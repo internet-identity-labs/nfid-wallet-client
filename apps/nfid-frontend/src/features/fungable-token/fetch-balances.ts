@@ -2,13 +2,13 @@ import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { getAccounts } from "src/features/fungable-token/btc/get-btc"
+import { getAccountsMatic } from "src/features/fungable-token/matic/get-matic"
 
 import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
 import { getBalance as getICPBalance } from "@nfid/integration"
 import { getDIP20Balance, TokenMetadata } from "@nfid/integration/token/dip-20"
 
 import { getEthBalance } from "./eth/get-eth-balance"
-import { getAccountsMatic } from "src/features/fungable-token/matic/get-matic";
 
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]

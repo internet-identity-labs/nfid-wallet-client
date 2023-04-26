@@ -1,150 +1,18 @@
-import React from "react";
-import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance";
-import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20";
-
-import { IconPngEthereum, IconSvgBTC, IconSvgDfinity } from "@nfid-frontend/ui";
-import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp";
-import { TokenStandards } from "@nfid/integration/token/types";
-
-import { stringICPtoE8s } from "frontend/integration/wallet/utils";
-
-import { useAllDip20Token } from "./dip-20/hooks/use-all-token-meta";
-import { useEthBalance } from "./eth/hooks/use-eth-balances";
-import { useBalanceICPAll } from "./icp/hooks/use-balance-icp-all";
-import { useErc20Polygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-polygon";
-import { useMaticBalance } from "src/features/fungable-token/matic/hooks/use-matic-balance";
-
-export interface TokenConfig {
-  balance: bigint | undefined
-  currency: string
-  fee: bigint
-  icon: string
-  price: string | undefined
-  title: string
-  canisterId?: string
-  tokenStandard: TokenStandards
-  toPresentation: (value?: bigint) => number
-  transformAmount: (value: string) => number
-  blockchain: string
-  feeCurrency?: string
-  contract?: string
-}
+import React from "react"
+import { getAssetScreenTokens } from "src/ui/view-model/fungible-asset-view-factory"
+import { useTokenConfig } from "src/ui/view-model/fungible-asset/hooks/use-token-config"
+import { useICTokens } from "src/ui/view-model/fungible-asset/ic/hooks/use-icp"
+import { TokenConfig } from "src/ui/view-model/fungible-asset/types"
 
 export const useAllToken = (): { token: TokenConfig[] } => {
-  const { balances: btcSheet } = useBtcBalance()
-  const {balances: matic } = useMaticBalance()
-  const { appAccountBalance } = useBalanceICPAll()
-  const { token: dip20Token } = useAllDip20Token()
-  const { balance: ethSheet } = useEthBalance()
-  const { erc20 } = useErc20()
-  const { erc20: erc20Polygon } = useErc20Polygon()
+  const tokens = getAssetScreenTokens()
+  let configs = tokens.map(useTokenConfig)
+  let tokenConfigs = configs.flatMap((config) => config.configs ?? [])
+  //¯\_(ツ)_/¯
+  let icTokenConfigs = useICTokens()
   const token: TokenConfig[] = React.useMemo(() => {
-    return [
-      {
-        icon: IconSvgDfinity,
-        tokenStandard: TokenStandards.ICP,
-        title: "Internet Computer",
-        currency: "ICP",
-        balance: appAccountBalance?.ICP.tokenBalance,
-        price: appAccountBalance?.ICP.usdBalance,
-        fee: BigInt(WALLET_FEE_E8S),
-        toPresentation,
-        transformAmount: stringICPtoE8s,
-        blockchain: "Internet Computer",
-      },
-      {
-        icon: IconSvgBTC,
-        tokenStandard: TokenStandards.BTC,
-        title: "Bitcoin",
-        currency: "BTC",
-        balance: btcSheet?.tokenBalance,
-        price: btcSheet?.usdBalance,
-        fee: BigInt(btcSheet?.fee ?? 0),
-        toPresentation,
-        transformAmount: stringICPtoE8s,
-        blockchain: "Bitcoin",
-      },
-      {
-        icon: IconSvgBTC,
-        tokenStandard: TokenStandards.MATIC,
-        title: "Matic",
-        currency: "MATIC",
-        balance: matic?.tokenBalance,
-        price: matic?.usdBalance,
-        fee: BigInt(matic?.fee ?? 0),
-        toPresentation,
-        transformAmount: stringICPtoE8s,
-        blockchain: "Polygon",
-      },
-      {
-        icon: IconPngEthereum,
-        tokenStandard: TokenStandards.ETH,
-        title: "Ethereum",
-        currency: "ETH",
-        balance: ethSheet?.tokenBalance,
-        price: ethSheet?.usdBalance,
-        fee: BigInt(0),
-        toPresentation,
-        transformAmount: stringICPtoE8s,
-        blockchain: "Ethereum",
-      },
-      ...(dip20Token
-        ? dip20Token.map(({ symbol, name, logo, ...rest }) => ({
-            tokenStandard: TokenStandards.DIP20,
-            icon: logo,
-            title: name,
-            currency: symbol,
-            balance: appAccountBalance?.[symbol].tokenBalance,
-            price: appAccountBalance?.[symbol].usdBalance,
-            blockchain: "Internet Computer",
-            ...rest,
-          }))
-        : []),
-      ...(erc20
-        ? erc20.map((l) => ({
-            tokenStandard: TokenStandards.ERC20,
-            icon: l.icon,
-            title: l.label,
-            currency: l.token,
-            balance: l.tokenBalance,
-            price: l.usdBalance,
-            blockchain: "Ethereum",
-            fee: BigInt(0),
-            toPresentation,
-            transformAmount: stringICPtoE8s,
-            feeCurrency: "ETH",
-            contract: l.contract,
-          }))
-        : []),
-      ...(erc20Polygon
-        ? erc20Polygon.map((l) => ({
-            tokenStandard: TokenStandards.ERC20P,
-            icon: l.icon,
-            title: l.label,
-            currency: l.token,
-            balance: l.tokenBalance,
-            price: l.usdBalance,
-            blockchain: "Polygon",
-            fee: BigInt(0),
-            toPresentation,
-            transformAmount: stringICPtoE8s,
-            feeCurrency: "MATIC",
-            contract: l.contract,
-          }))
-        : []),
-    ]
-  }, [
-    appAccountBalance,
-    btcSheet?.tokenBalance,
-    btcSheet?.usdBalance,
-    ethSheet?.tokenBalance,
-    ethSheet?.usdBalance,
-    dip20Token,
-    btcSheet?.fee,
-    erc20,
-    erc20Polygon,
-    matic,
-  ])
+    return [...tokenConfigs, ...icTokenConfigs]
+  }, [tokenConfigs, icTokenConfigs])
   console.debug("useAllToken", { token })
   return { token }
 }

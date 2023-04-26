@@ -1,11 +1,11 @@
 import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
+import { useErc20Polygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-polygon"
 import useSWR from "swr"
 
 import { fetchBalances } from "frontend/features/fungable-token/fetch-balances"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
 import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"
-import { useErc20Polygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-polygon";
 
 export const useUserBalances = () => {
   const { principals } = useAllPrincipals()

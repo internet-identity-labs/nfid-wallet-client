@@ -61,7 +61,6 @@ export class BtcAsset extends Asset {
   }
 
   async getRootAccount(
-    addressW?: string,
     delegation?: DelegationIdentity,
     logo?: string,
   ): Promise<TokenBalanceSheet> {
@@ -254,3 +253,5 @@ interface MempoolAddressResponse {
     tx_count: number
   }
 }
+
+export const btcAsset = new BtcAsset()

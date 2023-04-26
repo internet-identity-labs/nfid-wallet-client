@@ -29,7 +29,7 @@ export abstract class Asset implements FungibleAsset {
 
   abstract getTransactionHistory(
     identity: DelegationIdentity,
-    contract?: string
+    contract?: string,
   ): Promise<FungibleTxs>
 
   abstract getBalance(

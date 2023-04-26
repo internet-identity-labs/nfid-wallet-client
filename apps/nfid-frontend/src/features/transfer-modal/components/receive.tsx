@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo } from "react"
+import { TokenConfig } from "src/ui/view-model/fungible-asset/types"
 
 import { ChooseModal, Copy, QRCode } from "@nfid-frontend/ui"
 
-import {
-  TokenConfig,
-  useAllToken,
-} from "frontend/features/fungable-token/use-all-token"
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
@@ -106,8 +104,8 @@ export const TransferReceive = ({
           <p className="mb-1 text-gray-400">
             {selectedToken?.tokenStandard === "ETH" ||
             selectedToken?.tokenStandard === "BTC" ||
-            selectedToken?.tokenStandard === "ERC20"||
-            selectedToken?.tokenStandard === "MATIC"||
+            selectedToken?.tokenStandard === "ERC20" ||
+            selectedToken?.tokenStandard === "MATIC" ||
             selectedToken?.tokenStandard === "ERC20P"
               ? "Wallet address"
               : "Account ID"}

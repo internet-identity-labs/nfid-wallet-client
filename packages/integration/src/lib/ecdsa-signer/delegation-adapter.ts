@@ -73,6 +73,7 @@ export class DelegationWalletAdapter {
     try {
       tx = await this.wallet.populateTransaction(transaction)
       tx.gasLimit = ethers.BigNumber.from(tx.gasLimit).mul(125).div(100)
+      tx.gasPrice = gasPrice
       return [tx, err]
     } catch (error) {
       const alchemy = new Alchemy({

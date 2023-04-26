@@ -1,4 +1,4 @@
-import { Asset } from "./asset";
+import { Asset } from "./asset"
 import {
   ActivitiesByItemRequest,
   ActivitiesByUserRequest,
@@ -9,8 +9,8 @@ import {
   NonFungibleActivityRecords,
   NonFungibleAssetI,
   NonFungibleItems,
-  Tokens
-} from "./types";
+  Tokens,
+} from "./types"
 
 export abstract class NonFungibleAsset
   extends Asset

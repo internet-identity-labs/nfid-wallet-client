@@ -49,7 +49,8 @@ import {
   Identity,
   ItemsByUserRequest,
   NonFungibleActivityRecords,
-  NonFungibleItems, Token,
+  NonFungibleItems,
+  Token,
   TokenBalanceSheet,
   Tokens,
   TransferETHRequest,
@@ -299,7 +300,7 @@ export class EthereumAsset extends NonFungibleAsset {
     defaultIcon?: string,
   ): Promise<TokenBalanceSheet> {
     const address = await this.getAddress(identity)
-    const balance = await this.getBalance(undefined ,identity)
+    const balance = await this.getBalance(undefined, identity)
     const token: Token = {
       address: address,
       balance: balance.balance?.toFixed(8) ?? "0",
@@ -308,15 +309,16 @@ export class EthereumAsset extends NonFungibleAsset {
       name: "Matic",
       symbol: "MATIC",
     }
-    return  super.computeSheetForRootAccount(
-        token,
-        identity.getPrincipal().toText(),
-        defaultIcon,
-      )
+    return super.computeSheetForRootAccount(
+      token,
+      identity.getPrincipal().toText(),
+      defaultIcon,
+    )
   }
 
   public async getTransactionHistory(
-    identity: DelegationIdentity, contract?: string
+    identity: DelegationIdentity,
+    contract?: string,
   ): Promise<FungibleTxs> {
     const address = "0x377B85Ad7E8da204F990c1e7E0B97501e3CB7D44"
     const receivedTransactions = await this.getFungibleActivityByTokenAndUser({

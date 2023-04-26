@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { useErc20Polygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-polygon"
 
 import {
   IconPngEthereum,
@@ -8,8 +9,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { useAllDip20Token } from "frontend/features/fungable-token/dip-20/hooks/use-all-token-meta"
-import { useErc20Polygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-polygon";
-import { useErc20 } from "frontend/features/fungable-token/erc-20/hooks/use-erc-20";
+import { useErc20 } from "frontend/features/fungable-token/erc-20/hooks/use-erc-20"
 
 export const useTokenOptions = () => {
   const { token: dip20Tokens } = useAllDip20Token()

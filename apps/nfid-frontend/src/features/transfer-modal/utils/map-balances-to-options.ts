@@ -31,7 +31,7 @@ export const mapAccountBalancesToOptions = (
 ) => {
   if (!wallets) return []
 
-  if (selectedToken === "ETH" || selectedToken === 'MATIC')
+  if (selectedToken === "ETH" || selectedToken === "MATIC")
     return [
       {
         label: "Public",

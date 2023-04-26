@@ -1,5 +1,7 @@
 import { transferBTC } from "src/features/fungable-token/btc/get-btc"
 import { transferERC20 } from "src/features/fungable-token/erc-20/get-erc-20"
+import { transferERC20Polygon } from "src/features/fungable-token/erc-20/get-erc-20-polygon"
+import { transferMatic } from "src/features/fungable-token/matic/get-matic"
 
 import {
   Account,
@@ -17,8 +19,6 @@ import { fetchProfile } from "frontend/integration/identity-manager"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { TransferMachineContext } from "../machine"
-import { transferERC20Polygon } from "src/features/fungable-token/erc-20/get-erc-20-polygon";
-import { transferMatic } from "src/features/fungable-token/matic/get-matic";
 
 export const transferFT = async (context: TransferMachineContext) => {
   if (context.sourceAccount?.isVaultWallet) {

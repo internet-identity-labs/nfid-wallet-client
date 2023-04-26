@@ -1,5 +1,5 @@
-import useSWR from "swr";
-import { getAccountsMatic } from "src/features/fungable-token/matic/get-matic";
+import { getAccountsMatic } from "src/features/fungable-token/matic/get-matic"
+import useSWR from "swr"
 
 export const useMaticBalance = () => {
   const { data: balances, ...rest } = useSWR("maticBalance", getAccountsMatic)

@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
+import { TokenConfig } from "src/ui/view-model/fungible-asset/types"
 
 import {
   BlurredLoader,
@@ -13,10 +14,7 @@ import {
   sumRules,
 } from "@nfid-frontend/ui"
 
-import {
-  TokenConfig,
-  useAllToken,
-} from "frontend/features/fungable-token/use-all-token"
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import {
   useAllWallets,
   Wallet,

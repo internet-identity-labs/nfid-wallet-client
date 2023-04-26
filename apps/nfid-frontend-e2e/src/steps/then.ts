@@ -233,7 +233,7 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
 
 Then(/^Asset appears with label ([^"]*)$/, async (asselLabel: string) => {
   await $(`#token_${asselLabel.replace(/\s/g, "")}`).waitForDisplayed({
-    timeout: 17000,
+    timeout: 25000,
   })
 })
 

@@ -13,6 +13,6 @@ export class EthereumERC20AssetDetailsView extends FungibleAssetDetailsView {
 }
 
 export const ethereumERC20AssetDetailsView = new EthereumERC20AssetDetailsView({
-  tokenStandard: TokenStandards.ERC20,
+  tokenStandard: TokenStandards.ERC20_ETHEREUM,
   blockchain: Blockchain.ETHEREUM,
 })

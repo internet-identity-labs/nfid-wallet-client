@@ -4,6 +4,6 @@ export enum TokenStandards {
   "ETH" = "ETH",
   "MATIC" = "MATIC",
   "BTC" = "BTC",
-  "ERC20" = "ERC20",
-  "ERC20P" = "ERC20P",
+  "ERC20_ETHEREUM" = "ERC20_ETHEREUM",
+  "ERC20_POLYGON" = "ERC20_POLYGON",
 }

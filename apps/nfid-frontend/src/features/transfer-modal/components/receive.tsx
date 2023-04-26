@@ -48,9 +48,9 @@ export const TransferReceive = ({
         return selectedWallet?.ethAddress
       case "MATIC":
         return selectedWallet?.ethAddress
-      case "ERC20P":
+      case "ERC20_POLYGON":
         return selectedWallet?.ethAddress
-      case "ERC20":
+      case "ERC20_ETHEREUM":
         return selectedWallet?.ethAddress
       case "BTC":
         return selectedWallet?.btcAddress
@@ -104,9 +104,9 @@ export const TransferReceive = ({
           <p className="mb-1 text-gray-400">
             {selectedToken?.tokenStandard === "ETH" ||
             selectedToken?.tokenStandard === "BTC" ||
-            selectedToken?.tokenStandard === "ERC20" ||
+            selectedToken?.tokenStandard === "ERC20_ETHEREUM" ||
             selectedToken?.tokenStandard === "MATIC" ||
-            selectedToken?.tokenStandard === "ERC20P"
+            selectedToken?.tokenStandard === "ERC20_POLYGON"
               ? "Wallet address"
               : "Account ID"}
           </p>

@@ -2,7 +2,7 @@ Feature:Send/Receive Asset
   As a user, I want to send/receive assets
 
   @sendreceive1
-  Scenario Outline: User should be able to receive BTC/ETH transaction
+  Scenario Outline: User should be able to receive transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
@@ -15,6 +15,8 @@ Feature:Send/Receive Asset
       | chain           | anchor | account_id                            | currency |
       | Bitcoin         | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h | BTC      |
       | Ethereum        | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | ETH      |
+      | Matic           | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | MATIC    |
+      | Test Token      | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | TST      |
       | ChainLink Token | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | LINK     |
 
   @sendreceive2
@@ -44,12 +46,14 @@ Feature:Send/Receive Asset
     Examples:
       | chain             | anchor | balance    | fee          | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | 0.000015 BTC | NFID Account 1 | BTC      |
+      | Matic             | 25795  | 0.2        | 0 MATIC      | NFID Account 1 | MATIC    |
+      | Test Token        | 25795  | 1          | 0 MATIC      | NFID Account 1 | TST      |
       | Ethereum          | 25795  | 0.09664164 | 0 ETH        | NFID Account 1 | ETH      |
       | Internet Computer | 28542  | 0.01       | 0.0001 ICP   | NFID account 1 | ICP      |
       | ChainLink Token   | 25795  | 20         | 0 ETH        | NFID Account 1 | LINK     |
 
   @pending
-  @send_receive_once_a_day
+    @send_receive_once_a_day
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

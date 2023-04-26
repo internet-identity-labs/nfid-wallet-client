@@ -305,7 +305,7 @@ export class EthereumAsset extends NonFungibleAsset {
       balance: balance.balance?.toFixed(8) ?? "0",
       balanceinUsd: "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00"),
       logo: defaultIcon,
-      name: "Polygon",
+      name: "Matic",
       symbol: "MATIC",
     }
     return  super.computeSheetForRootAccount(
@@ -472,11 +472,11 @@ export class EthereumAsset extends NonFungibleAsset {
 
   private priceInUsd(price: any, balance?: string, token?: string) {
     if (!token || !balance) {
-      return ""
+      return "N/A"
     }
     const selectedTokenPrice = price[token]
     if (!selectedTokenPrice) {
-      return ""
+      return "N/A"
     }
     const balanceBN = toBn(balance)
     const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)

@@ -35,7 +35,10 @@ const ProfileTokenWalletsDetailPage = () => {
           return appAccountBalance[token]
         }
         if (typeof erc20Polygon !== "undefined") {
-          return erc20Polygon.find((l) => l.token === token)
+          const polygonToken = erc20Polygon.find((l) => l.token === token);
+          if (polygonToken) {
+            return polygonToken
+          }
         }
         if (typeof erc20Ethereum !== "undefined") {
           return erc20Ethereum.find((l) => l.token === token)

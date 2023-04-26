@@ -8,6 +8,7 @@ import { getBalance as getICPBalance } from "@nfid/integration"
 import { getDIP20Balance, TokenMetadata } from "@nfid/integration/token/dip-20"
 
 import { getEthBalance } from "./eth/get-eth-balance"
+import { getAccountsMatic } from "src/features/fungable-token/matic/get-matic";
 
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]
@@ -50,6 +51,9 @@ export async function fetchBalances({
         })),
         ...["BTC"].map(async (token) => ({
           [token]: (await getAccounts()).tokenBalance,
+        })),
+        ...["MATIC"].map(async (token) => ({
+          [token]: (await getAccountsMatic()).tokenBalance,
         })),
         ...dip20Token.map(async ({ symbol: token, canisterId }) => ({
           [token]: await getDIP20Balance({

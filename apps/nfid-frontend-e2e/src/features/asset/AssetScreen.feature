@@ -18,6 +18,8 @@ Feature:Fungible Asset
       | Bitcoin           | BTC      | 0.00006879 BTC | Bitcoin           | 25795  | Bitcoin           |
       | Ethereum          | LINK     | 20 LINK        | ChainLink Token   | 25795  | ChainLink Token   |
       | Ethereum          | FAU      | 1 FAU          | FaucetToken       | 25795  | FaucetToken       |
+      | Polygon           | MATIC    | 0.2 MATIC      | Matic             | 25795  | Matic             |
+      | Polygon           | TST      | 1 TST          | Test Token        | 25795  | Test Token        |
       | Ethereum          | ETH      | 0.09664164 ETH | Ethereum          | 25795  | Ethereum          |
       | Internet Computer | ICP      | 0 ICP          | Internet Computer | 28542  | Internet Computer |
       | Internet Computer | WICP     | 0 WICP         | WICP              | 28565  | WICP              |
@@ -34,13 +36,14 @@ Feature:Fungible Asset
     And Expect blockchain filter menu with text "All"
     And Open blockchain filter on page
     And Click checkbox chain <chain>
-    Then Asset appears with label <chain>
+    Then Asset appears with label <label>
     Then Only <amount> asset displayed
     Examples:
-      | chain             | anchor | amount |
-      | Bitcoin           | 25795  | 1      |
-      | Ethereum          | 25795  | 3      |
-      | Internet Computer | 28542  | 4      |
+      | chain             | anchor | amount | label             |
+      | Bitcoin           | 25795  | 1      | Bitcoin           |
+      | Ethereum          | 25795  | 3      | Ethereum          |
+      | Polygon           | 25795  | 2      | Matic             |
+      | Internet Computer | 28542  | 4      | Internet Computer |
 
   @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account

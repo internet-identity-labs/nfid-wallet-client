@@ -18,7 +18,7 @@ export class PolygonERC20AssetView extends FungibleAssetView {
 }
 
 export const polygonERC20AssetView = new PolygonERC20AssetView({
-  tokenStandard: TokenStandards.ERC20P,
+  tokenStandard: TokenStandards.ERC20_POLYGON,
   icon: IconERC20,
   blockchain: Blockchain.POLYGON,
   feeCurrency: NativeToken.MATIC,

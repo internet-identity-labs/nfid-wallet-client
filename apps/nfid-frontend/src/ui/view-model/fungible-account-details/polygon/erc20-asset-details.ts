@@ -13,6 +13,6 @@ export class PolygonERC20AssetDetailsView extends FungibleAssetDetailsView {
 }
 
 export const polygonERC20AssetDetailsView = new PolygonERC20AssetDetailsView({
-  tokenStandard: TokenStandards.ERC20P,
+  tokenStandard: TokenStandards.ERC20_POLYGON,
   icon: IconPngEthereum,
 })

@@ -36,13 +36,13 @@ export const transferFT = async (context: TransferMachineContext) => {
       return transferBTC(parseFloat(context.amount), context.receiverWallet)
     case "MATIC":
       return transferMatic(parseFloat(context.amount), context.receiverWallet)
-    case "ERC20":
+    case "ERC20_ETHEREUM":
       return transferERC20(
         parseFloat(context.amount),
         context.receiverWallet,
         context.selectedFT,
       )
-    case "ERC20P":
+    case "ERC20_POLYGON":
       return transferERC20Polygon(
         parseFloat(context.amount),
         context.receiverWallet,

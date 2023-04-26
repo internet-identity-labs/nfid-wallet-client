@@ -18,7 +18,7 @@ export class EthereumERC20AssetView extends FungibleAssetView {
 }
 
 export const ethereumERC20AssetView = new EthereumERC20AssetView({
-  tokenStandard: TokenStandards.ERC20,
+  tokenStandard: TokenStandards.ERC20_ETHEREUM,
   blockchain: Blockchain.ETHEREUM,
   feeCurrency: NativeToken.ETH,
   icon: IconERC20,

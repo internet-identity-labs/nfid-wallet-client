@@ -13,6 +13,7 @@ type FetchBalanceArgs = {
   principals: PrincipalAccount[]
   dip20Token: TokenMetadata[]
   erc20: TokenBalanceSheet[]
+  erc20Polygon: TokenBalanceSheet[]
 }
 
 export type Token = string
@@ -35,6 +36,7 @@ export async function fetchBalances({
   principals,
   dip20Token,
   erc20,
+  erc20Polygon,
 }: FetchBalanceArgs): Promise<AccountBalance[]> {
   return await Promise.all(
     principals.map(async ({ principal, account }) => {
@@ -56,6 +58,9 @@ export async function fetchBalances({
           }),
         })),
         ...erc20.map(async (token) => ({
+          [token.token]: token.tokenBalance,
+        })),
+        ...erc20Polygon.map(async (token) => ({
           [token.token]: token.tokenBalance,
         })),
       ])

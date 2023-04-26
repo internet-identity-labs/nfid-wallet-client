@@ -9,29 +9,29 @@ import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
 
 import { IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
+import { ethereumAsset, loadProfileFromLocalStorage, polygonAsset } from "@nfid/integration";
 
 export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
   const identity = await getIdentity()
-  return await ethereumAsset.getAccounts(identity, IconERC20)
+  return await polygonAsset.getAccounts(identity, IconERC20)
 }
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
-  return ethereumAsset.getTransactionHistory(identity, "erc20")
+  return polygonAsset.getTransactionHistory(identity, "erc20")
 }
 
-export const transferERC20 = async (
+export const transferERC20Polygon = async (
   amount: number,
   to: string,
   token: TokenConfig,
 ) => {
   try {
     const identity = await getIdentity()
-    const transaction = await ethereumAsset.getEstimatedTransaction(
+    const transaction = await polygonAsset.getEstimatedTransaction(
       new Erc20TransferRequest(identity, to, token.contract!, amount),
     )
-    const response = await ethereumAsset.transfer(
+    const response = await polygonAsset.transfer(
       identity,
       transaction.transaction,
     )

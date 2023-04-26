@@ -49,7 +49,7 @@ import {
   Identity,
   ItemsByUserRequest,
   NonFungibleActivityRecords,
-  NonFungibleItems,
+  NonFungibleItems, Token,
   TokenBalanceSheet,
   Tokens,
   TransferETHRequest,
@@ -294,13 +294,34 @@ export class EthereumAsset extends NonFungibleAsset {
     })
   }
 
-  public async getTransactionHistory(
+  public async getNativeAccount(
     identity: DelegationIdentity,
-  ): Promise<FungibleTxs> {
+    defaultIcon?: string,
+  ): Promise<TokenBalanceSheet> {
     const address = await this.getAddress(identity)
+    const balance = await this.getBalance(undefined ,identity)
+    const token: Token = {
+      address: address,
+      balance: balance.balance?.toFixed(8) ?? "0",
+      balanceinUsd: "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00"),
+      logo: defaultIcon,
+      name: "Polygon",
+      symbol: "MATIC",
+    }
+    return  super.computeSheetForRootAccount(
+        token,
+        identity.getPrincipal().toText(),
+        defaultIcon,
+      )
+  }
+
+  public async getTransactionHistory(
+    identity: DelegationIdentity, contract?: string
+  ): Promise<FungibleTxs> {
+    const address = "0x377B85Ad7E8da204F990c1e7E0B97501e3CB7D44"
     const receivedTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "to",
-      contract: "erc20",
+      contract,
       address,
     }).then((receiveTsx) => {
       return receiveTsx.activities.map((tx) =>
@@ -309,7 +330,7 @@ export class EthereumAsset extends NonFungibleAsset {
     })
     const sendTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "from",
-      contract: "erc20",
+      contract,
       address,
     }).then((sendTsx) => {
       return sendTsx.activities.map((tx) => this.toTransactionRow(tx, address))

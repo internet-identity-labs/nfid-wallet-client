@@ -43,6 +43,8 @@ const AppRow: React.FC<
     toPresentation?: (balance?: bigint) => number
   }
 > = ({ appName, icon, accounts, currency, blockchain, toPresentation }) => {
+  console.log("{ appName, icon, accounts, currency, blockchain, toPresentation }")
+  console.log({ appName, icon, accounts, currency, blockchain, toPresentation })
   const navigate = useNavigate()
   const copyToClipboard = React.useCallback(
     (type: string, value: string) => (e: React.SyntheticEvent) => {
@@ -143,6 +145,8 @@ export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
   blockchain = "Internet Computer",
   toPresentation,
 }) => {
+  console.log("apps")
+  console.log(apps)
   const headings = [
     "Application",
     "Account",

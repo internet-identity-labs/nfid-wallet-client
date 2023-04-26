@@ -1,19 +1,18 @@
-import React from "react"
-import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance"
-import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
+import React from "react";
+import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance";
+import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20";
 
-import { IconPngEthereum, IconSvgBTC, IconSvgDfinity } from "@nfid-frontend/ui"
-import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
-import { TokenStandards } from "@nfid/integration/token/types"
+import { IconPngEthereum, IconSvgBTC, IconSvgDfinity } from "@nfid-frontend/ui";
+import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp";
+import { TokenStandards } from "@nfid/integration/token/types";
 
-import { useProfile } from "frontend/integration/identity-manager/queries"
-import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
-import { stringICPtoE8s } from "frontend/integration/wallet/utils"
-import { keepStaticOrder } from "frontend/ui/utils/sorting"
+import { stringICPtoE8s } from "frontend/integration/wallet/utils";
 
-import { useAllDip20Token } from "./dip-20/hooks/use-all-token-meta"
-import { useEthBalance } from "./eth/hooks/use-eth-balances"
-import { useBalanceICPAll } from "./icp/hooks/use-balance-icp-all"
+import { useAllDip20Token } from "./dip-20/hooks/use-all-token-meta";
+import { useEthBalance } from "./eth/hooks/use-eth-balances";
+import { useBalanceICPAll } from "./icp/hooks/use-balance-icp-all";
+import { useErc20Polygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-polygon";
+import { useMaticBalance } from "src/features/fungable-token/matic/hooks/use-matic-balance";
 
 export interface TokenConfig {
   balance: bigint | undefined
@@ -31,20 +30,14 @@ export interface TokenConfig {
   contract?: string
 }
 
-export const useAllToken = (
-  accountsFilter?: string[],
-): { token: TokenConfig[] } => {
+export const useAllToken = (): { token: TokenConfig[] } => {
   const { balances: btcSheet } = useBtcBalance()
-  const { appAccountBalance } = useBalanceICPAll(true, accountsFilter)
+  const {balances: matic } = useMaticBalance()
+  const { appAccountBalance } = useBalanceICPAll()
   const { token: dip20Token } = useAllDip20Token()
   const { balance: ethSheet } = useEthBalance()
   const { erc20 } = useErc20()
-  const { profile } = useProfile()
-  const { data: delegation } = useWalletDelegation(
-    profile?.anchor,
-    "nfid.one",
-    "0",
-  )
+  const { erc20: erc20Polygon } = useErc20Polygon()
   const token: TokenConfig[] = React.useMemo(() => {
     return [
       {
@@ -59,6 +52,42 @@ export const useAllToken = (
         transformAmount: stringICPtoE8s,
         blockchain: "Internet Computer",
       },
+      {
+        icon: IconSvgBTC,
+        tokenStandard: TokenStandards.BTC,
+        title: "Bitcoin",
+        currency: "BTC",
+        balance: btcSheet?.tokenBalance,
+        price: btcSheet?.usdBalance,
+        fee: BigInt(btcSheet?.fee ?? 0),
+        toPresentation,
+        transformAmount: stringICPtoE8s,
+        blockchain: "Bitcoin",
+      },
+      {
+        icon: IconSvgBTC,
+        tokenStandard: TokenStandards.MATIC,
+        title: "Matic",
+        currency: "MATIC",
+        balance: matic?.tokenBalance,
+        price: matic?.usdBalance,
+        fee: BigInt(matic?.fee ?? 0),
+        toPresentation,
+        transformAmount: stringICPtoE8s,
+        blockchain: "Polygon",
+      },
+      {
+        icon: IconPngEthereum,
+        tokenStandard: TokenStandards.ETH,
+        title: "Ethereum",
+        currency: "ETH",
+        balance: ethSheet?.tokenBalance,
+        price: ethSheet?.usdBalance,
+        fee: BigInt(0),
+        toPresentation,
+        transformAmount: stringICPtoE8s,
+        blockchain: "Ethereum",
+      },
       ...(dip20Token
         ? dip20Token.map(({ symbol, name, logo, ...rest }) => ({
             tokenStandard: TokenStandards.DIP20,
@@ -71,71 +100,51 @@ export const useAllToken = (
             ...rest,
           }))
         : []),
-    ].concat(
-      !accountsFilter?.length ||
-        accountsFilter?.includes(delegation?.getPrincipal().toString() ?? "")
-        ? [
-            {
-              icon: IconSvgBTC,
-              tokenStandard: TokenStandards.BTC,
-              title: "Bitcoin",
-              currency: "BTC",
-              balance: btcSheet?.tokenBalance,
-              price: btcSheet?.usdBalance,
-              fee: BigInt(btcSheet?.fee ?? 0),
-              toPresentation,
-              transformAmount: stringICPtoE8s,
-              blockchain: "Bitcoin",
-            },
-            {
-              icon: IconPngEthereum,
-              tokenStandard: TokenStandards.ETH,
-              title: "Ethereum",
-              currency: "ETH",
-              balance: ethSheet?.tokenBalance,
-              price: ethSheet?.usdBalance,
-              fee: BigInt(0),
-              toPresentation,
-              transformAmount: stringICPtoE8s,
-              blockchain: "Ethereum",
-            },
-            ...(erc20
-              ? erc20.map((l) => ({
-                  tokenStandard: TokenStandards.ERC20,
-                  icon: l.icon,
-                  title: l.label,
-                  currency: l.token,
-                  balance: l.tokenBalance,
-                  price: l.usdBalance,
-                  blockchain: "Ethereum",
-                  fee: BigInt(0),
-                  toPresentation,
-                  transformAmount: stringICPtoE8s,
-                  feeCurrency: "ETH",
-                  contract: l.contract,
-                }))
-              : []),
-          ]
-        : [],
-    )
+      ...(erc20
+        ? erc20.map((l) => ({
+            tokenStandard: TokenStandards.ERC20,
+            icon: l.icon,
+            title: l.label,
+            currency: l.token,
+            balance: l.tokenBalance,
+            price: l.usdBalance,
+            blockchain: "Ethereum",
+            fee: BigInt(0),
+            toPresentation,
+            transformAmount: stringICPtoE8s,
+            feeCurrency: "ETH",
+            contract: l.contract,
+          }))
+        : []),
+      ...(erc20Polygon
+        ? erc20Polygon.map((l) => ({
+            tokenStandard: TokenStandards.ERC20P,
+            icon: l.icon,
+            title: l.label,
+            currency: l.token,
+            balance: l.tokenBalance,
+            price: l.usdBalance,
+            blockchain: "Polygon",
+            fee: BigInt(0),
+            toPresentation,
+            transformAmount: stringICPtoE8s,
+            feeCurrency: "MATIC",
+            contract: l.contract,
+          }))
+        : []),
+    ]
   }, [
     appAccountBalance,
-    dip20Token,
-    accountsFilter,
-    delegation,
     btcSheet?.tokenBalance,
     btcSheet?.usdBalance,
-    btcSheet?.fee,
     ethSheet?.tokenBalance,
     ethSheet?.usdBalance,
+    dip20Token,
+    btcSheet?.fee,
     erc20,
+    erc20Polygon,
+    matic,
   ])
-
-  const sortedToken = keepStaticOrder<TokenConfig>(
-    ({ title }) => title ?? "",
-    ["Internet Computer", "Ethereum", "Bitcoin"],
-  )(token)
-
   console.debug("useAllToken", { token })
-  return { token: sortedToken }
+  return { token }
 }

@@ -1,10 +1,4 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-import { format } from "date-fns"
-import { principalToAddress } from "ictool"
-import {
-  ChainBalance,
-} from "packages/integration/src/lib/asset/types"
 import {
   FungibleTxs,
   TokenBalanceSheet,

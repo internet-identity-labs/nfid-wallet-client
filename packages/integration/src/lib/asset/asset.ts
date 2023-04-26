@@ -29,6 +29,7 @@ export abstract class Asset implements FungibleAsset {
 
   abstract getTransactionHistory(
     identity: DelegationIdentity,
+    contract?: string
   ): Promise<FungibleTxs>
 
   abstract getBalance(
@@ -96,7 +97,7 @@ export abstract class Asset implements FungibleAsset {
     return price
   }
 
-  private stringICPtoE8s = (value: string) => {
+  protected stringICPtoE8s = (value: string) => {
     return Number(parseFloat(value) * E8S)
   }
 }

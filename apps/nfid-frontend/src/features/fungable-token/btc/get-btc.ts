@@ -10,7 +10,7 @@ import { fetchProfile } from "src/integration/identity-manager"
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
-export const getAccounts = async (): Promise<TokenBalanceSheet> => {
+export const getAccounts = async (crypto?: string): Promise<TokenBalanceSheet> => {
   const principal = await getIdentity()
   return await new BtcAsset().getRootAccount(undefined, principal, IconSvgBTC)
 }

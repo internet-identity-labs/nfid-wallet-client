@@ -48,6 +48,10 @@ export const TransferReceive = ({
     switch (selectedToken?.tokenStandard) {
       case "ETH":
         return selectedWallet?.ethAddress
+      case "MATIC":
+        return selectedWallet?.ethAddress
+      case "ERC20P":
+        return selectedWallet?.ethAddress
       case "ERC20":
         return selectedWallet?.ethAddress
       case "BTC":
@@ -95,14 +99,16 @@ export const TransferReceive = ({
         preselectedValue={selectedSourceWallet}
         type="small"
       />
-      {["ETH", "ICP", "BTC", "ERC20"].includes(
+      {["ETH", "ICP", "BTC", "ERC20", "MATIC", "ERC20P"].includes(
         selectedToken?.tokenStandard ?? "",
       ) && (
         <div>
           <p className="mb-1 text-gray-400">
             {selectedToken?.tokenStandard === "ETH" ||
             selectedToken?.tokenStandard === "BTC" ||
-            selectedToken?.tokenStandard === "ERC20"
+            selectedToken?.tokenStandard === "ERC20"||
+            selectedToken?.tokenStandard === "MATIC"||
+            selectedToken?.tokenStandard === "ERC20P"
               ? "Wallet address"
               : "Account ID"}
           </p>

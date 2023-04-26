@@ -17,6 +17,8 @@ import { fetchProfile } from "frontend/integration/identity-manager"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { TransferMachineContext } from "../machine"
+import { transferERC20Polygon } from "src/features/fungable-token/erc-20/get-erc-20-polygon";
+import { transferMatic } from "src/features/fungable-token/matic/get-matic";
 
 export const transferFT = async (context: TransferMachineContext) => {
   if (context.sourceAccount?.isVaultWallet) {
@@ -32,8 +34,16 @@ export const transferFT = async (context: TransferMachineContext) => {
       return transferETH(parseFloat(context.amount), context.receiverWallet)
     case "BTC":
       return transferBTC(parseFloat(context.amount), context.receiverWallet)
+    case "MATIC":
+      return transferMatic(parseFloat(context.amount), context.receiverWallet)
     case "ERC20":
       return transferERC20(
+        parseFloat(context.amount),
+        context.receiverWallet,
+        context.selectedFT,
+      )
+    case "ERC20P":
+      return transferERC20Polygon(
         parseFloat(context.amount),
         context.receiverWallet,
         context.selectedFT,

@@ -27,7 +27,10 @@ export const mapAccountBalancesToOptions = (
   selectedToken: string,
   rates: IRate,
   erc20: TokenBalanceSheet[],
+  erc20Polygon: TokenBalanceSheet[],
 ) => {
+  console.log("erc20Polygon")
+
   if (!wallets) return []
 
   if (selectedToken === "ETH")
@@ -86,6 +89,27 @@ export const mapAccountBalancesToOptions = (
               erc20token.tokenBalance,
             )} ${selectedToken}`,
             innerSubtitle: erc20token.usdBalance,
+          },
+        ],
+      },
+    ] as IGroupedOptions[]
+  }
+  console.log(erc20Polygon)
+  const erc20PolygonToken = erc20Polygon.find((l) => l.token === selectedToken)
+
+  if (erc20PolygonToken) {
+    return [
+      {
+        label: "Public",
+        options: [
+          {
+            title: "NFID Account 1",
+            value: wallets[0]?.ethAddress,
+            subTitle: truncateString(wallets[0]?.ethAddress ?? "", 10),
+            innerTitle: `${toPresentation(
+              erc20PolygonToken.tokenBalance,
+            )} ${selectedToken}`,
+            innerSubtitle: erc20PolygonToken.usdBalance,
           },
         ],
       },

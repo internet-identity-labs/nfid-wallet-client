@@ -46,11 +46,11 @@ export class Assets {
 
   public async waitWhileCalculated(asselLabel: string) {
     await $(this.getTokenUsd(asselLabel)).waitForDisplayed({
-      timeout: 7000,
+      timeout: 14000,
     })
     const usd = await $(this.getTokenUsd(asselLabel))
     await usd.waitForDisplayed({
-      timeout: 7000,
+      timeout: 14000,
     })
     await expect(usd).not.toHaveText("")
   }

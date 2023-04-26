@@ -3,8 +3,17 @@ import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/commo
 import { Network } from "alchemy-sdk"
 
 import { EthereumAsset } from "./asset-ethereum"
+import { NonFungibleAsset } from "./non-fungible-asset";
 
-export const polygonAsset = new EthereumAsset({
+
+export class PolygonAsset extends EthereumAsset {
+
+  override getBlockchain(): string {
+    return "Polygon"
+  }
+}
+
+export const polygonAsset = new PolygonAsset({
   currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
   blockchain: Blockchain.POLYGON as EVMBlockchain,
   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,

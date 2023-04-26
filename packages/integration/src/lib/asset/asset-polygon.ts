@@ -3,11 +3,18 @@ import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/commo
 import { Network } from "alchemy-sdk"
 
 import { EthereumAsset } from "./asset-ethereum"
-import { NonFungibleAsset } from "./non-fungible-asset"
 
 export class PolygonAsset extends EthereumAsset {
   override getBlockchain(): string {
     return "Polygon"
+  }
+
+  override getNativeToken(): string {
+    return "Matic"
+  }
+
+  override getNativeCurrency(): string {
+    return "MATIC"
   }
 }
 

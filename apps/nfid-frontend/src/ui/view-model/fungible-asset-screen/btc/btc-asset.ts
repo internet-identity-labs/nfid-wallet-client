@@ -1,11 +1,7 @@
 import { btcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
-import { FungibleAssetView } from "src/ui/view-model/fungible-asset/fungible-asset"
-import {
-  Blockchain,
-  NativeToken,
-  TokenConfig,
-} from "src/ui/view-model/fungible-asset/types"
-import { nativeToTokenConfig } from "src/ui/view-model/fungible-asset/util/util"
+import { FungibleAssetView } from "src/ui/view-model/fungible-asset-screen/fungible-asset"
+import { nativeToTokenConfig } from "src/ui/view-model/fungible-asset-screen/util/util"
+import { Blockchain, NativeToken, TokenConfig } from "src/ui/view-model/types"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"

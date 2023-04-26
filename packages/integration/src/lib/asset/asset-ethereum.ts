@@ -306,8 +306,8 @@ export class EthereumAsset extends NonFungibleAsset {
       balance: balance.balance?.toFixed(8) ?? "0",
       balanceinUsd: "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00"),
       logo: defaultIcon,
-      name: "Matic",
-      symbol: "MATIC",
+      name: this.getNativeToken(),
+      symbol: this.getNativeCurrency(),
     }
     return super.computeSheetForRootAccount(
       token,
@@ -385,6 +385,14 @@ export class EthereumAsset extends NonFungibleAsset {
         asset: x.asset || x.erc721TokenId || "",
       })),
     }
+  }
+
+  getNativeCurrency(): string {
+    return "ETH"
+  }
+
+  getNativeToken(): string {
+    return "Ethereum"
   }
 
   private getEtherscanUrl(mode: string, config: Configuration) {

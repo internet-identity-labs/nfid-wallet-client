@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import { TokenConfig } from "src/ui/view-model/fungible-asset/types"
+import { TokenConfig } from "src/ui/view-model/types"
 
 import {
   BlurredLoader,

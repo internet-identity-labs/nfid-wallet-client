@@ -1,4 +1,4 @@
-import { getTokens } from "src/ui/view-model/fungible-asset-view-factory"
+import { getTokens } from "src/ui/view-model/fungible-asset-screen/fungible-asset-factory"
 import useSWR from "swr"
 
 import { TokenStandards } from "@nfid/integration/token/types"

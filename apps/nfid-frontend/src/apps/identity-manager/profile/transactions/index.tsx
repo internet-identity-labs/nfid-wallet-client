@@ -187,7 +187,6 @@ const ProfileTransactions = () => {
     btcTxs?.receivedTransactions,
     nftTransactions,
     selectedBlockchainFilters,
-    erc20txs?.receivedTransactions,
     erc20txsPolygon?.receivedTransactions,
     txs?.receivedTransactions,
   ])

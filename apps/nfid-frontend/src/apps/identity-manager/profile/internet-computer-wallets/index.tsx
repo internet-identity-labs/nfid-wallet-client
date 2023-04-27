@@ -1,7 +1,7 @@
 import React, { useMemo } from "react"
 import { useParams } from "react-router-dom"
-import { getAssetDetailsTokens } from "src/ui/view-model/fungible-asset-details/fungible-asset-details-factory"
-import { useAssetDetails } from "src/ui/view-model/fungible-asset-details/hooks/use-account-config"
+import { getAssetDetailsTokens } from "src/ui/connnector/fungible-asset-details/fungible-asset-details-factory"
+import { useAssetDetails } from "src/ui/connnector/fungible-asset-details/hooks/use-account-config"
 
 import { useBalanceICPAll } from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
 import TokenWalletsDetailPage from "frontend/ui/pages/new-profile/internet-computer-wallets"

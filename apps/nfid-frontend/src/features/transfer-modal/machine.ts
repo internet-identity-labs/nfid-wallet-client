@@ -1,4 +1,4 @@
-import { TokenConfig } from "src/ui/view-model/types"
+import { TokenConfig } from "src/ui/connnector/types"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"

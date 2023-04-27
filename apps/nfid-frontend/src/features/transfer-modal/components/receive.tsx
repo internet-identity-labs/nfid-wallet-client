@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react"
-import { TokenConfig } from "src/ui/view-model/types"
+import { TokenConfig } from "src/ui/connnector/types"
 
 import { ChooseModal, Copy, QRCode } from "@nfid-frontend/ui"
 

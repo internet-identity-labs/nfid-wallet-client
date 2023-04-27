@@ -6,7 +6,7 @@ import {
 } from "packages/integration/src/lib/asset/types"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
-import { TokenConfig } from "src/ui/view-model/types"
+import { TokenConfig } from "src/ui/connnector/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"

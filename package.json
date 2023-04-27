@@ -101,6 +101,7 @@
     "@commitlint/cli": "16.2.4",
     "@commitlint/config-conventional": "17.3.0",
     "@craco/craco": "6.4.3",
+    "@esbuild-plugins/node-globals-polyfill": "0.2.3",
     "@melloware/csp-webpack-plugin": "6.0.4",
     "@nrwl/cypress": "15.8.7",
     "@nrwl/eslint-plugin-nx": "15.8.7",

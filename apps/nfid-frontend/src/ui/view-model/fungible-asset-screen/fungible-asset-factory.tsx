@@ -1,22 +1,22 @@
-import { btcAssetView } from "src/ui/view-model/fungible-asset-screen/btc/btc-asset"
-import { ethereumERC20AssetView } from "src/ui/view-model/fungible-asset-screen/eth/erc20-asset"
-import { ethAssetView } from "src/ui/view-model/fungible-asset-screen/eth/eth-asset"
-import { FungibleAssetView } from "src/ui/view-model/fungible-asset-screen/fungible-asset"
-import { polygonERC20AssetView } from "src/ui/view-model/fungible-asset-screen/polygon/erc20-asset"
-import { maticAssetView } from "src/ui/view-model/fungible-asset-screen/polygon/matic-asset"
-import { IFungibleAssetView, TokenConfig } from "src/ui/view-model/types"
+import { btcAssetConnector } from "src/ui/view-model/fungible-asset-screen/btc/btc-asset"
+import { ethereumERC20AssetConnector } from "src/ui/view-model/fungible-asset-screen/eth/erc20-asset"
+import { ethAssetConnector } from "src/ui/view-model/fungible-asset-screen/eth/eth-asset"
+import { FungibleAssetConnector } from "src/ui/view-model/fungible-asset-screen/fungible-asset"
+import { polygonERC20AssetConnector } from "src/ui/view-model/fungible-asset-screen/polygon/erc20-asset"
+import { maticAssetConnector } from "src/ui/view-model/fungible-asset-screen/polygon/matic-asset"
+import { IFungibleAssetConnector, TokenConfig } from "src/ui/view-model/types"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
 const assetViews = [
-  btcAssetView,
-  maticAssetView,
-  polygonERC20AssetView,
-  ethereumERC20AssetView,
-  ethAssetView,
+  btcAssetConnector,
+  maticAssetConnector,
+  polygonERC20AssetConnector,
+  ethereumERC20AssetConnector,
+  ethAssetConnector,
 ]
 
-const assetViewConfigStorage: Map<TokenStandards, IFungibleAssetView> =
+const assetViewConfigStorage: Map<TokenStandards, IFungibleAssetConnector> =
   toMap(assetViews)
 
 export const getAssetScreenTokens = (): Array<TokenStandards> => {
@@ -31,9 +31,9 @@ export const getTokens = async (
 }
 
 function toMap(
-  assetViews: FungibleAssetView[],
-): Map<TokenStandards, IFungibleAssetView> {
-  const assetViewMap = new Map<TokenStandards, FungibleAssetView>()
+  assetViews: FungibleAssetConnector[],
+): Map<TokenStandards, IFungibleAssetConnector> {
+  const assetViewMap = new Map<TokenStandards, FungibleAssetConnector>()
   assetViews.forEach((assetView) => {
     assetViewMap.set(assetView.getTokenStandard(), assetView)
   })

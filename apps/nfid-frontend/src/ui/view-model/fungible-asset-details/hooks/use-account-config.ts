@@ -1,4 +1,4 @@
-import { getAssetDetails } from "src/ui/view-model/fungible-account-details/fungible-asset-details-factory"
+import { getAssetDetails } from "src/ui/view-model/fungible-asset-details/fungible-asset-details-factory"
 import useSWR from "swr"
 
 import { TokenStandards } from "@nfid/integration/token/types"

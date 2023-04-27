@@ -1,4 +1,4 @@
-import { FungibleAssetView } from "src/ui/view-model/fungible-asset-screen/fungible-asset"
+import { FungibleAssetConnector } from "src/ui/view-model/fungible-asset-screen/fungible-asset"
 import { nativeToTokenConfig } from "src/ui/view-model/fungible-asset-screen/util/util"
 import { Blockchain, NativeToken, TokenConfig } from "src/ui/view-model/types"
 
@@ -6,7 +6,7 @@ import { IconSvgBTC } from "@nfid-frontend/ui"
 import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export class MaticAssetView extends FungibleAssetView {
+export class MaticAssetConnector extends FungibleAssetConnector {
   async getTokenConfigs(): Promise<Array<TokenConfig>> {
     const principal = await this.getIdentity()
     return polygonAsset
@@ -15,7 +15,7 @@ export class MaticAssetView extends FungibleAssetView {
   }
 }
 
-export const maticAssetView = new MaticAssetView({
+export const maticAssetConnector = new MaticAssetConnector({
   icon: IconSvgBTC,
   tokenStandard: TokenStandards.MATIC,
   title: "Matic",

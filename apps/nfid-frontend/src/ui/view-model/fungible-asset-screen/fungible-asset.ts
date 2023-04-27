@@ -1,12 +1,12 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
-import { IFungibleAssetView, TokenConfig } from "src/ui/view-model/types"
+import { IFungibleAssetConnector, TokenConfig } from "src/ui/view-model/types"
 
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export abstract class FungibleAssetView implements IFungibleAssetView {
+export abstract class FungibleAssetConnector implements IFungibleAssetConnector {
   protected config: any
 
   constructor(config: any) {

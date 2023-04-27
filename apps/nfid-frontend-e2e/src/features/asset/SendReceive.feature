@@ -69,6 +69,8 @@ Feature:Send/Receive Asset
       | chain             | anchor | target                                                           | amount    | text                                    | currency | account        |
       | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | You've sent 1e-7 BTC. Transaction hash: | BTC      | NFID Account 1 |
       | Ethereum          | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 LINK               | LINK     | NFID Account 1 |
+      | Polygon           | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 MATIC              | MATIC    | NFID Account 1 |
+      | Polygon           | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 TST                | TST      | NFID Account 1 |
       | Ethereum          | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 ETH                | ETH      | NFID Account 1 |
       | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001    | You've sent 0.0001 ICP                  | ICP      | NFID account 1 |
 

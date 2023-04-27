@@ -1,6 +1,6 @@
 {
   "name": "nfid-frontend",
-  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/nfid-frontend/src",
   "projectType": "application",
   "targets": {
@@ -19,7 +19,9 @@
     },
     "build-storybook": {
       "executor": "@nrwl/storybook:build",
-      "outputs": ["{options.outputDir}"],
+      "outputs": [
+        "{options.outputDir}"
+      ],
       "options": {
         "uiFramework": "@storybook/react",
         "configDir": "apps/nfid-frontend/.storybook",
@@ -29,6 +31,77 @@
         "ci": {
           "quiet": true
         }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/vite:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/nfid-frontend"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "nfid-frontend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "nfid-frontend:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "nfid-frontend:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nrwl/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "nfid-frontend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "nfid-frontend:build:development"
+        },
+        "production": {
+          "buildTarget": "nfid-frontend:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nrwl/vite:test",
+      "outputs": [
+        "coverage/apps/nfid-frontend"
+      ],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/apps/nfid-frontend"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/nfid-frontend/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     }
   },

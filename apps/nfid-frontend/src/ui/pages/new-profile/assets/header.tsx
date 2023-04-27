@@ -42,12 +42,14 @@ export const ProfileAssetsHeader = ({
               options={blockchainOptions}
               selectedValues={blockchainFilter}
               setSelectedValues={setBlockchainFilter}
+              id="blockchain_filter"
             />
             <DropdownSelect
               label="Account"
               options={accountsOptions}
               selectedValues={accountsFilter}
               setSelectedValues={setAccountsFilter}
+              id="account_filter"
             />
           </FilterPopover>
         </div>

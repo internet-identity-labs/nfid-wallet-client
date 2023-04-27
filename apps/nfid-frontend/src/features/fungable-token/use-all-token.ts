@@ -1,8 +1,8 @@
 import React from "react"
-import { getAssetScreenTokens } from "src/ui/view-model/fungible-asset-screen/fungible-asset-factory"
-import { useTokenConfig } from "src/ui/view-model/fungible-asset-screen/hooks/use-token-config"
-import { useICTokens } from "src/ui/view-model/fungible-asset-screen/ic/hooks/use-icp"
-import { TokenConfig } from "src/ui/view-model/types"
+import { getAssetScreenTokens } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
+import { useTokenConfig } from "src/ui/connnector/fungible-asset-screen/hooks/use-token-config"
+import { useICTokens } from "src/ui/connnector/fungible-asset-screen/ic/hooks/use-icp"
+import { TokenConfig } from "src/ui/connnector/types"
 
 export const useAllToken = (): { token: TokenConfig[] } => {
   const tokens = getAssetScreenTokens()

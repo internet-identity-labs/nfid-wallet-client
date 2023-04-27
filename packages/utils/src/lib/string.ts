@@ -1,8 +1,15 @@
-export const truncateString = (str: string, maxLength: number): string => {
-  if (str.length > maxLength) {
-    return str.substring(0, maxLength) + "..."
+export const truncateString = (
+  str: string,
+  leadingChars: number,
+  trailingChars?: number,
+): string => {
+  if (str.length < leadingChars) return str
+  if (trailingChars) {
+    const splitAt = str.length - trailingChars
+    return `${str.slice(0, leadingChars)}...${str.slice(splitAt)}`
   }
-  return str
+
+  return `${str.slice(0, leadingChars)}...`
 }
 
 export const copyToClipboard = (

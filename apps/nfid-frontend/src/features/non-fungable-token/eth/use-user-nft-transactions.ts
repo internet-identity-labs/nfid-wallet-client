@@ -20,7 +20,7 @@ export const useUserEthNFTTransactions = () => {
         ({
           asset: "NFT",
           quantity: 1,
-          date: format(new Date(), "MMM dd, yyyy - hh:mm:ss aaa"),
+          date: format(new Date(activity.date), "MMM dd, yyyy - hh:mm:ss aaa"),
           from: activity.from.replace("ETHEREUM:", ""),
           to: activity.to.replace("ETHEREUM:", ""),
           type:

@@ -24,7 +24,9 @@ Feature:Fungible Asset History
       | 1   | Sent     | Internet Computer | ICP      | 0.18       | 1681206438000 | 7d2912c28cd074a912be7d0cd5a6f6dd48591045d7d626edc5e6877a3a22314f | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 28593  |
       | 1   | Sent     | Ethereum          | ETH      | 0.05       | 1682378652000 | 0xeaf87e4ddf980280b64f860b1af9bf7decb2e780                       | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 28593  |
       | 1   | Received | Ethereum          | ETH      | 0.1        | 1682378592000 | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 0xeaf87e4ddf980280b64f860b1af9bf7decb2e780                       | 28593  |
-      | 3   | Received | Ethereum          | FAU      | 1          | 1682376036000 | 0x0000000000000000000000000000000000000000                       | 0x00607c1f864508e7de80b6db6a2cef775b9f01e7                       | 25795  |
+      | 5   | Received | Ethereum          | FAU      | 1          | 1682580072000 | 0x91a636095fa65511a30a9d9ac29549984ad25741                       | 0x00607c1f864508e7de80b6db6a2cef775b9f01e7                       | 25795  |
+      | 1   | Received | Ethereum          | NFT      | 1          | 1682582412000 | 0x91a636095fa65511a30a9d9ac29549984ad25741                       | 0xf6319bbb3c94391a95041810c6e4f3adf004e82a                       | 28542  |
+
 
   @tsxhistory2
   Scenario Outline: User should be able to see transaction depends on selected app
@@ -48,10 +50,11 @@ Feature:Fungible Asset History
     Then 0 transaction in the table
     Examples:
       | tab      | chain             | anchor | txs   | txss |
-      | Received | Bitcoin           | 25795  | 4 TXs | 1    |
-      | Received | Ethereum          | 25795  | 4 TXs | 3    |
+      | Received | Bitcoin           | 25795  | 6 TXs | 1    |
+      | Received | Ethereum          | 25795  | 6 TXs | 5    |
       | Sent     | Bitcoin           | 28593  | 9 TXs | 2    |
       | Sent     | Ethereum          | 28593  | 9 TXs | 1    |
       | Sent     | Internet Computer | 28593  | 9 TXs | 1    |
       | Received | Internet Computer | 28542  | 1 TXs | 1    |
+      | Received | Ethereum          | 28542  | 1 TXs | 1    |
 

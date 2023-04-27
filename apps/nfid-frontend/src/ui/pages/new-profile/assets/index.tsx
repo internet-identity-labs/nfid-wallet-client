@@ -5,6 +5,7 @@ import { generatePath, useNavigate } from "react-router-dom"
 import { Image } from "@nfid-frontend/ui"
 import { blockchains } from "@nfid/config"
 
+import { useAccountOptions } from "frontend/apps/identity-manager/profile/assets/use-account-options"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
@@ -31,13 +32,18 @@ interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: Token[]
   nfts?: UserNonFungibleToken[]
+  accountsFilter: string[]
+  setAccountsFilter: (value: string[]) => void
 }
 
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   onIconClick,
   tokens,
   nfts,
+  accountsFilter,
+  setAccountsFilter,
 }) => {
+  const { options } = useAccountOptions()
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
   const navigate = useNavigate()
   const handleNavigateToTokenDetails = React.useCallback(
@@ -68,7 +74,8 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
 
   const resetFilters = React.useCallback(() => {
     setBlockchainFilter([])
-  }, [])
+    setAccountsFilter([])
+  }, [setAccountsFilter])
 
   return (
     <ProfileTemplate
@@ -81,6 +88,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       <ProfileContainer
         title={
           <ProfileAssetsHeader
+            accountsOptions={options}
+            accountsFilter={accountsFilter}
+            setAccountsFilter={setAccountsFilter}
             blockchainOptions={blockchainOptions}
             blockchainFilter={blockchainFilter}
             setBlockchainFilter={setBlockchainFilter}

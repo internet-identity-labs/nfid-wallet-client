@@ -56,5 +56,5 @@ Feature:Fungible Asset History
       | Sent     | Ethereum          | 28593  | 9 TXs | 1    |
       | Sent     | Internet Computer | 28593  | 9 TXs | 1    |
       | Received | Internet Computer | 28542  | 2 TXs | 1    |
-      | Received | Ethereum          | 28542  | 2 TXs | 1    |
+      | Received | Ethereum          | 28542  | 1 TXs | 1    |
 

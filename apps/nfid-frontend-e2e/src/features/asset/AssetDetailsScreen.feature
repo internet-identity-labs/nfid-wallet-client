@@ -18,8 +18,8 @@ Feature:Fungible Asset Details
     Examples:
       | label             | currency | balance    | principal | address | anchor |
       | Bitcoin           | BTC      | 0.00006879 | 5qfm      | mn9c    | 25795  |
-      | Ethereum          | ETH      | 0.1        | 5qfm      | 0x00    | 25795  |
-      | FaucetToken       | FAU      | 1          | 5qfm      | 0x00   | 25795  |
+      | Ethereum          | ETH      | 0.09664164 | 5qfm      | 0x00    | 25795  |
+      | FaucetToken       | FAU      | 1          | 5qfm      | 0x00    | 25795  |
       | ChainLink Token   | LINK     | 20         | 5qfm      | 0x00    | 25795  |
       | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
       | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |

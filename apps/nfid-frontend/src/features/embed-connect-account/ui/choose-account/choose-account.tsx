@@ -62,16 +62,18 @@ export const ChooseAccount = ({
               }
             />
           </div>
-          <Tooltip
-            tip={
-              <div>
-                Connect anonymously — сreate an account <br /> for exclusive use
-                with this application.
-              </div>
-            }
-          >
-            <IconCmpInfo className="cursor-pointer hover:opacity-70" />
-          </Tooltip>
+          {onConnectAnonymously && (
+            <Tooltip
+              tip={
+                <div>
+                  Connect anonymously — сreate an account <br /> for exclusive
+                  use with this application.
+                </div>
+              }
+            >
+              <IconCmpInfo className="cursor-pointer hover:opacity-70" />
+            </Tooltip>
+          )}
         </div>
         <ChooseModal
           title="Choose an account"

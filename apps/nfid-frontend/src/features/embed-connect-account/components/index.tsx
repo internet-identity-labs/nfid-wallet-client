@@ -37,7 +37,7 @@ export const EmbedChooseAccount = ({
           {
             title: "NFID Account 1",
             value: address,
-            subTitle: truncateString(address, 5),
+            subTitle: truncateString(address, 6, 4),
             innerTitle: balance?.tokenBalance
               ? `${Number(balance.tokenBalance) / E8S} ETH`
               : "",

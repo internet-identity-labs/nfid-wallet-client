@@ -2,7 +2,7 @@ import { decodeTokenIdentifier } from "ictool"
 import React from "react"
 import useSWR from "swr"
 
-import { authState, getWalletName } from "@nfid/integration"
+import { getWalletName } from "@nfid/integration"
 
 import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
 import { useEthNFTs } from "frontend/features/fungable-token/eth/hooks/use-eth-nfts"
@@ -13,8 +13,12 @@ import {
   tokens,
   token,
 } from "frontend/integration/entrepot"
-import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
+import {
+  useApplicationsMeta,
+  useProfile,
+} from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
+import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
 
 export function useNFT(tokenId: string) {
   const { canister } = decodeTokenIdentifier(tokenId)
@@ -56,11 +60,17 @@ export function useNFT(tokenId: string) {
   )
 }
 
-export const useAllNFTs = () => {
+export const useAllNFTs = (accountsFilter?: string[]) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
   const { nfts: ethNFTS } = useEthNFTs()
   const { address } = useEthAddress()
+  const { profile } = useProfile()
+  const { data: delegation } = useWalletDelegation(
+    profile?.anchor,
+    "nfid.one",
+    "0",
+  )
 
   const { data, isLoading, isValidating } = useSWR(
     principals ? [principals, "userTokens"] : null,
@@ -88,40 +98,46 @@ export const useAllNFTs = () => {
         owner: principal?.toText(),
         ...rest,
       }))
-      .concat(
-        // I have not found decoded data for NFT
-        // Mocking for rarible demo
-        // @ts-ignore
-        (ethNFTS?.map(
-          (nft) =>
-            ({
-              index: nft.id,
-              contractId: nft.contract,
-              owner: address,
-              tokenId: nft.tokenId,
-              account: {
-                domain: "nfid.one",
-                label: "",
-                accountId: "0",
-                alias: [
-                  "https://nfid.one",
-                  "https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app",
-                ],
-              },
-              assetFullsize: { url: nft?.image, format: "img" },
-              assetPreview: nft?.thumbnail,
-              blockchain: "Ethereum",
-              collection: {
-                description: nft.description,
-                id: nft.collection,
-                name: nft.contractName,
-                standard: nft.tokenType,
-              },
-              name: nft.title,
-              principal: authState.get().delegationIdentity?.getPrincipal(),
-            } as UserNonFungibleToken),
-        ) as any) ?? [],
+      .filter((nft) =>
+        !accountsFilter?.length
+          ? true
+          : accountsFilter?.includes(nft.principal.toString()),
       )
-  }, [data, applicationsMeta, ethNFTS, address])
+      .concat(
+        !accountsFilter?.length ||
+          accountsFilter?.includes(delegation?.getPrincipal().toString() ?? "")
+          ? (ethNFTS?.map(
+              (nft) =>
+                ({
+                  index: nft.id,
+                  contractId: nft.contract,
+                  owner: address,
+                  tokenId: nft.tokenId,
+                  account: {
+                    domain: "nfid.one",
+                    label: "",
+                    accountId: "0",
+                    alias: [
+                      "https://nfid.one",
+                      "https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app",
+                    ],
+                  },
+                  assetFullsize: { url: nft?.image, format: "img" },
+                  assetPreview: nft?.thumbnail,
+                  blockchain: "Ethereum",
+                  collection: {
+                    description: nft.description,
+                    id: nft.collection,
+                    name: nft.contractName,
+                    standard: nft.tokenType,
+                  },
+                  name: nft.title,
+                  principal: delegation?.getPrincipal(),
+                } as UserNonFungibleToken),
+            ) as any) ?? []
+          : [],
+      )
+  }, [data, applicationsMeta, accountsFilter, ethNFTS, address, delegation])
+
   return { nfts, isLoading: isLoading || isValidating }
 }

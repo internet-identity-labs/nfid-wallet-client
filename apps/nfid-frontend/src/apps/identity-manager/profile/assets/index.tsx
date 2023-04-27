@@ -8,10 +8,11 @@ import { ProfileConstants } from "../routes"
 import { useAllNFTs } from "./hooks"
 
 const ProfileAssets = () => {
+  const [accountsFilter, setAccountsFilter] = React.useState<string[]>([])
   const { navigate } = useNFIDNavigate()
-  const { nfts: nonFungibleTokens } = useAllNFTs()
+  const { nfts: nonFungibleTokens } = useAllNFTs(accountsFilter)
+  const { token } = useAllToken(accountsFilter)
 
-  const { token } = useAllToken()
   console.debug("ProfileAssets", { token })
 
   return (
@@ -21,6 +22,8 @@ const ProfileAssets = () => {
       }
       tokens={token}
       nfts={nonFungibleTokens}
+      accountsFilter={accountsFilter}
+      setAccountsFilter={setAccountsFilter}
     />
   )
 }

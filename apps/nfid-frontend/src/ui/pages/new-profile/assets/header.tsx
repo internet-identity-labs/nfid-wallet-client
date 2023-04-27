@@ -12,10 +12,16 @@ interface IProfileAssetsHeader {
   blockchainOptions: IOption[]
   blockchainFilter: string[]
   setBlockchainFilter: (value: string[]) => void
+  accountsOptions: IOption[]
+  accountsFilter: string[]
+  setAccountsFilter: (value: string[]) => void
   resetFilters: () => void
 }
 
 export const ProfileAssetsHeader = ({
+  accountsOptions,
+  accountsFilter,
+  setAccountsFilter,
   blockchainFilter,
   blockchainOptions,
   setBlockchainFilter,
@@ -36,6 +42,12 @@ export const ProfileAssetsHeader = ({
               options={blockchainOptions}
               selectedValues={blockchainFilter}
               setSelectedValues={setBlockchainFilter}
+            />
+            <DropdownSelect
+              label="Account"
+              options={accountsOptions}
+              selectedValues={accountsFilter}
+              setSelectedValues={setAccountsFilter}
             />
           </FilterPopover>
         </div>

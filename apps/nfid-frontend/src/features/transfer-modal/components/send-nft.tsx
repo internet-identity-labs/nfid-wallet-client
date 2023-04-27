@@ -14,6 +14,7 @@ import {
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 import { getWalletName } from "@nfid/integration"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 import { useAllNFTs } from "frontend/apps/identity-manager/profile/assets/hooks"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -167,7 +168,9 @@ export const TransferNFT = ({
         registerFunction={register("to", {
           required: "This field cannot be empty",
           validate: makeAddressFieldValidation(
-            selectedNFT?.blockchain === "Ethereum" ? "ETH" : "ICP",
+            selectedNFT?.blockchain === "Ethereum"
+              ? TokenStandards.ETH
+              : TokenStandards.ICP,
           ),
         })}
       />

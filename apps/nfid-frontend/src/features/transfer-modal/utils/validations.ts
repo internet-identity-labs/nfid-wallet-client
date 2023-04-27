@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 
 import { isHex } from "@nfid-frontend/utils"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 const PRINCIPAL_LENGTH = 63
 const IC_ADDRESS_LENGTH = 64
@@ -45,46 +46,47 @@ export const validateTransferAmountField =
     return true
   }
 
-export const makeAddressFieldValidation = (type: string) => (value: string) => {
-  if (typeof isNotEmpty(value) !== "boolean") return isNotEmpty(value)
+export const makeAddressFieldValidation =
+  (type: TokenStandards) => (value: string) => {
+    if (typeof isNotEmpty(value) !== "boolean") return isNotEmpty(value)
 
-  switch (type) {
-    case "ETH":
-      return typeof isHex(value) === "boolean" &&
-        value.length === ETH_ADDRESS_LENGTH
-        ? true
-        : "Incorrect address"
-    case "ERC20":
-      return typeof isHex(value) === "boolean" &&
-        value.length === ETH_ADDRESS_LENGTH
-        ? true
-        : "Incorrect address"
-    case "ERC20P":
-      return typeof isHex(value) === "boolean" &&
-        value.length === ETH_ADDRESS_LENGTH
-        ? true
-        : "Incorrect address"
-    case "MATIC":
-      return typeof isHex(value) === "boolean" &&
-        value.length === ETH_ADDRESS_LENGTH
-        ? true
-        : "Incorrect address"
-    case "BTC":
-      return typeof isHex(value) === "boolean" &&
-        value.length > 25 &&
-        value.length < 36
-        ? true
-        : "Incorrect BTC address"
-    case "DIP20":
-      return typeof isValidPrincipalId(value) === "boolean" &&
-        value.length === PRINCIPAL_LENGTH
-        ? true
-        : "For DIP20 only principal address allowed"
-    default:
-      return (typeof isHex(value) === "boolean" &&
-        value.length === IC_ADDRESS_LENGTH) ||
-        typeof isValidPrincipalId(value) === "boolean"
-        ? true
-        : "Incorrect account or principal ID"
+    switch (type) {
+      case TokenStandards.ETH:
+        return typeof isHex(value) === "boolean" &&
+          value.length === ETH_ADDRESS_LENGTH
+          ? true
+          : "Incorrect address"
+      case TokenStandards.ERC20_ETHEREUM:
+        return typeof isHex(value) === "boolean" &&
+          value.length === ETH_ADDRESS_LENGTH
+          ? true
+          : "Incorrect address"
+      case TokenStandards.ERC20_POLYGON:
+        return typeof isHex(value) === "boolean" &&
+          value.length === ETH_ADDRESS_LENGTH
+          ? true
+          : "Incorrect address"
+      case TokenStandards.MATIC:
+        return typeof isHex(value) === "boolean" &&
+          value.length === ETH_ADDRESS_LENGTH
+          ? true
+          : "Incorrect address"
+      case TokenStandards.BTC:
+        return typeof isHex(value) === "boolean" &&
+          value.length > 25 &&
+          value.length < 36
+          ? true
+          : "Incorrect BTC address"
+      case TokenStandards.DIP20:
+        return typeof isValidPrincipalId(value) === "boolean" &&
+          value.length === PRINCIPAL_LENGTH
+          ? true
+          : "For DIP20 only principal address allowed"
+      default:
+        return (typeof isHex(value) === "boolean" &&
+          value.length === IC_ADDRESS_LENGTH) ||
+          typeof isValidPrincipalId(value) === "boolean"
+          ? true
+          : "Incorrect account or principal ID"
+    }
   }
-}

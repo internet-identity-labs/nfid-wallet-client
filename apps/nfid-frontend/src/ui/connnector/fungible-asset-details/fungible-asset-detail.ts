@@ -7,7 +7,9 @@ import { IFungibleAssetDetailsConnector } from "src/ui/connnector/types"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export abstract class FungibleAssetDetailsConnector implements IFungibleAssetDetailsConnector {
+export abstract class FungibleAssetDetailsConnector
+  implements IFungibleAssetDetailsConnector
+{
   protected config: any
 
   constructor(config: any) {

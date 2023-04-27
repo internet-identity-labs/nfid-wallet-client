@@ -53,9 +53,10 @@ Feature:Send/Receive Asset
       | ChainLink Token   | 25795  | 20         | 0 ETH        | NFID Account 1 | LINK     |
 
   @pending
-    @send_receive_once_a_day
+    @once_a_day
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
+    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
     Then Asset calculated for <chain>

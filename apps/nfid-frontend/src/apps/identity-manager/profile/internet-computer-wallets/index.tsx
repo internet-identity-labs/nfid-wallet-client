@@ -15,10 +15,10 @@ const ProfileTokenWalletsDetailPage = () => {
 
   const balance = useMemo(() => {
     if (!token) return undefined
-    if (details) return details.find((l) => l.token === token)
     if (appAccountBalance && appAccountBalance[token]) {
       return appAccountBalance[token]
     }
+    if (details) return details.find((l) => l.token === token)
   }, [appAccountBalance, token, details])
   console.debug(">> ProfileIWallets", { balance })
 

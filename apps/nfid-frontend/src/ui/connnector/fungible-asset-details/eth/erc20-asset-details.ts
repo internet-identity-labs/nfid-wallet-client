@@ -12,7 +12,8 @@ export class EthereumERC20AssetDetailsConnector extends FungibleAssetDetailsConn
   }
 }
 
-export const ethereumERC20AssetDetailsConnector = new EthereumERC20AssetDetailsConnector({
-  tokenStandard: TokenStandards.ERC20_ETHEREUM,
-  blockchain: Blockchain.ETHEREUM,
-})
+export const ethereumERC20AssetDetailsConnector =
+  new EthereumERC20AssetDetailsConnector({
+    tokenStandard: TokenStandards.ERC20_ETHEREUM,
+    blockchain: Blockchain.ETHEREUM,
+  })

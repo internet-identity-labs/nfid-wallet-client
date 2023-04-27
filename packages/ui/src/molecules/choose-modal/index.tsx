@@ -89,7 +89,7 @@ export const ChooseModal = ({
   }, [selectedValue])
 
   return (
-    <div className="flex flex-col shrink-0">
+    <div className="flex flex-col shrink-0" id={"choose_modal"}>
       {label && <Label className="mb-1">{label}</Label>}
 
       {type === "input" ? (

@@ -12,7 +12,8 @@ export class PolygonERC20AssetDetailsConnector extends FungibleAssetDetailsConne
   }
 }
 
-export const polygonERC20AssetDetailsConnector = new PolygonERC20AssetDetailsConnector({
-  tokenStandard: TokenStandards.ERC20_POLYGON,
-  icon: IconPngEthereum,
-})
+export const polygonERC20AssetDetailsConnector =
+  new PolygonERC20AssetDetailsConnector({
+    tokenStandard: TokenStandards.ERC20_POLYGON,
+    icon: IconPngEthereum,
+  })

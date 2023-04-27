@@ -40,7 +40,10 @@ export class Assets {
   }
 
   public async openAssetOptionsOnSR() {
-    const assetOptions = await $("#token_ICP")
+    const assetOptions = await $("#choose_modal")
+    await assetOptions.waitForDisplayed({
+      timeout: 30000,
+    })
     await assetOptions.click()
   }
 

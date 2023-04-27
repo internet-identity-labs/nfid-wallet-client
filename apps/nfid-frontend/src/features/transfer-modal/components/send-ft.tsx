@@ -13,6 +13,7 @@ import {
   Image,
   sumRules,
 } from "@nfid-frontend/ui"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import {
@@ -276,7 +277,7 @@ export const TransferFT = ({
           registerFunction={register("to", {
             required: "This field cannot be empty",
             validate: makeAddressFieldValidation(
-              selectedToken?.tokenStandard ?? "ICP",
+              selectedToken?.tokenStandard ?? TokenStandards.ICP,
             ),
           })}
         />

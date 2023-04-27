@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from "react"
 import { TokenConfig } from "src/ui/connnector/types"
 
 import { ChooseModal, Copy, QRCode } from "@nfid-frontend/ui"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
@@ -97,9 +98,7 @@ export const TransferReceive = ({
         preselectedValue={selectedSourceWallet}
         type="small"
       />
-      {["ETH", "ICP", "BTC", "ERC20", "MATIC", "ERC20P"].includes(
-        selectedToken?.tokenStandard ?? "",
-      ) && (
+      {Object.values(TokenStandards).includes(selectedToken!.tokenStandard) && (
         <div>
           <p className="mb-1 text-gray-400">
             {selectedToken?.tokenStandard === "ETH" ||

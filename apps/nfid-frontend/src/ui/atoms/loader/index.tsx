@@ -20,7 +20,6 @@ export const ImageOnlyLoader: React.FC<
   return (
     <div className="transition duration-100 group">
       <Image
-        auto="format"
         alt="loader"
         src={"/assets/loader.webp"}
         className={clsx(

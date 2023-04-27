@@ -1,8 +1,20 @@
+import React from "react"
+
 import { isProduction } from "../../utils/is-production"
 
-export const Image = ({ src, ...rest }: any) => {
-  return src ? <img src={getImageUrl(src)} {...rest} /> : <img {...rest} />
-}
+export const Image = React.forwardRef<
+  HTMLImageElement,
+  React.DetailedHTMLProps<
+    React.ImgHTMLAttributes<HTMLImageElement>,
+    HTMLImageElement
+  >
+>(({ src, alt, ...rest }, ref) => {
+  return src ? (
+    <img ref={ref} alt={alt} src={getImageUrl(src)} {...rest} />
+  ) : (
+    <img ref={ref} alt={alt} {...rest} />
+  )
+})
 
 export const getImageUrl = (src: string): string => {
   const isData = (x: string) => x.startsWith("data")

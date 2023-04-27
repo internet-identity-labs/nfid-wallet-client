@@ -18,7 +18,7 @@ Feature:Fungible Asset
       | Bitcoin           | BTC      | 0.00006879 BTC | Bitcoin           | 25795  | Bitcoin           |
       | Ethereum          | LINK     | 20 LINK        | ChainLink Token   | 25795  | ChainLink Token   |
       | Ethereum          | FAU      | 1 FAU          | FaucetToken       | 25795  | FaucetToken       |
-      | Ethereum          | ETH      | 0.1 ETH        | Ethereum          | 25795  | Ethereum          |
+      | Ethereum          | ETH      | 0.09664164 ETH | Ethereum          | 25795  | Ethereum          |
       | Internet Computer | ICP      | 0 ICP          | Internet Computer | 28542  | Internet Computer |
       | Internet Computer | WICP     | 0 WICP         | WICP              | 28565  | WICP              |
 
@@ -31,8 +31,8 @@ Feature:Fungible Asset
     Given User signs in
     And Tokens displayed on user assets
     Then Open filter menu on assets screen
-    And Expect dropdown menu with text "All"
-    And Open dropdown menu on page
+    And Expect blockchain filter menu with text "All"
+    And Open blockchain filter on page
     And Click checkbox chain <chain>
     Then Asset appears with label <chain>
     Then Only <amount> asset displayed
@@ -42,3 +42,20 @@ Feature:Fungible Asset
       | Ethereum          | 25795  | 3      |
       | Internet Computer | 28542  | 4      |
 
+  @asset3
+  Scenario Outline: User should be able to filter assets by account
+    Given User opens NFID site
+    Given authstate is cleared
+    And User is already authenticated by <anchor> anchor
+    Given User signs in
+    And Tokens displayed on user assets
+    Then Open filter menu on assets screen
+    Then Expect account filter menu with text "All"
+    And Open account filter on page
+    And Click checkbox account <account>
+    And <asset> appears with <currency> on <chain> and <balance>
+
+    Examples:
+      | chain             | asset             | account        | anchor | balance  | currency |
+      | Internet Computer | Internet Computer | NFID account 1 | 28542  | 0.01 ICP | ICP      |
+      | Internet Computer | Internet Computer | NNS account 1  | 28542  | 0 ICP    | ICP      |

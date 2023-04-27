@@ -18,7 +18,7 @@ Feature:Fungible Asset
       | Bitcoin           | BTC      | 0.00006879 BTC | Bitcoin           | 25795  | Bitcoin           |
       | Ethereum          | LINK     | 20 LINK        | ChainLink Token   | 25795  | ChainLink Token   |
       | Ethereum          | FAU      | 1 FAU          | FaucetToken       | 25795  | FaucetToken       |
-      | Ethereum          | ETH      | 0.1 ETH        | Ethereum          | 25795  | Ethereum          |
+      | Ethereum          | ETH      | 0.09664164 ETH | Ethereum          | 25795  | Ethereum          |
       | Internet Computer | ICP      | 0 ICP          | Internet Computer | 28542  | Internet Computer |
       | Internet Computer | WICP     | 0 WICP         | WICP              | 28565  | WICP              |
 

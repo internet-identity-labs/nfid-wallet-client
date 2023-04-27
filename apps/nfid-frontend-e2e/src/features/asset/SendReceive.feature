@@ -50,7 +50,7 @@ Feature:Send/Receive Asset
     Examples:
       | chain             | anchor | balance    | fee          | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | 0.000015 BTC | NFID Account 1 | BTC      |
-      | Ethereum          | 25795  | 0.1        | 0 ETH        | NFID Account 1 | ETH      |
+      | Ethereum          | 25795  | 0.09664164 | 0 ETH        | NFID Account 1 | ETH      |
       | Internet Computer | 28542  | 0.01       | 0.0001 ICP   | NFID account 1 | ICP      |
       | ChainLink Token   | 25795  | 20         | 0 ETH        | NFID Account 1 | LINK     |
 

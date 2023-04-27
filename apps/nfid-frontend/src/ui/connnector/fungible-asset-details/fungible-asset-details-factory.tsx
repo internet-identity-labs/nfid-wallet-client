@@ -8,16 +8,16 @@ import { IFungibleAssetDetailsConnector } from "src/ui/connnector/types"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
-const accountViews = [
-  btcAssetDetailsConnector as IFungibleAssetDetailsConnector,
-  maticAssetDetailsConnector as IFungibleAssetDetailsConnector,
-  polygonERC20AssetDetailsConnector as IFungibleAssetDetailsConnector,
-  ethAssetDetailsConnector as IFungibleAssetDetailsConnector,
-  ethereumERC20AssetDetailsConnector as IFungibleAssetDetailsConnector,
+const accountConnectors = [
+  btcAssetDetailsConnector,
+  maticAssetDetailsConnector,
+  polygonERC20AssetDetailsConnector,
+  ethAssetDetailsConnector,
+  ethereumERC20AssetDetailsConnector,
 ]
 
 const assetAccountStorage: Map<TokenStandards, IFungibleAssetDetailsConnector> =
-  toMap(accountViews)
+  toMap(accountConnectors)
 
 export const getAssetDetailsTokens = (): Array<TokenStandards> => {
   return Array.from(assetAccountStorage.keys())

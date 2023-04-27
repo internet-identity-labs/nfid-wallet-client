@@ -42,7 +42,7 @@ Feature:Fungible Asset
       | Ethereum          | 25795  | 3      |
       | Internet Computer | 28542  | 4      |
 
-  @asset3
+  @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account
     Given User opens NFID site
     Given authstate is cleared

@@ -1,23 +1,26 @@
-import { principalToAddress } from "ictool";
-import { TransactionRow } from "packages/integration/src/lib/asset/types";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useBtcTransactions } from "src/features/fungable-token/btc/hooks/use-btc-transactions";
-import { useErc20Transactions } from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions";
-import { useErc20TransactionsPolygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions-polygon";
-import { useMaticTransactions } from "src/features/fungable-token/matic/hooks/use-matic-transactions";
+import { principalToAddress } from "ictool"
+import { TransactionRow } from "packages/integration/src/lib/asset/types"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useLocation } from "react-router-dom"
+import { useBtcTransactions } from "src/features/fungable-token/btc/hooks/use-btc-transactions"
+import { useErc20Transactions } from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions"
+import { useErc20TransactionsPolygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions-polygon"
+import { useMaticTransactions } from "src/features/fungable-token/matic/hooks/use-matic-transactions"
 
-import { IOption } from "@nfid-frontend/ui";
-import { sortByDate } from "@nfid-frontend/utils";
-import { blockchains } from "@nfid/config";
+import { IOption } from "@nfid-frontend/ui"
+import { sortByDate } from "@nfid-frontend/utils"
+import { blockchains } from "@nfid/config"
 
-import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions";
-import { useUserEthNFTTransactions } from "frontend/features/non-fungable-token/eth/use-user-nft-transactions";
-import { selectReceivedTransactions, selectSendTransactions } from "frontend/integration/rosetta/select-transactions";
-import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets";
-import { useWallet } from "frontend/integration/wallet/hooks/use-wallet";
-import { Loader } from "frontend/ui/atoms/loader";
-import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history";
+import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
+import { useUserEthNFTTransactions } from "frontend/features/non-fungable-token/eth/use-user-nft-transactions"
+import {
+  selectReceivedTransactions,
+  selectSendTransactions,
+} from "frontend/integration/rosetta/select-transactions"
+import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
+import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
+import { Loader } from "frontend/ui/atoms/loader"
+import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 
 const ProfileTransactions = () => {
   const { walletTransactions, isWalletLoading } = useWallet()

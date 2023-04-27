@@ -1,5 +1,4 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { ethers } from "ethers-ts"
 import { EthTransferRequest } from "packages/integration/src/lib/asset/estimateTransaction/transferRequest/ethTransferRequest"
 import {
   FungibleTxs,

@@ -1,11 +1,11 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { btcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
-import { FungibleAssetDetailsView } from "src/ui/view-model/fungible-account-details/fungible-asset-detail"
+import { FungibleAssetDetailsConnector } from "src/ui/view-model/fungible-asset-details/fungible-asset-detail"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export class BtcAssetDetailsView extends FungibleAssetDetailsView {
+export class BtcAssetDetailsConnector extends FungibleAssetDetailsConnector {
   async getAssetDetails(): Promise<Array<TokenBalanceSheet>> {
     const principal = await this.getIdentity()
     return btcAsset
@@ -16,7 +16,7 @@ export class BtcAssetDetailsView extends FungibleAssetDetailsView {
   }
 }
 
-export const btcAssetDetailsView = new BtcAssetDetailsView({
+export const btcAssetDetailsConnector = new BtcAssetDetailsConnector({
   tokenStandard: TokenStandards.BTC,
   icon: IconSvgBTC,
 })

@@ -2,12 +2,12 @@ import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export interface IFungibleAssetView {
+export interface IFungibleAssetConnector {
   getTokenConfigs(): Promise<Array<TokenConfig>>
   getTokenStandard(): TokenStandards
 }
 
-export interface IFungibleAccountView {
+export interface IFungibleAssetDetailsConnector {
   getAssetDetails(): Promise<Array<TokenBalanceSheet>>
   getTokenStandard(): TokenStandards
 }

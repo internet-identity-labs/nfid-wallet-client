@@ -1,11 +1,11 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
-import { FungibleAssetDetailsView } from "src/ui/view-model/fungible-account-details/fungible-asset-detail"
+import { FungibleAssetDetailsConnector } from "src/ui/view-model/fungible-asset-details/fungible-asset-detail"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export class MaticAssetDetailsView extends FungibleAssetDetailsView {
+export class MaticAssetDetailsConnector extends FungibleAssetDetailsConnector {
   async getAssetDetails(): Promise<Array<TokenBalanceSheet>> {
     const principal = await this.getIdentity()
     return polygonAsset
@@ -14,7 +14,7 @@ export class MaticAssetDetailsView extends FungibleAssetDetailsView {
   }
 }
 
-export const maticAssetDetailsView = new MaticAssetDetailsView({
+export const maticAssetDetailsConnector = new MaticAssetDetailsConnector({
   icon: IconSvgBTC,
   tokenStandard: TokenStandards.MATIC,
 })

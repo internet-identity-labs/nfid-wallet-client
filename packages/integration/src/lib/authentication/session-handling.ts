@@ -23,6 +23,7 @@ export const setupSessionManager = ({
   options = idleManagerConfig,
   onIdle,
 }: SetupSessionManagerArgs) => {
+  if (getLocalStorageOverride(1, "NFID_DISABLE_IDLEMANAGER")) return
   if (matchPath(ROUTE_EMBED, window.location.pathname)) return
   if (idleManager) return
   console.debug("setupIdleManager")

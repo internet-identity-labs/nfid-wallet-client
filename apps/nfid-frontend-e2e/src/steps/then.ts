@@ -283,6 +283,14 @@ Then(/^Open dropdown menu on page/, async () => {
   await Assets.openElementById(dropdownAccountId)
 })
 
+Then(/^Open blockchain filter on page/, async () => {
+  await Assets.openElementById("blockchain_filter")
+})
+
+Then(/^Open account filter on page/, async () => {
+  await Assets.openElementById("account_filter")
+})
+
 Then(
   /^Expect txs account "([^"]*)" with txs amount "([^"]*)"$/,
   async (asselLabel: string, text: string) => {
@@ -312,6 +320,38 @@ Then(/^Click checkbox chain ([^"]*)$/, async (asselLabel: string) => {
   asselLabel = asselLabel.replace(/\s/g, "")
   await Assets.openElementById("option_cbx_" + asselLabel)
 })
+
+Then(
+  /^Expect dropdown menu with text "([^"]*)"$/,
+  async (expectedText: string) => {
+    await $("#selected_acc").then(async (x) =>
+      x
+        .waitForExist({ timeout: 7000 })
+        .then(async () => expect(x).toHaveText(expectedText)),
+    )
+  },
+)
+
+Then(
+  /^Expect blockchain filter menu with text "([^"]*)"$/,
+  async (expectedText: string) => {
+    await $("#blockchain_filter #selected_acc").then(async (x) =>
+      x
+        .waitForExist({ timeout: 7000 })
+        .then(async () => expect(x).toHaveText(expectedText)),
+    )
+  },
+)
+Then(
+  /^Expect account filter menu with text "([^"]*)"$/,
+  async (expectedText: string) => {
+    await $("#account_filter #selected_acc").then(async (x) =>
+      x
+        .waitForExist({ timeout: 7000 })
+        .then(async () => expect(x).toHaveText(expectedText)),
+    )
+  },
+)
 
 Then(
   /^Expect dropdown menu with text "([^"]*)"$/,

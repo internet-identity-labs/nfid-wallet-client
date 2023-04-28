@@ -27,6 +27,7 @@ type UseBalanceICPAllReturn = {
  */
 export const useBalanceICPAll = (
   excludeEmpty: boolean = true,
+  accountsFilter?: string[],
 ): UseBalanceICPAllReturn => {
   const { applicationsMeta: applications } = useApplicationsMeta()
   const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
@@ -48,7 +49,11 @@ export const useBalanceICPAll = (
 
     return {
       ICP: accumulateAppAccountBalance({
-        balances,
+        balances: accountsFilter?.length
+          ? balances.filter((b) =>
+              accountsFilter?.includes(b.principal.toString()),
+            )
+          : balances,
         applications,
         exchangeRate,
         excludeEmpty,
@@ -83,6 +88,7 @@ export const useBalanceICPAll = (
     isLoadingBalances,
     exchangeRate,
     balances,
+    accountsFilter,
     applications,
     excludeEmpty,
     dip20Token,

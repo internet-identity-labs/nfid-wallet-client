@@ -51,6 +51,9 @@ function makeAuthState() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.resetAuthState = invalidateIdentity
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.setAuthState = _setAuthSession
   }
 
   async function _loadAuthSessionFromCache() {
@@ -85,6 +88,18 @@ function makeAuthState() {
     })
   }
 
+  async function _setAuthSession(authState: {
+    delegation: string
+    identity: string
+  }) {
+    console.debug("_setAuthSession", { authState })
+    await Promise.all([
+      authStorage.set(KEY_STORAGE_KEY, authState.identity),
+      authStorage.set(KEY_STORAGE_DELEGATION, authState.delegation),
+    ])
+    _loadAuthSessionFromCache()
+  }
+
   async function _clearAuthSessionFromCache() {
     await Promise.all([
       authStorage.remove(KEY_STORAGE_KEY),
@@ -101,6 +116,7 @@ function makeAuthState() {
             sub && sub.unsubscribe()
             const { delegationIdentity } = state
             const isExpired = isDelegationExpired(delegationIdentity)
+            console.debug("loadCachedAuthSession", { isExpired })
             resolve({
               ...state,
               ...(isExpired

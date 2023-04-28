@@ -64,6 +64,29 @@ When(/^User has account stored in localstorage$/, async () => {
 })
 
 When(
+  /^User has authState$/,
+  //use this method to pick a random available user from the list
+  async function () {
+    for (let i = 0; i < userClient.userMap.size; i++) {
+      if (userClient.userMap.get(userClient.users[i]) === false) {
+        await userClient.takeUser(userClient.users[i])
+        this.testUser = userClient.users[i]
+      }
+    }
+
+    let testUser: TestUser = this.testUser
+
+    await browser.execute(function (authState: AuthState) {
+      // @ts-ignore
+      if (typeof this.setAuthState === "function") {
+        // @ts-ignore
+        this.setAuthState(authState)
+      }
+    }, testUser.authstate)
+  },
+)
+
+When(
   /^User is already authenticated with ?(?:(.*))?$/,
   async function (account: string) {
     if (account === "BTC") {
@@ -118,29 +141,14 @@ When(
   async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
-    const authId = await browser.addVirtualWebAuth(
-      "ctap2",
-      "internal",
-      true,
-      true,
-      true,
-      true,
-    )
-    const rpId = new URL(baseURL).hostname
-    const creds: WebAuthnCredential = testUser.credentials
-    const account: JSON = testUser.account
-
-    await browser.addWebauthnCredential(
-      authId,
-      rpId,
-      creds.credentialId,
-      creds.isResidentCredential,
-      creds.privateKey,
-      creds.signCount,
-    )
-
-    await browser.setLocalStorage("account", JSON.stringify(account))
-    await browser.refresh()
+    await browser.execute(function (authState: AuthState) {
+      // @ts-ignore
+      if (typeof this.setAuthState === "function") {
+        // @ts-ignore
+        this.setAuthState(authState)
+      }
+    }, testUser.authstate)
+    await HomePage.openPage("/profile/assets")
   },
 )
 

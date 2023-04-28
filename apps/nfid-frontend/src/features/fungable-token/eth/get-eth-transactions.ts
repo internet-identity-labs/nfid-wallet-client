@@ -10,14 +10,13 @@ export const getEthTransactions = async () => {
   const hostname = "nfid.one"
   const accountId = "0"
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+
   const delegation = await getWalletDelegation(
     profile?.anchor,
     hostname,
     accountId,
   )
-
   const address = await ethereumAsset.getAddress(delegation)
-
   const incoming = await ethereumAsset.getFungibleActivityByTokenAndUser(
     {
       direction: "to",

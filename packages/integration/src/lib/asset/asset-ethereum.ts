@@ -320,7 +320,7 @@ export class EthereumAsset extends NonFungibleAsset {
     identity: DelegationIdentity,
     contract?: string,
   ): Promise<FungibleTxs> {
-    const address = "0x377B85Ad7E8da204F990c1e7E0B97501e3CB7D44"
+    const address = await this.getAddress(identity)
     const receivedTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "to",
       contract,

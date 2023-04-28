@@ -4,7 +4,7 @@ import { useTokenConfig } from "src/ui/connnector/fungible-asset-screen/hooks/us
 import { useICTokens } from "src/ui/connnector/fungible-asset-screen/ic/hooks/use-icp"
 import { TokenConfig } from "src/ui/connnector/types"
 
-export const useAllToken = (): { token: TokenConfig[] } => {
+export const useAllToken = ( accountsFilter?: string[] ): { token: TokenConfig[] } => {
   const tokens = getAssetScreenTokens()
   const configs = tokens.map(useTokenConfig)
   const tokenConfigs = configs.flatMap((config) => config.configs ?? [])

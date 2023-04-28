@@ -43,7 +43,6 @@ Feature:Fungible Asset
     Given User opens NFID site
     Given authstate is cleared
     And User is already authenticated by <anchor> anchor
-    Given User signs in
     And Tokens displayed on user assets
     Then Open filter menu on assets screen
     Then Expect account filter menu with text "All"

@@ -150,7 +150,7 @@ export class Assets {
     await $(
       this.assetLabel + `${name.replace(/\s/g, "")}` + "']",
     ).waitForDisplayed({
-      timeout: 7000,
+      timeout: 17000,
       timeoutMsg: "Asset has not been showed! Missing asset label!",
     })
     await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").click()

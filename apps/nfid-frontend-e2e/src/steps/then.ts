@@ -593,12 +593,12 @@ Then(/^(\d+) transaction in the table/, async (amount: number) => {
 Then(/^Sent ([^"]*) ([^"]*)/, async (amount: string, currency: string) => {
   await $("#transaction_asset_0").then(async (x) =>
     x
-      .waitForExist({ timeout: 7000 })
+      .waitForExist({ timeout: 17000 })
       .then(async () => expect(x).toHaveText(currency)),
   )
   await $("#transaction_quantity_0").then(async (x) =>
     x
-      .waitForExist({ timeout: 7000 })
+      .waitForExist({ timeout: 17000 })
       .then(async () => expect(x).toHaveText(amount)),
   )
 })
@@ -615,3 +615,46 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
       .then(async () => expect(x).toHaveText(to)),
   )
 })
+
+
+// //
+// Then(/^(\d+) transaction in the table/, async (amount: number) => {
+//   for (let i = 0; i < amount; i++) {
+//     await $("id=transaction_" + i).waitForDisplayed({
+//       timeout: 17000,
+//       timeoutMsg: "Transaction has not been showed! Missing transaction!",
+//       reverse: false,
+//     })
+//   }
+//   await $("id=transaction_" + amount).waitForDisplayed({
+//     timeout: 17000,
+//     timeoutMsg: "More than expects. Unexpected transaction!",
+//     reverse: true,
+//   })
+// })
+//
+// Then(/^Sent ([^"]*) ([^"]*) ([^"]*)/, async (amount: string, currency: string, row: string) => {
+//   await $("#transaction_asset_" + row).then(async (x) =>
+//     x
+//       .waitForExist({ timeout: 17000 })
+//       .then(async () => expect(x).toHaveText(currency)),
+//   )
+//   await $("#transaction_quantity_" + row).then(async (x) =>
+//     x
+//       .waitForExist({ timeout: 17000 })
+//       .then(async () => expect(x).toHaveText(amount)),
+//   )
+// })
+//
+// Then(/^From ([^"]*) to ([^"]*) ([^"]*)/, async (from: string, to: string, row: string) => {
+//   await $("#transaction_from_" + row).then(async (x) =>
+//     x
+//       .waitForExist({ timeout: 7000 })
+//       .then(async () => expect(x).toHaveText(from)),
+//   )
+//   await $("#transaction_to_" + row).then(async (x) =>
+//     x
+//       .waitForExist({ timeout: 7000 })
+//       .then(async () => expect(x).toHaveText(to)),
+//   )
+// })

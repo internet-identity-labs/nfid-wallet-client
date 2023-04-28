@@ -27,7 +27,7 @@ const ProfileTransactions = () => {
   const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
     useEthTransactions()
   const { txs: btcTxs } = useBtcTransactions()
-  const { txs } = useMaticTransactions()
+  const { txs: maticTxs } = useMaticTransactions()
   const { erc20txs } = useErc20Transactions()
   const { transactions: nftTransactions } = useUserEthNFTTransactions()
   const { erc20txs: erc20txsPolygon } = useErc20TransactionsPolygon()
@@ -72,8 +72,7 @@ const ProfileTransactions = () => {
     const ERC20TransactionsPolygon = isNFIDAccount
       ? erc20txsPolygon?.sendTransactions ?? []
       : []
-    const TransactionsPolygon = isNFIDAccount ? txs?.sendTransactions ?? [] : []
-
+    const TransactionsPolygon = isNFIDAccount ? maticTxs?.sendTransactions ?? [] : []
     if (!selectedBlockchainFilters.length)
       return sortByDate(
         [
@@ -98,7 +97,6 @@ const ProfileTransactions = () => {
         ...ERC20Transactions,
         ...ETHNFTTransactions,
       )
-    transactions.push(...ETHTransactions, ...ERC20Transactions)
     selectedBlockchainFilters.includes("Polygon") &&
       transactions.push(...ERC20TransactionsPolygon, ...TransactionsPolygon)
     selectedBlockchainFilters.includes("Bitcoin") &&
@@ -116,7 +114,7 @@ const ProfileTransactions = () => {
     nftTransactions,
     selectedBlockchainFilters,
     erc20txsPolygon?.sendTransactions,
-    txs?.sendTransactions,
+    maticTxs?.sendTransactions,
   ])
 
   const receivedTransactions: TransactionRow[] = useMemo(() => {
@@ -136,7 +134,7 @@ const ProfileTransactions = () => {
       : []
 
     const TransactionsPolygon = isNFIDAccount
-      ? txs?.receivedTransactions ?? []
+      ? maticTxs?.receivedTransactions ?? []
       : []
 
     const BTCTransactions = isNFIDAccount
@@ -188,7 +186,7 @@ const ProfileTransactions = () => {
     nftTransactions,
     selectedBlockchainFilters,
     erc20txsPolygon?.receivedTransactions,
-    txs?.receivedTransactions,
+    maticTxs?.receivedTransactions,
   ])
 
   const accountsOptions = useMemo(() => {
@@ -219,8 +217,8 @@ const ProfileTransactions = () => {
             (erc20txs?.receivedTransactions?.length ?? 0) +
             (erc20txsPolygon?.sendTransactions?.length ?? 0) +
             (erc20txsPolygon?.receivedTransactions?.length ?? 0) +
-            (txs?.sendTransactions?.length ?? 0) +
-            (txs?.receivedTransactions?.length ?? 0) +
+            (maticTxs?.sendTransactions?.length ?? 0) +
+            (maticTxs?.receivedTransactions?.length ?? 0) +
             ICTransactionsLength
           : ICTransactionsLength
 
@@ -237,8 +235,8 @@ const ProfileTransactions = () => {
     erc20txs?.sendTransactions?.length,
     erc20txsPolygon?.receivedTransactions?.length,
     erc20txsPolygon?.sendTransactions?.length,
-    txs?.receivedTransactions?.length,
-    txs?.sendTransactions?.length,
+    maticTxs?.receivedTransactions?.length,
+    maticTxs?.sendTransactions?.length,
     receiveEthTXs.length,
     sendEthTXs.length,
     walletTransactions,

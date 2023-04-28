@@ -90,8 +90,10 @@ export class Assets {
   }
 
   public async receiveDialog() {
-    await this.sendDialog()
     const tabReceive = await $("#tab_receive")
+    await tabReceive.waitForDisplayed({
+      timeout: 17000,
+    })
     await tabReceive.click()
   }
 

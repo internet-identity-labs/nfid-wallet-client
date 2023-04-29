@@ -482,11 +482,11 @@ export class EthereumAsset extends NonFungibleAsset {
 
   private priceInUsd(price: any, balance?: string, token?: string) {
     if (!token || !balance) {
-      return "N/A"
+      return ""
     }
     const selectedTokenPrice = price[token]
     if (!selectedTokenPrice) {
-      return "N/A"
+      return ""
     }
     const balanceBN = toBn(balance)
     const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)

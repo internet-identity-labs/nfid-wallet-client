@@ -1,3 +1,4 @@
+@sendreceive
 Feature:Send/Receive Asset
   As a user, I want to send/receive assets
 
@@ -6,7 +7,7 @@ Feature:Send/Receive Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then Asset calculated for <chain>
+    Then Asset calculated for <chain> with <currency>
     Then User opens receive dialog window
     Then Choose <currency> from options
     Then Choose NFID Account 1 from receive accounts
@@ -24,7 +25,7 @@ Feature:Send/Receive Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then Asset calculated for <chain>
+    Then Asset calculated for <chain> with <currency>
     Then User opens receive dialog window
     Then Choose <currency> from options
     Then Account ID is <princ>
@@ -38,7 +39,7 @@ Feature:Send/Receive Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then Asset calculated for <chain>
+    Then Asset calculated for <chain> with <currency>
     Then User opens send dialog window
     Then Choose <currency> from send options
     Then Choose <account> from accounts
@@ -53,13 +54,13 @@ Feature:Send/Receive Asset
       | ChainLink Token   | 25795  | 20         | 0 ETH        | NFID Account 1 | LINK     |
 
   @pending
-    @once_a_day
+  @once_a_day
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then Asset calculated for <chain>
+    Then Asset calculated for <chain> with <currency>
     And User opens send dialog window
     And Choose <currency> from send options
     And Choose <account> from accounts

@@ -47,15 +47,15 @@ export class Assets {
     await assetOptions.click()
   }
 
-  public async waitWhileCalculated(asselLabel: string) {
-    await $(this.getTokenUsd(asselLabel)).waitForDisplayed({
-      timeout: 25000,
+  public async waitWhileCalculated(assetLabel: string, currency: string) {
+    const tokenBalance = await $(this.getTokenBalance(assetLabel))
+    await tokenBalance.waitForDisplayed({
+      timeout: 10000,
     })
-    const usd = await $(this.getTokenUsd(asselLabel))
-    await usd.waitForDisplayed({
-      timeout: 25000,
-    })
-    await expect(usd).not.toHaveText("")
+
+    await tokenBalance.waitUntil(
+      async () => (await tokenBalance.getText()) !== `0 ${currency}`,
+    )
   }
 
   public async openAssetOptions() {
@@ -87,14 +87,18 @@ export class Assets {
       timeout: 7000,
     })
     await sendReceiveButton.click()
+    const loader = await $("#loader")
+    await loader.waitForExist({ reverse: true, interval: 5000 })
   }
 
   public async receiveDialog() {
+    await this.sendDialog()
     const tabReceive = await $("#tab_receive")
     await tabReceive.waitForDisplayed({
-      timeout: 17000,
+      timeout: 5000,
     })
     await tabReceive.click()
+    await $("#option_Asset").waitForDisplayed({ timeout: 5000 })
   }
 
   public async getAccountId(isAddress?: boolean) {

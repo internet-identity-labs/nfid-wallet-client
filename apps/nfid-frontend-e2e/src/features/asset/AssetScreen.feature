@@ -47,6 +47,7 @@ Feature:Fungible Asset
     Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
+    Then Asset calculated for <chain> with <currency>
     Then Open filter menu on assets screen
     Then Expect account filter menu with text "All"
     And Open account filter on page

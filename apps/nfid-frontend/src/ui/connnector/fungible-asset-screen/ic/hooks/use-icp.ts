@@ -7,8 +7,8 @@ import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export const useICTokens = (): TokenConfig[] => {
-  const { appAccountBalance } = useBalanceICPAll()
+export const useICTokens = (accountsFilter: string[] = []): TokenConfig[] => {
+  const { appAccountBalance } = useBalanceICPAll(true, accountsFilter)
   const { token: dip20Token } = useAllDip20Token()
   return [
     {

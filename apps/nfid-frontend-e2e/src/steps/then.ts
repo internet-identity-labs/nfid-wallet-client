@@ -351,17 +351,6 @@ Then(
   },
 )
 
-Then(
-  /^Expect dropdown menu with text "([^"]*)"$/,
-  async (expectedText: string) => {
-    await $("#selected_acc").then(async (x) =>
-      x
-        .waitForExist({ timeout: 7000 })
-        .then(async () => expect(x).toHaveText(expectedText)),
-    )
-  },
-)
-
 Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
   await clickElement("click", "selector", '[id="account_row_0"]')
   await Assets.openElementById("tab_" + tab)

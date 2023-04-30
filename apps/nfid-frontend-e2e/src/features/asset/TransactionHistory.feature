@@ -39,7 +39,7 @@ Feature:Fungible Asset History
     Then Wait while <label> accounts calculated
     Then Open <tab> tab for first account
     And Open dropdown menu on page
-    Then Expect dropdown menu with text "1 selected"
+    And Expect dropdown menu with text "1 selected"
     And Expect txs account "NFID account 1" with txs amount "<txs>"
     And Expect checkbox for account "NFID account 1" is selected
     Then Click checkbox account NFID account 1

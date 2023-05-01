@@ -26,6 +26,8 @@ import IconSvgMobile from "./mobile.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPencil from "./pencil.svg"
 import IconSvgPlus from "./plus.svg"
+import PolygonERC20Svg from "./polygon-ERC20.svg"
+import MaticSvg from "./polygon.svg"
 import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
@@ -44,6 +46,8 @@ import IconSvgWarning from "./warning.svg"
 export {
   IconPngEthereum,
   IconSvgBTC,
+  MaticSvg,
+  PolygonERC20Svg,
   IconERC20,
   IconSvgArrow,
   IconSvgCalendar,

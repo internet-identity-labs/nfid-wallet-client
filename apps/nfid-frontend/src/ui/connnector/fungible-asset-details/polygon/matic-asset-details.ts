@@ -1,7 +1,7 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { FungibleAssetDetailsConnector } from "src/ui/connnector/fungible-asset-details/fungible-asset-detail"
 
-import { IconSvgBTC } from "@nfid-frontend/ui"
+import { MaticSvg } from "@nfid-frontend/ui"
 import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -15,6 +15,6 @@ export class MaticAssetDetailsConnector extends FungibleAssetDetailsConnector {
 }
 
 export const maticAssetDetailsConnector = new MaticAssetDetailsConnector({
-  icon: IconSvgBTC,
+  icon: MaticSvg,
   tokenStandard: TokenStandards.MATIC,
 })

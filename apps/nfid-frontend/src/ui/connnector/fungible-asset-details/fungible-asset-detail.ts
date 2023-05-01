@@ -2,7 +2,10 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
-import { IFungibleAssetDetailsConnector } from "src/ui/connnector/types"
+import {
+  IFungibleAssetDetailsConnector,
+  TokenDetailsConfig,
+} from "src/ui/connnector/types"
 
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -10,9 +13,9 @@ import { TokenStandards } from "@nfid/integration/token/types"
 export abstract class FungibleAssetDetailsConnector
   implements IFungibleAssetDetailsConnector
 {
-  protected config: any
+  protected config: TokenDetailsConfig
 
-  constructor(config: any) {
+  constructor(config: TokenDetailsConfig) {
     this.config = config
   }
 

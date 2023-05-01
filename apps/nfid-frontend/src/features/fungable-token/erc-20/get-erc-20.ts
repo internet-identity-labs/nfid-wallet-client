@@ -1,14 +1,15 @@
-import { DelegationIdentity } from "@dfinity/identity";
+import { DelegationIdentity } from "@dfinity/identity"
+import { Erc20TransferRequest } from "packages/integration/src/lib/asset/estimateTransaction/transferRequest/erc20TransferRequest"
 import {
-  Erc20TransferRequest
-} from "packages/integration/src/lib/asset/estimateTransaction/transferRequest/erc20TransferRequest";
-import { FungibleTxs, TokenBalanceSheet } from "packages/integration/src/lib/asset/types";
-import { getWalletDelegation } from "src/integration/facade/wallet";
-import { fetchProfile } from "src/integration/identity-manager";
-import { TokenConfig } from "src/ui/connnector/types";
+  FungibleTxs,
+  TokenBalanceSheet,
+} from "packages/integration/src/lib/asset/types"
+import { getWalletDelegation } from "src/integration/facade/wallet"
+import { fetchProfile } from "src/integration/identity-manager"
+import { TokenConfig } from "src/ui/connnector/types"
 
-import { IconERC20 } from "@nfid-frontend/ui";
-import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration";
+import { IconERC20 } from "@nfid-frontend/ui"
+import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
 
 export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
   const identity = await getIdentity()

@@ -1,24 +1,29 @@
 import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
-import { nativeToTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
-import { Blockchain, NativeToken, TokenConfig } from "src/ui/connnector/types"
+import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
+import {
+  AssetNativeConfig,
+  Blockchain,
+  NativeToken,
+  TokenConfig,
+} from "src/ui/connnector/types"
 
-import { IconSvgBTC } from "@nfid-frontend/ui"
+import { MaticSvg } from "@nfid-frontend/ui"
 import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export class MaticAssetConnector extends FungibleAssetConnector {
+export class MaticAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
   async getTokenConfigs(): Promise<Array<TokenConfig>> {
     const principal = await this.getIdentity()
     return polygonAsset
       .getNativeAccount(principal, this.config.icon)
-      .then((matic) => [nativeToTokenConfig(this.config, matic)])
+      .then((matic) => [toNativeTokenConfig(this.config, matic)])
   }
 }
 
 export const maticAssetConnector = new MaticAssetConnector({
-  icon: IconSvgBTC,
+  icon: MaticSvg,
   tokenStandard: TokenStandards.MATIC,
   title: "Matic",
-  currency: NativeToken.MATIC,
-  blockchain: Blockchain.POLYGON.toString(),
+  feeCurrency: NativeToken.MATIC,
+  blockchain: Blockchain.POLYGON,
 })

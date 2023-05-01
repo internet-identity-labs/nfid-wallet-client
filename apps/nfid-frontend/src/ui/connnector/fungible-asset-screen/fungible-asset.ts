@@ -1,17 +1,23 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
-import { IFungibleAssetConnector, TokenConfig } from "src/ui/connnector/types"
+import {
+  AssetNativeConfig,
+  AssetErc20Config,
+  IFungibleAssetConnector,
+  TokenConfig,
+} from "src/ui/connnector/types"
 
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export abstract class FungibleAssetConnector
-  implements IFungibleAssetConnector
+export abstract class FungibleAssetConnector<
+  T extends AssetNativeConfig | AssetErc20Config,
+> implements IFungibleAssetConnector
 {
-  protected config: any
+  protected config: T
 
-  constructor(config: any) {
+  constructor(config: T) {
     this.config = config
   }
 

@@ -1,7 +1,7 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { FungibleAssetDetailsConnector } from "src/ui/connnector/fungible-asset-details/fungible-asset-detail"
-import { Blockchain } from "src/ui/connnector/types"
 
+import { IconERC20 } from "@nfid-frontend/ui"
 import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -15,5 +15,5 @@ export class EthereumERC20AssetDetailsConnector extends FungibleAssetDetailsConn
 export const ethereumERC20AssetDetailsConnector =
   new EthereumERC20AssetDetailsConnector({
     tokenStandard: TokenStandards.ERC20_ETHEREUM,
-    blockchain: Blockchain.ETHEREUM,
+    icon: IconERC20,
   })

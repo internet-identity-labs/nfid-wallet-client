@@ -72,7 +72,9 @@ const ProfileTransactions = () => {
     const ERC20TransactionsPolygon = isNFIDAccount
       ? erc20txsPolygon?.sendTransactions ?? []
       : []
-    const TransactionsPolygon = isNFIDAccount ? maticTxs?.sendTransactions ?? [] : []
+    const TransactionsPolygon = isNFIDAccount
+      ? maticTxs?.sendTransactions ?? []
+      : []
     if (!selectedBlockchainFilters.length)
       return sortByDate(
         [

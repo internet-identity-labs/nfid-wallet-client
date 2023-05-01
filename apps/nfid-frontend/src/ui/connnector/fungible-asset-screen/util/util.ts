@@ -1,18 +1,22 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { stringICPtoE8s } from "src/integration/wallet/utils"
-import { TokenConfig } from "src/ui/connnector/types"
+import {
+  AssetErc20Config,
+  AssetNativeConfig,
+  TokenConfig,
+} from "src/ui/connnector/types"
 
 import { toPresentation } from "@nfid/integration/token/icp"
 
-export function nativeToTokenConfig(
-  config: any,
+export function toNativeTokenConfig(
+  config: AssetNativeConfig,
   tokenSheet: TokenBalanceSheet,
 ): TokenConfig {
   return {
     icon: config.icon,
     tokenStandard: config.tokenStandard,
     title: config.title,
-    currency: config.currency,
+    currency: config.feeCurrency,
     balance: tokenSheet?.tokenBalance,
     price: tokenSheet?.usdBalance,
     fee: BigInt(tokenSheet?.fee ?? 0),
@@ -21,8 +25,9 @@ export function nativeToTokenConfig(
     blockchain: config.blockchain,
   }
 }
+
 export function erc20ToTokenConfig(
-  config: any,
+  config: AssetErc20Config,
   tokenSheet: TokenBalanceSheet,
 ): TokenConfig {
   return {

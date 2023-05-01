@@ -1,7 +1,7 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { FungibleAssetDetailsConnector } from "src/ui/connnector/fungible-asset-details/fungible-asset-detail"
 
-import { IconPngEthereum } from "@nfid-frontend/ui"
+import { PolygonERC20Svg } from "@nfid-frontend/ui"
 import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -15,5 +15,5 @@ export class PolygonERC20AssetDetailsConnector extends FungibleAssetDetailsConne
 export const polygonERC20AssetDetailsConnector =
   new PolygonERC20AssetDetailsConnector({
     tokenStandard: TokenStandards.ERC20_POLYGON,
-    icon: IconPngEthereum,
+    icon: PolygonERC20Svg,
   })

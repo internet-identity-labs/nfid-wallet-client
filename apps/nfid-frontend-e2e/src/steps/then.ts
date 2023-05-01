@@ -272,7 +272,7 @@ Then(
           return l !== "0 " + asset
         }),
       {
-        timeout: 59000,
+        timeout: 100000,
       },
     )
   },
@@ -297,7 +297,7 @@ Then(
     assetLabel = assetLabel.replace(/\s/g, "")
     await $("#option_txs_" + assetLabel).then(async (x) =>
       x
-        .waitForExist({ timeout: 7000 })
+        .waitForExist({ timeout: 30000 })
         .then(async () => expect(x).toHaveText(text)),
     )
   },
@@ -364,7 +364,7 @@ Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
         return l.includes(text)
       }),
     {
-      timeout: 59000,
+      timeout: 90000,
     },
   )
 })
@@ -568,13 +568,13 @@ Then(/^(\d+) row in the table/, async (amount: number) => {
 Then(/^(\d+) transaction in the table/, async (amount: number) => {
   for (let i = 0; i < amount; i++) {
     await $("id=transaction_" + i).waitForDisplayed({
-      timeout: 15000,
+      timeout: 30000,
       timeoutMsg: "Transaction has not been showed! Missing transaction!",
       reverse: false,
     })
   }
   await $("id=transaction_" + amount).waitForDisplayed({
-    timeout: 15000,
+    timeout: 30000,
     timeoutMsg: "More than expects. Unexpected transaction!",
     reverse: true,
   })

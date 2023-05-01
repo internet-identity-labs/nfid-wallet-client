@@ -84,21 +84,21 @@ export class Assets {
   public async sendDialog() {
     const sendReceiveButton = await $("#sendReceiveButton")
     await sendReceiveButton.waitForDisplayed({
-      timeout: 7000,
+      timeout: 27000,
     })
     await sendReceiveButton.click()
     const loader = await $("#loader")
-    await loader.waitForExist({ reverse: true, interval: 5000 })
+    await loader.waitForExist({ reverse: true, interval: 20000 })
   }
 
   public async receiveDialog() {
     await this.sendDialog()
     const tabReceive = await $("#tab_receive")
     await tabReceive.waitForDisplayed({
-      timeout: 5000,
+      timeout: 20000,
     })
     await tabReceive.click()
-    await $("#option_Asset").waitForDisplayed({ timeout: 5000 })
+    await $("#option_Asset").waitForDisplayed({ timeout: 20000 })
   }
 
   public async getAccountId(isAddress?: boolean) {

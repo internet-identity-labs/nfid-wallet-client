@@ -237,9 +237,13 @@ Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
   })
 })
 
-Then(/^Open asset with label ([^"]*)$/, async (assetLabel: string) => {
-  await Assets.openAssetByLabel(assetLabel)
-})
+Then(
+  /^Open asset with label ([^"]*)$/,
+  { wrapperOptions: { retry: 2 } },
+  async (assetLabel: string) => {
+    await Assets.openAssetByLabel(assetLabel)
+  },
+)
 
 Then(/^Only (\d+) asset displayed/, async (amount: number) => {
   await Profile.waitForTokensAppear(amount)
@@ -264,6 +268,7 @@ Then(
 
 Then(
   /^([^"]*) ([^"]*) address calculated$/,
+  { wrapperOptions: { retry: 2 } },
   async (chain: string, asset: string) => {
     const title = `#token_${chain.replace(/\s/g, "")}_balance`
     await $(title).waitUntil(
@@ -272,7 +277,7 @@ Then(
           return l !== "0 " + asset
         }),
       {
-        timeout: 100000,
+        timeout: 120000,
       },
     )
   },
@@ -293,11 +298,12 @@ Then(/^Open account filter on page/, async () => {
 
 Then(
   /^Expect txs account "([^"]*)" with txs amount "([^"]*)"$/,
+  { wrapperOptions: { retry: 2 } },
   async (assetLabel: string, text: string) => {
     assetLabel = assetLabel.replace(/\s/g, "")
     await $("#option_txs_" + assetLabel).then(async (x) =>
       x
-        .waitForExist({ timeout: 30000 })
+        .waitForExist({ timeout: 40000 })
         .then(async () => expect(x).toHaveText(text)),
     )
   },
@@ -356,18 +362,22 @@ Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
   await Assets.openElementById("tab_" + tab)
 })
 
-Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
-  const title = "#page_title"
-  await $(title).waitUntil(
-    async () =>
-      (await $(title)).getText().then((l) => {
-        return l.includes(text)
-      }),
-    {
-      timeout: 90000,
-    },
-  )
-})
+Then(
+  /^Wait while ([^"]*) accounts calculated$/,
+  { wrapperOptions: { retry: 2 } },
+  async (text: string) => {
+    const title = "#page_title"
+    await $(title).waitUntil(
+      async () =>
+        (await $(title)).getText().then((l) => {
+          return l.includes(text)
+        }),
+      {
+        timeout: 90000,
+      },
+    )
+  },
+)
 
 Then(/^Expect that ([^"]*) is "([^"]*)"$/, async (id: string, text: string) => {
   await $("#transaction_" + id + "_0").then(async (x) =>

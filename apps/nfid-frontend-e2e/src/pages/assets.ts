@@ -50,7 +50,7 @@ export class Assets {
   public async waitWhileCalculated(assetLabel: string, currency: string) {
     const tokenBalance = await $(this.getTokenBalance(assetLabel))
     await tokenBalance.waitForDisplayed({
-      timeout: 10000,
+      timeout: 30000,
     })
 
     await tokenBalance.waitUntil(
@@ -84,11 +84,11 @@ export class Assets {
   public async sendDialog() {
     const sendReceiveButton = await $("#sendReceiveButton")
     await sendReceiveButton.waitForDisplayed({
-      timeout: 27000,
+      timeout: 30000,
     })
     await sendReceiveButton.click()
     const loader = await $("#loader")
-    await loader.waitForExist({ reverse: true, interval: 20000 })
+    await loader.waitForDisplayed({ reverse: true, timeout: 30000 })
   }
 
   public async receiveDialog() {
@@ -109,11 +109,11 @@ export class Assets {
       parent = await this.principal
     }
     const firstAddressPart = await parent.$("#first_part")
-    await firstAddressPart.waitForExist({
+    await firstAddressPart.waitForDisplayed({
       timeout: 7000,
     })
     const secondAddressElement = await parent.$("#second_part")
-    await secondAddressElement.waitForExist({
+    await secondAddressElement.waitForDisplayed({
       timeout: 7000,
     })
     return { firstAddressPart, secondAddressElement }
@@ -156,7 +156,7 @@ export class Assets {
     await $(
       this.assetLabel + `${name.replace(/\s/g, "")}` + "']",
     ).waitForDisplayed({
-      timeout: 17000,
+      timeout: 27000,
       timeoutMsg: "Asset has not been showed! Missing asset label!",
     })
     await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").click()

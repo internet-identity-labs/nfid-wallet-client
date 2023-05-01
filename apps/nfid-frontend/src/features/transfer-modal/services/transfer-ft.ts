@@ -1,5 +1,7 @@
 import { transferBTC } from "src/features/fungable-token/btc/get-btc"
 import { transferERC20 } from "src/features/fungable-token/erc-20/get-erc-20"
+import { transferERC20Polygon } from "src/features/fungable-token/erc-20/get-erc-20-polygon"
+import { transferMatic } from "src/features/fungable-token/matic/get-matic"
 
 import {
   Account,
@@ -32,8 +34,16 @@ export const transferFT = async (context: TransferMachineContext) => {
       return transferETH(parseFloat(context.amount), context.receiverWallet)
     case "BTC":
       return transferBTC(parseFloat(context.amount), context.receiverWallet)
-    case "ERC20":
+    case "MATIC":
+      return transferMatic(parseFloat(context.amount), context.receiverWallet)
+    case "ERC20_ETHEREUM":
       return transferERC20(
+        parseFloat(context.amount),
+        context.receiverWallet,
+        context.selectedFT,
+      )
+    case "ERC20_POLYGON":
+      return transferERC20Polygon(
         parseFloat(context.amount),
         context.receiverWallet,
         context.selectedFT,

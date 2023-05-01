@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo } from "react"
+import { TokenConfig } from "src/ui/connnector/types"
 
 import { ChooseModal, Copy, QRCode } from "@nfid-frontend/ui"
+import { TokenStandards } from "@nfid/integration/token/types"
 
-import {
-  TokenConfig,
-  useAllToken,
-} from "frontend/features/fungable-token/use-all-token"
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
@@ -48,7 +47,11 @@ export const TransferReceive = ({
     switch (selectedToken?.tokenStandard) {
       case "ETH":
         return selectedWallet?.ethAddress
-      case "ERC20":
+      case "MATIC":
+        return selectedWallet?.ethAddress
+      case "ERC20_POLYGON":
+        return selectedWallet?.ethAddress
+      case "ERC20_ETHEREUM":
         return selectedWallet?.ethAddress
       case "BTC":
         return selectedWallet?.btcAddress
@@ -95,14 +98,14 @@ export const TransferReceive = ({
         preselectedValue={selectedSourceWallet}
         type="small"
       />
-      {["ETH", "ICP", "BTC", "ERC20"].includes(
-        selectedToken?.tokenStandard ?? "",
-      ) && (
+      {Object.values(TokenStandards).includes(selectedToken!.tokenStandard) && (
         <div>
           <p className="mb-1 text-gray-400">
             {selectedToken?.tokenStandard === "ETH" ||
             selectedToken?.tokenStandard === "BTC" ||
-            selectedToken?.tokenStandard === "ERC20"
+            selectedToken?.tokenStandard === "ERC20_ETHEREUM" ||
+            selectedToken?.tokenStandard === "MATIC" ||
+            selectedToken?.tokenStandard === "ERC20_POLYGON"
               ? "Wallet address"
               : "Account ID"}
           </p>

@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { getAccounts } from "src/features/fungable-token/btc/get-btc"
+import { getAccountsMatic } from "src/features/fungable-token/matic/get-matic"
 
 import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
 import { getBalance as getICPBalance } from "@nfid/integration"
@@ -13,6 +14,7 @@ type FetchBalanceArgs = {
   principals: PrincipalAccount[]
   dip20Token: TokenMetadata[]
   erc20: TokenBalanceSheet[]
+  erc20Polygon: TokenBalanceSheet[]
 }
 
 export type Token = string
@@ -35,6 +37,7 @@ export async function fetchBalances({
   principals,
   dip20Token,
   erc20,
+  erc20Polygon,
 }: FetchBalanceArgs): Promise<AccountBalance[]> {
   return await Promise.all(
     principals.map(async ({ principal, account }) => {
@@ -49,6 +52,9 @@ export async function fetchBalances({
         ...["BTC"].map(async (token) => ({
           [token]: (await getAccounts()).tokenBalance,
         })),
+        ...["MATIC"].map(async (token) => ({
+          [token]: (await getAccountsMatic()).tokenBalance,
+        })),
         ...dip20Token.map(async ({ symbol: token, canisterId }) => ({
           [token]: await getDIP20Balance({
             canisterId,
@@ -56,6 +62,9 @@ export async function fetchBalances({
           }),
         })),
         ...erc20.map(async (token) => ({
+          [token.token]: token.tokenBalance,
+        })),
+        ...erc20Polygon.map(async (token) => ({
           [token.token]: token.tokenBalance,
         })),
       ])

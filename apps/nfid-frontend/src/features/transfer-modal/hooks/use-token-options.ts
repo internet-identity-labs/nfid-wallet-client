@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
+import { useErc20Polygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-polygon"
 
 import {
   IconPngEthereum,
@@ -9,10 +9,12 @@ import {
 } from "@nfid-frontend/ui"
 
 import { useAllDip20Token } from "frontend/features/fungable-token/dip-20/hooks/use-all-token-meta"
+import { useErc20 } from "frontend/features/fungable-token/erc-20/hooks/use-erc-20"
 
 export const useTokenOptions = () => {
   const { token: dip20Tokens } = useAllDip20Token()
   const { erc20 } = useErc20()
+  const { erc20: erc20Polygon } = useErc20Polygon()
 
   const tokenOptions: IGroupedOptions[] = useMemo(() => {
     return [
@@ -53,6 +55,24 @@ export const useTokenOptions = () => {
         ),
       },
       {
+        label: "Polygon",
+        options: [
+          {
+            icon: IconSvgBTC,
+            title: "MATIC",
+            subTitle: "Polygon",
+            value: "MATIC",
+          },
+        ].concat(
+          erc20Polygon?.map((token) => ({
+            icon: token.icon,
+            title: token.token,
+            subTitle: token.label,
+            value: token.token,
+          })) ?? [],
+        ),
+      },
+      {
         label: "Bitcoin",
         options: [
           {
@@ -64,7 +84,7 @@ export const useTokenOptions = () => {
         ],
       },
     ] as IGroupedOptions[]
-  }, [dip20Tokens, erc20])
+  }, [dip20Tokens, erc20, erc20Polygon])
 
   return { tokenOptions }
 }

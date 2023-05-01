@@ -50,7 +50,7 @@ describe.skip("BTC suite", () => {
   })
 
   it("get activities with cursor", async () => {
-    const txs =  await new BtcAsset().getFungibleActivityByTokenAndUser({
+    const txs = await new BtcAsset().getFungibleActivityByTokenAndUser({
       address,
       cursor:
         "e1a7aa68258849bd01d4ad460204327a00cae2a154260edc68211f9534ea1f99",
@@ -85,7 +85,7 @@ describe.skip("BTC suite", () => {
   })
 
   it("get activities from", async () => {
-    const txs =  await new BtcAsset().getFungibleActivityByTokenAndUser({
+    const txs = await new BtcAsset().getFungibleActivityByTokenAndUser({
       address,
       cursor: undefined,
       size: 1,

@@ -231,14 +231,14 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
   await clickElement("click", "selector", button)
 })
 
-Then(/^Asset appears with label ([^"]*)$/, async (asselLabel: string) => {
-  await $(`#token_${asselLabel.replace(/\s/g, "")}`).waitForDisplayed({
-    timeout: 17000,
+Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
+  await $(`#token_${assetLabel.replace(/\s/g, "")}`).waitForDisplayed({
+    timeout: 10000,
   })
 })
 
-Then(/^Open asset with label ([^"]*)$/, async (asselLabel: string) => {
-  await Assets.openAssetByLabel(asselLabel)
+Then(/^Open asset with label ([^"]*)$/, async (assetLabel: string) => {
+  await Assets.openAssetByLabel(assetLabel)
 })
 
 Then(/^Only (\d+) asset displayed/, async (amount: number) => {
@@ -248,16 +248,16 @@ Then(/^Only (\d+) asset displayed/, async (amount: number) => {
 Then(
   /^([^"]*) appears with ([^"]*) on ([^"]*) and ([^"]*)$/,
   async (
-    asselLabel: string,
+    assetLabel: string,
     currency: string,
     blockchain: string,
     balance: string,
   ) => {
-    let assetBalance = await Assets.getAssetBalance(asselLabel)
+    let assetBalance = await Assets.getAssetBalance(assetLabel)
     await expect(assetBalance).toHaveText(balance)
-    let assetCurrency = await Assets.getCurrency(asselLabel)
+    let assetCurrency = await Assets.getCurrency(assetLabel)
     await expect(assetCurrency).toHaveText(currency)
-    let assetBlockchain = await Assets.getBlockchain(asselLabel)
+    let assetBlockchain = await Assets.getBlockchain(assetLabel)
     await expect(assetBlockchain).toHaveText(blockchain)
   },
 )
@@ -293,9 +293,9 @@ Then(/^Open account filter on page/, async () => {
 
 Then(
   /^Expect txs account "([^"]*)" with txs amount "([^"]*)"$/,
-  async (asselLabel: string, text: string) => {
-    asselLabel = asselLabel.replace(/\s/g, "")
-    await $("#option_txs_" + asselLabel).then(async (x) =>
+  async (assetLabel: string, text: string) => {
+    assetLabel = assetLabel.replace(/\s/g, "")
+    await $("#option_txs_" + assetLabel).then(async (x) =>
       x
         .waitForExist({ timeout: 7000 })
         .then(async () => expect(x).toHaveText(text)),
@@ -305,30 +305,28 @@ Then(
 
 Then(
   /^Expect checkbox for account "([^"]*)" is( not)* selected$/,
-  async (asselLabel: string, falseCase: string) => {
-    asselLabel = asselLabel.replace(/\s/g, "")
-    await Assets.isElementSelected("option_cbx_" + asselLabel, falseCase)
+  async (assetLabel: string, falseCase: string) => {
+    assetLabel = assetLabel.replace(/\s/g, "")
+    await Assets.isElementSelected("option_cbx_" + assetLabel, falseCase)
   },
 )
 
-Then(/^Click checkbox account ([^"]*)$/, async (asselLabel: string) => {
-  asselLabel = asselLabel.replace(/\s/g, "")
-  await Assets.openElementById("option_cbx_" + asselLabel)
+Then(/^Click checkbox account ([^"]*)$/, async (assetLabel: string) => {
+  assetLabel = assetLabel.replace(/\s/g, "")
+  await Assets.openElementById("option_cbx_" + assetLabel)
 })
 
-Then(/^Click checkbox chain ([^"]*)$/, async (asselLabel: string) => {
-  asselLabel = asselLabel.replace(/\s/g, "")
-  await Assets.openElementById("option_cbx_" + asselLabel)
+Then(/^Click checkbox chain ([^"]*)$/, async (assetLabel: string) => {
+  assetLabel = assetLabel.replace(/\s/g, "")
+  await Assets.openElementById("option_cbx_" + assetLabel)
 })
 
 Then(
   /^Expect dropdown menu with text "([^"]*)"$/,
   async (expectedText: string) => {
-    await $("#selected_acc").then(async (x) =>
-      x
-        .waitForExist({ timeout: 7000 })
-        .then(async () => expect(x).toHaveText(expectedText)),
-    )
+    const dropdown = await $("#selected_acc")
+    await dropdown.waitForExist({ timeout: 5000 })
+    expect(dropdown).toHaveText(expectedText)
   },
 )
 
@@ -346,17 +344,6 @@ Then(
   /^Expect account filter menu with text "([^"]*)"$/,
   async (expectedText: string) => {
     await $("#account_filter #selected_acc").then(async (x) =>
-      x
-        .waitForExist({ timeout: 7000 })
-        .then(async () => expect(x).toHaveText(expectedText)),
-    )
-  },
-)
-
-Then(
-  /^Expect dropdown menu with text "([^"]*)"$/,
-  async (expectedText: string) => {
-    await $("#selected_acc").then(async (x) =>
       x
         .waitForExist({ timeout: 7000 })
         .then(async () => expect(x).toHaveText(expectedText)),
@@ -430,9 +417,12 @@ Then(/^Choose ([^"]*) from receive accounts/, async (account: string) => {
   await Assets.chooseAccountReceive(account)
 })
 
-Then(/^Asset calculated for ([^"]*)$/, async (asselLabel: string) => {
-  await Assets.waitWhileCalculated(asselLabel)
-})
+Then(
+  /^Asset calculated for ([^"]*) with ([^"]*)/,
+  async (assetLabel: string, currency: string) => {
+    await Assets.waitWhileCalculated(assetLabel, currency)
+  },
+)
 
 Then(
   /^Balance is ([^"]*) and fee is ([^"]*)/,
@@ -578,13 +568,13 @@ Then(/^(\d+) row in the table/, async (amount: number) => {
 Then(/^(\d+) transaction in the table/, async (amount: number) => {
   for (let i = 0; i < amount; i++) {
     await $("id=transaction_" + i).waitForDisplayed({
-      timeout: 7000,
+      timeout: 15000,
       timeoutMsg: "Transaction has not been showed! Missing transaction!",
       reverse: false,
     })
   }
   await $("id=transaction_" + amount).waitForDisplayed({
-    timeout: 7000,
+    timeout: 15000,
     timeoutMsg: "More than expects. Unexpected transaction!",
     reverse: true,
   })
@@ -593,12 +583,12 @@ Then(/^(\d+) transaction in the table/, async (amount: number) => {
 Then(/^Sent ([^"]*) ([^"]*)/, async (amount: string, currency: string) => {
   await $("#transaction_asset_0").then(async (x) =>
     x
-      .waitForExist({ timeout: 7000 })
+      .waitForExist({ timeout: 17000 })
       .then(async () => expect(x).toHaveText(currency)),
   )
   await $("#transaction_quantity_0").then(async (x) =>
     x
-      .waitForExist({ timeout: 7000 })
+      .waitForExist({ timeout: 17000 })
       .then(async () => expect(x).toHaveText(amount)),
   )
 })

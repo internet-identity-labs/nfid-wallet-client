@@ -1,8 +1,8 @@
+import { TokenConfig } from "src/ui/connnector/types"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
-import { TokenConfig } from "../fungable-token/use-all-token"
 import { UserNonFungibleToken } from "../non-fungable-token/types"
 import { transferFT } from "./services/transfer-ft"
 import { transferNFT } from "./services/transfer-nft"

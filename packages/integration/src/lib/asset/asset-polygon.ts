@@ -4,7 +4,21 @@ import { Network } from "alchemy-sdk"
 
 import { EthereumAsset } from "./asset-ethereum"
 
-export const polygonAsset = new EthereumAsset({
+export class PolygonAsset extends EthereumAsset {
+  override getBlockchain(): string {
+    return "Polygon"
+  }
+
+  override getNativeToken(): string {
+    return "Matic"
+  }
+
+  override getNativeCurrency(): string {
+    return "MATIC"
+  }
+}
+
+export const polygonAsset = new PolygonAsset({
   currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
   blockchain: Blockchain.POLYGON as EVMBlockchain,
   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,

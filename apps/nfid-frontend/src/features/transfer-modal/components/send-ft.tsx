@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
+import { TokenConfig } from "src/ui/connnector/types"
 
 import {
   BlurredLoader,
@@ -12,11 +13,9 @@ import {
   Image,
   sumRules,
 } from "@nfid-frontend/ui"
+import { TokenStandards } from "@nfid/integration/token/types"
 
-import {
-  TokenConfig,
-  useAllToken,
-} from "frontend/features/fungable-token/use-all-token"
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import {
   useAllWallets,
   Wallet,
@@ -278,7 +277,7 @@ export const TransferFT = ({
           registerFunction={register("to", {
             required: "This field cannot be empty",
             validate: makeAddressFieldValidation(
-              selectedToken?.tokenStandard ?? "ICP",
+              selectedToken?.tokenStandard ?? TokenStandards.ICP,
             ),
           })}
         />

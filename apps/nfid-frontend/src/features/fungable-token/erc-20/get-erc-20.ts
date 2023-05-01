@@ -4,9 +4,9 @@ import {
   FungibleTxs,
   TokenBalanceSheet,
 } from "packages/integration/src/lib/asset/types"
-import { TokenConfig } from "src/features/fungable-token/use-all-token"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
+import { TokenConfig } from "src/ui/connnector/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
@@ -18,7 +18,7 @@ export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
-  return ethereumAsset.getTransactionHistory(identity)
+  return ethereumAsset.getTransactionHistory(identity, "erc20")
 }
 
 export const transferERC20 = async (

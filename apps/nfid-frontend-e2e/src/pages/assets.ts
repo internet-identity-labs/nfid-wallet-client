@@ -40,19 +40,22 @@ export class Assets {
   }
 
   public async openAssetOptionsOnSR() {
-    const assetOptions = await $("#token_ICP")
+    const assetOptions = await $("#choose_modal")
+    await assetOptions.waitForDisplayed({
+      timeout: 30000,
+    })
     await assetOptions.click()
   }
 
-  public async waitWhileCalculated(asselLabel: string) {
-    await $(this.getTokenUsd(asselLabel)).waitForDisplayed({
-      timeout: 7000,
+  public async waitWhileCalculated(assetLabel: string, currency: string) {
+    const tokenBalance = await $(this.getTokenBalance(assetLabel))
+    await tokenBalance.waitForDisplayed({
+      timeout: 10000,
     })
-    const usd = await $(this.getTokenUsd(asselLabel))
-    await usd.waitForDisplayed({
-      timeout: 7000,
-    })
-    await expect(usd).not.toHaveText("")
+
+    await tokenBalance.waitUntil(
+      async () => (await tokenBalance.getText()) !== `0 ${currency}`,
+    )
   }
 
   public async openAssetOptions() {
@@ -84,12 +87,18 @@ export class Assets {
       timeout: 7000,
     })
     await sendReceiveButton.click()
+    const loader = await $("#loader")
+    await loader.waitForExist({ reverse: true, interval: 5000 })
   }
 
   public async receiveDialog() {
     await this.sendDialog()
     const tabReceive = await $("#tab_receive")
+    await tabReceive.waitForDisplayed({
+      timeout: 5000,
+    })
     await tabReceive.click()
+    await $("#option_Asset").waitForDisplayed({ timeout: 5000 })
   }
 
   public async getAccountId(isAddress?: boolean) {
@@ -147,7 +156,7 @@ export class Assets {
     await $(
       this.assetLabel + `${name.replace(/\s/g, "")}` + "']",
     ).waitForDisplayed({
-      timeout: 7000,
+      timeout: 17000,
       timeoutMsg: "Asset has not been showed! Missing asset label!",
     })
     await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").click()

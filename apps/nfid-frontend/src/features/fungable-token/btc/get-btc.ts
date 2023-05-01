@@ -12,7 +12,7 @@ import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 export const getAccounts = async (): Promise<TokenBalanceSheet> => {
   const principal = await getIdentity()
-  return await new BtcAsset().getRootAccount(undefined, principal, IconSvgBTC)
+  return await new BtcAsset().getRootAccount(principal, IconSvgBTC)
 }
 
 export const getBtcAddress = async (): Promise<string> => {

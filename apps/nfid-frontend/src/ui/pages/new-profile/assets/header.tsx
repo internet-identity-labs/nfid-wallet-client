@@ -6,6 +6,8 @@ import {
   Tooltip,
 } from "@nfid-frontend/ui"
 
+import { AssetFilter } from "frontend/ui/connnector/types"
+
 import ActionIcon from "./actions-icon.svg"
 
 interface IProfileAssetsHeader {
@@ -13,15 +15,15 @@ interface IProfileAssetsHeader {
   blockchainFilter: string[]
   setBlockchainFilter: (value: string[]) => void
   accountsOptions: IOption[]
-  accountsFilter: string[]
-  setAccountsFilter: (value: string[]) => void
+  assetFilter: AssetFilter[]
+  setAssetFilter: (value: AssetFilter[]) => void
   resetFilters: () => void
 }
 
 export const ProfileAssetsHeader = ({
   accountsOptions,
-  accountsFilter,
-  setAccountsFilter,
+  assetFilter,
+  setAssetFilter,
   blockchainFilter,
   blockchainOptions,
   setBlockchainFilter,
@@ -47,8 +49,10 @@ export const ProfileAssetsHeader = ({
             <DropdownSelect
               label="Account"
               options={accountsOptions}
-              selectedValues={accountsFilter}
-              setSelectedValues={setAccountsFilter}
+              selectedValues={assetFilter.map((item) => item?.principal ?? "")}
+              setSelectedValues={(values) =>
+                setAssetFilter(values.map((item) => ({ principal: item })))
+              }
               id="account_filter"
             />
           </FilterPopover>

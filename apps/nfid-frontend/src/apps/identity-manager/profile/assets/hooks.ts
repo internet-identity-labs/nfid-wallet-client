@@ -19,6 +19,7 @@ import {
 } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
+import { AssetFilter } from "frontend/ui/connnector/types"
 
 export function useNFT(tokenId: string) {
   const { canister } = decodeTokenIdentifier(tokenId)
@@ -60,7 +61,7 @@ export function useNFT(tokenId: string) {
   )
 }
 
-export const useAllNFTs = (accountsFilter?: string[]) => {
+export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
   const { nfts: ethNFTS } = useEthNFTs()
@@ -99,13 +100,15 @@ export const useAllNFTs = (accountsFilter?: string[]) => {
         ...rest,
       }))
       .filter((nft) =>
-        !accountsFilter?.length
+        !assetFilter?.length
           ? true
-          : accountsFilter?.includes(nft.principal.toString()),
+          : !!assetFilter.find((f) => f.principal === nft.principal.toString()),
       )
       .concat(
-        !accountsFilter?.length ||
-          accountsFilter?.includes(delegation?.getPrincipal().toString() ?? "")
+        !assetFilter?.length ||
+          !!assetFilter?.find(
+            (f) => f.principal === delegation?.getPrincipal().toString(),
+          )
           ? (ethNFTS?.map(
               (nft) =>
                 ({
@@ -137,7 +140,7 @@ export const useAllNFTs = (accountsFilter?: string[]) => {
             ) as any) ?? []
           : [],
       )
-  }, [data, applicationsMeta, accountsFilter, ethNFTS, address, delegation])
+  }, [data, applicationsMeta, assetFilter, ethNFTS, delegation, address])
 
   return { nfts, isLoading: isLoading || isValidating }
 }

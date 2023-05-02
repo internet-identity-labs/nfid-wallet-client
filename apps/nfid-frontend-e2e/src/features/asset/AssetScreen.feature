@@ -47,13 +47,15 @@ Feature:Fungible Asset
     Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
+    And <asset> appears with <currency> on <chain> and <balanceAll>
     Then Open filter menu on assets screen
     Then Expect account filter menu with text "All"
     And Open account filter on page
-    And Click checkbox account <account>
-    And <asset> appears with <currency> on <chain> and <balance>
+    And Click checkbox account <account1>
+    And <asset> appears with <currency> on <chain> and <balance1>
+    And Click checkbox account <account2>
+    And <asset> appears with <currency> on <chain> and <balance2>
 
     Examples:
-      | chain             | asset             | account        | anchor | balance  | currency |
-      | Internet Computer | Internet Computer | NFID account 1 | 28542  | 0.01 ICP | ICP      |
-      | Internet Computer | Internet Computer | NNS account 1  | 28542  | 0 ICP    | ICP      |
+      | anchor | chain             | asset             | account1       | account2      | balanceAll   | balance1    | balance2     | currency |
+      | 10271  | Internet Computer | Internet Computer | NFID account 1 | NNS account 1 | 1.100159 ICP | 0.26961 ICP | 0.283797 ICP | ICP      |

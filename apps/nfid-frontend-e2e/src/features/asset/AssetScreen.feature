@@ -44,9 +44,9 @@ Feature:Fungible Asset
   @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account
     Given User opens NFID site
-    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
+    And Wait while <asset> asset calculated with currency <currency>
     And <asset> appears with <currency> on <chain> and <balanceAll>
     Then Open filter menu on assets screen
     Then Expect account filter menu with text "All"
@@ -57,5 +57,5 @@ Feature:Fungible Asset
     And <asset> appears with <currency> on <chain> and <balance2>
 
     Examples:
-      | anchor | chain             | asset             | account1       | account2      | balanceAll   | balance1    | balance2     | currency |
-      | 10271  | Internet Computer | Internet Computer | NFID account 1 | NNS account 1 | 1.100159 ICP | 0.26961 ICP | 0.283797 ICP | ICP      |
+      | anchor | chain             | asset | account1      | account2       | balanceAll | balance1 | balance2  | currency |
+      | 10271  | Internet Computer | WICP  | NNS account 1 | NFID account 1 | 0.01 WICP  | 0 WICP   | 0.01 WICP | WICP     |

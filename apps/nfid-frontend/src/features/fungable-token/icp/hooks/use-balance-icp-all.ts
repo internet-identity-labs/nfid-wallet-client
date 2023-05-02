@@ -70,7 +70,13 @@ export const useBalanceICPAll = (
               ...acc,
               [symbol]: accumulateAppAccountBalance({
                 toPresentation,
-                balances,
+                balances: assetFilters?.length
+                  ? balances.filter((b) =>
+                      assetFilters?.find(
+                        (f) => f.principal === b.principal.toString(),
+                      ),
+                    )
+                  : balances,
                 applications,
                 icon: logo,
                 exchangeRate: symbol === "WICP" ? exchangeRate : 0,

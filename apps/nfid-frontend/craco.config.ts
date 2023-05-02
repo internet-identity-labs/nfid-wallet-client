@@ -46,6 +46,7 @@ const setupCSP = () => {
         "https://testnet-api.rarible.org",
         "https://logging.rarible.com/",
         "https://polygon-mainnet.infura.io",
+        "https://testnet-polygon-api.rarible.org",
         "https://rpc-mumbai.maticvigil.com",
         "https://mempool.space/",
         "https://api.blockcypher.com/",

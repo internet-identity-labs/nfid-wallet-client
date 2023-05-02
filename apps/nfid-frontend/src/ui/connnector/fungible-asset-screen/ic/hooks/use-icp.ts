@@ -10,6 +10,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 export const useICTokens = (assetFilter: AssetFilter[]): TokenConfig[] => {
   const { appAccountBalance } = useBalanceICPAll(true, assetFilter)
   const { token: dip20Token } = useAllDip20Token()
+
   return [
     {
       icon: IconSvgDfinity,

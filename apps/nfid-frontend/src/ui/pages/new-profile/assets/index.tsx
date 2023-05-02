@@ -10,6 +10,7 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
+import { AssetFilter } from "frontend/ui/connnector/types"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -32,16 +33,16 @@ interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: Token[]
   nfts?: UserNonFungibleToken[]
-  accountsFilter: string[]
-  setAccountsFilter: (value: string[]) => void
+  assetFilter: AssetFilter[]
+  setAssetFilter: (value: AssetFilter[]) => void
 }
 
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   onIconClick,
   tokens,
   nfts,
-  accountsFilter,
-  setAccountsFilter,
+  assetFilter,
+  setAssetFilter,
 }) => {
   const { options } = useAccountOptions()
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
@@ -74,8 +75,8 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
 
   const resetFilters = React.useCallback(() => {
     setBlockchainFilter([])
-    setAccountsFilter([])
-  }, [setAccountsFilter])
+    setAssetFilter([])
+  }, [setAssetFilter])
 
   return (
     <ProfileTemplate
@@ -89,8 +90,8 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         title={
           <ProfileAssetsHeader
             accountsOptions={options}
-            accountsFilter={accountsFilter}
-            setAccountsFilter={setAccountsFilter}
+            assetFilter={assetFilter}
+            setAssetFilter={setAssetFilter}
             blockchainOptions={blockchainOptions}
             blockchainFilter={blockchainFilter}
             setBlockchainFilter={setBlockchainFilter}

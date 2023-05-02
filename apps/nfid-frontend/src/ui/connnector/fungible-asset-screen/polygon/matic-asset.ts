@@ -1,6 +1,7 @@
 import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
 import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
+  AssetFilter,
   AssetNativeConfig,
   Blockchain,
   NativeToken,
@@ -12,10 +13,17 @@ import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class MaticAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
-  async getTokenConfigs(): Promise<Array<TokenConfig>> {
-    const principal = await this.getIdentity()
+  async getTokenConfigs(
+    assetFilter?: AssetFilter[],
+  ): Promise<Array<TokenConfig>> {
+    console.log({ assetFilter })
+    const identity = await this.getIdentity(
+      assetFilter?.map((filter) => filter.principal),
+    )
+    if (!identity) return []
+
     return polygonAsset
-      .getNativeAccount(principal, this.config.icon)
+      .getNativeAccount(identity, this.config.icon)
       .then((matic) => [toNativeTokenConfig(this.config, matic)])
   }
 }

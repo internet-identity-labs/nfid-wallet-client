@@ -27,8 +27,16 @@ export abstract class FungibleAssetConnector<
     return this.config.tokenStandard
   }
 
-  protected getIdentity = async (): Promise<DelegationIdentity> => {
+  protected getIdentity = async (
+    filterPrincipals?: string[],
+  ): Promise<DelegationIdentity | undefined> => {
     const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-    return await getWalletDelegation(profile.anchor, "nfid.one", "0")
+    const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
+
+    if (
+      !filterPrincipals?.length ||
+      filterPrincipals?.includes(identity.getPrincipal().toString())
+    )
+      return identity
   }
 }

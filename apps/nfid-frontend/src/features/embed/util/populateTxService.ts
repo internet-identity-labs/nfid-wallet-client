@@ -5,17 +5,16 @@ import {
   ProviderError,
   loadProfileFromLocalStorage,
 } from "@nfid/integration"
-import { RPCMessage } from "@nfid/integration-ethereum"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
 
+import { RPCMessage } from "../services/rpc-receiver"
+
 export async function populateTransactionData(
   rpcMessage: RPCMessage,
 ): Promise<[TransactionRequest, ProviderError | undefined]> {
-  const adapter = new DelegationWalletAdapter(
-    "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
-  )
+  const adapter = new DelegationWalletAdapter(rpcMessage.options.rpcUrl)
   const data = removeEmptyKeys(rpcMessage?.params[0])
   const hostname = "nfid.one"
   const accountId = "0"

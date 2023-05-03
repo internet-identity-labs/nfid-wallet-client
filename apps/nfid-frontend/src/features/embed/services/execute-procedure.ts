@@ -27,12 +27,11 @@ export const ExecuteProcedureService = async (
     throw new Error("ExecuteProcedureService: missing authSession")
 
   const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
-  const adapter = new DelegationWalletAdapter(
-    "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
-  )
   const delegation = await getWalletDelegation(authSession.anchor)
+  const { rpcUrl } = rpcMessage.options
   switch (rpcMessage.method) {
     case "eth_accounts": {
+      const adapter = new DelegationWalletAdapter(rpcUrl)
       const address = await adapter.getAddress(delegation)
 
       const response = { ...rpcBase, result: [address] }
@@ -42,8 +41,10 @@ export const ExecuteProcedureService = async (
       return response
     }
     case "eth_signTypedData_v4": {
+      const [, typedData] = rpcMessage.params
+      const adapter = new DelegationWalletAdapter(rpcUrl)
       const result = await adapter.signTypedData(
-        JSON.parse(rpcMessage.params[1]),
+        JSON.parse(typedData),
         delegation,
       )
       const response = { ...rpcBase, result }
@@ -53,6 +54,7 @@ export const ExecuteProcedureService = async (
       return response
     }
     case "eth_sendTransaction": {
+      const adapter = new DelegationWalletAdapter(rpcUrl)
       const { wait, ...result } = await adapter.sendTransaction(
         delegation,
         data?.populatedTransaction,
@@ -64,7 +66,9 @@ export const ExecuteProcedureService = async (
       return response
     }
     case "personal_sign": {
-      const result = await adapter.signMessage(rpcMessage.params[0], delegation)
+      const [message] = rpcMessage.params
+      const adapter = new DelegationWalletAdapter(rpcUrl)
+      const result = await adapter.signMessage(message, delegation)
       const response = { ...rpcBase, result: result }
       console.debug("ExecuteProcedureService personal_sign", {
         response,

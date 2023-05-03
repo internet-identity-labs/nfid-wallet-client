@@ -30,6 +30,7 @@ interface ISendTransaction {
   warnings?: IWarningAccordionOption[]
   isInsufficientBalance?: boolean
   assets?: IAsset[]
+  disableApproveButton?: boolean
   onAdjustNetworkFee?: () => void
   onShowTransactionDetails?: () => void
   onApprove: () => void
@@ -49,6 +50,7 @@ export const SendTransaction = ({
   currency,
   warnings,
   isInsufficientBalance,
+  disableApproveButton,
   assets,
   onAdjustNetworkFee,
   onShowTransactionDetails,
@@ -183,7 +185,7 @@ export const SendTransaction = ({
             type="primary"
             className={clsx("w-full", isInsufficientBalance && "!bg-gray-300")}
             onClick={onApprove}
-            disabled={isInsufficientBalance}
+            disabled={isInsufficientBalance || disableApproveButton}
           >
             Confirm
           </Button>

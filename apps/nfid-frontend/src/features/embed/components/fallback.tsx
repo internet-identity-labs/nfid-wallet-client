@@ -13,6 +13,7 @@ const MappedFallback: React.FC<ApproverCmpProps> = ({
   rpcMessage,
   rpcMessageDecoded,
   populatedTransaction,
+  disableConfirmButton,
   onConfirm,
   onReject,
 }) => {
@@ -68,6 +69,7 @@ const MappedFallback: React.FC<ApproverCmpProps> = ({
       totalToken={price.total ?? rpcMessageDecoded?.total}
       currency={"ETH"}
       onApprove={onConfirm}
+      disableApproveButton={disableConfirmButton}
       isInsufficientBalance={price.isInsufficientFundsError}
       warnings={warnings}
       onCancel={onReject}

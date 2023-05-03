@@ -9,9 +9,15 @@ interface RPCBase {
   id: string
 }
 
+type NfidRpcOptions = {
+  chainId?: string
+  rpcUrl?: string
+}
+
 export interface RPCMessage extends RPCBase {
   method: string
   params: any[]
+  options: NfidRpcOptions
 }
 
 interface RPCSuccessResponse extends RPCBase {

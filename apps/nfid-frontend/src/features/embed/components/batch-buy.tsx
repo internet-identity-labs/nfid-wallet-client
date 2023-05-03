@@ -15,6 +15,7 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
   rpcMessage,
   rpcMessageDecoded,
   populatedTransaction,
+  disableConfirmButton,
   onConfirm,
   onReject,
 }) => {
@@ -73,6 +74,7 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
       price={total}
       currency={"ETH"}
       onApprove={onConfirm}
+      disableApproveButton={disableConfirmButton}
       isInsufficientBalance={price.isInsufficientFundsError}
       warnings={warnings}
       onCancel={onReject}

@@ -1,7 +1,7 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
 import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
-  AssetFilter,
   AssetNativeConfig,
   Blockchain,
   NativeToken,
@@ -13,17 +13,11 @@ import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class MaticAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
-  async getTokenConfigs(
-    assetFilter?: AssetFilter[],
+  async getAccounts(
+    identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    console.log({ assetFilter })
-    const identity = await this.getIdentity(
-      assetFilter?.map((filter) => filter.principal),
-    )
-    if (!identity) return []
-
     return polygonAsset
-      .getNativeAccount(identity, this.config.icon)
+      .getNativeAccount(identity[0], this.config.icon)
       .then((matic) => [toNativeTokenConfig(this.config, matic)])
   }
 }

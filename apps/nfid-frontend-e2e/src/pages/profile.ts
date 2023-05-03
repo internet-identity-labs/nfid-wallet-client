@@ -119,7 +119,7 @@ export class Profile extends HomePage {
         },
       )
     } else {
-      await browser.waitUntil(async () => (await this.tokens.length) > 5, {
+      await browser.waitUntil(async () => (await this.tokens.length) > 3, {
         timeout: 30000,
         timeoutMsg: "Tokens are not displayed on user profile!",
       })

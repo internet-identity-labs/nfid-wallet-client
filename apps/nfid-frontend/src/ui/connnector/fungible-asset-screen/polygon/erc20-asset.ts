@@ -1,8 +1,8 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
 import { erc20ToTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
   AssetErc20Config,
-  AssetFilter,
   Blockchain,
   NativeToken,
   TokenConfig,
@@ -13,19 +13,16 @@ import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class PolygonERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
-  async getTokenConfigs(
-    assetFilter?: AssetFilter[],
+  async getAccounts(
+    identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    const identity = await this.getIdentity(
-      assetFilter?.map((filter) => filter.principal),
-    )
-    if (!identity) return []
-
-    return polygonAsset.getAccounts(identity, this.config.icon).then((ts) => {
-      return ts.map((l) => {
-        return erc20ToTokenConfig(this.config, l)
+    return polygonAsset
+      .getAccounts(identity[0], this.config.icon)
+      .then((ts) => {
+        return ts.map((l) => {
+          return erc20ToTokenConfig(this.config, l)
+        })
       })
-    })
   }
 }
 

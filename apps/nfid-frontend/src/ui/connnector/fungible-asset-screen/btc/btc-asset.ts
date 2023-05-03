@@ -1,8 +1,8 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { btcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
 import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
 import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
-  AssetFilter,
   AssetNativeConfig,
   Blockchain,
   NativeToken,
@@ -13,16 +13,10 @@ import { IconSvgBTC } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class BtcAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
-  async getTokenConfigs(
-    assetFilter?: AssetFilter[],
+  async getAccounts(
+    identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    const identity = await this.getIdentity(
-      assetFilter?.map((filter) => filter.principal),
-    )
-
-    if (!identity) return []
-
-    return btcAsset.getRootAccount(identity, IconSvgBTC).then((token) => {
+    return btcAsset.getRootAccount(identity[0], IconSvgBTC).then((token) => {
       return [toNativeTokenConfig(this.config, token)]
     })
   }

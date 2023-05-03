@@ -8,8 +8,9 @@ export const useAllToken = (
   assetFilters: AssetFilter[] = [],
 ): { token: TokenConfig[] } => {
   const tokens = getAssetScreenTokens()
-  const configs = tokens.map((t) => useTokenConfig(t, assetFilters)) // eslint-disable-line react-hooks/rules-of-hooks
-  const tokenConfigs = configs.flatMap((config) => config.configs ?? [])
+  const { configs } = useTokenConfig({ tokens, assetFilters })
+
+  const tokenConfigs = configs.flatMap((config) => config ?? [])
 
   const icTokenConfigs = useICTokens(assetFilters)
 

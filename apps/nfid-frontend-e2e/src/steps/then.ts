@@ -254,11 +254,11 @@ Then(
     balance: string,
   ) => {
     let assetBalance = await Assets.getAssetBalance(assetLabel)
-    await expect(assetBalance).toHaveText(balance)
+    expect(assetBalance).toHaveText(balance)
     let assetCurrency = await Assets.getCurrency(assetLabel)
-    await expect(assetCurrency).toHaveText(currency)
+    expect(assetCurrency).toHaveText(currency)
     let assetBlockchain = await Assets.getBlockchain(assetLabel)
-    await expect(assetBlockchain).toHaveText(blockchain)
+    expect(assetBlockchain).toHaveText(blockchain)
   },
 )
 
@@ -368,6 +368,17 @@ Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
     },
   )
 })
+
+Then(
+  /^Wait while ([^"]*) asset calculated with currency ([^"]*)$/,
+  async (text: string, currency) => {
+    await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (x) =>
+      x
+        .waitForExist({ timeout: 7000 })
+        .then(async () => expect(x).not.toHaveText(`0 ${currency}`)),
+    )
+  },
+)
 
 Then(/^Expect that ([^"]*) is "([^"]*)"$/, async (id: string, text: string) => {
   await $("#transaction_" + id + "_0").then(async (x) =>

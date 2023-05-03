@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
 import { erc20ToTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
@@ -12,13 +13,16 @@ import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class EthereumERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
-  async getTokenConfigs(): Promise<Array<TokenConfig>> {
-    const principal = await this.getIdentity()
-    return ethereumAsset.getAccounts(principal, this.config.icon).then((ts) => {
-      return ts.map((l) => {
-        return erc20ToTokenConfig(this.config, l)
+  async getAccounts(
+    identity: DelegationIdentity[],
+  ): Promise<Array<TokenConfig>> {
+    return ethereumAsset
+      .getAccounts(identity[0], this.config.icon)
+      .then((ts) => {
+        return ts.map((l) => {
+          return erc20ToTokenConfig(this.config, l)
+        })
       })
-    })
   }
 }
 

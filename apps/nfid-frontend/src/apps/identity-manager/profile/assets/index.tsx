@@ -1,6 +1,7 @@
 import React from "react"
 
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
+import { AssetFilter } from "frontend/ui/connnector/types"
 import ProfileAssetsPage from "frontend/ui/pages/new-profile/assets"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
@@ -8,10 +9,10 @@ import { ProfileConstants } from "../routes"
 import { useAllNFTs } from "./hooks"
 
 const ProfileAssets = () => {
-  const [accountsFilter, setAccountsFilter] = React.useState<string[]>([])
+  const [assetFilter, setAssetFilter] = React.useState<AssetFilter[]>([])
   const { navigate } = useNFIDNavigate()
-  const { nfts: nonFungibleTokens } = useAllNFTs(accountsFilter)
-  const { token } = useAllToken(accountsFilter)
+  const { nfts: nonFungibleTokens } = useAllNFTs(assetFilter)
+  const { token } = useAllToken(assetFilter)
 
   console.debug("ProfileAssets", { token })
 
@@ -22,8 +23,8 @@ const ProfileAssets = () => {
       }
       tokens={token}
       nfts={nonFungibleTokens}
-      accountsFilter={accountsFilter}
-      setAccountsFilter={setAccountsFilter}
+      assetFilter={assetFilter}
+      setAssetFilter={setAssetFilter}
     />
   )
 }

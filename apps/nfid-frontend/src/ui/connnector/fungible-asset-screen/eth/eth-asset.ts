@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
 import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
@@ -12,10 +13,11 @@ import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class EthAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
-  async getTokenConfigs(): Promise<Array<TokenConfig>> {
-    const principal = await this.getIdentity()
+  async getAccounts(
+    identity: DelegationIdentity[],
+  ): Promise<Array<TokenConfig>> {
     return ethereumAsset
-      .getNativeAccount(principal, this.config.icon)
+      .getNativeAccount(identity[0], this.config.icon)
       .then((matic) => [toNativeTokenConfig(this.config, matic)])
   }
 }

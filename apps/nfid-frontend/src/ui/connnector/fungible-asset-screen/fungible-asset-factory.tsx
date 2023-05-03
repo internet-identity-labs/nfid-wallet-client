@@ -6,6 +6,7 @@ import { polygonERC20AssetConnector } from "src/ui/connnector/fungible-asset-scr
 import { maticAssetConnector } from "src/ui/connnector/fungible-asset-screen/polygon/matic-asset"
 import {
   AssetErc20Config,
+  AssetFilter,
   AssetNativeConfig,
   IFungibleAssetConnector,
   TokenConfig,
@@ -30,9 +31,10 @@ export const getAssetScreenTokens = (): Array<TokenStandards> => {
 
 export const getTokens = async (
   asset: TokenStandards,
+  assetFilters: AssetFilter[],
 ): Promise<Array<TokenConfig>> => {
-  const conf = await assetViewConfigStorage.get(asset)!
-  return conf.getTokenConfigs()
+  const conf = assetViewConfigStorage.get(asset)!
+  return conf.getTokenConfigs(assetFilters)
 }
 
 function toMap(

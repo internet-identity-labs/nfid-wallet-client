@@ -2,15 +2,15 @@ import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export type IFungibleAssetConnector = StandardisedToken & {
-  getTokenConfigs(): Promise<Array<TokenConfig>>
+export type IFungibleAssetConnector = StandardizedToken & {
+  getTokenConfigs(assetFilter: AssetFilter[]): Promise<Array<TokenConfig>>
 }
 
-export type IFungibleAssetDetailsConnector = StandardisedToken & {
+export type IFungibleAssetDetailsConnector = StandardizedToken & {
   getAssetDetails(): Promise<Array<TokenBalanceSheet>>
 }
 
-export type StandardisedToken = {
+export type StandardizedToken = {
   getTokenStandard(): TokenStandards
 }
 
@@ -58,4 +58,8 @@ export interface TokenConfig {
   blockchain: string
   feeCurrency?: string
   contract?: string
+}
+
+export interface AssetFilter {
+  principal: string
 }

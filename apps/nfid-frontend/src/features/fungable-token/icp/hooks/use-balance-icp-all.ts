@@ -5,6 +5,7 @@ import { toPresentation } from "@nfid/integration/token/icp"
 
 import ICP from "frontend/assets/dfinity.svg"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
+import { AssetFilter } from "frontend/ui/connnector/types"
 
 import { accumulateAppAccountBalance } from "../../accumulate-app-account-balances"
 import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"
@@ -27,7 +28,7 @@ type UseBalanceICPAllReturn = {
  */
 export const useBalanceICPAll = (
   excludeEmpty: boolean = true,
-  accountsFilter?: string[],
+  assetFilters?: AssetFilter[],
 ): UseBalanceICPAllReturn => {
   const { applicationsMeta: applications } = useApplicationsMeta()
   const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
@@ -49,9 +50,9 @@ export const useBalanceICPAll = (
 
     return {
       ICP: accumulateAppAccountBalance({
-        balances: accountsFilter?.length
+        balances: assetFilters?.length
           ? balances.filter((b) =>
-              accountsFilter?.includes(b.principal.toString()),
+              assetFilters?.find((f) => f.principal === b.principal.toString()),
             )
           : balances,
         applications,
@@ -69,7 +70,13 @@ export const useBalanceICPAll = (
               ...acc,
               [symbol]: accumulateAppAccountBalance({
                 toPresentation,
-                balances,
+                balances: assetFilters?.length
+                  ? balances.filter((b) =>
+                      assetFilters?.find(
+                        (f) => f.principal === b.principal.toString(),
+                      ),
+                    )
+                  : balances,
                 applications,
                 icon: logo,
                 exchangeRate: symbol === "WICP" ? exchangeRate : 0,
@@ -88,7 +95,7 @@ export const useBalanceICPAll = (
     isLoadingBalances,
     exchangeRate,
     balances,
-    accountsFilter,
+    assetFilters,
     applications,
     excludeEmpty,
     dip20Token,

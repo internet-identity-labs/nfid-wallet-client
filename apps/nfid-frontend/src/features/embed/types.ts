@@ -11,6 +11,7 @@ export type ApproverCmpProps = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
+  disableConfirmButton?: boolean
   onConfirm: (data?: any) => void
   onReject: (reason?: any) => void
 }

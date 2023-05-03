@@ -55,6 +55,7 @@ const hasMapped = (messageInterface: string = "") =>
   !!componentMap[messageInterface as Method]
 
 interface ProcedureApprovalCoordinatorProps extends ApproverCmpProps {
+  disableConfirmButton?: boolean
   authSession: AuthSession
 }
 export const ProcedureApprovalCoordinator: React.FC<
@@ -69,7 +70,10 @@ export const ProcedureApprovalCoordinator: React.FC<
 }) => {
   console.debug("ProcedureApprovalCoordinator", { rpcMessage })
 
-  const { data: populatedTransaction } = useSWR(
+  const {
+    data: populatedTransaction,
+    isLoading: isLoadingPopulateTransaction,
+  } = useSWR(
     rpcMessage.method === "eth_sendTransaction"
       ? [rpcMessage, "populateTransactionData"]
       : null,
@@ -96,6 +100,7 @@ export const ProcedureApprovalCoordinator: React.FC<
               appMeta,
               rpcMessageDecoded,
               populatedTransaction,
+              disableConfirmButton: isLoadingPopulateTransaction,
               onConfirm: handleOnConfirmSignature,
               onReject,
             }}
@@ -120,9 +125,10 @@ export const ProcedureApprovalCoordinator: React.FC<
           {...{
             rpcMessage,
             appMeta,
+            disableConfirmButton: isLoadingPopulateTransaction,
             rpcMessageDecoded,
             populatedTransaction,
-            onConfirm,
+            onConfirm: handleOnConfirmSignature,
             onReject,
           }}
         />

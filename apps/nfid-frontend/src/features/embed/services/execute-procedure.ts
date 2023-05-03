@@ -41,7 +41,7 @@ export const ExecuteProcedureService = async (
       return response
     }
     case "eth_signTypedData_v4": {
-      const [_, typedData] = rpcMessage.params
+      const [, typedData] = rpcMessage.params
       const adapter = new DelegationWalletAdapter(rpcUrl)
       const result = await adapter.signTypedData(
         JSON.parse(typedData),

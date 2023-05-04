@@ -15,7 +15,7 @@ import { EthWalletV2 } from "./signer-ecdsa"
 describe("ECDSA suite", () => {
   jest.setTimeout(200000)
   const rpcProvider = new ethers.providers.JsonRpcProvider(
-    "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ",
+    "https://goerli-ethereum-node.rarible.com",
   )
   let nfidWallet: EthWalletV2
 

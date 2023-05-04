@@ -23,8 +23,8 @@ export const polygonAsset = new PolygonAsset({
   blockchain: Blockchain.POLYGON as EVMBlockchain,
   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
   provider: {
-    mainnet: "https://polygon-mainnet.infura.io",
-    testnet: "https://rpc-mumbai.maticvigil.com",
+    mainnet: "https://polygon-rpc.com",
+    testnet: "https://rpc-mumbai.matic.today",
   },
   alchemy: { mainnet: Network.MATIC_MAINNET, testnet: Network.MATIC_MUMBAI },
   etherscanUrl: {

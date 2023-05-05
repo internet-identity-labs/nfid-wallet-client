@@ -153,7 +153,7 @@ When(
       }
     }, testUser.authstate)
     await HomePage.openPage("/profile/assets")
-    console.log("BROWSER logs: ", browser.getLogs("browser"))
+    console.log(browser.getLogs("browser"))
   },
 )
 

@@ -138,11 +138,11 @@ When(
 
 When(
   /^User is already authenticated by ([^"]*) anchor$/, 
-  // {
-  //   wrapperOptions: {
-  //     retry: 3
-  //   },
-  // },
+  {
+    wrapperOptions: {
+      retry: 2
+    },
+  },
   async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 

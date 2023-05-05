@@ -137,7 +137,12 @@ When(
 )
 
 When(
-  /^User is already authenticated by ([^"]*) anchor$/,
+  /^User is already authenticated by ([^"]*) anchor$/, 
+  {
+    wrapperOptions: {
+      retry: 2
+    },
+  },
   async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
@@ -149,6 +154,7 @@ When(
       }
     }, testUser.authstate)
     await HomePage.openPage("/profile/assets")
+    console.log(await browser.getLogs("browser"))
   },
 )
 

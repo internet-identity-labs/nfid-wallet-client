@@ -41,7 +41,6 @@ const setupCSP = () => {
         "https://stats.g.doubleclick.net/g/collect",
         "https://registry.walletconnect.com",
         "wss://*.bridge.walletconnect.org",
-        "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ",
         "https://ethereum.publicnode.com",
         "https://testnet-api.rarible.org",
         "https://logging.rarible.com/",
@@ -54,8 +53,8 @@ const setupCSP = () => {
         "https://ethereum-api.rarible.org",
         "https://testnet-ethereum-api.rarible.org",
         "https://api.coinbase.com",
-        "https://eth-mainnet.g.alchemy.com",
         "https://*.alchemy.com",
+        "https://*.rarible.com/",
       ],
       "worker-src": "'self'",
       "img-src": [

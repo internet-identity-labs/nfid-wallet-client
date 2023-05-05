@@ -9,9 +9,8 @@ export const ethereumAsset = new EthereumAsset({
   blockchain: Blockchain.ETHEREUM as EVMBlockchain,
   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
   provider: {
-    mainnet: "https://ethereum.publicnode.com",
-    testnet:
-      "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
+    mainnet: `https://node-mainnet.rarible.com`,
+    testnet: `https://goerli-ethereum-node.rarible.com`,
   },
   alchemy: { mainnet: Network.ETH_MAINNET, testnet: Network.ETH_GOERLI },
   etherscanUrl: {

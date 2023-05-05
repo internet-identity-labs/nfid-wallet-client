@@ -55,6 +55,8 @@ const setupCSP = () => {
         "https://api.coinbase.com",
         "https://*.alchemy.com",
         "https://*.rarible.com/",
+        "https://polygon-rpc.com",
+        "https://rpc-mumbai.matic.today",
       ],
       "worker-src": "'self'",
       "img-src": [

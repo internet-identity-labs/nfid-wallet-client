@@ -9,8 +9,8 @@ import TokenWalletsDetailPage from "frontend/ui/pages/new-profile/internet-compu
 const ProfileTokenWalletsDetailPage = () => {
   const { appAccountBalance } = useBalanceICPAll()
   const tokens = getAssetDetailsTokens()
-  const assets = tokens.map(useAssetDetails)
-  let details = assets.flatMap((details) => details.assets ?? [])
+  const { assets: details } = useAssetDetails({ tokens })
+
   const { token } = useParams()
 
   const balance = useMemo(() => {

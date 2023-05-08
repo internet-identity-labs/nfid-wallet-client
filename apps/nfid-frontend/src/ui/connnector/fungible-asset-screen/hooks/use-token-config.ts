@@ -1,6 +1,7 @@
 import { getTokens } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
 import useSWR from "swr"
 
+import { ONE_MINUTE_IN_MS } from "@nfid/config"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { AssetFilter } from "../../types"
@@ -17,6 +18,10 @@ export const useTokenConfig = ({ assetFilters, tokens }: UseTokenConfig) => {
       Promise.all(
         tokens.map(async (token) => await getTokens(token, assetFilters)),
       ),
+    {
+      focusThrottleInterval: ONE_MINUTE_IN_MS,
+      dedupingInterval: ONE_MINUTE_IN_MS,
+    },
   )
 
   return { configs: configs || [], ...rest }

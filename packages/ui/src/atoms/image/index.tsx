@@ -17,10 +17,16 @@ export const Image = React.forwardRef<
 })
 
 export const getImageUrl = (src: string): string => {
-  const isData = (x: string) => x.startsWith("data")
-  const isLink = (x: string) => x.startsWith("http")
-  const isWebp = (x: string) => x.endsWith("webp")
-  return isData(src) || isLink(src) || !isProduction()
-    ? src
-    : "https://nfid.imgix.net/" + src + (isWebp(src) ? "" : "?auto=format")
+  const isData = src.startsWith("data")
+  const isLink = src.startsWith("http")
+  const isImgixApplied = !(isData || isLink || !isProduction())
+  return isImgixApplied ? getImagixUrl(src) : src
+}
+
+function getImagixUrl(src: string): string {
+  const slash = src.startsWith("/") ? "" : "/"
+  const autoformat =
+    src.endsWith("webp") || src.endsWith("svg") ? "" : "?auto=format"
+
+  return `https://nfid.imgix.net${slash}${src}${autoformat}`
 }

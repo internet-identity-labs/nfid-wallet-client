@@ -58,7 +58,7 @@ Default.args = {
     {
       title: "Solo Sensei #2969",
       subtitle: "Degenerate Ape Academy",
-      icon: "https://nfid.imgix.netstatic/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg",
+      icon: "https://nfid.imgix.net/static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg",
     },
   ],
 }

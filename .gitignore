@@ -9,6 +9,7 @@ tmp
 # dependencies
 node_modules
 build
+.firebase/
 
 # environment variables
 *.local

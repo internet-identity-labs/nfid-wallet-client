@@ -1,5 +1,4 @@
 const { createGlobPatternsForDependencies } = require("@nrwl/react/tailwind")
-const defaultTheme = require("tailwindcss/defaultTheme")
 const { join } = require("path")
 
 /** @type {import('tailwindcss').Config} */
@@ -13,13 +12,4 @@ module.exports = {
     require("../../packages/ui-tailwind-core"),
     require("tailwindcss-radix")(),
   ],
-  theme: {
-    extend: {
-      fontFamily: {
-        ...defaultTheme.fontFamily,
-        sans: ["Inter", ...defaultTheme.fontFamily.sans],
-        mono: ["IBM Plex Mono", ...defaultTheme.fontFamily.mono],
-      },
-    },
-  },
 }

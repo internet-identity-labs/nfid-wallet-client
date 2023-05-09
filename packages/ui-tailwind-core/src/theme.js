@@ -1,3 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme")
+
 const fontSize = {
   titleLarge: [
     "54px",
@@ -20,7 +22,9 @@ const fontSize = {
 }
 
 const fontFamily = {
-  inter: ["Inter", "sans-serif"],
+  ...defaultTheme.fontFamily,
+  sans: ["Inter", ...defaultTheme.fontFamily.sans],
+  mono: ["IBM Plex Mono", ...defaultTheme.fontFamily.mono],
 }
 
 const dropShadow = {
@@ -48,4 +52,38 @@ const blur = {
   "7xl": "128px ",
 }
 
-module.exports = { blur, fontSize, fontFamily, dropShadow, boxShadow }
+const keyframes = {
+  "fade-in": {
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    },
+  },
+  "snuggle-up": {
+    from: {
+      opacity: 0,
+      transform: "translate(-50%, -48%) scale(0.96)",
+    },
+    to: {
+      opacity: 1,
+      transform: "translate(-50%, -50%) scale(1)",
+    },
+  },
+}
+
+const animation = {
+  "fade-in": "fade-in 500ms cubic-bezier(0.16, 1, 0.3, 1)",
+  "snuggle-up": "snuggle-up 500ms cubic-bezier(0.16, 1, 0.3, 1)",
+}
+
+module.exports = {
+  animation,
+  blur,
+  fontSize,
+  fontFamily,
+  dropShadow,
+  boxShadow,
+  keyframes,
+}

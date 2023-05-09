@@ -788,7 +788,7 @@ function createHttpQueryResponsePayload(
     upgrade: upgrade ? [upgrade] : [],
   };
   const candidResponse: QueryResponse = {
-    status: QueryResponseStatus.Replied,
+    status: 'replied',
     reply: {
       arg: IDL.encode([responseType], [response]),
     },
@@ -808,7 +808,7 @@ function createHttpRedirectResponsePayload(
     upgrade: [],
   };
   const candidResponse: QueryResponse = {
-    status: QueryResponseStatus.Replied,
+    status: 'replied',
     reply: {
       arg: IDL.encode([getResponseTypes(IDL.Text)[0]], [response]),
     },
@@ -833,7 +833,7 @@ function createCallbackResponsePayload(
     body: Array.from(new TextEncoder().encode(body)),
   };
   const candidResponse: QueryResponse = {
-    status: QueryResponseStatus.Replied,
+    status: 'replied',
     reply: {
       arg: IDL.encode([responseType], [response]),
     },

@@ -5,7 +5,7 @@ import { idlFactory } from '../../http-interface/canister_http_interface';
 import {
   HttpRequest,
   _SERVICE,
-} from '../../http-interface/canister_http_interface_types';
+} from '../http-interface/canister_http_interface_types';
 import { streamContent } from '../streaming';
 import { NotAllowedRequestRedirectError } from './errors';
 import { FetchAssetOptions, FetchAssetResult, HTTPHeaders } from './typings';

@@ -111,6 +111,8 @@ export class BtcAsset extends Asset {
     const address = await new BtcWallet(identity).getBitcoinAddress()
     const sendTransactions = await this.getTransactions("send", address)
     const receivedTransactions = await this.getTransactions("received", address)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const addressPrincipal = principalToAddress(identity.getPrincipal())
     return {
       sendTransactions,

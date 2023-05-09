@@ -337,6 +337,8 @@ export class EthereumAsset extends NonFungibleAsset {
     }).then((sendTsx) => {
       return sendTsx.activities.map((tx) => this.toTransactionRow(tx, address))
     })
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const addressPrincipal = principalToAddress(identity.getPrincipal())
     return {
       sendTransactions,

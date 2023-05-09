@@ -1,5 +1,6 @@
-import { HeaderField } from '../http-interface/canister_http_interface_types';
-import { parseSafeInteger } from '../../utils';
+import { parseSafeInteger } from "frontend/utils"
+
+import { HeaderField } from "../http-interface/canister_http_interface_types"
 import {
   RequestCacheControlHeader,
   RequestCacheControlDirectives,
@@ -9,99 +10,90 @@ import {
   ResponseCacheControlDirectives,
   HeaderDirectiveEntry,
   headerDirectiveEntrySeparator,
-} from './typings';
+} from "./typings"
 
 export class RequestMapper {
   static toRequestCacheControlHeader(
-    headers: Headers
+    headers: Headers,
   ): RequestCacheControlHeader | undefined {
-    const cacheControlHeader = headers.get(HTTPHeaders.CacheControl);
+    const cacheControlHeader = headers.get(HTTPHeaders.CacheControl)
     if (!cacheControlHeader) {
-      return;
+      return
     }
 
-    const cacheControl: RequestCacheControlHeader = {};
+    const cacheControl: RequestCacheControlHeader = {}
     cacheControlHeader
       .split(cacheControlHeaderSeparator)
       .map((directive) => RequestMapper.toHeaderDirectiveEntry(directive))
       .forEach((entry) => {
         switch (entry.directive) {
           case RequestCacheControlDirectives.NoCache: {
-            cacheControl.noCache = true;
-            break;
+            cacheControl.noCache = true
+            break
           }
           case RequestCacheControlDirectives.NoStore: {
-            cacheControl.noStore = true;
-            break;
+            cacheControl.noStore = true
+            break
           }
         }
-      });
+      })
 
-    return cacheControl;
+    return cacheControl
   }
 
   static toResponseVerificationHeaders(
-    headers: HeaderField[]
+    headers: HeaderField[],
   ): [string, string][] {
-    const finalHeaders: [string, string][] = [];
+    const finalHeaders: [string, string][] = []
     headers.forEach(([key, multiValues]) => {
-      multiValues.split(',').forEach((value) => {
-        finalHeaders.push([key.toLowerCase(), value]);
-      });
-    });
+      multiValues.split(",").forEach((value) => {
+        finalHeaders.push([key.toLowerCase(), value])
+      })
+    })
 
-    return finalHeaders;
-  }
-
-  static fromResponseVerificationHeaders(headers: [string, string][]): Headers {
-    const finalHeaders = new Headers();
-    headers.forEach(([key, value]) => {
-      finalHeaders.append(key, value);
-    });
-
-    return finalHeaders;
+    return finalHeaders
   }
 
   static toResponseCacheControlHeader(
-    headers: Headers
+    headers: Headers,
   ): ResponseCacheControlHeader | undefined {
-    const cacheControlHeader = headers.get(HTTPHeaders.CacheControl);
+    const cacheControlHeader = headers.get(HTTPHeaders.CacheControl)
     if (!cacheControlHeader) {
-      return;
+      return
     }
 
-    const cacheControl: ResponseCacheControlHeader = {};
+    const cacheControl: ResponseCacheControlHeader = {}
     cacheControlHeader
       .split(cacheControlHeaderSeparator)
       .map((directive) => RequestMapper.toHeaderDirectiveEntry(directive))
       .forEach((entry) => {
         switch (entry.directive) {
           case ResponseCacheControlDirectives.MaxAge: {
-            const maybeMaxAge = parseSafeInteger(entry.value);
+            const maybeMaxAge = parseSafeInteger(entry.value)
             if (!Number.isNaN(maybeMaxAge) && maybeMaxAge >= 0) {
-              cacheControl.maxAge = maybeMaxAge;
+              cacheControl.maxAge = maybeMaxAge
               // max-age = 0 is equivalent to no-store
               if (maybeMaxAge === 0) {
-                cacheControl.noStore = true;
+                cacheControl.noStore = true
               }
             }
-            break;
+            break
           }
           case ResponseCacheControlDirectives.NoStore: {
-            cacheControl.noStore = true;
-            break;
+            cacheControl.noStore = true
+            break
           }
         }
-      });
+      })
 
-    return cacheControl;
+    return cacheControl
   }
 
   static toHeaderDirectiveEntry(directive: string): HeaderDirectiveEntry {
-    const [key, value] = directive.split(headerDirectiveEntrySeparator);
+    const [key, value] = directive.split(headerDirectiveEntrySeparator)
     return {
       directive: key.toLowerCase().trim(),
       value: value?.toLowerCase().trim(),
-    };
+    }
   }
 }

@@ -1,22 +1,7 @@
 {
   "hosting": [
     {
-      "target": "staging",
-      "public": "dist-prod",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "target": "production",
+      "site": "staging-nfid-one",
       "public": "dist-prod",
       "ignore": [
         "firebase.json",

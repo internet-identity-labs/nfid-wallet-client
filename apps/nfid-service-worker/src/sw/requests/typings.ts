@@ -1,5 +1,5 @@
 import { ActorSubclass, HttpAgent } from '@dfinity/agent';
-import { _SERVICE } from '../../http-interface/canister_http_interface_types';
+import { _SERVICE } from '../http-interface/canister_http_interface_types';
 import { Principal } from '@dfinity/principal';
 
 export enum HTTPHeaders {

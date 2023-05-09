@@ -66,7 +66,8 @@
     "format:fix": "npm run prettier:format",
     "format": "npm run prettier:format",
     "deploy": "npm run build && firebase deploy --only hosting:production",
-    "deploy-dev": "npm run build && firebase deploy --only hosting:staging"
+    "deploy-dev": "npm run build && firebase deploy --only hosting:staging",
+    "deploy-staging": "npm run build && firebase deploy --only hosting:staging-nfid-one"
   },
   "engines": {
     "node": "^17",

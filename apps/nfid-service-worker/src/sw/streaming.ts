@@ -36,7 +36,7 @@ export async function streamContent(
       callBackFunc
     );
     switch (callbackResponse.status) {
-      case QueryResponseStatus.Replied: {
+      case 'replied': {
         const callbackData = IDL.decode(
           [streamingCallbackHttpResponseType],
           callbackResponse.reply.arg

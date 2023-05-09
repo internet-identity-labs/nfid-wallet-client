@@ -21,11 +21,8 @@ export type ServiceWorkerRegistrationResult =
 export class InstallView extends BaseView {
   async content(): Promise<TemplateResult> {
     return html`
-      <p class="transparent">This app is powered by</p>
-      <ic-logo aria-label="Internet Computer."></ic-logo>
       <ic-loading></ic-loading>
-      <h1 aria-label="Loading resources.">Loading Resources...</h1>
-      <h3>Blockchain cryptography will make this domain more secure.</h3>
+      <p>One moment, performing initial setup.</p>
     `;
   }
 

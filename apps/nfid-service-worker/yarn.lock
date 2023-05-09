@@ -330,6 +330,19 @@
   resolved "https://registry.yarnpkg.com/@dfinity/response-verification/-/response-verification-0.1.1.tgz#d97074fd8bd206f31260b63edef77ca0fa60fa0c"
   integrity sha512-QVSB/oempRHv30GxDfXLZTXeKmjVkGiMNyVrflr0XZA0Io64qE5umbwXDAchekW/77T3woTdBBzODsIKGTcq5g==
 
+"@dfinity/service-worker@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/service-worker/-/service-worker-1.7.0.tgz#e9fc197ad35e9ff78fae7b4f9759a915418e0151"
+  integrity sha512-zr8nbEkcz0PEpFtX73MPgp4Qmj2wa2vtSTj5NF6FLfuSyrn4m3eplH/YlhLTctWeb4G4MlfDRatJ+ArDid90BA==
+  dependencies:
+    "@dfinity/agent" "~0.13.3"
+    "@dfinity/candid" "~0.13.3"
+    "@dfinity/principal" "~0.13.3"
+    "@dfinity/response-verification" "^0.1.1"
+    idb "^7.1.1"
+    lit "^2.6.1"
+    pako "^2.0.3"
+
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"

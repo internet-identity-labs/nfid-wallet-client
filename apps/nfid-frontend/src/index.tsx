@@ -9,11 +9,12 @@ import { SWRConfig } from "swr"
 
 import { ONE_SECOND_IN_MS } from "@nfid/config"
 
+import * as serviceWorkerRegistration from "@nfid/service-worker"
+
 import { App } from "./App"
 import { initializeConsoleWarnings, redirectFromCanisters } from "./boot"
 import "./index.css"
 import { Provider } from "./provider"
-import * as serviceWorkerRegistration from "./service-worker-registration"
 import { ToastIcons } from "./ui/atoms/toast-icons"
 
 process.env.NODE_ENV === "production" &&

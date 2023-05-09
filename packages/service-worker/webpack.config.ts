@@ -10,7 +10,7 @@ const webpackConfig = (env: NodeJS.ProcessEnv): Configuration => {
   return {
     entry: {
       'install-script': path.join(__dirname, 'src/index.ts'),
-      sw: path.join(__dirname, 'src/sw/sw.ts'),
+      'service-worker': path.join(__dirname, 'src/sw/sw.ts'),
     },
     mode: isDevelopment ? 'development' : 'production',
     target: 'webworker',

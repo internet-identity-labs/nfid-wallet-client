@@ -1,5 +1,6 @@
 // import {} from "@craco/craco"
 import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
+import CopyPlugin from "copy-webpack-plugin"
 import path from "path"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
@@ -168,14 +169,15 @@ const config = {
             ...config.resolve.fallback,
             assert: require.resolve("assert"),
             buffer: require.resolve("buffer"),
-            events: require.resolve("events"),
-            stream: require.resolve("stream-browserify"),
-            util: require.resolve("util"),
-            https: require.resolve("https-browserify"),
-            http: require.resolve("stream-http"),
             crypto: require.resolve("crypto-browserify"),
-            path: require.resolve("path-browserify"),
+            events: require.resolve("events"),
+            http: require.resolve("stream-http"),
+            https: require.resolve("https-browserify"),
             os: require.resolve("os-browserify/browser"),
+            path: require.resolve("path-browserify"),
+            stream: require.resolve("stream-browserify"),
+            url: require.resolve("url/"),
+            util: require.resolve("util"),
           },
         },
         plugins: [
@@ -188,6 +190,21 @@ const config = {
           new webpack.IgnorePlugin({
             contextRegExp: /^\.\/wordlists\/(?!english)/,
             resourceRegExp: /bip39\/src$/,
+          }),
+          new CopyPlugin({
+            patterns: [
+              {
+                from: path.join(
+                  __dirname,
+                  "../../dist/packages/service-worker/",
+                ),
+                filter: (resourcePath) => {
+                  return ["service-worker.js", "web_bg.wasm"].includes(
+                    resourcePath.split("/").pop() || "",
+                  )
+                },
+              },
+            ],
           }),
           ...setupCSP(),
         ],

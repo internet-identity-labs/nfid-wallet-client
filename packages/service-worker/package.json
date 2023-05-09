@@ -1,5 +1,5 @@
 {
-  "name": "@dfinity/service-worker",
+  "name": "service-worker",
   "description": "Service worker to check certification when loading assets from the Internet Computer.",
   "version": "1.7.2",
   "license": "Apache-2.0",
@@ -64,10 +64,6 @@
     "format:check": "npm run prettier:check",
     "format:fix": "npm run prettier:format",
     "format": "npm run prettier:format"
-  },
-  "engines": {
-    "node": "^17",
-    "npm": "^8.5"
   },
   "keywords": [
     "internet computer",

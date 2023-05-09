@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "reverse-proxy-staging"
+  },
+  "targets": {
+    "reverse-proxy-staging": {
+      "hosting": {
+        "production": [
+          "reverse-proxy-production"
+        ],
+        "staging": [
+          "reverse-proxy-staging"
+        ]
+      }
+    }
+  }
+}

@@ -6,7 +6,6 @@ import {
 } from '@dfinity/response-verification';
 import { ResponseCache } from '../cache';
 import { CanisterResolver } from '../domains';
-import { isRawDomain } from '../domains/utils';
 import { RequestMapper } from './mapper';
 import { VerifiedResponse, cacheHeaders, maxCertTimeOffsetNs } from './typings';
 import {

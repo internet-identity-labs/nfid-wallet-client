@@ -6,10 +6,7 @@ export const DEFAULT_GATEWAY = new URL(
 
 export const hostnameCanisterIdMap: Map<string, Principal> = new Map(
   Object.entries({
-    'identity.ic0.app': Principal.from('rdmx6-jaaaa-aaaaa-aaadq-cai'),
-    'nns.ic0.app': Principal.from('qoctq-giaaa-aaaaa-aaaea-cai'),
-    'dscvr.one': Principal.from('h5aet-waaaa-aaaab-qaamq-cai'),
-    'dscvr.ic0.app': Principal.from('h5aet-waaaa-aaaab-qaamq-cai'),
-    'personhood.ic0.app': Principal.from('g3wsl-eqaaa-aaaan-aaaaa-cai'),
+    'nfid.one': Principal.from('3y5ko-7qaaa-aaaal-aaaaq-cai'),
+    'nfid.dev': Principal.from('n2mln-sqaaa-aaaag-abjoa-cai'),
   })
 );

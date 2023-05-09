@@ -63,7 +63,9 @@
     "prettier:format": "prettier --write src",
     "format:check": "npm run prettier:check",
     "format:fix": "npm run prettier:format",
-    "format": "npm run prettier:format"
+    "format": "npm run prettier:format",
+    "deploy": "npm run build && firebase deploy --only hosting:production",
+    "deploy-dev": "npm run build && firebase deploy --only hosting:staging"
   },
   "engines": {
     "node": "^17",

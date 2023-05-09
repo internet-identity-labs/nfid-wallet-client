@@ -16,7 +16,7 @@ const webpackConfig = (env: NodeJS.ProcessEnv): Configuration => {
     target: 'webworker',
     devtool: 'source-map',
     output: {
-      path: path.join(__dirname, isDevelopment ? 'dist-dev' : 'dist-prod'),
+      path: path.join(__dirname, '../../dist/packages/service-worker'),
       filename: '[name].js',
       publicPath: '/',
       assetModuleFilename: (pathData) =>

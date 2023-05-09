@@ -15,7 +15,7 @@ export interface QueryResponseBase {
   status: QueryResponseStatus
 }
 
-export declare enum ReplicaRejectCode {
+export enum ReplicaRejectCode {
   SysFatal = 1,
   SysTransient = 2,
   DestinationInvalid = 3,
@@ -36,8 +36,8 @@ export interface QueryResponseReplied extends QueryResponseBase {
   }
 }
 
-export declare type QueryResponse = QueryResponseReplied | QueryResponseRejected
-export declare const enum QueryResponseStatus {
+export type QueryResponse = QueryResponseReplied | QueryResponseRejected
+export enum QueryResponseStatus {
   Replied = "replied",
   Rejected = "rejected",
 }

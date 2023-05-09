@@ -127,6 +127,8 @@ const config = {
       minimize: !isExampleBuild,
     },
     configure: (config: any, { env, paths }: any) => {
+      console.debug("webpack config", { config })
+
       config.resolve.plugins = config.resolve.plugins.filter(
         (plugin: any) => !(plugin instanceof ModuleScopePlugin),
       )
@@ -152,6 +154,7 @@ const config = {
       const isProduction = process.env.FRONTEND_MODE === "production"
       return {
         ...config,
+        // target: "webworker",
         output: {
           ...config.output,
           crossOriginLoading: "anonymous",

@@ -67,6 +67,8 @@
     "jest-environment-jsdom": "^28",
     "jotai": "1.11.0",
     "lodash": "^4.17.21",
+    "node-ts-cache": "4.4.0",
+    "node-ts-cache-storage-memory": "4.4.0",
     "process": "0.11.10",
     "qrcode": "1.5.1",
     "react": "^18.2.0",

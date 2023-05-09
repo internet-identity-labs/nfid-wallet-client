@@ -1,7 +1,6 @@
-import { getTokens } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
+import { getToken } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
 import useSWR from "swr"
 
-import { ONE_MINUTE_IN_MS } from "@nfid/config"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { AssetFilter } from "../../types"
@@ -16,13 +15,17 @@ export const useTokenConfig = ({ assetFilters, tokens }: UseTokenConfig) => {
     [tokens, assetFilters, "tokenConfig"],
     ([tokens, assetFilters]) =>
       Promise.all(
-        tokens.map(async (token) => await getTokens(token, assetFilters)),
+        tokens.map(async (token) => {
+          try {
+            return await getToken(token, assetFilters)
+          } catch (e) {
+            // FIXME: handle case when request fails
+            console.error("useTokenConfig", e)
+            return []
+          }
+        }),
       ),
-    {
-      focusThrottleInterval: ONE_MINUTE_IN_MS,
-      dedupingInterval: ONE_MINUTE_IN_MS,
-    },
   )
 
-  return { configs: configs || [], ...rest }
+  return { configs: configs?.flat() || [], ...rest }
 }

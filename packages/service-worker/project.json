@@ -1,0 +1,8 @@
+{
+  "name": "service-worker",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/service-worker/src",
+  "projectType": "library",
+  "targets": {},
+  "tags": []
+}

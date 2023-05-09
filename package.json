@@ -9,7 +9,8 @@
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
     "prepare": "husky install",
-    "tunnel": "./scripts/tunnel.sh"
+    "tunnel": "./scripts/tunnel.sh",
+    "deploy-staging": "firebase deploy --only hosting:staging-nfid-one"
   },
   "dependencies": {
     "@dfinity/agent": "^0.11.3",

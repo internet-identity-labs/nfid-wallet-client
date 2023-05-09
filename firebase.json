@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "site": "staging-nfid-one",
+      "public": "dist/apps/nfid-frontend",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

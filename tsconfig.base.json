@@ -25,6 +25,7 @@
       ],
       "@nfid/integration/token/*": ["packages/integration/src/lib/token/*"],
       "frontend/*": ["apps/nfid-frontend/src/*"],
+      "@nfid/service-worker": ["packages/nfid-service-worker/src/index.ts"],
       "src/*": ["apps/nfid-frontend/src/*"]
     }
   },

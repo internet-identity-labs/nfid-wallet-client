@@ -1,0 +1,21 @@
+diff --git a/node_modules/@dfinity/response-verification/web/web.js b/node_modules/@dfinity/response-verification/web/web.js
+index 4581888..d76e636 100644
+--- a/node_modules/@dfinity/response-verification/web/web.js
++++ b/node_modules/@dfinity/response-verification/web/web.js
+@@ -574,8 +574,15 @@ function initSync(module) {
+ }
+ 
+ async function init(input) {
++    console.debug("import.meta.url", import.meta.url)
++
+     if (typeof input === 'undefined') {
+-        input = new URL('web_bg.wasm', import.meta.url);
++        try {
++          input = new URL('web_bg.wasm', import.meta.url);
++        } catch (e) {
++          console.error("catched url error", {e})
++          input = new URL("/static/media/web_bg.5092f00fc4357344b42c.wasm", "https://staging.nfid.one")
++        }
+     }
+     const imports = getImports();
+ 

@@ -1,5 +1,3 @@
-import { CacheContainer } from "node-ts-cache"
-import { MemoryStorage } from "node-ts-cache-storage-memory"
 import { btcAssetConnector } from "src/ui/connnector/fungible-asset-screen/btc/btc-asset"
 import { ethereumERC20AssetConnector } from "src/ui/connnector/fungible-asset-screen/eth/erc20-asset"
 import { ethAssetConnector } from "src/ui/connnector/fungible-asset-screen/eth/eth-asset"

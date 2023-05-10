@@ -5,12 +5,12 @@ export abstract class ConnectorFactory<
   N,
   T extends StandardizedToken<N> & Cacheable,
 > {
-  assetViews: any
+  connectors: any
   connectorsStorage: Map<N, T>
 
-  constructor(assetViews: any) {
-    this.assetViews = assetViews
-    this.connectorsStorage = this.toMap(this.assetViews)
+  constructor(connectors: any) {
+    this.connectors = connectors
+    this.connectorsStorage = this.toMap(this.connectors)
   }
 
   getKeys(): N[] {

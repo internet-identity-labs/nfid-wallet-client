@@ -5,13 +5,10 @@ import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { Image } from "@nfid-frontend/ui"
-import { IconCmpDots, IconPngEthereum } from "@nfid-frontend/ui"
+import { IconCmpDots, Image } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import ICPLogo from "frontend/assets/dfinity.svg"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
-import { link } from "frontend/integration/entrepot"
 import { ProfileContext } from "frontend/provider"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 

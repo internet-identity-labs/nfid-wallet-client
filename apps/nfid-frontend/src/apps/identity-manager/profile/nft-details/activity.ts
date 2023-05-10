@@ -101,8 +101,8 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
     NFTActivity.length,
     fetchICTokenHistory,
     fetchETHTokenHistory,
-    fetchPolygonTokenHistory
-    nft?.blockchain
+    fetchPolygonTokenHistory,
+    nft?.blockchain,
   ])
 
   const transactions = React.useMemo(() => {

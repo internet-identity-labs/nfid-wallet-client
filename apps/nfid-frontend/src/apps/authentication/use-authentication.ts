@@ -5,7 +5,11 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
-import { authState, hasOwnProperty } from "@nfid/integration"
+import {
+  authState,
+  hasOwnProperty,
+  isDelegationExpired,
+} from "@nfid/integration"
 import { agent } from "@nfid/integration"
 
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
@@ -26,8 +30,26 @@ export interface User {
 }
 
 const loadingAtom = atom<boolean>(false)
-const authenticationAtom = atom<boolean>(false)
 const shouldStoreLocalAccountAtom = atom<boolean>(true)
+
+const useAuthState = () => {
+  const [{ delegationIdentity, cacheLoaded }, setDelegationIdentity] =
+    React.useState(authState.get())
+
+  React.useEffect(() => {
+    const observer = authState.subscribe((authState) => {
+      setDelegationIdentity(authState)
+    })
+    return () => observer.unsubscribe()
+  }, [setDelegationIdentity])
+
+  const isAuthenticated = React.useMemo(
+    () => !isDelegationExpired(delegationIdentity),
+    [delegationIdentity],
+  )
+  console.debug("useAuthState", { isAuthenticated })
+  return { isAuthenticated, cacheLoaded }
+}
 
 let user: User | undefined = undefined
 
@@ -38,17 +60,11 @@ export function setUser(userState: User | undefined) {
 export const useAuthentication = () => {
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
-  const [isAuthenticated, setIsAuthenticated] = useAtom(authenticationAtom)
   const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
     shouldStoreLocalAccountAtom,
   )
 
-  React.useEffect(() => {
-    const observer = authState.subscribe(({ delegationIdentity }) => {
-      setIsAuthenticated(!!delegationIdentity)
-    })
-    return () => observer.unsubscribe()
-  }, [setIsAuthenticated])
+  const { isAuthenticated, cacheLoaded } = useAuthState()
 
   const logout = React.useCallback(() => {
     authState.logout()
@@ -92,7 +108,6 @@ export const useAuthentication = () => {
 
       if (result.tag === "ok") {
         Sentry.setUser({ id: anchor.toString() })
-        setIsAuthenticated(true)
         initUserGeek(principal)
         setUser({
           principal: principal.toText(),
@@ -106,7 +121,7 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setIsAuthenticated, setIsLoading, userNumber],
+    [initUserGeek, setIsLoading, userNumber],
   )
 
   const loginWithRecovery = React.useCallback(
@@ -155,6 +170,7 @@ export const useAuthentication = () => {
   return {
     isLoading,
     isAuthenticated,
+    cacheLoaded,
     user,
     shouldStoreLocalAccount,
     setShouldStoreLocalAccount,

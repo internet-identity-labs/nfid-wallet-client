@@ -4,7 +4,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { BehaviorSubject, Subscription } from "rxjs"
+import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
@@ -65,8 +65,10 @@ function makeAuthState() {
       })
     }
 
+    const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
+
     const delegationIdentity = DelegationIdentity.fromDelegation(
-      Ed25519KeyIdentity.fromJSON(sessionKey),
+      identity,
       DelegationChain.fromJSON(chain),
     )
 
@@ -85,6 +87,7 @@ function makeAuthState() {
     observableAuthState$.next({
       cacheLoaded: true,
       delegationIdentity,
+      identity,
     })
   }
 
@@ -107,30 +110,21 @@ function makeAuthState() {
     ])
   }
 
-  async function loadCachedAuthSession() {
-    let sub: Subscription | undefined
-    return new Promise<ObservableAuthState & { cacheLoaded: true }>(
-      (resolve) => {
-        sub = subscribe((state) => {
-          if (state.cacheLoaded === true) {
-            sub && sub.unsubscribe()
-            const { delegationIdentity } = state
-            const isExpired = isDelegationExpired(delegationIdentity)
-            console.debug("loadCachedAuthSession", { isExpired })
-            resolve({
-              ...state,
-              ...(isExpired
-                ? { delegationIdentity: undefined }
-                : { delegationIdentity }),
-              cacheLoaded: true,
-            })
-          }
-        })
-      },
+  async function fromCache() {
+    const cacheLoaded$ = observableAuthState$.pipe(
+      find((s) => s.cacheLoaded),
+      map((s) => ({
+        ...s,
+        delegationIdentity: isDelegationExpired(s?.delegationIdentity)
+          ? undefined
+          : s?.delegationIdentity,
+      })),
     )
+    return await lastValueFrom(cacheLoaded$)
   }
 
   function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
+    console.debug("makeAuthState set new auth state")
     setupSessionManager({ onIdle: invalidateIdentity })
     observableAuthState$.next({
       ...observableAuthState$.getValue(),
@@ -158,16 +152,17 @@ function makeAuthState() {
   }
 
   function checkAndRenewFEDelegation() {
+    console.debug("checkAndRenewFEDelegation", { pendingRenewDelegation })
     const { delegationIdentity, identity } = observableAuthState$.getValue()
 
     if (!delegationIdentity || !identity || pendingRenewDelegation) return
 
     if (isDelegationExpired(delegationIdentity)) {
+      console.debug("checkAndRenewFEDelegation", { delegationExpired: true })
       pendingRenewDelegation = true
 
       return requestFEDelegation(identity)
         .then((result) => {
-          pendingRenewDelegation = false
           set({
             identity,
             delegationIdentity: result.delegationIdentity,
@@ -175,9 +170,10 @@ function makeAuthState() {
             sessionKey: result.sessionKey,
           })
         })
-        .catch((e) => {
-          console.error("checkDelegationExpiration", e)
-          invalidateIdentity()
+        .catch(invalidateIdentity)
+        .finally(() => {
+          console.debug("checkAndRenewFEDelegation requestFEDelegation done")
+          pendingRenewDelegation = false
         })
     }
     return
@@ -187,6 +183,7 @@ function makeAuthState() {
    * When user disconnects an identity, we update our agent.
    */
   async function invalidateIdentity() {
+    console.debug("makeAuthState invalidateIdentity")
     await reset()
     window.location.reload()
   }
@@ -195,7 +192,7 @@ function makeAuthState() {
     get,
     reset,
     subscribe,
-    loadCachedAuthSession,
+    fromCache,
     checkAndRenewFEDelegation,
     logout: invalidateIdentity,
   }

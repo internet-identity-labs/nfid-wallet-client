@@ -8,6 +8,8 @@ import { IFungibleAssetDetailsConnector } from "src/ui/connnector/types"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
+import { connectorCache } from "../cache"
+
 const accountConnectors = [
   btcAssetDetailsConnector,
   maticAssetDetailsConnector,
@@ -27,7 +29,26 @@ export const getAssetDetails = async (
   asset: TokenStandards,
 ): Promise<Array<TokenBalanceSheet>> => {
   const conf = await assetAccountStorage.get(asset)!
-  return conf.getAssetDetails()
+  const cacheKey = "getAssetDetails" + asset
+  console.debug("getAssetDetails cache hit:", { cacheKey })
+  const cachedAssetDetails = await connectorCache.getItem<TokenBalanceSheet[]>(
+    cacheKey,
+  )
+  if (cachedAssetDetails) {
+    console.debug("getAssetDetails cache hit:", {
+      cacheKey,
+      cachedAssetDetails,
+    })
+    return cachedAssetDetails
+  }
+
+  const response = await conf.getAssetDetails()
+  console.debug("getAssetDetails refresh cache:", { cacheKey, response })
+  await connectorCache.setItem(cacheKey, response, {
+    ttl: 30,
+  })
+
+  return response
 }
 
 function toMap(

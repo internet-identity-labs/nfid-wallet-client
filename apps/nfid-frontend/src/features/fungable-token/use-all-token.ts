@@ -8,9 +8,7 @@ export const useAllToken = (
   assetFilters: AssetFilter[] = [],
 ): { token: TokenConfig[] } => {
   const tokens = getAssetScreenTokens()
-  const { configs } = useTokenConfig({ tokens, assetFilters })
-
-  const tokenConfigs = configs.flatMap((config) => config ?? [])
+  const { configs: tokenConfigs } = useTokenConfig({ tokens, assetFilters })
 
   const icTokenConfigs = useICTokens(assetFilters)
 

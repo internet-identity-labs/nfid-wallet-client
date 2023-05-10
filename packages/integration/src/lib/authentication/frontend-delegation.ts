@@ -28,7 +28,7 @@ export const requestFEDelegationChain = async (
     "NFID_DELEGATION_TTL_MS",
   ),
 ) => {
-  console.debug("Request FE Delegation Chain.")
+  console.debug("requestFEDelegationChain")
   const sessionKey = Ed25519KeyIdentity.generate()
   // Here the security device is used. Besides creating new keys, this is the only place.
   const chain = await DelegationChain.create(

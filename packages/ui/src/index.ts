@@ -47,6 +47,7 @@ export * from "./molecules/accordion/index_v2"
 export * from "./molecules/warning-accordion"
 
 export * from "./organisms/tabs-switcher"
+export * from "./organisms/service-worker"
 
 export * from "./pages/auth-ii"
 export * from "./pages/auth-ii-connect"

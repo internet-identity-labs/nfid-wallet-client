@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "strict": true,
     "allowJs": false,
@@ -16,10 +17,9 @@
     ],
     "module": "ESNext",
     "moduleResolution": "node",
-    "outDir": "./lib/esm",
-    "rootDir": ".",
     "experimentalDecorators": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.test.ts", "src/mocks/*"],

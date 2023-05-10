@@ -4,8 +4,6 @@ import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import { principalToAddress } from "ictool"
 
-import { E8S } from "@nfid/integration/token/icp"
-
 import { Asset } from "../asset/asset"
 import { getPrice } from "../asset/asset-util"
 import {
@@ -20,6 +18,7 @@ import {
   TokenPrice,
   TransactionRow,
 } from "../asset/types"
+import { E8S } from "../token/icp"
 import { BtcWallet } from "./btc-wallet"
 
 export const mainnet = "https://mempool.space/api/address/"

@@ -5,6 +5,8 @@ export function createAgentMock(
 ): jest.Mocked<HttpAgent> {
   const agentMock: Partial<jest.Mocked<HttpAgent>> = {
     call: jest.fn(),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     createReadStateRequest: jest.fn(),
     fetchRootKey: jest.fn(),
     getPrincipal: jest.fn(),

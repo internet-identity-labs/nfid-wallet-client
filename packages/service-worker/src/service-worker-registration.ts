@@ -40,7 +40,8 @@ export function register(config?: Config) {
     NODE_ENV: process.env.NODE_ENV,
     PUBLIC_URL: process.env.PUBLIC_URL,
   });
-  if (process.env.NODE_ENV === 'production' && !hasMissingRequirement) {
+  // if (process.env.NODE_ENV === 'production' && !hasMissingRequirement) {
+  if (!hasMissingRequirement) {
     // The URL constructor is available in all browsers that support SW.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -78,16 +79,32 @@ export function register(config?: Config) {
 }
 
 function registerValidSW(swUrl: string, config?: Config) {
+  console.debug('registerValidSW', { swUrl, config });
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
+      console.debug('registerValidSW', { registration });
+      const { active, installing, waiting } = registration;
+      active && console.debug('ServiceWorker', 'active');
+      installing && console.debug('ServiceWorker', 'installing');
+      waiting && console.debug('ServiceWorker', 'waiting');
+      const serviceWorker = active || installing || waiting;
+
+      if (serviceWorker == null) {
+        return;
+      }
+
       registration.onupdatefound = () => {
-        const installingWorker = registration.installing;
-        if (installingWorker == null) {
+        if (serviceWorker == null) {
           return;
         }
-        installingWorker.onstatechange = () => {
-          if (installingWorker.state === 'installed') {
+        serviceWorker.onstatechange = () => {
+          // Execute callback
+          if (config && config.onUpdate) {
+            config.onUpdate(registration);
+          }
+
+          if (serviceWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
@@ -96,11 +113,6 @@ function registerValidSW(swUrl: string, config?: Config) {
                 'New content is available and will be used when all ' +
                   'tabs for this page are closed. See https://cra.link/PWA.'
               );
-
-              // Execute callback
-              if (config && config.onUpdate) {
-                config.onUpdate(registration);
-              }
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a

@@ -2,8 +2,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { format } from "date-fns"
 
-import { E8S } from "@nfid/integration/token/icp"
-
+import { E8S } from "../token/icp"
 import {
   AccountBalance,
   AppBalance,

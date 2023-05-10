@@ -1,7 +1,11 @@
-import { Principal } from '@dfinity/principal';
 import { ResponseCache } from '../cache';
 import { CanisterResolver } from '../domains';
+import { queryCallHandler } from './query-call';
 import { VerifiedResponse } from './typings';
+import {
+  updateCallHandler,
+  shouldUpgradeToUpdateCall,
+} from './upgrade-to-update-call';
 import {
   createHttpRequest,
   createAgentAndActor,
@@ -9,11 +13,7 @@ import {
   shouldFetchRootKey,
   updateRequestApiGateway,
 } from './utils';
-import {
-  updateCallHandler,
-  shouldUpgradeToUpdateCall,
-} from './upgrade-to-update-call';
-import { queryCallHandler } from './query-call';
+import { Principal } from '@dfinity/principal';
 
 export class RequestProcessor {
   private readonly url: URL;
@@ -35,6 +35,7 @@ export class RequestProcessor {
       return cachedResponse;
     }
 
+    // TODO: make this more explicit on which domain this should be denied
     // maybe check if the response should be denied
     if (this.url.pathname.startsWith('/_/')) {
       return this.denyRequestHandler();
@@ -69,16 +70,17 @@ export class RequestProcessor {
       return assetResponse.response;
     }
 
+    // TODO: setup bundle verification for our own domain
     // make sure that we don't make a request against the service worker's origin,
     // else we'll end up in a service worker loading loop
-    if (this.url.hostname === self.location.hostname) {
-      console.error(
-        `URL ${JSON.stringify(
-          this.url.toString()
-        )} did not resolve to a canister ID.`
-      );
-      return new Response('Could not find the canister ID.', { status: 404 });
-    }
+    // if (this.url.hostname === self.location.hostname) {
+    //   console.error(
+    //     `URL ${JSON.stringify(
+    //       this.url.toString()
+    //     )} did not resolve to a canister ID.`
+    //   );
+    //   return new Response('Could not find the canister ID.', { status: 404 });
+    // }
 
     return await this.directRequestHandler();
   }
@@ -94,6 +96,7 @@ export class RequestProcessor {
    * We forward all requests to /api/ to the gateway, as is.
    */
   private async apiRequestHandler(gatewayUrl: URL): Promise<Response> {
+    console.debug('RequestProcessor.apiRequestHandler', { gatewayUrl });
     const cleanedRequest = await updateRequestApiGateway(
       this.request,
       gatewayUrl

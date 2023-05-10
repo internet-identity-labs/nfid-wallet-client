@@ -4,8 +4,8 @@
   "cucumberautocomplete.syncfeatures": "./apps/nfid-frontend-e2e/src/features/**/*.feature",
   "cucumberautocomplete.strictGherkinCompletion": true,
   "explorer.fileNesting.patterns": {
-    "*.ts": "${capture}.d.ts, ${capture}.types.ts, ${capture}.js, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.mocks.ts",
-    "*.tsx": "${capture}.ts, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.stories.tsx, ${capture}.md, ${capture}.mocks.ts"
+    "*.ts": "${capture}.d.ts, ${capture}.types.ts, ${capture}.js, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.mocks.ts, ${capture}.css",
+    "*.tsx": "${capture}.ts, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.stories.tsx, ${capture}.md, ${capture}.mocks.ts, ${capture}.css"
   },
   "explorer.fileNesting.expand": true,
   "explorer.fileNesting.enabled": true,

@@ -10,3 +10,10 @@ export interface SaveICHostInfoMessage {
   action: ServiceWorkerEvents.SaveICHostInfo;
   data: ICHostInfoEvent;
 }
+
+export type VerificationMessage = {
+  type: 'error' | 'info' | 'success';
+  message: string;
+  status: number;
+  url?: string;
+};

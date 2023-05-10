@@ -1,10 +1,35 @@
-import { ServiceWorkerEvents } from '../typings';
+import { VerificationMessage, ServiceWorkerEvents } from '../typings';
 import { CanisterResolver } from './domains';
 import { RequestProcessor } from './requests';
 import { loadResponseVerification } from './requests/utils';
 import { handleErrorResponse } from './views/error';
 
 declare const self: ServiceWorkerGlobalScope;
+
+export const sendClientMessage =
+  ({ type, message, url }: VerificationMessage) =>
+  async (event: FetchEvent) => {
+    event.waitUntil(
+      (async () => {
+        // Exit early if we don't have access to the client.
+        // Eg, if it's cross-origin.
+        if (!event.clientId) return;
+
+        // Get the client.
+        const client = await self.clients.get(event.clientId);
+        // Exit early if we don't get the client.
+        // Eg, if it closed.
+        if (!client) return;
+
+        // Send a message to the client.
+        client.postMessage({
+          type,
+          message,
+          url,
+        });
+      })()
+    );
+  };
 
 // Always install updated SW immediately
 self.addEventListener('install', (event) => {
@@ -19,21 +44,24 @@ self.addEventListener('activate', (event) => {
 // Intercept and proxy all fetch requests made by the browser or DOM on this scope.
 self.addEventListener('fetch', (event) => {
   const isNavigation = event.request.mode === 'navigate';
+  console.debug('sw fetch', { isNavigation });
   try {
     const request = new RequestProcessor(event.request);
     event.respondWith(
       request
         .perform()
         .then((response) => {
-          if (response.status >= 400) {
-            return handleErrorResponse({
-              isNavigation,
-              error: response.statusText,
-            });
-          }
+          console.debug('fetch', { response });
+          sendClientMessage({
+            type: response.status >= 400 ? 'error' : 'info',
+            message: response.statusText,
+            status: response.status,
+            url: event.request.url,
+          })(event);
 
           return response;
         })
+        // TODO: not sure if this can throw internally
         .catch((e) => handleErrorResponse({ isNavigation, error: e }))
     );
   } catch (e) {

@@ -1,6 +1,5 @@
 import * as Sentry from "@sentry/react"
 import { BrowserTracing } from "@sentry/tracing"
-import React from "react"
 import { createRoot } from "react-dom/client"
 import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
@@ -9,12 +8,11 @@ import { SWRConfig } from "swr"
 
 import { ONE_SECOND_IN_MS } from "@nfid/config"
 
-import * as serviceWorkerRegistration from "@nfid/service-worker"
-
 import { App } from "./App"
 import { initializeConsoleWarnings, redirectFromCanisters } from "./boot"
 import "./index.css"
 import { Provider } from "./provider"
+import { ServiceWorkerDialog } from "./service-worker-dialog"
 import { ToastIcons } from "./ui/atoms/toast-icons"
 
 process.env.NODE_ENV === "production" &&
@@ -52,10 +50,6 @@ root.render(
         <App />
       </Router>
     </Provider>
+    <ServiceWorkerDialog />
   </SWRConfig>,
 )
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
-serviceWorkerRegistration.register()

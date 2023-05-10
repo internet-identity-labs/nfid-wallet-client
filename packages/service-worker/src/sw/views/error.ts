@@ -18,6 +18,7 @@ export const handleErrorResponse = async (
   props: ErrorResponseProps
 ): Promise<Response> => {
   const errorMessage = String(props.error);
+  console.debug('handleErrorResponse', { errorMessage });
 
   if (props.isNavigation) {
     return new Response(

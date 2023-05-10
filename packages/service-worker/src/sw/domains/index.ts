@@ -1,4 +1,3 @@
-import { Principal } from '@dfinity/principal';
 import { ICHostInfoEvent } from '../../typings';
 import { isMainNet } from '../requests/utils';
 import { Storage } from '../storage';
@@ -18,6 +17,7 @@ import {
   maybeResolveCanisterFromHeaders,
   resolveCanisterFromUrl,
 } from './utils';
+import { Principal } from '@dfinity/principal';
 
 export class CanisterResolver {
   private static instance: CanisterResolver;

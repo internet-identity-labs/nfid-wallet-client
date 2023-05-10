@@ -1,6 +1,7 @@
+import { nftFactory } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset-factory"
 import useSWR from "swr"
-import {AssetFilter, Blockchain} from "../../types"
-import {nftFactory} from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset-factory";
+
+import { AssetFilter, Blockchain } from "../../types"
 
 type UseTokenConfig = {
   assetFilters: AssetFilter[]

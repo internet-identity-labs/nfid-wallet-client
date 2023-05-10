@@ -1,17 +1,25 @@
-import {Principal} from "@dfinity/principal";
-import {UserNonFungibleToken} from "src/features/non-fungable-token/types";
-import {MaticSvg} from "@nfid-frontend/ui";
-import {NonFungibleItem} from "packages/integration/src/lib/asset/types"
-import {NftConnectorConfig} from "src/ui/connnector/types";
+import { Principal } from "@dfinity/principal"
+import { NonFungibleItem } from "packages/integration/src/lib/asset/types"
+import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
+import { NftConnectorConfig } from "src/ui/connnector/types"
 
-export function toUserNFT(nft: NonFungibleItem, principal: Principal, conf: NftConnectorConfig): UserNonFungibleToken {
+import { MaticSvg } from "@nfid-frontend/ui"
+
+export function toUserNFT(
+  nft: NonFungibleItem,
+  principal: Principal,
+  conf: NftConnectorConfig,
+): UserNonFungibleToken {
   return {
     account: {
       domain: "nfid.one",
       label: "account 1",
       accountId: "0",
     },
-    assetFullsize: {url: nft.image.length === 0 ?  conf.defaultLogo : nft.image, format: "img"},
+    assetFullsize: {
+      url: nft.image.length === 0 ? conf.defaultLogo : nft.image,
+      format: "img",
+    },
     assetPreview: nft?.thumbnail || MaticSvg,
     blockchainLogo: conf.defaultLogo,
     // @ts-ignore
@@ -27,7 +35,6 @@ export function toUserNFT(nft: NonFungibleItem, principal: Principal, conf: NftC
     index: nft.id,
     name: nft.title,
     principal: principal,
-    tokenId: nft.tokenId || "N/A"
+    tokenId: nft.tokenId || "N/A",
   }
 }
-

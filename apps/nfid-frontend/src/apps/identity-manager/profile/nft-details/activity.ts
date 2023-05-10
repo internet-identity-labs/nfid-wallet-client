@@ -1,12 +1,12 @@
 import { format } from "date-fns"
 import React, { useState } from "react"
+import { getPolygonTokenActivity } from "src/features/non-fungable-token/eth/get-polygon-tokens"
 
 import { getETHTokenActivity } from "frontend/features/non-fungable-token/eth/get-tokens"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap/fungible-transactions"
 
 import { ITransaction, mapTransactionsForUI } from "./utils"
-import {getPolygonTokenActivity} from "src/features/non-fungable-token/eth/get-polygon-tokens";
 
 const ACTIVITY_TARGET = 5
 
@@ -68,7 +68,7 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
     )
     setIsActivityFetching(false)
   }, [nft?.contractId, nft?.tokenId])
- //WIP have to be moved to connector layer
+  //WIP have to be moved to connector layer
   const fetchPolygonTokenHistory = React.useCallback(async () => {
     if (!nft?.contractId || !nft?.tokenId) return
     const transactions = await getPolygonTokenActivity(

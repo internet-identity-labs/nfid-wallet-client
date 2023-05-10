@@ -50,8 +50,9 @@ When(/^([^"]*) NFT displayed on assets page$/, async (amount: string) => {
   const nftAmount = await Profile.getNftAmount()
   await nftAmount.waitUntil(async () =>
     (await nftAmount).getText().then((l) => {
-      return l === (amount)
-    }),)
+      return l === amount
+    }),
+  )
   const actualAmount = await Profile.getNftsLength()
   expect(actualAmount.toString()).toEqual(amount)
 })
@@ -151,7 +152,7 @@ When(
   /^User is already authenticated by ([^"]*) anchor$/,
   {
     wrapperOptions: {
-      retry: 2
+      retry: 2,
     },
   },
   async function (anchor: number) {

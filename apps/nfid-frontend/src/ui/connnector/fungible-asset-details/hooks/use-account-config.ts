@@ -1,7 +1,7 @@
-import {fungibleAssetDetailsFactory} from "src/ui/connnector/fungible-asset-details/fungible-asset-details-factory"
+import { fungibleAssetDetailsFactory } from "src/ui/connnector/fungible-asset-details/fungible-asset-details-factory"
 import useSWR from "swr"
 
-import {TokenStandards} from "@nfid/integration/token/types"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 type UseAssetDetails = {
   tokens: TokenStandards[]

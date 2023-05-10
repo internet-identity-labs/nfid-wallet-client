@@ -1,28 +1,44 @@
-import {AssetFilter, Blockchain, NftConnectorConfig,} from "src/ui/connnector/types"
-import {ethereumNftConnector,} from "src/ui/connnector/non-fungible-asset-screen/eth/ethereum-nft-asset";
-import {NonFungibleAssetConnector} from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset";
-import {UserNonFungibleToken} from "src/features/non-fungable-token/types";
-import {polygonNftConnector} from "src/ui/connnector/non-fungible-asset-screen/polygon/polygon-nft-asset";
-import {ConnectorFactory} from "src/ui/connnector/connector-factory";
+import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
+import { ConnectorFactory } from "src/ui/connnector/connector-factory"
+import { ethereumNftConnector } from "src/ui/connnector/non-fungible-asset-screen/eth/ethereum-nft-asset"
+import { NonFungibleAssetConnector } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset"
+import { polygonNftConnector } from "src/ui/connnector/non-fungible-asset-screen/polygon/polygon-nft-asset"
+import {
+  AssetFilter,
+  Blockchain,
+  NftConnectorConfig,
+} from "src/ui/connnector/types"
 
-
-export class NftFactory extends ConnectorFactory<Blockchain, NonFungibleAssetConnector<NftConnectorConfig>> {
+export class NftFactory extends ConnectorFactory<
+  Blockchain,
+  NonFungibleAssetConnector<NftConnectorConfig>
+> {
   getNFToken = async (
     blockchain: Blockchain,
     assetFilters: AssetFilter[],
   ): Promise<Array<UserNonFungibleToken>> => {
-    return this.process(blockchain,[assetFilters])
+    return this.process(blockchain, [assetFilters])
   }
 
   getCacheKey(key: Blockchain, functionToCall: Function, args: any[]): string {
-    return functionToCall.name + key +
-      (args[0]! as AssetFilter[]).reduce((acc, {principal}) => `${acc}${principal}`, "")
+    return (
+      functionToCall.name +
+      key +
+      (args[0]! as AssetFilter[]).reduce(
+        (acc, { principal }) => `${acc}${principal}`,
+        "",
+      )
+    )
   }
 
-  getFunctionToCall(connector: NonFungibleAssetConnector<NftConnectorConfig>): Function {
-    return connector.getNonFungibleItems;
+  getFunctionToCall(
+    connector: NonFungibleAssetConnector<NftConnectorConfig>,
+  ): Function {
+    return connector.getNonFungibleItems
   }
 }
 
-
-export const nftFactory = new NftFactory([ polygonNftConnector, ethereumNftConnector])
+export const nftFactory = new NftFactory([
+  polygonNftConnector,
+  ethereumNftConnector,
+])

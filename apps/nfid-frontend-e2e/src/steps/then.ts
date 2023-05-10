@@ -617,13 +617,20 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
   )
 })
 
-Then(/^Token ([^"]*) from ([^"]*) collection displayed/, async (token: string, collection: string) => {
-    await  Assets.getNftName(token).then(l=>l.waitForDisplayed({
-       timeout: 5000,
-       timeoutMsg: "No NFT " + token
-     }))
-  await  Assets.getNftCollection(collection).then(l=>l.waitForDisplayed({
-       timeout: 5000,
-       timeoutMsg: "No NFT collection " + collection
-     }))
-})
+Then(
+  /^Token ([^"]*) from ([^"]*) collection displayed/,
+  async (token: string, collection: string) => {
+    await Assets.getNftName(token).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT " + token,
+      }),
+    )
+    await Assets.getNftCollection(collection).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT collection " + collection,
+      }),
+    )
+  },
+)

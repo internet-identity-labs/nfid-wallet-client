@@ -1,9 +1,9 @@
+import { fungibleAssetFactory } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
 import useSWR from "swr"
 
-import {TokenStandards} from "@nfid/integration/token/types"
+import { TokenStandards } from "@nfid/integration/token/types"
 
-import {AssetFilter} from "../../types"
-import {fungibleAssetFactory} from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory";
+import { AssetFilter } from "../../types"
 
 type UseTokenConfig = {
   assetFilters: AssetFilter[]
@@ -17,7 +17,10 @@ export const useTokenConfig = ({ assetFilters, tokens }: UseTokenConfig) => {
       Promise.all(
         tokens.map(async (token) => {
           try {
-            return await fungibleAssetFactory.getTokenConfigs(token, assetFilters)
+            return await fungibleAssetFactory.getTokenConfigs(
+              token,
+              assetFilters,
+            )
           } catch (e) {
             // FIXME: handle case when request fails
             console.error("useTokenConfig", e)

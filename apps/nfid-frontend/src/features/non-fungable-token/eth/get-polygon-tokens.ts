@@ -1,4 +1,4 @@
-import {polygonAsset} from "@nfid/integration"
+import { polygonAsset } from "@nfid/integration"
 
 //WIP have to be moved to connector layer
 export const getPolygonTokenActivity = async (

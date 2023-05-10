@@ -3,6 +3,7 @@ import clsx from "clsx"
 import React, { useCallback, useContext } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
+import { trimConcat } from "src/ui/atoms/util/util"
 
 import { Image } from "@nfid-frontend/ui"
 import { IconCmpDots, IconPngEthereum } from "@nfid-frontend/ui"
@@ -16,7 +17,6 @@ import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import copyIcon from "./assets/copy.svg"
 import transferIcon from "./assets/transfer.svg"
-import {trimConcat} from "src/ui/atoms/util/util";
 
 const NFTPreview = (props: UserNonFungibleToken) => {
   const globalServices = useContext(ProfileContext)
@@ -66,9 +66,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
           )}
         >
           <Image
-            src={
-              props.blockchainLogo
-            }
+            src={props.blockchainLogo}
             alt="logo"
             className={clsx(
               "w-2/3",
@@ -86,11 +84,15 @@ const NFTPreview = (props: UserNonFungibleToken) => {
         <div className={clsx(`text-sm p-2.5 flex justify-between items-end`)}>
           <div>
             <div
-              id={ trimConcat("nft_token_", props.name) }
-                 className={clsx(`font-bold`)}>{props.name}</div>
+              id={trimConcat("nft_token_", props.name)}
+              className={clsx(`font-bold`)}
+            >
+              {props.name}
+            </div>
             <div
-              id={ trimConcat("nft_collection_", props.collection.name)}
-              className={clsx(`text-secondary truncate w-[190px] mt-1`)}>
+              id={trimConcat("nft_collection_", props.collection.name)}
+              className={clsx(`text-secondary truncate w-[190px] mt-1`)}
+            >
               {props.collection.name}
             </div>
           </div>

@@ -1,6 +1,6 @@
-import {DelegationIdentity} from "@dfinity/identity"
-import {getWalletDelegation} from "src/integration/facade/wallet"
-import {fetchProfile} from "src/integration/identity-manager"
+import { DelegationIdentity } from "@dfinity/identity"
+import { getWalletDelegation } from "src/integration/facade/wallet"
+import { fetchProfile } from "src/integration/identity-manager"
 import {
   AssetErc20Config,
   AssetFilter,
@@ -9,8 +9,8 @@ import {
   TokenConfig,
 } from "src/ui/connnector/types"
 
-import {loadProfileFromLocalStorage} from "@nfid/integration"
-import {TokenStandards} from "@nfid/integration/token/types"
+import { loadProfileFromLocalStorage } from "@nfid/integration"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 export abstract class FungibleAssetConnector<
   T extends AssetNativeConfig | AssetErc20Config,
@@ -52,6 +52,6 @@ export abstract class FungibleAssetConnector<
   }
 
   getCacheTtl(): number {
-    return 30;
+    return 30
   }
 }

@@ -1,11 +1,10 @@
 import { format } from "date-fns"
 import { TransactionRow } from "packages/integration/src/lib/asset/types"
 import { useMemo } from "react"
+import { getUserPolygonNFTActivity } from "src/features/non-fungable-token/eth/get-user-polygon-activity"
 import useSWR from "swr"
 
 import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
-
-import {getUserPolygonNFTActivity} from "src/features/non-fungable-token/eth/get-user-polygon-activity";
 
 export const useUserPolygonNFTTransactions = () => {
   const { address } = useEthAddress()

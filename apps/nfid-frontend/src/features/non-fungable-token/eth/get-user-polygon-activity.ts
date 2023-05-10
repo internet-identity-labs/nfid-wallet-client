@@ -1,7 +1,7 @@
-import {loadProfileFromLocalStorage, polygonAsset} from "@nfid/integration"
+import { loadProfileFromLocalStorage, polygonAsset } from "@nfid/integration"
 
-import {getWalletDelegation} from "frontend/integration/facade/wallet"
-import {fetchProfile} from "frontend/integration/identity-manager"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { fetchProfile } from "frontend/integration/identity-manager"
 
 //WIP have to be moved to connector layer
 export const getUserPolygonNFTActivity = async () => {
@@ -14,5 +14,5 @@ export const getUserPolygonNFTActivity = async () => {
     accountId,
   )
 
-  return await polygonAsset.getActivitiesByUser({identity: delegation})
+  return await polygonAsset.getActivitiesByUser({ identity: delegation })
 }

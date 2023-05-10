@@ -139,22 +139,22 @@ export class Profile extends HomePage {
   }
 
   public async waitForNFTsAppear() {
-   await this.nfts.waitForDisplayed({
-     timeout: 30000,
-     timeoutMsg: "NFTs are missing",
-   })
+    await this.nfts.waitForDisplayed({
+      timeout: 30000,
+      timeoutMsg: "NFTs are missing",
+    })
   }
 
   public async getNftAmount() {
-   await this.nftViewAll.waitForDisplayed({
-     timeout: 5000,
-     timeoutMsg: "NFTs are missing",
-   })
-    return this.nftViewAll;
+    await this.nftViewAll.waitForDisplayed({
+      timeout: 5000,
+      timeoutMsg: "NFTs are missing",
+    })
+    return this.nftViewAll
   }
 
   public async getNftsLength(): Promise<number> {
-   return this.nftContainer.length
+    return this.nftContainer.length
   }
 
   public async openMobileProfileMenu() {

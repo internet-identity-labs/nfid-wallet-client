@@ -1,15 +1,25 @@
-import {decodeTokenIdentifier} from "ictool"
+import { decodeTokenIdentifier } from "ictool"
 import React from "react"
+import ICPLogo from "src/assets/dfinity.svg"
+import { useNFTConfig } from "src/ui/connnector/non-fungible-asset-screen/hooks/use-nft-token"
+import { AssetFilter, Blockchain } from "src/ui/connnector/types"
 import useSWR from "swr"
 
-import {getWalletName} from "@nfid/integration"
-import {collection, link, principalTokens, token, tokens,} from "frontend/integration/entrepot"
-import {useApplicationsMeta, useProfile,} from "frontend/integration/identity-manager/queries"
-import {useAllPrincipals} from "frontend/integration/internet-identity/queries"
-import {useWalletDelegation} from "frontend/integration/wallet/hooks/use-wallet-delegation"
-import {AssetFilter, Blockchain} from "src/ui/connnector/types";
-import {useNFTConfig} from "src/ui/connnector/non-fungible-asset-screen/hooks/use-nft-token";
-import ICPLogo from "src/assets/dfinity.svg";
+import { getWalletName } from "@nfid/integration"
+
+import {
+  collection,
+  link,
+  principalTokens,
+  token,
+  tokens,
+} from "frontend/integration/entrepot"
+import {
+  useApplicationsMeta,
+  useProfile,
+} from "frontend/integration/identity-manager/queries"
+import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
+import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
 
 export function useNFT(tokenId: string) {
   const { canister } = decodeTokenIdentifier(tokenId)
@@ -52,8 +62,10 @@ export function useNFT(tokenId: string) {
 }
 
 export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
-  const {configs: tokens} = useNFTConfig({assetFilters: assetFilter ?? [],
-    blockchains: [Blockchain.POLYGON, Blockchain.ETHEREUM]})
+  const { configs: tokens } = useNFTConfig({
+    assetFilters: assetFilter ?? [],
+    blockchains: [Blockchain.POLYGON, Blockchain.ETHEREUM],
+  })
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
   const { profile } = useProfile()
@@ -76,7 +88,7 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
     if (!data || !applicationsMeta) return []
 
     return data
-      .map(({ principal, account, collection, index , ...rest }) => ({
+      .map(({ principal, account, collection, index, ...rest }) => ({
         principal,
         account,
         walletName: getWalletName(

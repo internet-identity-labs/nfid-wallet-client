@@ -1,13 +1,13 @@
-import {NonFungibleAssetConnector} from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset";
-import {Blockchain, NftConnectorConfig} from "src/ui/connnector/types";
-import {ethereumAsset} from "@nfid/integration";
-import {IconPngEthereum} from "@nfid-frontend/ui";
+import { NonFungibleAssetConnector } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset"
+import { Blockchain, NftConnectorConfig } from "src/ui/connnector/types"
 
-export class EthereumNftConnector extends NonFungibleAssetConnector<NftConnectorConfig> {
-}
+import { IconPngEthereum } from "@nfid-frontend/ui"
+import { ethereumAsset } from "@nfid/integration"
+
+export class EthereumNftConnector extends NonFungibleAssetConnector<NftConnectorConfig> {}
 
 export const ethereumNftConnector = new EthereumNftConnector({
   blockchain: Blockchain.ETHEREUM,
   defaultLogo: IconPngEthereum,
-  assetService: ethereumAsset
+  assetService: ethereumAsset,
 })

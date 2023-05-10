@@ -1,11 +1,14 @@
-import {DelegationIdentity} from "@dfinity/identity"
-import {TokenBalanceSheet} from "packages/integration/src/lib/asset/types"
-import {getWalletDelegation} from "src/integration/facade/wallet"
-import {fetchProfile} from "src/integration/identity-manager"
-import {IFungibleAssetDetailsConnector, TokenDetailsConfig,} from "src/ui/connnector/types"
+import { DelegationIdentity } from "@dfinity/identity"
+import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
+import { getWalletDelegation } from "src/integration/facade/wallet"
+import { fetchProfile } from "src/integration/identity-manager"
+import {
+  IFungibleAssetDetailsConnector,
+  TokenDetailsConfig,
+} from "src/ui/connnector/types"
 
-import {loadProfileFromLocalStorage} from "@nfid/integration"
-import {TokenStandards} from "@nfid/integration/token/types"
+import { loadProfileFromLocalStorage } from "@nfid/integration"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 export abstract class FungibleAssetDetailsConnector
   implements IFungibleAssetDetailsConnector
@@ -28,6 +31,6 @@ export abstract class FungibleAssetDetailsConnector
   }
 
   getCacheTtl(): number {
-    return 30;
+    return 30
   }
 }

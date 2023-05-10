@@ -155,7 +155,7 @@ jobs:
           ref: main
           token: ${{ secrets.PAT }}
 
-      - run: ls -la apps/nfid-frontend-e2e/user-google-e2e
+      - run: ls -la apps/nfid-frontend-e2e/chrome-user-data-dir
 
       - name: Running E2E test
         run: |

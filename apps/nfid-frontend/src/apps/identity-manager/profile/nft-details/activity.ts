@@ -97,7 +97,13 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
     if (nft?.blockchain === "Internet Computer") fetchICTokenHistory(1)
     if (nft?.blockchain === "Ethereum") fetchETHTokenHistory()
     if (nft?.blockchain === "Polygon") fetchPolygonTokenHistory()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [
+    NFTActivity.length,
+    fetchICTokenHistory,
+    fetchETHTokenHistory,
+    fetchPolygonTokenHistory
+    nft?.blockchain
+  ])
 
   const transactions = React.useMemo(() => {
     return NFTActivity.sort((a, b) => Number(b.datetime) - Number(a.datetime))

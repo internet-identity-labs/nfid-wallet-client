@@ -2,6 +2,7 @@ import { decodeTokenIdentifier } from "ictool"
 import React from "react"
 import ICPLogo from "src/assets/dfinity.svg"
 import { useNFTConfig } from "src/ui/connnector/non-fungible-asset-screen/hooks/use-nft-token"
+import { nftFactory } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset-factory"
 import { AssetFilter, Blockchain } from "src/ui/connnector/types"
 import useSWR from "swr"
 
@@ -14,12 +15,8 @@ import {
   token,
   tokens,
 } from "frontend/integration/entrepot"
-import {
-  useApplicationsMeta,
-  useProfile,
-} from "frontend/integration/identity-manager/queries"
+import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
 
 export function useNFT(tokenId: string) {
   const { canister } = decodeTokenIdentifier(tokenId)
@@ -62,18 +59,13 @@ export function useNFT(tokenId: string) {
 }
 
 export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
+  const supportedBlockchains = nftFactory.getKeys()
   const { configs: tokens } = useNFTConfig({
     assetFilters: assetFilter ?? [],
-    blockchains: [Blockchain.POLYGON, Blockchain.ETHEREUM],
+    blockchains: supportedBlockchains,
   })
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
-  const { profile } = useProfile()
-  const { data: delegation } = useWalletDelegation(
-    profile?.anchor,
-    "nfid.one",
-    "0",
-  )
   const { data, isLoading, isValidating } = useSWR(
     principals ? [principals, "userTokens"] : null,
     ([principals]) => principalTokens(principals),

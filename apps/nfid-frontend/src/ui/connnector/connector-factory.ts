@@ -17,7 +17,7 @@ export abstract class ConnectorFactory<
     return Array.from(this.connectorsStorage.keys())
   }
 
-  toMap(connectors: T[]): Map<N, T> {
+  private toMap(connectors: T[]): Map<N, T> {
     const connectorsMap = new Map<N, T>()
     connectors.forEach((connector) => {
       connectorsMap.set(connector.getTokenStandard(), connector)
@@ -25,7 +25,7 @@ export abstract class ConnectorFactory<
     return connectorsMap
   }
 
-  getConnector(key: N) {
+  private getConnector(key: N) {
     return this.connectorsStorage.get(key)
   }
 
@@ -45,11 +45,15 @@ export abstract class ConnectorFactory<
     )
   }
 
-  abstract getCacheKey(key: N, functionToCall: Function, args: any[]): string
+  protected abstract getCacheKey(
+    key: N,
+    functionToCall: Function,
+    args: any[],
+  ): string
 
-  abstract getFunctionToCall(connector: T): Function
+  protected abstract getFunctionToCall(connector: T): Function
 
-  async processCacheable(
+  private async processCacheable(
     cacheKey: string,
     connector: T,
     a: Function,

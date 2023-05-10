@@ -3,7 +3,7 @@ import React from "react"
 import ICPLogo from "src/assets/dfinity.svg"
 import { useNFTConfig } from "src/ui/connnector/non-fungible-asset-screen/hooks/use-nft-token"
 import { nftFactory } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset-factory"
-import { AssetFilter, Blockchain } from "src/ui/connnector/types"
+import { AssetFilter } from "src/ui/connnector/types"
 import useSWR from "swr"
 
 import { getWalletName } from "@nfid/integration"

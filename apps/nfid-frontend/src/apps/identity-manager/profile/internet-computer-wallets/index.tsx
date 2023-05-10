@@ -9,7 +9,7 @@ import TokenWalletsDetailPage from "frontend/ui/pages/new-profile/internet-compu
 const ProfileTokenWalletsDetailPage = () => {
   const { appAccountBalance } = useBalanceICPAll()
   const tokens = fungibleAssetDetailsFactory.getKeys()
-  const { assets: details } = useAssetDetails({ tokens })
+  const { assets: details, isLoading: isLoadingDetails } = useAssetDetails({ tokens })
 
   const { token } = useParams()
 

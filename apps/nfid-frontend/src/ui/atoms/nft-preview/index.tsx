@@ -16,12 +16,11 @@ import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import copyIcon from "./assets/copy.svg"
 import transferIcon from "./assets/transfer.svg"
+import {trimConcat} from "src/ui/atoms/util/util";
 
 const NFTPreview = (props: UserNonFungibleToken) => {
   const globalServices = useContext(ProfileContext)
-
   const [, send] = useActor(globalServices.transferService)
-
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
   const ref = useClickOutside(() => setIsTooltipOpen(false))
 
@@ -31,19 +30,9 @@ const NFTPreview = (props: UserNonFungibleToken) => {
       toast.info("NFT URL copied to clipboard", {
         toastId: `copied_nft_${props.tokenId}`,
       })
-      navigator.clipboard.writeText(
-        props.blockchain === "Ethereum"
-          ? props.assetFullsize.url
-          : link(props.collection.id, Number(props.index)),
-      )
+      navigator.clipboard.writeText(props.clipboardText ?? "")
     },
-    [
-      props.assetFullsize.url,
-      props.blockchain,
-      props.collection.id,
-      props.index,
-      props.tokenId,
-    ],
+    [props.clipboardText, props.tokenId],
   )
 
   const onTransferNFT = useCallback(
@@ -63,7 +52,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
     <div
       className={clsx(
         "rounded-md w-full transition-all cursor-pointer overflow-visible p-[1px] relative z-10",
-        "bg-gray-50 hover:bg-white hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)]",
+        "bg-gray-50 hover:bg-white hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)] nft",
       )}
     >
       <Link
@@ -78,9 +67,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
         >
           <Image
             src={
-              props.blockchain === "Internet Computer"
-                ? ICPLogo
-                : IconPngEthereum
+              props.blockchainLogo
             }
             alt="logo"
             className={clsx(
@@ -98,8 +85,12 @@ const NFTPreview = (props: UserNonFungibleToken) => {
         />
         <div className={clsx(`text-sm p-2.5 flex justify-between items-end`)}>
           <div>
-            <div className={clsx(`font-bold`)}>{props.name}</div>
-            <div className={clsx(`text-secondary truncate w-[190px] mt-1`)}>
+            <div
+              id={ trimConcat("nft_token_", props.name) }
+                 className={clsx(`font-bold`)}>{props.name}</div>
+            <div
+              id={ trimConcat("nft_collection_", props.collection.name)}
+              className={clsx(`text-secondary truncate w-[190px] mt-1`)}>
               {props.collection.name}
             </div>
           </div>

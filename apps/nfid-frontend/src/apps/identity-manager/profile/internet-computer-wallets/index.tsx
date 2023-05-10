@@ -1,14 +1,14 @@
-import React, { useMemo } from "react"
-import { useParams } from "react-router-dom"
-import { getAssetDetailsTokens } from "src/ui/connnector/fungible-asset-details/fungible-asset-details-factory"
-import { useAssetDetails } from "src/ui/connnector/fungible-asset-details/hooks/use-account-config"
+import React, {useMemo} from "react"
+import {useParams} from "react-router-dom"
+import {fungibleAssetDetailsFactory} from "src/ui/connnector/fungible-asset-details/fungible-asset-details-factory"
+import {useAssetDetails} from "src/ui/connnector/fungible-asset-details/hooks/use-account-config"
 
-import { useBalanceICPAll } from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
+import {useBalanceICPAll} from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
 import TokenWalletsDetailPage from "frontend/ui/pages/new-profile/internet-computer-wallets"
 
 const ProfileTokenWalletsDetailPage = () => {
   const { appAccountBalance } = useBalanceICPAll()
-  const tokens = getAssetDetailsTokens()
+  const tokens = fungibleAssetDetailsFactory.getKeys()
   const { assets: details } = useAssetDetails({ tokens })
 
   const { token } = useParams()
@@ -18,7 +18,9 @@ const ProfileTokenWalletsDetailPage = () => {
     if (appAccountBalance && appAccountBalance[token]) {
       return appAccountBalance[token]
     }
-    if (details) return details.find((l) => l.token === token)
+    if (details) {
+      return details.find((l) => l.token === token)
+    }
   }, [appAccountBalance, token, details])
   console.debug(">> ProfileIWallets", { balance })
 

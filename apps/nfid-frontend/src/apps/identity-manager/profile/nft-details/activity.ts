@@ -6,6 +6,7 @@ import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types
 import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap/fungible-transactions"
 
 import { ITransaction, mapTransactionsForUI } from "./utils"
+import {getPolygonTokenActivity} from "src/features/non-fungable-token/eth/get-polygon-tokens";
 
 const ACTIVITY_TARGET = 5
 
@@ -67,12 +68,35 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
     )
     setIsActivityFetching(false)
   }, [nft?.contractId, nft?.tokenId])
+ //WIP have to be moved to connector layer
+  const fetchPolygonTokenHistory = React.useCallback(async () => {
+    if (!nft?.contractId || !nft?.tokenId) return
+    const transactions = await getPolygonTokenActivity(
+      nft.contractId,
+      nft.tokenId,
+      ACTIVITY_TARGET,
+    )
+    setNFTActivity(
+      transactions.activities.map(
+        (t) =>
+          ({
+            type: t.type,
+            datetime: format(new Date(t.date), "MMM dd, yyyy - hh:mm:ss aaa"),
+            from: t.from,
+            to: t.to,
+            price: t.price ? `${t.price} MATIC` : "",
+          } as ITransaction),
+      ),
+    )
+    setIsActivityFetching(false)
+  }, [nft?.contractId, nft?.tokenId])
 
   React.useEffect(() => {
     if (NFTActivity.length) return
 
     if (nft?.blockchain === "Internet Computer") fetchICTokenHistory(1)
     if (nft?.blockchain === "Ethereum") fetchETHTokenHistory()
+    if (nft?.blockchain === "Polygon") fetchPolygonTokenHistory()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const transactions = React.useMemo(() => {

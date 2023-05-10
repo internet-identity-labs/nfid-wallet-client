@@ -1,7 +1,7 @@
-import { getAssetDetails } from "src/ui/connnector/fungible-asset-details/fungible-asset-details-factory"
+import {fungibleAssetDetailsFactory} from "src/ui/connnector/fungible-asset-details/fungible-asset-details-factory"
 import useSWR from "swr"
 
-import { TokenStandards } from "@nfid/integration/token/types"
+import {TokenStandards} from "@nfid/integration/token/types"
 
 type UseAssetDetails = {
   tokens: TokenStandards[]
@@ -14,7 +14,7 @@ export const useAssetDetails = ({ tokens }: UseAssetDetails) => {
       Promise.all(
         tokens.map(async (token) => {
           try {
-            return await getAssetDetails(token)
+            return await fungibleAssetDetailsFactory.getAssetDetails(token)
           } catch (e) {
             // FIXME: handle case when request fails
             console.error("useAssetDetails", e)

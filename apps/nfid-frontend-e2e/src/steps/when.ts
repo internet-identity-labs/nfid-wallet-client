@@ -45,6 +45,17 @@ When(/^Tokens displayed on user assets$/, async () => {
   await Profile.waitForTokensAppear()
 })
 
+When(/^([^"]*) NFT displayed on assets page$/, async (amount: string) => {
+  await Profile.waitForNFTsAppear()
+  const nftAmount = await Profile.getNftAmount()
+  await nftAmount.waitUntil(async () =>
+    (await nftAmount).getText().then((l) => {
+      return l === (amount)
+    }),)
+  const actualAmount = await Profile.getNftsLength()
+  expect(actualAmount.toString()).toEqual(amount)
+})
+
 When(/^User opens burger menu$/, async () => {
   await HomePage.openHomeBurgerMenu()
 })
@@ -137,7 +148,7 @@ When(
 )
 
 When(
-  /^User is already authenticated by ([^"]*) anchor$/, 
+  /^User is already authenticated by ([^"]*) anchor$/,
   {
     wrapperOptions: {
       retry: 2

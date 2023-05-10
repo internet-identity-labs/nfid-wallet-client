@@ -11,6 +11,14 @@ export class Assets {
     return $("#balance")
   }
 
+  public async getNftName(token: string) {
+    return $(`#nft_token_${token.replace(/\s/g, "")}`)
+  }
+
+  public async getNftCollection(collection: string) {
+    return $(`#nft_collection_${collection.replace(/\s/g, "")}`)
+  }
+
   public async getAssetBalance(label: string) {
     return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_balance']")
   }
@@ -21,10 +29,6 @@ export class Assets {
 
   public async getBlockchain(label: string) {
     return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_blockchain']")
-  }
-
-  private getTokenUsd(assetLabel: string) {
-    return `#token_${assetLabel.replace(/\s/g, "")}_usd`
   }
 
   private getTokenBalance(chain: string) {

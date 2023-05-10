@@ -21,6 +21,7 @@ import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets
 import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
+import {useUserPolygonNFTTransactions} from "src/features/non-fungable-token/eth/use-user-polygon-transactions";
 
 const ProfileTransactions = () => {
   const { walletTransactions, isWalletLoading } = useWallet()
@@ -30,6 +31,7 @@ const ProfileTransactions = () => {
   const { txs: maticTxs } = useMaticTransactions()
   const { erc20txs } = useErc20Transactions()
   const { transactions: nftTransactions } = useUserEthNFTTransactions()
+  const { transactions: nftPolygonTransactions } = useUserPolygonNFTTransactions()
   const { erc20txs: erc20txsPolygon } = useErc20TransactionsPolygon()
 
   const { wallets } = useAllWallets()
@@ -69,6 +71,9 @@ const ProfileTransactions = () => {
     const ETHNFTTransactions = isNFIDAccount
       ? nftTransactions?.filter((t) => t.type === "send") ?? []
       : []
+    const PolygonNFTTransactions = isNFIDAccount
+      ? nftPolygonTransactions?.filter((t) => t.type === "send") ?? []
+      : []
     const ERC20TransactionsPolygon = isNFIDAccount
       ? erc20txsPolygon?.sendTransactions ?? []
       : []
@@ -83,6 +88,7 @@ const ProfileTransactions = () => {
           ...BTCTransactions,
           ...ERC20Transactions,
           ...ETHNFTTransactions,
+          ...PolygonNFTTransactions,
           ...ERC20TransactionsPolygon,
           ...TransactionsPolygon,
         ],
@@ -100,7 +106,7 @@ const ProfileTransactions = () => {
         ...ETHNFTTransactions,
       )
     selectedBlockchainFilters.includes("Polygon") &&
-      transactions.push(...ERC20TransactionsPolygon, ...TransactionsPolygon)
+      transactions.push(...ERC20TransactionsPolygon, ...TransactionsPolygon, ...PolygonNFTTransactions)
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
 
@@ -110,6 +116,7 @@ const ProfileTransactions = () => {
     selectedAccountFilters,
     wallets,
     isNFIDAccount,
+    nftPolygonTransactions,
     sendEthTXs,
     btcTxs?.sendTransactions,
     erc20txs?.sendTransactions,
@@ -147,6 +154,10 @@ const ProfileTransactions = () => {
       ? nftTransactions?.filter((t) => t.type === "received") ?? []
       : []
 
+    const PolygonNFTTransactions = isNFIDAccount
+      ? nftPolygonTransactions?.filter((t) => t.type === "received") ?? []
+      : []
+
     if (!selectedBlockchainFilters.length)
       return sortByDate(
         [
@@ -155,6 +166,7 @@ const ProfileTransactions = () => {
           ...BTCTransactions,
           ...ERC20Transactions,
           ...ETHNFTTransactions,
+          ...PolygonNFTTransactions,
           ...ERC20TransactionsPolygon,
           ...TransactionsPolygon,
         ],
@@ -174,7 +186,7 @@ const ProfileTransactions = () => {
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
     selectedBlockchainFilters.includes("Polygon") &&
-      transactions.push(...ERC20TransactionsPolygon, ...TransactionsPolygon)
+      transactions.push(...ERC20TransactionsPolygon, ...TransactionsPolygon, ...PolygonNFTTransactions)
 
     return sortByDate(transactions, "MMM dd',' yyyy - hh:mm:ss a")
   }, [
@@ -221,6 +233,8 @@ const ProfileTransactions = () => {
             (erc20txsPolygon?.receivedTransactions?.length ?? 0) +
             (maticTxs?.sendTransactions?.length ?? 0) +
             (maticTxs?.receivedTransactions?.length ?? 0) +
+            (nftPolygonTransactions?.length ?? 0) +
+            (nftTransactions?.length ?? 0) +
             ICTransactionsLength
           : ICTransactionsLength
 
@@ -243,6 +257,8 @@ const ProfileTransactions = () => {
     sendEthTXs.length,
     walletTransactions,
     wallets,
+    nftPolygonTransactions,
+    nftTransactions
   ])
 
   const handleSelectAccountFilter = useCallback(

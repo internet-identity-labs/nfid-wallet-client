@@ -41,6 +41,17 @@ Feature:Fungible Asset
       | Polygon           | 25795  | 2      | Matic             |
       | Internet Computer | 28542  | 4      | Internet Computer |
 
+  @asset3
+  Scenario Outline: User should be able to see NFTs
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    And <amount> NFT displayed on assets page
+    Then Token <token> from <collection> collection displayed
+    Examples:
+      | amount | anchor | token       | collection |
+      | 4      | 31870  | AnilAnimal  | Rarible    |
+      | 4      | 31870  | TestERC1155 | Rarible    |
+
   @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account
     Given User opens NFID site

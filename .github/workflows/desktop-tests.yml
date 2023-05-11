@@ -166,11 +166,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: internet-identity-labs/user-google-e2e
-          path: apps/nfid-frontend-e2e/chrome-user-data-dir
+          path: apps/nfid-frontend-e2e/src/chrome-user-data-dir
           ref: main
           token: ${{ secrets.PAT }}
 
-      - run: ls -la apps/nfid-frontend-e2e/chrome-user-data-dir
+      - run: ls -la apps/nfid-frontend-e2e/src/chrome-user-data-dir
 
       - name: Running E2E test
         run: |

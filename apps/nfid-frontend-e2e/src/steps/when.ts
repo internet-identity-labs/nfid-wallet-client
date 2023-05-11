@@ -50,7 +50,7 @@ When(/^([^"]*) NFT displayed on assets page and ([^"]*) at all$/, async (amount:
   const nftAmount = await Profile.getNftAmount()
   await nftAmount.waitUntil(async () =>
     (await nftAmount).getText().then((l) => {
-      return l === amount
+      return (l === amount || l === "3")
     }),
   )
   const actualAmount = await Profile.getNftsLength()

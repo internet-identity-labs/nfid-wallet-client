@@ -45,12 +45,13 @@ Feature:Fungible Asset
   Scenario Outline: User should be able to see NFTs
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And <amount> NFT displayed on assets page
+    And <amount> NFT displayed on assets page and <view> at all
     Then Token <token> from <collection> collection displayed
     Examples:
-      | amount | anchor | token       | collection |
-      | 4      | 31870  | AnilAnimal  | Rarible    |
-      | 4      | 31870  | TestERC1155 | Rarible    |
+      | amount | anchor | token          | collection | view |
+      | 6      | 31870  | AnilAnimal     | Rarible    | 4    |
+      | 6      | 31870  | MadaraUchiha   | Rarible    | 4    |
+      | 6      | 31870  | PandaQueen#571 | PandaQueen | 4    |
 
   @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account

@@ -45,7 +45,7 @@ When(/^Tokens displayed on user assets$/, async () => {
   await Profile.waitForTokensAppear()
 })
 
-When(/^([^"]*) NFT displayed on assets page$/, async (amount: string) => {
+When(/^([^"]*) NFT displayed on assets page and ([^"]*) at all$/, async (amount: string, view: string) => {
   await Profile.waitForNFTsAppear()
   const nftAmount = await Profile.getNftAmount()
   await nftAmount.waitUntil(async () =>
@@ -54,7 +54,7 @@ When(/^([^"]*) NFT displayed on assets page$/, async (amount: string) => {
     }),
   )
   const actualAmount = await Profile.getNftsLength()
-  expect(actualAmount.toString()).toEqual(amount)
+  expect(actualAmount.toString()).toEqual(view)
 })
 
 When(/^User opens burger menu$/, async () => {
@@ -166,7 +166,6 @@ When(
       }
     }, testUser.authstate)
     await HomePage.openPage("/profile/assets")
-    console.log(await browser.getLogs("browser"))
   },
 )
 

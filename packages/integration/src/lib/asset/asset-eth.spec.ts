@@ -4,13 +4,14 @@ import { BigNumber } from "@rarible/utils"
 import { ethers } from "ethers-ts"
 
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { mockIdentityA } from "../identity"
+import { mockIdentityA, mockIdentityB } from "../identity"
 import { generateDelegationIdentity } from "../test-utils"
 import { ethereumAsset } from "./asset-eth"
-import { Erc20TransferRequest } from "./estimateTransaction/transferRequest/erc20TransferRequest"
-import { EthTransferRequest } from "./estimateTransaction/transferRequest/ethTransferRequest"
-import { NftErc721TransferRequest } from "./estimateTransaction/transferRequest/nftErc721TransferRequest"
-import { NftErc1155TransferRequest } from "./estimateTransaction/transferRequest/nftErc1155TransferRequest"
+import { ErrorCode } from "./error-code.enum"
+import { Erc20EstimateTransactionRequest } from "./service/populate-transaction-service/erc20-populate-transaction.service"
+import { EthTransferRequest } from "./service/populate-transaction-service/eth-populate-transaction.service"
+import { NftErc721EstimateTransactionRequest } from "./service/populate-transaction-service/nft-erc721-populate-transaction.service"
+import { NftErc1155EstimateTransactionRequest } from "./service/populate-transaction-service/nft-erc1155-populate-transaction.service"
 import { ChainBalance } from "./types.d"
 
 describe("Ethereum Asset", () => {
@@ -21,7 +22,7 @@ describe("Ethereum Asset", () => {
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
-    const request = new Erc20TransferRequest(
+    const request = new Erc20EstimateTransactionRequest(
       delegationIdentity,
       "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
       "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
@@ -34,15 +35,60 @@ describe("Ethereum Asset", () => {
         from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
         nonce: expect.any(Number),
+        chainId: 5,
+        type: 2,
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
         data: "0xa9059cbb000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4390000000000000000000000000000000000000000000000000de0b6b3a7640000",
       },
+      errors: [],
       fee: expect.any(String),
       feeUsd: expect.any(String),
       maxFee: expect.any(String),
       maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: undefined,
+      valueUsd: undefined,
+    })
+  })
+
+  it("should return one estimated erc20 tx when insufficient balance of erc20 and native token", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+
+    const request = new Erc20EstimateTransactionRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+      100,
+    )
+
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    expect(actual).toEqual({
+      transaction: {
+        from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
+        to: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+        nonce: expect.any(Number),
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+        data: "0xa9059cbb000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4390000000000000000000000000000000000000000000000000000000000000000",
+      },
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: undefined,
+      valueUsd: undefined,
+      errors: [
+        ErrorCode.INSUFFICIENT_FUNDS_CONTRACT,
+        ErrorCode.INSUFFICIENT_FUNDS,
+      ],
     })
   })
 
@@ -51,7 +97,7 @@ describe("Ethereum Asset", () => {
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
-    const request = new NftErc1155TransferRequest(
+    const request = new NftErc1155EstimateTransactionRequest(
       delegationIdentity,
       "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
       1,
@@ -65,16 +111,60 @@ describe("Ethereum Asset", () => {
       transaction: {
         from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0xCB7E40c8DfBb6b83C7D222af862a6A1111D77897",
+        chainId: 5,
+        type: 2,
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
         data: "0xf242432a0000000000000000000000006a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439b65ca21d6396e0d8455bacaa1eb43cad27788f80000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000",
       },
+      errors: [],
       fee: expect.any(String),
       feeUsd: expect.any(String),
       maxFee: expect.any(String),
       maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: undefined,
+      valueUsd: undefined,
+    })
+  })
+
+  it("should return one estimated nft erc1155 tx when insufficient balance of native token", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+
+    const request = new NftErc1155EstimateTransactionRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      1,
+      "0xCB7E40c8DfBb6b83C7D222af862a6A1111D77897",
+      "82484607247348712068732030314470275353650558748440325380375732522564550918146",
+    )
+
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
+
+    expect(actual).toEqual({
+      transaction: {
+        from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
+        to: "0xCB7E40c8DfBb6b83C7D222af862a6A1111D77897",
+        nonce: expect.any(Number),
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+        data: "0xf242432a00000000000000000000000066824a3f8ce2c2490fd893548a325b3cca4679f4000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439b65ca21d6396e0d8455bacaa1eb43cad27788f80000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000",
+      },
+      errors: [ErrorCode.INSUFFICIENT_FUNDS],
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: undefined,
+      valueUsd: undefined,
     })
   })
 
@@ -83,7 +173,7 @@ describe("Ethereum Asset", () => {
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
-    const request = new NftErc721TransferRequest(
+    const request = new NftErc721EstimateTransactionRequest(
       delegationIdentity,
       "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
       "0xD8560C88D1DC85f9ED05b25878E366c49B68bEf9",
@@ -96,16 +186,61 @@ describe("Ethereum Asset", () => {
       transaction: {
         from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0xD8560C88D1DC85f9ED05b25878E366c49B68bEf9",
+        chainId: 5,
+        type: 2,
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
         data: "0x42842e0e0000000000000000000000006a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439c9167f6d465d3f38a4e8afd07cfdd529b1260f1a000000000000000000000071",
       },
+      errors: [],
       fee: expect.any(String),
       feeUsd: expect.any(String),
       maxFee: expect.any(String),
       maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: undefined,
+      valueUsd: undefined,
+    })
+  })
+
+  it("should return one estimated nft erc721 tx when insufficient balance of native token", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+
+    const request = new NftErc721EstimateTransactionRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      "0xD8560C88D1DC85f9ED05b25878E366c49B68bEf9",
+      "90954632668492117629724492447872876170185211583852507408636743397101359071345",
+    )
+
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
+
+    expect(actual).toEqual({
+      transaction: {
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
+        to: "0xD8560C88D1DC85f9ED05b25878E366c49B68bEf9",
+        chainId: 5,
+        type: 2,
+        nonce: expect.any(Number),
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+        data: "0x42842e0e0000000000000000000000006a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439c9167f6d465d3f38a4e8afd07cfdd529b1260f1a000000000000000000000071",
+      },
+      errors: [],
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: undefined,
+      valueUsd: undefined,
     })
   })
 
@@ -149,6 +284,41 @@ describe("Ethereum Asset", () => {
     expect(actual).toEqual({
       transaction: {
         from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
+        to: "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439",
+        type: 2,
+        chainId: 5,
+        nonce: expect.any(Number),
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        value: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+      },
+      errors: [],
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: expect.any(String),
+      valueUsd: expect.any(String),
+    })
+  })
+
+  it("should return one estimated tx when insufficient balance of native token", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+
+    const request = new EthTransferRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      0.001,
+    )
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    expect(actual).toEqual({
+      transaction: {
+        from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
         to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
@@ -156,10 +326,15 @@ describe("Ethereum Asset", () => {
         value: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
       },
+      errors: [ErrorCode.INSUFFICIENT_FUNDS],
       fee: expect.any(String),
       feeUsd: expect.any(String),
       maxFee: expect.any(String),
       maxFeeUsd: expect.any(String),
+      total: expect.any(String),
+      totalUsd: expect.any(String),
+      value: expect.any(String),
+      valueUsd: expect.any(String),
     })
   })
 

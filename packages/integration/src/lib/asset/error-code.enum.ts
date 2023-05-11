@@ -1,0 +1,4 @@
+export enum ErrorCode {
+  INSUFFICIENT_FUNDS,
+  INSUFFICIENT_FUNDS_CONTRACT,
+}

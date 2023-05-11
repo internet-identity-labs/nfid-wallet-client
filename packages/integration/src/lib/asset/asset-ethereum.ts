@@ -30,8 +30,8 @@ import { principalToAddress } from "ictool"
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { getPriceFull } from "./asset-util"
-import { estimateTransaction } from "./estimateTransaction/estimateTransaction"
 import { NonFungibleAsset } from "./non-fungible-asset"
+import { estimateTransaction } from "./service/estimate-transaction.service"
 import {
   ActivitiesByItemRequest,
   ActivitiesByUserRequest,
@@ -40,9 +40,9 @@ import {
   ChainBalance,
   Configuration,
   Erc20TokensByUserRequest,
+  EstimateTransactionRequest,
   EstimatedTransaction,
   EtherscanTransactionHashUrl,
-  EthEstimatedTransactionRequest,
   FungibleActivityRecords,
   FungibleActivityRequest,
   FungibleTxs,
@@ -76,7 +76,7 @@ export class EthereumAsset extends NonFungibleAsset {
   }
 
   async getEstimatedTransaction(
-    request: EthEstimatedTransactionRequest,
+    request: EstimateTransactionRequest,
   ): Promise<EstimatedTransaction> {
     const wallet = this.getWallet(request.identity, CHAIN_NETWORK, this.config)
     return estimateTransaction(wallet, request)
@@ -474,8 +474,10 @@ export class EthereumAsset extends NonFungibleAsset {
   private getAlchemySdk(mode: string, config: Configuration): Alchemy {
     const alchemyNetwork: Network =
       "mainnet" == mode ? config.alchemy.mainnet : config.alchemy.testnet
+    const alchemyApiKey =
+      "mainnet" == mode ? ETH_ALCHEMY_API_KEY : GOERLI_ALCHEMY_API_KEY
     return new Alchemy({
-      apiKey: ALCHEMY_API_KEY,
+      apiKey: alchemyApiKey,
       network: alchemyNetwork,
     })
   }

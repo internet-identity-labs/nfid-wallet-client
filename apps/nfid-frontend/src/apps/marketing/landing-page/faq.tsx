@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 import { Fade } from "react-awesome-reveal"
-import { ParallaxProvider } from "react-scroll-parallax"
 
 import { Image } from "@nfid-frontend/ui"
 
@@ -30,52 +29,50 @@ export const Faq = () => {
         )}
       >
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <ParallaxProvider>
-            <div className="font-inter">
-              <section
-                id="faq"
-                className="relative grid grid-cols-1 sm:grid-cols-[5fr,7fr] gap-10 mt-20"
-              >
-                <Image
-                  className="absolute z-0 w-50% top-36 -left-[30vw]"
-                  src={Blur}
-                  alt="blur"
-                />
-                <div className="top-28">
-                  {/* @ts-ignore: TODO: Pasha fix */}
-                  <Fade left>
-                    <h2 className="font-bold text-titleMobile sm:text-titleLarge">
-                      Frequently <br />
-                      asked {""}
-                      <span
-                        style={{
-                          WebkitTextFillColor: "transparent",
-                          background:
-                            "linear-gradient(90deg, #00DE59 -0.08%, #009382 100%)",
-                          WebkitBackgroundClip: "text",
-                        }}
-                      >
-                        questions
-                      </span>
-                    </h2>
-                  </Fade>
-                </div>
+          <div className="font-inter">
+            <section
+              id="faq"
+              className="relative grid grid-cols-1 sm:grid-cols-[5fr,7fr] gap-10 mt-20"
+            >
+              <Image
+                className="absolute z-0 w-50% top-36 -left-[30vw]"
+                src={Blur}
+                alt="blur"
+              />
+              <div className="top-28">
                 {/* @ts-ignore: TODO: Pasha fix */}
-                <Fade>
-                  <div className="relative">
-                    {questions.map((question, i) => (
-                      <Accordion
-                        title={question.title}
-                        details={question.info}
-                        key={i}
-                        className="border-b xl:text-lg"
-                      />
-                    ))}
-                  </div>
+                <Fade left>
+                  <h2 className="font-bold text-titleMobile sm:text-titleLarge">
+                    Frequently <br />
+                    asked {""}
+                    <span
+                      style={{
+                        WebkitTextFillColor: "transparent",
+                        background:
+                          "linear-gradient(90deg, #00DE59 -0.08%, #009382 100%)",
+                        WebkitBackgroundClip: "text",
+                      }}
+                    >
+                      questions
+                    </span>
+                  </h2>
                 </Fade>
-              </section>
-            </div>
-          </ParallaxProvider>
+              </div>
+              {/* @ts-ignore: TODO: Pasha fix */}
+              <Fade>
+                <div className="relative">
+                  {questions.map((question, i) => (
+                    <Accordion
+                      title={question.title}
+                      details={question.info}
+                      key={i}
+                      className="border-b xl:text-lg"
+                    />
+                  ))}
+                </div>
+              </Fade>
+            </section>
+          </div>
           <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
             <div className=" top-28">
               {/* @ts-ignore: TODO: Pasha fix */}

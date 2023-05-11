@@ -1,0 +1,13 @@
+diff --git a/node_modules/@wdio/protocols/build/commands/webdriver.d.ts b/node_modules/@wdio/protocols/build/commands/webdriver.d.ts
+index 39bbb59..7909305 100644
+--- a/node_modules/@wdio/protocols/build/commands/webdriver.d.ts
++++ b/node_modules/@wdio/protocols/build/commands/webdriver.d.ts
+@@ -567,7 +567,7 @@ export default interface WebdriverCommands {
+      * @ref https://www.w3.org/TR/webauthn-2/#sctn-automation-add-virtual-authenticator
+      *
+      */
+-    addVirtualAuthenticator(protocol?: string, transport?: string, hasResidentKey?: boolean, hasUserVerification?: boolean, isUserConsenting?: boolean, isUserVerified?: boolean, extensions?: string[], uvm?: object[]): Promise<void>;
++    addVirtualAuthenticator(protocol?: string, transport?: string, hasResidentKey?: boolean, hasUserVerification?: boolean, isUserConsenting?: boolean, isUserVerified?: boolean, extensions?: string[], uvm?: object[]): Promise<string>;
+     /**
+      * Webdriver Protocol Command
+      *

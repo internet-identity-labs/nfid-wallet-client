@@ -21,6 +21,9 @@ export const chromeBrowser = {
   "goog:chromeOptions": chromeBrowserOptions,
   "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
   acceptInsecureCerts: true,
+  'webauthn:extension:credBlob': true,
+  'webauthn:extension:largeBlob': true,
+  'webauthn:virtualAuthenticators': true
 }
 
 export const firefoxBrowser = {}

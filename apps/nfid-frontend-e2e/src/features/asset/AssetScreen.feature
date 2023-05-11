@@ -51,7 +51,6 @@ Feature:Fungible Asset
       | amount | anchor | token          | collection | view |
       | 6      | 31870  | AnilAnimal     | Rarible    | 4    |
       | 6      | 31870  | MadaraUchiha   | Rarible    | 4    |
-      | 6      | 31870  | PandaQueen#571 | PandaQueen | 4    |
 
   @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account

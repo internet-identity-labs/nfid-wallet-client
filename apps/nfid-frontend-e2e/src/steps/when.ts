@@ -45,21 +45,24 @@ When(/^Tokens displayed on user assets$/, async () => {
   await Profile.waitForTokensAppear()
 })
 
-When(/^([^"]*) NFT displayed on assets page and ([^"]*) at all$/, async (amount: string, view: string) => {
-  await Profile.waitForNFTsAppear()
-  const nftAmount = await Profile.getNftAmount()
-  await nftAmount.waitUntil(async () =>
-    (await nftAmount).getText().then((l) => {
-      return (l === amount)
-    }),
-  )
-  const actualAmount = await Profile.getNftsLength()
-  if (parseInt(view) < 4) {
-    expect(view).toEqual(actualAmount)
-  } else {
-    expect(parseInt(view)).toBeGreaterThan(2)
-  }
-})
+When(
+  /^([^"]*) NFT displayed on assets page and ([^"]*) at all$/,
+  async (amount: string, view: string) => {
+    await Profile.waitForNFTsAppear()
+    const nftAmount = await Profile.getNftAmount()
+    await nftAmount.waitUntil(async () =>
+      (await nftAmount).getText().then((l) => {
+        return l === amount
+      }),
+    )
+    const actualAmount = await Profile.getNftsLength()
+    if (parseInt(view) < 4) {
+      expect(view).toEqual(actualAmount)
+    } else {
+      expect(parseInt(view)).toBeGreaterThan(2)
+    }
+  },
+)
 
 When(/^User opens burger menu$/, async () => {
   await HomePage.openHomeBurgerMenu()

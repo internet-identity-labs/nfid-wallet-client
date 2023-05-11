@@ -205,11 +205,12 @@ const ProfileTransactions = () => {
     isNFIDAccount,
     receiveEthTXs,
     erc20txs?.receivedTransactions,
-    btcTxs?.receivedTransactions,
-    nftTransactions,
-    selectedBlockchainFilters,
     erc20txsPolygon?.receivedTransactions,
     maticTxs?.receivedTransactions,
+    btcTxs?.receivedTransactions,
+    nftTransactions,
+    nftPolygonTransactions,
+    selectedBlockchainFilters,
   ])
 
   const accountsOptions = useMemo(() => {

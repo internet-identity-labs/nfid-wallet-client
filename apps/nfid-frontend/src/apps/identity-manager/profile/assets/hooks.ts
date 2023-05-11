@@ -1,25 +1,22 @@
 import { decodeTokenIdentifier } from "ictool"
 import React from "react"
+import ICPLogo from "src/assets/dfinity.svg"
+import { useNFTConfig } from "src/ui/connnector/non-fungible-asset-screen/hooks/use-nft-token"
+import { nftFactory } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset-factory"
+import { AssetFilter } from "src/ui/connnector/types"
 import useSWR from "swr"
 
 import { getWalletName } from "@nfid/integration"
 
-import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
-import { useEthNFTs } from "frontend/features/fungable-token/eth/hooks/use-eth-nfts"
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import {
-  principalTokens,
   collection,
-  tokens,
+  link,
+  principalTokens,
   token,
+  tokens,
 } from "frontend/integration/entrepot"
-import {
-  useApplicationsMeta,
-  useProfile,
-} from "frontend/integration/identity-manager/queries"
+import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
-import { AssetFilter } from "frontend/ui/connnector/types"
 
 export function useNFT(tokenId: string) {
   const { canister } = decodeTokenIdentifier(tokenId)
@@ -62,17 +59,13 @@ export function useNFT(tokenId: string) {
 }
 
 export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
+  const supportedBlockchains = nftFactory.getKeys()
+  const { configs: tokens } = useNFTConfig({
+    assetFilters: assetFilter ?? [],
+    blockchains: supportedBlockchains,
+  })
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
-  const { nfts: ethNFTS } = useEthNFTs()
-  const { address } = useEthAddress()
-  const { profile } = useProfile()
-  const { data: delegation } = useWalletDelegation(
-    profile?.anchor,
-    "nfid.one",
-    "0",
-  )
-
   const { data, isLoading, isValidating } = useSWR(
     principals ? [principals, "userTokens"] : null,
     ([principals]) => principalTokens(principals),
@@ -87,7 +80,7 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
     if (!data || !applicationsMeta) return []
 
     return data
-      .map(({ principal, account, ...rest }) => ({
+      .map(({ principal, account, collection, index, ...rest }) => ({
         principal,
         account,
         walletName: getWalletName(
@@ -97,6 +90,10 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
         ),
         contractId: rest.canisterId,
         owner: principal?.toText(),
+        clipboardText: link(collection.id, Number(index)),
+        collection,
+        index,
+        blockchainLogo: ICPLogo,
         ...rest,
       }))
       .filter((nft) =>
@@ -104,43 +101,7 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
           ? true
           : !!assetFilter.find((f) => f.principal === nft.principal.toString()),
       )
-      .concat(
-        !assetFilter?.length ||
-          !!assetFilter?.find(
-            (f) => f.principal === delegation?.getPrincipal().toString(),
-          )
-          ? (ethNFTS?.map(
-              (nft) =>
-                ({
-                  index: nft.id,
-                  contractId: nft.contract,
-                  owner: address,
-                  tokenId: nft.tokenId,
-                  account: {
-                    domain: "nfid.one",
-                    label: "",
-                    accountId: "0",
-                    alias: [
-                      "https://nfid.one",
-                      "https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app",
-                    ],
-                  },
-                  assetFullsize: { url: nft?.image, format: "img" },
-                  assetPreview: nft?.thumbnail,
-                  blockchain: "Ethereum",
-                  collection: {
-                    description: nft.description,
-                    id: nft.collection,
-                    name: nft.contractName,
-                    standard: nft.tokenType,
-                  },
-                  name: nft.title,
-                  principal: delegation?.getPrincipal(),
-                } as UserNonFungibleToken),
-            ) as any) ?? []
-          : [],
-      )
-  }, [data, applicationsMeta, assetFilter, ethNFTS, delegation, address])
-
+      .concat(tokens as any)
+  }, [data, applicationsMeta, assetFilter, tokens])
   return { nfts, isLoading: isLoading || isValidating }
 }

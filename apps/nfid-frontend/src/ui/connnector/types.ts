@@ -1,17 +1,38 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
+import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 
+import { NonFungibleAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export type IFungibleAssetConnector = StandardizedToken & {
-  getTokenConfigs(assetFilter: AssetFilter[]): Promise<Array<TokenConfig>>
+export type IFungibleAssetConnector = StandardizedToken<TokenStandards> &
+  Cacheable & {
+    getTokenConfigs(assetFilter: AssetFilter[]): Promise<Array<TokenConfig>>
+  }
+
+export type INonFungibleAssetConnector = StandardizedToken<Blockchain> &
+  Cacheable & {
+    getNonFungibleItems(
+      assetFilter: AssetFilter[],
+    ): Promise<Array<UserNonFungibleToken>>
+  }
+
+export type IFungibleAssetDetailsConnector = StandardizedToken<TokenStandards> &
+  Cacheable & {
+    getAssetDetails(): Promise<Array<TokenBalanceSheet>>
+  }
+
+export type StandardizedToken<T> = {
+  getTokenStandard(): T
 }
 
-export type IFungibleAssetDetailsConnector = StandardizedToken & {
-  getAssetDetails(): Promise<Array<TokenBalanceSheet>>
+export type Cacheable = {
+  getCacheTtl(): number
 }
 
-export type StandardizedToken = {
-  getTokenStandard(): TokenStandards
+export type NftConnectorConfig = {
+  defaultLogo: string
+  blockchain: Blockchain
+  assetService: NonFungibleAsset
 }
 
 export type TokenDetailsConfig = {

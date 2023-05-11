@@ -29,4 +29,8 @@ export abstract class FungibleAssetDetailsConnector
     const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
     return await getWalletDelegation(profile.anchor, "nfid.one", "0")
   }
+
+  getCacheTtl(): number {
+    return 30
+  }
 }

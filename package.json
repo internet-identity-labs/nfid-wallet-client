@@ -160,7 +160,7 @@
     "autoprefixer": "10.4.13",
     "babel-loader": "8.1.0",
     "buffer": "6.0.3",
-    "chromedriver": "111.0.0",
+    "chromedriver": "113.0.0",
     "cross-env": "7.0.3",
     "crypto-browserify": "3.12.0",
     "csp-html-webpack-plugin": "5.1.0",

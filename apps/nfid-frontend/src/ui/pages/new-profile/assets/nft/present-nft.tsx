@@ -35,6 +35,7 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
             >
               <span>View all</span>
               <span
+                id={"nfts-length"}
                 className={clsx(
                   "text-xs font-bold text-white bg-blue-600 rounded-lg",
                   "flex item-center justify-center",
@@ -47,12 +48,14 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
           </>
         }
         className={clsx("pb-[26px] mt-[30px] mb-[30px] relative")}
+        id={"asset-collection-nft"}
       >
         <div
           className={clsx(
             "grid gap-5 mt-2",
             "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
           )}
+          id={"nft-container"}
         >
           {nfts.slice(0, visibleLength).map((nft) => (
             <NFTPreview {...nft} key={`nft_${nft.tokenId}_${Math.random()}`} />

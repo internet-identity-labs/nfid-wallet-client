@@ -34,10 +34,12 @@ const getSortedBalanceSheet = (balanceSheet?: TokenBalanceSheet) => {
 interface IProfileTransactionsPage
   extends React.HTMLAttributes<HTMLDivElement> {
   balanceSheet?: TokenBalanceSheet
+  isLoading?: boolean
 }
 
 const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
   balanceSheet,
+  isLoading,
 }) => {
   const { token } = useAllToken()
   const apps: AppBalance[] | null = React.useMemo(
@@ -56,6 +58,7 @@ const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
       className="w-full min-w-fit z-[1]"
       containerClassName="overflow-x-auto"
       showBackButton
+      isLoading={isLoading}
     >
       <TokenDetailBalance
         token={balanceSheet?.token || ""}

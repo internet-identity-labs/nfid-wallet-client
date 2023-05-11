@@ -30,7 +30,7 @@
     "sourceMap": true,
     "types": [
       "node",
-      "webdriverio/async",
+      // "webdriverio/async",
       "@wdio/globals/types",
       "@wdio/cucumber-framework",
       "@wdio/devtools-service",

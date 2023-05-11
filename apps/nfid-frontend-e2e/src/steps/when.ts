@@ -129,14 +129,22 @@ When(
 
     let testUser: TestUser = this.testUser
 
-    const authId = await browser.addVirtualWebAuth(
+    const authId = await browser.addVirtualAuthenticator(
       "ctap2",
       "internal",
       true,
       true,
       true,
-      true,
-    )
+      true,)
+
+    // const authId = await browser.addVirtualWebAuth(
+    //   "ctap2",
+    //   "internal",
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    // )
     const rpId = new URL(baseURL).hostname
     const creds: WebAuthnCredential = testUser.credentials
     const anchor: JSON = testUser.account

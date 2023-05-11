@@ -2,6 +2,7 @@ import * as RadixTooltip from "@radix-ui/react-tooltip"
 import { useInterpret } from "@xstate/react"
 import React, { createContext } from "react"
 import { HelmetProvider } from "react-helmet-async"
+import { ParallaxProvider } from "react-scroll-parallax"
 
 import {
   transferMachine,
@@ -20,10 +21,12 @@ export const Provider: React.FC<ProviderProps> = ({ children }) => {
   const transferService: TransferMachineActor = useInterpret(transferMachine)
 
   return (
-    <HelmetProvider>
-      <ProfileContext.Provider value={{ transferService }}>
-        <RadixTooltip.Provider>{children}</RadixTooltip.Provider>
-      </ProfileContext.Provider>
-    </HelmetProvider>
+    <ParallaxProvider>
+      <HelmetProvider>
+        <ProfileContext.Provider value={{ transferService }}>
+          <RadixTooltip.Provider>{children}</RadixTooltip.Provider>
+        </ProfileContext.Provider>
+      </HelmetProvider>
+    </ParallaxProvider>
   )
 }

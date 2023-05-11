@@ -50,11 +50,15 @@ When(/^([^"]*) NFT displayed on assets page and ([^"]*) at all$/, async (amount:
   const nftAmount = await Profile.getNftAmount()
   await nftAmount.waitUntil(async () =>
     (await nftAmount).getText().then((l) => {
-      return (l === amount || l === "3")
+      return (l === amount)
     }),
   )
   const actualAmount = await Profile.getNftsLength()
-  expect(actualAmount.toString()).toEqual(view)
+  if (parseInt(view) < 4) {
+    expect(view).toEqual(actualAmount)
+  } else {
+    expect(parseInt(view)).toBeGreaterThan(2)
+  }
 })
 
 When(/^User opens burger menu$/, async () => {

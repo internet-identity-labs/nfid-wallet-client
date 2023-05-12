@@ -90,7 +90,7 @@ export class BtcAsset extends Asset {
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
     const token: Token = {
       address: address,
-      balance: balanceBN.toString(),
+      balance: this.toDenomination(balanceBN.toString()),
       balanceinUsd: "$" + (balanceinUsd?.toFixed(2) ?? "0.00"),
       logo,
       name: this.getBlockchain(),

@@ -274,7 +274,7 @@ export class EthereumAsset extends NonFungibleAsset {
           name: x.name || "",
           symbol: x.symbol || "",
           logo: x.logo,
-          balance: x.balance || "0",
+          balance: this.toDenomination(x.balance ?? "0"),
           contractAddress: x.contractAddress,
           balanceinUsd: this.priceInUsd(price, x.balance, x.symbol),
         })),
@@ -303,7 +303,7 @@ export class EthereumAsset extends NonFungibleAsset {
     const balance = await this.getBalance(undefined, identity)
     const token: Token = {
       address: address,
-      balance: balance.balance?.toFixed(8) ?? "0",
+      balance: this.toDenomination(balance.balance?.toFixed(8)),
       balanceinUsd: "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00"),
       logo: defaultIcon,
       name: this.getNativeToken(),

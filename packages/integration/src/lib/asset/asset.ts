@@ -54,13 +54,13 @@ export abstract class Asset implements FungibleAsset {
       accountName: "account 1",
       address: token.address,
       principalId,
-      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+      tokenBalance: token.balance,
       usdBalance: token.balanceinUsd,
     }
     const appBalance: AppBalance = {
       accounts: [rootAccountBalance],
       appName: "NFID",
-      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+      tokenBalance: token.balance,
     }
     return {
       applications: {
@@ -69,7 +69,7 @@ export abstract class Asset implements FungibleAsset {
       icon: token.logo ? token.logo : defaultIcon!,
       label: token.name,
       token: token.symbol,
-      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+      tokenBalance: token.balance,
       usdBalance: token.balanceinUsd,
       blockchain: this.getBlockchain(),
       fee: fee,
@@ -97,7 +97,7 @@ export abstract class Asset implements FungibleAsset {
     return price
   }
 
-  protected stringICPtoE8s = (value: string) => {
-    return Number(parseFloat(value) * E8S)
+  protected toDenomination = (value?: string) => {
+    return BigInt(value ? Math.floor(parseFloat(value) * E8S) : 0)
   }
 }

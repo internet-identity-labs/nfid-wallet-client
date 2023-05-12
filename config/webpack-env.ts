@@ -14,7 +14,10 @@ export const serviceConfig = {
   II_ENV: JSON.stringify(process.env.II_MODE),
   CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
   ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
-  ALCHEMY_API_KEY: JSON.stringify(process.env.ALCHEMY_API_KEY),
+  GOERLI_ALCHEMY_API_KEY: JSON.stringify(process.env.GOERLI_ALCHEMY_API_KEY),
+  ETH_ALCHEMY_API_KEY: JSON.stringify(process.env.ETH_ALCHEMY_API_KEY),
+  MATIC_ALCHEMY_API_KEY: JSON.stringify(process.env.MATIC_ALCHEMY_API_KEY),
+  MUMBAI_ALCHEMY_API_KEY: JSON.stringify(process.env.MUMBAI_ALCHEMY_API_KEY),
   FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
   IS_DEV: JSON.stringify(process.env.IS_DEV),
   USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
@@ -61,9 +64,7 @@ export const serviceConfig = {
   ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
     process.env.ECDSA_SIGNER_CANISTER_ID,
   ),
-  BTC_SIGNER_CANISTER_ID: JSON.stringify(
-    process.env.BTC_SIGNER_CANISTER_ID,
-  ),
+  BTC_SIGNER_CANISTER_ID: JSON.stringify(process.env.BTC_SIGNER_CANISTER_ID),
   RAMP_WALLET_API_KEY: JSON.stringify(process.env.RAMP_WALLET_API_KEY),
   RAMP_WALLET_SDK_URL: JSON.stringify(process.env.RAMP_WALLET_SDK_URL),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),

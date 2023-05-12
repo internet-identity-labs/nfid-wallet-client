@@ -77,7 +77,7 @@ export class DelegationWalletAdapter {
       return [tx, err]
     } catch (error) {
       const alchemy = new Alchemy({
-        apiKey: ALCHEMY_API_KEY,
+        apiKey: GOERLI_ALCHEMY_API_KEY,
         network: Network.ETH_GOERLI,
       })
 

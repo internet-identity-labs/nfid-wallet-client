@@ -4,32 +4,32 @@ on:
   workflow_dispatch:
     inputs:
       env:
-        description: 'Environment to run against'
+        description: "Environment to run against"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - staging
-        - production
+          - dev
+          - staging
+          - production
       device:
-        description: 'Device to run tests with'
+        description: "Device to run tests with"
         required: true
-        default: 'Pixel 5'
+        default: "Pixel 5"
         type: choice
         options:
-        - Pixel 5
-        - iPhone X
-        - Galaxy S8
+          - Pixel 5
+          - iPhone X
+          - Galaxy S8
       logLevel:
-        description: 'Log level'
+        description: "Log level"
         required: true
-        default: 'warning'
+        default: "warning"
         type: choice
         options:
-        - info
-        - warning
-        - debug
+          - info
+          - warning
+          - debug
 
 jobs:
   check-secrets:
@@ -61,8 +61,10 @@ jobs:
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
-
+          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
+          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
+          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
 
   e2e-tests:
     needs: check-secrets
@@ -97,7 +99,10 @@ jobs:
           IS_E2E_TEST: true
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
+          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
+          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
 
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}

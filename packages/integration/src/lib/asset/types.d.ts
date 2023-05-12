@@ -4,10 +4,9 @@ import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/commo
 import { BigNumber } from "@rarible/utils"
 import { Network } from "alchemy-sdk"
 
-import { Balance } from "@nfid/integration"
-
 import { Asset } from "./asset"
-import { Erc20TransferRequest } from "./estimateTransaction/transferRequest/erc20TransferRequest"
+import { ErrorCode } from "./error-code.enum"
+import { Erc20TransferRequest } from "./estimate-transaction-service/populate-transaction-service/erc20-populate-transaction.service"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
@@ -96,6 +95,11 @@ declare type EstimatedTransaction = {
   feeUsd: string
   maxFee: string
   maxFeeUsd: string
+  value?: string
+  valueUsd?: string
+  total: string
+  totalUsd: string
+  errors: ErrorCode[]
 }
 
 declare type FungibleActivityRequest = PageRequest & {
@@ -201,12 +205,7 @@ declare type Configuration = {
   }
 }
 
-declare interface EstimatedTransactionRequest {
-  to: string
-  identity: DelegationIdentity
-}
-
-declare type EthEstimatedTransactionRequest =
+declare type EstimateTransactionRequest =
   | EthTransferRequest
   | NftERC721TransferRequest
   | NftERC1155TransferRequest

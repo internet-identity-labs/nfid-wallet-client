@@ -3,8 +3,8 @@ import {
   ActivitiesByItemRequest,
   ActivitiesByUserRequest,
   Erc20TokensByUserRequest,
+  EstimateTransactionRequest,
   EstimatedTransaction,
-  EstimatedTransactionRequest,
   ItemsByUserRequest,
   NonFungibleActivityRecords,
   NonFungibleAssetI,
@@ -29,7 +29,7 @@ export abstract class NonFungibleAsset
   ): Promise<Tokens>
 
   abstract getEstimatedTransaction(
-    request: EstimatedTransactionRequest,
+    request: EstimateTransactionRequest,
   ): Promise<EstimatedTransaction>
 
   abstract getItemsByUser(

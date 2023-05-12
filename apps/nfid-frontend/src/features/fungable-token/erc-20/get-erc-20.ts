@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { Erc20TransferRequest } from "packages/integration/src/lib/asset/estimateTransaction/transferRequest/erc20TransferRequest"
+import { Erc20EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/erc20-populate-transaction.service"
 import {
   FungibleTxs,
   TokenBalanceSheet,
@@ -29,7 +29,12 @@ export const transferERC20 = async (
   try {
     const identity = await getIdentity()
     const transaction = await ethereumAsset.getEstimatedTransaction(
-      new Erc20TransferRequest(identity, to, token.contract!, amount),
+      new Erc20EstimateTransactionRequest(
+        identity,
+        to,
+        token.contract!,
+        amount,
+      ),
     )
     const response = await ethereumAsset.transfer(
       identity,

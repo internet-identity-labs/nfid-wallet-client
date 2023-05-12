@@ -55,7 +55,7 @@ export const DropdownSelect = ({
 
   const filteredOptions = useMemo(() => {
     return options.filter((option) =>
-      option.label.toLowerCase().includes(searchInput.toLowerCase()),
+      option.label?.toLowerCase().includes(searchInput.toLowerCase()),
     )
   }, [options, searchInput])
 

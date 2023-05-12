@@ -121,7 +121,7 @@ declare type Token = {
   name: string
   symbol: string
   logo?: string
-  balance: string
+  balance: bigint
   balanceinUsd: string
   contractAddress?: string
   address: string

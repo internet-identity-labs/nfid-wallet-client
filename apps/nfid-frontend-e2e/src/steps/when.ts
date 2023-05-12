@@ -135,7 +135,8 @@ When(
       true,
       true,
       true,
-      true,)
+      true,
+    )
 
     // const authId = await browser.addVirtualWebAuth(
     //   "ctap2",

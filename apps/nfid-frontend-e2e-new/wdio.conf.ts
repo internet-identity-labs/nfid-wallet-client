@@ -1,6 +1,8 @@
 import type { Options } from "@wdio/types"
 
-import { chromeBrowserOptions } from "./src/browserOptions.js"
+import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
+import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
+import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
 
 export const isHeadless = process.env.IS_HEADLESS
 export const isDebug = process.env.DEBUG === "true"
@@ -187,7 +189,7 @@ export const config: Options.Testrunner = {
     // <string> (expression) only execute the features or scenarios with tags matching the expression
     tagExpression: "",
     // <number> timeout for step definitions
-    timeout: 60000,
+    timeout: 150000,
     // <boolean> Enable this config to treat undefined definitions as warnings.
     ignoreUndefinedDefinitions: false,
   },
@@ -244,8 +246,10 @@ export const config: Options.Testrunner = {
    * @param {Array.<String>} specs        List of spec file paths that are to be run
    * @param {object}         browser      instance of created browser/device session
    */
-  // before: function (capabilities, specs) {
-  // },
+  before: async function (capabilities, specs) {
+    await addVirtualAuthCommands(browser)
+    await addLocalStorageCommands(browser)
+  },
   /**
    * Runs before a WebdriverIO command gets executed.
    * @param {string} commandName hook command name
@@ -302,8 +306,9 @@ export const config: Options.Testrunner = {
    * @param {number}                 result.duration  duration of scenario in milliseconds
    * @param {object}                 context          Cucumber World object
    */
-  // afterScenario: function (world, result, context) {
-  // },
+  afterScenario: function (world, result, context) {
+    browser.execute("window.localStorage.clear()")
+  },
   /**
    *
    * Runs after a Cucumber Feature.

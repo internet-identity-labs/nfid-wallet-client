@@ -1,5 +1,19 @@
 import type { Options } from "@wdio/types"
 
+import { chromeBrowserOptions } from "./src/browserOptions.js"
+
+export const isHeadless = process.env.IS_HEADLESS
+export const isDebug = process.env.DEBUG === "true"
+export const hostName = process.env.HOST_NAME
+export const hostPath = process.env.HOST_PATH
+export const baseUrl = process.env.NFID_PROVIDER_URL
+  ? process.env.NFID_PROVIDER_URL
+  : "http://localhost:9090"
+
+if (isHeadless) {
+  chromeBrowserOptions.args.push("--headless=new")
+}
+
 export const config: Options.Testrunner = {
   //
   // ====================
@@ -111,7 +125,7 @@ export const config: Options.Testrunner = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: "http://localhost:3000",
+  baseUrl,
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -155,7 +169,7 @@ export const config: Options.Testrunner = {
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
     // <string[]> (file/dir) require files before executing features
-    require: ["./src/features/step-definitions/steps.ts"],
+    require: ["./src/steps/*.ts"],
     // <boolean> show full backtrace for errors
     backtrace: false,
     // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)

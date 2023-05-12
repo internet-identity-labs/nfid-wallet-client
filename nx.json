@@ -85,7 +85,16 @@
         "env": "ETHERSCAN_API_KEY"
       },
       {
-        "env": "ALCHEMY_API_KEY"
+        "env": "GOERLI_ALCHEMY_API_KEY"
+      },
+      {
+        "env": "ETH_ALCHEMY_API_KEY"
+      },
+      {
+        "env": "MATIC_ALCHEMY_API_KEY"
+      },
+      {
+        "env": "MUMBAI_ALCHEMY_API_KEY"
       },
       {
         "env": "RAMP_WALLET_API_KEY"

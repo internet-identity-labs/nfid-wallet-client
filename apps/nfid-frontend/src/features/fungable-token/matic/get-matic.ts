@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { EthTransferRequest } from "packages/integration/src/lib/asset/estimateTransaction/transferRequest/ethTransferRequest"
+import { EthTransferRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/eth-populate-transaction.service"
 import {
   FungibleTxs,
   TokenBalanceSheet,

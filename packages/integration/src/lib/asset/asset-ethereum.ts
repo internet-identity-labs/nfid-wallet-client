@@ -7,6 +7,7 @@ import {
   OrderMatchSell,
   TransferActivity,
   UserActivityType,
+  ItemId,
 } from "@rarible/api-client"
 import { EthersEthereum } from "@rarible/ethers-ethereum"
 import { createRaribleSdk, IRaribleSdk } from "@rarible/sdk"
@@ -15,6 +16,7 @@ import {
   convertEthereumItemId,
   convertEthereumToUnionAddress,
 } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
+import { toItemId } from "@rarible/types"
 import { toCurrencyId, UnionAddress } from "@rarible/types"
 import { toBn } from "@rarible/utils"
 import {
@@ -56,6 +58,10 @@ import {
   TransferETHRequest,
   TransferNftRequest,
 } from "./types"
+
+function removeChain(id: UnionAddress): string {
+  return id.slice(id.indexOf(":") + 1)
+}
 
 export class EthereumAsset extends NonFungibleAsset {
   private readonly config: Configuration
@@ -162,6 +168,7 @@ export class EthereumAsset extends NonFungibleAsset {
   }: ItemsByUserRequest): Promise<NonFungibleItems> {
     const address = await this.getAddressByIdentity(identity)
     const alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, this.config)
+    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
     const tokens: AlchemyOwnedNftsResponse =
       await alchemySdk.nft.getNftsForOwner(address, {
         pageKey: cursor,
@@ -169,20 +176,38 @@ export class EthereumAsset extends NonFungibleAsset {
         omitMetadata: false,
       })
 
+    const chain = this.config.blockchain.toString()
+    const ids: Array<ItemId> = tokens.ownedNfts.map((item) => {
+      const contract = item.contract.address
+      const id = `${chain}:${contract}:${item.tokenId}`
+      return toItemId(id)
+    })
+
+    const contentUrlById: Map<string, string> = await raribleSdk.apis.item
+      .getItemByIds({ itemIds: { ids } })
+      .then((x) => {
+        return x.items.reduce((acc, val) => {
+          const contentUrl = val.meta?.content[0].url
+          acc.set(val.id, contentUrl)
+          return acc
+        }, new Map())
+      })
+
     return {
       total: tokens.totalCount,
       items: tokens.ownedNfts.map((item) => {
         const contract = item.contract.address
-        const chain = this.config.blockchain.toString()
+        const id = `${chain}:${contract}:${item.tokenId}`
+        const image = contentUrlById.get(id)
         return {
-          id: `${chain}:${contract}:${item.tokenId}`,
+          id,
           blockchain: chain,
           collection: contract,
           contract: contract,
           tokenId: item.tokenId,
           lastUpdatedAt: item.timeLastUpdated,
-          thumbnail: item.media.length ? item.media[0]?.thumbnail : "",
-          image: item.media.length ? item.media[0]?.gateway : "",
+          thumbnail: item.media[0]?.thumbnail ?? image ?? "",
+          image: image ?? item.media[0]?.gateway ?? "",
           title: item.title,
           description: item.description,
           tokenType: item.tokenType.toString(),
@@ -427,8 +452,8 @@ export class EthereumAsset extends NonFungibleAsset {
           id: sell.id.toString(),
           type: sell["@type"].toString(),
           date: sell.date,
-          to: sell.buyer.toString(),
-          from: sell.seller.toString(),
+          to: removeChain(sell.buyer),
+          from: removeChain(sell.seller),
           transactionHash: activity.transactionHash,
           price: sell.price.toString(),
           priceUsd: sell.priceUsd?.toString(),
@@ -440,8 +465,8 @@ export class EthereumAsset extends NonFungibleAsset {
           id: transfer.id.toString(),
           type: transfer["@type"].toString(),
           date: transfer.date,
-          from: transfer.from.toString(),
-          to: transfer.owner.toString(),
+          from: removeChain(transfer.from),
+          to: removeChain(transfer.owner),
           transactionHash: activity.transactionHash,
         }
       }

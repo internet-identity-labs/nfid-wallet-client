@@ -13,7 +13,7 @@ export const chromeBrowserOptions: IChromeOption = {
     // "--enable-features=NetworkService,NetworkServiceInProcess"
     "--user-data-dir=chrome-user-data-dir",
   ],
-  w3c: false,
+  // w3c: false,
 }
 
 export const chromeBrowser = {

@@ -6,7 +6,7 @@ Feature: User navigates through Home page
 
   Scenario Outline: User navigates sections on home page
     When I click on the link <link>
-    # Then I expect that element <element> becomes displayed
+    Then I expect that element <element> becomes displayed
 
     Examples:
       | link               | element         |

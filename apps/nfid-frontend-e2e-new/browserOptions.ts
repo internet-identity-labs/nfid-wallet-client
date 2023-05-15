@@ -6,7 +6,7 @@ export const chromeBrowserOptions: IChromeOption = {
       "--disable-web-security",
       "--allow-insecure-localhost",
       "--disable-infobars",
-    //   "--disable-dev-shm-usage",
+      "--disable-dev-shm-usage",
     //   "--start-maximized",
       "--ignore-certificate-errors",
       "--disable-gpu",

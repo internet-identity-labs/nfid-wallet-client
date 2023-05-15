@@ -138,7 +138,7 @@ export const config: Options.Testrunner = {
   specFileRetries: 1,
   //
   // Delay in seconds between the spec file retry attempts
-  specFileRetriesDelay: 3,
+  specFileRetriesDelay: 5,
   //
   // Whether or not retried specfiles should be retried immediately or deferred to the end of the queue
   // specFileRetriesDeferred: false,

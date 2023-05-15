@@ -1,6 +1,6 @@
 import type { Options } from "@wdio/types"
 
-import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
+import { chromeBrowser, chromeBrowserOptions } from "./browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
 import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
 
@@ -22,7 +22,7 @@ export const config: Options.Testrunner = {
   // Runner Configuration
   // ====================
   // WebdriverIO supports running e2e tests as well as unit and component tests.
-  runner: "local",
+  // runner: "local",
   autoCompileOpts: {
     autoCompile: true,
     tsNodeOpts: {
@@ -75,26 +75,7 @@ export const config: Options.Testrunner = {
   // https://saucelabs.com/platform/platform-configurator
   //
   capabilities: [
-    {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: [
-          "--no-sandbox",
-          // "--use-fake-device-for-media-stream",
-          "--disable-notifications",
-          "--disable-web-security",
-          "--allow-insecure-localhost",
-          "--disable-infobars",
-          "--disable-dev-shm-usage",
-          "--start-maximized",
-          "--ignore-certificate-errors",
-          "--disable-gpu",
-          // "--enable-features=NetworkService,NetworkServiceInProcess"
-          "--user-data-dir=chrome-user-data-dir",
-        ],
-      },
-      acceptInsecureCerts: true,
-    },
+    chromeBrowser
   ],
   //
   // ===================

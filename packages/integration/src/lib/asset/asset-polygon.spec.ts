@@ -102,8 +102,8 @@ describe("Polygon Asset", () => {
           id: "POLYGON:63bfd52391b2831cffcff0be",
           type: "TRANSFER",
           date: "2023-01-05T07:07:09Z",
-          from: "ETHEREUM:0x380674ee168d258baa2825be55b57628c150099b",
-          to: "ETHEREUM:0x722fe0d1dbe893edd76a63832c08cb3801069c00",
+          from: "0x380674ee168d258baa2825be55b57628c150099b",
+          to: "0x722fe0d1dbe893edd76a63832c08cb3801069c00",
           transactionHash:
             "0x15c9d5bd5389a3f551cd92ba4478956e5c5edb8ed282fae54a51f7230fa129c4",
         },
@@ -125,8 +125,8 @@ describe("Polygon Asset", () => {
           id: "POLYGON:63ef8fc49b7e157fa48bedff",
           type: "TRANSFER",
           date: "2023-02-17T14:31:31Z",
-          from: "ETHEREUM:0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
-          to: "ETHEREUM:0x382901144a77bec53493fa090053b9c63da5dd07",
+          from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+          to: "0x382901144a77bec53493fa090053b9c63da5dd07",
           transactionHash:
             "0xa317ed05be5fd7c9d420e273759fdc6094908d5322b6cfd6e287433f61b5419d",
         },
@@ -153,7 +153,7 @@ describe("Polygon Asset", () => {
           thumbnail:
             "https://res.cloudinary.com/alchemyapi/image/upload/thumbnailv2/matic-mumbai/bb028732257939400ab526ce1e60a3f2",
           image:
-            "https://nft-cdn.alchemy.com/matic-mumbai/bb028732257939400ab526ce1e60a3f2",
+            "https://ipfs.io/ipfs/bafybeie6at2xtadbnh4cy3hjevhundyyys46vr45s3fjzy66wzxtgoq4zi/image.png",
           title: "Test Gateway #22",
           description: "",
           tokenType: "ERC1155",

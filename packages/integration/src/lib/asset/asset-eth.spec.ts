@@ -434,8 +434,8 @@ describe("Ethereum Asset", () => {
           id: "ETHEREUM:63c7d2161020c105300ae228",
           type: "TRANSFER",
           date: "2023-01-18T11:03:48Z",
-          from: "ETHEREUM:0xc3217ef1d6027b5ad5404b21a911b952b5f728b4",
-          to: "ETHEREUM:0x2209da095ba4a0e55d96745006ad3df747f06a3b",
+          from: "0xc3217ef1d6027b5ad5404b21a911b952b5f728b4",
+          to: "0x2209da095ba4a0e55d96745006ad3df747f06a3b",
           transactionHash:
             "0x7db526539a7e6c0e5532d6ee60b6f7530e83cce70c5972d10bdd1900401815a0",
         },
@@ -456,8 +456,8 @@ describe("Ethereum Asset", () => {
           id: "ETHEREUM:63cebfa5e32fa77caef04084",
           type: "SELL",
           date: "2023-01-23T17:11:00Z",
-          to: "ETHEREUM:0x382901144a77bec53493fa090053b9c63da5dd07",
-          from: "ETHEREUM:0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+          to: "0x382901144a77bec53493fa090053b9c63da5dd07",
+          from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
           transactionHash:
             "0xfe38a1136ab602dee254731dd38609d61cd474d57a0bad314ef2c1f035da3101",
           price: "0.001",
@@ -484,8 +484,7 @@ describe("Ethereum Asset", () => {
           lastUpdatedAt: expect.any(String),
           thumbnail:
             "https://res.cloudinary.com/alchemyapi/image/upload/thumbnailv2/eth-goerli/59574aaf4d245619066f319901075a03",
-          image:
-            "https://nft-cdn.alchemy.com/eth-goerli/59574aaf4d245619066f319901075a03",
+          image: "https://snakes.connectednft.art/img/nfts/1653.png",
           title: "Snake #1653",
           description:
             "A research project by DEPT® for generating and running interactive NFTs.",

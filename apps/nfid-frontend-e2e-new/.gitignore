@@ -1,0 +1,4 @@
+allure-results
+node_modules
+chrome-user-data-dir
+test

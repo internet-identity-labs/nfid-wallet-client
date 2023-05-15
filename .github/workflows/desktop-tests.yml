@@ -89,11 +89,11 @@ jobs:
       contents: read
     env:
       IMAGE_NAME: nfid-test
-    
+
     concurrency:
       group: nfid-frontend-tests-docker-${{ github.event.inputs.test_cycle || format('{0}', 'full') }}-${{ contains( (github.event.inputs.test_cycle || format('{0}', 'full')), 'full') || github.ref }}
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) }}
-  
+
     steps:
       - name: Checkout repo.
         uses: actions/checkout@v3
@@ -171,10 +171,10 @@ jobs:
               --file Dockerfile \
               --tag ${IMAGE_NAME} \
               --label "runnumber=${GITHUB_RUN_ID}"
-            
+
             ci_echo_debug "docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}" >&2
             docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}
-  
+
             ci_echo_debug "docker push ${IMAGE_ID}:${VERSION}" >&2
             docker push ${IMAGE_ID}:${VERSION}
           fi
@@ -241,7 +241,7 @@ jobs:
     concurrency:
       group: nfid-frontend-tests-e2e-${{ github.event.inputs.test_cycle || format('{0}', 'full') }}-${{ contains( (github.event.inputs.test_cycle || format('{0}', 'full')), 'full') || github.ref }}
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) }}
-  
+
     steps:
       - name: Checkout repo.
         uses: actions/checkout@v3

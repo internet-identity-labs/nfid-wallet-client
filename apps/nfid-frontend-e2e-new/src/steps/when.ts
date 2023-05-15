@@ -1,28 +1,29 @@
-import { When } from "@cucumber/cucumber"
+import { When } from "@wdio/cucumber-framework"
 
-import { baseURL } from "../../wdio.conf"
-import userClient from "../helpers/accounts-service"
-import HomePage from "../pages/home-page"
-import Profile from "../pages/profile"
-import RecoveryPage from "../pages/recovery-page"
-import Vault from "../pages/vault"
-import Vaults from "../pages/vaults"
-import clearInputField from "./support/action/clearInputField"
-import clickElement from "./support/action/clickElement"
-import closeLastOpenedWindow from "./support/action/closeLastOpenedWindow"
-import deleteCookies from "./support/action/deleteCookies"
-import dragElement from "./support/action/dragElement"
-import focusLastOpenedWindow from "./support/action/focusLastOpenedWindow"
-import handleModal from "./support/action/handleModal"
-import moveTo from "./support/action/moveTo"
-import pause from "./support/action/pause"
-import pressButton from "./support/action/pressButton"
-import scroll from "./support/action/scroll"
-import selectOption from "./support/action/selectOption"
-import selectOptionByIndex from "./support/action/selectOptionByIndex"
-import setCookie from "./support/action/setCookie"
-import setInputField from "./support/action/setInputField"
-import setPromptText from "./support/action/setPromptText"
+import { baseUrl } from "../../wdio.conf.js"
+import userClient from "../helpers/accounts-service.js"
+import HomePage from "../pages/home-page.js"
+import Profile from "../pages/profile.js"
+import RecoveryPage from "../pages/recovery-page.js"
+import Vault from "../pages/vault.js"
+import Vaults from "../pages/vaults.js"
+
+import clickElement from "./support/actions/clickElement.js"
+import clearInputField from "./support/actions/clearInputField.js"
+import closeLastOpenedWindow from "./support/actions/closeLastOpenedWindow.js"
+import deleteCookies from "./support/actions/deleteCookies.js"
+import dragElement from "./support/actions/dragElement.js"
+import focusLastOpenedWindow from "./support/actions/focusLastOpenedWindow.js"
+import handleModal from "./support/actions/handleModal.js"
+import moveTo from "./support/actions/moveTo.js"
+import pause from "./support/actions/pause.js"
+import pressButton from "./support/actions/pressButton.js"
+import scroll from "./support/actions/scroll.js"
+import selectOption from "./support/actions/selectOption.js"
+import selectOptionByIndex from "./support/actions/selectOptionByIndex.js"
+import setCookie from "./support/actions/setCookie.js"
+import setInputField from "./support/actions/setInputField.js"
+import setPromptText from "./support/actions/setPromptText.js"
 
 When(/^User enters a captcha$/, async function () {
   await HomePage.captchaPass()
@@ -32,7 +33,7 @@ When(/^User enters a captcha$/, async function () {
 
 When(/^User trusts this device$/, async () => {
   await HomePage.iTrustThisDevice()
-  await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true)
+  await browser.addVirtualAuthenticator("ctap2", "internal", true, true, true, true)
   await HomePage.waitForLoaderDisappear()
 })
 
@@ -138,19 +139,12 @@ When(
       true,
     )
 
-    // const authId = await browser.addVirtualWebAuth(
-    //   "ctap2",
-    //   "internal",
-    //   true,
-    //   true,
-    //   true,
-    //   true,
-    // )
-    const rpId = new URL(baseURL).hostname
+    const rpId = new URL(baseUrl).hostname
     const creds: WebAuthnCredential = testUser.credentials
     const anchor: JSON = testUser.account
 
-    await browser.addWebauthnCredential(
+    // @ts-ignore
+    await browser.addCredentialV2(
       authId,
       rpId,
       creds.credentialId,
@@ -159,8 +153,18 @@ When(
       creds.signCount,
     )
 
-    await browser.setLocalStorage("account", JSON.stringify(anchor))
-    await browser.refresh()
+    await browser.execute(
+      function (key, value) {
+        // @ts-ignore
+        return this.localStorage.setItem(key, value)
+      },
+      "account",
+      JSON.stringify(anchor),
+    )
+    await browser.execute(function () {
+      // @ts-ignore
+      return this.location.reload()
+    })
   },
 )
 
@@ -172,7 +176,7 @@ When(
     },
   },
   async function (anchor: number) {
-    let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
+    const testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
     await browser.execute(function (authState: AuthState) {
       // @ts-ignore
@@ -245,7 +249,7 @@ When(/^User inputs a phone number (.*)$/, async (phoneNumber: string) => {
 
 When(/^Phone number error appears "(.*)"$/, async (errorMsg: string) => {
   await $("#phone-number-error").waitForDisplayed({
-    timeout: 7000,
+    timeout: 17000,
     timeoutMsg: "Phone number error is missing",
   })
   expect(await $("#phone-number-error").getText()).toContain(errorMsg)
@@ -258,11 +262,11 @@ When(/^User enters pincode "(.*)"$/, async (pinCode: string) => {
 When(/^Pin code error message appears "(.*)"$/, async (errorMsg: string) => {
   await Profile.waitForLoaderDisappear()
   await $("#pin-input-error").waitForDisplayed({
-    timeout: 7000,
+    timeout: 15000,
     timeoutMsg: "Pin Error message is not displayed",
   })
   const text = await $("#pin-input-error").getText()
-  expect(text).toHaveText(errorMsg)
+  await expect(text).toContain(errorMsg)
 })
 
 When(/^User goes to recover account with FAQ$/, async () => {

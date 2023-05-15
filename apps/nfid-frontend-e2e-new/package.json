@@ -1,0 +1,9 @@
+{
+  "name": "nfid-frontend-e2e",
+  "type": "module",
+  "scripts": {
+    "test:e2e": "wdio run ./wdio.conf.ts",
+    "clean": "rm -rf allure-results allure-report",
+    "allure-report": "allure generate allure-results --clean && allure open"
+  }
+}

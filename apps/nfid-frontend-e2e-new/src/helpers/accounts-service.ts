@@ -1,3 +1,4 @@
+import { fail } from "assert"
 import { readFile as readJSONFile } from "./fileops.js"
 
 /**
@@ -46,7 +47,7 @@ class UserService implements UserActions {
         return discoveredUser
       }
     }
-    console.error("All users borrowed")
+    fail("All users borrowed")
   }
 
   public releaseUser(user: TestUser) {

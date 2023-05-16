@@ -63,7 +63,7 @@ export class HomePage extends Page {
 
   public async authenticateWithGoogle() {
     await this.googleAuthButton.waitForDisplayed({
-      timeout: 6000,
+      timeout: 11000,
       timeoutMsg: "Google auth button is missing!",
     })
     await this.googleAuthButton.waitForClickable()

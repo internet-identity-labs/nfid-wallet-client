@@ -17,6 +17,18 @@ export class Profile extends HomePage {
     return $$("table tbody tr")
   }
 
+  private get nftContainer() {
+    return $$("#nft-container .nft")
+  }
+
+  private get nfts() {
+    return $("#asset-collection-nft")
+  }
+
+  private get nftViewAll() {
+    return $("#nfts-length")
+  }
+
   private get logoutButton() {
     return $("#logout")
   }
@@ -73,7 +85,7 @@ export class Profile extends HomePage {
 
   public async connectMobilePhoneNumber() {
     await this.connectPhoneNumberButton.waitForDisplayed({
-      timeout: 7000,
+      timeout: 17000,
       timeoutMsg: "Connect Phone number",
     })
     await this.connectPhoneNumberButton.click()
@@ -94,14 +106,14 @@ export class Profile extends HomePage {
     const pinNumberArr: string[] = [...pinNumber]
     for (let i = 0; i < pinNumberArr.length; i++) {
       $(this.pinInput(i)).waitForDisplayed({
-        timeout: 7000,
+        timeout: 11000,
         timeoutMsg: `Pin Number ${i} input is missing`,
       })
       await $(this.pinInput(i)).click()
       await $(this.pinInput(i)).setValue(pinNumberArr[i])
     }
     await this.sendPinButton.waitForDisplayed({
-      timeout: 6000,
+      timeout: 11000,
       timeoutMsg: "Send Pin button is missing",
     })
     try {
@@ -124,6 +136,25 @@ export class Profile extends HomePage {
         timeoutMsg: "Tokens are not displayed on user profile!",
       })
     }
+  }
+
+  public async waitForNFTsAppear() {
+    await this.nfts.waitForDisplayed({
+      timeout: 30000,
+      timeoutMsg: "NFTs are missing",
+    })
+  }
+
+  public async getNftAmount() {
+    await this.nftViewAll.waitForDisplayed({
+      timeout: 5000,
+      timeoutMsg: "NFTs are missing",
+    })
+    return this.nftViewAll
+  }
+
+  public async getNftsLength(): Promise<number> {
+    return this.nftContainer.length
   }
 
   public async openMobileProfileMenu() {

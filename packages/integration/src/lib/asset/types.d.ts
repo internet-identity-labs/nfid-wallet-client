@@ -10,7 +10,12 @@ import { Erc20TransferRequest } from "./estimate-transaction-service/populate-tr
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
-declare type EtherscanTransactionHashUrl = string
+
+declare type TransferResponse = {
+  etherscanTransactionUrl: string
+  time: number
+  waitOnChain: Promise<{ total: string; totalUSD: string }>
+}
 
 declare type NonFungibleAssetI = Asset &
   FungibleAsset & {
@@ -32,7 +37,7 @@ declare type FungibleAsset = Asset & {
   transfer(
     identity: DelegationIdentity,
     transaction: TransactionRequest | FungibleTransactionRequest,
-  ): Promise<EtherscanTransactionHashUrl>
+  ): Promise<TransferResponse>
   getAddress(identity: DelegationIdentity): Promise<string>
   getTransactionHistory(identity: DelegationIdentity): Promise<FungibleTxs>
   getBalance(

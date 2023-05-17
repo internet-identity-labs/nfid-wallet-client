@@ -6,7 +6,7 @@ export const chromeBrowserOptions: IChromeOption = {
       "--disable-web-security",
       "--allow-insecure-localhost",
       "--disable-infobars",
-      "--disable-dev-shm-usage",
+      // "--disable-dev-shm-usage",
     //   "--start-maximized",
       "--ignore-certificate-errors",
       "--disable-gpu",
@@ -20,9 +20,9 @@ export const chromeBrowserOptions: IChromeOption = {
     "goog:chromeOptions": chromeBrowserOptions,
     "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
     acceptInsecureCerts: true,
-    'webauthn:extension:credBlob': true,
-    'webauthn:extension:largeBlob': true,
-    'webauthn:virtualAuthenticators': true
+    // 'webauthn:extension:credBlob': true,
+    // 'webauthn:extension:largeBlob': true,
+    // 'webauthn:virtualAuthenticators': true
   }
   
   export const firefoxBrowser = {}

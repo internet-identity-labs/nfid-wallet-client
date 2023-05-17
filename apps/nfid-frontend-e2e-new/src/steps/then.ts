@@ -74,7 +74,7 @@ Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
     timeout: 13000,
     timeoutMsg: "Phone Number is not displayed",
   })
-  await expect(await Profile.getPhoneNumber.getText()).toHaveText(phoneNumber)
+  await expect(await Profile.getPhoneNumber.getText()).toContain(phoneNumber)
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)

@@ -44,4 +44,5 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register",
   AWS_ECDSA_SIGN:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
+  BLOCK_CYPHER_TOKEN:"a983f9288e73496f83d02ea3af7e2f3b"
 }

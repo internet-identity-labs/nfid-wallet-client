@@ -40,7 +40,7 @@ export const transferERC20Polygon = async (
       identity,
       transaction.transaction,
     )
-    return `You've sent ${amount} ${token.currency}. ${response}`
+    return `You've sent ${amount} ${token.currency}. ${response.etherscanTransactionUrl}`
   } catch (e: any) {
     throw new Error(
       e?.message ?? "Unexpected error: The transaction has been cancelled",

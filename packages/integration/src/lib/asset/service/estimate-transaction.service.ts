@@ -1,9 +1,9 @@
 import { ethers } from "ethers"
 
 import { EthWalletV2 } from "../../ecdsa-signer/signer-ecdsa"
-import { getPrice } from "../asset-util"
 import { ErrorCode } from "../error-code.enum"
 import { EstimateTransactionRequest, EstimatedTransaction } from "../types"
+import { coinbaseRatesService } from "./coinbase-rates.service"
 import { erc20PopulateTransactionService } from "./populate-transaction-service/erc20-populate-transaction.service"
 import { ethPopulateTransactionService } from "./populate-transaction-service/eth-populate-transaction.service"
 import { ntfErc721PopulateTransactionService } from "./populate-transaction-service/nft-erc721-populate-transaction.service"
@@ -33,29 +33,17 @@ const populateTransactionServices: Record<string, PopulateTransactionService> =
     NftErc1155EstimateTransactionRequest: ntfErc1155PopulateTransactionService,
   }
 
-const chainNames: Record<number, string> = {
-  1: "ETH",
-  5: "ETH",
-  137: "MATIC",
-  80001: "MATIC",
-}
-
 export async function estimateTransaction(
   wallet: EthWalletV2,
   request: EstimateTransactionRequest,
 ): Promise<EstimatedTransaction> {
   const chainId = await wallet.getChainId()
-  const chainName = chainNames[chainId]
 
-  if (!chainName) {
-    throw Error("No Chain Name found.")
-  }
-
-  const [from, nonce, feeData, rates] = await Promise.all([
+  const [from, nonce, feeData, rate] = await Promise.all([
     wallet.getAddress(),
     wallet.getTransactionCount("latest"),
     wallet.getFeeData(),
-    getPrice([chainName]),
+    coinbaseRatesService.getRateByChainId(chainId),
   ])
 
   if (
@@ -88,17 +76,16 @@ export async function estimateTransaction(
     throw Error("GasLimit wasn't calculated.")
   }
 
-  const currencyPrice = parseFloat(rates[0].price)
   const value = transaction.value
   const valueUsd = value
-    ? parseFloat(ethers.utils.formatEther(value)) * currencyPrice
+    ? parseFloat(ethers.utils.formatEther(value)) * rate
     : undefined
   const fee = feeData.gasPrice.mul(transaction.gasLimit)
-  const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * currencyPrice
+  const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rate
   const maxFee = feeData.maxFeePerGas.mul(transaction.gasLimit)
-  const maxFeeUsd = parseFloat(ethers.utils.formatEther(maxFee)) * currencyPrice
+  const maxFeeUsd = parseFloat(ethers.utils.formatEther(maxFee)) * rate
   const total = value ? fee.add(value) : fee
-  const totalUsd = parseFloat(ethers.utils.formatEther(total)) * currencyPrice
+  const totalUsd = parseFloat(ethers.utils.formatEther(total)) * rate
 
   return {
     transaction,

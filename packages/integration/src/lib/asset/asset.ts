@@ -19,11 +19,11 @@ import {
   TransactionRow,
 } from "./types"
 
-export abstract class Asset implements FungibleAsset {
+export abstract class Asset<T> implements FungibleAsset {
   abstract transfer(
     identity: DelegationIdentity,
     transaction: TransactionRequest | FungibleTransactionRequest,
-  ): Promise<string>
+  ): Promise<T>
 
   abstract getAddress(identity: DelegationIdentity): Promise<string>
 

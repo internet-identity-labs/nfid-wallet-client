@@ -20,12 +20,19 @@ export const getMaticTransactionHistory = async (): Promise<FungibleTxs> => {
   return await polygonAsset.getTransactionHistory(identity)
 }
 
-export const transferMATIC = async (value: number, to: string) => {
+export const transferMATIC = async (
+  value: number,
+  to: string,
+): Promise<string> => {
   const identity = await getIdentity()
-  return await polygonAsset.transfer(identity, { to, value })
+  return (await polygonAsset.transfer(identity, { to, value }))
+    .etherscanTransactionUrl
 }
 
-export const transferMatic = async (amount: number, to: string) => {
+export const transferMatic = async (
+  amount: number,
+  to: string,
+): Promise<string> => {
   try {
     const identity = await getIdentity()
     const transaction = await polygonAsset.getEstimatedTransaction(
@@ -35,7 +42,7 @@ export const transferMatic = async (amount: number, to: string) => {
       identity,
       transaction.transaction,
     )
-    return `You've sent ${amount} . ${response}`
+    return `You've sent ${amount} . ${response.etherscanTransactionUrl}`
   } catch (e: any) {
     throw new Error(
       e?.message ?? "Unexpected error: The transaction has been cancelled",

@@ -33,6 +33,7 @@ import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { getPriceFull } from "./asset-util"
 import { NonFungibleAsset } from "./non-fungible-asset"
+import { coinbaseRatesService } from "./service/coinbase-rates.service"
 import { estimateTransaction } from "./service/estimate-transaction.service"
 import {
   ActivitiesByItemRequest,
@@ -44,7 +45,6 @@ import {
   Erc20TokensByUserRequest,
   EstimateTransactionRequest,
   EstimatedTransaction,
-  EtherscanTransactionHashUrl,
   FungibleActivityRecords,
   FungibleActivityRequest,
   FungibleTxs,
@@ -57,13 +57,14 @@ import {
   Tokens,
   TransferETHRequest,
   TransferNftRequest,
+  TransferResponse,
 } from "./types"
 
 function removeChain(id: UnionAddress): string {
   return id.slice(id.indexOf(":") + 1)
 }
 
-export class EthereumAsset extends NonFungibleAsset {
+export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   private readonly config: Configuration
 
   constructor(config: Configuration) {
@@ -74,11 +75,22 @@ export class EthereumAsset extends NonFungibleAsset {
   async transfer(
     identity: DelegationIdentity,
     transaction: ethers.providers.TransactionRequest,
-  ): Promise<EtherscanTransactionHashUrl> {
+  ): Promise<TransferResponse> {
     const wallet = this.getWallet(identity, CHAIN_NETWORK, this.config)
     const etherscanUrl = this.getEtherscanUrl(CHAIN_NETWORK, this.config)
+    const chainId = await wallet.getChainId()
+    const rate = await coinbaseRatesService.getRateByChainId(chainId)
     const response = await wallet.sendTransaction(transaction)
-    return `${etherscanUrl}${response.hash}`
+    return {
+      etherscanTransactionUrl: `${etherscanUrl}${response.hash}`,
+      time: 600, // It's a hardcoded value as 10 minutes, we don't know how to calculate the time yet.
+      waitOnChain: response.wait().then(({ effectiveGasPrice, gasUsed }) => {
+        const fee = effectiveGasPrice.mul(gasUsed)
+        const feeFormatted = ethers.utils.formatEther(fee)
+        const feeInUSD = parseFloat(feeFormatted) * rate
+        return { total: feeFormatted, totalUSD: feeInUSD.toFixed(2) }
+      }),
+    }
   }
 
   async getEstimatedTransaction(

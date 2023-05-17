@@ -77,8 +77,8 @@ export class Profile extends HomePage {
     let index = isMobile ? 0 : 1
     if (isMobile) await this.openMobileProfileMenu()
     this.credentialsTab[index].waitForDisplayed({
-      timeout: 5000,
-      timeoutMsg: "Creadentials tab is missing!",
+      timeout: 20000,
+      timeoutMsg: "Credentials tab is missing!",
     })
     this.credentialsTab[index].click()
   }

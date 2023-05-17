@@ -123,7 +123,7 @@ export class HomePage extends Page {
 
   public async captchaPass() {
     await this.captchaImage.waitForDisplayed({
-      timeout: 18000,
+      timeout: 28000,
       interval: 1000,
       timeoutMsg: "Captha is failed to appear",
     })

@@ -28,14 +28,14 @@ const alchemies: Record<number, Alchemy> = {
   10: maticMumbai,
 }
 
-interface AlchemyRepository {
+interface AlchemyService {
   estimateGas(
     chainId: number,
     tx: ethers.providers.TransactionRequest,
   ): Promise<BigNumber>
 }
 
-export const alchemyRepository: AlchemyRepository = {
+export const alchemyService: AlchemyService = {
   estimateGas: function (
     chainId: number,
     tx: ethers.providers.TransactionRequest,

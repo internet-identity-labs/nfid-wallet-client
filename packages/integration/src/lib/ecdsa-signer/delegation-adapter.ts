@@ -4,10 +4,10 @@ import {
   TransactionResponse,
 } from "@ethersproject/abstract-provider"
 import { TypedMessage } from "@metamask/eth-sig-util"
-import { Alchemy, Network } from "alchemy-sdk"
 import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
 
+import { alchemyService } from "../asset/service/alchemy.service"
 import { EthWalletV2 } from "./signer-ecdsa"
 
 export enum ProviderError {
@@ -51,8 +51,9 @@ export class DelegationWalletAdapter {
     let tx: TransactionRequest
     let err: ProviderError | undefined
     let gasLimit
-    const [nonce, { gasPrice, maxPriorityFeePerGas, maxFeePerGas }] =
+    const [chainId, nonce, { gasPrice, maxPriorityFeePerGas, maxFeePerGas }] =
       await Promise.all([
+        this.wallet.getChainId(),
         this.wallet.getTransactionCount("latest"),
         this.wallet.getFeeData(),
       ])
@@ -76,17 +77,12 @@ export class DelegationWalletAdapter {
       tx.gasPrice = gasPrice
       return [tx, err]
     } catch (error) {
-      const alchemy = new Alchemy({
-        apiKey: GOERLI_ALCHEMY_API_KEY,
-        network: Network.ETH_GOERLI,
-      })
-
       if ((error as any).code === "INSUFFICIENT_FUNDS") {
         err = ProviderError.INSUFICIENT_FUNDS
         const t = { ...transaction }
         t.from = "0xC48E23C5F6e1eA0BaEf6530734edC3968f79Af2e"
 
-        gasLimit = await alchemy.core.estimateGas(t)
+        gasLimit = await alchemyService.estimateGas(chainId, t)
         tx = {
           from: transaction.from,
           to: transaction.to,
@@ -100,7 +96,7 @@ export class DelegationWalletAdapter {
       }
 
       try {
-        gasLimit = await alchemy.core.estimateGas(transaction)
+        gasLimit = await alchemyService.estimateGas(chainId, transaction)
 
         tx = {
           from: transaction.from,
@@ -120,7 +116,7 @@ export class DelegationWalletAdapter {
           delete t.maxFeePerGas
           delete t.maxPriorityFeePerGas
 
-          gasLimit = await alchemy.core.estimateGas(t)
+          gasLimit = await alchemyService.estimateGas(chainId, t)
         } catch (error) {
           gasLimit = ethers.utils.parseEther("0.7").div(gasPrice)
         }

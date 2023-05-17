@@ -3,9 +3,9 @@ import { ethers } from "ethers-ts"
 
 import { EthWalletV2 } from "../../../ecdsa-signer/signer-ecdsa"
 import { ErrorCode } from "../../error-code.enum"
-import { alchemyRepository } from "../../repository/alchemy.repository"
 import { PopulateTransactionService } from "../../service/estimate-transaction.service"
 import { EstimateTransactionRequest } from "../../types"
+import { alchemyService } from "../alchemy.service"
 
 export class Erc20EstimateTransactionRequest
   implements EstimateTransactionRequest
@@ -75,7 +75,7 @@ export const erc20PopulateTransactionService: PopulateTransactionService = {
 
       const tempTx = { ...tx }
       delete tempTx["from"]
-      const gasLimit = await alchemyRepository.estimateGas(chainId, tempTx)
+      const gasLimit = await alchemyService.estimateGas(chainId, tempTx)
       const populatedTransaction = { ...tx, gasLimit }
 
       return { populatedTransaction, errors }

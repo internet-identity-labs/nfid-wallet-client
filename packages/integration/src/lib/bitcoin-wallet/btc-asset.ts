@@ -25,7 +25,7 @@ import { BtcWallet } from "./btc-wallet"
 export const mainnet = "https://mempool.space/api/address/"
 export const testnet = "https://mempool.space/testnet/api/address/"
 
-export class BtcAsset extends Asset {
+export class BtcAsset extends Asset<string> {
   getAddress(identity: DelegationIdentity): Promise<string> {
     return new BtcWallet(identity).getBitcoinAddress()
   }

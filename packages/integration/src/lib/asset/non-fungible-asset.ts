@@ -12,8 +12,8 @@ import {
   Tokens,
 } from "./types"
 
-export abstract class NonFungibleAsset
-  extends Asset
+export abstract class NonFungibleAsset<T>
+  extends Asset<T>
   implements NonFungibleAssetI
 {
   abstract getActivitiesByItem(

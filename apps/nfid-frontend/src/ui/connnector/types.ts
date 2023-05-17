@@ -1,4 +1,7 @@
-import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
+import {
+  TokenBalanceSheet,
+  TransferResponse,
+} from "packages/integration/src/lib/asset/types"
 import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 
 import { NonFungibleAsset } from "@nfid/integration"
@@ -32,7 +35,7 @@ export type Cacheable = {
 export type NftConnectorConfig = {
   defaultLogo: string
   blockchain: Blockchain
-  assetService: NonFungibleAsset
+  assetService: NonFungibleAsset<TransferResponse>
 }
 
 export type TokenDetailsConfig = {

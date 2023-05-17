@@ -1,7 +1,8 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { TransactionResponse } from "@ethersproject/abstract-provider"
-import { BigNumber } from "@rarible/utils"
+import { BigNumber as RaribleBigNumber } from "@rarible/utils"
 import { ethers } from "ethers-ts"
+import { BigNumber } from "ethers/lib/ethers"
 
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { mockIdentityA, mockIdentityB } from "../identity"
@@ -256,6 +257,11 @@ describe("Ethereum Asset", () => {
     }
     const expectedResponse: TransactionResponse = {
       hash: "0x35cbbf3a821d29c641eb3902683903fdb2e7337679dc6fe0fd208e3cd9e483fb",
+      wait: (confirmations?: number) =>
+        Promise.resolve({
+          effectiveGasPrice: BigNumber.from("200000000"),
+          gasUsed: BigNumber.from("200000000"),
+        }),
     } as TransactionResponse
 
     walletSpy.mockResolvedValueOnce(expectedResponse)
@@ -264,8 +270,16 @@ describe("Ethereum Asset", () => {
     expect(walletSpy).toHaveBeenCalledTimes(1)
     expect(walletSpy).toHaveBeenCalledWith(transaction)
     expect(result).toEqual(
-      "https://goerli.etherscan.io/tx/0x35cbbf3a821d29c641eb3902683903fdb2e7337679dc6fe0fd208e3cd9e483fb",
+      expect.objectContaining({
+        etherscanTransactionUrl:
+          "https://goerli.etherscan.io/tx/0x35cbbf3a821d29c641eb3902683903fdb2e7337679dc6fe0fd208e3cd9e483fb",
+        time: 600,
+      }),
     )
+    expect(result.waitOnChain).resolves.toEqual({
+      total: "0.04",
+      totalUSD: expect.any(String),
+    })
 
     walletSpy.mockRestore()
   })
@@ -411,8 +425,8 @@ describe("Ethereum Asset", () => {
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
     expect(balance).toMatchObject({
-      balance: expect.any(BigNumber),
-      balanceinUsd: expect.any(BigNumber),
+      balance: expect.any(RaribleBigNumber),
+      balanceinUsd: expect.any(RaribleBigNumber),
     })
   })
 

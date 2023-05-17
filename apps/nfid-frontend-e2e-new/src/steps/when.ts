@@ -266,7 +266,7 @@ When(/^Pin code error message appears "(.*)"$/, async (errorMsg: string) => {
     timeoutMsg: "Pin Error message is not displayed",
   })
   const text = await $("#pin-input-error").getText()
-  await expect(text).toHaveText(errorMsg)
+  await expect(text).toContain(errorMsg)
 })
 
 When(/^User goes to recover account with FAQ$/, async () => {

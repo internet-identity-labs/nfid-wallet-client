@@ -10,7 +10,6 @@ import { Asset } from "../asset/asset"
 import { getPrice } from "../asset/asset-util"
 import {
   ChainBalance,
-  FungibleActivityRecord,
   FungibleActivityRecords,
   FungibleActivityRequest,
   FungibleTransactionRequest,
@@ -20,10 +19,12 @@ import {
   TokenPrice,
   TransactionRow,
 } from "../asset/types"
+import { bcAddressInfo, bcTransactionInfo } from "./blockcypher-adapter"
 import { BtcWallet } from "./btc-wallet"
-
-export const mainnet = "https://mempool.space/api/address/"
-export const testnet = "https://mempool.space/testnet/api/address/"
+import {
+  BlockCypherAddressResponse,
+  BlockCypherTransactionOutput,
+} from "./types"
 
 export class BtcAsset extends Asset {
   getAddress(identity: DelegationIdentity): Promise<string> {
@@ -67,19 +68,10 @@ export class BtcAsset extends Asset {
     if (!delegation) {
       throw Error("Give me delegation. It's cached!")
     }
-    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
     const wallet = new BtcWallet(delegation)
     const address: string = await wallet.getBitcoinAddress()
-    url += `${address}`
-    const response = await fetch(url)
-
-    const json: MempoolAddressResponse = await response.json()
-
-    // Calculate the account balance based on the funded and spent transaction outputs
-    const funded = json.chain_stats.funded_txo_sum
-    const spent = json.chain_stats.spent_txo_sum
-    const balance = funded - spent
-
+    const json: BlockCypherAddressResponse = await bcAddressInfo(address)
+    const balance = json.final_balance
     let price: TokenPrice[]
     const balanceBN = toBn(balance * 0.00000001)
     try {
@@ -96,7 +88,7 @@ export class BtcAsset extends Asset {
       name: this.getBlockchain(),
       symbol: "BTC",
     }
-    const fee = await wallet.getFee()
+    const fee = await wallet.getFee(address, 100)
     return super.computeSheetForRootAccount(
       token,
       delegation.getPrincipal().toText(),
@@ -109,8 +101,9 @@ export class BtcAsset extends Asset {
     identity: DelegationIdentity,
   ): Promise<FungibleTxs> {
     const address = await new BtcWallet(identity).getBitcoinAddress()
-    const sendTransactions = await this.getTransactions("send", address)
-    const receivedTransactions = await this.getTransactions("received", address)
+    const txs = await this.getTransactions(address)
+    const sendTransactions = txs.sent
+    const receivedTransactions = txs.received
     const addressPrincipal = principalToAddress(identity.getPrincipal())
     return {
       sendTransactions,
@@ -121,136 +114,80 @@ export class BtcAsset extends Asset {
   }
 
   private async getTransactions(
-    type: string,
     address: string,
-  ): Promise<TransactionRow[]> {
-    return await new BtcAsset()
-      .getFungibleActivityByTokenAndUser({
-        address,
-        direction: type === "send" ? "from" : "to",
-      })
-      .then((tss) => {
-        return tss.activities
-          .map((tx) => {
-            tx.asset = "BTC"
-            return tx
-          })
-          .map((tx) => this.toTransactionRow(tx, address))
-      })
+  ): Promise<{ sent: TransactionRow[]; received: TransactionRow[] }> {
+    try {
+      const data = await bcTransactionInfo(address)
+      const allTransactions = data.txs ? data.txs : []
+      const sentTransactions: TransactionRow[] = []
+      const receivedTransactions: TransactionRow[] = []
+      console.log("allTransactions " + allTransactions)
+      for (let i = 0; i < allTransactions.length; i++) {
+        const transaction = allTransactions[i]
+        //check input or output transaction
+        const isInput = transaction.inputs.some((l) => {
+          return l.addresses && l.addresses.includes(address)
+        })
+        if (isInput) {
+          const output: BlockCypherTransactionOutput[] =
+            transaction.outputs.filter((l) => {
+              return !l.addresses.includes(address)
+            })
+          if (output.length !== 0) {
+            const row: TransactionRow = {
+              type: "send",
+              asset: "BTC",
+              quantity: this.formatPrice(output[0].value),
+              date: this.formatDateInt(transaction.confirmed),
+              from: address,
+              to: output[0].addresses.join(", "),
+            }
+            sentTransactions.push(row)
+          }
+        } else {
+          const output: BlockCypherTransactionOutput[] =
+            transaction.outputs.filter((l) => {
+              return l.addresses.includes(address)
+            })
+          if (output.length === 0) break
+          const row: TransactionRow = {
+            type: "received",
+            asset: "BTC",
+            quantity: this.formatPrice(output[0].value),
+            date: this.formatDateInt(transaction.confirmed),
+            from: transaction.inputs[0].addresses.join(", "),
+            to: output[0].addresses.join(", "),
+          }
+          receivedTransactions.push(row)
+        }
+      }
+
+      return {
+        sent: sentTransactions,
+        received: receivedTransactions,
+      }
+    } catch (error) {
+      console.error("Error retrieving BTC transactions:", error)
+      return {
+        sent: [],
+        received: [],
+      }
+    }
   }
 
-  protected override formatDate(date: string): string {
-    return format(new Date(Number(date) * 1000), "MMM dd, yyyy - hh:mm:ss aaa")
+  protected formatDateInt(date: number): string {
+    return format(new Date(date), "MMM dd, yyyy - hh:mm:ss aaa")
   }
 
   protected override formatPrice(price: number) {
-    return Number(price) / E8S
+    return parseFloat((price / E8S).toFixed(8))
   }
 
   async getFungibleActivityByTokenAndUser(
     request: FungibleActivityRequest,
     delegation?: DelegationIdentity,
   ): Promise<FungibleActivityRecords> {
-    const size = request.size ? request.size : Number.MAX_VALUE
-    const activities: FungibleActivityRecord[] = []
-    let cursor = request.cursor
-    let address: string
-    if (!request.address) {
-      if (!delegation) throw new Error("Can not get BTC activity")
-      address = await new BtcWallet(delegation).getBitcoinAddress()
-    } else {
-      address = request.address
-    }
-    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
-    url += `${address}/txs`
-    for (;;) {
-      if (cursor) {
-        url += `?last_seen_txid=${cursor}`
-      }
-      const response = await fetch(url)
-
-      const json: MempoolTransactionResponse[] = await response.json()
-
-      let records: FungibleActivityRecord[] = []
-
-      if (request.direction === "to") {
-        records = json
-          .filter((tx) =>
-            tx.vout.some((vout) => vout.scriptpubkey_address === address),
-          )
-          .map((tx) => {
-            const from = tx.vout.find(
-              (vout) => vout.scriptpubkey_address === address,
-            )
-            return {
-              id: tx.txid,
-              date: tx.status.block_time,
-              to: address,
-              from: tx.vin[0].prevout.scriptpubkey_address,
-              transactionHash: tx.txid,
-              price: from?.value ?? 0,
-            }
-          })
-      }
-
-      if (request.direction === "from") {
-        records = json
-          .filter((tx) =>
-            tx.vin.some((vin) => vin.prevout.scriptpubkey_address === address),
-          )
-          .map((tx) => {
-            const to = tx.vin.find(
-              (vin) => vin.prevout.scriptpubkey_address === address,
-            )
-            return {
-              id: tx.txid,
-              date: tx.status.block_time,
-              to: tx.vout[0].scriptpubkey_address,
-              from: address,
-              transactionHash: tx.txid,
-              price: to?.prevout.value ?? 0,
-            }
-          })
-      }
-
-      if (json.length === 0) {
-        break
-      }
-
-      if (records.length < size) {
-        activities.push(...records)
-        break
-      }
-
-      if (records.length >= size) {
-        for (let i = 0; i < size; i++) {
-          activities.push(records[i])
-        }
-        cursor = records[size - 1].transactionHash
-        break
-      }
-
-      activities.push(...records)
-      cursor = records[records.length - 1].transactionHash
-    }
-    return { activities, cursor }
-  }
-}
-
-interface MempoolTransactionResponse {
-  txid: string
-  status: {
-    block_time: string
-  }
-  vin: { prevout: { scriptpubkey_address: string; value: number } }[]
-  vout: { scriptpubkey_address: string; value: number }[]
-}
-
-interface MempoolAddressResponse {
-  chain_stats: {
-    funded_txo_sum: number
-    spent_txo_sum: number
-    tx_count: number
+    throw Error("Not implemented.")
   }
 }
 

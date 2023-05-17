@@ -65,6 +65,7 @@ jobs:
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
+          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
   e2e-tests:
     needs: check-secrets
@@ -108,6 +109,7 @@ jobs:
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
       - name: Setup chrome browser
         uses: browser-actions/setup-chrome@latest

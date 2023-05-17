@@ -494,7 +494,7 @@ describe("Decode function call data.", () => {
     }
 
     const actual = await decodeRpcMessage(request)
-    console.log(JSON.stringify(actual))
+    console.debug(JSON.stringify(actual))
     expect(actual).toEqual({
       interface: "Item",
       method: "BidOrder",

@@ -121,7 +121,6 @@ export class BtcAsset extends Asset {
       const allTransactions = data.txs ? data.txs : []
       const sentTransactions: TransactionRow[] = []
       const receivedTransactions: TransactionRow[] = []
-      console.log("allTransactions " + allTransactions)
       for (let i = 0; i < allTransactions.length; i++) {
         const transaction = allTransactions[i]
         //check input or output transaction

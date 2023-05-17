@@ -166,11 +166,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: internet-identity-labs/user-google-e2e
-          path: apps/nfid-frontend-e2e/chrome-user-data-dir
+          path: apps/nfid-frontend-e2e-new/chrome-user-data-dir
           ref: main
           token: ${{ secrets.PAT }}
 
-      - run: ls -la apps/nfid-frontend-e2e/chrome-user-data-dir
+      - run: ls -la apps/nfid-frontend-e2e-new/chrome-user-data-dir
 
       - name: Running E2E test
         run: |
@@ -185,7 +185,7 @@ jobs:
         if: always()
         uses: pat-s/always-upload-cache@v3.0.11
         with:
-          path: apps/nfid-frontend-e2e/allure-results
+          path: apps/nfid-frontend-e2e-new/allure-results
           key: allure-results-${{github.RUN_ID}}
 
       - name: Upload Chrome logs
@@ -193,7 +193,7 @@ jobs:
         if: always()
         with:
           name: chrome_debug.log
-          path: apps/nfid-frontend-e2e/user-google-e2e/chrome_debug.log
+          path: apps/nfid-frontend-e2e-new/chrome-user-data-dir/chrome_debug.log
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
@@ -219,7 +219,7 @@ jobs:
           path: gh-pages
       - uses: pat-s/always-upload-cache@v3.0.11
         with:
-          path: apps/nfid-frontend-e2e/allure-results
+          path: apps/nfid-frontend-e2e-new/allure-results
           key: allure-results-${{github.RUN_ID}}
 
       - name: Preparing the report
@@ -239,7 +239,7 @@ jobs:
         with:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: apps/nfid-frontend-e2e/allure-history
+          PUBLISH_DIR: apps/nfid-frontend-e2e-new/allure-history
 
       - name: Upload url to file
         env:

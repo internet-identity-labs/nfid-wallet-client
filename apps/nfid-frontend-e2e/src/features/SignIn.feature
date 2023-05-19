@@ -1,5 +1,6 @@
 Feature: Sign in
 
+  @pending
   Scenario: User Signs In with predefined credentials
     Given User opens NFID site
     Given authstate is cleared

@@ -1,4 +1,4 @@
-@registration @phone @verify-phone-number
+@registration @phone @verify-phone-number @only_deploy_to_main
 Feature: User wants to veirfy his phone number
 
   Background: Open the link and ensure userE2E and user by test phone number are deleted

@@ -1,4 +1,6 @@
 import type { Options } from "@wdio/types"
+import allureReporter from "@wdio/allure-reporter"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import { chromeBrowser, chromeBrowserOptions } from "./browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
@@ -264,8 +266,9 @@ export const config: Options.Testrunner = {
    * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
    * @param {object}                 context  Cucumber World object
    */
-  // beforeScenario: function (world, context) {
-  // },
+  beforeScenario: function (world, context) {
+    allureReporter.addFeature(world.pickle.name)
+  },
   /**
    *
    * Runs before a Cucumber Step.
@@ -286,8 +289,9 @@ export const config: Options.Testrunner = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {object}             context          Cucumber World object
    */
-  // afterStep: function (step, scenario, result, context) {
-  // },
+  afterStep: async function (step, scenario, result, context) {
+    cucumberJson.attach(await browser.takeScreenshot(), "image/png")
+  },
   /**
    *
    * Runs after a Cucumber Scenario.
@@ -353,4 +357,11 @@ export const config: Options.Testrunner = {
    */
   // onReload: function(oldSessionId, newSessionId) {
   // }
+  // @ts-ignore
+  afterFeature: async function (uri, feature) {
+    // @ts-ignore browser
+    allureReporter.addEnvironment("Browser", "Chrome")
+    allureReporter.addEnvironment("Environment", baseUrl)
+    allureReporter.addEnvironment("Platform", process.platform)
+  },
 }

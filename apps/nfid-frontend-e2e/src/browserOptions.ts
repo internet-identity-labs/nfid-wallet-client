@@ -6,12 +6,12 @@ export const chromeBrowserOptions: IChromeOption = {
     "--disable-web-security",
     "--allow-insecure-localhost",
     "--disable-infobars",
-    // "--disable-dev-shm-usage",
+    "--disable-dev-shm-usage",
     "--start-maximized",
     "--ignore-certificate-errors",
     "--disable-gpu",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
-    `--user-data-dir=${process.env.USER_DATA_DIR}`,
+    "--user-data-dir=chrome-user-data-dir",
   ],
   w3c: false,
 }

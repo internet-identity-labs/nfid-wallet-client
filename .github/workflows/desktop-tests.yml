@@ -26,6 +26,23 @@ on:
           - info
           - warning
           - debug
+      docker_rebuild:
+        description: "Rebuild Docker image"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      test_cycle:
+        description: "Test Cycle"
+        required: true
+        default: "no_google"
+        type: choice
+        options:
+          - "full"
+          - "no-google"
+
 
 jobs:
   check-secrets:
@@ -62,6 +79,105 @@ jobs:
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+
+  docker-for-e2e:
+    needs: check-secrets
+    runs-on: ubuntu-latest
+    # runs-on: [self-hosted, Linux, x64, frontend]
+    permissions:
+      packages: write
+      contents: read
+    env:
+      IMAGE_NAME: nfid-test
+    
+    concurrency:
+      group: nfid-frontend-tests-docker-${{ github.event.inputs.test_cycle || format('{0}', 'full') }}-${{ contains( (github.event.inputs.test_cycle || format('{0}', 'full')), 'full') || github.ref }}
+      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) }}
+  
+    steps:
+      - name: Checkout repo.
+        uses: actions/checkout@v3
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Log in to registry
+        # This is where you will update the personal access token to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Pull Build Push Image
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo ${IMAGE_ID} | tr '[A-Z]' '[a-z]')
+
+          # Check is this pull request
+          if [ -z "${{ github.head_ref }}" ]; then
+            # If NOT
+            # Strip git ref prefix from version
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          else
+            # If YES
+            # Strip git ref prefix from version and left pull-request number
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\([0-9]\+\)/\(.*\),\1-\2,')
+          fi
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "${VERSION}" == "main" ] && VERSION=latest
+
+          # Preparing env Vars
+          if [ "${{ github.event.inputs.logLevel }}" == 'debug' ]; then
+            CI_DEBUG='true'
+          fi
+
+          ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
+          ci_echo_info "VERSION : ${VERSION}" >&2
+
+          ci_echo_debug "DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect ${IMAGE_ID}:${VERSION} >/dev/null" >&2
+          if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect ${IMAGE_ID}:${VERSION} >/dev/null; then
+            ci_echo_info "Docker image '${IMAGE_ID}:${VERSION}' was found" >&2
+            DOCKER_REBUILD="false"
+          else
+            ci_echo_warn "Image '${IMAGE_ID}:${VERSION}' was not found" >&2
+            DOCKER_REBUILD="true"
+          fi
+
+          if [ "${DOCKER_REBUILD}" == "true" ] || [ "${{ github.event.inputs.docker_rebuild }}" == "true" ]; then
+            ci_echo_warn "Will try to build the Docker Image." >&2
+
+            pushd ./docker-e2e-tests
+
+            ci_echo_debug "docker build . \
+              --build-arg USER_ID=$(id -u) \
+              --build-arg GROUP_ID=$(id -g) \
+              --file Dockerfile \
+              --tag ${IMAGE_NAME} \
+              --label 'runnumber=${GITHUB_RUN_ID}'" >&2
+
+            docker build . \
+              --build-arg USER_ID=$(id -u) \
+              --build-arg GROUP_ID=$(id -g) \
+              --file Dockerfile \
+              --tag ${IMAGE_NAME} \
+              --label "runnumber=${GITHUB_RUN_ID}"
+            
+            ci_echo_debug "docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}" >&2
+            docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}
+  
+            ci_echo_debug "docker push ${IMAGE_ID}:${VERSION}" >&2
+            docker push ${IMAGE_ID}:${VERSION}
+          fi
 
   unit-tests:
     needs: check-secrets
@@ -114,33 +230,145 @@ jobs:
           path: /home/runner/work/nfid-frontend/nfid-frontend/yarn-error.log
 
   e2e-tests:
-    needs: check-secrets
+    needs: docker-for-e2e
     runs-on: ubuntu-latest
+    # runs-on: [self-hosted, Linux, x64, frontend]
+    permissions:
+      packages: write
+      contents: read
+    env:
+      IMAGE_NAME: nfid-test
     concurrency:
-      group: ci-frontend-test
-      cancel-in-progress: false
-
+      group: nfid-frontend-tests-e2e-${{ github.event.inputs.test_cycle || format('{0}', 'full') }}-${{ contains( (github.event.inputs.test_cycle || format('{0}', 'full')), 'full') || github.ref }}
+      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) }}
+  
     steps:
-      - run: pwd
-
-      - name: Checkout CI repo
+      - name: Checkout repo.
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Checkout CI repo.
+        uses: actions/checkout@v3
         with:
-          node-version: "16"
-          cache: "yarn"
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
-      - name: Build project
+      - name: Log in to registry
+        # This is where you will update the personal access token to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Pull Image and preparing Env Vars
+        id: pull_image
         run: |
-          cat > ~/.npmrc << EOF
+          source ./ci_libs/CI_LIBS.sh
+
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo ${IMAGE_ID} | tr '[A-Z]' '[a-z]')
+
+          # Check is this pull request
+          if [ -z "${{ github.head_ref }}" ]; then
+            # If NOT
+            # Strip git ref prefix from version
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          else
+            # If YES
+            # Strip git ref prefix from version and left pull-request number
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\([0-9]\+\)/\(.*\),\1-\2,')
+          fi
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "${VERSION}" == "main" ] && VERSION=latest
+
+          # Preparing env Vars
+          if [ "${{ github.event.inputs.logLevel }}" == 'debug' ]; then
+            CI_DEBUG='true'
+          fi
+
+          ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
+          ci_echo_info "VERSION : ${VERSION}" >&2
+
+          ci_echo_debug "docker pull ${IMAGE_ID}:${VERSION}" >&2
+          docker pull ${IMAGE_ID}:${VERSION}
+
+          # Save VARS for next steps
+          case "${{ github.event.inputs.test_cycle }}" in
+            no-google)
+              TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
+              ;;
+            *)
+              TEST_ADD_PARAMS=""
+              ;;
+          esac
+
+          echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "CI_DEBUG=${CI_DEBUG}" >> $GITHUB_ENV
+          echo "TEST_ADD_PARAMS="${TEST_ADD_PARAMS}"" >> $GITHUB_ENV
+
+      - name: Checkout Google user E2E
+        uses: actions/checkout@v3
+        with:
+          repository: internet-identity-labs/user-google-e2e
+          path: apps/nfid-frontend-e2e/chrome-user-data-dir
+          ref: main
+          token: ${{ secrets.PAT }}
+
+      - name: Cache Node Modules.
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-yarn-e2e
+
+      - name: Run tests
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          cat > npmrc_file << EOF
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
-          yarn --prefer-offline
-          npx env-cmd -f .env.staging nx build nfid-frontend
-          yarn serve -l 9090 -s dist/apps/nfid-frontend &
+
+          cat > docker_env << EOF
+            IS_DEV=true
+            IS_E2E_TEST=true
+            CURRCONV_TOKEN=${CURRCONV_TOKEN}
+            ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
+            GOERLI_ALCHEMY_API_KEY=${GOERLI_ALCHEMY_API_KEY}
+            ETH_ALCHEMY_API_KEY=${ETH_ALCHEMY_API_KEY}
+            MATIC_ALCHEMY_API_KEY=${MATIC_ALCHEMY_API_KEY}
+            MUMBAI_ALCHEMY_API_KEY=${MUMBAI_ALCHEMY_API_KEY}
+            RAMP_WALLET_API_KEY=${RAMP_WALLET_API_KEY}
+
+            REACT_APP_SENTRY_CONNECTION=${REACT_APP_SENTRY_CONNECTION}
+            USERGEEK_API_KEY=${USERGEEK_API_KEY}
+            PSYCHEDELIC_GH_NPM_REGISTRY=${PSYCHEDELIC_GH_NPM_REGISTRY}
+            BLOCK_CYPHER_TOKEN=${BLOCK_CYPHER_TOKEN}
+
+            URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
+            LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
+          EOF
+
+          ci_echo_debug "docker run --rm \
+            -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
+            --env-file $(pwd)/docker_env \
+            -e CI_DEBUG='${CI_DEBUG}' \
+            ${IMAGE_ID}:${VERSION} \
+            '${TEST_ADD_PARAMS}'">&2
+
+          docker run --rm \
+            -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
+            --env-file $(pwd)/docker_env \
+            -e CI_DEBUG="${CI_DEBUG}" \
+            ${IMAGE_ID}:${VERSION} \
+            "${TEST_ADD_PARAMS}"
         env:
           IS_DEV: true
           IS_E2E_TEST: true
@@ -157,30 +385,8 @@ jobs:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
-      - name: Setup chrome browser
-        uses: browser-actions/setup-chrome@latest
-
-      - name: Chrome version
-        run: chrome --version
-
-      - name: Checkout Google user E2E
-        uses: actions/checkout@v3
-        with:
-          repository: internet-identity-labs/user-google-e2e
-          path: apps/nfid-frontend-e2e/user-google-e2e
-          ref: main
-          token: ${{ secrets.PAT }}
-
-      - run: ls -la apps/nfid-frontend-e2e/user-google-e2e
-
-      - name: Running E2E test
-        run: |
-          npx nx clean nfid-frontend-e2e
-          IS_HEADLESS='true' npx env-cmd -f .env.${{ github.event.inputs.env || 'dev' }} nx test:e2e nfid-frontend-e2e
-        env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
-          USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
 
       - name: Caching allure-results
         if: always()
@@ -194,7 +400,7 @@ jobs:
         if: always()
         with:
           name: chrome_debug.log
-          path: apps/nfid-frontend-e2e/user-google-e2e/chrome_debug.log
+          path: apps/nfid-frontend-e2e/chrome-user-data-dir/chrome_debug.log
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3

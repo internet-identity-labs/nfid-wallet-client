@@ -1,4 +1,4 @@
-@registration @google @registration-with-google
+@registration @google @registration-with-google @only_deploy_to_main
 Feature: Registration using Google
 
   @register-with-google

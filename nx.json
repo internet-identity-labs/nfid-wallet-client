@@ -91,6 +91,9 @@
         "env": "ETH_ALCHEMY_API_KEY"
       },
       {
+        "env": "BLOCK_CYPHER_TOKEN"
+      },
+      {
         "env": "MATIC_ALCHEMY_API_KEY"
       },
       {

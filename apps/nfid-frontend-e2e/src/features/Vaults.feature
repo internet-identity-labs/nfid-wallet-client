@@ -1,4 +1,4 @@
-@smoke @regression @vaults @vaults-crud
+@smoke @regression @vaults @vaults-crud @only_deploy_to_main
 Feature: Vault scenarios
   As a user, I want to create vault, create wallet, invite member and add custom policy.
 

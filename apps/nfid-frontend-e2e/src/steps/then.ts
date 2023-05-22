@@ -3,6 +3,7 @@ import { format } from "date-fns"
 
 import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Assets from "../pages/assets"
+import Nft from "../pages/nft"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
 import Vaults from "../pages/vaults"
@@ -620,13 +621,13 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
 Then(
   /^Token ([^"]*) from ([^"]*) collection displayed/,
   async (token: string, collection: string) => {
-    await Assets.getNftName(token).then((l) =>
+    await Nft.getNftName(token).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT " + token,
       }),
     )
-    await Assets.getNftCollection(collection).then((l) =>
+    await Nft.getNftCollection(collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT collection " + collection,
@@ -634,3 +635,49 @@ Then(
     )
   },
 )
+
+Then(
+  /^Raw ([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
+  async (token: string, collection: string, id: string, wallet: string) => {
+    await Nft.getNftName(token).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT " + token,
+      }),
+    )
+    await Nft.getNftCollection(collection).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT collection " + collection,
+      }),
+    )
+    await Nft.getNftWallet(wallet).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT wallet " + collection,
+      }),
+    )
+    await Nft.getNftId(id).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT id " + collection,
+      }),
+    )
+  },
+)
+
+Then(/^Open collectibles page$/, async () => {
+  await Nft.openCollectibles()
+})
+
+Then(/^Filter by ([^"]*)$/, async (blockchain: string) => {
+  await Nft.filterByBlockchain(blockchain)
+})
+
+Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
+  await Nft.getNftCollectiblesAmount(amount)
+})
+
+Then(/^Switch to table$/, async () => {
+  await Nft.switchToTable()
+})

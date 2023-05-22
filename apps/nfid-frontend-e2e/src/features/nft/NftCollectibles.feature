@@ -10,9 +10,9 @@ Feature:Non Fungible Asset
     Then <amount> NFT displayed on collectibles page
     Then Filter by <blockchain>
     Then <filteredAmount> NFT displayed on collectibles page
-    And Token <token> from <collection> collection displayed
+    And Token <token> from <collection> nft collection displayed
     Then Switch to table
-    And <token> <collection> <id> <wallet> displayed
+    And NFT <token> <collection> <id> <wallet> displayed
 
     Examples:
       | amount | anchor | token         | collection | filteredAmount | wallet       | id                                                                            | blockchain       |

@@ -7,7 +7,7 @@ Feature:Non Fungible Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And <amount> NFT displayed on assets page and <view> at all
-    Then Token <token> from <collection> collection displayed
+    Then Token <token> from <collection> nft collection displayed
     Examples:
       | amount | anchor | token         | collection | view |
       | 6      | 31870  | AnilAnimal    | Rarible    | 4    |

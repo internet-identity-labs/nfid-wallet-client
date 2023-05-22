@@ -619,7 +619,7 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
 })
 
 Then(
-  /^Token ([^"]*) from ([^"]*) collection displayed/,
+  /^Token ([^"]*) from ([^"]*) nft collection displayed/,
   async (token: string, collection: string) => {
     await Nft.getNftName(token).then((l) =>
       l.waitForDisplayed({
@@ -637,7 +637,7 @@ Then(
 )
 
 Then(
-  /^([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
+  /^NFT ([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
   async (token: string, collection: string, id: string, wallet: string) => {
     await Nft.getNftName(token).then((l) =>
       l.waitForDisplayed({

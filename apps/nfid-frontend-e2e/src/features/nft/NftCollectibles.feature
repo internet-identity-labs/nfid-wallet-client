@@ -1,19 +1,8 @@
-@nft
+@nft-collectibles
 Feature:Non Fungible Asset
-  As a user, I want to see nft in profile
+  As a user, I want to see nft in collectibles
 
-  @nft1
-  Scenario Outline: User should be able to see NFTs
-    Given User opens NFID site
-    And User is already authenticated by <anchor> anchor
-    And <amount> NFT displayed on assets page and <view> at all
-    Then Token <token> from <collection> collection displayed
-    Examples:
-      | amount | anchor | token         | collection | view |
-      | 6      | 31870  | AnilAnimal    | Rarible    | 4    |
-      | 6      | 31870  | PandaQueen571 | PandaQueen | 4    |
-
-  @nft2
+ @nft2
   Scenario Outline: User should be able to see collectibles page
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -23,10 +12,11 @@ Feature:Non Fungible Asset
     Then <filteredAmount> NFT displayed on collectibles page
     And Token <token> from <collection> collection displayed
     Then Switch to table
-    And Raw <token> <collection> <id> <wallet> displayed
+    And <token> <collection> <id> <wallet> displayed
 
     Examples:
       | amount | anchor | token         | collection | filteredAmount | wallet       | id                                                                            | blockchain       |
       | 6      | 31870  | AnilAnimal    | Rarible    | 3              | NFIDaccount1 | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | Polygon          |
       | 6      | 31870  | TestERC1155   | Rarible    | 1              | NFIDaccount1 | 94667527331073441490639696296732950748865385440430584394830104056550742032385 | Ethereum         |
       | 6      | 31870  | PandaQueen571 | PandaQueen | 2              | NFIDaccount1 | jzwaa-zikor-uwiaa-aaaaa-b4avk-qaqca-aaai5-q                                   | InternetComputer |
+

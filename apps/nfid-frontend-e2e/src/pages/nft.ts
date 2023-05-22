@@ -11,16 +11,62 @@ export class Nft {
     return $("#nfts-length")
   }
 
+  private get activity() {
+    return $$("table tbody tr")
+  }
+
+  public async trType(rawNumber: number) {
+    return $(
+      `table tbody tr:nth-child(${rawNumber}) td:nth-child(1)`,
+    ).getText()
+  }
+
+  public async trDate(rawNumber: number) {
+    return $(
+      `table tbody :nth-child(${rawNumber}) td:nth-child(2)`,
+    ).getText()
+  }
+
+  public async trFrom(rawNumber: number) {
+    return $(
+      `table tbody :nth-child(${rawNumber}) td:nth-child(3)`,
+    ).getText()
+  }
+
+  public async trTo(rawNumber: number) {
+    return $(
+      `table tbody :nth-child(${rawNumber}) td:nth-child(4)`,
+    ).getText()
+  }
+
+  public async trPrice(rawNumber: number) {
+    return $(
+      `table tbody :nth-child(${rawNumber}) td:nth-child(5)`,
+    ).getText()
+  }
+
   public async getNftName(token: string) {
     return $(`#nft_token_${token.replace(/\s|#/g, "")}`)
+  }
+
+  public async getNftStandard() {
+    return $(`#token-standard`)
+  }
+
+  public async getAbout() {
+    return $(`#token-about`)
+  }
+
+  public async getCollectionId() {
+    return $(`#collection-id`)
   }
 
   public async getNftCollection(collection: string) {
     return $(`#nft_collection_${collection.replace(/\s/g, "")}`)
   }
 
-  public async getNftId(collection: string) {
-    return $(`#nft_id_${collection.replace(/\s/g, "")}`)
+  public async getNftId(id: string) {
+    return $(`#nft_id_${id.replace(/\s/g, "")}`)
   }
 
   public async getNftWallet(collection: string) {
@@ -41,6 +87,14 @@ export class Nft {
       timeout: 5000,
     })
     await table.click()
+  }
+
+  public async nftDetails(token: string) {
+    const nft = await this.getNftName(token)
+    await nft.waitForDisplayed({
+      timeout: 10000,
+    })
+    await nft.click()
   }
 
   public async waitForNFTsAppear() {
@@ -86,6 +140,13 @@ export class Nft {
         .waitForDisplayed({ timeout: 27000 })
         .then(async () => expect(x).toHaveText(n + " items")),
     )
+  }
+
+  public async getActivityAmount(n: number) {
+    await browser.waitUntil(async () => (await this.activity.length) === n, {
+      timeout: 10000,
+      timeoutMsg: "Current txs amount is " + (await this.activity.length),
+    })
   }
 }
 

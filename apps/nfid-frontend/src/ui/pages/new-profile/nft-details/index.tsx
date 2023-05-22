@@ -1,6 +1,7 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { useCallback, useContext } from "react"
+import { trimConcat } from "src/ui/atoms/util/util"
 
 import { Image } from "@nfid-frontend/ui"
 import { Application } from "@nfid/integration"
@@ -97,12 +98,27 @@ export const ProfileNFTDetailsPage = ({
           />
         </div>
         <div>
-          <p className="font-bold text-blue">{nft.collection.name}</p>
-          <p className="text-[28px] mt-2.5">{nft.name}</p>
+          <p
+            className="font-bold text-blue"
+            id={trimConcat("nft_collection_", nft.collection.name)}
+          >
+            {nft.collection.name}
+          </p>
+          <p
+            className="text-[28px] mt-2.5"
+            id={trimConcat("nft_token_", nft.name)}
+          >
+            {nft.name}
+          </p>
           {"account" in nft ? (
             <div className="flex items-center mt-4 space-x-2">
               <Image src={WalletIcon} alt="wallet" />
-              <p className="text-sm font-semibold text-secondary">
+              <p
+                className="text-sm font-semibold text-secondary"
+                id={`nft_wallet_${applications
+                  .find((x) => x.domain === nft.account.domain)
+                  ?.name.replace(/\s/g, "")}`}
+              >
                 {
                   applications.find((x) => x.domain === nft.account.domain)
                     ?.name
@@ -119,20 +135,29 @@ export const ProfileNFTDetailsPage = ({
                 )}
               >
                 <p className="mb-1 text-secondary">Blockchain</p>
-                <p className={clsx("w-full")}>{nft.blockchain}</p>
+                <p className={clsx("w-full")} id={"nft_blockchain_"}>
+                  {nft.blockchain}
+                </p>
 
                 <p className="mb-1 text-secondary">Standard</p>
-                <p className={clsx("w-full")}>
+                <p id={"token-standard"} className={clsx("w-full")}>
                   {nft.collection.standard === "legacy"
                     ? "Legacy EXT"
                     : nft.collection.standard}
                 </p>
 
                 <p className="mb-1 text-secondary">NFT ID</p>
-                <p className="w-full overflow-hidden">{nft.tokenId}</p>
+                <p
+                  id={`nft_id_${nft.tokenId.replace(/\s/g, "")}`}
+                  className="w-full overflow-hidden"
+                >
+                  {nft.tokenId}
+                </p>
 
                 <p className="mb-1 text-secondary">Collection ID</p>
-                <p className="w-full overflow-hidden">{nft.contractId}</p>
+                <p id={"collection-id"} className="w-full overflow-hidden">
+                  {nft.contractId}
+                </p>
               </div>
             </div>
           </ProfileContainer>
@@ -140,7 +165,9 @@ export const ProfileNFTDetailsPage = ({
       </div>
       <div className={clsx("mt-[30px] max-w-[100vw]")}>
         <ProfileContainer title="About">
-          <p className="text-sm">{nft.collection.description}</p>
+          <p id={"token-about"} className="text-sm">
+            {nft.collection.description}
+          </p>
         </ProfileContainer>
       </div>
       <div

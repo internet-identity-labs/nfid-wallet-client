@@ -24,6 +24,7 @@ export const DisplaySwitch = ({ state, setState }: IDisplaySwitch) => {
         />
       </div>
       <div
+        id={"to-table"}
         onClick={() => setState("table")}
         className={clsx(
           "p-0 w-[36px] h-[36px] outline-none rounded-[4px]",

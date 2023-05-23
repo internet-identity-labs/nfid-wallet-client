@@ -3,6 +3,7 @@ import { When } from "@cucumber/cucumber"
 import { baseURL } from "../../wdio.conf"
 import userClient from "../helpers/accounts-service"
 import HomePage from "../pages/home-page"
+import Collectibles from "../pages/nft"
 import Profile from "../pages/profile"
 import RecoveryPage from "../pages/recovery-page"
 import Vault from "../pages/vault"
@@ -48,14 +49,14 @@ When(/^Tokens displayed on user assets$/, async () => {
 When(
   /^([^"]*) NFT displayed on assets page and ([^"]*) at all$/,
   async (amount: string, view: string) => {
-    await Profile.waitForNFTsAppear()
-    const nftAmount = await Profile.getNftAmount()
+    await Collectibles.waitForNFTsAppear()
+    const nftAmount = await Collectibles.getNftAmount()
     await nftAmount.waitUntil(async () =>
       (await nftAmount).getText().then((l) => {
         return l === amount
       }),
     )
-    const actualAmount = await Profile.getNftsLength()
+    const actualAmount = await Collectibles.getNftsLength()
     if (parseInt(view) < 4) {
       expect(view).toEqual(actualAmount)
     } else {

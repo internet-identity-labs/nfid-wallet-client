@@ -38,6 +38,7 @@ export const CollectiblesModal = ({
         options={blockchainOptions}
         selectedValues={blockchainFilter}
         setSelectedValues={setBlockchainFilter}
+        id={"blockchain-filter"}
       />
       <DropdownSelect
         options={collectionsOptions}

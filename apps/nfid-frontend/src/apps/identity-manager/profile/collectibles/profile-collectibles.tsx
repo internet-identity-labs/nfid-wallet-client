@@ -131,15 +131,31 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             className={clsx(`w-[74px] h-[74px] object-cover rounded`)}
           />
         </Link>,
-        <div>{token.name}</div>,
-        <div className={clsx(`w-full`)}>{token.collection.name}</div>,
+        <div id={`nft_token_${token.name.replace(/\s|#/g, "")}`}>
+          {" "}
+          {token.name}
+        </div>,
+        <div
+          id={`nft_collection_${token.collection.name.replace(/\s/g, "")}`}
+          className={clsx(`w-full`)}
+        >
+          {token.collection.name}
+        </div>,
         <Link
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
           className="truncate block sm:w-[400px]"
+          id={`nft_id_${token.tokenId.replace(/\s/g, "")}`}
         >
           {token.tokenId}
         </Link>,
-        <div className={clsx(`w-full`)}>
+        <div
+          className={clsx(`w-full`)}
+          id={`nft_wallet_${getWalletName(
+            applications,
+            token.account.domain,
+            token.account.accountId,
+          ).replace(/\s/g, "")}`}
+        >
           {getWalletName(
             applications,
             token.account.domain,
@@ -245,7 +261,10 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             <div className={clsx("flex items-center space-x-6 shrink-0")}>
               <FilterPopover
                 trigger={
-                  <div className="flex items-center justify-center p-2 rounded-md md:bg-white">
+                  <div
+                    id={"filter-nft"}
+                    className="flex items-center justify-center p-2 rounded-md md:bg-white"
+                  >
                     <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60" />
                   </div>
                 }
@@ -267,7 +286,10 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             </div>
           </div>
         </ProfileContainer>
-        <p className="text-sm text-center text-secondary h-[50px] leading-[50px]">
+        <p
+          id={"items-amount"}
+          className="text-sm text-center text-secondary h-[50px] leading-[50px]"
+        >
           {tokensFiltered.length} items
         </p>
         {!tokens.length ? (

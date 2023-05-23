@@ -17,18 +17,6 @@ export class Profile extends HomePage {
     return $$("table tbody tr")
   }
 
-  private get nftContainer() {
-    return $$("#nft-container .nft")
-  }
-
-  private get nfts() {
-    return $("#asset-collection-nft")
-  }
-
-  private get nftViewAll() {
-    return $("#nfts-length")
-  }
-
   private get logoutButton() {
     return $("#logout")
   }
@@ -136,25 +124,6 @@ export class Profile extends HomePage {
         timeoutMsg: "Tokens are not displayed on user profile!",
       })
     }
-  }
-
-  public async waitForNFTsAppear() {
-    await this.nfts.waitForDisplayed({
-      timeout: 30000,
-      timeoutMsg: "NFTs are missing",
-    })
-  }
-
-  public async getNftAmount() {
-    await this.nftViewAll.waitForDisplayed({
-      timeout: 5000,
-      timeoutMsg: "NFTs are missing",
-    })
-    return this.nftViewAll
-  }
-
-  public async getNftsLength(): Promise<number> {
-    return this.nftContainer.length
   }
 
   public async openMobileProfileMenu() {

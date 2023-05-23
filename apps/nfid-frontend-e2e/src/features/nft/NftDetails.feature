@@ -8,7 +8,7 @@ Feature:Non Fungible Asset Details
     And User is already authenticated by <anchor> anchor
     Then Open collectibles page
     Then Go to <token> details
-    And <token> <collection> <id> <wallet> displayed
+    And NFT <token> <collection> <id> <wallet> displayed
     And Details are <standard> <collection_id>
     And About starts with <about>
 

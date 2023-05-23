@@ -4,8 +4,10 @@
 name: Desktop Tests CI
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
-    branches: [main, current-release, release/*]
   workflow_dispatch:
     inputs:
       env:
@@ -61,6 +63,18 @@ jobs:
           ref: main
           path: ci_libs
 
+      - name: Show concurency group
+        run: |
+          echo "REF: ${{ github.ref }}"
+          echo "HEAD_REF: ${{ github.head_ref }}"
+          echo "BASE_REF: ${{ github.base_ref }}"
+          echo "EVENT_NAME: ${{ github.event_name }}"
+          echo "REF_NAME: ${{ github.ref_name }}"
+          echo "group: nfid-frontend-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
+          echo "group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
+          echo "cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}"
+
+
       - name: Check secrets
         run: |
           source ./ci_libs/CI_LIBS.sh
@@ -91,8 +105,8 @@ jobs:
       IMAGE_NAME: nfid-test
     
     concurrency:
-      group: nfid-frontend-tests-docker-${{ github.event.inputs.test_cycle || format('{0}', 'full') }}-${{ contains( (github.event.inputs.test_cycle || format('{0}', 'full')), 'full') || github.ref }}
-      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) }}
+      group: nfid-frontend-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
+      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
   
     steps:
       - name: Checkout repo.
@@ -239,8 +253,8 @@ jobs:
     env:
       IMAGE_NAME: nfid-test
     concurrency:
-      group: nfid-frontend-tests-e2e-${{ github.event.inputs.test_cycle || format('{0}', 'full') }}-${{ contains( (github.event.inputs.test_cycle || format('{0}', 'full')), 'full') || github.ref }}
-      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) }}
+      group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
+      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
   
     steps:
       - name: Checkout repo.
@@ -298,13 +312,19 @@ jobs:
 
           # Save VARS for next steps
           case "${{ github.event.inputs.test_cycle }}" in
-            no-google)
-              TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
-              ;;
-            *)
+            full)
               TEST_ADD_PARAMS=""
               ;;
+            *)
+              TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
+              ;;
           esac
+
+          # If branch main, run full cycle
+          if [ "${{ github.ref_name }}" == 'main' ]; then
+            TEST_ADD_PARAMS=""
+            CI_DEBUG='true'
+          fi
 
           echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV

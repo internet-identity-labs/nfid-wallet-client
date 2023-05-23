@@ -2,6 +2,8 @@ import { Meta, Story } from "@storybook/react"
 import clsx from "clsx"
 import React from "react"
 
+import { ReactComponent as ArrowGreen } from "./arrow-green.svg"
+import { ReactComponent as ArrowRed } from "./arrow-red.svg"
 import { ReactComponent as Arrow } from "./arrow.svg"
 import { ReactComponent as Calendar } from "./calendar.svg"
 import { ReactComponent as Cancel } from "./cancel.svg"
@@ -95,6 +97,14 @@ const Icons: Story = (args) => {
         <IconWrapper
           icon={<Arrow className={clsx(args["className"], "-rotate-90")} />}
           label="Arrow Down"
+        />
+        <IconWrapper
+          icon={<ArrowRed className={clsx(args["className"])} />}
+          label="Arrow Red"
+        />
+        <IconWrapper
+          icon={<ArrowGreen className={clsx(args["className"])} />}
+          label="Arrow Red"
         />
         <IconWrapper
           icon={<Calendar className={clsx(args["className"])} />}

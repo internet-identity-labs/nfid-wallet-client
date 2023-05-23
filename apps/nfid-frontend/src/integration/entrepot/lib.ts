@@ -7,6 +7,8 @@ import {
 
 import { Account } from "@nfid/integration"
 
+import { Blockchain } from "frontend/ui/connnector/types"
+
 import { mapToNFTData } from "./mapper"
 import {
   CollectionCache,
@@ -295,7 +297,5 @@ export async function fetchNFTsOfPrincipals(
         .then((r: EntrepotToken[]) => mapToNFTData(r, principal, account))
     }),
   )
-  return response
-    .flat()
-    .map((nft) => ({ ...nft, blockchain: "Internet Computer" }))
+  return response.flat().map((nft) => ({ ...nft, blockchain: Blockchain.IC }))
 }

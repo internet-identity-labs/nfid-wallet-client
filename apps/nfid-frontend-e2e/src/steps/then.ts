@@ -3,6 +3,7 @@ import { format } from "date-fns"
 
 import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Assets from "../pages/assets"
+import Nft from "../pages/nft"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
 import Vaults from "../pages/vaults"
@@ -618,19 +619,122 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
 })
 
 Then(
-  /^Token ([^"]*) from ([^"]*) collection displayed/,
+  /^Token ([^"]*) from ([^"]*) nft collection displayed/,
   async (token: string, collection: string) => {
-    await Assets.getNftName(token).then((l) =>
+    await Nft.getNftName(token).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT " + token,
       }),
     )
-    await Assets.getNftCollection(collection).then((l) =>
+    await Nft.getNftCollection(collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT collection " + collection,
       }),
     )
+  },
+)
+
+Then(
+  /^NFT ([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
+  async (token: string, collection: string, id: string, wallet: string) => {
+    await Nft.getNftName(token).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT " + token,
+      }),
+    )
+    await Nft.getNftCollection(collection).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT collection " + collection,
+      }),
+    )
+    await Nft.getNftWallet(wallet).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT wallet " + wallet,
+      }),
+    )
+    await Nft.getNftId(id).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT id " + id,
+      }),
+    )
+  },
+)
+Then(
+  /^Details are ([^"]*) ([^"]*)/,
+  async (standard: string, collection: string) => {
+    await Nft.getNftStandard().then(async (l) => {
+      l.waitForDisplayed({
+        timeout: 5000,
+      })
+      expect(await l.getText()).toContain(standard)
+    })
+    await Nft.getCollectionId().then(async (l) => {
+      l.waitForDisplayed({
+        timeout: 5000,
+      })
+      expect(await l.getText()).toContain(collection)
+    })
+  },
+)
+Then(/^About starts with ([^"]*)/, async (about: string) => {
+  await Nft.getAbout().then(async (l) => {
+    l.waitForDisplayed({
+      timeout: 5000,
+    })
+    expect(await l.getText()).toContain(about)
+  })
+})
+
+Then(/^Open collectibles page$/, async () => {
+  await Nft.openCollectibles()
+})
+
+Then(/^Filter by ([^"]*)$/, async (blockchain: string) => {
+  await Nft.filterByBlockchain(blockchain)
+})
+
+Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
+  await Nft.getNftCollectiblesAmount(amount)
+})
+
+Then(/^Switch to table$/, async () => {
+  await Nft.switchToTable()
+})
+
+Then(/^Go to ([^"]*) details$/, async (token: string) => {
+  await Nft.nftDetails(token)
+})
+
+Then(/^(\d+) transactions appear$/, async (amount: number) => {
+  await Nft.getActivityAmount(amount)
+})
+
+Then(
+  /^(\d+) raw with ([^"]*) & (\d+) & ([^"]*) & ([^"]*) & ([^"]*)$/,
+  async (
+    n: number,
+    type: string,
+    date: number,
+    from: string,
+    to: string,
+    price: string,
+  ) => {
+    const actualType = await Nft.trType(n)
+    expect(actualType).toContain(type)
+    const actualFrom = await Nft.trFrom(n)
+    expect(actualFrom).toContain(from)
+    const actualTo = await Nft.trTo(n)
+    expect(actualTo).toContain(to)
+    const actualPrice = await Nft.trPrice(n)
+    expect(actualPrice).toContain(price)
+    const actualDate = await Nft.trDate(n)
+    let parsed = format(new Date(Number(date)), "MMM dd, yyyy - hh:mm:ss aaa")
+    expect(actualDate).toContain(parsed)
   },
 )

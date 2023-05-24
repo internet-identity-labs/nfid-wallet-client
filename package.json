@@ -3,7 +3,6 @@
   "scripts": {
     "analyze": "source-map-explorer",
     "analyze:nfid-frontend": "yarn analyze 'dist/apps/nfid-frontend/static/js/*.js'",
-    "preinstall": "./scripts/preinstall.sh & echo \"running normal\" || yarn",
     "postinstall": "patch-package",
     "build": "echo '💀 DONT REMOVE THIS 💀'",
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",

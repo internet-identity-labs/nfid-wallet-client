@@ -9,13 +9,14 @@ import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { Blockchain } from "../../types"
 import {
   ITransferFTConnector,
-  ITransferFTModalConfig,
+  ITransferConfig,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { ICMTransferConnector } from "./icm-transfer-connector"
 
 export class ICTransferConnector
-  extends ICMTransferConnector<ITransferFTModalConfig>
+  extends ICMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
   getFee(): Promise<TokenFee> {
@@ -47,8 +48,7 @@ export const icTransferConnector = new ICTransferConnector({
   tokenStandard: TokenStandards.ICP,
   blockchain: Blockchain.IC,
   title: "Internet Computer",
-  isNativeToken: true,
   shouldHavePrincipal: true,
   addressPlaceholder: "Recipient IC address or principal",
-  type: "ft",
+  type: TransferModalType.FT,
 })

@@ -1,30 +1,20 @@
-import { principalToAddress } from "ictool"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
-import {
-  IGroupOption,
-  IGroupedOptions,
-  IconPngEthereum,
-} from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
-import {
-  PrincipalAccount,
-  ethereumAsset,
-  getWalletName,
-} from "@nfid/integration"
+import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
+import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { principalTokens } from "frontend/integration/entrepot"
-import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
 import { connectorCache } from "../../cache"
 import { Blockchain } from "../../types"
 import {
+  ITransferConfig,
   ITransferNFTConnector,
-  ITransferNFTModalConfig,
   ITransferNFTRequest,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import {
   mapUserNFTDetailsToGroupedOptions,
@@ -33,7 +23,7 @@ import {
 import { ICMTransferConnector } from "./icm-transfer-connector"
 
 export class IcNFTTransferConnector
-  extends ICMTransferConnector<ITransferNFTModalConfig>
+  extends ICMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
   async getNFTs(): Promise<UserNonFungibleToken[]> {
@@ -87,6 +77,5 @@ export const icNFTTransferConnector = new IcNFTTransferConnector({
   tokenStandard: TokenStandards.ICP,
   blockchain: Blockchain.ETHEREUM,
   addressPlaceholder: "Recipient IC address",
-  supportNFT: true,
-  type: "nft",
+  type: TransferModalType.NFT,
 })

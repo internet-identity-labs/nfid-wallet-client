@@ -11,16 +11,17 @@ import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
 import {
+  ITransferConfig,
   ITransferNFTConnector,
-  ITransferNFTModalConfig,
   ITransferNFTRequest,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
 import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class EthNFTTransferConnector
-  extends EVMTransferConnector<ITransferNFTModalConfig>
+  extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
   async getNFTs(): Promise<UserNonFungibleToken[]> {
@@ -73,7 +74,6 @@ export class EthNFTTransferConnector
         request,
       )
     } catch (e: any) {
-      console.log({ e })
       throw new Error(e)
     }
 
@@ -94,6 +94,5 @@ export const ethereumNFTTransferConnector = new EthNFTTransferConnector({
   blockchain: Blockchain.ETHEREUM,
   feeCurrency: NativeToken.ETH,
   addressPlaceholder: "Recipient ETH address",
-  supportNFT: true,
-  type: "nft",
+  type: TransferModalType.NFT,
 })

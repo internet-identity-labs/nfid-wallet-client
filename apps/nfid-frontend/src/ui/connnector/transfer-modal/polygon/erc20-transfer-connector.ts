@@ -10,18 +10,19 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
 import {
-  ITransferFT20Connector,
-  ITransferFT20ModalConfig,
+  ITransferConfig,
+  ITransferFTConnector,
   ITransferFTRequest,
   TokenBalance,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
 import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class PolygonERC20TransferConnector
-  extends EVMTransferConnector<ITransferFT20ModalConfig>
-  implements ITransferFT20Connector
+  extends EVMTransferConnector<ITransferConfig>
+  implements ITransferFTConnector
 {
   async getTokenMetadata(currency: string): Promise<Token> {
     const tokens = await this.getTokens()
@@ -124,5 +125,5 @@ export const polygonERC20TransferConnector = new PolygonERC20TransferConnector({
   feeCurrency: NativeToken.MATIC,
   icon: PolygonERC20Svg,
   addressPlaceholder: "Recipient Polygon address",
-  type: "ft20",
+  type: TransferModalType.FT20,
 })

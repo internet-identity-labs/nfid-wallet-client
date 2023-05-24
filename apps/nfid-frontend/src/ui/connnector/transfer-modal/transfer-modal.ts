@@ -20,22 +20,16 @@ import {
 } from "frontend/integration/identity-manager"
 
 import {
-  ITransferFT20ModalConfig,
-  ITransferFTModalConfig,
+  ITransferConfig,
   ITransferFTRequest,
   ITransferModalConnector,
-  ITransferNFTModalConfig,
   ITransferNFTRequest,
   ITransferResponse,
   TokenFee,
 } from "./types"
 
-export abstract class TransferModalConnector<
-  T extends
-    | ITransferFTModalConfig
-    | ITransferFT20ModalConfig
-    | ITransferNFTModalConfig,
-> implements ITransferModalConnector
+export abstract class TransferModalConnector<T extends ITransferConfig>
+  implements ITransferModalConnector
 {
   protected config: T
 

@@ -199,7 +199,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       .getItemByIds({ itemIds: { ids } })
       .then((x) => {
         return x.items.reduce((acc, val) => {
-          const contentUrl = val.meta?.content[0].url
+          const contentUrl = val.meta?.content[0]?.url
           acc.set(val.id, contentUrl)
           return acc
         }, new Map())

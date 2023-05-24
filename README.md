@@ -9,13 +9,16 @@ yarn login --registry=https://npm.pkg.github.com --scope=@psychedelic
 yarn
 ```
 
-*In some cases you may run into trouble seeing message like*
+_In some cases you may run into trouble seeing message like_
+
 ```
 yarn install vx.xx.xx
 error An unexpected error occurred: "Failed to replace env in config: ${NPM_TOKEN}".
 info If you think this is a bug, please open a bug report with the information provided
 ```
-*To fix this, make sure node (along with npm) and yarn are installed, then do the following:*
+
+_To fix this, make sure node (along with npm) and yarn are installed, then do the following:_
+
 - open your github account
 - navigate to Settings
 - navigate to Developer Settings (usually it's on the bottom side)
@@ -28,11 +31,13 @@ info If you think this is a bug, please open a bug report with the information p
 - go to your user directory (e.g. /Users/<your_username> on UNIX based OS)
 - find `.npmrc` file (if there is none just create it)
 - add the following lines to this file
+
 ```
 @psychedelic:registry=https://npm.pkg.github.com/
 //npm.pkg.github.com/:_authToken=ghp_xxxxx
 ```
-- *where xxxxx is your github token*
+
+- _where xxxxx is your github token_
 
 ### Install latest dfx
 
@@ -72,6 +77,19 @@ when you're working with vscode you can use the task runner to start the develop
 2. NFID Demo (`npx nx serve nfid-demo`)
 3. NFID Storybook (`npx nx storybook ui`)
 4. etc...
+
+## Deployment
+
+NFID Frontend is deployed to [cloudflare pages](https://dash.cloudflare.com/2680fff2f5b4404ed84e1395cfda8afd/pages/view/nfid-frontend). The latest dev version ([staging.nfid.one](https://staging.nfid.one)) is deployed when a PR is merged into `main` branch. [nfid.one](https://nfid.one) is deployed when a PR is merged into `production` branch.
+
+- [Domain Configuration](https://dash.cloudflare.com/2680fff2f5b4404ed84e1395cfda8afd/pages/view/nfid-frontend/domains)
+- [General Setting](https://dash.cloudflare.com/2680fff2f5b4404ed84e1395cfda8afd/pages/view/nfid-frontend/settings)
+
+All `feature/*` branches are deployed as preview to `https://<branch-prefix>.nfid-frontend.pages.dev`. The cloudflare bot comments the preview url to the PR.
+
+**NOTE:** To test these preview deployments, it is important to add the exact url to [google authClient config in console.cloud.google.com](https://console.cloud.google.com/apis/credentials/oauthclient/339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com?project=leafy-chariot-353306) as `Authorized JavaScript origins`:
+
+![authorized-java-script-origins.png](./docs/authorized-javascript-origins.png)
 
 ## Architecture
 

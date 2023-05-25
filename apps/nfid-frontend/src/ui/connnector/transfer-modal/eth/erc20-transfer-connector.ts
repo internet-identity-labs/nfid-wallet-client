@@ -8,6 +8,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
+import { EVMTransferConnector } from "../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferFTConnector,
@@ -17,8 +18,7 @@ import {
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
-import { EVMTransferConnector } from "./evm-transfer-connector"
-
+import { Cache } from "node-ts-cache"
 export class EthERC20TransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
@@ -65,10 +65,8 @@ export class EthERC20TransferConnector
     }
   }
 
-  async getAccountsOptions(
-    _?: string,
-    currency?: string,
-  ): Promise<IGroupedOptions[]> {
+  @Cache(connectorCache, {ttl: 60})
+  async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
     const balance = await this.getBalance(currency)
 
@@ -118,4 +116,5 @@ export const ethereumERC20TransferConnector = new EthERC20TransferConnector({
   icon: IconERC20,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT20,
+  assetService: ethereumAsset,
 })

@@ -21,17 +21,19 @@ import {
   userNFTDetailsToNFT,
 } from "../util/nfts"
 import { ICMTransferConnector } from "./icm-transfer-connector"
-
+import { Cache } from "node-ts-cache"
 export class IcNFTTransferConnector
   extends ICMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
+  @Cache(connectorCache, {ttl: 60})
   async getNFTs(): Promise<UserNonFungibleToken[]> {
     const allPrincipals = await this.getAllPrincipals(false)
     const allNFTs = await principalTokens(allPrincipals)
     return userNFTDetailsToNFT(allNFTs)
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getNFTOptions(): Promise<IGroupedOptions[]> {
     const applications = await this.getApplications()
     const allNFTs = await this.getNFTs()

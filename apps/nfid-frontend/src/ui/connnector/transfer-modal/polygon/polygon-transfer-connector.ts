@@ -7,6 +7,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
+import { EVMTransferConnector } from "../evm-transfer-connector"
 import {
   ITransferFTConnector,
   ITransferConfig,
@@ -14,7 +15,6 @@ import {
   TokenFee,
   TransferModalType,
 } from "../types"
-import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class MaticTransferConnector
   extends EVMTransferConnector<ITransferConfig>
@@ -65,4 +65,5 @@ export const polygonTransferConnector = new MaticTransferConnector({
   title: "Polygon",
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT,
+  assetService: polygonAsset,
 })

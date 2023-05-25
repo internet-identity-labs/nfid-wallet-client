@@ -69,6 +69,7 @@ export const TransferFT = ({
     {
       onSuccess: (data) => {
         setSelectedAccountAddress(data[0].options[0]?.value)
+        resetField("to")
       },
     },
   )
@@ -299,11 +300,10 @@ export const TransferFT = ({
                 <p className="text-sm leading-5">
                   ${transferFee?.feeUsd ?? "0.00"}
                 </p>
-                {transferFee?.fee && (
-                  <p className="text-xs leading-5" id="fee">
-                    {transferFee.fee}
-                  </p>
-                )}
+
+                <p className="text-xs leading-5" id="fee">
+                  {transferFee?.fee ?? `0.00 ${selectedTokenCurrency}`}
+                </p>
               </div>
             )}
           </div>

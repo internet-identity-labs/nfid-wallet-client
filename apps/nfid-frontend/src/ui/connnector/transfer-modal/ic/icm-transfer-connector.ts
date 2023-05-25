@@ -24,6 +24,8 @@ import {
   ITransferResponse,
   TokenBalance,
 } from "../types"
+import { connectorCache } from "../../cache"
+import { Cache } from "node-ts-cache"
 
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
@@ -68,6 +70,7 @@ export abstract class ICMTransferConnector<
     )(groupedOptions.sort(sortAlphabetic(({ label }) => label)))
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getBalance(principalId: string): Promise<TokenBalance> {
     const address = principalToAddress(Principal.fromText(principalId))
     const balance = await getBalance(address)

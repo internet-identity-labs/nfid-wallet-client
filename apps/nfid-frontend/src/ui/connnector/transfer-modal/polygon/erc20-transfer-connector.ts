@@ -9,6 +9,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
+import { EVMTransferConnector } from "../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferFTConnector,
@@ -18,7 +19,6 @@ import {
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
-import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class PolygonERC20TransferConnector
   extends EVMTransferConnector<ITransferConfig>
@@ -126,4 +126,5 @@ export const polygonERC20TransferConnector = new PolygonERC20TransferConnector({
   icon: PolygonERC20Svg,
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT20,
+  assetService: polygonAsset,
 })

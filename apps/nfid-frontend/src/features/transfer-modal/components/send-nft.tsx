@@ -269,9 +269,12 @@ export const TransferNFT = ({
                 <p className="text-sm leading-5">
                   ${transferFee?.feeUsd ?? "0.00"}
                 </p>
+
                 <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee ?? 0}{" "}
-                  {selectedConnector?.getTokenConfig().tokenStandard}
+                  {transferFee?.fee ??
+                    `0.00 ${
+                      selectedConnector?.getTokenConfig()?.feeCurrency ?? ""
+                    }`}
                 </p>
               </div>
             )}

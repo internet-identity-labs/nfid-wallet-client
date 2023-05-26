@@ -88,6 +88,9 @@
         "env": "GOERLI_ALCHEMY_API_KEY"
       },
       {
+        "env": "RARIBLE_X_API_KEY"
+      },
+      {
         "env": "ETH_ALCHEMY_API_KEY"
       },
       {

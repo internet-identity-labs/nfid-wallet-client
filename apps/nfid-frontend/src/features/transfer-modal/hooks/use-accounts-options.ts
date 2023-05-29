@@ -6,7 +6,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 
-export const useAccountsOptions = (token: TokenStandards | null) => {
+export const useAccountsOptions = (token: TokenStandards) => {
   const { data: accountsOptions, ...rest } = useSWR<IGroupedOptions[]>(
     [token, "accountsOptions"],
     async ([token]) =>

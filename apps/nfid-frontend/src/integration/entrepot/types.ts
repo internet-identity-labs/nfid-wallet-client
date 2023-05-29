@@ -2,6 +2,8 @@ import { Principal } from "@dfinity/principal"
 
 import { Account } from "@nfid/integration"
 
+import { Blockchain } from "frontend/ui/connnector/types"
+
 // External Entrepot types
 export interface EntrepotCollection {
   id: string
@@ -78,7 +80,7 @@ export interface NFTDetails {
   }
   collection: EntrepotCollection
   owner?: string
-  blockchain: "Internet Computer" | "Ethereum"
+  blockchain: Blockchain
 }
 
 export interface UserNFTDetails extends NFTDetails {

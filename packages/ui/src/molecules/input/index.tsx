@@ -11,7 +11,7 @@ export interface InputProps
   type?: string
   icon?: ReactElement
   errorText?: string
-  helperText?: string
+  helperText?: string | JSX.Element
   labelText?: string
   pin?: boolean
   small?: boolean

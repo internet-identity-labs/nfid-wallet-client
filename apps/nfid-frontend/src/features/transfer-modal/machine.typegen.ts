@@ -4,33 +4,12 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
     "": { type: "" }
-    "done.invoke.TransferMachine.TransferFT:invocation[0]": {
-      type: "done.invoke.TransferMachine.TransferFT:invocation[0]"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "done.invoke.TransferMachine.TransferNFT:invocation[0]": {
-      type: "done.invoke.TransferMachine.TransferNFT:invocation[0]"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "error.platform.TransferMachine.TransferFT:invocation[0]": {
-      type: "error.platform.TransferMachine.TransferFT:invocation[0]"
-      data: unknown
-    }
-    "error.platform.TransferMachine.TransferNFT:invocation[0]": {
-      type: "error.platform.TransferMachine.TransferNFT:invocation[0]"
-      data: unknown
-    }
     "xstate.after(5000)#TransferMachine.Success": {
       type: "xstate.after(5000)#TransferMachine.Success"
     }
     "xstate.init": { type: "xstate.init" }
   }
-  invokeSrcNameMap: {
-    transferFT: "done.invoke.TransferMachine.TransferFT:invocation[0]"
-    transferNFT: "done.invoke.TransferMachine.TransferNFT:invocation[0]"
-  }
+  invokeSrcNameMap: {}
   missingImplementations: {
     actions: never
     delays: never
@@ -40,18 +19,14 @@ export interface Typegen0 {
   eventsCausingActions: {
     assignAmount: "ASSIGN_AMOUNT"
     assignDirection: "CHANGE_DIRECTION"
-    assignError:
-      | "ASSIGN_ERROR"
-      | "error.platform.TransferMachine.TransferFT:invocation[0]"
-      | "error.platform.TransferMachine.TransferNFT:invocation[0]"
+    assignError: "ASSIGN_ERROR"
     assignReceiverWallet: "ASSIGN_RECEIVER_WALLET"
     assignSelectedFT: "ASSIGN_SELECTED_FT"
     assignSelectedNFT: "ASSIGN_SELECTED_NFT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
-    assignSuccessMessage:
-      | "done.invoke.TransferMachine.TransferFT:invocation[0]"
-      | "done.invoke.TransferMachine.TransferNFT:invocation[0]"
+    assignSuccessMessage: "ON_SUCCESS"
+    assignTokenStandard: "ASSIGN_TOKEN_STANDARD"
     assignTokenType: "CHANGE_TOKEN_TYPE"
   }
   eventsCausingDelays: {}
@@ -59,10 +34,7 @@ export interface Typegen0 {
     isSendFungible: ""
     isSendMachine: ""
   }
-  eventsCausingServices: {
-    transferFT: "ON_SUBMIT"
-    transferNFT: "ON_SUBMIT"
-  }
+  eventsCausingServices: {}
   matchesStates:
     | "Hidden"
     | "ReceiveMachine"
@@ -71,9 +43,7 @@ export interface Typegen0 {
     | "SendMachine.SendFT"
     | "SendMachine.SendNFT"
     | "Success"
-    | "TransferFT"
     | "TransferModal"
-    | "TransferNFT"
     | { SendMachine?: "CheckSendType" | "SendFT" | "SendNFT" }
   tags: never
 }

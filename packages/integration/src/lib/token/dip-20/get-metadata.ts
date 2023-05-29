@@ -14,6 +14,7 @@ export async function getMetadata(canisterId: string): Promise<TokenMetadata> {
       ...metadata,
     }))
     .catch((e) => {
+      console.log("getMetadata error", e)
       throw new Error(`getMetadata: ${e.message}`)
     })
 }

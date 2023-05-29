@@ -1,16 +1,16 @@
 import { TokenConfig } from "src/ui/connnector/types"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { TokenStandards } from "@nfid/integration/token/types"
+
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
 import { UserNonFungibleToken } from "../non-fungable-token/types"
-import { transferFT } from "./services/transfer-ft"
-import { transferNFT } from "./services/transfer-nft"
 
 export type TransferMachineContext = {
   direction: "send" | "receive"
   tokenType: "ft" | "nft"
-  sourceWalletAddress?: string
+  sourceWalletAddress: string
   sourceAccount?: Wallet
   selectedFT?: TokenConfig
   selectedNFT?: UserNonFungibleToken
@@ -18,6 +18,8 @@ export type TransferMachineContext = {
   amount: string
   successMessage: string
   error?: Error
+  tokenStandard: string
+  tokenCurrency: string
 }
 
 export type ErrorEvents =
@@ -42,7 +44,8 @@ export type Events =
   | { type: "ASSIGN_SELECTED_FT"; data: TokenConfig }
   | { type: "ASSIGN_SELECTED_NFT"; data: UserNonFungibleToken }
   | { type: "ASSIGN_ERROR"; data: string }
-  | { type: "ON_SUBMIT" }
+  | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
+  | { type: "ON_SUCCESS"; data: string }
 
 type Services = {
   transferFT: {
@@ -68,6 +71,8 @@ export const transferMachine = createMachine(
       receiverWallet: "",
       amount: "",
       successMessage: "",
+      tokenStandard: TokenStandards.ICP,
+      tokenCurrency: TokenStandards.ICP,
     },
     id: "TransferMachine",
     initial: "Hidden",
@@ -103,6 +108,9 @@ export const transferMachine = createMachine(
       },
       ASSIGN_ERROR: {
         actions: "assignError",
+      },
+      ASSIGN_TOKEN_STANDARD: {
+        actions: "assignTokenStandard",
       },
     },
     states: {
@@ -143,38 +151,19 @@ export const transferMachine = createMachine(
           },
           SendFT: {
             on: {
-              ON_SUBMIT: {
-                target: "#TransferMachine.TransferFT",
+              ON_SUCCESS: {
+                target: "#TransferMachine.Success",
+                actions: "assignSuccessMessage",
               },
             },
           },
           SendNFT: {
             on: {
-              ON_SUBMIT: {
-                target: "#TransferMachine.TransferNFT",
+              ON_SUCCESS: {
+                target: "#TransferMachine.Success",
+                actions: "assignSuccessMessage",
               },
             },
-          },
-        },
-      },
-
-      TransferFT: {
-        invoke: {
-          src: "transferFT",
-          onDone: { target: "Success", actions: "assignSuccessMessage" },
-          onError: {
-            target: "#SendMachine.SendFT",
-            actions: "assignError",
-          },
-        },
-      },
-      TransferNFT: {
-        invoke: {
-          src: "transferNFT",
-          onDone: { target: "Success", actions: "assignSuccessMessage" },
-          onError: {
-            target: "#SendMachine.SendNFT",
-            actions: "assignError",
           },
         },
       },
@@ -222,15 +211,15 @@ export const transferMachine = createMachine(
       assignSuccessMessage: assign((_, event) => ({
         successMessage: event?.data,
       })),
+      assignTokenStandard: assign((_, event) => ({
+        tokenStandard: event?.data,
+      })),
       assignError: assign({
         // @ts-ignore
         error: (_, event) => event.data,
       }),
     },
-    services: {
-      transferFT,
-      transferNFT,
-    },
+    services: {},
   },
 )
 

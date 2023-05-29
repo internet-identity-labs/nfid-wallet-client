@@ -7,18 +7,15 @@ Feature:Send/Receive Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then Asset calculated for <chain> with <currency>
     Then User opens receive dialog window
-    Then Choose <currency> from options
-    Then Choose NFID Account 1 from receive accounts
+    Then Choose <chain> from receive options
+    Then Choose NFID account 1 from receive accounts
     Then Account ID is <account_id>
     Examples:
-      | chain           | anchor | account_id                            | currency |
-      | Bitcoin         | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h | BTC      |
-      | Ethereum        | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | ETH      |
-      | Matic           | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | MATIC    |
-      | Test Token      | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | TST      |
-      | ChainLink Token | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | LINK     |
+      | chain    | anchor | account_id                            |
+      | Bitcoin  | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h |
+      | Ethereum | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
+      | Polygon  | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
 
   @sendreceive2
   Scenario Outline: User should be able to receive ICP transaction
@@ -27,12 +24,12 @@ Feature:Send/Receive Asset
     And Tokens displayed on user assets
     Then Asset calculated for <chain> with <currency>
     Then User opens receive dialog window
-    Then Choose <currency> from options
-    Then Account ID is <princ>
-    Then Address is <address>
+    Then Choose <chain> from receive options
+    Then Account ID is <address>
+    Then Principal is <principal>
     Examples:
-      | chain             | anchor | princ                                 | address                               | currency |
-      | Internet Computer | 28542  | 8f4835777b8e7abf166ab5e7390ab...d52ba | ymhyc-prisv-3sxup-hjy2n-4tgz4...q-pae | ICP      |
+      | chain            | anchor | address                               | principal                             | currency |
+      | InternetComputer | 28542  | 8f4835777b8e7abf166ab5e7390ab...d52ba | ymhyc-prisv-3sxup-hjy2n-4tgz4...q-pae | ICP      |
 
   @sendreceive3
   Scenario Outline: User should be able to see balance and fee
@@ -42,16 +39,33 @@ Feature:Send/Receive Asset
     Then Asset calculated for <chain> with <currency>
     Then User opens send dialog window
     Then Choose <currency> from send options
+    And Set amount '0.0001'
+    Then Wait while balance and fee calculated
     Then Choose <account> from accounts
-    Then Balance is <balance> and fee is <fee>
+    Then Wait while balance and fee calculated
+    Then Balance is <balance> and fee is <fee> and currency is <currency>
     Examples:
-      | chain             | anchor | balance    | fee          | account        | currency |
-      | Bitcoin           | 25795  | 0.00006879 | 0.000015 BTC | NFID Account 1 | BTC      |
-      | Matic             | 25795  | 0.2        | 0 MATIC      | NFID Account 1 | MATIC    |
-      | Test Token        | 25795  | 1          | 0 MATIC      | NFID Account 1 | TST      |
-      | Ethereum          | 25795  | 0.09664164 | 0 ETH        | NFID Account 1 | ETH      |
-      | Internet Computer | 28542  | 0.01       | 0.0001 ICP   | NFID account 1 | ICP      |
-      | ChainLink Token   | 25795  | 20         | 0 ETH        | NFID Account 1 | LINK     |
+      | chain             | anchor | balance             | fee    | account        | currency |
+      | Bitcoin           | 25795  | 0.00006879          | any    | NFID account 1 | BTC      |
+      | Matic             | 25795  | 0.2                 | any    | NFID account 1 | MATIC    |
+      | Test Token        | 25795  | 1                   | any    | NFID account 1 | TST      |
+      | Ethereum          | 25795  | 0.09664164132181263 | any    | NFID account 1 | ETH      |
+      | Internet Computer | 28542  | 0.01                | 0.0001 | NFID account 1 | ICP      |
+      | ChainLink Token   | 25795  | 20                  | any    | NFID account 1 | LINK     |
+
+  @sendreceive4
+  Scenario Outline: User should be able to see his collectibles on send NFT tab
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    And Tokens displayed on user assets
+    Then User opens send nft dialog window
+    Then User opens choose nft window
+    Then User sees option <nft1> in dropdown
+    Then User sees option <nft2> in dropdown
+    Examples:
+      | anchor | nft1       | nft2        |
+      | 31870  | AnilAnimal | TestERC1155 |
+
 
   @pending
   @once_a_day

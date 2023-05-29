@@ -45,7 +45,6 @@ on:
           - "full"
           - "no-google"
 
-
 jobs:
   check-secrets:
     defaults:
@@ -74,7 +73,6 @@ jobs:
           echo "group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
           echo "cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}"
 
-
       - name: Check secrets
         run: |
           source ./ci_libs/CI_LIBS.sh
@@ -89,6 +87,7 @@ jobs:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
@@ -103,11 +102,11 @@ jobs:
       contents: read
     env:
       IMAGE_NAME: nfid-test
-    
+
     concurrency:
       group: nfid-frontend-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
-  
+
     steps:
       - name: Checkout repo.
         uses: actions/checkout@v3
@@ -185,10 +184,10 @@ jobs:
               --file Dockerfile \
               --tag ${IMAGE_NAME} \
               --label "runnumber=${GITHUB_RUN_ID}"
-            
+
             ci_echo_debug "docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}" >&2
             docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}
-  
+
             ci_echo_debug "docker push ${IMAGE_ID}:${VERSION}" >&2
             docker push ${IMAGE_ID}:${VERSION}
           fi
@@ -221,6 +220,7 @@ jobs:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
@@ -231,6 +231,7 @@ jobs:
         env:
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
@@ -255,7 +256,7 @@ jobs:
     concurrency:
       group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
-  
+
     steps:
       - name: Checkout repo.
         uses: actions/checkout@v3
@@ -342,7 +343,7 @@ jobs:
       - name: Cache Node Modules.
         uses: actions/cache@v3
         with:
-          path: '**/node_modules'
+          path: "**/node_modules"
           key: ${{ runner.os }}-yarn-e2e
 
       - name: Run tests
@@ -360,6 +361,7 @@ jobs:
             CURRCONV_TOKEN=${CURRCONV_TOKEN}
             ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
             GOERLI_ALCHEMY_API_KEY=${GOERLI_ALCHEMY_API_KEY}
+            RARIBLE_X_API_KEY=${RARIBLE_X_API_KEY}
             ETH_ALCHEMY_API_KEY=${ETH_ALCHEMY_API_KEY}
             MATIC_ALCHEMY_API_KEY=${MATIC_ALCHEMY_API_KEY}
             MUMBAI_ALCHEMY_API_KEY=${MUMBAI_ALCHEMY_API_KEY}
@@ -395,6 +397,7 @@ jobs:
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}

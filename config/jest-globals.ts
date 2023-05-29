@@ -32,6 +32,7 @@ export const JEST_GLOBALS = {
   CURRCONV_TOKEN: process.env["CURRCONV_TOKEN"],
   ETHERSCAN_API_KEY: process.env["ETHERSCAN_API_KEY"],
   GOERLI_ALCHEMY_API_KEY: process.env["GOERLI_ALCHEMY_API_KEY"],
+  RARIBLE_X_API_KEY: process.env["RARIBLE_X_API_KEY"],
   ETH_ALCHEMY_API_KEY: process.env["ETH_ALCHEMY_API_KEY"],
   MATIC_ALCHEMY_API_KEY: process.env["MATIC_ALCHEMY_API_KEY"],
   MUMBAI_ALCHEMY_API_KEY: process.env["MUMBAI_ALCHEMY_API_KEY"],
@@ -44,5 +45,5 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register",
   AWS_ECDSA_SIGN:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
-  BLOCK_CYPHER_TOKEN:"a983f9288e73496f83d02ea3af7e2f3b"
+  BLOCK_CYPHER_TOKEN: "a983f9288e73496f83d02ea3af7e2f3b",
 }

@@ -21,7 +21,7 @@ export class ICTransferConnector
 {
   getFee(): Promise<TokenFee> {
     return Promise.resolve({
-      fee: String(WALLET_FEE),
+      fee: `${String(WALLET_FEE)} ${this.config.feeCurrency}`,
       feeUsd: String(WALLET_FEE),
     })
   }

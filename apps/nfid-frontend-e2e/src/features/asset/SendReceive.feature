@@ -22,7 +22,6 @@ Feature:Send/Receive Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then Asset calculated for <chain> with <currency>
     Then User opens receive dialog window
     Then Choose <chain> from receive options
     Then Account ID is <address>

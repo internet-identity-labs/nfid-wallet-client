@@ -58,7 +58,6 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     }
   }
 
-  @Cache(connectorCache, {ttl: 600})
   getTokensOptions(): Promise<IGroupedOptions> {
     return Promise.resolve({
       label: this.config.blockchain,
@@ -92,7 +91,6 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   ): Promise<IGroupedOptions[]>
   abstract validateAddress(address: string): string | boolean
 
-  @Cache(connectorCache, {ttl: 60})
   protected async getAllPrincipals<T extends boolean>(
     groupedById: T,
   ): Promise<

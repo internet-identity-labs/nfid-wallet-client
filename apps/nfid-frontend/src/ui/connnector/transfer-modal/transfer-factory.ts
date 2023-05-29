@@ -114,11 +114,11 @@ export const getNativeTokenStandards = (): Array<TokenStandards> => {
 
 export const getAllTokensOptions = async (): Promise<IGroupedOptions[]> => {
   const ftConnectors = [...singleFTConnectors, ...multiFTConnectors]
-
+  console.log({ ftConnectors })
   const options = await Promise.all(
     ftConnectors.map(async (c) => await c.getTokensOptions()),
   )
-
+  console.log({ options })
   return concatOptionsWithSameLabel(options)
 }
 

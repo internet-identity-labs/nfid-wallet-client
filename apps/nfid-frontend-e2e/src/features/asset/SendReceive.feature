@@ -65,15 +65,16 @@ Feature:Send/Receive Asset
       | 31870  | AnilAnimal | TestERC1155 |
 
 
-  @pending
-  @once_a_day
+  @only_deploy_to_main
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
     And User opens send dialog window
     And Choose <currency> from send options
+    Then Wait while balance and fee calculated
     And Choose <account> from accounts
+    Then Wait while balance and fee calculated
     And Set <target> address and <amount> and send
     Then Success window appears with <text>
     Examples:

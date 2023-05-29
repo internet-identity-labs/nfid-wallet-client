@@ -69,6 +69,12 @@ export class Assets {
     await target.setValue(address)
     const amountToSend = await $("#amount")
     await amountToSend.setValue(amount)
+
+    const assetBalance = await this.getBalance()
+    const fee = await this.getFee()
+    await assetBalance.waitForExist({ timeout: 10000 })
+    await fee.waitForExist({ timeout: 15000 })
+
     const sendButton = await $("#sendFT")
     await sendButton.click()
   }

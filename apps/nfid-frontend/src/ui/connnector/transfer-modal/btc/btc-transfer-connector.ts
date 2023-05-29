@@ -20,6 +20,8 @@ import {
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
+import { Cache } from "node-ts-cache"
+import { connectorCache } from "../../cache"
 
 export class BtcTransferConnector
   extends TransferModalConnector<ITransferConfig>
@@ -40,6 +42,7 @@ export class BtcTransferConnector
     }
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getAccountsOptions(): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
     const balance = await this.getBalance()

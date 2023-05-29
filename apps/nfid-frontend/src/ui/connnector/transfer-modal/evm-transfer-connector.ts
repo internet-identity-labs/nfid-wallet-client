@@ -1,18 +1,18 @@
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions } from "@nfid-frontend/ui"
-import { ethereumAsset } from "@nfid/integration"
 
-import { connectorCache } from "../../cache"
-import { TransferModalConnector } from "../transfer-modal"
+import { connectorCache } from "../cache"
+import { TransferModalConnector } from "./transfer-modal"
 import {
   ITransferConfig,
   ITransferFTRequest,
   ITransferNFTRequest,
   ITransferResponse,
   TokenBalance,
-} from "../types"
-import { makeRootAccountGroupedOptions } from "../util/options"
+} from "./types"
+import { makeRootAccountGroupedOptions } from "./util/options"
+import { Cache } from "node-ts-cache"
 
 export abstract class EVMTransferConnector<
   ConfigType extends ITransferConfig,
@@ -36,7 +36,7 @@ export abstract class EVMTransferConnector<
       if (!transaction)
         throw new Error("Populated transaction not found. Please try again")
 
-      const response = await ethereumAsset.transfer(
+      const response = await this.config.assetService.transfer(
         identity,
         transaction.transaction,
       )
@@ -62,14 +62,16 @@ export abstract class EVMTransferConnector<
     return true
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getAddress(): Promise<string> {
     const identity = await this.getIdentity()
-    return await ethereumAsset.getAddress(identity)
+    return await this.config.assetService.getAddress(identity)
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getBalance(): Promise<TokenBalance> {
     const address = await this.getAddress()
-    const balance = await ethereumAsset.getBalance(address)
+    const balance = await this.config.assetService.getBalance(address)
 
     return {
       balance: String(balance.balance),
@@ -77,6 +79,7 @@ export abstract class EVMTransferConnector<
     }
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getAccountsOptions(): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
     const balance = await this.getBalance()

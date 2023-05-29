@@ -6,6 +6,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
+import { EVMTransferConnector } from "../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferFTConnector,
@@ -13,7 +14,6 @@ import {
   TokenFee,
   TransferModalType,
 } from "../types"
-import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class EthTransferConnector
   extends EVMTransferConnector<ITransferConfig>
@@ -50,4 +50,5 @@ export const ethereumTransferConnector = new EthTransferConnector({
   title: "Ethereum",
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT,
+  assetService: ethereumAsset,
 })

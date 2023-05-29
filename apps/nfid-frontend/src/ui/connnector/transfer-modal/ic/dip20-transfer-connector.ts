@@ -29,11 +29,14 @@ import {
   TransferModalType,
 } from "../types"
 import { ICMTransferConnector } from "./icm-transfer-connector"
+import { Cache } from "node-ts-cache"
+import { connectorCache } from "../../cache"
 
 export class DIP20TransferConnector
   extends ICMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
+  @Cache(connectorCache, {ttl: 600})
   async getTokenMetadata(currency: string): Promise<TokenMetadata> {
     const tokens = await this.getTokens()
     const token = tokens.find((token) => token.symbol === currency)
@@ -45,6 +48,7 @@ export class DIP20TransferConnector
     } as any
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getBalance(address?: string, currency?: string): Promise<TokenBalance> {
     const { canisterId } = await this.getTokenMetadata(currency ?? "")
 
@@ -59,15 +63,18 @@ export class DIP20TransferConnector
     })
   }
 
+  @Cache(connectorCache, {ttl: 600})
   async getTokenCurrencies(): Promise<string[]> {
     const tokens = await this.getTokens()
     return tokens.map((token) => token.symbol)
   }
 
+  @Cache(connectorCache, {ttl: 600})
   async getTokens(): Promise<TokenMetadata[]> {
     return await Promise.all(TOKEN_CANISTER.map(getMetadata))
   }
 
+  @Cache(connectorCache, {ttl: 600})
   async getTokensOptions(): Promise<IGroupedOptions> {
     const tokens = await this.getTokens()
 
@@ -82,6 +89,7 @@ export class DIP20TransferConnector
     }
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
     const { symbol } = await this.getTokenMetadata(currency ?? "")
     const principals = await this.getAllPrincipals(true)
@@ -139,7 +147,7 @@ export class DIP20TransferConnector
     const tokenMetadata = await this.getTokenMetadata(currency)
     return Promise.resolve({
       fee: tokenMetadata.fee.toString(),
-      feeUsd: `$${tokenMetadata.fee.toString()}`,
+      feeUsd: tokenMetadata.fee.toString(),
     })
   }
 }

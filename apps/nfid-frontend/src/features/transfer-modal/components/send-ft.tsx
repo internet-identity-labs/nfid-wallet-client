@@ -333,7 +333,7 @@ export const TransferFT = ({
         <div className="flex justify-between text-sm text-gray-400">
           <p>Current balance</p>
           <div className="flex items-center space-x-0.5">
-            {!!balance?.balance ? (
+            {!!balance?.balance?.length ? (
               <span id="balance">
                 {balance.balance.toString()} {selectedTokenCurrency}
               </span>

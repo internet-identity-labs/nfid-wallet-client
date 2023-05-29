@@ -6,7 +6,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
-import { Blockchain } from "../../types"
+import { Blockchain, NativeToken } from "../../types"
 import {
   ITransferFTConnector,
   ITransferConfig,
@@ -46,6 +46,7 @@ export class ICTransferConnector
 export const icTransferConnector = new ICTransferConnector({
   icon: IconSvgDfinity,
   tokenStandard: TokenStandards.ICP,
+  feeCurrency: NativeToken.ICP,
   blockchain: Blockchain.IC,
   title: "Internet Computer",
   shouldHavePrincipal: true,

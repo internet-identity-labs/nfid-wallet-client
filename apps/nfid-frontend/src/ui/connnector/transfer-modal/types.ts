@@ -1,4 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { FungibleAsset } from "packages/integration/src/lib/asset/types"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -22,6 +23,7 @@ export type ITransferConfig = {
   feeCurrency?: NativeToken
   shouldHavePrincipal?: boolean
   addressPlaceholder: string
+  assetService?: FungibleAsset
 }
 
 export interface ITransferModalConnector

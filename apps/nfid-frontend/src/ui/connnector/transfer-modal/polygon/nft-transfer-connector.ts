@@ -10,6 +10,7 @@ import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types
 
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
+import { EVMTransferConnector } from "../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferNFTConnector,
@@ -18,12 +19,13 @@ import {
   TransferModalType,
 } from "../types"
 import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
-import { EVMTransferConnector } from "./evm-transfer-connector"
+import { Cache } from "node-ts-cache"
 
 export class PolygonNFTTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
+  @Cache(connectorCache, {ttl: 60})
   async getNFTs(): Promise<UserNonFungibleToken[]> {
     const identity = await this.getIdentity()
     const nfts = await polygonAsset.getItemsByUser({ identity })
@@ -37,6 +39,7 @@ export class PolygonNFTTransferConnector
     )
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getNFTOptions(): Promise<IGroupedOptions[]> {
     const applications = await this.getApplications()
     const nfts = await this.getNFTs()
@@ -93,4 +96,5 @@ export const polygonNFTTransferConnector = new PolygonNFTTransferConnector({
   feeCurrency: NativeToken.MATIC,
   addressPlaceholder: "Recipient polygon address",
   type: TransferModalType.NFT,
+  assetService: polygonAsset,
 })

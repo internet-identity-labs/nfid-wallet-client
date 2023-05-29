@@ -81,7 +81,9 @@ export const getConnector = async <T extends TransferModalType>({
         }
       }),
     )
-  ).filter((c) => type === "ft" || c.type === "nft")
+  ).filter(
+    (c) => type === TransferModalType.FT || c.type === TransferModalType.NFT,
+  )
 
   if (tokenStandard) {
     const neededConfig = allConfigs.find((c) => c.token === tokenStandard)

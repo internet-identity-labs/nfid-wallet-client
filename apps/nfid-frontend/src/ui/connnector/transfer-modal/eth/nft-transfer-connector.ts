@@ -7,7 +7,7 @@ import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
-
+import { Cache } from "node-ts-cache"
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
 import {
@@ -18,12 +18,14 @@ import {
   TransferModalType,
 } from "../types"
 import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
-import { EVMTransferConnector } from "./evm-transfer-connector"
+import { EVMTransferConnector } from "../evm-transfer-connector"
+
 
 export class EthNFTTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
+  @Cache(connectorCache, {ttl: 60})
   async getNFTs(): Promise<UserNonFungibleToken[]> {
     const identity = await this.getIdentity()
     const nfts = await ethereumAsset.getItemsByUser({ identity })
@@ -37,6 +39,7 @@ export class EthNFTTransferConnector
     )
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getNFTOptions(): Promise<IGroupedOptions[]> {
     const applications = await this.getApplications()
     const nfts = await this.getNFTs()
@@ -95,4 +98,5 @@ export const ethereumNFTTransferConnector = new EthNFTTransferConnector({
   feeCurrency: NativeToken.ETH,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.NFT,
+  assetService: ethereumAsset,
 })

@@ -16,9 +16,9 @@ import { polygonNFTTransferConnector } from "./polygon/nft-transfer-connector"
 import { polygonTransferConnector } from "./polygon/polygon-transfer-connector"
 import {
   IConnector,
-  IConnectorType,
   IGetConnector,
   IUniversalConnector,
+  TransferModalType,
 } from "./types"
 import { concatOptionsWithSameLabel } from "./util/options"
 
@@ -59,14 +59,14 @@ const allConnectors = [
 
 const ftMappedConnectors = toMap([...singleFTConnectors, ...multiFTConnectors])
 const nftMappedConnectors = toMap(NFTConnectors)
-export const getConnector = async <T extends IConnectorType>({
+export const getConnector = async <T extends TransferModalType>({
   type,
   currency,
   blockchain,
   tokenStandard,
 }: IGetConnector<T>): Promise<IConnector<T>> => {
   const mappedConnectors =
-    type === "ft" ? ftMappedConnectors : nftMappedConnectors
+    type === TransferModalType.FT ? ftMappedConnectors : nftMappedConnectors
 
   const allConfigs = (
     await Promise.all(
@@ -95,7 +95,6 @@ export const getConnector = async <T extends IConnectorType>({
 
   if (blockchain) {
     const neededConfig = allConfigs.find((c) => c.blockchain === blockchain)
-    console.log({ blockchain, allConfigs, neededConfig })
     return mappedConnectors.get(neededConfig?.token!)! as IConnector<T>
   }
 

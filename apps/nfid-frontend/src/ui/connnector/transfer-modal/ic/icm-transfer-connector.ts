@@ -18,16 +18,15 @@ import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
 import { TransferModalConnector } from "../transfer-modal"
 import {
-  ITransferFTModalConfig,
+  ITransferConfig,
   ITransferFTRequest,
-  ITransferNFTModalConfig,
   ITransferNFTRequest,
   ITransferResponse,
   TokenBalance,
 } from "../types"
 
 export abstract class ICMTransferConnector<
-  ConfigType extends ITransferFTModalConfig | ITransferNFTModalConfig,
+  ConfigType extends ITransferConfig,
 > extends TransferModalConnector<ConfigType> {
   async getAccountsOptions(): Promise<IGroupedOptions[]> {
     const principals = await this.getAllPrincipals(true)

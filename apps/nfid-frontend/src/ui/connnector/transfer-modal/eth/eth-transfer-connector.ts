@@ -7,15 +7,16 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
 import {
+  ITransferConfig,
   ITransferFTConnector,
-  ITransferFTModalConfig,
   ITransferFTRequest,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class EthTransferConnector
-  extends EVMTransferConnector<ITransferFTModalConfig>
+  extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
   async getFee({
@@ -47,7 +48,6 @@ export const ethereumTransferConnector = new EthTransferConnector({
   blockchain: Blockchain.ETHEREUM,
   feeCurrency: NativeToken.ETH,
   title: "Ethereum",
-  isNativeToken: true,
   addressPlaceholder: "Recipient ETH address",
-  type: "ft",
+  type: TransferModalType.FT,
 })

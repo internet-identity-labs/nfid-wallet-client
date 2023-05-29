@@ -6,9 +6,8 @@ import { ethereumAsset } from "@nfid/integration"
 import { connectorCache } from "../../cache"
 import { TransferModalConnector } from "../transfer-modal"
 import {
-  ITransferFTModalConfig,
+  ITransferConfig,
   ITransferFTRequest,
-  ITransferNFTModalConfig,
   ITransferNFTRequest,
   ITransferResponse,
   TokenBalance,
@@ -16,7 +15,7 @@ import {
 import { makeRootAccountGroupedOptions } from "../util/options"
 
 export abstract class EVMTransferConnector<
-  ConfigType extends ITransferFTModalConfig | ITransferNFTModalConfig,
+  ConfigType extends ITransferConfig,
 > extends TransferModalConnector<ConfigType> {
   async transfer(
     request: ITransferFTRequest | ITransferNFTRequest,

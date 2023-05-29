@@ -9,14 +9,15 @@ import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
 import {
   ITransferFTConnector,
-  ITransferFTModalConfig,
+  ITransferConfig,
   ITransferFTRequest,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class MaticTransferConnector
-  extends EVMTransferConnector<ITransferFTModalConfig>
+  extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
   async getEstimatedTransaction({
@@ -62,7 +63,6 @@ export const polygonTransferConnector = new MaticTransferConnector({
   blockchain: Blockchain.POLYGON,
   feeCurrency: NativeToken.MATIC,
   title: "Polygon",
-  isNativeToken: true,
   addressPlaceholder: "Recipient Polygon address",
-  type: "ft",
+  type: TransferModalType.FT,
 })

@@ -7,6 +7,7 @@ import {
   getConnector,
   getNativeTokenStandards,
 } from "frontend/ui/connnector/transfer-modal/transfer-factory"
+import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 
 export const useNetworkOptions = () => {
   const supportedNetworks = getNativeTokenStandards()
@@ -17,7 +18,10 @@ export const useNetworkOptions = () => {
       Promise.all(
         tokens.map(async (token: TokenStandards) =>
           (
-            await getConnector({ type: "ft", tokenStandard: token })
+            await getConnector({
+              type: TransferModalType.FT,
+              tokenStandard: token,
+            })
           ).getNetworkOption(),
         ),
       ),

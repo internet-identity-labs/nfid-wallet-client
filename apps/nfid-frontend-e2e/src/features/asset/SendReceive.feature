@@ -66,7 +66,7 @@ Feature:Send/Receive Asset
 
 
   @pending
-  @once_per_day
+  @once_a_day
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

@@ -54,8 +54,8 @@ export class Assets {
     )
   }
 
-  public async openAssetOptions() {
-    const assetOptions = await $("#option_Asset")
+  public async openAssetReceiveOptions() {
+    const assetOptions = await $("#option_Network")
     await assetOptions.click()
   }
 
@@ -74,7 +74,7 @@ export class Assets {
   }
 
   public async getFee() {
-    return $("#transfer_fee")
+    return $("#fee")
   }
 
   public async sendDialog() {
@@ -84,17 +84,29 @@ export class Assets {
     })
     await sendReceiveButton.click()
     const loader = await $("#loader")
-    await loader.waitForExist({ reverse: true, interval: 5000 })
+    await loader.waitForExist({ reverse: true, timeout: 15000 })
+  }
+
+  public async sendNFTDialog() {
+    const sendReceiveButton = await $("#sendReceiveButton")
+    await sendReceiveButton.waitForDisplayed({
+      timeout: 7000,
+    })
+    await sendReceiveButton.click()
+    const loader = await $("#loader")
+    await loader.waitForExist({ reverse: true, timeout: 15000 })
+    await $("#send_type_toggle").click()
+    await loader.waitForExist({ reverse: true, timeout: 15000 })
   }
 
   public async receiveDialog() {
     await this.sendDialog()
     const tabReceive = await $("#tab_receive")
     await tabReceive.waitForDisplayed({
-      timeout: 5000,
+      timeout: 10000,
     })
     await tabReceive.click()
-    await $("#option_Asset").waitForDisplayed({ timeout: 5000 })
+    await $("#option_Network").waitForDisplayed({ timeout: 10000 })
   }
 
   public async getAccountId(isAddress?: boolean) {
@@ -134,7 +146,7 @@ export class Assets {
   }
 
   public async chooseAccountReceive(account: string) {
-    const assetOptions = await $("#option_Account")
+    const assetOptions = await $("#option_Accounts")
     await assetOptions.click()
     await this.chooseOption(account)
   }

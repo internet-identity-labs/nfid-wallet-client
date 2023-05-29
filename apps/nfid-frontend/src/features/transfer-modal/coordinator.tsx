@@ -45,51 +45,26 @@ export const TransferModalCoordinator = () => {
       case state.matches("SendMachine.SendFT"):
         return (
           <TransferFT
-            selectedToken={state.context?.selectedFT}
-            selectedReceiverWallet={state.context?.receiverWallet}
-            selectedSourceWallet={state.context?.sourceWalletAddress}
-            selectedSourceAccount={state.context?.sourceAccount}
-            assignToken={(token) =>
-              send({ type: "ASSIGN_SELECTED_FT", data: token })
+            preselectedTokenCurrency={state.context.tokenCurrency}
+            preselectedAccountAddress={state.context.sourceWalletAddress}
+            onSuccess={(message: string) =>
+              send({ type: "ON_SUCCESS", data: message })
             }
-            assignSourceWallet={(value) =>
-              send({ type: "ASSIGN_SOURCE_WALLET", data: value })
-            }
-            assignReceiverWallet={(value) =>
-              send({ type: "ASSIGN_RECEIVER_WALLET", data: value })
-            }
-            assignAmount={(value) =>
-              send({ type: "ASSIGN_AMOUNT", data: value })
-            }
-            assignFromAccount={(value) =>
-              send({ type: "ASSIGN_SOURCE_ACCOUNT", data: value })
-            }
-            onSubmit={() => send({ type: "ON_SUBMIT" })}
           />
         )
       case state.matches("SendMachine.SendNFT"):
         return (
           <TransferNFT
-            assignReceiverWallet={(value) =>
-              send({ type: "ASSIGN_RECEIVER_WALLET", data: value })
-            }
-            onSubmit={() => send({ type: "ON_SUBMIT" })}
-            assignSelectedNFT={(value) =>
-              send({ type: "ASSIGN_SELECTED_NFT", data: value })
+            onSuccess={(message: string) =>
+              send({ type: "ON_SUCCESS", data: message })
             }
           />
         )
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive
-            assignSelectedToken={(token) =>
-              send({ type: "ASSIGN_SELECTED_FT", data: token })
-            }
-            assignSourceWallet={(value) =>
-              send({ type: "ASSIGN_SOURCE_WALLET", data: value })
-            }
-            selectedToken={state.context?.selectedFT}
-            selectedSourceWallet={state.context?.sourceWalletAddress}
+            preselectedTokenStandard={state.context.tokenStandard}
+            preselectedAccountAddress={state.context.sourceWalletAddress}
           />
         )
       case state.matches("Success"):
@@ -133,10 +108,10 @@ export const TransferModalCoordinator = () => {
     >
       <div
         className={clsx(
-          "rounded-xl shadow-lg p-5 text-black",
+          "rounded-xl shadow-lg p-5 text-black overflow-hidden",
           "z-20 bg-white absolute flex flex-col",
           "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
-          "w-[95%] sm:w-[450px] h-[540px]",
+          "w-[95%] sm:w-[450px] h-[580px]",
         )}
         onClick={(e) => e.stopPropagation()}
       >
@@ -155,6 +130,7 @@ export const TransferModalCoordinator = () => {
             className="mb-6"
             onChange={onTokenTypeChange}
             defaultValue={state.context.tokenType === "nft"}
+            id="send_type_toggle"
           />
         )}
         {Component}

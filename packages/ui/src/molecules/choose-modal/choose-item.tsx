@@ -32,6 +32,7 @@ export const ChooseItem = ({
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
         "py-2.5 cursor-pointer",
+        "first:border-t-0",
       )}
     >
       <div id={id} className="flex items-center">

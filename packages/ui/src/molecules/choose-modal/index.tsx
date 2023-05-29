@@ -28,6 +28,7 @@ export interface IChooseModal {
   errorText?: string
   registerFunction?: UseFormRegisterReturn<string>
   iconClassnames?: string
+  isSmooth?: boolean
 }
 
 export const ChooseModal = ({
@@ -44,6 +45,7 @@ export const ChooseModal = ({
   errorText,
   registerFunction,
   iconClassnames,
+  isSmooth = false,
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -53,7 +55,12 @@ export const ChooseModal = ({
   const handleSelect = useCallback((option: IGroupOption) => {
     setSelectedValue(option.value)
     setSelectedOption(option)
-    setIsModalVisible(false)
+    setTimeout(
+      () => {
+        setIsModalVisible(false)
+      },
+      isSmooth ? 100 : 0,
+    )
   }, [])
 
   const filteredOptions = useMemo(() => {
@@ -152,18 +159,21 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput(e.target.value)}
           className="my-4"
         />
-        <div className={clsx("flex-1 overflow-auto snap-end scroll-pl-1")}>
-          {filteredOptions.map((group) => (
-            <div
-              className="mt-6"
-              key={`group_${group.label}_${group.options.length}`}
-            >
-              <p
-                id={"label_" + group.label}
-                className="text-sm font-bold tracking-[0.01em] mb-1.5"
-              >
-                {group.label}
-              </p>
+        <div
+          className={clsx(
+            "flex-1 overflow-auto snap-end scroll-pl-1 space-y-6",
+          )}
+        >
+          {filteredOptions.map((group, index) => (
+            <div key={`group_${group.label}_${group.options.length}_${index}`}>
+              {group.label && (
+                <p
+                  id={"label_" + group.label}
+                  className="text-sm font-bold tracking-[0.01em] mb-1.5"
+                >
+                  {group.label}
+                </p>
+              )}
               {group.options.map((option) => (
                 <ChooseItem
                   key={`option_${option.value}`}

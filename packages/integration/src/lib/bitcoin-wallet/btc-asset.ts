@@ -88,12 +88,12 @@ export class BtcAsset extends Asset<string> {
       name: this.getBlockchain(),
       symbol: "BTC",
     }
-    const fee = await wallet.getFee(address, 100)
+
     return super.computeSheetForRootAccount(
       token,
       delegation.getPrincipal().toText(),
       logo,
-      fee.toString(),
+      "0",
     )
   }
 

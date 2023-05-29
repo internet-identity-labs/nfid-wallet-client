@@ -1,146 +1,149 @@
-import { useCallback, useEffect, useMemo } from "react"
-import { TokenConfig } from "src/ui/connnector/types"
+import { Principal } from "@dfinity/principal"
+import clsx from "clsx"
+import { principalToAddress } from "ictool"
+import { useEffect, useMemo, useState } from "react"
+import useSWR from "swr"
 
-import { ChooseModal, Copy, QRCode } from "@nfid-frontend/ui"
+import {
+  ChooseModal,
+  Copy,
+  QRCode,
+  SmoothBlurredLoader,
+} from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { useAllToken } from "frontend/features/fungable-token/use-all-token"
-import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
+import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 
-import { useTokenOptions } from "../hooks/use-token-options"
-import { useWalletOptions } from "../hooks/use-wallets-options"
+import { useAccountsOptions } from "../hooks/use-accounts-options"
+import { useNetworkOptions } from "../hooks/use-network-options"
+import { PRINCIPAL_LENGTH } from "../utils/validations"
+import { ReceiveModal } from "./receive-modal"
 
-interface ITransferReceive {
-  selectedToken?: TokenConfig
-  selectedSourceWallet?: string
-  assignSourceWallet: (value: string) => void
-  assignSelectedToken: (value: TokenConfig) => void
+export interface ITransferReceive {
+  preselectedTokenStandard: string
+  preselectedAccountAddress: string
 }
 
 export const TransferReceive = ({
-  selectedToken,
-  selectedSourceWallet,
-  assignSourceWallet,
-  assignSelectedToken,
+  preselectedTokenStandard,
+  preselectedAccountAddress,
 }: ITransferReceive) => {
-  const { tokenOptions } = useTokenOptions()
-  const { walletOptions } = useWalletOptions(selectedToken?.currency ?? "ICP")
-  const { wallets } = useAllWallets()
-  const { token: allTokens } = useAllToken()
-
-  const selectedWallet = useMemo(() => {
-    if (!selectedSourceWallet) return
-
-    return wallets.find((w) =>
-      [
-        w.principal.toText(),
-        w.address,
-        w.ethAddress,
-        w.principalId,
-        w.btcAddress,
-      ].includes(selectedSourceWallet),
-    )
-  }, [selectedSourceWallet, wallets])
-
-  const selectedAddress = useMemo(() => {
-    switch (selectedToken?.tokenStandard) {
-      case "ETH":
-        return selectedWallet?.ethAddress
-      case "MATIC":
-        return selectedWallet?.ethAddress
-      case "ERC20_POLYGON":
-        return selectedWallet?.ethAddress
-      case "ERC20_ETHEREUM":
-        return selectedWallet?.ethAddress
-      case "BTC":
-        return selectedWallet?.btcAddress
-      case "ICP":
-        return selectedWallet?.address
-    }
-  }, [
-    selectedToken?.tokenStandard,
-    selectedWallet?.address,
-    selectedWallet?.ethAddress,
-    selectedWallet?.btcAddress,
-  ])
-
-  const handleSelectToken = useCallback(
-    (value: string) => {
-      const token = allTokens.find((t) => t.currency === value)
-      if (!token) return
-
-      assignSelectedToken(token)
-    },
-    [allTokens, assignSelectedToken],
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTokenStandard, setSelectedTokenStandard] = useState(
+    preselectedTokenStandard,
+  )
+  const [selectedAccountAddress, setSelectedAccountAddress] = useState(
+    preselectedAccountAddress,
   )
 
+  const { data: networkOptions } = useNetworkOptions()
+  const { data: accountsOptions } = useAccountsOptions(
+    selectedTokenStandard as TokenStandards,
+  )
+
+  const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
+    [selectedTokenStandard, "selectedConnector"],
+    ([selectedTokenStandard]) =>
+      getConnector({ type: "ft", blockchain: selectedTokenStandard }),
+  )
+
+  const isPrincipalVisible = useMemo(() => {
+    return !!selectedConnector?.getTokenConfig().shouldHavePrincipal
+  }, [selectedConnector])
+
+  const address = useMemo(() => {
+    if (
+      !isPrincipalVisible ||
+      (isPrincipalVisible &&
+        selectedAccountAddress?.length !== PRINCIPAL_LENGTH)
+    )
+      return selectedAccountAddress
+
+    return principalToAddress(Principal.fromText(selectedAccountAddress))
+  }, [isPrincipalVisible, selectedAccountAddress])
+
   useEffect(() => {
-    assignSourceWallet(walletOptions[0].options[0]?.value)
-  }, [walletOptions]) // eslint-disable-line react-hooks/exhaustive-deps
+    setSelectedAccountAddress(accountsOptions[0]?.options[0]?.value)
+  }, [accountsOptions])
 
   return (
-    <div className="space-y-3 text-xs">
+    <SmoothBlurredLoader
+      className="mt-4 space-y-3 text-xs"
+      isLoading={!accountsOptions.length || isConnectorLoading}
+    >
+      <p className="text-sm">
+        Use this address for receiving tokens and NFTs. See which{" "}
+        <span
+          className="text-sm text-blue-600 cursor-pointer"
+          onClick={() => setIsModalOpen(true)}
+        >
+          tokens NFID supports.
+        </span>
+      </p>
       <ChooseModal
-        label="Asset"
-        title={"Choose an asset"}
-        optionGroups={tokenOptions}
+        label="Network"
+        title={"Choose an network"}
+        optionGroups={networkOptions}
         iconClassnames="!w-6 !h-auto !object-contain"
-        preselectedValue={selectedToken?.currency}
-        onSelect={handleSelectToken}
+        preselectedValue={selectedTokenStandard}
+        onSelect={setSelectedTokenStandard}
         type="small"
+        isSmooth
       />
       <ChooseModal
-        label="Account"
-        optionGroups={walletOptions}
+        label="Accounts"
         title={"Choose an account"}
-        onSelect={(value) => assignSourceWallet(value)}
-        preselectedValue={selectedSourceWallet}
+        optionGroups={accountsOptions}
+        iconClassnames="!w-6 !h-auto !object-contain"
+        preselectedValue={selectedAccountAddress}
+        onSelect={setSelectedAccountAddress}
         type="small"
+        isSmooth
       />
-      {Object.values(TokenStandards).includes(selectedToken!.tokenStandard) && (
+      <div>
+        <p className="mb-1 text-gray-400">
+          {isPrincipalVisible ? "Account ID" : "Wallet address"}
+        </p>
+        <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
+          <CenterEllipsis
+            value={address ?? ""}
+            leadingChars={29}
+            trailingChars={5}
+            id={"address"}
+          />
+          <Copy value={address} />
+        </div>
+      </div>
+      {isPrincipalVisible && (
         <div>
-          <p className="mb-1 text-gray-400">
-            {selectedToken?.tokenStandard === "ETH" ||
-            selectedToken?.tokenStandard === "BTC" ||
-            selectedToken?.tokenStandard === "ERC20_ETHEREUM" ||
-            selectedToken?.tokenStandard === "MATIC" ||
-            selectedToken?.tokenStandard === "ERC20_POLYGON"
-              ? "Wallet address"
-              : "Account ID"}
-          </p>
-          <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10">
+          <p className="mb-1 text-gray-400">Principal ID</p>
+          <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
             <CenterEllipsis
-              value={selectedAddress ?? ""}
+              value={selectedAccountAddress ?? ""}
               leadingChars={29}
               trailingChars={5}
               id={"principal"}
             />
-            <Copy value={selectedAddress ?? ""} />
+            <Copy value={selectedAccountAddress} />
           </div>
         </div>
       )}
-
-      {["ICP", "DIP20"].includes(selectedToken?.tokenStandard ?? "") && (
-        <div>
-          <p className="mb-1 text-gray-400">Principal ID</p>
-          <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10">
-            <CenterEllipsis
-              value={selectedWallet?.principal.toText() ?? ""}
-              leadingChars={29}
-              trailingChars={5}
-              id={"address"}
-            />
-            <Copy value={selectedWallet?.principal.toText() ?? ""} />
-          </div>
-        </div>
-      )}
-      <div className="w-[150px] my-4 mx-auto">
+      <div className="mx-auto">
         <QRCode
-          options={{ width: 150, margin: 0 }}
-          content={selectedAddress ?? selectedWallet?.principal.toText() ?? ""}
+          options={{ width: isPrincipalVisible ? 140 : 200, margin: 0 }}
+          content={address}
         />
       </div>
-    </div>
+
+      <div
+        className={clsx(
+          "absolute top-0 left-0 z-50 w-full h-full p-5 bg-white transition-all duration-200 ease-in-out",
+          isModalOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <ReceiveModal onBack={() => setIsModalOpen(false)} />
+      </div>
+    </SmoothBlurredLoader>
   )
 }

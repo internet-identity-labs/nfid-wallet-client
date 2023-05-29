@@ -54,10 +54,6 @@ export class BtcWallet {
   }
 
   async getFee(target: string, value: number): Promise<number> {
-    //TODO: please remove after migration to new send/receive flow
-    if (CHAIN_NETWORK != "mainnet") {
-      return feeTestnet
-    }
     const source = await this.getBitcoinAddress()
     return await bcComputeFee(source, target, value)
   }

@@ -12,7 +12,7 @@ import {
   IconCmpNFTPreview,
   Image,
   Label,
-  SmoothBlurredLoader,
+  BlurredLoader,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 import { getWalletName } from "@nfid/integration"
@@ -143,7 +143,7 @@ export const TransferNFT = ({
   }, [isNFTLoading, isTransferInProgress])
 
   return (
-    <SmoothBlurredLoader
+    <BlurredLoader
       overlayClassnames="rounded-xl"
       isLoading={isTransferInProgress || isNFTLoading}
       loadingMessage={loadingMessage}
@@ -290,6 +290,6 @@ export const TransferNFT = ({
           Send
         </Button>
       </div>
-    </SmoothBlurredLoader>
+    </BlurredLoader>
   )
 }

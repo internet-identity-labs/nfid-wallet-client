@@ -27,6 +27,8 @@ import {
   ITransferResponse,
   TokenFee,
 } from "./types"
+import { connectorCache } from "../cache"
+import { Cache } from "node-ts-cache"
 
 export abstract class TransferModalConnector<T extends ITransferConfig>
   implements ITransferModalConnector
@@ -37,13 +39,16 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     this.config = config
   }
 
+
   getTokenConfig(currency?: string): any {
     return this.config
   }
 
+
   getTokenCurrencies(): Promise<string[]> {
     return Promise.resolve([this.config.tokenStandard])
   }
+
 
   getNetworkOption(): IGroupOption {
     return {
@@ -53,6 +58,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     }
   }
 
+  @Cache(connectorCache, {ttl: 600})
   getTokensOptions(): Promise<IGroupedOptions> {
     return Promise.resolve({
       label: this.config.blockchain,
@@ -86,6 +92,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   ): Promise<IGroupedOptions[]>
   abstract validateAddress(address: string): string | boolean
 
+  @Cache(connectorCache, {ttl: 60})
   protected async getAllPrincipals<T extends boolean>(
     groupedById: T,
   ): Promise<
@@ -112,10 +119,12 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     ) as any
   }
 
+  @Cache(connectorCache, {ttl: 120})
   protected async getProfile(): Promise<Profile> {
     return loadProfileFromLocalStorage() ?? (await fetchProfile())
   }
 
+  @Cache(connectorCache, {ttl: 120})
   protected async getAccounts(
     extendWithFixedAccounts: boolean = false,
   ): Promise<Account[]> {
@@ -138,6 +147,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     }, accounts)
   }
 
+  @Cache(connectorCache, {ttl: 180})
   protected async getApplications(): Promise<Application[]> {
     return await fetchApplications()
   }

@@ -504,7 +504,9 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     const ethersWallet = wallet
       ? new EthereumWallet(new EthersEthereum(wallet))
       : undefined
-    const raribleSdk = createRaribleSdk(ethersWallet, network)
+    const raribleSdk = createRaribleSdk(ethersWallet, network, {
+      apiKey: RARIBLE_X_API_KEY,
+    })
     return raribleSdk
   }
 

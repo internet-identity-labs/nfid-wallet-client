@@ -1,44 +1,45 @@
-import { Then } from "@wdio/cucumber-framework"
+import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
 
-import Profile from "../pages/profile.js"
-import Assets from "../pages/assets.js"
-import Vault from "../pages/vault.js"
-import Vaults from "../pages/vaults.js"
-
-import clickElement from "./support/actions/clickElement.js"
-import setInputField from "./support/actions/setInputField.js"
-import waitFor from "./support/actions/waitFor.js"
-import waitForVisible from "./support/actions/waitForDisplayed.js"
-import checkClass from "./support/check/checkClass.js"
-import checkContainsAnyText from "./support/check/checkContainsAnyText.js"
-import checkContainsText from "./support/check/checkContainsText.js"
-import checkCookieContent from "./support/check/checkCookieContent.js"
-import checkCookieExists from "./support/check/checkCookieExists.js"
-import checkDimension from "./support/check/checkDimension.js"
-import checkEqualsText from "./support/check/checkEqualsText.js"
-import checkFocus from "./support/check/checkFocus.js"
-import checkFontProperty from "./support/check/checkFontProperty.js"
-import checkInURLPath from "./support/check/checkInURLPath.js"
-import checkIsEmpty from "./support/check/checkIsEmpty.js"
-import checkIsOpenedInNewWindow from "./support/check/checkIsOpenedInNewWindow.js"
-import checkLocalStorageKey from "./support/check/checkLocalStorageKey.js"
-import checkModal from "./support/check/checkModal.js"
-import checkModalText from "./support/check/checkModalText.js"
-import checkNewWindow from "./support/check/checkNewWindow.js"
-import checkOffset from "./support/check/checkOffset.js"
-import checkProperty from "./support/check/checkProperty.js"
-import checkSelected from "./support/check/checkSelected.js"
-import checkTitle from "./support/check/checkTitle.js"
-import checkTitleContains from "./support/check/checkTitleContains.js"
-import checkURL from "./support/check/checkURL.js"
-import checkURLPath from "./support/check/checkURLPath.js"
-import checkWithinViewport from "./support/check/checkWithinViewport.js"
-import compareText from "./support/check/compareText.js"
-import isVisible from "./support/check/isDisplayed.js"
-import isEnabled from "./support/check/isEnabled.js"
-import isExisting from "./support/check/isExisting.js"
-import checkIfElementExists from "./support/check/checkIfElementExists.js"
+import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
+import Assets from "../pages/assets"
+import Nft from "../pages/nft"
+import Profile from "../pages/profile"
+import Vault from "../pages/vault"
+import Vaults from "../pages/vaults"
+import clickElement from "./support/action/clickElement"
+import setInputField from "./support/action/setInputField"
+import waitFor from "./support/action/waitFor"
+import waitForVisible from "./support/action/waitForDisplayed"
+import checkClass from "./support/check/checkClass"
+import checkContainsAnyText from "./support/check/checkContainsAnyText"
+import checkContainsText from "./support/check/checkContainsText"
+import checkCookieContent from "./support/check/checkCookieContent"
+import checkCookieExists from "./support/check/checkCookieExists"
+import checkDimension from "./support/check/checkDimension"
+import checkEqualsText from "./support/check/checkEqualsText"
+import checkFocus from "./support/check/checkFocus"
+import checkFontProperty from "./support/check/checkFontProperty"
+import checkInURLPath from "./support/check/checkInURLPath"
+import checkIsEmpty from "./support/check/checkIsEmpty"
+import checkIsOpenedInNewWindow from "./support/check/checkIsOpenedInNewWindow"
+import checkLocalStorageKey from "./support/check/checkLocalStorageKey"
+import checkModal from "./support/check/checkModal"
+import checkModalText from "./support/check/checkModalText"
+import checkNewWindow from "./support/check/checkNewWindow"
+import checkOffset from "./support/check/checkOffset"
+import checkProperty from "./support/check/checkProperty"
+import checkSelected from "./support/check/checkSelected"
+import checkTitle from "./support/check/checkTitle"
+import checkTitleContains from "./support/check/checkTitleContains"
+import checkURL from "./support/check/checkURL"
+import checkURLPath from "./support/check/checkURLPath"
+import checkWithinViewport from "./support/check/checkWithinViewport"
+import compareText from "./support/check/compareText"
+import isVisible from "./support/check/isDisplayed"
+import isEnabled from "./support/check/isEnabled"
+import isExisting from "./support/check/isExisting"
+import checkIfElementExists from "./support/lib/checkIfElementExists"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -74,7 +75,7 @@ Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
     timeout: 13000,
     timeoutMsg: "Phone Number is not displayed",
   })
-  await expect(await Profile.getPhoneNumber.getText()).toContain(phoneNumber)
+  expect(await Profile.getPhoneNumber.getText()).toHaveText(phoneNumber)
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
@@ -203,16 +204,16 @@ Then(
   checkLocalStorageKey,
 )
 
-// Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
-//   await checkCredentialAmount(this.authenticator, Number(amount))
-// })
+Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
+  await checkCredentialAmount(this.authenticator, Number(amount))
+})
 
 Then(/^Go to Profile page$/, async function () {
   await clickElement("click", "selector", "#profileButton")
 })
 
 Then(
-  /^I put Recovery Phrase to input field "([^"]*)?"$/,
+  /^I put Recovery Phrase to input field ([^"]*)$/,
   async function (phrase: string) {
     await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
   },
@@ -237,9 +238,12 @@ Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
   })
 })
 
-Then(/^Open asset with label ([^"]*)$/, async (assetLabel: string) => {
-  await Assets.openAssetByLabel(assetLabel)
-})
+Then(
+  /^Open asset with label ([^"]*) and network ([^"]*)$/,
+  async (assetLabel: string, network: string) => {
+    await Assets.openAssetByLabel(assetLabel + network)
+  },
+)
 
 Then(/^Only (\d+) asset displayed/, async (amount: number) => {
   await Profile.waitForTokensAppear(amount)
@@ -406,19 +410,52 @@ Then(/^User opens receive dialog window/, async () => {
   await Assets.receiveDialog()
 })
 
+Then(/^User opens send modal window/, async () => {
+  browser.setWindowSize(1000, 1000)
+  const sendReceiveButton = await $("#sendReceiveButton")
+  await sendReceiveButton.waitForDisplayed({
+    timeout: 7000,
+  })
+  await sendReceiveButton.click()
+
+  const loader = await $("#loader")
+  await loader.waitForDisplayed({ reverse: true, timeout: 25000 })
+
+  await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
+})
+
 Then(/^User opens send dialog window/, async () => {
   await Assets.sendDialog()
 })
 
-Then(/^Choose ([^"]*) from options/, async (chain: string) => {
-  await Assets.openAssetOptions()
-  await Assets.chooseChainOption(chain)
+Then(/^User opens send nft dialog window/, async () => {
+  await Assets.sendNFTDialog()
 })
 
-Then(/^Choose ([^"]*) from send options/, async (chain: string) => {
-  await Assets.openAssetOptionsOnSR()
-  await Assets.chooseChainOption(chain)
+Then(/^User opens choose nft window/, async () => {
+  await $("#choose-nft").click()
 })
+
+Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
+  const opt = await $(`#choose_option_${option}`)
+  await opt.waitForExist({ timeout: 15000 })
+})
+
+Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
+  await Assets.openAssetReceiveOptions()
+  await Assets.chooseChainOption(chain)
+
+  const loader = await $("#loader")
+  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
+})
+
+Then(
+  /^Choose ([^"]*) on ([^"]*) from send options/,
+  async (currency: string, chain: string) => {
+    await Assets.openAssetOptionsOnSR()
+    await Assets.chooseCurrencyOption(currency, chain)
+  },
+)
 
 Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
   await Assets.chooseAccountFrom(account)
@@ -435,13 +472,25 @@ Then(
   },
 )
 
+Then(/^Wait while balance and fee calculated/, async () => {
+  const assetBalance = await Assets.getBalance()
+  const fee = await Assets.getFee()
+
+  await assetBalance.waitForExist({ timeout: 20000 })
+  await fee.waitForDisplayed({ timeout: 15000 })
+})
+
 Then(
-  /^Balance is ([^"]*) and fee is ([^"]*)/,
-  async (balance: string, fee: string) => {
+  /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
+  async (balance: string, fee: string, currency: string) => {
     const assetBalance = await Assets.getBalance()
-    await expect(assetBalance).toHaveText("Balance: " + balance)
+    assetBalance.waitForExist({ timeout: 20000 })
+    expect(assetBalance).toHaveText(balance + " " + currency)
+
     const transferFee = await Assets.getFee()
-    await expect(transferFee).toHaveText("Transfer fee: " + fee)
+    transferFee.waitForDisplayed({ timeout: 10000 })
+    if (fee === "any") expect(transferFee).not.toContain("0.00")
+    else expect(transferFee).toHaveText(fee + " " + currency)
   },
 )
 
@@ -452,8 +501,13 @@ Then(
   },
 )
 
-Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
-  await Assets.successWindow(text)
+Then(/^Set amount ([^"]*)/, async (amount: string) => {
+  const input = await $("#amount")
+  await input.setValue(amount)
+})
+
+Then(/^Transaction is success$/, async () => {
+  await Assets.successWindow()
 })
 
 Then(
@@ -466,7 +520,7 @@ Then(
 )
 
 Then(/^Account ID is ([^"]*)/, async (principal: string) => {
-  let address = await Assets.getAccountId(false)
+  let address = await Assets.getAccountId(true)
   expect(
     (await address.firstAddressPart.getText()) +
       "..." +
@@ -474,8 +528,8 @@ Then(/^Account ID is ([^"]*)/, async (principal: string) => {
   ).toEqual(principal)
 })
 
-Then(/^Address is ([^"]*)/, async (principal: string) => {
-  let address = await Assets.getAccountId(true)
+Then(/^Principal is ([^"]*)/, async (principal: string) => {
+  let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
       "..." +
@@ -553,16 +607,18 @@ Then(
 Then(
   /^Identifiers are ([^"]*) and ([^"]*)/,
   async (princ: string, account: string) => {
-    await $("#principal_id_0").then((x) =>
-      x
-        .waitForDisplayed({ timeout: 12000 })
-        .then(async () => expect(await x.getText()).toContain(princ)),
-    )
     await $("#account_id_0").then((x) =>
       x
         .waitForDisplayed({ timeout: 12000 })
         .then(async () => expect(await x.getText()).toContain(account)),
     )
+
+    if (princ.length)
+      await $("#principal_id_0").then((x) =>
+        x
+          .waitForDisplayed({ timeout: 12000 })
+          .then(async () => expect(await x.getText()).toContain(princ)),
+      )
   },
 )
 
@@ -584,6 +640,7 @@ Then(/^(\d+) transaction in the table/, async (amount: number) => {
       reverse: false,
     })
   }
+
   await $("id=transaction_" + amount).waitForDisplayed({
     timeout: 15000,
     timeoutMsg: "More than expects. Unexpected transaction!",
@@ -618,19 +675,133 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
 })
 
 Then(
-  /^Token ([^"]*) from ([^"]*) collection displayed/,
+  /^Token ([^"]*) from ([^"]*) nft collection displayed/,
   async (token: string, collection: string) => {
-    await Assets.getNftName(token).then((l) =>
+    await Nft.getNftName(token, collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT " + token,
       }),
     )
-    await Assets.getNftCollection(collection).then((l) =>
+    await Nft.getNftCollection(collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT collection " + collection,
       }),
     )
+  },
+)
+
+Then(
+  /^NFT ([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
+  async (token: string, collection: string, id: string, wallet: string) => {
+    await Nft.getNftName(token, collection).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT " + token,
+      }),
+    )
+    await Nft.getNftCollection(collection).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT collection " + collection,
+      }),
+    )
+    await Nft.getNftWallet(wallet).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT wallet " + wallet,
+      }),
+    )
+    await Nft.getNftId(id).then((l) =>
+      l.waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: "No NFT id " + id,
+      }),
+    )
+  },
+)
+Then(
+  /^Details are ([^"]*) ([^"]*)/,
+  async (standard: string, collection: string) => {
+    await Nft.getNftStandard().then(async (l) => {
+      l.waitForDisplayed({
+        timeout: 5000,
+      })
+      expect(await l.getText()).toContain(standard)
+    })
+    await Nft.getCollectionId().then(async (l) => {
+      l.waitForDisplayed({
+        timeout: 5000,
+      })
+      expect(await l.getText()).toContain(collection)
+    })
+  },
+)
+Then(/^About starts with ([^"]*)/, async (about: string) => {
+  await Nft.getAbout().then(async (l) => {
+    l.waitForDisplayed({
+      timeout: 5000,
+    })
+    expect(await l.getText()).toContain(about)
+  })
+})
+
+Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
+  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
+})
+
+Then(/^Open collectibles page$/, async () => {
+  await Nft.openCollectibles()
+})
+
+Then(/^Filter by ([^"]*)$/, async (blockchain: string) => {
+  await Nft.filterByBlockchain(blockchain)
+})
+
+Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
+  await Nft.getNftCollectiblesAmount(amount)
+})
+
+Then(/^Switch to table$/, async () => {
+  await Nft.switchToTable()
+})
+
+Then(
+  /^Open nft ([^"]*) and ([^"]*) details$/,
+  async (token: string, collection: string) => {
+    await Nft.nftDetails(token, collection)
+  },
+)
+
+Then(/^Go to ([^"]*) details$/, async (token: string) => {
+  await Nft.nftDetails(token)
+})
+
+Then(/^(\d+) transactions appear$/, async (amount: number) => {
+  await Nft.getActivityAmount(amount)
+})
+
+Then(
+  /^(\d+) raw with ([^"]*) & (\d+) & ([^"]*) & ([^"]*) & ([^"]*)$/,
+  async (
+    n: number,
+    type: string,
+    date: number,
+    from: string,
+    to: string,
+    price: string,
+  ) => {
+    const actualType = await Nft.trType(n)
+    expect(actualType).toContain(type)
+    const actualFrom = await Nft.trFrom(n)
+    expect(actualFrom).toContain(from)
+    const actualTo = await Nft.trTo(n)
+    expect(actualTo).toContain(to)
+    const actualPrice = await Nft.trPrice(n)
+    expect(actualPrice).toContain(price)
+    const actualDate = await Nft.trDate(n)
+    let parsed = format(new Date(Number(date)), "MMM dd, yyyy - hh:mm:ss aaa")
+    expect(actualDate).toContain(parsed)
   },
 )

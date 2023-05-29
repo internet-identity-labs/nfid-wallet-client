@@ -1,8 +1,0 @@
-{
-  "name": "nfid-frontend-e2e-back",
-  "$schema": "node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/nfid-frontend-e2e/src",
-  "projectType": "application",
-  "targets": {},
-  "tags": []
-}

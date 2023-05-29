@@ -20,10 +20,7 @@ import {
   getAllTokensOptions,
   getConnector,
 } from "frontend/ui/connnector/transfer-modal/transfer-factory"
-import {
-  ITransferFT20Connector,
-  ITransferFTConnector,
-} from "frontend/ui/connnector/transfer-modal/types"
+import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { validateTransferAmountField } from "../utils/validations"
@@ -50,7 +47,10 @@ export const TransferFT = ({
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenCurrency, "selectedConnector"],
     ([selectedTokenCurrency]) =>
-      getConnector({ type: "ft", currency: selectedTokenCurrency }),
+      getConnector({
+        type: TransferModalType.FT,
+        currency: selectedTokenCurrency,
+      }),
   )
 
   const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<any>(
@@ -76,10 +76,7 @@ export const TransferFT = ({
   const { data: balance, mutate: refetchBalance } = useSWR(
     selectedConnector ? [selectedConnector, "balance"] : null,
     ([connector]) =>
-      (connector as ITransferFT20Connector | ITransferFTConnector).getBalance(
-        selectedAccountAddress,
-        selectedTokenCurrency,
-      ),
+      connector.getBalance(selectedAccountAddress, selectedTokenCurrency),
     { refreshInterval: 10000 },
   )
 
@@ -183,8 +180,6 @@ export const TransferFT = ({
     isTokensLoading,
     isTransferInProgress,
   ])
-
-  console.log({ transferFee })
 
   return (
     <SmoothBlurredLoader

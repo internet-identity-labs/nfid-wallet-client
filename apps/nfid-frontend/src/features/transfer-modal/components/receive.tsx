@@ -14,6 +14,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
+import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 
 import { useAccountsOptions } from "../hooks/use-accounts-options"
 import { useNetworkOptions } from "../hooks/use-network-options"
@@ -45,7 +46,10 @@ export const TransferReceive = ({
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenStandard, "selectedConnector"],
     ([selectedTokenStandard]) =>
-      getConnector({ type: "ft", blockchain: selectedTokenStandard }),
+      getConnector({
+        type: TransferModalType.FT,
+        blockchain: selectedTokenStandard,
+      }),
   )
 
   const isPrincipalVisible = useMemo(() => {

@@ -2,8 +2,8 @@ import { NftErc721EstimateTransactionRequest } from "packages/integration/src/li
 import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/nft-erc1155-populate-transaction.service"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
-import { IGroupedOptions, IconPngEthereum, MaticSvg } from "@nfid-frontend/ui"
-import { ethereumAsset, polygonAsset } from "@nfid/integration"
+import { IGroupedOptions, MaticSvg } from "@nfid-frontend/ui"
+import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -11,16 +11,17 @@ import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
 import {
+  ITransferConfig,
   ITransferNFTConnector,
-  ITransferNFTModalConfig,
   ITransferNFTRequest,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
 import { EVMTransferConnector } from "./evm-transfer-connector"
 
 export class PolygonNFTTransferConnector
-  extends EVMTransferConnector<ITransferNFTModalConfig>
+  extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
   async getNFTs(): Promise<UserNonFungibleToken[]> {
@@ -71,7 +72,6 @@ export class PolygonNFTTransferConnector
     try {
       estimatedTransaction = await polygonAsset.getEstimatedTransaction(request)
     } catch (e: any) {
-      console.log({ e })
       throw new Error(e?.message)
     }
 
@@ -92,6 +92,5 @@ export const polygonNFTTransferConnector = new PolygonNFTTransferConnector({
   blockchain: Blockchain.POLYGON,
   feeCurrency: NativeToken.MATIC,
   addressPlaceholder: "Recipient polygon address",
-  supportNFT: true,
-  type: "nft",
+  type: TransferModalType.NFT,
 })

@@ -21,17 +21,18 @@ import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
 import { Blockchain, NativeToken } from "../../types"
 import {
-  ITransferFT20Connector,
-  ITransferFT20ModalConfig,
+  ITransferConfig,
+  ITransferFTConnector,
   ITransferFTRequest,
   TokenBalance,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { ICMTransferConnector } from "./icm-transfer-connector"
 
 export class DIP20TransferConnector
-  extends ICMTransferConnector<ITransferFT20ModalConfig>
-  implements ITransferFT20Connector
+  extends ICMTransferConnector<ITransferConfig>
+  implements ITransferFTConnector
 {
   async getTokenMetadata(currency: string): Promise<TokenMetadata> {
     const tokens = await this.getTokens()
@@ -52,7 +53,6 @@ export class DIP20TransferConnector
       principalId: address ?? "",
     })
 
-    console.log({ balance })
     return Promise.resolve({
       balance: e8sICPToString(Number(balance)),
       balanceinUsd: e8sICPToString(Number(Number(balance)?.toFixed(2))),
@@ -151,5 +151,5 @@ export const dip20TransferConnector = new DIP20TransferConnector({
   shouldHavePrincipal: true,
   addressPlaceholder: "Recipient principal ID",
   icon: IconSvgDfinity,
-  type: "ft20",
+  type: TransferModalType.FT20,
 })

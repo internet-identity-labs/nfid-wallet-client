@@ -11,17 +11,18 @@ import { e8sICPToString } from "frontend/integration/wallet/utils"
 import { Blockchain, NativeToken } from "../../types"
 import { TransferModalConnector } from "../transfer-modal"
 import {
+  ITransferConfig,
   ITransferFTConnector,
-  ITransferFTModalConfig,
   ITransferFTRequest,
   ITransferResponse,
   TokenBalance,
   TokenFee,
+  TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
 
 export class BtcTransferConnector
-  extends TransferModalConnector<ITransferFTModalConfig>
+  extends TransferModalConnector<ITransferConfig>
   implements ITransferFTConnector
 {
   async getAddress(): Promise<string> {
@@ -100,7 +101,6 @@ export const btcTransferConnector = new BtcTransferConnector({
   blockchain: Blockchain.BITCOIN,
   feeCurrency: NativeToken.BTC,
   title: "Bitcoin",
-  isNativeToken: true,
   addressPlaceholder: "Recipient Bitcoin address",
-  type: "ft",
+  type: TransferModalType.FT,
 })

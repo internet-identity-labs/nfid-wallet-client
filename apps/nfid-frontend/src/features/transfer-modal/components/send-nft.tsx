@@ -17,7 +17,6 @@ import {
 import { truncateString } from "@nfid-frontend/utils"
 import { getWalletName } from "@nfid/integration"
 
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import {
@@ -25,6 +24,7 @@ import {
   getAllNFTOptions,
   getConnector,
 } from "frontend/ui/connnector/transfer-modal/transfer-factory"
+import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 interface ITransferNFT {
@@ -56,7 +56,7 @@ export const TransferNFT = ({
       : null,
     ([chain]) =>
       getConnector({
-        type: "nft",
+        type: TransferModalType.NFT,
         blockchain: chain,
       }),
     {
@@ -85,7 +85,6 @@ export const TransferNFT = ({
     },
   })
 
-  console.log({ selectedConnector, selectedNFT })
   const {
     data: transferFee,
     mutate: calculateFee,

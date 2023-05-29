@@ -66,4 +66,5 @@ export const polygonTransferConnector = new MaticTransferConnector({
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT,
   assetService: polygonAsset,
+  isNativeToken: true,
 })

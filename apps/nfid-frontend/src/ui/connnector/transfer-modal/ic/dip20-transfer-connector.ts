@@ -48,7 +48,7 @@ export class DIP20TransferConnector
     } as any
   }
 
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, {ttl: 15})
   async getBalance(address?: string, currency?: string): Promise<TokenBalance> {
     const { canisterId } = await this.getTokenMetadata(currency ?? "")
 
@@ -89,7 +89,7 @@ export class DIP20TransferConnector
     }
   }
 
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, {ttl: 15})
   async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
     const { symbol } = await this.getTokenMetadata(currency ?? "")
     const principals = await this.getAllPrincipals(true)

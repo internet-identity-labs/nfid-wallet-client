@@ -23,6 +23,7 @@ export class EthERC20TransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
+  @Cache(connectorCache, {ttl: 600})
   async getTokenMetadata(currency: string): Promise<Token> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
@@ -30,7 +31,8 @@ export class EthERC20TransferConnector
     return { ...this.config, ...token }
   }
 
-  async getBalance(address?: string, currency?: string): Promise<TokenBalance> {
+  @Cache(connectorCache, {ttl: 60})
+  async getBalance (_?: string, currency?: string): Promise<TokenBalance> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
@@ -40,11 +42,13 @@ export class EthERC20TransferConnector
     })
   }
 
+  @Cache(connectorCache, {ttl: 600})
   async getTokenCurrencies(): Promise<string[]> {
     const tokens = await this.getTokens()
     return tokens.map((token) => token.symbol)
   }
 
+  @Cache(connectorCache, {ttl: 60})
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
     return (await ethereumAsset.getErc20TokensByUser({ identity })).tokens.map(
@@ -52,6 +56,7 @@ export class EthERC20TransferConnector
     )
   }
 
+  @Cache(connectorCache, {ttl: 600})
   async getTokensOptions(): Promise<IGroupedOptions> {
     const tokens = await this.getTokens()
     return {
@@ -68,8 +73,8 @@ export class EthERC20TransferConnector
   @Cache(connectorCache, {ttl: 60})
   async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
-    const balance = await this.getBalance(currency)
-
+    const balance = await this.getBalance('', currency)
+    
     return [
       makeRootAccountGroupedOptions(
         address,

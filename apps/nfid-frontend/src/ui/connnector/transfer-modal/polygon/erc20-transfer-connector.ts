@@ -19,11 +19,13 @@ import {
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
+import { Cache } from "node-ts-cache"
 
 export class PolygonERC20TransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
+  @Cache(connectorCache, {ttl: 600})
   async getTokenMetadata(currency: string): Promise<Token> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
@@ -31,23 +33,23 @@ export class PolygonERC20TransferConnector
     return { ...this.config, ...token }
   }
 
-  async getAddress(
-    address?: string,
-    identity?: DelegationIdentity,
-  ): Promise<string> {
+  @Cache(connectorCache, {ttl: 600})
+  async getAddress(_?: string, identity?: DelegationIdentity): Promise<string> {
     return await polygonAsset.getAddress(identity)
   }
 
-  async getBalance(address?: string, currency?: string): Promise<TokenBalance> {
+  @Cache(connectorCache, {ttl: 10})
+  async getBalance(_?: string, currency?: string): Promise<TokenBalance> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
     return Promise.resolve({
-      balance: String(token.balance),
-      balanceinUsd: token.balanceinUsd,
+      balance: String(token?.balance),
+      balanceinUsd: token?.balanceinUsd,
     })
   }
 
+  @Cache(connectorCache, {ttl: 10})
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
     return (await polygonAsset.getErc20TokensByUser({ identity })).tokens.map(
@@ -55,6 +57,7 @@ export class PolygonERC20TransferConnector
     )
   }
 
+  @Cache(connectorCache, {ttl: 10})
   async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
     const identity = await this.getIdentity()
     const address = await this.getAddress("", identity)
@@ -70,11 +73,13 @@ export class PolygonERC20TransferConnector
     ]
   }
 
+  @Cache(connectorCache, {ttl: 600})
   async getTokenCurrencies(): Promise<string[]> {
     const tokens = await this.getTokens()
     return tokens.map((token) => token.symbol)
   }
 
+  @Cache(connectorCache, {ttl: 600})
   async getTokensOptions(): Promise<IGroupedOptions> {
     const tokens = await this.getTokens()
     return {

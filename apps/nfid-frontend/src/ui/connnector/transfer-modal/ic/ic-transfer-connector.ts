@@ -51,4 +51,5 @@ export const icTransferConnector = new ICTransferConnector({
   shouldHavePrincipal: true,
   addressPlaceholder: "Recipient IC address or principal",
   type: TransferModalType.FT,
+  isNativeToken: true,
 })

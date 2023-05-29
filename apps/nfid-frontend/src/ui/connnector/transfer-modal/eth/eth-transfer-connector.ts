@@ -51,4 +51,5 @@ export const ethereumTransferConnector = new EthTransferConnector({
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT,
   assetService: ethereumAsset,
+  isNativeToken: true,
 })

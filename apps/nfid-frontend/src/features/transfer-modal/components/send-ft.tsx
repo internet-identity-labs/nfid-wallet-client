@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { Token } from "packages/integration/src/lib/asset/types"
 import { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -11,9 +12,10 @@ import {
   IconCmpArrowRight,
   Image,
   Label,
-  SmoothBlurredLoader,
+  BlurredLoader,
   sumRules,
 } from "@nfid-frontend/ui"
+import { TokenMetadata } from "@nfid/integration/token/dip-20"
 
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import {
@@ -21,6 +23,7 @@ import {
   getConnector,
 } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
+import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { validateTransferAmountField } from "../utils/validations"
@@ -53,7 +56,9 @@ export const TransferFT = ({
       }),
   )
 
-  const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<any>(
+  const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
+    ITransferConfig & (TokenMetadata | Token)
+  >(
     selectedConnector ? [selectedConnector, "tokenMetadata"] : null,
     async ([selectedConnector]) => {
       // if it's dip20 token, we need to fetch token metadata
@@ -107,13 +112,16 @@ export const TransferFT = ({
     mutate: calculateFee,
     isValidating: isFeeLoading,
   } = useSWR(
-    selectedConnector ? [selectedConnector, getValues, "transferFee"] : null,
-    ([selectedConnector, getValues]) =>
+    selectedConnector && tokenMetadata
+      ? [selectedConnector, getValues, tokenMetadata, "transferFee"]
+      : null,
+    ([selectedConnector, getValues, token]) =>
       selectedConnector?.getFee({
         amount: getValues("amount"),
         to: getValues("to"),
         currency: selectedTokenCurrency,
-        contract: tokenMetadata.contractAddress,
+        contract:
+          "contractAddress" in token ? String(token.contractAddress) : "",
       }),
     {
       refreshInterval: 5000,
@@ -139,7 +147,10 @@ export const TransferFT = ({
           amount: values.amount,
           currency: selectedTokenCurrency,
           identity: identity,
-          contract: tokenMetadata.contractAddress,
+          contract:
+            "contractAddress" in tokenMetadata
+              ? String(tokenMetadata.contractAddress)
+              : "",
         })
 
         if (response?.status === "ok")
@@ -183,7 +194,7 @@ export const TransferFT = ({
   ])
 
   return (
-    <SmoothBlurredLoader
+    <BlurredLoader
       className="text-xs"
       overlayClassnames="rounded-xl"
       isLoading={
@@ -332,6 +343,6 @@ export const TransferFT = ({
           </div>
         </div>
       </div>
-    </SmoothBlurredLoader>
+    </BlurredLoader>
   )
 }

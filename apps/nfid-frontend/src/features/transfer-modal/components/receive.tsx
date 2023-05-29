@@ -4,12 +4,7 @@ import { principalToAddress } from "ictool"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
-import {
-  ChooseModal,
-  Copy,
-  QRCode,
-  SmoothBlurredLoader,
-} from "@nfid-frontend/ui"
+import { ChooseModal, Copy, QRCode, BlurredLoader } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
@@ -72,7 +67,7 @@ export const TransferReceive = ({
   }, [accountsOptions])
 
   return (
-    <SmoothBlurredLoader
+    <BlurredLoader
       className="mt-4 space-y-3 text-xs"
       isLoading={!accountsOptions.length || isConnectorLoading}
     >
@@ -148,6 +143,6 @@ export const TransferReceive = ({
       >
         <ReceiveModal onBack={() => setIsModalOpen(false)} />
       </div>
-    </SmoothBlurredLoader>
+    </BlurredLoader>
   )
 }

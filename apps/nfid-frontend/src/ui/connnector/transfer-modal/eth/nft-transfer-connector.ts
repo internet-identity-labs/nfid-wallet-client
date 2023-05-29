@@ -25,21 +25,24 @@ export class EthNFTTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, {ttl: 15})
   async getNFTs(): Promise<UserNonFungibleToken[]> {
     const identity = await this.getIdentity()
+    const address =await  this.getAddress()
+
     const nfts = await ethereumAsset.getItemsByUser({ identity })
     return nfts.items.map((nft) =>
       toUserNFT(
         nft,
         identity.getPrincipal(),
         this.config.icon,
+        address,
         this.config.blockchain,
       ),
     )
   }
 
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, {ttl: 15})
   async getNFTOptions(): Promise<IGroupedOptions[]> {
     const applications = await this.getApplications()
     const nfts = await this.getNFTs()

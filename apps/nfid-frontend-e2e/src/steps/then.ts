@@ -463,7 +463,7 @@ Then(
     const assetBalance = await Assets.getBalance()
     expect(assetBalance).toHaveText(balance + " " + currency)
     const transferFee = await Assets.getFee()
-    if (fee === "any") expect(transferFee).toHaveText("ETH")
+    if (fee === "any") expect(transferFee).not.toContain("0.00")
     else expect(transferFee).toHaveText(fee + " " + currency)
   },
 )

@@ -29,7 +29,8 @@ import { Cache } from "node-ts-cache"
 
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
-> extends TransferModalConnector<ConfigType> {
+  > extends TransferModalConnector<ConfigType> {
+  @Cache(connectorCache, {ttl: 15})
   async getAccountsOptions(): Promise<IGroupedOptions[]> {
     const principals = await this.getAllPrincipals(true)
     const applications = await this.getApplications()
@@ -70,7 +71,7 @@ export abstract class ICMTransferConnector<
     )(groupedOptions.sort(sortAlphabetic(({ label }) => label)))
   }
 
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, {ttl: 10})
   async getBalance(principalId: string): Promise<TokenBalance> {
     const address = principalToAddress(Principal.fromText(principalId))
     const balance = await getBalance(address)

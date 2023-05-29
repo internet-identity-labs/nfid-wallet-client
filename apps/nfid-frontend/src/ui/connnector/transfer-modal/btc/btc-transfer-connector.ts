@@ -27,11 +27,13 @@ export class BtcTransferConnector
   extends TransferModalConnector<ITransferConfig>
   implements ITransferFTConnector
 {
+  @Cache(connectorCache, {ttl: 30})
   async getAddress(): Promise<string> {
     const identity = await this.getIdentity()
     return await new BtcAsset().getAddress(identity)
   }
 
+  @Cache(connectorCache, {ttl: 30})
   async getBalance(): Promise<TokenBalance> {
     const identity = await this.getIdentity()
     const tokenSheet = await new BtcAsset().getRootAccount(identity)
@@ -106,4 +108,5 @@ export const btcTransferConnector = new BtcTransferConnector({
   title: "Bitcoin",
   addressPlaceholder: "Recipient Bitcoin address",
   type: TransferModalType.FT,
+  isNativeToken: true,
 })

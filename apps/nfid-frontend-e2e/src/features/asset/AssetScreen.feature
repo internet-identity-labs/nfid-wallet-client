@@ -7,6 +7,7 @@ Feature:Fungible Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
+    And Wait while <asset> asset calculated with currency <currency>
     And Asset appears with label <label>
     And <asset> appears with <currency> on <chain> and <balance>
     And <label> <currency> address calculated

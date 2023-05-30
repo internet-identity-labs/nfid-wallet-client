@@ -126,15 +126,15 @@ declare type Token = {
   name: string
   symbol: string
   logo?: string
-  balance: bigint
+  balance: string
   balanceinUsd: string
   contractAddress?: string
   address: string
 }
 
 declare type ChainBalance = {
-  balance?: BigNumber
-  balanceinUsd?: BigNumber
+  balance?: string
+  balanceinUsd?: string
 }
 
 declare type FungibleActivityRecords = {

@@ -58,6 +58,7 @@ describe("Polygon Asset", () => {
     const actual = await polygonAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
+    console.log(actual.tokens[0].balance)
     expect(actual).toEqual({
       cursor: undefined,
       tokens: [
@@ -65,7 +66,7 @@ describe("Polygon Asset", () => {
           name: "USD Coin",
           symbol: "USDC",
           logo: undefined,
-          balance: BigInt(10000000000),
+          balance: "100.0",
           contractAddress: "0xe097d6b3100777dc31b34dc2c58fb524c2e76921",
           address: "0x382901144a77bec53493fa090053b9c63da5dd07",
           balanceinUsd: expect.any(String),
@@ -79,8 +80,8 @@ describe("Polygon Asset", () => {
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
     expect(balance).toMatchObject({
-      balance: expect.any(BigNumber),
-      balanceinUsd: expect.any(BigNumber),
+      balance: expect.any(String),
+      balanceinUsd: expect.any(String),
     })
   })
 

@@ -7,6 +7,7 @@ interface IToggleButton {
   secondValue: string
   onChange: (value: boolean) => void
   defaultValue?: boolean
+  id?: string
 }
 
 export const ToggleButton: React.FC<IToggleButton> = ({
@@ -15,6 +16,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
   className,
   onChange,
   defaultValue,
+  id,
 }) => {
   const [value, setValue] = useState(defaultValue ?? false)
 
@@ -30,6 +32,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
         className,
       )}
       onClick={() => setValue(!value)}
+      id={id}
     >
       <div
         className={clsx(

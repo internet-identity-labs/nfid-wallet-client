@@ -36,6 +36,7 @@ export const useBalanceICPAll = (
   const { token: dip20Token } = useAllDip20Token()
 
   const { balances, isLoading: isLoadingBalances } = useUserBalances()
+
   console.debug("useUserBalances", { icpBalance: balances })
 
   const appAccountBalance = React.useMemo(() => {

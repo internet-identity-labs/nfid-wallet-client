@@ -36,5 +36,6 @@ export function toUserNFT(
     name: nft.title,
     principal: principal,
     tokenId: nft.tokenId || "N/A",
+    owner: principal.toString(),
   }
 }

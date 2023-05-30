@@ -2,8 +2,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { format } from "date-fns"
 
-import { E8S } from "@nfid/integration/token/icp"
-
+import { E8S } from "../token/icp"
 import {
   AccountBalance,
   AppBalance,
@@ -54,7 +53,7 @@ export abstract class Asset<T> implements FungibleAsset {
       accountName: "account 1",
       address: token.address,
       principalId,
-      tokenBalance: token.balance,
+      tokenBalance: parseFloat(token.balance) * E8S,
       usdBalance: token.balanceinUsd,
     }
     const appBalance: AppBalance = {
@@ -69,7 +68,7 @@ export abstract class Asset<T> implements FungibleAsset {
       icon: token.logo ? token.logo : defaultIcon!,
       label: token.name,
       token: token.symbol,
-      tokenBalance: token.balance,
+      tokenBalance: parseFloat(token.balance) * E8S,
       usdBalance: token.balanceinUsd,
       blockchain: this.getBlockchain(),
       fee: fee,
@@ -98,6 +97,6 @@ export abstract class Asset<T> implements FungibleAsset {
   }
 
   protected toDenomination = (value?: string) => {
-    return BigInt(value ? Math.floor(parseFloat(value) * E8S) : 0)
+    return String(value ? Math.floor(parseFloat(value) * E8S) : 0)
   }
 }

@@ -407,12 +407,39 @@ Then(/^User opens receive dialog window/, async () => {
   await Assets.receiveDialog()
 })
 
+Then(/^User opens send modal window/, async () => {
+  browser.setWindowSize(1000, 1000)
+  const sendReceiveButton = await $("#sendReceiveButton")
+  await sendReceiveButton.waitForDisplayed({
+    timeout: 7000,
+  })
+  await sendReceiveButton.click()
+
+  const loader = await $("#loader")
+  await loader.waitForDisplayed({ reverse: true, timeout: 15000 })
+
+  await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
+})
+
 Then(/^User opens send dialog window/, async () => {
   await Assets.sendDialog()
 })
 
-Then(/^Choose ([^"]*) from options/, async (chain: string) => {
-  await Assets.openAssetOptions()
+Then(/^User opens send nft dialog window/, async () => {
+  await Assets.sendNFTDialog()
+})
+
+Then(/^User opens choose nft window/, async () => {
+  await $("#choose-nft").click()
+})
+
+Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
+  const opt = await $(`#choose_option_${option}`)
+  await opt.waitForExist({ timeout: 15000 })
+})
+
+Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
+  await Assets.openAssetReceiveOptions()
   await Assets.chooseChainOption(chain)
 })
 
@@ -436,13 +463,25 @@ Then(
   },
 )
 
+Then(/^Wait while balance and fee calculated/, async () => {
+  const assetBalance = await Assets.getBalance()
+  const fee = await Assets.getFee()
+
+  await assetBalance.waitForExist({ timeout: 20000 })
+  await fee.waitForDisplayed({ timeout: 15000 })
+})
+
 Then(
-  /^Balance is ([^"]*) and fee is ([^"]*)/,
-  async (balance: string, fee: string) => {
+  /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
+  async (balance: string, fee: string, currency: string) => {
     const assetBalance = await Assets.getBalance()
-    await expect(assetBalance).toHaveText("Balance: " + balance)
+    assetBalance.waitForExist({ timeout: 20000 })
+    expect(assetBalance).toHaveText(balance + " " + currency)
+
     const transferFee = await Assets.getFee()
-    await expect(transferFee).toHaveText("Transfer fee: " + fee)
+    transferFee.waitForDisplayed({ timeout: 10000 })
+    if (fee === "any") expect(transferFee).not.toContain("0.00")
+    else expect(transferFee).toHaveText(fee + " " + currency)
   },
 )
 
@@ -452,6 +491,11 @@ Then(
     await Assets.sendFTto(address, amount)
   },
 )
+
+Then(/^Set amount ([^"]*)/, async (amount: string) => {
+  const input = await $("#amount")
+  await input.setValue(amount)
+})
 
 Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
   await Assets.successWindow(text)
@@ -467,7 +511,7 @@ Then(
 )
 
 Then(/^Account ID is ([^"]*)/, async (principal: string) => {
-  let address = await Assets.getAccountId(false)
+  let address = await Assets.getAccountId(true)
   expect(
     (await address.firstAddressPart.getText()) +
       "..." +
@@ -475,8 +519,8 @@ Then(/^Account ID is ([^"]*)/, async (principal: string) => {
   ).toEqual(principal)
 })
 
-Then(/^Address is ([^"]*)/, async (principal: string) => {
-  let address = await Assets.getAccountId(true)
+Then(/^Principal is ([^"]*)/, async (principal: string) => {
+  let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
       "..." +

@@ -2,8 +2,10 @@ import { Principal } from "@dfinity/principal"
 
 import { Account } from "@nfid/integration"
 
+import { Blockchain } from "frontend/ui/connnector/types"
+
 export interface NonFungibleToken {
-  blockchain: "Internet Computer" | "Ethereum" | "Polygon"
+  blockchain: Blockchain
   name: string
   index: string | number
   tokenId: string
@@ -16,6 +18,7 @@ export interface NonFungibleToken {
   collection: NonFungibleCollection
   clipboardText?: string
   blockchainLogo: string
+  owner: string
 }
 
 export interface NonFungibleCollection {

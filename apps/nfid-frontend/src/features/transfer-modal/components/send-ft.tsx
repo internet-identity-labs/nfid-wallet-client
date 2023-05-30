@@ -1,63 +1,95 @@
 import clsx from "clsx"
-import { useCallback, useEffect } from "react"
+import { Token } from "packages/integration/src/lib/asset/types"
+import { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import { TokenConfig } from "src/ui/connnector/types"
+import useSWR from "swr"
 
 import {
-  BlurredLoader,
   Button,
   ChooseModal,
   IconCmpArrow,
   IconCmpArrowRight,
   Image,
+  Label,
+  BlurredLoader,
   sumRules,
 } from "@nfid-frontend/ui"
-import { TokenStandards } from "@nfid/integration/token/types"
+import { TokenMetadata } from "@nfid/integration/token/dip-20"
 
-import { useAllToken } from "frontend/features/fungable-token/use-all-token"
+import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import {
-  useAllWallets,
-  Wallet,
-} from "frontend/integration/wallet/hooks/use-all-wallets"
+  getAllTokensOptions,
+  getConnector,
+} from "frontend/ui/connnector/transfer-modal/transfer-factory"
+import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
+import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
+import { Blockchain } from "frontend/ui/connnector/types"
 
-import { useTokenOptions } from "../hooks/use-token-options"
-import { useWalletOptions } from "../hooks/use-wallets-options"
-import { transformToAddress } from "../utils/transform-to-address"
-import {
-  makeAddressFieldValidation,
-  validateTransferAmountField,
-} from "../utils/validations"
+import { validateTransferAmountField } from "../utils/validations"
 
 interface ITransferFT {
-  assignToken: (token: TokenConfig) => void
-  assignSourceWallet: (value: string) => void
-  assignReceiverWallet: (value: string) => void
-  assignFromAccount: (value: Wallet) => void
-  assignAmount: (value: string) => void
-  selectedToken?: TokenConfig
-  selectedSourceWallet?: string
-  selectedSourceAccount?: Wallet
-  selectedReceiverWallet?: string
-  onSubmit: () => void
+  preselectedTokenCurrency: string
+  preselectedAccountAddress: string
+  onSuccess: (message: string) => void
 }
 
 export const TransferFT = ({
-  assignToken,
-  assignSourceWallet,
-  assignReceiverWallet,
-  assignFromAccount,
-  assignAmount,
-  selectedToken,
-  selectedSourceWallet,
-  selectedReceiverWallet,
-  selectedSourceAccount,
-  onSubmit,
+  preselectedTokenCurrency,
+  preselectedAccountAddress = "",
+  onSuccess,
 }: ITransferFT) => {
-  const { walletOptions } = useWalletOptions(selectedToken?.currency ?? "ICP")
-  const { tokenOptions } = useTokenOptions()
-  const { token: allTokens } = useAllToken()
-  const { wallets } = useAllWallets()
+  const [isTransferInProgress, setIsTransferInProgress] = useState(false)
+  const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
+    preselectedTokenCurrency,
+  )
+  const [selectedAccountAddress, setSelectedAccountAddress] = useState(
+    preselectedAccountAddress,
+  )
+
+  const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
+    [selectedTokenCurrency, "selectedConnector"],
+    ([selectedTokenCurrency]) =>
+      getConnector({
+        type: TransferModalType.FT,
+        currency: selectedTokenCurrency,
+      }),
+  )
+
+  const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
+    ITransferConfig & (TokenMetadata | Token)
+  >(
+    selectedConnector ? [selectedConnector, "tokenMetadata"] : null,
+    async ([selectedConnector]) => {
+      // if it's dip20 token, we need to fetch token metadata
+      if (selectedConnector.getTokenMetadata)
+        return await selectedConnector.getTokenMetadata(selectedTokenCurrency)
+      else return selectedConnector.getTokenConfig()
+    },
+  )
+
+  const { data: accountsOptions, isLoading: isAccountsLoading } = useSWR(
+    selectedConnector ? [selectedConnector, "accountsOptions"] : null,
+    ([connector]) => connector.getAccountsOptions(selectedTokenCurrency),
+    {
+      onSuccess: (data) => {
+        setSelectedAccountAddress(data[0].options[0]?.value)
+        resetField("to")
+      },
+    },
+  )
+
+  const { data: balance, mutate: refetchBalance } = useSWR(
+    selectedConnector ? [selectedConnector, "balance"] : null,
+    ([connector]) =>
+      connector.getBalance(selectedAccountAddress, selectedTokenCurrency),
+    { refreshInterval: 10000 },
+  )
+
+  const { data: tokenOptions, isLoading: isTokensLoading } = useSWR(
+    "getAllTokensOptions",
+    getAllTokensOptions,
+  )
 
   const {
     register,
@@ -66,223 +98,229 @@ export const TransferFT = ({
     setValue,
     setError,
     resetField,
+    getValues,
   } = useForm({
     mode: "all",
     defaultValues: {
       amount: undefined as any as number,
-      from: selectedSourceWallet ?? "",
-      to: selectedReceiverWallet ?? "",
+      to: "",
     },
   })
 
-  const setFullAmount = useCallback(() => {
-    if (!selectedToken || !selectedToken.balance)
-      return toast.error("No selected token or selected token has no balance", {
-        toastId: "unexpectedTransferError",
-      })
-
-    const amount =
-      BigInt(
-        selectedSourceAccount?.balance[selectedToken.currency] ??
-          selectedToken.fee,
-      ) - selectedToken.fee
-
-    if (!amount || typeof amount !== "bigint")
-      return toast.error("Amount is invalid", {
-        toastId: "unexpectedTransferError",
-      })
-
-    if (amount < 0) {
-      setValue("amount", 0)
-      setError("amount", { message: "Insufficient funds" })
-      setTimeout(() => {
-        resetField("amount")
-      }, 2000)
-    } else {
-      resetField("amount")
-      setValue("amount", Number(selectedToken.toPresentation(amount)))
-    }
-  }, [
-    selectedToken,
-    selectedSourceAccount?.balance,
-    setValue,
-    setError,
-    resetField,
-  ])
-
-  const handleSelectToken = useCallback(
-    (value: string) => {
-      const token = allTokens.find((t) => t.currency === value)
-      if (!token) return
-
-      assignToken(token)
-      setValue("from", walletOptions[0].options[0]?.value)
+  const {
+    data: transferFee,
+    mutate: calculateFee,
+    isValidating: isFeeLoading,
+  } = useSWR(
+    selectedConnector && tokenMetadata
+      ? [selectedConnector, getValues, tokenMetadata, "transferFee"]
+      : null,
+    ([selectedConnector, getValues, token]) =>
+      selectedConnector?.getFee({
+        amount: getValues("amount"),
+        to: getValues("to"),
+        currency: selectedTokenCurrency,
+        contract:
+          "contractAddress" in token ? String(token.contractAddress) : "",
+      }),
+    {
+      refreshInterval: 5000,
     },
-    [allTokens, assignToken, setValue, walletOptions],
-  )
-  const handleSelectWallet = useCallback(
-    (value: string) => {
-      const account = wallets?.find((w) =>
-        [
-          w.principal.toText(),
-          w.ethAddress,
-          w.btcAddress,
-          w.accountId,
-        ].includes(value),
-      )
-      if (!account) return
-
-      assignFromAccount(account)
-      assignSourceWallet(value)
-    },
-    [assignFromAccount, assignSourceWallet, wallets],
   )
 
   const submit = useCallback(
-    (values: any) => {
-      if (!selectedToken)
-        return toast.error(
-          "No selected token or selected token has no balance",
-          {
-            toastId: "unexpectedTransferError",
-          },
-        )
-      if (values.from === values.to)
+    async (values: any) => {
+      if (!tokenMetadata) return toast.error("Token metadata has not loaded")
+      if (values.to === selectedAccountAddress)
         return setError("to", {
           type: "value",
           message: "You can't transfer to the same wallet",
         })
-      assignAmount(values.amount)
-      assignReceiverWallet(
-        transformToAddress(values.to, selectedToken?.tokenStandard),
-      )
 
-      onSubmit()
+      try {
+        setIsTransferInProgress(true)
+        const identity = await selectedConnector?.getIdentity(
+          selectedAccountAddress,
+        )
+        const response = await selectedConnector?.transfer({
+          to: values.to,
+          amount: values.amount,
+          currency: selectedTokenCurrency,
+          identity: identity,
+          contract:
+            "contractAddress" in tokenMetadata
+              ? String(tokenMetadata.contractAddress)
+              : "",
+        })
+
+        if (response?.status === "ok")
+          onSuccess(
+            response?.successMessage ??
+              `You've sent ${values.amount} ${selectedTokenCurrency}`,
+          )
+        else throw new Error(response?.errorMessage)
+      } catch (e: any) {
+        toast.error(
+          e?.message ?? "Unexpected error: The transaction has been cancelled",
+        )
+      } finally {
+        setIsTransferInProgress(false)
+        refetchBalance()
+      }
     },
-    [assignAmount, assignReceiverWallet, onSubmit, selectedToken, setError],
+    [
+      onSuccess,
+      refetchBalance,
+      selectedAccountAddress,
+      selectedConnector,
+      selectedTokenCurrency,
+      setError,
+      tokenMetadata,
+    ],
   )
 
-  useEffect(() => {
-    if (!selectedToken && allTokens.length) assignToken(allTokens[0])
-  }, [allTokens, assignToken, selectedToken])
-
-  useEffect(() => {
-    assignSourceWallet(walletOptions[0].options[0]?.value)
-  }, [walletOptions]) // eslint-disable-line react-hooks/exhaustive-deps
+  const loadingMessage = useMemo(() => {
+    if (isTransferInProgress) return "Sending..."
+    if (isTokensLoading) return "Fetching supported tokens..."
+    if (isConnectorLoading || isMetadataLoading)
+      return "Loading token config..."
+    if (isAccountsLoading) return "Loading accounts..."
+  }, [
+    isAccountsLoading,
+    isConnectorLoading,
+    isMetadataLoading,
+    isTokensLoading,
+    isTransferInProgress,
+  ])
 
   return (
     <BlurredLoader
-      className="!p-0 text-xs"
+      className="text-xs"
       overlayClassnames="rounded-xl"
-      isLoading={!selectedSourceWallet}
+      isLoading={
+        isTransferInProgress ||
+        isConnectorLoading ||
+        isAccountsLoading ||
+        isMetadataLoading ||
+        isTokensLoading
+      }
+      loadingMessage={loadingMessage}
     >
       <p className="mb-1">Amount to send</p>
-      <div
-        className={clsx(
-          "border rounded-md flex items-center justify-between pl-4 pr-5 h-20",
-          errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
-        )}
-      >
-        <input
+      <div className="space-y-3">
+        <div
           className={clsx(
-            "min-w-0 text-3xl placeholder:text-black",
-            "outline-none border-none h-[66px] focus:ring-0",
-            "p-0",
+            "border rounded-md flex items-center justify-between pl-4 pr-5 h-14",
+            errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
           )}
-          placeholder="0.00"
-          type="number"
-          id="amount"
-          min={0.0}
-          {...register("amount", {
-            required: sumRules.errorMessages.required,
-            validate: validateTransferAmountField(
-              selectedToken?.toPresentation(
-                selectedSourceAccount?.balance[selectedToken.currency],
-              ),
-            ),
-            valueAsNumber: true,
-          })}
-        />
-        <ChooseModal
-          optionGroups={tokenOptions}
-          title="Choose an asset"
-          type="trigger"
-          onSelect={handleSelectToken}
-          isFirstPreselected={false}
-          trigger={
-            <div
-              id={`token_${selectedToken?.currency}`}
-              className="flex items-center cursor-pointer shrink-0"
-            >
-              <Image
-                className="w-[26px] mr-1.5"
-                src={selectedToken?.icon}
-                alt={selectedToken?.currency}
-              />
-              <p className="text-lg font-semibold">{selectedToken?.currency}</p>
-              <IconCmpArrowRight className="ml-4" />
-            </div>
-          }
-        />
-      </div>
-      <div className="flex items-center justify-between mt-2 mb-3.5">
-        <p
-          id={"balance"}
-          className={clsx(errors.amount ? "text-red-600" : "text-gray-400")}
         >
-          Balance:{" "}
-          <span
-            className="text-black underline cursor-pointer decoration-dotted"
-            onClick={setFullAmount}
-          >
-            {selectedToken?.toPresentation(
-              selectedSourceAccount?.balance[selectedToken.currency],
+          <input
+            className={clsx(
+              "min-w-0 text-xl placeholder:text-black font-semibold",
+              "outline-none border-none h-[54px] focus:ring-0",
+              "p-0",
             )}
-          </span>
-        </p>
-        <p id={"transfer_fee"} className="text-gray-400">
-          Transfer fee:{" "}
-          {`${selectedToken?.toPresentation(selectedToken?.fee)} ${
-            selectedToken?.feeCurrency ?? selectedToken?.currency
-          }`}
-        </p>
-      </div>
-      <div className="mt-4 space-y-5">
+            placeholder="0.00"
+            type="number"
+            id="amount"
+            min={0.0}
+            {...register("amount", {
+              required: sumRules.errorMessages.required,
+              validate: validateTransferAmountField(balance?.balance),
+              valueAsNumber: true,
+              onBlur: calculateFee,
+            })}
+          />
+          <div
+            className={clsx(
+              "absolute mt-[72px] left-5",
+              "text-xs py-1 text-red",
+            )}
+          >
+            {errors.amount?.message}
+          </div>
+          <ChooseModal
+            optionGroups={tokenOptions ?? []}
+            title="Choose an asset"
+            type="trigger"
+            onSelect={setSelectedTokenCurrency}
+            preselectedValue={selectedTokenCurrency}
+            isSmooth
+            trigger={
+              <div
+                id={`token_${selectedTokenCurrency}`}
+                className="flex items-center cursor-pointer shrink-0"
+              >
+                <Image
+                  className="w-[26px] mr-1.5"
+                  src={tokenMetadata?.icon}
+                  alt={selectedTokenCurrency}
+                />
+
+                <p className="text-lg font-semibold">{selectedTokenCurrency}</p>
+                <IconCmpArrowRight className="ml-4" />
+              </div>
+            }
+          />
+        </div>
         <ChooseModal
-          optionGroups={walletOptions}
-          preselectedValue={selectedSourceWallet}
           label="From"
           title={"Choose an account"}
-          onSelect={(value) => {
-            setValue("from", value)
-            handleSelectWallet(value)
-          }}
+          optionGroups={accountsOptions ?? []}
+          preselectedValue={selectedAccountAddress}
+          onSelect={setSelectedAccountAddress}
         />
         <ChooseModal
-          label="To"
-          optionGroups={walletOptions}
-          title={"Choose an account"}
-          onSelect={(value) => {
-            resetField("to")
-            setValue("to", value)
-          }}
           type="input"
-          placeholder={
-            selectedToken?.tokenStandard === "ICP"
-              ? "Recipient principal or account ID"
-              : "Recipient principal"
-          }
+          label="To"
+          title={"Choose an account"}
+          optionGroups={accountsOptions ?? []}
           isFirstPreselected={false}
+          placeholder={tokenMetadata?.addressPlaceholder}
           errorText={errors.to?.message}
           registerFunction={register("to", {
             required: "This field cannot be empty",
-            validate: makeAddressFieldValidation(
-              selectedToken?.tokenStandard ?? TokenStandards.ICP,
-            ),
+            validate: (value) => selectedConnector?.validateAddress(value),
+            onBlur: calculateFee,
           })}
+          onSelect={(value) => {
+            resetField("to")
+            setValue("to", value)
+            calculateFee()
+          }}
         />
+        <div>
+          <Label>Network fee</Label>
+          <div
+            className={clsx(
+              "flex items-center justify-between mt-1",
+              "px-2.5 text-gray-400 bg-gray-100 rounded-md h-14",
+            )}
+          >
+            <div>
+              <p className="text-sm">
+                {tokenMetadata?.blockchain === Blockchain.IC
+                  ? "Instant"
+                  : "Estimated"}
+              </p>
+            </div>
+            {isFeeLoading ? (
+              <Spinner className="w-3 h-3 text-gray-400" />
+            ) : (
+              <div className="text-right">
+                <p className="text-sm leading-5">
+                  ${transferFee?.feeUsd ?? "0.00"}
+                </p>
+
+                <p className="text-xs leading-5" id="fee">
+                  {transferFee?.fee ?? `0.00 ${selectedTokenCurrency}`}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
         <Button
-          className="text-base !mt-[35px]"
+          className="text-base"
           type="primary"
           id={"sendFT"}
           block
@@ -291,6 +329,19 @@ export const TransferFT = ({
         >
           Send
         </Button>
+
+        <div className="flex justify-between text-sm text-gray-400">
+          <p>Current balance</p>
+          <div className="flex items-center space-x-0.5">
+            {!!balance?.balance?.length ? (
+              <span id="balance">
+                {balance.balance.toString()} {selectedTokenCurrency}
+              </span>
+            ) : (
+              <Spinner className="w-3 h-3 text-gray-400" />
+            )}
+          </div>
+        </div>
       </div>
     </BlurredLoader>
   )

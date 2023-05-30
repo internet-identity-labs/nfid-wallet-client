@@ -1,4 +1,6 @@
 import IconSvgAlertCircle from "./alert-circle.svg"
+import IconSvgArrowGreen from "./arrow-green.svg"
+import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgBook from "./book.svg"
 import IconSvgBTC from "./btc.svg"
@@ -88,6 +90,8 @@ export {
   ImagePngSuccess,
   IconSvgNFTPreview,
   IconSvgTransfer,
+  IconSvgArrowRed,
+  IconSvgArrowGreen,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -139,6 +143,8 @@ export { ReactComponent as IconCmpNFIDWallet } from "./nfid-wallet.svg"
 export { ReactComponent as IconCmpAlertCircle } from "./alert-circle.svg"
 export { ReactComponent as IconCmpLoading } from "./loader.svg"
 export { ReactComponent as IconCmpNFTPreview } from "./nft-preview.svg"
+export { ReactComponent as IconCmpArrowRed } from "./arrow-red.svg"
+export { ReactComponent as IconCmpArrowGreen } from "./arrow-green.svg"
 
 // png
 export { IconMetamask } from "./metamask"

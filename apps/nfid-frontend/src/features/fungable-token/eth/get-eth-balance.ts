@@ -7,7 +7,6 @@ import {
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -37,8 +36,8 @@ export const computeSheetForRootAccount = async (
   address: string | undefined,
   principalId: string,
 ): Promise<TokenBalanceSheet> => {
-  const tokenBalance = BigInt(Number(balance.balance?.toFixed(8) ?? 0) * E8S)
-  const usdBalance = "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00")
+  const tokenBalance = Number(balance.balance ?? 0)
+  const usdBalance = "$" + (balance.balanceinUsd ?? "0.00")
   const rootAccountBalance: AccountBalance = {
     accountName: "account 1",
     address: address ?? "",

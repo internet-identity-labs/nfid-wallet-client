@@ -3,6 +3,8 @@ import { encodeTokenIdentifier } from "ictool"
 
 import { Account } from "@nfid/integration"
 
+import { Blockchain } from "frontend/ui/connnector/types"
+
 import {
   assetFullsize,
   assetPreview,
@@ -57,7 +59,7 @@ export async function token(
     name: `${collection.name} #${index}`,
     assetPreview: assetPreview(collection, token),
     assetFullsize: await assetFullsize(collection, token),
-    blockchain: "Internet Computer",
+    blockchain: Blockchain.IC,
   }
 }
 

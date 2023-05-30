@@ -3,9 +3,9 @@ import { Principal } from "@dfinity/principal"
 import { isHex } from "@nfid-frontend/utils"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-const PRINCIPAL_LENGTH = 63
-const IC_ADDRESS_LENGTH = 64
-const ETH_ADDRESS_LENGTH = 42
+export const PRINCIPAL_LENGTH = 63
+export const IC_ADDRESS_LENGTH = 64
+export const ETH_ADDRESS_LENGTH = 42
 
 export const validateAddressField = (string: string) => {
   if (!string.length) return "This field cannot be empty"

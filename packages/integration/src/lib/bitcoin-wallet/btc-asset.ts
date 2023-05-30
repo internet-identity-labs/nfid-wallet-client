@@ -73,7 +73,7 @@ export class BtcAsset extends Asset<string> {
     const json: BlockCypherAddressResponse = await bcAddressInfo(address)
     const balance = json.final_balance
     let price: TokenPrice[]
-    const balanceBN = toBn(balance * 0.00000001)
+    const balanceBN = toBn(balance / E8S)
     try {
       price = await getPrice(["BTC"])
     } catch (e) {
@@ -82,7 +82,7 @@ export class BtcAsset extends Asset<string> {
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
     const token: Token = {
       address: address,
-      balance: this.toDenomination(balanceBN.toString()),
+      balance: balanceBN.toString(),
       balanceinUsd: "$" + (balanceinUsd?.toFixed(2) ?? "0.00"),
       logo,
       name: this.getBlockchain(),

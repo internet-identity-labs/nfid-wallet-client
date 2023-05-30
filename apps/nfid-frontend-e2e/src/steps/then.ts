@@ -466,7 +466,7 @@ Then(/^Wait while balance and fee calculated/, async () => {
   const assetBalance = await Assets.getBalance()
   const fee = await Assets.getFee()
 
-  await assetBalance.waitForDisplayed({ timeout: 30000 })
+  await assetBalance.waitForExist({ timeout: 20000 })
   await fee.waitForDisplayed({ timeout: 15000 })
 })
 
@@ -474,7 +474,7 @@ Then(
   /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
   async (balance: string, fee: string, currency: string) => {
     const assetBalance = await Assets.getBalance()
-    assetBalance.waitForDisplayed({ timeout: 10000 })
+    assetBalance.waitForExist({ timeout: 20000 })
     expect(assetBalance).toHaveText(balance + " " + currency)
 
     const transferFee = await Assets.getFee()

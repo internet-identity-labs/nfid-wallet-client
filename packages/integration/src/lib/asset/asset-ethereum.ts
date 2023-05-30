@@ -255,7 +255,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       }),
     ])
 
-    const balanceInString = parseFloat(balance.toString()).toFixed(8)
+    const balanceInString =
+      balance.toString().length > 9
+        ? parseFloat(balance.toString()).toFixed(8)
+        : balance.toString()
     const balanceinUsd = parseFloat(
       toBn(currencyRate.rate).multipliedBy(balance).toString(),
     ).toFixed(2)

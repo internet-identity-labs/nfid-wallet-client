@@ -263,13 +263,6 @@ export const TransferFT = ({
             }
           />
         </div>
-        {!!balance?.balance?.length ? (
-          <span id="balance">
-            {balance.balance.toString()} {selectedTokenCurrency}
-          </span>
-        ) : (
-          <Spinner className="w-3 h-3 text-gray-400" />
-        )}
         <ChooseModal
           label="From"
           title={"Choose an account"}
@@ -340,13 +333,13 @@ export const TransferFT = ({
         <div className="flex justify-between text-sm text-gray-400">
           <p>Current balance</p>
           <div className="flex items-center space-x-0.5">
-            {/* {!!balance?.balance?.length ? (
+            {!!balance?.balance?.length ? (
               <span id="balance">
                 {balance.balance.toString()} {selectedTokenCurrency}
               </span>
             ) : (
               <Spinner className="w-3 h-3 text-gray-400" />
-            )} */}
+            )}
           </div>
         </div>
       </div>

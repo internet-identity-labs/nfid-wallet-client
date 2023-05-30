@@ -30,6 +30,7 @@ export const SendReceiveButton = () => {
           "cursor-pointer z-30",
         )}
         onClick={() => send("SHOW")}
+        id="sendReceiveButton"
       >
         <Image className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />
       </div>

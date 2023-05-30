@@ -411,7 +411,7 @@ describe("Ethereum Asset", () => {
           name: "ChainLink Token",
           symbol: "LINK",
           logo: undefined,
-          balance: BigInt(1000000000),
+          balance: "10.0",
           contractAddress: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
           address: "0x382901144a77bec53493fa090053b9c63da5dd07",
           balanceinUsd: expect.any(String),

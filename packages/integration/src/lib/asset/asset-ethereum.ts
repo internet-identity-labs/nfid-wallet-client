@@ -253,6 +253,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
         at: now,
       }),
     ])
+
     const balanceBN = toBn(balance)
     const balanceinUsd = toBn(currencyRate.rate).multipliedBy(balanceBN)
     return { balance: balanceBN, balanceinUsd }

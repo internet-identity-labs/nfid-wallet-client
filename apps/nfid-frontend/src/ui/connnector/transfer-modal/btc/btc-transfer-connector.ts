@@ -7,6 +7,7 @@ import { E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { e8sICPToString } from "frontend/integration/wallet/utils"
+import { toBn } from "@rarible/utils"
 
 import { Blockchain, NativeToken } from "../../types"
 import { TransferModalConnector } from "../transfer-modal"
@@ -68,7 +69,7 @@ export class BtcTransferConnector
 
   async getFee({ to, amount }: ITransferFTRequest): Promise<TokenFee> {
     const identity = await this.getIdentity()
-    const fee = await new BtcWallet(identity).getFee(to, amount)
+    const fee = await new BtcWallet(identity).getFee(to, toBn(amount).multipliedBy(E8S).toNumber())
     const rate = await getPrice(["BTC"])
 
     return {

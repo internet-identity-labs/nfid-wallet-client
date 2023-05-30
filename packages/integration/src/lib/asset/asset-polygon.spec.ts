@@ -1,5 +1,6 @@
 import { BigNumber } from "@rarible/utils"
 
+import { E8S } from "../token/icp"
 import { polygonAsset } from "./asset-polygon"
 import { ChainBalance } from "./types"
 
@@ -65,7 +66,7 @@ describe("Polygon Asset", () => {
           name: "USD Coin",
           symbol: "USDC",
           logo: undefined,
-          balance: BigInt(10000000000),
+          balance: BigInt(10000000000 / E8S),
           contractAddress: "0xe097d6b3100777dc31b34dc2c58fb524c2e76921",
           address: "0x382901144a77bec53493fa090053b9c63da5dd07",
           balanceinUsd: expect.any(String),

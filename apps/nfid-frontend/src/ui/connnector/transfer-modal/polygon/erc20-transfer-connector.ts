@@ -4,7 +4,7 @@ import { Token } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, PolygonERC20Svg } from "@nfid-frontend/ui"
 import { polygonAsset } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/icp"
+
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -52,9 +52,7 @@ export class PolygonERC20TransferConnector
   @Cache(connectorCache, {ttl: 10})
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
-    return (await polygonAsset.getErc20TokensByUser({ identity })).tokens.map(
-      (t) => ({ ...t, balance: BigInt(Number(t.balance) / E8S) }),
-    )
+    return (await polygonAsset.getErc20TokensByUser({ identity })).tokens
   }
 
   @Cache(connectorCache, {ttl: 10})

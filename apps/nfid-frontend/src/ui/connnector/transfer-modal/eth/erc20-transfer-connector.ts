@@ -3,7 +3,7 @@ import { Token } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, IconERC20 } from "@nfid-frontend/ui"
 import { ethereumAsset } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/icp"
+
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -51,9 +51,7 @@ export class EthERC20TransferConnector
   @Cache(connectorCache, {ttl: 60})
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
-    return (await ethereumAsset.getErc20TokensByUser({ identity })).tokens.map(
-      (t) => ({ ...t, balance: BigInt(Number(t.balance) / E8S) }),
-    )
+    return (await ethereumAsset.getErc20TokensByUser({ identity })).tokens
   }
 
   @Cache(connectorCache, {ttl: 600})

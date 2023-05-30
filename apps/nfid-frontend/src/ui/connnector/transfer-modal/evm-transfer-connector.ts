@@ -74,8 +74,8 @@ export abstract class EVMTransferConnector<
     const balance = await this.config.assetService.getBalance(address)
 
     return {
-      balance: parseFloat(balance.balance).toFixed(8),
-      balanceinUsd: String(balance.balanceinUsd?.toFixed(2)),
+      balance: balance.balance,
+      balanceinUsd: balance.balanceinUsd
     }
   }
 

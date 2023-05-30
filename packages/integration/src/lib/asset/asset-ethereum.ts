@@ -31,6 +31,7 @@ import { principalToAddress } from "ictool"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
+import { E8S } from "../token/icp"
 import { getPriceFull } from "./asset-util"
 import { NonFungibleAsset } from "./non-fungible-asset"
 import { coinbaseRatesService } from "./service/coinbase-rates.service"
@@ -254,9 +255,11 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       }),
     ])
 
-    const balanceBN = toBn(balance)
-    const balanceinUsd = toBn(currencyRate.rate).multipliedBy(balanceBN)
-    return { balance: balanceBN, balanceinUsd }
+    const balanceInString = parseFloat(balance.toString()).toFixed(8)
+    const balanceinUsd = parseFloat(
+      toBn(currencyRate.rate).multipliedBy(balance).toString(),
+    ).toFixed(2)
+    return { balance: balanceInString, balanceinUsd }
   }
 
   public async transferNft({
@@ -312,7 +315,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
           name: x.name || "",
           symbol: x.symbol || "",
           logo: x.logo,
-          balance: this.toDenomination(x.balance ?? "0"),
+          balance: x.balance ?? "0.00",
           contractAddress: x.contractAddress,
           balanceinUsd: this.priceInUsd(price, x.balance, x.symbol),
         })),
@@ -341,8 +344,8 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     const balance = await this.getBalance(undefined, identity)
     const token: Token = {
       address: address,
-      balance: this.toDenomination(balance.balance?.toFixed(8)),
-      balanceinUsd: "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00"),
+      balance: balance.balance ?? "0.00",
+      balanceinUsd: "$" + (balance.balanceinUsd ?? "0.00"),
       logo: defaultIcon,
       name: this.getNativeToken(),
       symbol: this.getNativeCurrency(),
@@ -532,7 +535,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     }
     const balanceBN = toBn(balance)
     const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)
-    return "$" + (usd?.toFixed(2) ?? "0.00")
+    return "$" + (usd?.toFixed(2).toString() ?? "0.00")
   }
 
   getBlockchain(): string {

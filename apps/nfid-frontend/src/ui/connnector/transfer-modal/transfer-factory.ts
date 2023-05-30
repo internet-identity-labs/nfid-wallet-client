@@ -71,32 +71,40 @@ export const getConnector = async <T extends TransferModalType>({
   const allConfigs = (
     await Promise.all(
       allConnectors.map(async (c: IUniversalConnector) => {
-        const config = c.getTokenConfig()
+        try {
+          const config = c.getTokenConfig()
 
-        return {
-          token: config.tokenStandard,
-          blockchain: config.blockchain,
-          currencies: await c.getTokenCurrencies(),
-          type: config.type,
+          return {
+            token: config.tokenStandard,
+            blockchain: config.blockchain,
+            currencies: await c.getTokenCurrencies(),
+            type: config.type,
+          }
+        } catch (e) {
+          // FIXME: handle case when request fails
+          console.error("getConnector", e)
+          return null
         }
       }),
     )
   ).filter(
-    (c) => type === TransferModalType.FT || c.type === TransferModalType.NFT,
+    (c) => type === TransferModalType.FT || c?.type === TransferModalType.NFT,
   )
 
   if (tokenStandard) {
-    const neededConfig = allConfigs.find((c) => c.token === tokenStandard)
+    const neededConfig = allConfigs.find((c) => c?.token === tokenStandard)
     return mappedConnectors.get(neededConfig?.token!)! as IConnector<T>
   }
 
   if (currency) {
-    const neededConfig = allConfigs.find((c) => c.currencies.includes(currency))
+    const neededConfig = allConfigs.find((c) =>
+      c?.currencies.includes(currency),
+    )
     return mappedConnectors.get(neededConfig?.token!)! as IConnector<T>
   }
 
   if (blockchain) {
-    const neededConfig = allConfigs.find((c) => c.blockchain === blockchain)
+    const neededConfig = allConfigs.find((c) => c?.blockchain === blockchain)
     return mappedConnectors.get(neededConfig?.token!)! as IConnector<T>
   }
 
@@ -115,21 +123,52 @@ export const getNativeTokenStandards = (): Array<TokenStandards> => {
 export const getAllTokensOptions = async (): Promise<IGroupedOptions[]> => {
   const ftConnectors = [...singleFTConnectors, ...multiFTConnectors]
   const options = await Promise.all(
-    ftConnectors.map(async (c) => await c.getTokensOptions()),
+    ftConnectors.map(async (c) => {
+      try {
+        return await c.getTokensOptions()
+      } catch (e) {
+        // FIXME: handle case when request fails
+        console.error("getAllTokensOptions", e)
+        return undefined
+      }
+    }),
   )
-  return concatOptionsWithSameLabel(options)
+
+  return concatOptionsWithSameLabel(
+    options.filter((o) => !!o) as IGroupedOptions[],
+  )
 }
 
 export const getAllNFTOptions = async (): Promise<IGroupedOptions[]> => {
   const options = await Promise.all(
-    NFTConnectors.map(async (c) => await c.getNFTOptions()),
+    NFTConnectors.map(async (c) => {
+      try {
+        return await c.getNFTOptions()
+      } catch (e) {
+        // FIXME: handle case when request fails
+        console.error("getAllNFTOptions", e)
+        return undefined
+      }
+    }),
   )
 
-  return options.flat()
+  return options.flat().filter((o) => !!o) as IGroupedOptions[]
 }
 
 export const getAllNFT = async (): Promise<UserNonFungibleToken[]> => {
   return (
-    await Promise.all(NFTConnectors.map(async (c) => await c.getNFTs()))
-  ).flat()
+    await Promise.all(
+      NFTConnectors.map(async (c) => {
+        try {
+          return await c.getNFTs()
+        } catch (e) {
+          // FIXME: handle case when request fails
+          console.error("getAllNFT", e)
+          return undefined
+        }
+      }),
+    )
+  )
+    .flat()
+    .filter((nft) => !!nft) as UserNonFungibleToken[]
 }

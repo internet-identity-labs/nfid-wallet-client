@@ -91,7 +91,7 @@ export class Assets {
     await sendReceiveButton.click()
     const loader = await $("#loader")
     await loader.waitForDisplayed({ reverse: true, timeout: 15000 })
-    await (await $("#balance")).waitForDisplayed({ timeout: 20000 })
+    await (await $("#sendFT")).waitForDisplayed({ timeout: 20000 })
   }
 
   public async sendNFTDialog() {

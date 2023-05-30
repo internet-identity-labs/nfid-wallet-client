@@ -425,8 +425,8 @@ describe("Ethereum Asset", () => {
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
     expect(balance).toMatchObject({
-      balance: expect.any(RaribleBigNumber),
-      balanceinUsd: expect.any(RaribleBigNumber),
+      balance: expect.any(String),
+      balanceinUsd: expect.any(String),
     })
   })
 

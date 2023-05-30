@@ -43,13 +43,13 @@ Feature:Send/Receive Asset
     Then Wait while balance and fee calculated
     Then Balance is <balance> and fee is <fee> and currency is <currency>
     Examples:
-      | chain             | anchor | balance             | fee    | account        | currency |
-      | Bitcoin           | 25795  | 0.00006879          | any    | NFID account 1 | BTC      |
-      | Matic             | 25795  | 0.2                 | any    | NFID account 1 | MATIC    |
-      | Test Token        | 25795  | 1                   | any    | NFID account 1 | TST      |
-      | Ethereum          | 25795  | 0.09664164132181263 | any    | NFID account 1 | ETH      |
-      | Internet Computer | 28542  | 0.01                | 0.0001 | NFID account 1 | ICP      |
-      | ChainLink Token   | 25795  | 20                  | any    | NFID account 1 | LINK     |
+      | chain             | anchor | balance    | fee    | account        | currency |
+      | Bitcoin           | 25795  | 0.00006879 | any    | NFID account 1 | BTC      |
+      | Matic             | 25795  | 0.2        | any    | NFID account 1 | MATIC    |
+      | Test Token        | 25795  | 1          | any    | NFID account 1 | TST      |
+      | Ethereum          | 25795  | 0.09664164 | any    | NFID account 1 | ETH      |
+      | Internet Computer | 28542  | 0.01       | 0.0001 | NFID account 1 | ICP      |
+      | ChainLink Token   | 25795  | 20         | any    | NFID account 1 | LINK     |
 
   @sendreceive4
   Scenario Outline: User should be able to see his collectibles on send NFT tab

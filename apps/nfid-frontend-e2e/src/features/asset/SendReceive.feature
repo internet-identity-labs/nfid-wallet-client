@@ -35,7 +35,7 @@ Feature:Send/Receive Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then User opens send dialog window
+    Then User opens send modal window
     Then Choose <currency> from send options
     And Set amount '0.0001'
     Then Wait while balance and fee calculated

@@ -407,6 +407,19 @@ Then(/^User opens receive dialog window/, async () => {
   await Assets.receiveDialog()
 })
 
+Then(/^User opens send modal window/, async () => {
+  const sendReceiveButton = await $("#sendReceiveButton")
+  await sendReceiveButton.waitForDisplayed({
+    timeout: 7000,
+  })
+  await sendReceiveButton.click()
+
+  const loader = await $("#loader")
+  await loader.waitForDisplayed({ reverse: true, timeout: 15000 })
+
+  await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
+})
+
 Then(/^User opens send dialog window/, async () => {
   await Assets.sendDialog()
 })

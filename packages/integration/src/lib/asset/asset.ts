@@ -53,7 +53,7 @@ export abstract class Asset<T> implements FungibleAsset {
       accountName: "account 1",
       address: token.address,
       principalId,
-      tokenBalance: token.balance,
+      tokenBalance: parseFloat(token.balance) * E8S,
       usdBalance: token.balanceinUsd,
     }
     const appBalance: AppBalance = {
@@ -97,6 +97,6 @@ export abstract class Asset<T> implements FungibleAsset {
   }
 
   protected toDenomination = (value?: string) => {
-    return BigInt(value ? Math.floor(parseFloat(value) * E8S) : 0)
+    return String(value ? Math.floor(parseFloat(value) * E8S) : 0)
   }
 }

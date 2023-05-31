@@ -497,12 +497,9 @@ Then(/^Set amount ([^"]*)/, async (amount: string) => {
   await input.setValue(amount)
 })
 
-Then(
-  /^Success window appears with ([^"]*) ([^"]*)$/,
-  async (amount: string, currency: string) => {
-    await Assets.successWindow(amount, currency)
-  },
-)
+Then(/^Transaction is success$/, async () => {
+  await Assets.successWindow()
+})
 
 Then(
   /^Account ID is ([^"]*) ... ([^"]*)/,

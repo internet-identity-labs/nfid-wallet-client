@@ -170,9 +170,6 @@ export const transferMachine = createMachine(
       },
 
       Success: {
-        // after: {
-        //   5000: "Hidden",
-        // },
         on: {
           HIDE: "Hidden",
         },

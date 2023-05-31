@@ -95,6 +95,6 @@ export type ITransferNFTRequest = {
 
 export interface ITransferResponse {
   verifyPromise?: Promise<void>
-  errorMessage?: string
+  errorMessage?: Error
   url?: string
 }

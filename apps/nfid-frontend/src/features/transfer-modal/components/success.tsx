@@ -25,13 +25,19 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
   isAssetPadding,
   callback,
 }) => {
-  const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3>(0)
+  const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3 | 4>(0)
 
   const { data } = useSWR(
     [initialPromise, "initialTransferPromise"],
     ([initialPromise]) => initialPromise,
     {
       onSuccess: async (data) => {
+        if ("errorMessage" in data) {
+          toast.error(data.errorMessage?.message ?? "Unknown error", {
+            toastId: "failedTransfer",
+          })
+          return setCurrentState(4)
+        }
         setCurrentState(1)
         setTimeout(async () => {
           if (!data?.verifyPromise) {
@@ -41,10 +47,17 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
             await data.verifyPromise
             setCurrentState(3)
           }
+          toast.success(`Transaction ${title} successful`, {
+            toastId: "successTransfer",
+          })
           callback && callback()
         }, 5000)
       },
-      onError: () => toast.error("Something went wrong"),
+      onError: () => {
+        toast.error("Something went wrong")
+        setCurrentState(4)
+      },
+      revalidateOnFocus: false,
     },
   )
   return (

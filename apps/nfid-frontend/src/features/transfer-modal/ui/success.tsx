@@ -36,7 +36,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
 
   return (
     <div
-      id={"success_window"}
+      id={"success_window_" + step}
       className={clsx(
         "text-black text-center relative",
         "flex flex-grow flex-col justify-between",

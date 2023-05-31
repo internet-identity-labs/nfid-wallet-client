@@ -26,7 +26,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
   callback,
 }) => {
   const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3>(0)
-  console.log({ initialPromise })
+
   const { data } = useSWR(
     [initialPromise, "initialTransferPromise"],
     ([initialPromise]) => initialPromise,

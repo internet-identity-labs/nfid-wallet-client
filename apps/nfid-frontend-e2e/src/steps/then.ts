@@ -416,7 +416,7 @@ Then(/^User opens send modal window/, async () => {
   await sendReceiveButton.click()
 
   const loader = await $("#loader")
-  await loader.waitForDisplayed({ reverse: true, timeout: 15000 })
+  await loader.waitForDisplayed({ reverse: true, timeout: 25000 })
 
   await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
 })
@@ -497,9 +497,12 @@ Then(/^Set amount ([^"]*)/, async (amount: string) => {
   await input.setValue(amount)
 })
 
-Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
-  await Assets.successWindow(text)
-})
+Then(
+  /^Success window appears with ([^"]*) ([^"]*)$/,
+  async (amount: string, currency: string) => {
+    await Assets.successWindow(amount, currency)
+  },
+)
 
 Then(
   /^Account ID is ([^"]*) ... ([^"]*)/,

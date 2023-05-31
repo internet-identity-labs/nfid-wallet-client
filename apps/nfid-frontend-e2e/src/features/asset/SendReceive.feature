@@ -65,7 +65,6 @@ Feature:Send/Receive Asset
       | 31870  | AnilAnimal | TestERC1155 |
 
 
-  @pending
   @only_deploy_to_main
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
@@ -78,14 +77,14 @@ Feature:Send/Receive Asset
     And Choose <account> from accounts
     Then Wait while balance and fee calculated
     And Set <target> address and <amount> and send
-    Then Success window appears with <text>
+    Then Success window appears with <amount> <currency>
     Examples:
-      | chain             | anchor | target                                                           | amount    | text                                    | currency | account        |
-      | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | You've sent 1e-7 BTC. Transaction hash: | BTC      | NFID account 1 |
-      | Polygon           | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 MATIC              | MATIC    | NFID account 1 |
-      | Polygon           | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 TST                | TST      | NFID account 1 |
-      | Ethereum          | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 ETH                | ETH      | NFID account 1 |
-      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001    | You've sent 0.0001 ICP                  | ICP      | NFID account 1 |
-      | Ethereum          | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | You've sent 0.000001 LINK               | LINK     | NFID account 1 |
+      | chain             | anchor | target                                                           | amount    | currency | account        |
+      | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | BTC      | NFID account 1 |
+      | Polygon           | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | MATIC    | NFID account 1 |
+      | Polygon           | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | TST      | NFID account 1 |
+      | Ethereum          | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | ETH      | NFID account 1 |
+      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001    | ICP      | NFID account 1 |
+      | Ethereum          | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | LINK     | NFID account 1 |
 
 

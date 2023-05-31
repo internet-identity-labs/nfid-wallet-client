@@ -1,9 +1,11 @@
 import clsx from "clsx"
 import React, { useMemo } from "react"
+import { Fade } from "react-awesome-reveal"
 
 import { LottieAnimation } from "@nfid-frontend/ui"
 import { Button, H5, Image } from "@nfid-frontend/ui"
 
+import Fail from "../assets/error.json"
 import Success1 from "../assets/success_1.json"
 import Success2 from "../assets/success_2.json"
 import Success3 from "../assets/success_3.json"
@@ -16,10 +18,10 @@ export interface ITransferModalSuccess {
   onClose: () => void
   assetImg: string
   isAssetPadding?: boolean
-  step: 0 | 1 | 2 | 3
+  step: 0 | 1 | 2 | 3 | 4
 }
 
-const allAnimations = [Success1, Success2, Success3, Success4]
+const allAnimations = [Success1, Success2, Success3, Success4, Fail]
 
 export const Success: React.FC<ITransferModalSuccess> = ({
   title,
@@ -34,6 +36,14 @@ export const Success: React.FC<ITransferModalSuccess> = ({
     return allAnimations[step]
   }, [step])
 
+  const isCompleted = useMemo(() => {
+    return step >= 3
+  }, [step])
+
+  const isFailed = useMemo(() => {
+    return step === 4
+  }, [step])
+
   return (
     <div
       id={"success_window_" + step}
@@ -43,11 +53,23 @@ export const Success: React.FC<ITransferModalSuccess> = ({
       )}
     >
       <div className="flex-grow text-center">
-        <H5 className="mt-5 text-xl leading-6">Processing...</H5>
+        <H5 className="mt-5 text-xl leading-6">
+          {isFailed
+            ? "Transaction failed"
+            : isCompleted
+            ? "Sent successfully"
+            : "Processing..."}
+        </H5>
+
         <p className="mt-2 text-sm leading-5">
-          This usually takes less than 10 min.
+          {isFailed
+            ? "Please make sure you have enough funds and try again"
+            : isCompleted
+            ? ""
+            : "This usually takes less than 10 min."}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 -top-20">
+
+        <div className="absolute flex items-center justify-center w-full px-3 -top-0">
           <LottieAnimation
             animationData={animation}
             loop={step === 0 || step === 2}
@@ -72,14 +94,19 @@ export const Success: React.FC<ITransferModalSuccess> = ({
           Done
         </Button>
         {url && (
-          <Button
-            block
-            type="ghost"
-            className="mt-2.5"
-            onClick={() => window.open(url, "_blank")}
-          >
-            View transaction
-          </Button>
+          <>
+            {/* @ts-ignore: no solution yet */}
+            <Fade bottom>
+              <Button
+                block
+                type="ghost"
+                className="mt-2.5"
+                onClick={() => window.open(url, "_blank")}
+              >
+                View transaction
+              </Button>
+            </Fade>
+          </>
         )}
       </div>
     </div>

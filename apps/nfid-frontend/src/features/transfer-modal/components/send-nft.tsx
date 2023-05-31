@@ -165,7 +165,7 @@ export const TransferNFT = ({
           iconClassnames="!w-12 !h-12 !object-cover rounded-md"
           trigger={
             <div
-              className="flex items-center justify-between w-full h-[90px] p-2 pr-5 border border-black rounded-md"
+              className="flex items-center justify-between w-full h-[90px] pl-0.5 p-2 pr-5 border border-black rounded-md"
               id="choose-nft"
             >
               <div className="flex items-center">

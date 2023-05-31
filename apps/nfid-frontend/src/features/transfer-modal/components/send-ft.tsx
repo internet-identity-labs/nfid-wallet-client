@@ -86,8 +86,10 @@ export const TransferFT = ({
     isValidating: isBalanceFetching,
     isLoading: isBalanceLoading,
   } = useSWR(
-    selectedConnector ? [selectedConnector, "balance"] : null,
-    ([connector]) =>
+    selectedConnector && selectedAccountAddress
+      ? [selectedConnector, selectedAccountAddress, "balance"]
+      : null,
+    ([connector, selectedAccountAddress]) =>
       connector.getBalance(selectedAccountAddress, selectedTokenCurrency),
     { refreshInterval: 10000 },
   )

@@ -1,5 +1,4 @@
 import { useActor } from "@xstate/react"
-import clsx from "clsx"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 import React, { useCallback, useContext, useMemo } from "react"
 import { toast } from "react-toastify"
@@ -11,8 +10,9 @@ import { ProfileContext } from "frontend/provider"
 import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
-import { TransferSuccess } from "./components/success"
+import { ITransferSuccess, TransferSuccess } from "./components/success"
 import { transferTabs } from "./constants"
+import { TransferTemplate } from "./ui/template"
 
 export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)
@@ -47,16 +47,16 @@ export const TransferModalCoordinator = () => {
           <TransferFT
             preselectedTokenCurrency={state.context.tokenCurrency}
             preselectedAccountAddress={state.context.sourceWalletAddress}
-            onSuccess={(message: string) =>
-              send({ type: "ON_SUCCESS", data: message })
+            onTransferPromise={(message: ITransferSuccess) =>
+              send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
           />
         )
       case state.matches("SendMachine.SendNFT"):
         return (
           <TransferNFT
-            onSuccess={(message: string) =>
-              send({ type: "ON_SUCCESS", data: message })
+            onTransferPromise={(message: ITransferSuccess) =>
+              send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
           />
         )
@@ -70,8 +70,8 @@ export const TransferModalCoordinator = () => {
       case state.matches("Success"):
         return (
           <TransferSuccess
-            transactionMessage={state.context.successMessage}
             onClose={() => send({ type: "HIDE" })}
+            {...state.context.transferObject!}
           />
         )
       default:
@@ -97,44 +97,26 @@ export const TransferModalCoordinator = () => {
   if (state.matches("Hidden")) return null
 
   return (
-    <div
-      className={clsx([
-        "transition ease-in-out delay-150 duration-300",
-        "z-40 top-0 left-0 w-full h-screen",
-        "fixed bg-opacity-75 bg-gray-600",
-      ])}
-      style={{ margin: 0 }}
-      onClick={() => send("HIDE")}
-    >
-      <div
-        className={clsx(
-          "rounded-xl shadow-lg p-5 text-black overflow-hidden",
-          "z-20 bg-white absolute flex flex-col",
-          "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
-          "w-[95%] sm:w-[450px] h-[580px]",
-        )}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {!state.matches("Success") && (
-          <Tabs
-            tabs={transferTabs}
-            defaultValue={state.context.direction}
-            onValueChange={onModalTypeChange}
-            isFitLine={false}
-          />
-        )}
-        {state.context.direction === "send" && !state.matches("Success") && (
-          <ToggleButton
-            firstValue="Token"
-            secondValue="Collectible"
-            className="mb-6"
-            onChange={onTokenTypeChange}
-            defaultValue={state.context.tokenType === "nft"}
-            id="send_type_toggle"
-          />
-        )}
-        {Component}
-      </div>
-    </div>
+    <TransferTemplate onClickOutside={() => send({ type: "HIDE" })}>
+      {!state.matches("Success") && (
+        <Tabs
+          tabs={transferTabs}
+          defaultValue={state.context.direction}
+          onValueChange={onModalTypeChange}
+          isFitLine={false}
+        />
+      )}
+      {state.context.direction === "send" && !state.matches("Success") && (
+        <ToggleButton
+          firstValue="Token"
+          secondValue="Collectible"
+          className="mb-6"
+          onChange={onTokenTypeChange}
+          defaultValue={state.context.tokenType === "nft"}
+          id="send_type_toggle"
+        />
+      )}
+      {Component}
+    </TransferTemplate>
   )
 }

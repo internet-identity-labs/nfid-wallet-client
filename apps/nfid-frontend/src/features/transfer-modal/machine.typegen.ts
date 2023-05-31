@@ -4,9 +4,6 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
     "": { type: "" }
-    "xstate.after(5000)#TransferMachine.Success": {
-      type: "xstate.after(5000)#TransferMachine.Success"
-    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {}
@@ -25,9 +22,9 @@ export interface Typegen0 {
     assignSelectedNFT: "ASSIGN_SELECTED_NFT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
-    assignSuccessMessage: "ON_SUCCESS"
     assignTokenStandard: "ASSIGN_TOKEN_STANDARD"
     assignTokenType: "CHANGE_TOKEN_TYPE"
+    assignTransferObject: "ON_TRANSFER_PROMISE"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {

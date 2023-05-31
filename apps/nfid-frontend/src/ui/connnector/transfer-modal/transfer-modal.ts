@@ -29,6 +29,7 @@ import {
 } from "./types"
 import { connectorCache } from "../cache"
 import { Cache } from "node-ts-cache"
+import { getPrice } from "packages/integration/src/lib/asset/asset-util"
 
 export abstract class TransferModalConnector<T extends ITransferConfig>
   implements ITransferModalConnector
@@ -148,6 +149,11 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   @Cache(connectorCache, {ttl: 180})
   protected async getApplications(): Promise<Application[]> {
     return await fetchApplications()
+  }
+  
+  @Cache(connectorCache, { ttl: 60 })
+  async getRate(currency: string): Promise<string> {
+    return (await getPrice([currency])).find(t => t.token === currency)?.price ?? '0'
   }
 
   async getIdentity(

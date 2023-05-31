@@ -1,52 +1,61 @@
-import clsx from "clsx"
 import React from "react"
+import { toast } from "react-toastify"
+import useSWR from "swr"
 
-import { Button, Image, ImagePngSuccess } from "@nfid-frontend/ui"
+import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
 
-interface ITransferModalSuccess {
-  transactionMessage: string
-  transactionRoute?: string
-  onClose: () => void
+import { Success } from "../ui/success"
+
+export interface ITransferSuccess {
+  onClose?: () => void
+  initialPromise: Promise<ITransferResponse>
+  callback?: () => void
+  title: string
+  subTitle: string
+  assetImg: string
+  isAssetPadding?: boolean
 }
 
-export const TransferSuccess: React.FC<ITransferModalSuccess> = ({
-  transactionMessage,
-  transactionRoute,
+export const TransferSuccess: React.FC<ITransferSuccess> = ({
   onClose,
+  initialPromise,
+  title,
+  subTitle,
+  assetImg,
+  isAssetPadding,
+  callback,
 }) => {
+  const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3>(0)
+  console.log({ initialPromise })
+  const { data } = useSWR(
+    [initialPromise, "initialTransferPromise"],
+    ([initialPromise]) => initialPromise,
+    {
+      onSuccess: async (data) => {
+        setCurrentState(1)
+        setTimeout(async () => {
+          if (!data?.verifyPromise) {
+            setCurrentState(3)
+          } else {
+            setCurrentState(2)
+            await data.verifyPromise
+            setCurrentState(3)
+          }
+          callback && callback()
+        }, 5000)
+      },
+      onError: () => toast.error("Something went wrong"),
+    },
+  )
   return (
-    <div
-      id={"success_window"}
-      className={clsx(
-        "text-black text-center",
-        "flex flex-grow flex-col justify-between",
-      )}
-    >
-      <div className="flex-grow">
-        <Image
-          className="w-[240px] mx-auto"
-          src={ImagePngSuccess}
-          alt="success"
-        />
-        <p className="text-xl font-bold">Transaction successful</p>
-        <p className="font-bold mt-[10px] mb-3">{transactionMessage}</p>
-        <p className={clsx("text-sm", !transactionRoute?.length && "hidden")}>
-          You can view transaction details in the <br />
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href={transactionRoute}
-            onClick={onClose}
-            className="transition-opacity cursor-pointer text-blue hover:opacity-75"
-          >
-            Transaction history
-          </a>
-          .
-        </p>
-      </div>
-      <Button type="primary" block className="mt-[36px]" onClick={onClose}>
-        Close
-      </Button>
-    </div>
+    <Success
+      title={title}
+      subTitle={subTitle}
+      url={data?.url}
+      onClose={onClose!}
+      assetImg={assetImg}
+      step={currentState}
+      isAssetPadding={isAssetPadding}
+    />
   )
 }

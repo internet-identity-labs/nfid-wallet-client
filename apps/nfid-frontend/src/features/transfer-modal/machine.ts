@@ -6,6 +6,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
 import { UserNonFungibleToken } from "../non-fungable-token/types"
+import { ITransferSuccess } from "./components/success"
 
 export type TransferMachineContext = {
   direction: "send" | "receive"
@@ -16,7 +17,7 @@ export type TransferMachineContext = {
   selectedNFT?: UserNonFungibleToken
   receiverWallet: string
   amount: string
-  successMessage: string
+  transferObject?: ITransferSuccess
   error?: Error
   tokenStandard: string
   tokenCurrency: string
@@ -45,7 +46,7 @@ export type Events =
   | { type: "ASSIGN_SELECTED_NFT"; data: UserNonFungibleToken }
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
-  | { type: "ON_SUCCESS"; data: string }
+  | { type: "ON_TRANSFER_PROMISE"; data: ITransferSuccess }
 
 type Services = {
   transferFT: {
@@ -70,7 +71,7 @@ export const transferMachine = createMachine(
       sourceWalletAddress: "",
       receiverWallet: "",
       amount: "",
-      successMessage: "",
+      transferObject: undefined,
       tokenStandard: TokenStandards.ICP,
       tokenCurrency: TokenStandards.ICP,
     },
@@ -151,17 +152,17 @@ export const transferMachine = createMachine(
           },
           SendFT: {
             on: {
-              ON_SUCCESS: {
+              ON_TRANSFER_PROMISE: {
                 target: "#TransferMachine.Success",
-                actions: "assignSuccessMessage",
+                actions: "assignTransferObject",
               },
             },
           },
           SendNFT: {
             on: {
-              ON_SUCCESS: {
+              ON_TRANSFER_PROMISE: {
                 target: "#TransferMachine.Success",
-                actions: "assignSuccessMessage",
+                actions: "assignTransferObject",
               },
             },
           },
@@ -169,9 +170,9 @@ export const transferMachine = createMachine(
       },
 
       Success: {
-        after: {
-          5000: "Hidden",
-        },
+        // after: {
+        //   5000: "Hidden",
+        // },
         on: {
           HIDE: "Hidden",
         },
@@ -208,8 +209,8 @@ export const transferMachine = createMachine(
       assignSelectedNFT: assign((_, event) => ({
         selectedNFT: event?.data,
       })),
-      assignSuccessMessage: assign((_, event) => ({
-        successMessage: event?.data,
+      assignTransferObject: assign((_, event) => ({
+        transferObject: event?.data,
       })),
       assignTokenStandard: assign((_, event) => ({
         tokenStandard: event?.data,

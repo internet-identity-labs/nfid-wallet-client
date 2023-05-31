@@ -50,13 +50,13 @@ Feature:Fungible Asset History
     Then 0 transaction in the table
     Examples:
       | tab      | label             | anchor | txs   | txss |
-      | Received | Bitcoin           | 25795  | 11 TXs | 1    |
-      | Received | Ethereum          | 25795  | 11 TXs | 5    |
-      | Sent     | Bitcoin           | 28593  | 7 TXs | 2    |
-      | Sent     | Ethereum          | 28593  | 7 TXs | 1    |
-      | Sent     | Internet Computer | 28593  | 7 TXs | 1    |
+      | Received | Bitcoin           | 25795  | 9 TXs | 1    |
+      | Received | Ethereum          | 25795  | 9 TXs | 5    |
+      | Sent     | Bitcoin           | 28593  | 4 TXs | 2    |
+      | Sent     | Ethereum          | 28593  | 4 TXs | 1    |
+      | Sent     | Internet Computer | 28593  | 4 TXs | 1    |
       | Received | Internet Computer | 28542  | 3 TXs | 1    |
       | Received | Ethereum          | 28542  | 3 TXs | 1    |
-      | Sent     | Test Token        | 10974  | 3 TXs | 2    |
-      | Received | Test Token        | 10974  | 3 TXs | 1    |
+      | Sent     | Test Token        | 10974  | 2 TXs | 2    |
+      | Received | Test Token        | 10974  | 2 TXs | 1    |
 

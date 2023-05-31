@@ -2,6 +2,10 @@ import { render } from "@testing-library/react"
 
 import App from "./app"
 
+jest.mock("lottie-web", () => ({
+  loadAnimation: jest.fn().mockReturnValue({}),
+}));
+
 describe("App", () => {
   it("should render successfully", () => {
     const { baseElement } = render(<App />)

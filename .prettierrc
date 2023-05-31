@@ -18,7 +18,11 @@
     "^[./]"
   ],
   "importOrderSeparation": true,
-  "importOrderParserPlugins": ["jsx", "typescript"],
+  "importOrderParserPlugins": [
+    "jsx",
+    "typescript",
+    "decorators-legacy"
+  ],
   "overrides": [
     {
       "files": [

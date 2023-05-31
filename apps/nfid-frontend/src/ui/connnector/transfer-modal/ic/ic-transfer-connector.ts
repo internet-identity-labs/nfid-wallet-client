@@ -10,8 +10,8 @@ import { Blockchain, NativeToken } from "../../types"
 import {
   ITransferFTConnector,
   ITransferConfig,
-  TokenFee,
   TransferModalType,
+  TokenFee,
 } from "../types"
 import { ICMTransferConnector } from "./icm-transfer-connector"
 
@@ -19,13 +19,6 @@ export class ICTransferConnector
   extends ICMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
-  getFee(): Promise<TokenFee> {
-    return Promise.resolve({
-      fee: `${String(WALLET_FEE)} ${this.config.feeCurrency}`,
-      feeUsd: String(WALLET_FEE),
-    })
-  }
-
   async getIdentity(address: string): Promise<DelegationIdentity> {
     const profile = await this.getProfile()
     const allAccounts = await this.getAllPrincipals(false)
@@ -40,6 +33,13 @@ export class ICTransferConnector
       neededAccount?.account.domain,
       neededAccount?.account.accountId,
     )
+  }
+
+  getFee(): Promise<TokenFee> {
+    return Promise.resolve({
+      fee: `${String(WALLET_FEE)} ${this.config.feeCurrency}`,
+      feeUsd: String(WALLET_FEE),
+    })
   }
 }
 

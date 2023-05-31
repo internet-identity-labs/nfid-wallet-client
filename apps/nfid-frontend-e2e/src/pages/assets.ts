@@ -158,13 +158,11 @@ export class Assets {
     await this.chooseOption(account)
   }
 
-  public async successWindow(expectedText: string) {
-    const sw = await $(`#success_window`)
-
+  public async successWindow() {
+    const sw = await $(`#success_window_3`)
     await sw.waitForExist({
       timeout: 50000,
     })
-    // await expect(sw).toHaveTextContaining(expectedText)
   }
 
   public async openAssetByLabel(name: string) {

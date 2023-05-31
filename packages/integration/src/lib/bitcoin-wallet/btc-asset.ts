@@ -52,7 +52,7 @@ export class BtcAsset extends Asset<string> {
         request.to,
         satoshi,
       )
-      return `You've sent ${request.amount} BTC. Transaction hash: ${response.tx.hash}`
+      return response.tx.hash
     } catch (e: any) {
       throw new Error(
         e?.message ??

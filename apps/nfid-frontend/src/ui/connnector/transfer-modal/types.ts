@@ -32,6 +32,7 @@ export interface ITransferModalConnector
   getTokenConfig(currency?: string): ITransferConfig
   getTokenCurrencies(): Promise<string[]>
   getAccountsOptions(currency?: string): Promise<IGroupedOptions[]>
+  getRate(currency?: string): Promise<string>
 
   getNetworkOption(): IGroupOption
   getTokensOptions(): Promise<IGroupedOptions>
@@ -93,8 +94,7 @@ export type ITransferNFTRequest = {
 } & ITransferRequest
 
 export interface ITransferResponse {
-  status: "ok" | "error"
-  errorMessage?: string
-  successMessage?: string
-  hash?: string
+  verifyPromise?: Promise<void>
+  errorMessage?: Error
+  url?: string
 }

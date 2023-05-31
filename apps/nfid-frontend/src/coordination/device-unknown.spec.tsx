@@ -37,6 +37,10 @@ const setupCoordinator = (userAgent: string, WebAuthNCapability: boolean) => {
   )
 }
 
+jest.mock("lottie-web", () => ({
+  loadAnimation: jest.fn().mockReturnValue({}),
+}));
+
 describe("UnknownDeviceCoordinator", () => {
   describe("Desktop or no support for WebAuthN", () => {
     // it.each(["DesktopBrowser", ...device.MobileBrowser])(

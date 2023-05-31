@@ -8,6 +8,7 @@ import { EstimateTransactionRequest } from "../../types"
 import { alchemyService } from "../alchemy.service"
 
 export class EthTransferRequest implements EstimateTransactionRequest {
+  readonly type = "EthTransferRequest"
   constructor(
     readonly identity: DelegationIdentity,
     readonly to: string,

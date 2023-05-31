@@ -9,6 +9,7 @@ import { EstimateTransactionRequest } from "../../types"
 export class NftErc721EstimateTransactionRequest
   implements EstimateTransactionRequest
 {
+  readonly type = "NftErc721EstimateTransactionRequest"
   constructor(
     readonly identity: DelegationIdentity,
     readonly to: string,

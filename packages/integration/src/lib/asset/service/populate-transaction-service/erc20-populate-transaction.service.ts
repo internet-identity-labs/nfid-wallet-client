@@ -10,6 +10,7 @@ import { alchemyService } from "../alchemy.service"
 export class Erc20EstimateTransactionRequest
   implements EstimateTransactionRequest
 {
+  readonly type = "Erc20EstimateTransactionRequest"
   constructor(
     readonly identity: DelegationIdentity,
     readonly to: string,

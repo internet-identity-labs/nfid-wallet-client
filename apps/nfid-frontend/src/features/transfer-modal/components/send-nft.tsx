@@ -19,6 +19,7 @@ import { getWalletName } from "@nfid/integration"
 
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
+import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
   getAllNFT,
   getAllNFTOptions,
@@ -27,16 +28,17 @@ import {
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
+import { ITransferSuccess } from "./success"
+
 interface ITransferNFT {
   selectedReceiverWallet?: string
-  onSuccess: (data: string) => void
+  onTransferPromise: (data: ITransferSuccess) => void
 }
 
 export const TransferNFT = ({
   selectedReceiverWallet,
-  onSuccess,
+  onTransferPromise,
 }: ITransferNFT) => {
-  const [isTransferInProgress, setIsTransferInProgress] = useState(false)
   const [selectedNFTId, setSelectedNFTId] = useState("")
   const { applicationsMeta } = useApplicationsMeta()
 
@@ -66,8 +68,8 @@ export const TransferNFT = ({
     },
   )
 
-  const { data: accountsOptions } = useSWR(
-    selectedConnector ? [selectedConnector, "nftAccountsOptions"] : null,
+  const { data: accountsOptions, isLoading: isAccountsLoading } = useSWR(
+    selectedConnector ? [selectedConnector, "accountsOptions"] : null,
     ([connector]) => connector.getAccountsOptions(),
   )
 
@@ -105,47 +107,50 @@ export const TransferNFT = ({
 
   const submit = useCallback(
     async (values: any) => {
-      if (!selectedNFT) return console.error("No selected NFT")
+      if (!selectedNFT) return toast.error("No selected NFT")
+      if (!selectedConnector) return toast.error("No selected connector")
 
-      try {
-        setIsTransferInProgress(true)
-        const response = await selectedConnector?.transfer({
-          identity: await selectedConnector.getIdentity(
-            selectedNFT.account.domain,
-            selectedNFT.account.accountId,
-          ),
-          to: values.to,
-          contract: selectedNFT?.contractId ?? "",
-          tokenId: selectedNFT?.tokenId ?? "",
-          standard: selectedNFT?.collection.standard ?? "",
-        })
+      onTransferPromise({
+        assetImg: selectedNFT?.assetPreview,
+        initialPromise: new Promise(async (resolve) => {
+          const res = await selectedConnector.transfer({
+            identity: await selectedConnector.getIdentity(
+              selectedNFT.account.domain,
+              selectedNFT.account.accountId,
+            ),
+            to: values.to,
+            contract: selectedNFT?.contractId ?? "",
+            tokenId: selectedNFT?.tokenId ?? "",
+            standard: selectedNFT?.collection.standard ?? "",
+          })
 
-        if (response?.status === "ok")
-          onSuccess(
-            response?.successMessage ??
-              `You've sent ${selectedNFT?.name} to ${values.to}`,
+          resolve(res)
+        }),
+        title: selectedNFT.name,
+        subTitle: selectedNFT.collection.name,
+        callback: () => {
+          resetCachesByKey(
+            [
+              `${selectedConnector.constructor.name}:getNFTOptions:[]`,
+              `${selectedConnector.constructor.name}:getNFTs:[]`,
+            ],
+            () => refetchNFTs(),
           )
-      } catch (e: any) {
-        toast.error(
-          e?.message ?? "Unexpected error: The transaction has been cancelled",
-        )
-      } finally {
-        setIsTransferInProgress(false)
-        refetchNFTs()
-      }
+        },
+      })
     },
-    [onSuccess, refetchNFTs, selectedConnector, selectedNFT],
+    [onTransferPromise, refetchNFTs, selectedConnector, selectedNFT],
   )
 
   const loadingMessage = useMemo(() => {
-    if (isTransferInProgress) return "Sending..."
     if (isNFTLoading) return "Fetching your NFTs..."
-  }, [isNFTLoading, isTransferInProgress])
+    if (isAccountsLoading) return "Loading accounts..."
+  }, [isAccountsLoading, isNFTLoading])
 
   return (
     <BlurredLoader
       overlayClassnames="rounded-xl"
-      isLoading={isTransferInProgress || isNFTLoading}
+      isLoading={isNFTLoading || isAccountsLoading}
       loadingMessage={loadingMessage}
     >
       <div className="space-y-3 text-xs ">

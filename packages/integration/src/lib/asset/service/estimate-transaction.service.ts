@@ -54,8 +54,7 @@ export async function estimateTransaction(
     throw Error("No FeeData received from Provider.")
   }
 
-  const populateTransactionService =
-    populateTransactionServices[request.constructor.name]
+  const populateTransactionService = populateTransactionServices[request.type]
 
   if (!populateTransactionService) {
     throw Error("No populate transaction service found.")

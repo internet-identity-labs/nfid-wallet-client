@@ -44,6 +44,7 @@ import IconSvgTrash from "./trash.svg"
 import IconSvgUnknown from "./unknown.svg"
 import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
+import IconSvgEthereum from './ethereum.svg'
 
 export {
   IconPngEthereum,
@@ -92,6 +93,7 @@ export {
   IconSvgTransfer,
   IconSvgArrowRed,
   IconSvgArrowGreen,
+  IconSvgEthereum
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -145,6 +147,7 @@ export { ReactComponent as IconCmpLoading } from "./loader.svg"
 export { ReactComponent as IconCmpNFTPreview } from "./nft-preview.svg"
 export { ReactComponent as IconCmpArrowRed } from "./arrow-red.svg"
 export { ReactComponent as IconCmpArrowGreen } from "./arrow-green.svg"
+
 
 // png
 export { IconMetamask } from "./metamask"

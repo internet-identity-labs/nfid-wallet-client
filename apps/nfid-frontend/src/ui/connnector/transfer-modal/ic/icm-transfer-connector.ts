@@ -1,6 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
+import { Cache } from "node-ts-cache"
 import { isHex } from "packages/utils/src/lib/validation"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
@@ -16,6 +17,7 @@ import {
 } from "frontend/integration/wallet/utils"
 import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
+import { connectorCache } from "../../cache"
 import { TransferModalConnector } from "../transfer-modal"
 import {
   ITransferConfig,
@@ -24,13 +26,11 @@ import {
   ITransferResponse,
   TokenBalance,
 } from "../types"
-import { connectorCache } from "../../cache"
-import { Cache } from "node-ts-cache"
 
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
-  > extends TransferModalConnector<ConfigType> {
-  @Cache(connectorCache, {ttl: 15})
+> extends TransferModalConnector<ConfigType> {
+  @Cache(connectorCache, { ttl: 15 })
   async getAccountsOptions(): Promise<IGroupedOptions[]> {
     const principals = await this.getAllPrincipals(true)
     const applications = await this.getApplications()
@@ -71,7 +71,7 @@ export abstract class ICMTransferConnector<
     )(groupedOptions.sort(sortAlphabetic(({ label }) => label)))
   }
 
-  @Cache(connectorCache, {ttl: 10})
+  @Cache(connectorCache, { ttl: 15 })
   async getBalance(principalId: string): Promise<TokenBalance> {
     const address = principalToAddress(Principal.fromText(principalId))
     const balance = await getBalance(address)
@@ -93,24 +93,19 @@ export abstract class ICMTransferConnector<
       throw new Error("Identity not found. Please try again")
 
     try {
-      const response =
-        "tokenId" in request
-          ? await transferEXT(request.tokenId, request.identity, request.to)
-          : await submitICP(
-              stringICPtoE8s(String(request.amount)),
-              request.to.length === PRINCIPAL_LENGTH
-                ? principalToAddress(Principal.fromText(request.to))
-                : request.to,
-              request.identity,
-            )
+      "tokenId" in request
+        ? await transferEXT(request.tokenId, request.identity, request.to)
+        : await submitICP(
+            stringICPtoE8s(String(request.amount)),
+            request.to.length === PRINCIPAL_LENGTH
+              ? principalToAddress(Principal.fromText(request.to))
+              : request.to,
+            request.identity,
+          )
 
-      return {
-        status: "ok",
-        hash: String(response),
-      }
+      return {}
     } catch (e: any) {
       return {
-        status: "error",
         errorMessage: e ?? "Unknown error",
       }
     }

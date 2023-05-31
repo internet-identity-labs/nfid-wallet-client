@@ -14,6 +14,7 @@ import {
 import { makeRootAccountGroupedOptions } from "./util/options"
 import { Cache } from "node-ts-cache"
 
+
 export abstract class EVMTransferConnector<
   ConfigType extends ITransferConfig,
 > extends TransferModalConnector<ConfigType> {
@@ -42,12 +43,11 @@ export abstract class EVMTransferConnector<
       )
 
       result = {
-        status: "ok",
-        hash: response.etherscanTransactionUrl,
+        verifyPromise: response.waitOnChain,
+        url: response.etherscanTransactionUrl,
       }
     } catch (e: any) {
       result = {
-        status: "error",
         errorMessage: e.message ?? "Unknown error",
       }
     }

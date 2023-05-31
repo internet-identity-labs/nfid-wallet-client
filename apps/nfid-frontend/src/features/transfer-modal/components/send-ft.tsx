@@ -18,6 +18,7 @@ import {
 import { TokenMetadata } from "@nfid/integration/token/dip-20"
 
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
+import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
   getAllTokensOptions,
   getConnector,
@@ -27,19 +28,19 @@ import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { validateTransferAmountField } from "../utils/validations"
+import { ITransferSuccess } from "./success"
 
 interface ITransferFT {
   preselectedTokenCurrency: string
   preselectedAccountAddress: string
-  onSuccess: (message: string) => void
+  onTransferPromise: (data: ITransferSuccess) => void
 }
 
 export const TransferFT = ({
   preselectedTokenCurrency,
   preselectedAccountAddress = "",
-  onSuccess,
+  onTransferPromise,
 }: ITransferFT) => {
-  const [isTransferInProgress, setIsTransferInProgress] = useState(false)
   const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
     preselectedTokenCurrency,
   )
@@ -79,9 +80,16 @@ export const TransferFT = ({
     },
   )
 
-  const { data: balance, mutate: refetchBalance } = useSWR(
-    selectedConnector ? [selectedConnector, "balance"] : null,
-    ([connector]) =>
+  const {
+    data: balance,
+    mutate: refetchBalance,
+    isValidating: isBalanceFetching,
+    isLoading: isBalanceLoading,
+  } = useSWR(
+    selectedConnector && selectedAccountAddress
+      ? [selectedConnector, selectedAccountAddress, "balance"]
+      : null,
+    ([connector, selectedAccountAddress]) =>
       connector.getBalance(selectedAccountAddress, selectedTokenCurrency),
     { refreshInterval: 10000 },
   )
@@ -128,48 +136,59 @@ export const TransferFT = ({
     },
   )
 
+  const { data: rate } = useSWR(
+    selectedConnector ? [selectedTokenCurrency, "rate"] : null,
+    ([selectedTokenCurrency]) =>
+      selectedConnector?.getRate(selectedTokenCurrency),
+  )
+
   const submit = useCallback(
-    async (values: any) => {
+    async (values: { amount: number; to: string }) => {
       if (!tokenMetadata) return toast.error("Token metadata has not loaded")
+      if (!selectedConnector) return toast.error("No selected connector")
       if (values.to === selectedAccountAddress)
         return setError("to", {
           type: "value",
           message: "You can't transfer to the same wallet",
         })
 
-      try {
-        setIsTransferInProgress(true)
-        const identity = await selectedConnector?.getIdentity(
-          selectedAccountAddress,
-        )
-        const response = await selectedConnector?.transfer({
-          to: values.to,
-          amount: values.amount,
-          currency: selectedTokenCurrency,
-          identity: identity,
-          contract:
-            "contractAddress" in tokenMetadata
-              ? String(tokenMetadata.contractAddress)
-              : "",
-        })
+      onTransferPromise({
+        assetImg: tokenMetadata?.icon ?? "",
+        initialPromise: new Promise(async (resolve) => {
+          const res = await selectedConnector.transfer({
+            to: values.to,
+            amount: values.amount,
+            currency: selectedTokenCurrency,
+            identity: await selectedConnector?.getIdentity(
+              selectedAccountAddress,
+            ),
+            contract:
+              "contractAddress" in tokenMetadata
+                ? String(tokenMetadata.contractAddress)
+                : "",
+          })
 
-        if (response?.status === "ok")
-          onSuccess(
-            response?.successMessage ??
-              `You've sent ${values.amount} ${selectedTokenCurrency}`,
+          resolve(res)
+        }),
+        title: `${values.amount} ${selectedTokenCurrency}`,
+        subTitle: `$${(Number(values.amount) * Number(rate)).toFixed(2)}`,
+        callback: () => {
+          resetCachesByKey(
+            [
+              `${selectedConnector.constructor.name}:getBalance:["${selectedAccountAddress}"]`,
+              `${selectedConnector.constructor.name}:getBalance:["${values.to}"]`,
+              `${selectedConnector.constructor.name}:getBalance:[]`,
+              `${selectedConnector.constructor.name}:getAccountsOptions:["${selectedTokenCurrency}"]`,
+            ],
+            () => refetchBalance(),
           )
-        else throw new Error(response?.errorMessage)
-      } catch (e: any) {
-        toast.error(
-          e?.message ?? "Unexpected error: The transaction has been cancelled",
-        )
-      } finally {
-        setIsTransferInProgress(false)
-        refetchBalance()
-      }
+        },
+        isAssetPadding: true,
+      })
     },
     [
-      onSuccess,
+      onTransferPromise,
+      rate,
       refetchBalance,
       selectedAccountAddress,
       selectedConnector,
@@ -180,7 +199,6 @@ export const TransferFT = ({
   )
 
   const loadingMessage = useMemo(() => {
-    if (isTransferInProgress) return "Sending..."
     if (isTokensLoading) return "Fetching supported tokens..."
     if (isConnectorLoading || isMetadataLoading)
       return "Loading token config..."
@@ -190,7 +208,6 @@ export const TransferFT = ({
     isConnectorLoading,
     isMetadataLoading,
     isTokensLoading,
-    isTransferInProgress,
   ])
 
   return (
@@ -198,7 +215,6 @@ export const TransferFT = ({
       className="text-xs"
       overlayClassnames="rounded-xl"
       isLoading={
-        isTransferInProgress ||
         isConnectorLoading ||
         isAccountsLoading ||
         isMetadataLoading ||
@@ -333,7 +349,9 @@ export const TransferFT = ({
         <div className="flex justify-between text-sm text-gray-400">
           <p>Current balance</p>
           <div className="flex items-center space-x-0.5">
-            {!!balance?.balance?.length ? (
+            {!isBalanceLoading &&
+            !isBalanceFetching &&
+            !!balance?.balance?.length ? (
               <span id="balance">
                 {balance.balance.toString()} {selectedTokenCurrency}
               </span>

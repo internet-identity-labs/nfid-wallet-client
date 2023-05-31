@@ -9,7 +9,7 @@ import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-et
 export const useUserPolygonNFTTransactions = () => {
   const { address } = useEthAddress()
   const { data, error, isValidating } = useSWR(
-    "user-eth-nft-transactions",
+    "user-polygon-nft-transactions",
     getUserPolygonNFTActivity,
   )
 

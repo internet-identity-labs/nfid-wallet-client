@@ -20,6 +20,10 @@ import KnownDeviceMachine, {
 import { KnownDeviceCoordinator } from "./device-known"
 import { makeInvokedActor } from "./test-utils"
 
+jest.mock("lottie-web", () => ({
+  loadAnimation: jest.fn().mockReturnValue({}),
+}));
+
 describe("KnownDevice Coordinator", () => {
   describe("NFID Auth State rendering", () => {
     const NFID_TEST_PLAN = [

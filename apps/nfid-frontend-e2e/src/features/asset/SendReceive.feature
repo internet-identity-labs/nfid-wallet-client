@@ -77,7 +77,7 @@ Feature:Send/Receive Asset
     And Choose <account> from accounts
     Then Wait while balance and fee calculated
     And Set <target> address and <amount> and send
-    Then Success window appears with <amount> <currency>
+    Then Transaction is success
     Examples:
       | chain             | anchor | target                                                           | amount    | currency | account        |
       | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | BTC      | NFID account 1 |

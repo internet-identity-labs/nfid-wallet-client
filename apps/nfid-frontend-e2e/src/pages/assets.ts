@@ -158,7 +158,7 @@ export class Assets {
     await this.chooseOption(account)
   }
 
-  public async successWindow(amount: string, currency: string) {
+  public async successWindow() {
     const sw = await $(`#success_window_3`)
     await sw.waitForExist({
       timeout: 50000,

@@ -55,8 +55,8 @@ Feature:Fungible Asset History
       | Sent     | Bitcoin           | 28593  | 7 TXs | 2    |
       | Sent     | Ethereum          | 28593  | 7 TXs | 1    |
       | Sent     | Internet Computer | 28593  | 7 TXs | 1    |
-      | Received | Internet Computer | 28542  | 3 TXs | 1    |
-      | Received | Ethereum          | 28542  | 3 TXs | 1    |
+      | Received | Internet Computer | 28542  | 2 TXs | 1    |
+      | Received | Ethereum          | 28542  | 2 TXs | 1    |
       | Sent     | Test Token        | 10974  | 3 TXs | 2    |
       | Received | Test Token        | 10974  | 3 TXs | 1    |
 

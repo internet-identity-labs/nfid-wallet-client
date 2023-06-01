@@ -1,9 +1,10 @@
+import { Cache } from "node-ts-cache"
 import { NftErc721EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/nft-erc721-populate-transaction.service"
 import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/nft-erc1155-populate-transaction.service"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -19,17 +20,16 @@ import {
   TransferModalType,
 } from "../types"
 import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
-import { Cache } from "node-ts-cache"
 
 export class PolygonNFTTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getNFTs(): Promise<UserNonFungibleToken[]> {
-    const address =await  this.getAddress()
+    const address = await this.getAddress()
     const identity = await this.getIdentity()
-    const nfts = await polygonAsset.getItemsByUser({ identity })
+    const nfts = await polygonMumbaiAsset.getItemsByUser({ identity })
 
     return nfts.items.map((nft) =>
       toUserNFT(
@@ -42,7 +42,7 @@ export class PolygonNFTTransferConnector
     )
   }
 
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getNFTOptions(): Promise<IGroupedOptions[]> {
     const applications = await this.getApplications()
     const nfts = await this.getNFTs()
@@ -76,7 +76,9 @@ export class PolygonNFTTransferConnector
 
     let estimatedTransaction: EstimatedTransaction | undefined = undefined
     try {
-      estimatedTransaction = await polygonAsset.getEstimatedTransaction(request)
+      estimatedTransaction = await polygonMumbaiAsset.getEstimatedTransaction(
+        request,
+      )
     } catch (e: any) {
       throw new Error(e?.message)
     }
@@ -99,5 +101,5 @@ export const polygonNFTTransferConnector = new PolygonNFTTransferConnector({
   feeCurrency: NativeToken.MATIC,
   addressPlaceholder: "Recipient polygon address",
   type: TransferModalType.NFT,
-  assetService: polygonAsset,
+  assetService: polygonMumbaiAsset,
 })

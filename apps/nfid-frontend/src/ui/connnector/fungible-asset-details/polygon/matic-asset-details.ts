@@ -2,13 +2,13 @@ import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { FungibleAssetDetailsConnector } from "src/ui/connnector/fungible-asset-details/fungible-asset-detail"
 
 import { MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class MaticAssetDetailsConnector extends FungibleAssetDetailsConnector {
   async getAssetDetails(): Promise<Array<TokenBalanceSheet>> {
     const principal = await this.getIdentity()
-    return polygonAsset
+    return polygonMumbaiAsset
       .getNativeAccount(principal, this.config.icon)
       .then((l) => [l])
   }

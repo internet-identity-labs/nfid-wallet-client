@@ -12,6 +12,7 @@ import {
 import { EthersEthereum } from "@rarible/ethers-ethereum"
 import { createRaribleSdk, IRaribleSdk } from "@rarible/sdk"
 import { EthereumWallet } from "@rarible/sdk-wallet"
+import { RaribleSdkEnvironment } from "@rarible/sdk/build/config/domain"
 import {
   convertEthereumItemId,
   convertEthereumToUnionAddress,
@@ -31,7 +32,6 @@ import { principalToAddress } from "ictool"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { E8S } from "../token/icp"
 import { getPriceFull } from "./asset-util"
 import { NonFungibleAsset } from "./non-fungible-asset"
 import { coinbaseRatesService } from "./service/coinbase-rates.service"
@@ -73,12 +73,24 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     this.config = config
   }
 
+  getBlockchain(): string {
+    return this.config.blockchainName
+  }
+
+  getNativeCurrency(): string {
+    return this.config.symbol
+  }
+
+  getNativeToken(): string {
+    return this.config.token
+  }
+
   async transfer(
     identity: DelegationIdentity,
     transaction: ethers.providers.TransactionRequest,
   ): Promise<TransferResponse> {
-    const wallet = this.getWallet(identity, CHAIN_NETWORK, this.config)
-    const etherscanUrl = this.getEtherscanUrl(CHAIN_NETWORK, this.config)
+    const wallet = this.getWallet(identity, this.config.providerUrl)
+    const etherscanUrl = this.config.etherscanUrl
     const chainId = await wallet.getChainId()
     const rate = await coinbaseRatesService.getRateByChainId(chainId)
     const response = await wallet.sendTransaction(transaction)
@@ -97,7 +109,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   async getEstimatedTransaction(
     request: EstimateTransactionRequest,
   ): Promise<EstimatedTransaction> {
-    const wallet = this.getWallet(request.identity, CHAIN_NETWORK, this.config)
+    const wallet = this.getWallet(request.identity, this.config.providerUrl)
     return estimateTransaction(wallet, request)
   }
 
@@ -105,7 +117,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     if (!delegation) {
       throw Error("Delegation is needed.")
     }
-    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    const wallet = this.getWallet(delegation, this.config.providerUrl)
     return await wallet.getAddress()
   }
 
@@ -116,7 +128,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     sort,
     size,
   }: ActivitiesByItemRequest): Promise<NonFungibleActivityRecords> {
-    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
+    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
     const itemId = convertEthereumItemId(
       `${contract}:${tokenId}`,
       this.config.blockchain,
@@ -146,7 +158,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     sort,
   }: ActivitiesByUserRequest): Promise<NonFungibleActivityRecords> {
     const address = await this.getAddressByIdentity(identity)
-    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
+    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,
       this.config.unionBlockchain,
@@ -180,8 +192,11 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     size,
   }: ItemsByUserRequest): Promise<NonFungibleItems> {
     const address = await this.getAddressByIdentity(identity)
-    const alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, this.config)
-    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
+    const alchemySdk = this.getAlchemySdk(
+      this.config.alchemyNetwork,
+      this.config.alchemyApiKey,
+    )
+    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
     const tokens: AlchemyOwnedNftsResponse =
       await alchemySdk.nft.getNftsForOwner(address, {
         pageKey: cursor,
@@ -242,7 +257,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       addressVal,
       this.config.unionBlockchain,
     )
-    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
+    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
     const now = new Date()
     const [balance, currencyRate] = await Promise.all([
       raribleSdk.balances.getBalance(
@@ -271,7 +286,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     contract,
     receiver,
   }: TransferNftRequest): Promise<void> {
-    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    const wallet = this.getWallet(delegation, this.config.providerUrl)
     return await wallet.safeTransferFrom(receiver, contract, tokenId)
   }
 
@@ -280,7 +295,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     to,
     amount,
   }: TransferETHRequest): Promise<TransactionResponse> {
-    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    const wallet = this.getWallet(delegation, this.config.providerUrl)
     const address = await wallet.getAddress()
     // const trCount = await this.wallet.getTransactionCount("latest")
     // const gasPrice = await this.wallet.getGasPrice()
@@ -304,7 +319,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     cursor,
   }: Erc20TokensByUserRequest): Promise<Tokens> {
     const address = await this.getAddressByIdentity(identity)
-    const alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, this.config)
+    const alchemySdk = this.getAlchemySdk(
+      this.config.alchemyNetwork,
+      this.config.alchemyApiKey,
+    )
     const tokens = await alchemySdk.core.getTokensForOwner(address, {
       pageKey: cursor,
     })
@@ -404,7 +422,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     const addressVal = await this.getAddressByIdentity(
       address ?? delegation ?? undefined,
     )
-    const alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, this.config)
+    const alchemySdk = this.getAlchemySdk(
+      this.config.alchemyNetwork,
+      this.config.alchemyApiKey,
+    )
 
     const transfers = await alchemySdk.core.getAssetTransfers({
       fromAddress: "from" == direction ? addressVal : undefined,
@@ -431,22 +452,6 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     }
   }
 
-  getNativeCurrency(): string {
-    return "ETH"
-  }
-
-  getNativeToken(): string {
-    return "Ethereum"
-  }
-
-  private getEtherscanUrl(mode: string, config: Configuration) {
-    const url =
-      "mainnet" == mode
-        ? config.etherscanUrl.mainnet
-        : config.etherscanUrl.testnet
-    return url
-  }
-
   private getAddressByIdentity(identity?: Identity): Promise<string> {
     if (!identity) {
       throw Error("No Identity provided.")
@@ -459,7 +464,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   private getAddressByDelegation(
     delegation: DelegationIdentity,
   ): Promise<string> {
-    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    const wallet = this.getWallet(delegation, this.config.providerUrl)
     return wallet.getAddress()
   }
 
@@ -497,31 +502,29 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
   private getWallet(
     delegation: DelegationIdentity,
-    mode: string,
-    config: Configuration,
+    providerUrl: string,
   ): EthWalletV2 {
-    const url =
-      "mainnet" == mode ? config.provider.mainnet : config.provider.testnet
-    const rpcProvider = new ethers.providers.JsonRpcProvider(url)
+    const rpcProvider = new ethers.providers.JsonRpcProvider(providerUrl)
     return new EthWalletV2(rpcProvider, delegation)
   }
 
-  private getRaribleSdk(mode: string, wallet?: EthWallet): IRaribleSdk {
-    const network = "mainnet" == mode ? "prod" : "testnet"
+  private getRaribleSdk(
+    raribleEnv: RaribleSdkEnvironment,
+    wallet?: EthWallet,
+  ): IRaribleSdk {
     const ethersWallet = wallet
       ? new EthereumWallet(new EthersEthereum(wallet))
       : undefined
-    const raribleSdk = createRaribleSdk(ethersWallet, network, {
+    const raribleSdk = createRaribleSdk(ethersWallet, raribleEnv, {
       apiKey: RARIBLE_X_API_KEY,
     })
     return raribleSdk
   }
 
-  private getAlchemySdk(mode: string, config: Configuration): Alchemy {
-    const alchemyNetwork: Network =
-      "mainnet" == mode ? config.alchemy.mainnet : config.alchemy.testnet
-    const alchemyApiKey =
-      "mainnet" == mode ? ETH_ALCHEMY_API_KEY : GOERLI_ALCHEMY_API_KEY
+  private getAlchemySdk(
+    alchemyNetwork: Network,
+    alchemyApiKey: string,
+  ): Alchemy {
     return new Alchemy({
       apiKey: alchemyApiKey,
       network: alchemyNetwork,
@@ -539,9 +542,5 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     const balanceBN = toBn(balance)
     const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)
     return "$" + (usd?.toFixed(2).toString() ?? "0.00")
-  }
-
-  getBlockchain(): string {
-    return "Ethereum"
   }
 }

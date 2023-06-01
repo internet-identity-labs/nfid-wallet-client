@@ -4,31 +4,30 @@ import { Network } from "alchemy-sdk"
 
 import { EthereumAsset } from "./asset-ethereum"
 
-export class PolygonAsset extends EthereumAsset {
-  override getBlockchain(): string {
-    return "Polygon"
-  }
-
-  override getNativeToken(): string {
-    return "Matic"
-  }
-
-  override getNativeCurrency(): string {
-    return "MATIC"
-  }
-}
-
-export const polygonAsset = new PolygonAsset({
+export const polygonAsset = new EthereumAsset({
   currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
   blockchain: Blockchain.POLYGON as EVMBlockchain,
   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
-  provider: {
-    mainnet: `https://polygon-mainnet.g.alchemy.com/v2/${MATIC_ALCHEMY_API_KEY}`,
-    testnet: `https://polygon-mumbai.g.alchemy.com/v2/${MUMBAI_ALCHEMY_API_KEY}`,
-  },
-  alchemy: { mainnet: Network.MATIC_MAINNET, testnet: Network.MATIC_MUMBAI },
-  etherscanUrl: {
-    mainnet: "https://polygonscan.com/tx/",
-    testnet: "https://mumbai.polygonscan.com/tx/",
-  },
+  providerUrl: `https://polygon-mainnet.g.alchemy.com/v2/${MATIC_ALCHEMY_API_KEY}`,
+  alchemyNetwork: Network.MATIC_MAINNET,
+  raribleEnv: "prod",
+  etherscanUrl: "https://polygonscan.com/tx/",
+  symbol: "MATIC",
+  token: "Matic",
+  blockchainName: "Polygon",
+  alchemyApiKey: MATIC_ALCHEMY_API_KEY,
+})
+
+export const polygonMumbaiAsset = new EthereumAsset({
+  currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
+  blockchain: Blockchain.POLYGON as EVMBlockchain,
+  unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
+  providerUrl: `https://polygon-mumbai.g.alchemy.com/v2/${MUMBAI_ALCHEMY_API_KEY}`,
+  alchemyNetwork: Network.MATIC_MUMBAI,
+  raribleEnv: "testnet",
+  etherscanUrl: "https://mumbai.polygonscan.com/tx/",
+  symbol: "MATIC",
+  token: "Matic",
+  blockchainName: "Polygon",
+  alchemyApiKey: MUMBAI_ALCHEMY_API_KEY,
 })

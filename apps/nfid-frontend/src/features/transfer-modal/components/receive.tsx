@@ -82,7 +82,7 @@ export const TransferReceive = ({
       </p>
       <ChooseModal
         label="Network"
-        title={"Choose an network"}
+        title={"Choose a network"}
         optionGroups={networkOptions}
         iconClassnames="!w-6 !h-auto !object-contain"
         preselectedValue={selectedTokenStandard}

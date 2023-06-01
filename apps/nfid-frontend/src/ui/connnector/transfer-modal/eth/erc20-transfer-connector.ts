@@ -1,9 +1,9 @@
+import { Cache } from "node-ts-cache"
 import { Erc20EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/erc20-populate-transaction.service"
 import { Token } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset } from "@nfid/integration"
-
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -18,12 +18,12 @@ import {
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
-import { Cache } from "node-ts-cache"
+
 export class EthERC20TransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
-  @Cache(connectorCache, {ttl: 600})
+  @Cache(connectorCache, { ttl: 600 })
   async getTokenMetadata(currency: string): Promise<Token> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
@@ -31,8 +31,8 @@ export class EthERC20TransferConnector
     return { ...this.config, ...token }
   }
 
-  @Cache(connectorCache, {ttl: 60})
-  async getBalance (_?: string, currency?: string): Promise<TokenBalance> {
+  @Cache(connectorCache, { ttl: 60 })
+  async getBalance(_?: string, currency?: string): Promise<TokenBalance> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
@@ -42,19 +42,19 @@ export class EthERC20TransferConnector
     })
   }
 
-  @Cache(connectorCache, {ttl: 600})
+  @Cache(connectorCache, { ttl: 600 })
   async getTokenCurrencies(): Promise<string[]> {
     const tokens = await this.getTokens()
     return tokens.map((token) => token.symbol)
   }
 
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, { ttl: 60 })
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
-    return (await ethereumAsset.getErc20TokensByUser({ identity })).tokens
+    return (await ethereumGoerliAsset.getErc20TokensByUser({ identity })).tokens
   }
 
-  @Cache(connectorCache, {ttl: 600})
+  @Cache(connectorCache, { ttl: 600 })
   async getTokensOptions(): Promise<IGroupedOptions> {
     const tokens = await this.getTokens()
     return {
@@ -68,11 +68,11 @@ export class EthERC20TransferConnector
     }
   }
 
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, { ttl: 60 })
   async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
-    const balance = await this.getBalance('', currency)
-    
+    const balance = await this.getBalance("", currency)
+
     return [
       makeRootAccountGroupedOptions(
         address,
@@ -98,9 +98,8 @@ export class EthERC20TransferConnector
       amount,
     )
 
-    const estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
-      request,
-    )
+    const estimatedTransaction =
+      await ethereumGoerliAsset.getEstimatedTransaction(request)
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
@@ -119,5 +118,5 @@ export const ethereumERC20TransferConnector = new EthERC20TransferConnector({
   icon: IconERC20,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT20,
-  assetService: ethereumAsset,
+  assetService: ethereumGoerliAsset,
 })

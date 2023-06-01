@@ -1,4 +1,7 @@
-import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
+import {
+  ethereumGoerliAsset,
+  loadProfileFromLocalStorage,
+} from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -13,5 +16,5 @@ export const getUserEthNFTActivity = async () => {
     accountId,
   )
 
-  return await ethereumAsset.getActivitiesByUser({ identity: delegation })
+  return await ethereumGoerliAsset.getActivitiesByUser({ identity: delegation })
 }

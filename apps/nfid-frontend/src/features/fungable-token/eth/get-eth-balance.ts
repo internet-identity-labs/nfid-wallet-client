@@ -6,7 +6,10 @@ import {
 } from "packages/integration/src/lib/asset/types"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
+import {
+  ethereumGoerliAsset,
+  loadProfileFromLocalStorage,
+} from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -21,8 +24,8 @@ export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
     hostname,
     accountId,
   )
-  const balance = await ethereumAsset.getBalance(undefined, delegation)
-  const address = await ethereumAsset.getAddress(delegation)
+  const balance = await ethereumGoerliAsset.getBalance(undefined, delegation)
+  const address = await ethereumGoerliAsset.getAddress(delegation)
   const principal = (await getWalletDelegation(profile.anchor))
     .getPrincipal()
     .toText()

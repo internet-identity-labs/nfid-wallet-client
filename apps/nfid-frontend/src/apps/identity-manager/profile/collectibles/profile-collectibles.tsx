@@ -15,7 +15,6 @@ import {
   Tooltip,
 } from "@nfid-frontend/ui"
 import { Image } from "@nfid-frontend/ui"
-import { blockchains } from "@nfid/config"
 import { Application, getWalletName } from "@nfid/integration"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -225,11 +224,12 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
   }, [tokensByCollections, walletsFilter])
 
   const blockchainOptions = React.useMemo(() => {
-    return blockchains.map((blockchain) => ({
+    const chains = [...new Set(tokens.map((t) => t.blockchain))]
+    return chains.map((blockchain) => ({
       label: blockchain,
       value: blockchain,
     }))
-  }, [])
+  }, [tokens])
 
   const onResetFilters = React.useCallback(() => {
     setBlockchainFilter([])

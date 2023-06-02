@@ -5,7 +5,7 @@ import {
   AccountBalance,
   AppBalance,
 } from "packages/integration/src/lib/asset/types"
-import { ReactNode } from "react"
+import { ReactNode, useMemo } from "react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
@@ -16,6 +16,7 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
+import { Blockchain } from "frontend/ui/connnector/types"
 
 interface GridCellProps {
   className?: string
@@ -114,16 +115,18 @@ const AppRow: React.FC<
               />
             </GridCell>
           </Tooltip>
-          <Tooltip tip="Copy to clipboard">
-            <GridCell id={`principal_id_${i}`}>
-              <CenterEllipsis
-                onClick={copyToClipboard("Principal ID", account.principalId)}
-                value={account.principalId}
-                trailingChars={3}
-                leadingChars={4}
-              />
-            </GridCell>
-          </Tooltip>
+          {blockchain === Blockchain.IC && (
+            <Tooltip tip="Copy to clipboard">
+              <GridCell id={`principal_id_${i}`}>
+                <CenterEllipsis
+                  onClick={copyToClipboard("Principal ID", account.principalId)}
+                  value={account.principalId}
+                  trailingChars={3}
+                  leadingChars={4}
+                />
+              </GridCell>
+            </Tooltip>
+          )}
         </tr>
       ))}
     </tbody>
@@ -143,14 +146,17 @@ export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
   blockchain = "Internet Computer",
   toPresentation,
 }) => {
-  const headings = [
-    "Application",
-    "Account",
-    `${currency} balance`,
-    "USD balance",
-    "Account ID",
-    "Principal ID",
-  ]
+  const headings = useMemo(() => {
+    const heads = [
+      "Application",
+      "Account",
+      `${currency} balance`,
+      "USD balance",
+      "Account ID",
+    ]
+    if (blockchain === Blockchain.IC) heads.push("Principal ID")
+    return heads
+  }, [blockchain, currency])
 
   return (
     <TableWrapper>

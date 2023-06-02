@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { IIAuthRecovery } from "@nfid-frontend/ui"
+import { formatSeedPhrase } from "@nfid-frontend/utils"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { createProfile } from "frontend/integration/identity-manager"
@@ -81,11 +82,19 @@ export const IIAuthRecoveryPhrase: React.FC<IIAuthRecoveryPhraseProps> = ({
     setIsLoading(false)
   }, [loginWithRecovery, onSuccess, recoverAccount, recoveryPhrase])
 
+  const handleRecoveryPhraseChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    event.target.value = formatSeedPhrase(event.target.value)
+  }
+
   return (
     <IIAuthRecovery
       onBack={onBack}
       onRecover={onRecover}
-      fieldProps={{ ...register("recoveryPhrase") }}
+      fieldProps={{
+        ...register("recoveryPhrase", { onChange: handleRecoveryPhraseChange }),
+      }}
       responseError={responseError}
       isLoading={isLoading}
       isDisabled={!recoveryPhrase?.length}

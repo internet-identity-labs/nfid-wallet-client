@@ -199,15 +199,14 @@ declare type Configuration = {
   currencyId: string
   blockchain: EVMBlockchain
   unionBlockchain: EVMBlockchain
-  provider: {
-    mainnet: string
-    testnet: string
-  }
-  alchemy: { mainnet: Network; testnet: Network }
-  etherscanUrl: {
-    mainnet: string
-    testnet: string
-  }
+  providerUrl: string
+  alchemyNetwork: alchemyNetwork
+  etherscanUrl: string
+  raribleEnv: RaribleSdkEnvironment
+  symbol: string
+  token: string
+  blockchainName: string
+  alchemyApiKey: string
 }
 
 declare type EstimateTransactionRequest =

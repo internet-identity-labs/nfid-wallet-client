@@ -6,7 +6,7 @@ import { transferMatic } from "src/features/fungable-token/matic/get-matic"
 import {
   Account,
   ecdsaSigner,
-  ethereumAsset,
+  ethereumGoerliAsset,
   loadProfileFromLocalStorage,
   registerTransaction,
   replaceActorIdentity,
@@ -63,7 +63,7 @@ const transferETH = async (amount: number, to: string) => {
     const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
     const identity = await getWalletDelegation(profile.anchor, "nfid.one", "1")
     await replaceActorIdentity(ecdsaSigner, identity)
-    await ethereumAsset.transferETH({
+    await ethereumGoerliAsset.transferETH({
       delegation: identity,
       to,
       amount: String(amount),

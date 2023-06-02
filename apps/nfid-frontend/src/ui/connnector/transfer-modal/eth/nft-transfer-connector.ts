@@ -1,15 +1,17 @@
+import { Cache } from "node-ts-cache"
 import { NftErc721EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/nft-erc721-populate-transaction.service"
 import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/nft-erc1155-populate-transaction.service"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
-import { Cache } from "node-ts-cache"
+
 import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
+import { EVMTransferConnector } from "../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferNFTConnector,
@@ -18,19 +20,17 @@ import {
   TransferModalType,
 } from "../types"
 import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
-import { EVMTransferConnector } from "../evm-transfer-connector"
-
 
 export class EthNFTTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getNFTs(): Promise<UserNonFungibleToken[]> {
     const identity = await this.getIdentity()
-    const address =await  this.getAddress()
+    const address = await this.getAddress()
 
-    const nfts = await ethereumAsset.getItemsByUser({ identity })
+    const nfts = await ethereumGoerliAsset.getItemsByUser({ identity })
     return nfts.items.map((nft) =>
       toUserNFT(
         nft,
@@ -42,7 +42,7 @@ export class EthNFTTransferConnector
     )
   }
 
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getNFTOptions(): Promise<IGroupedOptions[]> {
     const applications = await this.getApplications()
     const nfts = await this.getNFTs()
@@ -76,7 +76,7 @@ export class EthNFTTransferConnector
 
     let estimatedTransaction: EstimatedTransaction | undefined = undefined
     try {
-      estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
+      estimatedTransaction = await ethereumGoerliAsset.getEstimatedTransaction(
         request,
       )
     } catch (e: any) {
@@ -101,5 +101,5 @@ export const ethereumNFTTransferConnector = new EthNFTTransferConnector({
   feeCurrency: NativeToken.ETH,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.NFT,
-  assetService: ethereumAsset,
+  assetService: ethereumGoerliAsset,
 })

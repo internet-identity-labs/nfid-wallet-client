@@ -9,14 +9,14 @@ import {
 } from "src/ui/connnector/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class EthereumERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return ethereumAsset
+    return ethereumGoerliAsset
       .getAccounts(identity[0], this.config.icon)
       .then((ts) => {
         return ts.map((l) => {

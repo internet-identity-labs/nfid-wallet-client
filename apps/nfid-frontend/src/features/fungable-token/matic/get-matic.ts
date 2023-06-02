@@ -8,16 +8,19 @@ import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
-import { loadProfileFromLocalStorage, polygonAsset } from "@nfid/integration"
+import {
+  loadProfileFromLocalStorage,
+  polygonMumbaiAsset,
+} from "@nfid/integration"
 
 export const getAccountsMatic = async (): Promise<TokenBalanceSheet> => {
   const principal = await getIdentity()
-  return await polygonAsset.getNativeAccount(principal, IconSvgBTC)
+  return await polygonMumbaiAsset.getNativeAccount(principal, IconSvgBTC)
 }
 
 export const getMaticTransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
-  return await polygonAsset.getTransactionHistory(identity)
+  return await polygonMumbaiAsset.getTransactionHistory(identity)
 }
 
 export const transferMATIC = async (
@@ -25,7 +28,7 @@ export const transferMATIC = async (
   to: string,
 ): Promise<string> => {
   const identity = await getIdentity()
-  return (await polygonAsset.transfer(identity, { to, value }))
+  return (await polygonMumbaiAsset.transfer(identity, { to, value }))
     .etherscanTransactionUrl
 }
 
@@ -35,10 +38,10 @@ export const transferMatic = async (
 ): Promise<string> => {
   try {
     const identity = await getIdentity()
-    const transaction = await polygonAsset.getEstimatedTransaction(
+    const transaction = await polygonMumbaiAsset.getEstimatedTransaction(
       new EthTransferRequest(identity, to, amount),
     )
-    const response = await polygonAsset.transfer(
+    const response = await polygonMumbaiAsset.transfer(
       identity,
       transaction.transaction,
     )

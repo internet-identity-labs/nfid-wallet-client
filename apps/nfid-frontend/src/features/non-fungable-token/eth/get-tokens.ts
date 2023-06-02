@@ -1,11 +1,11 @@
-import { ethereumAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 
 export const getETHTokenActivity = async (
   contract: string,
   tokenId: string,
   size?: number,
 ) => {
-  return await ethereumAsset.getActivitiesByItem({
+  return await ethereumGoerliAsset.getActivitiesByItem({
     contract: contract,
     tokenId: tokenId,
     size: size,

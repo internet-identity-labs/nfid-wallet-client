@@ -2,7 +2,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 
 import {
   ecdsaSigner,
-  ethereumAsset,
+  ethereumGoerliAsset,
   loadProfileFromLocalStorage,
   replaceActorIdentity,
 } from "@nfid/integration"
@@ -50,7 +50,7 @@ const transferETH = async (
 ) => {
   try {
     await replaceActorIdentity(ecdsaSigner, identity)
-    const res = await ethereumAsset.transferNft({
+    const res = await ethereumGoerliAsset.transferNft({
       delegation: identity,
       tokenId,
       contract,

@@ -2,7 +2,7 @@ import { EthTransferRequest } from "packages/integration/src/lib/asset/service/p
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -28,9 +28,8 @@ export class MaticTransferConnector
 
     const identity = await this.getIdentity()
     const request = new EthTransferRequest(identity, to, amount)
-    const estimatedTransaction = await polygonAsset.getEstimatedTransaction(
-      request,
-    )
+    const estimatedTransaction =
+      await polygonMumbaiAsset.getEstimatedTransaction(request)
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
@@ -43,9 +42,8 @@ export class MaticTransferConnector
 
     const identity = await this.getIdentity()
     const request = new EthTransferRequest(identity, to, amount)
-    const estimatedTransaction = await polygonAsset.getEstimatedTransaction(
-      request,
-    )
+    const estimatedTransaction =
+      await polygonMumbaiAsset.getEstimatedTransaction(request)
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
@@ -65,6 +63,6 @@ export const polygonTransferConnector = new MaticTransferConnector({
   title: "Polygon",
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT,
-  assetService: polygonAsset,
+  assetService: polygonMumbaiAsset,
   isNativeToken: true,
 })

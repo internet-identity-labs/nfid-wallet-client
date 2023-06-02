@@ -1,7 +1,7 @@
 import { EthTransferRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/eth-populate-transaction.service"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -28,9 +28,8 @@ export class EthTransferConnector
 
     const identity = await this.getIdentity()
     const request = new EthTransferRequest(identity, to, amount)
-    const estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
-      request,
-    )
+    const estimatedTransaction =
+      await ethereumGoerliAsset.getEstimatedTransaction(request)
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
@@ -50,6 +49,6 @@ export const ethereumTransferConnector = new EthTransferConnector({
   title: "Ethereum",
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT,
-  assetService: ethereumAsset,
+  assetService: ethereumGoerliAsset,
   isNativeToken: true,
 })

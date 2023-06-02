@@ -2,12 +2,12 @@ import { NonFungibleAssetConnector } from "src/ui/connnector/non-fungible-asset-
 import { Blockchain, NftConnectorConfig } from "src/ui/connnector/types"
 
 import { MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 
 export class PolygonNftConnector extends NonFungibleAssetConnector<NftConnectorConfig> {}
 
 export const polygonNftConnector = new PolygonNftConnector({
   blockchain: Blockchain.POLYGON,
   defaultLogo: MaticSvg,
-  assetService: polygonAsset,
+  assetService: polygonMumbaiAsset,
 })

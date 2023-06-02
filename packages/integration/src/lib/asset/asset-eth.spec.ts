@@ -7,7 +7,7 @@ import { BigNumber } from "ethers/lib/ethers"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { mockIdentityA, mockIdentityB } from "../identity"
 import { generateDelegationIdentity } from "../test-utils"
-import { ethereumAsset } from "./asset-eth"
+import { ethereumGoerliAsset } from "./asset-eth"
 import { ErrorCode } from "./error-code.enum"
 import { Erc20EstimateTransactionRequest } from "./service/populate-transaction-service/erc20-populate-transaction.service"
 import { EthTransferRequest } from "./service/populate-transaction-service/eth-populate-transaction.service"
@@ -30,7 +30,7 @@ describe("Ethereum Asset", () => {
       1,
     )
 
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
         from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
@@ -67,7 +67,7 @@ describe("Ethereum Asset", () => {
       100,
     )
 
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
         from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
@@ -106,7 +106,7 @@ describe("Ethereum Asset", () => {
       "82484607247348712068732030314470275353650558748440325380375732522564550918146",
     )
 
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
 
     expect(actual).toEqual({
       transaction: {
@@ -145,7 +145,7 @@ describe("Ethereum Asset", () => {
       "82484607247348712068732030314470275353650558748440325380375732522564550918146",
     )
 
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
 
     expect(actual).toEqual({
       transaction: {
@@ -181,7 +181,7 @@ describe("Ethereum Asset", () => {
       "90954632668492117629724492447872876170185211583852507408636743397101359071345",
     )
 
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
 
     expect(actual).toEqual({
       transaction: {
@@ -219,7 +219,7 @@ describe("Ethereum Asset", () => {
       "90954632668492117629724492447872876170185211583852507408636743397101359071345",
     )
 
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
 
     expect(actual).toEqual({
       transaction: {
@@ -265,7 +265,7 @@ describe("Ethereum Asset", () => {
     } as TransactionResponse
 
     walletSpy.mockResolvedValueOnce(expectedResponse)
-    const result = await ethereumAsset.transfer(identity, transaction)
+    const result = await ethereumGoerliAsset.transfer(identity, transaction)
 
     expect(walletSpy).toHaveBeenCalledTimes(1)
     expect(walletSpy).toHaveBeenCalledWith(transaction)
@@ -294,7 +294,7 @@ describe("Ethereum Asset", () => {
       "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
       0.001,
     )
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
         from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
@@ -329,7 +329,7 @@ describe("Ethereum Asset", () => {
       "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
       0.001,
     )
-    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
         from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
@@ -353,7 +353,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should return one fungible native tx", async function () {
-    const actual = await ethereumAsset.getFungibleActivityByTokenAndUser({
+    const actual = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
       sort: "asc",
@@ -376,7 +376,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should return one fungible erc20 tx", async function () {
-    const actual = await ethereumAsset.getFungibleActivityByTokenAndUser({
+    const actual = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       contract: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
       size: 1,
@@ -401,7 +401,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should return one fungible erc20 token", async function () {
-    const actual = await ethereumAsset.getErc20TokensByUser({
+    const actual = await ethereumGoerliAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
     expect(actual).toEqual({
@@ -421,7 +421,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should request balance", async function () {
-    const balance: ChainBalance = await ethereumAsset.getBalance(
+    const balance: ChainBalance = await ethereumGoerliAsset.getBalance(
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
     expect(balance).toMatchObject({
@@ -434,7 +434,7 @@ describe("Ethereum Asset", () => {
     const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
     const tokenId =
       "88260187566799326202913268841041605580353496351673437472672373155789474365442"
-    const activities = await ethereumAsset.getActivitiesByItem({
+    const activities = await ethereumGoerliAsset.getActivitiesByItem({
       contract,
       tokenId,
       size: 1,
@@ -458,7 +458,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should request activities by user", async function () {
-    const activities = await ethereumAsset.getActivitiesByUser({
+    const activities = await ethereumGoerliAsset.getActivitiesByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
       sort: "asc",
@@ -482,7 +482,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should request items by user", async function () {
-    const items = await ethereumAsset.getItemsByUser({
+    const items = await ethereumGoerliAsset.getItemsByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
     })

@@ -5,7 +5,7 @@ import {
 import {
   replaceActorIdentity,
   ecdsaSigner,
-  ethereumAsset,
+  ethereumGoerliAsset,
 } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -26,7 +26,7 @@ export const getEthAddress = async (anchor: number) => {
   const identity = await getWalletDelegation(anchor, hostname, accountId)
   replaceActorIdentity(ecdsaSigner, identity)
 
-  const address = await ethereumAsset.getAddress(identity)
+  const address = await ethereumGoerliAsset.getAddress(identity)
 
   !cachedAddress &&
     storeAddressInLocalCache({

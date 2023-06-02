@@ -1,4 +1,4 @@
-import { polygonAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 
 //WIP have to be moved to connector layer
 export const getPolygonTokenActivity = async (
@@ -6,7 +6,7 @@ export const getPolygonTokenActivity = async (
   tokenId: string,
   size?: number,
 ) => {
-  return await polygonAsset.getActivitiesByItem({
+  return await polygonMumbaiAsset.getActivitiesByItem({
     contract: contract,
     tokenId: tokenId,
     size: size,

@@ -1,4 +1,7 @@
-import { loadProfileFromLocalStorage, polygonAsset } from "@nfid/integration"
+import {
+  loadProfileFromLocalStorage,
+  polygonMumbaiAsset,
+} from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -14,5 +17,5 @@ export const getUserPolygonNFTActivity = async () => {
     accountId,
   )
 
-  return await polygonAsset.getActivitiesByUser({ identity: delegation })
+  return await polygonMumbaiAsset.getActivitiesByUser({ identity: delegation })
 }

@@ -9,16 +9,19 @@ import { fetchProfile } from "src/integration/identity-manager"
 import { TokenConfig } from "src/ui/connnector/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
+import {
+  ethereumGoerliAsset,
+  loadProfileFromLocalStorage,
+} from "@nfid/integration"
 
 export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
   const identity = await getIdentity()
-  return await ethereumAsset.getAccounts(identity, IconERC20)
+  return await ethereumGoerliAsset.getAccounts(identity, IconERC20)
 }
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
-  return ethereumAsset.getTransactionHistory(identity, "erc20")
+  return ethereumGoerliAsset.getTransactionHistory(identity, "erc20")
 }
 
 export const transferERC20 = async (
@@ -28,7 +31,7 @@ export const transferERC20 = async (
 ) => {
   try {
     const identity = await getIdentity()
-    const transaction = await ethereumAsset.getEstimatedTransaction(
+    const transaction = await ethereumGoerliAsset.getEstimatedTransaction(
       new Erc20EstimateTransactionRequest(
         identity,
         to,
@@ -36,7 +39,7 @@ export const transferERC20 = async (
         amount,
       ),
     )
-    const response = await ethereumAsset.transfer(
+    const response = await ethereumGoerliAsset.transfer(
       identity,
       transaction.transaction,
     )

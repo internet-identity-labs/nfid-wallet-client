@@ -1,7 +1,10 @@
 import { format } from "date-fns"
 import { TransactionRow } from "packages/integration/src/lib/asset/types"
 
-import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
+import {
+  ethereumGoerliAsset,
+  loadProfileFromLocalStorage,
+} from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -16,15 +19,15 @@ export const getEthTransactions = async () => {
     hostname,
     accountId,
   )
-  const address = await ethereumAsset.getAddress(delegation)
-  const incoming = await ethereumAsset.getFungibleActivityByTokenAndUser(
+  const address = await ethereumGoerliAsset.getAddress(delegation)
+  const incoming = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser(
     {
       direction: "to",
     },
     delegation,
   )
 
-  const outcoming = await ethereumAsset.getFungibleActivityByTokenAndUser(
+  const outcoming = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser(
     {
       direction: "from",
     },

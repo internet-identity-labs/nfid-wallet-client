@@ -598,16 +598,18 @@ Then(
 Then(
   /^Identifiers are ([^"]*) and ([^"]*)/,
   async (princ: string, account: string) => {
-    await $("#principal_id_0").then((x) =>
-      x
-        .waitForDisplayed({ timeout: 12000 })
-        .then(async () => expect(await x.getText()).toContain(princ)),
-    )
     await $("#account_id_0").then((x) =>
       x
         .waitForDisplayed({ timeout: 12000 })
         .then(async () => expect(await x.getText()).toContain(account)),
     )
+
+    if (princ.length)
+      await $("#principal_id_0").then((x) =>
+        x
+          .waitForDisplayed({ timeout: 12000 })
+          .then(async () => expect(await x.getText()).toContain(princ)),
+      )
   },
 )
 

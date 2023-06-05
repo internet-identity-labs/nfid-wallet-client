@@ -24,8 +24,8 @@ const maticMumbai = new Alchemy({
 const alchemies: Record<number, Alchemy> = {
   1: ethMainnet,
   5: ethGoerli,
-  8: maticMainnet,
-  10: maticMumbai,
+  137: maticMainnet,
+  80001: maticMumbai,
 }
 
 interface AlchemyService {

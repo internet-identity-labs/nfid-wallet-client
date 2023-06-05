@@ -7,7 +7,7 @@ import { BigNumber } from "ethers/lib/ethers"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { mockIdentityA, mockIdentityB } from "../identity"
 import { generateDelegationIdentity } from "../test-utils"
-import { ethereumGoerliAsset } from "./asset-eth"
+import { ethereumAsset, ethereumGoerliAsset } from "./asset-eth"
 import { ErrorCode } from "./error-code.enum"
 import { Erc20EstimateTransactionRequest } from "./service/populate-transaction-service/erc20-populate-transaction.service"
 import { EthTransferRequest } from "./service/populate-transaction-service/eth-populate-transaction.service"
@@ -427,6 +427,16 @@ describe("Ethereum Asset", () => {
     expect(balance).toMatchObject({
       balance: expect.any(String),
       balanceinUsd: expect.any(String),
+    })
+  })
+
+  it("should request balance mainnet", async function () {
+    const balance: ChainBalance = await ethereumAsset.getBalance(
+      "0x382901144a77bec53493fa090053b9c63da5dd07",
+    )
+    expect(balance).toMatchObject({
+      balance: "0",
+      balanceinUsd: "0.00",
     })
   })
 

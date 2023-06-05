@@ -128,7 +128,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     sort,
     size,
   }: ActivitiesByItemRequest): Promise<NonFungibleActivityRecords> {
-    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
+    const raribleSdk = this.getRaribleSdk(
+      this.config.raribleEnv,
+      this.config.raribleApiKey,
+    )
     const itemId = convertEthereumItemId(
       `${contract}:${tokenId}`,
       this.config.blockchain,
@@ -158,7 +161,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     sort,
   }: ActivitiesByUserRequest): Promise<NonFungibleActivityRecords> {
     const address = await this.getAddressByIdentity(identity)
-    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
+    const raribleSdk = this.getRaribleSdk(
+      this.config.raribleEnv,
+      this.config.raribleApiKey,
+    )
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,
       this.config.unionBlockchain,
@@ -196,7 +202,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       this.config.alchemyNetwork,
       this.config.alchemyApiKey,
     )
-    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
+    const raribleSdk = this.getRaribleSdk(
+      this.config.raribleEnv,
+      this.config.raribleApiKey,
+    )
     const tokens: AlchemyOwnedNftsResponse =
       await alchemySdk.nft.getNftsForOwner(address, {
         pageKey: cursor,
@@ -257,7 +266,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       addressVal,
       this.config.unionBlockchain,
     )
-    const raribleSdk = this.getRaribleSdk(this.config.raribleEnv)
+    const raribleSdk = this.getRaribleSdk(
+      this.config.raribleEnv,
+      this.config.raribleApiKey,
+    )
     const now = new Date()
     const [balance, currencyRate] = await Promise.all([
       raribleSdk.balances.getBalance(
@@ -510,13 +522,14 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
   private getRaribleSdk(
     raribleEnv: RaribleSdkEnvironment,
+    raribleKey: string,
     wallet?: EthWallet,
   ): IRaribleSdk {
     const ethersWallet = wallet
       ? new EthereumWallet(new EthersEthereum(wallet))
       : undefined
     const raribleSdk = createRaribleSdk(ethersWallet, raribleEnv, {
-      apiKey: RARIBLE_X_API_KEY,
+      apiKey: raribleKey,
     })
     return raribleSdk
   }

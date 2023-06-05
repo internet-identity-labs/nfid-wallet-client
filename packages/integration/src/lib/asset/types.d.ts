@@ -203,6 +203,7 @@ declare type Configuration = {
   alchemyNetwork: alchemyNetwork
   etherscanUrl: string
   raribleEnv: RaribleSdkEnvironment
+  raribleApiKey: string
   symbol: string
   token: string
   blockchainName: string

@@ -27,7 +27,7 @@ export const ethPopulateTransactionService: PopulateTransactionService = {
   ) => {
     const errors: ErrorCode[] = []
     const { amount } = request as EthTransferRequest
-    const value = ethers.utils.parseEther(amount.toString())
+    const value = ethers.utils.parseEther(amount ? amount.toString() : "0")
 
     const tx: ethers.providers.TransactionRequest = {
       to: request.to,

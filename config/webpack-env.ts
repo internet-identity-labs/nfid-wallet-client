@@ -16,6 +16,7 @@ export const serviceConfig = {
   ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
   GOERLI_ALCHEMY_API_KEY: JSON.stringify(process.env.GOERLI_ALCHEMY_API_KEY),
   RARIBLE_X_API_KEY: JSON.stringify(process.env.RARIBLE_X_API_KEY),
+  PROD_RARIBLE_X_API_KEY: JSON.stringify(process.env.PROD_RARIBLE_X_API_KEY),
   ETH_ALCHEMY_API_KEY: JSON.stringify(process.env.ETH_ALCHEMY_API_KEY),
   MATIC_ALCHEMY_API_KEY: JSON.stringify(process.env.MATIC_ALCHEMY_API_KEY),
   MUMBAI_ALCHEMY_API_KEY: JSON.stringify(process.env.MUMBAI_ALCHEMY_API_KEY),

@@ -16,20 +16,24 @@ import { createTokenPrivateMethodDecoder } from "./method-decoder/create-token/c
 import { createTokenPublicMethodDecoder } from "./method-decoder/create-token/create-token-public/create-token-public-method-decoder"
 import { directAcceptBidMethodDecoder } from "./method-decoder/direct-accept-bid/direct-accept-bid-method-decoder"
 import { directPurchaseMethodDecoder } from "./method-decoder/direct-purchase/direct-purchase-method-decoder"
-import { FunctionCall, Method } from "./method-decoder/method-decoder"
+import {
+  FunctionCall,
+  Method,
+  MethodDecoder,
+} from "./method-decoder/method-decoder"
 import { mintAndTransferMethodDecoder } from "./method-decoder/mint/mint-and-transfer-method-decoder"
 import { safeTransferFromMethodDecoder } from "./method-decoder/safe-transfer-from/safe-transfer-from-method-decoder"
 import { setApprovalForAllMethodDecoder } from "./method-decoder/set-approval-for-all/set-approval-for-all-method-decoder"
 import { ethSendTransactionRpcMessageDecoder } from "./rpc-message-decoder/eth-sendtransaction-rpc-message-decoder"
 import { personalSignRpcMessageDecoder } from "./rpc-message-decoder/personal-sign-decoder"
 import {
-  RpcMessageDecoder,
   RpcMessageFunctionalCall,
+  RpcMessageDecoder,
 } from "./rpc-message-decoder/rpc-message-decoder"
 import { signTypedDataV4RpcMessageDecoder } from "./rpc-message-decoder/sign-typed-data-v4-rpc-message-decoder."
 
 const sdk = createRaribleSdk(null, "testnet")
-const methodDecoders = dependencyService.group([
+const methodDecoders: Record<string, MethodDecoder> = dependencyService.group([
   cancelMethodDecoder,
   directAcceptBidMethodDecoder,
   burnMethodDecoder,
@@ -109,6 +113,12 @@ export const functionCallDecoder = {
       throw new Error("No rpc message decoder found")
     }
 
-    return rpcMessageDecoder.decode(params)
+    const data = await rpcMessageDecoder.decode(params)
+
+    if (["directPurchase"].includes(data.method) && !params[0].value) {
+      throw Error("Not a native token.")
+    }
+
+    return data
   },
 }

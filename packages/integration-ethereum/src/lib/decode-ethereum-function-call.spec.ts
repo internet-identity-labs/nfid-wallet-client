@@ -8,6 +8,11 @@ import {
 describe("Decode function call data.", () => {
   it("should return decoded approve request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -39,6 +44,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded SetApprovalForAll request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -69,6 +79,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded mint 1155 lazy request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_signTypedData_v4",
       params: [
         "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
@@ -101,6 +116,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded batch buy request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -151,6 +171,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded deploy private collection request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -184,6 +209,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded accept bid request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -239,6 +269,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded cancel request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -283,6 +318,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded mint request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -323,6 +363,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded buy request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -360,6 +405,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded transfer request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -393,6 +443,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded burn request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -423,6 +478,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded deploy collection request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_sendTransaction",
       params: [
         {
@@ -456,6 +516,11 @@ describe("Decode function call data.", () => {
 
   it("should return decoded sell request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_signTypedData_v4",
       params: [
         "0x1A90e5cd839d61b167D516108606456C2d06d369",
@@ -484,8 +549,58 @@ describe("Decode function call data.", () => {
     })
   })
 
-  it("should return decoded bid request by decodeRpcMessage", async () => {
+  it("should throw exception for a buy request with erc20 by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "93eed9f7-7236-4679-8664-1f8ecdf6d9a4",
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: "0x79fd51134b38e4d3e5d39c4edffd5a57ff02dfb9",
+          to: "0x02afbd43cad367fcb71305a2dfb9a3928218f0c1",
+          data: "0x0d5f7d35000000000000000000000000000000000000000000000000000000000000002000000000000000000000000079fd51134b38e4d3e5d39c4edffd5a57ff02dfb9000000000000000000000000000000000000000000000000000000000000000173ad21460000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000016345785d8a0000000000000000000000000000b4fbf271143f4fbf7b91a5ded31805e42b2208d6e99ee3db8d027f530cd66879bd14e66ccbfa7fb87d7af9758d8f351a2a4310c3000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002fa3cfd30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002400000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000016345785d8a0000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003800000000000000000000000000000000000000000000000000000000000000040000000000000000000000000c0dcab2615cbc2b0c582598037ffd74760fbeed9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003e812345678900000000000000000000000000123456789face09616c6c646174610000000000000000000000000000000000000000000000000000000000000041731ec2b3cac3ef7e3d9f74b220d0ea56222144c1b567424e6e1d7410905c7d25269087cfde6337671cfde700b16460d84d81392bb21f4c55b4bd4fd1dc4459ac1b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012345678900000000000000000000000000123456789face09616c6c64617461",
+          maxPriorityFeePerGas: "0x9502F900",
+          maxFeePerGas: "0x9502ff32",
+        },
+      ],
+      options: {
+        chainId: "0x05",
+        rpcUrl: "https://goerli-ethereum-node.rarible.com",
+      },
+    }
+
+    await expect(decodeRpcMessage(request)).rejects.toThrow(
+      "Not a native token.",
+    )
+  })
+
+  it("should throw exception for a sell request with erc20 by decodeRpcMessage", async () => {
+    const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "16311a7a-472e-4053-912c-96052f858484",
+      method: "eth_signTypedData_v4",
+      params: [
+        "0x79fd51134B38e4D3e5D39C4edfFD5A57ff02DFB9",
+        '{"primaryType":"Order","domain":{"name":"Exchange","version":"2","verifyingContract":"0x02afbd43cad367fcb71305a2dfb9a3928218f0c1","chainId":5},"types":{"EIP712Domain":[{"type":"string","name":"name"},{"type":"string","name":"version"},{"type":"uint256","name":"chainId"},{"type":"address","name":"verifyingContract"}],"AssetType":[{"name":"assetClass","type":"bytes4"},{"name":"data","type":"bytes"}],"Asset":[{"name":"assetType","type":"AssetType"},{"name":"value","type":"uint256"}],"Order":[{"name":"maker","type":"address"},{"name":"makeAsset","type":"Asset"},{"name":"taker","type":"address"},{"name":"takeAsset","type":"Asset"},{"name":"salt","type":"uint256"},{"name":"start","type":"uint256"},{"name":"end","type":"uint256"},{"name":"dataType","type":"bytes4"},{"name":"data","type":"bytes"}]},"message":{"maker":"0x79fd51134b38e4d3e5d39c4edffd5a57ff02dfb9","makeAsset":{"assetType":{"assetClass":"0x73ad2146","data":"0x000000000000000000000000c0dcab2615cbc2b0c582598037ffd74760fbeed90000000000000000000000000000000000000000000000000000000000000000"},"value":"1"},"taker":"0x0000000000000000000000000000000000000000","takeAsset":{"assetType":{"assetClass":"0x8ae85d84","data":"0x000000000000000000000000b4fbf271143f4fbf7b91a5ded31805e42b2208d6"},"value":"100000000000000000"},"salt":"0xe99ee3db8d027f530cd66879bd14e66ccbfa7fb87d7af9758d8f351a2a4310c3","start":0,"end":0,"dataType":"0x2fa3cfd3","data":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003e812345678900000000000000000000000000123456789face09616c6c64617461"}}',
+      ],
+      options: {
+        chainId: "0x05",
+        rpcUrl: "https://goerli-ethereum-node.rarible.com",
+      },
+    }
+
+    await expect(decodeRpcMessage(request)).rejects.toThrow(
+      "Not a native token.",
+    )
+  })
+
+  it("should throw exception for a bid request with erc20 by decodeRpcMessage", async () => {
+    const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_signTypedData_v4",
       params: [
         "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
@@ -493,30 +608,18 @@ describe("Decode function call data.", () => {
       ],
     }
 
-    const actual = await decodeRpcMessage(request)
-    console.debug(JSON.stringify(actual))
-    expect(actual).toEqual({
-      interface: "Item",
-      method: "BidOrder",
-      from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
-      data: expect.objectContaining({
-        blockchain: "ETHEREUM",
-        collection: expect.stringMatching(
-          /ETHEREUM:0x8a1d516d73fb36227d6ded260888c42bb7c55cfa/i,
-        ),
-        contract: expect.stringMatching(
-          /ETHEREUM:0x8a1d516d73fb36227d6ded260888c42bb7c55cfa/i,
-        ),
-        tokenId: expect.stringMatching(
-          /12997079243578958014486847546347798191014225278195692514948617470507594285060/i,
-        ),
-      }),
-      total: 1e-18,
-    })
+    await expect(decodeRpcMessage(request)).rejects.toThrow(
+      "Not a native token.",
+    )
   })
 
   it("should return decoded mint721 request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
+      jsonrpc: "2.0",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "eth_signTypedData_v4",
       params: [
         "0xBEcedD989418F4D8109920ebC51E12c01CE9978e",
@@ -876,7 +979,10 @@ describe("Decode function call data.", () => {
   it("should return signMessage by personal_sign", async () => {
     const rpcMessage = {
       jsonrpc: "2.0",
-      id: "cf3dc342-f917-41d5-b8c1-c73e7a917f7e",
+      id: "",
+      options: {
+        chainId: "0x05",
+      },
       method: "personal_sign",
       params: [
         "0x48656c6c6f20776f726c64",

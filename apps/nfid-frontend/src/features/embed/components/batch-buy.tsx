@@ -1,3 +1,4 @@
+import { chainService } from "packages/integration-ethereum/src/lib/decoder/chain-service"
 import { useMemo } from "react"
 
 import { IWarningAccordionOption } from "@nfid-frontend/ui"
@@ -20,10 +21,14 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
   onReject,
 }) => {
   const { rates } = useExchangeRates()
+  const { symbol, chainName } = chainService.getSymbolAndChainName(
+    rpcMessage.options.chainId,
+  )
+  const rate = rates[symbol]
 
   const price = useMemo(() => {
-    return calcPrice(rates, populatedTransaction)
-  }, [rates, populatedTransaction])
+    return calcPrice(rate, populatedTransaction)
+  }, [rate, populatedTransaction])
 
   const warnings = useMemo(() => {
     if (!price) return []
@@ -67,12 +72,12 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
       applicationMeta={appMeta}
       fromAddress={rpcMessage?.params[0].from}
       toAddress={rpcMessage?.params[0].to}
-      network={"Ethereum"}
+      network={chainName}
+      currency={symbol}
       networkFee={price.fee}
       totalUSD={price.totalUsd}
       totalToken={price.total}
       price={total}
-      currency={"ETH"}
       onApprove={onConfirm}
       disableApproveButton={disableConfirmButton}
       isInsufficientBalance={price.isInsufficientFundsError}

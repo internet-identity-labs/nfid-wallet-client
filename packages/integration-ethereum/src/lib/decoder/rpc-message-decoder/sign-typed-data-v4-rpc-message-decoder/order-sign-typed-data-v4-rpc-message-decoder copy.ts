@@ -16,13 +16,25 @@ export const orderSignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageDec
       // if the first element is NFI, then it's a sell, otherwise it's a bid.
       const isSell = Object.values(AssetType).includes(makeAsset.assetClass)
       const asset = isSell
-        ? { method: "SellOrder" as Method, value: makeAsset }
-        : { method: "BidOrder" as Method, value: takeAsset }
+        ? {
+            method: "SellOrder" as Method,
+            value: makeAsset,
+            currency: takeAsset,
+          }
+        : {
+            method: "BidOrder" as Method,
+            value: takeAsset,
+            currency: makeAsset,
+          }
 
       const data = await functionCallDecoder.decodeByAssetClass(
         asset.value.assetClass,
         asset.value.data,
       )
+
+      if (asset.currency.assetClass !== "0xaaaebeba") {
+        throw Error("Not a native token.")
+      }
 
       return Promise.resolve({
         interface: "Item",

@@ -2,9 +2,20 @@ import { functionCallDecoder } from "./decoder/function-call-decoder"
 import { FunctionCall, Method } from "./decoder/method-decoder/method-decoder"
 import { RpcMessageFunctionalCall } from "./decoder/rpc-message-decoder/rpc-message-decoder"
 
-export interface RPCMessage {
+export interface RPCBase {
+  jsonrpc: string
+  id: string
+}
+
+export type NfidRpcOptions = {
+  chainId?: string
+  rpcUrl?: string
+}
+
+export interface RPCMessage extends RPCBase {
   method: string
   params: any[]
+  options: NfidRpcOptions
 }
 
 export async function decodeRpcMessage(

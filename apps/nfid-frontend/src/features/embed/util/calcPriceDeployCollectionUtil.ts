@@ -4,13 +4,11 @@ import { BigNumber } from "ethers/lib/ethers"
 
 import { ProviderError } from "@nfid/integration"
 
-import { IRate } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
-
 export function calcPriceDeployCollection(
-  rates: IRate,
+  rate: number,
   populatedTransaction?: [TransactionRequest, ProviderError | undefined],
 ) {
-  if (!rates["ETH"] || !populatedTransaction || !populatedTransaction[0])
+  if (!rate || !populatedTransaction || !populatedTransaction[0])
     return {
       feeUsd: "0",
       fee: "0",
@@ -28,9 +26,9 @@ export function calcPriceDeployCollection(
   const gasPrice = BigNumber.from(gasPriceRaw ?? transaction?.maxFeePerGas)
   const maxFeePerGas = BigNumber.from(transaction?.maxFeePerGas ?? gasPriceRaw)
   const fee = gasLimit.mul(gasPrice).div(125).mul(100)
-  const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rates["ETH"]
+  const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rate
   const maxFee = gasLimit.mul(maxFeePerGas)
-  const maxFeeUsd = parseFloat(ethers.utils.formatEther(maxFee)) * rates["ETH"]
+  const maxFeeUsd = parseFloat(ethers.utils.formatEther(maxFee)) * rate
 
   return {
     feeUsd: feeUsd.toFixed(2),

@@ -4,12 +4,12 @@ import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 
-interface RPCBase {
+export interface RPCBase {
   jsonrpc: string
   id: string
 }
 
-type NfidRpcOptions = {
+export type NfidRpcOptions = {
   chainId?: string
   rpcUrl?: string
 }

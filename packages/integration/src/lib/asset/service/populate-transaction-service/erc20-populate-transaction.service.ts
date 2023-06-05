@@ -36,6 +36,8 @@ export const erc20PopulateTransactionService: PopulateTransactionService = {
     const errors: ErrorCode[] = []
     const { to, contractId, amount } =
       request as Erc20EstimateTransactionRequest
+    const quantity = amount ? amount : 0
+    const receiver = to ? to : from
     const contract = new ethers.Contract(
       contractId,
       ABI,
@@ -46,16 +48,16 @@ export const erc20PopulateTransactionService: PopulateTransactionService = {
     const balance = Number(ethers.utils.formatEther(balanceOf))
     let data
 
-    if (Number(balance) < amount) {
+    if (Number(balance) < quantity) {
       errors.push(ErrorCode.INSUFFICIENT_FUNDS_CONTRACT)
       data = contract.interface.encodeFunctionData("transfer", [
-        to,
+        receiver,
         ethers.utils.parseUnits("0", 18),
       ])
     } else {
       data = contract.interface.encodeFunctionData("transfer", [
-        to,
-        ethers.utils.parseUnits(amount.toString(), 18),
+        receiver,
+        ethers.utils.parseUnits(quantity.toString(), 18),
       ])
     }
 

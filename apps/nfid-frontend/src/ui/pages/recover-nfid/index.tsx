@@ -3,6 +3,7 @@ import React from "react"
 import { FieldValues, useForm } from "react-hook-form"
 
 import { TextArea } from "@nfid-frontend/ui"
+import { formatSeedPhrase } from "@nfid-frontend/utils"
 
 import { Button } from "frontend/ui/atoms/button"
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
@@ -44,6 +45,12 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
     }
   }, [responseError, setError])
 
+  const handleRecoveryPhraseChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    event.target.value = formatSeedPhrase(event.target.value)
+  }
+
   return (
     <AppScreen isFocused showLogo>
       <main className={clsx("flex flex-1")}>
@@ -66,6 +73,7 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
                         value: true,
                         message: "Please enter your Recovery Phrase",
                       },
+                      onChange: handleRecoveryPhraseChange,
                     })}
                   />
                   <div>

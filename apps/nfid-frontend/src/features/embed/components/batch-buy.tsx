@@ -21,10 +21,10 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
   onReject,
 }) => {
   const { rates } = useExchangeRates()
-  const { symbol, chainName } = chainService.getSymbolAndChainName(
+  const { symbol, currency, chainName } = chainService.getSymbolAndChainName(
     rpcMessage.options.chainId,
   )
-  const rate = rates[symbol]
+  const rate = rates[currency]
 
   const price = useMemo(() => {
     return calcPrice(rate, populatedTransaction)

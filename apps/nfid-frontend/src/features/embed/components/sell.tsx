@@ -14,10 +14,10 @@ const MappedSell: React.FC<ApproverCmpProps> = ({
   onReject,
 }) => {
   const { rates } = useExchangeRates()
-  const { symbol, chainName } = chainService.getSymbolAndChainName(
+  const { symbol, currency, chainName } = chainService.getSymbolAndChainName(
     rpcMessage.options.chainId,
   )
-  const rate = rates[symbol]
+  const rate = rates[currency]
 
   const price = useMemo(() => {
     if (!rate || !rpcMessageDecoded?.total) return
@@ -32,8 +32,8 @@ const MappedSell: React.FC<ApproverCmpProps> = ({
       title="Sell collectible"
       applicationMeta={appMeta}
       fromAddress={rpcMessageDecoded?.from}
-      totalToken={String(price?.total)}
-      totalUSD={String(price?.totalUSD)}
+      totalToken={String(price?.total) ?? "0"}
+      totalUSD={String(price?.totalUSD) ?? "0"}
       network={chainName}
       currency={symbol}
       onApprove={onConfirm}

@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useCallback } from "react"
 
 import {
   LegacyDevice,
@@ -46,7 +46,6 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
   socialDevices,
   walletDevices,
 }) => {
-  console.log({ devices, socialDevices })
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const [phrase, setPhrase] = React.useState("")
@@ -80,6 +79,26 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
         setIsModalVisible(false)
       }
     }
+
+  const onBeforeUnload = (e: BeforeUnloadEvent) => {
+    e.preventDefault()
+    e.returnValue =
+      "Your recovery phrase is not protected. Are you sure you want to leave?"
+  }
+
+  const onClose = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      await onRecoveryProtect(phrase)
+      window.removeEventListener("beforeunload", onBeforeUnload)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsLoading(false)
+      setIsModalVisible(false)
+      setPhrase("")
+    }
+  }, [onRecoveryProtect, phrase])
 
   return (
     <ProfileTemplate pageTitle="Security">
@@ -176,15 +195,17 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
           <div className="mt-3 space-y-2">
             {!hasRecoveryPhrase && (
               <MethodRaw
-                onClick={handleWithLoading(onCreateRecoveryPhrase, (value) =>
-                  setPhrase(value),
-                )}
+                onClick={handleWithLoading(onCreateRecoveryPhrase, (value) => {
+                  setPhrase(value)
+                  window.addEventListener("beforeunload", onBeforeUnload)
+                })}
                 title="Secret recovery phrase"
                 id="recovery-key"
                 subtitle="A “master password” to keep offline"
                 img={<IconRecovery />}
               />
             )}
+            {/* Hidden button only for E2E */}
             {!hasRecoveryPhrase && (
               <MethodRaw
                 onClick={handleWithLoading(
@@ -211,7 +232,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
         </ModalAdvanced>
       )}
       {phrase.length ? (
-        <AddRecoveryPhraseModal onClose={() => setPhrase("")} phrase={phrase} />
+        <AddRecoveryPhraseModal onClose={onClose} phrase={phrase} />
       ) : null}
       <Loader isLoading={isLoading} />
     </ProfileTemplate>

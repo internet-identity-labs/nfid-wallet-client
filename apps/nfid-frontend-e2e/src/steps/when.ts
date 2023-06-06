@@ -177,6 +177,19 @@ When(
   },
 )
 
+When(
+  /^User enters recovery phrase of ([^"]*) anchor$/,
+  {
+    wrapperOptions: {
+      retry: 2,
+    },
+  },
+  async function (anchor: number) {
+    let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
+    return (await $("[name='recoveryPhrase']")).setValue(testUser.seed)
+  },
+)
+
 When(/^I open Vaults$/, async () => {
   await Profile.openVaults()
   await Profile.waitForLoaderDisappear()
@@ -201,6 +214,10 @@ When(/^I create a new Vault with name ([^"]*)$/, async (vaultName: string) => {
 When(/^I click on vault with name ([^"]*)$/, async (vaultName: string) => {
   await (await Vaults.getVaultByName(vaultName)).click()
   await Vaults.waitForLoaderDisappear()
+})
+
+When(/^I click on recover button$/, async () => {
+  await $("#recovery-button").click()
 })
 
 When(

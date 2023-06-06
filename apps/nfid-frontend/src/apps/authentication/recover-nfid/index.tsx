@@ -29,7 +29,7 @@ export const AppScreenRecoverNFID: React.FC<
 
   const onRecover = React.useCallback(
     async (data: FieldValues) => {
-      const recoveryPhrase = data.recoveryPhrase.trim()
+      const recoveryPhrase = data.recoveryPhrase.replace(/\s+/g, " ").trim()
 
       const stringUserNumber = recoveryPhrase.split(" ")[0]
       const userNumber = parseUserNumber(stringUserNumber)

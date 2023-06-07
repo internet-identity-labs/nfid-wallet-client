@@ -31,6 +31,7 @@ import { Blockchain } from "frontend/ui/connnector/types"
 import { ITransferSuccess } from "./success"
 
 interface ITransferNFT {
+  preselectedNFTId?: string
   selectedReceiverWallet?: string
   onTransferPromise: (data: ITransferSuccess) => void
 }
@@ -38,8 +39,9 @@ interface ITransferNFT {
 export const TransferNFT = ({
   selectedReceiverWallet,
   onTransferPromise,
+  preselectedNFTId = "",
 }: ITransferNFT) => {
-  const [selectedNFTId, setSelectedNFTId] = useState("")
+  const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const { applicationsMeta } = useApplicationsMeta()
 
   const { data: nfts, mutate: refetchNFTs } = useSWR("allNFTS", getAllNFT)
@@ -49,6 +51,7 @@ export const TransferNFT = ({
   )
 
   const selectedNFT = useMemo(() => {
+    console.log({ nfts, selectedNFTId })
     return nfts?.find((nft) => nft.tokenId === selectedNFTId)
   }, [nfts, selectedNFTId])
 
@@ -162,6 +165,7 @@ export const TransferNFT = ({
             setSelectedNFTId(value)
             calculateFee()
           }}
+          preselectedValue={selectedNFTId}
           iconClassnames="!w-12 !h-12 !object-cover rounded-md"
           trigger={
             <div

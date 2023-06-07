@@ -36,7 +36,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault()
 
-      send({ type: "ASSIGN_SELECTED_NFT", data: props })
+      send({ type: "ASSIGN_SELECTED_NFT", data: props.tokenId })
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
       send({ type: "CHANGE_DIRECTION", data: "send" })
 
@@ -48,11 +48,12 @@ const NFTPreview = (props: UserNonFungibleToken) => {
   return (
     <div
       className={clsx(
-        "rounded-md w-full transition-all cursor-pointer overflow-visible p-[1px] relative z-10",
+        "rounded-md w-full transition-all cursor-pointer overflow-visible p-[1px]",
         "bg-gray-50 hover:bg-white hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)] nft",
       )}
     >
       <Link
+        className="relative"
         to={`${ProfileConstants.base}/${ProfileConstants.assets}/${props.tokenId}`}
         state={{ nft: props }}
       >
@@ -78,7 +79,9 @@ const NFTPreview = (props: UserNonFungibleToken) => {
           src={props.assetPreview}
           alt={props.name}
         />
-        <div className={clsx(`text-sm p-2.5 flex justify-between items-end`)}>
+        <div
+          className={clsx(`text-sm p-2.5 flex justify-between items-center`)}
+        >
           <div>
             <div
               id={trimConcat("nft_token_", props.name)}
@@ -88,16 +91,16 @@ const NFTPreview = (props: UserNonFungibleToken) => {
             </div>
             <div
               id={trimConcat("nft_collection_", props.collection.name)}
-              className={clsx(`text-secondary truncate w-[190px] mt-1`)}
+              className={clsx(`text-secondary truncate max-w-[190px] mt-1`)}
             >
               {props.collection.name}
             </div>
           </div>
-          <div className="relative w-6" ref={ref}>
+          <div className="relative w-6 shrink-0" ref={ref}>
             <IconCmpDots
               className={clsx(
                 "text-secondary cursor-pointer hover:text-black",
-                "rotate-90",
+                "rotate-90 shrink-0",
               )}
               onClick={(e) => {
                 e.preventDefault()
@@ -108,7 +111,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
               className={clsx(
                 "absolute top-6 right-0 w-[150px]",
                 "bg-white rounded-md shadow-md",
-                "text-sm",
+                "text-sm z-10",
                 !isTooltipOpen && "hidden",
               )}
             >

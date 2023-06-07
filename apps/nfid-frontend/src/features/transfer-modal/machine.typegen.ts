@@ -19,7 +19,7 @@ export interface Typegen0 {
     assignError: "ASSIGN_ERROR"
     assignReceiverWallet: "ASSIGN_RECEIVER_WALLET"
     assignSelectedFT: "ASSIGN_SELECTED_FT"
-    assignSelectedNFT: "ASSIGN_SELECTED_NFT"
+    assignSelectedNFTId: "ASSIGN_SELECTED_NFT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
     assignTokenStandard: "ASSIGN_TOKEN_STANDARD"

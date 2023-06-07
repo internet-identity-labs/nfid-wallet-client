@@ -213,7 +213,7 @@ Then(/^Go to Profile page$/, async function () {
 })
 
 Then(
-  /^I put Recovery Phrase to input field "([^"]*)?"$/,
+  /^I put Recovery Phrase to input field ([^"]*)$/,
   async function (phrase: string) {
     await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
   },

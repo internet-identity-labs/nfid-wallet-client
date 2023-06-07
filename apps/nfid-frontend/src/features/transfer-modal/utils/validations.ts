@@ -39,10 +39,13 @@ export const isValidPrincipalId = (value: string) => {
 }
 
 export const validateTransferAmountField =
-  (balance?: number | string) => (value: string | number) => {
+  (balance = "0", fee = "0") =>
+  (value: string | number) => {
     if (Number(value) < 0) return "Transfer amount can't be negative value"
     if (Number(value) === 0) return "You can't send 0"
-    if (balance && Number(balance) < Number(value)) return "Insufficient funds"
+
+    if (Number(balance) - Number(fee) < Number(value))
+      return "Insufficient funds"
     return true
   }
 

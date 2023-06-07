@@ -42,7 +42,7 @@ export const ProfileNFTDetailsPage = ({
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault()
 
-      send({ type: "ASSIGN_SELECTED_NFT", data: nft })
+      send({ type: "ASSIGN_SELECTED_NFT", data: nft.tokenId })
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
       send({ type: "CHANGE_DIRECTION", data: "send" })
 

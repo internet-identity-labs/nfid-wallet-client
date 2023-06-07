@@ -107,7 +107,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
       const nft = tokens.find((token) => token.tokenId === tokenId)
       if (!nft) return
 
-      send({ type: "ASSIGN_SELECTED_NFT", data: nft })
+      send({ type: "ASSIGN_SELECTED_NFT", data: nft.tokenId })
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
       send({ type: "CHANGE_DIRECTION", data: "send" })
 
@@ -161,11 +161,11 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             token.account.accountId,
           )}
         </div>,
-        <div className="flex items-center space-x-2.5 justify-center">
+        <div className="flex items-center space-x-2.5 justify-center shrink-0">
           <Tooltip tip="Transfer">
             <IconCmpTransfer
               data-tip="Transfer"
-              className="transition-opacity cursor-pointer hover:opacity-50"
+              className="w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0"
               onClick={() => onTransferNFT(token.tokenId)}
             />
           </Tooltip>

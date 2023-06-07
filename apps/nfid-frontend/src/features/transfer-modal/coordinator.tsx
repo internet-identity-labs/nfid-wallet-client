@@ -55,6 +55,7 @@ export const TransferModalCoordinator = () => {
       case state.matches("SendMachine.SendNFT"):
         return (
           <TransferNFT
+            preselectedNFTId={state.context.selectedNFTId}
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }

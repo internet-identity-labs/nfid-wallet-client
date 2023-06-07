@@ -30,8 +30,9 @@ const ProfileSecurity = () => {
   const handleDeleteDevice = React.useCallback(
     async (device: LegacyDevice) => {
       await deleteDevice(device.pubkey)
+      await getDevices()
     },
-    [deleteDevice],
+    [deleteDevice, getDevices],
   )
 
   const handleDeviceUpdate = React.useCallback(
@@ -45,21 +46,23 @@ const ProfileSecurity = () => {
   const handleRecoveryDelete = React.useCallback(
     async (method: RecoveryDevice) => {
       await deleteDevice(method.pubkey)
+      await getRecoveryDevices()
     },
-    [deleteDevice],
+    [deleteDevice, getRecoveryDevices],
   )
 
   const handleRecoveryUpdate = React.useCallback(
     async (device: RecoveryDevice) => {
       await updateDevice({ ...device, browser: "" })
+      await getDevices()
     },
-    [updateDevice],
+    [getDevices, updateDevice],
   )
 
   const handleCreateRecoveryPhrase = React.useCallback(
-    async (protect = true) => {
+    async (protect = false) => {
       // NOTE: NEVER LOG RECOVERY PHRASE
-      return await createRecoveryPhrase(protect)
+      return await createRecoveryPhrase(false)
     },
     [createRecoveryPhrase],
   )
@@ -71,10 +74,7 @@ const ProfileSecurity = () => {
       let phrase = seedPhrase.split(" ")
       const possibleUserNumber = parseInt(phrase[0])
 
-      if (
-        !isNaN(possibleUserNumber) &&
-        Number(profile.anchor) !== possibleUserNumber
-      ) {
+      if (Number(profile.anchor) !== possibleUserNumber) {
         toast.error("Incorrect seed phrase")
         return
       }

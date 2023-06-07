@@ -5,7 +5,6 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
-import { UserNonFungibleToken } from "../non-fungable-token/types"
 import { ITransferSuccess } from "./components/success"
 
 export type TransferMachineContext = {
@@ -14,7 +13,7 @@ export type TransferMachineContext = {
   sourceWalletAddress: string
   sourceAccount?: Wallet
   selectedFT?: TokenConfig
-  selectedNFT?: UserNonFungibleToken
+  selectedNFTId?: string
   receiverWallet: string
   amount: string
   transferObject?: ITransferSuccess
@@ -43,7 +42,7 @@ export type Events =
   | { type: "ASSIGN_AMOUNT"; data: string }
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
   | { type: "ASSIGN_SELECTED_FT"; data: TokenConfig }
-  | { type: "ASSIGN_SELECTED_NFT"; data: UserNonFungibleToken }
+  | { type: "ASSIGN_SELECTED_NFT"; data: string }
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
   | { type: "ON_TRANSFER_PROMISE"; data: ITransferSuccess }
@@ -99,7 +98,7 @@ export const transferMachine = createMachine(
         actions: "assignSelectedFT",
       },
       ASSIGN_SELECTED_NFT: {
-        actions: "assignSelectedNFT",
+        actions: "assignSelectedNFTId",
       },
       ASSIGN_AMOUNT: {
         actions: "assignAmount",
@@ -203,8 +202,8 @@ export const transferMachine = createMachine(
       assignSelectedFT: assign((_, event) => ({
         selectedFT: event?.data,
       })),
-      assignSelectedNFT: assign((_, event) => ({
-        selectedNFT: event?.data,
+      assignSelectedNFTId: assign((_, event) => ({
+        selectedNFTId: event?.data,
       })),
       assignTransferObject: assign((_, event) => ({
         transferObject: event?.data,

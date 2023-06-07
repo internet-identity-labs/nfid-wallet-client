@@ -83,9 +83,11 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
             </div>
           </div>
 
-          <div className={clsx("absolute top-5 right-5")} onClick={onClose}>
-            <ModalCloseIcon />
-          </div>
+          {onClose && (
+            <div className={clsx("absolute top-5 right-5")} onClick={onClose}>
+              <ModalCloseIcon />
+            </div>
+          )}
         </div>
       </div>
       <div

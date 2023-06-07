@@ -33,7 +33,6 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
           use it on <b>https://nfid.one.</b>
         </>
       }
-      onClose={onClose}
       buttonsClassNames="py-3"
     >
       <div>
@@ -48,7 +47,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         </div>
         <Button
           block
-          className="flex justify-center space-x-2 border-2 border-t-0 rounded-t-none border-black"
+          className="flex justify-center space-x-2 border-2 border-t-0 border-black rounded-t-none"
           onClick={copyToClipboard}
           id="copy-button"
         >
@@ -60,7 +59,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
           <input
             type="checkbox"
             id="saved-checkbox"
-            className="w-5 h-5 border-2 rounded cursor-pointer border-black"
+            className="w-5 h-5 border-2 border-black rounded cursor-pointer"
             onChange={() => setIsSaved(!isSaved)}
             checked={isSaved}
           />

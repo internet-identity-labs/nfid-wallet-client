@@ -23,7 +23,8 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
     try {
       await onDelete(phrase)
       onClose()
-    } catch {
+    } catch (e) {
+      console.error(e)
       toast.error("Incorrect seed phrase")
     } finally {
       setIsLoading(false)

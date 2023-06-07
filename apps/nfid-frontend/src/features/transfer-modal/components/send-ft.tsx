@@ -242,7 +242,10 @@ export const TransferFT = ({
             min={0.0}
             {...register("amount", {
               required: sumRules.errorMessages.required,
-              validate: validateTransferAmountField(balance?.balance),
+              validate: validateTransferAmountField(
+                balance?.balance,
+                transferFee?.fee?.replace(/[^0-9.]/g, ""),
+              ),
               valueAsNumber: true,
               onBlur: calculateFee,
             })}

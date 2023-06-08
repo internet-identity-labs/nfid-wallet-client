@@ -29,7 +29,7 @@ export const polygonMumbaiAsset = new EthereumAsset({
   raribleApiKey: RARIBLE_X_API_KEY,
   etherscanUrl: "https://mumbai.polygonscan.com/tx/",
   symbol: "MATIC",
-  token: "Matic",
-  blockchainName: "Polygon",
+  token: "Matic Mumbai",
+  blockchainName: "Polygon Mumbai",
   alchemyApiKey: MUMBAI_ALCHEMY_API_KEY,
 })

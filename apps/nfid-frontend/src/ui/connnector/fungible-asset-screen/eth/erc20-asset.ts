@@ -4,19 +4,20 @@ import { erc20ToTokenConfig } from "src/ui/connnector/fungible-asset-screen/util
 import {
   AssetErc20Config,
   Blockchain,
+  ETHNetwork,
   NativeToken,
   TokenConfig,
 } from "src/ui/connnector/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
-import { ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class EthereumERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return ethereumGoerliAsset
+    return ethereumAsset
       .getAccounts(identity[0], this.config.icon)
       .then((ts) => {
         return ts.map((l) => {
@@ -31,4 +32,5 @@ export const ethereumERC20AssetConnector = new EthereumERC20AssetConnector({
   blockchain: Blockchain.ETHEREUM,
   feeCurrency: NativeToken.ETH,
   icon: IconERC20,
+  network: ETHNetwork.MAINNET,
 })

@@ -4,30 +4,30 @@ import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/uti
 import {
   AssetNativeConfig,
   Blockchain,
-  ETHNetwork,
   NativeToken,
+  PolygonNetwork,
   TokenConfig,
 } from "src/ui/connnector/types"
 
-import { IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumAsset } from "@nfid/integration"
+import { MaticSvg } from "@nfid-frontend/ui"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export class EthAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
+export class MaticMumbaiAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return ethereumAsset
+    return polygonMumbaiAsset
       .getNativeAccount(identity[0], this.config.icon)
       .then((matic) => [toNativeTokenConfig(this.config, matic)])
   }
 }
 
-export const ethAssetConnector = new EthAssetConnector({
-  icon: IconPngEthereum,
-  tokenStandard: TokenStandards.ETH,
-  title: "Ethereum",
-  feeCurrency: NativeToken.ETH,
-  blockchain: Blockchain.ETHEREUM,
-  network: ETHNetwork.MAINNET,
+export const maticMumbaiAssetConnector = new MaticMumbaiAssetConnector({
+  icon: MaticSvg,
+  tokenStandard: TokenStandards.MATIC,
+  title: "Matic Mumbai",
+  feeCurrency: NativeToken.MATIC,
+  blockchain: Blockchain.POLYGON_MUMBAI,
+  network: PolygonNetwork.MUMBAI,
 })

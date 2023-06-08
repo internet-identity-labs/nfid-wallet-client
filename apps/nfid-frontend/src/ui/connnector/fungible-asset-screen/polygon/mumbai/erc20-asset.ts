@@ -10,14 +10,14 @@ import {
 } from "src/ui/connnector/types"
 
 import { PolygonERC20Svg } from "@nfid-frontend/ui"
-import { polygonAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export class PolygonERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
+export class PolygonMumbaiERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return polygonAsset
+    return polygonMumbaiAsset
       .getAccounts(identity[0], this.config.icon)
       .then((ts) => {
         return ts.map((l) => {
@@ -27,10 +27,11 @@ export class PolygonERC20AssetConnector extends FungibleAssetConnector<AssetErc2
   }
 }
 
-export const polygonERC20AssetConnector = new PolygonERC20AssetConnector({
-  tokenStandard: TokenStandards.ERC20_POLYGON,
-  icon: PolygonERC20Svg,
-  blockchain: Blockchain.POLYGON,
-  feeCurrency: NativeToken.MATIC,
-  network: PolygonNetwork.MAINNET,
-})
+export const polygonMumbaiERC20AssetConnector =
+  new PolygonMumbaiERC20AssetConnector({
+    tokenStandard: TokenStandards.ERC20_POLYGON,
+    icon: PolygonERC20Svg,
+    blockchain: Blockchain.POLYGON_MUMBAI,
+    feeCurrency: NativeToken.MATIC,
+    network: PolygonNetwork.MUMBAI,
+  })

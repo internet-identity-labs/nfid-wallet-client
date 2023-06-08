@@ -349,7 +349,7 @@ export const TransferFT = ({
                 </p>
 
                 <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee ?? `0.00 ${selectedTokenCurrency}`}
+                  {transferFee?.fee ?? `0.00 ${tokenMetadata?.feeCurrency}`}
                 </p>
               </div>
             )}

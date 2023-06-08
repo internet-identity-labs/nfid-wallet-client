@@ -12,8 +12,6 @@ import {
   TokenConfig,
 } from "src/ui/connnector/types"
 
-import { ethereumGoerliAsset, polygonMumbaiAsset } from "@nfid/integration"
-
 import { ethereumGoerliERC20AssetConnector } from "./eth/goerli/erc20-asset"
 import { ethGoerliAssetConnector } from "./eth/goerli/eth-asset"
 import { polygonMumbaiERC20AssetConnector } from "./polygon/mumbai/erc20-asset"

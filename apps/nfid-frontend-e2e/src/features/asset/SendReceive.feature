@@ -48,7 +48,7 @@ Feature:Send/Receive Asset
       | Polygon Mumbai    | 25795  | 0.2        | any    | NFID account 1 | MATIC    |
       | Polygon Mumbai    | 25795  | 1.0        | any    | NFID account 1 | TST      |
       | Ethereum Goerli   | 25795  | 0.09664164 | any    | NFID account 1 | ETH      |
-      | Etherem Goerli    | 25795  | 20.0       | any    | NFID account 1 | LINK     |
+      | Ethereum Goerli   | 25795  | 20.0       | any    | NFID account 1 | LINK     |
       | Internet Computer | 28542  | 0.01       | 0.0001 | NFID account 1 | ICP      |
 
   @sendreceive4

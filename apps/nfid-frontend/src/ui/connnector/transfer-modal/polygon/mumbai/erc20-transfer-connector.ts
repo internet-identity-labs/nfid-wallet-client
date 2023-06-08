@@ -93,7 +93,6 @@ export class PolygonMumbaiERC20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     amount,

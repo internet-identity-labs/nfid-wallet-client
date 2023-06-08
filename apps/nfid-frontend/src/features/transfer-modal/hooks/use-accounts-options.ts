@@ -12,8 +12,8 @@ export const useAccountsOptions = (
   blockchain: Blockchain,
 ) => {
   const { data: accountsOptions, ...rest } = useSWR<IGroupedOptions[]>(
-    [token, "accountsOptions"],
-    async ([token]) =>
+    [token, blockchain, "accountsOptions"],
+    async ([token, blockchain]) =>
       (
         await getConnector({
           type: TransferModalType.FT,

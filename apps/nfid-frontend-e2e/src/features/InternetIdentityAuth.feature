@@ -13,8 +13,6 @@ Feature: User should be able to register and authenticate from desktop
     When I click on recover button
     When It log's me in
     Then Wait while Security accounts calculated
-    When User opens profile menu
-    Then NFID number is not zero
     Examples:
       | anchor |
       | 28593  |

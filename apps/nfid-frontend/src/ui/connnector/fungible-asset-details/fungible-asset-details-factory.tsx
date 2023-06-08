@@ -9,13 +9,16 @@ import { maticAssetDetailsConnector } from "src/ui/connnector/fungible-asset-det
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
+import { ethereumGoerliERC20AssetDetailsConnector } from "./eth/goerli/erc20-asset-details"
+import { ethGoerliAssetDetailsConnector } from "./eth/goerli/eth-asset-details"
+import { polygonMumbaiERC20AssetDetailsConnector } from "./polygon/mumbai/erc20-asset-details"
+import { maticMumbaiAssetDetailsConnector } from "./polygon/mumbai/matic-asset-details"
+
 export class FungibleAssetDetailsFactory extends ConnectorFactory<
-  TokenStandards,
+  string,
   FungibleAssetDetailsConnector
 > {
-  getAssetDetails = async (
-    key: TokenStandards,
-  ): Promise<Array<TokenBalanceSheet>> => {
+  getAssetDetails = async (key: string): Promise<Array<TokenBalanceSheet>> => {
     return this.process(key, [])
   }
 
@@ -31,7 +34,11 @@ export class FungibleAssetDetailsFactory extends ConnectorFactory<
 export const fungibleAssetDetailsFactory = new FungibleAssetDetailsFactory([
   btcAssetDetailsConnector,
   maticAssetDetailsConnector,
+  maticMumbaiAssetDetailsConnector,
   polygonERC20AssetDetailsConnector,
+  polygonMumbaiERC20AssetDetailsConnector,
   ethAssetDetailsConnector,
+  ethGoerliAssetDetailsConnector,
   ethereumERC20AssetDetailsConnector,
+  ethereumGoerliERC20AssetDetailsConnector,
 ])

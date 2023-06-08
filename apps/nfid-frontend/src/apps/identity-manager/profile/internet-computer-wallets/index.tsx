@@ -13,17 +13,21 @@ const ProfileTokenWalletsDetailPage = () => {
     tokens,
   })
 
-  const { token } = useParams()
+  const { token, chain } = useParams()
 
   const balance = useMemo(() => {
     if (!token) return undefined
     if (appAccountBalance && appAccountBalance[token]) {
       return appAccountBalance[token]
     }
+    const chains = chain ? [chain] : details.map((d) => d.blockchain)
+    console.log({ details, chains, token, chain })
     if (details) {
-      return details.find((l) => l.token === token)
+      return details.find(
+        (l) => l.token === token && chains.includes(l.blockchain),
+      )
     }
-  }, [appAccountBalance, token, details])
+  }, [token, appAccountBalance, details, chain])
   console.debug(">> ProfileIWallets", { balance })
 
   return (

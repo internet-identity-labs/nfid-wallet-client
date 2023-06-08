@@ -21,8 +21,8 @@ export abstract class FungibleAssetDetailsConnector
 
   abstract getAssetDetails(): Promise<Array<TokenBalanceSheet>>
 
-  getTokenStandard(): TokenStandards {
-    return this.config.tokenStandard
+  getTokenStandard(): string {
+    return `${this.config.tokenStandard}&${this.config.blockchain}`
   }
 
   protected getIdentity = async (): Promise<DelegationIdentity> => {

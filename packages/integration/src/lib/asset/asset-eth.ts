@@ -30,6 +30,6 @@ export const ethereumGoerliAsset = new EthereumAsset({
   etherscanUrl: "https://goerli.etherscan.io/tx/",
   symbol: "ETH",
   token: "Ethereum",
-  blockchainName: "Ethereum",
+  blockchainName: "Ethereum Goerli",
   alchemyApiKey: GOERLI_ALCHEMY_API_KEY,
 })

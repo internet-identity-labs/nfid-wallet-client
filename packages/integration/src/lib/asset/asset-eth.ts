@@ -28,7 +28,7 @@ export const ethereumGoerliAsset = new EthereumAsset({
   raribleEnv: "testnet",
   raribleApiKey: RARIBLE_X_API_KEY,
   etherscanUrl: "https://goerli.etherscan.io/tx/",
-  symbol: "ETH",
+  symbol: "GETH",
   token: "Ethereum",
   blockchainName: "Ethereum",
   alchemyApiKey: GOERLI_ALCHEMY_API_KEY,

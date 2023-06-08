@@ -46,11 +46,12 @@ export const TransferReceive = ({
   )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
-    [selectedTokenStandard, "selectedConnector"],
-    ([selectedTokenStandard]) =>
+    [selectedTokenBlockchain, selectedTokenStandard, "selectedConnector"],
+    ([selectedTokenBlockchain, selectedTokenStandard]) =>
       getConnector({
         type: TransferModalType.FT,
-        blockchain: selectedTokenStandard,
+        tokenStandard: selectedTokenStandard,
+        blockchain: selectedTokenBlockchain,
       }),
   )
 

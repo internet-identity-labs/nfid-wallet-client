@@ -66,4 +66,5 @@ export const polygonMumbaiTransferConnector = new MaticMumbaiTransferConnector({
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT,
   assetService: polygonMumbaiAsset,
+  isNativeToken: true,
 })

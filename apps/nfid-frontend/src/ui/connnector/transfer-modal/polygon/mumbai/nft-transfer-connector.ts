@@ -49,6 +49,7 @@ export class PolygonMumbaiNFTTransferConnector
     return mapUserNFTDetailsToGroupedOptions(nfts, applications)
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     tokenId,

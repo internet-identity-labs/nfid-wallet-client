@@ -1,7 +1,8 @@
+import { Cache } from "node-ts-cache"
 import { EthTransferRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/eth-populate-transaction.service"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumAsset, ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -19,6 +20,7 @@ export class EthTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     amount,
@@ -28,8 +30,9 @@ export class EthTransferConnector
 
     const identity = await this.getIdentity()
     const request = new EthTransferRequest(identity, to, amount)
-    const estimatedTransaction =
-      await ethereumGoerliAsset.getEstimatedTransaction(request)
+    const estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
+      request,
+    )
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })

@@ -54,20 +54,19 @@ export const TransferFT = ({
   )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
-    [selectedTokenCurrency, "selectedConnector"],
-    ([selectedTokenCurrency]) =>
+    [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
+    ([selectedTokenCurrency, selectedTokenBlockchain]) =>
       getConnector({
         type: TransferModalType.FT,
         currency: selectedTokenCurrency,
         blockchain: selectedTokenBlockchain,
       }),
+    {
+      onSuccess: () => {
+        refetchBalance()
+      },
+    },
   )
-
-  console.log({
-    selectedTokenCurrency,
-    selectedTokenBlockchain,
-    selectedConnector,
-  })
 
   const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
     ITransferConfig & (TokenMetadata | Token)
@@ -275,10 +274,13 @@ export const TransferFT = ({
             title="Choose an asset"
             type="trigger"
             onSelect={(value) => {
-              setSelectedTokenCurrency(value.split("&")[0])
-              setSelectedTokenBlockchain(value.split("&")[1])
+              const arrayValue = value.split("&")
+              if (arrayValue.length < 2) return
+
+              setSelectedTokenCurrency(arrayValue[0])
+              setSelectedTokenBlockchain(arrayValue[1])
             }}
-            preselectedValue={selectedTokenCurrency}
+            preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
             isSmooth
             trigger={
               <div

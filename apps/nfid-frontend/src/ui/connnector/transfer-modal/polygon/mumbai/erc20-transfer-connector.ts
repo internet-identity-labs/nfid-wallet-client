@@ -87,11 +87,13 @@ export class PolygonMumbaiERC20TransferConnector
         icon: token.logo ?? this.config.icon,
         title: token.symbol,
         subTitle: token.name,
-        value: token.symbol,
+        value: `${token.symbol}&${this.config.blockchain}`,
       })),
     }
   }
 
+  @Cache(connectorCache, { ttl: 10 })
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     amount,

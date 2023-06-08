@@ -1,3 +1,4 @@
+import { Cache } from "node-ts-cache"
 import { EthTransferRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/eth-populate-transaction.service"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
@@ -38,6 +39,7 @@ export class MaticMumbaiTransferConnector
     return estimatedTransaction
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({ to, amount }: ITransferFTRequest): Promise<TokenFee> {
     const cacheKey = this.config.tokenStandard + "_transaction"
 

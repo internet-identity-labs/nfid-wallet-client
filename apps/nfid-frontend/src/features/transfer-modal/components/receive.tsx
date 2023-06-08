@@ -26,7 +26,7 @@ export interface ITransferReceive {
 export const TransferReceive = ({
   preselectedTokenStandard,
   preselectedAccountAddress,
-  preselectedTokenBlockchain,
+  preselectedTokenBlockchain = Blockchain.IC,
 }: ITransferReceive) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedTokenStandard, setSelectedTokenStandard] = useState(
@@ -92,8 +92,11 @@ export const TransferReceive = ({
         title={"Choose a network"}
         optionGroups={networkOptions}
         iconClassnames="!w-6 !h-auto !object-contain"
-        preselectedValue={selectedTokenStandard}
+        preselectedValue={`${selectedTokenStandard}&${selectedTokenBlockchain}`}
         onSelect={(value) => {
+          const arrayValue = value.split("&")
+          if (arrayValue.length < 2) return
+
           setSelectedTokenStandard(value.split("&")[0])
           setSelectedTokenBlockchain(value.split("&")[1])
         }}

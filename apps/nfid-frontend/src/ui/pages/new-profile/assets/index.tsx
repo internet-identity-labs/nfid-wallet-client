@@ -63,7 +63,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   const filteredTokens = useMemo(() => {
     return tokens.filter((token) => {
       if (!blockchainFilter.length) return true
-      return blockchainFilter.includes(token.blockchain)
+      return (
+        blockchainFilter.findIndex((b) => token.blockchain.includes(b)) !== -1
+      )
     })
   }, [blockchainFilter, tokens])
 

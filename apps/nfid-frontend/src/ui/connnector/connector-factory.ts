@@ -25,7 +25,6 @@ export abstract class ConnectorFactory<N, T extends StandardizedToken<N>> {
   private toMap(connectors: T[]): Map<N, T> {
     const connectorsMap = new Map<N, T>()
     connectors.forEach((connector) => {
-      console.log({ connector })
       connectorsMap.set(connector.getTokenStandard(), connector)
     })
     return connectorsMap

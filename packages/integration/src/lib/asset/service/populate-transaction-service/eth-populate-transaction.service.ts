@@ -32,7 +32,7 @@ export const ethPopulateTransactionService: PopulateTransactionService = {
     try {
       value = ethers.utils.parseEther(amount ? amount.toString() : "0")
     } catch (e) {
-      throw Error("Invalid number.")
+      value = ethers.utils.parseEther("0")
     }
 
     const tx: ethers.providers.TransactionRequest = {

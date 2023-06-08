@@ -443,10 +443,13 @@ Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
   await Assets.chooseChainOption(chain)
 })
 
-Then(/^Choose ([^"]*) from send options/, async (chain: string) => {
-  await Assets.openAssetOptionsOnSR()
-  await Assets.chooseChainOption(chain)
-})
+Then(
+  /^Choose ([^"]*) on ([^"]*) from send options/,
+  async (currency: string, chain: string) => {
+    await Assets.openAssetOptionsOnSR()
+    await Assets.chooseCurrencyOption(currency, chain)
+  },
+)
 
 Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
   await Assets.chooseAccountFrom(account)

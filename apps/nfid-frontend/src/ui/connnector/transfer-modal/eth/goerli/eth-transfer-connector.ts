@@ -52,5 +52,4 @@ export const ethereumGoerliTransferConnector = new EthGoerliTransferConnector({
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT,
   assetService: ethereumGoerliAsset,
-  isNativeToken: true,
 })

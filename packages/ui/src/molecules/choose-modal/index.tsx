@@ -165,7 +165,10 @@ export const ChooseModal = ({
           )}
         >
           {filteredOptions.map((group, index) => (
-            <div key={`group_${group.label}_${group.options.length}_${index}`}>
+            <div
+              id={`option_group_${group.label.replace(/\s/g, "")}`}
+              key={`group_${group.label}_${group.options.length}_${index}`}
+            >
               {group.label && (
                 <p
                   id={"label_" + group.label}

@@ -10,6 +10,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
+import { Blockchain } from "frontend/ui/connnector/types"
 
 import { useAccountsOptions } from "../hooks/use-accounts-options"
 import { useNetworkOptions } from "../hooks/use-network-options"
@@ -19,15 +20,20 @@ import { ReceiveModal } from "./receive-modal"
 export interface ITransferReceive {
   preselectedTokenStandard: string
   preselectedAccountAddress: string
+  preselectedTokenBlockchain?: string
 }
 
 export const TransferReceive = ({
   preselectedTokenStandard,
   preselectedAccountAddress,
+  preselectedTokenBlockchain,
 }: ITransferReceive) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedTokenStandard, setSelectedTokenStandard] = useState(
     preselectedTokenStandard,
+  )
+  const [selectedTokenBlockchain, setSelectedTokenBlockchain] = useState(
+    preselectedTokenBlockchain,
   )
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
@@ -36,6 +42,7 @@ export const TransferReceive = ({
   const { data: networkOptions } = useNetworkOptions()
   const { data: accountsOptions } = useAccountsOptions(
     selectedTokenStandard as TokenStandards,
+    selectedTokenBlockchain as Blockchain,
   )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
@@ -86,7 +93,10 @@ export const TransferReceive = ({
         optionGroups={networkOptions}
         iconClassnames="!w-6 !h-auto !object-contain"
         preselectedValue={selectedTokenStandard}
-        onSelect={setSelectedTokenStandard}
+        onSelect={(value) => {
+          setSelectedTokenStandard(value.split("&")[0])
+          setSelectedTokenBlockchain(value.split("&")[1])
+        }}
         type="small"
         isSmooth
       />

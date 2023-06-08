@@ -3,34 +3,34 @@ import { NftErc721EstimateTransactionRequest } from "packages/integration/src/li
 import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/nft-erc1155-populate-transaction.service"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
-import { IGroupedOptions, MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset, polygonMumbaiAsset } from "@nfid/integration"
+import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { connectorCache } from "frontend/ui/connnector/cache"
+import { NativeToken, Blockchain } from "frontend/ui/connnector/types"
 
-import { connectorCache } from "../../cache"
-import { Blockchain, NativeToken } from "../../types"
-import { EVMTransferConnector } from "../evm-transfer-connector"
+import { EVMTransferConnector } from "../../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferNFTConnector,
   ITransferNFTRequest,
   TokenFee,
   TransferModalType,
-} from "../types"
-import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
+} from "../../types"
+import { toUserNFT, mapUserNFTDetailsToGroupedOptions } from "../../util/nfts"
 
-export class PolygonNFTTransferConnector
+export class EthGoerliNFTTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
   @Cache(connectorCache, { ttl: 15 })
   async getNFTs(): Promise<UserNonFungibleToken[]> {
-    const address = await this.getAddress()
     const identity = await this.getIdentity()
-    const nfts = await polygonMumbaiAsset.getItemsByUser({ identity })
+    const address = await this.getAddress()
 
+    const nfts = await ethereumGoerliAsset.getItemsByUser({ identity })
     return nfts.items.map((nft) =>
       toUserNFT(
         nft,
@@ -76,11 +76,11 @@ export class PolygonNFTTransferConnector
 
     let estimatedTransaction: EstimatedTransaction | undefined = undefined
     try {
-      estimatedTransaction = await polygonMumbaiAsset.getEstimatedTransaction(
+      estimatedTransaction = await ethereumGoerliAsset.getEstimatedTransaction(
         request,
       )
     } catch (e: any) {
-      throw new Error(e?.message)
+      throw new Error(e)
     }
 
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
@@ -94,12 +94,13 @@ export class PolygonNFTTransferConnector
   }
 }
 
-export const polygonNFTTransferConnector = new PolygonNFTTransferConnector({
-  icon: MaticSvg,
-  tokenStandard: TokenStandards.MATIC,
-  blockchain: Blockchain.POLYGON,
-  feeCurrency: NativeToken.MATIC,
-  addressPlaceholder: "Recipient polygon address",
-  type: TransferModalType.NFT,
-  assetService: polygonAsset,
-})
+export const ethereumGoerliNFTTransferConnector =
+  new EthGoerliNFTTransferConnector({
+    icon: IconPngEthereum,
+    tokenStandard: TokenStandards.ETH,
+    blockchain: Blockchain.ETHEREUM_GOERLI,
+    feeCurrency: NativeToken.ETH,
+    addressPlaceholder: "Recipient ETH address",
+    type: TransferModalType.NFT,
+    assetService: ethereumGoerliAsset,
+  })

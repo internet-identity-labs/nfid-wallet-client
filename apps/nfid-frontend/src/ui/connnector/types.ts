@@ -56,7 +56,9 @@ export type AssetNativeConfig = AssetErc20Config & {
 
 export enum Blockchain {
   ETHEREUM = "Ethereum",
+  ETHEREUM_GOERLI = "Ethereum Goerli",
   POLYGON = "Polygon",
+  POLYGON_MUMBAI = "Polygon Mumbai",
   IC = "Internet Computer",
   BITCOIN = "Bitcoin",
 }

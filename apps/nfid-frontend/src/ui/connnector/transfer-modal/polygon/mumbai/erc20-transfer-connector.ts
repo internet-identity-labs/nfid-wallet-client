@@ -1,14 +1,16 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { Cache } from "node-ts-cache"
 import { Erc20EstimateTransactionRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/erc20-populate-transaction.service"
 import { Token } from "packages/integration/src/lib/asset/types"
 
-import { IGroupedOptions, IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset, ethereumGoerliAsset } from "@nfid/integration"
+import { IGroupedOptions, PolygonERC20Svg } from "@nfid-frontend/ui"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { connectorCache } from "../../cache"
-import { Blockchain, NativeToken } from "../../types"
-import { EVMTransferConnector } from "../evm-transfer-connector"
+import { connectorCache } from "frontend/ui/connnector/cache"
+import { Blockchain, NativeToken } from "frontend/ui/connnector/types"
+
+import { EVMTransferConnector } from "../../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferFTConnector,
@@ -16,10 +18,10 @@ import {
   TokenBalance,
   TokenFee,
   TransferModalType,
-} from "../types"
-import { makeRootAccountGroupedOptions } from "../util/options"
+} from "../../types"
+import { makeRootAccountGroupedOptions } from "../../util/options"
 
-export class EthERC20TransferConnector
+export class PolygonMumbaiERC20TransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
@@ -31,47 +33,33 @@ export class EthERC20TransferConnector
     return { ...this.config, ...token }
   }
 
-  @Cache(connectorCache, { ttl: 60 })
+  @Cache(connectorCache, { ttl: 600 })
+  async getAddress(_?: string, identity?: DelegationIdentity): Promise<string> {
+    return await polygonMumbaiAsset.getAddress(identity)
+  }
+
+  @Cache(connectorCache, { ttl: 10 })
   async getBalance(_?: string, currency?: string): Promise<TokenBalance> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
     return Promise.resolve({
-      balance: String(token.balance),
-      balanceinUsd: token.balanceinUsd,
+      balance: String(token?.balance),
+      balanceinUsd: token?.balanceinUsd,
     })
   }
 
-  @Cache(connectorCache, { ttl: 600 })
-  async getTokenCurrencies(): Promise<string[]> {
-    const tokens = await this.getTokens()
-    return tokens.map((token) => token.symbol)
-  }
-
-  @Cache(connectorCache, { ttl: 60 })
+  @Cache(connectorCache, { ttl: 10 })
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
-    return (await ethereumGoerliAsset.getErc20TokensByUser({ identity })).tokens
+    return (await polygonMumbaiAsset.getErc20TokensByUser({ identity })).tokens
   }
 
-  @Cache(connectorCache, { ttl: 600 })
-  async getTokensOptions(): Promise<IGroupedOptions> {
-    const tokens = await this.getTokens()
-    return {
-      label: this.config.blockchain,
-      options: tokens.map((token) => ({
-        icon: token.logo ?? this.config.icon,
-        title: token.symbol,
-        subTitle: token.name,
-        value: token.symbol,
-      })),
-    }
-  }
-
-  @Cache(connectorCache, { ttl: 60 })
+  @Cache(connectorCache, { ttl: 10 })
   async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
-    const address = await this.getAddress()
-    const balance = await this.getBalance("", currency)
+    const identity = await this.getIdentity()
+    const address = await this.getAddress("", identity)
+    const balance = await this.getBalance(currency)
 
     return [
       makeRootAccountGroupedOptions(
@@ -83,13 +71,35 @@ export class EthERC20TransferConnector
     ]
   }
 
+  @Cache(connectorCache, { ttl: 600 })
+  async getTokenCurrencies(): Promise<string[]> {
+    const tokens = await this.getTokens()
+    return tokens.map((token) => token.symbol)
+  }
+
+  @Cache(connectorCache, { ttl: 600 })
+  async getTokensOptions(): Promise<IGroupedOptions> {
+    const tokens = await this.getTokens()
+
+    return {
+      label: this.config.blockchain,
+      options: tokens.map((token) => ({
+        icon: token.logo ?? this.config.icon,
+        title: token.symbol,
+        subTitle: token.name,
+        value: token.symbol,
+      })),
+    }
+  }
+
   async getFee({
     to,
     amount,
-    contract,
     currency,
+    contract,
   }: ITransferFTRequest): Promise<TokenFee> {
     const cacheKey = currency + "_transaction"
+
     const identity = await this.getIdentity()
     const request = new Erc20EstimateTransactionRequest(
       identity,
@@ -99,7 +109,8 @@ export class EthERC20TransferConnector
     )
 
     const estimatedTransaction =
-      await ethereumGoerliAsset.getEstimatedTransaction(request)
+      await polygonMumbaiAsset.getEstimatedTransaction(request)
+
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
@@ -111,12 +122,13 @@ export class EthERC20TransferConnector
   }
 }
 
-export const ethereumERC20TransferConnector = new EthERC20TransferConnector({
-  tokenStandard: TokenStandards.ERC20_ETHEREUM,
-  blockchain: Blockchain.ETHEREUM,
-  feeCurrency: NativeToken.ETH,
-  icon: IconERC20,
-  addressPlaceholder: "Recipient ETH address",
-  type: TransferModalType.FT20,
-  assetService: ethereumAsset,
-})
+export const polygonMumbaiERC20TransferConnector =
+  new PolygonMumbaiERC20TransferConnector({
+    tokenStandard: TokenStandards.ERC20_POLYGON,
+    blockchain: Blockchain.POLYGON_MUMBAI,
+    feeCurrency: NativeToken.MATIC,
+    icon: PolygonERC20Svg,
+    addressPlaceholder: "Recipient Polygon address",
+    type: TransferModalType.FT20,
+    assetService: polygonMumbaiAsset,
+  })

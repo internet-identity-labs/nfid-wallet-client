@@ -2,21 +2,22 @@ import { EthTransferRequest } from "packages/integration/src/lib/asset/service/p
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset, polygonMumbaiAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { connectorCache } from "../../cache"
-import { Blockchain, NativeToken } from "../../types"
-import { EVMTransferConnector } from "../evm-transfer-connector"
+import { connectorCache } from "frontend/ui/connnector/cache"
+import { Blockchain, NativeToken } from "frontend/ui/connnector/types"
+
+import { EVMTransferConnector } from "../../evm-transfer-connector"
 import {
-  ITransferFTConnector,
   ITransferConfig,
+  ITransferFTConnector,
   ITransferFTRequest,
   TokenFee,
   TransferModalType,
-} from "../types"
+} from "../../types"
 
-export class MaticTransferConnector
+export class MaticMumbaiTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
@@ -55,13 +56,13 @@ export class MaticTransferConnector
   }
 }
 
-export const polygonTransferConnector = new MaticTransferConnector({
+export const polygonMumbaiTransferConnector = new MaticMumbaiTransferConnector({
   icon: MaticSvg,
   tokenStandard: TokenStandards.MATIC,
-  blockchain: Blockchain.POLYGON,
+  blockchain: Blockchain.POLYGON_MUMBAI,
   feeCurrency: NativeToken.MATIC,
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT,
-  assetService: polygonAsset,
+  assetService: polygonMumbaiAsset,
   isNativeToken: true,
 })

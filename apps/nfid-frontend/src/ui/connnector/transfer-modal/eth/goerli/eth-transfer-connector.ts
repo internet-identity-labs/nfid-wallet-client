@@ -1,21 +1,22 @@
 import { EthTransferRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/eth-populate-transaction.service"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumAsset, ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { connectorCache } from "../../cache"
-import { Blockchain, NativeToken } from "../../types"
-import { EVMTransferConnector } from "../evm-transfer-connector"
+import { connectorCache } from "frontend/ui/connnector/cache"
+import { Blockchain, NativeToken } from "frontend/ui/connnector/types"
+
+import { EVMTransferConnector } from "../../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferFTConnector,
   ITransferFTRequest,
   TokenFee,
   TransferModalType,
-} from "../types"
+} from "../../types"
 
-export class EthTransferConnector
+export class EthGoerliTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
@@ -41,13 +42,13 @@ export class EthTransferConnector
   }
 }
 
-export const ethereumTransferConnector = new EthTransferConnector({
+export const ethereumGoerliTransferConnector = new EthGoerliTransferConnector({
   icon: IconPngEthereum,
   tokenStandard: TokenStandards.ETH,
-  blockchain: Blockchain.ETHEREUM,
+  blockchain: Blockchain.ETHEREUM_GOERLI,
   feeCurrency: NativeToken.ETH,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT,
-  assetService: ethereumAsset,
+  assetService: ethereumGoerliAsset,
   isNativeToken: true,
 })

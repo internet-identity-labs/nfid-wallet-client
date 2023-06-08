@@ -27,7 +27,13 @@ export const ethPopulateTransactionService: PopulateTransactionService = {
   ) => {
     const errors: ErrorCode[] = []
     const { amount } = request as EthTransferRequest
-    const value = ethers.utils.parseEther(amount ? amount.toString() : "0")
+    let value
+
+    try {
+      value = ethers.utils.parseEther(amount ? amount.toString() : "0")
+    } catch (e) {
+      value = ethers.utils.parseEther("0")
+    }
 
     const tx: ethers.providers.TransactionRequest = {
       to: request.to,
@@ -47,6 +53,7 @@ export const ethPopulateTransactionService: PopulateTransactionService = {
       }
       const tempTx = { ...tx }
       delete tempTx["from"]
+      tempTx["value"] = ethers.utils.parseEther("0")
       const gasLimit = await alchemyService.estimateGas(chainId, tempTx)
       const populatedTransaction = { ...tx, gasLimit }
       return { populatedTransaction, errors }

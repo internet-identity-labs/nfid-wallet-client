@@ -42,6 +42,8 @@ export const validateTransferAmountField =
   (balance = "0", fee = "0") =>
   (value: string | number) => {
     if (Number(value) < 0) return "Transfer amount can't be negative value"
+    if (Number(value) >= 100000000000000000000)
+      return "The transferred sum cannot be excessively large."
     if (Number(value) === 0) return "You can't send 0"
 
     if (Number(balance) - Number(fee) < Number(value))

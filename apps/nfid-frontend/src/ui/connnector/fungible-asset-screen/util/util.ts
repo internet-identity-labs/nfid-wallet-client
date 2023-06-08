@@ -33,7 +33,7 @@ export function erc20ToTokenConfig(
   return {
     tokenStandard: config.tokenStandard,
     icon: tokenSheet.icon,
-    title: tokenSheet.label,
+    title: `${tokenSheet.label} ${config.network ? `${config.network}` : ""}`,
     currency: tokenSheet.token,
     balance: tokenSheet.tokenBalance,
     price: tokenSheet.usdBalance,

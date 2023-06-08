@@ -4,20 +4,20 @@ import { erc20ToTokenConfig } from "src/ui/connnector/fungible-asset-screen/util
 import {
   AssetErc20Config,
   Blockchain,
+  ETHNetwork,
   NativeToken,
-  PolygonNetwork,
   TokenConfig,
 } from "src/ui/connnector/types"
 
-import { PolygonERC20Svg } from "@nfid-frontend/ui"
-import { polygonAsset } from "@nfid/integration"
+import { IconERC20 } from "@nfid-frontend/ui"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export class PolygonERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
+export class EthereumGoerliERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return polygonAsset
+    return ethereumGoerliAsset
       .getAccounts(identity[0], this.config.icon)
       .then((ts) => {
         return ts.map((l) => {
@@ -27,10 +27,11 @@ export class PolygonERC20AssetConnector extends FungibleAssetConnector<AssetErc2
   }
 }
 
-export const polygonERC20AssetConnector = new PolygonERC20AssetConnector({
-  tokenStandard: TokenStandards.ERC20_POLYGON,
-  icon: PolygonERC20Svg,
-  blockchain: Blockchain.POLYGON,
-  feeCurrency: NativeToken.MATIC,
-  network: PolygonNetwork.MAINNET,
-})
+export const ethereumGoerliERC20AssetConnector =
+  new EthereumGoerliERC20AssetConnector({
+    tokenStandard: TokenStandards.ERC20_ETHEREUM,
+    blockchain: Blockchain.ETHEREUM_GOERLI,
+    feeCurrency: NativeToken.ETH,
+    icon: IconERC20,
+    network: ETHNetwork.GOERLI,
+  })

@@ -1,13 +1,11 @@
 import { fungibleAssetFactory } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
 import useSWR from "swr"
 
-import { TokenStandards } from "@nfid/integration/token/types"
-
 import { AssetFilter } from "../../types"
 
 type UseTokenConfig = {
   assetFilters: AssetFilter[]
-  tokens: TokenStandards[]
+  tokens: string[]
 }
 
 export const useTokenConfig = ({ assetFilters, tokens }: UseTokenConfig) => {

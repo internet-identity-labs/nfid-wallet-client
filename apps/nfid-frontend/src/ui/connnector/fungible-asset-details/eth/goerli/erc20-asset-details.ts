@@ -2,21 +2,21 @@ import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { FungibleAssetDetailsConnector } from "src/ui/connnector/fungible-asset-details/fungible-asset-detail"
 
 import { IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { Blockchain } from "../../types"
+import { Blockchain } from "frontend/ui/connnector/types"
 
-export class EthereumERC20AssetDetailsConnector extends FungibleAssetDetailsConnector {
+export class EthereumGoerliERC20AssetDetailsConnector extends FungibleAssetDetailsConnector {
   async getAssetDetails(): Promise<Array<TokenBalanceSheet>> {
     const principal = await this.getIdentity()
-    return ethereumAsset.getAccounts(principal, this.config.icon)
+    return ethereumGoerliAsset.getAccounts(principal, this.config.icon)
   }
 }
 
-export const ethereumERC20AssetDetailsConnector =
-  new EthereumERC20AssetDetailsConnector({
+export const ethereumGoerliERC20AssetDetailsConnector =
+  new EthereumGoerliERC20AssetDetailsConnector({
     tokenStandard: TokenStandards.ERC20_ETHEREUM,
     icon: IconERC20,
-    blockchain: Blockchain.ETHEREUM,
+    blockchain: Blockchain.ETHEREUM_GOERLI,
   })

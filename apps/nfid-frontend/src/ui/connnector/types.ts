@@ -32,6 +32,7 @@ export type NftConnectorConfig = {
 }
 
 export type TokenDetailsConfig = {
+  blockchain: Blockchain
   tokenStandard: TokenStandards
   icon: string
 }

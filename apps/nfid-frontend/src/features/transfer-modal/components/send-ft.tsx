@@ -33,16 +33,21 @@ import { ITransferSuccess } from "./success"
 interface ITransferFT {
   preselectedTokenCurrency: string
   preselectedAccountAddress: string
+  preselectedTokenBlockchain?: string
   onTransferPromise: (data: ITransferSuccess) => void
 }
 
 export const TransferFT = ({
   preselectedTokenCurrency,
   preselectedAccountAddress = "",
+  preselectedTokenBlockchain = Blockchain.IC,
   onTransferPromise,
 }: ITransferFT) => {
   const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
     preselectedTokenCurrency,
+  )
+  const [selectedTokenBlockchain, setSelectedTokenBlockchain] = useState(
+    preselectedTokenBlockchain,
   )
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
@@ -54,8 +59,15 @@ export const TransferFT = ({
       getConnector({
         type: TransferModalType.FT,
         currency: selectedTokenCurrency,
+        blockchain: selectedTokenBlockchain,
       }),
   )
+
+  console.log({
+    selectedTokenCurrency,
+    selectedTokenBlockchain,
+    selectedConnector,
+  })
 
   const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
     ITransferConfig & (TokenMetadata | Token)
@@ -262,7 +274,10 @@ export const TransferFT = ({
             optionGroups={tokenOptions ?? []}
             title="Choose an asset"
             type="trigger"
-            onSelect={setSelectedTokenCurrency}
+            onSelect={(value) => {
+              setSelectedTokenCurrency(value.split("&")[0])
+              setSelectedTokenBlockchain(value.split("&")[1])
+            }}
             preselectedValue={selectedTokenCurrency}
             isSmooth
             trigger={

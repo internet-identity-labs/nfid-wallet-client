@@ -4,24 +4,24 @@ import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/l
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset, polygonMumbaiAsset } from "@nfid/integration"
+import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { connectorCache } from "frontend/ui/connnector/cache"
+import { Blockchain, NativeToken } from "frontend/ui/connnector/types"
 
-import { connectorCache } from "../../cache"
-import { Blockchain, NativeToken } from "../../types"
-import { EVMTransferConnector } from "../evm-transfer-connector"
+import { EVMTransferConnector } from "../../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferNFTConnector,
   ITransferNFTRequest,
   TokenFee,
   TransferModalType,
-} from "../types"
-import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
+} from "../../types"
+import { toUserNFT, mapUserNFTDetailsToGroupedOptions } from "../../util/nfts"
 
-export class PolygonNFTTransferConnector
+export class PolygonMumbaiNFTTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
@@ -94,12 +94,13 @@ export class PolygonNFTTransferConnector
   }
 }
 
-export const polygonNFTTransferConnector = new PolygonNFTTransferConnector({
-  icon: MaticSvg,
-  tokenStandard: TokenStandards.MATIC,
-  blockchain: Blockchain.POLYGON,
-  feeCurrency: NativeToken.MATIC,
-  addressPlaceholder: "Recipient polygon address",
-  type: TransferModalType.NFT,
-  assetService: polygonAsset,
-})
+export const polygonMumbaiNFTTransferConnector =
+  new PolygonMumbaiNFTTransferConnector({
+    icon: MaticSvg,
+    tokenStandard: TokenStandards.MATIC,
+    blockchain: Blockchain.POLYGON_MUMBAI,
+    feeCurrency: NativeToken.MATIC,
+    addressPlaceholder: "Recipient polygon address",
+    type: TransferModalType.NFT,
+    assetService: polygonMumbaiAsset,
+  })

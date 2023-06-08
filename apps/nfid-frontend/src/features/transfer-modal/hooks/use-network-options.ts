@@ -8,6 +8,7 @@ import {
   getNativeTokenStandards,
 } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
+import { Blockchain } from "frontend/ui/connnector/types"
 
 export const useNetworkOptions = () => {
   const supportedNetworks = getNativeTokenStandards()
@@ -16,13 +17,15 @@ export const useNetworkOptions = () => {
     [supportedNetworks, "networkOptions"],
     ([tokens]) =>
       Promise.all(
-        tokens.map(async (token: TokenStandards) =>
-          (
-            await getConnector({
-              type: TransferModalType.FT,
-              tokenStandard: token,
-            })
-          ).getNetworkOption(),
+        tokens.map(
+          async (t: { token: TokenStandards; blockchain: Blockchain }) =>
+            (
+              await getConnector({
+                type: TransferModalType.FT,
+                tokenStandard: t.token,
+                blockchain: t.blockchain,
+              })
+            ).getNetworkOption(),
         ),
       ),
   )

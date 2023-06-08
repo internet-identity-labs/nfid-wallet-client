@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
+import { Cache } from "node-ts-cache"
 
 import {
   IGroupOption,
@@ -19,6 +20,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
+import { connectorCache } from "../../cache"
 import { Blockchain, NativeToken } from "../../types"
 import {
   ITransferConfig,
@@ -29,14 +31,12 @@ import {
   TransferModalType,
 } from "../types"
 import { ICMTransferConnector } from "./icm-transfer-connector"
-import { Cache } from "node-ts-cache"
-import { connectorCache } from "../../cache"
 
 export class DIP20TransferConnector
   extends ICMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
-  @Cache(connectorCache, {ttl: 600})
+  @Cache(connectorCache, { ttl: 600 })
   async getTokenMetadata(currency: string): Promise<TokenMetadata> {
     const tokens = await this.getTokens()
     const token = tokens.find((token) => token.symbol === currency)
@@ -48,7 +48,7 @@ export class DIP20TransferConnector
     } as any
   }
 
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getBalance(address?: string, currency?: string): Promise<TokenBalance> {
     const { canisterId } = await this.getTokenMetadata(currency ?? "")
 
@@ -63,18 +63,18 @@ export class DIP20TransferConnector
     })
   }
 
-  @Cache(connectorCache, {ttl: 600})
+  @Cache(connectorCache, { ttl: 600 })
   async getTokenCurrencies(): Promise<string[]> {
     const tokens = await this.getTokens()
     return tokens.map((token) => token.symbol)
   }
 
-  @Cache(connectorCache, {ttl: 600})
+  @Cache(connectorCache, { ttl: 600 })
   async getTokens(): Promise<TokenMetadata[]> {
     return await Promise.all(TOKEN_CANISTER.map(getMetadata))
   }
 
-  @Cache(connectorCache, {ttl: 600})
+  @Cache(connectorCache, { ttl: 600 })
   async getTokensOptions(): Promise<IGroupedOptions> {
     const tokens = await this.getTokens()
 
@@ -89,7 +89,7 @@ export class DIP20TransferConnector
     }
   }
 
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
     const { symbol } = await this.getTokenMetadata(currency ?? "")
     const principals = await this.getAllPrincipals(true)

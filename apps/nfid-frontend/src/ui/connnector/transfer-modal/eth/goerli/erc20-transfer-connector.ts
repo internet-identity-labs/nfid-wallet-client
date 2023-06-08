@@ -3,12 +3,13 @@ import { Erc20EstimateTransactionRequest } from "packages/integration/src/lib/as
 import { Token } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset, ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { connectorCache } from "../../cache"
-import { Blockchain, NativeToken } from "../../types"
-import { EVMTransferConnector } from "../evm-transfer-connector"
+import { connectorCache } from "frontend/ui/connnector/cache"
+import { Blockchain, NativeToken } from "frontend/ui/connnector/types"
+
+import { EVMTransferConnector } from "../../evm-transfer-connector"
 import {
   ITransferConfig,
   ITransferFTConnector,
@@ -16,10 +17,10 @@ import {
   TokenBalance,
   TokenFee,
   TransferModalType,
-} from "../types"
-import { makeRootAccountGroupedOptions } from "../util/options"
+} from "../../types"
+import { makeRootAccountGroupedOptions } from "../../util/options"
 
-export class EthERC20TransferConnector
+export class EthGoerliERC20TransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
@@ -111,12 +112,13 @@ export class EthERC20TransferConnector
   }
 }
 
-export const ethereumERC20TransferConnector = new EthERC20TransferConnector({
-  tokenStandard: TokenStandards.ERC20_ETHEREUM,
-  blockchain: Blockchain.ETHEREUM,
-  feeCurrency: NativeToken.ETH,
-  icon: IconERC20,
-  addressPlaceholder: "Recipient ETH address",
-  type: TransferModalType.FT20,
-  assetService: ethereumAsset,
-})
+export const ethereumGoerliERC20TransferConnector =
+  new EthGoerliERC20TransferConnector({
+    tokenStandard: TokenStandards.ERC20_ETHEREUM,
+    blockchain: Blockchain.ETHEREUM_GOERLI,
+    feeCurrency: NativeToken.ETH,
+    icon: IconERC20,
+    addressPlaceholder: "Recipient ETH address",
+    type: TransferModalType.FT20,
+    assetService: ethereumGoerliAsset,
+  })

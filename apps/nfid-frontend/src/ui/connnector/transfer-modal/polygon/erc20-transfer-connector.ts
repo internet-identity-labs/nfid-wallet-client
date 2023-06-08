@@ -4,7 +4,7 @@ import { Erc20EstimateTransactionRequest } from "packages/integration/src/lib/as
 import { Token } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, PolygonERC20Svg } from "@nfid-frontend/ui"
-import { polygonMumbaiAsset } from "@nfid/integration"
+import { polygonAsset, polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -127,5 +127,5 @@ export const polygonERC20TransferConnector = new PolygonERC20TransferConnector({
   icon: PolygonERC20Svg,
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT20,
-  assetService: polygonMumbaiAsset,
+  assetService: polygonAsset,
 })

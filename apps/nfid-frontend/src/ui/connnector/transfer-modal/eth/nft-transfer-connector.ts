@@ -4,7 +4,7 @@ import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/l
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset, ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -101,5 +101,5 @@ export const ethereumNFTTransferConnector = new EthNFTTransferConnector({
   feeCurrency: NativeToken.ETH,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.NFT,
-  assetService: ethereumGoerliAsset,
+  assetService: ethereumAsset,
 })

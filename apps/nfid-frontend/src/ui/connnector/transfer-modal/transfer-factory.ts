@@ -3,31 +3,39 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 
-import { StandardizedToken } from "../types"
+import { Blockchain } from "../types"
 import { btcTransferConnector } from "./btc/btc-transfer-connector"
 import { ethereumERC20TransferConnector } from "./eth/erc20-transfer-connector"
 import { ethereumTransferConnector } from "./eth/eth-transfer-connector"
+import { ethereumGoerliERC20TransferConnector } from "./eth/goerli/erc20-transfer-connector"
+import { ethereumGoerliTransferConnector } from "./eth/goerli/eth-transfer-connector"
+import { ethereumGoerliNFTTransferConnector } from "./eth/goerli/nft-transfer-connector"
 import { ethereumNFTTransferConnector } from "./eth/nft-transfer-connector"
 import { dip20TransferConnector } from "./ic/dip20-transfer-connector"
 import { icTransferConnector } from "./ic/ic-transfer-connector"
 import { icNFTTransferConnector } from "./ic/nft-transfer-connector"
 import { polygonERC20TransferConnector } from "./polygon/erc20-transfer-connector"
+import { polygonMumbaiERC20TransferConnector } from "./polygon/mumbai/erc20-transfer-connector"
+import { polygonMumbaiNFTTransferConnector } from "./polygon/mumbai/nft-transfer-connector"
+import { polygonMumbaiTransferConnector } from "./polygon/mumbai/polygon-transfer-connector"
 import { polygonNFTTransferConnector } from "./polygon/nft-transfer-connector"
 import { polygonTransferConnector } from "./polygon/polygon-transfer-connector"
 import {
   IConnector,
   IGetConnector,
+  ITransferConfig,
   IUniversalConnector,
   TransferModalType,
 } from "./types"
 import { concatOptionsWithSameLabel } from "./util/options"
 
-function toMap<T extends StandardizedToken<TokenStandards>>(
+function toMap<T extends { getTokenConfig: () => ITransferConfig }>(
   assetViews: T[] | T[],
-): Map<TokenStandards, T> {
-  const assetViewMap = new Map<TokenStandards, T>()
+): Map<string, T> {
+  const assetViewMap = new Map<string, T>()
   assetViews.forEach((assetView) => {
-    assetViewMap.set(assetView.getTokenStandard(), assetView)
+    const config = assetView.getTokenConfig()
+    assetViewMap.set(`${config.tokenStandard}&${config.blockchain}`, assetView)
   })
   return assetViewMap
 }
@@ -35,19 +43,25 @@ function toMap<T extends StandardizedToken<TokenStandards>>(
 const singleFTConnectors = [
   btcTransferConnector,
   polygonTransferConnector,
+  polygonMumbaiTransferConnector,
   ethereumTransferConnector,
+  ethereumGoerliTransferConnector,
 ]
 
 const multiFTConnectors = [
   polygonERC20TransferConnector,
+  polygonMumbaiERC20TransferConnector,
   ethereumERC20TransferConnector,
+  ethereumGoerliERC20TransferConnector,
   icTransferConnector,
   dip20TransferConnector,
 ]
 
 const NFTConnectors = [
   ethereumNFTTransferConnector,
+  ethereumGoerliNFTTransferConnector,
   polygonNFTTransferConnector,
+  polygonMumbaiNFTTransferConnector,
   icNFTTransferConnector,
 ]
 
@@ -92,32 +106,39 @@ export const getConnector = async <T extends TransferModalType>({
   )
 
   if (tokenStandard) {
-    const neededConfig = allConfigs.find((c) => c?.token === tokenStandard)
-    return mappedConnectors.get(neededConfig?.token!)! as IConnector<T>
+    const neededConfig = allConfigs.find(
+      (c) => c?.token === tokenStandard && c?.blockchain === blockchain,
+    )
+    return mappedConnectors.get(
+      `${neededConfig?.token}&${neededConfig?.blockchain}`,
+    )! as IConnector<T>
   }
 
   if (currency) {
-    const neededConfig = allConfigs.find((c) =>
-      c?.currencies.includes(currency),
+    const neededConfig = allConfigs.find(
+      (c) => c?.currencies.includes(currency) && c.blockchain === blockchain,
     )
-    return mappedConnectors.get(neededConfig?.token!)! as IConnector<T>
-  }
-
-  if (blockchain) {
-    const neededConfig = allConfigs.find((c) => c?.blockchain === blockchain)
-    return mappedConnectors.get(neededConfig?.token!)! as IConnector<T>
+    return mappedConnectors.get(
+      `${neededConfig?.token}&${neededConfig?.blockchain}`,
+    )! as IConnector<T>
   }
 
   // UNREACHABLE
   throw new Error("No connector found")
 }
 
-export const getNativeTokenStandards = (): Array<TokenStandards> => {
+export const getNativeTokenStandards = (): Array<{
+  token: TokenStandards
+  blockchain: Blockchain
+}> => {
   const nativeConnectors = allConnectors.filter(
     (c) => c.getTokenConfig()?.isNativeToken,
   )
 
-  return nativeConnectors.map((c) => c.getTokenStandard())
+  return nativeConnectors.map((c) => ({
+    token: c.getTokenStandard(),
+    blockchain: c.getTokenConfig()?.blockchain,
+  }))
 }
 
 export const getAllTokensOptions = async (): Promise<IGroupedOptions[]> => {

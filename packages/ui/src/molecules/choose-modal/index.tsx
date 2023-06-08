@@ -174,9 +174,9 @@ export const ChooseModal = ({
                   {group.label}
                 </p>
               )}
-              {group.options.map((option) => (
+              {group.options.map((option, i) => (
                 <ChooseItem
-                  key={`option_${option.value}`}
+                  key={`option_${option.value}_group_${index}_${i}`}
                   handleClick={() => handleSelect(option)}
                   image={option.icon}
                   title={option.title}

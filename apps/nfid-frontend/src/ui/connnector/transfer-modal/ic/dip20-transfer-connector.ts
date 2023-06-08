@@ -84,7 +84,7 @@ export class DIP20TransferConnector
         icon: token.logo ?? this.config.icon,
         title: token.symbol,
         subTitle: token.name,
-        value: token.symbol,
+        value: `${token.symbol}&${this.config.blockchain}`,
       })),
     }
   }
@@ -143,6 +143,7 @@ export class DIP20TransferConnector
     return true
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({ currency }: ITransferFTRequest): Promise<TokenFee> {
     const tokenMetadata = await this.getTokenMetadata(currency)
     return Promise.resolve({

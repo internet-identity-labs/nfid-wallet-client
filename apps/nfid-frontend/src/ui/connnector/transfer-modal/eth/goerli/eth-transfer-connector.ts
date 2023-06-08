@@ -1,3 +1,4 @@
+import { Cache } from "node-ts-cache"
 import { EthTransferRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/eth-populate-transaction.service"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
@@ -20,6 +21,7 @@ export class EthGoerliTransferConnector
   extends EVMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     amount,

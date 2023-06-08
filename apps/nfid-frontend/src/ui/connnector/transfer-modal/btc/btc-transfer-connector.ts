@@ -67,6 +67,7 @@ export class BtcTransferConnector
     return true
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({ to, amount }: ITransferFTRequest): Promise<TokenFee> {
     const identity = await this.getIdentity()
     const fee = await new BtcWallet(identity).getFee(

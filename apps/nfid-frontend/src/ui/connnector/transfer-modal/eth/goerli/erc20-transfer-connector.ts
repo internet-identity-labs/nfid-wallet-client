@@ -64,7 +64,7 @@ export class EthGoerliERC20TransferConnector
         icon: token.logo ?? this.config.icon,
         title: token.symbol,
         subTitle: token.name,
-        value: token.symbol,
+        value: `${token.symbol}&${this.config.blockchain}`,
       })),
     }
   }
@@ -84,6 +84,7 @@ export class EthGoerliERC20TransferConnector
     ]
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     amount,

@@ -1,3 +1,4 @@
+import { Cache } from "node-ts-cache"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions } from "@nfid-frontend/ui"
@@ -12,8 +13,6 @@ import {
   TokenBalance,
 } from "./types"
 import { makeRootAccountGroupedOptions } from "./util/options"
-import { Cache } from "node-ts-cache"
-
 
 export abstract class EVMTransferConnector<
   ConfigType extends ITransferConfig,
@@ -62,24 +61,22 @@ export abstract class EVMTransferConnector<
     return true
   }
 
-  @Cache(connectorCache, {ttl: 60})
+  @Cache(connectorCache, { ttl: 60 })
   async getAddress(): Promise<string> {
     const identity = await this.getIdentity()
     return await this.config.assetService.getAddress(identity)
   }
 
-  @Cache(connectorCache, {ttl: 60})
   async getBalance(): Promise<TokenBalance> {
     const address = await this.getAddress()
     const balance = await this.config.assetService.getBalance(address)
 
     return {
       balance: balance.balance,
-      balanceinUsd: balance.balanceinUsd
+      balanceinUsd: balance.balanceinUsd,
     }
   }
 
-  @Cache(connectorCache, {ttl: 60})
   async getAccountsOptions(): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
     const balance = await this.getBalance()

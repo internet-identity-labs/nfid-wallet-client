@@ -1,8 +1,9 @@
+import { Cache } from "node-ts-cache"
 import { EthTransferRequest } from "packages/integration/src/lib/asset/service/populate-transaction-service/eth-populate-transaction.service"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { MaticSvg } from "@nfid-frontend/ui"
-import { polygonAsset, polygonMumbaiAsset } from "@nfid/integration"
+import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -28,8 +29,9 @@ export class MaticTransferConnector
 
     const identity = await this.getIdentity()
     const request = new EthTransferRequest(identity, to, amount)
-    const estimatedTransaction =
-      await polygonMumbaiAsset.getEstimatedTransaction(request)
+    const estimatedTransaction = await polygonAsset.getEstimatedTransaction(
+      request,
+    )
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
@@ -37,13 +39,15 @@ export class MaticTransferConnector
     return estimatedTransaction
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({ to, amount }: ITransferFTRequest): Promise<TokenFee> {
     const cacheKey = this.config.tokenStandard + "_transaction"
 
     const identity = await this.getIdentity()
     const request = new EthTransferRequest(identity, to, amount)
-    const estimatedTransaction =
-      await polygonMumbaiAsset.getEstimatedTransaction(request)
+    const estimatedTransaction = await polygonAsset.getEstimatedTransaction(
+      request,
+    )
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })

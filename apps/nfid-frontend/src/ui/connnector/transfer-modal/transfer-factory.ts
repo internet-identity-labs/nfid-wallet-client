@@ -109,6 +109,7 @@ export const getConnector = async <T extends TransferModalType>({
     const neededConfig = allConfigs.find(
       (c) => c?.token === tokenStandard && c?.blockchain === blockchain,
     )
+
     return mappedConnectors.get(
       `${neededConfig?.token}&${neededConfig?.blockchain}`,
     )! as IConnector<T>
@@ -118,6 +119,7 @@ export const getConnector = async <T extends TransferModalType>({
     const neededConfig = allConfigs.find(
       (c) => c?.currencies.includes(currency) && c.blockchain === blockchain,
     )
+
     return mappedConnectors.get(
       `${neededConfig?.token}&${neededConfig?.blockchain}`,
     )! as IConnector<T>

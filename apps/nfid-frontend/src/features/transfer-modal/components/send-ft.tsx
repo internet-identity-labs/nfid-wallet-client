@@ -33,28 +33,39 @@ import { ITransferSuccess } from "./success"
 interface ITransferFT {
   preselectedTokenCurrency: string
   preselectedAccountAddress: string
+  preselectedTokenBlockchain?: string
   onTransferPromise: (data: ITransferSuccess) => void
 }
 
 export const TransferFT = ({
   preselectedTokenCurrency,
   preselectedAccountAddress = "",
+  preselectedTokenBlockchain = Blockchain.IC,
   onTransferPromise,
 }: ITransferFT) => {
   const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
     preselectedTokenCurrency,
+  )
+  const [selectedTokenBlockchain, setSelectedTokenBlockchain] = useState(
+    preselectedTokenBlockchain,
   )
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
   )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
-    [selectedTokenCurrency, "selectedConnector"],
-    ([selectedTokenCurrency]) =>
+    [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
+    ([selectedTokenCurrency, selectedTokenBlockchain]) =>
       getConnector({
         type: TransferModalType.FT,
         currency: selectedTokenCurrency,
+        blockchain: selectedTokenBlockchain,
       }),
+    {
+      onSuccess: () => {
+        refetchBalance()
+      },
+    },
   )
 
   const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
@@ -262,8 +273,14 @@ export const TransferFT = ({
             optionGroups={tokenOptions ?? []}
             title="Choose an asset"
             type="trigger"
-            onSelect={setSelectedTokenCurrency}
-            preselectedValue={selectedTokenCurrency}
+            onSelect={(value) => {
+              const arrayValue = value.split("&")
+              if (arrayValue.length < 2) return
+
+              setSelectedTokenCurrency(arrayValue[0])
+              setSelectedTokenBlockchain(arrayValue[1])
+            }}
+            preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
             isSmooth
             trigger={
               <div
@@ -332,7 +349,7 @@ export const TransferFT = ({
                 </p>
 
                 <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee ?? `0.00 ${selectedTokenCurrency}`}
+                  {transferFee?.fee ?? `0.00 ${tokenMetadata?.feeCurrency}`}
                 </p>
               </div>
             )}

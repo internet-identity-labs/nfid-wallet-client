@@ -48,10 +48,11 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
   const navigate = useNavigate()
   const handleNavigateToTokenDetails = React.useCallback(
-    (token: string) => () => {
+    (token: string, chain: string) => () => {
       navigate(
         generatePath(`${ProfileConstants.base}/${ProfileConstants.wallet}`, {
           token,
+          chain,
         }),
       )
     },
@@ -117,7 +118,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 <tr
                   key={`token_${index}`}
                   id={`token_${token.title.replace(/\s+/g, "")}`}
-                  onClick={handleNavigateToTokenDetails(token.currency)}
+                  onClick={handleNavigateToTokenDetails(
+                    token.currency,
+                    token.blockchain,
+                  )}
                   className="border-b border-gray-200 cursor-pointer last:border-b-0 hover:bg-gray-100"
                 >
                   <td className="flex items-center h-16">
@@ -165,7 +169,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               <div
                 key={`token_${index}`}
                 className="flex items-center justify-between h-16"
-                onClick={handleNavigateToTokenDetails(token.currency)}
+                onClick={handleNavigateToTokenDetails(
+                  token.currency,
+                  token.blockchain,
+                )}
               >
                 <div className="flex items-center text-[#0B0E13]">
                   <Image

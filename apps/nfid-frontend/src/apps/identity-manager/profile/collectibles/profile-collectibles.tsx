@@ -71,7 +71,9 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         })
         .filter((token) => {
           if (!blockchainFilter.length) return true
-          return blockchainFilter.includes(token.blockchain)
+          return blockchainFilter
+            .map((f) => f.replace(/\s+/g, ""))
+            .includes(token.blockchain.replace(/\s+/g, ""))
         }),
     [tokens, search, walletsFilter, collectionsFilter, blockchainFilter],
   )
@@ -227,7 +229,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     const chains = [...new Set(tokens.map((t) => t.blockchain))]
     return chains.map((blockchain) => ({
       label: blockchain,
-      value: blockchain,
+      value: blockchain.replace(/\s+/g, ""),
     }))
   }, [tokens])
 

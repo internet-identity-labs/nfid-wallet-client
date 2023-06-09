@@ -47,6 +47,7 @@ export const TransferModalCoordinator = () => {
           <TransferFT
             preselectedTokenCurrency={state.context.tokenCurrency}
             preselectedAccountAddress={state.context.sourceWalletAddress}
+            preselectedTokenBlockchain={state.context.tokenBlockchain}
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
@@ -66,6 +67,7 @@ export const TransferModalCoordinator = () => {
           <TransferReceive
             preselectedTokenStandard={state.context.tokenStandard}
             preselectedAccountAddress={state.context.sourceWalletAddress}
+            preselectedTokenBlockchain={state.context.tokenBlockchain}
           />
         )
       case state.matches("Success"):

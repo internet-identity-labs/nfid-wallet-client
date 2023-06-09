@@ -38,7 +38,7 @@ export const ProfileConstants = {
   nftDetails: ":tokenId",
   assets: "assets",
   collectibles: "collectibles",
-  wallet: ":token/wallet",
+  wallet: ":token/wallet/:chain",
   security: "security",
   credentials: "credentials",
   transactions: "transactions",

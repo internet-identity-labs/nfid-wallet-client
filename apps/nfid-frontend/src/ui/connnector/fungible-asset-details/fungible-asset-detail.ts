@@ -8,7 +8,6 @@ import {
 } from "src/ui/connnector/types"
 
 import { loadProfileFromLocalStorage } from "@nfid/integration"
-import { TokenStandards } from "@nfid/integration/token/types"
 
 export abstract class FungibleAssetDetailsConnector
   implements IFungibleAssetDetailsConnector
@@ -21,8 +20,8 @@ export abstract class FungibleAssetDetailsConnector
 
   abstract getAssetDetails(): Promise<Array<TokenBalanceSheet>>
 
-  getTokenStandard(): TokenStandards {
-    return this.config.tokenStandard
+  getTokenStandard(): string {
+    return `${this.config.tokenStandard}&${this.config.blockchain}`
   }
 
   protected getIdentity = async (): Promise<DelegationIdentity> => {

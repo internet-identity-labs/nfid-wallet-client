@@ -13,7 +13,9 @@ export const useAllToken = (
   const icTokenConfigs = useICTokens(assetFilters)
 
   const token: TokenConfig[] = React.useMemo(() => {
-    return [...tokenConfigs, ...icTokenConfigs]
+    return [...tokenConfigs, ...icTokenConfigs].sort((a, b) =>
+      a.currency.localeCompare(b.currency),
+    )
   }, [tokenConfigs, icTokenConfigs])
 
   console.debug("useAllToken", { token })

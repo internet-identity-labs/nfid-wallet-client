@@ -4,7 +4,7 @@ import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/l
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, MaticSvg } from "@nfid-frontend/ui"
-import { polygonMumbaiAsset } from "@nfid/integration"
+import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -29,7 +29,7 @@ export class PolygonNFTTransferConnector
   async getNFTs(): Promise<UserNonFungibleToken[]> {
     const address = await this.getAddress()
     const identity = await this.getIdentity()
-    const nfts = await polygonMumbaiAsset.getItemsByUser({ identity })
+    const nfts = await polygonAsset.getItemsByUser({ identity })
 
     return nfts.items.map((nft) =>
       toUserNFT(
@@ -49,6 +49,7 @@ export class PolygonNFTTransferConnector
     return mapUserNFTDetailsToGroupedOptions(nfts, applications)
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     tokenId,
@@ -76,9 +77,7 @@ export class PolygonNFTTransferConnector
 
     let estimatedTransaction: EstimatedTransaction | undefined = undefined
     try {
-      estimatedTransaction = await polygonMumbaiAsset.getEstimatedTransaction(
-        request,
-      )
+      estimatedTransaction = await polygonAsset.getEstimatedTransaction(request)
     } catch (e: any) {
       throw new Error(e?.message)
     }
@@ -101,5 +100,5 @@ export const polygonNFTTransferConnector = new PolygonNFTTransferConnector({
   feeCurrency: NativeToken.MATIC,
   addressPlaceholder: "Recipient polygon address",
   type: TransferModalType.NFT,
-  assetService: polygonMumbaiAsset,
+  assetService: polygonAsset,
 })

@@ -5,18 +5,19 @@ import {
   AssetErc20Config,
   Blockchain,
   NativeToken,
+  PolygonNetwork,
   TokenConfig,
 } from "src/ui/connnector/types"
 
 import { PolygonERC20Svg } from "@nfid-frontend/ui"
-import { polygonMumbaiAsset } from "@nfid/integration"
+import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class PolygonERC20AssetConnector extends FungibleAssetConnector<AssetErc20Config> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return polygonMumbaiAsset
+    return polygonAsset
       .getAccounts(identity[0], this.config.icon)
       .then((ts) => {
         return ts.map((l) => {
@@ -31,4 +32,5 @@ export const polygonERC20AssetConnector = new PolygonERC20AssetConnector({
   icon: PolygonERC20Svg,
   blockchain: Blockchain.POLYGON,
   feeCurrency: NativeToken.MATIC,
+  network: PolygonNetwork.MAINNET,
 })

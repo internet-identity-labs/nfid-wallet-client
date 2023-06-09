@@ -12,24 +12,23 @@ import {
   TokenConfig,
 } from "src/ui/connnector/types"
 
-import { TokenStandards } from "@nfid/integration/token/types"
+import { ethereumGoerliERC20AssetConnector } from "./eth/goerli/erc20-asset"
+import { ethGoerliAssetConnector } from "./eth/goerli/eth-asset"
+import { polygonMumbaiERC20AssetConnector } from "./polygon/mumbai/erc20-asset"
+import { maticMumbaiAssetConnector } from "./polygon/mumbai/matic-asset"
 
 export class FungibleAssetFactory extends ConnectorFactory<
-  TokenStandards,
+  string,
   FungibleAssetConnector<AssetNativeConfig | AssetErc20Config>
 > {
   getTokenConfigs = async (
-    key: TokenStandards,
+    key: string,
     assetFilters: AssetFilter[],
   ): Promise<Array<TokenConfig>> => {
     return super.process(key, [assetFilters])
   }
 
-  getCacheKey(
-    key: TokenStandards,
-    functionToCall: Function,
-    args: any[],
-  ): string {
+  getCacheKey(key: string, functionToCall: Function, args: any[]): string {
     return (
       functionToCall.name +
       key +
@@ -53,4 +52,8 @@ export const fungibleAssetFactory = new FungibleAssetFactory([
   polygonERC20AssetConnector,
   ethereumERC20AssetConnector,
   ethAssetConnector,
+  maticMumbaiAssetConnector,
+  polygonMumbaiERC20AssetConnector,
+  ethereumGoerliERC20AssetConnector,
+  ethGoerliAssetConnector,
 ])

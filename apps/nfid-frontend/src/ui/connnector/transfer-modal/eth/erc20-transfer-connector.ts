@@ -3,7 +3,7 @@ import { Erc20EstimateTransactionRequest } from "packages/integration/src/lib/as
 import { Token } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, IconERC20 } from "@nfid-frontend/ui"
-import { ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -51,7 +51,7 @@ export class EthERC20TransferConnector
   @Cache(connectorCache, { ttl: 60 })
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
-    return (await ethereumGoerliAsset.getErc20TokensByUser({ identity })).tokens
+    return (await ethereumAsset.getErc20TokensByUser({ identity })).tokens
   }
 
   @Cache(connectorCache, { ttl: 600 })
@@ -63,7 +63,7 @@ export class EthERC20TransferConnector
         icon: token.logo ?? this.config.icon,
         title: token.symbol,
         subTitle: token.name,
-        value: token.symbol,
+        value: `${token.symbol}&${this.config.blockchain}`,
       })),
     }
   }
@@ -83,6 +83,7 @@ export class EthERC20TransferConnector
     ]
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     amount,
@@ -98,8 +99,9 @@ export class EthERC20TransferConnector
       amount,
     )
 
-    const estimatedTransaction =
-      await ethereumGoerliAsset.getEstimatedTransaction(request)
+    const estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
+      request,
+    )
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
@@ -118,5 +120,5 @@ export const ethereumERC20TransferConnector = new EthERC20TransferConnector({
   icon: IconERC20,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT20,
-  assetService: ethereumGoerliAsset,
+  assetService: ethereumAsset,
 })

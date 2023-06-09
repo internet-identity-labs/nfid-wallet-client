@@ -4,7 +4,7 @@ import { NftErc1155EstimateTransactionRequest } from "packages/integration/src/l
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -30,7 +30,7 @@ export class EthNFTTransferConnector
     const identity = await this.getIdentity()
     const address = await this.getAddress()
 
-    const nfts = await ethereumGoerliAsset.getItemsByUser({ identity })
+    const nfts = await ethereumAsset.getItemsByUser({ identity })
     return nfts.items.map((nft) =>
       toUserNFT(
         nft,
@@ -49,6 +49,7 @@ export class EthNFTTransferConnector
     return mapUserNFTDetailsToGroupedOptions(nfts, applications)
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     tokenId,
@@ -76,7 +77,7 @@ export class EthNFTTransferConnector
 
     let estimatedTransaction: EstimatedTransaction | undefined = undefined
     try {
-      estimatedTransaction = await ethereumGoerliAsset.getEstimatedTransaction(
+      estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
         request,
       )
     } catch (e: any) {
@@ -101,5 +102,5 @@ export const ethereumNFTTransferConnector = new EthNFTTransferConnector({
   feeCurrency: NativeToken.ETH,
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.NFT,
-  assetService: ethereumGoerliAsset,
+  assetService: ethereumAsset,
 })

@@ -441,6 +441,9 @@ Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
 Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
   await Assets.openAssetReceiveOptions()
   await Assets.chooseChainOption(chain)
+
+  const loader = await $("#loader")
+  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
 })
 
 Then(

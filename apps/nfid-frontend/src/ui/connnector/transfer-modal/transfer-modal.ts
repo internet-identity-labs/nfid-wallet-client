@@ -1,4 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { Cache } from "node-ts-cache"
+import { getPrice } from "packages/integration/src/lib/asset/asset-util"
 import { applicationToAccount } from "packages/integration/src/lib/identity-manager/application/application-to-account"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
@@ -19,6 +21,7 @@ import {
   fetchProfile,
 } from "frontend/integration/identity-manager"
 
+import { connectorCache } from "../cache"
 import {
   ITransferConfig,
   ITransferFTRequest,
@@ -27,9 +30,6 @@ import {
   ITransferResponse,
   TokenFee,
 } from "./types"
-import { connectorCache } from "../cache"
-import { Cache } from "node-ts-cache"
-import { getPrice } from "packages/integration/src/lib/asset/asset-util"
 
 export abstract class TransferModalConnector<T extends ITransferConfig>
   implements ITransferModalConnector
@@ -40,22 +40,19 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     this.config = config
   }
 
-
   getTokenConfig(currency?: string): any {
     return this.config
   }
-
 
   getTokenCurrencies(): Promise<string[]> {
     return Promise.resolve([this.config.tokenStandard])
   }
 
-
   getNetworkOption(): IGroupOption {
     return {
-      title: "title" in this.config ? String(this.config.title) : "",
+      title: this.config.blockchain,
       icon: this.config.icon,
-      value: this.config.tokenStandard,
+      value: `${this.config.tokenStandard}&${this.config.blockchain}`,
     }
   }
 
@@ -66,7 +63,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
         {
           icon: this.config.icon,
           title: this.config.tokenStandard,
-          value: this.config.tokenStandard,
+          value: this.config.tokenStandard + "&" + this.config.blockchain,
           subTitle: this.config.tokenStandard,
         },
       ],
@@ -118,12 +115,12 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     ) as any
   }
 
-  @Cache(connectorCache, {ttl: 120})
+  @Cache(connectorCache, { ttl: 120 })
   protected async getProfile(): Promise<Profile> {
     return loadProfileFromLocalStorage() ?? (await fetchProfile())
   }
 
-  @Cache(connectorCache, {ttl: 120})
+  @Cache(connectorCache, { ttl: 120 })
   protected async getAccounts(
     extendWithFixedAccounts: boolean = false,
   ): Promise<Account[]> {
@@ -146,14 +143,17 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     }, accounts)
   }
 
-  @Cache(connectorCache, {ttl: 180})
+  @Cache(connectorCache, { ttl: 180 })
   protected async getApplications(): Promise<Application[]> {
     return await fetchApplications()
   }
-  
+
   @Cache(connectorCache, { ttl: 60 })
   async getRate(currency: string): Promise<string> {
-    return (await getPrice([currency])).find(t => t.token === currency)?.price ?? '0'
+    return (
+      (await getPrice([currency])).find((t) => t.token === currency)?.price ??
+      "0"
+    )
   }
 
   async getIdentity(

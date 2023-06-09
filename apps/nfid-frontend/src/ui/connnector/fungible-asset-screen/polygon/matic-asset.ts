@@ -5,18 +5,19 @@ import {
   AssetNativeConfig,
   Blockchain,
   NativeToken,
+  PolygonNetwork,
   TokenConfig,
 } from "src/ui/connnector/types"
 
 import { MaticSvg } from "@nfid-frontend/ui"
-import { polygonMumbaiAsset } from "@nfid/integration"
+import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class MaticAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return polygonMumbaiAsset
+    return polygonAsset
       .getNativeAccount(identity[0], this.config.icon)
       .then((matic) => [toNativeTokenConfig(this.config, matic)])
   }
@@ -28,4 +29,5 @@ export const maticAssetConnector = new MaticAssetConnector({
   title: "Matic",
   feeCurrency: NativeToken.MATIC,
   blockchain: Blockchain.POLYGON,
+  network: PolygonNetwork.MAINNET,
 })

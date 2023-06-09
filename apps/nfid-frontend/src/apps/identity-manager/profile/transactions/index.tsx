@@ -100,13 +100,13 @@ const ProfileTransactions = () => {
 
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
-    selectedBlockchainFilters.includes("Ethereum") &&
+    !!selectedBlockchainFilters.find((f) => f.includes("Ethereum")) &&
       transactions.push(
         ...ETHTransactions,
         ...ERC20Transactions,
         ...ETHNFTTransactions,
       )
-    selectedBlockchainFilters.includes("Polygon") &&
+    !!selectedBlockchainFilters.find((f) => f.includes("Polygon")) &&
       transactions.push(
         ...ERC20TransactionsPolygon,
         ...TransactionsPolygon,
@@ -182,15 +182,17 @@ const ProfileTransactions = () => {
 
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
-    selectedBlockchainFilters.includes("Ethereum") &&
+    !!selectedBlockchainFilters.find((f) => f.includes("Ethereum")) &&
       transactions.push(
         ...ETHTransactions,
         ...ERC20Transactions,
         ...ETHNFTTransactions,
       )
+
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
-    selectedBlockchainFilters.includes("Polygon") &&
+
+    !!selectedBlockchainFilters.find((f) => f.includes("Polygon")) &&
       transactions.push(
         ...ERC20TransactionsPolygon,
         ...TransactionsPolygon,

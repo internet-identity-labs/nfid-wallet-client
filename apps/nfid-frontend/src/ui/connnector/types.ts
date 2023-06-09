@@ -7,29 +7,22 @@ import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 import { NonFungibleAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-export type IFungibleAssetConnector = StandardizedToken<TokenStandards> &
-  Cacheable & {
-    getTokenConfigs(assetFilter: AssetFilter[]): Promise<Array<TokenConfig>>
-  }
+export type IFungibleAssetConnector = StandardizedToken<string> & {
+  getTokenConfigs(assetFilter: AssetFilter[]): Promise<Array<TokenConfig>>
+}
 
-export type INonFungibleAssetConnector = StandardizedToken<Blockchain> &
-  Cacheable & {
-    getNonFungibleItems(
-      assetFilter: AssetFilter[],
-    ): Promise<Array<UserNonFungibleToken>>
-  }
+export type INonFungibleAssetConnector = StandardizedToken<string> & {
+  getNonFungibleItems(
+    assetFilter: AssetFilter[],
+  ): Promise<Array<UserNonFungibleToken>>
+}
 
-export type IFungibleAssetDetailsConnector = StandardizedToken<TokenStandards> &
-  Cacheable & {
-    getAssetDetails(): Promise<Array<TokenBalanceSheet>>
-  }
+export type IFungibleAssetDetailsConnector = StandardizedToken<string> & {
+  getAssetDetails(): Promise<Array<TokenBalanceSheet>>
+}
 
 export type StandardizedToken<T> = {
   getTokenStandard(): T
-}
-
-export type Cacheable = {
-  getCacheTtl(): number
 }
 
 export type NftConnectorConfig = {
@@ -39,11 +32,13 @@ export type NftConnectorConfig = {
 }
 
 export type TokenDetailsConfig = {
+  blockchain: Blockchain
   tokenStandard: TokenStandards
   icon: string
 }
 
 export type AssetErc20Config = {
+  network: Network
   tokenStandard: TokenStandards
   icon: string
   blockchain: Blockchain
@@ -56,7 +51,9 @@ export type AssetNativeConfig = AssetErc20Config & {
 
 export enum Blockchain {
   ETHEREUM = "Ethereum",
+  ETHEREUM_GOERLI = "Ethereum Goerli",
   POLYGON = "Polygon",
+  POLYGON_MUMBAI = "Polygon Mumbai",
   IC = "Internet Computer",
   BITCOIN = "Bitcoin",
 }
@@ -68,6 +65,22 @@ export enum NativeToken {
   BTC = "BTC",
 }
 
+export enum ETHNetwork {
+  MAINNET = "",
+  GOERLI = "Goerli",
+}
+
+export enum PolygonNetwork {
+  MAINNET = "",
+  MUMBAI = "Mumbai",
+}
+
+export enum BTCNetwork {
+  MAINNET = "",
+  TESTNET = "Testnet",
+}
+
+export type Network = ETHNetwork | PolygonNetwork | BTCNetwork
 export interface TokenConfig {
   balance: bigint | undefined
   currency: string

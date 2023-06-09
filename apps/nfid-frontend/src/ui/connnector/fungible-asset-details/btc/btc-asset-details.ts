@@ -5,6 +5,8 @@ import { FungibleAssetDetailsConnector } from "src/ui/connnector/fungible-asset-
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
+import { Blockchain } from "../../types"
+
 export class BtcAssetDetailsConnector extends FungibleAssetDetailsConnector {
   async getAssetDetails(): Promise<Array<TokenBalanceSheet>> {
     const principal = await this.getIdentity()
@@ -19,4 +21,5 @@ export class BtcAssetDetailsConnector extends FungibleAssetDetailsConnector {
 export const btcAssetDetailsConnector = new BtcAssetDetailsConnector({
   tokenStandard: TokenStandards.BTC,
   icon: IconSvgBTC,
+  blockchain: Blockchain.BITCOIN,
 })

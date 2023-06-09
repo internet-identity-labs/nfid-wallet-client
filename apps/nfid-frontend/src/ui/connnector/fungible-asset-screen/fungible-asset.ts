@@ -10,7 +10,6 @@ import {
 } from "src/ui/connnector/types"
 
 import { loadProfileFromLocalStorage } from "@nfid/integration"
-import { TokenStandards } from "@nfid/integration/token/types"
 
 export abstract class FungibleAssetConnector<
   T extends AssetNativeConfig | AssetErc20Config,
@@ -35,8 +34,8 @@ export abstract class FungibleAssetConnector<
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>>
 
-  getTokenStandard(): TokenStandards {
-    return this.config.tokenStandard
+  getTokenStandard(): string {
+    return `${this.config.tokenStandard}&${this.config.blockchain}`
   }
 
   protected getIdentity = async (

@@ -4,19 +4,20 @@ import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/uti
 import {
   AssetNativeConfig,
   Blockchain,
+  ETHNetwork,
   NativeToken,
   TokenConfig,
 } from "src/ui/connnector/types"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
-import { ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class EthAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return ethereumGoerliAsset
+    return ethereumAsset
       .getNativeAccount(identity[0], this.config.icon)
       .then((matic) => [toNativeTokenConfig(this.config, matic)])
   }
@@ -28,4 +29,5 @@ export const ethAssetConnector = new EthAssetConnector({
   title: "Ethereum",
   feeCurrency: NativeToken.ETH,
   blockchain: Blockchain.ETHEREUM,
+  network: ETHNetwork.MAINNET,
 })

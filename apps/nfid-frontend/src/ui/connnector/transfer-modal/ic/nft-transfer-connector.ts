@@ -1,3 +1,4 @@
+import { Cache } from "node-ts-cache"
 
 import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -10,7 +11,6 @@ import { Blockchain, NativeToken } from "../../types"
 import {
   ITransferConfig,
   ITransferNFTConnector,
-
   TokenFee,
   TransferModalType,
 } from "../types"
@@ -19,26 +19,25 @@ import {
   userNFTDetailsToNFT,
 } from "../util/nfts"
 import { ICMTransferConnector } from "./icm-transfer-connector"
-import { Cache } from "node-ts-cache"
 
 export class IcNFTTransferConnector
   extends ICMTransferConnector<ITransferConfig>
   implements ITransferNFTConnector
 {
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getNFTs(): Promise<UserNonFungibleToken[]> {
     const allPrincipals = await this.getAllPrincipals(false)
     const allNFTs = await principalTokens(allPrincipals)
     return userNFTDetailsToNFT(allNFTs)
   }
 
-  @Cache(connectorCache, {ttl: 15})
+  @Cache(connectorCache, { ttl: 15 })
   async getNFTOptions(): Promise<IGroupedOptions[]> {
     const applications = await this.getApplications()
     const allNFTs = await this.getNFTs()
     return mapUserNFTDetailsToGroupedOptions(allNFTs, applications)
   }
-  
+
   getFee(): Promise<TokenFee> {
     return Promise.resolve({
       fee: `0 ${this.config.feeCurrency}`,
@@ -53,5 +52,5 @@ export const icNFTTransferConnector = new IcNFTTransferConnector({
   blockchain: Blockchain.IC,
   addressPlaceholder: "Recipient IC address",
   type: TransferModalType.NFT,
-  feeCurrency: NativeToken.ICP
+  feeCurrency: NativeToken.ICP,
 })

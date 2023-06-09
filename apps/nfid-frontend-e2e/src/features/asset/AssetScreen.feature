@@ -7,21 +7,21 @@ Feature:Fungible Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    And Wait while <asset> asset calculated with currency <currency>
+    And Wait while <label> asset calculated with currency <currency>
     And Asset appears with label <label>
-    And <asset> appears with <currency> on <chain> and <balance>
+    And <label> appears with <currency> on <chain> and <balance>
     And <label> <currency> address calculated
     And <label> USD balance not $0.00
     Examples:
-      | chain             | currency | balance        | asset             | anchor | label             |
-      | Bitcoin           | BTC      | 0.00006879 BTC | Bitcoin           | 25795  | Bitcoin           |
-      | Ethereum          | LINK     | 20 LINK        | ChainLink Token   | 25795  | ChainLink Token   |
-      | Ethereum          | FAU      | 1 FAU          | FaucetToken       | 25795  | FaucetToken       |
-      | Polygon           | MATIC    | 0.2 MATIC      | Matic             | 25795  | Matic             |
-      | Polygon           | TST      | 1 TST          | Test Token        | 25795  | Test Token        |
-      | Ethereum          | ETH      | 0.09664164 ETH | Ethereum          | 25795  | Ethereum          |
-      | Internet Computer | ICP      | 0 ICP          | Internet Computer | 28542  | Internet Computer |
-      | Internet Computer | WICP     | 0 WICP         | WICP              | 28565  | WICP              |
+      | chain             | currency | balance        | anchor | label                  |
+      | Bitcoin           | BTC      | 0.00006879 BTC | 25795  | Bitcoin                |
+      | Ethereum Goerli   | LINK     | 20 LINK        | 25795  | ChainLink Token Goerli |
+      | Ethereum Goerli   | FAU      | 1 FAU          | 25795  | FaucetToken Goerli     |
+      | Polygon Mumbai    | MATIC    | 0.2 MATIC      | 25795  | Matic Mumbai           |
+      | Polygon Mumbai    | TST      | 1 TST          | 25795  | Test Token Mumbai      |
+      | Ethereum Goerli   | ETH      | 0.09664164 ETH | 25795  | Ethereum Goerli        |
+      | Internet Computer | ICP      | 0 ICP          | 28542  | Internet Computer      |
+      | Internet Computer | WICP     | 0 WICP         | 28565  | WICP                   |
 
 
   @asset2
@@ -38,8 +38,8 @@ Feature:Fungible Asset
     Examples:
       | chain             | anchor | amount | label             |
       | Bitcoin           | 25795  | 1      | Bitcoin           |
-      | Ethereum          | 25795  | 3      | Ethereum          |
-      | Polygon           | 25795  | 2      | Matic             |
+      | Ethereum Goerli   | 25795  | 3      | Ethereum Goerli   |
+      | Polygon Mumbai    | 25795  | 2      | Matic Mumbai      |
       | Internet Computer | 28542  | 4      | Internet Computer |
 
   @assets-filter-by-account

@@ -165,7 +165,10 @@ export const ChooseModal = ({
           )}
         >
           {filteredOptions.map((group, index) => (
-            <div key={`group_${group.label}_${group.options.length}_${index}`}>
+            <div
+              id={`option_group_${group.label.replace(/\s/g, "")}`}
+              key={`group_${group.label}_${group.options.length}_${index}`}
+            >
               {group.label && (
                 <p
                   id={"label_" + group.label}
@@ -174,9 +177,9 @@ export const ChooseModal = ({
                   {group.label}
                 </p>
               )}
-              {group.options.map((option) => (
+              {group.options.map((option, i) => (
                 <ChooseItem
-                  key={`option_${option.value}`}
+                  key={`option_${option.value}_group_${index}_${i}`}
                   handleClick={() => handleSelect(option)}
                   image={option.icon}
                   title={option.title}

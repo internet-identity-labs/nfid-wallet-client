@@ -4,7 +4,7 @@ import { Erc20EstimateTransactionRequest } from "packages/integration/src/lib/as
 import { Token } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions, PolygonERC20Svg } from "@nfid-frontend/ui"
-import { polygonMumbaiAsset } from "@nfid/integration"
+import { polygonAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { connectorCache } from "../../cache"
@@ -34,7 +34,7 @@ export class PolygonERC20TransferConnector
 
   @Cache(connectorCache, { ttl: 600 })
   async getAddress(_?: string, identity?: DelegationIdentity): Promise<string> {
-    return await polygonMumbaiAsset.getAddress(identity)
+    return await polygonAsset.getAddress(identity)
   }
 
   @Cache(connectorCache, { ttl: 10 })
@@ -51,7 +51,7 @@ export class PolygonERC20TransferConnector
   @Cache(connectorCache, { ttl: 10 })
   async getTokens(): Promise<Token[]> {
     const identity = await this.getIdentity()
-    return (await polygonMumbaiAsset.getErc20TokensByUser({ identity })).tokens
+    return (await polygonAsset.getErc20TokensByUser({ identity })).tokens
   }
 
   @Cache(connectorCache, { ttl: 10 })
@@ -85,11 +85,12 @@ export class PolygonERC20TransferConnector
         icon: token.logo ?? this.config.icon,
         title: token.symbol,
         subTitle: token.name,
-        value: token.symbol,
+        value: `${token.symbol}&${this.config.blockchain}`,
       })),
     }
   }
 
+  @Cache(connectorCache, { ttl: 10 })
   async getFee({
     to,
     amount,
@@ -106,8 +107,9 @@ export class PolygonERC20TransferConnector
       amount,
     )
 
-    const estimatedTransaction =
-      await polygonMumbaiAsset.getEstimatedTransaction(request)
+    const estimatedTransaction = await polygonAsset.getEstimatedTransaction(
+      request,
+    )
 
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
@@ -127,5 +129,5 @@ export const polygonERC20TransferConnector = new PolygonERC20TransferConnector({
   icon: PolygonERC20Svg,
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT20,
-  assetService: polygonMumbaiAsset,
+  assetService: polygonAsset,
 })

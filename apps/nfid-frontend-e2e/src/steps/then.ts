@@ -441,12 +441,18 @@ Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
 Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
   await Assets.openAssetReceiveOptions()
   await Assets.chooseChainOption(chain)
+
+  const loader = await $("#loader")
+  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
 })
 
-Then(/^Choose ([^"]*) from send options/, async (chain: string) => {
-  await Assets.openAssetOptionsOnSR()
-  await Assets.chooseChainOption(chain)
-})
+Then(
+  /^Choose ([^"]*) on ([^"]*) from send options/,
+  async (currency: string, chain: string) => {
+    await Assets.openAssetOptionsOnSR()
+    await Assets.chooseCurrencyOption(currency, chain)
+  },
+)
 
 Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
   await Assets.chooseAccountFrom(account)

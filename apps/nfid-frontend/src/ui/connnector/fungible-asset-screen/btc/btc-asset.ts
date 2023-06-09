@@ -4,6 +4,7 @@ import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/
 import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
   AssetNativeConfig,
+  BTCNetwork,
   Blockchain,
   NativeToken,
   TokenConfig,
@@ -28,4 +29,5 @@ export const btcAssetConnector = new BtcAssetConnector({
   title: "Bitcoin",
   feeCurrency: NativeToken.BTC,
   blockchain: Blockchain.BITCOIN,
+  network: BTCNetwork.MAINNET,
 })

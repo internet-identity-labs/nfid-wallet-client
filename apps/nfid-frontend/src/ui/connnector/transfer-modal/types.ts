@@ -63,8 +63,8 @@ export type IUniversalConnector = ITransferFTConnector | ITransferNFTConnector
 export type IGetConnector<T extends TransferModalType> = {
   type?: T
   currency?: string
-  blockchain?: string
   tokenStandard?: string
+  blockchain: string
 }
 
 export type IConnector<T extends TransferModalType> =

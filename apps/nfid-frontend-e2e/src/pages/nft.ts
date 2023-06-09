@@ -16,33 +16,23 @@ export class Nft {
   }
 
   public async trType(rawNumber: number) {
-    return $(
-      `table tbody tr:nth-child(${rawNumber}) td:nth-child(1)`,
-    ).getText()
+    return $(`table tbody tr:nth-child(${rawNumber}) td:nth-child(1)`).getText()
   }
 
   public async trDate(rawNumber: number) {
-    return $(
-      `table tbody :nth-child(${rawNumber}) td:nth-child(2)`,
-    ).getText()
+    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(2)`).getText()
   }
 
   public async trFrom(rawNumber: number) {
-    return $(
-      `table tbody :nth-child(${rawNumber}) td:nth-child(3)`,
-    ).getText()
+    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(3)`).getText()
   }
 
   public async trTo(rawNumber: number) {
-    return $(
-      `table tbody :nth-child(${rawNumber}) td:nth-child(4)`,
-    ).getText()
+    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(4)`).getText()
   }
 
   public async trPrice(rawNumber: number) {
-    return $(
-      `table tbody :nth-child(${rawNumber}) td:nth-child(5)`,
-    ).getText()
+    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(5)`).getText()
   }
 
   public async getNftName(token: string) {
@@ -127,7 +117,7 @@ export class Nft {
       timeout: 5000,
     })
     await dropdown.click()
-    const option = await $(`#option_cbx_${blockchain}`)
+    const option = await $(`#option_cbx_${blockchain.replace(/\s+/g, "")}`)
     await option.waitForDisplayed({
       timeout: 5000,
     })
@@ -135,10 +125,14 @@ export class Nft {
   }
 
   public async getNftCollectiblesAmount(n: number) {
-    await $("#items-amount").then(async (x) =>
-      x
-        .waitForDisplayed({ timeout: 27000 })
-        .then(async () => expect(x).toHaveText(n + " items")),
+    await browser.waitUntil(
+      async () => (await (await $("#items-amount")).getText()) === n + " items",
+      {
+        timeout: 15000,
+        timeoutMsg:
+          "Current nfts amount is " +
+          (await (await $("#items-amount")).getText()),
+      },
     )
   }
 

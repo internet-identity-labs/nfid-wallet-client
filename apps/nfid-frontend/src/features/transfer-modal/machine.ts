@@ -1,4 +1,4 @@
-import { TokenConfig } from "src/ui/connnector/types"
+import { Blockchain, TokenConfig } from "src/ui/connnector/types"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -20,6 +20,7 @@ export type TransferMachineContext = {
   error?: Error
   tokenStandard: string
   tokenCurrency: string
+  tokenBlockchain: Blockchain
 }
 
 export type ErrorEvents =
@@ -73,6 +74,7 @@ export const transferMachine = createMachine(
       transferObject: undefined,
       tokenStandard: TokenStandards.ICP,
       tokenCurrency: TokenStandards.ICP,
+      tokenBlockchain: Blockchain.IC,
     },
     id: "TransferMachine",
     initial: "Hidden",

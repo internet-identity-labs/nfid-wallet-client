@@ -49,11 +49,13 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
 
   const fetchETHTokenHistory = React.useCallback(async () => {
     if (!nft?.contractId || !nft?.tokenId) return
+
     const transactions = await getETHTokenActivity(
       nft.contractId,
       nft.tokenId,
       ACTIVITY_TARGET,
     )
+
     setNFTActivity(
       transactions.activities.map(
         (t) =>
@@ -89,14 +91,14 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
       ),
     )
     setIsActivityFetching(false)
-  }, [nft?.contractId, nft?.tokenId])
+  }, [nft])
 
   React.useEffect(() => {
     if (NFTActivity.length) return
 
     if (nft?.blockchain === "Internet Computer") fetchICTokenHistory(1)
-    if (nft?.blockchain === "Ethereum") fetchETHTokenHistory()
-    if (nft?.blockchain === "Polygon") fetchPolygonTokenHistory()
+    if (nft?.blockchain === "Ethereum Goerli") fetchETHTokenHistory()
+    if (nft?.blockchain === "Polygon Mumbai") fetchPolygonTokenHistory()
   }, [
     NFTActivity.length,
     fetchICTokenHistory,
@@ -108,7 +110,6 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
   const transactions = React.useMemo(() => {
     return NFTActivity.sort((a, b) => Number(b.datetime) - Number(a.datetime))
   }, [NFTActivity])
-  console.log({ transactions, NFTActivity, nft })
 
   return {
     transactions,

@@ -12,10 +12,10 @@ Feature:Send/Receive Asset
     Then Choose NFID account 1 from receive accounts
     Then Account ID is <account_id>
     Examples:
-      | chain    | anchor | account_id                            |
-      | Bitcoin  | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h |
-      | Ethereum | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
-      | Polygon  | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
+      | chain          | anchor | account_id                            |
+      | Bitcoin        | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h |
+      | Ethereum       | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
+      | Polygon Mumbai | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
 
   @sendreceive2
   Scenario Outline: User should be able to receive ICP transaction

@@ -15,6 +15,10 @@ import { Policy, updatePolicy } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultPolicies } from "frontend/features/vaults/hooks/use-vault-policies"
+import {
+  e8sICPToString,
+  stringICPtoE8s,
+} from "frontend/integration/wallet/utils"
 
 interface VaultPolicyEditProps {
   isModalOpen: boolean
@@ -40,7 +44,7 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
   const { register, handleSubmit, formState, reset } = useForm({
     defaultValues: useMemo(() => {
       return {
-        amount: Number(selectedPolicy?.amountThreshold),
+        amount: Number(e8sICPToString(Number(selectedPolicy?.amountThreshold))),
         approvers: Number(selectedPolicy?.memberThreshold),
         wallet: String(
           selectedPolicy?.wallets ? selectedPolicy.wallets[0] : "Any",
@@ -55,7 +59,7 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
 
   useEffect(() => {
     reset({
-      amount: Number(selectedPolicy?.amountThreshold),
+      amount: Number(e8sICPToString(Number(selectedPolicy?.amountThreshold))),
       approvers: Number(selectedPolicy?.memberThreshold),
       wallet: String(
         selectedPolicy?.wallets ? selectedPolicy.wallets[0] : "Any",
@@ -71,7 +75,7 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
         setIsLoading(true)
         await updatePolicy({
           ...selectedPolicy,
-          amountThreshold: BigInt(data.amount),
+          amountThreshold: BigInt(stringICPtoE8s(String(data.amount))),
           memberThreshold: Number(data.approvers),
         })
       } catch (e: any) {

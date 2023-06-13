@@ -408,13 +408,22 @@ describe("Ethereum Asset", () => {
       cursor: undefined,
       tokens: [
         {
+          address: "0x382901144a77bec53493fa090053b9c63da5dd07",
+          balance: "888888",
+          balanceinUsd: expect.any(String),
+          contractAddress: "0x1b809925ba90c541d895d19f0b7d70ee281a987f",
+          logo: undefined,
+          name: "VanityTRX.org",
+          symbol: "VanityTRX.org",
+        },
+        {
+          address: "0x382901144a77bec53493fa090053b9c63da5dd07",
+          balance: "10.0",
+          balanceinUsd: expect.any(String),
+          contractAddress: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
+          logo: undefined,
           name: "ChainLink Token",
           symbol: "LINK",
-          logo: undefined,
-          balance: "10.0",
-          contractAddress: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
-          address: "0x382901144a77bec53493fa090053b9c63da5dd07",
-          balanceinUsd: expect.any(String),
         },
       ],
     })

@@ -334,7 +334,6 @@ export async function removeDevice(
   userNumber: UserNumber,
   publicKey: PublicKey,
 ): Promise<void> {
-  await renewDelegation()
   await ii.remove(userNumber, publicKey).catch((e) => {
     throw new Error(`removeDevice: ${e.message}`)
   })

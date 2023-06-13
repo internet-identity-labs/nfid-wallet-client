@@ -21,7 +21,7 @@ const ProfileTokenWalletsDetailPage = () => {
       return appAccountBalance[token]
     }
     const chains = chain ? [chain] : details.map((d) => d.blockchain)
-    console.log({ details, chains, token, chain })
+
     if (details) {
       return details.find(
         (l) => l.token === token && chains.includes(l.blockchain),

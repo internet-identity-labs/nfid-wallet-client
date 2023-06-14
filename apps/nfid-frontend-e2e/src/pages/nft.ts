@@ -86,7 +86,7 @@ export class Nft {
     await table.click()
   }
 
-  public async nftDetails(token: string, collection: string) {
+  public async nftDetails(token: string, collection?: string) {
     const nft = await this.getNftName(token, collection)
     await nft.waitForDisplayed({
       timeout: 15000,

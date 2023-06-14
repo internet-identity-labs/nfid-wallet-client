@@ -132,12 +132,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             className={clsx(`w-[74px] h-[74px] object-cover rounded`)}
           />
         </Link>,
-        <div
-          id={`nft_token_${token.name.replace(
-            /\s|#/g,
-            "",
-          )}_${token.collection.id.replace(/\s|#/g, "")}`}
-        >
+        <div id={`nft_token_${token.name.replace(/\s|#/g, "")}`}>
           {" "}
           {token.name}
         </div>,

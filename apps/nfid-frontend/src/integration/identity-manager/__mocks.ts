@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { AccessPoint, Account, Profile } from "@nfid/integration"
+import { AccessPoint, Account, Profile, RootWallet } from "@nfid/integration"
 
 import {
   AccessPointResponse,
@@ -14,6 +14,7 @@ export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse
   return {
     data: [
       {
+        wallet: { II: null },
         name: [],
         anchor: BigInt(10_000),
         access_points: [],
@@ -33,6 +34,7 @@ export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse
  */
 export function factoryAccount(principal?: Principal): Profile {
   return {
+    wallet: RootWallet.II,
     anchor: Math.floor(100_000 * Math.random()),
     accessPoints: new Array(Math.floor(Math.random() * 5)).fill(
       factoryAccessPoint(),
@@ -72,6 +74,7 @@ export function factoryAccessPoint(principal?: Principal): AccessPoint {
 
 export function factoryProfile(): Profile {
   return {
+    wallet: RootWallet.II,
     anchor: 42069,
     accessPoints: Array(Math.floor(Math.random() * 4))
       .fill(null)
@@ -111,6 +114,7 @@ export async function mockCreateAccessPointResponse(): Promise<HTTPAccessPointRe
 
 export function factoryAccountResponse(): AccountResponse {
   return {
+    wallet: { II: null },
     name: ["Mr. Doolittle"],
     anchor: BigInt(42069),
     access_points: Array(Math.floor(Math.random() * 4))

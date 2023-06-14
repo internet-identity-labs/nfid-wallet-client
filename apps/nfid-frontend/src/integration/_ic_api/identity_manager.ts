@@ -41,7 +41,12 @@ export const idlFactory = ({ IDL }: any) => {
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
-  const HTTPAccountRequest = IDL.Record({ anchor: IDL.Nat64 })
+  const WalletVariant = IDL.Variant({ II: IDL.Null, NFID: IDL.Null })
+  const HTTPAccountRequest = IDL.Record({
+    anchor: IDL.Nat64,
+    access_point: IDL.Opt(AccessPointRequest),
+    wallet: IDL.Opt(WalletVariant),
+  })
   const PersonaResponse = IDL.Record({
     domain: IDL.Text,
     persona_name: IDL.Text,
@@ -52,6 +57,7 @@ export const idlFactory = ({ IDL }: any) => {
     anchor: IDL.Nat64,
     access_points: IDL.Vec(AccessPointResponse),
     personas: IDL.Vec(PersonaResponse),
+    wallet: WalletVariant,
     principal_id: IDL.Text,
     phone_number: IDL.Opt(IDL.Text),
   })
@@ -207,9 +213,7 @@ export const idlFactory = ({ IDL }: any) => {
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
-  const AccessPointRemoveRequest = IDL.Record({
-    pub_key: IDL.Text,
-  })
+  const AccessPointRemoveRequest = IDL.Record({ pub_key: IDL.Text })
   const BasicEntity = IDL.Record({
     modified_date: IDL.Nat64,
     created_date: IDL.Nat64,
@@ -220,6 +224,7 @@ export const idlFactory = ({ IDL }: any) => {
     access_points: IDL.Vec(AccessPointRequest),
     basic_entity: BasicEntity,
     personas: IDL.Vec(PersonaResponse),
+    wallet: WalletVariant,
     principal_id: IDL.Text,
     phone_number: IDL.Opt(IDL.Text),
   })
@@ -292,7 +297,11 @@ export const idlFactory = ({ IDL }: any) => {
     read_access_points: IDL.Func([], [HTTPAccessPointResponse], ["query"]),
     read_applications: IDL.Func([], [HTTPApplicationResponse], ["query"]),
     read_personas: IDL.Func([], [HTTPPersonasResponse], ["query"]),
-    recover_account: IDL.Func([IDL.Nat64], [HTTPAccountResponse], []),
+    recover_account: IDL.Func(
+      [IDL.Nat64, IDL.Opt(WalletVariant)],
+      [HTTPAccountResponse],
+      [],
+    ),
     remove_access_point: IDL.Func(
       [AccessPointRemoveRequest],
       [HTTPAccessPointResponse],

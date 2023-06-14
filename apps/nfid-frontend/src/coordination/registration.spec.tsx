@@ -34,7 +34,7 @@ import { makeInvokedActor } from "./test-utils"
 
 jest.mock("lottie-web", () => ({
   loadAnimation: jest.fn().mockReturnValue({}),
-}));
+}))
 
 describe("Registration Coordinator", () => {
   // FIXME: skip for now to unblock CI.

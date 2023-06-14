@@ -23,6 +23,7 @@ export interface Account {
   access_points: Array<AccessPointRequest>
   basic_entity: BasicEntity
   personas: Array<PersonaResponse>
+  wallet: WalletVariant
   principal_id: string
   phone_number: [] | [string]
 }
@@ -31,6 +32,7 @@ export interface AccountResponse {
   anchor: bigint
   access_points: Array<AccessPointResponse>
   personas: Array<PersonaResponse>
+  wallet: WalletVariant
   principal_id: string
   phone_number: [] | [string]
 }
@@ -53,8 +55,8 @@ export interface BoolHttpResponse {
   error: [] | [Error]
   status_code: number
 }
-export type CanisterCyclesAggregatedData = Array<bigint>
-export type CanisterHeapMemoryAggregatedData = Array<bigint>
+export type CanisterCyclesAggregatedData = BigUint64Array
+export type CanisterHeapMemoryAggregatedData = BigUint64Array
 export type CanisterLogFeature =
   | { filterMessageByContains: null }
   | { filterMessageByRegex: null }
@@ -75,7 +77,7 @@ export type CanisterLogRequest =
 export type CanisterLogResponse =
   | { messagesInfo: CanisterLogMessagesInfo }
   | { messages: CanisterLogMessages }
-export type CanisterMemoryAggregatedData = Array<bigint>
+export type CanisterMemoryAggregatedData = BigUint64Array
 export interface CanisterMetrics {
   data: CanisterMetricsData
 }
@@ -149,6 +151,8 @@ export interface HTTPAccessPointResponse {
 }
 export interface HTTPAccountRequest {
   anchor: bigint
+  access_point: [] | [AccessPointRequest]
+  wallet: [] | [WalletVariant]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]
@@ -159,7 +163,7 @@ export interface HTTPAccountUpdateRequest {
   name: [] | [string]
 }
 export interface HTTPAnchorsResponse {
-  data: [] | [Array<bigint>]
+  data: [] | [BigUint64Array]
   error: [] | [Error]
   status_code: number
 }
@@ -232,11 +236,12 @@ export interface TokenRequest {
   principal_id: string
   phone_number_encrypted: string
 }
-export type UpdateCallsAggregatedData = Array<bigint>
+export type UpdateCallsAggregatedData = BigUint64Array
 export interface ValidatePhoneRequest {
   phone_number_hash: string
   principal_id: string
 }
+export type WalletVariant = { II: null } | { NFID: null }
 export interface _SERVICE {
   add_all_accounts_json: ActorMethod<[string], undefined>
   anchors: ActorMethod<[], HTTPAnchorsResponse>
@@ -272,7 +277,10 @@ export interface _SERVICE {
   read_access_points: ActorMethod<[], HTTPAccessPointResponse>
   read_applications: ActorMethod<[], HTTPApplicationResponse>
   read_personas: ActorMethod<[], HTTPPersonasResponse>
-  recover_account: ActorMethod<[bigint], HTTPAccountResponse>
+  recover_account: ActorMethod<
+    [bigint, [] | [WalletVariant]],
+    HTTPAccountResponse
+  >
   remove_access_point: ActorMethod<
     [AccessPointRemoveRequest],
     HTTPAccessPointResponse

@@ -8,4 +8,10 @@ export interface Profile {
   accounts: Account[]
   principalId: string
   phoneNumber?: string
+  wallet: RootWallet
+}
+
+export enum RootWallet {
+  NFID = "NFID",
+  II = "II",
 }

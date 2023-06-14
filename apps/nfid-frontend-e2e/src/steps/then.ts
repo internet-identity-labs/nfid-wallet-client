@@ -764,7 +764,7 @@ Then(/^Switch to table$/, async () => {
 })
 
 Then(
-  /^Go to ([^"]*) and ([^"]*) details$/,
+  /^Open nft ([^"]*) and ([^"]*) details$/,
   async (token: string, collection: string) => {
     await Nft.nftDetails(token, collection)
   },

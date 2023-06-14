@@ -11,6 +11,7 @@ import { TokenConfig } from "src/ui/connnector/types"
 import { IconERC20 } from "@nfid-frontend/ui"
 import {
   loadProfileFromLocalStorage,
+  polygonAsset,
   polygonMumbaiAsset,
 } from "@nfid/integration"
 
@@ -21,8 +22,14 @@ export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
-  return polygonMumbaiAsset.getTransactionHistory(identity, "erc20")
+  return polygonAsset.getTransactionHistory(identity, "erc20")
 }
+
+export const getErc20TransactionHistoryMumbai =
+  async (): Promise<FungibleTxs> => {
+    const identity = await getIdentity()
+    return polygonMumbaiAsset.getTransactionHistory(identity, "erc20")
+  }
 
 export const transferERC20Polygon = async (
   amount: number,

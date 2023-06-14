@@ -10,6 +10,7 @@ import { TokenConfig } from "src/ui/connnector/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
 import {
+  ethereumAsset,
   ethereumGoerliAsset,
   loadProfileFromLocalStorage,
 } from "@nfid/integration"
@@ -21,8 +22,14 @@ export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
-  return ethereumGoerliAsset.getTransactionHistory(identity, "erc20")
+  return ethereumAsset.getTransactionHistory(identity, "erc20")
 }
+
+export const getGoerliErc20TransactionHistory =
+  async (): Promise<FungibleTxs> => {
+    const identity = await getIdentity()
+    return ethereumGoerliAsset.getTransactionHistory(identity, "erc20")
+  }
 
 export const transferERC20 = async (
   amount: number,

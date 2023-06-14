@@ -18,9 +18,12 @@ export function toUserNFT(
     },
     assetFullsize: {
       url: nft.image.length === 0 ? conf.defaultLogo : nft.image,
-      format: "img",
+      format: nft?.imageType ?? "img",
     },
-    assetPreview: nft?.thumbnail || MaticSvg,
+    assetPreview: {
+      url: nft?.thumbnail || MaticSvg,
+      format: nft?.imageType ?? "img",
+    },
     blockchainLogo: conf.defaultLogo,
     // @ts-ignore
     blockchain: conf.blockchain,

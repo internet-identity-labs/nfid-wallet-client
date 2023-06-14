@@ -97,7 +97,7 @@ export const ProfileNFTDetailsPage = ({
             format={nft.assetFullsize.format}
           />
         </div>
-        <div>
+        <div id={trimConcat("nft_token_", nft.name + "_" + nft.collection.id)}>
           <p
             className="font-bold text-blue"
             id={trimConcat("nft_collection_", nft.collection.name)}

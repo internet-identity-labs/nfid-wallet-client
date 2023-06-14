@@ -691,7 +691,7 @@ Then(
 Then(
   /^NFT ([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
   async (token: string, collection: string, id: string, wallet: string) => {
-    await Nft.getNftName(token).then((l) =>
+    await Nft.getNftName(token, collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT " + token,

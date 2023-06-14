@@ -100,7 +100,7 @@ export const ProfileNFTDetailsPage = ({
         <div id={trimConcat("nft_token_", nft.name + "_" + nft.collection.id)}>
           <p
             className="font-bold text-blue"
-            id={trimConcat("nft_collection_", nft.collection.name)}
+            id={trimConcat("nft_collection_", nft.collection.id)}
           >
             {nft.collection.name}
           </p>
@@ -166,7 +166,9 @@ export const ProfileNFTDetailsPage = ({
       <div className={clsx("mt-[30px] max-w-[100vw]")}>
         <ProfileContainer title="About">
           <p id={"token-about"} className="text-sm">
-            {nft.collection.description}
+            {nft.collection.description.length
+              ? nft.collection.description
+              : "No description"}
           </p>
         </ProfileContainer>
       </div>

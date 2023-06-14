@@ -67,6 +67,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
             "flex items-center justify-center",
             "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
           )}
+          id={trimConcat("nft_token_", props.name)}
         >
           <Image
             src={props.blockchainLogo}
@@ -107,7 +108,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
               {props.name}
             </div>
             <div
-              id={trimConcat("nft_collection_", props.collection.name)}
+              id={trimConcat("nft_collection_", props.collection.id)}
               className={clsx(`text-secondary truncate max-w-[190px] mt-1`)}
             >
               {props.collection.name}

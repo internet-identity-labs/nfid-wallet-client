@@ -673,7 +673,7 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
 Then(
   /^Token ([^"]*) from ([^"]*) nft collection displayed/,
   async (token: string, collection: string) => {
-    await Nft.getNftName(token).then((l) =>
+    await Nft.getNftName(token, collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT " + token,

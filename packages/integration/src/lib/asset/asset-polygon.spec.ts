@@ -160,6 +160,7 @@ describe("Polygon Asset", () => {
           tokenType: "ERC1155",
           contractName: "Meshplus Test Store Multi",
           contractSymbol: "MTSM",
+          imageType: "image",
         },
       ],
     })

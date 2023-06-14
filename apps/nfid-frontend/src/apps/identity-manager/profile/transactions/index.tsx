@@ -3,17 +3,35 @@ import { TransactionRow } from "packages/integration/src/lib/asset/types"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useBtcTransactions } from "src/features/fungable-token/btc/hooks/use-btc-transactions"
-import { useErc20Transactions } from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions"
-import { useErc20TransactionsPolygon } from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions-polygon"
-import { useMaticTransactions } from "src/features/fungable-token/matic/hooks/use-matic-transactions"
-import { useUserPolygonNFTTransactions } from "src/features/non-fungable-token/eth/use-user-polygon-transactions"
+import {
+  useErc20GoerliTransactions,
+  useErc20Transactions,
+} from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions"
+import {
+  useErc20TransactionsPolygon,
+  useErc20TransactionsPolygonMumbai,
+} from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions-polygon"
+import {
+  useMaticMumbaiTransactions,
+  useMaticTransactions,
+} from "src/features/fungable-token/matic/hooks/use-matic-transactions"
+import {
+  useUserPolygonMumbaiNFTTransactions,
+  useUserPolygonNFTTransactions,
+} from "src/features/non-fungable-token/eth/use-user-polygon-transactions"
 
 import { IOption } from "@nfid-frontend/ui"
 import { sortByDate } from "@nfid-frontend/utils"
 import { blockchains } from "@nfid/config"
 
-import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
-import { useUserEthNFTTransactions } from "frontend/features/non-fungable-token/eth/use-user-nft-transactions"
+import {
+  useEthGoerliTransactions,
+  useEthTransactions,
+} from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
+import {
+  useUserEthGoerliNFTTransactions,
+  useUserEthNFTTransactions,
+} from "frontend/features/non-fungable-token/eth/use-user-nft-transactions"
 import {
   selectReceivedTransactions,
   selectSendTransactions,
@@ -25,15 +43,33 @@ import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-h
 
 const ProfileTransactions = () => {
   const { walletTransactions, isWalletLoading } = useWallet()
+
   const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
     useEthTransactions()
-  const { txs: btcTxs } = useBtcTransactions()
-  const { txs: maticTxs } = useMaticTransactions()
+  const {
+    sendTransactions: sendEthGoerliTXs,
+    receiveTransactions: receiveEthGoerliTXs,
+  } = useEthGoerliTransactions()
+
   const { erc20txs } = useErc20Transactions()
+  const { erc20goerlitxs } = useErc20GoerliTransactions()
+
   const { transactions: nftTransactions } = useUserEthNFTTransactions()
+  const { transactions: nftGoerliTransactions } =
+    useUserEthGoerliNFTTransactions()
+
+  const { txs: maticTxs } = useMaticTransactions()
+  const { txs: maticMumbaiTxs } = useMaticMumbaiTransactions()
+
+  const { erc20txs: erc20txsPolygon } = useErc20TransactionsPolygon()
+  const { erc20mumbaitxs } = useErc20TransactionsPolygonMumbai()
+
   const { transactions: nftPolygonTransactions } =
     useUserPolygonNFTTransactions()
-  const { erc20txs: erc20txsPolygon } = useErc20TransactionsPolygon()
+  const { transactions: nftPolygonMumbaiTransactions } =
+    useUserPolygonMumbaiNFTTransactions()
+
+  const { txs: btcTxs } = useBtcTransactions()
 
   const { wallets } = useAllWallets()
 
@@ -64,23 +100,45 @@ const ProfileTransactions = () => {
         ? selectedAccountFilters.map((f) => f.value)
         : wallets.map((w) => principalToAddress(w.principal)),
     })
-    const ETHTransactions = isNFIDAccount ? sendEthTXs : []
     const BTCTransactions = isNFIDAccount ? btcTxs?.sendTransactions ?? [] : []
+
+    const ETHTransactions = isNFIDAccount ? sendEthTXs : []
+    const ETHGoerliTransactions = isNFIDAccount ? sendEthGoerliTXs : []
+
     const ERC20Transactions = isNFIDAccount
       ? erc20txs?.sendTransactions ?? []
       : []
+    const ERC20GoerliTransactions = isNFIDAccount
+      ? erc20goerlitxs?.sendTransactions ?? []
+      : []
+
     const ETHNFTTransactions = isNFIDAccount
       ? nftTransactions?.filter((t) => t.type === "send") ?? []
       : []
+
+    const ETHGoerliNFTTransactions = isNFIDAccount
+      ? nftGoerliTransactions?.filter((t) => t.type === "send") ?? []
+      : []
+
     const PolygonNFTTransactions = isNFIDAccount
       ? nftPolygonTransactions?.filter((t) => t.type === "send") ?? []
+      : []
+    const PolygonMumbaiNFTTransactions = isNFIDAccount
+      ? nftPolygonMumbaiTransactions?.filter((t) => t.type === "send") ?? []
       : []
     const ERC20TransactionsPolygon = isNFIDAccount
       ? erc20txsPolygon?.sendTransactions ?? []
       : []
+    const ERC20TransactionsPolygonMumbai = isNFIDAccount
+      ? erc20mumbaitxs?.sendTransactions ?? []
+      : []
     const TransactionsPolygon = isNFIDAccount
       ? maticTxs?.sendTransactions ?? []
       : []
+    const TransactionsPolygonMumbai = isNFIDAccount
+      ? maticMumbaiTxs?.sendTransactions ?? []
+      : []
+
     if (!selectedBlockchainFilters.length)
       return sortByDate(
         [
@@ -100,17 +158,35 @@ const ProfileTransactions = () => {
 
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
+    selectedBlockchainFilters.includes("Ethereum") &&
+      transactions.push(
+        ...ETHTransactions,
+        ...ERC20Transactions,
+        ...ETHNFTTransactions,
+      )
+    selectedBlockchainFilters.includes("Ethereum Goerli") &&
+      transactions.push(
+        ...ETHGoerliTransactions,
+        ...ERC20GoerliTransactions,
+        ...ETHGoerliNFTTransactions,
+      )
     !!selectedBlockchainFilters.find((f) => f.includes("Ethereum")) &&
       transactions.push(
         ...ETHTransactions,
         ...ERC20Transactions,
         ...ETHNFTTransactions,
       )
-    !!selectedBlockchainFilters.find((f) => f.includes("Polygon")) &&
+    selectedBlockchainFilters.includes("Polygon") &&
       transactions.push(
         ...ERC20TransactionsPolygon,
         ...TransactionsPolygon,
         ...PolygonNFTTransactions,
+      )
+    selectedBlockchainFilters.includes("Polygon Mumbai") &&
+      transactions.push(
+        ...TransactionsPolygonMumbai,
+        ...ERC20TransactionsPolygonMumbai,
+        ...PolygonMumbaiNFTTransactions,
       )
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
@@ -121,14 +197,20 @@ const ProfileTransactions = () => {
     selectedAccountFilters,
     wallets,
     isNFIDAccount,
-    nftPolygonTransactions,
-    sendEthTXs,
     btcTxs?.sendTransactions,
+    sendEthTXs,
+    sendEthGoerliTXs,
     erc20txs?.sendTransactions,
+    erc20goerlitxs?.sendTransactions,
     nftTransactions,
-    selectedBlockchainFilters,
+    nftGoerliTransactions,
+    nftPolygonTransactions,
+    nftPolygonMumbaiTransactions,
     erc20txsPolygon?.sendTransactions,
+    erc20mumbaitxs?.sendTransactions,
     maticTxs?.sendTransactions,
+    maticMumbaiTxs?.sendTransactions,
+    selectedBlockchainFilters,
   ])
 
   const receivedTransactions: TransactionRow[] = useMemo(() => {
@@ -139,16 +221,27 @@ const ProfileTransactions = () => {
         : wallets.map((w) => principalToAddress(w.principal)),
     })
     const ETHTransactions = isNFIDAccount ? receiveEthTXs : []
+    const ETHGoeriTransactions = isNFIDAccount ? receiveEthGoerliTXs : []
     const ERC20Transactions = isNFIDAccount
       ? erc20txs?.receivedTransactions ?? []
+      : []
+    const ERC20GoerliTransactions = isNFIDAccount
+      ? erc20goerlitxs?.receivedTransactions ?? []
       : []
 
     const ERC20TransactionsPolygon = isNFIDAccount
       ? erc20txsPolygon?.receivedTransactions ?? []
       : []
 
+    const ERC20TransactionsPolygonMumbai = isNFIDAccount
+      ? erc20mumbaitxs?.receivedTransactions ?? []
+      : []
+
     const TransactionsPolygon = isNFIDAccount
       ? maticTxs?.receivedTransactions ?? []
+      : []
+    const TransactionsPolygonMumbai = isNFIDAccount
+      ? maticMumbaiTxs?.receivedTransactions ?? []
       : []
 
     const BTCTransactions = isNFIDAccount
@@ -159,8 +252,16 @@ const ProfileTransactions = () => {
       ? nftTransactions?.filter((t) => t.type === "received") ?? []
       : []
 
+    const ETHGoelriNFTTransactions = isNFIDAccount
+      ? nftGoerliTransactions?.filter((t) => t.type === "received") ?? []
+      : []
+
     const PolygonNFTTransactions = isNFIDAccount
       ? nftPolygonTransactions?.filter((t) => t.type === "received") ?? []
+      : []
+
+    const PolygonMumbaiNFTTransactions = isNFIDAccount
+      ? nftPolygonMumbaiTransactions?.filter((t) => t.type === "received") ?? []
       : []
 
     if (!selectedBlockchainFilters.length)
@@ -182,21 +283,33 @@ const ProfileTransactions = () => {
 
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
-    !!selectedBlockchainFilters.find((f) => f.includes("Ethereum")) &&
+    !!selectedBlockchainFilters.includes("Ethereum") &&
       transactions.push(
         ...ETHTransactions,
         ...ERC20Transactions,
         ...ETHNFTTransactions,
       )
+    !!selectedBlockchainFilters.includes("Ethereum Goerli") &&
+      transactions.push(
+        ...ETHGoeriTransactions,
+        ...ERC20GoerliTransactions,
+        ...ETHGoelriNFTTransactions,
+      )
 
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
 
-    !!selectedBlockchainFilters.find((f) => f.includes("Polygon")) &&
+    selectedBlockchainFilters.includes("Polygon") &&
       transactions.push(
         ...ERC20TransactionsPolygon,
         ...TransactionsPolygon,
         ...PolygonNFTTransactions,
+      )
+    selectedBlockchainFilters.includes("Polygon Mumbai") &&
+      transactions.push(
+        ...TransactionsPolygonMumbai,
+        ...ERC20TransactionsPolygonMumbai,
+        ...PolygonMumbaiNFTTransactions,
       )
 
     return sortByDate(transactions, "MMM dd',' yyyy - hh:mm:ss a")
@@ -206,12 +319,18 @@ const ProfileTransactions = () => {
     wallets,
     isNFIDAccount,
     receiveEthTXs,
+    receiveEthGoerliTXs,
     erc20txs?.receivedTransactions,
+    erc20goerlitxs?.receivedTransactions,
     erc20txsPolygon?.receivedTransactions,
+    erc20mumbaitxs?.receivedTransactions,
     maticTxs?.receivedTransactions,
+    maticMumbaiTxs?.receivedTransactions,
     btcTxs?.receivedTransactions,
     nftTransactions,
+    nftGoerliTransactions,
     nftPolygonTransactions,
+    nftPolygonMumbaiTransactions,
     selectedBlockchainFilters,
   ])
 

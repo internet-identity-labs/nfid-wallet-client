@@ -5,42 +5,8 @@ import useSWR from "swr"
 
 import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
 
-import {
-  getUserEthGoerliNFTActivity,
-  getUserEthNFTActivity,
-} from "./get-user-nft-activity"
+import { getUserEthGoerliNFTActivity } from "./get-user-nft-activity"
 
-export const useUserEthNFTTransactions = () => {
-  const { address } = useEthAddress()
-  const { data, error, isValidating } = useSWR(
-    "user-eth-nft-transactions",
-    getUserEthNFTActivity,
-  )
-
-  const transactions = useMemo(() => {
-    return data?.activities.map(
-      (activity) =>
-        ({
-          asset: "NFT",
-          quantity: 1,
-          date: format(new Date(activity.date), "MMM dd, yyyy - hh:mm:ss aaa"),
-          from: activity.from.replace("ETHEREUM:", ""),
-          to: activity.to.replace("ETHEREUM:", ""),
-          type:
-            activity.to.replace("ETHEREUM:", "").toLowerCase() ===
-            address?.toLowerCase()
-              ? "received"
-              : "send",
-        } as TransactionRow),
-    )
-  }, [address, data?.activities])
-
-  return {
-    transactions,
-    error,
-    isValidating,
-  }
-}
 export const useUserEthGoerliNFTTransactions = () => {
   const { address } = useEthAddress()
   const { data, error, isValidating } = useSWR(
@@ -67,7 +33,7 @@ export const useUserEthGoerliNFTTransactions = () => {
   }, [address, data?.activities])
 
   return {
-    transactions,
+    transactions: transactions ?? [],
     error,
     isValidating,
   }

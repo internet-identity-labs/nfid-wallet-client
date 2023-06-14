@@ -51,6 +51,11 @@ const NFTPreview = (props: UserNonFungibleToken) => {
         "rounded-md w-full transition-all cursor-pointer overflow-visible p-[1px]",
         "bg-gray-50 hover:bg-white hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)] nft",
       )}
+      id={
+        trimConcat("nft_token_", props.name) +
+        "_" +
+        props.collection.id.replace(/\s|#/g, "")
+      }
     >
       <Link
         className="relative"
@@ -72,20 +77,32 @@ const NFTPreview = (props: UserNonFungibleToken) => {
             )}
           />
         </div>
-        <Image
-          className={clsx(
-            "rounded-[5px] w-full h-[245px] md:h-[300px] object-cover",
-          )}
-          src={props.assetPreview}
-          alt={props.name}
-        />
+        {["img", "image"].includes(props.assetPreview.format) && (
+          <Image
+            id="asset-img"
+            className={clsx(
+              "rounded-[5px] w-full h-[245px] md:h-[300px] object-cover",
+            )}
+            src={props.assetPreview.url}
+            alt={props.name}
+          />
+        )}
+        {props.assetPreview.format === "video" && (
+          <video
+            id="asset-video"
+            className={clsx(
+              "rounded-[5px] w-full h-[245px] md:h-[300px] object-cover",
+            )}
+            src={props.assetPreview.url}
+          />
+        )}
         <div
           className={clsx(`text-sm p-2.5 flex justify-between items-center`)}
         >
           <div>
             <div
-              id={trimConcat("nft_token_", props.name)}
               className={clsx(`font-bold`)}
+              id={trimConcat("nft_token_", props.name)}
             >
               {props.name}
             </div>

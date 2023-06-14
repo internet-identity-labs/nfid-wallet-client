@@ -743,6 +743,10 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
   })
 })
 
+Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
+  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
+})
+
 Then(/^Open collectibles page$/, async () => {
   await Nft.openCollectibles()
 })
@@ -758,6 +762,13 @@ Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
 Then(/^Switch to table$/, async () => {
   await Nft.switchToTable()
 })
+
+Then(
+  /^Go to ([^"]*) and ([^"]*) details$/,
+  async (token: string, collection: string) => {
+    await Nft.nftDetails(token, collection)
+  },
+)
 
 Then(/^Go to ([^"]*) details$/, async (token: string) => {
   await Nft.nftDetails(token)

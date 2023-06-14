@@ -57,7 +57,10 @@ export async function token(
     index,
     tokenId,
     name: `${collection.name} #${index}`,
-    assetPreview: assetPreview(collection, token),
+    assetPreview: {
+      url: assetPreview(collection, token),
+      format: "img",
+    },
     assetFullsize: await assetFullsize(collection, token),
     blockchain: Blockchain.IC,
   }

@@ -73,7 +73,10 @@ export interface NFTDetails {
   index: number
   tokenId: string
   name: string
-  assetPreview: string
+  assetPreview: {
+    url: string
+    format: DisplayFormat
+  }
   assetFullsize: {
     url: string
     format: DisplayFormat

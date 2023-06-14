@@ -10,5 +10,5 @@ Feature:Non Fungible Asset
     Then Token <token> from <collection> nft collection displayed
     Examples:
       | amount | anchor | token         | collection | view |
-      | 6      | 31870  | AnilAnimal    | Rarible    | 4    |
-      | 6      | 31870  | PandaQueen571 | PandaQueen | 4    |
+      | 7      | 31870  | AnilAnimal    | Rarible    | 4    |
+      | 7      | 31870  | PandaQueen571 | PandaQueen | 4    |

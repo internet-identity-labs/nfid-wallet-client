@@ -354,18 +354,28 @@ const ProfileTransactions = () => {
 
       const transactionsLength =
         w.domain === "nfid.one"
-          ? sendEthTXs.length +
-            receiveEthTXs.length +
+          ? (sendEthTXs.length ?? 0) +
+            (receiveEthTXs.length ?? 0) +
+            (sendEthGoerliTXs.length ?? 0) +
+            (receiveEthGoerliTXs.length ?? 0) +
             (btcTxs?.sendTransactions?.length ?? 0) +
             (btcTxs?.receivedTransactions?.length ?? 0) +
             (erc20txs?.sendTransactions?.length ?? 0) +
             (erc20txs?.receivedTransactions?.length ?? 0) +
+            (erc20goerlitxs?.sendTransactions?.length ?? 0) +
+            (erc20goerlitxs?.receivedTransactions?.length ?? 0) +
             (erc20txsPolygon?.sendTransactions?.length ?? 0) +
             (erc20txsPolygon?.receivedTransactions?.length ?? 0) +
+            (erc20mumbaitxs?.sendTransactions?.length ?? 0) +
+            (erc20mumbaitxs?.receivedTransactions?.length ?? 0) +
             (maticTxs?.sendTransactions?.length ?? 0) +
             (maticTxs?.receivedTransactions?.length ?? 0) +
+            (maticMumbaiTxs?.sendTransactions?.length ?? 0) +
+            (maticMumbaiTxs?.receivedTransactions?.length ?? 0) +
             (nftPolygonTransactions?.length ?? 0) +
+            (nftPolygonMumbaiTransactions?.length ?? 0) +
             (nftTransactions?.length ?? 0) +
+            (nftGoerliTransactions?.length ?? 0) +
             ICTransactionsLength
           : ICTransactionsLength
 
@@ -376,20 +386,30 @@ const ProfileTransactions = () => {
       } as IOption
     })
   }, [
-    btcTxs?.receivedTransactions?.length,
-    btcTxs?.sendTransactions?.length,
-    erc20txs?.receivedTransactions?.length,
-    erc20txs?.sendTransactions?.length,
-    erc20txsPolygon?.receivedTransactions?.length,
-    erc20txsPolygon?.sendTransactions?.length,
-    maticTxs?.receivedTransactions?.length,
-    maticTxs?.sendTransactions?.length,
-    receiveEthTXs.length,
-    sendEthTXs.length,
-    walletTransactions,
     wallets,
-    nftPolygonTransactions,
-    nftTransactions,
+    walletTransactions,
+    sendEthTXs.length,
+    receiveEthTXs.length,
+    sendEthGoerliTXs.length,
+    receiveEthGoerliTXs.length,
+    btcTxs?.sendTransactions?.length,
+    btcTxs?.receivedTransactions?.length,
+    erc20txs?.sendTransactions?.length,
+    erc20txs?.receivedTransactions?.length,
+    erc20goerlitxs?.sendTransactions?.length,
+    erc20goerlitxs?.receivedTransactions?.length,
+    erc20txsPolygon?.sendTransactions?.length,
+    erc20txsPolygon?.receivedTransactions?.length,
+    erc20mumbaitxs?.sendTransactions?.length,
+    erc20mumbaitxs?.receivedTransactions?.length,
+    maticTxs?.sendTransactions?.length,
+    maticTxs?.receivedTransactions?.length,
+    maticMumbaiTxs?.sendTransactions?.length,
+    maticMumbaiTxs?.receivedTransactions?.length,
+    nftPolygonTransactions?.length,
+    nftPolygonMumbaiTransactions?.length,
+    nftTransactions?.length,
+    nftGoerliTransactions?.length,
   ])
 
   const handleSelectAccountFilter = useCallback(

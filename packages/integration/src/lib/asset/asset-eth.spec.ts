@@ -524,6 +524,7 @@ describe("Ethereum Asset", () => {
           tokenType: "ERC721",
           contractName: "Snakes on a chain",
           contractSymbol: "SNAKE",
+          imageType: "image",
         },
       ],
     })

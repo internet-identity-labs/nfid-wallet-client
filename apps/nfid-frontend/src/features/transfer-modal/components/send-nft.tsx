@@ -51,7 +51,6 @@ export const TransferNFT = ({
   )
 
   const selectedNFT = useMemo(() => {
-    console.log({ nfts, selectedNFTId })
     return nfts?.find((nft) => nft.tokenId === selectedNFTId)
   }, [nfts, selectedNFTId])
 
@@ -114,7 +113,7 @@ export const TransferNFT = ({
       if (!selectedConnector) return toast.error("No selected connector")
 
       onTransferPromise({
-        assetImg: selectedNFT?.assetPreview,
+        assetImg: selectedNFT?.assetPreview.url,
         initialPromise: new Promise(async (resolve) => {
           const res = await selectedConnector.transfer({
             identity: await selectedConnector.getIdentity(
@@ -177,7 +176,7 @@ export const TransferNFT = ({
                   {selectedNFT?.assetPreview ? (
                     <Image
                       className="object-cover rounded-sm w-[84px] h-[84px]"
-                      src={selectedNFT?.assetPreview}
+                      src={selectedNFT?.assetPreview.url}
                       alt={""}
                     />
                   ) : (

@@ -10,7 +10,10 @@ export interface NonFungibleToken {
   index: string | number
   tokenId: string
   contractId: string // same as canister id for ic
-  assetPreview: string
+  assetPreview: {
+    format: "video" | "img" | "iframe"
+    url: string
+  }
   assetFullsize: {
     format: "video" | "img" | "iframe"
     url: string

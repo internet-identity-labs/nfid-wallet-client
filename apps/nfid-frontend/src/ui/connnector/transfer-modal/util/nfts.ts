@@ -56,7 +56,7 @@ export const mapUserNFTDetailsToGroupedOptions = (
             title: nft.name,
             subTitle: nft.collection.name,
             value: nft.tokenId,
-            icon: nft.assetPreview,
+            icon: nft.assetPreview.url,
           } as IGroupOption),
       )
       return {
@@ -86,7 +86,10 @@ export function toUserNFT(
       url: nft?.image.length === 0 ? defaultLogo : nft?.image,
       format: "img",
     },
-    assetPreview: nft?.thumbnail || MaticSvg,
+    assetPreview: {
+      url: nft?.thumbnail || MaticSvg,
+      format: nft?.imageType ?? "img",
+    },
     blockchainLogo: defaultLogo,
     // @ts-ignore
     blockchain: blockchain ?? nft?.blockchain,

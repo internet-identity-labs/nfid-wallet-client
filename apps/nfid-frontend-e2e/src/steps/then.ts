@@ -637,6 +637,7 @@ Then(/^(\d+) transaction in the table/, async (amount: number) => {
       reverse: false,
     })
   }
+
   await $("id=transaction_" + amount).waitForDisplayed({
     timeout: 15000,
     timeoutMsg: "More than expects. Unexpected transaction!",
@@ -673,7 +674,7 @@ Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
 Then(
   /^Token ([^"]*) from ([^"]*) nft collection displayed/,
   async (token: string, collection: string) => {
-    await Nft.getNftName(token).then((l) =>
+    await Nft.getNftName(token, collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT " + token,
@@ -691,7 +692,7 @@ Then(
 Then(
   /^NFT ([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
   async (token: string, collection: string, id: string, wallet: string) => {
-    await Nft.getNftName(token).then((l) =>
+    await Nft.getNftName(token, collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT " + token,
@@ -743,6 +744,10 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
   })
 })
 
+Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
+  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
+})
+
 Then(/^Open collectibles page$/, async () => {
   await Nft.openCollectibles()
 })
@@ -758,6 +763,13 @@ Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
 Then(/^Switch to table$/, async () => {
   await Nft.switchToTable()
 })
+
+Then(
+  /^Open nft ([^"]*) and ([^"]*) details$/,
+  async (token: string, collection: string) => {
+    await Nft.nftDetails(token, collection)
+  },
+)
 
 Then(/^Go to ([^"]*) details$/, async (token: string) => {
   await Nft.nftDetails(token)

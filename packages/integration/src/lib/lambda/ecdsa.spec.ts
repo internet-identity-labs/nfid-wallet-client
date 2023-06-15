@@ -38,36 +38,36 @@ describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(50000)
 
   describe("lambdaECDSA", () => {
-    // it("register ecdsa ETH", async function () {
-    //   const mockedIdentity = Ed25519KeyIdentity.generate()
-    //   const delegationIdentity: DelegationIdentity =
-    //     await generateDelegationIdentity(mockedIdentity)
-    //   await replaceActorIdentity(ecdsaSigner, delegationIdentity)
-    //   const publicKey = await registerECDSA(delegationIdentity, Chain.ETH)
-    //   const keccak = hashMessage("test_message")
-    //   const signature = await signECDSA(keccak, delegationIdentity, Chain.ETH)
-    //   const digestBytes = arrayify(keccak)
-    //   const pk = ethers.utils.recoverPublicKey(digestBytes, signature)
-    //   expect(pk).toEqual(publicKey)
-    // })
-    //
-    // it("register ecdsa BTC", async function () {
-    //   const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-    //   const delegationIdentity: DelegationIdentity =
-    //     await generateDelegationIdentity(mockedIdentity)
-    //   const publicKey = await getPublicKey(delegationIdentity, Chain.BTC)
-    //   const { address } = payments.p2pkh({
-    //     pubkey: Buffer.from(publicKey, "hex"),
-    //     network: networks.testnet,
-    //   })
-    //   expect(address).toEqual("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
-    //   const tx = await calc("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
-    //   const hex = tx.buildIncomplete().toHex()
-    //   const signedTxHex = await signECDSA(hex, delegationIdentity, Chain.BTC)
-    //   const txx = Transaction.fromHex(signedTxHex)
-    //   expect(txx.ins.length).toEqual(1)
-    //   expect(txx.outs[0].value).toEqual(10)
-    // })
+    it("register ecdsa ETH", async function () {
+      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const delegationIdentity: DelegationIdentity =
+        await generateDelegationIdentity(mockedIdentity)
+      await replaceActorIdentity(ecdsaSigner, delegationIdentity)
+      const publicKey = await registerECDSA(delegationIdentity, Chain.ETH)
+      const keccak = hashMessage("test_message")
+      const signature = await signECDSA(keccak, delegationIdentity, Chain.ETH)
+      const digestBytes = arrayify(keccak)
+      const pk = ethers.utils.recoverPublicKey(digestBytes, signature)
+      expect(pk).toEqual(publicKey)
+    })
+
+    it("register ecdsa BTC", async function () {
+      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
+      const delegationIdentity: DelegationIdentity =
+        await generateDelegationIdentity(mockedIdentity)
+      const publicKey = await getPublicKey(delegationIdentity, Chain.BTC)
+      const { address } = payments.p2pkh({
+        pubkey: Buffer.from(publicKey, "hex"),
+        network: networks.testnet,
+      })
+      expect(address).toEqual("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
+      const tx = await calc("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
+      const hex = tx.buildIncomplete().toHex()
+      const signedTxHex = await signECDSA(hex, delegationIdentity, Chain.BTC)
+      const txx = Transaction.fromHex(signedTxHex)
+      expect(txx.ins.length).toEqual(1)
+      expect(txx.outs[0].value).toEqual(10)
+    })
 
     it("get global IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)

@@ -44,7 +44,7 @@ describe("Entrepot suite", () => {
       expect(response[0].principal).toBe(principal)
       expect(response[0].account).toBe(acc)
       expect(response[0].canisterId).toBe("nges7-giaaa-aaaaj-qaiya-cai")
-      expect(response[0].assetPreview).toBe(
+      expect(response[0].assetPreview.url).toBe(
         "https://images.entrepot.app/t/nges7-giaaa-aaaaj-qaiya-cai/4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q",
       )
       expect(response[0].tokenId).toBe(

@@ -8,6 +8,7 @@ export const NFTAsset = (assetFullsize: {
     case "img":
       return (
         <div
+          id="asset-img"
           style={{ backgroundImage: `url(${assetFullsize.url})` }}
           className="relative z-20 h-full bg-center bg-no-repeat bg-contain"
         />
@@ -28,10 +29,19 @@ export const NFTAsset = (assetFullsize: {
         />
       )
     case "video":
-      return <video src={assetFullsize.url} autoPlay controls muted />
+      return (
+        <video
+          id="asset-video"
+          src={assetFullsize.url}
+          autoPlay
+          controls
+          muted
+        />
+      )
     default:
       return (
         <div
+          id="asset-img"
           style={{ backgroundImage: `url(${assetFullsize.url})` }}
           className="relative z-20 h-full bg-center bg-no-repeat bg-contain"
         />

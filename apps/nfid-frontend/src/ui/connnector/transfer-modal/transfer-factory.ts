@@ -125,6 +125,14 @@ export const getConnector = async <T extends TransferModalType>({
     )! as IConnector<T>
   }
 
+  if (blockchain) {
+    const neededConfig = allConfigs.find((c) => c?.blockchain === blockchain)
+
+    return mappedConnectors.get(
+      `${neededConfig?.token}&${neededConfig?.blockchain}`,
+    )! as IConnector<T>
+  }
+
   // UNREACHABLE
   throw new Error("No connector found")
 }

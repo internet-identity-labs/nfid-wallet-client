@@ -188,6 +188,7 @@ declare type NonFungibleItem = {
   tokenType: string
   contractName?: string
   contractSymbol?: string
+  imageType?: "img" | "video" | "iframe"
 }
 
 declare type TokenPrice = {

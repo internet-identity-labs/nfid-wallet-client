@@ -23,9 +23,9 @@ Feature:Fungible Asset History
       | 1   | Sent     | Ethereum          | ETH      | 0.05       | 1682378652000 | 0xeaf87e4ddf980280b64f860b1af9bf7decb2e780                       | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 28593  |
       | 2   | Sent     | Test Token        | TST      | 0.1        | 1682686127000 | 0xc1ac7969159ca99a50341ee78779c56120632265                       | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 10974  |
       | 1   | Received | Test Token        | TST      | 1          | 1682686001000 | 0xe84d601e5d945031129a83e5602be0cc7f182cf3                       | 0xc1ac7969159ca99a50341ee78779c56120632265                       | 10974  |
-      | 1   | Received | Ethereum          | ETH      | 0.1        | 1682378592000 | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 0xeaf87e4ddf980280b64f860b1af9bf7decb2e780                       | 28593  |
-      | 5   | Received | Ethereum          | FAU      | 1          | 1682580072000 | 0x91a636095fa65511a30a9d9ac29549984ad25741                       | 0x00607c1f864508e7de80b6db6a2cef775b9f01e7                       | 25795  |
-      | 1   | Received | Ethereum          | NFT      | 1          | 1682582412000 | 0x91a636095fa65511a30a9d9ac29549984ad25741                       | 0xf6319bbb3c94391a95041810c6e4f3adf004e82a                       | 28542  |
+      | 2   | Received | Ethereum          | ETH      | 0.1        | 1682378592000 | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 0xeaf87e4ddf980280b64f860b1af9bf7decb2e780                       | 28593  |
+      | 6   | Received | Ethereum          | FAU      | 1          | 1682580072000 | 0x91a636095fa65511a30a9d9ac29549984ad25741                       | 0x00607c1f864508e7de80b6db6a2cef775b9f01e7                       | 25795  |
+      | 2   | Received | Ethereum          | NFT      | 1          | 1682582412000 | 0x91a636095fa65511a30a9d9ac29549984ad25741                       | 0xf6319bbb3c94391a95041810c6e4f3adf004e82a                       | 28542  |
       | 1   | Sent     | Matic             | MATIC    | 0.01       | 1682688335000 | 0xe4ee3c7a77791b899a4f4400bcfcd86d4911e3f6                       | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 10271  |
       | 2   | Received | Matic             | MATIC    | 0.01       | 1682689429000 | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 0xe4ee3c7a77791b899a4f4400bcfcd86d4911e3f6                       | 10271  |
 

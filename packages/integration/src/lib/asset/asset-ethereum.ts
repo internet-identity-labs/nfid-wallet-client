@@ -220,12 +220,20 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       return toItemId(id)
     })
 
-    const contentUrlById: Map<string, string> = await raribleSdk.apis.item
+    const contentUrlById: Map<
+      string,
+      { contentUrl: string; contentType?: "video" | "img" | "iframe" }
+    > = await raribleSdk.apis.item
       .getItemByIds({ itemIds: { ids } })
       .then((x) => {
         return x.items.reduce((acc, val) => {
           const contentUrl = val.meta?.content[0]?.url
-          acc.set(val.id, contentUrl)
+          const contentType =
+            val.meta?.content?.length &&
+            "@type" in val.meta.content[0] &&
+            val.meta?.content[0]["@type"].toLowerCase()
+          acc.set(val.id, { contentUrl, contentType })
+
           return acc
         }, new Map())
       })
@@ -243,8 +251,9 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
           contract: contract,
           tokenId: item.tokenId,
           lastUpdatedAt: item.timeLastUpdated,
-          thumbnail: item.media[0]?.thumbnail ?? image ?? "",
-          image: image ?? item.media[0]?.gateway ?? "",
+          thumbnail: item.media[0]?.thumbnail ?? image?.contentUrl ?? "",
+          image: image?.contentUrl ?? item.media[0]?.gateway ?? "",
+          imageType: image?.contentType,
           title: item.title,
           description: item.description,
           tokenType: item.tokenType.toString(),

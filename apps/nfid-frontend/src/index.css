@@ -4,6 +4,8 @@ DON'T INTRODUCE ADDITIONAL CODE TO THIS FILE
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Inter:wght@400;600;700&display=swap");
 
 @import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 /* Firefox */
 * {
@@ -25,9 +27,6 @@ DON'T INTRODUCE ADDITIONAL CODE TO THIS FILE
   border-radius: 12px;
   border: 5px solid white;
 }
-
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

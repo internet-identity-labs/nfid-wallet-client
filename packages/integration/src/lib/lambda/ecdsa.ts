@@ -39,7 +39,7 @@ export async function getGlobalKeys(
   identity: SignIdentity,
   sessionKey: Ed25519KeyIdentity,
   chain: Chain,
-  targets: [string],
+  targets: string[],
 ): Promise<DelegationIdentity> {
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const lambdaPublicKey = await fetch(registerUrl, {

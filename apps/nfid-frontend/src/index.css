@@ -7,6 +7,27 @@ DON'T INTRODUCE ADDITIONAL CODE TO THIS FILE
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: theme("colors.gray.200") none;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+  background: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: theme("colors.gray.200");
+  border-radius: 12px;
+  border: 5px solid white;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

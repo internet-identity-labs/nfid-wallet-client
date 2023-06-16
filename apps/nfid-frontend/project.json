@@ -19,7 +19,9 @@
     },
     "build-storybook": {
       "executor": "@nrwl/storybook:build",
-      "outputs": ["{options.outputDir}"],
+      "outputs": [
+        "{options.outputDir}"
+      ],
       "options": {
         "uiFramework": "@storybook/react",
         "configDir": "apps/nfid-frontend/.storybook",
@@ -29,6 +31,16 @@
         "ci": {
           "quiet": true
         }
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "apps/nfid-frontend/jest.config.ts",
+        "passWithNoTests": true
       }
     }
   },

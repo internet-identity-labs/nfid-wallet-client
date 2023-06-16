@@ -238,9 +238,12 @@ Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
   })
 })
 
-Then(/^Open asset with label ([^"]*)$/, async (assetLabel: string) => {
-  await Assets.openAssetByLabel(assetLabel)
-})
+Then(
+  /^Open asset with label ([^"]*) and network ([^"]*)$/,
+  async (assetLabel: string, network: string) => {
+    await Assets.openAssetByLabel(assetLabel + network)
+  },
+)
 
 Then(/^Only (\d+) asset displayed/, async (amount: number) => {
   await Profile.waitForTokensAppear(amount)

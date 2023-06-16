@@ -1,4 +1,7 @@
-import { getErc20TransactionHistory } from "src/features/fungable-token/erc-20/get-erc-20-polygon"
+import {
+  getErc20TransactionHistory,
+  getErc20TransactionHistoryMumbai,
+} from "src/features/fungable-token/erc-20/get-erc-20-polygon"
 import useSWR from "swr"
 
 export const useErc20TransactionsPolygon = () => {
@@ -8,4 +11,12 @@ export const useErc20TransactionsPolygon = () => {
   )
 
   return { erc20txs: erc20txs, ...rest }
+}
+export const useErc20TransactionsPolygonMumbai = () => {
+  const { data: erc20txs, ...rest } = useSWR(
+    "erc20txsPolygonMumbai",
+    getErc20TransactionHistoryMumbai,
+  )
+
+  return { erc20mumbaitxs: erc20txs, ...rest }
 }

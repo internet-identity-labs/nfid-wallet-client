@@ -10,6 +10,7 @@ import { fetchProfile } from "src/integration/identity-manager"
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import {
   loadProfileFromLocalStorage,
+  polygonAsset,
   polygonMumbaiAsset,
 } from "@nfid/integration"
 
@@ -20,8 +21,13 @@ export const getAccountsMatic = async (): Promise<TokenBalanceSheet> => {
 
 export const getMaticTransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
-  return await polygonMumbaiAsset.getTransactionHistory(identity)
+  return await polygonAsset.getTransactionHistory(identity)
 }
+export const getMaticMumbaiTransactionHistory =
+  async (): Promise<FungibleTxs> => {
+    const identity = await getIdentity()
+    return await polygonMumbaiAsset.getTransactionHistory(identity)
+  }
 
 export const transferMATIC = async (
   value: number,

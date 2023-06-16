@@ -78,7 +78,7 @@ function makeAuthState() {
       })
     }
 
-    replaceIdentity(delegationIdentity)
+    replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
 
     console.debug("_hydrate", {
       principalId: delegationIdentity.getPrincipal().toText(),
@@ -133,7 +133,7 @@ function makeAuthState() {
       chain,
       sessionKey,
     })
-    replaceIdentity(delegationIdentity)
+    replaceIdentity(delegationIdentity, "authState.set")
   }
   function get() {
     checkAndRenewFEDelegation()
@@ -203,9 +203,11 @@ export const authState = makeAuthState()
 /**
  * When user connects an identity, we update our agent.
  */
-export function replaceIdentity(identity: SignIdentity) {
+export function replaceIdentity(identity: SignIdentity, calledFrom?: string) {
   agent.replaceIdentity(identity)
   agent.getPrincipal().then((principal) => {
-    console.debug("replaceIdentity", { principalId: principal.toText() })
+    console.debug(`replaceIdentity calledFrom: ${calledFrom}`, {
+      principalId: principal.toText(),
+    })
   })
 }

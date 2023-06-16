@@ -13,6 +13,7 @@ import {
   FrontendDelegation,
   mapOptional,
   requestFEDelegation,
+  requestFEDelegationChain,
 } from "@nfid/integration"
 import { ii, im, replaceIdentity } from "@nfid/integration"
 
@@ -123,27 +124,6 @@ export async function fetchRecoveryDevices(anchor: UserNumber) {
   )
 }
 
-async function renewDelegation() {
-  console.debug("renewDelegation")
-  const { delegationIdentity, identity } = authState.get()
-  if (!delegationIdentity || !identity)
-    throw new Error(`renewDelegation unauthorized`)
-
-  for (const { delegation } of delegationIdentity.getDelegation().delegations) {
-    // prettier-ignore
-    if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
-      authState.logout();
-      break;
-    }
-  }
-
-  authState.set({
-    identity,
-    delegationIdentity: (await requestFEDelegation(identity))
-      .delegationIdentity,
-  })
-}
-
 /**
  * @deprecated: no need to use the session key as secret
  *
@@ -166,7 +146,6 @@ async function prepareDelegation(
   console.log(
     `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
   )
-  await renewDelegation()
   return await ii
     .prepare_delegation(
       userNumber,
@@ -221,7 +200,6 @@ async function getDelegation(
   console.log(
     `get_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey}, timestamp: ${timestamp})`,
   )
-  await renewDelegation()
   return await ii
     .get_delegation(userNumber, hostname, sessionKey, timestamp)
     .catch((e) => {
@@ -354,12 +332,13 @@ export async function removeRecoveryDeviceII(
     .then((x) =>
       x.find((d) => hasOwnProperty(d.purpose, "recovery")),
     )) as DeviceData
+
   if (!recoveryPhraseDeviceData) {
     throw Error("Seed phrase not registered")
   }
 
   await removeDevice(userNumber, recoveryPhraseDeviceData.pubkey)
-  replaceIdentity(delegationIdentity)
+  replaceIdentity(delegationIdentity, "removeRecoveryDeviceII")
   return recoveryPhraseDeviceData.pubkey
 }
 
@@ -393,7 +372,7 @@ export async function protectRecoveryPhrase(
     recoveryPhraseDeviceData.pubkey,
     recoveryPhraseDeviceData,
   )
-  replaceIdentity(delegationIdentity)
+  replaceIdentity(delegationIdentity, "protectRecoveryPhrase")
 }
 
 async function asRecoveryIdentity(seedPhrase: string) {
@@ -401,8 +380,12 @@ async function asRecoveryIdentity(seedPhrase: string) {
     seedPhrase,
     IC_DERIVATION_PATH,
   )
-  const frontendDelegation = await requestFEDelegation(identity)
-  replaceIdentity(frontendDelegation.delegationIdentity)
+  const { sessionKey, chain } = await requestFEDelegationChain(identity)
+  const delegationIdentity = DelegationIdentity.fromDelegation(
+    sessionKey,
+    chain,
+  )
+  replaceIdentity(delegationIdentity, "asRecoveryIdentity")
 }
 
 async function registerAnchor(

@@ -1,16 +1,17 @@
-import { Cbor, QueryFields } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
-import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import { DelegationIdentity } from "@dfinity/identity"
+import {Cbor, QueryFields, SignIdentity} from "@dfinity/agent"
+import {IDL} from "@dfinity/candid"
+import {toHexString} from "@dfinity/candid/lib/cjs/utils/buffer"
+import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
 
-import { KeyPair } from "../_ic_api/ecdsa-signer.d"
-import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
-import { ic } from "../agent/index"
-import { getTransformedRequest } from "./util"
-
+import {KeyPair} from "../_ic_api/ecdsa-signer.d"
+import {btcSigner, ecdsaSigner, replaceActorIdentity} from "../actors"
+import {ic} from "../agent/index"
+import {getTransformedRequest} from "./util"
+import { ONE_MINUTE_IN_MS } from "@nfid/config"
 export enum Chain {
   BTC = "BTC",
   ETH = "ETH",
+  IC = "IC",
 }
 
 export async function registerECDSA(
@@ -31,6 +32,53 @@ export async function registerECDSA(
     await signer.add_kp(kp)
     return kp.public_key
   })
+}
+
+export async function getGlobalKeys(
+  identity: SignIdentity,
+  sessionKey: Ed25519KeyIdentity,
+  chain: Chain,
+  targets: string[],
+): Promise<DelegationIdentity> {
+  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
+  const lambdaPublicKey = await fetch(registerUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chain,
+    }),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    return (await response.json()).public_key
+  })
+
+  //delegate lambda to register global keys
+  const delegationChainForLambda = await DelegationChain.create(
+    identity,
+    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
+  )
+  //prepare session key to get global delegation
+  const globalICDelegationRequest = {
+    chain,
+    delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
+    sessionPublicKey: sessionKey.toJSON()[0],
+    tempPublicKey: lambdaPublicKey,
+    targets,
+  }
+  const signUrl = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
+  const chainResponse = await fetch(signUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(globalICDelegationRequest),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    return await response.json()
+  })
+  return DelegationIdentity.fromDelegation(
+    sessionKey,
+    DelegationChain.fromJSON(chainResponse),
+  )
 }
 
 export async function getPublicKey(
@@ -91,6 +139,8 @@ function defineSigner(chain: Chain) {
       return ecdsaSigner
     case Chain.BTC:
       return btcSigner
+    case Chain.IC:
+      throw Error("Deprecated")
   }
 }
 
@@ -100,6 +150,8 @@ function defineCanisterId(chain: Chain) {
       return ECDSA_SIGNER_CANISTER_ID
     case Chain.BTC:
       return BTC_SIGNER_CANISTER_ID
+    case Chain.IC:
+      throw Error("Deprecated")
   }
 }
 

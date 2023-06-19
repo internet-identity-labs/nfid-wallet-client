@@ -3,12 +3,11 @@ import {IDL} from "@dfinity/candid"
 import {toHexString} from "@dfinity/candid/lib/cjs/utils/buffer"
 import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
 
-import {ONE_MINUTE_IN_M_SEC} from "../../constants"
 import {KeyPair} from "../_ic_api/ecdsa-signer.d"
 import {btcSigner, ecdsaSigner, replaceActorIdentity} from "../actors"
 import {ic} from "../agent/index"
 import {getTransformedRequest} from "./util"
-
+import { ONE_MINUTE_IN_MS } from "@nfid/config"
 export enum Chain {
   BTC = "BTC",
   ETH = "ETH",
@@ -57,7 +56,7 @@ export async function getGlobalKeys(
   const delegationChainForLambda = await DelegationChain.create(
     identity,
     Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
-    new Date(Date.now() + ONE_MINUTE_IN_M_SEC * 10),
+    new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
   )
   //prepare session key to get global delegation
   const globalICDelegationRequest = {

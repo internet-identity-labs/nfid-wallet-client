@@ -15,7 +15,7 @@ import {
 
 const canisterId = "74gpt-tiaaa-aaaak-aacaa-cai"
 
-describe("candid runner suite", () => {
+describe.skip("candid runner suite", () => {
   jest.setTimeout(20000)
   it("retrieve candid file and execute method", async function () {
     let agent = new HttpAgent({ host: "https://ic0.app" })

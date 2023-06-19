@@ -1,14 +1,17 @@
-import { DelegationIdentity } from "@dfinity/identity";
-import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset";
-import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util";
-import { AssetNativeConfig, Blockchain, ETHNetwork, NativeToken, TokenConfig } from "src/ui/connnector/types";
+import { DelegationIdentity } from "@dfinity/identity"
+import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/fungible-asset"
+import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
+import {
+  AssetNativeConfig,
+  Blockchain,
+  ETHNetwork,
+  NativeToken,
+  TokenConfig,
+} from "src/ui/connnector/types"
 
-
-
-import { IconPngEthereum } from "@nfid-frontend/ui";
-import { ethereumGoerliAsset } from "@nfid/integration";
-import { TokenStandards } from "@nfid/integration/token/types";
-
+import { IconPngEthereum } from "@nfid-frontend/ui"
+import { ethereumGoerliAsset } from "@nfid/integration"
+import { TokenStandards } from "@nfid/integration/token/types"
 
 export class EthGoerliAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
   async getAccounts(

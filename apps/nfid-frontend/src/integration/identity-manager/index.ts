@@ -1,4 +1,5 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
+import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import {
@@ -6,11 +7,14 @@ import {
   AccessPointCommon,
   Account,
   Application,
+  hasOwnProperty,
   Icon,
   im,
   mapOptional,
   Profile,
+  replaceActorIdentity,
   reverseMapOptional,
+  RootWallet,
 } from "@nfid/integration"
 
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
@@ -22,7 +26,9 @@ import {
   AccessPointResponse,
   AccountResponse,
   Application as BEApplication,
+  HTTPAccountRequest,
   PersonaResponse,
+  WalletVariant,
 } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
 
@@ -44,6 +50,7 @@ export function mapProfile(profile: AccountResponse): Profile {
     accounts: profile.personas.map(mapAccount),
     principalId: profile.principal_id,
     phoneNumber: mapOptional(profile.phone_number),
+    wallet: walletResponseToWallet(profile.wallet),
   }
 }
 
@@ -206,9 +213,52 @@ export async function createAccessPoint(accessPoint: CreateAccessPoint) {
 
 export async function createProfile(anchor: number) {
   return im
-    .create_account({ anchor: BigInt(anchor) })
+    .create_account({
+      anchor: BigInt(anchor),
+      access_point: [],
+      wallet: [],
+    })
     .then(unpackResponse)
     .then(mapProfile)
+}
+
+/**
+ * create NFID profile registered without II
+ * use email identity
+ */
+export async function createNFIDProfile(
+  emailDelegationIdentity: DelegationIdentity,
+) {
+  await replaceActorIdentity(im, emailDelegationIdentity)
+
+  const dd: AccessPointRequest = {
+    icon: "email",
+    device: "Global",
+    pub_key: emailDelegationIdentity.getPrincipal().toText(),
+    browser: "",
+  }
+
+  const accountRequest: HTTPAccountRequest = {
+    access_point: [dd],
+    wallet: [{ NFID: null }],
+    anchor: BigInt(0), //we will calculate new anchor on IM side
+  }
+
+  const profile: Profile = await im
+    .create_account(accountRequest)
+    .then((response) => {
+      console.debug("createNFIDProfile", { response })
+      if (response.status_code !== 200) {
+        throw Error("Unable to create account: " + response.error)
+      }
+      return response
+    })
+    .then((r) => mapProfile(unpackResponse(r)))
+    .catch((e) => {
+      throw new Error(`createProfile im.create_account: ${e.message}`)
+    })
+
+  return profile
 }
 
 /**
@@ -304,4 +354,14 @@ export async function processApplicationOrigin(
       reverseMapOptional(applicationName),
     )
   }
+}
+
+function walletResponseToWallet(response: WalletVariant): RootWallet {
+  if (hasOwnProperty(response, "NFID")) {
+    return RootWallet.NFID
+  }
+  if (hasOwnProperty(response, "II")) {
+    return RootWallet.II
+  }
+  throw Error("Unexpected enum value")
 }

@@ -45,6 +45,8 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
   let anchor: UserNumber = await registerIIAccount(identity, deviceData)
   let req: HTTPAccountRequest = {
     anchor: anchor,
+    access_point: [],
+    wallet: [],
   }
   await im.create_account(req)
 }

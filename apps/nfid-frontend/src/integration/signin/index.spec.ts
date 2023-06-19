@@ -145,6 +145,8 @@ describe("SignIn with Internet Identity", () => {
 
     await im.create_account({
       anchor: derivedAnchor,
+      access_point: [],
+      wallet: [],
     })
 
     // NOTE: Here I relogin to user's own II to check

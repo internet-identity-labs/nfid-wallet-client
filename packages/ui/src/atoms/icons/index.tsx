@@ -16,6 +16,7 @@ import IconSvgDots from "./dots.svg"
 import IconERC20 from "./erc20-fallback.svg"
 import IconSvgError from "./error.svg"
 import IconPngEthereum from "./ethereum.png"
+import IconSvgEthereum from "./ethereum.svg"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
@@ -44,7 +45,6 @@ import IconSvgTrash from "./trash.svg"
 import IconSvgUnknown from "./unknown.svg"
 import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
-import IconSvgEthereum from './ethereum.svg'
 
 export {
   IconPngEthereum,
@@ -93,7 +93,7 @@ export {
   IconSvgTransfer,
   IconSvgArrowRed,
   IconSvgArrowGreen,
-  IconSvgEthereum
+  IconSvgEthereum,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -147,7 +147,6 @@ export { ReactComponent as IconCmpLoading } from "./loader.svg"
 export { ReactComponent as IconCmpNFTPreview } from "./nft-preview.svg"
 export { ReactComponent as IconCmpArrowRed } from "./arrow-red.svg"
 export { ReactComponent as IconCmpArrowGreen } from "./arrow-green.svg"
-
 
 // png
 export { IconMetamask } from "./metamask"

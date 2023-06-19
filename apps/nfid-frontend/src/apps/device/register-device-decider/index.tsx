@@ -75,7 +75,9 @@ export const RouterRegisterDeviceDecider: React.FC<
       await recoverAccount(BigInt(userNumber), true)
     } catch (e) {
       console.warn("account not found. Recreating")
-      const account = { anchor: userNumber }
+      const account = {
+        anchor: userNumber,
+      } as any
       const accessPoint = {
         icon: getIcon(deviceInfo),
         device: deviceInfo.newDeviceName,

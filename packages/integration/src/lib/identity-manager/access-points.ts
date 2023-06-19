@@ -9,6 +9,7 @@ export type Icon =
   | "unknown"
   | "ii"
   | "metamask"
+  | "email"
 
 export interface AccessPointCommon {
   icon: Icon

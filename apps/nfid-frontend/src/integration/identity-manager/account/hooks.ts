@@ -55,7 +55,7 @@ export const useAccount = () => {
   const recoverAccount = React.useCallback(
     async (userNumber: bigint, shouldStoreLocalAccount: boolean) => {
       const newAccount = await im
-        .recover_account(userNumber)
+        .recover_account(userNumber, [])
         .then(unpackResponse)
         .then(mapProfile)
 

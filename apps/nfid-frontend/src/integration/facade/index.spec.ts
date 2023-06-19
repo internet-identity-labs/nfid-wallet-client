@@ -55,7 +55,11 @@ describe("Facade suite", () => {
       let recoveryDevice = Ed25519KeyIdentity.generate()
       const recoveryIdentity: DelegationIdentity =
         await generateDelegationIdentity(recoveryDevice)
-      await im.create_account({ anchor })
+      await im.create_account({
+        anchor,
+        access_point: [],
+        wallet: [],
+      })
       await iiIndexMock.addDevice(
         anchor,
         "DeviceRecoveryTest",
@@ -139,7 +143,11 @@ describe("Facade suite", () => {
         credential_id: [],
       }
       let anchor = await registerIIAccount(mockedIdentity, deviceData)
-      await im.create_account({ anchor })
+      await im.create_account({
+        anchor,
+        access_point: [],
+        wallet: [],
+      })
       await im.create_access_point({
         browser: "",
         device: "",

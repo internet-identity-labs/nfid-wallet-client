@@ -8,6 +8,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.authWithEmail": {
+      type: "done.invoke.authWithEmail"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.authWithII": {
       type: "done.invoke.authWithII"
       data: unknown
@@ -47,6 +52,10 @@ export interface Typegen0 {
       type: "error.platform.AuthWithGoogleMachine"
       data: unknown
     }
+    "error.platform.authWithEmail": {
+      type: "error.platform.authWithEmail"
+      data: unknown
+    }
     "error.platform.authWithII": {
       type: "error.platform.authWithII"
       data: unknown
@@ -75,6 +84,7 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
+    AuthWithEmailMachine: "done.invoke.authWithEmail"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     AuthWithIIMachine: "done.invoke.authWithII"
     RegistrationMachine: "done.invoke.registration"
@@ -93,12 +103,14 @@ export interface Typegen0 {
   eventsCausingActions: {
     assignAuthSession:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithEmail"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.getWalletConnectAuthSession"
       | "done.invoke.loginWithAnchor"
       | "done.invoke.registration"
       | "done.invoke.remote"
+    assignVerificationEmail: "AUTH_WITH_EMAIL"
     handleError:
       | "error.platform.getMetamaskAuthSession"
       | "error.platform.getWalletConnectAuthSession"
@@ -108,16 +120,19 @@ export interface Typegen0 {
     bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
     isExistingAccount:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithEmail"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.getWalletConnectAuthSession"
-    isReturn: "done.invoke.authWithII"
+    isReturn: "done.invoke.authWithEmail" | "done.invoke.authWithII"
   }
   eventsCausingServices: {
+    AuthWithEmailMachine: "AUTH_WITH_EMAIL"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
     AuthWithIIMachine: "AUTH_WITH_II"
     RegistrationMachine:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithEmail"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.getWalletConnectAuthSession"
@@ -134,6 +149,7 @@ export interface Typegen0 {
     | "AuthWithMetamask"
     | "AuthWithWalletConnect"
     | "AuthenticateSameDevice"
+    | "EmailAuthentication"
     | "End"
     | "ExistingAnchor"
     | "IIAuthentication"

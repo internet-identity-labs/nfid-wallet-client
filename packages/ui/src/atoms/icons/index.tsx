@@ -20,13 +20,17 @@ import IconSvgEthereum from "./ethereum.svg"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
+import IconSvgID from "./id.svg"
 import IconSvgInfo from "./info.svg"
 import IconSvgKey from "./key.svg"
 import IconSvgLaptop from "./laptop.svg"
 import IconSvgLogout from "./logout.svg"
 import IconSvgMapPin from "./map-pin.svg"
 import IconSvgMobile from "./mobile.svg"
+import IconSvgNFIDWallet from "./nfid-wallet.svg"
+import IconSvgNFID from "./nfid.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
+import IconSvgPasskey from "./passkey.svg"
 import IconSvgPencil from "./pencil.svg"
 import IconSvgPlus from "./plus.svg"
 import PolygonERC20Svg from "./polygon-ERC20.svg"
@@ -47,6 +51,10 @@ import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
 
 export {
+  IconSvgNFID,
+  IconSvgPasskey,
+  IconSvgID,
+  IconSvgNFIDWallet,
   IconPngEthereum,
   IconSvgBTC,
   MaticSvg,
@@ -147,6 +155,9 @@ export { ReactComponent as IconCmpLoading } from "./loader.svg"
 export { ReactComponent as IconCmpNFTPreview } from "./nft-preview.svg"
 export { ReactComponent as IconCmpArrowRed } from "./arrow-red.svg"
 export { ReactComponent as IconCmpArrowGreen } from "./arrow-green.svg"
+export { ReactComponent as IconCmpID } from "./id.svg"
+export { ReactComponent as IconCmpPasskey } from "./passkey.svg"
+export { ReactComponent as IconCmpNFID } from "./nfid.svg"
 
 // png
 export { IconMetamask } from "./metamask"

@@ -72,7 +72,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               "flex-1 block w-full py-[7px]",
               "placeholder:text-secondary placeholder:text-sm",
               "disabled:bg-gray-200 disabled:text-secondary disabled:drop-shadow-none shadow-none",
-              "border-1 disabled:border-gray-200",
+              "border-1 border-gray-400 disabled:border-gray-200",
               "rounded-md",
               errorText || isErrorStyles
                 ? clsx(

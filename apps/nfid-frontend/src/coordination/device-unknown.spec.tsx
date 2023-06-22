@@ -31,6 +31,7 @@ const setupCoordinator = (userAgent: string, WebAuthNCapability: boolean) => {
       sessionPublicKey: new Uint8Array([]),
       hostname: "myhost.com",
     },
+    verificationEmail: "",
   })
   return render(
     <UnknownDeviceCoordinator actor={actor as UnknownDeviceActor} />,

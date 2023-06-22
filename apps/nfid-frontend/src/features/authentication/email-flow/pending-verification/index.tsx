@@ -21,7 +21,7 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
       />
       <AuthAppMeta title="An email is on its way!" />
       <p className="font-bold">{email}</p>
-      <p className="mt-2 leading-[22px]">
+      <p className="mt-6 leading-[22px]">
         An email was sent to this address. If this email address has an NFID
         account, you’ll find a magic link that will sign you in. You may need to
         check your spam folder if you don’t see it.

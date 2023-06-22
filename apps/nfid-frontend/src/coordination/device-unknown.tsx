@@ -5,7 +5,7 @@ import { Loader } from "@nfid-frontend/ui"
 
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/email-flow/machine"
-import { AuthSignIn } from "frontend/features/authentication/ui/signin"
+import { AuthSignIn } from "frontend/features/authentication/signin"
 import { AuthWithIIActor } from "frontend/features/sign-in-options/machine"
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
@@ -51,6 +51,7 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
               data: email,
             })
           }
+          appMeta={state.context.appMeta}
         />
         // <AuthorizeDecider
         //   applicationName={state.context.appMeta?.name}

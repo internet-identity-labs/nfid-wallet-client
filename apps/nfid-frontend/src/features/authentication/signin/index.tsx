@@ -2,22 +2,25 @@ import { useForm } from "react-hook-form"
 
 import { Button, IconCmpGoogle, IconCmpPasskey, Input } from "@nfid-frontend/ui"
 
+import { AuthorizingAppMeta } from "frontend/state/authorization"
 import {
   LoginEventHandler,
   SignInWithGoogle,
 } from "frontend/ui/atoms/button/signin-with-google"
 import { Separator } from "frontend/ui/atoms/separator"
 
-import { AuthAppMeta } from "../app-meta"
+import { AuthAppMeta } from "../ui/app-meta"
 
 export interface AuthSignInProps {
   onSelectGoogleAuthorization: LoginEventHandler
   onSelectEmailAuthorization: (email: string) => void
+  appMeta?: AuthorizingAppMeta
 }
 
 export const AuthSignIn: React.FC<AuthSignInProps> = ({
   onSelectGoogleAuthorization,
   onSelectEmailAuthorization,
+  appMeta,
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
@@ -26,7 +29,12 @@ export const AuthSignIn: React.FC<AuthSignInProps> = ({
 
   return (
     <div className="w-full h-full">
-      <AuthAppMeta title="Continue to your account" />
+      <AuthAppMeta
+        applicationLogo={appMeta?.logo}
+        applicationURL={appMeta?.url}
+        applicationName={appMeta?.name}
+        title="Continue to your account"
+      />
       <form
         onSubmit={handleSubmit((values) =>
           onSelectEmailAuthorization(values.email),

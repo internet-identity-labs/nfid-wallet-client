@@ -101,7 +101,11 @@ export async function postDelegation(context: {
  */
 export async function getAppMeta(): Promise<AuthorizingAppMeta> {
   const meta = getAppMetaFromQuery()
-  return meta
+
+  return {
+    ...meta,
+    url: document.referrer,
+  }
 }
 
 export async function checkIsIframe() {

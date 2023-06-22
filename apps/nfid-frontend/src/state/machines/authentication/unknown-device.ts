@@ -4,7 +4,6 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import AuthWithEmailMachine from "frontend/features/authentication/email-flow/machine"
 import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
-import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
 import { getMetamaskAuthSession } from "frontend/integration/sign-in/metamask"
 import { getWalletConnectAuthSession } from "frontend/integration/sign-in/wallet-connect"
@@ -19,7 +18,6 @@ import {
 } from "frontend/state/authorization"
 
 import AuthWithGoogleMachine from "./auth-with-google"
-import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
 export interface UnknownDeviceContext {
@@ -86,44 +84,8 @@ const UnknownDeviceMachine =
       tsTypes: {} as import("./unknown-device.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
       id: "auth-unknown-device",
-      initial: "Start",
+      initial: "AuthSelection",
       states: {
-        Start: {
-          initial: "CheckCapability",
-          states: {
-            CheckCapability: {
-              invoke: {
-                src: "isMobileWithWebAuthn",
-                id: "isMobileWithWebAuthn",
-                onDone: [
-                  {
-                    cond: "bool",
-                    target: "#auth-unknown-device.RegistrationMachine",
-                  },
-                  {
-                    target: "#auth-unknown-device.AuthSelection",
-                  },
-                ],
-              },
-            },
-          },
-        },
-        RegistrationMachine: {
-          invoke: {
-            src: "RegistrationMachine",
-            id: "registration",
-            data: (context, event) => ({
-              authSession: context.authSession,
-              appMeta: context.appMeta,
-            }),
-            onDone: [
-              {
-                target: "End",
-                actions: "assignAuthSession",
-              },
-            ],
-          },
-        },
         AuthSelection: {
           on: {
             AUTH_WITH_GOOGLE: {
@@ -165,7 +127,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
           },
@@ -187,7 +149,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
           },
@@ -210,7 +172,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
           },
@@ -227,7 +189,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
             onError: { target: "AuthSelection", actions: "handleError" },
@@ -245,7 +207,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
             onError: { target: "AuthSelection", actions: "handleError" },
@@ -340,8 +302,6 @@ const UnknownDeviceMachine =
         },
       },
       services: {
-        isMobileWithWebAuthn,
-        RegistrationMachine,
         AuthWithEmailMachine,
         RemoteReceiverMachine,
         loginWithAnchor,

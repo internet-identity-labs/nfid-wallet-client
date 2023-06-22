@@ -7,13 +7,11 @@ import { AuthEmailFlowCoordinator } from "frontend/features/authentication/coord
 import { AuthWithEmailActor } from "frontend/features/authentication/email-flow/machine"
 import { AuthSignIn } from "frontend/features/authentication/signin"
 import { AuthWithIIActor } from "frontend/features/sign-in-options/machine"
-import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { AuthWithIICoordinator } from "../features/sign-in-options/coordination"
-import { RegistrationCoordinator } from "./registration"
 import { RemoteReceiverCoordinator } from "./remote-receiver"
 
 export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
@@ -111,12 +109,12 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           actor={state.children.authWithEmail as AuthWithEmailActor}
         />
       )
-    case state.matches("RegistrationMachine"):
-      return (
-        <RegistrationCoordinator
-          actor={state.children.registration as RegistrationActor}
-        />
-      )
+    // case state.matches("RegistrationMachine"):
+    //   return (
+    //     <RegistrationCoordinator
+    //       actor={state.children.registration as RegistrationActor}
+    //     />
+    //   )
     case state.matches("RemoteAuthentication"):
       return (
         <RemoteReceiverCoordinator
@@ -139,7 +137,6 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
         </div>
       )
     case state.matches("End"):
-    case state.matches("Start"):
     default:
       return <BlurredLoader isLoading />
   }

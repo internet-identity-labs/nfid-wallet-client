@@ -63,3 +63,16 @@ export const checkEmailVerification = async (
 
   return mockedDelegationIdentity
 }
+
+export const verify = async (verificationMethod: string, token: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 2000))
+
+  if (token === "nfid") throw new Error("Invalid token")
+
+  console.debug("verify", {
+    verificationMethod,
+    token: token,
+  })
+
+  return true
+}

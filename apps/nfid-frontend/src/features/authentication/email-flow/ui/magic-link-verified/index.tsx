@@ -14,7 +14,7 @@ export const AuthEmailVerified: React.FC<AuthEmailVerifiedProps> = ({
       <AuthAppMeta title="Sign in verified" />
       <p>You may now continue to the application.</p>
       <div className="w-full h-56 bg-gray-100 my-9" />
-      <Button type="primary" onClick={onContinue}>
+      <Button type="primary" block onClick={onContinue}>
         Continue
       </Button>
     </div>

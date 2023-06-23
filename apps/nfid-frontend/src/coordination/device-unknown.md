@@ -1,3 +1,5 @@
+# DEPRECATED
+
 # Unknown Device Machine
 
 [Registration Machine](../registration/registration.md)

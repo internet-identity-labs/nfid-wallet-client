@@ -12,7 +12,6 @@ export interface AuthWithEmailMachineContext {
   authSession: AuthSession
   email: string
   keyPair?: KeyPair
-  requestId?: string
 }
 
 export type Events =
@@ -22,7 +21,7 @@ export type Events =
   | { type: "RESEND" }
   | {
       type: "done.invoke.sendVerificationEmail"
-      data: { requestId: string; keyPair: KeyPair }
+      data: { keyPair: KeyPair }
     }
 
 export interface Schema {
@@ -76,12 +75,9 @@ const AuthWithEmailMachine =
     },
     {
       actions: {
-        assignVerificationData: assign((_, event) => {
-          return {
-            keyPair: event.data.keyPair,
-            requestId: event.data.requestId,
-          }
-        }),
+        assignVerificationData: assign((_, event) => ({
+          keyPair: event.data.keyPair,
+        })),
       },
       guards: {},
       services: {

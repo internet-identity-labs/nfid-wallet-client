@@ -95,6 +95,7 @@ const normalizeDeviceRequest = (device: LegacyDevice): AccessPointRequest => {
       new Uint8Array(device.pubkey),
     ).toText(),
     browser: device.browser,
+    device_type: { Unknown: null },
   }
 }
 
@@ -369,6 +370,7 @@ export const useDevices = () => {
             pub_key: Principal.selfAuthenticating(
               new Uint8Array(pub_key),
             ).toText(),
+            device_type: { Unknown: null },
           })
           .catch((e) => {
             throw new Error(
@@ -389,6 +391,7 @@ export const useDevices = () => {
         pub_key: Principal.selfAuthenticating(
           new Uint8Array(await recoverIdentity.arrayBuffer()),
         ).toText(),
+        device_type: { Recovery: null },
       }
 
       return await im.create_access_point(newDevice).catch((e) => {

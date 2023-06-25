@@ -23,14 +23,22 @@ export const idlFactory = ({ IDL }: any) => {
     token_ttl: IDL.Opt(IDL.Nat64),
     commit_hash: IDL.Opt(IDL.Text),
   })
+  const DeviceType = IDL.Variant({
+    Email: IDL.Null,
+    Passkey: IDL.Null,
+    Recovery: IDL.Null,
+    Unknown: IDL.Null,
+  })
   const AccessPointRequest = IDL.Record({
     icon: IDL.Text,
+    device_type: DeviceType,
     device: IDL.Text,
     pub_key: IDL.Text,
     browser: IDL.Text,
   })
   const AccessPointResponse = IDL.Record({
     icon: IDL.Text,
+    device_type: DeviceType,
     device: IDL.Text,
     browser: IDL.Text,
     last_used: IDL.Nat64,
@@ -57,6 +65,7 @@ export const idlFactory = ({ IDL }: any) => {
     anchor: IDL.Nat64,
     access_points: IDL.Vec(AccessPointResponse),
     personas: IDL.Vec(PersonaResponse),
+    is2fa_enabled: IDL.Bool,
     wallet: WalletVariant,
     principal_id: IDL.Text,
     phone_number: IDL.Opt(IDL.Text),
@@ -313,6 +322,7 @@ export const idlFactory = ({ IDL }: any) => {
     restore_accounts: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     store_accounts: IDL.Func([IDL.Vec(Account)], [BoolHttpResponse], []),
     sync_controllers: IDL.Func([], [IDL.Vec(IDL.Text)], []),
+    update_2fa: IDL.Func([IDL.Bool], [AccountResponse], []),
     update_access_point: IDL.Func(
       [AccessPointRequest],
       [HTTPAccessPointResponse],
@@ -342,6 +352,7 @@ export const idlFactory = ({ IDL }: any) => {
       ["query"],
     ),
     verify_token: IDL.Func([Token], [Response], []),
+    get_root_by_principal: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
   })
 }
 export const init = ({ IDL }: any) => {

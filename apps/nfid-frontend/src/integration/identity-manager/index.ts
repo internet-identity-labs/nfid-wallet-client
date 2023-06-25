@@ -227,6 +227,10 @@ export async function createProfile(anchor: number) {
     .then(mapProfile)
 }
 
+export async function update2fa(state: boolean) {
+  return im.update_2fa(state).then(mapProfile)
+}
+
 /**
  * create NFID profile registered without II
  * use email identity

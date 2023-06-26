@@ -38,3 +38,6 @@ declare const VAULT_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
 declare const VERIFY_PHONE_NUMBER: string
 declare const WALLET_CONNECT_PROJECT_ID: string
+declare const AWS_SEND_VERIFICATION_EMAIL: string
+declare const AWS_CHECK_VERIFICATION: string
+declare const AWS_VERIFY_EMAIL: string

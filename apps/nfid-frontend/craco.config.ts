@@ -34,6 +34,9 @@ const setupCSP = () => {
         process.env.AWS_SIGNIN_GOOGLE as string,
         process.env.AWS_ECDSA_SIGN as string,
         process.env.AWS_ECDSA_REGISTER as string,
+        process.env.AWS_SEND_VERIFICATION_EMAIL as string,
+        process.env.AWS_CHECK_VERIFICATION as string,
+        process.env.AWS_VERIFY_EMAIL as string,
         "https://o1255710.ingest.sentry.io",
         "https://rosetta-api.internetcomputer.org",
         "https://free.currconv.com/",
@@ -235,6 +238,26 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/ecdsa_sign/, ""),
+      },
+      "/send_verification_email": {
+        target: process.env.AWS_SEND_VERIFICATION_EMAIL,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/send_verification_email/, ""),
+      },
+      "/check_verification": {
+        target: process.env.AWS_CHECK_VERIFICATION,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/check_verification/, ""),
+      },
+      "/verify_email": {
+        target: process.env.AWS_VERIFY_EMAIL,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/verify_email/, ""),
       },
     },
   },

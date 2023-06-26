@@ -6,21 +6,20 @@ import { IconCmpNFID, Loader } from "@nfid-frontend/ui"
 
 import { verify } from "../email-flow/services"
 import { EmailMagicLinkExpired } from "./expired"
+import { EmailMagicLinkLink } from "./link-accounts"
 import { EmailMagicLinkSuccess } from "./sucess"
 
 export const AuthEmailMagicLink = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [isExpired, setIsExpired] = useState(false)
+  const [status, setStatus] = useState<
+    "success" | "expired-token" | "link-required"
+  >()
   const { token } = useParams()
 
   const verifyEmail = useCallback(async (token: string) => {
-    try {
-      await verify("email", token)
-    } catch (e) {
-      setIsExpired(true)
-    } finally {
-      setIsLoading(false)
-    }
+    const res = await verify("email", token)
+    setStatus(res.status)
+    setIsLoading(false)
   }, [])
 
   useEffect(() => {
@@ -53,11 +52,13 @@ export const AuthEmailMagicLink = () => {
               <Loader isLoading={true} fullscreen={false} />
             </div>
           </div>
-        ) : isExpired ? (
+        ) : status === "expired-token" ? (
           <EmailMagicLinkExpired />
-        ) : (
+        ) : status === "success" ? (
           <EmailMagicLinkSuccess />
-        )}
+        ) : status === "link-required" ? (
+          <EmailMagicLinkLink />
+        ) : null}
       </div>
     </div>
   )

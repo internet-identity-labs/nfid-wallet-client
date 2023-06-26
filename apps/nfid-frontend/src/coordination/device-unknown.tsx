@@ -3,7 +3,7 @@ import React from "react"
 
 import { Loader } from "@nfid-frontend/ui"
 
-import { AuthEmailFlowCoordinator } from "frontend/features/authentication/coordination"
+import { AuthEmailFlowCoordinator } from "frontend/features/authentication/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/email-flow/machine"
 import { AuthSignIn } from "frontend/features/authentication/signin"
 import { AuthWithIIActor } from "frontend/features/sign-in-options/machine"

@@ -3,8 +3,6 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { generateKeyPairSync } from "crypto"
-import * as jwt from "jsonwebtoken"
 
 import { ic } from "../agent"
 
@@ -42,7 +40,7 @@ export const verificationService = {
       ? sendVerificationEmailEndpointUrl
       : AWS_SEND_VERIFICATION_EMAIL
 
-    const keyPair = generateCryptoKeyPair()
+    const keyPair = { publicKey: "", privateKey: "" }
     const body = { email: emailAddress, publicKey: keyPair.publicKey }
 
     const response = await fetch(url, {
@@ -94,14 +92,15 @@ export const verificationService = {
       ? checkVerificationEndpointUrl
       : AWS_CHECK_VERIFICATION
 
-    const payload = {
-      sub: emailAddress,
-    }
+    // TODO: due to absence crypto on the FE, temp comment.
+    // const payload = {
+    //   sub: emailAddress,
+    // }
 
-    const token: string = jwt
-      .sign(payload, keypair.privateKey, { algorithm: "ES512" })
-      .toString()
-    const body = { token }
+    // const token: string = jwt
+    //   .sign(payload, keypair.privateKey, { algorithm: "ES512" })
+    //   .toString()
+    const body = { token: emailAddress }
 
     const response = await fetch(url, {
       method: "POST",
@@ -131,19 +130,19 @@ export const verificationService = {
   },
 }
 
-function generateCryptoKeyPair(): {
-  publicKey: string
-  privateKey: string
-} {
-  const { privateKey, publicKey } = generateKeyPairSync("ec", {
-    namedCurve: "secp521r1",
-  })
-  const privateKeyPem = privateKey
-    .export({ type: "sec1", format: "pem" })
-    .toString()
-  const publicKeyPem = publicKey
-    .export({ type: "spki", format: "pem" })
-    .toString()
+// function generateCryptoKeyPair(): {
+//   publicKey: string
+//   privateKey: string
+// } {
+//   const { privateKey, publicKey } = generateKeyPairSync("ec", {
+//     namedCurve: "secp521r1",
+//   })
+//   const privateKeyPem = privateKey
+//     .export({ type: "sec1", format: "pem" })
+//     .toString()
+//   const publicKeyPem = publicKey
+//     .export({ type: "spki", format: "pem" })
+//     .toString()
 
-  return { publicKey: publicKeyPem, privateKey: privateKeyPem }
-}
+//   return { publicKey: publicKeyPem, privateKey: privateKeyPem }
+// }

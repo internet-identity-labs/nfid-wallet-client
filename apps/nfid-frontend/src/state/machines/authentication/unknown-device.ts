@@ -2,8 +2,8 @@ import { toast } from "react-toastify"
 import { v4 as uuid } from "uuid"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import AuthWithEmailMachine from "frontend/features/authentication/email-flow/machine"
 import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
-import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
 import { getMetamaskAuthSession } from "frontend/integration/sign-in/metamask"
 import { getWalletConnectAuthSession } from "frontend/integration/sign-in/wallet-connect"
@@ -18,13 +18,13 @@ import {
 } from "frontend/state/authorization"
 
 import AuthWithGoogleMachine from "./auth-with-google"
-import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
 export interface UnknownDeviceContext {
   authRequest: AuthorizationRequest
   authSession?: AuthSession
   appMeta?: AuthorizingAppMeta
+  verificationEmail: string
 }
 
 export type Events =
@@ -52,6 +52,10 @@ export type Events =
       data: AuthSession
     }
   | {
+      type: "done.invoke.authWithEmail"
+      data: AuthSession
+    }
+  | {
       type: "done.invoke.loginWithAnchor"
       data: AuthSession
     }
@@ -61,6 +65,7 @@ export type Events =
   | { type: "AUTH_WITH_II" }
   | { type: "AUTH_WITH_METAMASK" }
   | { type: "AUTH_WITH_WALLET_CONNECT" }
+  | { type: "AUTH_WITH_EMAIL"; data: string }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
       data: { anchor: number; withSecurityDevices?: boolean }
@@ -79,44 +84,8 @@ const UnknownDeviceMachine =
       tsTypes: {} as import("./unknown-device.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
       id: "auth-unknown-device",
-      initial: "Start",
+      initial: "AuthSelection",
       states: {
-        Start: {
-          initial: "CheckCapability",
-          states: {
-            CheckCapability: {
-              invoke: {
-                src: "isMobileWithWebAuthn",
-                id: "isMobileWithWebAuthn",
-                onDone: [
-                  {
-                    cond: "bool",
-                    target: "#auth-unknown-device.RegistrationMachine",
-                  },
-                  {
-                    target: "#auth-unknown-device.AuthSelection",
-                  },
-                ],
-              },
-            },
-          },
-        },
-        RegistrationMachine: {
-          invoke: {
-            src: "RegistrationMachine",
-            id: "registration",
-            data: (context, event) => ({
-              authSession: context.authSession,
-              appMeta: context.appMeta,
-            }),
-            onDone: [
-              {
-                target: "End",
-                actions: "assignAuthSession",
-              },
-            ],
-          },
-        },
         AuthSelection: {
           on: {
             AUTH_WITH_GOOGLE: {
@@ -137,6 +106,10 @@ const UnknownDeviceMachine =
             AUTH_WITH_WALLET_CONNECT: {
               target: "AuthWithWalletConnect",
             },
+            AUTH_WITH_EMAIL: {
+              target: "EmailAuthentication",
+              actions: "assignVerificationEmail",
+            },
           },
         },
         AuthWithGoogle: {
@@ -154,7 +127,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
           },
@@ -176,7 +149,30 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
+              },
+            ],
+          },
+        },
+        EmailAuthentication: {
+          invoke: {
+            src: "AuthWithEmailMachine",
+            id: "authWithEmail",
+            data: (context, _) => ({
+              authRequest: context.authRequest,
+              appMeta: context.appMeta,
+              email: context.verificationEmail,
+            }),
+            onDone: [
+              { cond: "isReturn", target: "AuthSelection" },
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "AuthSelection",
               },
             ],
           },
@@ -193,7 +189,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
             onError: { target: "AuthSelection", actions: "handleError" },
@@ -211,7 +207,7 @@ const UnknownDeviceMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "RegistrationMachine",
+                target: "AuthSelection",
               },
             ],
             onError: { target: "AuthSelection", actions: "handleError" },
@@ -293,13 +289,20 @@ const UnknownDeviceMachine =
             return event.data
           },
         }),
+        assignVerificationEmail: assign({
+          verificationEmail: (_, event) => {
+            console.debug("UnknownDeviceMachine assignVerificationEmail", {
+              event,
+            })
+            return event.data
+          },
+        }),
         handleError: (event, context) => {
           toast.error(context.data.message)
         },
       },
       services: {
-        isMobileWithWebAuthn,
-        RegistrationMachine,
+        AuthWithEmailMachine,
         RemoteReceiverMachine,
         loginWithAnchor,
         AuthWithGoogleMachine,

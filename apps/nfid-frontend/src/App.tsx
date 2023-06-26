@@ -9,6 +9,7 @@ import { authState, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
+import { AuthEmailMagicLink } from "./features/authentication/magic-link-flow"
 import { NotFound } from "./ui/pages/404"
 
 const IDPCoordinator = React.lazy(() => import("./coordination/idp"))
@@ -95,6 +96,9 @@ export const App = () => {
             </ScreenResponsive>
           }
         />
+
+        <Route path="/verify/email/:token" element={<AuthEmailMagicLink />} />
+
         <Route
           path="/ridp"
           element={

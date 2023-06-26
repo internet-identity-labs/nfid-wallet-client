@@ -9,10 +9,12 @@ if (!GOOGLE_CLIENT_ID) console.error("GOOGLE_CLIENT_ID is not defined")
 
 interface SignInWithGoogleProps {
   onLogin: LoginEventHandler
+  button?: JSX.Element
 }
 
 export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   onLogin,
+  button,
 }) => {
   const buttonRef = React.useRef<HTMLDivElement>(null)
 
@@ -48,5 +50,18 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
     size: "large",
   })
 
-  return <div ref={buttonRef} className="w-full" />
+  const onClick = React.useCallback(() => {
+    const el = buttonRef.current?.querySelector("div[role=button]")
+    //  @ts-ignore
+    el?.click()
+  }, [])
+
+  return (
+    <>
+      <div ref={buttonRef} className="hidden" />
+      <div className="w-full" onClick={onClick}>
+        {button}
+      </div>
+    </>
+  )
 }

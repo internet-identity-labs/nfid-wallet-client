@@ -8,6 +8,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.authWithEmail": {
+      type: "done.invoke.authWithEmail"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.authWithII": {
       type: "done.invoke.authWithII"
       data: unknown
@@ -23,18 +28,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.isMobileWithWebAuthn": {
-      type: "done.invoke.isMobileWithWebAuthn"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.loginWithAnchor": {
       type: "done.invoke.loginWithAnchor"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "done.invoke.registration": {
-      type: "done.invoke.registration"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -45,6 +40,10 @@ export interface Typegen0 {
     }
     "error.platform.AuthWithGoogleMachine": {
       type: "error.platform.AuthWithGoogleMachine"
+      data: unknown
+    }
+    "error.platform.authWithEmail": {
+      type: "error.platform.authWithEmail"
       data: unknown
     }
     "error.platform.authWithII": {
@@ -59,29 +58,20 @@ export interface Typegen0 {
       type: "error.platform.getWalletConnectAuthSession"
       data: unknown
     }
-    "error.platform.isMobileWithWebAuthn": {
-      type: "error.platform.isMobileWithWebAuthn"
-      data: unknown
-    }
     "error.platform.loginWithAnchor": {
       type: "error.platform.loginWithAnchor"
-      data: unknown
-    }
-    "error.platform.registration": {
-      type: "error.platform.registration"
       data: unknown
     }
     "error.platform.remote": { type: "error.platform.remote"; data: unknown }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
+    AuthWithEmailMachine: "done.invoke.authWithEmail"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     AuthWithIIMachine: "done.invoke.authWithII"
-    RegistrationMachine: "done.invoke.registration"
     RemoteReceiverMachine: "done.invoke.remote"
     getMetamaskAuthSession: "done.invoke.getMetamaskAuthSession"
     getWalletConnectAuthSession: "done.invoke.getWalletConnectAuthSession"
-    isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
     loginWithAnchor: "done.invoke.loginWithAnchor"
   }
   missingImplementations: {
@@ -93,39 +83,35 @@ export interface Typegen0 {
   eventsCausingActions: {
     assignAuthSession:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithEmail"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.getWalletConnectAuthSession"
       | "done.invoke.loginWithAnchor"
-      | "done.invoke.registration"
       | "done.invoke.remote"
+    assignVerificationEmail: "AUTH_WITH_EMAIL"
     handleError:
       | "error.platform.getMetamaskAuthSession"
       | "error.platform.getWalletConnectAuthSession"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
-    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
+    bool: "done.invoke.remote"
     isExistingAccount:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithEmail"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.getWalletConnectAuthSession"
-    isReturn: "done.invoke.authWithII"
+    isReturn: "done.invoke.authWithEmail" | "done.invoke.authWithII"
   }
   eventsCausingServices: {
+    AuthWithEmailMachine: "AUTH_WITH_EMAIL"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
     AuthWithIIMachine: "AUTH_WITH_II"
-    RegistrationMachine:
-      | "done.invoke.AuthWithGoogleMachine"
-      | "done.invoke.authWithII"
-      | "done.invoke.getMetamaskAuthSession"
-      | "done.invoke.getWalletConnectAuthSession"
-      | "done.invoke.isMobileWithWebAuthn"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     getMetamaskAuthSession: "AUTH_WITH_METAMASK"
     getWalletConnectAuthSession: "AUTH_WITH_WALLET_CONNECT"
-    isMobileWithWebAuthn: "xstate.init"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
   matchesStates:
@@ -134,13 +120,10 @@ export interface Typegen0 {
     | "AuthWithMetamask"
     | "AuthWithWalletConnect"
     | "AuthenticateSameDevice"
+    | "EmailAuthentication"
     | "End"
     | "ExistingAnchor"
     | "IIAuthentication"
-    | "RegistrationMachine"
     | "RemoteAuthentication"
-    | "Start"
-    | "Start.CheckCapability"
-    | { Start?: "CheckCapability" }
   tags: never
 }

@@ -200,12 +200,6 @@ const config = {
       "/api": {
         target: `http://0.0.0.0:${DFX_PORT}`,
       },
-      "/verify": {
-        target: process.env.AWS_VERIFY_PHONENUMBER,
-        secure: true,
-        changeOrigin: true,
-        pathRewrite: (path: string) => path.replace(/^\/verify/, ""),
-      },
       "/signin": {
         target: process.env.AWS_SIGNIN_GOOGLE,
         secure: true,

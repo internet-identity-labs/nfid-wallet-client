@@ -1,12 +1,10 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { KeyPair } from "@nfid/integration"
+
 import { AuthSession, IIAuthSession } from "frontend/state/authentication"
 
-import {
-  KeyPair,
-  checkEmailVerification,
-  sendVerificationEmail,
-} from "./services"
+import { checkEmailVerification, sendVerificationEmail } from "./services"
 
 export interface AuthWithEmailMachineContext {
   authSession: AuthSession

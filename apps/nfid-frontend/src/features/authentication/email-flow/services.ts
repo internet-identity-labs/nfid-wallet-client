@@ -1,29 +1,26 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { AuthWithEmailMachineContext } from "./machine"
+import {
+  KeyPair,
+  VerificationMethod,
+  verificationService,
+} from "@nfid/integration"
 
-export interface KeyPair {
-  publicKey: string
-  privateKey: string
-}
+import { AuthWithEmailMachineContext } from "./machine"
 
 export const sendVerificationEmail = async (
   context: AuthWithEmailMachineContext,
 ): Promise<{
   keyPair: KeyPair
 }> => {
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-  console.debug("sendVerificationEmail", {
-    verificationMethod: "email",
-    emailAddress: context.email,
-  })
-
-  return {
-    keyPair: {
-      publicKey: "123",
-      privateKey: "123",
-    },
+  try {
+    const keyPair = await verificationService.sendVerification({
+      verificationMethod: "email",
+      emailAddress: context.email,
+    })
+    return { keyPair }
+  } catch (e) {
+    throw e
   }
 }
 
@@ -38,35 +35,30 @@ export const checkEmailVerification = async (
     keyPair: context.keyPair,
   })
 
-  const mockedDelegationIdentity = {
-    getDelegation: () => ({
-      delegations: [
-        {
-          delegation: {
-            expiration: BigInt(Date.now() + 2 * 60 * 1000) * BigInt(1000000),
-          },
-        },
-      ],
-    }),
-  } as DelegationIdentity
-  await new Promise((resolve) => setTimeout(resolve, 5000))
-
-  return mockedDelegationIdentity
+  try {
+    return verificationService.checkVerification(
+      verificationMethod,
+      context.email,
+      context.keyPair!,
+    )
+  } catch (e) {
+    throw e
+  }
 }
 
 export const verify = async (
-  verificationMethod: string,
+  verificationMethod: VerificationMethod,
   token: string,
-): Promise<{ status: "success" | "expired-token" | "link-required" }> => {
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-  if (token === "expired-token") return { status: "expired-token" }
-  if (token === "link-required") return { status: "link-required" }
-
+): Promise<{ status: "success" | "invalid-token" | "link-required" }> => {
   console.debug("verify", {
     verificationMethod,
     token: token,
   })
 
-  return { status: "success" }
+  try {
+    const status = await verificationService.verify(verificationMethod, token)
+    return { status }
+  } catch (e) {
+    throw e
+  }
 }

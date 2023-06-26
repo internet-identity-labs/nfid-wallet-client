@@ -12,7 +12,7 @@ import { EmailMagicLinkSuccess } from "./sucess"
 export const AuthEmailMagicLink = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [status, setStatus] = useState<
-    "success" | "expired-token" | "link-required"
+    "success" | "invalid-token" | "link-required"
   >()
   const { token } = useParams()
 
@@ -52,7 +52,7 @@ export const AuthEmailMagicLink = () => {
               <Loader isLoading={true} fullscreen={false} />
             </div>
           </div>
-        ) : status === "expired-token" ? (
+        ) : status === "invalid-token" ? (
           <EmailMagicLinkExpired />
         ) : status === "success" ? (
           <EmailMagicLinkSuccess />

@@ -11,10 +11,18 @@ export type Icon =
   | "metamask"
   | "email"
 
+export enum DeviceType {
+  Email = "Email",
+  Passkey = "Passkey",
+  Recovery = "Recovery",
+  Unknown = "Unknown",
+}
+
 export interface AccessPointCommon {
   icon: Icon
   device: string
   browser: string
+  deviceType: DeviceType
 }
 
 export interface AccessPoint extends AccessPointCommon {

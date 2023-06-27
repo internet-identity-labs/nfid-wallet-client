@@ -1,6 +1,12 @@
 import { Principal } from "@dfinity/principal"
 
-import { AccessPoint, Account, Profile, RootWallet } from "@nfid/integration"
+import {
+  AccessPoint,
+  Account,
+  DeviceType,
+  Profile,
+  RootWallet,
+} from "@nfid/integration"
 
 import {
   AccessPointResponse,
@@ -21,6 +27,7 @@ export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse
         personas: [],
         principal_id: "",
         phone_number: [],
+        is2fa_enabled: false,
       },
     ],
     error: [],
@@ -34,6 +41,7 @@ export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse
  */
 export function factoryAccount(principal?: Principal): Profile {
   return {
+    is2fa: false,
     wallet: RootWallet.II,
     anchor: Math.floor(100_000 * Math.random()),
     accessPoints: new Array(Math.floor(Math.random() * 5)).fill(
@@ -64,6 +72,7 @@ export function factoryPersona(principal?: Principal): Account {
  */
 export function factoryAccessPoint(principal?: Principal): AccessPoint {
   return {
+    deviceType: DeviceType.Email,
     icon: "mobile",
     device: "string",
     browser: "string",
@@ -74,6 +83,7 @@ export function factoryAccessPoint(principal?: Principal): AccessPoint {
 
 export function factoryProfile(): Profile {
   return {
+    is2fa: false,
     wallet: RootWallet.II,
     anchor: 42069,
     accessPoints: Array(Math.floor(Math.random() * 4))
@@ -101,6 +111,7 @@ export function factoryAccessPointResponse(): AccessPointResponse {
     browser: "string",
     last_used: BigInt(new Date().getTime()),
     principal_id: "string",
+    device_type: { Email: null },
   }
 }
 
@@ -125,6 +136,7 @@ export function factoryAccountResponse(): AccountResponse {
       .map(factoryPersonaResponse),
     principal_id: "aaaaa-aa",
     phone_number: ["123"],
+    is2fa_enabled: false,
   }
 }
 

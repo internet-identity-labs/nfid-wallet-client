@@ -1,7 +1,13 @@
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 
-import { authState, ii, replaceIdentity, setProfile } from "@nfid/integration"
+import {
+  authState,
+  DeviceType,
+  ii,
+  replaceIdentity,
+  setProfile,
+} from "@nfid/integration"
 
 import { IIAuthenticationMachineContext } from "frontend/features/sign-in-options/machine"
 import { AuthSession } from "frontend/state/authentication"
@@ -117,6 +123,7 @@ export async function createTentativeDevice({
     }
 
     await registerProfileWithAccessPoint(anchor, {
+      deviceType: DeviceType.Unknown,
       browser: getBrowserName(),
       device: deviceInfo.newDeviceName,
       icon: "desktop",

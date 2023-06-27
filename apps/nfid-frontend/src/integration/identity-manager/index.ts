@@ -7,6 +7,7 @@ import {
   AccessPointCommon,
   Account,
   Application,
+  DeviceType,
   hasOwnProperty,
   Icon,
   im,
@@ -26,6 +27,7 @@ import {
   AccessPointResponse,
   AccountResponse,
   Application as BEApplication,
+  DeviceType as DeviceVariant,
   HTTPAccountRequest,
   PersonaResponse,
   WalletVariant,
@@ -51,6 +53,7 @@ export function mapProfile(profile: AccountResponse): Profile {
     principalId: profile.principal_id,
     phoneNumber: mapOptional(profile.phone_number),
     wallet: walletResponseToWallet(profile.wallet),
+    is2fa: profile.is2fa_enabled,
   }
 }
 
@@ -85,6 +88,7 @@ function mapAccount(persona: PersonaResponse): Account {
  */
 function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
   return {
+    deviceType: deviceTypeToDevice(accessPoint.device_type),
     icon: accessPoint.icon as Icon,
     device: accessPoint.device,
     browser: accessPoint.browser,
@@ -201,6 +205,7 @@ function mapToAccessPointRequest(
       new Uint8Array(accessPoint.pubKey),
     ).toText(),
     browser: accessPoint.browser,
+    device_type: deviceToDeviceVariant(accessPoint.deviceType),
   }
 }
 
@@ -222,6 +227,10 @@ export async function createProfile(anchor: number) {
     .then(mapProfile)
 }
 
+export async function update2fa(state: boolean) {
+  return im.update_2fa(state).then(mapProfile)
+}
+
 /**
  * create NFID profile registered without II
  * use email identity
@@ -236,6 +245,9 @@ export async function createNFIDProfile(
     device: "Global",
     pub_key: emailDelegationIdentity.getPrincipal().toText(),
     browser: "",
+    device_type: {
+      Email: null,
+    },
   }
 
   const accountRequest: HTTPAccountRequest = {
@@ -362,6 +374,36 @@ function walletResponseToWallet(response: WalletVariant): RootWallet {
   }
   if (hasOwnProperty(response, "II")) {
     return RootWallet.II
+  }
+  throw Error("Unexpected enum value")
+}
+
+function deviceTypeToDevice(response: DeviceVariant): DeviceType {
+  if (hasOwnProperty(response, "Email")) {
+    return DeviceType.Email
+  }
+  if (hasOwnProperty(response, "Passkey")) {
+    return DeviceType.Passkey
+  }
+  if (hasOwnProperty(response, "Unknown")) {
+    return DeviceType.Unknown
+  }
+  if (hasOwnProperty(response, "Recovery")) {
+    return DeviceType.Recovery
+  }
+  throw Error("Unexpected enum value")
+}
+
+function deviceToDeviceVariant(dt: DeviceType): DeviceVariant {
+  switch (dt) {
+    case DeviceType.Email:
+      return { Email: null }
+    case DeviceType.Passkey:
+      return { Passkey: null }
+    case DeviceType.Recovery:
+      return { Recovery: null }
+    case DeviceType.Unknown:
+      return { Unknown: null }
   }
   throw Error("Unexpected enum value")
 }

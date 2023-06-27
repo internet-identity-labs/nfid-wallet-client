@@ -61,6 +61,9 @@ describe("SignIn with Internet Identity", () => {
       device: deviceName,
       browser: getBrowserName(),
       pub_key: identity2.getPrincipal().toString(),
+      device_type: {
+        Email: null,
+      },
     })
 
     expect(accessPoints).toEqual(

@@ -6,12 +6,14 @@ export interface AccessPointRemoveRequest {
 }
 export interface AccessPointRequest {
   icon: string
+  device_type: DeviceType
   device: string
   pub_key: string
   browser: string
 }
 export interface AccessPointResponse {
   icon: string
+  device_type: DeviceType
   device: string
   browser: string
   last_used: bigint
@@ -32,6 +34,7 @@ export interface AccountResponse {
   anchor: bigint
   access_points: Array<AccessPointResponse>
   personas: Array<PersonaResponse>
+  is2fa_enabled: boolean
   wallet: WalletVariant
   principal_id: string
   phone_number: [] | [string]
@@ -123,6 +126,11 @@ export interface DailyMetricsData {
   canisterMemorySize: NumericEntity
   timeMillis: bigint
 }
+export type DeviceType =
+  | { Email: null }
+  | { Passkey: null }
+  | { Recovery: null }
+  | { Unknown: null }
 export type Error = string
 export interface GetLatestLogMessagesParameters {
   upToTimeNanos: [] | [Nanos]
@@ -291,6 +299,8 @@ export interface _SERVICE {
   restore_accounts: ActorMethod<[string], BoolHttpResponse>
   store_accounts: ActorMethod<[Array<Account>], BoolHttpResponse>
   sync_controllers: ActorMethod<[], Array<string>>
+  update_2fa: ActorMethod<[boolean], AccountResponse>
+  get_root_by_principal: ActorMethod<[string], [[] | [string]]>
   update_access_point: ActorMethod<
     [AccessPointRequest],
     HTTPAccessPointResponse

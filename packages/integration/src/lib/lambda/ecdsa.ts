@@ -1,13 +1,19 @@
-import {Cbor, QueryFields, SignIdentity} from "@dfinity/agent"
-import {IDL} from "@dfinity/candid"
-import {toHexString} from "@dfinity/candid/lib/cjs/utils/buffer"
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
+import { Cbor, QueryFields, SignIdentity } from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
+import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 
-import {KeyPair} from "../_ic_api/ecdsa-signer.d"
-import {btcSigner, ecdsaSigner, replaceActorIdentity} from "../actors"
-import {ic} from "../agent/index"
-import {getTransformedRequest} from "./util"
 import { ONE_MINUTE_IN_MS } from "@nfid/config"
+
+import { KeyPair } from "../_ic_api/ecdsa-signer.d"
+import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
+import { ic } from "../agent/index"
+import { getTransformedRequest } from "./util"
+
 export enum Chain {
   BTC = "BTC",
   ETH = "ETH",

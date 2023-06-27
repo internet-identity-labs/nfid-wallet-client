@@ -72,6 +72,7 @@ describe("Facade suite", () => {
         device: "RecoveryTest",
         browser: "RecoveryTest",
         pub_key: recoveryDevice.getPrincipal().toText(),
+        device_type: { Recovery: null },
       })
       // @ts-ignore
       expect(accessPoints.data[0][0].device).toEqual("RecoveryTest")
@@ -153,6 +154,7 @@ describe("Facade suite", () => {
         device: "",
         icon: "",
         pub_key: mockedIdentity.getPrincipal().toText(),
+        device_type: { Recovery: null },
       })
       await Promise.all([
         im.create_persona({

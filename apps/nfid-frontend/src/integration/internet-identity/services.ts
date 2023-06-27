@@ -10,6 +10,7 @@ import {
   Icon,
   Profile,
   fetchDelegate,
+  DeviceType,
 } from "@nfid/integration"
 
 import {
@@ -229,6 +230,7 @@ export async function registerService(
     const accessPoint =
       sessionSource === "google"
         ? {
+            deviceType: DeviceType.Email,
             icon: "google" as Icon,
             device: "Google",
             browser: `${
@@ -238,6 +240,7 @@ export async function registerService(
           }
         : sessionSource === "ii"
         ? {
+            deviceType: DeviceType.Unknown,
             icon: "ii" as Icon,
             device: "Internet Identity",
             browser: delegationIdentity.getPrincipal().toString(),
@@ -245,6 +248,7 @@ export async function registerService(
           }
         : sessionSource === "metamask"
         ? {
+            deviceType: DeviceType.Unknown,
             icon: "metamask" as Icon,
             device: "Metamask",
             browser: (await getMetamaskAccounts())[0],
@@ -255,6 +259,7 @@ export async function registerService(
             device: deviceInfo.newDeviceName,
             browser: deviceInfo.browser.name ?? "Mobile",
             pubKey,
+            deviceType: DeviceType.Unknown,
           }
     console.debug("RouterRegisterDeviceDecider handleRegister", {
       account,

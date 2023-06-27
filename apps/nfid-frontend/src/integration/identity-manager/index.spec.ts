@@ -7,12 +7,13 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
-import { im as imMock, RootWallet } from "@nfid/integration"
+import { im, im as imMock, RootWallet } from "@nfid/integration"
 
 import { Application } from "frontend/integration/_ic_api/identity_manager.d"
 import {
   createNFIDProfile,
   processApplicationOrigin,
+  update2fa,
 } from "frontend/integration/identity-manager/index"
 
 describe("Identity Manager suite", () => {
@@ -36,6 +37,19 @@ describe("Identity Manager suite", () => {
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)
       expect(nfidProfile.accessPoints.length).toEqual(1)
+      const identityDevice = Ed25519KeyIdentity.generate()
+      const deviceData = {
+        icon: "Icon",
+        device: "Global",
+        pub_key: identityDevice.getPrincipal().toText(),
+        browser: "Her",
+        device_type: {
+          Passkey: null,
+        },
+      }
+      await im.create_access_point(deviceData)
+      const updatedProfile = await update2fa(true)
+      expect(updatedProfile.is2fa).toEqual(true)
     })
 
     it("Should create application", async function () {

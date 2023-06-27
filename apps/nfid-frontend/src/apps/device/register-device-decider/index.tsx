@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import { ScreenResponsive } from "@nfid-frontend/ui"
-import { authState, im } from "@nfid/integration"
+import { authState, DeviceType, im } from "@nfid/integration"
 
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -87,6 +87,7 @@ export const RouterRegisterDeviceDecider: React.FC<
             authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
           ),
         ),
+        deviceType: DeviceType.Unknown,
       }
       console.debug("RouterRegisterDeviceDecider handleRegister", {
         account,
@@ -105,6 +106,7 @@ export const RouterRegisterDeviceDecider: React.FC<
           device: deviceName,
           browser: getBrowserName(),
           pub_key,
+          device_type: { Recovery: null },
         })
         .catch((e) => {
           throw new Error(

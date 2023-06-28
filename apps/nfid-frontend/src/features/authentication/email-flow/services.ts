@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
 import {
-  KeyPair,
+  SendVerificationResponse,
   VerificationMethod,
   verificationService,
 } from "@nfid/integration"
@@ -10,15 +10,15 @@ import { AuthWithEmailMachineContext } from "./machine"
 
 export const sendVerificationEmail = async (
   context: AuthWithEmailMachineContext,
-): Promise<{
-  keyPair: KeyPair
-}> => {
+): Promise<SendVerificationResponse> => {
   try {
-    const keyPair = await verificationService.sendVerification({
-      verificationMethod: "email",
-      emailAddress: context.email,
-    })
-    return { keyPair }
+    const sendVerificationResponse = await verificationService.sendVerification(
+      {
+        verificationMethod: "email",
+        emailAddress: context.email,
+      },
+    )
+    return sendVerificationResponse
   } catch (e) {
     throw e
   }
@@ -39,7 +39,9 @@ export const checkEmailVerification = async (
     return verificationService.checkVerification(
       verificationMethod,
       context.email,
-      context.keyPair!,
+      context.keyPair,
+      context.requestId,
+      0,
     )
   } catch (e) {
     throw e

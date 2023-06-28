@@ -3,7 +3,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import * as JwtService from "jsonwebtoken"
+import * as jose from "jose"
 
 import { ic } from "../agent"
 
@@ -98,19 +98,18 @@ export const verificationService = {
       ? checkVerificationEndpointUrl
       : AWS_CHECK_VERIFICATION
 
-    const payload = {
-      iss: "https://nfid.one",
-      sub: emailAddress,
-      aud: "https://nfid.one",
-      exp: Math.floor(Date.now() / 1000) + 20, // 20 seconds
-      nbf: Math.floor(Date.now() / 1000),
-      jti: requestId,
-      nonce: nonce.toString(),
-    }
+    const privateKey = await jose.importPKCS8(keypair.privateKey, "ES512")
+    const token = await new jose.SignJWT({ nonce: nonce.toString() })
+      .setProtectedHeader({ alg: "ES512" })
+      .setIssuer("https://nfid.one")
+      .setSubject(emailAddress)
+      .setAudience("https://nfid.one")
+      .setExpirationTime("20s")
+      .setNotBefore(0)
+      .setJti(requestId)
+      .setIssuedAt()
+      .sign(privateKey)
 
-    const token: string = JwtService.sign(payload, keypair.privateKey, {
-      algorithm: "ES512",
-    }).toString()
     const body = { token }
 
     const response = await fetch(url, {
@@ -141,23 +140,7 @@ export const verificationService = {
   },
 }
 
-async function exportKeyToPem(
-  key: CryptoKey,
-  keyType: "PUBLIC KEY" | "PRIVATE KEY",
-  format: "pkcs8" | "spki",
-) {
-  const exportedKey = await window.crypto.subtle.exportKey(format, key)
-  const exportedKeyBuffer = new Uint8Array(exportedKey)
-  const exportedKeyBase64 = window.btoa(
-    String.fromCharCode.apply(null, Array.from(exportedKeyBuffer)),
-  )
-
-  const pemExportedPublicKey = `-----BEGIN ${keyType}-----\n${exportedKeyBase64}\n-----END ${keyType}-----`
-
-  return pemExportedPublicKey
-}
-
-async function generateCryptoKeyPair(): Promise<{
+export async function generateCryptoKeyPair(): Promise<{
   publicKey: string
   privateKey: string
 }> {
@@ -174,4 +157,20 @@ async function generateCryptoKeyPair(): Promise<{
   const privateKeyPem = await exportKeyToPem(privateKey, "PRIVATE KEY", "pkcs8")
 
   return { publicKey: publicKeyPem, privateKey: privateKeyPem }
+}
+
+async function exportKeyToPem(
+  key: CryptoKey,
+  keyType: "PUBLIC KEY" | "PRIVATE KEY",
+  format: "pkcs8" | "spki",
+) {
+  const exportedKey = await window.crypto.subtle.exportKey(format, key)
+  const exportedKeyBuffer = new Uint8Array(exportedKey)
+  const exportedKeyBase64 = window.btoa(
+    String.fromCharCode.apply(null, Array.from(exportedKeyBuffer)),
+  )
+
+  const pemExportedPublicKey = `-----BEGIN ${keyType}-----\n${exportedKeyBase64}\n-----END ${keyType}-----`
+
+  return pemExportedPublicKey
 }

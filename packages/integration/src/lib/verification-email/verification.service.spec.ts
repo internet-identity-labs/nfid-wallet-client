@@ -1,24 +1,21 @@
+import * as jose from "jose"
+import * as JwtService from "jsonwebtoken"
+
 import {
   PrevTokenHasNotExpiredError,
   VerificationIsInProgressError,
+  generateCryptoKeyPair,
   verificationService,
 } from "./verification.service"
 
 const testEmail = "testEmailAddress"
 const token = "token"
 const userPublicKey = `-----BEGIN PUBLIC KEY-----
-MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQAgbZCKZ0r0nhhLzdgJoh8vy4sST2j
-7kSWJsOk6GWK6rJ2LiiQccv8SKhgN+B/xUvdnxEBCwiMPnJ5kDuFURaQXBcAoPvx
-jHGlKn1c6J2SoX3jiDnkSaX0HPag6feS1LU4M+mQCgBR3ZMhk0kT8myOa7lpYi4V
-6/2raN6Dk8ARTPYCnWs=
+MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQAIH/ILWSkFYKvy3ga28KUu88yLJPFYSbLNy2ekY33LfK9lTd24RL6b3n/xH9RbaOhP8EwG1+VhqmEGKUajx3XkrwBZKg9pSS8ajodxjXNXbDwQaE9PpV6ZN9S925TrVBGH+9zuFyWdfPNMAUoMR/xGl7LQ3I10Wfr7ZhqCpVwU3nBgIU=
 -----END PUBLIC KEY-----`
-const userPrivateKey = `-----BEGIN EC PRIVATE KEY-----
-MIHcAgEBBEIAqnqsS3S9k6LRXBfRelSw0EkidOuRMrC675Lol+GJc5qvYbvYW4Le
-OPIXYCEuoghCeiji/4zq60Xeghb34IbO46KgBwYFK4EEACOhgYkDgYYABACBtkIp
-nSvSeGEvN2AmiHy/LixJPaPuRJYmw6ToZYrqsnYuKJBxy/xIqGA34H/FS92fEQEL
-CIw+cnmQO4VRFpBcFwCg+/GMcaUqfVzonZKhfeOIOeRJpfQc9qDp95LUtTgz6ZAK
-AFHdkyGTSRPybI5ruWliLhXr/ato3oOTwBFM9gKdaw==
------END EC PRIVATE KEY-----`
+const userPrivateKey = `-----BEGIN PRIVATE KEY-----
+MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIAF3G7uAQrT1lszy1r6Jo2aARbWemHWzW0LmB99HPiKoHZd2mX+vlupCLPwnyrvhf8NLOmE/bQ2y9yv7YWarePUyOhgYkDgYYABAAgf8gtZKQVgq/LeBrbwpS7zzIsk8VhJss3LZ6Rjfct8r2VN3bhEvpvef/Ef1Fto6E/wTAbX5WGqYQYpRqPHdeSvAFkqD2lJLxqOh3GNc1dsPBBoT0+lXpk31L3blOtUEYf73O4XJZ1880wBSgxH/EaXstDcjXRZ+vtmGoKlXBTecGAhQ==
+-----END PRIVATE KEY-----`
 const keyPair = {
   publicKey: userPublicKey,
   privateKey: userPrivateKey,
@@ -27,6 +24,31 @@ const keyPair = {
 describe("Verification of email", () => {
   beforeEach(() => {
     jest.resetModules() // Resets the module registry before each test
+  })
+
+  it("should validate contract between jose and jsonwebtoken libs.", async () => {
+    const keyPair = await generateCryptoKeyPair()
+    const privateKey = await jose.importPKCS8(keyPair.privateKey, "ES512")
+
+    const token = await new jose.SignJWT({ nonce: "0" })
+      .setProtectedHeader({ alg: "ES512" })
+      .setIssuer("https://nfid.one")
+      .setSubject(testEmail)
+      .setAudience("https://nfid.one")
+      .setExpirationTime("20s")
+      .setNotBefore(0)
+      .setJti("requestId")
+      .setIssuedAt()
+      .sign(privateKey)
+
+    JwtService.verify(token, keyPair.publicKey, {
+      algorithms: ["ES512"],
+      audience: "https://nfid.one",
+      issuer: "https://nfid.one",
+      subject: testEmail,
+      nonce: "0",
+      jwtid: "requestId",
+    })
   })
 
   it("should exec sendVerification and receive success response", async () => {

@@ -9,7 +9,8 @@ import { checkEmailVerification, sendVerificationEmail } from "./services"
 export interface AuthWithEmailMachineContext {
   authSession: AuthSession
   email: string
-  keyPair?: KeyPair
+  keyPair: KeyPair
+  requestId: string
 }
 
 export type Events =
@@ -19,7 +20,7 @@ export type Events =
   | { type: "RESEND" }
   | {
       type: "done.invoke.sendVerificationEmail"
-      data: { keyPair: KeyPair }
+      data: { keyPair: KeyPair; requestId: string }
     }
 
 export interface Schema {
@@ -75,6 +76,7 @@ const AuthWithEmailMachine =
       actions: {
         assignVerificationData: assign((_, event) => ({
           keyPair: event.data.keyPair,
+          requestId: event.data.requestId,
         })),
       },
       guards: {},

@@ -3,6 +3,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import * as JwtService from "jsonwebtoken"
 
 import { ic } from "../agent"
 
@@ -10,6 +11,7 @@ export type VerificationStatus = "success" | "invalid-token" | "link-required"
 export type VerificationMethod = "email"
 export type RequestId = string
 export type KeyPair = { publicKey: string; privateKey: string }
+export type SendVerificationResponse = { keyPair: KeyPair; requestId: string }
 export type SendVerificationEmailRequest = {
   verificationMethod: VerificationMethod
   emailAddress: string
@@ -35,12 +37,12 @@ export const verificationService = {
   async sendVerification({
     verificationMethod,
     emailAddress,
-  }: SendVerificationEmailRequest): Promise<KeyPair> {
+  }: SendVerificationEmailRequest): Promise<SendVerificationResponse> {
     const url = ic.isLocal
       ? sendVerificationEmailEndpointUrl
       : AWS_SEND_VERIFICATION_EMAIL
 
-    const keyPair = { publicKey: "", privateKey: "" }
+    const keyPair = await generateCryptoKeyPair()
     const body = { email: emailAddress, publicKey: keyPair.publicKey }
 
     const response = await fetch(url, {
@@ -49,15 +51,17 @@ export const verificationService = {
       body: JSON.stringify(body),
     })
 
+    const text = await response.text()
     if (!response.ok) {
-      const text = await response.text()
       if (response.status === 429) {
         throw new PrevTokenHasNotExpiredError(text)
       }
       throw new Error(text)
     }
 
-    return keyPair
+    const requestId = JSON.parse(text).requestId
+
+    return { keyPair, requestId }
   },
 
   async verify(
@@ -87,20 +91,27 @@ export const verificationService = {
     verificationMethod: VerificationMethod,
     emailAddress: string,
     keypair: KeyPair,
+    requestId: string,
+    nonce: number,
   ): Promise<DelegationIdentity> {
     const url = ic.isLocal
       ? checkVerificationEndpointUrl
       : AWS_CHECK_VERIFICATION
 
-    // TODO: due to absence crypto on the FE, temp comment.
-    // const payload = {
-    //   sub: emailAddress,
-    // }
+    const payload = {
+      iss: "https://nfid.one",
+      sub: emailAddress,
+      aud: "https://nfid.one",
+      exp: Math.floor(Date.now() / 1000) + 20, // 20 seconds
+      nbf: Math.floor(Date.now() / 1000),
+      jti: requestId,
+      nonce: nonce.toString(),
+    }
 
-    // const token: string = jwt
-    //   .sign(payload, keypair.privateKey, { algorithm: "ES512" })
-    //   .toString()
-    const body = { token: emailAddress }
+    const token: string = JwtService.sign(payload, keypair.privateKey, {
+      algorithm: "ES512",
+    }).toString()
+    const body = { token }
 
     const response = await fetch(url, {
       method: "POST",
@@ -117,10 +128,10 @@ export const verificationService = {
     }
 
     const json = JSON.parse(text)
-    const delegationChain = DelegationChain.fromJSON(json.chain)
-    const ed25519KeyIdentity = Ed25519KeyIdentity.fromParsedJson(
-      json.sessionKey,
-    )
+    const chain = JSON.parse(json.delegation).chain
+    const sessionKey = JSON.parse(json.delegation).sessionKey
+    const delegationChain = DelegationChain.fromJSON(chain)
+    const ed25519KeyIdentity = Ed25519KeyIdentity.fromParsedJson(sessionKey)
     const delegation = DelegationIdentity.fromDelegation(
       ed25519KeyIdentity,
       delegationChain,
@@ -130,19 +141,37 @@ export const verificationService = {
   },
 }
 
-// function generateCryptoKeyPair(): {
-//   publicKey: string
-//   privateKey: string
-// } {
-//   const { privateKey, publicKey } = generateKeyPairSync("ec", {
-//     namedCurve: "secp521r1",
-//   })
-//   const privateKeyPem = privateKey
-//     .export({ type: "sec1", format: "pem" })
-//     .toString()
-//   const publicKeyPem = publicKey
-//     .export({ type: "spki", format: "pem" })
-//     .toString()
+async function exportKeyToPem(
+  key: CryptoKey,
+  keyType: "PUBLIC KEY" | "PRIVATE KEY",
+  format: "pkcs8" | "spki",
+) {
+  const exportedKey = await window.crypto.subtle.exportKey(format, key)
+  const exportedKeyBuffer = new Uint8Array(exportedKey)
+  const exportedKeyBase64 = window.btoa(
+    String.fromCharCode.apply(null, Array.from(exportedKeyBuffer)),
+  )
 
-//   return { publicKey: publicKeyPem, privateKey: privateKeyPem }
-// }
+  const pemExportedPublicKey = `-----BEGIN ${keyType}-----\n${exportedKeyBase64}\n-----END ${keyType}-----`
+
+  return pemExportedPublicKey
+}
+
+async function generateCryptoKeyPair(): Promise<{
+  publicKey: string
+  privateKey: string
+}> {
+  const { privateKey, publicKey } = await window.crypto.subtle.generateKey(
+    {
+      name: "ECDSA",
+      namedCurve: "P-521",
+    },
+    true,
+    ["sign", "verify"],
+  )
+
+  const publicKeyPem = await exportKeyToPem(publicKey, "PUBLIC KEY", "spki")
+  const privateKeyPem = await exportKeyToPem(privateKey, "PRIVATE KEY", "pkcs8")
+
+  return { publicKey: publicKeyPem, privateKey: privateKeyPem }
+}

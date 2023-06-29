@@ -90,12 +90,14 @@ const AuthWithEmailMachine =
           invoke: {
             src: "prepareGlobalDelegation",
             id: "prepareGlobalDelegation",
+            onDone: "Authenticated",
           },
+        },
+        Authenticated: {
           on: {
             CONTINUE_VERIFIED: "End",
           },
         },
-
         End: {
           type: "final",
           data: (context) => {

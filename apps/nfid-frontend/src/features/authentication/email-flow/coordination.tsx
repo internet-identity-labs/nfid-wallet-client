@@ -30,7 +30,7 @@ export function AuthEmailFlowCoordinator({
           onResend={() => send({ type: "RESEND" })}
         />
       )
-    case state.matches("EmailVerified"):
+    case state.matches("Authenticated"):
       return (
         <AuthEmailVerified
           onContinue={() => send({ type: "CONTINUE_VERIFIED" })}

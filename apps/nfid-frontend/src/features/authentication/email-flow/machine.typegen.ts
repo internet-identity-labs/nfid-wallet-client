@@ -60,6 +60,7 @@ export interface Typegen0 {
     sendVerificationEmail: "RESEND" | "xstate.init"
   }
   matchesStates:
+    | "Authenticated"
     | "EmailVerified"
     | "End"
     | "PendingEmailVerification"

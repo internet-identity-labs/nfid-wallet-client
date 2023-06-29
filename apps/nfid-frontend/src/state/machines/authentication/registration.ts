@@ -10,8 +10,8 @@ import {
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
+import AuthWithGoogleMachine from "../../../features/authentication/google-flow/auth-with-google"
 import { logServiceError } from "../actions"
-import AuthWithGoogleMachine from "./auth-with-google"
 
 export interface RegistrationContext {
   authSession?: AuthSession

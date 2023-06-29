@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom"
 
 import { IconCmpNFID, Loader } from "@nfid-frontend/ui"
 
-import { verify } from "../email-flow/services"
+import { verify } from "../services"
 import { EmailMagicLinkExpired } from "./expired"
 import { EmailMagicLinkLink } from "./link-accounts"
 import { EmailMagicLinkSuccess } from "./sucess"

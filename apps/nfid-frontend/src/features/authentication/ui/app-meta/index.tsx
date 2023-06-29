@@ -54,7 +54,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
         />
       )}
 
-      <H5 className="mt-5 mb-3 text-sm leading-6 text-black">
+      <H5 className="mt-4 mb-2 text-sm leading-6 text-black">
         {applicationURL ? "Use NFID" : title}
       </H5>
 

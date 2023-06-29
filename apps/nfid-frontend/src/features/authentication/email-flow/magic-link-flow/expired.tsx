@@ -1,4 +1,4 @@
-import { AuthAppMeta } from "../ui/app-meta"
+import { AuthAppMeta } from "../../ui/app-meta"
 
 export const EmailMagicLinkExpired = () => {
   return (

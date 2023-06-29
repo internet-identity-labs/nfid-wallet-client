@@ -1,7 +1,11 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import {
   networks,
@@ -73,7 +77,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const globalICIdentity = await getGlobalKeys(
-        mockedIdentity,
+        await DelegationChain.create(mockedIdentity, sessionKey.getPublicKey()),
         sessionKey,
         Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],

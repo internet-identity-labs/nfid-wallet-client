@@ -1,16 +1,29 @@
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { toast } from "react-toastify"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { KeyPair } from "@nfid/integration"
 
 import { AuthSession, IIAuthSession } from "frontend/state/authentication"
 
-import { checkEmailVerification, sendVerificationEmail } from "./services"
+import {
+  checkEmailVerification,
+  prepareGlobalDelegation,
+  sendVerificationEmail,
+} from "./services"
 
 export interface AuthWithEmailMachineContext {
-  authSession: AuthSession
+  authSession?: AuthSession
   email: string
   keyPair: KeyPair
   requestId: string
+  emailDelegation?: Ed25519KeyIdentity
+  chainRoot?: DelegationChain
+  delegation?: DelegationIdentity
 }
 
 export type Events =
@@ -22,6 +35,11 @@ export type Events =
       type: "done.invoke.sendVerificationEmail"
       data: { keyPair: KeyPair; requestId: string }
     }
+  | {
+      type: "done.invoke.checkEmailVerification"
+      data: any
+    }
+  | { type: "error.platform.sendVerificationEmail"; data: Error }
 
 export interface Schema {
   events: Events
@@ -45,13 +63,23 @@ const AuthWithEmailMachine =
               target: "PendingEmailVerification",
               actions: "assignVerificationData",
             },
+            onError: [
+              {
+                cond: "isRequestInProgress",
+                target: "PendingEmailVerification",
+              },
+              { target: "End", actions: "toastError" },
+            ],
           },
         },
         PendingEmailVerification: {
           invoke: {
             src: "checkEmailVerification",
             id: "checkEmailVerification",
-            onDone: "EmailVerified",
+            onDone: {
+              target: "EmailVerified",
+              actions: "assignEmailDelegation",
+            },
           },
           on: {
             BACK: "End",
@@ -59,6 +87,10 @@ const AuthWithEmailMachine =
           },
         },
         EmailVerified: {
+          invoke: {
+            src: "prepareGlobalDelegation",
+            id: "prepareGlobalDelegation",
+          },
           on: {
             CONTINUE_VERIFIED: "End",
           },
@@ -78,11 +110,24 @@ const AuthWithEmailMachine =
           keyPair: event.data.keyPair,
           requestId: event.data.requestId,
         })),
+        assignEmailDelegation: assign((_, event) => ({
+          emailDelegation: event.data.identity,
+          chainRoot: event.data.chainRoot,
+          delegation: event.data.delegation,
+        })),
+        toastError: (context, event) => {
+          toast.error(event.data.message)
+        },
       },
-      guards: {},
+      guards: {
+        isRequestInProgress: (context, event: { data: Error }) => {
+          return !event.data.message.includes("has not been expired")
+        },
+      },
       services: {
         sendVerificationEmail,
         checkEmailVerification,
+        prepareGlobalDelegation,
       },
     },
   )

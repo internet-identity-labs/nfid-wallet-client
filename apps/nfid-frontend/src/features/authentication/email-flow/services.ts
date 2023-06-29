@@ -3,6 +3,11 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import {
+  KEY_STORAGE_DELEGATION,
+  KEY_STORAGE_KEY,
+  authStorage,
+} from "packages/integration/src/lib/authentication/storage"
 import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
 
 import {
@@ -11,6 +16,7 @@ import {
   authState,
   im,
   replaceActorIdentity,
+  setProfile,
   verificationService,
 } from "@nfid/integration"
 
@@ -37,7 +43,11 @@ export const sendVerificationEmail = async (
 
 export const checkEmailVerification = async (
   context: AuthWithEmailMachineContext,
-): Promise<{ identity: Ed25519KeyIdentity; chainRoot: DelegationChain }> => {
+): Promise<{
+  identity: Ed25519KeyIdentity
+  chainRoot: DelegationChain
+  delegation: DelegationIdentity
+}> => {
   const verificationMethod = "email"
 
   console.debug("checkEmailVerification", {
@@ -47,14 +57,16 @@ export const checkEmailVerification = async (
   })
 
   return new Promise((resolve) => {
+    let nonce = 0
     const int = setInterval(async () => {
       try {
+        nonce++
         const res = await verificationService.checkVerification(
           verificationMethod,
           context.email,
           context.keyPair!,
           context.requestId,
-          0,
+          nonce - 1,
         )
         if (res) {
           clearInterval(int)
@@ -89,41 +101,44 @@ export const prepareGlobalDelegation = async (
 ): Promise<AuthSession> => {
   if (!context?.emailDelegation) throw new Error("No email delegation")
 
-  let del: any, prof: any
-
+  await replaceActorIdentity(im, context.delegation as DelegationIdentity)
   try {
-    // const sessionKey = Ed25519KeyIdentity.generate()
-    await replaceActorIdentity(im, context.delegation as DelegationIdentity)
-    try {
-      const nfidProfile = await fetchProfile()
-      console.log({ nfidProfile })
-    } catch (e) {
-      await createNFIDProfile(context.delegation as DelegationIdentity)
-    }
-
-    const delegation = await getGlobalKeys(
-      context.chainRoot as DelegationChain,
-      context.emailDelegation,
-      Chain.IC,
-      ["74gpt-tiaaa-aaaak-aacaa-cai"],
-    )
-
-    authState.set({
-      delegationIdentity: context.delegation as DelegationIdentity,
-      sessionKey: context.emailDelegation,
-    })
-
-    const profile = await fetchProfile()
-    del = delegation
-    prof = profile
+    const nfidProfile = await fetchProfile()
+    console.log({ nfidProfile })
   } catch (e) {
-    console.log({ e })
+    await createNFIDProfile(context.delegation as DelegationIdentity)
   }
+
+  const delegation = await getGlobalKeys(
+    context.chainRoot as DelegationChain,
+    context.emailDelegation,
+    Chain.IC,
+    ["74gpt-tiaaa-aaaak-aacaa-cai"],
+  )
+
+  authState.set({
+    delegationIdentity: context.delegation as DelegationIdentity,
+    sessionKey: context.emailDelegation,
+    chain: context.chainRoot,
+    globalKey: delegation,
+  })
+
+  await authStorage.set(
+    KEY_STORAGE_KEY,
+    JSON.stringify(context.emailDelegation.toJSON()),
+  )
+  await authStorage.set(
+    KEY_STORAGE_DELEGATION,
+    JSON.stringify(context.chainRoot?.toJSON()),
+  )
+
+  const profile = await fetchProfile()
+  setProfile(profile)
 
   const session = {
     sessionSource: "google",
-    anchor: prof?.anchor,
-    delegationIdentity: del,
+    anchor: profile?.anchor,
+    delegationIdentity: delegation,
   } as AuthSession
 
   return session

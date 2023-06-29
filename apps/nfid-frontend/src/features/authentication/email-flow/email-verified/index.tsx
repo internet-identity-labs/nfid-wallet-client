@@ -1,6 +1,8 @@
-import { Button } from "@nfid-frontend/ui"
+import { Button, Image } from "@nfid-frontend/ui"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
+
+import ImageVerified from "../images/verified.png"
 
 export interface AuthEmailVerifiedProps {
   onContinue: () => void
@@ -13,7 +15,7 @@ export const AuthEmailVerified: React.FC<AuthEmailVerifiedProps> = ({
     <div className="w-full h-full text-sm text-center">
       <AuthAppMeta title="Sign in verified" />
       <p>You may now continue to the application.</p>
-      <div className="w-full h-56 bg-gray-100 my-9" />
+      <Image src={ImageVerified} className="w-full h-56 my-9" alt="verified" />
       <Button type="primary" block onClick={onContinue}>
         Continue
       </Button>

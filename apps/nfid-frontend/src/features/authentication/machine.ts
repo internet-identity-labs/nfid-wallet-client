@@ -69,6 +69,12 @@ const AuthenticationMachine =
       initial: "Start",
       states: {
         Start: {
+          always: [
+            { cond: "isNFID", target: "AuthSelection" },
+            { target: "Handshake" },
+          ],
+        },
+        Handshake: {
           type: "parallel",
           states: {
             Handshake: {
@@ -209,14 +215,11 @@ const AuthenticationMachine =
           },
         },
         End: {
+          type: "final",
           invoke: {
             src: "postDelegation",
             id: "postDelegation",
           },
-          type: "final",
-          data: (context) => ({
-            authSession: context.authSession,
-          }),
         },
       },
     },

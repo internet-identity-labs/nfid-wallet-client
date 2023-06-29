@@ -58,8 +58,8 @@ export interface Typegen0 {
       type: "error.platform.postDelegation"
       data: unknown
     }
-    "xstate.after(2000)#auth-machine.Start": {
-      type: "xstate.after(2000)#auth-machine.Start"
+    "xstate.after(2000)#auth-machine.Handshake": {
+      type: "xstate.after(2000)#auth-machine.Handshake"
     }
     "xstate.init": { type: "xstate.init" }
   }
@@ -99,9 +99,9 @@ export interface Typegen0 {
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
-    getAppMeta: "xstate.init"
+    getAppMeta: ""
     getThirdPartyAuthSession: ""
-    handshake: "RETRY" | "xstate.init"
+    handshake: "" | "RETRY"
     postDelegation: "" | "done.invoke.getThirdPartyAuthSession"
   }
   matchesStates:
@@ -111,17 +111,18 @@ export interface Typegen0 {
     | "EmailAuthentication"
     | "End"
     | "GetThirdPartyAuthSession"
+    | "Handshake"
+    | "Handshake.GetAppMeta"
+    | "Handshake.GetAppMeta.Done"
+    | "Handshake.GetAppMeta.Fetch"
+    | "Handshake.Handshake"
+    | "Handshake.Handshake.Done"
+    | "Handshake.Handshake.Error"
+    | "Handshake.Handshake.Fetch"
     | "OtherSignOptions"
     | "Start"
-    | "Start.GetAppMeta"
-    | "Start.GetAppMeta.Done"
-    | "Start.GetAppMeta.Fetch"
-    | "Start.Handshake"
-    | "Start.Handshake.Done"
-    | "Start.Handshake.Error"
-    | "Start.Handshake.Fetch"
     | {
-        Start?:
+        Handshake?:
           | "GetAppMeta"
           | "Handshake"
           | {

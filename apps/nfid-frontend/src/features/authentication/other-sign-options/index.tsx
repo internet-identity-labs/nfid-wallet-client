@@ -55,7 +55,7 @@ export const AuthOtherSignOptions = ({
   return (
     <div>
       <IconCmpArrow
-        className="transition-opacity cursor-pointer hover:opacity-50"
+        className="transition-opacity cursor-pointer hover:opacity-50 w-6 shrink-0 absolute"
         onClick={onBack}
       />
       <AuthAppMeta
@@ -67,7 +67,7 @@ export const AuthOtherSignOptions = ({
       <div
         className={clsx(
           "grid grid-cols-[22px,1fr] space-x-1.5 text-sm",
-          "bg-orange-50 p-[15px]",
+          "bg-orange-50 p-[15px] mt-4",
         )}
       >
         <div>

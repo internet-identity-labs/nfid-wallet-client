@@ -2,8 +2,8 @@ import { useActor } from "@xstate/react"
 
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
+import { AuthEmailVerified } from "./email-verified"
 import { AuthWithEmailActor } from "./machine"
-import { AuthEmailVerified } from "./magic-link-verified"
 import { AuthEmailPending } from "./pending-verification"
 
 interface AuthEmailFlowCoordinatorProps {

@@ -8,6 +8,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.prepareGlobalDelegation": {
+      type: "done.invoke.prepareGlobalDelegation"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.sendVerificationEmail": {
       type: "done.invoke.sendVerificationEmail"
       data: unknown
@@ -15,6 +20,10 @@ export interface Typegen0 {
     }
     "error.platform.checkEmailVerification": {
       type: "error.platform.checkEmailVerification"
+      data: unknown
+    }
+    "error.platform.prepareGlobalDelegation": {
+      type: "error.platform.prepareGlobalDelegation"
       data: unknown
     }
     "error.platform.sendVerificationEmail": {
@@ -25,6 +34,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     checkEmailVerification: "done.invoke.checkEmailVerification"
+    prepareGlobalDelegation: "done.invoke.prepareGlobalDelegation"
     sendVerificationEmail: "done.invoke.sendVerificationEmail"
   }
   missingImplementations: {
@@ -34,12 +44,19 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    assignEmailDelegation: "done.invoke.checkEmailVerification"
     assignVerificationData: "done.invoke.sendVerificationEmail"
+    toastError: "error.platform.sendVerificationEmail"
   }
   eventsCausingDelays: {}
-  eventsCausingGuards: {}
+  eventsCausingGuards: {
+    isRequestInProgress: "error.platform.sendVerificationEmail"
+  }
   eventsCausingServices: {
-    checkEmailVerification: "done.invoke.sendVerificationEmail"
+    checkEmailVerification:
+      | "done.invoke.sendVerificationEmail"
+      | "error.platform.sendVerificationEmail"
+    prepareGlobalDelegation: "done.invoke.checkEmailVerification"
     sendVerificationEmail: "RESEND" | "xstate.init"
   }
   matchesStates:

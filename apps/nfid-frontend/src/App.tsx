@@ -9,7 +9,7 @@ import { authState, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
-import { AuthEmailMagicLink } from "./features/authentication/magic-link-flow"
+import { AuthEmailMagicLink } from "./features/authentication/email-flow/magic-link-flow"
 import { NotFound } from "./ui/pages/404"
 
 const AuthenticationCoordinator = React.lazy(

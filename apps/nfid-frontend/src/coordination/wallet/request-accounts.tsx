@@ -5,11 +5,10 @@ import { useSearchParams } from "react-router-dom"
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
 import { RequestAccounts } from "frontend/apps/identity-manager/request-accounts"
-import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
+import AuthenticationCoordinator from "frontend/features/authentication/coordinator"
+import { AuthenticationMachineActor } from "frontend/features/authentication/machine"
 import RequestAccountsMachine from "frontend/state/machines/wallet/request-accounts"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-
-import { AuthenticationCoordinator } from "../authentication"
 
 export default function RequestAccountsCoordinator() {
   const [searchParams] = useSearchParams()
@@ -43,8 +42,9 @@ export default function RequestAccountsCoordinator() {
       return (
         <ScreenResponsive>
           <AuthenticationCoordinator
-            actor={state.children.AuthenticationMachine as AuthenticationActor}
-            enforceSingleAccountScreen
+            actor={
+              state.children.AuthenticationMachine as AuthenticationMachineActor
+            }
           />
         </ScreenResponsive>
       )

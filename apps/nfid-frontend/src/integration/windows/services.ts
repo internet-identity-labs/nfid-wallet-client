@@ -63,19 +63,19 @@ export async function postDelegation(context: AuthenticationContext) {
   console.debug("postDelegation")
   if (!context.authRequest?.hostname)
     throw new Error("postDelegation context.authRequest.hostname missing")
-  if (!context.thirdPartyAuthoSession)
-    throw new Error("postDelegation context.thirdPartyAuthoSession missing")
+  if (!context.thirdPartyAuthSession)
+    throw new Error("postDelegation context.thirdPartyAuthSession missing")
   if (!context.appMeta)
     throw new Error("postDelegation context.appMeta missing")
 
   const delegations = [
-    prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation),
+    prepareClientDelegate(context.thirdPartyAuthSession.signedDelegation),
   ]
-  const userPublicKey = context.thirdPartyAuthoSession.userPublicKey
+  const userPublicKey = context.thirdPartyAuthSession.userPublicKey
 
   logAuthorizeApplication({
-    scope: context.thirdPartyAuthoSession.scope,
-    anchor: context.thirdPartyAuthoSession.anchor,
+    scope: context.thirdPartyAuthSession.scope,
+    anchor: context.thirdPartyAuthSession.anchor,
     applicationName: context.appMeta.name,
     chain: "Internet Computer",
   })

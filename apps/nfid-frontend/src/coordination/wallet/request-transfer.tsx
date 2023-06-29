@@ -5,13 +5,12 @@ import { useSearchParams } from "react-router-dom"
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
 import { RequestTransfer } from "frontend/apps/identity-manager/request-transfer"
-import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
+import AuthenticationCoordinator from "frontend/features/authentication/coordinator"
+import { AuthenticationMachineActor } from "frontend/features/authentication/machine"
 import RequestTransferMachine, {
   RequestTransferMachineType,
 } from "frontend/state/machines/wallet/request-transfer"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-
-import { AuthenticationCoordinator } from "../authentication"
 
 interface Props {
   machine?: RequestTransferMachineType
@@ -50,8 +49,9 @@ export default function RequestTransferCoordinator({ machine }: Props) {
       return (
         <ScreenResponsive>
           <AuthenticationCoordinator
-            actor={state.children.AuthenticationMachine as AuthenticationActor}
-            enforceSingleAccountScreen
+            actor={
+              state.children.AuthenticationMachine as AuthenticationMachineActor
+            }
           />
         </ScreenResponsive>
       )

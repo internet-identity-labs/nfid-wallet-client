@@ -9,13 +9,20 @@ import { AuthWithEmailActor } from "frontend/features/authentication/email-flow/
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import AuthenticationMachine from "./machine"
+import AuthenticationMachine, { AuthenticationMachineActor } from "./machine"
 import { AuthOtherSignOptions } from "./other-sign-options"
 
-export default function AuthenticationCoordinator({ isNFID = false }) {
+export default function AuthenticationCoordinator({
+  actor,
+  isNFID = false,
+}: {
+  isNFID?: boolean
+  actor?: AuthenticationMachineActor
+}) {
   const [state, send] = useMachine(AuthenticationMachine, {
     context: { isNFID },
   })
+
   const navigate = useNavigate()
 
   React.useEffect(
@@ -70,7 +77,7 @@ export default function AuthenticationCoordinator({ isNFID = false }) {
           appMeta={state.context.appMeta}
           onBack={() => send({ type: "BACK" })}
           onSuccess={(authSession: AbstractAuthSession) =>
-            send({ type: "END", data: authSession })
+            send({ type: "AUTHENTICATED", data: authSession })
           }
         />
       )

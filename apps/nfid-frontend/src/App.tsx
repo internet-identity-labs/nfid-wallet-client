@@ -17,17 +17,11 @@ const AuthenticationCoordinator = React.lazy(
 )
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 const Faq = React.lazy(() => import("./apps/marketing/landing-page/faq"))
-const PhoneCredentialCoordinator = React.lazy(
-  () => import("./coordination/phone-credential"),
-)
 const RequestTransferCoordinator = React.lazy(
   () => import("./coordination/wallet/request-transfer"),
 )
 const RequestAccountsCoordinator = React.lazy(
   () => import("./coordination/wallet/request-accounts"),
-)
-const RemoteIDPCoordinator = React.lazy(
-  () => import("./coordination/remote-sender"),
 )
 
 const NFIDEmbedCoordinator = React.lazy(
@@ -72,15 +66,6 @@ export const App = () => {
         />
 
         <Route
-          path="/credential/verified-phone-number"
-          element={
-            <ScreenResponsive frameLabel="Verify with NFID">
-              <PhoneCredentialCoordinator />
-            </ScreenResponsive>
-          }
-        />
-
-        <Route
           path="/wallet/request-transfer"
           element={<RequestTransferCoordinator />}
         />
@@ -101,14 +86,6 @@ export const App = () => {
 
         <Route path="/verify/email/:token" element={<AuthEmailMagicLink />} />
 
-        <Route
-          path="/ridp"
-          element={
-            <ScreenResponsive className="flex flex-col items-center">
-              <RemoteIDPCoordinator />
-            </ScreenResponsive>
-          }
-        />
         <Route
           path="/iframe/trust-device"
           element={

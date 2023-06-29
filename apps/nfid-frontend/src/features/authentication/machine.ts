@@ -15,22 +15,30 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
+import { getThirdPartyAuthSession } from "./services"
+
 export interface AuthenticationContext {
   isNFID?: boolean
 
-  verificationEmail: string
-  authRequest: AuthorizationRequest
+  verificationEmail?: string
+  authRequest?: AuthorizationRequest
   appMeta?: AuthorizingAppMeta
 
-  thirdPartyAuthoSession?: ThirdPartyAuthSession
   authSession?: AbstractAuthSession
   error?: Error
+
+  selectedPersonaId?: number
+  thirdPartyAuthSession?: ThirdPartyAuthSession
 }
 
 export type Events =
   | { type: "done.invoke.handshake"; data: AuthorizationRequest }
   | { type: "error.platform.handshake"; data: Error }
   | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
+  | {
+      type: "done.invoke.getThirdPartyAuthSession"
+      data: ThirdPartyAuthSession
+    }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
       data: AbstractAuthSession
@@ -42,7 +50,7 @@ export type Events =
   | { type: "AUTH_WITH_EMAIL"; data: string }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "AUTH_WITH_OTHER" }
-  | { type: "END"; data: AbstractAuthSession }
+  | { type: "AUTHENTICATED"; data: AbstractAuthSession }
   | { type: "BACK" }
   | { type: "RETRY" }
 
@@ -114,6 +122,9 @@ const AuthenticationMachine =
           onDone: {
             target: "AuthSelection",
           },
+          after: {
+            2000: "AuthSelection",
+          },
         },
         AuthSelection: {
           on: {
@@ -140,7 +151,7 @@ const AuthenticationMachine =
               {
                 cond: "isExistingAccount",
                 actions: "assignAuthSession",
-                target: "End",
+                target: "Authenticated",
               },
               {
                 actions: "assignAuthSession",
@@ -163,7 +174,7 @@ const AuthenticationMachine =
               {
                 cond: "isExistingAccount",
                 actions: "assignAuthSession",
-                target: "End",
+                target: "Authenticated",
               },
               {
                 actions: "assignAuthSession",
@@ -175,9 +186,25 @@ const AuthenticationMachine =
         OtherSignOptions: {
           on: {
             BACK: "AuthSelection",
-            END: {
-              target: "End",
+            AUTHENTICATED: {
+              target: "Authenticated",
               actions: "assignAuthSession",
+            },
+          },
+        },
+        Authenticated: {
+          always: [
+            { target: "End", cond: "isNFID" },
+            { target: "GetThirdPartyAuthSession" },
+          ],
+        },
+        GetThirdPartyAuthSession: {
+          invoke: {
+            src: "getThirdPartyAuthSession",
+            id: "getThirdPartyAuthSession",
+            onDone: {
+              actions: "assignThirdPartyAuthSession",
+              target: "End",
             },
           },
         },
@@ -186,6 +213,10 @@ const AuthenticationMachine =
             src: "postDelegation",
             id: "postDelegation",
           },
+          type: "final",
+          data: (context) => ({
+            authSession: context.authSession,
+          }),
         },
       },
     },
@@ -195,22 +226,18 @@ const AuthenticationMachine =
           return !!event?.data?.anchor
         },
         isReturn: (context, event) => !event.data,
+        isNFID: (context) => !!context?.isNFID,
       },
       actions: {
-        assignAuthSession: assign({
-          authSession: (_, event) => {
-            console.debug("AuthenticationMachine assignAuthSession", { event })
-            return event.data
-          },
-        }),
-        assignVerificationEmail: assign({
-          verificationEmail: (_, event) => {
-            console.debug("AuthenticationMachine assignVerificationEmail", {
-              event,
-            })
-            return event.data
-          },
-        }),
+        assignAuthSession: assign((_, event) => ({
+          authSession: event.data,
+        })),
+        assignThirdPartyAuthSession: assign((_, event) => ({
+          thirdPartyAuthSession: event.data,
+        })),
+        assignVerificationEmail: assign((_, event) => ({
+          verificationEmail: event.data,
+        })),
         assignAuthRequest: assign((_, event) => ({
           authRequest: event.data,
         })),
@@ -222,6 +249,7 @@ const AuthenticationMachine =
         })),
       },
       services: {
+        getThirdPartyAuthSession,
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
         postDelegation,

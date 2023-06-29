@@ -1,18 +1,14 @@
 import { useMachine } from "@xstate/react"
 import React from "react"
 
-import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
-import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
-import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
 import IDPMachine, {
   IDPMachineType,
-} from "frontend/state/machines/authorization/idp"
+} from "frontend/features/authentication/idp"
+import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { ErrorBanner } from "frontend/ui/molecules/error-banner"
 
 import { AuthenticationCoordinator } from "./authentication"
-import { AuthorizationCoordinator } from "./authorization"
-import { TrustDeviceCoordinator } from "./trust-device"
 
 interface Props {
   machine?: IDPMachineType
@@ -45,18 +41,12 @@ export default function IDPCoordinator({ machine }: Props) {
           actor={state.children.authenticate as AuthenticationActor}
         />
       )
-    case state.matches("AuthorizationMachine"):
-      return (
-        <AuthorizationCoordinator
-          actor={state.children.authorize as AuthorizationActor}
-        />
-      )
-    case state.matches("TrustDevice"):
-      return (
-        <TrustDeviceCoordinator
-          actor={state.children.trustDeviceMachine as TrustDeviceActor}
-        />
-      )
+    // case state.matches("AuthorizationMachine"):
+    //   return (
+    //     <AuthorizationCoordinator
+    //       actor={state.children.authorize as AuthorizationActor}
+    //     />
+    //   )
     case state.matches("End"):
     case state.matches("Start"):
     default:

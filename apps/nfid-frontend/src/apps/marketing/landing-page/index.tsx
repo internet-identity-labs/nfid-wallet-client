@@ -5,8 +5,8 @@ import { Link } from "react-router-dom"
 import { Parallax } from "react-scroll-parallax"
 
 import { Image } from "@nfid-frontend/ui"
-import { loadProfileFromLocalStorage } from "@nfid/integration"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/integration/device"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
@@ -34,7 +34,7 @@ interface Props
   > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const isRegistered = !!React.useMemo(() => loadProfileFromLocalStorage(), [])
+  const { isAuthenticated } = useAuthentication()
 
   const { isMobile } = useDeviceInfo()
 
@@ -57,7 +57,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         >
           <div
             className={`font-inner ${isMobile ? `mobile` : ``} ${
-              isRegistered ? `has-account` : ``
+              isAuthenticated ? `has-account` : ``
             }`}
           >
             <section
@@ -65,7 +65,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               className="grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 scroll-mt-20"
             >
               <div className="relative">
-                <HeroLeftSide isUnregistered={!isRegistered} />
+                <HeroLeftSide isUnregistered={!isAuthenticated} />
                 <Parallax speed={isMobile ? undefined : -300}>
                   <p className="absolute text-[25vw] opacity-[0.02] z-0 left-0 font-bold">
                     Identity
@@ -78,7 +78,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                   src={Blur1}
                   alt="blur1"
                 />
-                <NFIDAuthentication isUnregistered={!isRegistered} />
+                <NFIDAuthentication isAuthenticated={isAuthenticated} />
                 {/* @ts-ignore: TODO: Pasha fix */}
                 <Fade right>
                   <Parallax

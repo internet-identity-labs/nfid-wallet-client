@@ -50,6 +50,7 @@ export async function fetchGoogleDevice(
       "Content-Type": "application/json",
     },
   })
+
   return mapGoogleDeviceResult(await response.json())
 }
 

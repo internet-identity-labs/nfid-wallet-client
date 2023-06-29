@@ -3,9 +3,9 @@ import React from "react"
 
 import { Loader } from "@nfid-frontend/ui"
 
+import { AuthSelection } from "frontend/features/authentication/auth-selection"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/email-flow/machine"
-import { AuthSignIn } from "frontend/features/authentication/signin"
 import { AuthWithIIActor } from "frontend/features/sign-in-options/machine"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
@@ -32,7 +32,7 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
     case state.matches("AuthWithGoogle"):
     case state.matches("AuthenticateSameDevice"):
       return (
-        <AuthSignIn
+        <AuthSelection
           onSelectGoogleAuthorization={({ credential }) => {
             console.debug(
               "UnknownDeviceCoordinator onSelectGoogleAuthorization",

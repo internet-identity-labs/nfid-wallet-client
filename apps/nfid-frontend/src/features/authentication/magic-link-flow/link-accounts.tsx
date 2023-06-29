@@ -1,6 +1,6 @@
 import { Button, IconCmpGoogle, Image } from "@nfid-frontend/ui"
 
-import LinkAsset from "../assets/link-accounts.png"
+import LinkAsset from "../images/link-accounts.png"
 import { AuthAppMeta } from "../ui/app-meta"
 
 export const EmailMagicLinkLink = () => {

@@ -11,20 +11,20 @@ import { Separator } from "frontend/ui/atoms/separator"
 
 import { AuthAppMeta } from "../ui/app-meta"
 
-export interface AuthSignInProps {
+export interface AuthSelectionProps {
   onSelectGoogleAuthorization: LoginEventHandler
   onSelectEmailAuthorization: (email: string) => void
   appMeta?: AuthorizingAppMeta
 }
 
-export const AuthSignIn: React.FC<AuthSignInProps> = ({
+export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectGoogleAuthorization,
   onSelectEmailAuthorization,
   appMeta,
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
-    mode: "all",
+    mode: "onBlur",
   })
 
   return (

@@ -1,6 +1,5 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { isWebAuthNSupported } from "frontend/integration/device"
 import {
   getAppMeta,
   handshake,
@@ -15,9 +14,6 @@ import {
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
-import AuthorizationMachine from "frontend/state/machines/authorization/authorization"
-
-import TrustDeviceMachine from "../authentication/trust-device"
 
 export interface IDPMachineContext {
   authRequest?: {
@@ -146,36 +142,10 @@ const IDPMachine =
           invoke: {
             src: "AuthenticationMachine",
             id: "authenticate",
-            onDone: "AuthorizationMachine",
-            data: (context) => ({
-              appMeta: context.appMeta,
-              authRequest: context.authRequest,
-            }),
-          },
-        },
-        AuthorizationMachine: {
-          invoke: {
-            src: "AuthorizationMachine",
-            id: "authorize",
-            onDone: [
-              { target: "TrustDevice", cond: "isWebAuthNSupported" },
-              { target: "End" },
-            ],
-            data: (context, event: { data: AuthSession }) => ({
-              appMeta: context.appMeta,
-              authRequest: context.authRequest,
-              authSession: event.data,
-            }),
-          },
-        },
-        TrustDevice: {
-          entry: "assignAuthoSession",
-          invoke: {
-            src: "TrustDeviceMachine",
-            id: "trustDeviceMachine",
             onDone: "End",
             data: (context) => ({
-              isIframe: context.isIframe,
+              appMeta: context.appMeta,
+              authRequest: context.authRequest,
             }),
           },
         },
@@ -199,8 +169,6 @@ const IDPMachine =
         checkIsIframe,
         checkIsIframeAllowed,
         AuthenticationMachine,
-        AuthorizationMachine,
-        TrustDeviceMachine,
       },
       actions: {
         assignAuthRequest: assign((_, event) => ({
@@ -209,9 +177,6 @@ const IDPMachine =
         assignAppMeta: assign((_, event) => ({
           appMeta: event.data,
         })),
-        assignAuthoSession: assign({
-          thirdPartyAuthoSession: (_, event) => event.data,
-        }),
         assignError: assign({ error: (_, event) => event.data }),
         assignIframeNotAllowedError: assign({
           error: (_) =>
@@ -224,7 +189,6 @@ const IDPMachine =
         })),
       },
       guards: {
-        isWebAuthNSupported,
         isTrue: (_, event) => !!event.data,
       },
     },

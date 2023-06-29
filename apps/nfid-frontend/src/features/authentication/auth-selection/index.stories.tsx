@@ -1,10 +1,10 @@
 import { Meta, Story } from "@storybook/react"
 
-import { AuthSignIn, AuthSignInProps } from "./index"
+import { AuthSelection, AuthSelectionProps } from "./index"
 
 const meta: Meta = {
   title: "Auth/SignIn",
-  component: AuthSignIn,
+  component: AuthSelection,
   argTypes: {},
   parameters: {
     controls: { expanded: true },
@@ -14,7 +14,9 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<AuthSignInProps> = (args) => <AuthSignIn {...args} />
+const Template: Story<AuthSelectionProps> = (args) => (
+  <AuthSelection {...args} />
+)
 
 export const Default = Template.bind({})
 

@@ -17,7 +17,7 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
-import AuthWithGoogleMachine from "./auth-with-google"
+import AuthWithGoogleMachine from "../../../features/authentication/google-flow/auth-with-google"
 import RemoteReceiverMachine from "./remote-receiver"
 
 export interface UnknownDeviceContext {

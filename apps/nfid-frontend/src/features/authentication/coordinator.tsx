@@ -6,15 +6,15 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { AuthSelection } from "frontend/features/authentication/auth-selection"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/email-flow/machine"
+import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import AuthenticationMachine from "./machine"
+import { AuthOtherSignOptions } from "./other-sign-options"
 
-export default function AuthenticationCoordinator({
-  shouldRedirectToProfile = false,
-}) {
+export default function AuthenticationCoordinator({ isNFID = false }) {
   const [state, send] = useMachine(AuthenticationMachine, {
-    context: { shouldRedirectToProfile },
+    context: { isNFID },
   })
   const navigate = useNavigate()
 
@@ -28,31 +28,31 @@ export default function AuthenticationCoordinator({
   )
 
   React.useEffect(() => {
-    if (!state.context.shouldRedirectToProfile) return
+    if (!state.context.isNFID) return
     if (state.value === "End" && state.context.authSession) {
       navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
     }
-  }, [
-    navigate,
-    state.context.authSession,
-    state.context.shouldRedirectToProfile,
-    state.value,
-  ])
+  }, [navigate, state.context.authSession, state.context.isNFID, state.value])
 
   switch (true) {
     case state.matches("AuthSelection"):
       return (
         <AuthSelection
-          onSelectGoogleAuthorization={({ credential }) => {
+          onSelectEmailAuth={(email: string) =>
+            send({
+              type: "AUTH_WITH_EMAIL",
+              data: email,
+            })
+          }
+          onSelectGoogleAuth={({ credential }) => {
             send({
               type: "AUTH_WITH_GOOGLE",
               data: { jwt: credential },
             })
           }}
-          onSelectEmailAuthorization={(email: string) =>
+          onSelectOtherAuth={() =>
             send({
-              type: "AUTH_WITH_EMAIL",
-              data: email,
+              type: "AUTH_WITH_OTHER",
             })
           }
           appMeta={state.context.appMeta}
@@ -62,6 +62,16 @@ export default function AuthenticationCoordinator({
       return (
         <AuthEmailFlowCoordinator
           actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
+        />
+      )
+    case state.matches("OtherSignOptions"):
+      return (
+        <AuthOtherSignOptions
+          appMeta={state.context.appMeta}
+          onBack={() => send({ type: "BACK" })}
+          onSuccess={(authSession: AbstractAuthSession) =>
+            send({ type: "END", data: authSession })
+          }
         />
       )
     case state.matches("End"):

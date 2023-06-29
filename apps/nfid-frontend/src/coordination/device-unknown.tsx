@@ -32,25 +32,26 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
     case state.matches("AuthWithGoogle"):
     case state.matches("AuthenticateSameDevice"):
       return (
-        <AuthSelection
-          onSelectGoogleAuthorization={({ credential }) => {
-            console.debug(
-              "UnknownDeviceCoordinator onSelectGoogleAuthorization",
-              { credential },
-            )
-            send({
-              type: "AUTH_WITH_GOOGLE",
-              data: { jwt: credential },
-            })
-          }}
-          onSelectEmailAuthorization={(email: string) =>
-            send({
-              type: "AUTH_WITH_EMAIL",
-              data: email,
-            })
-          }
-          appMeta={state.context.appMeta}
-        />
+        <div>123</div>
+        // <AuthSelection
+        //   onSelectGoogleAuthorization={({ credential }) => {
+        //     console.debug(
+        //       "UnknownDeviceCoordinator onSelectGoogleAuthorization",
+        //       { credential },
+        //     )
+        //     send({
+        //       type: "AUTH_WITH_GOOGLE",
+        //       data: { jwt: credential },
+        //     })
+        //   }}
+        //   onSelectEmailAuthorization={(email: string) =>
+        //     send({
+        //       type: "AUTH_WITH_EMAIL",
+        //       data: email,
+        //     })
+        //   }
+        //   appMeta={state.context.appMeta}
+        // />
         // <AuthorizeDecider
         //   applicationName={state.context.appMeta?.name}
         //   applicationLogo={state.context.appMeta?.logo}

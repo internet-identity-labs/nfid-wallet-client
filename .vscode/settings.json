@@ -24,5 +24,8 @@
   },
   "[feature]": {
     "editor.defaultFormatter": "alexkrechik.cucumberautocomplete"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

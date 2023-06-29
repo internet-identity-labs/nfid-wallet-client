@@ -1,8 +1,8 @@
+import { AuthenticationContext } from "frontend/features/authentication/machine"
 import { logAuthorizeApplication } from "frontend/features/stats/services"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
-  ThirdPartyAuthSession,
 } from "frontend/state/authorization"
 
 import {
@@ -59,11 +59,7 @@ export async function handshake(): Promise<AuthorizationRequest> {
  * @param event
  * @returns
  */
-export async function postDelegation(context: {
-  authRequest?: { hostname: string }
-  thirdPartyAuthoSession?: ThirdPartyAuthSession
-  appMeta?: AuthorizingAppMeta
-}) {
+export async function postDelegation(context: AuthenticationContext) {
   console.debug("postDelegation")
   if (!context.authRequest?.hostname)
     throw new Error("postDelegation context.authRequest.hostname missing")

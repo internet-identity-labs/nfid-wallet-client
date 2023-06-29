@@ -13,6 +13,16 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.getAppMeta": {
+      type: "done.invoke.getAppMeta"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.handshake": {
+      type: "done.invoke.handshake"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.postDelegation": {
       type: "done.invoke.postDelegation"
       data: unknown
@@ -26,6 +36,14 @@ export interface Typegen0 {
       type: "error.platform.AuthWithGoogleMachine"
       data: unknown
     }
+    "error.platform.getAppMeta": {
+      type: "error.platform.getAppMeta"
+      data: unknown
+    }
+    "error.platform.handshake": {
+      type: "error.platform.handshake"
+      data: unknown
+    }
     "error.platform.postDelegation": {
       type: "error.platform.postDelegation"
       data: unknown
@@ -35,6 +53,8 @@ export interface Typegen0 {
   invokeSrcNameMap: {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
+    getAppMeta: "done.invoke.getAppMeta"
+    handshake: "done.invoke.handshake"
     postDelegation: "done.invoke.postDelegation"
   }
   missingImplementations: {
@@ -44,9 +64,13 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    assignAppMeta: "done.invoke.getAppMeta"
+    assignAuthRequest: "done.invoke.handshake"
     assignAuthSession:
+      | "END"
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+    assignError: "error.platform.handshake"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
   }
   eventsCausingDelays: {}
@@ -59,7 +83,10 @@ export interface Typegen0 {
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
+    getAppMeta: "xstate.init"
+    handshake: "RETRY" | "xstate.init"
     postDelegation:
+      | "END"
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
   }
@@ -68,5 +95,23 @@ export interface Typegen0 {
     | "AuthWithGoogle"
     | "EmailAuthentication"
     | "End"
+    | "OtherSignOptions"
+    | "Start"
+    | "Start.GetAppMeta"
+    | "Start.GetAppMeta.Done"
+    | "Start.GetAppMeta.Fetch"
+    | "Start.Handshake"
+    | "Start.Handshake.Done"
+    | "Start.Handshake.Error"
+    | "Start.Handshake.Fetch"
+    | {
+        Start?:
+          | "GetAppMeta"
+          | "Handshake"
+          | {
+              GetAppMeta?: "Done" | "Fetch"
+              Handshake?: "Done" | "Error" | "Fetch"
+            }
+      }
   tags: never
 }

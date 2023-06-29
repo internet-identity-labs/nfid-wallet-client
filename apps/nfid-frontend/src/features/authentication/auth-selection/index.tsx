@@ -12,14 +12,16 @@ import { Separator } from "frontend/ui/atoms/separator"
 import { AuthAppMeta } from "../ui/app-meta"
 
 export interface AuthSelectionProps {
-  onSelectGoogleAuthorization: LoginEventHandler
-  onSelectEmailAuthorization: (email: string) => void
+  onSelectGoogleAuth: LoginEventHandler
+  onSelectEmailAuth: (email: string) => void
+  onSelectOtherAuth: () => void
   appMeta?: AuthorizingAppMeta
 }
 
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
-  onSelectGoogleAuthorization,
-  onSelectEmailAuthorization,
+  onSelectGoogleAuth,
+  onSelectEmailAuth,
+  onSelectOtherAuth,
   appMeta,
 }) => {
   const { register, handleSubmit, formState } = useForm({
@@ -36,9 +38,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         title="Continue to your account"
       />
       <form
-        onSubmit={handleSubmit((values) =>
-          onSelectEmailAuthorization(values.email),
-        )}
+        onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
         className="space-y-2.5"
       >
         <Input
@@ -56,7 +56,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         <Separator />
 
         <SignInWithGoogle
-          onLogin={onSelectGoogleAuthorization}
+          onLogin={onSelectGoogleAuth}
           button={
             <Button
               className="h-12 !p-0"
@@ -76,7 +76,12 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         >
           Continue with a passkey
         </Button>
-        <Button className="h-12 !p-0" type="ghost" block>
+        <Button
+          className="h-12 !p-0"
+          type="ghost"
+          block
+          onClick={onSelectOtherAuth}
+        >
           Other sign in options
         </Button>
       </form>

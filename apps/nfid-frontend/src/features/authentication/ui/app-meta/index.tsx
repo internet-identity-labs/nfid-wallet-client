@@ -63,7 +63,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
           <span>
             to connect to{" "}
             <a
-              className="transition-opacity text-blue hover:opacity-50"
+              className="transition-opacity text-linkColor hover:opacity-50"
               href={applicationURL}
               target="_blank"
               rel="noreferrer"

@@ -31,7 +31,7 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
         )}
       >
         <div className="relative z-10 flex flex-col justify-between w-full h-[580px] p-5">
-          <AuthenticationCoordinator shouldRedirectToProfile />
+          <AuthenticationCoordinator isNFID />
           <SDKFooter />
         </div>
       </div>

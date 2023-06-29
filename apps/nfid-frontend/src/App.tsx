@@ -12,7 +12,9 @@ import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { AuthEmailMagicLink } from "./features/authentication/magic-link-flow"
 import { NotFound } from "./ui/pages/404"
 
-const IDPCoordinator = React.lazy(() => import("./coordination/idp"))
+const AuthenticationCoordinator = React.lazy(
+  () => import("./features/authentication/coordinator"),
+)
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 const Faq = React.lazy(() => import("./apps/marketing/landing-page/faq"))
 const PhoneCredentialCoordinator = React.lazy(
@@ -92,7 +94,7 @@ export const App = () => {
           path="/authenticate"
           element={
             <ScreenResponsive className="flex flex-col items-center">
-              <IDPCoordinator />
+              <AuthenticationCoordinator />
             </ScreenResponsive>
           }
         />

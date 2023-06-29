@@ -12,13 +12,10 @@ export const sendVerificationEmail = async (
   context: AuthWithEmailMachineContext,
 ): Promise<SendVerificationResponse> => {
   try {
-    const sendVerificationResponse = await verificationService.sendVerification(
-      {
-        verificationMethod: "email",
-        emailAddress: context.email,
-      },
-    )
-    return sendVerificationResponse
+    return await verificationService.sendVerification({
+      verificationMethod: "email",
+      emailAddress: context.email,
+    })
   } catch (e) {
     throw e
   }
@@ -35,17 +32,20 @@ export const checkEmailVerification = async (
     keyPair: context.keyPair,
   })
 
-  try {
-    return verificationService.checkVerification(
-      verificationMethod,
-      context.email,
-      context.keyPair,
-      context.requestId,
-      0,
-    )
-  } catch (e) {
-    throw e
-  }
+  return new Promise((resolve) => {
+    setInterval(() => {
+      try {
+        const res = verificationService.checkVerification(
+          verificationMethod,
+          context.email,
+          context.keyPair!,
+          context.requestId,
+          0,
+        )
+        if (res) resolve(res)
+      } catch (e) {}
+    }, 5000)
+  })
 }
 
 export const verify = async (

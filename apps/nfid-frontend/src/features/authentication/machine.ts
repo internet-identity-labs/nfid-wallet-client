@@ -1,8 +1,14 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { ThirdPartyAuthSession } from "@nfid/integration"
+
 import AuthWithEmailMachine from "frontend/features/authentication/email-flow/machine"
 import AuthWithGoogleMachine from "frontend/features/authentication/google-flow/auth-with-google"
-import { postDelegation } from "frontend/integration/windows/services"
+import {
+  getAppMeta,
+  handshake,
+  postDelegation,
+} from "frontend/integration/windows/services"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
@@ -10,14 +16,21 @@ import {
 } from "frontend/state/authorization"
 
 export interface AuthenticationContext {
-  shouldRedirectToProfile?: boolean
-  authRequest: AuthorizationRequest
-  authSession?: AbstractAuthSession
-  appMeta?: AuthorizingAppMeta
+  isNFID?: boolean
+
   verificationEmail: string
+  authRequest: AuthorizationRequest
+  appMeta?: AuthorizingAppMeta
+
+  thirdPartyAuthoSession?: ThirdPartyAuthSession
+  authSession?: AbstractAuthSession
+  error?: Error
 }
 
 export type Events =
+  | { type: "done.invoke.handshake"; data: AuthorizationRequest }
+  | { type: "error.platform.handshake"; data: Error }
+  | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
       data: AbstractAuthSession
@@ -28,7 +41,10 @@ export type Events =
     }
   | { type: "AUTH_WITH_EMAIL"; data: string }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
+  | { type: "AUTH_WITH_OTHER" }
   | { type: "END"; data: AbstractAuthSession }
+  | { type: "BACK" }
+  | { type: "RETRY" }
 
 export interface Schema {
   events: Events
@@ -42,16 +58,74 @@ const AuthenticationMachine =
       tsTypes: {} as import("./machine.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
       id: "auth-machine",
-      initial: "AuthSelection",
+      initial: "Start",
       states: {
+        Start: {
+          type: "parallel",
+          states: {
+            Handshake: {
+              initial: "Fetch",
+              states: {
+                Fetch: {
+                  invoke: {
+                    src: "handshake",
+                    id: "handshake",
+                    onDone: [
+                      {
+                        actions: "assignAuthRequest",
+                        target: "Done",
+                      },
+                    ],
+                    onError: {
+                      target: "Error",
+                      actions: "assignError",
+                    },
+                  },
+                },
+                Error: {
+                  on: { RETRY: "Fetch" },
+                },
+                Done: {
+                  type: "final",
+                },
+              },
+            },
+            GetAppMeta: {
+              initial: "Fetch",
+              states: {
+                Fetch: {
+                  invoke: {
+                    src: "getAppMeta",
+                    id: "getAppMeta",
+                    onDone: [
+                      {
+                        actions: "assignAppMeta",
+                        target: "Done",
+                      },
+                    ],
+                  },
+                },
+                Done: {
+                  type: "final",
+                },
+              },
+            },
+          },
+          onDone: {
+            target: "AuthSelection",
+          },
+        },
         AuthSelection: {
           on: {
-            AUTH_WITH_GOOGLE: {
-              target: "AuthWithGoogle",
-            },
             AUTH_WITH_EMAIL: {
               target: "EmailAuthentication",
               actions: "assignVerificationEmail",
+            },
+            AUTH_WITH_GOOGLE: {
+              target: "AuthWithGoogle",
+            },
+            AUTH_WITH_OTHER: {
+              target: "OtherSignOptions",
             },
           },
         },
@@ -98,18 +172,19 @@ const AuthenticationMachine =
             ],
           },
         },
+        OtherSignOptions: {
+          on: {
+            BACK: "AuthSelection",
+            END: {
+              target: "End",
+              actions: "assignAuthSession",
+            },
+          },
+        },
         End: {
-          type: "final",
           invoke: {
             src: "postDelegation",
             id: "postDelegation",
-          },
-          data: (context, event) => {
-            console.debug("AuthenticationMachine End", {
-              authSession: context.authSession,
-              context,
-              event,
-            })
           },
         },
       },
@@ -136,14 +211,22 @@ const AuthenticationMachine =
             return event.data
           },
         }),
-        // handleError: (event, context) => {
-        //   toast.error(context.data.message)
-        // },
+        assignAuthRequest: assign((_, event) => ({
+          authRequest: event.data,
+        })),
+        assignAppMeta: assign((_, event) => ({
+          appMeta: event.data,
+        })),
+        assignError: assign((_, event) => ({
+          error: event.data,
+        })),
       },
       services: {
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
         postDelegation,
+        getAppMeta,
+        handshake,
       },
     },
   )

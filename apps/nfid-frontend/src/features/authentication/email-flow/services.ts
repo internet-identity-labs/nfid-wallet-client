@@ -16,7 +16,6 @@ import {
   authState,
   im,
   replaceActorIdentity,
-  setProfile,
   verificationService,
 } from "@nfid/integration"
 
@@ -75,7 +74,7 @@ export const checkEmailVerification = async (
       } catch (e) {
         console.log("ERROR", e)
       }
-    }, 5000)
+    }, 3000)
   })
 }
 
@@ -103,8 +102,7 @@ export const prepareGlobalDelegation = async (
 
   await replaceActorIdentity(im, context.delegation as DelegationIdentity)
   try {
-    const nfidProfile = await fetchProfile()
-    console.log({ nfidProfile })
+    await fetchProfile()
   } catch (e) {
     await createNFIDProfile(context.delegation as DelegationIdentity)
   }
@@ -133,7 +131,6 @@ export const prepareGlobalDelegation = async (
   )
 
   const profile = await fetchProfile()
-  setProfile(profile)
 
   const session = {
     sessionSource: "google",

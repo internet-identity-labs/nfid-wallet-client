@@ -13,6 +13,7 @@ import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
 import {
   SendVerificationResponse,
   VerificationMethod,
+  accessList,
   authState,
   im,
   replaceActorIdentity,
@@ -111,7 +112,7 @@ export const prepareGlobalDelegation = async (
     context.chainRoot as DelegationChain,
     context.emailDelegation,
     Chain.IC,
-    ["74gpt-tiaaa-aaaak-aacaa-cai"],
+    accessList,
   )
 
   authState.set({

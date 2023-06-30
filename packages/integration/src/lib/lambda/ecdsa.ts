@@ -58,13 +58,6 @@ export async function getGlobalKeys(
     return (await response.json()).public_key
   })
 
-  // const chainRoot = await DelegationChain.create(
-  //   identity,
-  //   sessionKey.getPublicKey(),
-  //   new Date(Date.now() + 3_600_000 * 44),
-  //   {},
-  // )
-
   //delegate lambda to register global keys
   const delegationChainForLambda = await DelegationChain.create(
     sessionKey,

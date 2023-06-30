@@ -202,7 +202,7 @@ describe("Verification of email", () => {
       return mockFetchPromise
     })
 
-    const delegationIdentity = await verificationService.checkVerification(
+    const { delegation } = await verificationService.checkVerification(
       "email",
       testEmail,
       keyPair,
@@ -210,7 +210,7 @@ describe("Verification of email", () => {
       0,
     )
 
-    expect(delegationIdentity.getPrincipal().toString()).toEqual(
+    expect(delegation.getPrincipal().toString()).toEqual(
       "3n7dj-gk5yn-hh4ka-xqp43-bz7sg-eysrq-vyoje-ljtyh-5wqma-5f4h5-mqe",
     )
   })

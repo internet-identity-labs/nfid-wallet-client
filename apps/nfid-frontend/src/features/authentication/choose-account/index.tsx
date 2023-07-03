@@ -1,6 +1,5 @@
-import { ChooseItem } from "packages/ui/src/molecules/choose-modal/choose-item"
-
-import { Button, IGroupOption } from "@nfid-frontend/ui"
+import { Button } from "@nfid-frontend/ui"
+import { ThirdPartyAuthSession } from "@nfid/integration"
 
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
@@ -8,15 +7,11 @@ import { AuthAppMeta } from "../ui/app-meta"
 
 export interface IAuthChooseAccount {
   appMeta: AuthorizingAppMeta
-  rootAccount: IGroupOption
-  appSpecificAccounts: IGroupOption[]
-  handleSelectAccount: (account: IGroupOption) => void
+  handleSelectAccount: (account: ThirdPartyAuthSession) => void
 }
 
 export const AuthChooseAccount = ({
   appMeta,
-  rootAccount,
-  appSpecificAccounts,
   handleSelectAccount,
 }: IAuthChooseAccount) => {
   return (
@@ -27,9 +22,9 @@ export const AuthChooseAccount = ({
         applicationName={appMeta?.name}
         title="Choose an account"
       />
-      <ChooseItem
-        {...rootAccount}
-        handleClick={() => handleSelectAccount(rootAccount)}
+      {/* <ChooseItem
+        // {...rootAccount}
+        // handleClick={() => handleSelectAccount()}
       />
       <hr />
       {appSpecificAccounts.map((account) => (
@@ -38,7 +33,7 @@ export const AuthChooseAccount = ({
           key={account.value}
           handleClick={() => handleSelectAccount(account)}
         />
-      ))}
+      ))} */}
       <div className="flex-1" />
       <Button type="ghost" block>
         Use a different NFID

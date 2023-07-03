@@ -4,7 +4,7 @@ import React from "react"
 import { Image } from "@nfid-frontend/ui"
 import { SDKFooter } from "@nfid-frontend/ui"
 
-import AuthenticationCoordinator from "frontend/features/authentication/coordinator"
+import NFIDAuthCoordinator from "frontend/features/authentication/nfid/coordinator"
 import { ElementProps } from "frontend/types/react"
 
 import Group from "./assets/Group.svg"
@@ -31,7 +31,7 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
         )}
       >
         <div className="relative z-10 flex flex-col justify-between w-full h-[580px] p-5">
-          <AuthenticationCoordinator isNFID />
+          <NFIDAuthCoordinator />
           <SDKFooter />
         </div>
       </div>

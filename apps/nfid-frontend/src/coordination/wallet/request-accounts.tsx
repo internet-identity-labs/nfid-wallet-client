@@ -5,8 +5,8 @@ import { useSearchParams } from "react-router-dom"
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
 import { RequestAccounts } from "frontend/apps/identity-manager/request-accounts"
-import AuthenticationCoordinator from "frontend/features/authentication/coordinator"
-import { AuthenticationMachineActor } from "frontend/features/authentication/machine"
+import AuthenticationCoordinator from "frontend/features/authentication/root/coordinator"
+import { AuthenticationMachineActor } from "frontend/features/authentication/root/root-machine"
 import RequestAccountsMachine from "frontend/state/machines/wallet/request-accounts"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 

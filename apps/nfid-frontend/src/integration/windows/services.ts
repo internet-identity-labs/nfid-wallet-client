@@ -1,4 +1,4 @@
-import { AuthenticationContext } from "frontend/features/authentication/machine"
+import { AuthenticationContext } from "frontend/features/authentication/root/root-machine"
 import { logAuthorizeApplication } from "frontend/features/stats/services"
 import {
   AuthorizationRequest,

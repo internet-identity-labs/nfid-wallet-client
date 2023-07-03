@@ -37,22 +37,24 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         applicationName={appMeta?.name}
         title="Continue to your account"
       />
-      <form
-        onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
-        className="space-y-2.5"
-      >
-        <Input
-          inputClassName="h-12"
-          labelText="Email"
-          type="email"
-          errorText={formState.errors.email?.message?.toString()}
-          {...register("email", {
-            required: "Please enter your email",
-          })}
-        />
-        <Button className="h-12 !p-0" type="primary" block>
-          Continue with email
-        </Button>
+      <div className="space-y-2.5">
+        <form
+          onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
+          className="space-y-2.5"
+        >
+          <Input
+            inputClassName="h-12"
+            labelText="Email"
+            type="email"
+            errorText={formState.errors.email?.message?.toString()}
+            {...register("email", {
+              required: "Please enter your email",
+            })}
+          />
+          <Button className="h-12 !p-0" type="primary" block>
+            Continue with email
+          </Button>
+        </form>
         <Separator />
 
         <SignInWithGoogle
@@ -84,7 +86,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         >
           Other sign in options
         </Button>
-      </form>
+      </div>
     </div>
   )
 }

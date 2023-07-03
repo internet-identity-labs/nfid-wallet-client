@@ -12,7 +12,7 @@ import { AuthSession, IIAuthSession } from "frontend/state/authentication"
 
 import {
   checkEmailVerification,
-  prepareGlobalDelegation,
+  authorizeWithEmail,
   sendVerificationEmail,
 } from "./services"
 
@@ -23,7 +23,7 @@ export interface AuthWithEmailMachineContext {
   requestId: string
   emailDelegation?: Ed25519KeyIdentity
   chainRoot?: DelegationChain
-  delegation?: DelegationIdentity
+  delegation: DelegationIdentity
 }
 
 export type Events =
@@ -88,8 +88,8 @@ const AuthWithEmailMachine =
         },
         EmailVerified: {
           invoke: {
-            src: "prepareGlobalDelegation",
-            id: "prepareGlobalDelegation",
+            src: "authorizeWithEmail",
+            id: "authorizeWithEmail",
             onDone: "Authenticated",
           },
         },
@@ -129,7 +129,7 @@ const AuthWithEmailMachine =
       services: {
         sendVerificationEmail,
         checkEmailVerification,
-        prepareGlobalDelegation,
+        authorizeWithEmail,
       },
     },
   )

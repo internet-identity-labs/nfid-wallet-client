@@ -1,6 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
+import { Icon } from "@nfid/integration"
+
 import {
   LegacyDevice,
   RecoveryDevice,
@@ -36,7 +38,7 @@ AppScreen.args = {
   devices: [
     {
       label: "NFID Safari on iOS",
-      icon: "mobile",
+      icon: Icon.mobile,
       browser: "Chrome",
       lastUsed: Date.now(),
       pubkey: [
@@ -51,7 +53,7 @@ AppScreen.args = {
     {
       label: "NFID Chrome on Mac OS",
       browser: "Chrome",
-      icon: "desktop",
+      icon: Icon.desktop,
       lastUsed: Date.now(),
       pubkey: [
         48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
@@ -77,7 +79,7 @@ AppScreen.args = {
       ],
       isSecurityKey: true,
       isRecoveryPhrase: false,
-      icon: "usb",
+      icon: Icon.usb,
     },
     {
       label: "Recovery phrase",
@@ -92,13 +94,13 @@ AppScreen.args = {
       ],
       isSecurityKey: false,
       isRecoveryPhrase: true,
-      icon: "document",
+      icon: Icon.document,
     },
   ],
   socialDevices: [
     {
       label: "Google",
-      icon: "google",
+      icon: Icon.google,
       browser: "Chrome",
       lastUsed: Date.now(),
       isAccessPoint: true,

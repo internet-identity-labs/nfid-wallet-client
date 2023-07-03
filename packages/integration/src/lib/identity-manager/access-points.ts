@@ -1,15 +1,16 @@
-export type Icon =
-  | "mobile"
-  | "tablet"
-  | "desktop"
-  | "laptop"
-  | "document"
-  | "usb"
-  | "google"
-  | "unknown"
-  | "ii"
-  | "metamask"
-  | "email"
+export enum Icon {
+  mobile = "mobile",
+  tablet = "tablet",
+  desktop = "desktop",
+  laptop = "laptop",
+  document = "document",
+  usb = "usb",
+  google = "google",
+  unknown = "unknown",
+  ii = "ii",
+  metamask = "metamask",
+  email = "email",
+}
 
 export enum DeviceType {
   Email = "Email",

@@ -41,7 +41,6 @@ type SetProps = {
   delegationIdentity: DelegationIdentity
   chain?: DelegationChain | undefined
   sessionKey?: Ed25519KeyIdentity | undefined
-  globalKey?: DelegationIdentity | undefined
 }
 
 function makeAuthState() {

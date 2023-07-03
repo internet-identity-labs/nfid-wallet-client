@@ -3,13 +3,13 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.checkEmailVerification": {
-      type: "done.invoke.checkEmailVerification"
+    "done.invoke.authorizeWithEmail": {
+      type: "done.invoke.authorizeWithEmail"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.prepareGlobalDelegation": {
-      type: "done.invoke.prepareGlobalDelegation"
+    "done.invoke.checkEmailVerification": {
+      type: "done.invoke.checkEmailVerification"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -18,12 +18,12 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.checkEmailVerification": {
-      type: "error.platform.checkEmailVerification"
+    "error.platform.authorizeWithEmail": {
+      type: "error.platform.authorizeWithEmail"
       data: unknown
     }
-    "error.platform.prepareGlobalDelegation": {
-      type: "error.platform.prepareGlobalDelegation"
+    "error.platform.checkEmailVerification": {
+      type: "error.platform.checkEmailVerification"
       data: unknown
     }
     "error.platform.sendVerificationEmail": {
@@ -33,8 +33,8 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
+    authorizeWithEmail: "done.invoke.authorizeWithEmail"
     checkEmailVerification: "done.invoke.checkEmailVerification"
-    prepareGlobalDelegation: "done.invoke.prepareGlobalDelegation"
     sendVerificationEmail: "done.invoke.sendVerificationEmail"
   }
   missingImplementations: {
@@ -53,10 +53,10 @@ export interface Typegen0 {
     isRequestInProgress: "error.platform.sendVerificationEmail"
   }
   eventsCausingServices: {
+    authorizeWithEmail: "done.invoke.checkEmailVerification"
     checkEmailVerification:
       | "done.invoke.sendVerificationEmail"
       | "error.platform.sendVerificationEmail"
-    prepareGlobalDelegation: "done.invoke.checkEmailVerification"
     sendVerificationEmail: "RESEND" | "xstate.init"
   }
   matchesStates:

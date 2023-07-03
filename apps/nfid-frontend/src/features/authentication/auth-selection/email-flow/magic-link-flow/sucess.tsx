@@ -1,6 +1,6 @@
 import { Image } from "@nfid-frontend/ui"
 
-import { AuthAppMeta } from "../../ui/app-meta"
+import { AuthAppMeta } from "../../../ui/app-meta"
 import ImageVerified from "../images/verified.png"
 
 export const EmailMagicLinkSuccess = () => {

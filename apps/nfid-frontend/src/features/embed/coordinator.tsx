@@ -3,8 +3,8 @@ import React from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 
-import AuthenticationCoordinator from "../authentication/coordinator"
-import { AuthenticationMachineActor } from "../authentication/machine"
+import AuthenticationCoordinator from "../authentication/root/coordinator"
+import { AuthenticationMachineActor } from "../authentication/root/root-machine"
 import { NFIDEmbedMachineV2 } from "./machine-v2"
 import { ProcedureApprovalCoordinator } from "./procedure-approval-coordinator"
 import { PageError } from "./ui/error"

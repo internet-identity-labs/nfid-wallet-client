@@ -7,7 +7,7 @@ import { FunctionCall } from "@nfid/integration-ethereum"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import AuthenticationMachine from "../authentication/machine"
+import AuthenticationMachine from "../authentication/root/root-machine"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import {

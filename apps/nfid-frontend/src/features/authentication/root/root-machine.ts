@@ -2,24 +2,15 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { ThirdPartyAuthSession } from "@nfid/integration"
 
-import AuthWithEmailMachine from "frontend/features/authentication/email-flow/machine"
-import AuthWithGoogleMachine from "frontend/features/authentication/google-flow/auth-with-google"
-import {
-  getAppMeta,
-  handshake,
-  postDelegation,
-} from "frontend/integration/windows/services"
+import AuthWithEmailMachine from "frontend/features/authentication/auth-selection/email-flow/machine"
+import AuthWithGoogleMachine from "frontend/features/authentication/auth-selection/google-flow/auth-with-google"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
-import { getThirdPartyAuthSession } from "./services"
-
 export interface AuthenticationContext {
-  isNFID?: boolean
-
   verificationEmail?: string
   authRequest?: AuthorizationRequest
   appMeta?: AuthorizingAppMeta
@@ -32,13 +23,6 @@ export interface AuthenticationContext {
 }
 
 export type Events =
-  | { type: "done.invoke.handshake"; data: AuthorizationRequest }
-  | { type: "error.platform.handshake"; data: Error }
-  | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
-  | {
-      type: "done.invoke.getThirdPartyAuthSession"
-      data: ThirdPartyAuthSession
-    }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
       data: AbstractAuthSession
@@ -63,75 +47,11 @@ const AuthenticationMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SYGFMx6BHsgAOyAEa0ANrXQBPAMQRieZrTzViBNbACyxSVLAB1WZmNhxAQQyY8iUCOKxZtFQ5AAPRAEYATABsTACcABw+wQDMAAwALJEA7D4ArP6hADQgcoiRkX5MscHBCcGxyQnRoWEBsQC+tZloWLiEJOSUNAzMAEpgULSw6BzI6G54usj0mOpgSipqGlrMHH0DQyNjHk4uo+5IXojxQbEBoaGxftHB5akZWYjJoQlMydFvfjHnVQEJ9Y22LSIZAoVDojCYNiwLDARnouzwCisAFUACoACQA+sYAJLojEAcQA8oT8QAZACiW2crj2oG8CD8jwKiUKyT8fh8sROoWSmWyCFCkWCTDeosiPmiPh5AT8fxATRw+CB7VBXQhtmhsPhiNRmJxeO65N0hJRlP22xp9n29L8sVCzISrPZnO5fj5viuQVeb1eZT8xTqDXlAKVbRBnXBkMwmoE2uReP1mJNaPJ3SpO021sQgXt8Ud12dXNOvPuCASqSYPgC1ceCQCuQqkTlCsBYY6YOYUdMWHxxGIUCMc1UTHUmm06qw3cwvf7RgmUxm6ctHnpPh84qYkXKkXCkTt0T8CXdAsCTCSyTCoUue8qPmbIdawPbat6AFtiOgwFGwHhRvQNioQ4LGOyxgO+n5LvCK6IFekQhNEMrJAEt4lIUx4SsEXqir6bIBvezShk+qrguSnhrOoUBWHgUzEBwOoJriSboqmkGZnS2anA6TockWPLHo2lbVtWgqXLEdYBPhiqPiqEbMKR5F4JR1GYLR9F6oxGLkgAGtiLAotiABy+IYlYBk8GihJpua1JQVmCCnD4LxPPE5SeleR6lvWsRMO5fjhMUPxFMEkmtkRskTvwv4MCMYAsMgr5gAAIrJQEjos45SP26hTlRNEcKxtIHAgKQJPk64ROywSepKdz8jUjnBFKMp+SUAQRCFhEyR2EU-n+MVxQlyUdgoYAcBwtFMCIUgjAAZrRr5MJl-R4Dlym0QVVrscVlRwT8bxnFUeSVG6pYJEKZ4nJc4SxJK5QSXKJBUPA+wtp14bdWwnDcHwAhCKIEjSLI-KODZbFFaV6EciKoo1RUwnnB10nvWqn1cBt0EIHax52iEQWYaVdpiRUySI8qyPgr0-SDMM8LztMqjo3ZzVnj8JTJEK4rlD42MVEwh6RPWVYJKV1zJCTQavUjz6RhqMKxmDFq2VtnHRHD1xnaEbVRCWdUHkwyFCikpxRHu4v-ARUvEZ2thTjOA5gIzW2vMcxSJDuRTrkhx7XQUosnJhhsyqTbZW0wb4fl+ti9dFSsgIrYP0mUjkfHmKS2qcmvoQhyTQ28e7Xarh7B2F3XyYMFG5Sp+XWRmhX0my+QHoUh7xJrqQefyFTPDDUoxF5AvF11arflF-6fgNSWyY7RUSuyBTREh1xlK7W7HvW0QvFVvc7cksRSoP5NyXgEDT6u5y7ZrjrrjtKSRN75xnsEtqHVceQIxLD5k9LDs18udm2sebAc88ZVTFlud2A96i1CAA */
   createMachine(
     {
-      tsTypes: {} as import("./machine.typegen").Typegen0,
+      tsTypes: {} as import("./root-machine.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
       id: "auth-machine",
-      initial: "Start",
+      initial: "AuthSelection",
       states: {
-        Start: {
-          always: [
-            { cond: "isNFID", target: "AuthSelection" },
-            { target: "Handshake" },
-          ],
-        },
-        Handshake: {
-          type: "parallel",
-          states: {
-            Handshake: {
-              initial: "Fetch",
-              states: {
-                Fetch: {
-                  invoke: {
-                    src: "handshake",
-                    id: "handshake",
-                    onDone: [
-                      {
-                        actions: "assignAuthRequest",
-                        target: "Done",
-                      },
-                    ],
-                    onError: {
-                      target: "Error",
-                      actions: "assignError",
-                    },
-                  },
-                },
-                Error: {
-                  on: { RETRY: "Fetch" },
-                },
-                Done: {
-                  type: "final",
-                },
-              },
-            },
-            GetAppMeta: {
-              initial: "Fetch",
-              states: {
-                Fetch: {
-                  invoke: {
-                    src: "getAppMeta",
-                    id: "getAppMeta",
-                    onDone: [
-                      {
-                        actions: "assignAppMeta",
-                        target: "Done",
-                      },
-                    ],
-                  },
-                },
-                Done: {
-                  type: "final",
-                },
-              },
-            },
-          },
-          onDone: {
-            target: "AuthSelection",
-          },
-          after: {
-            2000: "AuthSelection",
-          },
-        },
         AuthSelection: {
           on: {
             AUTH_WITH_EMAIL: {
@@ -157,7 +77,7 @@ const AuthenticationMachine =
               {
                 cond: "isExistingAccount",
                 actions: "assignAuthSession",
-                target: "Authenticated",
+                target: "End",
               },
               {
                 actions: "assignAuthSession",
@@ -178,13 +98,8 @@ const AuthenticationMachine =
             onDone: [
               { cond: "isReturn", target: "AuthSelection" },
               {
-                cond: "isExistingAccount",
                 actions: "assignAuthSession",
-                target: "Authenticated",
-              },
-              {
-                actions: "assignAuthSession",
-                target: "AuthSelection",
+                target: "End",
               },
             ],
           },
@@ -193,33 +108,14 @@ const AuthenticationMachine =
           on: {
             BACK: "AuthSelection",
             AUTHENTICATED: {
-              target: "Authenticated",
-              actions: "assignAuthSession",
-            },
-          },
-        },
-        Authenticated: {
-          always: [
-            { target: "End", cond: "isNFID" },
-            { target: "GetThirdPartyAuthSession" },
-          ],
-        },
-        GetThirdPartyAuthSession: {
-          invoke: {
-            src: "getThirdPartyAuthSession",
-            id: "getThirdPartyAuthSession",
-            onDone: {
-              actions: "assignThirdPartyAuthSession",
               target: "End",
+              actions: "assignAuthSession",
             },
           },
         },
         End: {
           type: "final",
-          invoke: {
-            src: "postDelegation",
-            id: "postDelegation",
-          },
+          data: (context) => ({ ...context }),
         },
       },
     },
@@ -229,35 +125,19 @@ const AuthenticationMachine =
           return !!event?.data?.anchor
         },
         isReturn: (context, event) => !event.data,
-        isNFID: (context) => !!context?.isNFID,
       },
       actions: {
         assignAuthSession: assign((_, event) => ({
           authSession: event.data,
         })),
-        assignThirdPartyAuthSession: assign((_, event) => ({
-          thirdPartyAuthSession: event.data,
-        })),
+
         assignVerificationEmail: assign((_, event) => ({
           verificationEmail: event.data,
         })),
-        assignAuthRequest: assign((_, event) => ({
-          authRequest: event.data,
-        })),
-        assignAppMeta: assign((_, event) => ({
-          appMeta: event.data,
-        })),
-        assignError: assign((_, event) => ({
-          error: event.data,
-        })),
       },
       services: {
-        getThirdPartyAuthSession,
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
-        postDelegation,
-        getAppMeta,
-        handshake,
       },
     },
   )

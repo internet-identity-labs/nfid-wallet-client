@@ -16,7 +16,7 @@ import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 
-import { AuthAppMeta } from "../ui/app-meta"
+import { AuthAppMeta } from "../../ui/app-meta"
 import { authWithAnchor } from "./services"
 
 export interface AuthOtherSignOptionsProps {

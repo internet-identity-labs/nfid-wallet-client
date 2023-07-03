@@ -5,8 +5,8 @@ import { useSearchParams } from "react-router-dom"
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
 import { RequestTransfer } from "frontend/apps/identity-manager/request-transfer"
-import AuthenticationCoordinator from "frontend/features/authentication/coordinator"
-import { AuthenticationMachineActor } from "frontend/features/authentication/machine"
+import AuthenticationCoordinator from "frontend/features/authentication/root/coordinator"
+import { AuthenticationMachineActor } from "frontend/features/authentication/root/root-machine"
 import RequestTransferMachine, {
   RequestTransferMachineType,
 } from "frontend/state/machines/wallet/request-transfer"

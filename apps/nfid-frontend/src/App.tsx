@@ -9,12 +9,10 @@ import { authState, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
-import { AuthEmailMagicLink } from "./features/authentication/email-flow/magic-link-flow"
+import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
+import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import { NotFound } from "./ui/pages/404"
 
-const AuthenticationCoordinator = React.lazy(
-  () => import("./features/authentication/coordinator"),
-)
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 const Faq = React.lazy(() => import("./apps/marketing/landing-page/faq"))
 const RequestTransferCoordinator = React.lazy(
@@ -79,7 +77,7 @@ export const App = () => {
           path="/authenticate"
           element={
             <ScreenResponsive className="flex flex-col items-center">
-              <AuthenticationCoordinator />
+              <ThirdPartyAuthCoordinator />
             </ScreenResponsive>
           }
         />

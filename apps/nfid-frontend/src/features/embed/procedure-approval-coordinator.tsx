@@ -5,7 +5,6 @@ import useSWR from "swr"
 import { ProviderError } from "@nfid/integration"
 import { FunctionCall, Method } from "@nfid/integration-ethereum"
 
-import { NFIDConnectAccountCoordinator } from "frontend/features/embed-connect-account/coordinator"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
@@ -108,17 +107,17 @@ export const ProcedureApprovalCoordinator: React.FC<
         </React.Suspense>
       )
 
-    case rpcMessage.method === "eth_accounts":
-      return (
-        <NFIDConnectAccountCoordinator
-          onConnect={() => onConfirm()}
-          {...{
-            rpcMessage,
-            appMeta,
-            authSession,
-          }}
-        />
-      )
+    // case rpcMessage.method === "eth_accounts":
+    //   return (
+    //     <NFIDConnectAccountCoordinator
+    //       onConnect={() => onConfirm()}
+    //       {...{
+    //         rpcMessage,
+    //         appMeta,
+    //         authSession,
+    //       }}
+    //     />
+    //   )
     default:
       return (
         <MappedFallback

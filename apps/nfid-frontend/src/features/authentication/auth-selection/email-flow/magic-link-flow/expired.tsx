@@ -1,6 +1,6 @@
 import { Image } from "@nfid-frontend/ui"
 
-import { AuthAppMeta } from "../../ui/app-meta"
+import { AuthAppMeta } from "../../../ui/app-meta"
 import ImageExpired from "../images/expired.png"
 
 export const EmailMagicLinkExpired = () => {

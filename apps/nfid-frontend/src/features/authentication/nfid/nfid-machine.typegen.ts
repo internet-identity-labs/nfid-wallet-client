@@ -3,19 +3,19 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.fetchAccountsService": {
-      type: "done.invoke.fetchAccountsService"
+    "done.invoke.AuthenticationMachine": {
+      type: "done.invoke.AuthenticationMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.fetchAccountsService": {
-      type: "error.platform.fetchAccountsService"
+    "error.platform.AuthenticationMachine": {
+      type: "error.platform.AuthenticationMachine"
       data: unknown
     }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    fetchAccountsService: "done.invoke.fetchAccountsService"
+    AuthenticationMachine: "done.invoke.AuthenticationMachine"
   }
   missingImplementations: {
     actions: never
@@ -24,19 +24,13 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
-    assignAccounts: "done.invoke.fetchAccountsService"
+    assignAuthSession: "done.invoke.AuthenticationMachine"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}
   eventsCausingServices: {
-    fetchAccountsService: "BACK" | "xstate.init"
+    AuthenticationMachine: "xstate.init"
   }
-  matchesStates:
-    | "ConnectionDetails"
-    | "End"
-    | "Error"
-    | "Start"
-    | "Start.FetchAccounts"
-    | { Start?: "FetchAccounts" }
+  matchesStates: "AuthenticationMachine" | "End"
   tags: never
 }

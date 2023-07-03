@@ -2,7 +2,7 @@ import { ThirdPartyAuthSession, fetchDelegate } from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
 
-import { AuthenticationContext } from "./machine"
+import { AuthenticationContext } from "./root/root-machine"
 
 export async function getThirdPartyAuthSession(
   context: AuthenticationContext,

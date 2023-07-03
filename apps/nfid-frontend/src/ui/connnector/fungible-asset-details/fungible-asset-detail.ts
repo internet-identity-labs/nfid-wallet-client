@@ -1,13 +1,11 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
-import { getWalletDelegation } from "src/integration/facade/wallet"
-import { fetchProfile } from "src/integration/identity-manager"
 import {
   IFungibleAssetDetailsConnector,
   TokenDetailsConfig,
 } from "src/ui/connnector/types"
 
-import { loadProfileFromLocalStorage } from "@nfid/integration"
+import { authState } from "@nfid/integration"
 
 export abstract class FungibleAssetDetailsConnector
   implements IFungibleAssetDetailsConnector
@@ -24,9 +22,12 @@ export abstract class FungibleAssetDetailsConnector
     return `${this.config.tokenStandard}&${this.config.blockchain}`
   }
 
-  protected getIdentity = async (): Promise<DelegationIdentity> => {
-    const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-    return await getWalletDelegation(profile.anchor, "nfid.one", "0")
+  protected getIdentity = (): DelegationIdentity => {
+    const { delegationIdentity } = authState.get()
+    if (!delegationIdentity) {
+      throw Error("Delegation identity error")
+    }
+    return delegationIdentity
   }
 
   getCacheTtl(): number {

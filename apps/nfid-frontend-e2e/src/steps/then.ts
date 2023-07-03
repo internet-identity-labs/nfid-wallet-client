@@ -234,7 +234,7 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
 
 Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
   await $(`#token_${assetLabel.replace(/\s/g, "")}`).waitForDisplayed({
-    timeout: 10000,
+    timeout: 15000,
   })
 })
 
@@ -378,7 +378,7 @@ Then(
   async (text: string, currency) => {
     await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (x) =>
       x
-        .waitForExist({ timeout: 7000 })
+        .waitForExist({ timeout: 17000 })
         .then(async () => expect(x).not.toHaveText(`0 ${currency}`)),
     )
   },

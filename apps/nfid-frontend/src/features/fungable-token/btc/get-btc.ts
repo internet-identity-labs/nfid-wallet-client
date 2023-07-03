@@ -4,11 +4,9 @@ import {
   TokenBalanceSheet,
 } from "packages/integration/src/lib/asset/types"
 import { BtcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
-import { getWalletDelegation } from "src/integration/facade/wallet"
-import { fetchProfile } from "src/integration/identity-manager"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
-import { loadProfileFromLocalStorage } from "@nfid/integration"
+import { authState } from "@nfid/integration"
 
 export const getAccounts = async (): Promise<TokenBalanceSheet> => {
   const principal = await getIdentity()
@@ -30,7 +28,10 @@ export const transferBTC = async (amount: number, to: string) => {
   return await new BtcAsset().transfer(identity, { amount, to })
 }
 
-const getIdentity = async (): Promise<DelegationIdentity> => {
-  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  return await getWalletDelegation(profile.anchor, "nfid.one", "0")
+const getIdentity = (): DelegationIdentity => {
+  const { delegationIdentity } = authState.get()
+  if (!delegationIdentity) {
+    throw Error("Delegation identity error")
+  }
+  return delegationIdentity
 }

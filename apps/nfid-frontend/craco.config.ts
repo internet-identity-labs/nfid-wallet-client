@@ -34,6 +34,7 @@ const setupCSP = () => {
         process.env.AWS_SIGNIN_GOOGLE as string,
         process.env.AWS_ECDSA_SIGN as string,
         process.env.AWS_ECDSA_REGISTER as string,
+        process.env.AWS_ECDSA_REGISTER_ADDRESS as string,
         process.env.AWS_SEND_VERIFICATION_EMAIL as string,
         process.env.AWS_CHECK_VERIFICATION as string,
         process.env.AWS_VERIFY_EMAIL as string,
@@ -232,6 +233,12 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/ecdsa_register/, ""),
+      },
+      "/ecdsa_register_address": {
+        target: process.env.AWS_ECDSA_REGISTER_ADDRESS,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/ecdsa_register_address/, ""),
       },
       "/ecdsa_sign": {
         target: process.env.AWS_ECDSA_SIGN,

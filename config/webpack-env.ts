@@ -78,4 +78,5 @@ export const serviceConfig = {
   BLOCK_CYPHER_TOKEN: JSON.stringify(process.env.BLOCK_CYPHER_TOKEN),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),
   AWS_ECDSA_REGISTER: JSON.stringify(process.env.AWS_ECDSA_REGISTER),
+  AWS_ECDSA_REGISTER_ADDRESS: JSON.stringify(process.env.AWS_ECDSA_REGISTER_ADDRESS),
 }

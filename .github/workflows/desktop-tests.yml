@@ -339,7 +339,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: internet-identity-labs/user-google-e2e
-          path: apps/nfid-frontend-e2e/chrome-user-data-dir
+          path: apps/nfid-frontend-e2e-new/chrome-user-data-dir
           ref: main
           token: ${{ secrets.PAT }}
 
@@ -354,8 +354,8 @@ jobs:
           source ./ci_libs/CI_LIBS.sh
           
           ci_echo_info "Cleaning Allure folder" >&2
-          rm -rf apps/nfid-frontend-e2e/allure-results
-          mkdir -p apps/nfid-frontend-e2e/allure-results
+          rm -rf apps/nfid-frontend-e2e-new/allure-results
+          mkdir -p apps/nfid-frontend-e2e-new/allure-results
 
           cat > npmrc_file << EOF
           @psychedelic:registry=https://npm.pkg.github.com
@@ -466,10 +466,10 @@ jobs:
         if: always()
         id: allure-report
         with:
-          allure_results: apps/nfid-frontend-e2e/allure-results
+          allure_results: apps/nfid-frontend-e2e-new/allure-results
           gh_pages: gh-pages
-          allure_report: apps/nfid-frontend-e2e/allure-report
-          allure_history: apps/nfid-frontend-e2e/allure-history
+          allure_report: apps/nfid-frontend-e2e-new/allure-report
+          allure_history: apps/nfid-frontend-e2e-new/allure-history
           keep_reports: 20
 
       - name: Deploy report to Github Pages

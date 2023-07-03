@@ -12,12 +12,12 @@ interface DeviceListButtonGroupProps {
 }
 
 const ICONS: Icon[] = [
-  "mobile",
-  "tablet",
-  "laptop",
-  "desktop",
-  "document",
-  "usb",
+  Icon.mobile,
+  Icon.tablet,
+  Icon.laptop,
+  Icon.desktop,
+  Icon.document,
+  Icon.usb,
 ]
 
 export const DeviceListButtonGroup: React.FC<DeviceListButtonGroupProps> = ({

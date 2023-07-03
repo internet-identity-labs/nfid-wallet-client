@@ -160,7 +160,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
             <DeviceIconDecider
               icon={
                 recoveryMethod.isRecoveryPhrase
-                  ? "document"
+                  ? Icon.document
                   : recoveryMethod.icon
               }
               onClick={

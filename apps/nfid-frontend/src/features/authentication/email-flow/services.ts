@@ -8,12 +8,11 @@ import {
   KEY_STORAGE_KEY,
   authStorage,
 } from "packages/integration/src/lib/authentication/storage"
-import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
 
 import {
+  Profile,
   SendVerificationResponse,
   VerificationMethod,
-  accessList,
   authState,
   im,
   replaceActorIdentity,
@@ -96,30 +95,26 @@ export const verify = async (
   }
 }
 
-export const prepareGlobalDelegation = async (
+export const authorizeWithEmail = async (
   context: AuthWithEmailMachineContext,
 ): Promise<AuthSession> => {
   if (!context?.emailDelegation) throw new Error("No email delegation")
 
-  await replaceActorIdentity(im, context.delegation as DelegationIdentity)
+  let profile: Profile
+  const delegationIdentity = context.delegation // email delegation
+
   try {
-    await fetchProfile()
+    await replaceActorIdentity(im, delegationIdentity)
+    profile = await fetchProfile()
   } catch (e) {
-    await createNFIDProfile(context.delegation as DelegationIdentity)
+    console.log("creating new profile")
+    profile = await createNFIDProfile(delegationIdentity)
   }
 
-  const delegation = await getGlobalKeys(
-    context.chainRoot as DelegationChain,
-    context.emailDelegation,
-    Chain.IC,
-    accessList,
-  )
-
   authState.set({
-    delegationIdentity: context.delegation as DelegationIdentity,
-    sessionKey: context.emailDelegation,
+    delegationIdentity,
     chain: context.chainRoot,
-    globalKey: delegation,
+    sessionKey: context.emailDelegation,
   })
 
   await authStorage.set(
@@ -131,12 +126,11 @@ export const prepareGlobalDelegation = async (
     JSON.stringify(context.chainRoot?.toJSON()),
   )
 
-  const profile = await fetchProfile()
-
   const session = {
-    sessionSource: "google",
+    sessionSource: "email",
     anchor: profile?.anchor,
-    delegationIdentity: delegation,
+    delegationIdentity,
+    identity: context.emailDelegation,
   } as AuthSession
 
   return session

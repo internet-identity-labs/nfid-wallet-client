@@ -1,6 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import React from "react"
 
+import { Icon } from "@nfid/integration"
+
 import { List } from "frontend/ui/molecules/list"
 
 import { DeviceListItem } from "./device-list-item"
@@ -27,7 +29,7 @@ Default.args = {
   device: {
     label: "My device",
     browser: "Chrome",
-    icon: "desktop",
+    icon: Icon.desktop,
     lastUsed: Date.now(),
     pubkey: [123, 123],
   },

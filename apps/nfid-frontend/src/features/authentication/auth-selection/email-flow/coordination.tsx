@@ -25,7 +25,7 @@ export function AuthEmailFlowCoordinator({
     case state.matches("PendingEmailVerification"):
       return (
         <AuthEmailPending
-          email={state.context.email}
+          email={state.context.verificationEmail}
           onBack={() => send({ type: "BACK" })}
           onResend={() => send({ type: "RESEND" })}
         />

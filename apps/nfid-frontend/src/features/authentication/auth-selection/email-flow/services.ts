@@ -33,7 +33,7 @@ export const sendVerificationEmail = async (
   try {
     return await verificationService.sendVerification({
       verificationMethod: "email",
-      emailAddress: context.email,
+      emailAddress: context.verificationEmail,
     })
   } catch (e) {
     throw e
@@ -51,7 +51,7 @@ export const checkEmailVerification = async (
 
   console.debug("checkEmailVerification", {
     verificationMethod,
-    emailAddress: context.email,
+    emailAddress: context.verificationEmail,
     keyPair: context.keyPair,
   })
 
@@ -62,7 +62,7 @@ export const checkEmailVerification = async (
         nonce++
         const res = await verificationService.checkVerification(
           verificationMethod,
-          context.email,
+          context.verificationEmail,
           context.keyPair!,
           context.requestId,
           nonce - 1,

@@ -1,4 +1,5 @@
 import IconSvgAlertCircle from "./alert-circle.svg"
+import IconSvgAnonymous from "./anonymous.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrow from "./arrow.svg"
@@ -102,6 +103,7 @@ export {
   IconSvgArrowRed,
   IconSvgArrowGreen,
   IconSvgEthereum,
+  IconSvgAnonymous,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -158,6 +160,7 @@ export { ReactComponent as IconCmpArrowGreen } from "./arrow-green.svg"
 export { ReactComponent as IconCmpID } from "./id.svg"
 export { ReactComponent as IconCmpPasskey } from "./passkey.svg"
 export { ReactComponent as IconCmpNFID } from "./nfid.svg"
+export { ReactComponent as IconCmpAnonymous } from "./anonymous.svg"
 
 // png
 export { IconMetamask } from "./metamask"

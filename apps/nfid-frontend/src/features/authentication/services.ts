@@ -1,26 +1,55 @@
-import { ThirdPartyAuthSession, fetchDelegate } from "@nfid/integration"
+import {
+  ThirdPartyAuthSession,
+  authState,
+  fetchDelegate,
+} from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
-
-import { AuthenticationContext } from "./root/root-machine"
+import { AuthorizationRequest } from "frontend/state/authorization"
 
 export async function getThirdPartyAuthSession(
-  context: AuthenticationContext,
+  authRequest: AuthorizationRequest,
+  selectedPersonaId?: string,
+  targets: string[] = [],
 ): Promise<ThirdPartyAuthSession> {
-  if (!context.authRequest) throw new Error("No auth request")
+  if (!authRequest) throw new Error("No auth request")
   const account = await fetchProfile()
 
   const scope = getScope(
-    context.authRequest.hostname,
-    Number(context?.selectedPersonaId),
-    context.authRequest.derivationOrigin,
+    authRequest.hostname,
+    Number(selectedPersonaId),
+    authRequest.derivationOrigin,
   )
+
+  const state = authState.get()
+
+  if (!state.chain) throw new Error("No delegation chain")
+  if (!state.sessionKey) throw new Error("No session key")
+
+  // if (targets.length > 0) {
+  //   const globalKeys = await getGlobalKeys(
+  //     state.chain,
+  //     state.sessionKey,
+  //     authRequest.sessionPublicKey,
+  //     authRequest.chain ?? Chain.IC,
+  //     targets,
+  //   )
+
+  //   const delegation = globalKeys.delegations[0]
+
+  //   return {
+  //     scope: scope,
+  //     anchor: account.anchor,
+  //     signedDelegation: delegation,
+  //     userPublicKey: authRequest.sessionPublicKey,
+  //   }
+  // }
 
   const delegate = await fetchDelegate(
     account.anchor,
     scope,
-    Array.from(context.authRequest.sessionPublicKey),
-    context.authRequest.maxTimeToLive,
+    Array.from(authRequest.sessionPublicKey),
+    authRequest.maxTimeToLive,
   )
 
   return delegate

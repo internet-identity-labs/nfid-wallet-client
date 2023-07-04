@@ -1,4 +1,5 @@
-import { SignedDelegation } from "@nfid/integration"
+import { SignedDelegation } from "@dfinity/identity"
+import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 /**
  * An auth session, signed by the private keys in II, delegating signing authority for a
@@ -21,6 +22,8 @@ export interface AuthorizationRequest {
   sessionPublicKey: Uint8Array
   hostname: string
   derivationOrigin?: string
+  targets?: string[]
+  chain?: Chain
 }
 
 /**

@@ -166,6 +166,9 @@
         "env": "AWS_SEND_VERIFICATION_EMAIL"
       },
       {
+        "env": "AWS_LINK_GOOGLE_ACCOUNT"
+      },
+      {
         "env": "AWS_CHECK_VERIFICATION"
       },
       {

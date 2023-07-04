@@ -83,4 +83,5 @@ export const serviceConfig = {
   AWS_ECDSA_REGISTER_ADDRESS: JSON.stringify(
     process.env.AWS_ECDSA_REGISTER_ADDRESS,
   ),
+  AWS_ECDSA_GET_ANONYMOUS: JSON.stringify(process.env.AWS_ECDSA_GET_ANONYMOUS),
 }

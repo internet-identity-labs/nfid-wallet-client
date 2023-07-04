@@ -1,16 +1,32 @@
 /**
  * @jest-environment jsdom
  */
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
-import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
-import {networks, payments, Transaction, TransactionBuilder,} from "bitcoinjs-lib"
-import {ethers} from "ethers"
-import {arrayify, hashMessage} from "ethers/lib/utils"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import {
+  networks,
+  payments,
+  Transaction,
+  TransactionBuilder,
+} from "bitcoinjs-lib"
+import { ethers } from "ethers"
+import { arrayify, hashMessage } from "ethers/lib/utils"
 import fetch from "node-fetch"
 
-import {Chain, ecdsaSign, getGlobalKeys, getPublicKey,} from "./ecdsa"
-import {ii, im, replaceActorIdentity} from "@nfid/integration";
-import {WALLET_SCOPE} from "@nfid/config";
+import { WALLET_SCOPE } from "@nfid/config"
+import { ii, im, replaceActorIdentity } from "@nfid/integration"
+
+import {
+  Chain,
+  ecdsaGetAnonymous,
+  ecdsaSign,
+  getGlobalKeys,
+  getPublicKey,
+} from "./ecdsa"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -29,10 +45,10 @@ describe("Lambda Sign/Register ECDSA", () => {
         new Date(Date.now() + 3_600_000 * 44),
         {},
       )
-      const di =  DelegationIdentity.fromDelegation(sessionKey, chainRoot);
+      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
       const pubKey = await getPublicKey(di, Chain.ETH)
       const keccak = hashMessage("test_message")
-      const signature = await ecdsaSign(keccak, di,  Chain.ETH)
+      const signature = await ecdsaSign(keccak, di, Chain.ETH)
       const digestBytes = arrayify(keccak)
       const pk = ethers.utils.recoverPublicKey(digestBytes, signature)
       expect(pk).toEqual(pubKey)
@@ -47,7 +63,10 @@ describe("Lambda Sign/Register ECDSA", () => {
         new Date(Date.now() + 3_600_000 * 44),
         {},
       )
-      const delegationIdentity =  DelegationIdentity.fromDelegation(sessionKey, chainRoot);
+      const delegationIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
+        chainRoot,
+      )
       const publicKey = await getPublicKey(delegationIdentity, Chain.BTC)
       const { address } = payments.p2pkh({
         pubkey: Buffer.from(publicKey, "hex"),
@@ -85,6 +104,32 @@ describe("Lambda Sign/Register ECDSA", () => {
       } catch (e) {
         throw Error("Should not fail")
       }
+    })
+
+    it("get anonymous IC keys", async function () {
+      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
+      const sessionKey = Ed25519KeyIdentity.generate()
+      const chainRoot = await DelegationChain.create(
+        mockedIdentity,
+        sessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
+      const globalICIdentity = await ecdsaGetAnonymous(
+        "nfid.one",
+        sessionKey,
+        di,
+        Chain.IC,
+      )
+      const chainActual = DelegationChain.fromJSON(globalICIdentity)
+      const actualIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
+        chainActual,
+      )
+      expect(actualIdentity.getPrincipal().toText()).toEqual(
+        "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
+      )
     })
   })
 })

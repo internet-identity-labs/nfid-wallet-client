@@ -1,9 +1,14 @@
-import {SignIdentity} from "@dfinity/agent"
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
+import { SignIdentity } from "@dfinity/agent"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 
-import {ONE_MINUTE_IN_MS} from "@nfid/config"
-import {btcSigner, ecdsaSigner, replaceActorIdentity} from "../actors"
-import {ic} from "../agent/index"
+import { ONE_MINUTE_IN_MS } from "@nfid/config"
+
+import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
+import { ic } from "../agent/index"
 
 export enum Chain {
   BTC = "BTC",
@@ -55,9 +60,10 @@ export async function getGlobalKeys(
   )
 }
 
-export async function ecdsaSign(keccak: string,
+export async function ecdsaSign(
+  keccak: string,
   identity: DelegationIdentity,
-  chain: Chain
+  chain: Chain,
 ): Promise<string> {
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const lambdaPublicKey = await fetch(registerUrl, {
@@ -74,7 +80,7 @@ export async function ecdsaSign(keccak: string,
     identity,
     Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
-    { previous: identity.getDelegation()}
+    { previous: identity.getDelegation() },
   )
   const request = {
     chain,
@@ -85,7 +91,7 @@ export async function ecdsaSign(keccak: string,
   const signUrl = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
   return await fetch(signUrl, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   }).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
@@ -93,9 +99,11 @@ export async function ecdsaSign(keccak: string,
   })
 }
 
-export async function ecdsaRegisterNewKeyPair(
+export async function ecdsaGetAnonymous(
+  domain: string,
+  sessionKey: Ed25519KeyIdentity,
   identity: DelegationIdentity,
-  chain: Chain
+  chain: Chain,
 ): Promise<string> {
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const lambdaPublicKey = await fetch(registerUrl, {
@@ -112,14 +120,57 @@ export async function ecdsaRegisterNewKeyPair(
     identity,
     Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
-    { previous: identity.getDelegation()}
+    { previous: identity.getDelegation() },
+  )
+  const request = {
+    chain,
+    delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
+    tempPublicKey: lambdaPublicKey,
+    domain,
+    sessionPublicKey: sessionKey.toJSON()[0],
+  }
+  const signUrl = ic.isLocal ? `/ecdsa_get_anonymous` : AWS_ECDSA_GET_ANONYMOUS
+  return await fetch(signUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    const a = await response.json()
+    console.log(a)
+    return a
+  })
+}
+
+export async function ecdsaRegisterNewKeyPair(
+  identity: DelegationIdentity,
+  chain: Chain,
+): Promise<string> {
+  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
+  const lambdaPublicKey = await fetch(registerUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chain,
+    }),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    return (await response.json()).public_key
+  })
+  const delegationChainForLambda = await DelegationChain.create(
+    identity,
+    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
+    { previous: identity.getDelegation() },
   )
   const request = {
     chain,
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
   }
-  const registerAddressUrl = ic.isLocal ? `/ecdsa_register_address` : AWS_ECDSA_REGISTER_ADDRESS
+  const registerAddressUrl = ic.isLocal
+    ? `/ecdsa_register_address`
+    : AWS_ECDSA_REGISTER_ADDRESS
   const response = await fetch(registerAddressUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -140,8 +191,8 @@ export async function getPublicKey(
   await replaceActorIdentity(signer, identity)
   let response = await signer.get_kp()
   if (response.key_pair.length === 0) {
-   await ecdsaRegisterNewKeyPair(identity, chain)
-   response = await signer.get_kp()
+    await ecdsaRegisterNewKeyPair(identity, chain)
+    response = await signer.get_kp()
     if (response.key_pair.length === 0) {
       throw "Unable to preregister keys"
     }

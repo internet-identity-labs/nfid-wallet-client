@@ -6,7 +6,7 @@ import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
 import { UnsignedTransaction } from "ethers-ts";
 import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
-import { Chain, getPublicKey, signECDSA } from "../lambda/ecdsa";
+import {Chain, ecdsaSign, getPublicKey} from "../lambda/ecdsa";
 import { DelegationIdentity } from "@dfinity/identity";
 
 const ABI_721 = [
@@ -39,7 +39,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
       throw Error("Empty wallet identity")
     }
     const keccakHash = hashMessage(message);
-    return signECDSA(keccakHash, this.walletIdentity, Chain.ETH)
+    return ecdsaSign(keccakHash, this.walletIdentity, Chain.ETH)
       .then(joinSignature);
   }
 
@@ -52,7 +52,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
         delete tx.from;
       }
       const keccakHash = keccak256(serialize(<UnsignedTransaction>tx));
-      return signECDSA(keccakHash, this.walletIdentity, Chain.ETH)
+      return ecdsaSign(keccakHash, this.walletIdentity, Chain.ETH)
         .then(async signature => {
           return serialize(<UnsignedTransaction>tx, signature);
         });
@@ -73,7 +73,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
       { types, primaryType, domain, message },
       SignTypedDataVersion.V4
     );
-    return signECDSA(hexlify(typedDataHash), this.walletIdentity, Chain.ETH)
+    return ecdsaSign(hexlify(typedDataHash), this.walletIdentity, Chain.ETH)
       .then(async signature => {
         return joinSignature(signature);
       });

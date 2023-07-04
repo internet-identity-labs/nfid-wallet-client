@@ -1,6 +1,8 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { useCallback, useMemo, useState } from "react"
+import { principalToAddress } from "ictool"
+import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
 import {
@@ -10,7 +12,12 @@ import {
   IconCmpInfo,
   Tooltip,
 } from "@nfid-frontend/ui"
-import { Account, ThirdPartyAuthSession } from "@nfid/integration"
+import {
+  Account,
+  ThirdPartyAuthSession,
+  authState,
+  getBalance,
+} from "@nfid/integration"
 
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {
@@ -20,6 +27,7 @@ import {
 
 import { getThirdPartyAuthSession } from "../../services"
 import { AuthAppMeta } from "../../ui/app-meta"
+import { getPublicProfile } from "./services"
 
 export interface IAuthChooseAccount {
   appMeta: AuthorizingAppMeta
@@ -34,7 +42,12 @@ export const AuthChooseAccount = ({
 }: IAuthChooseAccount) => {
   const [isLoading, setIsLoading] = useState(false)
 
-  const publicProfile = useMemo(async () => {}, [])
+  const { data: legacyAnonymousProfiles, isLoading: isAnonymousLoading } =
+    useSWR([authRequest, "legacyAnonymousProfiles"], ([authRequest]) =>
+      fetchAccountsService({ authRequest }),
+    )
+
+  const { data: publicProfile } = useSWR("publicProfile", getPublicProfile)
 
   const handleSelectAnonymous = useCallback(
     async (account: Account) => {
@@ -49,12 +62,8 @@ export const AuthChooseAccount = ({
     [authRequest, handleSelectAccount],
   )
 
-  const { data: legacyAnonymousProfiles } = useSWR(
-    [authRequest, "legacyAnonymousProfiles"],
-    ([authRequest]) => fetchAccountsService({ authRequest }),
-  )
-
-  if (isLoading) return <BlurredLoader isLoading />
+  if (isLoading || isAnonymousLoading || !publicProfile)
+    return <BlurredLoader isLoading />
 
   return (
     <>
@@ -86,19 +95,22 @@ export const AuthChooseAccount = ({
           </Tooltip>
         </TooltipProvider>
       </div>
-      {/* <ChooseItem
-        // {...rootAccount}
-        // handleClick={() => handleSelectAccount()}
-      />
-      <hr />
-      {appSpecificAccounts.map((account) => (
-        <ChooseItem
-          {...account}
-          key={account.value}
-          handleClick={() => handleSelectAccount(account)}
-        />
-      ))} */}
       <div className="w-full space-y-2.5 my-9">
+        <div
+          className={clsx(
+            "border border-gray-100 bg-gray-50",
+            "px-2.5 h-[70px] space-x-2.5 rounded-md",
+            "flex items-center w-full",
+          )}
+        >
+          <IconCmpAnonymous className="w-10 h-10 shrink-0" />
+          <div className="grid w-full grid-cols-2 text-sm text-gray-400">
+            <div className="">{publicProfile.label}</div>
+            <div className="text-right">{publicProfile.balance}</div>
+            <div className="text-xs">{publicProfile.address}</div>
+            <div className="text-xs text-right">{publicProfile.balanceUSD}</div>
+          </div>
+        </div>
         {legacyAnonymousProfiles?.map((acc) => (
           <div
             key={acc.label}

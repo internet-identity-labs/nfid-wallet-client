@@ -17,8 +17,6 @@ interface ObservableAuthState {
   //
   identity?: SignIdentity // Device Identity (different for each device and browser combination)
   delegationIdentity?: DelegationIdentity // User Identity (unique across all users devices)
-  //
-  // This is only required to remote authenticate via post message channel
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
 }

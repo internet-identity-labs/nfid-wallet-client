@@ -95,6 +95,14 @@ export const verify = async (
   }
 }
 
+export const linkGoogle = async (token: string): Promise<void> => {
+  try {
+    return await verificationService.linkGoogleAccount(token)
+  } catch (e) {
+    throw e
+  }
+}
+
 export const authorizeWithEmail = async (
   context: AuthWithEmailMachineContext,
 ): Promise<AuthSession> => {
@@ -115,6 +123,7 @@ export const authorizeWithEmail = async (
     delegationIdentity,
     chain: context.chainRoot,
     sessionKey: context.emailDelegation,
+    identity: delegationIdentity,
   })
 
   await authStorage.set(

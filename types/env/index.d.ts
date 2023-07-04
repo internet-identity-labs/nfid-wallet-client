@@ -6,6 +6,7 @@ declare const MATIC_ALCHEMY_API_KEY: string
 declare const MUMBAI_ALCHEMY_API_KEY: string
 declare const AWS_AUTH_STATS: string
 declare const AWS_ECDSA_REGISTER: string
+declare const AWS_ECDSA_REGISTER_ADDRESS: string
 declare const AWS_ECDSA_SIGN: string
 declare const AWS_SIGNATURE_EVENT: string
 declare const AWS_SYMMETRIC: string
@@ -39,5 +40,6 @@ declare const VERIFIER_CANISTER_ID: string
 declare const VERIFY_PHONE_NUMBER: string
 declare const WALLET_CONNECT_PROJECT_ID: string
 declare const AWS_SEND_VERIFICATION_EMAIL: string
+declare const AWS_LINK_GOOGLE_ACCOUNT: string
 declare const AWS_CHECK_VERIFICATION: string
 declare const AWS_VERIFY_EMAIL: string

@@ -32,8 +32,26 @@ export class VerificationIsInProgressError extends Error {
 const sendVerificationEmailEndpointUrl = "/send_verification_email"
 const checkVerificationEndpointUrl = "/check_verification"
 const verifyEmailEndpointUrl = "/verify_email"
+const linkGoogleAccountEndpointUrl = "/link_google_account"
 
 export const verificationService = {
+  async linkGoogleAccount(token: string): Promise<void> {
+    const url = ic.isLocal
+      ? linkGoogleAccountEndpointUrl
+      : AWS_LINK_GOOGLE_ACCOUNT
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    })
+
+    if (!response.ok) {
+      const text = await response.text()
+      throw new Error(text)
+    }
+  },
+
   async sendVerification({
     verificationMethod,
     emailAddress,
@@ -80,6 +98,9 @@ export const verificationService = {
       const text = await response.text()
       if (response.status === 400) {
         return "invalid-token"
+      }
+      if (response.status === 422) {
+        return "link-required"
       }
       throw new Error(text)
     }

@@ -1,15 +1,13 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { networks, payments, TransactionBuilder } from "bitcoinjs-lib"
 
-import { Chain, getPublicKey, signECDSA } from "../lambda/ecdsa"
+import {Chain, ecdsaSign, getPublicKey} from "../lambda/ecdsa"
 import {
   bcComputeFee,
   bcComputeTransaction,
   bcPushTransaction,
 } from "./blockcypher-adapter"
 import { BlockCypherTx } from "./types"
-
-const feeTestnet = 1500
 
 export class BtcWallet {
   private readonly walletIdentity: DelegationIdentity
@@ -46,7 +44,7 @@ export class BtcWallet {
     const tx = await this.computeTransactionHex(source, satoshi, targetAddress)
     let signedTx
     try {
-      signedTx = await signECDSA(tx, this.walletIdentity, Chain.BTC)
+      signedTx = await ecdsaSign(tx, this.walletIdentity, Chain.BTC)
     } catch (e: any) {
       throw new Error("sendSatoshi: " + e.message)
     }

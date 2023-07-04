@@ -34,7 +34,9 @@ const setupCSP = () => {
         process.env.AWS_SIGNIN_GOOGLE as string,
         process.env.AWS_ECDSA_SIGN as string,
         process.env.AWS_ECDSA_REGISTER as string,
+        process.env.AWS_ECDSA_REGISTER_ADDRESS as string,
         process.env.AWS_SEND_VERIFICATION_EMAIL as string,
+        process.env.AWS_LINK_GOOGLE_ACCOUNT as string,
         process.env.AWS_CHECK_VERIFICATION as string,
         process.env.AWS_VERIFY_EMAIL as string,
         "https://o1255710.ingest.sentry.io",
@@ -233,6 +235,12 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/ecdsa_register/, ""),
       },
+      "/ecdsa_register_address": {
+        target: process.env.AWS_ECDSA_REGISTER_ADDRESS,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/ecdsa_register_address/, ""),
+      },
       "/ecdsa_sign": {
         target: process.env.AWS_ECDSA_SIGN,
         secure: true,
@@ -245,6 +253,13 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) =>
           path.replace(/^\/send_verification_email/, ""),
+      },
+      "/link_google_account": {
+        target: process.env.AWS_LINK_GOOGLE_ACCOUNT,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/link_google_account/, ""),
       },
       "/check_verification": {
         target: process.env.AWS_CHECK_VERIFICATION,

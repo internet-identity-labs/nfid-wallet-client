@@ -34,6 +34,7 @@ export const serviceConfig = {
   AWS_SEND_VERIFICATION_EMAIL: JSON.stringify(
     process.env.AWS_SEND_VERIFICATION_EMAIL,
   ),
+  AWS_LINK_GOOGLE_ACCOUNT: JSON.stringify(process.env.AWS_LINK_GOOGLE_ACCOUNT),
   AWS_CHECK_VERIFICATION: JSON.stringify(process.env.AWS_CHECK_VERIFICATION),
   AWS_VERIFY_EMAIL: JSON.stringify(process.env.AWS_VERIFY_EMAIL),
   AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
@@ -78,4 +79,5 @@ export const serviceConfig = {
   BLOCK_CYPHER_TOKEN: JSON.stringify(process.env.BLOCK_CYPHER_TOKEN),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),
   AWS_ECDSA_REGISTER: JSON.stringify(process.env.AWS_ECDSA_REGISTER),
+  AWS_ECDSA_REGISTER_ADDRESS: JSON.stringify(process.env.AWS_ECDSA_REGISTER_ADDRESS),
 }

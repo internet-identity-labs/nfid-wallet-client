@@ -23,6 +23,8 @@ import {
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
+import {DelegationIdentity} from "@dfinity/identity";
+import {authState} from "@nfid/integration";
 
 export class BtcTransferConnector
   extends TransferModalConnector<ITransferConfig>
@@ -100,6 +102,17 @@ export class BtcTransferConnector
     }
 
     return result
+  }
+
+  protected getIdentity = (): Promise<DelegationIdentity> => {
+    return new Promise((resolve, reject) => {
+      const { delegationIdentity } = authState.get()
+      if (!delegationIdentity) {
+        reject(Error("Delegation identity error"))
+      } else {
+        resolve(delegationIdentity)
+      }
+    })
   }
 }
 

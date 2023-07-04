@@ -1,4 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { getWalletDelegation } from "src/integration/facade/wallet"
+import { fetchProfile } from "src/integration/identity-manager"
 import {
   AssetErc20Config,
   AssetFilter,
@@ -7,7 +9,7 @@ import {
   TokenConfig,
 } from "src/ui/connnector/types"
 
-import { authState } from "@nfid/integration"
+import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 export abstract class FungibleAssetConnector<
   T extends AssetNativeConfig | AssetErc20Config,
@@ -39,13 +41,12 @@ export abstract class FungibleAssetConnector<
   protected getIdentity = async (
     filterPrincipals?: string[],
   ): Promise<DelegationIdentity[]> => {
-    const { delegationIdentity } = authState.get()
-    if (!delegationIdentity) {
-      throw Error("Delegation identity error")
-    }
+    const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+    const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
+
     return !filterPrincipals?.length ||
-      filterPrincipals?.includes(delegationIdentity.getPrincipal().toString())
-      ? [delegationIdentity]
+      filterPrincipals?.includes(identity.getPrincipal().toString())
+      ? [identity]
       : []
   }
 

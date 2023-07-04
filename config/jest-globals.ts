@@ -51,6 +51,8 @@ export const JEST_GLOBALS = {
   BLOCK_CYPHER_TOKEN: "a983f9288e73496f83d02ea3af7e2f3b",
   AWS_SEND_VERIFICATION_EMAIL:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
+  AWS_LINK_GOOGLE_ACCOUNT:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/link_google_account",
   AWS_CHECK_VERIFICATION:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/check_verification",
   AWS_VERIFY_EMAIL:

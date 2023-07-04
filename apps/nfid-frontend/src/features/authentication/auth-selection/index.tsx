@@ -26,7 +26,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
-    mode: "onBlur",
+    mode: "all",
   })
 
   return (

@@ -1,4 +1,4 @@
-import { SignedDelegation } from "@nfid/integration"
+import { SignedDelegation } from "@dfinity/identity"
 
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
@@ -81,11 +81,11 @@ export const prepareClientDelegate = (
   receivedDelegation: SignedDelegation,
 ): DfinityAuthClientDelegate => ({
   delegation: {
-    pubkey: Uint8Array.from(receivedDelegation.delegation.pubkey),
+    pubkey: new Uint8Array(receivedDelegation.delegation.pubkey),
     expiration: receivedDelegation.delegation.expiration,
     targets: undefined,
   },
-  signature: Uint8Array.from(receivedDelegation.signature),
+  signature: new Uint8Array(receivedDelegation.signature),
 })
 
 /**

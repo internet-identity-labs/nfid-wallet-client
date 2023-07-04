@@ -91,9 +91,9 @@ const AuthenticationMachine =
             src: "AuthWithEmailMachine",
             id: "AuthWithEmailMachine",
             data: (context, _) => ({
-              authRequest: context.authRequest,
-              appMeta: context.appMeta,
-              email: context.verificationEmail,
+              authRequest: context?.authRequest,
+              appMeta: context?.appMeta,
+              verificationEmail: context?.verificationEmail,
             }),
             onDone: [
               { cond: "isReturn", target: "AuthSelection" },
@@ -130,8 +130,7 @@ const AuthenticationMachine =
         assignAuthSession: assign((_, event) => ({
           authSession: event.data,
         })),
-
-        assignVerificationEmail: assign((_, event) => ({
+        assignVerificationEmail: assign((c, event) => ({
           verificationEmail: event.data,
         })),
       },

@@ -3,11 +3,12 @@ import React from "react"
 
 import { ThirdPartyAuthSession } from "@nfid/integration"
 
+import { AuthorizationRequest } from "frontend/state/authorization"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import { AuthChooseAccount } from "../choose-account"
 import AuthenticationCoordinator from "../root/coordinator"
 import { AuthenticationMachineActor } from "../root/root-machine"
+import { AuthChooseAccount } from "./choose-account"
 import ThirdPartyAuthMachine from "./third-party-machine"
 
 export default function ThirdPartyAuthCoordinator() {
@@ -34,6 +35,7 @@ export default function ThirdPartyAuthCoordinator() {
     case state.matches("Authorization"):
       return (
         <AuthChooseAccount
+          authRequest={state.context.authRequest as AuthorizationRequest}
           appMeta={state.context.appMeta}
           handleSelectAccount={(authSession: ThirdPartyAuthSession) =>
             send({ type: "CHOOSE_ACCOUNT", data: authSession })

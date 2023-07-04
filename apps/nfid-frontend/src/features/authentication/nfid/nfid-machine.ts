@@ -32,6 +32,9 @@ const NFIDAuthMachine =
             src: "AuthenticationMachine",
             id: "AuthenticationMachine",
             onDone: { target: "End", actions: "assignAuthSession" },
+            data: {
+              verificationEmail: "",
+            },
           },
         },
         End: {

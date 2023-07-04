@@ -7,7 +7,7 @@ import {
   checkIsIframe,
   checkIsIframeAllowed,
 } from "frontend/integration/windows/services"
-import { AuthSession } from "frontend/state/authentication"
+import { AbstractAuthSession, AuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
@@ -23,6 +23,7 @@ export interface ThirdPartyAuthMachineContext {
     hostname: string
     derivationOrigin?: string
   }
+  authSession?: AbstractAuthSession
   thirdPartyAuthSession?: ThirdPartyAuthSession
   appMeta: AuthorizingAppMeta
   error?: Error
@@ -33,10 +34,8 @@ export type ThirdPartyAuthMachineEvents =
   | { type: "done.invoke.handshake"; data: AuthorizationRequest }
   | { type: "error.platform.handshake"; data: Error }
   | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
-  | { type: "done.invoke.checkIsIframe"; data: boolean }
-  | { type: "done.invoke.checkIsIframeAllowed"; data: boolean }
   | { type: "error.platform.checkRuntime"; data: Error }
-  | { type: "done.invoke.authenticate"; data: AuthSession }
+  | { type: "done.invoke.AuthenticationMachine"; data: AuthSession }
   | { type: "done.invoke.postDelegation"; data: void }
   | { type: "RETRY" }
   | { type: "CHOOSE_ACCOUNT"; data: ThirdPartyAuthSession }
@@ -67,43 +66,13 @@ const ThirdPartyAuthMachine =
                     onDone: [
                       {
                         actions: "assignAuthRequest",
-                        target: "CheckIsIframe",
+                        target: "Done",
                       },
                     ],
                     onError: {
                       target: "Error",
                       actions: "assignError",
                     },
-                  },
-                },
-                CheckIsIframe: {
-                  invoke: {
-                    src: "checkIsIframe",
-                    id: "checkIsIframe",
-                    onDone: [
-                      {
-                        actions: "assignIsIframe",
-                        target: "CheckIsIframeAllowed",
-                        cond: "isTrue",
-                      },
-                      { target: "#idp.AuthenticationMachine" },
-                    ],
-                  },
-                },
-                CheckIsIframeAllowed: {
-                  invoke: {
-                    src: "checkIsIframeAllowed",
-                    id: "checkIsIframeAllowed",
-                    onDone: [
-                      {
-                        target: "#idp.AuthenticationMachine",
-                        cond: "isTrue",
-                      },
-                      {
-                        target: "Error",
-                        actions: "assignIframeNotAllowedError",
-                      },
-                    ],
                   },
                 },
                 Error: {
@@ -143,10 +112,14 @@ const ThirdPartyAuthMachine =
           invoke: {
             src: "AuthenticationMachine",
             id: "AuthenticationMachine",
-            onDone: "End",
+            onDone: {
+              actions: "assignAuthSession",
+              target: "Authorization",
+            },
             data: (context) => ({
               appMeta: context.appMeta,
               authRequest: context.authRequest,
+              authSession: context.authSession,
             }),
           },
         },
@@ -175,10 +148,7 @@ const ThirdPartyAuthMachine =
         handshake,
         getAppMeta,
         postDelegation,
-        checkIsIframe,
-        checkIsIframeAllowed,
         AuthenticationMachine,
-        // AuthorizationMachine,
       },
       actions: {
         assignAuthRequest: assign((_, event) => ({
@@ -190,20 +160,14 @@ const ThirdPartyAuthMachine =
         assignAuthoSession: assign({
           thirdPartyAuthSession: (_, event) => event.data,
         }),
-        assignError: assign({ error: (_, event) => event.data }),
-        assignIframeNotAllowedError: assign({
-          error: (_) =>
-            new Error(
-              "NFID Embed is not activated. Please contact Internet Identity Labs at support@identitylabs.ooo to activate this feature.",
-            ),
+
+        assignAuthSession: assign({
+          authSession: (_, event) => event.data,
         }),
-        assignIsIframe: assign((_, event) => ({
-          isIframe: event.data,
-        })),
+
+        assignError: assign({ error: (_, event) => event.data }),
       },
-      guards: {
-        isTrue: (_, event) => !!event.data,
-      },
+      guards: {},
     },
   )
 

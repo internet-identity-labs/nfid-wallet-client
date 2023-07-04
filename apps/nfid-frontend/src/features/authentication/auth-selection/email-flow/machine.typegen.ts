@@ -44,6 +44,7 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    assignAuthSession: "done.invoke.authorizeWithEmail"
     assignEmailDelegation: "done.invoke.checkEmailVerification"
     assignVerificationData: "done.invoke.sendVerificationEmail"
     toastError: "error.platform.sendVerificationEmail"

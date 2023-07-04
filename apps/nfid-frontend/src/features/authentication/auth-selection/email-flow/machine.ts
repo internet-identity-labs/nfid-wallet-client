@@ -18,7 +18,7 @@ import {
 
 export interface AuthWithEmailMachineContext {
   authSession?: AuthSession
-  email: string
+  verificationEmail: string
   keyPair: KeyPair
   requestId: string
   emailDelegation?: Ed25519KeyIdentity
@@ -40,6 +40,7 @@ export type Events =
       data: any
     }
   | { type: "error.platform.sendVerificationEmail"; data: Error }
+  | { type: "done.invoke.authorizeWithEmail"; data: AuthSession }
 
 export interface Schema {
   events: Events
@@ -90,7 +91,10 @@ const AuthWithEmailMachine =
           invoke: {
             src: "authorizeWithEmail",
             id: "authorizeWithEmail",
-            onDone: "Authenticated",
+            onDone: {
+              target: "Authenticated",
+              actions: "assignAuthSession",
+            },
           },
         },
         Authenticated: {
@@ -111,6 +115,9 @@ const AuthWithEmailMachine =
         assignVerificationData: assign((_, event) => ({
           keyPair: event.data.keyPair,
           requestId: event.data.requestId,
+        })),
+        assignAuthSession: assign((_, event) => ({
+          authSession: event.data,
         })),
         assignEmailDelegation: assign((_, event) => ({
           emailDelegation: event.data.identity,

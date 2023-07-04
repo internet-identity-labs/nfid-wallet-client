@@ -1,9 +1,15 @@
 import { Button, IconCmpGoogle, Image } from "@nfid-frontend/ui"
 
+import { SignInWithGoogle } from "frontend/ui/atoms/button/signin-with-google"
+
 import { AuthAppMeta } from "../../../ui/app-meta"
 import LinkAsset from "../images/link-accounts.png"
 
-export const EmailMagicLinkLink = () => {
+export const EmailMagicLinkLink = ({
+  onContinue,
+}: {
+  onContinue: (token: string) => void
+}) => {
   return (
     <>
       <AuthAppMeta title="Link account" />
@@ -13,14 +19,19 @@ export const EmailMagicLinkLink = () => {
         Google sign in.
       </p>
       <Image src={LinkAsset} className="w-full h-56 my-10" />
-      <Button
-        className="h-12 !p-0"
-        type="stroke"
-        icon={<IconCmpGoogle />}
-        block
-      >
-        Continue with Google
-      </Button>
+      <SignInWithGoogle
+        onLogin={(credential) => onContinue(credential.credential)}
+        button={
+          <Button
+            className="h-12 !p-0"
+            type="stroke"
+            icon={<IconCmpGoogle />}
+            block
+          >
+            Continue with Google
+          </Button>
+        }
+      />
     </>
   )
 }

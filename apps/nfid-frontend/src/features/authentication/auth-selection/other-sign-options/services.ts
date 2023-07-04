@@ -28,6 +28,7 @@ export async function authWithAnchor({
     authResult.sessionKey,
     authResult.chain,
   )
+
   authState.set({
     identity: authResult.sessionKey,
     delegationIdentity,

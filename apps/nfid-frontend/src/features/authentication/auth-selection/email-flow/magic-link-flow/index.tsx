@@ -1,10 +1,11 @@
 import clsx from "clsx"
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import { IconCmpNFID, Loader } from "@nfid-frontend/ui"
 
-import { verify } from "../services"
+import { linkGoogle, verify } from "../services"
 import { EmailMagicLinkExpired } from "./expired"
 import { EmailMagicLinkLink } from "./link-accounts"
 import { EmailMagicLinkSuccess } from "./sucess"
@@ -18,6 +19,7 @@ export const AuthEmailMagicLink = () => {
 
   const verifyEmail = useCallback(async (token: string) => {
     const res = await verify("email", token)
+    console.log(res.status)
     setStatus(res.status)
     setIsLoading(false)
   }, [])
@@ -26,6 +28,18 @@ export const AuthEmailMagicLink = () => {
     if (!token) return // UNREACHABLE
     verifyEmail(token)
   }, [token, verifyEmail])
+
+  const handleLinkGoogle = useCallback(async (googleToken: string) => {
+    setIsLoading(true)
+    try {
+      await linkGoogle(googleToken)
+      setStatus("success")
+    } catch (e: any) {
+      toast.error(e.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
 
   return (
     <div
@@ -57,7 +71,7 @@ export const AuthEmailMagicLink = () => {
         ) : status === "success" ? (
           <EmailMagicLinkSuccess />
         ) : status === "link-required" ? (
-          <EmailMagicLinkLink />
+          <EmailMagicLinkLink onContinue={handleLinkGoogle} />
         ) : null}
       </div>
     </div>

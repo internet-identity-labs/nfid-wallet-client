@@ -1,7 +1,8 @@
+import { SignedDelegation } from "@dfinity/identity"
+
 import { PublicKey } from "../_ic_api/internet_identity.d"
 import { ii } from "../actors"
 import { mapOptional } from "../ic-utils"
-import { SignedDelegation } from "./types"
 
 /**
  * Retrieve prepared third party auth session.
@@ -30,7 +31,7 @@ export async function getDelegate(
             targets: mapOptional(r.signed_delegation.delegation.targets),
           },
           signature: r.signed_delegation.signature,
-        }
+        } as unknown as SignedDelegation
       }
       throw new Error("No such delegation")
     })

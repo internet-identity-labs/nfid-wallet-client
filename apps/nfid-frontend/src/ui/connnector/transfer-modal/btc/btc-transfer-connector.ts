@@ -104,7 +104,7 @@ export class BtcTransferConnector
     return result
   }
 
-  protected getIdentity = (): Promise<DelegationIdentity> => {
+  getIdentity = (): Promise<DelegationIdentity> => {
     return new Promise((resolve, reject) => {
       const { delegationIdentity } = authState.get()
       if (!delegationIdentity) {

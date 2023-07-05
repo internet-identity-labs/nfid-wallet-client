@@ -37,6 +37,7 @@ export const serviceConfig = {
   AWS_LINK_GOOGLE_ACCOUNT: JSON.stringify(process.env.AWS_LINK_GOOGLE_ACCOUNT),
   AWS_CHECK_VERIFICATION: JSON.stringify(process.env.AWS_CHECK_VERIFICATION),
   AWS_VERIFY_EMAIL: JSON.stringify(process.env.AWS_VERIFY_EMAIL),
+  AWS_SIGNIN_GOOGLE_V2: JSON.stringify(process.env.AWS_SIGNIN_GOOGLE_V2),
   AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
   SIGNIN_GOOGLE: JSON.stringify(
     process.env.FRONTEND_MODE === "production"
@@ -79,5 +80,7 @@ export const serviceConfig = {
   BLOCK_CYPHER_TOKEN: JSON.stringify(process.env.BLOCK_CYPHER_TOKEN),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),
   AWS_ECDSA_REGISTER: JSON.stringify(process.env.AWS_ECDSA_REGISTER),
-  AWS_ECDSA_REGISTER_ADDRESS: JSON.stringify(process.env.AWS_ECDSA_REGISTER_ADDRESS),
+  AWS_ECDSA_REGISTER_ADDRESS: JSON.stringify(
+    process.env.AWS_ECDSA_REGISTER_ADDRESS,
+  ),
 }

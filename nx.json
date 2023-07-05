@@ -166,6 +166,9 @@
         "env": "AWS_ECDSA_REGISTER_ADDRESS"
       },
       {
+        "env": "AWS_ECDSA_GET_ANONYMOUS"
+      },
+      {
         "env": "AWS_SEND_VERIFICATION_EMAIL"
       },
       {

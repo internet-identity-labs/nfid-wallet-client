@@ -1,4 +1,4 @@
-import { SignedDelegation } from "@dfinity/identity"
+import { SignedDelegation } from "@nfid/integration"
 
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 

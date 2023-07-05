@@ -115,17 +115,21 @@ describe("Lambda Sign/Register ECDSA", () => {
         new Date(Date.now() + 3_600_000 * 44),
         {},
       )
+
+      // NOTE: this is what we receive from authClient
+      // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
+      const sessionPublicKey = new Uint8Array(sessionKey.getPublicKey().toDer())
+
       const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
-      const globalICIdentity = await ecdsaGetAnonymous(
+      const delegationChain = await ecdsaGetAnonymous(
         "nfid.one",
-        sessionKey,
+        sessionPublicKey,
         di,
         Chain.IC,
       )
-      const chainActual = DelegationChain.fromJSON(globalICIdentity)
       const actualIdentity = DelegationIdentity.fromDelegation(
         sessionKey,
-        chainActual,
+        delegationChain,
       )
       expect(actualIdentity.getPrincipal().toText()).toEqual(
         "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",

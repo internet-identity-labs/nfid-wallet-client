@@ -16,6 +16,17 @@ export enum Chain {
   IC = "IC",
 }
 
+/**
+ * Returns an hexadecimal representation of an array buffer.
+ * @param bytes The array buffer.
+ */
+export function toHexString(bytes: ArrayBuffer): string {
+  return new Uint8Array(bytes).reduce(
+    (str, byte) => str + byte.toString(16).padStart(2, "0"),
+    "",
+  )
+}
+
 export async function getGlobalKeys(
   identity: SignIdentity,
   sessionKey: Ed25519KeyIdentity,
@@ -101,10 +112,10 @@ export async function ecdsaSign(
 
 export async function ecdsaGetAnonymous(
   domain: string,
-  sessionKey: Ed25519KeyIdentity,
+  sessionKey: Uint8Array,
   identity: DelegationIdentity,
   chain: Chain,
-): Promise<string> {
+): Promise<DelegationChain> {
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const lambdaPublicKey = await fetch(registerUrl, {
     method: "POST",
@@ -127,7 +138,7 @@ export async function ecdsaGetAnonymous(
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
     domain,
-    sessionPublicKey: sessionKey.toJSON()[0],
+    sessionPublicKey: toHexString(sessionKey),
   }
   const signUrl = ic.isLocal ? `/ecdsa_get_anonymous` : AWS_ECDSA_GET_ANONYMOUS
   return await fetch(signUrl, {
@@ -138,7 +149,7 @@ export async function ecdsaGetAnonymous(
     if (!response.ok) throw new Error(await response.text())
     const a = await response.json()
     console.log(a)
-    return a
+    return DelegationChain.fromJSON(a)
   })
 }
 

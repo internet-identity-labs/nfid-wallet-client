@@ -169,31 +169,25 @@ describe("Verification of email", () => {
   })
 
   it("should exec checkVerification and receive success response", async () => {
-    const sessionKeyAndDelegationChain = {
-      delegation: JSON.stringify({
-        sessionKey: [
-          "302a300506032b6570032100e35758ad5ef3e445ad5e68bdb7edf084a948fa66077f16ab377149a4c0ccc0f8",
-          "8015be7438299df91dcd9f9c773f2bfca034b9a9a45647305ebccde34f08c335e35758ad5ef3e445ad5e68bdb7edf084a948fa66077f16ab377149a4c0ccc0f8",
-        ],
-        chain: {
-          delegations: [
-            {
-              delegation: {
-                expiration: "176ce4113d4b10c0",
-                pubkey:
-                  "302a300506032b6570032100e35758ad5ef3e445ad5e68bdb7edf084a948fa66077f16ab377149a4c0ccc0f8",
-              },
-              signature:
-                "87390e5fb985d091f0ce8fc58c57a4a21a73486e30f84b7d36f1192f07e69d99252954c5d1a15717d3db6aeeacc9f3af0808a7646614452014dee1829c849501",
+    const delegationChain = {
+      delegationChain: {
+        delegations: [
+          {
+            delegation: {
+              expiration: "176eea29a49fa7c0",
+              pubkey:
+                "302a300506032b6570032100f0a5aa9e01e34f93c637b137196b8c8bbf696472bfe3f54da61a7be4e24434cf",
             },
-          ],
-          publicKey:
-            "302a300506032b65700321002ec65e4e583e53d3750bb0d3bdc5c7c529c02dbfa1b2ac5a58bce4eb327edc7f",
-        },
-      }),
+            signature:
+              "d23be27018f38620473b8d1a5b3d7a6b0bfb1864ca07d1ae4c80903e41fad6304f25ea43bb93370a324d3b7b056887224efd12b44214f0724d49dd648e95ac0e",
+          },
+        ],
+        publicKey:
+          "302a300506032b6570032100f8a284f5c22a5d3687a5bb22c4cc92ab3dc39f4bb896183642f8798c5d6d2cd0",
+      },
     }
     const mockFetchPromise = Promise.resolve({
-      text: () => JSON.stringify(sessionKeyAndDelegationChain),
+      text: () => JSON.stringify(delegationChain),
       ok: true,
     })
 
@@ -211,7 +205,7 @@ describe("Verification of email", () => {
     )
 
     expect(delegationIdentity.getPrincipal().toString()).toEqual(
-      "3n7dj-gk5yn-hh4ka-xqp43-bz7sg-eysrq-vyoje-ljtyh-5wqma-5f4h5-mqe",
+      "reg26-wntni-wohfr-joo32-yiiep-pndnq-jocjn-oqpdg-yzqnm-afsbg-uqe",
     )
   })
 

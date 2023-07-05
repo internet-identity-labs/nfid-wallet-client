@@ -1,12 +1,8 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { checkRegistrationStatus } from "frontend/integration/identity-manager/services"
-import {
-  fetchGoogleDevice,
-  GoogleDeviceResult,
-  getGoogleAuthSession,
-} from "frontend/integration/lambda/google"
 import { GoogleAuthSession } from "frontend/state/authentication"
+
+import { signWithGoogleService } from "./services"
 
 export interface AuthWithGoogleMachineContext {
   jwt: string
@@ -15,9 +11,7 @@ export interface AuthWithGoogleMachineContext {
 }
 
 export type Events =
-  | { type: "done.invoke.fetchGoogleDeviceService"; data: GoogleDeviceResult }
-  | { type: "done.invoke.signInWithGoogleService"; data: GoogleAuthSession }
-  | { type: "done.invoke.checkRegistrationStatus"; data: boolean }
+  | { type: "done.invoke.signWithGoogleService"; data: GoogleAuthSession }
   | {
       type: "End"
       data: { authSession: GoogleAuthSession; isRegistered: boolean }
@@ -40,26 +34,12 @@ const AuthWithGoogleMachine =
       states: {
         FetchKeys: {
           invoke: {
-            src: "fetchGoogleDeviceService",
-            id: "fetchGoogleDeviceService",
-            onDone: "SignIn",
-          },
-        },
-        SignIn: {
-          invoke: {
-            src: "signInWithGoogleService",
-            id: "signInWithGoogleService",
+            src: "signWithGoogleService",
+            id: "signWithGoogleService",
             onDone: {
-              target: "CheckRegistrationStatus",
+              target: "End",
               actions: "assignAuthSession",
             },
-          },
-        },
-        CheckRegistrationStatus: {
-          invoke: {
-            src: "checkRegistrationStatus",
-            id: "checkRegistrationStatus",
-            onDone: { target: "End", actions: "assignRegistrationStatus" },
           },
         },
         End: {
@@ -80,22 +60,9 @@ const AuthWithGoogleMachine =
             return event.data
           },
         }),
-        assignRegistrationStatus: assign({
-          isRegistered: (_, event) => event.data,
-        }),
       },
       services: {
-        checkRegistrationStatus,
-        fetchGoogleDeviceService: (context) => {
-          return fetchGoogleDevice(context.jwt)
-        },
-        signInWithGoogleService: (context, event) => {
-          console.debug("AuthWithGoogleMachine signInWithGoogleService", {
-            context,
-            event,
-          })
-          return getGoogleAuthSession(event.data)
-        },
+        signWithGoogleService,
       },
     },
   )

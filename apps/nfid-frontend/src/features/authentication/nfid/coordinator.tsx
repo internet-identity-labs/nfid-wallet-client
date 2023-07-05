@@ -10,7 +10,7 @@ import { AuthenticationMachineActor } from "../root/root-machine"
 import NFIDAuthMachine from "./nfid-machine"
 
 export default function NFIDAuthCoordinator() {
-  const [state, send] = useMachine(NFIDAuthMachine)
+  const [state] = useMachine(NFIDAuthMachine)
 
   React.useEffect(
     () =>

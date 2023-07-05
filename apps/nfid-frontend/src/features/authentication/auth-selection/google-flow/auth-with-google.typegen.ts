@@ -3,39 +3,19 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.checkRegistrationStatus": {
-      type: "done.invoke.checkRegistrationStatus"
+    "done.invoke.signWithGoogleService": {
+      type: "done.invoke.signWithGoogleService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.fetchGoogleDeviceService": {
-      type: "done.invoke.fetchGoogleDeviceService"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "done.invoke.signInWithGoogleService": {
-      type: "done.invoke.signInWithGoogleService"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "error.platform.checkRegistrationStatus": {
-      type: "error.platform.checkRegistrationStatus"
-      data: unknown
-    }
-    "error.platform.fetchGoogleDeviceService": {
-      type: "error.platform.fetchGoogleDeviceService"
-      data: unknown
-    }
-    "error.platform.signInWithGoogleService": {
-      type: "error.platform.signInWithGoogleService"
+    "error.platform.signWithGoogleService": {
+      type: "error.platform.signWithGoogleService"
       data: unknown
     }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    checkRegistrationStatus: "done.invoke.checkRegistrationStatus"
-    fetchGoogleDeviceService: "done.invoke.fetchGoogleDeviceService"
-    signInWithGoogleService: "done.invoke.signInWithGoogleService"
+    signWithGoogleService: "done.invoke.signWithGoogleService"
   }
   missingImplementations: {
     actions: never
@@ -44,16 +24,13 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
-    assignAuthSession: "done.invoke.signInWithGoogleService"
-    assignRegistrationStatus: "done.invoke.checkRegistrationStatus"
+    assignAuthSession: "done.invoke.signWithGoogleService"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}
   eventsCausingServices: {
-    checkRegistrationStatus: "done.invoke.signInWithGoogleService"
-    fetchGoogleDeviceService: "xstate.init"
-    signInWithGoogleService: "done.invoke.fetchGoogleDeviceService"
+    signWithGoogleService: "xstate.init"
   }
-  matchesStates: "CheckRegistrationStatus" | "End" | "FetchKeys" | "SignIn"
+  matchesStates: "End" | "FetchKeys"
   tags: never
 }

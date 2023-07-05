@@ -34,6 +34,7 @@ declare const RAMP_WALLET_API_KEY: string
 declare const RAMP_WALLET_SDK_URL: string
 declare const SENTRY_RELEASE: string
 declare const SIGNIN_GOOGLE: string
+declare const AWS_SIGNIN_GOOGLE_V2: string
 declare const USERGEEK_API_KEY: string
 declare const VAULT_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string

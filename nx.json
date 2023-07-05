@@ -130,6 +130,9 @@
         "env": "AWS_SIGNIN_GOOGLE"
       },
       {
+        "env": "AWS_SIGNIN_GOOGLE_V2"
+      },
+      {
         "env": "AWS_SYMMETRIC"
       },
       {

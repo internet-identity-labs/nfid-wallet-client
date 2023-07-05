@@ -1,8 +1,10 @@
-import { SignedDelegation } from "@dfinity/identity"
+import { DelegationIdentity } from "@dfinity/identity"
 
 import { PublicKey } from "../_ic_api/internet_identity.d"
 import { ii } from "../actors"
 import { mapOptional } from "../ic-utils"
+import { Chain, ecdsaGetAnonymous } from "../lambda/ecdsa"
+import { SignedDelegation } from "./types"
 
 /**
  * Retrieve prepared third party auth session.
@@ -31,7 +33,7 @@ export async function getDelegate(
             targets: mapOptional(r.signed_delegation.delegation.targets),
           },
           signature: r.signed_delegation.signature,
-        } as unknown as SignedDelegation
+        }
       }
       throw new Error("No such delegation")
     })
@@ -55,4 +57,25 @@ export async function getDelegateRetry(
     }
   }
   throw new Error(`Failed to retrieve a delegation after ${10} retries.`)
+}
+
+export const getAnonymousDelegate = async (
+  sessionPublicKey: Uint8Array,
+  delegationIdentity: DelegationIdentity,
+): Promise<SignedDelegation> => {
+  const delegationChain = await ecdsaGetAnonymous(
+    "nfid.one",
+    sessionPublicKey,
+    delegationIdentity,
+    Chain.IC,
+  )
+  const { delegation, signature } = delegationChain.delegations[0]
+  return {
+    delegation: {
+      expiration: delegation.expiration,
+      pubkey: Array.from(new Uint8Array(delegation.pubkey)),
+      targets: delegation.targets,
+    },
+    signature: Array.from(new Uint8Array(signature)),
+  }
 }

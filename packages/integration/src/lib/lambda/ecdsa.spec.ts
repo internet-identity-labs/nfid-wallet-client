@@ -20,7 +20,17 @@ import fetch from "node-fetch"
 import { WALLET_SCOPE } from "@nfid/config"
 import { ii, im, replaceActorIdentity } from "@nfid/integration"
 
+<<<<<<< HEAD
 import { Chain, ecdsaSign, getGlobalKeys, getPublicKey } from "./ecdsa"
+=======
+import {
+  Chain,
+  ecdsaGetAnonymous,
+  ecdsaSign,
+  getGlobalKeys,
+  getPublicKey,
+} from "./ecdsa"
+>>>>>>> main
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -98,6 +108,36 @@ describe("Lambda Sign/Register ECDSA", () => {
       } catch (e) {
         throw Error("Should not fail")
       }
+    })
+
+    it("get anonymous IC keys", async function () {
+      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
+      const sessionKey = Ed25519KeyIdentity.generate()
+      const chainRoot = await DelegationChain.create(
+        mockedIdentity,
+        sessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+
+      // NOTE: this is what we receive from authClient
+      // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
+      const sessionPublicKey = new Uint8Array(sessionKey.getPublicKey().toDer())
+
+      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
+      const delegationChain = await ecdsaGetAnonymous(
+        "nfid.one",
+        sessionPublicKey,
+        di,
+        Chain.IC,
+      )
+      const actualIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
+        delegationChain,
+      )
+      expect(actualIdentity.getPrincipal().toText()).toEqual(
+        "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
+      )
     })
   })
 })

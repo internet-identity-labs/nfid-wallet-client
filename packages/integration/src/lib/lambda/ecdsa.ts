@@ -16,6 +16,17 @@ export enum Chain {
   IC = "IC",
 }
 
+/**
+ * Returns an hexadecimal representation of an array buffer.
+ * @param bytes The array buffer.
+ */
+export function toHexString(bytes: ArrayBuffer): string {
+  return new Uint8Array(bytes).reduce(
+    (str, byte) => str + byte.toString(16).padStart(2, "0"),
+    "",
+  )
+}
+
 export async function getGlobalKeys(
   identity: DelegationIdentity,
   chain: Chain,
@@ -99,6 +110,49 @@ export async function ecdsaSign(
   }).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
     return await response.json()
+  })
+}
+
+export async function ecdsaGetAnonymous(
+  domain: string,
+  sessionKey: Uint8Array,
+  identity: DelegationIdentity,
+  chain: Chain,
+): Promise<DelegationChain> {
+  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
+  const lambdaPublicKey = await fetch(registerUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chain,
+    }),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    return (await response.json()).public_key
+  })
+  const delegationChainForLambda = await DelegationChain.create(
+    identity,
+    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
+    { previous: identity.getDelegation() },
+  )
+  const request = {
+    chain,
+    delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
+    tempPublicKey: lambdaPublicKey,
+    domain,
+    sessionPublicKey: toHexString(sessionKey),
+  }
+  const signUrl = ic.isLocal ? `/ecdsa_get_anonymous` : AWS_ECDSA_GET_ANONYMOUS
+  return await fetch(signUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    const a = await response.json()
+    console.log(a)
+    return DelegationChain.fromJSON(a)
   })
 }
 

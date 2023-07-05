@@ -123,8 +123,12 @@ export const verificationService = {
       ? checkVerificationEndpointUrl
       : AWS_CHECK_VERIFICATION
 
+    const ed25519KeyIdentity = Ed25519KeyIdentity.generate()
     const privateKey = await jose.importPKCS8(keypair.privateKey, "ES512")
-    const token = await new jose.SignJWT({ nonce: nonce.toString() })
+    const token = await new jose.SignJWT({
+      nonce: nonce.toString(),
+      publicKey: ed25519KeyIdentity.toJSON()[0],
+    })
       .setProtectedHeader({ alg: "ES512" })
       .setIssuer("https://nfid.one")
       .setSubject(emailAddress)
@@ -152,11 +156,7 @@ export const verificationService = {
     }
 
     const json = JSON.parse(text)
-    const chain = JSON.parse(json.delegation).chain
-    const sessionKey = JSON.parse(json.delegation).sessionKey
-    const delegationChain = DelegationChain.fromJSON(chain)
-    const ed25519KeyIdentity = Ed25519KeyIdentity.fromParsedJson(sessionKey)
-
+    const delegationChain = DelegationChain.fromJSON(json.delegationChain)
     const delegation = DelegationIdentity.fromDelegation(
       ed25519KeyIdentity,
       delegationChain,

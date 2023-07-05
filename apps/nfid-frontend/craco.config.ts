@@ -32,6 +32,7 @@ const setupCSP = () => {
         process.env.AWS_AUTH_STATS as string,
         process.env.AWS_SIGNATURE_EVENT as string,
         process.env.AWS_SIGNIN_GOOGLE as string,
+        process.env.AWS_SIGNIN_GOOGLE_V2 as string,
         process.env.AWS_ECDSA_SIGN as string,
         process.env.AWS_ECDSA_REGISTER as string,
         process.env.AWS_ECDSA_REGISTER_ADDRESS as string,
@@ -211,6 +212,12 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/signin/, ""),
       },
+      "/signin/v2": {
+        target: process.env.AWS_SIGNIN_GOOGLE_V2,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/signin\/v2/, ""),
+      },
       "/symmetric": {
         target: process.env.AWS_SYMMETRIC,
         secure: true,
@@ -239,7 +246,8 @@ const config = {
         target: process.env.AWS_ECDSA_REGISTER_ADDRESS,
         secure: true,
         changeOrigin: true,
-        pathRewrite: (path: string) => path.replace(/^\/ecdsa_register_address/, ""),
+        pathRewrite: (path: string) =>
+          path.replace(/^\/ecdsa_register_address/, ""),
       },
       "/ecdsa_sign": {
         target: process.env.AWS_ECDSA_SIGN,

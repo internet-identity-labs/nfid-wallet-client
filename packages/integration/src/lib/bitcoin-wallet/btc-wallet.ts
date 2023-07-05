@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { networks, payments, TransactionBuilder } from "bitcoinjs-lib"
 
-import {Chain, ecdsaSign, getPublicKey} from "../lambda/ecdsa"
+import { Chain, ecdsaSign, getPublicKey } from "../lambda/ecdsa"
 import {
   bcComputeFee,
   bcComputeTransaction,

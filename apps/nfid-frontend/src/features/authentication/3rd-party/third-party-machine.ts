@@ -4,8 +4,6 @@ import {
   getAppMeta,
   handshake,
   postDelegation,
-  checkIsIframe,
-  checkIsIframeAllowed,
 } from "frontend/integration/windows/services"
 import { AbstractAuthSession, AuthSession } from "frontend/state/authentication"
 import {

@@ -121,9 +121,7 @@ export const authorizeWithEmail = async (
 
   authState.set({
     delegationIdentity,
-    chain: context.chainRoot,
-    sessionKey: context.emailDelegation,
-    identity: delegationIdentity,
+    identity: context.emailDelegation,
   })
 
   await authStorage.set(

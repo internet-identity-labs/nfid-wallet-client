@@ -24,16 +24,16 @@ export default function NFIDEmbedCoordinator() {
   )
 
   switch (true) {
-    // case state.matches("AUTH.Authenticate"):
-    //   return (
-    //     <AuthenticationCoordinator
-    //       actor={
-    //         state.children[
-    //           "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
-    //         ] as AuthenticationMachineActor
-    //       }
-    //     />
-    //   )
+    case state.matches("AUTH.Authenticate"):
+      return (
+        <AuthenticationCoordinator
+          actor={
+            state.children[
+              "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+            ] as AuthenticationMachineActor
+          }
+        />
+      )
     case state.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
       if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
       if (!state.context.authSession) throw new Error("missing authSession")

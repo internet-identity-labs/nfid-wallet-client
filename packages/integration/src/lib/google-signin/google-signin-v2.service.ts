@@ -9,11 +9,15 @@ import { ic } from "../agent"
 const signinV2 = "/signin/v2"
 
 interface GoogleSigninV2Service {
-  signin(token: string): Promise<DelegationIdentity>
+  signin(
+    token: string,
+  ): Promise<{ delegation: DelegationIdentity; identity: Ed25519KeyIdentity }>
 }
 
 export const googleSigninV2Service: GoogleSigninV2Service = {
-  async signin(token: string): Promise<DelegationIdentity> {
+  async signin(
+    token: string,
+  ): Promise<{ delegation: DelegationIdentity; identity: Ed25519KeyIdentity }> {
     const url = ic.isLocal ? signinV2 : AWS_SIGNIN_GOOGLE_V2
 
     const ed25519KeyIdentity = Ed25519KeyIdentity.generate()
@@ -30,12 +34,12 @@ export const googleSigninV2Service: GoogleSigninV2Service = {
     }
 
     const json = JSON.parse(text)
-    const delegationChain = DelegationChain.fromJSON(json.delegationChain)
+    const delegationChain = DelegationChain.fromJSON(json.identity)
     const delegation = DelegationIdentity.fromDelegation(
       ed25519KeyIdentity,
       delegationChain,
     )
 
-    return delegation
+    return { delegation, identity: ed25519KeyIdentity }
   },
 }

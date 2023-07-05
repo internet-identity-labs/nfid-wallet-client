@@ -1,8 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { principalToAddress } from "ictool"
-import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import useSWR from "swr"
 
 import {
@@ -12,12 +10,7 @@ import {
   IconCmpInfo,
   Tooltip,
 } from "@nfid-frontend/ui"
-import {
-  Account,
-  ThirdPartyAuthSession,
-  authState,
-  getBalance,
-} from "@nfid/integration"
+import { Account, ThirdPartyAuthSession } from "@nfid/integration"
 
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {

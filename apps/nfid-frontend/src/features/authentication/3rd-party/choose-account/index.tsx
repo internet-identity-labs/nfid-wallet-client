@@ -1,6 +1,8 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
+import { toast } from "react-toastify"
+import User from "src/assets/userpics/userpic_6.svg"
 import useSWR from "swr"
 
 import {
@@ -9,16 +11,23 @@ import {
   IconCmpAnonymous,
   IconCmpInfo,
   Tooltip,
+  Image,
 } from "@nfid-frontend/ui"
-import { Account, ThirdPartyAuthSession } from "@nfid/integration"
+import {
+  Account,
+  ThirdPartyAuthSession,
+  authState,
+  getAnonymousDelegate,
+} from "@nfid/integration"
 
+import { fetchProfile } from "frontend/integration/identity-manager"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
-import { getThirdPartyAuthSession } from "../../services"
+import { getLegacyThirdPartyAuthSession } from "../../services"
 import { AuthAppMeta } from "../../ui/app-meta"
 import { getPublicProfile } from "./services"
 
@@ -42,10 +51,10 @@ export const AuthChooseAccount = ({
 
   const { data: publicProfile } = useSWR("publicProfile", getPublicProfile)
 
-  const handleSelectAnonymous = useCallback(
+  const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {
       setIsLoading(true)
-      const authSession = await getThirdPartyAuthSession(
+      const authSession = await getLegacyThirdPartyAuthSession(
         authRequest,
         account.accountId,
       )
@@ -54,6 +63,32 @@ export const AuthChooseAccount = ({
     },
     [authRequest, handleSelectAccount],
   )
+
+  const handleSelectAnonymous = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const delegation = authState.get().delegationIdentity
+      if (!delegation) throw new Error("No delegation identity")
+
+      const anonymousDelegation = await getAnonymousDelegate(
+        authRequest.sessionPublicKey,
+        delegation,
+      )
+
+      const authSession: ThirdPartyAuthSession = {
+        anchor: (await fetchProfile()).anchor,
+        signedDelegation: anonymousDelegation,
+        userPublicKey: authRequest.sessionPublicKey,
+        scope: "nfid.one",
+      }
+
+      handleSelectAccount(authSession)
+    } catch (e: any) {
+      toast.error(e.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [authRequest.sessionPublicKey, handleSelectAccount])
 
   if (isLoading || isAnonymousLoading || !publicProfile)
     return <BlurredLoader isLoading />
@@ -96,12 +131,15 @@ export const AuthChooseAccount = ({
             "flex items-center w-full",
           )}
         >
-          <IconCmpAnonymous className="w-10 h-10 shrink-0" />
-          <div className="grid w-full grid-cols-2 text-sm text-gray-400">
+          <Image src={User} className="w-10 h-10 shrink-0" />
+          <div className="flex items-center justify-between w-full text-sm text-gray-400">
             <div className="">{publicProfile.label}</div>
-            <div className="text-right">{publicProfile.balance}</div>
-            <div className="text-xs">{publicProfile.address}</div>
-            <div className="text-xs text-right">{publicProfile.balanceUSD}</div>
+            <div className="flex flex-col">
+              <div className="text-right">{publicProfile.balance} ICP</div>
+              <div className="text-xs text-right">
+                {publicProfile.balanceUSD}
+              </div>
+            </div>
           </div>
         </div>
         {legacyAnonymousProfiles?.map((acc) => (
@@ -110,14 +148,27 @@ export const AuthChooseAccount = ({
             className={clsx(
               "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
               "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",
-              "flex items-center hover:shadow-[0px_0px_2px_0px_#0E62FF]",
+              "flex items-center hover:shadow-[0px_0px_2px_0px_#0E62FF] text-sm",
             )}
-            onClick={() => handleSelectAnonymous(acc)}
+            onClick={() => handleSelectLegacyAnonymous(acc)}
           >
             <IconCmpAnonymous className="w-10 h-10" />
             <span>Anonymous {acc.label}</span>
           </div>
         ))}
+        {!legacyAnonymousProfiles?.length && (
+          <div
+            className={clsx(
+              "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
+              "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",
+              "flex items-center hover:shadow-[0px_0px_2px_0px_#0E62FF] text-sm",
+            )}
+            onClick={() => handleSelectAnonymous()}
+          >
+            <IconCmpAnonymous className="w-10 h-10" />
+            <span>Anonymous {appMeta.name} profile</span>
+          </div>
+        )}
       </div>
       <div className="flex-1" />
       <Button type="ghost" block>

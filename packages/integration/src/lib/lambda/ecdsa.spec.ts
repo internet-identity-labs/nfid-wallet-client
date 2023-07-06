@@ -20,9 +20,6 @@ import fetch from "node-fetch"
 import { WALLET_SCOPE } from "@nfid/config"
 import { ii, im, replaceActorIdentity } from "@nfid/integration"
 
-<<<<<<< HEAD
-import { Chain, ecdsaSign, getGlobalKeys, getPublicKey } from "./ecdsa"
-=======
 import {
   Chain,
   ecdsaGetAnonymous,
@@ -30,7 +27,6 @@ import {
   getGlobalKeys,
   getPublicKey,
 } from "./ecdsa"
->>>>>>> main
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -88,9 +84,19 @@ describe("Lambda Sign/Register ECDSA", () => {
     it("get global IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
-      const globalICIdentity = await getGlobalKeys(
+      const chainRoot = await DelegationChain.create(
         mockedIdentity,
+        sessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const delegationIdentity = DelegationIdentity.fromDelegation(
         sessionKey,
+        chainRoot,
+      )
+
+      const globalICIdentity = await getGlobalKeys(
+        delegationIdentity,
         Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )

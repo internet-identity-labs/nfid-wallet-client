@@ -1,8 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { im } from "../actors"
 import { delegationByScope } from "../internet-identity/get-delegation-by-scope"
-import { authState } from "./auth-state"
 import { getExpirationDelay } from "./get-expiration"
 
 class RefreshingDelegation {
@@ -39,14 +37,6 @@ class RefreshingDelegation {
   async _getDelegation(): Promise<DelegationIdentity> {
     if (this._delegationPromise) {
       return this._delegationPromise
-    }
-
-    const { data } = await im.get_account()
-
-    if (data.length && "NFID" in data[0].wallet) {
-      return Promise.resolve(
-        authState.get().delegationIdentity as DelegationIdentity,
-      )
     }
 
     this._delegationPromise = delegationByScope(

@@ -1,4 +1,4 @@
-import { HomePage } from "./home-page"
+import { HomePage } from "./home-page.js"
 
 export class Profile extends HomePage {
   private get profilePic() {

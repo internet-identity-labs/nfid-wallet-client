@@ -104,6 +104,7 @@ export const AuthChooseAccount = ({
       <div className="absolute right-5 top-2.5">
         <TooltipProvider>
           <Tooltip
+            className="w-[368px]"
             tip={
               <div>
                 <b>Public profiles</b> reveal cryptocurrency balances and
@@ -119,7 +120,7 @@ export const AuthChooseAccount = ({
               </div>
             }
           >
-            <IconCmpInfo />
+            <IconCmpInfo className="text-gray-400" />
           </Tooltip>
         </TooltipProvider>
       </div>

@@ -19,7 +19,6 @@ export const AuthEmailMagicLink = () => {
 
   const verifyEmail = useCallback(async (token: string) => {
     const res = await verify("email", token)
-    console.log(res.status)
     setStatus(res.status)
     setIsLoading(false)
   }, [])

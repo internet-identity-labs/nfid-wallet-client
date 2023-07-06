@@ -1,29 +1,29 @@
 import { When } from "@cucumber/cucumber"
 
-import { baseURL } from "../../wdio.conf"
-import userClient from "../helpers/accounts-service"
-import HomePage from "../pages/home-page"
-import Collectibles from "../pages/nft"
-import Profile from "../pages/profile"
-import RecoveryPage from "../pages/recovery-page"
-import Vault from "../pages/vault"
-import Vaults from "../pages/vaults"
-import clearInputField from "./support/action/clearInputField"
-import clickElement from "./support/action/clickElement"
-import closeLastOpenedWindow from "./support/action/closeLastOpenedWindow"
-import deleteCookies from "./support/action/deleteCookies"
-import dragElement from "./support/action/dragElement"
-import focusLastOpenedWindow from "./support/action/focusLastOpenedWindow"
-import handleModal from "./support/action/handleModal"
-import moveTo from "./support/action/moveTo"
-import pause from "./support/action/pause"
-import pressButton from "./support/action/pressButton"
-import scroll from "./support/action/scroll"
-import selectOption from "./support/action/selectOption"
-import selectOptionByIndex from "./support/action/selectOptionByIndex"
-import setCookie from "./support/action/setCookie"
-import setInputField from "./support/action/setInputField"
-import setPromptText from "./support/action/setPromptText"
+import { baseURL } from "../../wdio.conf.js"
+import userClient from "../helpers/accounts-service.js"
+import HomePage from "../pages/home-page.js"
+import Collectibles from "../pages/nft.js"
+import Profile from "../pages/profile.js"
+import RecoveryPage from "../pages/recovery-page.js"
+import Vault from "../pages/vault.js"
+import Vaults from "../pages/vaults.js"
+import clearInputField from "./support/action/clearInputField.js"
+import clickElement from "./support/action/clickElement.js"
+import closeLastOpenedWindow from "./support/action/closeLastOpenedWindow.js"
+import deleteCookies from "./support/action/deleteCookies.js"
+import dragElement from "./support/action/dragElement.js"
+import focusLastOpenedWindow from "./support/action/focusLastOpenedWindow.js"
+import handleModal from "./support/action/handleModal.js"
+import moveTo from "./support/action/moveTo.js"
+import pause from "./support/action/pause.js"
+import pressButton from "./support/action/pressButton.js"
+import scroll from "./support/action/scroll.js"
+import selectOption from "./support/action/selectOption.js"
+import selectOptionByIndex from "./support/action/selectOptionByIndex.js"
+import setCookie from "./support/action/setCookie.js"
+import setInputField from "./support/action/setInputField.js"
+import setPromptText from "./support/action/setPromptText.js"
 
 When(/^User enters a captcha$/, async function () {
   await HomePage.captchaPass()
@@ -33,7 +33,7 @@ When(/^User enters a captcha$/, async function () {
 
 When(/^User trusts this device$/, async () => {
   await HomePage.iTrustThisDevice()
-  await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true)
+  await browser.addVirtualAuthenticator("ctap2", "internal", true, true, true, true)
   await HomePage.waitForLoaderDisappear()
 })
 
@@ -135,21 +135,15 @@ When(
       true,
       true,
       true,
-      true,)
+      true,
+    )
 
-    // const authId = await browser.addVirtualWebAuth(
-    //   "ctap2",
-    //   "internal",
-    //   true,
-    //   true,
-    //   true,
-    //   true,
-    // )
     const rpId = new URL(baseURL).hostname
     const creds: WebAuthnCredential = testUser.credentials
     const anchor: JSON = testUser.account
 
-    await browser.addWebauthnCredential(
+    // @ts-ignore
+    await browser.addCredentialV2(
       authId,
       rpId,
       creds.credentialId,
@@ -158,8 +152,18 @@ When(
       creds.signCount,
     )
 
-    await browser.setLocalStorage("account", JSON.stringify(anchor))
-    await browser.refresh()
+    await browser.execute(
+      function (key, value) {
+        // @ts-ignore
+        return this.localStorage.setItem(key, value)
+      },
+      "account",
+      JSON.stringify(anchor),
+    )
+    await browser.execute(function () {
+      // @ts-ignore
+      return this.location.reload()
+    })
   },
 )
 

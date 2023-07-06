@@ -1,6 +1,6 @@
-import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
-import { cucumberOpts } from "./src/cucumber-options"
-import { config as common } from "./wdio.conf"
+import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
+import { cucumberOpts } from "./src/cucumber-options.js"
+import { config as common } from "./wdio.conf.js"
 
 export const deviceName = process.env.DEVICE_NAME
 

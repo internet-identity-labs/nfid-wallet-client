@@ -1,10 +1,10 @@
 import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
-import { baseURL } from "../wdio.conf"
-import { deviceName } from "../wdio.mobile.conf"
-import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
-import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
+import { baseURL } from "../wdio.conf.js"
+import { deviceName } from "../wdio.mobile.conf.js"
+import { addLocalStorageCommands } from "./helpers/setupLocalStorage.js"
+import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn.js"
 
 //
 // =====
@@ -205,10 +205,13 @@ export const hooks = {
   afterFeature: async function (uri, feature) {
     // @ts-ignore browser
     allureReporter.addEnvironment("Browser", "Chrome")
+    // @ts-ignore browser
     allureReporter.addEnvironment("Environment", baseURL)
     if (deviceName) {
+      // @ts-ignore browser
       allureReporter.addEnvironment("Device", deviceName)
     }
+    // @ts-ignore browser
     allureReporter.addEnvironment("Platform", process.platform)
   },
 }

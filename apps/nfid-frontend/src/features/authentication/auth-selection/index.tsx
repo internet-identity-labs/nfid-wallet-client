@@ -61,6 +61,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           onLogin={onSelectGoogleAuth}
           button={
             <Button
+              id="google-sign-button"
               className="h-12 !p-0"
               type="stroke"
               icon={<IconCmpGoogle />}
@@ -71,6 +72,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           }
         />
         <Button
+          id="passkey-sign-button"
           className="h-12 !p-0"
           type="stroke"
           icon={<IconCmpPasskey />}
@@ -79,6 +81,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           Continue with a passkey
         </Button>
         <Button
+          id="other-sign-button"
           className="h-12 !p-0"
           type="ghost"
           block

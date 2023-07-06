@@ -14,7 +14,7 @@ export class HomePage extends Page {
   }
 
   private get googleAuthButton() {
-    return $(".//iframe[contains(@src,'accounts.google')]")
+    return $("#google-sign-button")
   }
 
   private get accountPicker() {

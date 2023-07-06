@@ -1,4 +1,5 @@
-import { readFile as readJSONFile } from "./fileops"
+import { fail } from "assert"
+import { readFile as readJSONFile } from "./fileops.js"
 
 /**
  * The Subject interface declares a set of methods for managing subscribers.

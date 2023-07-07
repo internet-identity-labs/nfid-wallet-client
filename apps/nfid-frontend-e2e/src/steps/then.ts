@@ -628,7 +628,7 @@ Then(/^(\d+) row in the table/, async (amount: number) => {
   })
 })
 
-Then(/^(\d+) transaction in the table/, async (amount: number) => {
+Then(/^([^"]*) transaction in the table/, async (amount: number) => {
   for (let i = 0; i < amount; i++) {
     await $("id=transaction_" + i).waitForDisplayed({
       timeout: 15000,

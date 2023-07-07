@@ -2,17 +2,8 @@ import { fetchPrincipal } from "@nfid/integration"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { AuthorizationRequest } from "frontend/state/authorization"
-import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
-import {
-  createAccount,
-  fetchProfile,
-  fetchAccounts,
-  selectAccounts,
-  mapPersonaToLegacy,
-  verifyToken,
-} from "."
-import { getNextAccountId } from "./persona/utils"
+import { fetchProfile, fetchAccounts, selectAccounts, verifyToken } from "."
 
 export function getLocalStorageProfileService() {
   const profile = loadProfileFromLocalStorage()
@@ -59,28 +50,6 @@ export async function fetchAccountsService({
     authRequest.hostname,
     authRequest.derivationOrigin,
   )
-}
-
-export async function createAccountService({
-  authRequest,
-  accounts,
-}: Pick<AuthorizationMachineContext, "authRequest" | "accounts">): Promise<{
-  accountId: string
-  hostname: string
-}> {
-  console.log({ authRequest })
-  if (!authRequest) throw new Error(`createAccountService authRequest missing`)
-  if (!accounts) throw new Error(`createAccountService accounts missing`)
-  const accountId = getNextAccountId(accounts.map(mapPersonaToLegacy))
-  const derivationOrigin = authRequest?.derivationOrigin || authRequest.hostname
-
-  const createPersonaReposne = await createAccount(
-    derivationOrigin,
-    accountId,
-    `Account #${accountId}`,
-  )
-  console.debug(`createAccountService`, { createPersonaReposne })
-  return { accountId, hostname: derivationOrigin }
 }
 
 export async function fetchProfileService() {

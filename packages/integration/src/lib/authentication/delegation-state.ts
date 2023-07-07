@@ -38,6 +38,7 @@ class RefreshingDelegation {
     if (this._delegationPromise) {
       return this._delegationPromise
     }
+
     this._delegationPromise = delegationByScope(
       this._anchor,
       this._scope,
@@ -51,6 +52,7 @@ class RefreshingDelegation {
       .finally(() => {
         this._delegationPromise = undefined
       })
+
     return this._delegationPromise
   }
 

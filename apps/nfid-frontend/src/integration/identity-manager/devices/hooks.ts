@@ -45,11 +45,11 @@ const getIcon = (device: DeviceData): Icon => {
   switch (device.alias.split(" ")[3]) {
     case "Android":
     case "iOS":
-      return "mobile"
+      return Icon.mobile
     case "Mac OS":
-      return "desktop"
+      return Icon.desktop
     default:
-      return "laptop"
+      return Icon.laptop
   }
 }
 
@@ -111,12 +111,12 @@ const getRecoveryDeviceLabel = (accessPoint?: AccessPointResponse) => {
 
 const getRecoveryDeviceIcon = (accessPoint?: AccessPointResponse): Icon => {
   if (accessPoint?.icon === "recovery") {
-    return "document"
+    return Icon.document
   }
   if (accessPoint?.icon) {
     return accessPoint.icon as Icon
   }
-  return "usb"
+  return Icon.usb
 }
 
 const normalizeRecoveryDevices = (

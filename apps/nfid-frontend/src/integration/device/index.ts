@@ -127,9 +127,9 @@ export function fetchWebAuthnCapabilitySync() {
 
 export function getIcon(deviceInfo: any): Icon {
   if (deviceInfo.platform.os === "Windows") {
-    return "desktop"
+    return Icon.desktop
   }
-  return deviceInfo.isMobile ? "mobile" : "desktop"
+  return deviceInfo.isMobile ? Icon.mobile : Icon.desktop
 }
 
 export const deviceInfo = {

@@ -4,6 +4,7 @@ import {
   AccessPoint,
   Account,
   DeviceType,
+  Icon,
   Profile,
   RootWallet,
 } from "@nfid/integration"
@@ -73,7 +74,7 @@ export function factoryPersona(principal?: Principal): Account {
 export function factoryAccessPoint(principal?: Principal): AccessPoint {
   return {
     deviceType: DeviceType.Email,
-    icon: "mobile",
+    icon: Icon.mobile,
     device: "string",
     browser: "string",
     lastUsed: new Date().getTime(),

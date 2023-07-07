@@ -241,8 +241,8 @@ export async function createNFIDProfile(
   await replaceActorIdentity(im, emailDelegationIdentity)
 
   const dd: AccessPointRequest = {
-    icon: "email",
-    device: "Global",
+    icon: Icon.email,
+    device: DeviceType.Email,
     pub_key: emailDelegationIdentity.getPrincipal().toText(),
     browser: "",
     device_type: {

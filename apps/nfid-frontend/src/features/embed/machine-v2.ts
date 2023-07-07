@@ -6,9 +6,8 @@ import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
-import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
-import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
 
+import AuthenticationMachine from "../authentication/root/root-machine"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import {
@@ -138,18 +137,8 @@ export const NFIDEmbedMachineV2 = createMachine(
               data: (context) => context,
               onDone: [
                 {
-                  target: "TrustDevice",
-                  actions: "assignAuthSession",
-                },
-              ],
-            },
-          },
-          TrustDevice: {
-            invoke: {
-              src: "TrustDeviceMachine",
-              onDone: [
-                {
                   target: "Authenticated",
+                  actions: "assignAuthSession",
                 },
               ],
             },
@@ -318,7 +307,6 @@ export const NFIDEmbedMachineV2 = createMachine(
       CheckApplicationMeta,
       ExecuteProcedureService,
       AuthenticationMachine,
-      TrustDeviceMachine,
       RPCReceiver,
       CheckAuthState,
     },

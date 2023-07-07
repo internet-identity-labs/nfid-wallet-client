@@ -28,8 +28,7 @@ export function toHexString(bytes: ArrayBuffer): string {
 }
 
 export async function getGlobalKeys(
-  identity: SignIdentity,
-  sessionKey: Ed25519KeyIdentity,
+  identity: DelegationIdentity,
   chain: Chain,
   targets: string[],
 ): Promise<DelegationIdentity> {
@@ -44,11 +43,15 @@ export async function getGlobalKeys(
     if (!response.ok) throw new Error(await response.text())
     return (await response.json()).public_key
   })
+
   const delegationChainForLambda = await DelegationChain.create(
     identity,
     Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
+    { previous: identity.getDelegation() },
   )
+
+  const sessionKey = Ed25519KeyIdentity.generate()
   const request = {
     chain,
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),

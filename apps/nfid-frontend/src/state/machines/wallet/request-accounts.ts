@@ -2,10 +2,9 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { registerRequestAccountsHandler } from "@nfid/wallet"
 
+import AuthenticationMachine from "frontend/features/authentication/root/root-machine"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
-
-import AuthenticationMachine from "../authentication/authentication"
 
 interface Context {
   appMeta?: AuthorizingAppMeta

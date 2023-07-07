@@ -7,7 +7,6 @@ Feature: Registration using Google
     Given authstate is cleared
     Given I remove the e2e@identitylabs.ooo
     Given User authenticates with google account
-    And User enters a captcha
     And It log's me in
     And Tokens displayed on user assets
     When User opens profile menu
@@ -30,8 +29,7 @@ Feature: Registration using Google
     Given authstate is cleared
     Given I remove the e2e@identitylabs.ooo
     Given User authenticates with google account
-    And User enters a captcha
-    And User trusts this device
+    And It log's me in
     And Tokens displayed on user assets
     And User has account stored in localstorage
     When User opens mobile profile menu

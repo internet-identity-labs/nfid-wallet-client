@@ -1,5 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { WALLET_SCOPE, WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
 import {
@@ -20,6 +21,7 @@ export async function getWalletDelegation(
   userNumber: number,
   hostName?: string,
   personaId?: string,
+  chain: Chain = Chain.IC,
 ): Promise<DelegationIdentity> {
   const scope =
     typeof hostName === "undefined" || hostName === "nfid.one"

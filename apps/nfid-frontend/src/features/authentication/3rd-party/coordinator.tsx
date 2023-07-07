@@ -1,5 +1,5 @@
 import { useMachine } from "@xstate/react"
-import React from "react"
+import React, { useEffect } from "react"
 
 import { ThirdPartyAuthSession } from "@nfid/integration"
 
@@ -11,7 +11,11 @@ import { AuthenticationMachineActor } from "../root/root-machine"
 import { AuthChooseAccount } from "./choose-account"
 import ThirdPartyAuthMachine from "./third-party-machine"
 
-export default function ThirdPartyAuthCoordinator() {
+export default function ThirdPartyAuthCoordinator({
+  onEnd,
+}: {
+  onEnd?: () => void
+}) {
   const [state, send] = useMachine(ThirdPartyAuthMachine)
 
   React.useEffect(
@@ -22,6 +26,11 @@ export default function ThirdPartyAuthCoordinator() {
       }),
     [state.value, state.context],
   )
+
+  useEffect(() => {
+    if (!onEnd) return
+    if (state.matches("End")) onEnd()
+  }, [onEnd, state])
 
   switch (true) {
     case state.matches("AuthenticationMachine"):

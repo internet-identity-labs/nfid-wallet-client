@@ -169,6 +169,7 @@ export class HomePage extends Page {
     await $("//button[contains(.,'What if my device')]").click()
 
     await $("[href*='/recover-nfid']").waitForDisplayed({ timeout: 6000 })
+    await $("[href*='/recover-nfid']").scrollIntoView()
     await $("[href*='/recover-nfid']").click()
   }
 }

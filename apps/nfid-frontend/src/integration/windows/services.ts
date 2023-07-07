@@ -1,8 +1,8 @@
+import { AuthenticationContext } from "frontend/features/authentication/root/root-machine"
 import { logAuthorizeApplication } from "frontend/features/stats/services"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
-  ThirdPartyAuthSession,
 } from "frontend/state/authorization"
 
 import {
@@ -12,7 +12,6 @@ import {
   postMessageToClient,
   prepareClientDelegate,
 } from "."
-import { fetchApplication } from "../identity-manager"
 import { validateDerivationOrigin } from "../internet-identity/validateDerivationOrigin"
 
 /**
@@ -59,27 +58,23 @@ export async function handshake(): Promise<AuthorizationRequest> {
  * @param event
  * @returns
  */
-export async function postDelegation(context: {
-  authRequest?: { hostname: string }
-  thirdPartyAuthoSession?: ThirdPartyAuthSession
-  appMeta?: AuthorizingAppMeta
-}) {
+export async function postDelegation(context: AuthenticationContext) {
   console.debug("postDelegation")
   if (!context.authRequest?.hostname)
     throw new Error("postDelegation context.authRequest.hostname missing")
-  if (!context.thirdPartyAuthoSession)
-    throw new Error("postDelegation context.thirdPartyAuthoSession missing")
+  if (!context.thirdPartyAuthSession)
+    throw new Error("postDelegation context.thirdPartyAuthSession missing")
   if (!context.appMeta)
     throw new Error("postDelegation context.appMeta missing")
 
   const delegations = [
-    prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation),
+    prepareClientDelegate(context.thirdPartyAuthSession.signedDelegation),
   ]
-  const userPublicKey = context.thirdPartyAuthoSession.userPublicKey
+  const userPublicKey = context.thirdPartyAuthSession.userPublicKey
 
   logAuthorizeApplication({
-    scope: context.thirdPartyAuthoSession.scope,
-    anchor: context.thirdPartyAuthoSession.anchor,
+    scope: context.thirdPartyAuthSession.scope,
+    anchor: context.thirdPartyAuthSession.anchor,
     applicationName: context.appMeta.name,
     chain: "Internet Computer",
   })
@@ -106,35 +101,4 @@ export async function getAppMeta(): Promise<AuthorizingAppMeta> {
     ...meta,
     url: document.referrer,
   }
-}
-
-export async function checkIsIframe() {
-  try {
-    return window.self !== window.top
-  } catch (e) {
-    return true
-  }
-}
-
-type CheckIsIframeAllowedParams = {
-  authRequest?: {
-    hostname: string
-    derivationOrigin?: string
-  }
-}
-
-export async function checkIsIframeAllowed({
-  authRequest: { hostname, derivationOrigin } = {
-    hostname: "",
-  },
-}: CheckIsIframeAllowedParams) {
-  console.debug("checkIsIframeAllowed", { hostname, derivationOrigin })
-  if (!hostname)
-    throw new Error("checkIsIframeAllowed hostname cannot be empty")
-
-  const { isIFrameAllowed, domain } = await fetchApplication(
-    derivationOrigin || hostname,
-  )
-  console.debug("checkIsIframeAllowed", { isIFrameAllowed, domain })
-  return isIFrameAllowed
 }

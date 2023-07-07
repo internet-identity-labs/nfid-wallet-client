@@ -84,9 +84,19 @@ describe("Lambda Sign/Register ECDSA", () => {
     it("get global IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
-      const globalICIdentity = await getGlobalKeys(
+      const chainRoot = await DelegationChain.create(
         mockedIdentity,
+        sessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const delegationIdentity = DelegationIdentity.fromDelegation(
         sessionKey,
+        chainRoot,
+      )
+
+      const globalICIdentity = await getGlobalKeys(
+        delegationIdentity,
         Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )

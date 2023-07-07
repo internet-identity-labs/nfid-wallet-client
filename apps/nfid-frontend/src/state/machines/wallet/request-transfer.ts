@@ -5,9 +5,9 @@ import {
   RequestTransferParams,
 } from "@nfid/wallet"
 
+import AuthenticationMachine from "frontend/features/authentication/root/root-machine"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
-import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 
 // State local to the machine.
 interface Context {

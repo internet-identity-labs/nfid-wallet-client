@@ -4,6 +4,7 @@ import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   authState,
   DeviceType,
+  Icon,
   ii,
   replaceIdentity,
   setProfile,
@@ -126,7 +127,7 @@ export async function createTentativeDevice({
       deviceType: DeviceType.Unknown,
       browser: getBrowserName(),
       device: deviceInfo.newDeviceName,
-      icon: "desktop",
+      icon: Icon.desktop,
       pubKey: Array.from(
         new Uint8Array(userIdentity.getPublicKey().toDer() ?? []),
       ),

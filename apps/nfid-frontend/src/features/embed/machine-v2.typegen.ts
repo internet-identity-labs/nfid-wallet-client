@@ -19,11 +19,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]": {
-      type: "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]": {
       type: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
       data: unknown
@@ -45,7 +40,6 @@ export interface Typegen0 {
     CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     ExecuteProcedureService: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     RPCReceiver: "done.invoke.NFIDEmbedMachineV2.RPC_RECEIVER:invocation[0]"
-    TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
   }
   missingImplementations: {
     actions: never
@@ -61,8 +55,8 @@ export interface Typegen0 {
     assignError: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     assignProcedure: "RPC_MESSAGE"
     nfid_authenticated:
+      | "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
       | "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
-      | "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
     nfid_unauthenticated: "SESSION_EXPIRED"
     queueRequest: "RPC_MESSAGE"
     sendRPCCancelResponse: "CANCEL" | "CANCEL_ERROR"
@@ -85,7 +79,6 @@ export interface Typegen0 {
     CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
     ExecuteProcedureService: "APPROVE"
     RPCReceiver: "RPC_MESSAGE" | "xstate.init"
-    TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
   }
   matchesStates:
     | "AUTH"
@@ -93,7 +86,6 @@ export interface Typegen0 {
     | "AUTH.Authenticated"
     | "AUTH.CheckAppMeta"
     | "AUTH.CheckAuthentication"
-    | "AUTH.TrustDevice"
     | "HANDLE_PROCEDURE"
     | "HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"
     | "HANDLE_PROCEDURE.ERROR"
@@ -106,7 +98,6 @@ export interface Typegen0 {
           | "Authenticated"
           | "CheckAppMeta"
           | "CheckAuthentication"
-          | "TrustDevice"
         HANDLE_PROCEDURE?:
           | "AWAIT_PROCEDURE_APPROVAL"
           | "ERROR"

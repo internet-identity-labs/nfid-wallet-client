@@ -38,7 +38,6 @@ When(/^User trusts this device$/, async () => {
 })
 
 When(/^It log's me in$/, async () => {
-  await HomePage.dontTrustThisDevice()
   await HomePage.waitForLoaderDisappear()
 })
 

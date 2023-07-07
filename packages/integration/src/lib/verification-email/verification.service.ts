@@ -114,7 +114,11 @@ export const verificationService = {
     keypair: KeyPair,
     requestId: string,
     nonce: number,
-  ): Promise<DelegationIdentity> {
+  ): Promise<{
+    identity: Ed25519KeyIdentity
+    chainRoot: DelegationChain
+    delegation: DelegationIdentity
+  }> {
     const url = ic.isLocal
       ? checkVerificationEndpointUrl
       : AWS_CHECK_VERIFICATION
@@ -158,7 +162,11 @@ export const verificationService = {
       delegationChain,
     )
 
-    return delegation
+    return {
+      identity: ed25519KeyIdentity,
+      chainRoot: delegationChain,
+      delegation,
+    }
   },
 }
 

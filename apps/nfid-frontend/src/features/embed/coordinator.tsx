@@ -3,11 +3,8 @@ import React from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 
-import { AuthenticationCoordinator } from "frontend/coordination/authentication"
-import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
-import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
-import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
-
+import AuthenticationCoordinator from "../authentication/root/coordinator"
+import { AuthenticationMachineActor } from "../authentication/root/root-machine"
 import { NFIDEmbedMachineV2 } from "./machine-v2"
 import { ProcedureApprovalCoordinator } from "./procedure-approval-coordinator"
 import { PageError } from "./ui/error"
@@ -21,8 +18,9 @@ export default function NFIDEmbedCoordinator() {
       console.log("NFIDEmbedCoordinator", {
         context: state.context,
         state: state.value,
+        children: state.children,
       }),
-    [state.value, state.context],
+    [state.value, state.context, state.children],
   )
 
   switch (true) {
@@ -32,17 +30,7 @@ export default function NFIDEmbedCoordinator() {
           actor={
             state.children[
               "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
-            ] as AuthenticationActor
-          }
-        />
-      )
-    case state.matches("AUTH.TrustDevice"):
-      return (
-        <TrustDeviceCoordinator
-          actor={
-            state.children[
-              "NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
-            ] as TrustDeviceActor
+            ] as AuthenticationMachineActor
           }
         />
       )

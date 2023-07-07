@@ -9,23 +9,17 @@ import { authState, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
-import { AuthEmailMagicLink } from "./features/authentication/magic-link-flow"
+import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
+import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import { NotFound } from "./ui/pages/404"
 
-const IDPCoordinator = React.lazy(() => import("./coordination/idp"))
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 const Faq = React.lazy(() => import("./apps/marketing/landing-page/faq"))
-const PhoneCredentialCoordinator = React.lazy(
-  () => import("./coordination/phone-credential"),
-)
 const RequestTransferCoordinator = React.lazy(
   () => import("./coordination/wallet/request-transfer"),
 )
 const RequestAccountsCoordinator = React.lazy(
   () => import("./coordination/wallet/request-accounts"),
-)
-const RemoteIDPCoordinator = React.lazy(
-  () => import("./coordination/remote-sender"),
 )
 
 const NFIDEmbedCoordinator = React.lazy(
@@ -70,15 +64,6 @@ export const App = () => {
         />
 
         <Route
-          path="/credential/verified-phone-number"
-          element={
-            <ScreenResponsive frameLabel="Verify with NFID">
-              <PhoneCredentialCoordinator />
-            </ScreenResponsive>
-          }
-        />
-
-        <Route
           path="/wallet/request-transfer"
           element={<RequestTransferCoordinator />}
         />
@@ -92,21 +77,13 @@ export const App = () => {
           path="/authenticate"
           element={
             <ScreenResponsive className="flex flex-col items-center">
-              <IDPCoordinator />
+              <ThirdPartyAuthCoordinator />
             </ScreenResponsive>
           }
         />
 
         <Route path="/verify/email/:token" element={<AuthEmailMagicLink />} />
 
-        <Route
-          path="/ridp"
-          element={
-            <ScreenResponsive className="flex flex-col items-center">
-              <RemoteIDPCoordinator />
-            </ScreenResponsive>
-          }
-        />
         <Route
           path="/iframe/trust-device"
           element={

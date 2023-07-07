@@ -205,7 +205,7 @@ describe("Verification of email", () => {
     )
 
     expect(delegation.getPrincipal().toString()).toEqual(
-      "3n7dj-gk5yn-hh4ka-xqp43-bz7sg-eysrq-vyoje-ljtyh-5wqma-5f4h5-mqe",
+      "reg26-wntni-wohfr-joo32-yiiep-pndnq-jocjn-oqpdg-yzqnm-afsbg-uqe",
     )
   })
 

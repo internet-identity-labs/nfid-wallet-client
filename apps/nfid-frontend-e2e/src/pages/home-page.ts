@@ -90,18 +90,25 @@ export class HomePage extends Page {
   public async signIn(isMobile?: boolean) {
     let index = isMobile ? 0 : 1
     let counter = 0
+    if (isMobile) {
+      await this.openHomeBurgerMenu()
+    } else {
+      await browser.waitUntil(async () => (await this.signInButton.length) > 1, {
+        timeout: 10000,
+        timeoutMsg: "Sign In button for desktop is not displayed!"
+      })
+    }
+    await this.signInButton[index].waitForDisplayed({
+      timeout: 17000,
+      timeoutMsg: "Sign In button is not displayed!",
+    })
+    await this.signInButton[index].waitForClickable({
+      timeout: 4000,
+      timeoutMsg: "Sign In button is not clickable!",
+    })
     while ((await this.signInButton.length) > 0 && counter < 5) {
-      if (isMobile) await this.openHomeBurgerMenu()
-      await this.signInButton[index].waitForDisplayed({
-        timeout: 7000,
-        timeoutMsg: "Sign In button is not displayed!",
-      })
-      await this.signInButton[index].waitForClickable({
-        timeout: 4000,
-        timeoutMsg: "Sign In button is not clickable!",
-      })
-      await this.signInButton[index].click()
       try {
+        await this.signInButton[index].click()
         await $(".//div[contains(text(),'Loading')]").waitForDisplayed({
           interval: 8000,
           reverse: true,
@@ -154,7 +161,7 @@ export class HomePage extends Page {
   }
 
   public async recoverAccountWithFAQ() {
-    await $(`=${"FAQ"}`).waitForDisplayed({ timeout: 5000, timeoutMsg: "" })
+    await $(`=${"FAQ"}`).waitForDisplayed({ timeout: 8000, timeoutMsg: "FAQ page is failed to load" })
 
     await $("//button[contains(.,'What if my device')]").waitForDisplayed({
       timeout: 7000,

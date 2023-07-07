@@ -1,6 +1,6 @@
 Feature: Sign in
 
-  @only
+  
   Scenario: User Signs In with predefined credentials
     Given User opens NFID site
     Given authstate is cleared

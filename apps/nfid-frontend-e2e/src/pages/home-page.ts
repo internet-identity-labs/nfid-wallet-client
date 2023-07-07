@@ -166,6 +166,7 @@ export class HomePage extends Page {
     await $("//button[contains(.,'What if my device')]").waitForDisplayed({
       timeout: 7000,
     })
+    await $("//button[contains(.,'What if my device')]").scrollIntoView()
     await $("//button[contains(.,'What if my device')]").click()
 
     await $("[href*='/recover-nfid']").waitForDisplayed({ timeout: 6000 })

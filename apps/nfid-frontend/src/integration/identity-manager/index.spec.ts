@@ -46,7 +46,8 @@ describe("Identity Manager suite", () => {
         device_type: {
           Passkey: null,
         },
-      }
+        credential_id: [],
+      } as any
       await im.create_access_point(deviceData)
       const updatedProfile = await update2fa(true)
       expect(updatedProfile.is2fa).toEqual(true)

@@ -46,6 +46,7 @@ export async function addDeviceToIIandIM(
           browser: deviceInfo.browser.name ?? "",
           pub_key: identity.getPrincipal().toText(),
           device_type: { Unknown: null },
+          credential_id: [],
         })
         .catch((e) => {
           throw new Error(

@@ -41,6 +41,14 @@ export class HomePage extends Page {
     return $("#create-nfid")
   }
 
+  private get whatIfMyDeviceHasBeenStolen() {
+    return $("//button[contains(.,'What if my device')]")
+  }
+
+  private get recoverNFID() {
+    return $("[href*='/recover-nfid']")
+  }
+
   private get trustThisDeviceButton() {
     return $("#trust-this-device")
   }
@@ -163,15 +171,15 @@ export class HomePage extends Page {
   public async recoverAccountWithFAQ() {
     await $(`=${"FAQ"}`).waitForDisplayed({ timeout: 8000, timeoutMsg: "FAQ page is failed to load" })
 
-    await $("//button[contains(.,'What if my device')]").waitForDisplayed({
+    await this.whatIfMyDeviceHasBeenStolen.waitForDisplayed({
       timeout: 7000,
     })
-    await $("//button[contains(.,'What if my device')]").scrollIntoView()
-    await $("//button[contains(.,'What if my device')]").click()
+    await this.whatIfMyDeviceHasBeenStolen.scrollIntoView()
+    await this.whatIfMyDeviceHasBeenStolen.click()
 
-    await $("[href*='/recover-nfid']").waitForDisplayed({ timeout: 6000 })
-    await $("[href*='/recover-nfid']").scrollIntoView()
-    await $("[href*='/recover-nfid']").click()
+    await this.recoverNFID.waitForDisplayed({ timeout: 6000 })
+    await this.recoverNFID.scrollIntoView()
+    await this.recoverNFID.click()
   }
 }
 

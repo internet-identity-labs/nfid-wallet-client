@@ -28,7 +28,7 @@ Feature: Sign in
     Then NFID number is not zero
 
 
-  @mobilesign
+  @mobile
   Scenario: User Signs In from mobile
     Given User opens NFID site
     Given authstate is cleared

@@ -206,6 +206,7 @@ function mapToAccessPointRequest(
     ).toText(),
     browser: accessPoint.browser,
     device_type: deviceToDeviceVariant(accessPoint.deviceType),
+    credential_id: [],
   }
 }
 
@@ -248,6 +249,7 @@ export async function createNFIDProfile(
     device_type: {
       Email: null,
     },
+    credential_id: [],
   }
 
   const accountRequest: HTTPAccountRequest = {

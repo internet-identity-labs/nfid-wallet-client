@@ -96,6 +96,7 @@ const normalizeDeviceRequest = (device: LegacyDevice): AccessPointRequest => {
     ).toText(),
     browser: device.browser,
     device_type: { Unknown: null },
+    credential_id: [],
   }
 }
 
@@ -371,6 +372,7 @@ export const useDevices = () => {
               new Uint8Array(pub_key),
             ).toText(),
             device_type: { Unknown: null },
+            credential_id: [],
           })
           .catch((e) => {
             throw new Error(
@@ -384,7 +386,7 @@ export const useDevices = () => {
 
   const createRecoveryDevice = React.useCallback(
     async (recoverIdentity: Blob, icon?: string, device?: string) => {
-      const newDevice = {
+      const newDevice: AccessPointRequest = {
         icon: icon ?? "document",
         device: device ?? "Recovery Phrase",
         browser: "",
@@ -392,6 +394,7 @@ export const useDevices = () => {
           new Uint8Array(await recoverIdentity.arrayBuffer()),
         ).toText(),
         device_type: { Recovery: null },
+        credential_id: [],
       }
 
       return await im.create_access_point(newDevice).catch((e) => {

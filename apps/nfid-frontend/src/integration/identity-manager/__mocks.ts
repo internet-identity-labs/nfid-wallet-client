@@ -113,6 +113,7 @@ export function factoryAccessPointResponse(): AccessPointResponse {
     last_used: BigInt(new Date().getTime()),
     principal_id: "string",
     device_type: { Email: null },
+    credential_id: [],
   }
 }
 

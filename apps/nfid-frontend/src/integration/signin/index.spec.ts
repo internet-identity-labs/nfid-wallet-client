@@ -64,6 +64,7 @@ describe("SignIn with Internet Identity", () => {
       device_type: {
         Email: null,
       },
+      credential_id: [],
     })
 
     expect(accessPoints).toEqual(

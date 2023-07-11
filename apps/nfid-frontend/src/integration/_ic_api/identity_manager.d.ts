@@ -10,6 +10,7 @@ export interface AccessPointRequest {
   device: string
   pub_key: string
   browser: string
+  credential_id: [] | [string]
 }
 export interface AccessPointResponse {
   icon: string
@@ -18,6 +19,7 @@ export interface AccessPointResponse {
   browser: string
   last_used: bigint
   principal_id: string
+  credential_id: [] | [string]
 }
 export interface Account {
   name: [] | [string]
@@ -263,6 +265,10 @@ export interface _SERVICE {
   >
   create_account: ActorMethod<[HTTPAccountRequest], HTTPAccountResponse>
   create_application: ActorMethod<[Application], HTTPApplicationResponse>
+  create_application_all: ActorMethod<
+    [Array<Application>],
+    HTTPApplicationResponse
+  >
   create_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
   credentials: ActorMethod<[], CredentialResponse>
   delete_application: ActorMethod<[string], BoolHttpResponse>
@@ -300,7 +306,6 @@ export interface _SERVICE {
   store_accounts: ActorMethod<[Array<Account>], BoolHttpResponse>
   sync_controllers: ActorMethod<[], Array<string>>
   update_2fa: ActorMethod<[boolean], AccountResponse>
-  get_root_by_principal: ActorMethod<[string], [[] | [string]]>
   update_access_point: ActorMethod<
     [AccessPointRequest],
     HTTPAccessPointResponse

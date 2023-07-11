@@ -171,14 +171,11 @@ export class HomePage extends Page {
   public async recoverAccountWithFAQ() {
     await $(`=${"FAQ"}`).waitForDisplayed({ timeout: 8000, timeoutMsg: "FAQ page is failed to load" })
 
-    await this.whatIfMyDeviceHasBeenStolen.waitForDisplayed({
-      timeout: 7000,
-    })
-    await this.whatIfMyDeviceHasBeenStolen.scrollIntoView()
+    await this.whatIfMyDeviceHasBeenStolen.waitForDisplayed({ timeout: 7000 })
     await this.whatIfMyDeviceHasBeenStolen.click()
 
     await this.recoverNFID.waitForDisplayed({ timeout: 6000 })
-    await this.recoverNFID.scrollIntoView()
+    await this.recoverNFID.waitForClickable({ timeout: 6000 })
     await this.recoverNFID.click()
   }
 }

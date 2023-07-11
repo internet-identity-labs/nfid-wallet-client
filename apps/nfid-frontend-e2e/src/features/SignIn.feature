@@ -1,6 +1,6 @@
 Feature: Sign in
 
-  
+  @passkeysign
   Scenario: User Signs In with predefined credentials
     Given User opens NFID site
     Given authstate is cleared
@@ -16,6 +16,7 @@ Feature: Sign in
   @pending
   Scenario: User Signs In from Third-Party app (DSCVR)
 
+  @faqsign
   Scenario: User authenticates with recovery phrase (FAQ)
     Given User opens NFID site
     Given authstate is cleared
@@ -27,7 +28,7 @@ Feature: Sign in
     Then NFID number is not zero
 
 
-  @mobile
+  @mobilesign
   Scenario: User Signs In from mobile
     Given User opens NFID site
     Given authstate is cleared

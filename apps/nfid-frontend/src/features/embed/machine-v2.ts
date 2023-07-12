@@ -44,10 +44,10 @@ type Services = {
     data: null
   }
   CheckAuthState: {
-    data: AuthSession
+    data: { authSession: AuthSession }
   }
   AuthenticationMachine: {
-    data: AuthSession
+    data: { authSession: AuthSession }
   }
   ExecuteProcedureService: {
     data: RPCResponse
@@ -248,7 +248,7 @@ export const NFIDEmbedMachineV2 = createMachine(
       }),
       assignAuthSession: assign((_, event) => {
         console.debug("assignAuthSession", { event })
-        return { authSession: event.data }
+        return { authSession: event.data.authSession }
       }),
       queueRequest: assign((context, event) => ({
         // TODO: we need to queue all data

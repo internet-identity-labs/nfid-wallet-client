@@ -3,8 +3,13 @@ import { authState, loadProfileFromLocalStorage } from "@nfid/integration"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthSession } from "frontend/state/authentication"
 
-export const CheckAuthState = async (): Promise<AuthSession> => {
+export const CheckAuthState = async (): Promise<{
+  authSession: AuthSession
+}> => {
+  console.debug("CheckAuthState")
   const { delegationIdentity } = await authState.fromCache()
+
+  console.debug("CheckAuthState", { delegationIdentity })
 
   if (!delegationIdentity)
     throw new Error("CheckAuthState: no auth session in cache")
@@ -12,8 +17,10 @@ export const CheckAuthState = async (): Promise<AuthSession> => {
   const { anchor } = loadProfileFromLocalStorage() ?? (await fetchProfile())
 
   return {
-    anchor,
-    sessionSource: "cache",
-    delegationIdentity,
+    authSession: {
+      anchor,
+      sessionSource: "cache",
+      delegationIdentity,
+    },
   }
 }

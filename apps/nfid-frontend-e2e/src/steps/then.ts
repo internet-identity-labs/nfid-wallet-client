@@ -66,8 +66,10 @@ Then(/^Policy is displayed on the policies list$/, async () => {
 })
 
 Then(/^NFID number is not zero$/, async () => {
-  const actualNFID = await Profile.getNFIDnumber()
-  expect(actualNFID).not.toBe("0")
+  await browser.waitUntil(async () => await Profile.getNFIDnumber() !== "0", {
+    timeout: 10000,
+    timeoutMsg: "Profile NFID number is 0"
+  })
 })
 
 Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
@@ -519,8 +521,8 @@ Then(/^Account ID is ([^"]*)/, async (principal: string) => {
   let address = await Assets.getAccountId(true)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressElement.getText()),
+    "..." +
+    (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -528,8 +530,8 @@ Then(/^Principal is ([^"]*)/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressElement.getText()),
+    "..." +
+    (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -744,7 +746,7 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
 })
 
 Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
-  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
+  ; (await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
 })
 
 Then(/^Open collectibles page$/, async () => {

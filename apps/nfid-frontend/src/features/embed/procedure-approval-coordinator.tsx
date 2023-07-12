@@ -8,7 +8,6 @@ import { FunctionCall, Method } from "@nfid/integration-ethereum"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import ThirdPartyAuthCoordinator from "../authentication/3rd-party/coordinator"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
@@ -110,14 +109,15 @@ export const ProcedureApprovalCoordinator: React.FC<
 
     case rpcMessage.method === "eth_accounts":
       return (
-        <ThirdPartyAuthCoordinator
-          onEnd={() => onConfirm()}
-          {...{
-            rpcMessage,
-            appMeta,
-            authSession,
-          }}
-        />
+        <div>eth_accounts</div>
+        // <AuthChooseAccount
+        //   // onEnd={() => onConfirm()}
+        //   {...{
+        //     rpcMessage,
+        //     appMeta,
+        //     authSession,
+        //   }}
+        // />
       )
     default:
       return (

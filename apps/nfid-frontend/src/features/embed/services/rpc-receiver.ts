@@ -71,6 +71,7 @@ export const RPCReceiverV2 =
   () => (send: (event: ProcedureCallEvent) => void) => {
     const subsciption = rpcMessages.subscribe(
       async ({ data: rpcMessage, origin }) => {
+        console.debug("RPCReceiverV2", { rpcMessage, origin })
         switch (rpcMessage.method) {
           case "eth_accounts":
             return send({

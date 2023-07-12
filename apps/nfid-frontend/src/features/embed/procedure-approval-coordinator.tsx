@@ -107,18 +107,6 @@ export const ProcedureApprovalCoordinator: React.FC<
         </React.Suspense>
       )
 
-    case rpcMessage.method === "eth_accounts":
-      return (
-        <div>eth_accounts</div>
-        // <AuthChooseAccount
-        //   // onEnd={() => onConfirm()}
-        //   {...{
-        //     rpcMessage,
-        //     appMeta,
-        //     authSession,
-        //   }}
-        // />
-      )
     default:
       return (
         <MappedFallback

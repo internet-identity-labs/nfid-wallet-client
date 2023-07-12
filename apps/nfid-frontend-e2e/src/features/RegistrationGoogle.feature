@@ -31,6 +31,5 @@ Feature: Registration using Google
     Given User authenticates with google account
     And It log's me in
     And Tokens displayed on user assets
-    And User has account stored in localstorage
     When User opens mobile profile menu
     Then NFID number is not zero

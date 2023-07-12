@@ -28,7 +28,15 @@ export default function NFIDEmbedCoordinator() {
     case state.matches("AUTH.CheckAppMeta"):
     case state.matches("AUTH.CheckAuthentication"):
     default:
-      return <BlurredLoader isLoading />
+      return (
+        <BlurredLoader
+          isLoading
+          loadingMessage={
+            state.context.rpcMessage?.method === "eth_accounts" &&
+            "Requesting account..."
+          }
+        />
+      )
 
     case state.matches("AUTH.Authenticate"):
       return (

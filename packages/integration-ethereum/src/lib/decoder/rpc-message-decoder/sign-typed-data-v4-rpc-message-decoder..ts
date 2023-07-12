@@ -7,7 +7,7 @@ import { mint1155SignTypedDataV4RpcMessageDecoder } from "./sign-typed-data-v4-r
 import { orderSignTypedDataV4RpcMessageDecoder } from "./sign-typed-data-v4-rpc-message-decoder/order-sign-typed-data-v4-rpc-message-decoder copy"
 
 export type SignTypedDataV4RpcMessageDecoder = {
-  decode: (from: string, json: object) => Promise<RpcMessageFunctionalCall>
+  decode: (from: string, json: object, chainId: string) => Promise<RpcMessageFunctionalCall>
 }
 
 const decoders: { [key: string]: SignTypedDataV4RpcMessageDecoder } = {
@@ -21,7 +21,7 @@ export const signTypedDataV4RpcMessageDecoder: RpcMessageDecoder = {
   decode: async ([
     from,
     parameter,
-  ]: any[]): Promise<RpcMessageFunctionalCall> => {
+  ]: any[], chainId: string): Promise<RpcMessageFunctionalCall> => {
     const json = JSON.parse(parameter)
     const type = json.primaryType
 
@@ -31,6 +31,6 @@ export const signTypedDataV4RpcMessageDecoder: RpcMessageDecoder = {
       throw new Error("No sign typed data decoder found")
     }
 
-    return decoder.decode(from, json)
+    return decoder.decode(from, json, chainId)
   },
 }

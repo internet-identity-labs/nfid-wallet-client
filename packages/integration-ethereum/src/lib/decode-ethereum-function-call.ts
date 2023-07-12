@@ -24,14 +24,15 @@ export async function decodeRpcMessage(
   return functionCallDecoder.decodeRpcMessage(rpcMessage)
 }
 
-export async function decode(data: string): Promise<FunctionCall> {
-  return functionCallDecoder.decode(data)
+export async function decode(data: string, chainId: string): Promise<FunctionCall> {
+  return functionCallDecoder.decode(data, chainId)
 }
 
 export async function decodeTokenByAssetClass(
   type: string,
   data: string,
+  chainId: string,
   method: Method = "sell",
 ): Promise<FunctionCall> {
-  return functionCallDecoder.decodeByAssetClass(type, data, method)
+  return functionCallDecoder.decodeByAssetClass(type, data, chainId, method)
 }

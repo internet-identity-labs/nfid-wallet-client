@@ -34,7 +34,7 @@ class DirectAcceptBidMethodDecoder implements MethodDecoder {
     return "0x67d49a3b"
   }
 
-  async map(x: DecodedFunctionCall): Promise<DirectAcceptBid> {
+  async map(x: DecodedFunctionCall, chainId: string): Promise<DirectAcceptBid> {
     const [
       bidMaker,
       bidNftAmount,
@@ -55,6 +55,7 @@ class DirectAcceptBidMethodDecoder implements MethodDecoder {
     const nft: FunctionCall = await decodeTokenByAssetClass(
       nftAssetClass,
       nftData,
+      chainId
     )
     return Promise.resolve({
       interface: "DirectAcceptBid",

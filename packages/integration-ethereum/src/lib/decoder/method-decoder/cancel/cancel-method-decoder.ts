@@ -27,12 +27,12 @@ export class CancelMethodDecoder implements MethodDecoder {
     return "0xe2864fe3"
   }
 
-  async map(x: DecodedFunctionCall): Promise<CancelOrder> {
+  async map(x: DecodedFunctionCall, chainId: string): Promise<CancelOrder> {
     const [[maker, makeAssets, taker, [_, takeAssetPrice], salt, start, end]] =
       x.inputs
     const [assetClass, assetId] = makeAssets[0]
 
-    const makeAsset = await decodeTokenByAssetClass(assetClass, assetId)
+    const makeAsset = await decodeTokenByAssetClass(assetClass, assetId, chainId)
 
     return {
       interface: "CancelOrder",

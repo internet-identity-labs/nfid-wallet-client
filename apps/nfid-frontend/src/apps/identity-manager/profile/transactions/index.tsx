@@ -39,7 +39,6 @@ import {
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
 import { Loader } from "frontend/ui/atoms/loader"
-import { Blockchain } from "frontend/ui/connnector/types"
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 
 const ProfileTransactions = () => {
@@ -85,12 +84,6 @@ const ProfileTransactions = () => {
 
   const isNFIDAccount = useMemo(() => {
     if (!wallets.length) return false
-
-    if (
-      location.state?.blockchain &&
-      location.state?.blockchain !== Blockchain.IC
-    )
-      return true
 
     return !selectedAccountFilters.length
       ? true

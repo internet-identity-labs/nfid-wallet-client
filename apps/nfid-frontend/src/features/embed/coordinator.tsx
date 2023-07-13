@@ -24,6 +24,20 @@ export default function NFIDEmbedCoordinator() {
   )
 
   switch (true) {
+    case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
+    case state.matches("AUTH.CheckAppMeta"):
+    case state.matches("AUTH.CheckAuthentication"):
+    default:
+      return (
+        <BlurredLoader
+          isLoading
+          loadingMessage={
+            state.context.rpcMessage?.method === "eth_accounts" &&
+            "Requesting account..."
+          }
+        />
+      )
+
     case state.matches("AUTH.Authenticate"):
       return (
         <AuthenticationCoordinator
@@ -59,8 +73,5 @@ export default function NFIDEmbedCoordinator() {
           onRetry={() => send({ type: "RETRY" })}
         />
       )
-    case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
-    default:
-      return <BlurredLoader isLoading />
   }
 }

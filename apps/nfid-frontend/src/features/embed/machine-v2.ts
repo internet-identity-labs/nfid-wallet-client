@@ -44,10 +44,10 @@ type Services = {
     data: null
   }
   CheckAuthState: {
-    data: AuthSession
+    data: { authSession: AuthSession }
   }
   AuthenticationMachine: {
-    data: AuthSession
+    data: { authSession: AuthSession }
   }
   ExecuteProcedureService: {
     data: RPCResponse
@@ -182,10 +182,16 @@ export const NFIDEmbedMachineV2 = createMachine(
         initial: "READY",
         states: {
           READY: {
-            always: {
-              target: "AWAIT_PROCEDURE_APPROVAL",
-              cond: "hasProcedure",
-            },
+            always: [
+              {
+                target: "EXECUTE_PROCEDURE",
+                cond: "isAutoApprovable",
+              },
+              {
+                target: "AWAIT_PROCEDURE_APPROVAL",
+                cond: "hasProcedure",
+              },
+            ],
           },
 
           AWAIT_PROCEDURE_APPROVAL: {
@@ -248,10 +254,9 @@ export const NFIDEmbedMachineV2 = createMachine(
       }),
       assignAuthSession: assign((_, event) => {
         console.debug("assignAuthSession", { event })
-        return { authSession: event.data }
+        return { authSession: event.data.authSession }
       }),
       queueRequest: assign((context, event) => ({
-        // TODO: we need to queue all data
         messageQueue: [...context.messageQueue, event.data.rpcMessage],
       })),
       assignError: assign((context, event) => ({
@@ -302,6 +307,8 @@ export const NFIDEmbedMachineV2 = createMachine(
       hasProcedure: (context: NFIDEmbedMachineContext) => !!context.rpcMessage,
       isReady: (_: NFIDEmbedMachineContext, __: Events, { state }: any) =>
         state.matches("HANDLE_PROCEDURE.READY"),
+      isAutoApprovable: (context: NFIDEmbedMachineContext) =>
+        ["eth_accounts"].includes(context.rpcMessage?.method ?? ""),
     },
     services: {
       CheckApplicationMeta,

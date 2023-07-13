@@ -13,13 +13,15 @@ export type ApproveSignatureEvent = {
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
-type ExecuteProcedureEvent = ApproveSignatureEvent
+type ExecuteProcedureEvent =
+  | { type: "APPROVE"; data?: ApproveSignatureEvent }
+  | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext
 
 export const ExecuteProcedureService = async (
   { rpcMessage, authSession }: ExecuteProcedureServiceContext,
-  { data }: { data?: ExecuteProcedureEvent },
+  event: ExecuteProcedureEvent,
 ): Promise<RPCResponse> => {
   if (!rpcMessage)
     throw new Error("ExecuteProcedureService: missing rpcMessage")
@@ -57,7 +59,7 @@ export const ExecuteProcedureService = async (
       const adapter = new DelegationWalletAdapter(rpcUrl)
       const { wait, ...result } = await adapter.sendTransaction(
         delegation,
-        data?.populatedTransaction,
+        event.type === "APPROVE" ? event.data?.populatedTransaction : undefined,
       )
       const response = { ...rpcBase, result: result.hash }
       console.debug("ExecuteProcedureService eth_accounts", {

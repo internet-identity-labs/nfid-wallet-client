@@ -622,9 +622,9 @@ Then(
 
 Then(/^(\d+) row in the table/, async (amount: number) => {
   for (let i = 0; i < amount; i++) {
-    await $(`#account_row_${i}`).waitForExist({ timeout: 7000 })
+    await $(`#account_row_${i}`).waitForDisplayed({ timeout: 7000 })
   }
-  await $(`#account_row_${amount}`).waitForExist({
+  await $(`#account_row_${amount}`).waitForDisplayed({
     timeout: 7000,
     reverse: true,
   })
@@ -632,14 +632,14 @@ Then(/^(\d+) row in the table/, async (amount: number) => {
 
 Then(/^([^"]*) transaction in the table/, async (amount: number) => {
   for (let i = 0; i < amount; i++) {
-    await $("id=transaction_" + i).waitForDisplayed({
+    await $(`#transaction_${i}`).waitForDisplayed({
       timeout: 15000,
       timeoutMsg: "Transaction has not been showed! Missing transaction!",
       reverse: false,
     })
   }
 
-  await $("id=transaction_" + amount).waitForDisplayed({
+  await $(`#transaction_${amount}`).waitForDisplayed({
     timeout: 15000,
     timeoutMsg: "More than expects. Unexpected transaction!",
     reverse: true,

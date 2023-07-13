@@ -69,6 +69,7 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {
     hasProcedure: ""
+    isAutoApprovable: ""
     isReady: "RPC_MESSAGE"
   }
   eventsCausingServices: {
@@ -77,7 +78,7 @@ export interface Typegen0 {
       | "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     CheckApplicationMeta: "xstate.init"
     CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
-    ExecuteProcedureService: "APPROVE"
+    ExecuteProcedureService: "" | "APPROVE"
     RPCReceiver: "RPC_MESSAGE" | "xstate.init"
   }
   matchesStates:

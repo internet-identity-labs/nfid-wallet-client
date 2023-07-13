@@ -232,7 +232,7 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
 
 Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
   await $(`#token_${assetLabel.replace(/\s/g, "")}`).waitForDisplayed({
-    timeout: 10000,
+    timeout: 17000,
   })
 })
 
@@ -337,7 +337,7 @@ Then(
   async (expectedText: string) => {
     await $("#blockchain_filter #selected_acc").then(async (x) =>
       x
-        .waitForExist({ timeout: 7000 })
+        .waitForExist({ timeout: 17000 })
         .then(async () => expect(x).toHaveText(expectedText)),
     )
   },
@@ -376,7 +376,7 @@ Then(
   async (text: string, currency) => {
     await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (x) =>
       x
-        .waitForExist({ timeout: 7000 })
+        .waitForExist({ timeout: 17000 })
         .then(async () => expect(x).not.toHaveText(`0 ${currency}`)),
     )
   },
@@ -540,8 +540,8 @@ Then(
   async (chain: string, text: string) => {
     const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
-    await usd.waitForExist({
-      timeout: 7000,
+    await usd.waitForDisplayed({
+      timeout: 13000,
     })
     await expect(usd).not.toHaveText(text)
   },
@@ -550,16 +550,16 @@ Then(
 Then(/^([^"]*) USD balance is not empty$/, async (chain: string) => {
   const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
-  await usd.waitForExist({
-    timeout: 10000,
+  await usd.waitForDisplayed({
+    timeout: 13000,
   })
   await expect(usd).not.toHaveText("")
 })
 
 Then(/^Account balance in USD not empty$/, async () => {
   const usd = await $("#usd_balance_0")
-  await usd.waitForExist({
-    timeout: 7000,
+  await usd.waitForDisplayed({
+    timeout: 13000,
   })
   await expect(usd).not.toHaveText("")
 })

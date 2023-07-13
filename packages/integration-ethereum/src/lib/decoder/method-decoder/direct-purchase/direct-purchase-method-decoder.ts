@@ -17,9 +17,9 @@ class DirectPurchaseMethodDecoder implements MethodDecoder {
     return "0x0d5f7d35"
   }
 
-  async map({ inputs }: DecodedFunctionCall): Promise<DirectPurchase> {
+  async map({ inputs }: DecodedFunctionCall, chainId: string): Promise<DirectPurchase> {
     const [[, , type, content]] = inputs
-    return await decodeTokenByAssetClass(type, content, "directPurchase")
+    return await decodeTokenByAssetClass(type, content, chainId, "directPurchase")
   }
 }
 

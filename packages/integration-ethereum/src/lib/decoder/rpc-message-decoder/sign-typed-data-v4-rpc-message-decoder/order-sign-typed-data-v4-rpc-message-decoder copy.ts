@@ -9,6 +9,7 @@ export const orderSignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageDec
     decode: async (
       from: string,
       json: any,
+      chainId: string
     ): Promise<RpcMessageFunctionalCall> => {
       const makeAsset = json.message.makeAsset.assetType
       const takeAsset = json.message.takeAsset.assetType
@@ -30,6 +31,7 @@ export const orderSignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageDec
       const data = await functionCallDecoder.decodeByAssetClass(
         asset.value.assetClass,
         asset.value.data,
+        chainId
       )
 
       if (asset.currency.assetClass !== "0xaaaebeba") {

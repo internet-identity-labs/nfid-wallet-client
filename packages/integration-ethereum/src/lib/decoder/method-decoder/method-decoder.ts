@@ -59,5 +59,5 @@ export interface MethodDecoder
   extends Decoder<object, string, DecodedFunctionCall, Promise<FunctionCall>> {
   getAbi(): object
   getMethod(): string
-  map(decodedFunctionCall: DecodedFunctionCall): Promise<FunctionCall>
+  map(decodedFunctionCall: DecodedFunctionCall, chainId: string): Promise<FunctionCall>
 }

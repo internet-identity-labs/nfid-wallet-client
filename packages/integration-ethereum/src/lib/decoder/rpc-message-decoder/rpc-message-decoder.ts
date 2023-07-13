@@ -13,7 +13,7 @@ export type RpcMessageFunctionalCall = {
 
 export type RpcMessageDecoder = {
   method: string
-  decode: (params: any[]) => Promise<RpcMessageFunctionalCall>
+  decode: (params: any[], chainId: string) => Promise<RpcMessageFunctionalCall>
 }
 
 export const parseHex = (x: string): string =>

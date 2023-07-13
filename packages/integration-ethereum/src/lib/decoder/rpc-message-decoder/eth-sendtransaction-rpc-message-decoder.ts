@@ -7,8 +7,8 @@ import {
 
 export const ethSendTransactionRpcMessageDecoder: RpcMessageDecoder = {
   method: "eth_sendTranscation",
-  decode: async ([parameter]: any[]): Promise<RpcMessageFunctionalCall> => {
-    const data = await functionCallDecoder.decode(parameter.data)
+  decode: async ([parameter]: any[], chainId: string): Promise<RpcMessageFunctionalCall> => {
+    const data = await functionCallDecoder.decode(parameter.data, chainId)
 
     return Promise.resolve({
       interface: data.interface,

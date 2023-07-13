@@ -32,7 +32,6 @@ import {
 } from "./rpc-message-decoder/rpc-message-decoder"
 import { signTypedDataV4RpcMessageDecoder } from "./rpc-message-decoder/sign-typed-data-v4-rpc-message-decoder."
 
-const sdk = createRaribleSdk(null, "testnet")
 const methodDecoders: Record<string, MethodDecoder> = dependencyService.group([
   cancelMethodDecoder,
   directAcceptBidMethodDecoder,
@@ -59,7 +58,7 @@ const rpcMessageDecoders: { [key: string]: RpcMessageDecoder } = {
 }
 
 export const functionCallDecoder = {
-  decode(data: string): Promise<FunctionCall> {
+  decode(data: string, chainId: string): Promise<FunctionCall> {
     const method = data.substring(0, 10)
     const methodDecoder = methodDecoders[method]
 
@@ -69,12 +68,13 @@ export const functionCallDecoder = {
 
     const fragment = methodDecoder.getAbi() as Fragment
     const decodedData = functionCallService.decode(data, fragment)
-    return methodDecoder.map(decodedData)
+    return methodDecoder.map(decodedData, chainId)
   },
 
   async decodeByAssetClass(
     type: string,
     data: string,
+    chainId: string,
     method: Method = "sell",
   ): Promise<FunctionCall> {
     const assetDecoder = assetDecoders[type]
@@ -84,6 +84,8 @@ export const functionCallDecoder = {
     }
 
     const tokenId = assetDecoder.map(data)
+    const env = chainId === "0x01" ? "prod" : "testnet"
+    const sdk = createRaribleSdk(null, env)
     const [item, collection] = await Promise.all([
       await sdk.apis.item.getItemById({
         itemId: `ETHEREUM:${tokenId.collectionId}:${tokenId.tokenId}`,
@@ -106,6 +108,7 @@ export const functionCallDecoder = {
   async decodeRpcMessage({
     method,
     params,
+    options
   }: RPCMessage): Promise<RpcMessageFunctionalCall> {
     const rpcMessageDecoder = rpcMessageDecoders[method]
 
@@ -113,7 +116,7 @@ export const functionCallDecoder = {
       throw new Error("No rpc message decoder found")
     }
 
-    const data = await rpcMessageDecoder.decode(params)
+    const data = await rpcMessageDecoder.decode(params, options.chainId ?? "")
 
     if (["directPurchase"].includes(data.method) && !params[0].value) {
       throw Error("Not a native token.")

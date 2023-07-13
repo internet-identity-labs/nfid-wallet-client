@@ -13,5 +13,5 @@ export const redirectFromCanisters = () => {
     return (window.location.href = "https://nfid.one")
 
   if (window.location.host === devHost)
-    return (window.location.href = "https://nfid.dev")
+    return (window.location.href = "https://staging.nfid.one")
 }

@@ -43,7 +43,7 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        className="p-5 w-[500px] z-[100] lg:rounded-xl"
+        className="p-5 w-[95%] md:w-[500px] z-[100] lg:rounded-xl"
       >
         <p className="text-2xl font-bold">Remove passkey</p>
         <div className="p-5 mt-5 text-sm text-orange-900 bg-orange-50 rounded-xl">

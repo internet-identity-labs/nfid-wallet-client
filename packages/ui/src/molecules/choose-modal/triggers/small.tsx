@@ -29,7 +29,7 @@ export const SmallTrigger = ({
     >
       <div className="flex items-center">
         {selectedOption?.icon && (
-          <Image
+          <img
             src={selectedOption?.icon}
             alt={selectedOption?.value}
             className={clsx("mr-2.5 w-12 h-12 object-cover", iconClassnames)}

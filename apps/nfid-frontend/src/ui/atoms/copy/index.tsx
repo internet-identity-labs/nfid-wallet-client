@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 import { Tooltip } from "@nfid-frontend/ui"
 
 import { ElementProps } from "frontend/types/react"
@@ -32,7 +32,7 @@ export const Copy: React.FC<ICopy> = ({ value, className }) => {
       )}
     >
       <Tooltip tip="Copy">
-        <Image
+        <img
           className="w-full"
           onClick={copyToClipboard}
           src={copied ? CopiedIcon : CopyIcon}

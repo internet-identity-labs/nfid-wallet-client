@@ -10,13 +10,14 @@ import {
   ChooseModal,
   IconCmpArrow,
   IconCmpArrowRight,
-  Image,
   Label,
   BlurredLoader,
   sumRules,
 } from "@nfid-frontend/ui"
+import { RootWallet } from "@nfid/integration"
 import { TokenMetadata } from "@nfid/integration/token/dip-20"
 
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -52,6 +53,9 @@ export const TransferFT = ({
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
   )
+
+  const { profile, isLoading: isLoadingProfile } = useProfile()
+  console.debug("TransferFT", { profile, isLoadingProfile })
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
@@ -210,11 +214,13 @@ export const TransferFT = ({
   )
 
   const loadingMessage = useMemo(() => {
+    if (isLoadingProfile) return "Fetching account information..."
     if (isTokensLoading) return "Fetching supported tokens..."
     if (isConnectorLoading || isMetadataLoading)
       return "Loading token config..."
     if (isAccountsLoading) return "Loading accounts..."
   }, [
+    isLoadingProfile,
     isAccountsLoading,
     isConnectorLoading,
     isMetadataLoading,
@@ -287,7 +293,7 @@ export const TransferFT = ({
                 id={`token_${selectedTokenCurrency}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
-                <Image
+                <img
                   className="w-[26px] mr-1.5"
                   src={tokenMetadata?.icon}
                   alt={selectedTokenCurrency}
@@ -299,13 +305,15 @@ export const TransferFT = ({
             }
           />
         </div>
-        <ChooseModal
-          label="From"
-          title={"Choose an account"}
-          optionGroups={accountsOptions ?? []}
-          preselectedValue={selectedAccountAddress}
-          onSelect={setSelectedAccountAddress}
-        />
+        {profile?.wallet === RootWallet.II && (
+          <ChooseModal
+            label="From"
+            title={"Choose an account"}
+            optionGroups={accountsOptions ?? []}
+            preselectedValue={selectedAccountAddress}
+            onSelect={setSelectedAccountAddress}
+          />
+        )}
         <ChooseModal
           type="input"
           label="To"

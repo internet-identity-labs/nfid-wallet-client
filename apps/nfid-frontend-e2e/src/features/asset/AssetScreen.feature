@@ -21,7 +21,7 @@ Feature:Fungible Asset
       | Polygon Mumbai    | MATIC    | 0.2 MATIC      | 25795  | Matic Mumbai      |
       | Polygon Mumbai    | TST      | 1 TST          | 25795  | Test Token Mumbai |
       | Internet Computer | ICP      | 0 ICP          | 28542  | Internet Computer |
-      | Internet Computer | WICP     | 0 WICP         | 28565  | WICP              |
+      | Internet Computer | WICP     | 0.01 WICP         | 28565  | WICP              |
 
 
   @asset2

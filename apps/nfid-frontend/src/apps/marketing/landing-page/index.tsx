@@ -4,8 +4,6 @@ import { Fade } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import { Parallax } from "react-scroll-parallax"
 
-import { Image } from "@nfid-frontend/ui"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/integration/device"
 import { Accordion } from "frontend/ui/atoms/accordion"
@@ -73,7 +71,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 </Parallax>
               </div>
               <div className="relative">
-                <Image
+                <img
                   className="absolute z-0 w-[275%] -left-40 md:w-[210%] top-[-35rem] sm:top-[-60rem] md:-top-40 max-w-none md:left-[-85%] blur-blue"
                   src={Blur1}
                   alt="blur1"
@@ -105,7 +103,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 </Fade>
                 {/* @ts-ignore: TODO: Pasha fix */}
                 <Fade right>
-                  <Image
+                  <img
                     className="absolute z-0 w-[200%] max-w-none left-[-100%] mt-80 blur-green"
                     src={Blur2}
                     alt="blur2"
@@ -186,7 +184,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     <div className="">
                       <div className="icon-background-blur private-background-blur big-background-blur"></div>
                       <div className="icon-background-blur private-background-blur small-background-blur"></div>
-                      <Image src={Icon1} alt="Private" />
+                      <img src={Icon1} alt="Private" />
                       <p className="text-[28px] md:text-[32px] mt-5 font-bold leading-[34px] md:leading-10">
                         Private
                       </p>
@@ -204,7 +202,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     <div className="">
                       <div className="icon-background-blur convenient-background-blur big-background-blur"></div>
                       <div className="icon-background-blur convenient-background-blur small-background-blur"></div>
-                      <Image src={Icon2} alt="Convenient" />
+                      <img src={Icon2} alt="Convenient" />
                       <p className="text-[28px] md:text-[32px] mt-5 font-bold leading-[34px] md:leading-10">
                         Convenient
                       </p>
@@ -222,7 +220,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     <div className="">
                       <div className="icon-background-blur secure-background-blur big-background-blur"></div>
                       <div className="icon-background-blur secure-background-blur small-background-blur"></div>
-                      <Image src={Icon3} alt="Secure" />
+                      <img src={Icon3} alt="Secure" />
                       <p className="text-[28px] md:text-[32px] mt-5 font-bold leading-[34px] md:leading-10">
                         Secure
                       </p>
@@ -242,12 +240,12 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               id="our-mission"
               className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 md:pt-24 scroll-mt-24"
             >
-              <Image
+              <img
                 src={Icon_pink}
                 alt="Ellipse_pink"
                 className="absolute z-0 -top-16 right-16"
               />
-              <Image
+              <img
                 src={Icon_yellow}
                 alt="Ellipse_yellow"
                 className="absolute right-8 blur-pink"
@@ -298,7 +296,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     to="/our-mission"
                     className="flex text-xl font-semibold transition-all text-blue hover:opacity-50 hover:underline hover:text-blue-hover"
                   >
-                    Read more <Image className="ml-2" src={Arrow} alt="" />
+                    Read more <img className="ml-2" src={Arrow} alt="" />
                   </Link> */}
                   </div>
                 </Fade>
@@ -378,7 +376,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     to={"/faq"}
                     className="flex mt-5 text-xl font-semibold transition-all text-blue hover:opacity-50 hover:underline hover:text-blue-hover"
                   >
-                    Read more <Image className="ml-2" src={Arrow} alt="" />
+                    Read more <img className="ml-2" src={Arrow} alt="" />
                   </Link>
                 </div>
               </Fade>

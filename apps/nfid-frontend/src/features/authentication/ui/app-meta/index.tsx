@@ -5,7 +5,6 @@ import {
   IconCmpInfo,
   IconSvgID,
   IconSvgNFID,
-  Image,
   Tooltip,
 } from "@nfid-frontend/ui"
 
@@ -28,7 +27,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
     <div className="flex flex-col items-center w-full pt-8">
       {applicationLogo ? (
         <div className="relative h-[54px] w-[84px] shadow-sm rounded-xl">
-          <Image
+          <img
             src={applicationLogo}
             alt={`application-logo-${applicationName}`}
             className="absolute top-0 right-0 z-10 h-full"
@@ -39,7 +38,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
               "bg-white bg-opacity-90 backdrop-blur-sm",
             )}
           >
-            <Image
+            <img
               className="h-full"
               src={IconSvgID}
               alt={`application-logo-NFID`}
@@ -47,7 +46,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
           </div>
         </div>
       ) : (
-        <Image
+        <img
           src={IconSvgNFID}
           alt={`application-logo-${applicationName}`}
           className="h-[54px]"

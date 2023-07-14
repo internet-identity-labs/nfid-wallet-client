@@ -11,13 +11,21 @@ const signinV2 = "/signin/v2"
 interface GoogleSigninV2Service {
   signin(
     token: string,
-  ): Promise<{ delegation: DelegationIdentity; identity: Ed25519KeyIdentity }>
+  ): Promise<{
+    delegation: DelegationIdentity
+    identity: Ed25519KeyIdentity
+    email: string
+  }>
 }
 
 export const googleSigninV2Service: GoogleSigninV2Service = {
   async signin(
     token: string,
-  ): Promise<{ delegation: DelegationIdentity; identity: Ed25519KeyIdentity; email: string}> {
+  ): Promise<{
+    delegation: DelegationIdentity
+    identity: Ed25519KeyIdentity
+    email: string
+  }> {
     const url = ic.isLocal ? signinV2 : AWS_SIGNIN_GOOGLE_V2
 
     const ed25519KeyIdentity = Ed25519KeyIdentity.generate()

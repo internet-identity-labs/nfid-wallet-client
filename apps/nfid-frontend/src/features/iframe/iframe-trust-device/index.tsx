@@ -1,5 +1,5 @@
 import { BlurredLoader, Button } from "@nfid-frontend/ui"
-import { Image } from "@nfid-frontend/ui"
+
 
 import securityKey from "./assets/security-key.png"
 import webauthn from "./assets/webauthn.png"
@@ -27,7 +27,7 @@ export const IframeTrustDevice = ({
           ? "Add a passkey for this browser on this device to sign in to NFID faster with a look, touch, or PIN."
           : "Add a passkey on your security key to sign in to NFID faster next time."}
       </p>
-      <Image
+      <img
         className="max-h-[200px] mx-auto mt-6 mb-7"
         src={isWebAuthN ? webauthn : securityKey}
         alt="webauthn"

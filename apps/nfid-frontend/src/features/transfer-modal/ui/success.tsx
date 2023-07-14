@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { Fade } from "react-awesome-reveal"
 
 import { LottieAnimation } from "@nfid-frontend/ui"
-import { Button, H5, Image } from "@nfid-frontend/ui"
+import { Button, H5 } from "@nfid-frontend/ui"
 
 import Fail from "../assets/error.json"
 import Success1 from "../assets/success_1.json"
@@ -74,7 +74,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
             animationData={animation}
             loop={step === 0 || step === 2}
           />
-          <Image
+          <img
             src={assetImg}
             className={clsx(
               "absolute h-[120px] w-[120px] object-contain -mt-[123px] ml-[1px] rounded-full object-center",

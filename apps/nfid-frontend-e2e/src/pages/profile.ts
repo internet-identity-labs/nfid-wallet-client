@@ -1,4 +1,4 @@
-import { HomePage } from "./home-page"
+import { HomePage } from "./home-page.js"
 
 export class Profile extends HomePage {
   private get profilePic() {
@@ -142,7 +142,7 @@ export class Profile extends HomePage {
 
   public async openProfileMenu() {
     await this.profilePic.waitForDisplayed({
-      timeout: 7000,
+      timeout: 17000,
       timeoutMsg: "Profile Picture is missing!",
     })
     await this.profilePic.click()

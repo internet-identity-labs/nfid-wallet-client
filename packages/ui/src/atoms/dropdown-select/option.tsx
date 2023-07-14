@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { IOption } from "."
 import { Checkbox } from "../checkbox"
@@ -37,7 +37,7 @@ export const DropdownOption = ({
         id={`option_cbx_${option.label.replace(/\s/g, "")}`}
       />
       {option.icon && (
-        <Image
+        <img
           className="mr-[13px] w-10 h-10 object-cover"
           src={option.icon}
           alt={option.value}

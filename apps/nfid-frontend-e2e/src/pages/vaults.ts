@@ -1,4 +1,4 @@
-import { Profile } from "./profile"
+import { Profile } from "./profile.js"
 
 export class Vaults extends Profile {
   private get createVaultButton() {

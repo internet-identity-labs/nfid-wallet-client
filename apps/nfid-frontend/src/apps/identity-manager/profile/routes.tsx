@@ -14,7 +14,7 @@ const ProfileTokenWalletsDetailPage = React.lazy(
 )
 const ProfileAssets = React.lazy(() => import("./assets"))
 const ProfileCredentials = React.lazy(() => import("./credentials"))
-const ProfileSecurity = React.lazy(() => import("./security"))
+const ProfileSecurity = React.lazy(() => import("../../../features/security"))
 const ProfileApplications = React.lazy(() => import("./applications"))
 const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
 const ProfileTransactions = React.lazy(() => import("./transactions"))

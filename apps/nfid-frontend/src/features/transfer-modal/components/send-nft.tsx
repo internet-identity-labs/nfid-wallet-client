@@ -10,7 +10,6 @@ import {
   IconCmpArrow,
   IconCmpArrowRight,
   IconCmpNFTPreview,
-  Image,
   Label,
   BlurredLoader,
 } from "@nfid-frontend/ui"
@@ -174,7 +173,7 @@ export const TransferNFT = ({
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
                   {selectedNFT?.assetPreview ? (
-                    <Image
+                    <img
                       className="object-cover rounded-sm w-[84px] h-[84px]"
                       src={selectedNFT?.assetPreview.url}
                       alt={""}
@@ -190,7 +189,7 @@ export const TransferNFT = ({
                       !selectedNFT && "hidden",
                     )}
                   >
-                    <Image
+                    <img
                       className="w-4"
                       src={selectedNFT?.blockchainLogo}
                       alt=""

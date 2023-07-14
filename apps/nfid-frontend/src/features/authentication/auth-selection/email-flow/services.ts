@@ -116,13 +116,19 @@ export const authorizeWithEmail = async (
     profile = await fetchProfile()
   } catch (e) {
     console.log("creating new profile")
-    profile = await createNFIDProfile(delegationIdentity)
+    profile = await createNFIDProfile(
+      delegationIdentity,
+      context.verificationEmail,
+    )
   }
 
   authState.set({
     delegationIdentity,
     identity: context.emailDelegation,
   })
+
+  if (!profile?.email?.length)
+    await im.update_account({ name: [], email: [context.verificationEmail] })
 
   await authStorage.set(
     KEY_STORAGE_KEY,

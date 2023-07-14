@@ -1,6 +1,7 @@
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 import * as decodeHelpers from "@simplewebauthn/server/helpers"
+import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
 import { toHexString } from "packages/integration/src/lib/lambda/ecdsa"
@@ -217,7 +218,10 @@ export class PasskeyConnector {
     // includes flags, and all other data
     let authDataParsed = decodeHelpers.parseAuthenticatorData(authData)
 
-    // authDataParsed.credentialPublicKey
+    // Format the AAGUID as a UUID string
+    const aaguid = isoUint8Array.toHex(authDataParsed.aaguid!)
+
+    console.log({ aaguidString: aaguid, aaguidBuffer: authDataParsed.aaguid })
 
     const passkeyMetadata: IPasskeyMetadata = {
       name: "Some editable name or keychain title",

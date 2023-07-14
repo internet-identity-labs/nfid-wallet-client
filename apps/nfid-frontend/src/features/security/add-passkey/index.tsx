@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React from "react"
+import { ToastContainer } from "react-toastify"
 
 import { Button, Checkbox, IconCmpPlus, Image } from "@nfid-frontend/ui"
 
@@ -35,6 +36,7 @@ export const AddPasskey = ({
         onClose={() => setIsModalVisible(false)}
         className="p-5 w-[450px] z-[100] lg:rounded-xl"
       >
+        <ToastContainer />
         <div className="space-y-3.5">
           <p className="text-2xl font-bold">Create a passkey</p>
           <Image src={PasskeyImage} alt="Passkey" className="w-full" />

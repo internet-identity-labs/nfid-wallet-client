@@ -116,7 +116,10 @@ export const authorizeWithEmail = async (
     profile = await fetchProfile()
   } catch (e) {
     console.log("creating new profile")
-    profile = await createNFIDProfile(delegationIdentity)
+    profile = await createNFIDProfile(
+      delegationIdentity,
+      context.verificationEmail,
+    )
   }
 
   authState.set({

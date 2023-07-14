@@ -135,9 +135,7 @@ export class SecurityConnector {
         IC_DERIVATION_PATH,
       )
 
-      console.log(profile.wallet)
       if (profile.wallet === RootWallet.II) {
-        console.log("remove ii")
         // Remove recovery device from II
         removeAccessPointFacade(
           BigInt(profile.anchor),
@@ -145,10 +143,8 @@ export class SecurityConnector {
         )
       }
 
-      console.log("before replace")
       await replaceActorIdentity(im, recoverIdentity)
-      console.log("after replace")
-      const res = await removeAccessPoint(
+      await removeAccessPoint(
         Principal.selfAuthenticating(
           new Uint8Array(
             await new Blob([
@@ -157,7 +153,6 @@ export class SecurityConnector {
           ),
         ).toText(),
       )
-      console.log({ res })
     } catch (e) {
       console.log({ e })
       toast.error(

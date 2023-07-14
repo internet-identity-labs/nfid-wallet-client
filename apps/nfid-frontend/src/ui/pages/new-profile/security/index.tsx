@@ -1,6 +1,9 @@
 import clsx from "clsx"
 import React, { useCallback } from "react"
 
+import { Button } from "@nfid-frontend/ui"
+
+import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import {
   LegacyDevice,
   RecoveryDevice,
@@ -115,6 +118,30 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
           />
         ))}
       </ProfileContainer>
+      <Button
+        type="primary"
+        onClick={() =>
+          passkeyConnector.createCredential({ isMultiDevice: true })
+        }
+      >
+        Add multi-device passkey
+      </Button>
+      <Button
+        type="primary"
+        onClick={() =>
+          passkeyConnector.createCredential({ isMultiDevice: false })
+        }
+      >
+        Add device passkey
+      </Button>
+      <div>
+        <h4>Passkeys</h4>
+        <ul>
+          {passkeyConnector.getAllowedCredentials()?.map((cred) => (
+            <li>{JSON.stringify(cred)}</li>
+          ))}
+        </ul>
+      </div>
       <ProfileContainer
         className="mt-[30px] relative mb-12 sm:mb-0"
         title="Account recovery methods"

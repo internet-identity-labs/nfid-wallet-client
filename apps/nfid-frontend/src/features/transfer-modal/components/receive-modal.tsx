@@ -1,6 +1,5 @@
 import { IconCmpArrow } from "@nfid-frontend/ui"
 
-
 import ReceiveModalImage from "../assets/receive.jpg"
 
 export interface IReceiveModal {
@@ -35,7 +34,11 @@ export const ReceiveModal = ({ onBack }: IReceiveModal) => {
           <span className="font-normal"> ICP, DIP-20, EXT</span>
         </p>
       </div>
-      <img className="absolute bottom-0 right-0" src={ReceiveModalImage} />
+      <img
+        alt="receive"
+        className="absolute bottom-0 right-0"
+        src={ReceiveModalImage}
+      />
     </div>
   )
 }

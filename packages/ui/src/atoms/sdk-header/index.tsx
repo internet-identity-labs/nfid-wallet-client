@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import logo from "../../assets/id.svg"
 
@@ -18,7 +18,7 @@ export const SDKHeader: React.FC<SDKHeaderProps> = ({ frameLabel }) => {
         "sm:border-x",
       )}
     >
-      <Image src={logo} alt="logo" />
+      <img src={logo} alt="logo" />
       <span className="text-xs text-gray-600">{frameLabel}</span>
     </div>
   )

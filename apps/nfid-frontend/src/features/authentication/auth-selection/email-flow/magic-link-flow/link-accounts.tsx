@@ -1,4 +1,4 @@
-import { Button, IconCmpGoogle, Image } from "@nfid-frontend/ui"
+import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
 
 import { SignInWithGoogle } from "frontend/ui/atoms/button/signin-with-google"
 
@@ -18,7 +18,7 @@ export const EmailMagicLinkLink = ({
         with Google to access your account through either a sign in link or
         Google sign in.
       </p>
-      <Image src={LinkAsset} className="w-full h-56 my-10" />
+      <img src={LinkAsset} className="w-full h-56 my-10" />
       <SignInWithGoogle
         onLogin={(credential) => onContinue(credential.credential)}
         button={

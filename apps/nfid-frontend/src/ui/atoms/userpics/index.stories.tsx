@@ -1,7 +1,7 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { UserPicture, UserPictureProps } from "."
 
@@ -16,7 +16,7 @@ const meta: Meta = {
 export default meta
 
 const Template: Story<UserPictureProps> = (args) => (
-  <Image src={UserPicture()} alt="avatar" />
+  <img src={UserPicture()} alt="avatar" />
 )
 
 // By passing using the Args format for exported stories, you can control the props for a component for reuse in a test

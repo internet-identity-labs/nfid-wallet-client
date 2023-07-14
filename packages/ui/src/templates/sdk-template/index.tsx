@@ -30,7 +30,7 @@ export const ThirdPartyTemplate: React.FC<ResponsiveTemplateProps> = ({
           "sm:border-x",
         )}
       >
-        <Image src={logo} alt="logo" />
+        <img src={logo} alt="logo" />
         <span className="text-xs text-secondary">{frameLabel}</span>
       </div>
 

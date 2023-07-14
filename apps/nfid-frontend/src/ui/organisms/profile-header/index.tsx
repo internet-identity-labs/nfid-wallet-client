@@ -3,7 +3,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import User from "src/assets/userpics/userpic_6.svg"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
@@ -43,7 +43,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
       <div className={clsx("hidden", "md:flex md:space-x-5 md:h-10")}>
         <SendReceiveButton />
         <div className={clsx("relative")} ref={popupRef} id="profile">
-          <Image
+          <img
             className={clsx("cursor-pointer w-10")}
             src={User}
             alt="profile icon"
@@ -60,7 +60,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
       <div className="md:hidden">
         <ButtonMenu
           buttonElement={
-            <Image
+            <img
               id="mobile-menu"
               src={MenuIcon}
               alt="menu"
@@ -87,7 +87,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                       className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0"
                       onClick={toggleMenu}
                     >
-                      <Image src={User} alt="user" className="cursor-pointer" />
+                      <img src={User} alt="user" className="cursor-pointer" />
                     </div>
                     <p className="text-sm text-gray-700 px-2.5 w-full">
                       {profile?.name ?? profile?.anchor ?? ""}

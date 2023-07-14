@@ -10,7 +10,6 @@ import {
   ChooseModal,
   IconCmpArrow,
   IconCmpArrowRight,
-  Image,
   Label,
   BlurredLoader,
   sumRules,
@@ -287,7 +286,7 @@ export const TransferFT = ({
                 id={`token_${selectedTokenCurrency}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
-                <Image
+                <img
                   className="w-[26px] mr-1.5"
                   src={tokenMetadata?.icon}
                   alt={selectedTokenCurrency}

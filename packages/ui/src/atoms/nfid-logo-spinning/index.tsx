@@ -1,4 +1,4 @@
-import { Image } from "@nfid-frontend/ui"
+
 
 import loader from "./loader.webp"
 
@@ -9,5 +9,5 @@ interface NFIDLogoSpinningProps {
 export const NFIDLogoSpinning: React.FC<NFIDLogoSpinningProps> = ({
   className,
 }) => {
-  return <Image src={loader} className={className} />
+  return <img src={loader} className={className} />
 }

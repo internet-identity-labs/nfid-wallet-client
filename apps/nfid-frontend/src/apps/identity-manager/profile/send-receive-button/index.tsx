@@ -2,7 +2,7 @@ import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { useContext } from "react"
 
-import { Button, Image } from "@nfid-frontend/ui"
+import { Button } from "@nfid-frontend/ui"
 
 import { ProfileContext } from "frontend/provider"
 
@@ -18,7 +18,7 @@ export const SendReceiveButton = () => {
         className={clsx("px-[10px] py-[11px] hidden md:flex z-10")}
         id="sendReceiveButton"
         onClick={() => send("SHOW")}
-        icon={<Image src={SendReceiveIcon} alt="send/receive" />}
+        icon={<img src={SendReceiveIcon} alt="send/receive" />}
       >
         Send / Receive
       </Button>
@@ -32,7 +32,7 @@ export const SendReceiveButton = () => {
         onClick={() => send("SHOW")}
         id="sendReceiveButton"
       >
-        <Image className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />
+        <img className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />
       </div>
     </div>
   )

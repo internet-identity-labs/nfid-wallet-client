@@ -28,7 +28,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
-    mode: "all",
+    mode: "onSubmit",
   })
   const [authAbortController, setAuthAbortController] = useState(
     new AbortController(),
@@ -64,7 +64,12 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             })}
             autoComplete="off webauthn"
           />
-          <Button className="h-12 !p-0" type="primary" block>
+          <Button
+            id="email-sign-button"
+            className="h-12 !p-0"
+            type="primary"
+            block
+          >
             Continue with email
           </Button>
         </form>

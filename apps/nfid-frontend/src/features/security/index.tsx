@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import useSWR from "swr"
 
-import { IconCmpPlus, IconCmpTrash, Table } from "@nfid-frontend/ui"
+import { IconCmpPlus, Table } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -14,9 +14,11 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { AddPasskey } from "./add-passkey"
 import { PasskeyDeviceItem } from "./components/passkey-device-item"
 import { securityConnector } from "./device-connector"
+import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
+import { DeleteRecoveryPhrase } from "./recovery-phrase/remove-recovery"
 
 export type IHandleWithLoading = (
-  action: () => Promise<void>,
+  action: () => Promise<any>,
   callback?: () => void,
 ) => void
 
@@ -137,18 +139,10 @@ const ProfileSecurityPage = () => {
                 </p>
               </div>
             </div>
-            <IconCmpTrash className="w-6 text-gray-400" />
+            <DeleteRecoveryPhrase handleWithLoading={handleWithLoading} />
           </div>
         ) : (
-          <div
-            className={clsx(
-              "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
-              "hover:opacity-50 cursor-pointer transition-opacity",
-            )}
-          >
-            <IconCmpPlus className="w-[18px] h-[18px]" />
-            <span className="text-sm font-bold">Add recovery phrase</span>
-          </div>
+          <AddRecoveryPhrase handleWithLoading={handleWithLoading} />
         )}
       </ProfileContainer>
       <Loader isLoading={isLoading || isValidating} />

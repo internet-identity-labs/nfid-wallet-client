@@ -28,7 +28,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
-    mode: "all",
+    mode: "onSubmit",
   })
   const [authAbortController, setAuthAbortController] = useState(
     new AbortController(),

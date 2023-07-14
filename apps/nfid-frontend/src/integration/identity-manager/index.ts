@@ -318,6 +318,7 @@ export async function removeAccount() {
 }
 
 export async function removeAccessPoint(devicePrincipal: string) {
+  console.log({ devicePrincipal })
   await im
     .remove_access_point({
       pub_key: devicePrincipal,

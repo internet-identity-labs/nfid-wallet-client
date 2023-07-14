@@ -94,7 +94,7 @@ export async function initActor(
 
 export async function replaceActorIdentity(
   actor: Actor,
-  identity: DelegationIdentity,
+  identity: SignIdentity,
 ) {
   const actorAgent = Actor.agentOf(actor)
   if (actorAgent?.replaceIdentity) actorAgent.replaceIdentity(identity)

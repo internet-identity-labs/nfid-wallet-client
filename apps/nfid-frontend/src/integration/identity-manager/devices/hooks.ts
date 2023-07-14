@@ -309,16 +309,6 @@ export const useDevices = () => {
     [refreshDevices],
   )
 
-  const deleteDevice = React.useCallback(
-    async (pubkey: PublicKey) => {
-      if (profile?.anchor) {
-        await removeAccessPointFacade(BigInt(profile?.anchor), pubkey)
-        refreshDevices()
-      }
-    },
-    [profile?.anchor, refreshDevices],
-  )
-
   const createWebAuthNDevice = React.useCallback(
     async (userNumber: bigint): Promise<{ device: WebAuthnDevice }> => {
       const existingDevices = await fetchAllDevices(userNumber)
@@ -572,6 +562,5 @@ export const useDevices = () => {
     createRecoveryDevice,
     recoverDevice,
     updateDevice,
-    deleteDevice,
   }
 }

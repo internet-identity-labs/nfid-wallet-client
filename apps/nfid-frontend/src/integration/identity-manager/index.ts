@@ -18,7 +18,6 @@ import {
   RootWallet,
 } from "@nfid/integration"
 
-import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
 import { unpackLegacyResponse, unpackResponse } from "../_common"
@@ -37,6 +36,10 @@ import { PublicKey } from "../_ic_api/internet_identity.d"
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
 }
+export interface CreatePasskeyAccessPoint extends AccessPointCommon {
+  principal: string
+  credential_id: [] | [string]
+}
 
 /**
  * Sanitize im.get_account response from canister into our internal profile representation
@@ -54,6 +57,7 @@ export function mapProfile(profile: AccountResponse): Profile {
     phoneNumber: mapOptional(profile.phone_number),
     wallet: walletResponseToWallet(profile.wallet),
     is2fa: profile.is2fa_enabled,
+    email: mapOptional(profile.email),
   }
 }
 
@@ -217,12 +221,27 @@ export async function createAccessPoint(accessPoint: CreateAccessPoint) {
     .then((r) => r.map(mapAccessPoint))
 }
 
+export async function createPasskeyAccessPoint(
+  accessPoint: CreatePasskeyAccessPoint,
+) {
+  return im
+    .create_access_point({
+      ...accessPoint,
+      device_type: deviceToDeviceVariant(accessPoint.deviceType),
+      pub_key: accessPoint.principal,
+      credential_id: accessPoint.credential_id,
+    })
+    .then(unpackResponse)
+    .then((r) => r.map(mapAccessPoint))
+}
+
 export async function createProfile(anchor: number) {
   return im
     .create_account({
       anchor: BigInt(anchor),
       access_point: [],
       wallet: [],
+      email: [],
     })
     .then(unpackResponse)
     .then(mapProfile)
@@ -238,6 +257,7 @@ export async function update2fa(state: boolean) {
  */
 export async function createNFIDProfile(
   emailDelegationIdentity: DelegationIdentity,
+  email: string,
 ) {
   await replaceActorIdentity(im, emailDelegationIdentity)
 
@@ -256,6 +276,7 @@ export async function createNFIDProfile(
     access_point: [dd],
     wallet: [{ NFID: null }],
     anchor: BigInt(0), //we will calculate new anchor on IM side
+    email: [email],
   }
 
   const profile: Profile = await im
@@ -296,10 +317,10 @@ export async function removeAccount() {
   im.remove_account()
 }
 
-export async function removeAccessPoint(pubkey: DeviceKey) {
+export async function removeAccessPoint(devicePrincipal: string) {
   await im
     .remove_access_point({
-      pub_key: Principal.selfAuthenticating(new Uint8Array(pubkey)).toText(),
+      pub_key: devicePrincipal,
     })
     .catch((e) => {
       throw new Error(`Not able to remove ap: ${e.message}`)

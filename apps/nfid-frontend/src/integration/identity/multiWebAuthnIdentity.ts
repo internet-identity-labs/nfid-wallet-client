@@ -17,6 +17,11 @@ import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import { toast } from "react-toastify"
+
+import { IPasskeyMetadata } from "@nfid/integration"
+
+import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 
 export type CredentialId = ArrayBuffer
 export type CredentialData = {
@@ -36,20 +41,29 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   public static fromCredentials(
     credentialData: CredentialData[],
     withSecurityDevices?: boolean,
+    mediation?: "conditional" | "required",
+    signal?: AbortSignal,
   ): MultiWebAuthnIdentity {
-    return new this(credentialData, withSecurityDevices)
+    return new this(credentialData, withSecurityDevices, mediation, signal)
   }
 
+  private operationIsActive: boolean = true
   public _actualIdentity?: WebAuthnIdentity
   public _withSecurityDevices?: boolean
+  public _mediation?: "conditional" | "required"
+  public _signal?: AbortSignal
 
   protected constructor(
     readonly credentialData: CredentialData[],
     withSecurityDevices?: boolean,
+    mediation?: "conditional" | "required",
+    signal?: AbortSignal,
   ) {
     super()
     this._actualIdentity = undefined
     this._withSecurityDevices = withSecurityDevices
+    this._mediation = mediation
+    this._signal = signal
   }
 
   public getPublicKey(): PublicKey {
@@ -61,35 +75,61 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   }
 
   public async sign(blob: ArrayBuffer): Promise<Signature> {
-    const transports = this._withSecurityDevices
+    const transports: AuthenticatorTransport[] = this._withSecurityDevices
       ? ["usb", "nfc", "ble"]
       : ["internal"]
 
+    let publicKeyOptions: PublicKeyCredentialRequestOptions = {
+      challenge: blob,
+      userVerification: "discouraged",
+    }
+
+    if (this.credentialData.length > 0) {
+      publicKeyOptions.allowCredentials = this.credentialData.map((cd) => ({
+        type: "public-key",
+        id: cd.credentialId,
+        transports: [...transports],
+      }))
+    }
+
     const result = (await navigator.credentials.get({
-      publicKey: {
-        // @ts-ignore
-        allowCredentials: this.credentialData.map((cd) => ({
-          type: "public-key",
-          id: cd.credentialId,
-          transports: [...transports],
-        })),
-        challenge: blob,
-        userVerification: "discouraged",
-      },
+      mediation: this._mediation as any,
+      publicKey: publicKeyOptions,
+      signal: this._signal,
     })) as PublicKeyCredential
 
-    this.credentialData.forEach((cd) => {
-      if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
-        const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
-        // would be nice if WebAuthnIdentity had a directly usable constructor
-        this._actualIdentity = WebAuthnIdentity.fromJSON(
-          JSON.stringify({
-            rawId: Buffer.from(cd.credentialId).toString("hex"),
-            publicKey: Buffer.from(strippedKey).toString("hex"),
-          }),
+    if (this.credentialData.length > 0) {
+      this.credentialData.forEach((cd) => {
+        if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
+          const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
+          // would be nice if WebAuthnIdentity had a directly usable constructor
+          this._actualIdentity = WebAuthnIdentity.fromJSON(
+            JSON.stringify({
+              rawId: Buffer.from(cd.credentialId).toString("hex"),
+              publicKey: Buffer.from(strippedKey).toString("hex"),
+            }),
+          )
+        }
+      })
+    } else {
+      let passkeyMetadata: IPasskeyMetadata
+
+      try {
+        passkeyMetadata = await passkeyConnector.getPasskeyByCredentialID(
+          result.id,
         )
+      } catch (e) {
+        toast.error("We could not find your passkey. Try different one")
+        throw new Error("We could not find your passkey.")
       }
-    })
+
+      this._actualIdentity = WebAuthnIdentity.fromJSON(
+        JSON.stringify({
+          rawId: Buffer.from(passkeyMetadata.credentialId).toString("hex"),
+          publicKey: Buffer.from(passkeyMetadata.publicKey).toString("hex"),
+        }),
+      )
+    }
 
     if (this._actualIdentity === undefined) {
       // Odd, user logged in with a credential we didn't provide?
@@ -108,6 +148,12 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     if (!cbor) {
       throw new Error("failed to encode cbor")
     }
+
+    // Check if the operation was cancelled
+    if (!this.operationIsActive) {
+      throw new Error("Operation was cancelled")
+    }
+
     return new Uint8Array(cbor).buffer as Signature
   }
 }

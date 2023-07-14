@@ -8,6 +8,7 @@ export interface ICheckbox {
   onChange: (isChecked: boolean, value: string) => void
   className?: string
   labelText?: string
+  labelClassName?: string
   id?: string
 }
 
@@ -17,6 +18,7 @@ export const Checkbox = ({
   onChange,
   className,
   labelText,
+  labelClassName,
   id,
 }: ICheckbox) => {
   return (
@@ -32,7 +34,11 @@ export const Checkbox = ({
         onChange={() => onChange(isChecked, value)}
       />
       {labelText && (
-        <Label id="checkbox_label" className="cursor-pointer" htmlFor={value}>
+        <Label
+          id="checkbox_label"
+          className={clsx("cursor-pointer", labelClassName)}
+          htmlFor={value}
+        >
           {labelText}
         </Label>
       )}

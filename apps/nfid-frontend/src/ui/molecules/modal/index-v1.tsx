@@ -85,6 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
               visible ? "scale-100" : "scale-0",
               className,
             ])}
+            onClick={(e) => e.stopPropagation()}
           >
             {children}
           </div>

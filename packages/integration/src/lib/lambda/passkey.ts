@@ -53,7 +53,7 @@ export interface IPasskeyMetadata {
   type: "cross-platform" | "platform"
   flags: IFlags
   aaguid: Uint8Array
-  credentialId: Uint8Array
+  credentialId: ArrayBuffer
   credentialStringId: string
   transports: AuthenticatorTransport[]
   clientData: IClientDataObj

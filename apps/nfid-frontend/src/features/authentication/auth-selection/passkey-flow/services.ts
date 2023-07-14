@@ -4,6 +4,7 @@ import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
 import { toHexString } from "packages/integration/src/lib/lambda/ecdsa"
+import { toast } from "react-toastify"
 
 import {
   DeviceType,
@@ -34,7 +35,7 @@ export class PasskeyConnector {
   }: LambdaPasskeyDecoded): Promise<void> {
     const jsonData = JSON.stringify({
       ...data,
-      credentialId: data.credentialId,
+      credentialId: base64url.encode(Buffer.from(data.credentialId)),
       aaguid: base64url.encode(Buffer.from(data.aaguid)),
       publicKey: toHexString(data.publicKey),
     })
@@ -71,8 +72,8 @@ export class PasskeyConnector {
     })
   }
 
-  async getPasskeyByCredentialID(key: string[]): Promise<IPasskeyMetadata> {
-    const passkey = await getPasskey(key)
+  async getPasskeyByCredentialID(key: string): Promise<IPasskeyMetadata> {
+    const passkey = await getPasskey([key])
     const decodedObject = JSON.parse(passkey[0].data)
 
     return {
@@ -98,43 +99,50 @@ export class PasskeyConnector {
       .map((d) => d.credential_id.join(""))
       .filter((d) => d.length)
 
-    const passkeysMetadata: LambdaPasskeyDecoded[] = allCredentials.length
-      ? (await getPasskey(allCredentials)).map((p) => ({
-          key: p.key,
-          data: JSON.parse(p.data),
-        }))
+    const passkeysMetadata: IPasskeyMetadata[] = allCredentials.length
+      ? await Promise.all(
+          allCredentials.map(
+            async (c) => await this.getPasskeyByCredentialID(c),
+          ),
+        )
       : []
 
     const email = (await fetchProfile()).email as string
-
-    const credential = (await navigator.credentials.create({
-      publicKey: {
-        authenticatorSelection: {
-          authenticatorAttachment: isMultiDevice
-            ? "cross-platform"
-            : "platform",
-          userVerification: "preferred",
-          residentKey: "required",
+    let credential: PublicKeyCredential
+    try {
+      credential = (await navigator.credentials.create({
+        publicKey: {
+          authenticatorSelection: {
+            authenticatorAttachment: isMultiDevice
+              ? "cross-platform"
+              : "platform",
+            userVerification: "preferred",
+            residentKey: "required",
+          },
+          excludeCredentials: passkeysMetadata.map((p) => ({
+            id: p.credentialId,
+            type: "public-key",
+          })),
+          attestation: "direct",
+          challenge: Buffer.from(JSON.stringify(delegationIdentity)),
+          pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+          rp: {
+            name: "NFID",
+            id: window.location.hostname,
+          },
+          user: {
+            id: delegationIdentity.getPublicKey().toDer(), //take root id from the account
+            name: email,
+            displayName: email,
+          },
         },
-        excludeCredentials: passkeysMetadata.map((p) => ({
-          id: p.data.credentialId,
-          type: "public-key",
-          transports: p.data.transports,
-        })),
-        attestation: "direct",
-        challenge: Buffer.from(JSON.stringify(delegationIdentity)),
-        pubKeyCredParams: [{ type: "public-key", alg: -7 }],
-        rp: {
-          name: "NFID",
-          id: window.location.hostname,
-        },
-        user: {
-          id: delegationIdentity.getPublicKey().toDer(), //take root id from the account
-          name: email,
-          displayName: email,
-        },
-      },
-    })) as PublicKeyCredential
+      })) as PublicKeyCredential
+    } catch (e: any) {
+      if (e.message.includes("registered")) {
+        toast.error("This device is already registered")
+      }
+      return
+    }
 
     const lambdaRequest = this.decodePublicKeyCredential(
       credential,
@@ -225,7 +233,7 @@ export class PasskeyConnector {
       },
       publicKey: authDataParsed.credentialPublicKey!,
       aaguid: authDataParsed.aaguid!,
-      credentialId: authDataParsed.credentialID!,
+      credentialId: credential.rawId,
       credentialStringId: credential.id,
       transports: (credential.response as any).getTransports(),
       clientData: clientDataObj,

@@ -4,9 +4,8 @@ import { IDevice } from "./types"
 
 export const isRecoveryDevice = (device: IDevice): boolean => {
   return (
-    device.type === DeviceType.Recovery ||
-    device.label.includes("Recovery") ||
-    !device.label.includes("Security Key")
+    !device.label.includes("Security Key") &&
+    (device.type === DeviceType.Recovery || device.label.includes("Recovery"))
   )
 }
 

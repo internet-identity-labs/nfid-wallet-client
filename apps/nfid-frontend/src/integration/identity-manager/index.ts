@@ -256,6 +256,7 @@ export async function update2fa(state: boolean) {
  */
 export async function createNFIDProfile(
   emailDelegationIdentity: DelegationIdentity,
+  email: string,
 ) {
   await replaceActorIdentity(im, emailDelegationIdentity)
 
@@ -274,6 +275,7 @@ export async function createNFIDProfile(
     access_point: [dd],
     wallet: [{ NFID: null }],
     anchor: BigInt(0), //we will calculate new anchor on IM side
+    email: [email],
   }
 
   const profile: Profile = await im

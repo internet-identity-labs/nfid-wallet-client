@@ -43,7 +43,7 @@ export const signWithGoogleService = async (
     profile = await fetchProfile()
   } catch (e) {
     console.log("creating new profile")
-    profile = await createNFIDProfile(delegation)
+    profile = await createNFIDProfile(delegation, email)
   }
 
   authState.set({

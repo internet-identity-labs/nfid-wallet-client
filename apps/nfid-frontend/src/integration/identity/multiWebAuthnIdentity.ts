@@ -17,6 +17,9 @@ import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import { toast } from "react-toastify"
+
+import { IPasskeyMetadata } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 
@@ -109,9 +112,16 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         }
       })
     } else {
-      const passkeyMetadata = await passkeyConnector.getPasskeyByCredentialID([
-        result.id,
-      ])
+      let passkeyMetadata: IPasskeyMetadata
+
+      try {
+        passkeyMetadata = await passkeyConnector.getPasskeyByCredentialID(
+          result.id,
+        )
+      } catch (e) {
+        toast.error("We could not find your passkey. Try different one")
+        throw new Error("We could not find your passkey.")
+      }
 
       this._actualIdentity = WebAuthnIdentity.fromJSON(
         JSON.stringify({

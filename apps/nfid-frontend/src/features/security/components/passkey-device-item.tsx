@@ -11,6 +11,7 @@ import {
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 
 import { IHandleWithLoading } from ".."
+import { DetailsPasskey } from "../passkey/details-passkey"
 import { DeletePasskey } from "../passkey/remove-passkey"
 import { IDevice } from "../types"
 
@@ -39,8 +40,8 @@ export const PasskeyDeviceItem = ({
           </span>
         )}
       </td>
-      <td>{device.created_at}</td>
-      <td>{device.last_used}</td>
+      <td className="hidden sm:table-cell">{device.created_at}</td>
+      <td className="hidden sm:table-cell">{device.last_used}</td>
       <td className="w-11 pr-[14px]">
         {device.isLegacyDevice && (
           <Tooltip
@@ -73,22 +74,16 @@ export const PasskeyDeviceItem = ({
               !isTooltipOpen && "hidden",
             )}
           >
-            {/* <div
-              className={clsx(
-                "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
-                "flex items-center space-x-2 cursor-pointer",
-              )}
-            >
-              <span>Details</span>
-            </div> */}
-            {/* <div
-              className={clsx(
-                "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
-                "flex items-center space-x-2",
-              )}
-            >
-              <span>Rename</span>
-            </div> */}
+            <DetailsPasskey device={device}>
+              <div
+                className={clsx(
+                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
+                  "flex items-center space-x-2 cursor-pointer",
+                )}
+              >
+                <span>Details</span>
+              </div>
+            </DetailsPasskey>
             <DeletePasskey
               handleWithLoading={handleWithLoading}
               device={device}

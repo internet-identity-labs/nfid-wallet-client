@@ -98,11 +98,12 @@ const ProfileSecurityPage = () => {
         }
       >
         <Table
+          className="w-full min-w-full"
           tableHeader={
             <tr className="border-b border-black">
               <th>Passkeys</th>
-              <th>Created</th>
-              <th>Last activity</th>
+              <th className="hidden sm:table-cell">Created</th>
+              <th className="hidden sm:table-cell">Last activity</th>
               <th className="w-[18px]"></th>
               <th className="w-6"></th>
             </tr>

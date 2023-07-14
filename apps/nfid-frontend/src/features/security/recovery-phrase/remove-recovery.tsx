@@ -29,7 +29,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        className="p-5 w-[450px] z-[100] lg:rounded-xl"
+        className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
         <p className="text-2xl font-bold">Remove recovery phrase</p>
         <p className="mt-5 text-sm">

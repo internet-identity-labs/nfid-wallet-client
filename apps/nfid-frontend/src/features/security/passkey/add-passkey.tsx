@@ -34,7 +34,7 @@ export const AddPasskey = ({
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        className="p-5 w-[450px] z-[100] lg:rounded-xl"
+        className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
         <ToastContainer />
         <div className="space-y-3.5">

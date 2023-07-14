@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { Button, IconCmpGoogle, IconCmpPasskey, Input } from "@nfid-frontend/ui"
@@ -10,6 +11,7 @@ import {
 import { Separator } from "frontend/ui/atoms/separator"
 
 import { AuthAppMeta } from "../ui/app-meta"
+import { passkeyConnector } from "./passkey-flow/services"
 
 export interface AuthSelectionProps {
   onSelectGoogleAuth: LoginEventHandler
@@ -28,6 +30,13 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     defaultValues: { email: "" },
     mode: "all",
   })
+  const [authAbortController, setAuthAbortController] = useState(
+    new AbortController(),
+  )
+
+  useEffect(() => {
+    passkeyConnector.initPasskeyAutocomplete(authAbortController.signal)
+  }, [authAbortController.signal])
 
   return (
     <div className="w-full h-full">
@@ -50,6 +59,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             {...register("email", {
               required: "Please enter your email",
             })}
+            autoComplete="off webauthn"
           />
           <Button className="h-12 !p-0" type="primary" block>
             Continue with email
@@ -77,6 +87,14 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           type="stroke"
           icon={<IconCmpPasskey />}
           block
+          onClick={() => {
+            authAbortController.abort("Aborted webauthn manually")
+            const abortController = new AbortController()
+            passkeyConnector.loginWithPasskey(abortController.signal, () => {
+              abortController.abort("Aborted loginWithPasskey manually")
+              setAuthAbortController(new AbortController())
+            })
+          }}
         >
           Continue with a passkey
         </Button>

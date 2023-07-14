@@ -1,12 +1,11 @@
 import React from "react"
 
-import { IconMetamask } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { IconLaptop } from "frontend/ui/atoms/icons/desktop"
 import { DocumentIcon } from "frontend/ui/atoms/icons/document"
+import { EmailIcon } from "frontend/ui/atoms/icons/email"
 import { GoogleIcon } from "frontend/ui/atoms/icons/google"
-import { IIIcon } from "frontend/ui/atoms/icons/ii"
 import { IconDesktop } from "frontend/ui/atoms/icons/laptop"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
 import { TabletIcon } from "frontend/ui/atoms/icons/tablet"
@@ -16,39 +15,34 @@ import { USBIcon } from "frontend/ui/atoms/icons/usb"
 interface DeviceIconDeciderProps {
   icon: Icon
   onClick?: (e: React.SyntheticEvent) => void
+  className?: string
 }
 
 export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
   icon,
   onClick,
+  className,
 }) => {
-  const props = {
-    className: "text-xl text-blue",
-    onClick,
-  }
-
   switch (icon) {
     case "mobile":
-      return <MobileIcon {...props} />
+      return <MobileIcon className={className} onClick={onClick} />
     case "tablet":
-      return <TabletIcon {...props} />
+      return <TabletIcon className={className} onClick={onClick} />
     case "laptop":
-      return <IconLaptop {...props} />
+      return <IconLaptop className={className} onClick={onClick} />
     case "desktop":
-      return <IconDesktop {...props} />
+      return <IconDesktop className={className} onClick={onClick} />
     case "document":
-      return <DocumentIcon {...props} />
+      return <DocumentIcon className={className} onClick={onClick} />
     case "usb":
-      return <USBIcon {...props} />
+      return <USBIcon className={className} onClick={onClick} />
     case "google":
-      return <GoogleIcon {...props} />
+      return <GoogleIcon className={className} onClick={onClick} />
     case "unknown":
-      return <UnknownIcon {...props} />
-    case "ii":
-      return <IIIcon />
-    case "metamask":
-      return <IconMetamask />
+      return <UnknownIcon className={className} onClick={onClick} />
+    case "email":
+      return <EmailIcon className={className} onClick={onClick} />
     default:
-      return null
+      return <UnknownIcon className={className} onClick={onClick} />
   }
 }

@@ -37,6 +37,10 @@ import { PublicKey } from "../_ic_api/internet_identity.d"
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
 }
+export interface CreatePasskeyAccessPoint extends AccessPointCommon {
+  principal: string
+  credential_id: [] | [string]
+}
 
 /**
  * Sanitize im.get_account response from canister into our internal profile representation
@@ -217,6 +221,20 @@ export async function createAccessPoint(accessPoint: CreateAccessPoint) {
     .then((r) => r.map(mapAccessPoint))
 }
 
+export async function createPasskeyAccessPoint(
+  accessPoint: CreatePasskeyAccessPoint,
+) {
+  return im
+    .create_access_point({
+      ...accessPoint,
+      device_type: deviceToDeviceVariant(accessPoint.deviceType),
+      pub_key: accessPoint.principal,
+      credential_id: accessPoint.credential_id,
+    })
+    .then(unpackResponse)
+    .then((r) => r.map(mapAccessPoint))
+}
+
 export async function createProfile(anchor: number) {
   return im
     .create_account({
@@ -296,10 +314,10 @@ export async function removeAccount() {
   im.remove_account()
 }
 
-export async function removeAccessPoint(pubkey: DeviceKey) {
+export async function removeAccessPoint(devicePrincipal: string) {
   await im
     .remove_access_point({
-      pub_key: Principal.selfAuthenticating(new Uint8Array(pubkey)).toText(),
+      pub_key: devicePrincipal,
     })
     .catch((e) => {
       throw new Error(`Not able to remove ap: ${e.message}`)

@@ -27,7 +27,7 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
           "mb-[20vh] sm:mb-[60vh] sm:max-w-[450px]",
           "min-h-[400px]",
           "md:mt-[4rem]",
-          !!isAuthenticated && "!hidden",
+          // !!isAuthenticated && "!hidden",
         )}
       >
         <div className="relative z-10 flex flex-col justify-between w-full h-[580px] p-5">

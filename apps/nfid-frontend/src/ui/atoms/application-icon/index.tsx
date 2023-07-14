@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 interface ApplicationIconProps {
   appName: string
@@ -23,7 +23,7 @@ export const ApplicationIcon: React.FC<ApplicationIconProps> = ({
       )}
     >
       {icon ? (
-        <Image
+        <img
           className="rounded-full w-[26px] h-[26px] object-contain object-center"
           src={icon}
           alt="app icon"

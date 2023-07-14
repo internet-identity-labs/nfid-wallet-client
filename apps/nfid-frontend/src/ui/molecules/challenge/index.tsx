@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { RefreshIcon } from "frontend/ui/atoms/icons/refresh"
 
@@ -28,7 +28,7 @@ export const Challenge: React.FC<ChallengeProps> = ({
       {isLoading || !src ? (
         <div className="flex flex-col w-full h-full my-auto text-center animate-pulse center">
           <div className="h-5 m-auto">
-            <Image
+            <img
               className="inline-block animate-spin"
               alt="spinner"
               src={spinner}
@@ -42,7 +42,7 @@ export const Challenge: React.FC<ChallengeProps> = ({
           </div>
         </div>
       ) : (
-        <Image
+        <img
           id="captcha-img"
           alt="captcha"
           src={src}

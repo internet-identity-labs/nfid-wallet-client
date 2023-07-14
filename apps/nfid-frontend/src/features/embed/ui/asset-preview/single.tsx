@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 interface IAsset {
   icon?: string
@@ -22,7 +22,7 @@ export const SingleAssetPreview: React.FC<IAsset> = ({
       )}
     >
       <div className="flex items-center w-full">
-        <Image
+        <img
           className={clsx(
             "object-cover w-20 h-20 rounded-[5px]",
             !icon && "hidden",

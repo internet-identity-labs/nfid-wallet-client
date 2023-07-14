@@ -1,4 +1,4 @@
-import { FilterPopover, Image } from "@nfid-frontend/ui"
+import { FilterPopover } from "@nfid-frontend/ui"
 import {
   DropdownSelect,
   IconCmpFilters,
@@ -66,7 +66,7 @@ export const ProfileAssetsHeader = ({
           }
         >
           <div className="ml-2 cursor-pointer">
-            <Image src={ActionIcon} alt="ActionIcon" />
+            <img src={ActionIcon} alt="ActionIcon" />
           </div>
         </Tooltip>
       </div>

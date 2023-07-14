@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { NonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -45,7 +45,7 @@ export const ProfileNFTNotPresent: React.FC<IProfileNFTNotPresent> = ({
               for support.
             </p>
           </div>
-          <Image
+          <img
             src={WithoutNFT}
             alt="Coming soon"
             className={clsx(

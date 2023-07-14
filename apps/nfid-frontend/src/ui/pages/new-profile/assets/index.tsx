@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React, { useMemo, useState } from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
-import { Image } from "@nfid-frontend/ui"
+
 import { blockchains } from "@nfid/config"
 
 import { useAccountOptions } from "frontend/apps/identity-manager/profile/assets/use-account-options"
@@ -158,7 +158,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     {token.price}
                   </td>
                   <td>
-                    <Image src={ArrowRight} alt="arrow right" />
+                    <img src={ArrowRight} alt="arrow right" />
                   </td>
                 </tr>
               ))}
@@ -175,7 +175,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 )}
               >
                 <div className="flex items-center text-[#0B0E13]">
-                  <Image
+                  <img
                     src={token.icon}
                     alt="icon"
                     className="w-6 h-6 mr-[13px]"

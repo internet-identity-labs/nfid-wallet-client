@@ -52,7 +52,7 @@ export const InputTrigger = ({
         ) : (
           <div className="flex">
             {selectedOption?.icon && (
-              <Image
+              <img
                 src={selectedOption?.icon}
                 alt={selectedOption?.value}
                 className="mr-2.5"

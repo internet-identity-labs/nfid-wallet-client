@@ -14,7 +14,7 @@ import {
   Loader,
   Tooltip,
 } from "@nfid-frontend/ui"
-import { Image } from "@nfid-frontend/ui"
+
 import { Application, getWalletName } from "@nfid/integration"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -126,7 +126,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
           state={{ nft: token }}
         >
-          <Image
+          <img
             alt={`${token.collection.name} ${token.index}`}
             src={token.assetPreview.url}
             className={clsx(`w-[74px] h-[74px] object-cover rounded`)}

@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { useCallback, useContext } from "react"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { Image } from "@nfid-frontend/ui"
+
 import { Application } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
@@ -56,7 +56,7 @@ export const ProfileNFTDetailsPage = ({
       showBackButton
       headerMenu={
         <div className="flex items-center space-x-4">
-          <Image
+          <img
             className="transition-opacity cursor-pointer hover:opacity-50"
             src={TransferIcon}
             alt="transfer"
@@ -112,7 +112,7 @@ export const ProfileNFTDetailsPage = ({
           </p>
           {"account" in nft ? (
             <div className="flex items-center mt-4 space-x-2">
-              <Image src={WalletIcon} alt="wallet" />
+              <img src={WalletIcon} alt="wallet" />
               <p
                 className="text-sm font-semibold text-secondary"
                 id={`nft_wallet_${applications

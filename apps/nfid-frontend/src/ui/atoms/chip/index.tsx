@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import iconClose from "./close.svg"
 
@@ -22,7 +22,7 @@ export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
       )}
     >
       <span className="text-xs tracking-[0.16px]">{title}</span>
-      <Image
+      <img
         onClick={() => onRemove && onRemove(title)}
         className={clsx(
           "block w-4 cursor-pointer",

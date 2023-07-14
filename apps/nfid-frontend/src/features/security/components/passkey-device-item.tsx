@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React, { useCallback } from "react"
+import React from "react"
 
 import {
   IconCmpDots,
@@ -8,12 +8,11 @@ import {
   useClickOutside,
 } from "@nfid-frontend/ui"
 
-import { removeAccessPointFacade } from "frontend/integration/facade"
-import { removeAccessPoint } from "frontend/integration/identity-manager"
-import { useProfile } from "frontend/integration/identity-manager/queries"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 
 import { IHandleWithLoading } from ".."
+import { DetailsPasskey } from "../passkey/details-passkey"
+import { DeletePasskey } from "../passkey/remove-passkey"
 import { IDevice } from "../types"
 
 export interface PasskeyDeviceItemProps {
@@ -28,21 +27,6 @@ export const PasskeyDeviceItem = ({
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
   const ref = useClickOutside(() => setIsTooltipOpen(false))
 
-  const { profile } = useProfile()
-
-  const onDelete = useCallback(async () => {
-    if (device.isLegacyDevice) {
-      handleWithLoading(() =>
-        removeAccessPointFacade(BigInt(profile?.anchor!), device.principal),
-      )
-    } else handleWithLoading(() => removeAccessPoint(device.principal))
-  }, [
-    device.isLegacyDevice,
-    device.principal,
-    handleWithLoading,
-    profile?.anchor,
-  ])
-
   return (
     <tr className="items-center text-sm border-b border-gray-200">
       <td className="flex h-[61px] items-center">
@@ -56,8 +40,8 @@ export const PasskeyDeviceItem = ({
           </span>
         )}
       </td>
-      <td>{device.created_at}</td>
-      <td>{device.last_used}</td>
+      <td className="hidden sm:table-cell">{device.created_at}</td>
+      <td className="hidden sm:table-cell">{device.last_used}</td>
       <td className="w-11 pr-[14px]">
         {device.isLegacyDevice && (
           <Tooltip
@@ -90,31 +74,30 @@ export const PasskeyDeviceItem = ({
               !isTooltipOpen && "hidden",
             )}
           >
-            {/* <div
-              className={clsx(
-                "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
-                "flex items-center space-x-2 cursor-pointer",
-              )}
+            <DetailsPasskey device={device}>
+              <div
+                className={clsx(
+                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
+                  "flex items-center space-x-2 cursor-pointer",
+                )}
+              >
+                <span>Details</span>
+              </div>
+            </DetailsPasskey>
+            <DeletePasskey
+              handleWithLoading={handleWithLoading}
+              device={device}
             >
-              <span>Details</span>
-            </div> */}
-            {/* <div
-              className={clsx(
-                "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
-                "flex items-center space-x-2",
-              )}
-            >
-              <span>Rename</span>
-            </div> */}
-            <div
-              className={clsx(
-                "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
-                "flex items-center space-x-2 cursor-pointer",
-              )}
-              onClick={onDelete}
-            >
-              <span>Delete</span>
-            </div>
+              <div
+                className={clsx(
+                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
+                  "flex items-center space-x-2 cursor-pointer",
+                )}
+                // onClick={onDelete}
+              >
+                <span>Delete</span>
+              </div>
+            </DeletePasskey>
           </div>
         </div>
       </td>

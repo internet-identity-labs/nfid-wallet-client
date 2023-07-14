@@ -10,7 +10,7 @@ import {
   Button,
   IconCmpAnonymous,
   IconCmpInfo,
-  Tooltip, 
+  Tooltip,
 } from "@nfid-frontend/ui"
 import {
   Account,
@@ -131,7 +131,7 @@ export const AuthChooseAccount = ({
             "flex items-center w-full",
           )}
         >
-          <img src={User} className="w-10 h-10 shrink-0" />
+          <img alt="user" src={User} className="w-10 h-10 shrink-0" />
           <div className="flex items-center justify-between w-full text-sm text-gray-400">
             <div className="">{publicProfile.label}</div>
             <div className="flex flex-col">

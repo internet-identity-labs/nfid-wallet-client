@@ -9,11 +9,14 @@ import {
   authState,
   hasOwnProperty,
   isDelegationExpired,
+  replaceIdentity,
+  requestFEDelegation,
 } from "@nfid/integration"
 import { agent } from "@nfid/integration"
 
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {
+  IC_DERIVATION_PATH,
   fetchRecoveryDevices,
   fromSeedPhrase,
   login as iiLogin,
@@ -22,6 +25,7 @@ import {
   apiResultToLoginResult,
   LoginResult,
 } from "frontend/integration/internet-identity/api-result-to-login-result"
+import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 
 export interface User {
   principal: string
@@ -128,41 +132,64 @@ export const useAuthentication = () => {
     async (seedPhrase: string, userNumber: bigint) => {
       setIsLoading(true)
 
-      // TODO improve refetch. once in 20 times not fetching correctly
-      let recoveryDevices = await fetchRecoveryDevices(userNumber)
-      if (!recoveryDevices.length) {
-        recoveryDevices = await fetchRecoveryDevices(userNumber)
-      }
+      // Recover legacy users
+      if (userNumber < 100000000) {
+        let recoveryDevices = await fetchRecoveryDevices(userNumber)
+        if (!recoveryDevices.length) {
+          recoveryDevices = await fetchRecoveryDevices(userNumber)
+        }
 
-      const recoveryPhraseDevice = recoveryDevices.find((device) =>
-        hasOwnProperty(device.key_type, "seed_phrase"),
-      )
+        const recoveryPhraseDevice = recoveryDevices.find((device) =>
+          hasOwnProperty(device.key_type, "seed_phrase"),
+        )
 
-      if (!recoveryPhraseDevice) {
-        setIsLoading(false)
-        throw new Error("useAuthentication.loginWithRecovery No devices found")
-      }
+        if (!recoveryPhraseDevice) {
+          setIsLoading(false)
+          throw new Error(
+            "useAuthentication.loginWithRecovery No devices found",
+          )
+        }
 
-      const response = await fromSeedPhrase(
-        userNumber,
-        seedPhrase,
-        recoveryPhraseDevice,
-      )
+        const response = await fromSeedPhrase(
+          userNumber,
+          seedPhrase,
+          recoveryPhraseDevice,
+        )
 
-      const result = apiResultToLoginResult(response)
+        const result = apiResultToLoginResult(response)
 
-      if (result.tag === "ok") {
-        setUser({
-          principal: (await agent.getPrincipal()).toText(),
-          chain: result.chain,
-          sessionKey: result.sessionKey,
+        if (result.tag === "ok") {
+          setUser({
+            principal: (await agent.getPrincipal()).toText(),
+            chain: result.chain,
+            sessionKey: result.sessionKey,
+          })
+          initUserGeek(await agent.getPrincipal())
+          setShouldStoreLocalAccount(false)
+        }
+        return result
+      } else {
+        // Recover new users
+        const identity = await fromMnemonicWithoutValidation(
+          seedPhrase,
+          IC_DERIVATION_PATH,
+        )
+
+        const { delegationIdentity, chain, sessionKey } =
+          await requestFEDelegation(identity)
+        replaceIdentity(delegationIdentity)
+        authState.set({
+          identity,
+          delegationIdentity: delegationIdentity,
         })
-        initUserGeek(await agent.getPrincipal())
-        setShouldStoreLocalAccount(false)
-      }
+        setIsLoading(false)
 
-      setIsLoading(false)
-      return result
+        return {
+          tag: "ok",
+          chain: chain,
+          sessionKey: sessionKey,
+        }
+      }
     },
     [initUserGeek, setIsLoading, setShouldStoreLocalAccount],
   )

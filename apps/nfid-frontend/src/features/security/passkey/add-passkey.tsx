@@ -8,7 +8,8 @@ import { passkeyConnector } from "frontend/features/authentication/auth-selectio
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
-import PasskeyImage from "./passkey-image.png"
+import MultiPasskey from "./multi-passkey.png"
+import SinglePasskey from "./single-passkey.png"
 
 export const AddPasskey = ({
   handleWithLoading,
@@ -16,7 +17,7 @@ export const AddPasskey = ({
   handleWithLoading: IHandleWithLoading
 }) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false)
-  const [isMultiDevice, setIsMultiDevice] = React.useState(false)
+  const [isMultiDevice, setIsMultiDevice] = React.useState(true)
 
   return (
     <div>
@@ -34,12 +35,16 @@ export const AddPasskey = ({
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        className="p-5 w-[450px] z-[100] lg:rounded-xl"
+        className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
         <ToastContainer />
         <div className="space-y-3.5">
           <p className="text-2xl font-bold">Create a passkey</p>
-           <img src={PasskeyImage} alt="Passkey" className="w-full" />
+          <img
+            src={isMultiDevice ? MultiPasskey : SinglePasskey}
+            alt="Passkey"
+            className="w-full"
+          />
           <p className="text-sm leading-5">
             Passkeys let you securely sign in to your NFID using your
             fingerprint, face, screen lock, or hardware security key.
@@ -71,7 +76,17 @@ export const AddPasskey = ({
             Continue
           </Button>
         </div>
-        <Button type="ghost" block>
+        <Button
+          type="ghost"
+          block
+          className="mt-1"
+          onClick={() =>
+            window.open(
+              "https://learn.nfid.one/enable-2fa-for-enterprise-grade-security",
+              "_blank",
+            )
+          }
+        >
           Learn about passkeys
         </Button>
       </ModalComponent>

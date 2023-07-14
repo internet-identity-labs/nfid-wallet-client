@@ -75,6 +75,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
             loop={step === 0 || step === 2}
           />
           <img
+            alt="assetImg"
             src={assetImg}
             className={clsx(
               "absolute h-[120px] w-[120px] object-contain -mt-[123px] ml-[1px] rounded-full object-center",

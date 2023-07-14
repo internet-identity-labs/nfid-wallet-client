@@ -67,6 +67,9 @@
       "{projectRoot}/**/*",
       "sharedGlobals",
       {
+        "env": "NFID_PROVIDER_URL"
+      },
+      {
         "env": "FRONTEND_MODE"
       },
       {

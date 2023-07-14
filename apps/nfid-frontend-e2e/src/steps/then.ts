@@ -540,7 +540,7 @@ Then(
   async (chain: string, text: string) => {
     const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
-    await usd.waitForDisplayed({
+    await usd.waitForExist({
       timeout: 13000,
     })
     await expect(usd).not.toHaveText(text)
@@ -550,7 +550,7 @@ Then(
 Then(/^([^"]*) USD balance is not empty$/, async (chain: string) => {
   const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
-  await usd.waitForDisplayed({
+  await usd.waitForExist({
     timeout: 13000,
   })
   await expect(usd).not.toHaveText("")
@@ -558,7 +558,7 @@ Then(/^([^"]*) USD balance is not empty$/, async (chain: string) => {
 
 Then(/^Account balance in USD not empty$/, async () => {
   const usd = await $("#usd_balance_0")
-  await usd.waitForDisplayed({
+  await usd.waitForExist({
     timeout: 13000,
   })
   await expect(usd).not.toHaveText("")

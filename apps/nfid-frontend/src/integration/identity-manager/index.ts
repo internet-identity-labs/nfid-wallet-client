@@ -241,6 +241,7 @@ export async function createProfile(anchor: number) {
       anchor: BigInt(anchor),
       access_point: [],
       wallet: [],
+      email: [],
     })
     .then(unpackResponse)
     .then(mapProfile)

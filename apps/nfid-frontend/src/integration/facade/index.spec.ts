@@ -59,6 +59,7 @@ describe("Facade suite", () => {
         anchor,
         access_point: [],
         wallet: [],
+        email: [],
       })
       await iiIndexMock.addDevice(
         anchor,
@@ -149,6 +150,7 @@ describe("Facade suite", () => {
         anchor,
         access_point: [],
         wallet: [],
+        email: [],
       })
       await im.create_access_point({
         browser: "",

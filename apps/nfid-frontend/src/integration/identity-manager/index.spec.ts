@@ -33,7 +33,10 @@ describe("Identity Manager suite", () => {
         sessionKey,
         chain,
       )
-      const nfidProfile = await createNFIDProfile(delegationIdentity)
+      const nfidProfile = await createNFIDProfile(
+        delegationIdentity,
+        "test@email.com",
+      )
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)
       expect(nfidProfile.accessPoints.length).toEqual(1)

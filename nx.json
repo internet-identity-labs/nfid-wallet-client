@@ -160,6 +160,9 @@
         "env": "AWS_ECDSA_SIGN"
       },
       {
+        "env": "AWS_ECDSA_PASSKEY"
+      },
+      {
         "env": "AWS_ECDSA_REGISTER"
       },
       {

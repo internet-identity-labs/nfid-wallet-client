@@ -90,22 +90,22 @@ export const PasskeyDeviceItem = ({
               !isTooltipOpen && "hidden",
             )}
           >
-            <div
+            {/* <div
               className={clsx(
                 "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
                 "flex items-center space-x-2 cursor-pointer",
               )}
             >
               <span>Details</span>
-            </div>
-            <div
+            </div> */}
+            {/* <div
               className={clsx(
                 "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
                 "flex items-center space-x-2",
               )}
             >
               <span>Rename</span>
-            </div>
+            </div> */}
             <div
               className={clsx(
                 "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",

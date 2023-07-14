@@ -124,6 +124,9 @@ export const authorizeWithEmail = async (
     identity: context.emailDelegation,
   })
 
+  if (!profile?.email?.length)
+    await im.update_account({ name: [], email: [context.verificationEmail] })
+
   await authStorage.set(
     KEY_STORAGE_KEY,
     JSON.stringify(context.emailDelegation.toJSON()),

@@ -11,8 +11,10 @@ import {
   IPasskeyMetadata,
   Icon,
   LambdaPasskeyDecoded,
+  RootWallet,
   authState,
   getPasskey,
+  ii,
   im,
   requestFEDelegationChain,
   storePasskey,
@@ -44,6 +46,20 @@ export class PasskeyConnector {
       }),
     )
 
+    const profile = await fetchProfile()
+    if (profile.wallet === RootWallet.II)
+      ii.add(BigInt(profile.anchor), {
+        credential_id: [Array.from(new Uint8Array(identity.rawId))],
+        alias: "aaguid device name",
+        pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
+        key_type:
+          data.type === "cross-platform"
+            ? { cross_platform: null }
+            : { platform: null },
+        purpose: { authentication: null },
+        protection: { unprotected: null },
+      })
+
     await storePasskey(key, jsonData)
     await createPasskeyAccessPoint({
       browser: getBrowser(),
@@ -70,7 +86,6 @@ export class PasskeyConnector {
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
     const { delegationIdentity } = authState.get()
     if (!delegationIdentity) throw new Error("Delegation identity not found")
-
     const { data: imDevices } = await im.read_access_points()
     if (!imDevices?.length) throw new Error("No devices found")
     const passkeys = imDevices[0].filter(
@@ -90,7 +105,7 @@ export class PasskeyConnector {
         }))
       : []
 
-    console.log({ passkeysMetadata })
+    const email = (await fetchProfile()).email as string
 
     const credential = (await navigator.credentials.create({
       publicKey: {
@@ -115,8 +130,8 @@ export class PasskeyConnector {
         },
         user: {
           id: delegationIdentity.getPublicKey().toDer(), //take root id from the account
-          name: "10:26@" + String((await fetchProfile()).anchor),
-          displayName: "displayemail@email.com",
+          name: email,
+          displayName: email,
         },
       },
     })) as PublicKeyCredential

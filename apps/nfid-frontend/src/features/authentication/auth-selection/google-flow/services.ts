@@ -25,8 +25,11 @@ export const signWithGoogleService = async (
   context: AuthWithGoogleMachineContext,
 ): Promise<GoogleAuthSession> => {
   let delegation: DelegationIdentity, identity: Ed25519KeyIdentity
+  let email: string
+
   try {
     const result = await googleSigninV2Service.signin(context.jwt)
+    email = result.email
     delegation = result.delegation
     identity = result.identity
   } catch (e: any) {
@@ -47,6 +50,9 @@ export const signWithGoogleService = async (
     delegationIdentity: delegation,
     identity: identity,
   })
+
+  if (!profile?.email?.length)
+    await im.update_account({ name: [], email: [email] })
 
   await authStorage.set(KEY_STORAGE_KEY, JSON.stringify(identity.toJSON()))
 

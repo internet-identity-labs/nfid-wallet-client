@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { Fade } from "react-awesome-reveal"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { ScrollTopOnNavigate } from "frontend/ui/templates/ScrollTopOnNavigate"
@@ -34,7 +34,7 @@ export const Faq = () => {
               id="faq"
               className="relative grid grid-cols-1 sm:grid-cols-[5fr,7fr] gap-10 mt-20"
             >
-              <Image
+              <img
                 className="absolute z-0 w-50% top-36 -left-[30vw]"
                 src={Blur}
                 alt="blur"

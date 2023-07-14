@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 import { SDKFooter } from "@nfid-frontend/ui"
 
 import NFIDAuthCoordinator from "frontend/features/authentication/nfid/coordinator"
@@ -38,7 +38,7 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
 
       {!!isAuthenticated && (
         <div className="mb-[75px] sm:mb-[87px] z-10 relative">
-          <Image src={Group} alt="Group" />
+          <img src={Group} alt="Group" />
         </div>
       )}
     </>

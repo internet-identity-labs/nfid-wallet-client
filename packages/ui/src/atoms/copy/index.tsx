@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React, { HTMLAttributes } from "react"
 import ReactTooltip from "react-tooltip"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { CopyIcon } from "../icons/copy"
 import CopiedIcon from "./copied.svg"
@@ -40,7 +40,7 @@ export const Copy: React.FC<ICopy> = ({
     >
       <div className="w-5">
         {copied && (
-          <Image
+          <img
             className="w-full"
             src={CopiedIcon}
             alt="copy"

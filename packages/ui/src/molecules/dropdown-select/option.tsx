@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { IOption } from "."
 import { Checkbox } from "../../atoms/checkbox"
@@ -35,7 +35,7 @@ export const DropdownOption = ({
         className={clsx("mr-[13px]", !isCheckbox && "hidden")}
       />
       {option.icon && (
-        <Image
+        <img
           className="mr-[13px] w-10 h-10 object-cover"
           src={option.icon}
           alt={option.value}

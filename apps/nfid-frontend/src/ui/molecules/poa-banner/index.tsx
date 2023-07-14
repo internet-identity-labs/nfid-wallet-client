@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import background from "./background.svg"
 
@@ -33,7 +33,7 @@ export const PoaBanner: React.FC<PoaBannerProps> = () => {
       >
         My expereineces and awards
       </div>
-      <Image
+      <img
         src={background}
         className="absolute bottom-0 right-0"
         alt="award"

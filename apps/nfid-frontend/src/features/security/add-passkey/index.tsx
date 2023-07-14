@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { ToastContainer } from "react-toastify"
 
-import { Button, Checkbox, IconCmpPlus, Image } from "@nfid-frontend/ui"
+import { Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
@@ -39,7 +39,7 @@ export const AddPasskey = ({
         <ToastContainer />
         <div className="space-y-3.5">
           <p className="text-2xl font-bold">Create a passkey</p>
-          <Image src={PasskeyImage} alt="Passkey" className="w-full" />
+           <img src={PasskeyImage} alt="Passkey" className="w-full" />
           <p className="text-sm leading-5">
             Passkeys let you securely sign in to your NFID using your
             fingerprint, face, screen lock, or hardware security key.

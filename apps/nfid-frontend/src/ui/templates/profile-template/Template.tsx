@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
-import { Image } from "@nfid-frontend/ui"
+
 
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -66,7 +66,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
 
             {icon && onIconClick && (
               <Tooltip tip={iconTooltip}>
-                <Image
+                <img
                   src={icon}
                   alt="icon"
                   onClick={onIconClick}

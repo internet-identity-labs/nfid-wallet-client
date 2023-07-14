@@ -1,12 +1,6 @@
 import clsx from "clsx"
 
-import {
-  H5,
-  IconCmpInfo,
-  IconSvgID,
-  IconSvgNFID,
-  Tooltip,
-} from "@nfid-frontend/ui"
+import { H5, IconSvgID, IconSvgNFID } from "@nfid-frontend/ui"
 
 export interface AuthAppMetaProps {
   applicationLogo?: string
@@ -70,14 +64,6 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
               {new URL(applicationURL).host}
             </a>
           </span>
-          <Tooltip
-            className="w-[368px] text-white text-sm leading-5 font-normal"
-            tip={
-              "By connecting, you share the blockchain addresses associated with your NFID. Your email address is never shared with anyone — it stays encrypted in your identity."
-            }
-          >
-            <IconCmpInfo className="w-[18px] h-[18px]" />
-          </Tooltip>
         </div>
       )}
     </div>

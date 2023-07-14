@@ -66,6 +66,7 @@ export class SecurityConnector {
           : "",
         type: Object.keys(device.device_type)[0],
         principal: device.principal_id,
+        credentialId: passkeyMetadata?.key,
       } as IDevice
     })
 

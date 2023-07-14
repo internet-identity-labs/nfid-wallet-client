@@ -19,7 +19,7 @@ export const DetailsPasskey: React.FC<IDetailsPasskeyModal> = ({
   const [isModalVisible, setIsModalVisible] = React.useState(false)
 
   const { data } = useSWR(
-    [device.credentialId, "_passkeyMetadata"],
+    device.credentialId ? [(device.credentialId, "_passkeyMetadata")] : null,
     ([credentialId]) => passkeyConnector.getPasskeyByCredentialID(credentialId),
   )
 

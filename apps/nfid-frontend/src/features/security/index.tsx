@@ -11,9 +11,9 @@ import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
-import { AddPasskey } from "./add-passkey"
 import { PasskeyDeviceItem } from "./components/passkey-device-item"
 import { securityConnector } from "./device-connector"
+import { AddPasskey } from "./passkey/add-passkey"
 import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
 import { DeleteRecoveryPhrase } from "./recovery-phrase/remove-recovery"
 

@@ -8,7 +8,7 @@ import { passkeyConnector } from "frontend/features/authentication/auth-selectio
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
-import PasskeyImage from "./passkey-image.png"
+import PasskeyImage from "./add-passkey.png"
 
 export const AddPasskey = ({
   handleWithLoading,

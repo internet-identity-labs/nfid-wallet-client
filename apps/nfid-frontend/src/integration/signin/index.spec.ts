@@ -151,6 +151,7 @@ describe("SignIn with Internet Identity", () => {
       anchor: derivedAnchor,
       access_point: [],
       wallet: [],
+      email: [],
     })
 
     // NOTE: Here I relogin to user's own II to check

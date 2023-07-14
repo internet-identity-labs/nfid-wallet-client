@@ -164,6 +164,7 @@ export interface HTTPAccountRequest {
   anchor: bigint
   access_point: [] | [AccessPointRequest]
   wallet: [] | [WalletVariant]
+  email: [] | [string]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]

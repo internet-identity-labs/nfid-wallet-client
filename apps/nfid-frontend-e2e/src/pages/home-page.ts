@@ -1,4 +1,4 @@
-import { Page } from "./page"
+import { Page } from "./page.js"
 
 export class HomePage extends Page {
   private get signInButton() {
@@ -14,7 +14,7 @@ export class HomePage extends Page {
   }
 
   private get googleAuthButton() {
-    return $("#google-sign-button")
+    return $("(.//button[contains(text(),'')])[4]")
   }
 
   private get accountPicker() {
@@ -39,6 +39,14 @@ export class HomePage extends Page {
 
   private get createNFID() {
     return $("#create-nfid")
+  }
+
+  private get whatIfMyDeviceHasBeenStolen() {
+    return $("//button[contains(.,'What if my device')]")
+  }
+
+  private get recoverNFID() {
+    return $("[href*='/recover-nfid']")
   }
 
   private get trustThisDeviceButton() {
@@ -90,22 +98,29 @@ export class HomePage extends Page {
   public async signIn(isMobile?: boolean) {
     let index = isMobile ? 0 : 1
     let counter = 0
-    while ((await this.signInButton.length) > 0 || counter < 5) {
-      if (isMobile) await this.openHomeBurgerMenu()
-      await this.signInButton[index].waitForDisplayed({
-        timeout: 7000,
-        timeoutMsg: "Sign In button is not displayed!",
+    if (isMobile) {
+      await this.openHomeBurgerMenu()
+    } else {
+      await browser.waitUntil(async () => (await this.signInButton.length) > 1, {
+        timeout: 10000,
+        timeoutMsg: "Sign In button for desktop is not displayed!"
       })
-      await this.signInButton[index].waitForClickable({
-        timeout: 4000,
-        timeoutMsg: "Sign In button is not clickable!",
-      })
-      await this.signInButton[index].click()
-      await $(".//div[contains(text(),'Loading')]").waitForDisplayed({
-        interval: 8000,
-        reverse: true,
-      })
+    }
+    await this.signInButton[index].waitForDisplayed({
+      timeout: 17000,
+      timeoutMsg: "Sign In button is not displayed!",
+    })
+    await this.signInButton[index].waitForClickable({
+      timeout: 4000,
+      timeoutMsg: "Sign In button is not clickable!",
+    })
+    while ((await this.signInButton.length) > 0 && counter < 5) {
       try {
+        await this.signInButton[index].click()
+        await $(".//div[contains(text(),'Loading')]").waitForDisplayed({
+          interval: 8000,
+          reverse: true,
+        })
         // handles the situation with Registration ceremony
         // https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client
         await browser.waitUntil(
@@ -154,15 +169,14 @@ export class HomePage extends Page {
   }
 
   public async recoverAccountWithFAQ() {
-    await $(`=${"FAQ"}`).waitForDisplayed({ timeout: 5000, timeoutMsg: "" })
+    await $(`=${"FAQ"}`).waitForDisplayed({ timeout: 8000, timeoutMsg: "FAQ page is failed to load" })
 
-    await $("//button[contains(.,'What if my device')]").waitForDisplayed({
-      timeout: 7000,
-    })
-    await $("//button[contains(.,'What if my device')]").click()
+    await this.whatIfMyDeviceHasBeenStolen.waitForDisplayed({ timeout: 7000 })
+    await this.whatIfMyDeviceHasBeenStolen.click()
 
-    await $("[href*='/recover-nfid']").waitForDisplayed({ timeout: 6000 })
-    await $("[href*='/recover-nfid']").click()
+    await this.recoverNFID.waitForDisplayed({ timeout: 6000 })
+    await this.recoverNFID.waitForClickable({ timeout: 6000 })
+    await this.recoverNFID.click()
   }
 }
 

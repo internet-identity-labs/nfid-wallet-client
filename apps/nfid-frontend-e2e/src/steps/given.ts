@@ -1,31 +1,30 @@
 import { Given } from "@cucumber/cucumber"
 
-import { setupVirtualAuthenticator } from "../helpers/setupVirtualWebauthn"
-import HomePage from "../pages/home-page"
-import clearAuthState from "./support/action/clear-auth-state"
-import closeAllButFirstTab from "./support/action/closeAllButFirstTab"
-import openWebsite from "./support/action/openWebsite"
-import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
-import removeUserE2E from "./support/action/removeUserE2E"
-import setWindowSize from "./support/action/setWindowSize"
-import addLocalStorageKey from "./support/check/addLocalStorageKey"
-import checkContainsAnyText from "./support/check/checkContainsAnyText"
-import checkContainsText from "./support/check/checkContainsText"
-import checkCookieContent from "./support/check/checkCookieContent"
-import checkCookieExists from "./support/check/checkCookieExists"
-import checkDimension from "./support/check/checkDimension"
-import checkElementExists from "./support/check/checkElementExists"
-import checkEqualsText from "./support/check/checkEqualsText"
-import checkIsEmpty from "./support/check/checkIsEmpty"
-import checkModal from "./support/check/checkModal"
-import checkOffset from "./support/check/checkOffset"
-import checkProperty from "./support/check/checkProperty"
-import checkSelected from "./support/check/checkSelected"
-import checkTitle from "./support/check/checkTitle"
-import checkUrl from "./support/check/checkURL"
-import compareText from "./support/check/compareText"
-import isDisplayed from "./support/check/isDisplayed"
-import isEnabled from "./support/check/isEnabled"
+import HomePage from "../pages/home-page.js"
+import clearAuthState from "./support/action/clear-auth-state.js"
+import closeAllButFirstTab from "./support/action/closeAllButFirstTab.js"
+import openWebsite from "./support/action/openWebsite.js"
+import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber.js"
+import removeUserE2E from "./support/action/removeUserE2E.js"
+import setWindowSize from "./support/action/setWindowSize.js"
+import addLocalStorageKey from "./support/check/addLocalStorageKey.js"
+import checkContainsAnyText from "./support/check/checkContainsAnyText.js"
+import checkContainsText from "./support/check/checkContainsText.js"
+import checkCookieContent from "./support/check/checkCookieContent.js"
+import checkCookieExists from "./support/check/checkCookieExists.js"
+import checkDimension from "./support/check/checkDimension.js"
+import checkElementExists from "./support/check/checkElementExists.js"
+import checkEqualsText from "./support/check/checkEqualsText.js"
+import checkIsEmpty from "./support/check/checkIsEmpty.js"
+import checkModal from "./support/check/checkModal.js"
+import checkOffset from "./support/check/checkOffset.js"
+import checkProperty from "./support/check/checkProperty.js"
+import checkSelected from "./support/check/checkSelected.js"
+import checkTitle from "./support/check/checkTitle.js"
+import checkUrl from "./support/check/checkURL.js"
+import compareText from "./support/check/compareText.js"
+import isDisplayed from "./support/check/isDisplayed.js"
+import isEnabled from "./support/check/isEnabled.js"
 
 Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
 
@@ -44,7 +43,7 @@ Given(/^User authenticates with google account$/, async () => {
 })
 
 Given(/^User authenticates with enhanced security$/, async function () {
-  this.auth = await browser.addVirtualWebAuth(
+  this.auth = await browser.addVirtualAuthenticator(
     "ctap2",
     "internal",
     true,
@@ -133,10 +132,6 @@ Given(/^I have a screen that is ([\d]+) by ([\d]+) pixels$/, setWindowSize)
 Given(/^I have closed all but the first (window|tab)$/, closeAllButFirstTab)
 
 Given(/^a (alertbox|confirmbox|prompt) is( not)* opened$/, checkModal)
-
-Given(/^My browser supports WebAuthN$/, async function () {
-  this.authenticator = await setupVirtualAuthenticator()
-})
 
 Given(
   /^My browser localStorage has a key "([^"]*)?" with value '([^]*)?'$/,

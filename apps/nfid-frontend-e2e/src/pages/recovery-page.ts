@@ -1,4 +1,4 @@
-import { HomePage } from "./home-page"
+import { HomePage } from "./home-page.js"
 
 class RecoveryPage extends HomePage {
   private get phraseTextarea() {

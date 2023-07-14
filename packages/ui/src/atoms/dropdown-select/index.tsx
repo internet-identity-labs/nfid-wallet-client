@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import { Input } from "../../molecules/input"
 import useClickOutside from "../../utils/use-click-outside"
@@ -144,7 +144,7 @@ export const DropdownSelect = ({
         <p className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
           All
         </p>
-        <Image src={Arrow} alt="arrow" />
+        <img src={Arrow} alt="arrow" />
       </div>
       <p className={clsx("text-sm text-red-600")}>{errorText}</p>
       {isDropdownOpen && (

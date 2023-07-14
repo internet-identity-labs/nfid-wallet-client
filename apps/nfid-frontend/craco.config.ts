@@ -34,6 +34,7 @@ const setupCSP = () => {
         process.env.AWS_SIGNIN_GOOGLE as string,
         process.env.AWS_SIGNIN_GOOGLE_V2 as string,
         process.env.AWS_ECDSA_SIGN as string,
+        process.env.AWS_PASSKEY as string,
         process.env.AWS_ECDSA_REGISTER as string,
         process.env.AWS_ECDSA_REGISTER_ADDRESS as string,
         process.env.AWS_ECDSA_GET_ANONYMOUS as string,
@@ -68,7 +69,6 @@ const setupCSP = () => {
       ],
       "worker-src": "'self'",
       "img-src": [
-        "https://nfid.imgix.net",
         "'self' blob: data: content: https:",
         "https://*.google-analytics.com",
         "https://*.googletagmanager.com",
@@ -262,6 +262,12 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/ecdsa_sign/, ""),
+      },
+      "/passkey": {
+        target: process.env.AWS_PASSKEY,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/passkey/, ""),
       },
       "/send_verification_email": {
         target: process.env.AWS_SEND_VERIFICATION_EMAIL,

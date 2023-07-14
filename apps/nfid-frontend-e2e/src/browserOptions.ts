@@ -7,13 +7,13 @@ export const chromeBrowserOptions: IChromeOption = {
     "--allow-insecure-localhost",
     "--disable-infobars",
     "--disable-dev-shm-usage",
-    "--start-maximized",
+    // "--start-maximized",
     "--ignore-certificate-errors",
     "--disable-gpu",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
     "--user-data-dir=chrome-user-data-dir",
   ],
-  w3c: false,
+  // w3c: false,
 }
 
 export const chromeBrowser = {
@@ -21,6 +21,9 @@ export const chromeBrowser = {
   "goog:chromeOptions": chromeBrowserOptions,
   "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
   acceptInsecureCerts: true,
+  'webauthn:extension:credBlob': true,
+  'webauthn:extension:largeBlob': true,
+  'webauthn:virtualAuthenticators': true
 }
 
 export const firefoxBrowser = {}

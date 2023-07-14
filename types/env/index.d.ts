@@ -9,6 +9,7 @@ declare const AWS_ECDSA_REGISTER: string
 declare const AWS_ECDSA_REGISTER_ADDRESS: string
 declare const AWS_ECDSA_GET_ANONYMOUS: string
 declare const AWS_ECDSA_SIGN: string
+declare const AWS_PASSKEY: string
 declare const AWS_SIGNATURE_EVENT: string
 declare const AWS_SYMMETRIC: string
 declare const BITCOIN_WALLET_CANISTER_ID: string

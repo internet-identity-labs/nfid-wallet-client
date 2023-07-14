@@ -1,4 +1,4 @@
-import { Vaults } from "./vaults"
+import { Vaults } from "./vaults.js"
 
 export class Vault extends Vaults {
   private get membersTab() {

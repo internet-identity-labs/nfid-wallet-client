@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { IconCmpDots, Image } from "@nfid-frontend/ui"
+import { IconCmpDots } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -69,7 +69,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
           )}
           id={trimConcat("nft_token_", props.name)}
         >
-          <Image
+          <img
             src={props.blockchainLogo}
             alt="logo"
             className={clsx(
@@ -79,7 +79,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
           />
         </div>
         {["img", "image"].includes(props.assetPreview.format) && (
-          <Image
+          <img
             id="asset-img"
             className={clsx(
               "rounded-[5px] w-full h-[245px] md:h-[300px] object-cover",
@@ -140,7 +140,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
                   "flex items-center space-x-2",
                 )}
               >
-                <Image src={transferIcon} alt="" />
+                <img src={transferIcon} alt="" />
                 <span>Transfer</span>
               </div>
               <div
@@ -150,7 +150,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
                   "flex items-center space-x-2",
                 )}
               >
-                <Image src={copyIcon} alt="" />
+                <img src={copyIcon} alt="" />
                 <span> Copy link</span>
               </div>
             </div>

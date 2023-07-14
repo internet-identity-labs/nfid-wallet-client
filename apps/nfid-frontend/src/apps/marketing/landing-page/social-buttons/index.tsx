@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import Discord from "./assets/ds.svg"
 import Github from "./assets/gh.svg"
@@ -20,7 +20,7 @@ export const SocialButtons = () => {
         <div className="table social-button-wrapper">
           <div className="table-cell">
             <div className="table">
-              <Image src={Discord} alt="discord" className="table-cell" />
+              <img src={Discord} alt="discord" className="table-cell" />
               <span className="table-cell">Discord</span>
             </div>
           </div>
@@ -35,7 +35,7 @@ export const SocialButtons = () => {
         <div className="table social-button-wrapper">
           <div className="table-cell">
             <div className="table">
-              <Image src={Twitter} alt="twitter" className="table-cell" />
+              <img src={Twitter} alt="twitter" className="table-cell" />
               <span className="table-cell">Twitter</span>
             </div>
           </div>
@@ -50,7 +50,7 @@ export const SocialButtons = () => {
         <div className="table social-button-wrapper">
           <div className="table-cell">
             <div className="table">
-              <Image src={Github} alt="github" className="table-cell" />
+              <img src={Github} alt="github" className="table-cell" />
               <span className="table-cell">Github</span>
             </div>
           </div>

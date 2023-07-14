@@ -32,7 +32,7 @@ export const DefaultTrigger = ({
         id={"option_" + selectedOption?.title.replace(/\s/g, "")}
       >
         {selectedOption?.icon && (
-          <Image
+          <img
             src={selectedOption?.icon}
             alt={selectedOption?.value}
             className={clsx("mr-2.5 w-12 h-12 object-cover", iconClassnames)}

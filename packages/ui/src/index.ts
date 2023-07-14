@@ -23,7 +23,6 @@ export * from "./atoms/popover/popover-tools"
 export * from "./atoms/badge"
 export * from "./atoms/skeleton"
 export * from "./atoms/sdk-footer/footer"
-export * from "./atoms/image"
 export * from "./atoms/info-list-item"
 
 export * from "./molecules/button"

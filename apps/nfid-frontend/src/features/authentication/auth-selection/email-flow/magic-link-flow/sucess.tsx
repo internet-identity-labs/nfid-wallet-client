@@ -1,4 +1,4 @@
-import { Image } from "@nfid-frontend/ui"
+
 
 import { AuthAppMeta } from "../../../ui/app-meta"
 import ImageVerified from "../images/verified.png"
@@ -11,7 +11,7 @@ export const EmailMagicLinkSuccess = () => {
         You’re already signed in on the tab where you originally requested sign
         in.
       </p>
-      <Image src={ImageVerified} alt="verified" className="w-full h-56 my-10" />
+      <img src={ImageVerified} alt="verified" className="w-full h-56 my-10" />
       <p className="text-sm text-center">You can close this window</p>
     </>
   )

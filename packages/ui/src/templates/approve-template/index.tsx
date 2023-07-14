@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Image } from "@nfid-frontend/ui"
+
 
 import successWhiteIcon from "./assets/success-white.svg"
 
@@ -71,7 +71,7 @@ export const ApproveTemplate: React.FC<ApproveTemplateProps> = ({
       </div>
       <Button
         icon={
-          <Image
+          <img
             src={successWhiteIcon}
             alt="success-icon"
             className={clsx("mr-2")}

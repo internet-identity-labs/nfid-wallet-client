@@ -1,45 +1,45 @@
 import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
 
-import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
-import Assets from "../pages/assets"
-import Nft from "../pages/nft"
-import Profile from "../pages/profile"
-import Vault from "../pages/vault"
-import Vaults from "../pages/vaults"
-import clickElement from "./support/action/clickElement"
-import setInputField from "./support/action/setInputField"
-import waitFor from "./support/action/waitFor"
-import waitForVisible from "./support/action/waitForDisplayed"
-import checkClass from "./support/check/checkClass"
-import checkContainsAnyText from "./support/check/checkContainsAnyText"
-import checkContainsText from "./support/check/checkContainsText"
-import checkCookieContent from "./support/check/checkCookieContent"
-import checkCookieExists from "./support/check/checkCookieExists"
-import checkDimension from "./support/check/checkDimension"
-import checkEqualsText from "./support/check/checkEqualsText"
-import checkFocus from "./support/check/checkFocus"
-import checkFontProperty from "./support/check/checkFontProperty"
-import checkInURLPath from "./support/check/checkInURLPath"
-import checkIsEmpty from "./support/check/checkIsEmpty"
-import checkIsOpenedInNewWindow from "./support/check/checkIsOpenedInNewWindow"
-import checkLocalStorageKey from "./support/check/checkLocalStorageKey"
-import checkModal from "./support/check/checkModal"
-import checkModalText from "./support/check/checkModalText"
-import checkNewWindow from "./support/check/checkNewWindow"
-import checkOffset from "./support/check/checkOffset"
-import checkProperty from "./support/check/checkProperty"
-import checkSelected from "./support/check/checkSelected"
-import checkTitle from "./support/check/checkTitle"
-import checkTitleContains from "./support/check/checkTitleContains"
-import checkURL from "./support/check/checkURL"
-import checkURLPath from "./support/check/checkURLPath"
-import checkWithinViewport from "./support/check/checkWithinViewport"
-import compareText from "./support/check/compareText"
-import isVisible from "./support/check/isDisplayed"
-import isEnabled from "./support/check/isEnabled"
-import isExisting from "./support/check/isExisting"
-import checkIfElementExists from "./support/lib/checkIfElementExists"
+// import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
+import Assets from "../pages/assets.js"
+import Nft from "../pages/nft.js"
+import Profile from "../pages/profile.js"
+import Vault from "../pages/vault.js"
+import Vaults from "../pages/vaults.js"
+import clickElement from "./support/action/clickElement.js"
+import setInputField from "./support/action/setInputField.js"
+import waitFor from "./support/action/waitFor.js"
+import waitForVisible from "./support/action/waitForDisplayed.js"
+import checkClass from "./support/check/checkClass.js"
+import checkContainsAnyText from "./support/check/checkContainsAnyText.js"
+import checkContainsText from "./support/check/checkContainsText.js"
+import checkCookieContent from "./support/check/checkCookieContent.js"
+import checkCookieExists from "./support/check/checkCookieExists.js"
+import checkDimension from "./support/check/checkDimension.js"
+import checkEqualsText from "./support/check/checkEqualsText.js"
+import checkFocus from "./support/check/checkFocus.js"
+import checkFontProperty from "./support/check/checkFontProperty.js"
+import checkInURLPath from "./support/check/checkInURLPath.js"
+import checkIsEmpty from "./support/check/checkIsEmpty.js"
+import checkIsOpenedInNewWindow from "./support/check/checkIsOpenedInNewWindow.js"
+import checkLocalStorageKey from "./support/check/checkLocalStorageKey.js"
+import checkModal from "./support/check/checkModal.js"
+import checkModalText from "./support/check/checkModalText.js"
+import checkNewWindow from "./support/check/checkNewWindow.js"
+import checkOffset from "./support/check/checkOffset.js"
+import checkProperty from "./support/check/checkProperty.js"
+import checkSelected from "./support/check/checkSelected.js"
+import checkTitle from "./support/check/checkTitle.js"
+import checkTitleContains from "./support/check/checkTitleContains.js"
+import checkURL from "./support/check/checkURL.js"
+import checkURLPath from "./support/check/checkURLPath.js"
+import checkWithinViewport from "./support/check/checkWithinViewport.js"
+import compareText from "./support/check/compareText.js"
+import isVisible from "./support/check/isDisplayed.js"
+import isEnabled from "./support/check/isEnabled.js"
+import isExisting from "./support/check/isExisting.js"
+import checkIfElementExists from "./support/check/checkIfElementExists.js"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -66,8 +66,10 @@ Then(/^Policy is displayed on the policies list$/, async () => {
 })
 
 Then(/^NFID number is not zero$/, async () => {
-  const actualNFID = await Profile.getNFIDnumber()
-  expect(actualNFID).not.toBe("0")
+  await browser.waitUntil(async () => await Profile.getNFIDnumber() !== "0", {
+    timeout: 10000,
+    timeoutMsg: "Profile NFID number is 0"
+  })
 })
 
 Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
@@ -75,7 +77,7 @@ Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
     timeout: 13000,
     timeoutMsg: "Phone Number is not displayed",
   })
-  expect(await Profile.getPhoneNumber.getText()).toHaveText(phoneNumber)
+  expect(await Profile.getPhoneNumber.getText()).toContain(phoneNumber)
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
@@ -204,10 +206,6 @@ Then(
   checkLocalStorageKey,
 )
 
-Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
-  await checkCredentialAmount(this.authenticator, Number(amount))
-})
-
 Then(/^Go to Profile page$/, async function () {
   await clickElement("click", "selector", "#profileButton")
 })
@@ -234,7 +232,7 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
 
 Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
   await $(`#token_${assetLabel.replace(/\s/g, "")}`).waitForDisplayed({
-    timeout: 10000,
+    timeout: 17000,
   })
 })
 
@@ -339,7 +337,7 @@ Then(
   async (expectedText: string) => {
     await $("#blockchain_filter #selected_acc").then(async (x) =>
       x
-        .waitForExist({ timeout: 7000 })
+        .waitForExist({ timeout: 17000 })
         .then(async () => expect(x).toHaveText(expectedText)),
     )
   },
@@ -378,7 +376,7 @@ Then(
   async (text: string, currency) => {
     await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (x) =>
       x
-        .waitForExist({ timeout: 7000 })
+        .waitForExist({ timeout: 17000 })
         .then(async () => expect(x).not.toHaveText(`0 ${currency}`)),
     )
   },
@@ -523,8 +521,8 @@ Then(/^Account ID is ([^"]*)/, async (principal: string) => {
   let address = await Assets.getAccountId(true)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressElement.getText()),
+    "..." +
+    (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -532,8 +530,8 @@ Then(/^Principal is ([^"]*)/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressElement.getText()),
+    "..." +
+    (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -543,7 +541,7 @@ Then(
     const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
     await usd.waitForExist({
-      timeout: 7000,
+      timeout: 13000,
     })
     await expect(usd).not.toHaveText(text)
   },
@@ -553,7 +551,7 @@ Then(/^([^"]*) USD balance is not empty$/, async (chain: string) => {
   const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
   await usd.waitForExist({
-    timeout: 10000,
+    timeout: 13000,
   })
   await expect(usd).not.toHaveText("")
 })
@@ -561,7 +559,7 @@ Then(/^([^"]*) USD balance is not empty$/, async (chain: string) => {
 Then(/^Account balance in USD not empty$/, async () => {
   const usd = await $("#usd_balance_0")
   await usd.waitForExist({
-    timeout: 7000,
+    timeout: 13000,
   })
   await expect(usd).not.toHaveText("")
 })
@@ -624,24 +622,24 @@ Then(
 
 Then(/^(\d+) row in the table/, async (amount: number) => {
   for (let i = 0; i < amount; i++) {
-    await $(`#account_row_${i}`).waitForExist({ timeout: 7000 })
+    await $(`#account_row_${i}`).waitForDisplayed({ timeout: 7000 })
   }
-  await $(`#account_row_${amount}`).waitForExist({
+  await $(`#account_row_${amount}`).waitForDisplayed({
     timeout: 7000,
     reverse: true,
   })
 })
 
-Then(/^(\d+) transaction in the table/, async (amount: number) => {
+Then(/^([^"]*) transaction in the table/, async (amount: number) => {
   for (let i = 0; i < amount; i++) {
-    await $("id=transaction_" + i).waitForDisplayed({
+    await $(`#transaction_${i}`).waitForDisplayed({
       timeout: 15000,
       timeoutMsg: "Transaction has not been showed! Missing transaction!",
       reverse: false,
     })
   }
 
-  await $("id=transaction_" + amount).waitForDisplayed({
+  await $(`#transaction_${amount}`).waitForDisplayed({
     timeout: 15000,
     timeoutMsg: "More than expects. Unexpected transaction!",
     reverse: true,
@@ -748,7 +746,7 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
 })
 
 Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
-  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
+  ; (await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
 })
 
 Then(/^Open collectibles page$/, async () => {

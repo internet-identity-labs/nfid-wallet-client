@@ -2,11 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -14,37 +10,18 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "commonjs",
+    "module": "ESNext", // breaks with commonjs
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "downlevelIteration": true,
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "frontend/*": [
-        "./src/*"
-      ]
-    },
-    "sourceMap": true,
     "types": [
       "node",
-      "webdriverio/async",
       "@wdio/globals/types",
-      "@wdio/cucumber-framework",
-      "@wdio/devtools-service",
       "expect-webdriverio",
-      "jest"
+      "@wdio/cucumber-framework"
     ]
   },
-  "include": [
-    "src",
-    "src/types/custom.d.ts",
-    "test",
-    "mocks"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

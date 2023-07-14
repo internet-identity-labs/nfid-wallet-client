@@ -10,6 +10,7 @@ export interface Profile {
   phoneNumber?: string
   wallet: RootWallet
   is2fa: boolean
+  email?: string
 }
 
 export enum RootWallet {

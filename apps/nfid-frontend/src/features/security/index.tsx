@@ -53,18 +53,19 @@ const ProfileSecurityPage = () => {
         title="Login info"
         subTitle="Primary method of signing in"
       >
-        {imDevices?.emailDevice ? (
+        {profile?.email ? (
           <div className="flex space-x-2.5 items-center">
             <div className="w-10 h-10 p-2 rounded-full">
-              <DeviceIconDecider icon={imDevices.emailDevice.icon} />
+              <DeviceIconDecider
+                icon={
+                  profile.email.includes("gmail") ? Icon.google : Icon.email
+                }
+              />
             </div>
             <div>
-              <p className="text-sm leading-5">dmitrii@email.com</p>
+              <p className="text-sm leading-5">{profile.email}</p>
               <p className="text-xs leading-4 text-gray-400">
-                {imDevices.emailDevice.icon === Icon.google
-                  ? "Google"
-                  : "Email"}{" "}
-                sign in
+                {profile.email.includes("gmail") ? "Google" : "Email"} sign in
               </p>
             </div>
           </div>

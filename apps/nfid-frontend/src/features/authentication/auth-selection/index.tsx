@@ -36,7 +36,10 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
 
   useEffect(() => {
     passkeyConnector.initPasskeyAutocomplete(authAbortController.signal)
-  }, [authAbortController.signal])
+    return () => {
+      authAbortController.abort("Aborted webauthn on unmount")
+    }
+  }, [authAbortController, authAbortController.signal])
 
   return (
     <div className="w-full h-full">

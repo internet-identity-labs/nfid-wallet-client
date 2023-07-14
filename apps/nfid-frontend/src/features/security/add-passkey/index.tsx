@@ -4,7 +4,7 @@ import React from "react"
 import { Button, Checkbox, IconCmpPlus, Image } from "@nfid-frontend/ui"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
-import { Modal } from "frontend/ui/molecules/modal/index-v1"
+import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
 import PasskeyImage from "./passkey-image.png"
@@ -30,10 +30,9 @@ export const AddPasskey = ({
         <span className="text-sm font-bold">Add passkey</span>
       </div>
 
-      <Modal
+      <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        id={"modal-add-passkey"}
         className="p-5 w-[450px] z-[100] lg:rounded-xl"
       >
         <div className="space-y-3.5">
@@ -61,8 +60,9 @@ export const AddPasskey = ({
             type="primary"
             block
             onClick={() =>
-              handleWithLoading(() =>
-                passkeyConnector.createCredential({ isMultiDevice }),
+              handleWithLoading(
+                () => passkeyConnector.createCredential({ isMultiDevice }),
+                () => setIsModalVisible(false),
               )
             }
           >
@@ -72,7 +72,7 @@ export const AddPasskey = ({
         <Button type="ghost" block>
           Learn about passkeys
         </Button>
-      </Modal>
+      </ModalComponent>
     </div>
   )
 }

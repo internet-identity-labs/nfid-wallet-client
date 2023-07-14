@@ -18,7 +18,6 @@ import {
   RootWallet,
 } from "@nfid/integration"
 
-import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
 import { unpackLegacyResponse, unpackResponse } from "../_common"
@@ -58,6 +57,7 @@ export function mapProfile(profile: AccountResponse): Profile {
     phoneNumber: mapOptional(profile.phone_number),
     wallet: walletResponseToWallet(profile.wallet),
     is2fa: profile.is2fa_enabled,
+    email: mapOptional(profile.email),
   }
 }
 

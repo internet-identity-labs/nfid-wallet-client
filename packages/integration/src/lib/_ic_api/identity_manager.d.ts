@@ -40,6 +40,7 @@ export interface AccountResponse {
   wallet: WalletVariant
   principal_id: string
   phone_number: [] | [string]
+  email: [] | [string]
 }
 export interface Application {
   img: [] | [string]
@@ -171,6 +172,7 @@ export interface HTTPAccountResponse {
 }
 export interface HTTPAccountUpdateRequest {
   name: [] | [string]
+  email: [] | [string]
 }
 export interface HTTPAnchorsResponse {
   data: [] | [BigUint64Array]

@@ -29,6 +29,7 @@ export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse
         principal_id: "",
         phone_number: [],
         is2fa_enabled: false,
+        email: [],
       },
     ],
     error: [],
@@ -139,6 +140,7 @@ export function factoryAccountResponse(): AccountResponse {
     principal_id: "aaaaa-aa",
     phone_number: ["123"],
     is2fa_enabled: false,
+    email: [],
   }
 }
 

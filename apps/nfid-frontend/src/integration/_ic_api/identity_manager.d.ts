@@ -40,6 +40,7 @@ export interface AccountResponse {
   wallet: WalletVariant
   principal_id: string
   phone_number: [] | [string]
+  email: [] | [string]
 }
 export interface Application {
   img: [] | [string]

@@ -1,10 +1,8 @@
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
-import ApplicationsIcon from "frontend/ui/organisms/profile-sidebar/assets/applications.svg"
 import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
 import CollectiblesIcon from "frontend/ui/organisms/profile-sidebar/assets/collectibles.svg"
-import CredentialsIcon from "frontend/ui/organisms/profile-sidebar/assets/credentials.svg"
 import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.svg"
 import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
@@ -13,13 +11,9 @@ const ProfileTokenWalletsDetailPage = React.lazy(
   () => import("./internet-computer-wallets"),
 )
 const ProfileAssets = React.lazy(() => import("./assets"))
-const ProfileCredentials = React.lazy(() => import("./credentials"))
 const ProfileSecurity = React.lazy(() => import("../../../features/security"))
-const ProfileApplications = React.lazy(() => import("./applications"))
 const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
 const ProfileTransactions = React.lazy(() => import("./transactions"))
-const ProfilePhone = React.lazy(() => import("./credentials/phone-number"))
-const ProfileSMS = React.lazy(() => import("./credentials/phone-sms"))
 const ProfileNFTDetails = React.lazy(() => import("./nft-details"))
 const VaultsListPage = React.lazy(
   () => import("frontend/features/vaults/vaults-list-page"),
@@ -40,9 +34,7 @@ export const ProfileConstants = {
   collectibles: "collectibles",
   wallet: ":token/wallet/:chain",
   security: "security",
-  credentials: "credentials",
   transactions: "transactions",
-  applications: "applications",
   copyRecoveryPhrase: "copy-recovery-phrase",
   addPhoneNumber: "add-phone-number",
   verifySMS: "verify-sms",
@@ -86,14 +78,6 @@ export const ProfileRoutes = (
       }
     />
     <Route
-      path={ProfileConstants.credentials}
-      element={
-        <AuthWrapper>
-          <ProfileCredentials />
-        </AuthWrapper>
-      }
-    />
-    <Route
       path={ProfileConstants.security}
       element={
         <AuthWrapper>
@@ -102,34 +86,10 @@ export const ProfileRoutes = (
       }
     />
     <Route
-      path={ProfileConstants.applications}
-      element={
-        <AuthWrapper>
-          <ProfileApplications />
-        </AuthWrapper>
-      }
-    />
-    <Route
       path={ProfileConstants.copyRecoveryPhrase}
       element={
         <AuthWrapper>
           <CopyRecoveryPhrase />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={`${ProfileConstants.credentials}/${ProfileConstants.addPhoneNumber}`}
-      element={
-        <AuthWrapper>
-          <ProfilePhone />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={`${ProfileConstants.credentials}/${ProfileConstants.verifySMS}`}
-      element={
-        <AuthWrapper>
-          <ProfileSMS />
         </AuthWrapper>
       }
     />
@@ -186,18 +146,6 @@ export const profileSidebarItems = [
     title: "Vaults",
     link: `${ProfileConstants.base}/${ProfileConstants.vaults}`,
     id: "profile-vaults",
-  },
-  {
-    icon: ApplicationsIcon,
-    title: "Applications",
-    link: `${ProfileConstants.base}/${ProfileConstants.applications}`,
-    id: "profile-applications",
-  },
-  {
-    icon: CredentialsIcon,
-    title: "Credentials",
-    link: `${ProfileConstants.base}/${ProfileConstants.credentials}`,
-    id: "profile-credentials",
   },
   {
     icon: SecurityIcon,

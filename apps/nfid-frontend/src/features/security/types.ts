@@ -9,6 +9,7 @@ export interface IDevice {
   isMultiDevice: boolean
   isLegacyDevice: boolean
   principal: string
+  credentialId: string
 }
 
 export interface IGroupedDevices {

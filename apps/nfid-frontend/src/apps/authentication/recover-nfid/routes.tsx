@@ -1,6 +1,8 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+
 const AppScreenRecoverNFID = React.lazy(() => import("."))
 const RouterRegisterDeviceDecider = React.lazy(
   () => import("../../device/register-device-decider"),
@@ -18,7 +20,7 @@ export const RecoverNFIDRoutes = (
       path={RecoverNFIDRoutesConstants.enterRecoveryPhrase}
       element={
         <AppScreenRecoverNFID
-          registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
+          registerDeviceDeciderPath={`${ProfileConstants.base}/${ProfileConstants.security}`}
         />
       }
     />

@@ -52,6 +52,8 @@ export abstract class NonFungibleAssetConnector<T extends NftConnectorConfig>
     filterPrincipals: string[],
   ): Promise<DelegationIdentity[]> => {
     const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+    // FIXME:
+    // what to do here
     const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
     return !filterPrincipals.length ||
       filterPrincipals.includes(identity.getPrincipal().toString())

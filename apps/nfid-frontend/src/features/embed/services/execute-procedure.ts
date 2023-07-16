@@ -29,6 +29,8 @@ export const ExecuteProcedureService = async (
     throw new Error("ExecuteProcedureService: missing authSession")
 
   const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
+  // FIXME:
+  // what to do here
   const delegation = await getWalletDelegation(authSession.anchor)
   const { rpcUrl } = rpcMessage.options
   switch (rpcMessage.method) {

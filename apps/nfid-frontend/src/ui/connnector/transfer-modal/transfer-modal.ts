@@ -9,11 +9,13 @@ import {
   Application,
   PrincipalAccount,
   Profile,
+  RootWallet,
   fetchPrincipals,
   loadProfileFromLocalStorage,
 } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
+import { getGlobalDelegation } from "frontend/features/authentication/3rd-party/choose-account/services"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import {
   fetchAccounts,
@@ -161,6 +163,11 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     accountId = "0",
   ): Promise<DelegationIdentity> {
     const profile = await this.getProfile()
-    return await getWalletDelegation(profile.anchor, domain, accountId)
+
+    // FIXME:
+    // what to do here
+    return profile.wallet === RootWallet.II
+      ? await getWalletDelegation(profile.anchor, domain, accountId)
+      : await getGlobalDelegation()
   }
 }

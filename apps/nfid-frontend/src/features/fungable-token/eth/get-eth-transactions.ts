@@ -15,6 +15,8 @@ export const getEthTransactions = async () => {
   const accountId = "0"
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
 
+  // FIXME:
+  // what to do here
   const delegation = await getWalletDelegation(
     profile?.anchor,
     hostname,
@@ -57,6 +59,8 @@ export const getEthGoerliTransactions = async () => {
   const accountId = "0"
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
 
+  // FIXME:
+  // what to do here
   const delegation = await getWalletDelegation(
     profile?.anchor,
     hostname,

@@ -13,6 +13,8 @@ export const useWalletDelegation = (
   return useSWR(
     userNumber ? [userNumber, hostName, personaId] : null,
     ([userNumber, hostName, personaId]) =>
+      // FIXME:
+      // what to do here
       getWalletDelegation(userNumber, hostName, personaId),
     {
       dedupingInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,

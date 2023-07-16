@@ -8,18 +8,23 @@ import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-b
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 
-export const getPublicProfile = async (): Promise<{
-  label: string
-  address: string
-  balance: string
-  balanceUSD: string
-}> => {
+export const getGlobalDelegation = async () => {
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")
 
   const publicDelegation = await getGlobalKeys(delegationIdentity, Chain.IC, [
     "zhr63-daaaa-aaaap-qbh4q-cai",
   ])
+  return publicDelegation
+}
+
+export const getPublicProfile = async (): Promise<{
+  label: string
+  address: string
+  balance: string
+  balanceUSD: string
+}> => {
+  const publicDelegation = await getGlobalDelegation()
 
   const principal = publicDelegation.getPrincipal()
   const address = principalToAddress(principal)

@@ -60,5 +60,7 @@ export const transferERC20 = async (
 
 const getIdentity = async (): Promise<DelegationIdentity> => {
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  // FIXME:
+  // what to do here
   return await getWalletDelegation(profile.anchor, "nfid.one", "0")
 }

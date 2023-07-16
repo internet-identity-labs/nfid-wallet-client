@@ -28,6 +28,8 @@ export class ICTransferConnector
     )
     if (!neededAccount) throw new Error("Account not found")
 
+    // FIXME:
+    // what to do here
     return await getWalletDelegation(
       profile.anchor,
       neededAccount?.account.domain,

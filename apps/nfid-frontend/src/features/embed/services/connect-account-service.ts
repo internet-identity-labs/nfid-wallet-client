@@ -27,6 +27,8 @@ export const ConnectAccountService = async (
   const address = await getEthAddress(authSession.anchor)
   console.debug("ConnectAccountService", { address })
 
+  // FIXME:
+  // what to do here
   const identity = await getWalletDelegation(
     authSession.anchor,
     event.data.hostname,

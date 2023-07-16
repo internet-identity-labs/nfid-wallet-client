@@ -13,6 +13,8 @@ export const useVaultDelegation = (
   return useSWR(
     userNumber ? [userNumber, hostName, personaId] : null,
     ([userNumber, hostName, personaId]) =>
+      // FIXME:
+      // what to do here
       getWalletDelegation(userNumber, hostName, personaId),
     {
       refreshInterval: WALLET_SESSION_TTL_1_MIN_IN_MS,

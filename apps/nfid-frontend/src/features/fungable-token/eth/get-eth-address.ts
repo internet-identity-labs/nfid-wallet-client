@@ -23,6 +23,8 @@ export const getEthAddress = async (anchor: number) => {
 
   if (cachedAddress) return cachedAddress
 
+  // FIXME:
+  // what to do here
   const identity = await getWalletDelegation(anchor, hostname, accountId)
   replaceActorIdentity(ecdsaSigner, identity)
 

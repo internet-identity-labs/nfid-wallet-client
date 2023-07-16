@@ -19,6 +19,8 @@ export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
   const hostname = "nfid.one"
   const accountId = "0"
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  // FIXME:
+  // what to do here
   const delegation = await getWalletDelegation(
     profile?.anchor,
     hostname,

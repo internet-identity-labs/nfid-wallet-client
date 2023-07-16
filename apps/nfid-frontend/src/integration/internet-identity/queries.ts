@@ -1,7 +1,11 @@
 import React from "react"
 import useSWRImmutable from "swr/immutable"
 
-import { extendWithFixedAccounts, fetchPrincipals } from "@nfid/integration"
+import {
+  RootWallet,
+  extendWithFixedAccounts,
+  fetchPrincipals,
+} from "@nfid/integration"
 
 import {
   useAccounts,
@@ -23,9 +27,14 @@ export const useAllPrincipals = () => {
 
   const { data: principals } = useSWRImmutable(
     profile?.anchor && allAccounts
-      ? [BigInt(profile.anchor), allAccounts]
+      ? [
+          BigInt(profile.anchor),
+          allAccounts,
+          profile.wallet === RootWallet.NFID,
+        ]
       : null,
-    ([anchor, allAccounts]) => fetchPrincipals(anchor, allAccounts),
+    ([anchor, allAccounts, isNewUser]) =>
+      fetchPrincipals(anchor, allAccounts, isNewUser),
     { dedupingInterval: 60_000, refreshInterval: 60_000 },
   )
 

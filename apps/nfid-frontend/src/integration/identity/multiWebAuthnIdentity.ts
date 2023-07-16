@@ -7,12 +7,7 @@
  *   then we know which one the user is actually using
  * - It doesn't support creating credentials; use `WebAuthnIdentity` for that
  */
-import {
-  DerEncodedPublicKey,
-  PublicKey,
-  Signature,
-  SignIdentity,
-} from "@dfinity/agent"
+import { PublicKey, Signature, SignIdentity } from "@dfinity/agent"
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
@@ -25,7 +20,7 @@ import { passkeyConnector } from "frontend/features/authentication/auth-selectio
 
 export type CredentialId = ArrayBuffer
 export type CredentialData = {
-  pubkey: DerEncodedPublicKey
+  pubkey: ArrayBuffer // must be Der encoded
   credentialId: CredentialId
 }
 
@@ -43,8 +38,15 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     withSecurityDevices?: boolean,
     mediation?: "conditional" | "required",
     signal?: AbortSignal,
+    isNewDevice?: boolean,
   ): MultiWebAuthnIdentity {
-    return new this(credentialData, withSecurityDevices, mediation, signal)
+    return new this(
+      credentialData,
+      withSecurityDevices,
+      mediation,
+      signal,
+      isNewDevice,
+    )
   }
 
   private operationIsActive: boolean = true
@@ -52,18 +54,21 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   public _withSecurityDevices?: boolean
   public _mediation?: "conditional" | "required"
   public _signal?: AbortSignal
+  public _isNewDevice?: boolean
 
   protected constructor(
     readonly credentialData: CredentialData[],
     withSecurityDevices?: boolean,
     mediation?: "conditional" | "required",
     signal?: AbortSignal,
+    isNewDevice?: boolean,
   ) {
     super()
     this._actualIdentity = undefined
     this._withSecurityDevices = withSecurityDevices
     this._mediation = mediation
     this._signal = signal
+    this._isNewDevice = isNewDevice
   }
 
   public getPublicKey(): PublicKey {
@@ -98,10 +103,11 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       signal: this._signal,
     })) as PublicKeyCredential
 
-    if (this.credentialData.length > 0) {
+    if (!this._isNewDevice) {
       this.credentialData.forEach((cd) => {
         if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
           const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
+
           // would be nice if WebAuthnIdentity had a directly usable constructor
           this._actualIdentity = WebAuthnIdentity.fromJSON(
             JSON.stringify({

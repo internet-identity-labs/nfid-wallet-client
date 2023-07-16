@@ -1,14 +1,7 @@
 import { FilterPopover } from "@nfid-frontend/ui"
-import {
-  DropdownSelect,
-  IconCmpFilters,
-  IOption,
-  Tooltip,
-} from "@nfid-frontend/ui"
+import { DropdownSelect, IconCmpFilters, IOption } from "@nfid-frontend/ui"
 
 import { AssetFilter } from "frontend/ui/connnector/types"
-
-import ActionIcon from "./actions-icon.svg"
 
 interface IProfileAssetsHeader {
   blockchainOptions: IOption[]
@@ -57,18 +50,6 @@ export const ProfileAssetsHeader = ({
             />
           </FilterPopover>
         </div>
-        <Tooltip
-          tip={
-            <div>
-              Transaction history for the DIP-20
-              <br /> token standard is not supported.
-            </div>
-          }
-        >
-          <div className="ml-2 cursor-pointer">
-            <img src={ActionIcon} alt="ActionIcon" />
-          </div>
-        </Tooltip>
       </div>
     </div>
   )

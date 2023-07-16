@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import useSWR from "swr"
 
-import { IconCmpPlus, Table } from "@nfid-frontend/ui"
+import { IconCmpPlus, Table, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -24,7 +24,7 @@ export type IHandleWithLoading = (
 
 const ProfileSecurityPage = () => {
   const [isLoading, setIsLoading] = React.useState(false)
-  const { profile } = useProfile()
+  const { profile, refreshProfile } = useProfile()
 
   const {
     data: imDevices,
@@ -48,6 +48,8 @@ const ProfileSecurityPage = () => {
       refetchDevices()
     }
   }
+
+  if (!profile) return <Loader isLoading={true} />
 
   return (
     <ProfileTemplate pageTitle="Security">
@@ -86,7 +88,21 @@ const ProfileSecurityPage = () => {
 
       <ProfileContainer
         className="mt-[30px]"
-        title="Two-factor authentication"
+        title={
+          <>
+            <span>Two-factor authentication</span>
+            <Toggle
+              isDisabled={!imDevices?.passkeys?.length}
+              isChecked={!!profile?.is2fa}
+              onToggle={async (val) => {
+                handleWithLoading(
+                  async () => await securityConnector.toggle2FA(val),
+                  () => refreshProfile(),
+                )
+              }}
+            />
+          </>
+        }
         subTitle={
           <span>
             Use biometric authentication or external USB keys for very strong

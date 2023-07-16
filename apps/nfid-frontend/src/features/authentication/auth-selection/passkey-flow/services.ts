@@ -1,5 +1,10 @@
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
+import {
+  DER_COSE_OID,
+  DelegationIdentity,
+  WebAuthnIdentity,
+  wrapDER,
+} from "@dfinity/identity"
 import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
@@ -22,11 +27,16 @@ import {
   storePasskey,
 } from "@nfid/integration"
 
+import { getPlatformInfo } from "frontend/integration/device"
 import {
   createPasskeyAccessPoint,
   fetchProfile,
 } from "frontend/integration/identity-manager"
-import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
+import {
+  CredentialData,
+  MultiWebAuthnIdentity,
+} from "frontend/integration/identity/multiWebAuthnIdentity"
+import { AbstractAuthSession } from "frontend/state/authentication"
 import { getBrowser } from "frontend/ui/utils"
 
 export class PasskeyConnector {
@@ -52,7 +62,7 @@ export class PasskeyConnector {
     if (profile.wallet === RootWallet.II)
       ii.add(BigInt(profile.anchor), {
         credential_id: [Array.from(new Uint8Array(identity.rawId))],
-        alias: "aaguid device name",
+        alias: `${getBrowser()} on ${getPlatformInfo().device}`,
         pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
         key_type:
           data.type === "cross-platform"
@@ -65,7 +75,7 @@ export class PasskeyConnector {
     await storePasskey(key, jsonData)
     await createPasskeyAccessPoint({
       browser: getBrowser(),
-      device: "aaguid device name",
+      device: `${getBrowser()} on ${getPlatformInfo().device}`,
       deviceType: DeviceType.Passkey,
       icon: Icon.usb,
       principal: identity.getPrincipal().toText(),
@@ -153,12 +163,17 @@ export class PasskeyConnector {
     return await this.storePasskey(lambdaRequest)
   }
 
-  async loginWithPasskey(signal?: AbortSignal, callback?: () => void) {
+  async loginWithPasskey(
+    signal?: AbortSignal,
+    callback?: () => void,
+    allowedPasskeys: CredentialData[] = [],
+  ) {
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
-      [],
+      allowedPasskeys,
       false,
       "required",
       signal,
+      true,
     )
 
     const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
@@ -176,6 +191,37 @@ export class PasskeyConnector {
       chain,
       sessionKey,
     })
+
+    return {
+      anchor: (await fetchProfile()).anchor,
+      delegationIdentity: delegationIdentity,
+      identity: multiIdent._actualIdentity!,
+    }
+  }
+
+  async loginWithAllowedPasskey(): Promise<AbstractAuthSession> {
+    const { data: imDevices } = await im.read_access_points()
+    if (!imDevices?.length) throw new Error("No devices found")
+
+    const allowedPasskeys = imDevices[0]
+      .filter(
+        (d) =>
+          DeviceType.Passkey in d.device_type && d.credential_id[0]?.length,
+      )
+      .map((d) => d.credential_id[0])
+
+    const passkeysMetadata: IPasskeyMetadata[] = await Promise.all(
+      allowedPasskeys.map(async (p) => await this.getPasskeyByCredentialID(p!)),
+    )
+
+    return await this.loginWithPasskey(
+      undefined,
+      undefined,
+      passkeysMetadata.map((p) => ({
+        credentialId: p.credentialId,
+        pubkey: wrapDER(p.publicKey, DER_COSE_OID) as any,
+      })),
+    )
   }
 
   async initPasskeyAutocomplete(signal?: AbortSignal) {
@@ -184,6 +230,7 @@ export class PasskeyConnector {
       false,
       "conditional",
       signal,
+      true,
     )
     const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
 

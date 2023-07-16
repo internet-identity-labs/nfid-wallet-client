@@ -7,6 +7,7 @@ import { AuthWithEmailActor } from "frontend/features/authentication/auth-select
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
+import { Auth2FA } from "../auth-selection/2fa"
 import { AuthOtherSignOptions } from "../auth-selection/other-sign-options"
 import { AuthenticationMachineActor } from "./root-machine"
 
@@ -47,6 +48,9 @@ export default function AuthenticationCoordinator({
               type: "AUTH_WITH_OTHER",
             })
           }
+          onAuthWithPasskey={(authSession: AbstractAuthSession) =>
+            send({ type: "AUTHENTICATED", data: authSession })
+          }
           appMeta={state.context?.appMeta}
         />
       )
@@ -61,6 +65,15 @@ export default function AuthenticationCoordinator({
         <AuthOtherSignOptions
           appMeta={state.context?.appMeta}
           onBack={() => send({ type: "BACK" })}
+          onSuccess={(authSession: AbstractAuthSession) =>
+            send({ type: "AUTHENTICATED", data: authSession })
+          }
+        />
+      )
+    case state.matches("TwoFA"):
+      return (
+        <Auth2FA
+          appMeta={state.context?.appMeta}
           onSuccess={(authSession: AbstractAuthSession) =>
             send({ type: "AUTHENTICATED", data: authSession })
           }

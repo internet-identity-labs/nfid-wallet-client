@@ -24,6 +24,7 @@ import {
 } from "frontend/integration/internet-identity"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 
+import { passkeyConnector } from "../authentication/auth-selection/passkey-flow/services"
 import { isPasskeyDevice, isRecoveryDevice } from "./helpers"
 import { IDevice, IGroupedDevices } from "./types"
 
@@ -161,6 +162,21 @@ export class SecurityConnector {
     } finally {
       replaceActorIdentity(im, oldIdent!)
     }
+  }
+
+  async toggle2FA(enabled: boolean) {
+    await im.update_2fa(enabled).catch(async (e: any) => {
+      if (e.message.includes("Unauthorised")) {
+        await passkeyConnector.loginWithAllowedPasskey()
+        await im.update_2fa(enabled)
+      } else {
+        toast.error(e.message)
+        throw new Error(`im.update_2fa: ${e.message}`)
+      }
+    })
+
+    if (enabled) toast.success("2FA enabled")
+    else toast.success("2FA disabled")
   }
 }
 

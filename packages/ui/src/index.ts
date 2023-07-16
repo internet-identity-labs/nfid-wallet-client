@@ -24,6 +24,7 @@ export * from "./atoms/badge"
 export * from "./atoms/skeleton"
 export * from "./atoms/sdk-footer/footer"
 export * from "./atoms/info-list-item"
+export * from "./atoms/toggle"
 
 export * from "./molecules/button"
 export * from "./molecules/button/arrow-button"

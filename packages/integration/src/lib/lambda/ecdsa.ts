@@ -182,9 +182,12 @@ export async function ecdsaRegisterNewKeyPair(
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
   }
-  const registerAddressUrl = ic.isLocal
-    ? `/ecdsa_register_address`
-    : AWS_ECDSA_REGISTER_ADDRESS
+
+  const registerAddressUrl = AWS_ECDSA_REGISTER_ADDRESS
+  // const registerAddressUrl = ic.isLocal
+  //   ? `/ecdsa_register_address`
+  //   : AWS_ECDSA_REGISTER_ADDRESS
+
   const response = await fetch(registerAddressUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

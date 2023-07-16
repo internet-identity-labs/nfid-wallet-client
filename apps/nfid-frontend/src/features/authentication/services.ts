@@ -60,5 +60,5 @@ export const checkIf2FAEnabled = async () => {
 }
 
 export const get2FAAuthSession = async () => {
-  return await passkeyConnector.loginWithAllowedPasskey()
+  return await passkeyConnector.loginWithPasskey()
 }

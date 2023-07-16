@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 
 import { Button, IconCmpGoogle, IconCmpPasskey, Input } from "@nfid-frontend/ui"
 
+import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import {
   LoginEventHandler,
@@ -17,6 +18,7 @@ export interface AuthSelectionProps {
   onSelectGoogleAuth: LoginEventHandler
   onSelectEmailAuth: (email: string) => void
   onSelectOtherAuth: () => void
+  onAuthWithPasskey: (data: AbstractAuthSession) => void
   appMeta?: AuthorizingAppMeta
 }
 
@@ -24,6 +26,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectGoogleAuth,
   onSelectEmailAuth,
   onSelectOtherAuth,
+  onAuthWithPasskey,
   appMeta,
 }) => {
   const { register, handleSubmit, formState } = useForm({
@@ -95,13 +98,17 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           type="stroke"
           icon={<IconCmpPasskey />}
           block
-          onClick={() => {
+          onClick={async () => {
             authAbortController.abort("Aborted webauthn manually")
             const abortController = new AbortController()
-            passkeyConnector.loginWithPasskey(abortController.signal, () => {
-              abortController.abort("Aborted loginWithPasskey manually")
-              setAuthAbortController(new AbortController())
-            })
+            const res = await passkeyConnector.loginWithPasskey(
+              abortController.signal,
+              () => {
+                abortController.abort("Aborted loginWithPasskey manually")
+                setAuthAbortController(new AbortController())
+              },
+            )
+            onAuthWithPasskey(res)
           }}
         >
           Continue with a passkey

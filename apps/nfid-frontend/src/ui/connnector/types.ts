@@ -92,7 +92,7 @@ export interface TokenConfig {
   tokenStandard: TokenStandards
   toPresentation: (value?: bigint) => number
   transformAmount: (value: string) => number
-  blockchain: string
+  blockchain: Blockchain
   feeCurrency?: string
   contract?: string
 }

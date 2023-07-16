@@ -1,22 +1,20 @@
 import clsx from "clsx"
 import React, { useMemo, useState } from "react"
-import { generatePath, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 
 import { blockchains } from "@nfid/config"
 
 import { useAccountOptions } from "frontend/apps/identity-manager/profile/assets/use-account-options"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
-import { AssetFilter } from "frontend/ui/connnector/types"
+import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import ArrowRight from "./arrow-right.svg"
 import { ProfileAssetsHeader } from "./header"
-import { ProfileAssetsNFT } from "./nft"
 import Icon from "./transactions.svg"
 
 type Token = {
@@ -26,13 +24,12 @@ type Token = {
   currency: string
   balance?: bigint
   price?: string
-  blockchain: string
+  blockchain: Blockchain
 }
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: Token[]
-  nfts?: UserNonFungibleToken[]
   assetFilter: AssetFilter[]
   setAssetFilter: (value: AssetFilter[]) => void
 }
@@ -40,24 +37,24 @@ interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   onIconClick,
   tokens,
-  nfts,
   assetFilter,
   setAssetFilter,
 }) => {
   const { options } = useAccountOptions()
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
   const navigate = useNavigate()
-  const handleNavigateToTokenDetails = React.useCallback(
-    (token: string, chain: string) => () => {
-      navigate(
-        generatePath(`${ProfileConstants.base}/${ProfileConstants.wallet}`, {
-          token,
-          chain,
-        }),
-      )
+
+  const navigateToTransactions = React.useCallback(
+    (blockchain: Blockchain) => () => {
+      navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
+        state: {
+          blockchain,
+        },
+      })
     },
     [navigate],
   )
+
   console.debug("ProfileAssetsPage", { tokens })
 
   const filteredTokens = useMemo(() => {
@@ -118,10 +115,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 <tr
                   key={`token_${index}`}
                   id={`token_${token.title.replace(/\s+/g, "")}`}
-                  onClick={handleNavigateToTokenDetails(
-                    token.currency,
-                    token.blockchain,
-                  )}
+                  onClick={navigateToTransactions(token.blockchain)}
                   className="border-b border-gray-200 cursor-pointer last:border-b-0 hover:bg-gray-100"
                 >
                   <td className="flex items-center h-16">
@@ -169,10 +163,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               <div
                 key={`token_${index}`}
                 className="flex items-center justify-between h-16"
-                onClick={handleNavigateToTokenDetails(
-                  token.currency,
-                  token.blockchain,
-                )}
+                onClick={navigateToTransactions(token.blockchain)}
               >
                 <div className="flex items-center text-[#0B0E13]">
                   <img
@@ -200,7 +191,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
           </div>
         </div>
       </ProfileContainer>
-      <ProfileAssetsNFT nfts={nfts} />
     </ProfileTemplate>
   )
 }

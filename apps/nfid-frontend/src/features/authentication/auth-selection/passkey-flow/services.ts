@@ -193,10 +193,9 @@ export class PasskeyConnector {
     })
 
     return {
+      anchor: (await fetchProfile()).anchor,
+      delegationIdentity: delegationIdentity,
       identity: multiIdent._actualIdentity!,
-      delegationIdentity,
-      chain,
-      sessionKey,
     }
   }
 
@@ -215,7 +214,7 @@ export class PasskeyConnector {
       allowedPasskeys.map(async (p) => await this.getPasskeyByCredentialID(p!)),
     )
 
-    const res = await this.loginWithPasskey(
+    return await this.loginWithPasskey(
       undefined,
       undefined,
       passkeysMetadata.map((p) => ({
@@ -223,12 +222,6 @@ export class PasskeyConnector {
         pubkey: wrapDER(p.publicKey, DER_COSE_OID),
       })),
     )
-
-    return {
-      anchor: (await fetchProfile()).anchor,
-      delegationIdentity: res.delegationIdentity,
-      identity: res.identity,
-    }
   }
 
   async initPasskeyAutocomplete(signal?: AbortSignal) {

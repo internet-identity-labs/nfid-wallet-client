@@ -48,6 +48,9 @@ export default function AuthenticationCoordinator({
               type: "AUTH_WITH_OTHER",
             })
           }
+          onAuthWithPasskey={(authSession: AbstractAuthSession) =>
+            send({ type: "AUTHENTICATED", data: authSession })
+          }
           appMeta={state.context?.appMeta}
         />
       )

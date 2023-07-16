@@ -70,6 +70,10 @@ const AuthenticationMachine =
             AUTH_WITH_OTHER: {
               target: "OtherSignOptions",
             },
+            AUTHENTICATED: {
+              actions: "assignAuthSession",
+              target: "End",
+            },
           },
         },
         AuthWithGoogle: {

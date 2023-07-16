@@ -26,8 +26,10 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
 
   const onDelete = useCallback(async () => {
     if (device.isLegacyDevice) {
-      handleWithLoading(() =>
-        removeAccessPointFacade(BigInt(profile?.anchor!), device.principal),
+      handleWithLoading(
+        () =>
+          removeAccessPointFacade(BigInt(profile?.anchor!), device.principal),
+        () => setIsModalVisible(false),
       )
     } else handleWithLoading(() => removeAccessPoint(device.principal))
   }, [

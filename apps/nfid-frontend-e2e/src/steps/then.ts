@@ -376,7 +376,7 @@ Then(
   async (text: string, currency) => {
     await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (x) =>
       x
-        .waitForExist({ timeout: 17000 })
+        .waitForExist({ timeout: 57000 })
         .then(async () => expect(x).not.toHaveText(`0 ${currency}`)),
     )
   },

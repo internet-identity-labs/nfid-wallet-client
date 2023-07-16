@@ -11,7 +11,6 @@ import {
 } from "src/ui/connnector/types"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
-import { authState } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class BtcAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
@@ -21,19 +20,6 @@ export class BtcAssetConnector extends FungibleAssetConnector<AssetNativeConfig>
     return btcAsset.getRootAccount(identity[0], IconSvgBTC).then((token) => {
       return [toNativeTokenConfig(this.config, token)]
     })
-  }
-
-  protected getIdentity = async (
-    filterPrincipals?: string[],
-  ): Promise<DelegationIdentity[]> => {
-    const { delegationIdentity } = authState.get()
-    if (!delegationIdentity) {
-      throw Error("Delegation identity error")
-    }
-    return !filterPrincipals?.length ||
-      filterPrincipals?.includes(delegationIdentity.getPrincipal().toString())
-      ? [delegationIdentity]
-      : []
   }
 }
 

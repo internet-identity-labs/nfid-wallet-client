@@ -35,6 +35,7 @@ interface ITransferFT {
   preselectedTokenCurrency: string
   preselectedAccountAddress: string
   preselectedTokenBlockchain?: string
+  preselectedTransferDestination?: string
   onTransferPromise: (data: ITransferSuccess) => void
 }
 
@@ -42,6 +43,7 @@ export const TransferFT = ({
   preselectedTokenCurrency,
   preselectedAccountAddress = "",
   preselectedTokenBlockchain = Blockchain.IC,
+  preselectedTransferDestination,
   onTransferPromise,
 }: ITransferFT) => {
   const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
@@ -126,7 +128,7 @@ export const TransferFT = ({
     mode: "all",
     defaultValues: {
       amount: undefined as any as number,
-      to: "",
+      to: preselectedTransferDestination ?? "",
     },
   })
 
@@ -332,6 +334,7 @@ export const TransferFT = ({
             setValue("to", value)
             calculateFee()
           }}
+          preselectedValue={preselectedTransferDestination}
         />
         <div>
           <Label>Network fee</Label>

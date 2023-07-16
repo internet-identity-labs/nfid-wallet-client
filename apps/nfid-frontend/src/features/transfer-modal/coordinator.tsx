@@ -48,6 +48,7 @@ export const TransferModalCoordinator = () => {
             preselectedTokenCurrency={state.context.tokenCurrency}
             preselectedAccountAddress={state.context.sourceWalletAddress}
             preselectedTokenBlockchain={state.context.tokenBlockchain}
+            preselectedTransferDestination={state.context.receiverWallet}
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }

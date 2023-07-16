@@ -1,13 +1,10 @@
 import clsx from "clsx"
 import React from "react"
 
-
 import { SDKFooter } from "@nfid-frontend/ui"
 
 import NFIDAuthCoordinator from "frontend/features/authentication/nfid/coordinator"
 import { ElementProps } from "frontend/types/react"
-
-import Group from "./assets/Group.svg"
 
 interface HeroRightSideProps extends ElementProps<HTMLDivElement> {
   isAuthenticated?: boolean
@@ -27,7 +24,6 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
           "mb-[20vh] sm:mb-[60vh] sm:max-w-[450px]",
           "min-h-[400px]",
           "md:mt-[4rem]",
-          !!isAuthenticated && "!hidden",
         )}
       >
         <div className="relative z-10 flex flex-col justify-between w-full h-[580px] p-5">
@@ -35,12 +31,6 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
           <SDKFooter />
         </div>
       </div>
-
-      {!!isAuthenticated && (
-        <div className="mb-[75px] sm:mb-[87px] z-10 relative">
-          <img src={Group} alt="Group" />
-        </div>
-      )}
     </>
   )
 }

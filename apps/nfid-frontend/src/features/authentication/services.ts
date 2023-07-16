@@ -3,6 +3,8 @@ import { ThirdPartyAuthSession, fetchDelegate } from "@nfid/integration"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
+import { passkeyConnector } from "./auth-selection/passkey-flow/services"
+
 export async function getLegacyThirdPartyAuthSession(
   authRequest: AuthorizationRequest,
   selectedPersonaId?: string,
@@ -50,4 +52,13 @@ export function getScope(
     : `https://${host}`
 
   return `${accountId ? `${accountId}@` : ""}${hostWithProtocol}`
+}
+
+export const checkIf2FAEnabled = async () => {
+  const profile = await fetchProfile()
+  return !!profile?.is2fa
+}
+
+export const get2FAAuthSession = async () => {
+  return await passkeyConnector.loginWithPasskey()
 }

@@ -13,6 +13,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.checkIf2FAEnabled": {
+      type: "done.invoke.checkIf2FAEnabled"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "error.platform.AuthWithEmailMachine": {
       type: "error.platform.AuthWithEmailMachine"
       data: unknown
@@ -21,11 +26,16 @@ export interface Typegen0 {
       type: "error.platform.AuthWithGoogleMachine"
       data: unknown
     }
+    "error.platform.checkIf2FAEnabled": {
+      type: "error.platform.checkIf2FAEnabled"
+      data: unknown
+    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
+    checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
   }
   missingImplementations: {
     actions: never
@@ -42,12 +52,16 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    is2FAEnabled: "done.invoke.checkIf2FAEnabled"
     isExistingAccount: "done.invoke.AuthWithGoogleMachine"
     isReturn: "done.invoke.AuthWithEmailMachine"
   }
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
+    checkIf2FAEnabled:
+      | "done.invoke.AuthWithEmailMachine"
+      | "done.invoke.AuthWithGoogleMachine"
   }
   matchesStates:
     | "AuthSelection"
@@ -55,5 +69,7 @@ export interface Typegen0 {
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"
+    | "TwoFA"
+    | "check2FA"
   tags: never
 }

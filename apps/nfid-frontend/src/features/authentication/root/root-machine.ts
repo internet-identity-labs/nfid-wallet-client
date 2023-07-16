@@ -10,6 +10,8 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
+import { checkIf2FAEnabled } from "../services"
+
 export interface AuthenticationContext {
   verificationEmail?: string
   authRequest?: AuthorizationRequest
@@ -31,10 +33,14 @@ export type Events =
       type: "done.invoke.AuthWithEmailMachine"
       data: AbstractAuthSession
     }
+  | {
+      type: "done.invoke.checkIf2FAEnabled"
+      data: boolean
+    }
   | { type: "AUTH_WITH_EMAIL"; data: string }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "AUTH_WITH_OTHER" }
-  | { type: "AUTHENTICATED"; data: AbstractAuthSession }
+  | { type: "AUTHENTICATED"; data?: AbstractAuthSession }
   | { type: "BACK" }
   | { type: "RETRY" }
 
@@ -77,7 +83,7 @@ const AuthenticationMachine =
               {
                 cond: "isExistingAccount",
                 actions: "assignAuthSession",
-                target: "End",
+                target: "check2FA",
               },
               {
                 actions: "assignAuthSession",
@@ -99,7 +105,7 @@ const AuthenticationMachine =
               { cond: "isReturn", target: "AuthSelection" },
               {
                 actions: "assignAuthSession",
-                target: "End",
+                target: "check2FA",
               },
             ],
           },
@@ -110,6 +116,23 @@ const AuthenticationMachine =
             AUTHENTICATED: {
               target: "End",
               actions: "assignAuthSession",
+            },
+          },
+        },
+        check2FA: {
+          invoke: {
+            src: "checkIf2FAEnabled",
+            id: "checkIf2FAEnabled",
+            onDone: [
+              { cond: "is2FAEnabled", target: "TwoFA" },
+              { target: "End" },
+            ],
+          },
+        },
+        TwoFA: {
+          on: {
+            AUTHENTICATED: {
+              target: "End",
             },
           },
         },
@@ -125,6 +148,7 @@ const AuthenticationMachine =
           return !!event?.data?.anchor
         },
         isReturn: (context, event) => !event.data,
+        is2FAEnabled: (context, event) => event.data,
       },
       actions: {
         assignAuthSession: assign((_, event) => ({
@@ -137,6 +161,7 @@ const AuthenticationMachine =
       services: {
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
+        checkIf2FAEnabled,
       },
     },
   )

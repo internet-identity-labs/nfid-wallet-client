@@ -20,6 +20,7 @@ import checkDimension from "./support/check/checkDimension.js"
 import checkEqualsText from "./support/check/checkEqualsText.js"
 import checkFocus from "./support/check/checkFocus.js"
 import checkFontProperty from "./support/check/checkFontProperty.js"
+import checkIfElementExists from "./support/check/checkIfElementExists.js"
 import checkInURLPath from "./support/check/checkInURLPath.js"
 import checkIsEmpty from "./support/check/checkIsEmpty.js"
 import checkIsOpenedInNewWindow from "./support/check/checkIsOpenedInNewWindow.js"
@@ -39,7 +40,6 @@ import compareText from "./support/check/compareText.js"
 import isVisible from "./support/check/isDisplayed.js"
 import isEnabled from "./support/check/isEnabled.js"
 import isExisting from "./support/check/isExisting.js"
-import checkIfElementExists from "./support/check/checkIfElementExists.js"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -66,9 +66,9 @@ Then(/^Policy is displayed on the policies list$/, async () => {
 })
 
 Then(/^NFID number is not zero$/, async () => {
-  await browser.waitUntil(async () => await Profile.getNFIDnumber() !== "0", {
+  await browser.waitUntil(async () => (await Profile.getNFIDnumber()) !== "0", {
     timeout: 10000,
-    timeoutMsg: "Profile NFID number is 0"
+    timeoutMsg: "Profile NFID number is 0",
   })
 })
 
@@ -232,7 +232,7 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
 
 Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
   await $(`#token_${assetLabel.replace(/\s/g, "")}`).waitForDisplayed({
-    timeout: 17000,
+    timeout: 15000,
   })
 })
 
@@ -521,8 +521,8 @@ Then(/^Account ID is ([^"]*)/, async (principal: string) => {
   let address = await Assets.getAccountId(true)
   expect(
     (await address.firstAddressPart.getText()) +
-    "..." +
-    (await address.secondAddressElement.getText()),
+      "..." +
+      (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -530,8 +530,8 @@ Then(/^Principal is ([^"]*)/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-    "..." +
-    (await address.secondAddressElement.getText()),
+      "..." +
+      (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -746,7 +746,7 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
 })
 
 Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
-  ; (await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
+  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
 })
 
 Then(/^Open collectibles page$/, async () => {

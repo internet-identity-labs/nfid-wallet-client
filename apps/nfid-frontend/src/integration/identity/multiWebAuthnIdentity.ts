@@ -7,7 +7,12 @@
  *   then we know which one the user is actually using
  * - It doesn't support creating credentials; use `WebAuthnIdentity` for that
  */
-import { PublicKey, Signature, SignIdentity } from "@dfinity/agent"
+import {
+  DerEncodedPublicKey,
+  PublicKey,
+  Signature,
+  SignIdentity,
+} from "@dfinity/agent"
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
@@ -20,7 +25,7 @@ import { passkeyConnector } from "frontend/features/authentication/auth-selectio
 
 export type CredentialId = ArrayBuffer
 export type CredentialData = {
-  pubkey: ArrayBuffer // must be Der encoded
+  pubkey: DerEncodedPublicKey
   credentialId: CredentialId
 }
 

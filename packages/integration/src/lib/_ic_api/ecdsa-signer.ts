@@ -15,7 +15,7 @@ export const idlFactory = ({ IDL }: any) => {
   const Result_1 = IDL.Variant({ Ok: SignatureReply, Err: IDL.Text })
   return IDL.Service({
     add_kp: IDL.Func([KeyPair], [], []),
-    get_kp: IDL.Func([], [KeyPairResponse], ["query"]),
+    get_kp: IDL.Func([], [KeyPairResponse], []),
     public_key: IDL.Func([], [Result], []),
     sign: IDL.Func([IDL.Vec(IDL.Nat8)], [Result_1], []),
     prepare_signature: IDL.Func([IDL.Vec(IDL.Nat8)], [IDL.Text], []),

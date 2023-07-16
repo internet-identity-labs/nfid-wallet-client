@@ -7,9 +7,6 @@ import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.
 import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 
-const ProfileTokenWalletsDetailPage = React.lazy(
-  () => import("./internet-computer-wallets"),
-)
 const ProfileAssets = React.lazy(() => import("./assets"))
 const ProfileSecurity = React.lazy(() => import("../../../features/security"))
 const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
@@ -32,7 +29,6 @@ export const ProfileConstants = {
   nftDetails: ":tokenId",
   assets: "assets",
   collectibles: "collectibles",
-  wallet: ":token/wallet/:chain",
   security: "security",
   transactions: "transactions",
   copyRecoveryPhrase: "copy-recovery-phrase",
@@ -58,14 +54,6 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <ProfileCollectiblesPage />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={ProfileConstants.wallet}
-      element={
-        <AuthWrapper>
-          <ProfileTokenWalletsDetailPage />
         </AuthWrapper>
       }
     />

@@ -92,7 +92,7 @@ const ProfileTransactions = () => {
         )
       ? true
       : false
-  }, [selectedAccountFilters, wallets])
+  }, [location.state?.blockchain, selectedAccountFilters, wallets])
 
   const sendTransactions: TransactionRow[] = useMemo(() => {
     const ICTransactions = selectSendTransactions({

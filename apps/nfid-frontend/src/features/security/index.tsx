@@ -127,6 +127,9 @@ const ProfileSecurityPage = () => {
         >
           {imDevices?.passkeys.map((device, key) => (
             <PasskeyDeviceItem
+              showLastPasskeyWarning={
+                imDevices.passkeys.length < 2 && !!profile?.is2fa
+              }
               device={device}
               key={`passkey_device_${key}`}
               handleWithLoading={handleWithLoading}

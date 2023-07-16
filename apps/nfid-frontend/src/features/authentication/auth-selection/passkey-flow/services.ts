@@ -219,7 +219,7 @@ export class PasskeyConnector {
       undefined,
       passkeysMetadata.map((p) => ({
         credentialId: p.credentialId,
-        pubkey: wrapDER(p.publicKey, DER_COSE_OID),
+        pubkey: wrapDER(p.publicKey, DER_COSE_OID) as any,
       })),
     )
   }

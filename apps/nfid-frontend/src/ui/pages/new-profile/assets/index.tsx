@@ -9,10 +9,7 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
-import {
-  MigrationWarning,
-  useMigrationTransfer,
-} from "frontend/ui/molecules/migration-warning"
+import { MigrationWarning } from "frontend/ui/molecules/migration-warning"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -45,9 +42,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   const { options } = useAccountOptions()
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
   const navigate = useNavigate()
-
-  const { showMigrationWarning, handleNavigateToTransfer } =
-    useMigrationTransfer()
 
   const navigateToTransactions = React.useCallback(
     (blockchain: Blockchain) => () => {
@@ -89,10 +83,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       onIconClick={onIconClick}
       className="overflow-inherit"
     >
-      <MigrationWarning
-        showUpgradeWarning={showMigrationWarning}
-        onTransferClick={handleNavigateToTransfer}
-      />
+      <MigrationWarning />
       <ProfileContainer
         title={
           <ProfileAssetsHeader

@@ -12,11 +12,6 @@ import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 import { getICPublicDelegation } from "frontend/ui/connnector/fungible-asset-screen/ic/hooks/use-icp"
 
-type MigrationWarningProps = {
-  showUpgradeWarning: boolean
-  onTransferClick: () => void
-}
-
 export const useMigrationTransfer = () => {
   const { profile } = useProfile()
 
@@ -28,7 +23,7 @@ export const useMigrationTransfer = () => {
 
   const [, send] = useActor(globalServices.transferService)
 
-  const handleNavigateToTransfer = React.useCallback(async () => {
+  const onTransferClick = React.useCallback(async () => {
     if (!publicDelegation)
       return toast.warn("Please wait a few seconds and try again.")
 
@@ -43,16 +38,14 @@ export const useMigrationTransfer = () => {
   }, [publicDelegation, send])
 
   return {
-    handleNavigateToTransfer,
+    onTransferClick,
     showMigrationWarning: profile?.wallet === RootWallet.II,
   }
 }
 
-export const MigrationWarning: React.FC<MigrationWarningProps> = ({
-  showUpgradeWarning,
-  onTransferClick,
-}) => {
-  if (!showUpgradeWarning) return null
+export const MigrationWarning: React.FC = () => {
+  const { showMigrationWarning, onTransferClick } = useMigrationTransfer()
+  if (!showMigrationWarning) return null
 
   return (
     <div

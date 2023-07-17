@@ -28,6 +28,7 @@ import {
 
 import { getLegacyThirdPartyAuthSession } from "../../services"
 import { AuthAppMeta } from "../../ui/app-meta"
+import { PublicProfileButton } from "../public-profile-button"
 import { getPublicProfile } from "./services"
 
 export interface IAuthChooseAccount {
@@ -89,8 +90,7 @@ export const AuthChooseAccount = ({
     }
   }, [authRequest.sessionPublicKey, handleSelectAccount])
 
-  if (isLoading || isAnonymousLoading || !publicProfile)
-    return <BlurredLoader isLoading />
+  if (isLoading || isAnonymousLoading) return <BlurredLoader isLoading />
 
   return (
     <>
@@ -124,24 +124,7 @@ export const AuthChooseAccount = ({
         </TooltipProvider>
       </div>
       <div className="w-full space-y-2.5 my-9">
-        <div
-          className={clsx(
-            "border border-gray-100 bg-gray-50",
-            "px-2.5 h-[70px] space-x-2.5 rounded-md",
-            "flex items-center w-full",
-          )}
-        >
-          <img alt="user" src={User} className="w-10 h-10 shrink-0" />
-          <div className="flex items-center justify-between w-full text-sm text-gray-400">
-            <div className="">{publicProfile.label}</div>
-            <div className="flex flex-col">
-              <div className="text-right">{publicProfile.balance} ICP</div>
-              <div className="text-xs text-right">
-                {publicProfile.balanceUSD}
-              </div>
-            </div>
-          </div>
-        </div>
+        <PublicProfileButton />
         {legacyAnonymousProfiles?.map((acc) => (
           <div
             key={acc.label}

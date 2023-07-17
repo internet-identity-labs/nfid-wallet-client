@@ -73,10 +73,9 @@ jobs:
       - name: NFID FRONTEND | deploy
         run: |
 
-          npx env-cmd -f .env.staging nx run-many --target=build --configuration=staging --projects=nfid-demo,nfid-frontend
+          npx env-cmd -f .env.staging nx build nfid-demo
 
           dfx identity use action
-          dfx deploy --network dev nfid-frontend --no-wallet
           dfx deploy --network dev nfid-demo --no-wallet
 
         env:

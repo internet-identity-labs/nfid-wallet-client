@@ -53,6 +53,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
     })
     send({ type: "CHANGE_DIRECTION", data: "send" })
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+    send({ type: "ASSIGN_VAULTS", data: true })
 
     send({ type: "SHOW" })
   }, [address, send, wallets])
@@ -61,6 +62,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
     send({ type: "ASSIGN_SELECTED_FT", data: allTokens[0] })
     send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
     send({ type: "CHANGE_DIRECTION", data: "receive" })
+    send({ type: "ASSIGN_VAULTS", data: true })
 
     send({ type: "SHOW" })
   }, [address, send, allTokens])

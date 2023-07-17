@@ -90,7 +90,11 @@ export class DIP20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 15 })
-  async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
+  async getAccountsOptions({
+    currency,
+  }: {
+    currency: string
+  }): Promise<IGroupedOptions[]> {
     const { symbol } = await this.getTokenMetadata(currency ?? "")
     const principals = await this.getAllPrincipals(true)
     const applications = await this.getApplications()

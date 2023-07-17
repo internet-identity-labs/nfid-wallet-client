@@ -6,11 +6,19 @@ import { isHex } from "packages/utils/src/lib/validation"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
-import { getBalance, getWalletName } from "@nfid/integration"
+import {
+  getBalance,
+  getVaults,
+  getWalletName,
+  getWallets,
+} from "@nfid/integration"
 import { transfer as submitICP } from "@nfid/integration/token/icp"
 
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
+import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
 import { PRINCIPAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
+import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import {
   e8sICPToString,
   stringICPtoE8s,
@@ -30,8 +38,38 @@ import {
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
 > extends TransferModalConnector<ConfigType> {
-  @Cache(connectorCache, { ttl: 15 })
-  async getAccountsOptions(): Promise<IGroupedOptions[]> {
+  @Cache(connectorCache, { ttl: 5 })
+  async getAccountsOptions({
+    currency,
+    isVault,
+  }: {
+    currency?: string
+    isVault?: boolean
+  }): Promise<IGroupedOptions[]> {
+    if (isVault) {
+      const rate = await getExchangeRate()
+      const allVaults = await getVaults()
+      const vaultWallets = await Promise.all(
+        allVaults.map((v) => v.id).map(async (v) => await getWallets(v)),
+      )
+
+      const walletsWithBalances = await Promise.all(
+        vaultWallets.map(async (wallets) => fetchVaultWalletsBalances(wallets)),
+      )
+
+      return walletsWithBalances.map((vaultWallets) => ({
+        label:
+          allVaults.find((v) => v.id === vaultWallets[0].vaults[0])?.name ?? "",
+        options: vaultWallets.map((wallet) => ({
+          title: wallet.name ?? "",
+          subTitle: truncateString(wallet.address ?? "", 6, 4),
+          innerTitle: String(wallet.balance?.ICP) + " ICP",
+          innerSubtitle: toUSD(Number(wallet.balance?.ICP), rate),
+          value: wallet.address ?? "",
+        })),
+      }))
+    }
+
     const principals = await this.getAllPrincipals(true)
     const applications = await this.getApplications()
 
@@ -72,9 +110,12 @@ export abstract class ICMTransferConnector<
   }
 
   @Cache(connectorCache, { ttl: 15 })
-  async getBalance(principalId: string): Promise<TokenBalance> {
-    const address = principalToAddress(Principal.fromText(principalId))
-    const balance = await getBalance(address)
+  async getBalance(address: string): Promise<TokenBalance> {
+    const addressVerified =
+      address.length === PRINCIPAL_LENGTH
+        ? principalToAddress(Principal.fromText(address))
+        : address
+    const balance = await getBalance(addressVerified)
 
     return Promise.resolve({
       balance: e8sICPToString(Number(balance)),

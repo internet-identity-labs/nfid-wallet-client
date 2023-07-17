@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 
-import { IconCmpSearch, Image } from "@nfid-frontend/ui"
+import { IconCmpSearch } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow, IconCmpInfo, Label, Tooltip } from "@nfid-frontend/ui"
 
@@ -102,7 +102,9 @@ export const ChooseModal = ({
       {type === "input" ? (
         <InputTrigger
           placeholder={placeholder}
-          onShowModal={() => setIsModalVisible(true)}
+          onShowModal={
+            optionGroups.length ? () => setIsModalVisible(true) : undefined
+          }
           onClearValue={resetValue}
           selectedOption={selectedOption}
           errorText={errorText}

@@ -10,6 +10,7 @@ import { Blockchain } from "frontend/ui/connnector/types"
 export const useAccountsOptions = (
   token: TokenStandards,
   blockchain: Blockchain,
+  isVaultWallets?: boolean,
 ) => {
   const { data: accountsOptions, ...rest } = useSWR<IGroupedOptions[]>(
     [token, blockchain, "accountsOptions"],
@@ -20,7 +21,7 @@ export const useAccountsOptions = (
           tokenStandard: token,
           blockchain: blockchain,
         })
-      ).getAccountsOptions(),
+      ).getAccountsOptions({ isVault: true }),
   )
 
   return { data: accountsOptions ?? [], ...rest }

@@ -21,6 +21,7 @@ export type TransferMachineContext = {
   tokenStandard: string
   tokenCurrency: string
   tokenBlockchain: Blockchain
+  isOpenedFromVaults: boolean
 }
 
 export type ErrorEvents =
@@ -47,6 +48,7 @@ export type Events =
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
   | { type: "ON_TRANSFER_PROMISE"; data: ITransferSuccess }
+  | { type: "ASSIGN_VAULTS"; data: boolean }
 
 type Services = {
   transferFT: {
@@ -75,6 +77,7 @@ export const transferMachine = createMachine(
       tokenStandard: TokenStandards.ICP,
       tokenCurrency: TokenStandards.ICP,
       tokenBlockchain: Blockchain.IC,
+      isOpenedFromVaults: false,
     },
     id: "TransferMachine",
     initial: "Hidden",
@@ -104,6 +107,9 @@ export const transferMachine = createMachine(
       },
       ASSIGN_AMOUNT: {
         actions: "assignAmount",
+      },
+      ASSIGN_VAULTS: {
+        actions: "assignIsVault",
       },
       HIDE: {
         target: "#TransferMachine.Hidden",
@@ -212,6 +218,9 @@ export const transferMachine = createMachine(
       })),
       assignTokenStandard: assign((_, event) => ({
         tokenStandard: event?.data,
+      })),
+      assignIsVault: assign((_, event) => ({
+        isOpenedFromVaults: event?.data,
       })),
       assignError: assign({
         // @ts-ignore

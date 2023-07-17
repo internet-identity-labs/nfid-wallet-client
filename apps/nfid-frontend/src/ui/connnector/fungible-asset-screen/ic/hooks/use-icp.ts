@@ -5,7 +5,7 @@ import { stringICPtoE8s } from "src/integration/wallet/utils"
 import { AssetFilter, Blockchain, TokenConfig } from "src/ui/connnector/types"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
-import { authState } from "@nfid/integration"
+import { accessList, authState } from "@nfid/integration"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -45,9 +45,11 @@ export const useICTokens = (assetFilter: AssetFilter[]): TokenConfig[] => {
 export const getICPublicDelegation = async () => {
   const { delegationIdentity } = authState.get()
 
-  const publicDelegation = await getGlobalKeys(delegationIdentity!, Chain.IC, [
-    "zhr63-daaaa-aaaap-qbh4q-cai",
-  ])
+  const publicDelegation = await getGlobalKeys(
+    delegationIdentity!,
+    Chain.IC,
+    accessList,
+  )
 
   return publicDelegation
 }

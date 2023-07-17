@@ -77,10 +77,10 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
   )
 
   const nfts = React.useMemo(() => {
-    if (!data || !applicationsMeta) return []
+    if (!applicationsMeta) return []
 
     return data
-      .map(({ principal, account, collection, index, ...rest }) => ({
+      ?.map(({ principal, account, collection, index, ...rest }) => ({
         principal,
         account,
         walletName: getWalletName(

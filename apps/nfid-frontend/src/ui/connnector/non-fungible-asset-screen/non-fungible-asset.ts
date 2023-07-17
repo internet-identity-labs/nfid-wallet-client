@@ -53,6 +53,7 @@ export abstract class NonFungibleAssetConnector<T extends NftConnectorConfig>
     if (!delegationIdentity) {
       throw Error("Delegation identity error")
     }
+
     return !filterPrincipals?.length ||
       filterPrincipals?.includes(delegationIdentity.getPrincipal().toString())
       ? [delegationIdentity]

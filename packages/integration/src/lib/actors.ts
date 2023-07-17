@@ -49,7 +49,6 @@ const canisterConfig = [
   ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
   ["BtcSigner", BTC_SIGNER_CANISTER_ID],
-  ["ICSigner", "zhr63-daaaa-aaaap-qbh4q-cai"],
 ]
 
 export const accessList = [

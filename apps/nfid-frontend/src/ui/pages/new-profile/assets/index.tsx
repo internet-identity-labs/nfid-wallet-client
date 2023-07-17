@@ -1,21 +1,18 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import React, { useContext, useMemo, useState } from "react"
+import React, { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
-import useSWR from "swr"
 
-import { IconCmpWarning } from "@nfid-frontend/ui"
 import { blockchains } from "@nfid/config"
 
 import { useAccountOptions } from "frontend/apps/identity-manager/profile/assets/use-account-options"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { useProfile } from "frontend/integration/identity-manager/queries"
-import { ProfileContext } from "frontend/provider"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
-import { getICPublicDelegation } from "frontend/ui/connnector/fungible-asset-screen/ic/hooks/use-icp"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
+import {
+  MigrationWarning,
+  useMigrationTransfer,
+} from "frontend/ui/molecules/migration-warning"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -45,32 +42,12 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   assetFilter,
   setAssetFilter,
 }) => {
-  const { profile } = useProfile()
   const { options } = useAccountOptions()
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
   const navigate = useNavigate()
 
-  const { data: publicDelegation } = useSWR(
-    "ICPublicDelegation",
-    getICPublicDelegation,
-  )
-  const globalServices = useContext(ProfileContext)
-
-  const [, send] = useActor(globalServices.transferService)
-
-  const handleNavigateToTransfer = React.useCallback(async () => {
-    if (!publicDelegation)
-      return toast.warn("Please wait a few seconds and try again.")
-
-    send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
-    send({ type: "CHANGE_DIRECTION", data: "send" })
-    send({
-      type: "ASSIGN_RECEIVER_WALLET",
-      data: publicDelegation.getPrincipal().toText(),
-    })
-
-    send({ type: "SHOW" })
-  }, [publicDelegation, send])
+  const { showMigrationWarning, handleNavigateToTransfer } =
+    useMigrationTransfer()
 
   const navigateToTransactions = React.useCallback(
     (blockchain: Blockchain) => () => {
@@ -112,31 +89,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       onIconClick={onIconClick}
       className="overflow-inherit"
     >
-      {profile?.wallet === "NFID" && (
-        <div
-          className={clsx(
-            "bg-orange-50 rounded-xl flex space-x-5 p-[30px] text-orange-900",
-            "mb-[30px]",
-          )}
-        >
-          <IconCmpWarning className="w-[22px] h-[22px] shrink-0" />
-          <div className="text-sm">
-            <p className="font-bold mb-2.5">NFID upgrade</p>
-            <p className="leading-[22px]">
-              Starting September 1, 2023, assets from external applications will
-              not be displayed in NFID. To manage those assets in NFID, transfer
-              them to your <b>ICP address</b>. Otherwise, you will only have
-              access through the application’s website.
-            </p>
-            <p
-              onClick={handleNavigateToTransfer}
-              className="mt-4 font-semibold cursor-pointer text-blue"
-            >
-              Transfer assets to my ICP address
-            </p>
-          </div>
-        </div>
-      )}
+      <MigrationWarning
+        showUpgradeWarning={showMigrationWarning}
+        onTransferClick={handleNavigateToTransfer}
+      />
       <ProfileContainer
         title={
           <ProfileAssetsHeader

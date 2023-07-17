@@ -18,7 +18,7 @@ export const getPublicProfile = async (): Promise<{
   if (!delegationIdentity) throw new Error("No identity")
 
   const publicDelegation = await getGlobalKeys(delegationIdentity, Chain.IC, [
-    "zhr63-daaaa-aaaap-qbh4q-cai",
+    "nux62-yqaaa-aaaak-ae2pq-cai",
   ])
 
   const principal = publicDelegation.getPrincipal()

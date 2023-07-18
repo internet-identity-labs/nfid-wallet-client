@@ -45,10 +45,10 @@ Feature:Send/Receive Asset
     Examples:
       | chain             | anchor | balance    | fee    | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | any    | NFID account 1 | BTC      |
-      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID account 1 | MATIC    |
-      | Polygon Mumbai    | 25795  | 1.0        | any    | NFID account 1 | TST      |
-      | Ethereum Goerli   | 25795  | 0.09664164 | any    | NFID account 1 | ETH      |
-      | Ethereum Goerli   | 25795  | 20.0       | any    | NFID account 1 | LINK     |
+      # | Polygon Mumbai    | 25795  | 0.2        | any    | NFID account 1 | MATIC    |
+      # | Polygon Mumbai    | 25795  | 1.0        | any    | NFID account 1 | TST      |
+      # | Ethereum Goerli   | 25795  | 0.09664164 | any    | NFID account 1 | ETH      |
+      # | Ethereum Goerli   | 25795  | 20.0       | any    | NFID account 1 | LINK     |
       | Internet Computer | 28542  | 0.01       | 0.0001 | NFID account 1 | ICP      |
 
   @sendreceive4

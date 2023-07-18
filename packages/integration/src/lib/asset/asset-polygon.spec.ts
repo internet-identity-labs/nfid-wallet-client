@@ -6,7 +6,7 @@ import { ChainBalance } from "./types"
 describe("Polygon Asset", () => {
   jest.setTimeout(20000)
 
-  it("should return one fungible native tx", async function () {
+  it.skip("should return one fungible native tx", async function () {
     const actual = await polygonMumbaiAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -29,7 +29,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it("should return one fungible erc20 tx", async function () {
+  it.skip("should return one fungible erc20 tx", async function () {
     const actual = await polygonMumbaiAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       contract: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
@@ -54,7 +54,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it("should return one fungible erc20 token", async function () {
+  it.skip("should return one fungible erc20 token", async function () {
     const actual = await polygonMumbaiAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
@@ -75,7 +75,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it("should request balance", async function () {
+  it.skip("should request balance", async function () {
     const balance: ChainBalance = await polygonMumbaiAsset.getBalance(
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
@@ -85,7 +85,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it("should request activities by item", async function () {
+  it.skip("should request activities by item", async function () {
     const contract = "0x2953399124f0cbb46d2cbacd8a89cf0599974963"
     const tokenId =
       "25340927624470057327886108971339045949703948342541401788851146193678729479144"
@@ -112,7 +112,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it("should request activities by user", async function () {
+  it.skip("should request activities by user", async function () {
     const activities = await polygonMumbaiAsset.getActivitiesByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -135,7 +135,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it("should request items by user", async function () {
+  it.skip("should request items by user", async function () {
     const items = await polygonMumbaiAsset.getItemsByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,

@@ -16,11 +16,13 @@ import { DeletePasskey } from "../passkey/remove-passkey"
 import { IDevice } from "../types"
 
 export interface PasskeyDeviceItemProps {
+  showLastPasskeyWarning: boolean
   device: IDevice
   handleWithLoading: IHandleWithLoading
 }
 
 export const PasskeyDeviceItem = ({
+  showLastPasskeyWarning,
   device,
   handleWithLoading,
 }: PasskeyDeviceItemProps) => {
@@ -87,6 +89,7 @@ export const PasskeyDeviceItem = ({
             <DeletePasskey
               handleWithLoading={handleWithLoading}
               device={device}
+              showLastPasskeyWarning={showLastPasskeyWarning}
             >
               <div
                 className={clsx(

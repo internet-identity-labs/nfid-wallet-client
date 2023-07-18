@@ -56,7 +56,11 @@ export class PolygonMumbaiERC20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
+  async getAccountsOptions({
+    currency,
+  }: {
+    currency?: string
+  }): Promise<IGroupedOptions[]> {
     const identity = await this.getIdentity()
     const address = await this.getAddress("", identity)
     const balance = await this.getBalance(currency)

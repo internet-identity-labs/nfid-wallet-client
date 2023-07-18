@@ -45,12 +45,15 @@ export const TransferModalCoordinator = () => {
       case state.matches("SendMachine.SendFT"):
         return (
           <TransferFT
+            isVault={state.context.isOpenedFromVaults}
             preselectedTokenCurrency={state.context.tokenCurrency}
             preselectedAccountAddress={state.context.sourceWalletAddress}
             preselectedTokenBlockchain={state.context.tokenBlockchain}
+            preselectedTransferDestination={state.context.receiverWallet}
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
+            onVaultTransfer={() => send("HIDE")}
           />
         )
       case state.matches("SendMachine.SendNFT"):
@@ -65,6 +68,7 @@ export const TransferModalCoordinator = () => {
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive
+            isVault={state.context.isOpenedFromVaults}
             preselectedTokenStandard={state.context.tokenStandard}
             preselectedAccountAddress={state.context.sourceWalletAddress}
             preselectedTokenBlockchain={state.context.tokenBlockchain}

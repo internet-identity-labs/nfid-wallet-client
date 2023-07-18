@@ -12,12 +12,17 @@ export const SendReceiveButton = () => {
   const globalServices = useContext(ProfileContext)
 
   const [, send] = useActor(globalServices.transferService)
+
+  const handleOpenSendReceive = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send("SHOW")
+  }
   return (
     <div id="sendReceiveButton">
       <Button
         className={clsx("px-[10px] py-[11px] hidden md:flex z-10")}
         id="sendReceiveButton"
-        onClick={() => send("SHOW")}
+        onClick={handleOpenSendReceive}
         icon={<img src={SendReceiveIcon} alt="send/receive" />}
       >
         Send / Receive
@@ -29,7 +34,7 @@ export const SendReceiveButton = () => {
           "rounded-full shadow-blueLight shadow-blue-600",
           "cursor-pointer z-30",
         )}
-        onClick={() => send("SHOW")}
+        onClick={handleOpenSendReceive}
         id="sendReceiveButton"
       >
         <img className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />

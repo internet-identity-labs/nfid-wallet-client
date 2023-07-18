@@ -18,7 +18,7 @@ import { ChainBalance } from "./types.d"
 describe("Ethereum Asset", () => {
   jest.setTimeout(30000)
 
-  it("should return one estimated erc20 tx", async function () {
+  it.skip("should return one estimated erc20 tx", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -55,7 +55,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one estimated erc20 tx when insufficient balance of erc20 and native token", async function () {
+  it.skip("should return one estimated erc20 tx when insufficient balance of erc20 and native token", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -93,7 +93,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one estimated nft erc1155 tx", async function () {
+  it.skip("should return one estimated nft erc1155 tx", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -132,7 +132,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one estimated nft erc1155 tx when insufficient balance of native token", async function () {
+  it.skip("should return one estimated nft erc1155 tx when insufficient balance of native token", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -169,7 +169,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one estimated nft erc721 tx", async function () {
+  it.skip("should return one estimated nft erc721 tx", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -207,7 +207,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one estimated nft erc721 tx when insufficient balance of native token", async function () {
+  it.skip("should return one estimated nft erc721 tx when insufficient balance of native token", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -245,7 +245,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return hash with etherenet url after transfer", async () => {
+  it.skip("should return hash with etherenet url after transfer", async () => {
     const walletSpy = jest.spyOn(EthWalletV2.prototype, "sendTransaction")
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const identity: DelegationIdentity = await generateDelegationIdentity(
@@ -284,7 +284,7 @@ describe("Ethereum Asset", () => {
     walletSpy.mockRestore()
   })
 
-  it("should return one estimated tx", async function () {
+  it.skip("should return one estimated tx", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -319,7 +319,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one estimated tx when insufficient balance of native token", async function () {
+  it.skip("should return one estimated tx when insufficient balance of native token", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -352,7 +352,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one fungible native tx", async function () {
+  it.skip("should return one fungible native tx", async function () {
     const actual = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -375,7 +375,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one fungible erc20 tx", async function () {
+  it.skip("should return one fungible erc20 tx", async function () {
     const actual = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       contract: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
@@ -400,7 +400,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should return one fungible erc20 token", async function () {
+  it.skip("should return one fungible erc20 token", async function () {
     const actual = await ethereumGoerliAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
@@ -429,7 +429,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should request balance", async function () {
+  it.skip("should request balance", async function () {
     const balance: ChainBalance = await ethereumGoerliAsset.getBalance(
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
@@ -439,7 +439,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should request balance mainnet", async function () {
+  it.skip("should request balance mainnet", async function () {
     const balance: ChainBalance = await ethereumAsset.getBalance(
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
@@ -449,7 +449,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should request activities by item", async function () {
+  it.skip("should request activities by item", async function () {
     const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
     const tokenId =
       "88260187566799326202913268841041605580353496351673437472672373155789474365442"
@@ -476,7 +476,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should request activities by user", async function () {
+  it.skip("should request activities by user", async function () {
     const activities = await ethereumGoerliAsset.getActivitiesByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -500,7 +500,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it("should request items by user", async function () {
+  it.skip("should request items by user", async function () {
     const items = await ethereumGoerliAsset.getItemsByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,

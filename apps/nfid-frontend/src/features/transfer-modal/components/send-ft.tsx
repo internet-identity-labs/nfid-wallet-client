@@ -1,4 +1,6 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { principalToAddress } from "ictool"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -14,35 +16,50 @@ import {
   BlurredLoader,
   sumRules,
 } from "@nfid-frontend/ui"
-import { RootWallet } from "@nfid/integration"
+import { truncateString } from "@nfid-frontend/utils"
+import { RootWallet, registerTransaction } from "@nfid/integration"
 import { TokenMetadata } from "@nfid/integration/token/dip-20"
 
+import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
   getAllTokensOptions,
   getConnector,
 } from "frontend/ui/connnector/transfer-modal/transfer-factory"
-import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
+import {
+  ITransferResponse,
+  TransferModalType,
+} from "frontend/ui/connnector/transfer-modal/types"
 import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { validateTransferAmountField } from "../utils/validations"
+import {
+  PRINCIPAL_LENGTH,
+  validateTransferAmountField,
+} from "../utils/validations"
 import { ITransferSuccess } from "./success"
 
 interface ITransferFT {
+  isVault: boolean
   preselectedTokenCurrency: string
   preselectedAccountAddress: string
   preselectedTokenBlockchain?: string
+  preselectedTransferDestination?: string
   onTransferPromise: (data: ITransferSuccess) => void
+  onVaultTransfer: () => void
 }
 
 export const TransferFT = ({
+  isVault,
   preselectedTokenCurrency,
   preselectedAccountAddress = "",
   preselectedTokenBlockchain = Blockchain.IC,
+  preselectedTransferDestination,
   onTransferPromise,
+  onVaultTransfer,
 }: ITransferFT) => {
   const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
     preselectedTokenCurrency,
@@ -86,10 +103,15 @@ export const TransferFT = ({
 
   const { data: accountsOptions, isLoading: isAccountsLoading } = useSWR(
     selectedConnector ? [selectedConnector, "accountsOptions"] : null,
-    ([connector]) => connector.getAccountsOptions(selectedTokenCurrency),
+    ([connector]) =>
+      connector.getAccountsOptions({
+        currency: selectedTokenCurrency,
+        isVault,
+      }),
     {
       onSuccess: (data) => {
-        setSelectedAccountAddress(data[0].options[0]?.value)
+        !preselectedAccountAddress.length &&
+          setSelectedAccountAddress(data[0].options[0]?.value)
         resetField("to")
       },
     },
@@ -126,7 +148,7 @@ export const TransferFT = ({
     mode: "all",
     defaultValues: {
       amount: undefined as any as number,
-      to: "",
+      to: preselectedTransferDestination ?? "",
     },
   })
 
@@ -167,6 +189,42 @@ export const TransferFT = ({
           message: "You can't transfer to the same wallet",
         })
 
+      if (isVault) {
+        return onTransferPromise({
+          assetImg: tokenMetadata?.icon ?? "",
+          initialPromise: new Promise(async (resolve) => {
+            const wallet = await getVaultWalletByAddress(selectedAccountAddress)
+
+            const address =
+              values.to.length === PRINCIPAL_LENGTH
+                ? principalToAddress(Principal.fromText(values.to))
+                : values.to
+
+            await registerTransaction({
+              address,
+              amount: BigInt(stringICPtoE8s(String(values.amount))),
+              from_sub_account: wallet?.uid ?? "",
+            })
+
+            resolve({} as ITransferResponse)
+          }),
+          title: `${values.amount} ${selectedTokenCurrency}`,
+          subTitle: `$${(Number(values.amount) * Number(rate)).toFixed(2)}`,
+          callback: () => {
+            resetCachesByKey(
+              [
+                `${selectedConnector.constructor.name}:getBalance:["${selectedAccountAddress}"]`,
+                `${selectedConnector.constructor.name}:getBalance:["${values.to}"]`,
+                `${selectedConnector.constructor.name}:getBalance:[]`,
+                `${selectedConnector.constructor.name}:getAccountsOptions:["${selectedTokenCurrency}"]`,
+              ],
+              () => refetchBalance(),
+            )
+          },
+          isAssetPadding: true,
+        })
+      }
+
       onTransferPromise({
         assetImg: tokenMetadata?.icon ?? "",
         initialPromise: new Promise(async (resolve) => {
@@ -202,6 +260,7 @@ export const TransferFT = ({
       })
     },
     [
+      isVault,
       onTransferPromise,
       rate,
       refetchBalance,
@@ -240,7 +299,7 @@ export const TransferFT = ({
       loadingMessage={loadingMessage}
     >
       <p className="mb-1">Amount to send</p>
-      <div className="space-y-3">
+      <div className="flex flex-col justify-between h-full pb-20">
         <div
           className={clsx(
             "border rounded-md flex items-center justify-between pl-4 pr-5 h-14",
@@ -305,7 +364,7 @@ export const TransferFT = ({
             }
           />
         </div>
-        {profile?.wallet === RootWallet.II && (
+        {(isVault || profile?.wallet === RootWallet.II) && (
           <ChooseModal
             label="From"
             title={"Choose an account"}
@@ -318,7 +377,9 @@ export const TransferFT = ({
           type="input"
           label="To"
           title={"Choose an account"}
-          optionGroups={accountsOptions ?? []}
+          optionGroups={
+            profile?.wallet === RootWallet.NFID ? [] : accountsOptions ?? []
+          }
           isFirstPreselected={false}
           placeholder={tokenMetadata?.addressPlaceholder}
           errorText={errors.to?.message}
@@ -332,6 +393,7 @@ export const TransferFT = ({
             setValue("to", value)
             calculateFee()
           }}
+          preselectedValue={preselectedTransferDestination}
         />
         <div>
           <Label>Network fee</Label>
@@ -374,18 +436,29 @@ export const TransferFT = ({
           Send
         </Button>
 
-        <div className="flex justify-between text-sm text-gray-400">
-          <p>Current balance</p>
-          <div className="flex items-center space-x-0.5">
-            {!isBalanceLoading &&
-            !isBalanceFetching &&
-            !!balance?.balance?.length ? (
-              <span id="balance">
-                {balance.balance.toString()} {selectedTokenCurrency}
-              </span>
-            ) : (
-              <Spinner className="w-3 h-3 text-gray-400" />
-            )}
+        <div
+          className={clsx(
+            "bg-gray-50 flex flex-col text-sm text-gray-500",
+            "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
+          )}
+        >
+          <div className="flex items-center justify-between">
+            <p>{tokenMetadata?.blockchain}</p>
+            <p>Balance</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
+            <div className="flex items-center space-x-0.5">
+              {!isBalanceLoading &&
+              !isBalanceFetching &&
+              !!balance?.balance?.length ? (
+                <span id="balance">
+                  {balance.balance.toString()} {selectedTokenCurrency}
+                </span>
+              ) : (
+                <Spinner className="w-3 h-3 text-gray-400" />
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -1,8 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { NonFungibleItem } from "packages/integration/src/lib/asset/types"
 import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
-import { getWalletDelegation } from "src/integration/facade/wallet"
-import { fetchProfile } from "src/integration/identity-manager"
 import { toUserNFT } from "src/ui/connnector/non-fungible-asset-screen/util/util"
 import {
   AssetFilter,
@@ -11,7 +9,7 @@ import {
   NftConnectorConfig,
 } from "src/ui/connnector/types"
 
-import { loadProfileFromLocalStorage } from "@nfid/integration"
+import { authState } from "@nfid/integration"
 
 export abstract class NonFungibleAssetConnector<T extends NftConnectorConfig>
   implements INonFungibleAssetConnector
@@ -49,13 +47,16 @@ export abstract class NonFungibleAssetConnector<T extends NftConnectorConfig>
   }
 
   protected getIdentity = async (
-    filterPrincipals: string[],
+    filterPrincipals?: string[],
   ): Promise<DelegationIdentity[]> => {
-    const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-    const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
-    return !filterPrincipals.length ||
-      filterPrincipals.includes(identity.getPrincipal().toString())
-      ? [identity]
+    const { delegationIdentity } = authState.get()
+    if (!delegationIdentity) {
+      throw Error("Delegation identity error")
+    }
+
+    return !filterPrincipals?.length ||
+      filterPrincipals?.includes(delegationIdentity.getPrincipal().toString())
+      ? [delegationIdentity]
       : []
   }
 

@@ -1,6 +1,8 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { networks, payments, TransactionBuilder } from "bitcoinjs-lib"
+import { Cache } from "node-ts-cache"
 
+import { integrationCache } from "../../cache"
 import { Chain, ecdsaSign, getPublicKey } from "../lambda/ecdsa"
 import {
   bcComputeFee,
@@ -22,6 +24,7 @@ export class BtcWallet {
     }
   }
 
+  @Cache(integrationCache, { ttl: 3600 })
   async getBitcoinAddress(): Promise<string> {
     const publicKey = await getPublicKey(this.walletIdentity, Chain.BTC)
     const network =

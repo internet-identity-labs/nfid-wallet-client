@@ -87,7 +87,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   public async sign(blob: ArrayBuffer): Promise<Signature> {
     const transports: AuthenticatorTransport[] = this._withSecurityDevices
       ? ["usb", "nfc", "ble"]
-      : ["internal"]
+      : []
 
     let publicKeyOptions: PublicKeyCredentialRequestOptions = {
       challenge: blob,

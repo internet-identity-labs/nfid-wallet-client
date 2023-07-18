@@ -1,7 +1,9 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { Cache } from "node-ts-cache"
 import { EstimatedTransaction } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 
 import { connectorCache } from "../cache"
 import { TransferModalConnector } from "./transfer-modal"
@@ -77,7 +79,11 @@ export abstract class EVMTransferConnector<
     }
   }
 
-  async getAccountsOptions(): Promise<IGroupedOptions[]> {
+  async getAccountsOptions({
+    currency,
+  }: {
+    currency?: string
+  }): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
     const balance = await this.getBalance()
 
@@ -89,5 +95,11 @@ export abstract class EVMTransferConnector<
         this.config.tokenStandard,
       ),
     ]
+  }
+
+  async getIdentity(): Promise<DelegationIdentity> {
+    const { delegationIdentity } = authState.get()
+
+    return delegationIdentity!
   }
 }

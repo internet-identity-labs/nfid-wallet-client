@@ -13,10 +13,7 @@ import {
   Label,
   BlurredLoader,
 } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
-import { getWalletName } from "@nfid/integration"
 
-import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -41,7 +38,6 @@ export const TransferNFT = ({
   preselectedNFTId = "",
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
-  const { applicationsMeta } = useApplicationsMeta()
 
   const { data: nfts, mutate: refetchNFTs } = useSWR("allNFTS", getAllNFT)
   const { data: nftOptions, isLoading: isNFTLoading } = useSWR(
@@ -71,7 +67,7 @@ export const TransferNFT = ({
 
   const { data: accountsOptions, isLoading: isAccountsLoading } = useSWR(
     selectedConnector ? [selectedConnector, "accountsOptions"] : null,
-    ([connector]) => connector.getAccountsOptions(),
+    ([connector]) => connector.getAccountsOptions({}),
   )
 
   const {
@@ -214,25 +210,6 @@ export const TransferNFT = ({
           }
           type="trigger"
         />
-        <div className="text-gray-400">
-          <p className="mb-1">From</p>
-          <div className={clsx("rounded-md bg-gray-100 px-2.5 h-14 mt-1")}>
-            {selectedNFT ? (
-              <div className="flex flex-col justify-center h-full">
-                <p className="text-black mb-[3px]">
-                  {getWalletName(
-                    applicationsMeta ?? [],
-                    selectedNFT?.account.domain ?? "",
-                    selectedNFT?.account.accountId ?? "",
-                  )}
-                </p>
-                <p>{truncateString(selectedNFT?.owner ?? "", 40)}</p>
-              </div>
-            ) : (
-              <p className="leading-[56px] text-sm">Your NFT account address</p>
-            )}
-          </div>
-        </div>
         <ChooseModal
           label="To"
           optionGroups={accountsOptions ?? []}

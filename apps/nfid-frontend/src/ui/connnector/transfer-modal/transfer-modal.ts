@@ -9,6 +9,7 @@ import {
   Application,
   PrincipalAccount,
   Profile,
+  RootWallet,
   fetchPrincipals,
   loadProfileFromLocalStorage,
 } from "@nfid/integration"
@@ -84,9 +85,13 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   abstract transfer(
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<ITransferResponse>
-  abstract getAccountsOptions(
-    currency?: string | undefined,
-  ): Promise<IGroupedOptions[]>
+  abstract getAccountsOptions({
+    currency,
+    isVault,
+  }: {
+    currency?: string
+    isVault?: boolean
+  }): Promise<IGroupedOptions[]>
   abstract validateAddress(address: string): string | boolean
 
   protected async getAllPrincipals<T extends boolean>(
@@ -97,7 +102,11 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     const profile = await this.getProfile()
     const accounts = await this.getAccounts(true)
 
-    const principals = await fetchPrincipals(BigInt(profile.anchor), accounts)
+    const principals = await fetchPrincipals(
+      BigInt(profile.anchor),
+      accounts,
+      profile.wallet === RootWallet.NFID,
+    )
     if (!groupedById) return principals as any
 
     return principals.reduce(

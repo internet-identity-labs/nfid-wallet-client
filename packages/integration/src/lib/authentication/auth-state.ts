@@ -55,12 +55,21 @@ function makeAuthState() {
   }
 
   async function _loadAuthSessionFromCache() {
-    const sessionKey = await authStorage.get(KEY_STORAGE_KEY)
-    const chain = await authStorage.get(KEY_STORAGE_DELEGATION)
+    let sessionKey = await authStorage.get(KEY_STORAGE_KEY)
+    let chain = await authStorage.get(KEY_STORAGE_DELEGATION)
     if (!sessionKey || !chain) {
       return observableAuthState$.next({
         cacheLoaded: true,
       })
+    }
+
+    console.log(sessionKey)
+    if (typeof sessionKey !== "string") {
+      sessionKey = JSON.stringify(sessionKey)
+    }
+
+    if (typeof chain !== "string") {
+      chain = JSON.stringify(chain)
     }
 
     const identity = Ed25519KeyIdentity.fromJSON(sessionKey)

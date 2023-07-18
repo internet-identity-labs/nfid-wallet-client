@@ -14,7 +14,6 @@ import {
   Loader,
   Tooltip,
 } from "@nfid-frontend/ui"
-
 import { Application, getWalletName } from "@nfid/integration"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -22,6 +21,7 @@ import { link } from "frontend/integration/entrepot"
 import { ProfileContext } from "frontend/provider"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import Table from "frontend/ui/atoms/table"
+import { MigrationWarning } from "frontend/ui/molecules/migration-warning"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -253,6 +253,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`)
       }
     >
+      <MigrationWarning />
       <ProfileContainer className={clsx(`flex flex-col`)}>
         <ProfileContainer className={clsx(`bg-gray-200 !py-5`)}>
           <div className="flex items-center justify-between gap-6">

@@ -4,8 +4,8 @@ import { FungibleAssetConnector } from "src/ui/connnector/fungible-asset-screen/
 import { toNativeTokenConfig } from "src/ui/connnector/fungible-asset-screen/util/util"
 import {
   AssetNativeConfig,
-  BTCNetwork,
   Blockchain,
+  BTCNetwork,
   NativeToken,
   TokenConfig,
 } from "src/ui/connnector/types"

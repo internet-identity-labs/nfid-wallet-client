@@ -5,8 +5,10 @@ import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
 import { ChooseModal, Copy, QRCode, BlurredLoader } from "@nfid-frontend/ui"
+import { RootWallet } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
@@ -18,12 +20,14 @@ import { PRINCIPAL_LENGTH } from "../utils/validations"
 import { ReceiveModal } from "./receive-modal"
 
 export interface ITransferReceive {
+  isVault: boolean
   preselectedTokenStandard: string
   preselectedAccountAddress: string
   preselectedTokenBlockchain?: string
 }
 
 export const TransferReceive = ({
+  isVault,
   preselectedTokenStandard,
   preselectedAccountAddress,
   preselectedTokenBlockchain = Blockchain.IC,
@@ -39,10 +43,13 @@ export const TransferReceive = ({
     preselectedAccountAddress,
   )
 
+  console.log({ isVault })
+  const { profile } = useProfile()
   const { data: networkOptions } = useNetworkOptions()
   const { data: accountsOptions } = useAccountsOptions(
     selectedTokenStandard as TokenStandards,
     selectedTokenBlockchain as Blockchain,
+    isVault,
   )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
@@ -66,13 +73,13 @@ export const TransferReceive = ({
         selectedAccountAddress?.length !== PRINCIPAL_LENGTH)
     )
       return selectedAccountAddress
-
+    console.log("address", selectedAccountAddress)
     return principalToAddress(Principal.fromText(selectedAccountAddress))
   }, [isPrincipalVisible, selectedAccountAddress])
 
   useEffect(() => {
-    setSelectedAccountAddress(accountsOptions[0]?.options[0]?.value)
-  }, [accountsOptions])
+    !isVault && setSelectedAccountAddress(accountsOptions[0]?.options[0]?.value)
+  }, [accountsOptions, isVault])
 
   return (
     <BlurredLoader
@@ -104,16 +111,18 @@ export const TransferReceive = ({
         type="small"
         isSmooth
       />
-      <ChooseModal
-        label="Accounts"
-        title={"Choose an account"}
-        optionGroups={accountsOptions}
-        iconClassnames="!w-6 !h-auto !object-contain"
-        preselectedValue={selectedAccountAddress}
-        onSelect={setSelectedAccountAddress}
-        type="small"
-        isSmooth
-      />
+      {(isVault || profile?.wallet === RootWallet.II) && (
+        <ChooseModal
+          label="Accounts"
+          title={"Choose an account"}
+          optionGroups={accountsOptions}
+          iconClassnames="!w-6 !h-auto !object-contain"
+          preselectedValue={selectedAccountAddress}
+          onSelect={setSelectedAccountAddress}
+          type="small"
+          isSmooth
+        />
+      )}
       <div>
         <p className="mb-1 text-gray-400">
           {isPrincipalVisible ? "Account ID" : "Wallet address"}
@@ -128,7 +137,7 @@ export const TransferReceive = ({
           <Copy value={address} />
         </div>
       </div>
-      {isPrincipalVisible && (
+      {!isVault && isPrincipalVisible && (
         <div>
           <p className="mb-1 text-gray-400">Principal ID</p>
           <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">

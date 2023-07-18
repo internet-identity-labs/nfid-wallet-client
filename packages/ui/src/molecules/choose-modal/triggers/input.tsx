@@ -1,13 +1,12 @@
 import clsx from "clsx"
 import { IconCmpArrowRight, IconCmpCancel } from "packages/ui/src/atoms/icons"
-import { Image } from "packages/ui/src/atoms/image"
 import { ChangeEvent } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 
 import { IGroupOption } from "../types"
 
 interface IInputTrigger {
-  onShowModal: () => void
+  onShowModal?: () => void
   onClearValue: () => void
   placeholder?: string
   setSelectedValue: (value: string) => void
@@ -70,6 +69,7 @@ export const InputTrigger = ({
           className={clsx(
             "flex items-center justify-center",
             "w-12 hover:opacity-70",
+            !onShowModal && "hidden",
           )}
           onClick={selectedOption ? onClearValue : onShowModal}
         >

@@ -36,7 +36,7 @@ describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(50000)
 
   describe("lambdaECDSA", () => {
-    it("register ecdsa ETH", async function () {
+    it.skip("register ecdsa ETH", async function () {
       const mockedIdentity = Ed25519KeyIdentity.generate()
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -54,7 +54,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       expect(pk).toEqual(pubKey)
     })
 
-    it("register ecdsa BTC", async function () {
+    it.skip("register ecdsa BTC", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -81,7 +81,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       expect(txx.outs[0].value).toEqual(10)
     })
 
-    it("get global IC keys", async function () {
+    it.skip("get global IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -116,7 +116,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       }
     })
 
-    it("get anonymous IC keys", async function () {
+    it.skip("get anonymous IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(

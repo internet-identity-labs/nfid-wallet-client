@@ -69,7 +69,11 @@ export class EthERC20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 60 })
-  async getAccountsOptions(currency?: string): Promise<IGroupedOptions[]> {
+  async getAccountsOptions({
+    currency,
+  }: {
+    currency?: string
+  }): Promise<IGroupedOptions[]> {
     const address = await this.getAddress()
     const balance = await this.getBalance("", currency)
 

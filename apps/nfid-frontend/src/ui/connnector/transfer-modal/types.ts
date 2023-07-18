@@ -31,8 +31,14 @@ export interface ITransferModalConnector
   extends StandardizedToken<TokenStandards> {
   getTokenConfig(currency?: string): ITransferConfig
   getTokenCurrencies(): Promise<string[]>
-  getAccountsOptions(currency?: string): Promise<IGroupedOptions[]>
-  getRate(currency?: string): Promise<string>
+  getAccountsOptions({
+    currency,
+    isVault,
+  }: {
+    currency?: string
+    isVault?: boolean
+  }): Promise<IGroupedOptions[]>
+  getRate(currency: string): Promise<string>
 
   getNetworkOption(): IGroupOption
   getTokensOptions(): Promise<IGroupedOptions>

@@ -6,9 +6,8 @@ import {
   replaceActorIdentity,
   ecdsaSigner,
   ethereumGoerliAsset,
+  authState,
 } from "@nfid/integration"
-
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 export const getEthAddress = async (anchor: number) => {
   const hostname = "nfid.one"
@@ -23,7 +22,9 @@ export const getEthAddress = async (anchor: number) => {
 
   if (cachedAddress) return cachedAddress
 
-  const identity = await getWalletDelegation(anchor, hostname, accountId)
+  const identity = authState.get().delegationIdentity
+  if (!identity) throw new Error("Identity not found")
+
   replaceActorIdentity(ecdsaSigner, identity)
 
   const address = await ethereumGoerliAsset.getAddress(identity)

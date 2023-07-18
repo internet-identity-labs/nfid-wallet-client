@@ -17,6 +17,7 @@ export interface Typegen0 {
     assignAmount: "ASSIGN_AMOUNT"
     assignDirection: "CHANGE_DIRECTION"
     assignError: "ASSIGN_ERROR"
+    assignIsVault: "ASSIGN_VAULTS"
     assignReceiverWallet: "ASSIGN_RECEIVER_WALLET"
     assignSelectedFT: "ASSIGN_SELECTED_FT"
     assignSelectedNFTId: "ASSIGN_SELECTED_NFT"

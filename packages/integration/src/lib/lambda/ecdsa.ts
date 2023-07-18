@@ -1,4 +1,3 @@
-import { SignIdentity } from "@dfinity/agent"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -7,6 +6,7 @@ import {
 
 import { ONE_MINUTE_IN_MS } from "@nfid/config"
 
+import { integrationCache } from "../../cache"
 import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
 
@@ -32,6 +32,11 @@ export async function getGlobalKeys(
   chain: Chain,
   targets: string[],
 ): Promise<DelegationIdentity> {
+  const cachedValue = await integrationCache.getItem(
+    JSON.stringify({ identity, chain, targets }),
+  )
+  if (cachedValue) return cachedValue as any
+
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const lambdaPublicKey = await fetch(registerUrl, {
     method: "POST",
@@ -68,10 +73,18 @@ export async function getGlobalKeys(
     if (!response.ok) throw new Error(await response.text())
     return await response.json()
   })
-  return DelegationIdentity.fromDelegation(
+  const response = DelegationIdentity.fromDelegation(
     sessionKey,
     DelegationChain.fromJSON(chainResponse),
   )
+
+  integrationCache.setItem(
+    JSON.stringify({ identity, chain, targets }),
+    response,
+    { ttl: 600 },
+  )
+
+  return response
 }
 
 export async function ecdsaSign(
@@ -182,9 +195,12 @@ export async function ecdsaRegisterNewKeyPair(
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
   }
-  const registerAddressUrl = ic.isLocal
-    ? `/ecdsa_register_address`
-    : AWS_ECDSA_REGISTER_ADDRESS
+
+  const registerAddressUrl = AWS_ECDSA_REGISTER_ADDRESS
+  // const registerAddressUrl = ic.isLocal
+  //   ? `/ecdsa_register_address`
+  //   : AWS_ECDSA_REGISTER_ADDRESS
+
   const response = await fetch(registerAddressUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -2,12 +2,12 @@ import React, { useCallback, useMemo, useState } from "react"
 import useSWR from "swr"
 
 import { EmptyCard, IconCmpVault, Loader } from "@nfid-frontend/ui"
-import { getVaults } from "@nfid/integration"
 
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { VaultActionBar } from "../action-bar"
 import { useVaultMember } from "../hooks/use-vault-member"
+import { getAllVaults } from "../services"
 import { VaultAddressBar } from "./address-bar"
 import { VaultModalCreate } from "./modal-add-vault"
 import { VaultsTable } from "./table"
@@ -23,7 +23,7 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
     mutate,
     isLoading,
     isValidating,
-  } = useSWR([isReady ? "vaults" : null], getVaults)
+  } = useSWR([isReady ? "vaults" : null], getAllVaults)
 
   const filteredVaults = useMemo(() => {
     if (!vaults) return []
@@ -38,7 +38,7 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   )
 
   return (
-    <ProfileTemplate pageTitle="Vaults" isLoading={!isReady}>
+    <ProfileTemplate pageTitle="Vaults">
       <VaultAddressBar />
       <div className="border border-gray-200 rounded-xl mt-[30px]">
         <VaultActionBar

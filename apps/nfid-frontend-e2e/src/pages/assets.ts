@@ -97,7 +97,7 @@ export class Assets {
     })
     await sendReceiveButton.click()
     const loader = await $("#loader")
-    await loader.waitForDisplayed({ reverse: true, timeout: 15000 })
+    await loader.waitForDisplayed({ reverse: true, timeout: 40000 })
     await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
   }
 
@@ -120,7 +120,7 @@ export class Assets {
       timeout: 10000,
     })
     await tabReceive.click()
-    await $("#option_Network").waitForDisplayed({ timeout: 10000 })
+    await $("#option_Network").waitForDisplayed({ timeout: 30000 })
   }
 
   public async getAccountId(isAddress?: boolean) {

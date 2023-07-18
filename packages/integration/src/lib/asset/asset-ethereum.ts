@@ -29,7 +29,9 @@ import {
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
 import { principalToAddress } from "ictool"
+import { Cache } from "node-ts-cache"
 
+import { integrationCache } from "../../cache"
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { getPriceFull } from "./asset-util"
@@ -113,6 +115,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     return estimateTransaction(wallet, request)
   }
 
+  @Cache(integrationCache, { ttl: 3600 })
   public async getAddress(delegation?: DelegationIdentity): Promise<string> {
     if (!delegation) {
       throw Error("Delegation is needed.")

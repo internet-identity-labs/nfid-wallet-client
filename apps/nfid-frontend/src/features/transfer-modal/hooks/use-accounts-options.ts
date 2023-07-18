@@ -21,7 +21,7 @@ export const useAccountsOptions = (
           tokenStandard: token,
           blockchain: blockchain,
         })
-      ).getAccountsOptions({ isVault: true }),
+      ).getAccountsOptions({ isVault: isVaultWallets }),
   )
 
   return { data: accountsOptions ?? [], ...rest }

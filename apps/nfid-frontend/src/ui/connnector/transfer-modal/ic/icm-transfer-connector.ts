@@ -69,7 +69,6 @@ export abstract class ICMTransferConnector<
         })),
       }))
     }
-
     const principals = await this.getAllPrincipals(true)
     const applications = await this.getApplications()
 

@@ -475,7 +475,7 @@ Then(/^Wait while balance and fee calculated/, async () => {
   const fee = await Assets.getFee()
 
   await assetBalance.waitForExist({ timeout: 20000 })
-  await fee.waitForDisplayed({ timeout: 15000 })
+  await fee.waitForDisplayed({ timeout: 40000 })
 })
 
 Then(

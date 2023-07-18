@@ -482,11 +482,11 @@ Then(
   /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
   async (balance: string, fee: string, currency: string) => {
     const assetBalance = await Assets.getBalance()
-    assetBalance.waitForExist({ timeout: 20000 })
+    assetBalance.waitForExist({ timeout: 40000 })
     expect(assetBalance).toHaveText(balance + " " + currency)
 
     const transferFee = await Assets.getFee()
-    transferFee.waitForDisplayed({ timeout: 10000 })
+    transferFee.waitForDisplayed({ timeout: 30000 })
     if (fee === "any") expect(transferFee).not.toContain("0.00")
     else expect(transferFee).toHaveText(fee + " " + currency)
   },

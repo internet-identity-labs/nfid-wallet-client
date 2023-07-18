@@ -43,6 +43,7 @@ export const TransferReceive = ({
     preselectedAccountAddress,
   )
 
+  console.log({ isVault })
   const { profile } = useProfile()
   const { data: networkOptions } = useNetworkOptions()
   const { data: accountsOptions } = useAccountsOptions(
@@ -72,7 +73,7 @@ export const TransferReceive = ({
         selectedAccountAddress?.length !== PRINCIPAL_LENGTH)
     )
       return selectedAccountAddress
-
+    console.log("address", selectedAccountAddress)
     return principalToAddress(Principal.fromText(selectedAccountAddress))
   }, [isPrincipalVisible, selectedAccountAddress])
 

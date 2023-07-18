@@ -17,18 +17,18 @@ Feature:Send/Receive Asset
       | Ethereum       | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
       | Polygon Mumbai | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
 
-  # @sendreceive2
-  # Scenario Outline: User should be able to receive ICP transaction
-  #   Given User opens NFID site
-  #   And User is already authenticated by <anchor> anchor
-  #   And Tokens displayed on user assets
-  #   Then User opens receive dialog window
-  #   Then Choose <chain> from receive options
-  #   Then Account ID is <address>
-  #   Then Principal is <principal>
-  #   Examples:
-  #     | chain            | anchor | address                               | principal                             | currency |
-  #     | InternetComputer | 28542  | 8f4835777b8e7abf166ab5e7390ab...d52ba | ymhyc-prisv-3sxup-hjy2n-4tgz4...q-pae | ICP      |
+  @sendreceive2
+  Scenario Outline: User should be able to receive ICP transaction
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    And Tokens displayed on user assets
+    Then User opens receive dialog window
+    Then Choose <chain> from receive options
+    Then Account ID is <address>
+    Then Principal is <principal>
+    Examples:
+      | chain            | anchor | address                               | principal                             | currency |
+      | InternetComputer | 28542  | 8f4835777b8e7abf166ab5e7390ab...d52ba | ymhyc-prisv-3sxup-hjy2n-4tgz4...q-pae | ICP      |
 
   @sendreceive3
   Scenario Outline: User should be able to see balance and fee
@@ -43,13 +43,13 @@ Feature:Send/Receive Asset
     Then Wait while balance and fee calculated
     Then Balance is <balance> and fee is <fee> and currency is <currency>
     Examples:
-      | chain           | anchor | balance    | fee | account        | currency |
-      | Bitcoin         | 25795  | 0.00006879 | any | NFID account 1 | BTC      |
-      | Polygon Mumbai  | 25795  | 0.2        | any | NFID account 1 | MATIC    |
-      | Polygon Mumbai  | 25795  | 1.0        | any | NFID account 1 | TST      |
-      | Ethereum Goerli | 25795  | 0.09664164 | any | NFID account 1 | ETH      |
-      | Ethereum Goerli | 25795  | 20.0       | any | NFID account 1 | LINK     |
-  # | Internet Computer | 28542  | 0.01       | 0.0001 | NFID account 1 | ICP      |
+      | chain             | anchor | balance    | fee    | account        | currency |
+      | Bitcoin           | 25795  | 0.00006879 | any    | NFID account 1 | BTC      |
+      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID account 1 | MATIC    |
+      | Polygon Mumbai    | 25795  | 1.0        | any    | NFID account 1 | TST      |
+      | Ethereum Goerli   | 25795  | 0.09664164 | any    | NFID account 1 | ETH      |
+      | Ethereum Goerli   | 25795  | 20.0       | any    | NFID account 1 | LINK     |
+      | Internet Computer | 28542  | 0.01       | 0.0001 | NFID account 1 | ICP      |
 
   @sendreceive4
   Scenario Outline: User should be able to see his collectibles on send NFT tab
@@ -79,12 +79,12 @@ Feature:Send/Receive Asset
     And Set <target> address and <amount> and send
     Then Transaction is success
     Examples:
-      | chain           | anchor | target                                     | amount   | currency | account        |
-      # | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | BTC      | NFID account 1 |
-      | Polygon Mumbai  | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e | 0.000001 | MATIC    | NFID account 1 |
-      | Polygon Mumbai  | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e | 0.000001 | TST      | NFID account 1 |
-      | Ethereum Goerli | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e | 0.000001 | ETH      | NFID account 1 |
-# | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001   | ICP      | NFID account 1 |
-# | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | LINK     | NFID account 1 |
+      | chain             | anchor | target                                                           | amount    | currency | account        |
+      | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | BTC      | NFID account 1 |
+      | Polygon Mumbai    | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | MATIC    | NFID account 1 |
+      | Polygon Mumbai    | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | TST      | NFID account 1 |
+      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | ETH      | NFID account 1 |
+      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001    | ICP      | NFID account 1 |
+      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | LINK     | NFID account 1 |
 
 

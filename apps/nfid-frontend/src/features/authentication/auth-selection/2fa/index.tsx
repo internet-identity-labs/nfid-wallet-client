@@ -46,7 +46,9 @@ export const Auth2FA = ({ appMeta, onSuccess }: IAuth2FA) => {
         your passkey to confirm it’s you.
       </p>
       <img alt="asset" src={Image2FA} className="w-full h-56 my-10" />
-      <Button onClick={handleAuth}>Continue</Button>
+      <Button className="mb-[30px]" onClick={handleAuth}>
+        Continue
+      </Button>
     </>
   )
 }

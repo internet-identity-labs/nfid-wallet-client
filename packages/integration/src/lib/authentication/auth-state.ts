@@ -63,7 +63,6 @@ function makeAuthState() {
       })
     }
 
-    console.log(sessionKey)
     if (typeof sessionKey !== "string") {
       sessionKey = JSON.stringify(sessionKey)
     }

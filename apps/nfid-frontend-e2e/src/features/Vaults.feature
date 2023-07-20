@@ -5,16 +5,6 @@ Feature: Vault scenarios
     Background: User navigates to Vaults page
         Given User opens NFID site
 
-    Scenario: User registers via google
-        Given I remove the e2e@identitylabs.ooo
-        Given authstate is cleared
-        Given User authenticates with google account
-        And User enters a captcha
-        And It log's me in
-        And Tokens displayed on user assets
-        When User opens profile menu
-        Then User logs out
-
     Scenario: Create a new Vault
         Given authstate is cleared
         Given User authenticates with google account

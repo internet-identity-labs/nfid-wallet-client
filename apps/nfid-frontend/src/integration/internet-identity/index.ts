@@ -38,7 +38,7 @@ import { fromMnemonicWithoutValidation } from "frontend/integration/internet-ide
 
 import { mapVariant } from "../_common"
 import { getBrowserName } from "../device"
-import { createNFIDProfile, fetchProfile } from "../identity-manager"
+import { fetchProfile } from "../identity-manager"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
 import { derFromPubkey, hasOwnProperty } from "./utils"

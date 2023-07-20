@@ -114,7 +114,7 @@ const ProfileSecurityPage = () => {
         }
       >
         <Table
-          className="w-full min-w-full"
+          className="w-full !min-w-full"
           tableHeader={
             <tr className="border-b border-black">
               <th>Passkeys</th>

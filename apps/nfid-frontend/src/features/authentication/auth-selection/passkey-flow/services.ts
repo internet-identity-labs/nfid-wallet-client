@@ -23,6 +23,7 @@ import {
   getPasskey,
   ii,
   im,
+  replaceIdentity,
   requestFEDelegationChain,
   storePasskey,
 } from "@nfid/integration"
@@ -61,7 +62,7 @@ export class PasskeyConnector {
     )
 
     const profile = await fetchProfile()
-    if (profile.wallet === RootWallet.II)
+    if (profile.wallet === RootWallet.II) {
       ii.add(BigInt(profile.anchor), {
         credential_id: [Array.from(new Uint8Array(identity.rawId))],
         alias: `${getBrowser()} on ${getPlatformInfo().device}`,
@@ -73,6 +74,7 @@ export class PasskeyConnector {
         purpose: { authentication: null },
         protection: { unprotected: null },
       })
+    }
 
     const isSecurityKey =
       data.type === "cross-platform" &&
@@ -111,9 +113,11 @@ export class PasskeyConnector {
 
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
     const { delegationIdentity } = authState.get()
-    if (!delegationIdentity) throw new Error("Delegation identity not found")
     const { data: imDevices } = await im.read_access_points()
+
+    if (!delegationIdentity) throw new Error("Delegation identity not found")
     if (!imDevices?.length) throw new Error("No devices found")
+
     const passkeys = imDevices[0].filter(
       (d) =>
         DeviceType.Passkey in d.device_type ||
@@ -132,7 +136,9 @@ export class PasskeyConnector {
         )
       : []
 
-    const email = (await fetchProfile()).email as string
+    const profile = await fetchProfile()
+    if (!profile) throw new Error("Profile not found")
+
     let credential: PublicKeyCredential
     try {
       credential = (await navigator.credentials.create({
@@ -156,15 +162,18 @@ export class PasskeyConnector {
             id: window.location.hostname,
           },
           user: {
-            id: delegationIdentity.getPublicKey().toDer(), //take root id from the account
-            name: email,
-            displayName: email,
+            id: Buffer.from(String(profile.anchor)),
+            name: profile?.email ?? "",
+            displayName: profile?.email ?? "",
           },
         },
       })) as PublicKeyCredential
     } catch (e: any) {
+      console.error(e)
       if (e.message.includes("registered")) {
         toast.error("This device is already registered")
+      } else {
+        toast.error(e.message)
       }
       return
     }

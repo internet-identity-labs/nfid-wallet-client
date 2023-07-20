@@ -34,10 +34,10 @@ export const DetailsPasskey: React.FC<IDetailsPasskeyModal> = ({
         className="p-5 w-[95%] md:w-[540px] z-[100] lg:rounded-xl"
       >
         <p className="text-2xl font-bold">Passkey details</p>
-        <table>
+        <table className="w-full">
           <thead>
             <tr>
-              <th className="w-[110px] sm:w-[180px]" />
+              <th className="w-[130px] sm:w-[180px]" />
               <th className="w-auto" />
             </tr>
           </thead>

@@ -1,5 +1,7 @@
 import React from "react"
 
+import { getIsMobileDeviceMatch } from "frontend/integration/device"
+
 import { CredentialResponse } from "./types"
 import useLoadGsiScript from "./useLoadGsiScript"
 
@@ -51,7 +53,11 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   })
 
   const onClick = React.useCallback(() => {
-    const el = buttonRef.current?.querySelector("div[role=button]")
+    let el: any
+    if (getIsMobileDeviceMatch())
+      el = buttonRef.current?.children[0].children[1].children[1]
+    else el = buttonRef.current?.querySelector("div[role=button]")
+
     //  @ts-ignore
     el?.click()
   }, [])

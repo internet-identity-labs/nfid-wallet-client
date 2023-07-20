@@ -85,7 +85,7 @@ export class PasskeyConnector {
       browser: getBrowser(),
       device: isSecurityKey
         ? "Security Key"
-        : data.type === "cross-platform"
+        : data.type === "cross-platform" || data.transports.includes("hybrid")
         ? "Keychain"
         : `${getBrowser()} on ${getPlatformInfo().device}`,
       deviceType: DeviceType.Passkey,
@@ -143,9 +143,10 @@ export class PasskeyConnector {
       credential = (await navigator.credentials.create({
         publicKey: {
           authenticatorSelection: {
-            authenticatorAttachment: isMultiDevice
-              ? "cross-platform"
-              : "platform",
+            authenticatorAttachment:
+              getIsMobileDeviceMatch() || !isMultiDevice
+                ? "platform"
+                : "cross-platform",
             userVerification: "preferred",
             residentKey: "required",
           },

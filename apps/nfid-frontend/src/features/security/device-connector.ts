@@ -55,7 +55,7 @@ export class SecurityConnector {
         label: device.device,
         icon: device.icon,
         isLegacyDevice: !passkeyMetadata,
-        isMultiDevice: !!passkeyMetadata?.data?.flags.backupEligibility,
+        isMultiDevice: passkeyMetadata?.data.type === "cross-platform",
         created_at: passkeyMetadata?.data?.created_at
           ? format(new Date(passkeyMetadata?.data?.created_at), "MMM dd, yyyy")
           : "",

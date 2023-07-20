@@ -1,4 +1,5 @@
 import React, { useCallback } from "react"
+import { toast } from "react-toastify"
 
 import { Button } from "@nfid-frontend/ui"
 
@@ -37,10 +38,16 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
         () => setIsModalVisible(false),
       )
     } else
-      handleWithLoading(async () => {
-        showLastPasskeyWarning && (await securityConnector.toggle2FA(false))
-        await removeAccessPoint(device.principal)
-      })
+      handleWithLoading(
+        async () => {
+          showLastPasskeyWarning && (await securityConnector.toggle2FA(false))
+          await removeAccessPoint(device.principal)
+        },
+        () => {
+          toast.success("Device has been removed")
+          setIsModalVisible(false)
+        },
+      )
   }, [
     showLastPasskeyWarning,
     device.isLegacyDevice,

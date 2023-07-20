@@ -44,10 +44,11 @@ export const AppScreenRecoverNFID: React.FC<
         setResponseError("")
         result = await loginWithRecovery(seedPhrase, userNumber)
         await refreshProfile()
-      } catch (e) {
+      } catch (e: any) {
         console.error(e)
         return setResponseError(
-          "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
+          e.message ??
+            "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
       }
 

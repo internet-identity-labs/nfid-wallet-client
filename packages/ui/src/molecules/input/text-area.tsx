@@ -33,7 +33,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           className={clsx(
             "shadow-sm text-black my-1 block w-full text-sm border rounded-md font-mono bg-transparent",
             errorText
-              ? "active:bg-transparent active:border-red-base !border-red-base box-shadow-red focus:ring-red-base"
+              ? "active:bg-transparent active:border-red !border-red box-shadow-red focus:ring-red"
               : "focus:ring-black focus:border-black border-black",
           )}
           {...props}
@@ -42,7 +42,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
         <div
           className={clsx(
             "text-sm py-1 text-secondary",
-            errorText && "!text-red-base",
+            errorText && "!text-red",
           )}
         >
           {errorText ?? helperText}

@@ -12,6 +12,7 @@ import {
   authState,
   FrontendDelegation,
   mapOptional,
+  Profile,
   requestFEDelegation,
   requestFEDelegationChain,
 } from "@nfid/integration"
@@ -37,6 +38,7 @@ import { fromMnemonicWithoutValidation } from "frontend/integration/internet-ide
 
 import { mapVariant } from "../_common"
 import { getBrowserName } from "../device"
+import { createNFIDProfile, fetchProfile } from "../identity-manager"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
 import { derFromPubkey, hasOwnProperty } from "./utils"
@@ -609,21 +611,21 @@ export async function fromSeedPhrase(
   }
   const delegationIdentity = await requestFEDelegation(identity)
 
-  replaceIdentity(delegationIdentity.delegationIdentity)
-  authState.set({
-    identity,
-    delegationIdentity: delegationIdentity.delegationIdentity,
-  })
-
-  im.use_access_point([getBrowserName()]).catch((e) => {
-    // When user recovers from II, the call to use_access_points will fail
-    // because there is no account yet.
-    console.error(e)
-  })
+  let profile: Profile
+  try {
+    replaceIdentity(delegationIdentity.delegationIdentity)
+    authState.set({
+      identity,
+      delegationIdentity: delegationIdentity.delegationIdentity,
+    })
+    profile = await fetchProfile()
+  } catch (e) {
+    throw new Error("This is not an NFID recovery phrase.")
+  }
 
   return {
     kind: "loginSuccess",
-    userNumber,
+    userNumber: BigInt(profile.anchor),
     chain: delegationIdentity.chain,
     sessionKey: delegationIdentity.sessionKey,
   }

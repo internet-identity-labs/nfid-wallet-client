@@ -41,7 +41,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   public static fromCredentials(
     credentialData: CredentialData[],
     withSecurityDevices?: boolean,
-    mediation?: "conditional" | "required",
+    mediation?: "conditional" | "required" | "optional" | "silent",
     signal?: AbortSignal,
     isNewDevice?: boolean,
   ): MultiWebAuthnIdentity {
@@ -57,14 +57,14 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   private operationIsActive: boolean = true
   public _actualIdentity?: WebAuthnIdentity
   public _withSecurityDevices?: boolean
-  public _mediation?: "conditional" | "required"
+  public _mediation?: "conditional" | "required" | "optional" | "silent"
   public _signal?: AbortSignal
   public _isNewDevice?: boolean
 
   protected constructor(
     readonly credentialData: CredentialData[],
     withSecurityDevices?: boolean,
-    mediation?: "conditional" | "required",
+    mediation?: "conditional" | "required" | "optional" | "silent",
     signal?: AbortSignal,
     isNewDevice?: boolean,
   ) {
@@ -91,7 +91,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
 
     let publicKeyOptions: PublicKeyCredentialRequestOptions = {
       challenge: blob,
-      userVerification: "discouraged",
+      userVerification: "preferred",
     }
 
     if (this.credentialData.length > 0) {

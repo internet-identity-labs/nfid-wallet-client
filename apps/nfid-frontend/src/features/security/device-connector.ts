@@ -165,6 +165,19 @@ export class SecurityConnector {
   }
 
   async toggle2FA(enabled: boolean) {
+    if (enabled) {
+      const profile = await fetchProfile()
+      const email = profile.accessPoints.find(
+        (p) => p.deviceType === DeviceType.Email,
+      )
+
+      if (
+        email?.principalId ===
+        authState.get().delegationIdentity?.getPrincipal().toText()
+      )
+        await passkeyConnector.loginWithAllowedPasskey()
+    }
+
     await im.update_2fa(enabled).catch(async (e: any) => {
       if (e.message.includes("Unauthorised")) {
         await passkeyConnector.loginWithAllowedPasskey()

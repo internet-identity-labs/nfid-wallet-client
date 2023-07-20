@@ -23,7 +23,6 @@ import {
   getPasskey,
   ii,
   im,
-  replaceIdentity,
   requestFEDelegationChain,
   storePasskey,
 } from "@nfid/integration"

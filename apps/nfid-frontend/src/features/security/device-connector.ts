@@ -55,7 +55,9 @@ export class SecurityConnector {
         label: device.device,
         icon: device.icon,
         isLegacyDevice: !passkeyMetadata,
-        isMultiDevice: !!passkeyMetadata?.data?.flags.backupEligibility,
+        isMultiDevice:
+          passkeyMetadata?.data.type === "cross-platform" ||
+          passkeyMetadata?.data.transports.includes("hybrid"),
         created_at: passkeyMetadata?.data?.created_at
           ? format(new Date(passkeyMetadata?.data?.created_at), "MMM dd, yyyy")
           : "",
@@ -165,6 +167,19 @@ export class SecurityConnector {
   }
 
   async toggle2FA(enabled: boolean) {
+    if (enabled) {
+      const profile = await fetchProfile()
+      const email = profile.accessPoints.find(
+        (p) => p.deviceType === DeviceType.Email,
+      )
+
+      if (
+        email?.principalId ===
+        authState.get().delegationIdentity?.getPrincipal().toText()
+      )
+        await passkeyConnector.loginWithAllowedPasskey()
+    }
+
     await im.update_2fa(enabled).catch(async (e: any) => {
       if (e.message.includes("Unauthorised")) {
         await passkeyConnector.loginWithAllowedPasskey()

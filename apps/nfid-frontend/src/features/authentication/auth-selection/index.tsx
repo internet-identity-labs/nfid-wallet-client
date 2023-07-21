@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { Button, IconCmpGoogle, IconCmpPasskey, Input } from "@nfid-frontend/ui"
+import {
+  BlurredLoader,
+  Button,
+  IconCmpGoogle,
+  IconCmpPasskey,
+  Input,
+} from "@nfid-frontend/ui"
 
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -29,6 +35,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onAuthWithPasskey,
   appMeta,
 }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
     mode: "onSubmit",
@@ -38,14 +45,18 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   )
 
   useEffect(() => {
-    passkeyConnector.initPasskeyAutocomplete(authAbortController.signal)
+    passkeyConnector.initPasskeyAutocomplete(
+      authAbortController.signal,
+      () => setIsLoading(true),
+      onAuthWithPasskey,
+    )
     return () => {
       authAbortController.abort("Aborted webauthn on unmount")
     }
-  }, [authAbortController, authAbortController.signal])
+  }, [authAbortController]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="w-full h-full">
+    <BlurredLoader isLoading={isLoading} className="w-full h-full">
       <AuthAppMeta
         applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url}
@@ -123,6 +134,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           Other sign in options
         </Button>
       </div>
-    </div>
+    </BlurredLoader>
   )
 }

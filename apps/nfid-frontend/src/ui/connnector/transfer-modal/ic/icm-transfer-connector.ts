@@ -81,11 +81,13 @@ export abstract class ICMTransferConnector<
             )
 
             return {
-              title: getWalletName(
-                applications,
-                account.domain,
-                account.accountId,
-              ),
+              title: account.label.length
+                ? account.label
+                : getWalletName(
+                    applications,
+                    account.domain,
+                    account.accountId,
+                  ),
               subTitle: truncateString(principalToAddress(principal), 6, 4),
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + this.config.tokenStandard,

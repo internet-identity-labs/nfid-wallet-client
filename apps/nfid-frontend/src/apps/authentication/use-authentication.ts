@@ -150,13 +150,19 @@ export const useAuthentication = () => {
           )
         }
 
-        const response = await fromSeedPhrase(
-          userNumber,
-          seedPhrase,
-          recoveryPhraseDevice,
-        )
+        let result: LoginResult
 
-        const result = apiResultToLoginResult(response)
+        try {
+          const response = await fromSeedPhrase(
+            userNumber,
+            seedPhrase,
+            recoveryPhraseDevice,
+          )
+          result = apiResultToLoginResult(response)
+        } catch (e: any) {
+          setIsLoading(false)
+          throw new Error(e.message)
+        }
 
         if (result.tag === "ok") {
           setUser({

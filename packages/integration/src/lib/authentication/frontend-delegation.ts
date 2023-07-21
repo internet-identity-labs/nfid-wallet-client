@@ -30,7 +30,7 @@ export const requestFEDelegationChain = async (
 ) => {
   console.debug("requestFEDelegationChain")
   const sessionKey = Ed25519KeyIdentity.generate()
-  console.log(sessionKey.getPrincipal().toText())
+
   // Here the security device is used. Besides creating new keys, this is the only place.
   const chain = await DelegationChain.create(
     identity,

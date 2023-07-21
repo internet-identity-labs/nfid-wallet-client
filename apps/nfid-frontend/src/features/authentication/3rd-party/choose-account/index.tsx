@@ -153,7 +153,9 @@ export const AuthChooseAccount = ({
             onClick={() => handleSelectLegacyAnonymous(acc)}
           >
             <IconCmpAnonymous className="w-10 h-10" />
-            <span>Anonymous {acc.label}</span>
+            <span>
+              {appMeta.name} account {parseInt(acc.accountId) + 1}
+            </span>
           </div>
         ))}
         {!legacyAnonymousProfiles?.length && (

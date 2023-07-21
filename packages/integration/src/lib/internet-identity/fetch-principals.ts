@@ -25,8 +25,8 @@ export async function fetchPrincipals(
   const globalAcc = {
     account: {
       accountId: "0",
-      domain: window.location.hostname,
-      label: "Globalkey IC Account",
+      domain: "nfid.one",
+      label: "My NFID profile",
     },
     principal: ICDelegation.getPrincipal(),
   }

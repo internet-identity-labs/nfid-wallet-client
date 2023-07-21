@@ -27,7 +27,10 @@ import {
   storePasskey,
 } from "@nfid/integration"
 
-import { getPlatformInfo } from "frontend/integration/device"
+import {
+  getIsMobileDeviceMatch,
+  getPlatformInfo,
+} from "frontend/integration/device"
 import {
   createPasskeyAccessPoint,
   fetchProfile,
@@ -47,7 +50,6 @@ export class PasskeyConnector {
     const jsonData = JSON.stringify({
       ...data,
       credentialId: base64url.encode(Buffer.from(data.credentialId)),
-      aaguid: base64url.encode(Buffer.from(data.aaguid)),
       publicKey: toHexString(data.publicKey),
     })
 
@@ -59,7 +61,7 @@ export class PasskeyConnector {
     )
 
     const profile = await fetchProfile()
-    if (profile.wallet === RootWallet.II)
+    if (profile.wallet === RootWallet.II) {
       ii.add(BigInt(profile.anchor), {
         credential_id: [Array.from(new Uint8Array(identity.rawId))],
         alias: `${getBrowser()} on ${getPlatformInfo().device}`,
@@ -71,13 +73,27 @@ export class PasskeyConnector {
         purpose: { authentication: null },
         protection: { unprotected: null },
       })
+    }
+
+    const isSecurityKey =
+      data.type === "cross-platform" &&
+      !data.transports.includes("internal") &&
+      !data.transports.includes("hybrid")
 
     await storePasskey(key, jsonData)
     await createPasskeyAccessPoint({
       browser: getBrowser(),
-      device: `${getBrowser()} on ${getPlatformInfo().device}`,
+      device: isSecurityKey
+        ? "Security Key"
+        : data.type === "cross-platform" || data.transports.includes("hybrid")
+        ? "Keychain"
+        : `${getBrowser()} on ${getPlatformInfo().device}`,
       deviceType: DeviceType.Passkey,
-      icon: Icon.usb,
+      icon: isSecurityKey
+        ? Icon.usb
+        : getIsMobileDeviceMatch() || data.type === "cross-platform"
+        ? Icon.mobile
+        : Icon.desktop,
       principal: identity.getPrincipal().toText(),
       credential_id: [data.credentialStringId],
     })
@@ -90,16 +106,17 @@ export class PasskeyConnector {
     return {
       ...decodedObject,
       credentialId: base64url.toBuffer(decodedObject.credentialId),
-      aaguid: base64url.toBuffer(decodedObject.aaguid),
       publicKey: fromHexString(decodedObject.publicKey),
     }
   }
 
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
     const { delegationIdentity } = authState.get()
-    if (!delegationIdentity) throw new Error("Delegation identity not found")
     const { data: imDevices } = await im.read_access_points()
+
+    if (!delegationIdentity) throw new Error("Delegation identity not found")
     if (!imDevices?.length) throw new Error("No devices found")
+
     const passkeys = imDevices[0].filter(
       (d) =>
         DeviceType.Passkey in d.device_type ||
@@ -118,15 +135,18 @@ export class PasskeyConnector {
         )
       : []
 
-    const email = (await fetchProfile()).email as string
+    const profile = await fetchProfile()
+    if (!profile) throw new Error("Profile not found")
+
     let credential: PublicKeyCredential
     try {
       credential = (await navigator.credentials.create({
         publicKey: {
           authenticatorSelection: {
-            authenticatorAttachment: isMultiDevice
-              ? "cross-platform"
-              : "platform",
+            authenticatorAttachment:
+              getIsMobileDeviceMatch() || !isMultiDevice
+                ? "platform"
+                : "cross-platform",
             userVerification: "preferred",
             residentKey: "required",
           },
@@ -142,23 +162,23 @@ export class PasskeyConnector {
             id: window.location.hostname,
           },
           user: {
-            id: delegationIdentity.getPublicKey().toDer(), //take root id from the account
-            name: email,
-            displayName: email,
+            id: Buffer.from(String(profile.anchor)),
+            name: profile?.email ?? "",
+            displayName: profile?.email ?? "",
           },
         },
       })) as PublicKeyCredential
     } catch (e: any) {
+      console.error(e)
       if (e.message.includes("registered")) {
         toast.error("This device is already registered")
+      } else {
+        toast.error(e.message)
       }
       return
     }
 
-    const lambdaRequest = this.decodePublicKeyCredential(
-      credential,
-      isMultiDevice,
-    )
+    const lambdaRequest = this.decodePublicKeyCredential(credential)
 
     return await this.storePasskey(lambdaRequest)
   }
@@ -171,7 +191,7 @@ export class PasskeyConnector {
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       allowedPasskeys,
       false,
-      "required",
+      "optional",
       signal,
       true,
     )
@@ -191,6 +211,8 @@ export class PasskeyConnector {
       chain,
       sessionKey,
     })
+
+    await im.use_access_point([])
 
     return {
       anchor: (await fetchProfile()).anchor,
@@ -224,7 +246,12 @@ export class PasskeyConnector {
     )
   }
 
-  async initPasskeyAutocomplete(signal?: AbortSignal) {
+  async initPasskeyAutocomplete(
+    signal: AbortSignal,
+    onBegin: () => void,
+    onEnd: (data: AbstractAuthSession) => void,
+  ) {
+    onBegin()
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       [],
       false,
@@ -232,6 +259,7 @@ export class PasskeyConnector {
       signal,
       true,
     )
+
     const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
 
     const delegationIdentity = DelegationIdentity.fromDelegation(
@@ -245,12 +273,19 @@ export class PasskeyConnector {
       chain,
       sessionKey,
     })
+
+    await im.use_access_point([])
+
+    const authSession = {
+      anchor: (await fetchProfile()).anchor,
+      delegationIdentity: delegationIdentity,
+      identity: multiIdent._actualIdentity!,
+    }
+
+    onEnd && onEnd(authSession)
   }
 
-  private decodePublicKeyCredential(
-    credential: PublicKeyCredential,
-    isMultiDevice?: boolean,
-  ) {
+  private decodePublicKeyCredential(credential: PublicKeyCredential) {
     const utf8Decoder = new TextDecoder("utf-8")
     const decodedClientData = utf8Decoder.decode(
       credential.response.clientDataJSON,
@@ -268,11 +303,9 @@ export class PasskeyConnector {
     // Format the AAGUID as a UUID string
     const aaguid = isoUint8Array.toHex(authDataParsed.aaguid!)
 
-    console.log({ aaguidString: aaguid, aaguidBuffer: authDataParsed.aaguid })
-
     const passkeyMetadata: IPasskeyMetadata = {
       name: "Some editable name or keychain title",
-      type: isMultiDevice ? "cross-platform" : "platform",
+      type: credential.authenticatorAttachment as "cross-platform" | "platform",
       flags: {
         userPresent: authDataParsed.flags.up, // is user was present when signing the passkey
         userVerified: authDataParsed.flags.uv, // is user was verified when signing the passkey
@@ -283,7 +316,7 @@ export class PasskeyConnector {
         flagsInt: authDataParsed.flags.flagsInt, // unknown
       },
       publicKey: authDataParsed.credentialPublicKey!,
-      aaguid: authDataParsed.aaguid!,
+      aaguid,
       credentialId: credential.rawId,
       credentialStringId: credential.id,
       transports: (credential.response as any).getTransports(),

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Copy } from "@nfid-frontend/ui"
+import { Copy, Loader } from "@nfid-frontend/ui"
 
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
@@ -40,12 +40,22 @@ export const VaultAddressBar: React.FC<VaultAddressBarProps> = () => {
             "mt-3 sm:mt-0",
           )}
         >
-          <CenterEllipsis
-            value={address ?? ""}
-            leadingChars={20}
-            trailingChars={3}
-          />
-          <Copy className="text-secondary" value={address ?? ""} />
+          {address ? (
+            <>
+              <CenterEllipsis
+                value={address ?? ""}
+                leadingChars={20}
+                trailingChars={3}
+              />
+              <Copy className="text-secondary" value={address ?? ""} />
+            </>
+          ) : (
+            <Loader
+              imageClasses="h-5 w-5"
+              fullscreen={false}
+              isLoading={true}
+            />
+          )}
         </div>
       </div>
     </div>

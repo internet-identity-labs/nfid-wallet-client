@@ -5,24 +5,17 @@ import { useMemo } from "react"
 import { useVaultDelegation } from "./use-vault-delegation"
 
 export const useVaultMember = () => {
-  const {
-    data: UserIIDelegation,
-    isLoading,
-    isValidating,
-  } = useVaultDelegation()
+  const { data: delegation, isLoading, isValidating } = useVaultDelegation()
 
   const userAddress = useMemo(() => {
-    if (!UserIIDelegation) return ""
+    if (!delegation) return ""
 
-    return principalToAddress(
-      UserIIDelegation.getPrincipal(),
-      Array(32).fill(1),
-    )
-  }, [UserIIDelegation])
+    return principalToAddress(delegation.getPrincipal(), Array(32).fill(1))
+  }, [delegation])
 
   return {
     address: userAddress,
-    identity: UserIIDelegation as SignIdentity,
+    identity: delegation as SignIdentity,
     isLoading: isValidating,
     isReady: !isLoading,
   }

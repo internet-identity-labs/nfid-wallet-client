@@ -3,13 +3,11 @@ import useSWR from "swr"
 import { getVaults, getWallets, ObjectState } from "@nfid/integration"
 
 import { fetchVaultsWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
-import { useProfile } from "frontend/integration/identity-manager/queries"
 
 import { useVaultDelegation } from "./use-vault-delegation"
 
 export const useAllVaultsWallets = () => {
-  const { profile } = useProfile()
-  const { data: vaultDelegation } = useVaultDelegation(profile?.anchor)
+  const { data: vaultDelegation } = useVaultDelegation()
 
   const { data: allVaultsWallets, isLoading: isAllWalletsLoading } = useSWR(
     vaultDelegation ? "allVaultsWallets" : null,

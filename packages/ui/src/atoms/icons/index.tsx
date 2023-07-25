@@ -162,5 +162,11 @@ export { ReactComponent as IconCmpPasskey } from "./passkey.svg"
 export { ReactComponent as IconCmpNFID } from "./nfid.svg"
 export { ReactComponent as IconCmpAnonymous } from "./anonymous.svg"
 
+export { ReactComponent as IconCmpTinyETH } from "./tiny-eth.svg"
+export { ReactComponent as IconCmpTinyBTC } from "./tiny-btc.svg"
+export { ReactComponent as IconCmpTinyIC } from "./tiny-ic.svg"
+
+export { ReactComponent as IconCmpStatusSuccess } from "./status-success.svg"
+
 // png
 export { IconMetamask } from "./metamask"

@@ -12,7 +12,7 @@ As a user, I want to see fungible assets transaction history
 #       And Open <tab> tab for first account
 #       Then <txs> transaction in the table
 #       And Sent <balance> <currency>
-#       And From <address_from> to <address_to>
+#   And From <address_from> to <address_to>
 #       And Date is <millis>
 #       Examples:
 #             | txs | tab      | network | label             | currency | balance | millis        | address_from                                                     | address_to                                                       | anchor |

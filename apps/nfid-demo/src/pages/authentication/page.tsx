@@ -44,7 +44,7 @@ export const PageAuthentication = () => {
       onError: (error) => {
         console.error(error)
       },
-      identityProvider: `${NFID_PROVIDER_URL}/authenticate`,
+      identityProvider: `${NFID_PROVIDER_URL}/authenticate?applicationName=NFID-DEMO&applicationLogo=https://logo.clearbit.com/clearbit.com`,
       windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
     })
   }, [authClient, updateAuthButton])

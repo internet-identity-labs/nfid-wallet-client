@@ -1,7 +1,13 @@
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
-import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  anchorRules,
+  Button,
+  IconCmpGoogle,
+  Input,
+  SDKApplicationMeta,
+} from "@nfid-frontend/ui"
 
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
@@ -80,7 +86,20 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       <div className="flex flex-col w-full mt-8 space-y-1">
         {!showAdvancedOptions ? (
           <>
-            <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+            <SignInWithGoogle
+              onLogin={onSelectGoogleAuthorization}
+              button={
+                <Button
+                  id="google-sign-button"
+                  className="h-12 !p-0 border-buttonBorderColor"
+                  type="stroke"
+                  icon={<IconCmpGoogle />}
+                  block
+                >
+                  Continue with Google
+                </Button>
+              }
+            />
             <Separator className="max-w-[400px]" />
 
             <IconButton

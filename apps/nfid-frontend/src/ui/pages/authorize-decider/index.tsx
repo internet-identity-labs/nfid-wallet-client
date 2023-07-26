@@ -1,7 +1,13 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  anchorRules,
+  Button,
+  IconCmpGoogle,
+  Input,
+  SDKApplicationMeta,
+} from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
 import MetamaskIcon from "frontend/assets/metamask.svg"
@@ -135,7 +141,20 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         )}
         {!showAdvancedOptions ? (
           <div className="w-full max-w-[400px]">
-            <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+            <SignInWithGoogle
+              onLogin={onSelectGoogleAuthorization}
+              button={
+                <Button
+                  id="google-sign-button"
+                  className="h-12 !p-0 border-buttonBorderColor"
+                  type="stroke"
+                  icon={<IconCmpGoogle />}
+                  block
+                >
+                  Continue with Google
+                </Button>
+              }
+            />
 
             <div className="grid h-12 grid-cols-3 gap-4 my-2.5">
               <IconButton

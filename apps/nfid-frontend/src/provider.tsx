@@ -28,6 +28,7 @@ export const Provider: React.FC<ProviderProps> = ({ children }) => {
         api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
         autocapture: false,
         persistence: "localStorage",
+        capture_pageview: false,
       }}
     >
       <ParallaxProvider>

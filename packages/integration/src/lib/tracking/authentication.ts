@@ -1,5 +1,7 @@
 import posthog from "posthog-js"
 
+import { authState } from "../authentication"
+
 type AuthSource =
   | "google"
   | "email"
@@ -37,6 +39,12 @@ type AuthAbortedEvent = {
   authTarget: string
 }
 
+type UserData = {
+  legacyUser: boolean
+  hasEmail: boolean
+  registrationSource?: AuthTarget
+}
+
 type AuthMagicLinkLoadedEvent = {
   emailVerified: boolean
   tokenExpired: boolean
@@ -48,7 +56,8 @@ type AuthMagicGoolgeLinkCompletedEvent = {
 }
 
 class AuthenticationTracking {
-  private data = {}
+  private data: Partial<AuthData> = {}
+  private userData = {}
 
   public updateData(data: Partial<AuthData>) {
     this.data = {
@@ -56,6 +65,22 @@ class AuthenticationTracking {
       ...data,
     }
   }
+
+  public updateUserData(userData: UserData) {
+    this.userData = {
+      ...this.userData,
+      ...userData,
+    }
+  }
+
+  public identify(userData: UserData) {
+    const delegationIdentity = authState.get().delegationIdentity
+    if (!delegationIdentity) throw new Error("delegationIdentity is missing")
+
+    console.debug("authenticationTracking.identify", { userData })
+    posthog.identify(delegationIdentity.getPrincipal().toString(), userData)
+  }
+
   public initiated(event: AuthInitiatedEvent) {
     console.debug("authenticationTracking.initiated", { event })
     this.updateData(event)
@@ -68,9 +93,14 @@ class AuthenticationTracking {
     posthog.capture("Auth - aborted", this.data)
   }
 
-  public completed(event: AuthAbortedEvent) {
-    console.debug("authenticationTracking.completed", { event })
-    this.updateData(event)
+  public completed(userData: UserData) {
+    this.identify({
+      ...userData,
+      ...(this.data.isNewUser
+        ? { registrationSource: this.data.authTarget }
+        : {}),
+    })
+    console.debug("authenticationTracking.completed", { data: this.data })
     posthog.capture("Auth - completed", this.data)
   }
 
@@ -80,20 +110,17 @@ class AuthenticationTracking {
   }
 
   public magicLinkLoaded(data: AuthMagicLinkLoadedEvent) {
-    console.debug("authenticationTracking.magicLinkLoaded", { data: this.data })
+    console.debug("authenticationTracking.magicLinkLoaded", { data })
     posthog.capture("Auth - magic link loaded", data)
   }
 
   public magicGoogleLinkInitiated() {
-    console.debug("authenticationTracking.magicGoogleLinkInitiated", {
-      data: this.data,
-    })
     posthog.capture("Auth - magic google link initiated")
   }
 
   public magicGoogleLinkCompleted(data: AuthMagicGoolgeLinkCompletedEvent) {
     console.debug("authenticationTracking.magicGoogleLinkCompleted", {
-      data: this.data,
+      data,
     })
     posthog.capture("Auth - magic google link completed", data)
   }

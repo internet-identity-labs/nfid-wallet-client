@@ -214,15 +214,22 @@ export class PasskeyConnector {
         sessionKey,
       })
 
-      authenticationTracking.completed({
+      authenticationTracking.updateData({
         authSource: "passkey - continue",
         authTarget: "nfid",
+      })
+
+      const profile = await fetchProfile()
+
+      authenticationTracking.completed({
+        legacyUser: profile.wallet === RootWallet.II,
+        hasEmail: !!profile.email,
       })
 
       await im.use_access_point([])
 
       return {
-        anchor: (await fetchProfile()).anchor,
+        anchor: profile.anchor,
         delegationIdentity: delegationIdentity,
         identity: multiIdent._actualIdentity!,
       }

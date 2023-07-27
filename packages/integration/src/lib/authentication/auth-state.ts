@@ -141,9 +141,6 @@ function makeAuthState() {
       sessionKey,
     })
     replaceIdentity(delegationIdentity, "authState.set")
-    posthog.identify(delegationIdentity.getPrincipal().toString(), {
-      legacyUser: false,
-    })
   }
   function get() {
     checkAndRenewFEDelegation()

@@ -25,6 +25,7 @@ import {
   ii,
   im,
   requestFEDelegationChain,
+  securityTracking,
   storePasskey,
 } from "@nfid/integration"
 
@@ -97,6 +98,15 @@ export class PasskeyConnector {
         : Icon.desktop,
       principal: identity.getPrincipal().toText(),
       credential_id: [data.credentialStringId],
+    })
+    securityTracking.passkeyAdded({
+      authenticatorAttachment: data.type,
+      transports: data.transports,
+      userPresent: data.flags.userPresent,
+      userVerified: data.flags.userVerified,
+      backupEligibility: data.flags.backupEligibility,
+      backupState: data.flags.backupState,
+      name: data.name,
     })
   }
 

@@ -4,6 +4,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import posthog from "posthog-js"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
 import { agent } from "../agent"
@@ -152,6 +153,8 @@ function makeAuthState() {
     observableAuthState$.next({
       cacheLoaded: true,
     })
+    // clear tracking session
+    posthog.reset()
   }
   function subscribe(next: (state: ObservableAuthState) => void) {
     return observableAuthState$.subscribe(next)

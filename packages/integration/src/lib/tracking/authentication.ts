@@ -37,6 +37,16 @@ type AuthAbortedEvent = {
   authTarget: string
 }
 
+type AuthMagicLinkLoadedEvent = {
+  emailVerified: boolean
+  tokenExpired: boolean
+  linkGoogle: boolean
+}
+
+type AuthMagicGoolgeLinkCompletedEvent = {
+  googleEmailLinked: boolean
+}
+
 class AuthenticationTracking {
   private data = {}
 
@@ -47,22 +57,45 @@ class AuthenticationTracking {
     }
   }
   public initiated(event: AuthInitiatedEvent) {
+    console.debug("authenticationTracking.initiated", { event })
     this.updateData(event)
     posthog.capture("Auth - initiated", this.data)
   }
 
   public aborted(event: AuthAbortedEvent) {
+    console.debug("authenticationTracking.aborted", { event })
     this.updateData(event)
     posthog.capture("Auth - aborted", this.data)
   }
 
   public completed(event: AuthAbortedEvent) {
+    console.debug("authenticationTracking.completed", { event })
     this.updateData(event)
     posthog.capture("Auth - completed", this.data)
   }
 
   public failed() {
+    console.debug("authenticationTracking.failed", { data: this.data })
     posthog.capture("Auth - 2fa failed", this.data)
+  }
+
+  public magicLinkLoaded(data: AuthMagicLinkLoadedEvent) {
+    console.debug("authenticationTracking.magicLinkLoaded", { data: this.data })
+    posthog.capture("Auth - magic link loaded", data)
+  }
+
+  public magicGoogleLinkInitiated() {
+    console.debug("authenticationTracking.magicGoogleLinkInitiated", {
+      data: this.data,
+    })
+    posthog.capture("Auth - magic google link initiated")
+  }
+
+  public magicGoogleLinkCompleted(data: AuthMagicGoolgeLinkCompletedEvent) {
+    console.debug("authenticationTracking.magicGoogleLinkCompleted", {
+      data: this.data,
+    })
+    posthog.capture("Auth - magic google link completed", data)
   }
 }
 

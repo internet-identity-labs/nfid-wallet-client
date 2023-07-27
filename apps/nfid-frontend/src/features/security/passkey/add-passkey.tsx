@@ -25,6 +25,14 @@ export const AddPasskey = ({
     securityTracking.addPasskey()
   }, [])
 
+  const handleCreatePasskey = React.useCallback(() => {
+    securityTracking.passkeyCreationInitiated(isMultiDevice)
+    handleWithLoading(
+      () => passkeyConnector.createCredential({ isMultiDevice }),
+      () => setIsModalVisible(false),
+    )
+  }, [handleWithLoading, isMultiDevice])
+
   return (
     <div>
       <div
@@ -69,16 +77,7 @@ export const AddPasskey = ({
             generally more convenient and easier to secure. Some devices, like
             newer iPhones, only support multi-device passkeys.
           </p>
-          <Button
-            type="primary"
-            block
-            onClick={() =>
-              handleWithLoading(
-                () => passkeyConnector.createCredential({ isMultiDevice }),
-                () => setIsModalVisible(false),
-              )
-            }
-          >
+          <Button type="primary" block onClick={handleCreatePasskey}>
             Continue
           </Button>
         </div>

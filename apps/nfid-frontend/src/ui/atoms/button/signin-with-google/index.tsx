@@ -1,6 +1,6 @@
 import React from "react"
 
-import { getIsMobileDeviceMatch } from "frontend/integration/device"
+import { getBrowser } from "frontend/ui/utils"
 
 import { CredentialResponse } from "./types"
 import useLoadGsiScript from "./useLoadGsiScript"
@@ -20,19 +20,6 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
 }) => {
   const buttonRef = React.useRef<HTMLDivElement>(null)
 
-  const [googleButtonWidth, setButtonWidth] = React.useState<
-    number | undefined
-  >()
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      const width = buttonRef.current?.clientWidth
-      console.debug("handleOnLoadContainer", { width })
-      setButtonWidth(width)
-    })
-    return () => clearTimeout(timer)
-  }, [])
-
   const onScriptLoadSuccess = React.useCallback(() => {
     window.google?.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
@@ -44,7 +31,6 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   useLoadGsiScript({ onScriptLoadSuccess })
 
   window.google?.accounts.id.renderButton(buttonRef.current, {
-    width: googleButtonWidth?.toString() || "200",
     text: "continue_with",
     shape: "rectangular",
     theme: "outline",
@@ -54,7 +40,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
 
   const onClick = React.useCallback(() => {
     let el: any
-    if (getIsMobileDeviceMatch())
+    if (getBrowser() === "Safari")
       el = buttonRef.current?.children[0].children[1].children[1]
     else el = buttonRef.current?.querySelector("div[role=button]")
 

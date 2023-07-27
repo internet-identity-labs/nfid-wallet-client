@@ -11,8 +11,8 @@ type SendToken = {
 }
 
 class SendReceiveTracking {
-  openModal() {
-    const title = "Send tokens modal opened"
+  openModal({ isSending = true } = {}) {
+    const title = `${isSending ? "Send" : "Receive"} tokens modal opened`
     console.debug("SendReceiveTracking.openModal", { title })
     posthog.capture(title)
   }

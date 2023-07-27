@@ -3,6 +3,7 @@ import React from "react"
 import { ToastContainer } from "react-toastify"
 
 import { Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
+import { securityTracking } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
@@ -19,6 +20,19 @@ export const AddPasskey = ({
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [isMultiDevice, setIsMultiDevice] = React.useState(true)
 
+  const handleOpenModal = React.useCallback(() => {
+    setIsModalVisible(true)
+    securityTracking.addPasskey()
+  }, [])
+
+  const handleCreatePasskey = React.useCallback(() => {
+    securityTracking.passkeyCreationInitiated(isMultiDevice)
+    handleWithLoading(
+      () => passkeyConnector.createCredential({ isMultiDevice }),
+      () => setIsModalVisible(false),
+    )
+  }, [handleWithLoading, isMultiDevice])
+
   return (
     <div>
       <div
@@ -26,7 +40,7 @@ export const AddPasskey = ({
           "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
           "hover:opacity-50 cursor-pointer transition-opacity",
         )}
-        onClick={() => setIsModalVisible(true)}
+        onClick={handleOpenModal}
       >
         <IconCmpPlus className="w-[18px] h-[18px]" />
         <span className="text-sm font-bold">Add passkey</span>
@@ -63,16 +77,7 @@ export const AddPasskey = ({
             generally more convenient and easier to secure. Some devices, like
             newer iPhones, only support multi-device passkeys.
           </p>
-          <Button
-            type="primary"
-            block
-            onClick={() =>
-              handleWithLoading(
-                () => passkeyConnector.createCredential({ isMultiDevice }),
-                () => setIsModalVisible(false),
-              )
-            }
-          >
+          <Button type="primary" block onClick={handleCreatePasskey}>
             Continue
           </Button>
         </div>

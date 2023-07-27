@@ -1,5 +1,6 @@
 import * as RadixTooltip from "@radix-ui/react-tooltip"
 import { useInterpret } from "@xstate/react"
+import { PostHogProvider } from "posthog-js/react"
 import React, { createContext } from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { ParallaxProvider } from "react-scroll-parallax"
@@ -21,12 +22,22 @@ export const Provider: React.FC<ProviderProps> = ({ children }) => {
   const transferService: TransferMachineActor = useInterpret(transferMachine)
 
   return (
-    <ParallaxProvider>
-      <HelmetProvider>
-        <ProfileContext.Provider value={{ transferService }}>
-          <RadixTooltip.Provider>{children}</RadixTooltip.Provider>
-        </ProfileContext.Provider>
-      </HelmetProvider>
-    </ParallaxProvider>
+    <PostHogProvider
+      apiKey={process.env.REACT_APP_PUBLIC_POSTHOG_KEY}
+      options={{
+        api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
+        autocapture: false,
+        persistence: "localStorage",
+        capture_pageview: false,
+      }}
+    >
+      <ParallaxProvider>
+        <HelmetProvider>
+          <ProfileContext.Provider value={{ transferService }}>
+            <RadixTooltip.Provider>{children}</RadixTooltip.Provider>
+          </ProfileContext.Provider>
+        </HelmetProvider>
+      </ParallaxProvider>
+    </PostHogProvider>
   )
 }

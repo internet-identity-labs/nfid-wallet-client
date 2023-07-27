@@ -2,6 +2,7 @@ import clsx from "clsx"
 import React, { useState } from "react"
 
 import { IconCmpTrash } from "@nfid-frontend/ui"
+import { securityTracking } from "@nfid/integration"
 
 import { Button } from "frontend/ui/atoms/button"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
@@ -54,7 +55,13 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
           className="rounded-t-none"
           onClick={() =>
             handleWithLoading(
-              () => securityConnector.deleteRecoveryPhrase(phrase),
+              async () => {
+                const response = await securityConnector.deleteRecoveryPhrase(
+                  phrase,
+                )
+                securityTracking.recoveryPhraseRemoved()
+                return response
+              },
               () => setIsModalVisible(false),
             )
           }

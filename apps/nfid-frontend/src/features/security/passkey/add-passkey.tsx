@@ -3,6 +3,7 @@ import React from "react"
 import { ToastContainer } from "react-toastify"
 
 import { Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
+import { securityTracking } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
@@ -19,6 +20,11 @@ export const AddPasskey = ({
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [isMultiDevice, setIsMultiDevice] = React.useState(true)
 
+  const handleOpenModal = React.useCallback(() => {
+    setIsModalVisible(true)
+    securityTracking.addPasskey()
+  }, [])
+
   return (
     <div>
       <div
@@ -26,7 +32,7 @@ export const AddPasskey = ({
           "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
           "hover:opacity-50 cursor-pointer transition-opacity",
         )}
-        onClick={() => setIsModalVisible(true)}
+        onClick={handleOpenModal}
       >
         <IconCmpPlus className="w-[18px] h-[18px]" />
         <span className="text-sm font-bold">Add passkey</span>

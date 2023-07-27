@@ -8,6 +8,7 @@ import {
   IconCmpPasskey,
   Input,
 } from "@nfid-frontend/ui"
+import { authenticationTracking } from "@nfid/integration"
 
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -110,6 +111,10 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           icon={<IconCmpPasskey />}
           block
           onClick={async () => {
+            authenticationTracking.initiated({
+              authSource: "passkey - continue",
+              authTarget: "nfid",
+            })
             authAbortController.abort("Aborted webauthn manually")
             const abortController = new AbortController()
             const res = await passkeyConnector.loginWithPasskey(
@@ -119,6 +124,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                 setAuthAbortController(new AbortController())
               },
             )
+
             onAuthWithPasskey(res)
           }}
         >

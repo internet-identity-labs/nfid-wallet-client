@@ -17,9 +17,10 @@ import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import posthog from "posthog-js"
 import { toast } from "react-toastify"
 
-import { IPasskeyMetadata } from "@nfid/integration"
+import { authenticationTracking, IPasskeyMetadata } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 
@@ -130,9 +131,27 @@ export class MultiWebAuthnIdentity extends SignIdentity {
           result.id,
         )
       } catch (e) {
+        authenticationTracking.failed()
         toast.error("We could not find your passkey. Try different one")
         throw new Error("We could not find your passkey.")
       }
+
+      authenticationTracking.updateData({
+        authLocation: "main",
+        authSource: "passkey - continue",
+        isNewUser: false,
+        authTarget: "nfid", // {APP_NAME}
+        networkTarget: "nfid",
+        mainAccountOffered: false,
+        accountWillAutoSelect: true,
+        passkeyUsed: true,
+        // authenticatorAttachment: ADD_VALUE,
+        // transports: passkeyMetadata.transports,
+        userPresent: passkeyMetadata.flags.userPresent,
+        userVerified: passkeyMetadata.flags.userVerified,
+        backupEligibility: passkeyMetadata.flags.backupEligibility,
+        backupState: passkeyMetadata.flags.backupState,
+      })
 
       this._actualIdentity = WebAuthnIdentity.fromJSON(
         JSON.stringify({

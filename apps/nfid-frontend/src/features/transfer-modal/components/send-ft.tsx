@@ -374,6 +374,7 @@ export const TransferFT = ({
               setSelectedTokenCurrency(arrayValue[0])
               setSelectedTokenBlockchain(arrayValue[1])
             }}
+            onOpen={sendReceiveTracking.supportedTokenModalOpened}
             preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
             isSmooth
             trigger={

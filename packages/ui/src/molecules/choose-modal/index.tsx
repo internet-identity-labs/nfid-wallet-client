@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
-import { IoIosSearch } from "react-icons/io"
 
 import { IconCmpSearch } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
@@ -18,6 +17,7 @@ export interface IChooseModal {
   optionGroups: IGroupedOptions[]
   preselectedValue?: string
   onSelect?: (value: string) => void
+  onOpen?: () => void
   infoText?: string
   label?: string
   title: string
@@ -35,6 +35,7 @@ export const ChooseModal = ({
   optionGroups,
   preselectedValue,
   onSelect,
+  onOpen,
   infoText,
   title,
   label,
@@ -51,6 +52,7 @@ export const ChooseModal = ({
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
   const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
+  console.debug("ChooseModal", { isModalVisible })
 
   const handleSelect = useCallback((option: IGroupOption) => {
     setSelectedValue(option.value)

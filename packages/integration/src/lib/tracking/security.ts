@@ -53,6 +53,18 @@ export class SecurityTracking {
     console.debug("SecurityTracking.toggle2FA", { title })
     posthog.capture(title)
   }
+
+  recoveryPhraseAdded() {
+    const title = "Recovery phrase added"
+    console.debug("SecurityTracking.recoveryPhraseAdded", { title })
+    posthog.capture(title)
+  }
+
+  recoveryPhraseRemoved() {
+    const title = "Recovery phrase removed"
+    console.debug("SecurityTracking.recoveryPhraseRemoved", { title })
+    posthog.capture(title)
+  }
 }
 
 export const securityTracking = new SecurityTracking()

@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IconCmpPlus } from "@nfid-frontend/ui"
+import { securityTracking } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
@@ -103,7 +104,13 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
             className="mt-5"
             onClick={() =>
               handleWithLoading(
-                () => securityConnector.createRecoveryPhrase(phrase),
+                async () => {
+                  const response = await securityConnector.createRecoveryPhrase(
+                    phrase,
+                  )
+                  securityTracking.recoveryPhraseAdded()
+                  return response
+                },
                 () => setIsModalVisible(false),
               )
             }

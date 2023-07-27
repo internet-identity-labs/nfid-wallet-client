@@ -3,6 +3,7 @@ import clsx from "clsx"
 import { useContext } from "react"
 
 import { Button } from "@nfid-frontend/ui"
+import { sendReceiveTracking } from "@nfid/integration"
 
 import { ProfileContext } from "frontend/provider"
 
@@ -14,6 +15,7 @@ export const SendReceiveButton = () => {
   const [, send] = useActor(globalServices.transferService)
 
   const handleOpenSendReceive = () => {
+    sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send("SHOW")
   }

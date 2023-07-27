@@ -12,8 +12,6 @@ type AuthSource =
 
 type AuthTarget = "nfid" | string
 
-type AuthenticatorAttachment = "platform" | "cross-platform"
-
 type AuthData = {
   authLocation: "magic" | "main"
   authSource: AuthSource

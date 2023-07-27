@@ -1,4 +1,4 @@
-import { ic } from "@nfid/integration"
+import { ic } from "../agent"
 
 export async function storePasskey(key: string, data: string) {
   const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY

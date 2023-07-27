@@ -11,6 +11,7 @@ import {
   getPasskey,
   im,
   replaceActorIdentity,
+  securityTracking,
 } from "@nfid/integration"
 
 import { removeAccessPointFacade } from "frontend/integration/facade"
@@ -192,6 +193,7 @@ export class SecurityConnector {
 
     if (enabled) toast.success("2FA enabled")
     else toast.success("2FA disabled")
+    securityTracking.toggle2FA(enabled)
   }
 }
 

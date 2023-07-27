@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
 import { ChooseModal, Copy, QRCode, BlurredLoader } from "@nfid-frontend/ui"
-import { RootWallet } from "@nfid/integration"
+import { RootWallet, sendReceiveTracking } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -80,6 +80,10 @@ export const TransferReceive = ({
   useEffect(() => {
     !isVault && setSelectedAccountAddress(accountsOptions[0]?.options[0]?.value)
   }, [accountsOptions, isVault])
+
+  useEffect(() => {
+    sendReceiveTracking.openModal({ isSending: false })
+  }, [])
 
   return (
     <BlurredLoader

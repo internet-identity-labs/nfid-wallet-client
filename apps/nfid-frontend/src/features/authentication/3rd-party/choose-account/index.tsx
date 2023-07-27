@@ -2,7 +2,6 @@ import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import { toast } from "react-toastify"
-import User from "src/assets/userpics/userpic_6.svg"
 import useSWR from "swr"
 
 import {
@@ -29,7 +28,6 @@ import {
 import { getLegacyThirdPartyAuthSession } from "../../services"
 import { AuthAppMeta } from "../../ui/app-meta"
 import { PublicProfileButton } from "../public-profile-button"
-import { getPublicProfile } from "./services"
 
 export interface IAuthChooseAccount {
   appMeta: AuthorizingAppMeta
@@ -48,8 +46,6 @@ export const AuthChooseAccount = ({
     useSWR([authRequest, "legacyAnonymousProfiles"], ([authRequest]) =>
       fetchAccountsService({ authRequest }),
     )
-
-  const { data: publicProfile } = useSWR("publicProfile", getPublicProfile)
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {

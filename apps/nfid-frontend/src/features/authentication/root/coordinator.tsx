@@ -1,5 +1,8 @@
 import { useActor } from "@xstate/react"
+import posthog from "posthog-js"
 import React from "react"
+
+import { authenticationTracking } from "@nfid/integration"
 
 import { AuthSelection } from "frontend/features/authentication/auth-selection"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
@@ -31,26 +34,34 @@ export default function AuthenticationCoordinator({
     case state.matches("AuthSelection"):
       return (
         <AuthSelection
-          onSelectEmailAuth={(email: string) =>
+          onSelectEmailAuth={(email: string) => {
+            authenticationTracking.initiated({
+              authSource: "email",
+              authTarget: "nfid",
+            })
             send({
               type: "AUTH_WITH_EMAIL",
               data: email,
             })
-          }
+          }}
           onSelectGoogleAuth={({ credential }) => {
+            authenticationTracking.initiated({
+              authSource: "google",
+              authTarget: "nfid",
+            })
             send({
               type: "AUTH_WITH_GOOGLE",
               data: { jwt: credential },
             })
           }}
-          onSelectOtherAuth={() =>
+          onSelectOtherAuth={() => {
             send({
               type: "AUTH_WITH_OTHER",
             })
-          }
-          onAuthWithPasskey={(authSession: AbstractAuthSession) =>
+          }}
+          onAuthWithPasskey={(authSession: AbstractAuthSession) => {
             send({ type: "AUTHENTICATED", data: authSession })
-          }
+          }}
           appMeta={state.context?.appMeta}
         />
       )

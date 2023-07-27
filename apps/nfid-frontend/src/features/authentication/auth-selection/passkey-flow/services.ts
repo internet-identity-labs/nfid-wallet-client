@@ -20,6 +20,7 @@ import {
   LambdaPasskeyDecoded,
   RootWallet,
   authState,
+  authenticationTracking,
   getPasskey,
   ii,
   im,
@@ -196,28 +197,41 @@ export class PasskeyConnector {
       true,
     )
 
-    const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
+    try {
+      const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
 
-    const delegationIdentity = DelegationIdentity.fromDelegation(
-      sessionKey,
-      chain,
-    )
+      callback && callback()
 
-    callback && callback()
+      const delegationIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
+        chain,
+      )
 
-    authState.set({
-      identity: multiIdent._actualIdentity!,
-      delegationIdentity,
-      chain,
-      sessionKey,
-    })
+      authState.set({
+        identity: multiIdent._actualIdentity!,
+        delegationIdentity,
+        chain,
+        sessionKey,
+      })
 
-    await im.use_access_point([])
+      authenticationTracking.completed({
+        authSource: "passkey - continue",
+        authTarget: "nfid",
+      })
 
-    return {
-      anchor: (await fetchProfile()).anchor,
-      delegationIdentity: delegationIdentity,
-      identity: multiIdent._actualIdentity!,
+      await im.use_access_point([])
+
+      return {
+        anchor: (await fetchProfile()).anchor,
+        delegationIdentity: delegationIdentity,
+        identity: multiIdent._actualIdentity!,
+      }
+    } catch (e) {
+      authenticationTracking.aborted({
+        authSource: "passkey - continue",
+        authTarget: "nfid",
+      })
+      throw e
     }
   }
 

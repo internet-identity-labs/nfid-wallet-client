@@ -17,7 +17,11 @@ import {
   sumRules,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
-import { RootWallet, registerTransaction } from "@nfid/integration"
+import {
+  RootWallet,
+  registerTransaction,
+  sendReceiveTracking,
+} from "@nfid/integration"
 import { TokenMetadata } from "@nfid/integration/token/dip-20"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
@@ -72,7 +76,12 @@ export const TransferFT = ({
   )
 
   const { profile, isLoading: isLoadingProfile } = useProfile()
-  console.debug("TransferFT", { profile, isLoadingProfile })
+  console.debug("TransferFT", {
+    profile,
+    isLoadingProfile,
+    selectedTokenBlockchain,
+    selectedTokenCurrency,
+  })
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
@@ -179,6 +188,24 @@ export const TransferFT = ({
       selectedConnector?.getRate(selectedTokenCurrency),
   )
 
+  const handleTrackTransfer = useCallback(
+    (amount: number) => {
+      const token = selectedConnector?.getTokenConfig()
+      if (!token) return
+
+      sendReceiveTracking.sendToken({
+        network: token.blockchain,
+        destinationType: "address",
+        tokenName: token.title || "",
+        tokenType: "non-fungible",
+        tokenStandard: token.tokenStandard,
+        amount: amount,
+        fee: transferFee?.fee ?? "0",
+      })
+    },
+    [selectedConnector, transferFee?.fee],
+  )
+
   const submit = useCallback(
     async (values: { amount: number; to: string }) => {
       if (!tokenMetadata) return toast.error("Token metadata has not loaded")
@@ -241,6 +268,7 @@ export const TransferFT = ({
                 : "",
           })
 
+          handleTrackTransfer(values.amount)
           resolve(res)
         }),
         title: `${values.amount} ${selectedTokenCurrency}`,
@@ -260,6 +288,7 @@ export const TransferFT = ({
       })
     },
     [
+      handleTrackTransfer,
       isVault,
       onTransferPromise,
       rate,

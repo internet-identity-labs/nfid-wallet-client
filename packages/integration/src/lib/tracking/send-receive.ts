@@ -22,6 +22,12 @@ class SendReceiveTracking {
     console.debug("SendReceiveTracking.sendToken", { title, data })
     posthog.capture(title, data)
   }
+
+  supportedTokenModalOpened() {
+    const title = "Token support dialog opened"
+    console.debug("SendReceiveTracking.supportedTokenModalOpened", { title })
+    posthog.capture(title)
+  }
 }
 
 export const sendReceiveTracking = new SendReceiveTracking()

@@ -1,5 +1,4 @@
 import { useActor } from "@xstate/react"
-import posthog from "posthog-js"
 import React from "react"
 
 import { authenticationTracking } from "@nfid/integration"
@@ -29,6 +28,13 @@ export default function AuthenticationCoordinator({
       }),
     [state.value, state.context],
   )
+
+  // Track on unmount
+  React.useEffect(() => {
+    return () => {
+      authenticationTracking.userSendToApp()
+    }
+  }, [])
 
   switch (true) {
     case state.matches("AuthSelection"):

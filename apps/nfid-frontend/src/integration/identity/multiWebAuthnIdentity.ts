@@ -130,6 +130,9 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         passkeyMetadata = await passkeyConnector.getPasskeyByCredentialID(
           result.id,
         )
+        authenticationTracking.updateData({
+          authenticatorAttachment: passkeyMetadata.type,
+        })
       } catch (e) {
         authenticationTracking.failed()
         toast.error("We could not find your passkey. Try different one")

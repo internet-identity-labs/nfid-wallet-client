@@ -12,6 +12,8 @@ type AuthSource =
 
 type AuthTarget = "nfid" | string
 
+type AuthenticatorAttachment = "platform" | "cross-platform"
+
 type AuthData = {
   authLocation: "magic" | "main"
   authSource: AuthSource
@@ -21,7 +23,7 @@ type AuthData = {
   mainAccountOffered: boolean
   accountWillAutoSelect: boolean
   passkeyUsed: boolean
-  authenticatorAttachment: ""
+  authenticatorAttachment: AuthenticatorAttachment
   transports: ""
   userPresent: boolean
   userVerified: boolean
@@ -102,6 +104,18 @@ class AuthenticationTracking {
     })
     console.debug("authenticationTracking.completed", { data: this.data })
     posthog.capture("Auth - completed", this.data)
+  }
+
+  public userSendToApp() {
+    const data = {
+      authSource: this.data.authSource,
+      authTarget: this.data.authTarget,
+      isNewUser: this.data.isNewUser,
+      networkTarget: this.data.networkTarget,
+    }
+    const title = "User sent to app"
+    console.debug("authenticationTracking.userSendToApp", { title, data })
+    posthog.capture(title, data)
   }
 
   public failed() {

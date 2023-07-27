@@ -20,6 +20,7 @@ export class SecurityTracking {
   addPasskey() {
     posthog.capture("Add passkey modal opened")
   }
+
   addPasskeyError(data?: { message: string }) {
     const title = "Add passkey error"
     console.debug("SecurityTracking.addPasskeyError", { title, data })
@@ -34,15 +35,23 @@ export class SecurityTracking {
     })
     posthog.capture(title, { isMultiDevice })
   }
+
   passkeyAdded(data: PasskeyBase) {
     const title = "Passkey added"
     console.debug("SecurityTracking.passkeyAdded", { title, data })
     posthog.capture(title, data)
   }
+
   passkeyRemoved(data: PasskeyRemoved) {
     const title = "Passkey removed"
     console.debug("SecurityTracking.passkeyRemoved", { title, data })
     posthog.capture(title, data)
+  }
+
+  toggle2FA(enabled: boolean) {
+    const title = `2FA ${enabled ? "enabled" : "disabled"}`
+    console.debug("SecurityTracking.toggle2FA", { title })
+    posthog.capture(title)
   }
 }
 

@@ -99,20 +99,12 @@ export class PasskeyConnector {
       principal: identity.getPrincipal().toText(),
       credential_id: [data.credentialStringId],
     })
-    securityTracking.passkeyAdded({
-      authenticatorAttachment: data.type,
-      transports: data.transports,
-      userPresent: data.flags.userPresent,
-      userVerified: data.flags.userVerified,
-      backupEligibility: data.flags.backupEligibility,
-      backupState: data.flags.backupState,
-      name: data.name,
-    })
   }
 
   async getPasskeyByCredentialID(key: string): Promise<IPasskeyMetadata> {
     const passkey = await getPasskey([key])
     const decodedObject = JSON.parse(passkey[0].data)
+    console.debug("getPasskeyByCredentialID", { decodedObject })
 
     return {
       ...decodedObject,
@@ -186,10 +178,20 @@ export class PasskeyConnector {
       } else {
         toast.error(e.message)
       }
+      securityTracking.addPasskeyError({ message: e.message })
       return
     }
 
     const lambdaRequest = this.decodePublicKeyCredential(credential)
+    securityTracking.passkeyAdded({
+      authenticatorAttachment: lambdaRequest.data.type,
+      transports: lambdaRequest.data.transports,
+      userPresent: lambdaRequest.data.flags.userPresent,
+      userVerified: lambdaRequest.data.flags.userVerified,
+      backupEligibility: lambdaRequest.data.flags.backupEligibility,
+      backupState: lambdaRequest.data.flags.backupState,
+      name: lambdaRequest.data.name,
+    })
 
     return await this.storePasskey(lambdaRequest)
   }
@@ -317,6 +319,8 @@ export class PasskeyConnector {
   }
 
   private decodePublicKeyCredential(credential: PublicKeyCredential) {
+    console.debug("decodePublicKeyCredential", { credential })
+
     const utf8Decoder = new TextDecoder("utf-8")
     const decodedClientData = utf8Decoder.decode(
       credential.response.clientDataJSON,

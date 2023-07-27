@@ -20,6 +20,12 @@ export class SecurityTracking {
   addPasskey() {
     posthog.capture("Add passkey modal opened")
   }
+  addPasskeyError(data?: { message: string }) {
+    const title = "Add passkey error"
+    console.debug("SecurityTracking.addPasskeyError", { title, data })
+    posthog.capture(title, data)
+  }
+
   passkeyCreationInitiated(isMultiDevice: boolean) {
     const title = "Passkey creation initiated"
     console.debug("passkeyCreationInitiated", {

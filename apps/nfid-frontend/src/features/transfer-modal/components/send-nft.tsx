@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { useCallback, useMemo, useState } from "react"
+import React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR from "swr"
@@ -13,6 +14,7 @@ import {
   Label,
   BlurredLoader,
 } from "@nfid-frontend/ui"
+import { sendReceiveTracking } from "@nfid/integration"
 
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
@@ -102,6 +104,25 @@ export const TransferNFT = ({
     },
   )
 
+  const handleTrackTransfer = React.useCallback(() => {
+    const token = selectedConnector?.getTokenConfig()
+    if (!token) return
+
+    sendReceiveTracking.sendToken({
+      network: token.blockchain,
+      destinationType: "address",
+      tokenName: selectedNFT?.tokenId || "",
+      tokenType: "non-fungible",
+      tokenStandard: selectedNFT?.collection.standard || "",
+      amount: "1",
+      fee: "0",
+    })
+  }, [
+    selectedConnector,
+    selectedNFT?.collection.standard,
+    selectedNFT?.tokenId,
+  ])
+
   const submit = useCallback(
     async (values: any) => {
       if (!selectedNFT) return toast.error("No selected NFT")
@@ -121,6 +142,7 @@ export const TransferNFT = ({
             standard: selectedNFT?.collection.standard ?? "",
           })
 
+          handleTrackTransfer()
           resolve(res)
         }),
         title: selectedNFT.name,

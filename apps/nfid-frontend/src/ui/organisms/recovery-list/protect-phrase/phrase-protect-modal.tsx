@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 
+import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
+
 import { Button } from "frontend/ui/atoms/button"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
@@ -32,6 +34,7 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
         <textarea
           name="recoveryPhrase"
           className={clsx(
+            SENSITIVE_CONTENT_NO_SESSION_RECORDING,
             "border border-black rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 font-mono leading-[26px]",

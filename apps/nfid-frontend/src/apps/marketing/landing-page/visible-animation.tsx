@@ -1,11 +1,13 @@
+import clsx from "clsx"
 import Lottie from "lottie-react"
 import React, { useRef, useEffect, useState } from "react"
 
 interface Props {
   animationData: any
+  className?: string
 }
 
-const AnimationWrapper: React.FC<Props> = ({ animationData }) => {
+const AnimationWrapper: React.FC<Props> = ({ animationData, className }) => {
   const animationRef = useRef<HTMLDivElement | null>(null)
   const lottieRef = useRef<any | null>(null)
   const [isVisible, setIsVisible] = useState<boolean>(false)
@@ -32,13 +34,13 @@ const AnimationWrapper: React.FC<Props> = ({ animationData }) => {
 
     return () => {
       if (animationRef.current) {
-        observer.unobserve(animationRef.current)
+        observer.unobserve(animationRef.current) // eslint-disable-line react-hooks/exhaustive-deps
       }
     }
   }, [isVisible])
 
   return (
-    <div ref={animationRef}>
+    <div ref={animationRef} className={clsx(className)}>
       <Lottie
         lottieRef={lottieRef}
         animationData={animationData}
@@ -46,9 +48,11 @@ const AnimationWrapper: React.FC<Props> = ({ animationData }) => {
         loop={false}
         rendererSettings={{
           progressiveLoad: true,
+          imagePreserveAspectRatio: "xMidYMid slice",
+          className: className,
         }}
         // @ts-ignore
-        renderer="canvas"
+        renderer={"canvas"}
       />
     </div>
   )

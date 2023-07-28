@@ -108,9 +108,11 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         />
         <Button
           id="passkey-sign-button"
-          className="h-12 !p-0"
+          className="h-12 !p-0 group"
           type="stroke"
-          icon={<IconCmpPasskey />}
+          icon={
+            <IconCmpPasskey className="text-black group-hover:text-white" />
+          }
           block
           onClick={async () => {
             authenticationTracking.initiated({

@@ -1,3 +1,5 @@
+import { DotLottiePlayer, Controls } from "@dotlottie/react-player"
+import "@dotlottie/react-player/dist/index.css"
 import Lottie, { AnimationItem } from "lottie-web"
 import React, { useEffect, useRef } from "react"
 
@@ -18,62 +20,63 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   height = "100%",
   className,
 }) => {
-  const animationContainer = useRef<HTMLDivElement>(null)
-  const animationInstance = useRef<AnimationItem | null>(null)
-  const animationProgress = useRef<number>(0)
+  // const animationContainer = useRef<HTMLDivElement>(null)
+  // const animationInstance = useRef<AnimationItem | null>(null)
+  // const animationProgress = useRef<number>(0)
 
-  useEffect(() => {
-    if (animationContainer.current) {
-      animationInstance.current = Lottie.loadAnimation({
-        container: animationContainer.current,
-        renderer: "svg",
-        loop,
-        autoplay,
-        animationData,
-      })
+  // useEffect(() => {
+  //   if (animationContainer.current) {
+  //     animationInstance.current = Lottie.loadAnimation({
+  //       container: animationContainer.current,
+  //       renderer: "svg",
+  //       loop,
+  //       autoplay,
+  //       animationData,
+  //     })
 
-      animationInstance.current.addEventListener("enterFrame", handleEnterFrame)
-    }
+  //     animationInstance.current.addEventListener("enterFrame", handleEnterFrame)
+  //   }
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible" && animationInstance.current) {
-        animationInstance.current.playSegments(
-          [animationProgress.current, animationInstance.current.totalFrames],
-          true,
-        )
-      } else if (
-        document.visibilityState === "hidden" &&
-        animationInstance.current
-      ) {
-        animationInstance.current.pause()
-      }
-    }
+  //   const handleVisibilityChange = () => {
+  //     if (document.visibilityState === "visible" && animationInstance.current) {
+  //       animationInstance.current.playSegments(
+  //         [animationProgress.current, animationInstance.current.totalFrames],
+  //         true,
+  //       )
+  //     } else if (
+  //       document.visibilityState === "hidden" &&
+  //       animationInstance.current
+  //     ) {
+  //       animationInstance.current.pause()
+  //     }
+  //   }
 
-    document.addEventListener("visibilitychange", handleVisibilityChange)
+  //   document.addEventListener("visibilitychange", handleVisibilityChange)
 
-    return () => {
-      if (animationInstance.current) {
-        animationInstance.current.removeEventListener(
-          "enterFrame",
-          handleEnterFrame,
-        )
-        animationInstance.current.destroy()
-      }
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-    }
-  }, [animationData, autoplay, loop])
+  //   return () => {
+  //     if (animationInstance.current) {
+  //       animationInstance.current.removeEventListener(
+  //         "enterFrame",
+  //         handleEnterFrame,
+  //       )
+  //       animationInstance.current.destroy()
+  //     }
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange)
+  //   }
+  // }, [animationData, autoplay, loop])
 
-  const handleEnterFrame = () => {
-    if (animationInstance.current) {
-      animationProgress.current = animationInstance.current.currentFrame
-    }
-  }
+  // const handleEnterFrame = () => {
+  //   if (animationInstance.current) {
+  //     animationProgress.current = animationInstance.current.currentFrame
+  //   }
+  // }
 
   return (
-    <div
-      className={className}
-      ref={animationContainer}
-      style={{ width, height }}
-    />
+    // <div
+    //   className={className}
+    //   ref={animationContainer}
+    //   style={{ width, height }}
+    // />
+    <DotLottiePlayer src={animationData} autoplay loop renderer="canvas" />
   )
 }

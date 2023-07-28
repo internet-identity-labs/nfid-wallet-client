@@ -1,8 +1,10 @@
+import { DotLottiePlayer } from "@dotlottie/react-player"
+import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
 import React, { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { Button, LottieAnimation, NFIDLogo } from "@nfid-frontend/ui"
+import { Button, NFIDLogo } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -41,7 +43,7 @@ import { NFIDAuthentication } from "./auth-modal"
 import "./index.css"
 import AnimationWrapper from "./visible-animation"
 
-const container = "max-w-[1280px] mx-auto px-[30px] lg:px-0"
+const container = "max-w-[1280px] w-[calc(100%-60px)] mx-auto"
 const asset = "relative w-full md:w-[40%] shrink-0 mx-auto sm:mx-0"
 const section2 = "justify-between block md:flex gap-[60px] items-center"
 const card =
@@ -111,11 +113,12 @@ export const HomeScreen = () => {
             Continue to NFID
           </Button>
         </div>
-        <div className="absolute top-0 right-0 z-0 hidden h-full md:block">
-          <LottieAnimation
-            className="h-[175%] object-cover"
-            animationData={mainAnimation}
-            loop={true}
+        <div className="absolute bottom-0 right-0 z-0 hidden h-full md:block">
+          <DotLottiePlayer
+            src={mainAnimation}
+            autoplay
+            loop
+            renderer="canvas"
           />
         </div>
       </section>

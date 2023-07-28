@@ -8,6 +8,7 @@ import {
   IconCmpPasskey,
   Input,
 } from "@nfid-frontend/ui"
+import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { authenticationTracking } from "@nfid/integration"
 
 import { AbstractAuthSession } from "frontend/state/authentication"
@@ -70,6 +71,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           className="space-y-2.5"
         >
           <Input
+            className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
             inputClassName="h-12"
             labelText="Email"
             type="email"

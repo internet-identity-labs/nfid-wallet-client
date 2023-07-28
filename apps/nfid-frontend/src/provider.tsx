@@ -5,6 +5,8 @@ import React, { createContext } from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { ParallaxProvider } from "react-scroll-parallax"
 
+import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
+
 import {
   transferMachine,
   TransferMachineActor,
@@ -29,6 +31,9 @@ export const Provider: React.FC<ProviderProps> = ({ children }) => {
         autocapture: false,
         persistence: "localStorage",
         capture_pageview: false,
+        session_recording: {
+          maskTextSelector: `.${SENSITIVE_CONTENT_NO_SESSION_RECORDING}, #${SENSITIVE_CONTENT_NO_SESSION_RECORDING}`, // masks all elements with the given class name
+        },
       }}
     >
       <ParallaxProvider>

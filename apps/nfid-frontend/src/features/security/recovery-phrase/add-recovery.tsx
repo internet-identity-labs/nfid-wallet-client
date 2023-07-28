@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IconCmpPlus } from "@nfid-frontend/ui"
+import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { securityTracking } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -63,6 +64,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
         <div>
           <div
             className={clsx(
+              SENSITIVE_CONTENT_NO_SESSION_RECORDING,
               "border-2 border-black rounded-t-md mt-4",
               "focus:outline-none resize-none focus:ring-0",
               "w-full font-mono leading-[26px] p-2",

@@ -66,6 +66,7 @@ const setupCSP = () => {
         "https://*.rarible.com/",
         "https://polygon-rpc.com",
         "https://rpc-mumbai.matic.today",
+        "https://eu.posthog.com",
       ],
       "worker-src": "'self'",
       "img-src": [

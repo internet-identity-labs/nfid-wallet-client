@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React, { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { Button, NFIDLogo } from "@nfid-frontend/ui"
+import { Button, LottieAnimation, NFIDLogo } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -11,6 +11,7 @@ import AnimationDark1 from "./assets/animations/1_dark.json"
 import AnimationDark2 from "./assets/animations/2_dark.json"
 import AnimationDark3 from "./assets/animations/3_dark.json"
 import AnimationDark4 from "./assets/animations/4_dark.json"
+import mainAnimation from "./assets/animations/main.json"
 import Card1 from "./assets/cards/decentralized_icon_1.png"
 import Card1Hover from "./assets/cards/decentralized_icon_1_hover.png"
 import Card3 from "./assets/cards/globe_1.png"
@@ -19,6 +20,7 @@ import Card2 from "./assets/cards/lock_1.png"
 import Card2Hover from "./assets/cards/lock_1_hover.png"
 import Card4 from "./assets/cards/person-1.png"
 import Card4Hover from "./assets/cards/person-1_hover.png"
+import Gradient from "./assets/dark-gradient.png"
 import Discord from "./assets/new-landing/Discord.png"
 import Github from "./assets/new-landing/Github.png"
 import Twitter from "./assets/new-landing/Twitter.png"
@@ -32,9 +34,9 @@ import Rubylight from "./assets/new-landing/sponsors/rubylight.png"
 import Spaceship from "./assets/new-landing/sponsors/spaceship.png"
 import Tomahawk from "./assets/new-landing/sponsors/tomahawk.png"
 import Yards from "./assets/new-landing/sponsors/yards.png"
-import MainBanner from "./assets/photo.png"
 import PoweredBy from "./assets/poweredBy.svg"
 
+import { AuthButton } from "./auth-button"
 import { NFIDAuthentication } from "./auth-modal"
 import "./index.css"
 import AnimationWrapper from "./visible-animation"
@@ -46,7 +48,7 @@ const card =
   "px-5 bg-gradient-to-r from-purple-50 to-blue-50 md:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group"
 const cardItem =
   "mt-[50px] md:mt-[90px] font-bold text-xl md:text-[28px] tracking-[0.2px} md:tracking-[0.28px] leading-[36px]"
-const cardImg = "w-[100px] lg:w-[140px]"
+const cardImg = "w-[100px] lg:w-[140px] absolute"
 const sponsor = "max-w-[150px] md:max-w-[220px] max-h-[80px]"
 
 export const HomeScreen = () => {
@@ -66,22 +68,27 @@ export const HomeScreen = () => {
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}
       />
-      <div
-        className={clsx("flex items-center justify-between py-2.5", container)}
-      >
-        <NFIDLogo />
-        <div className="flex items-center text-sm font-semibold">
-          <a
-            href="https://learn.nfid.one/"
-            target="_blank"
-            className="mr-[50px]"
-            rel="noreferrer"
-          >
-            Knowledge base
-          </a>
-          <p className="cursor-pointer" onClick={onContinue}>
-            {isAuthenticated ? "Profile" : "Sign in"}
-          </p>
+      <div className="sticky top-0 z-50 bg-white">
+        <div
+          className={clsx(
+            "flex items-center justify-between py-2.5",
+            container,
+          )}
+        >
+          <NFIDLogo />
+          <div className="flex items-center text-sm font-semibold">
+            <a
+              href="https://learn.nfid.one/"
+              target="_blank"
+              className="mr-[50px]"
+              rel="noreferrer"
+            >
+              Knowledge base
+            </a>
+            <p className="cursor-pointer" onClick={onContinue}>
+              <AuthButton isAuthenticated={isAuthenticated} />
+            </p>
+          </div>
         </div>
       </div>
       <section
@@ -104,20 +111,29 @@ export const HomeScreen = () => {
             Continue to NFID
           </Button>
         </div>
-        <div className="absolute top-0 right-0 z-0 hidden md:block h-[70vh]">
-          <img className="h-[175%] object-cover" src={MainBanner} alt="main" />
+        <div className="absolute top-0 right-0 z-0 hidden h-full md:block">
+          <LottieAnimation
+            className="h-[175%] object-cover"
+            animationData={mainAnimation}
+            loop={true}
+          />
         </div>
       </section>
       <section
         className={clsx(
           "rounded-[30px] bg-[#0B0D32] py-[30px] lg:px-[60px] text-white relative z-10",
-          "mt-[20vh] md:mt-0",
+          "mt-[20vh] md:mt-0 md:w-[calc(100%-60px)] mx-auto",
         )}
+        style={{
+          backgroundImage: `url(${Gradient})`,
+          backgroundSize: "cover",
+          backgroundPosition: "bottom-0 right-0",
+        }}
       >
         <div className={clsx("space-y-20 md:space-y-[100px]", container)}>
           <div className={clsx("flex-row-reverse", section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark1} />
+              <AnimationWrapper animationData={AnimationDark3} />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">1/4</p>
@@ -132,7 +148,7 @@ export const HomeScreen = () => {
           </div>
           <div className={clsx(section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark2} />
+              <AnimationWrapper animationData={AnimationDark4} />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">2/4</p>
@@ -148,7 +164,7 @@ export const HomeScreen = () => {
           </div>
           <div className={clsx("flex-row-reverse", section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark3} />
+              <AnimationWrapper animationData={AnimationDark2} />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">3/4</p>
@@ -164,17 +180,17 @@ export const HomeScreen = () => {
           </div>
           <div className={clsx(section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark4} />
+              <AnimationWrapper animationData={AnimationDark1} />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">4/4</p>
-              <p className="font-bold">Sign in everywhere</p>
+              <p className="font-bold">Secure your assets</p>
               <p className="text-sm md:text-lg">
-                Powered by state-of-the-art passkey & chainkey technology, your
-                NFID offers unprecedented security, insulating you from the
-                vulnerabilities that threaten even the most fortified digital
-                platforms. Your NFID is exclusively yours, accessible and usable
-                by no one else.
+                NFID isn't just an identity; it's a powerful tool for managing
+                digital assets. Equipped with an integrated crypto wallet, NFID
+                empowers you to seamlessly manage BTC, ETH, MATIC, ICP,
+                collectibles, and more under the protection of the most advanced
+                smart contract platform to date.
               </p>
             </div>
           </div>
@@ -192,64 +208,68 @@ export const HomeScreen = () => {
         </div>
         <div className="mt-[27px] md:mt-[98px] grid grid-cols-1 md:grid-cols-2 md:gap-[30px] gap-[20px]">
           <div className={clsx(card)}>
-            <img
-              src={Card1}
-              alt=""
-              className={clsx(cardImg, "lg:group-hover:hidden")}
-            />
-            <img
-              src={Card1Hover}
-              alt=""
-              className={clsx(cardImg, "hidden lg:group-hover:block")}
-            />
+            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+              <img src={Card1} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card1Hover}
+                alt=""
+                className={clsx(
+                  cardImg,
+                  "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",
+                )}
+              />
+            </div>
             <p className={clsx(cardItem)}>
               Secured on decentralized architecture built by 100s of the world’s
               best cryptographers.
             </p>
           </div>
           <div className={clsx(card)}>
-            <img
-              src={Card2}
-              alt=""
-              className={clsx(cardImg, "lg:group-hover:hidden")}
-            />
-            <img
-              src={Card2Hover}
-              alt=""
-              className={clsx(cardImg, "hidden lg:group-hover:block")}
-            />
+            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+              <img src={Card2} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card2Hover}
+                alt=""
+                className={clsx(
+                  cardImg,
+                  "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",
+                )}
+              />
+            </div>
             <p className={clsx(cardItem)}>
               Secured on decentralized architecture built by 100s of the world’s
               best cryptographers.
             </p>
           </div>
           <div className={clsx(card)}>
-            <img
-              src={Card3}
-              alt=""
-              className={clsx(cardImg, "lg:group-hover:hidden")}
-            />
-            <img
-              src={Card3Hover}
-              alt=""
-              className={clsx(cardImg, "hidden lg:group-hover:block")}
-            />
+            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+              <img src={Card3} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card3Hover}
+                alt=""
+                className={clsx(
+                  cardImg,
+                  "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",
+                )}
+              />
+            </div>
             <p className={clsx(cardItem)}>
               Secured on decentralized architecture built by 100s of the world’s
               best cryptographers.
             </p>
           </div>
           <div className={clsx(card)}>
-            <img
-              src={Card4}
-              alt=""
-              className={clsx(cardImg, "lg:group-hover:hidden")}
-            />
-            <img
-              src={Card4Hover}
-              alt=""
-              className={clsx(cardImg, "hidden lg:group-hover:block")}
-            />
+            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+              <img src={Card4} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card4Hover}
+                alt=""
+                className={clsx(
+                  cardImg,
+                  "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",
+                )}
+              />
+            </div>
             <p className={clsx(cardItem)}>
               Secured on decentralized architecture built by 100s of the world’s
               best cryptographers.

@@ -8,6 +8,7 @@ import { Button, NFIDLogo } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { getIsMobileDeviceMatch } from "frontend/integration/device"
 
 import AnimationDark1 from "./assets/animations/1_dark.json"
 import AnimationDark2 from "./assets/animations/2_dark.json"
@@ -44,12 +45,13 @@ import "./index.css"
 import AnimationWrapper from "./visible-animation"
 
 const container = "max-w-[1280px] w-[calc(100%-60px)] mx-auto"
-const asset = "relative w-full md:w-[40%] shrink-0 mx-auto sm:mx-0"
+const asset =
+  "relative w-full md:w-[40%] min-w-[330px] min-h-[330px] shrink-0 mx-auto sm:mx-0"
 const section2 = "justify-between block md:flex gap-[60px] items-center"
 const card =
   "px-5 bg-gradient-to-r from-purple-50 to-blue-50 md:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group"
 const cardItem =
-  "mt-[50px] md:mt-[90px] font-bold text-xl md:text-[28px] tracking-[0.2px} md:tracking-[0.28px] leading-[36px]"
+  "mt-[50px] md:mt-[90px] font-bold text-xl md:text-[28px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-9"
 const cardImg = "w-[100px] lg:w-[140px] absolute"
 const sponsor = "max-w-[150px] md:max-w-[220px] max-h-[80px]"
 
@@ -70,7 +72,7 @@ export const HomeScreen = () => {
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}
       />
-      <div className="sticky top-0 z-50 bg-white">
+      <div className="sticky top-0 z-20 bg-white bg-opacity-[0.99]">
         <div
           className={clsx(
             "flex items-center justify-between py-2.5",
@@ -82,7 +84,7 @@ export const HomeScreen = () => {
             <a
               href="https://learn.nfid.one/"
               target="_blank"
-              className="mr-[50px]"
+              className="mr-[50px] hidden md:inline-block"
               rel="noreferrer"
             >
               Knowledge base
@@ -113,12 +115,16 @@ export const HomeScreen = () => {
             Continue to NFID
           </Button>
         </div>
-        <div className="absolute bottom-0 right-0 z-0 hidden h-full md:block">
+        <div className="absolute bottom-0 right-0 z-0 hidden w-full h-full md:block">
           <DotLottiePlayer
             src={mainAnimation}
             autoplay
             loop
             renderer="canvas"
+            rendererSettings={{
+              preserveAspectRatio: "xMidYMid slice",
+              className: "w-full h-full",
+            }}
           />
         </div>
       </section>
@@ -128,15 +134,19 @@ export const HomeScreen = () => {
           "mt-[20vh] md:mt-0 md:w-[calc(100%-60px)] mx-auto",
         )}
         style={{
-          backgroundImage: `url(${Gradient})`,
+          backgroundImage: getIsMobileDeviceMatch() ? "" : `url(${Gradient})`,
           backgroundSize: "cover",
-          backgroundPosition: "bottom-0 right-0",
+          backgroundPosition: "center bottom -10px",
+          backgroundRepeat: "no-repeat",
         }}
       >
         <div className={clsx("space-y-20 md:space-y-[100px]", container)}>
           <div className={clsx("flex-row-reverse", section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark3} />
+              <AnimationWrapper
+                animationData={AnimationDark3}
+                className="min-w-[330px] min-h-[330px]"
+              />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">1/4</p>
@@ -151,7 +161,10 @@ export const HomeScreen = () => {
           </div>
           <div className={clsx(section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark4} />
+              <AnimationWrapper
+                animationData={AnimationDark4}
+                className="min-w-[330px] min-h-[330px]"
+              />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">2/4</p>
@@ -167,7 +180,10 @@ export const HomeScreen = () => {
           </div>
           <div className={clsx("flex-row-reverse", section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark2} />
+              <AnimationWrapper
+                animationData={AnimationDark2}
+                className="min-w-[330px] min-h-[330px]"
+              />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">3/4</p>
@@ -183,7 +199,10 @@ export const HomeScreen = () => {
           </div>
           <div className={clsx(section2)}>
             <div className={clsx(asset)}>
-              <AnimationWrapper animationData={AnimationDark1} />
+              <AnimationWrapper
+                animationData={AnimationDark1}
+                className="min-w-[330px] min-h-[330px]"
+              />
             </div>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
               <p className="font-light text-indigo-400 opacity-25">4/4</p>
@@ -204,7 +223,7 @@ export const HomeScreen = () => {
           <p className="leading-10 md:text-[42px] text-[32px] font-bold tracking-[0.32px] md:tracking-[0.42px]">
             Security isn’t a feature. It’s the foundation.
           </p>
-          <p className="text-base md:text-[28px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-[32px] max-w-[800px] mx-auto mt-[18px]">
+          <p className="text-base md:text-[28px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[800px] mx-auto mt-[18px]">
             Breakthroughs in cryptography make owning a self-sovereign digital
             identity easier than ever before.
           </p>

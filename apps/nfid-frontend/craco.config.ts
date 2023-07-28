@@ -102,6 +102,7 @@ const setupCSP = () => {
         "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
         "https://accounts.google.com/gsi/client",
         "https://*.googletagmanager.com",
+        "https://eu.posthog.com",
       ],
       "require-trusted-types-for": ["'script'"],
     }

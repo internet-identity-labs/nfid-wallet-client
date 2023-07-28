@@ -44,7 +44,11 @@ const AnimationWrapper: React.FC<Props> = ({ animationData }) => {
         animationData={animationData}
         autoplay={false} // disable autoplay because we're handling play state manually
         loop={false}
-        rendererSettings={{ progressiveLoad: true }}
+        rendererSettings={{
+          progressiveLoad: true,
+        }}
+        // @ts-ignore
+        renderer="canvas"
       />
     </div>
   )

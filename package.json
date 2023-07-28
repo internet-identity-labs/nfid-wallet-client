@@ -72,6 +72,7 @@
     "jose": "^4.14.4",
     "jotai": "1.11.0",
     "lodash": "^4.17.21",
+    "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.0",
     "node-ts-cache": "4.4.0",
     "node-ts-cache-storage-memory": "4.4.0",

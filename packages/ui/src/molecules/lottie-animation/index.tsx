@@ -7,6 +7,7 @@ export interface LottieAnimationProps {
   autoplay?: boolean
   width?: number | string
   height?: number | string
+  className?: string
 }
 
 export const LottieAnimation: React.FC<LottieAnimationProps> = ({
@@ -15,6 +16,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   autoplay = true,
   width = "100%",
   height = "100%",
+  className,
 }) => {
   const animationContainer = useRef<HTMLDivElement>(null)
   const animationInstance = useRef<AnimationItem | null>(null)
@@ -67,5 +69,11 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
     }
   }
 
-  return <div ref={animationContainer} style={{ width, height }} />
+  return (
+    <div
+      className={className}
+      ref={animationContainer}
+      style={{ width, height }}
+    />
+  )
 }

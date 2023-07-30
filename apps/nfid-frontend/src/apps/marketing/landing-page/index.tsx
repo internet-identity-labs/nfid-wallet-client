@@ -109,6 +109,7 @@ export const HomeScreen = () => {
             and digital assets secure.
           </p>
           <Button
+            id="authentication-button"
             onClick={onContinue}
             className="mt-[30px] w-[148px] mx-auto md:mx-0"
           >

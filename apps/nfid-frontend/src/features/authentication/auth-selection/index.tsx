@@ -62,6 +62,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       isLoading={isLoading}
       className="w-full h-full"
       overlayClassnames="rounded-xl"
+      id="auth-selection"
     >
       <AuthAppMeta
         applicationLogo={appMeta?.logo}

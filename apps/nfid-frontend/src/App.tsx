@@ -14,7 +14,7 @@ import { AuthEmailMagicLink } from "./features/authentication/auth-selection/ema
 import { NotFound } from "./ui/pages/404"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
-const Faq = React.lazy(() => import("./apps/marketing/landing-page/faq"))
+
 const RequestTransferCoordinator = React.lazy(
   () => import("./coordination/wallet/request-transfer"),
 )
@@ -28,10 +28,6 @@ const NFIDEmbedCoordinator = React.lazy(
 
 const IframeTrustDeviceCoordinator = React.lazy(
   () => import("./features/iframe/iframe-trust-device/coordinator"),
-)
-
-const OurMission = React.lazy(
-  () => import("./apps/marketing/landing-page/our-mission"),
 )
 
 if (USERGEEK_API_KEY) {
@@ -53,15 +49,6 @@ export const App = () => {
     <React.Suspense fallback={<BlurredLoader isLoading />}>
       <Routes>
         <Route path={"/"} element={<HomeScreen />} />
-        <Route path={"/faq"} element={<Faq />} />
-        <Route
-          path={"/our-mission"}
-          element={
-            <React.Suspense>
-              <OurMission />
-            </React.Suspense>
-          }
-        />
 
         <Route
           path="/wallet/request-transfer"

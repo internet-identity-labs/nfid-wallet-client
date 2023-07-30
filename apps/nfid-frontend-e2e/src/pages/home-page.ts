@@ -13,8 +13,16 @@ export class HomePage extends Page {
     return $("#menu-mobile-window")
   }
 
+  private get authenticationButton() {
+    return $("#authentication-button")
+  }
+
+  private get authSelection() {
+    return $("#auth-selection")
+  }
+
   private get googleAuthButton() {
-    return $("(.//button[contains(text(),'')])[4]")
+    return $("#google-sign-button")
   }
 
   private get accountPicker() {
@@ -69,6 +77,17 @@ export class HomePage extends Page {
     })
   }
 
+  public async openAuthModal() {
+    await this.authenticationButton.waitForDisplayed({
+      timeout: 5000,
+    })
+    await this.authenticationButton.click()
+
+    await this.authSelection.waitForDisplayed({
+      timeout: 5000,
+    })
+  }
+
   public async authenticateWithGoogle() {
     await this.googleAuthButton.waitForDisplayed({
       timeout: 6000,
@@ -101,10 +120,13 @@ export class HomePage extends Page {
     if (isMobile) {
       await this.openHomeBurgerMenu()
     } else {
-      await browser.waitUntil(async () => (await this.signInButton.length) > 1, {
-        timeout: 10000,
-        timeoutMsg: "Sign In button for desktop is not displayed!"
-      })
+      await browser.waitUntil(
+        async () => (await this.signInButton.length) > 1,
+        {
+          timeout: 10000,
+          timeoutMsg: "Sign In button for desktop is not displayed!",
+        },
+      )
     }
     await this.signInButton[index].waitForDisplayed({
       timeout: 17000,
@@ -169,7 +191,10 @@ export class HomePage extends Page {
   }
 
   public async recoverAccountWithFAQ() {
-    await $(`=${"FAQ"}`).waitForDisplayed({ timeout: 8000, timeoutMsg: "FAQ page is failed to load" })
+    await $(`=${"FAQ"}`).waitForDisplayed({
+      timeout: 8000,
+      timeoutMsg: "FAQ page is failed to load",
+    })
 
     await this.whatIfMyDeviceHasBeenStolen.waitForDisplayed({ timeout: 7000 })
     await this.whatIfMyDeviceHasBeenStolen.click()

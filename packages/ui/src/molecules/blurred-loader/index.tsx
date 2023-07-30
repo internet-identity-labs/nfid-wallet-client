@@ -15,6 +15,7 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
   children,
   className,
   overlayClassnames,
+  id,
 }) => {
   const [isVisible, setIsVisible] = useState(isLoading)
 
@@ -30,7 +31,9 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
 
   return (
     <>
-      <div className={clsx("w-full h-full", className)}>{children}</div>
+      <div className={clsx("w-full h-full", className)} id={id}>
+        {children}
+      </div>
       {isVisible && (
         <BlurOverlay
           id="loader"

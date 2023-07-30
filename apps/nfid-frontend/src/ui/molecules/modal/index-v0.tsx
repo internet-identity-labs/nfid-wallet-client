@@ -16,14 +16,14 @@ export const ModalComponent: React.FC<ModalProps> = ({
     <div
       onClick={onClose}
       className={clsx([
-        "transition ease-in-out delay-150 duration-300",
-        "z-50 top-0 right-0 bottom-0 left-0",
+        "transition ease-in-out delay-150 duration-500",
+        "z-50 top-0 right-0 bottom-0 left-0 ",
         isVisible ? "fixed bg-opacity-75 bg-gray-200" : "bg-transparent",
       ])}
     >
       <div
         className={clsx([
-          "transition ease-in-out delay-150 duration-300",
+          "transition ease-in-out duration-300",
           "fixed top-[50%] right-[50%] bottom-[50%] left-[50%]",
           "transform -translate-x-2/4 -translate-y-2/4",
           "md:rounded-md drop-shadow-lg",

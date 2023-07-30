@@ -55,10 +55,15 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     return () => {
       authAbortController.abort("Aborted webauthn on unmount")
     }
-  }, [authAbortController]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <BlurredLoader isLoading={isLoading} className="w-full h-full">
+    <BlurredLoader
+      isLoading={isLoading}
+      className="w-full h-full"
+      overlayClassnames="rounded-xl"
+      id="auth-selection"
+    >
       <AuthAppMeta
         applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url}
@@ -108,15 +113,18 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         />
         <Button
           id="passkey-sign-button"
-          className="h-12 !p-0"
+          className="h-12 !p-0 group"
           type="stroke"
-          icon={<IconCmpPasskey />}
+          icon={
+            <IconCmpPasskey className="text-black group-hover:text-white group-active:text-white group-focus:text-white" />
+          }
           block
           onClick={async () => {
             authenticationTracking.initiated({
               authSource: "passkey - continue",
               authTarget: "nfid",
             })
+            setIsLoading(true)
             authAbortController.abort("Aborted webauthn manually")
             const abortController = new AbortController()
             const res = await passkeyConnector.loginWithPasskey(
@@ -124,6 +132,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               () => {
                 abortController.abort("Aborted loginWithPasskey manually")
                 setAuthAbortController(new AbortController())
+                setIsLoading(false)
               },
             )
 

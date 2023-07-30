@@ -212,8 +212,6 @@ export class PasskeyConnector {
     try {
       const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
 
-      callback && callback()
-
       const delegationIdentity = DelegationIdentity.fromDelegation(
         sessionKey,
         chain,
@@ -232,13 +230,12 @@ export class PasskeyConnector {
       })
 
       const profile = await fetchProfile()
+      await im.use_access_point([])
 
       authenticationTracking.completed({
         legacyUser: profile.wallet === RootWallet.II,
         hasEmail: !!profile.email,
       })
-
-      await im.use_access_point([])
 
       return {
         anchor: profile.anchor,
@@ -251,6 +248,8 @@ export class PasskeyConnector {
         authTarget: "nfid",
       })
       throw e
+    } finally {
+      callback?.()
     }
   }
 
@@ -284,7 +283,6 @@ export class PasskeyConnector {
     onBegin: () => void,
     onEnd: (data: AbstractAuthSession) => void,
   ) {
-    onBegin()
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       [],
       false,
@@ -294,6 +292,7 @@ export class PasskeyConnector {
     )
 
     const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
+    onBegin()
 
     const delegationIdentity = DelegationIdentity.fromDelegation(
       sessionKey,
@@ -306,8 +305,6 @@ export class PasskeyConnector {
       chain,
       sessionKey,
     })
-
-    await im.use_access_point([])
 
     const authSession = {
       anchor: (await fetchProfile()).anchor,

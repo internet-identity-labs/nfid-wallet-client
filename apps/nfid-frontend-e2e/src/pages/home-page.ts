@@ -22,7 +22,7 @@ export class HomePage extends Page {
   }
 
   private get googleAuthButton() {
-    return $("(.//button[contains(text(),'')])[4]")
+    return $("#google-sign-button")
   }
 
   private get accountPicker() {

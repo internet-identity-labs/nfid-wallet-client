@@ -1,6 +1,7 @@
 import { Given } from "@cucumber/cucumber"
 
 import HomePage from "../pages/home-page.js"
+import homePage from "../pages/home-page.js"
 import clearAuthState from "./support/action/clear-auth-state.js"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab.js"
 import openWebsite from "./support/action/openWebsite.js"
@@ -36,6 +37,7 @@ Given(
 Given(/^authstate is cleared$/, clearAuthState)
 
 Given(/^User authenticates with google account$/, async () => {
+  await homePage.openAuthModal()
   await HomePage.authenticateWithGoogle()
   await HomePage.switchToWindow("last")
   await HomePage.pickGoogleAccount()

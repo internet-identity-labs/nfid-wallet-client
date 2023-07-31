@@ -171,8 +171,7 @@ export class SecurityConnector {
       await removeAccessPointFacade(
         BigInt(profile.anchor),
         recoverIdentity.getPrincipal().toText(),
-        // @ts-ignore
-        recoverIdentity.getPublicKey().rawKey,
+        Array.from(new Uint8Array(recoverIdentity.getPublicKey().toDer())),
         profile.wallet === RootWallet.II,
       )
     } catch (e) {

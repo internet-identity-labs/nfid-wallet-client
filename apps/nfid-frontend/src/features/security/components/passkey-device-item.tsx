@@ -96,7 +96,6 @@ export const PasskeyDeviceItem = ({
                   "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
                   "flex items-center space-x-2 cursor-pointer",
                 )}
-                // onClick={onDelete}
               >
                 <span>Delete</span>
               </div>

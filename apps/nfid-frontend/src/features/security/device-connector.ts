@@ -15,30 +15,52 @@ import {
 } from "@nfid/integration"
 
 import { removeAccessPointFacade } from "frontend/integration/facade"
-import {
-  fetchProfile,
-  removeAccessPoint,
-} from "frontend/integration/identity-manager"
+import { fetchProfile } from "frontend/integration/identity-manager"
 import {
   IC_DERIVATION_PATH,
   addDevice,
+  fetchAllDevices,
 } from "frontend/integration/internet-identity"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 
 import { passkeyConnector } from "../authentication/auth-selection/passkey-flow/services"
 import { isPasskeyDevice, isRecoveryDevice } from "./helpers"
 import { IDevice, IGroupedDevices } from "./types"
+import { mapIIDevicesToIDevices, mapIMDevicesToIDevices } from "./utils"
 
 export class SecurityConnector {
-  async getIMDevices(): Promise<IGroupedDevices> {
+  async getIMDevices() {
     const { data: imDevices } = await im.read_access_points()
+    return mapIMDevicesToIDevices(imDevices[0] ?? [])
+  }
 
-    if (!imDevices.length)
-      throw new Error("Unable to fetch im.get_access_points")
+  async getIIDevices() {
+    const profile = await fetchProfile()
+    if (profile.wallet !== RootWallet.II) return []
+    const devices = await fetchAllDevices(BigInt(profile?.anchor))
+    return mapIIDevicesToIDevices(devices)
+  }
 
-    const allCredentials: string[] = imDevices[0]
-      .map((d) => d.credential_id.join(""))
-      .filter((d) => d.length)
+  getDevices = async (): Promise<IGroupedDevices> => {
+    const imDevices = await this.getIMDevices()
+    const iiDevices = await this.getIIDevices()
+    const profile = await fetchProfile()
+    const allDevices =
+      profile.wallet === RootWallet.II
+        ? iiDevices.map((d) => ({
+            ...d,
+            ...imDevices.find(
+              (p) =>
+                p.credentialId === d.credentialId &&
+                p.principal === d.principal,
+            ),
+          }))
+        : imDevices
+
+    const allCredentials: string[] = allDevices
+      .filter((d) => !d.isLegacyDevice)
+      ?.map((d) => d.credentialId)
+      .filter((d) => d?.length)
 
     const passkeysMetadata: LambdaPasskeyDecoded[] = allCredentials.length
       ? (await getPasskey(allCredentials)).map((p) => ({
@@ -47,14 +69,14 @@ export class SecurityConnector {
         }))
       : []
 
-    const allDevices = imDevices[0].map((device) => {
-      const passkeyMetadata = passkeysMetadata.find(
-        (p) => p.key === device.credential_id[0],
+    const allDevicesWithMetadata = allDevices?.map((device) => {
+      let passkeyMetadata = passkeysMetadata.find(
+        (p) => p.key === device?.credentialId,
       )
 
       return {
-        label: device.device,
-        icon: device.icon,
+        label: device.label,
+        icon: device?.icon,
         isLegacyDevice: !passkeyMetadata,
         isMultiDevice:
           passkeyMetadata?.data.type === "cross-platform" ||
@@ -68,16 +90,19 @@ export class SecurityConnector {
               "MMM dd, yyyy",
             )
           : "",
-        type: Object.keys(device.device_type)[0],
-        principal: device.principal_id,
+        type: device.type,
+        principal: device.principal,
         credentialId: passkeyMetadata?.key,
+        publickey: device.publickey,
       } as IDevice
     })
 
     return {
-      recoveryDevice: allDevices.find(isRecoveryDevice),
-      passkeys: allDevices.filter(isPasskeyDevice),
-      emailDevice: allDevices.find((d) => d.type === DeviceType.Email),
+      recoveryDevice: allDevicesWithMetadata.find(isRecoveryDevice),
+      passkeys: allDevicesWithMetadata.filter(isPasskeyDevice),
+      emailDevice: allDevicesWithMetadata.find(
+        (d) => d.type === DeviceType.Email,
+      ),
     }
   }
 
@@ -133,29 +158,21 @@ export class SecurityConnector {
     phraseWithoutAnchor?.shift()
 
     const oldIdent = authState.get().delegationIdentity
+    if (!oldIdent) throw new Error("No delegation identity found")
+
     try {
       const recoverIdentity = await fromMnemonicWithoutValidation(
         phraseWithoutAnchor.join(" "),
         IC_DERIVATION_PATH,
       )
 
-      if (profile.wallet === RootWallet.II) {
-        // Remove recovery device from II
-        removeAccessPointFacade(
-          BigInt(profile.anchor),
-          recoverIdentity.getPrincipal().toText(),
-        )
-      }
-
       await replaceActorIdentity(im, recoverIdentity)
-      await removeAccessPoint(
-        Principal.selfAuthenticating(
-          new Uint8Array(
-            await new Blob([
-              recoverIdentity.getPublicKey().toDer(),
-            ]).arrayBuffer(),
-          ),
-        ).toText(),
+
+      await removeAccessPointFacade(
+        BigInt(profile.anchor),
+        recoverIdentity.getPrincipal().toText(),
+        Array.from(new Uint8Array(recoverIdentity.getPublicKey().toDer())),
+        profile.wallet === RootWallet.II,
       )
     } catch (e) {
       console.log({ e })
@@ -163,7 +180,7 @@ export class SecurityConnector {
         "We could not delete your recovery phrase. Please make sure you have entered the correct phrase.",
       )
     } finally {
-      replaceActorIdentity(im, oldIdent!)
+      replaceActorIdentity(im, oldIdent)
     }
   }
 

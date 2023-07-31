@@ -2,11 +2,10 @@ import React, { useCallback } from "react"
 import { toast } from "react-toastify"
 
 import { Button } from "@nfid-frontend/ui"
-import { securityTracking } from "@nfid/integration"
+import { RootWallet, securityTracking } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import { removeAccessPointFacade } from "frontend/integration/facade"
-import { removeAccessPoint } from "frontend/integration/identity-manager"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
@@ -53,36 +52,32 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
   }, [])
 
   const onDelete = useCallback(async () => {
-    if (device.isLegacyDevice) {
-      handleWithLoading(
-        async () => {
-          showLastPasskeyWarning && (await securityConnector.toggle2FA(false))
-          removeAccessPointFacade(BigInt(profile?.anchor!), device.principal)
-        },
-        () => {
-          handleTrackRemovePasskey(device)
-          setIsModalVisible(false)
-        },
-      )
-    } else {
-      handleWithLoading(
-        async () => {
-          showLastPasskeyWarning && (await securityConnector.toggle2FA(false))
-          await removeAccessPoint(device.principal)
-        },
-        () => {
-          handleTrackRemovePasskey(device)
+    handleWithLoading(
+      async () => {
+        showLastPasskeyWarning && (await securityConnector.toggle2FA(false))
+        try {
+          await removeAccessPointFacade(
+            BigInt(profile?.anchor!),
+            device.principal,
+            device.publickey!,
+            profile?.wallet === RootWallet.II,
+          )
           toast.success("Device has been removed")
-          setIsModalVisible(false)
-        },
-      )
-    }
+        } catch (e: any) {
+          toast.error(e.message)
+        }
+      },
+      () => {
+        handleTrackRemovePasskey(device)
+        setIsModalVisible(false)
+      },
+    )
   }, [
-    handleTrackRemovePasskey,
-    device,
     handleWithLoading,
     showLastPasskeyWarning,
-    profile?.anchor,
+    profile,
+    device,
+    handleTrackRemovePasskey,
   ])
 
   return (

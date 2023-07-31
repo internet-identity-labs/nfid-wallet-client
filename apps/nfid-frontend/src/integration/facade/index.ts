@@ -1,12 +1,11 @@
 import { Principal } from "@dfinity/principal"
 
 import {
-  DeviceKey,
+  PublicKey,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
 import { removeAccessPoint } from "frontend/integration/identity-manager"
 import {
-  fetchAllDevices,
   removeDevice,
   removeRecoveryDeviceII,
 } from "frontend/integration/internet-identity"
@@ -24,14 +23,9 @@ export async function removeRecoveryDeviceFacade(
 export async function removeAccessPointFacade(
   userNumber: UserNumber,
   principal: string,
+  pubkey: PublicKey,
+  isLegacyUser: boolean,
 ): Promise<void> {
-  const iiDevices = await fetchAllDevices(userNumber)
-  const iiDevice = iiDevices.find(
-    (d) =>
-      Principal.selfAuthenticating(new Uint8Array(d.pubkey)).toText() ===
-      principal,
-  )
-  await removeDevice(userNumber, iiDevice?.pubkey as DeviceKey)
-
+  if (isLegacyUser) await removeDevice(userNumber, pubkey)
   await removeAccessPoint(principal)
 }

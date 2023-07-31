@@ -1,5 +1,7 @@
 import { DeviceType, Icon } from "@nfid/integration"
 
+import { PublicKey } from "frontend/integration/_ic_api/internet_identity.d"
+
 export interface IDevice {
   type: DeviceType
   label: string
@@ -10,6 +12,8 @@ export interface IDevice {
   isLegacyDevice: boolean
   principal: string
   credentialId: string
+  credentialIdBuffer?: Array<number>
+  publickey?: PublicKey
 }
 
 export interface IGroupedDevices {

@@ -15,14 +15,14 @@ import AnimationDark2 from "./assets/animations/2_dark.json"
 import AnimationDark3 from "./assets/animations/3_dark.json"
 import AnimationDark4 from "./assets/animations/4_dark.json"
 import mainAnimation from "./assets/animations/main.lottie"
-import Card1 from "./assets/cards/decentralized_icon_1.png"
-import Card1Hover from "./assets/cards/decentralized_icon_1_hover.png"
-import Card3 from "./assets/cards/globe_1.png"
-import Card3Hover from "./assets/cards/globe_1_hover.png"
-import Card2 from "./assets/cards/lock_1.png"
-import Card2Hover from "./assets/cards/lock_1_hover.png"
-import Card4 from "./assets/cards/person-1.png"
-import Card4Hover from "./assets/cards/person-1_hover.png"
+import Card1 from "./assets/cards/decentralized_icon_1.webp"
+import Card1Hover from "./assets/cards/decentralized_icon_1_hover.webp"
+import Card3 from "./assets/cards/globe_1.webp"
+import Card3Hover from "./assets/cards/globe_1_hover.webp"
+import Card2 from "./assets/cards/lock_1.webp"
+import Card2Hover from "./assets/cards/lock_1_hover.webp"
+import Card4 from "./assets/cards/person-1.webp"
+import Card4Hover from "./assets/cards/person-1_hover.webp"
 import Gradient from "./assets/dark-gradient.png"
 import Discord from "./assets/new-landing/Discord.png"
 import Github from "./assets/new-landing/Github.png"
@@ -51,8 +51,8 @@ const section2 = "justify-between block md:flex gap-[60px] items-center"
 const card =
   "px-5 bg-gradient-to-r from-purple-50 to-blue-50 md:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group"
 const cardItem =
-  "mt-[50px] md:mt-[90px] font-bold text-xl md:text-[28px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-9"
-const cardImg = "w-[100px] lg:w-[140px] absolute"
+  "mt-[10px] md:mt-[45px] font-bold text-xl md:text-[28px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-9 max-w-[291px] lg:max-w-full"
+const cardImg = "w-[140px] lg:w-[200px] absolute"
 const sponsor = "max-w-[150px] md:max-w-[220px] max-h-[80px]"
 
 export const HomeScreen = () => {
@@ -132,7 +132,7 @@ export const HomeScreen = () => {
       <section
         className={clsx(
           "rounded-[30px] bg-[#0B0D32] py-[30px] lg:px-[60px] text-white relative z-10",
-          "mt-[20vh] md:mt-0 md:w-[calc(100%-60px)] mx-auto",
+          "mt-[20vh] md:mt-0 md:w-[calc(100%-60px)] mx-auto pb-10",
         )}
         style={{
           backgroundImage: getIsMobileDeviceMatch() ? "" : `url(${Gradient})`,
@@ -149,7 +149,7 @@ export const HomeScreen = () => {
                 className="min-w-[330px] min-h-[330px]"
               />
             </div>
-            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
+            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px] px-5 lg:px-0">
               <p className="font-light text-indigo-400 opacity-25">1/4</p>
               <p className="font-bold">Sign in everywhere</p>
               <p className="text-sm md:text-lg">
@@ -167,7 +167,7 @@ export const HomeScreen = () => {
                 className="min-w-[330px] min-h-[330px]"
               />
             </div>
-            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
+            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px] px-5 lg:px-0">
               <p className="font-light text-indigo-400 opacity-25">2/4</p>
               <p className="font-bold">Maintain your anonymity</p>
               <p className="text-sm md:text-lg">
@@ -186,7 +186,7 @@ export const HomeScreen = () => {
                 className="min-w-[330px] min-h-[330px]"
               />
             </div>
-            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
+            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px] px-5 lg:px-0">
               <p className="font-light text-indigo-400 opacity-25">3/4</p>
               <p className="font-bold">Protect your identity</p>
               <p className="text-sm md:text-lg">
@@ -205,7 +205,7 @@ export const HomeScreen = () => {
                 className="min-w-[330px] min-h-[330px]"
               />
             </div>
-            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px]">
+            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[633px] px-5 lg:px-0">
               <p className="font-light text-indigo-400 opacity-25">4/4</p>
               <p className="font-bold">Secure your assets</p>
               <p className="text-sm md:text-lg">
@@ -231,7 +231,7 @@ export const HomeScreen = () => {
         </div>
         <div className="mt-[27px] md:mt-[98px] grid grid-cols-1 md:grid-cols-2 md:gap-[30px] gap-[20px]">
           <div className={clsx(card)}>
-            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+            <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
               <img src={Card1} alt="" className={clsx(cardImg, "z-10")} />
               <img
                 src={Card1Hover}
@@ -248,7 +248,7 @@ export const HomeScreen = () => {
             </p>
           </div>
           <div className={clsx(card)}>
-            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+            <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
               <img src={Card2} alt="" className={clsx(cardImg, "z-10")} />
               <img
                 src={Card2Hover}
@@ -260,12 +260,12 @@ export const HomeScreen = () => {
               />
             </div>
             <p className={clsx(cardItem)}>
-              Secured on decentralized architecture built by 100s of the world’s
-              best cryptographers.
+              Protected by best-in-class auth with enterprise security and
+              multi-factor recovery methods.
             </p>
           </div>
           <div className={clsx(card)}>
-            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+            <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
               <img src={Card3} alt="" className={clsx(cardImg, "z-10")} />
               <img
                 src={Card3Hover}
@@ -277,12 +277,12 @@ export const HomeScreen = () => {
               />
             </div>
             <p className={clsx(cardItem)}>
-              Secured on decentralized architecture built by 100s of the world’s
-              best cryptographers.
+              Trusted by hundreds of thousands of people and businesses around
+              the world.
             </p>
           </div>
           <div className={clsx(card)}>
-            <div className="w-[100px] lg:w-[140px] block relative aspect-square">
+            <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
               <img src={Card4} alt="" className={clsx(cardImg, "z-10")} />
               <img
                 src={Card4Hover}
@@ -294,8 +294,8 @@ export const HomeScreen = () => {
               />
             </div>
             <p className={clsx(cardItem)}>
-              Secured on decentralized architecture built by 100s of the world’s
-              best cryptographers.
+              Backed by some of the most trusted names in the crypto and Web3
+              industry.
             </p>
           </div>
         </div>

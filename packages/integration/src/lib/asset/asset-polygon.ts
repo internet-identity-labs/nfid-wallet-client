@@ -1,6 +1,6 @@
 import { Blockchain } from "@rarible/api-client"
 import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
-import { Network } from "alchemy-sdk"
+import { AssetTransfersCategory, Network } from "alchemy-sdk"
 
 import { EthereumAsset } from "./asset-ethereum"
 
@@ -17,6 +17,7 @@ export const polygonAsset = new EthereumAsset({
   token: "Matic",
   blockchainName: "Polygon",
   alchemyApiKey: MATIC_ALCHEMY_API_KEY,
+  activitiesTypes: Object.values(AssetTransfersCategory).filter(x => x !== AssetTransfersCategory.INTERNAL)
 })
 
 export const polygonMumbaiAsset = new EthereumAsset({
@@ -32,4 +33,5 @@ export const polygonMumbaiAsset = new EthereumAsset({
   token: "Matic Mumbai",
   blockchainName: "Polygon Mumbai",
   alchemyApiKey: MUMBAI_ALCHEMY_API_KEY,
+  activitiesTypes: Object.values(AssetTransfersCategory).filter(x => x !== AssetTransfersCategory.INTERNAL)
 })

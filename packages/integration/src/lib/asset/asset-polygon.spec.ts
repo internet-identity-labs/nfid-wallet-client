@@ -1,10 +1,38 @@
-import { BigNumber } from "@rarible/utils"
-
 import { polygonMumbaiAsset } from "./asset-polygon"
 import { ChainBalance } from "./types"
+import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity"
+import { mockIdentityA } from "../identity"
+import { generateDelegationIdentity } from "../test-utils"
 
 describe("Polygon Asset", () => {
   jest.setTimeout(20000)
+
+  it("should return 1 activity for identity", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+    const actual = await polygonMumbaiAsset.getActivityByUser(
+      delegationIdentity,
+      5,
+      "asc",
+    )
+    expect(actual).toEqual([
+      {
+         "id":"0x870cde38995cbcffa5ab3d6dc17133bae9df3d4bb7233adcfed587df8cc97b46:external",
+         "date":new Date("2023-07-31T10:21:41.000Z"),
+         "to":"0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+         "from":"0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+         "transactionHash":"0x870cde38995cbcffa5ab3d6dc17133bae9df3d4bb7233adcfed587df8cc97b46",
+         "action":"Receive",
+         "asset":{
+            "type":"ft",
+            "currency":"MATIC",
+            "amount":0.1
+         }
+      }
+   ])
+  })
+
 
   it.skip("should return one fungible native tx", async function () {
     const actual = await polygonMumbaiAsset.getFungibleActivityByTokenAndUser({

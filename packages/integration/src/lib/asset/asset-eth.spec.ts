@@ -1,6 +1,5 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { TransactionResponse } from "@ethersproject/abstract-provider"
-import { BigNumber as RaribleBigNumber } from "@rarible/utils"
 import { ethers } from "ethers-ts"
 import { BigNumber } from "ethers/lib/ethers"
 
@@ -17,6 +16,94 @@ import { ChainBalance } from "./types.d"
 
 describe("Ethereum Asset", () => {
   jest.setTimeout(30000)
+
+  it("should return 5 activities for identity", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+    const actual = await ethereumGoerliAsset.getActivityByUser(
+      delegationIdentity,
+      5,
+      "asc",
+    )
+    expect(actual).toEqual([
+      {
+        id: "0x77151f9f254b7515c1c2d3bf2abbb9a036927231d6b96a6a324b79f06a69d9df:external",
+        date: new Date("2023-04-25T14:08:00.000Z"),
+        to: "0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+        from: "0xb1107f4141fb56b07d15b65f1629451443ff8f8e",
+        transactionHash:
+          "0x77151f9f254b7515c1c2d3bf2abbb9a036927231d6b96a6a324b79f06a69d9df",
+        action: "Receive",
+        asset: {
+          type: "ft",
+          currency: "ETH",
+          amount: 0.05,
+        },
+      },
+      {
+        id: "0x75d539163a47d101b1984dcbe3468c61aad584bf49895eba9e0de397eae3ec1d:external",
+        date: new Date("2023-04-25T14:08:24.000Z"),
+        to: "0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+        from: "0xb1107f4141fb56b07d15b65f1629451443ff8f8e",
+        transactionHash:
+          "0x75d539163a47d101b1984dcbe3468c61aad584bf49895eba9e0de397eae3ec1d",
+        action: "Receive",
+        asset: {
+          type: "ft",
+          currency: "ETH",
+          amount: 0.05,
+        },
+      },
+      {
+        id: "0x27113833104087b9bdf6b0347a4ddb6746652baf3628ecc3ac263e7959ffd801:log:96",
+        date: new Date("2023-04-25T17:09:24.000Z"),
+        to: "0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+        from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        transactionHash:
+          "0x27113833104087b9bdf6b0347a4ddb6746652baf3628ecc3ac263e7959ffd801",
+        action: "Receive",
+        asset: {
+          type: "ft",
+          currency: "LINK",
+          amount: 2,
+        },
+      },
+      {
+        id: "0xdade54dfa1f08c4dd011ea69200ec2c01ec2d3bced396619a12fa56f020f17f3:log:97",
+        date: new Date("2023-04-25T17:11:48.000Z"),
+        to: "0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+        from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        transactionHash:
+          "0xdade54dfa1f08c4dd011ea69200ec2c01ec2d3bced396619a12fa56f020f17f3",
+        action: "Receive",
+        asset: {
+          type: "nft",
+          name: "adaasda",
+          preview:
+            "https://ipfs.io/ipfs/QmX8519rSfPT58xVD2ZaRM1exBB81J56QAPwF8MFHiE4Hi",
+          previewType: "image",
+        },
+      },
+      {
+        id: "0xbfc8db8812fba8ea4ad3c9b9df57240ba010a7843ce20bda32ae959dd54b48eb:log:90",
+        date: new Date("2023-04-25T17:13:48.000Z"),
+        to: "0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+        from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        transactionHash:
+          "0xbfc8db8812fba8ea4ad3c9b9df57240ba010a7843ce20bda32ae959dd54b48eb",
+        action: "Receive",
+        asset: {
+          type: "nft",
+          name: "test1",
+          preview:
+            "https://ipfs.io/ipfs/bafybeihgdszr3zaeb2fceb2axuyoajsker2topvye3pgdnzzoiq35f2ulq/image.png",
+          previewType: "image",
+          amount: "1",
+        },
+      },
+    ])
+  })
 
   it.skip("should return one estimated erc20 tx", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)

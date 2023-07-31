@@ -146,8 +146,6 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     })
     const contentUrlById = await this.getContentUrlById(nfts)
 
-    console.log("ActivityAction", ActivityAction)
-
     const activity: Activity[] = transfers
       .map((x) => ({
         id: x.uniqueId,

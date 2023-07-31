@@ -209,6 +209,7 @@ declare type Configuration = {
   token: string
   blockchainName: string
   alchemyApiKey: string
+  activitiesTypes: AssetTransfersCategory[]
 }
 
 declare type EstimateTransactionRequest =
@@ -264,3 +265,30 @@ export interface FungibleTransactionRequest {
   amount: number
   to: string
 }
+
+declare interface Activity {
+  id: string
+  date: Date
+  from: string
+  to: string
+  transactionHash: string
+  action: ActivityAction
+  asset: ActivityAssetFT | ActivityAssetNFT
+}
+
+declare interface ActivityAssetNFT {
+  type: "nft"
+  name: string
+  preview: string
+  previewType: string
+  amount?: string
+}
+
+declare interface ActivityAssetFT {
+  type: "ft"
+  currency: string
+  amount: number
+  amountUSD?: string
+}
+
+declare type Content = { contentUrl: string; contentType?: "video" | "img" | "iframe"; val: Item }

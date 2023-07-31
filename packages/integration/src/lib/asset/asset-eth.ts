@@ -1,6 +1,6 @@
 import { Blockchain } from "@rarible/api-client"
 import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
-import { Network } from "alchemy-sdk"
+import { AssetTransfersCategory, Network } from "alchemy-sdk"
 
 import { EthereumAsset } from "./asset-ethereum"
 
@@ -17,6 +17,7 @@ export const ethereumAsset = new EthereumAsset({
   token: "Ethereum",
   blockchainName: "Ethereum",
   alchemyApiKey: ETH_ALCHEMY_API_KEY,
+  activitiesTypes: Object.values(AssetTransfersCategory)
 })
 
 export const ethereumGoerliAsset = new EthereumAsset({
@@ -32,4 +33,5 @@ export const ethereumGoerliAsset = new EthereumAsset({
   token: "Ethereum Goerli",
   blockchainName: "Ethereum Goerli",
   alchemyApiKey: GOERLI_ALCHEMY_API_KEY,
+  activitiesTypes: Object.values(AssetTransfersCategory)
 })

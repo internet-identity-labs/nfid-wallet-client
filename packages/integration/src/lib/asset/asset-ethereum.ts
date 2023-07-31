@@ -26,6 +26,8 @@ import {
   Network,
   OwnedNftsResponse as AlchemyOwnedNftsResponse,
   SortingOrder,
+  AssetTransfersWithMetadataParams,
+  AssetTransfersWithMetadataResult,
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
 import { principalToAddress } from "ictool"
@@ -41,10 +43,14 @@ import { estimateTransaction } from "./service/estimate-transaction.service"
 import {
   ActivitiesByItemRequest,
   ActivitiesByUserRequest,
+  Activity,
+  ActivityAssetFT,
+  ActivityAssetNFT,
   ActivityRecord,
   Address,
   ChainBalance,
   Configuration,
+  Content,
   Erc20TokensByUserRequest,
   EstimateTransactionRequest,
   EstimatedTransaction,
@@ -62,6 +68,11 @@ import {
   TransferNftRequest,
   TransferResponse,
 } from "./types"
+
+export enum ActivityAction {
+  SEND = "Send",
+  RECEIVE = "Receive",
+}
 
 function removeChain(id: UnionAddress): string {
   return id.slice(id.indexOf(":") + 1)
@@ -85,6 +96,70 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
   getNativeToken(): string {
     return this.config.token
+  }
+
+  public async getActivityByUser(
+    identity: DelegationIdentity,
+    size = 50,
+    sort: "asc" | "desc" = "desc"
+  ): Promise<Activity[]> {
+    const addressVal = await this.getAddressByIdentity(identity)
+    const alchemySdk = this.getAlchemySdk(
+      this.config.alchemyNetwork,
+      this.config.alchemyApiKey,
+    )
+
+    const request: AssetTransfersWithMetadataParams = {
+      category: this.config.activitiesTypes,
+      withMetadata: true,
+      order: sort === "asc" ? SortingOrder.ASCENDING : SortingOrder.DESCENDING,
+      maxCount: size,
+    }
+
+    const toRequest: AssetTransfersWithMetadataParams = {
+      ...request,
+      toAddress: addressVal,
+    }
+
+    const fromRequest: AssetTransfersWithMetadataParams = {
+      ...request,
+      fromAddress: addressVal,
+    }
+
+    const [to, from] = await Promise.all([
+      alchemySdk.core.getAssetTransfers(toRequest),
+      alchemySdk.core.getAssetTransfers(fromRequest)
+    ])
+
+    const transfers = to.transfers.concat(from.transfers)
+
+    const chain = this.config.blockchain.toString()
+    const nfts = transfers.filter((x) =>
+      [AssetTransfersCategory.ERC721, AssetTransfersCategory.ERC1155].includes(
+        x.category,
+      ),
+    ).map(x => {
+      const contract = x.rawContract.address
+      const tokenId: string = x.tokenId ?? x.erc1155Metadata?.[0].tokenId ?? ""
+      const id = `${chain}:${contract}:${tokenId}`
+      return toItemId(id)
+    })
+    const contentUrlById = await this.getContentUrlById(nfts)
+
+    const activity: Activity[] = transfers
+      .map((x) => ({
+        id: x.uniqueId,
+        date: new Date(x.metadata.blockTimestamp),
+        to: x.to || "",
+        from: x.from,
+        transactionHash: x.hash,
+        action:
+          x.from === addressVal ? ActivityAction.SEND : ActivityAction.RECEIVE,
+        asset: this.getAsset(x, contentUrlById),
+      }))
+      .sort((x, y) => x.date.getTime() - y.date.getTime())
+
+    return activity
   }
 
   async transfer(
@@ -205,10 +280,6 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       this.config.alchemyNetwork,
       this.config.alchemyApiKey,
     )
-    const raribleSdk = this.getRaribleSdk(
-      this.config.raribleEnv,
-      this.config.raribleApiKey,
-    )
     const tokens: AlchemyOwnedNftsResponse =
       await alchemySdk.nft.getNftsForOwner(address, {
         pageKey: cursor,
@@ -223,23 +294,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       return toItemId(id)
     })
 
-    const contentUrlById: Map<
-      string,
-      { contentUrl: string; contentType?: "video" | "img" | "iframe" }
-    > = await raribleSdk.apis.item
-      .getItemByIds({ itemIds: { ids } })
-      .then((x) => {
-        return x.items.reduce((acc, val) => {
-          const contentUrl = val.meta?.content[0]?.url
-          const contentType =
-            val.meta?.content?.length &&
-            "@type" in val.meta.content[0] &&
-            val.meta?.content[0]["@type"].toLowerCase()
-          acc.set(val.id, { contentUrl, contentType })
-
-          return acc
-        }, new Map())
-      })
+    const contentUrlById = await this.getContentUrlById(ids)
 
     return {
       total: tokens.totalCount,
@@ -565,7 +620,75 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       return ""
     }
     const balanceBN = toBn(balance)
-    const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)
-    return "$" + (usd?.toFixed(2).toString() ?? "0.00")
+    const usd = balanceBN.dividedBy(selectedTokenPrice)
+    const result = "$" + (usd?.toFixed(2).toString() ?? "0.00")
+    return result
+  }
+
+  private async getContentUrlById(
+    ids: ItemId[],
+  ): Promise<Map<string, Content>> {
+    const raribleSdk = this.getRaribleSdk(
+      this.config.raribleEnv,
+      this.config.raribleApiKey,
+    )
+    return await raribleSdk.apis.item
+      .getItemByIds({ itemIds: { ids } })
+      .then((x) => {
+        return x.items.reduce((acc, val) => {
+          const contentUrl = val.meta?.content[0]?.url
+          const contentType =
+            val.meta?.content?.length &&
+            "@type" in val.meta.content[0] &&
+            val.meta?.content[0]["@type"].toLowerCase()
+          acc.set(val.id, { contentUrl, contentType, val })
+
+          return acc
+        }, new Map())
+      })
+  }
+
+  private getAsset(
+    entry: AssetTransfersWithMetadataResult,
+    contentUrlById: Map<string, Content>
+  ): ActivityAssetFT | ActivityAssetNFT {
+
+    if (AssetTransfersCategory.ERC721 === entry.category) {
+      const content = this.getContent(entry, contentUrlById)
+      return {
+        type: "nft",
+        name: content?.val.meta?.name ?? "",
+        preview: content?.contentUrl ?? "",
+        previewType: content?.contentType ?? "",
+      }
+    }
+
+    if (AssetTransfersCategory.ERC1155 === entry.category) {
+      const content = this.getContent(entry, contentUrlById)
+      return {
+        type: "nft",
+        name: content?.val.meta?.name ?? "",
+        preview: content?.contentUrl ?? "",
+        previewType: content?.contentType ?? "",
+        amount: BigInt(entry.erc1155Metadata?.[0].value ?? "").toString()
+      }
+    }
+
+    const amount = entry.value ?? 0
+    const currency = entry.asset ?? ""
+    return {
+      type: "ft",
+      currency,
+      amount,
+    }
+  }
+
+  private getContent(entry: AssetTransfersWithMetadataResult, contentUrlById: Map<string, Content>) {
+    const contract = entry.rawContract.address
+    const chain = this.config.blockchain.toString()
+    const tokenId = BigInt(entry.tokenId ?? entry.erc1155Metadata?.[0].tokenId ?? "").toString()
+    const id = `${chain}:${contract}:${tokenId}`
+    const image = contentUrlById.get(id)
+    return image
   }
 }

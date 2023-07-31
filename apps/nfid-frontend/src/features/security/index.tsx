@@ -27,12 +27,12 @@ const ProfileSecurityPage = () => {
   const { profile, refreshProfile } = useProfile()
 
   const {
-    data: imDevices,
+    data: devices,
     mutate: refetchDevices,
     isValidating,
   } = useSWR(
     profile?.anchor ? [profile.anchor.toString(), "devices"] : null,
-    securityConnector.getIMDevices,
+    securityConnector.getDevices,
     { revalidateOnFocus: false },
   )
 
@@ -92,7 +92,7 @@ const ProfileSecurityPage = () => {
           <>
             <span>Two-factor authentication</span>
             <Toggle
-              isDisabled={!imDevices?.passkeys?.length}
+              isDisabled={!devices?.passkeys?.length}
               isChecked={!!profile?.is2fa}
               onToggle={async (val) => {
                 handleWithLoading(
@@ -125,10 +125,10 @@ const ProfileSecurityPage = () => {
             </tr>
           }
         >
-          {imDevices?.passkeys.map((device, key) => (
+          {devices?.passkeys.map((device, key) => (
             <PasskeyDeviceItem
               showLastPasskeyWarning={
-                imDevices.passkeys.length < 2 && !!profile?.is2fa
+                devices.passkeys.length < 2 && !!profile?.is2fa
               }
               device={device}
               key={`passkey_device_${key}`}
@@ -144,7 +144,7 @@ const ProfileSecurityPage = () => {
         title="Recovery options"
         subTitle="Access your account even if you lose access to all other authentication factors."
       >
-        {imDevices?.recoveryDevice ? (
+        {devices?.recoveryDevice ? (
           <div className="flex items-center justify-between">
             <div className="flex space-x-2.5 items-center">
               <div className="w-10 h-10 p-2 rounded-full">
@@ -152,10 +152,10 @@ const ProfileSecurityPage = () => {
               </div>
               <div>
                 <p className="text-sm leading-5">
-                  {imDevices.recoveryDevice.label}
+                  {devices.recoveryDevice.label}
                 </p>
                 <p className="text-xs leading-4 text-gray-400">
-                  Last activity: {imDevices.recoveryDevice.last_used}
+                  Last activity: {devices.recoveryDevice.last_used}
                 </p>
               </div>
             </div>

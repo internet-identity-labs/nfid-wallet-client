@@ -31,12 +31,12 @@ type AuthData = {
 
 type AuthInitiatedEvent = {
   authSource: AuthSource
-  authTarget: string
+  authTarget?: string
 }
 
 type AuthAbortedEvent = {
   authSource: AuthSource
-  authTarget: string
+  authTarget?: string
 }
 
 type UserData = {
@@ -60,6 +60,10 @@ class AuthenticationTracking {
   private userData = {}
 
   public updateData(data: Partial<AuthData>) {
+    console.debug("authenticationTracking.updateData", {
+      currentData: this.data,
+      newData: data,
+    })
     this.data = {
       ...this.data,
       ...data,
@@ -97,9 +101,18 @@ class AuthenticationTracking {
   }
 
   public initiated(event: AuthInitiatedEvent) {
-    console.debug("authenticationTracking.initiated", { event })
-    this.updateData(event)
-    posthog.capture("Auth - initiated", this.data)
+    this.updateData({
+      ...event,
+      authTarget: event.authTarget || this.data.authTarget || "nfid",
+    })
+    const title = "Auth - initiated"
+
+    console.debug("authenticationTracking.initiated", {
+      title,
+      event,
+      accumulatedData: this.data,
+    })
+    posthog.capture(title, this.data)
   }
 
   public aborted(event: AuthAbortedEvent) {

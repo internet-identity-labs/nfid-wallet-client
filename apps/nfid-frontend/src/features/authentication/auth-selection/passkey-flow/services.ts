@@ -226,7 +226,6 @@ export class PasskeyConnector {
 
       authenticationTracking.updateData({
         authSource: "passkey - continue",
-        authTarget: "nfid",
       })
 
       const profile = await fetchProfile()
@@ -245,7 +244,6 @@ export class PasskeyConnector {
     } catch (e) {
       authenticationTracking.aborted({
         authSource: "passkey - continue",
-        authTarget: "nfid",
       })
       throw e
     } finally {

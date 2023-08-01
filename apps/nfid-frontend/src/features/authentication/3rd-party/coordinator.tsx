@@ -21,12 +21,12 @@ export default function ThirdPartyAuthCoordinator({
 }) {
   const [state, send] = useMachine(ThirdPartyAuthMachine)
 
-  React.useEffect(() => {
-    console.debug("ThirdPartyAuthCoordinator", {
-      context: state?.context,
-      state: state.value,
-    })
-    if (state.context.appMeta && state.context.authRequest) {
+  const handleTrackAuthModalOpened = React.useCallback(() => {
+    if (
+      state.context.appMeta &&
+      state.context.authRequest &&
+      state.matches("AuthenticationMachine")
+    ) {
       const authTarget = state.context.appMeta.name
         ? `${state.context.appMeta.name} - ${state.context.authRequest.hostname}`
         : state.context.authRequest.hostname
@@ -35,7 +35,15 @@ export default function ThirdPartyAuthCoordinator({
         authTarget,
       })
     }
-  }, [state.value, state.context])
+  }, [state])
+
+  React.useEffect(() => {
+    console.debug("ThirdPartyAuthCoordinator", {
+      context: state?.context,
+      state: state.value,
+    })
+    handleTrackAuthModalOpened()
+  }, [state.value, state?.context, handleTrackAuthModalOpened])
 
   useEffect(() => {
     if (!onEnd) return

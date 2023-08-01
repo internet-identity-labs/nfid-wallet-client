@@ -224,10 +224,6 @@ export class PasskeyConnector {
         sessionKey,
       })
 
-      authenticationTracking.updateData({
-        authSource: "passkey - continue",
-      })
-
       const profile = await fetchProfile()
       await im.use_access_point([])
 

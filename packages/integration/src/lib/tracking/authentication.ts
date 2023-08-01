@@ -193,6 +193,11 @@ class AuthenticationTracking {
 
     posthog.capture(title, event)
   }
+
+  public loaded2fa() {
+    console.debug("authenticationTracking.loaded2fa")
+    posthog.capture("Auth - 2fa loaded", this.data)
+  }
 }
 
 export const authenticationTracking = new AuthenticationTracking()

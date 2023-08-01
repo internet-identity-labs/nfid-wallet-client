@@ -13,30 +13,27 @@ type AuthSource =
 type AuthTarget = "nfid" | string
 
 type AuthData = {
+  accountWillAutoSelect: boolean
+  authenticatorAttachment: AuthenticatorAttachment
   authLocation: "magic" | "main"
   authSource: AuthSource
-  isNewUser: boolean
   authTarget: AuthTarget
-  networkTarget: "ICP" | "ETH" | "MATIC" | "nfid"
+  backupEligibility: boolean
+  backupState: boolean
+  isNewUser: boolean
+  legacyUser: boolean
   mainAccountOffered: boolean
-  accountWillAutoSelect: boolean
+  networkTarget: "ICP" | "ETH" | "MATIC" | "nfid"
   passkeyUsed: boolean
-  authenticatorAttachment: AuthenticatorAttachment
+  rootWallet: boolean
   transports: ""
   userPresent: boolean
   userVerified: boolean
-  backupEligibility: boolean
-  backupState: boolean
-}
-
-type AuthInitiatedEvent = {
-  authSource: AuthSource
-  authTarget: string
 }
 
 type AuthAbortedEvent = {
   authSource: AuthSource
-  authTarget: string
+  authTarget?: string
 }
 
 type UserData = {
@@ -60,6 +57,10 @@ class AuthenticationTracking {
   private userData = {}
 
   public updateData(data: Partial<AuthData>) {
+    console.debug("authenticationTracking.updateData", {
+      currentData: this.data,
+      newData: data,
+    })
     this.data = {
       ...this.data,
       ...data,
@@ -73,6 +74,21 @@ class AuthenticationTracking {
     }
   }
 
+  public authModalOpened(data: Partial<AuthData>) {
+    const title = "Auth - modal opened"
+    const event = {
+      authTarget: data.authTarget || "nfid",
+      mainAccountOffered: false,
+      accountWillAutoSelect: false, // needs to be dynamic on new SDK flow
+      networkTarget: data.networkTarget || "nfid",
+      // isAuthenticated: false, // could be helpful to know if user is already authenticated
+    }
+    console.debug("authenticationTracking.authModalOpened", { title, event })
+
+    this.updateData(event)
+    posthog.capture(title, event)
+  }
+
   public identify(userData: UserData) {
     const delegationIdentity = authState.get().delegationIdentity
     if (!delegationIdentity) throw new Error("delegationIdentity is missing")
@@ -81,10 +97,19 @@ class AuthenticationTracking {
     posthog.identify(delegationIdentity.getPrincipal().toString(), userData)
   }
 
-  public initiated(event: AuthInitiatedEvent) {
-    console.debug("authenticationTracking.initiated", { event })
-    this.updateData(event)
-    posthog.capture("Auth - initiated", this.data)
+  public initiated(event: Partial<AuthData>, is2FA = false) {
+    this.updateData({
+      ...event,
+      authTarget: event.authTarget || this.data.authTarget || "nfid",
+    })
+    const title = is2FA ? "Auth - 2fa initiated" : "Auth - initiated"
+
+    console.debug("authenticationTracking.initiated", {
+      title,
+      event,
+      accumulatedData: this.data,
+    })
+    posthog.capture(title, this.data)
   }
 
   public aborted(event: AuthAbortedEvent) {
@@ -135,6 +160,43 @@ class AuthenticationTracking {
       data,
     })
     posthog.capture("Auth - magic google link completed", data)
+  }
+
+  public profileSelectionLoaded({
+    privateProfilesCount,
+  }: {
+    privateProfilesCount: number
+  }) {
+    const title = "Profile selection loaded"
+    const event = {
+      ...this.data,
+      privateProfiles: privateProfilesCount,
+    }
+    console.debug("authenticationTracking.profileSelectionLoaded", {
+      title,
+      event,
+    })
+
+    posthog.capture(title, event)
+  }
+
+  public profileChosen({ profile }: { profile: string }) {
+    const title = "Profile chosen"
+    const event = {
+      ...this.data,
+      profile,
+    }
+    console.debug("authenticationTracking.profileChosen", {
+      title,
+      event,
+    })
+
+    posthog.capture(title, event)
+  }
+
+  public loaded2fa() {
+    console.debug("authenticationTracking.loaded2fa")
+    posthog.capture("Auth - 2fa loaded", this.data)
   }
 }
 

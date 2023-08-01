@@ -1,7 +1,10 @@
 import { useMachine } from "@xstate/react"
 import React, { useEffect } from "react"
 
-import { ThirdPartyAuthSession } from "@nfid/integration"
+import {
+  ThirdPartyAuthSession,
+  authenticationTracking,
+} from "@nfid/integration"
 
 import { AuthorizationRequest } from "frontend/state/authorization"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -18,14 +21,29 @@ export default function ThirdPartyAuthCoordinator({
 }) {
   const [state, send] = useMachine(ThirdPartyAuthMachine)
 
-  React.useEffect(
-    () =>
-      console.debug("ThirdPartyAuthCoordinator", {
-        context: state?.context,
-        state: state.value,
-      }),
-    [state.value, state.context],
-  )
+  const handleTrackAuthModalOpened = React.useCallback(() => {
+    if (
+      state.context.appMeta &&
+      state.context.authRequest &&
+      state.matches("AuthenticationMachine")
+    ) {
+      const authTarget = state.context.appMeta.name
+        ? `${state.context.appMeta.name} - ${state.context.authRequest.hostname}`
+        : state.context.authRequest.hostname
+
+      authenticationTracking.authModalOpened({
+        authTarget,
+      })
+    }
+  }, [state])
+
+  React.useEffect(() => {
+    console.debug("ThirdPartyAuthCoordinator", {
+      context: state?.context,
+      state: state.value,
+    })
+    handleTrackAuthModalOpened()
+  }, [state.value, state?.context, handleTrackAuthModalOpened])
 
   useEffect(() => {
     if (!onEnd) return

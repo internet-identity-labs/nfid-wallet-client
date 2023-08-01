@@ -7,6 +7,7 @@ import {
   AccessPointCommon,
   Account,
   Application,
+  authenticationTracking,
   DeviceType,
   hasOwnProperty,
   Icon,
@@ -112,7 +113,13 @@ export async function fetchProfile() {
       console.debug("fetchProfile im.get_account", { response })
       return response
     })
-    .then((r) => mapProfile(unpackResponse(r)))
+    .then((r) => {
+      const profile = mapProfile(unpackResponse(r))
+      authenticationTracking.updateData({
+        legacyUser: profile.wallet === RootWallet.II,
+      })
+      return profile
+    })
     .catch((e) => {
       // expected 404 handled upstream
       if (e.code === 404) {

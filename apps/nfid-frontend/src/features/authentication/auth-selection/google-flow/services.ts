@@ -7,6 +7,7 @@ import {
 
 import {
   Profile,
+  RootWallet,
   authState,
   authenticationTracking,
   googleSigninV2Service,
@@ -52,6 +53,9 @@ export const signWithGoogleService = async (
       isNewUser: true,
     })
   }
+  authenticationTracking.updateData({
+    rootWallet: profile.wallet === RootWallet.NFID,
+  })
 
   authState.set({
     delegationIdentity: delegation,

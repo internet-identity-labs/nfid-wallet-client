@@ -32,7 +32,10 @@ export default function AuthenticationCoordinator({
   // Track on unmount
   React.useEffect(() => {
     return () => {
-      authenticationTracking.userSendToApp()
+      // NOTE: If we are on the root page (https://nfid.one/), unmounting means
+      // the user is send to the NFID Profile App.
+      // We don't want to track this when the user is on 3rd party authentication flow
+      window.location.pathname === "/" && authenticationTracking.userSendToApp()
     }
   }, [])
 
@@ -43,7 +46,6 @@ export default function AuthenticationCoordinator({
           onSelectEmailAuth={(email: string) => {
             authenticationTracking.initiated({
               authSource: "email",
-              authTarget: "nfid",
             })
             send({
               type: "AUTH_WITH_EMAIL",
@@ -53,7 +55,6 @@ export default function AuthenticationCoordinator({
           onSelectGoogleAuth={({ credential }) => {
             authenticationTracking.initiated({
               authSource: "google",
-              authTarget: "nfid",
             })
             send({
               type: "AUTH_WITH_GOOGLE",

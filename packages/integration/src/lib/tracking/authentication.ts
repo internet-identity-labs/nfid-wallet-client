@@ -31,11 +31,6 @@ type AuthData = {
   userVerified: boolean
 }
 
-type AuthInitiatedEvent = {
-  authSource: AuthSource
-  authTarget?: string
-}
-
 type AuthAbortedEvent = {
   authSource: AuthSource
   authTarget?: string
@@ -102,12 +97,12 @@ class AuthenticationTracking {
     posthog.identify(delegationIdentity.getPrincipal().toString(), userData)
   }
 
-  public initiated(event: AuthInitiatedEvent) {
+  public initiated(event: Partial<AuthData>, is2FA = false) {
     this.updateData({
       ...event,
       authTarget: event.authTarget || this.data.authTarget || "nfid",
     })
-    const title = "Auth - initiated"
+    const title = `Auth - ${is2FA ? "2fa" : ""} initiated`
 
     console.debug("authenticationTracking.initiated", {
       title,

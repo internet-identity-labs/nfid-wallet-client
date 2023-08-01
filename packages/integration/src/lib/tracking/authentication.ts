@@ -13,21 +13,22 @@ type AuthSource =
 type AuthTarget = "nfid" | string
 
 type AuthData = {
+  accountWillAutoSelect: boolean
+  authenticatorAttachment: AuthenticatorAttachment
   authLocation: "magic" | "main"
   authSource: AuthSource
-  isNewUser: boolean
   authTarget: AuthTarget
-  networkTarget: "ICP" | "ETH" | "MATIC" | "nfid"
+  backupEligibility: boolean
+  backupState: boolean
+  isNewUser: boolean
+  legacyUser: boolean
   mainAccountOffered: boolean
-  accountWillAutoSelect: boolean
+  networkTarget: "ICP" | "ETH" | "MATIC" | "nfid"
   passkeyUsed: boolean
-  authenticatorAttachment: AuthenticatorAttachment
+  rootWallet: boolean
   transports: ""
   userPresent: boolean
   userVerified: boolean
-  backupEligibility: boolean
-  backupState: boolean
-  rootWallet: boolean
 }
 
 type AuthInitiatedEvent = {

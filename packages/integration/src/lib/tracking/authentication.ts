@@ -164,6 +164,26 @@ class AuthenticationTracking {
     })
     posthog.capture("Auth - magic google link completed", data)
   }
+
+  public profileSelectionLoaded({
+    privateProfilesCount,
+  }: {
+    privateProfilesCount: number
+  }) {
+    const title = "Profile selection loaded"
+    const event = {
+      ...this.data,
+      privateProfiles: privateProfilesCount,
+    }
+    console.debug("authenticationTracking.profileSelectionLoaded", {
+      title,
+      event,
+    })
+
+    posthog.capture(title, {
+      privateProfiles: privateProfilesCount,
+    })
+  }
 }
 
 export const authenticationTracking = new AuthenticationTracking()

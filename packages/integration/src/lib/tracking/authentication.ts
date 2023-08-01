@@ -134,7 +134,7 @@ class AuthenticationTracking {
       authSource: this.data.authSource,
       authTarget: this.data.authTarget,
       isNewUser: this.data.isNewUser,
-      networkTarget: this.data.networkTarget,
+      networkTarget: this.data.networkTarget || "nfid",
     }
     const title = "User sent to app"
     console.debug("authenticationTracking.userSendToApp", { title, data })

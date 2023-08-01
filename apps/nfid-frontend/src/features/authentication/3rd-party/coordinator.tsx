@@ -1,7 +1,10 @@
 import { useMachine } from "@xstate/react"
 import React, { useEffect } from "react"
 
-import { ThirdPartyAuthSession } from "@nfid/integration"
+import {
+  ThirdPartyAuthSession,
+  authenticationTracking,
+} from "@nfid/integration"
 
 import { AuthorizationRequest } from "frontend/state/authorization"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -18,14 +21,21 @@ export default function ThirdPartyAuthCoordinator({
 }) {
   const [state, send] = useMachine(ThirdPartyAuthMachine)
 
-  React.useEffect(
-    () =>
-      console.debug("ThirdPartyAuthCoordinator", {
-        context: state?.context,
-        state: state.value,
-      }),
-    [state.value, state.context],
-  )
+  React.useEffect(() => {
+    console.debug("ThirdPartyAuthCoordinator", {
+      context: state?.context,
+      state: state.value,
+    })
+    if (state.context.appMeta && state.context.authRequest) {
+      const authTarget = state.context.appMeta.name
+        ? `${state.context.appMeta.name} - ${state.context.authRequest.hostname}`
+        : state.context.authRequest.hostname
+
+      authenticationTracking.authModalOpened({
+        authTarget,
+      })
+    }
+  }, [state.value, state.context])
 
   useEffect(() => {
     if (!onEnd) return

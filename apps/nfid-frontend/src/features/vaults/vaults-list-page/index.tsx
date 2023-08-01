@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react"
 import useSWR from "swr"
 
 import { EmptyCard, IconCmpVault, Loader } from "@nfid-frontend/ui"
+import { vaultsTracking } from "@nfid/integration"
 
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -29,6 +30,13 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
     if (!vaults) return []
     return vaults.filter((vault) => vault.name.includes(searchFilter))
   }, [searchFilter, vaults])
+
+  React.useEffect(() => {
+    if (!isLoading) {
+      console.debug("VaultsListPage", { vaults, isLoading })
+      vaultsTracking.vaultsLoaded(vaults?.length || 0)
+    }
+  }, [vaults, isLoading])
 
   const onFilterChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

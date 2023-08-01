@@ -65,7 +65,7 @@ Feature:Send/Receive Asset
       | 31870  | AnilAnimal | TestERC1155 |
 
 
-  @only_deploy_to_mainsr
+  @only_deploy_to_main
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

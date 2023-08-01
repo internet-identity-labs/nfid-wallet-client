@@ -19,6 +19,10 @@ export const Auth2FA = ({ appMeta, onSuccess }: IAuth2FA) => {
   const { profile } = useProfile()
   const [isLoading, setIsLoading] = React.useState(false)
 
+  React.useEffect(() => {
+    authenticationTracking.loaded2fa()
+  }, [])
+
   const handleAuth = React.useCallback(async () => {
     setIsLoading(true)
     try {

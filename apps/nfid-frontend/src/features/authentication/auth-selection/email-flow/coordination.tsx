@@ -1,5 +1,7 @@
 import { useActor } from "@xstate/react"
 
+import { authenticationTracking } from "@nfid/integration"
+
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { AuthEmailVerified } from "./email-verified"
@@ -27,7 +29,10 @@ export function AuthEmailFlowCoordinator({
         <AuthEmailPending
           email={state.context.verificationEmail}
           onBack={() => send({ type: "BACK" })}
-          onResend={() => send({ type: "RESEND" })}
+          onResend={() => {
+            authenticationTracking.magicLinkResendVerification()
+            send({ type: "RESEND" })
+          }}
         />
       )
     case state.matches("Authenticated"):

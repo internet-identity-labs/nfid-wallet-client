@@ -163,6 +163,13 @@ class AuthenticationTracking {
     })
     posthog.capture("Auth - magic google link completed", data)
   }
+  public magicLinkResendVerification() {
+    const title = "Resend magic link email"
+    console.debug("authenticationTracking.magicLinkResendVerification", {
+      title,
+    })
+    posthog.capture(title)
+  }
 
   public profileSelectionLoaded({
     privateProfilesCount,

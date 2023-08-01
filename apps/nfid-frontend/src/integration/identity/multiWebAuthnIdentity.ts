@@ -140,9 +140,6 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       }
 
       authenticationTracking.updateData({
-        authLocation: "main",
-        authSource: "passkey - continue",
-        passkeyUsed: true,
         userPresent: passkeyMetadata.flags.userPresent,
         userVerified: passkeyMetadata.flags.userVerified,
         backupEligibility: passkeyMetadata.flags.backupEligibility,

@@ -7,6 +7,7 @@ import {
 
 import {
   Profile,
+  RootWallet,
   authState,
   authenticationTracking,
   googleSigninV2Service,
@@ -42,16 +43,13 @@ export const signWithGoogleService = async (
   try {
     await replaceActorIdentity(im, delegation)
     profile = await fetchProfile()
-    authenticationTracking.updateData({
-      isNewUser: false,
-    })
   } catch (e) {
     console.log("creating new profile")
     profile = await createNFIDProfile(delegation, email)
-    authenticationTracking.updateData({
-      isNewUser: true,
-    })
   }
+  authenticationTracking.updateData({
+    isNewUser: profile.wallet === RootWallet.NFID,
+  })
 
   authState.set({
     delegationIdentity: delegation,

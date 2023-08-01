@@ -1,4 +1,4 @@
-import {validateTargets} from "./targets";
+import { validateTargets } from "./targets"
 
 describe("Targets validation", () => {
   jest.setTimeout(50000)
@@ -6,7 +6,7 @@ describe("Targets validation", () => {
   it("validate", async function () {
     try {
       await validateTargets(["txkre-oyaaa-aaaap-qa3za-cai"], "nfid.one")
-    }catch (e) {
+    } catch (e) {
       fail("Should pass")
     }
   })
@@ -14,9 +14,8 @@ describe("Targets validation", () => {
   it("validate fail", async function () {
     try {
       await validateTargets(["txkre-oyaaa-aaaap-qa3za-cai"], "hernia.one")
-    }catch (e) {
-      expect((e as Error).message).toContain("Target canister does not support")
+    } catch (e) {
+      expect((e as Error).message).toContain("Target canister txkre-oyaaa-aaaap-qa3za-cai does not support")
     }
   })
-
 })

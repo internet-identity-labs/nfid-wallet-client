@@ -1,3 +1,5 @@
+import { authenticationTracking } from "@nfid/integration"
+
 import { AuthenticationContext } from "frontend/features/authentication/root/root-machine"
 import { logAuthorizeApplication } from "frontend/features/stats/services"
 import {
@@ -87,6 +89,7 @@ export async function postDelegation(context: AuthenticationContext) {
     },
     context.authRequest.hostname,
   )
+  authenticationTracking.userSendToApp()
   window.close()
   return undefined
 }

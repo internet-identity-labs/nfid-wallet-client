@@ -143,8 +143,6 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         authLocation: "main",
         authSource: "passkey - continue",
         isNewUser: false,
-        authTarget: "nfid", // {APP_NAME}
-        networkTarget: "nfid",
         mainAccountOffered: false,
         accountWillAutoSelect: true,
         passkeyUsed: true,

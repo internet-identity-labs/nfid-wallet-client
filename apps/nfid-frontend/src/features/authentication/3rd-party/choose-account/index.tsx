@@ -1,6 +1,7 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
+import React from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -15,6 +16,7 @@ import {
   Account,
   ThirdPartyAuthSession,
   authState,
+  authenticationTracking,
   getAnonymousDelegate,
 } from "@nfid/integration"
 
@@ -46,6 +48,14 @@ export const AuthChooseAccount = ({
     useSWR([authRequest, "legacyAnonymousProfiles"], ([authRequest]) =>
       fetchAccountsService({ authRequest }),
     )
+
+  React.useEffect(() => {
+    if (!isAnonymousLoading) {
+      authenticationTracking.profileSelectionLoaded({
+        privateProfilesCount: legacyAnonymousProfiles?.length ?? 0,
+      })
+    }
+  }, [legacyAnonymousProfiles, isAnonymousLoading])
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {

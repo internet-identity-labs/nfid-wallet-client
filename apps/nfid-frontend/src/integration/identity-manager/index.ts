@@ -113,13 +113,7 @@ export async function fetchProfile() {
       console.debug("fetchProfile im.get_account", { response })
       return response
     })
-    .then((r) => {
-      const profile = mapProfile(unpackResponse(r))
-      authenticationTracking.updateData({
-        isNewUser: profile.wallet === RootWallet.NFID,
-      })
-      return profile
-    })
+    .then((r) => mapProfile(unpackResponse(r)))
     .catch((e) => {
       // expected 404 handled upstream
       if (e.code === 404) {

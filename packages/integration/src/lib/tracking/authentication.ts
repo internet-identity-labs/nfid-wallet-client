@@ -180,9 +180,21 @@ class AuthenticationTracking {
       event,
     })
 
-    posthog.capture(title, {
-      privateProfiles: privateProfilesCount,
+    posthog.capture(title, event)
+  }
+
+  public profileChosen({ profile }: { profile: string }) {
+    const title = "Profile chosen"
+    const event = {
+      ...this.data,
+      profile,
+    }
+    console.debug("authenticationTracking.profileChosen", {
+      title,
+      event,
     })
+
+    posthog.capture(title, event)
   }
 }
 

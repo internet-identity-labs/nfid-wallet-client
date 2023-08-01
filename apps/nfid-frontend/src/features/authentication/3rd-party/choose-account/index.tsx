@@ -52,13 +52,16 @@ export const AuthChooseAccount = ({
   React.useEffect(() => {
     if (!isAnonymousLoading) {
       authenticationTracking.profileSelectionLoaded({
-        privateProfilesCount: legacyAnonymousProfiles?.length ?? 0,
+        privateProfilesCount: legacyAnonymousProfiles?.length ?? 1,
       })
     }
   }, [legacyAnonymousProfiles, isAnonymousLoading])
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {
+      authenticationTracking.profileChosen({
+        profile: `private-${parseInt(account.accountId) + 1}`,
+      })
       setIsLoading(true)
       const authSession = await getLegacyThirdPartyAuthSession(
         authRequest,
@@ -71,6 +74,9 @@ export const AuthChooseAccount = ({
   )
 
   const handleSelectAnonymous = useCallback(async () => {
+    authenticationTracking.profileChosen({
+      profile: "private-1",
+    })
     setIsLoading(true)
     try {
       const delegation = authState.get().delegationIdentity

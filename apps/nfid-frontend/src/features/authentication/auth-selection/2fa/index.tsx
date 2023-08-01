@@ -1,6 +1,7 @@
 import React from "react"
 
 import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { authenticationTracking } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { AbstractAuthSession } from "frontend/state/authentication"
@@ -18,9 +19,19 @@ export const Auth2FA = ({ appMeta, onSuccess }: IAuth2FA) => {
   const { profile } = useProfile()
   const [isLoading, setIsLoading] = React.useState(false)
 
+  React.useEffect(() => {
+    authenticationTracking.loaded2fa()
+  }, [])
+
   const handleAuth = React.useCallback(async () => {
     setIsLoading(true)
     try {
+      authenticationTracking.initiated(
+        {
+          authLocation: "magic",
+        },
+        true,
+      )
       const res = await passkeyConnector.loginWithAllowedPasskey()
       onSuccess(res)
     } catch (e) {

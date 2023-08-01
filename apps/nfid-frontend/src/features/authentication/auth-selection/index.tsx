@@ -122,7 +122,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           onClick={async () => {
             authenticationTracking.initiated({
               authSource: "passkey - continue",
-              authTarget: "nfid",
             })
             setIsLoading(true)
             authAbortController.abort("Aborted webauthn manually")

@@ -1,6 +1,7 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
+import React from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -15,6 +16,7 @@ import {
   Account,
   ThirdPartyAuthSession,
   authState,
+  authenticationTracking,
   getAnonymousDelegate,
 } from "@nfid/integration"
 
@@ -47,8 +49,19 @@ export const AuthChooseAccount = ({
       fetchAccountsService({ authRequest }),
     )
 
+  React.useEffect(() => {
+    if (!isAnonymousLoading) {
+      authenticationTracking.profileSelectionLoaded({
+        privateProfilesCount: legacyAnonymousProfiles?.length ?? 1,
+      })
+    }
+  }, [legacyAnonymousProfiles, isAnonymousLoading])
+
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {
+      authenticationTracking.profileChosen({
+        profile: `private-${parseInt(account.accountId) + 1}`,
+      })
       setIsLoading(true)
       const authSession = await getLegacyThirdPartyAuthSession(
         authRequest,
@@ -61,6 +74,9 @@ export const AuthChooseAccount = ({
   )
 
   const handleSelectAnonymous = useCallback(async () => {
+    authenticationTracking.profileChosen({
+      profile: "private-1",
+    })
     setIsLoading(true)
     try {
       const delegation = authState.get().delegationIdentity

@@ -18,7 +18,7 @@ export const AuthEmailVerified: React.FC<AuthEmailVerifiedProps> = ({
   const { profile, isLoading } = useProfile()
 
   React.useEffect(() => {
-    if (!isLoading && profile) {
+    if (!isLoading && profile && !profile.is2fa) {
       authenticationTracking.completed({
         legacyUser: profile.wallet === RootWallet.II,
         hasEmail: true,

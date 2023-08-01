@@ -29,6 +29,7 @@ export const Auth2FA = ({ appMeta, onSuccess }: IAuth2FA) => {
       authenticationTracking.initiated(
         {
           authLocation: "magic",
+          authSource: "passkey",
         },
         true,
       )

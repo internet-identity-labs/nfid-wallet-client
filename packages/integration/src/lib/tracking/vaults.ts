@@ -1,7 +1,7 @@
 import posthog from "posthog-js"
 
 class VaultsTracking {
-  vaultsLoaded(totalVaults: number) {
+  public vaultsLoaded(totalVaults: number) {
     const title = "Vaults loaded"
     const data = { totalVaults }
     console.debug("VaultsTracking.vaultsLoaded", {
@@ -10,6 +10,18 @@ class VaultsTracking {
     })
 
     posthog.capture(title, data)
+  }
+
+  public vaultsModalOpened() {
+    const title = "Add vault modal loaded"
+    console.debug("VaultsTracking.vaultsModalOpened", { title })
+    posthog.capture(title)
+  }
+
+  public vaultCreaded() {
+    const title = "Vault created"
+    console.debug("VaultsTracking.vaultCreaded", { title })
+    posthog.capture(title)
   }
 }
 

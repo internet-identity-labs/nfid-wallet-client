@@ -102,7 +102,7 @@ class AuthenticationTracking {
       ...event,
       authTarget: event.authTarget || this.data.authTarget || "nfid",
     })
-    const title = `Auth - ${is2FA ? "2fa" : ""} initiated`
+    const title = is2FA ? "Auth - 2fa initiated" : "Auth - initiated"
 
     console.debug("authenticationTracking.initiated", {
       title,

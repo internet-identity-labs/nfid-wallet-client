@@ -5,6 +5,7 @@ import { authState } from "../authentication"
 type AuthSource =
   | "google"
   | "email"
+  | "passkey"
   | "passkey - continue"
   | "passkey - legacy platform"
   | "passkey - legacy roaming"
@@ -93,8 +94,9 @@ class AuthenticationTracking {
     const delegationIdentity = authState.get().delegationIdentity
     if (!delegationIdentity) throw new Error("delegationIdentity is missing")
 
-    console.debug("authenticationTracking.identify", { userData })
-    posthog.identify(delegationIdentity.getPrincipal().toString(), userData)
+    const principalId = delegationIdentity.getPrincipal().toString()
+    console.debug("authenticationTracking.identify", { principalId, userData })
+    posthog.identify(principalId, userData)
   }
 
   public initiated(event: Partial<AuthData>, is2FA = false) {
@@ -134,7 +136,7 @@ class AuthenticationTracking {
       authSource: this.data.authSource,
       authTarget: this.data.authTarget,
       isNewUser: this.data.isNewUser,
-      networkTarget: this.data.networkTarget,
+      networkTarget: this.data.networkTarget || "nfid",
     }
     const title = "User sent to app"
     console.debug("authenticationTracking.userSendToApp", { title, data })

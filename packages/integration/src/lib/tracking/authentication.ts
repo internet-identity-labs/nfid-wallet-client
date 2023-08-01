@@ -27,6 +27,7 @@ type AuthData = {
   userVerified: boolean
   backupEligibility: boolean
   backupState: boolean
+  rootWallet: boolean
 }
 
 type AuthInitiatedEvent = {

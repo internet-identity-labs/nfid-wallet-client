@@ -26,13 +26,13 @@ export const Auth2FA = ({ appMeta, onSuccess }: IAuth2FA) => {
   const handleAuth = React.useCallback(async () => {
     setIsLoading(true)
     try {
-      const res = await passkeyConnector.loginWithAllowedPasskey()
       authenticationTracking.initiated(
         {
           authLocation: "magic",
         },
         true,
       )
+      const res = await passkeyConnector.loginWithAllowedPasskey()
       onSuccess(res)
     } catch (e) {
       console.error(e)

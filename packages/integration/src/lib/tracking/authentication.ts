@@ -73,6 +73,21 @@ class AuthenticationTracking {
     }
   }
 
+  public authModalOpened(data: Partial<AuthData>) {
+    const title = "Auth - modal opened"
+    const event = {
+      authTarget: data.authTarget || "nfid",
+      mainAccountOffered: false,
+      accountWillAutoSelect: false, // needs to be dynamic on new SDK flow
+      networkTarget: data.networkTarget || "nfid",
+      // isAuthenticated: false, // could be helpful to know if user is already authenticated
+    }
+    console.debug("authenticationTracking.authModalOpened", { title, event })
+
+    this.updateData(event)
+    posthog.capture(title, event)
+  }
+
   public identify(userData: UserData) {
     const delegationIdentity = authState.get().delegationIdentity
     if (!delegationIdentity) throw new Error("delegationIdentity is missing")

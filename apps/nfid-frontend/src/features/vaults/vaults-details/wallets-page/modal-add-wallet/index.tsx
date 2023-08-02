@@ -1,10 +1,10 @@
 import clsx from "clsx"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 import { IconCmpPlus, Input, ModalAdvanced } from "@nfid-frontend/ui"
-import { registerWallet } from "@nfid/integration"
+import { registerWallet, vaultsTracking } from "@nfid/integration"
 
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
 
@@ -22,6 +22,12 @@ export const VaultAddWallet = () => {
       name: "",
     },
   })
+
+  React.useEffect(() => {
+    if (isModalOpen) {
+      vaultsTracking.addVaultAccountModalOpened()
+    }
+  }, [isModalOpen])
 
   const onAddMember = async ({ name }: WalletCreateForm) => {
     if (!vaultId) return

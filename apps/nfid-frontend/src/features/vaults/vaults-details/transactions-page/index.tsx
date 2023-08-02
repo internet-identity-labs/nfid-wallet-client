@@ -44,10 +44,11 @@ export const VaultsTransactionsPage: React.FC<
       vaultsTracking.vaultTransactionsLoaded({
         vaultId: vault.id.toString(),
         totalTransactions: transactions.length,
-        viewIsFiltered: !!searchFilter,
+        viewIsFiltered:
+          !!searchFilter || !!initiatedFilter.length || !!timeFilter,
       })
     }
-  }, [searchFilter, transactions, vault])
+  }, [initiatedFilter.length, searchFilter, timeFilter, transactions, vault])
 
   const initiatorsOptions = useMemo(() => {
     return (

@@ -77,6 +77,15 @@ class VaultsTracking {
       totalInactiveMembers,
     })
   }
+
+  public addVaultMemberModalOpened(vaultId: string) {
+    const title = "Add vault member modal loaded"
+    console.debug("VaultsTracking.addVaultMemberModalOpened", {
+      title,
+      vaultId,
+    })
+    posthog.capture(title, { vaultId })
+  }
 }
 
 export const vaultsTracking = new VaultsTracking()

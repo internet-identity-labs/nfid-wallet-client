@@ -11,20 +11,34 @@ type SendToken = {
 }
 
 class SendReceiveTracking {
-  openModal({ isSending = true } = {}) {
-    const title = `${isSending ? "Send" : "Receive"} tokens modal opened`
+  isOpenedFromVaults = false
+
+  openModal({ isSending = true, isOpenedFromVaults = false } = {}) {
+    this.isOpenedFromVaults = isOpenedFromVaults
+
+    const title = isSending
+      ? isOpenedFromVaults
+        ? "Vault send tokens modal opened"
+        : "Send tokens modal opened"
+      : isOpenedFromVaults
+      ? "Vault receive tokens modal opened"
+      : "Receive tokens modal opened"
+
     console.debug("SendReceiveTracking.openModal", { title })
     posthog.capture(title)
   }
 
   sendToken(data: SendToken) {
-    const title = "Send token"
+    const title = this.isOpenedFromVaults ? "Vault send token" : "Send token"
+
     console.debug("SendReceiveTracking.sendToken", { title, data })
     posthog.capture(title, data)
   }
 
   supportedTokenModalOpened() {
-    const title = "Token support dialog opened"
+    const title = this.isOpenedFromVaults
+      ? "Vault token support dialog opened"
+      : "Token support dialog opened"
     console.debug("SendReceiveTracking.supportedTokenModalOpened", { title })
     posthog.capture(title)
   }

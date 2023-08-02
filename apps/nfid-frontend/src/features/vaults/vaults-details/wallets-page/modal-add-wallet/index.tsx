@@ -41,6 +41,7 @@ export const VaultAddWallet = () => {
       setIsLoading(false)
       setIsModalOpen(false)
       toast.success(`Wallet ${name} successfully added`)
+      vaultsTracking.vaultAccountCreated(vaultId)
       await refetch()
     }
   }

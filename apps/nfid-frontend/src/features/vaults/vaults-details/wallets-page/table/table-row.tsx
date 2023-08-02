@@ -11,6 +11,7 @@ import {
   TableCell,
   TableRow,
 } from "@nfid-frontend/ui"
+import { sendReceiveTracking } from "@nfid/integration"
 
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
@@ -46,6 +47,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {
+    sendReceiveTracking.openModal({ isOpenedFromVaults: true })
     send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
     send({
       type: "ASSIGN_SOURCE_ACCOUNT",
@@ -59,6 +61,11 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   }, [address, send, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
+    sendReceiveTracking.openModal({
+      isSending: false,
+      isOpenedFromVaults: true,
+    })
+
     send({ type: "ASSIGN_SELECTED_FT", data: allTokens[0] })
     send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
     send({ type: "CHANGE_DIRECTION", data: "receive" })

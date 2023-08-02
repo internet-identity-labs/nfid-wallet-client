@@ -20,6 +20,7 @@ interface IApprover {
 }
 
 export interface IVaultTransactionsDetails {
+  vaultId: bigint
   number: number
   id: bigint
   fromWalletName: string

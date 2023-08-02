@@ -3,7 +3,12 @@ import React, { Dispatch, SetStateAction, useCallback, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IconCmpArchive, ModalAdvanced } from "@nfid-frontend/ui"
-import { ObjectState, storeMember, VaultMember } from "@nfid/integration"
+import {
+  ObjectState,
+  storeMember,
+  VaultMember,
+  vaultsTracking,
+} from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 
@@ -40,6 +45,7 @@ export const VaultArchiveMember: React.FC<VaultArchiveMemberProps> = ({
       setIsModalOpen(false)
       toast.success("Vault member archived")
       await refetch()
+      vaultsTracking.vaultMemberArchived(vault.id.toString())
     }
   }, [refetch, selectedMember, setIsModalOpen, vault?.id])
 

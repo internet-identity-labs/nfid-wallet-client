@@ -75,9 +75,17 @@ export const VaultsTransactionsTable: React.FC<
               (approve) => approve.signer === userAddress,
             ) !== -1,
           memo: transaction.memo,
+          vaultId: vault?.id,
         } as IVaultTransactionsDetails),
     )
-  }, [exchangeRate, transactions, userAddress, vault?.members, wallets])
+  }, [
+    exchangeRate,
+    transactions,
+    userAddress,
+    vault?.id,
+    vault?.members,
+    wallets,
+  ])
 
   return (
     <Table tableHeader={<VaultsTransactionsTableHeader />}>

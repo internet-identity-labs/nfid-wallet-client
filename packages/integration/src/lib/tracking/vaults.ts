@@ -92,6 +92,18 @@ class VaultsTracking {
     console.debug("VaultsTracking.addVaultMemberCreated", { title, vaultId })
     posthog.capture(title, { vaultId })
   }
+
+  public vaultMemberUpdated(vaultId: string) {
+    const title = "Vault member edited"
+    console.debug("VaultsTracking.vaultMemberUpdated", { title, vaultId })
+    posthog.capture(title, { vaultId })
+  }
+
+  public vaultMemberArchived(vaultId: string) {
+    const title = "Vault member archived"
+    console.debug("VaultsTracking.vaultMemberArchived", { title, vaultId })
+    posthog.capture(title, { vaultId })
+  }
 }
 
 export const vaultsTracking = new VaultsTracking()

@@ -64,8 +64,8 @@ export const VaultEditMember: React.FC<VaultMemberEditProps> = ({
         setIsLoading(false)
         setIsModalOpen(false)
         toast.success("Vault member updated")
-        vaultsTracking.vaultMemberUpdated(vault.id.toString())
         await refetch()
+        vaultsTracking.vaultMemberUpdated(vault.id.toString())
       }
     },
     [refetch, selectedMember, setIsModalOpen, vault?.id],

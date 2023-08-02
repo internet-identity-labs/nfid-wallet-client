@@ -44,8 +44,8 @@ export const VaultArchiveMember: React.FC<VaultArchiveMemberProps> = ({
       setIsLoading(false)
       setIsModalOpen(false)
       toast.success("Vault member archived")
-      vaultsTracking.vaultMemberArchived(vault.id.toString())
       await refetch()
+      vaultsTracking.vaultMemberArchived(vault.id.toString())
     }
   }, [refetch, selectedMember, setIsModalOpen, vault?.id])
 

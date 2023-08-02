@@ -40,10 +40,10 @@ export const VaultModalCreate = ({ refetchVaults }: IVaultModalCreate) => {
   const onVaultCreate = async ({ description, vaultName }: VaultCreateForm) => {
     setIsLoading(true)
     await registerVault(vaultName, description)
-    vaultsTracking.vaultCreaded()
     setIsLoading(false)
     refetchVaults()
     setIsModalOpen(false)
+    vaultsTracking.vaultCreaded()
   }
 
   return (

@@ -11,7 +11,7 @@ import { toast } from "react-toastify"
 
 import { Input, ModalAdvanced } from "@nfid-frontend/ui"
 import { minMax } from "@nfid-frontend/utils"
-import { Policy, updatePolicy } from "@nfid/integration"
+import { Policy, updatePolicy, vaultsTracking } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultPolicies } from "frontend/features/vaults/hooks/use-vault-policies"
@@ -85,6 +85,7 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
         setIsModalOpen(false)
         toast.success("Vault policy updated")
         await refetch()
+        vaultsTracking.vaultPolicyUpdated(selectedPolicy.vault.toString())
       }
     },
     [refetch, selectedPolicy, setIsModalOpen],

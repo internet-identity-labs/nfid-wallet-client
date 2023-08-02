@@ -50,6 +50,33 @@ class VaultsTracking {
     console.debug("VaultsTracking.vaultAccountCreated", { title, vaultId })
     posthog.capture(title, { vaultId })
   }
+
+  public vaultMembersLoaded({
+    vaultId,
+    totalMembers,
+    totalActiveMembers,
+    totalInactiveMembers,
+  }: {
+    vaultId: string
+    totalMembers: number
+    totalActiveMembers: number
+    totalInactiveMembers: number
+  }) {
+    const title = "Vault members loaded"
+    console.debug("VaultsTracking.vaultMembersLoaded", {
+      title,
+      vaultId,
+      totalMembers,
+      totalActiveMembers,
+      totalInactiveMembers,
+    })
+    posthog.capture(title, {
+      vaultId,
+      totalMembers,
+      totalActiveMembers,
+      totalInactiveMembers,
+    })
+  }
 }
 
 export const vaultsTracking = new VaultsTracking()

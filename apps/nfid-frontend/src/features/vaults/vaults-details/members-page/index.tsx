@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react"
 
 import { EmptyCard, IconCmpMembers } from "@nfid-frontend/ui"
-import { VaultMember } from "@nfid/integration"
+import { ObjectState, VaultMember, vaultsTracking } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
@@ -13,6 +13,22 @@ interface VaultsMembersPageProps {}
 export const VaultsMembersPage: React.FC<VaultsMembersPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
   const { vault, isFetching, isAdmin } = useVault()
+
+  React.useEffect(() => {
+    if (!isFetching && vault) {
+      console.debug("VaultsMembersPage", { vault, isFetching })
+      vaultsTracking.vaultMembersLoaded({
+        vaultId: vault.id.toString(),
+        totalMembers: vault.members.length,
+        totalActiveMembers: vault.members.filter(
+          (m) => m.state === ObjectState.ACTIVE,
+        ).length,
+        totalInactiveMembers: vault.members.filter(
+          (m) => m.state === ObjectState.ARCHIVED,
+        ).length,
+      })
+    }
+  }, [isFetching, vault])
 
   const filteredMembers: VaultMember[] = useMemo(() => {
     if (!vault?.members) return []

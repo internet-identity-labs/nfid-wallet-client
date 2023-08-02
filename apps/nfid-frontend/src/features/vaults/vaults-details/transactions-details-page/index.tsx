@@ -4,7 +4,11 @@ import { useLocation } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { Badge, Button, IconCmpOut } from "@nfid-frontend/ui"
-import { approveTransaction, TransactionState } from "@nfid/integration"
+import {
+  approveTransaction,
+  TransactionState,
+  vaultsTracking,
+} from "@nfid/integration"
 
 import { Accordion } from "frontend/ui/atoms/accordion"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -22,6 +26,17 @@ export const VaultTransactionsDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [state, setState] = useState<IVaultTransactionsDetails>()
   const location = useLocation()
+
+  React.useEffect(() => {
+    if (state) {
+      vaultsTracking.vaultTransactionLoaded({
+        vaultId: state.vaultId.toString(),
+        transactionId: state.id.toString(),
+        status: state.status,
+        amount: Number(state.amountICP),
+      })
+    }
+  }, [state])
 
   useEffect(() => {
     setState(location.state as IVaultTransactionsDetails)

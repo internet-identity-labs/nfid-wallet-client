@@ -10,7 +10,11 @@ import {
   bigIntMillisecondsToSeconds,
   isDateBetween,
 } from "@nfid-frontend/utils"
-import { Transaction, TransactionState } from "@nfid/integration"
+import {
+  Transaction,
+  TransactionState,
+  vaultsTracking,
+} from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
@@ -34,6 +38,16 @@ export const VaultsTransactionsPage: React.FC<
   const [timeFilter, setTimeFilter] = useState(initialTimeFilter)
   const { transactions, isFetching } = useVaultTransactions()
   const { vault } = useVault()
+
+  React.useEffect(() => {
+    if (vault && transactions) {
+      vaultsTracking.vaultTransactionsLoaded({
+        vaultId: vault.id.toString(),
+        totalTransactions: transactions.length,
+        viewIsFiltered: !!searchFilter,
+      })
+    }
+  }, [searchFilter, transactions, vault])
 
   const initiatorsOptions = useMemo(() => {
     return (

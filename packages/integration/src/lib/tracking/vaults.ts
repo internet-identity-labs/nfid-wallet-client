@@ -143,6 +143,47 @@ class VaultsTracking {
     console.debug("VaultsTracking.vaultPolicyCreated", { title, vaultId })
     posthog.capture(title, { vaultId })
   }
+
+  public vaultTransactionsLoaded({
+    vaultId,
+    totalTransactions,
+    viewIsFiltered,
+  }: {
+    vaultId: string
+    totalTransactions: number
+    viewIsFiltered: boolean
+  }) {
+    const title = "Vault transactions loaded"
+    console.debug("VaultsTracking.vaultTransactionsLoaded", {
+      title,
+      vaultId,
+      totalTransactions,
+      viewIsFiltered,
+    })
+    posthog.capture(title, { vaultId, totalTransactions, viewIsFiltered })
+  }
+
+  public vaultTransactionLoaded({
+    vaultId,
+    transactionId,
+    status,
+    amount,
+  }: {
+    vaultId: string
+    transactionId: string
+    status: string
+    amount: number
+  }) {
+    const title = "Vault transaction loaded"
+    console.debug("VaultsTracking.vaultTransactionLoaded", {
+      title,
+      vaultId,
+      transactionId,
+      status,
+      amount,
+    })
+    posthog.capture(title, { vaultId, transactionId, status, amount })
+  }
 }
 
 export const vaultsTracking = new VaultsTracking()

@@ -101,7 +101,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   public async getActivityByUser(
     identity: DelegationIdentity,
     size = 50,
-    sort: "asc" | "desc" = "desc"
+    sort: "asc" | "desc" = "desc",
   ): Promise<Activity[]> {
     const addressVal = await this.getAddressByIdentity(identity)
     const alchemySdk = this.getAlchemySdk(
@@ -128,22 +128,26 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
     const [to, from] = await Promise.all([
       alchemySdk.core.getAssetTransfers(toRequest),
-      alchemySdk.core.getAssetTransfers(fromRequest)
+      alchemySdk.core.getAssetTransfers(fromRequest),
     ])
 
     const transfers = to.transfers.concat(from.transfers)
 
     const chain = this.config.blockchain.toString()
-    const nfts = transfers.filter((x) =>
-      [AssetTransfersCategory.ERC721, AssetTransfersCategory.ERC1155].includes(
-        x.category,
-      ),
-    ).map(x => {
-      const contract = x.rawContract.address
-      const tokenId: string = x.tokenId ?? x.erc1155Metadata?.[0].tokenId ?? ""
-      const id = `${chain}:${contract}:${tokenId}`
-      return toItemId(id)
-    })
+    const nfts = transfers
+      .filter((x) =>
+        [
+          AssetTransfersCategory.ERC721,
+          AssetTransfersCategory.ERC1155,
+        ].includes(x.category),
+      )
+      .map((x) => {
+        const contract = x.rawContract.address
+        const tokenId: string =
+          x.tokenId ?? x.erc1155Metadata?.[0].tokenId ?? ""
+        const id = `${chain}:${contract}:${tokenId}`
+        return toItemId(id)
+      })
     const contentUrlById = await this.getContentUrlById(nfts)
 
     const activity: Activity[] = transfers
@@ -650,9 +654,8 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
   private getAsset(
     entry: AssetTransfersWithMetadataResult,
-    contentUrlById: Map<string, Content>
+    contentUrlById: Map<string, Content>,
   ): ActivityAssetFT | ActivityAssetNFT {
-
     if (AssetTransfersCategory.ERC721 === entry.category) {
       const content = this.getContent(entry, contentUrlById)
       return {
@@ -670,7 +673,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
         name: content?.val.meta?.name ?? "",
         preview: content?.contentUrl ?? "",
         previewType: content?.contentType ?? "",
-        amount: BigInt(entry.erc1155Metadata?.[0].value ?? "").toString()
+        amount: BigInt(entry.erc1155Metadata?.[0].value ?? "").toString(),
       }
     }
 
@@ -683,10 +686,15 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     }
   }
 
-  private getContent(entry: AssetTransfersWithMetadataResult, contentUrlById: Map<string, Content>) {
+  private getContent(
+    entry: AssetTransfersWithMetadataResult,
+    contentUrlById: Map<string, Content>,
+  ) {
     const contract = entry.rawContract.address
     const chain = this.config.blockchain.toString()
-    const tokenId = BigInt(entry.tokenId ?? entry.erc1155Metadata?.[0].tokenId ?? "").toString()
+    const tokenId = BigInt(
+      entry.tokenId ?? entry.erc1155Metadata?.[0].tokenId ?? "",
+    ).toString()
     const id = `${chain}:${contract}:${tokenId}`
     const image = contentUrlById.get(id)
     return image

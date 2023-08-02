@@ -66,6 +66,7 @@ export const VaultAddMember = () => {
     } finally {
       setIsLoading(false)
       setIsModalOpen(false)
+      vaultsTracking.addVaultMemberCreated(vault.id.toString())
       await refetch()
     }
   }

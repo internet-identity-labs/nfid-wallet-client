@@ -38,6 +38,12 @@ class VaultsTracking {
     console.debug("VaultsTracking.walletsLoaded", { title, data })
     posthog.capture(title, data)
   }
+
+  public addVaultAccountModalOpened() {
+    const title = "Add vault account modal loaded"
+    console.debug("VaultsTracking.addVaultAccountModalOpened", { title })
+    posthog.capture(title)
+  }
 }
 
 export const vaultsTracking = new VaultsTracking()

@@ -23,6 +23,21 @@ class VaultsTracking {
     console.debug("VaultsTracking.vaultCreaded", { title })
     posthog.capture(title)
   }
+
+  public walletsLoaded({
+    vaultId,
+    totalAccounts,
+    totalICPBalance,
+  }: {
+    vaultId: string
+    totalAccounts: number
+    totalICPBalance: number
+  }) {
+    const title = "Vault accounts loaded"
+    const data = { vaultId, totalAccounts, totalICPBalance }
+    console.debug("VaultsTracking.walletsLoaded", { title, data })
+    posthog.capture(title, data)
+  }
 }
 
 export const vaultsTracking = new VaultsTracking()

@@ -104,6 +104,45 @@ class VaultsTracking {
     console.debug("VaultsTracking.vaultMemberArchived", { title, vaultId })
     posthog.capture(title, { vaultId })
   }
+
+  public vaultPoliciesLoaded(vaultId: string, totalPolicies: number) {
+    const title = "Vault policies loaded"
+    console.debug("VaultsTracking.vaultPoliciesLoaded", {
+      title,
+      vaultId,
+      totalPolicies,
+    })
+    posthog.capture(title, { vaultId, totalPolicies })
+  }
+
+  public addVaultPolicyModalOpened(vaultId: string) {
+    const title = "Add vault policy modal loaded"
+    console.debug("VaultsTracking.addVaultPolicyModalOpened", {
+      title,
+      vaultId,
+    })
+    posthog.capture(title, { vaultId })
+  }
+
+  public vaultPolicyCreated(vaultId: string) {
+    const title = "Vault policy created"
+    console.debug("VaultsTracking.vaultPolicyCreated", { title, vaultId })
+    posthog.capture(title, { vaultId })
+  }
+
+  public vaultPolicyUpdated(vaultId: string) {
+    const title = "Vault policy edited"
+    console.debug("VaultsTracking.vaultPolicyCreated", { title, vaultId })
+    posthog.capture(title, {
+      vaultId,
+    })
+  }
+
+  public vaultPolicyArchived(vaultId: string) {
+    const title = "Vault policy archived"
+    console.debug("VaultsTracking.vaultPolicyCreated", { title, vaultId })
+    posthog.capture(title, { vaultId })
+  }
 }
 
 export const vaultsTracking = new VaultsTracking()

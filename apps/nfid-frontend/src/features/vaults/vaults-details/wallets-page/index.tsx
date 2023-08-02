@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react"
 
 import { EmptyCard, IconCmpWallet } from "@nfid-frontend/ui"
-import { Wallet } from "@nfid/integration"
+import { Wallet, vaultsTracking } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
@@ -13,8 +13,25 @@ interface VaultsWalletsPageProps {}
 
 export const VaultsWalletsPage: React.FC<VaultsWalletsPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
-  const { wallets, isFetching } = useVaultWallets()
+  const { vaultId, wallets, isFetching } = useVaultWallets()
   const { isAdmin } = useVault()
+
+  React.useEffect(() => {
+    if (!isFetching && vaultId && wallets) {
+      console.debug("VaultsWalletsPage", { wallets, isFetching })
+
+      const totalICPBalance = wallets.reduce(
+        (acc, { balance }) => acc + (balance ? balance.ICP : BigInt(0)),
+        BigInt(0),
+      )
+
+      vaultsTracking.walletsLoaded({
+        vaultId,
+        totalAccounts: wallets.length,
+        totalICPBalance: Number(totalICPBalance),
+      })
+    }
+  }, [wallets, isFetching, vaultId])
 
   const filteredWallets: Wallet[] = useMemo(() => {
     if (!wallets) return []

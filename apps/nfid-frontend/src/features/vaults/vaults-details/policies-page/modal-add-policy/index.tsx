@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { useMemo, useState } from "react"
+import React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
@@ -16,6 +17,7 @@ import {
   ObjectState,
   PolicyType,
   registerPolicy,
+  vaultsTracking,
 } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
@@ -35,6 +37,12 @@ export const VaultAddPolicy = () => {
   const { refetch } = useVaultPolicies()
   const { wallets } = useVaultWallets()
   const { vault } = useVault()
+
+  React.useEffect(() => {
+    if (isModalOpen && vault?.id) {
+      vaultsTracking.addVaultPolicyModalOpened(vault.id.toString())
+    }
+  }, [isModalOpen, vault?.id])
 
   const walletsOptions: IOption[] | undefined = useMemo(() => {
     const options = wallets?.map((wallet) => ({
@@ -81,6 +89,7 @@ export const VaultAddPolicy = () => {
       setIsModalOpen(false)
       toast.success(`Policy successfully added`)
       await refetch()
+      vaultsTracking.vaultPolicyCreated(vault.id.toString())
     }
   }
 

@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { useState } from "react"
+import React from "react"
 import { useForm } from "react-hook-form"
 
 import {
@@ -9,7 +10,7 @@ import {
   TextArea,
   vaultRules,
 } from "@nfid-frontend/ui"
-import { registerVault } from "@nfid/integration"
+import { registerVault, vaultsTracking } from "@nfid/integration"
 
 interface VaultCreateForm {
   vaultName: string
@@ -30,12 +31,19 @@ export const VaultModalCreate = ({ refetchVaults }: IVaultModalCreate) => {
     },
   })
 
+  React.useEffect(() => {
+    if (isModalOpen) {
+      vaultsTracking.vaultsModalOpened()
+    }
+  }, [isModalOpen])
+
   const onVaultCreate = async ({ description, vaultName }: VaultCreateForm) => {
     setIsLoading(true)
     await registerVault(vaultName, description)
     setIsLoading(false)
     refetchVaults()
     setIsModalOpen(false)
+    vaultsTracking.vaultCreaded()
   }
 
   return (

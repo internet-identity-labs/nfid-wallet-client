@@ -3,7 +3,12 @@ import React, { Dispatch, SetStateAction, useCallback, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IconCmpArchive, ModalAdvanced } from "@nfid-frontend/ui"
-import { ObjectState, Policy, updatePolicy } from "@nfid/integration"
+import {
+  ObjectState,
+  Policy,
+  updatePolicy,
+  vaultsTracking,
+} from "@nfid/integration"
 
 import { useVaultPolicies } from "frontend/features/vaults/hooks/use-vault-policies"
 
@@ -37,13 +42,14 @@ export const VaultArchivePolicy: React.FC<VaultArchivePolicyProps> = ({
       setIsModalOpen(false)
       toast.success("Policy archived")
       await refetch()
+      vaultsTracking.vaultPolicyArchived(selectedPolicy.vault.toString())
     }
   }, [refetch, selectedPolicy, setIsModalOpen])
 
   return (
     <ModalAdvanced
       large
-      title="Archive wallet"
+      title="Archive policy"
       isLoading={isLoading}
       isModalOpen={isModalOpen}
       isModalOpenChange={setIsModalOpen}

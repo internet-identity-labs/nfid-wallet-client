@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react"
 
 import { EmptyCard, IconCmpPolicy } from "@nfid-frontend/ui"
-import { Policy } from "@nfid/integration"
+import { Policy, vaultsTracking } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
@@ -15,7 +15,17 @@ interface VaultsPoliciesPageProps {}
 export const VaultsPoliciesPage: React.FC<VaultsPoliciesPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
   const { policies, isFetching } = useVaultPolicies()
-  const { isAdmin } = useVault()
+  const { vault, isAdmin } = useVault()
+
+  React.useEffect(() => {
+    if (vault && policies) {
+      console.debug("VaultsPoliciesPage", { vault, policies, isFetching })
+      vaultsTracking.vaultPoliciesLoaded(
+        vault.id.toString(),
+        vault.policies.length,
+      )
+    }
+  }, [isFetching, policies, vault])
 
   const filteredPolicies: Policy[] = useMemo(() => {
     if (!policies) return []

@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 import { Input, ModalAdvanced } from "@nfid-frontend/ui"
-import { storeMember, VaultMember } from "@nfid/integration"
+import { storeMember, VaultMember, vaultsTracking } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 
@@ -65,6 +65,7 @@ export const VaultEditMember: React.FC<VaultMemberEditProps> = ({
         setIsModalOpen(false)
         toast.success("Vault member updated")
         await refetch()
+        vaultsTracking.vaultMemberUpdated(vault.id.toString())
       }
     },
     [refetch, selectedMember, setIsModalOpen, vault?.id],

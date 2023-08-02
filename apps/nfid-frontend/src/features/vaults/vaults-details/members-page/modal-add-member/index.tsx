@@ -1,10 +1,16 @@
 import clsx from "clsx"
 import { useState } from "react"
+import React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 import { IconCmpPlus, Input, ModalAdvanced } from "@nfid-frontend/ui"
-import { ObjectState, storeMember, VaultRole } from "@nfid/integration"
+import {
+  ObjectState,
+  storeMember,
+  VaultRole,
+  vaultsTracking,
+} from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
@@ -19,6 +25,12 @@ export const VaultAddMember = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { vault, refetch } = useVault()
   const { address: memberAddress } = useVaultMember()
+
+  React.useEffect(() => {
+    if (isModalOpen && vault?.id) {
+      vaultsTracking.addVaultMemberModalOpened(vault.id.toString())
+    }
+  }, [isModalOpen, vault?.id])
 
   const { register, handleSubmit, formState, resetField, reset } = useForm({
     defaultValues: {
@@ -55,6 +67,7 @@ export const VaultAddMember = () => {
       setIsLoading(false)
       setIsModalOpen(false)
       await refetch()
+      vaultsTracking.addVaultMemberCreated(vault.id.toString())
     }
   }
 

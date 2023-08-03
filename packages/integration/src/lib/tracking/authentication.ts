@@ -38,6 +38,7 @@ type AuthAbortedEvent = {
 }
 
 type UserData = {
+  anchor: number
   legacyUser: boolean
   hasEmail: boolean
   registrationSource?: AuthTarget
@@ -90,14 +91,10 @@ class AuthenticationTracking {
     posthog.capture(title, event)
   }
 
-  public identify(userData: UserData) {
-    const delegationIdentity = authState.get().delegationIdentity
-    if (!delegationIdentity)
-      return console.error("delegationIdentity is missing")
+  public identify({ anchor, ...userData }: UserData) {
+    console.debug("authenticationTracking.identify", { anchor, userData })
 
-    const principalId = delegationIdentity.getPrincipal().toString()
-    console.debug("authenticationTracking.identify", { principalId, userData })
-    posthog.identify(principalId, userData)
+    posthog.identify(anchor.toString(), userData)
   }
 
   public initiated(event: Partial<AuthData>, is2FA = false) {

@@ -38,7 +38,7 @@ import {
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
 > extends TransferModalConnector<ConfigType> {
-  @Cache(connectorCache, { ttl: 5 })
+  @Cache(connectorCache, { ttl: 30 })
   async getAccountsOptions({
     currency,
     isVault,
@@ -110,7 +110,7 @@ export abstract class ICMTransferConnector<
     )(groupedOptions.sort(sortAlphabetic(({ label }) => label)))
   }
 
-  @Cache(connectorCache, { ttl: 15 })
+  @Cache(connectorCache, { ttl: 10 })
   async getBalance(address: string): Promise<TokenBalance> {
     const addressVerified =
       address.length === PRINCIPAL_LENGTH

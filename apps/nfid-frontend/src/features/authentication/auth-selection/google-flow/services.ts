@@ -63,6 +63,7 @@ export const signWithGoogleService = async (
   })
 
   authenticationTracking.completed({
+    anchor: profile.anchor,
     hasEmail: !!profile.email,
     legacyUser: profile.wallet === RootWallet.II,
   })

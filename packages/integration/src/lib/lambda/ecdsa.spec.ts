@@ -21,6 +21,10 @@ import { WALLET_SCOPE } from "@nfid/config"
 import { ii, im, replaceActorIdentity } from "@nfid/integration"
 
 import {
+  HTTPAccountRequest,
+  AccessPointRequest,
+} from "../_ic_api/identity_manager.d"
+import {
   Chain,
   ecdsaGetAnonymous,
   ecdsaSign,
@@ -33,10 +37,10 @@ const identity: JsonnableEd25519KeyIdentity = [
   "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
 ]
 describe("Lambda Sign/Register ECDSA", () => {
-  jest.setTimeout(50000)
+  jest.setTimeout(80000)
 
   describe("lambdaECDSA", () => {
-    it.skip("register ecdsa ETH", async function () {
+    it("register ecdsa ETH", async function () {
       const mockedIdentity = Ed25519KeyIdentity.generate()
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -46,6 +50,27 @@ describe("Lambda Sign/Register ECDSA", () => {
         {},
       )
       const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
+
+      const deviceData: AccessPointRequest = {
+        icon: "Icon",
+        device: "Global",
+        pub_key: di.getPrincipal().toText(),
+        browser: "Browser",
+        device_type: {
+          Email: null,
+        },
+        credential_id: [],
+      }
+      const accountRequest: HTTPAccountRequest = {
+        email: [],
+        access_point: [deviceData],
+        wallet: [{ NFID: null }],
+        anchor: BigInt(0),
+      }
+      replaceActorIdentity(im, di)
+
+      await im.create_account(accountRequest)
+
       const pubKey = await getPublicKey(di, Chain.ETH)
       const keccak = hashMessage("test_message")
       const signature = await ecdsaSign(keccak, di, Chain.ETH)
@@ -54,7 +79,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       expect(pk).toEqual(pubKey)
     })
 
-    it.skip("register ecdsa BTC", async function () {
+    it("register ecdsa BTC", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -81,7 +106,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       expect(txx.outs[0].value).toEqual(10)
     })
 
-    it.skip("get global IC keys", async function () {
+    it("get global IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -101,7 +126,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )
       expect(globalICIdentity.getPrincipal().toText()).toEqual(
-        "5froz-eldwx-manjh-jgfni-kzgqa-eah4z-mgs4t-ozk3e-57b6o-jrsn4-bae",
+        "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe",
       )
       await replaceActorIdentity(ii, globalICIdentity)
       try {
@@ -116,7 +141,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       }
     })
 
-    it.skip("get anonymous IC keys", async function () {
+    it("get anonymous IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(

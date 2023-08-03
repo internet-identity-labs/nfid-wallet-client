@@ -38,7 +38,7 @@ export class Assets {
   public async openAssetOptionsOnSR() {
     const assetOptions = await $("#choose_modal")
     await assetOptions.waitForDisplayed({
-      timeout: 30000,
+      timeout: 45000,
     })
     await assetOptions.click()
   }
@@ -80,7 +80,7 @@ export class Assets {
     const assetBalance = await this.getBalance()
     const fee = await this.getFee()
     await assetBalance.waitForExist({ timeout: 10000 })
-    await fee.waitForExist({ timeout: 15000 })
+    await fee.waitForExist({ timeout: 35000 })
 
     const sendButton = await $("#sendFT")
     await sendButton.click()

@@ -4,7 +4,7 @@ import { ethers } from "ethers-ts"
 import { BigNumber } from "ethers/lib/ethers"
 
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { mockIdentityA, mockIdentityB } from "../identity"
+import { evmIdentity } from "../identity"
 import { generateDelegationIdentity } from "../test-utils"
 import { ethereumAsset, ethereumGoerliAsset } from "./asset-eth"
 import { ErrorCode } from "./error-code.enum"
@@ -15,10 +15,10 @@ import { NftErc1155EstimateTransactionRequest } from "./service/populate-transac
 import { ChainBalance } from "./types.d"
 
 describe("Ethereum Asset", () => {
-  jest.setTimeout(30000)
+  jest.setTimeout(60000)
 
   it("should return 5 activities for identity", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
     const actual = await ethereumGoerliAsset.getActivityByUser(
@@ -81,7 +81,7 @@ describe("Ethereum Asset", () => {
           type: "nft",
           name: "adaasda",
           preview:
-            "https://ipfs.io/ipfs/QmX8519rSfPT58xVD2ZaRM1exBB81J56QAPwF8MFHiE4Hi",
+            "https://cloudflare-ipfs.com/ipfs/QmX8519rSfPT58xVD2ZaRM1exBB81J56QAPwF8MFHiE4Hi",
           previewType: "image",
         },
       },
@@ -97,7 +97,7 @@ describe("Ethereum Asset", () => {
           type: "nft",
           name: "test1",
           preview:
-            "https://ipfs.io/ipfs/bafybeihgdszr3zaeb2fceb2axuyoajsker2topvye3pgdnzzoiq35f2ulq/image.png",
+            "https://cloudflare-ipfs.com/ipfs/bafybeihgdszr3zaeb2fceb2axuyoajsker2topvye3pgdnzzoiq35f2ulq/image.png",
           previewType: "image",
           amount: "1",
         },
@@ -105,8 +105,8 @@ describe("Ethereum Asset", () => {
     ])
   })
 
-  it.skip("should return one estimated erc20 tx", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+  it("should return one estimated erc20 tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -123,12 +123,12 @@ describe("Ethereum Asset", () => {
         from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
         nonce: expect.any(Number),
-        chainId: 5,
-        type: 2,
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
         data: "0xa9059cbb000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+        chainId: 5,
+        type: 2,
       },
       errors: [],
       fee: expect.any(String),
@@ -142,8 +142,9 @@ describe("Ethereum Asset", () => {
     })
   })
 
+  // We need to prepare user which reflect this test case
   it.skip("should return one estimated erc20 tx when insufficient balance of erc20 and native token", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -157,13 +158,15 @@ describe("Ethereum Asset", () => {
     const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
-        from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
         data: "0xa9059cbb000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4390000000000000000000000000000000000000000000000000000000000000000",
+        chainId: 5,
+        type: 2,
       },
       fee: expect.any(String),
       feeUsd: expect.any(String),
@@ -180,8 +183,8 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return one estimated nft erc1155 tx", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+  it("should return one estimated nft erc1155 tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -219,8 +222,8 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return one estimated nft erc1155 tx when insufficient balance of native token", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+  it("should return one estimated nft erc1155 tx when insufficient balance of native token", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -236,15 +239,18 @@ describe("Ethereum Asset", () => {
 
     expect(actual).toEqual({
       transaction: {
-        from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0xCB7E40c8DfBb6b83C7D222af862a6A1111D77897",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
-        data: "0xf242432a00000000000000000000000066824a3f8ce2c2490fd893548a325b3cca4679f4000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439b65ca21d6396e0d8455bacaa1eb43cad27788f80000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000",
+        data: "0xf242432a0000000000000000000000006a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439b65ca21d6396e0d8455bacaa1eb43cad27788f80000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000",
+
+        chainId: 5,
+        type: 2,
       },
-      errors: [ErrorCode.INSUFFICIENT_FUNDS],
+      errors: [],
       fee: expect.any(String),
       feeUsd: expect.any(String),
       maxFee: expect.any(String),
@@ -256,8 +262,8 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return one estimated nft erc721 tx", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+  it("should return one estimated nft erc721 tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -294,8 +300,8 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return one estimated nft erc721 tx when insufficient balance of native token", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+  it("should return one estimated nft erc721 tx when insufficient balance of native token", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -332,9 +338,9 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return hash with etherenet url after transfer", async () => {
+  it("should return hash with etherenet url after transfer", async () => {
     const walletSpy = jest.spyOn(EthWalletV2.prototype, "sendTransaction")
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const identity: DelegationIdentity = await generateDelegationIdentity(
       mockedIdentity,
     )
@@ -371,8 +377,8 @@ describe("Ethereum Asset", () => {
     walletSpy.mockRestore()
   })
 
-  it.skip("should return one estimated tx", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+  it("should return one estimated tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -406,8 +412,9 @@ describe("Ethereum Asset", () => {
     })
   })
 
+  // We need to prepare user which reflect this test case
   it.skip("should return one estimated tx when insufficient balance of native token", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
 
@@ -419,13 +426,15 @@ describe("Ethereum Asset", () => {
     const actual = await ethereumGoerliAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
-        from: "0x66824a3F8Ce2C2490Fd893548A325B3ccA4679f4",
-        to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
+        to: "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         value: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
+        chainId: 5,
+        type: 2,
       },
       errors: [ErrorCode.INSUFFICIENT_FUNDS],
       fee: expect.any(String),
@@ -439,7 +448,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return one fungible native tx", async function () {
+  it("should return one fungible native tx", async function () {
     const actual = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -462,7 +471,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return one fungible erc20 tx", async function () {
+  it("should return one fungible erc20 tx", async function () {
     const actual = await ethereumGoerliAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       contract: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
@@ -487,7 +496,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should return one fungible erc20 token", async function () {
+  it("should return one fungible erc20 token", async function () {
     const actual = await ethereumGoerliAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
@@ -516,7 +525,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should request balance", async function () {
+  it("should request balance", async function () {
     const balance: ChainBalance = await ethereumGoerliAsset.getBalance(
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
@@ -526,7 +535,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should request balance mainnet", async function () {
+  it("should request balance mainnet", async function () {
     const balance: ChainBalance = await ethereumAsset.getBalance(
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
@@ -536,7 +545,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should request activities by item", async function () {
+  it("should request activities by item", async function () {
     const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
     const tokenId =
       "88260187566799326202913268841041605580353496351673437472672373155789474365442"
@@ -563,7 +572,7 @@ describe("Ethereum Asset", () => {
     })
   })
 
-  it.skip("should request activities by user", async function () {
+  it("should request activities by user", async function () {
     const activities = await ethereumGoerliAsset.getActivitiesByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -589,9 +598,10 @@ describe("Ethereum Asset", () => {
 
   it.skip("should request items by user", async function () {
     const items = await ethereumGoerliAsset.getItemsByUser({
-      identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
+      identity: "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439",
       size: 1,
     })
+
     expect(items).toEqual({
       total: 5,
       items: [

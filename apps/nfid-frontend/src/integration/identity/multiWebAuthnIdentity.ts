@@ -17,7 +17,6 @@ import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
-import posthog from "posthog-js"
 import { toast } from "react-toastify"
 
 import { authenticationTracking, IPasskeyMetadata } from "@nfid/integration"

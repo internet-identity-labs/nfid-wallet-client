@@ -2,7 +2,7 @@ import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"
 import { Token } from "packages/integration/src/lib/asset/types"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR from "swr"
@@ -119,12 +119,16 @@ export const TransferFT = ({
       }),
     {
       onSuccess: (data) => {
-        !preselectedAccountAddress.length &&
-          setSelectedAccountAddress(data[0].options[0]?.value)
         resetField("to")
       },
     },
   )
+
+  useEffect(() => {
+    if (!accountsOptions?.length) return
+    !preselectedAccountAddress.length &&
+      setSelectedAccountAddress(accountsOptions[0].options[0].value)
+  }, [accountsOptions, preselectedAccountAddress.length])
 
   const {
     data: balance,

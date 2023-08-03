@@ -92,7 +92,8 @@ class AuthenticationTracking {
 
   public identify(userData: UserData) {
     const delegationIdentity = authState.get().delegationIdentity
-    if (!delegationIdentity) throw new Error("delegationIdentity is missing")
+    if (!delegationIdentity)
+      return console.error("delegationIdentity is missing")
 
     const principalId = delegationIdentity.getPrincipal().toString()
     console.debug("authenticationTracking.identify", { principalId, userData })

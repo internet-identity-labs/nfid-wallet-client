@@ -17,7 +17,7 @@ export const ethereumAsset = new EthereumAsset({
   token: "Ethereum",
   blockchainName: "Ethereum",
   alchemyApiKey: ETH_ALCHEMY_API_KEY,
-  activitiesTypes: Object.values(AssetTransfersCategory)
+  activitiesTypes: Object.values(AssetTransfersCategory),
 })
 
 export const ethereumGoerliAsset = new EthereumAsset({
@@ -33,5 +33,5 @@ export const ethereumGoerliAsset = new EthereumAsset({
   token: "Ethereum Goerli",
   blockchainName: "Ethereum Goerli",
   alchemyApiKey: GOERLI_ALCHEMY_API_KEY,
-  activitiesTypes: Object.values(AssetTransfersCategory)
+  activitiesTypes: Object.values(AssetTransfersCategory),
 })

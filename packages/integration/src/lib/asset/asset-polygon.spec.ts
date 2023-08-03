@@ -1,14 +1,15 @@
+import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity"
+
+import { evmIdentity } from "../identity"
+import { generateDelegationIdentity } from "../test-utils"
 import { polygonMumbaiAsset } from "./asset-polygon"
 import { ChainBalance } from "./types"
-import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity"
-import { mockIdentityA } from "../identity"
-import { generateDelegationIdentity } from "../test-utils"
 
 describe("Polygon Asset", () => {
   jest.setTimeout(20000)
 
   it("should return 1 activity for identity", async function () {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(evmIdentity)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
     const actual = await polygonMumbaiAsset.getActivityByUser(
@@ -18,23 +19,23 @@ describe("Polygon Asset", () => {
     )
     expect(actual).toEqual([
       {
-         "id":"0x870cde38995cbcffa5ab3d6dc17133bae9df3d4bb7233adcfed587df8cc97b46:external",
-         "date":new Date("2023-07-31T10:21:41.000Z"),
-         "to":"0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
-         "from":"0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
-         "transactionHash":"0x870cde38995cbcffa5ab3d6dc17133bae9df3d4bb7233adcfed587df8cc97b46",
-         "action":"Receive",
-         "asset":{
-            "type":"ft",
-            "currency":"MATIC",
-            "amount":0.1
-         }
-      }
-   ])
+        id: "0x870cde38995cbcffa5ab3d6dc17133bae9df3d4bb7233adcfed587df8cc97b46:external",
+        date: new Date("2023-07-31T10:21:41.000Z"),
+        to: "0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+        from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        transactionHash:
+          "0x870cde38995cbcffa5ab3d6dc17133bae9df3d4bb7233adcfed587df8cc97b46",
+        action: "Receive",
+        asset: {
+          type: "ft",
+          currency: "MATIC",
+          amount: 0.1,
+        },
+      },
+    ])
   })
 
-
-  it.skip("should return one fungible native tx", async function () {
+  it("should return one fungible native tx", async function () {
     const actual = await polygonMumbaiAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -57,7 +58,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it.skip("should return one fungible erc20 tx", async function () {
+  it("should return one fungible erc20 tx", async function () {
     const actual = await polygonMumbaiAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       contract: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
@@ -82,7 +83,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it.skip("should return one fungible erc20 token", async function () {
+  it("should return one fungible erc20 token", async function () {
     const actual = await polygonMumbaiAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
@@ -103,7 +104,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it.skip("should request balance", async function () {
+  it("should request balance", async function () {
     const balance: ChainBalance = await polygonMumbaiAsset.getBalance(
       "0x382901144a77bec53493fa090053b9c63da5dd07",
     )
@@ -113,7 +114,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it.skip("should request activities by item", async function () {
+  it("should request activities by item", async function () {
     const contract = "0x2953399124f0cbb46d2cbacd8a89cf0599974963"
     const tokenId =
       "25340927624470057327886108971339045949703948342541401788851146193678729479144"
@@ -140,7 +141,7 @@ describe("Polygon Asset", () => {
     })
   })
 
-  it.skip("should request activities by user", async function () {
+  it("should request activities by user", async function () {
     const activities = await polygonMumbaiAsset.getActivitiesByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,

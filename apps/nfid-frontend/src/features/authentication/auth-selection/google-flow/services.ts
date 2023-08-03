@@ -62,6 +62,11 @@ export const signWithGoogleService = async (
     identity: identity,
   })
 
+  authenticationTracking.completed({
+    hasEmail: !!profile.email,
+    legacyUser: profile.wallet === RootWallet.II,
+  })
+
   if (!profile?.email?.length)
     await im.update_account({ name: [], email: [email] })
 

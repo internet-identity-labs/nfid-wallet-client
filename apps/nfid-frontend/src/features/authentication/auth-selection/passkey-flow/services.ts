@@ -228,6 +228,7 @@ export class PasskeyConnector {
       await im.use_access_point([])
 
       authenticationTracking.completed({
+        anchor: profile.anchor,
         legacyUser: profile.wallet === RootWallet.II,
         hasEmail: !!profile.email,
       })
@@ -310,6 +311,7 @@ export class PasskeyConnector {
     })
 
     authenticationTracking.completed({
+      anchor: profile.anchor,
       hasEmail: !!profile.email,
       legacyUser: profile.wallet === RootWallet.II,
     })

@@ -9,8 +9,8 @@ import { passkeyConnector } from "frontend/features/authentication/auth-selectio
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
-import MultiPasskey from "./multi-passkey.png"
-import SinglePasskey from "./single-passkey.png"
+import MultiPasskey from "./multi-passkey.webp"
+import SinglePasskey from "./single-passkey.webp"
 
 export const AddPasskey = ({
   handleWithLoading,

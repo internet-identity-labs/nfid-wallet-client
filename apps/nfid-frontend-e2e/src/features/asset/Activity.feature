@@ -8,7 +8,6 @@ Feature:Assets Activity
         And User is already authenticated by <anchor> anchor
         And I press on Activity icon
         Then I should see activity page
-        And Wait for loader to disappear
         Then I should see <txs> activities in the table
         And I should see transaction <action> <network> <currency> <type> <asset> <timestamp> <from> <to>
         Examples:

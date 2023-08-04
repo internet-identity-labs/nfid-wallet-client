@@ -352,8 +352,3 @@ When(
 When(/^I press on Activity icon$/, async () => {
   await assets.openActivity()
 })
-
-When(/^Wait for loader to disappear$/, async () => {
-  const loader = await $("#loader")
-  await loader.waitForDisplayed({ timeout: 60000, reverse: true })
-})

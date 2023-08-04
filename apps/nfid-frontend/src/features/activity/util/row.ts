@@ -18,8 +18,9 @@ export const groupActivityRowsByDate = (
 
   const groupedByDate = Object.entries(groups).map(([date, rows]) => ({
     date,
-    rows,
+    rows: rows.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
   }))
+
   return groupedByDate.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   )

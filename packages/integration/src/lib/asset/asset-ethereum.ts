@@ -30,7 +30,6 @@ import {
   AssetTransfersWithMetadataResult,
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
-import { principalToAddress } from "ictool"
 import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../cache"
@@ -54,10 +53,8 @@ import {
   Erc20TokensByUserRequest,
   EstimateTransactionRequest,
   EstimatedTransaction,
-  FungibleActivityRecord,
   FungibleActivityRecords,
   FungibleActivityRequest,
-  FungibleTxs,
   Identity,
   ItemsByUserRequest,
   NonFungibleActivityRecords,
@@ -71,8 +68,8 @@ import {
 } from "./types"
 
 export enum ActivityAction {
-  SEND = "Send",
-  RECEIVE = "Receive",
+  SENT = "Sent",
+  RECEIVED = "Received",
 }
 
 function removeChain(id: UnionAddress): string {
@@ -101,7 +98,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
   public async getActivityByUser(
     identity: DelegationIdentity,
-    size = 50,
+    size = 100,
     sort: "asc" | "desc" = "desc",
   ): Promise<Activity[]> {
     const addressVal = await this.getAddressByIdentity(identity)
@@ -159,7 +156,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
         from: x.from,
         transactionHash: x.hash,
         action:
-          x.from === addressVal ? ActivityAction.SEND : ActivityAction.RECEIVE,
+          x.from == addressVal ? ActivityAction.SENT : ActivityAction.RECEIVED,
         asset: this.getAsset(x, contentUrlById),
       }))
       .sort((x, y) => x.date.getTime() - y.date.getTime())

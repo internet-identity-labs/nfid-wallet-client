@@ -13,11 +13,11 @@ export const useEthTransactions = () => {
   )
 
   const sendTransactions = useMemo(() => {
-    return txs?.filter((tx) => tx.type === "send") ?? []
+    return txs?.filter((tx) => tx.type === "Sent") ?? []
   }, [txs])
 
   const receiveTransactions = useMemo(() => {
-    return txs?.filter((tx) => tx.type === "received") ?? []
+    return txs?.filter((tx) => tx.type === "Received") ?? []
   }, [txs])
 
   return { txs, sendTransactions, receiveTransactions, ...rest }
@@ -30,11 +30,11 @@ export const useEthGoerliTransactions = () => {
   )
 
   const sendTransactions = useMemo(() => {
-    return txs?.filter((tx) => tx.type === "send") ?? []
+    return txs?.filter((tx) => tx.type === "Sent") ?? []
   }, [txs])
 
   const receiveTransactions = useMemo(() => {
-    return txs?.filter((tx) => tx.type === "received") ?? []
+    return txs?.filter((tx) => tx.type === "Received") ?? []
   }, [txs])
 
   return { txs, sendTransactions, receiveTransactions, ...rest }

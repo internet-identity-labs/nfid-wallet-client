@@ -107,7 +107,7 @@ export class BtcAsset extends Asset<string> {
   async getActivityByUser(identity: DelegationIdentity): Promise<Activity[]> {
     const address = await new BtcWallet(identity).getBitcoinAddress()
     const txs = await this.getTransactions(address)
-
+    console.log("txs", txs)
     return txs.map((tx) => ({
       id: "",
       date: new Date(tx.date),
@@ -126,6 +126,7 @@ export class BtcAsset extends Asset<string> {
   private async getTransactions(address: string): Promise<TransactionRow[]> {
     try {
       const data = await bcTransactionInfo(address)
+
       const allTransactions = data.txs ? data.txs : []
       const sentTransactions: TransactionRow[] = []
       const receivedTransactions: TransactionRow[] = []
@@ -142,7 +143,7 @@ export class BtcAsset extends Asset<string> {
             })
           if (output.length !== 0) {
             const row: TransactionRow = {
-              type: "send",
+              type: "Sent",
               asset: "BTC",
               quantity: this.formatPrice(output[0].value),
               date: transaction.confirmed.toString(),
@@ -158,7 +159,7 @@ export class BtcAsset extends Asset<string> {
             })
           if (output.length === 0) break
           const row: TransactionRow = {
-            type: "received",
+            type: "Received",
             asset: "BTC",
             quantity: this.formatPrice(output[0].value),
             date: transaction.confirmed.toString(),

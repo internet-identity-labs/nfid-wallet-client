@@ -26,7 +26,7 @@ export const useUserPolygonMumbaiFTTransactions = () => {
           type:
             activity.to.replace("POLYGON:", "").toLowerCase() ===
             address?.toLowerCase()
-              ? "received"
+              ? "Received"
               : "send",
         } as TransactionRow),
     )

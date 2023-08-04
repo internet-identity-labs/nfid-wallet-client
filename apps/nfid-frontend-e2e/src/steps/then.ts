@@ -1,6 +1,7 @@
 import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
 
+import activity from "../pages/activity.js"
 // import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Assets from "../pages/assets.js"
 import Nft from "../pages/nft.js"
@@ -801,5 +802,42 @@ Then(
     const actualDate = await Nft.trDate(n)
     let parsed = format(new Date(Number(date)), "MMM dd, yyyy - hh:mm:ss aaa")
     expect(actualDate).toContain(parsed)
+  },
+)
+
+Then(/^I should see activity page$/, async () => {
+  const pageTitle = await activity.pageTitle
+  await pageTitle.waitForDisplayed({ timeout: 5000 })
+  expect(await pageTitle.getText()).toContain("Activity")
+})
+
+Then(/^I should see (\d+) activities in the table$/, async (amount: number) => {
+  const length = await activity.getActivitiesLength()
+  expect(length).toEqual(amount)
+})
+
+Then(
+  /^I should see transaction ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*)$/,
+  async (
+    action: string,
+    chain: string,
+    currency: string,
+    type: string,
+    asset: string,
+    timestamp: string,
+    from: string,
+    to: string,
+  ) => {
+    const tx = await activity.getTransaction(
+      action,
+      chain,
+      currency,
+      type,
+      asset,
+      timestamp,
+      from,
+      to,
+    )
+    expect(tx).toBeTruthy()
   },
 )

@@ -126,7 +126,7 @@ export class SecurityConnector {
         { recovery: null },
         recoverIdentity.getPublicKey().toDer(),
         undefined as any,
-        false,
+        true,
       )
     }
 

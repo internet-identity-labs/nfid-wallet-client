@@ -9,8 +9,6 @@ import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/u
 import { getWalletPrincipal } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 
-import { useAllTransactions } from "./get-all-transactions"
-
 export const useWallet = () => {
   const { profile } = useProfile()
 
@@ -29,8 +27,6 @@ export const useWallet = () => {
       refreshInterval: 30_000,
     },
   )
-
-  const { transactions, isWalletTransactionsLoading } = useAllTransactions()
 
   const { exchangeRate, isValidating: isWalletExchangeRateLoading } =
     useICPExchangeRate()
@@ -54,12 +50,10 @@ export const useWallet = () => {
     walletPrincipal: principal,
     walletBalance: balance,
     walletExchangeRate: exchangeRate,
-    walletTransactions: transactions,
     walletAddress: address,
     isWalletLoading:
       isWalletPrincipalLoading ||
       isWalletBalanceLoading ||
-      isWalletTransactionsLoading ||
       isWalletExchangeRateLoading,
   }
 }

@@ -79,8 +79,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
     <ProfileTemplate
       pageTitle="Assets"
       icon={Icon}
-      iconTooltip="Transactions history"
+      iconTooltip="Activity history"
       onIconClick={onIconClick}
+      iconId="activity"
       className="overflow-inherit"
     >
       <MigrationWarning />

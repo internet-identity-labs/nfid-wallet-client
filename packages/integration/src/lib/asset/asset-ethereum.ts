@@ -30,7 +30,6 @@ import {
   AssetTransfersWithMetadataResult,
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
-import { principalToAddress } from "ictool"
 import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../cache"
@@ -56,7 +55,6 @@ import {
   EstimatedTransaction,
   FungibleActivityRecords,
   FungibleActivityRequest,
-  FungibleTxs,
   Identity,
   ItemsByUserRequest,
   NonFungibleActivityRecords,
@@ -70,8 +68,8 @@ import {
 } from "./types"
 
 export enum ActivityAction {
-  SEND = "Send",
-  RECEIVE = "Receive",
+  SENT = "Sent",
+  RECEIVED = "Received",
 }
 
 function removeChain(id: UnionAddress): string {
@@ -100,7 +98,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
   public async getActivityByUser(
     identity: DelegationIdentity,
-    size = 50,
+    size = 100,
     sort: "asc" | "desc" = "desc",
   ): Promise<Activity[]> {
     const addressVal = await this.getAddressByIdentity(identity)
@@ -158,7 +156,9 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
         from: x.from,
         transactionHash: x.hash,
         action:
-          x.from === addressVal ? ActivityAction.SEND : ActivityAction.RECEIVE,
+          x.from.toLowerCase() == addressVal.toLowerCase()
+            ? ActivityAction.SENT
+            : ActivityAction.RECEIVED,
         asset: this.getAsset(x, contentUrlById),
       }))
       .sort((x, y) => x.date.getTime() - y.date.getTime())
@@ -464,30 +464,25 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   public async getTransactionHistory(
     identity: DelegationIdentity,
     contract?: string,
-  ): Promise<FungibleTxs> {
+  ): Promise<{
+    sendTransactions: FungibleActivityRecords
+    receivedTransactions: FungibleActivityRecords
+  }> {
     const address = await this.getAddress(identity)
     const receivedTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "to",
       contract,
       address,
-    }).then((receiveTsx) => {
-      return receiveTsx.activities.map((tx) =>
-        this.toTransactionRow(tx, address),
-      )
     })
     const sendTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "from",
       contract,
       address,
-    }).then((sendTsx) => {
-      return sendTsx.activities.map((tx) => this.toTransactionRow(tx, address))
     })
-    const addressPrincipal = principalToAddress(identity.getPrincipal())
+
     return {
       sendTransactions,
       receivedTransactions,
-      walletAddress: addressPrincipal,
-      btcAddress: address,
     }
   }
 

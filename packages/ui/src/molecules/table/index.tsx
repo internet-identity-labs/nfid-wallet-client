@@ -5,9 +5,10 @@ export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   tableHeader: JSX.Element
 }
 
-export const Table = ({ className, children, tableHeader }: TableProps) => {
+export const Table = ({ className, children, tableHeader, id }: TableProps) => {
   return (
     <table
+      id={id}
       className={clsx(
         "w-full text-left min-w-[640px]",
         className ?? "table-auto",

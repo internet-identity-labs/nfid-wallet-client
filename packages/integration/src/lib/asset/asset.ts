@@ -79,7 +79,7 @@ export abstract class Asset<T> implements FungibleAsset {
   protected toTransactionRow(tx: FungibleActivityRecord, address: string) {
     return {
       type:
-        tx.from.toLowerCase() === address.toLowerCase() ? "send" : "received",
+        tx.from.toLowerCase() === address.toLowerCase() ? "send" : "Received",
       asset: tx.asset,
       quantity: this.formatPrice(tx.price),
       date: this.formatDate(tx.date),

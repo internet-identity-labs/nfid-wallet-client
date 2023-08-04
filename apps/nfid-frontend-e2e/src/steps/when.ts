@@ -2,6 +2,7 @@ import { When } from "@cucumber/cucumber"
 
 import { baseURL } from "../../wdio.conf.js"
 import userClient from "../helpers/accounts-service.js"
+import assets, { Assets } from "../pages/assets.js"
 import HomePage from "../pages/home-page.js"
 import Collectibles from "../pages/nft.js"
 import Profile from "../pages/profile.js"
@@ -33,7 +34,14 @@ When(/^User enters a captcha$/, async function () {
 
 When(/^User trusts this device$/, async () => {
   await HomePage.iTrustThisDevice()
-  await browser.addVirtualAuthenticator("ctap2", "internal", true, true, true, true)
+  await browser.addVirtualAuthenticator(
+    "ctap2",
+    "internal",
+    true,
+    true,
+    true,
+    true,
+  )
   await HomePage.waitForLoaderDisappear()
 })
 
@@ -340,3 +348,7 @@ When(
   /^I move to element "([^"]*)?"(?: with an offset of (\d+),(\d+))*$/,
   moveTo,
 )
+
+When(/^I press on Activity icon$/, async () => {
+  await assets.openActivity()
+})

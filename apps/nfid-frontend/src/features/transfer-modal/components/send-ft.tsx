@@ -200,14 +200,14 @@ export const TransferFT = ({
       sendReceiveTracking.sendToken({
         network: token.blockchain,
         destinationType: "address",
-        tokenName: token.title || "",
-        tokenType: "non-fungible",
+        tokenName: selectedTokenCurrency,
+        tokenType: "fungible",
         tokenStandard: token.tokenStandard,
         amount: amount,
         fee: transferFee?.fee ?? "0",
       })
     },
-    [selectedConnector, transferFee?.fee],
+    [selectedConnector, selectedTokenCurrency, transferFee?.fee],
   )
 
   const submit = useCallback(

@@ -54,6 +54,7 @@ import {
   Erc20TokensByUserRequest,
   EstimateTransactionRequest,
   EstimatedTransaction,
+  FungibleActivityRecord,
   FungibleActivityRecords,
   FungibleActivityRequest,
   FungibleTxs,
@@ -464,30 +465,25 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   public async getTransactionHistory(
     identity: DelegationIdentity,
     contract?: string,
-  ): Promise<FungibleTxs> {
+  ): Promise<{
+    sendTransactions: FungibleActivityRecords
+    receivedTransactions: FungibleActivityRecords
+  }> {
     const address = await this.getAddress(identity)
     const receivedTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "to",
       contract,
       address,
-    }).then((receiveTsx) => {
-      return receiveTsx.activities.map((tx) =>
-        this.toTransactionRow(tx, address),
-      )
     })
     const sendTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "from",
       contract,
       address,
-    }).then((sendTsx) => {
-      return sendTsx.activities.map((tx) => this.toTransactionRow(tx, address))
     })
-    const addressPrincipal = principalToAddress(identity.getPrincipal())
+
     return {
       sendTransactions,
       receivedTransactions,
-      walletAddress: addressPrincipal,
-      btcAddress: address,
     }
   }
 

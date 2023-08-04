@@ -17,7 +17,7 @@ export class Activity extends Page {
       },
     )
 
-    return await $$("#activity-table tbody .activity-row").length
+    return await this.activityTableRows.length
   }
 
   async getTransaction(

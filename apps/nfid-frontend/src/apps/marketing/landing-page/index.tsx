@@ -1,10 +1,12 @@
 import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
+import posthog from "posthog-js"
 import React, { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button, NFIDLogo } from "@nfid-frontend/ui"
+import { landingPageTracking } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -59,6 +61,12 @@ export const HomeScreen = () => {
   const [isAuthModalVisible, setIsAuthModalVisible] = React.useState(false)
   const { isAuthenticated } = useAuthentication()
   const navigate = useNavigate()
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      landingPageTracking.pageLoaded()
+    })
+  }, [])
 
   const onContinue = useCallback(() => {
     return isAuthenticated

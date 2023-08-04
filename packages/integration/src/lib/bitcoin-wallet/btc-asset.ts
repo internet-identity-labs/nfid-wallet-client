@@ -107,7 +107,7 @@ export class BtcAsset extends Asset<string> {
   async getActivityByUser(identity: DelegationIdentity): Promise<Activity[]> {
     const address = await new BtcWallet(identity).getBitcoinAddress()
     const txs = await this.getTransactions(address)
-    console.log("txs", txs)
+
     return txs.map((tx) => ({
       id: "",
       date: new Date(tx.date),

@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import useSWR from "swr"
 
 import { Table } from "@nfid-frontend/ui"
@@ -12,16 +11,11 @@ import { getAllActivity } from "./connector/activity-factory"
 export interface IActivityPage {}
 
 const ActivityPage = () => {
-  const { data } = useSWR("activity", getAllActivity)
+  const { isLoading, data } = useSWR("activity", getAllActivity)
 
   return (
-    <ProfileTemplate pageTitle="Activity" showBackButton>
+    <ProfileTemplate isLoading={isLoading} pageTitle="Activity" showBackButton>
       <ProfileContainer>
-        <ProfileContainer className={clsx(`bg-gray-200`)}>
-          <div className="flex items-center justify-between w-full space-x-10 ">
-            123
-          </div>
-        </ProfileContainer>
         <Table
           tableHeader={
             <tr className="border-b border-black">

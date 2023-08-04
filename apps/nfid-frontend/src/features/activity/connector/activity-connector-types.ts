@@ -1,26 +1,12 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { Activity } from "packages/integration/src/lib/asset/types"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import {
-  IActivityAction,
-  IActivityAssetFT,
-  IActivityRow,
-  IActivityRowGroup,
-} from "../types"
-
-export interface IActivity {
-  id: string
-  date: number
-  from: string
-  to: string
-  transactionHash: string
-  action: IActivityAction
-  asset: IActivityAssetFT
-}
+import { IActivityRow } from "../types"
 
 export interface IActivityDetails {}
 export interface IActivityConfig {
@@ -32,11 +18,11 @@ export interface IActivityConfig {
 export interface IActivityConnector {
   config: IActivityConfig
   getBlockchain(): Blockchain
-  getActivities(): Promise<IActivity[]>
+  getActivities(): Promise<Activity[]>
   mapActivitiesToRows(
-    activities: IActivity[],
+    activities: Activity[],
     config: IActivityConfig,
   ): IActivityRow[]
-  getGroupedActivitiesRows(): Promise<IActivityRowGroup[]>
+  getActivitiesRows(): Promise<IActivityRow[]>
   getIdentity(): DelegationIdentity
 }

@@ -1,3 +1,7 @@
+import {
+  ActivityAssetFT,
+  ActivityAssetNFT,
+} from "packages/integration/src/lib/asset/types"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 export enum IActivityAction {
@@ -12,24 +16,11 @@ export enum IActivityStatus {
   CANCELLED = "Cancelled",
 }
 
-export interface IActivityAssetNFT {
-  type: "nft"
-  name: string
-  collectionName: string
-  preview: string
-}
-export interface IActivityAssetFT {
-  type: "ft"
-  currency: string
-  amount: number
-  amountUSD: number
-}
-
 export interface IActivityRow {
   action: IActivityAction
   chain: Chain
-  timestamp: number
-  asset: IActivityAssetFT | IActivityAssetNFT
+  timestamp: Date
+  asset: ActivityAssetFT | ActivityAssetNFT
   from: string
   to: string
 }

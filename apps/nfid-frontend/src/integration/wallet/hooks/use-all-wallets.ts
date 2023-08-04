@@ -1,11 +1,9 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import React from "react"
-import { useBtcAddress } from "src/features/fungable-token/btc/hooks/use-btc-address"
 
 import { getWalletName } from "@nfid/integration"
 
-import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
 import { TokenBalance } from "frontend/features/fungable-token/fetch-balances"
 import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
@@ -31,8 +29,6 @@ export const useAllWallets = () => {
   const { balances, isLoading } = useUserBalances()
   const { balances: vaultsBalances, isLoading: isAllWalletsLoading } =
     useAllVaultsWallets()
-  const { address } = useEthAddress()
-  const { btcAddress } = useBtcAddress()
 
   const applications = useApplicationsMeta()
 
@@ -50,8 +46,7 @@ export const useAllWallets = () => {
         domain: account.domain,
         principal,
         address: principalToAddress(principal),
-        ethAddress: address,
-        btcAddress: btcAddress,
+
         ...rest,
       }))
       .sort(sortAlphabetic(({ label }) => label ?? ""))
@@ -63,8 +58,6 @@ export const useAllWallets = () => {
           principal,
           address: address ?? account.accountId,
           isVaultWallet: true,
-          ethAddress: address,
-          btcAddress: btcAddress,
           ...rest,
         })) ?? [],
       )
@@ -72,13 +65,7 @@ export const useAllWallets = () => {
       ({ label }) => label ?? "",
       ["NFID", "NNS"],
     )(wallets || [])
-  }, [
-    address,
-    applications.applicationsMeta,
-    balances,
-    vaultsBalances,
-    btcAddress,
-  ])
+  }, [applications.applicationsMeta, balances, vaultsBalances])
 
   return { wallets, isLoading: isLoading || isAllWalletsLoading }
 }

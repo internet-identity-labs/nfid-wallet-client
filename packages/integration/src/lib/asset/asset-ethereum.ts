@@ -156,7 +156,9 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
         from: x.from,
         transactionHash: x.hash,
         action:
-          x.from == addressVal ? ActivityAction.SENT : ActivityAction.RECEIVED,
+          x.from.toLowerCase() == addressVal.toLowerCase()
+            ? ActivityAction.SENT
+            : ActivityAction.RECEIVED,
         asset: this.getAsset(x, contentUrlById),
       }))
       .sort((x, y) => x.date.getTime() - y.date.getTime())

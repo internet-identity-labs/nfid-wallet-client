@@ -34,7 +34,7 @@ describe("Ethereum Asset", () => {
         from: "0xb1107f4141fb56b07d15b65f1629451443ff8f8e",
         transactionHash:
           "0x77151f9f254b7515c1c2d3bf2abbb9a036927231d6b96a6a324b79f06a69d9df",
-        action: "Receive",
+        action: "Received",
         asset: {
           type: "ft",
           currency: "ETH",
@@ -48,7 +48,7 @@ describe("Ethereum Asset", () => {
         from: "0xb1107f4141fb56b07d15b65f1629451443ff8f8e",
         transactionHash:
           "0x75d539163a47d101b1984dcbe3468c61aad584bf49895eba9e0de397eae3ec1d",
-        action: "Receive",
+        action: "Received",
         asset: {
           type: "ft",
           currency: "ETH",
@@ -62,7 +62,7 @@ describe("Ethereum Asset", () => {
         from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
         transactionHash:
           "0x27113833104087b9bdf6b0347a4ddb6746652baf3628ecc3ac263e7959ffd801",
-        action: "Receive",
+        action: "Received",
         asset: {
           type: "ft",
           currency: "LINK",
@@ -76,7 +76,7 @@ describe("Ethereum Asset", () => {
         from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
         transactionHash:
           "0xdade54dfa1f08c4dd011ea69200ec2c01ec2d3bced396619a12fa56f020f17f3",
-        action: "Receive",
+        action: "Received",
         asset: {
           type: "nft",
           name: "adaasda",
@@ -92,7 +92,7 @@ describe("Ethereum Asset", () => {
         from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
         transactionHash:
           "0xbfc8db8812fba8ea4ad3c9b9df57240ba010a7843ce20bda32ae959dd54b48eb",
-        action: "Receive",
+        action: "Received",
         asset: {
           type: "nft",
           name: "test1",

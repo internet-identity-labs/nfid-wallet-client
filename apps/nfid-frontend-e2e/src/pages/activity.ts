@@ -25,8 +25,6 @@ export class Activity {
     from: string,
     to: string,
   ) {
-    await browser.waitUntil(() => 1 === 2)
-
     if (type === "ft")
       return $(
         `#tx-${action}-${chain}-${currency}-${type}-${asset}-${timestamp}-${from}-${to}`.replace(

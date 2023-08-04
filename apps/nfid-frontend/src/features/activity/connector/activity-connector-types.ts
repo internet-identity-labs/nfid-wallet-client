@@ -3,7 +3,7 @@ import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { Blockchain, StandardizedToken } from "frontend/ui/connnector/types"
+import { Blockchain } from "frontend/ui/connnector/types"
 
 import {
   IActivityAction,
@@ -14,13 +14,14 @@ import {
 
 export interface IActivity {
   id: string
-  date: string
+  date: number
   from: string
   to: string
   transactionHash: string
   action: IActivityAction
   asset: IActivityAssetFT
 }
+
 export interface IActivityDetails {}
 export interface IActivityConfig {
   network: Blockchain
@@ -28,14 +29,14 @@ export interface IActivityConfig {
   tokenStandard: TokenStandards
 }
 
-export interface IActivityConnector extends StandardizedToken<TokenStandards> {
+export interface IActivityConnector {
   config: IActivityConfig
+  getBlockchain(): Blockchain
   getActivities(): Promise<IActivity[]>
   mapActivitiesToRows(
     activities: IActivity[],
     config: IActivityConfig,
   ): IActivityRow[]
   getGroupedActivitiesRows(): Promise<IActivityRowGroup[]>
-  getActivityDetails(row: IActivityRow): Promise<IActivityDetails>
   getIdentity(): DelegationIdentity
 }

@@ -1,3 +1,5 @@
+import { format } from "date-fns"
+
 import {
   IconCmpArrow,
   IconCmpStatusSuccess,
@@ -43,14 +45,16 @@ export const ActivityTableRow = ({
             {ChainIcons[chain]}
           </div>
         </div>
-        <div>
-          <p className="font-bold ml-2.5">{action}</p>
-          <p className="text-xs text-gray-400">{timestamp}</p>
+        <div className="ml-2.5">
+          <p className="font-bold">{action}</p>
+          <p className="text-xs text-gray-400">
+            {format(new Date(timestamp), "HH:mm:ss aaa")}
+          </p>
         </div>
       </td>
       {asset?.type === "ft" ? (
         <td className="leading-5">
-          <p>{asset.amountUSD}</p>
+          <p>${asset.amountUSD}</p>
           <p className="text-gray-400">
             {asset.amount} {asset.currency}
           </p>

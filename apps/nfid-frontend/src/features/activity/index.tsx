@@ -17,6 +17,7 @@ const ActivityPage = () => {
     <ProfileTemplate isLoading={isLoading} pageTitle="Activity" showBackButton>
       <ProfileContainer>
         <Table
+          id="activity-table"
           tableHeader={
             <tr className="border-b border-black">
               <th>Action</th>

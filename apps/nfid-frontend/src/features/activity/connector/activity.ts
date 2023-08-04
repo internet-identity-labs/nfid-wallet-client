@@ -52,6 +52,7 @@ export abstract class ActivityClass<T extends IActivityConfig>
   ): IActivityRow[] {
     return activities.map((activity: Activity) => ({
       action: activity.action,
+      network: config.network,
       chain: config.chain,
       asset: activity.asset,
       type: activity.asset.type,

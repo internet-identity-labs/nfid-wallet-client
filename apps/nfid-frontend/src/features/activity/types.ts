@@ -4,9 +4,11 @@ import {
 } from "packages/integration/src/lib/asset/types"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
+import { Blockchain } from "frontend/ui/connnector/types"
+
 export enum IActivityAction {
-  SEND = "Send",
-  RECEIVE = "Receive",
+  SENT = "Sent",
+  RECEIVED = "Received",
 }
 
 export enum IActivityStatus {
@@ -19,6 +21,7 @@ export enum IActivityStatus {
 export interface IActivityRow {
   action: IActivityAction
   chain: Chain
+  network: Blockchain
   timestamp: Date
   asset: ActivityAssetFT | ActivityAssetNFT
   from: string

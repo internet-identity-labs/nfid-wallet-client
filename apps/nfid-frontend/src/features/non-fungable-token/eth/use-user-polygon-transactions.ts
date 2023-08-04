@@ -28,8 +28,8 @@ export const useUserPolygonNFTTransactions = () => {
           type:
             activity.to.replace("POLYGON:", "").toLowerCase() ===
             address?.toLowerCase()
-              ? "received"
-              : "send",
+              ? "Received"
+              : "Sent",
         } as TransactionRow),
     )
   }, [address, data?.activities])
@@ -60,8 +60,8 @@ export const useUserPolygonMumbaiNFTTransactions = () => {
           type:
             activity.to.replace("POLYGON:", "").toLowerCase() ===
             address?.toLowerCase()
-              ? "received"
-              : "send",
+              ? "Received"
+              : "Sent",
         } as TransactionRow),
     )
   }, [address, data?.activities])

@@ -13,7 +13,7 @@ export const icFungibleTxsToActivity = (txs: Transaction[]): Activity[] => {
       to: tx.transaction.operations[1].account.address,
       transactionHash: tx.transaction.transactionIdentifier.hash,
       // Assuming the action is 'SEND' for all transactions
-      action: IActivityAction.SEND,
+      action: IActivityAction.SENT,
       asset: {
         // Assuming the 'amount' and 'amountUSD' are both the same
         type: "ft",

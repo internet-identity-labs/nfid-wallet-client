@@ -41,7 +41,7 @@ export const getEthTransactions = async () => {
     allTXs.map(
       (tx) =>
         ({
-          type: tx.from === address.toLowerCase() ? "send" : "received",
+          type: tx.from === address.toLowerCase() ? "send" : "Received",
           asset: "ETH",
           quantity: tx.price,
           date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),
@@ -83,7 +83,7 @@ export const getEthGoerliTransactions = async () => {
     allTXs.map(
       (tx) =>
         ({
-          type: tx.from === address.toLowerCase() ? "send" : "received",
+          type: tx.from === address.toLowerCase() ? "send" : "Received",
           asset: "ETH",
           quantity: tx.price,
           date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),

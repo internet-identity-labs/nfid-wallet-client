@@ -26,7 +26,7 @@ export const useUserEthGoerliNFTTransactions = () => {
           type:
             activity.to.replace("ETHEREUM:", "").toLowerCase() ===
             address?.toLowerCase()
-              ? "received"
+              ? "Received"
               : "send",
         } as TransactionRow),
     )

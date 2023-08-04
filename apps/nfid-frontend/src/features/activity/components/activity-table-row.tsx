@@ -44,7 +44,7 @@ export const ActivityTableRow = ({
   return (
     <tr
       id={id}
-      className="items-center text-sm transition-all border-b border-gray-200 hover:bg-gray-100"
+      className="items-center text-sm transition-all border-b border-gray-200 hover:bg-gray-100 activity-row"
     >
       <td className="flex items-center py-2.5">
         <div className="w-10 h-10 rounded-[9px] bg-gray-50 flex items-center justify-center relative">
@@ -62,8 +62,7 @@ export const ActivityTableRow = ({
       </td>
       {asset?.type === "ft" ? (
         <td className="leading-5">
-          <p>${asset.amountUSD}</p>
-          <p className="text-gray-400">
+          <p className="font-medium">
             {asset.amount} {asset.currency}
           </p>
         </td>
@@ -71,7 +70,7 @@ export const ActivityTableRow = ({
         <td className="leading-5">
           <div className="flex items-center">
             <img src={asset.preview} className="object-cover w-10 h-10" />
-            <p className="font-bold ml-2.5">{asset.name}</p>
+            <p className="ml-2.5 font-semibold">{asset.name}</p>
           </div>
         </td>
       )}

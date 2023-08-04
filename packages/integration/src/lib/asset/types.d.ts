@@ -255,10 +255,8 @@ declare interface TransactionRow {
 }
 
 export interface FungibleTxs {
-  sendTransactions?: TransactionRow[]
-  receivedTransactions?: TransactionRow[]
-  walletAddress: string
-  btcAddress: string
+  sendTransactions?: FungibleActivityRecords
+  receivedTransactions?: FungibleActivityRecords
 }
 
 export interface FungibleTransactionRequest {

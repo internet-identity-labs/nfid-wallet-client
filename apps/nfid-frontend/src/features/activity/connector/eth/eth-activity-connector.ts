@@ -1,6 +1,6 @@
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
-import { ethereumAsset, ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Blockchain } from "frontend/ui/connnector/types"
@@ -13,11 +13,13 @@ import { IActivity, IActivityConfig, IActivityDetails } from "../types"
 export class EthActivityConnector extends ActivityClass<IActivityConfig> {
   async getActivities(): Promise<IActivity[]> {
     const identity = this.getIdentity()
-    const activities = await ethereumGoerliAsset.getActivitiesByUser({
-      identity,
-    })
 
-    return ethRecordsToActivities(activities)
+    const { receivedTransactions, sendTransactions } =
+      await ethereumGoerliAsset.getTransactionHistory(identity)
+
+    return ethRecordsToActivities(
+      receivedTransactions.activities.concat(sendTransactions.activities),
+    )
   }
 
   getActivityDetails(row: IActivityRow): Promise<IActivityDetails> {

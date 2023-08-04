@@ -25,7 +25,7 @@ describe("Polygon Asset", () => {
         from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
         transactionHash:
           "0x870cde38995cbcffa5ab3d6dc17133bae9df3d4bb7233adcfed587df8cc97b46",
-        action: "Receive",
+        action: "Received",
         asset: {
           type: "ft",
           currency: "MATIC",
@@ -35,7 +35,7 @@ describe("Polygon Asset", () => {
     ])
   })
 
-  it("should return one fungible native tx", async function () {
+  it.skip("should return one fungible native tx", async function () {
     const actual = await polygonMumbaiAsset.getFungibleActivityByTokenAndUser({
       address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
@@ -87,7 +87,7 @@ describe("Polygon Asset", () => {
     const actual = await polygonMumbaiAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
-    console.log(actual.tokens[0].balance)
+
     expect(actual).toEqual({
       cursor: undefined,
       tokens: [

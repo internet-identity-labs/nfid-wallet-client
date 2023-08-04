@@ -1,9 +1,16 @@
-import { ThirdPartyAuthSession, fetchDelegate } from "@nfid/integration"
+import {
+  DeviceType,
+  ThirdPartyAuthSession,
+  authState,
+  fetchDelegate,
+  im,
+  replaceIdentity,
+} from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
-import { passkeyConnector } from "./auth-selection/passkey-flow/services"
+import { AuthenticationContext } from "./root/root-machine"
 
 export async function getLegacyThirdPartyAuthSession(
   authRequest: AuthorizationRequest,
@@ -54,11 +61,22 @@ export function getScope(
   return `${accountId ? `${accountId}@` : ""}${hostWithProtocol}`
 }
 
-export const checkIf2FAEnabled = async () => {
+export const checkIf2FAEnabled = async (context: AuthenticationContext) => {
   const profile = await fetchProfile()
-  return !!profile?.is2fa
-}
+  if (!profile?.is2fa) {
+    replaceIdentity(context.authSession?.delegationIdentity!)
+    return undefined
+  }
 
-export const get2FAAuthSession = async () => {
-  return await passkeyConnector.loginWithPasskey()
+  const { data: imDevices } = await im.read_access_points()
+  if (!imDevices?.length) throw new Error("No devices found")
+
+  const allowedPasskeys = imDevices[0]
+    .filter(
+      (d) => DeviceType.Passkey in d.device_type && d.credential_id[0]?.length,
+    )
+    .map((d) => d.credential_id[0]) as string[]
+
+  authState.logout(false)
+  return allowedPasskeys
 }

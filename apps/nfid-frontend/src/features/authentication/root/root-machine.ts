@@ -22,6 +22,8 @@ export interface AuthenticationContext {
 
   selectedPersonaId?: number
   thirdPartyAuthSession?: ThirdPartyAuthSession
+
+  allowedDevices?: string[]
 }
 
 export type Events =
@@ -35,7 +37,7 @@ export type Events =
     }
   | {
       type: "done.invoke.checkIf2FAEnabled"
-      data: boolean
+      data?: string[]
     }
   | { type: "AUTH_WITH_EMAIL"; data: string }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
@@ -128,7 +130,11 @@ const AuthenticationMachine =
             src: "checkIf2FAEnabled",
             id: "checkIf2FAEnabled",
             onDone: [
-              { cond: "is2FAEnabled", target: "TwoFA" },
+              {
+                cond: "is2FAEnabled",
+                target: "TwoFA",
+                actions: "assignAllowedDevices",
+              },
               { target: "End" },
             ],
           },
@@ -152,7 +158,7 @@ const AuthenticationMachine =
           return !!event?.data?.anchor
         },
         isReturn: (context, event) => !event.data,
-        is2FAEnabled: (context, event) => event.data,
+        is2FAEnabled: (context, event) => !!event.data,
       },
       actions: {
         assignAuthSession: assign((_, event) => ({
@@ -160,6 +166,9 @@ const AuthenticationMachine =
         })),
         assignVerificationEmail: assign((c, event) => ({
           verificationEmail: event.data,
+        })),
+        assignAllowedDevices: assign((c, event) => ({
+          allowedDevices: event.data,
         })),
       },
       services: {

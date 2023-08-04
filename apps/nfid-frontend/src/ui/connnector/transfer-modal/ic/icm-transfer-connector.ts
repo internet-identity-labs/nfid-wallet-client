@@ -53,8 +53,15 @@ export abstract class ICMTransferConnector<
         allVaults.map((v) => v.id).map(async (v) => await getWallets(v)),
       )
 
-      const walletsWithBalances = await Promise.all(
+      const walletsWithE8SBalances = await Promise.all(
         vaultWallets.map(async (wallets) => fetchVaultWalletsBalances(wallets)),
+      )
+
+      const walletsWithBalances = walletsWithE8SBalances.map((vault) =>
+        vault.map((w) => ({
+          ...w,
+          balance: { ICP: e8sICPToString(Number(w?.balance?.ICP)) },
+        })),
       )
 
       return walletsWithBalances.map((vaultWallets) => ({

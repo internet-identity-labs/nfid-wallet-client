@@ -2,8 +2,6 @@ import clsx from "clsx"
 import React from "react"
 import User from "src/assets/userpics/userpic_6.svg"
 
-
-
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface IAuthenticatedPopup extends React.HTMLAttributes<HTMLDivElement> {
@@ -57,11 +55,11 @@ const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
             "w-full h-10 text-center border-t border-gray-200 leading-10",
             "hover:bg-gray-100 cursor-pointer text-sm block",
           )}
-          href="/faq"
+          href="https://learn.nfid.one/"
           target="_blank"
           rel="noreferrer"
         >
-          Help
+          Knowledge base
         </a>
         <div
           id="logout"

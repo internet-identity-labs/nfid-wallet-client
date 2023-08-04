@@ -16,5 +16,11 @@ export const groupActivityRowsByDate = (
     return acc
   }, {})
 
-  return Object.entries(groups).map(([date, rows]) => ({ date, rows }))
+  const groupedByDate = Object.entries(groups).map(([date, rows]) => ({
+    date,
+    rows,
+  }))
+  return groupedByDate.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  )
 }

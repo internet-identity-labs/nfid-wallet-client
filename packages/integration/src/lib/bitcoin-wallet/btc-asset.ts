@@ -2,14 +2,15 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { toBn } from "@rarible/utils"
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
-import { principalToAddress } from "ictool"
 
 import { E8S } from "@nfid/integration/token/icp"
 
 import { Asset } from "../asset/asset"
 import { getPrice } from "../asset/asset-util"
 import {
+  Activity,
   ChainBalance,
+  FungibleActivityRecord,
   FungibleActivityRecords,
   FungibleActivityRequest,
   FungibleTransactionRequest,
@@ -27,6 +28,12 @@ import {
 } from "./types"
 
 export class BtcAsset extends Asset<string> {
+  override getTransactionHistory(
+    identity: DelegationIdentity,
+    contract?: string | undefined,
+  ): Promise<FungibleTxs> {
+    throw new Error("Method not implemented.")
+  }
   getAddress(identity: DelegationIdentity): Promise<string> {
     return new BtcWallet(identity).getBitcoinAddress()
   }
@@ -97,25 +104,26 @@ export class BtcAsset extends Asset<string> {
     )
   }
 
-  async getTransactionHistory(
-    identity: DelegationIdentity,
-  ): Promise<FungibleTxs> {
+  async getActivityByUser(identity: DelegationIdentity): Promise<Activity[]> {
     const address = await new BtcWallet(identity).getBitcoinAddress()
     const txs = await this.getTransactions(address)
-    const sendTransactions = txs.sent
-    const receivedTransactions = txs.received
-    const addressPrincipal = principalToAddress(identity.getPrincipal())
-    return {
-      sendTransactions,
-      receivedTransactions,
-      walletAddress: addressPrincipal,
-      btcAddress: address,
-    }
+
+    return txs.map((tx) => ({
+      id: "",
+      date: new Date(tx.date),
+      from: tx.from,
+      to: tx.to,
+      transactionHash: "",
+      action: tx.type,
+      asset: {
+        type: "ft", // Assuming all transactions are "ft". You can modify this based on the requirement.
+        currency: tx.asset,
+        amount: tx.quantity,
+      },
+    }))
   }
 
-  private async getTransactions(
-    address: string,
-  ): Promise<{ sent: TransactionRow[]; received: TransactionRow[] }> {
+  private async getTransactions(address: string): Promise<TransactionRow[]> {
     try {
       const data = await bcTransactionInfo(address)
       const allTransactions = data.txs ? data.txs : []
@@ -137,7 +145,7 @@ export class BtcAsset extends Asset<string> {
               type: "send",
               asset: "BTC",
               quantity: this.formatPrice(output[0].value),
-              date: this.formatDateInt(transaction.confirmed),
+              date: transaction.confirmed.toString(),
               from: address,
               to: output[0].addresses.join(", "),
             }
@@ -153,7 +161,7 @@ export class BtcAsset extends Asset<string> {
             type: "received",
             asset: "BTC",
             quantity: this.formatPrice(output[0].value),
-            date: this.formatDateInt(transaction.confirmed),
+            date: transaction.confirmed.toString(),
             from: transaction.inputs[0].addresses.join(", "),
             to: output[0].addresses.join(", "),
           }
@@ -161,16 +169,10 @@ export class BtcAsset extends Asset<string> {
         }
       }
 
-      return {
-        sent: sentTransactions,
-        received: receivedTransactions,
-      }
+      return sentTransactions.concat(receivedTransactions)
     } catch (error) {
       console.error("Error retrieving BTC transactions:", error)
-      return {
-        sent: [],
-        received: [],
-      }
+      return []
     }
   }
 

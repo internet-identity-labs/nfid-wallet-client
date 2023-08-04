@@ -1,4 +1,6 @@
 import { format } from "date-fns"
+import { useCallback } from "react"
+import { toast } from "react-toastify"
 
 import {
   IconCmpArrow,
@@ -7,6 +9,7 @@ import {
   IconCmpTinyETH,
   IconCmpTinyIC,
 } from "@nfid-frontend/ui"
+import { truncateString } from "@nfid-frontend/utils"
 
 import { IActivityRow } from "../types"
 
@@ -33,6 +36,11 @@ export const ActivityTableRow = ({
   to,
   id,
 }: IActivityTableRow) => {
+  const onCopy = useCallback((text: string) => {
+    toast.success("Address copied to clipboard")
+    navigator.clipboard.writeText(text)
+  }, [])
+
   return (
     <tr
       id={id}
@@ -60,16 +68,25 @@ export const ActivityTableRow = ({
           </p>
         </td>
       ) : (
-        <td className="flex leading-5">
-          <img src={asset.preview} className="object-cover w-10 h-10" />
-          <div>
-            <p>{asset.name}</p>
-            <p className="text-gray-400">{asset.collectionName}</p>
+        <td className="leading-5">
+          <div className="flex items-center">
+            <img src={asset.preview} className="object-cover w-10 h-10" />
+            <p className="font-bold ml-2.5">{asset.name}</p>
           </div>
         </td>
       )}
-      <td>{from}</td>
-      <td>{to}</td>
+      <td
+        className="transition-opacity cursor-pointer hover:opacity-50"
+        onClick={() => onCopy(from)}
+      >
+        {truncateString(from, 6, 4)}
+      </td>
+      <td
+        className="transition-opacity cursor-pointer hover:opacity-50"
+        onClick={() => onCopy(to)}
+      >
+        {truncateString(to, 6, 4)}
+      </td>
     </tr>
   )
 }

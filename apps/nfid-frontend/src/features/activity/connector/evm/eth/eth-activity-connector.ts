@@ -1,3 +1,4 @@
+import { Activity } from "packages/integration/src/lib/asset/types"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { ethereumAsset } from "@nfid/integration"
@@ -5,20 +6,13 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { ethRecordsToActivities } from "../../../util/activity"
 import { ActivityClass } from "../../activity"
-import { IActivityConfig, IActivity } from "../../activity-connector-types"
+import { IActivityConfig } from "../../activity-connector-types"
 
 export class EthActivityConnector extends ActivityClass<IActivityConfig> {
-  async getActivities(): Promise<IActivity[]> {
+  async getActivities(): Promise<Activity[]> {
     const identity = this.getIdentity()
-
-    const { receivedTransactions, sendTransactions } =
-      await ethereumAsset.getTransactionHistory(identity)
-
-    return ethRecordsToActivities(
-      receivedTransactions.activities.concat(sendTransactions.activities),
-    )
+    return await ethereumAsset.getActivityByUser(identity)
   }
 }
 

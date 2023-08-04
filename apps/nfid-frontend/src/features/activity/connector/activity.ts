@@ -1,8 +1,8 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Cache } from "node-ts-cache"
+import { Activity } from "packages/integration/src/lib/asset/types"
 import { applicationToAccount } from "packages/integration/src/lib/identity-manager/application/application-to-account"
 
-import { truncateString } from "@nfid-frontend/utils"
 import {
   Account,
   Application,
@@ -22,13 +22,8 @@ import {
 import { connectorCache } from "frontend/ui/connnector/cache"
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { IActivityRow, IActivityRowGroup } from "../types"
-import { groupActivityRowsByDate } from "../util/row"
-import {
-  IActivity,
-  IActivityConfig,
-  IActivityConnector,
-} from "./activity-connector-types"
+import { IActivityRow } from "../types"
+import { IActivityConfig, IActivityConnector } from "./activity-connector-types"
 
 export abstract class ActivityClass<T extends IActivityConfig>
   implements IActivityConnector
@@ -52,31 +47,25 @@ export abstract class ActivityClass<T extends IActivityConfig>
   }
 
   mapActivitiesToRows(
-    activities: IActivity[],
+    activities: Activity[],
     config: IActivityConfig,
   ): IActivityRow[] {
-    return activities.map((activity: IActivity) => ({
+    return activities.map((activity: Activity) => ({
       action: activity.action,
       chain: config.chain,
-      asset: {
-        type: "ft",
-        amount: activity.asset.amount,
-        amountUSD: activity.asset.amountUSD,
-        currency: activity.asset.currency,
-      },
+      asset: activity.asset,
       type: activity.asset.type,
       timestamp: activity.date,
-      from: truncateString(activity.from, 6, 4),
-      to: truncateString(activity.to, 6, 4),
+      from: activity.from,
+      to: activity.to,
     }))
   }
 
-  @Cache(connectorCache, { ttl: 120 })
-  async getGroupedActivitiesRows(): Promise<IActivityRowGroup[]> {
+  async getActivitiesRows(): Promise<IActivityRow[]> {
     const activities = await this.getActivities()
     const activitiesRows = this.mapActivitiesToRows(activities, this.config)
 
-    return groupActivityRowsByDate(activitiesRows)
+    return activitiesRows
   }
 
   @Cache(connectorCache, { ttl: 3600 })
@@ -143,5 +132,5 @@ export abstract class ActivityClass<T extends IActivityConfig>
     return await fetchApplications()
   }
 
-  abstract getActivities(): Promise<IActivity[]>
+  abstract getActivities(): Promise<Activity[]>
 }

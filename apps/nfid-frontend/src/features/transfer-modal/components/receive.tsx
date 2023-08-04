@@ -45,11 +45,12 @@ export const TransferReceive = ({
 
   const { profile } = useProfile()
   const { data: networkOptions } = useNetworkOptions(isVault)
-  const { data: accountsOptions } = useAccountsOptions(
-    selectedTokenStandard as TokenStandards,
-    selectedTokenBlockchain as Blockchain,
-    isVault,
-  )
+  const { data: accountsOptions, isValidating: isAccountsValidating } =
+    useAccountsOptions(
+      selectedTokenStandard as TokenStandards,
+      selectedTokenBlockchain as Blockchain,
+      isVault,
+    )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenBlockchain, selectedTokenStandard, "selectedConnector"],
@@ -87,7 +88,9 @@ export const TransferReceive = ({
   return (
     <BlurredLoader
       className="mt-4 space-y-3 text-xs"
-      isLoading={!accountsOptions.length || isConnectorLoading}
+      isLoading={
+        !accountsOptions.length || isConnectorLoading || isAccountsValidating
+      }
     >
       <p className="text-sm">
         Use this address for receiving tokens and NFTs. See which{" "}

@@ -13,15 +13,15 @@ export const useAccountsOptions = (
   isVaultWallets?: boolean,
 ) => {
   const { data: accountsOptions, ...rest } = useSWR<IGroupedOptions[]>(
-    [token, blockchain, "accountsOptions"],
-    async ([token, blockchain]) =>
+    [token, blockchain, isVaultWallets, "accountsOptions"],
+    async ([token, blockchain, isVault]) =>
       (
         await getConnector({
           type: TransferModalType.FT,
           tokenStandard: token,
           blockchain: blockchain,
         })
-      ).getAccountsOptions({ isVault: isVaultWallets }),
+      ).getAccountsOptions({ isVault }),
   )
 
   return { data: accountsOptions ?? [], ...rest }

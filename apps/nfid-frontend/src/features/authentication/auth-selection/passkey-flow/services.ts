@@ -248,16 +248,22 @@ export class PasskeyConnector {
     }
   }
 
-  async loginWithAllowedPasskey(): Promise<AbstractAuthSession> {
-    const { data: imDevices } = await im.read_access_points()
-    if (!imDevices?.length) throw new Error("No devices found")
+  async loginWithAllowedPasskey(
+    allowedDevices?: string[],
+  ): Promise<AbstractAuthSession> {
+    let allowedPasskeys: string[] = allowedDevices ?? []
 
-    const allowedPasskeys = imDevices[0]
-      .filter(
-        (d) =>
-          DeviceType.Passkey in d.device_type && d.credential_id[0]?.length,
-      )
-      .map((d) => d.credential_id[0])
+    if (!allowedPasskeys?.length) {
+      const { data: imDevices } = await im.read_access_points()
+      if (!imDevices?.length) throw new Error("No devices found")
+
+      allowedPasskeys = imDevices[0]
+        .filter(
+          (d) =>
+            DeviceType.Passkey in d.device_type && d.credential_id[0]?.length,
+        )
+        .map((d) => d.credential_id[0]) as string[]
+    }
 
     const passkeysMetadata: IPasskeyMetadata[] = await Promise.all(
       allowedPasskeys.map(async (p) => await this.getPasskeyByCredentialID(p!)),

@@ -809,6 +809,8 @@ Then(/^I should see activity page$/, async () => {
   const pageTitle = await activity.pageTitle
   await pageTitle.waitForDisplayed({ timeout: 5000 })
   expect(await pageTitle.getText()).toContain("Activity")
+  await activity.waitForLoaderDisappear()
+
   await new Promise((resolve) => setTimeout(() => resolve(true), 3000)) // just manual delay before next step
 })
 

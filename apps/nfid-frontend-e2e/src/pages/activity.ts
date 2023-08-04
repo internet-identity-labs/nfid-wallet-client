@@ -1,17 +1,22 @@
-export class Activity {
+import { Page } from "./page"
+
+export class Activity extends Page {
   get pageTitle() {
     return $("#page_title")
+  }
+  get activityTableRows() {
+    return $$("#activity-table tbody .activity-row")
   }
 
   async getActivitiesLength() {
     await browser.waitUntil(
-      async () => (await $$("#activity-table tbody .activity-row")).length > 0,
+      async () => (await this.activityTableRows).length > 0,
       {
         timeout: 5000,
         timeoutMsg: "No activities found",
       },
     )
-    console.log(await $$("#activity-table tbody .activity-row").length)
+
     return await $$("#activity-table tbody .activity-row").length
   }
 

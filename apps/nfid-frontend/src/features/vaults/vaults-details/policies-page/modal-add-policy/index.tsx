@@ -81,15 +81,16 @@ export const VaultAddPolicy = () => {
         wallets: selectedWallets[0] === "Any" ? undefined : selectedWallets,
       })
       reset()
+      toast.success(`Policy successfully added`)
+      vaultsTracking.vaultPolicyCreated(vault.id.toString())
     } catch (e: any) {
       console.log({ e })
       toast.error(e.message)
     } finally {
+      toast.error("Failed to add policy")
       setIsLoading(false)
       setIsModalOpen(false)
-      toast.success(`Policy successfully added`)
       await refetch()
-      vaultsTracking.vaultPolicyCreated(vault.id.toString())
     }
   }
 

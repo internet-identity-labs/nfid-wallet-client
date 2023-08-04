@@ -32,6 +32,20 @@ describe("Polygon Asset", () => {
           amount: 0.1,
         },
       },
+      {
+        action: "Received",
+        date: new Date("2023-08-03T19:04:14.000Z"),
+        from: "0x3b00b3deef27c8c680059558f546366666666666",
+        id: "0x5f834e7acb72233e3ec0939a6f88bee48785ffcde1db678b6cbe209f2ac717d1:log:1727",
+        to: "0x6a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec",
+        transactionHash:
+          "0x5f834e7acb72233e3ec0939a6f88bee48785ffcde1db678b6cbe209f2ac717d1",
+        asset: {
+          amount: 6666666,
+          currency: "VanityTron.io",
+          type: "ft",
+        },
+      },
     ])
   })
 

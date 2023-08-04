@@ -3,7 +3,6 @@ import React from "react"
 
 import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
 
-
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
@@ -19,6 +18,7 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   isLoading?: boolean
   headerMenu?: React.ReactNode
   iconTooltip?: string
+  iconId?: string
 }
 
 const ProfileTemplate: React.FC<IProfileTemplate> = ({
@@ -33,6 +33,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   isLoading = false,
   headerMenu,
   iconTooltip,
+  iconId,
 }) => {
   const handleNavigateBack = React.useCallback(() => {
     window.history.back()
@@ -67,6 +68,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
             {icon && onIconClick && (
               <Tooltip tip={iconTooltip}>
                 <img
+                  id={iconId}
                   src={icon}
                   alt="icon"
                   onClick={onIconClick}

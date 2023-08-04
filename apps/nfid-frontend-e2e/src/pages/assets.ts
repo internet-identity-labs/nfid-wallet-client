@@ -202,6 +202,12 @@ export class Assets {
       expect(isSel).toEqual(true)
     }
   }
+
+  public async openActivity() {
+    const activityIcon = await $("#activity")
+    await activityIcon.waitForDisplayed({ timeout: 10000 })
+    await activityIcon.click()
+  }
 }
 
 export default new Assets()

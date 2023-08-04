@@ -10,7 +10,7 @@ import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 const ProfileAssets = React.lazy(() => import("./assets"))
 const ProfileSecurity = React.lazy(() => import("../../../features/security"))
 const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
-const ProfileTransactions = React.lazy(() => import("./transactions"))
+const ActivityPage = React.lazy(() => import("../../../features/activity"))
 const ProfileNFTDetails = React.lazy(() => import("./nft-details"))
 const VaultsListPage = React.lazy(
   () => import("frontend/features/vaults/vaults-list-page"),
@@ -61,7 +61,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.transactions}
       element={
         <AuthWrapper>
-          <ProfileTransactions />
+          <ActivityPage />
         </AuthWrapper>
       }
     />

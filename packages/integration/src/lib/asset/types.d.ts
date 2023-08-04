@@ -246,7 +246,7 @@ declare interface TokenBalanceSheet {
 }
 
 declare interface TransactionRow {
-  type: "send" | "received"
+  type: "Sent" | "Received"
   asset: string
   quantity: number
   date: string
@@ -255,10 +255,8 @@ declare interface TransactionRow {
 }
 
 export interface FungibleTxs {
-  sendTransactions?: TransactionRow[]
-  receivedTransactions?: TransactionRow[]
-  walletAddress: string
-  btcAddress: string
+  sendTransactions?: FungibleActivityRecords
+  receivedTransactions?: FungibleActivityRecords
 }
 
 export interface FungibleTransactionRequest {
@@ -291,4 +289,8 @@ declare interface ActivityAssetFT {
   amountUSD?: string
 }
 
-declare type Content = { contentUrl: string; contentType?: "video" | "img" | "iframe"; val: Item }
+declare type Content = {
+  contentUrl: string
+  contentType?: "video" | "img" | "iframe"
+  val: Item
+}

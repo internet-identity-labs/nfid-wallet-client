@@ -18,11 +18,7 @@ const activityConnectors: {
   [Blockchain.ETHEREUM_GOERLI]: [ethGoerliActivityConnector],
   [Blockchain.POLYGON]: [polygonActivityConnector],
   [Blockchain.POLYGON_MUMBAI]: [polygonMumbaiActivityConnector],
-  [Blockchain.IC]: [
-    icActivityConnector,
-    // icNFTActivityConnector
-    // icDIP20ActivityConnector
-  ],
+  [Blockchain.IC]: [icActivityConnector],
   [Blockchain.BITCOIN]: [btcActivityConnector],
 }
 

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import useSWR from "swr"
 
-import { Input, Table } from "@nfid-frontend/ui"
+import { Table } from "@nfid-frontend/ui"
 
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -13,7 +13,7 @@ export interface IActivityPage {}
 
 const ActivityPage = () => {
   const { data } = useSWR("activity", getAllActivity)
-  console.log({ data })
+
   return (
     <ProfileTemplate pageTitle="Activity" showBackButton>
       <ProfileContainer>
@@ -37,6 +37,7 @@ const ActivityPage = () => {
               groupIndex={index}
               date={group.date}
               rows={group.rows}
+              key={`group_${index}`}
             />
           ))}
         </Table>

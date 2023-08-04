@@ -21,14 +21,14 @@ export interface IActivityAssetNFT {
 export interface IActivityAssetFT {
   type: "ft"
   currency: string
-  amount: string
-  amountUSD: string
+  amount: number
+  amountUSD: number
 }
 
 export interface IActivityRow {
   action: IActivityAction
   chain: Chain
-  timestamp: string
+  timestamp: number
   asset: IActivityAssetFT | IActivityAssetNFT
   from: string
   to: string

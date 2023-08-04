@@ -5,12 +5,11 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { IActivityRow } from "../../types"
-import { ethRecordsToActivities } from "../../util/activity"
-import { ActivityClass } from "../activity"
-import { IActivity, IActivityConfig, IActivityDetails } from "../types"
+import { ethRecordsToActivities } from "../../../util/activity"
+import { ActivityClass } from "../../activity"
+import { IActivityConfig, IActivity } from "../../activity-connector-types"
 
-export class EthActivityConnector extends ActivityClass<IActivityConfig> {
+export class EthGoerliActivityConnector extends ActivityClass<IActivityConfig> {
   async getActivities(): Promise<IActivity[]> {
     const identity = this.getIdentity()
 
@@ -21,13 +20,9 @@ export class EthActivityConnector extends ActivityClass<IActivityConfig> {
       receivedTransactions.activities.concat(sendTransactions.activities),
     )
   }
-
-  getActivityDetails(row: IActivityRow): Promise<IActivityDetails> {
-    throw new Error("Method not implemented.")
-  }
 }
 
-export const ethActivityConnector = new EthActivityConnector({
+export const ethGoerliActivityConnector = new EthGoerliActivityConnector({
   chain: Chain.ETH,
   network: Blockchain.ETHEREUM,
   tokenStandard: TokenStandards.ETH,

@@ -10,8 +10,8 @@ import {
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
-export const useNetworkOptions = () => {
-  const supportedNetworks = getNativeTokenStandards()
+export const useNetworkOptions = (isVault?: boolean) => {
+  const supportedNetworks = getNativeTokenStandards(isVault)
 
   const { data: networkOptions, ...rest } = useSWR<IGroupOption[]>(
     [supportedNetworks, "networkOptions"],

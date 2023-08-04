@@ -44,7 +44,7 @@ export const TransferReceive = ({
   )
 
   const { profile } = useProfile()
-  const { data: networkOptions } = useNetworkOptions()
+  const { data: networkOptions } = useNetworkOptions(isVault)
   const { data: accountsOptions } = useAccountsOptions(
     selectedTokenStandard as TokenStandards,
     selectedTokenBlockchain as Blockchain,

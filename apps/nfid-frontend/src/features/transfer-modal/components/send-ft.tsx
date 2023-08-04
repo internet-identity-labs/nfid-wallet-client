@@ -149,8 +149,8 @@ export const TransferFT = ({
   )
 
   const { data: tokenOptions, isLoading: isTokensLoading } = useSWR(
-    "getAllTokensOptions",
-    getAllTokensOptions,
+    [isVault, "getAllTokensOptions"],
+    ([isVault]) => getAllTokensOptions(isVault),
   )
 
   const {

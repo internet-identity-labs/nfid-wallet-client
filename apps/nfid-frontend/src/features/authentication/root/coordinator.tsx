@@ -91,6 +91,7 @@ export default function AuthenticationCoordinator({
     case state.matches("TwoFA"):
       return (
         <Auth2FA
+          allowedDevices={state.context?.allowedDevices}
           appMeta={state.context?.appMeta}
           onSuccess={(authSession: AbstractAuthSession) =>
             send({ type: "AUTHENTICATED", data: authSession })

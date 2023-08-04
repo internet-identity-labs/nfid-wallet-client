@@ -1,7 +1,6 @@
 import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
-import posthog from "posthog-js"
 import React, { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 

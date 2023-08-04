@@ -146,7 +146,7 @@ function makeAuthState() {
     checkAndRenewFEDelegation()
     return observableAuthState$.getValue()
   }
-  async function reset() {
+  async function reset(hard = true) {
     await _clearAuthSessionFromCache()
     console.debug("invalidateIdentity")
     agent.invalidateIdentity()
@@ -154,7 +154,7 @@ function makeAuthState() {
       cacheLoaded: true,
     })
     // clear tracking session
-    posthog.reset()
+    hard && posthog.reset()
   }
   function subscribe(next: (state: ObservableAuthState) => void) {
     return observableAuthState$.subscribe(next)
@@ -191,10 +191,10 @@ function makeAuthState() {
   /**
    * When user disconnects an identity, we update our agent.
    */
-  async function invalidateIdentity() {
+  async function invalidateIdentity(hard = true) {
     console.debug("makeAuthState invalidateIdentity")
     await reset()
-    window.location.reload()
+    hard && window.location.reload()
   }
   return {
     set,

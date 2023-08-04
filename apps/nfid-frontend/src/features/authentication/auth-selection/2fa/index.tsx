@@ -14,8 +14,9 @@ import Image2FA from "./2fa.png"
 export interface IAuth2FA {
   appMeta?: AuthorizingAppMeta
   onSuccess: (authSession: AbstractAuthSession) => void
+  allowedDevices?: string[]
 }
-export const Auth2FA = ({ appMeta, onSuccess }: IAuth2FA) => {
+export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
   const { profile } = useProfile()
   const [isLoading, setIsLoading] = React.useState(false)
 
@@ -33,14 +34,14 @@ export const Auth2FA = ({ appMeta, onSuccess }: IAuth2FA) => {
         },
         true,
       )
-      const res = await passkeyConnector.loginWithAllowedPasskey()
+      const res = await passkeyConnector.loginWithAllowedPasskey(allowedDevices)
       onSuccess(res)
     } catch (e) {
       console.error(e)
     } finally {
       setIsLoading(false)
     }
-  }, [onSuccess])
+  }, [allowedDevices, onSuccess])
 
   if (isLoading) return <BlurredLoader isLoading />
 

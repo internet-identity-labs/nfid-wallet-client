@@ -159,7 +159,13 @@ export const TransferNFT = ({
         },
       })
     },
-    [onTransferPromise, refetchNFTs, selectedConnector, selectedNFT],
+    [
+      handleTrackTransfer,
+      onTransferPromise,
+      refetchNFTs,
+      selectedConnector,
+      selectedNFT,
+    ],
   )
 
   const loadingMessage = useMemo(() => {

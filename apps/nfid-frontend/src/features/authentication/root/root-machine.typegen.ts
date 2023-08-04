@@ -44,6 +44,7 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    assignAllowedDevices: "done.invoke.checkIf2FAEnabled"
     assignAuthSession:
       | "AUTHENTICATED"
       | "done.invoke.AuthWithEmailMachine"

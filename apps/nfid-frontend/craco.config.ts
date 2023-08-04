@@ -68,7 +68,8 @@ const setupCSP = () => {
         "https://rpc-mumbai.matic.today",
         "https://eu.posthog.com",
       ],
-      "worker-src": "'self' blob:",
+      "worker-src":
+        "'self' blob:https://feature-csp-worker-blobs.nfid-frontend.pages.dev/",
       "img-src": [
         "'self' blob: data: content: https:",
         "https://*.google-analytics.com",

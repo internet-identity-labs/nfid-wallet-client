@@ -17,6 +17,7 @@ export const SendReceiveButton = () => {
   const handleOpenSendReceive = () => {
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send("SHOW")
   }
   return (

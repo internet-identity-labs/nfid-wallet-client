@@ -110,9 +110,13 @@ export const TransferFT = ({
     },
   )
 
-  const { data: accountsOptions, isLoading: isAccountsLoading } = useSWR(
-    selectedConnector ? [selectedConnector, "accountsOptions"] : null,
-    ([connector]) =>
+  const {
+    data: accountsOptions,
+    isLoading: isAccountsLoading,
+    isValidating: isAccountsValidating,
+  } = useSWR(
+    selectedConnector ? [selectedConnector, isVault, "accountsOptions"] : null,
+    ([connector, isVault]) =>
       connector.getAccountsOptions({
         currency: selectedTokenCurrency,
         isVault,
@@ -145,8 +149,8 @@ export const TransferFT = ({
   )
 
   const { data: tokenOptions, isLoading: isTokensLoading } = useSWR(
-    "getAllTokensOptions",
-    getAllTokensOptions,
+    [isVault, "getAllTokensOptions"],
+    ([isVault]) => getAllTokensOptions(isVault),
   )
 
   const {
@@ -310,13 +314,14 @@ export const TransferFT = ({
     if (isTokensLoading) return "Fetching supported tokens..."
     if (isConnectorLoading || isMetadataLoading)
       return "Loading token config..."
-    if (isAccountsLoading) return "Loading accounts..."
+    if (isAccountsLoading || isAccountsValidating) return "Loading accounts..."
   }, [
     isLoadingProfile,
-    isAccountsLoading,
+    isTokensLoading,
     isConnectorLoading,
     isMetadataLoading,
-    isTokensLoading,
+    isAccountsLoading,
+    isAccountsValidating,
   ])
 
   return (
@@ -326,6 +331,7 @@ export const TransferFT = ({
       isLoading={
         isConnectorLoading ||
         isAccountsLoading ||
+        isAccountsValidating ||
         isMetadataLoading ||
         isTokensLoading
       }

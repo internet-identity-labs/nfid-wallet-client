@@ -115,12 +115,13 @@ export const TransferNFT = ({
       tokenType: "non-fungible",
       tokenStandard: selectedNFT?.collection.standard || "",
       amount: "1",
-      fee: "0",
+      fee: transferFee?.fee || "0",
     })
   }, [
     selectedConnector,
     selectedNFT?.collection.standard,
     selectedNFT?.tokenId,
+    transferFee,
   ])
 
   const submit = useCallback(

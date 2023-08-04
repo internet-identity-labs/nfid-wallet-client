@@ -10,6 +10,10 @@ type SendToken = {
   fee: string
 }
 
+const mapTokenStandard = (tokenStandard: string) => {
+  const nativeTokens = ["ICP", "ETH", "MATIC", "BTC"]
+  return nativeTokens.includes(tokenStandard) ? "native" : tokenStandard
+}
 class SendReceiveTracking {
   isOpenedFromVaults = false
 
@@ -28,11 +32,14 @@ class SendReceiveTracking {
     posthog.capture(title)
   }
 
-  sendToken(data: SendToken) {
+  sendToken({ tokenStandard, ...data }: SendToken) {
     const title = this.isOpenedFromVaults ? "Vault send token" : "Send token"
 
     console.debug("SendReceiveTracking.sendToken", { title, data })
-    posthog.capture(title, data)
+    posthog.capture(title, {
+      tokenStandard: mapTokenStandard(tokenStandard),
+      ...data,
+    })
   }
 
   supportedTokenModalOpened() {

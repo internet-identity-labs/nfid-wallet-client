@@ -137,13 +137,15 @@ export const getConnector = async <T extends TransferModalType>({
   throw new Error("No connector found")
 }
 
-export const getNativeTokenStandards = (): Array<{
+export const getNativeTokenStandards = (
+  isVault?: boolean,
+): Array<{
   token: TokenStandards
   blockchain: Blockchain
 }> => {
-  const nativeConnectors = allConnectors.filter(
-    (c) => c.getTokenConfig()?.isNativeToken,
-  )
+  const nativeConnectors = isVault
+    ? [icTransferConnector]
+    : allConnectors.filter((c) => c.getTokenConfig()?.isNativeToken)
 
   return nativeConnectors.map((c) => ({
     token: c.getTokenStandard(),
@@ -151,7 +153,10 @@ export const getNativeTokenStandards = (): Array<{
   }))
 }
 
-export const getAllTokensOptions = async (): Promise<IGroupedOptions[]> => {
+export const getAllTokensOptions = async (
+  isVault?: boolean,
+): Promise<IGroupedOptions[]> => {
+  if (isVault) return [await icTransferConnector.getTokensOptions()]
   const ftConnectors = [...singleFTConnectors, ...multiFTConnectors]
   const options = await Promise.all(
     ftConnectors.map(async (c) => {

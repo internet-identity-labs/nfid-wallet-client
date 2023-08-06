@@ -58,14 +58,14 @@ const NFTPreview = (props: UserNonFungibleToken) => {
       }
     >
       <Link
-        className="relative"
+        className="relative flex flex-col items-end"
         to={`${ProfileConstants.base}/${ProfileConstants.assets}/${props.tokenId}`}
         state={{ nft: props }}
       >
         <div
           className={clsx(
-            "flex items-center justify-center",
-            "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
+            "flex items-center justify-center z-10 mr-2.5",
+            "absolute w-6 h-6 bg-white rounded-full top-[215px] md:top-[267px]",
           )}
           id={trimConcat("nft_token_", props.name)}
         >
@@ -98,7 +98,9 @@ const NFTPreview = (props: UserNonFungibleToken) => {
           />
         )}
         <div
-          className={clsx(`text-sm p-2.5 flex justify-between items-center`)}
+          className={clsx(
+            `text-sm p-2.5 flex justify-between items-center w-full`,
+          )}
         >
           <div>
             <div

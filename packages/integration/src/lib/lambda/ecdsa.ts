@@ -212,11 +212,14 @@ export async function ecdsaRegisterNewKeyPair(
   return response.public_key
 }
 
-//TODO maybe we need update call ???
 export async function getPublicKey(
   identity: DelegationIdentity,
   chain: Chain,
 ): Promise<string> {
+  const cacheKey =
+    "ecdsa_getPublicKey" + chain.toString() + identity.getPrincipal().toText()
+  const cachedValue = await integrationCache.getItem(cacheKey)
+  if (cachedValue) return cachedValue as any
   const signer = defineChainCanister(chain)
   await replaceActorIdentity(signer, identity)
   let response = await signer.get_kp()
@@ -227,6 +230,9 @@ export async function getPublicKey(
       throw "Unable to preregister keys"
     }
   }
+  await integrationCache.setItem(cacheKey, response.key_pair[0].public_key, {
+    ttl: 600,
+  })
   return response.key_pair[0].public_key
 }
 

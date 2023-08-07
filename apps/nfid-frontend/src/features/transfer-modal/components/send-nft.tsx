@@ -132,6 +132,13 @@ export const TransferNFT = ({
       onTransferPromise({
         assetImg: selectedNFT?.assetPreview.url,
         initialPromise: new Promise(async (resolve) => {
+          await selectedConnector?.getFee({
+            to: getValues("to"),
+            contract: selectedNFT?.contractId ?? "",
+            tokenId: selectedNFT?.tokenId ?? "",
+            standard: selectedNFT?.collection.standard ?? "",
+          })
+
           const res = await selectedConnector.transfer({
             identity: await selectedConnector.getIdentity(
               selectedNFT.account.domain,
@@ -160,6 +167,7 @@ export const TransferNFT = ({
       })
     },
     [
+      getValues,
       handleTrackTransfer,
       onTransferPromise,
       refetchNFTs,

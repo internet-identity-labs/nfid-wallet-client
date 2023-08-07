@@ -222,18 +222,17 @@ export async function getPublicKey(
   if (cachedValue) return cachedValue as any
   const signer = defineChainCanister(chain)
   await replaceActorIdentity(signer, identity)
-  let response = await signer.get_kp()
+  const response = await signer.get_kp()
+  let publicKey
   if (response.key_pair.length === 0) {
-    await ecdsaRegisterNewKeyPair(identity, chain)
-    response = await signer.get_kp()
-    if (response.key_pair.length === 0) {
-      throw "Unable to preregister keys"
-    }
+    publicKey = await ecdsaRegisterNewKeyPair(identity, chain)
+  } else  {
+    publicKey = response.key_pair[0].public_key
   }
-  await integrationCache.setItem(cacheKey, response.key_pair[0].public_key, {
+  await integrationCache.setItem(cacheKey, publicKey, {
     ttl: 6000,
   })
-  return response.key_pair[0].public_key
+  return publicKey
 }
 
 function defineChainCanister(chain: Chain) {

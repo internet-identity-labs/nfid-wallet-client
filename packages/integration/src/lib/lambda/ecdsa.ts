@@ -231,7 +231,7 @@ export async function getPublicKey(
     }
   }
   await integrationCache.setItem(cacheKey, response.key_pair[0].public_key, {
-    ttl: 600,
+    ttl: 6000,
   })
   return response.key_pair[0].public_key
 }

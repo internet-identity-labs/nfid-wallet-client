@@ -30,7 +30,7 @@ process.env.NODE_ENV === "production" &&
 
 const container = document.getElementById("root")
 initializeConsoleWarnings()
-redirectFromCanisters()
+// redirectFromCanisters()
 
 if (!container) throw new Error("Failed to find the root element")
 

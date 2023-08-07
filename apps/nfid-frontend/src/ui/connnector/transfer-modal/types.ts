@@ -49,7 +49,11 @@ export interface ITransferModalConnector
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<ITransferResponse>
 
-  getIdentity(domain?: string, accountId?: string): Promise<DelegationIdentity>
+  getIdentity(
+    domain?: string,
+    accountId?: string,
+    targetCanisters?: string[],
+  ): Promise<DelegationIdentity>
 }
 
 export type ITransferFTConnector = {

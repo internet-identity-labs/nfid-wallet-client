@@ -9,6 +9,8 @@ import {
 
 import { authState } from "@nfid/integration"
 
+import { getICPublicDelegation } from "./ic/hooks/use-icp"
+
 export abstract class FungibleAssetConnector<
   T extends AssetNativeConfig | AssetErc20Config,
 > implements IFungibleAssetConnector
@@ -40,11 +42,14 @@ export abstract class FungibleAssetConnector<
     filterPrincipals?: string[],
   ): Promise<DelegationIdentity[]> => {
     const { delegationIdentity } = authState.get()
+    const rootDelegation = (await getICPublicDelegation())
+      .getPrincipal()
+      .toString()
     if (!delegationIdentity) {
       throw Error("Delegation identity error")
     }
     return !filterPrincipals?.length ||
-      filterPrincipals?.includes(delegationIdentity.getPrincipal().toString())
+      filterPrincipals?.includes(rootDelegation)
       ? [delegationIdentity]
       : []
   }

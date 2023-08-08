@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useMemo } from "react"
 import useSWR from "swr"
 
 import { IconCmpPlus, Table, Toggle } from "@nfid-frontend/ui"
@@ -35,6 +35,12 @@ const ProfileSecurityPage = () => {
     securityConnector.getDevices,
     { revalidateOnFocus: false },
   )
+
+  const showLastPasskeyWarning = useMemo(() => {
+    if (!profile?.is2fa) return false
+
+    return devices?.passkeys.filter((d) => !d.isLegacyDevice).length === 1
+  }, [devices?.passkeys, profile?.is2fa])
 
   const handleWithLoading: IHandleWithLoading = async (action, callback) => {
     try {
@@ -128,7 +134,7 @@ const ProfileSecurityPage = () => {
           {devices?.passkeys.map((device, key) => (
             <PasskeyDeviceItem
               showLastPasskeyWarning={
-                devices.passkeys.length < 2 && !!profile?.is2fa
+                device.isLegacyDevice ? false : showLastPasskeyWarning
               }
               device={device}
               key={`passkey_device_${key}`}

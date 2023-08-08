@@ -23,7 +23,7 @@ export const DefaultTrigger = ({
       className={clsx(
         "border border-black rounded-md cursor-pointer h-14",
         "flex items-center justify-between hover:opacity-70",
-        "text-black px-4",
+        "text-black px-4 mb-4",
       )}
       onClick={actionHandler}
     >

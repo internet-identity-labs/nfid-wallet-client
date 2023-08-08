@@ -53,4 +53,5 @@ export const ethereumTransferConnector = new EthTransferConnector({
   type: TransferModalType.FT,
   assetService: ethereumAsset,
   isNativeToken: true,
+  duration: "10 min",
 })

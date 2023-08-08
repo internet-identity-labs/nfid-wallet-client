@@ -104,4 +104,5 @@ export const polygonMumbaiNFTTransferConnector =
     addressPlaceholder: "Recipient polygon address",
     type: TransferModalType.NFT,
     assetService: polygonMumbaiAsset,
+    duration: "10 min",
   })

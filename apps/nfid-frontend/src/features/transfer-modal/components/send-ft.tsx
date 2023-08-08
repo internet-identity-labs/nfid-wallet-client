@@ -341,7 +341,7 @@ export const TransferFT = ({
       <div className="flex flex-col justify-between h-full pb-20">
         <div
           className={clsx(
-            "border rounded-md flex items-center justify-between pl-4 pr-5 h-14",
+            "border rounded-md flex items-center justify-between pl-4 pr-5 h-14 mb-4",
             errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
           )}
         >
@@ -367,7 +367,7 @@ export const TransferFT = ({
           />
           <div
             className={clsx(
-              "absolute mt-[72px] left-5",
+              "absolute mt-[75px] left-5",
               "text-xs py-1 text-red",
             )}
           >

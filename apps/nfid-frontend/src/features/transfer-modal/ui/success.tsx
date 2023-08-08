@@ -19,6 +19,7 @@ export interface ITransferModalSuccess {
   assetImg: string
   isAssetPadding?: boolean
   step: 0 | 1 | 2 | 3 | 4
+  duration: string
 }
 
 const allAnimations = [Success1, Success2, Success3, Success4, Fail]
@@ -31,6 +32,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
   assetImg,
   isAssetPadding = false,
   step = 0,
+  duration,
 }) => {
   const animation = useMemo(() => {
     return allAnimations[step]
@@ -66,7 +68,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
             ? "Please make sure you have enough funds and try again"
             : isCompleted
             ? ""
-            : "This usually takes less than 10 min."}
+            : `This usually takes less than ${duration}.`}
         </p>
 
         <div className="absolute flex items-center justify-center w-full px-3 -top-0">

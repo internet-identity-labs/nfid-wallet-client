@@ -68,4 +68,5 @@ export const polygonTransferConnector = new MaticTransferConnector({
   type: TransferModalType.FT,
   assetService: polygonAsset,
   isNativeToken: true,
+  duration: "10 min",
 })

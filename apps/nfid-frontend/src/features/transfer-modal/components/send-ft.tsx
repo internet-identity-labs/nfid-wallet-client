@@ -53,7 +53,6 @@ interface ITransferFT {
   preselectedTokenBlockchain?: string
   preselectedTransferDestination?: string
   onTransferPromise: (data: ITransferSuccess) => void
-  onVaultTransfer: () => void
 }
 
 export const TransferFT = ({
@@ -63,7 +62,6 @@ export const TransferFT = ({
   preselectedTokenBlockchain = Blockchain.IC,
   preselectedTransferDestination,
   onTransferPromise,
-  onVaultTransfer,
 }: ITransferFT) => {
   const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
     preselectedTokenCurrency,
@@ -293,6 +291,7 @@ export const TransferFT = ({
           )
         },
         isAssetPadding: true,
+        duration: tokenMetadata.duration,
       })
     },
     [
@@ -375,7 +374,7 @@ export const TransferFT = ({
           </div>
           <ChooseModal
             optionGroups={tokenOptions ?? []}
-            title="Choose an asset"
+            title="Asset to send"
             type="trigger"
             onSelect={(value) => {
               const arrayValue = value.split("&")
@@ -407,10 +406,18 @@ export const TransferFT = ({
         {(isVault || profile?.wallet === RootWallet.II) && (
           <ChooseModal
             label="From"
-            title={"Choose an account"}
+            title="From"
             optionGroups={accountsOptions ?? []}
             preselectedValue={selectedAccountAddress}
             onSelect={setSelectedAccountAddress}
+            warningText={
+              <div className="w-[337px]">
+                Starting September 1, 2023, assets from external applications
+                will not be displayed in NFID. <br /> <br /> To manage those
+                assets in NFID, transfer them to your NFID Wallet. Otherwise,
+                you’ll only have access through the application’s website.
+              </div>
+            }
           />
         )}
         <ChooseModal

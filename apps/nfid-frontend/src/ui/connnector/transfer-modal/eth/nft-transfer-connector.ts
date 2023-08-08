@@ -103,4 +103,5 @@ export const ethereumNFTTransferConnector = new EthNFTTransferConnector({
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.NFT,
   assetService: ethereumAsset,
+  duration: "10 min",
 })

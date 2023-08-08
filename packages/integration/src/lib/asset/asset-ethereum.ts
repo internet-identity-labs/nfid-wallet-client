@@ -210,6 +210,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     sort,
     size,
   }: ActivitiesByItemRequest): Promise<NonFungibleActivityRecords> {
+    console.log("RARIBLE_API_KEY", this.config.raribleApiKey)
     const raribleSdk = this.getRaribleSdk(
       this.config.raribleEnv,
       this.config.raribleApiKey,
@@ -243,6 +244,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     sort,
   }: ActivitiesByUserRequest): Promise<NonFungibleActivityRecords> {
     const address = await this.getAddressByIdentity(identity)
+    console.log("RARIBLE_API_KEY", this.config.raribleApiKey)
     const raribleSdk = this.getRaribleSdk(
       this.config.raribleEnv,
       this.config.raribleApiKey,
@@ -337,6 +339,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       addressVal,
       this.config.unionBlockchain,
     )
+    console.log("RARIBLE_API_KEY", this.config.raribleApiKey)
     const raribleSdk = this.getRaribleSdk(
       this.config.raribleEnv,
       this.config.raribleApiKey,
@@ -627,6 +630,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   private async getContentUrlById(
     ids: ItemId[],
   ): Promise<Map<string, Content>> {
+    console.log("RARIBLE_API_KEY", this.config.raribleApiKey)
     const raribleSdk = this.getRaribleSdk(
       this.config.raribleEnv,
       this.config.raribleApiKey,

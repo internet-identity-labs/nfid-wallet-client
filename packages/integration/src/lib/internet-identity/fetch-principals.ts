@@ -24,7 +24,7 @@ export async function fetchPrincipals(
 
   const globalAcc = {
     account: {
-      accountId: "0",
+      accountId: "-1",
       domain: "nfid.one",
       label: "My NFID profile",
     },

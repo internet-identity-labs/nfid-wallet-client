@@ -39,8 +39,8 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   assetFilter,
   setAssetFilter,
 }) => {
-  const { options } = useAccountOptions()
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
+  const { options } = useAccountOptions(blockchainFilter)
   const navigate = useNavigate()
 
   const navigateToTransactions = React.useCallback(

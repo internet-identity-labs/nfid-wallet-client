@@ -410,6 +410,14 @@ export const TransferFT = ({
             optionGroups={accountsOptions ?? []}
             preselectedValue={selectedAccountAddress}
             onSelect={setSelectedAccountAddress}
+            warningText={
+              <div className="w-[337px]">
+                Starting September 1, 2023, assets from external applications
+                will not be displayed in NFID. <br /> <br /> To manage those
+                assets in NFID, transfer them to your NFID Wallet. Otherwise,
+                you’ll only have access through the application’s website.
+              </div>
+            }
           />
         )}
         <ChooseModal

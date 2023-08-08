@@ -99,6 +99,7 @@ export abstract class ICMTransferConnector<
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + this.config.tokenStandard,
               innerSubtitle: "$" + balanceinUsd,
+              badgeText: account.accountId === "-1" ? "WALLET" : undefined,
             }
           }),
         )

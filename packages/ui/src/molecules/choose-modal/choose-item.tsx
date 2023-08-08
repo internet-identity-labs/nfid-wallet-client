@@ -1,6 +1,6 @@
 import { clsx } from "clsx"
 
-
+import { Badge } from "../../atoms/badge"
 
 interface IChooseItem {
   handleClick: () => void
@@ -11,6 +11,7 @@ interface IChooseItem {
   innerSubtitle?: string
   iconClassnames?: string
   id?: string
+  badgeText?: string
 }
 
 export const ChooseItem = ({
@@ -22,6 +23,7 @@ export const ChooseItem = ({
   innerSubtitle,
   iconClassnames,
   id,
+  badgeText,
 }: IChooseItem) => {
   return (
     <div
@@ -42,7 +44,10 @@ export const ChooseItem = ({
           className={clsx("mr-2.5 w-7", iconClassnames, !image && "hidden")}
         />
         <div>
-          <p className="text-sm mb-0.5">{title}</p>
+          <p className="text-sm mb-0.5 flex items-center space-x-1">
+            <span>{title}</span>
+            {badgeText ? <Badge type="success">{badgeText}</Badge> : null}
+          </p>
           <p className="text-xs text-gray-400">{subTitle}</p>
         </div>
       </div>

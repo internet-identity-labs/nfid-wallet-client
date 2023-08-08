@@ -101,4 +101,5 @@ export const polygonNFTTransferConnector = new PolygonNFTTransferConnector({
   addressPlaceholder: "Recipient polygon address",
   type: TransferModalType.NFT,
   assetService: polygonAsset,
+  duration: "10 min",
 })

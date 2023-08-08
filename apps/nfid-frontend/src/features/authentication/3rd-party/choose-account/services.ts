@@ -27,7 +27,7 @@ export const getPublicProfile = async (): Promise<{
   const exchangeRate = await getExchangeRate()
 
   return {
-    label: "My NFID profile",
+    label: "NFID",
     address: truncateString(principal.toText(), 6, 4),
     balance: balance,
     balanceUSD: toUSD(Number(balance), exchangeRate),

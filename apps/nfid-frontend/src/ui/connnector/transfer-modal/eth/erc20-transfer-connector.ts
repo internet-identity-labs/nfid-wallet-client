@@ -125,4 +125,5 @@ export const ethereumERC20TransferConnector = new EthERC20TransferConnector({
   addressPlaceholder: "Recipient ETH address",
   type: TransferModalType.FT20,
   assetService: ethereumAsset,
+  duration: "10 min",
 })

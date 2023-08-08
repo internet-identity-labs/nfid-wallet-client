@@ -14,6 +14,7 @@ export interface ITransferSuccess {
   subTitle: string
   assetImg: string
   isAssetPadding?: boolean
+  duration?: string
 }
 
 export const TransferSuccess: React.FC<ITransferSuccess> = ({
@@ -24,6 +25,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
   assetImg,
   isAssetPadding,
   callback,
+  duration = "10 min",
 }) => {
   const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3 | 4>(0)
 
@@ -69,6 +71,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
       assetImg={assetImg}
       step={currentState}
       isAssetPadding={isAssetPadding}
+      duration={duration}
     />
   )
 }

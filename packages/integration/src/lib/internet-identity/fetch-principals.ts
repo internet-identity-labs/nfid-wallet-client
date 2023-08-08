@@ -26,7 +26,7 @@ export async function fetchPrincipals(
     account: {
       accountId: "-1",
       domain: "nfid.one",
-      label: "My NFID profile",
+      label: "NFID",
     },
     principal: ICDelegation.getPrincipal(),
   }

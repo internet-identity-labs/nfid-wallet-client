@@ -53,4 +53,5 @@ export const icTransferConnector = new ICTransferConnector({
   addressPlaceholder: "Recipient IC address or principal",
   type: TransferModalType.FT,
   isNativeToken: true,
+  duration: "10 sec",
 })

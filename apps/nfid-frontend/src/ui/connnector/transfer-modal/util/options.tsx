@@ -10,7 +10,8 @@ export const makeRootAccountGroupedOptions = (
   label: "NFID",
   options: [
     {
-      title: "NFID account 1",
+      title: "NFID",
+      badgeText: "WALLET",
       subTitle: truncateString(address, 6, 4),
       value: address,
       innerTitle: balance + " " + currency,

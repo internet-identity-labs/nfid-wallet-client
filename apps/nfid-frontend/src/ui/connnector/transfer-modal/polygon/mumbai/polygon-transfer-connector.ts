@@ -67,4 +67,5 @@ export const polygonMumbaiTransferConnector = new MaticMumbaiTransferConnector({
   type: TransferModalType.FT,
   assetService: polygonMumbaiAsset,
   isNativeToken: true,
+  duration: "10 min",
 })

@@ -53,7 +53,6 @@ export const TransferModalCoordinator = () => {
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
-            onVaultTransfer={() => send("HIDE")}
           />
         )
       case state.matches("SendMachine.SendNFT"):

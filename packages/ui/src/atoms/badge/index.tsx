@@ -8,7 +8,7 @@ export const Badge = ({ type, children }: IBadge) => {
   return (
     <div
       className={clsx(
-        "inline-block px-2 py-1 font-bold text-[10px] tracking-[0.02em] rounded-md",
+        "inline-block px-2 py-1 font-bold text-[10px] leading-[14px] tracking-[0.02em] rounded-md",
         type === "warning" && "text-amber-500 bg-amber-50",
         type === "success" && "text-emerald-500 bg-emerald-50",
         type === "error" && "text-red-500 bg-red-50",

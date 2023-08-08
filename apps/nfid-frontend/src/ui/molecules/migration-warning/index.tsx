@@ -58,9 +58,9 @@ export const MigrationWarning: React.FC = () => {
       <div className="text-sm">
         <p className="font-bold mb-2.5">NFID upgrade</p>
         <p className="leading-[22px]">
-          Starting September 1, 2023, assets from external applications will not
+          Starting November 1, 2023, assets from external applications will not
           be displayed in NFID. To manage those assets in NFID, transfer them to
-          your <b>ICP address</b>. Otherwise, you will only have access through
+          your <b>NFID Wallet</b>. Otherwise, you’ll only have access through
           the application’s website.
         </p>
         <p

@@ -53,4 +53,5 @@ export const ethereumGoerliTransferConnector = new EthGoerliTransferConnector({
   type: TransferModalType.FT,
   assetService: ethereumGoerliAsset,
   isNativeToken: true,
+  duration: "10 min",
 })

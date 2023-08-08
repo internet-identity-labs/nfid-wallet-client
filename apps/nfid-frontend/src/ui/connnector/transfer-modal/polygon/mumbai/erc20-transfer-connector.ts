@@ -136,4 +136,5 @@ export const polygonMumbaiERC20TransferConnector =
     addressPlaceholder: "Recipient Polygon address",
     type: TransferModalType.FT20,
     assetService: polygonMumbaiAsset,
+    duration: "10 min",
   })

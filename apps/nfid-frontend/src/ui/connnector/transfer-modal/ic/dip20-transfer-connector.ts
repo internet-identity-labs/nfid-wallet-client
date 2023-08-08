@@ -165,4 +165,5 @@ export const dip20TransferConnector = new DIP20TransferConnector({
   addressPlaceholder: "Recipient principal ID",
   icon: IconSvgDfinity,
   type: TransferModalType.FT20,
+  duration: "10 sec",
 })

@@ -25,6 +25,7 @@ export type ITransferConfig = {
   addressPlaceholder: string
   assetService?: FungibleAsset
   isNativeToken?: boolean
+  duration: string
 }
 
 export interface ITransferModalConnector

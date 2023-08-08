@@ -126,4 +126,5 @@ export const ethereumGoerliERC20TransferConnector =
     addressPlaceholder: "Recipient ETH address",
     type: TransferModalType.FT20,
     assetService: ethereumGoerliAsset,
+    duration: "10 min",
   })

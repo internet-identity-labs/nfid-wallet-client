@@ -5,6 +5,7 @@ export interface IGroupOption {
   innerSubtitle?: string
   icon?: string
   value: string
+  badgeText?: string
 }
 
 export interface IGroupedOptions {

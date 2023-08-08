@@ -7,7 +7,6 @@ import useSWR from "swr"
 
 import {
   BlurredLoader,
-  Button,
   IconCmpAnonymous,
   IconCmpInfo,
   Tooltip,
@@ -168,9 +167,10 @@ export const AuthChooseAccount = ({
         )}
       </div>
       <div className="flex-1" />
-      <Button type="ghost" block>
+      {/* Hide for this release */}
+      {/* <Button type="ghost" block>
         Use a different NFID
-      </Button>
+      </Button> */}
     </>
   )
 }

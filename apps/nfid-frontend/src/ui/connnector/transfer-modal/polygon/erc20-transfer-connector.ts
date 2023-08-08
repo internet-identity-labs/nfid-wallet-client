@@ -134,4 +134,5 @@ export const polygonERC20TransferConnector = new PolygonERC20TransferConnector({
   addressPlaceholder: "Recipient Polygon address",
   type: TransferModalType.FT20,
   assetService: polygonAsset,
+  duration: "10 min",
 })

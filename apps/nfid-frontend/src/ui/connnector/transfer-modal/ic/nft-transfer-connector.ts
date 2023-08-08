@@ -53,4 +53,5 @@ export const icNFTTransferConnector = new IcNFTTransferConnector({
   addressPlaceholder: "Recipient IC address",
   type: TransferModalType.NFT,
   feeCurrency: NativeToken.ICP,
+  duration: "10 sec",
 })

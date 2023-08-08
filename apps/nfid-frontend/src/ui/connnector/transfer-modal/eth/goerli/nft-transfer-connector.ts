@@ -104,4 +104,5 @@ export const ethereumGoerliNFTTransferConnector =
     addressPlaceholder: "Recipient ETH address",
     type: TransferModalType.NFT,
     assetService: ethereumGoerliAsset,
+    duration: "10 min",
   })

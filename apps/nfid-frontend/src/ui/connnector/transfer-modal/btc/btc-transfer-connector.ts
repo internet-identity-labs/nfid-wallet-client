@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { toBn } from "@rarible/utils"
 import { Cache } from "node-ts-cache"
 import { getPrice } from "packages/integration/src/lib/asset/asset-util"
@@ -5,6 +6,7 @@ import { BtcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
 import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
 
 import { IGroupedOptions, IconSvgBTC } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -23,8 +25,6 @@ import {
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
-import {DelegationIdentity} from "@dfinity/identity";
-import {authState} from "@nfid/integration";
 
 export class BtcTransferConnector
   extends TransferModalConnector<ITransferConfig>
@@ -125,4 +125,5 @@ export const btcTransferConnector = new BtcTransferConnector({
   addressPlaceholder: "Recipient Bitcoin address",
   type: TransferModalType.FT,
   isNativeToken: true,
+  duration: "1.5 hours",
 })

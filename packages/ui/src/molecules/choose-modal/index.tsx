@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 
-import { IconCmpSearch } from "@nfid-frontend/ui"
+import { IconCmpSearch, IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow, IconCmpInfo, Label, Tooltip } from "@nfid-frontend/ui"
 
@@ -18,7 +18,7 @@ export interface IChooseModal {
   preselectedValue?: string
   onSelect?: (value: string) => void
   onOpen?: () => void
-  infoText?: string
+  warningText?: string | JSX.Element
   label?: string
   title: string
   type?: "default" | "input" | "trigger" | "small"
@@ -36,7 +36,7 @@ export const ChooseModal = ({
   preselectedValue,
   onSelect,
   onOpen,
-  infoText,
+  warningText,
   title,
   label,
   type = "default",
@@ -150,9 +150,9 @@ export const ChooseModal = ({
             </div>
             <p className="text-xl font-bold">{title}</p>
           </div>
-          {infoText && (
-            <Tooltip tip={infoText}>
-              <IconCmpInfo className="cursor-pointer hover:opacity-70" />
+          {warningText && (
+            <Tooltip tip={warningText}>
+              <IconCmpWarning className="cursor-help hover:opacity-70 text-orange" />
             </Tooltip>
           )}
         </div>
@@ -191,6 +191,7 @@ export const ChooseModal = ({
                   innerTitle={option.innerTitle}
                   innerSubtitle={option.innerSubtitle}
                   iconClassnames={iconClassnames}
+                  badgeText={option.badgeText}
                   id={`choose_option_${option.title.replace(/\s/g, "")}`}
                 />
               ))}

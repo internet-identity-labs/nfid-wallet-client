@@ -15,7 +15,7 @@ import {
 } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import {
   fetchAccounts,
   fetchApplications,
@@ -168,8 +168,8 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   async getIdentity(
     domain = "nfid.one",
     accountId = "0",
+    targetCanisters: string[],
   ): Promise<DelegationIdentity> {
-    const profile = await this.getProfile()
-    return await getWalletDelegation(profile.anchor, domain, accountId)
+    return getWalletDelegationAdapter(domain, accountId, targetCanisters)
   }
 }

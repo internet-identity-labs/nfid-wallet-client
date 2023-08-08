@@ -136,6 +136,7 @@ export const TransferNFT = ({
             identity: await selectedConnector.getIdentity(
               selectedNFT.account.domain,
               selectedNFT.account.accountId,
+              [selectedNFT.contractId],
             ),
             to: values.to,
             contract: selectedNFT?.contractId ?? "",

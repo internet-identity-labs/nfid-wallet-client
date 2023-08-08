@@ -4,7 +4,6 @@ import { useSearchParams } from "react-router-dom"
 
 import { checkIsIframe } from "@nfid-frontend/utils"
 
-import { SDKFooter } from "../../atoms/sdk-footer/footer"
 import { ScreenStyleParams } from "./config"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -73,7 +72,6 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
         )}
       >
         {children}
-        <SDKFooter />
       </div>
     </div>
   )

@@ -145,9 +145,7 @@ export const useAuthentication = () => {
 
         if (!recoveryPhraseDevice) {
           setIsLoading(false)
-          throw new Error(
-            "useAuthentication.loginWithRecovery No devices found",
-          )
+          throw new Error()
         }
 
         let result: LoginResult

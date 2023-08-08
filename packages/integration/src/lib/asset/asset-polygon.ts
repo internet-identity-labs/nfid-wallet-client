@@ -11,7 +11,7 @@ export const polygonAsset = new EthereumAsset({
   providerUrl: `https://polygon-mainnet.g.alchemy.com/v2/${MATIC_ALCHEMY_API_KEY}`,
   alchemyNetwork: Network.MATIC_MAINNET,
   raribleEnv: "prod",
-  raribleApiKey: PROD_RARIBLE_X_API_KEY,
+  raribleApiKey: MAINNET_RARIBLE_X_API_KEY,
   etherscanUrl: "https://polygonscan.com/tx/",
   symbol: "MATIC",
   token: "Matic",

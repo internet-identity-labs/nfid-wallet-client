@@ -11,7 +11,7 @@ export const ethereumAsset = new EthereumAsset({
   providerUrl: `https://eth-mainnet.g.alchemy.com/v2/${ETH_ALCHEMY_API_KEY}`,
   alchemyNetwork: Network.ETH_MAINNET,
   raribleEnv: "prod",
-  raribleApiKey: PROD_RARIBLE_X_API_KEY,
+  raribleApiKey: MAINNET_RARIBLE_X_API_KEY,
   etherscanUrl: "https://etherscan.io/tx/",
   symbol: "ETH",
   token: "Ethereum",

@@ -94,7 +94,7 @@
         "env": "RARIBLE_X_API_KEY"
       },
       {
-        "env": "PROD_RARIBLE_X_API_KEY"
+        "env": "MAINNET_RARIBLE_X_API_KEY"
       },
       {
         "env": "ETH_ALCHEMY_API_KEY"

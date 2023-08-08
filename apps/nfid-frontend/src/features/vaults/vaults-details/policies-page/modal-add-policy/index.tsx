@@ -84,10 +84,10 @@ export const VaultAddPolicy = () => {
       toast.success(`Policy successfully added`)
       vaultsTracking.vaultPolicyCreated(vault.id.toString())
     } catch (e: any) {
+      toast.error("Failed to add policy")
       console.log({ e })
       toast.error(e.message)
     } finally {
-      toast.error("Failed to add policy")
       setIsLoading(false)
       setIsModalOpen(false)
       await refetch()

@@ -7,6 +7,7 @@ import {
   IconCmpGoogle,
   IconCmpPasskey,
   Input,
+  SDKFooter,
 } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { authenticationTracking } from "@nfid/integration"
@@ -150,6 +151,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           Other sign in options
         </Button>
       </div>
+      <SDKFooter />
     </BlurredLoader>
   )
 }

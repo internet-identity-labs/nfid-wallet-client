@@ -97,8 +97,8 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
           </p>
           <p className="mt-3">
             {showLastPasskeyWarning
-              ? "You will not be able to sign back in with this passkey once removed. Make sure you have other methods of signing in."
-              : "Passkeys are the most secure authentication method available on the internet today. Disabling 2FA means anyone with access to your email address will be able to sign in."}
+              ? "Passkeys are the most secure authentication method available on the internet today. Disabling 2FA means anyone with access to your email address will be able to sign in."
+              : "You will not be able to sign back in with this passkey once removed. Make sure you have other methods of signing in."}
           </p>
         </div>
         <p className="mt-3 text-sm">

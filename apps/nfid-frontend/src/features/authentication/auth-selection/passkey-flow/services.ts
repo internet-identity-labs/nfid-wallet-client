@@ -227,6 +227,7 @@ export class PasskeyConnector {
       const profile = await fetchProfile()
       await im.use_access_point([])
 
+      authenticationTracking.updateData({ isNewUser: false })
       authenticationTracking.completed({
         anchor: profile.anchor,
         legacyUser: profile.wallet === RootWallet.II,

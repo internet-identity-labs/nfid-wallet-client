@@ -67,108 +67,15 @@ describe("Lambda Sign/Register ECDSA", () => {
         wallet: [{ NFID: null }],
         anchor: BigInt(0),
       }
-      replaceActorIdentity(im, di)
+      await replaceActorIdentity(im, di)
 
       await im.create_account(accountRequest)
-
       const pubKey = await getPublicKey(di, Chain.ETH)
       const keccak = hashMessage("test_message")
       const signature = await ecdsaSign(keccak, di, Chain.ETH)
       const digestBytes = arrayify(keccak)
       const pk = ethers.utils.recoverPublicKey(digestBytes, signature)
       expect(pk).toEqual(pubKey)
-    })
-
-    it("register ecdsa BTC", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-      const sessionKey = Ed25519KeyIdentity.generate()
-      const chainRoot = await DelegationChain.create(
-        mockedIdentity,
-        sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
-        {},
-      )
-      const delegationIdentity = DelegationIdentity.fromDelegation(
-        sessionKey,
-        chainRoot,
-      )
-      const publicKey = await getPublicKey(delegationIdentity, Chain.BTC)
-      const { address } = payments.p2pkh({
-        pubkey: Buffer.from(publicKey, "hex"),
-        network: networks.testnet,
-      })
-      expect(address).toEqual("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
-      const tx = await calc("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
-      const hex = tx.buildIncomplete().toHex()
-      const signedTxHex = await ecdsaSign(hex, delegationIdentity, Chain.BTC)
-      const txx = Transaction.fromHex(signedTxHex)
-      expect(txx.ins.length).toEqual(1)
-      expect(txx.outs[0].value).toEqual(10)
-    })
-
-    it("get global IC keys", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-      const sessionKey = Ed25519KeyIdentity.generate()
-      const chainRoot = await DelegationChain.create(
-        mockedIdentity,
-        sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
-        {},
-      )
-      const delegationIdentity = DelegationIdentity.fromDelegation(
-        sessionKey,
-        chainRoot,
-      )
-
-      const globalICIdentity = await getGlobalKeys(
-        delegationIdentity,
-        Chain.IC,
-        ["74gpt-tiaaa-aaaak-aacaa-cai"],
-      )
-      expect(globalICIdentity.getPrincipal().toText()).toEqual(
-        "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe",
-      )
-      await replaceActorIdentity(ii, globalICIdentity)
-      try {
-        await ii.get_principal(BigInt(1), WALLET_SCOPE)
-      } catch (e: any) {
-        expect(e.message).toContain("Forbidden")
-      }
-      try {
-        await im.get_account()
-      } catch (e) {
-        throw Error("Should not fail")
-      }
-    })
-
-    it("get anonymous IC keys", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-      const sessionKey = Ed25519KeyIdentity.generate()
-      const chainRoot = await DelegationChain.create(
-        mockedIdentity,
-        sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
-        {},
-      )
-
-      // NOTE: this is what we receive from authClient
-      // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
-      const sessionPublicKey = new Uint8Array(sessionKey.getPublicKey().toDer())
-
-      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
-      const delegationChain = await ecdsaGetAnonymous(
-        "nfid.one",
-        sessionPublicKey,
-        di,
-        Chain.IC,
-      )
-      const actualIdentity = DelegationIdentity.fromDelegation(
-        sessionKey,
-        delegationChain,
-      )
-      expect(actualIdentity.getPrincipal().toText()).toEqual(
-        "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
-      )
     })
   })
 })

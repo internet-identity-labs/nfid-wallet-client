@@ -9,7 +9,6 @@ Feature:Send/Receive Asset
     And Tokens displayed on user assets
     Then User opens receive dialog window
     Then Choose <chain> from receive options
-    Then Choose NFID account 1 from receive accounts
     Then Account ID is <account_id>
     Examples:
       | chain          | anchor | account_id                            |

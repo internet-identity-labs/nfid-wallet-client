@@ -436,7 +436,6 @@ Then(/^User opens choose nft window/, async () => {
 })
 
 Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
-  if (option === "AnilAnimal") return
   const opt = await $(`#choose_option_${option}`)
   await opt.waitForExist({ timeout: 15000 })
 })

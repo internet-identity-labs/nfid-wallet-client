@@ -4,7 +4,6 @@ import { ecdsaSigner, ecdsaSigner as ecdsaAPI } from "../actors"
 import { hasOwnProperty } from "../test-utils"
 
 export * from "./delegation-adapter"
-export * from "./ecdsa-wallet"
 export * from "./types"
 
 export async function getEcdsaPublicKey(): Promise<Array<number>> {

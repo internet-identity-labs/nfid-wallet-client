@@ -114,9 +114,9 @@ export const ProfileNFTDetailsPage = ({
               <img src={WalletIcon} alt="wallet" />
               <p
                 className="text-sm font-semibold text-secondary"
-                id={`nft_wallet_${applications
-                  .find((x) => x.domain === nft.account.domain)
-                  ?.name.replace(/\s/g, "")}`}
+                id={`nft_wallet_${
+                  nft?.walletName === "NFID" ? "NFID Wallet" : nft.walletName
+                }`}
               >
                 {nft?.walletName === "NFID" ? "NFID Wallet" : nft.walletName}
               </p>

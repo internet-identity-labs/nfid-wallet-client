@@ -202,11 +202,14 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     })
 
     return Object.values(wallets).map((item) => ({
-      label: getWalletName(
-        applications,
-        item.account.domain,
-        item.account.accountId,
-      ),
+      label:
+        item.account.accountId === "-1"
+          ? "NFID Wallet"
+          : getWalletName(
+              applications,
+              item.account.domain,
+              item.account.accountId,
+            ),
       value: item.principal,
       afterLabel: item.tokens.filter((token) => {
         if (!collectionsFilter.length) return true

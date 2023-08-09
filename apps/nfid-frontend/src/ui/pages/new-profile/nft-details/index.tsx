@@ -3,7 +3,6 @@ import clsx from "clsx"
 import { useCallback, useContext } from "react"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-
 import { Application } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
@@ -119,11 +118,7 @@ export const ProfileNFTDetailsPage = ({
                   .find((x) => x.domain === nft.account.domain)
                   ?.name.replace(/\s/g, "")}`}
               >
-                {
-                  applications.find((x) => x.domain === nft.account.domain)
-                    ?.name
-                }{" "}
-                account {Number(nft.account.accountId) + 1}
+                {nft?.walletName === "NFID" ? "NFID Wallet" : nft.walletName}
               </p>
             </div>
           ) : null}

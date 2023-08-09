@@ -22,6 +22,7 @@ export interface NonFungibleToken {
   clipboardText?: string
   blockchainLogo: string
   owner: string
+  walletName?: string
 }
 
 export interface NonFungibleCollection {

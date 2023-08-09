@@ -311,6 +311,7 @@ export class PasskeyConnector {
     })
 
     const profile = await fetchProfile()
+    im.use_access_point([])
 
     authenticationTracking.updateData({
       isNewUser: false,

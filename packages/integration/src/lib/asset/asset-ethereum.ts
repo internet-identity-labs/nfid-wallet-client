@@ -33,7 +33,6 @@ import { ethers } from "ethers-ts"
 import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../cache"
-import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { getPriceFull } from "./asset-util"
 import { NonFungibleAsset } from "./non-fungible-asset"
@@ -363,40 +362,6 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     return { balance: balanceInString, balanceinUsd }
   }
 
-  public async transferNft({
-    delegation,
-    tokenId,
-    contract,
-    receiver,
-  }: TransferNftRequest): Promise<void> {
-    const wallet = this.getWallet(delegation, this.config.providerUrl)
-    return await wallet.safeTransferFrom(receiver, contract, tokenId)
-  }
-
-  public async transferETH({
-    delegation,
-    to,
-    amount,
-  }: TransferETHRequest): Promise<TransactionResponse> {
-    const wallet = this.getWallet(delegation, this.config.providerUrl)
-    const address = await wallet.getAddress()
-    // const trCount = await this.wallet.getTransactionCount("latest")
-    // const gasPrice = await this.wallet.getGasPrice()
-    // const gasLimit = BigNumber.from(100000)
-
-    new EthWallet().sendTransaction
-    const transaction = {
-      from: address,
-      to: to,
-      value: ethers.utils.parseEther(amount),
-      // nonce: trCount,
-      // gasLimit: gasLimit,
-      // gasPrice: gasPrice,
-    }
-
-    return wallet.sendTransaction(transaction)
-  }
-
   public async getErc20TokensByUser({
     identity,
     cursor,
@@ -589,7 +554,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   private getRaribleSdk(
     raribleEnv: RaribleSdkEnvironment,
     raribleKey: string,
-    wallet?: EthWallet,
+    wallet?: EthWalletV2,
   ): IRaribleSdk {
     const ethersWallet = wallet
       ? new EthereumWallet(new EthersEthereum(wallet))

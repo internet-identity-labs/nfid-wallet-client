@@ -40,8 +40,8 @@ export class IcNFTTransferConnector
 
   getFee(): Promise<TokenFee> {
     return Promise.resolve({
-      fee: `0 ${this.config.feeCurrency}`,
-      feeUsd: String(0),
+      fee: `0.00 ${this.config.feeCurrency}`,
+      feeUsd: "0.00",
     })
   }
 }

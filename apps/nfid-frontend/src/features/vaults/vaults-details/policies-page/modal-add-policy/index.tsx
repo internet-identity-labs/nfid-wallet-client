@@ -69,6 +69,8 @@ export const VaultAddPolicy = () => {
 
   const onAddPolicy = async ({ amount, approvers }: PolicyCreateForm) => {
     if (!vault?.id) return
+    if (!selectedWallets.length)
+      return toast.error("Source wallet is a required field")
 
     try {
       setIsLoading(true)

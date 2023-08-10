@@ -81,6 +81,8 @@ export async function postDelegation(context: AuthenticationContext) {
     chain: "Internet Computer",
   })
 
+  authenticationTracking.userSendToApp()
+
   postMessageToClient(
     {
       kind: "authorize-client-success",
@@ -89,7 +91,7 @@ export async function postDelegation(context: AuthenticationContext) {
     },
     context.authRequest.hostname,
   )
-  authenticationTracking.userSendToApp()
+
   window.close()
   return undefined
 }

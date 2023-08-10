@@ -1,11 +1,12 @@
 import React from "react"
 
-import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { Button } from "@nfid-frontend/ui"
 import { authenticationTracking } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { AuthAppMeta } from "../../ui/app-meta"
 import { passkeyConnector } from "../passkey-flow/services"

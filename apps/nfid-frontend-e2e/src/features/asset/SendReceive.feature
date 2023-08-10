@@ -9,7 +9,6 @@ Feature:Send/Receive Asset
     And Tokens displayed on user assets
     Then User opens receive dialog window
     Then Choose <chain> from receive options
-    Then Choose NFID account 1 from receive accounts
     Then Account ID is <account_id>
     Examples:
       | chain          | anchor | account_id                            |
@@ -79,12 +78,12 @@ Feature:Send/Receive Asset
     And Set <target> address and <amount> and send
     Then Transaction is success
     Examples:
-      | chain             | anchor | target                                                           | amount    | currency | account        |
-      | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | BTC      | NFID account 1 |
-      | Polygon Mumbai    | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | MATIC    | NFID account 1 |
+      | chain             | anchor | target                                                           | amount    | currency | account |
+      | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | BTC      | NFID    |
+      | Polygon Mumbai    | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | MATIC    | NFID    |
       # | Polygon Mumbai    | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | TST      | NFID account 1 |
-      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | ETH      | NFID account 1 |
-      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001    | ICP      | NFID account 1 |
-      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | LINK     | NFID account 1 |
+      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | ETH      | NFID    |
+      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001    | ICP      | NFID    |
+      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | LINK     | NFID    |
 
 

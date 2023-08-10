@@ -3,8 +3,7 @@ import clsx from "clsx"
 import { useCallback, useContext } from "react"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-
-import { Application } from "@nfid/integration"
+import { Application, getWalletName } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -115,15 +114,27 @@ export const ProfileNFTDetailsPage = ({
               <img src={WalletIcon} alt="wallet" />
               <p
                 className="text-sm font-semibold text-secondary"
-                id={`nft_wallet_${applications
-                  .find((x) => x.domain === nft.account.domain)
-                  ?.name.replace(/\s/g, "")}`}
+                id={`nft_wallet_${
+                  nft?.walletName === "NFID"
+                    ? "NFIDWallet"
+                    : nft.walletName?.split(" ").join("") ??
+                      getWalletName(
+                        applications,
+                        nft.principal.toString(),
+                        nft.account.accountId,
+                      )
+                        .split(" ")
+                        .join("")
+                }`}
               >
-                {
-                  applications.find((x) => x.domain === nft.account.domain)
-                    ?.name
-                }{" "}
-                account {Number(nft.account.accountId) + 1}
+                {nft?.walletName === "NFID"
+                  ? "NFID Wallet"
+                  : nft?.walletName ??
+                    getWalletName(
+                      applications,
+                      nft.principal.toString(),
+                      nft.account.accountId,
+                    )}
               </p>
             </div>
           ) : null}

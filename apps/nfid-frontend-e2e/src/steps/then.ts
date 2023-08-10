@@ -457,6 +457,7 @@ Then(
 )
 
 Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
+  if (account === "NFID") return true
   await Assets.chooseAccountFrom(account)
 })
 

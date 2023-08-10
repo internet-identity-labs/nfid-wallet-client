@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 
-const ORIGIN_VALIDATION_REGEX = /^https:\/\/([\w-]+)(?:\.raw)?(\.icp?0\.app)$/
+const ORIGIN_VALIDATION_REGEX =
+  /^https:\/\/([\w-]+)(?:\.raw)?\.(?:ic0\.app|icp0\.io)$/
 export const MAX_ALTERNATIVE_ORIGINS = 10
 
 export type ValidationResult =
@@ -30,15 +31,22 @@ export const validateDerivationOrigin = async (
 
   try {
     const canisterId = Principal.fromText(matches[1]) // verifies that a valid canister id was matched
-    const tld = matches[2] // .ic0.app or .icp0.app
-    const canisterDomain = `${canisterId.toText()}${tld}`
 
-    const alternativeOriginsUrl = `https://${canisterDomain}/.well-known/ii-alternative-origins`
+    // Regardless of whether the _origin_ (from which principals are derived) is on ic0.app or icp0.io, we always
+    // query the list of alternative origins from icp0.io (official domain)
+    const alternativeOriginsUrl = `https://${canisterId.toText()}.icp0.io/.well-known/ii-alternative-origins`
     const response = await fetch(
       // always fetch non-raw
       alternativeOriginsUrl,
       // fail on redirects
-      { redirect: "error" },
+      {
+        redirect: "error",
+        headers: {
+          Accept: "application/json",
+        },
+        // do not send cookies or other credentials
+        credentials: "omit",
+      },
     )
 
     if (response.status !== 200) {

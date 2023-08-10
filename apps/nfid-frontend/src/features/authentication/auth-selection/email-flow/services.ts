@@ -14,6 +14,7 @@ import {
   SendVerificationResponse,
   VerificationMethod,
   authState,
+  authenticationTracking,
   im,
   replaceActorIdentity,
   verificationService,
@@ -114,12 +115,18 @@ export const authorizeWithEmail = async (
   try {
     await replaceActorIdentity(im, delegationIdentity)
     profile = await fetchProfile()
+    authenticationTracking.updateData({
+      isNewUser: false,
+    })
   } catch (e) {
     console.log("creating new profile")
     profile = await createNFIDProfile(
       delegationIdentity,
       context.verificationEmail,
     )
+    authenticationTracking.updateData({
+      isNewUser: true,
+    })
   }
 
   authState.set({

@@ -11,6 +11,7 @@ import {
   IconCmpWarning,
   Input,
 } from "@nfid-frontend/ui"
+import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -33,7 +34,11 @@ export const AuthOtherSignOptions = ({
   const [isLoading, setIsLoading] = React.useState(false)
   const { register, handleSubmit } = useForm<{
     userNumber: number
-  }>()
+  }>({
+    defaultValues: {
+      userNumber: loadProfileFromLocalStorage()?.anchor ?? undefined,
+    },
+  })
 
   const handleAuth = React.useCallback(
     async (data: { anchor: number; withSecurityDevices: boolean }) => {
@@ -55,7 +60,7 @@ export const AuthOtherSignOptions = ({
   return (
     <div>
       <IconCmpArrow
-        className="transition-opacity cursor-pointer hover:opacity-50 w-6 shrink-0 absolute"
+        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0"
         onClick={onBack}
       />
       <AuthAppMeta

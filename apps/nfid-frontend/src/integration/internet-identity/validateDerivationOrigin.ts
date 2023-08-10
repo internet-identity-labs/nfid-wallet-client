@@ -1,8 +1,15 @@
 import { Principal } from "@dfinity/principal"
 
+import { ic } from "@nfid/integration"
+
 const ORIGIN_VALIDATION_REGEX =
   /^https:\/\/([\w-]+)(?:\.raw)?\.(?:ic0\.app|icp0\.io)$/
+
 export const MAX_ALTERNATIVE_ORIGINS = 10
+
+const fetchAlternativeOrigins = ic.isLocal
+  ? "/fetch-alternative-origins"
+  : AWS_FETCH_ALTERNATIVE_ORIGINS
 
 export type ValidationResult =
   | { result: "valid" }
@@ -34,7 +41,7 @@ export const validateDerivationOrigin = async (
 
     // Regardless of whether the _origin_ (from which principals are derived) is on ic0.app or icp0.io, we always
     // query the list of alternative origins from icp0.io (official domain)
-    const alternativeOriginsUrl = `https://${canisterId.toText()}.icp0.io/.well-known/ii-alternative-origins`
+    const alternativeOriginsUrl = `${fetchAlternativeOrigins}/${canisterId.toText()}`
     const response = await fetch(
       // always fetch non-raw
       alternativeOriginsUrl,

@@ -23,6 +23,7 @@ import {
 } from "frontend/integration/internet-identity"
 import {
   apiResultToLoginResult,
+  LoginError,
   LoginResult,
 } from "frontend/integration/internet-identity/api-result-to-login-result"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
@@ -145,7 +146,11 @@ export const useAuthentication = () => {
 
         if (!recoveryPhraseDevice) {
           setIsLoading(false)
-          throw new Error()
+          return {
+            tag: "err",
+            title: "Unknown anchor",
+            message: "",
+          } as LoginError
         }
 
         let result: LoginResult
@@ -171,6 +176,7 @@ export const useAuthentication = () => {
           initUserGeek(await agent.getPrincipal())
           setShouldStoreLocalAccount(false)
         }
+        setIsLoading(false)
         return result
       } else {
         // Recover new users

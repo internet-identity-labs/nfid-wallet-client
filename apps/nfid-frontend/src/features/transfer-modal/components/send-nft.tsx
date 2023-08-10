@@ -89,7 +89,8 @@ export const TransferNFT = ({
   const {
     data: transferFee,
     mutate: calculateFee,
-    isValidating: isFeeLoading,
+    isValidating: isFeeValidating,
+    isLoading: isFeeLoading,
   } = useSWR(
     selectedConnector ? [selectedConnector, getValues, "nftTransferFee"] : null,
     ([selectedConnector, getValues]) =>
@@ -284,19 +285,14 @@ export const TransferNFT = ({
                   : "Estimated"}
               </p>
             </div>
-            {isFeeLoading ? (
+            {!transferFee || isFeeLoading || isFeeValidating ? (
               <Spinner className="w-3 h-3 text-gray-400" />
             ) : (
               <div className="text-right">
-                <p className="text-sm leading-5">
-                  ${transferFee?.feeUsd ?? "0.00"}
-                </p>
+                <p className="text-sm leading-5">${transferFee?.feeUsd}</p>
 
                 <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee ??
-                    `0.00 ${
-                      selectedConnector?.getTokenConfig()?.feeCurrency ?? ""
-                    }`}
+                  {transferFee?.fee}
                 </p>
               </div>
             )}

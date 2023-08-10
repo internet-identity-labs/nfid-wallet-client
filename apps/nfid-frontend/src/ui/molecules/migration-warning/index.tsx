@@ -67,7 +67,7 @@ export const MigrationWarning: React.FC = () => {
           onClick={onTransferClick}
           className="mt-4 font-semibold cursor-pointer text-blue"
         >
-          Transfer assets to my ICP address
+          Transfer assets to my NFID Wallet
         </p>
       </div>
     </div>

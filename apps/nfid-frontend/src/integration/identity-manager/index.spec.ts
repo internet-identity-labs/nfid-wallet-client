@@ -7,7 +7,7 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
-import { im, im as imMock, RootWallet } from "@nfid/integration"
+import { im, im as imMock, replaceActorIdentity, RootWallet } from "@nfid/integration"
 
 import { Application } from "frontend/integration/_ic_api/identity_manager.d"
 import {
@@ -15,13 +15,14 @@ import {
   processApplicationOrigin,
   update2fa,
 } from "frontend/integration/identity-manager/index"
+import { getIdentity } from "../test-util"
 
 describe("Identity Manager suite", () => {
   jest.setTimeout(80000)
 
   describe("Identity Manager Service Test", () => {
     it("Should create NFID profile", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const mockedIdentity = getIdentity("87654321876543218765432187654311")
       const sessionKey = Ed25519KeyIdentity.generate()
       const chain = await DelegationChain.create(
         mockedIdentity,
@@ -33,9 +34,13 @@ describe("Identity Manager suite", () => {
         sessionKey,
         chain,
       )
+
+      replaceActorIdentity(im, delegationIdentity)
+      await im.remove_account()
+
       const nfidProfile = await createNFIDProfile(
         delegationIdentity,
-        "test@email.com",
+        "test@test.test",
       )
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)

@@ -51,3 +51,8 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
   }
   await im.create_account(req)
 }
+
+export const getIdentity = (seed: string): Ed25519KeyIdentity => {
+  const seedEncoded: Uint8Array = new TextEncoder().encode(seed);
+  return Ed25519KeyIdentity.generate(seedEncoded);
+};

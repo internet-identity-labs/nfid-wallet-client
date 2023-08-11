@@ -84,6 +84,7 @@ const ProfileSecurityPage = () => {
             className={clsx(
               "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
               "hover:opacity-50 cursor-pointer transition-opacity",
+              "pointer-events-none !text-gray-400 cursor-not-allowed",
             )}
           >
             <IconCmpPlus className="w-[18px] h-[18px]" />
@@ -142,7 +143,10 @@ const ProfileSecurityPage = () => {
             />
           ))}
         </Table>
-        <AddPasskey handleWithLoading={handleWithLoading} />
+        <AddPasskey
+          isDisabled={!!profile.email?.length}
+          handleWithLoading={handleWithLoading}
+        />
       </ProfileContainer>
 
       <ProfileContainer

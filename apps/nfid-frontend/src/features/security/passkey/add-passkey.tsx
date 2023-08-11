@@ -14,8 +14,10 @@ import SinglePasskey from "./single-passkey.webp"
 
 export const AddPasskey = ({
   handleWithLoading,
+  isDisabled,
 }: {
   handleWithLoading: IHandleWithLoading
+  isDisabled?: boolean
 }) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [isMultiDevice, setIsMultiDevice] = React.useState(true)
@@ -39,6 +41,7 @@ export const AddPasskey = ({
         className={clsx(
           "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
           "hover:opacity-50 cursor-pointer transition-opacity",
+          isDisabled && "pointer-events-none !text-gray-400 cursor-not-allowed",
         )}
         onClick={handleOpenModal}
       >

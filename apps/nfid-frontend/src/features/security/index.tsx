@@ -144,7 +144,7 @@ const ProfileSecurityPage = () => {
           ))}
         </Table>
         <AddPasskey
-          isDisabled={!!profile.email?.length}
+          isDisabled={!profile.email?.length}
           handleWithLoading={handleWithLoading}
         />
       </ProfileContainer>

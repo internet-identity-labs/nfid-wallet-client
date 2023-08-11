@@ -15,27 +15,26 @@ import {
   processApplicationOrigin,
   update2fa,
 } from "frontend/integration/identity-manager/index"
-import { getIdentity } from "../test-util"
+import { getDelegationIdentity, getIdentity } from "../test-util"
 
 describe("Identity Manager suite", () => {
   jest.setTimeout(80000)
 
   describe("Identity Manager Service Test", () => {
     it("Should create NFID profile", async function () {
-      const mockedIdentity = getIdentity("87654321876543218765432187654311")
-      const sessionKey = Ed25519KeyIdentity.generate()
-      const chain = await DelegationChain.create(
-        mockedIdentity,
-        sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
-        {},
-      )
-      const delegationIdentity = DelegationIdentity.fromDelegation(
-        sessionKey,
-        chain,
-      )
+      const identityDevice = getIdentity("87654321876543218765432187654318")
+      const identityDeviceDelegationIdentity = await getDelegationIdentity(identityDevice)
 
-      replaceActorIdentity(im, delegationIdentity)
+      const mockedIdentity = getIdentity("87654321876543218765432187654311")
+      const delegationIdentity = await getDelegationIdentity(mockedIdentity)
+
+      await replaceActorIdentity(im, identityDeviceDelegationIdentity)
+      // Optional disable.
+      try {
+        await update2fa(false)
+      } catch(e) {}
+
+      await replaceActorIdentity(im, delegationIdentity)
       await im.remove_account()
 
       const nfidProfile = await createNFIDProfile(
@@ -45,7 +44,6 @@ describe("Identity Manager suite", () => {
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)
       expect(nfidProfile.accessPoints.length).toEqual(1)
-      const identityDevice = Ed25519KeyIdentity.generate()
       const deviceData = {
         icon: "Icon",
         device: "Global",
@@ -59,6 +57,12 @@ describe("Identity Manager suite", () => {
       await im.create_access_point(deviceData)
       const updatedProfile = await update2fa(true)
       expect(updatedProfile.is2fa).toEqual(true)
+
+      await replaceActorIdentity(im, identityDeviceDelegationIdentity)
+      await update2fa(false)
+
+      await replaceActorIdentity(im, delegationIdentity)
+      await im.remove_account()
     })
 
     it("Should create application", async function () {

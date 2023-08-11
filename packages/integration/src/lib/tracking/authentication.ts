@@ -138,6 +138,7 @@ class AuthenticationTracking {
     }
     const title = "User sent to app"
     console.debug("authenticationTracking.userSendToApp", { title, data })
+    debugger
     posthog.capture(title, data, { send_instantly: true })
   }
 

@@ -14,7 +14,7 @@ export function toUserNFT(
     account: {
       domain: "nfid.one",
       label: "account 1",
-      accountId: "0",
+      accountId: "-1",
     },
     assetFullsize: {
       url: nft.image.length === 0 ? conf.defaultLogo : nft.image,

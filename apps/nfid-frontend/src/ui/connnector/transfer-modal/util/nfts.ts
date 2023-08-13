@@ -106,5 +106,6 @@ export function toUserNFT(
     principal: principal,
     tokenId: nft?.tokenId || "N/A",
     owner: address,
+    walletName: "NFID",
   }
 }

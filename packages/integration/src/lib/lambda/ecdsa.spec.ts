@@ -17,6 +17,7 @@ import { ethers } from "ethers"
 import { arrayify, hashMessage } from "ethers/lib/utils"
 import fetch from "node-fetch"
 
+import { getIdentity } from "./util"
 import { WALLET_SCOPE } from "@nfid/config"
 import { ii, im, replaceActorIdentity } from "@nfid/integration"
 
@@ -36,12 +37,13 @@ const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
   "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
 ]
+
 describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(80000)
 
   describe("lambdaECDSA", () => {
     it("register ecdsa ETH", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const mockedIdentity = getIdentity("87654321876543218765432187654311")
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
         mockedIdentity,
@@ -62,13 +64,14 @@ describe("Lambda Sign/Register ECDSA", () => {
         credential_id: [],
       }
       const accountRequest: HTTPAccountRequest = {
-        email: [],
+        email: ["test@test.test"],
         access_point: [deviceData],
         wallet: [{ NFID: null }],
         anchor: BigInt(0),
       }
       replaceActorIdentity(im, di)
 
+      await im.remove_account()
       await im.create_account(accountRequest)
 
       const pubKey = await getPublicKey(di, Chain.ETH)

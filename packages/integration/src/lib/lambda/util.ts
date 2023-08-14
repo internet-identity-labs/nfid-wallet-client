@@ -1,5 +1,5 @@
 import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 const DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS = 5 * 60 * 1000
@@ -29,3 +29,8 @@ export async function getTransformedRequest(
     body: request,
   })
 }
+
+export const getIdentity = (seed: string): Ed25519KeyIdentity => {
+  const seedEncoded: Uint8Array = new TextEncoder().encode(seed);
+  return Ed25519KeyIdentity.generate(seedEncoded);
+};

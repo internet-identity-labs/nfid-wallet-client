@@ -144,32 +144,42 @@ describe("Lambda Sign/Register ECDSA", () => {
       }
     })
 
-    it("get anonymous IC keys", async function () {
+    it.only("get anonymous IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-      const sessionKey = Ed25519KeyIdentity.generate()
+
+      const nfidSessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
         mockedIdentity,
-        sessionKey.getPublicKey(),
+        nfidSessionKey.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
         {},
       )
+      const nfidDelegationIdentity = DelegationIdentity.fromDelegation(
+        nfidSessionKey,
+        chainRoot,
+      )
 
+      const dappSessionKey = Ed25519KeyIdentity.generate()
       // NOTE: this is what we receive from authClient
       // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
-      const sessionPublicKey = new Uint8Array(sessionKey.getPublicKey().toDer())
+      const dappSessionPublicKey = new Uint8Array(
+        dappSessionKey.getPublicKey().toDer(),
+      )
 
-      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
       const delegationChain = await ecdsaGetAnonymous(
         "nfid.one",
-        sessionPublicKey,
-        di,
+        dappSessionPublicKey,
+        nfidDelegationIdentity,
         Chain.IC,
       )
       const actualIdentity = DelegationIdentity.fromDelegation(
-        sessionKey,
+        dappSessionKey,
         delegationChain,
       )
-      expect(actualIdentity.getPrincipal().toText()).toEqual(
+      const actualPrincipalId = actualIdentity.getPrincipal().toText()
+      console.debug("actualPrincipalId", actualPrincipalId)
+
+      expect(actualPrincipalId).toEqual(
         "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
       )
     })

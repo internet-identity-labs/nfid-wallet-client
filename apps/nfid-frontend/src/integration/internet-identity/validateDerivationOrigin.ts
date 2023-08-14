@@ -1,6 +1,15 @@
 import { Principal } from "@dfinity/principal"
 
+import { ic } from "@nfid/integration"
+
+const ORIGIN_VALIDATION_REGEX =
+  /^https:\/\/([\w-]+)(?:\.raw)?\.(?:ic0\.app|icp0\.io)$/
+
 export const MAX_ALTERNATIVE_ORIGINS = 10
+
+const fetchAlternativeOrigins = ic.isLocal
+  ? "/fetch-alternative-origins"
+  : AWS_FETCH_ALTERNATIVE_ORIGINS
 
 export type ValidationResult =
   | { result: "valid" }
@@ -19,25 +28,32 @@ export const validateDerivationOrigin = async (
   }
 
   // check format of derivationOrigin
-  const matches = /^https:\/\/([\w-]*)(\.raw)?\.ic0\.app$/.exec(
-    derivationOrigin,
-  )
+  const matches = ORIGIN_VALIDATION_REGEX.exec(derivationOrigin)
   if (matches === null) {
     return {
       result: "invalid",
-      message:
-        'derivationOrigin does not match regex "^https:\\/\\/([\\w-]*)(\\.raw)?\\.ic0\\.app$"',
+      message: `derivationOrigin does not match regex "${ORIGIN_VALIDATION_REGEX.toString()}"`,
     }
   }
 
   try {
     const canisterId = Principal.fromText(matches[1]) // verifies that a valid canister id was matched
-    const alternativeOriginsUrl = `https://${canisterId.toText()}.ic0.app/.well-known/ii-alternative-origins`
+
+    // Regardless of whether the _origin_ (from which principals are derived) is on ic0.app or icp0.io, we always
+    // query the list of alternative origins from icp0.io (official domain)
+    const alternativeOriginsUrl = `${fetchAlternativeOrigins}/${canisterId.toText()}`
     const response = await fetch(
       // always fetch non-raw
       alternativeOriginsUrl,
       // fail on redirects
-      { redirect: "error" },
+      {
+        redirect: "error",
+        headers: {
+          Accept: "application/json",
+        },
+        // do not send cookies or other credentials
+        credentials: "omit",
+      },
     )
 
     if (response.status !== 200) {

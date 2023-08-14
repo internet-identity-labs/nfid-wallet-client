@@ -149,6 +149,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         </div>,
         <Link
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+          state={{ nft: token }}
           className="truncate block sm:w-[400px]"
           id={`nft_id_${token.tokenId.replace(/\s/g, "")}`}
         >

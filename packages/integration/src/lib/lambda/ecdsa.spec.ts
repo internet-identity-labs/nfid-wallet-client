@@ -144,7 +144,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       }
     })
 
-    it.only("get anonymous IC keys", async function () {
+    it("get anonymous IC keys", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()

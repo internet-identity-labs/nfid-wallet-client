@@ -1,14 +1,11 @@
-import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
+import { Signature } from "@dfinity/agent"
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-  SignedDelegation,
 } from "@dfinity/identity"
 
-import { im, replaceActorIdentity } from "../actors"
-import { Chain, ecdsaGetAnonymous } from "../lambda/ecdsa"
 import { getAnonymousDelegate } from "./get-delegate"
 
 describe("get-delegate suite", () => {
@@ -38,35 +35,21 @@ describe("get-delegate suite", () => {
       dappSessionKey.getPublicKey().toDer(),
     )
 
-    const anonymousDelegation = await ecdsaGetAnonymous(
-      "nfid.one",
+    const anonymousDelegation = await getAnonymousDelegate(
       dappSessionPublicKey,
       nfidDelegationIdentity,
-      Chain.IC,
     )
 
-    // const actualIdentity = DelegationIdentity.fromDelegation(
-    //   dappSessionKey,
-    //   anonymousDelegation,
-    // )
-
-    const { delegation, signature } = anonymousDelegation.delegations[0]
-
-    // const anonymousDelegation = await getAnonymousDelegate(
-    //   dappSessionPublicKey,
-    //   nfidDelegationIdentity,
-    // )
-
-    // // happens inside prepareClientDelegate
-    // // https://github.com/internet-identity-labs/nfid-frontend/blob/26d834fbdaaa989d7eafa67e1e98e7d1117335a7/apps/nfid-frontend/src/integration/windows/index.ts#L80-L89
+    // happens inside prepareClientDelegate
+    // https://github.com/internet-identity-labs/nfid-frontend/blob/26d834fbdaaa989d7eafa67e1e98e7d1117335a7/apps/nfid-frontend/src/integration/windows/index.ts#L80-L89
     const delegations = [
       {
         delegation: {
-          pubkey: new Uint8Array(delegation.pubkey),
-          expiration: delegation.expiration,
-          targets: delegation.targets,
+          pubkey: new Uint8Array(anonymousDelegation.delegation.pubkey),
+          expiration: anonymousDelegation.delegation.expiration,
+          targets: undefined,
         },
-        signature: new Uint8Array(signature),
+        signature: new Uint8Array(anonymousDelegation.signature),
       },
     ]
 
@@ -76,30 +59,27 @@ describe("get-delegate suite", () => {
     const parsedDelegation = delegations.map((signedDelegation) => {
       return {
         delegation: new Delegation(
-          delegation.pubkey,
-          delegation.expiration,
+          signedDelegation.delegation.pubkey,
+          signedDelegation.delegation.expiration,
+          signedDelegation.delegation.targets,
         ),
-        signature: signature,
+        signature: signedDelegation.signature.buffer as Signature,
       }
     })
 
     const delegationChain = DelegationChain.fromDelegations(
       parsedDelegation,
-      anonymousDelegation.publicKey,  //TODO: Philip PTAL at this line
+      anonymousDelegation.publicKey,
     )
     const identity = DelegationIdentity.fromDelegation(
       dappSessionKey,
       delegationChain,
     )
 
-    const principalId = identity.getPrincipal().toText()
+    const actualPrincipalId = identity.getPrincipal().toText()
+    const expectedPrincipalId =
+      "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae"
 
-    console.debug("thirdPartyIdentity", identity.getPrincipal().toText())
-
-    expect(principalId).toBe(
-      "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
-    )
-    await replaceActorIdentity(im, identity)
-    await im.get_account()
+    expect(actualPrincipalId).toBe(expectedPrincipalId)
   })
 })

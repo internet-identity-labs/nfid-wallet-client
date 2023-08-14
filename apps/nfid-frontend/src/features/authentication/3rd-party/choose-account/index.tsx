@@ -89,7 +89,7 @@ export const AuthChooseAccount = ({
       const authSession: ThirdPartyAuthSession = {
         anchor: (await fetchProfile()).anchor,
         signedDelegation: anonymousDelegation,
-        userPublicKey: authRequest.sessionPublicKey,
+        userPublicKey: new Uint8Array(anonymousDelegation.publicKey),
         scope: "nfid.one",
       }
 

@@ -23,6 +23,7 @@ const setupCSP = () => {
         "'self'",
         "https://ic0.app",
         "https://*.ic0.app",
+        "https://*.icp0.io",
         process.env.AWS_VERIFY_PHONENUMBER as string,
         process.env.AWS_SYMMETRIC as string,
         process.env.AWS_AUTH_STATS as string,

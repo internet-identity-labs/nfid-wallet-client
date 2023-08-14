@@ -85,7 +85,7 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
         account,
         walletName: getWalletName(
           applicationsMeta,
-          principal.toString(),
+          account.domain,
           account.accountId,
         ),
         contractId: rest.canisterId,

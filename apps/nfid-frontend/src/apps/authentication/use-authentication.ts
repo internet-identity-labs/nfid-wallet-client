@@ -8,12 +8,14 @@ import { Usergeek } from "usergeek-ic-js"
 import {
   authState,
   hasOwnProperty,
+  im,
   isDelegationExpired,
-  replaceIdentity,
+  replaceActorIdentity,
   requestFEDelegation,
 } from "@nfid/integration"
 import { agent } from "@nfid/integration"
 
+import { fetchProfile } from "frontend/integration/identity-manager"
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {
   IC_DERIVATION_PATH,
@@ -187,7 +189,19 @@ export const useAuthentication = () => {
 
         const { delegationIdentity, chain, sessionKey } =
           await requestFEDelegation(identity)
-        replaceIdentity(delegationIdentity)
+        await replaceActorIdentity(im, delegationIdentity)
+
+        try {
+          await fetchProfile()
+        } catch (e) {
+          setIsLoading(false)
+          return {
+            tag: "err",
+            title: "Incorrect seed phrase",
+            message: "",
+          } as LoginError
+        }
+
         authState.set({
           identity,
           delegationIdentity: delegationIdentity,

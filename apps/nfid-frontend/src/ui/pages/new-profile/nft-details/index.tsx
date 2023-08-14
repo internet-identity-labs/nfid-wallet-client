@@ -34,7 +34,7 @@ export const ProfileNFTDetailsPage = ({
   applications,
 }: IProfileNFTDetails) => {
   const globalServices = useContext(ProfileContext)
-
+  console.log({ nft })
   const [, send] = useActor(globalServices.transferService)
 
   const onTransferNFT = useCallback(

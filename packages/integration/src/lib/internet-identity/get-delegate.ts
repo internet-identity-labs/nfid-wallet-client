@@ -69,6 +69,7 @@ export const getAnonymousDelegate = async (
     delegationIdentity,
     Chain.IC,
   )
+
   const { delegation, signature } = delegationChain.delegations[0]
   return {
     delegation: {

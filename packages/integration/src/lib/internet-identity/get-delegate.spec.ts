@@ -4,8 +4,11 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
+  SignedDelegation,
 } from "@dfinity/identity"
 
+import { im, replaceActorIdentity } from "../actors"
+import { Chain, ecdsaGetAnonymous } from "../lambda/ecdsa"
 import { getAnonymousDelegate } from "./get-delegate"
 
 describe("get-delegate suite", () => {
@@ -28,28 +31,45 @@ describe("get-delegate suite", () => {
       chainRoot,
     )
 
-    const dappSessionKey = Ed25519KeyIdentity.generate()
+    const dappSessionKey = Ed25519KeyIdentity.fromParsedJson([
+      "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
+      "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
+    ])
     // NOTE: this is what we receive from authClient
     // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
     const dappSessionPublicKey = new Uint8Array(
       dappSessionKey.getPublicKey().toDer(),
     )
 
-    const anonymousDelegation = await getAnonymousDelegate(
+    const anonymousDelegation = await ecdsaGetAnonymous(
+      "nfid.one",
       dappSessionPublicKey,
       nfidDelegationIdentity,
+      Chain.IC,
     )
 
-    // happens inside prepareClientDelegate
-    // https://github.com/internet-identity-labs/nfid-frontend/blob/26d834fbdaaa989d7eafa67e1e98e7d1117335a7/apps/nfid-frontend/src/integration/windows/index.ts#L80-L89
+    const actualIdentity = DelegationIdentity.fromDelegation(
+      dappSessionKey,
+      anonymousDelegation,
+    )
+
+    const { delegation, signature } = anonymousDelegation.delegations[0]
+
+    // const anonymousDelegation = await getAnonymousDelegate(
+    //   dappSessionPublicKey,
+    //   nfidDelegationIdentity,
+    // )
+
+    // // happens inside prepareClientDelegate
+    // // https://github.com/internet-identity-labs/nfid-frontend/blob/26d834fbdaaa989d7eafa67e1e98e7d1117335a7/apps/nfid-frontend/src/integration/windows/index.ts#L80-L89
     const delegations = [
       {
         delegation: {
-          pubkey: Uint8Array.from(anonymousDelegation.delegation.pubkey),
-          expiration: anonymousDelegation.delegation.expiration,
-          targets: undefined,
+          pubkey: new Uint8Array(delegation.pubkey),
+          expiration: delegation.expiration,
+          targets: delegation.targets,
         },
-        signature: Uint8Array.from(anonymousDelegation.signature),
+        signature: new Uint8Array(signature),
       },
     ]
 
@@ -78,10 +98,14 @@ describe("get-delegate suite", () => {
 
     const principalId = identity.getPrincipal().toText()
 
-    console.debug("principalId", principalId)
+    console.debug("actualIdentity", actualIdentity.getPrincipal().toText())
+    console.debug("thirdPartyIdentity", identity.getPrincipal().toText())
 
     expect(principalId).toBe(
-      "67cfj-faycm-775rw-cfzwc-gkmy4-ifw5a-ui2na-57w6t-ht254-s5lpe-5qe",
+      "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe",
     )
+
+    await replaceActorIdentity(im, identity)
+    await im.get_account()
   })
 })

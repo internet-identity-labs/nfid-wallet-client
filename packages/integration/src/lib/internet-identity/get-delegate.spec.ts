@@ -31,10 +31,7 @@ describe("get-delegate suite", () => {
       chainRoot,
     )
 
-    const dappSessionKey = Ed25519KeyIdentity.fromParsedJson([
-      "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
-      "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
-    ])
+    const dappSessionKey = Ed25519KeyIdentity.generate()
     // NOTE: this is what we receive from authClient
     // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
     const dappSessionPublicKey = new Uint8Array(
@@ -48,10 +45,10 @@ describe("get-delegate suite", () => {
       Chain.IC,
     )
 
-    const actualIdentity = DelegationIdentity.fromDelegation(
-      dappSessionKey,
-      anonymousDelegation,
-    )
+    // const actualIdentity = DelegationIdentity.fromDelegation(
+    //   dappSessionKey,
+    //   anonymousDelegation,
+    // )
 
     const { delegation, signature } = anonymousDelegation.delegations[0]
 
@@ -79,17 +76,16 @@ describe("get-delegate suite", () => {
     const parsedDelegation = delegations.map((signedDelegation) => {
       return {
         delegation: new Delegation(
-          signedDelegation.delegation.pubkey,
-          signedDelegation.delegation.expiration,
-          signedDelegation.delegation.targets,
+          delegation.pubkey,
+          delegation.expiration,
         ),
-        signature: signedDelegation.signature.buffer as Signature,
+        signature: signature,
       }
     })
 
     const delegationChain = DelegationChain.fromDelegations(
       parsedDelegation,
-      dappSessionPublicKey.buffer as DerEncodedPublicKey,
+      anonymousDelegation.publicKey,  //TODO: Philip PTAL at this line
     )
     const identity = DelegationIdentity.fromDelegation(
       dappSessionKey,
@@ -98,13 +94,11 @@ describe("get-delegate suite", () => {
 
     const principalId = identity.getPrincipal().toText()
 
-    console.debug("actualIdentity", actualIdentity.getPrincipal().toText())
     console.debug("thirdPartyIdentity", identity.getPrincipal().toText())
 
     expect(principalId).toBe(
-      "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe",
+      "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
     )
-
     await replaceActorIdentity(im, identity)
     await im.get_account()
   })

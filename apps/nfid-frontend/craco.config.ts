@@ -39,6 +39,7 @@ const setupCSP = () => {
         process.env.AWS_LINK_GOOGLE_ACCOUNT as string,
         process.env.AWS_CHECK_VERIFICATION as string,
         process.env.AWS_VERIFY_EMAIL as string,
+        `${process.env.AWS_FETCH_ALTERNATIVE_ORIGINS as string}/*`,
         "https://o1255710.ingest.sentry.io",
         "https://rosetta-api.internetcomputer.org",
         "https://free.currconv.com/",
@@ -289,6 +290,13 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify_email/, ""),
+      },
+      "/fetch-alternative-origins": {
+        target: process.env.AWS_FETCH_ALTERNATIVE_ORIGINS,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/fetch-alternative-origins/, ""),
       },
     },
   },

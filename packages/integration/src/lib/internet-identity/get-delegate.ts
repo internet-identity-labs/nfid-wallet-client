@@ -1,3 +1,4 @@
+import { DerEncodedPublicKey } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
 
 import { PublicKey } from "../_ic_api/internet_identity.d"
@@ -62,13 +63,14 @@ export async function getDelegateRetry(
 export const getAnonymousDelegate = async (
   sessionPublicKey: Uint8Array,
   delegationIdentity: DelegationIdentity,
-): Promise<SignedDelegation> => {
+): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
   const delegationChain = await ecdsaGetAnonymous(
     "nfid.one",
     sessionPublicKey,
     delegationIdentity,
     Chain.IC,
   )
+
   const { delegation, signature } = delegationChain.delegations[0]
   return {
     delegation: {
@@ -77,5 +79,6 @@ export const getAnonymousDelegate = async (
       targets: delegation.targets,
     },
     signature: Array.from(new Uint8Array(signature)),
+    publicKey: delegationChain.publicKey,
   }
 }

@@ -11,12 +11,15 @@ import {
   getVaults,
   getWalletName,
   getWallets,
+  replaceActorIdentity,
+  vault,
 } from "@nfid/integration"
 import { transfer as submitICP } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
 import { PRINCIPAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import {
@@ -47,14 +50,17 @@ export abstract class ICMTransferConnector<
     isVault?: boolean
   }): Promise<IGroupedOptions[]> {
     if (isVault) {
+      await replaceActorIdentity(vault, await getWalletDelegationAdapter())
       const rate = await getExchangeRate()
       const allVaults = await getVaults()
-      const vaultWallets = await Promise.all(
+      const allVaultWallets = await Promise.all(
         allVaults.map((v) => v.id).map(async (v) => await getWallets(v)),
       )
 
       const walletsWithE8SBalances = await Promise.all(
-        vaultWallets.map(async (wallets) => fetchVaultWalletsBalances(wallets)),
+        allVaultWallets
+          .filter((wallets) => wallets.length > 0)
+          .map(async (wallets) => fetchVaultWalletsBalances(wallets)),
       )
 
       const walletsWithBalances = walletsWithE8SBalances.map((vault) =>

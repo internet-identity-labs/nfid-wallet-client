@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
+const ORIGIN_VALIDATION_REGEX = /^https:\/\/([\w-]+)(?:\.raw)?(\.icp?0\.app)$/
 export const MAX_ALTERNATIVE_ORIGINS = 10
 
 export type ValidationResult =
@@ -19,20 +20,20 @@ export const validateDerivationOrigin = async (
   }
 
   // check format of derivationOrigin
-  const matches = /^https:\/\/([\w-]*)(\.raw)?\.ic0\.app$/.exec(
-    derivationOrigin,
-  )
+  const matches = ORIGIN_VALIDATION_REGEX.exec(derivationOrigin)
   if (matches === null) {
     return {
       result: "invalid",
-      message:
-        'derivationOrigin does not match regex "^https:\\/\\/([\\w-]*)(\\.raw)?\\.ic0\\.app$"',
+      message: `derivationOrigin does not match regex "${ORIGIN_VALIDATION_REGEX.toString()}"`,
     }
   }
 
   try {
     const canisterId = Principal.fromText(matches[1]) // verifies that a valid canister id was matched
-    const alternativeOriginsUrl = `https://${canisterId.toText()}.ic0.app/.well-known/ii-alternative-origins`
+    const tld = matches[2] // .ic0.app or .icp0.app
+    const canisterDomain = `${canisterId.toText()}${tld}`
+
+    const alternativeOriginsUrl = `https://${canisterDomain}/.well-known/ii-alternative-origins`
     const response = await fetch(
       // always fetch non-raw
       alternativeOriginsUrl,

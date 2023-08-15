@@ -19,6 +19,7 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   headerMenu?: React.ReactNode
   iconTooltip?: string
   iconId?: string
+  className?: string
 }
 
 const ProfileTemplate: React.FC<IProfileTemplate> = ({
@@ -40,7 +41,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   }, [])
 
   return (
-    <div className={clsx("relative min-h-screen overflow-hidden")}>
+    <div className={clsx("relative min-h-screen overflow-hidden", className)}>
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
       <TransferModalCoordinator />
       <div

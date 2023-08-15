@@ -239,7 +239,9 @@ export class PasskeyConnector {
         delegationIdentity: delegationIdentity,
         identity: multiIdent._actualIdentity!,
       }
-    } catch (e) {
+    } catch (e: any) {
+      toast.error(e.message)
+      authState.reset(false)
       authenticationTracking.aborted({
         authSource: "passkey - continue",
       })

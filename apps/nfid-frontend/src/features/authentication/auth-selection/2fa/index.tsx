@@ -1,4 +1,5 @@
 import React from "react"
+import { toast } from "react-toastify"
 
 import { Button } from "@nfid-frontend/ui"
 import { authenticationTracking } from "@nfid/integration"
@@ -37,7 +38,8 @@ export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
       )
       const res = await passkeyConnector.loginWithAllowedPasskey(allowedDevices)
       onSuccess(res)
-    } catch (e) {
+    } catch (e: any) {
+      toast.error(e?.message ?? "Invalid passkey")
       console.error(e)
     } finally {
       setIsLoading(false)

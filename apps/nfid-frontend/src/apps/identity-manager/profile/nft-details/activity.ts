@@ -1,4 +1,4 @@
-import { format } from "date-fns"
+import { format, parse } from "date-fns"
 import React, { useState } from "react"
 import { getPolygonTokenActivity } from "src/features/non-fungable-token/eth/get-polygon-tokens"
 
@@ -108,7 +108,11 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
   ])
 
   const transactions = React.useMemo(() => {
-    return NFTActivity.sort((a, b) => Number(b.datetime) - Number(a.datetime))
+    return NFTActivity.sort(
+      (a, b) =>
+        parse(b.datetime, "MMM dd, yyyy - hh:mm:ss aaa", new Date()).getTime() -
+        parse(a.datetime, "MMM dd, yyyy - hh:mm:ss aaa", new Date()).getTime(),
+    )
   }, [NFTActivity])
 
   return {

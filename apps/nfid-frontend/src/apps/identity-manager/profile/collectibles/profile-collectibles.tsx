@@ -27,6 +27,7 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { ProfileConstants } from "../routes"
 import { DisplaySwitch } from "./display-switch"
+import EmptyNFT from "./empty.webp"
 import { CollectiblesModal } from "./filter-modal"
 import {
   filterUserTokens,
@@ -249,6 +250,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
 
   return (
     <ProfileTemplate
+      className="!static"
       pageTitle="Collectibles"
       icon={IconSvgBook}
       iconTooltip="Transactions history"
@@ -299,12 +301,29 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         </ProfileContainer>
         <p
           id={"items-amount"}
-          className="text-sm text-center text-secondary h-[50px] leading-[50px]"
+          className={clsx(
+            "text-sm text-center text-secondary h-[50px] leading-[50px]",
+            tokens.length === 0 && "hidden",
+          )}
         >
           {tokensFiltered.length} items
         </p>
         {!tokens.length ? (
-          <>{isLoading ? <Loader isLoading={true} /> : "You have no NFTs!"}</>
+          <>
+            {isLoading ? (
+              <Loader isLoading={true} />
+            ) : (
+              <div className="flex justify-between">
+                <span className="my-16 text-sm text-gray-400">
+                  You don’t own any collectibles yet
+                </span>
+                <img
+                  className="w-[100vw] absolute md:w-[40vw] right-0"
+                  src={EmptyNFT}
+                />
+              </div>
+            )}
+          </>
         ) : display === "table" ? (
           <Table
             rows={rows}

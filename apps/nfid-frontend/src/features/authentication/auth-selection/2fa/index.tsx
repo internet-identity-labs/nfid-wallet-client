@@ -1,9 +1,11 @@
 import React from "react"
+import { toast } from "react-toastify"
+import useSWR from "swr"
 
 import { Button } from "@nfid-frontend/ui"
 import { authenticationTracking } from "@nfid/integration"
 
-import { useProfile } from "frontend/integration/identity-manager/queries"
+import { fetchProfile } from "frontend/integration/identity-manager"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -18,7 +20,7 @@ export interface IAuth2FA {
   allowedDevices?: string[]
 }
 export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
-  const { profile } = useProfile()
+  const { data: profile } = useSWR("profile", fetchProfile)
   const [isLoading, setIsLoading] = React.useState(false)
 
   React.useEffect(() => {
@@ -37,7 +39,8 @@ export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
       )
       const res = await passkeyConnector.loginWithAllowedPasskey(allowedDevices)
       onSuccess(res)
-    } catch (e) {
+    } catch (e: any) {
+      toast.error(e?.message ?? "Invalid passkey")
       console.error(e)
     } finally {
       setIsLoading(false)

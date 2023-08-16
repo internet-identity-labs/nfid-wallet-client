@@ -45,15 +45,12 @@ export class SecurityConnector {
     const imDevices = await this.getIMDevices()
     const iiDevices = await this.getIIDevices()
     const profile = await fetchProfile()
+
     const allDevices =
       profile.wallet === RootWallet.II
         ? iiDevices.map((d) => ({
             ...d,
-            ...imDevices.find(
-              (p) =>
-                p.credentialId === d.credentialId &&
-                p.principal === d.principal,
-            ),
+            ...imDevices.find((p) => p.principal === d.principal),
           }))
         : imDevices
 

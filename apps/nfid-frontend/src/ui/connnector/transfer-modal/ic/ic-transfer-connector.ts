@@ -1,10 +1,11 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
+import { accessList } from "@nfid/integration"
 import { WALLET_FEE } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 
 import { Blockchain, NativeToken } from "../../types"
 import {
@@ -20,7 +21,6 @@ export class ICTransferConnector
   implements ITransferFTConnector
 {
   async getIdentity(address: string): Promise<DelegationIdentity> {
-    const profile = await this.getProfile()
     const allAccounts = await this.getAllPrincipals(false)
 
     const neededAccount = allAccounts.find(
@@ -28,10 +28,10 @@ export class ICTransferConnector
     )
     if (!neededAccount) throw new Error("Account not found")
 
-    return await getWalletDelegation(
-      profile.anchor,
-      neededAccount?.account.domain,
-      neededAccount?.account.accountId,
+    return await getWalletDelegationAdapter(
+      neededAccount.account.domain,
+      neededAccount.account.accountId,
+      accessList,
     )
   }
 

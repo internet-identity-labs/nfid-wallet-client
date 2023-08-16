@@ -35,9 +35,11 @@ export interface ITransferModalConnector
   getAccountsOptions({
     currency,
     isVault,
+    isRootOnly,
   }: {
     currency?: string
     isVault?: boolean
+    isRootOnly?: boolean
   }): Promise<IGroupedOptions[]>
   getRate(currency: string): Promise<string>
 

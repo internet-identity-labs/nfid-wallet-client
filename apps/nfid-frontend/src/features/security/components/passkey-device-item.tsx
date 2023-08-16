@@ -38,7 +38,9 @@ export const PasskeyDeviceItem = ({
         {device.label.length ? (
           <span>{device.label}</span>
         ) : (
-          <span className="text-sm text-gray-400">This is not NFID device</span>
+          <span className="text-sm text-gray-400">
+            This is not an NFID device
+          </span>
         )}
         {device.isMultiDevice && (
           <span className="ml-2.5 px-2 py-1 text-gray-600 uppercase bg-gray-50 font-bold tracking-[0.2px] text-[10px]">

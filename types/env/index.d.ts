@@ -14,6 +14,7 @@ declare const AWS_SIGNATURE_EVENT: string
 declare const AWS_SYMMETRIC: string
 declare const BITCOIN_WALLET_CANISTER_ID: string
 declare const BTC_SIGNER_CANISTER_ID: string
+declare const IC_SIGNER_CANISTER_ID: string
 declare const CHAIN_NETWORK: string
 declare const BLOCK_CYPHER_TOKEN: string
 declare const CURRCONV_TOKEN: string

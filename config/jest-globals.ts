@@ -7,6 +7,7 @@ export const JEST_GLOBALS = {
   ETH_SECRET_STORAGE_CANISTER_ID: "25nnx-kyaaa-aaaao-ab43a-cai",
   ECDSA_SIGNER_CANISTER_ID: "txkre-oyaaa-aaaap-qa3za-cai",
   BTC_SIGNER_CANISTER_ID: "7b5jg-paaaa-aaaap-aa32q-cai",
+  IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
   BITCOIN_WALLET_CANISTER_ID: "iohef-tiaaa-aaaal-qbtza-cai",
   PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
   VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",

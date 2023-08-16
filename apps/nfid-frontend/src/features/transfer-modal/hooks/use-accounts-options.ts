@@ -11,6 +11,7 @@ export const useAccountsOptions = (
   token: TokenStandards,
   blockchain: Blockchain,
   isVaultWallets?: boolean,
+  isRootOnly?: boolean,
 ) => {
   const { data: accountsOptions, ...rest } = useSWR<IGroupedOptions[]>(
     [token, blockchain, isVaultWallets, "accountsOptions"],
@@ -21,7 +22,7 @@ export const useAccountsOptions = (
           tokenStandard: token,
           blockchain: blockchain,
         })
-      ).getAccountsOptions({ isVault }),
+      ).getAccountsOptions({ isVault, isRootOnly }),
   )
 
   return { data: accountsOptions ?? [], ...rest }

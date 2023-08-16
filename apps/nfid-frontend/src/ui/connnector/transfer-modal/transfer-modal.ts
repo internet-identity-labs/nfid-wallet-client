@@ -11,7 +11,6 @@ import {
   Profile,
   RootWallet,
   fetchPrincipals,
-  loadProfileFromLocalStorage,
 } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -126,7 +125,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
 
   @Cache(connectorCache, { ttl: 120 })
   protected async getProfile(): Promise<Profile> {
-    return loadProfileFromLocalStorage() ?? (await fetchProfile())
+    return await fetchProfile()
   }
 
   @Cache(connectorCache, { ttl: 120 })

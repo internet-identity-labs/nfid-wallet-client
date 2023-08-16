@@ -50,6 +50,7 @@ export const TransferReceive = ({
       selectedTokenStandard as TokenStandards,
       selectedTokenBlockchain as Blockchain,
       isVault,
+      true,
     )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(

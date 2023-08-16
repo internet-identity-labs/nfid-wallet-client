@@ -27,7 +27,7 @@ Feature:Send/Receive Asset
     Then Principal is <principal>
     Examples:
       | chain            | anchor | address                               | principal                             | currency |
-      | InternetComputer | 28542  | 8f4835777b8e7abf166ab5e7390ab...d52ba | ymhyc-prisv-3sxup-hjy2n-4tgz4...q-pae | ICP      |
+      | InternetComputer | 28542  | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe | ICP      |
 
   @sendreceive3
   Scenario Outline: User should be able to see balance and fee

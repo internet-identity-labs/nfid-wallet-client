@@ -43,11 +43,12 @@ export abstract class ICMTransferConnector<
 > extends TransferModalConnector<ConfigType> {
   @Cache(connectorCache, { ttl: 30 })
   async getAccountsOptions({
-    currency,
     isVault,
+    isRootOnly,
   }: {
     currency?: string
     isVault?: boolean
+    isRootOnly?: boolean
   }): Promise<IGroupedOptions[]> {
     if (isVault) {
       await replaceActorIdentity(vault, await getWalletDelegationAdapter())
@@ -82,7 +83,16 @@ export abstract class ICMTransferConnector<
         })),
       }))
     }
-    const principals = await this.getAllPrincipals(true)
+
+    let principals = await this.getAllPrincipals(true)
+    if (isRootOnly) {
+      principals = {
+        "nfid.one": [
+          principals["nfid.one"].find((acc) => acc.account.accountId === "-1")!,
+        ],
+      }
+    }
+
     const applications = await this.getApplications()
 
     const groupedOptions = await Promise.all(

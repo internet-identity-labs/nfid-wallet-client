@@ -85,7 +85,6 @@ export const AuthChooseAccount = ({
       const anonymousDelegation = await getAnonymousDelegate(
         authRequest.sessionPublicKey,
         delegation,
-        authRequest.derivationOrigin ?? authRequest.hostname,
       )
 
       const authSession: ThirdPartyAuthSession = {
@@ -101,12 +100,7 @@ export const AuthChooseAccount = ({
     } finally {
       setIsLoading(false)
     }
-  }, [
-    authRequest.derivationOrigin,
-    authRequest.hostname,
-    authRequest.sessionPublicKey,
-    handleSelectAccount,
-  ])
+  }, [authRequest.sessionPublicKey, handleSelectAccount])
 
   if (isLoading || isAnonymousLoading) return <BlurredLoader isLoading />
 

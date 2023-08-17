@@ -100,11 +100,5 @@ export async function postDelegation(context: AuthenticationContext) {
  * xstate service retrieving connecting application meta data
  */
 export async function getAppMeta(): Promise<AuthorizingAppMeta> {
-  const meta = getAppMetaFromQuery()
-
-  return {
-    ...meta,
-    // FIXME: Pash document.referrer isn't safe to use. Use applicationConfig.
-    url: document.referrer,
-  }
+  return getAppMetaFromQuery()
 }

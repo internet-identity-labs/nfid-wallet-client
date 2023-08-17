@@ -70,6 +70,7 @@ export default function AuthenticationCoordinator({
             send({ type: "AUTHENTICATED", data: authSession })
           }}
           appMeta={state.context?.appMeta}
+          authRequest={state.context.authRequest}
         />
       )
     case state.matches("EmailAuthentication"):

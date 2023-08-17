@@ -104,6 +104,7 @@ export async function getAppMeta(): Promise<AuthorizingAppMeta> {
 
   return {
     ...meta,
+    // FIXME: Pash document.referrer isn't safe to use. Use applicationConfig.
     url: document.referrer,
   }
 }

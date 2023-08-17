@@ -30,7 +30,6 @@ export const PageAuthenticationIframe = () => {
         console.error(error)
       },
       identityProvider: `${NFID_PROVIDER_URL}/authenticate?applicationName=NFID-DEMO&applicationLogo=https://logo.clearbit.com/clearbit.com`,
-      idpWindowName: "nfidIdpWindow",
     })
   }, [])
 

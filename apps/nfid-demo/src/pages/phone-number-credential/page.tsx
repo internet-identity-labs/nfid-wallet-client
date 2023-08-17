@@ -42,7 +42,6 @@ export const PagePhoneNumberVerification: React.FC = () => {
     const authClient = await AuthClient.create()
     updateAuthButton({ loading: true, label: "Authenticating..." })
     await authClient.login({
-      idpWindowName: "nfidIdpWindow",
       onSuccess: () => {
         identity = authClient.getIdentity() as DelegationIdentity
         if (!(window as any).ic) (window as any).ic = {}

@@ -2509,10 +2509,12 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
-"@dfinity/auth-client@^0.11.3":
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.11.3.tgz#f337f5b4249a09f00092ed0ad8bd3e76bfbed196"
-  integrity sha512-+wwjoucE8ZIjcA1IG+OQ8OxFoAajYfnELbSMZE1p3FGlbC0X3gpab0bbXqh8VKou8Ng1eRU+sAwItruCLiIBHg==
+"@dfinity/auth-client@0.18.1":
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.18.1.tgz#a8fbb5ccc33889069a795a4f406fc8f496999aee"
+  integrity sha512-epsTbmXyVctNUI0P2pL1Ct5pJkuw2owSmW2bdje459lnaz2X/6jKlpSOjdZN7YzQ/PVoqL+vHn47E2xOs84uKw==
+  dependencies:
+    idb "^7.0.2"
 
 "@dfinity/authentication@0.14.1":
   version "0.14.1"
@@ -2529,7 +2531,7 @@
   resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.10.4.tgz#32f666f6a069d87b6f7007d7ad3c50ab307d8b76"
   integrity sha512-Rd8uoo3jd4FLmGY9aBgTRdBCYVuG/Y7QmpDJB3eQvsU3WHhVZJWLMHcodnMIoy2bzqzCKeTdLkL565K7qx5H3Q==
 
-"@dfinity/identity@0.11.3", "@dfinity/identity@^0.11.3":
+"@dfinity/identity@0.11.3":
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.11.3.tgz#b7ae0d049159f98bb3b693683824b7315124c4bb"
   integrity sha512-AXgrG6a7PxJmiZOC12ooKvPeOfh4+v3dR7D6jynLlN4qMy0ry+BMZhWkyjWrlRR3p8oMznzfjoMuKN5pOrBKDg==
@@ -2538,6 +2540,15 @@
     borc "^2.1.1"
     js-sha256 "^0.9.0"
     secp256k1 "^4.0.2"
+    tweetnacl "^1.0.1"
+
+"@dfinity/identity@0.18.1":
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.18.1.tgz#11f29fb18daa9a720274cd3d172162264b0cf401"
+  integrity sha512-u8pXzjEciaLad8WykwIO4nuASr0MdJHwFjd32TKr6oquJ6caMCDj0N8vlHfoWM6oInhYIWIME4pucjAM/isP2A==
+  dependencies:
+    borc "^2.1.1"
+    js-sha256 "^0.9.0"
     tweetnacl "^1.0.1"
 
 "@dfinity/principal@0.11.3", "@dfinity/principal@^0.11.0", "@dfinity/principal@^0.11.3":
@@ -17738,7 +17749,7 @@ ictool@^0.0.6:
     crc-32 "^1.2.2"
     crypto-js "^4.1.1"
 
-idb@7.1.1:
+idb@7.1.1, idb@^7.0.2:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
   integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==

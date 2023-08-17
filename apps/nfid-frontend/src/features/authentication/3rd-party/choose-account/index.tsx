@@ -82,10 +82,14 @@ export const AuthChooseAccount = ({
       const delegation = authState.get().delegationIdentity
       if (!delegation) throw new Error("No delegation identity")
 
+      console.debug("handleSelectAnonymous", {
+        derivationOrigin: authRequest.derivationOrigin,
+        hostname: authRequest.hostname,
+      })
       const anonymousDelegation = await getAnonymousDelegate(
         authRequest.sessionPublicKey,
         delegation,
-        authRequest.derivationOrigin ?? authRequest.hostname,
+        authRequest.derivationOrigin || authRequest.hostname,
       )
 
       const authSession: ThirdPartyAuthSession = {

@@ -13,7 +13,10 @@ import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { authenticationTracking } from "@nfid/integration"
 
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { AuthorizingAppMeta } from "frontend/state/authorization"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 import {
   LoginEventHandler,
   SignInWithGoogle,
@@ -29,6 +32,7 @@ export interface AuthSelectionProps {
   onSelectOtherAuth: () => void
   onAuthWithPasskey: (data: AbstractAuthSession) => void
   appMeta?: AuthorizingAppMeta
+  authRequest?: AuthorizationRequest
 }
 
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
@@ -37,6 +41,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectOtherAuth,
   onAuthWithPasskey,
   appMeta,
+  authRequest,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit, formState } = useForm({
@@ -58,6 +63,14 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  let appHost: string = ""
+  try {
+    appHost = new URL(authRequest?.hostname ?? "").host
+    console.log(authRequest, new URL(authRequest?.hostname ?? "").host)
+  } catch (e) {
+    appHost = appMeta?.name ?? ""
+  }
+
   return (
     <BlurredLoader
       isLoading={isLoading}
@@ -67,7 +80,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     >
       <AuthAppMeta
         applicationLogo={appMeta?.logo}
-        applicationURL={appMeta?.url}
+        applicationURL={appHost}
         applicationName={appMeta?.name}
         title="Continue to your account"
       />

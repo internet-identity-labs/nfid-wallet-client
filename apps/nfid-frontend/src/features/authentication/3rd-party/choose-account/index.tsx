@@ -42,6 +42,7 @@ export const AuthChooseAccount = ({
   handleSelectAccount,
 }: IAuthChooseAccount) => {
   const [isLoading, setIsLoading] = useState(false)
+  console.debug("AuthChooseAccount", { appMeta })
 
   const { data: legacyAnonymousProfiles, isLoading: isAnonymousLoading } =
     useSWR([authRequest, "legacyAnonymousProfiles"], ([authRequest]) =>
@@ -103,11 +104,18 @@ export const AuthChooseAccount = ({
 
   if (isLoading || isAnonymousLoading) return <BlurredLoader isLoading />
 
+  let appHost: string = ""
+  try {
+    appHost = new URL(authRequest.hostname ?? "").host
+  } catch (e) {
+    appHost = appMeta.name ?? ""
+  }
+
   return (
     <>
       <AuthAppMeta
         applicationLogo={appMeta?.logo}
-        applicationURL={appMeta?.url}
+        applicationURL={appHost}
         applicationName={appMeta?.name}
         title="Choose a profile"
       />
@@ -120,10 +128,8 @@ export const AuthChooseAccount = ({
                 <b>Public profiles</b> reveal cryptocurrency balances and
                 activity, and allow applications to request payment. <br />
                 <br />
-                <span className="text-blue">
-                  {new URL(appMeta.url ?? "").host}
-                </span>{" "}
-                does not support signing in with a public profile. <br />
+                <span className="text-blue">{appHost}</span> does not support
+                signing in with a public profile. <br />
                 <br />
                 <b>Anonymous profiles</b> hide your balance and activity across
                 applications, and can’t approve payments.

@@ -63,9 +63,10 @@ export async function getDelegateRetry(
 export const getAnonymousDelegate = async (
   sessionPublicKey: Uint8Array,
   delegationIdentity: DelegationIdentity,
+  domain: string,
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
   const delegationChain = await ecdsaGetAnonymous(
-    "nfid.one",
+    domain,
     sessionPublicKey,
     delegationIdentity,
     Chain.IC,

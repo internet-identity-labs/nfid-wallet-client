@@ -100,10 +100,5 @@ export async function postDelegation(context: AuthenticationContext) {
  * xstate service retrieving connecting application meta data
  */
 export async function getAppMeta(): Promise<AuthorizingAppMeta> {
-  const meta = getAppMetaFromQuery()
-
-  return {
-    ...meta,
-    url: document.referrer,
-  }
+  return getAppMetaFromQuery()
 }

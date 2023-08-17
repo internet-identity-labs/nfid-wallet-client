@@ -61,7 +61,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
               target="_blank"
               rel="noreferrer"
             >
-              {new URL(applicationURL).host}
+              {applicationURL}
             </a>
           </span>
         </div>

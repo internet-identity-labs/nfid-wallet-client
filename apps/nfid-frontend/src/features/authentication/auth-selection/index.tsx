@@ -67,7 +67,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     >
       <AuthAppMeta
         applicationLogo={appMeta?.logo}
-        applicationURL={appMeta?.url}
+        applicationURL={appMeta?.name}
         applicationName={appMeta?.name}
         title="Continue to your account"
       />

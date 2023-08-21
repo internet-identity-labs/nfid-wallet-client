@@ -7,6 +7,7 @@ import {
   Tooltip,
   useClickOutside,
 } from "@nfid-frontend/ui"
+import { Icon } from "@nfid/integration"
 
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 
@@ -33,7 +34,9 @@ export const PasskeyDeviceItem = ({
     <tr className="items-center text-sm border-b border-gray-200">
       <td className="flex h-[61px] items-center">
         <div className="flex items-center w-10 shrink-0">
-          <DeviceIconDecider icon={device.icon} />
+          <DeviceIconDecider
+            icon={device.isLegacyDevice ? Icon.unknown : device.icon}
+          />
         </div>
         {device.label.length ? (
           <span>{device.label}</span>

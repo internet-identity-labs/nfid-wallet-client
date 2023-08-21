@@ -5,6 +5,7 @@
     "analyze:nfid-frontend": "yarn analyze 'dist/apps/nfid-frontend/static/js/*.js'",
     "postinstall": "patch-package",
     "build": "echo '💀 DONT REMOVE THIS 💀'",
+    "build:cloudflare": "./scripts/cloudflare.sh",
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",

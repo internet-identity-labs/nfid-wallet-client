@@ -127,7 +127,9 @@ describe("Facade suite", () => {
           x.find((d) => hasOwnProperty(d.purpose, "recovery")),
         )) as DeviceData
       expect(removedDevice).toBe(undefined)
-      expect((await im.read_access_points()).data[0]).toEqual([])
+      replaceIdentity(delegationIdentity)
+      let aps = (await im.read_access_points())
+      expect(aps.data[0]).toEqual([])
     })
 
     it("Should fetch principals", async function () {
@@ -219,7 +221,10 @@ describe("Facade suite", () => {
         userAccounts,
         [nfid, appRequired, appNotRequired, appDuplicated],
       )
-
+      authStateMock.set({
+        identity: mockedIdentity,
+        delegationIdentity: delegationIdentity,
+      })
       const principals: { principal: Principal; account: Account }[] =
         await fetchPrincipals(anchor, accountsIncludingStaticApps)
 

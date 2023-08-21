@@ -31,8 +31,8 @@ ci_echo_info "Building frontend ..." >&2
 ci_echo_debug "yarn --prefer-offline" >&2
 yarn --prefer-offline
 
-ci_echo_debug "npx env-cmd -f .env.staging nx build nfid-frontend" >&2
-npx env-cmd -f .env.staging nx build nfid-frontend
+ci_echo_debug "npx env-cmd -f .env.dev nx build nfid-frontend" >&2
+npx env-cmd -f .env.dev nx build nfid-frontend
 
 ci_echo_info "Running frontend on port '${FRONTEND_PORT}' ..." >&2
 ci_echo_debug "yarn serve -l ${FRONTEND_PORT} -s dist/apps/nfid-frontend > /dev/null 2>&1 &" >&2

@@ -51,6 +51,7 @@ export class SecurityConnector {
         ? iiDevices.map((d) => ({
             ...d,
             ...imDevices.find((p) => p.principal === d.principal),
+            type: d.type,
           }))
         : imDevices
 

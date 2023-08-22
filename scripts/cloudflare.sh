@@ -1,5 +1,7 @@
 # !/bin/bash
 
+echo "variable CF_PAGES_BRANCH: $CF_PAGES_BRANCH"
+
 # On production branch
 if [ "$CF_PAGES_BRANCH" == "production" ]; then
   echo "Building production branch with .env.production"

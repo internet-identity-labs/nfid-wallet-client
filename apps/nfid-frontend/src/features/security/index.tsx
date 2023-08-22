@@ -99,7 +99,9 @@ const ProfileSecurityPage = () => {
           <>
             <span>Two-factor authentication</span>
             <Toggle
-              isDisabled={!devices?.passkeys?.length}
+              isDisabled={
+                !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length
+              }
               isChecked={!!profile?.is2fa}
               onToggle={async (val) => {
                 handleWithLoading(

@@ -82,7 +82,7 @@ export const ProfileRoutes = (
       }
     />
     <Route
-      path={`${ProfileConstants.assets}/${ProfileConstants.nftDetails}`}
+      path={`${ProfileConstants.collectibles}/${ProfileConstants.nftDetails}`}
       element={
         <AuthWrapper>
           <ProfileNFTDetails />

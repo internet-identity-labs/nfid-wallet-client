@@ -92,7 +92,7 @@ export const AuthChooseAccount = ({
         anchor: (await fetchProfile()).anchor,
         signedDelegation: anonymousDelegation,
         userPublicKey: new Uint8Array(anonymousDelegation.publicKey),
-        scope: "nfid.one",
+        scope: authRequest.derivationOrigin ?? authRequest.hostname,
       }
 
       handleSelectAccount(authSession)

@@ -86,6 +86,7 @@ jobs:
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
@@ -220,6 +221,7 @@ jobs:
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
@@ -232,6 +234,7 @@ jobs:
         run: npx env-cmd -f .env.dev nx run-many --target=test --skip-nx-cache
         env:
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
@@ -352,7 +355,7 @@ jobs:
       - name: Run tests
         run: |
           source ./ci_libs/CI_LIBS.sh
-          
+
           ci_echo_info "Cleaning Allure folders" >&2
           rm -rf apps/nfid-frontend-e2e/allure-results
           rm -rf apps/nfid-frontend-e2e/allure-report

@@ -9,8 +9,7 @@
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
-    "prepare": "husky install",
-    "tunnel": "./scripts/tunnel.sh"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@dfinity/agent": "^0.11.3",

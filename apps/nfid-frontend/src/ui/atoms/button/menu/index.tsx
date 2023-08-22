@@ -1,26 +1,23 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Button, ButtonProps } from ".."
-
 export interface ButtonMenuProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: (toggle: () => void) => React.ReactNode
-  buttonProps?: ButtonProps
   buttonElement?: React.ReactElement | string
 }
 
 export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   children,
   className,
-  buttonProps,
+
   buttonElement,
 }) => {
   const [toggleMenu, setToggleMenu] = React.useState(false)
   const ref = React.useRef<HTMLDivElement | null>(null)
 
   const handleMenuToggle = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation()
       setToggleMenu(!toggleMenu)
     },
@@ -41,17 +38,16 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
 
   return (
     <div ref={ref} className={clsx("overflow-hidden h-auto")}>
-      <Button
-        {...buttonProps}
+      <div
         onClick={(e) => handleMenuToggle(e)}
         className={clsx(
           "relative !p-1 z-30 transition-all duration-500",
-          toggleMenu ? "rotate-180" : "rotate-0",
+          toggleMenu ? "rotate-0" : "rotate-180",
           className,
         )}
       >
         {buttonElement}
-      </Button>
+      </div>
 
       {toggleMenu && (
         <div

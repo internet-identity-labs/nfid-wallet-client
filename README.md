@@ -61,14 +61,6 @@ setup your authtoken (copy from ngrok dashboard)
 cp .env.local.template .env.local
 ```
 
-Update user specific `TUNNEL_DOMAIN` vairables within your local copy `.env.local`. This is the domain which should be used for the qrcode.
-
-example
-
-```
-TUNNEL_DOMAIN=3540a630b330.ngrok.io
-```
-
 ## Available scripts
 
 when you're working with vscode you can use the task runner to start the development environment. Press `CMD+SHIFT+P` then type `run task` and select from:
@@ -206,7 +198,6 @@ packages/
     send-receive-icp/
 ```
 
-
 ### If you want to add new Test User
 
 - navigate to `helpers` folder
@@ -231,4 +222,3 @@ packages/
 - grab the credentials from logs and add them within `credentials` tag for your test user
 - that's it, a new user is ready
 - if you feel like there is an additional field should be added (e.g. for some token address), add it to `type TestUser` in `types.d.ts` file
-

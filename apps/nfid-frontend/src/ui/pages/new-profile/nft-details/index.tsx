@@ -3,6 +3,7 @@ import clsx from "clsx"
 import { useCallback, useContext } from "react"
 import { trimConcat } from "src/ui/atoms/util/util"
 
+import { Tooltip } from "@nfid-frontend/ui"
 import { Application, getWalletName } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
@@ -54,12 +55,14 @@ export const ProfileNFTDetailsPage = ({
       showBackButton
       headerMenu={
         <div className="flex items-center space-x-4">
-          <img
-            className="transition-opacity cursor-pointer hover:opacity-50"
-            src={TransferIcon}
-            alt="transfer"
-            onClick={onTransferNFT}
-          />
+          <Tooltip tip="Transfer">
+            <img
+              className="transition-opacity cursor-pointer hover:opacity-50"
+              src={TransferIcon}
+              alt="transfer"
+              onClick={onTransferNFT}
+            />
+          </Tooltip>
           <Copy
             value={
               nft.blockchain === "Internet Computer"

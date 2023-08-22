@@ -59,7 +59,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
     >
       <Link
         className="relative flex flex-col items-end"
-        to={`${ProfileConstants.base}/${ProfileConstants.assets}/${props.tokenId}`}
+        to={`${ProfileConstants.base}/${ProfileConstants.collectibles}/${props.tokenId}`}
         state={{ nft: props }}
       >
         <div

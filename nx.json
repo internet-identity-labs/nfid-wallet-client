@@ -83,9 +83,6 @@
         "env": "IC_HOST"
       },
       {
-        "env": "CURRCONV_TOKEN"
-      },
-      {
         "env": "ETHERSCAN_API_KEY"
       },
       {

@@ -17,7 +17,6 @@ declare const BTC_SIGNER_CANISTER_ID: string
 declare const IC_SIGNER_CANISTER_ID: string
 declare const CHAIN_NETWORK: string
 declare const BLOCK_CYPHER_TOKEN: string
-declare const CURRCONV_TOKEN: string
 declare const CYCLES_MINTER_CANISTER_ID: string
 declare const ECDSA_SIGNER_CANISTER_ID: string
 declare const ETH_SECRET_STORAGE_CANISTER_ID: string

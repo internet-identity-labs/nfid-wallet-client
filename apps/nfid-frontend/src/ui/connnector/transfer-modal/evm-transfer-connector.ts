@@ -32,6 +32,13 @@ export abstract class EVMTransferConnector<
       cacheKey,
     )
 
+    if (transaction?.errors?.length)
+      return {
+        errorMessage: new Error(
+          `Insufficient ${this.config.feeCurrency} balance for transaction`,
+        ),
+      }
+
     let result: ITransferResponse
 
     try {

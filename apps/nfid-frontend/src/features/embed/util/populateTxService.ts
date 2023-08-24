@@ -1,10 +1,6 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 
-import {
-  DelegationWalletAdapter,
-  ProviderError,
-  loadProfileFromLocalStorage,
-} from "@nfid/integration"
+import { DelegationWalletAdapter, ProviderError } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -18,7 +14,7 @@ export async function populateTransactionData(
   const data = removeEmptyKeys(rpcMessage?.params[0])
   const hostname = "nfid.one"
   const accountId = "0"
-  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  const profile = await fetchProfile()
   const delegation = await getWalletDelegation(
     profile?.anchor,
     hostname,

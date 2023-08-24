@@ -133,7 +133,7 @@ export const verificationService = {
       .setIssuer("https://nfid.one")
       .setSubject(emailAddress)
       .setAudience("https://nfid.one")
-      .setExpirationTime("20s")
+      .setExpirationTime("10m")
       .setNotBefore(0)
       .setJti(requestId)
       .setIssuedAt()

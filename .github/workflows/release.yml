@@ -30,7 +30,6 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
-          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
@@ -82,7 +81,6 @@ jobs:
           dfx deploy --network ic nfid-demo --no-wallet
 
         env:
-          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}

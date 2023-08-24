@@ -352,7 +352,7 @@ jobs:
       - name: Run tests
         run: |
           source ./ci_libs/CI_LIBS.sh
-          
+
           ci_echo_info "Cleaning Allure folders" >&2
           rm -rf apps/nfid-frontend-e2e/allure-results
           rm -rf apps/nfid-frontend-e2e/allure-report
@@ -367,7 +367,6 @@ jobs:
           cat > docker_env << EOF
             IS_DEV=true
             IS_E2E_TEST=true
-            CURRCONV_TOKEN=${CURRCONV_TOKEN}
             ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
             GOERLI_ALCHEMY_API_KEY=${GOERLI_ALCHEMY_API_KEY}
             RARIBLE_X_API_KEY=${RARIBLE_X_API_KEY}
@@ -404,7 +403,6 @@ jobs:
         env:
           IS_DEV: true
           IS_E2E_TEST: true
-          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}

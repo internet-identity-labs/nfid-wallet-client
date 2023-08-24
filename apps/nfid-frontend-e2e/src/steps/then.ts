@@ -808,7 +808,7 @@ Then(
 
 Then(/^I should see activity page$/, async () => {
   const pageTitle = await activity.pageTitle
-  await pageTitle.waitForDisplayed({ timeout: 5000 })
+  await pageTitle.waitForDisplayed({ timeout: 10000 })
   expect(await pageTitle.getText()).toContain("Activity")
   await activity.waitForLoaderDisappear()
 

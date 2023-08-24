@@ -63,7 +63,7 @@ describe("validate derivation origin test suite", () => {
 
     expect(response).toEqual({
       result: "invalid",
-      message: `Resource ${mockDerivationOrigin}/.well-known/ii-alternative-origins has too many entries: To prevent misuse at most ${MAX_ALTERNATIVE_ORIGINS} alternative origins are allowed.`,
+      message: `Resource https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins/rrkah-fqaaa-aaaaa-aaaaq-cai has too many entries: To prevent misuse at most ${MAX_ALTERNATIVE_ORIGINS} alternative origins are allowed.`,
     })
   })
 

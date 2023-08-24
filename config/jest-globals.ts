@@ -30,7 +30,6 @@ export const JEST_GLOBALS = {
   SIGNIN_GOOGLE: "/signin",
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
-  CURRCONV_TOKEN: process.env["CURRCONV_TOKEN"],
   ETHERSCAN_API_KEY: process.env["ETHERSCAN_API_KEY"],
   GOERLI_ALCHEMY_API_KEY: process.env["GOERLI_ALCHEMY_API_KEY"],
   RARIBLE_X_API_KEY: process.env["RARIBLE_X_API_KEY"],
@@ -64,4 +63,6 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify_email",
   AWS_SIGNIN_GOOGLE_V2:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
+  AWS_FETCH_ALTERNATIVE_ORIGINS:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins"
 }

@@ -100,7 +100,6 @@ jobs:
         env:
           IS_DEV: true
           IS_E2E_TEST: true
-          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}

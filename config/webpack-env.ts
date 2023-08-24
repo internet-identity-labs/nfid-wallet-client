@@ -12,7 +12,6 @@ export const serviceConfig = {
   IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
   IC_HOST: JSON.stringify(process.env.IC_HOST),
   II_ENV: JSON.stringify(process.env.II_MODE),
-  CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
   ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
   GOERLI_ALCHEMY_API_KEY: JSON.stringify(process.env.GOERLI_ALCHEMY_API_KEY),
   RARIBLE_X_API_KEY: JSON.stringify(process.env.RARIBLE_X_API_KEY),

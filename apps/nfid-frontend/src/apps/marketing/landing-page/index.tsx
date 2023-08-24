@@ -74,7 +74,7 @@ export const HomeScreen = () => {
   }, [isAuthenticated, navigate])
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <NFIDAuthentication
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}
@@ -96,9 +96,10 @@ export const HomeScreen = () => {
             >
               Knowledge base
             </a>
-            <p className="cursor-pointer" onClick={onContinue}>
-              <AuthButton isAuthenticated={isAuthenticated} />
-            </p>
+            <AuthButton
+              isAuthenticated={isAuthenticated}
+              onAuthClick={onContinue}
+            />
           </div>
         </div>
       </div>

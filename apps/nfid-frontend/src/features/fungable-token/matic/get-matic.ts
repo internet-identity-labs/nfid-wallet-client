@@ -8,11 +8,7 @@ import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
-import {
-  loadProfileFromLocalStorage,
-  polygonAsset,
-  polygonMumbaiAsset,
-} from "@nfid/integration"
+import { polygonAsset, polygonMumbaiAsset } from "@nfid/integration"
 
 export const getAccountsMatic = async (): Promise<TokenBalanceSheet> => {
   const principal = await getIdentity()
@@ -60,6 +56,6 @@ export const transferMatic = async (
 }
 
 const getIdentity = async (): Promise<DelegationIdentity> => {
-  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  const profile = await fetchProfile()
   return await getWalletDelegation(profile.anchor, "nfid.one", "0")
 }

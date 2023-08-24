@@ -6,10 +6,7 @@ import {
 } from "packages/integration/src/lib/asset/types"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
-import {
-  ethereumGoerliAsset,
-  loadProfileFromLocalStorage,
-} from "@nfid/integration"
+import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -18,7 +15,7 @@ import { fetchProfile } from "frontend/integration/identity-manager"
 export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
   const hostname = "nfid.one"
   const accountId = "0"
-  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  const profile = await fetchProfile()
   const delegation = await getWalletDelegation(
     profile?.anchor,
     hostname,

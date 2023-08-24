@@ -11,7 +11,6 @@ import {
   RootWallet,
   authState,
   fetchPrincipals,
-  loadProfileFromLocalStorage,
 } from "@nfid/integration"
 
 import {
@@ -102,7 +101,7 @@ export abstract class ActivityClass<T extends IActivityConfig>
 
   @Cache(connectorCache, { ttl: 3600 })
   protected async getProfile(): Promise<Profile> {
-    return loadProfileFromLocalStorage() ?? (await fetchProfile())
+    return await fetchProfile()
   }
 
   @Cache(connectorCache, { ttl: 3600 })

@@ -124,7 +124,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
       key: token.tokenId,
       val: [
         <Link
-          to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+          to={`${ProfileConstants.base}/${ProfileConstants.collectibles}/${token.tokenId}`}
           state={{ nft: token }}
         >
           <img
@@ -149,7 +149,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
           {token.collection.name}
         </div>,
         <Link
-          to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+          to={`${ProfileConstants.base}/${ProfileConstants.collectibles}/${token.tokenId}`}
           state={{ nft: token }}
           className="truncate block sm:w-[400px]"
           id={`nft_id_${token.tokenId.replace(/\s/g, "")}`}

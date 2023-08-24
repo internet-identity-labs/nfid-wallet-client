@@ -99,7 +99,9 @@ const ProfileSecurityPage = () => {
           <>
             <span>Two-factor authentication</span>
             <Toggle
-              isDisabled={!devices?.passkeys?.length}
+              isDisabled={
+                !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length
+              }
               isChecked={!!profile?.is2fa}
               onToggle={async (val) => {
                 handleWithLoading(
@@ -161,9 +163,7 @@ const ProfileSecurityPage = () => {
                 <DeviceIconDecider icon={Icon.document} />
               </div>
               <div>
-                <p className="text-sm leading-5">
-                  {devices.recoveryDevice.label}
-                </p>
+                <p className="text-sm leading-5">Recovery phrase</p>
                 <p className="text-xs leading-4 text-gray-400">
                   Last activity: {devices.recoveryDevice.last_used}
                 </p>

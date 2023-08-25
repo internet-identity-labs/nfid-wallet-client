@@ -20,6 +20,7 @@ const setupCSP = () => {
       "object-src": "'none'",
       "base-uri": "'self'",
       "connect-src": [
+        "https://tt4jxkw8vg.execute-api.us-east-1.amazonaws.com",
         "'self'",
         "https://ic0.app",
         "https://*.ic0.app",

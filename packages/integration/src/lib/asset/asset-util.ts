@@ -1,6 +1,6 @@
 import { TokenPrice } from "./types"
 
-const COINBASE_RATES_URL = `https://tt4jxkw8vg.execute-api.us-east-1.amazonaws.com/staging/exchange-rates`
+const COINBASE_RATES_URL = `https://tt4jxkw8vg.execute-api.us-east-1.amazonaws.com/staging/exchange-rate`
 const NOT_AVAILABLE = ""
 
 export const getPrice = async (tokens: string[]): Promise<TokenPrice[]> => {

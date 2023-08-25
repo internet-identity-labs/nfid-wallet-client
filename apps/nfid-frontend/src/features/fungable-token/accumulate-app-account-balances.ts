@@ -136,6 +136,7 @@ export const accumulateAppAccountBalance = ({
 
       return {
         ...acc,
+        address: "",
         icon: acc.icon,
         tokenBalance: totalBalanceValue,
         usdBalance: toUSD(toPresentation(totalBalanceValue), exchangeRate),
@@ -162,6 +163,7 @@ export const accumulateAppAccountBalance = ({
       tokenBalance: BigInt(0),
       usdBalance: "0",
       applications: {},
+      address: "",
     },
   )
 }

@@ -1,4 +1,7 @@
-export type NetworkKey = "BTC" | "ETH"
+export enum NetworkKey {
+  BTC = "BTC",
+  EVM = "EVM",
+}
 
 export type CachedAddresses = {
   [scope: string]: {

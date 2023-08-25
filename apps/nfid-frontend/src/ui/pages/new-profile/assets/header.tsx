@@ -44,7 +44,9 @@ export const ProfileAssetsHeader = ({
               options={accountsOptions}
               selectedValues={assetFilter.map((item) => item?.principal ?? "")}
               setSelectedValues={(values) =>
-                setAssetFilter(values.map((item) => ({ principal: item })))
+                setAssetFilter(
+                  values.map((item) => ({ principal: item, accountId: "-1" })),
+                )
               }
               id="account_filter"
             />

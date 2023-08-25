@@ -10,6 +10,7 @@ import {
 } from "src/ui/connnector/types"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
+import { NetworkKey } from "@nfid/client-db"
 import { ethereumGoerliAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -17,9 +18,22 @@ export class EthGoerliAssetConnector extends FungibleAssetConnector<AssetNativeC
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
+    console.timeEnd("prefetch")
+
     return ethereumGoerliAsset
-      .getNativeAccount(identity[0], this.config.icon)
-      .then((matic) => [toNativeTokenConfig(this.config, matic)])
+      .getNativeAccount(
+        identity[0],
+        this.config.icon,
+        await this.getCachedAddress(NetworkKey.EVM),
+      )
+      .then(async (matic) => [
+        toNativeTokenConfig(
+          this.config,
+          matic,
+          NetworkKey.EVM,
+          await this.getProfileAnchor(),
+        ),
+      ])
   }
 }
 

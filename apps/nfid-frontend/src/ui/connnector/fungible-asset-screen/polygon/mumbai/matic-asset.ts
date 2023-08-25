@@ -10,6 +10,7 @@ import {
 } from "src/ui/connnector/types"
 
 import { MaticSvg } from "@nfid-frontend/ui"
+import { NetworkKey } from "@nfid/client-db"
 import { polygonMumbaiAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -18,8 +19,19 @@ export class MaticMumbaiAssetConnector extends FungibleAssetConnector<AssetNativ
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
     return polygonMumbaiAsset
-      .getNativeAccount(identity[0], this.config.icon)
-      .then((matic) => [toNativeTokenConfig(this.config, matic)])
+      .getNativeAccount(
+        identity[0],
+        this.config.icon,
+        await this.getCachedAddress(NetworkKey.EVM),
+      )
+      .then(async (matic) => [
+        toNativeTokenConfig(
+          this.config,
+          matic,
+          NetworkKey.EVM,
+          await this.getProfileAnchor(),
+        ),
+      ])
   }
 }
 

@@ -99,4 +99,5 @@ export interface TokenConfig {
 
 export interface AssetFilter {
   principal: string
+  accountId: string
 }

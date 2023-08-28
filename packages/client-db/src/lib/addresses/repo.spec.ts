@@ -30,7 +30,7 @@ describe("address repo", () => {
     })
     const address = "0x2b6f14C88B256f2EbCb8e22267d5F726D0429a28"
     const expectedCache = {
-      [key]: { ETH: address },
+      [key]: { EVM: address },
     }
 
     storeAddressInLocalCache({
@@ -56,7 +56,7 @@ describe("address repo", () => {
     })
     const address = "0x2b6f14C88B256f2EbCb8e22267d5F726D0429a28"
     const cache = {
-      [key]: { ETH: address },
+      [key]: { EVM: address },
     }
     mockedLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(cache))
 

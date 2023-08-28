@@ -205,6 +205,7 @@ export class Assets {
 
   public async openActivity() {
     const activityIcon = await $("#activity")
+    await activityIcon.waitForClickable({ timeout: 50000 })
     await activityIcon.waitForDisplayed({ timeout: 10000 })
     await activityIcon.click()
   }

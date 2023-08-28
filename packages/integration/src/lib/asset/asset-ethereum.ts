@@ -410,6 +410,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     const tokens = await alchemySdk.core.getTokensForOwner(validAddress, {
       pageKey: cursor,
     })
+
     const price = await getPriceFull()
     return {
       cursor: tokens.pageKey,
@@ -433,6 +434,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     address?: string,
   ): Promise<Array<TokenBalanceSheet>> {
     const tokens = await this.getErc20TokensByUser({ identity, address })
+
     return tokens.tokens.map((l) => {
       return super.computeSheetForRootAccount(
         l,
@@ -614,7 +616,8 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     })
   }
 
-  private priceInUsd(price: any, balance?: string, token?: string) {
+  private priceInUsd(price?: any, balance?: string, token?: string) {
+    if (!price) return ""
     if (!token || !balance) {
       return ""
     }

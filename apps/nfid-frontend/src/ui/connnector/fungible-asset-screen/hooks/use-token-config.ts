@@ -18,9 +18,12 @@ export const useTokenConfig = ({ tokens }: UseTokenConfig) => {
         tokens.map(async (token) => {
           try {
             const res = await fungibleAssetFactory.getTokenConfigs(token)
+
             if (res && res.length) {
-              setConfigs((prevConfigs) =>
-                mergeSingleTokenConfig(prevConfigs, res[0]),
+              res.map((r) =>
+                setConfigs((prevConfigs) =>
+                  mergeSingleTokenConfig(prevConfigs, r),
+                ),
               )
             }
 

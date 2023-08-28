@@ -100,7 +100,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
           />
         }
         showChildrenPadding={false}
-        className="sm:pb-0"
+        className="mb-10 sm:pb-0 "
       >
         <div className="px-5">
           <Loader isLoading={!tokens.length} />

@@ -171,7 +171,13 @@ export abstract class ICMTransferConnector<
           )
 
       setTimeout(() => {
-        mutate((key) => key && Array.isArray(key) && key[0] === "AllBalanceRaw")
+        "tokenId" in request
+          ? mutate(
+              (key) => key && Array.isArray(key) && key[0] === "userTokens",
+            )
+          : mutate(
+              (key) => key && Array.isArray(key) && key[0] === "AllBalanceRaw",
+            )
       }, 1000)
       return {}
     } catch (e: any) {

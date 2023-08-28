@@ -10,8 +10,8 @@ type UseTokenConfig = {
 
 export const useNFTConfig = ({ assetFilters, blockchains }: UseTokenConfig) => {
   const { data: configs, ...rest } = useSWR(
-    [blockchains, assetFilters, "useNftConfig"],
-    ([blockchains, assetFilters]) =>
+    ["useNftConfig", blockchains, assetFilters],
+    ([key, blockchains, assetFilters]) =>
       Promise.all(
         blockchains.map(async (blockchain) => {
           try {

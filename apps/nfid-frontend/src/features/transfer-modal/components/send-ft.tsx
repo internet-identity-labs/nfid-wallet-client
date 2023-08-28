@@ -289,7 +289,6 @@ export const TransferFT = ({
             ],
             () => refetchBalance(),
           )
-          // Update tokens on assets page
           mutate(
             (key) => key && Array.isArray(key) && key[0] === "useTokenConfig",
           )

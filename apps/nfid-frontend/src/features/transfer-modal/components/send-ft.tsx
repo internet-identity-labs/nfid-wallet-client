@@ -5,7 +5,7 @@ import { Token } from "packages/integration/src/lib/asset/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import {
   Button,
@@ -288,6 +288,10 @@ export const TransferFT = ({
               `${selectedConnector.constructor.name}:getAccountsOptions:["${selectedTokenCurrency}"]`,
             ],
             () => refetchBalance(),
+          )
+          // Update tokens on assets page
+          mutate(
+            (key) => key && Array.isArray(key) && key[0] === "useTokenConfig",
           )
         },
         isAssetPadding: true,

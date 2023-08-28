@@ -11,25 +11,27 @@ type UseTokenConfig = {
 
 export const useTokenConfig = ({ tokens }: UseTokenConfig) => {
   const [configs, setConfigs] = useState<TokenConfig[]>([])
-  const { data, ...rest } = useSWR([tokens, "tokenConfig"], ([tokens]) =>
-    Promise.all(
-      tokens.map(async (token) => {
-        try {
-          const res = await fungibleAssetFactory.getTokenConfigs(token)
-          if (res && res.length) {
-            setConfigs((prevConfigs) =>
-              mergeSingleTokenConfig(prevConfigs, res[0]),
-            )
-          }
+  const { data, ...rest } = useSWR(
+    ["useTokenConfig", tokens],
+    ([key, tokens]) =>
+      Promise.all(
+        tokens.map(async (token) => {
+          try {
+            const res = await fungibleAssetFactory.getTokenConfigs(token)
+            if (res && res.length) {
+              setConfigs((prevConfigs) =>
+                mergeSingleTokenConfig(prevConfigs, res[0]),
+              )
+            }
 
-          return res
-        } catch (e) {
-          // FIXME: handle case when request fails
-          console.error("useTokenConfig", e)
-          return []
-        }
-      }),
-    ),
+            return res
+          } catch (e) {
+            // FIXME: handle case when request fails
+            console.error("useTokenConfig", e)
+            return []
+          }
+        }),
+      ),
   )
 
   return { configs, ...rest }

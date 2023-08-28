@@ -3,6 +3,7 @@ import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import { Cache } from "node-ts-cache"
 import { isHex } from "packages/utils/src/lib/validation"
+import { mutate } from "swr"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
@@ -169,6 +170,9 @@ export abstract class ICMTransferConnector<
             request.identity,
           )
 
+      setTimeout(() => {
+        mutate((key) => key && Array.isArray(key) && key[0] === "AllBalanceRaw")
+      }, 1000)
       return {}
     } catch (e: any) {
       return {

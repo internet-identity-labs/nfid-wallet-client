@@ -2,6 +2,7 @@ import { E8S } from "@nfid/integration/token/icp"
 
 export const APP_ACC_BALANCE_SHEET = {
   ICP: {
+    address: "",
     label: "Internet Computer",
     token: "ICP",
     icon: "",

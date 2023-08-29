@@ -14,11 +14,11 @@ Feature:Non Fungible Asset Details
     And Asset preview type is <previewType>
 
     Examples:
-      | anchor | token         | collection | wallet     | id                                                                            | standard  | collection_id                              | about          | previewType |
-      | 31870  | AnilAnimal    | Rarible    | NFIDWallet | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | ERC1155   | 0x67a8fe17db4d441f96f26094677763a2213a3b5f | Testing        | img         |
-      | 31870  | TestERC1155   | Rarible    | NFIDWallet | 94667527331073441490639696296732950748865385440430584394830104056550742032385 | ERC1155   | 0x7c4b13b5893cd82f371c5e28f12fb2f37542bbc5 | Test ERC1155   | img         |
-      | 31870  |               | Rarible    | NFIDWallet | 86090545217057429589019094455964497579787873809883022909766658167983963111527 | ERC721    | 0xd8560c88d1dc85f9ed05b25878e366c49b68bef9 | No description | video       |
-      | 31870  | PandaQueen571 | PandaQueen | NFIDWallet | jzwaa-zikor-uwiaa-aaaaa-b4avk-qaqca-aaai5-q                                   | legacy1.5 | zhibq-piaaa-aaaah-qcvka-cai                | Panda Queen    | img         |
+      | anchor | token         | collection | wallet       | id                                                                            | standard  | collection_id                              | about          | previewType |
+      | 31870  | AnilAnimal    | Rarible    | NFIDWallet   | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | ERC1155   | 0x67a8fe17db4d441f96f26094677763a2213a3b5f | Testing        | img         |
+      | 31870  | TestERC1155   | Rarible    | NFIDWallet   | 94667527331073441490639696296732950748865385440430584394830104056550742032385 | ERC1155   | 0x7c4b13b5893cd82f371c5e28f12fb2f37542bbc5 | Test ERC1155   | img         |
+      | 31870  |               | Rarible    | NFIDWallet   | 86090545217057429589019094455964497579787873809883022909766658167983963111527 | ERC721    | 0xd8560c88d1dc85f9ed05b25878e366c49b68bef9 | No description | video       |
+      | 31870  | PandaQueen571 | PandaQueen | NFIDaccount1 | jzwaa-zikor-uwiaa-aaaaa-b4avk-qaqca-aaai5-q                                   | legacy1.5 | zhibq-piaaa-aaaah-qcvka-cai                | Panda Queen    | img         |
 
   @nft4
   Scenario Outline: User should be able to see txs on NFT details page

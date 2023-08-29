@@ -91,6 +91,7 @@ declare type TransferETHRequest = {
 
 declare type Erc20TokensByUserRequest = {
   identity: Identity
+  address?: string
   cursor?: string
 }
 
@@ -243,6 +244,7 @@ declare interface TokenBalanceSheet {
   blockchain?: string
   contract?: string
   fee?: string
+  address: string
 }
 
 declare interface TransactionRow {

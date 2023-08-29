@@ -412,12 +412,14 @@ Then(/^User opens receive dialog window/, async () => {
 Then(/^User opens send modal window/, async () => {
   browser.setWindowSize(1000, 1000)
   const sendReceiveButton = await $("#sendReceiveButton")
+  const loader = await $("#loader")
+
+  await loader.waitForDisplayed({ reverse: true, timeout: 55000 })
   await sendReceiveButton.waitForDisplayed({
-    timeout: 7000,
+    timeout: 30000,
   })
   await sendReceiveButton.click()
 
-  const loader = await $("#loader")
   await loader.waitForDisplayed({ reverse: true, timeout: 25000 })
 
   await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })

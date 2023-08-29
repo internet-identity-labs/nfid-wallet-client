@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import {
   Button,
@@ -164,6 +164,13 @@ export const TransferNFT = ({
               `${selectedConnector.constructor.name}:getNFTs:[]`,
             ],
             () => refetchNFTs(),
+          )
+
+          mutate(
+            (key) => key && Array.isArray(key) && key[0] === "useNftConfig",
+          )
+          mutate(
+            (key) => key && Array.isArray(key) && key[0] === "useTokenConfig",
           )
         },
       })

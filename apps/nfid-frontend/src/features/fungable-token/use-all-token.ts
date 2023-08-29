@@ -6,18 +6,24 @@ import { AssetFilter, TokenConfig } from "src/ui/connnector/types"
 
 export const useAllToken = (
   assetFilters: AssetFilter[] = [],
-): { token: TokenConfig[] } => {
+): { token: TokenConfig[]; isLoading: boolean } => {
   const tokens = fungibleAssetFactory.getKeys()
-  const { configs: tokenConfigs } = useTokenConfig({ tokens, assetFilters })
+  const { configs: tokenConfigs, isLoading } = useTokenConfig({ tokens })
 
-  const icTokenConfigs = useICTokens(assetFilters)
+  const { configs: icTokenConfigs, isLoading: isICLoading } =
+    useICTokens(assetFilters)
 
   const token: TokenConfig[] = React.useMemo(() => {
-    return [...tokenConfigs, ...icTokenConfigs].sort((a, b) =>
-      a.currency.localeCompare(b.currency),
-    )
-  }, [tokenConfigs, icTokenConfigs])
+    if (assetFilters.length && !assetFilters.find((f) => f.accountId === "-1"))
+      return isICLoading ? [] : icTokenConfigs
+
+    const allTokens = isICLoading
+      ? tokenConfigs
+      : [...tokenConfigs, ...icTokenConfigs]
+
+    return allTokens.sort((a, b) => a.currency.localeCompare(b.currency))
+  }, [assetFilters, icTokenConfigs, isICLoading, tokenConfigs])
 
   console.debug("useAllToken", { token })
-  return { token }
+  return { token, isLoading }
 }

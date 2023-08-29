@@ -62,6 +62,7 @@ export abstract class Asset<T> implements FungibleAsset {
       tokenBalance: token.balance,
     }
     return {
+      address: token.address,
       applications: {
         NFID: appBalance,
       },

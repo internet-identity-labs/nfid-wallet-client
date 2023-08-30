@@ -15,7 +15,9 @@ describe("Targets validation", () => {
     try {
       await validateTargets(["txkre-oyaaa-aaaap-qa3za-cai"], "hernia.one")
     } catch (e) {
-      expect((e as Error).message).toContain("Target canister txkre-oyaaa-aaaap-qa3za-cai does not support")
+      expect((e as Error).message).toContain(
+        "Target canister txkre-oyaaa-aaaap-qa3za-cai does not support",
+      )
     }
   })
 })

@@ -1,5 +1,5 @@
-import {Then} from "@cucumber/cucumber"
-import {format} from "date-fns"
+import { Then } from "@cucumber/cucumber"
+import { format } from "date-fns"
 
 import activity from "../pages/activity.js"
 // import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
@@ -63,7 +63,7 @@ Then(/^Policy is displayed on the policies list$/, async () => {
   const policiesCount = await Vault.policiesList.length
   await browser.waitUntil(
     async () => policiesCount < (await Vault.policiesList.length),
-    {timeout: 10000, timeoutMsg: "Policy has no been added"},
+    { timeout: 10000, timeoutMsg: "Policy has no been added" },
   )
 })
 
@@ -423,7 +423,7 @@ Then(/^User opens send modal window/, async () => {
 
   await loader.waitForDisplayed({ reverse: true, timeout: 25000 })
 
-  await (await $("#sendFT")).waitForDisplayed({timeout: 5000})
+  await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
 })
 
 Then(/^User opens send dialog window/, async () => {

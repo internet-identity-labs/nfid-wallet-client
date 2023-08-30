@@ -17,7 +17,6 @@ import { ethers } from "ethers"
 import { arrayify, hashMessage } from "ethers/lib/utils"
 import fetch from "node-fetch"
 
-import { getIdentity } from "./util"
 import { WALLET_SCOPE } from "@nfid/config"
 import { ii, im, replaceActorIdentity } from "@nfid/integration"
 
@@ -29,9 +28,11 @@ import {
   Chain,
   ecdsaGetAnonymous,
   ecdsaSign,
-  getGlobalKeys, getGlobalKeysThirdParty,
+  getGlobalKeys,
+  getGlobalKeysThirdParty,
   getPublicKey,
 } from "./ecdsa"
+import { getIdentity } from "./util"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",

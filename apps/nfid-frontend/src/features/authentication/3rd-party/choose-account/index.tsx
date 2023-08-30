@@ -17,6 +17,7 @@ import {
   authState,
   authenticationTracking,
   getAnonymousDelegate,
+  getPublicAccountDelegate,
 } from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -108,6 +109,46 @@ export const AuthChooseAccount = ({
     handleSelectAccount,
   ])
 
+  const handleSelectPublic = useCallback(async () => {
+    authenticationTracking.profileChosen({
+      profile: "public",
+    })
+    setIsLoading(true)
+
+    try {
+      const delegation = authState.get().delegationIdentity
+      if (!delegation) throw new Error("No delegation identity")
+      if (!authRequest.targets) throw new Error("No targets")
+
+      const publicDelegation = await getPublicAccountDelegate(
+        authRequest.sessionPublicKey,
+        delegation,
+        authRequest.derivationOrigin ?? authRequest.hostname,
+        authRequest.targets,
+      )
+
+      const authSession: ThirdPartyAuthSession = {
+        anchor: (await fetchProfile()).anchor,
+        signedDelegation: publicDelegation,
+        userPublicKey: new Uint8Array(publicDelegation.publicKey),
+        scope: authRequest.derivationOrigin ?? authRequest.hostname,
+      }
+
+      handleSelectAccount(authSession)
+    } catch (e: any) {
+      console.error(e)
+      toast.error(e.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [
+    authRequest.derivationOrigin,
+    authRequest.hostname,
+    authRequest.sessionPublicKey,
+    authRequest.targets,
+    handleSelectAccount,
+  ])
+
   if (isLoading || isAnonymousLoading) return <BlurredLoader isLoading />
 
   let appHost: string = ""
@@ -147,7 +188,10 @@ export const AuthChooseAccount = ({
         </TooltipProvider>
       </div>
       <div className="w-full space-y-2.5 my-9">
-        <PublicProfileButton />
+        <PublicProfileButton
+          isAvailable={!!authRequest.targets}
+          onClick={handleSelectPublic}
+        />
         {legacyAnonymousProfiles?.map((acc) => (
           <div
             key={acc.label}

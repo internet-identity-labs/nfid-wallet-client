@@ -209,7 +209,6 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       const delegationChain = await getGlobalKeysThirdParty(
         nfidDelegationIdentity,
-        Chain.IC,
         ["txkre-oyaaa-aaaap-qa3za-cai"],
         dappSessionPublicKey,
         "nfid.one",
@@ -223,7 +222,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       console.debug("actualPrincipalId", actualPrincipalId)
 
       expect(actualPrincipalId).toEqual(
-        "o2x4y-ywrji-biykr-2fpeu-oyicx-muien-gecwr-lah4c-r2tcv-rnt4q-xqe",
+        "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe",
       )
     })
   })

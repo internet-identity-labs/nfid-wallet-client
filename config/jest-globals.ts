@@ -21,6 +21,8 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/auth/",
   AWS_SIGNATURE_EVENT:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signature/",
+  AWS_EXCHANGE_RATE:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/exchange-rate/",
   IC_HOST: "https://ic0.app",
   II_ENV: "dev",
   IS_DEV: "",

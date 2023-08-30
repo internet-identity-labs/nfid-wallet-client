@@ -17,7 +17,6 @@ import { ethers } from "ethers"
 import { arrayify, hashMessage } from "ethers/lib/utils"
 import fetch from "node-fetch"
 
-import { getIdentity } from "./util"
 import { WALLET_SCOPE } from "@nfid/config"
 import { ii, im, replaceActorIdentity } from "@nfid/integration"
 
@@ -30,8 +29,10 @@ import {
   ecdsaGetAnonymous,
   ecdsaSign,
   getGlobalKeys,
+  getGlobalKeysThirdParty,
   getPublicKey,
 } from "./ecdsa"
+import { getIdentity } from "./util"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -181,6 +182,48 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       expect(actualPrincipalId).toEqual(
         "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
+      )
+    })
+
+    it("get third party global keys", async function () {
+      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
+
+      const nfidSessionKey = Ed25519KeyIdentity.generate()
+      const chainRoot = await DelegationChain.create(
+        mockedIdentity,
+        nfidSessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const nfidDelegationIdentity = DelegationIdentity.fromDelegation(
+        nfidSessionKey,
+        chainRoot,
+      )
+
+      const dappSessionKey = Ed25519KeyIdentity.generate()
+      // NOTE: this is what we receive from authClient
+      // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
+      const dappSessionPublicKey = new Uint8Array(
+        dappSessionKey.getPublicKey().toDer(),
+      )
+
+      const delegationChain = await getGlobalKeysThirdParty(
+        nfidDelegationIdentity,
+        Chain.IC,
+        ["txkre-oyaaa-aaaap-qa3za-cai"],
+        dappSessionPublicKey,
+        "nfid.one",
+      )
+
+      const actualIdentity = DelegationIdentity.fromDelegation(
+        dappSessionKey,
+        delegationChain,
+      )
+      const actualPrincipalId = actualIdentity.getPrincipal().toText()
+      console.debug("actualPrincipalId", actualPrincipalId)
+
+      expect(actualPrincipalId).toEqual(
+        "o2x4y-ywrji-biykr-2fpeu-oyicx-muien-gecwr-lah4c-r2tcv-rnt4q-xqe",
       )
     })
   })

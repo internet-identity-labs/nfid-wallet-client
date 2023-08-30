@@ -1,8 +1,9 @@
-import { Then } from "@cucumber/cucumber"
-import { format } from "date-fns"
+import {Then} from "@cucumber/cucumber"
+import {format} from "date-fns"
 
 import activity from "../pages/activity.js"
 // import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
+import DemoAppPage from "../pages/demoApp-page.js"
 import Assets from "../pages/assets.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
@@ -62,7 +63,7 @@ Then(/^Policy is displayed on the policies list$/, async () => {
   const policiesCount = await Vault.policiesList.length
   await browser.waitUntil(
     async () => policiesCount < (await Vault.policiesList.length),
-    { timeout: 10000, timeoutMsg: "Policy has no been added" },
+    {timeout: 10000, timeoutMsg: "Policy has no been added"},
   )
 })
 
@@ -422,7 +423,7 @@ Then(/^User opens send modal window/, async () => {
 
   await loader.waitForDisplayed({ reverse: true, timeout: 25000 })
 
-  await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
+  await (await $("#sendFT")).waitForDisplayed({timeout: 5000})
 })
 
 Then(/^User opens send dialog window/, async () => {
@@ -525,18 +526,22 @@ Then(/^Account ID is ([^"]*)/, async (principal: string) => {
   let address = await Assets.getAccountId(true)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressElement.getText()),
+    "..." +
+    (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
-Then(/^Principal is ([^"]*)/, async (principal: string) => {
-  let address = await Assets.getAccountId(false)
-  expect(
-    (await address.firstAddressPart.getText()) +
+Then(/^Principal( in demoApp)? is ([^"]*)/, async (isDemoApp: string, principal: string) => {
+  if (isDemoApp === " in demoApp") {
+    expect((await DemoAppPage.getPrincipalId()).substring(18, 81)).toEqual(principal)
+  } else {
+    let address = await Assets.getAccountId(false)
+    expect(
+      (await address.firstAddressPart.getText()) +
       "..." +
-      (await address.secondAddressElement.getText()),
-  ).toEqual(principal)
+      (await address.secondAddressElement.getText())
+    ).toEqual(principal)
+  }
 })
 
 Then(

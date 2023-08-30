@@ -1,7 +1,7 @@
-import { Given } from "@cucumber/cucumber"
+import {Given} from "@cucumber/cucumber"
 
 import HomePage from "../pages/home-page.js"
-import homePage from "../pages/home-page.js"
+import DemoAppPage from "../pages/demoApp-page.js"
 import clearAuthState from "./support/action/clear-auth-state.js"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab.js"
 import openWebsite from "./support/action/openWebsite.js"
@@ -36,12 +36,16 @@ Given(
 
 Given(/^authstate is cleared$/, clearAuthState)
 
-Given(/^User authenticates with google account$/, async () => {
-  await homePage.openAuthModal()
-  await HomePage.authenticateWithGoogle()
-  await HomePage.switchToWindow("last")
-  await HomePage.pickGoogleAccount()
-  await HomePage.switchToWindow()
+Given(/^User authenticates( to demoApp)? with google account$/, async (isDemoApp: string) => {
+  if (isDemoApp === " to demoApp") {
+    await DemoAppPage.loginUsingIframe()
+  } else {
+    await HomePage.openAuthModal()
+    await HomePage.authenticateWithGoogle()
+    await HomePage.switchToWindow("last")
+    await HomePage.pickGoogleAccount()
+    await HomePage.switchToWindow()
+  }
 })
 
 Given(/^User authenticates with enhanced security$/, async function () {
@@ -62,7 +66,12 @@ Given(/^User signs in ?(?:(.*))?$/, async function (mobile: string) {
   else await HomePage.signIn()
 })
 
-Given(/^User opens NFID ?(?:(.*))?$/, async function (site: string) {
+Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
+  if (site != null) await browser.url(DemoAppPage.demoAppBaseUrl + site)
+  else await browser.url(DemoAppPage.demoAppBaseUrl)
+})
+
+Given(/^User opens NFID ?(.*)?$/, async function (site: string) {
   if (site === "site") await HomePage.openBaseUrl()
   else await HomePage.openPage(site)
   await HomePage.waitForLoaderDisappear()

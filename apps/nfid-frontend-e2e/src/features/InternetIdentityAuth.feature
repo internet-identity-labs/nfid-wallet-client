@@ -6,7 +6,7 @@ Feature: User should be able to register and authenticate from desktop
   # Scenario: User authenticates with Internet Identity anchor
 
   @ii-recovery-phrase
-  Scenario: User authenticates with Internet Identity recovery phrase
+  Scenario Outline: User authenticates with Internet Identity recovery phrase
     Given User opens NFID /recover-nfid/enter-recovery-phrase
     When User enters recovery phrase of <anchor> anchor
     Then I toggle checkbox "#has-verified-domain"
@@ -16,4 +16,3 @@ Feature: User should be able to register and authenticate from desktop
     Examples:
       | anchor |
       | 28593  |
-

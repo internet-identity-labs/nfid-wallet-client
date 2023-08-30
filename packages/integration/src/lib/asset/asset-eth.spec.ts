@@ -81,7 +81,7 @@ describe("Ethereum Asset", () => {
           type: "nft",
           name: "adaasda",
           preview:
-            "https://cloudflare-ipfs.com/ipfs/QmX8519rSfPT58xVD2ZaRM1exBB81J56QAPwF8MFHiE4Hi",
+            "https://ipfs.raribleuserdata.com/ipfs/QmX8519rSfPT58xVD2ZaRM1exBB81J56QAPwF8MFHiE4Hi",
           previewType: "image",
         },
       },
@@ -97,7 +97,7 @@ describe("Ethereum Asset", () => {
           type: "nft",
           name: "test1",
           preview:
-            "https://cloudflare-ipfs.com/ipfs/bafybeihgdszr3zaeb2fceb2axuyoajsker2topvye3pgdnzzoiq35f2ulq/image.png",
+            "https://ipfs.raribleuserdata.com/ipfs/bafybeihgdszr3zaeb2fceb2axuyoajsker2topvye3pgdnzzoiq35f2ulq/image.png",
           previewType: "image",
           amount: "1",
         },

@@ -97,6 +97,9 @@ export class Assets {
     await sendReceiveButton.waitForDisplayed({
       timeout: 7000,
     })
+    await sendReceiveButton.waitForClickable({
+      timeout: 7000,
+    })
     await sendReceiveButton.click()
     await loader.waitForDisplayed({ reverse: true, timeout: 40000 })
     await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
@@ -120,6 +123,7 @@ export class Assets {
     await tabReceive.waitForDisplayed({
       timeout: 10000,
     })
+    await tabReceive.waitForClickable({ timeout: 20000 })
     await tabReceive.click()
     await $("#option_Network").waitForDisplayed({ timeout: 30000 })
   }

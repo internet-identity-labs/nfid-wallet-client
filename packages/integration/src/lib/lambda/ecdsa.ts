@@ -1,14 +1,11 @@
-import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
+import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
 
-import { ONE_MINUTE_IN_MS } from "@nfid/config"
+import {ONE_MINUTE_IN_MS} from "@nfid/config"
 
-import { integrationCache } from "../../cache"
-import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
-import { ic } from "../agent/index"
+import {integrationCache} from "../../cache"
+import {btcSigner, ecdsaSigner, replaceActorIdentity} from "../actors"
+import {ic} from "../agent/index"
+import {validateTargets} from "./targets";
 
 export enum Chain {
   BTC = "BTC",
@@ -26,37 +23,56 @@ export function toHexString(bytes: ArrayBuffer): string {
     "",
   )
 }
+export async function getGlobalKeysThirdParty(
+  identity: DelegationIdentity,
+  chain: Chain,
+  targets: string[],
+  sessionPublicKey: Uint8Array,
+  origin: string
+): Promise<DelegationChain> {
+  await validateTargets(targets, origin);
+
+  const lambdaPublicKey = await fetchLambdaPublicKey(chain);
+
+  const delegationChainForLambda = await createDelegationChain(
+    identity,
+    lambdaPublicKey,
+    new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
+    { previous: identity.getDelegation() },
+  );
+
+  const request = {
+    chain,
+    delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
+    sessionPublicKey:  toHexString(sessionPublicKey),
+    tempPublicKey: lambdaPublicKey,
+    targets,
+  }
+
+  return fetchSignUrl(request);
+}
 
 export async function getGlobalKeys(
   identity: DelegationIdentity,
   chain: Chain,
-  targets: string[],
+  targets: string[]
 ): Promise<DelegationIdentity> {
   const cachedValue = await integrationCache.getItem(
-    JSON.stringify({ identity, chain, targets }),
-  )
-  if (cachedValue) return cachedValue as any
+    JSON.stringify({ identity, chain, targets })
+  );
 
-  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
-  const lambdaPublicKey = await fetch(registerUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chain,
-    }),
-  }).then(async (response) => {
-    if (!response.ok) throw new Error(await response.text())
-    return (await response.json()).public_key
-  })
+  if (cachedValue) return cachedValue as any;
 
-  const delegationChainForLambda = await DelegationChain.create(
+  const lambdaPublicKey = await fetchLambdaPublicKey(chain);
+
+  const delegationChainForLambda = await createDelegationChain(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
     { previous: identity.getDelegation() },
-  )
+  );
 
-  const sessionKey = Ed25519KeyIdentity.generate()
+  const sessionKey = Ed25519KeyIdentity.generate();
   const request = {
     chain,
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
@@ -64,27 +80,20 @@ export async function getGlobalKeys(
     tempPublicKey: lambdaPublicKey,
     targets,
   }
-  const signUrl = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
-  const chainResponse = await fetch(signUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
-  }).then(async (response) => {
-    if (!response.ok) throw new Error(await response.text())
-    return await response.json()
-  })
+
+  const chainResponse = await fetchSignUrl(request);
   const response = DelegationIdentity.fromDelegation(
     sessionKey,
     DelegationChain.fromJSON(chainResponse),
-  )
+  );
 
-  integrationCache.setItem(
-    JSON.stringify({ identity, chain, targets }),
+  await integrationCache.setItem(
+    JSON.stringify({identity, chain, targets}),
     response,
-    { ttl: 600 },
-  )
+    {ttl: 600},
+  );
 
-  return response
+  return response;
 }
 
 export async function ecdsaSign(
@@ -92,23 +101,15 @@ export async function ecdsaSign(
   identity: DelegationIdentity,
   chain: Chain,
 ): Promise<string> {
-  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
-  const lambdaPublicKey = await fetch(registerUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chain,
-    }),
-  }).then(async (response) => {
-    if (!response.ok) throw new Error(await response.text())
-    return (await response.json()).public_key
-  })
-  const delegationChainForLambda = await DelegationChain.create(
+  const lambdaPublicKey = await fetchLambdaPublicKey(chain);
+
+  const delegationChainForLambda = await createDelegationChain(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
     { previous: identity.getDelegation() },
-  )
+  );
+
   const request = {
     chain,
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
@@ -132,23 +133,15 @@ export async function ecdsaGetAnonymous(
   identity: DelegationIdentity,
   chain: Chain,
 ): Promise<DelegationChain> {
-  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
-  const lambdaPublicKey = await fetch(registerUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chain,
-    }),
-  }).then(async (response) => {
-    if (!response.ok) throw new Error(await response.text())
-    return (await response.json()).public_key
-  })
-  const delegationChainForLambda = await DelegationChain.create(
+  const lambdaPublicKey = await fetchLambdaPublicKey(chain);
+
+  const delegationChainForLambda = await createDelegationChain(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
     { previous: identity.getDelegation() },
-  )
+  );
+
   const request = {
     chain,
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
@@ -164,7 +157,6 @@ export async function ecdsaGetAnonymous(
   }).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
     const a = await response.json()
-    console.log(a)
     return DelegationChain.fromJSON(a)
   })
 }
@@ -173,17 +165,8 @@ export async function ecdsaRegisterNewKeyPair(
   identity: DelegationIdentity,
   chain: Chain,
 ): Promise<string> {
-  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
-  const lambdaPublicKey = await fetch(registerUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chain,
-    }),
-  }).then(async (response) => {
-    if (!response.ok) throw new Error(await response.text())
-    return (await response.json()).public_key
-  })
+  const lambdaPublicKey = await fetchLambdaPublicKey(chain);
+
   const delegationChainForLambda = await DelegationChain.create(
     identity,
     Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
@@ -244,4 +227,42 @@ function defineChainCanister(chain: Chain) {
     case Chain.IC:
       throw Error("Deprecated")
   }
+}
+
+async function fetchLambdaPublicKey(chain: Chain): Promise<string> {
+  const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER;
+  const response = await fetch(registerUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chain }),
+  });
+
+  if (!response.ok) throw new Error(await response.text());
+  return (await response.json()).public_key;
+}
+
+async function createDelegationChain(
+  identity: DelegationIdentity,
+  lambdaPublicKey: string,
+  expirationDate: Date,
+  options: Record<string, any>
+): Promise<DelegationChain> {
+  return await DelegationChain.create(
+    identity,
+    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    expirationDate,
+    options
+  );
+}
+
+async function fetchSignUrl(request: Record<string, any>): Promise<any> {
+  const signUrl = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN;
+  const response = await fetch(signUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) throw new Error(await response.text());
+  return await response.json();
 }

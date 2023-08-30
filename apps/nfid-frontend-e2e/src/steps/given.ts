@@ -1,4 +1,4 @@
-import {Given} from "@cucumber/cucumber"
+import { Given } from "@cucumber/cucumber"
 
 import HomePage from "../pages/home-page.js"
 import DemoAppPage from "../pages/demoApp-page.js"

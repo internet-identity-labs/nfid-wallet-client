@@ -1,4 +1,5 @@
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
+import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { assign, createMachine } from "xstate"
 
 import { Application, authState } from "@nfid/integration"
@@ -60,7 +61,12 @@ type Services = {
 type NFIDEmbedMachineContext = {
   appMeta: AuthorizingAppMeta
   authRequest: {
-    hostname: string
+    maxTimeToLive?: bigint
+    sessionPublicKey?: Uint8Array
+    hostname?: string
+    derivationOrigin?: string
+    targets?: string[]
+    chain?: Chain
   }
   authSession?: AuthSession
   requestOrigin?: string
@@ -85,9 +91,7 @@ export const NFIDEmbedMachineV2 = createMachine(
     context: {
       messageQueue: [],
       appMeta: {},
-      authRequest: {
-        hostname: "",
-      },
+      authRequest: {},
     },
     states: {
       RPC_RECEIVER: {

@@ -1,4 +1,4 @@
-import { filter, fromEvent, map } from "rxjs"
+import { filter, fromEvent } from "rxjs"
 
 import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
 
@@ -40,22 +40,6 @@ export const rpcMessages = windowMessages.pipe(
   filter((event) => event.data && event.data.jsonrpc === "2.0"),
 )
 
-export const RPCReceiver = () =>
-  rpcMessages.pipe(
-    map(async ({ data, origin }) => {
-      switch (data.method) {
-        case "eth_accounts":
-          return { type: "CONNECT_ACCOUNT", data, origin }
-        case "eth_sendTransaction":
-          return { type: "SEND_TRANSACTION", data, origin }
-        case "eth_signTypedData_v4":
-          return { type: "SIGN_TYPED_DATA", data, origin }
-        default:
-          throw new Error(`Unknown method: ${data.method}`)
-      }
-    }),
-  )
-
 type ProcedureDetails = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
@@ -73,6 +57,7 @@ export const RPCReceiverV2 =
       async ({ data: rpcMessage, origin }) => {
         console.debug("RPCReceiverV2", { rpcMessage, origin })
         switch (rpcMessage.method) {
+          case "ic_getDelegation":
           case "eth_accounts":
             return send({
               type: "RPC_MESSAGE",

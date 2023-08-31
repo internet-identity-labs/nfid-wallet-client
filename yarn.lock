@@ -4541,6 +4541,11 @@
     tweetnacl "1.0.3"
     util-deprecate "1.0.2"
 
+"@nfid/embed@^0.0.8-alpha.0":
+  version "0.0.8-alpha.0"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.0.8-alpha.0.tgz#574d0e6901ebcc1d7e7e50e0720a935f85545806"
+  integrity sha512-fREN9JE4/Zd/Tms9JyRZoiHpzo103x4TYpcdWRP9ELafAHobjacJbAWb4VKY8MnCTBD4YrqqzIkiH9HHOIG3Eg==
+
 "@nfid/wallet@1.1.0-alpha.0":
   version "1.1.0-alpha.0"
   resolved "https://registry.yarnpkg.com/@nfid/wallet/-/wallet-1.1.0-alpha.0.tgz#3c81e50bc8472ed6e50769ce50feb378b757e723"

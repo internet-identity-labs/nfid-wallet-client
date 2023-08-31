@@ -56,6 +56,7 @@ export default function NFIDEmbedCoordinator() {
         <ProcedureApprovalCoordinator
           appMeta={state.context.appMeta}
           authSession={state.context.authSession}
+          authRequest={state.context.authRequest}
           rpcMessage={state.context.rpcMessage}
           rpcMessageDecoded={state.context.rpcMessageDecoded}
           onConfirm={(data) => {

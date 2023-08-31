@@ -324,8 +324,11 @@ export const NFIDEmbedMachineV2 = createMachine(
       hasProcedure: (context: NFIDEmbedMachineContext) => !!context.rpcMessage,
       isReady: (_: NFIDEmbedMachineContext, __: Events, { state }: any) =>
         state.matches("HANDLE_PROCEDURE.READY"),
-      isAutoApprovable: (context: NFIDEmbedMachineContext) =>
-        ["eth_accounts"].includes(context.rpcMessage?.method ?? ""),
+      isAutoApprovable: (context: NFIDEmbedMachineContext) => {
+        const isAuthoApprovable = ["eth_accounts", "ic_renewDelegation"].includes(context.rpcMessage?.method ?? "")
+        console.debug("NFIDEmbedMachineV2", {isAuthoApprovable})
+        return ["eth_accounts", "ic_renewDelegation"].includes(context.rpcMessage?.method ?? "")
+      },
     },
     services: {
       CheckApplicationMeta,

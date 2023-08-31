@@ -531,8 +531,8 @@ Then(/^Account ID is ([^"]*)/, async (principal: string) => {
   ).toEqual(principal)
 })
 
-Then(/^Principal( in demoApp)? is ([^"]*)/, async (isDemoApp: string, principal: string) => {
-  if (isDemoApp === " in demoApp") {
+Then(/^Principal ?(.*)? is ([^"]*)/, async (isDemoApp: string, principal: string) => {
+  if (isDemoApp === "in demoApp") {
     expect((await DemoAppPage.getPrincipalId()).substring(18, 81)).toEqual(principal)
   } else {
     let address = await Assets.getAccountId(false)

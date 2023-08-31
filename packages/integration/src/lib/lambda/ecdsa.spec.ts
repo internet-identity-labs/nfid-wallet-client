@@ -30,9 +30,10 @@ import {
   ecdsaSign,
   getGlobalKeys,
   getGlobalKeysThirdParty,
-  getPublicKey,
+  getPublicKey, renewDelegationThirdParty,
 } from "./ecdsa"
 import { getIdentity } from "./util"
+import {LocalStorageMock} from "./local-storage-mock";
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -41,8 +42,14 @@ const identity: JsonnableEd25519KeyIdentity = [
 
 describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(80000)
-
+  const expectedGlobalAcc = "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {
+
+    const localStorageMock = new LocalStorageMock();
+    beforeAll(() => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+    });
+
     it("register ecdsa ETH", async function () {
       const mockedIdentity = getIdentity("87654321876543218765432187654311")
       const sessionKey = Ed25519KeyIdentity.generate()
@@ -129,9 +136,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )
-      expect(globalICIdentity.getPrincipal().toText()).toEqual(
-        "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe",
-      )
+      expect(globalICIdentity.getPrincipal().toText()).toEqual(expectedGlobalAcc)
       await replaceActorIdentity(ii, globalICIdentity)
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)
@@ -209,7 +214,6 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       const delegationChain = await getGlobalKeysThirdParty(
         nfidDelegationIdentity,
-        Chain.IC,
         ["txkre-oyaaa-aaaap-qa3za-cai"],
         dappSessionPublicKey,
         "nfid.one",
@@ -222,9 +226,19 @@ describe("Lambda Sign/Register ECDSA", () => {
       const actualPrincipalId = actualIdentity.getPrincipal().toText()
       console.debug("actualPrincipalId", actualPrincipalId)
 
-      expect(actualPrincipalId).toEqual(
-        "o2x4y-ywrji-biykr-2fpeu-oyicx-muien-gecwr-lah4c-r2tcv-rnt4q-xqe",
+      expect(actualPrincipalId).toEqual(expectedGlobalAcc)
+
+      const delegationChainRenewed = await renewDelegationThirdParty(
+        nfidDelegationIdentity,
+        ["txkre-oyaaa-aaaap-qa3za-cai"],
+        "nfid.one",
       )
+      const renewedIdentity = DelegationIdentity.fromDelegation(
+        dappSessionKey,
+        delegationChainRenewed,
+      )
+      const renewedPrincipalId = renewedIdentity.getPrincipal().toText()
+      expect(actualPrincipalId).toEqual(renewedPrincipalId)
     })
   })
 })

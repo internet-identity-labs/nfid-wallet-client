@@ -5,19 +5,20 @@ import {
   ProviderError,
   ThirdPartyAuthSession,
   authState,
-  fetchDelegate,
   renewDelegation,
 } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
-import { fetchProfile } from "frontend/integration/identity-manager"
 import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
-import { renewDelegationThirdParty } from "packages/integration/src/lib/lambda/ecdsa"
 
-type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession, requestOrigin?: string }
+type CommonContext = {
+  rpcMessage?: RPCMessage
+  authSession?: AuthSession
+  requestOrigin?: string
+}
 
 export type ApproveSignatureEvent = {
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
@@ -34,6 +35,11 @@ export const ExecuteProcedureService = async (
   { rpcMessage, authSession, requestOrigin }: ExecuteProcedureServiceContext,
   event: ExecuteProcedureEvent,
 ): Promise<RPCResponse> => {
+  console.debug("ExecuteProcedureService", {
+    rpcMessage,
+    authSession,
+    requestOrigin,
+  })
   if (!rpcMessage)
     throw new Error("ExecuteProcedureService: missing rpcMessage")
   if (!authSession)
@@ -66,14 +72,26 @@ export const ExecuteProcedureService = async (
     }
     case "ic_renewDelegation": {
       console.debug("ExecuteProcedureService ic_renewDelegation")
-      const {targets} = rpcMessage.params[0]
-      console.debug("ExecuteProcedureService ic_renewDelegation", {targets})
+      const { targets } = rpcMessage.params[0]
+      console.debug("ExecuteProcedureService ic_renewDelegation", { targets })
       const delegationIdentity = authState.get().delegationIdentity
       if (!delegationIdentity) throw new Error("missing delegationIdentity")
       if (!requestOrigin) throw new Error("missing requestOrigin")
 
-      const delegation = await renewDelegation(delegationIdentity, requestOrigin, targets)
-      console.debug("ExecuteProcedureService ic_renewDelegation", {delegation})
+      let delegation
+      try {
+        delegation = await renewDelegation(
+          delegationIdentity,
+          requestOrigin,
+          targets,
+        )
+      } catch (error) {
+        console.error("ExecuteProcedureService ic_renewDelegation", { error })
+        return { ...rpcBase, result: "error" }
+      }
+      console.debug("ExecuteProcedureService ic_renewDelegation", {
+        delegation,
+      })
 
       const delegations = [prepareClientDelegate(delegation)]
       const userPublicKey = delegation.publicKey

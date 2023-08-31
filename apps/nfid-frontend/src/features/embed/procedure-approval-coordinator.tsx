@@ -118,10 +118,10 @@ export const ProcedureApprovalCoordinator: React.FC<
         <AuthChooseAccount
           appMeta={appMeta}
           authRequest={authRequest as AuthorizationRequest}
-          handleSelectAccount={function (
-            authSession: ThirdPartyAuthSession,
-          ): void {
-            throw new Error("Function not implemented.")
+          handleSelectAccount={(authSession: ThirdPartyAuthSession) => {
+            console.debug("AuthChooseAccount.handleSelectAccount", {
+              authSession,
+            })
           }}
         />
       )

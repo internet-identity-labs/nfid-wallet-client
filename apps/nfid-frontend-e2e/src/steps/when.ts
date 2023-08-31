@@ -191,8 +191,8 @@ When(
         // @ts-ignore
         this.setAuthState(authState)
       }
-      window.location.href = "/profile/assets"
     }, testUser.authstate)
+    await HomePage.openPage("/profile/assets")
   },
 )
 

@@ -63,6 +63,15 @@ export default function NFIDEmbedCoordinator() {
             console.debug("onConfirm", { data })
             send({ type: "APPROVE", data })
           }}
+          onConfirmGetDelegate={(thirdPartyAuthSession) => {
+            console.debug("ProcedureApprovalCoordinator.onConfirmGetDelegate", {
+              thirdPartyAuthSession,
+            })
+            send({
+              type: "APPROVE_IC_GET_DELEGATION",
+              data: thirdPartyAuthSession,
+            })
+          }}
           onReject={() => send({ type: "CANCEL" })}
         />
       )

@@ -2,7 +2,11 @@ import { getExpirationDelay } from "packages/integration/src/lib/authentication/
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { assign, createMachine } from "xstate"
 
-import { Application, authState } from "@nfid/integration"
+import {
+  Application,
+  ThirdPartyAuthSession,
+  authState,
+} from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
@@ -35,6 +39,10 @@ type Events =
   | {
       type: "APPROVE"
       data?: ApproveSignatureEvent
+    }
+  | {
+      type: "APPROVE_IC_GET_DELEGATION"
+      data: ThirdPartyAuthSession
     }
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
@@ -201,6 +209,7 @@ export const NFIDEmbedMachineV2 = createMachine(
           AWAIT_PROCEDURE_APPROVAL: {
             on: {
               APPROVE: "EXECUTE_PROCEDURE",
+              APPROVE_IC_GET_DELEGATION: "EXECUTE_PROCEDURE",
               CANCEL: {
                 target: "READY",
                 actions: ["sendRPCCancelResponse", "updateProcedure"],

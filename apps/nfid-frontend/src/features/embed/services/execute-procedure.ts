@@ -3,6 +3,7 @@ import { TransactionRequest } from "@ethersproject/abstract-provider"
 import {
   DelegationWalletAdapter,
   ProviderError,
+  ThirdPartyAuthSession,
   fetchDelegate,
 } from "@nfid/integration"
 
@@ -21,6 +22,7 @@ export type ApproveSignatureEvent = {
 
 type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
+  | { type: "APPROVE_IC_GET_DELEGATION"; data?: ThirdPartyAuthSession }
   | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext
@@ -39,27 +41,13 @@ export const ExecuteProcedureService = async (
   const { rpcUrl } = rpcMessage.options
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
-      console.debug("ExecuteProcedureService ic_getDelegation")
-      // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-      // REPLACE BY NEW AUTH INTEGRATION LAYER
-      const account = await fetchProfile()
+      if (event.type !== "APPROVE_IC_GET_DELEGATION")
+        throw new Error("wrong event type")
 
-      const delegate = await fetchDelegate(
-        account.anchor,
-        "WHAT DO WE PUT HERE?",
-        Array.from(rpcMessage.params[0].sessionPublicKey),
-        rpcMessage.params[0].maxTimeToLive,
-      )
+      const delegate = event.data as ThirdPartyAuthSession
+      console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
       const delegations = [prepareClientDelegate(delegate.signedDelegation)]
       const userPublicKey = delegate.userPublicKey
-      // logAuthorizeApplication({
-      //   scope: delegate.scope,
-      //   anchor: delegate.anchor,
-      //   applicationName: "FIXME: application.meta.NFID-Demo",
-      //   chain: "Internet Computer",
-      // })
-      // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      // REPLACE BY NEW AUTH INTEGRATION LAYER
 
       return { ...rpcBase, result: { delegations, userPublicKey } }
     }

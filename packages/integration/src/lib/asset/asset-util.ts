@@ -26,7 +26,6 @@ export class PriceService {
 
   @Cache(integrationCache, { ttl: 10 })
   public async fetchPrices() {
-    console.log("AWS_EXCHANGE_RATE", AWS_EXCHANGE_RATE)
     return fetch(AWS_EXCHANGE_RATE)
     .then(async (response) => {
       if (!response.ok) {

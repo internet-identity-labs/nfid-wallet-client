@@ -1,23 +1,23 @@
 export class LocalStorageMock {
-  private store: Record<string, string>;
+  private store: Record<string, string>
 
   constructor() {
-    this.store = {};
+    this.store = {}
   }
 
   clear() {
-    this.store = {};
+    this.store = {}
   }
 
   getItem(key: string) {
-    return this.store[key] || null;
+    return this.store[key] || null
   }
 
   setItem(key: string, value: string) {
-    this.store[key] = value;
+    this.store[key] = value
   }
 
   removeItem(key: string) {
-    delete this.store[key];
+    delete this.store[key]
   }
 }

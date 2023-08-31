@@ -9,8 +9,8 @@ import { ONE_MINUTE_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
+import { getFromStorage, saveToStorage } from "./damin-key-repository"
 import { validateTargets } from "./targets"
-import {getFromStorage, saveToStorage} from "./damin-key-repository";
 
 export enum Chain {
   BTC = "BTC",
@@ -47,15 +47,20 @@ export async function getGlobalKeysThirdParty(
 
   const delegationJSON = await fetchSignUrl(request)
   const defaultExpirationInMinutes = 120
-  saveToStorage(origin, toHexString(sessionPublicKey),  defaultExpirationInMinutes)
-  return DelegationChain.fromJSON(delegationJSON)}
+  saveToStorage(
+    origin,
+    toHexString(sessionPublicKey),
+    defaultExpirationInMinutes,
+  )
+  return DelegationChain.fromJSON(delegationJSON)
+}
 
 export async function renewDelegationThirdParty(
   identity: DelegationIdentity,
   targets: string[],
   origin: string,
 ): Promise<DelegationChain> {
-  const sessionPublicKey =new Uint8Array(fromHexString( getFromStorage(origin)))
+  const sessionPublicKey = new Uint8Array(fromHexString(getFromStorage(origin)))
   return getGlobalKeysThirdParty(identity, targets, sessionPublicKey, origin)
 }
 
@@ -282,9 +287,9 @@ export function toHexString(bytes: ArrayBuffer): string {
 }
 
 function fromHexString(hexString: string): ArrayBuffer {
-  const bytes = new Uint8Array(hexString.length / 2);
+  const bytes = new Uint8Array(hexString.length / 2)
   for (let i = 0; i < hexString.length; i += 2) {
-    bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
+    bytes[i / 2] = parseInt(hexString.substr(i, 2), 16)
   }
-  return bytes.buffer;
+  return bytes.buffer
 }

@@ -30,10 +30,11 @@ import {
   ecdsaSign,
   getGlobalKeys,
   getGlobalKeysThirdParty,
-  getPublicKey, renewDelegationThirdParty,
+  getPublicKey,
+  renewDelegationThirdParty,
 } from "./ecdsa"
+import { LocalStorageMock } from "./local-storage-mock"
 import { getIdentity } from "./util"
-import {LocalStorageMock} from "./local-storage-mock";
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -42,13 +43,13 @@ const identity: JsonnableEd25519KeyIdentity = [
 
 describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(80000)
-  const expectedGlobalAcc = "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
+  const expectedGlobalAcc =
+    "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {
-
-    const localStorageMock = new LocalStorageMock();
+    const localStorageMock = new LocalStorageMock()
     beforeAll(() => {
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-    });
+      Object.defineProperty(window, "localStorage", { value: localStorageMock })
+    })
 
     it("register ecdsa ETH", async function () {
       const mockedIdentity = getIdentity("87654321876543218765432187654311")
@@ -136,7 +137,9 @@ describe("Lambda Sign/Register ECDSA", () => {
         Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )
-      expect(globalICIdentity.getPrincipal().toText()).toEqual(expectedGlobalAcc)
+      expect(globalICIdentity.getPrincipal().toText()).toEqual(
+        expectedGlobalAcc,
+      )
       await replaceActorIdentity(ii, globalICIdentity)
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)

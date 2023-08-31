@@ -46,7 +46,9 @@ describe("Lambda Sign/Register ECDSA", () => {
   const expectedGlobalAcc =
     "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {
+
     const localStorageMock = new LocalStorageMock()
+
     beforeAll(() => {
       Object.defineProperty(window, "localStorage", { value: localStorageMock })
     })
@@ -207,6 +209,17 @@ describe("Lambda Sign/Register ECDSA", () => {
         nfidSessionKey,
         chainRoot,
       )
+
+      try {
+        await renewDelegationThirdParty(
+          nfidDelegationIdentity,
+          ["txkre-oyaaa-aaaap-qa3za-cai"],
+          "nfid.one",
+        )
+        fail("Should not come here")
+      } catch (e:any) {
+        expect(e.message).toContain("not found")
+      }
 
       const dappSessionKey = Ed25519KeyIdentity.generate()
       // NOTE: this is what we receive from authClient

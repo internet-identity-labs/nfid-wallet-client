@@ -1,8 +1,14 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 
-import { DelegationWalletAdapter, ProviderError } from "@nfid/integration"
+import {
+  DelegationWalletAdapter,
+  ProviderError,
+  fetchDelegate,
+} from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { fetchProfile } from "frontend/integration/identity-manager"
+import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
@@ -32,6 +38,31 @@ export const ExecuteProcedureService = async (
   const delegation = await getWalletDelegation(authSession.anchor)
   const { rpcUrl } = rpcMessage.options
   switch (rpcMessage.method) {
+    case "ic_getDelegation": {
+      console.debug("ExecuteProcedureService ic_getDelegation")
+      // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+      // REPLACE BY NEW AUTH INTEGRATION LAYER
+      const account = await fetchProfile()
+
+      const delegate = await fetchDelegate(
+        account.anchor,
+        "WHAT DO WE PUT HERE?",
+        Array.from(rpcMessage.params[0].sessionPublicKey),
+        rpcMessage.params[0].maxTimeToLive,
+      )
+      const delegations = [prepareClientDelegate(delegate.signedDelegation)]
+      const userPublicKey = delegate.userPublicKey
+      // logAuthorizeApplication({
+      //   scope: delegate.scope,
+      //   anchor: delegate.anchor,
+      //   applicationName: "FIXME: application.meta.NFID-Demo",
+      //   chain: "Internet Computer",
+      // })
+      // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      // REPLACE BY NEW AUTH INTEGRATION LAYER
+
+      return { ...rpcBase, result: { delegations, userPublicKey } }
+    }
     case "eth_accounts": {
       const adapter = new DelegationWalletAdapter(rpcUrl)
       const address = await adapter.getAddress(delegation)

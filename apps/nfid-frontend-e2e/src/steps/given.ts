@@ -36,8 +36,8 @@ Given(
 
 Given(/^authstate is cleared$/, clearAuthState)
 
-Given(/^User authenticates( to demoApp)? with google account$/, async (isDemoApp: string) => {
-  if (isDemoApp === " to demoApp") {
+Given(/^User authenticates ?(.*)? with google account$/, async (isDemoApp: string) => {
+  if (isDemoApp === "to demoApp") {
     await DemoAppPage.loginUsingIframe()
   } else {
     await HomePage.openAuthModal()

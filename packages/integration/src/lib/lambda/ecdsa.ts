@@ -29,13 +29,12 @@ export function toHexString(bytes: ArrayBuffer): string {
 }
 export async function getGlobalKeysThirdParty(
   identity: DelegationIdentity,
-  chain: Chain,
   targets: string[],
   sessionPublicKey: Uint8Array,
   origin: string,
 ): Promise<DelegationChain> {
   await validateTargets(targets, origin)
-
+  const chain = Chain.IC
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
   const delegationChainForLambda = await createDelegationChain(
@@ -53,7 +52,8 @@ export async function getGlobalKeysThirdParty(
     targets,
   }
 
-  return fetchSignUrl(request)
+  const delegationJSON = await fetchSignUrl(request)
+  return DelegationChain.fromJSON(delegationJSON)
 }
 
 export async function getGlobalKeys(

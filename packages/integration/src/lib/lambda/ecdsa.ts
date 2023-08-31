@@ -10,6 +10,7 @@ import { integrationCache } from "../../cache"
 import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
 import { validateTargets } from "./targets"
+import {getFromStorage, saveToStorage} from "./domain-key-repository";
 
 export enum Chain {
   BTC = "BTC",
@@ -17,23 +18,14 @@ export enum Chain {
   IC = "IC",
 }
 
-/**
- * Returns an hexadecimal representation of an array buffer.
- * @param bytes The array buffer.
- */
-export function toHexString(bytes: ArrayBuffer): string {
-  return new Uint8Array(bytes).reduce(
-    (str, byte) => str + byte.toString(16).padStart(2, "0"),
-    "",
-  )
-}
 export async function getGlobalKeysThirdParty(
   identity: DelegationIdentity,
-  chain: Chain,
   targets: string[],
   sessionPublicKey: Uint8Array,
   origin: string,
 ): Promise<DelegationChain> {
+  const chain = Chain.IC
+
   await validateTargets(targets, origin)
 
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
@@ -53,7 +45,23 @@ export async function getGlobalKeysThirdParty(
     targets,
   }
 
-  return fetchSignUrl(request)
+  const delegationJSON = await fetchSignUrl(request)
+  const defaultExpirationInMinutes = 120
+  saveToStorage(
+    origin,
+    toHexString(sessionPublicKey),
+    defaultExpirationInMinutes,
+  )
+  return DelegationChain.fromJSON(delegationJSON)
+}
+
+export async function renewDelegationThirdParty(
+  identity: DelegationIdentity,
+  targets: string[],
+  origin: string,
+): Promise<DelegationChain> {
+  const sessionPublicKey = new Uint8Array(fromHexString(getFromStorage(origin)))
+  return getGlobalKeysThirdParty(identity, targets, sessionPublicKey, origin)
 }
 
 export async function getGlobalKeys(
@@ -269,4 +277,19 @@ async function fetchSignUrl(request: Record<string, any>): Promise<any> {
 
   if (!response.ok) throw new Error(await response.text())
   return await response.json()
+}
+
+export function toHexString(bytes: ArrayBuffer): string {
+  return new Uint8Array(bytes).reduce(
+    (str, byte) => str + byte.toString(16).padStart(2, "0"),
+    "",
+  )
+}
+
+function fromHexString(hexString: string): ArrayBuffer {
+  const bytes = new Uint8Array(hexString.length / 2)
+  for (let i = 0; i < hexString.length; i += 2) {
+    bytes[i / 2] = parseInt(hexString.substr(i, 2), 16)
+  }
+  return bytes.buffer
 }

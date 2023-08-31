@@ -23,6 +23,7 @@ export class demoAppPage extends Page {
 
   public async loginUsingIframe() {
     let iFrame = await $(`iframe.w-full`)
+    await iFrame.isDisplayed()
     await browser.switchToFrame(await $(iFrame))
     await HomePage.authenticateWithGoogle()
     await HomePage.switchToWindow("last")

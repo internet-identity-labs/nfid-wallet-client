@@ -35,7 +35,7 @@ import { Cache } from "node-ts-cache"
 import { integrationCache } from "../../cache"
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { getPriceFull } from "./asset-util"
+import { PriceService } from "./asset-util"
 import { NonFungibleAsset } from "./non-fungible-asset"
 import { coinbaseRatesService } from "./service/coinbase-rates.service"
 import { estimateTransaction } from "./service/estimate-transaction.service"
@@ -411,7 +411,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       pageKey: cursor,
     })
 
-    const price = await getPriceFull()
+    const price = await new PriceService().getPriceFull()
     return {
       cursor: tokens.pageKey,
       tokens: tokens.tokens

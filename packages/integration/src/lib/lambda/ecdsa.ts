@@ -9,8 +9,8 @@ import { ONE_MINUTE_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
-import { getFromStorage, saveToStorage } from "./damin-key-repository"
 import { validateTargets } from "./targets"
+import {getFromStorage, saveToStorage} from "./domain-key-repository";
 
 export enum Chain {
   BTC = "BTC",

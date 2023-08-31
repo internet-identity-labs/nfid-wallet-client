@@ -1,9 +1,5 @@
-import {
-  domainKeyStorage,
-  getFromStorage,
-  saveToStorage,
-} from "./damin-key-repository"
 import { LocalStorageMock } from "./local-storage-mock"
+import {domainKeyStorage, getFromStorage, saveToStorage} from "./domain-key-repository";
 
 describe("Storage Functions", () => {
   const localStorageMock = new LocalStorageMock()

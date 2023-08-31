@@ -1,23 +1,24 @@
 import clsx from "clsx"
 import { useCallback, useState } from "react"
+import React from "react"
 import { ImSpinner } from "react-icons/im"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
 import { Button, H1 } from "@nfid-frontend/ui"
 import { NFID } from "@nfid/embed"
 
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
-import React from "react"
 
 declare const NFID_PROVIDER_URL: string
-
 
 export const PageAuthenticationGetDelegation = () => {
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
-  const { data: nfid } = useSWR("nfid", () => NFID.init({ origin: NFID_PROVIDER_URL }))
+  const { data: nfid } = useSWRImmutable("nfid", () =>
+    NFID.init({ origin: NFID_PROVIDER_URL }),
+  )
 
   React.useEffect(() => {
     if (nfid?.isAuthenticated) {
@@ -44,9 +45,10 @@ export const PageAuthenticationGetDelegation = () => {
 
     console.debug("handleAuthenticate")
     updateAuthButton({ loading: true, label: "Authenticating..." })
-    const identity = await nfid.renewDelegation()
+    const response = await nfid.renewDelegation()
+    console.debug("handleAuthenticate", { response })
     updateAuthButton({ loading: false, label: "Authenticated" })
-    setNfidResponse({ principal: identity.getPrincipal().toText() })
+    // setNfidResponse({ principal: identity.getPrincipal().toText() })
   }, [nfid, updateAuthButton])
 
   const handleLogout = useCallback(async () => {

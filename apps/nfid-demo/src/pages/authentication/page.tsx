@@ -1,18 +1,18 @@
 import { HttpAgent } from "@dfinity/agent"
-import { NfidAuthClient } from "@nfid/embed"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import { ImSpinner } from "react-icons/im"
 import useSWR from "swr"
 
 import { Button, H1 } from "@nfid-frontend/ui"
+import { NfidAuthClient } from "@nfid/embed"
 
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
 declare const NFID_PROVIDER_URL: string
 
-let identity: ReturnType<NfidAuthClient['getIdentity']>
+let identity: ReturnType<NfidAuthClient["getIdentity"]>
 
 export const PageAuthentication = () => {
   const [authButton, updateAuthButton] = useButtonState({
@@ -20,7 +20,9 @@ export const PageAuthentication = () => {
   })
 
   const [nfidResponse, setNfidResponse] = useState({})
-  const { data: authClient } = useSWR("authClient", () => NfidAuthClient.create())
+  const { data: authClient } = useSWR("authClient", () =>
+    NfidAuthClient.create(),
+  )
 
   const handleAuthenticate = useCallback(async () => {
     if (!authClient) return

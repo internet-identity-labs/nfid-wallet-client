@@ -44,13 +44,13 @@ Feature:Send/Receive Asset
     Then Wait while balance and fee calculated
     Then Balance is <balance> and fee is <fee> and currency is <currency>
     Examples:
-      | chain             | anchor | balance | fee    | account        | currency |
-      # | Bitcoin           | 25795  | 0.00006879 | any    | NFID           | BTC      |
-      # | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
-      # | Polygon Mumbai    | 25795  | 1.0        | any    | NFID           | TST      |
-      # | Ethereum Goerli   | 25795  | 0.09664164 | any    | NFID           | ETH      |
-      # | Ethereum Goerli   | 25795  | 20.0       | any    | NFID           | LINK     |
-      | Internet Computer | 28542  | 0.01    | 0.0001 | NFID account 1 | ICP      |
+      | chain             | anchor | balance    | fee    | account        | currency |
+      | Bitcoin           | 25795  | 0.00006879 | any    | NFID           | BTC      |
+      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
+      | Polygon Mumbai    | 25795  | 1.0        | any    | NFID           | TST      |
+      | Ethereum Goerli   | 25795  | 0.09664164 | any    | NFID           | ETH      |
+      | Ethereum Goerli   | 25795  | 20.0       | any    | NFID           | LINK     |
+      | Internet Computer | 28542  | 0.01       | 0.0001 | NFID account 1 | ICP      |
 
   @sendreceive4
   Scenario Outline: User should be able to see his collectibles on send NFT tab

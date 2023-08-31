@@ -25,6 +25,7 @@ type ApproverCmpProps = {
   onConfirm: (data?: {
     populatedTransaction: [TransactionRequest, ProviderError | undefined]
   }) => void
+  onConfirmGetDelegate?: (thirdPartyAuthSession: ThirdPartyAuthSession) => void
   onReject: (reason?: any) => void
 }
 
@@ -70,6 +71,9 @@ export const ProcedureApprovalCoordinator: React.FC<
   rpcMessage,
   rpcMessageDecoded,
   onConfirm,
+  onConfirmGetDelegate = () => {
+    throw new Error("missing onConfirmGetDelegate")
+  },
   onReject,
   authSession,
 }) => {
@@ -118,11 +122,7 @@ export const ProcedureApprovalCoordinator: React.FC<
         <AuthChooseAccount
           appMeta={appMeta}
           authRequest={authRequest as AuthorizationRequest}
-          handleSelectAccount={(authSession: ThirdPartyAuthSession) => {
-            console.debug("AuthChooseAccount.handleSelectAccount", {
-              authSession,
-            })
-          }}
+          handleSelectAccount={onConfirmGetDelegate}
         />
       )
 

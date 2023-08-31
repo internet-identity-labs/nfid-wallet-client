@@ -39,6 +39,16 @@ export const PageAuthenticationGetDelegation = () => {
     setNfidResponse({ principal: identity.getPrincipal().toText() })
   }, [nfid, updateAuthButton])
 
+  const handleRenewDelegation = useCallback(async () => {
+    if (!nfid) throw new Error("NFID not initialized")
+
+    console.debug("handleAuthenticate")
+    updateAuthButton({ loading: true, label: "Authenticating..." })
+    const identity = await nfid.renewDelegation()
+    updateAuthButton({ loading: false, label: "Authenticated" })
+    setNfidResponse({ principal: identity.getPrincipal().toText() })
+  }, [nfid, updateAuthButton])
+
   const handleLogout = useCallback(async () => {
     setNfidResponse({})
     updateAuthButton({
@@ -71,6 +81,17 @@ export const PageAuthenticationGetDelegation = () => {
             ) : (
               authButton.label
             )}
+          </Button>
+        </div>
+      )}
+
+      {nfid?.isAuthenticated && (
+        <div className="flex flex-col w-64 my-8">
+          <Button
+            disabled={authButton.disabled}
+            onClick={handleRenewDelegation}
+          >
+            Renew Delegation
           </Button>
         </div>
       )}

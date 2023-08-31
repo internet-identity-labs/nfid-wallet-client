@@ -58,8 +58,10 @@ export const RPCReceiverV2 =
         console.debug("RPCReceiverV2", { rpcMessage, origin })
         switch (rpcMessage.method) {
           case "ic_renewDelegation": {
-            // TODO: implement
-            return
+            return send({
+              type: "RPC_MESSAGE",
+              data: { rpcMessage, origin },
+            })
           }
           case "ic_getDelegation":
           case "eth_accounts":

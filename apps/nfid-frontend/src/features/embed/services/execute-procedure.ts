@@ -4,7 +4,9 @@ import {
   DelegationWalletAdapter,
   ProviderError,
   ThirdPartyAuthSession,
+  authState,
   fetchDelegate,
+  renewDelegation,
 } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -13,8 +15,9 @@ import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
+import { renewDelegationThirdParty } from "packages/integration/src/lib/lambda/ecdsa"
 
-type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
+type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession, requestOrigin?: string }
 
 export type ApproveSignatureEvent = {
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
@@ -28,7 +31,7 @@ type ExecuteProcedureEvent =
 type ExecuteProcedureServiceContext = CommonContext
 
 export const ExecuteProcedureService = async (
-  { rpcMessage, authSession }: ExecuteProcedureServiceContext,
+  { rpcMessage, authSession, requestOrigin }: ExecuteProcedureServiceContext,
   event: ExecuteProcedureEvent,
 ): Promise<RPCResponse> => {
   if (!rpcMessage)
@@ -60,6 +63,22 @@ export const ExecuteProcedureService = async (
         response,
       })
       return response
+    }
+    case "ic_renewDelegation": {
+      console.debug("ExecuteProcedureService ic_renewDelegation")
+      const {targets} = rpcMessage.params[0]
+      console.debug("ExecuteProcedureService ic_renewDelegation", {targets})
+      const delegationIdentity = authState.get().delegationIdentity
+      if (!delegationIdentity) throw new Error("missing delegationIdentity")
+      if (!requestOrigin) throw new Error("missing requestOrigin")
+
+      const delegation = await renewDelegation(delegationIdentity, requestOrigin, targets)
+      console.debug("ExecuteProcedureService ic_renewDelegation", {delegation})
+
+      const delegations = [prepareClientDelegate(delegation)]
+      const userPublicKey = delegation.publicKey
+
+      return { ...rpcBase, result: { delegations, userPublicKey } }
     }
     case "eth_signTypedData_v4": {
       const [, typedData] = rpcMessage.params

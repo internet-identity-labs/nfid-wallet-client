@@ -1,6 +1,5 @@
 import { HttpAgent } from "@dfinity/agent"
-import { AuthClient } from "@dfinity/auth-client"
-import { DelegationIdentity } from "@dfinity/identity"
+import { NfidAuthClient } from "@nfid/embed"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import { ImSpinner } from "react-icons/im"
@@ -11,7 +10,9 @@ import { Button, H1 } from "@nfid-frontend/ui"
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
-let identity: DelegationIdentity
+declare const NFID_PROVIDER_URL: string
+
+let identity: ReturnType<NfidAuthClient['getIdentity']>
 
 export const PageAuthentication = () => {
   const [authButton, updateAuthButton] = useButtonState({
@@ -19,18 +20,18 @@ export const PageAuthentication = () => {
   })
 
   const [nfidResponse, setNfidResponse] = useState({})
-  const { data: authClient } = useSWR("authClient", () => AuthClient.create())
+  const { data: authClient } = useSWR("authClient", () => NfidAuthClient.create())
 
   const handleAuthenticate = useCallback(async () => {
     if (!authClient) return
 
     updateAuthButton({ loading: true, label: "Authenticating..." })
     await authClient.login({
-      idpWindowName: "nfidIdpWindow",
       onSuccess: () => {
-        identity = authClient.getIdentity() as DelegationIdentity
+        identity = authClient.getIdentity()
         if (!(window as any).ic) (window as any).ic = {}
         ;(window as any).ic.agent = new HttpAgent({
+          //@ts-ignore
           identity,
           host: "https://ic0.app",
         })

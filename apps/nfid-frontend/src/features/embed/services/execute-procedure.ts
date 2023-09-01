@@ -1,13 +1,24 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 
-import { DelegationWalletAdapter, ProviderError } from "@nfid/integration"
+import {
+  DelegationWalletAdapter,
+  ProviderError,
+  ThirdPartyAuthSession,
+  authState,
+  renewDelegation,
+} from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 
-type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
+type CommonContext = {
+  rpcMessage?: RPCMessage
+  authSession?: AuthSession
+  requestOrigin?: string
+}
 
 export type ApproveSignatureEvent = {
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
@@ -15,14 +26,20 @@ export type ApproveSignatureEvent = {
 
 type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
+  | { type: "APPROVE_IC_GET_DELEGATION"; data?: ThirdPartyAuthSession }
   | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext
 
 export const ExecuteProcedureService = async (
-  { rpcMessage, authSession }: ExecuteProcedureServiceContext,
+  { rpcMessage, authSession, requestOrigin }: ExecuteProcedureServiceContext,
   event: ExecuteProcedureEvent,
 ): Promise<RPCResponse> => {
+  console.debug("ExecuteProcedureService", {
+    rpcMessage,
+    authSession,
+    requestOrigin,
+  })
   if (!rpcMessage)
     throw new Error("ExecuteProcedureService: missing rpcMessage")
   if (!authSession)
@@ -32,6 +49,17 @@ export const ExecuteProcedureService = async (
   const delegation = await getWalletDelegation(authSession.anchor)
   const { rpcUrl } = rpcMessage.options
   switch (rpcMessage.method) {
+    case "ic_getDelegation": {
+      if (event.type !== "APPROVE_IC_GET_DELEGATION")
+        throw new Error("wrong event type")
+
+      const delegate = event.data as ThirdPartyAuthSession
+      console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
+      const delegations = [prepareClientDelegate(delegate.signedDelegation)]
+      const userPublicKey = delegate.userPublicKey
+
+      return { ...rpcBase, result: { delegations, userPublicKey } }
+    }
     case "eth_accounts": {
       const adapter = new DelegationWalletAdapter(rpcUrl)
       const address = await adapter.getAddress(delegation)
@@ -41,6 +69,34 @@ export const ExecuteProcedureService = async (
         response,
       })
       return response
+    }
+    case "ic_renewDelegation": {
+      console.debug("ExecuteProcedureService ic_renewDelegation")
+      const { targets } = rpcMessage.params[0]
+      console.debug("ExecuteProcedureService ic_renewDelegation", { targets })
+      const delegationIdentity = authState.get().delegationIdentity
+      if (!delegationIdentity) throw new Error("missing delegationIdentity")
+      if (!requestOrigin) throw new Error("missing requestOrigin")
+
+      let delegation
+      try {
+        delegation = await renewDelegation(
+          delegationIdentity,
+          requestOrigin,
+          targets,
+        )
+      } catch (error) {
+        console.error("ExecuteProcedureService ic_renewDelegation", { error })
+        return { ...rpcBase, result: "error" }
+      }
+      console.debug("ExecuteProcedureService ic_renewDelegation", {
+        delegation,
+      })
+
+      const delegations = [prepareClientDelegate(delegation)]
+      const userPublicKey = delegation.publicKey
+
+      return { ...rpcBase, result: { delegations, userPublicKey } }
     }
     case "eth_signTypedData_v4": {
       const [, typedData] = rpcMessage.params

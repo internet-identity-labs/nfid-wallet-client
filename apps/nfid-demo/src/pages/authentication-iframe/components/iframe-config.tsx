@@ -171,7 +171,7 @@ export const IframeConfig = ({
         </div>
       </div>
       <div className="flex justify-end">
-        <Button className="ml-1.5" onClick={onApply}>
+        <Button id="updateIframe" className="ml-1.5" onClick={onApply}>
           Update Iframe
         </Button>
       </div>

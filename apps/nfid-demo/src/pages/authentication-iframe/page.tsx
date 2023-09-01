@@ -63,7 +63,7 @@ export const PageAuthenticationIframe = () => {
           <h2 className={clsx("font-bold mb-1 w-full pl-2.5")}>
             NFID Response:
           </h2>
-          <div className="w-full font-mono text-left px-2.5">
+          <div id="principalID" className="w-full font-mono text-left px-2.5">
             {JSON.stringify(
               { principalId: identity?.getPrincipal().toString() },
               null,

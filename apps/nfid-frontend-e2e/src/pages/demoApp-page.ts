@@ -6,19 +6,15 @@ export class demoAppPage extends Page {
   public demoAppBaseUrl = "https://hvn26-aiaaa-aaaak-aaa2a-cai.ic0.app"
 
   get updateIframeButton() {
-    return $("//button[contains(@class, 'transition')]/div[contains(.,'Update Iframe')]")
-    // .transition=Update Iframe
-    //TODO add an ID
+    return $('#updateIframe')
   }
 
   get getPrincipalIdSelector() {
-    return $("//div[contains(.,'\"principalId\":') and contains(@class, 'font-mono')]")
-    //TODO add an ID
+    return $('#principalID')
   }
 
   get getAnonymousProfiles() {
-    return $("//div[contains(@class, 'border-gray-300')]/span")
-    //TODO add an ID
+    return $('#profileID')
   }
 
   public async loginUsingIframe() {

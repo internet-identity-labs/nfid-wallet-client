@@ -194,6 +194,7 @@ export const AuthChooseAccount = ({
         />
         {legacyAnonymousProfiles?.map((acc) => (
           <div
+            id="profileID"
             key={acc.label}
             className={clsx(
               "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
@@ -210,6 +211,7 @@ export const AuthChooseAccount = ({
         ))}
         {!legacyAnonymousProfiles?.length && (
           <div
+            id="profileID"
             className={clsx(
               "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
               "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",

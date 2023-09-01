@@ -1,72 +1,73 @@
-import { HttpAgent } from "@dfinity/agent"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
+import React from "react"
 import { ImSpinner } from "react-icons/im"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
 import { Button, H1 } from "@nfid-frontend/ui"
-import { NfidAuthClient } from "@nfid/embed"
+import { NFID } from "@nfid/embed"
 
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
 declare const NFID_PROVIDER_URL: string
 
-let identity: ReturnType<NfidAuthClient["getIdentity"]>
-
-export const PageAuthentication = () => {
+export const PageAuthenticationGetDelegation = () => {
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
-
-  const [nfidResponse, setNfidResponse] = useState({})
-  const { data: authClient } = useSWR("authClient", () =>
-    NfidAuthClient.create(),
+  const { data: nfid } = useSWRImmutable("nfid", () =>
+    NFID.init({ origin: NFID_PROVIDER_URL }),
   )
 
-  const handleAuthenticate = useCallback(async () => {
-    if (!authClient) return
+  React.useEffect(() => {
+    if (nfid?.isAuthenticated) {
+      const identity = nfid.getIdentity()
+      updateAuthButton({ label: "Logout" })
+      setNfidResponse({ principal: identity.getPrincipal().toText() })
+    }
+  }, [nfid, updateAuthButton])
 
+  const [nfidResponse, setNfidResponse] = useState({})
+
+  const handleAuthenticate = useCallback(async () => {
+    if (!nfid) throw new Error("NFID not initialized")
+
+    console.debug("handleAuthenticate")
     updateAuthButton({ loading: true, label: "Authenticating..." })
-    await authClient.login({
-      onSuccess: () => {
-        identity = authClient.getIdentity()
-        if (!(window as any).ic) (window as any).ic = {}
-        ;(window as any).ic.agent = new HttpAgent({
-          //@ts-ignore
-          identity,
-          host: "https://ic0.app",
-        })
-        updateAuthButton({
-          disabled: false,
-          loading: false,
-          label: "Logout",
-        })
-        setNfidResponse({ principal: identity.getPrincipal().toText() })
-      },
-      onError: (error) => {
-        console.error(error)
-      },
-      identityProvider: `${NFID_PROVIDER_URL}/authenticate?applicationName=NFID-DEMO&applicationLogo=https://logo.clearbit.com/clearbit.com`,
-      windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
-    })
-  }, [authClient, updateAuthButton])
+    const identity = await nfid.getDelegation()
+    updateAuthButton({ loading: false, label: "Authenticated" })
+    setNfidResponse({ principal: identity.getPrincipal().toText() })
+  }, [nfid, updateAuthButton])
+
+  const handleRenewDelegation = useCallback(async () => {
+    if (!nfid) throw new Error("NFID not initialized")
+
+    console.debug("handleAuthenticate")
+    updateAuthButton({ loading: true, label: "Authenticating..." })
+    const response = await nfid.renewDelegation()
+    console.debug("handleAuthenticate", { response })
+    updateAuthButton({ loading: false, label: "Authenticated" })
+    // setNfidResponse({ principal: identity.getPrincipal().toText() })
+  }, [nfid, updateAuthButton])
 
   const handleLogout = useCallback(async () => {
-    authClient?.logout()
     setNfidResponse({})
     updateAuthButton({
       disabled: false,
       loading: false,
       label: "Authenticate",
     })
-  }, [authClient, updateAuthButton])
+  }, [updateAuthButton])
 
   return (
     <PageTemplate title="Authentication / Registration">
       <H1 className="title">Authentication / Registration</H1>
+      <div>
+        by using <pre>@nfid/embed</pre>
+      </div>
 
-      {authClient && (
+      {!nfid?.isAuthenticated && (
         <div className="flex flex-col w-64 my-8">
           <Button
             disabled={authButton.disabled}
@@ -82,6 +83,17 @@ export const PageAuthentication = () => {
             ) : (
               authButton.label
             )}
+          </Button>
+        </div>
+      )}
+
+      {nfid?.isAuthenticated && (
+        <div className="flex flex-col w-64 my-8">
+          <Button
+            disabled={authButton.disabled}
+            onClick={handleRenewDelegation}
+          >
+            Renew Delegation
           </Button>
         </div>
       )}

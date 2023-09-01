@@ -1,29 +1,32 @@
 import { TokenPrice } from "./types"
+import { integrationCache } from "../../cache"
+import { Cache } from "node-ts-cache"
 
-const COINBASE_RATES_URL = `https://tt4jxkw8vg.execute-api.us-east-1.amazonaws.com/staging/exchange-rate`
 const NOT_AVAILABLE = ""
 
-export const getPrice = async (tokens: string[]): Promise<TokenPrice[]> => {
-  const prices = await fetch(COINBASE_RATES_URL).then(async (response) => {
-    if (!response.ok) {
-      throw []
-    }
-    return response.json().then((x) => x.data.rates)
-  })
+export class PriceService {
 
-  const result = tokens.map((token) => {
-    const priceInToken = prices[token]
-    const priceInUsd = priceInToken
-      ? (1 / priceInToken).toFixed(2)
-      : NOT_AVAILABLE
-    return { token, price: priceInUsd }
-  })
+  public async getPrice(tokens: string[]): Promise<TokenPrice[]> {
+    const prices = await this.fetchPrices()
 
-  return result
-}
+    const result = tokens.map((token) => {
+      const priceInToken = prices[token]
+      const priceInUsd = priceInToken
+        ? (1 / priceInToken).toFixed(2)
+        : NOT_AVAILABLE
+      return { token, price: priceInUsd }
+    })
 
-export const getPriceFull = async (): Promise<TokenPrice[]> => {
-  return fetch(COINBASE_RATES_URL)
+    return result
+  }
+
+  public async getPriceFull(): Promise<TokenPrice[]> {
+    return this.fetchPrices()
+  }
+
+  @Cache(integrationCache, { ttl: 10 })
+  public async fetchPrices() {
+    return fetch(AWS_EXCHANGE_RATE)
     .then(async (response) => {
       if (!response.ok) {
         throw []
@@ -33,4 +36,6 @@ export const getPriceFull = async (): Promise<TokenPrice[]> => {
     .catch((e) => {
       return []
     })
+  }
+
 }

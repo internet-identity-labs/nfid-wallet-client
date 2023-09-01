@@ -6,7 +6,7 @@ import { format } from "date-fns"
 import { E8S } from "@nfid/integration/token/icp"
 
 import { Asset } from "../asset/asset"
-import { getPrice } from "../asset/asset-util"
+import { PriceService } from "../asset/asset-util"
 import {
   Activity,
   ChainBalance,
@@ -83,7 +83,7 @@ export class BtcAsset extends Asset<string> {
     let price: TokenPrice[]
     const balanceBN = toBn(balance / E8S)
     try {
-      price = await getPrice(["BTC"])
+      price = await new PriceService().getPrice(["BTC"])
     } catch (e) {
       price = [{ price: "0.0", token: "BTC" }]
     }

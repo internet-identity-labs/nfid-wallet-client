@@ -20,7 +20,6 @@ const setupCSP = () => {
       "object-src": "'none'",
       "base-uri": "'self'",
       "connect-src": [
-        "https://tt4jxkw8vg.execute-api.us-east-1.amazonaws.com",
         "'self'",
         "https://ic0.app",
         "https://*.ic0.app",
@@ -211,6 +210,12 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/auth/, ""),
+      },
+      "/exchange-rate": {
+        target: process.env.AWS_EXCHANGE_RATE,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/exchange-rate/, ""),
       },
       "/signature": {
         target: process.env.AWS_SIGNATURE_EVENT,

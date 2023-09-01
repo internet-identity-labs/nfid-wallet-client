@@ -30,6 +30,7 @@ export const serviceConfig = {
   ),
   AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
   AWS_AUTH_STATS: JSON.stringify(process.env.AWS_AUTH_STATS),
+  AWS_EXCHANGE_RATE: JSON.stringify(process.env.AWS_EXCHANGE_RATE),
   AWS_SEND_VERIFICATION_EMAIL: JSON.stringify(
     process.env.AWS_SEND_VERIFICATION_EMAIL,
   ),

@@ -2,12 +2,16 @@ import { TransactionRequest } from "@ethersproject/abstract-provider"
 import React from "react"
 import useSWR from "swr"
 
-import { ProviderError } from "@nfid/integration"
+import { ProviderError, ThirdPartyAuthSession } from "@nfid/integration"
 import { FunctionCall, Method } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
-import { AuthorizingAppMeta } from "frontend/state/authorization"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 
+import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
@@ -21,6 +25,7 @@ type ApproverCmpProps = {
   onConfirm: (data?: {
     populatedTransaction: [TransactionRequest, ProviderError | undefined]
   }) => void
+  onConfirmGetDelegate?: (thirdPartyAuthSession: ThirdPartyAuthSession) => void
   onReject: (reason?: any) => void
 }
 
@@ -56,14 +61,19 @@ const hasMapped = (messageInterface: string = "") =>
 interface ProcedureApprovalCoordinatorProps extends ApproverCmpProps {
   disableConfirmButton?: boolean
   authSession: AuthSession
+  authRequest: Partial<AuthorizationRequest>
 }
 export const ProcedureApprovalCoordinator: React.FC<
   ProcedureApprovalCoordinatorProps
 > = ({
   appMeta,
+  authRequest,
   rpcMessage,
   rpcMessageDecoded,
   onConfirm,
+  onConfirmGetDelegate = () => {
+    throw new Error("missing onConfirmGetDelegate")
+  },
   onReject,
   authSession,
 }) => {
@@ -105,6 +115,15 @@ export const ProcedureApprovalCoordinator: React.FC<
             }}
           />
         </React.Suspense>
+      )
+
+    case ["ic_getDelegation"].includes(rpcMessage.method):
+      return (
+        <AuthChooseAccount
+          appMeta={appMeta}
+          authRequest={authRequest as AuthorizationRequest}
+          handleSelectAccount={onConfirmGetDelegate}
+        />
       )
 
     default:

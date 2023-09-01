@@ -4,7 +4,11 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { PublicKey } from "../_ic_api/internet_identity.d"
 import { ii } from "../actors"
 import { mapOptional } from "../ic-utils"
-import { Chain, ecdsaGetAnonymous, renewDelegationThirdParty } from "../lambda/ecdsa"
+import {
+  Chain,
+  ecdsaGetAnonymous,
+  getGlobalKeysThirdParty,
+} from "../lambda/ecdsa"
 import { SignedDelegation } from "./types"
 
 /**
@@ -87,11 +91,36 @@ export const getAnonymousDelegate = async (
 export const renewDelegation = async (
   delegationIdentity: DelegationIdentity,
   origin: string,
-  targets: string[]
+  targets: string[],
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
   const delegationChain = await renewDelegationThirdParty(
     delegationIdentity,
     targets,
+    origin,
+  )
+
+  const { delegation, signature } = delegationChain.delegations[0]
+  return {
+    delegation: {
+      expiration: delegation.expiration,
+      pubkey: Array.from(new Uint8Array(delegation.pubkey)),
+      targets: delegation.targets,
+    },
+    signature: Array.from(new Uint8Array(signature)),
+    publicKey: delegationChain.publicKey,
+  }
+}
+
+export const getPublicAccountDelegate = async (
+  sessionPublicKey: Uint8Array,
+  delegationIdentity: DelegationIdentity,
+  origin: string,
+  targets: string[],
+): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
+  const delegationChain = await getGlobalKeysThirdParty(
+    delegationIdentity,
+    targets,
+    sessionPublicKey,
     origin,
   )
 

@@ -27,7 +27,7 @@ export async function getGlobalKeysThirdParty(
   const chain = Chain.IC
 
   await validateTargets(targets, origin)
-
+  const chain = Chain.IC
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
   const delegationChainForLambda = await createDelegationChain(
@@ -45,7 +45,6 @@ export async function getGlobalKeysThirdParty(
     targets,
   }
 
-  const delegationJSON = await fetchSignUrl(request)
   const defaultExpirationInMinutes = 120
   saveToStorage(
     origin,

@@ -56,11 +56,21 @@ export default function NFIDEmbedCoordinator() {
         <ProcedureApprovalCoordinator
           appMeta={state.context.appMeta}
           authSession={state.context.authSession}
+          authRequest={state.context.authRequest}
           rpcMessage={state.context.rpcMessage}
           rpcMessageDecoded={state.context.rpcMessageDecoded}
           onConfirm={(data) => {
             console.debug("onConfirm", { data })
             send({ type: "APPROVE", data })
+          }}
+          onConfirmGetDelegate={(thirdPartyAuthSession) => {
+            console.debug("ProcedureApprovalCoordinator.onConfirmGetDelegate", {
+              thirdPartyAuthSession,
+            })
+            send({
+              type: "APPROVE_IC_GET_DELEGATION",
+              data: thirdPartyAuthSession,
+            })
           }}
           onReject={() => send({ type: "CANCEL" })}
         />

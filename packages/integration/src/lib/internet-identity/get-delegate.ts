@@ -8,6 +8,7 @@ import {
   Chain,
   ecdsaGetAnonymous,
   getGlobalKeysThirdParty,
+  renewDelegationThirdParty,
 } from "../lambda/ecdsa"
 import { SignedDelegation } from "./types"
 

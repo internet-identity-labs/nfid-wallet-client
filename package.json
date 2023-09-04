@@ -119,6 +119,7 @@
     "@nrwl/eslint-plugin-nx": "15.8.7",
     "@nrwl/jest": "15.8.7",
     "@nrwl/js": "15.8.7",
+    "@nfid/embed": "0.1",
     "@nrwl/linter": "15.8.7",
     "@nrwl/react": "15.8.7",
     "@nrwl/storybook": "15.8.7",

@@ -12,6 +12,7 @@ import {
 } from "frontend/state/authorization"
 
 import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
+import { RequestTransfer } from "../request-transfer"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
@@ -62,6 +63,7 @@ interface ProcedureApprovalCoordinatorProps extends ApproverCmpProps {
   disableConfirmButton?: boolean
   authSession: AuthSession
   authRequest: Partial<AuthorizationRequest>
+  sendIcResponse: (data: any) => void
 }
 export const ProcedureApprovalCoordinator: React.FC<
   ProcedureApprovalCoordinatorProps
@@ -71,8 +73,8 @@ export const ProcedureApprovalCoordinator: React.FC<
   rpcMessage,
   rpcMessageDecoded,
   onConfirm,
-  onConfirmGetDelegate = () => {
-    throw new Error("missing onConfirmGetDelegate")
+  sendIcResponse = () => {
+    throw new Error("missing onConfirmIC")
   },
   onReject,
   authSession,
@@ -122,7 +124,18 @@ export const ProcedureApprovalCoordinator: React.FC<
         <AuthChooseAccount
           appMeta={appMeta}
           authRequest={authRequest as AuthorizationRequest}
-          handleSelectAccount={onConfirmGetDelegate}
+          handleSelectAccount={sendIcResponse}
+        />
+      )
+
+    case ["ic_requestTransfer"].includes(rpcMessage.method):
+      return (
+        <RequestTransfer
+          appMeta={appMeta}
+          sourceAddress={rpcMessage.params[0].sourceAddress}
+          amount={rpcMessage.params[0].amount}
+          destinationAddress={rpcMessage.params[0].receiver}
+          onConfirmIC={sendIcResponse}
         />
       )
 

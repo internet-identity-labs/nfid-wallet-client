@@ -59,6 +59,7 @@ export const RPCReceiverV2 =
         switch (rpcMessage.method) {
           case "ic_renewDelegation":
           case "ic_getDelegation":
+          case "ic_requestTransfer":
           case "eth_accounts":
             console.debug(`RPCReceiverV2 ${rpcMessage.method}`, {
               rpcMessage,

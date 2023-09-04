@@ -78,7 +78,7 @@ export interface Typegen0 {
       | "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     CheckApplicationMeta: "xstate.init"
     CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
-    ExecuteProcedureService: "" | "APPROVE" | "APPROVE_IC_GET_DELEGATION"
+    ExecuteProcedureService: "" | "APPROVE" | "APPROVE_IC"
     RPCReceiver: "RPC_MESSAGE" | "xstate.init"
   }
   matchesStates:

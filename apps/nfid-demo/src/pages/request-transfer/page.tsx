@@ -4,189 +4,82 @@ import { useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
 import useSWR from "swr"
 
-import { Button, H1, Input } from "@nfid-frontend/ui"
+import { Button, H1, H2, H4, Input } from "@nfid-frontend/ui"
 import { minMax } from "@nfid-frontend/utils"
 import { getBalance } from "@nfid/integration"
 import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
 
 import { PageTemplate } from "../page-template"
+import NFTImage from "./nft-1.jpg"
 
 const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
 
 export const PageRequestTransfer: React.FC = () => {
-  const title = "Request transfer"
-  const [isLoading, toggleLoading] = React.useReducer(
-    (isLoading) => !isLoading,
-    false,
-  )
-  const [result, setResult] = React.useState({})
-
-  const handleRequestTransfer = React.useCallback(
-    async ({ to, amount }: RequestTransferParams) => {
-      console.log(">> handleRequestTransfer", { to, amount })
-
-      toggleLoading()
-      setResult({})
-      const result = await requestTransfer(
-        { to, amount },
-        {
-          provider: new URL(
-            `${NFID_PROVIDER_URL}/wallet/request-transfer?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
-          ),
-        },
-      )
-      setResult(result)
-      toggleLoading()
-      console.log(">> handleRequestTransfer", { result })
-    },
-    [],
-  )
-
   return (
-    <PageTemplate title={title}>
-      <div className={clsx("flex-col space-y-2")}>
-        <H1>{title}</H1>
-        <RequestTransferForm
-          onSubmit={handleRequestTransfer}
-          result={result}
-          isLoading={isLoading}
-        />
-      </div>
-    </PageTemplate>
-  )
-}
-
-interface RequestTransferFormProps {
-  result: any
-  isLoading: boolean
-  onSubmit: (params: RequestTransferParams) => Promise<void>
-}
-
-const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
-  result,
-  isLoading,
-  onSubmit,
-}) => {
-  const {
-    formState: { errors, isValid },
-    register,
-    watch,
-    handleSubmit,
-  } = useForm<RequestTransferParams>({
-    mode: "onChange",
-  })
-  console.log(">> RequestTransferForm", { errors, isValid })
-  const to = watch("to")
-
-  const { data: balance, mutate: refrechBalance } = useSWR(
-    to ? to : null,
-    getBalance,
-  )
-
-  React.useEffect(() => {
-    refrechBalance()
-  }, [refrechBalance, result])
-
-  return (
-    <>
-      <div
-        className={clsx(
-          "block border border-gray-200 rounded-xl",
-          "px-5 py-4",
-          "sm:px-[30px] sm:py-[26px]",
-        )}
-      >
-        <form>
-          <Input
-            labelText="To"
-            type="string"
-            {...register("to", {
-              required: true,
-            })}
-            errorText={errors.to?.message}
-            inputClassName={clsx("border")}
-            disabled={isLoading}
-          />
-          <Input
-            labelText="Amount"
-            type="number"
-            errorText={errors.amount?.message}
-            min={0}
-            disabled={isLoading}
-            {...register("amount", {
-              required: true,
-              validate: minMax({
-                min: 0,
-                toLowError: "Amount cannot be negative",
-              }),
-            })}
-            inputClassName={clsx("border")}
-          />
-          <Button
-            type="secondary"
-            onClick={handleSubmit(onSubmit)}
-            disabled={!isValid || isLoading}
-            className={"relative"}
-          >
-            {isLoading ? (
-              <div className={clsx("flex items-center space-x-2")}>
-                <ImSpinner className={clsx("animate-spin")} />
-                <div>Waiting for approval...</div>
-              </div>
-            ) : (
-              "Request transfer"
-            )}
-          </Button>
-        </form>
-      </div>
-      <div className={clsx("flex space-x-2 w-full")}>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>Form state:</h2>
-          <pre>{JSON.stringify({ isValid }, null, 2)}</pre>
-        </div>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>Form input:</h2>
-          <pre>
-            {JSON.stringify(
-              { to: watch("to"), amount: watch("amount") },
-              null,
-              2,
-            )}
+    <PageTemplate
+      title={"Request transfer"}
+      className="grid w-full h-screen grid-cols-2 !p-0 divide-x"
+    >
+      <div className="p-5">
+        <H4 className="mb-10">Authentication</H4>
+        {/* Step 1: Authentication */}
+        <Button type="primary">Authenticate</Button>
+        <div className="w-full p-6 mt-4 bg-gray-900 rounded-lg shadow-md">
+          <h3 className="mb-4 text-xl text-white">Authentication logs</h3>
+          <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
+            <code>
+              {`{
+  "principal": "User XYZ",
+  "address": "0x1234...",
+  "balance": "1.5 ETH"
+}`}
+            </code>
           </pre>
         </div>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>NFID response:</h2>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
+      </div>
+
+      <div className="flex flex-col p-5 space-y-4">
+        <H4 className="mb-10">NFT Marketplace</H4>
+        {/* Step 2: NFT Marketplace (Initially Disabled) */}
+        <div className="grid grid-cols-3 gap-6 opacity-50 pointer-events-none">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={index}
+              className="relative p-4 transition-shadow duration-300 bg-gray-900 rounded-xl group hover:shadow-xl"
+            >
+              <div className="relative mb-4 overflow-hidden rounded-md">
+                <img
+                  src={NFTImage}
+                  alt={`NFT ${index + 1}`}
+                  className="w-full transition-transform duration-300 transform group-hover:scale-105"
+                />
+                <div className="absolute p-1 text-sm text-white bg-gray-800 rounded-full bottom-2 left-2 bg-opacity-70">
+                  {["0.5", "1.0", "0.7"][index]} ETH
+                </div>
+              </div>
+              <h5 className="mb-2 text-lg text-white">NFT Title {index + 1}</h5>
+              <p className="mb-4 text-sm text-gray-400">
+                Limited edition digital art piece by NFID.
+              </p>
+              <Button type="primary" className="w-full">
+                Purchase NFT
+              </Button>
+            </div>
+          ))}
         </div>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>Current balance:</h2>
-          <pre>{JSON.stringify(balance, null, 2)}</pre>
+
+        <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
+          <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
+          <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
+            <code>
+              {`{
+  "status": "Success",
+  "message": "Purchase Successful"
+}`}
+            </code>
+          </pre>
         </div>
       </div>
-    </>
+    </PageTemplate>
   )
 }

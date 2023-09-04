@@ -8,6 +8,7 @@ import {
   renewDelegation,
 } from "@nfid/integration"
 
+import { IRequestTransferResponse } from "frontend/features/request-transfer/types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
@@ -26,7 +27,7 @@ export type ApproveSignatureEvent = {
 
 type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
-  | { type: "APPROVE_IC_GET_DELEGATION"; data?: ThirdPartyAuthSession }
+  | { type: "APPROVE_IC"; data?: any }
   | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext
@@ -48,10 +49,10 @@ export const ExecuteProcedureService = async (
   const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
   const delegation = await getWalletDelegation(authSession.anchor)
   const { rpcUrl } = rpcMessage.options
+  console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
-      if (event.type !== "APPROVE_IC_GET_DELEGATION")
-        throw new Error("wrong event type")
+      if (event.type !== "APPROVE_IC") throw new Error("wrong event type")
 
       const delegate = event.data as ThirdPartyAuthSession
       console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
@@ -59,6 +60,12 @@ export const ExecuteProcedureService = async (
       const userPublicKey = delegate.userPublicKey
 
       return { ...rpcBase, result: { delegations, userPublicKey } }
+    }
+    case "ic_requestTransfer": {
+      if (event.type !== "APPROVE_IC") throw new Error("wrong event type")
+
+      const result = event.data as IRequestTransferResponse
+      return { ...rpcBase, result }
     }
     case "eth_accounts": {
       const adapter = new DelegationWalletAdapter(rpcUrl)

@@ -1,7 +1,9 @@
 import { useMachine } from "@xstate/react"
-import React from "react"
+import React, { useMemo } from "react"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
+import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
+
+import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
@@ -23,65 +25,77 @@ export default function NFIDEmbedCoordinator() {
     [state.value, state.context, state.children],
   )
 
-  switch (true) {
-    case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
-    case state.matches("AUTH.CheckAppMeta"):
-    case state.matches("AUTH.CheckAuthentication"):
-    default:
-      return (
-        <BlurredLoader
-          isLoading
-          loadingMessage={
-            state.context.rpcMessage?.method === "eth_accounts" &&
-            "Requesting account..."
-          }
-        />
-      )
+  const Component = useMemo(() => {
+    switch (true) {
+      case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
+      case state.matches("AUTH.CheckAppMeta"):
+      case state.matches("AUTH.CheckAuthentication"):
+      default:
+        return (
+          <BlurredLoader
+            isLoading
+            loadingMessage={
+              state.context.rpcMessage?.method === "eth_accounts" &&
+              "Requesting account..."
+            }
+          />
+        )
 
-    case state.matches("AUTH.Authenticate"):
-      return (
-        <AuthenticationCoordinator
-          actor={
-            state.children[
-              "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
-            ] as AuthenticationMachineActor
-          }
-        />
-      )
-    case state.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
-      if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
-      if (!state.context.authSession) throw new Error("missing authSession")
+      case state.matches("AUTH.Authenticate"):
+        return (
+          <AuthenticationCoordinator
+            actor={
+              state.children[
+                "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+              ] as AuthenticationMachineActor
+            }
+          />
+        )
+      case state.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
+        if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
+        if (!state.context.authSession) throw new Error("missing authSession")
 
-      return (
-        <ProcedureApprovalCoordinator
-          appMeta={state.context.appMeta}
-          authSession={state.context.authSession}
-          authRequest={state.context.authRequest}
-          rpcMessage={state.context.rpcMessage}
-          rpcMessageDecoded={state.context.rpcMessageDecoded}
-          onConfirm={(data) => {
-            console.debug("onConfirm", { data })
-            send({ type: "APPROVE", data })
-          }}
-          onConfirmGetDelegate={(thirdPartyAuthSession) => {
-            console.debug("ProcedureApprovalCoordinator.onConfirmGetDelegate", {
-              thirdPartyAuthSession,
-            })
-            send({
-              type: "APPROVE_IC_GET_DELEGATION",
-              data: thirdPartyAuthSession,
-            })
-          }}
-          onReject={() => send({ type: "CANCEL" })}
-        />
-      )
-    case state.matches("HANDLE_PROCEDURE.ERROR"):
-      return (
-        <PageError
-          error={state.context.error}
-          onCancel={() => send({ type: "CANCEL_ERROR" })}
-          onRetry={() => send({ type: "RETRY" })}
-        />
-      )
-  }
+        return (
+          <ProcedureApprovalCoordinator
+            appMeta={state.context.appMeta}
+            authSession={state.context.authSession}
+            authRequest={state.context.authRequest}
+            rpcMessage={state.context.rpcMessage}
+            rpcMessageDecoded={state.context.rpcMessageDecoded}
+            onConfirm={(data) => {
+              console.debug("onConfirm", { data })
+              send({ type: "APPROVE", data })
+            }}
+            sendIcResponse={(data) => {
+              console.debug("ProcedureApprovalCoordinator.sendIcResponse", {
+                data,
+              })
+              send({
+                type: "APPROVE_IC",
+                data: data,
+              })
+            }}
+            onReject={() => send({ type: "CANCEL" })}
+          />
+        )
+      case state.matches("HANDLE_PROCEDURE.ERROR"):
+        return (
+          <PageError
+            error={state.context.error}
+            onCancel={() => send({ type: "CANCEL_ERROR" })}
+            onRetry={() => send({ type: "RETRY" })}
+          />
+        )
+    }
+  }, [send, state])
+
+  return (
+    <ModalComponent
+      onClose={() => send({ type: "CANCEL" })}
+      isVisible
+      className="w-[450px] h-auto"
+    >
+      <ScreenResponsive className="min-h-full">{Component}</ScreenResponsive>
+    </ModalComponent>
+  )
 }

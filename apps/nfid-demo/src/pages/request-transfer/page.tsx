@@ -1,192 +1,167 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import clsx from "clsx"
-import React from "react"
+import { principalToAddress } from "ictool"
+import React, { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
-import { Button, H1, Input } from "@nfid-frontend/ui"
-import { minMax } from "@nfid-frontend/utils"
+import { Button, H4, Input } from "@nfid-frontend/ui"
+import { NFID } from "@nfid/embed"
 import { getBalance } from "@nfid/integration"
-import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
+import { E8S } from "@nfid/integration/token/icp"
 
+import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
-const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
+declare const NFID_PROVIDER_URL: string
 
 export const PageRequestTransfer: React.FC = () => {
-  const title = "Request transfer"
-  const [isLoading, toggleLoading] = React.useReducer(
-    (isLoading) => !isLoading,
-    false,
-  )
-  const [result, setResult] = React.useState({})
-
-  const handleRequestTransfer = React.useCallback(
-    async ({ to, amount }: RequestTransferParams) => {
-      console.log(">> handleRequestTransfer", { to, amount })
-
-      toggleLoading()
-      setResult({})
-      const result = await requestTransfer(
-        { to, amount },
-        {
-          provider: new URL(
-            `${NFID_PROVIDER_URL}/wallet/request-transfer?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
-          ),
-        },
-      )
-      setResult(result)
-      toggleLoading()
-      console.log(">> handleRequestTransfer", { result })
-    },
-    [],
-  )
-
-  return (
-    <PageTemplate title={title}>
-      <div className={clsx("flex-col space-y-2")}>
-        <H1>{title}</H1>
-        <RequestTransferForm
-          onSubmit={handleRequestTransfer}
-          result={result}
-          isLoading={isLoading}
-        />
-      </div>
-    </PageTemplate>
-  )
-}
-
-interface RequestTransferFormProps {
-  result: any
-  isLoading: boolean
-  onSubmit: (params: RequestTransferParams) => Promise<void>
-}
-
-const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
-  result,
-  isLoading,
-  onSubmit,
-}) => {
-  const {
-    formState: { errors, isValid },
-    register,
-    watch,
-    handleSubmit,
-  } = useForm<RequestTransferParams>({
-    mode: "onChange",
+  const [delegation, setDelegation] = useState<DelegationIdentity | undefined>()
+  const [transferResponse, setTransferResponse] = useState<any>({})
+  const [authButton, updateAuthButton] = useButtonState({
+    label: "Authenticate",
   })
-  console.log(">> RequestTransferForm", { errors, isValid })
-  const to = watch("to")
 
-  const { data: balance, mutate: refrechBalance } = useSWR(
-    to ? to : null,
-    getBalance,
+  const { data: balance, mutate: refetchBalance } = useSWRImmutable(
+    delegation ? [delegation.getPrincipal(), "balance"] : null,
+    async ([principal]) =>
+      Number(await getBalance(principalToAddress(principal))) / E8S,
+  )
+
+  const { data: nfid } = useSWRImmutable("nfid", () =>
+    NFID.init({ origin: NFID_PROVIDER_URL }),
   )
 
   React.useEffect(() => {
-    refrechBalance()
-  }, [refrechBalance, result])
+    if (nfid?.isAuthenticated) {
+      const identity = nfid.getIdentity()
+      updateAuthButton({ label: "Logout" })
+      setDelegation(identity as unknown as DelegationIdentity)
+    }
+  }, [nfid, updateAuthButton])
+
+  const handleAuthenticate = useCallback(async () => {
+    if (!nfid) throw new Error("NFID not initialized")
+
+    console.debug("handleAuthenticate")
+    updateAuthButton({ loading: true, label: "Authenticating..." })
+    const identity = await nfid.getDelegation()
+    updateAuthButton({ loading: false, label: "Authenticated" })
+    setDelegation(identity as unknown as DelegationIdentity)
+  }, [nfid, updateAuthButton])
+
+  const handleLogout = useCallback(async () => {
+    setDelegation(undefined)
+    updateAuthButton({
+      disabled: false,
+      loading: false,
+      label: "Authenticate",
+    })
+  }, [updateAuthButton])
+
+  const address = useMemo(() => {
+    return delegation?.getPrincipal()
+      ? principalToAddress(delegation?.getPrincipal())
+      : ""
+  }, [delegation])
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      receiver: "",
+      amount: "",
+    },
+  })
+
+  const onRequestTransfer = useCallback(
+    async (values: any) => {
+      if (!delegation) return
+
+      const res = await nfid?.requestTransfer({
+        receiver: values.receiver,
+        amount: String(Number(values.amount) * E8S),
+        sourceAddress: delegation.getPrincipal().toString(),
+      })
+
+      console.log({ res })
+      setTransferResponse(res)
+      refetchBalance()
+    },
+    [delegation, nfid, refetchBalance],
+  )
 
   return (
-    <>
-      <div
-        className={clsx(
-          "block border border-gray-200 rounded-xl",
-          "px-5 py-4",
-          "sm:px-[30px] sm:py-[26px]",
-        )}
-      >
-        <form>
-          <Input
-            labelText="To"
-            type="string"
-            {...register("to", {
-              required: true,
-            })}
-            errorText={errors.to?.message}
-            inputClassName={clsx("border")}
-            disabled={isLoading}
-          />
-          <Input
-            labelText="Amount"
-            type="number"
-            errorText={errors.amount?.message}
-            min={0}
-            disabled={isLoading}
-            {...register("amount", {
-              required: true,
-              validate: minMax({
-                min: 0,
-                toLowError: "Amount cannot be negative",
-              }),
-            })}
-            inputClassName={clsx("border")}
-          />
+    <PageTemplate
+      title={"Request transfer"}
+      className="grid w-full h-screen grid-cols-2 !p-0 divide-x"
+    >
+      <div className="p-5">
+        <H4 className="mb-10">Authentication</H4>
+        {/* Step 1: Authentication */}
+        <div className="flex flex-col w-64 my-8">
           <Button
-            type="secondary"
-            onClick={handleSubmit(onSubmit)}
-            disabled={!isValid || isLoading}
-            className={"relative"}
+            disabled={authButton.disabled}
+            onClick={
+              authButton.label === "Logout" ? handleLogout : handleAuthenticate
+            }
           >
-            {isLoading ? (
+            {authButton.loading ? (
               <div className={clsx("flex items-center space-x-2")}>
                 <ImSpinner className={clsx("animate-spin")} />
-                <div>Waiting for approval...</div>
+                <div>{authButton.label}</div>
               </div>
             ) : (
-              "Request transfer"
+              authButton.label
             )}
           </Button>
-        </form>
-      </div>
-      <div className={clsx("flex space-x-2 w-full")}>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>Form state:</h2>
-          <pre>{JSON.stringify({ isValid }, null, 2)}</pre>
         </div>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>Form input:</h2>
-          <pre>
-            {JSON.stringify(
-              { to: watch("to"), amount: watch("amount") },
-              null,
-              2,
-            )}
+
+        <div className="w-full p-6 mt-4 bg-gray-900 rounded-lg shadow-md">
+          <h3 className="mb-4 text-xl text-white">Authentication logs</h3>
+          <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
+            <code>
+              {`{
+  "principal": "${delegation?.getPrincipal().toString() ?? ""}",
+  "address": "${address ?? ""}",
+  "balance": "${balance ? `${balance} ICP` : ""}"
+}`}
+            </code>
           </pre>
         </div>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>NFID response:</h2>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
+      </div>
+
+      <div className="flex flex-col p-5">
+        <H4 className="mb-10">Request transfer</H4>
+        {/* Step 2: Request transfer */}
+        <div className="flex flex-col space-y-4">
+          <Input
+            labelText="Receiver IC address"
+            placeholder="39206df1ca32d2..."
+            errorText={errors.receiver?.message}
+            {...register("receiver", { required: "This field is required" })}
+          />
+          <Input
+            labelText="Amount ICP"
+            placeholder="0.0001"
+            errorText={errors.amount?.message}
+            {...register("amount", { required: "This field is required" })}
+          />
+          <Button onClick={handleSubmit(onRequestTransfer)}>
+            Request transfer
+          </Button>
         </div>
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold")}>Current balance:</h2>
-          <pre>{JSON.stringify(balance, null, 2)}</pre>
+        <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
+          <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
+          <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
+            <code>{JSON.stringify(transferResponse, null, 4)}</code>
+          </pre>
         </div>
       </div>
-    </>
+    </PageTemplate>
   )
 }

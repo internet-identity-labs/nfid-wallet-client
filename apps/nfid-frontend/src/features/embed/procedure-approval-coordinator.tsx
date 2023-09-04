@@ -12,6 +12,8 @@ import {
 } from "frontend/state/authorization"
 
 import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
+import { RequestTransfer } from "../request-transfer"
+import { IRequestTransferResponse } from "../request-transfer/types"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
@@ -25,7 +27,10 @@ type ApproverCmpProps = {
   onConfirm: (data?: {
     populatedTransaction: [TransactionRequest, ProviderError | undefined]
   }) => void
-  onConfirmGetDelegate?: (thirdPartyAuthSession: ThirdPartyAuthSession) => void
+  onRequestICDelegation?: (thirdPartyAuthSession: ThirdPartyAuthSession) => void
+  onRequestICTransfer?: (
+    thirdPartyAuthSession: IRequestTransferResponse,
+  ) => void
   onReject: (reason?: any) => void
 }
 
@@ -71,9 +76,8 @@ export const ProcedureApprovalCoordinator: React.FC<
   rpcMessage,
   rpcMessageDecoded,
   onConfirm,
-  onConfirmGetDelegate = () => {
-    throw new Error("missing onConfirmGetDelegate")
-  },
+  onRequestICDelegation = () => new Error("Not implemented"),
+  onRequestICTransfer = () => new Error("Not implemented"),
   onReject,
   authSession,
 }) => {
@@ -122,7 +126,18 @@ export const ProcedureApprovalCoordinator: React.FC<
         <AuthChooseAccount
           appMeta={appMeta}
           authRequest={authRequest as AuthorizationRequest}
-          handleSelectAccount={onConfirmGetDelegate}
+          handleSelectAccount={onRequestICDelegation}
+        />
+      )
+
+    case ["ic_requestTransfer"].includes(rpcMessage.method):
+      return (
+        <RequestTransfer
+          appMeta={appMeta}
+          sourceAddress={rpcMessage.params[0].sourceAddress}
+          amount={rpcMessage.params[0].amount}
+          destinationAddress={rpcMessage.params[0].receiver}
+          onConfirmIC={onRequestICTransfer}
         />
       )
 

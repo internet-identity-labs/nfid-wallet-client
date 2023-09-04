@@ -14,8 +14,8 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   applicationLogo,
   applicationURL,
   applicationName,
-  title,
-  subTitle,
+  title = "Use NFID",
+  subTitle = "to connect to",
 }) => (
   <>
     <div className="flex flex-col items-center w-full pt-8">
@@ -47,14 +47,12 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
         />
       )}
 
-      <H5 className="mt-4 mb-2 text-sm leading-6 text-black">
-        {applicationURL ? "Use NFID" : title}
-      </H5>
+      <H5 className="mt-4 mb-2 text-sm leading-6 text-black">{title}</H5>
 
       {applicationURL && (
         <div className="flex items-center space-x-1 text-sm">
           <span>
-            to connect to{" "}
+            {subTitle}{" "}
             <a
               className="transition-opacity text-linkColor hover:opacity-50"
               href={`https://${applicationURL}`}

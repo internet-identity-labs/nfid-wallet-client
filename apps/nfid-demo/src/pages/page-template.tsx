@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Helmet } from "react-helmet-async"
-import { BiMobile, BiWallet, BiUser, BiLock } from "react-icons/bi"
+import { BiWallet, BiUser, BiLock } from "react-icons/bi"
 
 import {
   MenuWrapper,

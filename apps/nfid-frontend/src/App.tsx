@@ -7,10 +7,13 @@ import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED } from "@nfid/config"
 import { authState, ic } from "@nfid/integration"
 
+import Logo from "./assets/metamask.svg"
+
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
+import { RequestTransfer } from "./features/request-transfer"
 import { NotFound } from "./ui/pages/404"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
@@ -48,6 +51,17 @@ export const App = () => {
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>
       <Routes>
+        <Route
+          path="/request-transfer"
+          element={
+            <ScreenResponsive className="overflow-auto">
+              <RequestTransfer
+                amount={0.1}
+                appMeta={{ logo: Logo, url: "metamask.io" }}
+              />
+            </ScreenResponsive>
+          }
+        />
         <Route path={"/"} element={<HomeScreen />} />
 
         <Route

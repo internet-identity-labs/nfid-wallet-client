@@ -13,6 +13,7 @@ import {
 
 import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
 import { RequestTransfer } from "../request-transfer"
+import { IRequestTransferResponse } from "../request-transfer/types"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
@@ -26,7 +27,10 @@ type ApproverCmpProps = {
   onConfirm: (data?: {
     populatedTransaction: [TransactionRequest, ProviderError | undefined]
   }) => void
-  onConfirmGetDelegate?: (thirdPartyAuthSession: ThirdPartyAuthSession) => void
+  onRequestICDelegation?: (thirdPartyAuthSession: ThirdPartyAuthSession) => void
+  onRequestICTransfer?: (
+    thirdPartyAuthSession: IRequestTransferResponse,
+  ) => void
   onReject: (reason?: any) => void
 }
 
@@ -63,7 +67,6 @@ interface ProcedureApprovalCoordinatorProps extends ApproverCmpProps {
   disableConfirmButton?: boolean
   authSession: AuthSession
   authRequest: Partial<AuthorizationRequest>
-  sendIcResponse: (data: any) => void
 }
 export const ProcedureApprovalCoordinator: React.FC<
   ProcedureApprovalCoordinatorProps
@@ -73,9 +76,8 @@ export const ProcedureApprovalCoordinator: React.FC<
   rpcMessage,
   rpcMessageDecoded,
   onConfirm,
-  sendIcResponse = () => {
-    throw new Error("missing onConfirmIC")
-  },
+  onRequestICDelegation = () => new Error("Not implemented"),
+  onRequestICTransfer = () => new Error("Not implemented"),
   onReject,
   authSession,
 }) => {
@@ -124,7 +126,7 @@ export const ProcedureApprovalCoordinator: React.FC<
         <AuthChooseAccount
           appMeta={appMeta}
           authRequest={authRequest as AuthorizationRequest}
-          handleSelectAccount={sendIcResponse}
+          handleSelectAccount={onRequestICDelegation}
         />
       )
 
@@ -135,7 +137,7 @@ export const ProcedureApprovalCoordinator: React.FC<
           sourceAddress={rpcMessage.params[0].sourceAddress}
           amount={rpcMessage.params[0].amount}
           destinationAddress={rpcMessage.params[0].receiver}
-          onConfirmIC={sendIcResponse}
+          onConfirmIC={onRequestICTransfer}
         />
       )
 

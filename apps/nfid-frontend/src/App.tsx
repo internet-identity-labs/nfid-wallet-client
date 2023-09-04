@@ -80,14 +80,7 @@ export const App = () => {
           }
         />
 
-        <Route
-          path={ROUTE_EMBED}
-          element={
-            <ScreenResponsive className="overflow-auto">
-              <NFIDEmbedCoordinator />
-            </ScreenResponsive>
-          }
-        />
+        <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
 
         {ProfileRoutes}
         {RecoverNFIDRoutes}

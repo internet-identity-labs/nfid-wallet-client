@@ -1,11 +1,11 @@
-import { TokenPrice } from "./types"
-import { integrationCache } from "../../cache"
 import { Cache } from "node-ts-cache"
+
+import { integrationCache } from "../../cache"
+import { TokenPrice } from "./types"
 
 const NOT_AVAILABLE = ""
 
 export class PriceService {
-
   public async getPrice(tokens: string[]): Promise<TokenPrice[]> {
     const prices = await this.fetchPrices()
 
@@ -27,15 +27,14 @@ export class PriceService {
   @Cache(integrationCache, { ttl: 10 })
   public async fetchPrices() {
     return fetch(AWS_EXCHANGE_RATE)
-    .then(async (response) => {
-      if (!response.ok) {
-        throw []
-      }
-      return response.json().then((x) => x.data.rates)
-    })
-    .catch((e) => {
-      return []
-    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw []
+        }
+        return response.json().then((x) => x.data.rates)
+      })
+      .catch((e) => {
+        return []
+      })
   }
-
 }

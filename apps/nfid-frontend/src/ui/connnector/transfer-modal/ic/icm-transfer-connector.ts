@@ -160,15 +160,16 @@ export abstract class ICMTransferConnector<
       throw new Error("Identity not found. Please try again")
 
     try {
-      "tokenId" in request
-        ? await transferEXT(request.tokenId, request.identity, request.to)
-        : await submitICP(
-            stringICPtoE8s(String(request.amount)),
-            request.to.length === PRINCIPAL_LENGTH
-              ? principalToAddress(Principal.fromText(request.to))
-              : request.to,
-            request.identity,
-          )
+      const res =
+        "tokenId" in request
+          ? await transferEXT(request.tokenId, request.identity, request.to)
+          : await submitICP(
+              stringICPtoE8s(String(request.amount)),
+              request.to.length === PRINCIPAL_LENGTH
+                ? principalToAddress(Principal.fromText(request.to))
+                : request.to,
+              request.identity,
+            )
 
       setTimeout(() => {
         "tokenId" in request
@@ -179,7 +180,9 @@ export abstract class ICMTransferConnector<
               (key) => key && Array.isArray(key) && key[0] === "AllBalanceRaw",
             )
       }, 1000)
-      return {}
+      return {
+        hash: String(res),
+      }
     } catch (e: any) {
       return {
         errorMessage: e ?? "Unknown error",

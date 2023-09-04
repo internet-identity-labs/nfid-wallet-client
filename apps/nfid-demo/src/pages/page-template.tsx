@@ -14,7 +14,6 @@ import { RoutePathAuthenticationGetDelegation } from "./authentication-get-deleg
 import { RoutePathAuthenticationIFrame } from "./authentication-iframe"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
-import { RoutePathPhoneNumberVerification } from "./phone-number-credential"
 import { RoutePath as RoutePathRequestTransfer } from "./request-transfer"
 
 interface PageTemplateProps {
@@ -59,12 +58,6 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
             </NavLink>
             <NavLink route={RoutePathAuthenticationIFrame}>
               <SidebarItem icon={<BiLock />} title="Authentication iFrame" />
-            </NavLink>
-            <NavLink route={RoutePathPhoneNumberVerification}>
-              <SidebarItem
-                icon={<BiMobile />}
-                title="Phone number verification"
-              />
             </NavLink>
             <NavLink route={RoutePathRequestTransfer}>
               <SidebarItem icon={<BiWallet />} title="Request transfer" />

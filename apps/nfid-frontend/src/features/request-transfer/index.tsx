@@ -128,9 +128,6 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             </p>
           </div>
         </div>
-        <p className="text-sm text-blue-600 cursor-pointer hover:opacity-70">
-          Transaction details
-        </p>
       </div>
       <div className="space-y-2.5 flex flex-col mb-14 mt-6">
         <Button type="primary" onClick={() => setIsTransferInProgress(true)}>

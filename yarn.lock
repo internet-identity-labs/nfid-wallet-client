@@ -2498,6 +2498,18 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
+"@dfinity/agent@0.15.6":
+  version "0.15.6"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.15.6.tgz#a22eb276956065184329c70bb3ef21be94983790"
+  integrity sha512-Ch+tXAszPap0zwRgr/oFEgJLDld4RDwBdFDqR1JUg38xhHWTFMrTkjMT6uQFvqf6d2wDXnh3zwhqbg5P7OCv7A==
+  dependencies:
+    base64-arraybuffer "^0.2.0"
+    bignumber.js "^9.0.0"
+    borc "^2.1.1"
+    js-sha256 "0.9.0"
+    simple-cbor "^0.4.1"
+    ts-node "^10.8.2"
+
 "@dfinity/agent@^0.10.1":
   version "0.10.4"
   resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.10.4.tgz#269406f1cb5524276c52ddf37e933abd75529063"
@@ -2508,6 +2520,13 @@
     borc "^2.1.1"
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
+
+"@dfinity/auth-client@0.15.6":
+  version "0.15.6"
+  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.15.6.tgz#ae2702c4be6dcfe8808680b449a89429511dab52"
+  integrity sha512-UpqJ2qab8IlijUiXR0ig4Ww4ymXzE6auSXHf8fXcLSIT8NTAD/7U8+VLUcPj8rkqrExcNMCskeipKxnqHINJYw==
+  dependencies:
+    idb "^7.0.2"
 
 "@dfinity/auth-client@^0.11.3":
   version "0.11.3"
@@ -2540,10 +2559,27 @@
     secp256k1 "^4.0.2"
     tweetnacl "^1.0.1"
 
+"@dfinity/identity@0.15.6":
+  version "0.15.6"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.15.6.tgz#9ce81c8ae1793d26cfaf95825bf7a49d161bf4fb"
+  integrity sha512-hzTyKXAWPHxkZkOWxGj4JUITwdv92VEKnh3l334Yk9h6aw3m7Gi/ujEBLfszsl0LUA82tV4W2MDIz99KMAuW+g==
+  dependencies:
+    borc "^2.1.1"
+    js-sha256 "^0.9.0"
+    tweetnacl "^1.0.1"
+
 "@dfinity/principal@0.11.3", "@dfinity/principal@^0.11.0", "@dfinity/principal@^0.11.3":
   version "0.11.3"
   resolved "https://registry.npmjs.org/@dfinity/principal/-/principal-0.11.3.tgz"
   integrity sha512-+AJGDJ+RsveybSdxuTQFr2DPNZFpPfXnyixAOFWWdElVniSwnO/SwqQChR0AWvJdy/fKqoAXK+ZzyLG0uqSetA==
+
+"@dfinity/principal@0.15.6":
+  version "0.15.6"
+  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.15.6.tgz#c1260f8d09091eb5a4abfaf942940fe75184e4bb"
+  integrity sha512-eMsS5YofRk5Hm6LlhzyBvw1RzDxM5FWPtepQuYeZbZyD/ztq4TrUiScqoKBFw/LLODd0znt8rGnNgqtt+7JnQA==
+  dependencies:
+    js-sha256 "^0.9.0"
+    ts-node "^10.8.2"
 
 "@dfinity/principal@^0.10.1":
   version "0.10.4"
@@ -4521,10 +4557,17 @@
     tweetnacl "1.0.3"
     util-deprecate "1.0.2"
 
-"@nfid/embed@latest":
-  version "0.0.8-alpha.0"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.0.8-alpha.0.tgz#574d0e6901ebcc1d7e7e50e0720a935f85545806"
-  integrity sha512-fREN9JE4/Zd/Tms9JyRZoiHpzo103x4TYpcdWRP9ELafAHobjacJbAWb4VKY8MnCTBD4YrqqzIkiH9HHOIG3Eg==
+"@nfid/embed@^0.1.0-alpha.0":
+  version "0.1.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.1.0-alpha.0.tgz#b9871698b5b1d638f977f316e88659065a4cdf7b"
+  integrity sha512-uBaNmC23OMpVcdDmMqegkp0qWUQKU2TGD+1JQn6A4ZPWRDBoEpN45PpC7A8OhW7onNz3flidEZxmG510UrKFmA==
+  dependencies:
+    "@dfinity/agent" "0.15.6"
+    "@dfinity/auth-client" "0.15.6"
+    "@dfinity/identity" "0.15.6"
+    "@dfinity/principal" "0.15.6"
+    idb "7.1.1"
+    rxjs "7.5.7"
 
 "@nfid/wallet@1.1.0-alpha.0":
   version "1.1.0-alpha.0"
@@ -17743,7 +17786,7 @@ ictool@^0.0.6:
     crc-32 "^1.2.2"
     crypto-js "^4.1.1"
 
-idb@7.1.1:
+idb@7.1.1, idb@^7.0.2:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
   integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==
@@ -25358,6 +25401,13 @@ rustbn.js@~0.2.0:
   resolved "https://registry.yarnpkg.com/rustbn.js/-/rustbn.js-0.2.0.tgz#8082cb886e707155fd1cb6f23bd591ab8d55d0ca"
   integrity sha512-4VlvkRUuCJvr2J6Y0ImW7NvTCriMi7ErOAqWk1y69vAdoNIzCF3yPmgeNzx+RQTLEDFq5sHfscn1MwHxP9hNfA==
 
+rxjs@7.5.7:
+  version "7.5.7"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.7.tgz#2ec0d57fdc89ece220d2e702730ae8f1e49def39"
+  integrity sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==
+  dependencies:
+    tslib "^2.1.0"
+
 rxjs@7.6.0:
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.6.0.tgz#361da5362b6ddaa691a2de0b4f2d32028f1eb5a2"
@@ -27468,7 +27518,7 @@ ts-loader@^9.3.1:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
-ts-node@10.9.1, ts-node@^10.7.0, ts-node@^10.8.1:
+ts-node@10.9.1, ts-node@^10.7.0, ts-node@^10.8.1, ts-node@^10.8.2:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==

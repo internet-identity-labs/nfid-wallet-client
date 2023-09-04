@@ -66,12 +66,21 @@ export default function NFIDEmbedCoordinator() {
               console.debug("onConfirm", { data })
               send({ type: "APPROVE", data })
             }}
-            sendIcResponse={(data) => {
-              console.debug("ProcedureApprovalCoordinator.sendIcResponse", {
+            onRequestICDelegation={(data) => {
+              console.debug("ProcedureApprovalCoordinator.getDelegation", {
                 data,
               })
               send({
-                type: "APPROVE_IC",
+                type: "APPROVE_IC_GET_DELEGATION",
+                data: data,
+              })
+            }}
+            onRequestICTransfer={(data) => {
+              console.debug("ProcedureApprovalCoordinator.requestTransfer", {
+                data,
+              })
+              send({
+                type: "APPROVE_IC_REQUEST_TRANSFER",
                 data: data,
               })
             }}

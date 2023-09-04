@@ -2,13 +2,18 @@ import { getExpirationDelay } from "packages/integration/src/lib/authentication/
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { assign, createMachine } from "xstate"
 
-import { Application, authState } from "@nfid/integration"
+import {
+  Application,
+  ThirdPartyAuthSession,
+  authState,
+} from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import AuthenticationMachine from "../authentication/root/root-machine"
+import { IRequestTransferResponse } from "../request-transfer/types"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import {
@@ -37,9 +42,10 @@ type Events =
       data?: ApproveSignatureEvent
     }
   | {
-      type: "APPROVE_IC"
-      data: any
+      type: "APPROVE_IC_GET_DELEGATION"
+      data: ThirdPartyAuthSession
     }
+  | { type: "APPROVE_IC_REQUEST_TRANSFER"; data: IRequestTransferResponse }
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
@@ -205,7 +211,8 @@ export const NFIDEmbedMachineV2 = createMachine(
           AWAIT_PROCEDURE_APPROVAL: {
             on: {
               APPROVE: "EXECUTE_PROCEDURE",
-              APPROVE_IC: "EXECUTE_PROCEDURE",
+              APPROVE_IC_GET_DELEGATION: "EXECUTE_PROCEDURE",
+              APPROVE_IC_REQUEST_TRANSFER: "EXECUTE_PROCEDURE",
               CANCEL: {
                 target: "READY",
                 actions: ["sendRPCCancelResponse", "updateProcedure"],

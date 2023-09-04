@@ -27,7 +27,8 @@ export type ApproveSignatureEvent = {
 
 type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
-  | { type: "APPROVE_IC"; data?: any }
+  | { type: "APPROVE_IC_GET_DELEGATION"; data?: ThirdPartyAuthSession }
+  | { type: "APPROVE_IC_REQUEST_TRANSFER"; data?: IRequestTransferResponse }
   | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext
@@ -52,7 +53,8 @@ export const ExecuteProcedureService = async (
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
-      if (event.type !== "APPROVE_IC") throw new Error("wrong event type")
+      if (event.type !== "APPROVE_IC_GET_DELEGATION")
+        throw new Error("wrong event type")
 
       const delegate = event.data as ThirdPartyAuthSession
       console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
@@ -62,7 +64,8 @@ export const ExecuteProcedureService = async (
       return { ...rpcBase, result: { delegations, userPublicKey } }
     }
     case "ic_requestTransfer": {
-      if (event.type !== "APPROVE_IC") throw new Error("wrong event type")
+      if (event.type !== "APPROVE_IC_REQUEST_TRANSFER")
+        throw new Error("wrong event type")
 
       const result = event.data as IRequestTransferResponse
       return { ...rpcBase, result }

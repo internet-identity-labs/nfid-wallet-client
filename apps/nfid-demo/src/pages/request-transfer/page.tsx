@@ -23,7 +23,7 @@ export const PageRequestTransfer: React.FC = () => {
     label: "Authenticate",
   })
 
-  const { data: balance } = useSWRImmutable(
+  const { data: balance, mutate: refetchBalance } = useSWRImmutable(
     delegation ? [delegation.getPrincipal(), "balance"] : null,
     async ([principal]) =>
       Number(await getBalance(principalToAddress(principal))) / E8S,
@@ -90,8 +90,9 @@ export const PageRequestTransfer: React.FC = () => {
 
       console.log({ res })
       setTransferResponse(res)
+      refetchBalance()
     },
-    [delegation, nfid],
+    [delegation, nfid, refetchBalance],
   )
 
   return (

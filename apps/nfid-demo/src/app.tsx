@@ -5,7 +5,6 @@ import { RouteAuthentication } from "./pages/authentication"
 import { RouteAuthenticationGetDelegation } from "./pages/authentication-get-delegation"
 import { RouteAuthenticationIFrame } from "./pages/authentication-iframe"
 import { RouteGetAccounts } from "./pages/get-accounts"
-import { RoutePhoneNumberVerification } from "./pages/phone-number-credential"
 import { RouteRequestTransfer } from "./pages/request-transfer"
 
 export function App() {
@@ -16,7 +15,6 @@ export function App() {
       <RouteAuthenticationIFrame />
       <RouteHome />
       <RouteRequestTransfer />
-      <RoutePhoneNumberVerification />
       <RouteGetAccounts />
     </HelmetProvider>
   )

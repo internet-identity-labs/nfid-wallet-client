@@ -1,5 +1,4 @@
 import {IDL} from "@dfinity/candid";
-import {execute} from "./execute";
 import {expect} from "@jest/globals";
 import {executeCanisterCall} from "./execute-canister-call";
 
@@ -10,7 +9,7 @@ describe("Targets validation", () => {
     const idl = {
       get_trusted_origins: IDL.Func([], [IDL.Vec(IDL.Text)], []),
     }
-    const response = await execute(idl, "txkre-oyaaa-aaaap-qa3za-cai")
+    const response = await executeCanisterCall(idl, "txkre-oyaaa-aaaap-qa3za-cai")
     expect(JSON.stringify(response)).toContain("nfid.one")
   })
 

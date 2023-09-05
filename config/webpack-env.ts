@@ -8,7 +8,19 @@ const sentryRelease = childProcess
   .trim()
   .slice(0, 12)
 
+let sdkGitHash
+try {
+  sdkGitHash = childProcess
+    .execSync("cd ../../../sdk-ts/ && git rev-parse HEAD")
+    .toString()
+    .trim()
+    .slice(0, 12)
+} catch (e) {
+  sdkGitHash = "unknown"
+}
+
 export const serviceConfig = {
+  SDK_GIT_HASH: JSON.stringify(sdkGitHash),
   CANISTER_IDS: JSON.stringify(canisterIds),
   SENTRY_RELEASE: JSON.stringify(sentryRelease),
   NFID_PROVIDER_URL: JSON.stringify(process.env.NFID_PROVIDER_URL),

@@ -21,7 +21,6 @@
     "@dotlottie/react-player": "^1.1.0",
     "@headlessui/react": "1.5.0",
     "@metamask/eth-sig-util": "5.0.2",
-    "@nfid/credentials": "1.1.3",
     "@nfid/embed": "^0.1.0-alpha.0",
     "@nfid/wallet": "1.1.0-alpha.0",
     "@nrwl/nx-cloud": "15.2.4",

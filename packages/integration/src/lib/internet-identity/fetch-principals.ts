@@ -17,7 +17,7 @@ export async function fetchPrincipals(
   accounts: Account[],
   isNewUser?: boolean,
 ): Promise<PrincipalAccount[]> {
-  const delegation = authState.get().delegationIdentity
+  const delegation = (await authState).get().delegationIdentity
   if (!delegation) throw Error("No delegation identity")
 
   const ICDelegation = await getGlobalKeys(delegation, Chain.IC, accessList)

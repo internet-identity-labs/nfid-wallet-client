@@ -1,7 +1,5 @@
 import posthog from "posthog-js"
 
-import { authState } from "../authentication"
-
 type AuthSource =
   | "google"
   | "email"

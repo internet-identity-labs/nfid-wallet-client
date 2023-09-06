@@ -42,9 +42,9 @@ type SetProps = {
   sessionKey?: Ed25519KeyIdentity | undefined
 }
 
-function makeAuthState() {
+async function makeAuthState() {
   let pendingRenewDelegation = false
-  _loadAuthSessionFromCache()
+  await _loadAuthSessionFromCache()
 
   if (typeof window !== "undefined") {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

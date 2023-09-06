@@ -57,7 +57,7 @@ class RefreshingDelegation {
           this._delegationPromise = undefined
         })
     } else {
-      const deviceIdentity = authState.get().delegationIdentity
+      const deviceIdentity = (await authState).get().delegationIdentity
       if (!deviceIdentity) throw new Error("No device identity")
 
       this._delegationPromise = getGlobalKeys(

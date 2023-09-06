@@ -50,6 +50,7 @@ When(/^It log's me in$/, async () => {
 })
 
 When(/^Tokens displayed on user assets$/, async () => {
+  await HomePage.waitForLoaderDisappear()
   await Profile.waitForTokensAppear()
 })
 

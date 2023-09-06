@@ -29,18 +29,14 @@ Feature:Fungible Asset
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
-    Then Open filter menu on assets screen
+    When Open filter menu on assets screen
     And Expect blockchain filter menu with text "All"
     And Open blockchain filter on page
-    And Click checkbox chain <chain>
-    Then Asset appears with label <label>
-    Then Only <amount> asset displayed
+    Then Assert that with chosen <chain> there are only assets with <label> with only <amount> displayed
     Examples:
-      | chain             | anchor | amount | label             |
-      | Bitcoin           | 25795  | 1      | Bitcoin           |
-      | Ethereum Goerli   | 25795  | 4      | Ethereum Goerli   |
-      | Polygon Mumbai    | 25795  | 2      | Matic Mumbai      |
-      | Internet Computer | 28542  | 1      | Internet Computer |
+      | chain                                  | anchor | amount | label                                |
+      | Bitcoin,Ethereum Goerli,Polygon Mumbai | 25795  | 1,4,2  | Bitcoin,Ethereum Goerli,Matic Mumbai |
+      | Internet Computer                      | 28542  | 1      | Internet Computer                    |
 
   @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account

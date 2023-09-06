@@ -188,6 +188,10 @@ export class Assets {
       timeout: 15000,
       timeoutMsg: "Element has not been showed! Missing asset label!",
     })
+    await $(this.assetElement + `${name}` + "']").waitForClickable({
+      timeout: 60000,
+      timeoutMsg: "Element has not been clickable!",
+    })
     await $(this.assetElement + `${name}` + "']").click()
   }
 

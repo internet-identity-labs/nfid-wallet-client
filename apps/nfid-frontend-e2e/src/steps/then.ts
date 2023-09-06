@@ -245,10 +245,6 @@ Then(
   },
 )
 
-Then(/^Only (\d+) asset displayed/, async (amount: number) => {
-  await Profile.waitForTokensAppear(amount)
-})
-
 Then(
   /^([^"]*) appears with ([^"]*) on ([^"]*) and ([^"]*)$/,
   async (
@@ -316,11 +312,6 @@ Then(
 )
 
 Then(/^Click checkbox account ([^"]*)$/, async (assetLabel: string) => {
-  assetLabel = assetLabel.replace(/\s/g, "")
-  await Assets.openElementById("option_cbx_" + assetLabel)
-})
-
-Then(/^Click checkbox chain ([^"]*)$/, async (assetLabel: string) => {
   assetLabel = assetLabel.replace(/\s/g, "")
   await Assets.openElementById("option_cbx_" + assetLabel)
 })
@@ -852,3 +843,19 @@ Then(
     expect(tx).toBeTruthy()
   },
 )
+
+Then(/^Assert that with chosen (.+?) there are only assets with (.+?) with only (.+?) displayed$/,
+  async (chain: string, label: string, amount: string) => {
+    let chains = chain.split(",")
+    let labels = label.split(",")
+    let amounts = amount.split(",")
+
+    for (let i = 0; i < chains.length; i++) {
+      await Assets.openElementById("option_cbx_" + chains[i].replace(/\s/g, ""))
+      expect(await $(`#token_${labels[i].replace(/\s/g, "")}`).waitForDisplayed({
+        timeout: 15000,
+      })).toBeDisplayed()
+      await Profile.waitForTokensAppear(parseInt(amounts[i]))
+      await Assets.openElementById("option_cbx_" + chains[i].replace(/\s/g, ""))
+    }
+  })

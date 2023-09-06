@@ -107,7 +107,7 @@ export abstract class EVMTransferConnector<
   }
 
   async getIdentity(): Promise<DelegationIdentity> {
-    const { delegationIdentity } = authState.get()
+    const { delegationIdentity } = (await authState).get()
 
     return delegationIdentity!
   }

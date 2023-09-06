@@ -5,9 +5,10 @@ import { Usergeek } from "usergeek-ic-js"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED } from "@nfid/config"
-import { authState, ic } from "@nfid/integration"
+import { ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
+import { useAsyncAuthState } from "./apps/authentication/use-authentication"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
@@ -28,15 +29,12 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
-  React.useEffect(() => {
-    const sub = authState.subscribe(({ cacheLoaded }) => {
-      const root = document.getElementById("root")
-      if (root) {
-        root.setAttribute("data-cache-loaded", cacheLoaded.toString())
-      }
-    })
-    return () => sub.unsubscribe()
-  }, [])
+  useAsyncAuthState(({ cacheLoaded }) => {
+    const root = document.getElementById("root")
+    if (root) {
+      root.setAttribute("data-cache-loaded", cacheLoaded.toString())
+    }
+  })
 
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>

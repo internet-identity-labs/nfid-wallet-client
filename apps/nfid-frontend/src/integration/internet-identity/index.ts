@@ -9,7 +9,7 @@ import {
 import { arrayBufferEqual } from "ictool/dist/bits"
 
 import {
-  authState,
+  authState as asyncAuthState,
   FrontendDelegation,
   mapOptional,
   Profile,
@@ -93,6 +93,7 @@ export async function createChallenge(): Promise<Challenge> {
 }
 
 export async function fetchAllDevices(anchor: UserNumber) {
+  const authState = await asyncAuthState
   return (
     await ii.lookup(anchor).catch((e) => {
       throw new Error(`fetchAllDevices: ${e.message}`)
@@ -323,7 +324,7 @@ export async function removeRecoveryDeviceII(
   userNumber: UserNumber,
   seedPhrase: string,
 ) {
-  let { delegationIdentity } = authState.get()
+  let { delegationIdentity } = (await asyncAuthState).get()
   if (!delegationIdentity) {
     throw Error("Unauthenticated")
   }
@@ -358,7 +359,7 @@ export async function protectRecoveryPhrase(
   userNumber: UserNumber,
   seedPhrase: string,
 ): Promise<void> {
-  let { delegationIdentity } = authState.get()
+  let { delegationIdentity } = (await asyncAuthState).get()
   if (!delegationIdentity) {
     throw Error("Unauthenticated")
   }
@@ -446,6 +447,7 @@ export async function register(
   const credential_id = Array.from(new Uint8Array(identity.rawId))
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
+  const authState = await asyncAuthState
   authState.set({ identity, delegationIdentity: delegation.delegationIdentity })
 
   let registerResponse: RegisterResponse
@@ -518,6 +520,7 @@ export async function registerFromGoogle(
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
   replaceIdentity(delegation.delegationIdentity)
+  const authState = await asyncAuthState
   authState.set({ identity, delegationIdentity: delegation.delegationIdentity })
 
   let registerResponse: RegisterResponse
@@ -614,6 +617,7 @@ export async function fromSeedPhrase(
   let profile: Profile
   try {
     replaceIdentity(delegationIdentity.delegationIdentity)
+    const authState = await asyncAuthState
     authState.set({
       identity,
       delegationIdentity: delegationIdentity.delegationIdentity,
@@ -670,6 +674,7 @@ async function fromWebauthnDevices(
   })
 
   replaceIdentity(delegation.delegationIdentity)
+  const authState = await asyncAuthState
   authState.set({
     identity: multiIdent._actualIdentity!,
     delegationIdentity: delegation.delegationIdentity,
@@ -711,6 +716,7 @@ export async function loginFromRemoteFrontendDelegation({
   const multiIdent = getMultiIdent(devices)
   console.debug("loginFromRemoteFrontendDelegation", { devices })
 
+  const authState = await asyncAuthState
   authState.set({ identity: multiIdent._actualIdentity!, delegationIdentity })
 
   return {
@@ -730,6 +736,7 @@ export async function loginfromGoogleDevice(identity: string): Promise<void> {
   const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
   const frontendDelegation = await requestFEDelegation(googleIdentity)
 
+  const authState = await asyncAuthState
   authState.set({
     identity: googleIdentity,
     delegationIdentity: frontendDelegation.delegationIdentity,
@@ -839,6 +846,7 @@ export async function registerInternetIdentity(
   const credentialId = Array.from(new Uint8Array(identity.rawId))
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
+  const authState = await asyncAuthState
   authState.set({
     identity,
     delegationIdentity: delegation.delegationIdentity,

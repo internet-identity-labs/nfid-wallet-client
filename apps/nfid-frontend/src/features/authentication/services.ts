@@ -78,6 +78,6 @@ export const checkIf2FAEnabled = async (context: AuthenticationContext) => {
     )
     .map((d) => d.credential_id[0]) as string[]
 
-  authState.logout(false)
+  ;(await authState).logout(false)
   return allowedPasskeys
 }

@@ -45,7 +45,7 @@ export abstract class FungibleAssetConnector<
   protected getIdentity = async (
     filterPrincipals?: string[],
   ): Promise<DelegationIdentity[]> => {
-    const { delegationIdentity } = authState.get()
+    const { delegationIdentity } = (await authState).get()
     if (!delegationIdentity) {
       throw Error("Delegation identity error")
     }

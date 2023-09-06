@@ -13,7 +13,7 @@ import {
   Profile,
   SendVerificationResponse,
   VerificationMethod,
-  authState,
+  authState as asyncAuthState,
   authenticationTracking,
   im,
   replaceActorIdentity,
@@ -129,6 +129,7 @@ export const authorizeWithEmail = async (
     })
   }
 
+  const authState = await asyncAuthState
   authState.set({
     delegationIdentity,
     identity: context.emailDelegation,

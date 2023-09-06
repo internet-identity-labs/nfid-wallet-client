@@ -48,7 +48,7 @@ export const useICTokens = (
 }
 
 export const getICPublicDelegation = async () => {
-  const { delegationIdentity } = authState.get()
+  const { delegationIdentity } = (await authState).get()
 
   const publicDelegation = await getGlobalKeys(
     delegationIdentity!,

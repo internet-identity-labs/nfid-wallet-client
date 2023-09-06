@@ -6,7 +6,7 @@ import { BtcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
 import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
 
 import { IGroupedOptions, IconSvgBTC } from "@nfid-frontend/ui"
-import { authState } from "@nfid/integration"
+import { authState as asyncAuthState } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -104,7 +104,8 @@ export class BtcTransferConnector
     return result
   }
 
-  getIdentity = (): Promise<DelegationIdentity> => {
+  getIdentity = async (): Promise<DelegationIdentity> => {
+    const authState = await asyncAuthState
     return new Promise((resolve, reject) => {
       const { delegationIdentity } = authState.get()
       if (!delegationIdentity) {

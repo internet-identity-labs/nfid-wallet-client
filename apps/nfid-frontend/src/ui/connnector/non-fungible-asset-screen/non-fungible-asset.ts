@@ -29,6 +29,9 @@ export abstract class NonFungibleAssetConnector<T extends NftConnectorConfig>
   async getNonFungibleItems(
     assetFilter: AssetFilter[],
   ): Promise<Array<UserNonFungibleToken>> {
+    const principal = (await authState)
+      .get()
+      .delegationIdentity?.getPrincipal()!
     const address = await this.getCachedAddress(NetworkKey.EVM)
     const identities = address
       ? [address]
@@ -48,6 +51,7 @@ export abstract class NonFungibleAssetConnector<T extends NftConnectorConfig>
               ? identity
               : identity.getPrincipal().toString(),
             this.config,
+            principal,
           ),
         )
         nfts = [...nfts, ...userNFTS]
@@ -63,7 +67,7 @@ export abstract class NonFungibleAssetConnector<T extends NftConnectorConfig>
   protected getIdentity = async (
     filterPrincipals?: string[],
   ): Promise<DelegationIdentity[]> => {
-    const { delegationIdentity } = authState.get()
+    const { delegationIdentity } = (await authState).get()
     if (!delegationIdentity) {
       throw Error("Delegation identity error")
     }

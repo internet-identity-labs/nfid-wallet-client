@@ -3,8 +3,13 @@ import { Principal } from "@dfinity/principal"
 import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import React from "react"
+import useSWRImmutable from "swr/immutable"
 import { Usergeek } from "usergeek-ic-js"
 
+import {
+  ObservableAuthState,
+  authState as asyncAuthState,
+} from "@nfid/integration"
 import {
   authState,
   hasOwnProperty,
@@ -39,16 +44,28 @@ export interface User {
 const loadingAtom = atom<boolean>(false)
 const shouldStoreLocalAccountAtom = atom<boolean>(true)
 
+export const useAsyncAuthState = (
+  onChange?: (state: ObservableAuthState) => void,
+) => {
+  const { data: authState } = useSWRImmutable("authState", () => asyncAuthState)
+  React.useEffect(() => {
+    let sub = { unsubscribe: () => {} }
+    if (authState && onChange) {
+      sub = authState.subscribe(onChange)
+    }
+    return () => sub.unsubscribe()
+  }, [authState, onChange])
+  return authState
+}
+
 const useAuthState = () => {
   const [{ delegationIdentity, cacheLoaded }, setDelegationIdentity] =
-    React.useState(authState.get())
-
-  React.useEffect(() => {
-    const observer = authState.subscribe((authState) => {
-      setDelegationIdentity(authState)
+    React.useState<ObservableAuthState>({
+      delegationIdentity: undefined,
+      cacheLoaded: false,
     })
-    return () => observer.unsubscribe()
-  }, [setDelegationIdentity])
+
+  useAsyncAuthState(setDelegationIdentity)
 
   const isAuthenticated = React.useMemo(
     () => !isDelegationExpired(delegationIdentity),
@@ -65,6 +82,7 @@ export function setUser(userState: User | undefined) {
 }
 
 export const useAuthentication = () => {
+  const authState = useAsyncAuthState()
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
@@ -73,8 +91,9 @@ export const useAuthentication = () => {
 
   const { isAuthenticated, cacheLoaded } = useAuthState()
 
-  const logout = React.useCallback(() => {
-    authState.logout()
+  const logout = React.useCallback(async () => {
+    if (!authState) throw new Error("authState not hydrated")
+    await authState.logout()
     setUser(undefined)
     Sentry.setUser(null)
 
@@ -84,7 +103,7 @@ export const useAuthentication = () => {
     })
 
     Usergeek.setPrincipal(Principal.anonymous())
-  }, [])
+  }, [authState])
 
   const initUserGeek = React.useCallback((principal: Principal) => {
     Usergeek.setPrincipal(principal)
@@ -202,6 +221,7 @@ export const useAuthentication = () => {
           } as LoginError
         }
 
+        if (!authState) throw new Error("authState not hydrated")
         authState.set({
           identity,
           delegationIdentity: delegationIdentity,
@@ -215,10 +235,11 @@ export const useAuthentication = () => {
         }
       }
     },
-    [initUserGeek, setIsLoading, setShouldStoreLocalAccount],
+    [authState, initUserGeek, setIsLoading, setShouldStoreLocalAccount],
   )
 
   return {
+    authState,
     isLoading,
     isAuthenticated,
     cacheLoaded,

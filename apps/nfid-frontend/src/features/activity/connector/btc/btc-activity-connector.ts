@@ -11,7 +11,7 @@ import { IActivityConfig } from "../activity-connector-types"
 
 export class BTCActivityConnector extends ActivityClass<IActivityConfig> {
   async getActivities(): Promise<Activity[]> {
-    const identity = this.getIdentity()
+    const identity = await this.getIdentity()
     return await new BtcAsset().getActivityByUser(identity)
   }
 }

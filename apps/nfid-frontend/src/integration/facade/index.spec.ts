@@ -11,7 +11,7 @@ import { Principal } from "@dfinity/principal"
 import {
   Account,
   Application,
-  authState as authStateMock,
+  authState as asyncAuthState,
   extendWithFixedAccounts,
   fetchPrincipals,
   generateDelegationIdentity,
@@ -108,6 +108,7 @@ describe("Facade suite", () => {
       im.use_access_point = jest.fn((x: [] | [string]) => ({
         catch: jest.fn(),
       }))
+      const authStateMock = await asyncAuthState
       authStateMock.set({
         identity: recoveryDevice,
         delegationIdentity: recoveryIdentity,
@@ -128,7 +129,7 @@ describe("Facade suite", () => {
         )) as DeviceData
       expect(removedDevice).toBe(undefined)
       replaceIdentity(delegationIdentity)
-      let aps = (await im.read_access_points())
+      let aps = await im.read_access_points()
       expect(aps.data[0]).toEqual([])
     })
 
@@ -221,6 +222,7 @@ describe("Facade suite", () => {
         userAccounts,
         [nfid, appRequired, appNotRequired, appDuplicated],
       )
+      const authStateMock = await asyncAuthState
       authStateMock.set({
         identity: mockedIdentity,
         delegationIdentity: delegationIdentity,
@@ -271,6 +273,7 @@ describe("Facade suite", () => {
       im.use_access_point = jest.fn((x: [] | [string]) => ({
         catch: jest.fn(),
       }))
+      const authStateMock = await asyncAuthState
       authStateMock.set({ identity: mockedIdentity, delegationIdentity })
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>

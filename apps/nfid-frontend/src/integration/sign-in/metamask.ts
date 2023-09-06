@@ -2,7 +2,7 @@ import { Secp256k1KeyIdentity } from "@dfinity/identity"
 import { ethers, providers } from "ethers"
 
 import {
-  authState,
+  authState as asyncAuthState,
   ethSecretStorage,
   im,
   requestFEDelegation,
@@ -71,6 +71,8 @@ export async function getMetamaskAuthSession() {
   const { delegationIdentity } = await requestFEDelegation(identity)
 
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
+
+  const authState = await asyncAuthState
   authState.set({ identity, delegationIdentity })
 
   let profile

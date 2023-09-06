@@ -155,7 +155,7 @@ export class SecurityConnector {
     const phraseWithoutAnchor = phrase?.split(" ")
     phraseWithoutAnchor?.shift()
 
-    const oldIdent = authState.get().delegationIdentity
+    const oldIdent = (await authState).get().delegationIdentity
     if (!oldIdent) throw new Error("No delegation identity found")
 
     try {
@@ -191,7 +191,7 @@ export class SecurityConnector {
 
       if (
         email?.principalId ===
-        authState.get().delegationIdentity?.getPrincipal().toText()
+        (await authState).get().delegationIdentity?.getPrincipal().toText()
       )
         await passkeyConnector.loginWithAllowedPasskey()
     }

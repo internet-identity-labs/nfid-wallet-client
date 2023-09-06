@@ -13,7 +13,7 @@ import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
 
-interface ObservableAuthState {
+export interface ObservableAuthState {
   cacheLoaded: boolean
   //
   identity?: SignIdentity // Device Identity (different for each device and browser combination)

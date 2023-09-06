@@ -84,7 +84,7 @@ export const ExecuteProcedureService = async (
       console.debug("ExecuteProcedureService ic_renewDelegation")
       const { targets } = rpcMessage.params[0]
       console.debug("ExecuteProcedureService ic_renewDelegation", { targets })
-      const delegationIdentity = authState.get().delegationIdentity
+      const delegationIdentity = (await authState).get().delegationIdentity
       if (!delegationIdentity) throw new Error("missing delegationIdentity")
       if (!requestOrigin) throw new Error("missing requestOrigin")
 

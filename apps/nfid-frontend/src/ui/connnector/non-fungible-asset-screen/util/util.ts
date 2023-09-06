@@ -1,14 +1,15 @@
+import { Principal } from "@dfinity/principal"
 import { NonFungibleItem } from "packages/integration/src/lib/asset/types"
 import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 import { NftConnectorConfig } from "src/ui/connnector/types"
 
 import { MaticSvg } from "@nfid-frontend/ui"
-import { authState } from "@nfid/integration"
 
 export function toUserNFT(
   nft: NonFungibleItem,
   owner: string,
   conf: NftConnectorConfig,
+  principal: Principal,
 ): UserNonFungibleToken {
   return {
     account: {
@@ -40,6 +41,6 @@ export function toUserNFT(
     tokenId: nft.tokenId || "N/A",
     owner,
     walletName: "NFID",
-    principal: authState.get().delegationIdentity?.getPrincipal()!,
+    principal,
   }
 }

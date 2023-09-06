@@ -24,5 +24,5 @@ export interface IActivityConnector {
     config: IActivityConfig,
   ): IActivityRow[]
   getActivitiesRows(): Promise<IActivityRow[]>
-  getIdentity(): DelegationIdentity
+  getIdentity(): Promise<DelegationIdentity>
 }

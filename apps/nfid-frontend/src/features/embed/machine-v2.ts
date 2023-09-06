@@ -160,8 +160,8 @@ export const NFIDEmbedMachineV2 = createMachine(
           Authenticated: {
             entry: "nfid_authenticated",
             invoke: {
-              src: () => (send) => {
-                const { delegationIdentity } = authState.get()
+              src: () => async (send) => {
+                const { delegationIdentity } = (await authState).get()
                 if (!delegationIdentity) return send("SESSION_EXPIRED")
 
                 const expiresIn = getExpirationDelay(delegationIdentity)

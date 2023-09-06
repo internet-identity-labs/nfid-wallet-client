@@ -2,7 +2,11 @@ import WalletConnectProvider from "@walletconnect/ethereum-provider"
 import { providers } from "ethers"
 import Web3Modal from "web3modal"
 
-import { authState, im, requestFEDelegation } from "@nfid/integration"
+import {
+  authState as asyncAuthState,
+  im,
+  requestFEDelegation,
+} from "@nfid/integration"
 
 import { WalletConnectAuthSession } from "frontend/state/authentication"
 
@@ -55,6 +59,7 @@ export async function getWalletConnectAuthSession() {
   const { delegationIdentity } = await requestFEDelegation(identity)
 
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
+  const authState = await asyncAuthState
   authState.set({ identity, delegationIdentity })
 
   let profile

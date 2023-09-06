@@ -80,7 +80,7 @@ export const AuthChooseAccount = ({
     })
     setIsLoading(true)
     try {
-      const delegation = authState.get().delegationIdentity
+      const delegation = (await authState).get().delegationIdentity
       if (!delegation) throw new Error("No delegation identity")
 
       const anonymousDelegation = await getAnonymousDelegate(
@@ -116,7 +116,7 @@ export const AuthChooseAccount = ({
     setIsLoading(true)
 
     try {
-      const delegation = authState.get().delegationIdentity
+      const delegation = (await authState).get().delegationIdentity
       if (!delegation) throw new Error("No delegation identity")
       if (!authRequest.targets) throw new Error("No targets")
 

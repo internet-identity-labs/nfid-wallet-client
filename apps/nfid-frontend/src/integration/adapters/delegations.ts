@@ -16,7 +16,7 @@ export const getWalletDelegationAdapter = async (
     return await getWalletDelegation(profile.anchor, domain, accountId)
   else
     return await getGlobalKeys(
-      authState.get().delegationIdentity!,
+      (await authState).get().delegationIdentity!,
       Chain.IC,
       accessList.concat(targetCanisters),
     )

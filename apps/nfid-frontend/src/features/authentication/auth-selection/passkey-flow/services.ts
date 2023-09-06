@@ -19,7 +19,7 @@ import {
   Icon,
   LambdaPasskeyDecoded,
   RootWallet,
-  authState,
+  authState as asyncAuthState,
   authenticationTracking,
   getPasskey,
   ii,
@@ -114,7 +114,7 @@ export class PasskeyConnector {
   }
 
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
-    const { delegationIdentity } = authState.get()
+    const { delegationIdentity } = (await asyncAuthState).get()
     const { data: imDevices } = await im.read_access_points()
 
     if (!delegationIdentity) throw new Error("Delegation identity not found")
@@ -212,6 +212,7 @@ export class PasskeyConnector {
     callback?: () => void,
     allowedPasskeys: CredentialData[] = [],
   ) {
+    const authState = await asyncAuthState
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       allowedPasskeys,
       false,
@@ -298,6 +299,7 @@ export class PasskeyConnector {
     onBegin: () => void,
     onEnd: (data: AbstractAuthSession) => void,
   ) {
+    const authState = await asyncAuthState
     authenticationTracking.initiated({
       authSource: "passkey - conditional",
     })

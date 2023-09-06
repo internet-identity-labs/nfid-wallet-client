@@ -1,7 +1,7 @@
 import { AuthClient } from "@dfinity/auth-client"
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { authState, im } from "@nfid/integration"
+import { authState as asyncAuthState, im } from "@nfid/integration"
 
 import { IIAuthSession } from "frontend/state/authentication"
 
@@ -37,6 +37,8 @@ export const getIIAuthSessionService = async () => {
   const identity = (await signinWithII()) as DelegationIdentity
 
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
+  const authState = await asyncAuthState
+
   authState.set({ identity, delegationIdentity: identity })
 
   let profile

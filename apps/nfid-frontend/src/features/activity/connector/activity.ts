@@ -41,8 +41,8 @@ export abstract class ActivityClass<T extends IActivityConfig>
     return this.config.network
   }
 
-  getIdentity(): DelegationIdentity {
-    return authState.get().delegationIdentity as DelegationIdentity
+  async getIdentity(): Promise<DelegationIdentity> {
+    return (await authState).get().delegationIdentity as DelegationIdentity
   }
 
   mapActivitiesToRows(

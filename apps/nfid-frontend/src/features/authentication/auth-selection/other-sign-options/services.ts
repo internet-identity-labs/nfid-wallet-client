@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import * as Sentry from "@sentry/browser"
 
-import { authState, im, setProfile } from "@nfid/integration"
+import { authState as asyncAuthState, im, setProfile } from "@nfid/integration"
 
 import { getBrowserName } from "frontend/integration/device"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -29,6 +29,7 @@ export async function authWithAnchor({
     authResult.chain,
   )
 
+  const authState = await asyncAuthState
   authState.set({
     identity: authResult.sessionKey,
     delegationIdentity,

@@ -2,7 +2,7 @@ import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 import * as Sentry from "@sentry/browser"
 
 import {
-  authState,
+  authState as asyncAuthState,
   requestFEDelegationChain,
   im,
   setProfile,
@@ -59,6 +59,7 @@ export async function loginWithAnchor(
       authResult.sessionKey,
       authResult.chain,
     )
+    const authState = await asyncAuthState
     authState.set({
       identity: authResult.sessionKey,
       delegationIdentity,
@@ -144,6 +145,7 @@ export async function loginService(context: {
     principalId: delegationIdentity.getPrincipal().toText(),
   })
 
+  const authState = await asyncAuthState
   authState.set({
     identity: multiIdent._actualIdentity!,
     delegationIdentity,
@@ -221,6 +223,7 @@ export async function registerService(
   try {
     // Register the account with identity manager.
     const account = { anchor }
+    const authState = await asyncAuthState
     const pubKey = Array.from(
       new Uint8Array(
         authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],

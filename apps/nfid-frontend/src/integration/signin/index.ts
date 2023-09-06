@@ -2,7 +2,7 @@ import { DerEncodedPublicKey } from "@dfinity/agent"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 
 import {
-  authState,
+  authState as asyncAuthState,
   DeviceType,
   Icon,
   ii,
@@ -107,6 +107,7 @@ export async function createTentativeDevice({
 
   replaceIdentity(userDelegation.delegationIdentity)
 
+  const authState = await asyncAuthState
   authState.set({
     identity: userIdentity,
     delegationIdentity: userDelegation.delegationIdentity,

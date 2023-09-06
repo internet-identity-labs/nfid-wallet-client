@@ -7,7 +7,7 @@ export const CheckAuthState = async (): Promise<{
   authSession: AuthSession
 }> => {
   console.debug("CheckAuthState")
-  const { delegationIdentity } = await authState.fromCache()
+  const { delegationIdentity } = await (await authState).fromCache()
 
   console.debug("CheckAuthState", { delegationIdentity })
 

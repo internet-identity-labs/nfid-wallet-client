@@ -14,7 +14,7 @@ export const getPublicProfile = async (): Promise<{
   balance: string
   balanceUSD: string
 }> => {
-  const { delegationIdentity } = authState.get()
+  const { delegationIdentity } = (await authState).get()
   if (!delegationIdentity) throw new Error("No identity")
 
   const publicDelegation = await getGlobalKeys(delegationIdentity, Chain.IC, [

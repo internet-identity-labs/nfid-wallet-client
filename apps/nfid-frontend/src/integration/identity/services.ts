@@ -13,7 +13,7 @@ export async function postRemoteDelegationService(
   event: { data: AuthSession },
 ): Promise<void> {
   console.debug("postRemoteDelegationService", { context, event })
-  const { chain, sessionKey } = authState.get()
+  const { chain, sessionKey } = (await authState).get()
   if (!chain)
     throw new Error(`postRemoteDelegationService authState missing chain`)
   if (!sessionKey)

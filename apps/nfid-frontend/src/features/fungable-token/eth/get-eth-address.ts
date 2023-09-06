@@ -23,7 +23,7 @@ export const getEthAddress = async (anchor: number) => {
 
   if (cachedAddress) return cachedAddress
 
-  const identity = authState.get().delegationIdentity
+  const identity = (await authState).get().delegationIdentity
   if (!identity) throw new Error("Identity not found")
 
   replaceActorIdentity(ecdsaSigner, identity)

@@ -8,7 +8,7 @@ import {
 } from "@dfinity/identity"
 
 import {
-  authState as authStateMock,
+  authState as asyncAuthState,
   ii,
   im,
   replaceIdentity,
@@ -123,6 +123,7 @@ describe("ii suite", () => {
       im.use_access_point = jest.fn((x: [] | [string]) => ({
         catch: jest.fn(),
       }))
+      const authStateMock = await asyncAuthState
       authStateMock.set({
         identity: mockedIdentity,
         delegationIdentity: delegationIdentityDummy,

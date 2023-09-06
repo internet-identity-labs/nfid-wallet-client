@@ -1,6 +1,10 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { authState, im, requestFEDelegation } from "@nfid/integration"
+import {
+  authState as asyncAuthState,
+  im,
+  requestFEDelegation,
+} from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
 import "frontend/integration/internet-identity"
@@ -65,6 +69,7 @@ export async function getGoogleAuthSession(
   console.debug("getGoogleAuthSession", { deviceResult })
   const delegationIdentity = await requestFEDelegation(deviceResult.identity)
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
+  const authState = await asyncAuthState
   authState.set({
     identity: deviceResult.identity,
     delegationIdentity: delegationIdentity.delegationIdentity,

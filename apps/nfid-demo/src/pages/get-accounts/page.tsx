@@ -3,7 +3,6 @@ import { useCallback, useState } from "react"
 import { ImSpinner } from "react-icons/im"
 
 import { Button, H1 } from "@nfid-frontend/ui"
-import { requestAccounts } from "@nfid/wallet"
 
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
@@ -19,13 +18,10 @@ export const PageGetAccounts = () => {
 
   const handleRequestAccounts = useCallback(async () => {
     updateRequestButton({ loading: true, disabled: true })
-    const result = await requestAccounts({
-      provider: new URL(
-        `${NFID_PROVIDER_URL}/wallet/request-accounts?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
-      ),
-    })
+    // FIXME: Replace with own new sdk method
+    // const result = await nfid.getAccounts()
+    // setNfidResponse(result)
     updateRequestButton({ loading: false, disabled: false })
-    setNfidResponse(result)
   }, [updateRequestButton])
 
   return (

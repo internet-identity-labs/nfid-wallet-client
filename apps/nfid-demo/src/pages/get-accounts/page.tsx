@@ -7,14 +7,12 @@ import { Button, H1 } from "@nfid-frontend/ui"
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
-const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
-
 export const PageGetAccounts = () => {
   const [requestButton, updateRequestButton] = useButtonState({
     label: "Request accounts",
   })
 
-  const [nfidResponse, setNfidResponse] = useState({})
+  const [nfidResponse] = useState({})
 
   const handleRequestAccounts = useCallback(async () => {
     updateRequestButton({ loading: true, disabled: true })

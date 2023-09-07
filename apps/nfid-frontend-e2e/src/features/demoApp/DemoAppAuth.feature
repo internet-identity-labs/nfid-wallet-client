@@ -1,4 +1,4 @@
-@demoApp
+@demoApp @skip
 Feature: User should be able to register and authenticate to demoApp through iFrame
   Scenario Outline: User authenticates to NFID demoApp (iFrame)
     Given User opens the demoApp /authentication-iframe

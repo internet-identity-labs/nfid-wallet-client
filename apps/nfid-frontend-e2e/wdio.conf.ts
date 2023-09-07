@@ -1,4 +1,3 @@
-import type { Options } from "@wdio/types"
 import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
@@ -6,7 +5,7 @@ import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
 import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
 
-export const isHeadless = process.env.IS_HEADLESS
+export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME
 export const hostPath = process.env.HOST_PATH

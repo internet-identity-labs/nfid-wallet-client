@@ -53,6 +53,9 @@ function makeAuthState() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.setAuthState = _setAuthSession
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.resetAuthState = _clearAuthSessionFromCache
   }
 
   async function _loadAuthSessionFromCache() {
@@ -107,7 +110,8 @@ function makeAuthState() {
       authStorage.set(KEY_STORAGE_KEY, authState.identity),
       authStorage.set(KEY_STORAGE_DELEGATION, authState.delegation),
     ])
-    _loadAuthSessionFromCache()
+    await _loadAuthSessionFromCache()
+    return true
   }
 
   async function _clearAuthSessionFromCache() {
@@ -115,6 +119,7 @@ function makeAuthState() {
       authStorage.remove(KEY_STORAGE_KEY),
       authStorage.remove(KEY_STORAGE_DELEGATION),
     ])
+    return true
   }
 
   async function fromCache() {

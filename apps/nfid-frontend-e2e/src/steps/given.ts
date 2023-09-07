@@ -74,6 +74,7 @@ Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
 Given(/^User opens NFID ?(.*)?$/, async function (site: string) {
   if (site === "site") await HomePage.openBaseUrl()
   else await HomePage.openPage(site)
+  await clearAuthState()
   await HomePage.waitForLoaderDisappear()
   await HomePage.waitForDataCacheLoading()
 })

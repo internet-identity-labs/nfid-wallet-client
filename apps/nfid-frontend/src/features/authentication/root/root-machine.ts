@@ -11,6 +11,7 @@ import {
 } from "frontend/state/authorization"
 
 import { checkIf2FAEnabled } from "../services"
+import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -21,7 +22,7 @@ export interface AuthenticationContext {
   error?: Error
 
   selectedPersonaId?: number
-  thirdPartyAuthSession?: ThirdPartyAuthSession
+  thirdPartyAuthSession?: ApproveIcGetDelegationSdkResponse
 
   allowedDevices?: string[]
 }

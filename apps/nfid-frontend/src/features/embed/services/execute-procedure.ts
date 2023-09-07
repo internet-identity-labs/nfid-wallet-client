@@ -14,6 +14,8 @@ import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
+import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
+import { TransferStatus } from "frontend/features/types"
 
 type CommonContext = {
   rpcMessage?: RPCMessage
@@ -27,7 +29,7 @@ export type ApproveSignatureEvent = {
 
 type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
-  | { type: "APPROVE_IC_GET_DELEGATION"; data?: ThirdPartyAuthSession }
+  | { type: "APPROVE_IC_GET_DELEGATION"; data?: ApproveIcGetDelegationSdkResponse }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data?: IRequestTransferResponse }
   | { type: "" }
 
@@ -54,9 +56,13 @@ export const ExecuteProcedureService = async (
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
       if (event.type !== "APPROVE_IC_GET_DELEGATION")
-        throw new Error("wrong event type")
+        throw new Error("The event cannot be handled.")
 
-      const delegate = event.data as ThirdPartyAuthSession
+      const data = event.data as ApproveIcGetDelegationSdkResponse
+      if(data.status !== TransferStatus.SUCCESS)
+        throw new Error(`The delegation cannot be obtained: ${data.errorMessage}`)
+
+      const delegate = data.authSession as ThirdPartyAuthSession
       console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
       const delegations = [prepareClientDelegate(delegate.signedDelegation)]
       const userPublicKey = delegate.userPublicKey
@@ -65,9 +71,12 @@ export const ExecuteProcedureService = async (
     }
     case "ic_requestTransfer": {
       if (event.type !== "APPROVE_IC_REQUEST_TRANSFER")
-        throw new Error("wrong event type")
+        throw new Error("The event cannot be handled.")
 
       const result = event.data as IRequestTransferResponse
+      if(result.status !== TransferStatus.SUCCESS)
+        throw new Error(`The request cannot be completed: ${result.errorMessage}`)
+
       return { ...rpcBase, result }
     }
     case "eth_accounts": {

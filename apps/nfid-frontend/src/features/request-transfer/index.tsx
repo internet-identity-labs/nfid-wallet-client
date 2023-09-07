@@ -13,7 +13,8 @@ import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic
 import { AuthAppMeta } from "../authentication/ui/app-meta"
 import { toUSD } from "../fungable-token/accumulate-app-account-balances"
 import { TransferSuccess } from "../transfer-modal/components/success"
-import { IRequestTransferResponse, TransferStatus } from "./types"
+import { IRequestTransferResponse } from "./types"
+import { TransferStatus } from "../types"
 
 export interface IRequestTransferProps {
   appMeta: AuthorizingAppMeta
@@ -66,7 +67,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             } catch (e: any) {
               onConfirmIC({
                 status: TransferStatus.ERROR,
-                message: e?.message ?? "Request failed",
+                errorMessage: e?.message ?? "Request failed",
               })
             }
           })
@@ -77,7 +78,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         errorCallback={(res) =>
           onConfirmIC({
             status: TransferStatus.ERROR,
-            message: res?.errorMessage?.message ?? "Request failed",
+            errorMessage: res?.errorMessage?.message ?? "Request failed",
           })
         }
         title={`${(Number(amount) + Number(WALLET_FEE_E8S)) / E8S} ICP`}
@@ -138,7 +139,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           onClick={() =>
             onConfirmIC({
               status: TransferStatus.REJECTED,
-              message: "Rejected by user",
+              errorMessage: "Rejected by user",
             })
           }
         >

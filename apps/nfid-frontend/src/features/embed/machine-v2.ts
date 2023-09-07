@@ -27,6 +27,7 @@ import {
   RPCResponse,
   RPC_BASE,
 } from "./services/rpc-receiver"
+import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 
 type InvokationErrors = {
   type: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
@@ -43,7 +44,7 @@ type Events =
     }
   | {
       type: "APPROVE_IC_GET_DELEGATION"
-      data: ThirdPartyAuthSession
+      data: ApproveIcGetDelegationSdkResponse
     }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data: IRequestTransferResponse }
   | { type: "CANCEL" }

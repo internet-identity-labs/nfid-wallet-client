@@ -1,11 +1,5 @@
-export enum TransferStatus {
-  "SUCCESS" = "SUCCESS",
-  "ERROR" = "ERROR",
-  "REJECTED" = "REJECTED",
-}
+import { SdkResponse } from "../types";
 
-export interface IRequestTransferResponse {
-  status: TransferStatus
-  message?: string
+export interface IRequestTransferResponse extends SdkResponse {
   hash?: string
 }

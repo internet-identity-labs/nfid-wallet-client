@@ -1,4 +1,5 @@
 import { fail } from "assert"
+
 import { readFile as readJSONFile } from "./fileops.js"
 
 /**
@@ -39,13 +40,10 @@ class UserService implements UserActions {
 
   //please note that this method should be used only for static users
   public async takeStaticUserByAnchor(anchor: number) {
-    for (let i = 0; i < this.users.length; i++) {
-      let discoveredUser = this.users[i]
-      // @ts-ignore TODO wrap to object
-      if (discoveredUser.account.anchor == anchor) {
-        await this.takeUser(discoveredUser)
-        return discoveredUser
-      }
+    const user = this.users.find((user) => user.account.anchor == anchor)
+    if (user) {
+      await this.takeUser(user)
+      return user
     }
     fail("All users borrowed")
   }

@@ -3,7 +3,7 @@ import {Page} from "./page.js"
 
 export class demoAppPage extends Page {
 
-  public demoAppBaseUrl = "https://hvn26-aiaaa-aaaak-aaa2a-cai.ic0.app"
+  public demoAppBaseUrl = "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app"
 
   get updateIframeButton() {
     return $('#updateIframe')

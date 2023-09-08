@@ -20,7 +20,10 @@ export class ICTransferConnector
   extends ICMTransferConnector<ITransferConfig>
   implements ITransferFTConnector
 {
-  async getIdentity(address: string): Promise<DelegationIdentity> {
+  async getIdentity(
+    address: string,
+    targetCanister?: string,
+  ): Promise<DelegationIdentity> {
     const allAccounts = await this.getAllPrincipals(false)
 
     const neededAccount = allAccounts.find(
@@ -31,7 +34,7 @@ export class ICTransferConnector
     return await getWalletDelegationAdapter(
       neededAccount.account.domain,
       neededAccount.account.accountId,
-      accessList,
+      targetCanister ? [...accessList, targetCanister] : accessList,
     )
   }
 

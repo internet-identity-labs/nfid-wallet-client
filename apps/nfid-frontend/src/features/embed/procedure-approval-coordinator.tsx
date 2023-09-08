@@ -135,9 +135,10 @@ export const ProcedureApprovalCoordinator: React.FC<
         <RequestTransfer
           appMeta={appMeta}
           sourceAddress={rpcMessage.params[0].sourceAddress}
-          amount={rpcMessage.params[0].amount}
+          amount={rpcMessage.params[0]?.amount}
           destinationAddress={rpcMessage.params[0].receiver}
           onConfirmIC={onRequestICTransfer}
+          tokenId={rpcMessage.params[0]?.tokenId}
         />
       )
 

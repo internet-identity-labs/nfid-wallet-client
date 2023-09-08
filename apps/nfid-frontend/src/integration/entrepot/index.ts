@@ -90,3 +90,12 @@ export async function principalTokens(
 ): Promise<UserNFTDetails[]> {
   return (await fetchNFTsOfPrincipals(inputData)).flat()
 }
+
+export async function getNFTByTokenId(tokenId: string, principalId: string) {
+  if (!tokenId || !principalId) throw new Error("No tokenId or principalId")
+
+  const principal = Principal.fromText(principalId)
+  const allTokens = await principalTokens([{ principal, account: null as any }])
+
+  return allTokens.find((t) => t.tokenId === tokenId)
+}

@@ -148,6 +148,7 @@ When(
 
     const rpId = new URL(baseURL).hostname
     const creds: WebAuthnCredential = testUser.credentials
+    // @ts-ignore
     const anchor: JSON = testUser.account
 
     // @ts-ignore
@@ -185,13 +186,18 @@ When(
   async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
-    await browser.execute(function (authState: AuthState) {
+    const response = await browser.executeAsync(function (
+      authState: AuthState,
+      done,
+    ) {
       // @ts-ignore
       if (typeof this.setAuthState === "function") {
         // @ts-ignore
-        this.setAuthState(authState)
+        this.setAuthState(authState).then(done)
       }
-    }, testUser.authstate)
+    },
+    testUser.authstate)
+    console.log("set auth state", { response })
     await HomePage.openPage("/profile/assets")
   },
 )

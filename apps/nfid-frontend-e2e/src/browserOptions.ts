@@ -1,17 +1,18 @@
 export const chromeBrowserOptions: IChromeOption = {
   args: [
     "--no-sandbox",
-    // "--use-fake-device-for-media-stream",
     "--disable-notifications",
     "--disable-web-security",
     "--allow-insecure-localhost",
     "--disable-infobars",
     "--disable-dev-shm-usage",
-    // "--start-maximized",
     "--ignore-certificate-errors",
     "--disable-gpu",
+    // "--user-data-dir=chrome-user-data-dir",
+    // "--use-fake-device-for-media-stream",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
-    "--user-data-dir=chrome-user-data-dir",
+    // "--start-maximized",
+    // "--auto-open-devtools-for-tabs",
   ],
   // w3c: false,
 }
@@ -21,9 +22,9 @@ export const chromeBrowser = {
   "goog:chromeOptions": chromeBrowserOptions,
   "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
   acceptInsecureCerts: true,
-  'webauthn:extension:credBlob': true,
-  'webauthn:extension:largeBlob': true,
-  'webauthn:virtualAuthenticators': true
+  "webauthn:extension:credBlob": true,
+  "webauthn:extension:largeBlob": true,
+  "webauthn:virtualAuthenticators": true,
 }
 
 export const firefoxBrowser = {}

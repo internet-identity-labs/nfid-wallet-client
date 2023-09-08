@@ -2,34 +2,33 @@
 Feature:Send/Receive Asset
   As a user, I want to send/receive assets
 
-  # SC-8568 owned by Pavlo
-  # @sendreceive1
-  # Scenario Outline: User should be able to receive transaction
-  #   Given User opens NFID site
-  #   And User is already authenticated by <anchor> anchor
-  #   And Tokens displayed on user assets
-  #   Then User opens receive dialog window
-  #   Then Choose <chain> from receive options
-  #   Then Account ID is <account_id>
-  #   Examples:
-  #     | chain          | anchor | account_id                            |
-  #     | Bitcoin        | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h |
-  #     | Ethereum       | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
-  #     | Polygon Mumbai | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
+  @sendreceive1
+  Scenario Outline: User should be able to receive transaction
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    And Tokens displayed on user assets
+    Then User opens receive dialog window
+    Then Choose <chain> from receive options
+    Then Account ID is <account_id>
+    Examples:
+      | chain          | anchor | account_id                            |
+      | Bitcoin        | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h |
+      | Ethereum       | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
+      | Polygon Mumbai | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 |
 
 
-  # @sendreceive2
-  # Scenario Outline: User should be able to receive ICP transaction
-  #   Given User opens NFID site
-  #   And User is already authenticated by <anchor> anchor
-  #   And Tokens displayed on user assets
-  #   Then User opens receive dialog window
-  #   Then Choose <chain> from receive options
-  #   Then Account ID is <address>
-  #   Then Principal is <principal>
-  #   Examples:
-  #     | chain            | anchor | address                               | principal                             | currency |
-  #     | InternetComputer | 28542  | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe | ICP      |
+  @sendreceive2
+  Scenario Outline: User should be able to receive ICP transaction
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    And Tokens displayed on user assets
+    Then User opens receive dialog window
+    Then Choose <chain> from receive options
+    Then Account ID is <address>
+    Then Principal is <principal>
+    Examples:
+      | chain            | anchor | address                               | principal                             | currency |
+      | InternetComputer | 28542  | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe | ICP      |
 
   @sendreceive3
   Scenario Outline: User should be able to see balance and fee

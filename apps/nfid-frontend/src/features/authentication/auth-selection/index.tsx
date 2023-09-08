@@ -82,7 +82,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         applicationLogo={appMeta?.logo}
         applicationURL={appHost}
         applicationName={appMeta?.name}
-        title="Continue to your account"
+        title="Use your NFID Account"
       />
       <div className="space-y-2.5">
         <form

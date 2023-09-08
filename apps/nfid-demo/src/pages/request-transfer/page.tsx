@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
 import useSWRImmutable from "swr/immutable"
 
-import { Button, H4, Input } from "@nfid-frontend/ui"
+import { Button, DropdownSelect, H4, Input } from "@nfid-frontend/ui"
 import { NFID } from "@nfid/embed"
 import { getBalance } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
@@ -14,11 +14,16 @@ import { E8S } from "@nfid/integration/token/icp"
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
+const API = "https://us-central1-entrepot-api.cloudfunctions.net/api"
+
 declare const NFID_PROVIDER_URL: string
 
 export const PageRequestTransfer: React.FC = () => {
+  const [receiver, setReceiver] = useState("")
+  const [selectedNFTIds, setSelectedNFTIds] = useState<string[]>([""])
   const [delegation, setDelegation] = useState<DelegationIdentity | undefined>()
   const [transferResponse, setTransferResponse] = useState<any>({})
+  const [transferNFTResponse, setTransferNFTResponse] = useState<any>({})
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
@@ -46,7 +51,9 @@ export const PageRequestTransfer: React.FC = () => {
 
     console.debug("handleAuthenticate")
     updateAuthButton({ loading: true, label: "Authenticating..." })
-    const identity = await nfid.getDelegation()
+    const identity = await nfid.getDelegation({
+      targets: ["txkre-oyaaa-aaaap-qa3za-cai"],
+    })
     updateAuthButton({ loading: false, label: "Authenticated" })
     setDelegation(identity as unknown as DelegationIdentity)
   }, [nfid, updateAuthButton])
@@ -73,7 +80,6 @@ export const PageRequestTransfer: React.FC = () => {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      receiver: "",
       amount: "",
     },
   })
@@ -81,27 +87,55 @@ export const PageRequestTransfer: React.FC = () => {
   const onRequestTransfer = useCallback(
     async (values: any) => {
       if (!delegation) return
+      if (!receiver.length) return alert("Receiver should not be empty")
+      if (!values.amount.length) return alert("Please enter an amount")
 
-      const res = await nfid?.requestTransfer({
-        receiver: values.receiver,
+      const res = await nfid?.requestTransferFT({
+        receiver,
         amount: String(Number(values.amount) * E8S),
         sourceAddress: delegation.getPrincipal().toString(),
       })
 
-      console.log({ res })
       setTransferResponse(res)
       refetchBalance()
     },
-    [delegation, nfid, refetchBalance],
+    [delegation, nfid, receiver, refetchBalance],
+  )
+
+  const { data: userNFTs, mutate: refetchNFTs } = useSWRImmutable(
+    delegation ? [delegation.getPrincipal(), "nfts"] : null,
+    async ([principal]) => {
+      return await fetch(`${API}/maddies/getAllNfts/${address}`).then((r) =>
+        r.json(),
+      )
+    },
+  )
+
+  const onRequestNFTTransfer = useCallback(
+    async (values: any) => {
+      if (!receiver.length) return alert("Receiver should not be empty")
+      if (!delegation) return
+      if (!selectedNFTIds[0].length) return alert("Please select NFT")
+
+      const res = await nfid?.requestTransferNFT({
+        receiver,
+        tokenId: selectedNFTIds[0],
+        sourceAddress: delegation.getPrincipal().toString(),
+      })
+
+      setTransferNFTResponse(res)
+      refetchNFTs()
+    },
+    [delegation, nfid, receiver, refetchNFTs, selectedNFTIds],
   )
 
   return (
     <PageTemplate
       title={"Request transfer"}
-      className="grid w-full h-screen grid-cols-2 !p-0 divide-x"
+      className="flex flex-col w-full min-h-screen !p-0 divide-y"
     >
-      <div className="p-5">
-        <H4 className="mb-10">Authentication</H4>
+      <div className="p-5  h-[500px]">
+        <H4 className="mb-10">1. Authentication</H4>
         {/* Step 1: Authentication */}
         <div className="flex flex-col w-64 my-8">
           <Button
@@ -135,31 +169,66 @@ export const PageRequestTransfer: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col p-5">
-        <H4 className="mb-10">Request transfer</H4>
-        {/* Step 2: Request transfer */}
-        <div className="flex flex-col space-y-4">
-          <Input
-            labelText="Receiver IC address"
-            placeholder="39206df1ca32d2..."
-            errorText={errors.receiver?.message}
-            {...register("receiver", { required: "This field is required" })}
-          />
-          <Input
-            labelText="Amount ICP"
-            placeholder="0.0001"
-            errorText={errors.amount?.message}
-            {...register("amount", { required: "This field is required" })}
-          />
-          <Button onClick={handleSubmit(onRequestTransfer)}>
-            Request transfer
-          </Button>
+      <div className="grid grid-cols-2 divide-x">
+        <div className="flex flex-col p-5">
+          <H4 className="mb-10">Request ICP transfer</H4>
+          {/* Step 2: Request ICP transfer */}
+          <div className="flex flex-col space-y-4">
+            <Input
+              labelText="Receiver IC address"
+              placeholder="39206df1ca32d2..."
+              value={receiver}
+              onChange={(e) => setReceiver(e.target.value)}
+            />
+            <Input
+              labelText="Amount ICP"
+              placeholder="0.0001"
+              errorText={errors.amount?.message}
+              {...register("amount")}
+            />
+            <Button onClick={handleSubmit(onRequestTransfer)}>
+              Request ICP transfer
+            </Button>
+          </div>
+          <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
+            <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
+            <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
+              <code>{JSON.stringify(transferResponse, null, 4)}</code>
+            </pre>
+          </div>
         </div>
-        <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
-          <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
-          <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
-            <code>{JSON.stringify(transferResponse, null, 4)}</code>
-          </pre>
+        <div className="flex flex-col p-5">
+          <H4 className="mb-10">Request NFT transfer</H4>
+          {/* Step 2: Request IC NFT transfer */}
+          <div className="flex flex-col space-y-4">
+            <Input
+              labelText="Receiver IC address"
+              placeholder="39206df1ca32d2..."
+              value={receiver}
+              onChange={(e) => setReceiver(e.target.value)}
+            />
+            <DropdownSelect
+              options={
+                userNFTs?.map((nft: any) => ({
+                  label: nft.tokenId,
+                  icon: nft?.imageUrl,
+                  value: nft?.tokenId,
+                })) ?? []
+              }
+              selectedValues={selectedNFTIds}
+              setSelectedValues={setSelectedNFTIds}
+              isMultiselect={false}
+            />
+            <Button onClick={handleSubmit(onRequestNFTTransfer)}>
+              Request NFT transfer
+            </Button>
+          </div>
+          <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
+            <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
+            <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
+              <code>{JSON.stringify(transferNFTResponse, null, 4)}</code>
+            </pre>
+          </div>
         </div>
       </div>
     </PageTemplate>

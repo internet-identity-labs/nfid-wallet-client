@@ -1,7 +1,9 @@
-import {DelegationChain, DelegationIdentity} from "@dfinity/identity";
-import {ONE_MINUTE_IN_MS} from "@nfid/config";
-import {Chain, createDelegationChain, fetchLambdaPublicKey} from "./ecdsa";
-import {ic} from "@nfid/integration";
+import { DelegationChain, DelegationIdentity } from "@dfinity/identity"
+
+import { ONE_MINUTE_IN_MS } from "@nfid/config"
+import { ic } from "@nfid/integration"
+
+import { Chain, createDelegationChain, fetchLambdaPublicKey } from "./ecdsa"
 
 export async function executeCanisterCall(
   identity: DelegationIdentity,
@@ -26,12 +28,10 @@ export async function executeCanisterCall(
     tempPublicKey: lambdaPublicKey,
     calledMethodName,
     parameters,
-    canisterId
+    canisterId,
   }
 
-  const executeURL = ic.isLocal
-    ? `/execute_candid`
-    : AWS_EXECUTE_CANDID
+  const executeURL = ic.isLocal ? `/execute_candid` : AWS_EXECUTE_CANDID
 
   const response = await fetch(executeURL, {
     method: "POST",
@@ -43,7 +43,9 @@ export async function executeCanisterCall(
   })
 
   if (!response.result) {
-    throw new Error(`Unable to execute method ${calledMethodName}: ` + response.error)
+    throw new Error(
+      `Unable to execute method ${calledMethodName}: ` + response.error,
+    )
   }
 
   return response.result

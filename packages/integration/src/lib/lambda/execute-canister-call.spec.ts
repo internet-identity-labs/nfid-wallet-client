@@ -1,8 +1,13 @@
-import {IDL} from "@dfinity/candid";
-import {expect} from "@jest/globals";
-import {executeCanisterCall} from "./execute-canister-call";
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity";
-import {getIdentity} from "./util";
+import { IDL } from "@dfinity/candid"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { expect } from "@jest/globals"
+
+import { executeCanisterCall } from "./execute-canister-call"
+import { getIdentity } from "./util"
 
 describe("Targets validation", () => {
   jest.setTimeout(50000)
@@ -19,18 +24,21 @@ describe("Targets validation", () => {
       new Date(Date.now() + 3_600_000 * 44),
       {},
     )
-      const param1 =10000
+    const param1 = 10000
 
     const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
-    const canisterId = "rdmx6-jaaaa-aaaaa-aaadq-cai";
+    const canisterId = "rdmx6-jaaaa-aaaaa-aaadq-cai"
 
-    const response = await executeCanisterCall(di, "lookup", canisterId, stringifyParams(param1))
+    const response = await executeCanisterCall(
+      di,
+      "lookup",
+      canisterId,
+      stringifyParams(param1),
+    )
     expect(JSON.stringify(response)).toContain("alias")
   })
-
 })
 
-
-function stringifyParams (...params: any) {
+function stringifyParams(...params: any) {
   return JSON.stringify(params)
 }

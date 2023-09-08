@@ -31,7 +31,7 @@ import { getLegacyThirdPartyAuthSession } from "../../services"
 import { AuthAppMeta } from "../../ui/app-meta"
 import { PublicProfileButton } from "../public-profile-button"
 import { ApproveIcGetDelegationSdkResponse } from "./types"
-import { TransferStatus } from "frontend/features/types"
+import { RequestStatus } from "frontend/features/types"
 
 export interface IAuthChooseAccount {
   appMeta: AuthorizingAppMeta
@@ -74,14 +74,14 @@ export const AuthChooseAccount = ({
           )
 
           handleSelectAccount({
-            status: TransferStatus.SUCCESS,
+            status: RequestStatus.SUCCESS,
             authSession
           })
         } catch(e: any) {
           console.error(e)
           toast.error(e.message)
           handleSelectAccount({
-            status: TransferStatus.ERROR,
+            status: RequestStatus.ERROR,
             errorMessage: e.message
           })
         } finally {
@@ -114,14 +114,14 @@ export const AuthChooseAccount = ({
       }
 
       handleSelectAccount({
-        status: TransferStatus.SUCCESS,
+        status: RequestStatus.SUCCESS,
         authSession
       })
     } catch (e: any) {
       console.error(e)
       toast.error(e.message)
       handleSelectAccount({
-        status: TransferStatus.ERROR,
+        status: RequestStatus.ERROR,
         errorMessage: e.message
       })
     } finally {
@@ -160,14 +160,14 @@ export const AuthChooseAccount = ({
       }
 
       handleSelectAccount({
-        status: TransferStatus.SUCCESS,
+        status: RequestStatus.SUCCESS,
         authSession
       })
     } catch (e: any) {
       console.error(e)
       toast.error(e.message)
       handleSelectAccount({
-        status: TransferStatus.ERROR,
+        status: RequestStatus.ERROR,
         errorMessage: e.message
       })
     } finally {

@@ -1,10 +1,10 @@
-export enum TransferStatus {
+export enum RequestStatus {
   "SUCCESS" = "SUCCESS",
   "ERROR" = "ERROR",
   "REJECTED" = "REJECTED",
 }
 
 export interface SdkResponse {
-  status: TransferStatus
+  status: RequestStatus
   errorMessage?: string
 }

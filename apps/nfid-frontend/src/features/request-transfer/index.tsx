@@ -4,8 +4,9 @@ import useSWR from "swr"
 
 import { BlurredLoader, Button, Skeleton } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
-import { E8S, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
+import { E8S, WALLET_FEE, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 
+import { getNFTByTokenId } from "frontend/integration/entrepot"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
@@ -13,12 +14,15 @@ import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic
 import { AuthAppMeta } from "../authentication/ui/app-meta"
 import { toUSD } from "../fungable-token/accumulate-app-account-balances"
 import { TransferSuccess } from "../transfer-modal/components/success"
-import { IRequestTransferResponse } from "./types"
 import { TransferStatus } from "../types"
+import { RequestTransferFTDetails } from "./fungible-details"
+import { RequestTransferNFTDetails } from "./non-fungible-details"
+import { IRequestTransferResponse } from "./types"
 
 export interface IRequestTransferProps {
   appMeta: AuthorizingAppMeta
-  amount: string
+  amount?: string
+  tokenId?: string
   sourceAddress: string
   destinationAddress: string
   onConfirmIC: (data: IRequestTransferResponse) => void
@@ -26,11 +30,18 @@ export interface IRequestTransferProps {
 export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   appMeta,
   amount,
+  tokenId,
   sourceAddress,
   destinationAddress,
   onConfirmIC,
 }) => {
-  const [isTransferInProgress, setIsTransferInProgress] = useState(false)
+  const [transferPromise, setTransferPromise] = useState<any>(undefined)
+
+  const { data: nft } = useSWR(
+    tokenId ? ["nftDetails", tokenId, sourceAddress] : null,
+    ([key, id, principal]) => getNFTByTokenId(id, principal),
+  )
+
   const { data: identity } = useSWR(
     sourceAddress ? [sourceAddress, "userIdentity"] : null,
     ([address]) => icTransferConnector.getIdentity(address),
@@ -46,32 +57,10 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   if (!fee || typeof rate === "undefined")
     return <BlurredLoader isLoading={true} />
 
-  if (isTransferInProgress)
+  if (transferPromise)
     return (
       <TransferSuccess
-        initialPromise={
-          new Promise(async (resolve) => {
-            try {
-              let transferIdentity =
-                identity ??
-                (await icTransferConnector.getIdentity(sourceAddress))
-
-              const res = await icTransferConnector.transfer({
-                amount: Number(amount) / E8S,
-                identity: transferIdentity,
-                to: destinationAddress,
-                currency: "ICP",
-                contract: "",
-              })
-              resolve(res)
-            } catch (e: any) {
-              onConfirmIC({
-                status: TransferStatus.ERROR,
-                errorMessage: e?.message ?? "Request failed",
-              })
-            }
-          })
-        }
+        initialPromise={transferPromise}
         callback={(res) =>
           onConfirmIC({ status: TransferStatus.SUCCESS, hash: res?.hash })
         }
@@ -81,13 +70,19 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             errorMessage: res?.errorMessage?.message ?? "Request failed",
           })
         }
-        title={`${(Number(amount) + Number(WALLET_FEE_E8S)) / E8S} ICP`}
-        subTitle={toUSD(
-          (Number(amount) + Number(WALLET_FEE_E8S)) / E8S,
-          Number(rate),
-        )}
-        assetImg={icTransferConnector.getTokenConfig()?.icon ?? ""}
-        isAssetPadding
+        title={
+          nft?.name ?? `${(Number(amount) + Number(WALLET_FEE_E8S)) / E8S} ICP`
+        }
+        subTitle={
+          nft?.collection.name ??
+          toUSD((Number(amount) + Number(WALLET_FEE_E8S)) / E8S, Number(rate))
+        }
+        assetImg={
+          nft?.assetPreview.url ??
+          icTransferConnector.getTokenConfig()?.icon ??
+          ""
+        }
+        isAssetPadding={!tokenId}
         withToasts={false}
       />
     )
@@ -101,17 +96,22 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         title="Approve transfer"
         subTitle="Request from"
       />
-      <div className="flex flex-col mt-5 text-center">
-        <p className="text-[32px] font-medium">{Number(amount) / E8S} ICP</p>
-        <p className="text-sm text-gray-400">
-          {toUSD(Number(amount) / E8S, Number(rate))}
-        </p>
-      </div>
+      {tokenId ? (
+        <RequestTransferNFTDetails
+          tokenId={tokenId}
+          principalId={sourceAddress}
+        />
+      ) : (
+        <RequestTransferFTDetails
+          amount={`${Number(amount) / E8S} ICP`}
+          amountUSD={toUSD(Number(amount) / E8S, Number(rate))}
+        />
+      )}
       <div className="flex flex-col my-5">
         <div className="flex items-center justify-between text-sm border-b border-gray-200 h-14">
           <p>Network fee</p>
           <div className="text-right">
-            <p>{fee.feeUsd}</p>
+            <p>{toUSD(WALLET_FEE, Number(rate))}</p>
             <p className="text-xs text-gray-400">{fee.fee}</p>
           </div>
         </div>
@@ -119,19 +119,59 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           <p className="font-bold">Total</p>
           <div className="text-right">
             <p className="font-bold">
-              {toUSD(
-                (Number(amount) + Number(WALLET_FEE_E8S)) / E8S,
-                Number(rate),
-              )}
+              {amount
+                ? toUSD(
+                    (Number(amount) + Number(WALLET_FEE_E8S)) / E8S,
+                    Number(rate),
+                  )
+                : toUSD(WALLET_FEE, Number(rate))}
             </p>
             <p className="text-xs text-gray-400">
-              {(Number(amount) + Number(WALLET_FEE_E8S)) / E8S} ICP
+              {amount
+                ? (Number(amount) + Number(WALLET_FEE_E8S)) / E8S
+                : WALLET_FEE}{" "}
+              ICP
             </p>
           </div>
         </div>
       </div>
       <div className="space-y-2.5 flex flex-col mb-14 mt-6">
-        <Button type="primary" onClick={() => setIsTransferInProgress(true)}>
+        <Button
+          type="primary"
+          onClick={() =>
+            setTransferPromise(
+              new Promise(async (resolve) => {
+                try {
+                  let transferIdentity = tokenId
+                    ? await icTransferConnector.getIdentity(
+                        sourceAddress,
+                        nft?.canisterId,
+                      )
+                    : identity ??
+                      (await icTransferConnector.getIdentity(sourceAddress))
+                  const request = {
+                    tokenId: tokenId,
+                    amount: Number(amount) / E8S,
+                    identity: transferIdentity,
+                    to: destinationAddress,
+                    currency: "ICP",
+                    contract: "",
+                  }
+                  if (!tokenId) delete request.tokenId
+
+                  const res = await icTransferConnector.transfer(request)
+
+                  resolve(res)
+                } catch (e: any) {
+                  onConfirmIC({
+                    status: TransferStatus.ERROR,
+                    errorMessage: e?.message ?? "Request failed",
+                  })
+                }
+              }),
+            )
+          }
+        >
           Approve
         </Button>
         <Button

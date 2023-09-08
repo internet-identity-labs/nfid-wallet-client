@@ -15,7 +15,7 @@ import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
-import { TransferStatus } from "frontend/features/types"
+import { RequestStatus } from "frontend/features/types"
 
 type CommonContext = {
   rpcMessage?: RPCMessage
@@ -59,7 +59,7 @@ export const ExecuteProcedureService = async (
         throw new Error("The event cannot be handled.")
 
       const data = event.data as ApproveIcGetDelegationSdkResponse
-      if(data.status !== TransferStatus.SUCCESS)
+      if(data.status !== RequestStatus.SUCCESS)
         throw new Error(`The delegation cannot be obtained: ${data.errorMessage}`)
 
       const delegate = data.authSession as ThirdPartyAuthSession
@@ -74,7 +74,7 @@ export const ExecuteProcedureService = async (
         throw new Error("The event cannot be handled.")
 
       const result = event.data as IRequestTransferResponse
-      if(result.status !== TransferStatus.SUCCESS)
+      if(result.status !== RequestStatus.SUCCESS)
         throw new Error(`The request cannot be completed: ${result.errorMessage}`)
 
       return { ...rpcBase, result }

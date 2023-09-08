@@ -8,7 +8,7 @@ export const chromeBrowserOptions: IChromeOption = {
     "--disable-dev-shm-usage",
     "--ignore-certificate-errors",
     "--disable-gpu",
-    // "--user-data-dir=chrome-user-data-dir",
+    "--user-data-dir=chrome-user-data-dir",
     // "--use-fake-device-for-media-stream",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
     // "--start-maximized",

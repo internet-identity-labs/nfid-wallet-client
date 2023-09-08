@@ -1,33 +1,50 @@
-import {Actor, ActorSubclass, Agent, HttpAgent} from "@dfinity/agent";
-import {IDL} from "@dfinity/candid";
+import {DelegationChain, DelegationIdentity} from "@dfinity/identity";
+import {ONE_MINUTE_IN_MS} from "@nfid/config";
+import {Chain, createDelegationChain, fetchLambdaPublicKey} from "./ecdsa";
+import {ic} from "@nfid/integration";
 
-export async function executeCanisterCall(idl: any, canisterId: string, ...parameters: any[]) {
-  const agent: Agent = await new HttpAgent({ host: "https://ic0.app" })
-  const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
-    IDL.Service(idl)
-  const actor: ActorSubclass = Actor.createActor(idlFactory, {
-    agent,
-    canisterId,
+export async function executeCanisterCall(
+  identity: DelegationIdentity,
+  calledMethodName: string,
+  canisterId: string,
+  parameters?: string,
+): Promise<DelegationChain> {
+  const chain = Chain.IC
+
+  const lambdaPublicKey = await fetchLambdaPublicKey(chain)
+
+  const delegationChainForLambda = await createDelegationChain(
+    identity,
+    lambdaPublicKey,
+    new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
+    { previous: identity.getDelegation() },
+  )
+
+  const request = {
+    chain,
+    delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
+    tempPublicKey: lambdaPublicKey,
+    calledMethodName,
+    parameters,
+    canisterId
+  }
+
+  const executeURL = ic.isLocal
+    ? `/execute_candid`
+    : AWS_EXECUTE_CANDID
+
+  const response = await fetch(executeURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    return await response.json()
   })
-  return await evaluateMethod(actor, getMethodName(idl), ...parameters)
-}
 
-export async function evaluateMethod(
-  actor: ActorSubclass,
-  methodName: string,
-  ...parameters: any[]
-) {
-  return actor[methodName](...parameters)
-}
+  if (!response.result) {
+    throw new Error(`Unable to execute method ${calledMethodName}: ` + response.error)
+  }
 
-function getMethodName(obj: any) {
-  if (Object.keys(obj).length > 1) {
-    throw Error("More than one method in idl")
-  }
-  const methodName = Object.keys(obj)[0];
-  if (methodName) {
-    return methodName;
-  } else {
-    throw new Error(`No method found in the object.`);
-  }
+  return response.result
 }

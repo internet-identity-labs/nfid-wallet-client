@@ -117,9 +117,8 @@ export class Assets {
   public async receiveDialog() {
     await this.sendDialog()
     const tabReceive = await $("#tab_receive")
-    await tabReceive.waitForDisplayed({
-      timeout: 10000,
-    })
+    await tabReceive.waitForDisplayed({ timeout: 10000 })
+    await tabReceive.waitForClickable({ timeout: 15000 })
     await tabReceive.click()
     await $("#option_Network").waitForDisplayed({ timeout: 30000 })
   }

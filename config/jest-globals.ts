@@ -50,6 +50,8 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register_address",
   AWS_ECDSA_GET_ANONYMOUS:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_get_anonymous",
+  AWS_EXECUTE_CANDID:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/execute_candid",
   AWS_ECDSA_SIGN:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
   AWS_PASSKEY:

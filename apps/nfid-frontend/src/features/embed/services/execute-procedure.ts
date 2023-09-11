@@ -15,7 +15,7 @@ import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
-import { RequestStatus } from "frontend/features/types"
+import { RequestStatus, SdkResponse } from "frontend/features/types"
 
 type CommonContext = {
   rpcMessage?: RPCMessage
@@ -55,29 +55,37 @@ export const ExecuteProcedureService = async (
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
-      if (event.type !== "APPROVE_IC_GET_DELEGATION")
-        throw new Error("The event cannot be handled.")
+      try {
+        if (event.type !== "APPROVE_IC_GET_DELEGATION")
+          throw new Error("The event cannot be handled.")
 
-      const data = event.data as ApproveIcGetDelegationSdkResponse
-      if(data.status !== RequestStatus.SUCCESS)
-        throw new Error(`The delegation cannot be obtained: ${data.errorMessage}`)
+        const data = event.data as ApproveIcGetDelegationSdkResponse
+        if(data.status !== RequestStatus.SUCCESS)
+          throw new Error(`The delegation cannot be obtained: ${data.errorMessage}`)
 
-      const delegate = data.authSession as ThirdPartyAuthSession
-      console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
-      const delegations = [prepareClientDelegate(delegate.signedDelegation)]
-      const userPublicKey = delegate.userPublicKey
+        const delegate = data.authSession as ThirdPartyAuthSession
+        console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
+        const delegations = [prepareClientDelegate(delegate.signedDelegation)]
+        const userPublicKey = delegate.userPublicKey
 
-      return { ...rpcBase, result: { delegations, userPublicKey } }
+        return { ...rpcBase, result: {status: data.status, authSession: { delegations, userPublicKey }} }
+      } catch(e: any) {
+        return { ...rpcBase, result: {status: RequestStatus.ERROR, errorMessage: e.message} }
+      }
     }
     case "ic_requestTransfer": {
-      if (event.type !== "APPROVE_IC_REQUEST_TRANSFER")
-        throw new Error("The event cannot be handled.")
+      try {
+        if (event.type !== "APPROVE_IC_REQUEST_TRANSFER")
+          throw new Error("The event cannot be handled.")
 
-      const result = event.data as IRequestTransferResponse
-      if(result.status !== RequestStatus.SUCCESS)
-        throw new Error(`The request cannot be completed: ${result.errorMessage}`)
+        const result = event.data as IRequestTransferResponse
+        if(result.status !== RequestStatus.SUCCESS)
+          throw new Error(`The request cannot be completed: ${result.errorMessage}`)
 
-      return { ...rpcBase, result }
+        return { ...rpcBase, result: {status: result.status, errorMessage: result.errorMessage, hash: result.hash }}
+      } catch(e: any) {
+        return { ...rpcBase, result: {status: RequestStatus.ERROR, errorMessage: e.message} }
+      }
     }
     case "eth_accounts": {
       const adapter = new DelegationWalletAdapter(rpcUrl)
@@ -90,32 +98,39 @@ export const ExecuteProcedureService = async (
       return response
     }
     case "ic_renewDelegation": {
-      console.debug("ExecuteProcedureService ic_renewDelegation")
-      const { targets } = rpcMessage.params[0]
-      console.debug("ExecuteProcedureService ic_renewDelegation", { targets })
-      const delegationIdentity = authState.get().delegationIdentity
-      if (!delegationIdentity) throw new Error("missing delegationIdentity")
-      if (!requestOrigin) throw new Error("missing requestOrigin")
-
-      let delegation
       try {
+        if (event.type !== "APPROVE_IC_GET_DELEGATION")
+          throw new Error("The event cannot be handled.")
+
+        const data = event.data as SdkResponse
+        if(data.status !== RequestStatus.SUCCESS)
+          throw new Error(`The delegation cannot be obtained: ${data.errorMessage}`)
+
+        console.debug("ExecuteProcedureService ic_renewDelegation")
+        const { targets } = rpcMessage.params[0]
+        console.debug("ExecuteProcedureService ic_renewDelegation", { targets })
+        const delegationIdentity = authState.get().delegationIdentity
+        if (!delegationIdentity) throw new Error("missing delegationIdentity")
+        if (!requestOrigin) throw new Error("missing requestOrigin")
+
+        let delegation
         delegation = await renewDelegation(
           delegationIdentity,
           requestOrigin,
           targets,
         )
-      } catch (error) {
-        console.error("ExecuteProcedureService ic_renewDelegation", { error })
-        return { ...rpcBase, result: "error" }
-      }
+
+        const delegations = [prepareClientDelegate(delegation)]
+        const userPublicKey = delegation.publicKey
+
+        return { ...rpcBase, result: {status: data.status, authSession: { delegations, userPublicKey }}}
+    } catch (e: any) {
+      console.error("ExecuteProcedureService ic_renewDelegation", { e })
       console.debug("ExecuteProcedureService ic_renewDelegation", {
         delegation,
       })
-
-      const delegations = [prepareClientDelegate(delegation)]
-      const userPublicKey = delegation.publicKey
-
-      return { ...rpcBase, result: { delegations, userPublicKey } }
+      return { ...rpcBase, result: {status: RequestStatus.ERROR, errorMessage: e.message} }
+    }
     }
     case "eth_signTypedData_v4": {
       const [, typedData] = rpcMessage.params

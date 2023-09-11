@@ -236,6 +236,13 @@ const config = {
         pathRewrite: (path: string) =>
           path.replace(/^\/ecdsa_register_address/, ""),
       },
+      "/execute_candid": {
+        target: process.env.AWS_EXECUTE_CANDID,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/execute_candid/, ""),
+      },
       "/ecdsa_get_anonymous": {
         target: process.env.AWS_ECDSA_GET_ANONYMOUS,
         secure: true,

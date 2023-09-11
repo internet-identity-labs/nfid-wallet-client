@@ -240,7 +240,7 @@ function defineChainCanister(chain: Chain) {
   }
 }
 
-async function fetchLambdaPublicKey(chain: Chain): Promise<string> {
+export async function fetchLambdaPublicKey(chain: Chain): Promise<string> {
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const response = await fetch(registerUrl, {
     method: "POST",
@@ -252,7 +252,7 @@ async function fetchLambdaPublicKey(chain: Chain): Promise<string> {
   return (await response.json()).public_key
 }
 
-async function createDelegationChain(
+export async function createDelegationChain(
   identity: DelegationIdentity,
   lambdaPublicKey: string,
   expirationDate: Date,

@@ -444,11 +444,7 @@ Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
 })
 
 Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
-  await Assets.openAssetReceiveOptions()
-  await Assets.chooseChainOption(chain)
-
-  const loader = await $("#loader")
-  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
+  await chooseChainOption(chain)
 })
 
 Then(
@@ -522,13 +518,18 @@ Then(
   },
 )
 
-Then(/^Account ID is ([^"]*)/, async (principal: string) => {
+Then(/^Choose (.+?) then check that an Account ID is (.+)/, async (chain: string, principal: string) => {
+  let chains = chain.split(",")
+  let principals = principal.split(",")
   let address = await Assets.getAccountId(true)
-  expect(
-    (await address.firstAddressPart.getText()) +
-    "..." +
-    (await address.secondAddressElement.getText()),
-  ).toEqual(principal)
+
+  for (let i = 0; i < chains.length; i++) {
+    await chooseChainOption(chains[i])
+    let expectedResult =
+      await address.firstAddressPart.getText() + "..." +
+      await address.secondAddressElement.getText()
+    expect(expectedResult).toEqual(principals[i])
+  }
 })
 
 Then(/^Principal ?(.*)? is ([^"]*)/, async (isDemoApp: string, principal: string) => {
@@ -852,3 +853,11 @@ Then(
     expect(tx).toBeTruthy()
   },
 )
+
+async function chooseChainOption(chain: string) {
+  await Assets.openAssetReceiveOptions()
+  await Assets.chooseChainOption(chain)
+
+  const loader = await $("#loader")
+  await loader.waitForDisplayed({reverse: true, timeout: 10000})
+}

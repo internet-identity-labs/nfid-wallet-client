@@ -68,9 +68,9 @@ export const ExecuteProcedureService = async (
         const delegations = [prepareClientDelegate(delegate.signedDelegation)]
         const userPublicKey = delegate.userPublicKey
 
-        return { ...rpcBase, result: {status: data.status, authSession: { delegations, userPublicKey }} }
+        return { ...rpcBase, result: { delegations, userPublicKey } }
       } catch(e: any) {
-        return { ...rpcBase, result: {status: RequestStatus.ERROR, errorMessage: e.message} }
+        return { ...rpcBase, error: {code: 500, message: e.message} }
       }
     }
     case "ic_requestTransfer": {
@@ -82,9 +82,9 @@ export const ExecuteProcedureService = async (
         if(result.status !== RequestStatus.SUCCESS)
           throw new Error(`The request cannot be completed: ${result.errorMessage}`)
 
-        return { ...rpcBase, result: {status: result.status, errorMessage: result.errorMessage, hash: result.hash }}
+        return { ...rpcBase, result: {hash: result.hash}}
       } catch(e: any) {
-        return { ...rpcBase, result: {status: RequestStatus.ERROR, errorMessage: e.message} }
+        return { ...rpcBase, error: {code: 500, message: e.message} }
       }
     }
     case "eth_accounts": {
@@ -123,13 +123,13 @@ export const ExecuteProcedureService = async (
         const delegations = [prepareClientDelegate(delegation)]
         const userPublicKey = delegation.publicKey
 
-        return { ...rpcBase, result: {status: data.status, authSession: { delegations, userPublicKey }}}
+        return { ...rpcBase, result: { delegations, userPublicKey }}
     } catch (e: any) {
       console.error("ExecuteProcedureService ic_renewDelegation", { e })
       console.debug("ExecuteProcedureService ic_renewDelegation", {
         delegation,
       })
-      return { ...rpcBase, result: {status: RequestStatus.ERROR, errorMessage: e.message} }
+      return { ...rpcBase, error: {code: 500, message: e.message} }
     }
     }
     case "eth_signTypedData_v4": {

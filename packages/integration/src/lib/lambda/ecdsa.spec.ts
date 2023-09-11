@@ -46,7 +46,6 @@ describe("Lambda Sign/Register ECDSA", () => {
   const expectedGlobalAcc =
     "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {
-
     const localStorageMock = new LocalStorageMock()
 
     beforeAll(() => {
@@ -217,7 +216,7 @@ describe("Lambda Sign/Register ECDSA", () => {
           "nfid.one",
         )
         fail("Should not come here")
-      } catch (e:any) {
+      } catch (e: any) {
         expect(e.message).toContain("not found")
       }
 

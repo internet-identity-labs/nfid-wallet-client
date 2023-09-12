@@ -141,8 +141,13 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       )
       .map((x) => {
         const contract = x.rawContract.address
-        const tokenId: string =
+        let tokenId: string =
           x.tokenId ?? x.erc1155Metadata?.[0].tokenId ?? ""
+
+        if (tokenId.startsWith("0x")) {
+          tokenId = ethers.BigNumber.from(tokenId).toString();
+        }
+
         const id = `${chain}:${contract}:${tokenId}`
         return toItemId(id)
       })

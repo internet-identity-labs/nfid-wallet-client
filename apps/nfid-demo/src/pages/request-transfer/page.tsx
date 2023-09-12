@@ -94,7 +94,7 @@ export const PageRequestTransfer: React.FC = () => {
         receiver,
         amount: String(Number(values.amount) * E8S),
         sourceAddress: delegation.getPrincipal().toString(),
-      })
+      }).catch((e: Error) => ({ error: e.message }))
 
       setTransferResponse(res)
       refetchBalance()
@@ -121,7 +121,7 @@ export const PageRequestTransfer: React.FC = () => {
         receiver,
         tokenId: selectedNFTIds[0],
         sourceAddress: delegation.getPrincipal().toString(),
-      })
+      }).catch((e: Error) => ({ error: e.message }))
 
       setTransferNFTResponse(res)
       refetchNFTs()

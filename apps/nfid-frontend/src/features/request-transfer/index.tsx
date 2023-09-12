@@ -14,9 +14,10 @@ import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic
 import { AuthAppMeta } from "../authentication/ui/app-meta"
 import { toUSD } from "../fungable-token/accumulate-app-account-balances"
 import { TransferSuccess } from "../transfer-modal/components/success"
+import { RequestStatus } from "../types"
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
-import { IRequestTransferResponse, TransferStatus } from "./types"
+import { IRequestTransferResponse } from "./types"
 
 export interface IRequestTransferProps {
   appMeta: AuthorizingAppMeta
@@ -61,12 +62,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
       <TransferSuccess
         initialPromise={transferPromise}
         callback={(res) =>
-          onConfirmIC({ status: TransferStatus.SUCCESS, hash: res?.hash })
+          onConfirmIC({ status: RequestStatus.SUCCESS, hash: res?.hash })
         }
         errorCallback={(res) =>
           onConfirmIC({
-            status: TransferStatus.ERROR,
-            message: res?.errorMessage?.message ?? "Request failed",
+            status: RequestStatus.ERROR,
+            errorMessage: res?.errorMessage?.message ?? "Request failed",
           })
         }
         title={
@@ -163,8 +164,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   resolve(res)
                 } catch (e: any) {
                   onConfirmIC({
-                    status: TransferStatus.ERROR,
-                    message: e?.message ?? "Request failed",
+                    status: RequestStatus.ERROR,
+                    errorMessage: e?.message ?? "Request failed",
                   })
                 }
               }),
@@ -177,8 +178,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           type="stroke"
           onClick={() =>
             onConfirmIC({
-              status: TransferStatus.REJECTED,
-              message: "Rejected by user",
+              status: RequestStatus.REJECTED,
+              errorMessage: "Rejected by user",
             })
           }
         >

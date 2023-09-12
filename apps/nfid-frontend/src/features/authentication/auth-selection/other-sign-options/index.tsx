@@ -67,7 +67,7 @@ export const AuthOtherSignOptions = ({
         applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url}
         applicationName={appMeta?.name}
-        title="Use NFID"
+        title="Use your NFID Account"
       />
       <div
         className={clsx(

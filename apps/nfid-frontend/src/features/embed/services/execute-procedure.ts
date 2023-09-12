@@ -8,7 +8,8 @@ import {
   renewDelegation,
 } from "@nfid/integration"
 
-import { IRequestTransferResponse } from "frontend/features/request-transfer/types"
+import { ICanisterCallResponse } from "frontend/features/sdk/request-canister-call/types"
+import { IRequestTransferResponse } from "frontend/features/sdk/request-transfer/types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
@@ -29,6 +30,7 @@ type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
   | { type: "APPROVE_IC_GET_DELEGATION"; data?: ThirdPartyAuthSession }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data?: IRequestTransferResponse }
+  | { type: "APPROVE_IC_CANISTER_CALL"; data?: ICanisterCallResponse }
   | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext
@@ -68,6 +70,13 @@ export const ExecuteProcedureService = async (
         throw new Error("wrong event type")
 
       const result = event.data as IRequestTransferResponse
+      return { ...rpcBase, result }
+    }
+    case "ic_canisterCall": {
+      if (event.type !== "APPROVE_IC_CANISTER_CALL")
+        throw new Error("wrong event type")
+
+      const result = event.data as ICanisterCallResponse
       return { ...rpcBase, result }
     }
     case "eth_accounts": {

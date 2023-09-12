@@ -11,6 +11,8 @@ import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
+import { RequestCanisterCall } from "./features/sdk/request-canister-call"
+import { IRequestTransferResponse } from "./features/sdk/request-transfer/types"
 import { NotFound } from "./ui/pages/404"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
@@ -43,6 +45,22 @@ export const App = () => {
       <Routes>
         <Route path={"/"} element={<HomeScreen />} />
 
+        <Route
+          path="/test"
+          element={
+            <ScreenResponsive>
+              <RequestCanisterCall
+                appMeta={{}}
+                method={"getAccounts"}
+                canisterID={"74gpt-tiaaa-aaaak-aacaa-cai"}
+                args={"some args"}
+                onConfirmIC={function (data: IRequestTransferResponse): void {
+                  throw new Error("Function not implemented.")
+                }}
+              />
+            </ScreenResponsive>
+          }
+        />
         <Route
           path="/authenticate"
           element={

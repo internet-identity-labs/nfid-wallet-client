@@ -1,9 +1,7 @@
-import clsx from "clsx"
 import React, { useState } from "react"
 import useSWR from "swr"
 
-import { BlurredLoader, Button, Skeleton } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
+import { BlurredLoader, Button } from "@nfid-frontend/ui"
 import { E8S, WALLET_FEE, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
@@ -14,6 +12,7 @@ import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 
+import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
 import { IRequestTransferResponse, TransferStatus } from "./types"
@@ -44,10 +43,6 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   const { data: identity } = useSWR(
     sourceAddress ? [sourceAddress, "userIdentity"] : null,
     ([address]) => icTransferConnector.getIdentity(address),
-  )
-
-  const { data: balance } = useSWR("userBalance", () =>
-    icTransferConnector.getBalance(sourceAddress),
   )
 
   const { data: fee } = useSWR("requestFee", () => icTransferConnector.getFee())
@@ -184,35 +179,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         >
           Reject
         </Button>
-      </div>
-      <div
-        className={clsx(
-          "bg-gray-50 flex flex-col text-sm text-gray-500",
-          "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
-        )}
-      >
-        <div className="flex items-center justify-between">
-          <p>Internet Computer</p>
-          <p>Balance</p>
-        </div>
-        <div className="flex items-center justify-between">
-          <div>
-            {identity?.getPrincipal().toString() ? (
-              truncateString(identity?.getPrincipal().toString(), 6, 4)
-            ) : (
-              <Skeleton className="w-40 h-5 bg-gray-300" />
-            )}
-          </div>
-          <div className="flex items-center space-x-0.5">
-            <span id="balance">
-              {balance ? (
-                `${balance.balance} ICP`
-              ) : (
-                <Skeleton className="w-20 h-5 bg-gray-300" />
-              )}
-            </span>
-          </div>
-        </div>
+
+        <SDKFooter identity={identity} />
       </div>
     </>
   )

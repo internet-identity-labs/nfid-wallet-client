@@ -12,6 +12,7 @@ import {
 } from "frontend/state/authorization"
 
 import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
+import { RequestCanisterCall } from "../sdk/request-canister-call"
 import { RequestTransfer } from "../sdk/request-transfer"
 import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import MappedFallback from "./components/fallback"
@@ -139,6 +140,19 @@ export const ProcedureApprovalCoordinator: React.FC<
           destinationAddress={rpcMessage.params[0].receiver}
           onConfirmIC={onRequestICTransfer}
           tokenId={rpcMessage.params[0]?.tokenId}
+        />
+      )
+
+    case ["ic_canisterCall"].includes(rpcMessage.method):
+      return (
+        <RequestCanisterCall
+          appMeta={appMeta}
+          method={rpcMessage.params[0]?.method}
+          canisterID={rpcMessage.params[0]?.canisterId}
+          args={rpcMessage.params[0]?.parameters}
+          onConfirmIC={function (data: IRequestTransferResponse): void {
+            throw new Error("Function not implemented.")
+          }}
         />
       )
 

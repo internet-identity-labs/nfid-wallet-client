@@ -24,6 +24,9 @@ export const PageRequestTransfer: React.FC = () => {
   const [delegation, setDelegation] = useState<DelegationIdentity | undefined>()
   const [transferResponse, setTransferResponse] = useState<any>({})
   const [transferNFTResponse, setTransferNFTResponse] = useState<any>({})
+  const [canisterCallResponse, setCanisterCallResponse] = useState<
+    any | undefined
+  >({})
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
@@ -229,6 +232,25 @@ export const PageRequestTransfer: React.FC = () => {
               <code>{JSON.stringify(transferNFTResponse, null, 4)}</code>
             </pre>
           </div>
+        </div>
+      </div>
+
+      <div className="p-5">
+        <H4>Request canister call</H4>
+        <Input
+          labelText="Canister ID"
+          placeholder="74gpt-tiaaa-aaaak-aacaa-cai"
+        />
+        <Input labelText="Method name" placeholder="ii_getPrincipal" />
+        <Input labelText="Arguments" />
+
+        <Button className="mt-2">Call the canister</Button>
+
+        <div className="w-full p-6 mt-4 bg-gray-900 rounded-lg shadow-md">
+          <h3 className="mb-4 text-xl text-white">Logs</h3>
+          <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
+            <code>{JSON.stringify(canisterCallResponse, null, 4)}</code>
+          </pre>
         </div>
       </div>
     </PageTemplate>

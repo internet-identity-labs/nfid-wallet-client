@@ -13,7 +13,8 @@ import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import AuthenticationMachine from "../authentication/root/root-machine"
-import { IRequestTransferResponse } from "../request-transfer/types"
+import { ICanisterCallResponse } from "../sdk/request-canister-call/types"
+import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import {
@@ -46,6 +47,7 @@ type Events =
       data: ThirdPartyAuthSession
     }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data: IRequestTransferResponse }
+  | { type: "APPROVE_IC_CANISTER_CALL"; data: ICanisterCallResponse }
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
@@ -213,6 +215,7 @@ export const NFIDEmbedMachineV2 = createMachine(
               APPROVE: "EXECUTE_PROCEDURE",
               APPROVE_IC_GET_DELEGATION: "EXECUTE_PROCEDURE",
               APPROVE_IC_REQUEST_TRANSFER: "EXECUTE_PROCEDURE",
+              APPROVE_IC_CANISTER_CALL: "EXECUTE_PROCEDURE",
               CANCEL: {
                 target: "READY",
                 actions: ["sendRPCCancelResponse", "updateProcedure"],

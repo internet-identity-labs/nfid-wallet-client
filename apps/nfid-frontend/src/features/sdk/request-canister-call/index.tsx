@@ -1,0 +1,63 @@
+import clsx from "clsx"
+
+import { IconCmpWarning } from "@nfid-frontend/ui"
+
+import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
+import { AuthorizingAppMeta } from "frontend/state/authorization"
+
+import { IRequestTransferResponse } from "../request-transfer/types"
+
+export interface IRequestTransferProps {
+  appMeta: AuthorizingAppMeta
+  method: string
+  canisterID: string
+  args: string
+  onConfirmIC: (data: IRequestTransferResponse) => void
+}
+export const RequestCanisterCall = ({
+  appMeta,
+  method,
+  canisterID,
+  args,
+}: IRequestTransferProps) => {
+  return (
+    <>
+      <AuthAppMeta
+        applicationLogo={appMeta?.logo}
+        applicationURL={appMeta?.url ?? appMeta.name}
+        applicationName={appMeta?.name}
+        title={method}
+        subTitle="Request from"
+      />
+      <div
+        className={clsx(
+          "grid grid-cols-[22px,1fr] space-x-1.5 text-sm rounded-md",
+          "bg-orange-50 p-[15px] mt-4 text-orange-900",
+        )}
+      >
+        <div>
+          <IconCmpWarning className="text-orange-900 h-[22px]" />
+        </div>
+        <div>
+          <p className="font-bold leading-[20px]">Approval not recommended</p>
+          <p className="mt-0.5">
+            Unable to verify the safety of this approval. Please make sure you
+            trust this dapp.
+          </p>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "rounded-md bg-gray-50 px-3.5 py-2.5 flex-1 space-y-3",
+          "text-gray-500 break-all text-sm mt-2.5",
+        )}
+      >
+        <div className="flex space-x-2.5">
+          <span className="w-[100px] shrink-0">Canister ID</span>
+          <span className="text-black">{canisterID}</span>
+        </div>
+        <span className="text-gray-500 mt-2.5">{args}</span>
+      </div>
+    </>
+  )
+}

@@ -7,6 +7,7 @@ import { E8S, WALLET_FEE, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getNFTByTokenId } from "frontend/integration/entrepot"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -21,7 +22,6 @@ export interface IRequestTransferProps {
   appMeta: AuthorizingAppMeta
   amount?: string
   tokenId?: string
-  sourceAddress: string
   destinationAddress: string
   onConfirmIC: (data: IRequestTransferResponse) => void
 }
@@ -29,20 +29,19 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   appMeta,
   amount,
   tokenId,
-  sourceAddress,
   destinationAddress,
   onConfirmIC,
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
 
-  const { data: nft } = useSWR(
-    tokenId ? ["nftDetails", tokenId, sourceAddress] : null,
-    ([key, id, principal]) => getNFTByTokenId(id, principal),
+  const { data: identity } = useSWR("globalIdentity", () =>
+    getWalletDelegationAdapter(),
   )
 
-  const { data: identity } = useSWR(
-    sourceAddress ? [sourceAddress, "userIdentity"] : null,
-    ([address]) => icTransferConnector.getIdentity(address),
+  const { data: nft } = useSWR(
+    tokenId && identity ? ["nftDetails", tokenId, identity] : null,
+    ([key, id, identity]) =>
+      getNFTByTokenId(id, identity.getPrincipal().toString()),
   )
 
   const { data: fee } = useSWR("requestFee", () => icTransferConnector.getFee())
@@ -91,10 +90,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         subTitle="Request from"
       />
       {tokenId ? (
-        <RequestTransferNFTDetails
-          tokenId={tokenId}
-          principalId={sourceAddress}
-        />
+        <RequestTransferNFTDetails nft={nft} />
       ) : (
         <RequestTransferFTDetails
           amount={`${Number(amount) / E8S} ICP`}
@@ -137,12 +133,11 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
               new Promise(async (resolve) => {
                 try {
                   let transferIdentity = tokenId
-                    ? await icTransferConnector.getIdentity(
-                        sourceAddress,
-                        nft?.canisterId,
-                      )
-                    : identity ??
-                      (await icTransferConnector.getIdentity(sourceAddress))
+                    ? await getWalletDelegationAdapter("nfid.one", "0", [
+                        nft?.canisterId!,
+                      ])
+                    : identity ?? (await getWalletDelegationAdapter())
+
                   const request = {
                     tokenId: tokenId,
                     amount: Number(amount) / E8S,

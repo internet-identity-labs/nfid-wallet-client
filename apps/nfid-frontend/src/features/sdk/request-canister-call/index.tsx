@@ -1,25 +1,59 @@
 import clsx from "clsx"
+import { useState } from "react"
+import useSWR from "swr"
 
-import { IconCmpWarning } from "@nfid-frontend/ui"
+import { BlurredLoader, Button, IconCmpWarning } from "@nfid-frontend/ui"
+import { executeCanisterCall } from "@nfid/integration"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { IRequestTransferResponse } from "../request-transfer/types"
+import { TransferStatus } from "../request-transfer/types"
+import { SDKFooter } from "../ui/footer"
+import { ICanisterCallResponse } from "./types"
 
 export interface IRequestTransferProps {
   appMeta: AuthorizingAppMeta
   method: string
   canisterID: string
   args: string
-  onConfirmIC: (data: IRequestTransferResponse) => void
+  onConfirmIC: (data: ICanisterCallResponse) => void
 }
 export const RequestCanisterCall = ({
   appMeta,
   method,
   canisterID,
   args,
+  onConfirmIC,
 }: IRequestTransferProps) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { data: identity } = useSWR(
+    "globalIdentity",
+    getWalletDelegationAdapter,
+  )
+
+  const handleExecuteCall = async () => {
+    setIsLoading(true)
+    try {
+      const delegation = identity ?? (await getWalletDelegationAdapter())
+
+      const res = await executeCanisterCall(
+        delegation,
+        method,
+        canisterID,
+        args,
+      )
+      onConfirmIC({ status: TransferStatus.SUCCESS, response: res })
+    } catch (e: any) {
+      onConfirmIC({ status: TransferStatus.ERROR, errorMessage: e?.message })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (isLoading) return <BlurredLoader isLoading={true} />
+
   return (
     <>
       <AuthAppMeta
@@ -57,6 +91,24 @@ export const RequestCanisterCall = ({
           <span className="text-black">{canisterID}</span>
         </div>
         <span className="text-gray-500 mt-2.5">{args}</span>
+      </div>
+      <div className="space-y-2.5 flex flex-col mb-14 mt-6">
+        <Button type="primary" onClick={handleExecuteCall}>
+          Approve
+        </Button>
+        <Button
+          type="stroke"
+          onClick={() =>
+            onConfirmIC({
+              status: TransferStatus.REJECTED,
+              errorMessage: "Rejected by user",
+            })
+          }
+        >
+          Reject
+        </Button>
+
+        <SDKFooter identity={identity} />
       </div>
     </>
   )

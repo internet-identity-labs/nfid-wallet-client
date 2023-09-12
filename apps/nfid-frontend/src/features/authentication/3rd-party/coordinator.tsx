@@ -2,7 +2,6 @@ import { useMachine } from "@xstate/react"
 import React, { useEffect } from "react"
 
 import {
-  ThirdPartyAuthSession,
   authenticationTracking,
 } from "@nfid/integration"
 
@@ -13,6 +12,7 @@ import AuthenticationCoordinator from "../root/coordinator"
 import { AuthenticationMachineActor } from "../root/root-machine"
 import { AuthChooseAccount } from "./choose-account"
 import ThirdPartyAuthMachine from "./third-party-machine"
+import { ApproveIcGetDelegationSdkResponse } from "./choose-account/types"
 
 export default function ThirdPartyAuthCoordinator({
   onEnd,
@@ -64,7 +64,7 @@ export default function ThirdPartyAuthCoordinator({
         <AuthChooseAccount
           authRequest={state.context.authRequest as AuthorizationRequest}
           appMeta={state.context.appMeta}
-          handleSelectAccount={(authSession: ThirdPartyAuthSession) =>
+          handleSelectAccount={(authSession: ApproveIcGetDelegationSdkResponse) =>
             send({ type: "CHOOSE_ACCOUNT", data: authSession })
           }
         />

@@ -7,6 +7,7 @@ import { E8S, WALLET_FEE, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
+import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getNFTByTokenId } from "frontend/integration/entrepot"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
@@ -16,7 +17,7 @@ import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic
 import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
-import { IRequestTransferResponse, TransferStatus } from "./types"
+import { IRequestTransferResponse } from "./types"
 
 export interface IRequestTransferProps {
   appMeta: AuthorizingAppMeta
@@ -55,12 +56,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
       <TransferSuccess
         initialPromise={transferPromise}
         callback={(res) =>
-          onConfirmIC({ status: TransferStatus.SUCCESS, hash: res?.hash })
+          onConfirmIC({ status: RequestStatus.SUCCESS, hash: res?.hash })
         }
         errorCallback={(res) =>
           onConfirmIC({
-            status: TransferStatus.ERROR,
-            message: res?.errorMessage?.message ?? "Request failed",
+            status: RequestStatus.ERROR,
+            errorMessage: res?.errorMessage?.message ?? "Request failed",
           })
         }
         title={
@@ -153,8 +154,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   resolve(res)
                 } catch (e: any) {
                   onConfirmIC({
-                    status: TransferStatus.ERROR,
-                    message: e?.message ?? "Request failed",
+                    status: RequestStatus.ERROR,
+                    errorMessage: e?.message ?? "Request failed",
                   })
                 }
               }),
@@ -167,8 +168,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           type="stroke"
           onClick={() =>
             onConfirmIC({
-              status: TransferStatus.REJECTED,
-              message: "Rejected by user",
+              status: RequestStatus.REJECTED,
+              errorMessage: "Rejected by user",
             })
           }
         >

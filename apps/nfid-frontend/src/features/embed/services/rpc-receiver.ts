@@ -28,7 +28,7 @@ interface RPCErrorResponse extends RPCBase {
   error: {
     code: number
     message: string
-    data: any
+    data?: any
   }
 }
 

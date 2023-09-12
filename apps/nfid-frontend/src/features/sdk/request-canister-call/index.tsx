@@ -6,10 +6,10 @@ import { BlurredLoader, Button, IconCmpWarning } from "@nfid-frontend/ui"
 import { executeCanisterCall } from "@nfid/integration"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
+import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { TransferStatus } from "../request-transfer/types"
 import { SDKFooter } from "../ui/footer"
 import { ICanisterCallResponse } from "./types"
 
@@ -44,9 +44,9 @@ export const RequestCanisterCall = ({
         canisterID,
         args,
       )
-      onConfirmIC({ status: TransferStatus.SUCCESS, response: res })
+      onConfirmIC({ status: RequestStatus.SUCCESS, response: res })
     } catch (e: any) {
-      onConfirmIC({ status: TransferStatus.ERROR, errorMessage: e?.message })
+      onConfirmIC({ status: RequestStatus.ERROR, errorMessage: e?.message })
     } finally {
       setIsLoading(false)
     }
@@ -100,7 +100,7 @@ export const RequestCanisterCall = ({
           type="stroke"
           onClick={() =>
             onConfirmIC({
-              status: TransferStatus.REJECTED,
+              status: RequestStatus.REJECTED,
               errorMessage: "Rejected by user",
             })
           }

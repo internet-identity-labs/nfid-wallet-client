@@ -12,6 +12,7 @@ import { FunctionCall } from "@nfid/integration-ethereum"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
+import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import AuthenticationMachine from "../authentication/root/root-machine"
 import { ICanisterCallResponse } from "../sdk/request-canister-call/types"
 import { IRequestTransferResponse } from "../sdk/request-transfer/types"
@@ -44,7 +45,7 @@ type Events =
     }
   | {
       type: "APPROVE_IC_GET_DELEGATION"
-      data: ThirdPartyAuthSession
+      data: ApproveIcGetDelegationSdkResponse
     }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data: IRequestTransferResponse }
   | { type: "APPROVE_IC_CANISTER_CALL"; data: ICanisterCallResponse }

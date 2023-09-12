@@ -93,11 +93,12 @@ export const PageRequestTransfer: React.FC = () => {
       if (!receiver.length) return alert("Receiver should not be empty")
       if (!values.amount.length) return alert("Please enter an amount")
 
-      const res = await nfid?.requestTransferFT({
-        receiver,
-        amount: String(Number(values.amount) * E8S),
-      })
-
+      const res = await nfid
+        ?.requestTransferFT({
+          receiver,
+          amount: String(Number(values.amount) * E8S),
+        })
+        .catch((e: Error) => ({ error: e.message }))
       setTransferResponse(res)
       refetchBalance()
     },
@@ -119,11 +120,12 @@ export const PageRequestTransfer: React.FC = () => {
 
       if (!selectedNFTIds[0].length) return alert("Please select NFT")
 
-      const res = await nfid?.requestTransferNFT({
-        receiver,
-        tokenId: selectedNFTIds[0],
-      })
-
+      const res = await nfid
+        ?.requestTransferNFT({
+          receiver,
+          tokenId: selectedNFTIds[0],
+        })
+        .catch((e: Error) => ({ error: e.message }))
       setTransferNFTResponse(res)
       refetchNFTs()
     },

@@ -20,6 +20,7 @@ import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
 import { populateTransactionData } from "./util/populateTxService"
+import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 
 type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
@@ -29,7 +30,7 @@ type ApproverCmpProps = {
   onConfirm: (data?: {
     populatedTransaction: [TransactionRequest, ProviderError | undefined]
   }) => void
-  onRequestICDelegation?: (thirdPartyAuthSession: ThirdPartyAuthSession) => void
+  onRequestICDelegation?: (thirdPartyAuthSession: ApproveIcGetDelegationSdkResponse) => void
   onRequestICTransfer?: (
     thirdPartyAuthSession: IRequestTransferResponse,
   ) => void

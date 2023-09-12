@@ -1,4 +1,4 @@
-import { TransferStatus } from "../request-transfer/types"
+import { RequestStatus } from "frontend/features/types"
 
 export interface ICanisterCallRequest {
   canisterId: string
@@ -8,7 +8,7 @@ export interface ICanisterCallRequest {
 }
 
 export interface ICanisterCallResponse {
-  status: TransferStatus
+  status: RequestStatus
   errorMessage?: string
   response?: string
 }

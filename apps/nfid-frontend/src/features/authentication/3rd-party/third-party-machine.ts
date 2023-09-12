@@ -9,10 +9,10 @@ import { AbstractAuthSession, AuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
-  ThirdPartyAuthSession,
 } from "frontend/state/authorization"
 
 import AuthenticationMachine from "../root/root-machine"
+import { ApproveIcGetDelegationSdkResponse } from "./choose-account/types"
 
 export interface ThirdPartyAuthMachineContext {
   authRequest?: {
@@ -22,7 +22,7 @@ export interface ThirdPartyAuthMachineContext {
     derivationOrigin?: string
   }
   authSession?: AbstractAuthSession
-  thirdPartyAuthSession?: ThirdPartyAuthSession
+  thirdPartyAuthSession?: ApproveIcGetDelegationSdkResponse
   appMeta: AuthorizingAppMeta
   error?: Error
   isIframe: boolean
@@ -36,7 +36,7 @@ export type ThirdPartyAuthMachineEvents =
   | { type: "done.invoke.AuthenticationMachine"; data: AuthSession }
   | { type: "done.invoke.postDelegation"; data: void }
   | { type: "RETRY" }
-  | { type: "CHOOSE_ACCOUNT"; data: ThirdPartyAuthSession }
+  | { type: "CHOOSE_ACCOUNT"; data: ApproveIcGetDelegationSdkResponse }
 
 interface Schema {
   context: ThirdPartyAuthMachineContext

@@ -10,7 +10,7 @@ export async function executeCanisterCall(
   calledMethodName: string,
   canisterId: string,
   parameters?: string,
-): Promise<DelegationChain> {
+): Promise<string> {
   const chain = Chain.IC
 
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)

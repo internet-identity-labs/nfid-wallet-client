@@ -25,9 +25,6 @@ export const PageRequestTransfer: React.FC = () => {
   const [delegation, setDelegation] = useState<DelegationIdentity | undefined>()
   const [transferResponse, setTransferResponse] = useState<any>({})
   const [transferNFTResponse, setTransferNFTResponse] = useState<any>({})
-  const [canisterCallResponse, setCanisterCallResponse] = useState<
-    any | undefined
-  >({})
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })

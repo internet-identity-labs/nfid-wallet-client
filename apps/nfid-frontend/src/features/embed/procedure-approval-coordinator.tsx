@@ -12,8 +12,8 @@ import {
 } from "frontend/state/authorization"
 
 import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
-import { RequestTransfer } from "../request-transfer"
-import { IRequestTransferResponse } from "../request-transfer/types"
+import { RequestTransfer } from "../sdk/request-transfer"
+import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"

@@ -1,3 +1,5 @@
+import {ProfileType} from "./types.js"
+
 export class Page {
   private get loader() {
     return $("#loader")
@@ -55,5 +57,8 @@ export class Page {
         timeoutMsg: "expected data-cache-loaded to be true after 15s",
       },
     )
+  }
+
+  loginUsingIframe(profileType: ProfileType) {
   }
 }

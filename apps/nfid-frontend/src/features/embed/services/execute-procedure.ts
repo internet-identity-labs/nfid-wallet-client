@@ -7,12 +7,12 @@ import {
   authState,
   renewDelegation,
 } from "@nfid/integration"
+import { prepareClientDelegate } from "@nfid/integration"
 
 import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
 import { IRequestTransferResponse } from "frontend/features/request-transfer/types"
-import { RequestStatus, SdkResponse } from "frontend/features/types"
+import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
-import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
@@ -58,6 +58,9 @@ export const ExecuteProcedureService = async (
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
+      console.debug("debug delegate ExecuteProcedureService ic_getDelegation", {
+        rpcMessage,
+      })
       try {
         if (event.type !== "APPROVE_IC_GET_DELEGATION")
           throw new Error("The event cannot be handled.")
@@ -71,7 +74,13 @@ export const ExecuteProcedureService = async (
         const delegate = data.authSession as ThirdPartyAuthSession
         console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
         const delegations = [prepareClientDelegate(delegate.signedDelegation)]
-        const userPublicKey = delegate.userPublicKey
+        // FIXME: figure out what public key to use here
+        // const userPublicKey = rpcMessage.params[0].sessionPublicKey // fails
+        // const userPublicKey = new Uint8Array( // fails
+        //   delegate.signedDelegation.publicKey,
+        // )
+        // const userPublicKey = new Uint8Array(delegate.userPublicKey) // fails
+        const userPublicKey = delegate.userPublicKey // fails
 
         return { ...rpcBase, result: { delegations, userPublicKey } }
       } catch (e: any) {
@@ -105,32 +114,37 @@ export const ExecuteProcedureService = async (
       return response
     }
     case "ic_renewDelegation": {
+      console.debug(
+        "debug delegate ExecuteProcedureService ic_renewDelegation",
+        { rpcMessage },
+      )
       try {
-        if (event.type !== "APPROVE_IC_GET_DELEGATION")
-          throw new Error("The event cannot be handled.")
+        const { targets, sessionPublicKey } = rpcMessage.params[0]
 
-        const data = event.data as SdkResponse
-        if (data.status !== RequestStatus.SUCCESS)
-          throw new Error(
-            `The delegation cannot be obtained: ${data.errorMessage}`,
-          )
+        console.debug(
+          "debug delegation ExecuteProcedureService ic_renewDelegation",
+          {
+            targets,
+            sessionPublicKey,
+          },
+        )
 
-        console.debug("ExecuteProcedureService ic_renewDelegation")
-        const { targets } = rpcMessage.params[0]
-        console.debug("ExecuteProcedureService ic_renewDelegation", { targets })
         const delegationIdentity = authState.get().delegationIdentity
         if (!delegationIdentity) throw new Error("missing delegationIdentity")
         if (!requestOrigin) throw new Error("missing requestOrigin")
 
-        let delegation
-        delegation = await renewDelegation(
+        const delegate = await renewDelegation(
           delegationIdentity,
           requestOrigin,
           targets,
+          sessionPublicKey,
         )
 
-        const delegations = [prepareClientDelegate(delegation)]
-        const userPublicKey = delegation.publicKey
+        const delegations = [prepareClientDelegate(delegate)]
+        // FIXME: figure out what public key to use here
+        // const userPublicKey = rpcMessage.params[0].sessionPublicKey
+        // const userPublicKey = rpcMessage.params[0].sessionPublicKey // fails
+        const userPublicKey = new Uint8Array(delegate.publicKey)
 
         return { ...rpcBase, result: { delegations, userPublicKey } }
       } catch (error: any) {

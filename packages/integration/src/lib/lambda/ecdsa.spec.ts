@@ -18,12 +18,12 @@ import { arrayify, hashMessage } from "ethers/lib/utils"
 import fetch from "node-fetch"
 
 import { WALLET_SCOPE } from "@nfid/config"
-import { ii, im, replaceActorIdentity } from "@nfid/integration"
 
 import {
   HTTPAccountRequest,
   AccessPointRequest,
 } from "../_ic_api/identity_manager.d"
+import { ii, im, replaceActorIdentity } from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,

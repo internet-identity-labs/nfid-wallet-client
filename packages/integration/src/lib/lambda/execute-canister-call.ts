@@ -3,14 +3,21 @@ import { DelegationChain, DelegationIdentity } from "@dfinity/identity"
 import { ONE_MINUTE_IN_MS } from "@nfid/config"
 import { ic } from "@nfid/integration"
 
+import { getFromStorage, isPresentInStorage } from "./domain-key-repository"
 import { Chain, createDelegationChain, fetchLambdaPublicKey } from "./ecdsa"
 
 export async function executeCanisterCall(
+  origin: string,
   identity: DelegationIdentity,
   calledMethodName: string,
   canisterId: string,
   parameters?: string,
 ): Promise<string> {
+  if (!isPresentInStorage(origin))
+    throw new Error(
+      "You can not request canister calls with anonymous delegation",
+    )
+
   const chain = Chain.IC
 
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)

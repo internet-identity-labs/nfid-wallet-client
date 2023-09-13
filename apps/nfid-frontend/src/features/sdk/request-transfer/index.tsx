@@ -1,3 +1,4 @@
+import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
 import React, { useState } from "react"
 import useSWR from "swr"
 
@@ -20,6 +21,7 @@ import { RequestTransferNFTDetails } from "./non-fungible-details"
 import { IRequestTransferResponse } from "./types"
 
 export interface IRequestTransferProps {
+  origin: string
   appMeta: AuthorizingAppMeta
   amount?: string
   tokenId?: string
@@ -27,6 +29,7 @@ export interface IRequestTransferProps {
   onConfirmIC: (data: IRequestTransferResponse) => void
 }
 export const RequestTransfer: React.FC<IRequestTransferProps> = ({
+  origin,
   appMeta,
   amount,
   tokenId,
@@ -133,6 +136,11 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             setTransferPromise(
               new Promise(async (resolve) => {
                 try {
+                  if (!isPresentInStorage(origin))
+                    throw new Error(
+                      "You can not request canister calls with anonymous delegation",
+                    )
+
                   let transferIdentity = tokenId
                     ? await getWalletDelegationAdapter("nfid.one", "0", [
                         nft?.canisterId!,

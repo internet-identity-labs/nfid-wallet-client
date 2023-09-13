@@ -8,14 +8,14 @@ import {
   renewDelegation,
 } from "@nfid/integration"
 
+import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
 import { IRequestTransferResponse } from "frontend/features/request-transfer/types"
+import { RequestStatus, SdkResponse } from "frontend/features/types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { prepareClientDelegate } from "frontend/integration/windows"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
-import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
-import { RequestStatus, SdkResponse } from "frontend/features/types"
 
 type CommonContext = {
   rpcMessage?: RPCMessage
@@ -29,7 +29,10 @@ export type ApproveSignatureEvent = {
 
 type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
-  | { type: "APPROVE_IC_GET_DELEGATION"; data?: ApproveIcGetDelegationSdkResponse }
+  | {
+      type: "APPROVE_IC_GET_DELEGATION"
+      data?: ApproveIcGetDelegationSdkResponse
+    }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data?: IRequestTransferResponse }
   | { type: "" }
 
@@ -60,8 +63,10 @@ export const ExecuteProcedureService = async (
           throw new Error("The event cannot be handled.")
 
         const data = event.data as ApproveIcGetDelegationSdkResponse
-        if(data.status !== RequestStatus.SUCCESS)
-          throw new Error(`The delegation cannot be obtained: ${data.errorMessage}`)
+        if (data.status !== RequestStatus.SUCCESS)
+          throw new Error(
+            `The delegation cannot be obtained: ${data.errorMessage}`,
+          )
 
         const delegate = data.authSession as ThirdPartyAuthSession
         console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
@@ -69,8 +74,8 @@ export const ExecuteProcedureService = async (
         const userPublicKey = delegate.userPublicKey
 
         return { ...rpcBase, result: { delegations, userPublicKey } }
-      } catch(e: any) {
-        return { ...rpcBase, error: {code: 500, message: e.message} }
+      } catch (e: any) {
+        return { ...rpcBase, error: { code: 500, message: e.message } }
       }
     }
     case "ic_requestTransfer": {
@@ -79,12 +84,14 @@ export const ExecuteProcedureService = async (
           throw new Error("The event cannot be handled.")
 
         const result = event.data as IRequestTransferResponse
-        if(result.status !== RequestStatus.SUCCESS)
-          throw new Error(`The request cannot be completed: ${result.errorMessage}`)
+        if (result.status !== RequestStatus.SUCCESS)
+          throw new Error(
+            `The request cannot be completed: ${result.errorMessage}`,
+          )
 
-        return { ...rpcBase, result: {hash: result.hash}}
-      } catch(e: any) {
-        return { ...rpcBase, error: {code: 500, message: e.message} }
+        return { ...rpcBase, result: { hash: result.hash } }
+      } catch (e: any) {
+        return { ...rpcBase, error: { code: 500, message: e.message } }
       }
     }
     case "eth_accounts": {
@@ -103,8 +110,10 @@ export const ExecuteProcedureService = async (
           throw new Error("The event cannot be handled.")
 
         const data = event.data as SdkResponse
-        if(data.status !== RequestStatus.SUCCESS)
-          throw new Error(`The delegation cannot be obtained: ${data.errorMessage}`)
+        if (data.status !== RequestStatus.SUCCESS)
+          throw new Error(
+            `The delegation cannot be obtained: ${data.errorMessage}`,
+          )
 
         console.debug("ExecuteProcedureService ic_renewDelegation")
         const { targets } = rpcMessage.params[0]
@@ -123,14 +132,11 @@ export const ExecuteProcedureService = async (
         const delegations = [prepareClientDelegate(delegation)]
         const userPublicKey = delegation.publicKey
 
-        return { ...rpcBase, result: { delegations, userPublicKey }}
-    } catch (e: any) {
-      console.error("ExecuteProcedureService ic_renewDelegation", { e })
-      console.debug("ExecuteProcedureService ic_renewDelegation", {
-        delegation,
-      })
-      return { ...rpcBase, error: {code: 500, message: e.message} }
-    }
+        return { ...rpcBase, result: { delegations, userPublicKey } }
+      } catch (error: any) {
+        console.error("ExecuteProcedureService ic_renewDelegation", { error })
+        return { ...rpcBase, error: { code: 500, message: error.message } }
+      }
     }
     case "eth_signTypedData_v4": {
       const [, typedData] = rpcMessage.params

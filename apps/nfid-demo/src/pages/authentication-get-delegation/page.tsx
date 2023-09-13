@@ -1,3 +1,4 @@
+import { Identity } from "@dfinity/agent"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import React from "react"
@@ -10,10 +11,17 @@ import { NFID } from "@nfid/embed"
 
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
+import { PrincipalIdFromIdentity } from "./components/principal-from-identity"
 
 declare const NFID_PROVIDER_URL: string
 
+const canisterIds = [
+  // "txkre-oyaaa-aaaap-qa3za-cai",
+  "irshc-3aaaa-aaaam-absla-cai",
+]
+
 export const PageAuthenticationGetDelegation = () => {
+  const [identity, setIdentity] = useState<Identity>()
   const [response, setResponse] = useState({})
   const [error, setError] = useState<string>()
   const [authButton, updateAuthButton] = useButtonState({
@@ -49,19 +57,21 @@ export const PageAuthenticationGetDelegation = () => {
       const identity = nfid.getIdentity()
       updateAuthButton({ label: "Logout" })
       setResponse({ principal: identity.getPrincipal().toText() })
+      setIdentity(identity as unknown as Identity)
     }
   }, [nfid, updateAuthButton])
 
   const handleAuthenticate = useCallback(async () => {
-    setError()
+    setError(undefined)
     if (!nfid) throw new Error("NFID not initialized")
 
-    console.debug("handleAuthenticate")
+    console.debug("handleAuthenticate", { targetCanisterIds })
     updateAuthButton({ loading: true, label: "Authenticating..." })
     try {
       const identity = await nfid.getDelegation(
         targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
       )
+      setIdentity(identity as unknown as Identity)
       updateAuthButton({ loading: false, label: "Logout" })
       setResponse({ principal: identity.getPrincipal().toText() })
     } catch (error: any) {
@@ -72,7 +82,7 @@ export const PageAuthenticationGetDelegation = () => {
   }, [nfid, targetCanisterIds, updateAuthButton])
 
   const handleRenewDelegation = useCallback(async () => {
-    setError()
+    setError(undefined)
     if (!nfid) throw new Error("NFID not initialized")
 
     console.debug("handleRenewDelegation")
@@ -85,6 +95,7 @@ export const PageAuthenticationGetDelegation = () => {
         targets: targetCanisterIds,
       })
       console.debug("handleRenewDelegation", { identity })
+      setIdentity(identity as unknown as Identity)
       setResponse({ principal: identity.getPrincipal().toText() })
     } catch (error: any) {
       console.debug("handleRenewDelegation", { error })
@@ -94,11 +105,12 @@ export const PageAuthenticationGetDelegation = () => {
   }, [nfid, targetCanisterIds, updateRenewDelegationButton])
 
   const handleLogout = useCallback(async () => {
-    setError()
+    setError(undefined)
     if (!nfid) throw new Error("NFID not initialized")
 
     await nfid.logout()
     setResponse({})
+    setIdentity(undefined)
     updateAuthButton({
       disabled: false,
       loading: false,
@@ -150,13 +162,13 @@ export const PageAuthenticationGetDelegation = () => {
             <Button
               type="stroke"
               isSmall
-              onClick={() =>
-                append({
-                  canisterId: fields.length
-                    ? ""
-                    : "txkre-oyaaa-aaaap-qa3za-cai",
-                })
-              }
+              onClick={() => {
+                if (fields.length < 1) {
+                  canisterIds.forEach((canisterId) => {
+                    append({ canisterId })
+                  })
+                }
+              }}
             >
               Add target canisterId
             </Button>
@@ -194,16 +206,10 @@ export const PageAuthenticationGetDelegation = () => {
         </div>
       </div>
       {!error ? (
-        <div
-          className={clsx(
-            "w-full border border-gray-200 rounded-xl",
-            "px-5 py-4 mt-8",
-            "sm:px-[30px] sm:py-[26px]",
-          )}
-        >
-          <h2 className={clsx("font-bold mb-1")}>NFID Response:</h2>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
-        </div>
+        <PrincipalIdFromIdentity
+          canisterId={"irshc-3aaaa-aaaam-absla-cai"}
+          identity={identity}
+        />
       ) : (
         <div
           className={clsx(

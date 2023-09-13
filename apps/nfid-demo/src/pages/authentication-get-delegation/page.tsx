@@ -14,6 +14,8 @@ import { PageTemplate } from "../page-template"
 declare const NFID_PROVIDER_URL: string
 
 export const PageAuthenticationGetDelegation = () => {
+  const [response, setResponse] = useState({})
+  const [error, setError] = useState<string>()
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
@@ -36,31 +38,41 @@ export const PageAuthenticationGetDelegation = () => {
     () => fields.map((field) => field.canisterId),
     [fields],
   )
-  console.debug("PageAuthenticationGetDelegation", { targetCanisterIds })
+  console.debug("PageAuthenticationGetDelegation", {
+    targetCanisterIds,
+    error,
+    response,
+  })
 
   React.useEffect(() => {
     if (nfid?.isAuthenticated) {
       const identity = nfid.getIdentity()
       updateAuthButton({ label: "Logout" })
-      setNfidResponse({ principal: identity.getPrincipal().toText() })
+      setResponse({ principal: identity.getPrincipal().toText() })
     }
   }, [nfid, updateAuthButton])
 
-  const [nfidResponse, setNfidResponse] = useState({})
-
   const handleAuthenticate = useCallback(async () => {
+    setError()
     if (!nfid) throw new Error("NFID not initialized")
 
     console.debug("handleAuthenticate")
     updateAuthButton({ loading: true, label: "Authenticating..." })
-    const identity = await nfid.getDelegation(
-      targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
-    )
-    updateAuthButton({ loading: false, label: "Logout" })
-    setNfidResponse({ principal: identity.getPrincipal().toText() })
+    try {
+      const identity = await nfid.getDelegation(
+        targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
+      )
+      updateAuthButton({ loading: false, label: "Logout" })
+      setResponse({ principal: identity.getPrincipal().toText() })
+    } catch (error: any) {
+      console.debug("handleAuthenticate", { error })
+      updateAuthButton({ loading: false, label: "Authenticate" })
+      setError(error)
+    }
   }, [nfid, targetCanisterIds, updateAuthButton])
 
   const handleRenewDelegation = useCallback(async () => {
+    setError()
     if (!nfid) throw new Error("NFID not initialized")
 
     console.debug("handleRenewDelegation")
@@ -68,17 +80,25 @@ export const PageAuthenticationGetDelegation = () => {
       loading: true,
       label: "Refetching Delegation...",
     })
-    const identity = await nfid.renewDelegation({ targets: targetCanisterIds })
-    console.debug("handleRenewDelegation", { identity })
+    try {
+      const identity = await nfid.renewDelegation({
+        targets: targetCanisterIds,
+      })
+      console.debug("handleRenewDelegation", { identity })
+      setResponse({ principal: identity.getPrincipal().toText() })
+    } catch (error: any) {
+      console.debug("handleRenewDelegation", { error })
+      setError(error.message)
+    }
     updateRenewDelegationButton({ loading: false, label: "Renew Delegation" })
-    setNfidResponse({ principal: identity.getPrincipal().toText() })
   }, [nfid, targetCanisterIds, updateRenewDelegationButton])
 
   const handleLogout = useCallback(async () => {
+    setError()
     if (!nfid) throw new Error("NFID not initialized")
 
     await nfid.logout()
-    setNfidResponse({})
+    setResponse({})
     updateAuthButton({
       disabled: false,
       loading: false,
@@ -173,16 +193,29 @@ export const PageAuthenticationGetDelegation = () => {
           </div>
         </div>
       </div>
-      <div
-        className={clsx(
-          "w-full border border-gray-200 rounded-xl",
-          "px-5 py-4 mt-8",
-          "sm:px-[30px] sm:py-[26px]",
-        )}
-      >
-        <h2 className={clsx("font-bold mb-1")}>NFID Response:</h2>
-        <pre>{JSON.stringify(nfidResponse, null, 2)}</pre>
-      </div>
+      {!error ? (
+        <div
+          className={clsx(
+            "w-full border border-gray-200 rounded-xl",
+            "px-5 py-4 mt-8",
+            "sm:px-[30px] sm:py-[26px]",
+          )}
+        >
+          <h2 className={clsx("font-bold mb-1")}>NFID Response:</h2>
+          <pre>{JSON.stringify(response, null, 2)}</pre>
+        </div>
+      ) : (
+        <div
+          className={clsx(
+            "w-full border border-gray-200 rounded-xl",
+            "px-5 py-4 mt-8",
+            "sm:px-[30px] sm:py-[26px]",
+          )}
+        >
+          <h2 className={clsx("font-bold mb-1")}>NFID Error:</h2>
+          <pre>{error}</pre>
+        </div>
+      )}
     </PageTemplate>
   )
 }

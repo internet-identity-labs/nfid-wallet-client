@@ -318,7 +318,7 @@ export const NFIDEmbedMachineV2 = createMachine(
             ...RPC_BASE,
             id: context.rpcMessage.id,
             // FIXME: find correct error code
-            error: { code: -1, message: "NFID: user canceled request" },
+            error: { code: -1, message: "User canceled request" },
           },
           context.requestOrigin,
         )

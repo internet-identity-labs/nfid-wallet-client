@@ -219,7 +219,7 @@ export const PageAuthenticationGetDelegation = () => {
           )}
         >
           <h2 className={clsx("font-bold mb-1")}>NFID Error:</h2>
-          <pre>{error}</pre>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
         </div>
       )}
     </PageTemplate>

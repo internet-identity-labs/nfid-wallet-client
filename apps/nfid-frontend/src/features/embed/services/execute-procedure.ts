@@ -58,7 +58,7 @@ export const ExecuteProcedureService = async (
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
-      console.debug("debug delegate ExecuteProcedureService ic_getDelegation", {
+      console.debug("ExecuteProcedureService ic_getDelegation", {
         rpcMessage,
       })
       try {
@@ -74,13 +74,7 @@ export const ExecuteProcedureService = async (
         const delegate = data.authSession as ThirdPartyAuthSession
         console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
         const delegations = [prepareClientDelegate(delegate.signedDelegation)]
-        // FIXME: figure out what public key to use here
-        // const userPublicKey = rpcMessage.params[0].sessionPublicKey // fails
-        // const userPublicKey = new Uint8Array( // fails
-        //   delegate.signedDelegation.publicKey,
-        // )
-        // const userPublicKey = new Uint8Array(delegate.userPublicKey) // fails
-        const userPublicKey = delegate.userPublicKey // fails
+        const userPublicKey = delegate.userPublicKey
 
         return { ...rpcBase, result: { delegations, userPublicKey } }
       } catch (e: any) {
@@ -114,20 +108,16 @@ export const ExecuteProcedureService = async (
       return response
     }
     case "ic_renewDelegation": {
-      console.debug(
-        "debug delegate ExecuteProcedureService ic_renewDelegation",
-        { rpcMessage },
-      )
+      console.debug("ExecuteProcedureService ic_renewDelegation", {
+        rpcMessage,
+      })
       try {
         const { targets, sessionPublicKey } = rpcMessage.params[0]
 
-        console.debug(
-          "debug delegation ExecuteProcedureService ic_renewDelegation",
-          {
-            targets,
-            sessionPublicKey,
-          },
-        )
+        console.debug("ExecuteProcedureService ic_renewDelegation", {
+          targets,
+          sessionPublicKey,
+        })
 
         const delegationIdentity = authState.get().delegationIdentity
         if (!delegationIdentity) throw new Error("missing delegationIdentity")
@@ -141,9 +131,6 @@ export const ExecuteProcedureService = async (
         )
 
         const delegations = [prepareClientDelegate(delegate)]
-        // FIXME: figure out what public key to use here
-        // const userPublicKey = rpcMessage.params[0].sessionPublicKey
-        // const userPublicKey = rpcMessage.params[0].sessionPublicKey // fails
         const userPublicKey = new Uint8Array(delegate.publicKey)
 
         return { ...rpcBase, result: { delegations, userPublicKey } }

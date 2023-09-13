@@ -28,11 +28,13 @@ export const DemoCanisterCall = ({
   const handleExecuteCanisterCall = async (values: any) => {
     if (!nfid) return alert("NFID is not initialized")
 
-    const response = await nfid.requestCanisterCall({
-      method: values.method,
-      canisterId: values.canisterId,
-      parameters: values.parameters.length ? values.parameters : "",
-    })
+    const response = await nfid
+      .requestCanisterCall({
+        method: values.method,
+        canisterId: values.canisterId,
+        parameters: values.parameters.length ? values.parameters : "",
+      })
+      .catch((e: Error) => ({ error: e.message }))
 
     setResponse(response)
   }

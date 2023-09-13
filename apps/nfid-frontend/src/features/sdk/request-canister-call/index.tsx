@@ -14,6 +14,7 @@ import { SDKFooter } from "../ui/footer"
 import { ICanisterCallResponse } from "./types"
 
 export interface IRequestTransferProps {
+  origin: string
   appMeta: AuthorizingAppMeta
   method: string
   canisterID: string
@@ -21,12 +22,14 @@ export interface IRequestTransferProps {
   onConfirmIC: (data: ICanisterCallResponse) => void
 }
 export const RequestCanisterCall = ({
+  origin,
   appMeta,
   method,
   canisterID,
   args,
   onConfirmIC,
 }: IRequestTransferProps) => {
+  console.log({ appMeta })
   const [isLoading, setIsLoading] = useState(false)
   const { data: identity } = useSWR(
     "globalIdentity",
@@ -39,6 +42,7 @@ export const RequestCanisterCall = ({
       const delegation = identity ?? (await getWalletDelegationAdapter())
 
       const res = await executeCanisterCall(
+        origin,
         delegation,
         method,
         canisterID,

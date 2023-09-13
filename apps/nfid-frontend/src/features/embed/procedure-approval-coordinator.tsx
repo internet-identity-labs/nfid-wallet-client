@@ -12,6 +12,7 @@ import {
 } from "frontend/state/authorization"
 
 import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
+import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import { RequestCanisterCall } from "../sdk/request-canister-call"
 import { ICanisterCallResponse } from "../sdk/request-canister-call/types"
 import { RequestTransfer } from "../sdk/request-transfer"
@@ -20,7 +21,6 @@ import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
 import { populateTransactionData } from "./util/populateTxService"
-import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 
 type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
@@ -30,7 +30,9 @@ type ApproverCmpProps = {
   onConfirm: (data?: {
     populatedTransaction: [TransactionRequest, ProviderError | undefined]
   }) => void
-  onRequestICDelegation?: (thirdPartyAuthSession: ApproveIcGetDelegationSdkResponse) => void
+  onRequestICDelegation?: (
+    thirdPartyAuthSession: ApproveIcGetDelegationSdkResponse,
+  ) => void
   onRequestICTransfer?: (
     thirdPartyAuthSession: IRequestTransferResponse,
   ) => void
@@ -138,6 +140,7 @@ export const ProcedureApprovalCoordinator: React.FC<
     case ["ic_requestTransfer"].includes(rpcMessage.method):
       return (
         <RequestTransfer
+          origin={authRequest.derivationOrigin ?? authRequest.hostname!}
           appMeta={appMeta}
           amount={rpcMessage.params[0]?.amount}
           destinationAddress={rpcMessage.params[0].receiver}
@@ -149,6 +152,7 @@ export const ProcedureApprovalCoordinator: React.FC<
     case ["ic_canisterCall"].includes(rpcMessage.method):
       return (
         <RequestCanisterCall
+          origin={authRequest.derivationOrigin ?? authRequest.hostname!}
           appMeta={appMeta}
           method={rpcMessage.params[0]?.method}
           canisterID={rpcMessage.params[0]?.canisterId}

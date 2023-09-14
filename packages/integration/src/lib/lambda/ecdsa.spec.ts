@@ -1,6 +1,8 @@
 /**
  * @jest-environment jsdom
  */
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -195,9 +197,13 @@ describe("Lambda Sign/Register ECDSA", () => {
     })
 
     it("get third party global keys", async function () {
+      const canisterId = "txkre-oyaaa-aaaap-qa3za-cai"
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()
+      const nfidSessionPublicKey = new Uint8Array(
+        nfidSessionKey.getPublicKey().toDer(),
+      )
       const chainRoot = await DelegationChain.create(
         mockedIdentity,
         nfidSessionKey.getPublicKey(),
@@ -212,8 +218,9 @@ describe("Lambda Sign/Register ECDSA", () => {
       try {
         await renewDelegationThirdParty(
           nfidDelegationIdentity,
-          ["txkre-oyaaa-aaaap-qa3za-cai"],
+          [canisterId, "irshc-3aaaa-aaaam-absla-cai"],
           "nfid.one",
+          nfidSessionPublicKey,
         )
         fail("Should not come here")
       } catch (e: any) {
@@ -229,7 +236,7 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       const delegationChain = await getGlobalKeysThirdParty(
         nfidDelegationIdentity,
-        ["txkre-oyaaa-aaaap-qa3za-cai"],
+        [canisterId, "irshc-3aaaa-aaaam-absla-cai"],
         dappSessionPublicKey,
         "nfid.one",
       )
@@ -245,8 +252,9 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       const delegationChainRenewed = await renewDelegationThirdParty(
         nfidDelegationIdentity,
-        ["txkre-oyaaa-aaaap-qa3za-cai"],
+        [canisterId, "irshc-3aaaa-aaaam-absla-cai"],
         "nfid.one",
+        dappSessionPublicKey,
       )
       const renewedIdentity = DelegationIdentity.fromDelegation(
         dappSessionKey,
@@ -254,6 +262,33 @@ describe("Lambda Sign/Register ECDSA", () => {
       )
       const renewedPrincipalId = renewedIdentity.getPrincipal().toText()
       expect(actualPrincipalId).toEqual(renewedPrincipalId)
+      const agent: Agent = await new HttpAgent({
+        host: "https://ic0.app",
+        identity: actualIdentity,
+      })
+      const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
+        IDL.Service({
+          get_principal: IDL.Func([], [IDL.Text], []),
+        })
+      const actor: ActorSubclass = Actor.createActor(idlFactory, {
+        agent,
+        canisterId: "irshc-3aaaa-aaaam-absla-cai",
+      })
+      const result = (await actor["get_principal"]()) as string[]
+      console.log(result)
+
+      const agent2: Agent = await new HttpAgent({
+        host: "https://ic0.app",
+        identity: renewedIdentity,
+      })
+      const actor2: ActorSubclass = Actor.createActor(idlFactory, {
+        agent: agent2,
+        canisterId,
+      })
+      const principalIdFromCanister = (await actor2[
+        "get_principal"
+      ]()) as string
+      expect(renewedPrincipalId).toEqual(principalIdFromCanister)
     })
   })
 })

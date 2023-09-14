@@ -1,5 +1,3 @@
-import { SignedDelegation } from "@nfid/integration"
-
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { BuiltDelegate } from "../internet-identity/build-delegate"
@@ -34,16 +32,6 @@ export type IdentityClientAuthEvent = {
   derivationOrigin?: string
 }
 
-/** Third party auth delegation format expected by @dfinity/auth-client */
-export interface DfinityAuthClientDelegate {
-  delegation: {
-    pubkey: Uint8Array
-    expiration: bigint
-    targets: undefined
-  }
-  signature: Uint8Array
-}
-
 function opener() {
   const opener = window.opener || window.parent
   if (!opener) throw new Error("Could not identify window opener.")
@@ -73,20 +61,6 @@ export function awaitClientMessage<T>(
     })
   })
 }
-
-/**
- * Prepare third party auth delegation for transmission via window message channel.
- */
-export const prepareClientDelegate = (
-  receivedDelegation: SignedDelegation,
-): DfinityAuthClientDelegate => ({
-  delegation: {
-    pubkey: new Uint8Array(receivedDelegation.delegation.pubkey),
-    expiration: receivedDelegation.delegation.expiration,
-    targets: undefined,
-  },
-  signature: new Uint8Array(receivedDelegation.signature),
-})
 
 /**
  * Retrieve application metadata provided in the query params

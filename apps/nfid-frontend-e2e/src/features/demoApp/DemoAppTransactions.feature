@@ -1,7 +1,7 @@
 @demoApp
-Feature: User should be able to register and authenticate to demoApp through iFrame
+Feature: DemoApp transactions functionality
 
-  Scenario Outline: User authenticates to NFID demoApp (iFrame)
+  Scenario Outline: User sends ICP through demoApp
     Given User opens NFID site
     And authstate is cleared
     And User is already authenticated by <anchor> anchor

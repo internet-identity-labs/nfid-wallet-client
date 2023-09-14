@@ -58,8 +58,17 @@ export async function renewDelegationThirdParty(
   identity: DelegationIdentity,
   targets: string[],
   origin: string,
+  sessionPublicKey: Uint8Array,
 ): Promise<DelegationChain> {
-  const sessionPublicKey = new Uint8Array(fromHexString(getFromStorage(origin)))
+  const sessionPublicKeyFromStorage = new Uint8Array(
+    fromHexString(getFromStorage(origin)),
+  )
+  const textDecoder = new TextDecoder()
+  const spkHexFromStorage = textDecoder.decode(sessionPublicKeyFromStorage)
+  const spkHexFromThirdparty = textDecoder.decode(sessionPublicKey)
+  if (spkHexFromStorage !== spkHexFromThirdparty)
+    throw new Error("Cannot renew delegation for different session public key")
+
   return getGlobalKeysThirdParty(identity, targets, sessionPublicKey, origin)
 }
 

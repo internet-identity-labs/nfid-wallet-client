@@ -1,3 +1,4 @@
+import { Identity } from "@dfinity/agent"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import React from "react"
@@ -10,10 +11,19 @@ import { NFID } from "@nfid/embed"
 
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
+import { PrincipalIdFromIdentity } from "./components/principal-from-identity"
 
 declare const NFID_PROVIDER_URL: string
 
+const canisterIds = [
+  // "txkre-oyaaa-aaaap-qa3za-cai",
+  "irshc-3aaaa-aaaam-absla-cai",
+]
+
 export const PageAuthenticationGetDelegation = () => {
+  const [identity, setIdentity] = useState<Identity>()
+  const [response, setResponse] = useState({})
+  const [error, setError] = useState<string>()
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
@@ -36,31 +46,43 @@ export const PageAuthenticationGetDelegation = () => {
     () => fields.map((field) => field.canisterId),
     [fields],
   )
-  console.debug("PageAuthenticationGetDelegation", { targetCanisterIds })
+  console.debug("PageAuthenticationGetDelegation", {
+    targetCanisterIds,
+    error,
+    response,
+  })
 
   React.useEffect(() => {
     if (nfid?.isAuthenticated) {
       const identity = nfid.getIdentity()
       updateAuthButton({ label: "Logout" })
-      setNfidResponse({ principal: identity.getPrincipal().toText() })
+      setResponse({ principal: identity.getPrincipal().toText() })
+      setIdentity(identity as unknown as Identity)
     }
   }, [nfid, updateAuthButton])
 
-  const [nfidResponse, setNfidResponse] = useState({})
-
   const handleAuthenticate = useCallback(async () => {
+    setError(undefined)
     if (!nfid) throw new Error("NFID not initialized")
 
-    console.debug("handleAuthenticate")
+    console.debug("handleAuthenticate", { targetCanisterIds })
     updateAuthButton({ loading: true, label: "Authenticating..." })
-    const identity = await nfid.getDelegation(
-      targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
-    )
-    updateAuthButton({ loading: false, label: "Logout" })
-    setNfidResponse({ principal: identity.getPrincipal().toText() })
+    try {
+      const identity = await nfid.getDelegation(
+        targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
+      )
+      setIdentity(identity as unknown as Identity)
+      updateAuthButton({ loading: false, label: "Logout" })
+      setResponse({ principal: identity.getPrincipal().toText() })
+    } catch (error: any) {
+      console.debug("handleAuthenticate", { error })
+      updateAuthButton({ loading: false, label: "Authenticate" })
+      setError(error)
+    }
   }, [nfid, targetCanisterIds, updateAuthButton])
 
   const handleRenewDelegation = useCallback(async () => {
+    setError(undefined)
     if (!nfid) throw new Error("NFID not initialized")
 
     console.debug("handleRenewDelegation")
@@ -68,17 +90,27 @@ export const PageAuthenticationGetDelegation = () => {
       loading: true,
       label: "Refetching Delegation...",
     })
-    const identity = await nfid.renewDelegation({ targets: targetCanisterIds })
-    console.debug("handleRenewDelegation", { identity })
+    try {
+      const identity = await nfid.renewDelegation({
+        targets: targetCanisterIds,
+      })
+      console.debug("handleRenewDelegation", { identity })
+      setIdentity(identity as unknown as Identity)
+      setResponse({ principal: identity.getPrincipal().toText() })
+    } catch (error: any) {
+      console.debug("handleRenewDelegation", { error })
+      setError(error.message)
+    }
     updateRenewDelegationButton({ loading: false, label: "Renew Delegation" })
-    setNfidResponse({ principal: identity.getPrincipal().toText() })
   }, [nfid, targetCanisterIds, updateRenewDelegationButton])
 
   const handleLogout = useCallback(async () => {
+    setError(undefined)
     if (!nfid) throw new Error("NFID not initialized")
 
     await nfid.logout()
-    setNfidResponse({})
+    setResponse({})
+    setIdentity(undefined)
     updateAuthButton({
       disabled: false,
       loading: false,
@@ -130,13 +162,13 @@ export const PageAuthenticationGetDelegation = () => {
             <Button
               type="stroke"
               isSmall
-              onClick={() =>
-                append({
-                  canisterId: fields.length
-                    ? ""
-                    : "txkre-oyaaa-aaaap-qa3za-cai",
-                })
-              }
+              onClick={() => {
+                if (fields.length < 1) {
+                  canisterIds.forEach((canisterId) => {
+                    append({ canisterId })
+                  })
+                }
+              }}
             >
               Add target canisterId
             </Button>
@@ -173,16 +205,23 @@ export const PageAuthenticationGetDelegation = () => {
           </div>
         </div>
       </div>
-      <div
-        className={clsx(
-          "w-full border border-gray-200 rounded-xl",
-          "px-5 py-4 mt-8",
-          "sm:px-[30px] sm:py-[26px]",
-        )}
-      >
-        <h2 className={clsx("font-bold mb-1")}>NFID Response:</h2>
-        <pre>{JSON.stringify(nfidResponse, null, 2)}</pre>
-      </div>
+      {!error ? (
+        <PrincipalIdFromIdentity
+          canisterId={"irshc-3aaaa-aaaam-absla-cai"}
+          identity={identity}
+        />
+      ) : (
+        <div
+          className={clsx(
+            "w-full border border-gray-200 rounded-xl",
+            "px-5 py-4 mt-8",
+            "sm:px-[30px] sm:py-[26px]",
+          )}
+        >
+          <h2 className={clsx("font-bold mb-1")}>NFID Error:</h2>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+        </div>
+      )}
     </PageTemplate>
   )
 }

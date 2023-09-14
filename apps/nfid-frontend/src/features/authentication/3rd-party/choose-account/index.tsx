@@ -20,6 +20,7 @@ import {
   getPublicAccountDelegate,
 } from "@nfid/integration"
 
+import { RequestStatus } from "frontend/features/types"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {
@@ -31,18 +32,17 @@ import { getLegacyThirdPartyAuthSession } from "../../services"
 import { AuthAppMeta } from "../../ui/app-meta"
 import { PublicProfileButton } from "../public-profile-button"
 import { ApproveIcGetDelegationSdkResponse } from "./types"
-import { RequestStatus } from "frontend/features/types"
 
 export interface IAuthChooseAccount {
   appMeta: AuthorizingAppMeta
   authRequest: AuthorizationRequest
-  handleSelectAccount: (data: ApproveIcGetDelegationSdkResponse) => void,
+  handleSelectAccount: (data: ApproveIcGetDelegationSdkResponse) => void
 }
 
 export const AuthChooseAccount = ({
   appMeta,
   authRequest,
-  handleSelectAccount
+  handleSelectAccount,
 }: IAuthChooseAccount) => {
   const [isLoading, setIsLoading] = useState(false)
   console.debug("AuthChooseAccount", { appMeta })
@@ -63,30 +63,30 @@ export const AuthChooseAccount = ({
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {
       setIsLoading(true)
-        try {
-          authenticationTracking.profileChosen({
-            profile: `private-${parseInt(account.accountId) + 1}`,
-          })
+      try {
+        authenticationTracking.profileChosen({
+          profile: `private-${parseInt(account.accountId) + 1}`,
+        })
 
-          const authSession = await getLegacyThirdPartyAuthSession(
-            authRequest,
-            account.accountId,
-          )
+        const authSession = await getLegacyThirdPartyAuthSession(
+          authRequest,
+          account.accountId,
+        )
 
-          handleSelectAccount({
-            status: RequestStatus.SUCCESS,
-            authSession
-          })
-        } catch(e: any) {
-          console.error(e)
-          toast.error(e.message)
-          handleSelectAccount({
-            status: RequestStatus.ERROR,
-            errorMessage: e.message
-          })
-        } finally {
-          setIsLoading(false)
-        }
+        handleSelectAccount({
+          status: RequestStatus.SUCCESS,
+          authSession,
+        })
+      } catch (e: any) {
+        console.error(e)
+        toast.error(e.message)
+        handleSelectAccount({
+          status: RequestStatus.ERROR,
+          errorMessage: e.message,
+        })
+      } finally {
+        setIsLoading(false)
+      }
     },
     [authRequest, handleSelectAccount],
   )
@@ -115,14 +115,14 @@ export const AuthChooseAccount = ({
 
       handleSelectAccount({
         status: RequestStatus.SUCCESS,
-        authSession
+        authSession,
       })
     } catch (e: any) {
       console.error(e)
       toast.error(e.message)
       handleSelectAccount({
         status: RequestStatus.ERROR,
-        errorMessage: e.message
+        errorMessage: e.message,
       })
     } finally {
       setIsLoading(false)
@@ -131,7 +131,7 @@ export const AuthChooseAccount = ({
     authRequest.derivationOrigin,
     authRequest.hostname,
     authRequest.sessionPublicKey,
-    handleSelectAccount
+    handleSelectAccount,
   ])
 
   const handleSelectPublic = useCallback(async () => {
@@ -161,14 +161,14 @@ export const AuthChooseAccount = ({
 
       handleSelectAccount({
         status: RequestStatus.SUCCESS,
-        authSession
+        authSession,
       })
     } catch (e: any) {
       console.error(e)
       toast.error(e.message)
       handleSelectAccount({
         status: RequestStatus.ERROR,
-        errorMessage: e.message
+        errorMessage: e.message,
       })
     } finally {
       setIsLoading(false)

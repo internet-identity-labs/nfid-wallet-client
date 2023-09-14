@@ -532,7 +532,7 @@ Then(/^Choose (.+?) then check that an Account ID is (.+)/, async (chain: string
   }
 })
 
-Then(/^Principal is (\w+)/, async (principal: string) => {
+Then(/^Principal is ([^"]*)$/, async (principal: string) => {
     let address = await Assets.getAccountId(false)
     expect(
       (await address.firstAddressPart.getText()) +

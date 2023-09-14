@@ -33,7 +33,7 @@ export class DemoTransactions extends demoAppPage {
   async getAuthLogs() {
     await browser.waitUntil(async () => {
       let text = new Map(Object.entries(JSON.parse(await this.getAuthLogsLocator.getText())))
-      if (text.get("principal") != "" && text.get("address") != "") return true
+      if (text.get("principal") != "" && text.get("address") != "" && text.get("balance") != "") return true
     }, {
       timeout: 20000,
       timeoutMsg: "Authentication logs are not appeared"

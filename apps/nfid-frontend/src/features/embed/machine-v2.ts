@@ -12,8 +12,10 @@ import { FunctionCall } from "@nfid/integration-ethereum"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
+import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import AuthenticationMachine from "../authentication/root/root-machine"
-import { IRequestTransferResponse } from "../request-transfer/types"
+import { ICanisterCallResponse } from "../sdk/request-canister-call/types"
+import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import {
@@ -27,7 +29,6 @@ import {
   RPCResponse,
   RPC_BASE,
 } from "./services/rpc-receiver"
-import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 
 type InvokationErrors = {
   type: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
@@ -47,6 +48,7 @@ type Events =
       data: ApproveIcGetDelegationSdkResponse
     }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data: IRequestTransferResponse }
+  | { type: "APPROVE_IC_CANISTER_CALL"; data: ICanisterCallResponse }
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
@@ -214,6 +216,7 @@ export const NFIDEmbedMachineV2 = createMachine(
               APPROVE: "EXECUTE_PROCEDURE",
               APPROVE_IC_GET_DELEGATION: "EXECUTE_PROCEDURE",
               APPROVE_IC_REQUEST_TRANSFER: "EXECUTE_PROCEDURE",
+              APPROVE_IC_CANISTER_CALL: "EXECUTE_PROCEDURE",
               CANCEL: {
                 target: "READY",
                 actions: ["sendRPCCancelResponse", "updateProcedure"],

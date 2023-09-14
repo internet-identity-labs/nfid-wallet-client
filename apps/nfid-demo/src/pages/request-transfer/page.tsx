@@ -53,6 +53,7 @@ export const PageRequestTransfer: React.FC = () => {
     console.debug("handleAuthenticate")
     updateAuthButton({ loading: true, label: "Authenticating..." })
     const identity = await nfid.getDelegation({
+      // FIXME: make dynamic
       targets: ["txkre-oyaaa-aaaap-qa3za-cai"],
     })
     updateAuthButton({ loading: false, label: "Authenticated" })

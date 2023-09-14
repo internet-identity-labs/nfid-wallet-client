@@ -1,54 +1,51 @@
-import clsx from "clsx"
+import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
 import React, { useState } from "react"
 import useSWR from "swr"
 
-import { BlurredLoader, Button, Skeleton } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
+import { BlurredLoader, Button } from "@nfid-frontend/ui"
 import { E8S, WALLET_FEE, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 
+import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
+import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
+import { RequestStatus } from "frontend/features/types"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getNFTByTokenId } from "frontend/integration/entrepot"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 
-import { AuthAppMeta } from "../authentication/ui/app-meta"
-import { toUSD } from "../fungable-token/accumulate-app-account-balances"
-import { TransferSuccess } from "../transfer-modal/components/success"
-import { RequestStatus } from "../types"
+import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
 import { IRequestTransferResponse } from "./types"
 
 export interface IRequestTransferProps {
+  origin: string
   appMeta: AuthorizingAppMeta
   amount?: string
   tokenId?: string
-  sourceAddress: string
   destinationAddress: string
   onConfirmIC: (data: IRequestTransferResponse) => void
 }
 export const RequestTransfer: React.FC<IRequestTransferProps> = ({
+  origin,
   appMeta,
   amount,
   tokenId,
-  sourceAddress,
   destinationAddress,
   onConfirmIC,
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
 
+  const { data: identity } = useSWR("globalIdentity", () =>
+    getWalletDelegationAdapter(),
+  )
+
   const { data: nft } = useSWR(
-    tokenId ? ["nftDetails", tokenId, sourceAddress] : null,
-    ([key, id, principal]) => getNFTByTokenId(id, principal),
-  )
-
-  const { data: identity } = useSWR(
-    sourceAddress ? [sourceAddress, "userIdentity"] : null,
-    ([address]) => icTransferConnector.getIdentity(address),
-  )
-
-  const { data: balance } = useSWR("userBalance", () =>
-    icTransferConnector.getBalance(sourceAddress),
+    tokenId && identity ? ["nftDetails", tokenId, identity] : null,
+    ([key, id, identity]) =>
+      getNFTByTokenId(id, identity.getPrincipal().toString()),
   )
 
   const { data: fee } = useSWR("requestFee", () => icTransferConnector.getFee())
@@ -97,10 +94,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         subTitle="Request from"
       />
       {tokenId ? (
-        <RequestTransferNFTDetails
-          tokenId={tokenId}
-          principalId={sourceAddress}
-        />
+        <RequestTransferNFTDetails nft={nft} />
       ) : (
         <RequestTransferFTDetails
           amount={`${Number(amount) / E8S} ICP`}
@@ -142,13 +136,17 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             setTransferPromise(
               new Promise(async (resolve) => {
                 try {
+                  if (!isPresentInStorage(origin))
+                    throw new Error(
+                      "You can not request canister calls with anonymous delegation",
+                    )
+
                   let transferIdentity = tokenId
-                    ? await icTransferConnector.getIdentity(
-                        sourceAddress,
-                        nft?.canisterId,
-                      )
-                    : identity ??
-                      (await icTransferConnector.getIdentity(sourceAddress))
+                    ? await getWalletDelegationAdapter("nfid.one", "0", [
+                        nft?.canisterId!,
+                      ])
+                    : identity ?? (await getWalletDelegationAdapter())
+
                   const request = {
                     tokenId: tokenId,
                     amount: Number(amount) / E8S,
@@ -185,35 +183,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         >
           Reject
         </Button>
-      </div>
-      <div
-        className={clsx(
-          "bg-gray-50 flex flex-col text-sm text-gray-500",
-          "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
-        )}
-      >
-        <div className="flex items-center justify-between">
-          <p>Internet Computer</p>
-          <p>Balance</p>
-        </div>
-        <div className="flex items-center justify-between">
-          <div>
-            {identity?.getPrincipal().toString() ? (
-              truncateString(identity?.getPrincipal().toString(), 6, 4)
-            ) : (
-              <Skeleton className="w-40 h-5 bg-gray-300" />
-            )}
-          </div>
-          <div className="flex items-center space-x-0.5">
-            <span id="balance">
-              {balance ? (
-                `${balance.balance} ICP`
-              ) : (
-                <Skeleton className="w-20 h-5 bg-gray-300" />
-              )}
-            </span>
-          </div>
-        </div>
+
+        <SDKFooter identity={identity} />
       </div>
     </>
   )

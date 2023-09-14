@@ -5,12 +5,13 @@ import {
   ProviderError,
   ThirdPartyAuthSession,
   authState,
+  prepareClientDelegate,
   renewDelegation,
 } from "@nfid/integration"
-import { prepareClientDelegate } from "@nfid/integration"
 
 import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
-import { IRequestTransferResponse } from "frontend/features/request-transfer/types"
+import { ICanisterCallResponse } from "frontend/features/sdk/request-canister-call/types"
+import { IRequestTransferResponse } from "frontend/features/sdk/request-transfer/types"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
@@ -34,6 +35,7 @@ type ExecuteProcedureEvent =
       data?: ApproveIcGetDelegationSdkResponse
     }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data?: IRequestTransferResponse }
+  | { type: "APPROVE_IC_CANISTER_CALL"; data?: ICanisterCallResponse }
   | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext
@@ -96,6 +98,13 @@ export const ExecuteProcedureService = async (
       } catch (e: any) {
         return { ...rpcBase, error: { code: 500, message: e.message } }
       }
+    }
+    case "ic_canisterCall": {
+      if (event.type !== "APPROVE_IC_CANISTER_CALL")
+        throw new Error("wrong event type")
+
+      const result = event.data as ICanisterCallResponse
+      return { ...rpcBase, result }
     }
     case "eth_accounts": {
       const adapter = new DelegationWalletAdapter(rpcUrl)

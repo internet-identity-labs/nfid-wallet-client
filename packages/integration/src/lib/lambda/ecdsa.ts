@@ -9,7 +9,11 @@ import { ONE_MINUTE_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
-import { getFromStorage, saveToStorage } from "./domain-key-repository"
+import {
+  deleteFromStorage,
+  getFromStorage,
+  saveToStorage,
+} from "./domain-key-repository"
 import { validateTargets } from "./targets"
 
 export enum Chain {
@@ -177,6 +181,7 @@ export async function ecdsaGetAnonymous(
   }).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
     const a = await response.json()
+    deleteFromStorage(domain)
     return DelegationChain.fromJSON(a)
   })
 }

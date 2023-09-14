@@ -1,4 +1,5 @@
 import {
+  deleteFromStorage,
   domainKeyStorage,
   getFromStorage,
   saveToStorage,
@@ -43,5 +44,14 @@ describe("Storage Functions", () => {
     expect(() => getFromStorage("nonExistentKey")).toThrowError(
       "Value for key 'nonExistentKey' not found.",
     )
+  })
+
+  it("deleteFromStorage removes data correctly", () => {
+    saveToStorage("key4", "value4", 60)
+    deleteFromStorage("key4")
+    const storedData = JSON.parse(
+      localStorageMock.getItem(domainKeyStorage) || "{}",
+    )
+    expect(storedData.key4).toBeUndefined()
   })
 })

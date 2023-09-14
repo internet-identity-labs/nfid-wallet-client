@@ -144,6 +144,8 @@ export const getPublicAccountDelegate = async (
     origin,
   )
 
+  console.log({ targets, delegationChain })
+
   const { delegation, signature } = delegationChain.delegations[0]
   return mapToSerialisableDelegation({
     delegationChain,

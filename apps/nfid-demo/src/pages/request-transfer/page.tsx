@@ -11,6 +11,7 @@ import { NFID } from "@nfid/embed"
 import { getBalance } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 
+import { DemoCanisterCall } from "../../components/canister-call"
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
@@ -87,20 +88,19 @@ export const PageRequestTransfer: React.FC = () => {
 
   const onRequestTransfer = useCallback(
     async (values: any) => {
-      if (!delegation) return
       if (!receiver.length) return alert("Receiver should not be empty")
       if (!values.amount.length) return alert("Please enter an amount")
 
-      const res = await nfid?.requestTransferFT({
-        receiver,
-        amount: String(Number(values.amount) * E8S),
-        sourceAddress: delegation.getPrincipal().toString(),
-      }).catch((e: Error) => ({ error: e.message }))
-
+      const res = await nfid
+        ?.requestTransferFT({
+          receiver,
+          amount: String(Number(values.amount) * E8S),
+        })
+        .catch((e: Error) => ({ error: e.message }))
       setTransferResponse(res)
       refetchBalance()
     },
-    [delegation, nfid, receiver, refetchBalance],
+    [nfid, receiver, refetchBalance],
   )
 
   const { data: userNFTs, mutate: refetchNFTs } = useSWRImmutable(
@@ -115,19 +115,19 @@ export const PageRequestTransfer: React.FC = () => {
   const onRequestNFTTransfer = useCallback(
     async (values: any) => {
       if (!receiver.length) return alert("Receiver should not be empty")
-      if (!delegation) return
+
       if (!selectedNFTIds[0].length) return alert("Please select NFT")
 
-      const res = await nfid?.requestTransferNFT({
-        receiver,
-        tokenId: selectedNFTIds[0],
-        sourceAddress: delegation.getPrincipal().toString(),
-      }).catch((e: Error) => ({ error: e.message }))
-
+      const res = await nfid
+        ?.requestTransferNFT({
+          receiver,
+          tokenId: selectedNFTIds[0],
+        })
+        .catch((e: Error) => ({ error: e.message }))
       setTransferNFTResponse(res)
       refetchNFTs()
     },
-    [delegation, nfid, receiver, refetchNFTs, selectedNFTIds],
+    [nfid, receiver, refetchNFTs, selectedNFTIds],
   )
 
   return (
@@ -232,6 +232,8 @@ export const PageRequestTransfer: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <DemoCanisterCall nfid={nfid} identity={delegation} />
     </PageTemplate>
   )
 }

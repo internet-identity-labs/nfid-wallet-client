@@ -84,6 +84,18 @@ export default function NFIDEmbedCoordinator() {
                 data: data,
               })
             }}
+            onRequestCanisterCall={(data) => {
+              console.debug(
+                "ProcedureApprovalCoordinator.onRequestCanisterCall",
+                {
+                  data,
+                },
+              )
+              send({
+                type: "APPROVE_IC_CANISTER_CALL",
+                data: data,
+              })
+            }}
             onReject={() => send({ type: "CANCEL" })}
           />
         )

@@ -17,8 +17,6 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
-  AWS_AUTH_STATS:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/auth/",
   AWS_SIGNATURE_EVENT:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signature/",
   AWS_EXCHANGE_RATE:
@@ -68,5 +66,5 @@ export const JEST_GLOBALS = {
   AWS_SIGNIN_GOOGLE_V2:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_FETCH_ALTERNATIVE_ORIGINS:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins"
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins",
 }

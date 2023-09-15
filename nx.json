@@ -137,9 +137,6 @@
         "env": "AWS_SYMMETRIC"
       },
       {
-        "env": "AWS_AUTH_STATS"
-      },
-      {
         "env": "AWS_EXCHANGE_RATE"
       },
       {

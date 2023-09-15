@@ -3,7 +3,7 @@ import { format } from "date-fns"
 
 import activity from "../pages/activity.js"
 // import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
-import DemoAppPage from "../pages/demoApp-page.js"
+import DemoTransactions from "../pages/demo-transactions.js"
 import Assets from "../pages/assets.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
@@ -532,18 +532,22 @@ Then(/^Choose (.+?) then check that an Account ID is (.+)/, async (chain: string
   }
 })
 
-Then(/^Principal ?(.*)? is ([^"]*)/, async (isDemoApp: string, principal: string) => {
-  if (isDemoApp === "in demoApp") {
-    expect((await DemoAppPage.getPrincipalId()).substring(18, 81)).toEqual(principal)
-  } else {
+Then(/^Principal is ([^"]*)$/, async (principal: string) => {
     let address = await Assets.getAccountId(false)
     expect(
       (await address.firstAddressPart.getText()) +
       "..." +
       (await address.secondAddressElement.getText())
     ).toEqual(principal)
-  }
 })
+
+Then(/^Principal, Address, Balance are correct:/, async (data) => {
+    const expectedData = data.rowsHash()
+    let usersData = await DemoTransactions.getAuthLogs()
+    expect(String(usersData.get("principal"))).toEqual(expectedData.principal)
+    expect(String(usersData.get("address"))).toEqual(expectedData.address)
+    expect(String(usersData.get("balance"))).toEqual(expectedData.balance)
+  })
 
 Then(
   /^([^"]*) USD balance not ([^"]*)$/,
@@ -853,6 +857,10 @@ Then(
     expect(tx).toBeTruthy()
   },
 )
+
+Then(/^Assert logs are successful$/, async () => {
+  expect(await DemoTransactions.getTransferLogs()).toContain('"hash":')
+})
 
 async function chooseChainOption(chain: string) {
   await Assets.openAssetReceiveOptions()

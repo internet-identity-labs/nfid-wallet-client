@@ -4,7 +4,6 @@ import {
 } from "@nfid/integration"
 
 import { AuthenticationContext } from "frontend/features/authentication/root/root-machine"
-import { logAuthorizeApplication } from "frontend/features/stats/services"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
@@ -81,13 +80,6 @@ export async function postDelegation(context: AuthenticationContext) {
     ),
   ]
   const userPublicKey = context.thirdPartyAuthSession.authSession.userPublicKey
-
-  logAuthorizeApplication({
-    scope: context.thirdPartyAuthSession.authSession.scope,
-    anchor: context.thirdPartyAuthSession.authSession.anchor,
-    applicationName: context.appMeta.name,
-    chain: "Internet Computer",
-  })
 
   authenticationTracking.userSendToApp()
 

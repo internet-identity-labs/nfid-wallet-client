@@ -2,7 +2,7 @@ import { TransactionRequest } from "@ethersproject/abstract-provider"
 import React from "react"
 import useSWR from "swr"
 
-import { ProviderError, ThirdPartyAuthSession } from "@nfid/integration"
+import { ProviderError } from "@nfid/integration"
 import { FunctionCall, Method } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"

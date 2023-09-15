@@ -2,11 +2,7 @@ import { getExpirationDelay } from "packages/integration/src/lib/authentication/
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { assign, createMachine } from "xstate"
 
-import {
-  Application,
-  ThirdPartyAuthSession,
-  authState,
-} from "@nfid/integration"
+import { Application, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"

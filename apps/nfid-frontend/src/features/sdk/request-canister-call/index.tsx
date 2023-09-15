@@ -31,9 +31,8 @@ export const RequestCanisterCall = ({
 }: IRequestTransferProps) => {
   console.log({ appMeta })
   const [isLoading, setIsLoading] = useState(false)
-  const { data: identity } = useSWR(
-    "globalIdentity",
-    getWalletDelegationAdapter,
+  const { data: identity } = useSWR("globalIdentity", () =>
+    getWalletDelegationAdapter("nfid.one", "-1"),
   )
 
   const handleExecuteCall = async () => {

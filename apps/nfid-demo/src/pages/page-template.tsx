@@ -11,7 +11,6 @@ import {
 
 import { RoutePathAuthentication } from "./authentication"
 import { RoutePathAuthenticationGetDelegation } from "./authentication-get-delegation"
-import { RoutePathAuthenticationIFrame } from "./authentication-iframe"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
 import { RoutePath as RoutePathRequestTransfer } from "./request-transfer"
@@ -55,9 +54,6 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
                 icon={<BiLock />}
                 title="Authentication getDelegation"
               />
-            </NavLink>
-            <NavLink route={RoutePathAuthenticationIFrame}>
-              <SidebarItem icon={<BiLock />} title="Authentication iFrame" />
             </NavLink>
             <NavLink route={RoutePathRequestTransfer}>
               <SidebarItem icon={<BiWallet />} title="Request transfer" />

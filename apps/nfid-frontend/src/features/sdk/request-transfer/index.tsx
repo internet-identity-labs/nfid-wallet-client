@@ -39,7 +39,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
 
   const { data: identity } = useSWR("globalIdentity", () =>
-    getWalletDelegationAdapter(),
+    getWalletDelegationAdapter("nfid.one", "-1"),
   )
 
   const { data: nft } = useSWR(

@@ -4,7 +4,6 @@ declare const GOERLI_ALCHEMY_API_KEY: string
 declare const ETH_ALCHEMY_API_KEY: string
 declare const MATIC_ALCHEMY_API_KEY: string
 declare const MUMBAI_ALCHEMY_API_KEY: string
-declare const AWS_AUTH_STATS: string
 declare const AWS_EXCHANGE_RATE: string
 declare const AWS_ECDSA_REGISTER: string
 declare const AWS_ECDSA_REGISTER_ADDRESS: string

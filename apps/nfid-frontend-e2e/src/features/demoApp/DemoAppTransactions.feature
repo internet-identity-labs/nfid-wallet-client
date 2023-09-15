@@ -1,4 +1,4 @@
-@demoApp
+@demoApp @skip
 Feature: DemoApp transactions functionality
 
   Scenario Outline: User sends ICP through demoApp

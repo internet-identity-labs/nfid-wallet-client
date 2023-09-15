@@ -1,7 +1,5 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { ThirdPartyAuthSession } from "@nfid/integration"
-
 import AuthWithEmailMachine from "frontend/features/authentication/auth-selection/email-flow/machine"
 import AuthWithGoogleMachine from "frontend/features/authentication/auth-selection/google-flow/auth-with-google"
 import { AbstractAuthSession } from "frontend/state/authentication"
@@ -10,8 +8,8 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
-import { checkIf2FAEnabled } from "../services"
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
+import { checkIf2FAEnabled } from "../services"
 
 export interface AuthenticationContext {
   verificationEmail?: string

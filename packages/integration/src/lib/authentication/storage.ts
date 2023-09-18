@@ -1,4 +1,4 @@
-import { IdbKeyVal } from "./db"
+import { IdbKeyVal, KeyValueStore, MemoryKeyVal } from "./db"
 
 export const KEY_STORAGE_KEY = "identity"
 export const KEY_STORAGE_DELEGATION = "delegation"
@@ -49,14 +49,19 @@ export class LocalStorage implements AuthClientStorage {
       return this._localStorage
     }
 
-    const ls =
-      typeof window === "undefined"
-        ? typeof global === "undefined"
-          ? typeof self === "undefined"
-            ? undefined
-            : self.localStorage
-          : global.localStorage
-        : window.localStorage
+    let ls
+    try {
+      ls =
+        typeof window === "undefined"
+          ? typeof global === "undefined"
+            ? typeof self === "undefined"
+              ? undefined
+              : self.localStorage
+            : global.localStorage
+          : window.localStorage
+    } catch (error) {
+      console.error("LocalStorage", { error })
+    }
 
     if (!ls) {
       throw new Error("Could not find local storage.")
@@ -75,20 +80,36 @@ export class LocalStorage implements AuthClientStorage {
 export class IdbStorage implements AuthClientStorage {
   // Initializes a KeyVal on first request
   private initializedDb: IdbKeyVal | undefined
-  get _db(): Promise<IdbKeyVal> {
-    return new Promise((resolve) => {
+  private memoryMap: Map<string, string> = new Map()
+
+  get _db(): Promise<KeyValueStore> {
+    console.debug("IdbStorage._db")
+    const db = new Promise<KeyValueStore>((resolve) => {
       if (this.initializedDb) {
+        console.debug("IdbStorage._db already initialized")
+        this.initializedDb.set("test", "test")
+        this.initializedDb.get("test")
         resolve(this.initializedDb)
         return
       }
-      IdbKeyVal.create({ version: DB_VERSION }).then((db) => {
-        this.initializedDb = db
-        resolve(db)
-      })
+      IdbKeyVal.create({ version: DB_VERSION })
+        .then((db) => {
+          this.initializedDb = db
+          this.initializedDb.set("test", "test")
+          this.initializedDb.get("test")
+          resolve(db)
+        })
+        .catch((error) => {
+          console.error("IdbStorage._db", { error })
+          return resolve(MemoryKeyVal.create())
+        })
     })
+    console.debug("IdbStorage._db", { db })
+    return db
   }
 
   public async get(key: string): Promise<string | null> {
+    console.debug("IdbStorage.get", { key })
     const db = await this._db
     return await db.get<string>(key)
   }

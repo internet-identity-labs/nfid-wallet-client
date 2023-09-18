@@ -9,21 +9,25 @@ export function getLocalStorageOverride(
   defaultTTL: number,
   defaultLocalStorageKey = "NFID_DELEGATION_TTL",
 ): number {
-  const ttl = parseInt(
-    window.localStorage.getItem(defaultLocalStorageKey) || "",
-  )
-  if (!ttl) {
+  let ttl: number | undefined
+  try {
+    ttl = parseInt(window.localStorage.getItem(defaultLocalStorageKey) || "")
+  } catch (e) {
+    console.error("getLocalStorageOverride", {
+      defaultTTL,
+      defaultLocalStorageKey,
+      error: e,
+    })
+  }
+
+  if (ttl) {
     console.debug("getLocalStorageOverride", {
+      ttl,
       defaultTTL,
       defaultLocalStorageKey,
     })
-    return defaultTTL
+    return ttl
   }
-  console.debug("getLocalStorageOverride", {
-    defaultTTL,
-    overrideTTL: ttl,
-    defaultLocalStorageKey,
-  })
 
-  return ttl
+  return defaultTTL
 }

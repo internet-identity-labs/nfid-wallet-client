@@ -19,7 +19,7 @@ export class demoAppPage extends Page {
   }
 
   get getPublicProfile() {
-    return $("//div[contains(@class ,'w-full text-sm') and contains(.,'NFID')]")
+    return $('//div[contains(.,\'NFID\') and contains(@id,\'publicProfileID\')]')
   }
 }
 

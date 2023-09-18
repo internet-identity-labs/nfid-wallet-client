@@ -19,6 +19,7 @@ export const PublicProfileButton = ({
 
   return (
     <div
+      id="publicProfileID"
       className={clsx(
         "flex items-center w-full",
         isAvailable

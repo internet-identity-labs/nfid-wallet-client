@@ -3,7 +3,7 @@ import {ProfileType} from "./types.js"
 
 export class DemoTransactions extends demoAppPage {
   get getAuthenticateButton() {
-    return $("//button[contains(.,\'Authenticate\')]")
+    return $('#loginButton')
   }
 
   get getLogoutButton() {
@@ -11,23 +11,23 @@ export class DemoTransactions extends demoAppPage {
   }
 
   get getAuthLogsLocator() {
-    return $("//code[contains(.,'principal')]")
+    return $('#authLogs')
   }
 
   get getReceiverICAddressInput() {
-    return $("//h4[contains(.,'Request ICP transfer')]/..//label[contains(.,'Receiver IC address')]/..//input")
+    return $('#inputICAddressFT')
   }
 
   get getAmountICPInput() {
-    return $("//h4[contains(.,'Request ICP transfer')]/..//label[contains(.,'Amount ICP')]/..//input")
+    return $('#inputAmount')
   }
 
   get getRequestICPButton() {
-    return $("//h4[contains(.,'Request ICP transfer')]/..//button")
+    return $('#buttonRequestICP')
   }
 
   get getTransferLogsLocator() {
-    return $("//h4[contains(.,'Request ICP transfer')]/..//pre")
+    return $('#requestICPLogs')
   }
 
   async getAuthLogs() {

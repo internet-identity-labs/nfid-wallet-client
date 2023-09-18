@@ -140,6 +140,7 @@ export const PageRequestTransfer: React.FC = () => {
         {/* Step 1: Authentication */}
         <div className="flex flex-col w-64 my-8">
           <Button
+            id="loginButton"
             disabled={authButton.disabled}
             onClick={
               authButton.label === "Logout" ? handleLogout : handleAuthenticate
@@ -159,7 +160,7 @@ export const PageRequestTransfer: React.FC = () => {
         <div className="w-full p-6 mt-4 bg-gray-900 rounded-lg shadow-md">
           <h3 className="mb-4 text-xl text-white">Authentication logs</h3>
           <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
-            <code>
+            <code id="authLogs">
               {`{
   "principal": "${delegation?.getPrincipal().toString() ?? ""}",
   "address": "${address ?? ""}",
@@ -176,25 +177,29 @@ export const PageRequestTransfer: React.FC = () => {
           {/* Step 2: Request ICP transfer */}
           <div className="flex flex-col space-y-4">
             <Input
+              id="inputICAddressFT"
               labelText="Receiver IC address"
               placeholder="39206df1ca32d2..."
               value={receiver}
               onChange={(e) => setReceiver(e.target.value)}
             />
             <Input
+              id="inputAmount"
               labelText="Amount ICP"
               placeholder="0.0001"
               errorText={errors.amount?.message}
               {...register("amount")}
             />
-            <Button onClick={handleSubmit(onRequestTransfer)}>
+            <Button
+              id="buttonRequestICP"
+              onClick={handleSubmit(onRequestTransfer)}>
               Request ICP transfer
             </Button>
           </div>
           <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
             <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
             <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
-              <code>{JSON.stringify(transferResponse, null, 4)}</code>
+              <code id="requestICPLogs">{JSON.stringify(transferResponse, null, 4)}</code>
             </pre>
           </div>
         </div>
@@ -203,12 +208,15 @@ export const PageRequestTransfer: React.FC = () => {
           {/* Step 2: Request IC NFT transfer */}
           <div className="flex flex-col space-y-4">
             <Input
+              id="inputICAddressNFT"
               labelText="Receiver IC address"
               placeholder="39206df1ca32d2..."
               value={receiver}
               onChange={(e) => setReceiver(e.target.value)}
             />
             <DropdownSelect
+              id="inputNFT"
+              label="NFT"
               options={
                 userNFTs?.map((nft: any) => ({
                   label: nft.tokenId,
@@ -220,14 +228,16 @@ export const PageRequestTransfer: React.FC = () => {
               setSelectedValues={setSelectedNFTIds}
               isMultiselect={false}
             />
-            <Button onClick={handleSubmit(onRequestNFTTransfer)}>
+            <Button
+              id="buttonRequestNFT"
+              onClick={handleSubmit(onRequestNFTTransfer)}>
               Request NFT transfer
             </Button>
           </div>
           <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
             <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
             <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
-              <code>{JSON.stringify(transferNFTResponse, null, 4)}</code>
+              <code id="requestNFTLogs">{JSON.stringify(transferNFTResponse, null, 4)}</code>
             </pre>
           </div>
         </div>

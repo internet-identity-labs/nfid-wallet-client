@@ -1,4 +1,4 @@
-import { getScope } from "@nfid/integration"
+import { getScope } from "@nfid/config"
 
 import { localStorageWithFallback } from "../local-storage"
 import { STORAGE_KEY } from "./constants"

@@ -1,4 +1,4 @@
-import { WALLET_SCOPE } from "@nfid/config"
+import { WALLET_SCOPE } from "./constants"
 
 export function getScope(hostName: string, personaId?: string) {
   if (hostName === WALLET_SCOPE) return WALLET_SCOPE

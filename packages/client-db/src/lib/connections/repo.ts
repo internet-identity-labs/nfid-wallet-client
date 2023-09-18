@@ -1,9 +1,10 @@
+import { localStorageWithFallback } from "../local-storage"
 import { STORAGE_KEY } from "./constants"
 import { CachedConnections, ConnectionDetails } from "./types"
 
 const loadAddressCache = (): CachedConnections => {
   try {
-    const cache = localStorage.getItem(STORAGE_KEY)
+    const cache = localStorageWithFallback.getItem(STORAGE_KEY)
     const parsedCache = cache ? JSON.parse(cache) : {}
     return parsedCache
   } catch (error) {

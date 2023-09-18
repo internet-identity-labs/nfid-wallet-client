@@ -1,3 +1,5 @@
+import { localStorageWithFallback } from "@nfid/client-db"
+
 import { IdbKeyVal, KeyValueStore, MemoryKeyVal } from "./db"
 
 export const KEY_STORAGE_KEY = "identity"
@@ -58,7 +60,7 @@ export class LocalStorage implements AuthClientStorage {
               ? undefined
               : self.localStorage
             : global.localStorage
-          : window.localStorage
+          : localStorageWithFallback
     } catch (error) {
       console.error("LocalStorage", { error })
     }
@@ -80,13 +82,10 @@ export class LocalStorage implements AuthClientStorage {
 export class IdbStorage implements AuthClientStorage {
   // Initializes a KeyVal on first request
   private initializedDb: IdbKeyVal | undefined
-  private memoryMap: Map<string, string> = new Map()
 
   get _db(): Promise<KeyValueStore> {
-    console.debug("IdbStorage._db")
     const db = new Promise<KeyValueStore>((resolve) => {
       if (this.initializedDb) {
-        console.debug("IdbStorage._db already initialized")
         this.initializedDb.set("test", "test")
         this.initializedDb.get("test")
         resolve(this.initializedDb)
@@ -99,17 +98,14 @@ export class IdbStorage implements AuthClientStorage {
           this.initializedDb.get("test")
           resolve(db)
         })
-        .catch((error) => {
-          console.error("IdbStorage._db", { error })
+        .catch(() => {
           return resolve(MemoryKeyVal.create())
         })
     })
-    console.debug("IdbStorage._db", { db })
     return db
   }
 
   public async get(key: string): Promise<string | null> {
-    console.debug("IdbStorage.get", { key })
     const db = await this._db
     return await db.get<string>(key)
   }

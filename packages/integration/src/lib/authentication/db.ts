@@ -82,7 +82,6 @@ export class IdbKeyVal implements KeyValueStore {
       version = 1,
     } = options ?? {}
     const db = await _openDbStore(dbName, storeName, version)
-    console.debug("IdbKeyVal.create db ready create new IdbKeyVal")
     return new IdbKeyVal(db, storeName)
   }
 
@@ -96,7 +95,6 @@ export class IdbKeyVal implements KeyValueStore {
    * @returns void
    */
   public async set<T>(key: IDBValidKey, value: T) {
-    console.debug("IdbKeyVal.set", { key })
     return await _setValue<T>(this._db, this._storeName, key, value)
   }
   /**
@@ -108,7 +106,6 @@ export class IdbKeyVal implements KeyValueStore {
    * await get<string>('exampleKey') -> 'exampleValue'
    */
   public async get<T>(key: IDBValidKey): Promise<T | null> {
-    console.debug("IdbKeyVal.get", { key })
     return (await _getValue<T>(this._db, this._storeName, key)) ?? null
   }
 
@@ -118,7 +115,6 @@ export class IdbKeyVal implements KeyValueStore {
    * @returns void
    */
   public async remove(key: IDBValidKey) {
-    console.debug("IdbKeyVal.remove", { key })
     return await _removeValue(this._db, this._storeName, key)
   }
 }
@@ -127,7 +123,6 @@ export class MemoryKeyVal implements KeyValueStore {
   constructor(private _map: Map<IDBValidKey, unknown>) {}
 
   public static create(): MemoryKeyVal {
-    console.debug("MemoryKeyVal.create")
     const map = new Map<string, IDBValidKey>()
     return new MemoryKeyVal(map)
   }

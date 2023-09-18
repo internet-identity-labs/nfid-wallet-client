@@ -1,11 +1,12 @@
 import { getScope } from "@nfid/integration"
 
+import { localStorageWithFallback } from "../local-storage"
 import { STORAGE_KEY } from "./constants"
 import { CachedAddresses, NetworkKey } from "./types"
 
 const loadAddressCache = (): CachedAddresses => {
   try {
-    const cache = localStorage.getItem(STORAGE_KEY)
+    const cache = localStorageWithFallback.getItem(STORAGE_KEY)
     const parsedCache = cache ? JSON.parse(cache) : {}
     return parsedCache
   } catch (error) {
@@ -53,7 +54,7 @@ export const storeAddressInLocalCache = ({
   const key = getKey({ hostname, anchor, accountId })
   const existing = getEntity(key)
   try {
-    localStorage.setItem(
+    localStorageWithFallback.setItem(
       STORAGE_KEY,
       JSON.stringify({ ...cache, [key]: { ...existing, [network]: address } }),
     )

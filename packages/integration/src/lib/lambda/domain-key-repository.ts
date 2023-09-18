@@ -1,3 +1,5 @@
+import { localStorageWithFallback } from "@nfid/client-db"
+
 export const domainKeyStorage = "domainKeyStorage"
 export const defaultExpirationInMinutes = 120
 
@@ -54,7 +56,7 @@ export function deleteFromStorage(key: string): void {
 
 function loadFromStorage(): { [key: string]: any } {
   try {
-    const storedData = localStorage.getItem(domainKeyStorage)
+    const storedData = localStorageWithFallback.getItem(domainKeyStorage)
     return storedData ? JSON.parse(storedData) : {}
   } catch (error) {
     console.error("domain-key-repository loadFromStorage", { error })
@@ -64,7 +66,7 @@ function loadFromStorage(): { [key: string]: any } {
 
 function saveDataToStorage(data: { [key: string]: any }): void {
   try {
-    localStorage.setItem(domainKeyStorage, JSON.stringify(data))
+    localStorageWithFallback.setItem(domainKeyStorage, JSON.stringify(data))
   } catch (error) {
     console.error("domain-key-repository saveDataToStorage", { error })
   }

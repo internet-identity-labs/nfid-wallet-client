@@ -1,10 +1,16 @@
+import { localStorageWithFallback } from "../local-storage"
 import { STORAGE_KEY } from "./constants"
 import { CachedConnections, ConnectionDetails } from "./types"
 
 const loadAddressCache = (): CachedConnections => {
-  const cache = localStorage.getItem(STORAGE_KEY)
-  const parsedCache = cache ? JSON.parse(cache) : {}
-  return parsedCache
+  try {
+    const cache = localStorageWithFallback.getItem(STORAGE_KEY)
+    const parsedCache = cache ? JSON.parse(cache) : {}
+    return parsedCache
+  } catch (error) {
+    console.error("loadAddressCache", { error })
+    return {}
+  }
 }
 
 type CreateConnectionArg = {
@@ -19,16 +25,20 @@ export const createConnection = ({
   domain,
 }: CreateConnectionArg) => {
   const cache = loadAddressCache()
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      ...cache,
-      [connectionDomain]: {
-        accountId,
-        domain,
-      },
-    }),
-  )
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...cache,
+        [connectionDomain]: {
+          accountId,
+          domain,
+        },
+      }),
+    )
+  } catch (error) {
+    console.error("createConnection", { error })
+  }
 }
 
 type ReadConnectionArg = {

@@ -53,10 +53,19 @@ export function deleteFromStorage(key: string): void {
 }
 
 function loadFromStorage(): { [key: string]: any } {
-  const storedData = localStorage.getItem(domainKeyStorage)
-  return storedData ? JSON.parse(storedData) : {}
+  try {
+    const storedData = localStorage.getItem(domainKeyStorage)
+    return storedData ? JSON.parse(storedData) : {}
+  } catch (error) {
+    console.error("domain-key-repository loadFromStorage", { error })
+    return {}
+  }
 }
 
 function saveDataToStorage(data: { [key: string]: any }): void {
-  localStorage.setItem(domainKeyStorage, JSON.stringify(data))
+  try {
+    localStorage.setItem(domainKeyStorage, JSON.stringify(data))
+  } catch (error) {
+    console.error("domain-key-repository saveDataToStorage", { error })
+  }
 }

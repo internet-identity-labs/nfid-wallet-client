@@ -9,7 +9,6 @@ import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 
 export const getPublicProfile = async (): Promise<{
-  label: string
   address: string
   balance: string
   balanceUSD: string
@@ -27,7 +26,6 @@ export const getPublicProfile = async (): Promise<{
   const exchangeRate = await getExchangeRate()
 
   return {
-    label: "My NFID profile",
     address: truncateString(principal.toText(), 6, 4),
     balance: balance,
     balanceUSD: toUSD(Number(balance), exchangeRate),

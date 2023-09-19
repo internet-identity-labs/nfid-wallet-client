@@ -2,6 +2,7 @@ import { getExpirationDelay } from "packages/integration/src/lib/authentication/
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { assign, createMachine } from "xstate"
 
+import { ONE_DAY_IN_MS } from "@nfid/config"
 import { Application, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
@@ -173,10 +174,13 @@ export const NFIDEmbedMachineV2 = createMachine(
                   timeoutAt: new Date(now + timeoutIn),
                 })
 
-                const timeout = setTimeout(() => {
-                  console.debug("NFIDEmbedMachineV2 delegation expired")
-                  send("SESSION_EXPIRED")
-                }, timeoutIn)
+                const timeout = setTimeout(
+                  () => {
+                    console.debug("NFIDEmbedMachineV2 delegation expired")
+                    send("SESSION_EXPIRED")
+                  },
+                  timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
+                )
 
                 return () => clearTimeout(timeout)
               },
@@ -283,7 +287,9 @@ export const NFIDEmbedMachineV2 = createMachine(
         error: event.data,
       })),
       nfid_authenticated: () => {
-        console.debug("nfid_authenticated")
+        console.debug("nfid_authenticated", {
+          origin: window.location.ancestorOrigins[0],
+        })
         window.parent.postMessage(
           { type: "nfid_authenticated" },
           window.location.ancestorOrigins[0],

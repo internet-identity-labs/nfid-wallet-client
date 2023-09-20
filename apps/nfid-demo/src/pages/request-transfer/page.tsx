@@ -131,12 +131,11 @@ export const PageRequestTransfer: React.FC = () => {
   )
 
   return (
-    <PageTemplate
+    <div
       title={"Request transfer"}
       className="flex flex-col w-full min-h-screen !p-0 divide-y"
     >
       <div className="p-5  h-[500px]">
-        <H4 className="mb-10">1. Authentication</H4>
         {/* Step 1: Authentication */}
         <div className="flex flex-col w-64 my-8">
           <Button
@@ -192,14 +191,17 @@ export const PageRequestTransfer: React.FC = () => {
             />
             <Button
               id="buttonRequestICP"
-              onClick={handleSubmit(onRequestTransfer)}>
+              onClick={handleSubmit(onRequestTransfer)}
+            >
               Request ICP transfer
             </Button>
           </div>
           <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
             <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
             <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
-              <code id="requestICPLogs">{JSON.stringify(transferResponse, null, 4)}</code>
+              <code id="requestICPLogs">
+                {JSON.stringify(transferResponse, null, 4)}
+              </code>
             </pre>
           </div>
         </div>
@@ -230,20 +232,23 @@ export const PageRequestTransfer: React.FC = () => {
             />
             <Button
               id="buttonRequestNFT"
-              onClick={handleSubmit(onRequestNFTTransfer)}>
+              onClick={handleSubmit(onRequestNFTTransfer)}
+            >
               Request NFT transfer
             </Button>
           </div>
           <div className="w-full p-6 mt-6 bg-gray-900 rounded-lg shadow-md">
             <h3 className="mb-4 text-xl text-white">Transfer logs</h3>
             <pre className="p-4 overflow-x-auto text-sm text-white bg-gray-800 rounded">
-              <code id="requestNFTLogs">{JSON.stringify(transferNFTResponse, null, 4)}</code>
+              <code id="requestNFTLogs">
+                {JSON.stringify(transferNFTResponse, null, 4)}
+              </code>
             </pre>
           </div>
         </div>
       </div>
 
       <DemoCanisterCall nfid={nfid} identity={delegation} />
-    </PageTemplate>
+    </div>
   )
 }

@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React, { useState, useCallback } from "react"
 import { FaCode, FaChrome } from "react-icons/fa"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
@@ -9,6 +10,7 @@ type SectionTemplateProps = {
   title: string
   subtitle: string
   example: JSX.Element
+  method?: string
   codeSnippet: string
   jsonResponse: string
 }
@@ -17,6 +19,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
   title,
   subtitle,
   example,
+  method,
   codeSnippet,
   jsonResponse,
 }) => {
@@ -27,11 +30,25 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
   }, [])
 
   return (
-    <div className="grid grid-cols-[3fr,2fr] w-full space-x-6">
+    <div className="grid grid-cols-[3fr,2fr] w-full space-x-6 group min-h-[400px]">
       {/* Left Side */}
       <div className="flex-1">
         <div className="flex justify-between">
-          <h2 className="text-xl font-semibold">{title}</h2>
+          <h2 className="flex items-center text-xl font-semibold">
+            {title}{" "}
+            {method ? (
+              <span
+                className={clsx(
+                  "px-2 py-1 ml-1 font-mono text-xs text-white bg-gray-800 rounded-lg",
+                  "opacity-50 group-hover:opacity-100 transition-opacity",
+                )}
+              >
+                {method}
+              </span>
+            ) : (
+              ""
+            )}
+          </h2>
           <div className="w-20">
             <ToggleButton
               firstValue={<FaChrome className="w-5" />}

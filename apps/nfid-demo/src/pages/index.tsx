@@ -4,7 +4,9 @@ import { Route } from "wouter"
 import { NFIDLogo } from "@nfid-frontend/ui"
 
 import { AuthenticationForm } from "../components/authentication"
+import { DemoCanisterCall } from "../components/canister-call"
 import UserNavigation from "./new/header/user-navigation"
+import { RequestFungibleTransfer } from "./new/request-transfer/request-fungible"
 import { SectionTemplate } from "./new/section"
 import SideNav, { Section } from "./new/sidebar"
 
@@ -33,20 +35,16 @@ export const RouteHome: React.FC = () => {
 
   return (
     <Route path={RoutePathHome}>
-      <main className="font-inter">
-        <header className="grid grid-cols-[260px,1fr]">
-          <div className="p-5 bg-gray-100">
-            <NFIDLogo />
-          </div>
-          <div className="flex justify-end p-5">
-            <UserNavigation isAuthenticated={false} />
-          </div>
-        </header>
-        <div className="grid grid-cols-[260px,1fr] h-screen">
+      <main className="relative font-inter">
+        <div className="grid grid-cols-[260px,1fr]">
           <SideNav sections={sections} activeSection={activeSection} />
           <div className="p-5 space-y-5">
+            <div className="flex justify-end pb-10">
+              <UserNavigation isAuthenticated={true} />
+            </div>
             <SectionTemplate
               title={"1. Authentication / Registration"}
+              method="nfid.getDelegation()"
               subtitle={
                 "To use global delegations, you need provide at least one target canisterID"
               }
@@ -61,6 +59,7 @@ export const RouteHome: React.FC = () => {
             <hr />
             <SectionTemplate
               title={"2. Update delegation"}
+              method="nfid.renewDelegation()"
               subtitle={
                 "To use global delegations, you need provide at least one target canisterID"
               }
@@ -70,37 +69,63 @@ export const RouteHome: React.FC = () => {
               jsonResponse={`{
     "error": "User canceled request"
 }`}
-              example={<div></div>}
+              example={<AuthenticationForm />}
             />
             <hr />
 
             <SectionTemplate
               title={"3. Request transfer"}
+              method="nfid.requestTransferFT()"
               subtitle={
                 "To use global delegations, you need provide at least one target canisterID"
               }
-              codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
-    NFID.init({ origin: NFID_PROVIDER_URL }),
-  )`}
+              codeSnippet={`const onRequestTransfer = useCallback(
+  async (values: any) => {
+    if (!receiver.length) return alert("Receiver should not be empty")
+    if (!values.amount.length) return alert("Please enter an amount")
+
+    const res = await nfid
+      ?.requestTransferFT({
+        receiver,
+         amount: String(Number(values.amount) * E8S),
+        })
+       .catch((e: Error) => ({ error: e.message }))
+       
+     setTransferResponse(res)
+     refetchBalance()
+  },
+  [nfid, receiver, refetchBalance],
+)`}
               jsonResponse={`{
     "error": "User canceled request"
 }`}
-              example={<div></div>}
+              example={<RequestFungibleTransfer />}
             />
             <hr />
 
             <SectionTemplate
-              title={"4. Rqeuest canister call"}
+              title={"4. Request canister call"}
+              method="nfid.requestTransferNFT()"
               subtitle={
                 "To use global delegations, you need provide at least one target canisterID"
               }
-              codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
-    NFID.init({ origin: NFID_PROVIDER_URL }),
-  )`}
+              codeSnippet={`const handleExecuteCanisterCall = async (values: any) => {
+  if (!nfid) return alert("NFID is not initialized")
+
+  const response = await nfid
+    .requestCanisterCall({
+      method: values.method,
+      canisterId: values.canisterId,
+      parameters: values.parameters.length ? values.parameters : "",
+    })
+    .catch((e: Error) => ({ error: e.message }))
+
+  setResponse(response)
+}`}
               jsonResponse={`{
     "error": "User canceled request"
 }`}
-              example={<div></div>}
+              example={<DemoCanisterCall />}
             />
           </div>
         </div>

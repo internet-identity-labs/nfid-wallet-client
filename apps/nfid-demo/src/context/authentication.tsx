@@ -19,7 +19,7 @@ interface AuthenticationContextProps {
   config?: {
     principalID: string
     address: string
-    expirationTime: number
+    expirationTime: string
     targets: Principal[] | undefined
   }
 }
@@ -43,9 +43,12 @@ export const AuthenticationProvider: React.FC<{
 
     const principalID = identity.getPrincipal().toString()
     const address = principalToAddress(identity?.getPrincipal())
-    const expirationTime = Number(
-      identity.getDelegation().delegations[0].delegation.expiration,
-    )
+    const expirationTime = new Date(
+      Number(
+        identity.getDelegation().delegations[0].delegation.expiration /
+          BigInt(1000000),
+      ),
+    ).toString()
     const targets = identity.getDelegation().delegations[0].delegation.targets
 
     return {

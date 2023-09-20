@@ -360,6 +360,6 @@ When(/^I press on Activity icon$/, async () => {
   await assets.openActivity()
 })
 
-When(/^User sends ?(.*)? ICP to ?(.*)?$/, async (amount: number, address: string) => {
+When(/^User sends (.*)? ICP to (.*)$/, async (amount: number, address: string) => {
   await DemoTransactions.sendICPTransaction(amount, address)
 })

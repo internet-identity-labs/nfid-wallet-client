@@ -10,9 +10,9 @@ Feature: DemoApp transactions functionality
     Then Principal, Address, Balance are correct:
       | principal | <principal> |
       | address   | <address>   |
-      | balance   | <balance>   |
     When User sends <amount> ICP to <address>
-#    Then Assert logs are successful
+    Then Check request details equals to <amount> ICP
+    And Assert logs are successful
     Examples:
-      | anchor | profileType | amount  | principal                                                       | address                                                          | balance     |
-      | 28567  | public      | 0.00001 | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce | 0.00001 ICP |
+      | anchor | profileType | amount  | principal                                                       | address                                                          |
+      | 28567  | public      | 0.00001 | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce |

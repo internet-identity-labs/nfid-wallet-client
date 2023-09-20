@@ -1,5 +1,3 @@
-import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
-import { useAuthentication } from "apps/nfid-demo/src/hooks/useAuthentication"
 import clsx from "clsx"
 import React, { useState, useCallback } from "react"
 import { FaCode, FaChrome } from "react-icons/fa"
@@ -15,6 +13,7 @@ type SectionTemplateProps = {
   method?: string
   codeSnippet: string
   jsonResponse: string
+  id: string
 }
 
 export const SectionTemplate: React.FC<SectionTemplateProps> = ({
@@ -24,6 +23,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
   method,
   codeSnippet,
   jsonResponse,
+  id,
 }) => {
   const [isLiveExample, setIsLiveExample] = useState(true)
 
@@ -36,6 +36,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
       className={clsx(
         "grid grid-cols-[3fr,2fr] w-full space-x-6 group min-h-[400px]",
       )}
+      id={id}
     >
       {/* Left Side */}
       <div className="">

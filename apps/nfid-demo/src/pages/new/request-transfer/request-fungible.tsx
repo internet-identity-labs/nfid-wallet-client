@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
-import { Button, Input, Tooltip } from "@nfid-frontend/ui"
+import { Button, Input } from "@nfid-frontend/ui"
 import { E8S } from "@nfid/integration/token/icp"
 
 import { SectionTemplate } from "../section"
@@ -43,7 +43,8 @@ export const RequestFungibleTransfer = () => {
 
   return (
     <SectionTemplate
-      title={"3. Request transfer"}
+      id="requestICPTransfer"
+      title={"3. Request ICP transfer"}
       method="nfid.requestTransferFT()"
       subtitle={
         "To use global delegations, you need provide at least one target canisterID"

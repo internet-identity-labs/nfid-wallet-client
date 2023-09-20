@@ -4506,10 +4506,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.6.0-alpha.0":
-  version "0.6.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.6.0-alpha.0.tgz#1e5ef908c112f9bb022146d8c00cdab4851733b8"
-  integrity sha512-2mADJ/29lIXrIL9r647NJFSuLGqlUKx6sZI/WBUc6meO+o7B8uGq1efdaHtaOYPknIDvU2VRVVraDVuVwX6vpA==
+"@nfid/embed@0.7.0-alpha.0":
+  version "0.7.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.7.0-alpha.0.tgz#4d5d1cb04f28f6821dfe613e4a9a7e7c11dbc90f"
+  integrity sha512-S0i639Rw6y3svlu1TCQlYijyuW5RqqLstzuPXeZGEbOq/Deow8a5nOYUeHwz+7z0iJ6m7i3KmRY2tPiRSj7szw==
   dependencies:
     "@dfinity/agent" "0.15.6"
     "@dfinity/auth-client" "0.15.6"

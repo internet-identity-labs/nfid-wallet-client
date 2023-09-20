@@ -41,18 +41,7 @@ export const AuthenticationForm = () => {
     })
   }, [nfid, setError, setIdentity, updateAuthButton])
   return (
-    <div
-      className={clsx(
-        "flex flex-col gap-4",
-        "w-full border border-gray-200 rounded-xl",
-        "px-5 py-4 mt-8",
-        "sm:px-[30px] sm:py-[26px]",
-      )}
-    >
-      <div>
-        To use global delegations, you need provide at least one target
-        cansiterId
-      </div>
+    <div className={clsx("flex flex-col gap-4")}>
       <div className="flex flex-col gap-2" onSubmit={() => {}}>
         {/* <form onSubmit={handleSubmit(onSubmit)}> */}
         {fields.map((field, index) => {

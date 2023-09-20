@@ -3,6 +3,7 @@ import { Route } from "wouter"
 
 import { NFIDLogo } from "@nfid-frontend/ui"
 
+import { AuthenticationForm } from "../components/authentication"
 import UserNavigation from "./new/header/user-navigation"
 import { SectionTemplate } from "./new/section"
 import SideNav, { Section } from "./new/sidebar"
@@ -55,7 +56,7 @@ export const RouteHome: React.FC = () => {
               jsonResponse={`{
     "error": "User canceled request"
 }`}
-              example={<div></div>}
+              example={<AuthenticationForm />}
             />
             <hr />
             <SectionTemplate

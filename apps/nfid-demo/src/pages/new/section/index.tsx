@@ -44,7 +44,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
         <h3 className="mt-3 text-sm text-gray-600">{subtitle}</h3>
 
         {isLiveExample ? (
-          example
+          <div className="mt-5">{example}</div>
         ) : (
           <div className="relative mt-4">
             <SyntaxHighlighter

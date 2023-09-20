@@ -2,6 +2,7 @@ import { Identity } from "@dfinity/agent"
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import { useAuthentication } from "apps/nfid-demo/src/hooks/useAuthentication"
 import React from "react"
+import { ImWarning } from "react-icons/im"
 
 import { DelegationType } from "@nfid/embed"
 
@@ -37,7 +38,14 @@ export const UpdateDelegation = () => {
 
   const Example = () => {
     if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
-      return <div>You cannot update anonymous delegations</div>
+      return nfid.isAuthenticated ? (
+        <div className="flex gap-2 p-2 font-medium text-white bg-red-500 rounded">
+          <ImWarning />
+          <div className="text-sm ">
+            You cannot update anonymous delegations
+          </div>
+        </div>
+      ) : null
     }
 
     return (

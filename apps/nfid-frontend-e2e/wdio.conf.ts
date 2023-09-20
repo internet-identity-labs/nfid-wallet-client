@@ -369,6 +369,10 @@ export const config: WebdriverIO.Config = {
   /**
    * Cucumber-specific hooks
    */
+  // beforeFeature: function (uri, feature, scenarios) {
+  // },
+  // beforeScenario: function (uri, feature, scenario, sourceLocation) {
+  // },
   beforeFeature(uri: string, feature: Feature) {
     console.info(`Feature: ${feature.name}`)
   },

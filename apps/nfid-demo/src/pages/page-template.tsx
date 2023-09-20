@@ -9,6 +9,7 @@ import {
   SidebarWrapper,
 } from "@nfid-frontend/ui"
 
+import { AuthenticationForm } from "../components/authentication"
 import { RoutePathAuthentication } from "./authentication"
 import { RoutePathAuthenticationGetDelegation } from "./authentication-get-delegation"
 import { Link, NavLink } from "./common"
@@ -63,7 +64,10 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
             </NavLink>
           </SidebarWrapper>
         </div>
-        <div className={clsx("w-full px-5 py-6", className)}>{children}</div>
+        <div className={clsx("w-full px-5 py-6", className)}>
+          <AuthenticationForm />
+          {children}
+        </div>
       </div>
     </div>
   </>

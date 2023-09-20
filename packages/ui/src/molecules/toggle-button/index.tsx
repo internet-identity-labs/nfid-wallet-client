@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 
 interface IToggleButton {
   className?: string
-  firstValue: string
-  secondValue: string
+  firstValue: string | JSX.Element
+  secondValue: string | JSX.Element
   onChange: (value: boolean) => void
   defaultValue?: boolean
   id?: string
@@ -38,6 +38,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
         className={clsx(
           "text-center text-black",
           "font-semibold text-xs leading-7",
+          "flex items-center justify-center",
         )}
       >
         {firstValue}
@@ -46,6 +47,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
         className={clsx(
           "text-center text-black",
           "font-semibold text-xs leading-7",
+          "flex items-center justify-center",
         )}
       >
         {secondValue}
@@ -56,6 +58,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
           "bg-blue-600 leading-7 text-xs",
           "text-center text-white font-semibold",
           "transition-transform",
+          "flex items-center justify-center",
           value && "translate-x-full",
         )}
       >

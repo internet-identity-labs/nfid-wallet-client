@@ -2,8 +2,6 @@ import clsx from "clsx"
 import React, { HTMLAttributes } from "react"
 import ReactTooltip from "react-tooltip"
 
-
-
 import { CopyIcon } from "../icons/copy"
 import CopiedIcon from "./copied.svg"
 
@@ -39,16 +37,20 @@ export const Copy: React.FC<ICopy> = ({
       onClick={copyToClipboard}
     >
       <div className="w-5">
-        {copied && (
-          <img
-            className="w-full"
-            src={CopiedIcon}
-            alt="copy"
-            data-tip="Copy"
-          />
-        )}
+        <img
+          className={clsx(copied ? "inline-block" : "hidden")}
+          src={CopiedIcon}
+          alt="copy"
+          data-tip="Copy"
+        />
 
-        {!copied && <CopyIcon className={clsx("w-full", iconClassName)} />}
+        <CopyIcon
+          className={clsx(
+            "w-full",
+            copied ? "hidden" : "inline-block",
+            iconClassName,
+          )}
+        />
       </div>
 
       {copyTitle && (

@@ -43,9 +43,53 @@ export const RouteHome: React.FC = () => {
         </header>
         <div className="grid grid-cols-[260px,1fr] h-screen">
           <SideNav sections={sections} activeSection={activeSection} />
-          <div className="p-5">
+          <div className="p-5 space-y-5">
             <SectionTemplate
               title={"1. Authentication / Registration"}
+              subtitle={
+                "To use global delegations, you need provide at least one target canisterID"
+              }
+              codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
+    NFID.init({ origin: NFID_PROVIDER_URL }),
+  )`}
+              jsonResponse={`{
+    "error": "User canceled request"
+}`}
+              example={<div></div>}
+            />
+            <hr />
+            <SectionTemplate
+              title={"2. Update delegation"}
+              subtitle={
+                "To use global delegations, you need provide at least one target canisterID"
+              }
+              codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
+    NFID.init({ origin: NFID_PROVIDER_URL }),
+  )`}
+              jsonResponse={`{
+    "error": "User canceled request"
+}`}
+              example={<div></div>}
+            />
+            <hr />
+
+            <SectionTemplate
+              title={"3. Request transfer"}
+              subtitle={
+                "To use global delegations, you need provide at least one target canisterID"
+              }
+              codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
+    NFID.init({ origin: NFID_PROVIDER_URL }),
+  )`}
+              jsonResponse={`{
+    "error": "User canceled request"
+}`}
+              example={<div></div>}
+            />
+            <hr />
+
+            <SectionTemplate
+              title={"4. Rqeuest canister call"}
               subtitle={
                 "To use global delegations, you need provide at least one target canisterID"
               }

@@ -56,6 +56,7 @@ export const useAuthentication = () => {
         console.debug("handleAuthenticate", { error })
         updateAuthButton({ loading: false, label: "Authenticate" })
         setError(error)
+        return
       }
     },
     [nfid, setIdentity, updateAuthButton],
@@ -81,7 +82,10 @@ export const useAuthentication = () => {
       console.debug("handleRenewDelegation", { error })
       setError(error.message)
     }
-    updateRenewDelegationButton({ loading: false, label: "Renew Delegation" })
+    return updateRenewDelegationButton({
+      loading: false,
+      label: "Renew Delegation",
+    })
   }, [nfid, setIdentity, targetCanisterIds, updateRenewDelegationButton])
 
   return {

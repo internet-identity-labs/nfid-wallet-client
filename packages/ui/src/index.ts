@@ -46,6 +46,7 @@ export * from "./molecules/choose-modal/types"
 export * from "./molecules/accordion/index_v2"
 export * from "./molecules/warning-accordion"
 export * from "./molecules/lottie-animation"
+export * from "./molecules/toggle-button"
 
 export * from "./organisms/tabs-switcher"
 

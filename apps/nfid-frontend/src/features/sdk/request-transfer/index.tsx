@@ -131,6 +131,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
       </div>
       <div className="space-y-2.5 flex flex-col mb-14 mt-6">
         <Button
+          id="approveButton"
           type="primary"
           onClick={() =>
             setTransferPromise(
@@ -173,6 +174,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           Approve
         </Button>
         <Button
+          id="rejectButton"
           type="stroke"
           onClick={() =>
             onConfirmIC({

@@ -13,7 +13,6 @@ import { E8S } from "@nfid/integration/token/icp"
 
 import { DemoCanisterCall } from "../../components/canister-call"
 import { useButtonState } from "../../hooks/useButtonState"
-import { PageTemplate } from "../page-template"
 
 const API = "https://us-central1-entrepot-api.cloudfunctions.net/api"
 

@@ -1,4 +1,4 @@
-import { Identity } from "@dfinity/agent"
+import { DelegationIdentity } from "@dfinity/identity"
 import React from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 
@@ -17,7 +17,7 @@ export const useAuthentication = () => {
     if (nfid?.isAuthenticated) {
       const identity = nfid.getIdentity()
       updateAuthButton({ label: "Logout" })
-      setIdentity(identity as unknown as Identity)
+      setIdentity(identity as unknown as DelegationIdentity)
     }
   }, [nfid, setIdentity, updateAuthButton])
 
@@ -48,7 +48,7 @@ export const useAuthentication = () => {
       const identity = await nfid.getDelegation(
         targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
       )
-      setIdentity(identity as unknown as Identity)
+      setIdentity(identity as unknown as DelegationIdentity)
       updateAuthButton({ loading: false, label: "Logout" })
       return identity
     } catch (error: any) {
@@ -72,7 +72,7 @@ export const useAuthentication = () => {
         targets: targetCanisterIds,
       })
       console.debug("handleRenewDelegation", { identity })
-      setIdentity(identity as unknown as Identity)
+      setIdentity(identity as unknown as DelegationIdentity)
       return identity
     } catch (error: any) {
       console.debug("handleRenewDelegation", { error })

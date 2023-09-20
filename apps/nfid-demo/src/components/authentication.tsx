@@ -40,6 +40,7 @@ export const AuthenticationForm = () => {
       label: "Authenticate",
     })
   }, [nfid, setError, setIdentity, updateAuthButton])
+
   return (
     <div className={clsx("flex flex-col gap-4")}>
       <div className="flex flex-col gap-2" onSubmit={() => {}}>
@@ -55,8 +56,13 @@ export const AuthenticationForm = () => {
                 placeholder={`add canisterId ${index + 1}`}
                 className="flex-1"
               />
-              <div className="flex flex-end">
-                <Button type="stroke" isSmall onClick={() => remove(index)}>
+              <div className="flex items-end flex-end">
+                <Button
+                  className="h-10"
+                  type="stroke"
+                  isSmall
+                  onClick={() => remove(index)}
+                >
                   delete
                 </Button>
               </div>

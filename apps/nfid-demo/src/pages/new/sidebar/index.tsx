@@ -25,20 +25,20 @@ const SideNav: React.FC<SideNavProps> = ({
   activeSubPoint,
 }) => {
   return (
-    <div className="relative h-full p-5 bg-gray-100 border-r">
-      <ul className="sticky top-10">
-        <li className="ml-5">
-          <NFIDLogo />
+    <div className="relative h-full p-5 bg-gray-50">
+      <ul className="sticky top-5">
+        <li className="flex items-center mb-5 ml-5 text-xl font-bold">
+          <NFIDLogo /> Playground
         </li>
         {sections.map((section) => (
-          <li key={section.id} className="my-2 text-sm">
+          <li key={section.id} className="my-1 text-sm">
             <a
               href={`#${section.id}`}
-              className={`block px-5 py-2 rounded-lg 
+              className={`block px-5 py-2.5 rounded-lg  font-semibold
                                 ${
                                   activeSection === section.id
-                                    ? "text-blue-500"
-                                    : "text-gray-700 hover:bg-gray-200"
+                                    ? "text-blue-500 bg-gray-200 cursor-default pointer-events-none"
+                                    : "text-gray-700 hover:bg-gray-100"
                                 }`}
             >
               {section.name}
@@ -53,7 +53,7 @@ const SideNav: React.FC<SideNavProps> = ({
                                 ${
                                   activeSubPoint === subPoint.id
                                     ? "text-blue-400"
-                                    : "text-gray-600 hover:bg-gray-200"
+                                    : "text-gray-600 hover:bg-gray-100"
                                 }`}
                     >
                       {subPoint.name}

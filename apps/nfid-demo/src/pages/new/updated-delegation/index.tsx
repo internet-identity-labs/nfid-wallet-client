@@ -12,8 +12,8 @@ const nfid = await NFID.init({ origin: NFID_PROVIDER_URL })
 const identity = await nfid.updateGlobalDelegation()
 `
 
-export const UpdateDelegation = () => {
-  const { nfid, identity, setIdentity } = useAuthenticationContext()
+const Example = () => {
+  const { nfid, setIdentity } = useAuthenticationContext()
 
   const [loading, setLoading] = React.useState<boolean>(false)
 
@@ -31,27 +31,27 @@ export const UpdateDelegation = () => {
     [nfid, setIdentity],
   )
 
-  const Example = React.useCallback(() => {
-    if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
-      return nfid.isAuthenticated ? (
-        <div className="flex gap-2 p-2 font-medium text-white bg-red-500 rounded">
-          <ImWarning />
-          <div className="text-sm ">
-            You cannot update anonymous delegations
-          </div>
-        </div>
-      ) : null
-    }
+  if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
+    return nfid.isAuthenticated ? (
+      <div className="flex gap-2 p-2 font-medium text-white bg-red-500 rounded">
+        <ImWarning />
+        <div className="text-sm ">You cannot update anonymous delegations</div>
+      </div>
+    ) : null
+  }
 
-    return (
-      <TargetCanisterForm
-        submitButtonText="Update delegation"
-        submitButtonId="buttonUpdateDelegation"
-        isLoading={loading}
-        onSubmit={handleUpdateGlobalDelegation}
-      />
-    )
-  }, [handleUpdateGlobalDelegation, loading, nfid])
+  return (
+    <TargetCanisterForm
+      submitButtonText="Update delegation"
+      submitButtonId="buttonUpdateDelegation"
+      isLoading={loading}
+      onSubmit={handleUpdateGlobalDelegation}
+    />
+  )
+}
+
+export const UpdateDelegation = () => {
+  const { identity } = useAuthenticationContext()
   return (
     <SectionTemplate
       id="updateDelegation"

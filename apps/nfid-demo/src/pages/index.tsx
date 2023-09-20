@@ -1,14 +1,13 @@
 import React, { useEffect } from "react"
 import { Route } from "wouter"
 
-import { AuthenticationForm } from "../components/authentication"
-import { useAuthenticationContext } from "../context/authentication"
+import { Authentication } from "./new/authentication"
 import UserNavigation from "./new/header/user-navigation"
 import { RequestCanisterCall } from "./new/request-canister-call"
 import { RequestFungibleTransfer } from "./new/request-transfer/request-fungible"
 import { RequestNonFungibleTransfer } from "./new/request-transfer/request-non-fungible"
-import { SectionTemplate } from "./new/section"
 import SideNav, { Section } from "./new/sidebar"
+import { UpdateDelegation } from "./new/updated-delegation"
 
 export const RoutePathHome = "/"
 
@@ -27,7 +26,6 @@ const sections: Section[] = [
 ]
 
 export const RouteHome: React.FC = () => {
-  const context = useAuthenticationContext()
   const [activeSection, setActiveSection] =
     React.useState<string>("authentication")
 
@@ -68,54 +66,9 @@ export const RouteHome: React.FC = () => {
             <div className="flex items-center justify-end pb-10">
               <UserNavigation />
             </div>
-            <SectionTemplate
-              id="authentication"
-              title={"1. Authentication"}
-              method="nfid.getDelegation()"
-              subtitle={
-                "To use global delegations, you need provide at least one target canisterID"
-              }
-              codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
-  NFID.init({ origin: NFID_PROVIDER_URL }),
-)
-
-const handleAuthenticate = React.useCallback(async () => {
-  if (!nfid) return alert("NFID is not initialized")
-
-  try {
-    const identity = await nfid.getDelegation(
-      targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
-    )
-
-    setResponse(identity)
-  } catch (error: Error) {
-    setResponse({ error: error.message })
-  }
-}, [nfid, setIdentity, targetCanisterIds])
-  `}
-              jsonResponse={
-                context.identity
-                  ? JSON.stringify(context.identity, null, 2)
-                  : "{}"
-              }
-              example={<AuthenticationForm />}
-            />
+            <Authentication />
             <hr />
-            <SectionTemplate
-              id="updateDelegation"
-              title={"2. Update delegation"}
-              method="nfid.renewDelegation()"
-              subtitle={
-                "To use global delegations, you need provide at least one target canisterID"
-              }
-              codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
-    NFID.init({ origin: NFID_PROVIDER_URL }),
-  )`}
-              jsonResponse={`{
-    "error": "User canceled request"
-}`}
-              example={<AuthenticationForm />}
-            />
+            <UpdateDelegation />
             <hr />
             <RequestFungibleTransfer />
             <hr />

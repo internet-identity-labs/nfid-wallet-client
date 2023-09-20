@@ -58,7 +58,7 @@ export const useAuthentication = () => {
     }
   }, [nfid, setIdentity, targetCanisterIds, updateAuthButton])
 
-  const handleRenewDelegation = React.useCallback(async () => {
+  const handleUpdateGlobalDelegation = React.useCallback(async () => {
     setError(undefined)
     if (!nfid) throw new Error("NFID not initialized")
 
@@ -68,7 +68,7 @@ export const useAuthentication = () => {
       label: "Refetching Delegation...",
     })
     try {
-      const identity = await nfid.renewDelegation({
+      const identity = await nfid.updateGlobalDelegation({
         targets: targetCanisterIds,
       })
       console.debug("handleRenewDelegation", { identity })
@@ -97,6 +97,6 @@ export const useAuthentication = () => {
     renewDelegationButton,
     updateRenewDelegationButton,
     handleAuthenticate,
-    handleRenewDelegation,
+    handleUpdateGlobalDelegation,
   }
 }

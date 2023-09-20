@@ -38,25 +38,28 @@ export const useAuthentication = () => {
     [fields],
   )
 
-  const handleAuthenticate = React.useCallback(async () => {
-    setError(undefined)
-    if (!nfid) throw new Error("NFID not initialized")
+  const handleAuthenticate = React.useCallback(
+    async (targets: string[]) => {
+      setError(undefined)
+      if (!nfid) throw new Error("NFID not initialized")
 
-    console.debug("handleAuthenticate", { targetCanisterIds })
-    updateAuthButton({ loading: true, label: "Authenticating..." })
-    try {
-      const identity = await nfid.getDelegation(
-        targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
-      )
-      setIdentity(identity as unknown as DelegationIdentity)
-      updateAuthButton({ loading: false, label: "Logout" })
-      return identity
-    } catch (error: any) {
-      console.debug("handleAuthenticate", { error })
-      updateAuthButton({ loading: false, label: "Authenticate" })
-      setError(error)
-    }
-  }, [nfid, setIdentity, targetCanisterIds, updateAuthButton])
+      console.debug("handleAuthenticate", { targets })
+      updateAuthButton({ loading: true, label: "Authenticating..." })
+      try {
+        const identity = await nfid.getDelegation(
+          targets.length ? { targets } : undefined,
+        )
+        setIdentity(identity as unknown as DelegationIdentity)
+        updateAuthButton({ loading: false, label: "Logout" })
+        return identity
+      } catch (error: any) {
+        console.debug("handleAuthenticate", { error })
+        updateAuthButton({ loading: false, label: "Authenticate" })
+        setError(error)
+      }
+    },
+    [nfid, setIdentity, updateAuthButton],
+  )
 
   const handleUpdateGlobalDelegation = React.useCallback(async () => {
     setError(undefined)

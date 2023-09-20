@@ -1,5 +1,7 @@
 import React from "react"
 
+import { NFIDLogo } from "@nfid-frontend/ui"
+
 export type SubPoint = {
   id: string
   name: string
@@ -23,8 +25,11 @@ const SideNav: React.FC<SideNavProps> = ({
   activeSubPoint,
 }) => {
   return (
-    <div className="h-screen p-5 overflow-y-auto bg-gray-100 border-r">
-      <ul>
+    <div className="relative h-full p-5 bg-gray-100 border-r">
+      <ul className="sticky top-10">
+        <li className="ml-5">
+          <NFIDLogo />
+        </li>
         {sections.map((section) => (
           <li key={section.id} className="my-2 text-sm">
             <a

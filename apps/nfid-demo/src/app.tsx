@@ -1,5 +1,6 @@
 import React from "react"
 import { HelmetProvider } from "react-helmet-async"
+import { Route } from "wouter"
 
 import { AuthenticationProvider } from "./context/authentication"
 import { RouteHome } from "./pages"

@@ -2,7 +2,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { Button, H4, Input } from "@nfid-frontend/ui"
+import { Button, Input } from "@nfid-frontend/ui"
 import { NFID } from "@nfid/embed"
 
 export const DemoCanisterCall = ({
@@ -12,7 +12,7 @@ export const DemoCanisterCall = ({
   nfid?: NFID
   identity?: DelegationIdentity
 }) => {
-  const [response, setResponse] = useState({})
+  const [, setResponse] = useState({})
   const {
     register,
     formState: { errors },

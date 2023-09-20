@@ -84,12 +84,12 @@ export const AuthOtherSignOptions = ({
             NFID’s two-factor authentication has been upgraded. Update your
             settings in the Security section of your profile at{" "}
             <a
-              href="https://nfid.one/security"
+              href="https://nfid.one/profile/security"
               target="_blank"
               rel="noreferrer"
               className="text-linkColor"
             >
-              https://nfid.one/security
+              https://nfid.one/profile/security
             </a>
             .
           </p>

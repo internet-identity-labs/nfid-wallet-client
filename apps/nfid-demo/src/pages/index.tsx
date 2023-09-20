@@ -1,10 +1,13 @@
-import React from "react"
+import { TooltipProvider } from "@radix-ui/react-tooltip"
+import React, { useState } from "react"
+import { ToastContainer } from "react-toastify"
 import { Route } from "wouter"
 
-import { NFIDLogo } from "@nfid-frontend/ui"
+import { H3 } from "@nfid-frontend/ui"
 
 import { AuthenticationForm } from "../components/authentication"
 import { DemoCanisterCall } from "../components/canister-call"
+import { useAuthenticationContext } from "../context/authentication"
 import UserNavigation from "./new/header/user-navigation"
 import { RequestFungibleTransfer } from "./new/request-transfer/request-fungible"
 import { SectionTemplate } from "./new/section"
@@ -28,10 +31,14 @@ const sections: Section[] = [
 ]
 
 export const RouteHome: React.FC = () => {
+  const context = useAuthenticationContext()
   const [activeSection, setActiveSection] = React.useState<string>("auth")
   const [activeSubPoint, setActiveSubPoint] = React.useState<string>(
     "requestTransfer_sub1",
   )
+
+  const [authResponse, setAuthResponse] = useState("{}")
+  const [transferResponse, setTransferResponse] = useState("{}")
 
   return (
     <Route path={RoutePathHome}>
@@ -39,21 +46,38 @@ export const RouteHome: React.FC = () => {
         <div className="grid grid-cols-[260px,1fr]">
           <SideNav sections={sections} activeSection={activeSection} />
           <div className="p-5 space-y-5">
-            <div className="flex justify-end pb-10">
-              <UserNavigation isAuthenticated={true} />
+            <div className="flex items-center justify-between pb-10">
+              <UserNavigation />
             </div>
             <SectionTemplate
-              title={"1. Authentication / Registration"}
+              title={"1. Authentication"}
               method="nfid.getDelegation()"
               subtitle={
                 "To use global delegations, you need provide at least one target canisterID"
               }
               codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
-    NFID.init({ origin: NFID_PROVIDER_URL }),
-  )`}
-              jsonResponse={`{
-    "error": "User canceled request"
-}`}
+  NFID.init({ origin: NFID_PROVIDER_URL }),
+)
+
+const handleAuthenticate = React.useCallback(async () => {
+  if (!nfid) return alert("NFID is not initialized")
+
+  try {
+    const identity = await nfid.getDelegation(
+      targetCanisterIds.length ? { targets: targetCanisterIds } : undefined,
+    )
+
+    setResponse(identity)
+  } catch (error: Error) {
+    setResponse({ error: error.message })
+  }
+}, [nfid, setIdentity, targetCanisterIds])
+  `}
+              jsonResponse={
+                context.identity
+                  ? JSON.stringify(context.identity, null, 2)
+                  : "{}"
+              }
               example={<AuthenticationForm />}
             />
             <hr />
@@ -72,35 +96,7 @@ export const RouteHome: React.FC = () => {
               example={<AuthenticationForm />}
             />
             <hr />
-
-            <SectionTemplate
-              title={"3. Request transfer"}
-              method="nfid.requestTransferFT()"
-              subtitle={
-                "To use global delegations, you need provide at least one target canisterID"
-              }
-              codeSnippet={`const onRequestTransfer = useCallback(
-  async (values: any) => {
-    if (!receiver.length) return alert("Receiver should not be empty")
-    if (!values.amount.length) return alert("Please enter an amount")
-
-    const res = await nfid
-      ?.requestTransferFT({
-        receiver,
-         amount: String(Number(values.amount) * E8S),
-        })
-       .catch((e: Error) => ({ error: e.message }))
-       
-     setTransferResponse(res)
-     refetchBalance()
-  },
-  [nfid, receiver, refetchBalance],
-)`}
-              jsonResponse={`{
-    "error": "User canceled request"
-}`}
-              example={<RequestFungibleTransfer />}
-            />
+            <RequestFungibleTransfer />
             <hr />
 
             <SectionTemplate

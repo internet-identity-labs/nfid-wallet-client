@@ -1,10 +1,12 @@
+import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
+import { useAuthentication } from "apps/nfid-demo/src/hooks/useAuthentication"
 import clsx from "clsx"
 import React, { useState, useCallback } from "react"
 import { FaCode, FaChrome } from "react-icons/fa"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism"
 
-import { IconCmpCopy, ToggleButton } from "@nfid-frontend/ui"
+import { Copy, ToggleButton } from "@nfid-frontend/ui"
 
 type SectionTemplateProps = {
   title: string
@@ -30,9 +32,13 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
   }, [])
 
   return (
-    <div className="grid grid-cols-[3fr,2fr] w-full space-x-6 group min-h-[400px]">
+    <div
+      className={clsx(
+        "grid grid-cols-[3fr,2fr] w-full space-x-6 group min-h-[400px]",
+      )}
+    >
       {/* Left Side */}
-      <div className="flex-1">
+      <div className="">
         <div className="flex justify-between">
           <h2 className="flex items-center text-xl font-semibold">
             {title}{" "}
@@ -63,7 +69,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
         {isLiveExample ? (
           <div className="mt-5">{example}</div>
         ) : (
-          <div className="relative mt-4">
+          <div className="relative mt-4 w-[40vw]">
             <SyntaxHighlighter
               language="javascript"
               style={oneDark}
@@ -72,34 +78,41 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
               customStyle={{
                 padding: "20px",
                 borderRadius: "10px",
-                fontSize: "14px",
+                fontSize: "13px",
               }}
             >
               {codeSnippet}
             </SyntaxHighlighter>
-            <IconCmpCopy className="absolute text-gray-400 top-4 right-4" />
+            <Copy
+              className="absolute text-gray-400 top-4 right-4"
+              value={codeSnippet}
+            />
           </div>
         )}
       </div>
 
       {/* Right Side */}
-      <div className="relative flex flex-col flex-1 p-4 bg-[rgb(40,44,52)]">
+      <div className="relative flex flex-col p-4 bg-[rgb(40,44,52)] rounded-[10px] w-[30vw]">
         <h4 className="text-lg text-white">Response</h4>
         <SyntaxHighlighter
           language="javascript"
           style={oneDark}
           showLineNumbers={true}
           wrapLines={true}
+          //   wrapLongLines={true}
           customStyle={{
-            height: "100%", // Added this line
+            maxHeight: "50vh",
             padding: "20px",
-            fontSize: "14px",
+            fontSize: "13px",
             overflow: "auto",
           }}
         >
           {jsonResponse}
         </SyntaxHighlighter>
-        <IconCmpCopy className="absolute text-gray-400 top-4 right-4" />
+        <Copy
+          className="absolute text-gray-400 top-4 right-4"
+          value={jsonResponse}
+        />
       </div>
     </div>
   )

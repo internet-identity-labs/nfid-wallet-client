@@ -21,9 +21,6 @@ export const AuthenticationForm = () => {
     remove,
     setIdentity,
     updateAuthButton,
-    targetCanisterIds,
-    renewDelegationButton,
-    handleRenewDelegation,
     authButton,
     handleAuthenticate,
   } = useAuthentication()
@@ -83,21 +80,6 @@ export const AuthenticationForm = () => {
           >
             Add target canisterId
           </Button>
-          {nfid?.isAuthenticated && targetCanisterIds.length ? (
-            <Button
-              disabled={renewDelegationButton.disabled}
-              onClick={handleRenewDelegation}
-            >
-              {renewDelegationButton.loading ? (
-                <div className={clsx("flex items-center space-x-2")}>
-                  <ImSpinner className={clsx("animate-spin")} />
-                  <div>{renewDelegationButton.label}</div>
-                </div>
-              ) : (
-                renewDelegationButton.label
-              )}
-            </Button>
-          ) : null}
           <Button
             disabled={authButton.disabled}
             onClick={nfid?.isAuthenticated ? handleLogout : handleAuthenticate}

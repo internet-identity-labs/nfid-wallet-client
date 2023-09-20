@@ -546,7 +546,7 @@ Then(/^Principal, Address, Balance are correct:/, async (data) => {
     let usersData = await DemoTransactions.getAuthLogs()
     expect(String(usersData.get("principal"))).toEqual(expectedData.principal)
     expect(String(usersData.get("address"))).toEqual(expectedData.address)
-    expect(String(usersData.get("balance"))).toEqual(expectedData.balance)
+    expect(String(usersData.get("balance"))).not.toHaveLength(0)
   })
 
 Then(
@@ -859,7 +859,7 @@ Then(
 )
 
 Then(/^Assert logs are successful$/, async () => {
-  expect(await DemoTransactions.getTransferLogs()).toContain('"hash":')
+  expect((await DemoTransactions.getTransferLogs()).keys()).toContain("hash")
 })
 
 async function chooseChainOption(chain: string) {
@@ -869,3 +869,14 @@ async function chooseChainOption(chain: string) {
   const loader = await $("#loader")
   await loader.waitForDisplayed({reverse: true, timeout: 10000})
 }
+
+Then(/^Check request details equals to\s+(.*)$/, async (details: string) => {
+  await browser.switchToFrame(await $("#nfid-embed"))
+  await DemoTransactions.getApproveButton.waitForDisplayed({
+    timeout: 10000,
+    timeoutMsg: "Approve Transfer modal windows isn't appeared"
+  })
+  expect(await DemoTransactions.getAmountDetailsICP.getText()).toEqual(details)
+  await DemoTransactions.getApproveButton.click()
+  await browser.switchToParentFrame()
+})

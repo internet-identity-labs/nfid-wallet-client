@@ -26,6 +26,14 @@ export class DemoTransactions extends demoAppPage {
     return $('#buttonRequestICP')
   }
 
+  get getApproveButton() {
+    return $(`#approveButton div`)
+  }
+
+  get getAmountDetailsICP() {
+    return $('#amountICP')
+  }
+
   get getTransferLogsLocator() {
     return $('#requestICPLogs')
   }
@@ -42,6 +50,12 @@ export class DemoTransactions extends demoAppPage {
   }
 
   async getTransferLogs() {
+    await browser.waitUntil(async () =>
+        (new Map(Object.entries(JSON.parse(await this.getTransferLogsLocator.getText()))).size > 0), {
+        timeout: 20000,
+        timeoutMsg: "Transaction logs are not appeared",
+      }
+    )
     return new Map(Object.entries(JSON.parse(await this.getTransferLogsLocator.getText())))
   }
 

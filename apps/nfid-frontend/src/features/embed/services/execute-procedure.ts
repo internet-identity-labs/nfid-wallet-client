@@ -5,6 +5,7 @@ import {
   ProviderError,
   ThirdPartyAuthSession,
   authState,
+  executeCanisterCall,
   prepareClientDelegate,
   renewDelegation,
 } from "@nfid/integration"
@@ -13,6 +14,7 @@ import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authenticat
 import { ICanisterCallResponse } from "frontend/features/sdk/request-canister-call/types"
 import { IRequestTransferResponse } from "frontend/features/sdk/request-transfer/types"
 import { RequestStatus } from "frontend/features/types"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
 
@@ -99,13 +101,6 @@ export const ExecuteProcedureService = async (
         return { ...rpcBase, error: { code: 500, message: e.message } }
       }
     }
-    case "ic_canisterCall": {
-      if (event.type !== "APPROVE_IC_CANISTER_CALL")
-        throw new Error("wrong event type")
-
-      const result = event.data as ICanisterCallResponse
-      return { ...rpcBase, result }
-    }
     case "eth_accounts": {
       const adapter = new DelegationWalletAdapter(rpcUrl)
       const address = await adapter.getAddress(delegation)
@@ -145,6 +140,23 @@ export const ExecuteProcedureService = async (
         return { ...rpcBase, result: { delegations, userPublicKey } }
       } catch (error: any) {
         console.error("ExecuteProcedureService ic_renewDelegation", { error })
+        return { ...rpcBase, error: { code: 500, message: error.message } }
+      }
+    }
+    case "ic_canisterCall": {
+      const identity = await getWalletDelegationAdapter("nfid.one", "-1")
+
+      try {
+        const response = await executeCanisterCall(
+          origin,
+          identity,
+          rpcMessage.method,
+          rpcMessage.params[0].canisterID,
+          rpcMessage.params[0].args,
+        )
+        return { ...rpcBase, result: response }
+      } catch (error: any) {
+        console.error("ExecuteProcedureService ic_canisterCall", { error })
         return { ...rpcBase, error: { code: 500, message: error.message } }
       }
     }

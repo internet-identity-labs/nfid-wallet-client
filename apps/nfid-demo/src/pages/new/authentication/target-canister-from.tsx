@@ -5,7 +5,7 @@ import { ImSpinner } from "react-icons/im"
 
 import { Button, Input } from "@nfid-frontend/ui"
 
-const canisterIds = [
+const CANISTER_IDS = [
   // "txkre-oyaaa-aaaap-qa3za-cai",
   "irshc-3aaaa-aaaam-absla-cai",
 ]
@@ -26,7 +26,9 @@ export const TargetCanisterForm = ({
     return config?.targets?.map((target) => ({ canisterId: target.toString() }))
   }, [config])
 
-  const { control, register } = useForm<{
+  console.debug("TargetCanisterForm", { config, defaultTargetCanisterIds })
+
+  const { control, watch, register } = useForm<{
     canisterIds: { canisterId: string; id?: string }[]
   }>({
     defaultValues: {
@@ -40,22 +42,23 @@ export const TargetCanisterForm = ({
     name: "canisterIds", // This should match the name of your array field
   })
 
+  const canisterIds = watch("canisterIds")
+
   const handleSubmit = React.useCallback(() => {
-    const targets = fields.map(({ canisterId }) => canisterId)
+    const targets = canisterIds.map(({ canisterId }) => canisterId)
+    console.debug("handleSubmit", { targets, canisterIds })
     onSubmit(targets)
-  }, [fields, onSubmit])
+  }, [canisterIds, onSubmit])
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         {fields.map((field, index) => {
-          console.debug("form", { field, index })
           return (
             <div key={field.id} className="flex gap-2 center">
               <Input
                 labelText={`target canisterId ${index + 1}`}
                 {...register(`canisterIds.${index}.canisterId`)} // Use index to name the input fields
-                // defaultValue={field.name} // Use defaultValue for pre-filling fields
                 placeholder={`add canisterId ${index + 1}`}
                 className="flex-1"
               />
@@ -80,7 +83,7 @@ export const TargetCanisterForm = ({
           isSmall
           onClick={() => {
             if (fields.length === 0) {
-              return canisterIds.forEach((canisterId) => {
+              return CANISTER_IDS.forEach((canisterId) => {
                 append({ canisterId })
               })
             }

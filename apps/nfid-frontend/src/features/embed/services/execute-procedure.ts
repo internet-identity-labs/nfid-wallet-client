@@ -55,6 +55,8 @@ export const ExecuteProcedureService = async (
     throw new Error("ExecuteProcedureService: missing rpcMessage")
   if (!authSession)
     throw new Error("ExecuteProcedureService: missing authSession")
+  if (!requestOrigin)
+    throw new Error("ExecuteProcedureService: missing requestOrigin")
 
   const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
   const delegation = await getWalletDelegation(authSession.anchor)
@@ -148,15 +150,21 @@ export const ExecuteProcedureService = async (
 
       try {
         const response = await executeCanisterCall(
-          origin,
+          requestOrigin,
           identity,
-          rpcMessage.method,
-          rpcMessage.params[0].canisterID,
-          rpcMessage.params[0].args,
+          rpcMessage.params[0].method,
+          rpcMessage.params[0].canisterId,
+          rpcMessage.params[0].parameters,
         )
         return { ...rpcBase, result: response }
       } catch (error: any) {
         console.error("ExecuteProcedureService ic_canisterCall", { error })
+
+        const json = JSON.parse(error.message);
+        if ("error" in json) {
+          return { ...rpcBase, error: { code: 400, message: json.error } }
+        }
+
         return { ...rpcBase, error: { code: 500, message: error.message } }
       }
     }

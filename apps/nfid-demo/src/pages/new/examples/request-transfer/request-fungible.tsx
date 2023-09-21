@@ -5,8 +5,10 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 import { Button, Input } from "@nfid-frontend/ui"
+import { DelegationType } from "@nfid/embed"
 import { E8S } from "@nfid/integration/token/icp"
 
+import { ExampleError } from "../../error"
 import { SectionTemplate } from "../../section"
 
 const CODE_SNIPPET = `const { data: nfid } = useSWRImmutable("nfid", () =>
@@ -86,40 +88,45 @@ export const RequestFungibleTransfer = () => {
       codeSnippet={CODE_SNIPPET}
       jsonResponse={response}
       example={
-        <div className="space-y-4">
-          <Input
-            id="inputICAddressFT"
-            labelText="Receiver IC address"
-            placeholder="39206df1ca32d2..."
-            errorText={errors.receiver?.message}
-            {...register("receiver", { required: "This field is required" })}
-          />
-          <Input
-            id="inputAmount"
-            labelText="Amount ICP"
-            placeholder="0.0001"
-            errorText={errors.amount?.message}
-            {...register("amount", {
-              required: "This field is required",
-              min: {
-                value: 0.00000001,
-                message: "Amount should be greater than 0",
-              },
-            })}
-          />
+        nfid?.getDelegationType() === DelegationType.ANONYMOUS &&
+        nfid.isAuthenticated ? (
+          <ExampleError>You cannot update anonymous delegations</ExampleError>
+        ) : (
+          <div className="space-y-4">
+            <Input
+              id="inputICAddressFT"
+              labelText="Receiver IC address"
+              placeholder="39206df1ca32d2..."
+              errorText={errors.receiver?.message}
+              {...register("receiver", { required: "This field is required" })}
+            />
+            <Input
+              id="inputAmount"
+              labelText="Amount ICP"
+              placeholder="0.0001"
+              errorText={errors.amount?.message}
+              {...register("amount", {
+                required: "This field is required",
+                min: {
+                  value: 0.00000001,
+                  message: "Amount should be greater than 0",
+                },
+              })}
+            />
 
-          <Button
-            isSmall
-            id="buttonRequestICP"
-            onClick={
-              identity
-                ? handleSubmit(onRequestTransfer)
-                : () => toast.error("Please authenticate first")
-            }
-          >
-            Request ICP transfer
-          </Button>
-        </div>
+            <Button
+              isSmall
+              id="buttonRequestICP"
+              onClick={
+                identity
+                  ? handleSubmit(onRequestTransfer)
+                  : () => toast.error("Please authenticate first")
+              }
+            >
+              Request ICP transfer
+            </Button>
+          </div>
+        )
       }
     />
   )

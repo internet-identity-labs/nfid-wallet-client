@@ -5,7 +5,9 @@ import { toast } from "react-toastify"
 import useSWRImmutable from "swr/immutable"
 
 import { Button, DropdownSelect, Input } from "@nfid-frontend/ui"
+import { DelegationType } from "@nfid/embed"
 
+import { ExampleError } from "../../error"
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
 
@@ -92,41 +94,46 @@ export const RequestNonFungibleTransfer = () => {
       codeSnippet={CODE_SNIPPET}
       jsonResponse={response}
       example={
-        <div className="space-y-4">
-          <Input
-            id="inputICAddressNFT"
-            labelText="Receiver IC address"
-            placeholder="39206df1ca32d2..."
-            errorText={errors.receiver?.message}
-            {...register("receiver", { required: "This field is required" })}
-          />
-          <DropdownSelect
-            id="inputNFT"
-            label="NFT"
-            options={
-              userNFTs?.map((nft: any) => ({
-                label: nft.tokenId,
-                icon: nft?.imageUrl,
-                value: nft?.tokenId,
-              })) ?? []
-            }
-            selectedValues={selectedNFTIds}
-            setSelectedValues={setSelectedNFTIds}
-            isMultiselect={false}
-          />
+        nfid?.getDelegationType() === DelegationType.ANONYMOUS &&
+        nfid.isAuthenticated ? (
+          <ExampleError>You cannot update anonymous delegations</ExampleError>
+        ) : (
+          <div className="space-y-4">
+            <Input
+              id="inputICAddressNFT"
+              labelText="Receiver IC address"
+              placeholder="39206df1ca32d2..."
+              errorText={errors.receiver?.message}
+              {...register("receiver", { required: "This field is required" })}
+            />
+            <DropdownSelect
+              id="inputNFT"
+              label="NFT"
+              options={
+                userNFTs?.map((nft: any) => ({
+                  label: nft.tokenId,
+                  icon: nft?.imageUrl,
+                  value: nft?.tokenId,
+                })) ?? []
+              }
+              selectedValues={selectedNFTIds}
+              setSelectedValues={setSelectedNFTIds}
+              isMultiselect={false}
+            />
 
-          <Button
-            isSmall
-            id="buttonRequestNFT"
-            onClick={
-              identity
-                ? handleSubmit(onRequestNFTTransfer)
-                : () => toast.error("Please authenticate first")
-            }
-          >
-            Request NFT transfer
-          </Button>
-        </div>
+            <Button
+              isSmall
+              id="buttonRequestNFT"
+              onClick={
+                identity
+                  ? handleSubmit(onRequestNFTTransfer)
+                  : () => toast.error("Please authenticate first")
+              }
+            >
+              Request NFT transfer
+            </Button>
+          </div>
+        )
       }
     />
   )

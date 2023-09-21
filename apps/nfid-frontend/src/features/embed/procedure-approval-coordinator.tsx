@@ -157,7 +157,8 @@ export const ProcedureApprovalCoordinator: React.FC<
           method={rpcMessage.params[0]?.method}
           canisterID={rpcMessage.params[0]?.canisterId}
           args={rpcMessage.params[0]?.parameters}
-          onConfirmIC={onRequestCanisterCall}
+          onConfirm={onConfirm}
+          onReject={onReject}
         />
       )
 

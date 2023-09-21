@@ -81,7 +81,6 @@ export interface Typegen0 {
     ExecuteProcedureService:
       | ""
       | "APPROVE"
-      | "APPROVE_IC_CANISTER_CALL"
       | "APPROVE_IC_GET_DELEGATION"
       | "APPROVE_IC_REQUEST_TRANSFER"
     RPCReceiver: "RPC_MESSAGE" | "xstate.init"

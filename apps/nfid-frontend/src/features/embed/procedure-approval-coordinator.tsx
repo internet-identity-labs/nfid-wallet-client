@@ -14,7 +14,6 @@ import {
 import { AuthChooseAccount } from "../authentication/3rd-party/choose-account"
 import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import { RequestCanisterCall } from "../sdk/request-canister-call"
-import { ICanisterCallResponse } from "../sdk/request-canister-call/types"
 import { RequestTransfer } from "../sdk/request-transfer"
 import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import MappedFallback from "./components/fallback"
@@ -36,7 +35,6 @@ type ApproverCmpProps = {
   onRequestICTransfer?: (
     thirdPartyAuthSession: IRequestTransferResponse,
   ) => void
-  onRequestCanisterCall?: (props: ICanisterCallResponse) => void
   onReject: (reason?: any) => void
 }
 
@@ -84,9 +82,7 @@ export const ProcedureApprovalCoordinator: React.FC<
   onConfirm,
   onRequestICDelegation = () => new Error("Not implemented"),
   onRequestICTransfer = () => new Error("Not implemented"),
-  onRequestCanisterCall = () => new Error("Not implemented"),
   onReject,
-  authSession,
 }) => {
   console.debug("ProcedureApprovalCoordinator", { rpcMessage })
 
@@ -157,7 +153,8 @@ export const ProcedureApprovalCoordinator: React.FC<
           method={rpcMessage.params[0]?.method}
           canisterID={rpcMessage.params[0]?.canisterId}
           args={rpcMessage.params[0]?.parameters}
-          onConfirmIC={onRequestCanisterCall}
+          onConfirm={onConfirm}
+          onReject={onReject}
         />
       )
 

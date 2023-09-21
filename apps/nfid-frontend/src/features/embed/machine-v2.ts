@@ -45,7 +45,6 @@ type Events =
       data: ApproveIcGetDelegationSdkResponse
     }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data: IRequestTransferResponse }
-  | { type: "APPROVE_IC_CANISTER_CALL"; data: ICanisterCallResponse }
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
@@ -216,7 +215,6 @@ export const NFIDEmbedMachineV2 = createMachine(
               APPROVE: "EXECUTE_PROCEDURE",
               APPROVE_IC_GET_DELEGATION: "EXECUTE_PROCEDURE",
               APPROVE_IC_REQUEST_TRANSFER: "EXECUTE_PROCEDURE",
-              APPROVE_IC_CANISTER_CALL: "EXECUTE_PROCEDURE",
               CANCEL: {
                 target: "READY",
                 actions: ["sendRPCCancelResponse", "updateProcedure"],

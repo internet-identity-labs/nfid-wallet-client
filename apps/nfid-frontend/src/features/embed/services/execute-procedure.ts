@@ -1,4 +1,5 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
+import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
 
 import {
   DelegationWalletAdapter,
@@ -13,7 +14,6 @@ import {
 import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
 import { IRequestTransferResponse } from "frontend/features/sdk/request-transfer/types"
 import { RequestStatus } from "frontend/features/types"
-import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
 
@@ -144,7 +144,11 @@ export const ExecuteProcedureService = async (
       }
     }
     case "ic_canisterCall": {
-      const identity = await getWalletDelegationAdapter("nfid.one", "-1")
+      const identity = await getGlobalKeys(
+        authState.get().delegationIdentity!,
+        Chain.IC,
+        [rpcMessage.params[0].canisterId],
+      )
 
       try {
         const response = await executeCanisterCall(
@@ -158,7 +162,7 @@ export const ExecuteProcedureService = async (
       } catch (error: any) {
         console.error("ExecuteProcedureService ic_canisterCall", { error })
 
-        const json = JSON.parse(error.message);
+        const json = JSON.parse(error.message)
         if ("error" in json) {
           return { ...rpcBase, error: { code: 400, message: json.error } }
         }

@@ -5,7 +5,31 @@ import { toast } from "react-toastify"
 
 import { Button, Input } from "@nfid-frontend/ui"
 
-import { SectionTemplate } from "../section"
+import { ExampleMethod } from "../../method"
+import { SectionTemplate } from "../../section"
+
+const CODE_SNIPPET = `const { data: nfid } = useSWRImmutable("nfid", () =>
+  NFID.init({ origin: NFID_PROVIDER_URL }),
+)
+  
+const onRequestTransfer = useCallback(
+  async (values: any) => {
+    if (!nfid) return alert("NFID is not initialized")
+    if (!values.method.length) return alert("Method should not be empty")
+    if (!values.canisterId.length) return alert("CanisterId should not be empty")
+
+    const res = await nfid
+      .requestCanisterCall({
+        method: values.method,
+        canisterId: values.canisterId,
+        parameters: values.parameters.length ? values.parameters : "",
+      })
+      .catch((e: Error) => ({ error: e.message }))
+       
+     setResponse(res)
+  },
+  [nfid, receiver, refetchBalance],
+)`
 
 export const RequestCanisterCall = () => {
   const { nfid, identity } = useAuthenticationContext()
@@ -42,30 +66,13 @@ export const RequestCanisterCall = () => {
       title={"5. Request canister call"}
       method="nfid.requestCanisterCall()"
       subtitle={
-        "To use global delegations, you need provide at least one target canisterID"
+        <>
+          If a user is authenticated with their main wallet address, an
+          <ExampleMethod>requestCanisterCall</ExampleMethod> method is exposed
+          to request approval to call any canister and return the response value
+        </>
       }
-      codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
-  NFID.init({ origin: NFID_PROVIDER_URL }),
-)
-  
-const onRequestTransfer = useCallback(
-  async (values: any) => {
-    if (!nfid) return alert("NFID is not initialized")
-    if (!values.method.length) return alert("Method should not be empty")
-    if (!values.canisterId.length) return alert("CanisterId should not be empty")
-
-    const res = await nfid
-      .requestCanisterCall({
-        method: values.method,
-        canisterId: values.canisterId,
-        parameters: values.parameters.length ? values.parameters : "",
-      })
-      .catch((e: Error) => ({ error: e.message }))
-       
-     setResponse(res)
-  },
-  [nfid, receiver, refetchBalance],
-)`}
+      codeSnippet={CODE_SNIPPET}
       jsonResponse={response}
       example={
         <div className="space-y-4">

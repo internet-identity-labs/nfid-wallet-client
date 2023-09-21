@@ -1,9 +1,9 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import React from "react"
-import { ImWarning } from "react-icons/im"
 
 import { DelegationType } from "@nfid/embed"
 
+import { ExampleError } from "../../error"
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
 import { TargetCanisterForm } from "../authentication/target-canister-from"
@@ -34,10 +34,7 @@ const Example = () => {
 
   if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
     return nfid.isAuthenticated ? (
-      <div className="flex gap-2 p-2 font-medium text-white bg-red-500 rounded">
-        <ImWarning />
-        <div className="text-sm ">You cannot update anonymous delegations</div>
-      </div>
+      <ExampleError>You cannot update anonymous delegations</ExampleError>
     ) : null
   }
 

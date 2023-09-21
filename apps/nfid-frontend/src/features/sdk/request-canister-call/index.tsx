@@ -1,17 +1,13 @@
 import clsx from "clsx"
-import { useState } from "react"
 import useSWR from "swr"
 
-import { BlurredLoader, Button, IconCmpWarning } from "@nfid-frontend/ui"
-import { executeCanisterCall } from "@nfid/integration"
+import {  Button, IconCmpWarning } from "@nfid-frontend/ui"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
-import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { SDKFooter } from "../ui/footer"
-import { ICanisterCallResponse } from "./types"
 
 export interface IRequestTransferProps {
   origin: string
@@ -19,7 +15,8 @@ export interface IRequestTransferProps {
   method: string
   canisterID: string
   args: string
-  onConfirmIC: (data: ICanisterCallResponse) => void
+  onConfirm: () => void
+  onReject: () => void
 }
 export const RequestCanisterCall = ({
   origin,
@@ -27,35 +24,14 @@ export const RequestCanisterCall = ({
   method,
   canisterID,
   args,
-  onConfirmIC,
+  onConfirm,
+  onReject,
 }: IRequestTransferProps) => {
   console.log({ appMeta })
-  const [isLoading, setIsLoading] = useState(false)
+
   const { data: identity } = useSWR("globalIdentity", () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
   )
-
-  const handleExecuteCall = async () => {
-    setIsLoading(true)
-    try {
-      const delegation = identity ?? (await getWalletDelegationAdapter())
-
-      const res = await executeCanisterCall(
-        origin,
-        delegation,
-        method,
-        canisterID,
-        args,
-      )
-      onConfirmIC({ status: RequestStatus.SUCCESS, response: res })
-    } catch (e: any) {
-      onConfirmIC({ status: RequestStatus.ERROR, errorMessage: e?.message })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  if (isLoading) return <BlurredLoader isLoading={true} />
 
   return (
     <>
@@ -96,17 +72,12 @@ export const RequestCanisterCall = ({
         <span className="text-gray-500 mt-2.5">{args}</span>
       </div>
       <div className="space-y-2.5 flex flex-col mb-14 mt-6">
-        <Button type="primary" onClick={handleExecuteCall}>
+        <Button type="primary" onClick={onConfirm}>
           Approve
         </Button>
         <Button
           type="stroke"
-          onClick={() =>
-            onConfirmIC({
-              status: RequestStatus.REJECTED,
-              errorMessage: "Rejected by user",
-            })
-          }
+          onClick={onReject}
         >
           Reject
         </Button>

@@ -31,10 +31,15 @@ export const RequestCanisterCall = ({
 }: IRequestTransferProps) => {
   console.log({ appMeta })
   const [isLoading, setIsLoading] = useState(false)
+
+  // prefetching identity
   const { data: identity } = useSWR("globalIdentity", () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
   )
 
+  // TODO: call approve
+  // Refactored into:
+  // https://github.com/internet-identity-labs/nfid-frontend/blob/6c6df5336b8a41f599b2d540db32f612d2254190/apps/nfid-frontend/src/features/embed/services/execute-procedure.ts#L146-L162
   const handleExecuteCall = async () => {
     setIsLoading(true)
     try {

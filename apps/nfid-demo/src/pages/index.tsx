@@ -1,13 +1,13 @@
 import React, { useEffect } from "react"
 import { Route } from "wouter"
 
-import { Authentication } from "./new/authentication"
+import { Authentication } from "./new/examples/authentication"
+import { RequestCanisterCall } from "./new/examples/request-canister-call"
+import { RequestFungibleTransfer } from "./new/examples/request-transfer/request-fungible"
+import { RequestNonFungibleTransfer } from "./new/examples/request-transfer/request-non-fungible"
+import { UpdateDelegation } from "./new/examples/updated-delegation"
 import UserNavigation from "./new/header/user-navigation"
-import { RequestCanisterCall } from "./new/request-canister-call"
-import { RequestFungibleTransfer } from "./new/request-transfer/request-fungible"
-import { RequestNonFungibleTransfer } from "./new/request-transfer/request-non-fungible"
 import SideNav, { Section } from "./new/sidebar"
-import { UpdateDelegation } from "./new/updated-delegation"
 
 export const RoutePathHome = "/"
 
@@ -16,11 +16,11 @@ const sections: Section[] = [
   { id: "updateDelegation", name: "2. Update delegation" },
   {
     id: "requestICPTransfer",
-    name: "3. Request ICP transfer",
+    name: "3. Request Fungible Token transfer",
   },
   {
     id: "requestEXTTransfer",
-    name: "4. Request EXT transfer",
+    name: "4. Request NFT transfer",
   },
   { id: "requestCanisterCall", name: "5. Request canister call" },
 ]

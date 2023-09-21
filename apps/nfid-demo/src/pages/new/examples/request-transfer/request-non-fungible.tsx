@@ -6,9 +6,31 @@ import useSWRImmutable from "swr/immutable"
 
 import { Button, DropdownSelect, Input } from "@nfid-frontend/ui"
 
-import { SectionTemplate } from "../section"
+import { ExampleMethod } from "../../method"
+import { SectionTemplate } from "../../section"
 
 const API = "https://us-central1-entrepot-api.cloudfunctions.net/api"
+const CODE_SNIPPET = `const { data: nfid } = useSWRImmutable("nfid", () =>
+  NFID.init({ origin: NFID_PROVIDER_URL }),
+)
+  
+const onRequestTransfer = useCallback(
+  async (values: any) => {
+    if (!nfid) return alert("NFID is not initialized")
+    if (!values.receiver.length) return alert("Receiver should not be empty")
+    if (!selectedNFTIds.length) return alert("Please select an NFT")
+
+    const res = await nfid
+        .requestTransferNFT({
+          receiver: values.receiver,
+          tokenId: selectedNFTIds[0],
+        })
+        .catch((e: Error) => ({ error: e.message }))
+       
+     setResponse(res)
+  },
+  [nfid, receiver, refetchBalance],
+)`
 
 export const RequestNonFungibleTransfer = () => {
   const { nfid, identity, config } = useAuthenticationContext()
@@ -57,32 +79,17 @@ export const RequestNonFungibleTransfer = () => {
   return (
     <SectionTemplate
       id="requestEXTTransfer"
-      title={"4. Request EXT transfer"}
+      title={"4. Request NFT transfer"}
       method="nfid.requestTransferNFT()"
       subtitle={
-        "To use global delegations, you need provide at least one target canisterID"
+        <>
+          If a user is authenticated with their main wallet address, an
+          <ExampleMethod>requestTransferNFT</ExampleMethod> method is exposed to
+          request approval to transfer an EXT NFT from the user to a designated
+          address.
+        </>
       }
-      codeSnippet={`const { data: nfid } = useSWRImmutable("nfid", () =>
-  NFID.init({ origin: NFID_PROVIDER_URL }),
-)
-  
-const onRequestTransfer = useCallback(
-  async (values: any) => {
-    if (!nfid) return alert("NFID is not initialized")
-    if (!values.receiver.length) return alert("Receiver should not be empty")
-    if (!selectedNFTIds.length) return alert("Please select an NFT")
-
-    const res = await nfid
-        .requestTransferNFT({
-          receiver: values.receiver,
-          tokenId: selectedNFTIds[0],
-        })
-        .catch((e: Error) => ({ error: e.message }))
-       
-     setResponse(res)
-  },
-  [nfid, receiver, refetchBalance],
-)`}
+      codeSnippet={CODE_SNIPPET}
       jsonResponse={response}
       example={
         <div className="space-y-4">

@@ -8,7 +8,7 @@ import { Copy, ToggleButton } from "@nfid-frontend/ui"
 
 type SectionTemplateProps = {
   title: string
-  subtitle: string
+  subtitle: string | JSX.Element
   example: JSX.Element
   method?: string
   codeSnippet: string
@@ -41,21 +41,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
       {/* Left Side */}
       <div className="">
         <div className="flex justify-between">
-          <h2 className="flex items-center text-xl font-semibold">
-            {title}{" "}
-            {method ? (
-              <span
-                className={clsx(
-                  "px-2 py-1 ml-1 font-mono text-xs text-white bg-gray-800 rounded-lg",
-                  "opacity-50 group-hover:opacity-100 transition-opacity",
-                )}
-              >
-                {method}
-              </span>
-            ) : (
-              ""
-            )}
-          </h2>
+          <h2 className="flex items-center text-xl font-semibold">{title}</h2>
           <div className="w-20">
             <ToggleButton
               firstValue={<FaChrome className="w-5" />}
@@ -70,7 +56,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
         {isLiveExample ? (
           <div className="mt-5">{example}</div>
         ) : (
-          <div className="relative mt-4 w-[40vw]">
+          <div className="relative flex-1 mt-4">
             <SyntaxHighlighter
               language="javascript"
               style={oneDark}

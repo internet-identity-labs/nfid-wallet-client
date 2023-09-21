@@ -29,9 +29,6 @@ export const RequestCanisterCall = ({
 }: IRequestTransferProps) => {
   console.log({ appMeta })
 
-  // prefetching identity
-
-  // prefetching identity
   const { data: identity } = useSWR("globalIdentity", () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
   )

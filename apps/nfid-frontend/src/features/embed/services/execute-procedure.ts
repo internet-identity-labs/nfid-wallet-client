@@ -11,7 +11,6 @@ import {
 } from "@nfid/integration"
 
 import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
-import { ICanisterCallResponse } from "frontend/features/sdk/request-canister-call/types"
 import { IRequestTransferResponse } from "frontend/features/sdk/request-transfer/types"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
@@ -37,7 +36,6 @@ type ExecuteProcedureEvent =
       data?: ApproveIcGetDelegationSdkResponse
     }
   | { type: "APPROVE_IC_REQUEST_TRANSFER"; data?: IRequestTransferResponse }
-  | { type: "APPROVE_IC_CANISTER_CALL"; data?: ICanisterCallResponse }
   | { type: "" }
 
 type ExecuteProcedureServiceContext = CommonContext

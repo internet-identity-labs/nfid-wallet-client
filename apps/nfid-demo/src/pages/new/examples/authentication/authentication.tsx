@@ -2,8 +2,8 @@ import React from "react"
 
 import { Button } from "@nfid-frontend/ui"
 
-import { useAuthentication } from "../hooks/useAuthentication"
-import { TargetCanisterForm } from "../pages/new/authentication/target-canister-from"
+import { useAuthentication } from "../../../../hooks/useAuthentication"
+import { TargetCanisterForm } from "./target-canister-from"
 
 export const AuthenticationForm = () => {
   const {

@@ -9,11 +9,11 @@ import {
   SidebarWrapper,
 } from "@nfid-frontend/ui"
 
-import { AuthenticationForm } from "../components/authentication"
 import { RoutePathAuthentication } from "./authentication"
 import { RoutePathAuthenticationGetDelegation } from "./authentication-get-delegation"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
+import { AuthenticationForm } from "./new/examples/authentication/authentication"
 import { RoutePath as RoutePathRequestTransfer } from "./request-transfer"
 
 interface PageTemplateProps {

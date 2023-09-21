@@ -1,6 +1,4 @@
-import { Identity } from "@dfinity/agent"
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
-import { useAuthentication } from "apps/nfid-demo/src/hooks/useAuthentication"
 import React from "react"
 import { ImWarning } from "react-icons/im"
 
@@ -11,17 +9,13 @@ import { SectionTemplate } from "../section"
 
 const CODE_SNIPPET = `
 const nfid = await NFID.init({ origin: NFID_PROVIDER_URL })
-nfid.updateGlobalDelegation()
+const identity = await nfid.updateGlobalDelegation()
 `
 
-export const UpdateDelegation = () => {
-  const { nfid } = useAuthenticationContext()
-  const { targetCanisterIds } = useAuthentication()
+const Example = () => {
+  const { nfid, setIdentity } = useAuthenticationContext()
 
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [response, setResponse] = React.useState<Identity | undefined>()
-
-  console.debug("UpdateDelegation", { targetCanisterIds })
 
   const handleUpdateGlobalDelegation = React.useCallback(
     async (targets: string[]) => {
@@ -30,33 +24,34 @@ export const UpdateDelegation = () => {
       const response = await nfid.updateGlobalDelegation({
         targets,
       })
-      setResponse(response)
+      // @ts-ignore
+      setIdentity(response)
       setLoading(false)
     },
-    [nfid],
+    [nfid, setIdentity],
   )
 
-  const Example = () => {
-    if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
-      return nfid.isAuthenticated ? (
-        <div className="flex gap-2 p-2 font-medium text-white bg-red-500 rounded">
-          <ImWarning />
-          <div className="text-sm ">
-            You cannot update anonymous delegations
-          </div>
-        </div>
-      ) : null
-    }
-
-    return (
-      <TargetCanisterForm
-        submitButtonText="Update delegation"
-        submitButtonId="buttonUpdateDelegation"
-        isLoading={loading}
-        onSubmit={handleUpdateGlobalDelegation}
-      />
-    )
+  if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
+    return nfid.isAuthenticated ? (
+      <div className="flex gap-2 p-2 font-medium text-white bg-red-500 rounded">
+        <ImWarning />
+        <div className="text-sm ">You cannot update anonymous delegations</div>
+      </div>
+    ) : null
   }
+
+  return (
+    <TargetCanisterForm
+      submitButtonText="Update delegation"
+      submitButtonId="buttonUpdateDelegation"
+      isLoading={loading}
+      onSubmit={handleUpdateGlobalDelegation}
+    />
+  )
+}
+
+export const UpdateDelegation = () => {
+  const { identity } = useAuthenticationContext()
   return (
     <SectionTemplate
       id="updateDelegation"
@@ -66,7 +61,7 @@ export const UpdateDelegation = () => {
         "To use global delegations, you need provide at least one target canisterID"
       }
       codeSnippet={CODE_SNIPPET}
-      jsonResponse={response ? JSON.stringify(response, null, 2) : "{}"}
+      jsonResponse={identity ? JSON.stringify(identity, null, 2) : "{}"}
       example={<Example />}
     />
   )

@@ -79,20 +79,20 @@ export const applicationAccountDetailsNormalized = [
       "wzkxy-vyaaa-aaaaj-qab3q-cai.raw.ic0.app",
       "xyzxy-vyaaa-aaaaj-qab3q-cai.raw.ic0.app",
     ],
-    icon: undefined,
+    logo: undefined,
   },
   {
     applicationName: DUPLICATE_APPLICATION_NAME,
     accountsCount: 1,
     derivationOrigin: "http://my-sweet-application.com",
     aliasDomains: ["my-sweet-application.com"],
-    icon: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
+    logo: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
   },
   {
     applicationName: DUPLICATE_APPLICATION_NAME,
     accountsCount: 1,
     derivationOrigin: "http://localhost:3000",
     aliasDomains: ["localhost:3000"],
-    icon: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
+    logo: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
   },
 ]

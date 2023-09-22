@@ -12,6 +12,14 @@ export const useAuthentication = () => {
     label: "Authenticate",
   })
 
+  const derivationOrigin = React.useMemo(() => {
+    const origin = window.location.origin
+    const isDerivationOrigin = origin.includes(".raw")
+    return isDerivationOrigin
+      ? window.location.origin.replace(".raw", "")
+      : undefined
+  }, [])
+
   React.useEffect(() => {
     if (nfid?.isAuthenticated) {
       const identity = nfid.getIdentity()
@@ -28,9 +36,10 @@ export const useAuthentication = () => {
       console.debug("handleAuthenticate", { targets })
       updateAuthButton({ loading: true, label: "Authenticating..." })
       try {
-        const identity = await nfid.getDelegation(
-          targets.length ? { targets } : undefined,
-        )
+        const identity = await nfid.getDelegation({
+          ...(targets.length ? { targets } : {}),
+          ...(derivationOrigin ? { derivationOrigin } : {}),
+        })
         setIdentity(identity as unknown as DelegationIdentity)
         updateAuthButton({ loading: false, label: "Logout" })
         return identity
@@ -41,7 +50,7 @@ export const useAuthentication = () => {
         return
       }
     },
-    [nfid, setIdentity, updateAuthButton],
+    [derivationOrigin, nfid, setIdentity, updateAuthButton],
   )
 
   return {

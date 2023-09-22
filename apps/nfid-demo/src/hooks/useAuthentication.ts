@@ -24,7 +24,7 @@ export const useAuthentication = () => {
       ? CANISTER_IDS["nfid-demo"].ic
       : undefined
 
-    return `https://${derivationCanisterId}.ic0.app`
+    return derivationCanisterId && `https://${derivationCanisterId}.ic0.app`
   }, [])
 
   React.useEffect(() => {

@@ -49,7 +49,7 @@ export async function executeCanisterCall(
     return await response.json()
   })
 
-  if (!response.result) {
+  if (response.error) {
     throw new Error(
       `Unable to execute method ${calledMethodName}: ` + response.error,
     )

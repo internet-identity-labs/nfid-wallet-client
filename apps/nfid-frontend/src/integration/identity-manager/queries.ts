@@ -1,9 +1,6 @@
-import React from "react"
 import useSWR from "swr"
 
 import { Application } from "@nfid/integration"
-
-import { mapApplicationAccounts } from "frontend/apps/identity-manager/profile/applications/utils"
 
 import { fetchAccounts, fetchApplications, fetchProfile } from "."
 
@@ -52,22 +49,5 @@ export function useApplicationsMeta(
     isLoading: !data && !error,
     refreshApplicationMeta,
     applicationsMeta: data,
-  }
-}
-
-export const useApplicationAccounts = () => {
-  const { isLoading: isLoadingAppMeta, applicationsMeta } =
-    useApplicationsMeta()
-  const { isLoading: isLoadingProfile, profile } = useProfile()
-
-  const applicationAccounts = React.useMemo(
-    () =>
-      mapApplicationAccounts(profile?.accounts || [], applicationsMeta || []),
-    [profile?.accounts, applicationsMeta],
-  )
-
-  return {
-    isLoading: isLoadingAppMeta || isLoadingProfile,
-    applicationAccounts,
   }
 }

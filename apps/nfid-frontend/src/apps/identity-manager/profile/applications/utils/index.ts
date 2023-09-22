@@ -36,7 +36,7 @@ export const mapApplicationAccounts = (
         ...account,
         applicationName: applicationMeta?.name || applicationDomain,
         alias: applicationMeta?.alias,
-        icon: applicationMeta?.icon,
+        icon: applicationMeta?.logo,
       },
     ]
 

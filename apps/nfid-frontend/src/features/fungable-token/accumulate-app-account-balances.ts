@@ -45,7 +45,7 @@ function mapApplicationBalance({
   isExplicitlyIncluded,
 }: MapApplicationBalanceArgs): AppBalance {
   return {
-    icon: applicationMatch?.icon,
+    icon: applicationMatch?.logo,
     appName: appName,
     tokenBalance: currentAppTotalBalance,
     accounts: [

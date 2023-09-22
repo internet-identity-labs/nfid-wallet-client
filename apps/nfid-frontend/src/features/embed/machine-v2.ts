@@ -11,7 +11,6 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import AuthenticationMachine from "../authentication/root/root-machine"
-import { ICanisterCallResponse } from "../sdk/request-canister-call/types"
 import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
@@ -250,10 +249,7 @@ export const NFIDEmbedMachineV2 = createMachine(
     actions: {
       assignAppMeta: assign((context, event) => ({
         appMeta: {
-          logo: event.data?.icon
-            ? window.location.origin +
-              new URL(event?.data?.icon ?? "")?.pathname
-            : undefined,
+          logo: event.data?.logo,
           name: event?.data?.name,
           url: new URL(event?.data?.domain).host,
         },

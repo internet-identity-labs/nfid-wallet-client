@@ -4,6 +4,8 @@ import React from "react"
 import { useAuthenticationContext } from "../context/authentication"
 import { useButtonState } from "./useButtonState"
 
+declare const CANISTER_IDS: { [key: string]: { [key: string]: string } }
+
 export const useAuthentication = () => {
   const { nfid, identity, setIdentity } = useAuthenticationContext()
   const [error, setError] = React.useState<string>()
@@ -14,10 +16,15 @@ export const useAuthentication = () => {
 
   const derivationOrigin = React.useMemo(() => {
     const origin = window.location.origin
-    const isDerivationOrigin = origin.includes(".raw")
-    return isDerivationOrigin
-      ? window.location.origin.replace(".raw", "")
+    const isDevDerivationOrigin = origin.includes("-dev.nfid.one")
+    const isProdDerivationOrigin = origin.includes(".nfid.one")
+    const derivationOrigin = isDevDerivationOrigin
+      ? CANISTER_IDS["nfid-demo"].dev
+      : isProdDerivationOrigin
+      ? CANISTER_IDS["nfid-demo"].ic
       : undefined
+
+    return derivationOrigin
   }, [])
 
   React.useEffect(() => {

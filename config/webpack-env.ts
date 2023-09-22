@@ -1,5 +1,7 @@
 import * as childProcess from "child_process"
 
+import canisterIds from "../canister_ids.json"
+
 const sentryRelease = childProcess
   .execSync("git rev-parse HEAD")
   .toString()
@@ -7,6 +9,7 @@ const sentryRelease = childProcess
   .slice(0, 12)
 
 export const serviceConfig = {
+  CANISTER_IDS: JSON.stringify(canisterIds),
   SENTRY_RELEASE: JSON.stringify(sentryRelease),
   NFID_PROVIDER_URL: JSON.stringify(process.env.NFID_PROVIDER_URL),
   IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),

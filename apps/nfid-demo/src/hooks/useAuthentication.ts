@@ -18,13 +18,13 @@ export const useAuthentication = () => {
     const origin = window.location.origin
     const isDevDerivationOrigin = origin.includes("-dev.nfid.one")
     const isProdDerivationOrigin = origin.includes(".nfid.one")
-    const derivationOrigin = isDevDerivationOrigin
+    const derivationCanisterId = isDevDerivationOrigin
       ? CANISTER_IDS["nfid-demo"].dev
       : isProdDerivationOrigin
       ? CANISTER_IDS["nfid-demo"].ic
       : undefined
 
-    return derivationOrigin
+    return `https://${derivationCanisterId}.ic0.app`
   }, [])
 
   React.useEffect(() => {

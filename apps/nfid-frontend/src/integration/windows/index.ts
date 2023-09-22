@@ -68,10 +68,14 @@ export function awaitClientMessage<T>(
  */
 export function getAppMetaFromQuery(): AuthorizingAppMeta {
   const params = new URLSearchParams(window.location.search)
-  return {
-    name: params.get("applicationName") || undefined,
-    logo: params.get("applicationLogo") || undefined,
+  const name = params.get("applicationName")
+  const logo = params.get("applicationLogo")
+  const applicationMetaFromQuery = {
+    ...(name ? { name } : {}),
+    ...(logo ? { logo } : {}),
   }
+  console.debug("getAppMetaFromQuery", { applicationMetaFromQuery })
+  return applicationMetaFromQuery
 }
 
 export const isIdentityClientAuthEvent = (

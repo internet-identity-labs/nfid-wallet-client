@@ -35,7 +35,13 @@ export const AuthenticationProvider: React.FC<{
 }> = ({ children }: any) => {
   const [identity, setIdentity] = React.useState<DelegationIdentity>()
   const { data: nfid } = useSWRImmutable("nfid", () =>
-    NFID.init({ origin: NFID_PROVIDER_URL }),
+    NFID.init({
+      origin: NFID_PROVIDER_URL,
+      application: {
+        name: "NFID Demo",
+        logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
+      },
+    }),
   )
 
   const config = useMemo(() => {

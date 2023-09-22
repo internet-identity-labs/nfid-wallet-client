@@ -11,6 +11,6 @@ export function applicationToAccount(application: Application): Account {
     label: "",
     accountId: "0",
     alias: application.alias,
-    icon: application.icon,
+    icon: application.logo,
   }
 }

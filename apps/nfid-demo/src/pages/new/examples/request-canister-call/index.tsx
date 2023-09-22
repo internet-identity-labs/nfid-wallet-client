@@ -107,9 +107,9 @@ export const RequestCanisterCall = () => {
               {...register("method", { required: "This field is required" })}
             />
             <Input
-              labelText="Parameters"
+              labelText="Parameters (optional)"
               errorText={errors.parameters?.message}
-              placeholder=""
+              placeholder="[10000]"
               {...register("parameters")}
             />
 

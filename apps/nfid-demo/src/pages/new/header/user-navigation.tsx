@@ -6,6 +6,7 @@ import {
   CenterEllipsis,
   Copy,
   IconCmpInfo,
+  NFIDLogo,
   Popover,
 } from "@nfid-frontend/ui"
 
@@ -13,7 +14,10 @@ const UserNavigation = () => {
   const context = useAuthenticationContext()
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex justify-between flex-1">
+      <div className="flex items-center text-xl font-bold">
+        <NFIDLogo />
+      </div>
       <Popover
         align="end"
         trigger={

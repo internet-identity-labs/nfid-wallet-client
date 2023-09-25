@@ -80,7 +80,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
       </div>
 
       {/* Right Side */}
-      <div className="relative flex flex-col p-4 bg-[rgb(40,44,52)] rounded-[10px] flex-1 md:w-[30vh]">
+      <div className="relative flex flex-col p-4 bg-[rgb(40,44,52)] rounded-[10px] flex-1 md:w-[30vw]">
         <h4 className="text-lg text-white">Response</h4>
         <SyntaxHighlighter
           language="javascript"

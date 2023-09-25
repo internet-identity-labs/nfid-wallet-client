@@ -102,7 +102,7 @@ export default function NFIDEmbedCoordinator() {
     <ModalComponent
       onClose={() => send({ type: "CANCEL" })}
       isVisible
-      className="w-[450px] h-auto"
+      className="w-full sm:w-[450px] h-auto"
     >
       <ScreenResponsive className="min-h-full">{Component}</ScreenResponsive>
     </ModalComponent>

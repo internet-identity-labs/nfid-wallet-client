@@ -2,7 +2,7 @@ export interface Application {
   accountLimit: number
   domain: string
   name: string
-  icon?: string
+  logo?: string
   alias: string[]
   isNftStorage: boolean
   isIFrameAllowed: boolean

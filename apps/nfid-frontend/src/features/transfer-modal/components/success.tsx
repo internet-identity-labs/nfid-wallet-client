@@ -9,12 +9,14 @@ import { Success } from "../ui/success"
 export interface ITransferSuccess {
   onClose?: () => void
   initialPromise: Promise<ITransferResponse>
-  callback?: () => void
+  callback?: (res?: ITransferResponse) => void
+  errorCallback?: (res?: ITransferResponse) => void
   title: string
   subTitle: string
   assetImg: string
   isAssetPadding?: boolean
   duration?: string
+  withToasts?: boolean
 }
 
 export const TransferSuccess: React.FC<ITransferSuccess> = ({
@@ -25,7 +27,9 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
   assetImg,
   isAssetPadding,
   callback,
+  errorCallback,
   duration = "10 min",
+  withToasts = true,
 }) => {
   const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3 | 4>(0)
 
@@ -35,9 +39,11 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
     {
       onSuccess: async (data) => {
         if ("errorMessage" in data) {
-          toast.error(data.errorMessage?.message ?? "Unknown error", {
-            toastId: "failedTransfer",
-          })
+          withToasts &&
+            toast.error(data.errorMessage?.message ?? "Unknown error", {
+              toastId: "failedTransfer",
+            })
+          errorCallback && errorCallback(data)
           return setCurrentState(4)
         }
         setCurrentState(1)
@@ -48,15 +54,19 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
             setCurrentState(2)
             await data.verifyPromise
             setCurrentState(3)
+            await new Promise((resolve) =>
+              setTimeout(() => resolve(true), 2000),
+            )
           }
-          toast.success(`Transaction ${title} successful`, {
-            toastId: "successTransfer",
-          })
-          callback && callback()
+          withToasts &&
+            toast.success(`Transaction ${title} successful`, {
+              toastId: "successTransfer",
+            })
+          callback && callback(data)
         }, 5000)
       },
-      onError: () => {
-        toast.error("Something went wrong")
+      onError: async () => {
+        withToasts && toast.error("Something went wrong")
         setCurrentState(4)
       },
       revalidateOnFocus: false,

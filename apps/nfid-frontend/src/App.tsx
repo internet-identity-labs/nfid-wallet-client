@@ -15,13 +15,6 @@ import { NotFound } from "./ui/pages/404"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 
-const RequestTransferCoordinator = React.lazy(
-  () => import("./coordination/wallet/request-transfer"),
-)
-const RequestAccountsCoordinator = React.lazy(
-  () => import("./coordination/wallet/request-accounts"),
-)
-
 const NFIDEmbedCoordinator = React.lazy(
   () => import("./features/embed/coordinator"),
 )
@@ -51,16 +44,6 @@ export const App = () => {
         <Route path={"/"} element={<HomeScreen />} />
 
         <Route
-          path="/wallet/request-transfer"
-          element={<RequestTransferCoordinator />}
-        />
-
-        <Route
-          path="/wallet/request-accounts"
-          element={<RequestAccountsCoordinator />}
-        />
-
-        <Route
           path="/authenticate"
           element={
             <ScreenResponsive className="flex flex-col items-center">
@@ -80,14 +63,7 @@ export const App = () => {
           }
         />
 
-        <Route
-          path={ROUTE_EMBED}
-          element={
-            <ScreenResponsive className="overflow-auto">
-              <NFIDEmbedCoordinator />
-            </ScreenResponsive>
-          }
-        />
+        <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
 
         {ProfileRoutes}
         {RecoverNFIDRoutes}

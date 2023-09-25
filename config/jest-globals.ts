@@ -17,10 +17,10 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
-  AWS_AUTH_STATS:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/auth/",
   AWS_SIGNATURE_EVENT:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signature/",
+  AWS_EXCHANGE_RATE:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/exchange-rate/",
   IC_HOST: "https://ic0.app",
   II_ENV: "dev",
   IS_DEV: "",
@@ -48,6 +48,8 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register_address",
   AWS_ECDSA_GET_ANONYMOUS:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_get_anonymous",
+  AWS_EXECUTE_CANDID:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/execute_candid",
   AWS_ECDSA_SIGN:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
   AWS_PASSKEY:
@@ -64,5 +66,5 @@ export const JEST_GLOBALS = {
   AWS_SIGNIN_GOOGLE_V2:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_FETCH_ALTERNATIVE_ORIGINS:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins"
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins",
 }

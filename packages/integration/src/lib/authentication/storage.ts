@@ -1,4 +1,6 @@
-import { IdbKeyVal } from "./db"
+import { localStorageWithFallback } from "@nfid/client-db"
+
+import { IdbKeyVal, KeyValueStore, MemoryKeyVal } from "./db"
 
 export const KEY_STORAGE_KEY = "identity"
 export const KEY_STORAGE_DELEGATION = "delegation"
@@ -49,14 +51,19 @@ export class LocalStorage implements AuthClientStorage {
       return this._localStorage
     }
 
-    const ls =
-      typeof window === "undefined"
-        ? typeof global === "undefined"
-          ? typeof self === "undefined"
-            ? undefined
-            : self.localStorage
-          : global.localStorage
-        : window.localStorage
+    let ls
+    try {
+      ls =
+        typeof window === "undefined"
+          ? typeof global === "undefined"
+            ? typeof self === "undefined"
+              ? undefined
+              : self.localStorage
+            : global.localStorage
+          : localStorageWithFallback
+    } catch (error) {
+      console.error("LocalStorage", { error })
+    }
 
     if (!ls) {
       throw new Error("Could not find local storage.")
@@ -75,17 +82,27 @@ export class LocalStorage implements AuthClientStorage {
 export class IdbStorage implements AuthClientStorage {
   // Initializes a KeyVal on first request
   private initializedDb: IdbKeyVal | undefined
-  get _db(): Promise<IdbKeyVal> {
-    return new Promise((resolve) => {
+
+  get _db(): Promise<KeyValueStore> {
+    const db = new Promise<KeyValueStore>((resolve) => {
       if (this.initializedDb) {
+        this.initializedDb.set("test", "test")
+        this.initializedDb.get("test")
         resolve(this.initializedDb)
         return
       }
-      IdbKeyVal.create({ version: DB_VERSION }).then((db) => {
-        this.initializedDb = db
-        resolve(db)
-      })
+      IdbKeyVal.create({ version: DB_VERSION })
+        .then((db) => {
+          this.initializedDb = db
+          this.initializedDb.set("test", "test")
+          this.initializedDb.get("test")
+          resolve(db)
+        })
+        .catch(() => {
+          return resolve(MemoryKeyVal.create())
+        })
     })
+    return db
   }
 
   public async get(key: string): Promise<string | null> {

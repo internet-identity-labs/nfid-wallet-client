@@ -110,4 +110,5 @@ export interface ITransferResponse {
   verifyPromise?: Promise<void>
   errorMessage?: Error
   url?: string
+  hash?: string
 }

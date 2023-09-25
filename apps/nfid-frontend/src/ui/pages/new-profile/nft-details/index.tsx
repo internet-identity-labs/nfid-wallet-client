@@ -122,7 +122,7 @@ export const ProfileNFTDetailsPage = ({
                     : nft.walletName?.split(" ").join("") ??
                       getWalletName(
                         applications,
-                        nft.principal.toString(),
+                        nft?.principal?.toString() ?? "",
                         nft.account.accountId,
                       )
                         .split(" ")
@@ -134,7 +134,7 @@ export const ProfileNFTDetailsPage = ({
                   : nft?.walletName ??
                     getWalletName(
                       applications,
-                      nft.principal.toString(),
+                      nft?.principal?.toString() ?? "",
                       nft.account.accountId,
                     )}
               </p>

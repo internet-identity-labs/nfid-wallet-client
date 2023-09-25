@@ -25,6 +25,7 @@ export * from "./atoms/skeleton"
 export * from "./atoms/sdk-footer/footer"
 export * from "./atoms/info-list-item"
 export * from "./atoms/toggle"
+export * from "./atoms/center-ellipsis"
 
 export * from "./molecules/button"
 export * from "./molecules/button/arrow-button"
@@ -46,6 +47,7 @@ export * from "./molecules/choose-modal/types"
 export * from "./molecules/accordion/index_v2"
 export * from "./molecules/warning-accordion"
 export * from "./molecules/lottie-animation"
+export * from "./molecules/toggle-button"
 
 export * from "./organisms/tabs-switcher"
 

@@ -203,6 +203,14 @@ export class HomePage extends Page {
     await this.recoverNFID.waitForClickable({ timeout: 6000 })
     await this.recoverNFID.click()
   }
+
+  public override async loginUsingIframe() {
+    await this.openAuthModal()
+    await this.authenticateWithGoogle()
+    await this.switchToWindow("last")
+    await this.pickGoogleAccount()
+    await this.switchToWindow()
+  }
 }
 
 export default new HomePage()

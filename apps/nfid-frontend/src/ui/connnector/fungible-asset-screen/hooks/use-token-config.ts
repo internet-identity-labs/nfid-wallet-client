@@ -1,24 +1,33 @@
+import { useState } from "react"
 import { fungibleAssetFactory } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
 import useSWR from "swr"
 
-import { AssetFilter } from "../../types"
+import { TokenConfig } from "../../types"
+import { mergeSingleTokenConfig } from "../util/util"
 
 type UseTokenConfig = {
-  assetFilters: AssetFilter[]
   tokens: string[]
 }
 
-export const useTokenConfig = ({ assetFilters, tokens }: UseTokenConfig) => {
-  const { data: configs, ...rest } = useSWR(
-    [tokens, assetFilters, "tokenConfig"],
-    ([tokens, assetFilters]) =>
+export const useTokenConfig = ({ tokens }: UseTokenConfig) => {
+  const [configs, setConfigs] = useState<TokenConfig[]>([])
+  const { data, ...rest } = useSWR(
+    ["useTokenConfig", tokens],
+    ([key, tokens]) =>
       Promise.all(
         tokens.map(async (token) => {
           try {
-            return await fungibleAssetFactory.getTokenConfigs(
-              token,
-              assetFilters,
-            )
+            const res = await fungibleAssetFactory.getTokenConfigs(token)
+
+            if (res && res.length) {
+              res.map((r) =>
+                setConfigs((prevConfigs) =>
+                  mergeSingleTokenConfig(prevConfigs, r),
+                ),
+              )
+            }
+
+            return res
           } catch (e) {
             // FIXME: handle case when request fails
             console.error("useTokenConfig", e)
@@ -28,5 +37,5 @@ export const useTokenConfig = ({ assetFilters, tokens }: UseTokenConfig) => {
       ),
   )
 
-  return { configs: configs?.flat() || [], ...rest }
+  return { configs, ...rest }
 }

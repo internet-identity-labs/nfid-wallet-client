@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -110,10 +110,10 @@ jobs:
 
     steps:
       - name: Checkout repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -262,10 +262,10 @@ jobs:
 
     steps:
       - name: Checkout repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -336,7 +336,7 @@ jobs:
           echo "TEST_ADD_PARAMS="${TEST_ADD_PARAMS}"" >> $GITHUB_ENV
 
       - name: Checkout Google user E2E
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: internet-identity-labs/user-google-e2e
           path: apps/nfid-frontend-e2e/chrome-user-data-dir
@@ -346,8 +346,10 @@ jobs:
       - name: Cache Node Modules.
         uses: actions/cache@v3
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-yarn-e2e
+          path: |
+            **/node_modules
+            **/.eslintcache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run tests
         run: |
@@ -451,7 +453,7 @@ jobs:
       TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
     steps:
       - name: Get Allure history
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         continue-on-error: true
         with:
           ref: gh-pages

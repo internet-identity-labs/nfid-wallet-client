@@ -1,7 +1,9 @@
 import { Given } from "@cucumber/cucumber"
+import {ProfileType} from "../pages/types.js"
 
+import DemoTransactions from "../pages/demo-transactions.js"
 import HomePage from "../pages/home-page.js"
-import homePage from "../pages/home-page.js"
+import DemoAppPage from "../pages/demoApp-page.js"
 import clearAuthState from "./support/action/clear-auth-state.js"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab.js"
 import openWebsite from "./support/action/openWebsite.js"
@@ -27,6 +29,12 @@ import compareText from "./support/check/compareText.js"
 import isDisplayed from "./support/check/isDisplayed.js"
 import isEnabled from "./support/check/isEnabled.js"
 
+//TODO Move to Page.ts
+const pages = {
+  "DemoTransactions": DemoTransactions,
+  "HomePage": HomePage
+}
+
 Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
 
 Given(
@@ -36,12 +44,9 @@ Given(
 
 Given(/^authstate is cleared$/, clearAuthState)
 
-Given(/^User authenticates with google account$/, async () => {
-  await homePage.openAuthModal()
-  await HomePage.authenticateWithGoogle()
-  await HomePage.switchToWindow("last")
-  await HomePage.pickGoogleAccount()
-  await HomePage.switchToWindow()
+Given(/^User authenticates to ?(.*)? with google account( using ?(.*) account)?$/, async (page: string, profile: ProfileType) => {
+  // @ts-ignore
+  await pages[page].loginUsingIframe(profile)
 })
 
 Given(/^User authenticates with enhanced security$/, async function () {
@@ -62,9 +67,17 @@ Given(/^User signs in ?(?:(.*))?$/, async function (mobile: string) {
   else await HomePage.signIn()
 })
 
-Given(/^User opens NFID ?(?:(.*))?$/, async function (site: string) {
+Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
+  if (site != null) {
+    let page = await browser.newWindow(DemoAppPage.demoAppBaseUrl + site, {windowName: site})
+    await browser.switchToWindow(page)
+  } else await browser.url(DemoAppPage.demoAppBaseUrl)
+})
+
+Given(/^User opens NFID ?(.*)?$/, async function (site: string) {
   if (site === "site") await HomePage.openBaseUrl()
   else await HomePage.openPage(site)
+  await clearAuthState()
   await HomePage.waitForLoaderDisappear()
   await HomePage.waitForDataCacheLoading()
 })

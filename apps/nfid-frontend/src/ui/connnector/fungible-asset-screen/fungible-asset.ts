@@ -1,4 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { Cache } from "node-ts-cache"
 import {
   AssetErc20Config,
   AssetFilter,
@@ -7,9 +8,12 @@ import {
   TokenConfig,
 } from "src/ui/connnector/types"
 
+import { NetworkKey, readAddressFromLocalCache } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
 
-import { getICPublicDelegation } from "./ic/hooks/use-icp"
+import { fetchProfile } from "frontend/integration/identity-manager"
+
+import { connectorCache } from "../cache"
 
 export abstract class FungibleAssetConnector<
   T extends AssetNativeConfig | AssetErc20Config,
@@ -22,7 +26,7 @@ export abstract class FungibleAssetConnector<
   }
 
   async getTokenConfigs(
-    assetFilter: AssetFilter[],
+    assetFilter: AssetFilter[] = [],
   ): Promise<Array<TokenConfig>> {
     const identity = await this.getIdentity(
       assetFilter.map((filter) => filter.principal),
@@ -42,16 +46,26 @@ export abstract class FungibleAssetConnector<
     filterPrincipals?: string[],
   ): Promise<DelegationIdentity[]> => {
     const { delegationIdentity } = authState.get()
-    const rootDelegation = (await getICPublicDelegation())
-      .getPrincipal()
-      .toString()
     if (!delegationIdentity) {
       throw Error("Delegation identity error")
     }
-    return !filterPrincipals?.length ||
-      filterPrincipals?.includes(rootDelegation)
-      ? [delegationIdentity]
-      : []
+    return [delegationIdentity]
+  }
+
+  @Cache(connectorCache, { ttl: 3600 })
+  protected async getProfileAnchor() {
+    return BigInt((await fetchProfile()).anchor)
+  }
+
+  protected async getCachedAddress(chain: NetworkKey) {
+    const cachedAddress = readAddressFromLocalCache({
+      accountId: "-1",
+      hostname: "nfid.one",
+      anchor: await this.getProfileAnchor(),
+      network: chain,
+    })
+
+    return cachedAddress
   }
 
   getCacheTtl(): number {

@@ -40,12 +40,7 @@ export const useBalanceICPAll = (
   console.debug("useUserBalances", { icpBalance: balances })
 
   const appAccountBalance = React.useMemo(() => {
-    if (
-      isLoadingICPExchangeRate ||
-      isLoadingBalances ||
-      !exchangeRate ||
-      !balances
-    ) {
+    if (isLoadingBalances || !balances) {
       return
     }
 
@@ -57,7 +52,7 @@ export const useBalanceICPAll = (
             )
           : balances,
         applications,
-        exchangeRate,
+        exchangeRate: exchangeRate ?? 0,
         excludeEmpty,
         includeEmptyApps: ["nfid.one", "https://nns.ic0.app"],
         label: "Internet Computer",
@@ -80,7 +75,7 @@ export const useBalanceICPAll = (
                   : balances,
                 applications,
                 icon: logo,
-                exchangeRate: symbol === "WICP" ? exchangeRate : 0,
+                exchangeRate: symbol === "WICP" ? exchangeRate ?? 0 : 0,
                 excludeEmpty,
                 includeEmptyApps: ["nfid.one", "https://nns.ic0.app"],
                 label: name,
@@ -92,7 +87,6 @@ export const useBalanceICPAll = (
         : {}),
     }
   }, [
-    isLoadingICPExchangeRate,
     isLoadingBalances,
     exchangeRate,
     balances,
@@ -112,7 +106,10 @@ export const useBalanceICPAll = (
   })
 
   return {
-    isLoading: isLoadingBalances || isLoadingICPExchangeRate,
+    isLoading:
+      isLoadingBalances ||
+      !appAccountBalance ||
+      Object.values(appAccountBalance.ICP.applications).length === 0,
     appAccountBalance,
   }
 }

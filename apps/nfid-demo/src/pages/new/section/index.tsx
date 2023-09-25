@@ -34,7 +34,8 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
   return (
     <div
       className={clsx(
-        "grid grid-cols-[3fr,2fr] w-full space-x-6 group min-h-[400px]",
+        "grid grid-cols-1 md:grid-cols-[3fr,2fr] w-full group min-h-[400px]",
+        "gap-6",
       )}
       id={id}
     >
@@ -79,7 +80,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
       </div>
 
       {/* Right Side */}
-      <div className="relative flex flex-col p-4 bg-[rgb(40,44,52)] rounded-[10px] w-[30vw]">
+      <div className="relative flex flex-col p-4 bg-[rgb(40,44,52)] rounded-[10px] flex-1">
         <h4 className="text-lg text-white">Response</h4>
         <SyntaxHighlighter
           language="javascript"

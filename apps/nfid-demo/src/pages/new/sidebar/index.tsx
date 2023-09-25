@@ -14,7 +14,7 @@ export type SideNavProps = {
 
 const SideNav: React.FC<SideNavProps> = ({ sections, activeSection }) => {
   return (
-    <div className="relative h-full p-5 bg-gray-50">
+    <div className="relative hidden h-full p-5 bg-gray-50 md:block">
       <ul className="sticky top-5">
         <li className="flex items-center mb-5 ml-5 text-xl font-bold">
           <NFIDLogo /> Playground

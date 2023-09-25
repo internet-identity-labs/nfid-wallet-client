@@ -66,13 +66,11 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
   })
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
-  const { data, isLoading, isValidating } = useSWR(
-    principals ? [principals, "userTokens"] : null,
-    ([principals]) => principalTokens(principals),
+  const { data, isLoading } = useSWR(
+    principals ? ["userTokens", principals] : null,
+    ([key, principals]) => principalTokens(principals),
     {
-      dedupingInterval: 60_000 * 5,
-      focusThrottleInterval: 60_000 * 5,
-      revalidateIfStale: false,
+      revalidateOnFocus: true,
     },
   )
 
@@ -103,5 +101,5 @@ export const useAllNFTs = (assetFilter?: AssetFilter[]) => {
       )
       .concat(tokens as any)
   }, [data, applicationsMeta, assetFilter, tokens])
-  return { nfts, isLoading: isLoading || isValidating }
+  return { nfts, isLoading: isLoading }
 }

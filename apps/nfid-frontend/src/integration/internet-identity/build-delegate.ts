@@ -2,7 +2,7 @@ export interface BuiltDelegate {
   delegation: {
     pubkey: Uint8Array
     expiration: bigint
-    targets: undefined
+    targets?: string[]
   }
   signature: Uint8Array
 }

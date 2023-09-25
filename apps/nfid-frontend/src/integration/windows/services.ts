@@ -1,7 +1,9 @@
-import { authenticationTracking } from "@nfid/integration"
+import {
+  authenticationTracking,
+  prepareClientDelegate,
+} from "@nfid/integration"
 
 import { AuthenticationContext } from "frontend/features/authentication/root/root-machine"
-import { logAuthorizeApplication } from "frontend/features/stats/services"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
@@ -12,7 +14,6 @@ import {
   getAppMetaFromQuery,
   isIdentityClientAuthEvent,
   postMessageToClient,
-  prepareClientDelegate,
 } from "."
 import { validateDerivationOrigin } from "../internet-identity/validateDerivationOrigin"
 
@@ -66,20 +67,19 @@ export async function postDelegation(context: AuthenticationContext) {
     throw new Error("postDelegation context.authRequest.hostname missing")
   if (!context.thirdPartyAuthSession)
     throw new Error("postDelegation context.thirdPartyAuthSession missing")
+  if (!context.thirdPartyAuthSession.authSession)
+    throw new Error(
+      "postDelegation context.thirdPartyAuthSession.authSession missing",
+    )
   if (!context.appMeta)
     throw new Error("postDelegation context.appMeta missing")
 
   const delegations = [
-    prepareClientDelegate(context.thirdPartyAuthSession.signedDelegation),
+    prepareClientDelegate(
+      context.thirdPartyAuthSession.authSession.signedDelegation,
+    ),
   ]
-  const userPublicKey = context.thirdPartyAuthSession.userPublicKey
-
-  logAuthorizeApplication({
-    scope: context.thirdPartyAuthSession.scope,
-    anchor: context.thirdPartyAuthSession.anchor,
-    applicationName: context.appMeta.name,
-    chain: "Internet Computer",
-  })
+  const userPublicKey = context.thirdPartyAuthSession.authSession.userPublicKey
 
   authenticationTracking.userSendToApp()
 

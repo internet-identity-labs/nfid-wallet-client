@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Helmet } from "react-helmet-async"
-import { BiMobile, BiWallet, BiUser, BiLock } from "react-icons/bi"
+import { BiWallet, BiUser, BiLock } from "react-icons/bi"
 
 import {
   MenuWrapper,
@@ -10,10 +10,10 @@ import {
 } from "@nfid-frontend/ui"
 
 import { RoutePathAuthentication } from "./authentication"
-import { RoutePathAuthenticationIFrame } from "./authentication-iframe"
+import { RoutePathAuthenticationGetDelegation } from "./authentication-get-delegation"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
-import { RoutePathPhoneNumberVerification } from "./phone-number-credential"
+import { AuthenticationForm } from "./new/examples/authentication/authentication"
 import { RoutePath as RoutePathRequestTransfer } from "./request-transfer"
 
 interface PageTemplateProps {
@@ -50,13 +50,10 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
             <NavLink route={RoutePathAuthentication}>
               <SidebarItem icon={<BiLock />} title="Authentication" />
             </NavLink>
-            <NavLink route={RoutePathAuthenticationIFrame}>
-              <SidebarItem icon={<BiLock />} title="Authentication iFrame" />
-            </NavLink>
-            <NavLink route={RoutePathPhoneNumberVerification}>
+            <NavLink route={RoutePathAuthenticationGetDelegation}>
               <SidebarItem
-                icon={<BiMobile />}
-                title="Phone number verification"
+                icon={<BiLock />}
+                title="Authentication getDelegation"
               />
             </NavLink>
             <NavLink route={RoutePathRequestTransfer}>
@@ -67,7 +64,10 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
             </NavLink>
           </SidebarWrapper>
         </div>
-        <div className={clsx("w-full px-5 py-6", className)}>{children}</div>
+        <div className={clsx("w-full px-5 py-6", className)}>
+          <AuthenticationForm />
+          {children}
+        </div>
       </div>
     </div>
   </>

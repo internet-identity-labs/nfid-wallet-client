@@ -1,12 +1,12 @@
-import type { Options } from "@wdio/types"
 import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
 import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
+import { Feature } from "@nfid/config";
 
-export const isHeadless = process.env.IS_HEADLESS
+export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME
 export const hostPath = process.env.HOST_PATH
@@ -373,6 +373,9 @@ export const config: WebdriverIO.Config = {
   // },
   // beforeScenario: function (uri, feature, scenario, sourceLocation) {
   // },
+  beforeFeature(uri: string, feature: Feature) {
+    console.info(`Feature: ${feature.name}`)
+  },
   /**
    *
    * Runs before a Cucumber Scenario.

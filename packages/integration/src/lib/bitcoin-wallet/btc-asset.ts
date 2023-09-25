@@ -6,7 +6,7 @@ import { format } from "date-fns"
 import { E8S } from "@nfid/integration/token/icp"
 
 import { Asset } from "../asset/asset"
-import { getPrice } from "../asset/asset-util"
+import { PriceService } from "../asset/asset-util"
 import {
   Activity,
   ChainBalance,
@@ -71,24 +71,25 @@ export class BtcAsset extends Asset<string> {
   async getRootAccount(
     delegation?: DelegationIdentity,
     logo?: string,
+    address?: string,
   ): Promise<TokenBalanceSheet> {
     if (!delegation) {
       throw Error("Give me delegation. It's cached!")
     }
     const wallet = new BtcWallet(delegation)
-    const address: string = await wallet.getBitcoinAddress()
-    const json: BlockCypherAddressResponse = await bcAddressInfo(address)
+    const validAddress: string = address ?? (await wallet.getBitcoinAddress())
+    const json: BlockCypherAddressResponse = await bcAddressInfo(validAddress)
     const balance = json.final_balance
     let price: TokenPrice[]
     const balanceBN = toBn(balance / E8S)
     try {
-      price = await getPrice(["BTC"])
+      price = await new PriceService().getPrice(["BTC"])
     } catch (e) {
       price = [{ price: "0.0", token: "BTC" }]
     }
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
     const token: Token = {
-      address: address,
+      address: validAddress,
       balance: balanceBN.toString(),
       balanceinUsd: "$" + (balanceinUsd?.toFixed(2) ?? "0.00"),
       logo,

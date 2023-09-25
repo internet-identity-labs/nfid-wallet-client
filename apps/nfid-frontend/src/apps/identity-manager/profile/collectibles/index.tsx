@@ -4,12 +4,12 @@ import { useAllNFTs } from "../assets/hooks"
 import { ProfileCollectibles } from "./profile-collectibles"
 
 const ProfileCollectiblesPage = () => {
-  const { nfts } = useAllNFTs()
+  const { nfts, isLoading } = useAllNFTs()
   const applications = useApplicationsMeta()
 
   return (
     <ProfileCollectibles
-      isLoading={!nfts || applications.isLoading}
+      isLoading={isLoading || !nfts || applications.isLoading}
       tokens={nfts || []}
       applications={applications.applicationsMeta || []}
     />

@@ -1,57 +1,14 @@
 import clsx from "clsx"
-import React, { useEffect, useState } from "react"
-import { useSearchParams } from "react-router-dom"
-
-import { checkIsIframe } from "@nfid-frontend/utils"
-
-import { ScreenStyleParams } from "./config"
+import React from "react"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   frameLabel?: string
-}
-
-export const initialStyleConfig = {
-  frameBgColor: "",
-  frameBorderColor: "",
-  primaryButtonColor: "",
-  secondaryButtonColor: "",
-  mainTextColor: "",
-  secondaryTextColor: "",
-  linkColor: "",
 }
 
 export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   children,
   className,
 }) => {
-  const [styleConfig, setStyleConfig] =
-    useState<ScreenStyleParams>(initialStyleConfig)
-  const [searchParams] = useSearchParams()
-
-  useEffect(() => {
-    setStyleConfig({
-      frameBgColor: searchParams.get("frameBgColor"),
-      frameBorderColor: searchParams.get("frameBorderColor"),
-      primaryButtonColor: searchParams.get("primaryButtonColor"),
-      secondaryButtonColor: searchParams.get("secondaryButtonColor"),
-      mainTextColor: searchParams.get("mainTextColor"),
-      secondaryTextColor: searchParams.get("secondaryTextColor"),
-      linkColor: searchParams.get("linkColor"),
-      buttonBorderColor: searchParams.get("buttonBorderColor"),
-      checkMarkColor: searchParams.get("checkMarkColor"),
-    })
-  }, [searchParams])
-
-  useEffect(() => {
-    if (!checkIsIframe()) return
-    Object.entries(styleConfig).map((entry) => {
-      return document.documentElement.style.setProperty(
-        `--color-${entry[0]}`,
-        entry[1],
-      )
-    })
-  }, [styleConfig])
-
   return (
     <div
       className={clsx(
@@ -60,7 +17,6 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
         "absolute top-1/2 -translate-y-1/2 overflow-hidden",
         "w-[calc(100%-16px)] sm:w-[450px] sm:left-1/2 sm:-translate-x-1/2",
         "bg-frameBgColor border-frameBorderColor",
-        checkIsIframe() && "!w-full !m-0 !h-full",
       )}
     >
       <div

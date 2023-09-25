@@ -2,12 +2,12 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
-import { WALLET_SCOPE, WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
 import {
+  WALLET_SCOPE,
+  WALLET_SESSION_TTL_2_MIN_IN_NS,
   getScope,
-  getLocalStorageOverride,
-  delegationState,
-} from "@nfid/integration"
+} from "@nfid/config"
+import { getLocalStorageOverride, delegationState } from "@nfid/integration"
 
 import { fetchPrincipal } from "frontend/integration/internet-identity"
 

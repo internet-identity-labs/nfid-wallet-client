@@ -1,11 +1,12 @@
 import { Principal } from "@dfinity/principal"
 
+import { getScope } from "@nfid/config"
+
 import { UserNumber } from "../_ic_api/internet_identity.d"
 import { accessList, ii } from "../actors"
 import { authState } from "../authentication"
 import { Account } from "../identity-manager/account"
 import { Chain, getGlobalKeys } from "../lambda/ecdsa"
-import { getScope } from "./get-scope"
 
 export interface PrincipalAccount {
   principal: Principal

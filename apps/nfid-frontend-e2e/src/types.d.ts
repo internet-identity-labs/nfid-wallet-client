@@ -15,7 +15,7 @@ type TestUser = {
   icpAddress: string
   btcAddress: string
   ethAddress: string
-  account: JSON
+  account: { anchor: number }
   credentials: WebAuthnCredential
   authstate: AuthState
 }

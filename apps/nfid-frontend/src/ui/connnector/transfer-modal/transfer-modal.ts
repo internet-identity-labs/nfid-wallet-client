@@ -1,6 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Cache } from "node-ts-cache"
-import { getPrice } from "packages/integration/src/lib/asset/asset-util"
+import { PriceService } from "packages/integration/src/lib/asset/asset-util"
 import { applicationToAccount } from "packages/integration/src/lib/identity-manager/application/application-to-account"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
@@ -159,7 +159,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   @Cache(connectorCache, { ttl: 60 })
   async getRate(currency: string): Promise<string> {
     return (
-      (await getPrice([currency])).find((t) => t.token === currency)?.price ??
+      (await new PriceService().getPrice([currency])).find((t) => t.token === currency)?.price ??
       "0"
     )
   }

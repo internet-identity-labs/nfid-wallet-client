@@ -3,7 +3,7 @@ import { JEST_GLOBALS } from "../../config/jest-globals"
 const config = {
   displayName: "nfid-frontend",
   preset: "../../jest.preset.js",
-  coverageDirectory: "../../coverage/apps/nfid-demo",
+  coverageDirectory: "../../coverage/apps/nfid-frontend",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   globals: {
     ...JEST_GLOBALS,

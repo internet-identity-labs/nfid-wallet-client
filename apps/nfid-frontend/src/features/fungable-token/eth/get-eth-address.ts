@@ -1,6 +1,7 @@
 import {
   storeAddressInLocalCache,
   readAddressFromLocalCache,
+  NetworkKey,
 } from "@nfid/client-db"
 import {
   replaceActorIdentity,
@@ -17,7 +18,7 @@ export const getEthAddress = async (anchor: number) => {
     accountId: accountId,
     hostname: hostname,
     anchor: BigInt(anchor),
-    network: "ETH",
+    network: NetworkKey.EVM,
   })
 
   if (cachedAddress) return cachedAddress
@@ -35,7 +36,7 @@ export const getEthAddress = async (anchor: number) => {
       accountId,
       hostname,
       anchor: BigInt(anchor),
-      network: "ETH",
+      network: NetworkKey.EVM,
     })
 
   return address

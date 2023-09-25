@@ -3,10 +3,18 @@ import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
+  Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+import { principalToAddress } from "ictool"
+import { delegationChainFromDelegation } from "src/integration/identity/delegation-chain-from-delegation"
 
+import { getScope } from "@nfid/config"
+
+import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
-import { ii } from "../actors"
+import { ii, im, replaceActorIdentity, vault as vaultAPI } from "../actors"
+import { authState } from "../authentication"
 import { mapOptional } from "../ic-utils"
 import {
   Chain,
@@ -14,6 +22,8 @@ import {
   getGlobalKeysThirdParty,
   renewDelegationThirdParty,
 } from "../lambda/ecdsa"
+import { getVaults, migrateUser } from "../vault"
+import { fetchDelegate } from "./fetch-delegate"
 import { SignedDelegation } from "./types"
 
 /**
@@ -140,13 +150,76 @@ export const getPublicAccountDelegate = async (
   targets: string[],
   maxTimeToLive?: number,
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
-  const delegationChain = await getGlobalKeysThirdParty(
+  const delegationChainPromise = getGlobalKeysThirdParty(
     delegationIdentity,
     targets,
     sessionPublicKey,
     origin,
     maxTimeToLive,
   )
+
+  let promiseMigration
+  if (origin === VAULTS_ORIGIN) {
+    const account: HTTPAccountResponse = await im.get_account()
+    const anchor = account.data[0]!.anchor
+    const sessionKeyPair = Ed25519KeyIdentity.generate()
+
+    if (anchor < 100000000) {
+      const scope = getScope("nfid.one")
+      promiseMigration = fetchDelegate(
+        Number(anchor),
+        scope,
+        sessionKeyPair.getPublicKey() as any,
+      ).then((iiDelegation) => {
+        const delegationChainForMigration = delegationChainFromDelegation({
+          anchor: Number(anchor),
+          scope,
+          signedDelegation: iiDelegation.signedDelegation,
+          userPublicKey: iiDelegation.userPublicKey,
+        })
+        const actualIdentity = DelegationIdentity.fromDelegation(
+          sessionKeyPair,
+          delegationChainForMigration,
+        )
+        const targetPk = delegationChainForMigration.publicKey
+        return replaceActorIdentity(vaultAPI, actualIdentity).then(() => {
+          return migrateUser(
+            actualIdentity,
+            principalToAddress(
+              Principal.selfAuthenticating(new Uint8Array(targetPk)) as any,
+            ),
+          )
+        })
+      })
+    } else {
+      promiseMigration = getGlobalKeysThirdParty(
+        delegationIdentity,
+        targets,
+        new Uint8Array(sessionKeyPair.getPublicKey().toDer()),
+        origin,
+      ).then((delegationChainForMigration) => {
+        const actualIdentity = DelegationIdentity.fromDelegation(
+          sessionKeyPair,
+          delegationChainForMigration,
+        )
+        return replaceActorIdentity(vaultAPI, actualIdentity).then(() => {
+          return migrateUser(
+            actualIdentity,
+            principalToAddress(actualIdentity.getPrincipal() as any),
+          )
+        })
+      })
+    }
+  }
+
+  const [delegationChain, migratedUser] = await Promise.all([
+    delegationChainPromise,
+    promiseMigration,
+  ])
+
+  if (!migratedUser) {
+    console.error("Error during migration")
+  }
 
   console.log({ targets, delegationChain })
 

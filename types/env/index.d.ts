@@ -17,6 +17,7 @@ declare const BITCOIN_WALLET_CANISTER_ID: string
 declare const BTC_SIGNER_CANISTER_ID: string
 declare const IC_SIGNER_CANISTER_ID: string
 declare const CHAIN_NETWORK: string
+declare const VAULTS_ORIGIN: string
 declare const BLOCK_CYPHER_TOKEN: string
 declare const CYCLES_MINTER_CANISTER_ID: string
 declare const ECDSA_SIGNER_CANISTER_ID: string

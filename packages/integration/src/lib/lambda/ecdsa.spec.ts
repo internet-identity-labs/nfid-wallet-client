@@ -197,7 +197,7 @@ describe("Lambda Sign/Register ECDSA", () => {
     })
 
     it("get third party global keys", async function () {
-      const canisterId = "txkre-oyaaa-aaaap-qa3za-cai"
+      const canisterId = "irshc-3aaaa-aaaam-absla-cai"
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()

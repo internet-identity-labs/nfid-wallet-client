@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import useSWRImmutable from "swr/immutable"
 
+import { localStorageWithFallback } from "@nfid/client-db"
 import { NFID } from "@nfid/embed"
 
 declare const NFID_PROVIDER_URL: string
@@ -34,9 +35,15 @@ export const AuthenticationProvider: React.FC<{
   children: JSX.Element | JSX.Element[]
 }> = ({ children }: any) => {
   const [identity, setIdentity] = React.useState<DelegationIdentity>()
+  const nfidProviderUrl = React.useMemo(() => {
+    return (
+      localStorageWithFallback.getItem("NFID_PROVIDER_URL") || NFID_PROVIDER_URL
+    )
+  }, [])
+
   const { data: nfid } = useSWRImmutable("nfid", () =>
     NFID.init({
-      origin: NFID_PROVIDER_URL,
+      origin: nfidProviderUrl,
       application: {
         name: "NFID Demo",
         logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",

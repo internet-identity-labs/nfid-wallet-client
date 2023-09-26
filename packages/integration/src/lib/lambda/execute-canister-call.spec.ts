@@ -54,7 +54,7 @@ describe("Targets validation", () => {
 
     const delegationChain = await getGlobalKeysThirdParty(
       nfidDelegationIdentity,
-      ["txkre-oyaaa-aaaap-qa3za-cai"],
+      ["irshc-3aaaa-aaaam-absla-cai"],
       dappSessionPublicKey,
       "nfid.one",
     )

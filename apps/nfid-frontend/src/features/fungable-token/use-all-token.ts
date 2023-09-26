@@ -24,6 +24,7 @@ export const useAllToken = (
     return allTokens.sort((a, b) => a.currency.localeCompare(b.currency))
   }, [assetFilters, icTokenConfigs, isICLoading, tokenConfigs])
 
-  console.debug("useAllToken", { token })
+  console.debug("useAllToken", { tokenConfigs, icTokenConfigs, tokens, token })
+
   return { token, isLoading }
 }

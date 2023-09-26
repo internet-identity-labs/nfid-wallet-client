@@ -7,14 +7,12 @@ import {
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
-import { delegationChainFromDelegation } from "src/integration/identity/delegation-chain-from-delegation"
 
 import { getScope } from "@nfid/config"
 
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
 import { ii, im, replaceActorIdentity, vault as vaultAPI } from "../actors"
-import { authState } from "../authentication"
 import { mapOptional } from "../ic-utils"
 import {
   Chain,
@@ -22,7 +20,7 @@ import {
   getGlobalKeysThirdParty,
   renewDelegationThirdParty,
 } from "../lambda/ecdsa"
-import { getVaults, migrateUser } from "../vault"
+import { migrateUser } from "../vault"
 import { fetchDelegate } from "./fetch-delegate"
 import { SignedDelegation } from "./types"
 
@@ -229,4 +227,24 @@ export const getPublicAccountDelegate = async (
     delegation,
     signature,
   })
+}
+
+export const delegationChainFromDelegation = ({
+                                                signedDelegation,
+                                                userPublicKey,
+                                              }: any): DelegationChain => {
+  return DelegationChain.fromDelegations(
+    [
+      {
+        delegation: new Delegation(
+          new Uint8Array(signedDelegation.delegation.pubkey).buffer,
+          signedDelegation.delegation.expiration,
+          signedDelegation.delegation.targets,
+        ),
+        signature: new Uint8Array(signedDelegation.signature)
+          .buffer as Signature,
+      },
+    ],
+    new Uint8Array(userPublicKey).buffer as DerEncodedPublicKey,
+  )
 }

@@ -1,10 +1,11 @@
 import React from "react"
-import { Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { NFIDAuthentication } from "frontend/apps/marketing/landing-page/auth-modal"
 
 interface AuthWrapperProps {
   iframe?: boolean
@@ -12,6 +13,7 @@ interface AuthWrapperProps {
 }
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const { isAuthenticated, cacheLoaded } = useAuthentication()
+  const navigate = useNavigate()
 
   console.debug("AuthWrapper", { isAuthenticated, cacheLoaded })
 
@@ -21,7 +23,12 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
       return <>{children}</>
 
     case cacheLoaded && !isAuthenticated:
-      return <Navigate to="/" />
+      return (
+        <>
+          {children}
+          <NFIDAuthentication isVisible={true} onClose={() => navigate("/")} />
+        </>
+      )
 
     default:
       return <BlurredLoader loadingMessage="loading auth session" />

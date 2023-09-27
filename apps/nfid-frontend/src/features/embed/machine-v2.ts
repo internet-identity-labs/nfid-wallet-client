@@ -253,7 +253,7 @@ export const NFIDEmbedMachineV2 = createMachine(
           name: event?.data?.name,
           url: new URL(event?.data?.domain).host,
         },
-        authRequest: { hostname: event?.data?.domain },
+        authRequest: { ...context.authRequest, hostname: event?.data?.domain },
       })),
       assignProcedure: assign((context, event) => ({
         requestOrigin: event.data.origin,

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  repository_dispatch:
+    types:
+      - sdk-ts_event
 
 jobs:
   check-secrets:
@@ -15,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -24,7 +27,7 @@ jobs:
 
       - name: Check secrets
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
@@ -43,8 +46,12 @@ jobs:
   deploy:
     needs: check-secrets
     runs-on: ubuntu-latest
+    env:
+      CI_DEBUG: 'true'
     steps:
-      - uses: actions/checkout@v2
+
+      - name: Checkout nfid-frontend repo.
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -58,23 +65,77 @@ jobs:
           dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
+      
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: SDK-TS | Checkout sdk-ts repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/sdk-ts
+          ref: main
+          path: sdk-ts
+
+      - name: SDK-TS | build
+        working-directory: ./sdk-ts
+        run: |
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_info "Install ..." >&2
+          ci_echo_debug "yarn install --frozen-lockfile" >&2
+          yarn install --frozen-lockfile
+
+          ci_echo_debug "yarn lint" >&2
+          yarn lint
+
+          ci_echo_info "Build ..." >&2
+          ci_echo_debug "npx nx build embed" >&2
+          npx nx build embed
+
+      - name: SDK-TS | Create link to packages
+        working-directory: ./sdk-ts/dist/packages/embed
+        run: |
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
+          ci_echo_debug "yarn link" >&2
+          yarn link
 
       - name: NFID FRONTEND | install & format check
         run: |
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_info "Preparing .npmrc" >&2
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
+          
+          ci_echo_info "Yarn link ..." >&2
+          ci_echo_debug "yarn link @nfid/embed" >&2
+          yarn link @nfid/embed
+
+          ci_echo_info "Yarn ..." >&2
           yarn
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID FRONTEND | deploy
         run: |
-
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
+          ci_echo_info "NPX ..." >&2
+          ci_echo_debug "npx env-cmd -f .env.staging nx build nfid-demo" >&2
           npx env-cmd -f .env.staging nx build nfid-demo
 
+          ci_echo_info "DFX Deploy ..." >&2
+          ci_echo_debug "dfx identity use action" >&2
           dfx identity use action
+
+          ci_echo_debug "dfx deploy --network dev nfid-demo --no-wallet" >&2
           dfx deploy --network dev nfid-demo --no-wallet
 
         env:

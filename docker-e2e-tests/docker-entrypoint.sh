@@ -18,6 +18,7 @@ ci_echo_info "
 YARN=$(yarn --version)
 CHROME=$(chrome --version)
 NPM=$(npm --version)
+NODE=$(node --version)
 
 WORKDIR=${WORKDIR}
 FRONTEND_PORT=${FRONTEND_PORT}

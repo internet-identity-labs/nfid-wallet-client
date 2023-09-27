@@ -2,6 +2,8 @@ import { useState } from "react"
 import { fungibleAssetFactory } from "src/ui/connnector/fungible-asset-screen/fungible-asset-factory"
 import useSWR from "swr"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+
 import { TokenConfig } from "../../types"
 import { mergeSingleTokenConfig } from "../util/util"
 
@@ -11,8 +13,9 @@ type UseTokenConfig = {
 
 export const useTokenConfig = ({ tokens }: UseTokenConfig) => {
   const [configs, setConfigs] = useState<TokenConfig[]>([])
+  const { isAuthenticated } = useAuthentication()
   const { data, ...rest } = useSWR(
-    ["useTokenConfig", tokens],
+    isAuthenticated ? ["useTokenConfig", tokens] : null,
     ([key, tokens]) =>
       Promise.all(
         tokens.map(async (token) => {

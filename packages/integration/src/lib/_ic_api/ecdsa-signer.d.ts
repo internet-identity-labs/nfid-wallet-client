@@ -25,6 +25,7 @@ export interface SignatureReply {
 export interface _SERVICE {
   add_kp: ActorMethod<[KeyPair], undefined>
   get_kp: ActorMethod<[], KeyPairResponse>
+  get_public_key: ActorMethod<[string], [] | [string]>
   public_key: ActorMethod<[], Result>
   sign: ActorMethod<[Array<number>], Result_1>
   prepare_signature: ActorMethod<[Array<number>], string>

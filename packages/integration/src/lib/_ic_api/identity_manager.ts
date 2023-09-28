@@ -364,6 +364,7 @@ export const idlFactory = ({ IDL }: any) => {
       ["query"],
     ),
     verify_token: IDL.Func([Token], [Response], []),
+    get_root_by_principal: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], [])
   })
 }
 export const init = ({ IDL }: any) => {

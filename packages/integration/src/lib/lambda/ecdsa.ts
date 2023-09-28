@@ -7,7 +7,7 @@ import {
 import { ONE_MINUTE_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
-import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
+import { btcSigner, ecdsaSigner, im, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
 import {
   deleteFromStorage,
@@ -230,12 +230,13 @@ export async function getPublicKey(
   if (cachedValue) return cachedValue as any
   const signer = defineChainCanister(chain)
   await replaceActorIdentity(signer, identity)
-  const response = await signer.get_kp()
+  const root = await im.get_root_by_principal(identity.getPrincipal().toString())
+  const response = await signer.get_public_key(root[0]!) as string[]
   let publicKey
-  if (response.key_pair.length === 0) {
+  if (response.length === 0) {
     publicKey = await ecdsaRegisterNewKeyPair(identity, chain)
   } else {
-    publicKey = response.key_pair[0].public_key
+    publicKey = response[0]
   }
   await integrationCache.setItem(cacheKey, publicKey, {
     ttl: 6000,

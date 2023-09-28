@@ -231,7 +231,12 @@ export async function getPublicKey(
   const signer = defineChainCanister(chain)
   await replaceActorIdentity(signer, identity)
   const root = await im.get_root_by_principal(identity.getPrincipal().toString())
-  const response = await signer.get_public_key(root[0]!) as string[]
+
+  if(!root[0]) {
+    throw Error("The root account cannot be found.")
+  }
+
+  const response = await signer.get_public_key(root[0]) as string[]
   let publicKey
   if (response.length === 0) {
     publicKey = await ecdsaRegisterNewKeyPair(identity, chain)

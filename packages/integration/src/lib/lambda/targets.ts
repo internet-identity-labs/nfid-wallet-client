@@ -1,5 +1,16 @@
-import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
+import {
+  Actor,
+  ActorSubclass,
+  Agent,
+  compare,
+  HttpAgent,
+  lookup_path,
+} from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
+import { Principal } from "@dfinity/principal"
+import crypto from "crypto"
+
+import { verifyCertification } from "./cert-verification"
 
 export interface CertifiedResponse {
   certificate: Uint8Array | number[]
@@ -40,6 +51,7 @@ export async function validateTargets(targets: string[], origin: string) {
       if (!result || !result.response.includes(origin)) {
         uncertifiedTargets.push(canisterId)
       }
+      await verifyCertifiedResponse(result, "origins", canisterId)
     } catch (e) {
       //not implemented - will try with the update call
       uncertifiedTargets.push(canisterId)
@@ -61,4 +73,37 @@ export async function validateTargets(targets: string[], origin: string) {
   })
 
   await Promise.all(promises)
+}
+
+async function verifyCertifiedResponse(
+  certifiedResponse: CertifiedResponse,
+  key: string,
+  canisterId: string,
+) {
+  const agent = new HttpAgent({ host: IC_HOST })
+  await agent.fetchRootKey()
+  const tree = await verifyCertification({
+    canisterId: Principal.fromText(canisterId),
+    encodedCertificate: new Uint8Array(certifiedResponse.certificate).buffer,
+    encodedTree: new Uint8Array(certifiedResponse.witness).buffer,
+    rootKey: agent.rootKey,
+    maxCertificateTimeOffsetMs: 50000,
+  })
+  const treeHash = lookup_path([key], tree)
+  if (!treeHash) {
+    throw new Error("Response not found in tree")
+  }
+  const newOwnedString = certifiedResponse.response.join("")
+  const sha256Result = crypto
+    .createHash("sha256")
+    .update(newOwnedString)
+    .digest()
+  const byteArray = new Uint8Array(sha256Result)
+  if (!equal(byteArray, treeHash)) {
+    throw new Error("Response hash does not match")
+  }
+}
+
+function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {
+  return compare(a, b) === 0
 }

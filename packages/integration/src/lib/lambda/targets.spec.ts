@@ -1,6 +1,7 @@
-import {CertifiedResponse, validateTargets} from "./targets"
-import {Actor, ActorSubclass, Agent, HttpAgent} from "@dfinity/agent";
-import {IDL} from "@dfinity/candid";
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
+
+import { CertifiedResponse, validateTargets } from "./targets"
 
 describe("Targets validation", () => {
   jest.setTimeout(50000)
@@ -24,27 +25,43 @@ describe("Targets validation", () => {
   })
 
   it("validate certified", async function () {
-    const agent: Agent = await new HttpAgent({host: "https://ic0.app"})
-    const idlFactory: IDL.InterfaceFactory = ({IDL}) =>
+    const agent: Agent = await new HttpAgent({ host: "https://ic0.app" })
+    const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
       IDL.Service({
-        update_trusted_origins: IDL.Func([IDL.Vec(IDL.Text)], [IDL.Vec(IDL.Text)], []),
-        update_trusted_origins_raw: IDL.Func([IDL.Vec(IDL.Text)], [IDL.Vec(IDL.Text)], []),
+        update_trusted_origins: IDL.Func(
+          [IDL.Vec(IDL.Text)],
+          [IDL.Vec(IDL.Text)],
+          [],
+        ),
+        update_trusted_origins_raw: IDL.Func(
+          [IDL.Vec(IDL.Text)],
+          [IDL.Vec(IDL.Text)],
+          [],
+        ),
         get_trusted_origins: IDL.Func([], [IDL.Vec(IDL.Text)], []),
-        get_trusted_origins_certified: IDL.Func([], [
+        get_trusted_origins_certified: IDL.Func(
+          [],
+          [
             IDL.Record({
-              'certificate': IDL.Vec(IDL.Nat8),
-              'witness': IDL.Vec(IDL.Nat8),
-              'response': IDL.Vec(IDL.Text),
-            })],
-          ['query']),
+              certificate: IDL.Vec(IDL.Nat8),
+              witness: IDL.Vec(IDL.Nat8),
+              response: IDL.Vec(IDL.Text),
+            }),
+          ],
+          ["query"],
+        ),
       })
     const canisterId = "c543j-2qaaa-aaaal-ac4dq-cai"
     const actor: ActorSubclass = Actor.createActor(idlFactory, {
       agent,
       canisterId,
     })
-    const currentStateCertified = await actor["get_trusted_origins_certified"]() as CertifiedResponse
-    const currentStateUnCertified = await actor["get_trusted_origins"]() as string[]
+    const currentStateCertified = (await actor[
+      "get_trusted_origins_certified"
+    ]()) as CertifiedResponse
+    const currentStateUnCertified = (await actor[
+      "get_trusted_origins"
+    ]()) as string[]
 
     await actor["update_trusted_origins"](["noncertified.one", "nfid.one"])
     await actor["update_trusted_origins_raw"](["nfid.one"])

@@ -1,13 +1,13 @@
 import { IdleManager, IdleManagerOptions } from "@dfinity/auth-client"
 import { matchPath } from "react-router-dom"
 
-import { ROUTE_EMBED } from "@nfid/config"
+import { ROUTE_EMBED, TEN_MINUTES_IN_MS } from "@nfid/config"
 
 import { getLocalStorageOverride } from "../local-storage"
 
 const idleManagerConfig = {
   idleTimeout: getLocalStorageOverride(
-    1000 * 60 * 2,
+    TEN_MINUTES_IN_MS,
     "NFID_SESSION_MANAGER_IDLE_TIMEOUT_MS",
   ),
 }

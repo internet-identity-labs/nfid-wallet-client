@@ -6,14 +6,11 @@ import {
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
+import { TEN_MINUTES_IN_MS } from "@nfid/config"
+
 import { accessList } from "../actors"
 import { getLocalStorageOverride } from "../local-storage/get-delegation-ttl"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
-
-// FIXME: move to constants
-const ONE_SECOND_IN_M_SEC = 1000
-const ONE_MINUTE_IN_M_SEC = 60 * ONE_SECOND_IN_M_SEC
-const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
 
 export interface FrontendDelegation {
   delegationIdentity: DelegationIdentity
@@ -24,7 +21,7 @@ export interface FrontendDelegation {
 export const requestFEDelegationChain = async (
   identity: SignIdentity,
   ttl: number = getLocalStorageOverride(
-    TEN_MINUTES_IN_M_SEC,
+    TEN_MINUTES_IN_MS,
     "NFID_DELEGATION_TTL_MS",
   ),
 ) => {

@@ -1,13 +1,14 @@
-import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
+import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 import { useAllDip20Token } from "src/features/fungable-token/dip-20/hooks/use-all-token-meta"
 import { useBalanceICPAll } from "src/features/fungable-token/icp/hooks/use-balance-icp-all"
 import { stringICPtoE8s } from "src/integration/wallet/utils"
 import { AssetFilter, Blockchain, TokenConfig } from "src/ui/connnector/types"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
-import { accessList, authState } from "@nfid/integration"
+import { authState } from "@nfid/integration"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 export const useICTokens = (
   assetFilter: AssetFilter[],
@@ -50,11 +51,8 @@ export const useICTokens = (
 export const getICPublicDelegation = async () => {
   const { delegationIdentity } = authState.get()
 
-  const publicDelegation = await getGlobalKeys(
-    delegationIdentity!,
-    Chain.IC,
-    accessList,
-  )
+  const publicKey = await getPublicKey(delegationIdentity!, Chain.IC)
+  const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, ""])
 
   return publicDelegation
 }

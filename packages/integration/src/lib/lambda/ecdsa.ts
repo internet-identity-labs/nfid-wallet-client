@@ -7,7 +7,7 @@ import {
 import { ONE_MINUTE_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
-import { btcSigner, ecdsaSigner, im, replaceActorIdentity } from "../actors"
+import { btcSigner, ecdsaSigner, icSigner, im, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
 import {
   deleteFromStorage,
@@ -256,7 +256,7 @@ function defineChainCanister(chain: Chain) {
     case Chain.BTC:
       return btcSigner
     case Chain.IC:
-      throw Error("Deprecated")
+      return icSigner
   }
 }
 

@@ -1,8 +1,11 @@
 /* eslint-disable */
+import { JEST_GLOBALS } from "../../config/jest-globals"
+
+/* eslint-disable */
 export default {
   displayName: "integration-ethereum",
   preset: "../../jest.preset.js",
-  globals: {},
+  globals: { ...JEST_GLOBALS },
   transform: {
     "^.+\\.[tj]s$": [
       "ts-jest",

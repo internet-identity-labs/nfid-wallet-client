@@ -14,7 +14,7 @@ import { SectionTemplate } from "../../section"
 const CODE_SNIPPET = `const { data: nfid } = useSWRImmutable("nfid", () =>
   NFID.init({ origin: NFID_PROVIDER_URL }),
 )
-  
+
 const onRequestTransfer = useCallback(
   async (values: any) => {
     if (!nfid) return alert("NFID is not initialized")
@@ -27,7 +27,7 @@ const onRequestTransfer = useCallback(
          amount: String(Number(values.amount) * E8S),
         })
        .catch((e: Error) => ({ error: e.message }))
-       
+
      setResponse(res)
   },
   [nfid, receiver, refetchBalance],
@@ -101,7 +101,7 @@ export const RequestFungibleTransfer = () => {
               {...register("receiver", { required: "This field is required" })}
             />
             <Input
-              id="inputAmount"
+              id="inputICP"
               labelText="Amount ICP"
               placeholder="0.0001"
               errorText={errors.amount?.message}

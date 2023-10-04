@@ -545,13 +545,17 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
 Then(/^Principal, Address, Targets are correct:/, async (data) => {
   const expectedData = data.rowsHash()
   let usersData = await DemoAppPage.getAuthLogs()
+
   expect(String((await usersData.get("principal").firstAddressPart.getText()) + "..." +
     (await usersData.get("principal").secondAddressElement.getText())
   )).toEqual(expectedData.principal.substring(0, 29) + "..." + expectedData.principal.substring(58, 63))
+
   expect(String((await usersData.get("address").firstAddressPart.getText()) + "..." +
     (await usersData.get("address").secondAddressElement.getText())
   )).toEqual(expectedData.address.substring(0, 29) + "..." + expectedData.address.substring(59, 64))
-  expect(String(usersData.get("targets"))).toEqual("- " + expectedData.targets)
+
+  let targets = String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")
+  expect(targets).toEqual(expectedData.targets)
 })
 
 Then(
@@ -863,14 +867,33 @@ Then(
   },
 )
 
-Then(/^Assert ([^"]*) logs message has (.+)(: (.+))?$/, async (
-  block: string, messageHeader: string, messageBody?: string) => {
-  await DemoTransactions.getTransferLogsLocatorFirstPart(block).waitForDisplayed({timeout: 20000})
-  messageBody ? expect(await DemoTransactions.getTransferLogsLocatorFirstPart(block).getText() +
-      DemoTransactions.getTransferLogsLocatorSecondPart(block)).toContain(messageHeader + messageBody)
+Then(/^Assert ([^"]*) logs message:$/, async (
+  block: string, data) => {
+  const message = data.rowsHash()
+  let messageBody = message.body
+  let messageHeader = message.header
+  console.log(message, messageBody, messageHeader, message.firstChild)
+  await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
+  messageBody == "" ? expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText() +
+      DemoTransactions.getTransferLogsLocatorSecondPart(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
     :
-    expect(await DemoTransactions.getTransferLogsLocatorFirstPart(block).getText()).toContain(messageHeader)
+    expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
 })
+// String((await usersData.get("principal").firstAddressPart.getText())
+// Then(/^Assert ([^"]*) logs message:$/, async (
+//   block: string, data) => {
+//   const message = data.rowsHash()
+//   let messageBody = message.body
+//   let messageHeader = message.header
+//   let firstChild = message.firstChild?.split(',').map(Number)
+//   let secondChild = message.secondChild?.split(',').map(Number)
+//
+//   await (await DemoAppPage.getTransferLogsLocatorFirstPart(block, firstChild)).waitForDisplayed({timeout: 20000})
+//   messageBody != "" ? expect(await (await DemoAppPage.getTransferLogsLocatorFirstPart(block, firstChild)).getText() +
+//       await (await DemoAppPage.getTransferLogsLocatorSecondPart(block, secondChild)).getText()).toContain(messageHeader + messageBody)
+//     :
+//     expect((await DemoAppPage.getTransferLogsLocatorFirstPart(block, firstChild)).getText()).toContain(messageHeader)
+// })
 
 async function chooseChainOption(chain: string) {
   await Assets.openAssetReceiveOptions()

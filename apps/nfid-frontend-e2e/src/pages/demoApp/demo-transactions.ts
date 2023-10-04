@@ -27,14 +27,6 @@ export class DemoTransactions extends demoAppPage {
     else return $('#NFTName')
   }
 
-  getTransferLogsLocatorFirstPart(block: string) {
-    return $(`div#${block} #responseID code span:nth-child(2) span:nth-child(3)`)
-  }
-
-  getTransferLogsLocatorSecondPart(block: string) {
-    return $(`div#${block} #responseID code span:nth-child(2) span:nth-child(6)`)
-  }
-
   async sendICPTransaction(amount: number, address: string) {
     await this.getReceiverICAddressInput("FT").setValue(address)
     await this.getFTInput("ICP").setValue(amount)

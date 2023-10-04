@@ -2,6 +2,7 @@ import { When } from "@cucumber/cucumber"
 
 import { baseURL } from "../../wdio.conf.js"
 import DemoTransactions from "../pages/demoApp/demo-transactions.js"
+import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
 import userClient from "../helpers/accounts-service.js"
 import assets, { Assets } from "../pages/assets.js"
 import HomePage from "../pages/home-page.js"
@@ -364,4 +365,8 @@ When(/^User sends ?(.*)? ([^"]*) to (.*)$/, async (amount: number, FT: string, a
   FT == "ICP" ? await DemoTransactions.sendICPTransaction(amount, address)
     :
     await DemoTransactions.sendNFTTransaction(address)
+})
+
+When(/^User updates list of targets by (.*)$/, async (targets: string) => {
+  await DemoUpdateDelegation.updateDelegation(targets)
 })

@@ -57,6 +57,6 @@ export class Page {
     )
   }
 
-  loginUsingIframe(profileType: string, targets?: string[]) {
+  loginUsingIframe(profileType: string, targets?: string) {
   }
 }

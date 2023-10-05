@@ -21,6 +21,7 @@ const setupCSP = () => {
       "base-uri": "'self'",
       "connect-src": [
         "'self'",
+        "https://tt4jxkw8vg.execute-api.us-east-1.amazonaws.com", // Temp usage of staging exchange rate.
         "https://ic0.app",
         "https://*.ic0.app",
         "https://*.icp0.io",

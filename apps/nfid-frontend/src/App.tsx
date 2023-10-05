@@ -15,6 +15,13 @@ import { NotFound } from "./ui/pages/404"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 
+const RequestTransferCoordinator = React.lazy(
+  () => import("./coordination/wallet/request-transfer"),
+)
+const RequestAccountsCoordinator = React.lazy(
+  () => import("./coordination/wallet/request-accounts"),
+)
+
 const NFIDEmbedCoordinator = React.lazy(
   () => import("./features/embed/coordinator"),
 )
@@ -42,6 +49,16 @@ export const App = () => {
     <React.Suspense fallback={<BlurredLoader isLoading />}>
       <Routes>
         <Route path={"/"} element={<HomeScreen />} />
+
+        <Route
+          path="/wallet/request-transfer"
+          element={<RequestTransferCoordinator />}
+        />
+
+        <Route
+          path="/wallet/request-accounts"
+          element={<RequestAccountsCoordinator />}
+        />
 
         <Route
           path="/authenticate"

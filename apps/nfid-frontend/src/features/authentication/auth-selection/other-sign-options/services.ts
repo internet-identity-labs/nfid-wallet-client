@@ -20,6 +20,9 @@ export async function authWithAnchor({
     await login(BigInt(anchor), withSecurityDevices),
   )
 
+  if (authResult.tag !== "ok" && "message" in authResult)
+    throw new Error(authResult.message)
+
   if (authResult.tag !== "ok")
     throw new Error("We couldn't authenticate you using this device")
 

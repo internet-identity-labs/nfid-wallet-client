@@ -1,4 +1,4 @@
-import { getPrice } from "../asset-util"
+import { PriceService } from "../asset-util"
 
 const chainNames: Record<number, string> = {
   1: "ETH",
@@ -15,7 +15,7 @@ export const coinbaseRatesService = {
       throw Error("The Chain is not supported.")
     }
 
-    const tokenPrice = await getPrice([chainName]).then((tokenPrices) =>
+    const tokenPrice = await new PriceService().getPrice([chainName]).then((tokenPrices) =>
       parseFloat(tokenPrices[0].price),
     )
 

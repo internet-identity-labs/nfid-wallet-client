@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { toBn } from "@rarible/utils"
 import { Cache } from "node-ts-cache"
-import { getPrice } from "packages/integration/src/lib/asset/asset-util"
+import { PriceService } from "packages/integration/src/lib/asset/asset-util"
 import { BtcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
 import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
 
@@ -76,7 +76,7 @@ export class BtcTransferConnector
       to,
       toBn(amount).multipliedBy(E8S).toNumber(),
     )
-    const rate = await getPrice(["BTC"])
+    const rate = await new PriceService().getPrice(["BTC"])
 
     return {
       fee: `${e8sICPToString(Number(fee))} ${this.config.feeCurrency}`,

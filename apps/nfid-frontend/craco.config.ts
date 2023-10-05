@@ -20,7 +20,6 @@ const setupCSP = () => {
       "object-src": "'none'",
       "base-uri": "'self'",
       "connect-src": [
-        "https://tt4jxkw8vg.execute-api.us-east-1.amazonaws.com",
         "'self'",
         "https://ic0.app",
         "https://*.ic0.app",
@@ -206,11 +205,11 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/symmetric/, ""),
       },
-      "/auth": {
-        target: process.env.AWS_AUTH_STATS,
+      "/exchange-rate": {
+        target: process.env.AWS_EXCHANGE_RATE,
         secure: true,
         changeOrigin: true,
-        pathRewrite: (path: string) => path.replace(/^\/auth/, ""),
+        pathRewrite: (path: string) => path.replace(/^\/exchange-rate/, ""),
       },
       "/signature": {
         target: process.env.AWS_SIGNATURE_EVENT,
@@ -230,6 +229,12 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) =>
           path.replace(/^\/ecdsa_register_address/, ""),
+      },
+      "/execute_candid": {
+        target: process.env.AWS_EXECUTE_CANDID,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/execute_candid/, ""),
       },
       "/ecdsa_get_anonymous": {
         target: process.env.AWS_ECDSA_GET_ANONYMOUS,

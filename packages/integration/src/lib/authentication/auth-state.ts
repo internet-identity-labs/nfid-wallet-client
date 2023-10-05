@@ -43,6 +43,7 @@ type SetProps = {
 }
 
 function makeAuthState() {
+  console.debug("makeAuthState")
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()
 
@@ -53,15 +54,26 @@ function makeAuthState() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.setAuthState = _setAuthSession
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.resetAuthState = _clearAuthSessionFromCache
   }
 
   async function _loadAuthSessionFromCache() {
-    let sessionKey = await authStorage.get(KEY_STORAGE_KEY)
-    let chain = await authStorage.get(KEY_STORAGE_DELEGATION)
+    console.debug("_loadAuthSessionFromCache", Date.now())
+    let sessionKey
+    let chain
+    try {
+      sessionKey = await authStorage.get(KEY_STORAGE_KEY)
+      chain = await authStorage.get(KEY_STORAGE_DELEGATION)
+    } catch (error) {
+      console.error("_loadAuthSessionFromCache", { error })
+    }
     if (!sessionKey || !chain) {
-      return observableAuthState$.next({
+      observableAuthState$.next({
         cacheLoaded: true,
       })
+      return
     }
 
     if (typeof sessionKey !== "string") {
@@ -72,6 +84,9 @@ function makeAuthState() {
       chain = JSON.stringify(chain)
     }
 
+    console.debug(
+      "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
+    )
     const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
 
     const delegationIdentity = DelegationIdentity.fromDelegation(
@@ -80,16 +95,15 @@ function makeAuthState() {
     )
 
     if (isDelegationExpired(delegationIdentity)) {
+      console.debug(
+        "_loadAuthSessionFromCache load sessionKey and chain from cache. Session expired",
+      )
       return observableAuthState$.next({
         cacheLoaded: true,
       })
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
-
-    console.debug("_hydrate", {
-      principalId: delegationIdentity.getPrincipal().toText(),
-    })
 
     observableAuthState$.next({
       cacheLoaded: true,
@@ -107,7 +121,8 @@ function makeAuthState() {
       authStorage.set(KEY_STORAGE_KEY, authState.identity),
       authStorage.set(KEY_STORAGE_DELEGATION, authState.delegation),
     ])
-    _loadAuthSessionFromCache()
+    await _loadAuthSessionFromCache()
+    return true
   }
 
   async function _clearAuthSessionFromCache() {
@@ -115,6 +130,7 @@ function makeAuthState() {
       authStorage.remove(KEY_STORAGE_KEY),
       authStorage.remove(KEY_STORAGE_DELEGATION),
     ])
+    return true
   }
 
   async function fromCache() {

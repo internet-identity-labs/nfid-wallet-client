@@ -31,6 +31,6 @@ export async function getTransformedRequest(
 }
 
 export const getIdentity = (seed: string): Ed25519KeyIdentity => {
-  const seedEncoded: Uint8Array = new TextEncoder().encode(seed);
-  return Ed25519KeyIdentity.generate(seedEncoded);
-};
+  const seedEncoded: Uint8Array = new TextEncoder().encode(seed)
+  return Ed25519KeyIdentity.generate(seedEncoded)
+}

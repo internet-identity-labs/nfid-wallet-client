@@ -11,15 +11,29 @@ import {
 } from "src/ui/connnector/types"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
+import { NetworkKey } from "@nfid/client-db"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 export class BtcAssetConnector extends FungibleAssetConnector<AssetNativeConfig> {
   async getAccounts(
     identity: DelegationIdentity[],
   ): Promise<Array<TokenConfig>> {
-    return btcAsset.getRootAccount(identity[0], IconSvgBTC).then((token) => {
-      return [toNativeTokenConfig(this.config, token)]
-    })
+    return btcAsset
+      .getRootAccount(
+        identity[0],
+        IconSvgBTC,
+        await this.getCachedAddress(NetworkKey.BTC),
+      )
+      .then(async (token) => {
+        return [
+          toNativeTokenConfig(
+            this.config,
+            token,
+            NetworkKey.BTC,
+            await this.getProfileAnchor(),
+          ),
+        ]
+      })
   }
 }
 

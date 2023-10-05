@@ -10,7 +10,7 @@ import { ProfileConstants } from "../routes"
 const ProfileAssets = () => {
   const [assetFilter, setAssetFilter] = React.useState<AssetFilter[]>([])
   const { navigate } = useNFIDNavigate()
-  const { token } = useAllToken(assetFilter)
+  const { token, isLoading } = useAllToken(assetFilter)
 
   console.debug("ProfileAssets", { token })
 
@@ -19,6 +19,7 @@ const ProfileAssets = () => {
       onIconClick={() =>
         navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`)
       }
+      isLoading={isLoading}
       tokens={token}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}

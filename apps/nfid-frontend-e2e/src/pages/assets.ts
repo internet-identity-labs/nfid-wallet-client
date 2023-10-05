@@ -91,12 +91,13 @@ export class Assets {
   }
 
   public async sendDialog() {
+    const loader = await $("#loader")
+    await loader.waitForDisplayed({ reverse: true, timeout: 40000 })
     const sendReceiveButton = await $("#sendReceiveButton")
     await sendReceiveButton.waitForDisplayed({
       timeout: 7000,
     })
     await sendReceiveButton.click()
-    const loader = await $("#loader")
     await loader.waitForDisplayed({ reverse: true, timeout: 40000 })
     await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
   }
@@ -116,9 +117,8 @@ export class Assets {
   public async receiveDialog() {
     await this.sendDialog()
     const tabReceive = await $("#tab_receive")
-    await tabReceive.waitForDisplayed({
-      timeout: 10000,
-    })
+    await tabReceive.waitForDisplayed({ timeout: 10000 })
+    await tabReceive.waitForClickable({ timeout: 15000 })
     await tabReceive.click()
     await $("#option_Network").waitForDisplayed({ timeout: 30000 })
   }
@@ -149,7 +149,7 @@ export class Assets {
   public async chooseOption(account: string) {
     const defaultAcc = await $(`#choose_option_${account.replace(/\s/g, "")}`)
     await defaultAcc.waitForExist({
-      timeout: 17000,
+      timeout: 30000,
     })
     await defaultAcc.click()
   }
@@ -205,6 +205,9 @@ export class Assets {
 
   public async openActivity() {
     const activityIcon = await $("#activity")
+    const loader = await $("#loader")
+    await loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+
     await activityIcon.waitForDisplayed({ timeout: 10000 })
     await activityIcon.click()
   }

@@ -31,6 +31,7 @@ interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   tokens: Token[]
   assetFilter: AssetFilter[]
   setAssetFilter: (value: AssetFilter[]) => void
+  isLoading?: boolean
 }
 
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
@@ -38,6 +39,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   tokens,
   assetFilter,
   setAssetFilter,
+  isLoading,
 }) => {
   const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
   const { options } = useAccountOptions(blockchainFilter)
@@ -98,7 +100,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
           />
         }
         showChildrenPadding={false}
-        className="sm:pb-0"
+        className="mb-10 sm:pb-0 "
       >
         <div className="px-5">
           <Loader isLoading={!tokens.length} />
@@ -190,6 +192,15 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               </div>
             ))}
           </div>
+          {tokens?.length && isLoading ? (
+            <div className="flex items-center justify-center w-full h-16 border-t border-gray-200">
+              <Loader
+                isLoading={true}
+                fullscreen={false}
+                imageClasses="w-10 h-10"
+              />
+            </div>
+          ) : null}
         </div>
       </ProfileContainer>
     </ProfileTemplate>

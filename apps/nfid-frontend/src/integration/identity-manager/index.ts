@@ -342,7 +342,7 @@ function mapApplication(application: BEApplication): Application {
     accountLimit: application.user_limit,
     domain: application.domain,
     name: application.name,
-    icon: mapOptional(application.img),
+    logo: mapOptional(application.img),
     alias: mapOptional(application.alias) || [],
     isNftStorage: !!mapOptional(application.is_nft_storage),
     isIFrameAllowed: !!mapOptional(application.is_iframe_allowed),

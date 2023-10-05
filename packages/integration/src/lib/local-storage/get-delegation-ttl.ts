@@ -1,3 +1,5 @@
+import { localStorageWithFallback } from "@nfid/client-db"
+
 /**
  * tries to laod the delegation ttl from the local storage key NFID_DELEGATION_TTL
  * if not found, it will return the given defaultTTL value
@@ -10,20 +12,17 @@ export function getLocalStorageOverride(
   defaultLocalStorageKey = "NFID_DELEGATION_TTL",
 ): number {
   const ttl = parseInt(
-    window.localStorage.getItem(defaultLocalStorageKey) || "",
+    localStorageWithFallback.getItem(defaultLocalStorageKey) || "",
   )
-  if (!ttl) {
+
+  if (ttl) {
     console.debug("getLocalStorageOverride", {
+      ttl,
       defaultTTL,
       defaultLocalStorageKey,
     })
-    return defaultTTL
+    return ttl
   }
-  console.debug("getLocalStorageOverride", {
-    defaultTTL,
-    overrideTTL: ttl,
-    defaultLocalStorageKey,
-  })
 
-  return ttl
+  return defaultTTL
 }

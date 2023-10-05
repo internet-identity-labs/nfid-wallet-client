@@ -1,13 +1,17 @@
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
+import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { assign, createMachine } from "xstate"
 
+import { ONE_DAY_IN_MS } from "@nfid/config"
 import { Application, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
+import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import AuthenticationMachine from "../authentication/root/root-machine"
+import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import {
@@ -35,6 +39,11 @@ type Events =
       type: "APPROVE"
       data?: ApproveSignatureEvent
     }
+  | {
+      type: "APPROVE_IC_GET_DELEGATION"
+      data: ApproveIcGetDelegationSdkResponse
+    }
+  | { type: "APPROVE_IC_REQUEST_TRANSFER"; data: IRequestTransferResponse }
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
@@ -60,7 +69,12 @@ type Services = {
 type NFIDEmbedMachineContext = {
   appMeta: AuthorizingAppMeta
   authRequest: {
-    hostname: string
+    maxTimeToLive?: bigint
+    sessionPublicKey?: Uint8Array
+    hostname?: string
+    derivationOrigin?: string
+    targets?: string[]
+    chain?: Chain
   }
   authSession?: AuthSession
   requestOrigin?: string
@@ -85,9 +99,7 @@ export const NFIDEmbedMachineV2 = createMachine(
     context: {
       messageQueue: [],
       appMeta: {},
-      authRequest: {
-        hostname: "",
-      },
+      authRequest: {},
     },
     states: {
       RPC_RECEIVER: {
@@ -160,10 +172,13 @@ export const NFIDEmbedMachineV2 = createMachine(
                   timeoutAt: new Date(now + timeoutIn),
                 })
 
-                const timeout = setTimeout(() => {
-                  console.debug("NFIDEmbedMachineV2 delegation expired")
-                  send("SESSION_EXPIRED")
-                }, timeoutIn)
+                const timeout = setTimeout(
+                  () => {
+                    console.debug("NFIDEmbedMachineV2 delegation expired")
+                    send("SESSION_EXPIRED")
+                  },
+                  timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
+                )
 
                 return () => clearTimeout(timeout)
               },
@@ -197,6 +212,8 @@ export const NFIDEmbedMachineV2 = createMachine(
           AWAIT_PROCEDURE_APPROVAL: {
             on: {
               APPROVE: "EXECUTE_PROCEDURE",
+              APPROVE_IC_GET_DELEGATION: "EXECUTE_PROCEDURE",
+              APPROVE_IC_REQUEST_TRANSFER: "EXECUTE_PROCEDURE",
               CANCEL: {
                 target: "READY",
                 actions: ["sendRPCCancelResponse", "updateProcedure"],
@@ -232,19 +249,20 @@ export const NFIDEmbedMachineV2 = createMachine(
     actions: {
       assignAppMeta: assign((context, event) => ({
         appMeta: {
-          logo: event.data?.icon
-            ? window.location.origin +
-              new URL(event?.data?.icon ?? "")?.pathname
-            : undefined,
+          logo: event.data?.logo,
           name: event?.data?.name,
           url: new URL(event?.data?.domain).host,
         },
-        authRequest: { hostname: event?.data?.domain },
+        authRequest: { ...context.authRequest, hostname: event?.data?.domain },
       })),
-      assignProcedure: assign((_, event) => ({
+      assignProcedure: assign((context, event) => ({
         requestOrigin: event.data.origin,
         rpcMessage: event.data.rpcMessage,
         rpcMessageDecoded: event.data.rpcMessageDecoded,
+        authRequest: {
+          ...context.authRequest,
+          ...event.data.rpcMessage.params[0],
+        },
       })),
       updateProcedure: assign(({ messageQueue }, event) => {
         return {
@@ -263,7 +281,9 @@ export const NFIDEmbedMachineV2 = createMachine(
         error: event.data,
       })),
       nfid_authenticated: () => {
-        console.debug("nfid_authenticated")
+        console.debug("nfid_authenticated", {
+          origin: window.location.ancestorOrigins[0],
+        })
         window.parent.postMessage(
           { type: "nfid_authenticated" },
           window.location.ancestorOrigins[0],
@@ -297,7 +317,7 @@ export const NFIDEmbedMachineV2 = createMachine(
             ...RPC_BASE,
             id: context.rpcMessage.id,
             // FIXME: find correct error code
-            error: { code: -1, message: "NFID: user canceled request" },
+            error: { code: -1, message: "User canceled request" },
           },
           context.requestOrigin,
         )
@@ -307,8 +327,19 @@ export const NFIDEmbedMachineV2 = createMachine(
       hasProcedure: (context: NFIDEmbedMachineContext) => !!context.rpcMessage,
       isReady: (_: NFIDEmbedMachineContext, __: Events, { state }: any) =>
         state.matches("HANDLE_PROCEDURE.READY"),
-      isAutoApprovable: (context: NFIDEmbedMachineContext) =>
-        ["eth_accounts"].includes(context.rpcMessage?.method ?? ""),
+      isAutoApprovable: (context: NFIDEmbedMachineContext) => {
+        const isAuthoApprovable = [
+          "eth_accounts",
+          "ic_renewDelegation",
+        ].includes(context.rpcMessage?.method ?? "")
+        console.debug("NFIDEmbedMachineV2", {
+          isAuthoApprovable,
+          context,
+        })
+        return ["eth_accounts", "ic_renewDelegation"].includes(
+          context.rpcMessage?.method ?? "",
+        )
+      },
     },
     services: {
       CheckApplicationMeta,

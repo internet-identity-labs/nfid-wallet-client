@@ -17,8 +17,10 @@ import {
   authState,
   authenticationTracking,
   getAnonymousDelegate,
+  getPublicAccountDelegate,
 } from "@nfid/integration"
 
+import { RequestStatus } from "frontend/features/types"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {
@@ -29,11 +31,12 @@ import {
 import { getLegacyThirdPartyAuthSession } from "../../services"
 import { AuthAppMeta } from "../../ui/app-meta"
 import { PublicProfileButton } from "../public-profile-button"
+import { ApproveIcGetDelegationSdkResponse } from "./types"
 
 export interface IAuthChooseAccount {
   appMeta: AuthorizingAppMeta
   authRequest: AuthorizationRequest
-  handleSelectAccount: (authSession: ThirdPartyAuthSession) => void
+  handleSelectAccount: (data: ApproveIcGetDelegationSdkResponse) => void
 }
 
 export const AuthChooseAccount = ({
@@ -59,16 +62,31 @@ export const AuthChooseAccount = ({
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {
-      authenticationTracking.profileChosen({
-        profile: `private-${parseInt(account.accountId) + 1}`,
-      })
       setIsLoading(true)
-      const authSession = await getLegacyThirdPartyAuthSession(
-        authRequest,
-        account.accountId,
-      )
+      try {
+        authenticationTracking.profileChosen({
+          profile: `private-${parseInt(account.accountId) + 1}`,
+        })
 
-      handleSelectAccount(authSession)
+        const authSession = await getLegacyThirdPartyAuthSession(
+          authRequest,
+          account.accountId,
+        )
+
+        handleSelectAccount({
+          status: RequestStatus.SUCCESS,
+          authSession,
+        })
+      } catch (e: any) {
+        console.error(e)
+        toast.error(e.message)
+        handleSelectAccount({
+          status: RequestStatus.ERROR,
+          errorMessage: e.message,
+        })
+      } finally {
+        setIsLoading(false)
+      }
     },
     [authRequest, handleSelectAccount],
   )
@@ -85,7 +103,8 @@ export const AuthChooseAccount = ({
       const anonymousDelegation = await getAnonymousDelegate(
         authRequest.sessionPublicKey,
         delegation,
-        authRequest.derivationOrigin ?? authRequest.hostname,
+        // NOTE: has to be the alias domain. Don't use derivationOrigin here.
+        authRequest.hostname,
       )
 
       const authSession: ThirdPartyAuthSession = {
@@ -95,9 +114,17 @@ export const AuthChooseAccount = ({
         scope: authRequest.derivationOrigin ?? authRequest.hostname,
       }
 
-      handleSelectAccount(authSession)
+      handleSelectAccount({
+        status: RequestStatus.SUCCESS,
+        authSession,
+      })
     } catch (e: any) {
+      console.error(e)
       toast.error(e.message)
+      handleSelectAccount({
+        status: RequestStatus.ERROR,
+        errorMessage: e.message,
+      })
     } finally {
       setIsLoading(false)
     }
@@ -105,6 +132,54 @@ export const AuthChooseAccount = ({
     authRequest.derivationOrigin,
     authRequest.hostname,
     authRequest.sessionPublicKey,
+    handleSelectAccount,
+  ])
+
+  const handleSelectPublic = useCallback(async () => {
+    authenticationTracking.profileChosen({
+      profile: "public",
+    })
+    setIsLoading(true)
+
+    try {
+      const delegation = authState.get().delegationIdentity
+      if (!delegation) throw new Error("No delegation identity")
+      if (!authRequest.targets) throw new Error("No targets")
+
+      const publicDelegation = await getPublicAccountDelegate(
+        authRequest.sessionPublicKey,
+        delegation,
+        // NOTE: has to be the alias domain. Don't use derivationOrigin here.
+        authRequest.hostname,
+        authRequest.targets,
+      )
+
+      const authSession: ThirdPartyAuthSession = {
+        anchor: (await fetchProfile()).anchor,
+        signedDelegation: publicDelegation,
+        userPublicKey: new Uint8Array(publicDelegation.publicKey),
+        scope: authRequest.derivationOrigin ?? authRequest.hostname,
+      }
+
+      handleSelectAccount({
+        status: RequestStatus.SUCCESS,
+        authSession,
+      })
+    } catch (e: any) {
+      console.error(e)
+      toast.error(e.message)
+      handleSelectAccount({
+        status: RequestStatus.ERROR,
+        errorMessage: e.message,
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }, [
+    authRequest.derivationOrigin,
+    authRequest.hostname,
+    authRequest.sessionPublicKey,
+    authRequest.targets,
     handleSelectAccount,
   ])
 
@@ -147,9 +222,13 @@ export const AuthChooseAccount = ({
         </TooltipProvider>
       </div>
       <div className="w-full space-y-2.5 my-9">
-        <PublicProfileButton />
+        <PublicProfileButton
+          isAvailable={!!authRequest.targets}
+          onClick={handleSelectPublic}
+        />
         {legacyAnonymousProfiles?.map((acc) => (
           <div
+            id="profileID"
             key={acc.label}
             className={clsx(
               "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
@@ -166,6 +245,7 @@ export const AuthChooseAccount = ({
         ))}
         {!legacyAnonymousProfiles?.length && (
           <div
+            id="profileID"
             className={clsx(
               "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
               "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",

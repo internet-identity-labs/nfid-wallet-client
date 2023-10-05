@@ -3,6 +3,7 @@ import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import { Cache } from "node-ts-cache"
 import { isHex } from "packages/utils/src/lib/validation"
+import { mutate } from "swr"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
@@ -159,17 +160,29 @@ export abstract class ICMTransferConnector<
       throw new Error("Identity not found. Please try again")
 
     try {
-      "tokenId" in request
-        ? await transferEXT(request.tokenId, request.identity, request.to)
-        : await submitICP(
-            stringICPtoE8s(String(request.amount)),
-            request.to.length === PRINCIPAL_LENGTH
-              ? principalToAddress(Principal.fromText(request.to))
-              : request.to,
-            request.identity,
-          )
+      const res =
+        "tokenId" in request
+          ? await transferEXT(request.tokenId, request.identity, request.to)
+          : await submitICP(
+              stringICPtoE8s(String(request.amount)),
+              request.to.length === PRINCIPAL_LENGTH
+                ? principalToAddress(Principal.fromText(request.to))
+                : request.to,
+              request.identity,
+            )
 
-      return {}
+      setTimeout(() => {
+        "tokenId" in request
+          ? mutate(
+              (key) => key && Array.isArray(key) && key[0] === "userTokens",
+            )
+          : mutate(
+              (key) => key && Array.isArray(key) && key[0] === "AllBalanceRaw",
+            )
+      }, 1000)
+      return {
+        hash: String(res),
+      }
     } catch (e: any) {
       return {
         errorMessage: e ?? "Unknown error",

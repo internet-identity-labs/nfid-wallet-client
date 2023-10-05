@@ -11,7 +11,10 @@ import { getAllActivity } from "./connector/activity-factory"
 export interface IActivityPage {}
 
 const ActivityPage = () => {
-  const { isLoading, data } = useSWR("activity", getAllActivity)
+  const { isLoading, data } = useSWR("activity", getAllActivity, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+  })
 
   return (
     <ProfileTemplate isLoading={isLoading} pageTitle="Activity" showBackButton>

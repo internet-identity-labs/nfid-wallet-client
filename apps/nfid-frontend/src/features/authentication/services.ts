@@ -17,6 +17,7 @@ export async function getLegacyThirdPartyAuthSession(
   selectedPersonaId?: string,
   targets: string[] = [],
 ): Promise<ThirdPartyAuthSession> {
+  console.debug("getLegacyThirdPartyAuthSession", { authRequest })
   if (!authRequest) throw new Error("No auth request")
   const account = await fetchProfile()
 

@@ -7,7 +7,6 @@ import { polygonERC20AssetConnector } from "src/ui/connnector/fungible-asset-scr
 import { maticAssetConnector } from "src/ui/connnector/fungible-asset-screen/polygon/matic-asset"
 import {
   AssetErc20Config,
-  AssetFilter,
   AssetNativeConfig,
   TokenConfig,
 } from "src/ui/connnector/types"
@@ -21,22 +20,8 @@ export class FungibleAssetFactory extends ConnectorFactory<
   string,
   FungibleAssetConnector<AssetNativeConfig | AssetErc20Config>
 > {
-  getTokenConfigs = async (
-    key: string,
-    assetFilters: AssetFilter[],
-  ): Promise<Array<TokenConfig>> => {
-    return super.process(key, [assetFilters])
-  }
-
-  getCacheKey(key: string, functionToCall: Function, args: any[]): string {
-    return (
-      functionToCall.name +
-      key +
-      (args[0]! as AssetFilter[]).reduce(
-        (acc, { principal }) => `${acc}${principal}`,
-        "",
-      )
-    )
+  getTokenConfigs = async (key: string): Promise<Array<TokenConfig>> => {
+    return super.process(key, [])
   }
 
   getFunctionToCall(

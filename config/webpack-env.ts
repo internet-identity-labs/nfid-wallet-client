@@ -1,5 +1,7 @@
 import * as childProcess from "child_process"
 
+import canisterIds from "../canister_ids.json"
+
 const sentryRelease = childProcess
   .execSync("git rev-parse HEAD")
   .toString()
@@ -7,6 +9,7 @@ const sentryRelease = childProcess
   .slice(0, 12)
 
 export const serviceConfig = {
+  CANISTER_IDS: JSON.stringify(canisterIds),
   SENTRY_RELEASE: JSON.stringify(sentryRelease),
   NFID_PROVIDER_URL: JSON.stringify(process.env.NFID_PROVIDER_URL),
   IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
@@ -29,7 +32,7 @@ export const serviceConfig = {
       : "/verify",
   ),
   AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
-  AWS_AUTH_STATS: JSON.stringify(process.env.AWS_AUTH_STATS),
+  AWS_EXCHANGE_RATE: JSON.stringify(process.env.AWS_EXCHANGE_RATE),
   AWS_SEND_VERIFICATION_EMAIL: JSON.stringify(
     process.env.AWS_SEND_VERIFICATION_EMAIL,
   ),
@@ -85,6 +88,7 @@ export const serviceConfig = {
     process.env.AWS_ECDSA_REGISTER_ADDRESS,
   ),
   AWS_ECDSA_GET_ANONYMOUS: JSON.stringify(process.env.AWS_ECDSA_GET_ANONYMOUS),
+  AWS_EXECUTE_CANDID: JSON.stringify(process.env.AWS_EXECUTE_CANDID),
   AWS_FETCH_ALTERNATIVE_ORIGINS: JSON.stringify(
     process.env.AWS_FETCH_ALTERNATIVE_ORIGINS,
   ),

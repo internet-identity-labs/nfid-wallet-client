@@ -28,8 +28,11 @@ Additional test params: $@
 " >&2
 
 ci_echo_info "Building frontend ..." >&2
-ci_echo_debug "yarn --prefer-offline" >&2
-yarn --prefer-offline
+ci_echo_debug "yarn install --frozen-lockfile" >&2
+yarn install --frozen-lockfile
+
+ci_echo_debug "yarn lint" >&2
+yarn lint
 
 ci_echo_debug "npx env-cmd -f .env.dev nx build nfid-frontend" >&2
 npx env-cmd -f .env.dev nx build nfid-frontend

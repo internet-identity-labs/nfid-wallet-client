@@ -35,7 +35,7 @@ import { Cache } from "node-ts-cache"
 import { integrationCache } from "../../cache"
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { getPriceFull } from "./asset-util"
+import { PriceService } from "./asset-util"
 import { NonFungibleAsset } from "./non-fungible-asset"
 import { coinbaseRatesService } from "./service/coinbase-rates.service"
 import { estimateTransaction } from "./service/estimate-transaction.service"
@@ -404,23 +404,25 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
 
   public async getErc20TokensByUser({
     identity,
+    address,
     cursor,
   }: Erc20TokensByUserRequest): Promise<Tokens> {
-    const address = await this.getAddressByIdentity(identity)
+    const validAddress = address ?? (await this.getAddressByIdentity(identity))
     const alchemySdk = this.getAlchemySdk(
       this.config.alchemyNetwork,
       this.config.alchemyApiKey,
     )
-    const tokens = await alchemySdk.core.getTokensForOwner(address, {
+    const tokens = await alchemySdk.core.getTokensForOwner(validAddress, {
       pageKey: cursor,
     })
-    const price = await getPriceFull()
+
+    const price = await new PriceService().getPriceFull()
     return {
       cursor: tokens.pageKey,
       tokens: tokens.tokens
         .filter((x) => x.rawBalance !== undefined && 0 != +x.rawBalance)
         .map((x) => ({
-          address,
+          address: validAddress,
           name: x.name || "",
           symbol: x.symbol || "",
           logo: x.logo,
@@ -434,8 +436,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   public async getAccounts(
     identity: DelegationIdentity,
     defaultIcon?: string,
+    address?: string,
   ): Promise<Array<TokenBalanceSheet>> {
-    const tokens = await this.getErc20TokensByUser({ identity })
+    const tokens = await this.getErc20TokensByUser({ identity, address })
+
     return tokens.tokens.map((l) => {
       return super.computeSheetForRootAccount(
         l,
@@ -448,17 +452,19 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
   public async getNativeAccount(
     identity: DelegationIdentity,
     defaultIcon?: string,
+    address?: string,
   ): Promise<TokenBalanceSheet> {
-    const address = await this.getAddress(identity)
-    const balance = await this.getBalance(undefined, identity)
+    const actualAddress = address ?? (await this.getAddress(identity))
+    const balance = await this.getBalance(address, identity)
     const token: Token = {
-      address: address,
+      address: actualAddress,
       balance: balance.balance ?? "0.00",
       balanceinUsd: "$" + (balance.balanceinUsd ?? "0.00"),
       logo: defaultIcon,
       name: this.getNativeToken(),
       symbol: this.getNativeCurrency(),
     }
+
     return super.computeSheetForRootAccount(
       token,
       identity.getPrincipal().toText(),
@@ -615,7 +621,8 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     })
   }
 
-  private priceInUsd(price: any, balance?: string, token?: string) {
+  private priceInUsd(price?: any, balance?: string, token?: string) {
+    if (!price) return ""
     if (!token || !balance) {
       return ""
     }

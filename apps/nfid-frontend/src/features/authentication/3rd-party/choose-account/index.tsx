@@ -103,8 +103,7 @@ export const AuthChooseAccount = ({
       const anonymousDelegation = await getAnonymousDelegate(
         authRequest.sessionPublicKey,
         delegation,
-        // NOTE: has to be the alias domain. Don't use derivationOrigin here.
-        authRequest.hostname,
+        authRequest.derivationOrigin ?? authRequest.hostname,
       )
 
       const authSession: ThirdPartyAuthSession = {
@@ -149,8 +148,7 @@ export const AuthChooseAccount = ({
       const publicDelegation = await getPublicAccountDelegate(
         authRequest.sessionPublicKey,
         delegation,
-        // NOTE: has to be the alias domain. Don't use derivationOrigin here.
-        authRequest.hostname,
+        authRequest.derivationOrigin ?? authRequest.hostname,
         authRequest.targets,
       )
 

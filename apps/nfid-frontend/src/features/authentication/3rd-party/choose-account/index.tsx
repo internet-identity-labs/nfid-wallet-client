@@ -287,7 +287,7 @@ export const AuthChooseAccount = ({
             <span>Anonymous {appMeta.name} profile</span>
           </div>
         )}
-        {!legacyAnonymousProfiles && isDerivationBug ? (
+        {!legacyAnonymousProfiles?.length && isDerivationBug ? (
           <div
             id="hostnameAnonymous"
             className={clsx(

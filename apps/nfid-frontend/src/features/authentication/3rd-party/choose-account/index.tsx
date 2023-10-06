@@ -78,8 +78,12 @@ export const AuthChooseAccount = ({
   }, [legacyAnonymousProfiles, isAnonymousLoading])
 
   const isDerivationBug = useMemo(() => {
-    return HOT_FIX_V24_1_WRONG_HOSTNAMES.includes(authRequest.hostname)
-  }, [authRequest.hostname])
+    const isDerivationBug = HOT_FIX_V24_1_WRONG_HOSTNAMES.includes(
+      authRequest.hostname,
+    )
+    console.debug("isDerivationBug", { isDerivationBug, authRequest })
+    return isDerivationBug
+  }, [authRequest])
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {

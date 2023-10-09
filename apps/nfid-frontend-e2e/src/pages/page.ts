@@ -1,4 +1,4 @@
-import {ProfileType} from "./types.js"
+import { ProfileType } from "./types.js"
 
 export class Page {
   private get loader() {
@@ -30,18 +30,18 @@ export class Page {
   }
 
   public async waitForLoaderDisappear() {
-    let counter = 0;
+    let counter = 0
     try {
       await this.loader.waitForDisplayed({ timeout: 8000 })
     } catch (e: any) {
-      return;
+      return
     }
-    while (await this.loader.isDisplayed() && counter < 5) {
+    while ((await this.loader.isDisplayed()) && counter < 5) {
       try {
         await this.loader.waitForDisplayed({ timeout: 3000 })
         await this.loader.waitForDisplayed({ timeout: 20000, reverse: true })
       } catch (e: any) {
-        ++counter;
+        ++counter
         // console.log(e);
       }
     }
@@ -59,6 +59,5 @@ export class Page {
     )
   }
 
-  loginUsingIframe(profileType: ProfileType) {
-  }
+  loginUsingIframe(profileType: ProfileType) {}
 }

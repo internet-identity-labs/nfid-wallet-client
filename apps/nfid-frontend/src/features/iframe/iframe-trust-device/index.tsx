@@ -1,6 +1,5 @@
 import { BlurredLoader, Button } from "@nfid-frontend/ui"
 
-
 import securityKey from "./assets/security-key.png"
 import webauthn from "./assets/webauthn.png"
 

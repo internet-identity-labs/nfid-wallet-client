@@ -24,7 +24,10 @@ export async function decodeRpcMessage(
   return functionCallDecoder.decodeRpcMessage(rpcMessage)
 }
 
-export async function decode(data: string, chainId: string): Promise<FunctionCall> {
+export async function decode(
+  data: string,
+  chainId: string,
+): Promise<FunctionCall> {
   return functionCallDecoder.decode(data, chainId)
 }
 

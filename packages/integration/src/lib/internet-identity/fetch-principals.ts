@@ -1,3 +1,4 @@
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { getScope } from "@nfid/config"
@@ -7,7 +8,6 @@ import { ii } from "../actors"
 import { authState } from "../authentication"
 import { Account } from "../identity-manager/account"
 import { Chain, getPublicKey } from "../lambda/ecdsa"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 export interface PrincipalAccount {
   principal: Principal
@@ -23,7 +23,10 @@ export async function fetchPrincipals(
   if (!delegation) throw Error("No delegation identity")
 
   const publicKey = await getPublicKey(delegation, Chain.IC)
-  const principal = Ed25519KeyIdentity.fromParsedJson([publicKey, ""]).getPrincipal()
+  const principal = Ed25519KeyIdentity.fromParsedJson([
+    publicKey,
+    "",
+  ]).getPrincipal()
 
   const globalAcc = {
     account: {

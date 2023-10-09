@@ -1,4 +1,8 @@
-import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 
 import { ii, im } from "@nfid/integration"
 
@@ -53,11 +57,13 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
 }
 
 export const getIdentity = (seed: string): Ed25519KeyIdentity => {
-  const seedEncoded: Uint8Array = new TextEncoder().encode(seed);
-  return Ed25519KeyIdentity.generate(seedEncoded);
-};
+  const seedEncoded: Uint8Array = new TextEncoder().encode(seed)
+  return Ed25519KeyIdentity.generate(seedEncoded)
+}
 
-export const getDelegationIdentity = async (keyIdentity: Ed25519KeyIdentity): Promise<DelegationIdentity> => {
+export const getDelegationIdentity = async (
+  keyIdentity: Ed25519KeyIdentity,
+): Promise<DelegationIdentity> => {
   const identityDevicesessionKey = Ed25519KeyIdentity.generate()
   const identityDeviceChain = await DelegationChain.create(
     keyIdentity,

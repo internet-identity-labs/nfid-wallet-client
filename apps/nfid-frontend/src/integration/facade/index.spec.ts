@@ -128,7 +128,7 @@ describe("Facade suite", () => {
         )) as DeviceData
       expect(removedDevice).toBe(undefined)
       replaceIdentity(delegationIdentity)
-      let aps = (await im.read_access_points())
+      let aps = await im.read_access_points()
       expect(aps.data[0]).toEqual([])
     })
 

@@ -1,8 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-
-
 import Metamask from "./metamask.png"
 
 interface IconMetamaskProps extends React.HTMLAttributes<HTMLDivElement> {

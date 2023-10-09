@@ -1,7 +1,5 @@
 import clsx from "clsx"
 
-
-
 interface ApplicationIconProps {
   appName: string
   icon?: string

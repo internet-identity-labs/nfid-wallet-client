@@ -1,8 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-
-
 import iconClose from "./close.svg"
 
 export interface IChip {

@@ -7,7 +7,12 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
-import { im, im as imMock, replaceActorIdentity, RootWallet } from "@nfid/integration"
+import {
+  im,
+  im as imMock,
+  replaceActorIdentity,
+  RootWallet,
+} from "@nfid/integration"
 
 import { Application } from "frontend/integration/_ic_api/identity_manager.d"
 import {
@@ -15,6 +20,7 @@ import {
   processApplicationOrigin,
   update2fa,
 } from "frontend/integration/identity-manager/index"
+
 import { getDelegationIdentity, getIdentity } from "../test-util"
 
 describe("Identity Manager suite", () => {
@@ -23,7 +29,9 @@ describe("Identity Manager suite", () => {
   describe("Identity Manager Service Test", () => {
     it("Should create NFID profile", async function () {
       const identityDevice = getIdentity("87654321876543218765432187654318")
-      const identityDeviceDelegationIdentity = await getDelegationIdentity(identityDevice)
+      const identityDeviceDelegationIdentity = await getDelegationIdentity(
+        identityDevice,
+      )
 
       const mockedIdentity = getIdentity("87654321876543218765432187654311")
       const delegationIdentity = await getDelegationIdentity(mockedIdentity)
@@ -32,7 +40,7 @@ describe("Identity Manager suite", () => {
       // Optional disable.
       try {
         await update2fa(false)
-      } catch(e) {}
+      } catch (e) {}
 
       await replaceActorIdentity(im, delegationIdentity)
       await im.remove_account()

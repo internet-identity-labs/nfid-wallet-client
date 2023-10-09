@@ -1,7 +1,5 @@
 import clsx from "clsx"
 
-
-
 export type TokenOptionProps = {
   isSelected: boolean
   value: string

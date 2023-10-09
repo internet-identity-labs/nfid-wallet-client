@@ -3,8 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { IoCloseOutline } from "react-icons/io5"
 
-
-
 import useClickOutside from "../../utils/use-click-outside"
 import Arrow from "./arrow.svg"
 

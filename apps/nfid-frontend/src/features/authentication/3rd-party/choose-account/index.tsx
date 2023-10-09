@@ -57,7 +57,7 @@ const HOT_FIX_V24_1_WRONG_HOSTNAMES = [
   "https://65t4u-siaaa-aaaal-qbx4q-cai.ic0.app", // my-icp-app
 ]
 
-const HOT_FIX_V24_2_WRONG_ANCHORS = 100010000
+const HOT_FIX_V24_2_WRONG_ANCHORS = 100009230
 
 export const AuthChooseAccount = ({
   appMeta,

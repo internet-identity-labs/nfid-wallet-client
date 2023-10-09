@@ -22,6 +22,7 @@ import {
 
 import { RequestStatus } from "frontend/features/types"
 import { fetchProfile } from "frontend/integration/identity-manager"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {
   AuthorizationRequest,
@@ -56,6 +57,8 @@ const HOT_FIX_V24_1_WRONG_HOSTNAMES = [
   "https://65t4u-siaaa-aaaal-qbx4q-cai.ic0.app", // my-icp-app
 ]
 
+const HOT_FIX_V24_2_WRONG_ANCHORS = 100009230
+
 export const AuthChooseAccount = ({
   appMeta,
   authRequest,
@@ -63,6 +66,7 @@ export const AuthChooseAccount = ({
 }: IAuthChooseAccount) => {
   const [isLoading, setIsLoading] = useState(false)
   console.debug("AuthChooseAccount", { appMeta })
+  const { profile } = useProfile()
 
   const { data: legacyAnonymousProfiles, isLoading: isAnonymousLoading } =
     useSWR([authRequest, "legacyAnonymousProfiles"], ([authRequest]) =>
@@ -78,12 +82,16 @@ export const AuthChooseAccount = ({
   }, [legacyAnonymousProfiles, isAnonymousLoading])
 
   const isDerivationBug = useMemo(() => {
+    if (!profile?.anchor) return false
+
     const isDerivationBug = HOT_FIX_V24_1_WRONG_HOSTNAMES.includes(
       authRequest.hostname,
     )
+
     console.debug("isDerivationBug", { isDerivationBug, authRequest })
-    return isDerivationBug
-  }, [authRequest])
+
+    return isDerivationBug && profile?.anchor < HOT_FIX_V24_2_WRONG_ANCHORS
+  }, [authRequest, profile?.anchor])
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {

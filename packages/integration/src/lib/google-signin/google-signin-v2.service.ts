@@ -9,9 +9,7 @@ import { ic } from "../agent"
 const signinV2 = "/signin/v2"
 
 interface GoogleSigninV2Service {
-  signin(
-    token: string,
-  ): Promise<{
+  signin(token: string): Promise<{
     delegation: DelegationIdentity
     identity: Ed25519KeyIdentity
     email: string
@@ -19,9 +17,7 @@ interface GoogleSigninV2Service {
 }
 
 export const googleSigninV2Service: GoogleSigninV2Service = {
-  async signin(
-    token: string,
-  ): Promise<{
+  async signin(token: string): Promise<{
     delegation: DelegationIdentity
     identity: Ed25519KeyIdentity
     email: string

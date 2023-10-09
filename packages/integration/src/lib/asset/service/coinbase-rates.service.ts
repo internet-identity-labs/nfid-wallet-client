@@ -15,9 +15,9 @@ export const coinbaseRatesService = {
       throw Error("The Chain is not supported.")
     }
 
-    const tokenPrice = await new PriceService().getPrice([chainName]).then((tokenPrices) =>
-      parseFloat(tokenPrices[0].price),
-    )
+    const tokenPrice = await new PriceService()
+      .getPrice([chainName])
+      .then((tokenPrices) => parseFloat(tokenPrices[0].price))
 
     return tokenPrice
   },

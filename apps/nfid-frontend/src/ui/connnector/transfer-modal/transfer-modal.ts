@@ -159,8 +159,9 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   @Cache(connectorCache, { ttl: 60 })
   async getRate(currency: string): Promise<string> {
     return (
-      (await new PriceService().getPrice([currency])).find((t) => t.token === currency)?.price ??
-      "0"
+      (await new PriceService().getPrice([currency])).find(
+        (t) => t.token === currency,
+      )?.price ?? "0"
     )
   }
 

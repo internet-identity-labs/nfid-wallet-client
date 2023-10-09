@@ -1,7 +1,5 @@
 import clsx from "clsx"
 
-
-
 import { IconSvgChevron } from "../../atoms/icons"
 
 export type SelectedTokenProps = {
@@ -22,12 +20,7 @@ export const SelectedToken: React.FC<SelectedTokenProps> = ({
       </div>
       <div>{symbol}</div>
       <div>
-        <img
-          src={IconSvgChevron}
-          alt={`icon-chevron`}
-          width={20}
-          height={20}
-        />
+        <img src={IconSvgChevron} alt={`icon-chevron`} width={20} height={20} />
       </div>
     </div>
   )

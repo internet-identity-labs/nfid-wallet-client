@@ -1,5 +1,3 @@
-
-
 import { AuthAppMeta } from "../../../ui/app-meta"
 import ImageVerified from "../images/verified.png"
 

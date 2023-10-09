@@ -1,7 +1,5 @@
 import clsx from "clsx"
 
-
-
 import { IOption } from "."
 import { Checkbox } from "../../atoms/checkbox"
 

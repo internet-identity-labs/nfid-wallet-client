@@ -14,7 +14,10 @@ import {
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { AuthorizationRequest, AuthorizingAppMeta } from "frontend/state/authorization"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 
 import { AuthAppMeta } from "../../ui/app-meta"
@@ -23,7 +26,7 @@ import { authWithAnchor } from "./services"
 export interface AuthOtherSignOptionsProps {
   onBack: () => void
   appMeta?: AuthorizingAppMeta
-  onSuccess: (authSession: AbstractAuthSession) => void,
+  onSuccess: (authSession: AbstractAuthSession) => void
   authRequest?: AuthorizationRequest
 }
 

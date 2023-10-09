@@ -1,5 +1,3 @@
-
-
 import loader from "./loader.webp"
 
 interface NFIDLogoSpinningProps {

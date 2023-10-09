@@ -87,6 +87,7 @@ export default function AuthenticationCoordinator({
           onSuccess={(authSession: AbstractAuthSession) =>
             send({ type: "AUTHENTICATED", data: authSession })
           }
+          authRequest={state.context.authRequest}
         />
       )
     case state.matches("TwoFA"):

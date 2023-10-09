@@ -1,7 +1,5 @@
 import clsx from "clsx"
 
-
-
 import { NFIDLogoSpinning } from "../nfid-logo-spinning"
 import logo from "./logo.svg"
 

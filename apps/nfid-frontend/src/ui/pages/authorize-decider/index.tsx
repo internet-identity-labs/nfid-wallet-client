@@ -1,7 +1,6 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-
 import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"

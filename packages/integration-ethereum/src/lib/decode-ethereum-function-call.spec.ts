@@ -12,7 +12,7 @@ describe("Decode function call data.", () => {
 
   beforeEach(async () => {
     await waitOneSecond()
-  });
+  })
 
   it("should return decoded approve request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
@@ -959,7 +959,6 @@ describe("Decode function call data.", () => {
   })
 
   it("should return buy tokenId for 721 by assetClass", async () => {
-
     const type = "0x73ad2146"
     const data =
       "0x000000000000000000000000d8560c88d1dc85f9ed05b25878e366c49b68bef93eb89979bd2468b0fc0ed83cbf3fec379969c5e3000000000000000000000012"
@@ -1015,7 +1014,7 @@ describe("Decode function call data.", () => {
 function waitOneSecond(): Promise<void> {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
-      resolve();
-    }, 1000);
-  });
+      resolve()
+    }, 1000)
+  })
 }

@@ -1,10 +1,11 @@
 import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
+import { Feature } from "@nfid/config"
+
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
 import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
-import { Feature } from "@nfid/config";
 
 export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"

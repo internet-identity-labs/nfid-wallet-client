@@ -1,8 +1,6 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
 
-
-
 import { UserPicture, UserPictureProps } from "."
 
 const meta: Meta = {

@@ -1,9 +1,9 @@
 import { When } from "@cucumber/cucumber"
 
 import { baseURL } from "../../wdio.conf.js"
-import DemoTransactions from "../pages/demo-transactions.js"
 import userClient from "../helpers/accounts-service.js"
 import assets, { Assets } from "../pages/assets.js"
+import DemoTransactions from "../pages/demo-transactions.js"
 import HomePage from "../pages/home-page.js"
 import Collectibles from "../pages/nft.js"
 import Profile from "../pages/profile.js"
@@ -360,6 +360,9 @@ When(/^I press on Activity icon$/, async () => {
   await assets.openActivity()
 })
 
-When(/^User sends (.*)? ICP to (.*)$/, async (amount: number, address: string) => {
-  await DemoTransactions.sendICPTransaction(amount, address)
-})
+When(
+  /^User sends (.*)? ICP to (.*)$/,
+  async (amount: number, address: string) => {
+    await DemoTransactions.sendICPTransaction(amount, address)
+  },
+)

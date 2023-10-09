@@ -3,7 +3,8 @@ import {
   Certificate,
   HashTree,
   reconstruct,
-  compare, HttpAgent,
+  compare,
+  HttpAgent,
 } from "@dfinity/agent"
 import { PipeArrayBuffer, lebDecode } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
@@ -36,9 +37,12 @@ export async function verifyCertification({
 
   const agent = new HttpAgent({ host: IC_HOST })
   await agent.fetchRootKey()
-  const certificate = await new Certificate( {
-    certificate: encodedCertificate,
-  }, agent)
+  const certificate = await new Certificate(
+    {
+      certificate: encodedCertificate,
+    },
+    agent,
+  )
   await certificate.verify()
   const tree = Cbor.decode<HashTree>(encodedTree)
 

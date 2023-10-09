@@ -1,8 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-
-
 import logo from "../../assets/id.svg"
 
 interface SDKHeaderProps {

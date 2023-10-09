@@ -14,7 +14,7 @@ import {
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { AuthorizingAppMeta } from "frontend/state/authorization"
+import { AuthorizationRequest, AuthorizingAppMeta } from "frontend/state/authorization"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 
 import { AuthAppMeta } from "../../ui/app-meta"
@@ -23,13 +23,15 @@ import { authWithAnchor } from "./services"
 export interface AuthOtherSignOptionsProps {
   onBack: () => void
   appMeta?: AuthorizingAppMeta
-  onSuccess: (authSession: AbstractAuthSession) => void
+  onSuccess: (authSession: AbstractAuthSession) => void,
+  authRequest?: AuthorizationRequest
 }
 
 export const AuthOtherSignOptions = ({
   onBack,
   appMeta,
   onSuccess,
+  authRequest,
 }: AuthOtherSignOptionsProps) => {
   const [isLoading, setIsLoading] = React.useState(false)
   const { register, handleSubmit } = useForm<{
@@ -67,7 +69,7 @@ export const AuthOtherSignOptions = ({
         applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url}
         applicationName={appMeta?.name}
-        title="Use your NFID Account"
+        title={authRequest ? "Use your NFID Wallet" : "Use your NFID Account"}
       />
       <div
         className={clsx(

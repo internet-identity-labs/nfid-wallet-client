@@ -7,9 +7,7 @@ global.TextDecoder = TextDecoder
 // @ts-ignore
 global._expect = global.expect
 
-
 // // global.fetch = require("node-fetch")
 // import fetch from "node-fetch"
 // //@ts-ignore
 // global.fetch = fetch
-

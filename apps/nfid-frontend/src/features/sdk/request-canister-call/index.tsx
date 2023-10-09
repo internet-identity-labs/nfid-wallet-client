@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import useSWR from "swr"
 
-import {  Button, IconCmpWarning } from "@nfid-frontend/ui"
+import { Button, IconCmpWarning } from "@nfid-frontend/ui"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
@@ -75,10 +75,7 @@ export const RequestCanisterCall = ({
         <Button type="primary" onClick={onConfirm}>
           Approve
         </Button>
-        <Button
-          type="stroke"
-          onClick={onReject}
-        >
+        <Button type="stroke" onClick={onReject}>
           Reject
         </Button>
 

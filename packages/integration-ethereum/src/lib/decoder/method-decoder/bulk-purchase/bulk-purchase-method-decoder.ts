@@ -34,7 +34,10 @@ class BulkPurchaseMethodDecoder implements MethodDecoder {
     return "0xb94ee332"
   }
 
-  async map({ inputs }: DecodedFunctionCall, chainId: string): Promise<BulkPurchase> {
+  async map(
+    { inputs }: DecodedFunctionCall,
+    chainId: string,
+  ): Promise<BulkPurchase> {
     const [itemsData, feeRecipientFirst, feeRecipientSecond, allowFail] = inputs
 
     const itemPromises = itemsData.map(async (item: any) => {

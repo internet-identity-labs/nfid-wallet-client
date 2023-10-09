@@ -1,7 +1,5 @@
 import React from "react"
 
-
-
 interface ApplicationLogoProps {
   src: string
   applicationName?: string

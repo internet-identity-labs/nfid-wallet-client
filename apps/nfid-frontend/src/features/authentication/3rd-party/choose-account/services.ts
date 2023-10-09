@@ -1,5 +1,10 @@
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { principalToAddress } from "ictool"
-import { Chain, getGlobalKeys, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
+import {
+  Chain,
+  getGlobalKeys,
+  getPublicKey,
+} from "packages/integration/src/lib/lambda/ecdsa"
 
 import { truncateString } from "@nfid-frontend/utils"
 import { authState, getBalance } from "@nfid/integration"
@@ -7,7 +12,6 @@ import { authState, getBalance } from "@nfid/integration"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 export const getPublicProfile = async (): Promise<{
   address: string

@@ -1,3 +1,4 @@
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 import { useAllDip20Token } from "src/features/fungable-token/dip-20/hooks/use-all-token-meta"
 import { useBalanceICPAll } from "src/features/fungable-token/icp/hooks/use-balance-icp-all"
@@ -8,7 +9,6 @@ import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 export const useICTokens = (
   assetFilter: AssetFilter[],

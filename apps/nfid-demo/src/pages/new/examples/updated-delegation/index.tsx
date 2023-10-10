@@ -19,11 +19,18 @@ const Example = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const handleUpdateGlobalDelegation = React.useCallback(
-    async (targets: string[]) => {
+    async ({
+      targets,
+      maxTimeToLive,
+    }: {
+      targets: string[]
+      maxTimeToLive: bigint
+    }) => {
       if (!nfid) throw new Error("NFID not initialized")
       setLoading(true)
       const response = await nfid.updateGlobalDelegation({
         targets,
+        maxTimeToLive,
       })
       // @ts-ignore
       setIdentity(response)

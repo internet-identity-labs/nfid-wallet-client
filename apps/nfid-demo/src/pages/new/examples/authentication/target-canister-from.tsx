@@ -4,7 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
 
 import { Button, Input } from "@nfid-frontend/ui"
-import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
+import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 const CANISTER_IDS = [
   // "txkre-oyaaa-aaaap-qa3za-cai",
@@ -42,11 +42,9 @@ export const TargetCanisterForm = ({
       },
     },
   )
-
   const { fields, append, remove } = useFieldArray({
-    rules: { minLength: 4 },
     control,
-    name: "canisterIds", // This should match the name of your array field
+    name: "canisterIds",
   })
 
   const prepareForm = React.useCallback(
@@ -59,38 +57,41 @@ export const TargetCanisterForm = ({
   )
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit(prepareForm)} className="flex flex-col gap-4">
+      <section className="flex flex-col gap-2">
         <Input
           labelText={"Delegation max time to live (ns)"}
           {...register("maxTimeToLive")} // Use index to name the input fields
           className="flex-1"
         />
-        {fields.map((field, index) => {
-          return (
-            <div key={field.id} className="flex gap-2 center">
-              <Input
-                labelText={`target canisterId ${index + 1}`}
-                {...register(`canisterIds.${index}.canisterId`)} // Use index to name the input fields
-                placeholder={`add canisterId ${index + 1}`}
-                className="flex-1"
-              />
-              <div className="flex items-end flex-end">
-                <Button
-                  className="h-10"
-                  type="stroke"
-                  isSmall
-                  onClick={() => remove(index)}
-                >
-                  delete
-                </Button>
+        <ul className="flex flex-col gap-2">
+          {fields.map((field, index) => {
+            return (
+              <div key={field.id} className="flex gap-2 center">
+                <Input
+                  labelText={`target canisterId ${index + 1}`}
+                  {...register(`canisterIds.${index}.canisterId`)} // Use index to name the input fields
+                  placeholder={`add canisterId ${index + 1}`}
+                  className="flex-1"
+                />
+                <div className="flex items-end flex-end">
+                  <Button
+                    className="h-10"
+                    type="stroke"
+                    isSmall
+                    onClick={() => remove(index)}
+                  >
+                    delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          )
-        })}
-      </div>
-      <div className="flex gap-2">
+            )
+          })}
+        </ul>
+      </section>
+      <section className="flex gap-2">
         <Button
+          as="div"
           id="buttonAddTargetCanisterId"
           type="stroke"
           isSmall
@@ -105,13 +106,13 @@ export const TargetCanisterForm = ({
         >
           Add target canisterId
         </Button>
-        <Button isSmall id={submitButtonId} onClick={handleSubmit(prepareForm)}>
+        <Button isSmall id={submitButtonId}>
           <div className={"flex items-center space-x-2"}>
             {isLoading ? <ImSpinner className={"animate-spin"} /> : ""}
             <div>{submitButtonText}</div>
           </div>
         </Button>
-      </div>
-    </div>
+      </section>
+    </form>
   )
 }

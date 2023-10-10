@@ -57,7 +57,6 @@ export const ExecuteProcedureService = async (
     throw new Error("ExecuteProcedureService: missing requestOrigin")
 
   const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
-  const delegation = await getWalletDelegation(authSession.anchor)
   const { rpcUrl } = rpcMessage.options
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
@@ -103,6 +102,7 @@ export const ExecuteProcedureService = async (
     }
     case "eth_accounts": {
       const adapter = new DelegationWalletAdapter(rpcUrl)
+      const delegation = await getWalletDelegation(authSession.anchor)
       const address = await adapter.getAddress(delegation)
 
       const response = { ...rpcBase, result: [address] }
@@ -172,6 +172,7 @@ export const ExecuteProcedureService = async (
     }
     case "eth_signTypedData_v4": {
       const [, typedData] = rpcMessage.params
+      const delegation = await getWalletDelegation(authSession.anchor)
       const adapter = new DelegationWalletAdapter(rpcUrl)
       const result = await adapter.signTypedData(
         JSON.parse(typedData),
@@ -185,6 +186,7 @@ export const ExecuteProcedureService = async (
     }
     case "eth_sendTransaction": {
       const adapter = new DelegationWalletAdapter(rpcUrl)
+      const delegation = await getWalletDelegation(authSession.anchor)
       const { wait, ...result } = await adapter.sendTransaction(
         delegation,
         event.type === "APPROVE" ? event.data?.populatedTransaction : undefined,
@@ -198,6 +200,7 @@ export const ExecuteProcedureService = async (
     case "personal_sign": {
       const [message] = rpcMessage.params
       const adapter = new DelegationWalletAdapter(rpcUrl)
+      const delegation = await getWalletDelegation(authSession.anchor)
       const result = await adapter.signMessage(message, delegation)
       const response = { ...rpcBase, result: result }
       console.debug("ExecuteProcedureService personal_sign", {

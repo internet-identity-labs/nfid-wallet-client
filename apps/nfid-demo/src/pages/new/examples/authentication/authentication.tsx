@@ -4,6 +4,7 @@ import { ImSpinner } from "react-icons/im"
 import { Button } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
+import { ExampleMethod } from "../../method"
 import { TargetCanisterForm } from "./target-canister-from"
 
 export const AuthenticationForm = () => {
@@ -36,23 +37,32 @@ export const AuthenticationForm = () => {
       Logout
     </Button>
   ) : (
-    <div className="flex-col gap-2">
+    <div className="flex-col space-y-5">
       <TargetCanisterForm
         submitButtonId="buttonAuthenticate"
         submitButtonText={"Authenticate"}
         isLoading={authButton.loading}
         onSubmit={handleAuthenticate}
       />
-      <Button
-        isSmall
-        id={"buttonLegacyAuth"}
-        onClick={handleLegacyAuthenticate}
-      >
-        <div className={"flex items-center space-x-2"}>
-          {authButton.loading ? <ImSpinner className={"animate-spin"} /> : ""}
-          <div>AuthClient Login</div>
+      <div className="flex-col mt-5 space-y-2">
+        <h3 className="font-semibold">
+          Legacy implementation (DFINTIY authClient)
+        </h3>
+        <div>
+          This is only for testing purposes. Please use{" "}
+          <ExampleMethod>nfid.getDelegate()</ExampleMethod>
         </div>
-      </Button>
+        <Button
+          isSmall
+          id={"buttonLegacyAuth"}
+          onClick={handleLegacyAuthenticate}
+        >
+          <div className={"flex items-center space-x-2"}>
+            {authButton.loading ? <ImSpinner className={"animate-spin"} /> : ""}
+            <div>Authenticate</div>
+          </div>
+        </Button>
+      </div>
     </div>
   )
 }

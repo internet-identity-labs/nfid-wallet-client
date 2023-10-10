@@ -5,6 +5,8 @@ import {
 } from "@dfinity/identity"
 import * as jose from "jose"
 
+import { ONE_HOUR_IN_MS } from "@nfid/config"
+
 import { ic } from "../agent"
 
 export type VerificationStatus = "success" | "invalid-token" | "link-required"
@@ -108,12 +110,28 @@ export const verificationService = {
     return "success"
   },
 
+  /**
+   * Checks the verification of an email address using the specified verification method.
+   *
+   * @param verificationMethod - The verification method to use.
+   * @param emailAddress - The email address to verify.
+   * @param keypair - The key pair to use for signing the verification token.
+   * @param requestId - The ID of the verification request.
+   * @param nonce - The nonce to use for the verification token.
+   * @param maxTimeToLive - The maximum time to live for returned delegation chain, in milliseconds.
+   *
+   * @returns A promise that resolves to an object containing the identity, chain root, and delegation identity.
+   *
+   * @throws VerificationIsInProgressError if the verification is still in progress.
+   * @throws Error if an error occurs during the verification process.
+   */
   async checkVerification(
     verificationMethod: VerificationMethod,
     emailAddress: string,
     keypair: KeyPair,
     requestId: string,
     nonce: number,
+    maxTimeToLive = ONE_HOUR_IN_MS * 2,
   ): Promise<{
     identity: Ed25519KeyIdentity
     chainRoot: DelegationChain
@@ -139,12 +157,12 @@ export const verificationService = {
       .setIssuedAt()
       .sign(privateKey)
 
-    const body = { token }
+    const request = { token, delegationTtl: maxTimeToLive }
 
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(request),
     })
 
     const text = await response.text()

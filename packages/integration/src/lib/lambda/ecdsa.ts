@@ -4,7 +4,7 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
-import { ONE_MINUTE_IN_MS } from "@nfid/config"
+import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
 import {
@@ -33,6 +33,7 @@ export async function getGlobalKeysThirdParty(
   targets: string[],
   sessionPublicKey: Uint8Array,
   origin: string,
+  maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
   const chain = Chain.IC
 
@@ -52,6 +53,7 @@ export async function getGlobalKeysThirdParty(
     sessionPublicKey: toHexString(sessionPublicKey),
     tempPublicKey: lambdaPublicKey,
     targets,
+    maxTimeToLive,
   }
 
   const delegationJSON = await fetchSignUrl(request)
@@ -126,10 +128,20 @@ export async function getGlobalKeys(
   return response
 }
 
+/**
+ * Signs a message using ECDSA.
+ *
+ * @param keccak - The message to sign.
+ * @param identity - The users delegation identity.
+ * @param chain - The chain to sign on.
+ * @param maxTimeToLive - The maximum time to live for the delegation chain.
+ * @returns A Promise that resolves to the signature.
+ */
 export async function ecdsaSign(
   keccak: string,
   identity: DelegationIdentity,
   chain: Chain,
+  maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<string> {
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
@@ -145,6 +157,7 @@ export async function ecdsaSign(
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
     keccak,
+    delegationTtl: maxTimeToLive,
   }
   const signUrl = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
   return await fetch(signUrl, {
@@ -157,11 +170,21 @@ export async function ecdsaSign(
   })
 }
 
+/**
+ * Retrieves an anonymous delegation chain from the server using ECDSA.
+ * @param domain - The domain requesting the delegation.
+ * @param sessionKey - The session key as a Uint8Array.
+ * @param identity - The users delegation identity.
+ * @param chain - The target blockchain.
+ * @param maxTimeToLive - The maximum time to live for the delegation chain, in milliseconds. Defaults to 2 hours.
+ * @returns A Promise that resolves to a DelegationChain object.
+ */
 export async function ecdsaGetAnonymous(
   domain: string,
   sessionKey: Uint8Array,
   identity: DelegationIdentity,
   chain: Chain,
+  maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
@@ -178,6 +201,7 @@ export async function ecdsaGetAnonymous(
     tempPublicKey: lambdaPublicKey,
     domain,
     sessionPublicKey: toHexString(sessionKey),
+    delegationTtl: maxTimeToLive,
   }
   const signUrl = ic.isLocal ? `/ecdsa_get_anonymous` : AWS_ECDSA_GET_ANONYMOUS
   return await fetch(signUrl, {

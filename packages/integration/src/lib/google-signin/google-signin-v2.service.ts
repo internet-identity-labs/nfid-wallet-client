@@ -4,12 +4,17 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
+import { ONE_HOUR_IN_MS } from "@nfid/config"
+
 import { ic } from "../agent"
 
 const signinV2 = "/signin/v2"
 
 interface GoogleSigninV2Service {
-  signin(token: string): Promise<{
+  signin(
+    token: string,
+    maxTimeToLive?: number,
+  ): Promise<{
     delegation: DelegationIdentity
     identity: Ed25519KeyIdentity
     email: string
@@ -17,7 +22,10 @@ interface GoogleSigninV2Service {
 }
 
 export const googleSigninV2Service: GoogleSigninV2Service = {
-  async signin(token: string): Promise<{
+  async signin(
+    token: string,
+    maxTimeToLive = ONE_HOUR_IN_MS * 2,
+  ): Promise<{
     delegation: DelegationIdentity
     identity: Ed25519KeyIdentity
     email: string
@@ -26,10 +34,15 @@ export const googleSigninV2Service: GoogleSigninV2Service = {
 
     const ed25519KeyIdentity = Ed25519KeyIdentity.generate()
     const publicKeyDerHex = ed25519KeyIdentity.toJSON()[0]
+    const request = {
+      token,
+      publicKey: publicKeyDerHex,
+      delegationTtl: maxTimeToLive,
+    }
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, publicKey: publicKeyDerHex }),
+      body: JSON.stringify(request),
     })
 
     const text = await response.text()

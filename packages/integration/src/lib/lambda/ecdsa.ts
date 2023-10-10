@@ -33,6 +33,7 @@ export async function getGlobalKeysThirdParty(
   targets: string[],
   sessionPublicKey: Uint8Array,
   origin: string,
+  maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
   const chain = Chain.IC
 
@@ -52,6 +53,7 @@ export async function getGlobalKeysThirdParty(
     sessionPublicKey: toHexString(sessionPublicKey),
     tempPublicKey: lambdaPublicKey,
     targets,
+    maxTimeToLive,
   }
 
   const delegationJSON = await fetchSignUrl(request)

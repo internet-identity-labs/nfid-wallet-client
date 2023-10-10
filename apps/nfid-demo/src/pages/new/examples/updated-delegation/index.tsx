@@ -14,7 +14,7 @@ const identity = await nfid.updateGlobalDelegation()
 `
 
 const Example = () => {
-  const { nfid, identity, setIdentity } = useAuthenticationContext()
+  const { nfid, setIdentity } = useAuthenticationContext()
 
   const [loading, setLoading] = React.useState<boolean>(false)
 

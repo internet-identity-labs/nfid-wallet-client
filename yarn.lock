@@ -2494,18 +2494,6 @@
     "@devtools-ds/themes" "^1.2.0"
     clsx "1.1.0"
 
-"@dfinity/agent@0.15.6":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.15.6.tgz#a22eb276956065184329c70bb3ef21be94983790"
-  integrity sha512-Ch+tXAszPap0zwRgr/oFEgJLDld4RDwBdFDqR1JUg38xhHWTFMrTkjMT6uQFvqf6d2wDXnh3zwhqbg5P7OCv7A==
-  dependencies:
-    base64-arraybuffer "^0.2.0"
-    bignumber.js "^9.0.0"
-    borc "^2.1.1"
-    js-sha256 "0.9.0"
-    simple-cbor "^0.4.1"
-    ts-node "^10.8.2"
-
 "@dfinity/agent@^0.10.1":
   version "0.10.4"
   resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.10.4.tgz#269406f1cb5524276c52ddf37e933abd75529063"
@@ -2528,13 +2516,6 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
-"@dfinity/auth-client@0.15.6":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.15.6.tgz#ae2702c4be6dcfe8808680b449a89429511dab52"
-  integrity sha512-UpqJ2qab8IlijUiXR0ig4Ww4ymXzE6auSXHf8fXcLSIT8NTAD/7U8+VLUcPj8rkqrExcNMCskeipKxnqHINJYw==
-  dependencies:
-    idb "^7.0.2"
-
 "@dfinity/auth-client@^0.11.3":
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.11.3.tgz#f337f5b4249a09f00092ed0ad8bd3e76bfbed196"
@@ -2555,15 +2536,6 @@
   resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.11.3.tgz#aed66124751545522acf9bde7cdc22b5d9ce31df"
   integrity sha512-xX7xNj2lLt7SIlvy0sqNp4fpcTD/xnwEu9APj0tnIF64cnsxIiS12T1Z8jl9g80jCQ1CbRPQf4cfsOfS3Cd2OA==
 
-"@dfinity/identity@0.15.6":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.15.6.tgz#9ce81c8ae1793d26cfaf95825bf7a49d161bf4fb"
-  integrity sha512-hzTyKXAWPHxkZkOWxGj4JUITwdv92VEKnh3l334Yk9h6aw3m7Gi/ujEBLfszsl0LUA82tV4W2MDIz99KMAuW+g==
-  dependencies:
-    borc "^2.1.1"
-    js-sha256 "^0.9.0"
-    tweetnacl "^1.0.1"
-
 "@dfinity/identity@^0.11.3":
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.11.3.tgz#b7ae0d049159f98bb3b693683824b7315124c4bb"
@@ -2574,14 +2546,6 @@
     js-sha256 "^0.9.0"
     secp256k1 "^4.0.2"
     tweetnacl "^1.0.1"
-
-"@dfinity/principal@0.15.6":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.15.6.tgz#c1260f8d09091eb5a4abfaf942940fe75184e4bb"
-  integrity sha512-eMsS5YofRk5Hm6LlhzyBvw1RzDxM5FWPtepQuYeZbZyD/ztq4TrUiScqoKBFw/LLODd0znt8rGnNgqtt+7JnQA==
-  dependencies:
-    js-sha256 "^0.9.0"
-    ts-node "^10.8.2"
 
 "@dfinity/principal@^0.10.1":
   version "0.10.4"
@@ -4513,15 +4477,11 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.0-alpha.0":
-  version "0.10.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.0.tgz#b3561073d2364e3d90459000781f9084f24475e3"
-  integrity sha512-e/GojLKkyWB6FOY6c4QT5v9GvDCXRxxMuQ0Ga17mt++XQEIwJ4fw/iH9fPOWy6ZJ/JU9DmO2XIe5XhUK8jaT7A==
+"@nfid/embed@0.10.0-alpha.2":
+  version "0.10.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.2.tgz#d71882424096e8cf0e3913b1ad5be9b15c480697"
+  integrity sha512-0fJD5e+6DW4M82n+uGPStCi1C7mX486/9dOL+SdjjtxrZ/n8ywq/0xdDgn+LMe7vU8IzFvDku7ZTm/pcANLJrA==
   dependencies:
-    "@dfinity/agent" "0.15.6"
-    "@dfinity/auth-client" "0.15.6"
-    "@dfinity/identity" "0.15.6"
-    "@dfinity/principal" "0.15.6"
     ethers "^5.7.2"
     idb "7.1.1"
     rxjs "7.5.7"
@@ -17750,7 +17710,7 @@ ictool@^0.0.6:
     crc-32 "^1.2.2"
     crypto-js "^4.1.1"
 
-idb@7.1.1, idb@^7.0.2:
+idb@7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
   integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==
@@ -27525,7 +27485,7 @@ ts-loader@^9.3.1:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
-ts-node@10.9.1, ts-node@^10.7.0, ts-node@^10.8.1, ts-node@^10.8.2:
+ts-node@10.9.1, ts-node@^10.7.0, ts-node@^10.8.1:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==

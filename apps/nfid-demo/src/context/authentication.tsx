@@ -59,7 +59,7 @@ export const AuthenticationProvider: React.FC<{
     const expirationTime = new Date(
       Number(
         identity.getDelegation().delegations[0].delegation.expiration /
-          BigInt(1000000),
+          BigInt(1_000_000),
       ),
     ).toString()
     const targets = identity.getDelegation().delegations[0].delegation.targets

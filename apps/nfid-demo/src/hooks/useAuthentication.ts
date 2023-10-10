@@ -1,13 +1,18 @@
+import { HttpAgent } from "@dfinity/agent"
+import { AuthClient } from "@dfinity/auth-client"
 import { DelegationIdentity } from "@dfinity/identity"
 import React from "react"
+import useSWR from "swr"
 
 import { useAuthenticationContext } from "../context/authentication"
 import { useButtonState } from "./useButtonState"
 
 declare const CANISTER_IDS: { [key: string]: { [key: string]: string } }
+declare const NFID_PROVIDER_URL: string
 
 export const useAuthentication = () => {
   const { nfid, identity, setIdentity } = useAuthenticationContext()
+  const { data: authClient } = useSWR("authClient", () => AuthClient.create())
   const [error, setError] = React.useState<string>()
 
   const [authButton, updateAuthButton] = useButtonState({
@@ -35,6 +40,32 @@ export const useAuthentication = () => {
     }
   }, [nfid, setIdentity, updateAuthButton])
 
+  const handleLegacyAuthenticate = React.useCallback(async () => {
+    if (!authClient) return
+
+    updateAuthButton({ loading: true, label: "Authenticating..." })
+    await authClient.login({
+      onSuccess: () => {
+        const identity = authClient.getIdentity() as DelegationIdentity
+        if (!(window as any).ic) (window as any).ic = {}
+        ;(window as any).ic.agent = new HttpAgent({
+          identity,
+          host: "https://ic0.app",
+        })
+        updateAuthButton({
+          disabled: false,
+          loading: false,
+          label: "Logout",
+        })
+        setIdentity(identity)
+      },
+      onError: (error: any) => {
+        console.error(error)
+      },
+      identityProvider: `${NFID_PROVIDER_URL}/authenticate?applicationName=NFID-DEMO&applicationLogo=https://logo.clearbit.com/clearbit.com`,
+      windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
+    })
+  }, [authClient, setIdentity, updateAuthButton])
   const handleAuthenticate = React.useCallback(
     async (targets: string[]) => {
       setError(undefined)
@@ -69,5 +100,6 @@ export const useAuthentication = () => {
     authButton,
     updateAuthButton,
     handleAuthenticate,
+    handleLegacyAuthenticate,
   }
 }

@@ -142,6 +142,9 @@ export const AuthChooseAccount = ({
           authRequest.sessionPublicKey,
           delegation,
           domain,
+          authRequest.maxTimeToLive
+            ? Number(authRequest.maxTimeToLive / BigInt(1000))
+            : undefined,
         )
 
         const authSession: ThirdPartyAuthSession = {
@@ -169,6 +172,7 @@ export const AuthChooseAccount = ({
     [
       authRequest.derivationOrigin,
       authRequest.hostname,
+      authRequest.maxTimeToLive,
       authRequest.sessionPublicKey,
       handleSelectAccount,
     ],
@@ -190,6 +194,9 @@ export const AuthChooseAccount = ({
         delegation,
         authRequest.derivationOrigin ?? authRequest.hostname,
         authRequest.targets,
+        authRequest.maxTimeToLive
+          ? Number(authRequest.maxTimeToLive / BigInt(1000))
+          : undefined,
       )
 
       const authSession: ThirdPartyAuthSession = {
@@ -216,6 +223,7 @@ export const AuthChooseAccount = ({
   }, [
     authRequest.derivationOrigin,
     authRequest.hostname,
+    authRequest.maxTimeToLive,
     authRequest.sessionPublicKey,
     authRequest.targets,
     handleSelectAccount,

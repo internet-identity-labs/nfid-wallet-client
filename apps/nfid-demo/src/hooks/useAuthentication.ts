@@ -67,7 +67,13 @@ export const useAuthentication = () => {
     })
   }, [authClient, setIdentity, updateAuthButton])
   const handleAuthenticate = React.useCallback(
-    async (targets: string[]) => {
+    async ({
+      targets,
+      maxTimeToLive,
+    }: {
+      targets: string[]
+      maxTimeToLive: bigint
+    }) => {
       setError(undefined)
       if (!nfid) throw new Error("NFID not initialized")
 
@@ -75,6 +81,7 @@ export const useAuthentication = () => {
       updateAuthButton({ loading: true, label: "Authenticating..." })
       try {
         const identity = await nfid.getDelegation({
+          maxTimeToLive,
           ...(targets.length ? { targets } : {}),
           ...(derivationOrigin ? { derivationOrigin } : {}),
         })

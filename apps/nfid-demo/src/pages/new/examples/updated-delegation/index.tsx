@@ -14,7 +14,7 @@ const identity = await nfid.updateGlobalDelegation()
 `
 
 const Example = () => {
-  const { nfid, setIdentity } = useAuthenticationContext()
+  const { nfid, identity, setIdentity } = useAuthenticationContext()
 
   const [loading, setLoading] = React.useState<boolean>(false)
 
@@ -33,9 +33,7 @@ const Example = () => {
   )
 
   if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
-    return nfid.isAuthenticated ? (
-      <ExampleError>You cannot update anonymous delegations</ExampleError>
-    ) : null
+    return <ExampleError>You cannot update anonymous delegations</ExampleError>
   }
 
   return (

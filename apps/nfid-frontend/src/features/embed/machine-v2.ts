@@ -256,17 +256,15 @@ export const NFIDEmbedMachineV2 = createMachine(
         },
         authRequest: { ...context.authRequest, hostname: event?.data?.domain },
       })),
-      assignProcedure: assign((context, event) => {
-        return {
-          requestOrigin: event.data.origin,
-          rpcMessage: event.data.rpcMessage,
-          rpcMessageDecoded: event.data.rpcMessageDecoded,
-          authRequest: {
-            ...context.authRequest,
-            ...event.data.rpcMessage.params[0],
-          },
-        }
-      }),
+      assignProcedure: assign((context, event) => ({
+        requestOrigin: event.data.origin,
+        rpcMessage: event.data.rpcMessage,
+        rpcMessageDecoded: event.data.rpcMessageDecoded,
+        authRequest: {
+          ...context.authRequest,
+          ...event.data.rpcMessage.params[0],
+        },
+      })),
       updateProcedure: assign(({ messageQueue }, event) => {
         return {
           rpcMessage: messageQueue[0],

@@ -3,10 +3,15 @@ import React from "react"
 import { Button } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
-import { TargetCanisterForm } from "./target-canister-from"
+import { AuthenticationForm } from "./target-canister-from"
 
-export const AuthenticationForm = () => {
+export const AuthenticationExample = ({
+  onError,
+}: {
+  onError: (error: { error: string }) => void
+}) => {
   const {
+    error,
     setError,
     nfid,
     setIdentity,
@@ -14,6 +19,10 @@ export const AuthenticationForm = () => {
     authButton,
     handleAuthenticate,
   } = useAuthentication()
+
+  React.useEffect(() => {
+    error && onError({ error })
+  }, [error, onError])
 
   const handleLogout = React.useCallback(async () => {
     setError(undefined)
@@ -33,7 +42,7 @@ export const AuthenticationForm = () => {
       Logout
     </Button>
   ) : (
-    <TargetCanisterForm
+    <AuthenticationForm
       submitButtonId="buttonAuthenticate"
       submitButtonText={"Authenticate"}
       isLoading={authButton.loading}

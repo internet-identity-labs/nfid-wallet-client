@@ -6,7 +6,7 @@ import { DelegationType } from "@nfid/embed"
 import { ExampleError } from "../../error"
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
-import { TargetCanisterForm } from "../authentication/target-canister-from"
+import { AuthenticationForm } from "../authentication/target-canister-from"
 
 const CODE_SNIPPET = `
 const nfid = await NFID.init({ origin: NFID_PROVIDER_URL })
@@ -19,7 +19,7 @@ const Example = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const handleUpdateGlobalDelegation = React.useCallback(
-    async (targets: string[]) => {
+    async ({ targets }: { targets: string[]; derivationOrigin?: string }) => {
       if (!nfid) throw new Error("NFID not initialized")
       setLoading(true)
       const response = await nfid.updateGlobalDelegation({
@@ -39,7 +39,7 @@ const Example = () => {
   }
 
   return (
-    <TargetCanisterForm
+    <AuthenticationForm
       submitButtonText="Update delegation"
       submitButtonId="buttonUpdateDelegation"
       isLoading={loading}

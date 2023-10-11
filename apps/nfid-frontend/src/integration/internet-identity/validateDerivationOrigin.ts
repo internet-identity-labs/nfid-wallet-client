@@ -59,7 +59,7 @@ export const validateDerivationOrigin = async (
     if (response.status !== 200) {
       return {
         result: "invalid",
-        message: `resource ${alternativeOriginsUrl} returned invalid status: ${response.status}`,
+        message: `${derivationOrigin} failed validation for ${authRequestOrigin}`,
       }
     }
 

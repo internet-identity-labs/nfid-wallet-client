@@ -6,7 +6,6 @@ import { ONE_DAY_IN_MS } from "@nfid/config"
 import { Application, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
-import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 

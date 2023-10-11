@@ -57,9 +57,13 @@ const validateRPCMessage = async (rpcMessage: RPCMessage, origin: string) => {
   const params = rpcMessage.params[0]
   if (params && params.derivationOrigin) {
     // What are we doing if 3rd party without derivationOrigin
-    const response = await validateDerivationOrigin(
-      params.derivationOrigin,
+    console.debug("validateRPCMessage", {
+      derivationOrigin: params.derivationOrigin,
       origin,
+    })
+    const response = await validateDerivationOrigin(
+      origin,
+      params.derivationOrigin,
     )
     if (response.result === "invalid") {
       throw new Error(response.message)
@@ -72,7 +76,19 @@ export const RPCReceiverV2 =
     const subsciption = rpcMessages.subscribe(
       async ({ data: rpcMessage, origin }) => {
         console.debug("RPCReceiverV2", { rpcMessage, origin })
-        await validateRPCMessage(rpcMessage, origin)
+        try {
+          await validateRPCMessage(rpcMessage, origin)
+        } catch (e: any) {
+          console.error("RPCReceiverV2", { rpcMessage, origin, e })
+          window.parent.postMessage(
+            {
+              ...RPC_BASE,
+              id: rpcMessage.id,
+              error: { code: 400, message: e.message },
+            },
+            origin,
+          )
+        }
         switch (rpcMessage.method) {
           case "ic_renewDelegation":
           case "ic_canisterCall":

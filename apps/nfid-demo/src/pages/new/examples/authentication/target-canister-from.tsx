@@ -62,7 +62,7 @@ export const AuthenticationForm = ({
     <form onSubmit={handleSubmit(prepareForm)} className="flex flex-col gap-4">
       <section className="flex flex-col gap-2">
         <Input
-          labelText={"Delegation max time to live (ns)"}
+          labelText={"Derivation origin"}
           {...register("derivationOrigin")} // Use index to name the input fields
           className="flex-1"
         />

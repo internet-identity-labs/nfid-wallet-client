@@ -66,6 +66,14 @@ const validateRPCMessage = async (rpcMessage: RPCMessage, origin: string) => {
       params.derivationOrigin,
     )
     if (response.result === "invalid") {
+      window.parent.postMessage(
+        {
+          ...RPC_BASE,
+          id: rpcMessage.id,
+          error: { code: 400, message: response.message },
+        },
+        origin,
+      )
       throw new Error(response.message)
     }
   }
@@ -76,19 +84,7 @@ export const RPCReceiverV2 =
     const subsciption = rpcMessages.subscribe(
       async ({ data: rpcMessage, origin }) => {
         console.debug("RPCReceiverV2", { rpcMessage, origin })
-        try {
-          await validateRPCMessage(rpcMessage, origin)
-        } catch (e: any) {
-          console.error("RPCReceiverV2", { rpcMessage, origin, e })
-          window.parent.postMessage(
-            {
-              ...RPC_BASE,
-              id: rpcMessage.id,
-              error: { code: 400, message: e.message },
-            },
-            origin,
-          )
-        }
+        await validateRPCMessage(rpcMessage, origin)
         switch (rpcMessage.method) {
           case "ic_renewDelegation":
           case "ic_canisterCall":

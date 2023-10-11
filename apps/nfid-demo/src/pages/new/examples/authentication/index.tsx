@@ -1,5 +1,4 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
-import { useAuthentication } from "apps/nfid-demo/src/hooks/useAuthentication"
 import React from "react"
 
 import { ExampleMethod } from "../../method"

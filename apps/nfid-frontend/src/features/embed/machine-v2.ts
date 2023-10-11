@@ -6,6 +6,7 @@ import { ONE_DAY_IN_MS } from "@nfid/config"
 import { Application, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
+import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
@@ -255,15 +256,17 @@ export const NFIDEmbedMachineV2 = createMachine(
         },
         authRequest: { ...context.authRequest, hostname: event?.data?.domain },
       })),
-      assignProcedure: assign((context, event) => ({
-        requestOrigin: event.data.origin,
-        rpcMessage: event.data.rpcMessage,
-        rpcMessageDecoded: event.data.rpcMessageDecoded,
-        authRequest: {
-          ...context.authRequest,
-          ...event.data.rpcMessage.params[0],
-        },
-      })),
+      assignProcedure: assign((context, event) => {
+        return {
+          requestOrigin: event.data.origin,
+          rpcMessage: event.data.rpcMessage,
+          rpcMessageDecoded: event.data.rpcMessageDecoded,
+          authRequest: {
+            ...context.authRequest,
+            ...event.data.rpcMessage.params[0],
+          },
+        }
+      }),
       updateProcedure: assign(({ messageQueue }, event) => {
         return {
           rpcMessage: messageQueue[0],

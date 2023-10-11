@@ -2534,10 +2534,12 @@
   dependencies:
     idb "^7.0.2"
 
-"@dfinity/auth-client@^0.11.3":
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.11.3.tgz#f337f5b4249a09f00092ed0ad8bd3e76bfbed196"
-  integrity sha512-+wwjoucE8ZIjcA1IG+OQ8OxFoAajYfnELbSMZE1p3FGlbC0X3gpab0bbXqh8VKou8Ng1eRU+sAwItruCLiIBHg==
+"@dfinity/auth-client@^0.19.3":
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.19.3.tgz#c38baa311e02d4d5487a6be01875dcaae9643455"
+  integrity sha512-fN5sZXkO3pzsBE+dVOD57Nv59n2H5jtK1JRWP7NEKmxgUk/dOOX6I5ZwUYVOQA3VcJ3azvV9SbXUHSgaFcf0sw==
+  dependencies:
+    idb "^7.0.2"
 
 "@dfinity/authentication@0.14.2":
   version "0.14.2"
@@ -2556,6 +2558,17 @@
   resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.19.3.tgz#edc3491572d293824b821ce3a4fc50f5b4714f4d"
   integrity sha512-yXfbLSWTeRd4G0bLLxYoDqpXH3Jim0P+1PPZOoktXNC1X1hB+ea3yrZebX75t4GVoQK7123F7mxWHiPjuV2tQQ==
 
+"@dfinity/identity-secp256k1@^0.19.3":
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity-secp256k1/-/identity-secp256k1-0.19.3.tgz#e4d7a46a4a56fef2a747e67346775a80dad44009"
+  integrity sha512-mllF0y1p5zmZo24vqCSXTHAT89z4p0e90/23BjMlyWLjVlpZ4YSXThWILKg/z4e0cbiLpadScOPIy5scbaC90g==
+  dependencies:
+    "@dfinity/agent" "^0.19.3"
+    "@noble/hashes" "^1.3.1"
+    bip39 "^3.0.4"
+    bs58check "^2.1.2"
+    secp256k1 "^4.0.3"
+
 "@dfinity/identity@0.15.6":
   version "0.15.6"
   resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.15.6.tgz#9ce81c8ae1793d26cfaf95825bf7a49d161bf4fb"
@@ -2565,14 +2578,35 @@
     js-sha256 "^0.9.0"
     tweetnacl "^1.0.1"
 
-"@dfinity/identity@^0.11.3":
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.11.3.tgz#b7ae0d049159f98bb3b693683824b7315124c4bb"
-  integrity sha512-AXgrG6a7PxJmiZOC12ooKvPeOfh4+v3dR7D6jynLlN4qMy0ry+BMZhWkyjWrlRR3p8oMznzfjoMuKN5pOrBKDg==
+"@dfinity/identity@^0.15.1":
+  version "0.15.7"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.15.7.tgz#af8bf3f8e69f22e3cee08abb3a33851a6bc07c92"
+  integrity sha512-kBAkx9wq78jSQf6T5aayLyWm8YgtOZw8bW6+OuzX6tR3hkAEa85A9TcKA7BjkmMWSIskjEDVQub4fFfKWS2vOQ==
   dependencies:
     borc "^2.1.1"
     js-sha256 "^0.9.0"
     tweetnacl "^1.0.1"
+
+"@dfinity/identity@^0.19.3":
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.19.3.tgz#caec4a38b4a7d4567e662a7eb5bf2a9ae6466bdf"
+  integrity sha512-6XHrkNQ8tVN6+MERyXPy+avGHTd2zoX3l47bu6gSwreDdOZQnAnXpHVzLcXhnUptkBVetcC70YQEKCmqtuLriA==
+  dependencies:
+    "@noble/hashes" "^1.3.1"
+    borc "^2.1.1"
+    tweetnacl "^1.0.1"
+
+"@dfinity/ledger-icp@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/ledger-icp/-/ledger-icp-1.0.0.tgz#b82005f43a6514e8b6688dc52d0c7c9f2184abd6"
+  integrity sha512-T297uvqjhwmaSoJ7d2TDPGqZD9vUMfNF5K8+2tbD7apXa8j7cSnxgffdQNyeZH9u1R/ypeuw7yFeo+XNadqhAw==
+
+"@dfinity/nns-proto@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/nns-proto/-/nns-proto-1.0.0.tgz#89a35388c81281bcfe5a0115f5069e0d943e520a"
+  integrity sha512-VQ4G5/Opio6TYXpbv6xHqsjpYPw25wKOOXaS7F10IvKAa0bxM9DDfsTpaULRNRkDKvK/Jol2bHLoh6NO1SrbDA==
+  dependencies:
+    google-protobuf "^3.21.2"
 
 "@dfinity/principal@0.15.6":
   version "0.15.6"

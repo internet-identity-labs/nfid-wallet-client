@@ -11,6 +11,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   text?: boolean
   type?: ButtonType
   isSmall?: boolean
+  as?: React.ElementType
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -22,6 +23,7 @@ export const Button: React.FC<ButtonProps> = ({
   id,
   isSmall,
   block,
+  as: Component = "button",
   ...buttonProps
 }: ButtonProps) => {
   const isPrimary = type === "primary"
@@ -31,7 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
   const isRed = type === "red"
 
   return (
-    <button
+    <Component
       id={id}
       disabled={disabled}
       className={clsx(
@@ -94,6 +96,6 @@ export const Button: React.FC<ButtonProps> = ({
         ) : null}
         {children ? <div className="text-center">{children}</div> : null}
       </div>
-    </button>
+    </Component>
   )
 }

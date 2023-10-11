@@ -13,7 +13,7 @@ import { RoutePathAuthentication } from "./authentication"
 import { RoutePathAuthenticationGetDelegation } from "./authentication-get-delegation"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
-import { AuthenticationForm } from "./new/examples/authentication/authentication"
+import { AuthenticationFieldsForm } from "./new/examples/authentication/authentication"
 import { RoutePath as RoutePathRequestTransfer } from "./request-transfer"
 
 interface PageTemplateProps {
@@ -65,7 +65,7 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
           </SidebarWrapper>
         </div>
         <div className={clsx("w-full px-5 py-6", className)}>
-          <AuthenticationForm />
+          <AuthenticationFieldsForm />
           {children}
         </div>
       </div>

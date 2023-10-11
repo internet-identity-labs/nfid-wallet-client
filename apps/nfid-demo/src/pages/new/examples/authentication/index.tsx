@@ -1,5 +1,5 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
-import { AuthenticationForm } from "apps/nfid-demo/src/pages/new/examples/authentication/authentication"
+import { AuthenticationFieldsForm } from "apps/nfid-demo/src/pages/new/examples/authentication/authentication"
 
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
@@ -53,7 +53,7 @@ export const Authentication = () => {
       }
       codeSnippet={CODE_SNIPPET}
       jsonResponse={identity ? JSON.stringify(identity, null, 2) : "{}"}
-      example={<AuthenticationForm />}
+      example={<AuthenticationFieldsForm />}
     />
   )
 }

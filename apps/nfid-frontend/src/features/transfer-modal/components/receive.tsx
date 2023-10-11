@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { principalToAddress } from "ictool"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
@@ -75,7 +75,7 @@ export const TransferReceive = ({
     )
       return selectedAccountAddress
 
-    return principalToAddress(Principal.fromText(selectedAccountAddress))
+    return AccountIdentifier.fromPrincipal({ principal: Principal.fromText(selectedAccountAddress)}).toHex()
   }, [isPrincipalVisible, selectedAccountAddress])
 
   useEffect(() => {

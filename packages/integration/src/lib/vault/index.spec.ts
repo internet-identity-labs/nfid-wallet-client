@@ -40,6 +40,7 @@ describe("Vault suite", () => {
   let vaultFirst: Vault
   const memberIdentity = Ed25519KeyIdentity.generate()
   const memberAddress = principalToAddress(
+    //@ts-ignore
     memberIdentity.getPrincipal(),
     Array(32).fill(1),
   )
@@ -203,6 +204,7 @@ describe("Vault suite", () => {
   let registeredTransaction: Transaction
   it("create transaction test", async () => {
     const targetAddress = principalToAddress(
+      //@ts-ignore
       Principal.fromText(VAULT_CANISTER_ID),
       fromHexString(wallet.uid),
     )

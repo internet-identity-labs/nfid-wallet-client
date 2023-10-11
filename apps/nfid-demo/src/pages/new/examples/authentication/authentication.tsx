@@ -3,9 +3,9 @@ import React from "react"
 import { Button } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
-import { TargetCanisterForm } from "./target-canister-from"
+import { AuthenticationForm } from "./target-canister-from"
 
-export const AuthenticationForm = () => {
+export const Authentication = () => {
   const {
     setError,
     nfid,
@@ -33,7 +33,7 @@ export const AuthenticationForm = () => {
       Logout
     </Button>
   ) : (
-    <TargetCanisterForm
+    <AuthenticationForm
       submitButtonId="buttonAuthenticate"
       submitButtonText={"Authenticate"}
       isLoading={authButton.loading}

@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Cache } from "node-ts-cache"
 
 import {
@@ -114,7 +114,7 @@ export class DIP20TransferConnector
                 account.domain,
                 account.accountId,
               ),
-              subTitle: truncateString(principalToAddress(principal), 6, 4),
+              subTitle: truncateString(AccountIdentifier.fromPrincipal({ principal }).toHex(), 6, 4),
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + symbol,
               innerSubtitle: "$" + balanceinUsd,

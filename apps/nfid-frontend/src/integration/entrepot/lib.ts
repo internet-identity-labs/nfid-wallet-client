@@ -2,8 +2,9 @@ import { Principal } from "@dfinity/principal"
 import {
   decodeTokenIdentifier,
   encodeTokenIdentifier,
-  principalToAddress,
 } from "ictool"
+
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 
 import { Account } from "@nfid/integration"
 
@@ -291,7 +292,7 @@ export async function fetchNFTsOfPrincipals(
 ): Promise<UserNFTDetails[]> {
   const response = await Promise.all(
     inputData.map(async ({ principal, account }) => {
-      const address: string = principalToAddress(principal as any)
+      const address: string = AccountIdentifier.fromPrincipal({ principal }).toHex()
       return await fetch(`${API}/maddies/getAllNfts/${address}`)
         .then((r) => r.json())
         .then((r: EntrepotToken[]) => mapToNFTData(r, principal, account))

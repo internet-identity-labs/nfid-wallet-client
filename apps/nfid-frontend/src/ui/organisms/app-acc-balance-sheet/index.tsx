@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { principalToAddress } from "ictool"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import {
   AccountBalance,
   AppBalance,
@@ -63,7 +63,7 @@ const AppRow: React.FC<
         state: {
           wallet: {
             label: `${appName} ${account.accountName}`,
-            value: principalToAddress(Principal.fromText(account.principalId)),
+            value: AccountIdentifier.fromPrincipal({ principal: Principal.fromText(account.principalId) }).toHex(),
           },
           blockchain,
         },

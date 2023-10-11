@@ -1,5 +1,6 @@
-import { principalToAddress } from "ictool"
-import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { truncateString } from "@nfid-frontend/utils"
 import { authState, getBalance } from "@nfid/integration"
@@ -16,12 +17,11 @@ export const getPublicProfile = async (): Promise<{
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")
 
-  const publicDelegation = await getGlobalKeys(delegationIdentity, Chain.IC, [
-    "nux62-yqaaa-aaaak-ae2pq-cai",
-  ])
+  const publicKey = await getPublicKey(delegationIdentity!, Chain.IC)
+  const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, ""])
 
   const principal = publicDelegation.getPrincipal()
-  const address = principalToAddress(principal)
+  const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
   const balance = e8sICPToString(Number(await getBalance(address)))
   const exchangeRate = await getExchangeRate()
 

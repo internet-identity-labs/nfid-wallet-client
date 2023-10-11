@@ -11,7 +11,6 @@ export const signinWithII = async () => {
   const authClient = await AuthClient.create()
   return new Promise(async (resolve, reject) => {
     authClient.login({
-      idpWindowName: "iiIdpWindow",
       onSuccess: () => {
         const delegation = authClient.getIdentity() as DelegationIdentity
         resolve(delegation)

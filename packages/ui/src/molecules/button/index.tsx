@@ -43,7 +43,7 @@ export const Button: React.FC<ButtonProps> = ({
         "border rounded-md outline-none p-[15px] leading-4",
         "cursor-pointer disabled:cursor-not-allowed",
         "focus:ring-2 focus:ring-offset-[1px] focus:ring-black",
-        isSmall ? (children ? "px-[15px] py-[11px]" : "p-[11px]") : "p-[15px]",
+        isSmall ? "px-[15px] h-10 leading-10 py-0" : "p-[15px]",
         isPrimary &&
           clsx(
             "text-white border-transparent",

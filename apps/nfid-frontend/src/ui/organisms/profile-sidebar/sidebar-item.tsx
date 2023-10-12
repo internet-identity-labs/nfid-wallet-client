@@ -27,7 +27,8 @@ const ProfileSidebarItem: React.FC<IProfileSidebarItem> = ({
         "hover:bg-gray-100 transition-colors cursor-pointer",
         "md:w-[50px] md:justify-center",
         "lg:w-auto lg:justify-start",
-        isActive && "bg-gray-100",
+        "sidebar-item",
+        isActive && "bg-gray-100 sidebar-item-active",
       )}
     >
       <div

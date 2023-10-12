@@ -6,7 +6,7 @@ import { DelegationType } from "@nfid/embed"
 import { ExampleError } from "../../error"
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
-import { TargetCanisterForm } from "../authentication/target-canister-from"
+import { AuthenticationForm } from "../authentication/target-canister-from"
 
 const CODE_SNIPPET = `
 const nfid = await NFID.init({ origin: NFID_PROVIDER_URL })
@@ -22,10 +22,16 @@ const Example = () => {
     async ({
       targets,
       maxTimeToLive,
+      derivationOrigin,
     }: {
       targets: string[]
       maxTimeToLive: bigint
+      derivationOrigin?: string
     }) => {
+      console.warn(
+        "handleUpdateGlobalDelegation derivationOrigin not implemented yet",
+        { derivationOrigin },
+      )
       if (!nfid) throw new Error("NFID not initialized")
       setLoading(true)
       const response = await nfid.updateGlobalDelegation({
@@ -44,7 +50,7 @@ const Example = () => {
   }
 
   return (
-    <TargetCanisterForm
+    <AuthenticationForm
       submitButtonText="Update delegation"
       submitButtonId="buttonUpdateDelegation"
       isLoading={loading}

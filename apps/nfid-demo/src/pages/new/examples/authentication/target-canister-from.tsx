@@ -13,10 +13,11 @@ const CANISTER_IDS = [
 
 type AuthenticationFormValues = {
   maxTimeToLive: bigint
+  derivationOrigin: string
   canisterIds: { canisterId: string; id?: string }[]
 }
 
-export const TargetCanisterForm = ({
+export const AuthenticationForm = ({
   submitButtonText,
   submitButtonId,
   isLoading,
@@ -25,7 +26,11 @@ export const TargetCanisterForm = ({
   submitButtonText: string
   submitButtonId: string
   isLoading: boolean
-  onSubmit: (formValues: { targets: string[]; maxTimeToLive: bigint }) => void
+  onSubmit: (formValues: {
+    targets: string[]
+    maxTimeToLive: bigint
+    derivationOrigin: string
+  }) => void
 }) => {
   const { config } = useAuthenticationContext()
   const defaultTargetCanisterIds = React.useMemo(() => {
@@ -39,6 +44,7 @@ export const TargetCanisterForm = ({
       defaultValues: {
         canisterIds: defaultTargetCanisterIds,
         maxTimeToLive: BigInt(ONE_HOUR_IN_MS) * BigInt(1000),
+        derivationOrigin: "",
       },
     },
   )
@@ -48,10 +54,18 @@ export const TargetCanisterForm = ({
   })
 
   const prepareForm = React.useCallback(
-    ({ canisterIds, maxTimeToLive }: AuthenticationFormValues) => {
+    ({
+      canisterIds,
+      maxTimeToLive,
+      derivationOrigin,
+    }: AuthenticationFormValues) => {
       const targets = canisterIds.map(({ canisterId }) => canisterId)
-      console.debug("handleSubmit", { targets, canisterIds })
-      onSubmit({ targets, maxTimeToLive })
+      console.debug("handleSubmit", {
+        targets,
+        maxTimeToLive,
+        derivationOrigin,
+      })
+      onSubmit({ targets, maxTimeToLive, derivationOrigin })
     },
     [onSubmit],
   )
@@ -62,6 +76,10 @@ export const TargetCanisterForm = ({
         <Input
           labelText={"Delegation max time to live (ns)"}
           {...register("maxTimeToLive")} // Use index to name the input fields
+        />
+        <Input
+          labelText={"Derivation origin"}
+          {...register("derivationOrigin")} // Use index to name the input fields
           className="flex-1"
         />
         <ul className="flex flex-col gap-2">

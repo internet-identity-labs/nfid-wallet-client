@@ -2,6 +2,8 @@ import { filter, fromEvent } from "rxjs"
 
 import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
 
+import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
+
 export const RPC_BASE = { jsonrpc: "2.0" }
 
 export interface RPCBase {
@@ -51,11 +53,38 @@ export type ProcedureCallEvent = {
   data: ProcedureDetails
 }
 
+const validateRPCMessage = async (rpcMessage: RPCMessage, origin: string) => {
+  const params = rpcMessage.params[0]
+  if (params && params.derivationOrigin) {
+    // What are we doing if 3rd party without derivationOrigin
+    console.debug("validateRPCMessage", {
+      derivationOrigin: params.derivationOrigin,
+      origin,
+    })
+    const response = await validateDerivationOrigin(
+      origin,
+      params.derivationOrigin,
+    )
+    if (response.result === "invalid") {
+      window.parent.postMessage(
+        {
+          ...RPC_BASE,
+          id: rpcMessage.id,
+          error: { code: 400, message: response.message },
+        },
+        origin,
+      )
+      throw new Error(response.message)
+    }
+  }
+}
+
 export const RPCReceiverV2 =
   () => (send: (event: ProcedureCallEvent) => void) => {
     const subsciption = rpcMessages.subscribe(
       async ({ data: rpcMessage, origin }) => {
         console.debug("RPCReceiverV2", { rpcMessage, origin })
+        await validateRPCMessage(rpcMessage, origin)
         switch (rpcMessage.method) {
           case "ic_renewDelegation":
           case "ic_canisterCall":

@@ -4522,10 +4522,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.0-alpha.2":
-  version "0.10.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.2.tgz#d71882424096e8cf0e3913b1ad5be9b15c480697"
-  integrity sha512-0fJD5e+6DW4M82n+uGPStCi1C7mX486/9dOL+SdjjtxrZ/n8ywq/0xdDgn+LMe7vU8IzFvDku7ZTm/pcANLJrA==
+"@nfid/embed@0.10.0-alpha.5":
+  version "0.10.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.5.tgz#b74fc54edb68b8f9f80ca1bfc18e3878743852ec"
+  integrity sha512-vKv33jkgdsIKOoS/wd0CMauwy6+ozj9lzNTbICMVmm3GCTAfzYWtXTs0pvuB08DoJtu656oinlUIrcYkthrowA==
   dependencies:
     ethers "^5.7.2"
     idb "7.1.1"

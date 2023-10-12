@@ -80,7 +80,7 @@ export const VaultUpgradeScreen = () => {
             <Button
               isSmall
               className={clsx(
-                "mt-[30px] text-white border-white w-[200px]",
+                "mt-[30px] !text-white !border-white w-[200px]",
                 "hover:!bg-white hover:!text-black hover:!border-white",
                 "focus:!bg-white focus:!text-black focus:!border-white",
               )}

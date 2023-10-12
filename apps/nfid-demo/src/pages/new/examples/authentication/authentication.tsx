@@ -5,11 +5,16 @@ import { Button } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
 import { ExampleMethod } from "../../method"
-import { TargetCanisterForm } from "./target-canister-from"
+import { AuthenticationForm } from "./target-canister-from"
 
-export const AuthenticationForm = () => {
+export const AuthenticationExample = ({
+  onError,
+}: {
+  onError: (error: { error: string }) => void
+}) => {
   const {
     identity,
+    error,
     setError,
     nfid,
     setIdentity,
@@ -18,6 +23,10 @@ export const AuthenticationForm = () => {
     handleAuthenticate,
     handleLegacyAuthenticate,
   } = useAuthentication()
+
+  React.useEffect(() => {
+    error && onError({ error })
+  }, [error, onError])
 
   const handleLogout = React.useCallback(async () => {
     setError(undefined)
@@ -38,7 +47,7 @@ export const AuthenticationForm = () => {
     </Button>
   ) : (
     <div className="flex-col space-y-5">
-      <TargetCanisterForm
+      <AuthenticationForm
         submitButtonId="buttonAuthenticate"
         submitButtonText={"Authenticate"}
         isLoading={authButton.loading}

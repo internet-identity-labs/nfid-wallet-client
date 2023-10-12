@@ -1,8 +1,9 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
-import { AuthenticationForm } from "apps/nfid-demo/src/pages/new/examples/authentication/authentication"
+import React from "react"
 
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
+import { AuthenticationExample } from "./authentication"
 
 const CODE_SNIPPET = `const { data: nfid } = useSWRImmutable("nfid", () =>
   NFID.init({ origin: NFID_PROVIDER_URL }),
@@ -25,6 +26,7 @@ const handleAuthenticate = React.useCallback(async () => {
 
 export const Authentication = () => {
   const { identity } = useAuthenticationContext()
+  const [error, setError] = React.useState<{ error: string }>()
 
   return (
     <SectionTemplate
@@ -52,8 +54,14 @@ export const Authentication = () => {
         </>
       }
       codeSnippet={CODE_SNIPPET}
-      jsonResponse={identity ? JSON.stringify(identity, null, 2) : "{}"}
-      example={<AuthenticationForm />}
+      jsonResponse={
+        error
+          ? JSON.stringify(error, null, 2)
+          : identity
+          ? JSON.stringify(identity, null, 2)
+          : "{}"
+      }
+      example={<AuthenticationExample onError={setError} />}
     />
   )
 }

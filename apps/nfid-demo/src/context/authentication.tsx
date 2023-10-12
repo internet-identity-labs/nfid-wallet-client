@@ -17,6 +17,7 @@ interface AuthenticationContextProps {
   setIdentity: React.Dispatch<
     React.SetStateAction<DelegationIdentity | undefined>
   >
+  derivationOrigin?: string
   config?: {
     principalID: string
     address: string
@@ -30,6 +31,20 @@ const AuthenticationContext = React.createContext<AuthenticationContextProps>({
     throw new Error("setIdentity not implemented")
   },
 })
+
+declare const CANISTER_IDS: { [key: string]: { [key: string]: string } }
+
+const origin = window.location.origin
+const isDevDerivationOrigin = origin.includes("-dev.nfid.one")
+const isProdDerivationOrigin = origin.includes(".nfid.one")
+const derivationCanisterId = isDevDerivationOrigin
+  ? CANISTER_IDS["nfid-demo"].dev
+  : isProdDerivationOrigin
+  ? CANISTER_IDS["nfid-demo"].ic
+  : undefined
+
+const derivationOrigin =
+  derivationCanisterId && `https://${derivationCanisterId}.ic0.app`
 
 export const AuthenticationProvider: React.FC<{
   children: JSX.Element | JSX.Element[]
@@ -47,6 +62,9 @@ export const AuthenticationProvider: React.FC<{
       application: {
         name: "NFID Demo",
         logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
+      },
+      ic: {
+        derivationOrigin,
       },
     }),
   )
@@ -76,7 +94,7 @@ export const AuthenticationProvider: React.FC<{
   console.debug("AuthenticationProvider", { nfid, identity })
   return (
     <AuthenticationContext.Provider
-      value={{ nfid, identity, setIdentity, config }}
+      value={{ nfid, identity, setIdentity, config, derivationOrigin }}
     >
       <ToastContainer />
 

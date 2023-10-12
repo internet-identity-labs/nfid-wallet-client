@@ -7,30 +7,17 @@ import useSWR from "swr"
 import { useAuthenticationContext } from "../context/authentication"
 import { useButtonState } from "./useButtonState"
 
-declare const CANISTER_IDS: { [key: string]: { [key: string]: string } }
 declare const NFID_PROVIDER_URL: string
 
 export const useAuthentication = () => {
-  const { nfid, identity, setIdentity } = useAuthenticationContext()
+  const { nfid, identity, derivationOrigin, setIdentity } =
+    useAuthenticationContext()
   const { data: authClient } = useSWR("authClient", () => AuthClient.create())
   const [error, setError] = React.useState<string>()
 
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
-
-  const derivationOrigin = React.useMemo(() => {
-    const origin = window.location.origin
-    const isDevDerivationOrigin = origin.includes("-dev.nfid.one")
-    const isProdDerivationOrigin = origin.includes(".nfid.one")
-    const derivationCanisterId = isDevDerivationOrigin
-      ? CANISTER_IDS["nfid-demo"].dev
-      : isProdDerivationOrigin
-      ? CANISTER_IDS["nfid-demo"].ic
-      : undefined
-
-    return derivationCanisterId && `https://${derivationCanisterId}.ic0.app`
-  }, [])
 
   React.useEffect(() => {
     if (nfid?.isAuthenticated) {
@@ -66,13 +53,16 @@ export const useAuthentication = () => {
       windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
     })
   }, [authClient, setIdentity, updateAuthButton])
+
   const handleAuthenticate = React.useCallback(
     async ({
       targets,
       maxTimeToLive,
+      derivationOrigin: derivationOriginOverride,
     }: {
       targets: string[]
       maxTimeToLive: bigint
+      derivationOrigin: string
     }) => {
       setError(undefined)
       if (!nfid) throw new Error("NFID not initialized")
@@ -80,10 +70,14 @@ export const useAuthentication = () => {
       console.debug("handleAuthenticate", { targets })
       updateAuthButton({ loading: true, label: "Authenticating..." })
       try {
+        const derivationOriginToUse =
+          derivationOriginOverride || derivationOrigin
         const identity = await nfid.getDelegation({
           maxTimeToLive,
           ...(targets.length ? { targets } : {}),
-          ...(derivationOrigin ? { derivationOrigin } : {}),
+          ...(derivationOriginToUse
+            ? { derivationOrigin: derivationOriginToUse }
+            : {}),
         })
         setIdentity(identity as unknown as DelegationIdentity)
         updateAuthButton({ loading: false, label: "Logout" })

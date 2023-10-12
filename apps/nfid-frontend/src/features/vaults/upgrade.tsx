@@ -85,6 +85,9 @@ export const VaultUpgradeScreen = () => {
                 "focus:!bg-white focus:!text-black focus:!border-white",
               )}
               type="stroke"
+              onClick={() =>
+                window.open("https://vaults-dev.nfid.one", "_blank")
+              }
             >
               Continue to NFID Vaults
             </Button>

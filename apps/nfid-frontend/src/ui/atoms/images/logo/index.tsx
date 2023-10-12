@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { LogoText } from "./logo-text"
+import { ReactComponent as LogoText } from "./logo-text.svg"
 
 interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
   nav?: boolean

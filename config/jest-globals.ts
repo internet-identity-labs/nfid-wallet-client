@@ -30,7 +30,7 @@ export const JEST_GLOBALS = {
   SIGNIN_GOOGLE: "/signin",
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
-  VAULTS_ORIGIN: "vaults-dev.nfid.one",
+  VAULTS_ORIGIN: "https://github.com/internet-identity-labs/nfid-frontend/pull/1659/files",
   ETHERSCAN_API_KEY: process.env["ETHERSCAN_API_KEY"],
   GOERLI_ALCHEMY_API_KEY: process.env["GOERLI_ALCHEMY_API_KEY"],
   RARIBLE_X_API_KEY: process.env["RARIBLE_X_API_KEY"],

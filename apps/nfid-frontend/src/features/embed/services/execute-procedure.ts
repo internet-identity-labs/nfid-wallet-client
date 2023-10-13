@@ -56,7 +56,7 @@ export const ExecuteProcedureService = async (
   if (!requestOrigin)
     throw new Error("ExecuteProcedureService: missing requestOrigin")
 
-  const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
+  const rpcBase = { ...RPC_BASE, id: rpcMessage.id, origin: rpcMessage.origin }
   const { rpcUrl } = rpcMessage.options
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {

@@ -121,6 +121,13 @@ describe("Vault suite", () => {
       role: VaultRole.MEMBER,
       userId: memberAddress,
     })
+    await storeMember({
+      state: ObjectState.ACTIVE,
+      vaultId: vaultFirst.id,
+      memberAddress: memberAddress,
+      name: "Test Name2",
+      role: VaultRole.MEMBER,
+    })
   })
   let wallet: Wallet
   it("register member test", async () => {

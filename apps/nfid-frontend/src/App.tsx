@@ -28,6 +28,7 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
+  console.debug("test commit")
   React.useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
       const root = document.getElementById("root")

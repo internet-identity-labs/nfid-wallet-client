@@ -23,10 +23,11 @@ export const SendReceiveButton = () => {
   return (
     <div id="sendReceiveButton">
       <Button
-        className={clsx("px-[10px] py-[11px] hidden md:flex z-10")}
+        className={clsx("px-[10px] hidden md:flex z-10")}
         id="sendReceiveButton"
         onClick={handleOpenSendReceive}
         icon={<img src={SendReceiveIcon} alt="send/receive" />}
+        isSmall
       >
         Send / Receive
       </Button>

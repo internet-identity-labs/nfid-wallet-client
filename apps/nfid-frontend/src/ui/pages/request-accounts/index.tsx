@@ -3,7 +3,6 @@ import clsx from "clsx"
 import { IOption, DropdownSelect, SDKApplicationMeta } from "@nfid-frontend/ui"
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
-
 import { Button } from "frontend/ui/atoms/button"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 

@@ -88,8 +88,7 @@ export const RequestFungibleTransfer = () => {
       codeSnippet={CODE_SNIPPET}
       jsonResponse={response}
       example={
-        nfid?.getDelegationType() === DelegationType.ANONYMOUS &&
-        nfid.isAuthenticated ? (
+        nfid?.getDelegationType() === DelegationType.ANONYMOUS ? (
           <ExampleError>You cannot update anonymous delegations</ExampleError>
         ) : (
           <div className="space-y-4">

@@ -2,10 +2,10 @@ import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
 
 import activity from "../pages/activity.js"
+import Assets from "../pages/assets.js"
 // import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import DemoTransactions from "../pages/demoApp/demo-transactions.js"
 import DemoAppPage from "../pages/demoApp/demoApp-page.js"
-import Assets from "../pages/assets.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 import Vault from "../pages/vault.js"
@@ -519,27 +519,31 @@ Then(
   },
 )
 
-Then(/^Choose (.+?) then check that an Account ID is (.+)/, async (chain: string, principal: string) => {
-  let chains = chain.split(",")
-  let principals = principal.split(",")
-  let address = await Assets.getAccountId(true)
+Then(
+  /^Choose (.+?) then check that an Account ID is (.+)/,
+  async (chain: string, principal: string) => {
+    let chains = chain.split(",")
+    let principals = principal.split(",")
+    let address = await Assets.getAccountId(true)
 
-  for (let i = 0; i < chains.length; i++) {
-    await chooseChainOption(chains[i])
-    let expectedResult =
-      await address.firstAddressPart.getText() + "..." +
-      await address.secondAddressElement.getText()
-    expect(expectedResult).toEqual(principals[i])
-  }
-})
+    for (let i = 0; i < chains.length; i++) {
+      await chooseChainOption(chains[i])
+      let expectedResult =
+        (await address.firstAddressPart.getText()) +
+        "..." +
+        (await address.secondAddressElement.getText())
+      expect(expectedResult).toEqual(principals[i])
+    }
+  },
+)
 
 Then(/^Principal is ([^"]*)$/, async (principal: string) => {
-    let address = await Assets.getAccountId(false)
-    expect(
-      (await address.firstAddressPart.getText()) +
+  let address = await Assets.getAccountId(false)
+  expect(
+    (await address.firstAddressPart.getText()) +
       "..." +
-      (await address.secondAddressElement.getText())
-    ).toEqual(principal)
+      (await address.secondAddressElement.getText()),
+  ).toEqual(principal)
 })
 
 Then(/^Principal, Address, Targets are correct:/, async (data) => {
@@ -879,35 +883,20 @@ Then(/^Assert ([^"]*) logs message:$/, async (
     :
     expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
 })
-// String((await usersData.get("principal").firstAddressPart.getText())
-// Then(/^Assert ([^"]*) logs message:$/, async (
-//   block: string, data) => {
-//   const message = data.rowsHash()
-//   let messageBody = message.body
-//   let messageHeader = message.header
-//   let firstChild = message.firstChild?.split(',').map(Number)
-//   let secondChild = message.secondChild?.split(',').map(Number)
-//
-//   await (await DemoAppPage.getTransferLogsLocatorFirstPart(block, firstChild)).waitForDisplayed({timeout: 20000})
-//   messageBody != "" ? expect(await (await DemoAppPage.getTransferLogsLocatorFirstPart(block, firstChild)).getText() +
-//       await (await DemoAppPage.getTransferLogsLocatorSecondPart(block, secondChild)).getText()).toContain(messageHeader + messageBody)
-//     :
-//     expect((await DemoAppPage.getTransferLogsLocatorFirstPart(block, firstChild)).getText()).toContain(messageHeader)
-// })
 
 async function chooseChainOption(chain: string) {
   await Assets.openAssetReceiveOptions()
   await Assets.chooseChainOption(chain)
 
   const loader = await $("#loader")
-  await loader.waitForDisplayed({reverse: true, timeout: 10000})
+  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
 }
 
 Then(/^Check request details ([^"]*) equals to ([^"]*)$/, async (FT: string, details: string) => {
   await browser.switchToFrame(await $("#nfid-embed"))
   await DemoTransactions.getApproveButton.waitForDisplayed({
     timeout: 10000,
-    timeoutMsg: "Approve Transfer modal windows isn't appeared"
+    timeoutMsg: "Approve Transfer modal windows isn't appeared",
   })
   expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
   await DemoTransactions.getApproveButton.click()

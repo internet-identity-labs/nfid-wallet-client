@@ -17,7 +17,9 @@ export const polygonAsset = new EthereumAsset({
   token: "Matic",
   blockchainName: "Polygon",
   alchemyApiKey: MATIC_ALCHEMY_API_KEY,
-  activitiesTypes: Object.values(AssetTransfersCategory).filter(x => x !== AssetTransfersCategory.INTERNAL)
+  activitiesTypes: Object.values(AssetTransfersCategory).filter(
+    (x) => x !== AssetTransfersCategory.INTERNAL,
+  ),
 })
 
 export const polygonMumbaiAsset = new EthereumAsset({
@@ -33,5 +35,7 @@ export const polygonMumbaiAsset = new EthereumAsset({
   token: "Matic Mumbai",
   blockchainName: "Polygon Mumbai",
   alchemyApiKey: MUMBAI_ALCHEMY_API_KEY,
-  activitiesTypes: Object.values(AssetTransfersCategory).filter(x => x !== AssetTransfersCategory.INTERNAL)
+  activitiesTypes: Object.values(AssetTransfersCategory).filter(
+    (x) => x !== AssetTransfersCategory.INTERNAL,
+  ),
 })

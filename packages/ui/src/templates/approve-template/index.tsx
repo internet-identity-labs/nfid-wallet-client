@@ -1,8 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-
-
 import successWhiteIcon from "./assets/success-white.svg"
 
 import { Button } from "../../molecules/button"

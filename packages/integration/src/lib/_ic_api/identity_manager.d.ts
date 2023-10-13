@@ -323,6 +323,6 @@ export interface _SERVICE {
   use_access_point: ActorMethod<[[] | [string]], HTTPOneAccessPointResponse>
   validate_phone: ActorMethod<[ValidatePhoneRequest], Response>
   validate_signature: ActorMethod<[[] | [string]], [bigint, [] | [string]]>
-  verify_token: ActorMethod<[Token], Response>,
+  verify_token: ActorMethod<[Token], Response>
   get_root_by_principal: ActorMethod<[string], [] | [string]>
 }

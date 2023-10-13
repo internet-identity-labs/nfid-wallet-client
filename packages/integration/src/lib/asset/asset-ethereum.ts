@@ -141,11 +141,10 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       )
       .map((x) => {
         const contract = x.rawContract.address
-        let tokenId: string =
-          x.tokenId ?? x.erc1155Metadata?.[0].tokenId ?? ""
+        let tokenId: string = x.tokenId ?? x.erc1155Metadata?.[0].tokenId ?? ""
 
         if (tokenId.startsWith("0x")) {
-          tokenId = ethers.BigNumber.from(tokenId).toString();
+          tokenId = ethers.BigNumber.from(tokenId).toString()
         }
 
         const id = `${chain}:${contract}:${tokenId}`
@@ -236,6 +235,9 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       })
 
     return {
+      // FIXME: Dmitrii, please handle this
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       activities: raribleActivities.activities.map(this.mapActivity),
       cursor: raribleActivities.cursor,
     }
@@ -274,6 +276,9 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
             : ActivitySort.LATEST_FIRST,
       })
     return {
+      // FIXME: Dmitrii, please handle this
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       activities: raribleActivities.activities.map(this.mapActivity),
       cursor: raribleActivities.cursor,
     }

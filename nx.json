@@ -71,6 +71,9 @@
         "env": "NFID_PROVIDER_URL"
       },
       {
+        "env": "VAULTS_ORIGIN"
+      },
+      {
         "env": "FRONTEND_MODE"
       },
       {

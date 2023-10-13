@@ -92,6 +92,7 @@ export const serviceConfig = {
   RAMP_WALLET_API_KEY: JSON.stringify(process.env.RAMP_WALLET_API_KEY),
   RAMP_WALLET_SDK_URL: JSON.stringify(process.env.RAMP_WALLET_SDK_URL),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),
+  VAULTS_ORIGIN: JSON.stringify(process.env.VAULTS_ORIGIN),
   BLOCK_CYPHER_TOKEN: JSON.stringify(process.env.BLOCK_CYPHER_TOKEN),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),
   AWS_PASSKEY: JSON.stringify(process.env.AWS_PASSKEY),

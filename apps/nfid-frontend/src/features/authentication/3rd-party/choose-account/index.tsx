@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import React from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
@@ -22,6 +22,7 @@ import {
 
 import { RequestStatus } from "frontend/features/types"
 import { fetchProfile } from "frontend/integration/identity-manager"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {
   AuthorizationRequest,
@@ -39,6 +40,25 @@ export interface IAuthChooseAccount {
   handleSelectAccount: (data: ApproveIcGetDelegationSdkResponse) => void
 }
 
+const HOT_FIX_V24_1_WRONG_HOSTNAMES = [
+  "https://playground-dev.nfid.one",
+  "https://dscvr.one",
+  "https://hotornot.wtf",
+  "https://awcae-maaaa-aaaam-abmyq-cai.icp0.io", // BOOM DAO
+  "https://7p3gx-jaaaa-aaaal-acbda-cai.raw.ic0.app", // BOOM DAO
+  "https://scifi.scinet.one",
+  "https://oc.app",
+  "https://signalsicp.com",
+  "https://n7z64-2yaaa-aaaam-abnsa-cai.icp0.io", // BOOM DAO
+  "https://nuance.xyz",
+  "https://h3cjw-syaaa-aaaam-qbbia-cai.ic0.app", // The Asset App
+  "https://trax.so",
+  "https://jmorc-qiaaa-aaaam-aaeda-cai.ic0.app", // Unfold VR
+  "https://65t4u-siaaa-aaaal-qbx4q-cai.ic0.app", // my-icp-app
+]
+
+const HOT_FIX_V24_2_WRONG_ANCHORS = 100009230
+
 export const AuthChooseAccount = ({
   appMeta,
   authRequest,
@@ -46,6 +66,7 @@ export const AuthChooseAccount = ({
 }: IAuthChooseAccount) => {
   const [isLoading, setIsLoading] = useState(false)
   console.debug("AuthChooseAccount", { appMeta })
+  const { profile } = useProfile()
 
   const { data: legacyAnonymousProfiles, isLoading: isAnonymousLoading } =
     useSWR([authRequest, "legacyAnonymousProfiles"], ([authRequest]) =>
@@ -59,6 +80,18 @@ export const AuthChooseAccount = ({
       })
     }
   }, [legacyAnonymousProfiles, isAnonymousLoading])
+
+  const isDerivationBug = useMemo(() => {
+    if (!profile?.anchor) return false
+
+    const isDerivationBug = HOT_FIX_V24_1_WRONG_HOSTNAMES.includes(
+      authRequest.hostname,
+    )
+
+    console.debug("isDerivationBug", { isDerivationBug, authRequest })
+
+    return isDerivationBug && profile?.anchor < HOT_FIX_V24_2_WRONG_ANCHORS
+  }, [authRequest, profile?.anchor])
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {
@@ -91,49 +124,59 @@ export const AuthChooseAccount = ({
     [authRequest, handleSelectAccount],
   )
 
-  const handleSelectAnonymous = useCallback(async () => {
-    authenticationTracking.profileChosen({
-      profile: "private-1",
-    })
-    setIsLoading(true)
-    try {
-      const delegation = authState.get().delegationIdentity
-      if (!delegation) throw new Error("No delegation identity")
+  const handleSelectAnonymous = useCallback(
+    async (useHostName = false) => {
+      authenticationTracking.profileChosen({
+        profile: "private-1",
+      })
+      setIsLoading(true)
+      try {
+        const delegation = authState.get().delegationIdentity
+        if (!delegation) throw new Error("No delegation identity")
 
-      const anonymousDelegation = await getAnonymousDelegate(
-        authRequest.sessionPublicKey,
-        delegation,
-        // NOTE: has to be the alias domain. Don't use derivationOrigin here.
-        authRequest.hostname,
-      )
+        const domain = useHostName
+          ? authRequest.hostname
+          : authRequest.derivationOrigin ?? authRequest.hostname
 
-      const authSession: ThirdPartyAuthSession = {
-        anchor: (await fetchProfile()).anchor,
-        signedDelegation: anonymousDelegation,
-        userPublicKey: new Uint8Array(anonymousDelegation.publicKey),
-        scope: authRequest.derivationOrigin ?? authRequest.hostname,
+        const anonymousDelegation = await getAnonymousDelegate(
+          authRequest.sessionPublicKey,
+          delegation,
+          domain,
+          authRequest.maxTimeToLive
+            ? Number(authRequest.maxTimeToLive / BigInt(1000))
+            : undefined,
+        )
+
+        const authSession: ThirdPartyAuthSession = {
+          anchor: (await fetchProfile()).anchor,
+          signedDelegation: anonymousDelegation,
+          userPublicKey: new Uint8Array(anonymousDelegation.publicKey),
+          scope: domain,
+        }
+
+        handleSelectAccount({
+          status: RequestStatus.SUCCESS,
+          authSession,
+        })
+      } catch (e: any) {
+        console.error(e)
+        toast.error(e.message)
+        handleSelectAccount({
+          status: RequestStatus.ERROR,
+          errorMessage: e.message,
+        })
+      } finally {
+        setIsLoading(false)
       }
-
-      handleSelectAccount({
-        status: RequestStatus.SUCCESS,
-        authSession,
-      })
-    } catch (e: any) {
-      console.error(e)
-      toast.error(e.message)
-      handleSelectAccount({
-        status: RequestStatus.ERROR,
-        errorMessage: e.message,
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }, [
-    authRequest.derivationOrigin,
-    authRequest.hostname,
-    authRequest.sessionPublicKey,
-    handleSelectAccount,
-  ])
+    },
+    [
+      authRequest.derivationOrigin,
+      authRequest.hostname,
+      authRequest.maxTimeToLive,
+      authRequest.sessionPublicKey,
+      handleSelectAccount,
+    ],
+  )
 
   const handleSelectPublic = useCallback(async () => {
     authenticationTracking.profileChosen({
@@ -149,9 +192,11 @@ export const AuthChooseAccount = ({
       const publicDelegation = await getPublicAccountDelegate(
         authRequest.sessionPublicKey,
         delegation,
-        // NOTE: has to be the alias domain. Don't use derivationOrigin here.
-        authRequest.hostname,
+        authRequest.derivationOrigin ?? authRequest.hostname,
         authRequest.targets,
+        authRequest.maxTimeToLive
+          ? Number(authRequest.maxTimeToLive / BigInt(1000))
+          : undefined,
       )
 
       const authSession: ThirdPartyAuthSession = {
@@ -178,6 +223,7 @@ export const AuthChooseAccount = ({
   }, [
     authRequest.derivationOrigin,
     authRequest.hostname,
+    authRequest.maxTimeToLive,
     authRequest.sessionPublicKey,
     authRequest.targets,
     handleSelectAccount,
@@ -257,6 +303,20 @@ export const AuthChooseAccount = ({
             <span>Anonymous {appMeta.name} profile</span>
           </div>
         )}
+        {!legacyAnonymousProfiles?.length && isDerivationBug ? (
+          <div
+            id="hostnameAnonymous"
+            className={clsx(
+              "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
+              "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",
+              "flex items-center hover:shadow-[0px_0px_2px_0px_#0E62FF] text-sm",
+            )}
+            onClick={() => handleSelectAnonymous(true)}
+          >
+            <IconCmpAnonymous className="w-10 h-10" />
+            <span>Anonymous {appMeta.name} profile 2</span>
+          </div>
+        ) : null}
       </div>
       <div className="flex-1" />
       {/* Hide for this release */}

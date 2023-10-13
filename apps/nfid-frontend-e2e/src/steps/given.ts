@@ -29,8 +29,8 @@ import isEnabled from "./support/check/isEnabled.js"
 
 //TODO Move to Page.ts
 const pages = {
-  "DemoTransactions": DemoAppPage,
-  "HomePage": HomePage
+  DemoTransactions: DemoAppPage,
+  HomePage: HomePage
 }
 
 Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
@@ -42,10 +42,13 @@ Given(
 
 Given(/^authstate is cleared$/, clearAuthState)
 
-Given(/^User authenticates to ?(.*)? with google account( using ?(.*) account)?( with ?(.*))?$/, async (page: string, profile: string, targets?: string) => {
+Given(
+  /^User authenticates to ?(.*)? with google account( using ?(.*) account)?( with ?(.*))?$/,
+  async (page: string, profile: string, targets?: string) => {
   // @ts-ignore
   await pages[page].loginUsingIframe(profile, targets)
-})
+  },
+)
 
 Given(/^User authenticates with enhanced security$/, async function () {
   this.auth = await browser.addVirtualAuthenticator(

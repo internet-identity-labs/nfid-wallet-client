@@ -55,7 +55,7 @@ class DirectAcceptBidMethodDecoder implements MethodDecoder {
     const nft: FunctionCall = await decodeTokenByAssetClass(
       nftAssetClass,
       nftData,
-      chainId
+      chainId,
     )
     return Promise.resolve({
       interface: "DirectAcceptBid",

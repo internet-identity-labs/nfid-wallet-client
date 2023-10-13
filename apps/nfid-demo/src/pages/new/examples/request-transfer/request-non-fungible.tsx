@@ -15,7 +15,7 @@ const API = "https://us-central1-entrepot-api.cloudfunctions.net/api"
 const CODE_SNIPPET = `const { data: nfid } = useSWRImmutable("nfid", () =>
   NFID.init({ origin: NFID_PROVIDER_URL }),
 )
-  
+
 const onRequestTransfer = useCallback(
   async (values: any) => {
     if (!nfid) return alert("NFID is not initialized")
@@ -28,7 +28,7 @@ const onRequestTransfer = useCallback(
           tokenId: selectedNFTIds[0],
         })
         .catch((e: Error) => ({ error: e.message }))
-       
+
      setResponse(res)
   },
   [nfid, receiver, refetchBalance],
@@ -94,8 +94,7 @@ export const RequestNonFungibleTransfer = () => {
       codeSnippet={CODE_SNIPPET}
       jsonResponse={response}
       example={
-        nfid?.getDelegationType() === DelegationType.ANONYMOUS &&
-        nfid.isAuthenticated ? (
+        nfid?.getDelegationType() === DelegationType.ANONYMOUS ? (
           <ExampleError>You cannot update anonymous delegations</ExampleError>
         ) : (
           <div className="space-y-4">

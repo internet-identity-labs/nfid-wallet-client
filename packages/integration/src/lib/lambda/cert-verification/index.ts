@@ -3,7 +3,8 @@ import {
   Certificate,
   HashTree,
   reconstruct,
-  compare, HttpAgent,
+  compare,
+  HttpAgent,
 } from "@dfinity/agent"
 import { PipeArrayBuffer, lebDecode } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
@@ -26,22 +27,12 @@ export async function verifyCertification({
   maxCertificateTimeOffsetMs,
 }: VerifyCertificationParams): Promise<HashTree> {
   const nowMs = Date.now()
-
-  //uncomment after agent.js upgrade to 18.1
-  // const certificate = await Certificate.create({
-  //   certificate: encodedCertificate,
-  //   canisterId,
-  //   rootKey,
-  // })
-
-  const agent = new HttpAgent({ host: IC_HOST })
-  await agent.fetchRootKey()
-  const certificate = await new Certificate( {
+  const certificate = await Certificate.create({
     certificate: encodedCertificate,
-  }, agent)
-  await certificate.verify()
+    canisterId,
+    rootKey,
+  })
   const tree = Cbor.decode<HashTree>(encodedTree)
-
   validateCertificateTime(certificate, maxCertificateTimeOffsetMs, nowMs)
   await validateTree(tree, certificate, canisterId)
 

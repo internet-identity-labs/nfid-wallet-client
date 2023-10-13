@@ -11,7 +11,7 @@ import { Logo } from "frontend/ui/atoms/images/logo"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
-import MenuIcon from "./assets/menu.svg"
+import { ReactComponent as MenuIcon } from "./assets/menu.svg"
 
 import AuthenticatedPopup from "../navigation-popup"
 import ProfileSidebar from "../profile-sidebar"
@@ -56,10 +56,8 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
       <div className="md:hidden">
         <ButtonMenu
           buttonElement={
-            <img
+            <MenuIcon
               id="mobile-menu"
-              src={MenuIcon}
-              alt="menu"
               className={clsx("transform rotate-180", "md:hidden")}
             />
           }
@@ -80,7 +78,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                     id="profile-mobile"
                   >
                     <div
-                      className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0"
+                      className="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-full shrink-0"
                       onClick={toggleMenu}
                     >
                       <img src={User} alt="user" className="cursor-pointer" />

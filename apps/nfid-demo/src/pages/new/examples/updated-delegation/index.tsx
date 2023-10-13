@@ -1,4 +1,3 @@
-import { Identity } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import React from "react"

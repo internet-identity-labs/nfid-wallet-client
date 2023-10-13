@@ -48,6 +48,7 @@ export const AuthenticationForm = ({
       },
     },
   )
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "canisterIds",

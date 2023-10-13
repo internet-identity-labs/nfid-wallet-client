@@ -1,5 +1,6 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import { useState } from "react"
+import React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
@@ -33,6 +34,13 @@ const onRequestTransfer = useCallback(
   [nfid, receiver, refetchBalance],
 )`
 
+interface FormFields {
+  fakeDerivationOrigin?: string
+  canisterId: string
+  method: string
+  parameters: string
+}
+
 export const RequestCanisterCall = () => {
   const { nfid, identity } = useAuthenticationContext()
   const [response, setResponse] = useState("{}")
@@ -40,27 +48,39 @@ export const RequestCanisterCall = () => {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm({
+  } = useForm<FormFields>({
     defaultValues: {
-      canisterId: "",
-      method: "",
-      parameters: "",
+      fakeDerivationOrigin: "",
+      canisterId: "nprnb-waaaa-aaaaj-qax4a-cai",
+      method: "lookup",
+      parameters: "[10000]",
     },
   })
 
-  const handleExecuteCanisterCall = async (values: any) => {
-    if (!nfid) return alert("NFID is not initialized")
+  const handleExecuteCanisterCall = React.useCallback(
+    async ({
+      method,
+      canisterId,
+      parameters,
+      fakeDerivationOrigin,
+    }: FormFields) => {
+      if (!nfid) return alert("NFID is not initialized")
 
-    const response = await nfid
-      .requestCanisterCall({
-        method: values.method,
-        canisterId: values.canisterId,
-        parameters: values.parameters.length ? values.parameters : "",
-      })
-      .catch((e: Error) => ({ error: e.message }))
+      const response = await nfid
+        .requestCanisterCall({
+          method,
+          canisterId,
+          parameters: parameters.length ? parameters : "",
+          ...(fakeDerivationOrigin
+            ? { derivationOrigin: fakeDerivationOrigin }
+            : {}),
+        })
+        .catch((e: Error) => ({ error: e.message }))
 
-    setResponse(JSON.stringify(response, null, 2))
-  }
+      setResponse(JSON.stringify(response, null, 2))
+    },
+    [nfid],
+  )
 
   return (
     <SectionTemplate
@@ -91,6 +111,12 @@ export const RequestCanisterCall = () => {
           <ExampleError>You cannot update anonymous delegations</ExampleError>
         ) : (
           <div className="space-y-4">
+            <Input
+              labelText="Fake Derivation Origin (for testing purposes)"
+              errorText={errors.fakeDerivationOrigin?.message}
+              placeholder="nprnb-waaaa-aaaaj-qax4a-cai"
+              {...register("fakeDerivationOrigin")}
+            />
             <Input
               labelText="Canister ID"
               errorText={errors.canisterId?.message}

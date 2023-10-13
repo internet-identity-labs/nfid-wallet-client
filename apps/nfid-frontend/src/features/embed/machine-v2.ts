@@ -300,12 +300,11 @@ export const NFIDEmbedMachineV2 = createMachine(
           rpcMessage.origin,
         )
       },
-      sendRPCResponse: ({ rpcMessage }, event) => {
-        if (!rpcMessage?.origin)
-          throw new Error("nfid_unauthenticated: missing requestOrigin")
+      sendRPCResponse: (_, { data }) => {
+        const { origin, ...rpcMessage } = data
 
-        console.debug("sendRPCResponse", { event })
-        window.parent.postMessage(event.data, rpcMessage.origin)
+        console.debug("sendRPCResponse", { rpcMessage })
+        window.parent.postMessage(rpcMessage, origin)
       },
       sendRPCCancelResponse: ({ rpcMessage }) => {
         if (!rpcMessage?.origin)

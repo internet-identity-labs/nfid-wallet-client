@@ -3,9 +3,7 @@ import { Application } from "@nfid/integration"
 import { fetchApplication } from "frontend/integration/identity-manager"
 import { getAppMetaFromQuery } from "frontend/integration/windows"
 
-export const CheckApplicationMeta = async (context: {
-  requestOrigin?: string
-}) => {
+export const CheckApplicationMeta = async () => {
   const applicationMetaFromUrl = getAppMetaFromQuery()
   let application: Application
   try {

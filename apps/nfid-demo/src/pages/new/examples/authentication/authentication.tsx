@@ -5,7 +5,7 @@ import { Button } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
 import { ExampleMethod } from "../../method"
-import { AuthenticationForm } from "./target-canister-from"
+import { AuthenticationForm } from "./form"
 
 export const AuthenticationExample = ({
   onError,

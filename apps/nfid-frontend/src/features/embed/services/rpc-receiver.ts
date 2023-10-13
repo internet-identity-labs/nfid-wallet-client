@@ -7,6 +7,7 @@ import { validateDerivationOrigin } from "frontend/integration/internet-identity
 export const RPC_BASE = { jsonrpc: "2.0" }
 
 export interface RPCBase {
+  origin: string
   jsonrpc: string
   id: string
 }

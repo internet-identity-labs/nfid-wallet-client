@@ -22,7 +22,6 @@ import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 type CommonContext = {
   rpcMessage?: RPCMessage
   authSession?: AuthSession
-  requestOrigin?: string
 }
 
 export type ApproveSignatureEvent = {
@@ -41,22 +40,19 @@ type ExecuteProcedureEvent =
 type ExecuteProcedureServiceContext = CommonContext
 
 export const ExecuteProcedureService = async (
-  { rpcMessage, authSession, requestOrigin }: ExecuteProcedureServiceContext,
+  { rpcMessage, authSession }: ExecuteProcedureServiceContext,
   event: ExecuteProcedureEvent,
 ): Promise<RPCResponse> => {
   console.debug("ExecuteProcedureService", {
     rpcMessage,
     authSession,
-    requestOrigin,
   })
   if (!rpcMessage)
     throw new Error("ExecuteProcedureService: missing rpcMessage")
   if (!authSession)
     throw new Error("ExecuteProcedureService: missing authSession")
-  if (!requestOrigin)
-    throw new Error("ExecuteProcedureService: missing requestOrigin")
 
-  const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
+  const rpcBase = { ...RPC_BASE, id: rpcMessage.id, origin: rpcMessage.origin }
   const { rpcUrl } = rpcMessage.options
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
@@ -116,7 +112,8 @@ export const ExecuteProcedureService = async (
         rpcMessage,
       })
       try {
-        const { targets, sessionPublicKey } = rpcMessage.params[0]
+        const { targets, sessionPublicKey, derivationOrigin } =
+          rpcMessage.params[0]
 
         console.debug("ExecuteProcedureService ic_renewDelegation", {
           targets,
@@ -125,11 +122,10 @@ export const ExecuteProcedureService = async (
 
         const delegationIdentity = authState.get().delegationIdentity
         if (!delegationIdentity) throw new Error("missing delegationIdentity")
-        if (!requestOrigin) throw new Error("missing requestOrigin")
 
         const delegate = await renewDelegation(
           delegationIdentity,
-          requestOrigin,
+          derivationOrigin || rpcMessage.origin,
           targets,
           sessionPublicKey,
         )
@@ -152,7 +148,7 @@ export const ExecuteProcedureService = async (
 
       try {
         const response = await executeCanisterCall(
-          requestOrigin,
+          rpcMessage.params[0].derivationOrigin || rpcMessage.origin,
           identity,
           rpcMessage.params[0].method,
           rpcMessage.params[0].canisterId,

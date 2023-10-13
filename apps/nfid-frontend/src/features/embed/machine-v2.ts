@@ -77,7 +77,6 @@ type NFIDEmbedMachineContext = {
     chain?: Chain
   }
   authSession?: AuthSession
-  requestOrigin?: string
   rpcMessage?: RPCMessage
   rpcMessageDecoded?: FunctionCall
   error?: Error
@@ -256,8 +255,10 @@ export const NFIDEmbedMachineV2 = createMachine(
         authRequest: { ...context.authRequest, hostname: event?.data?.domain },
       })),
       assignProcedure: assign((context, event) => ({
-        requestOrigin: event.data.origin,
-        rpcMessage: event.data.rpcMessage,
+        rpcMessage: {
+          ...event.data.rpcMessage,
+          origin: event.data.origin,
+        },
         rpcMessageDecoded: event.data.rpcMessageDecoded,
         authRequest: {
           ...context.authRequest,
@@ -289,37 +290,36 @@ export const NFIDEmbedMachineV2 = createMachine(
           window.location.ancestorOrigins[0],
         )
       },
-      nfid_unauthenticated: ({ requestOrigin }) => {
-        if (!requestOrigin)
+      nfid_unauthenticated: ({ rpcMessage }) => {
+        if (!rpcMessage?.origin)
           throw new Error("nfid_unauthenticated: missing requestOrigin")
 
         console.debug("nfid_authenticated")
         window.parent.postMessage(
           { type: "nfid_unauthenticated" },
-          requestOrigin,
+          rpcMessage.origin,
         )
       },
-      sendRPCResponse: ({ requestOrigin }, event) => {
-        if (!requestOrigin)
-          throw new Error("nfid_unauthenticated: missing requestOrigin")
+      sendRPCResponse: (_, { data }) => {
+        const { origin, ...rpcMessage } = data
 
-        console.debug("sendRPCResponse", { event })
-        window.parent.postMessage(event.data, requestOrigin)
+        console.debug("sendRPCResponse", { rpcMessage })
+        window.parent.postMessage(rpcMessage, origin)
       },
-      sendRPCCancelResponse: (context) => {
-        if (!context.requestOrigin)
+      sendRPCCancelResponse: ({ rpcMessage }) => {
+        if (!rpcMessage?.origin)
           throw new Error("nfid_unauthenticated: missing requestOrigin")
-        if (!context.rpcMessage?.id)
+        if (!rpcMessage?.id)
           throw new Error("sendRPCCancelResponse: missing rpcMessage.id")
 
         window.parent.postMessage(
           {
             ...RPC_BASE,
-            id: context.rpcMessage.id,
+            id: rpcMessage.id,
             // FIXME: find correct error code
             error: { code: -1, message: "User canceled request" },
           },
-          context.requestOrigin,
+          rpcMessage.origin,
         )
       },
     },

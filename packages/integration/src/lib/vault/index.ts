@@ -1,4 +1,4 @@
-import {SignIdentity} from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
 
 import {
   PolicyRegisterRequest,
@@ -7,7 +7,7 @@ import {
   VaultRegisterRequest,
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
-import {replaceActorIdentity, vault as vaultAPI} from "../actors"
+import { replaceActorIdentity, vault as vaultAPI } from "../actors"
 import {
   candidToPolicy,
   candidToTransaction,

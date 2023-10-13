@@ -219,8 +219,6 @@ export const getPublicAccountDelegate = async (
     console.error("Error during migration")
   }
 
-  console.log({ targets, delegationChain })
-
   const { delegation, signature } = delegationChain.delegations[0]
   return mapToSerialisableDelegation({
     delegationChain,
@@ -230,9 +228,9 @@ export const getPublicAccountDelegate = async (
 }
 
 export const delegationChainFromDelegation = ({
-                                                signedDelegation,
-                                                userPublicKey,
-                                              }: any): DelegationChain => {
+  signedDelegation,
+  userPublicKey,
+}: any): DelegationChain => {
   return DelegationChain.fromDelegations(
     [
       {

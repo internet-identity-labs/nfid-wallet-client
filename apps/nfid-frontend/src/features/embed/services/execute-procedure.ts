@@ -152,7 +152,7 @@ export const ExecuteProcedureService = async (
 
       try {
         const response = await executeCanisterCall(
-          requestOrigin,
+          rpcMessage.params[0].derivationOrigin || requestOrigin,
           identity,
           rpcMessage.params[0].method,
           rpcMessage.params[0].canisterId,

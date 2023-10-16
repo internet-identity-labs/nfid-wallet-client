@@ -167,7 +167,11 @@ export const getPublicAccountDelegate = async (
       promiseMigration = fetchDelegate(
         Number(anchor),
         scope,
-        sessionKeyPair.getPublicKey() as any,
+        Array.from(
+          new Uint8Array(
+            sessionKeyPair.getPublicKey().toDer(),
+          ),
+        ),
       ).then((iiDelegation) => {
         const delegationChainForMigration = delegationChainFromDelegation({
           anchor: Number(anchor),

@@ -235,9 +235,6 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       })
 
     return {
-      // FIXME: Dmitrii, please handle this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       activities: raribleActivities.activities.map(this.mapActivity),
       cursor: raribleActivities.cursor,
     }
@@ -276,9 +273,6 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
             : ActivitySort.LATEST_FIRST,
       })
     return {
-      // FIXME: Dmitrii, please handle this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       activities: raribleActivities.activities.map(this.mapActivity),
       cursor: raribleActivities.cursor,
     }

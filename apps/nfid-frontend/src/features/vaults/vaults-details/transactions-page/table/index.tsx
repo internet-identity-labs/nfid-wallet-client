@@ -12,13 +12,13 @@ import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
+import { getAddress } from "frontend/util/get-address"
 
 import { VaultsTransactionsTableHeader } from "./table-header"
 import {
   IVaultTransactionsDetails,
   VaultsTransactionsTableRow,
 } from "./table-row"
-import { getAddress } from "frontend/util/get-address"
 
 export interface VaultsTransactionsTableProps {
   transactions: Transaction[]
@@ -51,7 +51,10 @@ export const VaultsTransactionsTable: React.FC<
             Number(e8sICPToString(Number(transaction.amount))),
             exchangeRate ?? 0,
           ),
-          fromAddress: getAddress(Principal.fromText(VAULT_CANISTER_ID), transaction.from_sub_account),
+          fromAddress: getAddress(
+            Principal.fromText(VAULT_CANISTER_ID),
+            transaction.from_sub_account,
+          ),
           createdDate: format(
             new Date(bigIntMillisecondsToSeconds(transaction.createdDate)),
             "MMM dd, yyyy - hh:mm:ss aaa",

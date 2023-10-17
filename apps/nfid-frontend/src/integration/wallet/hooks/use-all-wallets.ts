@@ -1,5 +1,5 @@
-import { Principal } from "@dfinity/principal"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 import React from "react"
 
 import { getWalletName } from "@nfid/integration"

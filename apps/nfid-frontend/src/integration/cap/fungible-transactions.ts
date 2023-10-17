@@ -1,6 +1,6 @@
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 
 import { getCapRootTransactions } from "frontend/integration/cap/cap_util"
 

@@ -1,9 +1,10 @@
-import { Principal } from "@dfinity/principal"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 
 import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
 import { getBalance as getICPBalance } from "@nfid/integration"
 import { getDIP20Balance, TokenMetadata } from "@nfid/integration/token/dip-20"
+
 import { getAddress } from "frontend/util/get-address"
 
 type FetchBalanceArgs = {
@@ -36,7 +37,9 @@ export async function fetchBalances({
       const token = await Promise.all<TokenBalance>([
         // mapping over this static list only to keep the same shape as the dip20Token
         ...["ICP"].map(async (token) => ({
-          [token]: await getICPBalance(AccountIdentifier.fromPrincipal({ principal }).toHex()),
+          [token]: await getICPBalance(
+            AccountIdentifier.fromPrincipal({ principal }).toHex(),
+          ),
         })),
         // ...["ETH"].map(async (token) => ({
         //   [token]: (await getEthBalance()).tokenBalance,
@@ -109,7 +112,7 @@ export async function fetchVaultWalletsBalances(
 
       return {
         ...wallet,
-        address: (getAddress(principal, wallet.uid)),
+        address: getAddress(principal, wallet.uid),
         balance: { ICP: balance },
       }
     }),

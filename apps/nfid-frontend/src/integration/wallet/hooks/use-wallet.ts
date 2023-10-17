@@ -19,7 +19,12 @@ export const useWallet = () => {
     )
 
   const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(
-    principal ? [AccountIdentifier.fromPrincipal({ principal }).toHex(), "walletBalance"] : null,
+    principal
+      ? [
+          AccountIdentifier.fromPrincipal({ principal }).toHex(),
+          "walletBalance",
+        ]
+      : null,
     ([address]) => getBalance(address),
     {
       dedupingInterval: 30_000,

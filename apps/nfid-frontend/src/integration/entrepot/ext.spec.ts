@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { expect } from "@jest/globals"
 import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
@@ -16,7 +17,6 @@ import {
   unListNFT,
 } from "frontend/integration/entrepot/ext"
 import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 
 const testToken = "m2qxv-aqkor-uwiaa-aaaaa-b4ats-4aqca-aaelv-q"
 const testCollection = "p5jg7-6aaaa-aaaah-qcolq-cai"
@@ -81,7 +81,9 @@ describe("NFT EXT standard suite", () => {
       let response: Balance = await transferEXT(
         testToken,
         sourceIdentity,
-        AccountIdentifier.fromPrincipal({ principal: targetIdentity.getPrincipal()}).toHex(),
+        AccountIdentifier.fromPrincipal({
+          principal: targetIdentity.getPrincipal(),
+        }).toHex(),
       )
       expect(response).toBe(BigInt(1))
     })
@@ -122,7 +124,9 @@ describe("NFT EXT standard suite", () => {
       let transfer = transferEXT(
         testToken,
         sourceIdentity,
-        AccountIdentifier.fromPrincipal({ principal: targetIdentity.getPrincipal()}).toHex(),
+        AccountIdentifier.fromPrincipal({
+          principal: targetIdentity.getPrincipal(),
+        }).toHex(),
       )
       await expect(transfer).rejects.toThrow("Unauthorized")
     })

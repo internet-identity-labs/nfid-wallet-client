@@ -143,7 +143,7 @@ export const AuthChooseAccount = ({
           delegation,
           domain,
           authRequest.maxTimeToLive
-            ? Number(authRequest.maxTimeToLive / BigInt(1000))
+            ? Number(authRequest.maxTimeToLive / BigInt(1000000))
             : undefined,
         )
 
@@ -195,7 +195,7 @@ export const AuthChooseAccount = ({
         authRequest.derivationOrigin ?? authRequest.hostname,
         authRequest.targets,
         authRequest.maxTimeToLive
-          ? Number(authRequest.maxTimeToLive / BigInt(1000))
+          ? Number(authRequest.maxTimeToLive / BigInt(1000000))
           : undefined,
       )
 

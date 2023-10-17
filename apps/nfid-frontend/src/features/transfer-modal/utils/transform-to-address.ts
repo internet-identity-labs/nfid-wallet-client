@@ -1,5 +1,5 @@
-import { Principal } from "@dfinity/principal"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 
 import { isHex } from "@nfid-frontend/utils"
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -11,7 +11,9 @@ export const transformToAddress = (
   if (tokenStandard === TokenStandards.ICP) {
     return isHex(toAddress)
       ? toAddress
-      : AccountIdentifier.fromPrincipal({ principal: Principal.fromText(toAddress)}).toHex()
+      : AccountIdentifier.fromPrincipal({
+          principal: Principal.fromText(toAddress),
+        }).toHex()
   }
 
   if (tokenStandard === TokenStandards.DIP20 && isHex(toAddress))

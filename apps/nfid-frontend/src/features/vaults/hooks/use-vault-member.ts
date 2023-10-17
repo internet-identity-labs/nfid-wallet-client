@@ -1,9 +1,10 @@
 import { SignIdentity } from "@dfinity/agent"
+import { uint8ArrayToHexString } from "@dfinity/utils"
 import { useMemo } from "react"
 
-import { useVaultDelegation } from "./use-vault-delegation"
 import { getAddress } from "frontend/util/get-address"
-import { uint8ArrayToHexString } from "@dfinity/utils"
+
+import { useVaultDelegation } from "./use-vault-delegation"
 
 export const useVaultMember = () => {
   const {

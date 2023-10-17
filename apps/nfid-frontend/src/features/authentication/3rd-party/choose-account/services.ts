@@ -1,10 +1,6 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
-import {
-  Chain,
-
-  getPublicKey,
-} from "packages/integration/src/lib/lambda/ecdsa"
+import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { truncateString } from "@nfid-frontend/utils"
 import { authState, getBalance } from "@nfid/integration"

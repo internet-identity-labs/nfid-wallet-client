@@ -2,9 +2,9 @@
  * Remove user Account by Test Phone Number.
  */
 import { Actor, HttpAgent } from "@dfinity/agent"
+import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
 // global.fetch = require("node-fetch")
 import fetch from "node-fetch"
-import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
 import sha256 from "sha256"
 
 import { idlFactory } from "./actors/identity-manager.js"

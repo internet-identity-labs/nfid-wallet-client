@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 
 import { getVaults, getWallets } from "@nfid/integration"
+
 import { getAddress } from "frontend/util/get-address"
 
 export const getVaultWalletByAddress = async (walletAddress: string) => {

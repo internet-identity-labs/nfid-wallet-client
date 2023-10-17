@@ -9,6 +9,9 @@ export function getAddress(principal: Principal, subAccountHex: string) {
     throw subAccount
   }
 
-  const accountIdentifier = AccountIdentifier.fromPrincipal({ principal, subAccount })
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal,
+    subAccount,
+  })
   return accountIdentifier.toHex()
 }

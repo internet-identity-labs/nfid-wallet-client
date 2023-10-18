@@ -282,12 +282,13 @@ export const NFIDEmbedMachineV2 = createMachine(
         error: event.data,
       })),
       nfid_authenticated: () => {
+        const requesterDomain = window.location.ancestorOrigins ? window.location.ancestorOrigins[0] : window.document.referrer
         console.debug("nfid_authenticated", {
-          origin: window.location.ancestorOrigins[0],
+          origin: requesterDomain,
         })
         window.parent.postMessage(
           { type: "nfid_authenticated" },
-          window.location.ancestorOrigins[0],
+          requesterDomain,
         )
       },
       nfid_unauthenticated: ({ rpcMessage }) => {

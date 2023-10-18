@@ -1,7 +1,6 @@
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
-import { VaultUpgradeScreen } from "frontend/features/vaults/upgrade"
 import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
 import CollectiblesIcon from "frontend/ui/organisms/profile-sidebar/assets/collectibles.svg"
 import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.svg"
@@ -13,6 +12,9 @@ const ProfileSecurity = React.lazy(() => import("../../../features/security"))
 const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
 const ActivityPage = React.lazy(() => import("../../../features/activity"))
 const ProfileNFTDetails = React.lazy(() => import("./nft-details"))
+const VaultsListPage = React.lazy(
+  () => import("frontend/features/vaults/vaults-list-page"),
+)
 const VaultsDetailsCoordinator = React.lazy(
   () => import("frontend/features/vaults/vaults-details"),
 )
@@ -91,7 +93,7 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}`}
       element={
         <AuthWrapper>
-          <VaultUpgradeScreen />
+          <VaultsListPage />
         </AuthWrapper>
       }
     />

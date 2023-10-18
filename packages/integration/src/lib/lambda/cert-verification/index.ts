@@ -27,12 +27,25 @@ export async function verifyCertification({
   maxCertificateTimeOffsetMs,
 }: VerifyCertificationParams): Promise<HashTree> {
   const nowMs = Date.now()
-  const certificate = await Certificate.create({
-    certificate: encodedCertificate,
-    canisterId,
-    rootKey,
-  })
+
+  //uncomment after agent.js upgrade to 18.1
+  // const certificate = await Certificate.create({
+  //   certificate: encodedCertificate,
+  //   canisterId,
+  //   rootKey,
+  // })
+
+  const agent = new HttpAgent({ host: IC_HOST })
+  await agent.fetchRootKey()
+  const certificate = await new Certificate(
+    {
+      certificate: encodedCertificate,
+    },
+    agent,
+  )
+  await certificate.verify()
   const tree = Cbor.decode<HashTree>(encodedTree)
+
   validateCertificateTime(certificate, maxCertificateTimeOffsetMs, nowMs)
   await validateTree(tree, certificate, canisterId)
 

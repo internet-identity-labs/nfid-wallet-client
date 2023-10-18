@@ -1,8 +1,7 @@
 import { Principal } from "@dfinity/principal"
+import { fromHexString, principalToAddress } from "ictool"
 
 import { getVaults, getWallets } from "@nfid/integration"
-
-import { getAddress } from "frontend/util/get-address"
 
 export const getVaultWalletByAddress = async (walletAddress: string) => {
   const vaults = await getVaults()
@@ -12,7 +11,10 @@ export const getVaultWalletByAddress = async (walletAddress: string) => {
 
   const mappedWallets = allWallets.map((w) => ({
     ...w,
-    address: getAddress(Principal.fromText(VAULT_CANISTER_ID), w.uid),
+    address: principalToAddress(
+      Principal.fromText(VAULT_CANISTER_ID),
+      fromHexString(w.uid),
+    ),
   }))
 
   return mappedWallets.find((w) => w.address === walletAddress)

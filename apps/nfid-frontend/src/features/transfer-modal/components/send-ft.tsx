@@ -1,6 +1,6 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { principalToAddress } from "ictool"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -230,9 +230,7 @@ export const TransferFT = ({
 
             const address =
               values.to.length === PRINCIPAL_LENGTH
-                ? AccountIdentifier.fromPrincipal({
-                    principal: Principal.fromText(values.to),
-                  }).toHex()
+                ? principalToAddress(Principal.fromText(values.to))
                 : values.to
 
             await registerTransaction({

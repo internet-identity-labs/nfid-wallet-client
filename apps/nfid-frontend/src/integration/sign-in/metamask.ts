@@ -1,4 +1,4 @@
-import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
+import { Secp256k1KeyIdentity } from "@dfinity/identity"
 import { ethers, providers } from "ethers"
 
 import {

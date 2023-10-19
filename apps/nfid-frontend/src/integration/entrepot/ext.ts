@@ -1,7 +1,6 @@
 import { Identity } from "@dfinity/agent/lib/cjs/auth"
-import { AccountIdentifier as AccountIdentifierAddress } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import { decodeTokenIdentifier } from "ictool"
+import { decodeTokenIdentifier, principalToAddress } from "ictool"
 
 import { isHex } from "@nfid-frontend/utils"
 import { initActor } from "@nfid/integration"
@@ -57,9 +56,7 @@ export async function lockNFT(
     .lock(
       token,
       BigInt(price),
-      AccountIdentifierAddress.fromPrincipal({
-        principal: identity.getPrincipal(),
-      }).toHex(),
+      principalToAddress(identity.getPrincipal() as any),
       [],
     )
     .catch((e) => {

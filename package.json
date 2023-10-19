@@ -232,6 +232,9 @@
     "webpack": "5.76.2",
     "whatwg-fetch": "3.6.2"
   },
+  "resolutions": {
+    "@imtbl/imx-sdk": "npm:dry-uninstall@0.3.0"
+  },
   "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
   "license": "MIT"
 }

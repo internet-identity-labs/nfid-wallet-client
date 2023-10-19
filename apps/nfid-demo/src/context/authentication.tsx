@@ -61,16 +61,16 @@ export const AuthenticationProvider: React.FC<{
   }, [])
 
   const { data: nfid } = useSWRImmutable("nfid", () =>
-  NFID.init({
-    origin: nfidProviderUrl,
-    application: {
-      name: "NFID Demo",
-      logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
-    },
-    ic: {
-      derivationOrigin,
-    },
-  }),
+    NFID.init({
+      origin: nfidProviderUrl,
+      application: {
+        name: "NFID Demo",
+        logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
+      },
+      ic: {
+        derivationOrigin,
+      },
+    }),
   )
 
   const config = useMemo(() => {

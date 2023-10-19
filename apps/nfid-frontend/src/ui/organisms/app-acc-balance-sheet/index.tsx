@@ -1,4 +1,3 @@
-
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"

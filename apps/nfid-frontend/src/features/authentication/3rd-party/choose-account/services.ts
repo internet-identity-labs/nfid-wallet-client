@@ -1,5 +1,5 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { principalToAddress } from "ictool"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { truncateString } from "@nfid-frontend/utils"
@@ -21,7 +21,7 @@ export const getPublicProfile = async (): Promise<{
   const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, ""])
 
   const principal = publicDelegation.getPrincipal()
-  const address = principalToAddress(principal)
+  const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
   const balance = e8sICPToString(Number(await getBalance(address)))
   const exchangeRate = await getExchangeRate()
 

@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
+import { fromHexString, principalToAddress } from "ictool"
 import React, { useMemo } from "react"
 
 import { Table } from "@nfid-frontend/ui"
@@ -12,8 +13,6 @@ import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
-import { getAddress } from "frontend/util/get-address"
-
 import { VaultsTransactionsTableHeader } from "./table-header"
 import {
   IVaultTransactionsDetails,
@@ -51,9 +50,9 @@ export const VaultsTransactionsTable: React.FC<
             Number(e8sICPToString(Number(transaction.amount))),
             exchangeRate ?? 0,
           ),
-          fromAddress: getAddress(
+          fromAddress: principalToAddress(
             Principal.fromText(VAULT_CANISTER_ID),
-            transaction.from_sub_account,
+            fromHexString(transaction.from_sub_account),
           ),
           createdDate: format(
             new Date(bigIntMillisecondsToSeconds(transaction.createdDate)),

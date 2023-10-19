@@ -1,8 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
-import { uint8ArrayToHexString } from "@dfinity/utils"
+import { principalToAddress } from "ictool"
 import { useMemo } from "react"
-
-import { getAddress } from "frontend/util/get-address"
 
 import { useVaultDelegation } from "./use-vault-delegation"
 
@@ -15,8 +13,11 @@ export const useVaultMember = () => {
 
   const userAddress = useMemo(() => {
     if (!UserIIDelegation) return ""
-    const hex = uint8ArrayToHexString(new Uint8Array(Array(32).fill(1)))
-    return getAddress(UserIIDelegation.getPrincipal(), hex)
+
+    return principalToAddress(
+      UserIIDelegation.getPrincipal(),
+      Array(32).fill(1),
+    )
   }, [UserIIDelegation])
 
   return {

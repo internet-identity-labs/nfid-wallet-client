@@ -1,4 +1,4 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { principalToAddress } from "ictool"
 import { useEffect, useMemo } from "react"
 import useSWR, { mutate } from "swr"
 import useSWRImmutable from "swr/immutable"
@@ -19,12 +19,7 @@ export const useWallet = () => {
     )
 
   const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(
-    principal
-      ? [
-          AccountIdentifier.fromPrincipal({ principal }).toHex(),
-          "walletBalance",
-        ]
-      : null,
+    principal ? [principalToAddress(principal), "walletBalance"] : null,
     ([address]) => getBalance(address),
     {
       dedupingInterval: 30_000,
@@ -38,7 +33,7 @@ export const useWallet = () => {
 
   const address = useMemo(() => {
     if (!principal) return ""
-    return AccountIdentifier.fromPrincipal({ principal }).toHex()
+    return principalToAddress(principal)
   }, [principal])
 
   useEffect(() => {

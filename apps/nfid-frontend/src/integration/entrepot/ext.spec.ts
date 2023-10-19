@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-
 import { expect } from "@jest/globals"
 import { encodeTokenIdentifier, principalToAddress } from "ictool"
 

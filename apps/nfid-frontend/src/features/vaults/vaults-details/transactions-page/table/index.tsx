@@ -13,6 +13,7 @@ import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
+
 import { VaultsTransactionsTableHeader } from "./table-header"
 import {
   IVaultTransactionsDetails,

@@ -1,11 +1,9 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+import { fromHexString, principalToAddress } from "ictool"
 
 import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
 import { getBalance as getICPBalance } from "@nfid/integration"
 import { getDIP20Balance, TokenMetadata } from "@nfid/integration/token/dip-20"
-
-import { getAddress } from "frontend/util/get-address"
 
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]
@@ -37,9 +35,7 @@ export async function fetchBalances({
       const token = await Promise.all<TokenBalance>([
         // mapping over this static list only to keep the same shape as the dip20Token
         ...["ICP"].map(async (token) => ({
-          [token]: await getICPBalance(
-            AccountIdentifier.fromPrincipal({ principal }).toHex(),
-          ),
+          [token]: await getICPBalance(principalToAddress(principal)),
         })),
         // ...["ETH"].map(async (token) => ({
         //   [token]: (await getEthBalance()).tokenBalance,
@@ -82,7 +78,8 @@ export async function fetchVaultsWalletsBalances(
   return await Promise.all(
     wallets.map(async (wallet) => {
       const principal = Principal.fromText(VAULT_CANISTER_ID)
-      const address = getAddress(principal, wallet.uid)
+
+      const address = principalToAddress(principal, fromHexString(wallet.uid))
       const balance = await getICPBalance(address)
 
       return {
@@ -108,11 +105,13 @@ export async function fetchVaultWalletsBalances(
   return await Promise.all(
     wallets.map(async (wallet) => {
       const principal = Principal.fromText(VAULT_CANISTER_ID)
-      const balance = await getICPBalance(getAddress(principal, wallet.uid))
+      const balance = await getICPBalance(
+        principalToAddress(principal, fromHexString(wallet.uid)),
+      )
 
       return {
         ...wallet,
-        address: getAddress(principal, wallet.uid),
+        address: principalToAddress(principal, fromHexString(wallet.uid)),
         balance: { ICP: balance },
       }
     }),

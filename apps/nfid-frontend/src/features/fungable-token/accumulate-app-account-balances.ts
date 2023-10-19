@@ -1,5 +1,5 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+import { principalToAddress } from "ictool"
 import {
   AppBalance,
   TokenBalanceSheet,
@@ -59,9 +59,9 @@ function mapApplicationBalance({
                   ? `account ${parseInt(accountBalance.account.accountId) + 1}`
                   : accountBalance.account.label,
               principalId: accountBalance.principalId,
-              address: AccountIdentifier.fromPrincipal({
-                principal: Principal.fromText(accountBalance.principalId),
-              }).toHex(),
+              address: principalToAddress(
+                Principal.fromText(accountBalance.principalId),
+              ),
               tokenBalance: accountBalance.balance[token],
               usdBalance: toUSD(
                 toPresentation(accountBalance.balance[token]),

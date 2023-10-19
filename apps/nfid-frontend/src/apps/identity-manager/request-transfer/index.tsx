@@ -1,5 +1,5 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+import { principalToAddress } from "ictool"
 import { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
@@ -74,9 +74,7 @@ export const RequestTransfer = ({
   const onApprove = async () => {
     let validAddress = isHex(to)
       ? to
-      : AccountIdentifier.fromPrincipal({
-          principal: Principal.fromText(to),
-        }).toHex()
+      : principalToAddress(Principal.fromText(to) as any)
 
     try {
       setIsLoading(true)

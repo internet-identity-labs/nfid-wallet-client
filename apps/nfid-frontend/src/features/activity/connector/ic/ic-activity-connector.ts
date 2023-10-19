@@ -1,4 +1,4 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { principalToAddress } from "ictool"
 import { Activity } from "packages/integration/src/lib/asset/types"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
@@ -15,7 +15,7 @@ export class ICActivityConnector extends ActivityClass<IActivityConfig> {
   async getActivities(): Promise<Activity[]> {
     const allPrincipals = await this.getAllPrincipals(false)
     const allAccounts = allPrincipals.map((p) =>
-      AccountIdentifier.fromPrincipal({ principal: p.principal }).toHex(),
+      principalToAddress(p.principal),
     )
 
     const icpTransactions = await getAllTransactionHistory(

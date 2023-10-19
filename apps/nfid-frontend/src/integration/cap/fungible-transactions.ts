@@ -1,6 +1,6 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
+import { principalToAddress } from "ictool"
 
 import { getCapRootTransactions } from "frontend/integration/cap/cap_util"
 
@@ -87,7 +87,7 @@ export async function getUserTransactions(
   from: number,
   to: number,
 ): Promise<{ txHistory: TransactionPrettified[]; isLastPage: boolean }> {
-  let address = AccountIdentifier.fromPrincipal({ principal: user }).toHex()
+  let address = principalToAddress(user as any)
   let transactionHistory = await Promise.all(
     Array.from(Array(to).keys())
       .slice(from, to)

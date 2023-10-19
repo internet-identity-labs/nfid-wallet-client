@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+
 import { expect } from "@jest/globals"
 import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
@@ -41,6 +41,7 @@ describe("NFT EXT standard suite", () => {
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
+
       await listNFT(token, sourceIdentity, price)
       let address = await lockNFT(token, targetIdentity, price)
       await transfer(price, address, targetIdentity)
@@ -81,9 +82,7 @@ describe("NFT EXT standard suite", () => {
       let response: Balance = await transferEXT(
         testToken,
         sourceIdentity,
-        AccountIdentifier.fromPrincipal({
-          principal: targetIdentity.getPrincipal(),
-        }).toHex(),
+        principalToAddress(targetIdentity.getPrincipal() as any),
       )
       expect(response).toBe(BigInt(1))
     })
@@ -124,9 +123,7 @@ describe("NFT EXT standard suite", () => {
       let transfer = transferEXT(
         testToken,
         sourceIdentity,
-        AccountIdentifier.fromPrincipal({
-          principal: targetIdentity.getPrincipal(),
-        }).toHex(),
+        principalToAddress(targetIdentity.getPrincipal() as any),
       )
       await expect(transfer).rejects.toThrow("Unauthorized")
     })

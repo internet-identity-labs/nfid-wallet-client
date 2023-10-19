@@ -1,5 +1,5 @@
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
 import React from "react"
 
 import { getWalletName } from "@nfid/integration"
@@ -45,7 +45,7 @@ export const useAllWallets = () => {
         accountId: account.accountId,
         domain: account.domain,
         principal,
-        address: principalToAddress(principal),
+        address: AccountIdentifier.fromPrincipal({ principal }).toHex(),
 
         ...rest,
       }))

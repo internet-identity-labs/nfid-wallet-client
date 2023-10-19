@@ -1,6 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
 import { Cache } from "node-ts-cache"
 import { isHex } from "packages/utils/src/lib/validation"
 import { mutate } from "swr"
@@ -112,7 +112,11 @@ export abstract class ICMTransferConnector<
                     account.domain,
                     account.accountId,
                   ),
-              subTitle: truncateString(principalToAddress(principal), 6, 4),
+              subTitle: truncateString(
+                AccountIdentifier.fromPrincipal({ principal }).toHex(),
+                6,
+                4,
+              ),
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + this.config.tokenStandard,
               innerSubtitle: "$" + balanceinUsd,
@@ -139,7 +143,9 @@ export abstract class ICMTransferConnector<
   async getBalance(address: string): Promise<TokenBalance> {
     const addressVerified =
       address.length === PRINCIPAL_LENGTH
-        ? principalToAddress(Principal.fromText(address))
+        ? AccountIdentifier.fromPrincipal({
+            principal: Principal.fromText(address),
+          }).toHex()
         : address
     const balance = await getBalance(addressVerified)
 
@@ -166,7 +172,9 @@ export abstract class ICMTransferConnector<
           : await submitICP(
               stringICPtoE8s(String(request.amount)),
               request.to.length === PRINCIPAL_LENGTH
-                ? principalToAddress(Principal.fromText(request.to))
+                ? AccountIdentifier.fromPrincipal({
+                    principal: Principal.fromText(request.to),
+                  }).toHex()
                 : request.to,
               request.identity,
             )

@@ -76,6 +76,12 @@ export const AuthenticationProvider: React.FC<{
   const config = useMemo(() => {
     if (!identity) return
 
+    try {
+      new Uint8Array(identity.getPublicKey().toDer())
+    } catch (e) {
+      return
+    }
+
     const principal = Principal.selfAuthenticating(
       new Uint8Array(identity.getPublicKey().toDer()),
     )

@@ -77,7 +77,12 @@ export const AuthenticationProvider: React.FC<{
     if (!identity) return
 
     try {
-      new Uint8Array(identity.getPublicKey().toDer())
+      const principal = Principal.selfAuthenticating(
+        new Uint8Array(identity.getPublicKey().toDer()),
+      )
+      const principalID = principal.toString()
+      const address = principalToAddress(principalID as any)
+      console.debug("config", { address })
     } catch (e) {
       return
     }

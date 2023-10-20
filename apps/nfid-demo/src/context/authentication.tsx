@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+import { principalToAddress } from "ictool"
 import React, { useMemo } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -76,11 +76,11 @@ export const AuthenticationProvider: React.FC<{
   const config = useMemo(() => {
     if (!identity) return
 
-    const principalID = identity.getPrincipal().toString()
-    const accountIdentifier = AccountIdentifier.fromPrincipal({
-      principal: identity?.getPrincipal(),
-    })
-    const address = accountIdentifier.toHex()
+    const principal = Principal.selfAuthenticating(
+      new Uint8Array(identity.getPublicKey().toDer()),
+    )
+    const principalID = principal.toString()
+    const address = principalToAddress(principalID as any)
     const expirationTime = new Date(
       Number(
         identity.getDelegation().delegations[0].delegation.expiration /

@@ -113,16 +113,7 @@ jobs:
 
       - name: Build
         run: yarn && yarn build:cloudflare
-
-      - name: Publish
-        uses: cloudflare/pages-action@1
         with:
-          apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
-          accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
-          gitHubToken: ${{secrets.GITHUB_TOKEN}}
-          projectName: nfid-frontend
-          directory: dist
-          branch: main
           IS_DEV: true
           IC_HOST: https://ic0.app
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
@@ -138,3 +129,13 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+
+      - name: Publish
+        uses: cloudflare/pages-action@1
+        with:
+          apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
+          accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
+          gitHubToken: ${{secrets.GITHUB_TOKEN}}
+          projectName: nfid-frontend
+          directory: dist
+          branch: main

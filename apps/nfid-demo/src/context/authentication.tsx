@@ -76,22 +76,11 @@ export const AuthenticationProvider: React.FC<{
   const config = useMemo(() => {
     if (!identity) return
 
-    try {
-      const principal = Principal.selfAuthenticating(
-        new Uint8Array(identity.getPublicKey().toDer()),
-      )
-      const principalID = principal.toString()
-      const address = principalToAddress(principalID as any)
-      console.debug("config", { address })
-    } catch (e) {
-      return
-    }
-
     const principal = Principal.selfAuthenticating(
       new Uint8Array(identity.getPublicKey().toDer()),
     )
     const principalID = principal.toString()
-    const address = principalToAddress(principalID as any)
+    const address = principalToAddress(principal as any)
     const expirationTime = new Date(
       Number(
         identity.getDelegation().delegations[0].delegation.expiration /

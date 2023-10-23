@@ -132,7 +132,7 @@ const config = {
       // so babel will handle workspace projects as well.
       config.module.rules[1].oneOf.forEach((r: any) => {
         if (r.loader && r.loader.indexOf("babel") !== -1) {
-          r.exclude = /node_modules/
+          r.exclude = /node_modules\/(?!(@dfinity\/ledger-icp)\/).*/
           delete r.include
         }
       })

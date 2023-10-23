@@ -113,7 +113,7 @@ jobs:
 
       - name: Build
         run: yarn && yarn build:cloudflare
-        with:
+        env:
           IS_DEV: true
           IC_HOST: https://ic0.app
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}

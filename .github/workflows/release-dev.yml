@@ -137,5 +137,4 @@ jobs:
           accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
           gitHubToken: ${{secrets.GITHUB_TOKEN}}
           projectName: nfid-frontend
-          directory: dist
-          branch: main
+          directory: dist/apps/nfid-frontend

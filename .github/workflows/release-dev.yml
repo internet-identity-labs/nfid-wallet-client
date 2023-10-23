@@ -39,6 +39,7 @@ jobs:
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          MAINNET_RARIBLE_X_API_KEY: ${{secrets.MAINNET_RARIBLE_X_API_KEY}}
 
   deploy:
     needs: check-secrets
@@ -94,6 +95,7 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
   deploy-cloudflare:
+    needs: check-secrets
     runs-on: ubuntu-latest
     permissions:
       contents: read

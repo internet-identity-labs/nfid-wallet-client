@@ -3,7 +3,7 @@ import { Principal } from "@dfinity/principal"
 import { ic } from "@nfid/integration"
 
 const ORIGIN_VALIDATION_REGEX =
-  /^https:\/\/([\w-]+)(?:\.raw)?\.(?:ic0\.app|icp0\.io)$/
+  /^(https:\/\/([\w-]+)(?:\.raw)?\.(?:ic0\.app|icp0\.io)|http:\/\/localhost:4200)$/
 
 export const MAX_ALTERNATIVE_ORIGINS = 10
 

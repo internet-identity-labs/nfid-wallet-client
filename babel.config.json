@@ -1,3 +1,15 @@
 {
-  "babelrcRoots": ["*"]
+  "babelrcRoots": ["*"],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "ios": "16"
+        },
+        "useBuiltIns": "usage",
+        "corejs": 3
+      }
+    ]
+  ]
 }

@@ -138,3 +138,4 @@ jobs:
           gitHubToken: ${{secrets.GITHUB_TOKEN}}
           projectName: nfid-frontend
           directory: dist/apps/nfid-frontend
+          branch: main

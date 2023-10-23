@@ -100,7 +100,7 @@ export const RequestFungibleTransfer = () => {
               {...register("receiver", { required: "This field is required" })}
             />
             <Input
-              id="inputAmount"
+              id="inputICP"
               labelText="Amount ICP"
               placeholder="0.0001"
               errorText={errors.amount?.message}

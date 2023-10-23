@@ -1,9 +1,7 @@
 import { Given } from "@cucumber/cucumber"
 
-import DemoTransactions from "../pages/demo-transactions.js"
-import DemoAppPage from "../pages/demoApp-page.js"
 import HomePage from "../pages/home-page.js"
-import { ProfileType } from "../pages/types.js"
+import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import clearAuthState from "./support/action/clear-auth-state.js"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab.js"
 import openWebsite from "./support/action/openWebsite.js"
@@ -31,7 +29,7 @@ import isEnabled from "./support/check/isEnabled.js"
 
 //TODO Move to Page.ts
 const pages = {
-  DemoTransactions: DemoTransactions,
+  DemoTransactions: DemoAppPage,
   HomePage: HomePage,
 }
 
@@ -45,10 +43,10 @@ Given(
 Given(/^authstate is cleared$/, clearAuthState)
 
 Given(
-  /^User authenticates to ?(.*)? with google account( using ?(.*) account)?$/,
-  async (page: string, profile: ProfileType) => {
+  /^User authenticates to ?(.*)? with google account( using ?(.*) account)?( with ?(.*))?$/,
+  async (page: string, profile: string, targets?: string) => {
     // @ts-ignore
-    await pages[page].loginUsingIframe(profile)
+    await pages[page].loginUsingIframe(profile, targets)
   },
 )
 
@@ -71,12 +69,7 @@ Given(/^User signs in ?(?:(.*))?$/, async function (mobile: string) {
 })
 
 Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
-  if (site != null) {
-    let page = await browser.newWindow(DemoAppPage.demoAppBaseUrl + site, {
-      windowName: site,
-    })
-    await browser.switchToWindow(page)
-  } else await browser.url(DemoAppPage.demoAppBaseUrl)
+  await browser.url(DemoAppPage.demoAppBaseUrl)
 })
 
 Given(/^User opens NFID ?(.*)?$/, async function (site: string) {

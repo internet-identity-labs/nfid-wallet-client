@@ -3,7 +3,8 @@ import { When } from "@cucumber/cucumber"
 import { baseURL } from "../../wdio.conf.js"
 import userClient from "../helpers/accounts-service.js"
 import assets, { Assets } from "../pages/assets.js"
-import DemoTransactions from "../pages/demo-transactions.js"
+import DemoTransactions from "../pages/demoApp/demo-transactions.js"
+import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
 import HomePage from "../pages/home-page.js"
 import Collectibles from "../pages/nft.js"
 import Profile from "../pages/profile.js"
@@ -360,9 +361,13 @@ When(/^I press on Activity icon$/, async () => {
   await assets.openActivity()
 })
 
-When(
-  /^User sends (.*)? ICP to (.*)$/,
-  async (amount: number, address: string) => {
-    await DemoTransactions.sendICPTransaction(amount, address)
-  },
-)
+/^User sends ?(.*)? ([^"]*) to (.*)$/,
+  async (amount: number, FT: string, address: string) => {
+    FT == "ICP" ? await DemoTransactions.sendICPTransaction(amount, address)
+      :
+      await DemoTransactions.sendNFTTransaction(address)
+  })
+
+When(/^User updates list of targets by (.*)$/, async (targets: string) => {
+  await DemoUpdateDelegation.updateDelegation(targets)
+})

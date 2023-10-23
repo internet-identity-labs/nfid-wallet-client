@@ -1,7 +1,7 @@
 import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
-import { Feature } from "@nfid/config"
+import { ITestCaseHookParameter } from "@cucumber/cucumber"
 
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
@@ -374,9 +374,6 @@ export const config: WebdriverIO.Config = {
   // },
   // beforeScenario: function (uri, feature, scenario, sourceLocation) {
   // },
-  beforeFeature(uri: string, feature: Feature) {
-    console.info(`Feature: ${feature.name}`)
-  },
   /**
    *
    * Runs before a Cucumber Scenario.
@@ -384,6 +381,7 @@ export const config: WebdriverIO.Config = {
    * @param {Object}                 context  Cucumber World object
    */
   beforeScenario: async (world: any) => {
+    console.info("Scenario: " + (<ITestCaseHookParameter>world).pickle.name)
     allureReporter.addFeature(world.name)
   },
   afterScenario: async () => {

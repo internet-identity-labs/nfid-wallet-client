@@ -22,6 +22,7 @@ const UserNavigation = () => {
         align="end"
         trigger={
           <Button
+            id="myDelegation"
             disabled={!context.identity}
             type="primary"
             icon={<IconCmpInfo />}
@@ -70,7 +71,9 @@ const UserNavigation = () => {
           <div>
             <p className="mb-1 text-sm text-gray-400">Targets</p>
             <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
-              <ul className="py-2">
+              <ul
+                id="myTargetsList"
+                className="py-2">
                 {context.config?.targets?.map((target) => (
                   <li key={"target_" + target.toString()}>
                     - {target.toString()}

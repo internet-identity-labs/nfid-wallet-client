@@ -1,0 +1,125 @@
+import {Page} from "../page.js"
+import Assets from "../assets.js"
+
+export class demoAppPage extends Page {
+
+  public demoAppBaseUrl = process.env.NFID_DEMO_URL
+    ? process.env.NFID_DEMO_URL
+    : "http://localhost:4200"
+
+  get getAnonymousProfiles() {
+    return $('#profileID')
+  }
+
+  get getPublicProfile() {
+    return $('#publicProfileID')
+  }
+
+  get getIFrame() {
+    return $(`#nfid-embed`)
+  }
+
+  get getLogoutButton() {
+    return $("//button[contains(.,\'Logout\')]")
+  }
+
+  get getAuthenticateButton() {
+    return $('#buttonAuthenticate')
+  }
+
+  get getMyDelegationLocator() {
+    return $(`#myDelegation`)
+  }
+
+  get getMyTargets() {
+    return $(`#myTargetsList`)
+  }
+
+  async getAddCanisterIDButton(block: string) {
+    let locator = $(`#${block} #buttonAddTargetCanisterId`)
+    await locator.waitForDisplayed({timeout: 20000, timeoutMsg: "Add canister button isn't displayed"})
+    return locator
+  }
+
+  async getTransferLogsLocatorFirstPart(block: string, position: number[]) {
+    console.log(`div#${block} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
+    let locator = $(`div#${block} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
+    await locator.waitForDisplayed({timeout: 50000, timeoutMsg: "Transfer Logs aren't displayed"})
+    return locator
+  }
+
+  async getTransferLogsLocatorSecondPart(block: string, position: number[]) {
+    let locator = $(`div#${block} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
+    await locator.waitForDisplayed({timeout: 50000, timeoutMsg: "Transfer Logs aren't displayed"})
+    return locator
+  }
+
+  getAddCanisterIDInput(block: string, number: number) {
+    return $(`//div[contains(@id, ${block})]//label[contains(.,'target canisterId ${number}')]/parent::div//input`)
+  }
+
+  async addCanisterID(block: string, targetsList: string) {
+    let targets = targetsList.split(",")
+    for (let i = 0; i < targets.length; i++) {
+      if (!await this.getAddCanisterIDInput(block, i + 1).isDisplayed()) {
+        await (await this.getAddCanisterIDButton(block)).click()
+      }
+      await this.getAddCanisterIDInput(block, i + 1).setValue(targets[i])
+    }
+  }
+
+  async clickAuthenticateButton(targets: string, profile: string) {
+    await browser.pause(6000)
+    if (await this.getLogoutButton.isDisplayed()) await this.getLogoutButton.click()
+    await browser.waitUntil(async () => {
+        await browser.switchToParentFrame()
+        await this.addCanisterID("authentication", targets)
+        if (await this.getAuthenticateButton.isClickable()) await this.getAuthenticateButton.click()
+        if (await this.getIFrame.isDisplayed()) {
+          await browser.switchToFrame(await this.getIFrame)
+          await this.getPublicProfile.waitForDisplayed({timeoutMsg: "Google account iframe is not displayed"})
+          if (profile == "public" && !await this.getPublicProfile.isClickable()) {
+            await browser.switchToParentFrame()
+            await browser.refresh()
+          } else {
+            return true
+          }
+        }
+        await this.getLogoutButton.isDisplayed() ? await this.getLogoutButton.click() : await this.getAuthenticateButton.click()
+      },
+      {
+        timeout: 20000,
+        timeoutMsg: "Google account iframe is not appeared",
+      }
+    )
+  }
+
+  async selectProfile(profileType: string) {
+    let profile = profileType == "public" ? this.getPublicProfile : this.getAnonymousProfiles
+    await profile.waitForDisplayed({timeout: 50000, timeoutMsg: "'Choose Profile' modal window isn't displayed after 50sec"})
+    await profile.click()
+
+  }
+
+  async loginUsingIframe(profile: string, targets: string) {
+    await this.clickAuthenticateButton(targets, profile)
+    await this.selectProfile(profile)
+    await browser.switchToParentFrame()
+    await browser.waitUntil(async () => {
+      let isElementDisplayed = await this.getIFrame.isDisplayed()
+      return !isElementDisplayed
+    }, {timeout: 50000, timeoutMsg: "Login iFrame did not disappear after 50sec"})
+  }
+
+  async getAuthLogs() {
+    let myMap = new Map()
+    await this.getMyDelegationLocator.waitForClickable({timeout: 90000})
+    await this.getMyDelegationLocator.click()
+    let myPrincipal = await Assets.getAccountId(false)
+    let myAddress = await Assets.getAccountId(true)
+    let myTargets = await this.getMyTargets.getText()
+    return myMap.set("principal", myPrincipal).set("address", myAddress).set("targets", myTargets)
+  }
+}
+
+export default new demoAppPage()

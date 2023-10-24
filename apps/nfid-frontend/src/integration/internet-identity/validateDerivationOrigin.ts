@@ -37,7 +37,7 @@ export const validateDerivationOrigin = async (
   }
 
   try {
-    const canisterId = Principal.fromText(matches[1]) // verifies that a valid canister id was matched
+    const canisterId = Principal.fromText(matches[matches.length - 1]) // verifies that a valid canister id was matched
 
     // Regardless of whether the _origin_ (from which principals are derived) is on ic0.app or icp0.io, we always
     // query the list of alternative origins from icp0.io (official domain)

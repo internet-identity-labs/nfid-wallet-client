@@ -6,8 +6,13 @@ on:
       - main
       - staging
 
+env:
+  CANISTER_NAME: 'nfid-demo'
+  CI_DEBUG: 'true'
+
 jobs:
   check-secrets:
+    name: Check Secrets
     defaults:
       run:
         shell: bash
@@ -16,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -42,11 +47,22 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           MAINNET_RARIBLE_X_API_KEY: ${{secrets.MAINNET_RARIBLE_X_API_KEY}}
 
-  deploy:
+  deploy-demo:
+    name: Deploy NFID-Demo
     needs: check-secrets
     runs-on: ubuntu-latest
+    if: ${{ ! contains( github.ref_name, 'production' ) }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repo.
+        uses: actions/checkout@v4
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -54,34 +70,101 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
-      - uses: aviate-labs/setup-dfx@v0.2.4
+      - name: Install DFX.
+        uses: aviate-labs/setup-dfx@v0.2.6
         with:
-          dfx-version: 0.13.1
+          dfx-version: 0.15.0
           dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
-      - name: NFID FRONTEND | install & format check
+      - name: PRE-BUILD => Populate env vars.
         run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          ci_echo_debug "Getting values from dfx.json" >&2
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
+            ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
+            exit 1
+          fi
+
+          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
+
+          ci_echo_debug "Detecting network for the canister based on the branch." >&2
+          case ${CANISTER_BRANCH} in
+            staging)
+              NETWORK_NAME='stage'
+              ENV_FILE='.env.staging'
+              ;;
+            production)
+              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
+              exit 1
+              ;;
+            *)
+              NETWORK_NAME='dev'
+              ENV_FILE='.env.dev'
+              ;;
+          esac
+
+          ci_echo_debug "Populating env variables" >&2          
+          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
+          echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
+          echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
+
+      - name: PRE-BUILD => Print Vars.
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+          ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
+          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
+          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
+          ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Node Modules.
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-demo-${{ hashFiles('**/yarn.lock') }}
+
+      - name: NFID-DEMO => Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          ci_echo_debug "Preparing npmrc" >&2
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
-          yarn
+
+          ci_echo_debug "yarn --prefer-offline" >&2
+          yarn --prefer-offline
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
-      - name: NFID FRONTEND | deploy
+      - name: NFID-DEMO => Deploy
         run: |
+          source ./ci_libs/CI_LIBS.sh
+          
+          ci_echo_info "NPX" >&2
+          ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}'" >&2
+          npx env-cmd -f "${ENV_FILE}" nx build "${CANISTER_NAME}"
 
-          npx env-cmd -f .env.staging nx build nfid-demo
-
+          ci_echo_info "DFX" >&2
           dfx identity use action
-          dfx deploy --network dev nfid-demo --no-wallet
 
+          ci_echo_debug "dfx deploy --network '${NETWORK_NAME}' '${CANISTER_NAME}' --no-wallet" >&2
+          dfx deploy --network "${NETWORK_NAME}" "${CANISTER_NAME}" --no-wallet
         env:
           IS_DEV: true
-          IC_HOST: https://ic0.app
+          IC_HOST: https://icp0.io
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
@@ -96,12 +179,13 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
   deploy-cloudflare:
+    name: Deploy NFID-Frontend to Cloudflare Pages
     needs: check-secrets
     runs-on: ubuntu-latest
+    if: ${{ ! contains( github.ref_name, 'production' ) }}
     permissions:
       contents: read
       deployments: write
-    name: Deploy to Cloudflare Pages
     steps:
       - name: Extract branch name
         shell: bash
@@ -109,7 +193,15 @@ jobs:
         id: extract_branch
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -118,10 +210,17 @@ jobs:
           cache: "yarn"
 
       - name: Build
-        run: yarn && yarn build:cloudflare
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+            
+          ci_echo_info "Yarn" >&2
+          yarn --prefer-offline
+
+          ci_echo_debug "yarn build:cloudflare" >&2
+          yarn build:cloudflare
         env:
           IS_DEV: true
-          IC_HOST: https://ic0.app
+          IC_HOST: https://icp0.io
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}

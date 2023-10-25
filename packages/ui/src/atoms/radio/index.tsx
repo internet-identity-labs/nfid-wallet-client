@@ -32,8 +32,10 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
           name={name}
           value={value}
           className={clsx(
-            "w-5 h-5 hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black",
-            disabled && "!border-gray-400",
+            "w-5 h-5 ",
+            disabled
+              ? "!border-gray-400 !pointer-events-none"
+              : "hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black",
           )}
           {...props}
         />

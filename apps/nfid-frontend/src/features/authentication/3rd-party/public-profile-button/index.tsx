@@ -1,7 +1,9 @@
 import clsx from "clsx"
 import useSWR from "swr"
 
-import { RadioButton } from "@nfid-frontend/ui"
+import { Loader, RadioButton } from "@nfid-frontend/ui"
+import { truncateString } from "@nfid-frontend/utils"
+import { authState } from "@nfid/integration"
 
 import { ProfileTypes } from "../choose-account"
 import { getPublicProfile } from "../choose-account/services"
@@ -14,7 +16,20 @@ export const PublicProfileButton = ({
   isAvailable,
   setSelectedProfile,
 }: IPublicProfileButton) => {
-  const { data: publicProfile } = useSWR("publicProfile", getPublicProfile)
+  const {
+    data: publicProfile,
+    isValidating,
+    isLoading,
+  } = useSWR(authState ? "publicProfile" : null, getPublicProfile, {
+    revalidateOnFocus: false,
+  })
+
+  if (!publicProfile || isValidating || isLoading)
+    return (
+      <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-white rounded-xl">
+        <Loader imageClasses="w-16" isLoading={true} fullscreen={false} />
+      </div>
+    )
 
   return (
     <div
@@ -31,8 +46,8 @@ export const PublicProfileButton = ({
           name={"profile"}
           disabled={!isAvailable}
         />
-        <label htmlFor="profile_public" className="ml-2">
-          My NFID profile
+        <label htmlFor="profile_public" className="ml-2 cursor-pointer">
+          {truncateString(publicProfile.address, 12, 5)}
         </label>
       </div>
       {publicProfile?.balance ? <div>{publicProfile?.balance} ICP</div> : null}

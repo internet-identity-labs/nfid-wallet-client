@@ -41,7 +41,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -80,7 +80,7 @@ jobs:
       - run: pwd
 
       - name: Checkout CI repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -121,7 +121,7 @@ jobs:
         run: chrome --version
 
       - name: Checkout Google user E2E
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: internet-identity-labs/user-google-e2e
           path: apps/nfid-frontend-e2e/user-google-e2e
@@ -170,7 +170,7 @@ jobs:
       TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
     steps:
       - name: Get Allure history
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         continue-on-error: true
         with:
           ref: gh-pages

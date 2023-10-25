@@ -458,7 +458,9 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
-      - uses: pat-s/always-upload-cache@v3.0.11
+
+      - name: Working with cache.
+        uses: pat-s/always-upload-cache@v3.0.11
         with:
           path: apps/nfid-frontend-e2e/allure-results
           key: allure-results-${{github.RUN_ID}}
@@ -486,19 +488,22 @@ jobs:
         env:
           target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
         run: echo "$target_url" > "report_url.txt"
-      - name: Upload url to PR comments
+
+      - name: Upload url to PR comments.
         run: |
           if [ -n "${URL}" ]; then
-          printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
-          curl \
-            -X POST \
-            $URL \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d "$data"
+            printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
+            curl \
+              -X POST \
+              $URL \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -d "$data"
           fi
-      - uses: actions/upload-artifact@v3
+
+      - name: Upload reports.
+        uses: actions/upload-artifact@v3
         with:
           name: ReportUrl
           path: "report_url.txt"

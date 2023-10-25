@@ -84,6 +84,7 @@ export default function NFIDEmbedCoordinator() {
                 data: data,
               })
             }}
+            onReset={() => send({ type: "RESET" })}
             onReject={() => send({ type: "CANCEL" })}
           />
         )

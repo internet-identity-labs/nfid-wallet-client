@@ -11,6 +11,7 @@ import { e8sICPToString } from "frontend/integration/wallet/utils"
 export const getPublicProfile = async (): Promise<{
   balance: string
   balanceUSD: string
+  address: string
 }> => {
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")
@@ -29,5 +30,6 @@ export const getPublicProfile = async (): Promise<{
     balance: balance,
     balanceUSD:
       balance === "0" ? "0" : `$${(exchangeRate * Number(balance)).toFixed(2)}`,
+    address,
   }
 }

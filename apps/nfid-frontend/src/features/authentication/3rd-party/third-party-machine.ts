@@ -37,6 +37,7 @@ export type ThirdPartyAuthMachineEvents =
   | { type: "done.invoke.postDelegation"; data: void }
   | { type: "RETRY" }
   | { type: "CHOOSE_ACCOUNT"; data: ApproveIcGetDelegationSdkResponse }
+  | { type: "RESET" }
 
 interface Schema {
   context: ThirdPartyAuthMachineContext
@@ -127,6 +128,7 @@ const ThirdPartyAuthMachine =
               actions: "assignAuthoSession",
               target: "End",
             },
+            RESET: "Start",
           },
         },
         End: {

@@ -47,6 +47,7 @@ type Events =
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
+  | { type: "RESET" }
 
 type Services = {
   RPCReceiver: {
@@ -122,6 +123,9 @@ export const NFIDEmbedMachineV2 = createMachine(
 
       AUTH: {
         initial: "CheckAppMeta",
+        on: {
+          RESET: "AUTH.CheckAppMeta",
+        },
         states: {
           CheckAppMeta: {
             invoke: {
@@ -194,6 +198,9 @@ export const NFIDEmbedMachineV2 = createMachine(
 
       HANDLE_PROCEDURE: {
         initial: "READY",
+        on: {
+          RESET: "HANDLE_PROCEDURE.READY",
+        },
         states: {
           READY: {
             always: [

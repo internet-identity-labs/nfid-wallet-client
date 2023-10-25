@@ -103,6 +103,11 @@ jobs:
       deployments: write
     name: Deploy to Cloudflare Pages
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -130,6 +135,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 
       - name: Publish
         uses: cloudflare/pages-action@1

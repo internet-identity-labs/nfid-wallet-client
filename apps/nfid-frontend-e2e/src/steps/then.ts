@@ -876,9 +876,8 @@ Then(/^Assert ([^"]*) logs message:$/, async (
   const message = data.rowsHash()
   let messageBody = message.body
   let messageHeader = message.header
-  console.log(message, messageBody, messageHeader, message.firstChild)
   await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
-  messageBody == "" ? expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText() +
+  messageBody != "" ? expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText() +
       DemoTransactions.getTransferLogsLocatorSecondPart(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
     :
     expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)

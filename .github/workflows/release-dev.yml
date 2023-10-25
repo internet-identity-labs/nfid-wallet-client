@@ -47,8 +47,8 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           MAINNET_RARIBLE_X_API_KEY: ${{secrets.MAINNET_RARIBLE_X_API_KEY}}
 
-  deploy-demo:
-    name: Deploy NFID-Demo
+  build-demo:
+    name: Build NFID-Demo
     needs: check-secrets
     runs-on: ubuntu-latest
     if: ${{ ! contains( github.ref_name, 'production' ) }}
@@ -64,19 +64,31 @@ jobs:
           ref: main
           path: ci_libs
 
-      - name: Set up Node.js
+      - name:  Setup DFX 15
+        uses: aviate-labs/setup-dfx@v0.2.6
+        with:
+          dfx-version: 0.15.0
+          dfx-disable-encryption: true
+
+      - name: Setup Node 18
         uses: actions/setup-node@v3
         with:
           node-version: "18"
           cache: "yarn"
 
-      - name: Install DFX.
-        uses: aviate-labs/setup-dfx@v0.2.6
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Node Modules.
+        id: cache-node-modules
+        uses: actions/cache@v3
         with:
-          dfx-version: 0.15.0
-          dfx-disable-encryption: true
-        env:
-          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-demo-${{ hashFiles('**/yarn.lock') }}
 
       - name: PRE-BUILD => Populate env vars.
         run: |
@@ -119,20 +131,6 @@ jobs:
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
           ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Node Modules.
-        id: cache-node-modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            **/.eslintcache
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-demo-${{ hashFiles('**/yarn.lock') }}
-
       - name: NFID-DEMO => Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
@@ -149,7 +147,7 @@ jobs:
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
-      - name: NFID-DEMO => Deploy
+      - name: NFID-DEMO => Build package
         run: |
           source ./ci_libs/CI_LIBS.sh
           
@@ -157,14 +155,11 @@ jobs:
           ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}'" >&2
           npx env-cmd -f "${ENV_FILE}" nx build "${CANISTER_NAME}"
 
-          ci_echo_info "DFX" >&2
-          dfx identity use action
-
-          ci_echo_debug "dfx deploy --network '${NETWORK_NAME}' '${CANISTER_NAME}' --no-wallet" >&2
-          dfx deploy --network "${NETWORK_NAME}" "${CANISTER_NAME}" --no-wallet
+          ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${CANISTER_NAME}" >&2
+          dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
         env:
           IS_DEV: true
-          IC_HOST: https://icp0.io
+          IC_HOST: https://ic0.app
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
@@ -177,6 +172,137 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+
+      - name: NFID-DEMO => Save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nfid-demo
+          path: |
+            build/
+            dist/
+            .dfx/
+
+  deploy-demo:
+    name: Deploy NFID-Demo
+    needs: build-demo
+    if: ${{ ! contains( github.ref_name, 'production' ) }}
+    runs-on:
+      group: dfx-runner
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repo.
+        uses: actions/checkout@v4
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: PRE-DEPLOY => Populate env vars.
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          ci_echo_debug "Getting values from dfx.json" >&2
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
+            ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
+            exit 1
+          fi
+
+          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
+
+          ci_echo_debug "Detecting network for the canister based on the branch." >&2
+          case ${CANISTER_BRANCH} in
+            staging)
+              NETWORK_NAME='stage'
+              ;;
+            production)
+              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
+              exit 1
+              ;;
+            *)
+              NETWORK_NAME='dev'
+              ;;
+          esac
+
+          ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
+
+          if [[ "${NETWORK_NAME}" =~ ^(dev|stage)$ ]]; then
+            ID_NAME="dev_admin"
+            IDENTITY_PEM_NAME_VAR="DEV_ADMIN_KEY"
+          elif [ "${NETWORK_NAME}" == 'ic' ]; then
+            ID_NAME="prod_admin"
+            IDENTITY_PEM_NAME_VAR="PROD_ADMIN_KEY"
+          fi
+          ID_PATH="/home/ubuntu/.config/dfx/identity/${ID_NAME}"
+
+          ci_echo_debug "Populating env variables" >&2
+          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
+          echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
+          echo "ID_NAME=${ID_NAME}" >> $GITHUB_ENV
+          echo "ID_PATH=${ID_PATH}" >> $GITHUB_ENV
+          echo "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >> $GITHUB_ENV
+
+      - name: PRE-DEPLOY => Print Vars.
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
+          ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
+          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
+          ci_echo_info "ID_NAME=${ID_NAME}" >&2
+          ci_echo_info "ID_PATH=${ID_PATH}" >&2
+          ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
+
+      - name: PRE-DEPLOY => Write identity.
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          mkdir -p "${ID_PATH}"
+          echo "${!IDENTITY_PEM_NAME_VAR}" > "${ID_PATH}/identity.pem"
+
+          ci_echo_warn "Preparing encoded key..." >&2
+          ci_echo_info "Installing base64 package..." >&2
+          sudo apt-get update && sudo apt-get install -y coreutils moreutils
+
+          ci_echo_info "Decoding..." >&2
+          base64 -d "${ID_PATH}/identity.pem" | sponge "${ID_PATH}/identity.pem"
+        env:
+          DEV_ADMIN_KEY: ${{secrets.DEV_ADMIN_KEY}}
+          PROD_ADMIN_KEY: ${{secrets.PROD_VAULT_KEY}}
+
+      - name: PRE-DEPLOY => DFX status.
+        run: |
+          dfx --version
+
+      - name: DEPLOY => Load artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: nfid-demo
+
+      - name: DEPLOY => Deploy to the canister.
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          if [ "${NETWORK_NAME}" == 'ic' ]; then
+            CI_DEBUG="true"
+          fi
+
+          dfx identity use "${ID_NAME}"
+
+          ci_echo_debug "dfx canister install --mode auto --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
+          if ! result=$(dfx canister install --mode auto --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
+            ci_echo_error "Deploy failed ${result}" >&2
+            exit 1
+          fi
+
+          ci_echo_debug "Command output was '${result}'" >&2
+
+          ci_echo_success "Canister '${CANISTER_NAME}' was deployed" >&2
 
   deploy-cloudflare:
     name: Deploy NFID-Frontend to Cloudflare Pages
@@ -220,7 +346,7 @@ jobs:
           yarn build:cloudflare
         env:
           IS_DEV: true
-          IC_HOST: https://icp0.io
+          IC_HOST: https://ic0.app
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}

@@ -17,4 +17,5 @@ case ${CF_PAGES_BRANCH} in
         # all other branches
         echo "Building branch: $CF_PAGES_BRANCH with .env.dev"
         npx env-cmd -f .env.dev nx build nfid-frontend
+        ;;
 esac

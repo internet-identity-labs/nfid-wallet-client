@@ -35,10 +35,7 @@ describe("Verification of email", () => {
       .setIssuer("https://nfid.one")
       .setSubject(testEmail)
       .setAudience("https://nfid.one")
-      .setExpirationTime("20s")
-      .setNotBefore(0)
       .setJti("requestId")
-      .setIssuedAt()
       .sign(privateKey)
 
     JwtService.verify(token, keyPair.publicKey, {

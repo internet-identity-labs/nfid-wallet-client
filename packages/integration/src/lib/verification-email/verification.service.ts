@@ -144,17 +144,14 @@ export const verificationService = {
     const ed25519KeyIdentity = Ed25519KeyIdentity.generate()
     const privateKey = await jose.importPKCS8(keypair.privateKey, "ES512")
     const token = await new jose.SignJWT({
-      nonce: nonce.toString(),
+      nonce: "0",
       publicKey: ed25519KeyIdentity.toJSON()[0],
     })
       .setProtectedHeader({ alg: "ES512" })
       .setIssuer("https://nfid.one")
       .setSubject(emailAddress)
       .setAudience("https://nfid.one")
-      .setExpirationTime("10m")
-      .setNotBefore(0)
       .setJti(requestId)
-      .setIssuedAt()
       .sign(privateKey)
 
     const request = { token, delegationTtl: maxTimeToLive }

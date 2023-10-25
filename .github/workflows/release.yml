@@ -55,7 +55,7 @@ jobs:
 
       - uses: aviate-labs/setup-dfx@v0.2.6
         with:
-          dfx-version: 0.15.0
+          dfx-version: 0.13.1
           dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}

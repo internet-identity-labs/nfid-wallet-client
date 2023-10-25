@@ -60,6 +60,7 @@ export default function ThirdPartyAuthCoordinator({
     case state.matches("Authorization"):
       return (
         <AuthChooseAccount
+          onReset={() => send("RESET")}
           authRequest={state.context.authRequest as AuthorizationRequest}
           appMeta={state.context.appMeta}
           handleSelectAccount={(

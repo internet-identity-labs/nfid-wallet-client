@@ -335,12 +335,31 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Node Modules.
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-cloudflare-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          ci_echo_debug "yarn --prefer-offline" >&2
+          yarn --prefer-offline
+
       - name: Build
         run: |
           source ./ci_libs/CI_LIBS.sh
-            
-          ci_echo_info "Yarn" >&2
-          yarn --prefer-offline
 
           ci_echo_debug "yarn build:cloudflare" >&2
           yarn build:cloudflare

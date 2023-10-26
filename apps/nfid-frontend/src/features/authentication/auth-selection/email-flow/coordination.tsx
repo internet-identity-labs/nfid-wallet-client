@@ -5,6 +5,7 @@ import { authenticationTracking } from "@nfid/integration"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { AuthEmailVerified } from "./email-verified"
+import { AuthEmailError } from "./error"
 import { AuthWithEmailActor } from "./machine"
 import { AuthEmailPending } from "./pending-verification"
 
@@ -28,6 +29,16 @@ export function AuthEmailFlowCoordinator({
       return (
         <AuthEmailPending
           email={state.context.verificationEmail}
+          onBack={() => send({ type: "BACK" })}
+          onResend={() => {
+            authenticationTracking.magicLinkResendVerification()
+            send({ type: "RESEND" })
+          }}
+        />
+      )
+    case state.matches("Error"):
+      return (
+        <AuthEmailError
           onBack={() => send({ type: "BACK" })}
           onResend={() => {
             authenticationTracking.magicLinkResendVerification()

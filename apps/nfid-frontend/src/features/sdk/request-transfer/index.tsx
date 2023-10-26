@@ -141,12 +141,16 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                     throw new Error(
                       "You can not request canister calls with anonymous delegation",
                     )
+                  if (!nft)
+                    throw new Error("Something went wrong. Please try again.")
 
                   let transferIdentity = tokenId
-                    ? await getWalletDelegationAdapter("nfid.one", "0", [
-                        nft?.canisterId!,
-                      ])
-                    : identity ?? (await getWalletDelegationAdapter())
+                    ? await getWalletDelegationAdapter(
+                        nft.account.domain,
+                        nft.account.accountId,
+                        [nft.canisterId],
+                      )
+                    : await getWalletDelegationAdapter()
 
                   const request = {
                     tokenId: tokenId,

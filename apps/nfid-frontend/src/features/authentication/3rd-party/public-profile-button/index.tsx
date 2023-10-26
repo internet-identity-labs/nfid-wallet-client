@@ -10,11 +10,13 @@ import { getPublicProfile } from "../choose-account/services"
 
 export interface IPublicProfileButton {
   isAvailable: boolean
+  selectedProfile: ProfileTypes
   setSelectedProfile: (value: ProfileTypes) => void
 }
 export const PublicProfileButton = ({
   isAvailable,
   setSelectedProfile,
+  selectedProfile,
 }: IPublicProfileButton) => {
   const {
     data: publicProfile,
@@ -35,7 +37,7 @@ export const PublicProfileButton = ({
     <div
       className={clsx(
         "flex justify-between text-xs uppercase font-mono h-5 mt-5",
-        !isAvailable && "!text-gray-400",
+        !isAvailable && "!text-gray-400 !pointer-events-none",
       )}
     >
       <div className="flex items-center">
@@ -43,6 +45,7 @@ export const PublicProfileButton = ({
           id="profile_public"
           onChange={(e) => setSelectedProfile(e.target.value as ProfileTypes)}
           value="public"
+          checked={selectedProfile === "public"}
           name={"profile"}
           disabled={!isAvailable}
         />

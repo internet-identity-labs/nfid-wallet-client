@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
@@ -247,7 +247,7 @@ export const AuthChooseAccount = ({
       return handleSelectLegacyAnonymous(selectedLegacyAccount)
     if (selectedProfile === "public") return handleSelectPublic()
 
-    return toast.error("Please select profile")
+    return toast.error("Something went wrong. Please select a profile.")
   }, [
     handleSelectAnonymous,
     handleSelectLegacyAnonymous,
@@ -260,6 +260,17 @@ export const AuthChooseAccount = ({
     await authState.reset(false)
     onReset()
   }, [onReset])
+
+  useEffect(() => {
+    if (isAnonymousLoading) return
+    if (!!authRequest.targets?.length) return setSelectedProfile("public")
+    if (!!legacyAnonymousProfiles?.length) {
+      setSelectedProfile("legacy-anonymous")
+      setSelectedLegacyAccount(legacyAnonymousProfiles[0])
+      return
+    }
+    setSelectedProfile("anonymous-1")
+  }, [authRequest.targets?.length, isAnonymousLoading, legacyAnonymousProfiles])
 
   if (isLoading || isAnonymousLoading) return <BlurredLoader isLoading />
 
@@ -298,14 +309,14 @@ export const AuthChooseAccount = ({
           </TooltipProvider>
         </div>
       )}
-      <div className="relative flex-1 w-full">
+      <div className="relative flex flex-col flex-1 w-full">
         <div
           className={clsx(
-            "w-full flex-1 pt-4 pb-[26px] rounded-xl",
+            "w-full pt-4 pb-[26px] rounded-xl",
             "flex flex-col font-inter bg-white",
             "border border-[rgba(0,0,0,0.04)]",
             "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
-            "mt-9 mb-6",
+            "mt-9",
           )}
         >
           <div className="px-5">
@@ -314,6 +325,7 @@ export const AuthChooseAccount = ({
               Allow this site to request payments and view your balances.
             </p>
             <PublicProfileButton
+              selectedProfile={selectedProfile}
               setSelectedProfile={(value) => setSelectedProfile(value)}
               isAvailable={!!authRequest.targets?.length}
             />
@@ -335,6 +347,7 @@ export const AuthChooseAccount = ({
                 <RadioButton
                   id={`profile_legacy_${acc.accountId}`}
                   value={`legacy-anonymous`}
+                  checked={selectedProfile === "legacy-anonymous"}
                   name={"profile"}
                   onChange={(e) => {
                     setSelectedLegacyAccount(acc)
@@ -351,22 +364,25 @@ export const AuthChooseAccount = ({
             ))}
 
             {/* Anonymous profile */}
-            <div className="flex items-center h-5 mt-5 font-mono text-xs uppercase">
-              <RadioButton
-                id="profile_anonymous-1"
-                value="anonymous-1"
-                name={"profile"}
-                onChange={(e) =>
-                  setSelectedProfile(e.target.value as ProfileTypes)
-                }
-              />
-              <label
-                htmlFor="profile_anonymous-1"
-                className="ml-2 cursor-pointer"
-              >
-                Anonymous {appMeta.name} profile 1
-              </label>
-            </div>
+            {!legacyAnonymousProfiles?.length ? (
+              <div className="flex items-center h-5 mt-5 font-mono text-xs uppercase">
+                <RadioButton
+                  id="profile_anonymous-1"
+                  value="anonymous-1"
+                  checked={selectedProfile === "anonymous-1"}
+                  name={"profile"}
+                  onChange={(e) =>
+                    setSelectedProfile(e.target.value as ProfileTypes)
+                  }
+                />
+                <label
+                  htmlFor="profile_anonymous-1"
+                  className="ml-2 cursor-pointer"
+                >
+                  Anonymous {appMeta.name} profile 1
+                </label>
+              </div>
+            ) : null}
 
             {/* Anonymous profile with derivation bug */}
             {!legacyAnonymousProfiles?.length && isDerivationBug ? (
@@ -374,6 +390,7 @@ export const AuthChooseAccount = ({
                 <RadioButton
                   id="anonymous-2"
                   value="anonymous-2"
+                  checked={selectedProfile === "anonymous-2"}
                   name={"profile"}
                   onChange={(e) =>
                     setSelectedProfile(e.target.value as ProfileTypes)
@@ -389,6 +406,7 @@ export const AuthChooseAccount = ({
             ) : null}
           </div>
         </div>
+        <div className="flex-1" />
         <div className="grid grid-cols-2 gap-2.5">
           <Button onClick={onBack} type="stroke">
             Back

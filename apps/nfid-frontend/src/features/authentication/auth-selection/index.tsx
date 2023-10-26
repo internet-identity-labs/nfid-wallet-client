@@ -74,7 +74,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   return (
     <BlurredLoader
       isLoading={isLoading}
-      className="w-full h-full"
+      className="flex flex-col flex-1"
       overlayClassnames="rounded-xl"
       id="auth-selection"
     >
@@ -164,6 +164,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           Other sign in options
         </Button>
       </div>
+      <div className="flex-1" />
       <SDKFooter />
     </BlurredLoader>
   )

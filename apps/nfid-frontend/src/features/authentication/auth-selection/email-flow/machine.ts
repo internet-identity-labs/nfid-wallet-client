@@ -14,6 +14,7 @@ import {
   checkEmailVerification,
   authorizeWithEmail,
   sendVerificationEmail,
+  stopIntervalVerification,
 } from "./services"
 
 export interface AuthWithEmailMachineContext {
@@ -81,9 +82,16 @@ const AuthWithEmailMachine =
               target: "EmailVerified",
               actions: "assignEmailDelegation",
             },
+            onError: {
+              target: "Error",
+              actions: "stopIntervalVerification",
+            },
           },
           on: {
-            BACK: "End",
+            BACK: {
+              target: "End",
+              actions: "stopIntervalVerification",
+            },
             RESEND: "SendVerificationEmail",
           },
         },
@@ -95,6 +103,12 @@ const AuthWithEmailMachine =
               target: "Authenticated",
               actions: "assignAuthSession",
             },
+          },
+        },
+        Error: {
+          on: {
+            BACK: "End",
+            RESEND: "SendVerificationEmail",
           },
         },
         Authenticated: {
@@ -127,6 +141,7 @@ const AuthWithEmailMachine =
         toastError: (context, event) => {
           toast.error(event.data.message)
         },
+        stopIntervalVerification,
       },
       guards: {
         isRequestInProgress: (context, event: { data: Error }) => {

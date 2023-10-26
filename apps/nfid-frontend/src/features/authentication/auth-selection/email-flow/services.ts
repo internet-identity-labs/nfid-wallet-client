@@ -12,6 +12,7 @@ import {
 import {
   Profile,
   SendVerificationResponse,
+  VerificationIsInProgressError,
   VerificationMethod,
   authState,
   authenticationTracking,
@@ -56,7 +57,7 @@ export const checkEmailVerification = async (
     keyPair: context.keyPair,
   })
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let nonce = 0
     const int = setInterval(async () => {
       try {
@@ -68,15 +69,27 @@ export const checkEmailVerification = async (
           context.requestId,
           nonce - 1,
         )
+
         if (res) {
           clearInterval(int)
           resolve(res)
         }
       } catch (e) {
-        console.log("ERROR", e)
+        const isPending = e instanceof VerificationIsInProgressError
+        if (!isPending) {
+          clearInterval(int)
+          reject()
+        }
       }
     }, 3000)
+    window.localStorage.setItem("emailIntervalId", int.toString())
   })
+}
+
+export const stopIntervalVerification = () => {
+  const intervalId = window.localStorage.getItem("emailIntervalId")
+  if (!intervalId) return
+  clearInterval(parseInt(intervalId))
 }
 
 export const verify = async (

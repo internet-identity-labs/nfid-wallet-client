@@ -144,13 +144,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   if (!nft)
                     throw new Error("Something went wrong. Please try again.")
 
+                    debugger
                   let transferIdentity = tokenId
-                    ? await getWalletDelegationAdapter(
-                        nft?.account?.domain,
-                        nft?.account?.accountId,
-                        [nft?.canisterId ?? ""],
-                      )
-                    : await getWalletDelegationAdapter()
+                  ? await getWalletDelegationAdapter("nfid.one", "-1", [
+                    nft?.canisterId!,
+                  ])
+                : identity ?? (await getWalletDelegationAdapter())
 
                   const request = {
                     tokenId: tokenId,

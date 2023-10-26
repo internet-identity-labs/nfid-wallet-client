@@ -1,4 +1,4 @@
-import { Button, IconCmpArrow } from "@nfid-frontend/ui"
+import { Button, IconCmpArrow, IconCmpDoubleSpinner } from "@nfid-frontend/ui"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 
@@ -14,7 +14,7 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
   onResend,
 }) => {
   return (
-    <div className="w-full h-full text-sm text-center">
+    <div className="flex flex-col w-full h-full text-sm text-center">
       <IconCmpArrow
         className="transition-opacity cursor-pointer hover:opacity-50"
         onClick={onBack}
@@ -30,6 +30,11 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
       <Button onClick={onResend} type="ghost">
         Resend email
       </Button>
+      <div className="flex-1" />
+      <div className="flex items-center justify-center space-x-1 text-gray-500">
+        <IconCmpDoubleSpinner className="animate-spin" />
+        <p className="text-sm">Checking for magic link verification</p>
+      </div>
     </div>
   )
 }

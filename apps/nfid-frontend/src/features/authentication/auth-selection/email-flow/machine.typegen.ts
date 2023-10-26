@@ -47,6 +47,7 @@ export interface Typegen0 {
     assignAuthSession: "done.invoke.authorizeWithEmail"
     assignEmailDelegation: "done.invoke.checkEmailVerification"
     assignVerificationData: "done.invoke.sendVerificationEmail"
+    stopIntervalVerification: "BACK" | "error.platform.checkEmailVerification"
     toastError: "error.platform.sendVerificationEmail"
   }
   eventsCausingDelays: {}
@@ -64,6 +65,7 @@ export interface Typegen0 {
     | "Authenticated"
     | "EmailVerified"
     | "End"
+    | "Error"
     | "PendingEmailVerification"
     | "SendVerificationEmail"
   tags: never

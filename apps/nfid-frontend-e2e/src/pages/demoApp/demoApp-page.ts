@@ -35,46 +35,50 @@ export class demoAppPage extends Page {
     return $(`#myTargetsList`)
   }
 
-  async getAddCanisterIDButton(block: string) {
-    let locator = $(`#${block} #buttonAddTargetCanisterId`)
-    await locator.waitForDisplayed({timeout: 20000, timeoutMsg: "Add canister button isn't displayed"})
-    return locator
+  getAddCanisterIDButton(pageBlock: string) {
+    return $(`#${pageBlock} #buttonAddTargetCanisterId`)
   }
 
-  async getTransferLogsLocatorFirstPart(block: string, position: number[]) {
-    console.log(`div#${block} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
-    let locator = $(`div#${block} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
+  async getTransferLogsLocatorFirstPart(pageBlock: string, position: number[]) {
+    let locator = $(`div#${pageBlock} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
     await locator.waitForDisplayed({timeout: 50000, timeoutMsg: "Transfer Logs aren't displayed"})
     return locator
   }
 
-  async getTransferLogsLocatorSecondPart(block: string, position: number[]) {
-    let locator = $(`div#${block} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
+  async getTransferLogsLocatorSecondPart(pageBlock: string, position: number[]) {
+    let locator = $(`div#${pageBlock} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`)
     await locator.waitForDisplayed({timeout: 50000, timeoutMsg: "Transfer Logs aren't displayed"})
     return locator
   }
 
-  getAddCanisterIDInput(block: string, number: number) {
-    return $(`//div[contains(@id, ${block})]//label[contains(.,'target canisterId ${number}')]/parent::div//input`)
+  getAddCanisterIDInput(pageBlock: string, number: number) {
+    return $(`//div[contains(@id, ${pageBlock})]//label[contains(.,'target canisterId ${number}')]/parent::div//input`)
   }
 
-  async addCanisterID(block: string, targetsList: string) {
+  getDerivationOriginInput(pageBlock: string) {
+    return $(`//div[contains(@id, ${pageBlock})]//label[contains(.,'Derivation origin')]/parent::div//input`)
+  }
+
+  async addCanisterID(pageBlock: string, targetsList: string) {
     let targets = targetsList.split(",")
     for (let i = 0; i < targets.length; i++) {
-      if (!await this.getAddCanisterIDInput(block, i + 1).isDisplayed()) {
-        await (await this.getAddCanisterIDButton(block)).click()
+      if (!await this.getAddCanisterIDInput(pageBlock, i + 1).isDisplayed()) {
+        await this.getAddCanisterIDButton(pageBlock).click()
       }
-      await this.getAddCanisterIDInput(block, i + 1).setValue(targets[i])
+      await this.getAddCanisterIDInput(pageBlock, i + 1).setValue(targets[i])
     }
   }
 
-  async clickAuthenticateButton(targets: string, profile: string) {
+  async clickAuthenticateButton(targets: string, profile: string, derivation: string) {
     await browser.pause(6000)
     if (await this.getLogoutButton.isDisplayed()) await this.getLogoutButton.click()
     await browser.waitUntil(async () => {
+        await browser.pause(1000)
         await browser.switchToParentFrame()
+        await this.getDerivationOriginInput("authentication").setValue(derivation)
         await this.addCanisterID("authentication", targets)
-        if (await this.getAuthenticateButton.isClickable()) await this.getAuthenticateButton.click()
+        // if (await this.getAuthenticateButton.isClickable())
+        await this.getAuthenticateButton.click()
         if (await this.getIFrame.isDisplayed()) {
           await browser.switchToFrame(await this.getIFrame)
           await this.getPublicProfile.waitForDisplayed({timeoutMsg: "Google account iframe is not displayed"})
@@ -101,8 +105,8 @@ export class demoAppPage extends Page {
 
   }
 
-  async loginUsingIframe(profile: string, targets: string) {
-    await this.clickAuthenticateButton(targets, profile)
+  async loginUsingIframe(profile: string, targets: string, derivation: string) {
+    await this.clickAuthenticateButton(targets, profile, derivation)
     await this.selectProfile(profile)
     await browser.switchToParentFrame()
     await browser.waitUntil(async () => {

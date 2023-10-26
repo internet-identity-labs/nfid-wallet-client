@@ -43,10 +43,10 @@ Given(
 Given(/^authstate is cleared$/, clearAuthState)
 
 Given(
-  /^User authenticates to ?(.*)? with google account( using ?(.*) account)?( with ?(.*))?$/,
-  async (page: string, profile: string, targets?: string) => {
+  /^User authenticates to ?(.*) with google account( using (.*) profile)?( with (.*) canister)?( and (.*))?$/,
+  async (page: string, profile?: string, targets?: string, derivation?: string) => {
     // @ts-ignore
-    await pages[page].loginUsingIframe(profile, targets)
+    await pages[page].loginUsingIframe(profile, targets, derivation)
   },
 )
 

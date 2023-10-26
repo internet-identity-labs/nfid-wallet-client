@@ -1,5 +1,3 @@
-import { ProfileType } from "./types.js"
-
 export class Page {
   private get loader() {
     return $("#loader")
@@ -59,6 +57,6 @@ export class Page {
     )
   }
 
-  loginUsingIframe(profileType: string, targets?: string) {
+  loginUsingIframe(profileType?: string, targets?: string, derivation?: string) {
   }
 }

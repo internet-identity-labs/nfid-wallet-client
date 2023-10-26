@@ -368,6 +368,6 @@ When(/^User sends ?(.*)? ([^"]*) to (.*)$/,
       await DemoTransactions.sendNFTTransaction(address)
   })
 
-When(/^User updates list of targets by (.*)$/, async (targets: string) => {
-  await DemoUpdateDelegation.updateDelegation(targets)
+When(/^User updates list of targets by (.*) and (.*)$/, async (targets: string, derivation: string) => {
+  await DemoUpdateDelegation.updateDelegation(targets, derivation)
 })

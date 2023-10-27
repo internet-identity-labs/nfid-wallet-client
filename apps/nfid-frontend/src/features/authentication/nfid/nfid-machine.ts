@@ -3,6 +3,7 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 import { AbstractAuthSession } from "frontend/state/authentication"
 
 import AuthenticationMachine from "../root/root-machine"
+import { hostName } from "./../../../../../nfid-frontend-e2e/wdio.conf"
 
 export interface AuthenticationContext {
   authSession?: AbstractAuthSession
@@ -34,6 +35,9 @@ const NFIDAuthMachine =
             onDone: { target: "End", actions: "assignAuthSession" },
             data: {
               verificationEmail: "",
+              authRequest: {
+                hostname: window.location.origin,
+              },
             },
           },
         },

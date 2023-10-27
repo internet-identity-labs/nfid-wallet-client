@@ -78,16 +78,11 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       overlayClassnames="rounded-xl"
       id="auth-selection"
     >
-      <AuthAppMeta
-        applicationLogo={appMeta?.logo}
-        applicationURL={appHost}
-        applicationName={appMeta?.name}
-        title={authRequest ? "Use your NFID Wallet" : "Use your NFID Account"}
-      />
-      <div className="space-y-2.5">
+      <AuthAppMeta applicationURL={appHost} />
+      <div className="mt-7">
         <form
           onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
-          className="space-y-2.5"
+          className="space-y-[14px]"
         >
           <Input
             className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
@@ -109,7 +104,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             Continue with email
           </Button>
         </form>
-        <Separator />
+        <Separator className="my-5" />
 
         <SignInWithGoogle
           onLogin={onSelectGoogleAuth}
@@ -127,7 +122,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         />
         <Button
           id="passkey-sign-button"
-          className="h-12 !p-0 group"
+          className="h-12 !p-0 group my-[14px]"
           type="stroke"
           icon={
             <IconCmpPasskey className="text-black group-hover:text-white group-active:text-white group-focus:text-white" />

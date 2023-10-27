@@ -34,6 +34,9 @@ const NFIDAuthMachine =
             onDone: { target: "End", actions: "assignAuthSession" },
             data: {
               verificationEmail: "",
+              authRequest: {
+                hostname: window.location.origin,
+              },
             },
           },
         },

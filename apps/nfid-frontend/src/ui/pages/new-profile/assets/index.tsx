@@ -127,14 +127,18 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       icon={token.icon}
                       appName={token.title}
                     />
-                    <div>
+                    <div className="text-ellipsis">
                       <p
-                        className="text-sm font-bold"
+                        className="text-sm font-bold w-[150px]"
                         id={`token_${token.title.replace(/\s/g, "")}_currency`}
                       >
                         {token.currency}
                       </p>
-                      <p className={"text-[#9CA3AF] text-xs items-left flex"}>
+                      <p
+                        className={
+                          "text-[#9CA3AF] text-xs items-left flex w-[150px]"
+                        }
+                      >
                         {token.title}
                       </p>
                     </div>
@@ -146,7 +150,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     {token.blockchain}
                   </td>
                   <td
-                    className="text-sm text-right"
+                    className="text-sm text-right text-ellipsis w-[150px]"
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
                     {token.toPresentation(token.balance)} {token.currency}
@@ -174,7 +178,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     alt="icon"
                     className="w-6 h-6 mr-[13px]"
                   />
-                  <div>
+                  <div className="text-ellipsis w-[150px]">
                     <p className="text-sm font-bold leading-5">{token.title}</p>
                     <p className="text-[#9CA3AF] text-xs items-left flex leading-3">
                       {token.currency}
@@ -182,7 +186,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm leading-5">
+                  <div className="text-sm leading-5 text-ellipsis w-[70px]">
                     {token.toPresentation(token.balance)} {token.currency}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">

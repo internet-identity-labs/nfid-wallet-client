@@ -23,9 +23,13 @@ export const setupSessionManager = ({
   options = idleManagerConfig,
   onIdle,
 }: SetupSessionManagerArgs) => {
-  if (matchPath(ROUTE_EMBED, window.location.pathname)) return
-  if (idleManager) return
-  console.debug("setupIdleManager")
+  const isDisabledOnEmbed = !!matchPath(ROUTE_EMBED, window.location.pathname)
+  const isAlreadySetup = idleManager !== null
+  console.debug("setupIdleManager", {
+    isDisabledOnEmbed,
+    isAlreadySetup,
+  })
+  if (isDisabledOnEmbed || isAlreadySetup) return
 
   idleManager = IdleManager.create({ ...options, onIdle })
 }

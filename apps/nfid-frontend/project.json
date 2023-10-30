@@ -5,9 +5,8 @@
   "projectType": "application",
   "targets": {
     "storybook": {
-      "executor": "@nrwl/storybook:storybook",
+      "executor": "@nx/storybook:storybook",
       "options": {
-        "uiFramework": "@storybook/react",
         "port": 4400,
         "configDir": "apps/nfid-frontend/.storybook"
       },
@@ -18,10 +17,9 @@
       }
     },
     "build-storybook": {
-      "executor": "@nrwl/storybook:build",
+      "executor": "@nx/storybook:build",
       "outputs": ["{options.outputDir}"],
       "options": {
-        "uiFramework": "@storybook/react",
         "configDir": "apps/nfid-frontend/.storybook",
         "outputDir": "dist/storybook/nfid-frontend"
       },

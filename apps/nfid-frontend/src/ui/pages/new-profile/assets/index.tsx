@@ -127,7 +127,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       icon={token.icon}
                       appName={token.title}
                     />
-                    <div className="text-ellipsis">
+                    <div className="overflow-hidden text-ellipsis whitespace-nowrap">
                       <p
                         className="text-sm font-bold w-[150px]"
                         id={`token_${token.title.replace(/\s/g, "")}_currency`}
@@ -150,10 +150,12 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     {token.blockchain}
                   </td>
                   <td
-                    className="text-sm text-right text-ellipsis w-[150px]"
+                    className="text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
-                    {token.toPresentation(token.balance)} {token.currency}
+                    <div className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
+                      {token.toPresentation(token.balance)} {token.currency}
+                    </div>
                   </td>
                   <td
                     className="pr-16 text-sm text-right"
@@ -178,7 +180,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     alt="icon"
                     className="w-6 h-6 mr-[13px]"
                   />
-                  <div className="text-ellipsis w-[150px]">
+                  <div className="text-ellipsis whitespace-nowrap overflow-hidden w-[150px]">
                     <p className="text-sm font-bold leading-5">{token.title}</p>
                     <p className="text-[#9CA3AF] text-xs items-left flex leading-3">
                       {token.currency}
@@ -186,7 +188,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm leading-5 text-ellipsis w-[70px]">
+                  <div className="text-sm leading-5 text-ellipsis whitespace-nowrap overflow-hidden w-[70px]">
                     {token.toPresentation(token.balance)} {token.currency}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">

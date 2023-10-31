@@ -44,7 +44,6 @@ type SetProps = {
 
 function makeAuthState() {
   console.debug("makeAuthState")
-  setupSessionManager({ onIdle: invalidateIdentity })
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()
 
@@ -105,6 +104,7 @@ function makeAuthState() {
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
+    setupSessionManager({ onIdle: invalidateIdentity })
 
     observableAuthState$.next({
       cacheLoaded: true,
@@ -157,6 +157,7 @@ function makeAuthState() {
       sessionKey,
     })
     replaceIdentity(delegationIdentity, "authState.set")
+    setupSessionManager({ onIdle: invalidateIdentity })
   }
   function get() {
     checkAndRenewFEDelegation()

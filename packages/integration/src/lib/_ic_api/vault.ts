@@ -125,7 +125,6 @@ export const idlFactory = ({ IDL }: any) => {
     update_policy: IDL.Func([Policy], [Policy], []),
     update_vault: IDL.Func([Vault], [Vault], []),
     update_wallet: IDL.Func([Wallet], [Wallet], []),
-    migrate_user: IDL.Func([IDL.Text], [IDL.Bool], []),
   })
 }
 export const init = ({ IDL }: any) => {

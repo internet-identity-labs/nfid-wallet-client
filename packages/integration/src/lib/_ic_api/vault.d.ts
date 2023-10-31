@@ -117,5 +117,4 @@ export interface _SERVICE {
   update_policy: ActorMethod<[Policy], Policy>
   update_vault: ActorMethod<[Vault], Vault>
   update_wallet: ActorMethod<[Wallet], Wallet>
-  migrate_user: ActorMethod<[string], boolean>
 }

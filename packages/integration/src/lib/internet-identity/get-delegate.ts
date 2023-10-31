@@ -3,16 +3,10 @@ import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
-  Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
 
-import { getScope } from "@nfid/config"
-
-import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
-import { ii, im, replaceActorIdentity, vault as vaultAPI } from "../actors"
+import { ii } from "../actors"
 import { mapOptional } from "../ic-utils"
 import {
   Chain,
@@ -20,8 +14,6 @@ import {
   getGlobalKeysThirdParty,
   renewDelegationThirdParty,
 } from "../lambda/ecdsa"
-import { migrateUser } from "../vault"
-import { fetchDelegate } from "./fetch-delegate"
 import { SignedDelegation } from "./types"
 
 /**
@@ -148,7 +140,7 @@ export const getPublicAccountDelegate = async (
   targets: string[],
   maxTimeToLive?: number,
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
-  const delegationChainPromise = getGlobalKeysThirdParty(
+  const delegationChain = await getGlobalKeysThirdParty(
     delegationIdentity,
     targets,
     sessionPublicKey,
@@ -156,93 +148,10 @@ export const getPublicAccountDelegate = async (
     maxTimeToLive,
   )
 
-  let promiseMigration
-  if (origin === VAULTS_ORIGIN) {
-    const account: HTTPAccountResponse = await im.get_account()
-    const anchor = account.data[0]!.anchor
-    const sessionKeyPair = Ed25519KeyIdentity.generate()
-
-    if (anchor < 100000000) {
-      const scope = getScope("nfid.one")
-      promiseMigration = fetchDelegate(
-        Number(anchor),
-        scope,
-        Array.from(new Uint8Array(sessionKeyPair.getPublicKey().toDer())),
-      ).then((iiDelegation) => {
-        const delegationChainForMigration = delegationChainFromDelegation({
-          anchor: Number(anchor),
-          scope,
-          signedDelegation: iiDelegation.signedDelegation,
-          userPublicKey: iiDelegation.userPublicKey,
-        })
-        const actualIdentity = DelegationIdentity.fromDelegation(
-          sessionKeyPair,
-          delegationChainForMigration,
-        )
-        const targetPk = delegationChainForMigration.publicKey
-        return replaceActorIdentity(vaultAPI, actualIdentity).then(() => {
-          return migrateUser(
-            actualIdentity,
-            principalToAddress(
-              Principal.selfAuthenticating(new Uint8Array(targetPk)) as any,
-            ),
-          )
-        })
-      })
-    } else {
-      promiseMigration = getGlobalKeysThirdParty(
-        delegationIdentity,
-        targets,
-        new Uint8Array(sessionKeyPair.getPublicKey().toDer()),
-        origin,
-      ).then((delegationChainForMigration) => {
-        const actualIdentity = DelegationIdentity.fromDelegation(
-          sessionKeyPair,
-          delegationChainForMigration,
-        )
-        return replaceActorIdentity(vaultAPI, actualIdentity).then(() => {
-          return migrateUser(
-            actualIdentity,
-            principalToAddress(actualIdentity.getPrincipal() as any),
-          )
-        })
-      })
-    }
-  }
-
-  const [delegationChain, migratedUser] = await Promise.all([
-    delegationChainPromise,
-    promiseMigration,
-  ])
-
-  if (!migratedUser) {
-    console.error("Error during migration")
-  }
-
   const { delegation, signature } = delegationChain.delegations[0]
   return mapToSerialisableDelegation({
     delegationChain,
     delegation,
     signature,
   })
-}
-
-export const delegationChainFromDelegation = ({
-  signedDelegation,
-  userPublicKey,
-}: any): DelegationChain => {
-  return DelegationChain.fromDelegations(
-    [
-      {
-        delegation: new Delegation(
-          new Uint8Array(signedDelegation.delegation.pubkey).buffer,
-          signedDelegation.delegation.expiration,
-          signedDelegation.delegation.targets,
-        ),
-        signature: new Uint8Array(signedDelegation.signature)
-          .buffer as Signature,
-      },
-    ],
-    new Uint8Array(userPublicKey).buffer as DerEncodedPublicKey,
-  )
 }

@@ -12,7 +12,7 @@ const idleManagerConfig = {
   ),
 }
 
-let idleManager: IdleManager | null
+let idleManager: IdleManager | null = null
 
 type SetupSessionManagerArgs = {
   options?: IdleManagerOptions

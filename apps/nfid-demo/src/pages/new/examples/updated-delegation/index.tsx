@@ -36,10 +36,6 @@ const Example = ({
       derivationOrigin?: string
     }) => {
       resetError()
-      console.warn(
-        "handleUpdateGlobalDelegation derivationOrigin not implemented yet",
-        { derivationOrigin },
-      )
       if (!nfid) throw new Error("NFID not initialized")
       setLoading(true)
       let response: DelegationIdentity
@@ -47,6 +43,7 @@ const Example = ({
         response = await nfid.updateGlobalDelegation({
           targets,
           maxTimeToLive,
+          derivationOrigin,
         })
       } catch (e: unknown) {
         let message = "Unknown error"

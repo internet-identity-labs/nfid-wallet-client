@@ -269,7 +269,10 @@ export const NFIDEmbedMachineV2 = createMachine(
         rpcMessageDecoded: event.data.rpcMessageDecoded,
         authRequest: {
           ...context.authRequest,
-          ...event.data.rpcMessage.params[0],
+          sessionPublicKey: event.data.rpcMessage.params[0].sessionPublicKey,
+          derivationOrigin: event.data.rpcMessage.params[0].derivationOrigin,
+          maxTimeToLive: event.data.rpcMessage.params[0].maxTimeToLive,
+          targets: event.data.rpcMessage.params[0].targets,
         },
       })),
       updateProcedure: assign(({ messageQueue }, event) => {

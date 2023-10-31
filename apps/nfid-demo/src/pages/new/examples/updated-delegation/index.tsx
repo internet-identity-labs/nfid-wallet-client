@@ -47,6 +47,7 @@ const Example = ({
         response = await nfid.updateGlobalDelegation({
           targets,
           maxTimeToLive,
+          derivationOrigin,
         })
       } catch (e: unknown) {
         let message = "Unknown error"

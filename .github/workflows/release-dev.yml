@@ -46,6 +46,13 @@ jobs:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           MAINNET_RARIBLE_X_API_KEY: ${{secrets.MAINNET_RARIBLE_X_API_KEY}}
+          SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+          SENTRY_ORG: ${{secrets.SENTRY_ORG}}
+          SENTRY_PROJECT: ${{secrets.SENTRY_PROJECT_NFID}}
+          SENTRY_LOG_LEVEL: ${{secrets.SENTRY_LOG_LEVEL}}
+          CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
+          CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   build-demo:
     name: Build NFID-Demo
@@ -118,7 +125,7 @@ jobs:
               ;;
           esac
 
-          ci_echo_debug "Populating env variables" >&2          
+          ci_echo_debug "Populating env variables" >&2
           echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
           echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
           echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
@@ -150,7 +157,7 @@ jobs:
       - name: NFID-DEMO => Build package
         run: |
           source ./ci_libs/CI_LIBS.sh
-          
+
           ci_echo_info "NPX" >&2
           ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}'" >&2
           npx env-cmd -f "${ENV_FILE}" nx build "${CANISTER_NAME}"

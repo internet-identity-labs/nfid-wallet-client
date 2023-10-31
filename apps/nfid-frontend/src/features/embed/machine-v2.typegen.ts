@@ -76,7 +76,7 @@ export interface Typegen0 {
     AuthenticationMachine:
       | "SESSION_EXPIRED"
       | "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
-    CheckApplicationMeta: "xstate.init"
+    CheckApplicationMeta: "RESET" | "xstate.init"
     CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
     ExecuteProcedureService:
       | ""

@@ -99,6 +99,7 @@ export const AuthenticationProvider: React.FC<{
 
   console.debug("AuthenticationProvider", {
     nfid,
+    config,
     identity,
     derivationOrigin,
   })

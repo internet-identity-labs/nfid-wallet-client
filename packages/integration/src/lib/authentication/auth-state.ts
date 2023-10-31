@@ -44,6 +44,7 @@ type SetProps = {
 
 function makeAuthState() {
   console.debug("makeAuthState")
+  setupSessionManager({ onIdle: invalidateIdentity })
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()
 
@@ -148,7 +149,6 @@ function makeAuthState() {
 
   function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
     console.debug("makeAuthState set new auth state")
-    setupSessionManager({ onIdle: invalidateIdentity })
     observableAuthState$.next({
       ...observableAuthState$.getValue(),
       identity,

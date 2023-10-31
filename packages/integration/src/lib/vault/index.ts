@@ -1,5 +1,3 @@
-import { SignIdentity } from "@dfinity/agent"
-
 import {
   PolicyRegisterRequest,
   ThresholdPolicy as ThresholdPolicyRequest,
@@ -7,7 +5,7 @@ import {
   VaultRegisterRequest,
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
-import { replaceActorIdentity, vault as vaultAPI } from "../actors"
+import { vault as vaultAPI } from "../actors"
 import {
   candidToPolicy,
   candidToTransaction,
@@ -216,14 +214,4 @@ export async function getTransactions(): Promise<Transaction[]> {
     throw new Error(`getTransactions: ${e.message}`)
   })
   return transactions.map(candidToTransaction)
-}
-
-export async function migrateUser(
-  sourceDelegation: SignIdentity,
-  targetAddress: string,
-): Promise<boolean> {
-  await replaceActorIdentity(vaultAPI, sourceDelegation)
-  return await vaultAPI.migrate_user(targetAddress).catch((e) => {
-    throw new Error(`getTransactions: ${e.message}`)
-  })
 }

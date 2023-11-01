@@ -20,14 +20,14 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
         onClick={onBack}
       />
       <AuthAppMeta title="An email is on its way!" />
-      <p className="font-bold">{email}</p>
+      <p className="text-sm font-bold">{email}</p>
       <p className="mt-6 leading-[22px]">
         An email was sent to this address. If this email address has an NFID
         account, you’ll find a magic link that will sign you in. You may need to
         check your spam folder if you don’t see it.
       </p>
       <p className="mt-8">Still can’t find the email?</p>
-      <Button onClick={onResend} type="ghost">
+      <Button onClick={onResend} type="ghost" className="mt-2">
         Resend email
       </Button>
       <div className="flex-1" />

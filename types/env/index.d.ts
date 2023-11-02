@@ -25,7 +25,7 @@ declare const FRONTEND_MODE: string
 declare const GOOGLE_CLIENT_ID: string
 declare const IC_HOST: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
-declare const II_ENV: string
+declare const II_MODE: string
 declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IS_DEV: string
 declare const IS_E2E_TEST: string

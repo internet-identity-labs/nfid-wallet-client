@@ -6,7 +6,7 @@ import { Principal } from "@dfinity/principal"
 export const ic = {
   host: IC_HOST || "https://ic0.app",
   // NOTE: not sure if this is the right envar for islocal
-  isLocal: II_ENV === "development",
+  isLocal: II_MODE === "development",
   isDev: IS_DEV,
 }
 

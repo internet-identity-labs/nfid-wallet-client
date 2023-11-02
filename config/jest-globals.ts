@@ -22,7 +22,7 @@ export const JEST_GLOBALS = {
   AWS_EXCHANGE_RATE:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/exchange-rate/",
   IC_HOST: "https://ic0.app",
-  II_ENV: "dev",
+  II_MODE: "dev",
   IS_DEV: "",
   IS_E2E_TEST: false,
   GOOGLE_CLIENT_ID:

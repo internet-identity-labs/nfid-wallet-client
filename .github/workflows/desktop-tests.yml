@@ -332,10 +332,23 @@ jobs:
             CI_DEBUG='true'
           fi
 
+          # If branch main, staging, production disabling parallel run
+          case "${{ github.ref_name }}" in 
+            main|staging|production)
+              RUN_E2E_PARALLEL='false'
+              ;;
+            *)
+              RUN_E2E_PARALLEL='true'
+              ;;
+          esac
+
+          ci_echo_info "RUN_E2E_PARALLEL: ${RUN_E2E_PARALLEL}" >&2
+
           echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "CI_DEBUG=${CI_DEBUG}" >> $GITHUB_ENV
           echo "TEST_ADD_PARAMS="${TEST_ADD_PARAMS}"" >> $GITHUB_ENV
+          echo "RUN_E2E_PARALLEL=${RUN_E2E_PARALLEL}" >> $GITHUB_ENV
 
       - name: Checkout Google user E2E
         uses: actions/checkout@v4
@@ -387,6 +400,8 @@ jobs:
 
             URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
             LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
+
+            RUN_E2E_PARALLEL=${RUN_E2E_PARALLEL}
           EOF
 
           ci_echo_debug "docker run --rm \

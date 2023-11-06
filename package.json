@@ -75,7 +75,7 @@
     "lottie-web": "^5.12.0",
     "node-ts-cache": "4.4.0",
     "node-ts-cache-storage-memory": "4.4.0",
-    "posthog-js": "1.72.0",
+    "posthog-js": "1.88.1",
     "process": "0.11.10",
     "qrcode": "1.5.1",
     "react": "^18.2.0",

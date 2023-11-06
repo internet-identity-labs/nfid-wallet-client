@@ -24,6 +24,7 @@ export interface IRequestTransferProps {
   origin: string
   appMeta: AuthorizingAppMeta
   amount?: string
+  derivationOrigin?: string
   tokenId?: string
   destinationAddress: string
   onConfirmIC: (data: IRequestTransferResponse) => void
@@ -34,6 +35,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   amount,
   tokenId,
   destinationAddress,
+  derivationOrigin,
   onConfirmIC,
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
@@ -137,12 +139,13 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             setTransferPromise(
               new Promise(async (resolve) => {
                 try {
-                  if (!isPresentInStorage(origin))
+                  console.debug("RequestTransfer", { derivationOrigin, origin })
+                  if (!isPresentInStorage(derivationOrigin || origin))
                     throw new Error(
                       "You can not request canister calls with anonymous delegation",
                     )
-                  if (!nft)
-                    throw new Error("Something went wrong. Please try again.")
+                  if (tokenId && !nft)
+                    throw new Error("Couldn't find NFT. Please try again.")
 
                   let transferIdentity = tokenId
                     ? await getWalletDelegationAdapter("nfid.one", "-1", [

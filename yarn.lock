@@ -4286,10 +4286,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.0-alpha.10":
-  version "0.10.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.10.tgz#72655bee4806e1562b511eedd8ea8684c0b84520"
-  integrity sha512-yXV6jJTWWIKduVglm22PfFB9CcKTW/T4lXtj31vMP32lpnLTeRgxQwC/0KYZpQcRygaV/EMe7Yc4ASv2U51F+A==
+"@nfid/embed@0.10.0-alpha.12":
+  version "0.10.0-alpha.12"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.12.tgz#feb511be2ba0b8c68b01bf6a768b8932b96ec340"
+  integrity sha512-cZGHCUUO1UbuMysMS7DI5f9INYFgEiSYXcQFy+2sejFOfq5v1C++uPzeN0D54LwGKisQvniFOKZeNlxf7h4abA==
   dependencies:
     ethers "^5.7.2"
     idb "7.1.1"

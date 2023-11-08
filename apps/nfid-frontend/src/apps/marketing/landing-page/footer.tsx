@@ -1,7 +1,5 @@
 import React from "react"
 
-
-
 import PoweredBy from "./assets/poweredBy.svg"
 
 interface FooterProps

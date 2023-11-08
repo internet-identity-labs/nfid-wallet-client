@@ -64,7 +64,7 @@ export class PasskeyConnector {
 
     const profile = await fetchProfile()
     if (profile.wallet === RootWallet.II) {
-      ii.add(BigInt(profile.anchor), {
+      await ii.add(BigInt(profile.anchor), {
         credential_id: [Array.from(new Uint8Array(identity.rawId))],
         alias: `${getBrowser()} on ${getPlatformInfo().device}`,
         pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),

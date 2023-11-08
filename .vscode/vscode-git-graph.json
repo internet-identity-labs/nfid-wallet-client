@@ -1,21 +1,21 @@
 {
-  "issueLinkingConfig": {
-    "issue": "sc-(\\d+)",
-    "url": "https://app.shortcut.com/the-internet-portal/story/$1"
-  },
-  "pullRequestConfig": {
-    "provider": "github",
-    "hostRootUrl": "https://github.com",
-    "sourceRemote": "origin",
-    "sourceOwner": "internet-identity-labs",
-    "sourceRepo": "nfid-frontend",
-    "destRemote": "origin",
-    "destOwner": "internet-identity-labs",
-    "destRepo": "nfid-frontend",
-    "destProjectId": "",
-    "destBranch": "main",
-    "custom": null
-  },
-  "showRemoteBranches": false,
-  "exportedAt": 1650954381453
+    "issueLinkingConfig": {
+        "issue": "sc-(\\d+)",
+        "url": "https://app.shortcut.com/the-internet-portal/story/$1"
+    },
+    "pullRequestConfig": {
+        "provider": "github",
+        "custom": null,
+        "hostRootUrl": "https://github.com",
+        "sourceRemote": "origin",
+        "sourceOwner": "internet-identity-labs",
+        "sourceRepo": "nfid-frontend",
+        "destRemote": "origin",
+        "destOwner": "internet-identity-labs",
+        "destRepo": "nfid-frontend",
+        "destProjectId": "",
+        "destBranch": "main"
+    },
+    "showRemoteBranches": true,
+    "exportedAt": 1697177340497
 }

@@ -1,14 +1,15 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import {
   BlurredLoader,
-  IconCmpAnonymous,
+  Button,
   IconCmpInfo,
+  RadioButton,
   Tooltip,
 } from "@nfid-frontend/ui"
 import {
@@ -35,6 +36,7 @@ import { PublicProfileButton } from "../public-profile-button"
 import { ApproveIcGetDelegationSdkResponse } from "./types"
 
 export interface IAuthChooseAccount {
+  onReset: () => void
   appMeta: AuthorizingAppMeta
   authRequest: AuthorizationRequest
   handleSelectAccount: (data: ApproveIcGetDelegationSdkResponse) => void
@@ -58,12 +60,21 @@ const HOT_FIX_V24_1_WRONG_HOSTNAMES = [
 ]
 
 const HOT_FIX_V24_2_WRONG_ANCHORS = 100009230
+export type ProfileTypes =
+  | ""
+  | "public"
+  | "legacy-anonymous"
+  | "anonymous-1"
+  | "anonymous-2"
 
 export const AuthChooseAccount = ({
+  onReset,
   appMeta,
   authRequest,
   handleSelectAccount,
 }: IAuthChooseAccount) => {
+  const [selectedProfile, setSelectedProfile] = useState<ProfileTypes>("")
+  const [selectedLegacyAccount, setSelectedLegacyAccount] = useState<any>()
   const [isLoading, setIsLoading] = useState(false)
   console.debug("AuthChooseAccount", { appMeta })
   const { profile } = useProfile()
@@ -142,6 +153,9 @@ export const AuthChooseAccount = ({
           authRequest.sessionPublicKey,
           delegation,
           domain,
+          authRequest.maxTimeToLive
+            ? Number(authRequest.maxTimeToLive / BigInt(1000000))
+            : undefined,
         )
 
         const authSession: ThirdPartyAuthSession = {
@@ -169,6 +183,7 @@ export const AuthChooseAccount = ({
     [
       authRequest.derivationOrigin,
       authRequest.hostname,
+      authRequest.maxTimeToLive,
       authRequest.sessionPublicKey,
       handleSelectAccount,
     ],
@@ -190,6 +205,9 @@ export const AuthChooseAccount = ({
         delegation,
         authRequest.derivationOrigin ?? authRequest.hostname,
         authRequest.targets,
+        authRequest.maxTimeToLive
+          ? Number(authRequest.maxTimeToLive / BigInt(1000000))
+          : undefined,
       )
 
       const authSession: ThirdPartyAuthSession = {
@@ -216,10 +234,43 @@ export const AuthChooseAccount = ({
   }, [
     authRequest.derivationOrigin,
     authRequest.hostname,
+    authRequest.maxTimeToLive,
     authRequest.sessionPublicKey,
     authRequest.targets,
     handleSelectAccount,
   ])
+
+  const onSubmit = useCallback(() => {
+    if (selectedProfile === "anonymous-1") return handleSelectAnonymous()
+    if (selectedProfile === "anonymous-2") return handleSelectAnonymous(true)
+    if (selectedProfile === "legacy-anonymous")
+      return handleSelectLegacyAnonymous(selectedLegacyAccount)
+    if (selectedProfile === "public") return handleSelectPublic()
+
+    return toast.error("Something went wrong. Please select a profile.")
+  }, [
+    handleSelectAnonymous,
+    handleSelectLegacyAnonymous,
+    handleSelectPublic,
+    selectedLegacyAccount,
+    selectedProfile,
+  ])
+
+  const onBack = useCallback(async () => {
+    await authState.reset(false)
+    onReset()
+  }, [onReset])
+
+  useEffect(() => {
+    if (isAnonymousLoading) return
+    if (!!authRequest.targets?.length) return setSelectedProfile("public")
+    if (!!legacyAnonymousProfiles?.length) {
+      setSelectedProfile("legacy-anonymous")
+      setSelectedLegacyAccount(legacyAnonymousProfiles[0])
+      return
+    }
+    setSelectedProfile("anonymous-1")
+  }, [authRequest.targets?.length, isAnonymousLoading, legacyAnonymousProfiles])
 
   if (isLoading || isAnonymousLoading) return <BlurredLoader isLoading />
 
@@ -236,85 +287,135 @@ export const AuthChooseAccount = ({
         applicationLogo={appMeta?.logo}
         applicationURL={appHost}
         applicationName={appMeta?.name}
-        title="Choose a profile"
+        title="Wallet permissions"
       />
-      <div className="absolute right-5 top-2.5">
-        <TooltipProvider>
-          <Tooltip
-            className="w-[368px]"
-            tip={
-              <div>
-                <b>Public profiles</b> reveal cryptocurrency balances and
-                activity, and allow applications to request payment. <br />
-                <br />
-                <span className="text-blue">{appHost}</span> does not support
-                signing in with a public profile. <br />
-                <br />
-                <b>Anonymous profiles</b> hide your balance and activity across
-                applications, and can’t approve payments.
+      {!authRequest.targets && (
+        <div className="absolute right-5 top-2.5">
+          <TooltipProvider>
+            <Tooltip
+              className="w-[368px]"
+              tip={
+                <div>
+                  <a className="text-blue" href={`https://${appHost}`}>
+                    {appHost}
+                  </a>{" "}
+                  does not support connecting your NFID Wallet address for
+                  payment requests.
+                </div>
+              }
+            >
+              <IconCmpInfo className="text-black" />
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      )}
+      <div className="relative flex flex-col flex-1 w-full">
+        <div
+          className={clsx(
+            "w-full pt-4 pb-[26px] rounded-xl",
+            "flex flex-col font-inter bg-white",
+            "border border-[rgba(0,0,0,0.04)]",
+            "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
+            "mt-9",
+          )}
+        >
+          <div className="px-5">
+            <p className="text-sm font-bold">Share NFID Wallet address</p>
+            <p className="mt-2 text-xs text-gray-500">
+              Allow this site to request payments and view your balances.
+            </p>
+            <PublicProfileButton
+              selectedProfile={selectedProfile}
+              setSelectedProfile={(value) => setSelectedProfile(value)}
+              isAvailable={!!authRequest.targets?.length}
+            />
+          </div>
+          <div className="bg-[#F5F5F5] w-full h-[1px] my-5" />
+          <div className="px-5">
+            <p className="text-sm font-bold">Hide NFID Wallet address</p>
+            <p className="mt-2 text-xs text-gray-500">
+              Connect anonymously to prevent this site from requesting payments
+              and viewing your balances.
+            </p>
+
+            {/* Legacy anonymous profiles */}
+            {legacyAnonymousProfiles?.map((acc) => (
+              <div
+                className="flex items-center h-5 mt-5 font-mono text-xs uppercase"
+                key={`legacy_persona_${acc.accountId}`}
+              >
+                <RadioButton
+                  id={`profile_legacy_${acc.accountId}`}
+                  value={`legacy-anonymous`}
+                  checked={selectedProfile === "legacy-anonymous"}
+                  name={"profile"}
+                  onChange={(e) => {
+                    setSelectedLegacyAccount(acc)
+                    setSelectedProfile(e.target.value as ProfileTypes)
+                  }}
+                />
+                <label
+                  htmlFor={`profile_legacy_${acc.accountId}`}
+                  className="ml-2 cursor-pointer"
+                >
+                  {appMeta.name} account {parseInt(acc.accountId) + 1}
+                </label>
               </div>
-            }
-          >
-            <IconCmpInfo className="text-gray-400" />
-          </Tooltip>
-        </TooltipProvider>
+            ))}
+
+            {/* Anonymous profile */}
+            {!legacyAnonymousProfiles?.length ? (
+              <div className="flex items-center h-5 mt-5 font-mono text-xs uppercase">
+                <RadioButton
+                  id="profile_anonymous-1"
+                  value="anonymous-1"
+                  checked={selectedProfile === "anonymous-1"}
+                  name={"profile"}
+                  onChange={(e) =>
+                    setSelectedProfile(e.target.value as ProfileTypes)
+                  }
+                />
+                <label
+                  htmlFor="profile_anonymous-1"
+                  className="ml-2 cursor-pointer"
+                >
+                  Anonymous {appMeta.name} profile 1
+                </label>
+              </div>
+            ) : null}
+
+            {/* Anonymous profile with derivation bug */}
+            {!legacyAnonymousProfiles?.length && isDerivationBug ? (
+              <div className="flex items-center h-5 mt-4 font-mono text-xs uppercase">
+                <RadioButton
+                  id="anonymous-2"
+                  value="anonymous-2"
+                  checked={selectedProfile === "anonymous-2"}
+                  name={"profile"}
+                  onChange={(e) =>
+                    setSelectedProfile(e.target.value as ProfileTypes)
+                  }
+                />
+                <label
+                  htmlFor="profile_anonymous-2"
+                  className="ml-2 cursor-pointer"
+                >
+                  Anonymous {appMeta.name} profile 2
+                </label>
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div className="flex-1" />
+        <div className="grid grid-cols-2 gap-2.5">
+          <Button onClick={onBack} type="stroke">
+            Back
+          </Button>
+          <Button onClick={onSubmit} type="primary">
+            Connect
+          </Button>
+        </div>
       </div>
-      <div className="w-full space-y-2.5 my-9">
-        <PublicProfileButton
-          isAvailable={!!authRequest.targets}
-          onClick={handleSelectPublic}
-        />
-        {legacyAnonymousProfiles?.map((acc) => (
-          <div
-            id="profileID"
-            key={acc.label}
-            className={clsx(
-              "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
-              "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",
-              "flex items-center hover:shadow-[0px_0px_2px_0px_#0E62FF] text-sm",
-            )}
-            onClick={() => handleSelectLegacyAnonymous(acc)}
-          >
-            <IconCmpAnonymous className="w-10 h-10" />
-            <span>
-              {appMeta.name} account {parseInt(acc.accountId) + 1}
-            </span>
-          </div>
-        ))}
-        {!legacyAnonymousProfiles?.length && (
-          <div
-            id="profileID"
-            className={clsx(
-              "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
-              "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",
-              "flex items-center hover:shadow-[0px_0px_2px_0px_#0E62FF] text-sm",
-            )}
-            onClick={() => handleSelectAnonymous()}
-          >
-            <IconCmpAnonymous className="w-10 h-10" />
-            <span>Anonymous {appMeta.name} profile</span>
-          </div>
-        )}
-        {!legacyAnonymousProfiles?.length && isDerivationBug ? (
-          <div
-            id="hostnameAnonymous"
-            className={clsx(
-              "border border-gray-300 hover:border-blue-600 hover:bg-blue-50",
-              "px-2.5 h-[70px] space-x-2.5 transition-all rounded-md cursor-pointer",
-              "flex items-center hover:shadow-[0px_0px_2px_0px_#0E62FF] text-sm",
-            )}
-            onClick={() => handleSelectAnonymous(true)}
-          >
-            <IconCmpAnonymous className="w-10 h-10" />
-            <span>Anonymous {appMeta.name} profile 2</span>
-          </div>
-        ) : null}
-      </div>
-      <div className="flex-1" />
-      {/* Hide for this release */}
-      {/* <Button type="ghost" block>
-        Use a different NFID
-      </Button> */}
     </>
   )
 }

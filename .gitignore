@@ -19,6 +19,7 @@ build
 # Other
 NOTES.md
 .idea
+.nx
 
 # misc
 coverage

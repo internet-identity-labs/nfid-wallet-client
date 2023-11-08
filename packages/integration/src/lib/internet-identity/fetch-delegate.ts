@@ -7,7 +7,7 @@ export async function fetchDelegate(
   userNumber: number,
   scope: string,
   sessionKey: PublicKey,
-  maxTimeToLive?: bigint,
+  maxTimeToLive?: bigint, // in ns
 ): Promise<ThirdPartyAuthSession> {
   console.debug("fetchDelegate", {
     userNumber,
@@ -19,7 +19,7 @@ export async function fetchDelegate(
     userNumber,
     scope,
     sessionKey,
-    maxTimeToLive,
+    maxTimeToLive ? BigInt(maxTimeToLive) : undefined,
   )
 
   const signedDelegation = await getDelegateRetry(

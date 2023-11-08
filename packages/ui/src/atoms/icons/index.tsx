@@ -28,6 +28,7 @@ import IconSvgLaptop from "./laptop.svg"
 import IconSvgLogout from "./logout.svg"
 import IconSvgMapPin from "./map-pin.svg"
 import IconSvgMobile from "./mobile.svg"
+import IconSvgNFIDWalletLogo from "./nfid-wallet-logo.svg"
 import IconSvgNFIDWallet from "./nfid-wallet.svg"
 import IconSvgNFID from "./nfid.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
@@ -104,6 +105,7 @@ export {
   IconSvgArrowGreen,
   IconSvgEthereum,
   IconSvgAnonymous,
+  IconSvgNFIDWalletLogo,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -161,6 +163,8 @@ export { ReactComponent as IconCmpID } from "./id.svg"
 export { ReactComponent as IconCmpPasskey } from "./passkey.svg"
 export { ReactComponent as IconCmpNFID } from "./nfid.svg"
 export { ReactComponent as IconCmpAnonymous } from "./anonymous.svg"
+export { ReactComponent as IconCmpDoubleSpinner } from "./double-spinner.svg"
+export { ReactComponent as IconCmpNFIDWalletLogo } from "./nfid-wallet-logo.svg"
 
 export { ReactComponent as IconCmpTinyETH } from "./tiny-eth.svg"
 export { ReactComponent as IconCmpTinyBTC } from "./tiny-btc.svg"

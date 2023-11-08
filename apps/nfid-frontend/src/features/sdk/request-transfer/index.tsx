@@ -24,6 +24,7 @@ export interface IRequestTransferProps {
   origin: string
   appMeta: AuthorizingAppMeta
   amount?: string
+  derivationOrigin?: string
   tokenId?: string
   destinationAddress: string
   onConfirmIC: (data: IRequestTransferResponse) => void
@@ -34,6 +35,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   amount,
   tokenId,
   destinationAddress,
+  derivationOrigin,
   onConfirmIC,
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
@@ -105,8 +107,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         <div className="flex items-center justify-between text-sm border-b border-gray-200 h-14">
           <p>Network fee</p>
           <div className="text-right">
-            <p>{toUSD(WALLET_FEE, Number(rate))}</p>
-            <p className="text-xs text-gray-400">{fee.fee}</p>
+            <p>{nft ? "$0.00" : toUSD(WALLET_FEE, Number(rate))}</p>
+            <p className="text-xs text-gray-400">{nft ? "0.00" : fee.fee}</p>
           </div>
         </div>
         <div className="flex items-center justify-between text-sm h-14">
@@ -118,12 +120,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                     (Number(amount) + Number(WALLET_FEE_E8S)) / E8S,
                     Number(rate),
                   )
-                : toUSD(WALLET_FEE, Number(rate))}
+                : "$0.00"}
             </p>
             <p className="text-xs text-gray-400">
               {amount
                 ? (Number(amount) + Number(WALLET_FEE_E8S)) / E8S
-                : WALLET_FEE}{" "}
+                : "0.00"}{" "}
               ICP
             </p>
           </div>
@@ -137,13 +139,16 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             setTransferPromise(
               new Promise(async (resolve) => {
                 try {
-                  if (!isPresentInStorage(origin))
+                  console.debug("RequestTransfer", { derivationOrigin, origin })
+                  if (!isPresentInStorage(derivationOrigin || origin))
                     throw new Error(
                       "You can not request canister calls with anonymous delegation",
                     )
+                  if (tokenId && !nft)
+                    throw new Error("Couldn't find NFT. Please try again.")
 
                   let transferIdentity = tokenId
-                    ? await getWalletDelegationAdapter("nfid.one", "0", [
+                    ? await getWalletDelegationAdapter("nfid.one", "-1", [
                         nft?.canisterId!,
                       ])
                     : identity ?? (await getWalletDelegationAdapter())

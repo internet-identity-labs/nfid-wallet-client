@@ -73,12 +73,14 @@ export const getAnonymousDelegate = async (
   sessionPublicKey: Uint8Array,
   delegationIdentity: DelegationIdentity,
   domain: string,
+  maxTimeToLive?: number,
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
   const delegationChain = await ecdsaGetAnonymous(
     domain,
     sessionPublicKey,
     delegationIdentity,
     Chain.IC,
+    maxTimeToLive,
   )
 
   const { delegation, signature } = delegationChain.delegations[0]
@@ -136,15 +138,15 @@ export const getPublicAccountDelegate = async (
   delegationIdentity: DelegationIdentity,
   origin: string,
   targets: string[],
+  maxTimeToLive?: number,
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
   const delegationChain = await getGlobalKeysThirdParty(
     delegationIdentity,
     targets,
     sessionPublicKey,
     origin,
+    maxTimeToLive,
   )
-
-  console.log({ targets, delegationChain })
 
   const { delegation, signature } = delegationChain.delegations[0]
   return mapToSerialisableDelegation({

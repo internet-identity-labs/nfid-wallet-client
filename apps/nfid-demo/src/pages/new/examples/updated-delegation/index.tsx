@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import React from "react"
 
@@ -6,36 +7,61 @@ import { DelegationType } from "@nfid/embed"
 import { ExampleError } from "../../error"
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
-import { AuthenticationForm } from "../authentication/target-canister-from"
+import { AuthenticationForm } from "../authentication/form"
 
 const CODE_SNIPPET = `
 const nfid = await NFID.init({ origin: NFID_PROVIDER_URL })
 const identity = await nfid.updateGlobalDelegation()
 `
 
-const Example = () => {
+const Example = ({
+  onError,
+  resetError,
+}: {
+  resetError: () => void
+  onError: (error: string) => void
+}) => {
   const { nfid, setIdentity } = useAuthenticationContext()
 
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const handleUpdateGlobalDelegation = React.useCallback(
-    async ({ targets }: { targets: string[]; derivationOrigin?: string }) => {
+    async ({
+      targets,
+      maxTimeToLive,
+      derivationOrigin,
+    }: {
+      targets: string[]
+      maxTimeToLive: bigint
+      derivationOrigin?: string
+    }) => {
+      resetError()
       if (!nfid) throw new Error("NFID not initialized")
       setLoading(true)
-      const response = await nfid.updateGlobalDelegation({
-        targets,
-      })
-      // @ts-ignore
+      let response: DelegationIdentity
+      try {
+        response = await nfid.updateGlobalDelegation({
+          targets,
+          maxTimeToLive,
+          derivationOrigin,
+        })
+      } catch (e: unknown) {
+        let message = "Unknown error"
+        if (e instanceof Error) {
+          message = e.message
+        }
+        onError(message)
+        setLoading(false)
+        return
+      }
       setIdentity(response)
       setLoading(false)
     },
-    [nfid, setIdentity],
+    [nfid, onError, resetError, setIdentity],
   )
 
   if (nfid?.getDelegationType() === DelegationType.ANONYMOUS) {
-    return nfid.isAuthenticated ? (
-      <ExampleError>You cannot update anonymous delegations</ExampleError>
-    ) : null
+    return <ExampleError>You cannot update anonymous delegations</ExampleError>
   }
 
   return (
@@ -50,6 +76,7 @@ const Example = () => {
 
 export const UpdateDelegation = () => {
   const { identity } = useAuthenticationContext()
+  const [error, setError] = React.useState<string>()
   return (
     <SectionTemplate
       id="updateDelegation"
@@ -76,8 +103,16 @@ export const UpdateDelegation = () => {
         </>
       }
       codeSnippet={CODE_SNIPPET}
-      jsonResponse={identity ? JSON.stringify(identity, null, 2) : "{}"}
-      example={<Example />}
+      jsonResponse={
+        error
+          ? JSON.stringify({ error }, null, 2)
+          : identity
+          ? JSON.stringify(identity, null, 2)
+          : "{}"
+      }
+      example={
+        <Example onError={setError} resetError={() => setError(undefined)} />
+      }
     />
   )
 }

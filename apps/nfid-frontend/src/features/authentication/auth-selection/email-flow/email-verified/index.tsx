@@ -28,10 +28,11 @@ export const AuthEmailVerified: React.FC<AuthEmailVerifiedProps> = ({
   }, [profile, isLoading])
 
   return (
-    <div className="w-full h-full text-sm text-center">
+    <div className="flex flex-col flex-1 w-full h-full text-sm text-center">
       <AuthAppMeta title="Sign in verified" />
       <p>You may now continue to the application.</p>
-      <img src={ImageVerified} className="w-full h-56 my-9" alt="verified" />
+      <img src={ImageVerified} className="w-full my-9" alt="verified" />
+      <div className="flex-1"></div>
       <Button type="primary" block onClick={onContinue}>
         Continue
       </Button>

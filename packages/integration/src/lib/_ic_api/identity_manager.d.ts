@@ -324,4 +324,5 @@ export interface _SERVICE {
   validate_phone: ActorMethod<[ValidatePhoneRequest], Response>
   validate_signature: ActorMethod<[[] | [string]], [bigint, [] | [string]]>
   verify_token: ActorMethod<[Token], Response>
+  get_root_by_principal: ActorMethod<[string], [] | [string]>
 }

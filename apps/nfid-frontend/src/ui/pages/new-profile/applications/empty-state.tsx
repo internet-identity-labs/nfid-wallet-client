@@ -1,7 +1,5 @@
 import React from "react"
 
-
-
 import Empty from "./assets/empty.png"
 
 interface IProfileApplicationsEmpty

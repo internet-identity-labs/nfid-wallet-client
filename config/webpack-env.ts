@@ -8,13 +8,25 @@ const sentryRelease = childProcess
   .trim()
   .slice(0, 12)
 
+let sdkGitHash
+try {
+  sdkGitHash = childProcess
+    .execSync("cd ../../../sdk-ts/ && git rev-parse HEAD")
+    .toString()
+    .trim()
+    .slice(0, 12)
+} catch (e) {
+  sdkGitHash = "unknown"
+}
+
 export const serviceConfig = {
+  SDK_GIT_HASH: JSON.stringify(sdkGitHash),
   CANISTER_IDS: JSON.stringify(canisterIds),
   SENTRY_RELEASE: JSON.stringify(sentryRelease),
   NFID_PROVIDER_URL: JSON.stringify(process.env.NFID_PROVIDER_URL),
   IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
   IC_HOST: JSON.stringify(process.env.IC_HOST),
-  II_ENV: JSON.stringify(process.env.II_MODE),
+  II_MODE: JSON.stringify(process.env.II_MODE),
   ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
   GOERLI_ALCHEMY_API_KEY: JSON.stringify(process.env.GOERLI_ALCHEMY_API_KEY),
   RARIBLE_X_API_KEY: JSON.stringify(process.env.RARIBLE_X_API_KEY),

@@ -47,6 +47,7 @@ type Events =
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
+  | { type: "RESET" }
 
 type Services = {
   RPCReceiver: {
@@ -77,7 +78,6 @@ type NFIDEmbedMachineContext = {
     chain?: Chain
   }
   authSession?: AuthSession
-  requestOrigin?: string
   rpcMessage?: RPCMessage
   rpcMessageDecoded?: FunctionCall
   error?: Error
@@ -123,6 +123,9 @@ export const NFIDEmbedMachineV2 = createMachine(
 
       AUTH: {
         initial: "CheckAppMeta",
+        on: {
+          RESET: "AUTH.CheckAppMeta",
+        },
         states: {
           CheckAppMeta: {
             invoke: {
@@ -195,6 +198,9 @@ export const NFIDEmbedMachineV2 = createMachine(
 
       HANDLE_PROCEDURE: {
         initial: "READY",
+        on: {
+          RESET: "HANDLE_PROCEDURE.READY",
+        },
         states: {
           READY: {
             always: [
@@ -256,12 +262,17 @@ export const NFIDEmbedMachineV2 = createMachine(
         authRequest: { ...context.authRequest, hostname: event?.data?.domain },
       })),
       assignProcedure: assign((context, event) => ({
-        requestOrigin: event.data.origin,
-        rpcMessage: event.data.rpcMessage,
+        rpcMessage: {
+          ...event.data.rpcMessage,
+          origin: event.data.origin,
+        },
         rpcMessageDecoded: event.data.rpcMessageDecoded,
         authRequest: {
           ...context.authRequest,
-          ...event.data.rpcMessage.params[0],
+          sessionPublicKey: event.data.rpcMessage.params[0].sessionPublicKey,
+          derivationOrigin: event.data.rpcMessage.params[0].derivationOrigin,
+          maxTimeToLive: event.data.rpcMessage.params[0].maxTimeToLive,
+          targets: event.data.rpcMessage.params[0].targets,
         },
       })),
       updateProcedure: assign(({ messageQueue }, event) => {
@@ -281,45 +292,47 @@ export const NFIDEmbedMachineV2 = createMachine(
         error: event.data,
       })),
       nfid_authenticated: () => {
+        const requesterDomain = window.location.ancestorOrigins
+          ? window.location.ancestorOrigins[0]
+          : window.document.referrer
         console.debug("nfid_authenticated", {
-          origin: window.location.ancestorOrigins[0],
+          origin: requesterDomain,
         })
         window.parent.postMessage(
           { type: "nfid_authenticated" },
-          window.location.ancestorOrigins[0],
+          requesterDomain,
         )
       },
-      nfid_unauthenticated: ({ requestOrigin }) => {
-        if (!requestOrigin)
+      nfid_unauthenticated: ({ rpcMessage }) => {
+        if (!rpcMessage?.origin)
           throw new Error("nfid_unauthenticated: missing requestOrigin")
 
         console.debug("nfid_authenticated")
         window.parent.postMessage(
           { type: "nfid_unauthenticated" },
-          requestOrigin,
+          rpcMessage.origin,
         )
       },
-      sendRPCResponse: ({ requestOrigin }, event) => {
-        if (!requestOrigin)
-          throw new Error("nfid_unauthenticated: missing requestOrigin")
+      sendRPCResponse: (_, { data }) => {
+        const { origin, ...rpcMessage } = data
 
-        console.debug("sendRPCResponse", { event })
-        window.parent.postMessage(event.data, requestOrigin)
+        console.debug("sendRPCResponse", { rpcMessage })
+        window.parent.postMessage(rpcMessage, origin)
       },
-      sendRPCCancelResponse: (context) => {
-        if (!context.requestOrigin)
+      sendRPCCancelResponse: ({ rpcMessage }) => {
+        if (!rpcMessage?.origin)
           throw new Error("nfid_unauthenticated: missing requestOrigin")
-        if (!context.rpcMessage?.id)
+        if (!rpcMessage?.id)
           throw new Error("sendRPCCancelResponse: missing rpcMessage.id")
 
         window.parent.postMessage(
           {
             ...RPC_BASE,
-            id: context.rpcMessage.id,
+            id: rpcMessage.id,
             // FIXME: find correct error code
             error: { code: -1, message: "User canceled request" },
           },
-          context.requestOrigin,
+          rpcMessage.origin,
         )
       },
     },

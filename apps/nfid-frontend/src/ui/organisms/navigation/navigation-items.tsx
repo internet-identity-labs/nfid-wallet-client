@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
 import User from "src/assets/userpics/userpic_6.svg"
 
-
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -116,11 +115,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                       id="burger-menu-title"
                     >
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0">
-                        <img
-                          src={User}
-                          alt="user"
-                          className="cursor-pointer"
-                        />
+                        <img src={User} alt="user" className="cursor-pointer" />
                       </div>
                       <p className="text-sm text-gray-700 px-2.5 w-full">
                         {profile?.name ?? profile?.anchor ?? ""}

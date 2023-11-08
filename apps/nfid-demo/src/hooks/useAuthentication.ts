@@ -57,9 +57,11 @@ export const useAuthentication = () => {
   const handleAuthenticate = React.useCallback(
     async ({
       targets,
+      maxTimeToLive,
       derivationOrigin: derivationOriginOverride,
     }: {
       targets: string[]
+      maxTimeToLive: bigint
       derivationOrigin: string
     }) => {
       setError(undefined)
@@ -71,6 +73,7 @@ export const useAuthentication = () => {
         const derivationOriginToUse =
           derivationOriginOverride || derivationOrigin
         const identity = await nfid.getDelegation({
+          maxTimeToLive,
           ...(targets.length ? { targets } : {}),
           ...(derivationOriginToUse
             ? { derivationOrigin: derivationOriginToUse }

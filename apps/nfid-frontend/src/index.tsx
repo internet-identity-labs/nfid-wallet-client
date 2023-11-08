@@ -36,6 +36,10 @@ if (!container) throw new Error("Failed to find the root element")
 
 const root = createRoot(container)
 
+console.debug("SDK_GIT_HASH", {
+  sdkGitHash: SDK_GIT_HASH,
+})
+
 root.render(
   <SWRConfig
     value={{

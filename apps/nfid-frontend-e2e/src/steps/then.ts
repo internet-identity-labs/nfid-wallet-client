@@ -2,9 +2,10 @@ import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
 
 import activity from "../pages/activity.js"
-// import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
-import DemoTransactions from "../pages/demo-transactions.js"
 import Assets from "../pages/assets.js"
+// import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
+import DemoTransactions from "../pages/demoApp/demo-transactions.js"
+import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 import Vault from "../pages/vault.js"
@@ -518,36 +519,48 @@ Then(
   },
 )
 
-Then(/^Choose (.+?) then check that an Account ID is (.+)/, async (chain: string, principal: string) => {
-  let chains = chain.split(",")
-  let principals = principal.split(",")
-  let address = await Assets.getAccountId(true)
+Then(
+  /^Choose (.+?) then check that an Account ID is (.+)/,
+  async (chain: string, principal: string) => {
+    let chains = chain.split(",")
+    let principals = principal.split(",")
+    let address = await Assets.getAccountId(true)
 
-  for (let i = 0; i < chains.length; i++) {
-    await chooseChainOption(chains[i])
-    let expectedResult =
-      await address.firstAddressPart.getText() + "..." +
-      await address.secondAddressElement.getText()
-    expect(expectedResult).toEqual(principals[i])
-  }
-})
+    for (let i = 0; i < chains.length; i++) {
+      await chooseChainOption(chains[i])
+      let expectedResult =
+        (await address.firstAddressPart.getText()) +
+        "..." +
+        (await address.secondAddressElement.getText())
+      expect(expectedResult).toEqual(principals[i])
+    }
+  },
+)
 
 Then(/^Principal is ([^"]*)$/, async (principal: string) => {
-    let address = await Assets.getAccountId(false)
-    expect(
-      (await address.firstAddressPart.getText()) +
+  let address = await Assets.getAccountId(false)
+  expect(
+    (await address.firstAddressPart.getText()) +
       "..." +
-      (await address.secondAddressElement.getText())
-    ).toEqual(principal)
+      (await address.secondAddressElement.getText()),
+  ).toEqual(principal)
 })
 
-Then(/^Principal, Address, Balance are correct:/, async (data) => {
-    const expectedData = data.rowsHash()
-    let usersData = await DemoTransactions.getAuthLogs()
-    expect(String(usersData.get("principal"))).toEqual(expectedData.principal)
-    expect(String(usersData.get("address"))).toEqual(expectedData.address)
-    expect(String(usersData.get("balance"))).not.toHaveLength(0)
-  })
+Then(/^Principal, Address, Targets are correct:/, async (data) => {
+  const expectedData = data.rowsHash()
+  let usersData = await DemoAppPage.getAuthLogs()
+
+  expect(String((await usersData.get("principal").firstAddressPart.getText()) + "..." +
+    (await usersData.get("principal").secondAddressElement.getText())
+  )).toEqual(expectedData.principal.substring(0, 29) + "..." + expectedData.principal.substring(58, 63))
+
+  expect(String((await usersData.get("address").firstAddressPart.getText()) + "..." +
+    (await usersData.get("address").secondAddressElement.getText())
+  )).toEqual(expectedData.address.substring(0, 29) + "..." + expectedData.address.substring(59, 64))
+
+  let targets = String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")
+  expect(targets).toEqual(expectedData.targets)
+})
 
 Then(
   /^([^"]*) USD balance not ([^"]*)$/,
@@ -858,8 +871,16 @@ Then(
   },
 )
 
-Then(/^Assert logs are successful$/, async () => {
-  expect((await DemoTransactions.getTransferLogs()).keys()).toContain("hash")
+Then(/^Assert ([^"]*) logs message:$/, async (
+  block: string, data) => {
+  const message = data.rowsHash()
+  let messageBody = message.body
+  let messageHeader = message.header
+  await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
+  messageBody != "" ? expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText() +
+      DemoTransactions.getTransferLogsLocatorSecondPart(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
+    :
+    expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
 })
 
 async function chooseChainOption(chain: string) {
@@ -867,16 +888,16 @@ async function chooseChainOption(chain: string) {
   await Assets.chooseChainOption(chain)
 
   const loader = await $("#loader")
-  await loader.waitForDisplayed({reverse: true, timeout: 10000})
+  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
 }
 
-Then(/^Check request details equals to\s+(.*)$/, async (details: string) => {
+Then(/^Check request details ([^"]*) equals to ([^"]*)$/, async (FT: string, details: string) => {
   await browser.switchToFrame(await $("#nfid-embed"))
   await DemoTransactions.getApproveButton.waitForDisplayed({
     timeout: 10000,
-    timeoutMsg: "Approve Transfer modal windows isn't appeared"
+    timeoutMsg: "Approve Transfer modal windows isn't appeared",
   })
-  expect(await DemoTransactions.getAmountDetailsICP.getText()).toEqual(details)
+  expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
   await DemoTransactions.getApproveButton.click()
   await browser.switchToParentFrame()
 })

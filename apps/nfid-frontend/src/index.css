@@ -64,7 +64,7 @@ ul {
 }
 
 .Toastify__close-button {
-  @apply opacity-100;
+  @apply opacity-100 shrink-0;
 }
 
 .Toastify__toast-theme--light {

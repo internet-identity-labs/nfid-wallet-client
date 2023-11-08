@@ -1,8 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-
-
 import dfinity from "frontend/assets/dfinity.svg"
 
 interface IIIconProps extends React.SVGProps<HTMLImageElement> {}

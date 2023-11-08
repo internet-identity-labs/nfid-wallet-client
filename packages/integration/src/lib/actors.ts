@@ -121,6 +121,11 @@ export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(
   },
 )
 
+export const icSigner = Agent.Actor.createActor<EcdsaSigner>(ecdsaSignerIDL, {
+  canisterId: IC_SIGNER_CANISTER_ID,
+  agent: new HttpAgent({ ...agentBaseConfig }),
+})
+
 export const btcSigner = Agent.Actor.createActor<BtcSigner>(ecdsaSignerIDL, {
   canisterId: BTC_SIGNER_CANISTER_ID,
   agent: new HttpAgent({ ...agentBaseConfig }),

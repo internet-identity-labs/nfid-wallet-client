@@ -500,17 +500,15 @@ describe("Ethereum Asset", () => {
     const actual = await ethereumGoerliAsset.getErc20TokensByUser({
       identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
     })
-    expect(actual.tokens).toContainEqual(
-        {
-          address: "0x382901144a77bec53493fa090053b9c63da5dd07",
-          balance: "10.0",
-          balanceinUsd: expect.any(String),
-          contractAddress: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
-          logo: undefined,
-          name: "ChainLink Token",
-          symbol: "LINK",
-        },
-      )
+    expect(actual.tokens).toContainEqual({
+      address: "0x382901144a77bec53493fa090053b9c63da5dd07",
+      balance: "10.0",
+      balanceinUsd: expect.any(String),
+      contractAddress: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
+      logo: undefined,
+      name: "ChainLink Token",
+      symbol: "LINK",
+    })
   })
 
   it("should request balance", async function () {

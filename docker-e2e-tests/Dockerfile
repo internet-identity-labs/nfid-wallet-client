@@ -3,10 +3,10 @@ FROM ubuntu:${TAG}
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-ARG NODE_VERSION=16
+ARG NODE_VERSION=18
 
 RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
-RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils curl wget git \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils curl wget git ca-certificates gnupg \
     && if [ -z "`getent group ${GROUP_ID}`" ]; then \
         addgroup --system --gid ${GROUP_ID} user; \
     else \
@@ -18,11 +18,20 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils cu
         usermod -l user -g ${GROUP_ID} -d /home/user -m `getent passwd ${USER_ID} | cut -d: -f1`; \
     fi
 
-RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash - && sudo apt-get install -y nodejs \
-    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
+# Install NODE
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y nodejs
+
+# Install YARN
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarnkey.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update && apt-get install -y yarn
 
+# Install Chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && dpkg -i google-chrome-stable_current_amd64.deb || true \
     && apt-get -f install -y \

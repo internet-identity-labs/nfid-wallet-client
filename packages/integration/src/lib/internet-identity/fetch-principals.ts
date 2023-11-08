@@ -1,12 +1,13 @@
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { getScope } from "@nfid/config"
 
 import { UserNumber } from "../_ic_api/internet_identity.d"
-import { accessList, ii } from "../actors"
+import { ii } from "../actors"
 import { authState } from "../authentication"
 import { Account } from "../identity-manager/account"
-import { Chain, getGlobalKeys } from "../lambda/ecdsa"
+import { Chain, getPublicKey } from "../lambda/ecdsa"
 
 export interface PrincipalAccount {
   principal: Principal
@@ -21,7 +22,11 @@ export async function fetchPrincipals(
   const delegation = authState.get().delegationIdentity
   if (!delegation) throw Error("No delegation identity")
 
-  const ICDelegation = await getGlobalKeys(delegation, Chain.IC, accessList)
+  const publicKey = await getPublicKey(delegation, Chain.IC)
+  const principal = Ed25519KeyIdentity.fromParsedJson([
+    publicKey,
+    "",
+  ]).getPrincipal()
 
   const globalAcc = {
     account: {
@@ -29,7 +34,7 @@ export async function fetchPrincipals(
       domain: "nfid.one",
       label: "NFID",
     },
-    principal: ICDelegation.getPrincipal(),
+    principal,
   }
 
   if (isNewUser) return [globalAcc]

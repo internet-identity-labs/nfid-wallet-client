@@ -1,8 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-
-
 import { RefreshIcon } from "frontend/ui/atoms/icons/refresh"
 
 import spinner from "./spinner.png"

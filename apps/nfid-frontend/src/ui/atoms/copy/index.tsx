@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-
 import { Tooltip } from "@nfid-frontend/ui"
 
 import { ElementProps } from "frontend/types/react"

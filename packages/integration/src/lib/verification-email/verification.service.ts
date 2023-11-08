@@ -5,6 +5,8 @@ import {
 } from "@dfinity/identity"
 import * as jose from "jose"
 
+import { ONE_HOUR_IN_MS } from "@nfid/config"
+
 import { ic } from "../agent"
 
 export type VerificationStatus = "success" | "invalid-token" | "link-required"
@@ -108,12 +110,28 @@ export const verificationService = {
     return "success"
   },
 
+  /**
+   * Checks the verification of an email address using the specified verification method.
+   *
+   * @param verificationMethod - The verification method to use.
+   * @param emailAddress - The email address to verify.
+   * @param keypair - The key pair to use for signing the verification token.
+   * @param requestId - The ID of the verification request.
+   * @param nonce - The nonce to use for the verification token.
+   * @param maxTimeToLive - The maximum time to live for returned delegation chain, in milliseconds.
+   *
+   * @returns A promise that resolves to an object containing the identity, chain root, and delegation identity.
+   *
+   * @throws VerificationIsInProgressError if the verification is still in progress.
+   * @throws Error if an error occurs during the verification process.
+   */
   async checkVerification(
     verificationMethod: VerificationMethod,
     emailAddress: string,
     keypair: KeyPair,
     requestId: string,
     nonce: number,
+    maxTimeToLive = ONE_HOUR_IN_MS * 2,
   ): Promise<{
     identity: Ed25519KeyIdentity
     chainRoot: DelegationChain
@@ -126,25 +144,22 @@ export const verificationService = {
     const ed25519KeyIdentity = Ed25519KeyIdentity.generate()
     const privateKey = await jose.importPKCS8(keypair.privateKey, "ES512")
     const token = await new jose.SignJWT({
-      nonce: nonce.toString(),
+      nonce: "0",
       publicKey: ed25519KeyIdentity.toJSON()[0],
     })
       .setProtectedHeader({ alg: "ES512" })
       .setIssuer("https://nfid.one")
       .setSubject(emailAddress)
       .setAudience("https://nfid.one")
-      .setExpirationTime("10m")
-      .setNotBefore(0)
       .setJti(requestId)
-      .setIssuedAt()
       .sign(privateKey)
 
-    const body = { token }
+    const request = { token, delegationTtl: maxTimeToLive }
 
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(request),
     })
 
     const text = await response.text()

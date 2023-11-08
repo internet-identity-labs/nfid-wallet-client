@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -26,10 +26,6 @@ jobs:
           ci_check_secrets "${JSON}"
         env:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
@@ -40,20 +36,27 @@ jobs:
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
+          SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+          SENTRY_ORG: ${{secrets.SENTRY_ORG}}
+          SENTRY_PROJECT: ${{secrets.SENTRY_PROJECT_NFID}}
+          SENTRY_LOG_LEVEL: ${{secrets.SENTRY_LOG_LEVEL}}
+          CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
+          CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   deploy:
     needs: check-secrets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
           cache: "yarn"
 
-      - uses: aviate-labs/setup-dfx@v0.2.4
+      - uses: aviate-labs/setup-dfx@v0.2.6
         with:
           dfx-version: 0.13.1
           dfx-disable-encryption: true
@@ -105,56 +108,87 @@ jobs:
           environment: production
           sourcemaps: ./build/static/js
 
-  update_sdk:
-    needs: deploy
-    if: github.event.pull_request.merged == true
+  deploy-cloudflare:
+    name: Deploy NFID-Frontend to Cloudflare Pages
+    needs: check-secrets
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Checkout CI repo.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
 
-      - name: Checkout nfid-frontend repo.
-        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          path: nfid-frontend
+          node-version: "18"
+          cache: "yarn"
 
-      - name: Building example.
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Node Modules.
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-cloudflare-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           source ./ci_libs/CI_LIBS.sh
 
-          pushd ./nfid-frontend > /dev/null
+          ci_echo_debug "yarn --prefer-offline" >&2
+          yarn --prefer-offline
 
-          ci_echo_info "Building example" >&2
-          yarn
-          npx nx build:example nfid-frontend
-
-      - name: Checkout nfid-sdk repo.
-        uses: actions/checkout@v3
-        with:
-          repository: internet-identity-labs/NFID-SDK
-          ref: main
-          path: nfid-sdk
-
-      - name: Updating files for PR.
+      - name: Build
         run: |
           source ./ci_libs/CI_LIBS.sh
 
-          ci_echo_info "Cleaning data in nfid-sdk/build/nfid/build/" >&2
-          rm -rf  nfid-sdk/build/nfid/build/
+          ci_echo_debug "yarn build:cloudflare" >&2
+          yarn build:cloudflare
+        env:
+          IS_DEV: false
+          IC_HOST: https://ic0.app
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
+          MAINNET_RARIBLE_X_API_KEY: ${{secrets.MAINNET_RARIBLE_X_API_KEY}}
+          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
+          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
+          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
+          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
+          RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
+          REACT_APP_SENTRY_CONNECTION: ${{secrets.PROD_SENTRY_CONNECTION}}
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
+          CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 
-          ci_echo_info "Put new data to nfid-sdk/build/nfid/build/" >&2
-          cp -Rf ./nfid-frontend/build/ nfid-sdk/build/nfid/
-
-      - name: Creating PR.
-        uses: peter-evans/create-pull-request@v4
+      - name: Publish
+        uses: cloudflare/pages-action@1
         with:
-          token: ${{ secrets.PAT }}
-          commit-message: "chore: update nfid-frontend build"
-          title: "chore: update nfid-frontend build"
-          branch: chore/update-nfid-frontend-build
-          path: nfid-sdk
+          apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
+          accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
+          gitHubToken: ${{secrets.GITHUB_TOKEN}}
+          projectName: nfid-frontend
+          directory: dist/apps/nfid-frontend

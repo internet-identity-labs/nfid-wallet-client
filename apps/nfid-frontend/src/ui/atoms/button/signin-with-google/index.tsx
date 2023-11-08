@@ -40,9 +40,9 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
 
   const onClick = React.useCallback(() => {
     let el: any
-    if (getBrowser() === "Safari")
-      el = buttonRef.current?.children[0].children[1].children[1]
-    else el = buttonRef.current?.querySelector("div[role=button]")
+    if (getBrowser() === "Chrome") {
+      el = buttonRef.current?.querySelector("div[role=button]")
+    } else el = buttonRef.current?.children[0].children[1].children[1]
 
     //  @ts-ignore
     el?.click()

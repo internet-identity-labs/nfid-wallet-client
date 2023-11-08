@@ -38,7 +38,7 @@ describe("get-delegate suite", () => {
     const anonymousDelegation = await getAnonymousDelegate(
       dappSessionPublicKey,
       nfidDelegationIdentity,
-      "nfid.one"
+      "nfid.one",
     )
 
     // happens inside prepareClientDelegate

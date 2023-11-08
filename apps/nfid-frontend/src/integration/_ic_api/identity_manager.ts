@@ -18,6 +18,7 @@ export const idlFactory = ({ IDL }: any) => {
     whitelisted_canisters: IDL.Opt(IDL.Vec(IDL.Principal)),
     git_branch: IDL.Opt(IDL.Text),
     lambda: IDL.Opt(IDL.Principal),
+    lambda_url: IDL.Opt(IDL.Text),
     token_refresh_ttl: IDL.Opt(IDL.Nat64),
     heartbeat: IDL.Opt(IDL.Nat32),
     token_ttl: IDL.Opt(IDL.Nat64),
@@ -54,6 +55,7 @@ export const idlFactory = ({ IDL }: any) => {
   const WalletVariant = IDL.Variant({ II: IDL.Null, NFID: IDL.Null })
   const HTTPAccountRequest = IDL.Record({
     anchor: IDL.Nat64,
+    email: IDL.Opt(IDL.Text),
     access_point: IDL.Opt(AccessPointRequest),
     wallet: IDL.Opt(WalletVariant),
   })
@@ -66,6 +68,7 @@ export const idlFactory = ({ IDL }: any) => {
     name: IDL.Opt(IDL.Text),
     anchor: IDL.Nat64,
     access_points: IDL.Vec(AccessPointResponse),
+    email: IDL.Opt(IDL.Text),
     personas: IDL.Vec(PersonaResponse),
     is2fa_enabled: IDL.Bool,
     wallet: WalletVariant,
@@ -96,13 +99,6 @@ export const idlFactory = ({ IDL }: any) => {
     domain: IDL.Text,
     persona_name: IDL.Text,
     persona_id: IDL.Text,
-  })
-  const PhoneNumberCredential = IDL.Record({ phone_number: IDL.Text })
-  const Credential = IDL.Variant({ phone_number: PhoneNumberCredential })
-  const CredentialResponse = IDL.Record({
-    data: IDL.Opt(IDL.Vec(Credential)),
-    error: IDL.Opt(Error),
-    status_code: IDL.Nat16,
   })
   const BoolHttpResponse = IDL.Record({
     data: IDL.Opt(IDL.Bool),
@@ -204,20 +200,16 @@ export const idlFactory = ({ IDL }: any) => {
     whitelisted_canisters: IDL.Opt(IDL.Vec(IDL.Principal)),
     git_branch: IDL.Opt(IDL.Text),
     lambda: IDL.Opt(IDL.Principal),
+    lambda_url: IDL.Opt(IDL.Text),
     token_refresh_ttl: IDL.Opt(IDL.Nat64),
     heartbeat: IDL.Opt(IDL.Nat32),
     token_ttl: IDL.Opt(IDL.Nat64),
     commit_hash: IDL.Opt(IDL.Text),
   })
-  const TokenRequest = IDL.Record({
-    token: IDL.Text,
-    phone_number_hash: IDL.Text,
-    principal_id: IDL.Text,
-    phone_number_encrypted: IDL.Text,
-  })
-  const Response = IDL.Record({
-    error: IDL.Opt(Error),
-    status_code: IDL.Nat16,
+  const CertifiedResponse = IDL.Record({
+    certificate: IDL.Vec(IDL.Nat8),
+    witness: IDL.Vec(IDL.Nat8),
+    response: IDL.Text,
   })
   const HTTPPersonasResponse = IDL.Record({
     data: IDL.Opt(IDL.Vec(PersonaResponse)),
@@ -233,23 +225,22 @@ export const idlFactory = ({ IDL }: any) => {
     name: IDL.Opt(IDL.Text),
     anchor: IDL.Nat64,
     access_points: IDL.Vec(AccessPointRequest),
+    email: IDL.Opt(IDL.Text),
     basic_entity: BasicEntity,
     personas: IDL.Vec(PersonaResponse),
     wallet: WalletVariant,
     principal_id: IDL.Text,
     phone_number: IDL.Opt(IDL.Text),
   })
-  const HTTPAccountUpdateRequest = IDL.Record({ name: IDL.Opt(IDL.Text) })
+  const HTTPAccountUpdateRequest = IDL.Record({
+    name: IDL.Opt(IDL.Text),
+    email: IDL.Opt(IDL.Text),
+  })
   const HTTPOneAccessPointResponse = IDL.Record({
     data: IDL.Opt(AccessPointResponse),
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
-  const ValidatePhoneRequest = IDL.Record({
-    phone_number_hash: IDL.Text,
-    principal_id: IDL.Text,
-  })
-  const Token = IDL.Text
   return IDL.Service({
     add_all_accounts_json: IDL.Func([IDL.Text], [], []),
     anchors: IDL.Func([], [HTTPAnchorsResponse], ["query"]),
@@ -274,7 +265,6 @@ export const idlFactory = ({ IDL }: any) => {
       [],
     ),
     create_persona: IDL.Func([PersonaRequest], [HTTPAccountResponse], []),
-    credentials: IDL.Func([], [CredentialResponse], []),
     delete_application: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     getCanisterLog: IDL.Func(
       [IDL.Opt(CanisterLogRequest)],
@@ -304,12 +294,12 @@ export const idlFactory = ({ IDL }: any) => {
     ),
     get_application: IDL.Func([IDL.Text], [HTTPAppResponse], []),
     get_config: IDL.Func([], [ConfigurationResponse], []),
+    get_root_certified: IDL.Func([], [CertifiedResponse], ["query"]),
     is_over_the_application_limit: IDL.Func(
       [IDL.Text],
       [BoolHttpResponse],
       ["query"],
     ),
-    post_token: IDL.Func([TokenRequest], [Response], []),
     read_access_points: IDL.Func([], [HTTPAccessPointResponse], ["query"]),
     read_applications: IDL.Func([], [HTTPApplicationResponse], ["query"]),
     read_personas: IDL.Func([], [HTTPPersonasResponse], ["query"]),
@@ -352,13 +342,11 @@ export const idlFactory = ({ IDL }: any) => {
       [HTTPOneAccessPointResponse],
       [],
     ),
-    validate_phone: IDL.Func([ValidatePhoneRequest], [Response], []),
     validate_signature: IDL.Func(
       [IDL.Opt(IDL.Text)],
       [IDL.Nat64, IDL.Opt(IDL.Text)],
       ["query"],
     ),
-    verify_token: IDL.Func([Token], [Response], []),
   })
 }
 export const init = ({ IDL }: any) => {

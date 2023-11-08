@@ -85,7 +85,9 @@ export const functionCallDecoder = {
 
     const tokenId = assetDecoder.map(data)
     const env = chainId === "0x01" ? "prod" : "testnet"
-    const sdk = createRaribleSdk(null, env)
+    const raribleKey =
+      env === "prod" ? PROD_RARIBLE_X_API_KEY : RARIBLE_X_API_KEY
+    const sdk = createRaribleSdk(null, env, { apiKey: raribleKey })
     const [item, collection] = await Promise.all([
       await sdk.apis.item.getItemById({
         itemId: `ETHEREUM:${tokenId.collectionId}:${tokenId.tokenId}`,
@@ -108,7 +110,7 @@ export const functionCallDecoder = {
   async decodeRpcMessage({
     method,
     params,
-    options
+    options,
   }: RPCMessage): Promise<RpcMessageFunctionalCall> {
     const rpcMessageDecoder = rpcMessageDecoders[method]
 

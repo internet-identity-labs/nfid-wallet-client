@@ -1,3 +1,4 @@
+import { SignIdentity } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
@@ -13,7 +14,8 @@ declare const NFID_PROVIDER_URL: string
 
 interface AuthenticationContextProps {
   nfid?: NFID
-  identity?: DelegationIdentity
+  identity?: SignIdentity
+  delegationIdentity?: DelegationIdentity
   setIdentity: React.Dispatch<
     React.SetStateAction<DelegationIdentity | undefined>
   >
@@ -35,11 +37,16 @@ const AuthenticationContext = React.createContext<AuthenticationContextProps>({
 declare const CANISTER_IDS: { [key: string]: { [key: string]: string } }
 
 const origin = window.location.origin
-const isDevDerivationOrigin = origin.includes("-dev.nfid.one")
-const isProdDerivationOrigin = origin.includes(".nfid.one")
-const derivationCanisterId = isDevDerivationOrigin
+const isStaging =  origin.includes("-staging.nfid.one")
+const isDev =
+  origin.includes("-dev.nfid.one") ||  origin.includes("localhost")
+const isProd = origin.includes(".nfid.one")
+
+const derivationCanisterId = isDev
   ? CANISTER_IDS["nfid-demo"].dev
-  : isProdDerivationOrigin
+  : isStaging
+  ? CANISTER_IDS["nfid-demo"].stage
+  : isProd
   ? CANISTER_IDS["nfid-demo"].ic
   : undefined
 
@@ -50,6 +57,7 @@ export const AuthenticationProvider: React.FC<{
   children: JSX.Element | JSX.Element[]
 }> = ({ children }: any) => {
   const [identity, setIdentity] = React.useState<DelegationIdentity>()
+
   const nfidProviderUrl = React.useMemo(() => {
     return (
       localStorageWithFallback.getItem("NFID_PROVIDER_URL") || NFID_PROVIDER_URL
@@ -72,8 +80,11 @@ export const AuthenticationProvider: React.FC<{
   const config = useMemo(() => {
     if (!identity) return
 
-    const principalID = identity.getPrincipal().toString()
-    const address = principalToAddress(identity?.getPrincipal())
+    const principal = Principal.selfAuthenticating(
+      new Uint8Array(identity.getPublicKey().toDer()),
+    )
+    const principalID = principal.toString()
+    const address = principalToAddress(principal as any)
     const expirationTime = new Date(
       Number(
         identity.getDelegation().delegations[0].delegation.expiration /
@@ -90,10 +101,21 @@ export const AuthenticationProvider: React.FC<{
     }
   }, [identity])
 
-  console.debug("AuthenticationProvider", { nfid, identity })
+  console.debug("AuthenticationProvider", {
+    nfid,
+    config,
+    identity,
+    derivationOrigin,
+  })
   return (
     <AuthenticationContext.Provider
-      value={{ nfid, identity, setIdentity, config, derivationOrigin }}
+      value={{
+        nfid,
+        identity,
+        setIdentity,
+        config,
+        derivationOrigin,
+      }}
     >
       <ToastContainer />
 

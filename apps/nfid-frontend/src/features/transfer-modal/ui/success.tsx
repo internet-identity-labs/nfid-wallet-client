@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import React, { useMemo } from "react"
-import { Fade } from "react-awesome-reveal"
 
 import { LottieAnimation } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
@@ -98,17 +97,14 @@ export const Success: React.FC<ITransferModalSuccess> = ({
         </Button>
         {url && (
           <>
-            {/* @ts-ignore: no solution yet */}
-            <Fade bottom>
-              <Button
-                block
-                type="ghost"
-                className="mt-2.5"
-                onClick={() => window.open(url, "_blank")}
-              >
-                View transaction
-              </Button>
-            </Fade>
+            <Button
+              block
+              type="ghost"
+              className="mt-2.5"
+              onClick={() => window.open(url, "_blank")}
+            >
+              View transaction
+            </Button>
           </>
         )}
       </div>

@@ -32,7 +32,11 @@ export class CancelMethodDecoder implements MethodDecoder {
       x.inputs
     const [assetClass, assetId] = makeAssets[0]
 
-    const makeAsset = await decodeTokenByAssetClass(assetClass, assetId, chainId)
+    const makeAsset = await decodeTokenByAssetClass(
+      assetClass,
+      assetId,
+      chainId,
+    )
 
     return {
       interface: "CancelOrder",

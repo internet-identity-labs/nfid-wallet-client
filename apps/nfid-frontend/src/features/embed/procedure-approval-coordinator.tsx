@@ -35,6 +35,7 @@ type ApproverCmpProps = {
   onRequestICTransfer?: (
     thirdPartyAuthSession: IRequestTransferResponse,
   ) => void
+  onReset: () => void
   onReject: (reason?: any) => void
 }
 
@@ -82,6 +83,7 @@ export const ProcedureApprovalCoordinator: React.FC<
   onConfirm,
   onRequestICDelegation = () => new Error("Not implemented"),
   onRequestICTransfer = () => new Error("Not implemented"),
+  onReset,
   onReject,
 }) => {
   console.debug("ProcedureApprovalCoordinator", { rpcMessage })
@@ -119,6 +121,7 @@ export const ProcedureApprovalCoordinator: React.FC<
               disableConfirmButton: isLoadingPopulateTransaction,
               onConfirm: handleOnConfirmSignature,
               onReject,
+              onReset,
             }}
           />
         </React.Suspense>
@@ -127,6 +130,7 @@ export const ProcedureApprovalCoordinator: React.FC<
     case ["ic_getDelegation"].includes(rpcMessage.method):
       return (
         <AuthChooseAccount
+          onReset={onReset}
           appMeta={appMeta}
           authRequest={authRequest as AuthorizationRequest}
           handleSelectAccount={onRequestICDelegation}
@@ -139,6 +143,7 @@ export const ProcedureApprovalCoordinator: React.FC<
           origin={authRequest.derivationOrigin ?? authRequest.hostname!}
           appMeta={appMeta}
           amount={rpcMessage.params[0]?.amount}
+          derivationOrigin={rpcMessage.params[0]?.derivationOrigin}
           destinationAddress={rpcMessage.params[0].receiver}
           onConfirmIC={onRequestICTransfer}
           tokenId={rpcMessage.params[0]?.tokenId}

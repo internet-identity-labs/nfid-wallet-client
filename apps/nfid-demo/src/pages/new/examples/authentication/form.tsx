@@ -4,6 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
 
 import { Button, Input } from "@nfid-frontend/ui"
+import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 const CANISTER_IDS = [
   // "txkre-oyaaa-aaaap-qa3za-cai",
@@ -11,6 +12,7 @@ const CANISTER_IDS = [
 ]
 
 type AuthenticationFormValues = {
+  maxTimeToLive: bigint
   derivationOrigin: string
   canisterIds: { canisterId: string; id?: string }[]
 }
@@ -26,6 +28,7 @@ export const AuthenticationForm = ({
   isLoading: boolean
   onSubmit: (formValues: {
     targets: string[]
+    maxTimeToLive: bigint
     derivationOrigin: string
   }) => void
 }) => {
@@ -40,20 +43,30 @@ export const AuthenticationForm = ({
     {
       defaultValues: {
         canisterIds: defaultTargetCanisterIds,
+        maxTimeToLive: BigInt(ONE_HOUR_IN_MS) * BigInt(1000),
         derivationOrigin: "",
       },
     },
   )
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "canisterIds",
   })
 
   const prepareForm = React.useCallback(
-    ({ canisterIds, derivationOrigin }: AuthenticationFormValues) => {
+    ({
+      canisterIds,
+      maxTimeToLive,
+      derivationOrigin,
+    }: AuthenticationFormValues) => {
       const targets = canisterIds.map(({ canisterId }) => canisterId)
-      console.debug("handleSubmit", { targets, canisterIds })
-      onSubmit({ targets, derivationOrigin })
+      console.debug("handleSubmit", {
+        targets,
+        maxTimeToLive,
+        derivationOrigin,
+      })
+      onSubmit({ targets, maxTimeToLive, derivationOrigin })
     },
     [onSubmit],
   )
@@ -61,6 +74,10 @@ export const AuthenticationForm = ({
   return (
     <form onSubmit={handleSubmit(prepareForm)} className="flex flex-col gap-4">
       <section className="flex flex-col gap-2">
+        <Input
+          labelText={"Delegation max time to live (ns)"}
+          {...register("maxTimeToLive")} // Use index to name the input fields
+        />
         <Input
           labelText={"Derivation origin"}
           {...register("derivationOrigin")} // Use index to name the input fields

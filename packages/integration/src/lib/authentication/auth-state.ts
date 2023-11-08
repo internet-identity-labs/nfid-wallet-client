@@ -104,6 +104,7 @@ function makeAuthState() {
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
+    setupSessionManager({ onIdle: invalidateIdentity })
 
     observableAuthState$.next({
       cacheLoaded: true,
@@ -148,7 +149,6 @@ function makeAuthState() {
 
   function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
     console.debug("makeAuthState set new auth state")
-    setupSessionManager({ onIdle: invalidateIdentity })
     observableAuthState$.next({
       ...observableAuthState$.getValue(),
       identity,
@@ -157,6 +157,7 @@ function makeAuthState() {
       sessionKey,
     })
     replaceIdentity(delegationIdentity, "authState.set")
+    setupSessionManager({ onIdle: invalidateIdentity })
   }
   function get() {
     checkAndRenewFEDelegation()

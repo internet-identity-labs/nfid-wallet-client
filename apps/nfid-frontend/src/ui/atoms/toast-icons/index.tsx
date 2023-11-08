@@ -1,5 +1,3 @@
-
-
 import ErrorIcon from "frontend/assets/toast-icons/error.svg"
 import InfoIcon from "frontend/assets/toast-icons/info.svg"
 import SuccessIcon from "frontend/assets/toast-icons/success.svg"

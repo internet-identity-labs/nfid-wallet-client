@@ -25,6 +25,7 @@ export interface Account {
   name: [] | [string]
   anchor: bigint
   access_points: Array<AccessPointRequest>
+  email: [] | [string]
   basic_entity: BasicEntity
   personas: Array<PersonaResponse>
   wallet: WalletVariant
@@ -35,12 +36,12 @@ export interface AccountResponse {
   name: [] | [string]
   anchor: bigint
   access_points: Array<AccessPointResponse>
+  email: [] | [string]
   personas: Array<PersonaResponse>
   is2fa_enabled: boolean
   wallet: WalletVariant
   principal_id: string
   phone_number: [] | [string]
-  email: [] | [string]
 }
 export interface Application {
   img: [] | [string]
@@ -61,8 +62,8 @@ export interface BoolHttpResponse {
   error: [] | [Error]
   status_code: number
 }
-export type CanisterCyclesAggregatedData = BigUint64Array
-export type CanisterHeapMemoryAggregatedData = BigUint64Array
+export type CanisterCyclesAggregatedData = BigUint64Array | bigint[]
+export type CanisterHeapMemoryAggregatedData = BigUint64Array | bigint[]
 export type CanisterLogFeature =
   | { filterMessageByContains: null }
   | { filterMessageByRegex: null }
@@ -83,13 +84,18 @@ export type CanisterLogRequest =
 export type CanisterLogResponse =
   | { messagesInfo: CanisterLogMessagesInfo }
   | { messages: CanisterLogMessages }
-export type CanisterMemoryAggregatedData = BigUint64Array
+export type CanisterMemoryAggregatedData = BigUint64Array | bigint[]
 export interface CanisterMetrics {
   data: CanisterMetricsData
 }
 export type CanisterMetricsData =
   | { hourly: Array<HourlyMetricsData> }
   | { daily: Array<DailyMetricsData> }
+export interface CertifiedResponse {
+  certificate: Uint8Array | number[]
+  witness: Uint8Array | number[]
+  response: string
+}
 export interface ConfigurationRequest {
   env: [] | [string]
   whitelisted_phone_numbers: [] | [Array<string>]
@@ -98,6 +104,7 @@ export interface ConfigurationRequest {
   whitelisted_canisters: [] | [Array<Principal>]
   git_branch: [] | [string]
   lambda: [] | [Principal]
+  lambda_url: [] | [string]
   token_refresh_ttl: [] | [bigint]
   heartbeat: [] | [number]
   token_ttl: [] | [bigint]
@@ -111,16 +118,11 @@ export interface ConfigurationResponse {
   whitelisted_canisters: [] | [Array<Principal>]
   git_branch: [] | [string]
   lambda: [] | [Principal]
+  lambda_url: [] | [string]
   token_refresh_ttl: [] | [bigint]
   heartbeat: [] | [number]
   token_ttl: [] | [bigint]
   commit_hash: [] | [string]
-}
-export type Credential = { phone_number: PhoneNumberCredential }
-export interface CredentialResponse {
-  data: [] | [Array<Credential>]
-  error: [] | [Error]
-  status_code: number
 }
 export interface DailyMetricsData {
   updateCalls: bigint
@@ -162,9 +164,9 @@ export interface HTTPAccessPointResponse {
 }
 export interface HTTPAccountRequest {
   anchor: bigint
+  email: [] | [string]
   access_point: [] | [AccessPointRequest]
   wallet: [] | [WalletVariant]
-  email: [] | [string]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]
@@ -173,9 +175,10 @@ export interface HTTPAccountResponse {
 }
 export interface HTTPAccountUpdateRequest {
   name: [] | [string]
+  email: [] | [string]
 }
 export interface HTTPAnchorsResponse {
-  data: [] | [BigUint64Array]
+  data: [] | [BigUint64Array | bigint[]]
   error: [] | [Error]
   status_code: number
 }
@@ -229,9 +232,6 @@ export interface PersonaResponse {
   persona_name: string
   persona_id: string
 }
-export interface PhoneNumberCredential {
-  phone_number: string
-}
 export interface Response {
   error: [] | [Error]
   status_code: number
@@ -241,18 +241,7 @@ export interface StringHttpResponse {
   error: [] | [Error]
   status_code: number
 }
-export type Token = string
-export interface TokenRequest {
-  token: string
-  phone_number_hash: string
-  principal_id: string
-  phone_number_encrypted: string
-}
-export type UpdateCallsAggregatedData = BigUint64Array
-export interface ValidatePhoneRequest {
-  phone_number_hash: string
-  principal_id: string
-}
+export type UpdateCallsAggregatedData = BigUint64Array | bigint[]
 export type WalletVariant = { II: null } | { NFID: null }
 export interface _SERVICE {
   add_all_accounts_json: ActorMethod<[string], undefined>
@@ -272,7 +261,6 @@ export interface _SERVICE {
     HTTPApplicationResponse
   >
   create_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
-  credentials: ActorMethod<[], CredentialResponse>
   delete_application: ActorMethod<[string], BoolHttpResponse>
   getCanisterLog: ActorMethod<
     [[] | [CanisterLogRequest]],
@@ -288,8 +276,8 @@ export interface _SERVICE {
   get_all_accounts_json: ActorMethod<[number, number], string>
   get_application: ActorMethod<[string], HTTPAppResponse>
   get_config: ActorMethod<[], ConfigurationResponse>
+  get_root_certified: ActorMethod<[], CertifiedResponse>
   is_over_the_application_limit: ActorMethod<[string], BoolHttpResponse>
-  post_token: ActorMethod<[TokenRequest], Response>
   read_access_points: ActorMethod<[], HTTPAccessPointResponse>
   read_applications: ActorMethod<[], HTTPApplicationResponse>
   read_personas: ActorMethod<[], HTTPPersonasResponse>
@@ -320,7 +308,5 @@ export interface _SERVICE {
   >
   update_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
   use_access_point: ActorMethod<[[] | [string]], HTTPOneAccessPointResponse>
-  validate_phone: ActorMethod<[ValidatePhoneRequest], Response>
   validate_signature: ActorMethod<[[] | [string]], [bigint, [] | [string]]>
-  verify_token: ActorMethod<[Token], Response>
 }

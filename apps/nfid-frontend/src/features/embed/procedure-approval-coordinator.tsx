@@ -143,6 +143,7 @@ export const ProcedureApprovalCoordinator: React.FC<
           origin={authRequest.derivationOrigin ?? authRequest.hostname!}
           appMeta={appMeta}
           amount={rpcMessage.params[0]?.amount}
+          derivationOrigin={rpcMessage.params[0]?.derivationOrigin}
           destinationAddress={rpcMessage.params[0].receiver}
           onConfirmIC={onRequestICTransfer}
           tokenId={rpcMessage.params[0]?.tokenId}

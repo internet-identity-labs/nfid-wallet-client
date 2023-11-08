@@ -4286,10 +4286,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.0-alpha.10":
-  version "0.10.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.10.tgz#72655bee4806e1562b511eedd8ea8684c0b84520"
-  integrity sha512-yXV6jJTWWIKduVglm22PfFB9CcKTW/T4lXtj31vMP32lpnLTeRgxQwC/0KYZpQcRygaV/EMe7Yc4ASv2U51F+A==
+"@nfid/embed@0.10.0-alpha.12":
+  version "0.10.0-alpha.12"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.12.tgz#feb511be2ba0b8c68b01bf6a768b8932b96ec340"
+  integrity sha512-cZGHCUUO1UbuMysMS7DI5f9INYFgEiSYXcQFy+2sejFOfq5v1C++uPzeN0D54LwGKisQvniFOKZeNlxf7h4abA==
   dependencies:
     ethers "^5.7.2"
     idb "7.1.1"
@@ -22180,10 +22180,10 @@ postcss@^7.0.14, postcss@^7.0.26, postcss@^7.0.32, postcss@^7.0.35, postcss@^7.0
     picocolors "^0.2.1"
     source-map "^0.6.1"
 
-posthog-js@1.72.0:
-  version "1.72.0"
-  resolved "https://registry.yarnpkg.com/posthog-js/-/posthog-js-1.72.0.tgz#a59e26a6eec09f66c0038696c2ff653ef9581171"
-  integrity sha512-ERgeUnhIzliNVMYUAz1CD9tTLvHI1lOYVOxNkdAdJ//NT1z3tX/CrS1Wbozae9PcqVOJgfINnOVrhDayV5eKkQ==
+posthog-js@1.88.1:
+  version "1.88.1"
+  resolved "https://registry.yarnpkg.com/posthog-js/-/posthog-js-1.88.1.tgz#ab81f21ec158a9c57be0e696744a9c9f6967ba3b"
+  integrity sha512-+8kFFU5KIcFSm8zB3tX8l0GSPyq/OtMtdrS9dYpMJk6nsEwXvOjkwFEpSrYzL5eGEpTPdbM65M52HvMqqsjpXw==
   dependencies:
     fflate "^0.4.1"
 

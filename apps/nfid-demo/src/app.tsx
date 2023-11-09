@@ -5,6 +5,7 @@ import { AuthenticationProvider } from "./context/authentication"
 import { RouteHome } from "./pages"
 
 export function App() {
+  console.debug("App")
   return (
     <AuthenticationProvider>
       <HelmetProvider>

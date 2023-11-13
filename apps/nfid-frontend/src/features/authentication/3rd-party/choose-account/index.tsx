@@ -84,6 +84,12 @@ export const AuthChooseAccount = ({
       fetchAccountsService({ authRequest }),
     )
 
+  console.debug("AuthChooseAccount", {
+    legacyAnonymousProfiles,
+    selectedLegacyAccount,
+    selectedProfile,
+  })
+
   React.useEffect(() => {
     if (!isAnonymousLoading) {
       authenticationTracking.profileSelectionLoaded({
@@ -106,6 +112,7 @@ export const AuthChooseAccount = ({
 
   const handleSelectLegacyAnonymous = useCallback(
     async (account: Account) => {
+      console.debug("handleSelectLegacyAnonymous", { account })
       setIsLoading(true)
       try {
         authenticationTracking.profileChosen({
@@ -243,7 +250,7 @@ export const AuthChooseAccount = ({
   const onSubmit = useCallback(() => {
     if (selectedProfile === "anonymous-1") return handleSelectAnonymous()
     if (selectedProfile === "anonymous-2") return handleSelectAnonymous(true)
-    if (selectedProfile === "legacy-anonymous")
+    if (selectedProfile.includes("legacy-anonymous"))
       return handleSelectLegacyAnonymous(selectedLegacyAccount)
     if (selectedProfile === "public") return handleSelectPublic()
 
@@ -346,20 +353,17 @@ export const AuthChooseAccount = ({
               >
                 <RadioButton
                   id={`profile_legacy_${acc.accountId}`}
-                  value={`legacy-anonymous`}
-                  checked={selectedProfile === "legacy-anonymous"}
-                  name={"profile"}
+                  value={`legacy-anonymous-${acc.accountId}`}
+                  checked={acc.accountId === selectedLegacyAccount?.accountId}
+                  name={`profile-${acc.accountId}`}
                   onChange={(e) => {
                     setSelectedLegacyAccount(acc)
                     setSelectedProfile(e.target.value as ProfileTypes)
                   }}
+                  text={`${appMeta.name} account ${
+                    parseInt(acc.accountId) + 1
+                  }`}
                 />
-                <label
-                  htmlFor={`profile_legacy_${acc.accountId}`}
-                  className="ml-2 cursor-pointer"
-                >
-                  {appMeta.name} account {parseInt(acc.accountId) + 1}
-                </label>
               </div>
             ))}
 

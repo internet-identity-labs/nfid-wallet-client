@@ -1,7 +1,3 @@
-import { DelegationIdentity } from "@dfinity/identity"
-
-import { authState } from "../auth-state"
-
 type AccessPoint = {
   device: string
   icon: string
@@ -48,9 +44,16 @@ export const getGoogleDeviceState = ({
   const isActiveGoogleSession =
     hasRegisteredWithGoogle && activeDevicePrincipalId === profile.principalId
 
-  return {
+  const googleState = {
     isActiveGoogleSession,
     hasGoogleDeviceOnII,
     hasRegisteredWithGoogle,
   }
+  console.debug("getGoogleDeviceState", {
+    googleState,
+    profile,
+    iiDevices,
+    activeDevicePrincipalId,
+  })
+  return googleState
 }

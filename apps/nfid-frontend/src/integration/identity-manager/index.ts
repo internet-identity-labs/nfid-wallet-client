@@ -48,7 +48,7 @@ export interface CreatePasskeyAccessPoint extends AccessPointCommon {
  * @returns {@link Account}
  */
 export function mapProfile(profile: AccountResponse): Profile {
-  console.debug("mapAccount", { account: profile })
+  console.debug("mapAccount", { profile })
   return {
     name: mapOptional(profile.name),
     anchor: Number(profile.anchor),
@@ -115,6 +115,7 @@ export async function fetchProfile() {
     })
     .then((r) => {
       const profile = mapProfile(unpackResponse(r))
+      console.debug("fetchProfile", { profile })
       authenticationTracking.updateData({
         legacyUser: profile.wallet === RootWallet.II,
       })

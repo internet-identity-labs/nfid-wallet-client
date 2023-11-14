@@ -13,12 +13,8 @@ import {
   AccessPointRequest,
   AccessPointResponse,
 } from "frontend/integration/_ic_api/identity_manager.d"
-import {
-  DeviceData,
-  PublicKey,
-} from "frontend/integration/_ic_api/internet_identity.d"
+import { DeviceData } from "frontend/integration/_ic_api/internet_identity.d"
 import { useDeviceInfo } from "frontend/integration/device"
-import { removeAccessPointFacade } from "frontend/integration/facade"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import {
   addDevice,

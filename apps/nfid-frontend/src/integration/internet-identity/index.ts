@@ -11,6 +11,7 @@ import { arrayBufferEqual } from "ictool/dist/bits"
 import {
   authState,
   FrontendDelegation,
+  getPrincipalId,
   mapOptional,
   Profile,
   requestFEDelegation,
@@ -90,17 +91,6 @@ export async function createChallenge(): Promise<Challenge> {
     throw new Error(`createChallenge: ${e.message}`)
   })
   return challenge
-}
-
-const getPrincipalId = (pubkey: PublicKey): string | undefined => {
-  try {
-    const pubkeyHex = Buffer.from(pubkey).toString("hex")
-    const key = Ed25519KeyIdentity.fromParsedJson([pubkeyHex, ""])
-    return key.getPrincipal().toString()
-  } catch (e) {
-    console.warn("getPrincipalId: failed to get principalId", e)
-    return
-  }
 }
 
 export async function fetchAllDevices(anchor: UserNumber) {

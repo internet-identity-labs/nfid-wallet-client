@@ -98,6 +98,7 @@ const getPrincipalId = (pubkey: PublicKey): string | undefined => {
     const key = Ed25519KeyIdentity.fromParsedJson([pubkeyHex, ""])
     return key.getPrincipal().toString()
   } catch (e) {
+    console.warn("getPrincipalId: failed to get principalId", e)
     return
   }
 }
@@ -118,13 +119,12 @@ export async function fetchAllDevices(anchor: UserNumber) {
     if (!!authState.get().delegationIdentity)
       return {
         ...deviceData,
-        ...(principalId ? { principalId } : {}),
         principalId,
       }
     else
       return {
         ...deviceData,
-        ...(principalId ? { principalId } : {}),
+        principalId,
         alias: "",
       }
   })

@@ -1,0 +1,291 @@
+name: SDK Tests CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker_rebuild:
+        description: "Rebuild Docker image"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+jobs:
+  check-secrets:
+    defaults:
+      run:
+        shell: bash
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Check secrets
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+          JSON='${{ toJSON(env) }}'
+          ci_check_secrets "${JSON}"
+        env:
+          REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
+          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
+          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
+          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
+          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
+          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
+          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+
+  docker-for-sdk-test:
+    needs: check-secrets
+    runs-on: ubuntu-latest
+    # runs-on: [self-hosted, Linux, x64, frontend]
+    permissions:
+      packages: write
+      contents: read
+    env:
+      IMAGE_NAME: nfid-sdk-test
+
+    steps:
+      - name: Checkout repo.
+        uses: actions/checkout@v4
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Log in to registry
+        # This is where you will update the personal access token to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Pull Build Push Image
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo ${IMAGE_ID} | tr '[A-Z]' '[a-z]')
+
+          # Check is this pull request
+          if [ -z "${{ github.head_ref }}" ]; then
+            # If NOT
+            # Strip git ref prefix from version
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          else
+            # If YES
+            # Strip git ref prefix from version and left pull-request number
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\([0-9]\+\)/\(.*\),\1-\2,')
+          fi
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "${VERSION}" == "main" ] && VERSION=latest
+
+          # Preparing env Vars
+          CI_DEBUG='true'
+
+          ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
+          ci_echo_info "VERSION : ${VERSION}" >&2
+
+          ci_echo_debug "DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect ${IMAGE_ID}:${VERSION} >/dev/null" >&2
+          if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect ${IMAGE_ID}:${VERSION} >/dev/null; then
+            ci_echo_info "Docker image '${IMAGE_ID}:${VERSION}' was found" >&2
+            DOCKER_REBUILD="false"
+          else
+            ci_echo_warn "Image '${IMAGE_ID}:${VERSION}' was not found" >&2
+            DOCKER_REBUILD="true"
+          fi
+
+          if [ "${DOCKER_REBUILD}" == "true" ] || [ "${{ github.event.inputs.docker_rebuild }}" == "true" ]; then
+            ci_echo_warn "Will try to build the Docker Image." >&2
+
+            pushd ./docker-e2e-sdk-tests
+
+            ci_echo_debug "docker build . \
+              --build-arg USER_ID=$(id -u) \
+              --build-arg GROUP_ID=$(id -g) \
+              --file Dockerfile \
+              --tag ${IMAGE_NAME} \
+              --label 'runnumber=${GITHUB_RUN_ID}'" >&2
+
+            docker build . \
+              --build-arg USER_ID=$(id -u) \
+              --build-arg GROUP_ID=$(id -g) \
+              --file Dockerfile \
+              --tag ${IMAGE_NAME} \
+              --label "runnumber=${GITHUB_RUN_ID}"
+
+            ci_echo_debug "docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}" >&2
+            docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}
+
+            ci_echo_debug "docker push ${IMAGE_ID}:${VERSION}" >&2
+            docker push ${IMAGE_ID}:${VERSION}
+          fi
+
+  sdk-e2e-tests:
+    needs: docker-for-sdk-test
+    runs-on: ubuntu-latest
+    # runs-on: [self-hosted, Linux, x64, frontend]
+    permissions:
+      packages: write
+      contents: read
+    env:
+      IMAGE_NAME: nfid-sdk-test
+
+    steps:
+      - name: Checkout repo.
+        uses: actions/checkout@v4
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Log in to registry
+        # This is where you will update the personal access token to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Pull Image and preparing Env Vars
+        id: pull_image
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo ${IMAGE_ID} | tr '[A-Z]' '[a-z]')
+
+          # Check is this pull request
+          if [ -z "${{ github.head_ref }}" ]; then
+            # If NOT
+            # Strip git ref prefix from version
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          else
+            # If YES
+            # Strip git ref prefix from version and left pull-request number
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\([0-9]\+\)/\(.*\),\1-\2,')
+          fi
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "${VERSION}" == "main" ] && VERSION=latest
+
+          CI_DEBUG='true'
+
+          ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
+          ci_echo_info "VERSION : ${VERSION}" >&2
+
+          ci_echo_debug "docker pull ${IMAGE_ID}:${VERSION}" >&2
+          docker pull ${IMAGE_ID}:${VERSION}
+
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='@demoApp'"
+
+          echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "CI_DEBUG=${CI_DEBUG}" >> $GITHUB_ENV
+          echo "TEST_ADD_PARAMS="${TEST_ADD_PARAMS}"" >> $GITHUB_ENV
+
+      - name: Cache Node Modules.
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Run tests
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          ci_echo_info "Cleaning Allure folders" >&2
+          rm -rf apps/nfid-frontend-e2e/allure-results
+          rm -rf apps/nfid-frontend-e2e/allure-report
+          mkdir -p apps/nfid-frontend-e2e/allure-results
+          mkdir -p apps/nfid-frontend-e2e/allure-report
+
+          cat > npmrc_file << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
+          EOF
+
+          cat > docker_env << EOF
+            IS_DEV=true
+            IS_E2E_TEST=true
+            ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
+            GOERLI_ALCHEMY_API_KEY=${GOERLI_ALCHEMY_API_KEY}
+            RARIBLE_X_API_KEY=${RARIBLE_X_API_KEY}
+            PROD_RARIBLE_X_API_KEY=${PROD_RARIBLE_X_API_KEY}
+            ETH_ALCHEMY_API_KEY=${ETH_ALCHEMY_API_KEY}
+            MATIC_ALCHEMY_API_KEY=${MATIC_ALCHEMY_API_KEY}
+            MUMBAI_ALCHEMY_API_KEY=${MUMBAI_ALCHEMY_API_KEY}
+            RAMP_WALLET_API_KEY=${RAMP_WALLET_API_KEY}
+
+            REACT_APP_SENTRY_CONNECTION=${REACT_APP_SENTRY_CONNECTION}
+            USERGEEK_API_KEY=${USERGEEK_API_KEY}
+            PSYCHEDELIC_GH_NPM_REGISTRY=${PSYCHEDELIC_GH_NPM_REGISTRY}
+            BLOCK_CYPHER_TOKEN=${BLOCK_CYPHER_TOKEN}
+
+            URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
+            LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
+          EOF
+
+          ci_echo_debug "docker run --rm \
+            -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
+            --env-file $(pwd)/docker_env \
+            -e CI_DEBUG='${CI_DEBUG}' \
+            ${IMAGE_ID}:${VERSION} \
+            '${TEST_ADD_PARAMS}'" >&2
+
+          docker run --rm \
+            -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
+            --env-file $(pwd)/docker_env \
+            -e CI_DEBUG="${CI_DEBUG}" \
+            ${IMAGE_ID}:${VERSION} \
+            "${TEST_ADD_PARAMS}"
+        env:
+          IS_DEV: true
+          IS_E2E_TEST: true
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
+          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
+          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
+          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
+          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
+          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
+          RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
+
+          REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+
+          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}

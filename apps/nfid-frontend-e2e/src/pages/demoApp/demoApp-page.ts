@@ -12,7 +12,11 @@ export class demoAppPage extends Page {
   }
 
   get getPublicProfile() {
-    return $('#publicProfileID')
+    return $('#profile_public')
+  }
+
+  get getConnectButton(){
+    return $('#connect')
   }
 
   get getIFrame() {
@@ -77,8 +81,8 @@ export class demoAppPage extends Page {
         await browser.switchToParentFrame()
         await this.getDerivationOriginInput("authentication").setValue(derivation)
         await this.addCanisterID("authentication", targets)
-        // if (await this.getAuthenticateButton.isClickable())
         await this.getAuthenticateButton.click()
+        await browser.pause(1000)
         if (await this.getIFrame.isDisplayed()) {
           await browser.switchToFrame(await this.getIFrame)
           await this.getPublicProfile.waitForDisplayed({timeoutMsg: "Google account iframe is not displayed"})
@@ -102,6 +106,7 @@ export class demoAppPage extends Page {
     let profile = profileType == "public" ? this.getPublicProfile : this.getAnonymousProfiles
     await profile.waitForDisplayed({timeout: 50000, timeoutMsg: "'Choose Profile' modal window isn't displayed after 50sec"})
     await profile.click()
+    await this.getConnectButton.click()
 
   }
 

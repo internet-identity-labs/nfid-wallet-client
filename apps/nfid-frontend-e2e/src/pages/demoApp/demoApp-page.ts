@@ -15,7 +15,7 @@ export class demoAppPage extends Page {
     return $('#profile_public')
   }
 
-  get getConnectButton(){
+  get getConnectButton() {
     return $('#connect')
   }
 
@@ -36,7 +36,7 @@ export class demoAppPage extends Page {
   }
 
   get getMyTargets() {
-    return $(`#myTargetsList`)
+    return $$(`#myTargetsList`)
   }
 
   getAddCanisterIDButton(pageBlock: string) {
@@ -79,7 +79,7 @@ export class demoAppPage extends Page {
     await browser.waitUntil(async () => {
         await browser.pause(1000)
         await browser.switchToParentFrame()
-        await this.getDerivationOriginInput("authentication").setValue(derivation)
+        if (derivation) await this.getDerivationOriginInput("authentication").setValue(derivation)
         await this.addCanisterID("authentication", targets)
         await this.getAuthenticateButton.click()
         await browser.pause(1000)
@@ -104,7 +104,10 @@ export class demoAppPage extends Page {
 
   async selectProfile(profileType: string) {
     let profile = profileType == "public" ? this.getPublicProfile : this.getAnonymousProfiles
-    await profile.waitForDisplayed({timeout: 50000, timeoutMsg: "'Choose Profile' modal window isn't displayed after 50sec"})
+    await profile.waitForClickable({
+      timeout: 50000,
+      timeoutMsg: "'Choose Profile' modal window isn't displayed after 50sec"
+    })
     await profile.click()
     await this.getConnectButton.click()
 
@@ -122,12 +125,15 @@ export class demoAppPage extends Page {
 
   async getAuthLogs() {
     let myMap = new Map()
-    await this.getMyDelegationLocator.waitForClickable({timeout: 90000})
-    await this.getMyDelegationLocator.click()
+    if (!await $('#myTargetsList').isDisplayed()) {
+      await this.getMyDelegationLocator.waitForClickable({timeout: 90000})
+      await this.getMyDelegationLocator.click()
+    }
     let myPrincipal = await Assets.getAccountId(false)
     let myAddress = await Assets.getAccountId(true)
-    let myTargets = await this.getMyTargets.getText()
-    return myMap.set("principal", myPrincipal).set("address", myAddress).set("targets", myTargets)
+    let listTargets = this.getMyTargets
+    let myTargets = Promise.all(await listTargets.map(async (element) => await element.getText()))
+    return myMap.set("principal", myPrincipal).set("address", myAddress).set("targets", await myTargets)
   }
 }
 

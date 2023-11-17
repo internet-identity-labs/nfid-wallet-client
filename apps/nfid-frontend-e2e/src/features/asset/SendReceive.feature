@@ -44,7 +44,7 @@ Feature:Send/Receive Asset
       | Polygon Mumbai    | 25795  | 1.0        | any    | NFID           | TST      |
       | Ethereum Goerli   | 25795  | 0.79664164 | any    | NFID           | ETH      |
       | Ethereum Goerli   | 25795  | 20.0       | any    | NFID           | LINK     |
-      | Internet Computer | 28542  | 0.01       | 0.0001 | NFID account 1 | ICP      |
+      | Internet Computer | 28542  | 0.0093     | 0.0001 | NFID account 1 | ICP      |
 
   @sendreceive4
   Scenario Outline: User should be able to see his collectibles on send NFT tab

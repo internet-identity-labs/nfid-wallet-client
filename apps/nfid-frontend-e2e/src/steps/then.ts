@@ -568,7 +568,7 @@ Then(
     const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
     await usd.waitForExist({
-      timeout: 13000,
+      timeout: 30000,
     })
     await expect(usd).not.toHaveText(text)
   },

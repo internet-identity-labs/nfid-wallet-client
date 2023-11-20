@@ -153,7 +153,7 @@ export const idlFactory = ({ IDL }: any) => {
       [IDL.Text, IDL.Text, IDL.Nat64],
       [BoolHttpResponse],
       [],
-  ),
+    ),
   })
 }
 export const init = ({ IDL }: any) => {

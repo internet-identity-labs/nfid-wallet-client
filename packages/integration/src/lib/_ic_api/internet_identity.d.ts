@@ -133,8 +133,8 @@ export interface _SERVICE {
     [UserNumber, string],
     VerifyTentativeDeviceResponse
   >,
-  'add_email_and_principal_for_create_account_validation' : ActorMethod<
+  add_email_and_principal_for_create_account_validation : ActorMethod<
   [string, string, number],
   BoolHttpResponse
-  >,
+  >
 }

@@ -259,23 +259,30 @@ export async function update2fa(state: boolean) {
   return im.update_2fa(state).then(mapProfile)
 }
 
+type CreateAccessPointProps = {
+  delegationIdentity: DelegationIdentity
+  email?: string
+  isGoogle?: boolean
+}
+
 /**
  * create NFID profile registered without II
  * use email identity
  */
-export async function createNFIDProfile(
-  emailDelegationIdentity: DelegationIdentity,
-  email?: string,
-) {
-  await replaceActorIdentity(im, emailDelegationIdentity)
+export async function createNFIDProfile({
+  delegationIdentity,
+  email,
+  isGoogle = false,
+}: CreateAccessPointProps) {
+  await replaceActorIdentity(im, delegationIdentity)
 
   const dd: AccessPointRequest = {
-    icon: Icon.email,
-    device: DeviceType.Email,
-    pub_key: emailDelegationIdentity.getPrincipal().toText(),
+    icon: isGoogle ? Icon.google : Icon.email,
+    device: isGoogle ? DeviceType.Google : DeviceType.Email,
+    pub_key: delegationIdentity.getPrincipal().toText(),
     browser: "",
     device_type: {
-      Email: null,
+      ...(isGoogle ? { Unknown: null } : { Email: null }),
     },
     credential_id: [],
   }

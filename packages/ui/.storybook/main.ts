@@ -5,7 +5,7 @@ const config: StorybookConfig = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [
     "@storybook/addon-essentials",
-    "@nrwl/react/plugins/storybook",
+    "@nx/react/plugins/storybook",
     "storybook-addon-react-router-v6",
   ],
 }

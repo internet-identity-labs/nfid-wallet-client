@@ -1,21 +1,6 @@
 {
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/nx-cloud",
-      "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e",
-          "build-storybook"
-        ],
-        "accessToken": "Yzg4ZGZiODAtYmEyNS00YjI1LTk5M2EtMDY1ODg1Nzc5YjdjfHJlYWQtd3JpdGU="
-      }
-    }
-  },
   "pluginsConfig": {
-    "@nrwl/js": {
+    "@nx/js": {
       "analyzeSourceFiles": true
     }
   },
@@ -26,7 +11,7 @@
   "extends": "nx/presets/npm.json",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "generators": {
-    "@nrwl/react": {
+    "@nx/react": {
       "application": {
         "babel": true
       }
@@ -34,32 +19,29 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"],
+      "cache": true
     },
     "lint": {
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json"
-      ]
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+      "cache": true
     },
     "build-storybook": {
       "inputs": [
         "default",
         "^production",
-        "!{projectRoot}/.storybook/**/*"
-      ]
+        "{projectRoot}/.storybook/**/*",
+        "{projectRoot}/tsconfig.storybook.json"
+      ],
+      "cache": true
     },
     "e2e": {
-      "inputs": [
-        "default",
-        "^production"
-      ]
+      "inputs": ["default", "^production"],
+      "cache": true
+    },
+    "test": {
+      "cache": true
     }
   },
   "namedInputs": {
@@ -195,11 +177,14 @@
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/.storybook/**/*",
-      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)"
+      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
+      "!{projectRoot}/tsconfig.storybook.json",
+      "!{projectRoot}/src/test-setup.[jt]s"
     ],
     "sharedGlobals": [
       "{workspaceRoot}/babel.config.json",
       "{workspaceRoot}/.env.(production|staging)"
     ]
-  }
+  },
+  "nxCloudAccessToken": "Yzg4ZGZiODAtYmEyNS00YjI1LTk5M2EtMDY1ODg1Nzc5YjdjfHJlYWQtd3JpdGU="
 }

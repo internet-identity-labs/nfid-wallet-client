@@ -69,7 +69,7 @@ const config = {
   },
   jest: {
     configure: (config: any) => {
-      config.resolver = "@nrwl/jest/plugins/resolver"
+      config.resolver = "@nx/jest/plugins/resolver"
       return {
         ...config,
         globals: {

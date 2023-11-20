@@ -415,7 +415,7 @@ export const AuthChooseAccount = ({
           <Button onClick={onBack} type="stroke">
             Back
           </Button>
-          <Button onClick={onSubmit} type="primary">
+          <Button id="connect" onClick={onSubmit} type="primary">
             Connect
           </Button>
         </div>

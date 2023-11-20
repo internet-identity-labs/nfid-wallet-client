@@ -45,6 +45,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   deploy:
+    name: Deploy Playground NFID (playground.nfid.one) to IC Canister
     needs: check-secrets
     runs-on: ubuntu-latest
     steps:
@@ -77,36 +78,10 @@ jobs:
         run: |
 
           # install local to generate the types
-          npx env-cmd -f .env.production nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend --skip-nx-cache
+          npx env-cmd -f .env.production nx build nfid-demo --skip-nx-cache
 
           dfx identity use action
-          dfx deploy --network ic nfid-frontend --no-wallet
           dfx deploy --network ic nfid-demo --no-wallet
-
-        env:
-          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
-          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
-          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
-          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
-          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
-          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
-          REACT_APP_SENTRY_CONNECTION: ${{secrets.PROD_SENTRY_CONNECTION}}
-          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
-        with:
-          environment: production
-          sourcemaps: ./build/static/js
 
   deploy-cloudflare:
     name: Deploy NFID-Frontend to Cloudflare Pages
@@ -192,3 +167,14 @@ jobs:
           gitHubToken: ${{secrets.GITHUB_TOKEN}}
           projectName: nfid-frontend
           directory: dist/apps/nfid-frontend
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
+          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
+        with:
+          environment: production
+          sourcemaps: dist/apps/nfid-frontend/static/js

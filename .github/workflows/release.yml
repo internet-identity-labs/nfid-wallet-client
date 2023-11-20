@@ -45,6 +45,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   deploy:
+    name: Deploy Playground NFID (playground.nfid.one) to IC Canister
     needs: check-secrets
     runs-on: ubuntu-latest
     steps:

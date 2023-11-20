@@ -331,7 +331,7 @@ jobs:
           fi
 
           # If branch main, staging, production disabling parallel run
-          case "${{ github.ref_name }}" in 
+          case "${{ github.ref_name }}" in
             main|staging|production)
               RUN_E2E_PARALLEL='false'
               ;;

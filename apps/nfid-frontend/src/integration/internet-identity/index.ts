@@ -11,6 +11,7 @@ import { arrayBufferEqual } from "ictool/dist/bits"
 import {
   authState,
   FrontendDelegation,
+  getPrincipalId,
   mapOptional,
   Profile,
   requestFEDelegation,
@@ -93,17 +94,32 @@ export async function createChallenge(): Promise<Challenge> {
 }
 
 export async function fetchAllDevices(anchor: UserNumber) {
-  return (
+  const deviceData = (
     await ii.lookup(anchor).catch((e) => {
       throw new Error(`fetchAllDevices: ${e.message}`)
     })
-  ).map((value) => {
+  ).map((deviceData) => {
+    const principalId = getPrincipalId(deviceData.pubkey)
+
     console.debug("fetchAllDevices", {
       isAuth: !!authState.get().delegationIdentity,
+      principalId,
     })
-    if (!!authState.get().delegationIdentity) return value
-    else return { ...value, alias: "" }
+
+    if (!!authState.get().delegationIdentity)
+      return {
+        ...deviceData,
+        principalId,
+      }
+    else
+      return {
+        ...deviceData,
+        principalId,
+        alias: "",
+      }
   })
+  console.debug("fetchAllDevices", { deviceData })
+  return deviceData
 }
 
 export async function fetchAuthenticatorDevices(
@@ -541,7 +557,7 @@ export async function registerFromGoogle(
     // FIXME: type guard
     // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
-    console.log(`registered Identity Anchor ${userNumber}`)
+    console.debug(`registered Identity Anchor ${userNumber}`)
     replaceIdentity(delegation.delegationIdentity)
     return {
       kind: "loginSuccess",

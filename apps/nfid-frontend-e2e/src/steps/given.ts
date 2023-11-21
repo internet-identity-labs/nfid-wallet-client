@@ -1,7 +1,7 @@
 import { Given } from "@cucumber/cucumber"
 
-import HomePage from "../pages/home-page.js"
 import DemoAppPage from "../pages/demoApp/demoApp-page.js"
+import HomePage from "../pages/home-page.js"
 import clearAuthState from "./support/action/clear-auth-state.js"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab.js"
 import openWebsite from "./support/action/openWebsite.js"
@@ -43,8 +43,13 @@ Given(
 Given(/^authstate is cleared$/, clearAuthState)
 
 Given(
-  /^User authenticates to ?(.*) with google account( using (.*) profile)?( with (.*) canister)?( and (.*))?$/,
-  async (page: string, profile?: string, targets?: string, derivation?: string) => {
+  /^User authenticates to ?(.*) with (?:shared NFID Wallet address|google account)( using (.*) profile)?( with (.*) canister)?( and (.*))?$/,
+  async (
+    page: string,
+    profile?: string,
+    targets?: string,
+    derivation?: string,
+  ) => {
     // @ts-ignore
     await pages[page].loginUsingIframe(profile, targets, derivation)
   },

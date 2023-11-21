@@ -281,9 +281,7 @@ export async function createNFIDProfile({
     device: isGoogle ? DeviceType.Google : DeviceType.Email,
     pub_key: delegationIdentity.getPrincipal().toText(),
     browser: "",
-    device_type: {
-      ...(isGoogle ? { Unknown: null } : { Email: null }),
-    },
+    device_type: { Email: null },
     credential_id: [],
   }
 

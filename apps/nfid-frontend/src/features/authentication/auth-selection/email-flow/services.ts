@@ -133,10 +133,10 @@ export const authorizeWithEmail = async (
     })
   } catch (e) {
     console.log("creating new profile")
-    profile = await createNFIDProfile(
+    profile = await createNFIDProfile({
       delegationIdentity,
-      context.verificationEmail,
-    )
+      email: context.verificationEmail,
+    })
     authenticationTracking.updateData({
       isNewUser: true,
     })

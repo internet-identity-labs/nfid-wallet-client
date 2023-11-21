@@ -20,7 +20,7 @@ Feature:Fungible Asset
       | Ethereum Goerli   | ETH      | 0.79664164 ETH | 25795  | Ethereum Goerli        |
       | Polygon Mumbai    | MATIC    | 0.2 MATIC      | 25795  | Matic Mumbai           |
       | Polygon Mumbai    | TST      | 1 TST          | 25795  | Test Token Mumbai      |
-      | Internet Computer | ICP      | 0.01 ICP       | 28542  | Internet Computer      |
+      | Internet Computer | ICP      | 0.0093 ICP     | 28542  | Internet Computer      |
       | Internet Computer | WICP     | 0.01 WICP      | 28565  | WICP                   |
 
 

@@ -1,8 +1,21 @@
 name: SDK Tests CI
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
     inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
       docker_rebuild:
         description: "Rebuild Docker image"
         required: true
@@ -103,7 +116,9 @@ jobs:
           [ "${VERSION}" == "main" ] && VERSION=latest
 
           # Preparing env Vars
-          CI_DEBUG='true'
+          if [ "${{ github.event.inputs.logLevel }}" == 'debug' ]; then
+            CI_DEBUG='true'
+          fi
 
           ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
           ci_echo_info "VERSION : ${VERSION}" >&2
@@ -196,7 +211,10 @@ jobs:
           # Use Docker `latest` tag convention
           [ "${VERSION}" == "main" ] && VERSION=latest
 
-          CI_DEBUG='true'
+          # Preparing env Vars
+          if [ "${{ github.event.inputs.logLevel }}" == 'debug' ]; then
+            CI_DEBUG='true'
+          fi
 
           ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
           ci_echo_info "VERSION : ${VERSION}" >&2

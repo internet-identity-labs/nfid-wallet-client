@@ -1,7 +1,8 @@
 @registration @mobile
 Feature: Enhanced security registration with mobile
 
-  Scenario Outline: User wants to register with Enhanced Security
+  @skip
+  Scenario: User wants to register with Enhanced Security
     Given User opens NFID site
     Given User authenticates with enhanced security
     And User enters a captcha

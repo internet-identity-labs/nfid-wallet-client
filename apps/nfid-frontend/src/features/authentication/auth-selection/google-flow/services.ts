@@ -48,7 +48,11 @@ export const signWithGoogleService = async (
     })
   } catch (e) {
     console.log("creating new profile")
-    profile = await createNFIDProfile(delegation, email)
+    profile = await createNFIDProfile({
+      delegationIdentity: delegation,
+      email,
+      isGoogle: true,
+    })
     authenticationTracking.updateData({
       isNewUser: true,
     })

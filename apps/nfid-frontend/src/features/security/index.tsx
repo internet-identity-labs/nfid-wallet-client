@@ -1,8 +1,7 @@
-import clsx from "clsx"
 import React, { useMemo } from "react"
 import useSWR from "swr"
 
-import { IconCmpPlus, Table, Toggle } from "@nfid-frontend/ui"
+import { Table, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -12,6 +11,7 @@ import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { PasskeyDeviceItem } from "./components/passkey-device-item"
+import { PrimarySignInMethod } from "./components/primary-sign-in-method"
 import { securityConnector } from "./device-connector"
 import { AddPasskey } from "./passkey/add-passkey"
 import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
@@ -63,34 +63,7 @@ const ProfileSecurityPage = () => {
         title="Login info"
         subTitle="Primary method of signing in"
       >
-        {profile?.email ? (
-          <div className="flex space-x-2.5 items-center">
-            <div className="w-10 h-10 p-2 rounded-full">
-              <DeviceIconDecider
-                icon={
-                  profile.email.includes("gmail") ? Icon.google : Icon.email
-                }
-              />
-            </div>
-            <div>
-              <p className="text-sm leading-5">{profile.email}</p>
-              <p className="text-xs leading-4 text-gray-400">
-                {profile.email.includes("gmail") ? "Google" : "Email"} sign in
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div
-            className={clsx(
-              "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
-              "hover:opacity-50 cursor-pointer transition-opacity",
-              "pointer-events-none !text-gray-400 cursor-not-allowed",
-            )}
-          >
-            <IconCmpPlus className="w-[18px] h-[18px]" />
-            <span className="text-sm font-bold">Add an email</span>
-          </div>
-        )}
+        <PrimarySignInMethod profile={profile} />
       </ProfileContainer>
 
       <ProfileContainer

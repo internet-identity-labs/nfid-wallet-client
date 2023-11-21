@@ -21,7 +21,11 @@ import {
   update2fa,
 } from "frontend/integration/identity-manager/index"
 
-import { getDelegationIdentity, getIdentity, getLambdaActor } from "../test-util"
+import {
+  getDelegationIdentity,
+  getIdentity,
+  getLambdaActor,
+} from "../test-util"
 
 describe("Identity Manager suite", () => {
   jest.setTimeout(80000)
@@ -47,13 +51,17 @@ describe("Identity Manager suite", () => {
 
       const email = "test@test.test"
       const principal = mockedIdentity.getPrincipal().toText()
-      const lambdaActor = getLambdaActor();
-      await lambdaActor.add_email_and_principal_for_create_account_validation(email, principal, new Date().getMilliseconds())
+      const lambdaActor = getLambdaActor()
+      await lambdaActor.add_email_and_principal_for_create_account_validation(
+        email,
+        principal,
+        new Date().getMilliseconds(),
+      )
 
-      const nfidProfile = await createNFIDProfile(
+      const nfidProfile = await createNFIDProfile({
         delegationIdentity,
         email,
-      )
+      })
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)
       expect(nfidProfile.accessPoints.length).toEqual(1)

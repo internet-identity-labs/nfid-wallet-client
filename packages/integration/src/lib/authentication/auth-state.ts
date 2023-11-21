@@ -20,6 +20,7 @@ interface ObservableAuthState {
   delegationIdentity?: DelegationIdentity // User Identity (unique across all users devices)
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
+  activeDevicePrincipalId?: string
 }
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
@@ -109,6 +110,7 @@ function makeAuthState() {
     observableAuthState$.next({
       cacheLoaded: true,
       delegationIdentity,
+      activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       identity,
     })
   }
@@ -153,6 +155,7 @@ function makeAuthState() {
       ...observableAuthState$.getValue(),
       identity,
       delegationIdentity,
+      activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       chain,
       sessionKey,
     })

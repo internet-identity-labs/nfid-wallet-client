@@ -227,6 +227,7 @@ jobs:
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Run unit tests
         run: npx env-cmd -f .env.dev nx run-many --target=test --skip-nx-cache
@@ -239,6 +240,7 @@ jobs:
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Upload build artefacts
         uses: actions/upload-artifact@v2

@@ -1,4 +1,4 @@
-@nft-detauls
+@nft-details
 Feature:Non Fungible Asset Details
   As a user, I want to see nft details
 

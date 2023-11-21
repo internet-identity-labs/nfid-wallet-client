@@ -347,6 +347,11 @@ export const idlFactory = ({ IDL }: any) => {
       [IDL.Nat64, IDL.Opt(IDL.Text)],
       ["query"],
     ),
+    add_email_and_principal_for_create_account_validation : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Nat64],
+      [BoolHttpResponse],
+      [],
+    ),
   })
 }
 export const init = ({ IDL }: any) => {

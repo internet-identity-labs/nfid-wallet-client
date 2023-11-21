@@ -14,6 +14,7 @@ export enum Icon {
 
 export enum DeviceType {
   Email = "Email",
+  Google = "Google",
   Passkey = "Passkey",
   Recovery = "Recovery",
   Unknown = "Unknown",

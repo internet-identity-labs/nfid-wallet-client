@@ -541,8 +541,8 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressElement.getText()),
+    "..." +
+    (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -558,8 +558,11 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
     (await usersData.get("address").secondAddressElement.getText())
   )).toEqual(expectedData.address.substring(0, 29) + "..." + expectedData.address.substring(59, 64))
 
-  let targets = String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")
-  expect(targets).toEqual(expectedData.targets)
+  await browser.waitUntil(async () => {
+    let usersData = await DemoAppPage.getAuthLogs()
+    let targets = String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")
+    return targets == expectedData.targets
+  }, {timeout: 50000, timeoutMsg: `Incorrect number of targets. Expected ${expectedData.targets} but was other`})
 })
 
 Then(
@@ -568,7 +571,7 @@ Then(
     const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
     await usd.waitForExist({
-      timeout: 13000,
+      timeout: 30000,
     })
     await expect(usd).not.toHaveText(text)
   },

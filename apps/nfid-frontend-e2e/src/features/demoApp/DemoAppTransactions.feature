@@ -6,7 +6,7 @@ Feature: DemoApp functionality
     And authstate is cleared
     And User is already authenticated by <anchor> anchor
     And User opens the demoApp
-    When User authenticates to DemoTransactions with google account using <profileType> profile with <target> canister and <derivationOrigin>
+    When User authenticates to DemoTransactions with shared NFID Wallet address using <profileType> profile with <target> canister and <derivationOrigin>
     Then Principal, Address, Targets are correct:
       | principal | <principal> |
       | address   | <address>   |
@@ -39,11 +39,11 @@ Feature: DemoApp functionality
       | principal | <principal> |
       | address   | <address>   |
       | targets   | <target>    |
-    When User updates list of targets by <target>,<target>,<target> and <derivationOrigin>
+    When User updates list of targets by <target>,<target>,<target>
     Then Principal, Address, Targets are correct:
       | principal | <principal>                |
       | address   | <address>                  |
       | targets   | <target>,<target>,<target> |
     Examples:
-      | anchor | profileType | derivationOrigin      | principal                                                       | address                                                          | target                      |
-      | 28567  | public      | http://localhost:4200 | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce | irshc-3aaaa-aaaam-absla-cai |
+      | anchor | profileType | principal                                                       | address                                                          | target                      |
+      | 28567  | public      | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce | irshc-3aaaa-aaaam-absla-cai |

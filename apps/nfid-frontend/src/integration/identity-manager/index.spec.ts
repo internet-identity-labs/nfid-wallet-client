@@ -45,10 +45,10 @@ describe("Identity Manager suite", () => {
       await replaceActorIdentity(im, delegationIdentity)
       await im.remove_account()
 
-      const nfidProfile = await createNFIDProfile(
+      const nfidProfile = await createNFIDProfile({
         delegationIdentity,
-        "test@test.test",
-      )
+        email: "test@test.test",
+      })
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)
       expect(nfidProfile.accessPoints.length).toEqual(1)

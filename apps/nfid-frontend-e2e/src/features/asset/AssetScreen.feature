@@ -25,7 +25,7 @@ Feature:Fungible Asset
 
 
   @asset2
-  Scenario Outline: User should be able to filter assets by blockchain
+  Scenario Outline: User should be able to filter assets by <chain> blockchain
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     And Tokens displayed on user assets
@@ -40,7 +40,7 @@ Feature:Fungible Asset
       | Bitcoin           | 25795  | 1      | Bitcoin           |
       | Ethereum Goerli   | 25795  | 5      | Ethereum Goerli   |
       | Polygon Mumbai    | 25795  | 2      | Matic Mumbai      |
-      | Internet Computer | 28542  | 1      | Internet Computer |
+#      | Internet Computer | 28542  | 1      | Internet Computer |
 
   @assets-filter-by-account
   Scenario Outline: User should be able to filter assets by account

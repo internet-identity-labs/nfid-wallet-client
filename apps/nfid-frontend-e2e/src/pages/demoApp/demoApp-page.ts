@@ -2,8 +2,8 @@ import Assets from "../assets.js"
 import { Page } from "../page.js"
 
 export class demoAppPage extends Page {
-  public demoAppBaseUrl = process.env.NFID_DEMO_URL
-    ? process.env.NFID_DEMO_URL
+  public demoAppBaseUrl = process.env.DEMO_APPLICATION_URL
+    ? process.env.DEMO_APPLICATION_URL
     : "http://localhost:4200"
 
   get getAnonymousProfiles() {
@@ -92,7 +92,7 @@ export class demoAppPage extends Page {
   async clickAuthenticateButton(
     targets: string,
     profile: string,
-    derivation: string,
+    derivation?: string,
   ) {
     await browser.pause(6000)
     if (await this.getLogoutButton.isDisplayed())
@@ -147,7 +147,7 @@ export class demoAppPage extends Page {
     await this.getConnectButton.click()
   }
 
-  async loginUsingIframe(profile: string, targets: string, derivation: string) {
+  async loginUsingIframe(profile: string, targets: string, derivation?: string) {
     await this.clickAuthenticateButton(targets, profile, derivation)
     await this.selectProfile(profile)
     await browser.switchToParentFrame()

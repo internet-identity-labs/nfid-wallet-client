@@ -39,7 +39,7 @@ Feature:Fungible Asset
       | chain             | anchor | amount | label             |
       | Bitcoin           | 25795  | 1      | Bitcoin           |
       | Ethereum Goerli   | 25795  | 5      | Ethereum Goerli   |
-#      | Polygon Mumbai    | 25795  | 2      | Matic Mumbai      |
+      | Polygon Mumbai    | 25795  | 2      | Matic Mumbai      |
 #      | Internet Computer | 28542  | 1      | Internet Computer |
 
   @assets-filter-by-account

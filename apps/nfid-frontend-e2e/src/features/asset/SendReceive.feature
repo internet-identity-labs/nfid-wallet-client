@@ -40,7 +40,7 @@ Feature:Send/Receive Asset
     Examples:
       | chain             | anchor | balance    | fee    | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | any    | NFID           | BTC      |
-#      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
+      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
       | Polygon Mumbai    | 25795  | 1.0        | any    | NFID           | TST      |
       | Ethereum Goerli   | 25795  | 0.79664164 | any    | NFID           | ETH      |
       | Ethereum Goerli   | 25795  | 20.0       | any    | NFID           | LINK     |
@@ -60,7 +60,7 @@ Feature:Send/Receive Asset
       | 31870  | AnilAnimal | TestERC1155 |
 
 
-  @only_deploy_to_main1
+  @only_deploy_to_main
   Scenario Outline: User should be able to send <chain> transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

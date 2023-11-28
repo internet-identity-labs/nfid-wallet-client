@@ -50,7 +50,7 @@ jobs:
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
-  docker-for-sdk-test:
+  docker-for-test:
     needs: check-secrets
     runs-on: ubuntu-latest
     # runs-on: [self-hosted, Linux, x64, frontend]
@@ -58,7 +58,7 @@ jobs:
       packages: write
       contents: read
     env:
-      IMAGE_NAME: nfid-sdk-test
+      IMAGE_NAME: nfid-test
 
     steps:
       - name: Checkout repo.
@@ -120,7 +120,7 @@ jobs:
           if [ "${DOCKER_REBUILD}" == "true" ] || [ "${{ github.event.inputs.docker_rebuild }}" == "true" ]; then
             ci_echo_warn "Will try to build the Docker Image." >&2
 
-            pushd ./docker-e2e-sdk-tests
+            pushd ./docker-e2e-tests
 
             ci_echo_debug "docker build . \
               --build-arg USER_ID=$(id -u) \
@@ -144,14 +144,14 @@ jobs:
           fi
 
   sdk-e2e-tests:
-    needs: docker-for-sdk-test
+    needs: docker-for-test
     runs-on: ubuntu-latest
     # runs-on: [self-hosted, Linux, x64, frontend]
     permissions:
       packages: write
       contents: read
     env:
-      IMAGE_NAME: nfid-sdk-test
+      IMAGE_NAME: nfid-test
 
     steps:
       - name: Checkout repo.

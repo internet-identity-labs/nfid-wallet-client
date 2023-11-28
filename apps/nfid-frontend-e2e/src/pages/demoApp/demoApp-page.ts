@@ -95,7 +95,7 @@ export class demoAppPage extends Page {
     derivation?: string,
   ) {
     await browser.pause(6000)
-    if (await this.getLogoutButton.isDisplayed())
+    if (await this.getLogoutButton.isClickable())
       await this.getLogoutButton.click()
     await browser.waitUntil(
       async () => {

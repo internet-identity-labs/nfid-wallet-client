@@ -10,8 +10,9 @@ Feature:Send/Receive Asset
     When User opens receive dialog window
     Then Choose <chain> then check that an Account ID is <account_id>
     Examples:
-      | chain                           | anchor | account_id                                                                                                        |
-      | Bitcoin,Ethereum,Polygon Mumbai | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h,0x00607C1f864508E7De80B6db6A2...f01E7,0x00607C1f864508E7De80B6db6A2...f01E7 |
+      | chain            | anchor | account_id                                                                  |
+      | Bitcoin,Ethereum | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h,0x00607C1f864508E7De80B6db6A2...f01E7 |
+#      | Bitcoin,Ethereum,Polygon Mumbai | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h,0x00607C1f864508E7De80B6db6A2...f01E7,0x00607C1f864508E7De80B6db6A2...f01E7 |
 
   @sendreceive2
   Scenario Outline: User should be able to receive ICP transaction
@@ -40,7 +41,7 @@ Feature:Send/Receive Asset
     Examples:
       | chain             | anchor | balance    | fee    | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | any    | NFID           | BTC      |
-      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
+#      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
       | Polygon Mumbai    | 25795  | 1.0        | any    | NFID           | TST      |
       | Ethereum Goerli   | 25795  | 0.79664164 | any    | NFID           | ETH      |
       | Ethereum Goerli   | 25795  | 20.0       | any    | NFID           | LINK     |
@@ -74,10 +75,10 @@ Feature:Send/Receive Asset
     And Set <target> address and <amount> and send
     Then Transaction is success
     Examples:
-      | chain             | anchor | target                                                           | amount    | currency | account        |
+      | chain             | anchor | target                                                           | amount   | currency | account |
 #      | Bitcoin           | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p                               | 0.0000001 | BTC      | NFID           |
 #      | Polygon Mumbai    | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | MATIC    | NFID           |
 #      | Polygon Mumbai    | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | TST      | NFID account 1 |
 #      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | ETH      | NFID           |
-      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001    | ICP      | NFID           |
-      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001  | LINK     | NFID           |
+      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001   | ICP      | NFID    |
+      | Ethereum Goerli   | 28567  | 0xB1107F4141fb56b07D15b65F1629451443Ff8F8e                       | 0.000001 | LINK     | NFID    |

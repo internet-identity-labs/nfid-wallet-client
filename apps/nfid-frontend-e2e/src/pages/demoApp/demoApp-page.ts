@@ -42,28 +42,16 @@ export class demoAppPage extends Page {
     return $(`#${pageBlock} #buttonAddTargetCanisterId`)
   }
 
-  async getTransferLogsLocatorFirstPart(pageBlock: string, position: number[]) {
+  async getLogs(pageBlock: string, position: number[], mayBeEmpty?: boolean) {
     let locator = $(
       `div#${pageBlock} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`,
     )
-    await locator.waitForDisplayed({
-      timeout: 50000,
-      timeoutMsg: "Transfer Logs aren't displayed",
-    })
-    return locator
-  }
-
-  async getTransferLogsLocatorSecondPart(
-    pageBlock: string,
-    position: number[],
-  ) {
-    let locator = $(
-      `div#${pageBlock} #responseID code span:nth-child(${position[0]}) span:nth-child(${position[1]})`,
-    )
-    await locator.waitForDisplayed({
-      timeout: 50000,
-      timeoutMsg: "Transfer Logs aren't displayed",
-    })
+    if (!mayBeEmpty) {
+      await locator.waitForDisplayed({
+        timeout: 50000,
+        timeoutMsg: "Transfer Logs aren't displayed",
+      })
+    }
     return locator
   }
 
@@ -117,6 +105,7 @@ export class demoAppPage extends Page {
             profile == "public" &&
             !(await this.getPublicProfile.isClickable())
           ) {
+            console.log("Public profile isn't clickable")
             await browser.switchToParentFrame()
             await browser.refresh()
           } else {
@@ -164,9 +153,13 @@ export class demoAppPage extends Page {
   }
 
   async getAuthLogs() {
+    let messageHeaderLocator = await this.getLogs("authentication", [2, 3], true)
+    let errorBodyLocator = await this.getLogs("authentication", [3, 6], true)
+    if (await messageHeaderLocator.isDisplayed() && await messageHeaderLocator.getText() == `"error"`) throw new Error(await errorBodyLocator.getText())
+
     let myMap = new Map()
     if (!(await $("#myTargetsList").isDisplayed())) {
-      await this.getMyDelegationLocator.waitForClickable({ timeout: 90000 })
+      await this.getMyDelegationLocator.waitForClickable({timeout: 90000})
       await this.getMyDelegationLocator.click()
     }
     let myPrincipal = await Assets.getAccountId(false)

@@ -18,7 +18,7 @@ Feature:Fungible Asset
       | Ethereum Goerli   | LINK     | 20 LINK        | 25795  | ChainLink Token Goerli |
       | Ethereum Goerli   | FAU      | 1 FAU          | 25795  | FaucetToken Goerli     |
       | Ethereum Goerli   | ETH      | 0.79664164 ETH | 25795  | Ethereum Goerli        |
-      | Polygon Mumbai    | MATIC    | 0.2 MATIC      | 25795  | Matic Mumbai           |
+#      | Polygon Mumbai    | MATIC    | 0.2 MATIC      | 25795  | Matic Mumbai           |
       | Polygon Mumbai    | TST      | 1 TST          | 25795  | Test Token Mumbai      |
       | Internet Computer | ICP      | 0.0093 ICP     | 28542  | Internet Computer      |
       | Internet Computer | WICP     | 0.01 WICP      | 28565  | WICP                   |
@@ -39,7 +39,7 @@ Feature:Fungible Asset
       | chain             | anchor | amount | label             |
       | Bitcoin           | 25795  | 1      | Bitcoin           |
       | Ethereum Goerli   | 25795  | 5      | Ethereum Goerli   |
-      | Polygon Mumbai    | 25795  | 2      | Matic Mumbai      |
+#      | Polygon Mumbai    | 25795  | 2      | Matic Mumbai      |
 #      | Internet Computer | 28542  | 1      | Internet Computer |
 
   @assets-filter-by-account

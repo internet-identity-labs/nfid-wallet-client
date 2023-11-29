@@ -547,7 +547,7 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
 })
 
 Then(/^Principal, Address, Targets are correct:/, async (data) => {
-  const expectedData = data.rowsHash()
+  let expectedData = data.rowsHash()
   let usersData = await DemoAppPage.getAuthLogs()
 
   expect(String((await usersData.get("principal").firstAddressPart.getText()) + "..." +
@@ -562,7 +562,10 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
     let usersData = await DemoAppPage.getAuthLogs()
     let targets = String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")
     return targets == expectedData.targets
-  }, {timeout: 50000, timeoutMsg: `Incorrect number of targets. Expected ${expectedData.targets} but was other`})
+  }, {
+    timeout: 50000,
+    timeoutMsg: `Incorrect number of targets. Expected ${expectedData.targets} but was ${String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")}`
+  })
 })
 
 Then(
@@ -879,11 +882,11 @@ Then(/^Assert ([^"]*) logs message:$/, async (
   const message = data.rowsHash()
   let messageBody = message.body
   let messageHeader = message.header
-  await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
-  messageBody != "" ? expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText() +
-      DemoTransactions.getTransferLogsLocatorSecondPart(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
+  await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
+  messageBody != "" ? expect(await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).getText() +
+      DemoTransactions.getLogs(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
     :
-    expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
+    expect(await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
 })
 
 async function chooseChainOption(chain: string) {

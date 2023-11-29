@@ -118,7 +118,7 @@ export class demoAppPage extends Page {
       },
       {
         timeout: 20000,
-        timeoutMsg: "Google account iframe is not appeared",
+        timeoutMsg: `Google account iframe is not appeared. ${await this.checkLoginSuccess()}`,
       },
     )
   }
@@ -152,11 +152,14 @@ export class demoAppPage extends Page {
     )
   }
 
-  async getAuthLogs() {
+  async checkLoginSuccess() {
     let messageHeaderLocator = await this.getLogs("authentication", [2, 3], true)
     let errorBodyLocator = await this.getLogs("authentication", [3, 6], true)
     if (await messageHeaderLocator.isDisplayed() && await messageHeaderLocator.getText() == `"error"`) throw new Error(await errorBodyLocator.getText())
+  }
 
+  async getAuthLogs() {
+    await this.checkLoginSuccess()
     let myMap = new Map()
     if (!(await $("#myTargetsList").isDisplayed())) {
       await this.getMyDelegationLocator.waitForClickable({timeout: 90000})

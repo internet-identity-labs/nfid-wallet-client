@@ -99,7 +99,7 @@ export class demoAppPage extends Page {
         if (await this.getIFrame.isDisplayed()) {
           await browser.switchToFrame(await this.getIFrame)
           await this.getPublicProfile.waitForDisplayed({
-            timeoutMsg: "Google account iframe is not displayed",
+            timeoutMsg: "Public Profile is not displayed",
           })
           if (
             profile == "public" &&

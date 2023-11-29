@@ -307,3 +307,89 @@ jobs:
 
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+
+      - name: Caching allure-results
+        if: always()
+        uses: pat-s/always-upload-cache@v3.0.11
+        with:
+          path: apps/nfid-frontend-e2e/allure-results
+          key: allure-results-${{github.RUN_ID}}
+
+      - name: Upload Chrome logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: chrome_debug.log
+          path: apps/nfid-frontend-e2e/chrome-user-data-dir/chrome_debug.log
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: dist
+          path: dist
+
+  allure-report:
+    needs: sdk-e2e-tests
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      URL: ${{ github.event.pull_request.comments_url }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+    steps:
+      - name: Get Allure history
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Working with cache.
+        uses: pat-s/always-upload-cache@v3.0.11
+        with:
+          path: apps/nfid-frontend-e2e/allure-results
+          key: allure-results-${{github.RUN_ID}}
+
+      - name: Preparing the report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: apps/nfid-frontend-e2e/allure-results
+          gh_pages: gh-pages
+          allure_report: apps/nfid-frontend-e2e/allure-report
+          allure_history: apps/nfid-frontend-e2e/allure-history
+          keep_reports: 20
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: apps/nfid-frontend-e2e/allure-history
+
+      - name: Upload url to file
+        env:
+          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+        run: echo "$target_url" > "report_url.txt"
+
+      - name: Upload url to PR comments.
+        run: |
+          if [ -n "${URL}" ]; then
+            printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
+            curl \
+              -X POST \
+              $URL \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -d "$data"
+          fi
+
+      - name: Upload reports.
+        uses: actions/upload-artifact@v3
+        with:
+          name: ReportUrl
+          path: "report_url.txt"

@@ -276,6 +276,8 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
   before: async function (capabilities: any, specs: any) {
+    if (process.env.DEMO_APPLICATION_URL) console.info(`DEMO_APPLICATION_URL: ${process.env.DEMO_APPLICATION_URL}`)
+    if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
   },
@@ -386,7 +388,7 @@ export const config: WebdriverIO.Config = {
     allureReporter.addFeature(world.name)
   },
   afterScenario: async () => {
-    browser.execute("window.localStorage.clear()")
+    await browser.execute("window.localStorage.clear()")
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },

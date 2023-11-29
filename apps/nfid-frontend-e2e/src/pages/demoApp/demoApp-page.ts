@@ -49,7 +49,7 @@ export class demoAppPage extends Page {
     if (!mayBeEmpty) {
       await locator.waitForDisplayed({
         timeout: 50000,
-        timeoutMsg: "Transfer Logs aren't displayed",
+        timeoutMsg: "Logs aren't displayed",
       })
     }
     return locator
@@ -83,8 +83,7 @@ export class demoAppPage extends Page {
     derivation?: string,
   ) {
     await browser.pause(6000)
-    if (await this.getLogoutButton.isClickable())
-      await this.getLogoutButton.click()
+    if (await this.getLogoutButton.isClickable()) await this.getLogoutButton.click()
     await browser.waitUntil(
       async () => {
         await browser.pause(1000)
@@ -112,13 +111,13 @@ export class demoAppPage extends Page {
             return true
           }
         }
-        ;(await this.getLogoutButton.isDisplayed())
+        (await this.getLogoutButton.isDisplayed())
           ? await this.getLogoutButton.click()
           : await this.getAuthenticateButton.click()
+        await this.checkLoginSuccess()
       },
       {
         timeout: 20000,
-        timeoutMsg: `Google account iframe is not appeared. ${await this.checkLoginSuccess()}`,
       },
     )
   }
@@ -155,7 +154,12 @@ export class demoAppPage extends Page {
   async checkLoginSuccess() {
     let messageHeaderLocator = await this.getLogs("authentication", [2, 3], true)
     let errorBodyLocator = await this.getLogs("authentication", [3, 6], true)
-    if (await messageHeaderLocator.isDisplayed() && await messageHeaderLocator.getText() == `"error"`) throw new Error(await errorBodyLocator.getText())
+    if (await messageHeaderLocator.isDisplayed()) {
+      let text = await errorBodyLocator.getText()
+      if (await messageHeaderLocator.getText() == `"error"`) {
+        throw new Error(text)
+      }
+    }
   }
 
   async getAuthLogs() {

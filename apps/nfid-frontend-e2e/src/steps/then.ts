@@ -894,7 +894,7 @@ async function chooseChainOption(chain: string) {
   await Assets.chooseChainOption(chain)
 
   const loader = await $("#loader")
-  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
+  await loader.waitForDisplayed({ reverse: true, timeout: 10000, timeoutMsg: `Loader is still displayed after timeout. Chain: ${chain}`})
 }
 
 Then(/^Check request details ([^"]*) equals to ([^"]*)$/, async (FT: string, details: string) => {

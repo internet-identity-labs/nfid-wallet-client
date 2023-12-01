@@ -329,4 +329,8 @@ export interface _SERVICE {
   [string, string, number],
   BoolHttpResponse
   >,
+  sync_recovery_phrase_from_internet_identity : ActorMethod<
+  [bigint],
+  HTTPAccountResponse
+  >
 }

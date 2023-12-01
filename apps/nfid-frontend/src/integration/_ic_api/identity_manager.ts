@@ -352,6 +352,11 @@ export const idlFactory = ({ IDL }: any) => {
       [BoolHttpResponse],
       [],
     ),
+    sync_recovery_phrase_from_internet_identity : IDL.Func(
+      [IDL.Nat64],
+      [HTTPAccountResponse],
+      [],
+    ),
   })
 }
 export const init = ({ IDL }: any) => {

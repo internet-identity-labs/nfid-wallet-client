@@ -120,7 +120,7 @@ export const TransferReceive = ({
         type="small"
         isSmooth
       />
-      {(isVault || profile?.wallet === RootWallet.II) && (
+      {(isVault) && (
         <ChooseModal
           label="Accounts"
           title={"Choose an account"}

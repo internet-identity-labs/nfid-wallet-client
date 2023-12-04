@@ -113,7 +113,6 @@ export abstract class ActivityClass<T extends IActivityConfig>
 
     const applications = await this.getApplications()
     const fixedAccounts = applications
-      .filter((app) => app.isNftStorage)
       .map(applicationToAccount)
 
     return fixedAccounts.reduce((acc, account) => {

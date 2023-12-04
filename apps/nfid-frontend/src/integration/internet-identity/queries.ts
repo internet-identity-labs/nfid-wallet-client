@@ -1,15 +1,12 @@
-import React from "react"
 import useSWRImmutable from "swr/immutable"
 
 import {
   RootWallet,
-  extendWithFixedAccounts,
   fetchPrincipals,
 } from "@nfid/integration"
 
 import {
   useAccounts,
-  useApplicationsMeta,
   useProfile,
 } from "frontend/integration/identity-manager/queries"
 
@@ -18,18 +15,12 @@ import {
  */
 export const useAllPrincipals = () => {
   const { profile } = useProfile()
-  const { accounts } = useAccounts()
-  const { applicationsMeta } = useApplicationsMeta()
-
-  const allAccounts = React.useMemo(() => {
-    return extendWithFixedAccounts(accounts, applicationsMeta)
-  }, [accounts, applicationsMeta])
 
   const { data: principals } = useSWRImmutable(
-    profile?.anchor && allAccounts
+    profile?.anchor
       ? [
           BigInt(profile.anchor),
-          allAccounts,
+          [],
           profile.wallet === RootWallet.NFID,
         ]
       : null,

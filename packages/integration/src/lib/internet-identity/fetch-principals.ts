@@ -37,18 +37,5 @@ export async function fetchPrincipals(
     principal,
   }
 
-  if (isNewUser) return [globalAcc]
-
-  return await Promise.all([
-    ...accounts.map(async (account) => {
-      return {
-        principal: await ii.get_principal(
-          userNumber,
-          getScope(account.domain, account.accountId),
-        ),
-        account,
-      }
-    }),
-    ...[globalAcc],
-  ])
+  return [globalAcc];
 }

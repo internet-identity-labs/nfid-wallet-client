@@ -12,7 +12,6 @@ import {
   Account,
   Application,
   authState as authStateMock,
-  extendWithFixedAccounts,
   fetchPrincipals,
   generateDelegationIdentity,
 } from "@nfid/integration"
@@ -184,49 +183,13 @@ describe("Facade suite", () => {
           persona_name: "",
         }),
       ])
-      const nfid: Application = {
-        accountLimit: 1,
-        alias: [],
-        domain: "nfid.one",
-        isNftStorage: true,
-        isIFrameAllowed: false,
-        name: "NFID",
-      }
-      const appRequired: Application = {
-        accountLimit: 0,
-        alias: [],
-        domain: "requiredDomain",
-        isNftStorage: true,
-        isIFrameAllowed: false,
-        name: "",
-      }
-      const appDuplicated: Application = {
-        accountLimit: 0,
-        alias: [],
-        domain: "duplicatedDomain",
-        isNftStorage: true,
-        isIFrameAllowed: false,
-        name: "",
-      }
-      const appNotRequired: Application = {
-        accountLimit: 0,
-        alias: [],
-        domain: "notRequiredDomain",
-        isNftStorage: false,
-        isIFrameAllowed: false,
-        name: "",
-      }
       const userAccounts = await fetchAccounts()
-      const accountsIncludingStaticApps = extendWithFixedAccounts(
-        userAccounts,
-        [nfid, appRequired, appNotRequired, appDuplicated],
-      )
       authStateMock.set({
         identity: mockedIdentity,
         delegationIdentity: delegationIdentity,
       })
       const principals: { principal: Principal; account: Account }[] =
-        await fetchPrincipals(anchor, accountsIncludingStaticApps)
+        await fetchPrincipals(anchor, userAccounts)
 
       expect(
         principals.filter((p) => p.account.domain === "test").length,
@@ -235,21 +198,9 @@ describe("Facade suite", () => {
         principals.filter((p) => p.account.domain === "oneMoreTest").length,
       ).toEqual(1)
       expect(
-        principals.filter((p) => p.account.domain === "requiredDomain").length,
-      ).toEqual(1)
-      expect(
         principals.filter((p) => p.account.domain === "duplicatedDomain")
           .length,
-      ).toEqual(2)
-      expect(
-        principals.filter((p) => p.account.domain === "notRequiredDomain"),
-      ).toEqual([])
-      const walletPrincipal = await getWalletPrincipal(Number(anchor))
-      expect(
-        principals.find(
-          (x) => x.principal.toText() === walletPrincipal.toText(),
-        ),
-      ).toBeDefined()
+      ).toEqual(1)
     })
 
     async function getErrorOnIncorrectSeedPhrase(

@@ -137,7 +137,6 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
 
     const applications = await this.getApplications()
     const fixedAccounts = applications
-      .filter((app) => app.isNftStorage)
       .map(applicationToAccount)
 
     return fixedAccounts.reduce((acc, account) => {

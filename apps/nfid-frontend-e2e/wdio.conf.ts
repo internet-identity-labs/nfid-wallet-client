@@ -91,7 +91,7 @@ export const config: WebdriverIO.Config = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: process.env.RUN_E2E_PARALLEL === 'true' ? 10 : 1,
+  maxInstances: process.env.RUN_E2E_PARALLEL === 'true' ? 2 : 1,
   // maxInstances: isDebug ? 1 : 10,
   //
   capabilities: [chromeBrowser],

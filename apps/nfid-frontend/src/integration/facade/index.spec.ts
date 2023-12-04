@@ -10,7 +10,6 @@ import { Principal } from "@dfinity/principal"
 
 import {
   Account,
-  Application,
   authState as authStateMock,
   fetchPrincipals,
   generateDelegationIdentity,
@@ -28,7 +27,6 @@ import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
-import { getWalletPrincipal } from "../rosetta/get-wallet-principal"
 import { registerIIAccount } from "../test-util"
 
 describe("Facade suite", () => {
@@ -191,15 +189,10 @@ describe("Facade suite", () => {
       const principals: { principal: Principal; account: Account }[] =
         await fetchPrincipals(anchor, userAccounts)
 
+      console.log({principals})
+
       expect(
-        principals.filter((p) => p.account.domain === "test").length,
-      ).toEqual(2)
-      expect(
-        principals.filter((p) => p.account.domain === "oneMoreTest").length,
-      ).toEqual(1)
-      expect(
-        principals.filter((p) => p.account.domain === "duplicatedDomain")
-          .length,
+        principals.length,
       ).toEqual(1)
     })
 

@@ -2,9 +2,6 @@ import clsx from "clsx"
 import React, { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { blockchains } from "@nfid/config"
-
-import { useAccountOptions } from "frontend/apps/identity-manager/profile/assets/use-account-options"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -40,8 +37,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   setAssetFilter,
   isLoading,
 }) => {
-  const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
-  const { options } = useAccountOptions(blockchainFilter)
+  const [blockchainFilter] = useState<string[]>([])
   const navigate = useNavigate()
 
   const navigateToTransactions = React.useCallback(
@@ -64,18 +60,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
     })
   }, [blockchainFilter, tokens])
 
-  const blockchainOptions = React.useMemo(() => {
-    return blockchains.map((blockchain) => ({
-      label: blockchain,
-      value: blockchain,
-    }))
-  }, [])
-
-  const resetFilters = React.useCallback(() => {
-    setBlockchainFilter([])
-    setAssetFilter([])
-  }, [setAssetFilter])
-
   return (
     <ProfileTemplate
       pageTitle="Assets"
@@ -87,15 +71,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
     >
       <ProfileContainer
         title={
-          <ProfileAssetsHeader
-            accountsOptions={options}
-            assetFilter={assetFilter}
-            setAssetFilter={setAssetFilter}
-            blockchainOptions={blockchainOptions}
-            blockchainFilter={blockchainFilter}
-            setBlockchainFilter={setBlockchainFilter}
-            resetFilters={resetFilters}
-          />
+          <ProfileAssetsHeader/>
         }
         showChildrenPadding={false}
         className="mb-10 sm:pb-0 "

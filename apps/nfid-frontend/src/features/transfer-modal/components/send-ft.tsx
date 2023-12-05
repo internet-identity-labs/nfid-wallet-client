@@ -118,6 +118,7 @@ export const TransferFT = ({
       connector.getAccountsOptions({
         currency: selectedTokenCurrency,
         isVault,
+        isRootOnly: true
       }),
     {
       onSuccess: (data) => {
@@ -408,7 +409,7 @@ export const TransferFT = ({
             }
           />
         </div>
-        {(isVault || profile?.wallet === RootWallet.II) && (
+        {(isVault) && (
           <ChooseModal
             label="From"
             title="From"

@@ -48,14 +48,6 @@ export const CollectiblesModal = ({
         isSearch
         bordered
       />
-      <DropdownSelect
-        options={walletOptions}
-        label="Accounts"
-        setSelectedValues={setWalletsFilter}
-        selectedValues={walletsFilter}
-        isSearch
-        bordered
-      />
     </div>
   )
 }

@@ -25,34 +25,6 @@ export const ProfileAssetsHeader = ({
   return (
     <div className="flex items-center justify-between w-full">
       <p>Your tokens</p>
-      <div className="flex items-center">
-        <div className="flex justify-center cursor-pointer" id="asset_filter">
-          <FilterPopover
-            onReset={() => resetFilters()}
-            trigger={<IconCmpFilters />}
-            align="end"
-          >
-            <DropdownSelect
-              label="Blockchain"
-              options={blockchainOptions}
-              selectedValues={blockchainFilter}
-              setSelectedValues={setBlockchainFilter}
-              id="blockchain_filter"
-            />
-            <DropdownSelect
-              label="Account"
-              options={accountsOptions}
-              selectedValues={assetFilter.map((item) => item?.principal ?? "")}
-              setSelectedValues={(values) =>
-                setAssetFilter(
-                  values.map((item) => ({ principal: item, accountId: "-1" })),
-                )
-              }
-              id="account_filter"
-            />
-          </FilterPopover>
-        </div>
-      </div>
     </div>
   )
 }

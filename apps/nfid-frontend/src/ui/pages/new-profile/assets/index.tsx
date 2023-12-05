@@ -9,7 +9,6 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
-import { MigrationWarning } from "frontend/ui/molecules/migration-warning"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -86,7 +85,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       iconId="activity"
       className="overflow-inherit"
     >
-      <MigrationWarning />
       <ProfileContainer
         title={
           <ProfileAssetsHeader

@@ -189,8 +189,6 @@ describe("Facade suite", () => {
       const principals: { principal: Principal; account: Account }[] =
         await fetchPrincipals(anchor, userAccounts)
 
-      console.log({principals})
-
       expect(
         principals.length,
       ).toEqual(1)

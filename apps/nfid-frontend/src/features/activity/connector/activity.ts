@@ -8,7 +8,6 @@ import {
   Application,
   PrincipalAccount,
   Profile,
-  RootWallet,
   authState,
   fetchPrincipals,
 } from "@nfid/integration"
@@ -74,14 +73,7 @@ export abstract class ActivityClass<T extends IActivityConfig>
   ): Promise<
     T extends true ? Record<string, PrincipalAccount[]> : PrincipalAccount[]
   > {
-    const profile = await this.getProfile()
-    const accounts = await this.getAccounts(true)
-
-    const principals = await fetchPrincipals(
-      BigInt(profile.anchor),
-      accounts,
-      profile.wallet === RootWallet.NFID,
-    )
+    const principals = await fetchPrincipals()
     if (!groupedById) return principals as any
 
     return principals.reduce(
@@ -112,8 +104,7 @@ export abstract class ActivityClass<T extends IActivityConfig>
     if (!extendWithFixedAccounts) return accounts
 
     const applications = await this.getApplications()
-    const fixedAccounts = applications
-      .map(applicationToAccount)
+    const fixedAccounts = applications.map(applicationToAccount)
 
     return fixedAccounts.reduce((acc, account) => {
       const accountAlreadyAdded = acc.find(

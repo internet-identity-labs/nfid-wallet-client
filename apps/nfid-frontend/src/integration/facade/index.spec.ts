@@ -22,7 +22,6 @@ import {
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
 import { removeRecoveryDeviceFacade } from "frontend/integration/facade/index"
-import { fetchAccounts } from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
@@ -181,17 +180,14 @@ describe("Facade suite", () => {
           persona_name: "",
         }),
       ])
-      const userAccounts = await fetchAccounts()
       authStateMock.set({
         identity: mockedIdentity,
         delegationIdentity: delegationIdentity,
       })
       const principals: { principal: Principal; account: Account }[] =
-        await fetchPrincipals(anchor, userAccounts)
+        await fetchPrincipals()
 
-      expect(
-        principals.length,
-      ).toEqual(1)
+      expect(principals.length).toEqual(1)
     })
 
     async function getErrorOnIncorrectSeedPhrase(

@@ -9,7 +9,6 @@ import {
   NftConnectorConfig,
 } from "src/ui/connnector/types"
 
-import { ethereumGoerliNftConnector } from "./eth/goerli/ethereum-nft-asset"
 import { polygonMumbaiNftConnector } from "./polygon/mumbai/polygon-nft-asset"
 
 export class NftFactory extends ConnectorFactory<
@@ -45,5 +44,5 @@ export const nftFactory = new NftFactory([
   polygonNftConnector,
   polygonMumbaiNftConnector,
   ethereumNftConnector,
-  ethereumGoerliNftConnector,
+  // ethereumGoerliNftConnector,
 ])

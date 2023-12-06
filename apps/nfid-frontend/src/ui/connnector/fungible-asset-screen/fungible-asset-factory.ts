@@ -11,8 +11,6 @@ import {
   TokenConfig,
 } from "src/ui/connnector/types"
 
-import { ethereumGoerliERC20AssetConnector } from "./eth/goerli/erc20-asset"
-import { ethGoerliAssetConnector } from "./eth/goerli/eth-asset"
 import { polygonMumbaiERC20AssetConnector } from "./polygon/mumbai/erc20-asset"
 import { maticMumbaiAssetConnector } from "./polygon/mumbai/matic-asset"
 
@@ -39,6 +37,6 @@ export const fungibleAssetFactory = new FungibleAssetFactory([
   ethAssetConnector,
   maticMumbaiAssetConnector,
   polygonMumbaiERC20AssetConnector,
-  ethereumGoerliERC20AssetConnector,
-  ethGoerliAssetConnector,
+  // ethereumGoerliERC20AssetConnector,
+  // ethGoerliAssetConnector,
 ])

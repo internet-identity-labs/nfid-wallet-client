@@ -32,11 +32,11 @@ export class EthereumGoerliERC20AssetConnector extends FungibleAssetConnector<As
   }
 }
 
-export const ethereumGoerliERC20AssetConnector =
-  new EthereumGoerliERC20AssetConnector({
-    tokenStandard: TokenStandards.ERC20_ETHEREUM,
-    blockchain: Blockchain.ETHEREUM_GOERLI,
-    feeCurrency: NativeToken.ETH,
-    icon: IconERC20,
-    network: ETHNetwork.GOERLI,
-  })
+// export const ethereumGoerliERC20AssetConnector =
+//   new EthereumGoerliERC20AssetConnector({
+//     tokenStandard: TokenStandards.ERC20_ETHEREUM,
+//     blockchain: Blockchain.ETHEREUM_GOERLI,
+//     feeCurrency: NativeToken.ETH,
+//     icon: IconERC20,
+//     network: ETHNetwork.GOERLI,
+//   })

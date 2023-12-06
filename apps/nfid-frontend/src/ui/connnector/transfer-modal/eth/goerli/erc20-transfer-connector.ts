@@ -117,14 +117,14 @@ export class EthGoerliERC20TransferConnector
   }
 }
 
-export const ethereumGoerliERC20TransferConnector =
-  new EthGoerliERC20TransferConnector({
-    tokenStandard: TokenStandards.ERC20_ETHEREUM,
-    blockchain: Blockchain.ETHEREUM_GOERLI,
-    feeCurrency: NativeToken.ETH,
-    icon: IconERC20,
-    addressPlaceholder: "Recipient ETH address",
-    type: TransferModalType.FT20,
-    assetService: ethereumGoerliAsset,
-    duration: "10 min",
-  })
+// export const ethereumGoerliERC20TransferConnector =
+//   new EthGoerliERC20TransferConnector({
+//     tokenStandard: TokenStandards.ERC20_ETHEREUM,
+//     blockchain: Blockchain.ETHEREUM_GOERLI,
+//     feeCurrency: NativeToken.ETH,
+//     icon: IconERC20,
+//     addressPlaceholder: "Recipient ETH address",
+//     type: TransferModalType.FT20,
+//     assetService: ethereumGoerliAsset,
+//     duration: "10 min",
+//   })

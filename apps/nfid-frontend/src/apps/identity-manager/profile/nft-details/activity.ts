@@ -97,7 +97,7 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
     if (NFTActivity.length) return
 
     if (nft?.blockchain === "Internet Computer") fetchICTokenHistory(1)
-    if (nft?.blockchain === "Ethereum Goerli") fetchETHTokenHistory()
+    // if (nft?.blockchain === "Ethereum Goerli") fetchETHTokenHistory()
     if (nft?.blockchain === "Polygon Mumbai") fetchPolygonTokenHistory()
   }, [
     NFTActivity.length,

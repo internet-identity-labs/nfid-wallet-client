@@ -95,14 +95,14 @@ export class EthGoerliNFTTransferConnector
   }
 }
 
-export const ethereumGoerliNFTTransferConnector =
-  new EthGoerliNFTTransferConnector({
-    icon: IconPngEthereum,
-    tokenStandard: TokenStandards.ETH,
-    blockchain: Blockchain.ETHEREUM_GOERLI,
-    feeCurrency: NativeToken.ETH,
-    addressPlaceholder: "Recipient ETH address",
-    type: TransferModalType.NFT,
-    assetService: ethereumGoerliAsset,
-    duration: "10 min",
-  })
+// export const ethereumGoerliNFTTransferConnector =
+//   new EthGoerliNFTTransferConnector({
+//     icon: IconPngEthereum,
+//     tokenStandard: TokenStandards.ETH,
+//     blockchain: Blockchain.ETHEREUM_GOERLI,
+//     feeCurrency: NativeToken.ETH,
+//     addressPlaceholder: "Recipient ETH address",
+//     type: TransferModalType.NFT,
+//     assetService: ethereumGoerliAsset,
+//     duration: "10 min",
+//   })

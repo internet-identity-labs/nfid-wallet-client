@@ -44,14 +44,14 @@ export class EthGoerliTransferConnector
   }
 }
 
-export const ethereumGoerliTransferConnector = new EthGoerliTransferConnector({
-  icon: IconPngEthereum,
-  tokenStandard: TokenStandards.ETH,
-  blockchain: Blockchain.ETHEREUM_GOERLI,
-  feeCurrency: NativeToken.ETH,
-  addressPlaceholder: "Recipient ETH address",
-  type: TransferModalType.FT,
-  assetService: ethereumGoerliAsset,
-  isNativeToken: true,
-  duration: "10 min",
-})
+// export const ethereumGoerliTransferConnector = new EthGoerliTransferConnector({
+//   icon: IconPngEthereum,
+//   tokenStandard: TokenStandards.ETH,
+//   blockchain: Blockchain.ETHEREUM_GOERLI,
+//   feeCurrency: NativeToken.ETH,
+//   addressPlaceholder: "Recipient ETH address",
+//   type: TransferModalType.FT,
+//   assetService: ethereumGoerliAsset,
+//   isNativeToken: true,
+//   duration: "10 min",
+// })

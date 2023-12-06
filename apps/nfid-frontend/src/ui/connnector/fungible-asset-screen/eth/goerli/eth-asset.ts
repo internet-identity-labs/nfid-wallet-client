@@ -37,11 +37,11 @@ export class EthGoerliAssetConnector extends FungibleAssetConnector<AssetNativeC
   }
 }
 
-export const ethGoerliAssetConnector = new EthGoerliAssetConnector({
-  icon: IconPngEthereum,
-  tokenStandard: TokenStandards.ETH,
-  title: "Ethereum Goerli",
-  feeCurrency: NativeToken.ETH,
-  blockchain: Blockchain.ETHEREUM_GOERLI,
-  network: ETHNetwork.GOERLI,
-})
+// export const ethGoerliAssetConnector = new EthGoerliAssetConnector({
+//   icon: IconPngEthereum,
+//   tokenStandard: TokenStandards.ETH,
+//   title: "Ethereum Goerli",
+//   feeCurrency: NativeToken.ETH,
+//   blockchain: Blockchain.ETHEREUM_GOERLI,
+//   network: ETHNetwork.GOERLI,
+// })

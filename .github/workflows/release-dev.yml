@@ -30,7 +30,7 @@ jobs:
 
       - name: Check secrets
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
@@ -71,6 +71,14 @@ jobs:
           ref: main
           path: ci_libs
 
+      - name: Checkout sdk-ts repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/sdk-ts
+          ref: main
+          path: sdk-ts
+
       - name: Setup DFX 15
         uses: aviate-labs/setup-dfx@v0.2.6
         with:
@@ -97,9 +105,32 @@ jobs:
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-demo-${{ hashFiles('**/yarn.lock') }}
 
-      - name: PRE-BUILD => Populate env vars.
+      - name: SDK-TS => Build
+        working-directory: ./sdk-ts
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_info "Install ..." >&2
+          ci_echo_debug "yarn install --frozen-lockfile" >&2
+          yarn install --frozen-lockfile
+
+          ci_echo_debug "yarn lint" >&2
+          yarn lint
+
+          ci_echo_info "Build ..." >&2
+          ci_echo_debug "npx nx build embed" >&2
+          npx nx build embed
+
+      - name: SDK-TS => Create link to packages
+        working-directory: ./sdk-ts/dist/packages/embed
+        run: |
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
+          ci_echo_debug "yarn link" >&2
+          yarn link
+
+      - name: NFID-DEMO => Populate env vars.
+        run: |
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "Getting values from dfx.json" >&2
           if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
@@ -130,9 +161,10 @@ jobs:
           echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
           echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
 
-      - name: PRE-BUILD => Print Vars.
+      - name: NFID-DEMO => Print Vars.
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
+
           ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
           ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
@@ -141,13 +173,17 @@ jobs:
       - name: NFID-DEMO => Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "Preparing npmrc" >&2
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
+
+          ci_echo_info "Yarn link ..." >&2
+          ci_echo_debug "yarn link @nfid/embed" >&2
+          yarn link @nfid/embed
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline
@@ -156,7 +192,7 @@ jobs:
 
       - name: NFID-DEMO => Build package
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           ci_echo_info "NPX" >&2
           ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}'" >&2
@@ -198,7 +234,7 @@ jobs:
 
       - name: PRE-DEPLOY => Populate env vars.
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "Getting values from dfx.json" >&2
           if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
@@ -242,7 +278,7 @@ jobs:
 
       - name: PRE-DEPLOY => Print Vars.
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
           ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
           ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
@@ -252,7 +288,7 @@ jobs:
 
       - name: PRE-DEPLOY => Write identity.
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           mkdir -p "${ID_PATH}"
           echo "${!IDENTITY_PEM_NAME_VAR}" > "${ID_PATH}/identity.pem"
@@ -278,7 +314,7 @@ jobs:
 
       - name: DEPLOY => Deploy to the canister.
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           if [ "${NETWORK_NAME}" == 'ic' ]; then
             CI_DEBUG="true"
@@ -344,14 +380,14 @@ jobs:
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline
 
       - name: Build
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source "${GITHUB_WORKSPACE}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "yarn build:cloudflare" >&2
           yarn build:cloudflare

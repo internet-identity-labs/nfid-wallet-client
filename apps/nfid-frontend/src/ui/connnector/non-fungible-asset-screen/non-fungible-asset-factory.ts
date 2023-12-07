@@ -44,5 +44,4 @@ export const nftFactory = new NftFactory([
   polygonNftConnector,
   polygonMumbaiNftConnector,
   ethereumNftConnector,
-  // ethereumGoerliNftConnector,
 ])

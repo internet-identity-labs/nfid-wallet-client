@@ -42,21 +42,18 @@ const singleFTConnectors = [
   polygonTransferConnector,
   polygonMumbaiTransferConnector,
   ethereumTransferConnector,
-  // ethereumGoerliTransferConnector,
 ]
 
 const multiFTConnectors = [
   polygonERC20TransferConnector,
   polygonMumbaiERC20TransferConnector,
   ethereumERC20TransferConnector,
-  // ethereumGoerliERC20TransferConnector,
   icTransferConnector,
   dip20TransferConnector,
 ]
 
 const NFTConnectors = [
   ethereumNFTTransferConnector,
-  // ethereumGoerliNFTTransferConnector,
   polygonNFTTransferConnector,
   polygonMumbaiNFTTransferConnector,
   icNFTTransferConnector,

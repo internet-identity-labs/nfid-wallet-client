@@ -79,7 +79,7 @@ export const SendTransaction = ({
                   onClick={(e) =>
                     window.open(
                       // PASHUNYA TODO: use network
-                      `https://goerli.etherscan.io/address/${fromAddress}`,
+                      `https://etherscan.io/address/${fromAddress}`,
                     )
                   }
                 />
@@ -101,7 +101,7 @@ export const SendTransaction = ({
                   onClick={(e) =>
                     window.open(
                       // PASHUNYA TODO: use network
-                      `https://goerli.etherscan.io/address/${toAddress}`,
+                      `https://etherscan.io/address/${toAddress}`,
                     )
                   }
                 />

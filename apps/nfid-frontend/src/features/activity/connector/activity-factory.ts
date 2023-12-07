@@ -14,7 +14,6 @@ const activityConnectors: {
   [key in Blockchain]: ActivityClass<IActivityConfig>[]
 } = {
   [Blockchain.ETHEREUM]: [ethActivityConnector],
-  // [Blockchain.ETHEREUM_GOERLI]: [ethGoerliActivityConnector],
   [Blockchain.POLYGON]: [polygonActivityConnector],
   [Blockchain.POLYGON_MUMBAI]: [polygonMumbaiActivityConnector],
   [Blockchain.IC]: [icActivityConnector],

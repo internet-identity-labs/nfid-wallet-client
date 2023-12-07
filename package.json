@@ -175,6 +175,8 @@
     "elliptic": "^6.5.4",
     "env-cmd": "10.1.0",
     "eslint": "~8.15.0",
+    "babel-plugin-polyfill-corejs2": "0.4.6",
+    "babel-plugin-polyfill-regenerator": "0.5.3",
     "eslint-config-prettier": "8.1.0",
     "eslint-config-react-app": "7.0.1",
     "eslint-plugin-cypress": "^2.10.3",

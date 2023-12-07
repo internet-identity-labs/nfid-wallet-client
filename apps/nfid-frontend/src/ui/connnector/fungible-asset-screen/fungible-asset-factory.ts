@@ -37,6 +37,4 @@ export const fungibleAssetFactory = new FungibleAssetFactory([
   ethAssetConnector,
   maticMumbaiAssetConnector,
   polygonMumbaiERC20AssetConnector,
-  // ethereumGoerliERC20AssetConnector,
-  // ethGoerliAssetConnector,
 ])

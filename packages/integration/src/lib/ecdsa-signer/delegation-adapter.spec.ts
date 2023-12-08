@@ -14,7 +14,7 @@ import { DelegationWalletAdapter } from "./delegation-adapter"
 
 describe.skip("Wallet Adapter suite", () => {
   jest.setTimeout(200000)
-  const url = `https://goerli-ethereum-node.rarible.com`
+  const url = `https://ethereum-node.rarible.com`
 
   it("sign message", async () => {
     const mockedIdentity = Ed25519KeyIdentity.generate()

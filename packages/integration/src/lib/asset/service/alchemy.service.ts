@@ -6,11 +6,6 @@ const ethMainnet = new Alchemy({
   network: Network.ETH_MAINNET,
 })
 
-const ethGoerli = new Alchemy({
-  apiKey: GOERLI_ALCHEMY_API_KEY,
-  network: Network.ETH_GOERLI,
-})
-
 const maticMainnet = new Alchemy({
   apiKey: MATIC_ALCHEMY_API_KEY,
   network: Network.MATIC_MAINNET,
@@ -23,7 +18,6 @@ const maticMumbai = new Alchemy({
 
 const alchemies: Record<number, Alchemy> = {
   1: ethMainnet,
-  5: ethGoerli,
   137: maticMainnet,
   80001: maticMumbai,
 }

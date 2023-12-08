@@ -21,7 +21,7 @@ const identity: JsonnableEd25519KeyIdentity = [
 describe("ECDSA suite", () => {
   jest.setTimeout(200000)
   const rpcProvider = new ethers.providers.JsonRpcProvider(
-    "https://goerli-ethereum-node.rarible.com",
+    "https://ethereum-node.rarible.com",
   )
   let nfidWallet: EthWalletV2
 

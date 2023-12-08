@@ -31,7 +31,6 @@ export const JEST_GLOBALS = {
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
   ETHERSCAN_API_KEY: process.env["ETHERSCAN_API_KEY"],
-  GOERLI_ALCHEMY_API_KEY: process.env["GOERLI_ALCHEMY_API_KEY"],
   RARIBLE_X_API_KEY: process.env["RARIBLE_X_API_KEY"],
   PROD_RARIBLE_X_API_KEY: process.env["PROD_RARIBLE_X_API_KEY"],
   ETH_ALCHEMY_API_KEY: process.env["ETH_ALCHEMY_API_KEY"],

@@ -28,7 +28,6 @@ export const serviceConfig = {
   IC_HOST: JSON.stringify(process.env.IC_HOST),
   II_MODE: JSON.stringify(process.env.II_MODE),
   ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
-  GOERLI_ALCHEMY_API_KEY: JSON.stringify(process.env.GOERLI_ALCHEMY_API_KEY),
   RARIBLE_X_API_KEY: JSON.stringify(process.env.RARIBLE_X_API_KEY),
   PROD_RARIBLE_X_API_KEY: JSON.stringify(process.env.PROD_RARIBLE_X_API_KEY),
   ETH_ALCHEMY_API_KEY: JSON.stringify(process.env.ETH_ALCHEMY_API_KEY),

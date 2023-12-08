@@ -7,9 +7,6 @@ import { Blockchain } from "../types"
 import { btcTransferConnector } from "./btc/btc-transfer-connector"
 import { ethereumERC20TransferConnector } from "./eth/erc20-transfer-connector"
 import { ethereumTransferConnector } from "./eth/eth-transfer-connector"
-import { ethereumGoerliERC20TransferConnector } from "./eth/goerli/erc20-transfer-connector"
-import { ethereumGoerliTransferConnector } from "./eth/goerli/eth-transfer-connector"
-import { ethereumGoerliNFTTransferConnector } from "./eth/goerli/nft-transfer-connector"
 import { ethereumNFTTransferConnector } from "./eth/nft-transfer-connector"
 import { dip20TransferConnector } from "./ic/dip20-transfer-connector"
 import { icTransferConnector } from "./ic/ic-transfer-connector"
@@ -45,21 +42,18 @@ const singleFTConnectors = [
   polygonTransferConnector,
   polygonMumbaiTransferConnector,
   ethereumTransferConnector,
-  ethereumGoerliTransferConnector,
 ]
 
 const multiFTConnectors = [
   polygonERC20TransferConnector,
   polygonMumbaiERC20TransferConnector,
   ethereumERC20TransferConnector,
-  ethereumGoerliERC20TransferConnector,
   icTransferConnector,
   dip20TransferConnector,
 ]
 
 const NFTConnectors = [
   ethereumNFTTransferConnector,
-  ethereumGoerliNFTTransferConnector,
   polygonNFTTransferConnector,
   polygonMumbaiNFTTransferConnector,
   icNFTTransferConnector,

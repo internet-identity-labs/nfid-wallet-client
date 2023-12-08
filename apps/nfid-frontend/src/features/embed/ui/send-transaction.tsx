@@ -78,7 +78,6 @@ export const SendTransaction = ({
                   className="w-[18px] cursor-pointer"
                   onClick={(e) =>
                     window.open(
-                      // PASHUNYA TODO: use network
                       `https://etherscan.io/address/${fromAddress}`,
                     )
                   }
@@ -100,7 +99,6 @@ export const SendTransaction = ({
                   className="w-[18px] cursor-pointer"
                   onClick={(e) =>
                     window.open(
-                      // PASHUNYA TODO: use network
                       `https://etherscan.io/address/${toAddress}`,
                     )
                   }

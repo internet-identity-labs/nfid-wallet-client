@@ -1,6 +1,5 @@
 declare const RARIBLE_X_API_KEY: string
 declare const PROD_RARIBLE_X_API_KEY: string
-declare const GOERLI_ALCHEMY_API_KEY: string
 declare const ETH_ALCHEMY_API_KEY: string
 declare const MATIC_ALCHEMY_API_KEY: string
 declare const MUMBAI_ALCHEMY_API_KEY: string

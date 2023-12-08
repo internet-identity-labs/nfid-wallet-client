@@ -41,10 +41,8 @@ Feature:Send/Receive Asset
     Examples:
       | chain             | anchor | balance    | fee    | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | any    | NFID           | BTC      |
-#      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
+      | Polygon Mumbai    | 25795  | 0.2        | any    | NFID           | MATIC    |
       | Polygon Mumbai    | 25795  | 1.0        | any    | NFID           | TST      |
-      | Ethereum Goerli   | 25795  | 0.79664164 | any    | NFID           | ETH      |
-      | Ethereum Goerli   | 25795  | 20.0       | any    | NFID           | LINK     |
 
   @sendreceive4
   Scenario Outline: User should be able to see his collectibles on send NFT tab
@@ -57,7 +55,7 @@ Feature:Send/Receive Asset
     Then User sees option <nft2> in dropdown
     Examples:
       | anchor | nft1       | nft2        |
-      | 31870  | AnilAnimal | TestERC1155 |
+      | 31870  | AnilAnimal | MadaraUchiha |
 
 
   @only_deploy_to_main

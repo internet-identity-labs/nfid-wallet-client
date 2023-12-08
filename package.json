@@ -164,6 +164,8 @@
     "assert": "2.0.0",
     "autoprefixer": "10.4.13",
     "babel-loader": "8.1.0",
+    "babel-plugin-polyfill-corejs2": "0.4.6",
+    "babel-plugin-polyfill-regenerator": "0.5.3",
     "buffer": "6.0.3",
     "chromedriver": "119.0.0",
     "cross-env": "7.0.3",

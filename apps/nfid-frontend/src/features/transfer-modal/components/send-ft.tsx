@@ -264,6 +264,7 @@ export const TransferFT = ({
       onTransferPromise({
         assetImg: tokenMetadata?.icon ?? "",
         initialPromise: new Promise(async (resolve) => {
+          await calculateFee()
           const res = await selectedConnector.transfer({
             to: values.to,
             amount: values.amount,

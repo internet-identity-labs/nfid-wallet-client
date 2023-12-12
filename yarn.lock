@@ -4302,15 +4302,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.0-alpha.12":
-  version "0.10.0-alpha.12"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.12.tgz#feb511be2ba0b8c68b01bf6a768b8932b96ec340"
-  integrity sha512-cZGHCUUO1UbuMysMS7DI5f9INYFgEiSYXcQFy+2sejFOfq5v1C++uPzeN0D54LwGKisQvniFOKZeNlxf7h4abA==
-  dependencies:
-    ethers "^5.7.2"
-    idb "7.1.1"
-    rxjs "7.5.7"
-    uuid "9.0.0"
+"@nfid/embed@0.10.0-alpha.13":
+  version "0.10.0-alpha.13"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.13.tgz#5dd724911fdabd864dc2ae7f2b48e840092e826b"
+  integrity sha512-piEXJUkkzI4Kuf/+hwiXebhzeHb0HCuBpFoN0SUxJlzw8zNlXWOkJDP3b9D/AOA8gK1k4OR8qWFxix5AwGt5jw==
 
 "@nicolo-ribaudo/semver-v6@^6.3.3":
   version "6.3.3"
@@ -23839,13 +23834,6 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha512-ntymy489o0/QQplUDnpYAYUsO50K9SBrIVaKCWDOJzYJts0f9WH9RFJkyagebkw5+y1oi00R7ynNW/d12GBumg==
   dependencies:
     aproba "^1.1.1"
-
-rxjs@7.5.7:
-  version "7.5.7"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.7.tgz#2ec0d57fdc89ece220d2e702730ae8f1e49def39"
-  integrity sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==
-  dependencies:
-    tslib "^2.1.0"
 
 rxjs@7.6.0:
   version "7.6.0"

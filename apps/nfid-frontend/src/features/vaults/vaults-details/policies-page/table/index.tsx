@@ -18,6 +18,7 @@ export interface VaultsPoliciesTableProps {
   policies: Policy[]
 }
 
+
 export const VaultsPoliciesTable: React.FC<VaultsPoliciesTableProps> = ({
   policies,
 }) => {

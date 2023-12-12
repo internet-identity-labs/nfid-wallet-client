@@ -302,6 +302,7 @@ export const TransferFT = ({
       })
     },
     [
+      calculateFee,
       handleTrackTransfer,
       isVault,
       onTransferPromise,

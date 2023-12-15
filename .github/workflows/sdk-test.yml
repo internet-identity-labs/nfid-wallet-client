@@ -25,6 +25,9 @@ on:
           - "false"
           - "true"
 
+env:
+  CI_DEBUG: "true"
+
 jobs:
   check-secrets:
     defaults:
@@ -44,7 +47,7 @@ jobs:
 
       - name: Check secrets
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
@@ -65,7 +68,6 @@ jobs:
   docker-for-test:
     needs: check-secrets
     runs-on: ubuntu-latest
-    # runs-on: [self-hosted, Linux, x64, frontend]
     permissions:
       packages: write
       contents: read
@@ -90,7 +92,7 @@ jobs:
 
       - name: Pull Build Push Image
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
 
@@ -160,7 +162,6 @@ jobs:
   sdk-e2e-tests:
     needs: docker-for-test
     runs-on: ubuntu-latest
-    # runs-on: [self-hosted, Linux, x64, frontend]
     permissions:
       packages: write
       contents: read
@@ -186,7 +187,7 @@ jobs:
       - name: Pull Image and preparing Env Vars
         id: pull_image
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
 
@@ -238,7 +239,7 @@ jobs:
 
       - name: Run tests
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           ci_echo_info "Cleaning Allure folders" >&2
           rm -rf apps/nfid-frontend-e2e/allure-results

@@ -12,9 +12,9 @@ Feature:Non Fungible Asset
     Then <filteredAmount> NFT displayed on collectibles page
     And Token <token> from <collection_id> nft collection displayed
     Then Switch to table
-    And NFT <token> <collection_id> <id> <wallet> displayed
+    And NFT <token> <collection_id> <id> displayed
 
     Examples:
-      | amount | anchor | token         | collection_id                              | filteredAmount | wallet       | id                                                                            | blockchain       |
-      | 3      | 31870  | AnilAnimal    | 0x67a8fe17db4d441f96f26094677763a2213a3b5f | 3              | NFID         | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | Polygon Mumbai   |
+      | amount | anchor | token         | collection_id                              | filteredAmount | id                                                                            | blockchain       |
+      | 3      | 31870  | AnilAnimal    | 0x67a8fe17db4d441f96f26094677763a2213a3b5f | 3              | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | Polygon Mumbai   |
 

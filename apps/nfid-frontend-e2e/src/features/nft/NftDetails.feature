@@ -8,14 +8,14 @@ Feature:Non Fungible Asset Details
     And User is already authenticated by <anchor> anchor
     Then Open collectibles page
     Then Open nft <token> and <collection_id> details
-    And NFT <token> <collection_id> <id> <wallet> displayed
+    And NFT <token> <collection_id> <id> displayed
     And Details are <standard> <collection_id>
     And About starts with <about>
     And Asset preview type is <previewType>
 
     Examples:
-      | anchor | token         | collection | wallet       | id                                                                            | standard  | collection_id                              | about          | previewType |
-      | 31870  | AnilAnimal    | Rarible    | NFIDWallet   | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | ERC1155   | 0x67a8fe17db4d441f96f26094677763a2213a3b5f | Testing        | img         |
+      | anchor | token         | collection | id                                                                            | standard  | collection_id                              | about          | previewType |
+      | 31870  | AnilAnimal    | Rarible    | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | ERC1155   | 0x67a8fe17db4d441f96f26094677763a2213a3b5f | Testing        | img         |
 
   @nft4
   Scenario Outline: User should be able to see txs on NFT details page

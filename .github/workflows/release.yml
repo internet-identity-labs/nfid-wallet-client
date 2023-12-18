@@ -2,6 +2,9 @@ name: Deployment
 on:
   workflow_dispatch:
 
+env:
+  CI_DEBUG: "true"
+
 jobs:
   check-secrets:
     defaults:
@@ -21,7 +24,7 @@ jobs:
 
       - name: Check secrets
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
@@ -48,7 +51,16 @@ jobs:
     needs: check-secrets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo.
+        uses: actions/checkout@v4
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -63,23 +75,38 @@ jobs:
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
+      - name: Versions
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+          
+          ci_versions
+
       - name: NFID FRONTEND | install & format check
         run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
+
+          ci_echo_debug "yarn" >&2
           yarn
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID FRONTEND | deploy
         run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           # install local to generate the types
+          ci_echo_debug "npx env-cmd -f .env.production nx build nfid-demo --skip-nx-cache" >&2
           npx env-cmd -f .env.production nx build nfid-demo --skip-nx-cache
 
+          ci_echo_debug "dfx identity use action" >&2
           dfx identity use action
+
+          ci_echo_debug "dfx deploy --network ic nfid-demo --no-wallet" >&2
           dfx deploy --network ic nfid-demo --no-wallet
 
   deploy-cloudflare:
@@ -95,7 +122,7 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
-      - name: Checkout
+      - name: Checkout repo.
         uses: actions/checkout@v4
 
       - name: Checkout CI repo.
@@ -126,17 +153,23 @@ jobs:
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-cloudflare-${{ hashFiles('**/yarn.lock') }}
 
+      - name: Versions
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+          
+          ci_versions
+  
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline
 
       - name: Build
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           ci_echo_debug "yarn build:cloudflare" >&2
           yarn build:cloudflare

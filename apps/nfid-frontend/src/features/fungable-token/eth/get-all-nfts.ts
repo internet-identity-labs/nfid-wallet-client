@@ -1,4 +1,4 @@
-import { ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -13,7 +13,7 @@ export const getAllEthNFTs = async () => {
     accountId,
   )
 
-  const { items } = await ethereumGoerliAsset.getItemsByUser({
+  const { items } = await ethereumAsset.getItemsByUser({
     identity: delegation,
   })
 

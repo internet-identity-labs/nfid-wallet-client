@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Desktop Tests CI
+name: SDK Tests CI
 
 on:
   push:
@@ -10,15 +7,6 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      env:
-        description: "Environment to run against"
-        required: true
-        default: "dev"
-        type: choice
-        options:
-          - dev
-          - staging
-          - production
       logLevel:
         description: "Log level"
         required: true
@@ -36,18 +24,10 @@ on:
         options:
           - "false"
           - "true"
-      test_cycle:
-        description: "Test Cycle"
-        required: true
-        default: "no_google"
-        type: choice
-        options:
-          - "full"
-          - "no-google"
 
 env:
   CI_DEBUG: "true"
-          
+
 jobs:
   check-secrets:
     defaults:
@@ -64,17 +44,6 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
-
-      - name: Show concurency group
-        run: |
-          echo "REF: ${{ github.ref }}"
-          echo "HEAD_REF: ${{ github.head_ref }}"
-          echo "BASE_REF: ${{ github.base_ref }}"
-          echo "EVENT_NAME: ${{ github.event_name }}"
-          echo "REF_NAME: ${{ github.ref_name }}"
-          echo "group: nfid-frontend-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
-          echo "group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
-          echo "cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}"
 
       - name: Check secrets
         run: |
@@ -96,7 +65,7 @@ jobs:
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
-  docker-for-e2e:
+  docker-for-test:
     needs: check-secrets
     runs-on: ubuntu-latest
     permissions:
@@ -104,10 +73,6 @@ jobs:
       contents: read
     env:
       IMAGE_NAME: nfid-test
-
-    concurrency:
-      group: nfid-frontend-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
-      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
 
     steps:
       - name: Checkout repo.
@@ -151,6 +116,11 @@ jobs:
           # Use Docker `latest` tag convention
           [ "${VERSION}" == "main" ] && VERSION=latest
 
+          # Preparing env Vars
+          if [ "${{ github.event.inputs.logLevel }}" == 'debug' ]; then
+            CI_DEBUG='true'
+          fi
+
           ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
           ci_echo_info "VERSION : ${VERSION}" >&2
 
@@ -189,90 +159,14 @@ jobs:
             docker push ${IMAGE_ID}:${VERSION}
           fi
 
-  unit-tests:
-    needs: check-secrets
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo.
-        uses: actions/checkout@v4
-
-      - name: Checkout CI repo.
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
-          repository: internet-identity-labs/ci_libs
-          ref: main
-          path: ci_libs
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-          cache: "yarn"
-
-      - name: Versions
-        run: |
-          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
-          ci_versions
-
-      - name: Build project
-        run: |
-          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          cat > ~/.npmrc << EOF
-          @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
-          EOF
-          
-          ci_echo_debug "yarn --prefer-offline" >&2
-          yarn --prefer-offline
-
-        env:
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
-          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
-          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
-          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
-          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
-          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
-
-      - name: Run unit tests
-        run: |
-          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-
-          ci_echo_debug "npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache" >&2
-          npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache
-        env:
-          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
-          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
-          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
-          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
-          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
-          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
-
-      - name: Upload build artefacts
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: yarn-error-logs
-          path: /home/runner/work/nfid-frontend/nfid-frontend/yarn-error.log
-
-  e2e-tests:
-    needs: docker-for-e2e
+  sdk-e2e-tests:
+    needs: docker-for-test
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
     env:
       IMAGE_NAME: nfid-test
-    concurrency:
-      group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
-      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
 
     steps:
       - name: Checkout repo.
@@ -317,39 +211,23 @@ jobs:
           # Use Docker `latest` tag convention
           [ "${VERSION}" == "main" ] && VERSION=latest
 
+          # Preparing env Vars
+          if [ "${{ github.event.inputs.logLevel }}" == 'debug' ]; then
+            CI_DEBUG='true'
+          fi
+
           ci_echo_info "IMAGE_ID: ${IMAGE_ID}" >&2
           ci_echo_info "VERSION : ${VERSION}" >&2
 
           ci_echo_debug "docker pull ${IMAGE_ID}:${VERSION}" >&2
           docker pull ${IMAGE_ID}:${VERSION}
 
-          # Save VARS for next steps
-          case "${{ github.event.inputs.test_cycle }}" in
-            full)
-              TEST_ADD_PARAMS=""
-              ;;
-            *)
-              TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
-              ;;
-          esac
-
-          # If branch main, run full cycle
-          if [ "${{ github.ref_name }}" == 'main' ]; then
-            TEST_ADD_PARAMS=""
-          fi
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='@demoApp'"
 
           echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "CI_DEBUG=${CI_DEBUG}" >> $GITHUB_ENV
           echo "TEST_ADD_PARAMS="${TEST_ADD_PARAMS}"" >> $GITHUB_ENV
-
-      - name: Checkout Google user E2E
-        uses: actions/checkout@v4
-        with:
-          repository: internet-identity-labs/user-google-e2e
-          path: apps/nfid-frontend-e2e/chrome-user-data-dir
-          ref: main
-          token: ${{ secrets.PAT }}
 
       - name: Cache Node Modules.
         uses: actions/cache@v3
@@ -450,7 +328,7 @@ jobs:
           path: dist
 
   allure-report:
-    needs: e2e-tests
+    needs: sdk-e2e-tests
     if: always()
     runs-on: ubuntu-latest
     env:

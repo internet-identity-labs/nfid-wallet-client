@@ -118,6 +118,7 @@ export const TransferFT = ({
       connector.getAccountsOptions({
         currency: selectedTokenCurrency,
         isVault,
+        isRootOnly: true
       }),
     {
       onSuccess: (data) => {
@@ -263,6 +264,7 @@ export const TransferFT = ({
       onTransferPromise({
         assetImg: tokenMetadata?.icon ?? "",
         initialPromise: new Promise(async (resolve) => {
+          await calculateFee()
           const res = await selectedConnector.transfer({
             to: values.to,
             amount: values.amount,
@@ -300,6 +302,7 @@ export const TransferFT = ({
       })
     },
     [
+      calculateFee,
       handleTrackTransfer,
       isVault,
       onTransferPromise,
@@ -408,7 +411,7 @@ export const TransferFT = ({
             }
           />
         </div>
-        {(isVault || profile?.wallet === RootWallet.II) && (
+        {(isVault) && (
           <ChooseModal
             label="From"
             title="From"

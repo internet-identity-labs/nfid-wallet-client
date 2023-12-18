@@ -345,13 +345,9 @@ function mapApplication(application: BEApplication): Application {
     throw new Error(`mapApplication user_limit has to be greater or equal to 1`)
 
   return {
-    accountLimit: application.user_limit,
     domain: application.domain,
     name: application.name,
     logo: mapOptional(application.img),
-    alias: mapOptional(application.alias) || [],
-    isNftStorage: !!mapOptional(application.is_nft_storage),
-    isIFrameAllowed: !!mapOptional(application.is_iframe_allowed),
   }
 }
 

@@ -10,7 +10,6 @@ export class DemoUpdateDelegation extends demoAppPage {
     if (derivation) await this.getDerivationOriginInput("updateDelegation").setValue(derivation)
     await super.addCanisterID("updateDelegation", targets)
     await this.getUpdateDelegationButton.click()
-    await browser.pause(6000)
   }
 }
 

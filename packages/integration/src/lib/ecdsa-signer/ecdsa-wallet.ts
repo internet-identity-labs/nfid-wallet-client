@@ -207,6 +207,3 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   }
 
 }
-
-const rpcProvider = new ethers.providers.JsonRpcProvider("https://goerli-ethereum-node.rarible.com")
-export const nfidEthWallet = new EthWallet(rpcProvider)

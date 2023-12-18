@@ -325,4 +325,12 @@ export interface _SERVICE {
   validate_signature: ActorMethod<[[] | [string]], [bigint, [] | [string]]>
   verify_token: ActorMethod<[Token], Response>
   get_root_by_principal: ActorMethod<[string], [] | [string]>
+  add_email_and_principal_for_create_account_validation : ActorMethod<
+  [string, string, number],
+  BoolHttpResponse
+  >,
+  sync_recovery_phrase_from_internet_identity : ActorMethod<
+  [bigint],
+  HTTPAccountResponse
+  >
 }

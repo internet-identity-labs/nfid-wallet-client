@@ -9,23 +9,17 @@ import { fetchProfile } from "src/integration/identity-manager"
 import { TokenConfig } from "src/ui/connnector/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
-import { ethereumAsset, ethereumGoerliAsset } from "@nfid/integration"
+import { ethereumAsset } from "@nfid/integration"
 
 export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
   const identity = await getIdentity()
-  return await ethereumGoerliAsset.getAccounts(identity, IconERC20)
+  return await ethereumAsset.getAccounts(identity, IconERC20)
 }
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
   const identity = await getIdentity()
   return ethereumAsset.getTransactionHistory(identity, "erc20")
 }
-
-export const getGoerliErc20TransactionHistory =
-  async (): Promise<FungibleTxs> => {
-    const identity = await getIdentity()
-    return ethereumGoerliAsset.getTransactionHistory(identity, "erc20")
-  }
 
 export const transferERC20 = async (
   amount: number,
@@ -34,7 +28,7 @@ export const transferERC20 = async (
 ) => {
   try {
     const identity = await getIdentity()
-    const transaction = await ethereumGoerliAsset.getEstimatedTransaction(
+    const transaction = await ethereumAsset.getEstimatedTransaction(
       new Erc20EstimateTransactionRequest(
         identity,
         to,
@@ -42,7 +36,7 @@ export const transferERC20 = async (
         amount,
       ),
     )
-    const response = await ethereumGoerliAsset.transfer(
+    const response = await ethereumAsset.transfer(
       identity,
       transaction.transaction,
     )

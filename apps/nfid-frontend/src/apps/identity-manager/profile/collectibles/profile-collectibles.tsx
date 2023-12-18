@@ -21,7 +21,6 @@ import { link } from "frontend/integration/entrepot"
 import { ProfileContext } from "frontend/provider"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import Table from "frontend/ui/atoms/table"
-import { MigrationWarning } from "frontend/ui/molecules/migration-warning"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -63,10 +62,6 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     () =>
       filterUserTokens(tokens, { search })
         .filter((token) => {
-          if (!walletsFilter.length) return true
-          return walletsFilter.includes(token.principal.toText())
-        })
-        .filter((token) => {
           if (!collectionsFilter.length) return true
           return collectionsFilter.includes(token.collection.id)
         })
@@ -76,14 +71,14 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             .map((f) => f.replace(/\s+/g, ""))
             .includes(token.blockchain.replace(/\s+/g, ""))
         }),
-    [tokens, search, walletsFilter, collectionsFilter, blockchainFilter],
+    [tokens, search, collectionsFilter, blockchainFilter],
   )
 
   const tokensByCollections = React.useMemo(() => {
     return Object.values(userTokensByCollection(sortUserTokens(tokens)))
   }, [tokens])
 
-  const headings = ["Asset", "Name", "Collection", "ID", "Account", "Actions"]
+  const headings = ["Asset", "Name", "Collection", "ID", "Actions"]
   const [sorting, setSorting] = React.useState([
     "Wallet",
     "Collection",
@@ -156,20 +151,6 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         >
           {token.tokenId}
         </Link>,
-        <div
-          className={clsx(`w-full`)}
-          id={`nft_wallet_${getWalletName(
-            applications,
-            token.account.domain,
-            token.account.accountId,
-          ).replace(/\s/g, "")}`}
-        >
-          {getWalletName(
-            applications,
-            token.account.domain,
-            token.account.accountId,
-          )}
-        </div>,
         <div className="flex items-center space-x-2.5 justify-center shrink-0">
           <Tooltip tip="Transfer">
             <IconCmpTransfer
@@ -190,7 +171,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     }))
     reverse && result.reverse()
     return result
-  }, [tokensFiltered, sorting, reverse, applications, onTransferNFT])
+  }, [tokensFiltered, sorting, reverse, onTransferNFT])
 
   const walletOptions = React.useMemo(() => {
     const wallets = Object.values(
@@ -259,7 +240,6 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`)
       }
     >
-      <MigrationWarning />
       <ProfileContainer className={clsx(`flex flex-col`)}>
         <ProfileContainer className={clsx(`bg-gray-200 !py-5`)}>
           <div className="flex items-center justify-between gap-6">

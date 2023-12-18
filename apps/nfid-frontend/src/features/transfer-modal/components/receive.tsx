@@ -5,10 +5,9 @@ import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
 import { ChooseModal, Copy, QRCode, BlurredLoader } from "@nfid-frontend/ui"
-import { RootWallet, sendReceiveTracking } from "@nfid/integration"
+import { sendReceiveTracking } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { useProfile } from "frontend/integration/identity-manager/queries"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
@@ -43,7 +42,6 @@ export const TransferReceive = ({
     preselectedAccountAddress,
   )
 
-  const { profile } = useProfile()
   const { data: networkOptions } = useNetworkOptions(isVault)
   const { data: accountsOptions, isValidating: isAccountsValidating } =
     useAccountsOptions(
@@ -120,7 +118,7 @@ export const TransferReceive = ({
         type="small"
         isSmooth
       />
-      {(isVault || profile?.wallet === RootWallet.II) && (
+      {(isVault) && (
         <ChooseModal
           label="Accounts"
           title={"Choose an account"}

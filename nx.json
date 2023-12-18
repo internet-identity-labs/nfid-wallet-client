@@ -86,9 +86,6 @@
         "env": "ETHERSCAN_API_KEY"
       },
       {
-        "env": "GOERLI_ALCHEMY_API_KEY"
-      },
-      {
         "env": "RARIBLE_X_API_KEY"
       },
       {

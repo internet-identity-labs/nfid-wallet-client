@@ -6,7 +6,7 @@ import {
 import {
   replaceActorIdentity,
   ecdsaSigner,
-  ethereumGoerliAsset,
+  ethereumAsset,
   authState,
 } from "@nfid/integration"
 
@@ -28,7 +28,7 @@ export const getEthAddress = async (anchor: number) => {
 
   replaceActorIdentity(ecdsaSigner, identity)
 
-  const address = await ethereumGoerliAsset.getAddress(identity)
+  const address = await ethereumAsset.getAddress(identity)
 
   !cachedAddress &&
     storeAddressInLocalCache({

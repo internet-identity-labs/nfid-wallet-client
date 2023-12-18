@@ -31,6 +31,9 @@ on:
           - warning
           - debug
 
+env:
+  CI_DEBUG: "true"
+
 jobs:
   check-secrets:
     defaults:
@@ -50,7 +53,7 @@ jobs:
 
       - name: Check secrets
         run: |
-          source ./ci_libs/CI_LIBS.sh
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
@@ -61,7 +64,6 @@ jobs:
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
@@ -79,8 +81,16 @@ jobs:
     steps:
       - run: pwd
 
-      - name: Checkout CI repo
+      - name: Checkout repo.
         uses: actions/checkout@v4
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -88,20 +98,33 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
+      - name: Versions
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+          
+          ci_versions          
+
       - name: Build project
         run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
+
+          ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline
+
+          ci_echo_debug "npx env-cmd -f .env.staging nx build nfid-frontend" >&2
           npx env-cmd -f .env.staging nx build nfid-frontend
+
+          ci_echo_debug "yarn serve -l 9090 -s dist/apps/nfid-frontend &" >&2
           yarn serve -l 9090 -s dist/apps/nfid-frontend &
         env:
           IS_DEV: true
           IS_E2E_TEST: true
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          GOERLI_ALCHEMY_API_KEY: ${{secrets.GOERLI_ALCHEMY_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
@@ -132,7 +155,12 @@ jobs:
 
       - name: Running E2E test
         run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+
+          ci_echo_debug "npx nx clean nfid-frontend-e2e" >&2
           npx nx clean nfid-frontend-e2e
+
+          ci_echo_debug "DEVICE_NAME=${{ github.event.inputs.device }} IS_HEADLESS='true' npx env-cmd -f .env.${{ github.event.inputs.env || 'dev' }} nx test:e2e:mobile nfid-frontend-e2e" >&2
           DEVICE_NAME=${{ github.event.inputs.device }} IS_HEADLESS='true' npx env-cmd -f .env.${{ github.event.inputs.env || 'dev' }} nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
@@ -203,6 +231,7 @@ jobs:
         env:
           target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
         run: echo "$target_url" > "report_url.txt"
+
       - name: Upload url to PR comments
         run: |
           if [ -n "${URL}" ]; then
@@ -215,6 +244,7 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -d "$data"
           fi
+
       - uses: actions/upload-artifact@v3
         with:
           name: ReportUrl

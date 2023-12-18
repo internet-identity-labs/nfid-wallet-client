@@ -309,4 +309,12 @@ export interface _SERVICE {
   update_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
   use_access_point: ActorMethod<[[] | [string]], HTTPOneAccessPointResponse>
   validate_signature: ActorMethod<[[] | [string]], [bigint, [] | [string]]>
+  add_email_and_principal_for_create_account_validation : ActorMethod<
+  [string, string, number],
+  BoolHttpResponse
+  >
+  sync_recovery_phrase_from_internet_identity : ActorMethod<
+  [bigint],
+  HTTPAccountResponse
+  >
 }

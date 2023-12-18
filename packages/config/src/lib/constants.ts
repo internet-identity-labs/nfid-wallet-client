@@ -9,7 +9,6 @@ export const WALLET_SESSION_TTL_1_MIN_IN_MS = 60000
 export const blockchains = [
   "Internet Computer",
   "Ethereum",
-  "Ethereum Goerli",
   "Polygon Mumbai",
   "Bitcoin",
   "Polygon",

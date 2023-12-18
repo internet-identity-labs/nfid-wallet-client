@@ -36,7 +36,7 @@ import {
   renewDelegationThirdParty,
 } from "./ecdsa"
 import { LocalStorageMock } from "./local-storage-mock"
-import { getIdentity } from "./util"
+import { getIdentity, getLambdaActor } from "./util"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -65,6 +65,11 @@ describe("Lambda Sign/Register ECDSA", () => {
       )
       const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
 
+      const email = "test@test.test"
+      const principal = di.getPrincipal().toText()
+      const lambdaActor = getLambdaActor();
+      await lambdaActor.add_email_and_principal_for_create_account_validation(email, principal, new Date().getMilliseconds())
+
       const deviceData: AccessPointRequest = {
         icon: "Icon",
         device: "Global",
@@ -76,7 +81,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         credential_id: [],
       }
       const accountRequest: HTTPAccountRequest = {
-        email: ["test@test.test"],
+        email: [email],
         access_point: [deviceData],
         wallet: [{ NFID: null }],
         anchor: BigInt(0),

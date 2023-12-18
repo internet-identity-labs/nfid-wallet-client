@@ -9,7 +9,6 @@ import {
   Application,
   PrincipalAccount,
   Profile,
-  RootWallet,
   fetchPrincipals,
 } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -98,14 +97,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   ): Promise<
     T extends true ? Record<string, PrincipalAccount[]> : PrincipalAccount[]
   > {
-    const profile = await this.getProfile()
-    const accounts = await this.getAccounts(true)
-
-    const principals = await fetchPrincipals(
-      BigInt(profile.anchor),
-      accounts,
-      profile.wallet === RootWallet.NFID,
-    )
+    const principals = await fetchPrincipals()
     if (!groupedById) return principals as any
 
     return principals.reduce(
@@ -136,9 +128,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     if (!extendWithFixedAccounts) return accounts
 
     const applications = await this.getApplications()
-    const fixedAccounts = applications
-      .filter((app) => app.isNftStorage)
-      .map(applicationToAccount)
+    const fixedAccounts = applications.map(applicationToAccount)
 
     return fixedAccounts.reduce((acc, account) => {
       const accountAlreadyAdded = acc.find(

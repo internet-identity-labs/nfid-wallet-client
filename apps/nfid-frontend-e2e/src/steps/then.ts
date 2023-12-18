@@ -547,7 +547,7 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
 })
 
 Then(/^Principal, Address, Targets are correct:/, async (data) => {
-  const expectedData = data.rowsHash()
+  let expectedData = data.rowsHash()
   let usersData = await DemoAppPage.getAuthLogs()
 
   expect(String((await usersData.get("principal").firstAddressPart.getText()) + "..." +
@@ -562,7 +562,10 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
     let usersData = await DemoAppPage.getAuthLogs()
     let targets = String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")
     return targets == expectedData.targets
-  }, {timeout: 50000, timeoutMsg: `Incorrect number of targets. Expected ${expectedData.targets} but was other`})
+  }, {
+    timeout: 50000,
+    timeoutMsg: `Incorrect number of targets. Expected ${expectedData.targets} but was ${String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")}`
+  })
 })
 
 Then(
@@ -721,8 +724,8 @@ Then(
 )
 
 Then(
-  /^NFT ([^"]*) ([^"]*) ([^"]*) ([^"]*) displayed/,
-  async (token: string, collection: string, id: string, wallet: string) => {
+  /^NFT ([^"]*) ([^"]*) ([^"]*) displayed/,
+  async (token: string, collection: string, id: string) => {
     await Nft.getNftName(token, collection).then((l) =>
       l.waitForDisplayed({
         timeout: 5000,
@@ -733,12 +736,6 @@ Then(
       l.waitForDisplayed({
         timeout: 5000,
         timeoutMsg: "No NFT collection " + collection,
-      }),
-    )
-    await Nft.getNftWallet(wallet).then((l) =>
-      l.waitForDisplayed({
-        timeout: 5000,
-        timeoutMsg: "No NFT wallet " + wallet,
       }),
     )
     await Nft.getNftId(id).then((l) =>
@@ -879,11 +876,11 @@ Then(/^Assert ([^"]*) logs message:$/, async (
   const message = data.rowsHash()
   let messageBody = message.body
   let messageHeader = message.header
-  await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
-  messageBody != "" ? expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText() +
-      DemoTransactions.getTransferLogsLocatorSecondPart(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
+  await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
+  messageBody != "" ? expect(await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).getText() +
+      DemoTransactions.getLogs(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
     :
-    expect(await (await DemoTransactions.getTransferLogsLocatorFirstPart(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
+    expect(await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
 })
 
 async function chooseChainOption(chain: string) {
@@ -891,7 +888,7 @@ async function chooseChainOption(chain: string) {
   await Assets.chooseChainOption(chain)
 
   const loader = await $("#loader")
-  await loader.waitForDisplayed({ reverse: true, timeout: 10000 })
+  await loader.waitForDisplayed({ reverse: true, timeout: 10000, timeoutMsg: `Loader is still displayed after timeout. Chain: ${chain}`})
 }
 
 Then(/^Check request details ([^"]*) equals to ([^"]*)$/, async (FT: string, details: string) => {

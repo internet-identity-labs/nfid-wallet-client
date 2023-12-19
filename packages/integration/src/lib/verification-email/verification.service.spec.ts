@@ -251,6 +251,29 @@ describe("Verification of email", () => {
     )
     await expect(func).rejects.toThrow(VerificationIsInProgressError)
   })
+
+  it("should exec checkVerification and receive VerificationIsInProgressError error", async () => {
+    const errorText = "errorText"
+    const mockFetchPromise = Promise.resolve({
+      text: () => errorText,
+      ok: false,
+      status: 423,
+    })
+
+    global.fetch = jest.fn().mockImplementation((url, options) => {
+      validateCheckVerificationRequest(url, options)
+      return mockFetchPromise
+    })
+
+    const func = verificationService.checkVerification(
+      "email",
+      testEmail,
+      keyPair,
+      "requestId",
+      0,
+    )
+    await expect(func).rejects.toThrow(VerificationIsInProgressError)
+  })
 })
 
 function validateVerificationRequest(url: string, options: any): string {

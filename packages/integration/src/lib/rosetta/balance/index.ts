@@ -1,4 +1,3 @@
-import { isHex } from "alchemy-sdk"
 import { rosetta } from ".."
 import { restCall } from "../../rest/rest-call"
 import { getRosettaRequest } from "../get-rosetta-request"

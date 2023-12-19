@@ -164,7 +164,7 @@ export const verificationService = {
 
     const text = await response.text()
     if (!response.ok) {
-      if (response.status === 423) {
+      if (response.status === 202) {
         throw new VerificationIsInProgressError(text)
       }
       throw new Error(text)

@@ -234,7 +234,7 @@ describe("Verification of email", () => {
     const mockFetchPromise = Promise.resolve({
       text: () => errorText,
       ok: false,
-      status: 423,
+      status: 202,
     })
 
     global.fetch = jest.fn().mockImplementation((url, options) => {

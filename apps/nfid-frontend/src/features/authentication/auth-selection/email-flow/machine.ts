@@ -67,6 +67,11 @@ const AuthWithEmailMachine =
             },
             onError: [
               {
+                cond: "isRequestNotExpired",
+                target: "PendingEmailVerification",
+                actions: "toastError"
+              },
+              {
                 cond: "isRequestInProgress",
                 target: "PendingEmailVerification",
               },
@@ -142,13 +147,17 @@ const AuthWithEmailMachine =
           delegation: event.data.delegation,
         })),
         toastError: (context, event) => {
-          toast.error(event.data.message)
+          const message = JSON.parse(event.data.message)
+          toast.error(message.error)
         },
         stopIntervalVerification,
       },
       guards: {
         isRequestInProgress: (context, event: { data: Error }) => {
           return !event.data.message.includes("has not been expired")
+        },
+        isRequestNotExpired: (context, event: { data: Error }) => {
+          return event.data.message.includes("has not been expired")
         },
       },
       services: {

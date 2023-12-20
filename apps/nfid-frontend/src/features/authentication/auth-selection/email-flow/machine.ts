@@ -92,7 +92,10 @@ const AuthWithEmailMachine =
               target: "End",
               actions: "stopIntervalVerification",
             },
-            RESEND: "SendVerificationEmail",
+            RESEND: {
+              target: "SendVerificationEmail",
+              actions: "stopIntervalVerification",
+            }
           },
         },
         EmailVerified: {

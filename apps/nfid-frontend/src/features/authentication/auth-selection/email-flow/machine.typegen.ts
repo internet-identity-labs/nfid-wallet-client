@@ -52,8 +52,7 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
-    isRequestNotExpired: "error.platform.sendVerificationEmail",
-    isRequestInProgress: "error.platform.sendVerificationEmail"
+    isRequestNotExpired: "error.platform.sendVerificationEmail"
   }
   eventsCausingServices: {
     authorizeWithEmail: "done.invoke.checkEmailVerification"

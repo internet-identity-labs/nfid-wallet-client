@@ -12,6 +12,7 @@ import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"
 import { IDevice } from "../types"
+import { authState } from "@nfid/integration"
 
 interface IDeletePasskeyModal extends React.HTMLAttributes<HTMLDivElement> {
   handleWithLoading: IHandleWithLoading
@@ -62,7 +63,13 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
             device.publickey!,
             profile?.wallet === RootWallet.II,
           )
+
           toast.success("Device has been removed")
+
+          const currentPrincipalId = authState.get().delegationIdentity?.getPrincipal().toText()
+          if (currentPrincipalId === device.principal) {
+            authState.logout()
+          }
         } catch (e: any) {
           toast.error(e.message)
         }

@@ -47,7 +47,7 @@ export const AppScreenRecoverNFID: React.FC<
       } catch (e: any) {
         console.error(e)
         return setResponseError(
-          e?.message?.length ??
+          e?.message ??
             "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
       }

@@ -118,7 +118,7 @@ export const TransferReceive = ({
         type="small"
         isSmooth
       />
-      {(isVault) && (
+      {isVault && (
         <ChooseModal
           label="Accounts"
           title={"Choose an account"}

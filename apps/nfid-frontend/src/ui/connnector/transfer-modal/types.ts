@@ -92,6 +92,7 @@ export type IConfirmEVMRequest = {
 
 export type ITransferRequest = {
   to: string
+  memo?: bigint
   contract: string
   identity?: DelegationIdentity
 }

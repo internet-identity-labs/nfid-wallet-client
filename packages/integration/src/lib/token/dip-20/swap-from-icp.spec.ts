@@ -1,14 +1,17 @@
-import { ActorSubclass } from "@dfinity/agent"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { ActorSubclass } from "@dfinity/agent";
+import { Ed25519KeyIdentity } from "@dfinity/identity";
+import { Principal } from "@dfinity/principal";
 
-import { DIP20 } from "."
-import { mockIdentityA } from "../../identity/mocks"
-import { stringify } from "../../test-utils"
-import { E8S } from "../icp"
-import * as mockedTransfer from "../icp/transfer"
-import * as mockedDip20Actor from "./actor"
-import { swapFromICP } from "./swap-from-icp"
+
+
+import { DIP20 } from ".";
+import { mockIdentityA } from "../../identity/mocks";
+import { stringify } from "../../test-utils";
+import { E8S } from "../icp";
+import * as mockedTransfer from "../icp/transfer";
+import * as mockedDip20Actor from "./actor";
+import { swapFromICP } from "./swap-from-icp";
+
 
 describe("swapFromIcp", () => {
   it("should work", async () => {
@@ -39,11 +42,12 @@ describe("swapFromIcp", () => {
 
     expect(stringify(response)).toEqual(stringify(expectedMintResponse))
 
-    expect(transferMock).toHaveBeenCalledWith(
-      1,
-      "cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a",
-      sourceIdentity,
-    )
+    expect(transferMock).toHaveBeenCalledWith({
+      amount: 1,
+      to: "cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a",
+      identity: sourceIdentity,
+      memo: undefined,
+    })
     expect(makeDip20ActorMock).toHaveBeenCalledWith(
       "canisterId",
       sourceIdentity,

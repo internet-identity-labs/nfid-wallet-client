@@ -4,6 +4,8 @@
 import { act, renderHook } from "@testing-library/react"
 import { SWRConfig } from "swr"
 
+
+
 import { Profile } from "@nfid/integration"
 import { transfer } from "@nfid/integration/token/icp"
 
@@ -80,11 +82,11 @@ describe("useTransfer", () => {
 
     // // checking final state
     expect(result.current.isValidatingWalletDelegation).toBe(false)
-    expect(transferSpy).toHaveBeenCalledWith(
-      1000000000,
-      "test",
-      expect.anything(),
-    )
+    expect(transferSpy).toHaveBeenCalledWith({
+      amount: 1000000000,
+      to: "test",
+      identity: expect.anything(),
+    })
     expect(transferPromise).resolves.toBe(BigInt(1))
   })
   it("should throw when calling transfer while pending", async () => {
@@ -125,10 +127,10 @@ describe("useTransfer", () => {
       await getWalletDelegationP
     })
     expect(transferPromise2).resolves.toBe(BigInt(1))
-    expect(transferSpy).toHaveBeenCalledWith(
-      2000000000,
-      "test-2",
-      expect.anything(),
-    )
+    expect(transferSpy).toHaveBeenCalledWith({
+      amount: 2000000000,
+      to: "test-2",
+      identity: expect.anything(),
+    })
   })
 })

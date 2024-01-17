@@ -44,8 +44,9 @@ export const RequestFungibleTransfer = () => {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      amount: "",
       receiver: "",
+      amount: "",
+      memo: "",
     },
   })
 
@@ -58,6 +59,7 @@ export const RequestFungibleTransfer = () => {
         ?.requestTransferFT({
           receiver: values.receiver,
           amount: String(Number(values.amount) * E8S),
+          ...(values.memo ? { memo: BigInt(values.memo) } : {}),
         })
         .catch((e: Error) => ({ error: e.message }))
 
@@ -111,6 +113,13 @@ export const RequestFungibleTransfer = () => {
                   message: "Amount should be greater than 0",
                 },
               })}
+            />
+            <Input
+              id="inputMemo"
+              labelText="Memo"
+              placeholder="0"
+              errorText={errors.memo?.message}
+              {...register("memo", { valueAsNumber: true })}
             />
 
             <Button

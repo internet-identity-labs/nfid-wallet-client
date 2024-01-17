@@ -69,7 +69,7 @@ const AuthWithEmailMachine =
               {
                 cond: "isRequestNotExpired",
                 target: "PendingEmailVerification",
-                actions: "toastError"
+                actions: "toastError",
               },
               { target: "End", actions: "toastError" },
             ],
@@ -96,7 +96,7 @@ const AuthWithEmailMachine =
             RESEND: {
               target: "SendVerificationEmail",
               actions: "stopIntervalVerification",
-            }
+            },
           },
         },
         EmailVerified: {
@@ -146,7 +146,7 @@ const AuthWithEmailMachine =
           try {
             const message = JSON.parse(event.data.message)
             toast.error(message.error)
-          } catch(_) {
+          } catch (_) {
             toast.error(event.data.message)
           }
         },

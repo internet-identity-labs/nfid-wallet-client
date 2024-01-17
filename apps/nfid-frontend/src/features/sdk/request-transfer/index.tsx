@@ -24,6 +24,7 @@ export interface IRequestTransferProps {
   origin: string
   appMeta: AuthorizingAppMeta
   amount?: string
+  memo?: bigint
   derivationOrigin?: string
   tokenId?: string
   destinationAddress: string
@@ -33,6 +34,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   origin,
   appMeta,
   amount,
+  memo,
   tokenId,
   destinationAddress,
   derivationOrigin,
@@ -156,6 +158,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   const request = {
                     tokenId: tokenId,
                     amount: Number(amount) / E8S,
+                    ...(memo ? { memo } : {}),
                     identity: transferIdentity,
                     to: destinationAddress,
                     currency: "ICP",

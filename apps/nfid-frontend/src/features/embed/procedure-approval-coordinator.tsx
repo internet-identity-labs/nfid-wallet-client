@@ -145,6 +145,7 @@ export const ProcedureApprovalCoordinator: React.FC<
           amount={rpcMessage.params[0]?.amount}
           derivationOrigin={rpcMessage.params[0]?.derivationOrigin}
           destinationAddress={rpcMessage.params[0].receiver}
+          memo={rpcMessage.params[0]?.memo}
           onConfirmIC={onRequestICTransfer}
           tokenId={rpcMessage.params[0]?.tokenId}
         />

@@ -83,7 +83,8 @@ export class demoAppPage extends Page {
     derivation?: string,
   ) {
     await browser.pause(6000)
-    if (await this.getLogoutButton.isClickable()) await this.getLogoutButton.click()
+    if (await this.getLogoutButton.isClickable())
+      await this.getLogoutButton.click()
     await browser.waitUntil(
       async () => {
         await browser.pause(1000)
@@ -111,7 +112,7 @@ export class demoAppPage extends Page {
             return true
           }
         }
-        (await this.getLogoutButton.isDisplayed())
+        ;(await this.getLogoutButton.isDisplayed())
           ? await this.getLogoutButton.click()
           : await this.getAuthenticateButton.click()
         await this.checkLoginSuccess()
@@ -135,7 +136,11 @@ export class demoAppPage extends Page {
     await this.getConnectButton.click()
   }
 
-  async loginUsingIframe(profile: string, targets: string, derivation?: string) {
+  async loginUsingIframe(
+    profile: string,
+    targets: string,
+    derivation?: string,
+  ) {
     await this.clickAuthenticateButton(targets, profile, derivation)
     await this.selectProfile(profile)
     await browser.switchToParentFrame()
@@ -152,11 +157,15 @@ export class demoAppPage extends Page {
   }
 
   async checkLoginSuccess() {
-    let messageHeaderLocator = await this.getLogs("authentication", [2, 3], true)
+    let messageHeaderLocator = await this.getLogs(
+      "authentication",
+      [2, 3],
+      true,
+    )
     let errorBodyLocator = await this.getLogs("authentication", [3, 6], true)
     if (await messageHeaderLocator.isDisplayed()) {
       let text = await errorBodyLocator.getText()
-      if (await messageHeaderLocator.getText() == `"error"`) {
+      if ((await messageHeaderLocator.getText()) == `"error"`) {
         throw new Error(text)
       }
     }
@@ -166,7 +175,7 @@ export class demoAppPage extends Page {
     await this.checkLoginSuccess()
     let myMap = new Map()
     if (!(await $("#myTargetsList").isDisplayed())) {
-      await this.getMyDelegationLocator.waitForClickable({timeout: 90000})
+      await this.getMyDelegationLocator.waitForClickable({ timeout: 90000 })
       await this.getMyDelegationLocator.click()
     }
     let myPrincipal = await Assets.getAccountId(false)

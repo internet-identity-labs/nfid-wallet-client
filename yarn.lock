@@ -4302,10 +4302,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.0-alpha.13":
-  version "0.10.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.13.tgz#5dd724911fdabd864dc2ae7f2b48e840092e826b"
-  integrity sha512-piEXJUkkzI4Kuf/+hwiXebhzeHb0HCuBpFoN0SUxJlzw8zNlXWOkJDP3b9D/AOA8gK1k4OR8qWFxix5AwGt5jw==
+"@nfid/embed@0.10.0-alpha.14":
+  version "0.10.0-alpha.14"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.0-alpha.14.tgz#058182ebc234e64b30e9b5a6254ee5da9d285cda"
+  integrity sha512-QrycIpx0Endg7JOylhIlOhVTZapzTvxLoGnzJ+t+mDOf7aRl5NSrZB7CkCKwShndwHBDiyiQgFN3jUdV/aqNDg==
 
 "@nicolo-ribaudo/semver-v6@^6.3.3":
   version "6.3.3"

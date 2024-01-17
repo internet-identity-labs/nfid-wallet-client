@@ -1,22 +1,22 @@
 /**
  * @jest-environment jsdom
  */
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { expect } from "@jest/globals"
-import { encodeTokenIdentifier, principalToAddress } from "ictool"
+import { Ed25519KeyIdentity } from "@dfinity/identity";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
+import { expect } from "@jest/globals";
+import { encodeTokenIdentifier, principalToAddress } from "ictool";
 
-import { mockIdentityA, mockIdentityB } from "@nfid/integration"
-import { transfer } from "@nfid/integration/token/icp"
 
-import { Balance } from "frontend/integration/_ic_api/ext.d"
-import {
-  listNFT,
-  lockNFT,
-  transferEXT,
-  unListNFT,
-} from "frontend/integration/entrepot/ext"
-import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
+
+import { mockIdentityA, mockIdentityB } from "@nfid/integration";
+import { transfer } from "@nfid/integration/token/icp";
+
+
+
+import { Balance } from "frontend/integration/_ic_api/ext.d";
+import { listNFT, lockNFT, transferEXT, unListNFT } from "frontend/integration/entrepot/ext";
+import { fetchCollectionTokens } from "frontend/integration/entrepot/lib";
+
 
 const testToken = "m2qxv-aqkor-uwiaa-aaaaa-b4ats-4aqca-aaelv-q"
 const testCollection = "p5jg7-6aaaa-aaaah-qcolq-cai"
@@ -43,7 +43,7 @@ describe("NFT EXT standard suite", () => {
         owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
       await listNFT(token, sourceIdentity, price)
       let address = await lockNFT(token, targetIdentity, price)
-      await transfer(price, address, targetIdentity)
+      await transfer({ amount: price, to: address, identity: targetIdentity })
       let result = await unListNFT(token, targetIdentity)
       expect(result).toBe(true)
     })

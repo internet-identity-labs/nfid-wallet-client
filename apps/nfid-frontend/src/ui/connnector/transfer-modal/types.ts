@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@dfinity/identity";
 import { FungibleAsset } from "packages/integration/src/lib/asset/types"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
@@ -6,7 +6,10 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 
-import { Blockchain, NativeToken, StandardizedToken } from "../types"
+
+
+import { Blockchain, NativeToken, StandardizedToken } from "../types";
+
 
 export enum TransferModalType {
   FT = "ft",
@@ -92,6 +95,7 @@ export type IConfirmEVMRequest = {
 
 export type ITransferRequest = {
   to: string
+  memo?: bigint
   contract: string
   identity?: DelegationIdentity
 }

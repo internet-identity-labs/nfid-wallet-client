@@ -70,9 +70,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       className="overflow-inherit"
     >
       <ProfileContainer
-        title={
-          <ProfileAssetsHeader/>
-        }
+        title={<ProfileAssetsHeader />}
         showChildrenPadding={false}
         className="mb-10 sm:pb-0 "
       >

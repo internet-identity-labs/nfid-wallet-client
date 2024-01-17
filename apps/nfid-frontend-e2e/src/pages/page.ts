@@ -57,6 +57,9 @@ export class Page {
     )
   }
 
-  loginUsingIframe(profileType?: string, targets?: string, derivation?: string) {
-  }
+  loginUsingIframe(
+    profileType?: string,
+    targets?: string,
+    derivation?: string,
+  ) {}
 }

@@ -1,9 +1,10 @@
-import {demoAppPage} from "./demoApp-page.js"
+import { demoAppPage } from "./demoApp-page.js"
 
 export class DemoTransactions extends demoAppPage {
-
   get myNFTSelector() {
-    return $('#option_3hfnf-vakor-uwiaa-aaaaa-b4atg-aaqca-aacgm-a span:first-of-type')
+    return $(
+      "#option_3hfnf-vakor-uwiaa-aaaaa-b4atg-aaqca-aacgm-a span:first-of-type",
+    )
   }
 
   get getApproveButton() {
@@ -23,8 +24,8 @@ export class DemoTransactions extends demoAppPage {
   }
 
   getFTDetails(FT: string) {
-    if (FT == "ICP") return $('#amountICP')
-    else return $('#NFTName')
+    if (FT == "ICP") return $("#amountICP")
+    else return $("#NFTName")
   }
 
   async sendICPTransaction(amount: number, address: string) {

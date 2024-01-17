@@ -77,9 +77,7 @@ export const SendTransaction = ({
                 <IconCmpOut
                   className="w-[18px] cursor-pointer"
                   onClick={(e) =>
-                    window.open(
-                      `https://etherscan.io/address/${fromAddress}`,
-                    )
+                    window.open(`https://etherscan.io/address/${fromAddress}`)
                   }
                 />
               }
@@ -98,9 +96,7 @@ export const SendTransaction = ({
                 <IconCmpOut
                   className="w-[18px] cursor-pointer"
                   onClick={(e) =>
-                    window.open(
-                      `https://etherscan.io/address/${toAddress}`,
-                    )
+                    window.open(`https://etherscan.io/address/${toAddress}`)
                   }
                 />
               }

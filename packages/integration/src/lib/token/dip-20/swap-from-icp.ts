@@ -1,8 +1,11 @@
-import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import { SignIdentity } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 
-import { transfer } from "../icp"
-import { makeDip20Actor } from "./actor"
+
+
+import { transfer } from "../icp";
+import { makeDip20Actor } from "./actor";
+
 
 type SwapFromICPParams = {
   sourceIdentity: SignIdentity
@@ -10,6 +13,7 @@ type SwapFromICPParams = {
   canisterId: string
   principalId: string
   amount: number
+  memo?: bigint
 }
 export async function swapFromICP({
   sourceIdentity,
@@ -17,9 +21,15 @@ export async function swapFromICP({
   canisterId,
   principalId,
   amount,
+  memo,
 }: SwapFromICPParams) {
   console.debug("swapFromICP", { canisterId, principalId, amount })
-  const result = await transfer(amount, tokenAccountId, sourceIdentity)
+  const result = await transfer({
+    amount,
+    to: tokenAccountId,
+    identity: sourceIdentity,
+    memo,
+  })
   const dip20Actor = makeDip20Actor(canisterId, sourceIdentity)
   return await dip20Actor
     .mint(Principal.fromText(principalId), result)

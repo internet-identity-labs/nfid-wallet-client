@@ -1,23 +1,31 @@
 import { SignIdentity } from "@dfinity/agent"
 import { fromHexString } from "ictool"
 
-import { BlockIndex, TransferResult } from "../../_ic_api/ledger.d"
+import { BlockIndex, Memo, TransferResult } from "../../_ic_api/ledger.d"
 import { ledgerWithIdentity } from "../../actors"
 
 //todo not properly tested. blocked by e2e
 
-export async function transfer(
-  amount: number,
-  to: string,
-  identity: SignIdentity,
-): Promise<BlockIndex> {
+type TransferParams = {
+  amount: number
+  to: string
+  memo?: Memo
+  identity: SignIdentity
+}
+
+export async function transfer({
+  amount,
+  to,
+  memo = BigInt(0),
+  identity,
+}: TransferParams): Promise<BlockIndex> {
   const ledgerWithWallet = ledgerWithIdentity(identity)
 
   const result: TransferResult = await ledgerWithWallet
     .transfer({
       to: fromHexString(to),
       amount: { e8s: BigInt(amount.toFixed()) },
-      memo: BigInt(0),
+      memo,
       fee: { e8s: BigInt(10000) },
       from_subaccount: [],
       created_at_time: [],

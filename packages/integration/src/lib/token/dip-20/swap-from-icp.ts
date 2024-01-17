@@ -1,11 +1,8 @@
-import { SignIdentity } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
+import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 
-
-
-import { transfer } from "../icp";
-import { makeDip20Actor } from "./actor";
-
+import { transfer } from "../icp"
+import { makeDip20Actor } from "./actor"
 
 type SwapFromICPParams = {
   sourceIdentity: SignIdentity

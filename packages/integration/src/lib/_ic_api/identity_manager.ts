@@ -365,12 +365,12 @@ export const idlFactory = ({ IDL }: any) => {
     ),
     verify_token: IDL.Func([Token], [Response], []),
     get_root_by_principal: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ["query"]),
-    add_email_and_principal_for_create_account_validation : IDL.Func(
+    add_email_and_principal_for_create_account_validation: IDL.Func(
       [IDL.Text, IDL.Text, IDL.Nat64],
       [BoolHttpResponse],
       [],
     ),
-    sync_recovery_phrase_from_internet_identity : IDL.Func(
+    sync_recovery_phrase_from_internet_identity: IDL.Func(
       [IDL.Nat64],
       [HTTPAccountResponse],
       [],

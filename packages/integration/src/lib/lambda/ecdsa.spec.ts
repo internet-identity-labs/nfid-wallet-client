@@ -67,8 +67,12 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       const email = "test@test.test"
       const principal = di.getPrincipal().toText()
-      const lambdaActor = getLambdaActor();
-      await lambdaActor.add_email_and_principal_for_create_account_validation(email, principal, new Date().getMilliseconds())
+      const lambdaActor = getLambdaActor()
+      await lambdaActor.add_email_and_principal_for_create_account_validation(
+        email,
+        principal,
+        new Date().getMilliseconds(),
+      )
 
       const deviceData: AccessPointRequest = {
         icon: "Icon",

@@ -5,6 +5,7 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
+import sha256 from "sha256"
 
 import { actor, ii, im, replaceActorIdentity } from "@nfid/integration"
 
@@ -15,11 +16,11 @@ import {
   DeviceData,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
-import sha256 from "sha256"
+
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.d"
 
-const LAMBDA_IDENTITY = process.env.LAMBDA_IDENTITY;
+const LAMBDA_IDENTITY = process.env.LAMBDA_IDENTITY
 
 export async function registerIIAccount(
   // FIXME: unused
@@ -85,14 +86,12 @@ export const getDelegationIdentity = async (
   return identityDeviceDelegationIdentity
 }
 
-export function getLambdaActor(): Agent.ActorSubclass<IdentityManager>  {
+export function getLambdaActor(): Agent.ActorSubclass<IdentityManager> {
   let identity = getLambdaIdentity()
   const lambdaIm = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
-  replaceActorIdentity(im, identity);
-  return lambdaIm;
+  replaceActorIdentity(im, identity)
+  return lambdaIm
 }
-
-
 
 function getLambdaIdentity(): Secp256k1KeyIdentity {
   const rawKey: any = LAMBDA_IDENTITY?.trim()

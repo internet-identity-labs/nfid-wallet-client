@@ -37,9 +37,8 @@ const AuthenticationContext = React.createContext<AuthenticationContextProps>({
 declare const CANISTER_IDS: { [key: string]: { [key: string]: string } }
 
 const origin = window.location.origin
-const isStaging =  origin.includes("-staging.nfid.one")
-const isDev =
-  origin.includes("-dev.nfid.one") ||  origin.includes("localhost")
+const isStaging = origin.includes("-staging.nfid.one")
+const isDev = origin.includes("-dev.nfid.one") || origin.includes("localhost")
 const isProd = origin.includes(".nfid.one")
 
 const derivationCanisterId = isDev

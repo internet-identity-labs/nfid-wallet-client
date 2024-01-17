@@ -59,7 +59,7 @@ export const RequestFungibleTransfer = () => {
         ?.requestTransferFT({
           receiver: values.receiver,
           amount: String(Number(values.amount) * E8S),
-          ...(values.memo ? { memo: BigInt(values.memo) } : {} )
+          ...(values.memo ? { memo: BigInt(values.memo) } : {}),
         })
         .catch((e: Error) => ({ error: e.message }))
 

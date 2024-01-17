@@ -10,17 +10,24 @@ import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"
+import { authState } from "@nfid/integration"
+import { IDevice } from "../types"
+import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
 
 interface IDeleteRecoveryPhraseModal
   extends React.HTMLAttributes<HTMLDivElement> {
+  device: IDevice
   handleWithLoading: IHandleWithLoading
 }
 
 export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
+  device,
   handleWithLoading,
 }) => {
   const [phrase, setPhrase] = useState("")
   const [isModalVisible, setIsModalVisible] = React.useState(false)
+  const { activeDevicePrincipalId } = authState.get()
+  const isInUseDevice = activeDevicePrincipalId === device.principal
 
   return (
     <div>
@@ -28,8 +35,12 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
         onClick={() => setIsModalVisible(true)}
         className="w-6 text-gray-400 cursor-pointer hover:opacity-50"
       />
+      <RemoveDeviceInUseError
+        isModalVisible={isModalVisible && isInUseDevice}
+        setIsModalVisible={setIsModalVisible}
+      />
       <ModalComponent
-        isVisible={isModalVisible}
+        isVisible={isModalVisible && !isInUseDevice}
         onClose={() => setIsModalVisible(false)}
         className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >

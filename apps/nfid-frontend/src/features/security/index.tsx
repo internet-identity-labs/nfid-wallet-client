@@ -142,7 +142,7 @@ const ProfileSecurityPage = () => {
                 </p>
               </div>
             </div>
-            <DeleteRecoveryPhrase handleWithLoading={handleWithLoading} />
+            <DeleteRecoveryPhrase device={devices.recoveryDevice} handleWithLoading={handleWithLoading} />
           </div>
         ) : (
           <AddRecoveryPhrase handleWithLoading={handleWithLoading} />

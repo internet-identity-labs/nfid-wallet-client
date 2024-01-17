@@ -106,7 +106,7 @@ export const PasskeyDeviceItem = ({
                   "flex items-center space-x-2 cursor-pointer",
                 )}
               >
-                <span>Delete</span>
+                <span>Remove</span>
               </div>
             </DeletePasskey>
           </div>

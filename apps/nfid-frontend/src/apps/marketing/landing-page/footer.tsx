@@ -14,7 +14,7 @@ export const Footer: React.FC<FooterProps> = ({ children, className }) => {
       <div className="flex flex-wrap items-center justify-center mb-2 space-x-6 sm:mb-0">
         <a
           className="text-blue hover:underline"
-          href="https://docs.nfid.one/privacy"
+          href="https://docs.nfid.one/legal/privacy"
           target="_blank"
           rel="noreferrer"
         >

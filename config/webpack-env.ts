@@ -70,6 +70,9 @@ export const serviceConfig = {
   BITCOIN_WALLET_CANISTER_ID: JSON.stringify(
     process.env.BITCOIN_WALLET_CANISTER_ID,
   ),
+  ICRC1_REGISTRY_CANISTER_ID: JSON.stringify(
+    process.env.ICRC1_REGISTRY_CANISTER_ID,
+  ),
   LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
   CYCLES_MINTER_CANISTER_ID: JSON.stringify(
     process.env.CYCLES_MINTER_CANISTER_ID,

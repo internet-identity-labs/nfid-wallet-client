@@ -31,6 +31,8 @@ import { idlFactory as vaultIDL } from "./_ic_api/vault"
 import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
+import { idlFactory as iCRC1RegistryIDL } from "./_ic_api/icrc1_registry"
+import { _SERVICE as ICRC1Registry } from "./_ic_api/icrc1_registry.d"
 import { agent } from "./agent"
 import { TOKEN_CANISTER } from "./token/dip-20/constants"
 
@@ -107,6 +109,7 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
+export const iCRC1 = actor<ICRC1Registry>(ICRC1_REGISTRY_CANISTER_ID, iCRC1RegistryIDL)
 
 export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
   canisterId: VAULT_CANISTER_ID,

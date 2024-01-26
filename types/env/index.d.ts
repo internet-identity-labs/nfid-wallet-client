@@ -29,6 +29,7 @@ declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IS_DEV: string
 declare const IS_E2E_TEST: string
 declare const LEDGER_CANISTER_ID: string
+declare const ICRC1_REGISTRY_CANISTER_ID: string
 declare const METAMASK_SIGNIN_MESSAGE: string
 declare const NFID_PROVIDER_URL: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string

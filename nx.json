@@ -74,6 +74,9 @@
         "env": "FRONTEND_MODE"
       },
       {
+        "env": "ICRC1_REGISTRY_CANISTER_ID"
+      },
+      {
         "env": "BACKEND_MODE"
       },
       {

@@ -2,6 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import User from "src/assets/userpics/userpic_6.svg"
+import useSWRImmutable from "swr/immutable"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
@@ -15,6 +16,8 @@ import { ReactComponent as MenuIcon } from "./assets/menu.svg"
 
 import AuthenticatedPopup from "../navigation-popup"
 import ProfileSidebar from "../profile-sidebar"
+import { IconCmpWarning, Loader } from "@nfid-frontend/ui"
+import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 
 interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
   anchor?: number
@@ -22,10 +25,25 @@ interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
 
 const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
   const { profile } = useProfile()
   const { logout } = useAuthentication()
   const navigate = useNavigate()
+  const {
+    data: isEmailDeviceOutOfSyncWithII,
+    mutate: refreshIsEmailDeviceOutOfSyncWithII
+  } = useSWRImmutable(
+    profile?.anchor ? [profile.anchor.toString(), "isEmailDeviceOutOfSyncWithII"] : null,
+    syncDeviceIIService.isEmailDeviceOutOfSyncWithII,
+  )
+
+  async function syncEmailDeviceWithII(): Promise<void> {
+    setIsLoading(true)
+    await syncDeviceIIService.syncEmailDeviceWithII()
+    await refreshIsEmailDeviceOutOfSyncWithII()
+    setIsLoading(false)
+  }
 
   return (
     <div
@@ -35,8 +53,27 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
         className,
       )}
     >
+      <Loader isLoading={isLoading}/>
       <Logo />
       <div className={clsx("hidden", "md:flex md:space-x-5 md:h-10")}>
+        {isEmailDeviceOutOfSyncWithII && (
+          <div
+            className={clsx(
+              "px-2.5 h-10 border border-orange-600 rounded-md",
+              "flex items-center",
+            )}
+          >
+            <IconCmpWarning className="text-orange-600 scale-50" />
+            <p className="text-sm text-orange-600">
+              Your account is out of sync.{" "}
+                <span className="font-bold border-b border-orange-600 cursor-pointer hover:opacity-80" onClick={async () => await syncEmailDeviceWithII()}>
+                  Re-sync
+                </span>
+              {" "}
+              to restore access.
+            </p>
+          </div>
+        )}
         <SendReceiveButton />
         <div className={clsx("relative")} ref={popupRef} id="profile">
           <img

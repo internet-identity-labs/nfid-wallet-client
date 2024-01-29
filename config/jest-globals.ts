@@ -67,4 +67,6 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_FETCH_ALTERNATIVE_ORIGINS:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins",
+  AWS_PUBLIC_KEY:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/publickey",
 }

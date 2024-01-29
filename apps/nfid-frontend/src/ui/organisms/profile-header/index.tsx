@@ -66,7 +66,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
             <IconCmpWarning className="text-orange-600 scale-50" />
             <p className="text-sm text-orange-600">
               Your account is out of sync.{" "}
-                <span className="font-bold border-b border-orange-600 cursor-pointer hover:opacity-80" onClick={async () => await syncEmailDeviceWithII()}>
+                <span className="font-bold border-b border-orange-600 cursor-pointer hover:opacity-80" onClick={() => syncEmailDeviceWithII()}>
                   Re-sync
                 </span>
               {" "}

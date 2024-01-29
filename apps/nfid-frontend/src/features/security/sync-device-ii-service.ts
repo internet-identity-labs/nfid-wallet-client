@@ -56,15 +56,13 @@ export class SyncDeviceIIService {
     const { publicKey }  = await publicKeyResponse.json()
     const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, ""])
 
-    const response = await addDevice(
+    await addDevice(
       BigInt(profile.anchor),
       "Email",
       { cross_platform: null },
       { authentication: null },
       identity.getPublicKey().toDer()
     )
-
-    console.log("syncEmailDeviceSWithII response", response)
 
     toast.success("The email device has been synchronized.")
   }

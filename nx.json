@@ -140,6 +140,9 @@
         "env": "AWS_SIGNATURE_EVENT"
       },
       {
+        "env": "AWS_PUBLIC_KEY"
+      },
+      {
         "env": "GOOGLE_CLIENT_ID"
       },
       {

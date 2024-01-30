@@ -1,7 +1,10 @@
-import type { Principal } from '@dfinity/principal';
-import type { ActorMethod } from '@dfinity/agent';
+import type { ActorMethod } from "@dfinity/agent"
+import type { Principal } from "@dfinity/principal"
 
+export interface Conf {
+  im_canister: [] | [string]
+}
 export interface _SERVICE {
-  'add_icrc1_canister' : ActorMethod<[string], undefined>,
-  'get_canisters' : ActorMethod<[], Array<string>>,
+  get_canisters_by_root: ActorMethod<[string], Array<string>>
+  store_icrc1_canister: ActorMethod<[string], undefined>
 }

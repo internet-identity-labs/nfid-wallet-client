@@ -11,6 +11,7 @@ declare const AWS_EXECUTE_CANDID: string
 declare const AWS_ECDSA_SIGN: string
 declare const AWS_PASSKEY: string
 declare const AWS_SIGNATURE_EVENT: string
+declare const AWS_PUBLIC_KEY: string
 declare const AWS_SYMMETRIC: string
 declare const BITCOIN_WALLET_CANISTER_ID: string
 declare const BTC_SIGNER_CANISTER_ID: string

@@ -109,7 +109,7 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
-export const iCRC1 = actor<ICRC1Registry>(
+export const iCRC1Registry = actor<ICRC1Registry>(
   ICRC1_REGISTRY_CANISTER_ID,
   iCRC1RegistryIDL,
 )

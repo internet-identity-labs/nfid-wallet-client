@@ -8,7 +8,7 @@ import { mockIdentityA } from "@nfid/integration"
 
 import { TransferArg } from "../_ic_api/icrc1.d"
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
-import { iCRC1, im, replaceActorIdentity } from "../actors"
+import { iCRC1Registry, im, replaceActorIdentity } from "../actors"
 import { generateDelegationIdentity } from "../test-utils"
 import {
   addICRC1Canister,
@@ -25,7 +25,7 @@ describe("ICRC1 suite", () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
-    await replaceActorIdentity(iCRC1, delegationIdentity)
+    await replaceActorIdentity(iCRC1Registry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
     await addICRC1Canister(iCRC1TestCanister)
     await replaceActorIdentity(im, delegationIdentity)
@@ -39,7 +39,7 @@ describe("ICRC1 suite", () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
-    await replaceActorIdentity(iCRC1, delegationIdentity)
+    await replaceActorIdentity(iCRC1Registry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
     const account = (await im.get_account()) as HTTPAccountResponse
     const root = account.data[0]!.principal_id

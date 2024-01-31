@@ -1,15 +1,12 @@
 import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 import { ConnectorFactory } from "src/ui/connnector/connector-factory"
-import { ethereumNftConnector } from "src/ui/connnector/non-fungible-asset-screen/eth/ethereum-nft-asset"
 import { NonFungibleAssetConnector } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset"
-import { polygonNftConnector } from "src/ui/connnector/non-fungible-asset-screen/polygon/polygon-nft-asset"
 import {
   AssetFilter,
   Blockchain,
   NftConnectorConfig,
 } from "src/ui/connnector/types"
 
-import { polygonMumbaiNftConnector } from "./polygon/mumbai/polygon-nft-asset"
 
 export class NftFactory extends ConnectorFactory<
   Blockchain,
@@ -41,7 +38,4 @@ export class NftFactory extends ConnectorFactory<
 }
 
 export const nftFactory = new NftFactory([
-  polygonNftConnector,
-  polygonMumbaiNftConnector,
-  ethereumNftConnector,
 ])

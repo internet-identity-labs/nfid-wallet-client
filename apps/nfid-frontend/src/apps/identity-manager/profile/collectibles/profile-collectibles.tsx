@@ -3,6 +3,7 @@ import clsx from "clsx"
 import React, { useContext } from "react"
 import { IoIosSearch } from "react-icons/io"
 import { Link, useNavigate } from "react-router-dom"
+import { trimConcat } from "src/ui/atoms/util/util"
 
 import {
   FilterPopover,
@@ -129,10 +130,11 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
           />
         </Link>,
         <div
-          id={`nft_token_${token.name.replace(
-            /\s|#/g,
-            "",
-          )}_${token.collection.id.replace(/\s/g, "")}`}
+          id={
+            trimConcat("nft_token_", token.name) +
+            "_" +
+            trimConcat("", token.collection.id)
+          }
         >
           {" "}
           {token.name}

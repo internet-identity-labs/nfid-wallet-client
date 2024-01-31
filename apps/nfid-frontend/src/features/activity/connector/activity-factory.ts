@@ -7,7 +7,7 @@ import { IActivityConfig } from "./activity-connector-types"
 import { icActivityConnector } from "./ic/ic-activity-connector"
 
 const activityConnectors: {
-  [key: string]: ActivityClass<IActivityConfig>[]
+  [key in Blockchain]: ActivityClass<IActivityConfig>[]
 } = {
   [Blockchain.ETHEREUM]: [],
   [Blockchain.POLYGON]: [],

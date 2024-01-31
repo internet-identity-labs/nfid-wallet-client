@@ -13,8 +13,7 @@ Feature:Non Fungible Asset
     And Token <token> from <collection_id> nft collection displayed
     Then Switch to table
     And NFT <token> <collection_id> <id> displayed
-
     Examples:
-      | amount | anchor | token         | collection_id                              | filteredAmount | id                                                                            | blockchain       |
-      | 3      | 31870  | AnilAnimal    | 0x67a8fe17db4d441f96f26094677763a2213a3b5f | 3              | 22558361690228810656161743101174268944760789894532108532742266930527975981633 | Polygon Mumbai   |
+      | amount | anchor | token         | collection_id               | filteredAmount | id                                          | blockchain       |
+      | 1      | 31870  | BOXONBLOCK479 | 7cpyk-jyaaa-aaaag-qa5na-cai | 1              | fz3lu-3ykor-uwiaa-aaaaa-buahl-iaqca-aaahp-q | InternetComputer |
 

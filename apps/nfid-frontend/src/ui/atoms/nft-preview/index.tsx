@@ -54,7 +54,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
       id={
         trimConcat("nft_token_", props.name) +
         "_" +
-        props.collection.id.replace(/\s|#/g, "")
+        trimConcat("", props.collection.id)
       }
     >
       <Link
@@ -67,7 +67,11 @@ const NFTPreview = (props: UserNonFungibleToken) => {
             "flex items-center justify-center z-10 mr-2.5",
             "absolute w-6 h-6 bg-white rounded-full top-[215px] md:top-[267px]",
           )}
-          id={trimConcat("nft_token_", props.name)}
+          id={
+            trimConcat("nft_token_", props.name) +
+            "_" +
+            trimConcat("", props.collection.id)
+          }
         >
           <img
             src={props.blockchainLogo}
@@ -105,7 +109,11 @@ const NFTPreview = (props: UserNonFungibleToken) => {
           <div>
             <div
               className={clsx(`font-bold`)}
-              id={trimConcat("nft_token_", props.name)}
+              id={
+                trimConcat("nft_token_", props.name) +
+                "_" +
+                trimConcat("", props.collection.id)
+              }
             >
               {props.name}
             </div>

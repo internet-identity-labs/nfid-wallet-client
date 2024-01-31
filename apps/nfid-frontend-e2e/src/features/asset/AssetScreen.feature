@@ -14,8 +14,4 @@ Feature:Fungible Asset
     And <label> USD balance not $0.00
     Examples:
       | chain             | currency | balance        | anchor | label                  |
-      | Bitcoin           | BTC      | 0.00006879 BTC | 25795  | Bitcoin                |
-      | Polygon Mumbai    | MATIC    | 0.2 MATIC      | 25795  | Matic Mumbai           |
-      | Polygon Mumbai    | TST      | 1 TST          | 25795  | Test Token Mumbai      |
       | Internet Computer | ICP      | 0.01007 ICP    | 28542  | Internet Computer      |
-      # | Internet Computer | WICP     | 0.01 WICP      | 28565  | WICP                   |

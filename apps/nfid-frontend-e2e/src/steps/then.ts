@@ -485,12 +485,14 @@ Then(
   async (balance: string, fee: string, currency: string) => {
     const assetBalance = await Assets.getBalance()
     assetBalance.waitForExist({ timeout: 40000 })
-    expect(assetBalance).toHaveText(balance + " " + currency)
+    const actualBalance = await assetBalance.getText()
+    expect(actualBalance).toEqual(balance + " " + currency)
 
     const transferFee = await Assets.getFee()
     transferFee.waitForDisplayed({ timeout: 30000 })
-    if (fee === "any") expect(transferFee).not.toContain("0.00")
-    else expect(transferFee).toHaveText(fee + " " + currency)
+    const actualFee = await transferFee.getText()
+    if (fee === "any") expect(actualFee).not.toEqual("0.00")
+    else expect(actualFee).toEqual(fee + " " + currency)
   },
 )
 
@@ -832,8 +834,8 @@ Then(
   },
 )
 
-Then(/^Go to ([^"]*) details$/, async (token: string) => {
-  await Nft.nftDetails(token)
+Then(/^Go to ([^"]*) and ([^"]*) details$/, async (token: string, collection: string) => {
+  await Nft.nftDetails(token, collection)
 })
 
 Then(/^(\d+) transactions appear$/, async (amount: number) => {

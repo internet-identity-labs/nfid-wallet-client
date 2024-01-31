@@ -60,6 +60,7 @@ export const HomeScreen = () => {
   const [isAuthModalVisible, setIsAuthModalVisible] = React.useState(false)
   const { isAuthenticated } = useAuthentication()
   const navigate = useNavigate()
+  const currentYear: number = new Date().getFullYear()
 
   React.useEffect(() => {
     setTimeout(() => {
@@ -358,7 +359,7 @@ export const HomeScreen = () => {
           </a>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-4 mt-[26px] md:mt-8 pb-[25px] md:pb-[30px] border-b border-gray-200">
-          <p>© 2022 Internet Identity Labs, Inc</p>
+          <p>© {currentYear} Internet Identity Labs, Inc</p>
           <a
             href="https://docs.nfid.one/legal/terms"
             target="_blank"

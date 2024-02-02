@@ -11,6 +11,14 @@ export class DemoTransactions extends demoAppPage {
     return $(`#approveButton div`)
   }
 
+  getEmbed() {
+    return $("#nfid-embed")
+  }
+
+  getScreenModal() {
+    return $("#screen-modal")
+  }
+
   getReceiverICAddressInput(FT: string) {
     return $("#inputICAddress" + `${FT}`)
   }

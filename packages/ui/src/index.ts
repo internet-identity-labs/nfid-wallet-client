@@ -1,4 +1,5 @@
-import "./styles.css"
+import "./styles.css";
+
 
 export * from "./atoms/copy"
 export * from "./atoms/dropdown-select"
@@ -32,6 +33,7 @@ export * from "./molecules/button/arrow-button"
 export * from "./molecules/input"
 export * from "./molecules/input/text-area"
 export * from "./molecules/input/label"
+export * from "./molecules/input-dropdown"
 export * from "./molecules/tooltip"
 export * from "./molecules/sdk-app-meta"
 export * from "./molecules/blurred-loader"

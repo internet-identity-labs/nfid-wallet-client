@@ -1,7 +1,10 @@
-import React from "react"
-import { ImSpinner } from "react-icons/im"
+import React from "react";
+import { ImSpinner } from "react-icons/im";
 
-import { Button } from "@nfid-frontend/ui"
+
+
+import { Button, DropdownSelect } from "@nfid-frontend/ui"
+import { BaseKeyType } from "@nfid/embed/src/lib/types"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
 import { ExampleMethod } from "../../method"
@@ -18,6 +21,8 @@ export const AuthenticationExample = ({
     setError,
     nfid,
     setIdentity,
+    keyType,
+    setKeyType,
     updateAuthButton,
     authButton,
     handleAuthenticate,
@@ -47,6 +52,15 @@ export const AuthenticationExample = ({
     </Button>
   ) : (
     <div className="flex-col space-y-5">
+      <DropdownSelect
+        selectedValues={[keyType]}
+        isMultiselect={false}
+        setSelectedValues={(value) => setKeyType(value[0] as BaseKeyType)}
+        options={[
+          { label: "ECDSA", value: "ECDSA" },
+          { label: "Ed25519", value: "Ed25519" },
+        ]}
+      />
       <AuthenticationForm
         submitButtonId="buttonAuthenticate"
         submitButtonText={"Authenticate"}

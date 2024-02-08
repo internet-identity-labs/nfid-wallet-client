@@ -40,6 +40,7 @@ export const config: WebdriverIO.Config = {
   // environment variables for ts-node or use wdio config's autoCompileOpts section.
   //
 
+  runner: "local",
   autoCompileOpts: {
     autoCompile: true,
     // see https://github.com/TypeStrong/ts-node#cli-and-programmatic-options
@@ -127,9 +128,6 @@ export const config: WebdriverIO.Config = {
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
   baseUrl: baseURL,
-  hostname: hostName ? hostName : "localhost",
-  port: 4444,
-  path: hostPath ? hostPath : "/",
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -145,7 +143,7 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ["chromedriver"],
+  // services: [],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber

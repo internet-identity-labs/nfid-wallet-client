@@ -47,7 +47,7 @@ on:
 
 env:
   CI_DEBUG: "true"
-          
+
 jobs:
   check-secrets:
     defaults:
@@ -214,7 +214,7 @@ jobs:
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
+
           ci_versions
 
       - name: Build project
@@ -224,7 +224,7 @@ jobs:
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
-          
+
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline
 
@@ -451,7 +451,7 @@ jobs:
 
   allure-report:
     needs: e2e-tests
-    if: always()
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       URL: ${{ github.event.pull_request.comments_url }}

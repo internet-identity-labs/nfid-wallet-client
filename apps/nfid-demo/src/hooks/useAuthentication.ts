@@ -82,6 +82,7 @@ export const useAuthentication = () => {
             ? { derivationOrigin: derivationOriginToUse }
             : {}),
         })
+        console.debug("handleAuthenticate", { identity })
         setIdentity(identity as unknown as DelegationIdentity)
         updateAuthButton({ loading: false, label: "Logout" })
         return identity

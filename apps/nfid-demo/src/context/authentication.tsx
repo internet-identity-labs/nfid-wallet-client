@@ -75,18 +75,23 @@ export const AuthenticationProvider: React.FC<{
 
   const [keyType, setKeyType] = React.useState<BaseKeyType>("ECDSA")
 
-  const { data: nfid } = useSWR(`nfid-${keyType}`, () =>
-    NFID.init({
-      origin: nfidProviderUrl,
-      application: {
-        name: "NFID Demo",
-        logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
-      },
-      ic: {
-        derivationOrigin,
-      },
-      keyType,
-    }),
+  const { data: nfid } = useSWR(
+    `nfid-${keyType}`,
+    () =>
+      NFID.init({
+        origin: nfidProviderUrl,
+        application: {
+          name: "NFID Demo",
+          logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
+        },
+        ic: {
+          derivationOrigin,
+        },
+        keyType,
+      }),
+    {
+      revalidateOnFocus: false,
+    },
   )
 
   const config = useMemo(() => {

@@ -1,7 +1,7 @@
 /**
  * Remove user Account by Test Phone Number.
  */
-import { Actor, HttpAgent } from "@dfinity/agent"
+import { Actor, HttpAgent, fromHex } from "@dfinity/agent"
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
 // global.fetch = require("node-fetch")
 import fetch from "node-fetch"
@@ -30,11 +30,10 @@ export default async () => {
   await actor.remove_account_by_phone_number()
 }
 
-function getIdentity(): Secp256k1KeyIdentity {
-  const rawKey: any = LAMBDA_IDENTITY?.trim()
-  const rawBuffer = Uint8Array.from(rawKey).buffer
-  const privateKey = Uint8Array.from(
-    sha256(rawBuffer as any, { asBytes: true }),
-  )
-  return Secp256k1KeyIdentity.fromSecretKey(Uint8Array.from(privateKey).buffer)
+export function getIdentity(): Secp256k1KeyIdentity {
+  if(!LAMBDA_IDENTITY) {
+      throw Error("No LAMBDA_IDENTITY provided.");
+  }
+  const secretKey = fromHex(LAMBDA_IDENTITY.trim());
+  return Secp256k1KeyIdentity.fromSecretKey(secretKey);
 }

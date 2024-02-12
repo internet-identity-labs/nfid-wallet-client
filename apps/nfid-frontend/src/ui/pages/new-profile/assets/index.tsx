@@ -125,9 +125,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
-                    <div className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
                       {token.toPresentation(token.balance)} {token.currency}
-                    </div>
+                    </span>
                   </td>
                   <td
                     className="pr-16 text-sm text-right"

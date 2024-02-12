@@ -44,6 +44,11 @@ import {
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { getBrowser } from "frontend/ui/utils"
 
+const alreadyRegisteredDeviceErrors = [
+  "credentials already registered", //Chrome-based browsers
+  "object that is not, or is no longer, usable" //Firefox
+]
+
 export class PasskeyConnector {
   private async storePasskey({
     key,
@@ -184,7 +189,7 @@ export class PasskeyConnector {
       })) as PublicKeyCredential
     } catch (e: any) {
       console.error(e)
-      if (e.message.includes("registered")) {
+      if (alreadyRegisteredDeviceErrors.find(x => e.message.includes(x))) {
         toast.error("This device is already registered")
       } else {
         toast.error(e.message)

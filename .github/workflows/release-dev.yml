@@ -1,6 +1,14 @@
 name: DEV Deployment
 on:
   workflow_dispatch:
+    inputs:
+      link_sdk:
+        description: "Link SDK-TS lib"
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
   push:
     branches:
       - main
@@ -9,6 +17,7 @@ on:
 env:
   CANISTER_NAME: "nfid-demo"
   CI_DEBUG: "true"
+  LINK_SDK: ${{ github.event.inputs.link_sdk }}
 
 jobs:
   check-secrets:
@@ -52,6 +61,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          LINK_SDK: "false"
 
   build-demo:
     name: Build NFID-Demo
@@ -71,6 +81,7 @@ jobs:
           path: ci_libs
 
       - name: Checkout sdk-ts repo.
+        if: ${{ (github.event.inputs.link_sdk == 'true') }}
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -111,6 +122,7 @@ jobs:
           ci_versions
 
       - name: SDK-TS => Build
+        if: ${{ (github.event.inputs.link_sdk == 'true') }}
         working-directory: ./sdk-ts
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
@@ -127,6 +139,7 @@ jobs:
           npx nx build embed
 
       - name: SDK-TS => Create link to packages
+        if: ${{ (github.event.inputs.link_sdk == 'true') }}
         working-directory: ./sdk-ts/dist/packages/embed
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
@@ -165,6 +178,7 @@ jobs:
           echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
           echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
           echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
+          echo "LINK_SDK=${LINK_SDK:-false}" >> $GITHUB_ENV
 
       - name: NFID-DEMO => Print Vars.
         run: |
@@ -174,6 +188,7 @@ jobs:
           ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
           ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
+          ci_echo_info "LINK_SDK=${LINK_SDK}" >&2
 
       - name: NFID-DEMO => Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -186,9 +201,11 @@ jobs:
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
 
-          ci_echo_info "Yarn link ..." >&2
-          ci_echo_debug "yarn link @nfid/embed" >&2
-          yarn link @nfid/embed
+          if [ "${LINK_SDK}" == 'true' ]; then
+            ci_echo_info "Yarn link ..." >&2
+            ci_echo_debug "yarn link @nfid/embed" >&2
+            yarn link @nfid/embed
+          fi
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline

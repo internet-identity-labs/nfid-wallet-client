@@ -12,6 +12,7 @@ import { DefaultTrigger } from "./triggers/default"
 import { InputTrigger } from "./triggers/input"
 import { SmallTrigger } from "./triggers/small"
 import { IGroupedOptions, IGroupOption } from "./types"
+import { trimConcat } from "src/ui/atoms/util/util"
 
 export interface IChooseModal {
   optionGroups: IGroupedOptions[]
@@ -192,7 +193,7 @@ export const ChooseModal = ({
                   innerSubtitle={option.innerSubtitle}
                   iconClassnames={iconClassnames}
                   badgeText={option.badgeText}
-                  id={`choose_option_${option.title.replace(/\s/g, "")}`}
+                  id={trimConcat('choose_option_', option.title)}
                 />
               ))}
             </div>

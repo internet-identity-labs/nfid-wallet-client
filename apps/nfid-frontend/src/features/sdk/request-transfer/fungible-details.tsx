@@ -10,9 +10,7 @@ export const RequestTransferFTDetails = ({
       <p id="amountICP" className="text-[32px] font-medium">
         {amount}
       </p>
-      <p className="text-sm text-gray-400">
-        {amountUSD}
-      </p>
+      <p className="text-sm text-gray-400">{amountUSD}</p>
     </div>
   )
 }

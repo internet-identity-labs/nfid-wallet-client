@@ -52,6 +52,7 @@ export const serviceConfig = {
   AWS_VERIFY_EMAIL: JSON.stringify(process.env.AWS_VERIFY_EMAIL),
   AWS_SIGNIN_GOOGLE_V2: JSON.stringify(process.env.AWS_SIGNIN_GOOGLE_V2),
   AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
+  AWS_PUBLIC_KEY: JSON.stringify(process.env.AWS_PUBLIC_KEY),
   SIGNIN_GOOGLE: JSON.stringify(
     process.env.FRONTEND_MODE === "production"
       ? process.env.AWS_SIGNIN_GOOGLE
@@ -69,6 +70,9 @@ export const serviceConfig = {
   VERIFIER_CANISTER_ID: JSON.stringify(process.env.VERIFIER_CANISTER_ID),
   BITCOIN_WALLET_CANISTER_ID: JSON.stringify(
     process.env.BITCOIN_WALLET_CANISTER_ID,
+  ),
+  ICRC1_REGISTRY_CANISTER_ID: JSON.stringify(
+    process.env.ICRC1_REGISTRY_CANISTER_ID,
   ),
   LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
   CYCLES_MINTER_CANISTER_ID: JSON.stringify(

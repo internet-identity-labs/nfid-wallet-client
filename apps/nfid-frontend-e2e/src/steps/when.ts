@@ -361,13 +361,18 @@ When(/^I press on Activity icon$/, async () => {
   await assets.openActivity()
 })
 
-When(/^User sends ?(.*)? ([^"]*) to (.*)$/,
+When(
+  /^User sends ?(.*)? ([^"]*) to (.*)$/,
   async (amount: number, FT: string, address: string) => {
-    FT == "ICP" ? await DemoTransactions.sendICPTransaction(amount, address)
-      :
-      await DemoTransactions.sendNFTTransaction(address)
-  })
+    FT == "ICP"
+      ? await DemoTransactions.sendICPTransaction(amount, address)
+      : await DemoTransactions.sendNFTTransaction(address)
+  },
+)
 
-When(/^User updates list of targets by (.*)( and (.*))?$/, async (targets: string, derivation?: string) => {
-  await DemoUpdateDelegation.updateDelegation(targets, derivation)
-})
+When(
+  /^User updates list of targets by (.*)( and (.*))?$/,
+  async (targets: string, derivation?: string) => {
+    await DemoUpdateDelegation.updateDelegation(targets, derivation)
+  },
+)

@@ -12,6 +12,8 @@ import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"
 import { IDevice } from "../types"
+import { authState } from "@nfid/integration"
+import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
 
 interface IDeletePasskeyModal extends React.HTMLAttributes<HTMLDivElement> {
   handleWithLoading: IHandleWithLoading
@@ -26,8 +28,9 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
   children,
 }) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false)
-
   const { profile } = useProfile()
+  const { activeDevicePrincipalId } = authState.get()
+  const isInUseDevice = activeDevicePrincipalId === device.principal
 
   const handleTrackRemovePasskey = useCallback(async (device: IDevice) => {
     if (device.isLegacyDevice) {
@@ -83,8 +86,12 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
   return (
     <div>
       <div onClick={() => setIsModalVisible(true)}>{children}</div>
+      <RemoveDeviceInUseError
+        isModalVisible={isModalVisible && isInUseDevice}
+        setIsModalVisible={setIsModalVisible}
+      />
       <ModalComponent
-        isVisible={isModalVisible}
+        isVisible={isModalVisible && !isInUseDevice}
         onClose={() => setIsModalVisible(false)}
         className="p-5 w-[95%] md:w-[500px] z-[100] lg:rounded-xl"
       >

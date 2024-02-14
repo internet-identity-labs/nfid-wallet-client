@@ -4,23 +4,13 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 
 import { Blockchain } from "../types"
-import { btcTransferConnector } from "./btc/btc-transfer-connector"
-import { ethereumERC20TransferConnector } from "./eth/erc20-transfer-connector"
-import { ethereumTransferConnector } from "./eth/eth-transfer-connector"
-import { ethereumNFTTransferConnector } from "./eth/nft-transfer-connector"
-import { dip20TransferConnector } from "./ic/dip20-transfer-connector"
 import { icTransferConnector } from "./ic/ic-transfer-connector"
 import { icNFTTransferConnector } from "./ic/nft-transfer-connector"
-import { polygonERC20TransferConnector } from "./polygon/erc20-transfer-connector"
-import { polygonMumbaiERC20TransferConnector } from "./polygon/mumbai/erc20-transfer-connector"
-import { polygonMumbaiNFTTransferConnector } from "./polygon/mumbai/nft-transfer-connector"
-import { polygonMumbaiTransferConnector } from "./polygon/mumbai/polygon-transfer-connector"
-import { polygonNFTTransferConnector } from "./polygon/nft-transfer-connector"
-import { polygonTransferConnector } from "./polygon/polygon-transfer-connector"
 import {
   IConnector,
   IGetConnector,
   ITransferConfig,
+  ITransferFTConnector,
   IUniversalConnector,
   TransferModalType,
 } from "./types"
@@ -37,25 +27,13 @@ function toMap<T extends { getTokenConfig: () => ITransferConfig }>(
   return assetViewMap
 }
 
-const singleFTConnectors = [
-  btcTransferConnector,
-  polygonTransferConnector,
-  polygonMumbaiTransferConnector,
-  ethereumTransferConnector,
-]
+const singleFTConnectors: ITransferFTConnector[] = []
 
 const multiFTConnectors = [
-  polygonERC20TransferConnector,
-  polygonMumbaiERC20TransferConnector,
-  ethereumERC20TransferConnector,
   icTransferConnector,
-  dip20TransferConnector,
 ]
 
 const NFTConnectors = [
-  ethereumNFTTransferConnector,
-  polygonNFTTransferConnector,
-  polygonMumbaiNFTTransferConnector,
   icNFTTransferConnector,
 ]
 

@@ -485,12 +485,14 @@ Then(
   async (balance: string, fee: string, currency: string) => {
     const assetBalance = await Assets.getBalance()
     assetBalance.waitForExist({ timeout: 40000 })
-    expect(assetBalance).toHaveText(balance + " " + currency)
+    const actualBalance = await assetBalance.getText()
+    expect(actualBalance).toEqual(balance + " " + currency)
 
     const transferFee = await Assets.getFee()
     transferFee.waitForDisplayed({ timeout: 30000 })
-    if (fee === "any") expect(transferFee).not.toContain("0.00")
-    else expect(transferFee).toHaveText(fee + " " + currency)
+    const actualFee = await transferFee.getText()
+    if (fee === "any") expect(actualFee).not.toEqual("0.00")
+    else expect(actualFee).toEqual(fee + " " + currency)
   },
 )
 
@@ -541,8 +543,8 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-    "..." +
-    (await address.secondAddressElement.getText()),
+      "..." +
+      (await address.secondAddressElement.getText()),
   ).toEqual(principal)
 })
 
@@ -550,22 +552,55 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
   let expectedData = data.rowsHash()
   let usersData = await DemoAppPage.getAuthLogs()
 
-  expect(String((await usersData.get("principal").firstAddressPart.getText()) + "..." +
-    (await usersData.get("principal").secondAddressElement.getText())
-  )).toEqual(expectedData.principal.substring(0, 29) + "..." + expectedData.principal.substring(58, 63))
+  expect(
+    String(
+      (await usersData.get("principal").firstAddressPart.getText()) +
+        "..." +
+        (await usersData.get("principal").secondAddressElement.getText()),
+    ),
+  ).toEqual(
+    expectedData.principal.substring(0, 29) +
+      "..." +
+      expectedData.principal.substring(58, 63),
+  )
 
-  expect(String((await usersData.get("address").firstAddressPart.getText()) + "..." +
-    (await usersData.get("address").secondAddressElement.getText())
-  )).toEqual(expectedData.address.substring(0, 29) + "..." + expectedData.address.substring(59, 64))
+  expect(
+    String(
+      (await usersData.get("address").firstAddressPart.getText()) +
+        "..." +
+        (await usersData.get("address").secondAddressElement.getText()),
+    ),
+  ).toEqual(
+    expectedData.address.substring(0, 29) +
+      "..." +
+      expectedData.address.substring(59, 64),
+  )
 
-  await browser.waitUntil(async () => {
-    let usersData = await DemoAppPage.getAuthLogs()
-    let targets = String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")
-    return targets == expectedData.targets
-  }, {
-    timeout: 50000,
-    timeoutMsg: `Incorrect number of targets. Expected ${expectedData.targets} but was ${String(usersData.get("targets")).trim().replace(/^[+\-\s]*/gm, "").trim().split("\n").map(str => str.trim()).join(",")}`
-  })
+  await browser.waitUntil(
+    async () => {
+      let usersData = await DemoAppPage.getAuthLogs()
+      let targets = String(usersData.get("targets"))
+        .trim()
+        .replace(/^[+\-\s]*/gm, "")
+        .trim()
+        .split("\n")
+        .map((str) => str.trim())
+        .join(",")
+      return targets == expectedData.targets
+    },
+    {
+      timeout: 50000,
+      timeoutMsg: `Incorrect number of targets. Expected ${
+        expectedData.targets
+      } but was ${String(usersData.get("targets"))
+        .trim()
+        .replace(/^[+\-\s]*/gm, "")
+        .trim()
+        .split("\n")
+        .map((str) => str.trim())
+        .join(",")}`,
+    },
+  )
 })
 
 Then(
@@ -799,8 +834,8 @@ Then(
   },
 )
 
-Then(/^Go to ([^"]*) details$/, async (token: string) => {
-  await Nft.nftDetails(token)
+Then(/^Go to ([^"]*) and ([^"]*) details$/, async (token: string, collection: string) => {
+  await Nft.nftDetails(token, collection)
 })
 
 Then(/^(\d+) transactions appear$/, async (amount: number) => {
@@ -871,16 +906,10 @@ Then(
   },
 )
 
-Then(/^Assert ([^"]*) logs message:$/, async (
-  block: string, data) => {
-  const message = data.rowsHash()
-  let messageBody = message.body
-  let messageHeader = message.header
-  await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).waitForDisplayed({timeout: 20000})
-  messageBody != "" ? expect(await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).getText() +
-      DemoTransactions.getLogs(block, message.secondChild.split(',').map(Number))).toContain(messageHeader + messageBody)
-    :
-    expect(await (await DemoTransactions.getLogs(block, message.firstChild.split(',').map(Number))).getText()).toContain(messageHeader)
+Then(/^Assert ([^"]*) code block has hash$/, async (block: string) => {
+  const codeBlock = $(`div#${block} #responseID code`)
+  const codeBlockText = await codeBlock.getText()
+  expect(codeBlockText).toContain("hash")
 })
 
 async function chooseChainOption(chain: string) {
@@ -888,16 +917,28 @@ async function chooseChainOption(chain: string) {
   await Assets.chooseChainOption(chain)
 
   const loader = await $("#loader")
-  await loader.waitForDisplayed({ reverse: true, timeout: 10000, timeoutMsg: `Loader is still displayed after timeout. Chain: ${chain}`})
+  await loader.waitForDisplayed({
+    reverse: true,
+    timeout: 10000,
+    timeoutMsg: `Loader is still displayed after timeout. Chain: ${chain}`,
+  })
 }
 
-Then(/^Check request details ([^"]*) equals to ([^"]*)$/, async (FT: string, details: string) => {
-  await browser.switchToFrame(await $("#nfid-embed"))
-  await DemoTransactions.getApproveButton.waitForDisplayed({
-    timeout: 10000,
-    timeoutMsg: "Approve Transfer modal windows isn't appeared",
-  })
-  expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
-  await DemoTransactions.getApproveButton.click()
-  await browser.switchToParentFrame()
-})
+Then(
+  /^Check request details ([^"]*) equals to ([^"]*)$/,
+  async (FT: string, details: string) => {
+    const embed = await DemoTransactions.getEmbed()
+    const screenModal = await DemoTransactions.getScreenModal()
+
+    await browser.switchToFrame(embed)
+    await DemoTransactions.getApproveButton.waitForDisplayed({
+      timeout: 10000,
+      timeoutMsg: "Approve Transfer modal windows isn't appeared",
+    })
+    expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
+    await DemoTransactions.getApproveButton.click()
+
+    await screenModal.waitForDisplayed({reverse: true, timeout: 100000, timeoutMsg: "The screenModal is still visible."})
+    await browser.switchToParentFrame()
+  },
+)

@@ -98,7 +98,13 @@ export const ProfileNFTDetailsPage = ({
             format={nft.assetFullsize.format}
           />
         </div>
-        <div id={trimConcat("nft_token_", nft.name + "_" + nft.collection.id)}>
+        <div
+          id={
+            trimConcat("nft_token_", nft.name) +
+            "_" +
+            trimConcat("", nft.collection.id)
+          }
+        >
           <p
             className="font-bold text-blue"
             id={trimConcat("nft_collection_", nft.collection.id)}
@@ -107,7 +113,11 @@ export const ProfileNFTDetailsPage = ({
           </p>
           <p
             className="text-[28px] mt-2.5"
-            id={trimConcat("nft_token_", nft.name)}
+            id={
+              trimConcat("nft_token_", nft.name) +
+              "_" +
+              trimConcat("", nft.collection.id)
+            }
           >
             {nft.name}
           </p>

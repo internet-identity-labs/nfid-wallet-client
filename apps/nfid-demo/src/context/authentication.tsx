@@ -1,14 +1,18 @@
-import { SignIdentity } from "@dfinity/agent"
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
-import React, { useMemo } from "react"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import useSWRImmutable from "swr/immutable"
+import { SignIdentity } from "@dfinity/agent";
+import { DelegationIdentity } from "@dfinity/identity";
+import { Principal } from "@dfinity/principal";
+import { principalToAddress } from "ictool";
+import React, { useMemo } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useSWR from "swr";
 
-import { localStorageWithFallback } from "@nfid/client-db"
-import { NFID } from "@nfid/embed"
+
+
+import { localStorageWithFallback } from "@nfid/client-db";
+import { NFID } from "@nfid/embed";
+import { BaseKeyType } from "@nfid/embed/src/lib/types";
+
 
 declare const NFID_PROVIDER_URL: string
 
@@ -19,6 +23,8 @@ interface AuthenticationContextProps {
   setIdentity: React.Dispatch<
     React.SetStateAction<DelegationIdentity | undefined>
   >
+  keyType: BaseKeyType
+  setKeyType: React.Dispatch<React.SetStateAction<BaseKeyType>>
   derivationOrigin?: string
   config?: {
     principalID: string
@@ -29,17 +35,20 @@ interface AuthenticationContextProps {
 }
 
 const AuthenticationContext = React.createContext<AuthenticationContextProps>({
+  keyType: "ECDSA",
   setIdentity: () => {
     throw new Error("setIdentity not implemented")
+  },
+  setKeyType: () => {
+    throw new Error("setKeyType not implemented")
   },
 })
 
 declare const CANISTER_IDS: { [key: string]: { [key: string]: string } }
 
 const origin = window.location.origin
-const isStaging =  origin.includes("-staging.nfid.one")
-const isDev =
-  origin.includes("-dev.nfid.one") ||  origin.includes("localhost")
+const isStaging = origin.includes("-staging.nfid.one")
+const isDev = origin.includes("-dev.nfid.one") || origin.includes("localhost")
 const isProd = origin.includes(".nfid.one")
 
 const derivationCanisterId = isDev
@@ -64,17 +73,25 @@ export const AuthenticationProvider: React.FC<{
     )
   }, [])
 
-  const { data: nfid } = useSWRImmutable("nfid", () =>
-    NFID.init({
-      origin: nfidProviderUrl,
-      application: {
-        name: "NFID Demo",
-        logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
-      },
-      ic: {
-        derivationOrigin,
-      },
-    }),
+  const [keyType, setKeyType] = React.useState<BaseKeyType>("ECDSA")
+
+  const { data: nfid } = useSWR(
+    `nfid-${keyType}`,
+    () =>
+      NFID.init({
+        origin: nfidProviderUrl,
+        application: {
+          name: "NFID Demo",
+          logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",
+        },
+        ic: {
+          derivationOrigin,
+        },
+        keyType,
+      }),
+    {
+      revalidateOnFocus: false,
+    },
   )
 
   const config = useMemo(() => {
@@ -113,6 +130,8 @@ export const AuthenticationProvider: React.FC<{
         nfid,
         identity,
         setIdentity,
+        keyType,
+        setKeyType,
         config,
         derivationOrigin,
       }}

@@ -14,12 +14,14 @@ interface Transfer {
   amount: string
   delegationIdentity: DelegationIdentity
   canisterId?: string
+  memo?: bigint
   transformAmount: (amount: string) => number
 }
 
 const handleTokenTransfer = async ({
   to,
   amount,
+  memo,
   delegationIdentity,
   transformAmount,
   canisterId,
@@ -32,12 +34,18 @@ const handleTokenTransfer = async ({
       sourceIdentity: delegationIdentity,
     })
   }
-  return await transferICP(transformAmount(amount), to, delegationIdentity)
+  return await transferICP({
+    amount: transformAmount(amount),
+    to,
+    memo,
+    identity: delegationIdentity,
+  })
 }
 
 export const useTransfer = ({
   domain,
   accountId,
+  memo,
   tokenCanisterId,
   transformAmount,
 }: TokenTransferConfig) => {
@@ -48,6 +56,7 @@ export const useTransfer = ({
   const queuedTransfer = React.useRef<{
     to: string
     amount: string
+    memo?: bigint
     domain?: string
     accountId?: string
     rejectTransfer?: (reason: any) => void
@@ -55,6 +64,7 @@ export const useTransfer = ({
       walletDelegation: DelegationIdentity,
       to: string,
       amount: string,
+      memo?: bigint,
     ) => void
   } | null>(null)
 
@@ -94,7 +104,7 @@ export const useTransfer = ({
         queuedTransfer.current = null
       }
     }
-  }, [accountId, domain, walletDelegation])
+  }, [accountId, memo, domain, walletDelegation])
 
   const handleTransfer = React.useCallback(
     async (to: string, amount: string) => {
@@ -114,6 +124,7 @@ export const useTransfer = ({
                 to,
                 delegationIdentity: walletDelegation,
                 canisterId: tokenCanisterId,
+                memo,
                 transformAmount,
               })
                 .then((value) => resolve(value))
@@ -124,6 +135,7 @@ export const useTransfer = ({
           return handleTokenTransfer({
             amount: amount,
             to,
+            memo,
             delegationIdentity: walletDelegation,
             canisterId: tokenCanisterId,
             transformAmount,
@@ -133,7 +145,14 @@ export const useTransfer = ({
         }
       })
     },
-    [accountId, domain, tokenCanisterId, transformAmount, walletDelegation],
+    [
+      accountId,
+      domain,
+      memo,
+      tokenCanisterId,
+      transformAmount,
+      walletDelegation,
+    ],
   )
 
   console.debug("useTransfer", { isValidatingWalletDelegation })

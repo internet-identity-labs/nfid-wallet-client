@@ -1,13 +1,22 @@
-import {demoAppPage} from "./demoApp-page.js"
+import { demoAppPage } from "./demoApp-page.js"
 
 export class DemoTransactions extends demoAppPage {
-
   get myNFTSelector() {
-    return $('#option_3hfnf-vakor-uwiaa-aaaaa-b4atg-aaqca-aacgm-a span:first-of-type')
+    return $(
+      "#option_3hfnf-vakor-uwiaa-aaaaa-b4atg-aaqca-aacgm-a span:first-of-type",
+    )
   }
 
   get getApproveButton() {
     return $(`#approveButton div`)
+  }
+
+  getEmbed() {
+    return $("#nfid-embed")
+  }
+
+  getScreenModal() {
+    return $("#screen-modal")
   }
 
   getReceiverICAddressInput(FT: string) {
@@ -23,8 +32,8 @@ export class DemoTransactions extends demoAppPage {
   }
 
   getFTDetails(FT: string) {
-    if (FT == "ICP") return $('#amountICP')
-    else return $('#NFTName')
+    if (FT == "ICP") return $("#amountICP")
+    else return $("#NFTName")
   }
 
   async sendICPTransaction(amount: number, address: string) {

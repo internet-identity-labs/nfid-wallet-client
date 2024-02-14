@@ -35,15 +35,8 @@ export class Nft {
     return $(`table tbody :nth-child(${rawNumber}) td:nth-child(5)`).getText()
   }
 
-  public async getNftName(token: string, collection?: string) {
-    if (collection?.length)
-      return $(
-        `#nft_token_${token.replace(/\s|#/g, "")}_${collection?.replace(
-          /\s#/g,
-          "",
-        )}`,
-      )
-    return $(`#nft_token_${token.replace(/\s|#/g, "")}`)
+  public async getNftName(token: string, collection: string) {
+    return $(`#nft_token_${token}_${collection}`)
   }
 
   public async getNftStandard() {
@@ -89,7 +82,7 @@ export class Nft {
     await table.click()
   }
 
-  public async nftDetails(token: string, collection?: string) {
+  public async nftDetails(token: string, collection: string) {
     const nft = await this.getNftName(token, collection)
     await nft.waitForDisplayed({
       timeout: 30000,

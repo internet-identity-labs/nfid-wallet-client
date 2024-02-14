@@ -43,7 +43,7 @@ describe("NFT EXT standard suite", () => {
         owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
       await listNFT(token, sourceIdentity, price)
       let address = await lockNFT(token, targetIdentity, price)
-      await transfer(price, address, targetIdentity)
+      await transfer({ amount: price, to: address, identity: targetIdentity })
       let result = await unListNFT(token, targetIdentity)
       expect(result).toBe(true)
     })

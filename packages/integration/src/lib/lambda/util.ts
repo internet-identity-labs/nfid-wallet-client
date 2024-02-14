@@ -1,15 +1,16 @@
 import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
 import * as Agent from "@dfinity/agent"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
+import { Principal } from "@dfinity/principal"
+import sha256 from "sha256"
+
 import { idlFactory as imIDL } from "../_ic_api/identity_manager"
 import { _SERVICE as IdentityManager } from "../_ic_api/identity_manager.d"
-import { actor, im, replaceActorIdentity } from '../actors';
-import sha256 from "sha256"
-import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
+import { actor, im, replaceActorIdentity } from "../actors"
 
 const DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS = 5 * 60 * 1000
-const LAMBDA_IDENTITY = process.env["LAMBDA_IDENTITY"];
+const LAMBDA_IDENTITY = process.env["LAMBDA_IDENTITY"]
 
 export async function getTransformedRequest(
   identity: DelegationIdentity,
@@ -42,18 +43,17 @@ export const getIdentity = (seed: string): Ed25519KeyIdentity => {
   return Ed25519KeyIdentity.generate(seedEncoded)
 }
 
-export function getLambdaActor(): Agent.ActorSubclass<IdentityManager>  {
+export function getLambdaActor(): Agent.ActorSubclass<IdentityManager> {
   const identity = getLambdaIdentity()
   const lambdaIm = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
-  replaceActorIdentity(im, identity);
-  return lambdaIm;
+  replaceActorIdentity(im, identity)
+  return lambdaIm
 }
 
-function getLambdaIdentity(): Secp256k1KeyIdentity {
-  const rawKey: any = LAMBDA_IDENTITY?.trim()
-  const rawBuffer = Uint8Array.from(rawKey).buffer
-  const privateKey = Uint8Array.from(
-    sha256(rawBuffer as any, { asBytes: true }),
-  )
-  return Secp256k1KeyIdentity.fromSecretKey(Uint8Array.from(privateKey).buffer)
+export function getLambdaIdentity(): Secp256k1KeyIdentity {
+  if(!LAMBDA_IDENTITY) {
+      throw Error("No LAMBDA_IDENTITY provided.");
+  }
+  const secretKey = Agent.fromHex(LAMBDA_IDENTITY.trim());
+  return Secp256k1KeyIdentity.fromSecretKey(secretKey);
 }

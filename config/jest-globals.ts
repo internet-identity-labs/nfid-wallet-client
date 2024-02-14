@@ -9,6 +9,7 @@ export const JEST_GLOBALS = {
   BTC_SIGNER_CANISTER_ID: "7b5jg-paaaa-aaaap-aa32q-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
   BITCOIN_WALLET_CANISTER_ID: "iohef-tiaaa-aaaal-qbtza-cai",
+  ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
   PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
   VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
   LEDGER_CANISTER_ID: "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -66,4 +67,6 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_FETCH_ALTERNATIVE_ORIGINS:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins",
+  AWS_PUBLIC_KEY:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/publickey",
 }

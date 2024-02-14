@@ -19,6 +19,8 @@ import { _SERVICE as EcdsaSigner } from "./_ic_api/ecdsa-signer.d"
 import { _SERVICE as BtcSigner } from "./_ic_api/ecdsa-signer.d"
 import { idlFactory as ethSecretStorageIDL } from "./_ic_api/eth_secret_storage"
 import { _SERVICE as EthSecretStorage } from "./_ic_api/eth_secret_storage.d"
+import { idlFactory as iCRC1RegistryIDL } from "./_ic_api/icrc1_registry"
+import { _SERVICE as ICRC1Registry } from "./_ic_api/icrc1_registry.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.d"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity"
@@ -107,6 +109,10 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
+export const iCRC1Registry = actor<ICRC1Registry>(
+  ICRC1_REGISTRY_CANISTER_ID,
+  iCRC1RegistryIDL,
+)
 
 export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
   canisterId: VAULT_CANISTER_ID,

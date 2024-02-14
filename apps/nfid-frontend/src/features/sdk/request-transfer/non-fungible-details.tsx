@@ -26,7 +26,9 @@ export const RequestTransferNFTDetails = ({
         alt=""
       />
       <div className="ml-2.5 flex flex-col justify-center">
-        <p id="NFTName" className="font-bold">{nft?.name}</p>
+        <p id="NFTName" className="font-bold">
+          {nft?.name}
+        </p>
         <p className="text-sm text-gray-400">{nft?.collection.name}</p>
       </div>
     </div>

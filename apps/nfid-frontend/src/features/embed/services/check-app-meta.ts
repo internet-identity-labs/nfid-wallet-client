@@ -1,4 +1,5 @@
 import { Application } from "@nfid/integration"
+
 import { getAppMetaFromQuery } from "frontend/integration/windows"
 
 export const CheckApplicationMeta = async (): Promise<Application> => {

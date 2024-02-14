@@ -4,20 +4,16 @@ import { IActivityRow, IActivityRowGroup } from "../types"
 import { groupActivityRowsByDate } from "../util/row"
 import { ActivityClass } from "./activity"
 import { IActivityConfig } from "./activity-connector-types"
-import { btcActivityConnector } from "./btc/btc-activity-connector"
-import { ethActivityConnector } from "./evm/eth/eth-activity-connector"
-import { polygonMumbaiActivityConnector } from "./evm/polygon-mumbai/polygon-mumbai-activity-connector"
-import { polygonActivityConnector } from "./evm/polygon/polygon-activity-connector"
 import { icActivityConnector } from "./ic/ic-activity-connector"
 
 const activityConnectors: {
   [key in Blockchain]: ActivityClass<IActivityConfig>[]
 } = {
-  [Blockchain.ETHEREUM]: [ethActivityConnector],
-  [Blockchain.POLYGON]: [polygonActivityConnector],
-  [Blockchain.POLYGON_MUMBAI]: [polygonMumbaiActivityConnector],
+  [Blockchain.ETHEREUM]: [],
+  [Blockchain.POLYGON]: [],
+  [Blockchain.POLYGON_MUMBAI]: [],
   [Blockchain.IC]: [icActivityConnector],
-  [Blockchain.BITCOIN]: [btcActivityConnector],
+  [Blockchain.BITCOIN]: [],
 }
 
 export const getAllActivity = async (): Promise<IActivityRowGroup[]> => {

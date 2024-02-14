@@ -11,6 +11,7 @@ declare const AWS_EXECUTE_CANDID: string
 declare const AWS_ECDSA_SIGN: string
 declare const AWS_PASSKEY: string
 declare const AWS_SIGNATURE_EVENT: string
+declare const AWS_PUBLIC_KEY: string
 declare const AWS_SYMMETRIC: string
 declare const BITCOIN_WALLET_CANISTER_ID: string
 declare const BTC_SIGNER_CANISTER_ID: string
@@ -29,6 +30,7 @@ declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IS_DEV: string
 declare const IS_E2E_TEST: string
 declare const LEDGER_CANISTER_ID: string
+declare const ICRC1_REGISTRY_CANISTER_ID: string
 declare const METAMASK_SIGNIN_MESSAGE: string
 declare const NFID_PROVIDER_URL: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string

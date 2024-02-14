@@ -15,7 +15,7 @@ import {
   replaceActorIdentity,
   vault,
 } from "@nfid/integration"
-import { transfer as submitICP } from "@nfid/integration/token/icp"
+import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
@@ -165,19 +165,22 @@ export abstract class ICMTransferConnector<
     if (!request.identity)
       throw new Error("Identity not found. Please try again")
 
+    console.debug("Transfer request", { request })
     try {
       const res =
         "tokenId" in request
           ? await transferEXT(request.tokenId, request.identity, request.to)
-          : await submitICP(
-              stringICPtoE8s(String(request.amount)),
-              request.to.length === PRINCIPAL_LENGTH
-                ? AccountIdentifier.fromPrincipal({
-                    principal: Principal.fromText(request.to),
-                  }).toHex()
-                : request.to,
-              request.identity,
-            )
+          : await transferICP({
+              amount: stringICPtoE8s(String(request.amount)),
+              to:
+                request.to.length === PRINCIPAL_LENGTH
+                  ? AccountIdentifier.fromPrincipal({
+                      principal: Principal.fromText(request.to),
+                    }).toHex()
+                  : request.to,
+              ...(request.memo ? { memo: request.memo } : {}),
+              identity: request.identity,
+            })
 
       setTimeout(() => {
         "tokenId" in request

@@ -74,6 +74,9 @@
         "env": "FRONTEND_MODE"
       },
       {
+        "env": "ICRC1_REGISTRY_CANISTER_ID"
+      },
+      {
         "env": "BACKEND_MODE"
       },
       {
@@ -138,6 +141,9 @@
       },
       {
         "env": "AWS_SIGNATURE_EVENT"
+      },
+      {
+        "env": "AWS_PUBLIC_KEY"
       },
       {
         "env": "GOOGLE_CLIENT_ID"

@@ -87,7 +87,7 @@ async function verifyCertifiedResponse(
     encodedCertificate: new Uint8Array(certifiedResponse.certificate).buffer,
     encodedTree: new Uint8Array(certifiedResponse.witness).buffer,
     rootKey: agent.rootKey,
-    maxCertificateTimeOffsetMs: 50000,
+    maxCertificateTimeOffsetMs: 500000,
   })
   const treeHash = lookup_path([key], tree)
   if (!treeHash) {

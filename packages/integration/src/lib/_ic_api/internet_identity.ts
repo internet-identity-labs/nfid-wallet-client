@@ -13,10 +13,10 @@ export const idlFactory = ({ IDL }: any) => {
     unknown: IDL.Null,
   })
   const BoolHttpResponse = IDL.Record({
-    'data' : IDL.Opt(IDL.Bool),
-    'error' : IDL.Opt(Error),
-    'status_code' : IDL.Nat16,
-});
+    data: IDL.Opt(IDL.Bool),
+    error: IDL.Opt(Error),
+    status_code: IDL.Nat16,
+  })
   const Purpose = IDL.Variant({
     authentication: IDL.Null,
     recovery: IDL.Null,
@@ -149,7 +149,7 @@ export const idlFactory = ({ IDL }: any) => {
       [VerifyTentativeDeviceResponse],
       [],
     ),
-    add_email_and_principal_for_create_account_validation : IDL.Func(
+    add_email_and_principal_for_create_account_validation: IDL.Func(
       [IDL.Text, IDL.Text, IDL.Nat64],
       [BoolHttpResponse],
       [],

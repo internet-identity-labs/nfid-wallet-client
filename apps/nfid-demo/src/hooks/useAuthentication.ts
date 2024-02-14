@@ -1,16 +1,19 @@
-import { HttpAgent } from "@dfinity/agent"
-import { AuthClient } from "@dfinity/auth-client"
-import { DelegationIdentity } from "@dfinity/identity"
-import React from "react"
-import useSWR from "swr"
+import { HttpAgent } from "@dfinity/agent";
+import { AuthClient } from "@dfinity/auth-client";
+import { DelegationIdentity } from "@dfinity/identity";
+import React from "react";
+import useSWR from "swr";
 
-import { useAuthenticationContext } from "../context/authentication"
-import { useButtonState } from "./useButtonState"
+
+
+import { useAuthenticationContext } from "../context/authentication";
+import { useButtonState } from "./useButtonState";
+
 
 declare const NFID_PROVIDER_URL: string
 
 export const useAuthentication = () => {
-  const { nfid, identity, derivationOrigin, setIdentity } =
+  const { nfid, identity, derivationOrigin, setIdentity, keyType, setKeyType } =
     useAuthenticationContext()
   const { data: authClient } = useSWR("authClient", () => AuthClient.create())
   const [error, setError] = React.useState<string>()
@@ -79,6 +82,7 @@ export const useAuthentication = () => {
             ? { derivationOrigin: derivationOriginToUse }
             : {}),
         })
+        console.debug("handleAuthenticate", { identity })
         setIdentity(identity as unknown as DelegationIdentity)
         updateAuthButton({ loading: false, label: "Logout" })
         return identity
@@ -95,6 +99,8 @@ export const useAuthentication = () => {
   return {
     identity,
     setIdentity,
+    setKeyType,
+    keyType,
     error,
     setError,
     nfid,

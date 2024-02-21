@@ -19,6 +19,7 @@ export const chromeBrowserOptions: IChromeOption = {
 
 export const chromeBrowser = {
   browserName: "chrome",
+  browserVersion: "122.0.6261.39",
   "goog:chromeOptions": chromeBrowserOptions,
   "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
   acceptInsecureCerts: true,

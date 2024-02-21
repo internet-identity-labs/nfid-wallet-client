@@ -4177,10 +4177,12 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.1-alpha.2":
-  version "0.10.1-alpha.2"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.1-alpha.2.tgz#3a3214498eec448aa6d388b40caf3b39fa015bee"
-  integrity sha512-DPHFqUdMBqEpwRhPL58TfgbVq2m1luFjJ+2lH+xc3b/5P0koVIHjMvIPuaw+ixlkxrMI5Vtohbu6jqrVZMhxlw==
+"@nfid/embed@0.10.1-alpha.4":
+  version "0.10.1-alpha.4"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.1-alpha.4.tgz#2c9c38b184e03ab78d72d20b8ef197c9f9a6cca9"
+  integrity sha512-zyiCc9wopDEnVq/5cz46GQGlGh1LwOUJ+fN3SN+zPWwae1xMG1VW6467gDJc5yfrPGMwPULlcEOl0Gxx5pgobg==
+  dependencies:
+    uuid "9"
 
 "@nicolo-ribaudo/semver-v6@^6.3.3":
   version "6.3.3"
@@ -26500,15 +26502,15 @@ uuid@8.3.2, uuid@^8.3.1, uuid@^8.3.2:
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
+uuid@9, uuid@9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
+  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
+
 uuid@9.0.0, uuid@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
   integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
-
-uuid@9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
-  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 uuid@^3.3.2, uuid@^3.3.3:
   version "3.4.0"

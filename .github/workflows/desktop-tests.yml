@@ -206,7 +206,7 @@ jobs:
           path: ci_libs
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "yarn"
@@ -256,7 +256,7 @@ jobs:
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Upload build artefacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: yarn-error-logs
@@ -352,7 +352,7 @@ jobs:
           token: ${{ secrets.PAT }}
 
       - name: Cache Node Modules.
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
@@ -436,14 +436,14 @@ jobs:
           key: allure-results-${{github.RUN_ID}}
 
       - name: Upload Chrome logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: chrome_debug.log
           path: apps/nfid-frontend-e2e/chrome-user-data-dir/chrome_debug.log
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: dist
@@ -509,7 +509,7 @@ jobs:
           fi
 
       - name: Upload reports.
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ReportUrl
           path: "report_url.txt"

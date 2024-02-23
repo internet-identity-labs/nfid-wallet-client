@@ -25,7 +25,6 @@ jobs:
     defaults:
       run:
         shell: bash
-
     runs-on: ubuntu-latest
 
     steps:
@@ -68,6 +67,7 @@ jobs:
     needs: check-secrets
     runs-on: ubuntu-latest
     if: ${{ ! contains( github.ref_name, 'production' ) }}
+
     steps:
       - name: Checkout repo.
         uses: actions/checkout@v4
@@ -90,10 +90,9 @@ jobs:
           path: sdk-ts
 
       - name: Setup DFX 15
-        uses: aviate-labs/setup-dfx@v0.2.6
+        uses: dfinity/setup-dfx@main
         with:
           dfx-version: 0.15.0
-          dfx-disable-encryption: true
 
       - name: Setup Node 18
         uses: actions/setup-node@v3
@@ -364,6 +363,7 @@ jobs:
     permissions:
       contents: read
       deployments: write
+
     steps:
       - name: Extract branch name
         shell: bash

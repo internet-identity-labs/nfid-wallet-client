@@ -52,7 +52,7 @@ export const getICPublicDelegation = async () => {
   const { delegationIdentity } = authState.get()
 
   const publicKey = await getPublicKey(delegationIdentity!, Chain.IC)
-  const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, ""])
+  const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
 
   return publicDelegation
 }

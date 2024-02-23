@@ -54,7 +54,7 @@ export class SyncDeviceIIService {
       body: JSON.stringify({email: profile.email, principal: emailImDevice.principal}),
     })
     const { publicKey }  = await publicKeyResponse.json()
-    const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, ""])
+    const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
 
     await addDevice(
       BigInt(profile.anchor),

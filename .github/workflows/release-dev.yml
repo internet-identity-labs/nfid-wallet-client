@@ -95,7 +95,7 @@ jobs:
           dfx-version: 0.15.0
 
       - name: Setup Node 18
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "yarn"
@@ -106,13 +106,13 @@ jobs:
 
       - name: Cache Node Modules.
         id: cache-node-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-demo-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn
 
       - name: Versions
         run: |
@@ -223,7 +223,7 @@ jobs:
           dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
 
       - name: NFID-DEMO => Save artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nfid-demo
           path: |
@@ -318,17 +318,13 @@ jobs:
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
           mkdir -p "${ID_PATH}"
-          echo "${!IDENTITY_PEM_NAME_VAR}" > "${ID_PATH}/identity.pem"
 
           ci_echo_warn "Preparing encoded key..." >&2
-          ci_echo_info "Installing base64 package..." >&2
-          sudo apt-get update && sudo apt-get install -y coreutils moreutils
-
           ci_echo_info "Decoding..." >&2
-          base64 -d "${ID_PATH}/identity.pem" | sponge "${ID_PATH}/identity.pem"
+          echo "${!IDENTITY_PEM_NAME_VAR}" | base64 -d > "${ID_PATH}/identity.pem"
         env:
           DEV_ADMIN_KEY: ${{secrets.DEV_ADMIN_KEY}}
-          PROD_ADMIN_KEY: ${{secrets.PROD_VAULT_KEY}}
+          PROD_ADMIN_KEY: ${{secrets.PROD_ADMIN_KEY}}
 
       - name: DEPLOY => Load artifact
         uses: actions/download-artifact@v3
@@ -345,15 +341,15 @@ jobs:
 
           dfx identity use "${ID_NAME}"
 
-          ci_echo_debug "dfx deploy -y --mode=reinstall --network ${NETWORK_NAME} --no-wallet ${CANISTER_NAME}" >&2
-          if ! result=$(dfx deploy -y --mode=reinstall --network "${NETWORK_NAME}" --no-wallet "${CANISTER_NAME}"); then
-            ci_echo_error "Deploy failed ${result}" >&2
+          ci_echo_debug "dfx install -y --mode=reinstall --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
+          if ! result=$(dfx install -y --mode=reinstall --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
+            ci_echo_error "Install failed ${result}" >&2
             exit 1
           fi
 
           ci_echo_debug "Command output was '${result}'" >&2
 
-          ci_echo_success "Canister '${CANISTER_NAME}' was deployed" >&2
+          ci_echo_success "Canister '${CANISTER_NAME}' was installed" >&2
 
   deploy-cloudflare:
     name: Deploy NFID-Frontend to Cloudflare Pages
@@ -382,7 +378,7 @@ jobs:
           path: ci_libs
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "yarn"
@@ -393,13 +389,13 @@ jobs:
 
       - name: Cache Node Modules.
         id: cache-node-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-cloudflare-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-cloudflare
 
       - name: Versions
         run: |

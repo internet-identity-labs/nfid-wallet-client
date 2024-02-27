@@ -451,7 +451,7 @@ jobs:
 
   allure-report:
     needs: e2e-tests
-    if: github.actor != 'dependabot[bot]'
+    if: always() && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       URL: ${{ github.event.pull_request.comments_url }}

@@ -1,3 +1,4 @@
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
 import React, { useState } from "react"
 import useSWR from "swr"
@@ -45,6 +46,22 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   const { data: identity } = useSWR("globalIdentity", () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
   )
+
+  const {
+    data: balance,
+    isLoading: isBalanceLoading,
+    isValidating: isBalanceValidating,
+  } = useSWR(identity ? ["userBalance", identity] : null, ([key, identity]) =>
+    icTransferConnector.getBalance(
+      AccountIdentifier.fromPrincipal({
+        principal: identity.getPrincipal(),
+      }).toHex(),
+    ),
+  )
+
+  const isApproveButtonDisabled =
+    !balance || isBalanceLoading || isBalanceValidating
+  console.debug("RequestTransfer", { isApproveButtonDisabled })
 
   const { data: nft } = useSWR(
     tokenId && identity ? ["nftDetails", tokenId, identity] : null,
@@ -137,6 +154,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         <Button
           id="approveButton"
           type="primary"
+          disabled={isApproveButtonDisabled}
           onClick={() =>
             setTransferPromise(
               new Promise(async (resolve) => {
@@ -179,7 +197,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             )
           }
         >
-          Approve
+          {isApproveButtonDisabled ? "loading..." : "Approve"}
         </Button>
         <Button
           id="rejectButton"
@@ -194,7 +212,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           Reject
         </Button>
 
-        <SDKFooter identity={identity} />
+        <SDKFooter identity={identity} balance={balance} />
       </div>
     </>
   )

@@ -936,7 +936,10 @@ Then(
       timeoutMsg: "Approve Transfer modal windows isn't appeared",
     })
     expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
-    await DemoTransactions.getApproveButton.click()
+    await DemoTransactions.getApproveButton.then(async(it)=>{
+      await it.isClickable()
+      await it.click()
+    })
 
     await screenModal.waitForDisplayed({reverse: true, timeout: 100000, timeoutMsg: "The screenModal is still visible."})
     await browser.switchToParentFrame()

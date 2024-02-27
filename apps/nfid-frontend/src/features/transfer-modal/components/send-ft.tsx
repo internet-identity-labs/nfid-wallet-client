@@ -120,11 +120,6 @@ export const TransferFT = ({
         isVault,
         isRootOnly: true,
       }),
-    {
-      onSuccess: (data) => {
-        resetField("to")
-      },
-    },
   )
 
   useEffect(() => {

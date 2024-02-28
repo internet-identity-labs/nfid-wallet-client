@@ -152,7 +152,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
       </div>
       <div className="space-y-2.5 flex flex-col mb-14 mt-6">
         <Button
-          id={isApproveButtonDisabled ? "approveButton" : "approveButtonDisabled"}
+          id={isApproveButtonDisabled ? "approveButtonDisabled" : "approveButton"}
           type="primary"
           disabled={isApproveButtonDisabled}
           onClick={() =>

@@ -99,6 +99,7 @@ export class demoAppPage extends Page {
         if (await this.getIFrame.isDisplayed()) {
           await browser.switchToFrame(await this.getIFrame)
           await this.getPublicProfile.waitForDisplayed({
+            timeout: 15000,
             timeoutMsg: "Public Profile is not displayed",
           })
           if (

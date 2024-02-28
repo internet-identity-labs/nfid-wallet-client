@@ -936,9 +936,10 @@ Then(
       timeoutMsg: "Approve Transfer modal windows isn't appeared",
     })
     expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
-    await browser.pause(5000)
-    await DemoTransactions.getApproveButton.then(async(it)=>{
-      await it.isClickable()
+    await DemoTransactions.getApproveButton.then(async (it) => {
+      await it.waitForDisplayed(
+        {timeout: 10000, timeoutMsg: "ApproveButton is still not displayed after 10 sec"}
+      )
       await it.click()
     })
 

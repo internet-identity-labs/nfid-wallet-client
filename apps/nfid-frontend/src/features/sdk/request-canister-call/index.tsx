@@ -1,3 +1,4 @@
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import clsx from "clsx"
 import useSWR from "swr"
 
@@ -6,6 +7,7 @@ import { Button, IconCmpWarning } from "@nfid-frontend/ui"
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
+import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 
 import { SDKFooter } from "../ui/footer"
 
@@ -19,7 +21,6 @@ export interface IRequestTransferProps {
   onReject: () => void
 }
 export const RequestCanisterCall = ({
-  origin,
   appMeta,
   method,
   canisterID,
@@ -31,6 +32,15 @@ export const RequestCanisterCall = ({
 
   const { data: identity } = useSWR("globalIdentity", () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
+  )
+  const { data: balance } = useSWR(
+    identity ? ["userBalance", identity] : null,
+    ([key, identity]) =>
+      icTransferConnector.getBalance(
+        AccountIdentifier.fromPrincipal({
+          principal: identity.getPrincipal(),
+        }).toHex(),
+      ),
   )
 
   return (
@@ -79,7 +89,7 @@ export const RequestCanisterCall = ({
           Reject
         </Button>
 
-        <SDKFooter identity={identity} />
+        <SDKFooter identity={identity} balance={balance} />
       </div>
     </>
   )

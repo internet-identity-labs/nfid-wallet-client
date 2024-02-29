@@ -17,7 +17,7 @@ export const getPublicProfile = async (): Promise<{
   if (!delegationIdentity) throw new Error("No identity")
 
   const publicKey = await getPublicKey(delegationIdentity!, Chain.IC)
-  const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, ""])
+  const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
   const principal = Principal.selfAuthenticating(
     new Uint8Array(publicDelegation.getPublicKey().toDer()),
   )

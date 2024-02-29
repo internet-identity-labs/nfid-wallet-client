@@ -224,7 +224,7 @@ export async function ecdsaRegisterNewKeyPair(
 
   const delegationChainForLambda = await DelegationChain.create(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, "0"]).getPublicKey(),
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
     { previous: identity.getDelegation() },
   )
@@ -312,7 +312,7 @@ export async function createDelegationChain(
 ): Promise<DelegationChain> {
   return await DelegationChain.create(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, ""]).getPublicKey(),
+    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, "0"]).getPublicKey(),
     expirationDate,
     options,
   )

@@ -10,14 +10,16 @@ export interface AuthAppMetaProps {
 
 export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   applicationURL,
-  subTitle = "Sign in to continue to",
+  subTitle = "Wallet permissions for",
   title,
 }) => (
   <>
     <div className="flex flex-col items-center w-full pt-8">
       <img src={IconSvgNFIDWalletLogo} className="h-[43px]" />
 
-      <H5 className="mt-5 mb-3 text-sm leading-6 text-black">{title}</H5>
+      {title && (
+        <H5 className="mt-5 mb-3 text-sm leading-6 text-black">{title}</H5>
+      )}
 
       {applicationURL && (
         <div className="flex items-center mt-5 space-x-1 text-sm">

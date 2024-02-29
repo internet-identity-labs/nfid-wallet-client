@@ -63,7 +63,7 @@ jobs:
         run: |
           echo "[ERROR] You have try release to network 'ic' without or with wrong confirmation phrase" >&2
           exit 1
-    
+
       - name: Checkout repo.
         uses: actions/checkout@v4
 
@@ -103,7 +103,7 @@ jobs:
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
+
           ci_versions
 
       - name: NFID-DEMO => Populate env vars.
@@ -168,8 +168,8 @@ jobs:
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
           ci_echo_info "NPX" >&2
-          ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}' ${OPTIONS}" >&2
-          npx env-cmd -f "${ENV_FILE}" nx build "${CANISTER_NAME} ${OPTIONS}"
+          ci_echo_debug "npx env-cmd -f ${ENV_FILE} nx build ${CANISTER_NAME} ${OPTIONS}" >&2
+          npx env-cmd -f ${ENV_FILE} nx build ${CANISTER_NAME} ${OPTIONS}
 
           ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${CANISTER_NAME}" >&2
           dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
@@ -208,7 +208,7 @@ jobs:
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
+
           ci_versions
 
       - name: PRE-DEPLOY => Populate env vars.
@@ -349,7 +349,7 @@ jobs:
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
+
           ci_versions
 
       - name: Install

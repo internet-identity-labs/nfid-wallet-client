@@ -1,24 +1,18 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
 import clsx from "clsx"
-import useSWR from "swr"
 
 import { Skeleton } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 
-import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
+import { TokenBalance } from "frontend/ui/connnector/transfer-modal/types"
 
-export const SDKFooter = ({ identity }: { identity?: DelegationIdentity }) => {
-  const { data: balance } = useSWR(
-    identity ? ["userBalance", identity] : null,
-    ([key, identity]) =>
-      icTransferConnector.getBalance(
-        AccountIdentifier.fromPrincipal({
-          principal: identity.getPrincipal(),
-        }).toHex(),
-      ),
-  )
-
+export const SDKFooter = ({
+  identity,
+  balance,
+}: {
+  identity?: DelegationIdentity
+  balance?: TokenBalance
+}) => {
   return (
     <div
       className={clsx(

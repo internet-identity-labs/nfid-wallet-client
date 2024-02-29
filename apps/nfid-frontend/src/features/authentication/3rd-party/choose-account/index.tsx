@@ -294,7 +294,6 @@ export const AuthChooseAccount = ({
         applicationLogo={appMeta?.logo}
         applicationURL={appHost}
         applicationName={appMeta?.name}
-        title="Wallet permissions"
       />
       {!authRequest.targets && (
         <div className="absolute right-5 top-2.5">

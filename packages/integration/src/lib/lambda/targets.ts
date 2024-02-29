@@ -99,7 +99,7 @@ async function verifyCertifiedResponse(
     .update(newOwnedString)
     .digest()
   const byteArray = new Uint8Array(sha256Result)
-  if (!equal(byteArray, treeHash)) {
+  if (!equal(byteArray, treeHash as ArrayBuffer)) {
     throw new Error("Response hash does not match")
   }
 }

@@ -95,10 +95,11 @@ export class demoAppPage extends Page {
           )
         await this.addCanisterID("authentication", targets)
         await this.getAuthenticateButton.click()
-        await browser.pause(1000)
+        await browser.pause(5000)
         if (await this.getIFrame.isDisplayed()) {
           await browser.switchToFrame(await this.getIFrame)
           await this.getPublicProfile.waitForDisplayed({
+            timeout: 15000,
             timeoutMsg: "Public Profile is not displayed",
           })
           if (

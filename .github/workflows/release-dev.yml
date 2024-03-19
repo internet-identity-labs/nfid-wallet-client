@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -69,10 +69,10 @@ jobs:
     if: ${{ ! contains( github.ref_name, 'production' ) }}
 
     steps:
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -80,7 +80,7 @@ jobs:
           ref: main
           path: ci_libs
 
-      - name: Checkout sdk-ts repo.
+      - name: Checkout sdk-ts repo
         if: ${{ (github.event.inputs.link_sdk == 'true') }}
         uses: actions/checkout@v4
         with:
@@ -104,7 +104,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache Node Modules.
+      - name: Cache Node Modules
         id: cache-node-modules
         uses: actions/cache@v4
         with:
@@ -112,7 +112,7 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn
+          key: nfid-fe-yarn
 
       - name: Versions
         run: |
@@ -145,7 +145,7 @@ jobs:
           ci_echo_debug "yarn link" >&2
           yarn link
 
-      - name: NFID-DEMO => Populate env vars.
+      - name: NFID-DEMO => Populate env vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -179,7 +179,7 @@ jobs:
           echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
           echo "LINK_SDK=${LINK_SDK:-false}" >> $GITHUB_ENV
 
-      - name: NFID-DEMO => Print Vars.
+      - name: NFID-DEMO => Print Vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -242,10 +242,10 @@ jobs:
         shell: bash
 
     steps:
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -259,7 +259,7 @@ jobs:
           
           ci_versions
 
-      - name: PRE-DEPLOY => Populate env vars.
+      - name: PRE-DEPLOY => Populate env vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -303,7 +303,7 @@ jobs:
           echo "ID_PATH=${ID_PATH}" >> $GITHUB_ENV
           echo "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >> $GITHUB_ENV
 
-      - name: PRE-DEPLOY => Print Vars.
+      - name: PRE-DEPLOY => Print Vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
@@ -313,7 +313,7 @@ jobs:
           ci_echo_info "ID_PATH=${ID_PATH}" >&2
           ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
 
-      - name: PRE-DEPLOY => Write identity.
+      - name: PRE-DEPLOY => Write identity
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -331,7 +331,7 @@ jobs:
         with:
           name: nfid-demo
 
-      - name: DEPLOY => Deploy to the canister.
+      - name: DEPLOY => Deploy to the canister
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -366,10 +366,10 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -387,7 +387,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache Node Modules.
+      - name: Cache Node Modules
         id: cache-node-modules
         uses: actions/cache@v4
         with:
@@ -395,7 +395,7 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-cloudflare
+          key: nfid-fe-yarn-cloudflare
 
       - name: Versions
         run: |

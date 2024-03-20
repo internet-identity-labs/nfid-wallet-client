@@ -36,6 +36,7 @@ env:
 
 jobs:
   check-secrets:
+    name: Check Secrets
     defaults:
       run:
         shell: bash
@@ -43,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -72,6 +73,7 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
   e2e-tests:
+    name: E2E Tests
     needs: check-secrets
     runs-on: ubuntu-latest
     concurrency:
@@ -81,10 +83,10 @@ jobs:
     steps:
       - run: pwd
 
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -167,50 +169,55 @@ jobs:
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
 
-      - name: Caching allure-results
-        if: always()
-        uses: actions/cache@v4
+      - name: Save test results
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
         with:
+          retention-days: 1
           path: apps/nfid-frontend-e2e/allure-results
-          key: allure-results-${{github.RUN_ID}}
+          name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
       - name: Upload Chrome logs
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ ! cancelled() }}
         with:
+          retention-days: 1
           name: chrome_debug.log
           path: apps/nfid-frontend-e2e/user-google-e2e/chrome_debug.log
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ ! cancelled() }}
         with:
+          retention-days: 1
           name: dist
           path: dist
 
   allure-report:
+    name: Allure Reports
     needs: e2e-tests
-    if: always()
+    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
     steps:
-      - name: Get Allure history
+      - name: Get history
         uses: actions/checkout@v4
         continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
-      - uses: actions/cache@v4
+
+      - name: Load test results
+        uses: actions/download-artifact@v4
         with:
+          name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
           path: apps/nfid-frontend-e2e/allure-results
-          key: allure-results-${{github.RUN_ID}}
 
       - name: Preparing the report
         uses: simple-elf/allure-report-action@master
-        if: always()
         id: allure-report
         with:
           allure_results: apps/nfid-frontend-e2e/allure-results
@@ -218,9 +225,9 @@ jobs:
           allure_report: apps/nfid-frontend-e2e/allure-report
           allure_history: apps/nfid-frontend-e2e/allure-history
           keep_reports: 20
+          github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
       - name: Deploy report to Github Pages
-        if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -229,23 +236,24 @@ jobs:
 
       - name: Upload url to file
         env:
-          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
         run: echo "$target_url" > "report_url.txt"
 
       - name: Upload url to PR comments
         run: |
           if [ -n "${URL}" ]; then
-          printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
-          curl \
-            -X POST \
-            $URL \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d "$data"
+            printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
+            curl \
+              -X POST \
+              $URL \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -d "$data"
           fi
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
         with:
           name: ReportUrl
           path: "report_url.txt"

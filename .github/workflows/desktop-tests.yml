@@ -4,9 +4,6 @@
 name: Desktop Tests CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
   workflow_dispatch:
     inputs:

@@ -27,7 +27,6 @@ import { E8S } from "@nfid/integration/token/icp"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {

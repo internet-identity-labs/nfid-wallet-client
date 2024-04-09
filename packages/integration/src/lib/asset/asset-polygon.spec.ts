@@ -5,7 +5,9 @@ import { generateDelegationIdentity } from "../test-utils"
 import { polygonMumbaiAsset } from "./asset-polygon"
 import { ChainBalance } from "./types"
 
-describe("Polygon Asset", () => {
+// SKIP: https://app.shortcut.com/the-internet-portal/story/11881/remove-rarible-unit-tests
+// @Dmitrii to take a look and probably remove
+describe.skip("Polygon Asset", () => {
   jest.setTimeout(20000)
 
   it("should return 1 activity for identity", async function () {

@@ -35,7 +35,7 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
             "w-5 h-5 ",
             disabled
               ? "!border-gray-400 !pointer-events-none"
-              : "hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black",
+              : "hover:ring-2 hover:ring-blue-200 hover:border-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-black",
           )}
           {...props}
         />

@@ -14,7 +14,7 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
   onResend,
 }) => {
   return (
-    <div className="flex flex-col w-full h-full text-sm text-center">
+    <div className="flex flex-col flex-1 w-full h-full text-sm text-center">
       <IconCmpArrow
         className="transition-opacity cursor-pointer hover:opacity-50"
         onClick={onBack}

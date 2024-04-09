@@ -23,10 +23,10 @@ import {
   sendReceiveTracking,
 } from "@nfid/integration"
 import { TokenMetadata } from "@nfid/integration/token/dip-20"
+import { E8S } from "@nfid/integration/token/icp"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -233,7 +233,7 @@ export const TransferFT = ({
 
             await registerTransaction({
               address,
-              amount: BigInt(stringICPtoE8s(String(values.amount))),
+              amount: BigInt(Math.round(Number(values.amount) * E8S)),
               from_sub_account: wallet?.uid ?? "",
             })
 

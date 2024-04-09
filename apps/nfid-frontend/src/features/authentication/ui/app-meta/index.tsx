@@ -10,7 +10,7 @@ export interface AuthAppMetaProps {
 
 export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   applicationURL,
-  subTitle = "Wallet permissions for",
+  subTitle = "Sign in to continue to",
   title,
 }) => (
   <>

@@ -6,8 +6,8 @@ import { toast } from "react-toastify"
 import {
   BlurredLoader,
   IconCmpArrow,
-  IconCmpKey,
   IconCmpTouchId,
+  IconCmpUsb,
   IconCmpWarning,
   Input,
 } from "@nfid-frontend/ui"
@@ -72,12 +72,11 @@ export const AuthOtherSignOptions = ({
         applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url}
         applicationName={appMeta?.name}
-        title={authRequest ? "Use your NFID Wallet" : "Use your NFID Account"}
       />
       <div
         className={clsx(
           "grid grid-cols-[22px,1fr] space-x-1.5 text-sm",
-          "bg-orange-50 p-[15px] mt-4",
+          "bg-orange-50 pl-[15px] py-[15px] mt-4 rounded-md",
         )}
       >
         <div>
@@ -85,7 +84,7 @@ export const AuthOtherSignOptions = ({
         </div>
         <div>
           <p className="font-bold leading-[22px]">Attention required</p>
-          <p className="mt-2.5">
+          <p className="mt-2.5 text-sm">
             NFID’s two-factor authentication has been upgraded. Update your
             settings in the Security section of your profile at{" "}
             <a
@@ -117,7 +116,7 @@ export const AuthOtherSignOptions = ({
         <IconButton
           title="Continue with security key"
           subtitle="Use a passkey on a security key"
-          img={<IconCmpKey />}
+          img={<IconCmpUsb />}
           onClick={handleSubmit((data) =>
             handleAuth({ anchor: data.userNumber, withSecurityDevices: true }),
           )}

@@ -86,16 +86,12 @@ export class IdbStorage implements AuthClientStorage {
   get _db(): Promise<KeyValueStore> {
     const db = new Promise<KeyValueStore>((resolve) => {
       if (this.initializedDb) {
-        this.initializedDb.set("test", "test")
-        this.initializedDb.get("test")
         resolve(this.initializedDb)
         return
       }
       IdbKeyVal.create({ version: DB_VERSION })
         .then((db) => {
           this.initializedDb = db
-          this.initializedDb.set("test", "test")
-          this.initializedDb.get("test")
           resolve(db)
         })
         .catch(() => {

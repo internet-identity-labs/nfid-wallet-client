@@ -106,6 +106,8 @@ export const NFIDEmbedMachineV2 = createMachine(
         invoke: {
           src: "RPCReceiver",
         },
+        order: 1,
+        entry: ['nfid_ready'],
         on: {
           RPC_MESSAGE: [
             {
@@ -291,6 +293,18 @@ export const NFIDEmbedMachineV2 = createMachine(
       assignError: assign((context, event) => ({
         error: event.data,
       })),
+      nfid_ready: () => {
+        const requesterDomain = window.location.ancestorOrigins
+          ? window.location.ancestorOrigins[0]
+          : window.document.referrer
+        console.debug("nfid_ready", {
+          origin: requesterDomain,
+        })
+        window.parent.postMessage(
+          { type: "nfid_ready" },
+          requesterDomain,
+        )
+      },
       nfid_authenticated: () => {
         const requesterDomain = window.location.ancestorOrigins
           ? window.location.ancestorOrigins[0]

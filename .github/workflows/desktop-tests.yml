@@ -4,9 +4,6 @@
 name: Desktop Tests CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
   workflow_dispatch:
     inputs:
@@ -50,6 +47,7 @@ env:
 
 jobs:
   check-secrets:
+    name: Check secrets
     defaults:
       run:
         shell: bash
@@ -57,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -97,6 +95,7 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
   docker-for-e2e:
+    name: Docker Image Build
     needs: check-secrets
     runs-on: ubuntu-latest
     permissions:
@@ -110,10 +109,10 @@ jobs:
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
 
     steps:
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -190,14 +189,15 @@ jobs:
           fi
 
   unit-tests:
+    name: Unit Tests
     needs: check-secrets
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -257,12 +257,13 @@ jobs:
 
       - name: Upload build artefacts
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ ! cancelled() }}
         with:
           name: yarn-error-logs
           path: /home/runner/work/nfid-frontend/nfid-frontend/yarn-error.log
 
   e2e-tests:
+    name: E2E Tests
     needs: docker-for-e2e
     runs-on: ubuntu-latest
     permissions:
@@ -275,10 +276,10 @@ jobs:
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
 
     steps:
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -351,13 +352,13 @@ jobs:
           ref: main
           token: ${{ secrets.PAT }}
 
-      - name: Cache Node Modules.
+      - name: Cache Node Modules
         uses: actions/cache@v4
         with:
           path: |
             **/node_modules
             **/.eslintcache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: test-nfid-fe
 
       - name: Run tests
         run: |
@@ -428,52 +429,55 @@ jobs:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
-      - name: Caching allure-results
-        if: always()
-        uses: pat-s/always-upload-cache@v3.0.11
+      - name: Save test results
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
         with:
+          retention-days: 1
           path: apps/nfid-frontend-e2e/allure-results
-          key: allure-results-${{github.RUN_ID}}
+          name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
       - name: Upload Chrome logs
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ ! cancelled() }}
         with:
+          retention-days: 1
           name: chrome_debug.log
           path: apps/nfid-frontend-e2e/chrome-user-data-dir/chrome_debug.log
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ ! cancelled() }}
         with:
+          retention-days: 1
           name: dist
           path: dist
 
   allure-report:
+    name: Allure Reports
     needs: e2e-tests
-    if: always() && github.actor != 'dependabot[bot]'
+    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
     steps:
-      - name: Get Allure history
+      - name: Get history
         uses: actions/checkout@v4
         continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
 
-      - name: Working with cache.
-        uses: pat-s/always-upload-cache@v3.0.11
+      - name: Load test results
+        uses: actions/download-artifact@v4
         with:
+          name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
           path: apps/nfid-frontend-e2e/allure-results
-          key: allure-results-${{github.RUN_ID}}
 
       - name: Preparing the report
         uses: simple-elf/allure-report-action@master
-        if: always()
         id: allure-report
         with:
           allure_results: apps/nfid-frontend-e2e/allure-results
@@ -481,9 +485,9 @@ jobs:
           allure_report: apps/nfid-frontend-e2e/allure-report
           allure_history: apps/nfid-frontend-e2e/allure-history
           keep_reports: 20
+          github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
       - name: Deploy report to Github Pages
-        if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -492,10 +496,10 @@ jobs:
 
       - name: Upload url to file
         env:
-          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
         run: echo "$target_url" > "report_url.txt"
 
-      - name: Upload url to PR comments.
+      - name: Upload url to PR comments
         run: |
           if [ -n "${URL}" ]; then
             printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
@@ -508,7 +512,7 @@ jobs:
               -d "$data"
           fi
 
-      - name: Upload reports.
+      - name: Upload reports
         uses: actions/upload-artifact@v4
         with:
           name: ReportUrl

@@ -117,7 +117,7 @@ jobs:
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
+
           ci_versions
 
       - name: SDK-TS => Build
@@ -190,7 +190,6 @@ jobs:
           ci_echo_info "LINK_SDK=${LINK_SDK}" >&2
 
       - name: NFID-DEMO => Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -256,7 +255,7 @@ jobs:
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
+
           ci_versions
 
       - name: PRE-DEPLOY => Populate env vars
@@ -400,11 +399,10 @@ jobs:
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          
+
           ci_versions
 
       - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 

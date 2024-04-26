@@ -294,6 +294,7 @@ export const AuthChooseAccount = ({
         applicationLogo={appMeta?.logo}
         applicationURL={appHost}
         applicationName={appMeta?.name}
+        subTitle="Wallet permissions for"
       />
       {!authRequest.targets && (
         <div className="absolute right-5 top-2.5">
@@ -318,9 +319,9 @@ export const AuthChooseAccount = ({
       <div className="relative flex flex-col flex-1 w-full">
         <div
           className={clsx(
-            "w-full pt-4 pb-[26px] rounded-xl",
-            "flex flex-col font-inter bg-white",
-            "border border-[rgba(0,0,0,0.04)]",
+            "w-full pt-4 pb-[26px] rounded-xl mb-5",
+            "flex flex-col flex-1 font-inter bg-white",
+            "border border-gray-200",
             "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
             "mt-9",
           )}
@@ -328,7 +329,7 @@ export const AuthChooseAccount = ({
           <div className="px-5">
             <p className="text-sm font-bold">Share NFID Wallet address</p>
             <p className="mt-2 text-xs text-gray-500">
-              Allow this site to request payments and view your balances.
+              Allow this site to request payments and view your <br /> balances.
             </p>
             <PublicProfileButton
               selectedProfile={selectedProfile}
@@ -336,12 +337,12 @@ export const AuthChooseAccount = ({
               isAvailable={!!authRequest.targets?.length}
             />
           </div>
-          <div className="bg-[#F5F5F5] w-full h-[1px] my-5" />
-          <div className="px-5">
+          <div className="bg-gray-200 w-full h-[1px] mt-[30px] mb-5" />
+          <div className="flex-1 px-5">
             <p className="text-sm font-bold">Hide NFID Wallet address</p>
             <p className="mt-2 text-xs text-gray-500">
-              Connect anonymously to prevent this site from requesting payments
-              and viewing your balances.
+              Connect anonymously to prevent this site from <br /> requesting
+              payments and viewing your balances.
             </p>
 
             {/* Legacy anonymous profiles */}
@@ -409,7 +410,6 @@ export const AuthChooseAccount = ({
             ) : null}
           </div>
         </div>
-        <div className="flex-1" />
         <div className="grid grid-cols-2 gap-2.5">
           <Button onClick={onBack} type="stroke">
             Back

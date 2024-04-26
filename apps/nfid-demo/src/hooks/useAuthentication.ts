@@ -13,7 +13,7 @@ import { useButtonState } from "./useButtonState";
 declare const NFID_PROVIDER_URL: string
 
 export const useAuthentication = () => {
-  const { nfid, identity, derivationOrigin, setIdentity, keyType, setKeyType } =
+  const { nfid, isLoadingNFID, identity, derivationOrigin, setIdentity, keyType, setKeyType } =
     useAuthenticationContext()
   const { data: authClient } = useSWR("authClient", () => AuthClient.create())
   const [error, setError] = React.useState<string>()
@@ -21,6 +21,12 @@ export const useAuthentication = () => {
   const [authButton, updateAuthButton] = useButtonState({
     label: "Authenticate",
   })
+
+  React.useEffect(() => {
+    updateAuthButton({disabled: isLoadingNFID})
+  }, [isLoadingNFID, updateAuthButton])
+
+  console.debug("useAuthentication",  authButton)
 
   React.useEffect(() => {
     if (nfid?.isAuthenticated) {

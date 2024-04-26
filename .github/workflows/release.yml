@@ -168,7 +168,7 @@ jobs:
 
           ci_echo_info "NPX" >&2
           ci_echo_debug "npx env-cmd -f ${ENV_FILE} nx build ${CANISTER_NAME} ${OPTIONS}" >&2
-          npx env-cmd -f ${ENV_FILE} nx build ${CANISTER_NAME} ${OPTIONS} --skip-nx-cache
+          npx env-cmd -f ${ENV_FILE} nx build ${CANISTER_NAME} ${OPTIONS}
 
           ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${CANISTER_NAME}" >&2
           dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"

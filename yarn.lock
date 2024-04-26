@@ -4180,10 +4180,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/embed@0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.1.tgz#0e2e566d759bdc8f25dbceeb51cd799aba836f14"
-  integrity sha512-CRwtrG6r92Etk4y6uW1NJdjehc0dwqzNdrVBLagXh5dWOvstFVl2DzdGhZRiIqA7+lsHti9aF2mf3mqDJjSIzg==
+"@nfid/embed@0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@nfid/embed/-/embed-0.10.2.tgz#ab184e1a6cd3e732fc2e552fc1cb740832684292"
+  integrity sha512-dE0/FpkWDLk+54XvWUv+wKPp6A1TzAFKRRI1MT+kpsdQINpA5uXh4+imyveC9z6zSQt1OV8jnDdJcwLFmwYD/w==
   dependencies:
     uuid "9"
 

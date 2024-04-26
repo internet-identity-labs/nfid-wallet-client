@@ -20,12 +20,14 @@ type AuthenticationFormValues = {
 export const AuthenticationForm = ({
   submitButtonText,
   submitButtonId,
+  submitButtonDisabled,
   isLoading,
   onSubmit,
 }: {
   submitButtonText: string
   submitButtonId: string
   isLoading: boolean
+  submitButtonDisabled: boolean
   onSubmit: (formValues: {
     targets: string[]
     maxTimeToLive: bigint
@@ -125,7 +127,7 @@ export const AuthenticationForm = ({
         >
           Add target canisterId
         </Button>
-        <Button isSmall id={submitButtonId}>
+        <Button isSmall id={submitButtonId} disabled={submitButtonDisabled}>
           <div className={"flex items-center space-x-2"}>
             {isLoading ? <ImSpinner className={"animate-spin"} /> : ""}
             <div>{submitButtonText}</div>

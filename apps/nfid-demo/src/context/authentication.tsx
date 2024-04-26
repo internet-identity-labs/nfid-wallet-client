@@ -18,6 +18,7 @@ declare const NFID_PROVIDER_URL: string
 
 interface AuthenticationContextProps {
   nfid?: NFID
+  isLoadingNFID?: boolean
   identity?: SignIdentity
   delegationIdentity?: DelegationIdentity
   setIdentity: React.Dispatch<
@@ -75,7 +76,7 @@ export const AuthenticationProvider: React.FC<{
 
   const [keyType, setKeyType] = React.useState<BaseKeyType>("ECDSA")
 
-  const { data: nfid } = useSWR(
+  const { data: nfid, isLoading: isLoadingNFID } = useSWR(
     `nfid-${keyType}`,
     () =>
       NFID.init({
@@ -128,6 +129,7 @@ export const AuthenticationProvider: React.FC<{
     <AuthenticationContext.Provider
       value={{
         nfid,
+        isLoadingNFID,
         identity,
         setIdentity,
         keyType,

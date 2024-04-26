@@ -352,7 +352,6 @@ jobs:
           ci_versions
 
       - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 

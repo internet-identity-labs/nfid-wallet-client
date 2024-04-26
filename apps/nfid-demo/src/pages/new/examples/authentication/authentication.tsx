@@ -65,6 +65,7 @@ export const AuthenticationExample = ({
         submitButtonId="buttonAuthenticate"
         submitButtonText={"Authenticate"}
         isLoading={authButton.loading}
+        submitButtonDisabled={authButton.disabled}
         onSubmit={handleAuthenticate}
       />
       <div className="flex-col mt-5 space-y-2">
@@ -79,6 +80,7 @@ export const AuthenticationExample = ({
           isSmall
           id={"buttonLegacyAuth"}
           onClick={handleLegacyAuthenticate}
+          disabled={authButton.disabled}
         >
           <div className={"flex items-center space-x-2"}>
             {authButton.loading ? <ImSpinner className={"animate-spin"} /> : ""}

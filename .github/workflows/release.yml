@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -64,10 +64,10 @@ jobs:
           echo "[ERROR] You have try release to network 'ic' without or with wrong confirmation phrase" >&2
           exit 1
 
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -90,7 +90,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache Node Modules.
+      - name: Cache Node Modules
         id: cache-node-modules
         uses: actions/cache@v4
         with:
@@ -98,7 +98,7 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn
+          key: nfid-fe-yarn
 
       - name: Versions
         run: |
@@ -106,7 +106,7 @@ jobs:
 
           ci_versions
 
-      - name: NFID-DEMO => Populate env vars.
+      - name: NFID-DEMO => Populate env vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -137,7 +137,7 @@ jobs:
           echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
           echo "OPTIONS=${OPTIONS}" >> $GITHUB_ENV
 
-      - name: NFID-DEMO => Print Vars.
+      - name: NFID-DEMO => Print Vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -148,7 +148,6 @@ jobs:
           ci_echo_info "OPTIONS=${OPTIONS}" >&2
 
       - name: NFID-DEMO => Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -194,10 +193,10 @@ jobs:
         shell: bash
 
     steps:
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -211,7 +210,7 @@ jobs:
 
           ci_versions
 
-      - name: PRE-DEPLOY => Populate env vars.
+      - name: PRE-DEPLOY => Populate env vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -252,7 +251,7 @@ jobs:
           echo "ID_PATH=${ID_PATH}" >> $GITHUB_ENV
           echo "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >> $GITHUB_ENV
 
-      - name: PRE-DEPLOY => Print Vars.
+      - name: PRE-DEPLOY => Print Vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
@@ -280,7 +279,7 @@ jobs:
         with:
           name: nfid-demo
 
-      - name: DEPLOY => Deploy to the canister.
+      - name: DEPLOY => Deploy to the canister
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -315,10 +314,10 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
-      - name: Checkout repo.
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Checkout CI repo.
+      - name: Checkout CI repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
@@ -336,7 +335,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache Node Modules.
+      - name: Cache Node Modules
         id: cache-node-modules
         uses: actions/cache@v4
         with:
@@ -344,7 +343,7 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-cloudflare
+          key: nfid-fe-yarn-cloudflare
 
       - name: Versions
         run: |
@@ -353,7 +352,6 @@ jobs:
           ci_versions
 
       - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 

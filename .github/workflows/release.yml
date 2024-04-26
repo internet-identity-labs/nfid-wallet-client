@@ -148,7 +148,6 @@ jobs:
           ci_echo_info "OPTIONS=${OPTIONS}" >&2
 
       - name: NFID-DEMO => Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 

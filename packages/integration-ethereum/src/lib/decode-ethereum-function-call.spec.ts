@@ -7,7 +7,9 @@ import {
 
 const goerliChainId = "00x5"
 
-describe("Decode function call data.", () => {
+// SKIP: https://app.shortcut.com/the-internet-portal/story/11881/remove-rarible-unit-tests
+// @Dmitrii to take a look and probably remove
+describe.skip("Decode function call data.", () => {
   jest.setTimeout(60000)
 
   beforeEach(async () => {

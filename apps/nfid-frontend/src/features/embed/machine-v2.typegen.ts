@@ -54,10 +54,10 @@ export interface Typegen0 {
       | "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     assignError: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     assignProcedure: "RPC_MESSAGE"
-    nfid_ready: "NFID_READY"
     nfid_authenticated:
       | "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
       | "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
+    nfid_ready: "RPC_MESSAGE" | "xstate.init"
     nfid_unauthenticated: "SESSION_EXPIRED"
     queueRequest: "RPC_MESSAGE"
     sendRPCCancelResponse: "CANCEL" | "CANCEL_ERROR"

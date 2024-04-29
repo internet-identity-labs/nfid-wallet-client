@@ -63,7 +63,6 @@ jobs:
         run: |
           echo "[ERROR] You have try release to network 'ic' without or with wrong confirmation phrase" >&2
           exit 1
-
       - name: Checkout repo
         uses: actions/checkout@v4
 

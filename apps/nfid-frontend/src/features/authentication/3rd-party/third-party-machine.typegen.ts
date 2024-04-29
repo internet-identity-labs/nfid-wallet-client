@@ -64,8 +64,8 @@ export interface Typegen0 {
   eventsCausingGuards: {}
   eventsCausingServices: {
     AuthenticationMachine: "done.state.idp.Start"
-    getAppMeta: "xstate.init"
-    handshake: "RETRY" | "xstate.init"
+    getAppMeta: "RESET" | "xstate.init"
+    handshake: "RESET" | "RETRY" | "xstate.init"
     postDelegation: "CHOOSE_ACCOUNT"
   }
   matchesStates:

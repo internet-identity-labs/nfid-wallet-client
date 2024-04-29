@@ -107,7 +107,7 @@ export const NFIDEmbedMachineV2 = createMachine(
           src: "RPCReceiver",
         },
         order: 1,
-        entry: ['nfid_ready'],
+        entry: ["nfid_ready"],
         on: {
           RPC_MESSAGE: [
             {
@@ -300,10 +300,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         console.debug("nfid_ready", {
           origin: requesterDomain,
         })
-        window.parent.postMessage(
-          { type: "nfid_ready" },
-          requesterDomain,
-        )
+        window.parent.postMessage({ type: "nfid_ready" }, requesterDomain)
       },
       nfid_authenticated: () => {
         const requesterDomain = window.location.ancestorOrigins

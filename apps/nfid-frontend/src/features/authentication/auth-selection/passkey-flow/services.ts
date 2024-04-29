@@ -2,6 +2,7 @@ import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   DER_COSE_OID,
   DelegationIdentity,
+  Ed25519KeyIdentity,
   WebAuthnIdentity,
   wrapDER,
 } from "@dfinity/identity"
@@ -255,18 +256,7 @@ export class PasskeyConnector {
         hasEmail: !!profile.email,
       })
 
-      const keyIdentity = JSON.stringify(sessionKey.toJSON())
-      const delegation = JSON.stringify(
-        delegationIdentity.getDelegation().toJSON(),
-      )
-
-      console.debug("PasskeyConnector.loginWithPasskey", {
-        keyIdentity,
-        delegation,
-      })
-
-      await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
-      await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
+      await this.cachePasskeyDelegation(sessionKey, delegationIdentity)
 
       return {
         anchor: profile.anchor,
@@ -360,18 +350,7 @@ export class PasskeyConnector {
       legacyUser: profile.wallet === RootWallet.II,
     })
 
-    const keyIdentity = JSON.stringify(sessionKey.toJSON())
-    const delegation = JSON.stringify(
-      delegationIdentity.getDelegation().toJSON(),
-    )
-
-    console.debug("PasskeyConnector.loginWithPasskey", {
-      keyIdentity,
-      delegation,
-    })
-
-    await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
-    await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
+    await this.cachePasskeyDelegation(sessionKey, delegationIdentity)
 
     const authSession = {
       anchor: profile.anchor,
@@ -429,6 +408,24 @@ export class PasskeyConnector {
     }
 
     return lambdaRequest
+  }
+
+  private async cachePasskeyDelegation(
+    identity: Ed25519KeyIdentity,
+    delegationIdentity: DelegationIdentity,
+  ) {
+    const keyIdentity = JSON.stringify(identity.toJSON())
+    const delegation = JSON.stringify(
+      delegationIdentity.getDelegation().toJSON(),
+    )
+
+    console.debug("PasskeyConnector.cachePasskeyDelegation", {
+      keyIdentity,
+      delegation,
+    })
+
+    await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
+    await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
   }
 }
 

@@ -260,7 +260,7 @@ export class PasskeyConnector {
         delegationIdentity.getDelegation().toJSON(),
       )
 
-      console.log("PasskeyConnector.loginWithPasskey", {
+      console.debug("PasskeyConnector.loginWithPasskey", {
         keyIdentity,
         delegation,
       })

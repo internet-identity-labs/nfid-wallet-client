@@ -360,6 +360,19 @@ export class PasskeyConnector {
       legacyUser: profile.wallet === RootWallet.II,
     })
 
+    const keyIdentity = JSON.stringify(sessionKey.toJSON())
+    const delegation = JSON.stringify(
+      delegationIdentity.getDelegation().toJSON(),
+    )
+
+    console.debug("PasskeyConnector.loginWithPasskey", {
+      keyIdentity,
+      delegation,
+    })
+
+    await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
+    await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
+
     const authSession = {
       anchor: profile.anchor,
       delegationIdentity: delegationIdentity,

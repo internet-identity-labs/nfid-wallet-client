@@ -34,17 +34,16 @@ export const TransferReceive = ({
   preselectedTokenBlockchain = Blockchain.IC,
 }: ITransferReceive) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedTokenStandard, setSelectedTokenStandard] = useState(
+  const [selectedTokenStandard] = useState(
     preselectedTokenStandard,
   )
-  const [selectedTokenBlockchain, setSelectedTokenBlockchain] = useState(
+  const [selectedTokenBlockchain] = useState(
     preselectedTokenBlockchain,
   )
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
   )
 
-  const { data: networkOptions } = useNetworkOptions(isVault)
   const { data: accountsOptions, isValidating: isAccountsValidating } =
     useAccountsOptions(
       selectedTokenStandard as TokenStandards,

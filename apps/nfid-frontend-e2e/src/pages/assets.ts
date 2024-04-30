@@ -59,11 +59,6 @@ export class Assets {
     await assetOptions.click()
   }
 
-  public async chooseChainOption(chain: string) {
-    const option = await $(`#choose_option_${chain.replace(/\s/g, "")}`)
-    await option.click()
-  }
-
   public async chooseCurrencyOption(currency: string, chain: string) {
     const option = await $(
       `#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`,

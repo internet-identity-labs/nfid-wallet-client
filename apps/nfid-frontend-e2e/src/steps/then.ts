@@ -444,10 +444,6 @@ Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
   await opt.waitForExist({ timeout: 15000 })
 })
 
-Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
-  await chooseChainOption(chain)
-})
-
 Then(
   /^Choose ([^"]*) on ([^"]*) from send options/,
   async (currency: string, chain: string) => {
@@ -529,7 +525,6 @@ Then(
     let address = await Assets.getAccountId(true)
 
     for (let i = 0; i < chains.length; i++) {
-      await chooseChainOption(chains[i])
       let expectedResult =
         (await address.firstAddressPart.getText()) +
         "..." +
@@ -911,18 +906,6 @@ Then(/^Assert ([^"]*) code block has hash$/, async (block: string) => {
   const codeBlockText = await codeBlock.getText()
   expect(codeBlockText).toContain("hash")
 })
-
-async function chooseChainOption(chain: string) {
-  await Assets.openAssetReceiveOptions()
-  await Assets.chooseChainOption(chain)
-
-  const loader = await $("#loader")
-  await loader.waitForDisplayed({
-    reverse: true,
-    timeout: 10000,
-    timeoutMsg: `Loader is still displayed after timeout. Chain: ${chain}`,
-  })
-}
 
 Then(
   /^Check request details ([^"]*) equals to ([^"]*)$/,

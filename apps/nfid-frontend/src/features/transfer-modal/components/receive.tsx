@@ -18,6 +18,8 @@ import { useNetworkOptions } from "../hooks/use-network-options"
 import { PRINCIPAL_LENGTH } from "../utils/validations"
 import { ReceiveModal } from "./receive-modal"
 
+import ICPIcon from "../../../../../../packages/ui/src/assets/ic.svg"
+
 export interface ITransferReceive {
   isVault: boolean
   preselectedTokenStandard: string
@@ -102,22 +104,15 @@ export const TransferReceive = ({
           tokens NFID supports.
         </span>
       </p>
-      <ChooseModal
-        label="Network"
-        title={"Choose a network"}
-        optionGroups={networkOptions}
-        iconClassnames="!w-6 !h-auto !object-contain"
-        preselectedValue={`${selectedTokenStandard}&${selectedTokenBlockchain}`}
-        onSelect={(value) => {
-          const arrayValue = value.split("&")
-          if (arrayValue.length < 2) return
-
-          setSelectedTokenStandard(value.split("&")[0])
-          setSelectedTokenBlockchain(value.split("&")[1])
-        }}
-        type="small"
-        isSmooth
-      />
+      <div>
+        <p className="mb-1 text-black">Network</p>
+        <div className="rounded-md bg-gray-100 text-black flex items-center gap-1 px-2.5 h-10 text-sm">
+          <div className="rounded-full w-6 h-6 bg-white p-1">
+            <img src={ICPIcon} alt="ICP&Internet Computer" />
+          </div>
+          <p>Internet Computer</p>
+        </div>
+      </div>
       {isVault && (
         <ChooseModal
           label="Accounts"

@@ -1,3 +1,5 @@
+import { DelegationIdentity } from "@dfinity/identity"
+
 import { authState } from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -7,12 +9,18 @@ export const CheckAuthState = async (): Promise<{
   authSession: AuthSession
 }> => {
   console.debug("CheckAuthState")
-  const { delegationIdentity } = await authState.fromCache()
+  let delegation: DelegationIdentity | undefined
 
-  console.debug("CheckAuthState", { delegationIdentity })
+  try {
+    const { delegationIdentity } = await authState.fromCache()
+    delegation = delegationIdentity
+  } catch {
+    console.debug("CheckAuthState: failed getting cache")
+    throw new Error("CheckAuthState: failed getting cache")
+  }
+  console.debug("CheckAuthState", { delegation })
 
-  if (!delegationIdentity)
-    throw new Error("CheckAuthState: no auth session in cache")
+  if (!delegation) throw new Error("CheckAuthState: no auth session in cache")
 
   const { anchor } = await fetchProfile()
 
@@ -20,7 +28,7 @@ export const CheckAuthState = async (): Promise<{
     authSession: {
       anchor,
       sessionSource: "cache",
-      delegationIdentity,
+      delegationIdentity: delegation,
     },
   }
 }

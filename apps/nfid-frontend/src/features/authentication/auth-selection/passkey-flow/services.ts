@@ -2,6 +2,7 @@ import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   DER_COSE_OID,
   DelegationIdentity,
+  Ed25519KeyIdentity,
   WebAuthnIdentity,
   wrapDER,
 } from "@dfinity/identity"
@@ -9,6 +10,11 @@ import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
+import {
+  KEY_STORAGE_DELEGATION,
+  KEY_STORAGE_KEY,
+  authStorage,
+} from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/lambda/ecdsa"
 import { toast } from "react-toastify"
 
@@ -46,7 +52,7 @@ import { getBrowser } from "frontend/ui/utils"
 
 const alreadyRegisteredDeviceErrors = [
   "credentials already registered", //Chrome-based browsers
-  "object that is not, or is no longer, usable" //Firefox
+  "object that is not, or is no longer, usable", //Firefox
 ]
 
 export class PasskeyConnector {
@@ -189,7 +195,7 @@ export class PasskeyConnector {
       })) as PublicKeyCredential
     } catch (e: any) {
       console.error(e)
-      if (alreadyRegisteredDeviceErrors.find(x => e.message.includes(x))) {
+      if (alreadyRegisteredDeviceErrors.find((x) => e.message.includes(x))) {
         toast.error("This device is already registered")
       } else {
         toast.error(e.message)
@@ -249,6 +255,8 @@ export class PasskeyConnector {
         legacyUser: profile.wallet === RootWallet.II,
         hasEmail: !!profile.email,
       })
+
+      await this.cachePasskeyDelegation(sessionKey, delegationIdentity)
 
       return {
         anchor: profile.anchor,
@@ -403,6 +411,24 @@ export class PasskeyConnector {
     }
 
     return lambdaRequest
+  }
+
+  private async cachePasskeyDelegation(
+    identity: Ed25519KeyIdentity,
+    delegationIdentity: DelegationIdentity,
+  ) {
+    const keyIdentity = JSON.stringify(identity.toJSON())
+    const delegation = JSON.stringify(
+      delegationIdentity.getDelegation().toJSON(),
+    )
+
+    console.debug("PasskeyConnector.cachePasskeyDelegation", {
+      keyIdentity,
+      delegation,
+    })
+
+    await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
+    await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
   }
 }
 

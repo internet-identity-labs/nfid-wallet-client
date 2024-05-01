@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/browser"
 import React, { useState } from "react"
 import { FieldValues } from "react-hook-form"
 
@@ -58,7 +57,6 @@ export const AppScreenRecoverNFID: React.FC<
         )
       }
 
-      Sentry.setUser({ id: userNumber.toString() })
       navigate(registerDeviceDeciderPath, { state: { userNumber } })
     },
     [loginWithRecovery, navigate, refreshProfile, registerDeviceDeciderPath],

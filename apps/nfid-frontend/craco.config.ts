@@ -25,7 +25,6 @@ const setupCSP = () => {
         "https://*.ic0.app",
         "https://*.icp0.io",
         process.env.AWS_BASE_EP as string,
-        "https://o1255710.ingest.sentry.io",
         "https://rosetta-api.internetcomputer.org",
         "https://free.currconv.com/",
         "https://us-central1-entrepot-api.cloudfunctions.net",

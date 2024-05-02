@@ -2,12 +2,6 @@ import * as childProcess from "child_process"
 
 import canisterIds from "../canister_ids.json"
 
-const sentryRelease = childProcess
-  .execSync("git rev-parse HEAD")
-  .toString()
-  .trim()
-  .slice(0, 12)
-
 let sdkGitHash
 try {
   sdkGitHash = childProcess
@@ -22,7 +16,6 @@ try {
 export const serviceConfig = {
   SDK_GIT_HASH: JSON.stringify(sdkGitHash),
   CANISTER_IDS: JSON.stringify(canisterIds),
-  SENTRY_RELEASE: JSON.stringify(sentryRelease),
   NFID_PROVIDER_URL: JSON.stringify(process.env.NFID_PROVIDER_URL),
   IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
   IC_HOST: JSON.stringify(process.env.IC_HOST),

@@ -13,7 +13,7 @@ import { generateDelegationIdentity } from "../test-utils"
 import {
   addICRC1Canister,
   getICRC1Canisters,
-  getICRC1Data,
+  getICRC1DataForUser,
   ICRC1Data,
   transferICRC1,
 } from "./index"
@@ -43,7 +43,7 @@ describe("ICRC1 suite", () => {
     await replaceActorIdentity(im, delegationIdentity)
     const account = (await im.get_account()) as HTTPAccountResponse
     const root = account.data[0]!.principal_id
-    const data = (await getICRC1Data(
+    const data = (await getICRC1DataForUser(
       root,
       "sculj-2sjuf-dxqlm-dcv5y-hin5x-zfyvr-tzngf-bt5b5-dwhcc-zbsqf-rae",
     )) as Array<ICRC1Data>

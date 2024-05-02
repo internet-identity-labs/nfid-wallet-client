@@ -1,16 +1,15 @@
 import * as Agent from "@dfinity/agent"
-import { HttpAgent, Identity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import {HttpAgent, Identity} from "@dfinity/agent"
+import {Principal} from "@dfinity/principal"
 
-import { idlFactory as icrc1IDL } from "../_ic_api/icrc1"
-import {
-  _SERVICE as ICRC1,
-  Icrc1TransferResult,
-  TransferArg,
-} from "../_ic_api/icrc1.d"
-import { agentBaseConfig, iCRC1Registry } from "../actors"
+import {idlFactory as icrc1IDL} from "../_ic_api/icrc1"
+import {idlFactory as icrc1IndexIDL} from "../_ic_api/index-icrc1"
+import {_SERVICE as ICRC1, Icrc1TransferResult, TransferArg,} from "../_ic_api/icrc1.d"
+import {_SERVICE as ICRCIndex, GetAccountTransactionsArgs, TransactionWithId,} from "../_ic_api/index-icrc1.d"
+import {agentBaseConfig, iCRC1Registry} from "../actors"
 import {TokenPrice} from "../asset/types";
 import {PriceService} from "../asset/asset-util";
+import {hasOwnProperty} from "@nfid/integration";
 
 
 const errorText = "This does not appear to be an ICRC1 compatible canister"
@@ -28,6 +27,11 @@ export interface ICRC1Data {
   network: string
   priceInUsd: number | undefined
   logo: string | undefined
+}
+
+export interface ICRC1IndexData {
+  transactions: Array<TransactionWithId>
+  oldestTransactionId: bigint | undefined
 }
 
 /*
@@ -49,7 +53,7 @@ export async function isICRC1Canister(
 ): Promise<ICRC1Data> {
   const actor = Agent.Actor.createActor<ICRC1>(icrc1IDL, {
     canisterId: canisterId,
-    agent: new HttpAgent({ ...agentBaseConfig }),
+    agent: new HttpAgent({...agentBaseConfig}),
   })
   const standards = await actor.icrc1_supported_standards()
   const isICRC1: boolean = standards
@@ -112,7 +116,7 @@ export async function getICRC1Data(
     canisters.map(async (canisterId) => {
       const actor = Agent.Actor.createActor<ICRC1>(icrc1IDL, {
         canisterId: canisterId,
-        agent: new HttpAgent({ ...agentBaseConfig }),
+        agent: new HttpAgent({...agentBaseConfig}),
       })
       const balance = await actor.icrc1_balance_of({
         subaccount: [],
@@ -177,3 +181,44 @@ export async function getICRC1Data(
   )
 }
 
+export async function getICRC1IndexData(
+  canisters: Array<string>,
+  publicKeyInPrincipal: string,
+  maxResults: bigint,
+  blockNumberToStartFrom: bigint | undefined
+): Promise<Array<ICRC1IndexData>> {
+
+  return Promise.all(
+    canisters.map(async (canisterId) => {
+      const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
+        canisterId: canisterId,
+        agent: new HttpAgent({...agentBaseConfig}),
+      })
+
+      const args: GetAccountTransactionsArgs = {
+        account: {
+          subaccount: [],
+          owner: Principal.fromText(publicKeyInPrincipal),
+        },
+        max_results: maxResults,
+        start: blockNumberToStartFrom === undefined ? [] : [blockNumberToStartFrom]
+      }
+
+      const response = await indexActor.get_account_transactions(args)
+
+      if (hasOwnProperty(response, "Err")) {
+        console.warn("Error getting account transactions for canister: " + canisterId)
+        return { transactions: [], oldestTransactionId: undefined }
+      }
+
+      if (hasOwnProperty(response, "Ok")) {
+        return {
+          transactions: response.Ok.transactions,
+          oldestTransactionId: response.Ok.oldest_tx_id.length === 0 ? undefined : response.Ok.oldest_tx_id[0]
+        }
+      }
+
+       return { transactions: [], oldestTransactionId: undefined }
+    }))
+
+}

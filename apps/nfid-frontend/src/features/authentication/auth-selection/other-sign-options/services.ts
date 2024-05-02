@@ -1,5 +1,4 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import * as Sentry from "@sentry/browser"
 
 import { authState, im, setProfile } from "@nfid/integration"
 
@@ -26,7 +25,6 @@ export async function authWithAnchor({
   if (authResult.tag !== "ok")
     throw new Error("We couldn't authenticate you using this device")
 
-  Sentry.setUser({ id: anchor.toString() })
   const delegationIdentity = DelegationIdentity.fromDelegation(
     authResult.sessionKey,
     authResult.chain,

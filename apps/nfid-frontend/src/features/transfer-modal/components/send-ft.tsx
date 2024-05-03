@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR, { mutate } from "swr"
+import Decimal from 'decimal.js'
 
 import {
   Button,
@@ -365,7 +366,7 @@ export const TransferFT = ({
               "p-0",
             )}
             placeholder="0.00"
-            type="number"
+            type="text"
             id="amount"
             min={0.0}
             {...register("amount", {
@@ -378,16 +379,24 @@ export const TransferFT = ({
               onBlur: calculateFee,
             })}
             onKeyDown={(e) => {
+              const allowedKeys = /[0-9.]/;
+              const key = e.key;
               const value = e.target.value;
-              const decimalIndex = value.indexOf('.');
-              const decimalValue = decimalIndex !== -1 ? value.substring(decimalIndex + 1) : null;
-
-              if (['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].includes(e.key)) {
+              const cursorPosition = e.target.selectionStart ?? 0;
+              const dotPosition = value.indexOf('.');
+              
+              if (['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].includes(key)) {
                 return;
               }
 
-              if (decimalValue && decimalValue.length >= MAX_DECIMAL_LENGTH) {
+              if (!allowedKeys.test(key) || (key === '.' && value.includes('.'))) {
                 e.preventDefault();
+              }
+
+              if (dotPosition !== -1 && cursorPosition > dotPosition) {
+                if (new Decimal(value).decimalPlaces() >= MAX_DECIMAL_LENGTH) {
+                  e.preventDefault();
+                }
               }
             }}
             onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {

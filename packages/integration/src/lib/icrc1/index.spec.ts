@@ -38,7 +38,7 @@ describe("ICRC1 suite", () => {
     expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
   })
 
-  it("Store/retrieve canister id", async () => {
+  it("Fail if incorrect index canister", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)

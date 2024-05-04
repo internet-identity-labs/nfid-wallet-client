@@ -13,10 +13,11 @@ import { generateDelegationIdentity } from "../test-utils"
 import {
   addICRC1Canister,
   getICRC1Canisters,
-  getICRC1DataForUser,
+  getICRC1DataForUser, getICRC1HistoryDataForUser, getICRC1IndexData,
   ICRC1Data,
   transferICRC1,
 } from "./index"
+import {ICRC1} from "../_ic_api/icrc1_registry.d";
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
@@ -27,12 +28,12 @@ describe("ICRC1 suite", () => {
       await generateDelegationIdentity(mockedIdentity)
     await replaceActorIdentity(iCRC1Registry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
-    await addICRC1Canister(iCRC1TestCanister)
+    await addICRC1Canister(iCRC1TestCanister, undefined)
     await replaceActorIdentity(im, delegationIdentity)
     const account = (await im.get_account()) as HTTPAccountResponse
     const root = account.data[0]!.principal_id
-    const canisters = (await getICRC1Canisters(root)) as string[]
-    expect(canisters).toContain(iCRC1TestCanister)
+    const canisters = (await getICRC1Canisters(root)) as ICRC1[]
+    expect(canisters.map(l => l.ledger)).toContain(iCRC1TestCanister)
   })
 
   it("Get data", async () => {
@@ -54,6 +55,23 @@ describe("ICRC1 suite", () => {
     expect(testICRC1.decimals).toEqual(8)
     expect(testICRC1.name).toEqual("ICPTestNfid")
     expect(testICRC1.symbol).toEqual("ICPTestNfid")
+  })
+
+  it("Get index data", async () => {
+    const data = (await getICRC1IndexData(
+      [{ledger: "2ouva-viaaa-aaaaq-aaamq-cai", index: ["2awyi-oyaaa-aaaaq-aaanq-cai"]}],
+      "7cpx7-5iqxa-df2t7-jktca-2mfbq-b7keh-dsunz-k256d-55byp-7lkyp-uqe",
+      BigInt(1), BigInt(298680)
+    ))
+    const testICRC1 = data[0]
+    expect(testICRC1.transactions.length).toBeGreaterThan(0)
+    expect(testICRC1.transactions[0].transactionId).toEqual(BigInt(298669))
+    expect(testICRC1.transactions[0].from).toEqual("7cpx7-5iqxa-df2t7-jktca-2mfbq-b7keh-dsunz-k256d-55byp-7lkyp-uqe",)
+    expect(testICRC1.transactions[0].to).toEqual("l3k5l-liaaa-aaaan-qmhkq-cai")
+    expect(testICRC1.transactions[0].type).toEqual("sent")
+    expect(testICRC1.transactions[0].symbol).toEqual("CHAT")
+    expect(testICRC1.transactions[0].amount).toEqual(BigInt(10000000))
+    expect(testICRC1.oldestTransactionId).toEqual(BigInt(246792))
   })
 
   it("Transfer", async () => {

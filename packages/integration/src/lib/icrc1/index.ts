@@ -98,6 +98,7 @@ export async function isICRC1Canister(
   canisterId: string,
   rootPrincipalId: string,
   publicKey: string,
+  indexCanister: string | undefined,
 ): Promise<ICRC1Data> {
   const actor = Agent.Actor.createActor<ICRC1Service>(icrc1IDL, {
     canisterId: canisterId,
@@ -123,6 +124,14 @@ export async function isICRC1Canister(
       throw Error("Canister cannot be added.")
     }
   })
+
+  if (indexCanister) {
+    const expectedLedgerId = await getLedgerIdFromIndexCanister(indexCanister)
+    if (expectedLedgerId.toText() !== canisterId) {
+      throw Error("Ledger canister does not match index canister.")
+    }
+  }
+
   return getICRC1Data([canisterId], publicKey)
     .then((data) => {
       return data[0]
@@ -290,6 +299,16 @@ export async function getICRC1IndexData(
       return { transactions: [], oldestTransactionId: undefined }
     }),
   )
+}
+
+function getLedgerIdFromIndexCanister(
+  indexCanister: string,
+): Promise<Principal> {
+  const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
+    canisterId: indexCanister,
+    agent: new HttpAgent({ ...agentBaseConfig }),
+  })
+  return indexActor.ledger_id()
 }
 
 function mapRawTrsToTransaction(

@@ -17,13 +17,14 @@ import {
   getICRC1DataForUser,
   getICRC1IndexData,
   ICRC1Data,
+  isICRC1Canister,
   transferICRC1,
 } from "./index"
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
-  it.skip("Store/retrieve canister id", async () => {
+  it("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -37,7 +38,30 @@ describe("ICRC1 suite", () => {
     expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
   })
 
-  it.skip("Get data", async () => {
+  it("Store/retrieve canister id", async () => {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+    await replaceActorIdentity(iCRC1Registry, delegationIdentity)
+    await replaceActorIdentity(im, delegationIdentity)
+    const account = (await im.get_account()) as HTTPAccountResponse
+    const root = account.data[0]!.principal_id
+    try {
+      await isICRC1Canister(
+        "2ouva-viaaa-aaaaq-aaamq-cai",
+        root,
+        "sculj-2sjuf-dxqlm-dcv5y-hin5x-zfyvr-tzngf-bt5b5-dwhcc-zbsqf-rae",
+        "qhbym-qaaaa-aaaaa-aaafq-cai",
+      )
+      fail("Should throw error")
+    } catch (e: any) {
+      expect(e.message).toEqual(
+        "Ledger canister does not match index canister.",
+      )
+    }
+  })
+
+  it("Get data", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)

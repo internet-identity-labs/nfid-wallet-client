@@ -7,17 +7,18 @@ import { Principal } from "@dfinity/principal"
 import { mockIdentityA } from "@nfid/integration"
 
 import { TransferArg } from "../_ic_api/icrc1.d"
+import { ICRC1 } from "../_ic_api/icrc1_registry.d"
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import { iCRC1Registry, im, replaceActorIdentity } from "../actors"
 import { generateDelegationIdentity } from "../test-utils"
 import {
   addICRC1Canister,
   getICRC1Canisters,
-  getICRC1DataForUser, getICRC1HistoryDataForUser, getICRC1IndexData,
+  getICRC1DataForUser,
+  getICRC1IndexData,
   ICRC1Data,
   transferICRC1,
 } from "./index"
-import {ICRC1} from "../_ic_api/icrc1_registry.d";
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
@@ -33,7 +34,7 @@ describe("ICRC1 suite", () => {
     const account = (await im.get_account()) as HTTPAccountResponse
     const root = account.data[0]!.principal_id
     const canisters = (await getICRC1Canisters(root)) as ICRC1[]
-    expect(canisters.map(l => l.ledger)).toContain(iCRC1TestCanister)
+    expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
   })
 
   it.skip("Get data", async () => {
@@ -58,15 +59,23 @@ describe("ICRC1 suite", () => {
   })
 
   it("Get index data", async () => {
-    const data = (await getICRC1IndexData(
-      [{ledger: "2ouva-viaaa-aaaaq-aaamq-cai", index: ["2awyi-oyaaa-aaaaq-aaanq-cai"]}],
+    const data = await getICRC1IndexData(
+      [
+        {
+          ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
+          index: ["2awyi-oyaaa-aaaaq-aaanq-cai"],
+        },
+      ],
       "7cpx7-5iqxa-df2t7-jktca-2mfbq-b7keh-dsunz-k256d-55byp-7lkyp-uqe",
-      BigInt(1), BigInt(298680)
-    ))
+      BigInt(1),
+      BigInt(298680),
+    )
     const testICRC1 = data[0]
     expect(testICRC1.transactions.length).toBeGreaterThan(0)
     expect(testICRC1.transactions[0].transactionId).toEqual(BigInt(298669))
-    expect(testICRC1.transactions[0].from).toEqual("7cpx7-5iqxa-df2t7-jktca-2mfbq-b7keh-dsunz-k256d-55byp-7lkyp-uqe",)
+    expect(testICRC1.transactions[0].from).toEqual(
+      "7cpx7-5iqxa-df2t7-jktca-2mfbq-b7keh-dsunz-k256d-55byp-7lkyp-uqe",
+    )
     expect(testICRC1.transactions[0].to).toEqual("l3k5l-liaaa-aaaan-qmhkq-cai")
     expect(testICRC1.transactions[0].type).toEqual("sent")
     expect(testICRC1.transactions[0].symbol).toEqual("CHAT")

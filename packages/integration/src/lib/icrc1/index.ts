@@ -4,12 +4,13 @@ import {Principal} from "@dfinity/principal"
 
 import {idlFactory as icrc1IDL} from "../_ic_api/icrc1"
 import {idlFactory as icrc1IndexIDL} from "../_ic_api/index-icrc1"
-import {_SERVICE as ICRC1, Icrc1TransferResult, TransferArg,} from "../_ic_api/icrc1.d"
-import {_SERVICE as ICRCIndex, GetAccountTransactionsArgs, TransactionWithId,} from "../_ic_api/index-icrc1.d"
+import {_SERVICE as ICRC1Service, Icrc1TransferResult, TransferArg,} from "../_ic_api/icrc1.d"
+import {_SERVICE as ICRCIndex, GetAccountTransactionsArgs, TransactionWithId, Transfer,} from "../_ic_api/index-icrc1.d"
 import {agentBaseConfig, iCRC1Registry} from "../actors"
 import {TokenPrice} from "../asset/types";
 import {PriceService} from "../asset/asset-util";
 import {hasOwnProperty} from "@nfid/integration";
+import {ICRC1} from "../_ic_api/icrc1_registry.d";
 
 
 const errorText = "This does not appear to be an ICRC1 compatible canister"
@@ -30,8 +31,19 @@ export interface ICRC1Data {
 }
 
 export interface ICRC1IndexData {
-  transactions: Array<TransactionWithId>
+  transactions: Array<TransactionData>
+  // The oldest transaction id (it can help to stop the pagination in the UI)
   oldestTransactionId: bigint | undefined
+}
+
+interface TransactionData {
+  type: 'sent' | 'received'
+  timestamp: bigint
+  transactionId: bigint
+  symbol: string
+  amount: bigint
+  from: string
+  to: string
 }
 
 /*
@@ -43,7 +55,25 @@ export async function getICRC1DataForUser(
   publicKey: string,
 ): Promise<Array<ICRC1Data>> {
   const canisters = await getICRC1Canisters(rootPrincipalId)
-  return getICRC1Data(canisters, publicKey)
+  return getICRC1Data(canisters.map(l=>l.ledger), publicKey)
+}
+
+
+/*
+ PTAL "Get index data" test in icrc1/index.spec.ts
+ * rootPrincipalId: the principal id of the account im.getAccount().principalId
+ * publicKey: the public key returned by lambda ecdsa.ts getPublicKey() => convert to principal with Ed25519JSONableKeyIdentity
+ * maxResults: the maximum number of transactions to return
+ * blockNumberToStartFrom: the block number to start from
+ */
+export async function getICRC1HistoryDataForUser(rootPrincipalId: string,
+                                                 publicKey: string,
+                                                 maxResults: bigint,
+                                                 blockNumberToStartFrom: bigint | undefined
+): Promise<Array<ICRC1IndexData>> {
+  const canisters = await getICRC1Canisters(rootPrincipalId)
+  const indexedCanisters = canisters.filter((canister) => canister.index.length > 0)
+  return getICRC1IndexData(indexedCanisters, publicKey, maxResults, blockNumberToStartFrom)
 }
 
 export async function isICRC1Canister(
@@ -51,7 +81,7 @@ export async function isICRC1Canister(
   rootPrincipalId: string,
   publicKey: string,
 ): Promise<ICRC1Data> {
-  const actor = Agent.Actor.createActor<ICRC1>(icrc1IDL, {
+  const actor = Agent.Actor.createActor<ICRC1Service>(icrc1IDL, {
     canisterId: canisterId,
     agent: new HttpAgent({...agentBaseConfig}),
   })
@@ -64,7 +94,9 @@ export async function isICRC1Canister(
   }
   await getICRC1Canisters(rootPrincipalId).then((icrc1) => {
     if (
-      icrc1.map((c) => c).includes(canisterId)
+      icrc1.map((c) => c)
+        .map((c) => c.ledger)
+        .includes(canisterId)
     ) {
       throw Error("Canister already added.")
     }
@@ -87,7 +119,7 @@ export async function transferICRC1(
   iCRC1Canister: string,
   args: TransferArg,
 ): Promise<Icrc1TransferResult> {
-  const actor = Agent.Actor.createActor<ICRC1>(icrc1IDL, {
+  const actor = Agent.Actor.createActor<ICRC1Service>(icrc1IDL, {
     canisterId: iCRC1Canister,
     agent: new HttpAgent({
       host: "https://ic0.app",
@@ -99,12 +131,13 @@ export async function transferICRC1(
 
 export async function getICRC1Canisters(
   principal: string,
-): Promise<Array<string>> {
+): Promise<Array<ICRC1>> {
   return iCRC1Registry.get_canisters_by_root(principal)
 }
 
-export async function addICRC1Canister(canisterId: string): Promise<void> {
-  await iCRC1Registry.store_icrc1_canister(canisterId)
+export async function addICRC1Canister(canisterId: string, indexCanisterId: string | undefined): Promise<void> {
+  const indexCandid: [] | [string] = indexCanisterId ? [indexCanisterId] : []
+  await iCRC1Registry.store_icrc1_canister(canisterId, indexCandid)
 }
 
 export async function getICRC1Data(
@@ -114,7 +147,7 @@ export async function getICRC1Data(
   const priceList: TokenPrice[] = await new PriceService().getPriceFull()
   return Promise.all(
     canisters.map(async (canisterId) => {
-      const actor = Agent.Actor.createActor<ICRC1>(icrc1IDL, {
+      const actor = Agent.Actor.createActor<ICRC1Service>(icrc1IDL, {
         canisterId: canisterId,
         agent: new HttpAgent({...agentBaseConfig}),
       })
@@ -182,7 +215,7 @@ export async function getICRC1Data(
 }
 
 export async function getICRC1IndexData(
-  canisters: Array<string>,
+  canisters: Array<ICRC1>,
   publicKeyInPrincipal: string,
   maxResults: bigint,
   blockNumberToStartFrom: bigint | undefined
@@ -191,7 +224,7 @@ export async function getICRC1IndexData(
   return Promise.all(
     canisters.map(async (canisterId) => {
       const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
-        canisterId: canisterId,
+        canisterId: canisterId.index[0]!,
         agent: new HttpAgent({...agentBaseConfig}),
       })
 
@@ -203,22 +236,44 @@ export async function getICRC1IndexData(
         max_results: maxResults,
         start: blockNumberToStartFrom === undefined ? [] : [blockNumberToStartFrom]
       }
-
       const response = await indexActor.get_account_transactions(args)
 
       if (hasOwnProperty(response, "Err")) {
-        console.warn("Error getting account transactions for canister: " + canisterId)
-        return { transactions: [], oldestTransactionId: undefined }
+        console.warn("Error " + response.Err + " getting account transactions for canister: " + canisterId)
+        return {transactions: [], oldestTransactionId: undefined}
       }
 
       if (hasOwnProperty(response, "Ok")) {
+        const ledgerData = await getICRC1Data([canisterId.ledger], publicKeyInPrincipal);
         return {
-          transactions: response.Ok.transactions,
+          transactions: mapRawTrsToTransaction(response.Ok.transactions, publicKeyInPrincipal, ledgerData[0].symbol),
           oldestTransactionId: response.Ok.oldest_tx_id.length === 0 ? undefined : response.Ok.oldest_tx_id[0]
         }
       }
-
-       return { transactions: [], oldestTransactionId: undefined }
+      return {transactions: [], oldestTransactionId: undefined}
     }))
 
+}
+
+function mapRawTrsToTransaction(rawTrss: Array<TransactionWithId>, ownerPrincipal: string, symbol: string): Array<TransactionData> {
+  const filtered = rawTrss.filter((rawTrs) =>
+    rawTrs.transaction.transfer.length !== 0
+  )
+  if (filtered.length === 0) {
+    return []
+  }
+  return filtered.map((rawTrs) => {
+    const trs: Transfer = rawTrs.transaction.transfer[0]!
+    const type = ownerPrincipal === trs.from.owner.toText() ? "sent" : "received"
+    const data: TransactionData = {
+      type,
+      timestamp: rawTrs.transaction.timestamp,
+      symbol: symbol,
+      amount: trs.amount,
+      from: trs.from.owner.toText(),
+      to: trs.to.owner.toText(),
+      transactionId: rawTrs.id
+    }
+    return data
+  })
 }

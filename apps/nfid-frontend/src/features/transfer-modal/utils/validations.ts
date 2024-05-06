@@ -6,6 +6,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 export const PRINCIPAL_LENGTH = 63
 export const IC_ADDRESS_LENGTH = 64
 export const ETH_ADDRESS_LENGTH = 42
+export const CANISTER_ID_LENGTH = 27
 
 export const validateAddressField = (string: string) => {
   if (!string.length) return "This field cannot be empty"

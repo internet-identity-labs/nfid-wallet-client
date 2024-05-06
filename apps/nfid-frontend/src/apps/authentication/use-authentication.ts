@@ -1,6 +1,5 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
@@ -76,7 +75,6 @@ export const useAuthentication = () => {
   const logout = React.useCallback(() => {
     authState.logout()
     setUser(undefined)
-    Sentry.setUser(null)
 
     // NOTE: after dom ready reload the page so thate safari is able to authenticate again
     setTimeout(() => {
@@ -114,7 +112,6 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
-        Sentry.setUser({ id: anchor.toString() })
         initUserGeek(principal)
         setUser({
           principal: principal.toText(),

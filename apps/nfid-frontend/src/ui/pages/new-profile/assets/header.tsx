@@ -41,10 +41,12 @@ export const ProfileAssetsHeader = () => {
     },
   })
 
-  const submit = async (values: { ledgerID: string; }) => {
+  const submit = async (values: { ledgerID: string; indexID: string }) => {
+    const { ledgerID, indexID } = values;
+
     try {
       setIsLoading(true);
-      await addICRC1Canister(values.ledgerID);
+      await addICRC1Canister(ledgerID, indexID);
       setIsModalVisible(false);
     } catch (e) {
       console.debug(e);
@@ -53,28 +55,15 @@ export const ProfileAssetsHeader = () => {
     }
   }
 
-  const changeHandler = async (
-    canisterId: string,
-  ): Promise<boolean | string> => {
-    console.log('canisterId???', canisterId);
-    if (canisterId === tokenInfo?.canisterId) return true
-
-    const account = await im.get_account()
-    const key = await getPublicKey(authState.get().delegationIdentity!, Chain.IC)
+  const fetchICRCToken = async () => {
+    const account = await im.get_account();
+    const key = await getPublicKey(authState.get().delegationIdentity!, Chain.IC);
     const principal = Ed25519KeyIdentity.fromParsedJson([ key, "0" ]).getPrincipal();
-    const root = account.data[0]?.principal_id
-
-    setTokenInfo(null)
-    if (isValidPrincipalId(canisterId) !== true) return Promise.resolve("This does not appear to be an ICRC-1 compatible canister")
-
-    if (canisterId.length !== CANISTER_ID_LENGTH) {
-      setTokenInfo(null);
-      return false;
-    }
+    const root = account.data[0]?.principal_id;
 
     try {
       setIsLoading(true);
-      const data = await isICRC1Canister(canisterId, root!, principal.toText());
+      const data = await isICRC1Canister(getValues('ledgerID'), root!, principal.toText(), getValues('indexID'));
       setTokenInfo(data);
       return true;
     } catch (e: unknown) {
@@ -82,6 +71,22 @@ export const ProfileAssetsHeader = () => {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const changeCanisterHandler = async (
+    canisterId: string
+  ): Promise<boolean | string> => {
+    console.log('canisterId???', canisterId);
+    if (canisterId === tokenInfo?.canisterId) return true;
+    setTokenInfo(null);
+    if (isValidPrincipalId(canisterId) !== true) return Promise.resolve("This does not appear to be an ICRC-1 compatible canister")
+
+    if (canisterId.length !== CANISTER_ID_LENGTH) {
+      setTokenInfo(null);
+      return false;
+    }
+
+    return fetchICRCToken();
   }
 
   return (
@@ -125,7 +130,7 @@ export const ProfileAssetsHeader = () => {
                 value: CANISTER_ID_LENGTH,
                 message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
               },
-              validate: changeHandler,
+              validate: changeCanisterHandler,
             })}
           />
           <Input

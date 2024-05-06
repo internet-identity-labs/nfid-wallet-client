@@ -110,9 +110,6 @@
         "env": "RAMP_WALLET_API_KEY"
       },
       {
-        "env": "REACT_APP_SENTRY_CONNECTION"
-      },
-      {
         "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION"
       },
       {

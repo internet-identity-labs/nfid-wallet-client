@@ -11,6 +11,7 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { ProfileAssetsHeader } from "./header"
 import Icon from "./transactions.svg"
+import { ICRC1Data } from "packages/integration/src/lib/icrc1"
 
 type Token = {
   toPresentation: (amount?: bigint) => number
@@ -25,6 +26,7 @@ type Token = {
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: Token[]
+  ICRCTokens?: Array<ICRC1Data>
   assetFilter: AssetFilter[]
   setAssetFilter: (value: AssetFilter[]) => void
   isLoading?: boolean
@@ -34,6 +36,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   onIconClick,
   tokens,
   assetFilter,
+  ICRCTokens,
   setAssetFilter,
   isLoading,
 }) => {
@@ -52,9 +55,11 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   )
 
   console.debug("ProfileAssetsPage", { tokens })
+  console.debug("ProfileAssetsPageICRC", ICRCTokens)
 
   const filteredTokens = useMemo(() => {
     return tokens.filter((token) => {
+      console.log('token???', token);
       if (!blockchainFilter.length) return true
       return blockchainFilter.includes(token.blockchain)
     })
@@ -137,6 +142,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </td>
                 </tr>
               ))}
+              {/* {ICRCTokens?.map((token, index) => {
+                
+              })} */}
             </tbody>
           </table>
           <div className="px-5 sm:hidden">

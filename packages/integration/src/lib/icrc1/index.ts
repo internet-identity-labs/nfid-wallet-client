@@ -39,7 +39,17 @@ export async function getICRC1DataForUser(
   publicKey: string,
 ): Promise<Array<ICRC1Data>> {
   const canisters = await getICRC1Canisters(rootPrincipalId)
-  return getICRC1Data(canisters, publicKey)
+
+  const validCanisterIds = canisters.filter(canisterId => {
+    try {
+      Principal.fromText(canisterId)
+      return true;
+    } catch (e) {
+      return false;
+    }
+  })
+
+  return getICRC1Data(validCanisterIds, publicKey)
 }
 
 export async function isICRC1Canister(

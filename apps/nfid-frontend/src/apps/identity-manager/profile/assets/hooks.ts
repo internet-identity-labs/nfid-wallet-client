@@ -18,6 +18,18 @@ import {
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
+// export function useCredentials () {
+//   const key = await getPublicKey(
+//     authState.get().delegationIdentity!,
+//     Chain.IC
+//   );
+//   const principal = Ed25519KeyIdentity.fromParsedJson([
+//     key,
+//     "0",
+//   ]).getPrincipal();
+//   const root = account.data[0]?.principal_id!;
+// }
+
 export function useNFT(tokenId: string) {
   const { canister } = decodeTokenIdentifier(tokenId)
   const _collection = useSWR(

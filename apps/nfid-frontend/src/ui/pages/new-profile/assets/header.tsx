@@ -1,12 +1,13 @@
-import { BlurredLoader, Button, Input, Loader, sumRules } from "@nfid-frontend/ui"
-import { useState } from "react"
+import { BlurredLoader, Button, Input, Loader, Warning, sumRules } from "@nfid-frontend/ui"
+import { ChangeEvent, useState } from "react"
 import clsx from "clsx"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
-import { isNotEmpty, validateTransferAmountField } from "frontend/features/transfer-modal/utils/validations"
+import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
+import { isNotEmpty, isValidPrincipalId, validateTransferAmountField, CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { register } from "frontend/integration/internet-identity"
 import { useForm } from "react-hook-form"
-import { ICRC1Data, addICRC1Canister, getICRC1Data } from '../../../../../../../packages/integration/src/lib/icrc1'
+import { ICRC1Data, addICRC1Canister, getICRC1Data, isICRC1Canister } from 'packages/integration/src/lib/icrc1'
 import { Chain, getGlobalKeys, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 import { RootWallet, accessList, authState, iCRC1Registry, im, replaceActorIdentity } from "@nfid/integration"
 import { toHexString } from "@dfinity/candid"
@@ -14,10 +15,10 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 //import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 
 
+
 export const ProfileAssetsHeader = () => {
   const [ isModalVisible, setIsModalVisible ] = useState(false);
-  const [ tokenInfo, setTokenInfo ] = useState<Array<ICRC1Data>>([]);
-  const [ importError, setImportError ] = useState(false);
+  const [ tokenInfo, setTokenInfo ] = useState<ICRC1Data | null>(null);
   const [ isLoading, setIsLoading ] = useState(false);
 
   const handleOpenImportToken = () => {
@@ -41,29 +42,46 @@ export const ProfileAssetsHeader = () => {
   })
 
   const submit = async (values: { ledgerID: string; }) => {
-    const account = await im.get_account()
-    const root = account.data[0]?.principal_id
-
     try {
       setIsLoading(true);
       await addICRC1Canister(values.ledgerID);
+      setIsModalVisible(false);
     } catch (e) {
       console.debug(e);
-      setImportError(true);
     } finally {
       setIsLoading(false);
     }
-    
-    
+  }
+
+  const changeHandler = async (
+    canisterId: string,
+  ): Promise<boolean | string> => {
+    console.log('canisterId???', canisterId);
+    if (canisterId === tokenInfo?.canisterId) return true
+
+    const account = await im.get_account()
     const key = await getPublicKey(authState.get().delegationIdentity!, Chain.IC)
-    const principal = Ed25519KeyIdentity.fromParsedJson([
-      key,
-      "0",
-    ]).getPrincipal();
-    const data = await getICRC1Data(root!, principal.toText());
-    console.log(data);
-    
-    setTokenInfo(data);
+    const principal = Ed25519KeyIdentity.fromParsedJson([ key, "0" ]).getPrincipal();
+    const root = account.data[0]?.principal_id
+
+    setTokenInfo(null)
+    if (isValidPrincipalId(canisterId) !== true) return Promise.resolve("This does not appear to be an ICRC-1 compatible canister")
+
+    if (canisterId.length !== CANISTER_ID_LENGTH) {
+      setTokenInfo(null);
+      return false;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await isICRC1Canister(canisterId, root!, principal.toText());
+      setTokenInfo(data);
+      return true;
+    } catch (e: unknown) {
+      return Promise.resolve(e instanceof Error ? e.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -83,7 +101,13 @@ export const ProfileAssetsHeader = () => {
       </div>
       <ModalComponent
         isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
+        onClose={() => {
+          setIsModalVisible(false);
+          resetField('ledgerID');
+          resetField('indexID');
+          setTokenInfo(null);
+          setIsLoading(false);
+        }}
         className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
         <div className="space-y-3.5">
@@ -91,19 +115,22 @@ export const ProfileAssetsHeader = () => {
           <Input
             id="ledgerID"
             labelText="Ledger canister ID"
-            placeholder="{Ledger canister ID}"
-            //errorText={errors.memo?.message}
+            errorText={isLoading ? undefined : errors.ledgerID?.message}
             {...register("ledgerID", {
-              required: sumRules.errorMessages.required,
-              validate: (value) => {
-                return isNotEmpty(value)
-              }
+              minLength: {
+                value: CANISTER_ID_LENGTH,
+                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
+              },
+              maxLength: {
+                value: CANISTER_ID_LENGTH,
+                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
+              },
+              validate: changeHandler,
             })}
           />
           <Input
             id="indexID"
             labelText="Index canister ID (optional)"
-            placeholder="{Index canister ID}"
             //errorText={errors.memo?.message}
             {...register("indexID", {
               //required: sumRules.errorMessages.required,
@@ -112,34 +139,36 @@ export const ProfileAssetsHeader = () => {
               // }
             })}
           />
-          <div className="min-h-[172px]">
-            {isLoading && (
-              <Loader isLoading={true} />
-            )}
-            {importError && (
-              <p>This does not appear to be an ICRC-1 compatible canister.</p>
-            )}
-            {tokenInfo.length && (
-              <div>
-                <div>
-                  <p>Token icon</p>
-                </div>
-                <div>
-                  <p>Token symbol</p>
-                  <p></p>
-                </div>
-                
-              </div>
-            )}
-          </div>
           <BlurredLoader
             isLoading={isLoading}
             className="flex flex-col flex-1"
             overlayClassnames="rounded-xl"
             id="import"
           >
-            
+            <div className="min-h-[172px] text-sm flex">
+              {tokenInfo && (
+                <div className="bg-gray-50 rounded-[6px] p-4 text-gray-500 w-full">
+                  <div className="grid grid-cols-[110px,1fr] gap-3">
+                    <p>Token icon</p>
+                    {tokenInfo.logo ? <img className="rounded-full" src={tokenInfo.logo} alt="Token logo" width={36} /> : <UnknownIcon />}
+                  </div>
+                  <div className="grid grid-cols-[110px,1fr] gap-3 my-4">
+                    <p>Token symbol</p>
+                    <p className="text-black">{tokenInfo.symbol}</p>
+                  </div>
+                  <div className="grid grid-cols-[110px,1fr] gap-3">
+                    <p>Token name</p>
+                    <p className="text-black">{tokenInfo.name}</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </BlurredLoader>
+          <Warning
+            title="Token safety"
+            text="contains a list of known ICRC-1 canisters. Import others with caution."
+            link={{text: "NFID’s Knowledge Base", url: "https://learn.nfid.one/"}}
+          />
           <Button
             className="text-base"
             id="importToken"
@@ -147,7 +176,7 @@ export const ProfileAssetsHeader = () => {
             block
             type="primary"
             onClick={handleSubmit(submit)}
-            disabled={Boolean(tokenInfo.length)}
+            disabled={Boolean(!tokenInfo)}
           >
             Import custom token
           </Button>

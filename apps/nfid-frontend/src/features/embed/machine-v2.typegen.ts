@@ -24,6 +24,10 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.NFIDEmbedMachineV2.AUTH.Authenticated:invocation[0]": {
+      type: "error.platform.NFIDEmbedMachineV2.AUTH.Authenticated:invocation[0]"
+      data: unknown
+    }
     "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]": {
       type: "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
       data: unknown
@@ -58,7 +62,9 @@ export interface Typegen0 {
       | "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
       | "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     nfid_ready: "RPC_MESSAGE" | "xstate.init"
-    nfid_unauthenticated: "SESSION_EXPIRED"
+    nfid_unauthenticated:
+      | "SESSION_EXPIRED"
+      | "error.platform.NFIDEmbedMachineV2.AUTH.Authenticated:invocation[0]"
     queueRequest: "RPC_MESSAGE"
     sendRPCCancelResponse: "CANCEL" | "CANCEL_ERROR"
     sendRPCResponse: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
@@ -76,6 +82,7 @@ export interface Typegen0 {
   eventsCausingServices: {
     AuthenticationMachine:
       | "SESSION_EXPIRED"
+      | "error.platform.NFIDEmbedMachineV2.AUTH.Authenticated:invocation[0]"
       | "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     CheckApplicationMeta: "RESET" | "xstate.init"
     CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"

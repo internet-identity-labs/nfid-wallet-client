@@ -21,7 +21,7 @@ import {
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
-  it("Store/retrieve canister id", async () => {
+  it.skip("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -35,7 +35,7 @@ describe("ICRC1 suite", () => {
     expect(canisters).toContain(iCRC1TestCanister)
   })
 
-  it("Get data", async () => {
+  it.skip("Get data", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)

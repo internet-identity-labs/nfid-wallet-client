@@ -33,8 +33,6 @@ interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   onIconClick,
   tokens,
-  assetFilter,
-  setAssetFilter,
   isLoading,
 }) => {
   const [blockchainFilter] = useState<string[]>([])
@@ -42,11 +40,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   const navigate = useNavigate()
 
   const navigateToTransactions = React.useCallback(
-    (blockchain: Blockchain, canisterId: string | null = null) => () => {
+    (blockchain: Blockchain) => () => {
       navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
         state: {
           blockchain,
-          canisterId
         },
       })
     },
@@ -74,7 +71,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       <ProfileContainer
         title={<ProfileAssetsHeader setIsNewTokenAdded={(value) => {
           if(value) {
-            console.log('rerender ??')
             updateState(prevState => prevState + 1);
           }
         }} />}
@@ -82,7 +78,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         className="mb-10 sm:pb-0 "
       >
         <div className="px-5">
-          <Loader isLoading={!tokens.length} />
+          <Loader isLoading={isLoading!} />
           <table className={clsx("text-left w-full hidden sm:table")}>
             <thead className={clsx("border-b border-black  h-16")}>
               <tr className={clsx("font-bold text-sm leading-5")}>

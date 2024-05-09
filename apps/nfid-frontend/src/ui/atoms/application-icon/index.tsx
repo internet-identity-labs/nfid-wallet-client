@@ -8,7 +8,6 @@ interface ApplicationIconProps {
 }
 
 export const ApplicationIcon: React.FC<ApplicationIconProps> = ({
-  appName,
   icon,
   className,
 }) => {

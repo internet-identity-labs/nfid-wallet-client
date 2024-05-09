@@ -19,7 +19,7 @@ interface ICRC1Metadata {
 }
 
 export const useAllICRC1Token = () => {
-    const { data: token, isLoading: isValidating } = useSWR("getICRC1Data", async () => {
+    const { data: token, isLoading: isIcrc1Loading } = useSWR("getICRC1Data", async () => {
         const { rootPrincipalId, publicKey } = await getLambdaCredentials();
         const result = await getICRC1DataForUser(rootPrincipalId!, publicKey);
 
@@ -35,5 +35,5 @@ export const useAllICRC1Token = () => {
         })) as ICRC1Metadata[]);
     });
 
-  return { token, isValidating }
+  return { token, isIcrc1Loading }
 }

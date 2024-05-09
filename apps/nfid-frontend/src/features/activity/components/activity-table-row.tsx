@@ -49,6 +49,9 @@ export const ActivityTableRow = ({
       <td className="flex items-center py-2.5">
         <div className="w-10 h-10 rounded-[9px] bg-gray-50 flex items-center justify-center relative">
           <IconCmpArrow className="rotate-[135deg] text-gray-400" />
+          <div className="absolute w-[18px] h-[18px] right-0 bottom-0">
+            {ChainIcons[chain]}
+          </div>
         </div>
         <div className="ml-2.5">
           <p className="font-bold">{action}</p>

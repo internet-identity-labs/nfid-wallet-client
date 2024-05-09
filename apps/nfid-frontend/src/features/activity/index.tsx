@@ -7,34 +7,14 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { ActivityTableGroup } from "./components/activity-table-group"
 import { getAllActivity } from "./connector/activity-factory"
-import { useLocation } from "react-router-dom"
-import { useEffect } from "react"
-import { getICRC1HistoryDataForUser } from "packages/integration/src/lib/token/icrc1"
-import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
 export interface IActivityPage {}
 
 const ActivityPage = () => {
-  const location = useLocation();
-
   const { isLoading, data } = useSWR("activity", getAllActivity, {
     revalidateOnMount: true,
     revalidateOnFocus: true,
   })
-
-  const getICRCTokenHistory = async () => {
-    const { rootPrincipalId, publicKey } = await getLambdaCredentials();
-    const historyData = await getICRC1HistoryDataForUser(rootPrincipalId!, publicKey, BigInt(10), undefined);
-    console.log('historyData', historyData);
-  }
-
-  useEffect(() => {
-    getICRCTokenHistory();
-  }, []);
-
-
-  console.log('location!!', location)
-  console.log('state!!', data)
 
   return (
     <ProfileTemplate isLoading={isLoading} pageTitle="Activity" showBackButton>

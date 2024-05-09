@@ -1,6 +1,5 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
-import { useAllDip20Token } from "src/features/fungable-token/dip-20/hooks/use-all-token-meta"
 import { useBalanceICPAll } from "src/features/fungable-token/icp/hooks/use-balance-icp-all"
 import { stringICPtoE8s } from "src/integration/wallet/utils"
 import { AssetFilter, Blockchain, TokenConfig } from "src/ui/connnector/types"
@@ -15,11 +14,7 @@ export const useICTokens = (
   assetFilter: AssetFilter[],
 ): { configs: TokenConfig[]; isLoading: boolean } => {
   const { appAccountBalance, isLoading } = useBalanceICPAll(true, assetFilter)
-  const { token: dip20Token } = useAllDip20Token()
-  const { token: ICRC1Token } = useAllICRC1Token()
-
-  console.log('dip20Token', dip20Token);
-  console.log('ICRC1Token', ICRC1Token);
+  const { token: ICRC1Token, isIcrc1Loading } = useAllICRC1Token()
 
   return {
     configs: [
@@ -35,19 +30,6 @@ export const useICTokens = (
         transformAmount: stringICPtoE8s,
         blockchain: Blockchain.IC,
       },
-      ...(dip20Token
-        ? dip20Token.map(({ symbol, name, logo, ...rest }) => ({
-            tokenStandard: TokenStandards.DIP20,
-            icon: logo,
-            title: name,
-            currency: symbol,
-            balance: appAccountBalance?.[symbol].tokenBalance,
-            price: appAccountBalance?.[symbol].usdBalance,
-            blockchain: Blockchain.IC,
-            ...rest,
-          }))
-        : []
-      ).filter((token) => token.balance > 0),
       ...(ICRC1Token
         ? ICRC1Token.map(({ symbol, name, logo, ...rest }) => ({
             tokenStandard: TokenStandards.ICRC1,
@@ -60,7 +42,7 @@ export const useICTokens = (
         : []
       ),
     ],
-    isLoading,
+    isLoading: isIcrc1Loading && isLoading,
   }
 }
 

@@ -15,6 +15,8 @@ import {
   TransferModalType,
 } from "./types"
 import { concatOptionsWithSameLabel } from "./util/options"
+import { dip20TransferConnector } from "./ic/dip20-transfer-connector"
+import { icrc1TransferConnector } from "./ic/icrc1-transfer-connector"
 
 function toMap<T extends { getTokenConfig: () => ITransferConfig }>(
   assetViews: T[] | T[],
@@ -31,6 +33,7 @@ const singleFTConnectors: ITransferFTConnector[] = []
 
 const multiFTConnectors = [
   icTransferConnector,
+  icrc1TransferConnector
 ]
 
 const NFTConnectors = [
@@ -130,10 +133,13 @@ export const getAllTokensOptions = async (
 ): Promise<IGroupedOptions[]> => {
   if (isVault) return [await icTransferConnector.getTokensOptions()]
   const ftConnectors = [...singleFTConnectors, ...multiFTConnectors]
+  console.log('ftConnectors!', ftConnectors)
   const options = await Promise.all(
     ftConnectors.map(async (c) => {
       try {
-        return await c.getTokensOptions()
+        const hz = await c.getTokensOptions()
+        console.log('hzzz', hz)
+        return hz
       } catch (e) {
         // FIXME: handle case when request fails
         console.error("getAllTokensOptions", e)

@@ -15,6 +15,7 @@ import {
   Label,
   BlurredLoader,
   sumRules,
+  IGroupedOptions,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 import {
@@ -45,6 +46,9 @@ import {
   validateTransferAmountField,
 } from "../utils/validations"
 import { ITransferSuccess } from "./success"
+import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
+import { getICRC1DataForUser } from "packages/integration/src/lib/token/icrc1"
+import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
 
 interface ITransferFT {
   isVault: boolean
@@ -146,6 +150,29 @@ export const TransferFT = ({
     [isVault, "getAllTokensOptions"],
     ([isVault]) => getAllTokensOptions(isVault),
   )
+
+  const {
+    data: ICRC1Tokens,
+    isLoading: isLoadingICRC1Token,
+  } = useSWR("getICRC1Data", async () => {
+    const { rootPrincipalId, publicKey } = await getLambdaCredentials();
+    const tokens = await getICRC1DataForUser(rootPrincipalId!, publicKey) || [];
+
+    return {
+      label: 'ICRC',
+      options: {
+        // title: string
+        // subTitle?: string
+        // innerTitle?: string
+        // innerSubtitle?: string
+        // icon?: string
+        // value: string
+        // badgeText?: string
+      }
+    }
+  });
+
+  console.log('tokenOptions!!', tokenOptions);
 
   const {
     register,
@@ -394,12 +421,13 @@ export const TransferFT = ({
                 id={`token_${selectedTokenCurrency}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
-                <img
-                  className="w-[26px] mr-1.5"
-                  src={tokenMetadata?.icon}
-                  alt={selectedTokenCurrency}
-                />
-
+                {!tokenMetadata?.icon ? <UnknownIcon className="w-[26px] mr-1.5" /> : (
+                  <img
+                    className="w-[26px] mr-1.5"
+                    src={tokenMetadata?.icon}
+                    alt={selectedTokenCurrency}
+                  />
+                )}
                 <p className="text-lg font-semibold">{selectedTokenCurrency}</p>
                 <IconCmpArrowRight className="ml-4" />
               </div>

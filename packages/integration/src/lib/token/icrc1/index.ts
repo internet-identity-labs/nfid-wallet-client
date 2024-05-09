@@ -4,23 +4,23 @@ import { Principal } from "@dfinity/principal"
 
 import { hasOwnProperty } from "@nfid/integration"
 
-import { idlFactory as icrc1IDL } from "../_ic_api/icrc1"
+import { idlFactory as icrc1IDL } from "../../_ic_api/icrc1"
 import {
   _SERVICE as ICRC1Service,
   Icrc1TransferResult,
   TransferArg,
-} from "../_ic_api/icrc1.d"
-import { ICRC1 } from "../_ic_api/icrc1_registry.d"
-import { idlFactory as icrc1IndexIDL } from "../_ic_api/index-icrc1"
+} from "../../_ic_api/icrc1.d"
+import { ICRC1 } from "../../_ic_api/icrc1_registry.d"
+import { idlFactory as icrc1IndexIDL } from "../../_ic_api/index-icrc1"
 import {
   _SERVICE as ICRCIndex,
   GetAccountTransactionsArgs,
   TransactionWithId,
   Transfer,
-} from "../_ic_api/index-icrc1.d"
-import { agentBaseConfig, iCRC1Registry } from "../actors"
-import { PriceService } from "../asset/asset-util"
-import { TokenPrice } from "../asset/types"
+} from "../../_ic_api/index-icrc1.d"
+import { agentBaseConfig, iCRC1Registry } from "../../actors"
+import { PriceService } from "../../asset/asset-util"
+import { TokenPrice } from "../../asset/types"
 
 const errorText = "This does not appear to be an ICRC1 compatible canister"
 const network = "Internet Computer"
@@ -29,6 +29,7 @@ const icpCanisterId = "ryjl3-tyaaa-aaaaa-aaaba-cai"
 export interface ICRC1Data {
   balance: bigint
   name: string
+  owner: Principal
   symbol: string
   decimals: number
   fee: bigint
@@ -231,6 +232,7 @@ export async function getICRC1Data(
       }
 
       return {
+        owner: Principal.fromText(publicKeyInPrincipal),
         balance,
         canisterId,
         decimals,

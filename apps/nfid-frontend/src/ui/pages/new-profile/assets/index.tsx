@@ -11,7 +11,6 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { ProfileAssetsHeader } from "./header"
 import Icon from "./transactions.svg"
-import { ICRC1Data } from "packages/integration/src/lib/icrc1"
 
 type Token = {
   toPresentation: (amount?: bigint) => number
@@ -26,7 +25,6 @@ type Token = {
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: Token[]
-  ICRCTokens?: Array<ICRC1Data>
   assetFilter: AssetFilter[]
   setAssetFilter: (value: AssetFilter[]) => void
   isLoading?: boolean
@@ -36,18 +34,19 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   onIconClick,
   tokens,
   assetFilter,
-  ICRCTokens,
   setAssetFilter,
   isLoading,
 }) => {
   const [blockchainFilter] = useState<string[]>([])
+  const [, updateState] = useState(0)
   const navigate = useNavigate()
 
   const navigateToTransactions = React.useCallback(
-    (blockchain: Blockchain) => () => {
+    (blockchain: Blockchain, canisterId: string | null = null) => () => {
       navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
         state: {
           blockchain,
+          canisterId
         },
       })
     },
@@ -55,11 +54,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   )
 
   console.debug("ProfileAssetsPage", { tokens })
-  console.debug("ProfileAssetsPageICRC", ICRCTokens)
 
   const filteredTokens = useMemo(() => {
     return tokens.filter((token) => {
-      console.log('token???', token);
       if (!blockchainFilter.length) return true
       return blockchainFilter.includes(token.blockchain)
     })
@@ -75,7 +72,12 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       className="overflow-inherit"
     >
       <ProfileContainer
-        title={<ProfileAssetsHeader />}
+        title={<ProfileAssetsHeader setIsNewTokenAdded={(value) => {
+          if(value) {
+            console.log('rerender ??')
+            updateState(prevState => prevState + 1);
+          }
+        }} />}
         showChildrenPadding={false}
         className="mb-10 sm:pb-0 "
       >
@@ -85,7 +87,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
             <thead className={clsx("border-b border-black  h-16")}>
               <tr className={clsx("font-bold text-sm leading-5")}>
                 <th>Name</th>
-                <th>Network</th>
                 <th className="text-right">Token balance</th>
                 <th className="pr-16 text-right">USD balance</th>
               </tr>
@@ -121,12 +122,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     </div>
                   </td>
                   <td
-                    className="text-left"
-                    id={`token_${token.title.replace(/\s/g, "")}_blockchain`}
-                  >
-                    {token.blockchain}
-                  </td>
-                  <td
                     className="text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
@@ -138,13 +133,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="pr-16 text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price}
+                    {token.price ? token.price : 'Not listed'}
                   </td>
                 </tr>
               ))}
-              {/* {ICRCTokens?.map((token, index) => {
-                
-              })} */}
             </tbody>
           </table>
           <div className="px-5 sm:hidden">

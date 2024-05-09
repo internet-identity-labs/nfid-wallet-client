@@ -1,5 +1,5 @@
 import { BlurredLoader, Button, Input, Loader, Warning, sumRules } from "@nfid-frontend/ui"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import clsx from "clsx"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
@@ -7,16 +7,14 @@ import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
 import { isNotEmpty, isValidPrincipalId, validateTransferAmountField, CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { register } from "frontend/integration/internet-identity"
 import { useForm } from "react-hook-form"
-import { ICRC1Data, addICRC1Canister, getICRC1Data, isICRC1Canister } from 'packages/integration/src/lib/icrc1'
-import { Chain, getGlobalKeys, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
-import { RootWallet, accessList, authState, iCRC1Registry, im, replaceActorIdentity } from "@nfid/integration"
-import { toHexString } from "@dfinity/candid"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-//import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { ICRC1Data, addICRC1Canister, isICRC1Canister } from 'packages/integration/src/lib/token/icrc1'
+import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
+interface IProfileAssetsHeader {
+  setIsNewTokenAdded: (value: boolean) => void
+}
 
-
-export const ProfileAssetsHeader = () => {
+export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTokenAdded }) => {
   const [ isModalVisible, setIsModalVisible ] = useState(false);
   const [ tokenInfo, setTokenInfo ] = useState<ICRC1Data | null>(null);
   const [ isLoading, setIsLoading ] = useState(false);
@@ -41,6 +39,16 @@ export const ProfileAssetsHeader = () => {
     },
   })
 
+  useEffect(() => {
+    if (errors.ledgerID) {
+      resetField('indexID');
+      setTokenInfo(null)
+    }
+  }, [errors.ledgerID, resetField]);
+
+  console.log('errrrr', Object.values(errors).some(error => error))
+  
+
   const submit = async (values: { ledgerID: string; indexID: string }) => {
     const { ledgerID, indexID } = values;
 
@@ -48,6 +56,7 @@ export const ProfileAssetsHeader = () => {
       setIsLoading(true);
       await addICRC1Canister(ledgerID, indexID);
       setIsModalVisible(false);
+      setIsNewTokenAdded(true);
     } catch (e) {
       console.debug(e);
     } finally {
@@ -56,38 +65,35 @@ export const ProfileAssetsHeader = () => {
   }
 
   const fetchICRCToken = async () => {
-    const account = await im.get_account();
-    const key = await getPublicKey(authState.get().delegationIdentity!, Chain.IC);
-    const principal = Ed25519KeyIdentity.fromParsedJson([ key, "0" ]).getPrincipal();
-    const root = account.data[0]?.principal_id;
-
     try {
-      setIsLoading(true);
-      const data = await isICRC1Canister(getValues('ledgerID'), root!, principal.toText(), getValues('indexID'));
+      const { rootPrincipalId, publicKey } = await getLambdaCredentials();
+      const data = await isICRC1Canister(getValues('ledgerID'), rootPrincipalId!, publicKey, getValues('indexID'));
       setTokenInfo(data);
       return true;
-    } catch (e: unknown) {
-      return Promise.resolve(e instanceof Error ? e.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
+    } catch (e) {
+      console.debug(e);
+      switch ((e as Error).message) {
+        case "Ledger canister does not match index canister.":
+          return Promise.resolve((e as Error).message);
+        case "Canister already added.":
+          return Promise.resolve((e as Error).message);
+        default:
+          return Promise.resolve("This does not appear to be an ICRC-1 compatible canister");
+      }
     }
   }
 
-  const changeCanisterHandler = async (
-    canisterId: string
-  ): Promise<boolean | string> => {
-    console.log('canisterId???', canisterId);
-    if (canisterId === tokenInfo?.canisterId) return true;
-    setTokenInfo(null);
-    if (isValidPrincipalId(canisterId) !== true) return Promise.resolve("This does not appear to be an ICRC-1 compatible canister")
 
-    if (canisterId.length !== CANISTER_ID_LENGTH) {
-      setTokenInfo(null);
-      return false;
-    }
+  // const validateInput = (value: string) => {
+  //   if (value === tokenInfo?.canisterId) return true;
+  //   setTokenInfo(null);
+  //   if (isValidPrincipalId(value) !== true) return Promise.resolve("This does not appear to be an ICRC-1 compatible canister")
 
-    return fetchICRCToken();
-  }
+  //   if (value.length !== CANISTER_ID_LENGTH) {
+  //     setTokenInfo(null);
+  //     return false;
+  //   }
+  // }
 
   return (
     <>
@@ -130,19 +136,25 @@ export const ProfileAssetsHeader = () => {
                 value: CANISTER_ID_LENGTH,
                 message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
               },
-              validate: changeCanisterHandler,
+              validate: fetchICRCToken,
             })}
           />
           <Input
             id="indexID"
             labelText="Index canister ID (optional)"
-            //errorText={errors.memo?.message}
+            errorText={isLoading ? undefined : errors.indexID?.message}
             {...register("indexID", {
-              //required: sumRules.errorMessages.required,
-              // validate: (value) => {
-              //   return isNotEmpty(value)
-              // }
+              minLength: {
+                value: CANISTER_ID_LENGTH,
+                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
+              },
+              maxLength: {
+                value: CANISTER_ID_LENGTH,
+                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
+              },
+              validate: fetchICRCToken,
             })}
+            disabled={!!errors.ledgerID || !getValues('ledgerID').length}
           />
           <BlurredLoader
             isLoading={isLoading}
@@ -181,7 +193,7 @@ export const ProfileAssetsHeader = () => {
             block
             type="primary"
             onClick={handleSubmit(submit)}
-            disabled={Boolean(!tokenInfo)}
+            disabled={Boolean(!tokenInfo) || Object.values(errors).some(error => error)}
           >
             Import custom token
           </Button>

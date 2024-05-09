@@ -9,12 +9,17 @@ import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
+import { useAllICRC1Token } from "frontend/features/fungable-token/icrc1"
 
 export const useICTokens = (
   assetFilter: AssetFilter[],
 ): { configs: TokenConfig[]; isLoading: boolean } => {
   const { appAccountBalance, isLoading } = useBalanceICPAll(true, assetFilter)
   const { token: dip20Token } = useAllDip20Token()
+  const { token: ICRC1Token } = useAllICRC1Token()
+
+  console.log('dip20Token', dip20Token);
+  console.log('ICRC1Token', ICRC1Token);
 
   return {
     configs: [
@@ -43,6 +48,17 @@ export const useICTokens = (
           }))
         : []
       ).filter((token) => token.balance > 0),
+      ...(ICRC1Token
+        ? ICRC1Token.map(({ symbol, name, logo, ...rest }) => ({
+            tokenStandard: TokenStandards.ICRC1,
+            icon: logo,
+            title: name,
+            currency: symbol,
+            blockchain: Blockchain.IC,
+            ...rest,
+          }))
+        : []
+      ),
     ],
     isLoading,
   }

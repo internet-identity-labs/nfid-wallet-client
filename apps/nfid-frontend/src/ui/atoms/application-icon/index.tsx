@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { UnknownIcon } from "../icons/unknown"
 
 interface ApplicationIconProps {
   appName: string
@@ -27,7 +28,7 @@ export const ApplicationIcon: React.FC<ApplicationIconProps> = ({
           alt="app icon"
         />
       ) : (
-        <div>{appName[0].toUpperCase()}</div>
+        <UnknownIcon />
       )}
     </div>
   )

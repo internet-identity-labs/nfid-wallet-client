@@ -24,7 +24,7 @@ const ProfileAssets = () => {
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
     />
-  );
-};
+  )
+}
 
 export default ProfileAssets

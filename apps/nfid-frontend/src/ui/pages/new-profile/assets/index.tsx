@@ -78,7 +78,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         className="mb-10 sm:pb-0 "
       >
         <div className="px-5">
-          <Loader isLoading={isLoading!} />
+          <Loader isLoading={!tokens.length!} />
           <table className={clsx("text-left w-full hidden sm:table")}>
             <thead className={clsx("border-b border-black  h-16")}>
               <tr className={clsx("font-bold text-sm leading-5")}>

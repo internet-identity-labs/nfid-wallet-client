@@ -80,8 +80,15 @@ export const AuthChooseAccount = ({
   const { profile } = useProfile()
 
   const { data: legacyAnonymousProfiles, isLoading: isAnonymousLoading } =
-    useSWR([authRequest, "legacyAnonymousProfiles"], ([authRequest]) =>
-      fetchAccountsService({ authRequest }),
+    useSWR(
+      [authRequest, "legacyAnonymousProfiles"],
+      ([authRequest]) => fetchAccountsService({ authRequest }),
+      {
+        onError: async () => {
+          await authState.reset(false)
+          onReset()
+        },
+      },
     )
 
   console.debug("AuthChooseAccount", {
@@ -335,6 +342,10 @@ export const AuthChooseAccount = ({
               selectedProfile={selectedProfile}
               setSelectedProfile={(value) => setSelectedProfile(value)}
               isAvailable={!!authRequest.targets?.length}
+              onError={async () => {
+                await authState.reset(false)
+                onReset()
+              }}
             />
           </div>
           <div className="bg-gray-200 w-full h-[1px] mt-[30px] mb-5" />

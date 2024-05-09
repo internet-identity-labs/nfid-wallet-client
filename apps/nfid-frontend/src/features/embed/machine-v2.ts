@@ -187,6 +187,10 @@ export const NFIDEmbedMachineV2 = createMachine(
 
                 return () => clearTimeout(timeout)
               },
+              onError: {
+                target: "Authenticate",
+                actions: "nfid_unauthenticated",
+              },
             },
             on: {
               SESSION_EXPIRED: {

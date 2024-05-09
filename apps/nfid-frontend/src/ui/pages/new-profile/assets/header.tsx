@@ -1,11 +1,10 @@
-import { BlurredLoader, Button, Input, Loader, Warning, sumRules } from "@nfid-frontend/ui"
-import { ChangeEvent, useEffect, useState } from "react"
+import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
+import { useEffect, useState } from "react"
 import clsx from "clsx"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
-import { isNotEmpty, isValidPrincipalId, validateTransferAmountField, CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
-import { register } from "frontend/integration/internet-identity"
+import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { useForm } from "react-hook-form"
 import { ICRC1Data, addICRC1Canister, isICRC1Canister } from 'packages/integration/src/lib/token/icrc1'
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
@@ -27,8 +26,6 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
     register,
     formState: { errors },
     handleSubmit,
-    setValue,
-    setError,
     resetField,
     getValues,
   } = useForm({
@@ -45,10 +42,7 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
       setTokenInfo(null)
     }
   }, [errors.ledgerID, resetField]);
-
-  console.log('errrrr', Object.values(errors).some(error => error))
   
-
   const submit = async (values: { ledgerID: string; indexID: string }) => {
     const { ledgerID, indexID } = values;
 
@@ -83,17 +77,17 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
     }
   }
 
-
-  // const validateInput = (value: string) => {
-  //   if (value === tokenInfo?.canisterId) return true;
-  //   setTokenInfo(null);
-  //   if (isValidPrincipalId(value) !== true) return Promise.resolve("This does not appear to be an ICRC-1 compatible canister")
-
-  //   if (value.length !== CANISTER_ID_LENGTH) {
-  //     setTokenInfo(null);
-  //     return false;
-  //   }
-  // }
+  const validationConfig = {
+    minLength: {
+      value: CANISTER_ID_LENGTH,
+      message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
+    },
+    maxLength: {
+      value: CANISTER_ID_LENGTH,
+      message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
+    },
+    validate: fetchICRCToken,
+  }
 
   return (
     <>
@@ -121,48 +115,30 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
-        <div className="space-y-3.5">
-          <p className="text-2xl font-bold">Import token</p>
+        <div>
+          <p className="text-2xl font-bold pb-[16px]">Import token</p>
           <Input
             id="ledgerID"
             labelText="Ledger canister ID"
             errorText={isLoading ? undefined : errors.ledgerID?.message}
-            {...register("ledgerID", {
-              minLength: {
-                value: CANISTER_ID_LENGTH,
-                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
-              },
-              maxLength: {
-                value: CANISTER_ID_LENGTH,
-                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
-              },
-              validate: fetchICRCToken,
-            })}
+            {...register("ledgerID", validationConfig)}
           />
+          <div className="mb-3"></div>
           <Input
             id="indexID"
             labelText="Index canister ID (optional)"
             errorText={isLoading ? undefined : errors.indexID?.message}
-            {...register("indexID", {
-              minLength: {
-                value: CANISTER_ID_LENGTH,
-                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
-              },
-              maxLength: {
-                value: CANISTER_ID_LENGTH,
-                message: `Canister ID must be ${CANISTER_ID_LENGTH} characters long`,
-              },
-              validate: fetchICRCToken,
-            })}
+            {...register("indexID", validationConfig)}
             disabled={!!errors.ledgerID || !getValues('ledgerID').length}
           />
+          <p className="text-gray-400 text-xs mt-[5px] mb-[10px]">Required for deposit history</p>
           <BlurredLoader
             isLoading={isLoading}
             className="flex flex-col flex-1"
             overlayClassnames="rounded-xl"
             id="import"
           >
-            <div className="min-h-[172px] text-sm flex">
+            <div className="min-h-[140px] text-sm flex">
               {tokenInfo && (
                 <div className="bg-gray-50 rounded-[6px] p-4 text-gray-500 w-full">
                   <div className="grid grid-cols-[110px,1fr] gap-3">

@@ -8,6 +8,7 @@ export const useAllToken = (
   assetFilters: AssetFilter[] = [],
 ): { token: TokenConfig[]; isLoading: boolean } => {
   const tokens = fungibleAssetFactory.getKeys()
+  console.log('toens>>>', tokens)
   const { configs: tokenConfigs, isLoading } = useTokenConfig({ tokens })
 
   const { configs: icTokenConfigs, isLoading: isICLoading } =

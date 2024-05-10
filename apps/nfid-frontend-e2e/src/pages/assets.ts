@@ -54,16 +54,6 @@ export class Assets {
     )
   }
 
-  public async openAssetReceiveOptions() {
-    const assetOptions = await $("#option_Network")
-    await assetOptions.click()
-  }
-
-  public async chooseChainOption(chain: string) {
-    const option = await $(`#choose_option_${chain.replace(/\s/g, "")}`)
-    await option.click()
-  }
-
   public async chooseCurrencyOption(currency: string, chain: string) {
     const option = await $(
       `#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`,
@@ -120,7 +110,6 @@ export class Assets {
     await tabReceive.waitForDisplayed({ timeout: 10000 })
     await tabReceive.waitForClickable({ timeout: 15000 })
     await tabReceive.click()
-    await $("#option_Network").waitForDisplayed({ timeout: 30000 })
   }
 
   public async getAccountId(isAddress?: boolean) {

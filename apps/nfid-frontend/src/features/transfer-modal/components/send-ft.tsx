@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR, { mutate } from "swr"
+import Decimal from 'decimal.js'
 
 import {
   Button,
@@ -42,6 +43,7 @@ import { Blockchain } from "frontend/ui/connnector/types"
 
 import {
   PRINCIPAL_LENGTH,
+  MAX_DECIMAL_LENGTH,
   validateTransferAmountField,
 } from "../utils/validations"
 import { ITransferSuccess } from "./success"
@@ -339,7 +341,17 @@ export const TransferFT = ({
       }
       loadingMessage={loadingMessage}
     >
-      <p className="mb-1">Amount to send</p>
+      <div className="flex justify-between">
+        <p className="mb-1">Amount to send</p>
+        <p
+          onClick={() => {
+            if(transferFee && balance) {
+              setValue("amount", +balance.balanceinUsd - +transferFee.feeUsd)
+            }
+          }}
+          className="text-blue-600 cursor-pointer">Max</p>
+      </div>
+      
       <div className="flex flex-col justify-between h-full pb-20">
         <div
           className={clsx(
@@ -354,7 +366,7 @@ export const TransferFT = ({
               "p-0",
             )}
             placeholder="0.00"
-            type="number"
+            type="text"
             id="amount"
             min={0.0}
             {...register("amount", {
@@ -366,6 +378,38 @@ export const TransferFT = ({
               valueAsNumber: true,
               onBlur: calculateFee,
             })}
+            onKeyDown={(e) => {
+              const allowedKeys = /[0-9.]/;
+              const key = e.key;
+              const value = e.target.value;
+              const cursorPosition = e.target.selectionStart ?? 0;
+              const dotPosition = value.indexOf('.');
+              
+              if (['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].includes(key)) {
+                return;
+              }
+
+              if (!allowedKeys.test(key) || (key === '.' && value.includes('.'))) {
+                e.preventDefault();
+              }
+
+              if (dotPosition !== -1 && cursorPosition > dotPosition) {
+                if (new Decimal(value).decimalPlaces() >= MAX_DECIMAL_LENGTH) {
+                  e.preventDefault();
+                }
+              }
+            }}
+            onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+              const pastedValue = e.clipboardData.getData('text/plain').replace(',', '.');
+              const decimalIndex = pastedValue.indexOf('.');
+              const $this = e.target as HTMLInputElement;
+
+              if (decimalIndex !== -1) {
+                e.preventDefault();
+                const decimalPart = pastedValue.substring(decimalIndex + 1);
+                $this.value = pastedValue.substring(0, decimalIndex + 1) + decimalPart.substring(0, MAX_DECIMAL_LENGTH);
+              }
+            }}
           />
           <div
             className={clsx(
@@ -466,10 +510,6 @@ export const TransferFT = ({
               <Spinner className="w-3 h-3 text-gray-400" />
             ) : (
               <div className="text-right">
-                <p className="text-sm leading-5">
-                  ${transferFee?.feeUsd ?? "0.00"}
-                </p>
-
                 <p className="text-xs leading-5" id="fee">
                   {transferFee?.fee ?? `0.00 ${tokenMetadata?.feeCurrency}`}
                 </p>

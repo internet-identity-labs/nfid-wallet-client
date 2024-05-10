@@ -30,7 +30,7 @@ export const InputTrigger = ({
         className={clsx(
           "border border-black rounded-md cursor-pointer h-14",
           "flex items-center justify-between",
-          "text-black pl-4 mb-4",
+          "text-black px-4 mb-4",
           errorText && "!border-red-600 ring ring-red-100",
         )}
       >
@@ -39,7 +39,7 @@ export const InputTrigger = ({
             id="input"
             className={clsx(
               "outline-none bg-transparent w-full h-11",
-              "text-sm border-r border-r-gray-200",
+              "text-sm",
               "placeholder:text-gray-400",
             )}
             placeholder={placeholder}

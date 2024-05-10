@@ -8,6 +8,7 @@ import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
+
 import { useAllICRC1Token } from "frontend/features/fungable-token/icrc1"
 
 export const useICTokens = (
@@ -39,10 +40,9 @@ export const useICTokens = (
             blockchain: Blockchain.IC,
             ...rest,
           }))
-        : []
-      ),
+        : []),
     ],
-    isLoading: isIcrc1Loading && isLoading,
+    isLoading: isIcrc1Loading || isLoading,
   }
 }
 

@@ -36,7 +36,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   isLoading,
 }) => {
   const [blockchainFilter] = useState<string[]>([])
-  const [, updateState] = useState(0)
   const navigate = useNavigate()
 
   const navigateToTransactions = React.useCallback(
@@ -69,11 +68,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       className="overflow-inherit"
     >
       <ProfileContainer
-        title={<ProfileAssetsHeader setIsNewTokenAdded={(value) => {
-          if(value) {
-            updateState(prevState => prevState + 1);
-          }
-        }} />}
+        title={<ProfileAssetsHeader />}
         showChildrenPadding={false}
         className="mb-10 sm:pb-0 "
       >
@@ -129,7 +124,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="pr-16 text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price ? token.price : 'Not listed'}
+                    {token.price ? token.price : "Not listed"}
                   </td>
                 </tr>
               ))}

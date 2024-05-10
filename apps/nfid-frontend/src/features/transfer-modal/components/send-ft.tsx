@@ -1,12 +1,12 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import Decimal from "decimal.js"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR, { mutate } from "swr"
-import Decimal from 'decimal.js'
 
 import {
   Button,
@@ -28,6 +28,7 @@ import { E8S } from "@nfid/integration/token/icp"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -47,7 +48,6 @@ import {
   validateTransferAmountField,
 } from "../utils/validations"
 import { ITransferSuccess } from "./success"
-import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
 
 interface ITransferFT {
   isVault: boolean
@@ -346,13 +346,16 @@ export const TransferFT = ({
         <p className="mb-1">Amount to send</p>
         <p
           onClick={() => {
-            if(transferFee && balance) {
+            if (transferFee && balance) {
               setValue("amount", +balance.balanceinUsd - +transferFee.feeUsd)
             }
           }}
-          className="text-blue-600 cursor-pointer">Max</p>
+          className="text-blue-600 cursor-pointer"
+        >
+          Max
+        </p>
       </div>
-      
+
       <div className="flex flex-col justify-between h-full pb-20">
         <div
           className={clsx(
@@ -380,35 +383,44 @@ export const TransferFT = ({
               onBlur: calculateFee,
             })}
             onKeyDown={(e) => {
-              const allowedKeys = /[0-9.]/;
-              const key = e.key;
-              const value = e.target.value;
-              const cursorPosition = e.target.selectionStart ?? 0;
-              const dotPosition = value.indexOf('.');
-              
-              if (['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].includes(key)) {
-                return;
+              const allowedKeys = /[0-9.]/
+              const key = e.key
+              const value = e.target.value
+              const cursorPosition = e.target.selectionStart ?? 0
+              const dotPosition = value.indexOf(".")
+
+              if (
+                ["ArrowLeft", "ArrowRight", "Backspace", "Delete"].includes(key)
+              ) {
+                return
               }
 
-              if (!allowedKeys.test(key) || (key === '.' && value.includes('.'))) {
-                e.preventDefault();
+              if (
+                !allowedKeys.test(key) ||
+                (key === "." && value.includes("."))
+              ) {
+                e.preventDefault()
               }
 
               if (dotPosition !== -1 && cursorPosition > dotPosition) {
                 if (new Decimal(value).decimalPlaces() >= MAX_DECIMAL_LENGTH) {
-                  e.preventDefault();
+                  e.preventDefault()
                 }
               }
             }}
             onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-              const pastedValue = e.clipboardData.getData('text/plain').replace(',', '.');
-              const decimalIndex = pastedValue.indexOf('.');
-              const $this = e.target as HTMLInputElement;
+              const pastedValue = e.clipboardData
+                .getData("text/plain")
+                .replace(",", ".")
+              const decimalIndex = pastedValue.indexOf(".")
+              const $this = e.target as HTMLInputElement
 
               if (decimalIndex !== -1) {
-                e.preventDefault();
-                const decimalPart = pastedValue.substring(decimalIndex + 1);
-                $this.value = pastedValue.substring(0, decimalIndex + 1) + decimalPart.substring(0, MAX_DECIMAL_LENGTH);
+                e.preventDefault()
+                const decimalPart = pastedValue.substring(decimalIndex + 1)
+                $this.value =
+                  pastedValue.substring(0, decimalIndex + 1) +
+                  decimalPart.substring(0, MAX_DECIMAL_LENGTH)
               }
             }}
           />
@@ -439,7 +451,9 @@ export const TransferFT = ({
                 id={`token_${selectedTokenCurrency}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
-                {!tokenMetadata?.icon ? <UnknownIcon className="w-[26px] mr-1.5" /> : (
+                {!tokenMetadata?.icon ? (
+                  <UnknownIcon className="w-[26px] mr-1.5" />
+                ) : (
                   <img
                     className="w-[26px] mr-1.5"
                     src={tokenMetadata?.icon}

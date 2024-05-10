@@ -1,9 +1,6 @@
 import clsx from "clsx"
 
-import {
-  IconCmpWarning,
-} from "@nfid-frontend/ui"
-
+import { IconCmpWarning } from "@nfid-frontend/ui"
 
 export interface IWarning {
   title: string
@@ -23,14 +20,16 @@ export const Warning = ({ title, text, link }: IWarning) => (
       </div>
     </div>
     <div className="pl-8 space-y-3 text-sm">
-    <div>
-      <p className="text-orange-900 text-sm">
-        {link && (
-          <a className="text-blue-600" href={link.url} target="_blank">{link.text}&nbsp;</a>
-        )}
-        {text}
-      </p>
-    </div>
+      <div>
+        <p className="text-orange-900 text-sm">
+          {link && (
+            <a className="text-blue-600" href={link.url} target="_blank">
+              {link.text}&nbsp;
+            </a>
+          )}
+          {text}
+        </p>
+      </div>
     </div>
   </div>
 )

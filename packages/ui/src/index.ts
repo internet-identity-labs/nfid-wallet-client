@@ -1,5 +1,4 @@
-import "./styles.css";
-
+import "./styles.css"
 
 export * from "./atoms/copy"
 export * from "./atoms/dropdown-select"

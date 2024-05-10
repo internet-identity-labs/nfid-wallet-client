@@ -1,22 +1,30 @@
-import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
-import { useEffect, useState } from "react"
 import clsx from "clsx"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
-import { PlusIcon } from "frontend/ui/atoms/icons/plus"
+import {
+  ICRC1Data,
+  addICRC1Canister,
+  isICRC1Canister,
+} from "packages/integration/src/lib/token/icrc1"
 import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
-import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { ICRC1Data, addICRC1Canister, isICRC1Canister } from 'packages/integration/src/lib/token/icrc1'
+
+import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
+
+import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
+import { PlusIcon } from "frontend/ui/atoms/icons/plus"
+import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 interface IProfileAssetsHeader {
-  setIsNewTokenAdded: (value: boolean) => void
+  setIsNewTokenAdded?: (value: boolean) => void
 }
 
-export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTokenAdded }) => {
-  const [ isModalVisible, setIsModalVisible ] = useState(false);
-  const [ tokenInfo, setTokenInfo ] = useState<ICRC1Data | null>(null);
-  const [ isLoading, setIsLoading ] = useState(false);
+export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({
+  setIsNewTokenAdded,
+}) => {
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [tokenInfo, setTokenInfo] = useState<ICRC1Data | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleOpenImportToken = () => {
     setIsModalVisible(true)
@@ -38,41 +46,47 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
 
   useEffect(() => {
     if (errors.ledgerID) {
-      resetField('indexID');
+      resetField("indexID")
       setTokenInfo(null)
     }
-  }, [errors.ledgerID, resetField]);
-  
+  }, [errors.ledgerID, resetField])
+
   const submit = async (values: { ledgerID: string; indexID: string }) => {
-    const { ledgerID, indexID } = values;
+    const { ledgerID, indexID } = values
 
     try {
-      setIsLoading(true);
-      await addICRC1Canister(ledgerID, indexID);
-      setIsModalVisible(false);
-      setIsNewTokenAdded(true);
+      setIsLoading(true)
+      await addICRC1Canister(ledgerID, indexID)
+      setIsModalVisible(false)
     } catch (e) {
-      console.debug(e);
+      console.debug(e)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
   const fetchICRCToken = async () => {
     try {
-      const { rootPrincipalId, publicKey } = await getLambdaCredentials();
-      const data = await isICRC1Canister(getValues('ledgerID'), rootPrincipalId!, publicKey, getValues('indexID'));
-      setTokenInfo(data);
-      return true;
+      const { rootPrincipalId, publicKey } = await getLambdaCredentials()
+      const data = await isICRC1Canister(
+        getValues("ledgerID"),
+        rootPrincipalId!,
+        publicKey,
+        getValues("indexID"),
+      )
+      setTokenInfo(data)
+      return true
     } catch (e) {
-      console.debug(e);
+      console.debug(e)
       switch ((e as Error).message) {
         case "Ledger canister does not match index canister.":
-          return Promise.resolve((e as Error).message);
+          return Promise.resolve((e as Error).message)
         case "Canister already added.":
-          return Promise.resolve((e as Error).message);
+          return Promise.resolve((e as Error).message)
         default:
-          return Promise.resolve("This does not appear to be an ICRC-1 compatible canister");
+          return Promise.resolve(
+            "This does not appear to be an ICRC-1 compatible canister",
+          )
       }
     }
   }
@@ -107,11 +121,11 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => {
-          setIsModalVisible(false);
-          resetField('ledgerID');
-          resetField('indexID');
-          setTokenInfo(null);
-          setIsLoading(false);
+          setIsModalVisible(false)
+          resetField("ledgerID")
+          resetField("indexID")
+          setTokenInfo(null)
+          setIsLoading(false)
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
@@ -129,9 +143,11 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
             labelText="Index canister ID (optional)"
             errorText={isLoading ? undefined : errors.indexID?.message}
             {...register("indexID", validationConfig)}
-            disabled={!!errors.ledgerID || !getValues('ledgerID').length}
+            disabled={!!errors.ledgerID || !getValues("ledgerID").length}
           />
-          <p className="text-gray-400 text-xs mt-[5px] mb-[10px]">Required for deposit history</p>
+          <p className="text-gray-400 text-xs mt-[5px] mb-[10px]">
+            Required for deposit history
+          </p>
           <BlurredLoader
             isLoading={isLoading}
             className="flex flex-col flex-1"
@@ -143,7 +159,16 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
                 <div className="bg-gray-50 rounded-[6px] p-4 text-gray-500 w-full">
                   <div className="grid grid-cols-[110px,1fr] gap-3">
                     <p>Token icon</p>
-                    {tokenInfo.logo ? <img className="rounded-full" src={tokenInfo.logo} alt="Token logo" width={36} /> : <UnknownIcon />}
+                    {tokenInfo.logo ? (
+                      <img
+                        className="rounded-full"
+                        src={tokenInfo.logo}
+                        alt="Token logo"
+                        width={36}
+                      />
+                    ) : (
+                      <UnknownIcon />
+                    )}
                   </div>
                   <div className="grid grid-cols-[110px,1fr] gap-3 my-4">
                     <p>Token symbol</p>
@@ -160,7 +185,10 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
           <Warning
             title="Token safety"
             text="contains a list of known ICRC-1 canisters. Import others with caution."
-            link={{text: "NFID’s Knowledge Base", url: "https://learn.nfid.one/"}}
+            link={{
+              text: "NFID’s Knowledge Base",
+              url: "https://learn.nfid.one/",
+            }}
           />
           <Button
             className="text-base"
@@ -169,7 +197,10 @@ export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({ setIsNewTo
             block
             type="primary"
             onClick={handleSubmit(submit)}
-            disabled={Boolean(!tokenInfo) || Object.values(errors).some(error => error)}
+            disabled={
+              Boolean(!tokenInfo) ||
+              Object.values(errors).some((error) => error)
+            }
           >
             Import custom token
           </Button>

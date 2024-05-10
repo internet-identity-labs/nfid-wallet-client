@@ -12,7 +12,7 @@ const ProfileAssets = () => {
   const { navigate } = useNFIDNavigate()
   const { token, isLoading } = useAllToken(assetFilter)
 
-  console.debug("ProfileAssets", { token })
+  console.debug("ProfileAssets!", { token })
 
   return (
     <ProfileAssetsPage

@@ -15,13 +15,7 @@ import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
-interface IProfileAssetsHeader {
-  setIsNewTokenAdded?: (value: boolean) => void
-}
-
-export const ProfileAssetsHeader: React.FC<IProfileAssetsHeader> = ({
-  setIsNewTokenAdded,
-}) => {
+export const ProfileAssetsHeader = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Data | null>(null)
   const [isLoading, setIsLoading] = useState(false)

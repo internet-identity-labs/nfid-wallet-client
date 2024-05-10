@@ -4,7 +4,7 @@ import clsx from "clsx"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
-import { ChooseModal, Copy, QRCode, BlurredLoader } from "@nfid-frontend/ui"
+import { ChooseModal, Copy, QRCode, BlurredLoader, IconSvgDfinity } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -14,7 +14,6 @@ import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { useAccountsOptions } from "../hooks/use-accounts-options"
-import { useNetworkOptions } from "../hooks/use-network-options"
 import { PRINCIPAL_LENGTH } from "../utils/validations"
 import { ReceiveModal } from "./receive-modal"
 
@@ -32,27 +31,20 @@ export const TransferReceive = ({
   preselectedTokenBlockchain = Blockchain.IC,
 }: ITransferReceive) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedTokenStandard, setSelectedTokenStandard] = useState(
-    preselectedTokenStandard,
-  )
-  const [selectedTokenBlockchain, setSelectedTokenBlockchain] = useState(
-    preselectedTokenBlockchain,
-  )
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
   )
 
-  const { data: networkOptions } = useNetworkOptions(isVault)
   const { data: accountsOptions, isValidating: isAccountsValidating } =
     useAccountsOptions(
-      selectedTokenStandard as TokenStandards,
-      selectedTokenBlockchain as Blockchain,
+      preselectedTokenStandard as TokenStandards,
+      preselectedTokenBlockchain as Blockchain,
       isVault,
       true,
     )
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
-    [selectedTokenBlockchain, selectedTokenStandard, "selectedConnector"],
+    [preselectedTokenBlockchain, preselectedTokenStandard, "selectedConnector"],
     ([selectedTokenBlockchain, selectedTokenStandard]) =>
       getConnector({
         type: TransferModalType.FT,
@@ -102,22 +94,15 @@ export const TransferReceive = ({
           tokens NFID supports.
         </span>
       </p>
-      <ChooseModal
-        label="Network"
-        title={"Choose a network"}
-        optionGroups={networkOptions}
-        iconClassnames="!w-6 !h-auto !object-contain"
-        preselectedValue={`${selectedTokenStandard}&${selectedTokenBlockchain}`}
-        onSelect={(value) => {
-          const arrayValue = value.split("&")
-          if (arrayValue.length < 2) return
-
-          setSelectedTokenStandard(value.split("&")[0])
-          setSelectedTokenBlockchain(value.split("&")[1])
-        }}
-        type="small"
-        isSmooth
-      />
+      <div>
+        <p className="mb-1 text-black">Network</p>
+        <div className="rounded-md bg-gray-100 text-black flex items-center gap-1 px-2.5 h-10 text-sm">
+          <div className="rounded-full w-6 h-6 bg-white p-1 flex justify-center items-center">
+            <img src={IconSvgDfinity} alt="ICP&Internet Computer" />
+          </div>
+          <p>Internet Computer</p>
+        </div>
+      </div>
       {isVault && (
         <ChooseModal
           label="Accounts"

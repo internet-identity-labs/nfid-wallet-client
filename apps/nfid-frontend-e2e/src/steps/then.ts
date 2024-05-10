@@ -43,6 +43,7 @@ import compareText from "./support/check/compareText.js"
 import isVisible from "./support/check/isDisplayed.js"
 import isEnabled from "./support/check/isEnabled.js"
 import isExisting from "./support/check/isExisting.js"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -904,7 +905,7 @@ Then(
 Then(/^Assert ([^"]*) code block has hash$/, async (block: string) => {
   const codeBlock = $(`div#${block} #responseID code`)
   const codeBlockText = await codeBlock.getText()
-  expect(codeBlockText).toContain("hash")
+  if (!(codeBlockText.includes("hash"))) throw new Error(`Incorrect response message. Expected to contain 'hash', but was ${codeBlockText}`)
 })
 
 Then(
@@ -923,6 +924,7 @@ Then(
       await it.waitForDisplayed(
         {timeout: 10000, timeoutMsg: "ApproveButton is still not displayed after 10 sec"}
       )
+      cucumberJson.attach(await browser.takeScreenshot(), "image/png")
       await it.click()
     })
 

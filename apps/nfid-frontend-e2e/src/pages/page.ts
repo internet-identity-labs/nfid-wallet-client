@@ -24,7 +24,7 @@ export class Page {
       )
     }
     const windowHandles = await browser.getWindowHandles()
-    browser.switchToWindow(windowHandles.slice(positionNumber)[0])
+    await browser.switchToWindow(windowHandles.slice(positionNumber)[0])
   }
 
   public async waitForLoaderDisappear() {

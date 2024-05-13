@@ -23,8 +23,8 @@ import {
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
-import { TokenMetadata } from "@nfid/integration/token/dip-20"
 import { E8S } from "@nfid/integration/token/icp"
+import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -99,9 +99,11 @@ export const TransferFT = ({
     },
   )
 
-  const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
-    ITransferConfig & (TokenMetadata | Token)
-  >(
+  const {
+    data: tokenMetadata,
+    mutate: refetchMetadata,
+    isLoading: isMetadataLoading,
+  } = useSWR<ITransferConfig & (ICRC1Metadata | Token)>(
     selectedConnector ? [selectedConnector, "tokenMetadata"] : null,
     async ([selectedConnector]) => {
       // if it's dip20 token, we need to fetch token metadata
@@ -140,10 +142,14 @@ export const TransferFT = ({
     selectedConnector && selectedAccountAddress
       ? [selectedConnector, selectedAccountAddress, "balance"]
       : null,
-    ([connector, selectedAccountAddress]) =>
-      connector.getBalance(selectedAccountAddress, selectedTokenCurrency),
+    ([connector, selectedAccountAddress]) => {
+      console.log("connector!!", tokenMetadata)
+      return connector.getBalance(selectedAccountAddress, selectedTokenCurrency)
+    },
     { refreshInterval: 10000 },
   )
+
+  console.log("balance!!!", balance)
 
   const { data: tokenOptions, isLoading: isTokensLoading } = useSWR(
     [isVault, "getAllTokensOptions"],
@@ -186,6 +192,8 @@ export const TransferFT = ({
       refreshInterval: 5000,
     },
   )
+
+  console.log("transferFee!", transferFee)
 
   const { data: rate } = useSWR(
     selectedConnector ? [selectedTokenCurrency, "rate"] : null,
@@ -265,10 +273,14 @@ export const TransferFT = ({
           await calculateFee()
           const res = await selectedConnector.transfer({
             to: values.to,
-            amount: values.amount,
+            canisterId: tokenMetadata.canisterId,
+            fee: Number(transferFee?.fee) * 10 ** tokenMetadata.decimals,
+            amount: values.amount * 10 ** tokenMetadata.decimals,
             currency: selectedTokenCurrency,
             identity: await selectedConnector?.getIdentity(
               selectedAccountAddress,
+              "",
+              [tokenMetadata?.canisterId!],
             ),
             contract:
               "contractAddress" in tokenMetadata
@@ -292,7 +304,8 @@ export const TransferFT = ({
             () => refetchBalance(),
           )
           mutate(
-            (key) => key && Array.isArray(key) && key[0] === "useTokenConfig",
+            (key: any) =>
+              key && Array.isArray(key) && key[0] === "useTokenConfig",
           )
         },
         isAssetPadding: true,
@@ -329,6 +342,13 @@ export const TransferFT = ({
     isAccountsValidating,
   ])
 
+  console.log(
+    "tokenData!!!",
+    selectedTokenCurrency,
+    transferFee,
+    tokenMetadata?.feeCurrency,
+  )
+
   return (
     <BlurredLoader
       className="text-xs"
@@ -347,7 +367,12 @@ export const TransferFT = ({
         <p
           onClick={() => {
             if (transferFee && balance) {
-              setValue("amount", +balance.balanceinUsd - +transferFee.feeUsd)
+              console.log("max!", transferFee, balance)
+              const val = +(+balance.balance - +transferFee.fee).toFixed(
+                MAX_DECIMAL_LENGTH,
+              )
+              if (val <= 0) return
+              setValue("amount", val)
             }
           }}
           className="text-blue-600 cursor-pointer"
@@ -438,10 +463,13 @@ export const TransferFT = ({
             type="trigger"
             onSelect={(value) => {
               const arrayValue = value.split("&")
+              console.log("choose connector!", value)
               if (arrayValue.length < 2) return
 
               setSelectedTokenCurrency(arrayValue[0])
               setSelectedTokenBlockchain(arrayValue[1])
+              calculateFee()
+              refetchMetadata()
             }}
             onOpen={sendReceiveTracking.supportedTokenModalOpened}
             preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
@@ -527,7 +555,9 @@ export const TransferFT = ({
             ) : (
               <div className="text-right">
                 <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee ?? `0.00 ${tokenMetadata?.feeCurrency}`}
+                  {transferFee?.fee
+                    ? `${transferFee?.fee} ${tokenMetadata?.feeCurrency}`
+                    : `0.00 ${tokenMetadata?.feeCurrency}`}
                 </p>
               </div>
             )}
@@ -561,7 +591,7 @@ export const TransferFT = ({
               !isBalanceFetching &&
               !!balance?.balance?.length ? (
                 <span id="balance">
-                  {balance.balance.toString()} {selectedTokenCurrency}
+                  {balance.balance} {selectedTokenCurrency}
                 </span>
               ) : (
                 <Spinner className="w-3 h-3 text-gray-400" />

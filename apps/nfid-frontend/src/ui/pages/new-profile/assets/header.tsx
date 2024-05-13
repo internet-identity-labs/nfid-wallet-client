@@ -77,6 +77,8 @@ export const ProfileAssetsHeader = () => {
           return Promise.resolve((e as Error).message)
         case "Canister already added.":
           return Promise.resolve((e as Error).message)
+        case "Canister cannot be added.":
+          return Promise.resolve((e as Error).message)
         default:
           return Promise.resolve(
             "This does not appear to be an ICRC-1 compatible canister",

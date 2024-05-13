@@ -31,6 +31,8 @@ export class ICTransferConnector
     )
     if (!neededAccount) throw new Error("Account not found")
 
+    console.log("targetCanister!!", targetCanister, accessList)
+
     return await getWalletDelegationAdapter(
       neededAccount.account.domain,
       neededAccount.account.accountId,
@@ -40,7 +42,7 @@ export class ICTransferConnector
 
   getFee(): Promise<TokenFee> {
     return Promise.resolve({
-      fee: `${String(WALLET_FEE)} ${this.config.feeCurrency}`,
+      fee: `${String(WALLET_FEE)}`,
       feeUsd: String(WALLET_FEE),
     })
   }

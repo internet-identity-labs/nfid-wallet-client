@@ -5,6 +5,7 @@ import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types
 
 import { Blockchain } from "../types"
 import { icTransferConnector } from "./ic/ic-transfer-connector"
+import { icrc1TransferConnector } from "./ic/icrc1-connector"
 import { icNFTTransferConnector } from "./ic/nft-transfer-connector"
 import {
   IConnector,
@@ -29,13 +30,9 @@ function toMap<T extends { getTokenConfig: () => ITransferConfig }>(
 
 const singleFTConnectors: ITransferFTConnector[] = []
 
-const multiFTConnectors = [
-  icTransferConnector,
-]
+const multiFTConnectors = [icTransferConnector, icrc1TransferConnector]
 
-const NFTConnectors = [
-  icNFTTransferConnector,
-]
+const NFTConnectors = [icNFTTransferConnector]
 
 const allConnectors = [
   ...singleFTConnectors,

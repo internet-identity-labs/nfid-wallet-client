@@ -39,6 +39,21 @@ export interface ICRC1Data {
   logo: string | undefined
 }
 
+export interface ICRC1Metadata {
+  balance: bigint
+  canisterId: string
+  fee: bigint
+  decimals: number
+  price: string | undefined
+  owner: Principal
+  logo: string
+  name: string
+  symbol: string
+  feeCurrency: string
+  toPresentation: (value?: bigint | undefined) => number
+  transformAmount: (value: string) => number
+}
+
 export interface ICRC1IndexData {
   transactions: Array<TransactionData>
   // The oldest transaction id (it can help to stop the pagination in the UI)

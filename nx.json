@@ -155,7 +155,7 @@
         "env": "CYCLES_MINTER_CANISTER_ID"
       },
       {
-        "env": "PSYCHEDELIC_GH_NPM_REGISTRY"
+        "env": "GH_NPM_REGISTRY"
       },
       {
         "env": "AWS_ECDSA_SIGN"

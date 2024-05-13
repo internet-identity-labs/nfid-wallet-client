@@ -52,7 +52,7 @@ jobs:
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
           PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
@@ -247,7 +247,8 @@ jobs:
 
           cat > npmrc_file << EOF
           @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
+          @internet-identity-labs:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
           EOF
 
           cat > docker_env << EOF
@@ -262,7 +263,7 @@ jobs:
             RAMP_WALLET_API_KEY=${RAMP_WALLET_API_KEY}
 
             USERGEEK_API_KEY=${USERGEEK_API_KEY}
-            PSYCHEDELIC_GH_NPM_REGISTRY=${PSYCHEDELIC_GH_NPM_REGISTRY}
+            GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
             BLOCK_CYPHER_TOKEN=${BLOCK_CYPHER_TOKEN}
 
             URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
@@ -296,7 +297,7 @@ jobs:
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
 
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}

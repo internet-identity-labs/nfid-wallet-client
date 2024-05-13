@@ -1,14 +1,6 @@
 name: DEV Deployment
 on:
   workflow_dispatch:
-    inputs:
-      link_sdk:
-        description: "Link SDK-TS lib"
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
   push:
     branches:
       - main
@@ -17,7 +9,6 @@ on:
 env:
   CANISTER_NAME: "nfid-demo"
   CI_DEBUG: "true"
-  LINK_SDK: ${{ github.event.inputs.link_sdk }}
 
 jobs:
   check-secrets:
@@ -50,13 +41,12 @@ jobs:
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           MAINNET_RARIBLE_X_API_KEY: ${{secrets.MAINNET_RARIBLE_X_API_KEY}}
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          LINK_SDK: "false"
 
   build-demo:
     name: Build NFID-Demo
@@ -75,15 +65,6 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
-
-      - name: Checkout sdk-ts repo
-        if: ${{ (github.event.inputs.link_sdk == 'true') }}
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
-          repository: internet-identity-labs/sdk-ts
-          ref: main
-          path: sdk-ts
 
       - name: Setup DFX 15
         uses: dfinity/setup-dfx@main
@@ -115,31 +96,6 @@ jobs:
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           ci_versions
-
-      - name: SDK-TS => Build
-        if: ${{ (github.event.inputs.link_sdk == 'true') }}
-        working-directory: ./sdk-ts
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          ci_echo_info "Install ..." >&2
-          ci_echo_debug "yarn install --frozen-lockfile" >&2
-          yarn install --frozen-lockfile
-
-          ci_echo_debug "yarn lint" >&2
-          yarn lint
-
-          ci_echo_info "Build ..." >&2
-          ci_echo_debug "npx nx build embed" >&2
-          npx nx build embed
-
-      - name: SDK-TS => Create link to packages
-        if: ${{ (github.event.inputs.link_sdk == 'true') }}
-        working-directory: ./sdk-ts/dist/packages/embed
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-          ci_echo_debug "yarn link" >&2
-          yarn link
 
       - name: NFID-DEMO => Populate env vars
         run: |
@@ -173,7 +129,6 @@ jobs:
           echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
           echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
           echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
-          echo "LINK_SDK=${LINK_SDK:-false}" >> $GITHUB_ENV
 
       - name: NFID-DEMO => Print Vars
         run: |
@@ -183,7 +138,6 @@ jobs:
           ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
           ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
-          ci_echo_info "LINK_SDK=${LINK_SDK}" >&2
 
       - name: NFID-DEMO => Install
         run: |
@@ -192,19 +146,14 @@ jobs:
           ci_echo_debug "Preparing npmrc" >&2
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
+          @internet-identity-labs:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
           EOF
-
-          if [ "${LINK_SDK}" == 'true' ]; then
-            ci_echo_info "Yarn link ..." >&2
-            ci_echo_debug "yarn link @nfid/embed" >&2
-            yarn link @nfid/embed
-          fi
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline
         env:
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID-DEMO => Build package
         run: |
@@ -423,7 +372,7 @@ jobs:
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 

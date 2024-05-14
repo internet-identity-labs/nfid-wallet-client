@@ -31,9 +31,9 @@ export default async () => {
 }
 
 export function getIdentity(): Secp256k1KeyIdentity {
-  if(!LAMBDA_IDENTITY) {
-      throw Error("No LAMBDA_IDENTITY provided.");
+  if (!LAMBDA_IDENTITY) {
+    throw Error("No LAMBDA_IDENTITY provided.")
   }
-  const secretKey = fromHex(LAMBDA_IDENTITY.trim());
-  return Secp256k1KeyIdentity.fromSecretKey(secretKey);
+  const secretKey = fromHex(LAMBDA_IDENTITY.trim())
+  return Secp256k1KeyIdentity.fromSecretKey(secretKey)
 }

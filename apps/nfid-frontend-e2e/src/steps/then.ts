@@ -829,9 +829,12 @@ Then(
   },
 )
 
-Then(/^Go to ([^"]*) and ([^"]*) details$/, async (token: string, collection: string) => {
-  await Nft.nftDetails(token, collection)
-})
+Then(
+  /^Go to ([^"]*) and ([^"]*) details$/,
+  async (token: string, collection: string) => {
+    await Nft.nftDetails(token, collection)
+  },
+)
 
 Then(/^(\d+) transactions appear$/, async (amount: number) => {
   await Nft.getActivityAmount(amount)
@@ -920,13 +923,18 @@ Then(
     })
     expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
     await DemoTransactions.getApproveButton.then(async (it) => {
-      await it.waitForDisplayed(
-        {timeout: 10000, timeoutMsg: "ApproveButton is still not displayed after 10 sec"}
-      )
+      await it.waitForDisplayed({
+        timeout: 10000,
+        timeoutMsg: "ApproveButton is still not displayed after 10 sec",
+      })
       await it.click()
     })
 
-    await screenModal.waitForDisplayed({reverse: true, timeout: 100000, timeoutMsg: "The screenModal is still visible."})
+    await screenModal.waitForDisplayed({
+      reverse: true,
+      timeout: 100000,
+      timeoutMsg: "The screenModal is still visible.",
+    })
     await browser.switchToParentFrame()
   },
 )

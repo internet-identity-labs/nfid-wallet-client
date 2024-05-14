@@ -154,7 +154,7 @@ jobs:
           EOF
 
           ci_echo_debug "yarn --prefer-offline" >&2
-          yarn --prefer-offline
+          yarn --prefer-offline --frozen-lockfile
         env:
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
@@ -352,7 +352,7 @@ jobs:
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "yarn --prefer-offline" >&2
-          yarn --prefer-offline
+          yarn --prefer-offline --frozen-lockfile
 
       - name: Build
         run: |

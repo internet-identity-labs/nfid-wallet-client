@@ -1,7 +1,5 @@
-import React from "react";
-import { ImSpinner } from "react-icons/im";
-
-
+import React from "react"
+import { ImSpinner } from "react-icons/im"
 
 import { Button, DropdownSelect } from "@nfid-frontend/ui"
 import { BaseKeyType } from "@nfid/embed/src/lib/types"
@@ -21,6 +19,7 @@ export const AuthenticationExample = ({
     setError,
     nfid,
     setIdentity,
+    setDerivationOrigin,
     keyType,
     setKeyType,
     updateAuthButton,
@@ -39,12 +38,13 @@ export const AuthenticationExample = ({
 
     await nfid.logout()
     setIdentity(undefined)
+    setDerivationOrigin(undefined)
     updateAuthButton({
       disabled: false,
       loading: false,
       label: "Authenticate",
     })
-  }, [nfid, setError, setIdentity, updateAuthButton])
+  }, [nfid, setError, setIdentity, updateAuthButton, setDerivationOrigin])
 
   return nfid?.isAuthenticated || identity ? (
     <Button className="h-10" isSmall onClick={handleLogout}>

@@ -4,7 +4,13 @@ import clsx from "clsx"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
-import { ChooseModal, Copy, QRCode, BlurredLoader, IconSvgDfinity } from "@nfid-frontend/ui"
+import {
+  ChooseModal,
+  Copy,
+  QRCode,
+  BlurredLoader,
+  IconSvgDfinity,
+} from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 

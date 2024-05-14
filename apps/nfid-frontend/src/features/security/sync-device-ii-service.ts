@@ -1,33 +1,46 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { RootWallet, DeviceType, authState, ic } from "@nfid/integration";
-import { fetchProfile } from "frontend/integration/identity-manager";
-import { fetchAllDevices, addDevice } from "frontend/integration/internet-identity";
-import { toast } from "react-toastify";
-import { mapIIDevicesToIDevices } from "./utils";
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { toast } from "react-toastify"
+
+import { RootWallet, DeviceType, authState, ic } from "@nfid/integration"
+
 import { securityConnector } from "frontend/features/security/device-connector"
+import { fetchProfile } from "frontend/integration/identity-manager"
+import {
+  fetchAllDevices,
+  addDevice,
+} from "frontend/integration/internet-identity"
+
+import { mapIIDevicesToIDevices } from "./utils"
 
 export class SyncDeviceIIService {
-
   async isEmailDeviceOutOfSyncWithII(): Promise<boolean> {
     const profile = await fetchProfile()
-    if(profile.wallet === RootWallet.II && profile.email) {
-      const emailDevice = profile.accessPoints.find((d) => d.deviceType === DeviceType.Email);
+    if (profile.wallet === RootWallet.II && profile.email) {
+      const emailDevice = profile.accessPoints.find(
+        (d) => d.deviceType === DeviceType.Email,
+      )
 
-      if(!emailDevice) {
-        return false;
+      if (!emailDevice) {
+        return false
       }
 
-      const iiDevices = await fetchAllDevices(BigInt(profile?.anchor))
-        .then(devices => mapIIDevicesToIDevices(devices))
+      const iiDevices = await fetchAllDevices(BigInt(profile?.anchor)).then(
+        (devices) => mapIIDevicesToIDevices(devices),
+      )
 
       const { delegationIdentity } = authState.get()
-      const isAuthentificatedII = iiDevices.find((device) => device.principal === delegationIdentity?.getPrincipal().toText())
+      const isAuthentificatedII = iiDevices.find(
+        (device) =>
+          device.principal === delegationIdentity?.getPrincipal().toText(),
+      )
 
-      if(!isAuthentificatedII) {
-        return false;
+      if (!isAuthentificatedII) {
+        return false
       }
 
-      const isEmailDeviceInII = iiDevices.find((device) => device.principal === emailDevice?.principalId)
+      const isEmailDeviceInII = iiDevices.find(
+        (device) => device.principal === emailDevice?.principalId,
+      )
       return !isEmailDeviceInII
     }
 
@@ -39,7 +52,7 @@ export class SyncDeviceIIService {
     const imDevices = await securityConnector.getIMDevices()
     const emailImDevice = imDevices.find((d) => d.type === DeviceType.Email)
 
-    if(!emailImDevice) {
+    if (!emailImDevice) {
       const errorMessage = "The email device is not found."
       toast.error(errorMessage)
       throw Error(errorMessage)
@@ -51,9 +64,12 @@ export class SyncDeviceIIService {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({email: profile.email, principal: emailImDevice.principal}),
+      body: JSON.stringify({
+        email: profile.email,
+        principal: emailImDevice.principal,
+      }),
     })
-    const { publicKey }  = await publicKeyResponse.json()
+    const { publicKey } = await publicKeyResponse.json()
     const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
 
     await addDevice(
@@ -61,12 +77,11 @@ export class SyncDeviceIIService {
       "Email",
       { cross_platform: null },
       { authentication: null },
-      identity.getPublicKey().toDer()
+      identity.getPublicKey().toDer(),
     )
 
     toast.success("The email device has been synchronized.")
   }
-
 }
 
 export const syncDeviceIIService = new SyncDeviceIIService()

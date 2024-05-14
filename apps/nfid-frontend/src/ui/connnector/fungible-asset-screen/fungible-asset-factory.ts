@@ -6,7 +6,6 @@ import {
   TokenConfig,
 } from "src/ui/connnector/types"
 
-
 export class FungibleAssetFactory extends ConnectorFactory<
   string,
   FungibleAssetConnector<AssetNativeConfig | AssetErc20Config>
@@ -22,5 +21,4 @@ export class FungibleAssetFactory extends ConnectorFactory<
   }
 }
 
-export const fungibleAssetFactory = new FungibleAssetFactory([
-])
+export const fungibleAssetFactory = new FungibleAssetFactory([])

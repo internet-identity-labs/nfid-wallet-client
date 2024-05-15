@@ -46,7 +46,7 @@ export class ICRC1TransferConnector
 
     return {
       ...token,
-      price: token?.priceInUsd ? `${token.priceInUsd}` : "Not listed",
+      price: token?.priceInUsd,
       feeCurrency: token?.symbol,
       title: token?.name,
       icon: token?.logo,
@@ -66,12 +66,13 @@ export class ICRC1TransferConnector
   @Cache(connectorCache, { ttl: 15 })
   async getBalance(_: any, currency?: string): Promise<TokenBalance> {
     const token = await this.getTokenMetadata(currency ?? "")
-    const balance = token.balance
+    const { balance, price } = token
 
     return Promise.resolve({
       balance: token.toPresentation(balance).toString(),
-      balanceinUsd:
-        Number(Number(token.price)?.toFixed(2)).toString() || "Not listed",
+      balanceinUsd: price
+        ? Number(Number(token.price)?.toFixed(2)).toString()
+        : undefined,
     })
   }
 
@@ -167,56 +168,45 @@ export class ICRC1TransferConnector
   @Cache(connectorCache, { ttl: 10 })
   async getFee({ currency }: ITransferFTRequest): Promise<TokenFee> {
     const token = await this.getTokenMetadata(currency)
-    const fee = token.fee
+    const { fee, price } = token
+    console.log(
+      "123123",
+      (Number(fee) * Number(price)).toString() || undefined,
+      price,
+    )
 
     return Promise.resolve({
       fee: token.toPresentation(fee).toString(),
-      feeUsd: Number(Number(fee)?.toFixed(2)).toString(),
+      feeUsd: price ? (Number(fee) * Number(price)).toString() : undefined,
     })
   }
 
   async getIdentity(
-    domain = "nfid.one",
-    accountId = "0",
-    targetCanisters: string[],
+    _?: string,
+    targetCanister?: string,
   ): Promise<DelegationIdentity> {
-    // console.log("getIdentity icrc1")
-    // console.log(domain)
-    // console.log(accountId)
-    // console.log(targetCanisters)
-    return getWalletDelegationAdapter(domain, accountId, targetCanisters)
+    return getWalletDelegationAdapter("nfid.one", "0", [targetCanister!])
   }
 
   async transfer(request: ITransferFTRequest): Promise<ITransferResponse> {
     if (!request.identity)
       throw new Error("Identity not found. Please try again")
-    if (!request.canisterId || !request.fee)
-      throw new Error("Canister id not found. Please try again")
 
     const { canisterId, identity, amount, to, fee } = request
 
     debugger
 
-    console.debug(
-      "Transfer request!",
-      identity,
-      { request },
-      Principal.fromText(to),
-      BigInt(amount),
-      fee,
-      Number(fee),
-      [BigInt(fee)],
-    )
+    console.debug("ICRC1 Transfer request", { request })
 
     try {
-      const result = await transferICRC1(identity, canisterId, {
+      const result = await transferICRC1(identity, canisterId!, {
         to: {
           subaccount: [],
           owner: Principal.fromText(to),
         },
         amount: BigInt(amount),
         memo: [],
-        fee: [BigInt(fee)],
+        fee: [BigInt(fee!)],
         from_subaccount: [],
         created_at_time: [],
       })

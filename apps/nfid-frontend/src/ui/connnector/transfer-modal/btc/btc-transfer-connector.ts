@@ -56,7 +56,7 @@ export class BtcTransferConnector
       makeRootAccountGroupedOptions(
         address,
         balance.balance?.toString() ?? "",
-        balance.balanceinUsd,
+        balance.balanceinUsd ?? "",
         this.config.tokenStandard,
       ),
     ]

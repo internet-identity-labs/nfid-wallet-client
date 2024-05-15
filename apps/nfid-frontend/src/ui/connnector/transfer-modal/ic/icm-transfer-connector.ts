@@ -1,5 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { checkAccountId } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
 import { isHex } from "packages/utils/src/lib/validation"
@@ -148,10 +149,12 @@ export abstract class ICMTransferConnector<
           }).toHex()
         : address
     const balance = await getBalance(addressVerified)
+    const rate = await getExchangeRate()
 
     return Promise.resolve({
       balance: e8sICPToString(Number(balance)),
-      balanceinUsd: e8sICPToString(Number(Number(balance)?.toFixed(2))),
+      balanceinUsd: e8sICPToString(Number(balance) * rate),
+      //balanceinUsd: e8sICPToString(Number(Number(balance)?.toFixed(2))),
     })
   }
 
@@ -164,8 +167,8 @@ export abstract class ICMTransferConnector<
   ): Promise<ITransferResponse> {
     if (!request.identity)
       throw new Error("Identity not found. Please try again")
+    console.debug("ICP Transfer request", { request })
 
-    console.debug("Transfer request", { request })
     try {
       const res =
         "tokenId" in request
@@ -202,19 +205,44 @@ export abstract class ICMTransferConnector<
   }
 
   validateAddress(address: string): boolean | string {
-    switch (address.length) {
-      case 63:
-        try {
-          Principal.fromText(address)
-          return true
-        } catch {
-          return "Not a valid principal ID"
-        }
-      case 64:
-        if (!isHex(address)) return "Not a valid address"
-        return true
-      default:
-        return "Address length should be 63 or 64 characters"
+    // switch (address.length) {
+    //   case 63:
+    //     try {
+    //       Principal.fromText(address)
+    //       return true
+    //     } catch {
+    //       return "Not a valid principal ID"
+    //     }
+    //   case 64:
+    //     if (!isHex(address)) return "Not a valid address"
+    //     return true
+    //   default:
+    //     return "Address length should be 63 or 64 characters"
+    // }
+    try {
+      checkAccountId(address)
+      return true
+    } catch {
+      return false
     }
   }
+}
+
+export const addressValidationService = {
+  isValidAccountIdentifier(value: string): boolean {
+    try {
+      checkAccountId(value)
+      return true
+    } catch {
+      return false
+    }
+  },
+  isValidPrincipalId(value: string): boolean {
+    try {
+      if (Principal.fromText(value)) return true
+      return false
+    } catch {
+      return false
+    }
+  },
 }

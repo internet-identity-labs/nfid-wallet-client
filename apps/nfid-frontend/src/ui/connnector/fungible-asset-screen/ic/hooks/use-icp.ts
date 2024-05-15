@@ -16,6 +16,7 @@ export const useICTokens = (
 ): { configs: TokenConfig[]; isLoading: boolean } => {
   const { appAccountBalance, isLoading } = useBalanceICPAll(true, assetFilter)
   const { token: ICRC1Token, isIcrc1Loading } = useAllICRC1Token()
+  console.log("appAccountBalanceee", appAccountBalance)
 
   return {
     configs: [

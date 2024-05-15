@@ -6,6 +6,7 @@ import { WALLET_FEE } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 
 import { Blockchain, NativeToken } from "../../types"
 import {
@@ -31,8 +32,6 @@ export class ICTransferConnector
     )
     if (!neededAccount) throw new Error("Account not found")
 
-    console.log("targetCanister!!", targetCanister, accessList)
-
     return await getWalletDelegationAdapter(
       neededAccount.account.domain,
       neededAccount.account.accountId,
@@ -40,11 +39,13 @@ export class ICTransferConnector
     )
   }
 
-  getFee(): Promise<TokenFee> {
-    return Promise.resolve({
-      fee: `${String(WALLET_FEE)}`,
-      feeUsd: String(WALLET_FEE),
-    })
+  async getFee(): Promise<TokenFee> {
+    const rate = await getExchangeRate()
+
+    return {
+      fee: String(WALLET_FEE),
+      feeUsd: String(WALLET_FEE * rate),
+    }
   }
 }
 

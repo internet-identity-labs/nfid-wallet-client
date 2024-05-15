@@ -85,8 +85,8 @@ export type IGetConnector<T extends TransferModalType> = {
 export type IConnector<T extends TransferModalType> =
   T extends TransferModalType.FT ? ITransferFTConnector : ITransferNFTConnector
 
-export type TokenBalance = { balance: string; balanceinUsd: string }
-export type TokenFee = { fee: string; feeUsd: string }
+export type TokenBalance = { balance: string; balanceinUsd?: string }
+export type TokenFee = { fee: string; feeUsd?: string }
 
 export type IConfirmEVMRequest = {
   cacheKey: string

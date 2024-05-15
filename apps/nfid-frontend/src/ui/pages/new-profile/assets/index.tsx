@@ -52,6 +52,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   console.debug("ProfileAssetsPage", { tokens })
 
   const filteredTokens = useMemo(() => {
+    console.log("filteredTokens", tokens)
     return tokens.filter((token) => {
       if (!blockchainFilter.length) return true
       return blockchainFilter.includes(token.blockchain)
@@ -124,7 +125,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="pr-16 text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price ? token.price : "Not listed"}
+                    {token.price ?? "Not listed"}
                   </td>
                 </tr>
               ))}
@@ -138,10 +139,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 onClick={navigateToTransactions(token.blockchain)}
               >
                 <div className="flex items-center text-[#0B0E13]">
-                  <img
-                    src={token.icon}
-                    alt="icon"
+                  <ApplicationIcon
                     className="w-6 h-6 mr-[13px]"
+                    icon={token.icon}
+                    appName={token.title}
                   />
                   <div className="text-ellipsis whitespace-nowrap overflow-hidden w-[150px]">
                     <p className="text-sm font-bold leading-5">{token.title}</p>
@@ -155,7 +156,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     {token.toPresentation(token.balance)} {token.currency}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
-                    {token.price}
+                    {token.price ?? "Not listed"}
                   </div>
                 </div>
               </div>

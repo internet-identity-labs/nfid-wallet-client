@@ -6,11 +6,11 @@ import { Principal } from "@dfinity/principal"
 
 import { mockIdentityA } from "@nfid/integration"
 
-import { TransferArg } from "../_ic_api/icrc1.d"
-import { ICRC1 } from "../_ic_api/icrc1_registry.d"
-import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
-import { iCRC1Registry, im, replaceActorIdentity } from "../actors"
-import { generateDelegationIdentity } from "../test-utils"
+import { TransferArg } from "../../_ic_api/icrc1.d"
+import { ICRC1 } from "../../_ic_api/icrc1_registry.d"
+import { HTTPAccountResponse } from "../../_ic_api/identity_manager.d"
+import { iCRC1Registry, im, replaceActorIdentity } from "../../actors"
+import { generateDelegationIdentity } from "../../test-utils"
 import {
   addICRC1Canister,
   getICRC1Canisters,

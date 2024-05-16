@@ -28,6 +28,7 @@ import { E8S } from "@nfid/integration/token/icp"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -450,12 +451,15 @@ export const TransferFT = ({
                 id={`token_${selectedTokenCurrency}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
-                <img
-                  className="w-[26px] mr-1.5"
-                  src={tokenMetadata?.icon}
-                  alt={selectedTokenCurrency}
-                />
-
+                {!tokenMetadata?.icon ? (
+                  <UnknownIcon className="w-[26px] mr-1.5" />
+                ) : (
+                  <img
+                    className="w-[26px] mr-1.5"
+                    src={tokenMetadata?.icon}
+                    alt={selectedTokenCurrency}
+                  />
+                )}
                 <p className="text-lg font-semibold">{selectedTokenCurrency}</p>
                 <IconCmpArrowRight className="ml-4" />
               </div>

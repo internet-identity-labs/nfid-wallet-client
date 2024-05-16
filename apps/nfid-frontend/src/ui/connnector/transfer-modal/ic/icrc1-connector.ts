@@ -1,5 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
 
@@ -155,14 +156,12 @@ export class ICRC1TransferConnector
   }
 
   validateAddress(address: string): boolean | string {
-    if (address.length !== 63) return "Principal length should be 63 characters"
     try {
-      Principal.fromText(address)
-    } catch {
-      return "Not a valid principal ID"
+      decodeIcrcAccount(address)
+      return true
+    } catch (e) {
+      return "Incorrect format of Principal"
     }
-
-    return true
   }
 
   @Cache(connectorCache, { ttl: 10 })
@@ -194,15 +193,15 @@ export class ICRC1TransferConnector
 
     const { canisterId, identity, amount, to, fee } = request
 
-    debugger
+    const { owner, subaccount } = decodeIcrcAccount(to)
 
     console.debug("ICRC1 Transfer request", { request })
 
     try {
       const result = await transferICRC1(identity, canisterId!, {
         to: {
-          subaccount: [],
-          owner: Principal.fromText(to),
+          subaccount: subaccount ? [subaccount] : [],
+          owner,
         },
         amount: BigInt(amount),
         memo: [],

@@ -17,7 +17,8 @@ import {
   getICRC1DataForUser,
   getICRC1IndexData,
   ICRC1Data,
-  isICRC1Canister, removeICRC1Canister,
+  isICRC1Canister,
+  removeICRC1Canister,
   transferICRC1,
 } from "./index"
 

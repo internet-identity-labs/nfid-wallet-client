@@ -171,7 +171,10 @@ export async function addICRC1Canister(
   await iCRC1Registry.store_icrc1_canister(canisterId, indexCandid)
 }
 
-export async function removeICRC1Canister(principal: string, ledgerCanisterId: string): Promise<void> {
+export async function removeICRC1Canister(
+  principal: string,
+  ledgerCanisterId: string,
+): Promise<void> {
   const allUsersCanisters = await getICRC1Canisters(principal)
   if (!allUsersCanisters.map((c) => c.ledger).includes(ledgerCanisterId)) {
     throw new Error("Canister not found.")

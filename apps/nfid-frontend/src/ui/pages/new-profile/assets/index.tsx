@@ -33,8 +33,6 @@ interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   onIconClick,
   tokens,
-  assetFilter,
-  setAssetFilter,
   isLoading,
 }) => {
   const [blockchainFilter] = useState<string[]>([])
@@ -75,12 +73,11 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         className="mb-10 sm:pb-0 "
       >
         <div className="px-5">
-          <Loader isLoading={!tokens.length} />
+          <Loader isLoading={!tokens.length!} />
           <table className={clsx("text-left w-full hidden sm:table")}>
             <thead className={clsx("border-b border-black  h-16")}>
               <tr className={clsx("font-bold text-sm leading-5")}>
                 <th>Name</th>
-                <th>Network</th>
                 <th className="text-right">Token balance</th>
                 <th className="pr-16 text-right">USD balance</th>
               </tr>
@@ -116,12 +113,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     </div>
                   </td>
                   <td
-                    className="text-left"
-                    id={`token_${token.title.replace(/\s/g, "")}_blockchain`}
-                  >
-                    {token.blockchain}
-                  </td>
-                  <td
                     className="text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
@@ -133,7 +124,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="pr-16 text-sm text-right"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price}
+                    {token.price ? token.price : "Not listed"}
                   </td>
                 </tr>
               ))}

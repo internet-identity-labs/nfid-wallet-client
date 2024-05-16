@@ -17,14 +17,15 @@ import {
   getICRC1DataForUser,
   getICRC1IndexData,
   ICRC1Data,
-  isICRC1Canister,
+  isICRC1Canister, removeICRC1Canister,
   transferICRC1,
 } from "./index"
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
+  let root: string
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
-  it("Store/retrieve canister id", async () => {
+  it("Store/retrieve/remove canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -33,7 +34,7 @@ describe("ICRC1 suite", () => {
     await addICRC1Canister(iCRC1TestCanister, undefined)
     await replaceActorIdentity(im, delegationIdentity)
     const account = (await im.get_account()) as HTTPAccountResponse
-    const root = account.data[0]!.principal_id
+    root = account.data[0]!.principal_id
     const canisters = (await getICRC1Canisters(root)) as ICRC1[]
     expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
   })
@@ -131,5 +132,13 @@ describe("ICRC1 suite", () => {
     )
     // @ts-ignore
     expect(block.Ok).toBeGreaterThan(0)
+  })
+
+  it("Remove canister id", async () => {
+    let canisters = (await getICRC1Canisters(root)) as ICRC1[]
+    expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
+    await removeICRC1Canister(root, iCRC1TestCanister)
+    canisters = (await getICRC1Canisters(root)) as ICRC1[]
+    expect(canisters.map((l) => l.ledger)).not.toContain(iCRC1TestCanister)
   })
 })

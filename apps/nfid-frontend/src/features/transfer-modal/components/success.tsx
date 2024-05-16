@@ -1,15 +1,10 @@
-import React from "react";
-import { toast } from "react-toastify";
-import useSWR from "swr";
+import React from "react"
+import { toast } from "react-toastify"
+import useSWR from "swr"
 
+import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
 
-
-import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types";
-
-
-
-import { Success } from "../ui/success";
-
+import { Success } from "../ui/success"
 
 export interface ITransferSuccess {
   onClose?: () => void

@@ -2428,6 +2428,11 @@
   resolved "https://registry.yarnpkg.com/@dfinity/ledger-icp/-/ledger-icp-2.2.1.tgz#0ed9c9cd527af003f18b1001cca111dda1694203"
   integrity sha512-0+muT7oPhrvSHQevX3XAMbyfwghYzFlEjLeiNQSsH/3Y1lBuY0GVn0UufR/5iBHkuDkCMmWGGLdHLyr55Qn44g==
 
+"@dfinity/ledger-icrc@^2.2.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/ledger-icrc/-/ledger-icrc-2.3.1.tgz#df464f81fae8e95714dd124e668d84150355999f"
+  integrity sha512-aHkVDIwEwOqZLSUzxd1Ed6jgVfCyIwNK8ExRebKhRmPX+WMj110fHyTXFLefr65qLY23FWpqGsQjhyf5XuRC7Q==
+
 "@dfinity/nns-proto@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@dfinity/nns-proto/-/nns-proto-1.0.1.tgz#2e5c15f3805dc813534ccc7f1271ed46d16d067d"

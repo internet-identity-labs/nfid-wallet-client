@@ -154,7 +154,6 @@ export abstract class ICMTransferConnector<
     return Promise.resolve({
       balance: e8sICPToString(Number(balance)),
       balanceinUsd: e8sICPToString(Number(balance) * rate),
-      //balanceinUsd: e8sICPToString(Number(Number(balance)?.toFixed(2))),
     })
   }
 
@@ -188,10 +187,12 @@ export abstract class ICMTransferConnector<
       setTimeout(() => {
         "tokenId" in request
           ? mutate(
-              (key) => key && Array.isArray(key) && key[0] === "userTokens",
+              (key: any) =>
+                key && Array.isArray(key) && key[0] === "userTokens",
             )
           : mutate(
-              (key) => key && Array.isArray(key) && key[0] === "AllBalanceRaw",
+              (key: any) =>
+                key && Array.isArray(key) && key[0] === "AllBalanceRaw",
             )
       }, 1000)
       return {
@@ -205,26 +206,13 @@ export abstract class ICMTransferConnector<
   }
 
   validateAddress(address: string): boolean | string {
-    // switch (address.length) {
-    //   case 63:
-    //     try {
-    //       Principal.fromText(address)
-    //       return true
-    //     } catch {
-    //       return "Not a valid principal ID"
-    //     }
-    //   case 64:
-    //     if (!isHex(address)) return "Not a valid address"
-    //     return true
-    //   default:
-    //     return "Address length should be 63 or 64 characters"
-    // }
-    try {
-      checkAccountId(address)
-      return true
-    } catch {
-      return false
-    }
+    const isPrincipal = addressValidationService.isValidPrincipalId(address)
+    const isAccountIdentifier =
+      addressValidationService.isValidAccountIdentifier(address)
+
+    if (!isPrincipal && !isAccountIdentifier)
+      return "Incorrect format of Destination Address"
+    else return true
   }
 }
 

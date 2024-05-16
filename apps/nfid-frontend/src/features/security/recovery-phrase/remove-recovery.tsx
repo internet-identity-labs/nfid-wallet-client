@@ -4,15 +4,15 @@ import React, { useState } from "react"
 import { IconCmpTrash } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { securityTracking } from "@nfid/integration"
+import { authState } from "@nfid/integration"
 
 import { Button } from "frontend/ui/atoms/button"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
-import { securityConnector } from "../device-connector"
-import { authState } from "@nfid/integration"
-import { IDevice } from "../types"
 import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
+import { securityConnector } from "../device-connector"
+import { IDevice } from "../types"
 
 interface IDeleteRecoveryPhraseModal
   extends React.HTMLAttributes<HTMLDivElement> {

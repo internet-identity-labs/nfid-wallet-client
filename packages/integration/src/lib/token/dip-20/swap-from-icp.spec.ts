@@ -1,17 +1,14 @@
-import { ActorSubclass } from "@dfinity/agent";
-import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { Principal } from "@dfinity/principal";
+import { ActorSubclass } from "@dfinity/agent"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 
-
-
-import { DIP20 } from ".";
-import { mockIdentityA } from "../../identity/mocks";
-import { stringify } from "../../test-utils";
-import { E8S } from "../icp";
-import * as mockedTransfer from "../icp/transfer";
-import * as mockedDip20Actor from "./actor";
-import { swapFromICP } from "./swap-from-icp";
-
+import { DIP20 } from "."
+import { mockIdentityA } from "../../identity/mocks"
+import { stringify } from "../../test-utils"
+import { E8S } from "../icp"
+import * as mockedTransfer from "../icp/transfer"
+import * as mockedDip20Actor from "./actor"
+import { swapFromICP } from "./swap-from-icp"
 
 describe("swapFromIcp", () => {
   it("should work", async () => {

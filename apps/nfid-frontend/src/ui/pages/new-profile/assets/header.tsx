@@ -3,12 +3,14 @@ import {
   ICRC1Data,
   addICRC1Canister,
   isICRC1Canister,
+  ICRC1Error,
 } from "packages/integration/src/lib/token/icrc1"
 import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
+import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/icrc1/constants"
 
 import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
@@ -53,7 +55,7 @@ export const ProfileAssetsHeader = () => {
       await addICRC1Canister(ledgerID, indexID)
       setIsModalVisible(false)
     } catch (e) {
-      console.debug(e)
+      console.error(e)
     } finally {
       setIsLoading(false)
     }
@@ -71,19 +73,11 @@ export const ProfileAssetsHeader = () => {
       setTokenInfo(data)
       return true
     } catch (e) {
-      console.debug(e)
-      switch ((e as Error).message) {
-        case "Ledger canister does not match index canister.":
-          return Promise.resolve((e as Error).message)
-        case "Canister already added.":
-          return Promise.resolve((e as Error).message)
-        case "Canister cannot be added.":
-          return Promise.resolve((e as Error).message)
-        default:
-          return Promise.resolve(
-            "This does not appear to be an ICRC-1 compatible canister",
-          )
+      if (e instanceof ICRC1Error) {
+        return e.message
       }
+
+      return DEFAULT_ERROR_TEXT
     }
   }
 

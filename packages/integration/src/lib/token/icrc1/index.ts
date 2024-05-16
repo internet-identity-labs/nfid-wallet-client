@@ -21,10 +21,9 @@ import {
 import { agentBaseConfig, iCRC1Registry } from "../../actors"
 import { PriceService } from "../../asset/asset-util"
 import { TokenPrice } from "../../asset/types"
+import { DEFAULT_ERROR_TEXT, ICP_CANISTER_ID, NETWORK } from "./constants"
 
-const errorText = "This does not appear to be an ICRC1 compatible canister"
-const network = "Internet Computer"
-const icpCanisterId = "ryjl3-tyaaa-aaaaa-aaaba-cai"
+export class ICRC1Error extends Error {}
 
 export interface ICRC1Data {
   balance: bigint
@@ -125,7 +124,7 @@ export async function isICRC1Canister(
     .map((standard) => standard.name)
     .some((name) => name === "ICRC-1")
   if (!isICRC1) {
-    throw new Error(errorText)
+    throw new ICRC1Error(DEFAULT_ERROR_TEXT)
   }
   await getICRC1Canisters(rootPrincipalId).then((icrc1) => {
     if (
@@ -134,17 +133,17 @@ export async function isICRC1Canister(
         .map((c) => c.ledger)
         .includes(canisterId)
     ) {
-      throw Error("Canister already added.")
+      throw new ICRC1Error("Canister already added.")
     }
-    if (canisterId === icpCanisterId) {
-      throw Error("Canister cannot be added.")
+    if (canisterId === ICP_CANISTER_ID) {
+      throw new ICRC1Error("Canister cannot be added.")
     }
   })
 
   if (indexCanister) {
     const expectedLedgerId = await getLedgerIdFromIndexCanister(indexCanister)
     if (expectedLedgerId.toText() !== canisterId) {
-      throw Error("Ledger canister does not match index canister.")
+      throw new ICRC1Error("Ledger canister does not match index canister.")
     }
   }
 
@@ -154,7 +153,7 @@ export async function isICRC1Canister(
     })
     .catch((e) => {
       console.error(`isICRC1Canister error: ` + e)
-      throw new Error(errorText)
+      throw new ICRC1Error(DEFAULT_ERROR_TEXT)
     })
 }
 
@@ -254,7 +253,7 @@ export async function getICRC1Data(
         fee,
         name,
         symbol,
-        network,
+        network: NETWORK,
         priceInUsd: roundedBalanceNumber,
         logo: logo,
       }

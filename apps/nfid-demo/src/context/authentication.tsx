@@ -1,18 +1,15 @@
-import { SignIdentity } from "@dfinity/agent";
-import { DelegationIdentity } from "@dfinity/identity";
-import { Principal } from "@dfinity/principal";
-import { principalToAddress } from "ictool";
-import React, { useMemo } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import useSWR from "swr";
+import { SignIdentity } from "@dfinity/agent"
+import { DelegationIdentity } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+import { principalToAddress } from "ictool"
+import React, { useMemo } from "react"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import useSWR from "swr"
 
-
-
-import { localStorageWithFallback } from "@nfid/client-db";
-import { NFID } from "@nfid/embed";
-import { BaseKeyType } from "@nfid/embed/src/lib/types";
-
+import { localStorageWithFallback } from "@nfid/client-db"
+import { NFID } from "@nfid/embed"
+import { BaseKeyType } from "@nfid/embed/src/lib/types"
 
 declare const NFID_PROVIDER_URL: string
 
@@ -27,6 +24,7 @@ interface AuthenticationContextProps {
   keyType: BaseKeyType
   setKeyType: React.Dispatch<React.SetStateAction<BaseKeyType>>
   derivationOrigin?: string
+  setDerivationOrigin: React.Dispatch<React.SetStateAction<string | undefined>>
   config?: {
     principalID: string
     address: string
@@ -42,6 +40,9 @@ const AuthenticationContext = React.createContext<AuthenticationContextProps>({
   },
   setKeyType: () => {
     throw new Error("setKeyType not implemented")
+  },
+  setDerivationOrigin: () => {
+    throw new Error("setDerivationOrigin not implemented")
   },
 })
 
@@ -67,6 +68,9 @@ export const AuthenticationProvider: React.FC<{
   children: JSX.Element | JSX.Element[]
 }> = ({ children }: any) => {
   const [identity, setIdentity] = React.useState<DelegationIdentity>()
+  const [derivationOriginState, setDerivationOrigin] = React.useState<
+    string | undefined
+  >(derivationOrigin)
 
   const nfidProviderUrl = React.useMemo(() => {
     return (
@@ -135,7 +139,8 @@ export const AuthenticationProvider: React.FC<{
         keyType,
         setKeyType,
         config,
-        derivationOrigin,
+        derivationOrigin: derivationOriginState,
+        setDerivationOrigin,
       }}
     >
       <ToastContainer />

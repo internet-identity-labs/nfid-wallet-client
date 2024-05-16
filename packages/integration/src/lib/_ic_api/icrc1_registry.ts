@@ -6,6 +6,7 @@ export const idlFactory = ({ IDL }: any) => {
   })
   return IDL.Service({
     get_canisters_by_root: IDL.Func([IDL.Text], [IDL.Vec(ICRC1)], ["query"]),
+    remove_icrc1_canister: IDL.Func([IDL.Text], [], []),
     store_icrc1_canister: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
   })
 }

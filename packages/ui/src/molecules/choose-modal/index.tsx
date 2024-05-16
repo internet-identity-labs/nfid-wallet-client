@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
+import { trimConcat } from "src/ui/atoms/util/util"
 
 import { IconCmpSearch, IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
@@ -12,7 +13,6 @@ import { DefaultTrigger } from "./triggers/default"
 import { InputTrigger } from "./triggers/input"
 import { SmallTrigger } from "./triggers/small"
 import { IGroupedOptions, IGroupOption } from "./types"
-import { trimConcat } from "src/ui/atoms/util/util"
 
 export interface IChooseModal {
   optionGroups: IGroupedOptions[]
@@ -193,7 +193,7 @@ export const ChooseModal = ({
                   innerSubtitle={option.innerSubtitle}
                   iconClassnames={iconClassnames}
                   badgeText={option.badgeText}
-                  id={trimConcat('choose_option_', option.title)}
+                  id={trimConcat("choose_option_", option.title)}
                 />
               ))}
             </div>

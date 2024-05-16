@@ -94,9 +94,9 @@ export function getLambdaActor(): Agent.ActorSubclass<IdentityManager> {
 }
 
 export function getLambdaIdentity(): Secp256k1KeyIdentity {
-  if(!LAMBDA_IDENTITY) {
-      throw Error("No LAMBDA_IDENTITY provided.");
+  if (!LAMBDA_IDENTITY) {
+    throw Error("No LAMBDA_IDENTITY provided.")
   }
-  const secretKey = Agent.fromHex(LAMBDA_IDENTITY.trim());
-  return Secp256k1KeyIdentity.fromSecretKey(secretKey);
+  const secretKey = Agent.fromHex(LAMBDA_IDENTITY.trim())
+  return Secp256k1KeyIdentity.fromSecretKey(secretKey)
 }

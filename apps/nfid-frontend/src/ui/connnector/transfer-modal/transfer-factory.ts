@@ -29,13 +29,9 @@ function toMap<T extends { getTokenConfig: () => ITransferConfig }>(
 
 const singleFTConnectors: ITransferFTConnector[] = []
 
-const multiFTConnectors = [
-  icTransferConnector,
-]
+const multiFTConnectors = [icTransferConnector]
 
-const NFTConnectors = [
-  icNFTTransferConnector,
-]
+const NFTConnectors = [icNFTTransferConnector]
 
 const allConnectors = [
   ...singleFTConnectors,

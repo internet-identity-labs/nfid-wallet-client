@@ -3,6 +3,7 @@ import { toast } from "react-toastify"
 
 import { Button } from "@nfid-frontend/ui"
 import { RootWallet, securityTracking } from "@nfid/integration"
+import { authState } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import { removeAccessPointFacade } from "frontend/integration/facade"
@@ -10,10 +11,9 @@ import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
+import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
 import { securityConnector } from "../device-connector"
 import { IDevice } from "../types"
-import { authState } from "@nfid/integration"
-import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
 
 interface IDeletePasskeyModal extends React.HTMLAttributes<HTMLDivElement> {
   handleWithLoading: IHandleWithLoading

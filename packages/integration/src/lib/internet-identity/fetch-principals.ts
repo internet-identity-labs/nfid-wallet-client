@@ -15,7 +15,10 @@ export async function fetchPrincipals(): Promise<PrincipalAccount[]> {
   if (!delegation) throw Error("No delegation identity")
 
   const publicKey = await getPublicKey(delegation, Chain.IC)
-  const principal = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"]).getPrincipal()
+  const principal = Ed25519KeyIdentity.fromParsedJson([
+    publicKey,
+    "0",
+  ]).getPrincipal()
 
   const globalAcc = {
     account: {

@@ -8,6 +8,7 @@ import CopiedIcon from "./copied.svg"
 export interface ICopy extends HTMLAttributes<HTMLDivElement> {
   value: string
   iconClassName?: string
+  isTokenMenu?: boolean
   copyTitle?: string
 }
 
@@ -15,6 +16,7 @@ export const Copy: React.FC<ICopy> = ({
   value,
   className,
   iconClassName,
+  isTokenMenu,
   copyTitle,
 }) => {
   const [copied, setCopied] = React.useState(false)
@@ -30,13 +32,16 @@ export const Copy: React.FC<ICopy> = ({
   return (
     <div
       className={clsx(
-        !copied && "hover:opacity-50 cursor-pointer transition-opacity",
+        !copied &&
+          !isTokenMenu &&
+          "hover:opacity-50 cursor-pointer transition-opacity",
+        isTokenMenu && "h-[100%] flex-1",
         "flex items-center stroke-gray-400",
         className,
       )}
       onClick={copyToClipboard}
     >
-      <div className="w-5">
+      <div className={iconClassName ? iconClassName : "w-5"}>
         <img
           className={clsx(copied ? "inline-block" : "hidden")}
           src={CopiedIcon}
@@ -54,7 +59,14 @@ export const Copy: React.FC<ICopy> = ({
       </div>
 
       {copyTitle && (
-        <p className="w-full ml-2 text-xs font-semibold text-secondary">
+        <p
+          className={clsx(
+            "w-full",
+            isTokenMenu
+              ? "text-black text-sm text-left ml-[10px]"
+              : "text-xs font-semibold text-secondary ml-2",
+          )}
+        >
           {copyTitle}
         </p>
       )}

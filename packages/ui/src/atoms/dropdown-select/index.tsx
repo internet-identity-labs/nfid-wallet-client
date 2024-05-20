@@ -4,15 +4,18 @@ import { IoIosSearch } from "react-icons/io"
 
 import { Input } from "../../molecules/input"
 import useClickOutside from "../../utils/use-click-outside"
+import { IconCmpDots } from "../icons"
 import Arrow from "./arrow.svg"
 import { DropdownOption } from "./option"
 
 export interface IOption {
-  label: string
-  afterLabel?: string | number
+  label?: string
   icon?: string
+  afterLabel?: string | number
+  element?: React.ReactNode
   value: string
   disabled?: boolean
+  handler?: () => void
 }
 
 export interface IDropdownSelect {
@@ -20,6 +23,7 @@ export interface IDropdownSelect {
   bordered?: boolean
   options: IOption[]
   isSearch?: boolean
+  isToken?: boolean
   selectedValues: string[]
   setSelectedValues: (value: string[]) => void
   placeholder?: string
@@ -36,6 +40,7 @@ export const DropdownSelect = ({
   options,
   bordered = true,
   isSearch = false,
+  isToken = false,
   selectedValues,
   setSelectedValues,
   placeholder = "All",
@@ -95,59 +100,74 @@ export const DropdownSelect = ({
       )}
       ref={ref}
     >
-      <label
-        className={clsx(
-          "text-xs tracking-[0.16px] leading-4 mb-1",
-          "text-black",
-        )}
-      >
-        {label}
-      </label>
-      <div
-        className={clsx(
-          "bg-white rounded-md h-10 p-2.5 w-full",
-          "flex justify-between items-center",
-          "cursor-pointer select-none",
-          "active:outline active:outline-offset-1",
-          bordered && "border border-black",
-          isDropdownOpen && "border border-blue-600 bg-blue-50",
-          disabled && "!border-none !bg-gray-100 !text-black",
-          errorText && "!border border-red-600 !ring-2 !ring-red-100",
-        )}
-        style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        id={id}
-      >
-        <p
-          className={clsx(
-            "text-sm leading-5",
-            (!isMultiselect || isAllSelected) && "hidden",
-          )}
-          id="selected_acc"
-        >
-          {selectedValues?.length
-            ? `${selectedValues.length} selected`
-            : placeholder}
-        </p>
-        <p
-          className={clsx(
-            "text-sm leading-5",
-            (isMultiselect || isAllSelected) && "hidden",
-          )}
-        >
-          {selectedValues?.length
-            ? options.find((o) => o.value === selectedValues[0])?.label
-            : placeholder}
-        </p>
-        <p className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
-          All
-        </p>
-        <img src={Arrow} alt="arrow" />
-      </div>
-      <p className={clsx("text-sm text-red-600")}>{errorText}</p>
+      {!isToken ? (
+        <>
+          <label
+            className={clsx(
+              "text-xs tracking-[0.16px] leading-4 mb-1",
+              "text-black",
+            )}
+          >
+            {label}
+          </label>
+          <div
+            className={clsx(
+              "bg-white rounded-md h-10 p-2.5 w-full",
+              "flex justify-between items-center",
+              "cursor-pointer select-none",
+              "active:outline active:outline-offset-1",
+              bordered && "border border-black",
+              isDropdownOpen && "border border-blue-600 bg-blue-50",
+              disabled && "!border-none !bg-gray-100 !text-black",
+              errorText && "!border border-red-600 !ring-2 !ring-red-100",
+            )}
+            style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            id={id}
+          >
+            <p
+              className={clsx(
+                "text-sm leading-5",
+                (!isMultiselect || isAllSelected) && "hidden",
+              )}
+              id="selected_acc"
+            >
+              {selectedValues?.length
+                ? `${selectedValues.length} selected`
+                : placeholder}
+            </p>
+            <p
+              className={clsx(
+                "text-sm leading-5",
+                (isMultiselect || isAllSelected) && "hidden",
+              )}
+            >
+              {selectedValues?.length
+                ? options.find((o) => o.value === selectedValues[0])?.label
+                : placeholder}
+            </p>
+            <p
+              className={clsx("text-sm leading-5", !isAllSelected && "hidden")}
+            >
+              All
+            </p>
+            <img src={Arrow} alt="arrow" />
+          </div>
+          <p className={clsx("text-sm text-red-600")}>{errorText}</p>
+        </>
+      ) : (
+        <IconCmpDots
+          className="mx-auto"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        />
+      )}
       {isDropdownOpen && (
         <div
-          className={clsx("w-full bg-white rounded-md mt-[1px] absolute z-50")}
+          className={clsx(
+            `${
+              !isToken ? "w-full" : "right-[-10px]"
+            } bg-white rounded-md mt-[1px] absolute z-50`,
+          )}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
         >
           {isSearch && (
@@ -159,28 +179,67 @@ export const DropdownSelect = ({
               onKeyUp={(e) => setSearchInput(e.target.value)}
             />
           )}
-          <div
-            className={clsx("max-h-[30vh] overflow-auto flex flex-col")}
-            id="dropdown-options"
-          >
-            {showSelectAllOption && (
-              <DropdownOption
-                option={{ label: "Select all", value: "all" }}
-                isChecked={isAllSelected}
-                toggleCheckbox={toggleSelectAll}
-                isCheckbox
-              />
-            )}
-            {filteredOptions?.map((option) => (
-              <DropdownOption
-                key={option.value}
-                option={option}
-                isChecked={selectedValues.includes(option.value)}
-                toggleCheckbox={toggleCheckbox}
-                isCheckbox
-              />
-            ))}
-          </div>
+          {isToken ? (
+            <div className="min-w-[210px] sm:min-w-[250px]">
+              {options?.map((option, index) => {
+                if (option.label === "Remove token" && !option.value)
+                  return null
+                return (
+                  <div
+                    key={`${option.label}_${index}`}
+                    className="px-[10px] flex items-center gap-[8px] hover:bg-gray-100 h-[40px]"
+                    onClick={() => {
+                      if (!option.handler) return
+                      option.handler()
+                      setIsDropdownOpen(false)
+                    }}
+                  >
+                    {option.element ? (
+                      option.element
+                    ) : (
+                      <>
+                        <img width={24} src={option.icon} />
+                        {option.label === "View on block explorer" ? (
+                          <a
+                            href={option.value}
+                            target="_blank"
+                            className="text-black text-sm"
+                          >
+                            {option.label}
+                          </a>
+                        ) : (
+                          <p className="text-black text-sm">{option.label}</p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div
+              className={clsx("max-h-[30vh] overflow-auto flex flex-col")}
+              id="dropdown-options"
+            >
+              {showSelectAllOption && (
+                <DropdownOption
+                  option={{ label: "Select all", value: "all" }}
+                  isChecked={isAllSelected}
+                  toggleCheckbox={toggleSelectAll}
+                  isCheckbox
+                />
+              )}
+              {filteredOptions?.map((option) => (
+                <DropdownOption
+                  key={option.value}
+                  option={option}
+                  isChecked={selectedValues.includes(option.value)}
+                  toggleCheckbox={toggleCheckbox}
+                  isCheckbox
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

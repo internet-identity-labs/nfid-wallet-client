@@ -174,12 +174,10 @@ export abstract class ICMTransferConnector<
               amount: stringICPtoE8s(String(request.amount)),
               to:
                 request.to.length === PRINCIPAL_LENGTH
-                  ? // get rid of PRINCIPAL_LENGTH comparison
-                    AccountIdentifier.fromPrincipal({
+                  ? AccountIdentifier.fromPrincipal({
                       principal: Principal.fromText(request.to),
                     }).toHex()
-                  : // toPrincipal from ic-ledger
-                    request.to,
+                  : request.to,
               ...(request.memo ? { memo: request.memo } : {}),
               identity: request.identity,
             })

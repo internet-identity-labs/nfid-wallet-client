@@ -67,7 +67,7 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       const email = "test@test.test"
       const principal = di.getPrincipal().toText()
-      const lambdaActor = getLambdaActor()
+      const lambdaActor = await getLambdaActor()
       await lambdaActor.add_email_and_principal_for_create_account_validation(
         email,
         principal,
@@ -90,7 +90,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         wallet: [{ NFID: null }],
         anchor: BigInt(0),
       }
-      replaceActorIdentity(im, di)
+      await replaceActorIdentity(im, di)
 
       await im.remove_account()
       await im.create_account(accountRequest)

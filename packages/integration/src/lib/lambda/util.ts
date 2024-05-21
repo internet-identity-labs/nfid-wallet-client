@@ -43,10 +43,10 @@ export const getIdentity = (seed: string): Ed25519KeyIdentity => {
   return Ed25519KeyIdentity.generate(seedEncoded)
 }
 
-export function getLambdaActor(): Agent.ActorSubclass<IdentityManager> {
+export async function getLambdaActor(): Promise<Agent.ActorSubclass<IdentityManager>> {
   const identity = getLambdaIdentity()
   const lambdaIm = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
-  replaceActorIdentity(im, identity)
+  await replaceActorIdentity(im, identity)
   return lambdaIm
 }
 

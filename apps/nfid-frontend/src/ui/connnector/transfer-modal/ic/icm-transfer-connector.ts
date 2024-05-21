@@ -3,7 +3,6 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { checkAccountId } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
-import { isHex } from "packages/utils/src/lib/validation"
 import { mutate } from "swr"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
@@ -161,6 +160,15 @@ export abstract class ICMTransferConnector<
     return Promise.resolve(identity.getPrincipal().toString())
   }
 
+  private getAccountIdentifier(address: string): string {
+    if (addressValidationService.isValidAccountIdentifier(address))
+      return address
+
+    var principal = Principal.fromText(address)
+    var accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
+    return accountIdentifier.toHex()
+  }
+
   async transfer(
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<ITransferResponse> {
@@ -174,12 +182,7 @@ export abstract class ICMTransferConnector<
           ? await transferEXT(request.tokenId, request.identity, request.to)
           : await transferICP({
               amount: stringICPtoE8s(String(request.amount)),
-              to:
-                request.to.length === PRINCIPAL_LENGTH
-                  ? AccountIdentifier.fromPrincipal({
-                      principal: Principal.fromText(request.to),
-                    }).toHex()
-                  : request.to,
+              to: this.getAccountIdentifier(request.to),
               ...(request.memo ? { memo: request.memo } : {}),
               identity: request.identity,
             })

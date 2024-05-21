@@ -85,11 +85,6 @@ export const makeAddressFieldValidation =
           value.length < 36
           ? true
           : "Incorrect BTC address"
-      case TokenStandards.DIP20:
-        return typeof isValidPrincipalId(value) === "boolean" &&
-          value.length === PRINCIPAL_LENGTH
-          ? true
-          : "For DIP20 only principal address allowed"
       default:
         return (typeof isHex(value) === "boolean" &&
           value.length === IC_ADDRESS_LENGTH) ||

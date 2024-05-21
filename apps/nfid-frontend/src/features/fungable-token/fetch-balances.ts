@@ -3,13 +3,11 @@ import { Principal } from "@dfinity/principal"
 
 import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
 import { getBalance as getICPBalance } from "@nfid/integration"
-import { getDIP20Balance, TokenMetadata } from "@nfid/integration/token/dip-20"
 
 import { getAddress } from "frontend/util/get-address"
 
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]
-  dip20Token: TokenMetadata[]
 }
 
 export type Token = string
@@ -30,12 +28,11 @@ export type AccountBalance = {
 
 export async function fetchBalances({
   principals,
-  dip20Token,
 }: FetchBalanceArgs): Promise<AccountBalance[]> {
   return await Promise.all(
     principals.map(async ({ principal, account }) => {
       const token = await Promise.all<TokenBalance>([
-        // mapping over this static list only to keep the same shape as the dip20Token
+        // mapping over this static list only to keep the same shape as the icrc1Token
         ...["ICP"].map(async (token) => ({
           [token]: await getICPBalance(
             AccountIdentifier.fromPrincipal({ principal }).toHex(),
@@ -50,12 +47,6 @@ export async function fetchBalances({
         // ...["MATIC"].map(async (token) => ({
         //   [token]: (await getAccountsMatic()).tokenBalance,
         // })),
-        ...dip20Token.map(async ({ symbol: token, canisterId }) => ({
-          [token]: await getDIP20Balance({
-            canisterId,
-            principalId: principal.toText(),
-          }),
-        })),
         // ...erc20.map(async (token) => ({
         //   [token.token]: token.tokenBalance,
         // })),

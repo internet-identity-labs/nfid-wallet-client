@@ -34,7 +34,6 @@ import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
 import { agent } from "./agent"
-import { TOKEN_CANISTER } from "./token/dip-20/constants"
 
 /////////////
 // Config //
@@ -54,10 +53,7 @@ const canisterConfig = [
   ["ICSigner", IC_SIGNER_CANISTER_ID],
 ]
 
-export const accessList = [
-  ...canisterConfig.map((x) => x[1]),
-  ...TOKEN_CANISTER,
-]
+export const accessList = [...canisterConfig.map((x) => x[1])]
 
 // NOTE: Might be nice to have the canister named in this exception
 for (const [label, canister] of canisterConfig) {

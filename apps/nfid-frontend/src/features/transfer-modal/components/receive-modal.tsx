@@ -31,7 +31,7 @@ export const ReceiveModal = ({ onBack }: IReceiveModal) => {
         </p>
         <p>
           Internet Computer:
-          <span className="font-normal"> ICP, DIP-20, EXT</span>
+          <span className="font-normal"> ICP, ICRC-1, EXT</span>
         </p>
       </div>
       <img

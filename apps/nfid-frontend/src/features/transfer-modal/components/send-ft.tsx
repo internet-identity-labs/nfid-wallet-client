@@ -115,7 +115,7 @@ export const TransferFT = ({
       ? [selectedConnector, "tokenMetadata", selectedTokenCurrency]
       : null,
     async ([selectedConnector]) => {
-      // if it's dip20 token, we need to fetch token metadata
+      // if it's icrc1 token, we need to fetch token metadata
       if (selectedConnector.getTokenMetadata)
         return await selectedConnector.getTokenMetadata(selectedTokenCurrency)
       else return selectedConnector.getTokenConfig()
@@ -152,13 +152,10 @@ export const TransferFT = ({
       ? [selectedConnector, selectedAccountAddress, "balance"]
       : null,
     ([connector, selectedAccountAddress]) => {
-      console.log("connector!!", tokenMetadata)
       return connector.getBalance(selectedAccountAddress, selectedTokenCurrency)
     },
     { refreshInterval: 10000 },
   )
-
-  console.log("balance!!!", balance)
 
   const { data: tokenOptions, isLoading: isTokensLoading } = useSWR(
     [isVault, "getAllTokensOptions"],
@@ -202,8 +199,6 @@ export const TransferFT = ({
     },
   )
 
-  console.log("transferFee!", transferFee)
-
   const { data: rate } = useSWR(
     selectedConnector ? [selectedTokenCurrency, "rate"] : null,
     ([selectedTokenCurrency]) =>
@@ -232,11 +227,6 @@ export const TransferFT = ({
     async (values: { amount: number; to: string }) => {
       if (!tokenMetadata) return toast.error("Token metadata has not loaded")
       if (!selectedConnector) return toast.error("No selected connector")
-      if (values.to === selectedAccountAddress)
-        return setError("to", {
-          type: "value",
-          message: "You can't transfer to the same wallet",
-        })
 
       if (isVault) {
         return onTransferPromise({
@@ -275,15 +265,6 @@ export const TransferFT = ({
           isAssetPadding: true,
         })
       }
-
-      console.log(
-        "ICP Transfer::",
-        Number(transferFee?.fee) * 10 ** tokenMetadata.decimals,
-        values.amount * 10 ** tokenMetadata.decimals,
-        transferFee?.fee,
-        values.amount,
-        tokenMetadata.decimals,
-      )
 
       onTransferPromise({
         assetImg: tokenMetadata?.icon ?? "",
@@ -363,13 +344,6 @@ export const TransferFT = ({
     isAccountsValidating,
   ])
 
-  console.log(
-    "tokenData!!!",
-    selectedTokenCurrency,
-    transferFee,
-    tokenMetadata?.feeCurrency,
-  )
-
   return (
     <BlurredLoader
       className="text-xs"
@@ -388,7 +362,6 @@ export const TransferFT = ({
         <p
           onClick={() => {
             if (transferFee && balance) {
-              console.log("max!", transferFee, balance)
               const val = +(+balance.balance - +transferFee.fee).toFixed(
                 MAX_DECIMAL_LENGTH,
               )
@@ -507,7 +480,6 @@ export const TransferFT = ({
             type="trigger"
             onSelect={(value) => {
               const arrayValue = value.split("&")
-              console.log("choose connector!", value)
               if (arrayValue.length < 2) return
 
               setSelectedTokenCurrency(arrayValue[0])

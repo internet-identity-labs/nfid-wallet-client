@@ -151,9 +151,8 @@ export const TransferFT = ({
     selectedConnector && selectedAccountAddress
       ? [selectedConnector, selectedAccountAddress, "balance"]
       : null,
-    ([connector, selectedAccountAddress]) => {
-      return connector.getBalance(selectedAccountAddress, selectedTokenCurrency)
-    },
+    ([connector, selectedAccountAddress]) =>
+      connector.getBalance(selectedAccountAddress, selectedTokenCurrency),
     { refreshInterval: 10000 },
   )
 

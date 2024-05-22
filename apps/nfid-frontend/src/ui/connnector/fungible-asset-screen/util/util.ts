@@ -34,6 +34,7 @@ export function toNativeTokenConfig(
     toPresentation,
     transformAmount: stringICPtoE8s,
     blockchain: config.blockchain,
+    canisterId: "",
   }
 }
 
@@ -54,6 +55,7 @@ export function erc20ToTokenConfig(
     transformAmount: stringICPtoE8s,
     feeCurrency: config.feeCurrency,
     contract: tokenSheet.contract,
+    canisterId: "",
   }
 }
 

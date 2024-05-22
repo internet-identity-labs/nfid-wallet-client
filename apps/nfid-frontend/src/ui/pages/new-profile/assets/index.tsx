@@ -1,16 +1,11 @@
 import clsx from "clsx"
-import ExternalIcon from "packages/ui/src/atoms/icons/external.svg"
-import HistoryIcon from "packages/ui/src/atoms/icons/history.svg"
-import RemoveIcon from "packages/ui/src/atoms/icons/trash.svg"
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
-import { Button, Copy, DropdownSelect } from "@nfid-frontend/ui"
+import { Button } from "@nfid-frontend/ui"
 import { removeICRC1Canister } from "@nfid/integration/token/icrc1"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/icrc1/constants"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { MAX_DECIMAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
@@ -22,9 +17,10 @@ import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { ProfileAssetsHeader } from "./header"
+import TokenDropdown from "./token-dropdown"
 import Icon from "./transactions.svg"
 
-type Token = {
+export type Token = {
   toPresentation: (amount?: bigint) => number
   icon: string
   title: string
@@ -32,10 +28,10 @@ type Token = {
   balance?: bigint
   price?: string
   blockchain: Blockchain
-  canisterId?: string
+  canisterId: string
 }
 
-type TokenToRemove = {
+export type TokenToRemove = {
   canisterId: string
   name: string
 }
@@ -56,20 +52,8 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   const [tokenToRemove, setTokenToRemove] = useState<TokenToRemove | null>(null)
   const [isRemoveLoading, setIsRemoveLoading] = useState(false)
 
-  const navigate = useNavigate()
-
-  const navigateToTransactions = React.useCallback(
-    (canisterId: string) => () => {
-      navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
-        state: {
-          canisterId,
-        },
-      })
-    },
-    [navigate],
-  )
-
   console.debug("ProfileAssetsPage", { tokens })
+  console.log("ProfileAssetsPage", { tokens })
 
   const removeHandler = async () => {
     setIsRemoveLoading(true)
@@ -105,7 +89,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         className="mb-10 sm:pb-0 "
       >
         <div className="px-5">
-          <Loader isLoading={!tokens.length!} />
+          <Loader isLoading={!tokens.length} />
           <table className={clsx("text-left w-full hidden sm:table")}>
             <thead className={clsx("border-b border-black  h-16")}>
               <tr className={clsx("font-bold text-sm leading-5")}>
@@ -149,59 +133,24 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
                     <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-                      {token.toPresentation(token.balance)} {token.currency}
+                      {parseFloat(
+                        token.toPresentation(token.balance).toString(),
+                      )
+                        .toFixed(MAX_DECIMAL_LENGTH)
+                        .replace(/(\.[0-9]*[1-9])0+$|\.0*$/, "$1")}{" "}
+                      {token.currency}
                     </span>
                   </td>
                   <td
                     className="text-sm text-right pr-[20px]"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price ? token.price : "Not listed"}
+                    {token.price ? `${token.price} USD` : "Not listed"}
                   </td>
                   <td className="px-[10px] text-sm text-right">
-                    <DropdownSelect
-                      isToken={true}
-                      options={
-                        [
-                          {
-                            label: "Transactions",
-                            icon: HistoryIcon,
-                            value: token.currency,
-                            handler: navigateToTransactions(token.canisterId!),
-                          },
-                          {
-                            element: (
-                              <Copy
-                                iconClassName="w-6"
-                                isTokenMenu={true}
-                                value={token.canisterId || ICP_CANISTER_ID}
-                                copyTitle="Copy token address"
-                              />
-                            ),
-                            value: "",
-                          },
-                          {
-                            label: "View on block explorer",
-                            icon: ExternalIcon,
-                            value: `https://dashboard.internetcomputer.org/canister/${
-                              token.canisterId || ICP_CANISTER_ID
-                            }`,
-                          },
-                          {
-                            label: "Remove token",
-                            icon: RemoveIcon,
-                            value: token.canisterId!,
-                            handler: () =>
-                              setTokenToRemove({
-                                canisterId: token.canisterId!,
-                                name: token.title,
-                              }),
-                          },
-                        ] ?? []
-                      }
-                      selectedValues={[]}
-                      setSelectedValues={() => console.log(1)}
-                      isMultiselect={false}
+                    <TokenDropdown
+                      token={token}
+                      setTokenToRemove={(value) => setTokenToRemove(value)}
                     />
                   </td>
                 </tr>
@@ -220,7 +169,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 style={{
                   backgroundImage:
                     "linear-gradient(to bottom right, rgba(220, 38, 38, 0.08), rgb(255, 255, 255))",
-                  //"linear-gradient(to bottom right, rgba(220, 38, 38, 0.6), rgb(220, 38, 38, 0))",
                 }}
                 className="flex flex-[0 0 70px] justify-center items-center min-w-[70px] h-[70px] rounded-[24px] hidden sm:flex"
               >
@@ -279,49 +227,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </div>
                 </div>
                 <div className="w-auto">
-                  <DropdownSelect
-                    isToken={true}
-                    options={
-                      [
-                        {
-                          label: "Transactions",
-                          icon: HistoryIcon,
-                          value: token.currency,
-                          handler: navigateToTransactions(token.canisterId!),
-                        },
-                        {
-                          element: (
-                            <Copy
-                              iconClassName="w-6"
-                              isTokenMenu={true}
-                              value={token.canisterId || ICP_CANISTER_ID}
-                              copyTitle="Copy token address"
-                            />
-                          ),
-                          value: "",
-                        },
-                        {
-                          label: "View on block explorer",
-                          icon: ExternalIcon,
-                          value: `https://dashboard.internetcomputer.org/canister/${
-                            token.canisterId || ICP_CANISTER_ID
-                          }`,
-                        },
-                        {
-                          label: "Remove token",
-                          icon: RemoveIcon,
-                          value: token.canisterId!,
-                          handler: () =>
-                            setTokenToRemove({
-                              canisterId: token.canisterId!,
-                              name: token.title,
-                            }),
-                        },
-                      ] ?? []
-                    }
-                    selectedValues={[]}
-                    setSelectedValues={() => console.log(1)}
-                    isMultiselect={false}
+                  <TokenDropdown
+                    token={token}
+                    setTokenToRemove={(value) => setTokenToRemove(value)}
                   />
                 </div>
               </div>

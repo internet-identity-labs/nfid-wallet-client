@@ -10,6 +10,7 @@ export class PriceService {
     const prices = await this.fetchPrices()
 
     const result = tokens.map((token) => {
+      token = PriceService.unwrapICRC1ckToken(token)
       const priceInToken = prices[token]
       const priceInUsd = priceInToken
         ? (1 / priceInToken).toFixed(2)
@@ -21,7 +22,16 @@ export class PriceService {
   }
 
   public async getPriceFull(): Promise<TokenPrice[]> {
-    return this.fetchPrices()
+    let prices = await this.fetchPrices()
+    const btcPrice = prices["BTC"]
+    const ethPrice = prices["ETH"]
+    if (btcPrice) {
+      prices["ckBTC"] = btcPrice
+    }
+    if (ethPrice) {
+      prices["ckETH"] = ethPrice
+    }
+    return prices
   }
 
   @Cache(integrationCache, { ttl: 10 })
@@ -36,5 +46,9 @@ export class PriceService {
       .catch((e) => {
         return []
       })
+  }
+
+  public static unwrapICRC1ckToken(token: string): string {
+    return token === "ckBTC" ? "BTC" : token === "ckETH" ? "ETH" : token
   }
 }

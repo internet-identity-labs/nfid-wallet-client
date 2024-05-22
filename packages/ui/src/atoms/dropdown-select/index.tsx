@@ -4,8 +4,8 @@ import { IoIosSearch } from "react-icons/io"
 
 import { Input } from "../../molecules/input"
 import useClickOutside from "../../utils/use-click-outside"
-import { IconCmpDots } from "../icons"
 import Arrow from "./arrow.svg"
+import { ContextMenu } from "./context-menu"
 import { DropdownOption } from "./option"
 
 export interface IOption {
@@ -23,7 +23,9 @@ export interface IDropdownSelect {
   bordered?: boolean
   options: IOption[]
   isSearch?: boolean
-  isToken?: boolean
+  isContextMenu?: boolean
+  triggerElement?: React.ReactNode
+  className?: string
   selectedValues: string[]
   setSelectedValues: (value: string[]) => void
   placeholder?: string
@@ -40,7 +42,8 @@ export const DropdownSelect = ({
   options,
   bordered = true,
   isSearch = false,
-  isToken = false,
+  isContextMenu,
+  triggerElement,
   selectedValues,
   setSelectedValues,
   placeholder = "All",
@@ -49,6 +52,7 @@ export const DropdownSelect = ({
   disabled = false,
   showSelectAllOption = false,
   errorText,
+  className,
   id,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -100,7 +104,7 @@ export const DropdownSelect = ({
       )}
       ref={ref}
     >
-      {!isToken ? (
+      {!triggerElement ? (
         <>
           <label
             className={clsx(
@@ -156,16 +160,15 @@ export const DropdownSelect = ({
           <p className={clsx("text-sm text-red-600")}>{errorText}</p>
         </>
       ) : (
-        <IconCmpDots
-          className="mx-auto"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        />
+        <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          {triggerElement}
+        </div>
       )}
       {isDropdownOpen && (
         <div
           className={clsx(
             `${
-              !isToken ? "w-full" : "right-[-10px]"
+              className ?? "w-full"
             } bg-white rounded-md mt-[1px] absolute z-50`,
           )}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
@@ -179,43 +182,11 @@ export const DropdownSelect = ({
               onKeyUp={(e) => setSearchInput(e.target.value)}
             />
           )}
-          {isToken ? (
-            <div className="min-w-[210px] sm:min-w-[250px]">
-              {options?.map((option, index) => {
-                if (option.label === "Remove token" && !option.value)
-                  return null
-                return (
-                  <div
-                    key={`${option.label}_${index}`}
-                    className="px-[10px] flex items-center gap-[8px] hover:bg-gray-100 h-[40px]"
-                    onClick={() => {
-                      if (!option.handler) return
-                      option.handler()
-                      setIsDropdownOpen(false)
-                    }}
-                  >
-                    {option.element ? (
-                      option.element
-                    ) : (
-                      <>
-                        <img width={24} src={option.icon} />
-                        {option.label === "View on block explorer" ? (
-                          <a
-                            href={option.value}
-                            target="_blank"
-                            className="text-black text-sm"
-                          >
-                            {option.label}
-                          </a>
-                        ) : (
-                          <p className="text-black text-sm">{option.label}</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+          {isContextMenu ? (
+            <ContextMenu
+              options={options}
+              setIsDropdownOpen={(value) => setIsDropdownOpen(value)}
+            />
           ) : (
             <div
               className={clsx("max-h-[30vh] overflow-auto flex flex-col")}

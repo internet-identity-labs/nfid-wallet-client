@@ -46,7 +46,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
               label: "Transactions",
               icon: HistoryIcon,
               value: token.currency,
-              handler: navigateToTransactions(token.canisterId),
+              handler: navigateToTransactions(token.canisterId || ""),
             },
             {
               element: (
@@ -54,7 +54,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
                   iconClassName="w-6"
                   className="h-[100%] flex-1"
                   textClassName="text-black text-sm text-left ml-[10px]"
-                  value={token.canisterId}
+                  value={token.canisterId || ""}
                   copyTitle="Copy token address"
                 />
               ),
@@ -69,11 +69,13 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
               label: "Remove token",
               icon: RemoveIcon,
               value: token.canisterId,
-              handler: () =>
+              handler: () => {
+                if (!token.canisterId) return
                 setTokenToRemove({
                   canisterId: token.canisterId,
                   name: token.title,
-                }),
+                })
+              },
             },
           ] as IOption[]) ?? []
         }

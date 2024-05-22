@@ -28,7 +28,7 @@ export type Token = {
   balance?: bigint
   price?: string
   blockchain: Blockchain
-  canisterId: string
+  canisterId?: string
 }
 
 export type TokenToRemove = {

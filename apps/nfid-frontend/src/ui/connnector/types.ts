@@ -86,7 +86,7 @@ export interface TokenConfig {
   icon: string
   price: string | undefined
   title: string
-  canisterId: string
+  canisterId?: string
   tokenStandard: TokenStandards
   toPresentation: (value?: bigint) => number
   transformAmount: (value: string) => number

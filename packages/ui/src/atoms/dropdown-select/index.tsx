@@ -5,7 +5,7 @@ import { IoIosSearch } from "react-icons/io"
 import { Input } from "../../molecules/input"
 import useClickOutside from "../../utils/use-click-outside"
 import Arrow from "./arrow.svg"
-import { DropdownOption } from "./option"
+import { DropdownSelectOption } from "./option"
 
 export interface IOption {
   label: string
@@ -164,7 +164,7 @@ export const DropdownSelect = ({
             id="dropdown-options"
           >
             {showSelectAllOption && (
-              <DropdownOption
+              <DropdownSelectOption
                 option={{ label: "Select all", value: "all" }}
                 isChecked={isAllSelected}
                 toggleCheckbox={toggleSelectAll}
@@ -172,7 +172,7 @@ export const DropdownSelect = ({
               />
             )}
             {filteredOptions?.map((option) => (
-              <DropdownOption
+              <DropdownSelectOption
                 key={option.value}
                 option={option}
                 isChecked={selectedValues.includes(option.value)}

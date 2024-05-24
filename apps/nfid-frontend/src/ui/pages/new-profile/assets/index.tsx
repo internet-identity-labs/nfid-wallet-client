@@ -5,7 +5,6 @@ import { toast } from "react-toastify"
 import { Button } from "@nfid-frontend/ui"
 import { removeICRC1Canister } from "@nfid/integration/token/icrc1"
 
-import { MAX_DECIMAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
@@ -61,11 +60,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       const { rootPrincipalId } = await getLambdaCredentials()
       if (!rootPrincipalId || !tokenToRemove) return
       await removeICRC1Canister(rootPrincipalId, tokenToRemove.canisterId)
-      toast.success(
-        <p className="font-semibold text-black">
-          {tokenToRemove.name} has been removed.
-        </p>,
-      )
+      toast.success(`${tokenToRemove.name} has been removed.`)
     } catch (e) {
       console.error("removeICRC1Canister", e)
     } finally {
@@ -133,19 +128,18 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
                     <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-                      {parseFloat(
-                        token.toPresentation(token.balance).toString(),
-                      )
-                        .toFixed(MAX_DECIMAL_LENGTH)
-                        .replace(/(\.[0-9]*[1-9])0+$|\.0*$/, "$1")}{" "}
-                      {token.currency}
+                      {`${token.toPresentation(token.balance)} ${
+                        token.currency
+                      }`}
                     </span>
                   </td>
                   <td
                     className="text-sm text-right pr-[20px]"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price ? `${token.price} USD` : "Not listed"}
+                    {token.price !== undefined
+                      ? `${token.price} USD`
+                      : "Not listed"}
                   </td>
                   <td className="px-[10px] text-sm text-right">
                     <TokenDropdown
@@ -172,7 +166,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 }}
                 className="flex flex-[0 0 70px] justify-center items-center min-w-[70px] h-[70px] rounded-[24px] hidden sm:flex"
               >
-                <TrashIcon className="text-red h-[38px] w-[38px] text-red-500" />
+                <TrashIcon className="h-[38px] w-[38px] !text-red-500" />
               </div>
 
               <p className="text-sm">

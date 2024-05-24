@@ -8,16 +8,18 @@ import CopiedIcon from "./copied.svg"
 export interface ICopy extends HTMLAttributes<HTMLDivElement> {
   value: string
   iconClassName?: string
-  textClassName?: string
   copyTitle?: string
+  iconSize?: string
+  gap?: number
 }
 
 export const Copy: React.FC<ICopy> = ({
   value,
   className,
   iconClassName,
-  textClassName,
   copyTitle,
+  iconSize,
+  gap,
 }) => {
   const [copied, setCopied] = React.useState(false)
 
@@ -32,13 +34,13 @@ export const Copy: React.FC<ICopy> = ({
   return (
     <div
       className={clsx(
-        !copied && (className ?? "h-[100%] flex-1"),
-        "flex items-center stroke-gray-400",
+        !copied && "hover:opacity-50 cursor-pointer transition-opacity",
+        "flex items-center stroke-gray-400 text-xs text-secondary font-semibold",
         className,
       )}
       onClick={copyToClipboard}
     >
-      <div className={iconClassName ?? "w-5"}>
+      <div className={clsx("w-5", iconSize)}>
         <img
           className={clsx(copied ? "inline-block" : "hidden")}
           src={CopiedIcon}
@@ -56,12 +58,7 @@ export const Copy: React.FC<ICopy> = ({
       </div>
 
       {copyTitle && (
-        <p
-          className={clsx(
-            "w-full",
-            textClassName ?? "text-xs font-semibold text-secondary ml-2",
-          )}
-        >
+        <p className={`w-full ${gap ? "ml-[" + gap + "px]" : "ml-2"}`}>
           {copyTitle}
         </p>
       )}

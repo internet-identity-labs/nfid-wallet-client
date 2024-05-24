@@ -22,7 +22,6 @@ export const useAllToken = (
       : [...tokenConfigs, ...icTokenConfigs]
 
     return allTokens.sort((a, b) => {
-      if (a.currency === "ICP") return -1
       if (b.currency === "ICP") return 1
       return a.currency.localeCompare(b.currency)
     })

@@ -2,6 +2,7 @@ import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../cache"
 import { TokenPrice } from "./types"
+import { wrappedTokenMap } from "./wrapped-token-map"
 
 const NOT_AVAILABLE = ""
 
@@ -23,14 +24,10 @@ export class PriceService {
 
   public async getPriceFull(): Promise<TokenPrice[]> {
     let prices = await this.fetchPrices()
-    const btcPrice = prices["BTC"]
-    const ethPrice = prices["ETH"]
-    if (btcPrice) {
-      prices["ckBTC"] = btcPrice
-    }
-    if (ethPrice) {
-      prices["ckETH"] = ethPrice
-    }
+    Object.keys(wrappedTokenMap).forEach((wrappedToken) => {
+      const baseToken = wrappedTokenMap[wrappedToken]
+      if (prices[baseToken]) prices[wrappedToken] = prices[baseToken]
+    })
     return prices
   }
 
@@ -49,6 +46,6 @@ export class PriceService {
   }
 
   public static unwrapICRC1ckToken(token: string): string {
-    return token === "ckBTC" ? "BTC" : token === "ckETH" ? "ETH" : token
+    return wrappedTokenMap[token] || token
   }
 }

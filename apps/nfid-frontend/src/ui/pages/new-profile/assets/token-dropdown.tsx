@@ -1,11 +1,11 @@
-import { IOption } from "packages/ui/src/atoms/dropdown-select"
 import ExternalIcon from "packages/ui/src/atoms/icons/external.svg"
 import HistoryIcon from "packages/ui/src/atoms/icons/history.svg"
 import RemoveIcon from "packages/ui/src/atoms/icons/trash.svg"
 import { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { Copy, DropdownSelect, IconCmpDots } from "@nfid-frontend/ui"
+import { Copy, Dropdown, DropdownOption, IconCmpDots } from "@nfid-frontend/ui"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/icrc1/constants"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
@@ -22,7 +22,6 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
   setTokenToRemove,
 }) => {
   const navigate = useNavigate()
-
   const navigateToTransactions = useCallback(
     (canisterId: string) => () => {
       navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
@@ -34,55 +33,52 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
     [navigate],
   )
 
+  if (!token.canisterId) return null
+
   return (
     <>
-      <DropdownSelect
-        isContextMenu={true}
-        triggerElement={<IconCmpDots className="mx-auto" />}
-        className="right-[-10px]"
-        options={
-          ([
-            {
-              label: "Transactions",
-              icon: HistoryIcon,
-              value: token.currency,
-              handler: navigateToTransactions(token.canisterId || ""),
-            },
-            {
-              element: (
-                <Copy
-                  iconClassName="w-6"
-                  className="h-[100%] flex-1"
-                  textClassName="text-black text-sm text-left ml-[10px]"
-                  value={token.canisterId || ""}
-                  copyTitle="Copy token address"
-                />
-              ),
-              value: "",
-            },
-            {
-              label: "View on block explorer",
-              icon: ExternalIcon,
-              value: `https://dashboard.internetcomputer.org/canister/${token.canisterId}`,
-            },
-            {
-              label: "Remove token",
-              icon: RemoveIcon,
-              value: token.canisterId,
-              handler: () => {
-                if (!token.canisterId) return
-                setTokenToRemove({
-                  canisterId: token.canisterId,
-                  name: token.title,
-                })
-              },
-            },
-          ] as IOption[]) ?? []
-        }
-        selectedValues={[]}
-        setSelectedValues={() => false}
-        isMultiselect={false}
-      />
+      <Dropdown triggerElement={<IconCmpDots className="mx-auto" />}>
+        <DropdownOption
+          label="Transactions"
+          icon={HistoryIcon}
+          handler={navigateToTransactions(token.canisterId)}
+        />
+        <DropdownOption
+          element={
+            <Copy
+              iconClassName="!w-6"
+              className="h-[100%] flex-1 !text-black !text-sm text-left !font-normal"
+              iconSize="!w-6"
+              gap={10}
+              value={token.canisterId}
+              copyTitle="Copy token address"
+            />
+          }
+        />
+        <DropdownOption
+          label="View on block explorer"
+          icon={ExternalIcon}
+          handler={() => {
+            window.open(
+              `https://dashboard.internetcomputer.org/canister/${token.canisterId}`,
+              "_blank",
+            )
+          }}
+        />
+        {token.canisterId !== ICP_CANISTER_ID && (
+          <DropdownOption
+            label="Remove token"
+            icon={RemoveIcon}
+            handler={() => {
+              if (!token.canisterId) return
+              setTokenToRemove({
+                canisterId: token.canisterId,
+                name: token.title,
+              })
+            }}
+          />
+        )}
+      </Dropdown>
     </>
   )
 }

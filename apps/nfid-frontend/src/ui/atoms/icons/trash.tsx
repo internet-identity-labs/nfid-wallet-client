@@ -13,9 +13,10 @@ export const TrashIcon: React.FC<TrashIconProps> = ({ className, onClick }) => {
       height="24"
       fill="none"
       viewBox="0 0 24 24"
-      className={
-        className ?? "text-secondary hover:text-red-base cursor-pointer"
-      }
+      className={clsx(
+        "text-secondary hover:text-red-base cursor-pointer",
+        className,
+      )}
       onClick={onClick}
     >
       <path

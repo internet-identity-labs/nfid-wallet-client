@@ -91,7 +91,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
       {/* TODO: create Chiplist component */}
       <div className="mt-6 flex w-full flex-wrap gap-2.5">
         {selectedTransactionFilter.map((chip) => (
-          <Chip key={chip.label} title={chip.label!} onRemove={onChipRemove} />
+          <Chip key={chip.label} title={chip.label} onRemove={onChipRemove} />
         ))}
       </div>
       <TabsSwitcher

@@ -5,17 +5,14 @@ import { IoIosSearch } from "react-icons/io"
 import { Input } from "../../molecules/input"
 import useClickOutside from "../../utils/use-click-outside"
 import Arrow from "./arrow.svg"
-import { ContextMenu } from "./context-menu"
-import { DropdownOption } from "./option"
+import { DropdownSelectOption } from "./option"
 
 export interface IOption {
-  label?: string
-  icon?: string
+  label: string
   afterLabel?: string | number
-  element?: React.ReactNode
+  icon?: string
   value: string
   disabled?: boolean
-  handler?: () => void
 }
 
 export interface IDropdownSelect {
@@ -23,9 +20,6 @@ export interface IDropdownSelect {
   bordered?: boolean
   options: IOption[]
   isSearch?: boolean
-  isContextMenu?: boolean
-  triggerElement?: React.ReactNode
-  className?: string
   selectedValues: string[]
   setSelectedValues: (value: string[]) => void
   placeholder?: string
@@ -42,8 +36,6 @@ export const DropdownSelect = ({
   options,
   bordered = true,
   isSearch = false,
-  isContextMenu,
-  triggerElement,
   selectedValues,
   setSelectedValues,
   placeholder = "All",
@@ -52,7 +44,6 @@ export const DropdownSelect = ({
   disabled = false,
   showSelectAllOption = false,
   errorText,
-  className,
   id,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -104,73 +95,59 @@ export const DropdownSelect = ({
       )}
       ref={ref}
     >
-      {!triggerElement ? (
-        <>
-          <label
-            className={clsx(
-              "text-xs tracking-[0.16px] leading-4 mb-1",
-              "text-black",
-            )}
-          >
-            {label}
-          </label>
-          <div
-            className={clsx(
-              "bg-white rounded-md h-10 p-2.5 w-full",
-              "flex justify-between items-center",
-              "cursor-pointer select-none",
-              "active:outline active:outline-offset-1",
-              bordered && "border border-black",
-              isDropdownOpen && "border border-blue-600 bg-blue-50",
-              disabled && "!border-none !bg-gray-100 !text-black",
-              errorText && "!border border-red-600 !ring-2 !ring-red-100",
-            )}
-            style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            id={id}
-          >
-            <p
-              className={clsx(
-                "text-sm leading-5",
-                (!isMultiselect || isAllSelected) && "hidden",
-              )}
-              id="selected_acc"
-            >
-              {selectedValues?.length
-                ? `${selectedValues.length} selected`
-                : placeholder}
-            </p>
-            <p
-              className={clsx(
-                "text-sm leading-5",
-                (isMultiselect || isAllSelected) && "hidden",
-              )}
-            >
-              {selectedValues?.length
-                ? options.find((o) => o.value === selectedValues[0])?.label
-                : placeholder}
-            </p>
-            <p
-              className={clsx("text-sm leading-5", !isAllSelected && "hidden")}
-            >
-              All
-            </p>
-            <img src={Arrow} alt="arrow" />
-          </div>
-          <p className={clsx("text-sm text-red-600")}>{errorText}</p>
-        </>
-      ) : (
-        <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          {triggerElement}
-        </div>
-      )}
+      <label
+        className={clsx(
+          "text-xs tracking-[0.16px] leading-4 mb-1",
+          "text-black",
+        )}
+      >
+        {label}
+      </label>
+      <div
+        className={clsx(
+          "bg-white rounded-md h-10 p-2.5 w-full",
+          "flex justify-between items-center",
+          "cursor-pointer select-none",
+          "active:outline active:outline-offset-1",
+          bordered && "border border-black",
+          isDropdownOpen && "border border-blue-600 bg-blue-50",
+          disabled && "!border-none !bg-gray-100 !text-black",
+          errorText && "!border border-red-600 !ring-2 !ring-red-100",
+        )}
+        style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        id={id}
+      >
+        <p
+          className={clsx(
+            "text-sm leading-5",
+            (!isMultiselect || isAllSelected) && "hidden",
+          )}
+          id="selected_acc"
+        >
+          {selectedValues?.length
+            ? `${selectedValues.length} selected`
+            : placeholder}
+        </p>
+        <p
+          className={clsx(
+            "text-sm leading-5",
+            (isMultiselect || isAllSelected) && "hidden",
+          )}
+        >
+          {selectedValues?.length
+            ? options.find((o) => o.value === selectedValues[0])?.label
+            : placeholder}
+        </p>
+        <p className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
+          All
+        </p>
+        <img src={Arrow} alt="arrow" />
+      </div>
+      <p className={clsx("text-sm text-red-600")}>{errorText}</p>
       {isDropdownOpen && (
         <div
-          className={clsx(
-            `${
-              className ?? "w-full"
-            } bg-white rounded-md mt-[1px] absolute z-50`,
-          )}
+          className={clsx("w-full bg-white rounded-md mt-[1px] absolute z-50")}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
         >
           {isSearch && (
@@ -182,35 +159,28 @@ export const DropdownSelect = ({
               onKeyUp={(e) => setSearchInput(e.target.value)}
             />
           )}
-          {isContextMenu ? (
-            <ContextMenu
-              options={options}
-              setIsDropdownOpen={(value) => setIsDropdownOpen(value)}
-            />
-          ) : (
-            <div
-              className={clsx("max-h-[30vh] overflow-auto flex flex-col")}
-              id="dropdown-options"
-            >
-              {showSelectAllOption && (
-                <DropdownOption
-                  option={{ label: "Select all", value: "all" }}
-                  isChecked={isAllSelected}
-                  toggleCheckbox={toggleSelectAll}
-                  isCheckbox
-                />
-              )}
-              {filteredOptions?.map((option) => (
-                <DropdownOption
-                  key={option.value}
-                  option={option}
-                  isChecked={selectedValues.includes(option.value)}
-                  toggleCheckbox={toggleCheckbox}
-                  isCheckbox
-                />
-              ))}
-            </div>
-          )}
+          <div
+            className={clsx("max-h-[30vh] overflow-auto flex flex-col")}
+            id="dropdown-options"
+          >
+            {showSelectAllOption && (
+              <DropdownSelectOption
+                option={{ label: "Select all", value: "all" }}
+                isChecked={isAllSelected}
+                toggleCheckbox={toggleSelectAll}
+                isCheckbox
+              />
+            )}
+            {filteredOptions?.map((option) => (
+              <DropdownSelectOption
+                key={option.value}
+                option={option}
+                isChecked={selectedValues.includes(option.value)}
+                toggleCheckbox={toggleCheckbox}
+                isCheckbox
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

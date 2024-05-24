@@ -155,24 +155,10 @@ export class ICRC1TransferConnector
     )(groupedOptions.sort(sortAlphabetic(({ label }) => label)))
   }
 
-  validateAddress(address: string): boolean | string {
-    try {
-      decodeIcrcAccount(address)
-      return true
-    } catch (e) {
-      return "Incorrect format of Principal"
-    }
-  }
-
   @Cache(connectorCache, { ttl: 10 })
   async getFee({ currency }: ITransferFTRequest): Promise<TokenFee> {
     const token = await this.getTokenMetadata(currency)
     const { fee, price } = token
-    console.log(
-      "123123",
-      (Number(fee) * Number(price)).toString() || undefined,
-      price,
-    )
 
     return Promise.resolve({
       fee: token.toPresentation(fee).toString(),
@@ -224,6 +210,15 @@ export class ICRC1TransferConnector
       return {
         errorMessage: e as Error,
       }
+    }
+  }
+
+  validateAddress(address: string): boolean | string {
+    try {
+      decodeIcrcAccount(address)
+      return true
+    } catch (e) {
+      return "Incorrect format of Principal"
     }
   }
 }

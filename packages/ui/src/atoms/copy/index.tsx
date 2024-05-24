@@ -10,7 +10,7 @@ export interface ICopy extends HTMLAttributes<HTMLDivElement> {
   iconClassName?: string
   copyTitle?: string
   iconSize?: string
-  gap?: number
+  titleClassName?: string
 }
 
 export const Copy: React.FC<ICopy> = ({
@@ -19,7 +19,7 @@ export const Copy: React.FC<ICopy> = ({
   iconClassName,
   copyTitle,
   iconSize,
-  gap,
+  titleClassName,
 }) => {
   const [copied, setCopied] = React.useState(false)
 
@@ -58,7 +58,12 @@ export const Copy: React.FC<ICopy> = ({
       </div>
 
       {copyTitle && (
-        <p className={`w-full ${gap ? "ml-[" + gap + "px]" : "ml-2"}`}>
+        <p
+          className={clsx(
+            "w-full ml-2 text-xs font-semibold text-secondary",
+            titleClassName,
+          )}
+        >
           {copyTitle}
         </p>
       )}

@@ -5,7 +5,7 @@ import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types
 
 import { Blockchain } from "../types"
 import { icTransferConnector } from "./ic/ic-transfer-connector"
-import { icrc1TransferConnector } from "./ic/icrc1-connector"
+import { icrc1TransferConnector } from "./ic/icrc1-transfer-connector"
 import { icNFTTransferConnector } from "./ic/nft-transfer-connector"
 import {
   IConnector,

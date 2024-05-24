@@ -222,6 +222,20 @@ export const TransferFT = ({
     [selectedConnector, selectedTokenCurrency, transferFee?.fee],
   )
 
+  const maxHandler = () => {
+    if (transferFee && balance) {
+      const val = +(+balance.balance - +transferFee.fee).toFixed(
+        MAX_DECIMAL_LENGTH,
+      )
+      if (val <= 0) return
+      setValue("amount", val)
+      if (!balance?.balanceinUsd) return
+      setAmountInUSD(
+        (exchangeRate! * val).toFixed(MAX_DECIMAL_USD_LENGTH).toString(),
+      )
+    }
+  }
+
   const submit = useCallback(
     async (values: { amount: number; to: string }) => {
       if (!tokenMetadata) return toast.error("Token metadata has not loaded")
@@ -358,24 +372,7 @@ export const TransferFT = ({
     >
       <div className="flex justify-between">
         <p className="mb-1">Amount to send</p>
-        <p
-          onClick={() => {
-            if (transferFee && balance) {
-              const val = +(+balance.balance - +transferFee.fee).toFixed(
-                MAX_DECIMAL_LENGTH,
-              )
-              if (val <= 0) return
-              setValue("amount", val)
-              if (!balance?.balanceinUsd) return
-              setAmountInUSD(
-                (exchangeRate! * val)
-                  .toFixed(MAX_DECIMAL_USD_LENGTH)
-                  .toString(),
-              )
-            }
-          }}
-          className="text-blue-600 cursor-pointer"
-        >
+        <p onClick={maxHandler} className="text-blue-600 cursor-pointer">
           Max
         </p>
       </div>
@@ -405,9 +402,9 @@ export const TransferFT = ({
               valueAsNumber: true,
               onBlur: calculateFee,
               onChange: (e) => {
-                if (!balance?.balanceinUsd) return
+                if (!balance?.balanceinUsd || !exchangeRate) return
                 setAmountInUSD(
-                  (exchangeRate! * Number(e.target.value))
+                  (exchangeRate * Number(e.target.value))
                     .toFixed(MAX_DECIMAL_USD_LENGTH)
                     .toString(),
                 )

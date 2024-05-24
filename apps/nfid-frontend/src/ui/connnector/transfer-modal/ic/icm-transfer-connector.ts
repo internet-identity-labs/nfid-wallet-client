@@ -1,6 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { checkAccountId } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
 import { mutate } from "swr"
@@ -38,6 +37,7 @@ import {
   ITransferResponse,
   TokenBalance,
 } from "../types"
+import { addressValidationService } from "../util/validation-service"
 
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
@@ -164,8 +164,8 @@ export abstract class ICMTransferConnector<
     if (addressValidationService.isValidAccountIdentifier(address))
       return address
 
-    var principal = Principal.fromText(address)
-    var accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
+    const principal = Principal.fromText(address)
+    const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
     return accountIdentifier.toHex()
   }
 
@@ -217,23 +217,4 @@ export abstract class ICMTransferConnector<
       return "Incorrect format of Destination Address"
     else return true
   }
-}
-
-export const addressValidationService = {
-  isValidAccountIdentifier(value: string): boolean {
-    try {
-      checkAccountId(value)
-      return true
-    } catch {
-      return false
-    }
-  },
-  isValidPrincipalId(value: string): boolean {
-    try {
-      if (Principal.fromText(value)) return true
-      return false
-    } catch {
-      return false
-    }
-  },
 }

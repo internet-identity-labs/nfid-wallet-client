@@ -1,22 +1,15 @@
 import clsx from "clsx"
 import React, { useState } from "react"
-import { toast } from "react-toastify"
 
-import { Button } from "@nfid-frontend/ui"
-import { removeICRC1Canister } from "@nfid/integration/token/icrc1"
-
-import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
-import { TrashIcon } from "frontend/ui/atoms/icons/trash"
 import { Loader } from "frontend/ui/atoms/loader"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
+import AssetDropdown from "./asset-dropdown"
+import AssetModal from "./asset-modal"
 import { ProfileAssetsHeader } from "./header"
-import TokenDropdown from "./token-dropdown"
 import Icon from "./transactions.svg"
 
 export type Token = {
@@ -49,25 +42,8 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   isLoading,
 }) => {
   const [tokenToRemove, setTokenToRemove] = useState<TokenToRemove | null>(null)
-  const [isRemoveLoading, setIsRemoveLoading] = useState(false)
 
   console.debug("ProfileAssetsPage", { tokens })
-  console.log("ProfileAssetsPage", { tokens })
-
-  const removeHandler = async () => {
-    setIsRemoveLoading(true)
-    try {
-      const { rootPrincipalId } = await getLambdaCredentials()
-      if (!rootPrincipalId || !tokenToRemove) return
-      await removeICRC1Canister(rootPrincipalId, tokenToRemove.canisterId)
-      toast.success(`${tokenToRemove.name} has been removed.`)
-    } catch (e) {
-      console.error("removeICRC1Canister", e)
-    } finally {
-      setTokenToRemove(null)
-      setIsRemoveLoading(false)
-    }
-  }
 
   return (
     <ProfileTemplate
@@ -142,7 +118,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       : "Not listed"}
                   </td>
                   <td className="px-[10px] text-sm text-right">
-                    <TokenDropdown
+                    <AssetDropdown
                       token={token}
                       setTokenToRemove={(value) => setTokenToRemove(value)}
                     />
@@ -151,48 +127,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               ))}
             </tbody>
           </table>
-          <ModalComponent
-            isVisible={Boolean(tokenToRemove)}
-            onClose={() => setTokenToRemove(null)}
-            className="p-5 w-[95%] md:w-[540px] z-[100] rounded-xl"
-          >
-            <BlurredLoader isLoading={isRemoveLoading} />
-            <p className="text-2xl font-bold mb-[20px]">Remove token</p>
-            <div className="flex items-center gap-[20px]">
-              <div
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to bottom right, rgba(220, 38, 38, 0.08), rgb(255, 255, 255))",
-                }}
-                className="flex flex-[0 0 70px] justify-center items-center min-w-[70px] h-[70px] rounded-[24px] hidden sm:flex"
-              >
-                <TrashIcon className="h-[38px] w-[38px] !text-red-500" />
-              </div>
-
-              <p className="text-sm">
-                Are you sure you want to remove{" "}
-                <span className="font-semibold">{tokenToRemove?.name}</span>?
-                Your balance will remain if you re-add this token in the future.
-              </p>
-            </div>
-
-            <div className="flex items-center justify-end space-x-2.5 mt-5">
-              <Button
-                className="min-w-[120px]"
-                type="stroke"
-                onClick={() => setTokenToRemove(null)}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="min-w-[120px]"
-                type="red"
-                onClick={removeHandler}
-              >
-                Remove
-              </Button>
-            </div>
-          </ModalComponent>
+          <AssetModal
+            token={tokenToRemove}
+            setTokenToRemove={(value) => setTokenToRemove(value)}
+          />
           <div className="sm:hidden">
             {tokens.map((token, index) => (
               <div
@@ -221,7 +159,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </div>
                 </div>
                 <div className="w-auto">
-                  <TokenDropdown
+                  <AssetDropdown
                     token={token}
                     setTokenToRemove={(value) => setTokenToRemove(value)}
                   />

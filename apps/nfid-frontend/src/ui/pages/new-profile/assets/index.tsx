@@ -114,7 +114,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
                     {token.price !== undefined
-                      ? `${token.price} USD`
+                      ? `${token.price}`
                       : "Not listed"}
                   </td>
                   <td className="px-[10px] text-sm text-right">

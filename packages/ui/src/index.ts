@@ -2,6 +2,8 @@ import "./styles.css"
 
 export * from "./atoms/copy"
 export * from "./atoms/dropdown-select"
+export * from "./atoms/dropdown"
+export * from "./atoms/dropdown/option"
 export * from "./atoms/icons"
 export * from "./atoms/loader"
 export * from "./atoms/menu-wrapper"

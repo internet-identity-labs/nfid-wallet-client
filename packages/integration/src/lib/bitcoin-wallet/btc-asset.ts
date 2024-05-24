@@ -95,6 +95,7 @@ export class BtcAsset extends Asset<string> {
       logo,
       name: this.getBlockchain(),
       symbol: "BTC",
+      decimals: 8,
     }
 
     return super.computeSheetForRootAccount(

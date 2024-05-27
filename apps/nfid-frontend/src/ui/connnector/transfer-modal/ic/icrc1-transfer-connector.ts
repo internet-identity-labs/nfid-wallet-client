@@ -1,7 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
 
 import {

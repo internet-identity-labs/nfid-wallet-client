@@ -1,18 +1,18 @@
 import clsx from "clsx"
-import React, { useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from "react"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
+import AssetDropdown from "./asset-dropdown"
+import AssetModal from "./asset-modal"
 import { ProfileAssetsHeader } from "./header"
 import Icon from "./transactions.svg"
 
-type Token = {
+export type Token = {
   toPresentation: (amount?: bigint) => number
   icon: string
   title: string
@@ -20,6 +20,12 @@ type Token = {
   balance?: bigint
   price?: string
   blockchain: Blockchain
+  canisterId?: string
+}
+
+export type TokenToRemove = {
+  canisterId: string
+  name: string
 }
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
@@ -35,28 +41,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   tokens,
   isLoading,
 }) => {
-  const [blockchainFilter] = useState<string[]>([])
-  const navigate = useNavigate()
-
-  const navigateToTransactions = React.useCallback(
-    (blockchain: Blockchain) => () => {
-      navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
-        state: {
-          blockchain,
-        },
-      })
-    },
-    [navigate],
-  )
+  const [tokenToRemove, setTokenToRemove] = useState<TokenToRemove | null>(null)
 
   console.debug("ProfileAssetsPage", { tokens })
-
-  const filteredTokens = useMemo(() => {
-    return tokens.filter((token) => {
-      if (!blockchainFilter.length) return true
-      return blockchainFilter.includes(token.blockchain)
-    })
-  }, [blockchainFilter, tokens])
 
   return (
     <ProfileTemplate
@@ -73,21 +60,21 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         className="mb-10 sm:pb-0 "
       >
         <div className="px-5">
-          <Loader isLoading={!tokens.length!} />
+          <Loader isLoading={!tokens.length} />
           <table className={clsx("text-left w-full hidden sm:table")}>
             <thead className={clsx("border-b border-black  h-16")}>
               <tr className={clsx("font-bold text-sm leading-5")}>
                 <th>Name</th>
                 <th className="text-right">Token balance</th>
-                <th className="pr-16 text-right">USD balance</th>
+                <th className="text-right pr-[22px]">USD balance</th>
+                <th className="px-[10px] w-[44px]"></th>
               </tr>
             </thead>
             <tbody className="h-16 text-sm text-[#0B0E13]">
-              {filteredTokens.map((token, index) => (
+              {tokens.map((token, index) => (
                 <tr
                   key={`token_${index}`}
                   id={`token_${token.title.replace(/\s+/g, "")}`}
-                  onClick={navigateToTransactions(token.blockchain)}
                   className="border-b border-gray-200 cursor-pointer last:border-b-0 hover:bg-gray-100"
                 >
                   <td className="flex items-center h-16">
@@ -117,25 +104,38 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
                     <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-                      {token.toPresentation(token.balance)} {token.currency}
+                      {`${token.toPresentation(token.balance)} ${
+                        token.currency
+                      }`}
                     </span>
                   </td>
                   <td
-                    className="pr-16 text-sm text-right"
+                    className="text-sm text-right pr-[20px]"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price ?? "Not listed"}
+                    {token.price !== undefined
+                      ? `${token.price} USD`
+                      : "Not listed"}
+                  </td>
+                  <td className="px-[10px] text-sm text-right">
+                    <AssetDropdown
+                      token={token}
+                      setTokenToRemove={(value) => setTokenToRemove(value)}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="px-5 sm:hidden">
+          <AssetModal
+            token={tokenToRemove}
+            setTokenToRemove={(value) => setTokenToRemove(value)}
+          />
+          <div className="sm:hidden">
             {tokens.map((token, index) => (
               <div
                 key={`token_${index}`}
-                className="flex items-center justify-between h-16"
-                onClick={navigateToTransactions(token.blockchain)}
+                className="flex items-center justify-between h-16 border-b border-gray-200 last:border-b-0 pr-[8px]"
               >
                 <div className="flex items-center text-[#0B0E13]">
                   <ApplicationIcon
@@ -150,13 +150,19 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right ml-auto mr-[20px]">
                   <div className="text-sm leading-5 text-ellipsis whitespace-nowrap overflow-hidden w-[70px]">
                     {token.toPresentation(token.balance)} {token.currency}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
                     {token.price ?? "Not listed"}
                   </div>
+                </div>
+                <div className="w-auto">
+                  <AssetDropdown
+                    token={token}
+                    setTokenToRemove={(value) => setTokenToRemove(value)}
+                  />
                 </div>
               </div>
             ))}

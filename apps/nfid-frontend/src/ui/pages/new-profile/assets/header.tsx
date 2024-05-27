@@ -98,14 +98,14 @@ export const ProfileAssetsHeader = () => {
       <div className="flex items-center justify-between w-full">
         <p>Your tokens</p>
         <Button
-          className={clsx("px-[10px] hidden md:flex z-10")}
+          className={clsx("px-[10px] md:flex pr-0 md:pr-[15px] z-10")}
           id="importToken"
           onClick={handleOpenImportToken}
           icon={<PlusIcon />}
           isSmall
           type="ghost"
         >
-          Import token
+          <span className="hidden md:block">Import token</span>
         </Button>
       </div>
       <ModalComponent

@@ -114,7 +114,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
                     {token.price !== undefined
-                      ? `${token.price}`
+                      ? `${token.price} USD`
                       : "Not listed"}
                   </td>
                   <td className="px-[10px] text-sm text-right">
@@ -135,7 +135,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
             {tokens.map((token, index) => (
               <div
                 key={`token_${index}`}
-                className="flex items-center justify-between h-16"
+                className="flex items-center justify-between h-16 border-b border-gray-200 last:border-b-0 pr-[8px]"
               >
                 <div className="flex items-center text-[#0B0E13]">
                   <ApplicationIcon
@@ -155,7 +155,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     {token.toPresentation(token.balance)} {token.currency}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
-                    {token.price}
+                    {token.price ?? "Not listed"}
                   </div>
                 </div>
                 <div className="w-auto">

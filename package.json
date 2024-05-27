@@ -19,6 +19,7 @@
     "@dfinity/identity": "^1.0.1",
     "@dfinity/identity-secp256k1": "^1.0.1",
     "@dfinity/ledger-icp": "^2.2.1",
+    "@dfinity/ledger-icrc": "^2.2.1",
     "@dfinity/nns-proto": "^1.0.1",
     "@dfinity/principal": "^1.0.1",
     "@dfinity/utils": "^1.0.0",

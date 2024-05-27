@@ -1,7 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import React from "react"
 
-import { transfer as transferDIP20 } from "@nfid/integration/token/dip-20"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -24,16 +23,7 @@ const handleTokenTransfer = async ({
   memo,
   delegationIdentity,
   transformAmount,
-  canisterId,
 }: Transfer) => {
-  if (canisterId) {
-    return await transferDIP20({
-      canisterId,
-      amount: transformAmount(amount),
-      to,
-      sourceIdentity: delegationIdentity,
-    })
-  }
   return await transferICP({
     amount: transformAmount(amount),
     to,

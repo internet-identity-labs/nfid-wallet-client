@@ -69,7 +69,7 @@ export class PolygonMumbaiERC20TransferConnector
       makeRootAccountGroupedOptions(
         address,
         balance.balance?.toString() ?? "",
-        balance.balanceinUsd,
+        balance.balanceinUsd ?? "",
         currency ?? "",
       ),
     ]

@@ -87,7 +87,6 @@ export const RequestTransferPage: React.FC<IRequestTransferPage> = ({
           value={destinationAddress}
         />
       </div>
-      {/* FIXME: support dip-20 */}
       <div className="text-xs text-secondary mt-2.5">
         Transfer fee: {WALLET_FEE} ICP
       </div>

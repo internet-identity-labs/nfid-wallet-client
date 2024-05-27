@@ -32,10 +32,29 @@ export interface ICRC1Data {
   symbol: string
   decimals: number
   fee: bigint
+  feeInUsd: number | undefined
+  rate: string | undefined
   canisterId: string
   network: string
   priceInUsd: number | undefined
   logo: string | undefined
+}
+
+export interface ICRC1Metadata {
+  balance: bigint
+  canisterId: string
+  fee: bigint
+  feeInUsd: number | undefined
+  rate: string | undefined
+  decimals: number
+  price: string | undefined
+  owner: Principal
+  logo: string
+  name: string
+  symbol: string
+  feeCurrency: string
+  toPresentation: (value?: bigint | undefined) => number
+  transformAmount: (value: string) => number
 }
 
 export interface ICRC1IndexData {
@@ -224,6 +243,7 @@ export async function getICRC1Data(
         }
       }
       const priceInToken = priceList[symbol as any]
+
       const priceInUsd = priceInToken
         ? Number((1 / Number(priceInToken)).toFixed(2))
         : undefined
@@ -231,6 +251,12 @@ export async function getICRC1Data(
       const balanceNumber = priceInUsd
         ? (Number(balance) / Math.pow(10, Number(decimals))) * priceInUsd
         : undefined
+
+      const feeNumber = priceInUsd
+        ? (Number(fee) / Math.pow(10, Number(decimals))) * priceInUsd
+        : undefined
+
+      const exchangeRate = 1
 
       const isListedOnUSD = typeof priceInToken !== "undefined"
 
@@ -247,6 +273,8 @@ export async function getICRC1Data(
         canisterId,
         decimals,
         fee,
+        feeInUsd: Number(feeNumber?.toFixed(4)),
+        rate: priceInUsd?.toString(),
         name,
         symbol,
         network: NETWORK,

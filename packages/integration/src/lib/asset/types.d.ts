@@ -131,6 +131,7 @@ declare type Token = {
   balanceinUsd: string
   contractAddress?: string
   address: string
+  decimals: number
 }
 
 declare type ChainBalance = {

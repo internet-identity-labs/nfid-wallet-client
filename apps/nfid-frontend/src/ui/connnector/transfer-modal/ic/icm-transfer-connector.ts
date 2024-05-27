@@ -2,7 +2,6 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
-import { isHex } from "packages/utils/src/lib/validation"
 import { mutate } from "swr"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
@@ -19,7 +18,10 @@ import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
-import { PRINCIPAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
+import {
+  MAX_DECIMAL_USD_LENGTH,
+  PRINCIPAL_LENGTH,
+} from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
@@ -38,6 +40,7 @@ import {
   ITransferResponse,
   TokenBalance,
 } from "../types"
+import { addressValidationService } from "../util/validation-service"
 
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
@@ -148,15 +151,27 @@ export abstract class ICMTransferConnector<
           }).toHex()
         : address
     const balance = await getBalance(addressVerified)
+    const rate = await getExchangeRate()
 
-    return Promise.resolve({
+    return {
       balance: e8sICPToString(Number(balance)),
-      balanceinUsd: e8sICPToString(Number(Number(balance)?.toFixed(2))),
-    })
+      balanceinUsd: (+e8sICPToString(Number(balance) * rate)).toFixed(
+        MAX_DECIMAL_USD_LENGTH,
+      ),
+    }
   }
 
   getAddress(_: string, identity: DelegationIdentity): Promise<string> {
     return Promise.resolve(identity.getPrincipal().toString())
+  }
+
+  private getAccountIdentifier(address: string): string {
+    if (addressValidationService.isValidAccountIdentifier(address))
+      return address
+
+    const principal = Principal.fromText(address)
+    const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
+    return accountIdentifier.toHex()
   }
 
   async transfer(
@@ -164,20 +179,15 @@ export abstract class ICMTransferConnector<
   ): Promise<ITransferResponse> {
     if (!request.identity)
       throw new Error("Identity not found. Please try again")
+    console.debug("ICP Transfer request", { request })
 
-    console.debug("Transfer request", { request })
     try {
       const res =
         "tokenId" in request
           ? await transferEXT(request.tokenId, request.identity, request.to)
           : await transferICP({
               amount: stringICPtoE8s(String(request.amount)),
-              to:
-                request.to.length === PRINCIPAL_LENGTH
-                  ? AccountIdentifier.fromPrincipal({
-                      principal: Principal.fromText(request.to),
-                    }).toHex()
-                  : request.to,
+              to: this.getAccountIdentifier(request.to),
               ...(request.memo ? { memo: request.memo } : {}),
               identity: request.identity,
             })
@@ -185,10 +195,12 @@ export abstract class ICMTransferConnector<
       setTimeout(() => {
         "tokenId" in request
           ? mutate(
-              (key) => key && Array.isArray(key) && key[0] === "userTokens",
+              (key: any) =>
+                key && Array.isArray(key) && key[0] === "userTokens",
             )
           : mutate(
-              (key) => key && Array.isArray(key) && key[0] === "AllBalanceRaw",
+              (key: any) =>
+                key && Array.isArray(key) && key[0] === "AllBalanceRaw",
             )
       }, 1000)
       return {
@@ -202,19 +214,12 @@ export abstract class ICMTransferConnector<
   }
 
   validateAddress(address: string): boolean | string {
-    switch (address.length) {
-      case 63:
-        try {
-          Principal.fromText(address)
-          return true
-        } catch {
-          return "Not a valid principal ID"
-        }
-      case 64:
-        if (!isHex(address)) return "Not a valid address"
-        return true
-      default:
-        return "Address length should be 63 or 64 characters"
-    }
+    const isPrincipal = addressValidationService.isValidPrincipalId(address)
+    const isAccountIdentifier =
+      addressValidationService.isValidAccountIdentifier(address)
+
+    if (!isPrincipal && !isAccountIdentifier)
+      return "Incorrect format of Destination Address"
+    else return true
   }
 }

@@ -23,9 +23,10 @@ import {
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
-import { TokenMetadata } from "@nfid/integration/token/dip-20"
 import { E8S } from "@nfid/integration/token/icp"
+import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
+import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
@@ -46,6 +47,7 @@ import {
   PRINCIPAL_LENGTH,
   MAX_DECIMAL_LENGTH,
   validateTransferAmountField,
+  MAX_DECIMAL_USD_LENGTH,
 } from "../utils/validations"
 import { ITransferSuccess } from "./success"
 
@@ -76,6 +78,8 @@ export const TransferFT = ({
     preselectedAccountAddress,
   )
 
+  const [amountInUSD, setAmountInUSD] = useState("")
+
   const { profile, isLoading: isLoadingProfile } = useProfile()
   console.debug("TransferFT", {
     profile,
@@ -83,6 +87,8 @@ export const TransferFT = ({
     selectedTokenBlockchain,
     selectedTokenCurrency,
   })
+
+  const { exchangeRate: icpRate } = useICPExchangeRate()
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
@@ -100,11 +106,13 @@ export const TransferFT = ({
   )
 
   const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
-    ITransferConfig & (TokenMetadata | Token)
+    ITransferConfig & (ICRC1Metadata | Token)
   >(
-    selectedConnector ? [selectedConnector, "tokenMetadata"] : null,
+    selectedConnector
+      ? [selectedConnector, "tokenMetadata", selectedTokenCurrency]
+      : null,
     async ([selectedConnector]) => {
-      // if it's dip20 token, we need to fetch token metadata
+      // if it's icrc1 token, we need to fetch token metadata
       if (selectedConnector.getTokenMetadata)
         return await selectedConnector.getTokenMetadata(selectedTokenCurrency)
       else return selectedConnector.getTokenConfig()
@@ -161,7 +169,7 @@ export const TransferFT = ({
   } = useForm({
     mode: "all",
     defaultValues: {
-      amount: undefined as any as number,
+      amount: undefined as any as string,
       to: preselectedTransferDestination ?? "",
     },
   })
@@ -176,7 +184,7 @@ export const TransferFT = ({
       : null,
     ([selectedConnector, getValues, token]) =>
       selectedConnector?.getFee({
-        amount: getValues("amount"),
+        amount: +getValues("amount"),
         to: getValues("to"),
         currency: selectedTokenCurrency,
         contract:
@@ -194,7 +202,7 @@ export const TransferFT = ({
   )
 
   const handleTrackTransfer = useCallback(
-    (amount: number) => {
+    (amount: string) => {
       const token = selectedConnector?.getTokenConfig()
       if (!token) return
 
@@ -211,15 +219,29 @@ export const TransferFT = ({
     [selectedConnector, selectedTokenCurrency, transferFee?.fee],
   )
 
+  const setCurrentUSDRate = (val: number) => {
+    const currentrate = selectedTokenCurrency === "ICP" ? icpRate : rate
+    setAmountInUSD((Number(currentrate) * val).toFixed(MAX_DECIMAL_USD_LENGTH))
+  }
+
+  const maxHandler = () => {
+    if (transferFee && balance) {
+      const val = +(+balance.balance - +transferFee.fee).toFixed(
+        MAX_DECIMAL_LENGTH,
+      )
+
+      if (val <= 0) return
+
+      setValue("amount", val.toFixed(MAX_DECIMAL_LENGTH))
+      if (!balance?.balanceinUsd) return
+      setCurrentUSDRate(val)
+    }
+  }
+
   const submit = useCallback(
-    async (values: { amount: number; to: string }) => {
+    async (values: { amount: string; to: string }) => {
       if (!tokenMetadata) return toast.error("Token metadata has not loaded")
       if (!selectedConnector) return toast.error("No selected connector")
-      if (values.to === selectedAccountAddress)
-        return setError("to", {
-          type: "value",
-          message: "You can't transfer to the same wallet",
-        })
 
       if (isVault) {
         return onTransferPromise({
@@ -265,10 +287,17 @@ export const TransferFT = ({
           await calculateFee()
           const res = await selectedConnector.transfer({
             to: values.to,
-            amount: values.amount,
+            canisterId: tokenMetadata.canisterId,
+            fee:
+              Number(transferFee?.fee) * 10 ** tokenMetadata.decimals ||
+              undefined,
+            amount: tokenMetadata.decimals
+              ? +values.amount * 10 ** tokenMetadata.decimals
+              : +values.amount,
             currency: selectedTokenCurrency,
             identity: await selectedConnector?.getIdentity(
               selectedAccountAddress,
+              tokenMetadata?.canisterId!,
             ),
             contract:
               "contractAddress" in tokenMetadata
@@ -292,7 +321,8 @@ export const TransferFT = ({
             () => refetchBalance(),
           )
           mutate(
-            (key) => key && Array.isArray(key) && key[0] === "useTokenConfig",
+            (key: any) =>
+              key && Array.isArray(key) && key[0] === "useTokenConfig",
           )
         },
         isAssetPadding: true,
@@ -311,6 +341,7 @@ export const TransferFT = ({
       selectedTokenCurrency,
       setError,
       tokenMetadata,
+      transferFee,
     ],
   )
 
@@ -344,18 +375,10 @@ export const TransferFT = ({
     >
       <div className="flex justify-between">
         <p className="mb-1">Amount to send</p>
-        <p
-          onClick={() => {
-            if (transferFee && balance) {
-              setValue("amount", +balance.balanceinUsd - +transferFee.feeUsd)
-            }
-          }}
-          className="text-blue-600 cursor-pointer"
-        >
+        <p onClick={maxHandler} className="text-blue-600 cursor-pointer">
           Max
         </p>
       </div>
-
       <div className="flex flex-col justify-between h-full pb-20">
         <div
           className={clsx(
@@ -381,6 +404,10 @@ export const TransferFT = ({
               ),
               valueAsNumber: true,
               onBlur: calculateFee,
+              onChange: (e) => {
+                if (!balance?.balanceinUsd || !icpRate) return
+                setCurrentUSDRate(e.target.value)
+              },
             })}
             onKeyDown={(e) => {
               const allowedKeys = /[0-9.]/
@@ -432,6 +459,16 @@ export const TransferFT = ({
           >
             {errors.amount?.message}
           </div>
+          {balance?.balanceinUsd && (
+            <p
+              className={clsx(
+                "absolute mt-[75px] right-[20px]",
+                "text-xs pt-[4px] text-gray-400 text-sm",
+              )}
+            >
+              {amountInUSD || "0.0000"} USD
+            </p>
+          )}
           <ChooseModal
             optionGroups={tokenOptions ?? []}
             title="Asset to send"
@@ -440,6 +477,9 @@ export const TransferFT = ({
               const arrayValue = value.split("&")
               if (arrayValue.length < 2) return
 
+              resetField("amount")
+              resetField("to")
+              setAmountInUSD("")
               setSelectedTokenCurrency(arrayValue[0])
               setSelectedTokenBlockchain(arrayValue[1])
             }}
@@ -526,8 +566,13 @@ export const TransferFT = ({
               <Spinner className="w-3 h-3 text-gray-400" />
             ) : (
               <div className="text-right">
-                <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee ?? `0.00 ${tokenMetadata?.feeCurrency}`}
+                <p className="text-sm leading-5" id="fee">
+                  {transferFee?.fee
+                    ? `${transferFee?.fee} ${tokenMetadata?.feeCurrency}`
+                    : `0.00 ${tokenMetadata?.feeCurrency}`}
+                  {transferFee?.feeUsd && (
+                    <span className="text-xs block">{`${transferFee.feeUsd} USD`}</span>
+                  )}
                 </p>
               </div>
             )}
@@ -543,7 +588,6 @@ export const TransferFT = ({
         >
           Send
         </Button>
-
         <div
           className={clsx(
             "bg-gray-50 flex flex-col text-sm text-gray-500",
@@ -552,19 +596,32 @@ export const TransferFT = ({
         >
           <div className="flex items-center justify-between">
             <p>{tokenMetadata?.blockchain}</p>
-            <p>Balance</p>
-          </div>
-          <div className="flex items-center justify-between">
-            <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
-            <div className="flex items-center space-x-0.5">
+            <p>
+              Balance:&nbsp;
               {!isBalanceLoading &&
               !isBalanceFetching &&
               !!balance?.balance?.length ? (
                 <span id="balance">
-                  {balance.balance.toString()} {selectedTokenCurrency}
+                  {balance.balance} {selectedTokenCurrency}
                 </span>
               ) : (
                 <Spinner className="w-3 h-3 text-gray-400" />
+              )}
+            </p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
+            <div className="flex items-center space-x-0.5">
+              {balance?.balanceinUsd && (
+                <>
+                  {!isBalanceLoading &&
+                  !isBalanceFetching &&
+                  !!balance?.balanceinUsd?.length ? (
+                    <span id="balance">{`${balance.balanceinUsd} USD`}</span>
+                  ) : (
+                    <Spinner className="w-3 h-3 text-gray-400" />
+                  )}
+                </>
               )}
             </div>
           </div>

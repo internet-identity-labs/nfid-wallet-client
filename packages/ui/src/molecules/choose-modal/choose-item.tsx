@@ -1,6 +1,7 @@
 import { clsx } from "clsx"
 
 import { Badge } from "../../atoms/badge"
+import { UnknownIcon } from "../../atoms/icons/unknown"
 
 interface IChooseItem {
   handleClick: () => void
@@ -38,11 +39,16 @@ export const ChooseItem = ({
       )}
     >
       <div id={id} className="flex items-center">
-        <img
-          src={image}
-          alt={title}
-          className={clsx("mr-2.5 w-7", iconClassnames, !image && "hidden")}
-        />
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className={clsx("mr-2.5 w-7", iconClassnames)}
+          />
+        ) : (
+          <UnknownIcon className="mr-2.5 w-7" />
+        )}
+
         <div>
           <p className="text-sm mb-0.5 flex items-center space-x-1">
             <span>{title}</span>

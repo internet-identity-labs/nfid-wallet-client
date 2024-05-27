@@ -105,11 +105,9 @@ export const TransferFT = ({
     },
   )
 
-  const {
-    data: tokenMetadata,
-    mutate: refetchMetadata,
-    isLoading: isMetadataLoading,
-  } = useSWR<ITransferConfig & (ICRC1Metadata | Token)>(
+  const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
+    ITransferConfig & (ICRC1Metadata | Token)
+  >(
     selectedConnector
       ? [selectedConnector, "tokenMetadata", selectedTokenCurrency]
       : null,
@@ -343,6 +341,7 @@ export const TransferFT = ({
       selectedTokenCurrency,
       setError,
       tokenMetadata,
+      transferFee,
     ],
   )
 

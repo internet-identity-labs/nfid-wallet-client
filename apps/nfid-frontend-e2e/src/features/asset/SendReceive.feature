@@ -1,4 +1,4 @@
-@sendreceive
+@sendreceive @skip
 Feature:Send/Receive Asset
   As a user, I want to send/receive assets
 

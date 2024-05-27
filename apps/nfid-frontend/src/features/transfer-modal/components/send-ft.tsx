@@ -88,8 +88,7 @@ export const TransferFT = ({
     selectedTokenCurrency,
   })
 
-  const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
-    useICPExchangeRate()
+  const { exchangeRate: icpRate } = useICPExchangeRate()
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
@@ -172,7 +171,7 @@ export const TransferFT = ({
   } = useForm({
     mode: "all",
     defaultValues: {
-      amount: undefined as any as number,
+      amount: undefined as any as string,
       to: preselectedTransferDestination ?? "",
     },
   })
@@ -187,7 +186,7 @@ export const TransferFT = ({
       : null,
     ([selectedConnector, getValues, token]) =>
       selectedConnector?.getFee({
-        amount: getValues("amount"),
+        amount: +getValues("amount"),
         to: getValues("to"),
         currency: selectedTokenCurrency,
         contract:
@@ -205,7 +204,7 @@ export const TransferFT = ({
   )
 
   const handleTrackTransfer = useCallback(
-    (amount: number) => {
+    (amount: string) => {
       const token = selectedConnector?.getTokenConfig()
       if (!token) return
 
@@ -222,22 +221,27 @@ export const TransferFT = ({
     [selectedConnector, selectedTokenCurrency, transferFee?.fee],
   )
 
+  const setCurrentUSDRate = (val: number) => {
+    const currentrate = selectedTokenCurrency === "ICP" ? icpRate : rate
+    setAmountInUSD((Number(currentrate) * val).toFixed(MAX_DECIMAL_USD_LENGTH))
+  }
+
   const maxHandler = () => {
     if (transferFee && balance) {
       const val = +(+balance.balance - +transferFee.fee).toFixed(
         MAX_DECIMAL_LENGTH,
       )
+
       if (val <= 0) return
-      setValue("amount", val)
+
+      setValue("amount", val.toFixed(MAX_DECIMAL_LENGTH))
       if (!balance?.balanceinUsd) return
-      setAmountInUSD(
-        (exchangeRate! * val).toFixed(MAX_DECIMAL_USD_LENGTH).toString(),
-      )
+      setCurrentUSDRate(val)
     }
   }
 
   const submit = useCallback(
-    async (values: { amount: number; to: string }) => {
+    async (values: { amount: string; to: string }) => {
       if (!tokenMetadata) return toast.error("Token metadata has not loaded")
       if (!selectedConnector) return toast.error("No selected connector")
 
@@ -290,8 +294,8 @@ export const TransferFT = ({
               Number(transferFee?.fee) * 10 ** tokenMetadata.decimals ||
               undefined,
             amount: tokenMetadata.decimals
-              ? values.amount * 10 ** tokenMetadata.decimals
-              : values.amount,
+              ? +values.amount * 10 ** tokenMetadata.decimals
+              : +values.amount,
             currency: selectedTokenCurrency,
             identity: await selectedConnector?.getIdentity(
               selectedAccountAddress,
@@ -402,12 +406,8 @@ export const TransferFT = ({
               valueAsNumber: true,
               onBlur: calculateFee,
               onChange: (e) => {
-                if (!balance?.balanceinUsd || !exchangeRate) return
-                setAmountInUSD(
-                  (exchangeRate * Number(e.target.value))
-                    .toFixed(MAX_DECIMAL_USD_LENGTH)
-                    .toString(),
-                )
+                if (!balance?.balanceinUsd || !icpRate) return
+                setCurrentUSDRate(e.target.value)
               },
             })}
             onKeyDown={(e) => {
@@ -478,6 +478,9 @@ export const TransferFT = ({
               const arrayValue = value.split("&")
               if (arrayValue.length < 2) return
 
+              resetField("amount")
+              resetField("to")
+              setAmountInUSD("")
               setSelectedTokenCurrency(arrayValue[0])
               setSelectedTokenBlockchain(arrayValue[1])
             }}
@@ -569,12 +572,7 @@ export const TransferFT = ({
                     ? `${transferFee?.fee} ${tokenMetadata?.feeCurrency}`
                     : `0.00 ${tokenMetadata?.feeCurrency}`}
                   {transferFee?.feeUsd && (
-                    <p className="text-xs">
-                      {Number(transferFee?.feeUsd).toFixed(
-                        MAX_DECIMAL_USD_LENGTH,
-                      )}
-                      &nbsp;USD
-                    </p>
+                    <span className="text-xs block">{`${transferFee.feeUsd} USD`}</span>
                   )}
                 </p>
               </div>
@@ -620,12 +618,7 @@ export const TransferFT = ({
                   {!isBalanceLoading &&
                   !isBalanceFetching &&
                   !!balance?.balanceinUsd?.length ? (
-                    <span id="balance">
-                      {Number(balance.balanceinUsd).toFixed(
-                        MAX_DECIMAL_USD_LENGTH,
-                      )}{" "}
-                      USD
-                    </span>
+                    <span id="balance">{`${balance.balanceinUsd} USD`}</span>
                   ) : (
                     <Spinner className="w-3 h-3 text-gray-400" />
                   )}

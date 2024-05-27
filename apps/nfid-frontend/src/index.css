@@ -61,6 +61,8 @@ ul {
   );
   border-radius: 12px;
   border: 1px solid #ffffff;
+  font-weight: 600;
+  color: #000;
 }
 
 .Toastify__close-button {

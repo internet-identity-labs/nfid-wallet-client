@@ -7,6 +7,7 @@ import { AssetFilter, Blockchain, TokenConfig } from "src/ui/connnector/types"
 import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/icrc1/constants"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { useAllICRC1Token } from "frontend/features/fungable-token/icrc1"
@@ -30,6 +31,7 @@ export const useICTokens = (
         toPresentation,
         transformAmount: stringICPtoE8s,
         blockchain: Blockchain.IC,
+        canisterId: ICP_CANISTER_ID,
       },
       ...(ICRC1Token
         ? ICRC1Token.map(({ symbol, name, logo, ...rest }) => ({

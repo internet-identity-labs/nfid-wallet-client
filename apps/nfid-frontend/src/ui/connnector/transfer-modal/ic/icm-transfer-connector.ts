@@ -18,7 +18,10 @@ import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
-import { PRINCIPAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
+import {
+  MAX_DECIMAL_USD_LENGTH,
+  PRINCIPAL_LENGTH,
+} from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
@@ -150,10 +153,12 @@ export abstract class ICMTransferConnector<
     const balance = await getBalance(addressVerified)
     const rate = await getExchangeRate()
 
-    return Promise.resolve({
+    return {
       balance: e8sICPToString(Number(balance)),
-      balanceinUsd: e8sICPToString(Number(balance) * rate),
-    })
+      balanceinUsd: (+e8sICPToString(Number(balance) * rate)).toFixed(
+        MAX_DECIMAL_USD_LENGTH,
+      ),
+    }
   }
 
   getAddress(_: string, identity: DelegationIdentity): Promise<string> {

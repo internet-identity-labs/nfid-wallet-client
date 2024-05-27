@@ -5,6 +5,7 @@ import { accessList } from "@nfid/integration"
 import { WALLET_FEE } from "@nfid/integration/token/icp"
 import { TokenStandards } from "@nfid/integration/token/types"
 
+import { MAX_DECIMAL_USD_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 
@@ -44,7 +45,7 @@ export class ICTransferConnector
 
     return {
       fee: String(WALLET_FEE),
-      feeUsd: String(WALLET_FEE * rate),
+      feeUsd: (WALLET_FEE * rate).toFixed(MAX_DECIMAL_USD_LENGTH),
     }
   }
 }

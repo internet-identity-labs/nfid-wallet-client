@@ -9,6 +9,8 @@ export interface ICopy extends HTMLAttributes<HTMLDivElement> {
   value: string
   iconClassName?: string
   copyTitle?: string
+  iconSize?: string
+  titleClassName?: string
 }
 
 export const Copy: React.FC<ICopy> = ({
@@ -16,6 +18,8 @@ export const Copy: React.FC<ICopy> = ({
   className,
   iconClassName,
   copyTitle,
+  iconSize,
+  titleClassName,
 }) => {
   const [copied, setCopied] = React.useState(false)
 
@@ -31,12 +35,12 @@ export const Copy: React.FC<ICopy> = ({
     <div
       className={clsx(
         !copied && "hover:opacity-50 cursor-pointer transition-opacity",
-        "flex items-center stroke-gray-400",
+        "flex items-center stroke-gray-400 text-xs text-secondary font-semibold",
         className,
       )}
       onClick={copyToClipboard}
     >
-      <div className="w-5">
+      <div className={clsx("w-5", iconSize)}>
         <img
           className={clsx(copied ? "inline-block" : "hidden")}
           src={CopiedIcon}
@@ -54,7 +58,12 @@ export const Copy: React.FC<ICopy> = ({
       </div>
 
       {copyTitle && (
-        <p className="w-full ml-2 text-xs font-semibold text-secondary">
+        <p
+          className={clsx(
+            "w-full ml-2 text-xs font-semibold text-secondary",
+            titleClassName,
+          )}
+        >
           {copyTitle}
         </p>
       )}

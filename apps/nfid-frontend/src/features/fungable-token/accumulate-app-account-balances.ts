@@ -19,7 +19,7 @@ export const sumE8sICPString = (a: string, b: string) => {
 }
 
 export const toUSD = (value: number, exchangeRate: number) =>
-  exchangeRate !== 0 ? `$${(exchangeRate * value).toFixed(2)}` : ``
+  exchangeRate !== 0 ? `${(exchangeRate * value).toFixed(2)}` : ``
 
 type MapApplicationBalanceArgs = {
   toPresentation: (value?: bigint) => number

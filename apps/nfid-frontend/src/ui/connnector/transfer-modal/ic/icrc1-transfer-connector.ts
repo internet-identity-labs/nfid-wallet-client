@@ -19,6 +19,7 @@ import {
 } from "@nfid/integration/token/icrc1"
 import { TokenStandards } from "@nfid/integration/token/types"
 
+import { MAX_DECIMAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
@@ -55,7 +56,10 @@ export class ICRC1TransferConnector
       addressPlaceholder: "Recipient IC address or principal",
       toPresentation: (value = BigInt(0)) => {
         if (!token) return
-        return Number(value) / Number(BigInt(10 ** token.decimals))
+        if (Number(value) === 0) return 0
+        return (Number(value) / Number(BigInt(10 ** token.decimals)))
+          .toFixed(MAX_DECIMAL_LENGTH)
+          .replace(/(\.\d*?[1-9])0+|\.0*$/, "$1")
       },
       transformAmount: (value: string) => {
         if (!token) return
@@ -69,12 +73,20 @@ export class ICRC1TransferConnector
     const token = await this.getTokenMetadata(currency ?? "")
     const { balance, price } = token
 
-    return Promise.resolve({
+    return {
       balance: token.toPresentation(balance).toString(),
       balanceinUsd: price
         ? Number(Number(token.price)?.toFixed(2)).toString()
         : undefined,
-    })
+    }
+  }
+
+  @Cache(connectorCache, { ttl: 60 })
+  async getRate(currency: string): Promise<string> {
+    const tokens = await this.getTokens()
+
+    const rate = tokens.find((token) => token.symbol === currency)?.rate
+    return rate ?? ""
   }
 
   @Cache(connectorCache, { ttl: 600 })
@@ -158,12 +170,14 @@ export class ICRC1TransferConnector
   @Cache(connectorCache, { ttl: 10 })
   async getFee({ currency }: ITransferFTRequest): Promise<TokenFee> {
     const token = await this.getTokenMetadata(currency)
-    const { fee, price } = token
+    const { fee, feeInUsd } = token
 
-    return Promise.resolve({
+    return {
       fee: token.toPresentation(fee).toString(),
-      feeUsd: price ? (Number(fee) * Number(price)).toString() : undefined,
-    })
+      feeUsd: feeInUsd
+        ? feeInUsd.toString().replace(/(\.\d*?[1-9])0+|\.0*$/, "$1")
+        : undefined,
+    }
   }
 
   async getIdentity(
@@ -206,7 +220,7 @@ export class ICRC1TransferConnector
         blockIndex: result.Ok,
       }
     } catch (e) {
-      console.debug("ERRR:", e)
+      console.error("ERRR:", e)
       return {
         errorMessage: e as Error,
       }

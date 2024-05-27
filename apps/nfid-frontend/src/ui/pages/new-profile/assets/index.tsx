@@ -143,19 +143,18 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     icon={token.icon}
                     appName={token.title}
                   />
-                  <div className="text-ellipsis whitespace-nowrap overflow-hidden w-[150px]">
-                    <p className="text-sm font-bold leading-5">{token.title}</p>
-                    <p className="text-[#9CA3AF] text-xs items-left flex leading-3">
-                      {token.currency}
-                    </p>
-                  </div>
+                  <p className="text-black text-sm items-left flex leading-5">
+                    {token.currency}
+                  </p>
                 </div>
                 <div className="text-right ml-auto mr-[20px]">
-                  <div className="text-sm leading-5 text-ellipsis whitespace-nowrap overflow-hidden w-[70px]">
-                    {token.toPresentation(token.balance)} {token.currency}
+                  <div className="text-sm leading-6">
+                    {`${token.toPresentation(token.balance)} ${token.currency}`}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
-                    {token.price ?? "Not listed"}
+                    {token.price !== undefined
+                      ? `${token.price} USD`
+                      : "Not listed"}
                   </div>
                 </div>
                 <div className="w-auto">

@@ -8,6 +8,7 @@ import {
 import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { mutate } from "swr"
 
 import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
 import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/icrc1/constants"
@@ -54,6 +55,8 @@ export const ProfileAssetsHeader = () => {
       setIsLoading(true)
       await addICRC1Canister(ledgerID, indexID)
       setIsModalVisible(false)
+      mutate("getICRC1Data")
+      mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
     } catch (e) {
       console.error(e)
     } finally {

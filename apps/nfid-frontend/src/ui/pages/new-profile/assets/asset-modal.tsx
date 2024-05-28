@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { toast } from "react-toastify"
+import { mutate } from "swr"
 
 import { Button } from "@nfid-frontend/ui"
 import { removeICRC1Canister } from "@nfid/integration/token/icrc1"
@@ -18,6 +19,7 @@ type IAssetModal = {
 
 const AssetModal: React.FC<IAssetModal> = ({ token, setTokenToRemove }) => {
   const [isRemoveLoading, setIsRemoveLoading] = useState(false)
+
   const removeHandler = async () => {
     setIsRemoveLoading(true)
     try {
@@ -25,6 +27,8 @@ const AssetModal: React.FC<IAssetModal> = ({ token, setTokenToRemove }) => {
       if (!rootPrincipalId || !token) return
       await removeICRC1Canister(rootPrincipalId, token.canisterId)
       toast.success(`${token.name} has been removed.`)
+      mutate("getICRC1Data")
+      mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
     } catch (e) {
       console.error("removeICRC1Canister", e)
       toast.error((e as Error)?.message ?? "Error during removing the asset")

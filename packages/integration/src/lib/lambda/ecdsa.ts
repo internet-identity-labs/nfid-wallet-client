@@ -1,17 +1,31 @@
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
+import { DerEncodedPublicKey, PublicKey } from "@dfinity/agent"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+import { hexStringToUint8Array } from "@dfinity/utils"
+import console from "console"
 
-import {ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS} from "@nfid/config"
+import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 
-import {integrationCache} from "../../cache"
-import {btcSigner, ecdsaSigner, icSigner, im, replaceActorIdentity,} from "../actors"
-import {ic} from "../agent/index"
-import {deleteFromStorage, getFromStorage, saveToStorage,} from "./domain-key-repository"
-import {validateTargets} from "./targets"
-import {DerEncodedPublicKey, PublicKey} from "@dfinity/agent";
-import console from "console";
-import {hexStringToUint8Array} from "@dfinity/utils";
-import {decrypt, encrypt} from "./util";
-import {Principal} from "@dfinity/principal";
+import { integrationCache } from "../../cache"
+import {
+  btcSigner,
+  ecdsaSigner,
+  icSigner,
+  im,
+  replaceActorIdentity,
+} from "../actors"
+import { ic } from "../agent/index"
+import {
+  deleteFromStorage,
+  getFromStorage,
+  saveToStorage,
+} from "./domain-key-repository"
+import { validateTargets } from "./targets"
+import { decrypt, encrypt } from "./util"
 
 const HOUR = 3_600_000
 
@@ -34,7 +48,12 @@ export async function getGlobalKeysThirdParty(
   }
   await validateTargets(targets, origin)
   const defaultExpirationInMinutes = 120
-  const delegationJSON = await getDelegationChain(toHexString(sessionPublicKey), targets, identity, maxTimeToLive)
+  const delegationJSON = await getDelegationChain(
+    toHexString(sessionPublicKey),
+    targets,
+    identity,
+    maxTimeToLive,
+  )
   saveToStorage(
     origin,
     toHexString(sessionPublicKey),
@@ -49,20 +68,24 @@ export async function getGlobalKeys(
   targets: string[],
 ): Promise<DelegationIdentity> {
   const cachedValue = await integrationCache.getItem(
-    JSON.stringify({identity, chain, targets}),
+    JSON.stringify({ identity, chain, targets }),
   )
   await replaceActorIdentity(icSigner, identity)
   if (cachedValue) return cachedValue as any
   const sessionKey = Ed25519KeyIdentity.generate()
-  const delegationJSON = await getDelegationChain(sessionKey.toJSON()[0], targets, identity)
+  const delegationJSON = await getDelegationChain(
+    sessionKey.toJSON()[0],
+    targets,
+    identity,
+  )
   const response = DelegationIdentity.fromDelegation(
     sessionKey,
     DelegationChain.fromJSON(delegationJSON),
   )
   await integrationCache.setItem(
-    JSON.stringify({identity, chain, targets}),
+    JSON.stringify({ identity, chain, targets }),
     response,
-    {ttl: 600},
+    { ttl: 600 },
   )
 
   return response
@@ -106,7 +129,7 @@ export async function ecdsaSign(
     identity,
     lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
-    {previous: identity.getDelegation()},
+    { previous: identity.getDelegation() },
   )
 
   const request = {
@@ -119,7 +142,7 @@ export async function ecdsaSign(
   const signUrl = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
   return await fetch(signUrl, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   }).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
@@ -144,20 +167,21 @@ export async function ecdsaGetAnonymous(
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
   await replaceActorIdentity(im, identity)
-  const principal = await im.get_root_by_principal(identity.getPrincipal().toString())
-  const hex = await getAnonEncryptionKey(identity, domain);
-  const seed = hexStringToUint8Array(hex);
-  const generatedIdentity = Ed25519KeyIdentity.generate(seed);
-  const key: PublicKey = new DerPublicKey(sessionKey);
+  const principal = await im.get_root_by_principal(
+    identity.getPrincipal().toString(),
+  )
+  const hex = await getAnonEncryptionKey(identity, domain)
+  const seed = hexStringToUint8Array(hex)
+  const generatedIdentity = Ed25519KeyIdentity.generate(seed)
+  const key: PublicKey = new DerPublicKey(sessionKey)
   const delegationChain = await DelegationChain.create(
     generatedIdentity,
     key,
     new Date(Date.now() + maxTimeToLive),
-  );
-  const a = JSON.stringify(delegationChain.toJSON());
+  )
+  const a = JSON.stringify(delegationChain.toJSON())
   deleteFromStorage(domain)
   return DelegationChain.fromJSON(a)
-
 }
 
 export async function getPublicKey(
@@ -206,8 +230,8 @@ export async function fetchLambdaPublicKey(chain: Chain): Promise<string> {
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const response = await fetch(registerUrl, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({chain}),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chain }),
   })
 
   if (!response.ok) throw new Error(await response.text())
@@ -243,29 +267,38 @@ function fromHexString(hexString: string): ArrayBuffer {
   return bytes.buffer
 }
 
-async function getDelegationChain(publicSessionKey: string, targets: string[], delegationIdentity: DelegationIdentity, delegationTtl?: number) {
-  const canisterKeyPairResponse = await icSigner.get_kp();
+async function getDelegationChain(
+  publicSessionKey: string,
+  targets: string[],
+  delegationIdentity: DelegationIdentity,
+  delegationTtl?: number,
+) {
+  const canisterKeyPairResponse = await icSigner.get_kp()
   let publicKey
   let privateKey
   if (canisterKeyPairResponse.key_pair.length === 0) {
-    const ecdsaKeyPair = await registerNewKeyPair(delegationIdentity);
-    publicKey = ecdsaKeyPair.publicKey;
-    privateKey = ecdsaKeyPair.privateKey;
+    const ecdsaKeyPair = await registerNewKeyPair(delegationIdentity)
+    publicKey = ecdsaKeyPair.publicKey
+    privateKey = ecdsaKeyPair.privateKey
   } else {
-    privateKey = decrypt(canisterKeyPairResponse.key_pair[0]!.private_key_encrypted, "utf8", await getEncryptionKey2(delegationIdentity));
-    publicKey = canisterKeyPairResponse.key_pair[0]!.public_key;
+    privateKey = decrypt(
+      canisterKeyPairResponse.key_pair[0]!.private_key_encrypted,
+      "utf8",
+      await getEncryptionKey2(delegationIdentity),
+    )
+    publicKey = canisterKeyPairResponse.key_pair[0]!.public_key
   }
 
   const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, privateKey])
-  let key;
+  let key
   try {
-    const bytes = fromHexString(publicSessionKey);
-    key = new DerPublicKey(new Uint8Array(bytes));
+    const bytes = fromHexString(publicSessionKey)
+    key = new DerPublicKey(new Uint8Array(bytes))
   } catch (e) {
-    throw  new Error("DerPublicKey is invalid");
+    throw new Error("DerPublicKey is invalid")
   }
   if (!key) {
-    throw new Error("Invalid key");
+    throw new Error("Invalid key")
   }
   const ttl = delegationTtl ?? 2 * HOUR
   const chain = await DelegationChain.create(
@@ -273,30 +306,29 @@ async function getDelegationChain(publicSessionKey: string, targets: string[], d
     key,
     new Date(Date.now() + ttl),
     {
-      targets: targets.map((x) => Principal.fromText(x))
+      targets: targets.map((x) => Principal.fromText(x)),
     },
   )
-  return JSON.stringify(chain.toJSON());
+  return JSON.stringify(chain.toJSON())
 }
 
 export class DerPublicKey implements PublicKey {
-
-  der;
+  der
 
   constructor(a: any) {
-    this.der = a;
+    this.der = a
   }
 
   toDer(): DerEncodedPublicKey {
-    return this.der;
+    return this.der
   }
-
 }
 
-
-async function getAnonEncryptionKey(identity: DelegationIdentity, domain: string) {
+async function getAnonEncryptionKey(
+  identity: DelegationIdentity,
+  domain: string,
+) {
   // authStorage.set()
-
 
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
 
@@ -304,7 +336,7 @@ async function getAnonEncryptionKey(identity: DelegationIdentity, domain: string
     identity,
     lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
-    {previous: identity.getDelegation()},
+    { previous: identity.getDelegation() },
   )
 
   const request = {
@@ -315,15 +347,16 @@ async function getAnonEncryptionKey(identity: DelegationIdentity, domain: string
 
   const res = await fetchAnonKey(request)
 
-  return res;
+  return res
 }
 
-
 async function fetchAnonKey(request: Record<string, any>): Promise<any> {
-  const signUrl = ic.isLocal ? `/ecdsa_get_anonymous_seed` : "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_get_anonymous_seed"
+  const signUrl = ic.isLocal
+    ? `/ecdsa_get_anonymous_seed`
+    : "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_get_anonymous_seed"
   const response = await fetch(signUrl, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   })
 
@@ -331,10 +364,8 @@ async function fetchAnonKey(request: Record<string, any>): Promise<any> {
   return await response.json()
 }
 
-
 async function getEncryptionKey2(identity: DelegationIdentity) {
   // authStorage.set()
-
 
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
 
@@ -342,7 +373,7 @@ async function getEncryptionKey2(identity: DelegationIdentity) {
     identity,
     lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
-    {previous: identity.getDelegation()},
+    { previous: identity.getDelegation() },
   )
 
   const request = {
@@ -354,12 +385,13 @@ async function getEncryptionKey2(identity: DelegationIdentity) {
   return res
 }
 
-
 async function fetchECDSAKey(request: Record<string, any>): Promise<any> {
-  const signUrl = ic.isLocal ? `/ecdsa_encryption_key` : "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_encryption_key"
+  const signUrl = ic.isLocal
+    ? `/ecdsa_encryption_key`
+    : "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_encryption_key"
   const response = await fetch(signUrl, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   })
 
@@ -368,27 +400,31 @@ async function fetchECDSAKey(request: Record<string, any>): Promise<any> {
 }
 
 async function registerNewKeyPair(delegationIdentity: DelegationIdentity) {
-  const keyPair = Ed25519KeyIdentity.generate();
+  const keyPair = Ed25519KeyIdentity.generate()
   const ecdsaKeyPair = {
     privateKey: keyPair.toJSON()[1],
-    publicKey: keyPair.toJSON()[0]
+    publicKey: keyPair.toJSON()[0],
   }
   //even if there is no KP - canister returns root principal of the related account
-  const encryptedPrivateKey = encrypt(ecdsaKeyPair.privateKey, "utf8", await getEncryptionKey2(delegationIdentity));
+  const encryptedPrivateKey = encrypt(
+    ecdsaKeyPair.privateKey,
+    "utf8",
+    await getEncryptionKey2(delegationIdentity),
+  )
   const encryptedKeyPair = {
-    "public_key": ecdsaKeyPair.publicKey,
-    "private_key_encrypted": encryptedPrivateKey,
-  };
+    public_key: ecdsaKeyPair.publicKey,
+    private_key_encrypted: encryptedPrivateKey,
+  }
   try {
-    await icSigner.add_kp(encryptedKeyPair);
+    await icSigner.add_kp(encryptedKeyPair)
   } catch (e: any) {
     if (e.message.includes("Already registered")) {
       console.warn("Already registered keypair:", e)
-      return ecdsaKeyPair;
+      return ecdsaKeyPair
     }
 
     throw Error(e)
   }
 
-  return ecdsaKeyPair;
+  return ecdsaKeyPair
 }

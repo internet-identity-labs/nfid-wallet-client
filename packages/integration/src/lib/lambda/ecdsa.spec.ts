@@ -1,13 +1,25 @@
 /**
  * @jest-environment jsdom
  */
-import {Actor, ActorSubclass, Agent, HttpAgent} from "@dfinity/agent"
-import {IDL} from "@dfinity/candid"
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
-import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 
-import {WALLET_SCOPE} from "@nfid/config"
-import {ii, im, replaceActorIdentity} from "../actors"
+import { WALLET_SCOPE } from "@nfid/config"
+
+import {
+  DeviceData,
+  Challenge,
+  ChallengeResult,
+  UserNumber,
+} from "../_ic_api/internet_identity.d"
+import { ii, im, replaceActorIdentity } from "../actors"
+import { generateDelegationIdentity } from "../test-utils"
 import {
   Chain,
   ecdsaGetAnonymous,
@@ -16,9 +28,7 @@ import {
   getPublicKey,
   renewDelegationThirdParty,
 } from "./ecdsa"
-import {LocalStorageMock} from "./local-storage-mock"
-import { generateDelegationIdentity } from '../test-utils';
-import { DeviceData, Challenge, ChallengeResult, UserNumber } from "../_ic_api/internet_identity.d"
+import { LocalStorageMock } from "./local-storage-mock"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -33,7 +43,7 @@ describe("Lambda Sign/Register ECDSA", () => {
     const localStorageMock = new LocalStorageMock()
 
     beforeAll(() => {
-      Object.defineProperty(window, "localStorage", {value: localStorageMock})
+      Object.defineProperty(window, "localStorage", { value: localStorageMock })
     })
 
     it("get global IC keys", async function () {
@@ -181,7 +191,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         host: "https://ic0.app",
         identity: actualIdentity,
       })
-      const idlFactory: IDL.InterfaceFactory = ({IDL}) =>
+      const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
         IDL.Service({
           get_principal: IDL.Func([], [IDL.Text], []),
         })
@@ -202,7 +212,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       })
       const principalIdFromCanister = (await actor2[
         "get_principal"
-        ]()) as string
+      ]()) as string
       expect(renewedPrincipalId).toEqual(principalIdFromCanister)
     })
   })
@@ -213,14 +223,12 @@ it("Should register new key pair", async function () {
   const delegationIdentity: DelegationIdentity =
     await generateDelegationIdentity(mockedIdentity)
   // await replaceIdentity(delegationIdentity)
-  const deviceData : DeviceData = {
+  const deviceData: DeviceData = {
     alias: "Device",
-    protection: {unprotected: null},
-    pubkey: Array.from(
-      new Uint8Array(mockedIdentity.getPublicKey().toDer()),
-    ),
-    key_type: {platform: null},
-    purpose: {authentication: null},
+    protection: { unprotected: null },
+    pubkey: Array.from(new Uint8Array(mockedIdentity.getPublicKey().toDer())),
+    key_type: { platform: null },
+    purpose: { authentication: null },
     credential_id: [],
   }
   await replaceActorIdentity(ii, delegationIdentity)
@@ -235,15 +243,12 @@ it("Should register new key pair", async function () {
 
   const pk = await getPublicKey(delegationIdentity, Chain.IC)
   const keyPair = await getGlobalKeys(delegationIdentity, Chain.IC, [])
-  expect(Ed25519KeyIdentity.fromParsedJson([pk, "0"]).getPrincipal().toText())
-    .toEqual(keyPair.getPrincipal().toText())
+  expect(
+    Ed25519KeyIdentity.fromParsedJson([pk, "0"]).getPrincipal().toText(),
+  ).toEqual(keyPair.getPrincipal().toText())
 })
 
-
-
-export async function registerIIAccount(
-  deviceData: DeviceData,
-) {
+export async function registerIIAccount(deviceData: DeviceData) {
   const challenge: Challenge = (await ii.create_challenge()) as Challenge
   const challenageResult: ChallengeResult = {
     key: challenge.challenge_key,

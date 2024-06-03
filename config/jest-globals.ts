@@ -69,4 +69,5 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/fetch-alternative-origins",
   AWS_PUBLIC_KEY:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/publickey",
+  LAMBDA_IDENTITY:"52b3beba1c5e2a128a6d0ec73ac780917b484b26b098c8a4c3ada845ef7a02d7"
 }

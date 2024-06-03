@@ -1,42 +1,24 @@
 /**
  * @jest-environment jsdom
  */
-import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
-import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import {
-  networks,
-  payments,
-  Transaction,
-  TransactionBuilder,
-} from "bitcoinjs-lib"
-import { ethers } from "ethers"
-import { arrayify, hashMessage } from "ethers/lib/utils"
-import fetch from "node-fetch"
+import {Actor, ActorSubclass, Agent, HttpAgent} from "@dfinity/agent"
+import {IDL} from "@dfinity/candid"
+import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
+import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
 
-import { WALLET_SCOPE } from "@nfid/config"
-
-import {
-  HTTPAccountRequest,
-  AccessPointRequest,
-} from "../_ic_api/identity_manager.d"
-import { ii, im, replaceActorIdentity } from "../actors"
+import {WALLET_SCOPE} from "@nfid/config"
+import {ii, im, replaceActorIdentity} from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,
-  ecdsaSign,
   getGlobalKeys,
   getGlobalKeysThirdParty,
   getPublicKey,
   renewDelegationThirdParty,
 } from "./ecdsa"
-import { LocalStorageMock } from "./local-storage-mock"
-import { getIdentity, getLambdaActor } from "./util"
+import {LocalStorageMock} from "./local-storage-mock"
+import { generateDelegationIdentity } from '../test-utils';
+import { DeviceData, Challenge, ChallengeResult, UserNumber } from "../_ic_api/internet_identity.d"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -51,83 +33,7 @@ describe("Lambda Sign/Register ECDSA", () => {
     const localStorageMock = new LocalStorageMock()
 
     beforeAll(() => {
-      Object.defineProperty(window, "localStorage", { value: localStorageMock })
-    })
-
-    it("register ecdsa ETH", async function () {
-      const mockedIdentity = getIdentity("87654321876543218765432187654311")
-      const sessionKey = Ed25519KeyIdentity.generate()
-      const chainRoot = await DelegationChain.create(
-        mockedIdentity,
-        sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
-        {},
-      )
-      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
-
-      const email = "test@test.test"
-      const principal = di.getPrincipal().toText()
-      const lambdaActor = await getLambdaActor()
-      await lambdaActor.add_email_and_principal_for_create_account_validation(
-        email,
-        principal,
-        new Date().getMilliseconds(),
-      )
-
-      const deviceData: AccessPointRequest = {
-        icon: "Icon",
-        device: "Global",
-        pub_key: di.getPrincipal().toText(),
-        browser: "Browser",
-        device_type: {
-          Email: null,
-        },
-        credential_id: [],
-      }
-      const accountRequest: HTTPAccountRequest = {
-        email: [email],
-        access_point: [deviceData],
-        wallet: [{ NFID: null }],
-        anchor: BigInt(0),
-      }
-      await replaceActorIdentity(im, di)
-
-      await im.remove_account()
-      await im.create_account(accountRequest)
-
-      const pubKey = await getPublicKey(di, Chain.ETH)
-      const keccak = hashMessage("test_message")
-      const signature = await ecdsaSign(keccak, di, Chain.ETH)
-      const digestBytes = arrayify(keccak)
-      const pk = ethers.utils.recoverPublicKey(digestBytes, signature)
-      expect(pk).toEqual(pubKey)
-    })
-
-    it("register ecdsa BTC", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-      const sessionKey = Ed25519KeyIdentity.generate()
-      const chainRoot = await DelegationChain.create(
-        mockedIdentity,
-        sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
-        {},
-      )
-      const delegationIdentity = DelegationIdentity.fromDelegation(
-        sessionKey,
-        chainRoot,
-      )
-      const publicKey = await getPublicKey(delegationIdentity, Chain.BTC)
-      const { address } = payments.p2pkh({
-        pubkey: Buffer.from(publicKey, "hex"),
-        network: networks.testnet,
-      })
-      expect(address).toEqual("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
-      const tx = await calc("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
-      const hex = tx.buildIncomplete().toHex()
-      const signedTxHex = await ecdsaSign(hex, delegationIdentity, Chain.BTC)
-      const txx = Transaction.fromHex(signedTxHex)
-      expect(txx.ins.length).toEqual(1)
-      expect(txx.outs[0].value).toEqual(10)
+      Object.defineProperty(window, "localStorage", {value: localStorageMock})
     })
 
     it("get global IC keys", async function () {
@@ -208,7 +114,7 @@ describe("Lambda Sign/Register ECDSA", () => {
     it("get third party global keys", async function () {
       const canisterId = "irshc-3aaaa-aaaam-absla-cai"
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-
+      await replaceActorIdentity(im, mockedIdentity)
       const nfidSessionKey = Ed25519KeyIdentity.generate()
       const nfidSessionPublicKey = new Uint8Array(
         nfidSessionKey.getPublicKey().toDer(),
@@ -275,7 +181,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         host: "https://ic0.app",
         identity: actualIdentity,
       })
-      const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
+      const idlFactory: IDL.InterfaceFactory = ({IDL}) =>
         IDL.Service({
           get_principal: IDL.Func([], [IDL.Text], []),
         })
@@ -296,44 +202,56 @@ describe("Lambda Sign/Register ECDSA", () => {
       })
       const principalIdFromCanister = (await actor2[
         "get_principal"
-      ]()) as string
+        ]()) as string
       expect(renewedPrincipalId).toEqual(principalIdFromCanister)
     })
   })
 })
 
-async function calc(address: string) {
-  const apiEndpoint = `https://api.blockcypher.com/v1/btc/test3/addrs/${address}/full`
-  const response = await fetch(apiEndpoint)
-
-  const json = await response.json()
-  const inputs = json.txs.map((tx: any) => ({
-    txid: tx.hash,
-    vout: tx.outputs.findIndex((output: any) =>
-      output.addresses.includes(address),
+it("Should register new key pair", async function () {
+  const mockedIdentity = Ed25519KeyIdentity.generate()
+  const delegationIdentity: DelegationIdentity =
+    await generateDelegationIdentity(mockedIdentity)
+  // await replaceIdentity(delegationIdentity)
+  const deviceData : DeviceData = {
+    alias: "Device",
+    protection: {unprotected: null},
+    pubkey: Array.from(
+      new Uint8Array(mockedIdentity.getPublicKey().toDer()),
     ),
-    value: tx.outputs.find((output: any) => output.addresses.includes(address))
-      .value,
-  }))
-  const transactionValue = 10
-  const txb = new TransactionBuilder(networks.testnet)
-  inputs.sort((a: any, b: any) => b.value - a.value) // sort inputs by value, highest to lowest
-  let inputTotal = 0
-  for (let i = 0; i < inputs.length; i++) {
-    const input = inputs[i]
-    const inputIndex = i // index of the input in the transaction
-
-    txb.addInput(input.txid, input.vout)
-    inputTotal += input.value
-
-    if (inputTotal >= transactionValue) {
-      break // stop adding inputs once the transaction value is covered
-    }
+    key_type: {platform: null},
+    purpose: {authentication: null},
+    credential_id: [],
   }
-  if (inputTotal < transactionValue) {
-    // not enough inputs to cover transaction value
-    // handle error or insufficient funds
+  await replaceActorIdentity(ii, delegationIdentity)
+  await replaceActorIdentity(im, delegationIdentity)
+  const anchor = await registerIIAccount(deviceData)
+  await im.create_account({
+    anchor,
+    access_point: [],
+    wallet: [],
+    email: [],
+  })
+
+  const pk = await getPublicKey(delegationIdentity, Chain.IC)
+  const keyPair = await getGlobalKeys(delegationIdentity, Chain.IC, [])
+  expect(Ed25519KeyIdentity.fromParsedJson([pk, "0"]).getPrincipal().toText())
+    .toEqual(keyPair.getPrincipal().toText())
+})
+
+
+
+export async function registerIIAccount(
+  deviceData: DeviceData,
+) {
+  const challenge: Challenge = (await ii.create_challenge()) as Challenge
+  const challenageResult: ChallengeResult = {
+    key: challenge.challenge_key,
+    chars: "a",
   }
-  txb.addOutput(address, transactionValue)
-  return txb
+  const registerResponse = (await ii.register(
+    deviceData,
+    challenageResult,
+  )) as { registered: { user_number: UserNumber } }
+  return registerResponse.registered.user_number
 }

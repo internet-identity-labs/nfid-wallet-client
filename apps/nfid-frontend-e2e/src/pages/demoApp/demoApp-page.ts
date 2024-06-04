@@ -84,12 +84,19 @@ export class demoAppPage extends Page {
   ) {
     await browser.pause(6000)
     if (await this.getLogoutButton.isClickable())
+      console.log("Logout button is clickable")
       await this.getLogoutButton.click()
-    console.log("Test message")
+    console.log("Start")
     await browser.waitUntil(
       async () => {
         await browser.pause(1000)
+        if (await this.getDerivationOriginInput("authentication").isClickable()) {
+          console.log("Derivation origin is clickable 0")
+        } else { console.log("DO not clickable 0") }
         await browser.switchToParentFrame()
+        if (await this.getDerivationOriginInput("authentication").isClickable()) {
+          console.log("Derivation origin is clickable 1")
+        } else { console.log("DO not clickable 1") }
         await browser.pause(3000)
         if (derivation)
           await this.getDerivationOriginInput("authentication").setValue(

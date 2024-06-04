@@ -7,8 +7,10 @@ declare const AWS_EXCHANGE_RATE: string
 declare const AWS_ECDSA_REGISTER: string
 declare const AWS_ECDSA_REGISTER_ADDRESS: string
 declare const AWS_ECDSA_GET_ANONYMOUS: string
+declare const AWS_ECDSA_GET_ANONYMOUS_SEED: string
 declare const AWS_EXECUTE_CANDID: string
 declare const AWS_ECDSA_SIGN: string
+declare const AWS_ECDSA_ENCRYPTION_KEY: string
 declare const AWS_PASSKEY: string
 declare const AWS_SIGNATURE_EVENT: string
 declare const AWS_PUBLIC_KEY: string

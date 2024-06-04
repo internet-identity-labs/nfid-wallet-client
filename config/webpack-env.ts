@@ -90,12 +90,14 @@ export const serviceConfig = {
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),
   BLOCK_CYPHER_TOKEN: JSON.stringify(process.env.BLOCK_CYPHER_TOKEN),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),
+  AWS_ECDSA_ENCRYPTION_KEY: JSON.stringify(process.env.AWS_ECDSA_ENCRYPTION_KEY),
   AWS_PASSKEY: JSON.stringify(process.env.AWS_PASSKEY),
   AWS_ECDSA_REGISTER: JSON.stringify(process.env.AWS_ECDSA_REGISTER),
   AWS_ECDSA_REGISTER_ADDRESS: JSON.stringify(
     process.env.AWS_ECDSA_REGISTER_ADDRESS,
   ),
   AWS_ECDSA_GET_ANONYMOUS: JSON.stringify(process.env.AWS_ECDSA_GET_ANONYMOUS),
+  AWS_ECDSA_GET_ANONYMOUS_SEED: JSON.stringify(process.env.AWS_ECDSA_GET_ANONYMOUS_SEED),
   AWS_EXECUTE_CANDID: JSON.stringify(process.env.AWS_EXECUTE_CANDID),
   AWS_FETCH_ALTERNATIVE_ORIGINS: JSON.stringify(
     process.env.AWS_FETCH_ALTERNATIVE_ORIGINS,

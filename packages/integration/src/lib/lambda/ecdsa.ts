@@ -19,6 +19,7 @@ import {
   replaceActorIdentity,
 } from "../actors"
 import { ic } from "../agent/index"
+import { authStorage } from "../authentication/storage"
 import {
   deleteFromStorage,
   getFromStorage,
@@ -328,8 +329,10 @@ async function getAnonEncryptionKey(
   identity: DelegationIdentity,
   domain: string,
 ) {
-  // authStorage.set()
-
+  const key = await authStorage.get("ANONYMOUS_" + domain)
+  if (key !== null) {
+    return key
+  }
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
 
   const delegationChainForLambda = await createDelegationChain(
@@ -344,16 +347,15 @@ async function getAnonEncryptionKey(
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
   }
-
   const res = await fetchAnonKey(request)
-
+  await authStorage.set("ANONYMOUS_" + domain, res)
   return res
 }
 
 async function fetchAnonKey(request: Record<string, any>): Promise<any> {
   const signUrl = ic.isLocal
     ? `/ecdsa_get_anonymous_seed`
-    : "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_get_anonymous_seed"
+    : AWS_ECDSA_GET_ANONYMOUS_SEED
   const response = await fetch(signUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -388,7 +390,7 @@ async function getEncryptionKey2(identity: DelegationIdentity) {
 async function fetchECDSAKey(request: Record<string, any>): Promise<any> {
   const signUrl = ic.isLocal
     ? `/ecdsa_encryption_key`
-    : "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_encryption_key"
+    : AWS_ECDSA_ENCRYPTION_KEY
   const response = await fetch(signUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

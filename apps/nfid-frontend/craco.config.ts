@@ -248,11 +248,25 @@ const config = {
         pathRewrite: (path: string) =>
           path.replace(/^\/ecdsa_get_anonymous/, ""),
       },
+      "/ecdsa_get_anonymous_seed": {
+        target: process.env.AWS_ECDSA_GET_ANONYMOUS_SEED,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/ecdsa_get_anonymous/, ""),
+      },
       "/ecdsa_sign": {
         target: process.env.AWS_ECDSA_SIGN,
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/ecdsa_sign/, ""),
+      },
+      "/ecdsa_encryption_key": {
+        target: process.env.AWS_ECDSA_SIGN,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/ecdsa_encryption_key/, ""),
       },
       "/passkey": {
         target: process.env.AWS_PASSKEY,

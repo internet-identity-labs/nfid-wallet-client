@@ -161,6 +161,9 @@
         "env": "AWS_ECDSA_SIGN"
       },
       {
+        "env": "AWS_ECDSA_ENCRYPTION_KEY"
+      },
+      {
         "env": "AWS_ECDSA_PASSKEY"
       },
       {
@@ -171,6 +174,9 @@
       },
       {
         "env": "AWS_ECDSA_GET_ANONYMOUS"
+      },
+      {
+        "env": "AWS_ECDSA_GET_ANONYMOUS_SEED"
       },
       {
         "env": "AWS_SEND_VERIFICATION_EMAIL"

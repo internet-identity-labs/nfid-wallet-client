@@ -120,6 +120,7 @@ export class demoAppPage extends Page {
       },
       {
         timeout: 20000,
+        timeoutMsg: "Something with iFrame after 20sec",
       },
     )
   }

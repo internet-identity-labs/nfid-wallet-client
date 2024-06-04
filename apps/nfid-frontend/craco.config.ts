@@ -241,13 +241,6 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/execute_candid/, ""),
       },
-      "/ecdsa_get_anonymous": {
-        target: process.env.AWS_ECDSA_GET_ANONYMOUS,
-        secure: true,
-        changeOrigin: true,
-        pathRewrite: (path: string) =>
-          path.replace(/^\/ecdsa_get_anonymous/, ""),
-      },
       "/ecdsa_get_anonymous_seed": {
         target: process.env.AWS_ECDSA_GET_ANONYMOUS_SEED,
         secure: true,

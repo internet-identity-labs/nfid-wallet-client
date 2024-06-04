@@ -85,6 +85,7 @@ export class demoAppPage extends Page {
     await browser.pause(6000)
     if (await this.getLogoutButton.isClickable())
       await this.getLogoutButton.click()
+    console.log("Test message")
     await browser.waitUntil(
       async () => {
         await browser.pause(1000)

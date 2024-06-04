@@ -6,7 +6,6 @@ import {
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { hexStringToUint8Array } from "@dfinity/utils"
-import console from "console"
 
 import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 

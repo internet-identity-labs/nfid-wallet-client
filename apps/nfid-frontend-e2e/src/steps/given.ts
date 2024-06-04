@@ -75,6 +75,8 @@ Given(/^User signs in ?(?:(.*))?$/, async function (mobile: string) {
 
 Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
   await browser.url(DemoAppPage.demoAppBaseUrl)
+  const element = await $('#responseID');
+  await element.waitForExist({ timeout: 15000 });
 })
 
 Given(/^User opens NFID ?(.*)?$/, async function (site: string) {

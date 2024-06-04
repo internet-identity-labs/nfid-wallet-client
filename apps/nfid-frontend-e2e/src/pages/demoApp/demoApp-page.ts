@@ -93,7 +93,9 @@ export class demoAppPage extends Page {
         await browser.pause(1000)
         if (await this.getDerivationOriginInput("authentication").isClickable()) {
           console.log("Derivation origin is clickable 0")
-        } else { console.log("DO not clickable 0") }
+        } else {
+          await browser.refresh()
+          console.log("Refreshed") }
         await browser.switchToParentFrame()
         if (await this.getDerivationOriginInput("authentication").isClickable()) {
           console.log("Derivation origin is clickable 1")

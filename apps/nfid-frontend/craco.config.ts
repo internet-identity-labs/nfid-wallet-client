@@ -262,7 +262,7 @@ const config = {
         pathRewrite: (path: string) => path.replace(/^\/ecdsa_sign/, ""),
       },
       "/ecdsa_encryption_key": {
-        target: process.env.AWS_ECDSA_SIGN,
+        target: process.env.AWS_ECDSA_ENCRYPTION_KEY,
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) =>

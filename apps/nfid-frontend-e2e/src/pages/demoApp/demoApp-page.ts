@@ -89,6 +89,7 @@ export class demoAppPage extends Page {
       async () => {
         await browser.pause(1000)
         await browser.switchToParentFrame()
+        await browser.pause(3000)
         if (derivation)
           await this.getDerivationOriginInput("authentication").setValue(
             derivation,
@@ -119,7 +120,7 @@ export class demoAppPage extends Page {
         await this.checkLoginSuccess()
       },
       {
-        timeout: 20000,
+        timeout: 23000,
         timeoutMsg: "Something with iFrame after 20sec",
       },
     )

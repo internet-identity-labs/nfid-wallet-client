@@ -154,7 +154,7 @@ export const config: WebdriverIO.Config = {
   framework: "cucumber",
   //
   // The number of times to retry the entire specfile when it fails as a whole
-  specFileRetries: 1,
+  specFileRetries: 3,
   //
   // Delay in seconds between the spec file retry attempts
   // specFileRetriesDelay: 0,

@@ -1,6 +1,11 @@
 import Page from "./page.js"
 
 export class Assets {
+
+  get sendDialogWindow() {
+    return $("#sendFT")
+  }
+
   private get assetLabel() {
     return "[id*='token_"
   }
@@ -74,8 +79,7 @@ export class Assets {
     await assetBalance.waitForExist({ timeout: 10000 })
     await fee.waitForExist({ timeout: 35000 })
 
-    const sendButton = await $("#sendFT")
-    await sendButton.click()
+    await this.sendDialogWindow.click()
   }
 
   public async getFee() {
@@ -83,36 +87,32 @@ export class Assets {
   }
 
   public async sendDialog() {
-    let sendDialogWindow = $("#sendFT")
     await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    const sendReceiveButton = await $("#sendReceiveButton")
-    await sendReceiveButton.waitForClickable({
+    await Page.sendReceiveButton.waitForClickable({
       timeout: 7000,
     })
-    await sendReceiveButton.click()
+    await Page.sendReceiveButton.click()
     await browser.waitUntil(async () => {
       await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
       try {
-        await sendDialogWindow.waitForDisplayed({ timeout: 15000 })
+        await this.sendDialogWindow.waitForDisplayed({ timeout: 15000 })
       } catch (e) {
         console.log("Send dialog window isn't displayed. Trying to open it again")
       }
-      console.log(await sendDialogWindow.isDisplayed())
-      if (!await sendDialogWindow.isDisplayed()) await sendReceiveButton.click()
-      return await sendDialogWindow.isDisplayed()
+      console.log(await this.sendDialogWindow.isDisplayed())
+      if (!await this.sendDialogWindow.isDisplayed()) await Page.sendReceiveButton.click()
+      return await this.sendDialogWindow.isDisplayed()
     }, { timeout: 60000, timeoutMsg: "Send dialog window isn't displayed in 60 sec" })
   }
 
   public async sendNFTDialog() {
-    const sendReceiveButton = await $("#sendReceiveButton")
-    await sendReceiveButton.waitForDisplayed({
+    await Page.sendReceiveButton.waitForDisplayed({
       timeout: 7000,
     })
-    await sendReceiveButton.click()
-    const loader = await $("#loader")
-    await loader.waitForExist({ reverse: true, timeout: 15000 })
+    await Page.sendReceiveButton.click()
+    await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
     await $("#send_type_toggle").click()
-    await loader.waitForExist({ reverse: true, timeout: 15000 })
+    await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
   }
 
   public async receiveDialog() {
@@ -208,8 +208,7 @@ export class Assets {
 
   public async openActivity() {
     const activityIcon = await $("#activity")
-    const loader = await $("#loader")
-    await loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
 
     await activityIcon.waitForDisplayed({ timeout: 10000 })
     await activityIcon.click()

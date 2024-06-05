@@ -1,3 +1,5 @@
+import Page from "./page"
+
 export class Nft {
   private get nftContainer() {
     return $$("#nft-container .nft")
@@ -64,14 +66,13 @@ export class Nft {
   }
 
   public async openCollectibles() {
-    const loader = await $("#loader")
-    await loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
     const collectiblesTab = await $("#desktop #profile-collectibles")
     await collectiblesTab.waitForDisplayed({
       timeout: 5000,
     })
     await collectiblesTab.click()
-    await loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
   }
 
   public async switchToTable() {

@@ -1,3 +1,5 @@
+import Page from "./page.js"
+
 export class Assets {
   private get assetLabel() {
     return "[id*='token_"
@@ -81,15 +83,24 @@ export class Assets {
   }
 
   public async sendDialog() {
-    const loader = await $("#loader")
-    await loader.waitForDisplayed({ reverse: true, timeout: 40000 })
+    let sendDialogWindow = $("#sendFT")
+    await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
     const sendReceiveButton = await $("#sendReceiveButton")
-    await sendReceiveButton.waitForDisplayed({
+    await sendReceiveButton.waitForClickable({
       timeout: 7000,
     })
     await sendReceiveButton.click()
-    await loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
+    await browser.waitUntil(async () => {
+      await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
+      try {
+        await sendDialogWindow.waitForDisplayed({ timeout: 15000 })
+      } catch (e) {
+        console.log("Send dialog window isn't displayed. Trying to open it again")
+      }
+      console.log(await sendDialogWindow.isDisplayed())
+      if (!await sendDialogWindow.isDisplayed()) await sendReceiveButton.click()
+      return await sendDialogWindow.isDisplayed()
+    }, { timeout: 60000, timeoutMsg: "Send dialog window isn't displayed in 60 sec" })
   }
 
   public async sendNFTDialog() {
@@ -120,14 +131,17 @@ export class Assets {
       parent = await this.principal
     }
     const firstAddressPart = await parent.$("#first_part")
-    await firstAddressPart.waitForExist({
+    await firstAddressPart.waitForDisplayed({
       timeout: 7000,
     })
-    const secondAddressElement = await parent.$("#second_part")
-    await secondAddressElement.waitForExist({
+    const secondAddressPart = await parent.$("#second_part")
+    await secondAddressPart.waitForDisplayed({
       timeout: 7000,
     })
-    return { firstAddressPart, secondAddressElement }
+    await browser.waitUntil(async () => {
+      return await firstAddressPart.getText() != "" && await secondAddressPart.getText() != ""
+    }, { timeout: 15000, timeoutMsg: "Address is still empty after 15 sec" })
+    return { firstAddressPart, secondAddressPart }
   }
 
   public async fromAccountOption() {

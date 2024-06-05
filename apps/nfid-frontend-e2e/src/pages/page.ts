@@ -1,6 +1,10 @@
 export class Page {
-  private get loader() {
+  get loader() {
     return $("#loader")
+  }
+
+  get sendReceiveButton() {
+    return $("#sendReceiveButton")
   }
 
   public async openBaseUrl() {
@@ -8,7 +12,7 @@ export class Page {
   }
 
   public async openPage(page: string) {
-    browser.url(browser.options.baseUrl + page)
+    await browser.url(browser.options.baseUrl + page)
   }
 
   // -1 retrieves the last window, or -2 gets the first one
@@ -24,7 +28,7 @@ export class Page {
       )
     }
     const windowHandles = await browser.getWindowHandles()
-    browser.switchToWindow(windowHandles.slice(positionNumber)[0])
+    await browser.switchToWindow(windowHandles.slice(positionNumber)[0])
   }
 
   public async waitForLoaderDisappear() {
@@ -47,7 +51,7 @@ export class Page {
 
   public async waitForDataCacheLoading() {
     await browser.waitUntil(
-      async function () {
+      async function() {
         return (await $("#root").getAttribute("data-cache-loaded")) === "true"
       },
       {
@@ -56,10 +60,6 @@ export class Page {
       },
     )
   }
-
-  loginUsingIframe(
-    profileType?: string,
-    targets?: string,
-    derivation?: string,
-  ) {}
 }
+
+export default new Page()

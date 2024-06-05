@@ -617,7 +617,7 @@ export const TransferFT = ({
                   {!isBalanceLoading &&
                   !isBalanceFetching &&
                   !!balance?.balanceinUsd?.length ? (
-                    <span id="balance">{`${balance.balanceinUsd} USD`}</span>
+                    <span id="USDbalance">{`${balance.balanceinUsd} USD`}</span>
                   ) : (
                     <Spinner className="w-3 h-3 text-gray-400" />
                   )}

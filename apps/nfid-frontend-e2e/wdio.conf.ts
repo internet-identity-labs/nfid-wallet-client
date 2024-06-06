@@ -403,14 +403,14 @@ export const config: WebdriverIO.Config = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {Object}             context          Cucumber World object
    */
-  afterStep: async function (
-    step: any,
-    scenario: any,
-    result: any,
-    context: any,
-  ) {
+  afterStep: async function (step: any, result: any) {
     // @ts-ignore browser
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
+    console.log(
+      step.text + " " +
+      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m") + " " +
+      result.duration
+    )
   },
   // afterScenario: function (uri, feature, scenario, result, sourceLocation) {
   // },

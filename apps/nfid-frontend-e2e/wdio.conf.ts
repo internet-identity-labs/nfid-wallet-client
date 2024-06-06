@@ -404,12 +404,11 @@ export const config: WebdriverIO.Config = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {Object}             context          Cucumber World object
    */
-  afterStep: async function (step: PickleStep, scenario: any, result: PickleResult) {
+  afterStep: async function(step: PickleStep, scenario: any, result: PickleResult) {
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
     console.log(
       step.text + " " +
-      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m") + " " +
-      result.duration
+      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m")
     )
   },
   // afterScenario: function (uri, feature, scenario, result, sourceLocation) {

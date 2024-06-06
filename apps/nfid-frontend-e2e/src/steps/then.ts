@@ -474,7 +474,6 @@ Then(
       let fullText = await it.getText()
       return fullText.replace(await it.$("span").getText(), "").trim()
     })
-    console.log(transferFee)
     if (fee === "any") expect(transferFee).not.toEqual("0.00")
     else expect(transferFee).toEqual(fee + " " + currency)
   },
@@ -518,7 +517,6 @@ Then(
         (await address.firstAddressPart.getText()) +
         "..." +
         (await address.secondAddressPart.getText())
-      console.log(1 + await address.firstAddressPart.getText(), 2 + await address.secondAddressPart.getText(), 3 + expectedResult)
       expect(expectedResult).toEqual(principals[i])
     }
   },

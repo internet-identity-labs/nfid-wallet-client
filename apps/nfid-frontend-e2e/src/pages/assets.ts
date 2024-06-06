@@ -99,7 +99,6 @@ export class Assets {
       } catch (e) {
         console.log("Send dialog window isn't displayed. Trying to open it again")
       }
-      console.log(await this.sendDialogWindow.isDisplayed())
       if (!await this.sendDialogWindow.isDisplayed()) await Page.sendReceiveButton.click()
       return await this.sendDialogWindow.isDisplayed()
     }, { timeout: 60000, timeoutMsg: "Send dialog window isn't displayed in 60 sec" })

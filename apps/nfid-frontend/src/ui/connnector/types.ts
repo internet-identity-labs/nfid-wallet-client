@@ -88,7 +88,11 @@ export interface TokenConfig {
   title: string
   canisterId?: string
   tokenStandard: TokenStandards
-  toPresentation: (value?: bigint) => number
+  toPresentation: (
+    value?: bigint,
+    decimals?: number,
+    scaling?: boolean,
+  ) => number | string
   transformAmount: (value: string) => number
   blockchain: Blockchain
   feeCurrency?: string

@@ -21,7 +21,7 @@ import {
 import { agentBaseConfig, iCRC1Registry } from "../../actors"
 import { PriceService } from "../../asset/asset-util"
 import { TokenPrice } from "../../asset/types"
-import { DEFAULT_ERROR_TEXT, ICP_CANISTER_ID, NETWORK } from "./constants"
+import { DEFAULT_ERROR_TEXT, ICP_CANISTER_ID, NETWORK } from "../constants"
 
 export class ICRC1Error extends Error {}
 
@@ -53,17 +53,22 @@ export interface ICRC1Metadata {
   name: string
   symbol: string
   feeCurrency: string
-  toPresentation: (value?: bigint | undefined) => number
+  toPresentation: (
+    value?: bigint | undefined,
+    decimals?: number,
+    isUSD?: boolean,
+  ) => number | string
   transformAmount: (value: string) => number
 }
 
 export interface ICRC1IndexData {
+  canisterId?: string | undefined
   transactions: Array<TransactionData>
   // The oldest transaction id (it can help to stop the pagination in the UI)
   oldestTransactionId: bigint | undefined
 }
 
-interface TransactionData {
+export interface TransactionData {
   type: "sent" | "received"
   timestamp: bigint
   transactionId: bigint
@@ -71,6 +76,7 @@ interface TransactionData {
   amount: bigint
   from: string
   to: string
+  decimals: number
 }
 
 /*
@@ -93,24 +99,36 @@ export async function getICRC1DataForUser(
  * rootPrincipalId: the principal id of the account im.getAccount().principalId
  * publicKey: the public key returned by lambda ecdsa.ts getPublicKey() => convert to principal with Ed25519JSONableKeyIdentity
  * maxResults: the maximum number of transactions to return
- * blockNumberToStartFrom: the block number to start from
  */
 export async function getICRC1HistoryDataForUser(
   rootPrincipalId: string,
   publicKey: string,
   maxResults: bigint,
-  blockNumberToStartFrom: bigint | undefined,
 ): Promise<Array<ICRC1IndexData>> {
   const canisters = await getICRC1Canisters(rootPrincipalId)
-  const indexedCanisters = canisters.filter(
-    (canister) => canister.index.length > 0,
-  )
-  return getICRC1IndexData(
-    indexedCanisters,
-    publicKey,
-    maxResults,
-    blockNumberToStartFrom,
-  )
+  const indexedCanisters = canisters
+    .filter((canister) => canister.index.length > 0)
+    .map((l) => {
+      return {
+        icrc1: l,
+        blockNumberToStartFrom: undefined,
+      }
+    })
+
+  if (!indexedCanisters.length) return []
+
+  return getICRC1IndexData(indexedCanisters, publicKey, maxResults)
+}
+
+export async function getICRC1HistoryDataForUserPaginated(
+  icrc1Paginated: Array<{
+    icrc1: ICRC1
+    blockNumberToStartFrom?: bigint
+  }>,
+  publicKey: string,
+  maxResults: bigint,
+): Promise<Array<ICRC1IndexData>> {
+  return getICRC1IndexData(icrc1Paginated, publicKey, maxResults)
 }
 
 export async function isICRC1Canister(
@@ -273,7 +291,7 @@ export async function getICRC1Data(
         canisterId,
         decimals,
         fee,
-        feeInUsd: Number(feeNumber?.toFixed(4)),
+        feeInUsd: Number(feeNumber?.toFixed(2)),
         rate: priceInUsd?.toString(),
         name,
         symbol,
@@ -286,15 +304,17 @@ export async function getICRC1Data(
 }
 
 export async function getICRC1IndexData(
-  canisters: Array<ICRC1>,
+  canisters: Array<{
+    icrc1: ICRC1
+    blockNumberToStartFrom?: bigint
+  }>,
   publicKeyInPrincipal: string,
   maxResults: bigint,
-  blockNumberToStartFrom: bigint | undefined,
 ): Promise<Array<ICRC1IndexData>> {
   return Promise.all(
-    canisters.map(async (canisterId) => {
+    canisters.map(async (pair) => {
       const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
-        canisterId: canisterId.index[0]!,
+        canisterId: pair.icrc1.index[0]!,
         agent: new HttpAgent({ ...agentBaseConfig }),
       })
 
@@ -305,7 +325,9 @@ export async function getICRC1IndexData(
         },
         max_results: maxResults,
         start:
-          blockNumberToStartFrom === undefined ? [] : [blockNumberToStartFrom],
+          pair.blockNumberToStartFrom === undefined
+            ? []
+            : [pair.blockNumberToStartFrom],
       }
       const response = await indexActor.get_account_transactions(args)
 
@@ -314,21 +336,28 @@ export async function getICRC1IndexData(
           "Error " +
             response.Err +
             " getting account transactions for canister: " +
-            canisterId,
+            pair.icrc1,
         )
-        return { transactions: [], oldestTransactionId: undefined }
+        return {
+          transactions: [],
+          oldestTransactionId: undefined,
+        }
       }
 
       if (hasOwnProperty(response, "Ok")) {
         const ledgerData = await getICRC1Data(
-          [canisterId.ledger],
+          [pair.icrc1.ledger],
           publicKeyInPrincipal,
         )
+
         return {
+          canisterId: pair.icrc1.ledger,
+          decimals: ledgerData[0].decimals,
           transactions: mapRawTrsToTransaction(
             response.Ok.transactions,
             publicKeyInPrincipal,
             ledgerData[0].symbol,
+            ledgerData[0].decimals,
           ),
           oldestTransactionId:
             response.Ok.oldest_tx_id.length === 0
@@ -336,7 +365,10 @@ export async function getICRC1IndexData(
               : response.Ok.oldest_tx_id[0],
         }
       }
-      return { transactions: [], oldestTransactionId: undefined }
+      return {
+        transactions: [],
+        oldestTransactionId: undefined,
+      }
     }),
   )
 }
@@ -355,6 +387,7 @@ function mapRawTrsToTransaction(
   rawTrss: Array<TransactionWithId>,
   ownerPrincipal: string,
   symbol: string,
+  decimals: number,
 ): Array<TransactionData> {
   const filtered = rawTrss.filter(
     (rawTrs) => rawTrs.transaction.transfer.length !== 0,
@@ -374,6 +407,7 @@ function mapRawTrsToTransaction(
       from: trs.from.owner.toText(),
       to: trs.to.owner.toText(),
       transactionId: rawTrs.id,
+      decimals,
     }
     return data
   })

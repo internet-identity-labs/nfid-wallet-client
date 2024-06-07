@@ -8,6 +8,7 @@ interface IProfileContainer {
   className?: string
   showChildrenPadding?: boolean
   id?: string
+  isActivity?: boolean
 }
 
 const ProfileContainer: React.FC<IProfileContainer> = ({
@@ -17,6 +18,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
   className,
   showChildrenPadding = true,
   id,
+  isActivity,
 }) => {
   return (
     <div
@@ -24,6 +26,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
       className={clsx(
         "block border border-gray-200 rounded-xl",
         "py-4 sm:py-[26px]",
+        isActivity && "pb-0",
         className,
       )}
     >
@@ -40,7 +43,12 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
         )}
       </div>
 
-      <div className={clsx(showChildrenPadding && "px-5 sm:px-[30px]")}>
+      <div
+        className={clsx(
+          showChildrenPadding && "px-5 sm:px-[30px]",
+          isActivity && "px-0 sm:px-[30px]",
+        )}
+      >
         {children}
       </div>
     </div>

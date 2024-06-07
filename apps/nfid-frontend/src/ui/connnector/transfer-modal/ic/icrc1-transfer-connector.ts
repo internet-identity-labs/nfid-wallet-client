@@ -17,8 +17,8 @@ import {
   transferICRC1,
 } from "@nfid/integration/token/icrc1"
 import { TokenStandards } from "@nfid/integration/token/types"
+import { toPresentationIcrc1 } from "@nfid/integration/token/utils"
 
-import { MAX_DECIMAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
@@ -53,13 +53,7 @@ export class ICRC1TransferConnector
       icon: token?.logo,
       blockchain: Blockchain.IC,
       addressPlaceholder: "Recipient IC address or principal",
-      toPresentation: (value = BigInt(0)) => {
-        if (!token) return
-        if (Number(value) === 0) return 0
-        return (Number(value) / Number(BigInt(10 ** token.decimals)))
-          .toFixed(MAX_DECIMAL_LENGTH)
-          .replace(/(\.\d*?[1-9])0+|\.0*$/, "$1")
-      },
+      toPresentation: toPresentationIcrc1,
       transformAmount: (value: string) => {
         if (!token) return
         return Number(parseFloat(value) * 10 ** token.decimals)
@@ -70,10 +64,10 @@ export class ICRC1TransferConnector
   @Cache(connectorCache, { ttl: 15 })
   async getBalance(_: any, currency?: string): Promise<TokenBalance> {
     const token = await this.getTokenMetadata(currency ?? "")
-    const { balance, price } = token
+    const { balance, price, decimals } = token
 
     return {
-      balance: token.toPresentation(balance).toString(),
+      balance: token.toPresentation(balance, decimals).toString(),
       balanceinUsd: price
         ? Number(Number(token.price)?.toFixed(2)).toString()
         : undefined,
@@ -169,10 +163,10 @@ export class ICRC1TransferConnector
   @Cache(connectorCache, { ttl: 10 })
   async getFee({ currency }: ITransferFTRequest): Promise<TokenFee> {
     const token = await this.getTokenMetadata(currency)
-    const { fee, feeInUsd } = token
+    const { fee, feeInUsd, decimals } = token
 
     return {
-      fee: token.toPresentation(fee).toString(),
+      fee: token.toPresentation(fee, decimals).toString(),
       feeUsd: feeInUsd
         ? feeInUsd.toString().replace(/(\.\d*?[1-9])0+|\.0*$/, "$1")
         : undefined,

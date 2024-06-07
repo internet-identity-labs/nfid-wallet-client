@@ -1,8 +1,15 @@
 import clsx from "clsx"
 import React from "react"
 
-import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
+import {
+  ArrowButton,
+  DropdownSelect,
+  FilterPopover,
+  IconCmpFilters,
+  Tooltip,
+} from "@nfid-frontend/ui"
 
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
@@ -20,6 +27,9 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   iconTooltip?: string
   iconId?: string
   className?: string
+  tokenFilter?: string[]
+  setTokenFilter?: (v: string[]) => void
+  hasFilter?: boolean
 }
 
 const ProfileTemplate: React.FC<IProfileTemplate> = ({
@@ -35,10 +45,20 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   headerMenu,
   iconTooltip,
   iconId,
+  tokenFilter,
+  setTokenFilter,
+  hasFilter = false,
 }) => {
+  const { token: tokens } = useAllToken()
   const handleNavigateBack = React.useCallback(() => {
     window.history.back()
   }, [])
+
+  console.debug("Activity Filter", tokenFilter)
+
+  const resetHandler = () => {
+    setTokenFilter!([])
+  }
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
@@ -58,7 +78,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
           <ProfileSidebar id="desktop" />
         </div>
         <section className={clsx("relative", className)}>
-          <div className="flex justify-between h-[70px] items-start mt-5">
+          <div className="flex justify-between h-[70px] items-center mt-5">
             <div className="sticky left-0 flex items-center space-x-2">
               {showBackButton && (
                 <ArrowButton
@@ -70,6 +90,33 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
                 {pageTitle}
               </p>
             </div>
+            {hasFilter && (
+              <FilterPopover
+                title="Assets"
+                align="end"
+                hasApplyBtn={false}
+                className="!min-w-[384px]"
+                trigger={
+                  <div
+                    id={"filter-ft"}
+                    className="flex items-center justify-center p-[10px] rounded-md md:bg-white"
+                  >
+                    <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60" />
+                  </div>
+                }
+                onReset={resetHandler}
+              >
+                <DropdownSelect
+                  selectedValues={tokenFilter!}
+                  setSelectedValues={setTokenFilter!}
+                  isMultiselect={true}
+                  options={tokens.map((token) => ({
+                    label: token.title,
+                    value: token.canisterId!,
+                  }))}
+                />
+              </FilterPopover>
+            )}
 
             {icon && onIconClick && (
               <Tooltip tip={iconTooltip}>

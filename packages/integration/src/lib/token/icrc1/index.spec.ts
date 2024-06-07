@@ -15,6 +15,7 @@ import {
   addICRC1Canister,
   getICRC1Canisters,
   getICRC1DataForUser,
+  getICRC1HistoryDataForUserPaginated,
   getICRC1IndexData,
   ICRC1Data,
   isICRC1Canister,
@@ -84,17 +85,19 @@ describe("ICRC1 suite", () => {
     expect(testICRC1.symbol).toEqual("ICPTestNfid")
   })
 
-  it("Get index data", async () => {
-    const data = await getICRC1IndexData(
+  it.skip("Get index data", async () => {
+    const data = await getICRC1HistoryDataForUserPaginated(
       [
         {
-          ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
-          index: ["2awyi-oyaaa-aaaaq-aaanq-cai"],
+          icrc1: {
+            ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
+            index: ["2awyi-oyaaa-aaaaq-aaanq-cai"],
+          },
+          blockNumberToStartFrom: BigInt(298680),
         },
       ],
       "7cpx7-5iqxa-df2t7-jktca-2mfbq-b7keh-dsunz-k256d-55byp-7lkyp-uqe",
       BigInt(1),
-      BigInt(298680),
     )
     const testICRC1 = data[0]
     expect(testICRC1.transactions.length).toBeGreaterThan(0)

@@ -13,13 +13,14 @@ import { ProfileAssetsHeader } from "./header"
 import Icon from "./transactions.svg"
 
 export type Token = {
-  toPresentation: (amount?: bigint) => number
+  toPresentation: (amount: bigint, decimals: number) => number | string
   icon: string
   title: string
   currency: string
   balance?: bigint
   price?: string
   blockchain: Blockchain
+  decimals?: number
   canisterId?: string
 }
 
@@ -104,9 +105,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
                     <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-                      {`${token.toPresentation(token.balance)} ${
-                        token.currency
-                      }`}
+                      {`${token.toPresentation(
+                        token.balance!,
+                        token.decimals!,
+                      )} ${token.currency}`}
                     </span>
                   </td>
                   <td
@@ -114,7 +116,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
                     {token.price !== undefined
-                      ? `${token.price} USD`
+                      ? `${token.price}`
                       : "Not listed"}
                   </td>
                   <td className="px-[10px] text-sm text-right">
@@ -152,7 +154,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 </div>
                 <div className="text-right ml-auto mr-[20px]">
                   <div className="text-sm leading-5 text-ellipsis whitespace-nowrap overflow-hidden w-[70px]">
-                    {token.toPresentation(token.balance)} {token.currency}
+                    {`${token.toPresentation(
+                      token.balance!,
+                      token.decimals!,
+                    )} ${token.currency}`}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
                     {token.price ?? "Not listed"}

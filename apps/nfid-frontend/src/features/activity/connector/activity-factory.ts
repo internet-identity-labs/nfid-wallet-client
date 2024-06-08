@@ -2,6 +2,7 @@ import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
 import { Blockchain } from "frontend/ui/connnector/types"
 
+import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRow, IActivityRowGroup } from "../types"
 import { getExchangeRateForActivity } from "../util/activity"
 import { groupActivityRowsByDate } from "../util/row"
@@ -23,17 +24,14 @@ const activityConnectors: {
 export const getAllActivity = async (
   filteredCanisters: string[],
   offset = 0,
-  limit = 10,
+  limit = PAGINATION_ITEMS,
 ): Promise<{ transactions: IActivityRowGroup[]; isEnd: boolean }> => {
   const activitiesArray = await Promise.all(
     Object.values(activityConnectors)
       .flat()
       .map(async (connector) => {
         try {
-          const activityRows = await connector.getActivitiesRows(
-            filteredCanisters,
-          )
-          return activityRows
+          return await connector.getActivitiesRows(filteredCanisters)
         } catch (e) {
           console.error(e)
         }

@@ -313,61 +313,69 @@ export async function getICRC1IndexData(
 ): Promise<Array<ICRC1IndexData>> {
   return Promise.all(
     canisters.map(async (pair) => {
-      const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
-        canisterId: pair.icrc1.index[0]!,
-        agent: new HttpAgent({ ...agentBaseConfig }),
-      })
+      try {
+        const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
+          canisterId: pair.icrc1.index[0]!,
+          agent: new HttpAgent({ ...agentBaseConfig }),
+        })
 
-      const args: GetAccountTransactionsArgs = {
-        account: {
-          subaccount: [],
-          owner: Principal.fromText(publicKeyInPrincipal),
-        },
-        max_results: maxResults,
-        start:
-          pair.blockNumberToStartFrom === undefined
-            ? []
-            : [pair.blockNumberToStartFrom],
-      }
-      const response = await indexActor.get_account_transactions(args)
+        const args: GetAccountTransactionsArgs = {
+          account: {
+            subaccount: [],
+            owner: Principal.fromText(publicKeyInPrincipal),
+          },
+          max_results: maxResults,
+          start:
+            pair.blockNumberToStartFrom === undefined
+              ? []
+              : [pair.blockNumberToStartFrom],
+        }
+        const response = await indexActor.get_account_transactions(args)
 
-      if (hasOwnProperty(response, "Err")) {
-        console.warn(
-          "Error " +
-            response.Err +
-            " getting account transactions for canister: " +
-            pair.icrc1,
-        )
+        if (hasOwnProperty(response, "Err")) {
+          console.warn(
+            "Error " +
+              response.Err +
+              " getting account transactions for canister: " +
+              pair.icrc1,
+          )
+          return {
+            transactions: [],
+            oldestTransactionId: undefined,
+          }
+        }
+
+        if (hasOwnProperty(response, "Ok")) {
+          const ledgerData = await getICRC1Data(
+            [pair.icrc1.ledger],
+            publicKeyInPrincipal,
+          )
+
+          return {
+            canisterId: pair.icrc1.ledger,
+            decimals: ledgerData[0].decimals,
+            transactions: mapRawTrsToTransaction(
+              response.Ok.transactions,
+              publicKeyInPrincipal,
+              ledgerData[0].symbol,
+              ledgerData[0].decimals,
+            ),
+            oldestTransactionId:
+              response.Ok.oldest_tx_id.length === 0
+                ? undefined
+                : response.Ok.oldest_tx_id[0],
+          }
+        }
         return {
           transactions: [],
           oldestTransactionId: undefined,
         }
-      }
-
-      if (hasOwnProperty(response, "Ok")) {
-        const ledgerData = await getICRC1Data(
-          [pair.icrc1.ledger],
-          publicKeyInPrincipal,
-        )
-
+      } catch (error) {
+        console.debug(error)
         return {
-          canisterId: pair.icrc1.ledger,
-          decimals: ledgerData[0].decimals,
-          transactions: mapRawTrsToTransaction(
-            response.Ok.transactions,
-            publicKeyInPrincipal,
-            ledgerData[0].symbol,
-            ledgerData[0].decimals,
-          ),
-          oldestTransactionId:
-            response.Ok.oldest_tx_id.length === 0
-              ? undefined
-              : response.Ok.oldest_tx_id[0],
+          transactions: [],
+          oldestTransactionId: undefined,
         }
-      }
-      return {
-        transactions: [],
-        oldestTransactionId: undefined,
       }
     }),
   )

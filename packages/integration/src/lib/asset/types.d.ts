@@ -290,7 +290,7 @@ declare interface ActivityAssetFT {
   currency: string
   amount: string
   amountUSD?: string
-  decimals: number
+  decimals?: number
 }
 
 declare type Content = {

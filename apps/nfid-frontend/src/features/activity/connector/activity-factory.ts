@@ -1,12 +1,9 @@
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
-import { MAX_DECIMAL_LENGTH } from "@nfid/integration/token/constants"
-import { toPresentationIcrc1 } from "@nfid/integration/token/utils"
-
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { IActivityRow, IActivityRowGroup } from "../types"
-import { getExchangeRate } from "../util/activity"
+import { getExchangeRateForActivity } from "../util/activity"
 import { groupActivityRowsByDate } from "../util/row"
 import { ActivityClass } from "./activity"
 import { IActivityConfig } from "./activity-connector-types"
@@ -79,25 +76,10 @@ export const getAllActivity = async (
     for (const row of group.rows) {
       const asset = row.asset as ActivityAssetFT
 
-      const usdRate = await getExchangeRate(
-        asset,
-        row.timestamp,
-        asset.decimals,
-      )
-      asset.amountUSD =
-        usdRate !== undefined
-          ? toPresentationIcrc1(
-              usdRate *
-                BigInt(
-                  Math.abs(
-                    Math.round(+asset.amount * 10 ** MAX_DECIMAL_LENGTH),
-                  ),
-                ),
-              asset.decimals,
-              true,
-              true,
-            ) + " USD"
-          : undefined
+      const usdRate = await getExchangeRateForActivity(asset, row.timestamp)
+      asset.amountUSD = usdRate
+        ? `${Math.floor(+usdRate * +asset.amount * 100) / 100} USD`
+        : undefined
     }
   }
 

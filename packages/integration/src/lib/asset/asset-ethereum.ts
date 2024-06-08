@@ -690,7 +690,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     return {
       type: "ft",
       currency,
-      amount,
+      amount: amount.toString(),
     }
   }
 

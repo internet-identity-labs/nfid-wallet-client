@@ -130,7 +130,7 @@ const ActivityPage = () => {
           className="!rounded-0 !sm:rounded-xl border-0 sm:border"
           isActivity={true}
         >
-          {!Boolean(activities?.length) ? (
+          {!Boolean(activities?.length) && !isValidating ? (
             <ActivityEmpty />
           ) : (
             <>
@@ -160,14 +160,18 @@ const ActivityPage = () => {
             </>
           )}
         </ProfileContainer>
-        <Button
-          disabled={isButtonLoading || isValidating || !hasMoreData}
-          className="block mx-auto my-[20px]"
-          onClick={loadMore}
-          type="ghost"
-        >
-          {isButtonLoading || isValidating ? "Loading..." : "Load more"}
-        </Button>
+        <div className="my-[20px]">
+          {hasMoreData && (
+            <Button
+              disabled={isButtonLoading || isValidating}
+              className="block mx-auto"
+              onClick={loadMore}
+              type="ghost"
+            >
+              {isButtonLoading || isValidating ? "Loading..." : "Load more"}
+            </Button>
+          )}
+        </div>
       </ProfileTemplate>
     </>
   )

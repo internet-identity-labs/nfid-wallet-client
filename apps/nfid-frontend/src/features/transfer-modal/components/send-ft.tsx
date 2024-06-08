@@ -163,7 +163,6 @@ export const TransferFT = ({
     formState: { errors },
     handleSubmit,
     setValue,
-    setError,
     resetField,
     getValues,
   } = useForm({
@@ -339,7 +338,6 @@ export const TransferFT = ({
       selectedAccountAddress,
       selectedConnector,
       selectedTokenCurrency,
-      setError,
       tokenMetadata,
       transferFee,
     ],

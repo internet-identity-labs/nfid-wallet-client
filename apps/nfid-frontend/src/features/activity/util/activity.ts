@@ -85,14 +85,12 @@ export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
 export const getHistoricalExchangeRate = async (
   pair = "ICP-USD",
   date: Date,
-): Promise<bigint | undefined> => {
+): Promise<string | undefined> => {
   const end = new Date(date.getTime() + 1 * 60000)
   const currentDate = new Date()
   if (end > currentDate) {
     const awsRate = await new PriceService().getPrice([pair.split("-")[0]])
-    return BigInt(
-      Math.round(Number(awsRate[0].price) * 10 ** MAX_DECIMAL_LENGTH),
-    )
+    return awsRate[0].price
   }
 
   const url = `https://api.pro.coinbase.com/products/${pair}/candles`
@@ -106,19 +104,17 @@ export const getHistoricalExchangeRate = async (
       },
     })
 
-    return BigInt(Math.round(response.data[0][1] * 10 ** MAX_DECIMAL_LENGTH))
+    return response.data[0][1]
   } catch (error) {
     console.debug(error)
-    console.dir(error)
     return undefined
   }
 }
 
-export const getExchangeRate = async (
+export const getExchangeRateForActivity = async (
   asset: ActivityAssetFT,
-  timestamp: Date,
-  decimals: number,
-): Promise<bigint | undefined> => {
+  date: Date,
+): Promise<string | undefined> => {
   const tokensToGetPrice: { [key: string]: string } = {
     ...wrappedTokenMap,
     ICP: "ICP",
@@ -127,9 +123,9 @@ export const getExchangeRate = async (
 
   if (symbol) {
     if (symbol === "USDC") {
-      return BigInt(1 * 10 ** decimals)
+      return "1"
     } else {
-      const dat = await getHistoricalExchangeRate(`${symbol}-USD`, timestamp)
+      const dat = await getHistoricalExchangeRate(`${symbol}-USD`, date)
       return dat
     }
   } else {

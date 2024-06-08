@@ -57,6 +57,10 @@ export const ProfileAssetsHeader = () => {
       setIsModalVisible(false)
       mutate("getICRC1Data")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
+      resetField("ledgerID")
+      resetField("indexID")
+      setTokenInfo(null)
+      setIsLoading(false)
     } catch (e) {
       console.error(e)
     } finally {

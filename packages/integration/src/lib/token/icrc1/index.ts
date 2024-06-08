@@ -56,7 +56,6 @@ export interface ICRC1Metadata {
   toPresentation: (
     value?: bigint | undefined,
     decimals?: number,
-    isUSD?: boolean,
   ) => number | string
   transformAmount: (value: string) => number
 }

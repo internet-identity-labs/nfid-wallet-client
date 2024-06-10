@@ -6,6 +6,7 @@ import { ITestCaseHookParameter } from "@cucumber/cucumber"
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
 import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
+import { PickleResult, PickleStep } from "@wdio/types/build/Frameworks"
 
 export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"
@@ -403,14 +404,12 @@ export const config: WebdriverIO.Config = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {Object}             context          Cucumber World object
    */
-  afterStep: async function (
-    step: any,
-    scenario: any,
-    result: any,
-    context: any,
-  ) {
-    // @ts-ignore browser
+  afterStep: async function(step: PickleStep, scenario: any, result: PickleResult) {
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
+    console.log(
+      step.text + " " +
+      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m")
+    )
   },
   // afterScenario: function (uri, feature, scenario, result, sourceLocation) {
   // },

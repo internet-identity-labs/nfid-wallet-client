@@ -6,7 +6,9 @@ import { TokenStandards } from "@nfid/integration/token/types"
 export const PRINCIPAL_LENGTH = 63
 export const IC_ADDRESS_LENGTH = 64
 export const ETH_ADDRESS_LENGTH = 42
+export const CANISTER_ID_LENGTH = 27
 export const MAX_DECIMAL_LENGTH = 8
+export const MAX_DECIMAL_USD_LENGTH = 4
 
 export const validateAddressField = (string: string) => {
   if (!string.length) return "This field cannot be empty"
@@ -83,11 +85,6 @@ export const makeAddressFieldValidation =
           value.length < 36
           ? true
           : "Incorrect BTC address"
-      case TokenStandards.DIP20:
-        return typeof isValidPrincipalId(value) === "boolean" &&
-          value.length === PRINCIPAL_LENGTH
-          ? true
-          : "For DIP20 only principal address allowed"
       default:
         return (typeof isHex(value) === "boolean" &&
           value.length === IC_ADDRESS_LENGTH) ||

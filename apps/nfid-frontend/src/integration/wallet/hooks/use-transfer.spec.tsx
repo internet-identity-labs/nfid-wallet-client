@@ -4,8 +4,6 @@
 import { act, renderHook } from "@testing-library/react"
 import { SWRConfig } from "swr"
 
-
-
 import { Profile } from "@nfid/integration"
 import { transfer } from "@nfid/integration/token/icp"
 

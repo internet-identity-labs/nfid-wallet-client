@@ -3,19 +3,19 @@ import clsx from "clsx"
 import { IOption } from "."
 import { Checkbox } from "../checkbox"
 
-export interface IDropdownOption {
+export interface IDropdownSelectOption {
   option: IOption
   isChecked: boolean
   toggleCheckbox: (isChecked: boolean, value: string) => void
   isCheckbox: boolean
 }
 
-export const DropdownOption = ({
+export const DropdownSelectOption = ({
   option,
   isChecked,
   toggleCheckbox,
   isCheckbox,
-}: IDropdownOption) => {
+}: IDropdownSelectOption) => {
   return (
     <label
       key={`option_${option.value}`}

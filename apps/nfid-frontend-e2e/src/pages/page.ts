@@ -1,6 +1,10 @@
 export class Page {
-  private get loader() {
+  get loader() {
     return $("#loader")
+  }
+
+  get sendReceiveButton() {
+    return $("#sendReceiveButton")
   }
 
   public async openBaseUrl() {
@@ -8,7 +12,7 @@ export class Page {
   }
 
   public async openPage(page: string) {
-    browser.url(browser.options.baseUrl + page)
+    await browser.url(browser.options.baseUrl + page)
   }
 
   // -1 retrieves the last window, or -2 gets the first one
@@ -47,7 +51,7 @@ export class Page {
 
   public async waitForDataCacheLoading() {
     await browser.waitUntil(
-      async function () {
+      async function() {
         return (await $("#root").getAttribute("data-cache-loaded")) === "true"
       },
       {
@@ -61,5 +65,8 @@ export class Page {
     profileType?: string,
     targets?: string,
     derivation?: string,
-  ) {}
+  ) {
+  }
 }
+
+export default new Page()

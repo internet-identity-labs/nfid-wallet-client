@@ -43,7 +43,6 @@ export const RequestTransfer = ({
     )
   }, [selectedWallets, wallets])
 
-  // FIXME: support dip-20
   const { transfer } = useTransfer({
     accountId: selectedWallet?.accountId,
     domain: selectedWallet?.domain,
@@ -58,7 +57,6 @@ export const RequestTransfer = ({
         ?.map((wallet) => ({
           label: wallet.label ?? "",
           value: wallet.principal?.toText() ?? "",
-          // FIXME: support dip-20
           afterLabel: toPresentation(wallet.balance["ICP"]),
           disabled: Number(wallet.balance) <= Number(amountICP),
         }))

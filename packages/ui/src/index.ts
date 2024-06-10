@@ -1,8 +1,9 @@
-import "./styles.css";
-
+import "./styles.css"
 
 export * from "./atoms/copy"
 export * from "./atoms/dropdown-select"
+export * from "./atoms/dropdown"
+export * from "./atoms/dropdown/option"
 export * from "./atoms/icons"
 export * from "./atoms/loader"
 export * from "./atoms/menu-wrapper"
@@ -48,6 +49,7 @@ export * from "./molecules/choose-modal"
 export * from "./molecules/choose-modal/types"
 export * from "./molecules/accordion/index_v2"
 export * from "./molecules/warning-accordion"
+export * from "./molecules/warning"
 export * from "./molecules/lottie-animation"
 export * from "./molecules/toggle-button"
 

@@ -163,7 +163,6 @@ export const TransferFT = ({
     formState: { errors },
     handleSubmit,
     setValue,
-    setError,
     resetField,
     getValues,
   } = useForm({

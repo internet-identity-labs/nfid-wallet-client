@@ -121,23 +121,10 @@ export const TransferReceive = ({
           isSmooth
         />
       )}
-      <div>
-        <p className="mb-1 text-gray-400">
-          {isPrincipalVisible ? "Account ID" : "Wallet address"}
-        </p>
-        <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
-          <CenterEllipsis
-            value={address ?? ""}
-            leadingChars={29}
-            trailingChars={5}
-            id={"address"}
-          />
-          <Copy value={address} />
-        </div>
-      </div>
+
       {!isVault && isPrincipalVisible && (
         <div>
-          <p className="mb-1 text-gray-400">Principal ID</p>
+          <p className="mb-1 text-gray-400">Wallet address</p>
           <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
             <CenterEllipsis
               value={selectedAccountAddress ?? ""}
@@ -149,6 +136,22 @@ export const TransferReceive = ({
           </div>
         </div>
       )}
+      <div>
+        <p className="mb-1 text-gray-400">
+          {isPrincipalVisible
+            ? "Account ID (for deposits from exchanges)"
+            : "Wallet address"}
+        </p>
+        <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
+          <CenterEllipsis
+            value={address ?? ""}
+            leadingChars={29}
+            trailingChars={5}
+            id={"address"}
+          />
+          <Copy value={address} />
+        </div>
+      </div>
       <div className="mx-auto">
         <QRCode
           options={{ width: isPrincipalVisible ? 140 : 200, margin: 0 }}

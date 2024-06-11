@@ -138,9 +138,11 @@ export const ProfileAssetsHeader = () => {
             {...register("indexID", validationConfig)}
             disabled={!!errors.ledgerID || !getValues("ledgerID").length}
           />
-          <p className="text-gray-400 text-xs mt-[5px] mb-[10px]">
-            Required for deposit history
-          </p>
+          {!errors.indexID && (
+            <p className="text-gray-400 text-xs mt-[5px] mb-[10px]">
+              Required to display transaction history
+            </p>
+          )}
           <BlurredLoader
             isLoading={isLoading}
             className="flex flex-col flex-1"

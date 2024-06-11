@@ -46,7 +46,7 @@ export const AddPasskey = ({
         onClick={handleOpenModal}
       >
         <IconCmpPlus className="w-[18px] h-[18px]" />
-        <span className="text-sm font-bold">Add passkey</span>
+        <span className="text-sm font-bold">Add Passkey</span>
       </div>
 
       <ModalComponent
@@ -56,7 +56,7 @@ export const AddPasskey = ({
       >
         <ToastContainer />
         <div className="space-y-3.5">
-          <p className="text-2xl font-bold">Create a passkey</p>
+          <p className="text-2xl font-bold">Create a Passkey</p>
           <img
             src={isMultiDevice ? MultiPasskey : SinglePasskey}
             alt="Passkey"
@@ -72,13 +72,13 @@ export const AddPasskey = ({
             value={"isMultiDevice"}
             isChecked={isMultiDevice}
             onChange={() => setIsMultiDevice(!isMultiDevice)}
-            labelText="Create a multi-device passkey"
+            labelText="Create a multi-device Passkey"
             labelClassName="!text-sm"
           />
           <p className="ml-[26px] text-xs text-gray-400">
-            Multi-device passkeys are highly recommended because they’re
+            Multi-device Passkeys are highly recommended because they’re
             generally more convenient and easier to secure. Some devices, like
-            newer iPhones, only support multi-device passkeys.
+            newer iPhones, only support multi-device Passkeys.
           </p>
           <Button type="primary" block onClick={handleCreatePasskey}>
             Continue
@@ -95,7 +95,7 @@ export const AddPasskey = ({
             )
           }
         >
-          Learn about passkeys
+          Learn about Passkeys
         </Button>
       </ModalComponent>
     </div>

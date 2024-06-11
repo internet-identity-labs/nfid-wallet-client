@@ -58,7 +58,7 @@ export const PasskeyDeviceItem = ({
           <Tooltip
             className="w-[262px] !p-2.5"
             tip={
-              "This is a legacy passkey and should be replaced with an upgraded one."
+              "This is a legacy Passkey and should be replaced with an upgraded one."
             }
           >
             <IconCmpWarning className="w-[18px] text-orange" />

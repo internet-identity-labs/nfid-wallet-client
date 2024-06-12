@@ -2423,10 +2423,10 @@
     "@noble/hashes" "^1.3.1"
     borc "^2.1.1"
 
-"@dfinity/ledger-icp@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/ledger-icp/-/ledger-icp-2.2.1.tgz#0ed9c9cd527af003f18b1001cca111dda1694203"
-  integrity sha512-0+muT7oPhrvSHQevX3XAMbyfwghYzFlEjLeiNQSsH/3Y1lBuY0GVn0UufR/5iBHkuDkCMmWGGLdHLyr55Qn44g==
+"@dfinity/ledger-icp@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/ledger-icp/-/ledger-icp-2.3.1.tgz#7807e56021e6f5cd57b50985ed70c32a0392e16e"
+  integrity sha512-L8nLXSlYzVJuLqnbj+qS41t5vnip5Qjv2ahP8i+leATLSZQ2t1rLw4Vui10vNw90gVDSkRDRBfMBPgMf68u1Tg==
 
 "@dfinity/ledger-icrc@^2.2.1":
   version "2.3.1"

@@ -163,7 +163,6 @@ export const TransferFT = ({
     formState: { errors },
     handleSubmit,
     setValue,
-    setError,
     resetField,
     getValues,
   } = useForm({
@@ -339,7 +338,6 @@ export const TransferFT = ({
       selectedAccountAddress,
       selectedConnector,
       selectedTokenCurrency,
-      setError,
       tokenMetadata,
       transferFee,
     ],
@@ -571,7 +569,7 @@ export const TransferFT = ({
                     ? `${transferFee?.fee} ${tokenMetadata?.feeCurrency}`
                     : `0.00 ${tokenMetadata?.feeCurrency}`}
                   {transferFee?.feeUsd && (
-                    <span className="text-xs block">{`${transferFee.feeUsd} USD`}</span>
+                    <span className="block text-xs">{`${transferFee.feeUsd} USD`}</span>
                   )}
                 </p>
               </div>

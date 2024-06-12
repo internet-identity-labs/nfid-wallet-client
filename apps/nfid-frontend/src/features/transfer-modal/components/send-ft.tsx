@@ -569,7 +569,7 @@ export const TransferFT = ({
                     ? `${transferFee?.fee} ${tokenMetadata?.feeCurrency}`
                     : `0.00 ${tokenMetadata?.feeCurrency}`}
                   {transferFee?.feeUsd && (
-                    <span className="text-xs block">{`${transferFee.feeUsd} USD`}</span>
+                    <span className="block text-xs">{`${transferFee.feeUsd} USD`}</span>
                   )}
                 </p>
               </div>

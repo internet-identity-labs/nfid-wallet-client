@@ -95,7 +95,7 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
         onClose={() => setIsModalVisible(false)}
         className="p-5 w-[95%] md:w-[500px] z-[100] lg:rounded-xl"
       >
-        <p className="text-2xl font-bold">Remove passkey</p>
+        <p className="text-2xl font-bold">Remove Passkey</p>
         <div className="p-5 mt-5 text-sm text-orange-900 bg-orange-50 rounded-xl">
           <p className="font-bold">
             {showLastPasskeyWarning
@@ -105,7 +105,7 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
           <p className="mt-3">
             {showLastPasskeyWarning
               ? "Passkeys are the most secure authentication method available on the internet today. Disabling 2FA means anyone with access to your email address will be able to sign in."
-              : "You will not be able to sign back in with this passkey once removed. Make sure you have other methods of signing in."}
+              : "You will not be able to sign back in with this Passkey once removed. Make sure you have other methods of signing in."}
           </p>
         </div>
         <p className="mt-3 text-sm">

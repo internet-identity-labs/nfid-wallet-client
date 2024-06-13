@@ -18,11 +18,11 @@ type PasskeyRemoved =
 
 export class SecurityTracking {
   addPasskey() {
-    posthog.capture("Add passkey modal opened")
+    posthog.capture("Add Passkey modal opened")
   }
 
   addPasskeyError(data?: { message: string }) {
-    const title = "Add passkey error"
+    const title = "Add Passkey error"
     console.debug("SecurityTracking.addPasskeyError", { title, data })
     posthog.capture(title, data)
   }

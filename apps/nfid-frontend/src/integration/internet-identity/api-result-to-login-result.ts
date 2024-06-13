@@ -38,7 +38,7 @@ export const apiResultToLoginResult = (result: ApiResult): LoginResult => {
       return {
         tag: "err",
         title: "Unknown Identity Anchor",
-        message: `No passkey found for NFID ${result.userNumber}. If this is the correct number and this browser had previously been trusted, please trust this browser again.`,
+        message: `No Passkey found for NFID ${result.userNumber}. If this is the correct number and this browser had previously been trusted, please trust this browser again.`,
         detail: "",
       }
     }

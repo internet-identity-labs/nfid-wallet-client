@@ -34,6 +34,7 @@ export const getAllActivity = async (
       .flat()
       .map(async (connector) => {
         try {
+          //console.log("filteredContracts", filteredContracts)
           return await connector.getActivitiesRows(filteredContracts)
         } catch (e) {
           console.error(e)

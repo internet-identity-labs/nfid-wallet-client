@@ -26,30 +26,28 @@ export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
       BigInt(10),
     )
 
-    return await Promise.all(
-      this.filterTransaction(filteredContracts, allCanistersActivities).map(
-        async (tx: TransactionData) => {
-          const modifiedDate = nanoSecondsToDate(tx.timestamp)
-
-          return {
-            id: tx.transactionId.toString(),
-            date: new Date(modifiedDate),
-            from: tx.from,
-            to: tx.to,
-            transactionHash: tx.transactionId.toString(),
-            action:
-              tx.type === "sent"
-                ? IActivityAction.SENT
-                : IActivityAction.RECEIVED,
-            asset: {
-              type: "ft",
-              currency: tx.symbol,
-              decimals: tx.decimals,
-              amount: toPresentationIcrc1(tx.amount, tx.decimals),
-            },
-          } as Activity
-        },
-      ),
+    return this.filterTransaction(
+      filteredContracts,
+      allCanistersActivities,
+    ).map(
+      (tx: TransactionData) =>
+        ({
+          id: tx.transactionId.toString(),
+          date: new Date(nanoSecondsToDate(tx.timestamp)),
+          from: tx.from,
+          to: tx.to,
+          transactionHash: tx.transactionId.toString(),
+          action:
+            tx.type === "sent"
+              ? IActivityAction.SENT
+              : IActivityAction.RECEIVED,
+          asset: {
+            type: "ft",
+            currency: tx.symbol,
+            decimals: tx.decimals,
+            amount: toPresentationIcrc1(tx.amount, tx.decimals),
+          },
+        } as Activity),
     )
   }
 

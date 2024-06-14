@@ -121,14 +121,11 @@ export const getExchangeRateForActivity = async (
   }
   const symbol = tokensToGetPrice[asset.currency]
 
-  if (symbol) {
-    if (symbol === "USDC") {
-      return "1"
-    } else {
-      const dat = await getHistoricalExchangeRate(`${symbol}-USD`, date)
-      return dat
-    }
+  if (!symbol) return undefined
+
+  if (symbol === "USDC") {
+    return "1"
   } else {
-    return undefined
+    return await getHistoricalExchangeRate(`${symbol}-USD`, date)
   }
 }

@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react"
 import useSWR from "swr"
 
-import {
-  getICRC1Canisters,
-  getICRC1HistoryDataForUserPaginated,
-} from "@nfid/integration/token/icrc1"
+import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
 
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
@@ -44,25 +41,23 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   }, [filter, mutate])
 
   useEffect(() => {
-    if (!data) return
+    if (!data?.transactions) return
 
-    if (data.transactions) {
-      setActivities((prevActivities) => {
-        const mergedActivities = [...prevActivities]
-        data.transactions.forEach((newGroup) => {
-          const existingGroup = mergedActivities.find(
-            (group) => group.date === newGroup.date,
-          )
-          if (existingGroup) {
-            existingGroup.rows = [...existingGroup.rows, ...newGroup.rows]
-          } else {
-            mergedActivities.push(newGroup)
-          }
-        })
-        return mergedActivities
+    setActivities((prevActivities) => {
+      const mergedActivities = [...prevActivities]
+      data.transactions.forEach((newGroup) => {
+        const existingGroup = mergedActivities.find(
+          (group) => group.date === newGroup.date,
+        )
+        if (existingGroup) {
+          existingGroup.rows = [...existingGroup.rows, ...newGroup.rows]
+        } else {
+          mergedActivities.push(newGroup)
+        }
       })
-      setHasMoreData(data.isEnd)
-    }
+      return mergedActivities
+    })
+    setHasMoreData(data.isEnd)
   }, [data])
 
   const loadMore = async () => {
@@ -89,23 +84,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
 
   const loadData = async () => {
     const { rootPrincipalId, publicKey } = await getLambdaCredentials()
-    const canisters = await getICRC1Canisters(rootPrincipalId!)
-    const indexedCanisters = canisters
-      .filter((canister) => canister.index.length > 0)
-      .map((l) => {
-        return {
-          icrc1: l,
-          blockNumberToStartFrom: undefined,
-        }
-      })
-
-    if (!indexedCanisters.length) return
-
-    await getICRC1HistoryDataForUserPaginated(
-      indexedCanisters,
-      publicKey,
-      icrcCount,
-    )
+    await getICRC1HistoryDataForUser(rootPrincipalId!, publicKey, icrcCount)
 
     setIcrcCount(icrcCount + BigInt(10))
     mutate()

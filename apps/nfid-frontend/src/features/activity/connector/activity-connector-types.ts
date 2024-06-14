@@ -18,7 +18,7 @@ export interface IActivityConfig {
 export interface IActivityConnector {
   config: IActivityConfig
   getBlockchain(): Blockchain
-  getActivities(filteredCanisters?: string[]): Promise<Activity[]>
+  getActivities(filteredContracts?: string[]): Promise<Activity[]>
   mapActivitiesToRows(
     activities: Activity[],
     config: IActivityConfig,

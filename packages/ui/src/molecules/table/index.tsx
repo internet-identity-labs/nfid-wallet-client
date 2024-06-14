@@ -3,7 +3,7 @@ import React from "react"
 
 export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   tableHeader: JSX.Element
-  isActivityTable?: boolean
+  theadClassName?: string
 }
 
 export const Table = ({
@@ -11,7 +11,7 @@ export const Table = ({
   children,
   tableHeader,
   id,
-  isActivityTable,
+  theadClassName,
 }: TableProps) => {
   return (
     <table
@@ -19,15 +19,10 @@ export const Table = ({
       className={clsx(
         "w-full text-left",
         className ?? "table-auto",
-        isActivityTable ? "min-w-0" : "min-w-[640px]",
+        theadClassName ? "min-w-0" : "min-w-[640px]",
       )}
     >
-      <thead
-        style={{}}
-        className={clsx("h-16", isActivityTable ? "h-0 sm:h-16" : "")}
-      >
-        {tableHeader}
-      </thead>
+      <thead className={clsx("h-16", theadClassName)}>{tableHeader}</thead>
       <tbody>{children}</tbody>
     </table>
   )

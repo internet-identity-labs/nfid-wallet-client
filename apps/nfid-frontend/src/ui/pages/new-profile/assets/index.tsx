@@ -57,8 +57,8 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
     >
       <ProfileContainer
         title={<ProfileAssetsHeader />}
-        showChildrenPadding={false}
         className="mb-10 sm:pb-0 "
+        innerClassName="!px-0 sm:!px-0"
       >
         <div className="px-5">
           <Loader isLoading={!tokens.length} />

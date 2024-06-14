@@ -48,7 +48,7 @@ export const useICTokens = (
               currency: symbol,
               toPresentation: toPresentationIcrc1,
               blockchain: Blockchain.IC,
-              price: price !== undefined ? `${price} USD` : undefined,
+              price: price && `${price} USD`,
               ...rest,
             }),
           )

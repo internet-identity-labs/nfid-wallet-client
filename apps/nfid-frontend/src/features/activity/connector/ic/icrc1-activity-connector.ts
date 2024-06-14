@@ -18,7 +18,7 @@ import { ActivityClass } from "../activity"
 import { IActivityConfig } from "../activity-connector-types"
 
 export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
-  async getActivities(filteredCanisters: string[]): Promise<Activity[]> {
+  async getActivities(filteredContracts: string[]): Promise<Activity[]> {
     const { rootPrincipalId, publicKey } = await getLambdaCredentials()
     const allCanistersActivities = await getICRC1HistoryDataForUser(
       rootPrincipalId!,
@@ -27,7 +27,7 @@ export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
     )
 
     return await Promise.all(
-      this.filterTransaction(filteredCanisters, allCanistersActivities).map(
+      this.filterTransaction(filteredContracts, allCanistersActivities).map(
         async (tx: TransactionData) => {
           const modifiedDate = nanoSecondsToDate(tx.timestamp)
 
@@ -54,17 +54,17 @@ export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
   }
 
   private filterTransaction(
-    filteredCanisters: string[] = [],
+    filteredContracts: string[] = [],
     allCanistersActivities: ICRC1IndexData[],
   ): TransactionData[] {
     let transactions: TransactionData[]
-    if (!filteredCanisters.length) {
+    if (!filteredContracts.length) {
       transactions = allCanistersActivities.flatMap(
         (activity) => activity.transactions,
       )
     } else {
       transactions = allCanistersActivities
-        .filter((activity) => filteredCanisters.includes(activity.canisterId!))
+        .filter((activity) => filteredContracts.includes(activity.canisterId!))
         .flatMap((activity) => activity.transactions)
     }
 

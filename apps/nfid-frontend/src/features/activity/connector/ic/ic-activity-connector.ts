@@ -13,10 +13,10 @@ import { ActivityClass } from "../activity"
 import { IActivityConfig } from "../activity-connector-types"
 
 export class ICActivityConnector extends ActivityClass<IActivityConfig> {
-  async getActivities(filteredCanisters: string[] = []): Promise<Activity[]> {
+  async getActivities(filteredContracts: string[] = []): Promise<Activity[]> {
     if (
-      filteredCanisters.length &&
-      !filteredCanisters.includes(ICP_CANISTER_ID)
+      filteredContracts.length &&
+      !filteredContracts.includes(ICP_CANISTER_ID)
     )
       return []
 

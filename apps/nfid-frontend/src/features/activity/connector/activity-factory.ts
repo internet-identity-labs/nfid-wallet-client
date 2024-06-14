@@ -22,7 +22,7 @@ const activityConnectors: {
 }
 
 export const getAllActivity = async (
-  filteredCanisters: string[],
+  filteredContracts: string[],
   offset = 0,
   limit = PAGINATION_ITEMS,
 ): Promise<{ transactions: IActivityRowGroup[]; isEnd: boolean }> => {
@@ -31,7 +31,7 @@ export const getAllActivity = async (
       .flat()
       .map(async (connector) => {
         try {
-          return await connector.getActivitiesRows(filteredCanisters)
+          return await connector.getActivitiesRows(filteredContracts)
         } catch (e) {
           console.error(e)
         }

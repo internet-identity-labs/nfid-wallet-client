@@ -16,7 +16,6 @@ import {
   getICRC1Canisters,
   getICRC1DataForUser,
   getICRC1HistoryDataForUserPaginated,
-  getICRC1IndexData,
   ICRC1Data,
   isICRC1Canister,
   removeICRC1Canister,
@@ -85,7 +84,7 @@ describe("ICRC1 suite", () => {
     expect(testICRC1.symbol).toEqual("ICPTestNfid")
   })
 
-  it.skip("Get index data", async () => {
+  it("Get index data", async () => {
     const data = await getICRC1HistoryDataForUserPaginated(
       [
         {

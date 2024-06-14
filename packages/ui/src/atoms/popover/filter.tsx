@@ -7,7 +7,6 @@ import { Button } from "../../molecules/button"
 interface IFilterPopover extends PopoverProps {
   title: string
   className?: string
-  hasApplyBtn?: boolean
   onReset: () => void
   onApply?: () => void
 }
@@ -20,7 +19,6 @@ export const FilterPopover = ({
   trigger,
   align,
   className,
-  hasApplyBtn,
 }: IFilterPopover) => {
   return (
     <Popover trigger={trigger} align={align}>
@@ -32,7 +30,7 @@ export const FilterPopover = ({
       >
         <p className="text-sm font-bold">{title}</p>
         {children}
-        <div className={hasApplyBtn ? "grid grid-cols-2 gap-5 mt-4" : "mt-4"}>
+        <div className={onApply ? "grid grid-cols-2 gap-5 mt-4" : "mt-4"}>
           <RadixPopover.Close className="w-full">
             <Button
               onClick={onReset}
@@ -43,7 +41,7 @@ export const FilterPopover = ({
               Reset filter
             </Button>
           </RadixPopover.Close>
-          {hasApplyBtn && (
+          {onApply && (
             <RadixPopover.Close>
               <Button
                 onClick={onApply}

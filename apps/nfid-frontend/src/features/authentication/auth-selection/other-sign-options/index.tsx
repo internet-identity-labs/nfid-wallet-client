@@ -107,7 +107,7 @@ export const AuthOtherSignOptions = ({
       <div className="space-y-2.5">
         <IconButton
           title="Continue with your device"
-          subtitle="Use a passkey on this device"
+          subtitle="Use a Passkey on this device"
           img={<IconCmpTouchId />}
           onClick={handleSubmit((data) =>
             handleAuth({ anchor: data.userNumber, withSecurityDevices: false }),
@@ -115,7 +115,7 @@ export const AuthOtherSignOptions = ({
         />
         <IconButton
           title="Continue with security key"
-          subtitle="Use a passkey on a security key"
+          subtitle="Use a Passkey on a security key"
           img={<IconCmpUsb />}
           onClick={handleSubmit((data) =>
             handleAuth({ anchor: data.userNumber, withSecurityDevices: true }),

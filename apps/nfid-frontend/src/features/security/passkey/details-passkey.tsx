@@ -50,8 +50,8 @@ export const DetailsPasskey: React.FC<IDetailsPasskeyModal> = ({
               <td className="text-gray-400">Passkey type</td>
               <td>
                 {device.isMultiDevice
-                  ? "Multi-device passkey"
-                  : "Single-device passkey"}
+                  ? "Multi-device Passkey"
+                  : "Single-device Passkey"}
               </td>
             </tr>
             <tr className="border-b border-gray-200 h-14">

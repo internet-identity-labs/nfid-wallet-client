@@ -12,7 +12,8 @@ import { getAllActivity } from "./connector/activity-factory"
 import { PAGINATION_ITEMS } from "./constants"
 import { IActivityRowGroup } from "./types"
 
-export const usePagination = (initialFilter: string[] = []) => {
+// TODO: make the pagination reusable
+export const useActivityPagination = (initialFilter: string[] = []) => {
   const [filter, setFilter] = useState<string[]>(initialFilter)
   const [offset, setOffset] = useState(0)
   const [activities, setActivities] = useState<IActivityRowGroup[]>([])
@@ -22,7 +23,12 @@ export const usePagination = (initialFilter: string[] = []) => {
 
   const { data, isValidating, mutate } = useSWR(
     ["activity", filter, offset],
-    () => getAllActivity(filter, offset, PAGINATION_ITEMS),
+    () =>
+      getAllActivity({
+        filteredContracts: filter,
+        offset,
+        limit: PAGINATION_ITEMS,
+      }),
     {
       revalidateOnMount: true,
       revalidateOnFocus: false,

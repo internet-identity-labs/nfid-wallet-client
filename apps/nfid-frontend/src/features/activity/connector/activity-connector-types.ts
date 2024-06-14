@@ -6,7 +6,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { IActivityRow } from "../types"
+import { IActivityRow, IActivityRowGroup } from "../types"
 
 export interface IActivityDetails {}
 export interface IActivityConfig {
@@ -23,6 +23,17 @@ export interface IActivityConnector {
     activities: Activity[],
     config: IActivityConfig,
   ): IActivityRow[]
-  getActivitiesRows(): Promise<IActivityRow[]>
+  getActivitiesRows(filteredContracts: string[]): Promise<IActivityRow[]>
   getIdentity(): DelegationIdentity
+}
+
+export interface GetAllActivityParams {
+  filteredContracts: string[]
+  offset?: number
+  limit?: number
+}
+
+export interface GetAllActivityResult {
+  transactions: IActivityRowGroup[]
+  isEnd: boolean
 }

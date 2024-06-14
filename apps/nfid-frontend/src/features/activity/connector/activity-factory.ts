@@ -7,7 +7,11 @@ import { IActivityRow, IActivityRowGroup } from "../types"
 import { getExchangeRateForActivity } from "../util/activity"
 import { groupActivityRowsByDate } from "../util/row"
 import { ActivityClass } from "./activity"
-import { IActivityConfig } from "./activity-connector-types"
+import {
+  GetAllActivityParams,
+  GetAllActivityResult,
+  IActivityConfig,
+} from "./activity-connector-types"
 import { icActivityConnector } from "./ic/ic-activity-connector"
 import { icrc1ActivityConnector } from "./ic/icrc1-activity-connector"
 
@@ -22,10 +26,9 @@ const activityConnectors: {
 }
 
 export const getAllActivity = async (
-  filteredContracts: string[],
-  offset = 0,
-  limit = PAGINATION_ITEMS,
-): Promise<{ transactions: IActivityRowGroup[]; isEnd: boolean }> => {
+  params: GetAllActivityParams,
+): Promise<GetAllActivityResult> => {
+  const { filteredContracts, offset = 0, limit = PAGINATION_ITEMS } = params
   const activitiesArray = await Promise.all(
     Object.values(activityConnectors)
       .flat()

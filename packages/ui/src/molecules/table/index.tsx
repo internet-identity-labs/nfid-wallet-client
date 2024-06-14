@@ -16,11 +16,7 @@ export const Table = ({
   return (
     <table
       id={id}
-      className={clsx(
-        "w-full text-left",
-        className ?? "table-auto",
-        theadClassName ? "min-w-0" : "min-w-[640px]",
-      )}
+      className={clsx("w-full text-left min-w-[640px]", className)}
     >
       <thead className={clsx("h-16", theadClassName)}>{tableHeader}</thead>
       <tbody>{children}</tbody>

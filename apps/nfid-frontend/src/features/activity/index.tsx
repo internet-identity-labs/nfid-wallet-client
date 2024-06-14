@@ -14,7 +14,7 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { useAllToken } from "../fungable-token/use-all-token"
 import ActivityEmpty from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"
-import { usePagination } from "./hooks"
+import { useActivityPagination } from "./hooks"
 
 export interface IActivityPage {}
 
@@ -31,7 +31,7 @@ const ActivityPage = () => {
     loadMore,
     isButtonLoading,
     resetHandler,
-  } = usePagination(initialFilter)
+  } = useActivityPagination(initialFilter)
 
   return (
     <>
@@ -76,6 +76,7 @@ const ActivityPage = () => {
             <>
               <div>
                 <Table
+                  className="!min-w-0"
                   theadClassName="!h-0 sm:!h-16"
                   id="activity-table"
                   tableHeader={

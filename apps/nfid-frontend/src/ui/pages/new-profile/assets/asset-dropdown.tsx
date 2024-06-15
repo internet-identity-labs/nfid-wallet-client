@@ -5,7 +5,7 @@ import { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Copy, Dropdown, DropdownOption, IconCmpDots } from "@nfid-frontend/ui"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/icrc1/constants"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 

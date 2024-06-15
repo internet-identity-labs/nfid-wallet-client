@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react"
 
 import { EmptyCard, IconCmpWallet } from "@nfid-frontend/ui"
 import { Wallet, vaultsTracking } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"

@@ -58,7 +58,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
           <ProfileSidebar id="desktop" />
         </div>
         <section className={clsx("relative", className)}>
-          <div className="flex justify-between h-[70px] items-start mt-5">
+          <div className="flex justify-between h-[70px] items-center mt-5">
             <div className="sticky left-0 flex items-center space-x-2">
               {showBackButton && (
                 <ArrowButton
@@ -70,7 +70,6 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
                 {pageTitle}
               </p>
             </div>
-
             {icon && onIconClick && (
               <Tooltip tip={iconTooltip}>
                 <img

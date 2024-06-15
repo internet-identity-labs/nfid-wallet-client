@@ -3,8 +3,6 @@ import { toBn } from "@rarible/utils"
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 
-import { E8S } from "@nfid/integration/token/icp"
-
 import { Asset } from "../asset/asset"
 import { PriceService } from "../asset/asset-util"
 import {
@@ -20,6 +18,7 @@ import {
   TokenPrice,
   TransactionRow,
 } from "../asset/types"
+import { E8S } from "../token/constants"
 import { bcAddressInfo, bcTransactionInfo } from "./blockcypher-adapter"
 import { BtcWallet } from "./btc-wallet"
 import {
@@ -120,7 +119,7 @@ export class BtcAsset extends Asset<string> {
       asset: {
         type: "ft", // Assuming all transactions are "ft". You can modify this based on the requirement.
         currency: tx.asset,
-        amount: tx.quantity,
+        amount: tx.quantity.toString(),
       },
     }))
   }

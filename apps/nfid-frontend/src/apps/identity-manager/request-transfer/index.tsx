@@ -5,7 +5,7 @@ import { toast } from "react-toastify"
 
 import { IOption } from "@nfid-frontend/ui"
 import { isHex } from "@nfid-frontend/utils"
-import { toPresentation } from "@nfid/integration/token/icp"
+import { toPresentation } from "@nfid/integration/token/utils"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"

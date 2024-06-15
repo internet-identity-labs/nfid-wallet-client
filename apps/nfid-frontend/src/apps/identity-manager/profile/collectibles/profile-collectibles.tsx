@@ -256,6 +256,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             />
             <div className={clsx("flex items-center space-x-6 shrink-0")}>
               <FilterPopover
+                title="Filter"
                 trigger={
                   <div
                     id={"filter-nft"}

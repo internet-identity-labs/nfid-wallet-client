@@ -4,7 +4,11 @@ import React, { useState } from "react"
 import useSWR from "swr"
 
 import { BlurredLoader, Button } from "@nfid-frontend/ui"
-import { E8S, WALLET_FEE, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
+import {
+  E8S,
+  WALLET_FEE,
+  WALLET_FEE_E8S,
+} from "@nfid/integration/token/constants"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"

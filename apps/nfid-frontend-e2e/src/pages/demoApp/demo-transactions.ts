@@ -48,6 +48,8 @@ export class DemoTransactions extends demoAppPage {
     await this.getReceiverICAddressInput("NFT").setValue(address)
     await this.getFTInput("NFT").click()
     await this.myNFTSelector.click()
+    cucumberJson.attach(await browser.takeScreenshot(), "image/png")
+    await browser.pause(3000)
     await this.getRequestFTButton("NFT").click()
   }
 }

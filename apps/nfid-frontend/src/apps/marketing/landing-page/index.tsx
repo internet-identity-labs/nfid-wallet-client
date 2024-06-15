@@ -199,7 +199,7 @@ export const HomeScreen = () => {
               <p className="font-light text-indigo-400 opacity-25">3/4</p>
               <p className="font-bold">Protect your identity</p>
               <p className="text-sm md:text-lg">
-                Powered by state-of-the-art passkey & chainkey technology, your
+                Powered by state-of-the-art Passkey & chainkey technology, your
                 NFID offers unprecedented security, insulating you from the
                 vulnerabilities that threaten even the most fortified digital
                 platforms. Your NFID is exclusively yours, accessible and usable

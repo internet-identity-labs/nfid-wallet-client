@@ -40,7 +40,7 @@ export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
       const res = await passkeyConnector.loginWithAllowedPasskey(allowedDevices)
       onSuccess(res)
     } catch (e: any) {
-      toast.error(e?.message ?? "Invalid passkey")
+      toast.error(e?.message ?? "Invalid Passkey")
       console.error(e)
     } finally {
       setIsLoading(false)
@@ -60,7 +60,7 @@ export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
       <p className="text-sm font-bold text-center">{profile?.email}</p>
       <p className="mt-3 text-sm text-center">
         Your account has been configured to use two-factor authentication. Use
-        your passkey to confirm it’s you.
+        your Passkey to confirm it’s you.
       </p>
       <img alt="asset" src={Image2FA} className="w-full h-56 my-10" />
       <Button className="mb-[30px]" onClick={handleAuth}>

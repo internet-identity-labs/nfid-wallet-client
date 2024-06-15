@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form"
 import { mutate } from "swr"
 
 import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
-import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/icrc1/constants"
+import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
 
 import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
@@ -57,6 +57,10 @@ export const ProfileAssetsHeader = () => {
       setIsModalVisible(false)
       mutate("getICRC1Data")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
+      resetField("ledgerID")
+      resetField("indexID")
+      setTokenInfo(null)
+      setIsLoading(false)
     } catch (e) {
       console.error(e)
     } finally {

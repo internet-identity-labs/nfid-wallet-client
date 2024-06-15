@@ -23,7 +23,7 @@ import {
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
 import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
@@ -464,7 +464,7 @@ export const TransferFT = ({
                 "text-xs pt-[4px] text-gray-400 text-sm",
               )}
             >
-              {amountInUSD || "0.0000"} USD
+              {amountInUSD || "0.00"} USD
             </p>
           )}
           <ChooseModal

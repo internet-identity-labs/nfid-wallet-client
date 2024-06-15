@@ -41,7 +41,7 @@ const AppRow: React.FC<
   Pick<AppBalance, "accounts" | "appName" | "icon"> & {
     currency: string
     blockchain: string
-    toPresentation?: (balance?: bigint) => number
+    toPresentation?: (balance?: bigint) => number | string
   }
 > = ({ appName, icon, accounts, currency, blockchain, toPresentation }) => {
   const navigate = useNavigate()
@@ -139,7 +139,7 @@ interface AppAccountBalanceSheetProps {
   apps: AppBalance[]
   currency?: string
   blockchain?: string
-  toPresentation?: (balance?: bigint) => number
+  toPresentation?: (balance?: bigint) => number | string
 }
 
 export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({

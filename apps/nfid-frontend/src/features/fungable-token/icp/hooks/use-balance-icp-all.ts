@@ -1,7 +1,7 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import React from "react"
 
-import { toPresentation } from "@nfid/integration/token/icp"
+import { toPresentation } from "@nfid/integration/token/utils"
 
 import ICP from "frontend/assets/dfinity.svg"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"

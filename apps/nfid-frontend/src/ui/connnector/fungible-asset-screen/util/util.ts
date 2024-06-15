@@ -7,7 +7,7 @@ import {
 } from "src/ui/connnector/types"
 
 import { NetworkKey, storeAddressInLocalCache } from "@nfid/client-db"
-import { toPresentation } from "@nfid/integration/token/icp"
+import { toPresentation } from "@nfid/integration/token/utils"
 
 export function toNativeTokenConfig(
   config: AssetNativeConfig,

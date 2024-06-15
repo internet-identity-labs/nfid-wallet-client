@@ -72,6 +72,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
             isSearch
           />
           <FilterPopover
+            title="Filter"
             onReset={() => resetBlockchainFilter()}
             trigger={<IconCmpFilters className="cursor-pointer" />}
             align="end"

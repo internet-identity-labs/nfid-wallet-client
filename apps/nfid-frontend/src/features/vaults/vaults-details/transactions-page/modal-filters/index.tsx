@@ -37,6 +37,7 @@ export const VaultFilterTransactions: React.FC<
 }) => {
   return (
     <FilterPopover
+      title="Filter"
       onReset={onResetFilters}
       onApply={onApplyFilters}
       trigger={

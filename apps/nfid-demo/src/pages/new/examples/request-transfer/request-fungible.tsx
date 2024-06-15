@@ -6,7 +6,7 @@ import { toast } from "react-toastify"
 
 import { Button, Input } from "@nfid-frontend/ui"
 import { DelegationType } from "@nfid/embed"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
 
 import { ExampleError } from "../../error"
 import { SectionTemplate } from "../../section"

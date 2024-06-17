@@ -64,7 +64,7 @@ export const HomeScreen = () => {
   const currentYear: number = new Date().getFullYear()
 
   React.useEffect(() => {
-    if (location.search === "?auth=true") {
+    if (new URLSearchParams(location.search).get("auth") === "true") {
       setIsAuthModalVisible(true)
     }
     setTimeout(() => {

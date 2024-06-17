@@ -1,6 +1,5 @@
 export const chromeBrowserOptions: IChromeOption = {
   args: [
-    "--headless",
     "--no-sandbox",
     "--disable-gpu",
     "--disable-infobars",

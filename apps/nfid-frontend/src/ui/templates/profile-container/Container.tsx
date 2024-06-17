@@ -6,7 +6,7 @@ interface IProfileContainer {
   subTitle?: string | React.ReactNode
   children?: React.ReactNode
   className?: string
-  showChildrenPadding?: boolean
+  innerClassName?: string
   id?: string
 }
 
@@ -15,7 +15,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
   subTitle,
   children,
   className,
-  showChildrenPadding = true,
+  innerClassName,
   id,
 }) => {
   return (
@@ -40,7 +40,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
         )}
       </div>
 
-      <div className={clsx(showChildrenPadding && "px-5 sm:px-[30px]")}>
+      <div className={clsx("px-5 sm:px-[30px]", innerClassName)}>
         {children}
       </div>
     </div>

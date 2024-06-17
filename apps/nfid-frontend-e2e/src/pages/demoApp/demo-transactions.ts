@@ -1,4 +1,5 @@
 import { demoAppPage } from "./demoApp-page.js"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 export class DemoTransactions extends demoAppPage {
   get myNFTSelector() {
@@ -39,6 +40,7 @@ export class DemoTransactions extends demoAppPage {
   async sendICPTransaction(amount: number, address: string) {
     await this.getReceiverICAddressInput("FT").setValue(address)
     await this.getFTInput("ICP").setValue(amount)
+    cucumberJson.attach(await browser.takeScreenshot(), "image/png")
     await this.getRequestFTButton("ICP").click()
   }
 
@@ -46,6 +48,8 @@ export class DemoTransactions extends demoAppPage {
     await this.getReceiverICAddressInput("NFT").setValue(address)
     await this.getFTInput("NFT").click()
     await this.myNFTSelector.click()
+    cucumberJson.attach(await browser.takeScreenshot(), "image/png")
+    await browser.pause(3000)
     await this.getRequestFTButton("NFT").click()
   }
 }

@@ -1,4 +1,4 @@
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
 
 export const APP_ACC_BALANCE_SHEET = {
   ICP: {

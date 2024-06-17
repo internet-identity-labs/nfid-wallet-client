@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form"
 import { mutate } from "swr"
 
 import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
-import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/icrc1/constants"
+import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
 
 import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
@@ -57,6 +57,10 @@ export const ProfileAssetsHeader = () => {
       setIsModalVisible(false)
       mutate("getICRC1Data")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
+      resetField("ledgerID")
+      resetField("indexID")
+      setTokenInfo(null)
+      setIsLoading(false)
     } catch (e) {
       console.error(e)
     } finally {
@@ -138,9 +142,11 @@ export const ProfileAssetsHeader = () => {
             {...register("indexID", validationConfig)}
             disabled={!!errors.ledgerID || !getValues("ledgerID").length}
           />
-          <p className="text-gray-400 text-xs mt-[5px] mb-[10px]">
-            Required for deposit history
-          </p>
+          {!errors.indexID && (
+            <p className="text-gray-400 text-xs mt-[5px] mb-[10px]">
+              Required to display transaction history
+            </p>
+          )}
           <BlurredLoader
             isLoading={isLoading}
             className="flex flex-col flex-1"

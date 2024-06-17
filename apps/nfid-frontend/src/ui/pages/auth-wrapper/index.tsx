@@ -1,5 +1,5 @@
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
@@ -23,13 +23,7 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
       return <>{children}</>
 
     case cacheLoaded && !isAuthenticated:
-      return (
-        <>
-          {children}
-          <NFIDAuthentication isVisible={true} onClose={() => navigate("/")} />
-        </>
-      )
-
+      return <Navigate to="/?auth=true" />
     default:
       return <BlurredLoader loadingMessage="loading auth session" />
   }

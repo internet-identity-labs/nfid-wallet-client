@@ -52,7 +52,10 @@ export const PublicProfileButton = ({
           name={"profile"}
           disabled={!isAvailable}
         />
-        <label htmlFor="profile_public" className="ml-2 cursor-pointer">
+        <label
+          htmlFor="profile_public"
+          className="ml-2 lowercase cursor-pointer"
+        >
           {truncateString(publicProfile.principal, 12, 5)}
         </label>
       </div>

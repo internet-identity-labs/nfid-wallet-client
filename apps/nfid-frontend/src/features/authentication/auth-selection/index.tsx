@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
 
 import {
   BlurredLoader,
@@ -44,7 +43,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   appMeta,
   authRequest,
 }) => {
-  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
@@ -55,7 +53,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   )
 
   useEffect(() => {
-    navigate("/?auth=true")
     passkeyConnector.initPasskeyAutocomplete(
       authAbortController.signal,
       () => setIsLoading(true),

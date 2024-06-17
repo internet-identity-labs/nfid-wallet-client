@@ -56,7 +56,7 @@ export const PublicProfileButton = ({
           htmlFor="profile_public"
           className="ml-2 lowercase cursor-pointer"
         >
-          {truncateString(publicProfile.principal, 12, 5)}
+          {truncateString(publicProfile.principal, 6, 4)}
         </label>
       </div>
       {publicProfile?.balance ? <div>{publicProfile?.balance} ICP</div> : null}

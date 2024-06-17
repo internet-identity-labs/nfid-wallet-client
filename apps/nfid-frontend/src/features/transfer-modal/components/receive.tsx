@@ -2,7 +2,6 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { useEffect, useMemo, useState } from "react"
-import useSWR from "swr"
 
 import {
   ChooseModal,
@@ -15,12 +14,9 @@ import { sendReceiveTracking } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
-import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
-import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { useAccountsOptions } from "../hooks/use-accounts-options"
-import { PRINCIPAL_LENGTH } from "../utils/validations"
 import { ReceiveModal } from "./receive-modal"
 
 export interface ITransferReceive {
@@ -49,32 +45,11 @@ export const TransferReceive = ({
       true,
     )
 
-  const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
-    [preselectedTokenBlockchain, preselectedTokenStandard, "selectedConnector"],
-    ([selectedTokenBlockchain, selectedTokenStandard]) =>
-      getConnector({
-        type: TransferModalType.FT,
-        tokenStandard: selectedTokenStandard,
-        blockchain: selectedTokenBlockchain,
-      }),
-  )
-
-  const isPrincipalVisible = useMemo(() => {
-    return !!selectedConnector?.getTokenConfig().shouldHavePrincipal
-  }, [selectedConnector])
-
   const address = useMemo(() => {
-    if (
-      !isPrincipalVisible ||
-      (isPrincipalVisible &&
-        selectedAccountAddress?.length !== PRINCIPAL_LENGTH)
-    )
-      return selectedAccountAddress
-
     return AccountIdentifier.fromPrincipal({
       principal: Principal.fromText(selectedAccountAddress),
     }).toHex()
-  }, [isPrincipalVisible, selectedAccountAddress])
+  }, [selectedAccountAddress])
 
   useEffect(() => {
     !isVault && setSelectedAccountAddress(accountsOptions[0]?.options[0]?.value)
@@ -87,9 +62,7 @@ export const TransferReceive = ({
   return (
     <BlurredLoader
       className="mt-4 space-y-3 text-xs"
-      isLoading={
-        !accountsOptions.length || isConnectorLoading || isAccountsValidating
-      }
+      isLoading={!accountsOptions.length || isAccountsValidating}
     >
       <p className="text-sm">
         Use this address for receiving tokens and NFTs. See which{" "}
@@ -103,7 +76,7 @@ export const TransferReceive = ({
       <div>
         <p className="mb-1 text-black">Network</p>
         <div className="rounded-md bg-gray-100 text-black flex items-center gap-1 px-2.5 h-10 text-sm">
-          <div className="rounded-full w-6 h-6 bg-white p-1 flex justify-center items-center">
+          <div className="flex items-center justify-center w-6 h-6 p-1 bg-white rounded-full">
             <img src={IconSvgDfinity} alt="ICP&Internet Computer" />
           </div>
           <p>Internet Computer</p>
@@ -122,7 +95,7 @@ export const TransferReceive = ({
         />
       )}
 
-      {!isVault && isPrincipalVisible && (
+      {!isVault && (
         <div>
           <p className="mb-1 text-gray-400">Wallet address</p>
           <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
@@ -138,9 +111,7 @@ export const TransferReceive = ({
       )}
       <div>
         <p className="mb-1 text-gray-400">
-          {isPrincipalVisible
-            ? "Account ID (for deposits from exchanges)"
-            : "Wallet address"}
+          Account ID (for deposits from exchanges)
         </p>
         <div className="rounded-md bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
           <CenterEllipsis
@@ -153,10 +124,7 @@ export const TransferReceive = ({
         </div>
       </div>
       <div className="mx-auto">
-        <QRCode
-          options={{ width: isPrincipalVisible ? 140 : 200, margin: 0 }}
-          content={address}
-        />
+        <QRCode options={{ width: 140, margin: 0 }} content={address} />
       </div>
 
       <div

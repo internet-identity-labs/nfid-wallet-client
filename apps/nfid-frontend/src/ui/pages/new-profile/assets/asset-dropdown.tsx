@@ -37,7 +37,11 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
 
   return (
     <>
-      <Dropdown triggerElement={<IconCmpDots className="mx-auto" />}>
+      <Dropdown
+        triggerElement={
+          <IconCmpDots className="mx-auto cursor-pointer hover:opacity-60 transition-all" />
+        }
+      >
         <DropdownOption
           label="Transactions"
           icon={HistoryIcon}

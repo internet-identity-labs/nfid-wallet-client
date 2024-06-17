@@ -23,8 +23,8 @@ export const IframeTrustDevice = ({
       </p>
       <p className="text-sm">
         {isWebAuthN
-          ? "Add a passkey for this browser on this device to sign in to NFID faster with a look, touch, or PIN."
-          : "Add a passkey on your security key to sign in to NFID faster next time."}
+          ? "Add a Passkey for this browser on this device to sign in to NFID faster with a look, touch, or PIN."
+          : "Add a Passkey on your security key to sign in to NFID faster next time."}
       </p>
       <img
         className="max-h-[200px] mx-auto mt-6 mb-7"
@@ -36,7 +36,7 @@ export const IframeTrustDevice = ({
           Skip for now
         </Button>
         <Button type="primary" className="w-full" onClick={onTrust}>
-          Add passkey
+          Add Passkey
         </Button>
       </div>
     </BlurredLoader>

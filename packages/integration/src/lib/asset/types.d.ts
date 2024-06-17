@@ -288,8 +288,9 @@ declare interface ActivityAssetNFT {
 declare interface ActivityAssetFT {
   type: "ft"
   currency: string
-  amount: number
+  amount: string
   amountUSD?: string
+  decimals?: number
 }
 
 declare type Content = {

@@ -119,7 +119,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       ? `${token.price}`
                       : "Not listed"}
                   </td>
-                  <td className="px-[10px] text-sm text-right cursor-pointer">
+                  <td className="px-[10px] text-sm text-right">
                     <AssetDropdown
                       token={token}
                       setTokenToRemove={(value) => setTokenToRemove(value)}

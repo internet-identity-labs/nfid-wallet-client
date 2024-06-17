@@ -6,7 +6,7 @@ import {
   ApproveTemplate,
   SDKStatusbar,
 } from "@nfid-frontend/ui"
-import { WALLET_FEE } from "@nfid/integration/token/icp"
+import { WALLET_FEE } from "@nfid/integration/token/constants"
 
 import { Copy } from "frontend/ui/atoms/copy"
 

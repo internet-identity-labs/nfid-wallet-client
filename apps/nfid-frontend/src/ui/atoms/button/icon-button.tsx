@@ -23,7 +23,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       onClick={onClick}
       className={clsx(
         "flex items-center px-3 py-2 bg-gray-50 border border-gray-100 rounded-md",
-        "hover:text-black  text-gray-400 transition-all cursor-pointer w-full",
+        "hover:text-black text-gray-400 transition-all cursor-pointer w-full",
         className,
       )}
     >

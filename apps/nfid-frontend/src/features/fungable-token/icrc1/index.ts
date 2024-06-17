@@ -4,7 +4,8 @@ import {
 } from "packages/integration/src/lib/token/icrc1"
 import useSWR from "swr"
 
-import { MAX_DECIMAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
+import { toPresentationIcrc1 } from "@nfid/integration/token/utils"
+
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
 export const useAllICRC1Token = () => {
@@ -18,12 +19,7 @@ export const useAllICRC1Token = () => {
         ...item,
         price: item.priceInUsd,
         feeCurrency: item.symbol,
-        toPresentation: (value = BigInt(0)) => {
-          if (Number(value) === 0) return 0
-          return (Number(value) / Number(BigInt(10 ** item.decimals)))
-            .toFixed(MAX_DECIMAL_LENGTH)
-            .replace(/(\.\d*?[1-9])0+|\.0*$/, "$1")
-        },
+        toPresentation: toPresentationIcrc1,
         transformAmount: (value: string) =>
           Number(parseFloat(value) * 10 ** item.decimals),
       })) as ICRC1Metadata[]

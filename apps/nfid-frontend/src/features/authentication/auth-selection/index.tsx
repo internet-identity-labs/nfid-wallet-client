@@ -150,7 +150,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             onAuthWithPasskey(res)
           }}
         >
-          Continue with a passkey
+          Continue with a Passkey
         </Button>
         <Button
           id="other-sign-button"

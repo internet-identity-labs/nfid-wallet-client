@@ -2,7 +2,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { accessList } from "@nfid/integration"
-import { WALLET_FEE } from "@nfid/integration/token/icp"
+import { WALLET_FEE } from "@nfid/integration/token/constants"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { MAX_DECIMAL_USD_LENGTH } from "frontend/features/transfer-modal/utils/validations"

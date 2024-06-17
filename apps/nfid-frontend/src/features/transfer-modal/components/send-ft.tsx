@@ -23,7 +23,7 @@ import {
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
 import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
@@ -163,7 +163,6 @@ export const TransferFT = ({
     formState: { errors },
     handleSubmit,
     setValue,
-    setError,
     resetField,
     getValues,
   } = useForm({
@@ -339,7 +338,6 @@ export const TransferFT = ({
       selectedAccountAddress,
       selectedConnector,
       selectedTokenCurrency,
-      setError,
       tokenMetadata,
       transferFee,
     ],
@@ -466,7 +464,7 @@ export const TransferFT = ({
                 "text-xs pt-[4px] text-gray-400 text-sm",
               )}
             >
-              {amountInUSD || "0.0000"} USD
+              {amountInUSD || "0.00"} USD
             </p>
           )}
           <ChooseModal
@@ -571,7 +569,7 @@ export const TransferFT = ({
                     ? `${transferFee?.fee} ${tokenMetadata?.feeCurrency}`
                     : `0.00 ${tokenMetadata?.feeCurrency}`}
                   {transferFee?.feeUsd && (
-                    <span className="text-xs block">{`${transferFee.feeUsd} USD`}</span>
+                    <span className="block text-xs">{`${transferFee.feeUsd} USD`}</span>
                   )}
                 </p>
               </div>

@@ -17,7 +17,10 @@ export const useAllICRC1Token = () => {
 
       return result.map((item) => ({
         ...item,
-        price: item.priceInUsd,
+        price:
+          item.priceInUsd === 0 || (item.priceInUsd && item.priceInUsd < 0.01)
+            ? "0.00"
+            : item.priceInUsd,
         feeCurrency: item.symbol,
         toPresentation: toPresentationIcrc1,
         transformAmount: (value: string) =>

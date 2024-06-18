@@ -29,7 +29,7 @@ import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
+import { NoIcon } from "frontend/ui/atoms/icons/no-icon"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -307,8 +307,10 @@ export const TransferFT = ({
           handleTrackTransfer(values.amount)
           resolve(res)
         }),
-        title: `${values.amount} ${selectedTokenCurrency}`,
-        subTitle: `$${(Number(values.amount) * Number(rate)).toFixed(2)}`,
+        title: `${Number(values.amount)
+          .toFixed(MAX_DECIMAL_LENGTH)
+          .replace(/\.?0+$/, "")} ${selectedTokenCurrency}`,
+        subTitle: `${(Number(values.amount) * Number(rate)).toFixed(2)} USD`,
         callback: () => {
           resetCachesByKey(
             [
@@ -490,7 +492,7 @@ export const TransferFT = ({
                 className="flex items-center cursor-pointer shrink-0"
               >
                 {!tokenMetadata?.icon ? (
-                  <UnknownIcon className="w-[26px] mr-1.5" />
+                  <NoIcon className="w-[40px] h-[40px] mr-1.5" />
                 ) : (
                   <img
                     className="w-[26px] mr-1.5"

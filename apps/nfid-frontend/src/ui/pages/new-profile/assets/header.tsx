@@ -5,7 +5,6 @@ import {
   isICRC1Canister,
   ICRC1Error,
 } from "packages/integration/src/lib/token/icrc1"
-import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { mutate } from "swr"
@@ -15,6 +14,7 @@ import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
 
 import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
+import { NoIcon } from "frontend/ui/atoms/icons/no-icon"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
@@ -166,7 +166,7 @@ export const ProfileAssetsHeader = () => {
                         width={36}
                       />
                     ) : (
-                      <UnknownIcon />
+                      <NoIcon className="w-[36px] h-[36px]" />
                     )}
                   </div>
                   <div className="grid grid-cols-[110px,1fr] gap-3 my-4">

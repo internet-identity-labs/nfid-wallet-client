@@ -3,13 +3,7 @@ import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { useEffect, useMemo, useState } from "react"
 
-import {
-  ChooseModal,
-  Copy,
-  QRCode,
-  BlurredLoader,
-  IconSvgDfinity,
-} from "@nfid-frontend/ui"
+import { ChooseModal, Copy, QRCode, BlurredLoader } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -31,7 +25,6 @@ export const TransferReceive = ({
   preselectedAccountAddress,
   preselectedTokenBlockchain = Blockchain.IC,
 }: ITransferReceive) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
   )
@@ -109,7 +102,7 @@ export const TransferReceive = ({
           <Copy value={address} />
         </div>
       </div>
-      <div className="!mt-[64px] mx-auto">
+      <div className="pt-[52px] mx-auto">
         <QRCode options={{ width: 150, margin: 0 }} content={address} />
       </div>
 

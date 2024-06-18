@@ -148,7 +148,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </p>
                 </div>
                 <div className="text-right ml-auto mr-[20px]">
-                  <div className="text-sm leading-5 text-ellipsis whitespace-nowrap overflow-hidden w-[70px]">
+                  <div className="text-sm leading-5">
                     {`${token.toPresentation(
                       token.balance!,
                       token.decimals!,
@@ -156,7 +156,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
                     {token.price !== undefined
-                      ? `${token.price} USD`
+                      ? `${token.price}`
                       : "Not listed"}
                   </div>
                 </div>

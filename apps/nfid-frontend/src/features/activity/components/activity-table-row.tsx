@@ -44,7 +44,7 @@ export const ActivityTableRow = ({
   return (
     <tr
       id={id}
-      className="items-center text-sm transition-all border-b border-gray-200 hover:bg-gray-100 activity-row last:border-none"
+      className="items-center text-sm border-b border-gray-200 activity-row last:border-none"
     >
       <td className="flex items-center py-2.5">
         <div className="w-10 h-10 rounded-[9px] bg-gray-50 flex items-center justify-center relative">

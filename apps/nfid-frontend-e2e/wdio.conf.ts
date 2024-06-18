@@ -18,7 +18,6 @@ export const baseURL = process.env.NFID_PROVIDER_URL
 
 if (isHeadless) {
   chromeBrowserOptions.args.push("--headless=new")
-  chromeBrowserOptions.args.push("--window-size=1000,800")
 }
 
 export const config: WebdriverIO.Config = {

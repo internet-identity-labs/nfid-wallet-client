@@ -21,11 +21,11 @@ export const SDKFooter = ({
       )}
     >
       <div className="flex items-center justify-between">
-        <p>Internet Computer</p>
+        <p>Wallet address</p>
         <p>Balance</p>
       </div>
       <div className="flex items-center justify-between">
-        <div>
+        <div className="lowercase">
           {identity?.getPrincipal().toString() ? (
             truncateString(identity?.getPrincipal().toString(), 6, 4)
           ) : (

@@ -51,6 +51,7 @@ const canisterConfig = [
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
   ["BtcSigner", BTC_SIGNER_CANISTER_ID],
   ["ICSigner", IC_SIGNER_CANISTER_ID],
+  ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
 ]
 
 export const accessList = [...canisterConfig.map((x) => x[1])]

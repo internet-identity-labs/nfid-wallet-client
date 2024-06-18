@@ -17,7 +17,6 @@ import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { useAccountsOptions } from "../hooks/use-accounts-options"
-import { ReceiveModal } from "./receive-modal"
 
 export interface ITransferReceive {
   isVault: boolean
@@ -66,23 +65,9 @@ export const TransferReceive = ({
       isLoading={!accountsOptions.length || isAccountsValidating}
     >
       <p className="text-sm">
-        Use this address for receiving tokens and NFTs. See which{" "}
-        <span
-          className="text-sm text-blue-600 cursor-pointer"
-          onClick={() => setIsModalOpen(true)}
-        >
-          tokens NFID supports.
-        </span>
+        NFID Wallet currently supports Internet Computer Protocol tokens and
+        standards: ICP, ICRC-1, EXT NFTs, and additional support coming soon.
       </p>
-      <div>
-        <p className="mb-1 text-black">Network</p>
-        <div className="rounded-md bg-gray-100 text-black flex items-center gap-1 px-2.5 h-10 text-sm">
-          <div className="flex items-center justify-center w-6 h-6 p-1 bg-white rounded-full">
-            <img src={IconSvgDfinity} alt="ICP&Internet Computer" />
-          </div>
-          <p>Internet Computer</p>
-        </div>
-      </div>
       {isVault && (
         <ChooseModal
           label="Accounts"
@@ -124,18 +109,16 @@ export const TransferReceive = ({
           <Copy value={address} />
         </div>
       </div>
-      <div className="pt-5 mx-auto">
+      <div className="!mt-[64px] mx-auto">
         <QRCode options={{ width: 150, margin: 0 }} content={address} />
       </div>
 
       <div
         className={clsx(
           "absolute top-0 left-0 z-50 w-full h-full p-5 bg-white transition-all duration-200 ease-in-out",
-          isModalOpen ? "translate-x-0" : "-translate-x-full",
+          "-translate-x-full",
         )}
-      >
-        <ReceiveModal onBack={() => setIsModalOpen(false)} />
-      </div>
+      ></div>
     </BlurredLoader>
   )
 }

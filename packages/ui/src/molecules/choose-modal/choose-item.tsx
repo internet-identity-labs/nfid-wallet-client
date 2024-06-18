@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 
+import { NoIcon } from "../../../../../apps/nfid-frontend/src/ui/atoms/icons/no-icon"
 import { Badge } from "../../atoms/badge"
-import { UnknownIcon } from "../../atoms/icons/unknown"
 
 interface IChooseItem {
   handleClick: () => void
@@ -46,7 +46,7 @@ export const ChooseItem = ({
             className={clsx("mr-2.5 w-7", iconClassnames)}
           />
         ) : (
-          <UnknownIcon className="mr-2.5 w-7" />
+          <NoIcon className="mr-2.5 w-7" />
         )}
 
         <div>

@@ -77,11 +77,15 @@ export const getAllActivity = async (
   for (const group of paginatedGroupedData) {
     for (const row of group.rows) {
       const asset = row.asset as ActivityAssetFT
-
       const usdRate = await getExchangeRateForActivity(asset, row.timestamp)
-      asset.amountUSD = usdRate
-        ? `${Math.floor(+usdRate * +asset.amount * 100) / 100} USD`
-        : undefined
+
+      if (+asset.amount < 0.01) {
+        asset.amountUSD = "0.00 USD"
+      } else {
+        asset.amountUSD = usdRate
+          ? `${Math.floor(+usdRate * +asset.amount * 100) / 100} USD`
+          : undefined
+      }
     }
   }
 

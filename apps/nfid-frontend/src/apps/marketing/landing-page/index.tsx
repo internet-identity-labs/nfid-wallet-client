@@ -64,13 +64,16 @@ export const HomeScreen = () => {
   const currentYear: number = new Date().getFullYear()
 
   React.useEffect(() => {
-    if (new URLSearchParams(location.search).get("auth") === "true") {
-      setIsAuthModalVisible(true)
-    }
     setTimeout(() => {
       landingPageTracking.pageLoaded()
     })
   }, [])
+
+  React.useEffect(() => {
+    if (new URLSearchParams(location.search).get("auth") === "true") {
+      setIsAuthModalVisible(true)
+    }
+  }, [location.search])
 
   const onContinue = useCallback(() => {
     return isAuthenticated

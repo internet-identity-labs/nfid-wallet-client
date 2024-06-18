@@ -1,11 +1,10 @@
 import React from "react"
-import { Navigate, useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { NFIDAuthentication } from "frontend/apps/marketing/landing-page/auth-modal"
 
 interface AuthWrapperProps {
   iframe?: boolean
@@ -13,7 +12,6 @@ interface AuthWrapperProps {
 }
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const { isAuthenticated, cacheLoaded } = useAuthentication()
-  const navigate = useNavigate()
 
   console.debug("AuthWrapper", { isAuthenticated, cacheLoaded })
 

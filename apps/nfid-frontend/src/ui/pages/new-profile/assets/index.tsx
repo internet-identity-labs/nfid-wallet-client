@@ -115,9 +115,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="text-sm text-right pr-[20px]"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price !== undefined
-                      ? `${token.price}`
-                      : "Not listed"}
+                    {token.price ? `${token.price}` : "Not listed"}
                   </td>
                   <td className="px-[10px] text-sm text-right">
                     <AssetDropdown

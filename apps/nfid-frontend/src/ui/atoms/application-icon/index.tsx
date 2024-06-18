@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { UnknownIcon } from "../icons/unknown"
+import { NoIcon } from "../icons/no-icon"
 
 interface ApplicationIconProps {
   appName: string
@@ -28,7 +28,7 @@ export const ApplicationIcon: React.FC<ApplicationIconProps> = ({
           alt="app icon"
         />
       ) : (
-        <UnknownIcon />
+        <NoIcon className="w-[40px] h-[40px]" />
       )}
     </div>
   )

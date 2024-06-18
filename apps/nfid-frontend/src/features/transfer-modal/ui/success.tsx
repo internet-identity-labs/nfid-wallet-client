@@ -4,6 +4,7 @@ import React, { useMemo } from "react"
 import { LottieAnimation } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
+import NoIcon from "../../../ui/atoms/icons/no-icon.svg"
 import Fail from "../assets/error.json"
 import Success1 from "../assets/success_1.json"
 import Success2 from "../assets/success_2.json"
@@ -77,7 +78,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
           />
           <img
             alt="assetImg"
-            src={assetImg}
+            src={assetImg || NoIcon}
             className={clsx(
               "absolute h-[120px] w-[120px] object-contain -mt-[123px] ml-[1px] rounded-full object-center",
               isAssetPadding && "p-4",

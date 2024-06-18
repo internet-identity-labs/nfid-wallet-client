@@ -46,6 +46,7 @@ export const TransferReceive = ({
     )
 
   const address = useMemo(() => {
+    if (!selectedAccountAddress?.length) return ""
     return AccountIdentifier.fromPrincipal({
       principal: Principal.fromText(selectedAccountAddress),
     }).toHex()
@@ -123,8 +124,8 @@ export const TransferReceive = ({
           <Copy value={address} />
         </div>
       </div>
-      <div className="mx-auto">
-        <QRCode options={{ width: 140, margin: 0 }} content={address} />
+      <div className="pt-5 mx-auto">
+        <QRCode options={{ width: 150, margin: 0 }} content={address} />
       </div>
 
       <div

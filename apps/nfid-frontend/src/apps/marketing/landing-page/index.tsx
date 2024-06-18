@@ -2,7 +2,7 @@ import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
 import React, { useCallback } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 import { Button, NFIDLogo } from "@nfid-frontend/ui"
 import { landingPageTracking } from "@nfid/integration"
@@ -60,6 +60,7 @@ export const HomeScreen = () => {
   const [isAuthModalVisible, setIsAuthModalVisible] = React.useState(false)
   const { isAuthenticated } = useAuthentication()
   const navigate = useNavigate()
+  const location = useLocation()
   const currentYear: number = new Date().getFullYear()
 
   React.useEffect(() => {
@@ -67,6 +68,12 @@ export const HomeScreen = () => {
       landingPageTracking.pageLoaded()
     })
   }, [])
+
+  React.useEffect(() => {
+    if (new URLSearchParams(location.search).get("auth") === "true") {
+      setIsAuthModalVisible(true)
+    }
+  }, [location.search])
 
   const onContinue = useCallback(() => {
     return isAuthenticated

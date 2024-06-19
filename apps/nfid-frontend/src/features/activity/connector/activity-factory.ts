@@ -1,9 +1,6 @@
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
-import {
-  MAX_DECIMAL_LENGTH,
-  MAX_DECIMAL_USD_LENGTH,
-} from "frontend/features/transfer-modal/utils/validations"
+import { MAX_DECIMAL_USD_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { PAGINATION_ITEMS } from "../constants"
@@ -38,7 +35,6 @@ export const getAllActivity = async (
       .flat()
       .map(async (connector) => {
         try {
-          //console.log("filteredContracts", filteredContracts)
           return await connector.getActivitiesRows(filteredContracts)
         } catch (e) {
           console.error(e)

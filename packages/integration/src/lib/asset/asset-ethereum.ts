@@ -428,6 +428,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
           balance: x.balance ?? "0.00",
           contractAddress: x.contractAddress,
           balanceinUsd: this.priceInUsd(price, x.balance, x.symbol),
+          decimals: 18,
         })),
     }
   }
@@ -462,6 +463,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       logo: defaultIcon,
       name: this.getNativeToken(),
       symbol: this.getNativeCurrency(),
+      decimals: 18,
     }
 
     return super.computeSheetForRootAccount(
@@ -688,7 +690,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     return {
       type: "ft",
       currency,
-      amount,
+      amount: amount.toString(),
     }
   }
 

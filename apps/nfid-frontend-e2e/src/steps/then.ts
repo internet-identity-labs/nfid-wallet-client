@@ -43,6 +43,7 @@ import compareText from "./support/check/compareText.js"
 import isVisible from "./support/check/isDisplayed.js"
 import isEnabled from "./support/check/isEnabled.js"
 import isExisting from "./support/check/isExisting.js"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -209,27 +210,27 @@ Then(
   checkLocalStorageKey,
 )
 
-Then(/^Go to Profile page$/, async function () {
+Then(/^Go to Profile page$/, async function() {
   await clickElement("click", "selector", "#profileButton")
 })
 
 Then(
   /^I put Recovery Phrase to input field ([^"]*)$/,
-  async function (phrase: string) {
-    await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
+  async function(phrase: string) {
+    await setInputField("setValue", phrase, "[name=\"recoveryPhrase\"]")
   },
 )
 
-Then(/^I put copied Recovery Phrase to input field/, async function () {
-  await clickElement("click", "selector", '[name="recoveryPhrase"]')
+Then(/^I put copied Recovery Phrase to input field/, async function() {
+  await clickElement("click", "selector", "[name=\"recoveryPhrase\"]")
   await browser.keys(["Command", "v"])
 })
 
-Then(/^I toggle checkbox "([^"]*)?"$/, async function (selector: string) {
+Then(/^I toggle checkbox "([^"]*)?"$/, async function(selector: string) {
   await clickElement("click", "selector", selector)
 })
 
-Then(/^I press button "([^"]*)?"$/, async function (button: string) {
+Then(/^I press button "([^"]*)?"$/, async function(button: string) {
   await clickElement("click", "selector", button)
 })
 
@@ -357,7 +358,7 @@ Then(
 )
 
 Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
-  await clickElement("click", "selector", '[id="account_row_0"]')
+  await clickElement("click", "selector", "[id=\"account_row_0\"]")
   await Assets.openElementById("tab_" + tab)
 })
 
@@ -411,22 +412,6 @@ Then(/^User opens receive dialog window/, async () => {
   await Assets.receiveDialog()
 })
 
-Then(/^User opens send modal window/, async () => {
-  browser.setWindowSize(1000, 1000)
-  const sendReceiveButton = await $("#sendReceiveButton")
-  const loader = await $("#loader")
-
-  await loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-  await sendReceiveButton.waitForDisplayed({
-    timeout: 30000,
-  })
-  await sendReceiveButton.click()
-
-  await loader.waitForDisplayed({ reverse: true, timeout: 25000 })
-
-  await (await $("#sendFT")).waitForDisplayed({ timeout: 5000 })
-})
-
 Then(/^User opens send dialog window/, async () => {
   await Assets.sendDialog()
 })
@@ -442,10 +427,6 @@ Then(/^User opens choose nft window/, async () => {
 Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
   const opt = await $(`#choose_option_${option}`)
   await opt.waitForExist({ timeout: 15000 })
-})
-
-Then(/^Choose ([^"]*) from receive options/, async (chain: string) => {
-  await chooseChainOption(chain)
 })
 
 Then(
@@ -483,16 +464,19 @@ Then(/^Wait while balance and fee calculated/, async () => {
 Then(
   /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
   async (balance: string, fee: string, currency: string) => {
-    const assetBalance = await Assets.getBalance()
-    assetBalance.waitForExist({ timeout: 40000 })
-    const actualBalance = await assetBalance.getText()
+    let actualBalance = await Assets.getBalance().then(async (it) => {
+      await it.waitForDisplayed({ timeout: 40000 })
+      return await it.getText()
+    })
     expect(actualBalance).toEqual(balance + " " + currency)
 
-    const transferFee = await Assets.getFee()
-    transferFee.waitForDisplayed({ timeout: 30000 })
-    const actualFee = await transferFee.getText()
-    if (fee === "any") expect(actualFee).not.toEqual("0.00")
-    else expect(actualFee).toEqual(fee + " " + currency)
+    let transferFee = await Assets.getFee().then(async (it) => {
+      await it.waitForDisplayed(({ timeout: 30000 }))
+      let fullText = await it.getText()
+      return fullText.replace(await it.$("span").getText(), "").trim()
+    })
+    if (fee === "any") expect(transferFee).not.toEqual("0.00")
+    else expect(transferFee).toEqual(fee + " " + currency)
   },
 )
 
@@ -517,7 +501,7 @@ Then(
   async (first: string, second: string) => {
     let address = await Assets.getAccountId()
     await expect(address.firstAddressPart).toHaveText(first)
-    await expect(address.secondAddressElement).toHaveText(second)
+    await expect(address.secondAddressPart).toHaveText(second)
   },
 )
 
@@ -526,14 +510,14 @@ Then(
   async (chain: string, principal: string) => {
     let chains = chain.split(",")
     let principals = principal.split(",")
+
     let address = await Assets.getAccountId(true)
 
     for (let i = 0; i < chains.length; i++) {
-      await chooseChainOption(chains[i])
       let expectedResult =
         (await address.firstAddressPart.getText()) +
         "..." +
-        (await address.secondAddressElement.getText())
+        (await address.secondAddressPart.getText())
       expect(expectedResult).toEqual(principals[i])
     }
   },
@@ -543,8 +527,8 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressElement.getText()),
+    "..." +
+    (await address.secondAddressPart.getText()),
   ).toEqual(principal)
 })
 
@@ -555,25 +539,25 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
   expect(
     String(
       (await usersData.get("principal").firstAddressPart.getText()) +
-        "..." +
-        (await usersData.get("principal").secondAddressElement.getText()),
+      "..." +
+      (await usersData.get("principal").secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
-      "..." +
-      expectedData.principal.substring(58, 63),
+    "..." +
+    expectedData.principal.substring(58, 63),
   )
 
   expect(
     String(
       (await usersData.get("address").firstAddressPart.getText()) +
-        "..." +
-        (await usersData.get("address").secondAddressElement.getText()),
+      "..." +
+      (await usersData.get("address").secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +
-      "..." +
-      expectedData.address.substring(59, 64),
+    "..." +
+    expectedData.address.substring(59, 64),
   )
 
   await browser.waitUntil(
@@ -834,9 +818,12 @@ Then(
   },
 )
 
-Then(/^Go to ([^"]*) and ([^"]*) details$/, async (token: string, collection: string) => {
-  await Nft.nftDetails(token, collection)
-})
+Then(
+  /^Go to ([^"]*) and ([^"]*) details$/,
+  async (token: string, collection: string) => {
+    await Nft.nftDetails(token, collection)
+  },
+)
 
 Then(/^(\d+) transactions appear$/, async (amount: number) => {
   await Nft.getActivityAmount(amount)
@@ -909,20 +896,8 @@ Then(
 Then(/^Assert ([^"]*) code block has hash$/, async (block: string) => {
   const codeBlock = $(`div#${block} #responseID code`)
   const codeBlockText = await codeBlock.getText()
-  expect(codeBlockText).toContain("hash")
+  if (!(codeBlockText.includes("hash"))) throw new Error(`Incorrect response message. Expected to contain 'hash', but was ${codeBlockText}`)
 })
-
-async function chooseChainOption(chain: string) {
-  await Assets.openAssetReceiveOptions()
-  await Assets.chooseChainOption(chain)
-
-  const loader = await $("#loader")
-  await loader.waitForDisplayed({
-    reverse: true,
-    timeout: 10000,
-    timeoutMsg: `Loader is still displayed after timeout. Chain: ${chain}`,
-  })
-}
 
 Then(
   /^Check request details ([^"]*) equals to ([^"]*)$/,
@@ -937,13 +912,19 @@ Then(
     })
     expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
     await DemoTransactions.getApproveButton.then(async (it) => {
-      await it.waitForDisplayed(
-        {timeout: 10000, timeoutMsg: "ApproveButton is still not displayed after 10 sec"}
-      )
+      await it.waitForDisplayed({
+        timeout: 10000,
+        timeoutMsg: "ApproveButton is still not displayed after 10 sec",
+      })
+      cucumberJson.attach(await browser.takeScreenshot(), "image/png")
       await it.click()
     })
 
-    await screenModal.waitForDisplayed({reverse: true, timeout: 100000, timeoutMsg: "The screenModal is still visible."})
+    await screenModal.waitForDisplayed({
+      reverse: true,
+      timeout: 100000,
+      timeoutMsg: "The screenModal is still visible.",
+    })
     await browser.switchToParentFrame()
   },
 )

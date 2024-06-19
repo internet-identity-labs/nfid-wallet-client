@@ -6,7 +6,7 @@ import { TokenIcon } from "frontend/ui/atoms/token-icon"
 
 interface TokenDetailBalanceProps {
   tokenConfig?: {
-    toPresentation: (balance?: bigint) => number
+    toPresentation: (balance?: bigint) => number | string
   }
   token: string
   label: string

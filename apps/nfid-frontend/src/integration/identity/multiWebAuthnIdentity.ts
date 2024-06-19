@@ -134,8 +134,8 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         })
       } catch (e) {
         authenticationTracking.failed()
-        toast.error("We could not find your passkey. Try different one")
-        throw new Error("We could not find your passkey.")
+        toast.error("We could not find your Passkey. Try different one")
+        throw new Error("We could not find your Passkey.")
       }
 
       authenticationTracking.updateData({

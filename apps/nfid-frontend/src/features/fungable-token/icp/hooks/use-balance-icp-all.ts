@@ -1,14 +1,13 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import React from "react"
 
-import { toPresentation } from "@nfid/integration/token/icp"
+import { toPresentation } from "@nfid/integration/token/utils"
 
 import ICP from "frontend/assets/dfinity.svg"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { AssetFilter } from "frontend/ui/connnector/types"
 
 import { accumulateAppAccountBalance } from "../../accumulate-app-account-balances"
-import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 import { useUserBalances } from "./use-user-balances"
 
@@ -33,11 +32,10 @@ export const useBalanceICPAll = (
   const { applicationsMeta: applications } = useApplicationsMeta()
   const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
     useICPExchangeRate()
-  const { token: dip20Token } = useAllDip20Token()
 
   const { balances, isLoading: isLoadingBalances } = useUserBalances()
 
-  console.debug("useUserBalances", { icpBalance: balances })
+  console.debug("useUserBalances", { icpBalance: balances, rate: exchangeRate })
 
   const appAccountBalance = React.useMemo(() => {
     if (isLoadingBalances || !balances) {
@@ -60,31 +58,6 @@ export const useBalanceICPAll = (
         icon: ICP,
         toPresentation,
       }),
-      ...(dip20Token
-        ? dip20Token.reduce(
-            (acc, { symbol, name, logo, toPresentation }) => ({
-              ...acc,
-              [symbol]: accumulateAppAccountBalance({
-                toPresentation,
-                balances: assetFilters?.length
-                  ? balances.filter((b) =>
-                      assetFilters?.find(
-                        (f) => f.principal === b.principal.toString(),
-                      ),
-                    )
-                  : balances,
-                applications,
-                icon: logo,
-                exchangeRate: symbol === "WICP" ? exchangeRate ?? 0 : 0,
-                excludeEmpty,
-                includeEmptyApps: ["nfid.one", "https://nns.ic0.app"],
-                label: name,
-                token: symbol,
-              }),
-            }),
-            {},
-          )
-        : {}),
     }
   }, [
     isLoadingBalances,
@@ -93,7 +66,6 @@ export const useBalanceICPAll = (
     assetFilters,
     applications,
     excludeEmpty,
-    dip20Token,
   ])
 
   console.debug("useBalanceICPAll", {

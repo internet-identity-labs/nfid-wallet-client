@@ -106,7 +106,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         title="Create an NFID"
         subTitle={
           showAdvancedOptions
-            ? `Sign in to ${applicationName} with your passkey`
+            ? `Sign in to ${applicationName} with your Passkey`
             : `to continue to ${applicationName ?? "the application"}`
         }
       />
@@ -156,7 +156,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
 
               <IconButton
                 title="iPhone, iPad, or Android device"
-                subtitle="Use passkey from a device with a camera"
+                subtitle="Use Passkey from a device with a camera"
                 img={<QRCode />}
                 onClick={onSelectRemoteAuthorization}
               />

@@ -7,7 +7,6 @@ import {
   NftConnectorConfig,
 } from "src/ui/connnector/types"
 
-
 export class NftFactory extends ConnectorFactory<
   Blockchain,
   NonFungibleAssetConnector<NftConnectorConfig>
@@ -37,5 +36,4 @@ export class NftFactory extends ConnectorFactory<
   }
 }
 
-export const nftFactory = new NftFactory([
-])
+export const nftFactory = new NftFactory([])

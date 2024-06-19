@@ -90,7 +90,7 @@ const ProfileSecurityPage = () => {
             Use biometric authentication or external USB keys for very strong
             two-factor authentication to your account. <br />
             <br />
-            At least one passkey and an email login are required to enable 2FA.
+            At least one Passkey and an email login are required to enable 2FA.
             Passkeys can be used for authentication even when 2FA is disabled.
           </span>
         }
@@ -142,7 +142,10 @@ const ProfileSecurityPage = () => {
                 </p>
               </div>
             </div>
-            <DeleteRecoveryPhrase device={devices.recoveryDevice} handleWithLoading={handleWithLoading} />
+            <DeleteRecoveryPhrase
+              device={devices.recoveryDevice}
+              handleWithLoading={handleWithLoading}
+            />
           </div>
         ) : (
           <AddRecoveryPhrase handleWithLoading={handleWithLoading} />

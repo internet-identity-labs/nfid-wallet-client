@@ -1,20 +1,25 @@
-import { HttpAgent } from "@dfinity/agent";
-import { AuthClient } from "@dfinity/auth-client";
-import { DelegationIdentity } from "@dfinity/identity";
-import React from "react";
-import useSWR from "swr";
+import { HttpAgent } from "@dfinity/agent"
+import { AuthClient } from "@dfinity/auth-client"
+import { DelegationIdentity } from "@dfinity/identity"
+import React from "react"
+import useSWR from "swr"
 
-
-
-import { useAuthenticationContext } from "../context/authentication";
-import { useButtonState } from "./useButtonState";
-
+import { useAuthenticationContext } from "../context/authentication"
+import { useButtonState } from "./useButtonState"
 
 declare const NFID_PROVIDER_URL: string
 
 export const useAuthentication = () => {
-  const { nfid, isLoadingNFID, identity, derivationOrigin, setIdentity, keyType, setKeyType } =
-    useAuthenticationContext()
+  const {
+    nfid,
+    isLoadingNFID,
+    identity,
+    derivationOrigin,
+    setDerivationOrigin,
+    setIdentity,
+    keyType,
+    setKeyType,
+  } = useAuthenticationContext()
   const { data: authClient } = useSWR("authClient", () => AuthClient.create())
   const [error, setError] = React.useState<string>()
 
@@ -23,10 +28,10 @@ export const useAuthentication = () => {
   })
 
   React.useEffect(() => {
-    updateAuthButton({disabled: isLoadingNFID})
+    updateAuthButton({ disabled: isLoadingNFID })
   }, [isLoadingNFID, updateAuthButton])
 
-  console.debug("useAuthentication",  authButton)
+  console.debug("useAuthentication", authButton)
 
   React.useEffect(() => {
     if (nfid?.isAuthenticated) {
@@ -90,6 +95,7 @@ export const useAuthentication = () => {
         })
         console.debug("handleAuthenticate", { identity })
         setIdentity(identity as unknown as DelegationIdentity)
+        setDerivationOrigin(derivationOriginToUse)
         updateAuthButton({ loading: false, label: "Logout" })
         return identity
       } catch (error: any) {
@@ -99,12 +105,19 @@ export const useAuthentication = () => {
         return
       }
     },
-    [derivationOrigin, nfid, setIdentity, updateAuthButton],
+    [
+      derivationOrigin,
+      nfid,
+      setIdentity,
+      updateAuthButton,
+      setDerivationOrigin,
+    ],
   )
 
   return {
     identity,
     setIdentity,
+    setDerivationOrigin,
     setKeyType,
     keyType,
     error,

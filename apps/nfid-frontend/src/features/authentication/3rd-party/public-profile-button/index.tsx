@@ -12,11 +12,13 @@ export interface IPublicProfileButton {
   isAvailable: boolean
   selectedProfile: ProfileTypes
   setSelectedProfile: (value: ProfileTypes) => void
+  onError: () => void
 }
 export const PublicProfileButton = ({
   isAvailable,
   setSelectedProfile,
   selectedProfile,
+  onError,
 }: IPublicProfileButton) => {
   const {
     data: publicProfile,
@@ -24,6 +26,7 @@ export const PublicProfileButton = ({
     isLoading,
   } = useSWR(authState ? "publicProfile" : null, getPublicProfile, {
     revalidateOnFocus: false,
+    onError,
   })
 
   if (!publicProfile || isValidating || isLoading)
@@ -49,8 +52,11 @@ export const PublicProfileButton = ({
           name={"profile"}
           disabled={!isAvailable}
         />
-        <label htmlFor="profile_public" className="ml-2 cursor-pointer">
-          {truncateString(publicProfile.address, 12, 5)}
+        <label
+          htmlFor="profile_public"
+          className="ml-2 lowercase cursor-pointer"
+        >
+          {truncateString(publicProfile.principal, 6, 4)}
         </label>
       </div>
       {publicProfile?.balance ? <div>{publicProfile?.balance} ICP</div> : null}

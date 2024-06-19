@@ -1,6 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import Decimal from "decimal.js"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -22,11 +23,13 @@ import {
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
-import { TokenMetadata } from "@nfid/integration/token/dip-20"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
+import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
+import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -42,7 +45,9 @@ import { Blockchain } from "frontend/ui/connnector/types"
 
 import {
   PRINCIPAL_LENGTH,
+  MAX_DECIMAL_LENGTH,
   validateTransferAmountField,
+  MAX_DECIMAL_USD_LENGTH,
 } from "../utils/validations"
 import { ITransferSuccess } from "./success"
 
@@ -73,6 +78,8 @@ export const TransferFT = ({
     preselectedAccountAddress,
   )
 
+  const [amountInUSD, setAmountInUSD] = useState("")
+
   const { profile, isLoading: isLoadingProfile } = useProfile()
   console.debug("TransferFT", {
     profile,
@@ -80,6 +87,8 @@ export const TransferFT = ({
     selectedTokenBlockchain,
     selectedTokenCurrency,
   })
+
+  const { exchangeRate: icpRate } = useICPExchangeRate()
 
   const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
     [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
@@ -97,11 +106,13 @@ export const TransferFT = ({
   )
 
   const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
-    ITransferConfig & (TokenMetadata | Token)
+    ITransferConfig & (ICRC1Metadata | Token)
   >(
-    selectedConnector ? [selectedConnector, "tokenMetadata"] : null,
+    selectedConnector
+      ? [selectedConnector, "tokenMetadata", selectedTokenCurrency]
+      : null,
     async ([selectedConnector]) => {
-      // if it's dip20 token, we need to fetch token metadata
+      // if it's icrc1 token, we need to fetch token metadata
       if (selectedConnector.getTokenMetadata)
         return await selectedConnector.getTokenMetadata(selectedTokenCurrency)
       else return selectedConnector.getTokenConfig()
@@ -152,13 +163,12 @@ export const TransferFT = ({
     formState: { errors },
     handleSubmit,
     setValue,
-    setError,
     resetField,
     getValues,
   } = useForm({
     mode: "all",
     defaultValues: {
-      amount: undefined as any as number,
+      amount: undefined as any as string,
       to: preselectedTransferDestination ?? "",
     },
   })
@@ -173,7 +183,7 @@ export const TransferFT = ({
       : null,
     ([selectedConnector, getValues, token]) =>
       selectedConnector?.getFee({
-        amount: getValues("amount"),
+        amount: +getValues("amount"),
         to: getValues("to"),
         currency: selectedTokenCurrency,
         contract:
@@ -191,7 +201,7 @@ export const TransferFT = ({
   )
 
   const handleTrackTransfer = useCallback(
-    (amount: number) => {
+    (amount: string) => {
       const token = selectedConnector?.getTokenConfig()
       if (!token) return
 
@@ -208,15 +218,29 @@ export const TransferFT = ({
     [selectedConnector, selectedTokenCurrency, transferFee?.fee],
   )
 
+  const setCurrentUSDRate = (val: number) => {
+    const currentrate = selectedTokenCurrency === "ICP" ? icpRate : rate
+    setAmountInUSD((Number(currentrate) * val).toFixed(MAX_DECIMAL_USD_LENGTH))
+  }
+
+  const maxHandler = () => {
+    if (transferFee && balance) {
+      const val = +(+balance.balance - +transferFee.fee).toFixed(
+        MAX_DECIMAL_LENGTH,
+      )
+
+      if (val <= 0) return
+
+      setValue("amount", val.toFixed(MAX_DECIMAL_LENGTH))
+      if (!balance?.balanceinUsd) return
+      setCurrentUSDRate(val)
+    }
+  }
+
   const submit = useCallback(
-    async (values: { amount: number; to: string }) => {
+    async (values: { amount: string; to: string }) => {
       if (!tokenMetadata) return toast.error("Token metadata has not loaded")
       if (!selectedConnector) return toast.error("No selected connector")
-      if (values.to === selectedAccountAddress)
-        return setError("to", {
-          type: "value",
-          message: "You can't transfer to the same wallet",
-        })
 
       if (isVault) {
         return onTransferPromise({
@@ -262,10 +286,17 @@ export const TransferFT = ({
           await calculateFee()
           const res = await selectedConnector.transfer({
             to: values.to,
-            amount: values.amount,
+            canisterId: tokenMetadata.canisterId,
+            fee:
+              Number(transferFee?.fee) * 10 ** tokenMetadata.decimals ||
+              undefined,
+            amount: tokenMetadata.decimals
+              ? +values.amount * 10 ** tokenMetadata.decimals
+              : +values.amount,
             currency: selectedTokenCurrency,
             identity: await selectedConnector?.getIdentity(
               selectedAccountAddress,
+              tokenMetadata?.canisterId!,
             ),
             contract:
               "contractAddress" in tokenMetadata
@@ -289,7 +320,8 @@ export const TransferFT = ({
             () => refetchBalance(),
           )
           mutate(
-            (key) => key && Array.isArray(key) && key[0] === "useTokenConfig",
+            (key: any) =>
+              key && Array.isArray(key) && key[0] === "useTokenConfig",
           )
         },
         isAssetPadding: true,
@@ -306,8 +338,8 @@ export const TransferFT = ({
       selectedAccountAddress,
       selectedConnector,
       selectedTokenCurrency,
-      setError,
       tokenMetadata,
+      transferFee,
     ],
   )
 
@@ -339,7 +371,12 @@ export const TransferFT = ({
       }
       loadingMessage={loadingMessage}
     >
-      <p className="mb-1">Amount to send</p>
+      <div className="flex justify-between">
+        <p className="mb-1">Amount to send</p>
+        <p onClick={maxHandler} className="text-blue-600 cursor-pointer">
+          Max
+        </p>
+      </div>
       <div className="flex flex-col justify-between h-full pb-20">
         <div
           className={clsx(
@@ -354,7 +391,7 @@ export const TransferFT = ({
               "p-0",
             )}
             placeholder="0.00"
-            type="number"
+            type="text"
             id="amount"
             min={0.0}
             {...register("amount", {
@@ -365,7 +402,52 @@ export const TransferFT = ({
               ),
               valueAsNumber: true,
               onBlur: calculateFee,
+              onChange: (e) => {
+                if (!balance?.balanceinUsd || !icpRate) return
+                setCurrentUSDRate(e.target.value)
+              },
             })}
+            onKeyDown={(e) => {
+              const allowedKeys = /[0-9.]/
+              const key = e.key
+              const value = e.target.value
+              const cursorPosition = e.target.selectionStart ?? 0
+              const dotPosition = value.indexOf(".")
+
+              if (
+                ["ArrowLeft", "ArrowRight", "Backspace", "Delete"].includes(key)
+              ) {
+                return
+              }
+
+              if (
+                !allowedKeys.test(key) ||
+                (key === "." && value.includes("."))
+              ) {
+                e.preventDefault()
+              }
+
+              if (dotPosition !== -1 && cursorPosition > dotPosition) {
+                if (new Decimal(value).decimalPlaces() >= MAX_DECIMAL_LENGTH) {
+                  e.preventDefault()
+                }
+              }
+            }}
+            onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+              const pastedValue = e.clipboardData
+                .getData("text/plain")
+                .replace(",", ".")
+              const decimalIndex = pastedValue.indexOf(".")
+              const $this = e.target as HTMLInputElement
+
+              if (decimalIndex !== -1) {
+                e.preventDefault()
+                const decimalPart = pastedValue.substring(decimalIndex + 1)
+                $this.value =
+                  pastedValue.substring(0, decimalIndex + 1) +
+                  decimalPart.substring(0, MAX_DECIMAL_LENGTH)
+              }
+            }}
           />
           <div
             className={clsx(
@@ -375,6 +457,16 @@ export const TransferFT = ({
           >
             {errors.amount?.message}
           </div>
+          {balance?.balanceinUsd && (
+            <p
+              className={clsx(
+                "absolute mt-[75px] right-[20px]",
+                "text-xs pt-[4px] text-gray-400 text-sm",
+              )}
+            >
+              {amountInUSD || "0.00"} USD
+            </p>
+          )}
           <ChooseModal
             optionGroups={tokenOptions ?? []}
             title="Asset to send"
@@ -383,6 +475,9 @@ export const TransferFT = ({
               const arrayValue = value.split("&")
               if (arrayValue.length < 2) return
 
+              resetField("amount")
+              resetField("to")
+              setAmountInUSD("")
               setSelectedTokenCurrency(arrayValue[0])
               setSelectedTokenBlockchain(arrayValue[1])
             }}
@@ -394,12 +489,15 @@ export const TransferFT = ({
                 id={`token_${selectedTokenCurrency}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
-                <img
-                  className="w-[26px] mr-1.5"
-                  src={tokenMetadata?.icon}
-                  alt={selectedTokenCurrency}
-                />
-
+                {!tokenMetadata?.icon ? (
+                  <UnknownIcon className="w-[26px] mr-1.5" />
+                ) : (
+                  <img
+                    className="w-[26px] mr-1.5"
+                    src={tokenMetadata?.icon}
+                    alt={selectedTokenCurrency}
+                  />
+                )}
                 <p className="text-lg font-semibold">{selectedTokenCurrency}</p>
                 <IconCmpArrowRight className="ml-4" />
               </div>
@@ -466,12 +564,13 @@ export const TransferFT = ({
               <Spinner className="w-3 h-3 text-gray-400" />
             ) : (
               <div className="text-right">
-                <p className="text-sm leading-5">
-                  ${transferFee?.feeUsd ?? "0.00"}
-                </p>
-
-                <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee ?? `0.00 ${tokenMetadata?.feeCurrency}`}
+                <p className="text-sm leading-5" id="fee">
+                  {transferFee?.fee
+                    ? `${transferFee?.fee} ${tokenMetadata?.feeCurrency}`
+                    : `0.00 ${tokenMetadata?.feeCurrency}`}
+                  {transferFee?.feeUsd && (
+                    <span className="block text-xs">{`${transferFee.feeUsd} USD`}</span>
+                  )}
                 </p>
               </div>
             )}
@@ -487,7 +586,6 @@ export const TransferFT = ({
         >
           Send
         </Button>
-
         <div
           className={clsx(
             "bg-gray-50 flex flex-col text-sm text-gray-500",
@@ -495,20 +593,33 @@ export const TransferFT = ({
           )}
         >
           <div className="flex items-center justify-between">
-            <p>{tokenMetadata?.blockchain}</p>
-            <p>Balance</p>
-          </div>
-          <div className="flex items-center justify-between">
-            <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
-            <div className="flex items-center space-x-0.5">
+            <p>Wallet address</p>
+            <p>
+              Balance:&nbsp;
               {!isBalanceLoading &&
               !isBalanceFetching &&
               !!balance?.balance?.length ? (
                 <span id="balance">
-                  {balance.balance.toString()} {selectedTokenCurrency}
+                  {balance.balance} {selectedTokenCurrency}
                 </span>
               ) : (
                 <Spinner className="w-3 h-3 text-gray-400" />
+              )}
+            </p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
+            <div className="flex items-center space-x-0.5">
+              {balance?.balanceinUsd && (
+                <>
+                  {!isBalanceLoading &&
+                  !isBalanceFetching &&
+                  !!balance?.balanceinUsd?.length ? (
+                    <span id="USDbalance">{`${balance.balanceinUsd} USD`}</span>
+                  ) : (
+                    <Spinner className="w-3 h-3 text-gray-400" />
+                  )}
+                </>
               )}
             </div>
           </div>

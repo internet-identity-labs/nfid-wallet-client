@@ -593,7 +593,7 @@ export const TransferFT = ({
           )}
         >
           <div className="flex items-center justify-between">
-            <p>{tokenMetadata?.blockchain}</p>
+            <p>Wallet address</p>
             <p>
               Balance:&nbsp;
               {!isBalanceLoading &&

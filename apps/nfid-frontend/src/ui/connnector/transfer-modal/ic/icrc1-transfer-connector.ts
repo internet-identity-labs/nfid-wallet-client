@@ -234,7 +234,6 @@ export const icrc1TransferConnector = new ICRC1TransferConnector({
   tokenStandard: TokenStandards.ICRC1,
   blockchain: Blockchain.IC,
   feeCurrency: NativeToken.ICP,
-  shouldHavePrincipal: true,
   addressPlaceholder: "Recipient principal ID",
   icon: IconSvgDfinity,
   type: TransferModalType.FT,

@@ -56,7 +56,6 @@ export const icTransferConnector = new ICTransferConnector({
   feeCurrency: NativeToken.ICP,
   blockchain: Blockchain.IC,
   title: "Internet Computer",
-  shouldHavePrincipal: true,
   addressPlaceholder: "Recipient IC address or principal",
   type: TransferModalType.FT,
   isNativeToken: true,

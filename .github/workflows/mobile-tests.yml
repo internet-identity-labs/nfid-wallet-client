@@ -10,8 +10,8 @@ on:
         type: choice
         options:
           - dev
-          - staging
-          - production
+          - stage
+          - ic
       device:
         description: "Device to run tests with"
         required: true
@@ -117,8 +117,8 @@ jobs:
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline --frozen-lockfile
 
-          ci_echo_debug "npx env-cmd -f .env.staging nx build nfid-frontend" >&2
-          npx env-cmd -f .env.staging nx build nfid-frontend
+          ci_echo_debug "npx env-cmd -f .env.stage nx build nfid-frontend" >&2
+          npx env-cmd -f .env.stage nx build nfid-frontend
 
           ci_echo_debug "yarn serve -l 9090 -s dist/apps/nfid-frontend &" >&2
           yarn serve -l 9090 -s dist/apps/nfid-frontend &

@@ -3,10 +3,10 @@
 echo "variable CF_PAGES_BRANCH: $CF_PAGES_BRANCH"
 
 case ${CF_PAGES_BRANCH} in
-staging)
-    # On staging branch
-    echo "Building staging branch with .env.staging"
-    npx env-cmd -f .env.staging nx build nfid-frontend
+stage)
+    # On stage branch
+    echo "Building stage branch with .env.stage"
+    npx env-cmd -f .env.stage nx build nfid-frontend
     ;;
 production)
     # On production branch

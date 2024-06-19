@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - staging
+      - stage
 
 env:
   CANISTER_NAME: "nfid-demo"
@@ -111,9 +111,9 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            staging)
+            stage)
               NETWORK_NAME='stage'
-              ENV_FILE='.env.staging'
+              ENV_FILE='.env.stage'
               ;;
             production)
               ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
@@ -217,7 +217,7 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            staging)
+            stage)
               NETWORK_NAME='stage'
               ;;
             production)

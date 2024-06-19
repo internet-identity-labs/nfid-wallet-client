@@ -3,18 +3,22 @@ import React from "react"
 
 export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   tableHeader: JSX.Element
+  theadClassName?: string
 }
 
-export const Table = ({ className, children, tableHeader, id }: TableProps) => {
+export const Table = ({
+  className,
+  children,
+  tableHeader,
+  id,
+  theadClassName,
+}: TableProps) => {
   return (
     <table
       id={id}
-      className={clsx(
-        "w-full text-left min-w-[640px]",
-        className ?? "table-auto",
-      )}
+      className={clsx("w-full text-left min-w-[640px]", className)}
     >
-      <thead className="h-16">{tableHeader}</thead>
+      <thead className={clsx("h-16", theadClassName)}>{tableHeader}</thead>
       <tbody>{children}</tbody>
     </table>
   )

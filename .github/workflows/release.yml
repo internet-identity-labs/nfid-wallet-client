@@ -41,7 +41,7 @@ jobs:
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
@@ -149,13 +149,14 @@ jobs:
           ci_echo_debug "Preparing npmrc" >&2
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
+          @internet-identity-labs:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
           EOF
 
           ci_echo_debug "yarn --prefer-offline" >&2
-          yarn --prefer-offline
+          yarn --prefer-offline --frozen-lockfile
         env:
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID-DEMO => Build package
         run: |
@@ -351,7 +352,7 @@ jobs:
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "yarn --prefer-offline" >&2
-          yarn --prefer-offline
+          yarn --prefer-offline --frozen-lockfile
 
       - name: Build
         run: |
@@ -371,7 +372,7 @@ jobs:
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
           CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 

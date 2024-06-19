@@ -5,7 +5,7 @@ import { TransactionHistory } from "frontend/integration/rosetta/rosetta_interfa
 import { getTransactionHistory } from "."
 import { reduceAllTransactions } from "./reduce-all-transactions"
 
-export async function getAllTransactionHistory(
+export async function getICPTransactionHistory(
   principals: Principal[],
 ): Promise<TransactionHistory> {
   return reduceAllTransactions(

@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { format } from "date-fns"
 import { useCallback } from "react"
 import { toast } from "react-toastify"
@@ -31,7 +32,6 @@ export const ActivityTableRow = ({
   action,
   asset,
   from,
-  chain,
   timestamp,
   to,
   id,
@@ -44,14 +44,16 @@ export const ActivityTableRow = ({
   return (
     <tr
       id={id}
-      className="items-center text-sm transition-all border-b border-gray-200 hover:bg-gray-100 activity-row"
+      className="items-center text-sm border-b border-gray-200 activity-row last:border-none"
     >
       <td className="flex items-center py-2.5">
         <div className="w-10 h-10 rounded-[9px] bg-gray-50 flex items-center justify-center relative">
-          <IconCmpArrow className="rotate-[135deg] text-gray-400" />
-          <div className="absolute w-[18px] h-[18px] right-0 bottom-0">
-            {ChainIcons[chain]}
-          </div>
+          <IconCmpArrow
+            className={clsx(
+              "text-gray-400",
+              action === "Sent" ? "rotate-[135deg]" : "rotate-[-45deg]",
+            )}
+          />
         </div>
         <div className="ml-2.5">
           <p className="font-bold">{action}</p>
@@ -61,13 +63,14 @@ export const ActivityTableRow = ({
         </div>
       </td>
       {asset?.type === "ft" ? (
-        <td className="leading-5">
+        <td className="leading-5 text-right sm:text-left">
           <p className="font-medium">
             {asset.amount} {asset.currency}
           </p>
+          <p className="text-gray-400 text-xs">{asset.amountUSD}</p>
         </td>
       ) : (
-        <td className="leading-5">
+        <td className="leading-5 text-right sm:text-left">
           <div className="flex items-center">
             <img src={asset.preview} className="object-cover w-10 h-10" />
             <p className="ml-2.5 font-semibold">{asset.name}</p>
@@ -75,13 +78,13 @@ export const ActivityTableRow = ({
         </td>
       )}
       <td
-        className="transition-opacity cursor-pointer hover:opacity-50"
+        className="transition-opacity cursor-pointer hover:opacity-50 hidden sm:table-cell"
         onClick={() => onCopy(from)}
       >
         {truncateString(from, 6, 4)}
       </td>
       <td
-        className="transition-opacity cursor-pointer hover:opacity-50"
+        className="transition-opacity cursor-pointer hover:opacity-50 hidden sm:table-cell"
         onClick={() => onCopy(to)}
       >
         {truncateString(to, 6, 4)}

@@ -6,7 +6,7 @@ import { toast } from "react-toastify"
 
 import { Button, Input } from "@nfid-frontend/ui"
 import { DelegationType } from "@nfid/embed"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
 
 import { ExampleError } from "../../error"
 import { SectionTemplate } from "../../section"
@@ -34,7 +34,7 @@ const onRequestTransfer = useCallback(
 )`
 
 export const RequestFungibleTransfer = () => {
-  const { nfid, identity } = useAuthenticationContext()
+  const { nfid, identity, derivationOrigin } = useAuthenticationContext()
   const [response, setResponse] = useState("{}")
 
   const {
@@ -60,12 +60,13 @@ export const RequestFungibleTransfer = () => {
           receiver: values.receiver,
           amount: String(Number(values.amount) * E8S),
           ...(values.memo ? { memo: BigInt(values.memo) } : {}),
+          derivationOrigin,
         })
         .catch((e: Error) => ({ error: e.message }))
 
       setResponse(JSON.stringify(res, null, 2))
     },
-    [nfid],
+    [nfid, derivationOrigin],
   )
 
   return (

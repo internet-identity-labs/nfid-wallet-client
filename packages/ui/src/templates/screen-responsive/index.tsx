@@ -19,7 +19,8 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
         "bg-frameBgColor border-frameBorderColor",
       )}
     >
-      <div id="screen-modal"
+      <div
+        id="screen-modal"
         className={clsx(
           "w-full h-full p-[22px] flex-grow flex flex-col",
           "sm:rounded-xl justify-between",

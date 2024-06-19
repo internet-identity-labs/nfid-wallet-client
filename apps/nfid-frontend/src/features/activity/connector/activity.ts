@@ -60,8 +60,10 @@ export abstract class ActivityClass<T extends IActivityConfig>
     }))
   }
 
-  async getActivitiesRows(): Promise<IActivityRow[]> {
-    const activities = await this.getActivities()
+  async getActivitiesRows(
+    filteredContracts: string[] = [],
+  ): Promise<IActivityRow[]> {
+    const activities = await this.getActivities(filteredContracts)
     const activitiesRows = this.mapActivitiesToRows(activities, this.config)
 
     return activitiesRows
@@ -122,5 +124,5 @@ export abstract class ActivityClass<T extends IActivityConfig>
     return await fetchApplications()
   }
 
-  abstract getActivities(): Promise<Activity[]>
+  abstract getActivities(filteredContracts: string[]): Promise<Activity[]>
 }

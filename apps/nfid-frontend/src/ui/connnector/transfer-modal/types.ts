@@ -1,4 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { Icrc1BlockIndex } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { FungibleAsset } from "packages/integration/src/lib/asset/types"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
@@ -21,11 +22,11 @@ export type ITransferConfig = {
   tokenStandard: TokenStandards
   blockchain: Blockchain
   feeCurrency?: NativeToken
-  shouldHavePrincipal?: boolean
   addressPlaceholder: string
   assetService?: FungibleAsset
   isNativeToken?: boolean
   duration: string
+  canisterId?: string
 }
 
 export interface ITransferModalConnector
@@ -45,7 +46,6 @@ export interface ITransferModalConnector
 
   getNetworkOption(): IGroupOption
   getTokensOptions(): Promise<IGroupedOptions>
-  shouldHavePrincipal(): boolean
 
   validateAddress(address: string): boolean | string
   transfer(
@@ -83,8 +83,8 @@ export type IGetConnector<T extends TransferModalType> = {
 export type IConnector<T extends TransferModalType> =
   T extends TransferModalType.FT ? ITransferFTConnector : ITransferNFTConnector
 
-export type TokenBalance = { balance: string; balanceinUsd: string }
-export type TokenFee = { fee: string; feeUsd: string }
+export type TokenBalance = { balance: string; balanceinUsd?: string }
+export type TokenFee = { fee: string; feeUsd?: string }
 
 export type IConfirmEVMRequest = {
   cacheKey: string
@@ -95,6 +95,8 @@ export type ITransferRequest = {
   memo?: bigint
   contract: string
   identity?: DelegationIdentity
+  canisterId?: string
+  fee?: number
 }
 
 export type ITransferFTRequest = {
@@ -112,4 +114,5 @@ export interface ITransferResponse {
   errorMessage?: Error
   url?: string
   hash?: string
+  blockIndex?: Icrc1BlockIndex
 }

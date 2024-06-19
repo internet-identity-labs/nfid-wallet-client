@@ -73,10 +73,6 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
     return this.config.tokenStandard
   }
 
-  shouldHavePrincipal(): boolean {
-    return !!this.config?.shouldHavePrincipal
-  }
-
   abstract getFee(
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<TokenFee>

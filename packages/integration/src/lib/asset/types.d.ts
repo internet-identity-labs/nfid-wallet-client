@@ -131,6 +131,7 @@ declare type Token = {
   balanceinUsd: string
   contractAddress?: string
   address: string
+  decimals: number
 }
 
 declare type ChainBalance = {
@@ -287,8 +288,9 @@ declare interface ActivityAssetNFT {
 declare interface ActivityAssetFT {
   type: "ft"
   currency: string
-  amount: number
+  amount: string
   amountUSD?: string
+  decimals?: number
 }
 
 declare type Content = {

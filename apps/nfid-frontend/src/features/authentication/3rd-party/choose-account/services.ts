@@ -12,6 +12,7 @@ export const getPublicProfile = async (): Promise<{
   balance: string
   balanceUSD: string
   address: string
+  principal: string
 }> => {
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")
@@ -29,7 +30,10 @@ export const getPublicProfile = async (): Promise<{
   return {
     balance: balance,
     balanceUSD:
-      balance === "0" ? "0" : `$${(exchangeRate * Number(balance)).toFixed(2)}`,
+      balance === "0"
+        ? "0.00 USD"
+        : `${(exchangeRate * Number(balance)).toFixed(2)} USD`,
     address,
+    principal: principal.toText(),
   }
 }

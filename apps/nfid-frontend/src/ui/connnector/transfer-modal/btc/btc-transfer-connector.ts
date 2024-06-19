@@ -7,7 +7,7 @@ import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-walle
 
 import { IGroupedOptions, IconSvgBTC } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/constants"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { e8sICPToString } from "frontend/integration/wallet/utils"
@@ -56,7 +56,7 @@ export class BtcTransferConnector
       makeRootAccountGroupedOptions(
         address,
         balance.balance?.toString() ?? "",
-        balance.balanceinUsd,
+        balance.balanceinUsd ?? "",
         this.config.tokenStandard,
       ),
     ]

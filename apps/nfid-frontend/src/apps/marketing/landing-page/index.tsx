@@ -2,7 +2,7 @@ import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
 import React, { useCallback } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 import { Button, NFIDLogo } from "@nfid-frontend/ui"
 import { landingPageTracking } from "@nfid/integration"
@@ -60,6 +60,7 @@ export const HomeScreen = () => {
   const [isAuthModalVisible, setIsAuthModalVisible] = React.useState(false)
   const { isAuthenticated } = useAuthentication()
   const navigate = useNavigate()
+  const location = useLocation()
   const currentYear: number = new Date().getFullYear()
 
   React.useEffect(() => {
@@ -67,6 +68,12 @@ export const HomeScreen = () => {
       landingPageTracking.pageLoaded()
     })
   }, [])
+
+  React.useEffect(() => {
+    if (new URLSearchParams(location.search).get("auth") === "true") {
+      setIsAuthModalVisible(true)
+    }
+  }, [location.search])
 
   const onContinue = useCallback(() => {
     return isAuthenticated
@@ -199,7 +206,7 @@ export const HomeScreen = () => {
               <p className="font-light text-indigo-400 opacity-25">3/4</p>
               <p className="font-bold">Protect your identity</p>
               <p className="text-sm md:text-lg">
-                Powered by state-of-the-art passkey & chainkey technology, your
+                Powered by state-of-the-art Passkey & chainkey technology, your
                 NFID offers unprecedented security, insulating you from the
                 vulnerabilities that threaten even the most fortified digital
                 platforms. Your NFID is exclusively yours, accessible and usable

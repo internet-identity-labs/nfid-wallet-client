@@ -124,9 +124,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           id="passkey-sign-button"
           className="h-12 !p-0 group my-[14px]"
           type="stroke"
-          icon={
-            <IconCmpPasskey className="text-black group-hover:text-white group-active:text-white group-focus:text-white" />
-          }
+          icon={<IconCmpPasskey />}
           block
           onClick={async () => {
             authenticationTracking.initiated({
@@ -147,7 +145,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             onAuthWithPasskey(res)
           }}
         >
-          Continue with a passkey
+          Continue with a Passkey
         </Button>
         <Button
           id="other-sign-button"

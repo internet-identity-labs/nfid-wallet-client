@@ -46,9 +46,10 @@ export const Button = <T extends React.ElementType = "button">({
         "btn",
         !disabled && "cursor-pointer",
         text && "btn-text",
-        secondary && "btn-secondary hover:bg-black-hover focus:ring-black ",
+        secondary &&
+          "btn-secondary hover:bg-gray-700 hover:shadow-md hover:shadow-gray-700/40 disabled:shadow-none disabled:bg-gray-300 hover:bg-gray-700 hover:shadow-md hover:shadow-gray-700/40",
         stroke &&
-          "btn-stroke hover:bg-black-hover !focus:ring-black-hover focus:bg-black-hover",
+          "btn-stroke hover:text-white hover:bg-gray-700 hover:border-gray-700 hover:shadow-md hover:shadow-gray-700/40 active:text-white active:bg-secondaryButtonColor disabled:shadow-none disabled:border-gray-300 disabled:border-secondaryButtonColor/50 disabled:text-gray-300 disabled:bg-white focus:text-black",
         large && "btn-large",
         largeMax && "btn-large-max",
         disabled && "btn-disabled",
@@ -56,7 +57,7 @@ export const Button = <T extends React.ElementType = "button">({
         icon && isActive && "btn-icon-active",
         block && "btn-block",
         error && "btn-error",
-        primary && "btn-primary",
+        primary && "btn-primary disabled:bg-gray-300 disabled:shadow-none",
         className,
       )}
       {...buttonProps}

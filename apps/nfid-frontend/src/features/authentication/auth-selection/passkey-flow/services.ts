@@ -311,54 +311,56 @@ export class PasskeyConnector {
     onBegin: () => void,
     onEnd: (data: AbstractAuthSession) => void,
   ) {
-    authenticationTracking.initiated({
-      authSource: "passkey - conditional",
-    })
-    const multiIdent = MultiWebAuthnIdentity.fromCredentials(
-      [],
-      false,
-      "conditional",
-      signal,
-      true,
-    )
+    try {
+      authenticationTracking.initiated({
+        authSource: "passkey - conditional",
+      })
+      const multiIdent = MultiWebAuthnIdentity.fromCredentials(
+        [],
+        false,
+        "conditional",
+        signal,
+        true,
+      )
 
-    const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
-    onBegin()
+      const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
+      onBegin()
 
-    const delegationIdentity = DelegationIdentity.fromDelegation(
-      sessionKey,
-      chain,
-    )
+      const delegationIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
+        chain,
+      )
 
-    authState.set({
-      identity: multiIdent._actualIdentity!,
-      delegationIdentity,
-      chain,
-      sessionKey,
-    })
+      authState.set({
+        identity: multiIdent._actualIdentity!,
+        delegationIdentity,
+        chain,
+        sessionKey,
+      })
 
-    const profile = await fetchProfile()
-    im.use_access_point([])
+      const profile = await fetchProfile()
+      im.use_access_point([])
 
-    authenticationTracking.updateData({
-      isNewUser: false,
-    })
+      authenticationTracking.updateData({
+        isNewUser: false,
+      })
 
-    authenticationTracking.completed({
-      anchor: profile.anchor,
-      hasEmail: !!profile.email,
-      legacyUser: profile.wallet === RootWallet.II,
-    })
+      authenticationTracking.completed({
+        anchor: profile.anchor,
+        hasEmail: !!profile.email,
+        legacyUser: profile.wallet === RootWallet.II,
+      })
 
-    await this.cachePasskeyDelegation(sessionKey, delegationIdentity)
+      const authSession = {
+        anchor: profile.anchor,
+        delegationIdentity: delegationIdentity,
+        identity: multiIdent._actualIdentity!,
+      }
 
-    const authSession = {
-      anchor: profile.anchor,
-      delegationIdentity: delegationIdentity,
-      identity: multiIdent._actualIdentity!,
+      onEnd && onEnd(authSession)
+    } catch (e) {
+      console.debug(e)
     }
-
-    onEnd && onEnd(authSession)
   }
 
   private decodePublicKeyCredential(credential: PublicKeyCredential) {

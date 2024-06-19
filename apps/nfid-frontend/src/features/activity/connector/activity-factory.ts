@@ -1,5 +1,9 @@
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
+import {
+  MAX_DECIMAL_LENGTH,
+  MAX_DECIMAL_USD_LENGTH,
+} from "frontend/features/transfer-modal/utils/validations"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { PAGINATION_ITEMS } from "../constants"
@@ -79,12 +83,14 @@ export const getAllActivity = async (
       const asset = row.asset as ActivityAssetFT
       const usdRate = await getExchangeRateForActivity(asset, row.timestamp)
 
-      if (+asset.amount < 0.01) {
-        asset.amountUSD = "0.00 USD"
-      } else {
-        asset.amountUSD = usdRate
-          ? `${Math.floor(+usdRate * +asset.amount * 100) / 100} USD`
-          : undefined
+      if (usdRate) {
+        const price = Number(usdRate) * Number(asset.amount)
+
+        price < 0.01
+          ? (asset.amountUSD = "0.00 USD")
+          : (asset.amountUSD = `${price
+              .toFixed(MAX_DECIMAL_USD_LENGTH)
+              .replace(/\.?0+$/, "")} USD`)
       }
     }
   }

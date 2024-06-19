@@ -22,7 +22,6 @@ export type ITransferConfig = {
   tokenStandard: TokenStandards
   blockchain: Blockchain
   feeCurrency?: NativeToken
-  shouldHavePrincipal?: boolean
   addressPlaceholder: string
   assetService?: FungibleAsset
   isNativeToken?: boolean
@@ -47,7 +46,6 @@ export interface ITransferModalConnector
 
   getNetworkOption(): IGroupOption
   getTokensOptions(): Promise<IGroupedOptions>
-  shouldHavePrincipal(): boolean
 
   validateAddress(address: string): boolean | string
   transfer(

@@ -51,9 +51,9 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
           element={
             <Copy
               iconClassName="!w-6"
-              className="h-[100%] flex-1 !text-black"
+              className="h-[100%] flex-1 !text-black hover:!opacity-100"
               iconSize="!w-6"
-              titleClassName="!ml-[10px] !text-black !text-sm text-left !font-normal"
+              titleClassName="!ml-[12px] !text-black !text-sm text-left !font-normal"
               value={token.canisterId}
               copyTitle="Copy token address"
             />

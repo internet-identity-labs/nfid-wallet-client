@@ -31,7 +31,7 @@ export const Dropdown = ({
           )}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
         >
-          <div className="min-w-[210px] sm:min-w-[250px]">{children}</div>
+          <div className="min-w-[210px]">{children}</div>
         </div>
       )}
     </div>

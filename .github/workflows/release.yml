@@ -13,6 +13,7 @@ env:
 jobs:
   check-secrets:
     name: Check Secrets
+    environment: ic
     defaults:
       run:
         shell: bash
@@ -52,6 +53,7 @@ jobs:
     needs: check-secrets
     runs-on: ubuntu-latest
     if: ${{ contains( github.ref_name, 'production' ) }}
+    environment: ic
 
     steps:
       - name: INPUT => Checks.
@@ -117,7 +119,7 @@ jobs:
           case ${CANISTER_BRANCH} in
             production)
               NETWORK_NAME='ic'
-              ENV_FILE='.env.production'
+              ENV_FILE='.env.ic'
               OPTIONS='--skip-nx-cache'
               ;;
             *)
@@ -184,6 +186,7 @@ jobs:
     if: ${{ contains( github.ref_name, 'production' ) }}
     runs-on:
       group: dfx-runner
+    environment: ic
     defaults:
       run:
         shell: bash
@@ -207,6 +210,8 @@ jobs:
           ci_versions
 
       - name: PRE-DEPLOY => Populate env vars
+        env:
+          DFX_ID_NAME: ${{ vars.DFX_ID_NAME }}
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -231,44 +236,35 @@ jobs:
 
           ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
 
-          if [[ "${NETWORK_NAME}" =~ ^(dev|stage)$ ]]; then
-            ID_NAME="dev_admin"
-            IDENTITY_PEM_NAME_VAR="DEV_ADMIN_KEY"
-          elif [ "${NETWORK_NAME}" == 'ic' ]; then
-            ID_NAME="prod_admin"
-            IDENTITY_PEM_NAME_VAR="PROD_ADMIN_KEY"
-          fi
-          ID_PATH="/home/ubuntu/.config/dfx/identity/${ID_NAME}"
+          DFX_ID_PATH="${HOME}/.config/dfx/identity/${DFX_ID_NAME}"
 
           ci_echo_debug "Populating env variables" >&2
           echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
           echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
-          echo "ID_NAME=${ID_NAME}" >> $GITHUB_ENV
-          echo "ID_PATH=${ID_PATH}" >> $GITHUB_ENV
-          echo "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >> $GITHUB_ENV
+          echo "DFX_ID_NAME=${DFX_ID_NAME}" >> $GITHUB_ENV
+          echo "DFX_ID_PATH=${DFX_ID_PATH}" >> $GITHUB_ENV
 
       - name: PRE-DEPLOY => Print Vars
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
           ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
           ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
-          ci_echo_info "ID_NAME=${ID_NAME}" >&2
-          ci_echo_info "ID_PATH=${ID_PATH}" >&2
+          ci_echo_info "DFX_ID_NAME=${DFX_ID_NAME}" >&2
+          ci_echo_info "DFX_ID_PATH=${DFX_ID_PATH}" >&2
           ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
 
       - name: PRE-BUILD => Write identity.
+        env:
+          DFX_ID_KEY: ${{ secrets.DFX_ID_KEY }}
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
-          mkdir -p "${ID_PATH}"
+          mkdir -p "${DFX_ID_PATH}"
 
           ci_echo_warn "Preparing encoded key..." >&2
-          ci_echo_info "Decoding..." >&2
-          echo "${!IDENTITY_PEM_NAME_VAR}" | base64 -d > "${ID_PATH}/identity.pem"
-        env:
-          DEV_ADMIN_KEY: ${{secrets.DEV_ADMIN_KEY}}
-          PROD_ADMIN_KEY: ${{secrets.PROD_ADMIN_KEY}}
+          echo "${DFX_ID_KEY}" | base64 -d > "${DFX_ID_PATH}/identity.pem"
 
       - name: DEPLOY => Load artifact
         uses: actions/download-artifact@v4
@@ -300,6 +296,7 @@ jobs:
     needs: check-secrets
     runs-on: ubuntu-latest
     if: ${{ contains( github.ref_name, 'production' ) }}
+    environment: ic
     permissions:
       contents: read
       deployments: write

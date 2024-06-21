@@ -37,6 +37,7 @@ env:
 jobs:
   check-secrets:
     name: Check Secrets
+    environment: ${{ github.event.inputs.env }}
     defaults:
       run:
         shell: bash
@@ -75,6 +76,7 @@ jobs:
     name: E2E Tests
     needs: check-secrets
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env }}
     concurrency:
       group: ci-frontend-test
       cancel-in-progress: false
@@ -196,6 +198,7 @@ jobs:
     needs: e2e-tests
     if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env }}
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

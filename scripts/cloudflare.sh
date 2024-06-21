@@ -10,8 +10,8 @@ stage)
     ;;
 production)
     # On production branch
-    echo "Building production branch with .env.production"
-    npx env-cmd -f .env.production nx build nfid-frontend
+    echo "Building production branch with .env.ic"
+    npx env-cmd -f .env.ic nx build nfid-frontend
     ;;
 *)
     # all other branches

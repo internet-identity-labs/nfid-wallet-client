@@ -12,7 +12,6 @@ import {
   ITransferFTRequest,
   ITransferNFTRequest,
   ITransferResponse,
-  TokenBalance,
 } from "./types"
 import { makeRootAccountGroupedOptions } from "./util/options"
 
@@ -78,14 +77,11 @@ export abstract class EVMTransferConnector<
     return await this.config.assetService.getAddress(identity)
   }
 
-  async getBalance(): Promise<TokenBalance> {
+  async getBalance(): Promise<number> {
     const address = await this.getAddress()
     const balance = await this.config.assetService.getBalance(address)
 
-    return {
-      balance: balance.balance,
-      balanceinUsd: balance.balanceinUsd,
-    }
+    return balance
   }
 
   async getAccountsOptions({
@@ -99,11 +95,15 @@ export abstract class EVMTransferConnector<
     return [
       makeRootAccountGroupedOptions(
         address,
-        balance.balance?.toString() ?? "",
-        `$${balance.balanceinUsd ?? "0.00"}`,
+        balance.toString() ?? "",
+        undefined,
         this.config.tokenStandard,
       ),
     ]
+  }
+
+  async getDecimals() {
+    return 8
   }
 
   async getIdentity(): Promise<DelegationIdentity> {

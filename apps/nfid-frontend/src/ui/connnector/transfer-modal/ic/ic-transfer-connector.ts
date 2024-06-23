@@ -2,19 +2,16 @@ import { DelegationIdentity } from "@dfinity/identity"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { accessList } from "@nfid/integration"
-import { WALLET_FEE } from "@nfid/integration/token/constants"
+import { ICP_DECIMALS, WALLET_FEE_E8S } from "@nfid/integration/token/constants"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { MAX_DECIMAL_USD_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
-import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 
 import { Blockchain, NativeToken } from "../../types"
 import {
   ITransferFTConnector,
   ITransferConfig,
   TransferModalType,
-  TokenFee,
 } from "../types"
 import { ICMTransferConnector } from "./icm-transfer-connector"
 
@@ -40,13 +37,12 @@ export class ICTransferConnector
     )
   }
 
-  async getFee(): Promise<TokenFee> {
-    const rate = await getExchangeRate()
+  async getFee(): Promise<number> {
+    return WALLET_FEE_E8S
+  }
 
-    return {
-      fee: String(WALLET_FEE),
-      feeUsd: (WALLET_FEE * rate).toFixed(MAX_DECIMAL_USD_LENGTH),
-    }
+  async getDecimals() {
+    return ICP_DECIMALS
   }
 }
 

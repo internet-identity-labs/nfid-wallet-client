@@ -69,7 +69,7 @@ export const Button: React.FC<ButtonProps> = ({
           ),
         isGhost &&
           clsx(
-            "text-linkColor border-transparent",
+            "text-primaryButtonColor border-transparent",
             "hover:bg-gray-100",
             "active:bg-gray-200",
             "disabled:bg-white disabled:border-transparent disabled:text-secondary",

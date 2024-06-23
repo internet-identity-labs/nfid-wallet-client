@@ -4,7 +4,7 @@ import {
 } from "packages/integration/src/lib/token/icrc1"
 import useSWR from "swr"
 
-import { toPresentationIcrc1 } from "@nfid/integration/token/utils"
+import { toPresentation } from "@nfid/integration/token/utils"
 
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
@@ -17,12 +17,9 @@ export const useAllICRC1Token = () => {
 
       return result.map((item) => ({
         ...item,
-        price:
-          item.priceInUsd === 0 || (item.priceInUsd && item.priceInUsd < 0.01)
-            ? "0.00"
-            : item.priceInUsd,
+        rate: item.rate,
         feeCurrency: item.symbol,
-        toPresentation: toPresentationIcrc1,
+        toPresentation,
         transformAmount: (value: string) =>
           Number(parseFloat(value) * 10 ** item.decimals),
       })) as ICRC1Metadata[]

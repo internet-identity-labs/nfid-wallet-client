@@ -131,6 +131,7 @@ declare type Token = {
   balanceinUsd: string
   contractAddress?: string
   address: string
+  rate?: number | undefined
   decimals: number
 }
 
@@ -195,7 +196,7 @@ declare type NonFungibleItem = {
 
 declare type TokenPrice = {
   token: string
-  price: string
+  price: number
 }
 
 declare type Configuration = {
@@ -288,8 +289,8 @@ declare interface ActivityAssetNFT {
 declare interface ActivityAssetFT {
   type: "ft"
   currency: string
-  amount: string
-  amountUSD?: string
+  amount: number
+  rate: number | undefined
   decimals?: number
 }
 

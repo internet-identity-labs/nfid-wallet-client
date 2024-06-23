@@ -30,7 +30,6 @@ export const ProfileAssetsHeader = () => {
   const {
     register,
     formState: { errors },
-    handleSubmit,
     resetField,
     getValues,
   } = useForm({
@@ -105,7 +104,7 @@ export const ProfileAssetsHeader = () => {
       <div className="flex items-center justify-between w-full">
         <p>Your tokens</p>
         <Button
-          className={clsx("px-[10px] md:flex pr-0 md:pr-[15px] z-10")}
+          className={clsx("px-[10px] md:flex pr-0 md:pr-[15px]")}
           id="importToken"
           onClick={handleOpenImportToken}
           icon={<PlusIcon />}
@@ -195,7 +194,13 @@ export const ProfileAssetsHeader = () => {
             icon={<PlusIcon />}
             block
             type="primary"
-            onClick={handleSubmit(submit)}
+            onClick={(event) => {
+              event.preventDefault()
+              submit({
+                ledgerID: getValues("ledgerID"),
+                indexID: getValues("indexID"),
+              })
+            }}
             disabled={
               Boolean(!tokenInfo) ||
               Object.values(errors).some((error) => error)

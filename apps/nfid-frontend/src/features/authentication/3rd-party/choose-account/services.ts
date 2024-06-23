@@ -25,7 +25,7 @@ export const getPublicProfile = async (): Promise<{
 
   const address = principalToAddress(principal as any)
   const balance = e8sICPToString(Number(await getBalance(address)))
-  const exchangeRate = await getExchangeRate()
+  const exchangeRate = await getExchangeRate("ICP")
 
   return {
     balance: balance,

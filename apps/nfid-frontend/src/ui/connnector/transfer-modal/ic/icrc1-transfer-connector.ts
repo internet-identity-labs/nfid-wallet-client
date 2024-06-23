@@ -17,7 +17,7 @@ import {
   transferICRC1,
 } from "@nfid/integration/token/icrc1"
 import { TokenStandards } from "@nfid/integration/token/types"
-import { toPresentationIcrc1 } from "@nfid/integration/token/utils"
+import { toPresentation } from "@nfid/integration/token/utils"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
@@ -30,8 +30,6 @@ import {
   ITransferFTConnector,
   ITransferFTRequest,
   ITransferResponse,
-  TokenBalance,
-  TokenFee,
   TransferModalType,
 } from "../types"
 import { ICMTransferConnector } from "./icm-transfer-connector"
@@ -47,13 +45,12 @@ export class ICRC1TransferConnector
 
     return {
       ...token,
-      price: token?.priceInUsd,
       feeCurrency: token?.symbol,
       title: token?.name,
       icon: token?.logo,
       blockchain: Blockchain.IC,
       addressPlaceholder: "Recipient IC address or principal",
-      toPresentation: toPresentationIcrc1,
+      toPresentation,
       transformAmount: (value: string) => {
         if (!token) return
         return Number(parseFloat(value) * 10 ** token.decimals)
@@ -62,24 +59,18 @@ export class ICRC1TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 15 })
-  async getBalance(_: any, currency?: string): Promise<TokenBalance> {
+  async getBalance(_: any, currency?: string): Promise<number> {
     const token = await this.getTokenMetadata(currency ?? "")
-    const { balance, price, decimals } = token
 
-    return {
-      balance: token.toPresentation(balance, decimals).toString(),
-      balanceinUsd: price
-        ? Number(Number(token.price)?.toFixed(2)).toString()
-        : undefined,
-    }
+    return Number(token.balance)
   }
 
   @Cache(connectorCache, { ttl: 60 })
-  async getRate(currency: string): Promise<string> {
+  async getRate(currency: string): Promise<number | undefined> {
     const tokens = await this.getTokens()
 
     const rate = tokens.find((token) => token.symbol === currency)?.rate
-    return rate ?? ""
+    return rate ?? 0
   }
 
   @Cache(connectorCache, { ttl: 600 })
@@ -123,10 +114,7 @@ export class ICRC1TransferConnector
       Object.entries(principals).map(async ([domain, principals]) => {
         const options: IGroupOption[] = await Promise.all(
           principals.map(async ({ account, principal }) => {
-            const { balance, balanceinUsd } = await this.getBalance(
-              undefined,
-              currency ?? "",
-            )
+            const balance = await this.getBalance(undefined, currency ?? "")
 
             return {
               title: getWalletName(
@@ -141,7 +129,7 @@ export class ICRC1TransferConnector
               ),
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + symbol,
-              innerSubtitle: "$" + balanceinUsd,
+              //innerSubtitle: "$" + balanceinUsd,
             }
           }),
         )
@@ -161,16 +149,15 @@ export class ICRC1TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({ currency }: ITransferFTRequest): Promise<TokenFee> {
+  async getFee({ currency }: ITransferFTRequest): Promise<number> {
     const token = await this.getTokenMetadata(currency)
-    const { fee, feeInUsd, decimals } = token
 
-    return {
-      fee: token.toPresentation(fee, decimals).toString(),
-      feeUsd: feeInUsd
-        ? feeInUsd.toString().replace(/(\.\d*?[1-9])0+|\.0*$/, "$1")
-        : undefined,
-    }
+    return Number(token.fee)
+  }
+
+  async getDecimals(currency: string): Promise<number> {
+    const token = await this.getTokenMetadata(currency)
+    return token.decimals
   }
 
   async getIdentity(
@@ -185,6 +172,8 @@ export class ICRC1TransferConnector
       throw new Error("Identity not found. Please try again")
 
     const { canisterId, identity, amount, to, fee } = request
+
+    console.log("transferrrr", amount, fee)
 
     const { owner, subaccount } = decodeIcrcAccount(to)
 
@@ -204,6 +193,7 @@ export class ICRC1TransferConnector
       })
 
       if (hasOwnProperty(result, "Err")) {
+        console.log("errr!!", result)
         return {
           errorMessage: result.Err as Error,
         }
@@ -213,7 +203,7 @@ export class ICRC1TransferConnector
         blockIndex: result.Ok,
       }
     } catch (e) {
-      console.error("ERRR:", e)
+      console.error("Error: ", e)
       return {
         errorMessage: e as Error,
       }

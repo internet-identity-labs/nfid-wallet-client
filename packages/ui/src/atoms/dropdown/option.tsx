@@ -13,7 +13,7 @@ export const DropdownOption = ({
 }: IDropdownOption) => {
   return (
     <div
-      className="px-[10px] flex items-center gap-[8px] hover:bg-gray-100 h-[40px] hover:opacity-50"
+      className="px-[10px] flex items-center gap-[8px] hover:bg-gray-100 h-[40px] cursor-pointer"
       onClick={() => {
         if (!handler) return
         handler()

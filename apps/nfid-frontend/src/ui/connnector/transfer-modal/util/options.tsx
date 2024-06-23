@@ -4,7 +4,7 @@ import { truncateString } from "@nfid-frontend/utils"
 export const makeRootAccountGroupedOptions = (
   address: string,
   balance: string,
-  usdBalance: string,
+  usdBalance: string | undefined,
   currency: string,
 ): IGroupedOptions => ({
   label: "NFID",

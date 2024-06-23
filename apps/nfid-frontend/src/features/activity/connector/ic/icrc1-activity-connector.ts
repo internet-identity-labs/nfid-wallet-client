@@ -7,7 +7,6 @@ import {
   getICRC1HistoryDataForUser,
 } from "@nfid/integration/token/icrc1"
 import { TokenStandards } from "@nfid/integration/token/types"
-import { toPresentationIcrc1 } from "@nfid/integration/token/utils"
 
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { Blockchain } from "frontend/ui/connnector/types"
@@ -45,7 +44,7 @@ export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
             type: "ft",
             currency: tx.symbol,
             decimals: tx.decimals,
-            amount: toPresentationIcrc1(tx.amount, tx.decimals),
+            amount: Number(tx.amount),
           },
         } as Activity),
     )

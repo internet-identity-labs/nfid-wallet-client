@@ -1,6 +1,5 @@
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
-import { MAX_DECIMAL_USD_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { PAGINATION_ITEMS } from "../constants"
@@ -78,16 +77,7 @@ export const getAllActivity = async (
     for (const row of group.rows) {
       const asset = row.asset as ActivityAssetFT
       const usdRate = await getExchangeRateForActivity(asset, row.timestamp)
-
-      if (usdRate) {
-        const price = Number(usdRate) * Number(asset.amount)
-
-        price < 0.01
-          ? (asset.amountUSD = "0.00 USD")
-          : (asset.amountUSD = `${price
-              .toFixed(MAX_DECIMAL_USD_LENGTH)
-              .replace(/\.?0+$/, "")} USD`)
-      }
+      asset.rate = usdRate
     }
   }
 

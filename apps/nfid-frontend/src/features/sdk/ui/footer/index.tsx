@@ -4,14 +4,12 @@ import clsx from "clsx"
 import { Skeleton } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 
-import { TokenBalance } from "frontend/ui/connnector/transfer-modal/types"
-
 export const SDKFooter = ({
   identity,
   balance,
 }: {
   identity?: DelegationIdentity
-  balance?: TokenBalance
+  balance?: number
 }) => {
   return (
     <div
@@ -35,7 +33,7 @@ export const SDKFooter = ({
         <div className="flex items-center space-x-0.5">
           <span id="balance">
             {balance ? (
-              `${balance.balance} ICP`
+              `${balance} ICP`
             ) : (
               <Skeleton className="w-20 h-5 bg-gray-300" />
             )}

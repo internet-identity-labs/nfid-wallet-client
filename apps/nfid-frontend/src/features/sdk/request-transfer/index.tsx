@@ -131,7 +131,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           <p>Network fee</p>
           <div className="text-right">
             <p>{nft ? "$0.00" : toUSD(WALLET_FEE, Number(rate))}</p>
-            <p className="text-xs text-gray-400">{nft ? "0.00" : fee.fee}</p>
+            <p className="text-xs text-gray-400">{nft ? "0.00" : fee}</p>
           </div>
         </div>
         <div className="flex items-center justify-between text-sm h-14">

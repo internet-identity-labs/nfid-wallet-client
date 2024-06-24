@@ -42,7 +42,7 @@ export interface ITransferModalConnector
     isVault?: boolean
     isRootOnly?: boolean
   }): Promise<IGroupedOptions[]>
-  getRate(currency: string): Promise<string>
+  getRate(currency: string): Promise<number | undefined>
 
   getNetworkOption(): IGroupOption
   getTokensOptions(): Promise<IGroupedOptions>
@@ -60,15 +60,16 @@ export interface ITransferModalConnector
 }
 
 export type ITransferFTConnector = {
-  getBalance(address?: string, currency?: string): Promise<TokenBalance>
+  getBalance(address?: string, currency?: string): Promise<number>
   getAddress(address?: string, identity?: DelegationIdentity): Promise<string>
-  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<TokenFee>
+  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<number>
+  getDecimals(currency?: string): Promise<number>
 } & ITransferModalConnector
 
 export type ITransferNFTConnector = {
   getNFTs(): Promise<UserNonFungibleToken[]>
   getNFTOptions(): Promise<IGroupedOptions[]>
-  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<TokenFee>
+  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<number>
 } & ITransferModalConnector
 
 export type IUniversalConnector = ITransferFTConnector | ITransferNFTConnector
@@ -84,7 +85,6 @@ export type IConnector<T extends TransferModalType> =
   T extends TransferModalType.FT ? ITransferFTConnector : ITransferNFTConnector
 
 export type TokenBalance = { balance: string; balanceinUsd?: string }
-export type TokenFee = { fee: string; feeUsd?: string }
 
 export type IConfirmEVMRequest = {
   cacheKey: string

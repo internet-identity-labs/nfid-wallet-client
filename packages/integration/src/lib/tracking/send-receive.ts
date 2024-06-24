@@ -7,7 +7,7 @@ type SendToken = {
   tokenType: "fungible" | "non-fungible"
   tokenStandard: string
   amount: string | number
-  fee: string
+  fee: string | number
 }
 
 const mapTokenStandard = (tokenStandard: string) => {

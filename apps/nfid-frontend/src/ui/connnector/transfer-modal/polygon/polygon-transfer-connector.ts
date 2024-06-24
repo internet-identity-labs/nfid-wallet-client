@@ -13,7 +13,6 @@ import {
   ITransferFTConnector,
   ITransferConfig,
   ITransferFTRequest,
-  TokenFee,
   TransferModalType,
 } from "../types"
 
@@ -40,7 +39,7 @@ export class MaticTransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({ to, amount }: ITransferFTRequest): Promise<TokenFee> {
+  async getFee({ to, amount }: ITransferFTRequest): Promise<number> {
     const cacheKey = this.config.tokenStandard + "_transaction"
 
     const identity = await this.getIdentity()
@@ -52,10 +51,7 @@ export class MaticTransferConnector
       ttl: 10,
     })
 
-    return {
-      fee: `${estimatedTransaction.fee} ${this.config.feeCurrency}`,
-      feeUsd: estimatedTransaction.feeUsd,
-    }
+    return +estimatedTransaction.fee
   }
 }
 

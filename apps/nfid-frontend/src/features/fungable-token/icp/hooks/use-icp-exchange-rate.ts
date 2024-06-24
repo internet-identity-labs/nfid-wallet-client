@@ -5,7 +5,7 @@ import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 export const useICPExchangeRate = () => {
   const { data: exchangeRate, ...rest } = useSWR(
     "walletExchangeRate",
-    getExchangeRate,
+    getExchangeRate.bind(null, "ICP"),
     {
       dedupingInterval: 60_000 * 60,
       focusThrottleInterval: 60_000 * 60,

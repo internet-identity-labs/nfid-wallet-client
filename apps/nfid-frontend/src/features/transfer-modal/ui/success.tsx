@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import NoIcon from "packages/ui/src/assets/no-icon.svg"
 import React, { useMemo } from "react"
 
 import { LottieAnimation } from "@nfid-frontend/ui"
@@ -77,7 +78,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
           />
           <img
             alt="assetImg"
-            src={assetImg}
+            src={assetImg || NoIcon}
             className={clsx(
               "absolute h-[120px] w-[120px] object-contain -mt-[123px] ml-[1px] rounded-full object-center",
               isAssetPadding && "p-4",

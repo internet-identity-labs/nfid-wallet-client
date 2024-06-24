@@ -18,6 +18,7 @@ type AppAccountBalanceByToken = {
 type UseBalanceICPAllReturn = {
   isLoading: boolean
   appAccountBalance?: AppAccountBalanceByToken
+  rate: number | undefined
 }
 
 /**
@@ -83,5 +84,6 @@ export const useBalanceICPAll = (
       !appAccountBalance ||
       Object.values(appAccountBalance.ICP.applications).length === 0,
     appAccountBalance,
+    rate: exchangeRate,
   }
 }

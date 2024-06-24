@@ -8,20 +8,21 @@ import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import {
   ICP_CANISTER_ID,
+  ICP_DECIMALS,
   WALLET_FEE_E8S,
 } from "@nfid/integration/token/constants"
 import { TokenStandards } from "@nfid/integration/token/types"
-import {
-  toPresentation,
-  toPresentationIcrc1,
-} from "@nfid/integration/token/utils"
+import { toPresentation } from "@nfid/integration/token/utils"
 
 import { useAllICRC1Token } from "frontend/features/fungable-token/icrc1"
 
 export const useICTokens = (
   assetFilter: AssetFilter[],
 ): { configs: TokenConfig[]; isLoading: boolean } => {
-  const { appAccountBalance, isLoading } = useBalanceICPAll(true, assetFilter)
+  const { appAccountBalance, rate, isLoading } = useBalanceICPAll(
+    true,
+    assetFilter,
+  )
   const { token: ICRC1Token, isIcrc1Loading } = useAllICRC1Token()
 
   return {
@@ -32,7 +33,8 @@ export const useICTokens = (
         title: "Internet Computer",
         currency: "ICP",
         balance: appAccountBalance?.ICP.tokenBalance,
-        price: appAccountBalance?.ICP.usdBalance,
+        rate,
+        decimals: ICP_DECIMALS,
         fee: BigInt(WALLET_FEE_E8S),
         toPresentation,
         transformAmount: stringICPtoE8s,
@@ -40,18 +42,14 @@ export const useICTokens = (
         canisterId: ICP_CANISTER_ID,
       },
       ...(ICRC1Token
-        ? ICRC1Token.map(
-            ({ symbol, name, logo, toPresentation, price, ...rest }) => ({
-              tokenStandard: TokenStandards.ICRC1,
-              icon: logo,
-              title: name,
-              currency: symbol,
-              toPresentation: toPresentationIcrc1,
-              blockchain: Blockchain.IC,
-              price: price && `${price} USD`,
-              ...rest,
-            }),
-          )
+        ? ICRC1Token.map(({ symbol, name, logo, ...rest }) => ({
+            tokenStandard: TokenStandards.ICRC1,
+            icon: logo,
+            title: name,
+            currency: symbol,
+            blockchain: Blockchain.IC,
+            ...rest,
+          }))
         : []),
     ],
     isLoading: isIcrc1Loading || isLoading,

@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
+import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -19,6 +20,7 @@ export type Token = {
   currency: string
   balance?: bigint
   price?: string
+  rate?: number | undefined
   blockchain: Blockchain
   decimals?: number
   canisterId?: string
@@ -105,19 +107,27 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
                     <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-                      {`${token.toPresentation(
-                        token.balance!,
-                        token.decimals!,
-                      )} ${token.currency}`}
+                      <TickerAmount
+                        symbol={token.currency}
+                        value={Number(token.balance)}
+                        decimals={token.decimals}
+                      />
                     </span>
                   </td>
                   <td
                     className="text-sm text-right pr-[20px]"
                     id={`token_${token.title.replace(/\s/g, "")}_usd`}
                   >
-                    {token.price !== undefined
-                      ? `${token.price}`
-                      : "Not listed"}
+                    {token.rate !== undefined ? (
+                      <TickerAmount
+                        symbol={token.currency}
+                        value={Number(token.balance)}
+                        decimals={token.decimals}
+                        usdRate={token.rate}
+                      />
+                    ) : (
+                      "Not listed"
+                    )}
                   </td>
                   <td className="px-[10px] text-sm text-right">
                     <AssetDropdown
@@ -157,9 +167,16 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     )} ${token.currency}`}
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
-                    {token.price !== undefined
-                      ? `${token.price}`
-                      : "Not listed"}
+                    {token.rate !== undefined ? (
+                      <TickerAmount
+                        symbol={token.currency}
+                        value={Number(token.balance)}
+                        decimals={token.decimals}
+                        usdRate={token.rate}
+                      />
+                    ) : (
+                      "Not listed"
+                    )}
                   </div>
                 </div>
                 <div className="w-auto">

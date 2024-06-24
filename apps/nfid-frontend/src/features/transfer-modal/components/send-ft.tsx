@@ -2,6 +2,8 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { Token } from "packages/integration/src/lib/asset/types"
+import { NoIcon } from "packages/ui/src/assets/no-icon"
+import { pressHandler, pasteHandler } from "packages/utils/src/lib/input-events"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -27,7 +29,6 @@ import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { NoIcon } from "frontend/ui/atoms/icons/no-icon"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
@@ -344,64 +345,6 @@ export const TransferFT = ({
       decimals,
     ],
   )
-
-  const pressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = /[0-9.]/
-    const key = e.key
-    const input = e.target as HTMLInputElement | null
-    if (!input) return
-    const value = input.value
-    const cursorPosition = input.selectionStart ?? 0
-    const dotPosition = value.indexOf(".")
-
-    if (["ArrowLeft", "ArrowRight", "Backspace", "Delete"].includes(key)) {
-      return
-    }
-
-    if (key === "." && !value.includes(".")) {
-      const tempValue =
-        value.slice(0, cursorPosition) + "." + value.slice(cursorPosition)
-      const [wholePart, decimalPart] = tempValue.split(".")
-
-      if (decimalPart && decimalPart.length > MAX_DECIMAL_LENGTH) {
-        input.value = `${wholePart}.${decimalPart.substring(
-          0,
-          MAX_DECIMAL_LENGTH,
-        )}`
-        input.setSelectionRange(cursorPosition, cursorPosition) // Restore cursor position
-        e.preventDefault()
-        return
-      }
-    }
-
-    if (!allowedKeys.test(key) || (key === "." && value.includes("."))) {
-      e.preventDefault()
-      return
-    }
-
-    if (dotPosition !== -1 && cursorPosition > dotPosition) {
-      const decimalPart = value.substring(dotPosition + 1)
-      const decimalDigits = decimalPart.length
-
-      if (decimalDigits >= MAX_DECIMAL_LENGTH) {
-        e.preventDefault()
-      }
-    }
-  }
-
-  const pasteHandler = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedValue = e.clipboardData.getData("text/plain").replace(",", ".")
-    const decimalIndex = pastedValue.indexOf(".")
-    const $this = e.target as HTMLInputElement
-
-    if (decimalIndex !== -1) {
-      e.preventDefault()
-      const decimalPart = pastedValue.substring(decimalIndex + 1)
-      $this.value =
-        pastedValue.substring(0, decimalIndex + 1) +
-        decimalPart.substring(0, MAX_DECIMAL_LENGTH)
-    }
-  }
 
   const loadingMessage = useMemo(() => {
     if (isLoadingProfile) return "Fetching account information..."

@@ -1,6 +1,6 @@
 import { clsx } from "clsx"
 
-import { NoIcon } from "../../../../../apps/nfid-frontend/src/ui/atoms/icons/no-icon"
+import { NoIcon } from "../../assets/no-icon"
 import { Badge } from "../../atoms/badge"
 
 interface IChooseItem {

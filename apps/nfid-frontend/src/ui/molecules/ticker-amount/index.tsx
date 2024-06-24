@@ -43,6 +43,7 @@ export const formatAssetAmountRaw = (
     .toFixed(MAX_DECIMAL_LENGTH)
     .replace(TRIM_ZEROS, "")
 }
+
 export const TickerAmount: React.FC<TickerAmountProps> = ({
   symbol,
   value,

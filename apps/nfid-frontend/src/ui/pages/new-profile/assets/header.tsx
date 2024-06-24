@@ -5,7 +5,7 @@ import {
   isICRC1Canister,
   ICRC1Error,
 } from "packages/integration/src/lib/token/icrc1"
-import { UnknownIcon } from "packages/ui/src/atoms/icons/unknown"
+import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { mutate } from "swr"
@@ -30,7 +30,6 @@ export const ProfileAssetsHeader = () => {
   const {
     register,
     formState: { errors },
-    handleSubmit,
     resetField,
     getValues,
   } = useForm({
@@ -105,7 +104,7 @@ export const ProfileAssetsHeader = () => {
       <div className="flex items-center justify-between w-full">
         <p>Your tokens</p>
         <Button
-          className={clsx("px-[10px] md:flex pr-0 md:pr-[15px] z-10")}
+          className={clsx("px-[10px] md:flex pr-0 md:pr-[15px]")}
           id="importToken"
           onClick={handleOpenImportToken}
           icon={<PlusIcon />}
@@ -166,7 +165,7 @@ export const ProfileAssetsHeader = () => {
                         width={36}
                       />
                     ) : (
-                      <UnknownIcon />
+                      <NoIcon className="w-[36px] h-[36px]" />
                     )}
                   </div>
                   <div className="grid grid-cols-[110px,1fr] gap-3 my-4">
@@ -195,7 +194,13 @@ export const ProfileAssetsHeader = () => {
             icon={<PlusIcon />}
             block
             type="primary"
-            onClick={handleSubmit(submit)}
+            onClick={(event) => {
+              event.preventDefault()
+              submit({
+                ledgerID: getValues("ledgerID"),
+                indexID: getValues("indexID"),
+              })
+            }}
             disabled={
               Boolean(!tokenInfo) ||
               Object.values(errors).some((error) => error)

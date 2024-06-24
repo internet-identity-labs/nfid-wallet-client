@@ -12,6 +12,8 @@ import {
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 
+import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
+
 import { IActivityRow } from "../types"
 
 interface IActivityTableRow extends IActivityRow {
@@ -65,9 +67,22 @@ export const ActivityTableRow = ({
       {asset?.type === "ft" ? (
         <td className="leading-5 text-right sm:text-left">
           <p className="font-medium">
-            {asset.amount} {asset.currency}
+            <TickerAmount
+              value={asset.amount}
+              decimals={asset.decimals}
+              symbol={asset.currency}
+            />
           </p>
-          <p className="text-gray-400 text-xs">{asset.amountUSD}</p>
+          {asset.rate && (
+            <p className="text-gray-400 text-xs">
+              <TickerAmount
+                value={asset.amount}
+                decimals={asset.decimals}
+                symbol={asset.currency}
+                usdRate={asset.rate}
+              />
+            </p>
+          )}
         </td>
       ) : (
         <td className="leading-5 text-right sm:text-left">

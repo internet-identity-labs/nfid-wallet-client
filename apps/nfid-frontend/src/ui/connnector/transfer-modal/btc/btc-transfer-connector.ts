@@ -20,8 +20,6 @@ import {
   ITransferFTConnector,
   ITransferFTRequest,
   ITransferResponse,
-  TokenBalance,
-  TokenFee,
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
@@ -37,14 +35,15 @@ export class BtcTransferConnector
   }
 
   @Cache(connectorCache, { ttl: 30 })
-  async getBalance(): Promise<TokenBalance> {
+  async getBalance(): Promise<number> {
     const identity = await this.getIdentity()
     const tokenSheet = await new BtcAsset().getRootAccount(identity)
 
-    return {
-      balance: e8sICPToString(Number(tokenSheet.tokenBalance)),
-      balanceinUsd: tokenSheet.usdBalance,
-    }
+    return +e8sICPToString(Number(tokenSheet.tokenBalance))
+  }
+
+  async getDecimals() {
+    return 8
   }
 
   @Cache(connectorCache, { ttl: 60 })
@@ -55,8 +54,8 @@ export class BtcTransferConnector
     return [
       makeRootAccountGroupedOptions(
         address,
-        balance.balance?.toString() ?? "",
-        balance.balanceinUsd ?? "",
+        balance.toString() ?? "",
+        undefined,
         this.config.tokenStandard,
       ),
     ]
@@ -70,7 +69,7 @@ export class BtcTransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({ to, amount }: ITransferFTRequest): Promise<TokenFee> {
+  async getFee({ to, amount }: ITransferFTRequest): Promise<number> {
     const identity = await this.getIdentity()
     const fee = await new BtcWallet(identity).getFee(
       to,
@@ -78,10 +77,7 @@ export class BtcTransferConnector
     )
     const rate = await new PriceService().getPrice(["BTC"])
 
-    return {
-      fee: `${e8sICPToString(Number(fee))} ${this.config.feeCurrency}`,
-      feeUsd: String(Number(rate[0].price) * (fee / E8S)),
-    }
+    return Number(fee)
   }
 
   async transfer(request: ITransferFTRequest): Promise<ITransferResponse> {

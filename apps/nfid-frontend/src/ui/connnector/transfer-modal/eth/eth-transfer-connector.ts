@@ -12,7 +12,6 @@ import {
   ITransferConfig,
   ITransferFTConnector,
   ITransferFTRequest,
-  TokenFee,
   TransferModalType,
 } from "../types"
 
@@ -21,11 +20,7 @@ export class EthTransferConnector
   implements ITransferFTConnector
 {
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({
-    to,
-    amount,
-    currency,
-  }: ITransferFTRequest): Promise<TokenFee> {
+  async getFee({ to, amount, currency }: ITransferFTRequest): Promise<number> {
     const cacheKey = currency + "_transaction"
 
     const identity = await this.getIdentity()
@@ -37,10 +32,7 @@ export class EthTransferConnector
       ttl: 10,
     })
 
-    return {
-      fee: `${estimatedTransaction.fee} ${this.config.feeCurrency}`,
-      feeUsd: estimatedTransaction.feeUsd,
-    }
+    return +estimatedTransaction.fee
   }
 }
 

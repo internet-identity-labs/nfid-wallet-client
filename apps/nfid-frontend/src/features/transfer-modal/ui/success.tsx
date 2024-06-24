@@ -1,10 +1,10 @@
 import clsx from "clsx"
+import NoIcon from "packages/ui/src/assets/no-icon.svg"
 import React, { useMemo } from "react"
 
 import { LottieAnimation } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
-import NoIcon from "../../../ui/atoms/icons/no-icon.svg"
 import Fail from "../assets/error.json"
 import Success1 from "../assets/success_1.json"
 import Success2 from "../assets/success_2.json"

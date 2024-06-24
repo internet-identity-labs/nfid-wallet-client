@@ -5,6 +5,7 @@ import {
   isICRC1Canister,
   ICRC1Error,
 } from "packages/integration/src/lib/token/icrc1"
+import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { mutate } from "swr"
@@ -14,7 +15,6 @@ import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
 
 import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
-import { NoIcon } from "frontend/ui/atoms/icons/no-icon"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 

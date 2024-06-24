@@ -115,6 +115,7 @@ export class ICRC1TransferConnector
         const options: IGroupOption[] = await Promise.all(
           principals.map(async ({ account, principal }) => {
             const balance = await this.getBalance(undefined, currency ?? "")
+            const rate = await this.getRate(symbol)
 
             return {
               title: getWalletName(
@@ -129,7 +130,7 @@ export class ICRC1TransferConnector
               ),
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + symbol,
-              //innerSubtitle: "$" + balanceinUsd,
+              innerSubtitle: `${balance * rate!} USD`,
             }
           }),
         )
@@ -172,12 +173,7 @@ export class ICRC1TransferConnector
       throw new Error("Identity not found. Please try again")
 
     const { canisterId, identity, amount, to, fee } = request
-
-    console.log("transferrrr", amount, fee)
-
     const { owner, subaccount } = decodeIcrcAccount(to)
-
-    console.debug("ICRC1 Transfer request", { request })
 
     try {
       const result = await transferICRC1(identity, canisterId!, {
@@ -193,7 +189,6 @@ export class ICRC1TransferConnector
       })
 
       if (hasOwnProperty(result, "Err")) {
-        console.log("errr!!", result)
         return {
           errorMessage: result.Err as Error,
         }

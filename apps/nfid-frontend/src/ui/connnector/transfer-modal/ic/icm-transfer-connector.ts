@@ -1,5 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
 import { mutate } from "swr"
@@ -205,8 +206,14 @@ export abstract class ICMTransferConnector<
     const isAccountIdentifier =
       addressValidationService.isValidAccountIdentifier(address)
 
-    if (!isPrincipal && !isAccountIdentifier)
-      return "Incorrect format of Destination Address"
-    else return true
+    if (!isPrincipal && !isAccountIdentifier) {
+      try {
+        decodeIcrcAccount(address)
+        return true
+      } catch (e) {
+        console.error("Error: ", e)
+        return "Incorrect format of Destination Address"
+      }
+    } else return true
   }
 }

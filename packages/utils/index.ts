@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { MAX_DECIMAL_LENGTH } from "../../../integration/src/lib/token/constants"
+import { MAX_DECIMAL_LENGTH } from "@nfid/integration/token/constants"
 
 export const pressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
   const allowedKeys = /[0-9.]/

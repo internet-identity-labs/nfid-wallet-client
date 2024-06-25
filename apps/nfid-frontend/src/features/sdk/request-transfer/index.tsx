@@ -131,7 +131,9 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           <p>Network fee</p>
           <div className="text-right">
             <p>{nft ? "$0.00" : toUSD(WALLET_FEE, Number(rate))}</p>
-            <p className="text-xs text-gray-400">{nft ? "0.00" : fee}</p>
+            <p className="text-xs text-gray-400">
+              {nft ? "0.00" : Number(fee)}
+            </p>
           </div>
         </div>
         <div className="flex items-center justify-between text-sm h-14">
@@ -218,7 +220,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           Reject
         </Button>
 
-        <SDKFooter identity={identity} balance={balance} />
+        <SDKFooter identity={identity} balance={Number(balance)} />
       </div>
     </>
   )

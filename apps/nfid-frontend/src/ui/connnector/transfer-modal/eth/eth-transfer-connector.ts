@@ -20,11 +20,11 @@ export class EthTransferConnector
   implements ITransferFTConnector
 {
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({ to, amount, currency }: ITransferFTRequest): Promise<number> {
+  async getFee({ to, amount, currency }: ITransferFTRequest): Promise<bigint> {
     const cacheKey = currency + "_transaction"
 
     const identity = await this.getIdentity()
-    const request = new EthTransferRequest(identity, to, amount)
+    const request = new EthTransferRequest(identity, to, amount as any)
     const estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
       request,
     )
@@ -32,7 +32,7 @@ export class EthTransferConnector
       ttl: 10,
     })
 
-    return +estimatedTransaction.fee
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

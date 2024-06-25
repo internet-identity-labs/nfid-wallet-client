@@ -35,11 +35,11 @@ export class BtcTransferConnector
   }
 
   @Cache(connectorCache, { ttl: 30 })
-  async getBalance(): Promise<number> {
+  async getBalance(): Promise<bigint> {
     const identity = await this.getIdentity()
     const tokenSheet = await new BtcAsset().getRootAccount(identity)
 
-    return +e8sICPToString(Number(tokenSheet.tokenBalance))
+    return BigInt(e8sICPToString(Number(tokenSheet.tokenBalance)))
   }
 
   async getDecimals() {
@@ -69,15 +69,17 @@ export class BtcTransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({ to, amount }: ITransferFTRequest): Promise<number> {
+  async getFee({ to, amount }: ITransferFTRequest): Promise<bigint> {
     const identity = await this.getIdentity()
     const fee = await new BtcWallet(identity).getFee(
       to,
-      toBn(amount).multipliedBy(E8S).toNumber(),
+      toBn(amount as any)
+        .multipliedBy(E8S)
+        .toNumber(),
     )
     const rate = await new PriceService().getPrice(["BTC"])
 
-    return Number(fee)
+    return BigInt(fee)
   }
 
   async transfer(request: ITransferFTRequest): Promise<ITransferResponse> {
@@ -86,7 +88,7 @@ export class BtcTransferConnector
     let result: ITransferResponse
 
     try {
-      const response = await new BtcAsset().transfer(identity, request)
+      const response = await new BtcAsset().transfer(identity, request as any)
 
       result = {
         url: `https://live.blockcypher.com/btc-testnet/tx/${response}/`,

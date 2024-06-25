@@ -74,7 +74,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
 
   abstract getFee(
     request: ITransferFTRequest | ITransferNFTRequest,
-  ): Promise<number>
+  ): Promise<bigint>
   abstract transfer(
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<ITransferResponse>

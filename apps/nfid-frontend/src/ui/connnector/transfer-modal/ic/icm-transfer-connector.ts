@@ -136,7 +136,7 @@ export abstract class ICMTransferConnector<
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getBalance(address: string): Promise<number> {
+  async getBalance(address: string): Promise<bigint> {
     const addressVerified =
       address.length === PRINCIPAL_LENGTH
         ? AccountIdentifier.fromPrincipal({
@@ -145,7 +145,7 @@ export abstract class ICMTransferConnector<
         : address
 
     const balance = await getBalance(addressVerified)
-    return Number(balance)
+    return balance
   }
 
   getAddress(_: string, identity: DelegationIdentity): Promise<string> {

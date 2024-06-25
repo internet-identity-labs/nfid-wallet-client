@@ -37,11 +37,11 @@ export class PolygonMumbaiERC20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getBalance(_?: string, currency?: string): Promise<number> {
+  async getBalance(_?: string, currency?: string): Promise<bigint> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
-    return +token.balance
+    return BigInt(token.balance)
   }
 
   @Cache(connectorCache, { ttl: 10 })
@@ -97,7 +97,7 @@ export class PolygonMumbaiERC20TransferConnector
     amount,
     currency,
     contract,
-  }: ITransferFTRequest): Promise<number> {
+  }: ITransferFTRequest): Promise<bigint> {
     const cacheKey = currency + "_transaction"
 
     const identity = await this.getIdentity()
@@ -105,7 +105,7 @@ export class PolygonMumbaiERC20TransferConnector
       identity,
       to,
       contract,
-      amount,
+      amount as any,
     )
 
     const estimatedTransaction =
@@ -115,7 +115,7 @@ export class PolygonMumbaiERC20TransferConnector
       ttl: 10,
     })
 
-    return +estimatedTransaction.fee
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

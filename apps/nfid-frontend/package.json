@@ -34,5 +34,6 @@
       "last 2 safari version",
       "last 2 edge version"
     ]
-  }
+  },
+  "license": "MIT"
 }

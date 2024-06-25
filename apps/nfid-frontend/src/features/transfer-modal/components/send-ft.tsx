@@ -211,6 +211,8 @@ export const TransferFT = ({
       const token = selectedConnector?.getTokenConfig()
       if (!token) return
 
+      console.log("handleTrackTransfer", amount, transferFee)
+
       sendReceiveTracking.sendToken({
         network: token.blockchain,
         destinationType: "address",
@@ -218,7 +220,7 @@ export const TransferFT = ({
         tokenType: "fungible",
         tokenStandard: token.tokenStandard,
         amount: amount,
-        fee: transferFee ?? 0,
+        fee: Number(transferFee) ?? 0,
       })
     },
     [selectedConnector, selectedTokenCurrency, transferFee],
@@ -226,11 +228,13 @@ export const TransferFT = ({
 
   const maxHandler = () => {
     if (transferFee && balance) {
+      console.log("balance max", balance, transferFee, balance - transferFee)
+      //const val = BigInt(balance) - BigInt(transferFee)
       const val = balance - transferFee
 
       if (val <= 0) return
 
-      const formattedValue = formatAssetAmountRaw(val, decimals!)
+      const formattedValue = formatAssetAmountRaw(Number(val), decimals!)
 
       setValue("amount", formattedValue)
       if (!balance || !rate) return
@@ -281,6 +285,15 @@ export const TransferFT = ({
         })
       }
 
+      console.log(
+        "transferrrr send-ft",
+        selectedTokenCurrency,
+        decimals,
+        values.amount,
+        +values.amount * 10 ** decimals!,
+        transferFee,
+      )
+
       onTransferPromise({
         assetImg: tokenMetadata?.icon ?? "",
         initialPromise: new Promise(async (resolve) => {
@@ -288,10 +301,14 @@ export const TransferFT = ({
           const res = await selectedConnector.transfer({
             to: values.to,
             canisterId: tokenMetadata.canisterId,
-            fee: transferFee! || undefined,
+            fee: transferFee!,
+            // amount:
+            //   selectedTokenCurrency !== "ICP"
+            //     ? +values.amount * 10 ** decimals!
+            //     : +values.amount,
             amount:
               selectedTokenCurrency !== "ICP"
-                ? +values.amount * 10 ** decimals!
+                ? BigInt(Math.round(+values.amount * 10 ** decimals!))
                 : +values.amount,
             currency: selectedTokenCurrency,
             identity: await selectedConnector?.getIdentity(
@@ -303,6 +320,8 @@ export const TransferFT = ({
                 ? String(tokenMetadata.contractAddress)
                 : "",
           })
+
+          console.log("resss", res)
 
           handleTrackTransfer(values.amount)
           resolve(res)
@@ -400,9 +419,14 @@ export const TransferFT = ({
             {...register("amount", {
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
-                formatAssetAmountRaw(balance!, decimals!),
-                formatAssetAmountRaw(transferFee!, decimals!),
+                formatAssetAmountRaw(Number(balance!), decimals!),
+                formatAssetAmountRaw(Number(transferFee!), decimals!),
               ),
+
+              // validate: validateTransferAmountField(
+              //   balance!.toString(),
+              //   transferFee!.toString(),
+              // ),
               valueAsNumber: true,
               onBlur: calculateFee,
               onChange: (e) => {
@@ -537,14 +561,14 @@ export const TransferFT = ({
               <div className="text-right">
                 <p className="text-sm leading-5" id="fee">
                   <TickerAmount
-                    value={transferFee!}
+                    value={Number(transferFee)}
                     decimals={decimals}
                     symbol={selectedTokenCurrency}
                   />
                   {!!rate && (
                     <span className="block text-xs">
                       <TickerAmount
-                        value={transferFee!}
+                        value={Number(transferFee)}
                         decimals={decimals}
                         symbol={selectedTokenCurrency}
                         usdRate={rate}
@@ -579,7 +603,7 @@ export const TransferFT = ({
               {!isBalanceLoading && !isBalanceFetching ? (
                 <span id="balance">
                   <TickerAmount
-                    value={balance!}
+                    value={Number(balance)}
                     decimals={decimals}
                     symbol={selectedTokenCurrency}
                   />
@@ -595,7 +619,7 @@ export const TransferFT = ({
               <div className="flex items-center space-x-0.5">
                 {!isBalanceLoading && !isBalanceFetching ? (
                   <TickerAmount
-                    value={balance!}
+                    value={Number(balance)}
                     decimals={decimals}
                     symbol={selectedTokenCurrency}
                     usdRate={rate}

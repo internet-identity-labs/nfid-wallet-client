@@ -8,6 +8,8 @@ type SendToken = {
   tokenStandard: string
   amount: string | number
   fee: string | number
+  // amount: bigint
+  // fee: bigint
 }
 
 const mapTokenStandard = (tokenStandard: string) => {

@@ -77,7 +77,7 @@ export abstract class EVMTransferConnector<
     return await this.config.assetService.getAddress(identity)
   }
 
-  async getBalance(): Promise<number> {
+  async getBalance(): Promise<bigint> {
     const address = await this.getAddress()
     const balance = await this.config.assetService.getBalance(address)
 

@@ -59,10 +59,12 @@ export class ICRC1TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 15 })
-  async getBalance(_: any, currency?: string): Promise<number> {
+  async getBalance(_: any, currency?: string): Promise<bigint> {
     const token = await this.getTokenMetadata(currency ?? "")
 
-    return Number(token.balance)
+    console.log("balancee", token)
+
+    return token.balance
   }
 
   @Cache(connectorCache, { ttl: 60 })
@@ -130,7 +132,7 @@ export class ICRC1TransferConnector
               ),
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + symbol,
-              innerSubtitle: `${balance * rate!} USD`,
+              innerSubtitle: `${Number(balance) * rate!} USD`,
             }
           }),
         )
@@ -150,10 +152,10 @@ export class ICRC1TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({ currency }: ITransferFTRequest): Promise<number> {
+  async getFee({ currency }: ITransferFTRequest): Promise<bigint> {
     const token = await this.getTokenMetadata(currency)
 
-    return Number(token.fee)
+    return BigInt(token.fee)
   }
 
   async getDecimals(currency: string): Promise<number> {
@@ -174,6 +176,8 @@ export class ICRC1TransferConnector
 
     const { canisterId, identity, amount, to, fee } = request
     const { owner, subaccount } = decodeIcrcAccount(to)
+
+    console.log("transferrr icrc1 connector", BigInt(fee!), BigInt(amount))
 
     try {
       const result = await transferICRC1(identity, canisterId!, {

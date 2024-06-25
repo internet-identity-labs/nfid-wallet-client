@@ -13,6 +13,11 @@ interface TickerAmountProps {
   usdRate?: number
 }
 
+const truncateToDecimals = (value: number, dec: number) => {
+  const calcDec = Math.pow(10, dec)
+  return Math.trunc(value * calcDec) / calcDec
+}
+
 const checkUsd = (value: number): string =>
   value < 0.01
     ? "0.00 USD"
@@ -39,9 +44,17 @@ export const formatAssetAmountRaw = (
   value: number,
   decimals: number,
 ): string => {
-  return (value / 10 ** decimals)
-    .toFixed(MAX_DECIMAL_LENGTH)
-    .replace(TRIM_ZEROS, "")
+  const amount = value / 10 ** decimals
+  console.log(
+    "formatAssetAmountRaw",
+    amount,
+    truncateToDecimals(amount, MAX_DECIMAL_LENGTH),
+    (value / 10 ** decimals)
+      .toFixed(MAX_DECIMAL_LENGTH)
+      .replace(TRIM_ZEROS, ""),
+  )
+
+  return truncateToDecimals(amount, MAX_DECIMAL_LENGTH).toString()
 }
 
 export const TickerAmount: React.FC<TickerAmountProps> = ({

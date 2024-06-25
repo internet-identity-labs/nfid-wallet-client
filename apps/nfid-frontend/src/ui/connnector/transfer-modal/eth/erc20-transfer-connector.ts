@@ -30,11 +30,11 @@ export class EthERC20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 60 })
-  async getBalance(_?: string, currency?: string): Promise<number> {
+  async getBalance(_?: string, currency?: string): Promise<bigint> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
-    return +token.balance
+    return BigInt(token.balance)
   }
 
   @Cache(connectorCache, { ttl: 600 })
@@ -88,14 +88,14 @@ export class EthERC20TransferConnector
     amount,
     contract,
     currency,
-  }: ITransferFTRequest): Promise<number> {
+  }: ITransferFTRequest): Promise<bigint> {
     const cacheKey = currency + "_transaction"
     const identity = await this.getIdentity()
     const request = new Erc20EstimateTransactionRequest(
       identity,
       to,
       contract,
-      amount,
+      amount as any,
     )
 
     const estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
@@ -105,7 +105,7 @@ export class EthERC20TransferConnector
       ttl: 10,
     })
 
-    return +estimatedTransaction.fee
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

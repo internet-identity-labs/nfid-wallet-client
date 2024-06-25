@@ -28,7 +28,7 @@ export class MaticMumbaiTransferConnector
     const cacheKey = this.config.tokenStandard + "_transaction"
 
     const identity = await this.getIdentity()
-    const request = new EthTransferRequest(identity, to, amount)
+    const request = new EthTransferRequest(identity, to, amount as any)
     const estimatedTransaction =
       await polygonMumbaiAsset.getEstimatedTransaction(request)
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
@@ -39,18 +39,18 @@ export class MaticMumbaiTransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getFee({ to, amount }: ITransferFTRequest): Promise<number> {
+  async getFee({ to, amount }: ITransferFTRequest): Promise<bigint> {
     const cacheKey = this.config.tokenStandard + "_transaction"
 
     const identity = await this.getIdentity()
-    const request = new EthTransferRequest(identity, to, amount)
+    const request = new EthTransferRequest(identity, to, amount as any)
     const estimatedTransaction =
       await polygonMumbaiAsset.getEstimatedTransaction(request)
     await connectorCache.setItem(cacheKey, estimatedTransaction, {
       ttl: 10,
     })
 
-    return +estimatedTransaction.fee
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

@@ -1,5 +1,6 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { NoIcon } from "packages/ui/src/assets/no-icon"
@@ -48,7 +49,6 @@ import {
 
 import {
   PRINCIPAL_LENGTH,
-  MAX_DECIMAL_LENGTH,
   validateTransferAmountField,
 } from "../utils/validations"
 import { ITransferSuccess } from "./success"
@@ -218,7 +218,7 @@ export const TransferFT = ({
         tokenType: "fungible",
         tokenStandard: token.tokenStandard,
         amount: amount,
-        fee: transferFee ?? 0,
+        fee: Number(transferFee) ?? 0,
       })
     },
     [selectedConnector, selectedTokenCurrency, transferFee],
@@ -226,15 +226,17 @@ export const TransferFT = ({
 
   const maxHandler = () => {
     if (transferFee && balance) {
-      const val = balance - transferFee
+      const balanceNum = new BigNumber(balance.toString())
+      const feeNum = new BigNumber(transferFee.toString())
+      const val = balanceNum.minus(feeNum)
 
-      if (val <= 0) return
+      if (val.isLessThanOrEqualTo(0)) return
 
-      const formattedValue = formatAssetAmountRaw(val, decimals!)
+      const formattedValue = formatAssetAmountRaw(Number(val), decimals!)
 
       setValue("amount", formattedValue)
       if (!balance || !rate) return
-      setAmountInUSD(+formattedValue)
+      setAmountInUSD(Number(formattedValue))
     }
   }
 
@@ -288,7 +290,7 @@ export const TransferFT = ({
           const res = await selectedConnector.transfer({
             to: values.to,
             canisterId: tokenMetadata.canisterId,
-            fee: transferFee! || undefined,
+            fee: transferFee!,
             amount:
               selectedTokenCurrency !== "ICP"
                 ? +values.amount * 10 ** decimals!
@@ -308,7 +310,7 @@ export const TransferFT = ({
           resolve(res)
         }),
         title: `${Number(values.amount)
-          .toFixed(MAX_DECIMAL_LENGTH)
+          .toFixed(decimals)
           .replace(/\.?0+$/, "")} ${selectedTokenCurrency}`,
         subTitle: `${(Number(values.amount) * Number(rate)).toFixed(2)} USD`,
         callback: () => {
@@ -400,8 +402,8 @@ export const TransferFT = ({
             {...register("amount", {
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
-                formatAssetAmountRaw(balance!, decimals!),
-                formatAssetAmountRaw(transferFee!, decimals!),
+                formatAssetAmountRaw(Number(balance), decimals!),
+                formatAssetAmountRaw(Number(transferFee!), decimals!),
               ),
               valueAsNumber: true,
               onBlur: calculateFee,
@@ -410,9 +412,10 @@ export const TransferFT = ({
                 setAmountInUSD(e.target.value)
               },
             })}
-            onKeyDown={pressHandler}
-            onPaste={pasteHandler}
+            onKeyDown={(e) => pressHandler(e, decimals!)}
+            onPaste={(e) => pasteHandler(e, decimals!)}
           />
+
           <div
             className={clsx(
               "absolute mt-[75px] left-5",
@@ -428,14 +431,12 @@ export const TransferFT = ({
                 "text-xs pt-[4px] text-gray-400 text-sm",
               )}
             >
-              {!!rate && (
-                <TickerAmount
-                  symbol={tokenMetadata!.symbol}
-                  value={amountInUSD}
-                  decimals={undefined}
-                  usdRate={rate}
-                />
-              )}
+              <TickerAmount
+                symbol={selectedTokenCurrency}
+                value={amountInUSD}
+                decimals={undefined}
+                usdRate={rate}
+              />
             </p>
           )}
           <ChooseModal
@@ -537,14 +538,14 @@ export const TransferFT = ({
               <div className="text-right">
                 <p className="text-sm leading-5" id="fee">
                   <TickerAmount
-                    value={transferFee!}
+                    value={Number(transferFee)}
                     decimals={decimals}
                     symbol={selectedTokenCurrency}
                   />
                   {!!rate && (
                     <span className="block text-xs">
                       <TickerAmount
-                        value={transferFee!}
+                        value={Number(transferFee)}
                         decimals={decimals}
                         symbol={selectedTokenCurrency}
                         usdRate={rate}
@@ -579,7 +580,7 @@ export const TransferFT = ({
               {!isBalanceLoading && !isBalanceFetching ? (
                 <span id="balance">
                   <TickerAmount
-                    value={balance!}
+                    value={Number(balance)}
                     decimals={decimals}
                     symbol={selectedTokenCurrency}
                   />
@@ -595,7 +596,7 @@ export const TransferFT = ({
               <div className="flex items-center space-x-0.5">
                 {!isBalanceLoading && !isBalanceFetching ? (
                   <TickerAmount
-                    value={balance!}
+                    value={Number(balance)}
                     decimals={decimals}
                     symbol={selectedTokenCurrency}
                     usdRate={rate}

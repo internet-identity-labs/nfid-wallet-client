@@ -22,7 +22,7 @@ export type Token = {
   price?: string
   rate?: number | undefined
   blockchain: Blockchain
-  decimals?: number
+  decimals: number
   canisterId?: string
 }
 
@@ -161,10 +161,11 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 </div>
                 <div className="text-right ml-auto mr-[20px]">
                   <div className="text-sm leading-5">
-                    {`${token.toPresentation(
-                      token.balance!,
-                      token.decimals!,
-                    )} ${token.currency}`}
+                    <TickerAmount
+                      symbol={token.currency}
+                      value={Number(token.balance)}
+                      decimals={token.decimals}
+                    />
                   </div>
                   <div className="text-xs leading-3 text-gray-400">
                     {token.rate !== undefined ? (

@@ -37,8 +37,8 @@ export class ICTransferConnector
     )
   }
 
-  async getFee(): Promise<number> {
-    return WALLET_FEE_E8S
+  async getFee(): Promise<bigint> {
+    return BigInt(WALLET_FEE_E8S)
   }
 
   async getDecimals() {

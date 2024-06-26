@@ -1,8 +1,9 @@
 import * as React from "react"
 
-import { MAX_DECIMAL_LENGTH } from "@nfid/integration/token/constants"
-
-export const pressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+export const pressHandler = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  decimals: number,
+) => {
   const allowedKeys = /[0-9.]/
   const key = e.key
   const input = e.target as HTMLInputElement | null
@@ -20,11 +21,8 @@ export const pressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
       value.slice(0, cursorPosition) + "." + value.slice(cursorPosition)
     const [wholePart, decimalPart] = tempValue.split(".")
 
-    if (decimalPart && decimalPart.length > MAX_DECIMAL_LENGTH) {
-      input.value = `${wholePart}.${decimalPart.substring(
-        0,
-        MAX_DECIMAL_LENGTH,
-      )}`
+    if (decimalPart && decimalPart.length > decimals) {
+      input.value = `${wholePart}.${decimalPart.substring(0, decimals)}`
       input.setSelectionRange(cursorPosition, cursorPosition)
       e.preventDefault()
       return
@@ -40,13 +38,16 @@ export const pressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const decimalPart = value.substring(dotPosition + 1)
     const decimalDigits = decimalPart.length
 
-    if (decimalDigits >= MAX_DECIMAL_LENGTH) {
+    if (decimalDigits >= decimals) {
       e.preventDefault()
     }
   }
 }
 
-export const pasteHandler = (e: React.ClipboardEvent<HTMLInputElement>) => {
+export const pasteHandler = (
+  e: React.ClipboardEvent<HTMLInputElement>,
+  decimals: number,
+) => {
   const pastedValue = e.clipboardData.getData("text/plain").replace(",", ".")
   const decimalIndex = pastedValue.indexOf(".")
   const $this = e.target as HTMLInputElement
@@ -56,6 +57,6 @@ export const pasteHandler = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const decimalPart = pastedValue.substring(decimalIndex + 1)
     $this.value =
       pastedValue.substring(0, decimalIndex + 1) +
-      decimalPart.substring(0, MAX_DECIMAL_LENGTH)
+      decimalPart.substring(0, decimals)
   }
 }

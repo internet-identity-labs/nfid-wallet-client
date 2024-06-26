@@ -1,5 +1,6 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { NoIcon } from "packages/ui/src/assets/no-icon"
@@ -225,15 +226,17 @@ export const TransferFT = ({
 
   const maxHandler = () => {
     if (transferFee && balance) {
-      const val = balance - transferFee
+      const balanceNum = new BigNumber(balance.toString())
+      const feeNum = new BigNumber(transferFee.toString())
+      const val = balanceNum.minus(feeNum)
 
-      if (val <= 0) return
+      if (val.isLessThanOrEqualTo(0)) return
 
       const formattedValue = formatAssetAmountRaw(Number(val), decimals!)
 
       setValue("amount", formattedValue)
       if (!balance || !rate) return
-      setAmountInUSD(+formattedValue)
+      setAmountInUSD(Number(formattedValue))
     }
   }
 
@@ -412,6 +415,7 @@ export const TransferFT = ({
             onKeyDown={(e) => pressHandler(e, decimals!)}
             onPaste={(e) => pasteHandler(e, decimals!)}
           />
+
           <div
             className={clsx(
               "absolute mt-[75px] left-5",

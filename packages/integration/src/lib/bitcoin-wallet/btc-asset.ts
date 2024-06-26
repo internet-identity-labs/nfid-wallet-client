@@ -121,6 +121,7 @@ export class BtcAsset extends Asset<string> {
         currency: tx.asset,
         rate: undefined,
         amount: tx.quantity,
+        decimals: 8,
       },
     }))
   }

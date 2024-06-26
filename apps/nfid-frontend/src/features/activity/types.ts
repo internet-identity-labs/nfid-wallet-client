@@ -19,6 +19,7 @@ export enum IActivityStatus {
 }
 
 export interface IActivityRow {
+  id: string
   action: IActivityAction
   chain: Chain
   network: Blockchain

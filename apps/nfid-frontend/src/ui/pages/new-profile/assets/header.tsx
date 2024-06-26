@@ -107,7 +107,7 @@ export const ProfileAssetsHeader = () => {
           className={clsx("px-[10px] md:flex pr-0 md:pr-[15px]")}
           id="importToken"
           onClick={handleOpenImportToken}
-          icon={<PlusIcon />}
+          icon={<PlusIcon className="w-[18px]" />}
           isSmall
           type="ghost"
         >

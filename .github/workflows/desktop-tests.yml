@@ -14,8 +14,8 @@ on:
         type: choice
         options:
           - dev
-          - staging
-          - production
+          - stage
+          - ic
       logLevel:
         description: "Log level"
         required: true
@@ -48,6 +48,7 @@ env:
 jobs:
   check-secrets:
     name: Check secrets
+    environment: ${{ github.event.inputs.env }}
     defaults:
       run:
         shell: bash
@@ -97,6 +98,7 @@ jobs:
     name: Docker Image Build
     needs: check-secrets
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env }}
     permissions:
       packages: write
       contents: read
@@ -191,6 +193,7 @@ jobs:
     name: Unit Tests
     needs: check-secrets
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env }}
 
     steps:
       - name: Checkout repo
@@ -266,6 +269,7 @@ jobs:
     name: E2E Tests
     needs: docker-for-e2e
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env }}
     permissions:
       packages: write
       contents: read
@@ -457,6 +461,7 @@ jobs:
     needs: e2e-tests
     if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env }}
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

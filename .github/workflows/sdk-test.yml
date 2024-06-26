@@ -27,6 +27,7 @@ env:
 jobs:
   check-secrets:
     name: Check Secrets
+    environment: dev
     defaults:
       run:
         shell: bash
@@ -65,6 +66,7 @@ jobs:
     name: Docker Image Build
     needs: check-secrets
     runs-on: ubuntu-latest
+    environment: dev
     permissions:
       packages: write
       contents: read
@@ -160,6 +162,7 @@ jobs:
     name: E2E Tests
     needs: docker-for-test
     runs-on: ubuntu-latest
+    environment: dev
     permissions:
       packages: write
       contents: read
@@ -332,6 +335,7 @@ jobs:
     needs: sdk-e2e-tests
     if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
+    environment: dev
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

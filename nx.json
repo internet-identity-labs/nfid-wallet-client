@@ -199,7 +199,7 @@
     ],
     "sharedGlobals": [
       "{workspaceRoot}/babel.config.json",
-      "{workspaceRoot}/.env.(production|staging)"
+      "{workspaceRoot}/.env.(ic|stage)"
     ]
   }
 }

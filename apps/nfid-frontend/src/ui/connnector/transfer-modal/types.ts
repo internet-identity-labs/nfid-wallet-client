@@ -60,16 +60,16 @@ export interface ITransferModalConnector
 }
 
 export type ITransferFTConnector = {
-  getBalance(address?: string, currency?: string): Promise<number>
+  getBalance(address?: string, currency?: string): Promise<bigint>
   getAddress(address?: string, identity?: DelegationIdentity): Promise<string>
-  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<number>
+  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<bigint>
   getDecimals(currency?: string): Promise<number>
 } & ITransferModalConnector
 
 export type ITransferNFTConnector = {
   getNFTs(): Promise<UserNonFungibleToken[]>
   getNFTOptions(): Promise<IGroupedOptions[]>
-  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<number>
+  getFee(request: ITransferFTRequest | ITransferNFTRequest): Promise<bigint>
 } & ITransferModalConnector
 
 export type IUniversalConnector = ITransferFTConnector | ITransferNFTConnector
@@ -96,12 +96,12 @@ export type ITransferRequest = {
   contract: string
   identity?: DelegationIdentity
   canisterId?: string
-  fee?: number
+  fee?: bigint
 }
 
 export type ITransferFTRequest = {
   currency: string
-  amount: number
+  amount: number | bigint
 } & ITransferRequest
 
 export type ITransferNFTRequest = {

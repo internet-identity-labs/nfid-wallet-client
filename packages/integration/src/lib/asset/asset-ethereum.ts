@@ -692,6 +692,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       type: "ft",
       currency,
       amount: amount,
+      decimals: 18,
     }
   }
 

@@ -54,7 +54,7 @@ export class EthNFTTransferConnector
     tokenId,
     contract,
     standard,
-  }: ITransferNFTRequest): Promise<number> {
+  }: ITransferNFTRequest): Promise<bigint> {
     const cacheKey = "nft_" + tokenId + "_transaction"
 
     const identity = await this.getIdentity()
@@ -87,7 +87,7 @@ export class EthNFTTransferConnector
       ttl: 10,
     })
 
-    return +estimatedTransaction.fee
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

@@ -37,8 +37,8 @@ export class IcNFTTransferConnector
     return mapUserNFTDetailsToGroupedOptions(allNFTs, applications)
   }
 
-  getFee(): Promise<number> {
-    return Promise.resolve(0)
+  getFee(): Promise<bigint> {
+    return Promise.resolve(BigInt(0))
   }
 }
 

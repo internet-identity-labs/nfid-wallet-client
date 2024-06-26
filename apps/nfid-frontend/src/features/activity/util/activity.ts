@@ -71,7 +71,7 @@ export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
 }
 
 export const getHistoricalExchangeRate = async (
-  pair = "ICP-USD",
+  pair: string,
   date: Date,
 ): Promise<number | undefined> => {
   const end = new Date(date.getTime() + 1 * 60000)

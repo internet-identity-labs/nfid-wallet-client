@@ -39,7 +39,7 @@ export class demoAppPage extends Page {
     return $$(`#myTargetsList`)
   }
 
-  getAddCanisterIDButton(pageBlock: string) {
+  async getAddCanisterIDButton(pageBlock: string) {
     return $(`#${pageBlock} #buttonAddTargetCanisterId`)
   }
 
@@ -72,7 +72,7 @@ export class demoAppPage extends Page {
     let targets = targetsList.split(",")
     for (let i = 0; i < targets.length; i++) {
       if (!(await this.getAddCanisterIDInput(pageBlock, i + 1).isDisplayed())) {
-        await this.getAddCanisterIDButton(pageBlock).click()
+        await (await this.getAddCanisterIDButton(pageBlock)).click()
       }
       await this.getAddCanisterIDInput(pageBlock, i + 1).setValue(targets[i])
     }

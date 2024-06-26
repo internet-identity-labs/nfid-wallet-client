@@ -402,7 +402,7 @@ export const TransferFT = ({
             {...register("amount", {
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
-                formatAssetAmountRaw(Number(balance!), decimals!),
+                formatAssetAmountRaw(Number(balance), decimals!),
                 formatAssetAmountRaw(Number(transferFee!), decimals!),
               ),
               valueAsNumber: true,

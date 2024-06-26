@@ -894,9 +894,16 @@ Then(
 )
 
 Then(/^Assert ([^"]*) code block has hash$/, async (block: string) => {
-  const codeBlock = $(`div#${block} #responseID code`)
-  const codeBlockText = await codeBlock.getText()
-  if (!(codeBlockText.includes("hash"))) throw new Error(`Incorrect response message. Expected to contain 'hash', but was ${codeBlockText}`)
+  const response = await (await DemoTransactions.getEXTTResponseBlock(block)).getText()
+  let responseTrim = response.trim().replace(/(?<!["\d])\b\d+\b(?!["\d])/g, "")
+  let responseJSON = JSON.parse(responseTrim)
+
+  let errors: string[] = []
+  Object.keys(responseJSON).forEach(it => {
+    if (it == "error") errors.push(`\n${responseJSON[it]}`)
+  })
+
+  if (errors.length > 0) throw new Error(`Incorrect response message. Expected to contain 'hash', but there were errors: \n${errors}`)
 })
 
 Then(

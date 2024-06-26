@@ -1,19 +1,31 @@
-name: Production Deployment
+name: Deployment
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
+      env:
+        description: "Environment to run against"
+        required: true
+        default: 'dev'
+        type: choice
+        options: 
+          - dev
+          - stage
+          - ic
       confirmation:
           description: 'For the ic deployment - confirm your choice by typing "Yes"'
           type: string
-
 env:
   CANISTER_NAME: "nfid-demo"
+  NETWORK_NAME: "${{ github.event.inputs.env || 'dev' }}"
   CI_DEBUG: "true"
 
 jobs:
   check-secrets:
     name: Check Secrets
-    environment: ic
+    environment: "${{ github.event.inputs.env || 'dev' }}"
     defaults:
       run:
         shell: bash
@@ -43,7 +55,8 @@ jobs:
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
+          MAINNET_RARIBLE_X_API_KEY: ${{secrets.MAINNET_RARIBLE_X_API_KEY}}
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -52,12 +65,11 @@ jobs:
     name: Build NFID-Demo
     needs: check-secrets
     runs-on: ubuntu-latest
-    if: ${{ contains( github.ref_name, 'production' ) }}
-    environment: ic
+    environment: "${{ github.event.inputs.env || 'dev' }}"
 
     steps:
       - name: INPUT => Checks.
-        if: ${{ github.event.inputs.confirmation != 'Yes' }}
+        if: ${{ github.event.inputs.confirmation != 'Yes' && github.event.inputs.env == 'ic' }}
         run: |
           echo "[ERROR] You have try release to network 'ic' without or with wrong confirmation phrase" >&2
           exit 1
@@ -115,18 +127,11 @@ jobs:
 
           CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
 
-          ci_echo_debug "Detecting network for the canister based on the branch." >&2
-          case ${CANISTER_BRANCH} in
-            production)
-              NETWORK_NAME='ic'
-              ENV_FILE='.env.ic'
-              OPTIONS='--skip-nx-cache'
-              ;;
-            *)
-              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
-              exit 1
-              ;;
-          esac
+          ENV_FILE=".env.${NETWORK_NAME}"
+          OPTIONS=''
+          if [ "${NETWORK_NAME}" == 'ic' ]; then
+            OPTIONS='--skip-nx-cache'
+          fi
 
           ci_echo_debug "Populating env variables" >&2
           echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
@@ -165,8 +170,8 @@ jobs:
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
           ci_echo_info "NPX" >&2
-          ci_echo_debug "npx env-cmd -f ${ENV_FILE} nx build ${CANISTER_NAME} ${OPTIONS}" >&2
-          npx env-cmd -f ${ENV_FILE} nx build ${CANISTER_NAME} ${OPTIONS}
+          ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}' ${OPTIONS}" >&2
+          npx env-cmd -f "${ENV_FILE}" nx build "${CANISTER_NAME}" ${OPTIONS}
 
           ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${CANISTER_NAME}" >&2
           dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
@@ -183,10 +188,9 @@ jobs:
   deploy-demo:
     name: Deploy NFID-Demo
     needs: build-demo
-    if: ${{ contains( github.ref_name, 'production' ) }}
     runs-on:
       group: dfx-runner
-    environment: ic
+    environment: "${{ github.event.inputs.env || 'dev' }}"
     defaults:
       run:
         shell: bash
@@ -223,17 +227,6 @@ jobs:
 
           CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
 
-          ci_echo_debug "Detecting network for the canister based on the branch." >&2
-          case ${CANISTER_BRANCH} in
-            production)
-              NETWORK_NAME='ic'
-              ;;
-            *)
-              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
-              exit 1
-              ;;
-          esac
-
           ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
 
           DFX_ID_PATH="${HOME}/.config/dfx/identity/${DFX_ID_NAME}"
@@ -255,7 +248,7 @@ jobs:
           ci_echo_info "DFX_ID_PATH=${DFX_ID_PATH}" >&2
           ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
 
-      - name: PRE-BUILD => Write identity.
+      - name: PRE-DEPLOY => Write identity.
         env:
           DFX_ID_KEY: ${{ secrets.DFX_ID_KEY }}
         run: |
@@ -295,8 +288,7 @@ jobs:
     name: Deploy NFID-Frontend to Cloudflare Pages
     needs: check-secrets
     runs-on: ubuntu-latest
-    if: ${{ contains( github.ref_name, 'production' ) }}
-    environment: ic
+    environment: "${{ github.event.inputs.env || 'dev' }}"
     permissions:
       contents: read
       deployments: write
@@ -358,7 +350,7 @@ jobs:
           ci_echo_debug "yarn build:cloudflare" >&2
           yarn build:cloudflare
         env:
-          IS_DEV: false
+          IS_DEV: ${{ vars.IS_DEV }}
           IC_HOST: https://ic0.app
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
@@ -370,7 +362,7 @@ jobs:
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
           CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 
       - name: Publish

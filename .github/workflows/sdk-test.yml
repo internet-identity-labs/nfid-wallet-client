@@ -60,7 +60,7 @@ jobs:
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
 
   docker-for-test:
     name: Docker Image Build
@@ -255,8 +255,8 @@ jobs:
           EOF
 
           cat > docker_env << EOF
-            IS_DEV=true
-            IS_E2E_TEST=true
+            IS_DEV=${IS_DEV}
+            IS_E2E_TEST=${IS_E2E_TEST}
             ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
             RARIBLE_X_API_KEY=${RARIBLE_X_API_KEY}
             PROD_RARIBLE_X_API_KEY=${PROD_RARIBLE_X_API_KEY}
@@ -289,7 +289,7 @@ jobs:
             ${IMAGE_ID}:${VERSION} \
             "${TEST_ADD_PARAMS}"
         env:
-          IS_DEV: true
+          IS_DEV: ${{ vars.IS_DEV }}
           IS_E2E_TEST: true
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
@@ -301,7 +301,7 @@ jobs:
 
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
 
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}

@@ -15,7 +15,6 @@ on:
         options:
           - dev
           - stage
-          - ic
       logLevel:
         description: "Log level"
         required: true
@@ -48,7 +47,7 @@ env:
 jobs:
   check-secrets:
     name: Check secrets
-    environment: ${{ github.event.inputs.env }}
+    environment: "${{ github.event.inputs.env || 'dev' }}"
     defaults:
       run:
         shell: bash
@@ -92,13 +91,13 @@ jobs:
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
 
   docker-for-e2e:
     name: Docker Image Build
     needs: check-secrets
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.env }}
+    environment: "${{ github.event.inputs.env || 'dev' }}"
     permissions:
       packages: write
       contents: read
@@ -193,7 +192,7 @@ jobs:
     name: Unit Tests
     needs: check-secrets
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.env }}
+    environment: "${{ github.event.inputs.env || 'dev' }}"
 
     steps:
       - name: Checkout repo
@@ -239,7 +238,7 @@ jobs:
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Run unit tests
@@ -255,7 +254,7 @@ jobs:
           ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
           MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
           MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Upload build artefacts
@@ -269,7 +268,7 @@ jobs:
     name: E2E Tests
     needs: docker-for-e2e
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.env }}
+    environment: "${{ github.event.inputs.env || 'dev' }}"
     permissions:
       packages: write
       contents: read
@@ -381,8 +380,8 @@ jobs:
           EOF
 
           cat > docker_env << EOF
-            IS_DEV=true
-            IS_E2E_TEST=true
+            IS_DEV=${IS_DEV}
+            IS_E2E_TEST=${IS_E2E_TEST}
             ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
             RARIBLE_X_API_KEY=${RARIBLE_X_API_KEY}
             PROD_RARIBLE_X_API_KEY=${PROD_RARIBLE_X_API_KEY}
@@ -415,7 +414,7 @@ jobs:
             ${IMAGE_ID}:${VERSION} \
             "${TEST_ADD_PARAMS}"
         env:
-          IS_DEV: true
+          IS_DEV: ${{ vars.IS_DEV }}
           IS_E2E_TEST: true
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
           RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
@@ -427,7 +426,7 @@ jobs:
 
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
+          BLOCK_CYPHER_TOKEN: ${{ vars.BLOCK_CYPHER_TOKEN }}
 
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
@@ -461,7 +460,7 @@ jobs:
     needs: e2e-tests
     if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.env }}
+    environment: "${{ github.event.inputs.env || 'dev' }}"
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

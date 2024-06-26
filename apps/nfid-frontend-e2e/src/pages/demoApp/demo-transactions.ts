@@ -37,6 +37,10 @@ export class DemoTransactions extends demoAppPage {
     else return $("#NFTName")
   }
 
+  async getEXTTResponseBlock(block: string) {
+    return $(`div#${block} #responseID code`)
+  }
+
   async sendICPTransaction(amount: number, address: string) {
     await this.getReceiverICAddressInput("FT").setValue(address)
     await this.getFTInput("ICP").setValue(amount)
@@ -49,8 +53,10 @@ export class DemoTransactions extends demoAppPage {
     await this.getFTInput("NFT").click()
     await this.myNFTSelector.click()
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
-    await browser.pause(3000)
-    await this.getRequestFTButton("NFT").click()
+    await this.getRequestFTButton("NFT").then(async (it) => {
+      await it.waitForClickable()
+      await it.click()
+    })
   }
 }
 

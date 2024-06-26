@@ -1,7 +1,6 @@
 import React from "react"
 
 import {
-  MAX_DECIMAL_LENGTH,
   MAX_DECIMAL_USD_LENGTH,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
@@ -37,7 +36,7 @@ const formatAssetAmount = (
   value: number,
   decimals: number,
 ): string =>
-  (value / 10 ** decimals).toFixed(MAX_DECIMAL_LENGTH).replace(TRIM_ZEROS, "") +
+  (value / 10 ** decimals).toFixed(decimals).replace(TRIM_ZEROS, "") +
   ` ${symbol}`
 
 export const formatAssetAmountRaw = (
@@ -45,16 +44,8 @@ export const formatAssetAmountRaw = (
   decimals: number,
 ): string => {
   const amount = value / 10 ** decimals
-  console.log(
-    "formatAssetAmountRaw",
-    amount,
-    truncateToDecimals(amount, MAX_DECIMAL_LENGTH),
-    (value / 10 ** decimals)
-      .toFixed(MAX_DECIMAL_LENGTH)
-      .replace(TRIM_ZEROS, ""),
-  )
 
-  return truncateToDecimals(amount, MAX_DECIMAL_LENGTH).toString()
+  return truncateToDecimals(amount, decimals).toString()
 }
 
 export const TickerAmount: React.FC<TickerAmountProps> = ({

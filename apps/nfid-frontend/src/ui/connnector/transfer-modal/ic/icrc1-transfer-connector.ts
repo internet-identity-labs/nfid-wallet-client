@@ -62,8 +62,6 @@ export class ICRC1TransferConnector
   async getBalance(_: any, currency?: string): Promise<bigint> {
     const token = await this.getTokenMetadata(currency ?? "")
 
-    console.log("balancee", token)
-
     return token.balance
   }
 
@@ -176,8 +174,6 @@ export class ICRC1TransferConnector
 
     const { canisterId, identity, amount, to, fee } = request
     const { owner, subaccount } = decodeIcrcAccount(to)
-
-    console.log("transferrr icrc1 connector", BigInt(fee!), BigInt(amount))
 
     try {
       const result = await transferICRC1(identity, canisterId!, {

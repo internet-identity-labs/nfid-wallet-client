@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
@@ -157,9 +157,24 @@ export abstract class ICMTransferConnector<
     if (addressValidationService.isValidAccountIdentifier(address))
       return address
 
-    const principal = Principal.fromText(address)
-    const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
-    return accountIdentifier.toHex()
+    try {
+      // Try if it's default principal or `${principal}-${checksum}-${subaccount}`
+      const principal = Principal.fromText(address)
+      const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
+      return accountIdentifier.toHex()
+    } catch (e) {
+      // Handle `${principal}-${checksum}-${subaccount}`
+      const { owner: principalTo, subaccount } = decodeIcrcAccount(address)
+      const subAccountObject = subaccount
+        ? SubAccount.fromBytes(subaccount as Uint8Array)
+        : null
+      if (subAccountObject instanceof Error) throw subAccountObject
+
+      return AccountIdentifier.fromPrincipal({
+        principal: principalTo,
+        subAccount: subAccountObject ?? undefined,
+      }).toHex()
+    }
   }
 
   async transfer(

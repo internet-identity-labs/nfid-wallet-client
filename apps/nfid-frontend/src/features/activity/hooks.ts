@@ -37,26 +37,33 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
     setActivities([])
     setIcrcCount(BigInt(20))
     setOffset(0)
-    mutate()
-  }, [filter, mutate])
+  }, [filter])
 
   useEffect(() => {
     if (!data?.transactions) return
 
     setActivities((prevActivities) => {
       const mergedActivities = [...prevActivities]
+
       data.transactions.forEach((newGroup) => {
         const existingGroup = mergedActivities.find(
           (group) => group.date === newGroup.date,
         )
         if (existingGroup) {
-          existingGroup.rows = [...existingGroup.rows, ...newGroup.rows]
+          const existingRows = new Set(existingGroup.rows.map((row) => row.id))
+          newGroup.rows.forEach((row) => {
+            if (!existingRows.has(row.id)) {
+              existingGroup.rows.push(row)
+            }
+          })
         } else {
           mergedActivities.push(newGroup)
         }
       })
+
       return mergedActivities
     })
+
     setHasMoreData(data.isEnd)
   }, [data])
 
@@ -92,6 +99,10 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
 
   const resetHandler = () => {
     setFilter([])
+    setActivities([])
+    setOffset(0)
+    setHasMoreData(true)
+    mutate()
   }
 
   return {

@@ -44,6 +44,7 @@ const setupCSP = () => {
         "https://polygon-api.rarible.org",
         "https://testnet-polygon-api.rarible.org",
         "https://api.coinbase.com",
+        "https://api.pro.coinbase.com",
         "https://*.alchemy.com",
         "https://*.rarible.com/",
         "https://polygon-rpc.com",

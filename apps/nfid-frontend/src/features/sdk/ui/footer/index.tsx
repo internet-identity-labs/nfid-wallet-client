@@ -9,7 +9,7 @@ export const SDKFooter = ({
   balance,
 }: {
   identity?: DelegationIdentity
-  balance?: number
+  balance?: bigint
 }) => {
   return (
     <div

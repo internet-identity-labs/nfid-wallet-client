@@ -89,7 +89,7 @@ export const RequestCanisterCall = ({
           Reject
         </Button>
 
-        <SDKFooter identity={identity} balance={Number(balance)} />
+        <SDKFooter identity={identity} balance={balance} />
       </div>
     </>
   )

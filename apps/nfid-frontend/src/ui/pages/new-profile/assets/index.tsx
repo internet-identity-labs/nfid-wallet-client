@@ -22,7 +22,7 @@ export type Token = {
   price?: string
   rate?: number | undefined
   blockchain: Blockchain
-  decimals?: number
+  decimals: number
   canisterId?: string
 }
 

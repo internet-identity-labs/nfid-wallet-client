@@ -48,7 +48,6 @@ import {
 
 import {
   PRINCIPAL_LENGTH,
-  MAX_DECIMAL_LENGTH,
   validateTransferAmountField,
 } from "../utils/validations"
 import { ITransferSuccess } from "./success"
@@ -211,8 +210,6 @@ export const TransferFT = ({
       const token = selectedConnector?.getTokenConfig()
       if (!token) return
 
-      console.log("handleTrackTransfer", amount, transferFee)
-
       sendReceiveTracking.sendToken({
         network: token.blockchain,
         destinationType: "address",
@@ -228,8 +225,6 @@ export const TransferFT = ({
 
   const maxHandler = () => {
     if (transferFee && balance) {
-      console.log("balance max", balance, transferFee, balance - transferFee)
-      //const val = BigInt(balance) - BigInt(transferFee)
       const val = balance - transferFee
 
       if (val <= 0) return
@@ -285,15 +280,6 @@ export const TransferFT = ({
         })
       }
 
-      console.log(
-        "transferrrr send-ft",
-        selectedTokenCurrency,
-        decimals,
-        values.amount,
-        +values.amount * 10 ** decimals!,
-        transferFee,
-      )
-
       onTransferPromise({
         assetImg: tokenMetadata?.icon ?? "",
         initialPromise: new Promise(async (resolve) => {
@@ -302,13 +288,9 @@ export const TransferFT = ({
             to: values.to,
             canisterId: tokenMetadata.canisterId,
             fee: transferFee!,
-            // amount:
-            //   selectedTokenCurrency !== "ICP"
-            //     ? +values.amount * 10 ** decimals!
-            //     : +values.amount,
             amount:
               selectedTokenCurrency !== "ICP"
-                ? BigInt(Math.round(+values.amount * 10 ** decimals!))
+                ? +values.amount * 10 ** decimals!
                 : +values.amount,
             currency: selectedTokenCurrency,
             identity: await selectedConnector?.getIdentity(
@@ -321,13 +303,11 @@ export const TransferFT = ({
                 : "",
           })
 
-          console.log("resss", res)
-
           handleTrackTransfer(values.amount)
           resolve(res)
         }),
         title: `${Number(values.amount)
-          .toFixed(MAX_DECIMAL_LENGTH)
+          .toFixed(decimals)
           .replace(/\.?0+$/, "")} ${selectedTokenCurrency}`,
         subTitle: `${(Number(values.amount) * Number(rate)).toFixed(2)} USD`,
         callback: () => {
@@ -422,11 +402,6 @@ export const TransferFT = ({
                 formatAssetAmountRaw(Number(balance!), decimals!),
                 formatAssetAmountRaw(Number(transferFee!), decimals!),
               ),
-
-              // validate: validateTransferAmountField(
-              //   balance!.toString(),
-              //   transferFee!.toString(),
-              // ),
               valueAsNumber: true,
               onBlur: calculateFee,
               onChange: (e) => {
@@ -434,8 +409,8 @@ export const TransferFT = ({
                 setAmountInUSD(e.target.value)
               },
             })}
-            onKeyDown={pressHandler}
-            onPaste={pasteHandler}
+            onKeyDown={(e) => pressHandler(e, decimals!)}
+            onPaste={(e) => pasteHandler(e, decimals!)}
           />
           <div
             className={clsx(
@@ -452,14 +427,12 @@ export const TransferFT = ({
                 "text-xs pt-[4px] text-gray-400 text-sm",
               )}
             >
-              {!!rate && (
-                <TickerAmount
-                  symbol={tokenMetadata!.symbol}
-                  value={amountInUSD}
-                  decimals={undefined}
-                  usdRate={rate}
-                />
-              )}
+              <TickerAmount
+                symbol={selectedTokenCurrency}
+                value={amountInUSD}
+                decimals={undefined}
+                usdRate={rate}
+              />
             </p>
           )}
           <ChooseModal

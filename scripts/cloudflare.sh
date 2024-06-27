@@ -1,21 +1,15 @@
 #!/bin/bash
 
-echo "variable CF_PAGES_BRANCH: $CF_PAGES_BRANCH"
+echo "variable NETWORK_NAME : ${NETWORK_NAME}"
 
-case ${CF_PAGES_BRANCH} in
-stage)
-    # On stage branch
-    echo "Building stage branch with .env.stage"
-    npx env-cmd -f .env.stage nx build nfid-frontend
-    ;;
-production)
-    # On production branch
-    echo "Building production branch with .env.ic"
+case ${NETWORK_NAME} in
+dev)
+    echo "Building ${NETWORK_NAME} branch with .env.${NETWORK_NAME}"
     npx env-cmd -f .env.ic nx build nfid-frontend
     ;;
 *)
     # all other branches
-    echo "Building branch: $CF_PAGES_BRANCH with .env.dev"
-    npx env-cmd -f .env.test nx build nfid-frontend
+    echo "Building ${NETWORK_NAME} branch with .env.${NETWORK_NAME}"
+    npx env-cmd -f .env.${NETWORK_NAME} nx build nfid-frontend
     ;;
 esac

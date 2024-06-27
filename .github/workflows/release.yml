@@ -246,7 +246,6 @@ jobs:
           ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
           ci_echo_info "DFX_ID_NAME=${DFX_ID_NAME}" >&2
           ci_echo_info "DFX_ID_PATH=${DFX_ID_PATH}" >&2
-          ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
 
       - name: PRE-DEPLOY => Write identity.
         env:
@@ -272,7 +271,7 @@ jobs:
             CI_DEBUG="true"
           fi
 
-          dfx identity use "${ID_NAME}"
+          dfx identity use "${DFX_ID_NAME}"
 
           ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
           if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then

@@ -6,11 +6,7 @@ import {
 } from "packages/integration/src/lib/asset/types"
 import { wrappedTokenMap } from "packages/integration/src/lib/asset/wrapped-token-map"
 
-import {
-  ICP_DECIMALS,
-  MAX_DECIMAL_LENGTH,
-} from "@nfid/integration/token/constants"
-import { toPresentation } from "@nfid/integration/token/utils"
+import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { Transaction } from "frontend/integration/rosetta/rosetta_interface"
 
@@ -31,18 +27,10 @@ export const mapToActivity = async (
       type: "ft",
       currency: "ICP",
       decimals: ICP_DECIMALS,
-      amount: toPresentation(
-        BigInt(
-          Math.abs(
-            Math.round(
-              +tx.transaction.operations[0].amount.value *
-                10 ** MAX_DECIMAL_LENGTH,
-            ),
-          ),
-        ),
-      )
-        .toFixed(MAX_DECIMAL_LENGTH)
-        .replace(/(\.\d*?[1-9])0+|\.0*$/, "$1"),
+      amount:
+        Math.abs(+tx.transaction.operations[0].amount.value) *
+        10 ** ICP_DECIMALS,
+      rate: undefined,
     },
   }
 }
@@ -83,14 +71,14 @@ export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
 }
 
 export const getHistoricalExchangeRate = async (
-  pair = "ICP-USD",
+  pair: string,
   date: Date,
-): Promise<string | undefined> => {
+): Promise<number | undefined> => {
   const end = new Date(date.getTime() + 1 * 60000)
   const currentDate = new Date()
   if (end > currentDate) {
     const awsRate = await new PriceService().getPrice([pair.split("-")[0]])
-    return awsRate[0].price
+    return Number(awsRate[0].price)
   }
 
   const url = `https://api.pro.coinbase.com/products/${pair}/candles`
@@ -114,7 +102,7 @@ export const getHistoricalExchangeRate = async (
 export const getExchangeRateForActivity = async (
   asset: ActivityAssetFT,
   date: Date,
-): Promise<string | undefined> => {
+): Promise<number | undefined> => {
   const tokensToGetPrice: { [key: string]: string } = {
     ...wrappedTokenMap,
     ICP: "ICP",
@@ -124,7 +112,7 @@ export const getExchangeRateForActivity = async (
   if (!symbol) return undefined
 
   if (symbol === "USDC") {
-    return "1"
+    return 1
   } else {
     return await getHistoricalExchangeRate(`${symbol}-USD`, date)
   }

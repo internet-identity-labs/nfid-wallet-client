@@ -8,7 +8,7 @@ const chainNames: Record<number, string> = {
 }
 
 export const coinbaseRatesService = {
-  getRateByChainId: async (chainId: number): Promise<number> => {
+  getRateByChainId: async (chainId: number): Promise<number | undefined> => {
     const chainName = chainNames[chainId]
 
     if (!chainName) {
@@ -17,7 +17,7 @@ export const coinbaseRatesService = {
 
     const tokenPrice = await new PriceService()
       .getPrice([chainName])
-      .then((tokenPrices) => parseFloat(tokenPrices[0].price))
+      .then((tokenPrices) => parseFloat(tokenPrices[0].price.toString()))
 
     return tokenPrice
   },

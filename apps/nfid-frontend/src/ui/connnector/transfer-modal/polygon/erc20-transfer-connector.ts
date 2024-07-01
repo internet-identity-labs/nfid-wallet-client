@@ -14,8 +14,6 @@ import {
   ITransferConfig,
   ITransferFTConnector,
   ITransferFTRequest,
-  TokenBalance,
-  TokenFee,
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
@@ -38,14 +36,11 @@ export class PolygonERC20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getBalance(_?: string, currency?: string): Promise<TokenBalance> {
+  async getBalance(_?: string, currency?: string): Promise<bigint> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
-    return Promise.resolve({
-      balance: String(token?.balance),
-      balanceinUsd: token?.balanceinUsd,
-    })
+    return BigInt(token.balance)
   }
 
   @Cache(connectorCache, { ttl: 10 })
@@ -67,8 +62,8 @@ export class PolygonERC20TransferConnector
     return [
       makeRootAccountGroupedOptions(
         address,
-        balance.balance?.toString() ?? "",
-        balance.balanceinUsd ?? "",
+        balance.toString() ?? "",
+        undefined,
         currency ?? "",
       ),
     ]
@@ -100,7 +95,7 @@ export class PolygonERC20TransferConnector
     amount,
     currency,
     contract,
-  }: ITransferFTRequest): Promise<TokenFee> {
+  }: ITransferFTRequest): Promise<bigint> {
     const cacheKey = currency + "_transaction"
 
     const identity = await this.getIdentity()
@@ -108,7 +103,7 @@ export class PolygonERC20TransferConnector
       identity,
       to,
       contract,
-      amount,
+      amount as any,
     )
 
     const estimatedTransaction = await polygonAsset.getEstimatedTransaction(
@@ -119,10 +114,7 @@ export class PolygonERC20TransferConnector
       ttl: 10,
     })
 
-    return {
-      fee: `${estimatedTransaction.fee} ${this.config.feeCurrency}`,
-      feeUsd: estimatedTransaction.feeUsd,
-    }
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

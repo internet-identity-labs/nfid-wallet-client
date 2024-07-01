@@ -68,7 +68,7 @@
     "idb": "7.1.1",
     "immer": "9.0.12",
     "jest-environment-jsdom": "^28",
-    "jose": "^4.14.4",
+    "jose": "^4.15.5",
     "jotai": "1.11.0",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
@@ -225,7 +225,9 @@
     "whatwg-fetch": "3.6.2"
   },
   "resolutions": {
-    "@imtbl/imx-sdk": "npm:dry-uninstall@0.3.0"
+    "@imtbl/imx-sdk": "npm:dry-uninstall@0.3.0",
+    "@rarible/solana-sdk": "npm:dry-uninstall@0.3.0",
+    "@solana/web3.js": "npm:dry-uninstall@0.3.0"
   },
   "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
   "license": "MIT"

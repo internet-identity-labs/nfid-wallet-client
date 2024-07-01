@@ -13,8 +13,6 @@ import {
   ITransferConfig,
   ITransferFTConnector,
   ITransferFTRequest,
-  TokenBalance,
-  TokenFee,
   TransferModalType,
 } from "../types"
 import { makeRootAccountGroupedOptions } from "../util/options"
@@ -32,14 +30,11 @@ export class EthERC20TransferConnector
   }
 
   @Cache(connectorCache, { ttl: 60 })
-  async getBalance(_?: string, currency?: string): Promise<TokenBalance> {
+  async getBalance(_?: string, currency?: string): Promise<bigint> {
     const tokens = await this.getTokens()
     const token = tokens.find((t) => t.symbol === currency)!
 
-    return Promise.resolve({
-      balance: String(token.balance),
-      balanceinUsd: token.balanceinUsd,
-    })
+    return BigInt(token.balance)
   }
 
   @Cache(connectorCache, { ttl: 600 })
@@ -80,8 +75,8 @@ export class EthERC20TransferConnector
     return [
       makeRootAccountGroupedOptions(
         address,
-        balance.balance?.toString() ?? "",
-        balance.balanceinUsd ?? "",
+        balance.toString() ?? "",
+        undefined,
         currency ?? "",
       ),
     ]
@@ -93,14 +88,14 @@ export class EthERC20TransferConnector
     amount,
     contract,
     currency,
-  }: ITransferFTRequest): Promise<TokenFee> {
+  }: ITransferFTRequest): Promise<bigint> {
     const cacheKey = currency + "_transaction"
     const identity = await this.getIdentity()
     const request = new Erc20EstimateTransactionRequest(
       identity,
       to,
       contract,
-      amount,
+      amount as any,
     )
 
     const estimatedTransaction = await ethereumAsset.getEstimatedTransaction(
@@ -110,10 +105,7 @@ export class EthERC20TransferConnector
       ttl: 10,
     })
 
-    return {
-      fee: `${estimatedTransaction.fee} ${this.config.feeCurrency}`,
-      feeUsd: estimatedTransaction.feeUsd,
-    }
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

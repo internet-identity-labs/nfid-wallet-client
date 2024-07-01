@@ -77,14 +77,14 @@ export async function estimateTransaction(
 
   const value = transaction.value
   const valueUsd = value
-    ? parseFloat(ethers.utils.formatEther(value)) * rate
+    ? parseFloat(ethers.utils.formatEther(value)) * rate!
     : undefined
   const fee = feeData.gasPrice.mul(transaction.gasLimit)
-  const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rate
+  const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rate!
   const maxFee = feeData.maxFeePerGas.mul(transaction.gasLimit)
-  const maxFeeUsd = parseFloat(ethers.utils.formatEther(maxFee)) * rate
+  const maxFeeUsd = parseFloat(ethers.utils.formatEther(maxFee)) * rate!
   const total = value ? fee.add(value) : fee
-  const totalUsd = parseFloat(ethers.utils.formatEther(total)) * rate
+  const totalUsd = parseFloat(ethers.utils.formatEther(total)) * rate!
 
   return {
     transaction,

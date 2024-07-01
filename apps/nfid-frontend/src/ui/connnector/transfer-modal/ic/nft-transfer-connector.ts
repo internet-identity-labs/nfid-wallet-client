@@ -11,7 +11,6 @@ import { Blockchain, NativeToken } from "../../types"
 import {
   ITransferConfig,
   ITransferNFTConnector,
-  TokenFee,
   TransferModalType,
 } from "../types"
 import {
@@ -38,11 +37,8 @@ export class IcNFTTransferConnector
     return mapUserNFTDetailsToGroupedOptions(allNFTs, applications)
   }
 
-  getFee(): Promise<TokenFee> {
-    return Promise.resolve({
-      fee: `0.00 ${this.config.feeCurrency}`,
-      feeUsd: "0.00",
-    })
+  getFee(): Promise<bigint> {
+    return Promise.resolve(BigInt(0))
   }
 }
 

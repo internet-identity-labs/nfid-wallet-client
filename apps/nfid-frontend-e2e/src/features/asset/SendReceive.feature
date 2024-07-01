@@ -40,8 +40,8 @@ Feature:Send/Receive Asset
     And User opens choose nft window
     And User sees option <nft1> in dropdown
     Examples:
-      | anchor | nft1          |
-      | 31870  | BOXONBLOCK479 |
+      | anchor | nft1                  |
+      | 31870  | ICPuppiesWearables145 |
 
 
   @only_deploy_to_main

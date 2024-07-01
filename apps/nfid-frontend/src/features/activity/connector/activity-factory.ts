@@ -34,7 +34,6 @@ export const getAllActivity = async (
       .flat()
       .map(async (connector) => {
         try {
-          //console.log("filteredContracts", filteredContracts)
           return await connector.getActivitiesRows(filteredContracts)
         } catch (e) {
           console.error(e)
@@ -77,11 +76,8 @@ export const getAllActivity = async (
   for (const group of paginatedGroupedData) {
     for (const row of group.rows) {
       const asset = row.asset as ActivityAssetFT
-
       const usdRate = await getExchangeRateForActivity(asset, row.timestamp)
-      asset.amountUSD = usdRate
-        ? `${Math.floor(+usdRate * +asset.amount * 100) / 100} USD`
-        : undefined
+      asset.rate = usdRate
     }
   }
 

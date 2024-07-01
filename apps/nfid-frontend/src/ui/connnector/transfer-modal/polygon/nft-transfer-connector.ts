@@ -16,7 +16,6 @@ import {
   ITransferConfig,
   ITransferNFTConnector,
   ITransferNFTRequest,
-  TokenFee,
   TransferModalType,
 } from "../types"
 import { mapUserNFTDetailsToGroupedOptions, toUserNFT } from "../util/nfts"
@@ -55,7 +54,7 @@ export class PolygonNFTTransferConnector
     tokenId,
     contract,
     standard,
-  }: ITransferNFTRequest): Promise<TokenFee> {
+  }: ITransferNFTRequest): Promise<bigint> {
     const cacheKey = "nft_" + tokenId + "_transaction"
 
     const identity = await this.getIdentity()
@@ -86,10 +85,7 @@ export class PolygonNFTTransferConnector
       ttl: 10,
     })
 
-    return {
-      fee: `${estimatedTransaction.fee} ${this.config.feeCurrency}`,
-      feeUsd: estimatedTransaction.feeUsd,
-    }
+    return BigInt(estimatedTransaction.fee)
   }
 }
 

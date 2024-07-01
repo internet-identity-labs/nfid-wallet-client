@@ -1,5 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
 import { mutate } from "swr"
@@ -18,10 +19,7 @@ import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
-import {
-  MAX_DECIMAL_USD_LENGTH,
-  PRINCIPAL_LENGTH,
-} from "frontend/features/transfer-modal/utils/validations"
+import { PRINCIPAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
@@ -38,7 +36,6 @@ import {
   ITransferFTRequest,
   ITransferNFTRequest,
   ITransferResponse,
-  TokenBalance,
 } from "../types"
 import { addressValidationService } from "../util/validation-service"
 
@@ -56,7 +53,7 @@ export abstract class ICMTransferConnector<
   }): Promise<IGroupedOptions[]> {
     if (isVault) {
       await replaceActorIdentity(vault, await getWalletDelegationAdapter())
-      const rate = await getExchangeRate()
+      const rate = await getExchangeRate("ICP")
       const allVaults = await getVaults()
       const allVaultWallets = await Promise.all(
         allVaults.map((v) => v.id).map(async (v) => await getWallets(v)),
@@ -103,9 +100,7 @@ export abstract class ICMTransferConnector<
       Object.entries(principals).map(async ([domain, principals]) => {
         const options: IGroupOption[] = await Promise.all(
           principals.map(async ({ account, principal }) => {
-            const { balance, balanceinUsd } = await this.getBalance(
-              principal.toString(),
-            )
+            const balance = await this.getBalance(principal.toString())
 
             return {
               title: account.label.length
@@ -122,7 +117,6 @@ export abstract class ICMTransferConnector<
               ),
               value: principal.toString(),
               innerTitle: balance?.toString() + " " + this.config.tokenStandard,
-              innerSubtitle: "$" + balanceinUsd,
               badgeText: account.accountId === "-1" ? "WALLET" : undefined,
             }
           }),
@@ -143,22 +137,16 @@ export abstract class ICMTransferConnector<
   }
 
   @Cache(connectorCache, { ttl: 10 })
-  async getBalance(address: string): Promise<TokenBalance> {
+  async getBalance(address: string): Promise<bigint> {
     const addressVerified =
       address.length === PRINCIPAL_LENGTH
         ? AccountIdentifier.fromPrincipal({
             principal: Principal.fromText(address),
           }).toHex()
         : address
-    const balance = await getBalance(addressVerified)
-    const rate = await getExchangeRate()
 
-    return {
-      balance: e8sICPToString(Number(balance)),
-      balanceinUsd: (+e8sICPToString(Number(balance) * rate)).toFixed(
-        MAX_DECIMAL_USD_LENGTH,
-      ),
-    }
+    const balance = await getBalance(addressVerified)
+    return balance
   }
 
   getAddress(_: string, identity: DelegationIdentity): Promise<string> {
@@ -169,9 +157,24 @@ export abstract class ICMTransferConnector<
     if (addressValidationService.isValidAccountIdentifier(address))
       return address
 
-    const principal = Principal.fromText(address)
-    const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
-    return accountIdentifier.toHex()
+    try {
+      // Try if it's default principal or `${principal}-${checksum}-${subaccount}`
+      const principal = Principal.fromText(address)
+      const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
+      return accountIdentifier.toHex()
+    } catch (e) {
+      // Handle `${principal}-${checksum}-${subaccount}`
+      const { owner: principalTo, subaccount } = decodeIcrcAccount(address)
+      const subAccountObject = subaccount
+        ? SubAccount.fromBytes(subaccount as Uint8Array)
+        : null
+      if (subAccountObject instanceof Error) throw subAccountObject
+
+      return AccountIdentifier.fromPrincipal({
+        principal: principalTo,
+        subAccount: subAccountObject ?? undefined,
+      }).toHex()
+    }
   }
 
   async transfer(
@@ -218,8 +221,14 @@ export abstract class ICMTransferConnector<
     const isAccountIdentifier =
       addressValidationService.isValidAccountIdentifier(address)
 
-    if (!isPrincipal && !isAccountIdentifier)
-      return "Incorrect format of Destination Address"
-    else return true
+    if (!isPrincipal && !isAccountIdentifier) {
+      try {
+        decodeIcrcAccount(address)
+        return true
+      } catch (e) {
+        console.error("Error: ", e)
+        return "Incorrect format of Destination Address"
+      }
+    } else return true
   }
 }

@@ -16,7 +16,7 @@ export class PriceService {
       const priceInUsd = priceInToken
         ? (1 / priceInToken).toFixed(2)
         : NOT_AVAILABLE
-      return { token, price: priceInUsd }
+      return { token, price: +priceInUsd }
     })
 
     return result

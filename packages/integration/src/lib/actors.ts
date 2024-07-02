@@ -150,6 +150,6 @@ export const cyclesMinter = actor<CyclesMinter>(
   cyclesMinterIDL,
 )
 export const delegationFactory = actor<DelegationFactory>(
-  "qyqgl-2yaaa-aaaak-qinaq-cai",
+  "wklas-pyaaa-aaaak-akv3a-cai",
   dfIDL,
 )

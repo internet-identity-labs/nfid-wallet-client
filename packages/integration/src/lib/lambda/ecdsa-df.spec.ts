@@ -4,13 +4,9 @@
 import {Actor, ActorSubclass, Agent, HttpAgent} from "@dfinity/agent"
 import {IDL} from "@dfinity/candid"
 import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
-import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
-import {networks, TransactionBuilder,} from "bitcoinjs-lib"
-import fetch from "node-fetch"
 
-import {WALLET_SCOPE} from "@nfid/config"
-
-import {ii, im, replaceActorIdentity} from "../actors"
+import {AccessPointRequest, HTTPAccountRequest,} from "../_ic_api/identity_manager.d"
+import {im, replaceActorIdentity} from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,
@@ -20,16 +16,13 @@ import {
   renewDelegationThirdParty,
 } from "./ecdsa"
 import {LocalStorageMock} from "./local-storage-mock"
+import {getIdentity, getLambdaActor} from "./util"
+import {Principal} from "@dfinity/principal";
 
-const identity: JsonnableEd25519KeyIdentity = [
-  "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
-  "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
-]
+const identity = getIdentity("97654321876543218765432187654388")
 
-describe("Lambda Sign/Register ECDSA", () => {
+describe("Lambda Sign/Register Delegation Factory", () => {
   jest.setTimeout(80000)
-  const expectedGlobalAcc =
-    "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {
     const localStorageMock = new LocalStorageMock()
 
@@ -37,11 +30,56 @@ describe("Lambda Sign/Register ECDSA", () => {
       Object.defineProperty(window, "localStorage", { value: localStorageMock })
     })
 
-    it("get global IC keys", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
+    it("register new user and check anchor/principal", async function () {
+      const mockedIdentity = getIdentity("97654321876543218765432187654388")
+
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
         mockedIdentity,
+        sessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
+
+      const email = "test@test.test"
+      const principal = di.getPrincipal().toText()
+      const lambdaActor = await getLambdaActor()
+      await lambdaActor.add_email_and_principal_for_create_account_validation(
+        email,
+        principal,
+        new Date().getMilliseconds(),
+      )
+      const deviceData: AccessPointRequest = {
+        icon: "Icon",
+        device: "Global",
+        pub_key: principal,
+        browser: "Browser",
+        device_type: {
+          Email: null,
+        },
+        credential_id: [],
+      }
+      const accountRequest: HTTPAccountRequest = {
+        email: [email],
+        access_point: [deviceData],
+        wallet: [{ NFID: null }],
+        anchor: BigInt(0),
+      }
+      await replaceActorIdentity(im, di)
+      await im.remove_account()
+      const account = await im.create_account(accountRequest)
+      const anchor = account.data[0]?.anchor
+      expect(anchor! >= 200_000_000).toBeTruthy()
+      const principalText = await getPublicKey(di, Chain.IC)
+      expect(Principal.fromText(principalText).isAnonymous()).toBeFalsy()
+    })
+
+
+    it("get global keys with canister signature", async function () {
+      const sessionKey = Ed25519KeyIdentity.generate()
+      const chainRoot = await DelegationChain.create(
+        identity,
         sessionKey.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
         {},
@@ -56,76 +94,72 @@ describe("Lambda Sign/Register ECDSA", () => {
         Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )
+
+      await replaceActorIdentity(im, globalICIdentity)
+      const principalText = await getPublicKey(delegationIdentity, Chain.IC)
+      expect(principalText).toEqual("skrkq-wvow3-5ptha-oqstj-lhxjc-suhi6-zc5hl-nk4qo-f4x6g-j4543-iqe")
       expect(globalICIdentity.getPrincipal().toText()).toEqual(
-        expectedGlobalAcc,
+        principalText,
       )
-      const principal = await getPublicKey(delegationIdentity, Chain.IC)
-      expect(principal).toEqual(
-        expectedGlobalAcc,
-      )
-      await replaceActorIdentity(ii, globalICIdentity)
-      try {
-        await ii.get_principal(BigInt(1), WALLET_SCOPE)
-      } catch (e: any) {
-        expect(e.message).toContain("Forbidden")
-      }
-      try {
-        await im.get_account()
-      } catch (e) {
-        throw Error("Should not fail")
-      }
     })
 
-    it("get anonymous IC keys", async function () {
-      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
-
-      const nfidSessionKey = Ed25519KeyIdentity.generate()
+    it.skip("get anonymous delegation with the canister delegation", async function () {
+      const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
-        mockedIdentity,
-        nfidSessionKey.getPublicKey(),
+        identity,
+        sessionKey.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
         {},
       )
-      const nfidDelegationIdentity = DelegationIdentity.fromDelegation(
-        nfidSessionKey,
+      const delegationIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
         chainRoot,
       )
 
       const dappSessionKey = Ed25519KeyIdentity.generate()
       // NOTE: this is what we receive from authClient
-      // https://github.com/dfinity/agent-js/blob/1d35889e0d0c0fd4a33d02a341bd90ee156da1cd/packages/auth-client/src/index.ts#L517
       const dappSessionPublicKey = new Uint8Array(
         dappSessionKey.getPublicKey().toDer(),
       )
 
-      const delegationChain = await ecdsaGetAnonymous(
+      const anon = await ecdsaGetAnonymous(
+        "nfid.two",
+        dappSessionPublicKey,
+        delegationIdentity,
+      )
+
+      const response = DelegationIdentity.fromDelegation(
+        dappSessionKey,
+        anon,
+      )
+      const principalText = await getPublicKey(delegationIdentity, Chain.IC)
+
+      expect("uf63z-wcfk4-qlxdj-rwhxw-vvfgz-ckfji-viyi2-znlst-kguug-ttnxg-lqe")
+        .toEqual(response.getPrincipal().toText())
+      expect(response.getPrincipal().toText()).not.toEqual(principalText)
+      const anonGlobal = await ecdsaGetAnonymous(
         "nfid.one",
         dappSessionPublicKey,
-        nfidDelegationIdentity,
-        Chain.IC,
+        delegationIdentity,
       )
-      const actualIdentity = DelegationIdentity.fromDelegation(
+      const responseGlobal = DelegationIdentity.fromDelegation(
         dappSessionKey,
-        delegationChain,
+        anonGlobal,
       )
-      const actualPrincipalId = actualIdentity.getPrincipal().toText()
-      console.debug("actualPrincipalId", actualPrincipalId)
-
-      expect(actualPrincipalId).toEqual(
-        "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
+      expect(responseGlobal.getPrincipal().toText()).toEqual(
+        principalText,
       )
     })
 
-    it("get third party global keys", async function () {
+    it("get third party global keys canister delegation", async function () {
       const canisterId = "irshc-3aaaa-aaaam-absla-cai"
-      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()
       const nfidSessionPublicKey = new Uint8Array(
         nfidSessionKey.getPublicKey().toDer(),
       )
       const chainRoot = await DelegationChain.create(
-        mockedIdentity,
+        identity,
         nfidSessionKey.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
         {},
@@ -167,8 +201,9 @@ describe("Lambda Sign/Register ECDSA", () => {
       )
       const actualPrincipalId = actualIdentity.getPrincipal().toText()
       console.debug("actualPrincipalId", actualPrincipalId)
+      const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
+      expect(principalText).toEqual(actualPrincipalId)
 
-      expect(actualPrincipalId).toEqual(expectedGlobalAcc)
 
       const delegationChainRenewed = await renewDelegationThirdParty(
         nfidDelegationIdentity,

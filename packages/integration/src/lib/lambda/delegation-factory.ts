@@ -31,7 +31,7 @@ export async function getDelegationChainSignedByCanister(
     userNumber: anchor,
     frontendHostname: origin,
     sessionKey: sessionPublicKey,
-    maxTimeToLive: [BigInt(maxTimeToLive)],
+    maxTimeToLive: [BigInt(maxTimeToLive * 1000000)], //to nanoseconds
     targets: [targets.map((t) => Principal.fromText(t))],
   }
   await replaceActorIdentity(delegationFactory, identity)

@@ -10,7 +10,7 @@ import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import {
-  btcSigner,
+  btcSigner, delegationFactory,
   ecdsaSigner,
   icSigner,
   im,
@@ -22,6 +22,7 @@ import {
   getPrincipalSignedByCanister,
 } from "./delegation-factory"
 import {
+  defaultExpirationInMinutes,
   deleteFromStorage,
   getFromStorage,
   saveToStorage,
@@ -45,11 +46,13 @@ export async function getGlobalKeysThirdParty(
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
   await validateTargets(targets, origin)
-
+  await replaceActorIdentity(im, identity)
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
-  if (anchor && anchor === ANCHOR_TO_GET_DELEGATION_FROM_DF) {
-    return getDelegationChainSignedByCanister(
+  let response
+  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
+    await replaceActorIdentity(delegationFactory, identity)
+    response = getDelegationChainSignedByCanister(
       identity,
       targets,
       sessionPublicKey,
@@ -58,7 +61,7 @@ export async function getGlobalKeysThirdParty(
       maxTimeToLive,
     )
   } else {
-    return oldFlowGlobalKeysFromLambda(
+    response =  oldFlowGlobalKeysFromLambda(
       identity,
       targets,
       sessionPublicKey,
@@ -66,6 +69,13 @@ export async function getGlobalKeysThirdParty(
       maxTimeToLive,
     )
   }
+
+  saveToStorage(
+    origin,
+    toHexString(sessionPublicKey),
+    defaultExpirationInMinutes,
+  )
+  return response;
 }
 
 export async function renewDelegationThirdParty(
@@ -104,6 +114,7 @@ export async function getGlobalKeys(
   const anchor = account.data[0]?.anchor
   let delegationChain
   if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
+    await replaceActorIdentity(delegationFactory, identity)
     const pk = new Uint8Array(sessionKey.getPublicKey().toDer())
     delegationChain = await getDelegationChainSignedByCanister(
       identity,
@@ -152,6 +163,7 @@ export async function ecdsaGetAnonymous(
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
   if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
+    await replaceActorIdentity(delegationFactory, identity)
     return await getDelegationChainSignedByCanister(
       identity,
       [],
@@ -269,14 +281,15 @@ async function ecdsaRegisterNewKeyPair(
 
 export async function getPublicKey(
   identity: DelegationIdentity,
-  chain: Chain,
+  chain = Chain.IC,
   origin = GLOBAL_ORIGIN,
 ): Promise<string> {
   const cacheKey =
     "ecdsa_getPublicKey" + chain.toString() + identity.getPrincipal().toText()
   const cachedValue = await integrationCache.getItem(cacheKey)
   if (cachedValue) return cachedValue as any
-
+  await replaceActorIdentity(delegationFactory, identity)
+  await replaceActorIdentity(im, identity)
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
   if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
@@ -395,12 +408,6 @@ async function oldFlowGlobalKeysFromLambda(
   }
 
   const delegationJSON = await fetchSignUrl(request)
-  const defaultExpirationInMinutes = 120
-  saveToStorage(
-    origin,
-    toHexString(sessionPublicKey),
-    defaultExpirationInMinutes,
-  )
   return DelegationChain.fromJSON(delegationJSON)
 }
 

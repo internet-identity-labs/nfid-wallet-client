@@ -14,7 +14,7 @@ import {
   AccessPointRequest,
   HTTPAccountRequest,
 } from "../_ic_api/identity_manager.d"
-import { im, replaceActorIdentity } from "../actors"
+import {im, replaceActorIdentity} from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,
@@ -44,7 +44,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const chainRoot = await DelegationChain.create(
         mockedIdentity,
         sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 500000),
+        new Date(Date.now() + 3_600_000 * 55),
         {},
       )
       const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
@@ -60,7 +60,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const deviceData: AccessPointRequest = {
         icon: "Icon",
         device: "Global",
-        pub_key: principal,
+        pub_key: di.getPrincipal().toText(),
         browser: "Browser",
         device_type: {
           Email: null,
@@ -78,7 +78,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const account = await im.create_account(accountRequest)
       const anchor = account.data[0]?.anchor
       expect(anchor! >= 200_000_000).toBeTruthy()
-      const principalText = await getPublicKey(di, Chain.IC)
+      const principalText = await getPublicKey(di)
       expect(Principal.fromText(principalText).isAnonymous()).toBeFalsy()
     })
 
@@ -87,7 +87,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const chainRoot = await DelegationChain.create(
         identity,
         sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 500000),
+        new Date(Date.now() + 3_600_000 * 55),
         {},
       )
       const delegationIdentity = DelegationIdentity.fromDelegation(
@@ -95,26 +95,26 @@ describe("Lambda Sign/Register Delegation Factory", () => {
         chainRoot,
       )
 
+      await replaceActorIdentity(im, delegationIdentity)
       const globalICIdentity = await getGlobalKeys(
         delegationIdentity,
         Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )
 
-      await replaceActorIdentity(im, globalICIdentity)
       const principalText = await getPublicKey(delegationIdentity, Chain.IC)
       expect(principalText).toEqual(
-        "skrkq-wvow3-5ptha-oqstj-lhxjc-suhi6-zc5hl-nk4qo-f4x6g-j4543-iqe",
+        "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
       )
       expect(globalICIdentity.getPrincipal().toText()).toEqual(principalText)
     })
 
-    it.skip("get anonymous delegation with the canister delegation", async function () {
+    it("get anonymous delegation with the canister delegation", async function () {
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
         identity,
         sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 500000),
+        new Date(Date.now() + 3_600_000 * 55),
         {},
       )
       const delegationIdentity = DelegationIdentity.fromDelegation(
@@ -163,7 +163,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const chainRoot = await DelegationChain.create(
         identity,
         nfidSessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 500000),
+        new Date(Date.now() + 3_600_000 * 55),
         {},
       )
       const nfidDelegationIdentity = DelegationIdentity.fromDelegation(
@@ -203,7 +203,10 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       )
       const actualPrincipalId = actualIdentity.getPrincipal().toText()
       console.debug("actualPrincipalId", actualPrincipalId)
-      const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
+        const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
+        expect(principalText).toEqual(
+          "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
+        )
       expect(principalText).toEqual(actualPrincipalId)
 
       const delegationChainRenewed = await renewDelegationThirdParty(
@@ -218,21 +221,10 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       )
       const renewedPrincipalId = renewedIdentity.getPrincipal().toText()
       expect(actualPrincipalId).toEqual(renewedPrincipalId)
-      const agent: Agent = await new HttpAgent({
-        host: "https://ic0.app",
-        identity: actualIdentity,
-      })
       const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
         IDL.Service({
           get_principal: IDL.Func([], [IDL.Text], []),
         })
-      const actor: ActorSubclass = Actor.createActor(idlFactory, {
-        agent,
-        canisterId: "irshc-3aaaa-aaaam-absla-cai",
-      })
-      const result = (await actor["get_principal"]()) as string[]
-      console.log(result)
-
       const agent2: Agent = await new HttpAgent({
         host: "https://ic0.app",
         identity: renewedIdentity,

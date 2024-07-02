@@ -1,4 +1,3 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 import { useBalanceICPAll } from "src/features/fungable-token/icp/hooks/use-balance-icp-all"
 import { stringICPtoE8s } from "src/integration/wallet/utils"

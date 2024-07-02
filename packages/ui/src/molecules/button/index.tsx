@@ -88,6 +88,7 @@ export const Button: React.FC<ButtonProps> = ({
             "text-white bg-[#0D9488] border-transparent rounded-[12px]",
             "hover:shadow-md hover:shadow-[#0D9488]/40 hover:bg-[#00A899]",
             "active:border-teal-700 active:bg-teal-700",
+            "focus:ring-0 focus:ring-offset-0 focus:ring-transparent",
             "disabled:shadow-none disabled:bg-gray-300 disabled:border-gray-300",
           ),
         block && clsx("w-full block"),

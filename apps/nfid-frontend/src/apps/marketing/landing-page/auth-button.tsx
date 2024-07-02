@@ -12,6 +12,7 @@ import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/button/menu"
 
 import IconMenu from "./assets/menu-white.svg"
+import IconMenuBlack from "./assets/menu.svg"
 
 export const AuthButton = ({
   isAuthenticated,
@@ -21,6 +22,7 @@ export const AuthButton = ({
   onAuthClick: () => void
 }) => {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
   const { profile } = useProfile()
   const navigate = useNavigate()
   const { logout } = useAuthentication()
@@ -45,9 +47,10 @@ export const AuthButton = ({
     <>
       <div className="md:hidden">
         <ButtonMenu
+          setIsOpened={(value) => setIsMenuOpened(value)}
           buttonElement={
             <img
-              src={IconMenu}
+              src={isMenuOpened ? IconMenuBlack : IconMenu}
               alt="menu"
               className="rotate-180 focus:shadow-none"
               id="burger-mobile"
@@ -99,7 +102,7 @@ export const AuthButton = ({
                   }
                 />
               ) : null}
-              <div className="flex flex-col px-4 pb-6 ml-1.5 space-y-5 font-bold mt-5">
+              <div className="flex flex-col px-6 pb-6 ml-1.5 space-y-5 font-bold mt-5">
                 <a
                   href="https://learn.nfid.one/"
                   target="_blank"
@@ -114,14 +117,16 @@ export const AuthButton = ({
 
                 <div>
                   {!isAuthenticated ? (
-                    <Button
+                    <span
                       id="btn-signin"
-                      className={clsx("h-full leading-none")}
-                      type="primary"
                       onClick={onAuthClick}
+                      className={clsx(
+                        "text-gray-700 text-sm",
+                        "hover:underline cursor-pointer hover:text-blue-hover transition-all",
+                      )}
                     >
                       Sign in
-                    </Button>
+                    </span>
                   ) : null}
                 </div>
               </div>
@@ -136,7 +141,10 @@ export const AuthButton = ({
         {isScrolled ? (
           <Button> {isAuthenticated ? "Profile" : "Sign in"}</Button>
         ) : (
-          <span> {isAuthenticated ? "Profile" : "Sign in"}</span>
+          <span className="hover:text-[#2DEECB] transition-all">
+            {" "}
+            {isAuthenticated ? "Profile" : "Sign in"}
+          </span>
         )}
       </div>
     </>

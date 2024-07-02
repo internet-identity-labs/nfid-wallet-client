@@ -5,12 +5,13 @@ export interface ButtonMenuProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: (toggle: () => void) => React.ReactNode
   buttonElement?: React.ReactElement | string
+  setIsOpened?: (value: boolean) => void
 }
 
 export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   children,
   className,
-
+  setIsOpened,
   buttonElement,
 }) => {
   const [toggleMenu, setToggleMenu] = React.useState(false)
@@ -23,6 +24,11 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
     },
     [toggleMenu],
   )
+
+  // TODO: refactoring and add position prop for the button
+  React.useEffect(() => {
+    if (setIsOpened) setIsOpened(toggleMenu)
+  }, [toggleMenu])
 
   React.useEffect(() => {
     const handleClickOutside = (event: any) => {

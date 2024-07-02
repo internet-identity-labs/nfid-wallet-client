@@ -28,7 +28,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   // TODO: refactoring and add position prop for the button
   React.useEffect(() => {
     if (setIsOpened) setIsOpened(toggleMenu)
-  }, [toggleMenu])
+  }, [toggleMenu, setIsOpened])
 
   React.useEffect(() => {
     const handleClickOutside = (event: any) => {

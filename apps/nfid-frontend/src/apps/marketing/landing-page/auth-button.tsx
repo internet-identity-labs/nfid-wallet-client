@@ -11,7 +11,7 @@ import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/button/menu"
 
-import IconMenu from "./assets/menu.svg"
+import IconMenu from "./assets/menu-white.svg"
 
 export const AuthButton = ({
   isAuthenticated,

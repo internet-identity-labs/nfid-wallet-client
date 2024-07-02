@@ -29,6 +29,6 @@ export const getPublicProfile = async (): Promise<{
         ? "0.00 USD"
         : `${(exchangeRate * Number(balance)).toFixed(2)} USD`,
     address,
-    principal: principal.toText(),
+    principal: principal,
   }
 }

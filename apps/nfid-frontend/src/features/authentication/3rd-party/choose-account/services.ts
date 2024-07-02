@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
 
@@ -5,7 +6,6 @@ import { authState, getBalance } from "@nfid/integration"
 
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
-import {Principal} from "@dfinity/principal";
 
 export const getPublicProfile = async (): Promise<{
   balance: string

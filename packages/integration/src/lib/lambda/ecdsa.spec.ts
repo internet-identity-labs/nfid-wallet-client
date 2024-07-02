@@ -1,16 +1,20 @@
 /**
  * @jest-environment jsdom
  */
-import {Actor, ActorSubclass, Agent, HttpAgent} from "@dfinity/agent"
-import {IDL} from "@dfinity/candid"
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
-import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
-import {networks, TransactionBuilder,} from "bitcoinjs-lib"
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { networks, TransactionBuilder } from "bitcoinjs-lib"
 import fetch from "node-fetch"
 
-import {WALLET_SCOPE} from "@nfid/config"
+import { WALLET_SCOPE } from "@nfid/config"
 
-import {ii, im, replaceActorIdentity} from "../actors"
+import { ii, im, replaceActorIdentity } from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,
@@ -19,7 +23,7 @@ import {
   getPublicKey,
   renewDelegationThirdParty,
 } from "./ecdsa"
-import {LocalStorageMock} from "./local-storage-mock"
+import { LocalStorageMock } from "./local-storage-mock"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -60,9 +64,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         expectedGlobalAcc,
       )
       const principal = await getPublicKey(delegationIdentity, Chain.IC)
-      expect(principal).toEqual(
-        expectedGlobalAcc,
-      )
+      expect(principal).toEqual(expectedGlobalAcc)
       await replaceActorIdentity(ii, globalICIdentity)
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)

@@ -43,7 +43,9 @@ export const getIdentity = (seed: string): Ed25519KeyIdentity => {
   return Ed25519KeyIdentity.generate(seedEncoded)
 }
 
-export async function getLambdaActor(): Promise<Agent.ActorSubclass<IdentityManager>> {
+export async function getLambdaActor(): Promise<
+  Agent.ActorSubclass<IdentityManager>
+> {
   const identity = getLambdaIdentity()
   const lambdaIm = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
   await replaceActorIdentity(im, identity)
@@ -54,6 +56,8 @@ export function getLambdaIdentity(): Secp256k1KeyIdentity {
   if (!LAMBDA_IDENTITY) {
     throw Error("No LAMBDA_IDENTITY provided.")
   }
-  const secretKey = Agent.fromHex("52b3beba1c5e2a128a6d0ec73ac780917b484b26b098c8a4c3ada845ef7a02d7")
+  const secretKey = Agent.fromHex(
+    "52b3beba1c5e2a128a6d0ec73ac780917b484b26b098c8a4c3ada845ef7a02d7",
+  )
   return Secp256k1KeyIdentity.fromSecretKey(secretKey)
 }

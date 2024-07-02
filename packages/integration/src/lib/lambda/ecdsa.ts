@@ -3,10 +3,12 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 
 import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
+import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import {
   btcSigner,
   ecdsaSigner,
@@ -15,15 +17,16 @@ import {
   replaceActorIdentity,
 } from "../actors"
 import { ic } from "../agent/index"
-import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
+import {
+  getDelegationChainSignedByCanister,
+  getPrincipalSignedByCanister,
+} from "./delegation-factory"
 import {
   deleteFromStorage,
   getFromStorage,
   saveToStorage,
 } from "./domain-key-repository"
 import { validateTargets } from "./targets"
-import {getDelegationChainSignedByCanister, getPrincipalSignedByCanister} from "./delegation-factory";
-import {Principal} from "@dfinity/principal";
 
 const GLOBAL_ORIGIN = "nfid.one"
 const ANCHOR_TO_GET_DELEGATION_FROM_DF = BigInt(200_000_000)
@@ -45,10 +48,23 @@ export async function getGlobalKeysThirdParty(
 
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
-  if (anchor && anchor === ANCHOR_TO_GET_DELEGATION_FROM_DF ) {
-     return getDelegationChainSignedByCanister(identity, targets, sessionPublicKey, anchor, origin, maxTimeToLive)
+  if (anchor && anchor === ANCHOR_TO_GET_DELEGATION_FROM_DF) {
+    return getDelegationChainSignedByCanister(
+      identity,
+      targets,
+      sessionPublicKey,
+      anchor,
+      origin,
+      maxTimeToLive,
+    )
   } else {
-    return oldFlowGlobalKeysFromLambda(identity, targets,sessionPublicKey,origin, maxTimeToLive)
+    return oldFlowGlobalKeysFromLambda(
+      identity,
+      targets,
+      sessionPublicKey,
+      origin,
+      maxTimeToLive,
+    )
   }
 }
 
@@ -74,7 +90,7 @@ export async function getGlobalKeys(
   identity: DelegationIdentity,
   chain: Chain,
   targets: string[],
-  origin = GLOBAL_ORIGIN
+  origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
   const cachedValue = await integrationCache.getItem(
     JSON.stringify({ identity, chain, targets }),
@@ -87,11 +103,21 @@ export async function getGlobalKeys(
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
   let delegationChain
-  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF ) {
+  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
     const pk = new Uint8Array(sessionKey.getPublicKey().toDer())
-    delegationChain = await getDelegationChainSignedByCanister(identity, targets, pk, anchor, origin)
-  }else {
-    delegationChain = await oldFlowDelegationChainLambda(identity, sessionKey, targets)
+    delegationChain = await getDelegationChainSignedByCanister(
+      identity,
+      targets,
+      pk,
+      anchor,
+      origin,
+    )
+  } else {
+    delegationChain = await oldFlowDelegationChainLambda(
+      identity,
+      sessionKey,
+      targets,
+    )
   }
   const response = DelegationIdentity.fromDelegation(
     sessionKey,
@@ -122,12 +148,17 @@ export async function ecdsaGetAnonymous(
   chain = Chain.IC,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
-
   await replaceActorIdentity(im, identity)
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
-  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF ) {
-    return await getDelegationChainSignedByCanister(identity, [], sessionKey, anchor, domain)
+  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
+    return await getDelegationChainSignedByCanister(
+      identity,
+      [],
+      sessionKey,
+      anchor,
+      domain,
+    )
   }
 
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
@@ -239,7 +270,7 @@ async function ecdsaRegisterNewKeyPair(
 export async function getPublicKey(
   identity: DelegationIdentity,
   chain: Chain,
-  origin = GLOBAL_ORIGIN
+  origin = GLOBAL_ORIGIN,
 ): Promise<string> {
   const cacheKey =
     "ecdsa_getPublicKey" + chain.toString() + identity.getPrincipal().toText()
@@ -248,7 +279,7 @@ export async function getPublicKey(
 
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
-  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF ) {
+  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
     const principal = await getPrincipalSignedByCanister(anchor, origin)
     return principal.toText()
   }
@@ -336,11 +367,13 @@ export function toHexString(bytes: ArrayBuffer): string {
   )
 }
 
-async function oldFlowGlobalKeysFromLambda(  identity: DelegationIdentity,
-                                   targets: string[],
-                                   sessionPublicKey: Uint8Array,
-                                   origin: string,
-                                   maxTimeToLive = ONE_HOUR_IN_MS * 2,) {
+async function oldFlowGlobalKeysFromLambda(
+  identity: DelegationIdentity,
+  targets: string[],
+  sessionPublicKey: Uint8Array,
+  origin: string,
+  maxTimeToLive = ONE_HOUR_IN_MS * 2,
+) {
   //we do not support BTC/ETH anymore
   const chain = Chain.IC
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
@@ -371,7 +404,11 @@ async function oldFlowGlobalKeysFromLambda(  identity: DelegationIdentity,
   return DelegationChain.fromJSON(delegationJSON)
 }
 
-async function oldFlowDelegationChainLambda(identity: DelegationIdentity, sessionKey: Ed25519KeyIdentity, targets: string[]): Promise<DelegationChain> {
+async function oldFlowDelegationChainLambda(
+  identity: DelegationIdentity,
+  sessionKey: Ed25519KeyIdentity,
+  targets: string[],
+): Promise<DelegationChain> {
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
   const delegationChainForLambda = await createDelegationChain(
     identity,
@@ -388,7 +425,7 @@ async function oldFlowDelegationChainLambda(identity: DelegationIdentity, sessio
   }
   const chainResponse = await fetchSignUrl(request)
 
-  return  DelegationChain.fromJSON(chainResponse)
+  return DelegationChain.fromJSON(chainResponse)
 }
 
 function fromHexString(hexString: string): ArrayBuffer {

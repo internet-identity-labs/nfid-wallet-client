@@ -1,12 +1,20 @@
 /**
  * @jest-environment jsdom
  */
-import {Actor, ActorSubclass, Agent, HttpAgent} from "@dfinity/agent"
-import {IDL} from "@dfinity/candid"
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 
-import {AccessPointRequest, HTTPAccountRequest,} from "../_ic_api/identity_manager.d"
-import {im, replaceActorIdentity} from "../actors"
+import {
+  AccessPointRequest,
+  HTTPAccountRequest,
+} from "../_ic_api/identity_manager.d"
+import { im, replaceActorIdentity } from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,
@@ -15,9 +23,8 @@ import {
   getPublicKey,
   renewDelegationThirdParty,
 } from "./ecdsa"
-import {LocalStorageMock} from "./local-storage-mock"
-import {getIdentity, getLambdaActor} from "./util"
-import {Principal} from "@dfinity/principal";
+import { LocalStorageMock } from "./local-storage-mock"
+import { getIdentity, getLambdaActor } from "./util"
 
 const identity = getIdentity("97654321876543218765432187654388")
 
@@ -75,7 +82,6 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       expect(Principal.fromText(principalText).isAnonymous()).toBeFalsy()
     })
 
-
     it("get global keys with canister signature", async function () {
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -97,10 +103,10 @@ describe("Lambda Sign/Register Delegation Factory", () => {
 
       await replaceActorIdentity(im, globalICIdentity)
       const principalText = await getPublicKey(delegationIdentity, Chain.IC)
-      expect(principalText).toEqual("skrkq-wvow3-5ptha-oqstj-lhxjc-suhi6-zc5hl-nk4qo-f4x6g-j4543-iqe")
-      expect(globalICIdentity.getPrincipal().toText()).toEqual(
-        principalText,
+      expect(principalText).toEqual(
+        "skrkq-wvow3-5ptha-oqstj-lhxjc-suhi6-zc5hl-nk4qo-f4x6g-j4543-iqe",
       )
+      expect(globalICIdentity.getPrincipal().toText()).toEqual(principalText)
     })
 
     it.skip("get anonymous delegation with the canister delegation", async function () {
@@ -128,14 +134,12 @@ describe("Lambda Sign/Register Delegation Factory", () => {
         delegationIdentity,
       )
 
-      const response = DelegationIdentity.fromDelegation(
-        dappSessionKey,
-        anon,
-      )
+      const response = DelegationIdentity.fromDelegation(dappSessionKey, anon)
       const principalText = await getPublicKey(delegationIdentity, Chain.IC)
 
-      expect("uf63z-wcfk4-qlxdj-rwhxw-vvfgz-ckfji-viyi2-znlst-kguug-ttnxg-lqe")
-        .toEqual(response.getPrincipal().toText())
+      expect(
+        "uf63z-wcfk4-qlxdj-rwhxw-vvfgz-ckfji-viyi2-znlst-kguug-ttnxg-lqe",
+      ).toEqual(response.getPrincipal().toText())
       expect(response.getPrincipal().toText()).not.toEqual(principalText)
       const anonGlobal = await ecdsaGetAnonymous(
         "nfid.one",
@@ -146,9 +150,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
         dappSessionKey,
         anonGlobal,
       )
-      expect(responseGlobal.getPrincipal().toText()).toEqual(
-        principalText,
-      )
+      expect(responseGlobal.getPrincipal().toText()).toEqual(principalText)
     })
 
     it("get third party global keys canister delegation", async function () {
@@ -203,7 +205,6 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       console.debug("actualPrincipalId", actualPrincipalId)
       const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
       expect(principalText).toEqual(actualPrincipalId)
-
 
       const delegationChainRenewed = await renewDelegationThirdParty(
         nfidDelegationIdentity,

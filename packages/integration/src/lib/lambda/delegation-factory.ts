@@ -1,15 +1,23 @@
+import { Signature } from "@dfinity/agent"
+import {
+  Delegation,
+  DelegationChain,
+  DelegationIdentity,
+} from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
-import {delegationFactory, mapOptional, replaceActorIdentity} from "@nfid/integration"
+import { ONE_HOUR_IN_MS } from "@nfid/config"
+import {
+  delegationFactory,
+  mapOptional,
+  replaceActorIdentity,
+} from "@nfid/integration"
 
 import {
   GetDelegationResponse,
   Timestamp,
   UserKey,
 } from "../_ic_api/delegation_factory.d"
-import {Delegation, DelegationChain, DelegationIdentity} from "@dfinity/identity";
-import {ONE_HOUR_IN_MS} from "@nfid/config";
-import {Signature} from "@dfinity/agent";
 
 export async function getDelegationChainSignedByCanister(
   identity: DelegationIdentity,
@@ -18,13 +26,13 @@ export async function getDelegationChainSignedByCanister(
   anchor: bigint,
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
-) : Promise<DelegationChain> {
+): Promise<DelegationChain> {
   const args: PrepareDelegationArgs = {
     userNumber: anchor,
     frontendHostname: origin,
     sessionKey: sessionPublicKey,
     maxTimeToLive: [BigInt(maxTimeToLive)],
-    targets: [targets.map((t) => Principal.fromText(t))]
+    targets: [targets.map((t) => Principal.fromText(t))],
   }
   await replaceActorIdentity(delegationFactory, identity)
   const prepareDelegationResponse = await prepareDelegation(args)
@@ -33,7 +41,7 @@ export async function getDelegationChainSignedByCanister(
     frontendHostname: origin,
     sessionKey: sessionPublicKey,
     expiration: prepareDelegationResponse[1],
-    targets: [targets.map((t) => Principal.fromText(t))]
+    targets: [targets.map((t) => Principal.fromText(t))],
   }).then((r) => {
     if ("signed_delegation" in r) {
       return DelegationChain.fromDelegations(
@@ -79,8 +87,8 @@ async function prepareDelegation(
     args.frontendHostname,
     args.sessionKey,
     args.maxTimeToLive,
-    args.targets
-)
+    args.targets,
+  )
 }
 
 type GetDelegationArgs = {

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-type ButtonType = "primary" | "secondary" | "stroke" | "ghost" | "red"
+type ButtonType = "primary" | "secondary" | "stroke" | "ghost" | "red" | "green"
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   block?: boolean
@@ -31,6 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
   const isGhost = type === "ghost"
   const isStroke = type === "stroke"
   const isRed = type === "red"
+  const isGreen = type === "green"
 
   return (
     <Component
@@ -80,6 +81,13 @@ export const Button: React.FC<ButtonProps> = ({
             "hover:shadow-md hover:shadow-red-600/40 hover:border-red-500 hover:bg-red-500",
             "active:border-red-700 active:bg-red-700",
             "focus:border-red-600 focus:bg-red-600",
+            "disabled:shadow-none disabled:bg-gray-300 disabled:border-gray-300",
+          ),
+        isGreen &&
+          clsx(
+            "text-white bg-[#0D9488] border-transparent rounded-[12px]",
+            "hover:shadow-md hover:shadow-[#0D9488]/40 hover:bg-[#00A899]",
+            "active:border-teal-700 active:bg-teal-700",
             "disabled:shadow-none disabled:bg-gray-300 disabled:border-gray-300",
           ),
         block && clsx("w-full block"),

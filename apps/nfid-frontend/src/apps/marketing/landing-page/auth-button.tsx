@@ -11,7 +11,7 @@ import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/button/menu"
 
-import IconMenu from "./assets/menu.svg"
+import IconMenu from "./assets/menu-white.svg"
 
 export const AuthButton = ({
   isAuthenticated,
@@ -129,7 +129,10 @@ export const AuthButton = ({
           )}
         </ButtonMenu>
       </div>
-      <div className="hidden cursor-pointer md:block" onClick={onAuthClick}>
+      <div
+        className="hidden cursor-pointer md:block text-white"
+        onClick={onAuthClick}
+      >
         {isScrolled ? (
           <Button> {isAuthenticated ? "Profile" : "Sign in"}</Button>
         ) : (

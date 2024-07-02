@@ -129,7 +129,10 @@ export const AuthButton = ({
           )}
         </ButtonMenu>
       </div>
-      <div className="hidden cursor-pointer md:block" onClick={onAuthClick}>
+      <div
+        className="hidden cursor-pointer md:block text-white"
+        onClick={onAuthClick}
+      >
         {isScrolled ? (
           <Button> {isAuthenticated ? "Profile" : "Sign in"}</Button>
         ) : (

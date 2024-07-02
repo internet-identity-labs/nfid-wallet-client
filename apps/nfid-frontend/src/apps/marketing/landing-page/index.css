@@ -141,8 +141,46 @@
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #0094ff 0%, #a400cd 100%);
+  background: linear-gradient(90deg, #edfffd 0%, #8bffdc 100%);
   color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
+}
+
+.gradient-radial {
+  top: 0;
+  left: 270px;
+  position: absolute;
+  width: 1200px;
+  height: 1200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00896c 0%, #0d1515 100%);
+  filter: blur(2400px);
+}
+
+@media only screen and (max-width: 768px) {
+  .gradient-radial {
+    width: 370px;
+    height: 370px;
+    left: 0;
+    top: 280px;
+    filter: blur(120px);
+  }
+}
+
+.gradient-radial-card {
+  opacity: 0;
+  top: -150px;
+  left: 210px;
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00896c 0%, #0d1515 100%);
+  filter: blur(200px);
+  transition: 0.25s opacity ease-in-out;
+}
+
+.card:hover .gradient-radial-card {
+  opacity: 1;
 }

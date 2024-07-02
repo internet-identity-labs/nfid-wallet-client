@@ -44,7 +44,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const chainRoot = await DelegationChain.create(
         mockedIdentity,
         sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
+        new Date(Date.now() + 3_600_000 * 500000),
         {},
       )
       const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
@@ -87,7 +87,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const chainRoot = await DelegationChain.create(
         identity,
         sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
+        new Date(Date.now() + 3_600_000 * 500000),
         {},
       )
       const delegationIdentity = DelegationIdentity.fromDelegation(
@@ -114,7 +114,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const chainRoot = await DelegationChain.create(
         identity,
         sessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
+        new Date(Date.now() + 3_600_000 * 500000),
         {},
       )
       const delegationIdentity = DelegationIdentity.fromDelegation(
@@ -163,7 +163,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const chainRoot = await DelegationChain.create(
         identity,
         nfidSessionKey.getPublicKey(),
-        new Date(Date.now() + 3_600_000 * 44),
+        new Date(Date.now() + 3_600_000 * 500000),
         {},
       )
       const nfidDelegationIdentity = DelegationIdentity.fromDelegation(

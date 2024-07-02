@@ -1,6 +1,5 @@
 import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { getPublicKey, Chain } from "packages/integration/src/lib/lambda/ecdsa"
 

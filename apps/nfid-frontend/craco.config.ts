@@ -83,6 +83,10 @@ const setupCSP = () => {
         "https://eu.posthog.com",
       ],
       "require-trusted-types-for": ["'script'"],
+      "media-src": [
+        "'self'",
+        "https://dev.nfid.one", // Add this line to allow media from the specified source
+      ],
     }
 
     return [

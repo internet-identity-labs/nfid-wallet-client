@@ -162,8 +162,10 @@
   .gradient-radial {
     width: 370px;
     height: 370px;
-    left: 0;
     top: 280px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     filter: blur(120px);
   }
 }

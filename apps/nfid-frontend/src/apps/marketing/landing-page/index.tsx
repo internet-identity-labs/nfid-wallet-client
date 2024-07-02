@@ -100,7 +100,7 @@ export const HomeScreen = () => {
             <a
               href="https://learn.nfid.one/"
               target="_blank"
-              className="mr-[50px] hidden md:inline-block text-white"
+              className="mr-[50px] hidden md:inline-block text-white hover:text-[#2DEECB] transition-all"
               rel="noreferrer"
             >
               Knowledge base
@@ -113,7 +113,7 @@ export const HomeScreen = () => {
         </div>
       </div>
       <section
-        className={clsx("h-[75vh] relative overflow-visible", container)}
+        className={clsx("md:h-[75vh] relative overflow-visible", container)}
       >
         <div className="gradient-radial"></div>
         <div className="relative z-10 pt-[15vh] md:max-w-[420px] lg:max-w-[540px] text-center md:text-left">
@@ -156,7 +156,7 @@ export const HomeScreen = () => {
         style={{
           backgroundImage: getIsMobileDeviceMatch() ? "" : `url(${Gradient})`,
           backgroundSize: "cover",
-          backgroundPosition: "center bottom -10px",
+          backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
         }}
       >
@@ -353,7 +353,7 @@ export const HomeScreen = () => {
               href="https://docs.nfid.one/legal/terms"
               target="_blank"
               rel="noreferrer"
-              className="mr-[30px] leading-[30px] inline-block"
+              className="mr-[30px] leading-[30px] inline-block hover:text-[#2DEECB] transition-all"
             >
               Terms of service
             </a>
@@ -361,7 +361,7 @@ export const HomeScreen = () => {
               href="https://docs.nfid.one/legal/privacy"
               target="_blank"
               rel="noreferrer"
-              className="leading-[30px] inline-block"
+              className="leading-[30px] inline-block hover:text-[#2DEECB] transition-all"
             >
               Privacy policy
             </a>

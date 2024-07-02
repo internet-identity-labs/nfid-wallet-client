@@ -14,7 +14,7 @@ import {
   AccessPointRequest,
   HTTPAccountRequest,
 } from "../_ic_api/identity_manager.d"
-import {im, replaceActorIdentity} from "../actors"
+import { im, replaceActorIdentity } from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,
@@ -203,10 +203,10 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       )
       const actualPrincipalId = actualIdentity.getPrincipal().toText()
       console.debug("actualPrincipalId", actualPrincipalId)
-        const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
-        expect(principalText).toEqual(
-          "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
-        )
+      const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
+      expect(principalText).toEqual(
+        "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
+      )
       expect(principalText).toEqual(actualPrincipalId)
 
       const delegationChainRenewed = await renewDelegationThirdParty(

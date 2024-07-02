@@ -10,7 +10,8 @@ import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import {
-  btcSigner, delegationFactory,
+  btcSigner,
+  delegationFactory,
   ecdsaSigner,
   icSigner,
   im,
@@ -61,7 +62,7 @@ export async function getGlobalKeysThirdParty(
       maxTimeToLive,
     )
   } else {
-    response =  oldFlowGlobalKeysFromLambda(
+    response = oldFlowGlobalKeysFromLambda(
       identity,
       targets,
       sessionPublicKey,
@@ -75,7 +76,7 @@ export async function getGlobalKeysThirdParty(
     toHexString(sessionPublicKey),
     defaultExpirationInMinutes,
   )
-  return response;
+  return response
 }
 
 export async function renewDelegationThirdParty(

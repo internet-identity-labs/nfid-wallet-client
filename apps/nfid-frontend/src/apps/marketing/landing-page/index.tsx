@@ -48,13 +48,13 @@ import AnimationWrapper from "./visible-animation"
 
 const container = "max-w-[1280px] w-[calc(100%-60px)] mx-auto"
 const asset =
-  "relative w-full md:w-[40%] min-w-[330px] min-h-[330px] shrink-0 mx-auto sm:mx-0"
+  "my-5 sm:my-0 relative w-full md:w-[40%] min-w-[330px] min-h-[330px] shrink-0 mx-auto sm:mx-0"
 const section2 = "justify-between block md:flex gap-[60px] items-center"
 const card =
-  "px-5 bg-[#112525] overflow-hidden relative bg-opacity-20 md:px-[16px] lg:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group card"
+  "px-5 bg-[#112525] overflow-hidden relative bg-opacity-40 md:px-[16px] lg:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group card"
 const cardItem =
   "mt-[10px] md:mt-[45px] font-medium text-xl md:text-[30px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-[140%] max-w-[350px] lg:max-w-full text-[#BBF7EC]"
-const cardImg = "w-[140px] lg:w-[200px] absolute ml-[40px]"
+const cardImg = "w-full lg:w-[200px] absolute ml-[40px]"
 const sponsor = "max-w-[150px] md:max-w-[220px] max-h-[80px] mx-auto md:max-0"
 
 export const HomeScreen = () => {
@@ -113,7 +113,7 @@ export const HomeScreen = () => {
         </div>
       </div>
       <section
-        className={clsx("md:h-[75vh] relative overflow-visible", container)}
+        className={clsx("h-[75vh] relative overflow-visible", container)}
       >
         <div className="gradient-radial"></div>
         <div className="relative z-10 pt-[15vh] md:max-w-[420px] lg:max-w-[540px] text-center md:text-left">
@@ -150,8 +150,8 @@ export const HomeScreen = () => {
       </section>
       <section
         className={clsx(
-          "rounded-[30px] py-[30px] lg:px-[60px] text-white relative z-10",
-          "mt-[20vh] md:mt-0 md:w-[calc(100%-60px)] mx-auto pb-10 gradient-box",
+          "rounded-[30px] py-20 lg:px-[60px] text-white relative z-10",
+          "mt-[20vh] md:mt-0 md:w-[calc(100%-60px)] mx-auto pb-20 gradient-box bg-[#03201C]",
         )}
         style={{
           backgroundImage: getIsMobileDeviceMatch() ? "" : `url(${Gradient})`,

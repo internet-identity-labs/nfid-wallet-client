@@ -35,7 +35,7 @@ const onRequestTransfer = useCallback(
 )`
 
 export const RequestNonFungibleTransfer = () => {
-  const { nfid, identity, config } = useAuthenticationContext()
+  const { nfid, identity, config, derivationOrigin } = useAuthenticationContext()
   const [response, setResponse] = useState("{}")
   const [selectedNFTIds, setSelectedNFTIds] = useState<string[]>([""])
 
@@ -58,12 +58,13 @@ export const RequestNonFungibleTransfer = () => {
         ?.requestTransferNFT({
           receiver: values.receiver,
           tokenId: selectedNFTIds[0],
+          derivationOrigin
         })
         .catch((e: Error) => ({ error: e.message }))
 
       setResponse(JSON.stringify(res, null, 2))
     },
-    [nfid, selectedNFTIds],
+    [nfid, selectedNFTIds, derivationOrigin],
   )
 
   const {

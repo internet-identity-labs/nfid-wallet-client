@@ -299,7 +299,7 @@ jobs:
       - name: DEPLOY => Load artifact
         uses: actions/download-artifact@v4
         with:
-          name: nfid-frotnend
+          name: nfid-frontend
 
       - name: DEPLOY => Deploy to the canister
         run: |

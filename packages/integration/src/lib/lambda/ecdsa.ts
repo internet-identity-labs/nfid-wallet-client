@@ -315,13 +315,14 @@ export async function getPublicKey(
   } else {
     publicKey = response[0]
   }
-  await integrationCache.setItem(cacheKey, publicKey, {
-    ttl: 6000,
-  })
   const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
   const principal = Principal.selfAuthenticating(
     new Uint8Array(publicDelegation.getPublicKey().toDer()),
   )
+
+  await integrationCache.setItem(cacheKey, principal.toText(), {
+    ttl: 6000,
+  })
   return principal.toText()
 }
 

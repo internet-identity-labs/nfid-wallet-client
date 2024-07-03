@@ -1,6 +1,5 @@
 import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { getPublicKey, Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
@@ -38,12 +37,11 @@ export async function getLambdaCredentials() {
   const identity = authState.get().delegationIdentity
   if (!identity) throw new Error("Identity not found. Please try again")
   const account = await im.get_account()
-  const key = await getPublicKey(identity, Chain.IC)
+  const principal = await getPublicKey(identity, Chain.IC)
   const rootPrincipalId = account.data[0]?.principal_id
-  const principal = Ed25519KeyIdentity.fromParsedJson([key, "0"]).getPrincipal()
 
   return {
     rootPrincipalId,
-    publicKey: principal.toText(),
+    publicKey: principal,
   }
 }

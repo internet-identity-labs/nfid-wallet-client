@@ -15,7 +15,7 @@ import { getICPublicDelegation } from "frontend/ui/connnector/fungible-asset-scr
 export const useMigrationTransfer = () => {
   const { profile } = useProfile()
 
-  const { data: publicDelegation } = useSWR(
+  const { data: principal } = useSWR(
     "ICPublicDelegation",
     getICPublicDelegation,
   )
@@ -24,18 +24,18 @@ export const useMigrationTransfer = () => {
   const [, send] = useActor(globalServices.transferService)
 
   const onTransferClick = React.useCallback(async () => {
-    if (!publicDelegation)
+    if (!principal)
       return toast.warn("Please wait a few seconds and try again.")
 
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
     send({ type: "CHANGE_DIRECTION", data: "send" })
     send({
       type: "ASSIGN_RECEIVER_WALLET",
-      data: publicDelegation.getPrincipal().toText(),
+      data: principal,
     })
 
     send({ type: "SHOW" })
-  }, [publicDelegation, send])
+  }, [principal, send])
 
   return {
     onTransferClick,

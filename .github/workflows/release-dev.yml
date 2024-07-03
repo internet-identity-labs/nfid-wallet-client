@@ -234,8 +234,8 @@ jobs:
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
           ci_echo_debug "Getting values from dfx.json" >&2
-          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
-            ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${FRONTEND_CANISTER_NAME}\""); then
+            ci_echo_error "Can't found canister '${FRONTEND_CANISTER_NAME}' data from dfx.json" >&2
             exit 1
           fi
 
@@ -277,7 +277,7 @@ jobs:
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
           ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-          ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
+          ci_echo_info "FRONTEND_CANISTER_NAME=${FRONTEND_CANISTER_NAME}" >&2
           ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
           ci_echo_info "ID_NAME=${ID_NAME}" >&2
           ci_echo_info "ID_PATH=${ID_PATH}" >&2
@@ -299,7 +299,7 @@ jobs:
       - name: DEPLOY => Load artifact
         uses: actions/download-artifact@v4
         with:
-          name: nfid-demo
+          name: nfid-frotnend
 
       - name: DEPLOY => Deploy to the canister
         run: |
@@ -311,15 +311,15 @@ jobs:
 
           dfx identity use "${ID_NAME}"
 
-          ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
-          if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
+          ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${FRONTEND_CANISTER_NAME}" >&2
+          if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${FRONTEND_CANISTER_NAME}"); then
             ci_echo_error "Install failed ${result}" >&2
             exit 1
           fi
 
           ci_echo_debug "Command output was '${result}'" >&2
 
-          ci_echo_success "Canister '${CANISTER_NAME}' was installed" >&2
+          ci_echo_success "Canister '${FRONTEND_CANISTER_NAME}' was installed" >&2
 
   # build-demo:
   #   name: Build NFID-Demo
@@ -481,8 +481,8 @@ jobs:
   #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
   #         ci_echo_debug "Getting values from dfx.json" >&2
-  #         if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
-  #           ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
+  #         if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${DEMO_CANISTER_NAME}\""); then
+  #           ci_echo_error "Can't found canister '${DEMO_CANISTER_NAME}' data from dfx.json" >&2
   #           exit 1
   #         fi
 
@@ -524,7 +524,7 @@ jobs:
   #       run: |
   #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
   #         ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-  #         ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
+  #         ci_echo_info "DEMO_CANISTER_NAME=${DEMO_CANISTER_NAME}" >&2
   #         ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
   #         ci_echo_info "ID_NAME=${ID_NAME}" >&2
   #         ci_echo_info "ID_PATH=${ID_PATH}" >&2
@@ -558,12 +558,12 @@ jobs:
 
   #         dfx identity use "${ID_NAME}"
 
-  #         ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
-  #         if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
+  #         ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${DEMO_CANISTER_NAME}" >&2
+  #         if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${DEMO_CANISTER_NAME}"); then
   #           ci_echo_error "Install failed ${result}" >&2
   #           exit 1
   #         fi
 
   #         ci_echo_debug "Command output was '${result}'" >&2
 
-  #         ci_echo_success "Canister '${CANISTER_NAME}' was installed" >&2
+  #         ci_echo_success "Canister '${DEMO_CANISTER_NAME}' was installed" >&2

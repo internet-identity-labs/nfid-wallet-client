@@ -1,4 +1,3 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { authState } from "../authentication"
@@ -14,11 +13,7 @@ export async function fetchPrincipals(): Promise<PrincipalAccount[]> {
   const delegation = authState.get().delegationIdentity
   if (!delegation) throw Error("No delegation identity")
 
-  const publicKey = await getPublicKey(delegation, Chain.IC)
-  const principal = Ed25519KeyIdentity.fromParsedJson([
-    publicKey,
-    "0",
-  ]).getPrincipal()
+  const principal = await getPublicKey(delegation, Chain.IC)
 
   const globalAcc = {
     account: {
@@ -26,7 +21,7 @@ export async function fetchPrincipals(): Promise<PrincipalAccount[]> {
       domain: "nfid.one",
       label: "NFID",
     },
-    principal,
+    principal: Principal.fromText(principal),
   }
 
   return [globalAcc]

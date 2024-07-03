@@ -321,249 +321,249 @@ jobs:
 
           ci_echo_success "Canister '${FRONTEND_CANISTER_NAME}' was installed" >&2
 
-  # build-demo:
-  #   name: Build NFID-Demo
-  #   needs: check-secrets
-  #   runs-on: ubuntu-latest
-  #   if: ${{ ! contains( github.ref_name, 'production' ) }}
+  build-demo:
+    name: Build NFID-Demo
+    needs: check-secrets
+    runs-on: ubuntu-latest
+    if: ${{ ! contains( github.ref_name, 'production' ) }}
 
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-  #     - name: Checkout CI repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         token: ${{ secrets.PAT }}
-  #         repository: internet-identity-labs/ci_libs
-  #         ref: main
-  #         path: ci_libs
+      - name: Checkout CI repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
-  #     - name: Setup DFX 15
-  #       uses: dfinity/setup-dfx@main
-  #       with:
-  #         dfx-version: 0.15.0
+      - name: Setup DFX 15
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: 0.15.0
 
-  #     - name: Setup Node 18
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "18"
-  #         cache: "yarn"
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "yarn"
 
-  #     - name: Get yarn cache directory path
-  #       id: yarn-cache-dir-path
-  #       run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-  #     - name: Cache Node Modules
-  #       id: cache-node-modules
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: |
-  #           **/node_modules
-  #           **/.eslintcache
-  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
-  #         key: nfid-fe-yarn
+      - name: Cache Node Modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: nfid-fe-yarn
 
-  #     - name: Versions
-  #       run: |
-  #         source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+      - name: Versions
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
-  #         ci_versions
+          ci_versions
 
-  #     - name: NFID-DEMO => Populate env vars
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      - name: NFID-DEMO => Populate env vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-  #         ci_echo_debug "Getting values from dfx.json" >&2
-  #         if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${DEMO_CANISTER_NAME}\""); then
-  #           ci_echo_error "Can't found canister '${DEMO_CANISTER_NAME}' data from dfx.json" >&2
-  #           exit 1
-  #         fi
+          ci_echo_debug "Getting values from dfx.json" >&2
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${DEMO_CANISTER_NAME}\""); then
+            ci_echo_error "Can't found canister '${DEMO_CANISTER_NAME}' data from dfx.json" >&2
+            exit 1
+          fi
 
-  #         CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
+          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
 
-  #         ci_echo_debug "Detecting network for the canister based on the branch." >&2
-  #         case ${CANISTER_BRANCH} in
-  #           staging)
-  #             NETWORK_NAME='stage'
-  #             ENV_FILE='.env.staging'
-  #             ;;
-  #           production)
-  #             ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
-  #             exit 1
-  #             ;;
-  #           *)
-  #             NETWORK_NAME='dev'
-  #             ENV_FILE='.env.dev'
-  #             ;;
-  #         esac
+          ci_echo_debug "Detecting network for the canister based on the branch." >&2
+          case ${CANISTER_BRANCH} in
+            staging)
+              NETWORK_NAME='stage'
+              ENV_FILE='.env.staging'
+              ;;
+            production)
+              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
+              exit 1
+              ;;
+            *)
+              NETWORK_NAME='dev'
+              ENV_FILE='.env.dev'
+              ;;
+          esac
 
-  #         ci_echo_debug "Populating env variables" >&2
-  #         echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
-  #         echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
-  #         echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
+          ci_echo_debug "Populating env variables" >&2
+          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
+          echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
+          echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
 
-  #     - name: NFID-DEMO => Print Vars
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      - name: NFID-DEMO => Print Vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-  #         ci_echo_info "DEMO_CANISTER_NAME=${DEMO_CANISTER_NAME}" >&2
-  #         ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
-  #         ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-  #         ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
+          ci_echo_info "DEMO_CANISTER_NAME=${DEMO_CANISTER_NAME}" >&2
+          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
+          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
+          ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
 
-  #     - name: NFID-DEMO => Install
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      - name: NFID-DEMO => Install
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-  #         ci_echo_debug "Preparing npmrc" >&2
-  #         cat > ~/.npmrc << EOF
-  #         @psychedelic:registry=https://npm.pkg.github.com
-  #         @internet-identity-labs:registry=https://npm.pkg.github.com
-  #         //npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
-  #         EOF
+          ci_echo_debug "Preparing npmrc" >&2
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          @internet-identity-labs:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
+          EOF
 
-  #         ci_echo_debug "yarn --prefer-offline" >&2
-  #         yarn --prefer-offline --frozen-lockfile
-  #       env:
-  #         GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          ci_echo_debug "yarn --prefer-offline" >&2
+          yarn --prefer-offline --frozen-lockfile
+        env:
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
-  #     - name: NFID-DEMO => Build package
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      - name: NFID-DEMO => Build package
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-  #         ci_echo_info "NPX" >&2
-  #         ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${DEMO_CANISTER_NAME}'" >&2
-  #         npx env-cmd -f "${ENV_FILE}" nx build "${DEMO_CANISTER_NAME}"
+          ci_echo_info "NPX" >&2
+          ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${DEMO_CANISTER_NAME}'" >&2
+          npx env-cmd -f "${ENV_FILE}" nx build "${DEMO_CANISTER_NAME}"
 
-  #         ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${DEMO_CANISTER_NAME}" >&2
-  #         dfx build --network "${NETWORK_NAME}" "${DEMO_CANISTER_NAME}"
+          ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${DEMO_CANISTER_NAME}" >&2
+          dfx build --network "${NETWORK_NAME}" "${DEMO_CANISTER_NAME}"
 
-  #     - name: NFID-DEMO => Save artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: nfid-demo
-  #         path: |
-  #           build/
-  #           dist/
-  #           .dfx/
+      - name: NFID-DEMO => Save artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfid-demo
+          path: |
+            build/
+            dist/
+            .dfx/
 
-  # deploy-demo:
-  #   name: Deploy NFID-Demo
-  #   needs: build-demo
-  #   if: ${{ ! contains( github.ref_name, 'production' ) }}
-  #   runs-on:
-  #     group: dfx-runner
-  #   defaults:
-  #     run:
-  #       shell: bash
+  deploy-demo:
+    name: Deploy NFID-Demo
+    needs: build-demo
+    if: ${{ ! contains( github.ref_name, 'production' ) }}
+    runs-on:
+      group: dfx-runner
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-  #     - name: Checkout CI repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         token: ${{ secrets.PAT }}
-  #         repository: internet-identity-labs/ci_libs
-  #         ref: main
-  #         path: ci_libs
+      - name: Checkout CI repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
-  #     - name: Versions
-  #       run: |
-  #         source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+      - name: Versions
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
-  #         ci_versions
+          ci_versions
 
-  #     - name: PRE-DEPLOY => Populate env vars
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      - name: PRE-DEPLOY => Populate env vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-  #         ci_echo_debug "Getting values from dfx.json" >&2
-  #         if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${DEMO_CANISTER_NAME}\""); then
-  #           ci_echo_error "Can't found canister '${DEMO_CANISTER_NAME}' data from dfx.json" >&2
-  #           exit 1
-  #         fi
+          ci_echo_debug "Getting values from dfx.json" >&2
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${DEMO_CANISTER_NAME}\""); then
+            ci_echo_error "Can't found canister '${DEMO_CANISTER_NAME}' data from dfx.json" >&2
+            exit 1
+          fi
 
-  #         CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
+          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
 
-  #         ci_echo_debug "Detecting network for the canister based on the branch." >&2
-  #         case ${CANISTER_BRANCH} in
-  #           staging)
-  #             NETWORK_NAME='stage'
-  #             ;;
-  #           production)
-  #             ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
-  #             exit 1
-  #             ;;
-  #           *)
-  #             NETWORK_NAME='dev'
-  #             ;;
-  #         esac
+          ci_echo_debug "Detecting network for the canister based on the branch." >&2
+          case ${CANISTER_BRANCH} in
+            staging)
+              NETWORK_NAME='stage'
+              ;;
+            production)
+              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
+              exit 1
+              ;;
+            *)
+              NETWORK_NAME='dev'
+              ;;
+          esac
 
-  #         ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
+          ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
 
-  #         if [[ "${NETWORK_NAME}" =~ ^(dev|stage)$ ]]; then
-  #           ID_NAME="dev_admin"
-  #           IDENTITY_PEM_NAME_VAR="DEV_ADMIN_KEY"
-  #         elif [ "${NETWORK_NAME}" == 'ic' ]; then
-  #           ID_NAME="prod_admin"
-  #           IDENTITY_PEM_NAME_VAR="PROD_ADMIN_KEY"
-  #         fi
-  #         ID_PATH="/home/ubuntu/.config/dfx/identity/${ID_NAME}"
+          if [[ "${NETWORK_NAME}" =~ ^(dev|stage)$ ]]; then
+            ID_NAME="dev_admin"
+            IDENTITY_PEM_NAME_VAR="DEV_ADMIN_KEY"
+          elif [ "${NETWORK_NAME}" == 'ic' ]; then
+            ID_NAME="prod_admin"
+            IDENTITY_PEM_NAME_VAR="PROD_ADMIN_KEY"
+          fi
+          ID_PATH="/home/ubuntu/.config/dfx/identity/${ID_NAME}"
 
-  #         ci_echo_debug "Populating env variables" >&2
-  #         echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
-  #         echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
-  #         echo "ID_NAME=${ID_NAME}" >> $GITHUB_ENV
-  #         echo "ID_PATH=${ID_PATH}" >> $GITHUB_ENV
-  #         echo "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >> $GITHUB_ENV
+          ci_echo_debug "Populating env variables" >&2
+          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
+          echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
+          echo "ID_NAME=${ID_NAME}" >> $GITHUB_ENV
+          echo "ID_PATH=${ID_PATH}" >> $GITHUB_ENV
+          echo "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >> $GITHUB_ENV
 
-  #     - name: PRE-DEPLOY => Print Vars
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-  #         ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-  #         ci_echo_info "DEMO_CANISTER_NAME=${DEMO_CANISTER_NAME}" >&2
-  #         ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
-  #         ci_echo_info "ID_NAME=${ID_NAME}" >&2
-  #         ci_echo_info "ID_PATH=${ID_PATH}" >&2
-  #         ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
+      - name: PRE-DEPLOY => Print Vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
+          ci_echo_info "DEMO_CANISTER_NAME=${DEMO_CANISTER_NAME}" >&2
+          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
+          ci_echo_info "ID_NAME=${ID_NAME}" >&2
+          ci_echo_info "ID_PATH=${ID_PATH}" >&2
+          ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
 
-  #     - name: PRE-DEPLOY => Write identity
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      - name: PRE-DEPLOY => Write identity
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-  #         mkdir -p "${ID_PATH}"
+          mkdir -p "${ID_PATH}"
 
-  #         ci_echo_warn "Preparing encoded key..." >&2
-  #         ci_echo_info "Decoding..." >&2
-  #         echo "${!IDENTITY_PEM_NAME_VAR}" | base64 -d > "${ID_PATH}/identity.pem"
-  #       env:
-  #         DEV_ADMIN_KEY: ${{secrets.DEV_ADMIN_KEY}}
-  #         PROD_ADMIN_KEY: ${{secrets.PROD_ADMIN_KEY}}
+          ci_echo_warn "Preparing encoded key..." >&2
+          ci_echo_info "Decoding..." >&2
+          echo "${!IDENTITY_PEM_NAME_VAR}" | base64 -d > "${ID_PATH}/identity.pem"
+        env:
+          DEV_ADMIN_KEY: ${{secrets.DEV_ADMIN_KEY}}
+          PROD_ADMIN_KEY: ${{secrets.PROD_ADMIN_KEY}}
 
-  #     - name: DEPLOY => Load artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: nfid-demo
+      - name: DEPLOY => Load artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nfid-demo
 
-  #     - name: DEPLOY => Deploy to the canister
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      - name: DEPLOY => Deploy to the canister
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-  #         if [ "${NETWORK_NAME}" == 'ic' ]; then
-  #           CI_DEBUG="true"
-  #         fi
+          if [ "${NETWORK_NAME}" == 'ic' ]; then
+            CI_DEBUG="true"
+          fi
 
-  #         dfx identity use "${ID_NAME}"
+          dfx identity use "${ID_NAME}"
 
-  #         ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${DEMO_CANISTER_NAME}" >&2
-  #         if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${DEMO_CANISTER_NAME}"); then
-  #           ci_echo_error "Install failed ${result}" >&2
-  #           exit 1
-  #         fi
+          ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${DEMO_CANISTER_NAME}" >&2
+          if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${DEMO_CANISTER_NAME}"); then
+            ci_echo_error "Install failed ${result}" >&2
+            exit 1
+          fi
 
-  #         ci_echo_debug "Command output was '${result}'" >&2
+          ci_echo_debug "Command output was '${result}'" >&2
 
-  #         ci_echo_success "Canister '${DEMO_CANISTER_NAME}' was installed" >&2
+          ci_echo_success "Canister '${DEMO_CANISTER_NAME}' was installed" >&2

@@ -84,7 +84,8 @@ export interface TokenConfig {
   currency: string
   fee: bigint
   icon: string
-  price: string | undefined
+  rate: number | undefined
+  decimals: number
   title: string
   canisterId?: string
   tokenStandard: TokenStandards

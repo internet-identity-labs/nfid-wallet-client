@@ -27,7 +27,6 @@ import {
   ITransferModalConnector,
   ITransferNFTRequest,
   ITransferResponse,
-  TokenFee,
 } from "./types"
 
 export abstract class TransferModalConnector<T extends ITransferConfig>
@@ -75,7 +74,7 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
 
   abstract getFee(
     request: ITransferFTRequest | ITransferNFTRequest,
-  ): Promise<TokenFee>
+  ): Promise<bigint>
   abstract transfer(
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<ITransferResponse>
@@ -143,12 +142,10 @@ export abstract class TransferModalConnector<T extends ITransferConfig>
   }
 
   @Cache(connectorCache, { ttl: 60 })
-  async getRate(currency: string): Promise<string> {
-    return (
-      (await new PriceService().getPrice([currency])).find(
-        (t) => t.token === currency,
-      )?.price ?? "0"
-    )
+  async getRate(currency: string): Promise<number | undefined> {
+    return (await new PriceService().getPrice([currency])).find(
+      (t) => t.token === currency,
+    )?.price
   }
 
   async getIdentity(

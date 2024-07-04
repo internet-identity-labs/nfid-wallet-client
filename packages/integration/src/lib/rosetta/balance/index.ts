@@ -1,8 +1,9 @@
+import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp"
+
 import { rosetta } from ".."
 import { restCall } from "../../rest/rest-call"
 import { getRosettaRequest } from "../get-rosetta-request"
 import { mapToBalance } from "./map-to-balance"
-import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp"
 
 export type RosettaTokenBalance = {
   value: string
@@ -25,5 +26,8 @@ export async function getBalance(address: string): Promise<Balance> {
   if (address.startsWith("0x")) {
     return Promise.resolve(BigInt(0))
   }
-  return LedgerCanister.create().accountBalance({ accountIdentifier: AccountIdentifier.fromHex(address), certified: false})
+  return LedgerCanister.create().accountBalance({
+    accountIdentifier: AccountIdentifier.fromHex(address),
+    certified: false,
+  })
 }

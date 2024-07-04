@@ -22,7 +22,7 @@ export const AuthButton = ({
   onAuthClick: () => void
 }) => {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isMenuOpened, setIsMenuOpened] = useState(false)
+  const [toggleMenu, setToggleMenu] = useState(false)
   const { profile } = useProfile()
   const navigate = useNavigate()
   const { logout } = useAuthentication()
@@ -47,10 +47,11 @@ export const AuthButton = ({
     <>
       <div className="md:hidden">
         <ButtonMenu
-          setIsOpened={(value) => setIsMenuOpened(value)}
+          toggleMenu={toggleMenu}
+          setToggleMenu={(value) => setToggleMenu(value)}
           buttonElement={
             <img
-              src={isMenuOpened ? IconMenuBlack : IconMenu}
+              src={IconMenu}
               alt="menu"
               className="rotate-180 focus:shadow-none"
               id="burger-mobile"
@@ -59,7 +60,7 @@ export const AuthButton = ({
         >
           {(toggleMenu) => (
             <div
-              className={clsx("font-bold bg-white rounded w-[70vw] pt-20")}
+              className={clsx("font-bold bg-white rounded w-[70vw] pt-[42px]")}
               id="menu-mobile-window"
             >
               {isAuthenticated ? (
@@ -103,6 +104,13 @@ export const AuthButton = ({
                 />
               ) : null}
               <div className="flex flex-col px-6 pb-6 ml-1.5 space-y-5 font-bold mt-5">
+                <img
+                  src={IconMenuBlack}
+                  onClick={() => setToggleMenu(false)}
+                  alt="menu"
+                  className="w-[24px] h-[24px] rotate-180 focus:shadow-none relative left-[-10px] mb-[20px]"
+                  id="burger-mobile-close"
+                />
                 <a
                   href="https://learn.nfid.one/"
                   target="_blank"
@@ -142,7 +150,6 @@ export const AuthButton = ({
           <Button> {isAuthenticated ? "Profile" : "Sign in"}</Button>
         ) : (
           <span className="hover:text-[#2DEECB] transition-all">
-            {" "}
             {isAuthenticated ? "Profile" : "Sign in"}
           </span>
         )}

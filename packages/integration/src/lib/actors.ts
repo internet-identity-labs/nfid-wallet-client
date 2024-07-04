@@ -14,8 +14,6 @@ import { idlFactory as btcIDL } from "./_ic_api/btc-wallet"
 import { _SERVICE as Btc } from "./_ic_api/btc-wallet.d"
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
-import { idlFactory as dfIDL } from "./_ic_api/delegation_factory"
-import { _SERVICE as DelegationFactory } from "./_ic_api/delegation_factory.d"
 import { idlFactory as ecdsaSignerIDL } from "./_ic_api/ecdsa-signer"
 import { _SERVICE as EcdsaSigner } from "./_ic_api/ecdsa-signer.d"
 import { _SERVICE as BtcSigner } from "./_ic_api/ecdsa-signer.d"
@@ -148,8 +146,4 @@ export const ethSecretStorage = actor<EthSecretStorage>(
 export const cyclesMinter = actor<CyclesMinter>(
   CYCLES_MINTER_CANISTER_ID,
   cyclesMinterIDL,
-)
-export const delegationFactory = actor<DelegationFactory>(
-  "wklas-pyaaa-aaaak-akv3a-cai",
-  dfIDL,
 )

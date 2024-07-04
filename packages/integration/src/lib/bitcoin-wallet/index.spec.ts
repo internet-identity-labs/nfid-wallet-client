@@ -10,7 +10,7 @@ import { generateDelegationIdentity } from "../test-utils"
 import { bcComputeFee } from "./blockcypher-adapter"
 import { BtcWallet } from "./btc-wallet"
 
-describe.skip("BTC suite", () => {
+describe("BTC suite", () => {
   jest.setTimeout(200000)
 
   let address = ""

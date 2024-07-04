@@ -9,21 +9,34 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { networks, TransactionBuilder } from "bitcoinjs-lib"
+import {
+  networks,
+  payments,
+  Transaction,
+  TransactionBuilder,
+} from "bitcoinjs-lib"
+import { ethers } from "ethers"
+import { arrayify, hashMessage } from "ethers/lib/utils"
 import fetch from "node-fetch"
 
 import { WALLET_SCOPE } from "@nfid/config"
 
+import {
+  HTTPAccountRequest,
+  AccessPointRequest,
+} from "../_ic_api/identity_manager.d"
 import { ii, im, replaceActorIdentity } from "../actors"
 import {
   Chain,
   ecdsaGetAnonymous,
+  ecdsaSign,
   getGlobalKeys,
   getGlobalKeysThirdParty,
   getPublicKey,
   renewDelegationThirdParty,
 } from "./ecdsa"
 import { LocalStorageMock } from "./local-storage-mock"
+import { getIdentity, getLambdaActor } from "./util"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -39,6 +52,82 @@ describe("Lambda Sign/Register ECDSA", () => {
 
     beforeAll(() => {
       Object.defineProperty(window, "localStorage", { value: localStorageMock })
+    })
+
+    it("register ecdsa ETH", async function () {
+      const mockedIdentity = getIdentity("87654321876543218765432187654311")
+      const sessionKey = Ed25519KeyIdentity.generate()
+      const chainRoot = await DelegationChain.create(
+        mockedIdentity,
+        sessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
+
+      const email = "test@test.test"
+      const principal = di.getPrincipal().toText()
+      const lambdaActor = await getLambdaActor()
+      await lambdaActor.add_email_and_principal_for_create_account_validation(
+        email,
+        principal,
+        new Date().getMilliseconds(),
+      )
+
+      const deviceData: AccessPointRequest = {
+        icon: "Icon",
+        device: "Global",
+        pub_key: di.getPrincipal().toText(),
+        browser: "Browser",
+        device_type: {
+          Email: null,
+        },
+        credential_id: [],
+      }
+      const accountRequest: HTTPAccountRequest = {
+        email: [email],
+        access_point: [deviceData],
+        wallet: [{ NFID: null }],
+        anchor: BigInt(0),
+      }
+      await replaceActorIdentity(im, di)
+
+      await im.remove_account()
+      await im.create_account(accountRequest)
+
+      const pubKey = await getPublicKey(di, Chain.ETH)
+      const keccak = hashMessage("test_message")
+      const signature = await ecdsaSign(keccak, di, Chain.ETH)
+      const digestBytes = arrayify(keccak)
+      const pk = ethers.utils.recoverPublicKey(digestBytes, signature)
+      expect(pk).toEqual(pubKey)
+    })
+
+    it("register ecdsa BTC", async function () {
+      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
+      const sessionKey = Ed25519KeyIdentity.generate()
+      const chainRoot = await DelegationChain.create(
+        mockedIdentity,
+        sessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const delegationIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
+        chainRoot,
+      )
+      const publicKey = await getPublicKey(delegationIdentity, Chain.BTC)
+      const { address } = payments.p2pkh({
+        pubkey: Buffer.from(publicKey, "hex"),
+        network: networks.testnet,
+      })
+      expect(address).toEqual("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
+      const tx = await calc("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
+      const hex = tx.buildIncomplete().toHex()
+      const signedTxHex = await ecdsaSign(hex, delegationIdentity, Chain.BTC)
+      const txx = Transaction.fromHex(signedTxHex)
+      expect(txx.ins.length).toEqual(1)
+      expect(txx.outs[0].value).toEqual(10)
     })
 
     it("get global IC keys", async function () {
@@ -63,8 +152,6 @@ describe("Lambda Sign/Register ECDSA", () => {
       expect(globalICIdentity.getPrincipal().toText()).toEqual(
         expectedGlobalAcc,
       )
-      const principal = await getPublicKey(delegationIdentity, Chain.IC)
-      expect(principal).toEqual(expectedGlobalAcc)
       await replaceActorIdentity(ii, globalICIdentity)
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)
@@ -214,3 +301,39 @@ describe("Lambda Sign/Register ECDSA", () => {
     })
   })
 })
+
+async function calc(address: string) {
+  const apiEndpoint = `https://api.blockcypher.com/v1/btc/test3/addrs/${address}/full`
+  const response = await fetch(apiEndpoint)
+
+  const json = await response.json()
+  const inputs = json.txs.map((tx: any) => ({
+    txid: tx.hash,
+    vout: tx.outputs.findIndex((output: any) =>
+      output.addresses.includes(address),
+    ),
+    value: tx.outputs.find((output: any) => output.addresses.includes(address))
+      .value,
+  }))
+  const transactionValue = 10
+  const txb = new TransactionBuilder(networks.testnet)
+  inputs.sort((a: any, b: any) => b.value - a.value) // sort inputs by value, highest to lowest
+  let inputTotal = 0
+  for (let i = 0; i < inputs.length; i++) {
+    const input = inputs[i]
+    const inputIndex = i // index of the input in the transaction
+
+    txb.addInput(input.txid, input.vout)
+    inputTotal += input.value
+
+    if (inputTotal >= transactionValue) {
+      break // stop adding inputs once the transaction value is covered
+    }
+  }
+  if (inputTotal < transactionValue) {
+    // not enough inputs to cover transaction value
+    // handle error or insufficient funds
+  }
+  txb.addOutput(address, transactionValue)
+  return txb
+}

@@ -115,8 +115,8 @@ export const TransferNFT = ({
       tokenName: selectedNFT?.tokenId || "",
       tokenType: "non-fungible",
       tokenStandard: selectedNFT?.collection.standard || "",
-      amount: "1",
-      fee: transferFee?.fee || "0",
+      amount: 1,
+      fee: Number(transferFee) || 0,
     })
   }, [
     selectedConnector,
@@ -296,10 +296,10 @@ export const TransferNFT = ({
               <Spinner className="w-3 h-3 text-gray-400" />
             ) : (
               <div className="text-right">
-                <p className="text-sm leading-5">${transferFee?.feeUsd}</p>
+                <p className="text-sm leading-5">${Number(transferFee)}</p>
 
                 <p className="text-xs leading-5" id="fee">
-                  {transferFee?.fee}
+                  {Number(transferFee)}
                 </p>
               </div>
             )}

@@ -84,7 +84,7 @@ export class BtcAsset extends Asset<string> {
     try {
       price = await new PriceService().getPrice(["BTC"])
     } catch (e) {
-      price = [{ price: "0.0", token: "BTC" }]
+      price = [{ price: 0, token: "BTC" }]
     }
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
     const token: Token = {
@@ -119,7 +119,9 @@ export class BtcAsset extends Asset<string> {
       asset: {
         type: "ft", // Assuming all transactions are "ft". You can modify this based on the requirement.
         currency: tx.asset,
-        amount: tx.quantity.toString(),
+        rate: undefined,
+        amount: tx.quantity,
+        decimals: 8,
       },
     }))
   }

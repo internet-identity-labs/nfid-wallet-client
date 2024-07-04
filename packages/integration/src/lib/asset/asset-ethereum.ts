@@ -185,7 +185,7 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
       waitOnChain: response.wait().then(({ effectiveGasPrice, gasUsed }) => {
         const fee = effectiveGasPrice.mul(gasUsed)
         const feeFormatted = ethers.utils.formatEther(fee)
-        const feeInUSD = parseFloat(feeFormatted) * rate
+        const feeInUSD = parseFloat(feeFormatted) * rate!
         return { total: feeFormatted, totalUSD: feeInUSD.toFixed(2) }
       }),
     }
@@ -688,9 +688,11 @@ export class EthereumAsset extends NonFungibleAsset<TransferResponse> {
     const amount = entry.value ?? 0
     const currency = entry.asset ?? ""
     return {
+      rate: undefined,
       type: "ft",
       currency,
-      amount: amount.toString(),
+      amount: amount,
+      decimals: 18,
     }
   }
 

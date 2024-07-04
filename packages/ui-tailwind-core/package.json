@@ -13,5 +13,6 @@
   ],
   "scripts": {
     "test": "jest --passWithNoTests"
-  }
+  },
+  "license": "MIT"
 }

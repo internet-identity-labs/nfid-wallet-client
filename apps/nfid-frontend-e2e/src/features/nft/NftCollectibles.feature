@@ -14,6 +14,6 @@ Feature:Non Fungible Asset
     Then Switch to table
     And NFT <token> <collection_id> <id> displayed
     Examples:
-      | amount | anchor | token         | collection_id               | filteredAmount | id                                          | blockchain       |
-      | 1      | 31870  | BOXONBLOCK479 | 7cpyk-jyaaa-aaaag-qa5na-cai | 1              | fz3lu-3ykor-uwiaa-aaaaa-buahl-iaqca-aaahp-q | InternetComputer |
+      | amount | anchor | token                    | collection_id               | filteredAmount | id                                          | blockchain       |
+      | 3      | 31870  | ICPuppiesWearables145    | 4gbxl-byaaa-aaaak-aafuq-cai | 3              | 3s5hr-4ikor-uwiaa-aaaaa-cqabn-eaqca-aaaci-q | InternetComputer |
 

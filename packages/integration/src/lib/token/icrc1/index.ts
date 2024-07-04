@@ -33,10 +33,9 @@ export interface ICRC1Data {
   decimals: number
   fee: bigint
   feeInUsd: number | undefined
-  rate: string | undefined
+  rate: number | undefined
   canisterId: string
   network: string
-  priceInUsd: number | undefined
   logo: string | undefined
 }
 
@@ -45,9 +44,8 @@ export interface ICRC1Metadata {
   canisterId: string
   fee: bigint
   feeInUsd: number | undefined
-  rate: string | undefined
+  rate: number | undefined
   decimals: number
-  price: string | undefined
   owner: Principal
   logo: string
   name: string
@@ -273,8 +271,6 @@ export async function getICRC1Data(
         ? (Number(fee) / Math.pow(10, Number(decimals))) * priceInUsd
         : undefined
 
-      const exchangeRate = 1
-
       const isListedOnUSD = typeof priceInToken !== "undefined"
 
       let roundedBalanceNumber: number | undefined = undefined
@@ -291,7 +287,7 @@ export async function getICRC1Data(
         decimals,
         fee,
         feeInUsd: Number(feeNumber?.toFixed(2)),
-        rate: priceInUsd?.toString(),
+        rate: priceInUsd,
         name,
         symbol,
         network: NETWORK,

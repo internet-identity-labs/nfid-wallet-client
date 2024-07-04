@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 
 import { isHex } from "@nfid-frontend/utils"
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -7,7 +8,6 @@ export const PRINCIPAL_LENGTH = 63
 export const IC_ADDRESS_LENGTH = 64
 export const ETH_ADDRESS_LENGTH = 42
 export const CANISTER_ID_LENGTH = 27
-export const MAX_DECIMAL_LENGTH = 8
 export const MAX_DECIMAL_USD_LENGTH = 2
 
 export const validateAddressField = (string: string) => {
@@ -43,13 +43,18 @@ export const isValidPrincipalId = (value: string) => {
 
 export const validateTransferAmountField =
   (balance = "0", fee = "0") =>
-  (value: string | number) => {
-    if (Number(value) < 0) return "Transfer amount can't be negative value"
-    if (Number(value) >= 100000000000000000000)
-      return "The transferred sum cannot be excessively large."
-    if (Number(value) === 0) return "You can't send 0"
+  (value: string) => {
+    const balanceNum = new BigNumber(balance)
+    const feeNum = new BigNumber(fee)
+    const valueNum = new BigNumber(value)
 
-    if (Number(balance) - Number(fee) < Number(value))
+    if (valueNum.isNaN()) return "Invalid input"
+    if (valueNum.isLessThan(0)) return "Transfer amount can't be negative value"
+    if (valueNum.isGreaterThanOrEqualTo(new BigNumber("1e20")))
+      return "The transferred sum cannot be excessively large."
+    if (valueNum.isEqualTo(0)) return "You can't send 0"
+
+    if (balanceNum.minus(feeNum).isLessThan(valueNum))
       return "Insufficient funds"
     return true
   }

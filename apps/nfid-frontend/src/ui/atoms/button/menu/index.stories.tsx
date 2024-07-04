@@ -57,27 +57,38 @@ const items = [
   },
 ]
 
-const DefaultTemplate: Story<ButtonMenuProps> = () => (
-  <ButtonMenu buttonElement={<span>menu</span>}>
-    {(toggleMenu) => (
-      <div className={"p-4 py-6 font-bold bg-white rounded w-[70vw]"}>
-        <div className="pt-24 pb-6 space-y-5">
-          {items.map((item, index) => (
-            <div
-              className={classes.navItem}
-              onClick={(el) => {
-                el.stopPropagation()
-                toggleMenu()
-              }}
-              key={index}
-            >
-              {item.label}
+const DefaultTemplate: Story<ButtonMenuProps> = () => {
+  const [toggleMenu, setToggleMenu] = React.useState(false)
+
+  return (
+    <>
+      <ButtonMenu
+        toggleMenu={toggleMenu}
+        setToggleMenu={(value) => setToggleMenu(value)}
+        buttonElement={<span>menu</span>}
+      >
+        {(toggleMenu) => (
+          <div className={"p-4 py-6 font-bold bg-white rounded w-[70vw]"}>
+            <div className="pt-24 pb-6 space-y-5">
+              {items.map((item, index) => (
+                <div
+                  className={classes.navItem}
+                  onClick={(el) => {
+                    el.stopPropagation()
+                    toggleMenu()
+                  }}
+                  key={index}
+                >
+                  {item.label}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-    )}
-  </ButtonMenu>
-)
+          </div>
+        )}
+      </ButtonMenu>
+      <span onClick={() => setToggleMenu(false)}>close</span>
+    </>
+  )
+}
 
 export const Default = DefaultTemplate.bind({})

@@ -11,7 +11,8 @@ import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/button/menu"
 
-import IconMenu from "./assets/menu.svg"
+import IconMenu from "./assets/menu-white.svg"
+import IconMenuBlack from "./assets/menu.svg"
 
 export const AuthButton = ({
   isAuthenticated,
@@ -21,6 +22,7 @@ export const AuthButton = ({
   onAuthClick: () => void
 }) => {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [toggleMenu, setToggleMenu] = useState(false)
   const { profile } = useProfile()
   const navigate = useNavigate()
   const { logout } = useAuthentication()
@@ -45,6 +47,8 @@ export const AuthButton = ({
     <>
       <div className="md:hidden">
         <ButtonMenu
+          toggleMenu={toggleMenu}
+          setToggleMenu={(value) => setToggleMenu(value)}
           buttonElement={
             <img
               src={IconMenu}
@@ -56,7 +60,7 @@ export const AuthButton = ({
         >
           {(toggleMenu) => (
             <div
-              className={clsx("font-bold bg-white rounded w-[70vw] pt-20")}
+              className={clsx("font-bold bg-white rounded w-[70vw] pt-[42px]")}
               id="menu-mobile-window"
             >
               {isAuthenticated ? (
@@ -99,7 +103,14 @@ export const AuthButton = ({
                   }
                 />
               ) : null}
-              <div className="flex flex-col px-4 pb-6 ml-1.5 space-y-5 font-bold mt-5">
+              <div className="flex flex-col px-6 pb-6 ml-1.5 space-y-5 font-bold mt-5">
+                <img
+                  src={IconMenuBlack}
+                  onClick={() => setToggleMenu(false)}
+                  alt="menu"
+                  className="w-[24px] h-[24px] rotate-180 focus:shadow-none relative left-[-10px] mb-[20px]"
+                  id="burger-mobile-close"
+                />
                 <a
                   href="https://learn.nfid.one/"
                   target="_blank"
@@ -114,14 +125,16 @@ export const AuthButton = ({
 
                 <div>
                   {!isAuthenticated ? (
-                    <Button
+                    <span
                       id="btn-signin"
-                      className={clsx("h-full leading-none")}
-                      type="primary"
                       onClick={onAuthClick}
+                      className={clsx(
+                        "text-gray-700 text-sm",
+                        "hover:underline cursor-pointer hover:text-blue-hover transition-all",
+                      )}
                     >
                       Sign in
-                    </Button>
+                    </span>
                   ) : null}
                 </div>
               </div>
@@ -129,11 +142,16 @@ export const AuthButton = ({
           )}
         </ButtonMenu>
       </div>
-      <div className="hidden cursor-pointer md:block" onClick={onAuthClick}>
+      <div
+        className="hidden cursor-pointer md:block text-white"
+        onClick={onAuthClick}
+      >
         {isScrolled ? (
           <Button> {isAuthenticated ? "Profile" : "Sign in"}</Button>
         ) : (
-          <span> {isAuthenticated ? "Profile" : "Sign in"}</span>
+          <span className="hover:text-[#2DEECB] transition-all">
+            {isAuthenticated ? "Profile" : "Sign in"}
+          </span>
         )}
       </div>
     </>

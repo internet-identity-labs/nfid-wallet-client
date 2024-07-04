@@ -5,15 +5,17 @@ export interface ButtonMenuProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: (toggle: () => void) => React.ReactNode
   buttonElement?: React.ReactElement | string
+  toggleMenu: boolean
+  setToggleMenu: (value: boolean) => void
 }
 
 export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   children,
   className,
-
+  toggleMenu,
+  setToggleMenu,
   buttonElement,
 }) => {
-  const [toggleMenu, setToggleMenu] = React.useState(false)
   const ref = React.useRef<HTMLDivElement | null>(null)
 
   const handleMenuToggle = React.useCallback(
@@ -21,7 +23,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
       e.stopPropagation()
       setToggleMenu(!toggleMenu)
     },
-    [toggleMenu],
+    [toggleMenu, setToggleMenu],
   )
 
   React.useEffect(() => {
@@ -34,14 +36,14 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
     return () => {
       document.removeEventListener("click", handleClickOutside, true)
     }
-  }, [])
+  }, [setToggleMenu])
 
   return (
     <div ref={ref} className={clsx("overflow-hidden h-auto")}>
       <div
         onClick={(e) => handleMenuToggle(e)}
         className={clsx(
-          "relative !p-1 z-30 transition-all duration-500",
+          "relative !p-1 transition-all duration-500",
           toggleMenu ? "rotate-0" : "rotate-180",
           className,
         )}

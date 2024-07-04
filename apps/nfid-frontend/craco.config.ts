@@ -83,6 +83,7 @@ const setupCSP = () => {
         "https://eu.posthog.com",
       ],
       "require-trusted-types-for": ["'script'"],
+      "media-src": ["'self'", process.env.NFID_PROVIDER_URL as string],
     }
 
     return [

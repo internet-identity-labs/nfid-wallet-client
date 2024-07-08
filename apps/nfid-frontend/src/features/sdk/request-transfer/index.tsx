@@ -65,7 +65,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   )
 
   const isApproveButtonDisabled =
-    !balance || isBalanceLoading || isBalanceValidating
+    balance === undefined || isBalanceLoading || isBalanceValidating
   console.debug("RequestTransfer", { isApproveButtonDisabled })
 
   const { data: nft } = useSWR(

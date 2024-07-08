@@ -18,7 +18,6 @@ export const CheckAuthState = async (): Promise<{
     console.debug("CheckAuthState: failed getting cache")
     throw new Error("CheckAuthState: failed getting cache")
   }
-  console.debug("CheckAuthState", { delegation })
 
   if (!delegation) throw new Error("CheckAuthState: no auth session in cache")
 

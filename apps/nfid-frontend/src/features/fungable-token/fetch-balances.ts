@@ -38,21 +38,6 @@ export async function fetchBalances({
             AccountIdentifier.fromPrincipal({ principal }).toHex(),
           ),
         })),
-        // ...["ETH"].map(async (token) => ({
-        //   [token]: (await getEthBalance()).tokenBalance,
-        // })),
-        // ...["BTC"].map(async (token) => ({
-        //   [token]: (await getAccounts()).tokenBalance,
-        // })),
-        // ...["MATIC"].map(async (token) => ({
-        //   [token]: (await getAccountsMatic()).tokenBalance,
-        // })),
-        // ...erc20.map(async (token) => ({
-        //   [token.token]: token.tokenBalance,
-        // })),
-        // ...erc20Polygon.map(async (token) => ({
-        //   [token.token]: token.tokenBalance,
-        // })),
       ])
 
       return {

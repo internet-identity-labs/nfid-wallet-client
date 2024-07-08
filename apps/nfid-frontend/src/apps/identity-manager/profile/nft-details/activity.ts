@@ -1,8 +1,6 @@
-import { format, parse } from "date-fns"
+import { parse } from "date-fns"
 import React, { useState } from "react"
-import { getPolygonTokenActivity } from "src/features/non-fungable-token/eth/get-polygon-tokens"
 
-import { getETHTokenActivity } from "frontend/features/non-fungable-token/eth/get-tokens"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap/fungible-transactions"
 
@@ -47,64 +45,11 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
     [NFTActivity, nft?.contractId, nft?.tokenId],
   )
 
-  const fetchETHTokenHistory = React.useCallback(async () => {
-    if (!nft?.contractId || !nft?.tokenId) return
-
-    const transactions = await getETHTokenActivity(
-      nft.contractId,
-      nft.tokenId,
-      ACTIVITY_TARGET,
-    )
-
-    setNFTActivity(
-      transactions.activities.map(
-        (t) =>
-          ({
-            type: t.type,
-            datetime: format(new Date(t.date), "MMM dd, yyyy - hh:mm:ss aaa"),
-            from: t.from,
-            to: t.to,
-            price: t.price ? `${t.price} ETH` : "",
-          } as ITransaction),
-      ),
-    )
-    setIsActivityFetching(false)
-  }, [nft?.contractId, nft?.tokenId])
-  //WIP have to be moved to connector layer
-  const fetchPolygonTokenHistory = React.useCallback(async () => {
-    if (!nft?.contractId || !nft?.tokenId) return
-    const transactions = await getPolygonTokenActivity(
-      nft.contractId,
-      nft.tokenId,
-      ACTIVITY_TARGET,
-    )
-    setNFTActivity(
-      transactions.activities.map(
-        (t) =>
-          ({
-            type: t.type,
-            datetime: format(new Date(t.date), "MMM dd, yyyy - hh:mm:ss aaa"),
-            from: t.from,
-            to: t.to,
-            price: t.price ? `${t.price} MATIC` : "",
-          } as ITransaction),
-      ),
-    )
-    setIsActivityFetching(false)
-  }, [nft])
-
   React.useEffect(() => {
     if (NFTActivity.length) return
 
     if (nft?.blockchain === "Internet Computer") fetchICTokenHistory(1)
-    if (nft?.blockchain === "Polygon Mumbai") fetchPolygonTokenHistory()
-  }, [
-    NFTActivity.length,
-    fetchICTokenHistory,
-    fetchETHTokenHistory,
-    fetchPolygonTokenHistory,
-    nft?.blockchain,
-  ])
+  }, [NFTActivity.length, fetchICTokenHistory, nft?.blockchain])
 
   const transactions = React.useMemo(() => {
     return NFTActivity.sort(

@@ -37,48 +37,18 @@ export type TokenDetailsConfig = {
   icon: string
 }
 
-export type AssetErc20Config = {
-  network: Network
-  tokenStandard: TokenStandards
-  icon: string
-  blockchain: Blockchain
-  feeCurrency: NativeToken
-}
-
-export type AssetNativeConfig = AssetErc20Config & {
+export type AssetNativeConfig = {
   title: string
 }
 
 export enum Blockchain {
-  ETHEREUM = "Ethereum",
-  POLYGON = "Polygon",
-  POLYGON_MUMBAI = "Polygon Mumbai",
   IC = "Internet Computer",
-  BITCOIN = "Bitcoin",
 }
 
 export enum NativeToken {
-  ETH = "ETH",
-  MATIC = "MATIC",
   ICP = "ICP",
-  BTC = "BTC",
 }
 
-export enum ETHNetwork {
-  MAINNET = "",
-}
-
-export enum PolygonNetwork {
-  MAINNET = "",
-  MUMBAI = "Mumbai",
-}
-
-export enum BTCNetwork {
-  MAINNET = "",
-  TESTNET = "Testnet",
-}
-
-export type Network = ETHNetwork | PolygonNetwork | BTCNetwork
 export interface TokenConfig {
   balance: bigint | undefined
   currency: string

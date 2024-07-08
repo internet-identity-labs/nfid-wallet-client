@@ -10,6 +10,6 @@ export const DEFAULT_ERROR_TEXT =
 export const NETWORK = "Internet Computer"
 export const ICP_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai"
 export const ICP_DECIMALS = 8
-export const USDC_DECIMALS = 8
+export const USDC_DECIMALS = 6
 export const MAX_DECIMAL_USD_LENGTH = 2
 export const TRIM_ZEROS = /\.?0+$/

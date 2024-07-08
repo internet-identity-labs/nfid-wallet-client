@@ -6,19 +6,20 @@ import useSWR from "swr"
 import { BlurredLoader, Button } from "@nfid-frontend/ui"
 import {
   E8S,
-  WALLET_FEE,
+  ICP_DECIMALS,
   WALLET_FEE_E8S,
 } from "@nfid/integration/token/constants"
 
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
+import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getNFTByTokenId } from "frontend/integration/entrepot"
-import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
+import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"
@@ -74,7 +75,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   )
 
   const { data: fee } = useSWR("requestFee", () => icTransferConnector.getFee())
-  const { data: rate } = useSWR("icpRate", getExchangeRate)
+  const { exchangeRate: rate } = useICPExchangeRate()
 
   if (!fee || typeof rate === "undefined")
     return <BlurredLoader isLoading={true} />
@@ -130,9 +131,28 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         <div className="flex items-center justify-between text-sm border-b border-gray-200 h-14">
           <p>Network fee</p>
           <div className="text-right">
-            <p>{nft ? "$0.00" : toUSD(WALLET_FEE, Number(rate))}</p>
+            <p>
+              {nft
+                ? "$0.00"
+                : Boolean(rate) && (
+                    <TickerAmount
+                      symbol="ICP"
+                      value={Number(fee)}
+                      decimals={ICP_DECIMALS}
+                      usdRate={rate}
+                    />
+                  )}
+            </p>
             <p className="text-xs text-gray-400">
-              {nft ? "0.00" : fee.toString()}
+              {nft ? (
+                "0.00"
+              ) : (
+                <TickerAmount
+                  symbol="ICP"
+                  value={Number(fee)}
+                  decimals={ICP_DECIMALS}
+                />
+              )}
             </p>
           </div>
         </div>

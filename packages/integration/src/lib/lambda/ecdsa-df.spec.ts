@@ -38,7 +38,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
     })
 
     it("register new user and check anchor/principal", async function () {
-      const mockedIdentity = getIdentity("97654321876543218765432187654388")
+      const mockedIdentity = getIdentity("97654321876543218765432187654399")
 
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -140,6 +140,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       expect(
         "h43jk-eusi6-eb2oo-amye6-6yvie-pabbo-ep44l-g2x3h-n6oak-rxshu-wqe",
       ).toEqual(response.getPrincipal().toText())
+
       expect(response.getPrincipal().toText()).not.toEqual(principalText)
       const anonGlobal = await ecdsaGetAnonymous(
         "nfid.one",

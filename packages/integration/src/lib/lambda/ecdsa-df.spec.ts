@@ -104,7 +104,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
 
       const principalText = await getPublicKey(delegationIdentity, Chain.IC)
       expect(principalText).toEqual(
-        "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
+        "av3wh-ctioy-ipegd-k7355-5jw4v-3gn2y-cm5ri-qpjho-nlddp-d4f3a-oae",
       )
       expect(globalICIdentity.getPrincipal().toText()).toEqual(principalText)
     })
@@ -138,7 +138,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const principalText = await getPublicKey(delegationIdentity, Chain.IC)
 
       expect(
-        "uf63z-wcfk4-qlxdj-rwhxw-vvfgz-ckfji-viyi2-znlst-kguug-ttnxg-lqe",
+        "h43jk-eusi6-eb2oo-amye6-6yvie-pabbo-ep44l-g2x3h-n6oak-rxshu-wqe",
       ).toEqual(response.getPrincipal().toText())
       expect(response.getPrincipal().toText()).not.toEqual(principalText)
       const anonGlobal = await ecdsaGetAnonymous(
@@ -205,7 +205,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       console.debug("actualPrincipalId", actualPrincipalId)
       const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
       expect(principalText).toEqual(
-        "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
+        "av3wh-ctioy-ipegd-k7355-5jw4v-3gn2y-cm5ri-qpjho-nlddp-d4f3a-oae",
       )
       expect(principalText).toEqual(actualPrincipalId)
 

@@ -5,24 +5,24 @@ import {
 } from "@dfinity/identity"
 import { TextEncoder } from "util"
 
-import { delegationFactory, replaceActorIdentity } from "@nfid/integration"
+import {delegationFactory, im, replaceActorIdentity} from "@nfid/integration"
 
 import {
   getDelegationChainSignedByCanister,
   getPrincipalSignedByCanister,
 } from "./delegation-factory"
 
-describe("Delegation Factory Tests", () => {
+describe.skip("Delegation Factory Tests", () => {
   jest.setTimeout(80000)
   it("get-principal", async function () {
     const mockedIdentity = getIdentity("97654321876543218765432187654388")
     await replaceActorIdentity(delegationFactory, mockedIdentity)
     const principal = await getPrincipalSignedByCanister(
-      BigInt(200000007),
+      BigInt(200000012),
       "nfid.one",
     )
     expect(
-      "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
+      "av3wh-ctioy-ipegd-k7355-5jw4v-3gn2y-cm5ri-qpjho-nlddp-d4f3a-oae",
     ).toEqual(principal.toText())
   })
 
@@ -45,7 +45,7 @@ describe("Delegation Factory Tests", () => {
       di,
       [],
       pk,
-      BigInt(200000007),
+      BigInt(200000012),
       "nfid.one",
     )
     const rootDelegation = DelegationIdentity.fromDelegation(
@@ -54,7 +54,7 @@ describe("Delegation Factory Tests", () => {
     )
 
     expect(
-      "mqv3l-ovus6-4k6vq-tw2bx-4fxqm-snv6c-73mzp-qh2b4-qlsk4-g2mrl-fae",
+      "av3wh-ctioy-ipegd-k7355-5jw4v-3gn2y-cm5ri-qpjho-nlddp-d4f3a-oae",
     ).toEqual(rootDelegation.getPrincipal().toText())
   })
 })

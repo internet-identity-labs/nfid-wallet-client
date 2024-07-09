@@ -48,6 +48,9 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
 }
+body.homescreen {
+  background-color: #141518;
+}
 /*
   6. Improve media defaults
 */

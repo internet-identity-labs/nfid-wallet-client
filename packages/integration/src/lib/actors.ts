@@ -29,6 +29,8 @@ import { idlFactory as iiIDL } from "./_ic_api/internet_identity"
 import { _SERVICE as InternetIdentity } from "./_ic_api/internet_identity.d"
 import { idlFactory as ledgerIDL } from "./_ic_api/ledger"
 import { _SERVICE as Ledger } from "./_ic_api/ledger.d"
+import { idlFactory as passkeyIDL } from "./_ic_api/passkey_storage"
+import { _SERVICE as PasskeyStorage } from "./_ic_api/passkey_storage.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel"
 import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.d"
 import { idlFactory as vaultIDL } from "./_ic_api/vault"
@@ -152,4 +154,8 @@ export const cyclesMinter = actor<CyclesMinter>(
 export const delegationFactory = actor<DelegationFactory>(
   "wklas-pyaaa-aaaak-akv3a-cai",
   dfIDL,
+)
+export const passkeyStorage = actor<PasskeyStorage>(
+  "dy546-gqaaa-aaaak-akwiq-cai",
+  passkeyIDL,
 )

@@ -21,8 +21,6 @@ export type Wallet = {
   address?: string
   vaultId?: bigint
   vaultName?: string
-  ethAddress?: string
-  btcAddress?: string
 }
 
 export const useAllWallets = () => {

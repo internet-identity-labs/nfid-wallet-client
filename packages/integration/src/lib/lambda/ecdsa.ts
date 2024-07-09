@@ -10,9 +10,7 @@ import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import {
-  btcSigner,
   delegationFactory,
-  ecdsaSigner,
   icSigner,
   im,
   replaceActorIdentity,
@@ -34,8 +32,6 @@ const GLOBAL_ORIGIN = "nfid.one"
 const ANCHOR_TO_GET_DELEGATION_FROM_DF = BigInt(200_000_000)
 
 export enum Chain {
-  BTC = "BTC",
-  ETH = "ETH",
   IC = "IC",
 }
 
@@ -298,8 +294,7 @@ export async function getPublicKey(
     return principal.toText()
   }
 
-  const signer = defineChainCanister(chain)
-  await replaceActorIdentity(signer, identity)
+  await replaceActorIdentity(icSigner, identity)
   const root = await im.get_root_by_principal(
     identity.getPrincipal().toString(),
   )
@@ -308,7 +303,7 @@ export async function getPublicKey(
     throw Error("The root account cannot be found.")
   }
 
-  const response = (await signer.get_public_key(root[0])) as string[]
+  const response = (await icSigner.get_public_key(root[0])) as string[]
   let publicKey
   if (response.length === 0) {
     publicKey = await ecdsaRegisterNewKeyPair(identity, chain)
@@ -324,17 +319,6 @@ export async function getPublicKey(
     ttl: 6000,
   })
   return principal.toText()
-}
-
-function defineChainCanister(chain: Chain) {
-  switch (chain) {
-    case Chain.ETH:
-      return ecdsaSigner
-    case Chain.BTC:
-      return btcSigner
-    case Chain.IC:
-      return icSigner
-  }
 }
 
 export async function fetchLambdaPublicKey(chain: Chain): Promise<string> {

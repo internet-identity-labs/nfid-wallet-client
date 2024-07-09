@@ -13,8 +13,6 @@ type AuthState = {
 type TestUser = {
   seed: string
   icpAddress: string
-  btcAddress: string
-  ethAddress: string
   account: { anchor: number }
   credentials: WebAuthnCredential
   authstate: AuthState

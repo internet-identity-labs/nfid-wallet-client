@@ -26,7 +26,7 @@ import {
 import { LocalStorageMock } from "./local-storage-mock"
 import { getIdentity, getLambdaActor } from "./util"
 
-const identity = getIdentity("97654321876543218765432187654388")
+const identity = getIdentity("97654321876543218765432187654399")
 
 describe("Lambda Sign/Register Delegation Factory", () => {
   jest.setTimeout(80000)
@@ -38,7 +38,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
     })
 
     it("register new user and check anchor/principal", async function () {
-      const mockedIdentity = getIdentity("97654321876543218765432187654399")
+      const mockedIdentity = Ed25519KeyIdentity.generate()
 
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -104,7 +104,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
 
       const principalText = await getPublicKey(delegationIdentity, Chain.IC)
       expect(principalText).toEqual(
-        "av3wh-ctioy-ipegd-k7355-5jw4v-3gn2y-cm5ri-qpjho-nlddp-d4f3a-oae",
+        "uctde-u7vpl-wqc7d-b3lho-t47lj-hn2xi-aezu2-mqgmo-ry3f4-rausf-2ae",
       )
       expect(globalICIdentity.getPrincipal().toText()).toEqual(principalText)
     })
@@ -138,7 +138,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       const principalText = await getPublicKey(delegationIdentity, Chain.IC)
 
       expect(
-        "h43jk-eusi6-eb2oo-amye6-6yvie-pabbo-ep44l-g2x3h-n6oak-rxshu-wqe",
+        "w5436-o53mi-v5s4u-2ttqo-mtdju-wex4r-w5ap7-hastg-zvzue-fp7du-6qe",
       ).toEqual(response.getPrincipal().toText())
 
       expect(response.getPrincipal().toText()).not.toEqual(principalText)
@@ -206,7 +206,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       console.debug("actualPrincipalId", actualPrincipalId)
       const principalText = await getPublicKey(nfidDelegationIdentity, Chain.IC)
       expect(principalText).toEqual(
-        "av3wh-ctioy-ipegd-k7355-5jw4v-3gn2y-cm5ri-qpjho-nlddp-d4f3a-oae",
+        "uctde-u7vpl-wqc7d-b3lho-t47lj-hn2xi-aezu2-mqgmo-ry3f4-rausf-2ae",
       )
       expect(principalText).toEqual(actualPrincipalId)
 

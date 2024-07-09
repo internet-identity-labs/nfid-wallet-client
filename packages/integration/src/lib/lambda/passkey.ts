@@ -1,6 +1,24 @@
+import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
+import { im, passkeyStorage } from "../actors"
 import { ic } from "../agent"
+import { ANCHOR_TO_GET_DELEGATION_FROM_DF } from "./ecdsa"
 
 export async function storePasskey(key: string, data: string) {
+  const account: HTTPAccountResponse = await im.get_account()
+  const anchor = account.data[0]?.anchor
+  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
+    let lambdaPasskeyEncoded: LambdaPasskeyEncoded[]
+    const passkey = await passkeyStorage.get_passkey()
+    if (passkey.length > 0) {
+      lambdaPasskeyEncoded = JSON.parse(passkey[0])
+    } else {
+      lambdaPasskeyEncoded = []
+    }
+    lambdaPasskeyEncoded.push({ key, data })
+    return await passkeyStorage.store_passkey(
+      JSON.stringify(lambdaPasskeyEncoded),
+    )
+  }
   const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY
   return await fetch(passkeyURL, {
     method: "POST",
@@ -17,6 +35,18 @@ export async function storePasskey(key: string, data: string) {
 export async function getPasskey(
   keys: string[],
 ): Promise<LambdaPasskeyEncoded[]> {
+  const account: HTTPAccountResponse = await im.get_account()
+  const anchor = account.data[0]?.anchor
+  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
+    const passkey = await passkeyStorage.get_passkey()
+    let lambdaPasskeyEncoded: LambdaPasskeyEncoded[]
+    if (passkey.length > 0) {
+      lambdaPasskeyEncoded = JSON.parse(passkey[0])
+      return lambdaPasskeyEncoded.filter((x) => keys.includes(x.key))
+    } else {
+      return []
+    }
+  }
   const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY
   const params = new URLSearchParams()
   keys.forEach((key) => {
@@ -32,12 +62,17 @@ export async function getPasskey(
   })
 }
 
+export async function removePasskeys() {
+  await passkeyStorage.store_passkey(JSON.stringify([]))
+}
+
 export interface IClientDataObj {
   challenge: string
   crossOrigin: boolean
   origin: string
   type: string // webauthn.create, etc.
 }
+
 export interface IFlags {
   userPresent: boolean // is user was present when signing the passkey
   userVerified: boolean // is user was verified when signing the passkey
@@ -60,10 +95,12 @@ export interface IPasskeyMetadata {
   created_at: string
   publicKey: Uint8Array
 }
+
 export interface LambdaPasskeyDecoded {
   key: string
   data: IPasskeyMetadata
 }
+
 export interface LambdaPasskeyEncoded {
   key: string
   data: string

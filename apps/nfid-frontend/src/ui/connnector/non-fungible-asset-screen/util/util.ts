@@ -2,7 +2,6 @@ import { NonFungibleItem } from "packages/integration/src/lib/asset/types"
 import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 import { NftConnectorConfig } from "src/ui/connnector/types"
 
-import { MaticSvg } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
 export function toUserNFT(
@@ -21,7 +20,7 @@ export function toUserNFT(
       format: nft?.imageType ?? "img",
     },
     assetPreview: {
-      url: nft?.thumbnail || MaticSvg,
+      url: nft?.thumbnail!,
       format: nft?.imageType ?? "img",
     },
     blockchainLogo: conf.defaultLogo,

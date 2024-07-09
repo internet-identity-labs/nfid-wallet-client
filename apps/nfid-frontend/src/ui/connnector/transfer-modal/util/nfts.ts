@@ -5,7 +5,6 @@ import {
   IGroupOption,
   IGroupedOptions,
   IconSvgDfinity,
-  MaticSvg,
 } from "@nfid-frontend/ui"
 import { Application, getWalletName } from "@nfid/integration"
 
@@ -87,7 +86,7 @@ export function toUserNFT(
       format: "img",
     },
     assetPreview: {
-      url: nft?.thumbnail || MaticSvg,
+      url: nft?.thumbnail!,
       format: nft?.imageType ?? "img",
     },
     blockchainLogo: defaultLogo,

@@ -1,7 +1,7 @@
 import { IdleManager, IdleManagerOptions } from "@dfinity/auth-client"
 import { matchPath } from "react-router-dom"
 
-import { ROUTE_EMBED, TEN_MINUTES_IN_MS } from "@nfid/config"
+import { TEN_MINUTES_IN_MS } from "@nfid/config"
 
 import { getLocalStorageOverride } from "../local-storage"
 
@@ -23,13 +23,11 @@ export const setupSessionManager = ({
   options = idleManagerConfig,
   onIdle,
 }: SetupSessionManagerArgs) => {
-  const isDisabledOnEmbed = !!matchPath(ROUTE_EMBED, window.location.pathname)
   const isAlreadySetup = idleManager !== null
   console.debug("setupIdleManager", {
-    isDisabledOnEmbed,
     isAlreadySetup,
   })
-  if (isDisabledOnEmbed || isAlreadySetup) return
+  if (isAlreadySetup) return
 
   idleManager = IdleManager.create({ ...options, onIdle })
 }

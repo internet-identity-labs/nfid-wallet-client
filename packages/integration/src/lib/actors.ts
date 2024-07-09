@@ -8,10 +8,7 @@ import {
   SignIdentity,
 } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
-import { DelegationIdentity } from "@dfinity/identity"
 
-import { idlFactory as btcIDL } from "./_ic_api/btc-wallet"
-import { _SERVICE as Btc } from "./_ic_api/btc-wallet.d"
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
 import { idlFactory as dfIDL } from "./_ic_api/delegation_factory"
@@ -133,11 +130,6 @@ export const icSigner = Agent.Actor.createActor<EcdsaSigner>(ecdsaSignerIDL, {
 
 export const btcSigner = Agent.Actor.createActor<BtcSigner>(ecdsaSignerIDL, {
   canisterId: BTC_SIGNER_CANISTER_ID,
-  agent: new HttpAgent({ ...agentBaseConfig }),
-})
-
-export const btcWallet = Agent.Actor.createActor<Btc>(btcIDL, {
-  canisterId: BITCOIN_WALLET_CANISTER_ID,
   agent: new HttpAgent({ ...agentBaseConfig }),
 })
 

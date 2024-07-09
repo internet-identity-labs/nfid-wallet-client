@@ -39,6 +39,10 @@ export type TokenDetailsConfig = {
 
 export type AssetNativeConfig = {
   title: string
+  tokenStandard: TokenStandards
+  blockchain: Blockchain
+  icon: string
+  feeCurrency: NativeToken
 }
 
 export enum Blockchain {

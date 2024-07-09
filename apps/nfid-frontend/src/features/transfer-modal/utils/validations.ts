@@ -6,7 +6,6 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 export const PRINCIPAL_LENGTH = 63
 export const IC_ADDRESS_LENGTH = 64
-export const ETH_ADDRESS_LENGTH = 42
 export const CANISTER_ID_LENGTH = 27
 export const MAX_DECIMAL_USD_LENGTH = 2
 
@@ -57,44 +56,4 @@ export const validateTransferAmountField =
     if (balanceNum.minus(feeNum).isLessThan(valueNum))
       return "Insufficient funds"
     return true
-  }
-
-export const makeAddressFieldValidation =
-  (type: TokenStandards) => (value: string) => {
-    if (typeof isNotEmpty(value) !== "boolean") return isNotEmpty(value)
-
-    switch (type) {
-      case TokenStandards.ETH:
-        return typeof isHex(value) === "boolean" &&
-          value.length === ETH_ADDRESS_LENGTH
-          ? true
-          : "Incorrect address"
-      case TokenStandards.ERC20_ETHEREUM:
-        return typeof isHex(value) === "boolean" &&
-          value.length === ETH_ADDRESS_LENGTH
-          ? true
-          : "Incorrect address"
-      case TokenStandards.ERC20_POLYGON:
-        return typeof isHex(value) === "boolean" &&
-          value.length === ETH_ADDRESS_LENGTH
-          ? true
-          : "Incorrect address"
-      case TokenStandards.MATIC:
-        return typeof isHex(value) === "boolean" &&
-          value.length === ETH_ADDRESS_LENGTH
-          ? true
-          : "Incorrect address"
-      case TokenStandards.BTC:
-        return typeof isHex(value) === "boolean" &&
-          value.length > 25 &&
-          value.length < 36
-          ? true
-          : "Incorrect BTC address"
-      default:
-        return (typeof isHex(value) === "boolean" &&
-          value.length === IC_ADDRESS_LENGTH) ||
-          typeof isValidPrincipalId(value) === "boolean"
-          ? true
-          : "Incorrect account or principal ID"
-    }
   }

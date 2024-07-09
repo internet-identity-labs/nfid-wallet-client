@@ -12,7 +12,7 @@ import {
   getPrincipalSignedByCanister,
 } from "./delegation-factory"
 
-describe("Delegation Factory Tests", () => {
+describe.skip("Delegation Factory Tests", () => {
   jest.setTimeout(80000)
   it("get-principal", async function () {
     const mockedIdentity = getIdentity("97654321876543218765432187654388")

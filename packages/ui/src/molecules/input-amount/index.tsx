@@ -1,6 +1,11 @@
-import * as React from "react"
+import clsx from "clsx"
+import { forwardRef } from "react"
 
-export const pressHandler = (
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  decimals: number
+}
+
+const pressHandler = (
   e: React.KeyboardEvent<HTMLInputElement>,
   decimals: number,
 ) => {
@@ -44,7 +49,7 @@ export const pressHandler = (
   }
 }
 
-export const pasteHandler = (
+const pasteHandler = (
   e: React.ClipboardEvent<HTMLInputElement>,
   decimals: number,
 ) => {
@@ -60,3 +65,23 @@ export const pasteHandler = (
       decimalPart.substring(0, decimals)
   }
 }
+
+export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
+  ({ decimals, ...inputProps }, ref) => (
+    <input
+      className={clsx(
+        "min-w-0 text-xl placeholder:text-black font-semibold",
+        "outline-none border-none h-[54px] focus:ring-0",
+        "p-0",
+      )}
+      placeholder="0.00"
+      type="text"
+      id="amount"
+      min={0.0}
+      onKeyDown={(e) => pressHandler(e, decimals)}
+      onPaste={(e) => pasteHandler(e, decimals)}
+      ref={ref}
+      {...inputProps}
+    />
+  ),
+)

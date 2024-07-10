@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { NoIcon } from "packages/ui/src/assets/no-icon"
-import { pressHandler, pasteHandler } from "packages/utils"
+import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -389,16 +389,8 @@ export const TransferFT = ({
             errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
           )}
         >
-          <input
-            className={clsx(
-              "min-w-0 text-xl placeholder:text-black font-semibold",
-              "outline-none border-none h-[54px] focus:ring-0",
-              "p-0",
-            )}
-            placeholder="0.00"
-            type="text"
-            id="amount"
-            min={0.0}
+          <InputAmount
+            decimals={decimals!}
             {...register("amount", {
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
@@ -412,10 +404,7 @@ export const TransferFT = ({
                 setAmountInUSD(e.target.value)
               },
             })}
-            onKeyDown={(e) => pressHandler(e, decimals!)}
-            onPaste={(e) => pasteHandler(e, decimals!)}
           />
-
           <div
             className={clsx(
               "absolute mt-[75px] left-5",

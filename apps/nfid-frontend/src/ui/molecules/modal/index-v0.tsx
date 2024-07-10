@@ -27,7 +27,7 @@ export const ModalComponent: React.FC<ModalProps> = ({
           "fixed top-[50%] right-[50%] bottom-[50%] left-[50%]",
           "transform -translate-x-2/4 -translate-y-2/4",
           "md:rounded-md drop-shadow-lg",
-          "min-w-min min-h-min bg-white",
+          "min-w-min min-h-min h-min bg-white",
           isVisible ? "scale-100" : "scale-0",
           className,
         ])}

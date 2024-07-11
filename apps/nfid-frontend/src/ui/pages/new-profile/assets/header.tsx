@@ -55,6 +55,7 @@ export const ProfileAssetsHeader = () => {
       await addICRC1Canister(ledgerID, indexID)
       setIsModalVisible(false)
       mutate("getICRC1Data")
+      mutate("getAllTokensOptions")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
       resetField("ledgerID")
       resetField("indexID")

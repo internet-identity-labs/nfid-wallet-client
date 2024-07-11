@@ -10,9 +10,11 @@ import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 export const SDKFooter = ({
   identity,
   balance,
+  isBalanceLoading,
 }: {
   identity?: DelegationIdentity
   balance?: bigint
+  isBalanceLoading?: boolean
 }) => {
   return (
     <div
@@ -35,7 +37,7 @@ export const SDKFooter = ({
         </div>
         <div className="flex items-center space-x-0.5">
           <span id="balance">
-            {balance !== undefined ? (
+            {/* {balance !== undefined ? (
               <TickerAmount
                 symbol="ICP"
                 value={Number(balance)}
@@ -43,6 +45,15 @@ export const SDKFooter = ({
               />
             ) : (
               <Skeleton className="w-20 h-5 bg-gray-300" />
+            )} */}
+            {balance === undefined || isBalanceLoading ? (
+              <Skeleton className="w-20 h-5 bg-gray-300" />
+            ) : (
+              <TickerAmount
+                symbol="ICP"
+                value={Number(balance)}
+                decimals={ICP_DECIMALS}
+              />
             )}
           </span>
         </div>

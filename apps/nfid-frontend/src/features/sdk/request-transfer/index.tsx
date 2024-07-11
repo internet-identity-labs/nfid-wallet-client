@@ -64,6 +64,14 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
     ),
   )
 
+  // useEffect(() => {
+  //   //if (identity) {
+  //   mutate(["userBalance", identity])
+  //   //}
+  // }, [identity?.getPrincipal()])
+
+  console.log("wtfff", balance, identity?.getPrincipal())
+
   const isApproveButtonDisabled =
     balance === undefined || isBalanceLoading || isBalanceValidating
   console.debug("RequestTransfer", { isApproveButtonDisabled })
@@ -240,7 +248,11 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           Reject
         </Button>
 
-        <SDKFooter identity={identity} balance={balance} />
+        <SDKFooter
+          identity={identity}
+          balance={balance}
+          isBalanceLoading={isBalanceLoading || isBalanceValidating}
+        />
       </div>
     </>
   )

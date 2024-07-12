@@ -183,9 +183,6 @@
       },
       {
         "env": "AWS_VERIFY_EMAIL"
-      },
-      {
-        "env": "AWS_FETCH_ALTERNATIVE_ORIGINS"
       }
     ],
     "production": [

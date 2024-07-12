@@ -1,7 +1,5 @@
 import { Principal } from "@dfinity/principal"
 
-import { ic } from "@nfid/integration"
-
 const ORIGIN_VALIDATION_REGEX =
   /^(https:\/\/([\w-]+)(?:\.raw)?\.(?:ic0\.app|icp0\.io)|http:\/\/localhost:4200)$/
 

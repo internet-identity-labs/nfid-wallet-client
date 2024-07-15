@@ -60,7 +60,9 @@ export const RPCComponentICRC27 = ({
                   id="profile_public"
                   onChange={(e) => setSelectedProfile(publicProfile)}
                   value={publicProfile.principal}
-                  checked={true}
+                  checked={
+                    selectedProfile.principal === publicProfile.principal
+                  }
                   name={"profile"}
                 />
                 <label
@@ -86,16 +88,16 @@ export const RPCComponentICRC27 = ({
             {/* Legacy anonymous profiles */}
             {anonymous?.map((acc) => (
               <div
-                className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400 uppercase pointer-events-none"
+                className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400 uppercase"
                 key={`legacy_persona_${acc.id}`}
               >
                 <RadioButton
                   id={`profile_legacy_${acc.id}`}
                   value={`anonymous-${acc.id}`}
-                  checked={false}
+                  onChange={(e) => setSelectedProfile(acc)}
+                  checked={selectedProfile.principal === acc.principal}
                   name={`profile-${acc.id}`}
                   text={acc.displayName}
-                  disabled
                 />
               </div>
             ))}

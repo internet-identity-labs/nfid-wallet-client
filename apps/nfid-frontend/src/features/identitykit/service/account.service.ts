@@ -1,31 +1,21 @@
-import { SubAccount } from "@dfinity/ledger-icp"
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
+import {
+  Chain,
+  DelegationType,
+  GLOBAL_ORIGIN,
+  getPublicKey,
+} from "packages/integration/src/lib/lambda/ecdsa"
 
 import { truncateString } from "@nfid-frontend/utils"
+import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
+import { authState, getBalance } from "@nfid/integration"
 
-import { fetchProfile } from "frontend/integration/identity-manager"
+import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 
-import { getPublicProfile } from "../../authentication/3rd-party/choose-account/services"
 import { Account, AccountType } from "../type"
 
-const HOT_FIX_V24_1_WRONG_HOSTNAMES = [
-  "https://playground-dev.nfid.one",
-  "https://dscvr.one",
-  "https://hotornot.wtf",
-  "https://awcae-maaaa-aaaam-abmyq-cai.icp0.io", // BOOM DAO
-  "https://7p3gx-jaaaa-aaaal-acbda-cai.raw.ic0.app", // BOOM DAO
-  "https://scifi.scinet.one",
-  "https://oc.app",
-  "https://signalsicp.com",
-  "https://n7z64-2yaaa-aaaam-abnsa-cai.icp0.io", // BOOM DAO
-  "https://nuance.xyz",
-  "https://h3cjw-syaaa-aaaam-qbbia-cai.ic0.app", // The Asset App
-  "https://trax.so",
-  "https://jmorc-qiaaa-aaaam-aaeda-cai.ic0.app", // Unfold VR
-  "https://65t4u-siaaa-aaaal-qbx4q-cai.ic0.app", // my-icp-app
-]
-
-const HOT_FIX_V24_2_WRONG_ANCHORS = 100009230
 export type ProfileTypes =
   | ""
   | "public"
@@ -37,52 +27,89 @@ export const accountService = {
   async getAccounts(
     origin: string,
   ): Promise<{ public: Account; anonymous: Account[] }> {
-    const [publicAccount, legacyAnonymousAccounts, profile] = await Promise.all(
-      [
-        getPublicProfile(),
-        fetchAccountsService({
-          authRequest: { hostname: origin },
-        }),
-        fetchProfile(),
-      ],
-    )
+    const publicProfile = this.getPublicProfile()
+    let anonymousProfiles: Account[] = []
 
-    const isDerivationBug =
-      HOT_FIX_V24_1_WRONG_HOSTNAMES.includes(origin) &&
-      profile.anchor < HOT_FIX_V24_2_WRONG_ANCHORS
+    const legacyProfiles = await this.getLegacyAnonymousProfiles(origin)
+    anonymousProfiles.push(...legacyProfiles)
 
-    // Temporary solution to avoid generating delegations with sessionPublicKeys
-    // We need to keep correct quantity. But anonymous options will be disabled.
-    const anonymousLength =
-      legacyAnonymousAccounts.length > 0
-        ? legacyAnonymousAccounts.length
-        : 1 + (isDerivationBug ? 1 : 0)
-
-    const formattedOrigin = new URL(origin).host
-    const subAccount = Buffer.from(
-      SubAccount.fromID(0).toUint8Array(),
-    ).toString("base64")
+    if (!legacyProfiles.length) {
+      const anonymousProfile = await this.getAnonymousProfiles(origin)
+      anonymousProfiles.push(anonymousProfile)
+    }
 
     return {
-      public: {
-        id: 0,
-        displayName: truncateString(publicAccount.principal, 6, 4),
-        principal: publicAccount.principal,
-        subaccount: subAccount,
-        type: AccountType.GLOBAL,
-        balance: Number(publicAccount.balance),
-      },
-      anonymous: Array(anonymousLength)
-        .fill(null)
-        .map((_, index) => ({
-          id: index,
-          displayName: `Anonymous ${formattedOrigin} profile ${
-            anonymousLength > 1 ? index + 1 : ""
-          }`,
-          principal: "",
-          subaccount: subAccount,
-          type: AccountType.SESSION,
-        })),
+      public: await publicProfile,
+      anonymous: anonymousProfiles,
     }
+  },
+  async getPublicProfile(): Promise<Account> {
+    const identity = authState.get().delegationIdentity
+    if (!identity) throw new Error("No identity")
+
+    const publicKey = await getPublicKey(identity, Chain.IC, GLOBAL_ORIGIN)
+    const publicAccAddress = AccountIdentifier.fromPrincipal({
+      principal: Principal.fromText(publicKey),
+    }).toHex()
+
+    const publicAccBalance = Number(await getBalance(publicAccAddress))
+
+    return {
+      id: 0,
+      displayName: truncateString(publicKey, 6, 4),
+      principal: publicKey,
+      subaccount: this.getDefaultSubAccount(),
+      type: AccountType.GLOBAL,
+      balance: publicAccBalance,
+    }
+  },
+  async getLegacyAnonymousProfiles(origin: string): Promise<Account[]> {
+    const accounts = await fetchAccountsService({
+      authRequest: { hostname: origin },
+    })
+
+    const delegations = await Promise.all(
+      accounts.map((acc) => {
+        return getLegacyThirdPartyAuthSession(
+          {
+            hostname: origin,
+            sessionPublicKey: new Uint8Array(),
+            maxTimeToLive: BigInt(WALLET_SESSION_TTL_1_MIN_IN_MS),
+          },
+          acc.accountId,
+        )
+      }),
+    )
+
+    return delegations.map((acc, index) => ({
+      id: index,
+      displayName: `Anonymous profile ${index + 1}`,
+      principal: Principal.fromUint8Array(acc.userPublicKey).toText(),
+      subaccount: this.getDefaultSubAccount(),
+      type: AccountType.SESSION,
+    }))
+  },
+  async getAnonymousProfiles(origin: string): Promise<Account> {
+    const identity = authState.get().delegationIdentity
+    if (!identity) throw new Error("No identity")
+
+    const publicKey = await getPublicKey(
+      identity,
+      Chain.IC,
+      origin,
+      DelegationType.ANONYMOUS,
+    )
+
+    return {
+      id: 0,
+      displayName: truncateString(publicKey, 6, 4),
+      principal: publicKey,
+      subaccount: this.getDefaultSubAccount(),
+      type: AccountType.SESSION,
+      balance: undefined,
+    }
+  },
+  getDefaultSubAccount(): string {
+    return Buffer.from(SubAccount.fromID(0).toUint8Array()).toString("base64")
   },
 }

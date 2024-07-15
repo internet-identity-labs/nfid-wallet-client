@@ -18,6 +18,7 @@ import {
   replaceActorIdentity,
 } from "../actors"
 import { ic } from "../agent/index"
+import { getAnonymousDelegate } from "../internet-identity/get-delegate"
 import {
   getDelegationChainSignedByCanister,
   getPrincipalSignedByCanister,
@@ -30,7 +31,11 @@ import {
 } from "./domain-key-repository"
 import { validateTargets } from "./targets"
 
-const GLOBAL_ORIGIN = "nfid.one"
+export enum DelegationType {
+  GLOBAL = "GLOBAL",
+  ANONYMOUS = "ANONYMOUS",
+}
+export const GLOBAL_ORIGIN = "nfid.one"
 export const ANCHOR_TO_GET_DELEGATION_FROM_DF = BigInt(200_000_000)
 
 export enum Chain {
@@ -284,9 +289,14 @@ export async function getPublicKey(
   identity: DelegationIdentity,
   chain = Chain.IC,
   origin = GLOBAL_ORIGIN,
+  type = DelegationType.GLOBAL,
 ): Promise<string> {
   const cacheKey =
-    "ecdsa_getPublicKey" + chain.toString() + identity.getPrincipal().toText()
+    "ecdsa_getPublicKey" +
+    chain.toString() +
+    identity.getPrincipal().toText() +
+    type.toString()
+
   const cachedValue = await integrationCache.getItem(cacheKey)
   if (cachedValue) return cachedValue as any
   await replaceActorIdentity(delegationFactory, identity)
@@ -297,33 +307,49 @@ export async function getPublicKey(
     const principal = await getPrincipalSignedByCanister(anchor, origin)
     return principal.toText()
   }
+  console.log(0)
+  // if global
+  if (type === DelegationType.GLOBAL) {
+    const signer = defineChainCanister(chain)
+    await replaceActorIdentity(signer, identity)
+    const root = await im.get_root_by_principal(
+      identity.getPrincipal().toString(),
+    )
 
-  const signer = defineChainCanister(chain)
-  await replaceActorIdentity(signer, identity)
-  const root = await im.get_root_by_principal(
-    identity.getPrincipal().toString(),
-  )
+    if (!root[0]) {
+      throw Error("The root account cannot be found.")
+    }
 
-  if (!root[0]) {
-    throw Error("The root account cannot be found.")
-  }
+    const response = (await signer.get_public_key(root[0])) as string[]
+    let publicKey
+    if (response.length === 0) {
+      publicKey = await ecdsaRegisterNewKeyPair(identity, chain)
+    } else {
+      publicKey = response[0]
+    }
+    const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
+    const principal = Principal.selfAuthenticating(
+      new Uint8Array(publicDelegation.getPublicKey().toDer()),
+    )
 
-  const response = (await signer.get_public_key(root[0])) as string[]
-  let publicKey
-  if (response.length === 0) {
-    publicKey = await ecdsaRegisterNewKeyPair(identity, chain)
+    await integrationCache.setItem(cacheKey, principal.toText(), {
+      ttl: 6000,
+    })
+    return principal.toText()
   } else {
-    publicKey = response[0]
-  }
-  const publicDelegation = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
-  const principal = Principal.selfAuthenticating(
-    new Uint8Array(publicDelegation.getPublicKey().toDer()),
-  )
+    const sessionKey = Ed25519KeyIdentity.generate()
 
-  await integrationCache.setItem(cacheKey, principal.toText(), {
-    ttl: 6000,
-  })
-  return principal.toText()
+    const anonymousDelegation = await getAnonymousDelegate(
+      Array.from(new Uint8Array(sessionKey.getPublicKey().toDer())) as any,
+      identity,
+      origin,
+      undefined,
+    )
+
+    return Principal.selfAuthenticating(
+      new Uint8Array(anonymousDelegation.publicKey),
+    ).toText()
+  }
 }
 
 function defineChainCanister(chain: Chain) {

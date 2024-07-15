@@ -8,7 +8,6 @@ import {
   SignIdentity,
 } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
-import { DelegationIdentity } from "@dfinity/identity"
 
 import { idlFactory as btcIDL } from "./_ic_api/btc-wallet"
 import { _SERVICE as Btc } from "./_ic_api/btc-wallet.d"
@@ -43,6 +42,7 @@ import { agent } from "./agent"
 // Config //
 ///////////
 
+//why do we need it all?
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
   ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],
@@ -56,6 +56,8 @@ const canisterConfig = [
   ["BtcSigner", BTC_SIGNER_CANISTER_ID],
   ["ICSigner", IC_SIGNER_CANISTER_ID],
   ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
+  ["DelegationFactory", DELEGATION_FACTORY],
+  ["PasskeyStorage", PASSKEY_STORAGE],
 ]
 
 export const accessList = [...canisterConfig.map((x) => x[1])]
@@ -152,10 +154,10 @@ export const cyclesMinter = actor<CyclesMinter>(
   cyclesMinterIDL,
 )
 export const delegationFactory = actor<DelegationFactory>(
-  "wklas-pyaaa-aaaak-akv3a-cai",
+  DELEGATION_FACTORY,
   dfIDL,
 )
 export const passkeyStorage = actor<PasskeyStorage>(
-  "dy546-gqaaa-aaaak-akwiq-cai",
+  PASSKEY_STORAGE,
   passkeyIDL,
 )

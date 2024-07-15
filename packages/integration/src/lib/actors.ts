@@ -157,7 +157,4 @@ export const delegationFactory = actor<DelegationFactory>(
   DELEGATION_FACTORY,
   dfIDL,
 )
-export const passkeyStorage = actor<PasskeyStorage>(
-  PASSKEY_STORAGE,
-  passkeyIDL,
-)
+export const passkeyStorage = actor<PasskeyStorage>(PASSKEY_STORAGE, passkeyIDL)

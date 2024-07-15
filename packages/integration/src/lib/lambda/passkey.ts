@@ -7,9 +7,7 @@ export async function storePasskey(key: string, data: string) {
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
   if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
-    return await passkeyStorage.store_passkey(
-      key, data
-    )
+    return await passkeyStorage.store_passkey(key, data)
   }
   const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY
   return await fetch(passkeyURL, {
@@ -28,7 +26,8 @@ export async function getPasskey(
   keys: string[],
 ): Promise<LambdaPasskeyEncoded[]> {
   //we know nothing about user on this stage
-  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] = await passkeyStorage.get_passkey(keys)
+  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] =
+    await passkeyStorage.get_passkey(keys)
   if (lambdaPasskeyEncoded.length > 0) {
     return lambdaPasskeyEncoded
   }

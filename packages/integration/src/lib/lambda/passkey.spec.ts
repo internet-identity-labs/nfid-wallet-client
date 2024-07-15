@@ -60,8 +60,8 @@ describe("Passkey test", () => {
     const account = await im.create_account(accountRequest as any)
     const anchor = account.data[0]?.anchor
     expect(anchor! >= 200_000_000).toBeTruthy()
-    const key1 = (Math.random() + 1).toString(36).substring(7);
-    const key2 = (Math.random() + 1).toString(36).substring(7);
+    const key1 = (Math.random() + 1).toString(36).substring(7)
+    const key2 = (Math.random() + 1).toString(36).substring(7)
     await storePasskey(key1, "testData")
     await storePasskey(key2, "testData2")
     const response = await getPasskey([key1])

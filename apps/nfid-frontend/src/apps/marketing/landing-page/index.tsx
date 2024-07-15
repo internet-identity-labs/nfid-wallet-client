@@ -68,6 +68,12 @@ export const HomeScreen = () => {
     setTimeout(() => {
       landingPageTracking.pageLoaded()
     })
+
+    document.body.classList.add("homescreen")
+
+    return () => {
+      document.body.classList.remove("homescreen")
+    }
   }, [])
 
   React.useEffect(() => {

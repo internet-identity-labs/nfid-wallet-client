@@ -48,4 +48,3 @@ declare const AWS_SEND_VERIFICATION_EMAIL: string
 declare const AWS_LINK_GOOGLE_ACCOUNT: string
 declare const AWS_CHECK_VERIFICATION: string
 declare const AWS_VERIFY_EMAIL: string
-declare const AWS_FETCH_ALTERNATIVE_ORIGINS: string

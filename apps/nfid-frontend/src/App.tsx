@@ -4,13 +4,14 @@ import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
-import { ROUTE_EMBED } from "@nfid/config"
+import { ROUTE_EMBED, ROUTE_RPC } from "@nfid/config"
 import { authState, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
+import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { NotFound } from "./ui/pages/404"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
@@ -64,6 +65,7 @@ export const App = () => {
         />
 
         <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
+        <Route path={ROUTE_RPC} element={<IdentityKitRPCCoordinator />} />
 
         {ProfileRoutes}
         {RecoverNFIDRoutes}

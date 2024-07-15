@@ -7,17 +7,7 @@ export async function storePasskey(key: string, data: string) {
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
   if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
-    let lambdaPasskeyEncoded: LambdaPasskeyEncoded[]
-    const passkey = await passkeyStorage.get_passkey()
-    if (passkey.length > 0) {
-      lambdaPasskeyEncoded = JSON.parse(passkey[0])
-    } else {
-      lambdaPasskeyEncoded = []
-    }
-    lambdaPasskeyEncoded.push({ key, data })
-    return await passkeyStorage.store_passkey(
-      JSON.stringify(lambdaPasskeyEncoded),
-    )
+    return await passkeyStorage.store_passkey(key, data)
   }
   const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY
   return await fetch(passkeyURL, {
@@ -35,17 +25,11 @@ export async function storePasskey(key: string, data: string) {
 export async function getPasskey(
   keys: string[],
 ): Promise<LambdaPasskeyEncoded[]> {
-  const account: HTTPAccountResponse = await im.get_account()
-  const anchor = account.data[0]?.anchor
-  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
-    const passkey = await passkeyStorage.get_passkey()
-    let lambdaPasskeyEncoded: LambdaPasskeyEncoded[]
-    if (passkey.length > 0) {
-      lambdaPasskeyEncoded = JSON.parse(passkey[0])
-      return lambdaPasskeyEncoded.filter((x) => keys.includes(x.key))
-    } else {
-      return []
-    }
+  //we know nothing about user on this stage
+  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] =
+    await passkeyStorage.get_passkey(keys)
+  if (lambdaPasskeyEncoded.length > 0) {
+    return lambdaPasskeyEncoded
   }
   const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY
   const params = new URLSearchParams()
@@ -60,10 +44,6 @@ export async function getPasskey(
     if (!response.ok) throw new Error(await response.text())
     return response.json()
   })
-}
-
-export async function removePasskeys() {
-  await passkeyStorage.store_passkey(JSON.stringify([]))
 }
 
 export interface IClientDataObj {

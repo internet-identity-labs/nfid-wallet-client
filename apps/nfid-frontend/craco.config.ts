@@ -288,7 +288,7 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify_email/, ""),
-      }
+      },
     },
   },
 }

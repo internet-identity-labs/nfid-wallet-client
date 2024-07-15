@@ -28,6 +28,7 @@ const AssetModal: React.FC<IAssetModal> = ({ token, setTokenToRemove }) => {
       await removeICRC1Canister(rootPrincipalId, token.canisterId)
       toast.success(`${token.name} has been removed.`)
       mutate("getICRC1Data")
+      mutate("getAllTokensOptions")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
     } catch (e) {
       console.error("removeICRC1Canister", e)

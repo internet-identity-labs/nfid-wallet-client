@@ -8,6 +8,7 @@ import {
 import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import { mutate } from "swr"
 
 import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
@@ -53,6 +54,7 @@ export const ProfileAssetsHeader = () => {
     try {
       setIsLoading(true)
       await addICRC1Canister(ledgerID, indexID)
+      toast.success(`${tokenInfo!.name} has been added.`)
       setIsModalVisible(false)
       mutate("getICRC1Data")
       mutate("getAllTokensOptions")

@@ -10,6 +10,7 @@ import {
   WALLET_FEE_E8S,
 } from "@nfid/integration/token/constants"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
@@ -48,7 +49,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
 
-  const { data: identity } = useSWR("globalIdentity", () =>
+  // const { data: identity } = useSWR("globalIdentity", () =>
+  //   getWalletDelegationAdapter("nfid.one", "-1"),
+  // )
+
+  const { user } = useAuthentication()
+  const { data: identity } = useSWR([user?.principal, "globalIdentity"], () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
   )
 
@@ -63,14 +69,6 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
       }).toHex(),
     ),
   )
-
-  // useEffect(() => {
-  //   //if (identity) {
-  //   mutate(["userBalance", identity])
-  //   //}
-  // }, [identity?.getPrincipal()])
-
-  console.log("wtfff", balance, identity?.getPrincipal())
 
   const isApproveButtonDisabled =
     balance === undefined || isBalanceLoading || isBalanceValidating
@@ -247,7 +245,6 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         >
           Reject
         </Button>
-
         <SDKFooter
           identity={identity}
           balance={balance}

@@ -5,7 +5,7 @@ import {
 } from "@dfinity/identity"
 import { TextEncoder } from "util"
 
-import {delegationFactory, im, replaceActorIdentity} from "@nfid/integration"
+import { delegationFactory, replaceActorIdentity } from "@nfid/integration"
 
 import {
   getDelegationChainSignedByCanister,

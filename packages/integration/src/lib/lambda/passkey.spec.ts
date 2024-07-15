@@ -6,7 +6,7 @@ import {
 
 import { im, passkeyStorage, replaceActorIdentity } from "@nfid/integration"
 
-import { getPasskey, removePasskeys, storePasskey } from "./passkey"
+import { getPasskey, storePasskey } from "./passkey"
 import { getIdentity, getLambdaActor } from "./util"
 
 describe("Passkey test", () => {
@@ -60,12 +60,16 @@ describe("Passkey test", () => {
     const account = await im.create_account(accountRequest as any)
     const anchor = account.data[0]?.anchor
     expect(anchor! >= 200_000_000).toBeTruthy()
-
-    await removePasskeys()
-    await storePasskey("testKey", "testData")
-    await storePasskey("testKey2", "testData2")
-    const response = await getPasskey(["testKey"])
-    expect(response[0].key).toEqual("testKey")
+    const key1 = (Math.random() + 1).toString(36).substring(7)
+    const key2 = (Math.random() + 1).toString(36).substring(7)
+    await storePasskey(key1, "testData")
+    await storePasskey(key2, "testData2")
+    const response = await getPasskey([key1])
+    expect(response[0].key).toEqual(key1)
     expect(response[0].data).toEqual("testData")
+    const response2 = await getPasskey([key1, key2])
+    expect(response2.length).toEqual(2)
+    expect(response2[0].data).toEqual("testData")
+    expect(response2[1].data).toEqual("testData2")
   })
 })

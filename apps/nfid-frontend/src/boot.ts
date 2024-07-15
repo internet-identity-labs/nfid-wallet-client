@@ -6,12 +6,16 @@ export const initializeConsoleWarnings = () => {
 }
 
 export const redirectFromCanisters = () => {
-  const productionHost = "3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app"
-  const devHost = "n2mln-sqaaa-aaaag-abjoa-cai.ic0.app"
+  const icHost = "3y5ko-7qaaa-aaaal-aaaaq-cai"
+  const stageHost = "appqm-xiaaa-aaaak-akwaa-cai"
+  const devHost = "n2mln-sqaaa-aaaag-abjoa-cai"
 
-  if (window.location.host === productionHost)
+  if (window.location.host.includes(icHost))
     return (window.location.href = "https://nfid.one")
 
-  if (window.location.host === devHost)
+  if (window.location.host.includes(devHost))
+    return (window.location.href = "https://dev.nfid.one")
+
+  if (window.location.host.includes(stageHost))
     return (window.location.href = "https://staging.nfid.one")
 }

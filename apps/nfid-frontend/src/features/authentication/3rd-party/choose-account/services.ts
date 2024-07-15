@@ -11,7 +11,7 @@ export const getPublicProfile = async (): Promise<{
   balance: string
   balanceUSD: string
   address: string
-  principal: string
+  principal: Principal
 }> => {
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")

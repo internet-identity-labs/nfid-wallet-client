@@ -4,6 +4,7 @@ import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
+import { ROUTE_EMBED } from "@nfid/config"
 import { authState, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
@@ -13,6 +14,10 @@ import { AuthEmailMagicLink } from "./features/authentication/auth-selection/ema
 import { NotFound } from "./ui/pages/404"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
+
+const NFIDEmbedCoordinator = React.lazy(
+  () => import("./features/embed/coordinator"),
+)
 
 const IframeTrustDeviceCoordinator = React.lazy(
   () => import("./features/iframe/iframe-trust-device/coordinator"),
@@ -57,6 +62,8 @@ export const App = () => {
             </ScreenResponsive>
           }
         />
+
+        <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
 
         {ProfileRoutes}
         {RecoverNFIDRoutes}

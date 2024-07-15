@@ -53,6 +53,8 @@ const canisterConfig = [
   ["BtcSigner", BTC_SIGNER_CANISTER_ID],
   ["ICSigner", IC_SIGNER_CANISTER_ID],
   ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
+  ["DelegationFactory", DELEGATION_FACTORY],
+  ["PasskeyStorage", PASSKEY_STORAGE],
 ]
 
 export const accessList = [...canisterConfig.map((x) => x[1])]
@@ -144,10 +146,7 @@ export const cyclesMinter = actor<CyclesMinter>(
   cyclesMinterIDL,
 )
 export const delegationFactory = actor<DelegationFactory>(
-  "wklas-pyaaa-aaaak-akv3a-cai",
+  DELEGATION_FACTORY,
   dfIDL,
 )
-export const passkeyStorage = actor<PasskeyStorage>(
-  "dy546-gqaaa-aaaak-akwiq-cai",
-  passkeyIDL,
-)
+export const passkeyStorage = actor<PasskeyStorage>(PASSKEY_STORAGE, passkeyIDL)

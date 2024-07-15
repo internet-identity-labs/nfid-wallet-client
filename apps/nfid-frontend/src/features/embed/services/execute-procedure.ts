@@ -17,7 +17,10 @@ import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
 
+import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
+
 type CommonContext = {
+  rpcMessage?: RPCMessage
   authSession?: AuthSession
 }
 
@@ -37,7 +40,7 @@ type ExecuteProcedureEvent =
 type ExecuteProcedureServiceContext = CommonContext
 
 export const ExecuteProcedureService = async (
-  { authSession }: ExecuteProcedureServiceContext,
+  { rpcMessage, authSession }: ExecuteProcedureServiceContext,
   event: ExecuteProcedureEvent,
 ): Promise<RPCResponse> => {
   console.debug("ExecuteProcedureService", {

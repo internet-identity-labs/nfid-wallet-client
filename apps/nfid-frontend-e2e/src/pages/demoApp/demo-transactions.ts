@@ -1,6 +1,5 @@
-import cucumberJson from "wdio-cucumberjs-json-reporter"
-
 import { demoAppPage } from "./demoApp-page.js"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 export class DemoTransactions extends demoAppPage {
   get myNFTSelector() {

@@ -1,6 +1,7 @@
 import Page from "./page.js"
 
 export class Assets {
+
   get sendDialogWindow() {
     return $("#sendFT")
   }
@@ -91,25 +92,16 @@ export class Assets {
       timeout: 7000,
     })
     await Page.sendReceiveButton.click()
-    await browser.waitUntil(
-      async () => {
-        await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-        try {
-          await this.sendDialogWindow.waitForDisplayed({ timeout: 15000 })
-        } catch (e) {
-          console.log(
-            "Send dialog window isn't displayed. Trying to open it again",
-          )
-        }
-        if (!(await this.sendDialogWindow.isDisplayed()))
-          await Page.sendReceiveButton.click()
-        return await this.sendDialogWindow.isDisplayed()
-      },
-      {
-        timeout: 60000,
-        timeoutMsg: "Send dialog window isn't displayed in 60 sec",
-      },
-    )
+    await browser.waitUntil(async () => {
+      await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
+      try {
+        await this.sendDialogWindow.waitForDisplayed({ timeout: 15000 })
+      } catch (e) {
+        console.log("Send dialog window isn't displayed. Trying to open it again")
+      }
+      if (!await this.sendDialogWindow.isDisplayed()) await Page.sendReceiveButton.click()
+      return await this.sendDialogWindow.isDisplayed()
+    }, { timeout: 60000, timeoutMsg: "Send dialog window isn't displayed in 60 sec" })
   }
 
   public async sendNFTDialog() {
@@ -145,15 +137,9 @@ export class Assets {
     await secondAddressPart.waitForDisplayed({
       timeout: 7000,
     })
-    await browser.waitUntil(
-      async () => {
-        return (
-          (await firstAddressPart.getText()) != "" &&
-          (await secondAddressPart.getText()) != ""
-        )
-      },
-      { timeout: 15000, timeoutMsg: "Address is still empty after 15 sec" },
-    )
+    await browser.waitUntil(async () => {
+      return await firstAddressPart.getText() != "" && await secondAddressPart.getText() != ""
+    }, { timeout: 15000, timeoutMsg: "Address is still empty after 15 sec" })
     return { firstAddressPart, secondAddressPart }
   }
 

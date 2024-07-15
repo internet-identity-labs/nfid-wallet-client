@@ -42,7 +42,6 @@ import { agent } from "./agent"
 // Config //
 ///////////
 
-//why do we need it all?
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
   ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],

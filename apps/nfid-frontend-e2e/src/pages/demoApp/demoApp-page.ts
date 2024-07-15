@@ -1,7 +1,6 @@
-import cucumberJson from "wdio-cucumberjs-json-reporter"
-
 import Assets from "../assets.js"
 import { Page } from "../page.js"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 export class demoAppPage extends Page {
   public demoAppBaseUrl = process.env.DEMO_APPLICATION_URL

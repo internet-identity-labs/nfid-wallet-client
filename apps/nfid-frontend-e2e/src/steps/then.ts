@@ -1,6 +1,5 @@
 import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
-import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
@@ -44,6 +43,7 @@ import compareText from "./support/check/compareText.js"
 import isVisible from "./support/check/isDisplayed.js"
 import isEnabled from "./support/check/isEnabled.js"
 import isExisting from "./support/check/isExisting.js"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -210,27 +210,27 @@ Then(
   checkLocalStorageKey,
 )
 
-Then(/^Go to Profile page$/, async function () {
+Then(/^Go to Profile page$/, async function() {
   await clickElement("click", "selector", "#profileButton")
 })
 
 Then(
   /^I put Recovery Phrase to input field ([^"]*)$/,
-  async function (phrase: string) {
-    await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
+  async function(phrase: string) {
+    await setInputField("setValue", phrase, "[name=\"recoveryPhrase\"]")
   },
 )
 
-Then(/^I put copied Recovery Phrase to input field/, async function () {
-  await clickElement("click", "selector", '[name="recoveryPhrase"]')
+Then(/^I put copied Recovery Phrase to input field/, async function() {
+  await clickElement("click", "selector", "[name=\"recoveryPhrase\"]")
   await browser.keys(["Command", "v"])
 })
 
-Then(/^I toggle checkbox "([^"]*)?"$/, async function (selector: string) {
+Then(/^I toggle checkbox "([^"]*)?"$/, async function(selector: string) {
   await clickElement("click", "selector", selector)
 })
 
-Then(/^I press button "([^"]*)?"$/, async function (button: string) {
+Then(/^I press button "([^"]*)?"$/, async function(button: string) {
   await clickElement("click", "selector", button)
 })
 
@@ -358,7 +358,7 @@ Then(
 )
 
 Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
-  await clickElement("click", "selector", '[id="account_row_0"]')
+  await clickElement("click", "selector", "[id=\"account_row_0\"]")
   await Assets.openElementById("tab_" + tab)
 })
 
@@ -471,7 +471,7 @@ Then(
     expect(actualBalance).toEqual(balance + " " + currency)
 
     let transferFee = await Assets.getFee().then(async (it) => {
-      await it.waitForDisplayed({ timeout: 30000 })
+      await it.waitForDisplayed(({ timeout: 30000 }))
       let fullText = await it.getText()
       return fullText.replace(await it.$("span").getText(), "").trim()
     })
@@ -527,8 +527,8 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressPart.getText()),
+    "..." +
+    (await address.secondAddressPart.getText()),
   ).toEqual(principal)
 })
 
@@ -539,25 +539,25 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
   expect(
     String(
       (await usersData.get("principal").firstAddressPart.getText()) +
-        "..." +
-        (await usersData.get("principal").secondAddressPart.getText()),
+      "..." +
+      (await usersData.get("principal").secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
-      "..." +
-      expectedData.principal.substring(58, 63),
+    "..." +
+    expectedData.principal.substring(58, 63),
   )
 
   expect(
     String(
       (await usersData.get("address").firstAddressPart.getText()) +
-        "..." +
-        (await usersData.get("address").secondAddressPart.getText()),
+      "..." +
+      (await usersData.get("address").secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +
-      "..." +
-      expectedData.address.substring(59, 64),
+    "..." +
+    expectedData.address.substring(59, 64),
   )
 
   await browser.waitUntil(
@@ -894,21 +894,16 @@ Then(
 )
 
 Then(/^Assert ([^"]*) code block has hash$/, async (block: string) => {
-  const response = await (
-    await DemoTransactions.getEXTTResponseBlock(block)
-  ).getText()
+  const response = await (await DemoTransactions.getEXTTResponseBlock(block)).getText()
   let responseTrim = response.trim().replace(/(?<!["\d])\b\d+\b(?!["\d])/g, "")
   let responseJSON = JSON.parse(responseTrim)
 
   let errors: string[] = []
-  Object.keys(responseJSON).forEach((it) => {
+  Object.keys(responseJSON).forEach(it => {
     if (it == "error") errors.push(`\n${responseJSON[it]}`)
   })
 
-  if (errors.length > 0)
-    throw new Error(
-      `Incorrect response message. Expected to contain 'hash', but there were errors: \n${errors}`,
-    )
+  if (errors.length > 0) throw new Error(`Incorrect response message. Expected to contain 'hash', but there were errors: \n${errors}`)
 })
 
 Then(

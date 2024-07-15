@@ -4,6 +4,7 @@ import { assign, createMachine } from "xstate"
 
 import { ONE_DAY_IN_MS } from "@nfid/config"
 import { Application, authState } from "@nfid/integration"
+import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -13,6 +14,17 @@ import AuthenticationMachine from "../authentication/root/root-machine"
 import { IRequestTransferResponse } from "../sdk/request-transfer/types"
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
+import {
+  ExecuteProcedureService,
+  ApproveSignatureEvent,
+} from "./services/execute-procedure"
+import {
+  ProcedureCallEvent,
+  RPCMessage,
+  RPCReceiverV2 as RPCReceiver,
+  RPCResponse,
+  RPC_BASE,
+} from "./services/rpc-receiver"
 
 type InvokationErrors = {
   type: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
@@ -21,7 +33,12 @@ type InvokationErrors = {
 
 type Events =
   | InvokationErrors
+  | ProcedureCallEvent
   | { type: "SESSION_EXPIRED" }
+  | {
+      type: "APPROVE"
+      data?: ApproveSignatureEvent
+    }
   | {
       type: "APPROVE_IC_GET_DELEGATION"
       data: ApproveIcGetDelegationSdkResponse
@@ -42,6 +59,9 @@ type Services = {
   AuthenticationMachine: {
     data: { authSession: AuthSession }
   }
+  ExecuteProcedureService: {
+    data: RPCResponse
+  }
   CheckApplicationMeta: {
     data: Application
   }
@@ -58,7 +78,10 @@ type NFIDEmbedMachineContext = {
     chain?: Chain
   }
   authSession?: AuthSession
+  rpcMessage?: RPCMessage
+  rpcMessageDecoded?: FunctionCall
   error?: Error
+  messageQueue: Array<RPCMessage>
 }
 
 export const NFIDEmbedMachineV2 = createMachine(
@@ -74,10 +97,32 @@ export const NFIDEmbedMachineV2 = createMachine(
       services: {} as Services,
     },
     context: {
+      messageQueue: [],
       appMeta: {},
       authRequest: {},
     },
     states: {
+      RPC_RECEIVER: {
+        invoke: {
+          src: "RPCReceiver",
+        },
+        order: 1,
+        entry: ["nfid_ready"],
+        on: {
+          RPC_MESSAGE: [
+            {
+              target: "RPC_RECEIVER",
+              actions: "assignProcedure",
+              cond: "isReady",
+            },
+            {
+              target: "RPC_RECEIVER",
+              actions: "queueRequest",
+            },
+          ],
+        },
+      },
+
       AUTH: {
         initial: "CheckAppMeta",
         on: {
@@ -178,6 +223,7 @@ export const NFIDEmbedMachineV2 = createMachine(
 
           AWAIT_PROCEDURE_APPROVAL: {
             on: {
+              APPROVE: "EXECUTE_PROCEDURE",
               APPROVE_IC_GET_DELEGATION: "EXECUTE_PROCEDURE",
               APPROVE_IC_REQUEST_TRANSFER: "EXECUTE_PROCEDURE",
               CANCEL: {
@@ -186,6 +232,18 @@ export const NFIDEmbedMachineV2 = createMachine(
               },
             },
           },
+
+          EXECUTE_PROCEDURE: {
+            invoke: {
+              src: "ExecuteProcedureService",
+              onDone: {
+                actions: ["sendRPCResponse", "updateProcedure"],
+                target: "READY",
+              },
+              onError: { target: "ERROR", actions: "assignError" },
+            },
+          },
+
           ERROR: {
             on: {
               RETRY: "AWAIT_PROCEDURE_APPROVAL",
@@ -209,10 +267,33 @@ export const NFIDEmbedMachineV2 = createMachine(
         },
         authRequest: { ...context.authRequest, hostname: event?.data?.domain },
       })),
+      assignProcedure: assign((context, event) => ({
+        rpcMessage: {
+          ...event.data.rpcMessage,
+          origin: event.data.origin,
+        },
+        rpcMessageDecoded: event.data.rpcMessageDecoded,
+        authRequest: {
+          ...context.authRequest,
+          sessionPublicKey: event.data.rpcMessage.params[0].sessionPublicKey,
+          derivationOrigin: event.data.rpcMessage.params[0].derivationOrigin,
+          maxTimeToLive: event.data.rpcMessage.params[0].maxTimeToLive,
+          targets: event.data.rpcMessage.params[0].targets,
+        },
+      })),
+      updateProcedure: assign(({ messageQueue }, event) => {
+        return {
+          rpcMessage: messageQueue[0],
+          messageQueue: messageQueue.slice(1, messageQueue.length),
+        }
+      }),
       assignAuthSession: assign((_, event) => {
         console.debug("assignAuthSession", { event })
         return { authSession: event.data.authSession }
       }),
+      queueRequest: assign((context, event) => ({
+        messageQueue: [...context.messageQueue, event.data.rpcMessage],
+      })),
       assignError: assign((context, event) => ({
         error: event.data,
       })),
@@ -237,10 +318,62 @@ export const NFIDEmbedMachineV2 = createMachine(
           requesterDomain,
         )
       },
+      nfid_unauthenticated: ({ rpcMessage }) => {
+        if (!rpcMessage?.origin)
+          throw new Error("nfid_unauthenticated: missing requestOrigin")
+
+        console.debug("nfid_authenticated")
+        window.parent.postMessage(
+          { type: "nfid_unauthenticated" },
+          rpcMessage.origin,
+        )
+      },
+      sendRPCResponse: (_, { data }) => {
+        const { origin, ...rpcMessage } = data
+
+        console.debug("sendRPCResponse", { rpcMessage })
+        window.parent.postMessage(rpcMessage, origin)
+      },
+      sendRPCCancelResponse: ({ rpcMessage }) => {
+        if (!rpcMessage?.origin)
+          throw new Error("nfid_unauthenticated: missing requestOrigin")
+        if (!rpcMessage?.id)
+          throw new Error("sendRPCCancelResponse: missing rpcMessage.id")
+
+        window.parent.postMessage(
+          {
+            ...RPC_BASE,
+            id: rpcMessage.id,
+            // FIXME: find correct error code
+            error: { code: -1, message: "User canceled request" },
+          },
+          rpcMessage.origin,
+        )
+      },
+    },
+    guards: {
+      hasProcedure: (context: NFIDEmbedMachineContext) => !!context.rpcMessage,
+      isReady: (_: NFIDEmbedMachineContext, __: Events, { state }: any) =>
+        state.matches("HANDLE_PROCEDURE.READY"),
+      isAutoApprovable: (context: NFIDEmbedMachineContext) => {
+        const isAuthoApprovable = [
+          "eth_accounts",
+          "ic_renewDelegation",
+        ].includes(context.rpcMessage?.method ?? "")
+        console.debug("NFIDEmbedMachineV2", {
+          isAuthoApprovable,
+          context,
+        })
+        return ["eth_accounts", "ic_renewDelegation"].includes(
+          context.rpcMessage?.method ?? "",
+        )
+      },
     },
     services: {
       CheckApplicationMeta,
+      ExecuteProcedureService,
       AuthenticationMachine,
+      RPCReceiver,
       CheckAuthState,
     },
   },

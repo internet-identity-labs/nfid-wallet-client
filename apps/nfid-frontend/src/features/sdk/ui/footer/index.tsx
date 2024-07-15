@@ -3,6 +3,9 @@ import clsx from "clsx"
 
 import { Skeleton } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
+import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+
+import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export const SDKFooter = ({
   identity,
@@ -32,8 +35,12 @@ export const SDKFooter = ({
         </div>
         <div className="flex items-center space-x-0.5">
           <span id="balance">
-            {balance ? (
-              `${balance} ICP`
+            {balance !== undefined ? (
+              <TickerAmount
+                symbol="ICP"
+                value={Number(balance)}
+                decimals={ICP_DECIMALS}
+              />
             ) : (
               <Skeleton className="w-20 h-5 bg-gray-300" />
             )}

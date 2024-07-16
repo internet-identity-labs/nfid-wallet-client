@@ -11,14 +11,14 @@ export const getPublicProfile = async (): Promise<{
   balance: string
   balanceUSD: string
   address: string
-  principal: string
+  principal: Principal
 }> => {
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")
 
-  const principal = await getPublicKey(delegationIdentity!, Chain.IC)
-
-  const address = principalToAddress(Principal.fromText(principal) as any)
+  const principalString = await getPublicKey(delegationIdentity!, Chain.IC)
+  const principal = Principal.fromText(principalString)
+  const address = principalToAddress(principal as any)
   const balance = e8sICPToString(Number(await getBalance(address)))
   const exchangeRate = await getExchangeRate("ICP")
 
@@ -29,6 +29,6 @@ export const getPublicProfile = async (): Promise<{
         ? "0.00 USD"
         : `${(exchangeRate * Number(balance)).toFixed(2)} USD`,
     address,
-    principal: principal,
+    principal,
   }
 }

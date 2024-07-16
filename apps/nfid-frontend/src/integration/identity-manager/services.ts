@@ -1,8 +1,6 @@
 import { fetchPrincipal } from "@nfid/integration"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
-import { AuthorizationRequest } from "frontend/state/authorization"
-
 import { fetchProfile, fetchAccounts, selectAccounts, verifyToken } from "."
 
 export function getLocalStorageProfileService() {
@@ -33,7 +31,10 @@ export async function checkRegistrationStatus() {
 }
 
 type FetchAccountsServiceArgs = {
-  authRequest: AuthorizationRequest
+  authRequest: {
+    hostname: string
+    derivationOrigin?: string
+  }
 }
 
 export async function fetchAccountsService({

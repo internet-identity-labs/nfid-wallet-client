@@ -86,7 +86,7 @@ export const accountService = {
       displayName: `Anonymous profile ${index + 1}`,
       principal: Principal.fromUint8Array(acc.userPublicKey).toText(),
       subaccount: this.getDefaultSubAccount(),
-      type: AccountType.SESSION,
+      type: AccountType.ANONYMOUS_LEGACY,
     }))
   },
   async getAnonymousProfiles(origin: string): Promise<Account> {

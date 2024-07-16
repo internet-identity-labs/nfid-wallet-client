@@ -7,7 +7,7 @@ import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
-import { RPCComponentICRC27 } from "./components/methods/icrc27-accounts"
+import { RPCComponent, RPCComponentsUI } from "./components/methods/method"
 import { IdentityKitRPCMachine } from "./machine"
 
 export default function IdentityKitRPCCoordinator() {
@@ -45,11 +45,18 @@ export default function IdentityKitRPCCoordinator() {
         )
       case state.matches("Main.InteractiveRequest.PromptInteractiveRequest"):
         return (
-          <RPCComponentICRC27
-            publicProfile={state.context.componentData.public}
-            anonymous={state.context.componentData.anonymous}
-            onApprove={(data) => send({ type: "ON_APPROVE", data: data })}
-            onReject={() => send({ type: "ON_CANCEL" })}
+          <RPCComponent
+            method={
+              String(
+                state.context.activeRequest?.data.method,
+              ) as RPCComponentsUI
+            }
+            props={{
+              onApprove: (data: any) =>
+                send({ type: "ON_APPROVE", data: data }),
+              onReject: () => send({ type: "ON_CANCEL" }),
+              ...state.context.componentData,
+            }}
           />
         )
       case state.matches("Main.InteractiveRequest.PrepareComponentData"):

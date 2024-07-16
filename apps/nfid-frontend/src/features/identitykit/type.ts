@@ -38,6 +38,7 @@ export interface Account {
 export enum AccountType {
   GLOBAL = "GLOBAL",
   SESSION = "SESSION",
+  ANONYMOUS_LEGACY = "ANONYMOUS_LEGACY",
 }
 
 export interface RPCBase {

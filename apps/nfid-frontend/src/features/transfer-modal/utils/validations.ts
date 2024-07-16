@@ -2,7 +2,6 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 
 import { isHex } from "@nfid-frontend/utils"
-import { TokenStandards } from "@nfid/integration/token/types"
 
 export const PRINCIPAL_LENGTH = 63
 export const IC_ADDRESS_LENGTH = 64

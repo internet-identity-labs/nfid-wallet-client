@@ -86,10 +86,6 @@ export type IConnector<T extends TransferModalType> =
 
 export type TokenBalance = { balance: string; balanceinUsd?: string }
 
-export type IConfirmEVMRequest = {
-  cacheKey: string
-}
-
 export type ITransferRequest = {
   to: string
   memo?: bigint

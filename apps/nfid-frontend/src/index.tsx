@@ -7,14 +7,13 @@ import { SWRConfig } from "swr"
 import { ONE_SECOND_IN_MS } from "@nfid/config"
 
 import { App } from "./App"
-import { initializeConsoleWarnings, redirectFromCanisters } from "./boot"
+import { initializeConsoleWarnings } from "./boot"
 import "./index.css"
 import { Provider } from "./provider"
 import { ToastIcons } from "./ui/atoms/toast-icons"
 
 const container = document.getElementById("root")
 initializeConsoleWarnings()
-redirectFromCanisters()
 
 if (!container) throw new Error("Failed to find the root element")
 

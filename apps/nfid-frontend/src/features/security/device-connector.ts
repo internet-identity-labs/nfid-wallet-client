@@ -75,6 +75,7 @@ export class SecurityConnector {
       return {
         label: device.label,
         icon: device?.icon,
+        origin: passkeyMetadata?.data.clientData.origin,
         isLegacyDevice: !passkeyMetadata,
         isMultiDevice:
           passkeyMetadata?.data.type === "cross-platform" ||

@@ -186,17 +186,6 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 
-      - name: Build package
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          ci_echo_info "NPX" >&2
-          ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${FRONTEND_CANISTER_NAME}'" >&2
-          npx env-cmd -f "${ENV_FILE}" nx build "${FRONTEND_CANISTER_NAME}"
-
-          ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${FRONTEND_CANISTER_NAME}" >&2
-          dfx build --network "${NETWORK_NAME}" "${FRONTEND_CANISTER_NAME}"
-
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
@@ -316,8 +305,8 @@ jobs:
 
           dfx identity use "${ID_NAME}"
 
-          ci_echo_debug "dfx canister install -y --mode=reinstall --network ${NETWORK_NAME} ${FRONTEND_CANISTER_NAME}" >&2
-          if ! result=$(dfx canister install -y --mode=reinstall --network "${NETWORK_NAME}" "${FRONTEND_CANISTER_NAME}"); then
+          ci_echo_debug "dfx deploy -y --network ${NETWORK_NAME} ${FRONTEND_CANISTER_NAME}" >&2
+          if ! result=$(dfx deploy -y --network "${NETWORK_NAME}" "${FRONTEND_CANISTER_NAME}"); then
             ci_echo_error "Install failed ${result}" >&2
             exit 1
           fi

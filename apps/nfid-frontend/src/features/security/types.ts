@@ -5,6 +5,7 @@ import { PublicKey } from "frontend/integration/_ic_api/internet_identity.d"
 export interface IDevice {
   type: DeviceType
   label: string
+  origin?: string
   icon: Icon
   created_at: string
   last_used: string

@@ -55,7 +55,7 @@ export const ProfileAssetsHeader = () => {
     try {
       setIsLoading(true)
       await addICRC1Canister(ledgerID, indexID)
-      toast.success(`${tokenInfo!.name} has been added.`)
+      toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       setIsModalVisible(false)
       resetCachesByKey(
         [

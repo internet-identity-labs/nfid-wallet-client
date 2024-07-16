@@ -181,7 +181,7 @@ export class ICRC1TransferConnector
           subaccount: subaccount ? [subaccount] : [],
           owner,
         },
-        amount: BigInt(amount),
+        amount: BigInt(Number(amount).toFixed()),
         memo: [],
         fee: [BigInt(fee!)],
         from_subaccount: [],

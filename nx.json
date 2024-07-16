@@ -77,6 +77,12 @@
         "env": "ICRC1_REGISTRY_CANISTER_ID"
       },
       {
+        "env": "DELEGATION_FACTORY"
+      },
+      {
+        "env": "PASSKEY_STORAGE"
+      },
+      {
         "env": "BACKEND_MODE"
       },
       {
@@ -183,9 +189,6 @@
       },
       {
         "env": "AWS_VERIFY_EMAIL"
-      },
-      {
-        "env": "AWS_FETCH_ALTERNATIVE_ORIGINS"
       }
     ],
     "production": [

@@ -7,6 +7,7 @@ import { removeICRC1Canister } from "@nfid/integration/token/icrc1"
 
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
+import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
@@ -27,8 +28,17 @@ const AssetModal: React.FC<IAssetModal> = ({ token, setTokenToRemove }) => {
       if (!rootPrincipalId || !token) return
       await removeICRC1Canister(rootPrincipalId, token.canisterId)
       toast.success(`${token.name} has been removed.`)
+      resetCachesByKey(
+        [
+          `ICRC1TransferConnector:getTokensOptions:[]`,
+          `ICRC1TransferConnector:getTokens:[]`,
+        ],
+        () =>
+          mutate(
+            (key) => Array.isArray(key) && key[1] === "getAllTokensOptions",
+          ),
+      )
       mutate("getICRC1Data")
-      mutate("getAllTokensOptions")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
     } catch (e) {
       console.error("removeICRC1Canister", e)

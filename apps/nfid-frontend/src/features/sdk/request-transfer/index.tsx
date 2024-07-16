@@ -49,12 +49,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
 
-  // const { data: identity } = useSWR("globalIdentity", () =>
-  //   getWalletDelegationAdapter("nfid.one", "-1"),
-  // )
-
   const { user } = useAuthentication()
-  const { data: identity } = useSWR([user?.principal, "globalIdentity"], () =>
+  const {
+    data: identity,
+    isLoading: isIdentityLoading,
+    isValidating: isIdentityValidating,
+  } = useSWR([user?.principal, "globalIdentity"], () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
   )
 
@@ -248,7 +248,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         <SDKFooter
           identity={identity}
           balance={balance}
-          isBalanceLoading={isBalanceLoading || isBalanceValidating}
+          isBalanceLoading={
+            isBalanceLoading ||
+            isBalanceValidating ||
+            isIdentityValidating ||
+            isIdentityLoading
+          }
         />
       </div>
     </>

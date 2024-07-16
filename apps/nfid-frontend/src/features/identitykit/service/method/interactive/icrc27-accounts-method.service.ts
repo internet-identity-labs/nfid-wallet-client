@@ -7,7 +7,7 @@ import {
 } from "./interactive-method.service"
 
 export interface AccountsComponentData extends ComponentData {
-  public: Account
+  publicProfile: Account
   anonymous: Account[]
 }
 
@@ -57,7 +57,7 @@ class Icrc27AccountsMethodService extends InteractiveMethodService {
     const baseData = await super.getComponentData(message)
     return {
       ...baseData,
-      public: accounts.public,
+      publicProfile: accounts.public,
       anonymous: accounts.anonymous,
     }
   }

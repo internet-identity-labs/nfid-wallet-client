@@ -9,21 +9,31 @@ import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 
-export interface IRPCComponentICRC27 {
+export interface IRPCComponentICRC34 {
   publicProfile: Account
   anonymous: Account[]
-  onApprove: (data: Account[]) => void
+  isPublicAvailable: boolean
+  onApprove: (data: Account) => void
   onReject: () => void
 }
 
-const RPCComponentICRC27 = ({
+const RPCComponentICRC34 = ({
   publicProfile,
   anonymous,
+  isPublicAvailable,
   onApprove,
   onReject,
-}: IRPCComponentICRC27) => {
-  const [selectedProfile, setSelectedProfile] =
-    React.useState<Account>(publicProfile)
+}: IRPCComponentICRC34) => {
+  console.log({
+    publicProfile,
+    anonymous,
+    isPublicAvailable,
+    onApprove,
+    onReject,
+  })
+  const [selectedProfile, setSelectedProfile] = React.useState<Account>(
+    isPublicAvailable ? publicProfile : anonymous[0],
+  )
 
   const applicationName = new URL(origin).host
 
@@ -35,7 +45,7 @@ const RPCComponentICRC27 = ({
           <span className="text-[#146F68]">{applicationName}</span>
         </>
       }
-      onApprove={() => onApprove([selectedProfile])}
+      onApprove={() => onApprove(selectedProfile)}
       onReject={onReject}
     >
       <div className="relative flex flex-col flex-1 w-full">
@@ -56,6 +66,7 @@ const RPCComponentICRC27 = ({
             <div
               className={clsx(
                 "flex justify-between text-xs uppercase font-mono h-5 mt-5",
+                !isPublicAvailable && "pointer-events-none",
               )}
             >
               <div className="flex items-center">
@@ -67,6 +78,7 @@ const RPCComponentICRC27 = ({
                     selectedProfile.principal === publicProfile.principal
                   }
                   name={"profile"}
+                  disabled={!isPublicAvailable}
                 />
                 <label
                   htmlFor="profile_public"
@@ -115,4 +127,4 @@ const RPCComponentICRC27 = ({
   )
 }
 
-export default RPCComponentICRC27
+export default RPCComponentICRC34

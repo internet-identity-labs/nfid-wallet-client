@@ -111,7 +111,6 @@ export async function getGlobalKeys(
   const cachedValue = await integrationCache.getItem(
     JSON.stringify({ identity, chain, targets }),
   )
-
   if (cachedValue) return cachedValue as any
 
   const sessionKey = Ed25519KeyIdentity.generate()

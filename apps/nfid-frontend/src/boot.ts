@@ -6,16 +6,16 @@ export const initializeConsoleWarnings = () => {
 }
 
 export const redirectFromCanisters = () => {
-  const icHost = "3y5ko-7qaaa-aaaal-aaaaq-cai"
-  const stageHost = "appqm-xiaaa-aaaak-akwaa-cai"
-  const devHost = "n2mln-sqaaa-aaaag-abjoa-cai"
+  const icCanisterId = "3y5ko-7qaaa-aaaal-aaaaq-cai"
+  const stageCanisterId = "appqm-xiaaa-aaaak-akwaa-cai"
+  const devCanisterId = "n2mln-sqaaa-aaaag-abjoa-cai"
 
-  if (window.location.host.includes(icHost))
-    return (window.location.href = "https://3y5ko-7qaaa-aaaal-aaaaq-cai.icp0.io")
+  if (window.location.host !== `${icCanisterId}.icp0.io` && window.location.host.includes(icCanisterId))
+    return (window.location.href = `https://${icCanisterId}.icp0.io`)
 
-  if (window.location.host.includes(devHost))
-    return (window.location.href = "https://n2mln-sqaaa-aaaag-abjoa-cai.icp0.io")
+  if (window.location.host !== `${devCanisterId}.icp0.io` && window.location.host.includes(devCanisterId))
+    return (window.location.href = `https://${devCanisterId}.icp0.io`)
 
-  if (window.location.host.includes(stageHost))
-    return (window.location.href = "https://appqm-xiaaa-aaaak-akwaa-cai.icp0.io")
+  if (window.location.host !== `${stageCanisterId}.icp0.io` && window.location.host.includes(stageCanisterId))
+    return (window.location.href = `https://${stageCanisterId}.icp0.io`)
 }

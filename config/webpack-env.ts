@@ -67,6 +67,12 @@ export const serviceConfig = {
   ICRC1_REGISTRY_CANISTER_ID: JSON.stringify(
     process.env.ICRC1_REGISTRY_CANISTER_ID,
   ),
+  DELEGATION_FACTORY: JSON.stringify(
+    process.env.DELEGATION_FACTORY,
+  ),
+  PASSKEY_STORAGE: JSON.stringify(
+    process.env.PASSKEY_STORAGE,
+  ),
   LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
   CYCLES_MINTER_CANISTER_ID: JSON.stringify(
     process.env.CYCLES_MINTER_CANISTER_ID,
@@ -97,7 +103,4 @@ export const serviceConfig = {
   ),
   AWS_ECDSA_GET_ANONYMOUS: JSON.stringify(process.env.AWS_ECDSA_GET_ANONYMOUS),
   AWS_EXECUTE_CANDID: JSON.stringify(process.env.AWS_EXECUTE_CANDID),
-  AWS_FETCH_ALTERNATIVE_ORIGINS: JSON.stringify(
-    process.env.AWS_FETCH_ALTERNATIVE_ORIGINS,
-  ),
 }

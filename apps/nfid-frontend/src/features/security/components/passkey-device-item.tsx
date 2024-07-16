@@ -39,7 +39,12 @@ export const PasskeyDeviceItem = ({
           />
         </div>
         {device.label.length ? (
-          <span>{device.label}</span>
+          <div>
+            <p className="leading-[26px]">{device.label}</p>
+            <p className="text-xs text-gray-400 leading-[16px]">
+              {device.origin}
+            </p>
+          </div>
         ) : (
           <span className="text-sm text-gray-400">
             This is not an NFID device

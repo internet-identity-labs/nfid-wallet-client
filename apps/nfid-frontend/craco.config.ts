@@ -289,13 +289,6 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify_email/, ""),
       },
-      "/fetch-alternative-origins": {
-        target: process.env.AWS_FETCH_ALTERNATIVE_ORIGINS,
-        secure: true,
-        changeOrigin: true,
-        pathRewrite: (path: string) =>
-          path.replace(/^\/fetch-alternative-origins/, ""),
-      },
     },
   },
 }

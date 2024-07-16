@@ -37,15 +37,6 @@ export const SDKFooter = ({
         </div>
         <div className="flex items-center space-x-0.5">
           <span id="balance">
-            {/* {balance !== undefined ? (
-              <TickerAmount
-                symbol="ICP"
-                value={Number(balance)}
-                decimals={ICP_DECIMALS}
-              />
-            ) : (
-              <Skeleton className="w-20 h-5 bg-gray-300" />
-            )} */}
             {balance === undefined || isBalanceLoading ? (
               <Skeleton className="w-20 h-5 bg-gray-300" />
             ) : (

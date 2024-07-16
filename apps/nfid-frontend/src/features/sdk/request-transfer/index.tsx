@@ -10,6 +10,7 @@ import {
   WALLET_FEE_E8S,
 } from "@nfid/integration/token/constants"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
@@ -48,7 +49,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
 
-  const { data: identity } = useSWR("globalIdentity", () =>
+  const { user } = useAuthentication()
+  const {
+    data: identity,
+    isLoading: isIdentityLoading,
+    isValidating: isIdentityValidating,
+  } = useSWR([user?.principal, "globalIdentity"], () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
   )
 
@@ -239,8 +245,16 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         >
           Reject
         </Button>
-
-        <SDKFooter identity={identity} balance={balance} />
+        <SDKFooter
+          identity={identity}
+          balance={balance}
+          isBalanceLoading={
+            isBalanceLoading ||
+            isBalanceValidating ||
+            isIdentityValidating ||
+            isIdentityLoading
+          }
+        />
       </div>
     </>
   )

@@ -8,6 +8,7 @@ import {
 import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import { mutate } from "swr"
 
 import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
@@ -16,6 +17,7 @@ import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
 import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
+import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 export const ProfileAssetsHeader = () => {
@@ -53,7 +55,18 @@ export const ProfileAssetsHeader = () => {
     try {
       setIsLoading(true)
       await addICRC1Canister(ledgerID, indexID)
+      toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       setIsModalVisible(false)
+      resetCachesByKey(
+        [
+          `ICRC1TransferConnector:getTokensOptions:[]`,
+          `ICRC1TransferConnector:getTokens:[]`,
+        ],
+        () =>
+          mutate(
+            (key) => Array.isArray(key) && key[1] === "getAllTokensOptions",
+          ),
+      )
       mutate("getICRC1Data")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
       resetField("ledgerID")

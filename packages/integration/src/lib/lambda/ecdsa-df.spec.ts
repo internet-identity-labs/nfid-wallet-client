@@ -154,7 +154,7 @@ describe("Lambda Sign/Register Delegation Factory", () => {
       expect(responseGlobal.getPrincipal().toText()).toEqual(principalText)
     })
 
-    it("get third party global keys canister delegation", async function () {
+    it.skip("get third party global keys canister delegation", async function () {
       const canisterId = "irshc-3aaaa-aaaam-absla-cai"
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()

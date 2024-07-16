@@ -74,11 +74,6 @@
     tslib "^2.6.2"
     webcrypto-core "^1.8.0"
 
-"@slide-computer/signer@^2.6.2":
-  version "2.6.2"
-  resolved "https://registry.npmjs.org/@slide-computer/signer/-/signer-2.6.2.tgz"
-  integrity sha512-nRgsUHcZcOkmQmkPt1aQ6A1rf1byueibQefj0nFwfHa0Gt+cRG8vVL+kk0CgJ4UFmMnJI+cCbfLu3GFMpmrmJA==
-
 asn1js@^3.0.1, asn1js@^3.0.5:
   version "3.0.5"
   resolved "https://registry.npmjs.org/asn1js/-/asn1js-3.0.5.tgz"

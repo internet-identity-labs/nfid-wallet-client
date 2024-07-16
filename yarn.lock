@@ -5500,6 +5500,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@slide-computer/signer@^2.6.2":
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/@slide-computer/signer/-/signer-2.6.2.tgz#469e6ab6f4663b37799cd00ead7e6bc403e20579"
+  integrity sha512-nRgsUHcZcOkmQmkPt1aQ6A1rf1byueibQefj0nFwfHa0Gt+cRG8vVL+kk0CgJ4UFmMnJI+cCbfLu3GFMpmrmJA==
+
 "@sovpro/delimited-stream@^1.1.0":
   version "1.1.0"
   resolved "https://registry.npmjs.org/@sovpro/delimited-stream/-/delimited-stream-1.1.0.tgz"

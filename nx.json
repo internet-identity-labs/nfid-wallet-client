@@ -92,25 +92,13 @@
         "env": "IC_HOST"
       },
       {
-        "env": "ETHERSCAN_API_KEY"
-      },
-      {
         "env": "RARIBLE_X_API_KEY"
       },
       {
         "env": "PROD_RARIBLE_X_API_KEY"
       },
       {
-        "env": "ETH_ALCHEMY_API_KEY"
-      },
-      {
         "env": "BLOCK_CYPHER_TOKEN"
-      },
-      {
-        "env": "MATIC_ALCHEMY_API_KEY"
-      },
-      {
-        "env": "MUMBAI_ALCHEMY_API_KEY"
       },
       {
         "env": "RAMP_WALLET_API_KEY"

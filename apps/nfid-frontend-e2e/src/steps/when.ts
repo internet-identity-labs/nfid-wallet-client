@@ -120,10 +120,7 @@ When(
   async function (account: string) {
     if (account === "BTC") {
       for (let i = 0; i < userClient.userMap.size; i++) {
-        if (
-          userClient.userMap.get(userClient.users[i]) === false &&
-          userClient.users[i].btcAddress !== undefined
-        ) {
+        if (userClient.userMap.get(userClient.users[i]) === false) {
           await userClient.takeUser(userClient.users[i])
           this.testUser = userClient.users[i]
         }

@@ -15,9 +15,6 @@ import { idlFactory as dfIDL } from "./_ic_api/delegation_factory"
 import { _SERVICE as DelegationFactory } from "./_ic_api/delegation_factory.d"
 import { idlFactory as ecdsaSignerIDL } from "./_ic_api/ecdsa-signer"
 import { _SERVICE as EcdsaSigner } from "./_ic_api/ecdsa-signer.d"
-import { _SERVICE as BtcSigner } from "./_ic_api/ecdsa-signer.d"
-import { idlFactory as ethSecretStorageIDL } from "./_ic_api/eth_secret_storage"
-import { _SERVICE as EthSecretStorage } from "./_ic_api/eth_secret_storage.d"
 import { idlFactory as iCRC1RegistryIDL } from "./_ic_api/icrc1_registry"
 import { _SERVICE as ICRC1Registry } from "./_ic_api/icrc1_registry.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
@@ -48,9 +45,7 @@ const canisterConfig = [
   ["Ledger", LEDGER_CANISTER_ID],
   ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
   ["Vault", VAULT_CANISTER_ID],
-  ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
-  ["BtcSigner", BTC_SIGNER_CANISTER_ID],
   ["ICSigner", IC_SIGNER_CANISTER_ID],
   ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
   ["DelegationFactory", DELEGATION_FACTORY],
@@ -132,15 +127,6 @@ export const icSigner = Agent.Actor.createActor<EcdsaSigner>(ecdsaSignerIDL, {
   agent: new HttpAgent({ ...agentBaseConfig }),
 })
 
-export const btcSigner = Agent.Actor.createActor<BtcSigner>(ecdsaSignerIDL, {
-  canisterId: BTC_SIGNER_CANISTER_ID,
-  agent: new HttpAgent({ ...agentBaseConfig }),
-})
-
-export const ethSecretStorage = actor<EthSecretStorage>(
-  ETH_SECRET_STORAGE_CANISTER_ID,
-  ethSecretStorageIDL,
-)
 export const cyclesMinter = actor<CyclesMinter>(
   CYCLES_MINTER_CANISTER_ID,
   cyclesMinterIDL,

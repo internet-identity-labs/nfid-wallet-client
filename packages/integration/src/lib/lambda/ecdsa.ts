@@ -11,6 +11,7 @@ import { integrationCache } from "../../cache"
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import {
   delegationFactory,
+  ecdsaSigner,
   icSigner,
   im,
   replaceActorIdentity,
@@ -37,6 +38,8 @@ export const GLOBAL_ORIGIN = "nfid.one"
 export const ANCHOR_TO_GET_DELEGATION_FROM_DF = BigInt(200_000_000)
 
 export enum Chain {
+  BTC = "BTC",
+  ETH = "ETH",
   IC = "IC",
 }
 
@@ -399,7 +402,6 @@ async function oldFlowGlobalKeysFromLambda(
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ) {
-  //we do not support BTC/ETH anymore
   const chain = Chain.IC
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 

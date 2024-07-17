@@ -1,8 +1,9 @@
 import { NonFungibleItem } from "packages/integration/src/lib/asset/types"
-import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 import { NftConnectorConfig } from "src/ui/connnector/types"
 
 import { authState } from "@nfid/integration"
+
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 
 export function toUserNFT(
   nft: NonFungibleItem,

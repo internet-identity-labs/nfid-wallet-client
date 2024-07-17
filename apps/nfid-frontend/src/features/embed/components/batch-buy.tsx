@@ -6,8 +6,8 @@ import { Item } from "@nfid/integration-ethereum"
 
 import { ApproverCmpProps } from "frontend/features/embed/types"
 import { calcPrice } from "frontend/features/embed/util/calcPriceUtil"
-import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
-import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
+import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
+import { useExchangeRates } from "frontend/features/fungible-token/eth/hooks/use-eth-exchange-rate"
 
 import { SendTransaction } from "../ui/send-transaction"
 

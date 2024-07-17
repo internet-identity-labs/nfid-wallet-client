@@ -7,7 +7,7 @@ import { Tooltip } from "@nfid-frontend/ui"
 import { Application, getWalletName } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { link } from "frontend/integration/entrepot"
 import { ProfileContext } from "frontend/provider"
 import { Copy } from "frontend/ui/atoms/copy"

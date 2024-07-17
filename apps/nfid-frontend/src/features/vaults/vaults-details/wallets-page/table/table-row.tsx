@@ -13,7 +13,7 @@ import {
 } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
-import { useAllToken } from "frontend/features/fungable-token/use-all-token"
+import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { ProfileContext } from "frontend/provider"
 

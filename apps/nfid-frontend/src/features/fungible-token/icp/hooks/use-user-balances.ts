@@ -1,6 +1,6 @@
 import useSWR from "swr"
 
-import { fetchBalances } from "frontend/features/fungable-token/fetch-balances"
+import { fetchBalances } from "frontend/features/fungible-token/fetch-balances"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
 export const useUserBalances = () => {

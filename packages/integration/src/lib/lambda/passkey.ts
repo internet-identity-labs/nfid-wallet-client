@@ -1,10 +1,11 @@
+import { Actor, HttpAgent } from "@dfinity/agent"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
+import { idlFactory as passkeyIDL } from "../_ic_api/passkey_storage"
 import { im, passkeyStorage } from "../actors"
 import { ic } from "../agent"
 import { ANCHOR_TO_GET_DELEGATION_FROM_DF } from "./ecdsa"
-import { Actor, HttpAgent } from "@dfinity/agent";
-import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { idlFactory as passkeyIDL } from "../_ic_api/passkey_storage";
 
 export async function storePasskey(key: string, data: string) {
   const account: HTTPAccountResponse = await im.get_account()
@@ -29,13 +30,14 @@ export async function getPasskey(
   keys: string[],
 ): Promise<LambdaPasskeyEncoded[]> {
   //we know nothing about user on this stage
-  const identity =  Ed25519KeyIdentity.generate();
-  const agent: HttpAgent = new HttpAgent({host: "https://ic0.app", identity});
-  const actorPasskey = Actor.createActor(passkeyIDL, {agent, canisterId: PASSKEY_STORAGE});
+  const identity = Ed25519KeyIdentity.generate()
+  const agent: HttpAgent = new HttpAgent({ host: "https://ic0.app", identity })
+  const actorPasskey = Actor.createActor(passkeyIDL, {
+    agent,
+    canisterId: PASSKEY_STORAGE,
+  })
   const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await actorPasskey.get_passkey(keys) as LambdaPasskeyEncoded[]
+    (await actorPasskey["get_passkey"](keys)) as LambdaPasskeyEncoded[]
   if (lambdaPasskeyEncoded.length > 0) {
     return lambdaPasskeyEncoded
   }

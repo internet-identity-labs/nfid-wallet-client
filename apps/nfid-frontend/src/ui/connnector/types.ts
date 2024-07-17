@@ -2,10 +2,11 @@ import {
   TokenBalanceSheet,
   TransferResponse,
 } from "packages/integration/src/lib/asset/types"
-import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 
 import { NonFungibleAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
+
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 
 export type IFungibleAssetConnector = StandardizedToken<string> & {
   getTokenConfigs(assetFilter: AssetFilter[]): Promise<Array<TokenConfig>>

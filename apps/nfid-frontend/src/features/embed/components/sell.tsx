@@ -2,7 +2,7 @@ import { chainService } from "packages/integration-ethereum/src/lib/decoder/chai
 import { useMemo } from "react"
 
 import { ApproverCmpProps } from "frontend/features/embed/types"
-import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
+import { useExchangeRates } from "frontend/features/fungible-token/eth/hooks/use-eth-exchange-rate"
 
 import { SendTransaction } from "../ui/send-transaction"
 

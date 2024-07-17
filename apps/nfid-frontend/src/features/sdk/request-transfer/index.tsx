@@ -12,8 +12,8 @@ import {
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
-import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
-import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
+import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
+import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"

@@ -5,7 +5,7 @@ import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
-import { getEthAddress } from "../../fungable-token/eth/get-eth-address"
+import { getEthAddress } from "../../fungible-token/eth/get-eth-address"
 
 export type ConnectAccountServiceContext = {
   authSession?: AuthSession

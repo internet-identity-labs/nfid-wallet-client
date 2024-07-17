@@ -5,7 +5,7 @@ import { IWarningAccordionOption } from "@nfid-frontend/ui"
 
 import { ApproverCmpProps } from "frontend/features/embed/types"
 import { calcPrice } from "frontend/features/embed/util/calcPriceUtil"
-import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
+import { useExchangeRates } from "frontend/features/fungible-token/eth/hooks/use-eth-exchange-rate"
 
 import { SendTransaction } from "../ui/send-transaction"
 

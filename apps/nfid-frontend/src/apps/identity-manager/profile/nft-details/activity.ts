@@ -1,7 +1,7 @@
 import { parse } from "date-fns"
 import React, { useState } from "react"
 
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap/fungible-transactions"
 
 import { ITransaction, mapTransactionsForUI } from "./utils"

@@ -8,7 +8,7 @@ import {
 } from "@nfid-frontend/ui"
 import { Application, getWalletName } from "@nfid/integration"
 
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 
 import { Blockchain } from "../../types"

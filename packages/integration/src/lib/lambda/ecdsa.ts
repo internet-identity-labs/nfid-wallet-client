@@ -63,7 +63,7 @@ export async function getGlobalKeysThirdParty(
       targets,
       sessionPublicKey,
       anchor,
-      origin,
+      GLOBAL_ORIGIN,
       maxTimeToLive,
     )
   } else {

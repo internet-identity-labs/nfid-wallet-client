@@ -49,7 +49,7 @@ class Icrc27AccountsMethodService extends InteractiveMethodService {
     message: MessageEvent<RPCMessage>,
   ): Promise<AccountsComponentData> {
     const accounts = await accountService.getAccounts(message.origin)
-    console.log({ accounts })
+
     if (!accounts) {
       throw new GenericError("User data has not been found")
     }

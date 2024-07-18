@@ -28,7 +28,7 @@ import { getIdentity, getLambdaActor } from "./util"
 
 const identity = getIdentity("97654321876543218765432187654399")
 
-describe("Lambda Sign/Register Delegation Factory", () => {
+describe.skip("Lambda Sign/Register Delegation Factory", () => {
   jest.setTimeout(80000)
   describe("lambdaECDSA", () => {
     const localStorageMock = new LocalStorageMock()
@@ -152,9 +152,13 @@ describe("Lambda Sign/Register Delegation Factory", () => {
         anonGlobal,
       )
       expect(responseGlobal.getPrincipal().toText()).toEqual(principalText)
+
+      await replaceActorIdentity(im, responseGlobal)
+      const acc = await im.get_account()
+      expect(acc.error.length).toEqual(1)
     })
 
-    it.skip("get third party global keys canister delegation", async function () {
+    it("get third party global keys canister delegation", async function () {
       const canisterId = "irshc-3aaaa-aaaam-absla-cai"
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()

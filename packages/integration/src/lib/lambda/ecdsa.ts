@@ -63,7 +63,7 @@ export async function getGlobalKeysThirdParty(
       targets,
       sessionPublicKey,
       anchor,
-      origin,
+      GLOBAL_ORIGIN,
       maxTimeToLive,
     )
   } else {
@@ -172,7 +172,7 @@ export async function ecdsaGetAnonymous(
     await replaceActorIdentity(delegationFactory, identity)
     return await getDelegationChainSignedByCanister(
       identity,
-      [],
+      undefined,
       sessionKey,
       anchor,
       domain,

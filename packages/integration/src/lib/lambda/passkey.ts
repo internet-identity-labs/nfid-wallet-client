@@ -1,4 +1,8 @@
+import { Actor, HttpAgent } from "@dfinity/agent"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
+import { idlFactory as passkeyIDL } from "../_ic_api/passkey_storage"
 import { im, passkeyStorage } from "../actors"
 import { ic } from "../agent"
 import { ANCHOR_TO_GET_DELEGATION_FROM_DF } from "./ecdsa"
@@ -26,8 +30,14 @@ export async function getPasskey(
   keys: string[],
 ): Promise<LambdaPasskeyEncoded[]> {
   //we know nothing about user on this stage
+  const identity = Ed25519KeyIdentity.generate()
+  const agent: HttpAgent = new HttpAgent({ host: "https://ic0.app", identity })
+  const actorPasskey = Actor.createActor(passkeyIDL, {
+    agent,
+    canisterId: PASSKEY_STORAGE,
+  })
   const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] =
-    await passkeyStorage.get_passkey(keys)
+    (await actorPasskey["get_passkey"](keys)) as LambdaPasskeyEncoded[]
   if (lambdaPasskeyEncoded.length > 0) {
     return lambdaPasskeyEncoded
   }

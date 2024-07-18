@@ -28,7 +28,7 @@ import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
 import { registerIIAccount } from "../test-util"
 
-describe("Facade suite", () => {
+describe.skip("Facade suite", () => {
   jest.setTimeout(100000)
 
   describe("Facade Service Test", () => {

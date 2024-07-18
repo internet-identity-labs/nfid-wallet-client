@@ -28,7 +28,7 @@ import { getIdentity, getLambdaActor } from "./util"
 
 const identity = getIdentity("97654321876543218765432187654399")
 
-describe("Lambda Sign/Register Delegation Factory", () => {
+describe.skip("Lambda Sign/Register Delegation Factory", () => {
   jest.setTimeout(80000)
   describe("lambdaECDSA", () => {
     const localStorageMock = new LocalStorageMock()

@@ -89,7 +89,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
 
     const agent: Agent = new HttpAgent({
       host: IC_HOSTNAME,
-      identity: delegation,
+      identity: delegation as unknown as Identity,
     })
 
     const baseData = await super.getComponentData(message)

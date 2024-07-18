@@ -38,7 +38,7 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
         <BlurOverlay
           id="loader"
           className={clsx(
-            "absolute top-0 bottom-0 left-0 z-20 w-full",
+            "absolute top-[1px] bottom-0 left-0 z-20 w-full",
             overlayClassnames,
             isLoading ? "opacity-100 scale-100" : "opacity-0 scale-90",
             "transform transition-all duration-1000 ease-in-out",

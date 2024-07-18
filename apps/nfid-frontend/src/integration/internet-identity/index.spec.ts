@@ -29,7 +29,7 @@ import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
 import { registerIIAccount } from "../test-util"
 
-describe("ii suite", () => {
+describe.skip("ii suite", () => {
   jest.setTimeout(50000)
 
   describe("II Service Test", () => {

@@ -3,6 +3,7 @@ export type IdentityKitRPCMachineContext = {
   activeRequest: MessageEvent<RPCMessage> | undefined
   activeRequestMetadata: any | undefined
   componentData: any
+  error?: Error
 }
 
 export type IdentityKitRPCEvents =

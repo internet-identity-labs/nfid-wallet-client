@@ -12,7 +12,6 @@ type ILandingDropdown = {
 
 export const LandingDropdown: React.FC<ILandingDropdown> = ({ handler }) => {
   const [isOpen, setIsOpen] = useState(false)
-  console.log("isOpened", isOpen)
   return (
     <>
       <Dropdown

@@ -21,6 +21,7 @@ const machineConfig = {
     activeRequest: undefined,
     activeRequestMetadata: undefined,
     componentData: {},
+    error: undefined,
   } as IdentityKitRPCMachineContext,
   type: "parallel" as any,
   states: {
@@ -126,6 +127,10 @@ const machineConfig = {
                   target: "PromptInteractiveRequest",
                   actions: ["assignComponentData"],
                 },
+                onError: {
+                  target: "Error",
+                  actions: ["assignError"],
+                },
               },
             },
             PromptInteractiveRequest: {
@@ -137,15 +142,31 @@ const machineConfig = {
             CancelInteractiveRequest: {
               invoke: {
                 src: "prepareCancelResponse",
-                onError: "#IdentityKitRPCMachine.Main.SendResponse",
                 onDone: "#IdentityKitRPCMachine.Main.SendResponse",
+                onError: {
+                  target: "Error",
+                  actions: ["assignError"],
+                },
               },
             },
             ExecuteInteractiveRequest: {
               invoke: {
                 src: "executeInteractiveMethod",
-                onError: "#IdentityKitRPCMachine.Main.SendResponse",
                 onDone: "#IdentityKitRPCMachine.Main.SendResponse",
+                onError: {
+                  target: "Error",
+                  actions: ["assignError"],
+                },
+              },
+            },
+            Error: {
+              on: {
+                TRY_AGAIN: {
+                  target: "#IdentityKitRPCMachine.Main.Authentication",
+                },
+                ON_CANCEL: {
+                  target: "CancelInteractiveRequest",
+                },
               },
             },
           },
@@ -154,8 +175,11 @@ const machineConfig = {
         ExecuteSilentRequest: {
           invoke: {
             src: "executeSilentMethod",
-            onError: "SendResponse",
             onDone: "SendResponse",
+            onError: {
+              actions: ["prepareFailedResponse"],
+              target: "#IdentityKitRPCMachine.Main.SendResponse",
+            },
           },
         },
 
@@ -228,6 +252,27 @@ const machineServices = {
         componentData: event.data,
       }),
     ),
+    assignError: assign((context: IdentityKitRPCMachineContext, event: any) => {
+      console.log({ event })
+      return {
+        error: event.data,
+      }
+    }),
+    prepareFailedResponse: async (context: IdentityKitRPCMachineContext) => {
+      if (!context.activeRequest) throw new Error("No active request")
+
+      const response: RPCErrorResponse = {
+        origin: context.activeRequest.origin,
+        jsonrpc: context.activeRequest.data.jsonrpc,
+        id: context.activeRequest.data.id,
+        error: {
+          code: 1001,
+          message: "Unknown error",
+        },
+      }
+
+      return response
+    },
   },
   services: {
     RPCReceiverV3,

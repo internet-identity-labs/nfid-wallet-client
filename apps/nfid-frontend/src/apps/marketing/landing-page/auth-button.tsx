@@ -12,7 +12,8 @@ import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/button/menu"
 
 import IconMenu from "./assets/menu-white.svg"
-import IconMenuBlack from "./assets/menu.svg"
+
+import { LandingDropdown } from "./landing-dropdown"
 
 export const AuthButton = ({
   isAuthenticated,
@@ -46,24 +47,26 @@ export const AuthButton = ({
   return (
     <>
       <div className="md:hidden">
-        <ButtonMenu
-          toggleMenu={toggleMenu}
-          setToggleMenu={(value) => setToggleMenu(value)}
-          buttonElement={
-            <img
-              src={IconMenu}
-              alt="menu"
-              className="rotate-180 focus:shadow-none"
-              id="burger-mobile"
-            />
-          }
-        >
-          {(toggleMenu) => (
-            <div
-              className={clsx("font-bold bg-white rounded w-[70vw] pt-[42px]")}
-              id="menu-mobile-window"
-            >
-              {isAuthenticated ? (
+        {isAuthenticated ? (
+          <ButtonMenu
+            toggleMenu={toggleMenu}
+            setToggleMenu={(value) => setToggleMenu(value)}
+            buttonElement={
+              <img
+                src={IconMenu}
+                alt="menu"
+                className="rotate-180 focus:shadow-none"
+                id="burger-mobile"
+              />
+            }
+          >
+            {(toggleMenu) => (
+              <div
+                className={clsx(
+                  "font-bold bg-white rounded w-[70vw] pt-[42px]",
+                )}
+                id="menu-mobile-window"
+              >
                 <Accordion
                   isBorder={false}
                   style={{ padding: 0 }}
@@ -102,45 +105,12 @@ export const AuthButton = ({
                     </div>
                   }
                 />
-              ) : null}
-              <div className="flex flex-col px-6 pb-6 ml-1.5 space-y-5 font-bold mt-5">
-                <img
-                  src={IconMenuBlack}
-                  onClick={() => setToggleMenu(false)}
-                  alt="menu"
-                  className="w-[24px] h-[24px] rotate-180 focus:shadow-none relative left-[-10px] mb-[20px]"
-                  id="burger-mobile-close"
-                />
-                <a
-                  href="https://learn.nfid.one/"
-                  target="_blank"
-                  className={clsx(
-                    "text-gray-700 text-sm",
-                    "hover:underline cursor-pointer hover:text-blue-hover transition-all",
-                  )}
-                  rel="noreferrer"
-                >
-                  Knowledge base
-                </a>
-
-                <div>
-                  {!isAuthenticated ? (
-                    <span
-                      id="btn-signin"
-                      onClick={onAuthClick}
-                      className={clsx(
-                        "text-gray-700 text-sm",
-                        "hover:underline cursor-pointer hover:text-blue-hover transition-all",
-                      )}
-                    >
-                      Sign in
-                    </span>
-                  ) : null}
-                </div>
               </div>
-            </div>
-          )}
-        </ButtonMenu>
+            )}
+          </ButtonMenu>
+        ) : (
+          <LandingDropdown handler={onAuthClick} />
+        )}
       </div>
       <div
         className="hidden cursor-pointer md:block text-white"

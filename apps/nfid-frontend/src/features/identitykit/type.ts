@@ -50,7 +50,7 @@ export interface RPCBase {
 
 export interface RPCMessage extends RPCBase {
   method: string
-  params: unknown[]
+  params: unknown
 }
 
 export interface RPCSuccessResponse extends RPCBase {

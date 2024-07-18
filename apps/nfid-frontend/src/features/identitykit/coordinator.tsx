@@ -56,6 +56,7 @@ export default function IdentityKitRPCCoordinator() {
               onApprove: (data: any) =>
                 send({ type: "ON_APPROVE", data: data }),
               onReject: () => send({ type: "ON_CANCEL" }),
+              request: state.context.activeRequest,
               ...state.context.componentData,
             }}
           />
@@ -73,6 +74,7 @@ export default function IdentityKitRPCCoordinator() {
             onRetry={() => send({ type: "TRY_AGAIN" })}
             onCancel={() => send({ type: "ON_CANCEL" })}
             error={state.context.error}
+            request={state.context.activeRequest}
           />
         )
       default:

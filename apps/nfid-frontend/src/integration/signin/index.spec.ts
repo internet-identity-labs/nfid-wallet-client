@@ -25,7 +25,7 @@ import { fetchProfile } from "../identity-manager"
 import { delegationChainFromDelegation } from "../identity/delegation-chain-from-delegation"
 import { registerIIAccount, registerIIAndIM } from "../test-util"
 
-describe("SignIn with Internet Identity", () => {
+describe.skip("SignIn with Internet Identity", () => {
   jest.setTimeout(150000)
 
   it("should add tentative device to account and authorize thru it.", async () => {

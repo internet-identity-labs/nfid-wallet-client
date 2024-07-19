@@ -157,10 +157,9 @@ export class PasskeyConnector {
       credential = (await navigator.credentials.create({
         publicKey: {
           authenticatorSelection: {
-            authenticatorAttachment:
-              getIsMobileDeviceMatch() || !isMultiDevice
-                ? "platform"
-                : "cross-platform",
+            authenticatorAttachment: isMultiDevice
+              ? "cross-platform"
+              : "platform",
             userVerification: "preferred",
             residentKey: "required",
           },

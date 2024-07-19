@@ -2419,10 +2419,10 @@
   resolved "https://registry.yarnpkg.com/@dfinity/ledger-icrc/-/ledger-icrc-2.3.3.tgz#e3977dcd87e3495caef92f5498dd77a061edbb09"
   integrity sha512-ASF9A/FcyHlEsFVENEZ1/f/PFcdvtEg75zD70zL/n7FUSN+3I8c82tbt5TunraRCGBQjDgBigUoRY2+k5J18rQ==
 
-"@dfinity/nns-proto@^1.0.1":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@dfinity/nns-proto/-/nns-proto-1.0.2.tgz#f9fcb6c7341b76e759ada305a8c67d6a45946e51"
-  integrity sha512-GszvkrGOFCFhMNGCjBLBOJJ7tqNIynqgB7ZCX5hKoK3Nd2VDI6sJ+B3kldnz59bHYeB2fTnXl+DogsL5iCRYFQ==
+"@dfinity/nns-proto@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/nns-proto/-/nns-proto-2.0.1.tgz#fbe35feba75aab7a30cca6b776021d57d4c6daaa"
+  integrity sha512-/uIr1TVr51g+J649+tm2/QtfDqsd9/YTUMxIHeyDajcce6cmqrsQyqaWYg6aReP1zSic3POdUm5uYzQVcP5uLg==
   dependencies:
     google-protobuf "^3.21.2"
 

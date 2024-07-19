@@ -14,14 +14,8 @@ import { authState, getBalance } from "@nfid/integration"
 import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 
+import { isDerivationBug } from "../helpers/derivation-bug"
 import { Account, AccountType } from "../type"
-
-export type ProfileTypes =
-  | ""
-  | "public"
-  | "legacy-anonymous"
-  | "anonymous-1"
-  | "anonymous-2"
 
 export const accountService = {
   async getAccounts(
@@ -35,7 +29,7 @@ export const accountService = {
 
     if (!legacyProfiles.length) {
       const anonymousProfile = await this.getAnonymousProfiles(origin)
-      anonymousProfiles.push(anonymousProfile)
+      anonymousProfiles.push(...anonymousProfile)
     }
 
     return {
@@ -89,25 +83,50 @@ export const accountService = {
       type: AccountType.ANONYMOUS_LEGACY,
     }))
   },
-  async getAnonymousProfiles(origin: string): Promise<Account> {
+  async getAnonymousProfiles(
+    origin: string,
+    derivationOrigin?: string,
+  ): Promise<Account[]> {
     const identity = authState.get().delegationIdentity
     if (!identity) throw new Error("No identity")
 
     const publicKey = await getPublicKey(
       identity,
       Chain.IC,
-      origin,
+      derivationOrigin ?? origin,
       DelegationType.ANONYMOUS,
     )
 
-    return {
-      id: 0,
-      displayName: truncateString(publicKey, 6, 4),
-      principal: publicKey,
-      subaccount: this.getDefaultSubAccount(),
-      type: AccountType.SESSION,
-      balance: undefined,
+    let accounts = [
+      {
+        id: 0,
+        displayName: truncateString(publicKey, 6, 4),
+        principal: publicKey,
+        subaccount: this.getDefaultSubAccount(),
+        type: AccountType.SESSION,
+        balance: undefined,
+      },
+    ]
+
+    if (derivationOrigin && (await isDerivationBug(origin))) {
+      const buggedPublicKey = await getPublicKey(
+        identity,
+        Chain.IC,
+        origin,
+        DelegationType.ANONYMOUS,
+      )
+
+      accounts.push({
+        id: 1,
+        displayName: truncateString(publicKey, 6, 4),
+        principal: buggedPublicKey,
+        subaccount: this.getDefaultSubAccount(),
+        type: AccountType.SESSION_WITHOUT_DERIVATION,
+        balance: undefined,
+      })
     }
+
+    return accounts
   },
   getDefaultSubAccount(): string {
     return Buffer.from(SubAccount.fromID(0).toUint8Array()).toString("base64")

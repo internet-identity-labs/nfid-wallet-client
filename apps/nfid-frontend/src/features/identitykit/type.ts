@@ -39,6 +39,7 @@ export interface Account {
 export enum AccountType {
   GLOBAL = "GLOBAL",
   SESSION = "SESSION",
+  SESSION_WITHOUT_DERIVATION = "SESSION_WITHOUT_DERIVATION",
   ANONYMOUS_LEGACY = "ANONYMOUS_LEGACY",
 }
 

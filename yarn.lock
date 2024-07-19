@@ -2371,10 +2371,10 @@
     buffer "^6.0.3"
     simple-cbor "^0.4.1"
 
-"@dfinity/auth-client@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-1.0.1.tgz#486693b18194d04f65c03955babcccff63bed537"
-  integrity sha512-QooHufXCDHTXySC1Tb1xf9+KRJISbw1sLYLIgY7PTxrA4Nc1ZgA7o4exwgRyIuJgoWMKrjgHPUZcu4N5ak69OQ==
+"@dfinity/auth-client@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-2.0.0.tgz#09371b15c3e2e70efaa42297b1c9a58aefca0f8d"
+  integrity sha512-mF1Dqc2k94FJhwKum/K6NPJZ5txuTTa9HP8OgOwaA/Zc8rKfzRtUz+ORTjLC4i/4bPyp5zGhrp/8mCihwvNBTg==
   dependencies:
     idb "^7.0.2"
 
@@ -3390,7 +3390,7 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@imtbl/imx-sdk@^2.1.1", "@imtbl/imx-sdk@npm:dry-uninstall@0.3.0", "@rarible/solana-sdk@^0.13.52", "@rarible/solana-sdk@npm:dry-uninstall@0.3.0", "@solana/web3.js@^1.35.0", "@solana/web3.js@^1.35.1", "@solana/web3.js@npm:dry-uninstall@0.3.0":
+"@imtbl/imx-sdk@^2.1.1", "@imtbl/imx-sdk@npm:dry-uninstall@0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/dry-uninstall/-/dry-uninstall-0.3.0.tgz#29847a27ed3b3bb94e6212547a677e37f4427011"
   integrity sha512-b8h94RVpETWkVV59x62NsY++79bM7Si6Dxq7a4iVxRcJU3ZJJ4vaiC7wUZwM8WDK0ySRL+i+T/1SMAzbJLejYA==
@@ -5271,6 +5271,11 @@
   dependencies:
     "@solana/web3.js" "^1.35.0"
 
+"@rarible/solana-sdk@^0.13.52", "@rarible/solana-sdk@npm:dry-uninstall@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/dry-uninstall/-/dry-uninstall-0.3.0.tgz#29847a27ed3b3bb94e6212547a677e37f4427011"
+  integrity sha512-b8h94RVpETWkVV59x62NsY++79bM7Si6Dxq7a4iVxRcJU3ZJJ4vaiC7wUZwM8WDK0ySRL+i+T/1SMAzbJLejYA==
+
 "@rarible/solana-wallet@^0.13.52":
   version "0.13.52"
   resolved "https://registry.yarnpkg.com/@rarible/solana-wallet/-/solana-wallet-0.13.52.tgz#6699193916bcccdb83b6ce81ffebdfb88808e4d9"
@@ -5528,6 +5533,11 @@
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/@slide-computer/signer/-/signer-2.6.2.tgz#469e6ab6f4663b37799cd00ead7e6bc403e20579"
   integrity sha512-nRgsUHcZcOkmQmkPt1aQ6A1rf1byueibQefj0nFwfHa0Gt+cRG8vVL+kk0CgJ4UFmMnJI+cCbfLu3GFMpmrmJA==
+
+"@solana/web3.js@^1.35.0", "@solana/web3.js@^1.35.1", "@solana/web3.js@npm:dry-uninstall@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/dry-uninstall/-/dry-uninstall-0.3.0.tgz#29847a27ed3b3bb94e6212547a677e37f4427011"
+  integrity sha512-b8h94RVpETWkVV59x62NsY++79bM7Si6Dxq7a4iVxRcJU3ZJJ4vaiC7wUZwM8WDK0ySRL+i+T/1SMAzbJLejYA==
 
 "@sovpro/delimited-stream@^1.1.0":
   version "1.1.0"

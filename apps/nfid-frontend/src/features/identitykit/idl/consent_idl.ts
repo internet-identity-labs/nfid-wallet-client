@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 export const idlFactory = ({ IDL }: any) => {
   const icrc21_consent_message_metadata = IDL.Record({
     utc_offset_minutes: IDL.Opt(IDL.Int16),
@@ -12,7 +14,7 @@ export const idlFactory = ({ IDL }: any) => {
           characters_per_line: IDL.Nat16,
           lines_per_page: IDL.Nat16,
         }),
-      })
+      }),
     ),
   })
   const icrc21_consent_message_request = IDL.Record({
@@ -51,12 +53,12 @@ export const idlFactory = ({ IDL }: any) => {
     icrc10_supported_standards: IDL.Func(
       [],
       [IDL.Vec(IDL.Record({ url: IDL.Text, name: IDL.Text }))],
-      ["query"]
+      ["query"],
     ),
     icrc21_canister_call_consent_message: IDL.Func(
       [icrc21_consent_message_request],
       [icrc21_consent_message_response],
-      []
+      [],
     ),
   })
 }

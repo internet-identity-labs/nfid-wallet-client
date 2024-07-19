@@ -32,6 +32,7 @@ class InterfaceFactoryService {
     const candidJs = await this.transformDidToJs(candidFile, agent as never)
     const dataUri =
       "data:text/javascript;charset=utf-8," + encodeURIComponent(candidJs)
+    // eslint-disable-next-line no-eval
     const interfaceFactory = await eval('import("' + dataUri + '")')
     return interfaceFactory.idlFactory
   }

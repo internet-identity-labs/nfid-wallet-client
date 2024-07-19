@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       confirmation:
-          description: 'For the ic deployment - confirm your choice by typing "Yes"'
-          type: string
+        description: 'For the ic deployment - confirm your choice by typing "Yes"'
+        type: string
 
 env:
   CANISTER_NAME: "nfid-demo"
@@ -295,14 +295,11 @@ jobs:
 
           ci_echo_success "Canister '${CANISTER_NAME}' was installed" >&2
 
-  deploy-cloudflare:
-    name: Deploy NFID-Frontend to Cloudflare Pages
+  build-frontend:
+    name: Build Frontend
     needs: check-secrets
     runs-on: ubuntu-latest
     if: ${{ contains( github.ref_name, 'production' ) }}
-    permissions:
-      contents: read
-      deployments: write
 
     steps:
       - name: Extract branch name
@@ -321,7 +318,12 @@ jobs:
           ref: main
           path: ci_libs
 
-      - name: Set up Node.js
+      - name: Setup DFX 15
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: 0.15.0
+
+      - name: Setup Node 18
         uses: actions/setup-node@v4
         with:
           node-version: "18"
@@ -339,13 +341,51 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: nfid-fe-yarn-cloudflare
+          key: nfid-fe-yarn-ic
 
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           ci_versions
+
+      - name: Populate env vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_debug "Getting values from dfx.json" >&2
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${FRONTEND_CANISTER_NAME}\""); then
+            ci_echo_error "Can't found canister '${FRONTEND_CANISTER_NAME}' data from dfx.json" >&2
+            exit 1
+          fi
+
+          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
+
+          ci_echo_debug "Detecting network for the canister based on the branch." >&2
+          case ${CANISTER_BRANCH} in
+            production)
+              NETWORK_NAME='ic'
+              ENV_FILE='.env.production'
+              ;;
+            *)
+              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
+              exit 1
+              ;;
+          esac
+
+          ci_echo_debug "Populating env variables" >&2
+          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
+          echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
+          echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
+
+      - name: Print Vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_info "FRONTEND_CANISTER_NAME=${FRONTEND_CANISTER_NAME}" >&2
+          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
+          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
+          ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
 
       - name: Install
         run: |
@@ -360,6 +400,9 @@ jobs:
 
           ci_echo_debug "yarn build:cloudflare" >&2
           yarn build:cloudflare
+
+          ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${FRONTEND_CANISTER_NAME}" >&2
+          dfx build --network "${NETWORK_NAME}" "${FRONTEND_CANISTER_NAME}"
         env:
           IS_DEV: false
           IC_HOST: https://ic0.app
@@ -376,11 +419,129 @@ jobs:
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN}}
           CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 
-      - name: Publish
-        uses: cloudflare/pages-action@1
+      - name: Save artifact
+        uses: actions/upload-artifact@v4
         with:
-          apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
-          accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
-          gitHubToken: ${{secrets.GITHUB_TOKEN}}
-          projectName: nfid-frontend
-          directory: dist/apps/nfid-frontend
+          name: nfid-frontend
+          path: |
+            build/
+            dist/
+            .dfx/
+
+  deploy-frotnend:
+    name: Deploy Frontend
+    needs: build-frontend
+    if: ${{ contains( github.ref_name, 'production' ) }}
+    runs-on:
+      group: dfx-runner
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Checkout CI repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Versions
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+
+          ci_versions
+
+      - name: PRE-DEPLOY => Populate env vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_debug "Getting values from dfx.json" >&2
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${FRONTEND_CANISTER_NAME}\""); then
+            ci_echo_error "Can't found canister '${FRONTEND_CANISTER_NAME}' data from dfx.json" >&2
+            exit 1
+          fi
+
+          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
+
+          ci_echo_debug "Detecting network for the canister based on the branch." >&2
+          case ${CANISTER_BRANCH} in
+            production)
+              NETWORK_NAME='ic'
+              ENV_FILE='.env.production'
+              ;;
+            *)
+              ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
+              exit 1
+              ;;
+          esac
+
+          ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
+
+          if [[ "${NETWORK_NAME}" =~ ^(dev|stage)$ ]]; then
+            ID_NAME="dev_admin"
+            IDENTITY_PEM_NAME_VAR="DEV_ADMIN_KEY"
+          elif [ "${NETWORK_NAME}" == 'ic' ]; then
+            ID_NAME="prod_admin"
+            IDENTITY_PEM_NAME_VAR="PROD_ADMIN_KEY"
+          fi
+          ID_PATH="/home/ubuntu/.config/dfx/identity/${ID_NAME}"
+
+          ci_echo_debug "Populating env variables" >&2
+          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
+          echo "NETWORK_NAME=${NETWORK_NAME}" >> $GITHUB_ENV
+          echo "ID_NAME=${ID_NAME}" >> $GITHUB_ENV
+          echo "ID_PATH=${ID_PATH}" >> $GITHUB_ENV
+          echo "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >> $GITHUB_ENV
+
+      - name: PRE-DEPLOY => Print Vars
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
+          ci_echo_info "FRONTEND_CANISTER_NAME=${FRONTEND_CANISTER_NAME}" >&2
+          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
+          ci_echo_info "ID_NAME=${ID_NAME}" >&2
+          ci_echo_info "ID_PATH=${ID_PATH}" >&2
+          ci_echo_info "IDENTITY_PEM_NAME_VAR=${IDENTITY_PEM_NAME_VAR}" >&2
+
+      - name: PRE-DEPLOY => Write identity
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+          mkdir -p "${ID_PATH}"
+
+          ci_echo_warn "Preparing encoded key..." >&2
+          ci_echo_info "Decoding..." >&2
+          echo "${!IDENTITY_PEM_NAME_VAR}" | base64 -d > "${ID_PATH}/identity.pem"
+        env:
+          DEV_ADMIN_KEY: ${{secrets.DEV_ADMIN_KEY}}
+          PROD_ADMIN_KEY: ${{secrets.PROD_ADMIN_KEY}}
+
+      - name: DEPLOY => Load artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nfid-frontend
+
+      - name: DEPLOY => Deploy to the canister
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+          if [ "${NETWORK_NAME}" == 'ic' ]; then
+            CI_DEBUG="true"
+          fi
+
+          dfx identity use "${ID_NAME}"
+
+          ci_echo_debug "dfx deploy -y --network ${NETWORK_NAME} ${FRONTEND_CANISTER_NAME}" >&2
+          if ! result=$(dfx deploy -y --network "${NETWORK_NAME}" "${FRONTEND_CANISTER_NAME}"); then
+            ci_echo_error "Install failed ${result}" >&2
+            exit 1
+          fi
+
+          ci_echo_debug "Command output was '${result}'" >&2
+
+          ci_echo_success "Canister '${FRONTEND_CANISTER_NAME}' was installed" >&2

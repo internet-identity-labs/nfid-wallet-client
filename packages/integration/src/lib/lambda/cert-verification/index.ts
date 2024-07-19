@@ -45,7 +45,7 @@ function validateCertificateTime(
   nowMs: number,
 ): void {
   const certificateTimeNs = lebDecode(
-    new PipeArrayBuffer(certificate.lookup(["time"]) as any),
+    new PipeArrayBuffer(certificate.lookup(["time"])),
   )
   const certificateTimeMs = Number(certificateTimeNs / BigInt(1_000_000))
 
@@ -80,7 +80,7 @@ async function validateTree(
     )
   }
 
-  if (!equal(certifiedData as any, treeRootHash)) {
+  if (!equal(certifiedData, treeRootHash)) {
     throw new CertificateVerificationError(
       "Tree root hash did not match the certified data in the certificate.",
     )

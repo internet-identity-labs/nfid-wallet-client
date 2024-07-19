@@ -2436,10 +2436,10 @@
   resolved "https://registry.npmjs.org/@dfinity/principal/-/principal-0.11.3.tgz"
   integrity sha512-+AJGDJ+RsveybSdxuTQFr2DPNZFpPfXnyixAOFWWdElVniSwnO/SwqQChR0AWvJdy/fKqoAXK+ZzyLG0uqSetA==
 
-"@dfinity/principal@^1.0.1":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-1.4.0.tgz#cfb4303824a4731cf2380660b7e379e02a95889d"
-  integrity sha512-SuTBVlc71ub89ji0WN5/T100zUG2uIMn5x4+We4vS4nJ0R3/Xt89XJsHepjd5SQTSQPOvP7eQ+S8cQKWRz/RkA==
+"@dfinity/principal@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-2.0.0.tgz#3c67c34710d9e57fb40f50af0e9534b35312f153"
+  integrity sha512-cqJ5kOrPpxco+wvJC4TFBhdr4lkw9mnwKGAYunesyqdzSYi8lnFB4dShNqlHFWdwoxNAw6OZkt/B+0nLa+7Yqw==
   dependencies:
     "@noble/hashes" "^1.3.1"
 

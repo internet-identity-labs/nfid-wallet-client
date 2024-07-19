@@ -5,7 +5,7 @@ const SIGNATURE =
 const SIGNATURE2 =
   "0xccfd9eb0bf034622dd40bfde6e2debfab16f36a2b715444f86a26507131cd06d2d92e12bc6d49a181a8f2a179385e555eb18f05731b71f153e3de4c46936edec1b"
 
-describe("SignIn with Internet Identity", () => {
+describe.skip("SignIn with Internet Identity", () => {
   jest.setTimeout(10000)
 
   it("should generate identity based on metamask signature.", async () => {

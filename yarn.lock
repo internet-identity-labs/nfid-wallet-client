@@ -2383,10 +2383,10 @@
   resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.10.4.tgz#32f666f6a069d87b6f7007d7ad3c50ab307d8b76"
   integrity sha512-Rd8uoo3jd4FLmGY9aBgTRdBCYVuG/Y7QmpDJB3eQvsU3WHhVZJWLMHcodnMIoy2bzqzCKeTdLkL565K7qx5H3Q==
 
-"@dfinity/candid@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-1.0.1.tgz#8176dc1f9940b630ba71e00b9aefe966b4e2b464"
-  integrity sha512-PfZNV1fTOWtl+NhLOw71ACLYGugKF9HdEJKtkyBJqbj+6pqshvK6rllCUkGwMsmXfP8YopLzmoNVdy1rp/eOgg==
+"@dfinity/candid@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-2.0.0.tgz#e65a6b8ff565e82ec1dab4d9187b024b893aa532"
+  integrity sha512-poxIEnzErcKBM5yroabQ3VqQpiYZnqYZdLJWFuIQZzioGdP1mlnVLHx7IbgHN4HBlqVXYPFmEzMU02FnyYUA1Q==
 
 "@dfinity/identity-secp256k1@^1.0.1":
   version "1.0.1"
@@ -2414,10 +2414,10 @@
   resolved "https://registry.yarnpkg.com/@dfinity/ledger-icp/-/ledger-icp-2.3.1.tgz#7807e56021e6f5cd57b50985ed70c32a0392e16e"
   integrity sha512-L8nLXSlYzVJuLqnbj+qS41t5vnip5Qjv2ahP8i+leATLSZQ2t1rLw4Vui10vNw90gVDSkRDRBfMBPgMf68u1Tg==
 
-"@dfinity/ledger-icrc@^2.2.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/ledger-icrc/-/ledger-icrc-2.3.1.tgz#df464f81fae8e95714dd124e668d84150355999f"
-  integrity sha512-aHkVDIwEwOqZLSUzxd1Ed6jgVfCyIwNK8ExRebKhRmPX+WMj110fHyTXFLefr65qLY23FWpqGsQjhyf5XuRC7Q==
+"@dfinity/ledger-icrc@^2.3.3":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/ledger-icrc/-/ledger-icrc-2.3.3.tgz#e3977dcd87e3495caef92f5498dd77a061edbb09"
+  integrity sha512-ASF9A/FcyHlEsFVENEZ1/f/PFcdvtEg75zD70zL/n7FUSN+3I8c82tbt5TunraRCGBQjDgBigUoRY2+k5J18rQ==
 
 "@dfinity/nns-proto@^1.0.1":
   version "1.0.1"

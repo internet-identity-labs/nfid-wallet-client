@@ -2,6 +2,7 @@ import { DelegationChain, Ed25519PublicKey } from "@dfinity/identity"
 import { fromBase64, toBase64 } from "@slide-computer/signer"
 import {
   Chain,
+  GLOBAL_ORIGIN,
   ecdsaGetAnonymous,
 } from "packages/integration/src/lib/lambda/ecdsa"
 
@@ -33,6 +34,7 @@ export interface AccountsComponentData extends ComponentData {
 export interface Icrc34Dto {
   publicKey: string
   targets: string[]
+  derivationOrigin?: string
   maxTimeToLive: string
 }
 
@@ -120,6 +122,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     icrc34Dto: Icrc34Dto,
     sessionPublicKey: Ed25519PublicKey,
     origin: string,
+    derivationOrigin?: string,
   ): Promise<DelegationChain> {
     const auth = authState.get()
     if (!auth.delegationIdentity) throw new Error("No delegation identity")
@@ -129,7 +132,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
         auth.delegationIdentity,
         icrc34Dto.targets,
         new Uint8Array(sessionPublicKey.toDer()),
-        origin,
+        GLOBAL_ORIGIN,
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,
@@ -139,6 +142,18 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION) {
+      return await ecdsaGetAnonymous(
+        derivationOrigin ?? origin,
+        new Uint8Array(sessionPublicKey.toDer()),
+        auth.delegationIdentity,
+        Chain.IC,
+        icrc34Dto.maxTimeToLive
+          ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
+          : undefined,
+      )
+    }
+
+    if (accountKeyIdentity.type === AccountType.SESSION_WITHOUT_DERIVATION) {
       return await ecdsaGetAnonymous(
         origin,
         new Uint8Array(sessionPublicKey.toDer()),
@@ -152,6 +167,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
 
     if (accountKeyIdentity.type === AccountType.ANONYMOUS_LEGACY) {
       const legacyAuthSession = await getLegacyThirdPartyAuthSession({
+        derivationOrigin,
         hostname: origin,
         sessionPublicKey: new Uint8Array(sessionPublicKey.toDer()),
         maxTimeToLive: BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000),

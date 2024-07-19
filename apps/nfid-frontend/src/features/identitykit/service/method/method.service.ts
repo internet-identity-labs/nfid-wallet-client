@@ -3,6 +3,7 @@ import { NotSupportedError } from "../exception-handler.service"
 import { utilsService } from "../utils.service"
 import { icrc27AccountsMethodService } from "./interactive/icrc27-accounts-method.service"
 import { icrc34DelegationMethodService } from "./interactive/icrc34-delegation-method.service"
+import { icrc49CallCanisterMethodService } from "./interactive/icrc49-call-canister-method.service"
 import { InteractiveMethodService } from "./interactive/interactive-method.service"
 import { icrc25PermissionsMethodService } from "./silent/icrc25-permissions-method.service"
 import { icrc25RequestPermissionsMethodService } from "./silent/icrc25-request-permissions-method.service"
@@ -29,7 +30,11 @@ export const silentMethodServices: Map<string, SilentMethodService> =
 export const interactiveMethodServices: Map<string, InteractiveMethodService> =
   utilsService.mapByKey(
     (x) => x.getMethod(),
-    [icrc27AccountsMethodService, icrc34DelegationMethodService],
+    [
+      icrc27AccountsMethodService,
+      icrc34DelegationMethodService,
+      icrc49CallCanisterMethodService,
+    ],
   )
 
 export const validateRequest = async (

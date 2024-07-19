@@ -139,6 +139,7 @@ export async function getGlobalKeys(
     sessionKey,
     delegationChain,
   )
+
   await integrationCache.setItem(
     JSON.stringify({ identity, chain, targets }),
     response,

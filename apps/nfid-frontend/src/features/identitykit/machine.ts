@@ -5,6 +5,7 @@ import AuthenticationMachine, {
 } from "../authentication/root/root-machine"
 import { RPCReceiverV3 } from "./helpers/rpc-receiver"
 import { checkAuthenticationStatus } from "./service/authentication.service"
+import { GenericError } from "./service/exception-handler.service"
 import {
   executeInteractiveMethod,
   executeSilentMethod,
@@ -253,7 +254,6 @@ const machineServices = {
       }),
     ),
     assignError: assign((context: IdentityKitRPCMachineContext, event: any) => {
-      console.log({ event })
       return {
         error: event.data,
       }
@@ -301,7 +301,22 @@ const machineServices = {
       const request = context.activeRequest
       const parent = window.opener || window.parent
 
-      parent.postMessage(event.data, request.origin)
+      if (event.data instanceof Error || event.data instanceof GenericError) {
+        parent.postMessage(
+          {
+            origin: context.activeRequest.origin,
+            jsonrpc: context.activeRequest.data.jsonrpc,
+            id: context.activeRequest.data.id,
+            error: {
+              code: 3001,
+              message: event.data?.message ?? "Unknown error",
+            },
+          },
+          request.origin,
+        )
+      } else {
+        parent.postMessage(event.data, request.origin)
+      }
     },
   },
 }

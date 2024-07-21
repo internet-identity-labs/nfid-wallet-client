@@ -1,5 +1,7 @@
+import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
+
 import { IdentityKitRPCMachineContext } from "../../type"
-import { NotSupportedError } from "../exception-handler.service"
+import { GenericError, NotSupportedError } from "../exception-handler.service"
 import { utilsService } from "../utils.service"
 import { icrc27AccountsMethodService } from "./interactive/icrc27-accounts-method.service"
 import { icrc34DelegationMethodService } from "./interactive/icrc34-delegation-method.service"
@@ -40,8 +42,22 @@ export const interactiveMethodServices: Map<string, InteractiveMethodService> =
 export const validateRequest = async (
   context: IdentityKitRPCMachineContext,
 ) => {
-  if (!context.activeRequest) throw new Error("No active requests")
-  if (!context.activeRequest.data.method) throw new Error("No method")
+  if (!context.activeRequest) throw new GenericError("No active requests")
+  if (!context.activeRequest.data.method) throw new GenericError("No method")
+
+  if (
+    context.activeRequest.data?.params &&
+    "derivationOrigin" in (context.activeRequest.data as any)?.params
+  ) {
+    const response = await validateDerivationOrigin(
+      origin,
+      String((context.activeRequest.data.params as any).derivationOrigin),
+    )
+
+    if (response.result === "invalid") {
+      throw new GenericError("Invalid derivation origin")
+    }
+  }
 
   const isSilent = silentMethodServices.has(context.activeRequest.data.method)
   const service = isSilent

@@ -93,13 +93,16 @@ async function verifyCertifiedResponse(
   if (!treeHash) {
     throw new Error("Response not found in tree")
   }
+  if (!ArrayBuffer.isView(treeHash)) {
+    throw new Error("Tree hash is not in expected format")
+  }
   const newOwnedString = certifiedResponse.response.join("")
   const sha256Result = crypto
     .createHash("sha256")
     .update(newOwnedString)
     .digest()
   const byteArray = new Uint8Array(sha256Result)
-  if (!equal(byteArray, treeHash as ArrayBuffer)) {
+  if (!equal(byteArray, treeHash.buffer)) {
     throw new Error("Response hash does not match")
   }
 }

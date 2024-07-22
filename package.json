@@ -50,6 +50,7 @@
     "@types/react-toastify": "^4.1.0",
     "@xstate/react": "^3.2.2",
     "alchemy-sdk": "^2.4.3",
+    "axios": "^1.7.2",
     "base64url": "^3.0.1",
     "biguintle": "1.0.3",
     "bip39": "3.0.4",
@@ -57,6 +58,7 @@
     "bn.js": "5.2.1",
     "borc": "3.0.0",
     "bowser": "^2.11.0",
+    "braces": "^3.0.3",
     "browser-crypto": "1.4.0",
     "cbor": "^9.0.0",
     "clsx": "1.2.1",
@@ -101,6 +103,7 @@
     "uuid": "8.3.2",
     "web3modal": "^1.9.10",
     "wouter": "2.9.0",
+    "ws": "^8.18.0",
     "xstate": "^4.32.1"
   },
   "devDependencies": {
@@ -224,11 +227,6 @@
     "webdriverio": "8.11.2",
     "webpack": "5.76.2",
     "whatwg-fetch": "3.6.2"
-  },
-  "resolutions": {
-    "@imtbl/imx-sdk": "npm:dry-uninstall@0.3.0",
-    "@rarible/solana-sdk": "npm:dry-uninstall@0.3.0",
-    "@solana/web3.js": "npm:dry-uninstall@0.3.0"
   },
   "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
   "license": "MIT"

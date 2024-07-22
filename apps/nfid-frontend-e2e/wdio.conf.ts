@@ -7,6 +7,7 @@ import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
 import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
 import { PickleResult, PickleStep } from "@wdio/types/build/Frameworks"
+import { getConsoleLogs, setupConsoleLogging } from "./src/helpers/logs.js"
 
 export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"
@@ -390,6 +391,9 @@ export const config: WebdriverIO.Config = {
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },
+  beforeStep: async function(){
+    await browser.execute(setupConsoleLogging);
+  },
   // afterStep: function ({uri, feature, step}, context, {error, result, duration, passed}) {
   // },
   /**
@@ -409,6 +413,7 @@ export const config: WebdriverIO.Config = {
       step.text + " " +
       (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m")
     )
+    cucumberJson.attach(JSON.stringify(await browser.execute(getConsoleLogs), null, 2), "application/json")
   },
   // afterScenario: function (uri, feature, scenario, result, sourceLocation) {
   // },

@@ -181,7 +181,7 @@ export const config: WebdriverIO.Config = {
       "json",
       {
         outputDir: "test/reporter",
-        outputFileFormat: function () {
+        outputFileFormat: function() {
           return `cucumber_report.json`
         },
       },
@@ -274,7 +274,7 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  before: async function (capabilities: any, specs: any) {
+  before: async function(capabilities: any, specs: any) {
     if (process.env.DEMO_APPLICATION_URL) console.info(`DEMO_APPLICATION_URL: ${process.env.DEMO_APPLICATION_URL}`)
     if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
     await addVirtualAuthCommands(browser)
@@ -391,8 +391,8 @@ export const config: WebdriverIO.Config = {
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },
-  beforeStep: async function(){
-    // await browser.execute(setupConsoleLogging);
+  beforeStep: async function() {
+    await browser.execute(setupConsoleLogging)
   },
   // afterStep: function ({uri, feature, step}, context, {error, result, duration, passed}) {
   // },
@@ -411,9 +411,12 @@ export const config: WebdriverIO.Config = {
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
     console.log(
       step.text + " " +
-      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m")
+      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m"),
     )
-    // cucumberJson.attach(JSON.stringify(await browser.execute(getConsoleLogs), null, 2), "application/json")
+    console.log(
+      `_________Error logs:_________\n
+      ${JSON.stringify(await browser.execute(getConsoleLogs), null, 2)}
+      `)
   },
   // afterScenario: function (uri, feature, scenario, result, sourceLocation) {
   // },
@@ -426,7 +429,7 @@ export const config: WebdriverIO.Config = {
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
   // @ts-ignore
-  afterFeature: async function (uri, feature) {
+  afterFeature: async function(uri, feature) {
     // @ts-ignore browser
     allureReporter.addArgument("Browser", "Chrome")
     allureReporter.addArgument("Environment", baseURL)

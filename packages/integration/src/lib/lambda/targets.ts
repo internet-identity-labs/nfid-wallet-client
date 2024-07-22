@@ -5,6 +5,7 @@ import {
   compare,
   HttpAgent,
   lookup_path,
+  LookupResultFound,
 } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
@@ -43,8 +44,9 @@ export async function validateTargets(targets: string[], origin: string) {
       canisterId,
     })
 
+    let result
     try {
-      const result = (await actor[
+      result = (await actor[
         "get_trusted_origins_certified"
       ]()) as CertifiedResponse
       if (!result || !result.response.includes(origin)) {
@@ -52,10 +54,7 @@ export async function validateTargets(targets: string[], origin: string) {
       }
       await verifyCertifiedResponse(result, "origins", canisterId)
     } catch (e) {
-      console.error(
-        `Error while checking certified origins for canister ${canisterId}:`,
-        e,
-      )
+      //not implemented - will try with the update call
       uncertifiedTargets.push(canisterId)
     }
   })
@@ -66,19 +65,11 @@ export async function validateTargets(targets: string[], origin: string) {
       agent,
       canisterId,
     })
-    try {
-      const result = (await actor["get_trusted_origins"]()) as string[]
-      if (!result.includes(origin)) {
-        throw new Error(
-          `Target canister ${canisterId} does not support "${origin}"`,
-        )
-      }
-    } catch (e) {
-      console.error(
-        `Error while checking un-certified origins for canister ${canisterId}:`,
-        e,
+    const result = (await actor["get_trusted_origins"]()) as string[]
+    if (!result.includes(origin)) {
+      throw new Error(
+        `Target canister ${canisterId} does not support "${origin}"`,
       )
-      throw e
     }
   })
 
@@ -103,16 +94,13 @@ async function verifyCertifiedResponse(
   if (!treeHash) {
     throw new Error("Response not found in tree")
   }
-  if (!ArrayBuffer.isView(treeHash)) {
-    throw new Error("Tree hash is not in expected format")
-  }
   const newOwnedString = certifiedResponse.response.join("")
   const sha256Result = crypto
     .createHash("sha256")
     .update(newOwnedString)
     .digest()
   const byteArray = new Uint8Array(sha256Result)
-  if (!equal(byteArray, treeHash.buffer)) {
+  if (!equal(byteArray, (treeHash as LookupResultFound).value as ArrayBuffer)) {
     throw new Error("Response hash does not match")
   }
 }

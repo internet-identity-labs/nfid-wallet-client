@@ -63,7 +63,6 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
   e2e-tests:
     name: E2E Tests
@@ -121,7 +120,6 @@ jobs:
           IS_E2E_TEST: true
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
       - name: Setup chrome browser
         uses: browser-actions/setup-chrome@latest

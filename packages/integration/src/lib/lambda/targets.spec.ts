@@ -10,7 +10,6 @@ describe("Targets validation", () => {
     try {
       await validateTargets(["irshc-3aaaa-aaaam-absla-cai"], "nfid.one")
     } catch (e) {
-      console.error("Validation failed:", e)
       fail("Should pass")
     }
   })
@@ -70,17 +69,15 @@ describe("Targets validation", () => {
     try {
       await validateTargets([canisterId], "noncertified.one")
     } catch (e) {
-      console.error("Validation failed for noncertified.one:", e)
+      console.log(e)
       fail("Should pass")
     }
-
     await actor["update_trusted_origins"](["noncertified.one"])
     await actor["update_trusted_origins_raw"](["nfid.one"])
 
     try {
       await validateTargets([canisterId], "nfid.one")
     } catch (e) {
-      console.error("Validation failed for nfid.one:", e)
       fail("Should pass")
     }
 

@@ -1,12 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { TransactionRequest } from "@ethersproject/abstract-provider"
-import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
-import { BigNumber } from "@rarible/utils"
-import { Network } from "alchemy-sdk"
 
 import { Asset } from "./asset"
 import { ErrorCode } from "./error-code.enum"
-import { Erc20TransferRequest } from "./estimate-transaction-service/populate-transaction-service/erc20-populate-transaction.service"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
@@ -81,18 +76,6 @@ declare type TransferNftRequest = {
   tokenId: string
   contract: string
   receiver: string
-}
-
-declare type TransferETHRequest = {
-  delegation: DelegationIdentity
-  to: string
-  amount: string
-}
-
-declare type Erc20TokensByUserRequest = {
-  identity: Identity
-  address?: string
-  cursor?: string
 }
 
 declare type EstimatedTransaction = {
@@ -197,22 +180,6 @@ declare type NonFungibleItem = {
 declare type TokenPrice = {
   token: string
   price: number
-}
-
-declare type Configuration = {
-  currencyId: string
-  blockchain: EVMBlockchain
-  unionBlockchain: EVMBlockchain
-  providerUrl: string
-  alchemyNetwork: alchemyNetwork
-  etherscanUrl: string
-  raribleEnv: RaribleSdkEnvironment
-  raribleApiKey: string
-  symbol: string
-  token: string
-  blockchainName: string
-  alchemyApiKey: string
-  activitiesTypes: AssetTransfersCategory[]
 }
 
 declare type EstimateTransactionRequest =

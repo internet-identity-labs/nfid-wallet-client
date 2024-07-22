@@ -92,12 +92,6 @@
         "env": "IC_HOST"
       },
       {
-        "env": "RARIBLE_X_API_KEY"
-      },
-      {
-        "env": "PROD_RARIBLE_X_API_KEY"
-      },
-      {
         "env": "BLOCK_CYPHER_TOKEN"
       },
       {

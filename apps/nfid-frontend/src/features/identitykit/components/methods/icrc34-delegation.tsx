@@ -24,13 +24,6 @@ const RPCComponentICRC34 = ({
   onApprove,
   onReject,
 }: IRPCComponentICRC34) => {
-  console.log({
-    publicProfile,
-    anonymous,
-    isPublicAvailable,
-    onApprove,
-    onReject,
-  })
   const [selectedProfile, setSelectedProfile] = React.useState<Account>(
     isPublicAvailable ? publicProfile : anonymous[0],
   )
@@ -40,10 +33,14 @@ const RPCComponentICRC34 = ({
   return (
     <RPCPromptTemplate
       subTitle={
-        <>
-          Wallet permissions for{" "}
-          <span className="text-[#146F68]">{applicationName}</span>
-        </>
+        <a
+          href={origin}
+          target="_blank"
+          className="text-[#146F68] no-underline"
+          rel="noreferrer"
+        >
+          {applicationName}
+        </a>
       }
       onApprove={() => onApprove(selectedProfile)}
       onReject={onReject}
@@ -104,10 +101,9 @@ const RPCComponentICRC34 = ({
               payments and viewing your balances.
             </p>
 
-            {/* Legacy anonymous profiles */}
             {anonymous?.map((acc) => (
               <div
-                className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400 uppercase"
+                className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400 lowercase"
                 key={`legacy_persona_${acc.id}`}
               >
                 <RadioButton

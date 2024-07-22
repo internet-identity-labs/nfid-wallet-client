@@ -30,10 +30,14 @@ const RPCComponentICRC27 = ({
   return (
     <RPCPromptTemplate
       subTitle={
-        <>
-          Wallet permissions for{" "}
-          <span className="text-[#146F68]">{applicationName}</span>
-        </>
+        <a
+          href={origin}
+          target="_blank"
+          className="text-[#146F68] no-underline"
+          rel="noreferrer"
+        >
+          {applicationName}
+        </a>
       }
       onApprove={() => onApprove([selectedProfile])}
       onReject={onReject}
@@ -92,10 +96,9 @@ const RPCComponentICRC27 = ({
               payments and viewing your balances.
             </p>
 
-            {/* Legacy anonymous profiles */}
             {anonymous?.map((acc) => (
               <div
-                className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400 uppercase"
+                className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400 lowercase"
                 key={`legacy_persona_${acc.id}`}
               >
                 <RadioButton

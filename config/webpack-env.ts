@@ -20,8 +20,6 @@ export const serviceConfig = {
   IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
   IC_HOST: JSON.stringify(process.env.IC_HOST),
   II_MODE: JSON.stringify(process.env.II_MODE),
-  RARIBLE_X_API_KEY: JSON.stringify(process.env.RARIBLE_X_API_KEY),
-  PROD_RARIBLE_X_API_KEY: JSON.stringify(process.env.PROD_RARIBLE_X_API_KEY),
   FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
   IS_DEV: JSON.stringify(process.env.IS_DEV),
   USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),

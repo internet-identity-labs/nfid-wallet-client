@@ -133,6 +133,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
           authenticatorAttachment: passkeyMetadata.type,
         })
       } catch (e) {
+        console.error(e)
         authenticationTracking.failed()
         toast.error("We could not find your Passkey. Try different one")
         throw new Error("We could not find your Passkey.")

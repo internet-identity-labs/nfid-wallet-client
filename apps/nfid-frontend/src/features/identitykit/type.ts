@@ -3,6 +3,7 @@ export type IdentityKitRPCMachineContext = {
   activeRequest: MessageEvent<RPCMessage> | undefined
   activeRequestMetadata: any | undefined
   componentData: any
+  error?: Error
 }
 
 export type IdentityKitRPCEvents =
@@ -38,6 +39,7 @@ export interface Account {
 export enum AccountType {
   GLOBAL = "GLOBAL",
   SESSION = "SESSION",
+  SESSION_WITHOUT_DERIVATION = "SESSION_WITHOUT_DERIVATION",
   ANONYMOUS_LEGACY = "ANONYMOUS_LEGACY",
 }
 
@@ -49,7 +51,7 @@ export interface RPCBase {
 
 export interface RPCMessage extends RPCBase {
   method: string
-  params: unknown[]
+  params: unknown
 }
 
 export interface RPCSuccessResponse extends RPCBase {

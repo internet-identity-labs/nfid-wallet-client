@@ -31,8 +31,6 @@ export const JEST_GLOBALS = {
   SIGNIN_GOOGLE: "/signin",
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
-  RARIBLE_X_API_KEY: process.env["RARIBLE_X_API_KEY"],
-  PROD_RARIBLE_X_API_KEY: process.env["PROD_RARIBLE_X_API_KEY"],
   AWS_ECDSA_REGISTER:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register",
   AWS_ECDSA_REGISTER_ADDRESS:

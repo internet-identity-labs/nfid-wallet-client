@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React, { useMemo } from "react"
+import React from "react"
 import { ToastContainer } from "react-toastify"
 
 import { Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
@@ -9,6 +9,7 @@ import { passkeyConnector } from "frontend/features/authentication/auth-selectio
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
+import isSafari from "../utils"
 import MultiPasskey from "./multi-passkey.webp"
 import SinglePasskey from "./single-passkey.webp"
 
@@ -27,28 +28,16 @@ export const AddPasskey = ({
     securityTracking.addPasskey()
   }, [])
 
-  const isAppleDevice = useMemo(() => {
-    const navigator = window.navigator.userAgent.toLowerCase()
-    const appleFilters = ["ios", "safari", "mac os", "macintosh", "applewebkit"]
-    const isAppleDevice = appleFilters.some((filter) =>
-      navigator.includes(filter),
-    )
-
-    return isAppleDevice
-  }, [])
-
   const handleCreatePasskey = React.useCallback(() => {
-    securityTracking.passkeyCreationInitiated(
-      isAppleDevice ? true : isMultiDevice,
-    )
+    securityTracking.passkeyCreationInitiated(isSafari() ? true : isMultiDevice)
     handleWithLoading(
       () =>
         passkeyConnector.createCredential({
-          isMultiDevice: isAppleDevice ? true : isMultiDevice,
+          isMultiDevice: isSafari() ? true : isMultiDevice,
         }),
       () => setIsModalVisible(false),
     )
-  }, [handleWithLoading, isAppleDevice, isMultiDevice])
+  }, [handleWithLoading, isMultiDevice])
 
   return (
     <div>
@@ -80,14 +69,14 @@ export const AddPasskey = ({
           <p
             className={clsx(
               "text-sm leading-5",
-              isAppleDevice && "text-center !my-10",
+              isSafari() && "text-center !my-10",
             )}
           >
             Passkeys let you securely sign in to your NFID using your
             fingerprint, face, screen lock, or hardware security key.
           </p>
 
-          {!isAppleDevice && (
+          {!isSafari() && (
             <>
               <Checkbox
                 id="isMultiDevice"

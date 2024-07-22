@@ -1,5 +1,3 @@
-declare const RARIBLE_X_API_KEY: string
-declare const PROD_RARIBLE_X_API_KEY: string
 declare const AWS_EXCHANGE_RATE: string
 declare const AWS_ECDSA_REGISTER: string
 declare const AWS_ECDSA_REGISTER_ADDRESS: string

@@ -38,8 +38,6 @@ export const GLOBAL_ORIGIN = "nfid.one"
 export const ANCHOR_TO_GET_DELEGATION_FROM_DF = BigInt(200_000_000)
 
 export enum Chain {
-  BTC = "BTC",
-  ETH = "ETH",
   IC = "IC",
 }
 

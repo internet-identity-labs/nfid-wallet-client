@@ -7,7 +7,6 @@ declare type Address = string
 declare type Identity = DelegationIdentity | Address
 
 declare type TransferResponse = {
-  etherscanTransactionUrl: string
   time: number
   waitOnChain: Promise<{ total: string; totalUSD: string }>
 }
@@ -21,17 +20,13 @@ declare type NonFungibleAssetI = Asset &
       request: ActivitiesByUserRequest,
     ): Promise<NonFungibleActivityRecords>
     getItemsByUser(request: ItemsByUserRequest): Promise<NonFungibleItems>
-    getErc20TokensByUser(request: Erc20TokensByUserRequest): Promise<Tokens>
     getAddress(delegation?: DelegationIdentity): Promise<string>
-    getEstimatedTransaction(
-      request: EstimatedTransactionRequest,
-    ): Promise<EstimatedTransaction>
   }
 
 declare type FungibleAsset = Asset & {
   transfer(
     identity: DelegationIdentity,
-    transaction: TransactionRequest | FungibleTransactionRequest,
+    transaction: FungibleTransactionRequest,
   ): Promise<TransferResponse>
   getAddress(identity: DelegationIdentity): Promise<string>
   getTransactionHistory(identity: DelegationIdentity): Promise<FungibleTxs>
@@ -181,12 +176,6 @@ declare type TokenPrice = {
   token: string
   price: number
 }
-
-declare type EstimateTransactionRequest =
-  | EthTransferRequest
-  | NftERC721TransferRequest
-  | NftERC1155TransferRequest
-  | Erc20TransferRequest
 
 declare interface AccountBalance {
   accountName: string

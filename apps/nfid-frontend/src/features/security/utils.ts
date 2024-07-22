@@ -45,3 +45,15 @@ export const mapIMDevicesToIDevices = (
     credentialId: d.credential_id[0] ?? "",
   }))
 }
+
+/**
+ * Checks if the user is using Safari browser
+ * @returns {boolean} - true if the browser is Safari, false otherwise
+ */
+function isSafari(): boolean {
+  const userAgent = navigator.userAgent.toLowerCase()
+  const isSafari = userAgent.includes("safari") && !userAgent.includes("chrome")
+  return isSafari
+}
+
+export default isSafari

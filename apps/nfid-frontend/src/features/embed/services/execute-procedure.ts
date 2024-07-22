@@ -1,9 +1,6 @@
-import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
 
 import {
-  DelegationWalletAdapter,
-  ProviderError,
   ThirdPartyAuthSession,
   authState,
   executeCanisterCall,
@@ -14,7 +11,6 @@ import {
 import { ApproveIcGetDelegationSdkResponse } from "frontend/features/authentication/3rd-party/choose-account/types"
 import { IRequestTransferResponse } from "frontend/features/sdk/request-transfer/types"
 import { RequestStatus } from "frontend/features/types"
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
 
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
@@ -24,9 +20,7 @@ type CommonContext = {
   authSession?: AuthSession
 }
 
-export type ApproveSignatureEvent = {
-  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
-}
+export type ApproveSignatureEvent = {}
 
 type ExecuteProcedureEvent =
   | { type: "APPROVE"; data?: ApproveSignatureEvent }
@@ -53,7 +47,6 @@ export const ExecuteProcedureService = async (
     throw new Error("ExecuteProcedureService: missing authSession")
 
   const rpcBase = { ...RPC_BASE, id: rpcMessage.id, origin: rpcMessage.origin }
-  const { rpcUrl } = rpcMessage.options
   console.log({ rpcMessage, event })
   switch (rpcMessage.method) {
     case "ic_getDelegation": {
@@ -95,17 +88,6 @@ export const ExecuteProcedureService = async (
       } catch (e: any) {
         return { ...rpcBase, error: { code: 500, message: e.message } }
       }
-    }
-    case "eth_accounts": {
-      const adapter = new DelegationWalletAdapter(rpcUrl)
-      const delegation = await getWalletDelegation(authSession.anchor)
-      const address = await adapter.getAddress(delegation)
-
-      const response = { ...rpcBase, result: [address] }
-      console.debug("ExecuteProcedureService eth_accounts", {
-        response,
-      })
-      return response
     }
     case "ic_renewDelegation": {
       console.debug("ExecuteProcedureService ic_renewDelegation", {
@@ -165,44 +147,6 @@ export const ExecuteProcedureService = async (
 
         return { ...rpcBase, error: { code: 500, message: error.message } }
       }
-    }
-    case "eth_signTypedData_v4": {
-      const [, typedData] = rpcMessage.params
-      const delegation = await getWalletDelegation(authSession.anchor)
-      const adapter = new DelegationWalletAdapter(rpcUrl)
-      const result = await adapter.signTypedData(
-        JSON.parse(typedData),
-        delegation,
-      )
-      const response = { ...rpcBase, result }
-      console.debug("ExecuteProcedureService eth_signTypedData_v4", {
-        response,
-      })
-      return response
-    }
-    case "eth_sendTransaction": {
-      const adapter = new DelegationWalletAdapter(rpcUrl)
-      const delegation = await getWalletDelegation(authSession.anchor)
-      const { wait, ...result } = await adapter.sendTransaction(
-        delegation,
-        event.type === "APPROVE" ? event.data?.populatedTransaction : undefined,
-      )
-      const response = { ...rpcBase, result: result.hash }
-      console.debug("ExecuteProcedureService eth_accounts", {
-        response,
-      })
-      return response
-    }
-    case "personal_sign": {
-      const [message] = rpcMessage.params
-      const adapter = new DelegationWalletAdapter(rpcUrl)
-      const delegation = await getWalletDelegation(authSession.anchor)
-      const result = await adapter.signMessage(message, delegation)
-      const response = { ...rpcBase, result: result }
-      console.debug("ExecuteProcedureService personal_sign", {
-        response,
-      })
-      return response
     }
     default:
       throw new Error("ExecuteProcedureService: unknown procedure")

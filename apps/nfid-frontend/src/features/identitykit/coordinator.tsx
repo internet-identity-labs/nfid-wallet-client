@@ -7,6 +7,7 @@ import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
+import { RPCComponentError } from "./components/error"
 import { RPCComponent, RPCComponentsUI } from "./components/methods/method"
 import { IdentityKitRPCMachine } from "./machine"
 
@@ -55,6 +56,7 @@ export default function IdentityKitRPCCoordinator() {
               onApprove: (data: any) =>
                 send({ type: "ON_APPROVE", data: data }),
               onReject: () => send({ type: "ON_CANCEL" }),
+              request: state.context.activeRequest,
               ...state.context.componentData,
             }}
           />
@@ -64,6 +66,15 @@ export default function IdentityKitRPCCoordinator() {
           <BlurredLoader
             isLoading
             loadingMessage={`Fetching your crypto coordinates...`}
+          />
+        )
+      case state.matches("Main.InteractiveRequest.Error"):
+        return (
+          <RPCComponentError
+            onRetry={() => send({ type: "TRY_AGAIN" })}
+            onCancel={() => send({ type: "ON_CANCEL" })}
+            error={state.context.error}
+            request={state.context.activeRequest}
           />
         )
       default:

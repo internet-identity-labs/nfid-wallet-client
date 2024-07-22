@@ -10,6 +10,7 @@ export interface RPCComponentProps {
 export enum RPCComponentsUI {
   "icrc27_accounts" = "icrc27_accounts",
   "icrc34_delegation" = "icrc34_delegation",
+  "icrc49_call_canister" = "icrc49_call_canister",
 }
 
 const componentsMap = {
@@ -18,6 +19,9 @@ const componentsMap = {
   ),
   [RPCComponentsUI.icrc34_delegation]: React.lazy(
     () => import("./icrc34-delegation"),
+  ),
+  [RPCComponentsUI.icrc49_call_canister]: React.lazy(
+    () => import("./icrc49-call-canister"),
   ),
 }
 

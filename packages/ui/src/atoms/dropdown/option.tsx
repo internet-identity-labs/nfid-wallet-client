@@ -1,8 +1,13 @@
+import clsx from "clsx"
+
 export interface IDropdownOption {
   label?: string
   icon?: string
   element?: React.ReactNode
+  link?: string
   handler?: () => void
+  className?: string
+  textClassName?: string
 }
 
 export const DropdownOption = ({
@@ -10,10 +15,16 @@ export const DropdownOption = ({
   icon,
   element,
   handler,
+  link,
+  className,
+  textClassName,
 }: IDropdownOption) => {
   return (
     <div
-      className="px-[10px] flex items-center gap-[8px] hover:bg-gray-100 h-[40px] cursor-pointer"
+      className={clsx(
+        "px-[10px] flex items-center gap-[8px] hover:bg-gray-100 h-[40px] cursor-pointer",
+        className,
+      )}
       onClick={() => {
         if (!handler) return
         handler()
@@ -21,8 +32,14 @@ export const DropdownOption = ({
     >
       {element ?? (
         <>
-          <img width={24} src={icon} />
-          <p className="text-black text-sm">{label}</p>
+          {icon && <img width={24} src={icon} />}
+          {link ? (
+            <a target="_blank" href={link}>
+              {label}
+            </a>
+          ) : (
+            <p className={clsx("text-black text-sm", textClassName)}>{label}</p>
+          )}
         </>
       )}
     </div>

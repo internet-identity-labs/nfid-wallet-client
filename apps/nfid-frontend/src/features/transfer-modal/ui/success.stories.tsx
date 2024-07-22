@@ -23,10 +23,4 @@ const Template: Story<ITransferModalSuccess> = (args) => (
 
 export const Default = Template.bind({})
 
-Default.args = {
-  title: "1.0047 ETH",
-  subTitle: "$1,866.24",
-  assetImg: "",
-  isAssetPadding: true,
-  step: 1,
-}
+Default.args = {}

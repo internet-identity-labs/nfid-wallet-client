@@ -27,7 +27,6 @@ declare const DELEGATION_FACTORY: string
 declare const PASSKEY_STORAGE: string
 declare const NFID_PROVIDER_URL: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
-declare const RAMP_WALLET_API_KEY: string
 declare const SDK_GIT_HASH: string
 declare const SIGNIN_GOOGLE: string
 declare const AWS_SIGNIN_GOOGLE_V2: string

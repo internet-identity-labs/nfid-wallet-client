@@ -36,6 +36,7 @@ import Flyrfy from "./assets/new-landing/sponsors/fyrfly.png"
 import Gmjp from "./assets/new-landing/sponsors/gmjp.png"
 import Outliers from "./assets/new-landing/sponsors/outliers.png"
 import Polychain from "./assets/new-landing/sponsors/polychain.png"
+import Rarible from "./assets/new-landing/sponsors/rarible.png"
 import Rubylight from "./assets/new-landing/sponsors/rubylight.png"
 import Spaceship from "./assets/new-landing/sponsors/spaceship.png"
 import Tomahawk from "./assets/new-landing/sponsors/tomahawk.png"
@@ -345,6 +346,7 @@ export const HomeScreen = () => {
           <img className={clsx(sponsor)} src={Outliers} alt="" />
           <img className={clsx(sponsor)} src={Dfinity} alt="" />
           <img className={clsx(sponsor)} src={Gmjp} alt="" />
+          <img className={clsx(sponsor)} src={Rarible} alt="" />
         </div>
         <div className="grid grid-cols-2 sm:flex items-center justify-center md:justify-around mt-10 md:mt-[78px] flex-wrap gap-10 md:gap-5">
           <img className={clsx(sponsor)} src={Yards} alt="" />

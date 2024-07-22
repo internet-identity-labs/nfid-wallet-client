@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @jest-environment jsdom
  */
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { expect } from "@jest/globals"
@@ -28,7 +28,7 @@ describe("symmetric suite", () => {
       let haveToBeSameKey = await symmetric(delegationIdentity)
       expect(key).toEqual(haveToBeSameKey)
       console.log(key)
-      // Wrap in same test to save time on registration
+      //wrap in same test to save time on registration
       let phoneNumber = "+380501111111"
       let encrypted = encrypt(phoneNumber, key)
       console.log(encrypted)
@@ -54,7 +54,7 @@ describe("symmetric suite", () => {
 
   function encrypt(value: string, key: string) {
     let secretBuffer = Buffer.from(key, "hex")
-    let cipher = createCipheriv("aes-256-ecb", secretBuffer, null)
+    let cipher = createCipheriv("aes-256-ecb", secretBuffer, "")
     let cipherText = cipher.update(value, "utf8", "hex")
     cipherText += cipher.final("hex")
     return cipherText

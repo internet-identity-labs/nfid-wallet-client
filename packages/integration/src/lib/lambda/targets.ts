@@ -43,9 +43,8 @@ export async function validateTargets(targets: string[], origin: string) {
       canisterId,
     })
 
-    let result
     try {
-      result = (await actor[
+      const result = (await actor[
         "get_trusted_origins_certified"
       ]()) as CertifiedResponse
       if (!result || !result.response.includes(origin)) {
@@ -53,7 +52,10 @@ export async function validateTargets(targets: string[], origin: string) {
       }
       await verifyCertifiedResponse(result, "origins", canisterId)
     } catch (e) {
-      //not implemented - will try with the update call
+      console.error(
+        `Error while checking certified origins for canister ${canisterId}:`,
+        e,
+      )
       uncertifiedTargets.push(canisterId)
     }
   })
@@ -64,11 +66,19 @@ export async function validateTargets(targets: string[], origin: string) {
       agent,
       canisterId,
     })
-    const result = (await actor["get_trusted_origins"]()) as string[]
-    if (!result.includes(origin)) {
-      throw new Error(
-        `Target canister ${canisterId} does not support "${origin}"`,
+    try {
+      const result = (await actor["get_trusted_origins"]()) as string[]
+      if (!result.includes(origin)) {
+        throw new Error(
+          `Target canister ${canisterId} does not support "${origin}"`,
+        )
+      }
+    } catch (e) {
+      console.error(
+        `Error while checking un-certified origins for canister ${canisterId}:`,
+        e,
       )
+      throw e
     }
   })
 

@@ -92,9 +92,6 @@
         "env": "IC_HOST"
       },
       {
-        "env": "BLOCK_CYPHER_TOKEN"
-      },
-      {
         "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION"
       },
       {

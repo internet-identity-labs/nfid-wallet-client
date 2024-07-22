@@ -36,7 +36,6 @@ jobs:
         env:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -184,7 +183,6 @@ jobs:
           IC_HOST: https://ic0.app
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           CF_PAGES_BRANCH: ${{steps.extract_branch.outputs.branch}}
 
       - name: Save artifact

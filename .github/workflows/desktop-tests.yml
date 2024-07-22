@@ -85,7 +85,6 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
 
   docker-for-e2e:
     name: Docker Image Build
@@ -224,7 +223,6 @@ jobs:
 
         env:
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Run unit tests
@@ -234,7 +232,6 @@ jobs:
           ci_echo_debug "npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache" >&2
           npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache
         env:
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Upload build artefacts
@@ -363,7 +360,6 @@ jobs:
             IS_E2E_TEST=true
             USERGEEK_API_KEY=${USERGEEK_API_KEY}
             GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
-            BLOCK_CYPHER_TOKEN=${BLOCK_CYPHER_TOKEN}
 
             URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
             LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
@@ -389,7 +385,6 @@ jobs:
           IS_E2E_TEST: true
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 

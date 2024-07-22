@@ -73,19 +73,6 @@ declare type TransferNftRequest = {
   receiver: string
 }
 
-declare type EstimatedTransaction = {
-  transaction: TransactionRequest
-  fee: string
-  feeUsd: string
-  maxFee: string
-  maxFeeUsd: string
-  value?: string
-  valueUsd?: string
-  total: string
-  totalUsd: string
-  errors: ErrorCode[]
-}
-
 declare type FungibleActivityRequest = PageRequest & {
   address?: string
   direction?: "from" | "to"

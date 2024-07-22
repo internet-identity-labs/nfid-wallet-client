@@ -10,7 +10,8 @@
     "test:e2e:debug": "cross-env DEBUG=true wdio run wdio.conf.ts --inspect",
     "generate-cucumber-html-report": "ts-node ./src/reporter/index.ts",
     "allure-report": "allure generate allure-results --clean && allure open",
-    "clean": "rm -rf allure-results allure-report"
+    "clean": "rm -rf allure-results allure-report",
+    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/allure-results --clean -o apps/nfid-frontend-e2e/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/allure-report"
   },
   "license": "MIT"
 }

@@ -2359,12 +2359,12 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
-"@dfinity/agent@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-1.0.1.tgz#4207490454c5900b35f72c617a9ae5fbc8069eb6"
-  integrity sha512-QoCiKIWEgsXoaiHpb76M2qLXYDS9IdfvC81dLJYvX9KVXRq8Ojo4S82tBqBFGtM0j0EKEC6mIAJV/bqhOJTtjQ==
+"@dfinity/agent@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-2.0.0.tgz#2c28d52b179af09f8b8998761ddaf81fcbd6d9c6"
+  integrity sha512-Cc2VDAMfxCNIQoaEeKPf0rbS/Y21HAF+eEFj6GfijNnUxS42i4zwUF2PUvEJZqaB2FQwA9SC7MDyuwL8BR2oJA==
   dependencies:
-    "@noble/curves" "^1.2.0"
+    "@noble/curves" "^1.4.0"
     "@noble/hashes" "^1.3.1"
     base64-arraybuffer "^0.2.0"
     borc "^2.1.1"
@@ -2388,22 +2388,23 @@
   resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-2.0.0.tgz#e65a6b8ff565e82ec1dab4d9187b024b893aa532"
   integrity sha512-poxIEnzErcKBM5yroabQ3VqQpiYZnqYZdLJWFuIQZzioGdP1mlnVLHx7IbgHN4HBlqVXYPFmEzMU02FnyYUA1Q==
 
-"@dfinity/identity-secp256k1@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/identity-secp256k1/-/identity-secp256k1-1.0.1.tgz#78f43ab4da096a0243fabaff74078ef4e6296436"
-  integrity sha512-NFK0K9UXLBcbkZZeXGZFaUvxdkikL7T7SoieJduV8IuO0ToUSKCp1ZlQkpzjObOCod0PuaU8vPMkS+voMNkbHw==
+"@dfinity/identity-secp256k1@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity-secp256k1/-/identity-secp256k1-2.0.0.tgz#08a14c636c99145514352220b17eed8ea75f566c"
+  integrity sha512-FyvevYIjaR4UBXwTiOqeHJVF9KhVUOiD+Oh2opw8MuCF6cpZVaC6lv/JtJvFMhCsgP8wS+HcrmawieEJMNgq+Q==
   dependencies:
-    "@dfinity/agent" "^1.0.1"
-    "@noble/curves" "^1.3.0"
+    "@dfinity/agent" "^2.0.0"
+    "@noble/curves" "^1.4.0"
     "@noble/hashes" "^1.3.1"
+    asn1js "^3.0.5"
     bip39 "^3.1.0"
     bs58check "^3.0.1"
     hdkey "^2.1.0"
 
-"@dfinity/identity@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-1.0.1.tgz#0e282c9ee1c156a50678b9698f94a09578703911"
-  integrity sha512-ArajyKSkiA4LjOq/ocGLMd66svgMVntF9j9P7irZScrzTCPcEXk5c7VteAqRGMwHCpI4LRipjmuZA1agwmUzRw==
+"@dfinity/identity@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-2.0.0.tgz#0a920742fc46be95d0fa8d3c0d26001b66b7a1c1"
+  integrity sha512-6NBdqG/Z2H6zEwBlpwWcWKsffgisIVzy2AMY7fXu5Jq31niFAoxv//oRsejeW45ChahVJlhvP/UYrNMJur8GpQ==
   dependencies:
     "@noble/curves" "^1.2.0"
     "@noble/hashes" "^1.3.1"
@@ -4072,7 +4073,7 @@
   resolved "https://registry.yarnpkg.com/@nicolo-ribaudo/semver-v6/-/semver-v6-6.3.3.tgz#ea6d23ade78a325f7a52750aab1526b02b628c29"
   integrity sha512-3Yc1fUTs69MG/uZbJlLSI3JISMn2UV2rg+1D/vROUqZyh3l6iYHCs7GMp+M40ZD7yOdDbYjJcU1oTJhrc+dGKg==
 
-"@noble/curves@^1.2.0", "@noble/curves@^1.3.0":
+"@noble/curves@^1.2.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.3.0.tgz#01be46da4fd195822dab821e72f71bf4aeec635e"
   integrity sha512-t01iSXPuN+Eqzb4eBX0S5oubSqXbK/xXa1Ne18Hj8f9pStxztHCE2gfboSp/dZRLSqfuLpRK2nDXDK+W9puocA==

@@ -1,6 +1,6 @@
 export const setupConsoleLogging = () => {
   (function() {
-    if (document.readyState !== "complete") {
+    if (typeof console === 'undefined' || typeof console.error !== 'function') {
       return
     }
     const log: any[] = []

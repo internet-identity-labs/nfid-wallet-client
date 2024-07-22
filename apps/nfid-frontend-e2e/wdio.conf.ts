@@ -416,8 +416,7 @@ export const config: WebdriverIO.Config = {
     )
     console.log(
       `_________Error logs:_________
-      ${JSON.stringify(await browser.execute(getConsoleLogs), null, 2)}
-      `)
+      ${JSON.stringify(await browser.execute(getConsoleLogs), null, 2)}`)
   },
   // afterScenario: function (uri, feature, scenario, result, sourceLocation) {
   // },

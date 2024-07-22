@@ -6,7 +6,6 @@ export const JEST_GLOBALS = {
   VAULT_CANISTER_ID: "ymvb6-7qaaa-aaaan-qbgga-cai",
   ECDSA_SIGNER_CANISTER_ID: "txkre-oyaaa-aaaap-qa3za-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
-  BITCOIN_WALLET_CANISTER_ID: "iohef-tiaaa-aaaal-qbtza-cai",
   ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
   DELEGATION_FACTORY: "wklas-pyaaa-aaaak-akv3a-cai",
   PASSKEY_STORAGE: "dy546-gqaaa-aaaak-akwiq-cai",

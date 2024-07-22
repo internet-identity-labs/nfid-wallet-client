@@ -46,7 +46,6 @@
     "@types/react-scrollspy": "^3.3.5",
     "@types/react-toastify": "^4.1.0",
     "@xstate/react": "^3.2.2",
-    "alchemy-sdk": "^2.4.3",
     "base64url": "^3.0.1",
     "biguintle": "1.0.3",
     "bip39": "3.0.4",

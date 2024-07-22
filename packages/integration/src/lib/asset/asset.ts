@@ -1,5 +1,4 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { format } from "date-fns"
 
 import { E8S } from "../token/constants"
@@ -21,7 +20,7 @@ import {
 export abstract class Asset<T> implements FungibleAsset {
   abstract transfer(
     identity: DelegationIdentity,
-    transaction: TransactionRequest | FungibleTransactionRequest,
+    transaction: FungibleTransactionRequest,
   ): Promise<T>
 
   abstract getAddress(identity: DelegationIdentity): Promise<string>

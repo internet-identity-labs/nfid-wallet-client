@@ -55,9 +55,6 @@ export const serviceConfig = {
     process.env.PUB_SUB_CHANNEL_CANISTER_ID,
   ),
   VERIFIER_CANISTER_ID: JSON.stringify(process.env.VERIFIER_CANISTER_ID),
-  BITCOIN_WALLET_CANISTER_ID: JSON.stringify(
-    process.env.BITCOIN_WALLET_CANISTER_ID,
-  ),
   ICRC1_REGISTRY_CANISTER_ID: JSON.stringify(
     process.env.ICRC1_REGISTRY_CANISTER_ID,
   ),

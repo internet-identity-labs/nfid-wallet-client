@@ -95,9 +95,6 @@
         "env": "BLOCK_CYPHER_TOKEN"
       },
       {
-        "env": "RAMP_WALLET_API_KEY"
-      },
-      {
         "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION"
       },
       {

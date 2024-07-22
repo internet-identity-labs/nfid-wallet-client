@@ -70,7 +70,6 @@ export const serviceConfig = {
     process.env.ECDSA_SIGNER_CANISTER_ID,
   ),
   IC_SIGNER_CANISTER_ID: JSON.stringify(process.env.IC_SIGNER_CANISTER_ID),
-  RAMP_WALLET_API_KEY: JSON.stringify(process.env.RAMP_WALLET_API_KEY),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),
   BLOCK_CYPHER_TOKEN: JSON.stringify(process.env.BLOCK_CYPHER_TOKEN),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),

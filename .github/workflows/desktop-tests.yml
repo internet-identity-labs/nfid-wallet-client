@@ -361,7 +361,6 @@ jobs:
           cat > docker_env << EOF
             IS_DEV=true
             IS_E2E_TEST=true
-            RAMP_WALLET_API_KEY=${RAMP_WALLET_API_KEY}
             USERGEEK_API_KEY=${USERGEEK_API_KEY}
             GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
             BLOCK_CYPHER_TOKEN=${BLOCK_CYPHER_TOKEN}
@@ -388,7 +387,6 @@ jobs:
         env:
           IS_DEV: true
           IS_E2E_TEST: true
-          RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}

@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form"
 import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
-import WConnectIcon from "frontend/assets/wallet-connect.svg"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
   LoginEventHandler,

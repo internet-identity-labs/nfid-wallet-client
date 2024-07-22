@@ -1,12 +1,14 @@
 export const setupConsoleLogging = () => {
-  (async function() {
+  (function() {
+    if (document.readyState !== "complete") {
+      return
+    }
     const log: any[] = []
-    const origLog = console.log
-
     const origError = console.error
-    console.error = function() {
-      log.push({ type: "error", args: Array.from(arguments) })
-      origError.apply(console, arguments as any)
+
+    console.error = function(...args: any[]) {
+      log.push({ type: "error", args: Array.from(args) })
+      origError.apply(console, args)
     };
 
     (window as any).getConsoleLogs = function() {
@@ -16,5 +18,5 @@ export const setupConsoleLogging = () => {
 }
 
 export const getConsoleLogs = () => {
-  return (window as any).getConsoleLogs()
+  return (window as any).getConsoleLogs ? (window as any).getConsoleLogs() : []
 }

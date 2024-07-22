@@ -279,6 +279,7 @@ export const config: WebdriverIO.Config = {
     if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
+    await browser.execute(setupConsoleLogging)
   },
   /**
    * Gets executed before the suite starts.
@@ -385,15 +386,15 @@ export const config: WebdriverIO.Config = {
   beforeScenario: async (world: any) => {
     console.info("Scenario: " + (<ITestCaseHookParameter>world).pickle.name)
     allureReporter.addFeature(world.name)
+    await browser.execute(setupConsoleLogging)
   },
   afterScenario: async () => {
     await browser.execute("window.localStorage.clear()")
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },
-  beforeStep: async function() {
-    await browser.execute(setupConsoleLogging)
-  },
+  // beforeStep: async function() {
+  // },
   // afterStep: function ({uri, feature, step}, context, {error, result, duration, passed}) {
   // },
   /**
@@ -414,7 +415,7 @@ export const config: WebdriverIO.Config = {
       (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m"),
     )
     console.log(
-      `_________Error logs:_________\n
+      `_________Error logs:_________
       ${JSON.stringify(await browser.execute(getConsoleLogs), null, 2)}
       `)
   },

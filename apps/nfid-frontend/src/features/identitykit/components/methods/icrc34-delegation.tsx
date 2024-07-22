@@ -24,13 +24,6 @@ const RPCComponentICRC34 = ({
   onApprove,
   onReject,
 }: IRPCComponentICRC34) => {
-  console.log({
-    publicProfile,
-    anonymous,
-    isPublicAvailable,
-    onApprove,
-    onReject,
-  })
   const [selectedProfile, setSelectedProfile] = React.useState<Account>(
     isPublicAvailable ? publicProfile : anonymous[0],
   )
@@ -108,7 +101,6 @@ const RPCComponentICRC34 = ({
               payments and viewing your balances.
             </p>
 
-            {/* Legacy anonymous profiles */}
             {anonymous?.map((acc) => (
               <div
                 className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400 lowercase"

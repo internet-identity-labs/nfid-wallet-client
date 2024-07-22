@@ -4,7 +4,8 @@ import {
   HashTree,
   reconstruct,
   compare,
-  HttpAgent,
+  LookupResult,
+  LookupResultFound,
 } from "@dfinity/agent"
 import { PipeArrayBuffer, lebDecode } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
@@ -44,21 +45,32 @@ function validateCertificateTime(
   maxCertificateTimeOffsetMs: number,
   nowMs: number,
 ): void {
-  const certificateTimeNs = lebDecode(
-    new PipeArrayBuffer(certificate.lookup(["time"])),
-  )
-  const certificateTimeMs = Number(certificateTimeNs / BigInt(1_000_000))
+  const lookupResult = certificate.lookup(["time"])
 
-  if (certificateTimeMs - maxCertificateTimeOffsetMs > nowMs) {
-    throw new CertificateTimeError(
-      `Invalid certificate: time ${certificateTimeMs} is too far in the future (current time: ${nowMs})`,
-    )
+  if (!lookupResult) {
+    throw new CertificateTimeError("Time not found in the certificate.")
   }
 
-  if (certificateTimeMs + maxCertificateTimeOffsetMs < nowMs) {
-    throw new CertificateTimeError(
-      `Invalid certificate: time ${certificateTimeMs} is too far in the past (current time: ${nowMs})`,
-    )
+  if (
+    isLookupResultFound(lookupResult) &&
+    lookupResult.value instanceof ArrayBuffer
+  ) {
+    const certificateTimeNs = lebDecode(new PipeArrayBuffer(lookupResult.value))
+    const certificateTimeMs = Number(certificateTimeNs / BigInt(1_000_000))
+
+    if (certificateTimeMs - maxCertificateTimeOffsetMs > nowMs) {
+      throw new CertificateTimeError(
+        `Invalid certificate: time ${certificateTimeMs} is too far in the future (current time: ${nowMs})`,
+      )
+    }
+
+    if (certificateTimeMs + maxCertificateTimeOffsetMs < nowMs) {
+      throw new CertificateTimeError(
+        `Invalid certificate: time ${certificateTimeMs} is too far in the past (current time: ${nowMs})`,
+      )
+    }
+  } else {
+    throw new CertificateTimeError("Time not found in the certificate.")
   }
 }
 
@@ -80,13 +92,28 @@ async function validateTree(
     )
   }
 
-  if (!equal(certifiedData, treeRootHash)) {
+  if (
+    isLookupResultFound(certifiedData) &&
+    certifiedData.value instanceof ArrayBuffer
+  ) {
+    if (!equal(certifiedData.value, treeRootHash)) {
+      throw new CertificateVerificationError(
+        "Tree root hash did not match the certified data in the certificate.",
+      )
+    }
+  } else {
     throw new CertificateVerificationError(
-      "Tree root hash did not match the certified data in the certificate.",
+      "Could not find certified data in the certificate.",
     )
   }
 }
 
+function isLookupResultFound(
+  result: LookupResult,
+): result is LookupResultFound {
+  return (result as LookupResultFound).value !== undefined
+}
+
 function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {
-  return compare(a, b) === 0
+  return compare(new Uint8Array(a), new Uint8Array(b)) === 0
 }

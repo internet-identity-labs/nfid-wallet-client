@@ -393,8 +393,6 @@ export const config: WebdriverIO.Config = {
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },
-  // beforeStep: async function() {
-  // },
   // afterStep: function ({uri, feature, step}, context, {error, result, duration, passed}) {
   // },
   /**

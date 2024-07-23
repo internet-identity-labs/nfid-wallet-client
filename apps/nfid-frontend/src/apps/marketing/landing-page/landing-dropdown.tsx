@@ -26,13 +26,13 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({ handler }) => {
         minWidth={160}
       >
         <DropdownOption
-          className="hover:bg-[#27272A] rounded-lg !gap-0"
+          className="hover:!bg-[#27272A] rounded-lg !gap-0"
           textClassName="!text-white"
           label="Knowledge base"
           link="https://learn.nfid.one/"
         />
         <DropdownOption
-          className="hover:bg-[#27272A] rounded-lg !gap-0"
+          className="hover:!bg-[#27272A] rounded-lg !gap-0"
           textClassName="!text-white"
           label="Get started"
           handler={handler}

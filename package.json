@@ -22,7 +22,7 @@
     "@dfinity/ledger-icrc": "^2.2.1",
     "@dfinity/nns-proto": "^1.0.1",
     "@dfinity/principal": "^1.0.1",
-    "@dfinity/utils": "^1.0.0",
+    "@dfinity/utils": "^2.4.0",
     "@dotlottie/react-player": "^1.1.0",
     "@headlessui/react": "1.5.0",
     "@metamask/eth-sig-util": "5.0.2",

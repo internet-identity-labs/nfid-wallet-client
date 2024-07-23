@@ -1,7 +1,5 @@
 import { filter, fromEvent } from "rxjs"
 
-import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
-
 import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
@@ -45,7 +43,6 @@ export const rpcMessages = windowMessages.pipe(
 
 type ProcedureDetails = {
   rpcMessage: RPCMessage
-  rpcMessageDecoded?: FunctionCall
   origin: string
 }
 
@@ -91,7 +88,6 @@ export const RPCReceiverV2 =
           case "ic_canisterCall":
           case "ic_getDelegation":
           case "ic_requestTransfer":
-          case "eth_accounts":
             console.debug(`RPCReceiverV2 ${rpcMessage.method}`, {
               rpcMessage,
               origin,
@@ -99,37 +95,6 @@ export const RPCReceiverV2 =
             return send({
               type: "RPC_MESSAGE",
               data: { rpcMessage, origin },
-            })
-          case "eth_sendTransaction":
-            const rpcMessageDecoded = await decodeMessage(rpcMessage)
-
-            return send({
-              type: "RPC_MESSAGE",
-              data: {
-                rpcMessage,
-                rpcMessageDecoded,
-                origin,
-              },
-            })
-          case "eth_signTypedData_v4":
-            const rpcMessageDecodedTypedData = await decodeMessage(rpcMessage)
-            return send({
-              type: "RPC_MESSAGE",
-              data: {
-                rpcMessage,
-                rpcMessageDecoded: rpcMessageDecodedTypedData,
-                origin,
-              },
-            })
-          case "personal_sign":
-            const rpcMessagePersonalSign = await decodeMessage(rpcMessage)
-            return send({
-              type: "RPC_MESSAGE",
-              data: {
-                rpcMessage,
-                rpcMessageDecoded: rpcMessagePersonalSign,
-                origin,
-              },
             })
           default:
             throw new Error(
@@ -140,14 +105,3 @@ export const RPCReceiverV2 =
     )
     return () => subsciption.unsubscribe()
   }
-
-const decodeMessage = async (
-  rpcMessage: RPCMessage,
-): Promise<FunctionCall | undefined> => {
-  try {
-    return await decodeRpcMessage(rpcMessage)
-  } catch (error: any) {
-    console.warn("decodeRPCMEssage", { error })
-    return undefined
-  }
-}

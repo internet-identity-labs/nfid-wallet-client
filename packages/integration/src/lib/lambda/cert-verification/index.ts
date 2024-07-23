@@ -63,7 +63,7 @@ function validateCertificateTime(
       )
     }
   } else {
-    throw new CertificateTimeError("Certified data couldn't be found")
+    throw new CertificateTimeError("Time not found in the certificate.")
   }
 }
 

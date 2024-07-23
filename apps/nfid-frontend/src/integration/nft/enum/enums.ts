@@ -4,3 +4,10 @@ export enum MarketPlace {
   YUMI = "YUMI",
   EXT = "EXT",
 }
+
+export enum TransactionType {
+  SALE = "SALE",
+  TRANSFER = "TRANSFER",
+  MINT = "MINT",
+  BURN = "BURN",
+}

@@ -1,8 +1,8 @@
 import {MarketPlace} from "src/integration/nft/enum/enums";
 import {MappedToken} from "src/integration/nft/geek/geek-types";
-import {AssetPreview} from "src/integration/nft/impl/nft-types";
+import {AssetPreview, NFTTransactions} from "src/integration/nft/impl/nft-types";
 import {encodeTokenIdentifier} from "ictool";
-import {NFT, NFTDetails} from "src/integration/nft/nft";
+import {NFT, NFTDetails, TransactionRecord} from "src/integration/nft/nft";
 
 export abstract class NftImpl implements NFT {
   private readonly millis: number;
@@ -78,4 +78,5 @@ export abstract class NFTDetailsImpl implements NFTDetails {
   protected assetFullSize: Promise<AssetPreview> | undefined
   abstract getAbout(): string;
   abstract getAssetFullSize(): Promise<AssetPreview>;
+ abstract  getTransactions(from: number, to: number): Promise<NFTTransactions>
 }

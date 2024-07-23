@@ -1,8 +1,10 @@
-import {NFTDetails} from "src/integration/nft/nft";
+import {NFTDetails, TransactionRecord} from "src/integration/nft/nft";
 import {assetFullsize, entrepotAsset, fetchCollection, getTokenLink} from "src/integration/entrepot/lib";
 import {EntrepotCollection} from "src/integration/entrepot/types";
-import {AssetPreview} from "./nft-types";
+import {AssetPreview} from "../nft-types";
 import {NFTDetailsImpl, NftImpl} from "src/integration/nft/impl/nft-abstract";
+import {getTokenTxHistoryOfTokenIndex} from "src/integration/cap/fungible-transactions";
+import {extTransactionMapper} from "src/integration/nft/impl/transaction/ext/ext-transaction-mapper";
 
 
 export class NFTExt extends NftImpl {
@@ -48,6 +50,21 @@ class NFTExtDetails extends NFTDetailsImpl {
 
   getAbout(): string {
     return this.collection.description;
+  }
+
+  async getTransactions(from: number, to: number): Promise<{ activity: Array<TransactionRecord>; isLastPage: boolean }> {
+    const {txHistory, isLastPage} = await getTokenTxHistoryOfTokenIndex(
+      this.collection.id,
+      this.tokenId,
+      from,
+      to
+    );
+    const activity = txHistory.map((raw) => extTransactionMapper.toTransactionRecord(raw))
+      .filter((tx): tx is TransactionRecord => tx !== null);
+    return {
+      activity,
+      isLastPage,
+    };
   }
 
   async getAssetFullSize(): Promise<AssetPreview> {

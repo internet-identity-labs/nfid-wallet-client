@@ -6,7 +6,8 @@ import {nftMapper} from "src/integration/nft/impl/nft-mapper";
 export class NftService {
   async getNFTs(userPrincipal: Principal): Promise<NFT[]> {
     return nftGeekService.getNftGeekData(userPrincipal)
-      .then(data => data.map(nftMapper.toNFT));
+      .then(data => data.map(nftMapper.toNFT)
+        .filter((nft): nft is NFT => nft !== null));
   }
 }
 

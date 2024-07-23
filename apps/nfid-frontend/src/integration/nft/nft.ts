@@ -1,5 +1,5 @@
-import {MarketPlace} from "src/integration/nft/enum/enums";
-import {AssetPreview} from "src/integration/nft/impl/nft-types";
+import {MarketPlace, TransactionType} from "src/integration/nft/enum/enums";
+import {AssetPreview, NFTTransactions} from "src/integration/nft/impl/nft-types";
 
 export interface NFT {
   getMillis(): number;
@@ -14,9 +14,17 @@ export interface NFT {
   getTokenLink(): string;
   getDetails(): Promise<NFTDetails>;
   getAssetPreview(): AssetPreview;
+  //TODO
+  //transfer(): Promise<bigint>;
 }
 
 export interface NFTDetails {
   getAbout(): string;
   getAssetFullSize(): Promise<AssetPreview>;
+  getTransactions(from: number, to: number): Promise<NFTTransactions>;
+}
+
+export interface TransactionRecord {
+  getDate(): Date;
+  getType(): TransactionType;
 }

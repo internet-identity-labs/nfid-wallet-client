@@ -9,7 +9,8 @@
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/allure-results --clean -o apps/nfid-frontend-e2e/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/allure-report"
   },
   "dependencies": {
     "@dfinity/agent": "^2.0.0",

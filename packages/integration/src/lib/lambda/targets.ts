@@ -5,21 +5,22 @@ import {
   compare,
   HttpAgent,
   lookup_path,
-  LookupResultFound,
 } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
 import crypto from "crypto"
 
 import { verifyCertification } from "./cert-verification"
+import { getLookupResultValue } from "./cert-verification/utils"
 
 export interface CertifiedResponse {
   certificate: Uint8Array | number[]
   witness: Uint8Array | number[]
   response: Array<string>
 }
+
 export async function validateTargets(targets: string[], origin: string) {
-  const agent: Agent = await new HttpAgent({ host: "https://ic0.app" })
+  const agent: Agent = new HttpAgent({ host: "https://ic0.app" })
   const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
     IDL.Service({
       get_trusted_origins_certified: IDL.Func(
@@ -44,17 +45,16 @@ export async function validateTargets(targets: string[], origin: string) {
       canisterId,
     })
 
-    let result
     try {
-      result = (await actor[
+      const result = (await actor[
         "get_trusted_origins_certified"
       ]()) as CertifiedResponse
       if (!result || !result.response.includes(origin)) {
         uncertifiedTargets.push(canisterId)
+      } else {
+        await verifyCertifiedResponse(result, "origins", canisterId)
       }
-      await verifyCertifiedResponse(result, "origins", canisterId)
     } catch (e) {
-      //not implemented - will try with the update call
       uncertifiedTargets.push(canisterId)
     }
   })
@@ -81,7 +81,7 @@ async function verifyCertifiedResponse(
   key: string,
   canisterId: string,
 ) {
-  const agent = new HttpAgent({ host: IC_HOST })
+  const agent = new HttpAgent({ host: "https://ic0.app" })
   await agent.fetchRootKey()
   const tree = await verifyCertification({
     canisterId: Principal.fromText(canisterId),
@@ -91,20 +91,23 @@ async function verifyCertifiedResponse(
     maxCertificateTimeOffsetMs: 500000,
   })
   const treeHash = lookup_path([key], tree)
-  if (!treeHash) {
+  const value = getLookupResultValue(treeHash)
+
+  if (value) {
+    const newOwnedString = certifiedResponse.response.join("")
+    const sha256Result = crypto
+      .createHash("sha256")
+      .update(newOwnedString)
+      .digest()
+    const byteArray = new Uint8Array(sha256Result)
+    if (!equal(byteArray, value)) {
+      throw new Error("Response hash does not match")
+    }
+  } else {
     throw new Error("Response not found in tree")
-  }
-  const newOwnedString = certifiedResponse.response.join("")
-  const sha256Result = crypto
-    .createHash("sha256")
-    .update(newOwnedString)
-    .digest()
-  const byteArray = new Uint8Array(sha256Result)
-  if (!equal(byteArray, (treeHash as LookupResultFound).value as ArrayBuffer)) {
-    throw new Error("Response hash does not match")
   }
 }
 
 function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {
-  return compare(a, b) === 0
+  return compare(new Uint8Array(a), new Uint8Array(b)) === 0
 }

@@ -4,13 +4,12 @@ import {
   HashTree,
   reconstruct,
   compare,
-  LookupResult,
-  LookupResultFound,
 } from "@dfinity/agent"
 import { PipeArrayBuffer, lebDecode } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
 
 import { CertificateTimeError, CertificateVerificationError } from "./error"
+import { getLookupResultValue } from "./utils"
 
 export interface VerifyCertificationParams {
   canisterId: Principal
@@ -46,16 +45,10 @@ function validateCertificateTime(
   nowMs: number,
 ): void {
   const lookupResult = certificate.lookup(["time"])
+  const value = getLookupResultValue(lookupResult)
 
-  if (!lookupResult) {
-    throw new CertificateTimeError("Time not found in the certificate.")
-  }
-
-  if (
-    isLookupResultFound(lookupResult) &&
-    lookupResult.value instanceof ArrayBuffer
-  ) {
-    const certificateTimeNs = lebDecode(new PipeArrayBuffer(lookupResult.value))
+  if (value) {
+    const certificateTimeNs = lebDecode(new PipeArrayBuffer(value))
     const certificateTimeMs = Number(certificateTimeNs / BigInt(1_000_000))
 
     if (certificateTimeMs - maxCertificateTimeOffsetMs > nowMs) {
@@ -70,7 +63,7 @@ function validateCertificateTime(
       )
     }
   } else {
-    throw new CertificateTimeError("Time not found in the certificate.")
+    throw new CertificateTimeError("Certified data couldn't be found")
   }
 }
 
@@ -85,33 +78,17 @@ async function validateTree(
     canisterId.toUint8Array(),
     "certified_data",
   ])
+  const value = getLookupResultValue(certifiedData)
 
-  if (!certifiedData) {
-    throw new CertificateVerificationError(
-      "Could not find certified data in the certificate.",
-    )
-  }
-
-  if (
-    isLookupResultFound(certifiedData) &&
-    certifiedData.value instanceof ArrayBuffer
-  ) {
-    if (!equal(certifiedData.value, treeRootHash)) {
+  if (value) {
+    if (!equal(value, treeRootHash)) {
       throw new CertificateVerificationError(
         "Tree root hash did not match the certified data in the certificate.",
       )
     }
   } else {
-    throw new CertificateVerificationError(
-      "Could not find certified data in the certificate.",
-    )
+    throw new CertificateVerificationError("Certified data not found.")
   }
-}
-
-function isLookupResultFound(
-  result: LookupResult,
-): result is LookupResultFound {
-  return (result as LookupResultFound).value !== undefined
 }
 
 function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {

@@ -1,5 +1,5 @@
-import {TransactionRecord} from "src/integration/nft/nft";
-import {TransactionType} from "src/integration/nft/enum/enums";
+import { TransactionType } from "src/integration/nft/enum/enums"
+import { TransactionRecord } from "src/integration/nft/nft"
 
 export abstract class TransactionRecordAbstract implements TransactionRecord {
   abstract getDate(): Date
@@ -7,13 +7,13 @@ export abstract class TransactionRecordAbstract implements TransactionRecord {
 }
 
 export interface TransferTransactionRecordI extends TransactionRecordAbstract {
-  getFrom(): string;
+  getFrom(): string
   getTo(): string
 }
 
 export interface SellTransactionRecordI extends TransactionRecordAbstract {
   getPrice(): bigint
-  getFrom(): string;
+  getFrom(): string
   getTo(): string
 }
 
@@ -22,5 +22,5 @@ export interface MintTransactionRecord extends TransactionRecordAbstract {
 }
 
 export interface BurnTransactionRecord extends TransactionRecordAbstract {
-  getFrom(): string;
+  getFrom(): string
 }

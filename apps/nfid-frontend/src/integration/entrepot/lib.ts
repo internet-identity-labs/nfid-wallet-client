@@ -133,9 +133,7 @@ export function entrepotAsset(
     //end of section
 
     if (collectionId === "6wih6-siaaa-aaaah-qczva-cai")
-      return `https://${
-        collectionId
-      }.raw.ic0.app/?cc${Date.now()}&type=thumbnail&tokenid=${token}`
+      return `https://${collectionId}.raw.ic0.app/?cc${Date.now()}&type=thumbnail&tokenid=${token}`
     if (collectionId === "kss7i-hqaaa-aaaah-qbvmq-cai")
       return `https://${collectionId}.raw.ic0.app/?type=thumbnail&tokenid=${token}`
     return `https://images.entrepot.app/t/${collectionId}/${token}`

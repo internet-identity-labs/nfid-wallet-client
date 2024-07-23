@@ -1,4 +1,4 @@
-import {TransactionRecord} from "src/integration/nft/nft";
+import { TransactionRecord } from "src/integration/nft/nft"
 
 export type AssetPreview = {
   url: string

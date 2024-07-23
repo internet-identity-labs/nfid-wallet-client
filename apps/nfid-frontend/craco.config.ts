@@ -50,7 +50,7 @@ const setupCSP = () => {
         "https://polygon-rpc.com",
         "https://rpc-mumbai.matic.today",
         "https://eu.posthog.com",
-        "https://api.nftgeek.app"
+        "https://api.nftgeek.app",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

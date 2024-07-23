@@ -20,7 +20,9 @@ export async function getCapRootTransactions(
     )
     .then((rootBucket) => {
       if (typeof rootBucket.canister[0] === "undefined") {
-        throw new CapRootBucketError(`Psychedelic error. No root bucket for ${canisterId}`)
+        throw new CapRootBucketError(
+          `Psychedelic error. No root bucket for ${canisterId}`,
+        )
       }
       return rootBucket.canister[0].toText()
     })
@@ -31,6 +33,4 @@ export async function getCapRootTransactions(
     .then((l) => l.data.map((event: any) => prettifyCapTransactions(event)))
 }
 
-
-export class CapRootBucketError extends Error {
-}
+export class CapRootBucketError extends Error {}

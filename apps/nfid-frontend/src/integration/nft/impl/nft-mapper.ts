@@ -7,7 +7,7 @@ export class NftMapper {
   public toNFT(mappedToken: MappedToken): NFT | null {
     switch (mappedToken.marketPlace) {
       case MarketPlace.EXT:
-        return new ExtNftCreator().geekDataToNFT(mappedToken)
+        return new NFTExt(mappedToken)
       default: {
         console.warn("Unsupported marketplace: " + mappedToken.marketPlace)
         return null
@@ -17,13 +17,3 @@ export class NftMapper {
 }
 
 export const nftMapper = new NftMapper()
-
-interface NftCreator {
-  geekDataToNFT(mappedToken: MappedToken): NFT
-}
-
-class ExtNftCreator implements NftCreator {
-  geekDataToNFT(mappedToken: MappedToken): NFT {
-    return new NFTExt(mappedToken)
-  }
-}

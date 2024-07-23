@@ -35,6 +35,7 @@ import {
   storePasskey,
 } from "@nfid/integration"
 
+import isSafari from "frontend/features/security/utils"
 import {
   getIsMobileDeviceMatch,
   getPlatformInfo,
@@ -157,7 +158,9 @@ export class PasskeyConnector {
       credential = (await navigator.credentials.create({
         publicKey: {
           authenticatorSelection: {
-            authenticatorAttachment: isMultiDevice
+            authenticatorAttachment: isSafari()
+              ? "platform"
+              : isMultiDevice
               ? "cross-platform"
               : "platform",
             userVerification: "preferred",

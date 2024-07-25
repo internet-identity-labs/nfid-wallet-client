@@ -66,9 +66,6 @@ export default function NFIDEmbedCoordinator() {
               send({ type: "APPROVE", data })
             }}
             onRequestICDelegation={(data) => {
-              console.debug("ProcedureApprovalCoordinator.getDelegation", {
-                data,
-              })
               send({
                 type: "APPROVE_IC_GET_DELEGATION",
                 data: data,

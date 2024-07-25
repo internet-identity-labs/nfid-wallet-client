@@ -119,9 +119,7 @@ export async function fetchDelegateService(
     Array.from(context.authRequest.sessionPublicKey),
     context.authRequest.maxTimeToLive,
   )
-  console.debug(`fetchDelegateService fetchDelegate`, {
-    delegate,
-  })
+
   return delegate
 }
 
@@ -137,10 +135,6 @@ export async function loginService(context: {
     sessionKey,
     chain,
   )
-  console.debug("loginService", {
-    delegationIdentity,
-    principalId: delegationIdentity.getPrincipal().toText(),
-  })
 
   authState.set({
     identity: multiIdent._actualIdentity!,

@@ -179,15 +179,11 @@ export const TransferNFT = ({
     ],
   )
 
-  const loadingMessage = useMemo(() => {
-    if (isNFTLoading) return "Fetching your NFTs..."
-  }, [isNFTLoading])
-
   return (
     <BlurredLoader
       overlayClassnames="rounded-xl"
       isLoading={isNFTLoading}
-      loadingMessage={loadingMessage}
+      loadingMessage={"Fetching your NFTs..."}
     >
       <div className="space-y-3 text-xs ">
         <ChooseModal

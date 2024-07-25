@@ -123,7 +123,10 @@ export const HomeScreen = () => {
         </div>
       </div>
       <section
-        className={clsx("md:h-[75vh] relative overflow-visible", container)}
+        className={clsx(
+          "md:h-[75vh] relative overflow-visible max-h-[800px]",
+          container,
+        )}
       >
         <div className="gradient-radial"></div>
         <div className="relative z-10 pt-[15vh] md:max-w-[420px] lg:max-w-[540px] text-center md:text-left">

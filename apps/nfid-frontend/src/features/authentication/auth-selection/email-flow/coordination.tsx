@@ -17,11 +17,6 @@ export function AuthEmailFlowCoordinator({
 }: AuthEmailFlowCoordinatorProps) {
   const [state, send] = useActor(actor)
 
-  console.debug("AuthEmailFlowCoordinator", {
-    context: state.context,
-    state: state.value,
-  })
-
   switch (true) {
     case state.matches("SendVerificationEmail"):
       return <BlurredLoader isLoading />

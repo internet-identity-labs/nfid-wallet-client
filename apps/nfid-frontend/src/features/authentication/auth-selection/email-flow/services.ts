@@ -51,12 +51,6 @@ export const checkEmailVerification = async (
 }> => {
   const verificationMethod = "email"
 
-  console.debug("checkEmailVerification", {
-    verificationMethod,
-    emailAddress: context.verificationEmail,
-    keyPair: context.keyPair,
-  })
-
   return new Promise((resolve, reject) => {
     let nonce = 0
     const int = setInterval(async () => {

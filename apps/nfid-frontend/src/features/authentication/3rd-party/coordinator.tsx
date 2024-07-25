@@ -36,12 +36,8 @@ export default function ThirdPartyAuthCoordinator({
   }, [state])
 
   React.useEffect(() => {
-    console.debug("ThirdPartyAuthCoordinator", {
-      context: state?.context,
-      state: state.value,
-    })
     handleTrackAuthModalOpened()
-  }, [state.value, state?.context, handleTrackAuthModalOpened])
+  }, [handleTrackAuthModalOpened])
 
   useEffect(() => {
     if (!onEnd) return

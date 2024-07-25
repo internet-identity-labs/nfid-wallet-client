@@ -19,15 +19,6 @@ export const TransferModalCoordinator = () => {
 
   const [state, send] = useActor(globalServices.transferService)
 
-  React.useEffect(
-    () =>
-      console.log("TransferModalCoordinator", {
-        context: state.context,
-        state: state.value,
-      }),
-    [state.value, state.context],
-  )
-
   React.useEffect(() => {
     if (state.context.error?.message?.length) {
       toast.error(state.context?.error.message, {

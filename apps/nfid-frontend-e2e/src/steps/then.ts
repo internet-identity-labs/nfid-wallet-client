@@ -538,9 +538,9 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
 
   expect(
     String(
-      (await usersData.get("principal").firstAddressPart.getText()) +
+      (await (await usersData.get("principal")).firstAddressPart.getText()) +
       "..." +
-      (await usersData.get("principal").secondAddressPart.getText()),
+      (await (await usersData.get("principal")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
@@ -550,9 +550,9 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
 
   expect(
     String(
-      (await usersData.get("address").firstAddressPart.getText()) +
+      (await (await usersData.get("address")).firstAddressPart.getText()) +
       "..." +
-      (await usersData.get("address").secondAddressPart.getText()),
+      (await (await usersData.get("address")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +

@@ -72,9 +72,15 @@ export class demoAppPage extends Page {
     let targets = targetsList.split(",")
     for (let i = 0; i < targets.length; i++) {
       if (!(await this.getAddCanisterIDInput(pageBlock, i + 1).isDisplayed())) {
-        await (await this.getAddCanisterIDButton(pageBlock)).click()
+        await this.getAddCanisterIDButton(pageBlock).then(async(it)=>{
+          await it.waitForClickable()
+          await it.click()
+        })
       }
-      await this.getAddCanisterIDInput(pageBlock, i + 1).setValue(targets[i])
+      await this.getAddCanisterIDInput(pageBlock, i + 1).then(async(it)=>{
+        await it.waitForDisplayed()
+        await it.setValue(targets[i])
+      })
     }
   }
 

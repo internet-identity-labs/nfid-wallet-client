@@ -423,11 +423,6 @@ export class PasskeyConnector {
       delegationIdentity.getDelegation().toJSON(),
     )
 
-    console.debug("PasskeyConnector.cachePasskeyDelegation", {
-      keyIdentity,
-      delegation,
-    })
-
     await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
     await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
   }

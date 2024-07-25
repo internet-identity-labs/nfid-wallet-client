@@ -101,11 +101,6 @@ export async function fetchAllDevices(anchor: UserNumber) {
   ).map((deviceData) => {
     const principalId = getPrincipalId(deviceData.pubkey)
 
-    console.debug("fetchAllDevices", {
-      isAuth: !!authState.get().delegationIdentity,
-      principalId,
-    })
-
     if (!!authState.get().delegationIdentity)
       return {
         ...deviceData,
@@ -679,12 +674,6 @@ async function fromWebauthnDevices(
       }
     }
   }
-  console.debug("fromWebauthnDevices", {
-    delegation,
-    delegationPrincipalId: delegation.delegationIdentity
-      .getPrincipal()
-      .toText(),
-  })
 
   replaceIdentity(delegation.delegationIdentity)
   authState.set({

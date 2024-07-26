@@ -1,9 +1,10 @@
-import {TransactionPrettified} from "@psychedelic/cap-js"
+import { TransactionPrettified } from "@psychedelic/cap-js"
 import {
   SellTransactionRecord,
-  TransactionRecordView, TransferTransactionRecord,
+  TransactionRecordView,
+  TransferTransactionRecord,
 } from "src/integration/nft/impl/nft-transaction-record"
-import {formatPrice} from "src/integration/nft/util/util";
+import { formatPrice } from "src/integration/nft/util/util"
 
 export class SaleTransactionRecordExt implements SellTransactionRecord {
   private readonly from: string
@@ -32,7 +33,7 @@ export class SaleTransactionRecordExt implements SellTransactionRecord {
       date: this.date.toISOString(),
       from: this.from,
       to: this.to,
-      price: formatPrice(this.price, this.priceDecimals, this.priceCurrency)
+      price: formatPrice(this.price, this.priceDecimals, this.priceCurrency),
     }
   }
 }
@@ -46,7 +47,7 @@ export class TransferTransactionRecordExt implements TransferTransactionRecord {
     if (rawTransaction.operation.toLowerCase() !== "transfer") {
       throw new Error(
         "Expect transfer but got invalid transaction type: " +
-        rawTransaction.operation,
+          rawTransaction.operation,
       )
     }
     this.from = rawTransaction.from!
@@ -61,8 +62,7 @@ export class TransferTransactionRecordExt implements TransferTransactionRecord {
       date: this.date.toISOString(),
       from: this.from,
       to: this.to,
-      price: undefined
+      price: undefined,
     }
   }
-
 }

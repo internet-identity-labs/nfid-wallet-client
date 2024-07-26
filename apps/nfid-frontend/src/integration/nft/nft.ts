@@ -1,9 +1,9 @@
 import { MarketPlace, TransactionType } from "src/integration/nft/enum/enums"
+import { TransactionRecordView } from "src/integration/nft/impl/nft-transaction-record"
 import {
   AssetPreview,
   NFTTransactions,
 } from "src/integration/nft/impl/nft-types"
-import {TransactionRecordView} from "src/integration/nft/impl/nft-transaction-record";
 
 export interface NFT {
   getMillis(): number

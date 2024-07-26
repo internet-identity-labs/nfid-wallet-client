@@ -1,10 +1,10 @@
 /**
  * @jest-environment jsdom
  */
-import {Principal} from "@dfinity/principal"
-import {nftGeekService} from "src/integration/nft/geek/nft-geek-service"
-import {mockGeekResponse} from "src/integration/nft/mock/mock"
-import {nftService} from "src/integration/nft/nft-service"
+import { Principal } from "@dfinity/principal"
+import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
+import { mockGeekResponse } from "src/integration/nft/mock/mock"
+import { nftService } from "src/integration/nft/nft-service"
 
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
@@ -56,9 +56,7 @@ describe("nft test suite", () => {
       expect(transactions.activity).toHaveLength(2)
       const transfer = transactions.activity[0].getTransactionView()
       expect(transfer.type).toEqual("Transfer")
-      expect(transfer.date).toEqual(
-        "2024-07-17T14:21:58.748Z",
-      )
+      expect(transfer.date).toEqual("2024-07-17T14:21:58.748Z")
       expect(transfer.from).toEqual(
         "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
       )
@@ -79,7 +77,6 @@ describe("nft test suite", () => {
         "550660832ce68b21bbcc5af42e0db30ce87abfffbf41f99a8b9c0de80d58face",
       )
       expect(sale.price).toEqual("0.188 ICP")
-
 
       //verify YUMI interface
 
@@ -119,17 +116,25 @@ describe("nft test suite", () => {
       expect(yumiNFTtransactions.activity).toHaveLength(9)
       expect(yumiNFTtransactions.isLastPage).toBeTruthy()
 
-      const listYumiActivity = yumiNFTtransactions.activity[8].getTransactionView()
+      const listYumiActivity =
+        yumiNFTtransactions.activity[8].getTransactionView()
       expect(listYumiActivity.type).toEqual("List")
       expect(listYumiActivity.to).toEqual(undefined)
-      expect(listYumiActivity.from).toEqual("287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77")
+      expect(listYumiActivity.from).toEqual(
+        "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
+      )
       expect(listYumiActivity.date).toEqual("2024-06-03T14:06:33.689Z")
       expect(listYumiActivity.price).toEqual("3 ICP")
 
-      const soldYumiActivity = yumiNFTtransactions.activity[0].getTransactionView()
+      const soldYumiActivity =
+        yumiNFTtransactions.activity[0].getTransactionView()
       expect(soldYumiActivity.type).toEqual("Sale")
-      expect(soldYumiActivity.to).toEqual("f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99")
-      expect(soldYumiActivity.from).toEqual("287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77")
+      expect(soldYumiActivity.to).toEqual(
+        "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
+      )
+      expect(soldYumiActivity.from).toEqual(
+        "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
+      )
       expect(soldYumiActivity.date).toEqual("2024-07-17T14:01:34.027Z")
       expect(listYumiActivity.price).toEqual("3 ICP")
     })

@@ -6,8 +6,8 @@ import {
   getTokenLink,
 } from "src/integration/entrepot/lib"
 import { EntrepotCollection } from "src/integration/entrepot/types"
-import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { extTransactionMapper } from "src/integration/nft/impl/ext/transaction/ext-transaction-mapper"
+import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 import { AssetPreview } from "../nft-types"

@@ -1,8 +1,9 @@
 import {
-  ListTransactionRecord, SellTransactionRecord,
+  ListTransactionRecord,
+  SellTransactionRecord,
   TransactionRecordView,
 } from "src/integration/nft/impl/nft-transaction-record"
-import {TransactionRecordData} from "src/integration/nft/impl/yumi/transaction/yumi-trs-types";
+import { TransactionRecordData } from "src/integration/nft/impl/yumi/transaction/yumi-trs-types"
 
 export class ListTransactionRecordYumi implements ListTransactionRecord {
   private readonly from: string
@@ -15,9 +16,9 @@ export class ListTransactionRecordYumi implements ListTransactionRecord {
     }
     //from - princ // fromAid = account id
     this.from = rawTransaction.fromAid!
-    const milliseconds = BigInt(rawTransaction.created_at) / BigInt(1_000_000);
-    this.date = new Date(Number(milliseconds));
-    this.price = rawTransaction.token_amount + " " + rawTransaction.token_symbol;
+    const milliseconds = BigInt(rawTransaction.created_at) / BigInt(1_000_000)
+    this.date = new Date(Number(milliseconds))
+    this.price = rawTransaction.token_amount + " " + rawTransaction.token_symbol
   }
 
   getTransactionView(): TransactionRecordView {
@@ -26,8 +27,8 @@ export class ListTransactionRecordYumi implements ListTransactionRecord {
       date: this.date.toISOString(),
       from: this.from,
       to: undefined,
-      price: this.price
-    };
+      price: this.price,
+    }
   }
 }
 
@@ -44,9 +45,9 @@ export class SoldTransactionRecordYumi implements SellTransactionRecord {
     //from - princ // fromAid - account id
     this.from = rawTransaction.fromAid!
     this.to = rawTransaction.toAid!
-    const milliseconds = BigInt(rawTransaction.created_at) / BigInt(1_000_000);
-    this.date = new Date(Number(milliseconds));
-    this.price = rawTransaction.token_amount + " " + rawTransaction.token_symbol;
+    const milliseconds = BigInt(rawTransaction.created_at) / BigInt(1_000_000)
+    this.date = new Date(Number(milliseconds))
+    this.price = rawTransaction.token_amount + " " + rawTransaction.token_symbol
   }
 
   getTransactionView(): TransactionRecordView {
@@ -55,7 +56,7 @@ export class SoldTransactionRecordYumi implements SellTransactionRecord {
       date: this.date.toISOString(),
       from: this.from,
       to: this.to,
-      price: this.price
-    };
+      price: this.price,
+    }
   }
 }

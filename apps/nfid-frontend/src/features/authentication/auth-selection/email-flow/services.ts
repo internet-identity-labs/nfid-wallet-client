@@ -144,14 +144,18 @@ export const authorizeWithEmail = async (
   if (!profile?.email?.length)
     await im.update_account({ name: [], email: [context.verificationEmail] })
 
-  await authStorage.set(
-    KEY_STORAGE_KEY,
-    JSON.stringify(context.emailDelegation.toJSON()),
-  )
-  await authStorage.set(
-    KEY_STORAGE_DELEGATION,
-    JSON.stringify(context.chainRoot?.toJSON()),
-  )
+  try {
+    await authStorage.set(
+      KEY_STORAGE_KEY,
+      JSON.stringify(context.emailDelegation.toJSON()),
+    )
+    await authStorage.set(
+      KEY_STORAGE_DELEGATION,
+      JSON.stringify(context.chainRoot?.toJSON()),
+    )
+  } catch (e) {
+    console.error("authStorage.set", { e })
+  }
 
   const session = {
     sessionSource: "email",

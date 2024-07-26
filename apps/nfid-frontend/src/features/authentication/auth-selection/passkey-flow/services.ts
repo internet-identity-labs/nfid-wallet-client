@@ -228,7 +228,7 @@ export class PasskeyConnector {
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       allowedPasskeys,
       false,
-      "optional",
+      "required",
       signal,
       true,
     )

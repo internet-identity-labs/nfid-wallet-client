@@ -505,6 +505,8 @@ jobs:
           flags: --recursive
 
       - name: Upload url to PR comments
+        env:
+          target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
         run: |
           if [ -n "${URL}" ]; then
             printf -v data '{ "body": "%s" }' "$TARGET_URL" &&

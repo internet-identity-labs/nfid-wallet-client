@@ -471,7 +471,7 @@ jobs:
         with:
           command: cp
           source: s3://nfid-frontend-e2e-report/last-history
-          destination: gh-pages/allure-history/last-history
+          destination: gh-pages/last-history
           aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
@@ -493,7 +493,7 @@ jobs:
           allure_history: apps/nfid-frontend-e2e/allure-history
           github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
-      - name: Upload reports to S3
+      - name: Upload report to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
           command: cp

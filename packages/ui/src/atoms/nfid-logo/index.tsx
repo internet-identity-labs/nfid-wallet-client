@@ -20,6 +20,7 @@ export const NFIDLogo = () => {
 
   return (
     <video
+      style={{ backgroundColor: "#0E0F10" }}
       ref={videoRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

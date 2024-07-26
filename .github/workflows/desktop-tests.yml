@@ -525,7 +525,7 @@ jobs:
           target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
         run: echo "$target_url" > "report_url.txt"
 
-      - name: Upload reports
+      - name: Upload report_url.txt
         uses: actions/upload-artifact@v4
         with:
           name: ReportUrl

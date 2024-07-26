@@ -508,6 +508,7 @@ jobs:
         env:
           target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
         run: |
+          echo $TARGET_URL
           if [ -n "${URL}" ]; then
             printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
             curl \
@@ -518,3 +519,14 @@ jobs:
               -H "X-GitHub-Api-Version: 2022-11-28" \
               -d "$data"
           fi
+
+      - name: Upload url to file
+        env:
+          target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
+        run: echo "$target_url" > "report_url.txt"
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReportUrl
+          path: "report_url.txt"

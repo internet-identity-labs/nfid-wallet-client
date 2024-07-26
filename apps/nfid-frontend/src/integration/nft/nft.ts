@@ -3,6 +3,7 @@ import {
   AssetPreview,
   NFTTransactions,
 } from "src/integration/nft/impl/nft-types"
+import {TransactionRecordView} from "src/integration/nft/impl/nft-transaction-record";
 
 export interface NFT {
   getMillis(): number
@@ -28,6 +29,5 @@ export interface NFTDetails {
 }
 
 export interface TransactionRecord {
-  getDate(): Date
-  getType(): TransactionType
+  getTransactionView(): TransactionRecordView
 }

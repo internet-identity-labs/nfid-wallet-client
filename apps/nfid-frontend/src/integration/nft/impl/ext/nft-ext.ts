@@ -7,7 +7,7 @@ import {
 } from "src/integration/entrepot/lib"
 import { EntrepotCollection } from "src/integration/entrepot/types"
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
-import { extTransactionMapper } from "src/integration/nft/impl/transaction/ext/ext-transaction-mapper"
+import { extTransactionMapper } from "src/integration/nft/impl/ext/transaction/ext-transaction-mapper"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 import { AssetPreview } from "../nft-types"

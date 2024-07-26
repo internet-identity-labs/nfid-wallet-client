@@ -89,7 +89,7 @@ export const HomeScreen = () => {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="overflow-x-hidden bg-black">
+    <div className="overflow-x-hidden">
       <NFIDAuthentication
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}

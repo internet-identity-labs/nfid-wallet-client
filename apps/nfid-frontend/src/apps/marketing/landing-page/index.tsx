@@ -2,7 +2,6 @@ import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
 import React, { useCallback } from "react"
-import { Helmet } from "react-helmet-async"
 import { useNavigate, useLocation } from "react-router-dom"
 
 import { Button, NFIDLogo } from "@nfid-frontend/ui"
@@ -91,9 +90,6 @@ export const HomeScreen = () => {
 
   return (
     <div className="overflow-x-hidden bg-black">
-      <Helmet>
-        <meta name="theme-color" content="#141518" />
-      </Helmet>
       <NFIDAuthentication
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}

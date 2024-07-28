@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import {
@@ -48,20 +48,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     defaultValues: { email: "" },
     mode: "onSubmit",
   })
-  const [authAbortController, setAuthAbortController] = useState(
-    new AbortController(),
-  )
-
-  useEffect(() => {
-    passkeyConnector.initPasskeyAutocomplete(
-      authAbortController.signal,
-      () => setIsLoading(true),
-      onAuthWithPasskey,
-    )
-    return () => {
-      authAbortController.abort("Aborted webauthn on unmount")
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   let appHost: string = ""
   try {
@@ -131,13 +117,9 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               authSource: "passkey - continue",
             })
             setIsLoading(true)
-            authAbortController.abort("Aborted webauthn manually")
-            const abortController = new AbortController()
             const res = await passkeyConnector.loginWithPasskey(
-              abortController.signal,
+              undefined,
               () => {
-                abortController.abort("Aborted loginWithPasskey manually")
-                setAuthAbortController(new AbortController())
                 setIsLoading(false)
               },
             )

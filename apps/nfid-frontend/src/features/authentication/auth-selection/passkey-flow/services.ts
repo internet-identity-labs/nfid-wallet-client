@@ -308,63 +308,6 @@ export class PasskeyConnector {
     )
   }
 
-  async initPasskeyAutocomplete(
-    signal: AbortSignal,
-    onBegin: () => void,
-    onEnd: (data: AbstractAuthSession) => void,
-  ) {
-    try {
-      authenticationTracking.initiated({
-        authSource: "passkey - conditional",
-      })
-      const multiIdent = MultiWebAuthnIdentity.fromCredentials(
-        [],
-        false,
-        "conditional" as CredentialMediationRequirement,
-        signal,
-        true,
-      )
-
-      const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
-      onBegin()
-
-      const delegationIdentity = DelegationIdentity.fromDelegation(
-        sessionKey,
-        chain,
-      )
-
-      authState.set({
-        identity: multiIdent._actualIdentity!,
-        delegationIdentity,
-        chain,
-        sessionKey,
-      })
-
-      const profile = await fetchProfile()
-      im.use_access_point([])
-
-      authenticationTracking.updateData({
-        isNewUser: false,
-      })
-
-      authenticationTracking.completed({
-        anchor: profile.anchor,
-        hasEmail: !!profile.email,
-        legacyUser: profile.wallet === RootWallet.II,
-      })
-
-      const authSession = {
-        anchor: profile.anchor,
-        delegationIdentity: delegationIdentity,
-        identity: multiIdent._actualIdentity!,
-      }
-
-      onEnd && onEnd(authSession)
-    } catch (e) {
-      console.debug(e)
-    }
-  }
-
   private decodePublicKeyCredential(credential: PublicKeyCredential) {
     console.debug("decodePublicKeyCredential", { credential })
 

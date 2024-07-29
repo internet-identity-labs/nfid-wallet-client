@@ -158,13 +158,6 @@ export const expectedGeekResponse = [
     collectionName: "ICAliens",
   },
   {
-    millis: 1721253870829,
-    marketPlace: "MEMECAKE",
-    tokenId: 5002,
-    collectionId: "gdeb6-lqaaa-aaaah-abvpq-cai",
-    collectionName: "Boxy Land",
-  },
-  {
     millis: 1721253726158,
     marketPlace: "EXT",
     tokenId: 2066,

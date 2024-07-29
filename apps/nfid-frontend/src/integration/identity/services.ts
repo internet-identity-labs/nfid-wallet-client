@@ -12,7 +12,6 @@ export async function postRemoteDelegationService(
   context: { pubsubChannel?: string; authSession?: AuthSession },
   event: { data: AuthSession },
 ): Promise<void> {
-  console.debug("postRemoteDelegationService", { context, event })
   const { chain, sessionKey } = authState.get()
   if (!chain)
     throw new Error(`postRemoteDelegationService authState missing chain`)

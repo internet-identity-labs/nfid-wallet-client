@@ -1,4 +1,5 @@
 import { MarketPlace, TransactionType } from "src/integration/nft/enum/enums"
+import { TransactionRecordView } from "src/integration/nft/impl/nft-transaction-record"
 import {
   AssetPreview,
   NFTTransactions,
@@ -28,6 +29,5 @@ export interface NFTDetails {
 }
 
 export interface TransactionRecord {
-  getDate(): Date
-  getType(): TransactionType
+  getTransactionView(): TransactionRecordView
 }

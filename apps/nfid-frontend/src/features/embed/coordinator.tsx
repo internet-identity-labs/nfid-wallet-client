@@ -15,16 +15,6 @@ export default function NFIDEmbedCoordinator() {
   const [state, send] = useMachine(NFIDEmbedMachineV2)
   console.debug("NFIDEmbedCoordinator")
 
-  React.useEffect(
-    () =>
-      console.log("NFIDEmbedCoordinator", {
-        context: state.context,
-        state: state.value,
-        children: state.children,
-      }),
-    [state.value, state.context, state.children],
-  )
-
   const Component = useMemo(() => {
     switch (true) {
       case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
@@ -61,15 +51,11 @@ export default function NFIDEmbedCoordinator() {
             authSession={state.context.authSession}
             authRequest={state.context.authRequest}
             rpcMessage={state.context.rpcMessage}
-            rpcMessageDecoded={state.context.rpcMessageDecoded}
             onConfirm={(data) => {
               console.debug("onConfirm", { data })
               send({ type: "APPROVE", data })
             }}
             onRequestICDelegation={(data) => {
-              console.debug("ProcedureApprovalCoordinator.getDelegation", {
-                data,
-              })
               send({
                 type: "APPROVE_IC_GET_DELEGATION",
                 data: data,

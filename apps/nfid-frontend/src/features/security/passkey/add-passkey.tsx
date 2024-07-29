@@ -9,6 +9,7 @@ import { passkeyConnector } from "frontend/features/authentication/auth-selectio
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
+import isSafari from "../utils"
 import MultiPasskey from "./multi-passkey.webp"
 import SinglePasskey from "./single-passkey.webp"
 
@@ -28,9 +29,12 @@ export const AddPasskey = ({
   }, [])
 
   const handleCreatePasskey = React.useCallback(() => {
-    securityTracking.passkeyCreationInitiated(isMultiDevice)
+    securityTracking.passkeyCreationInitiated(isSafari() ? true : isMultiDevice)
     handleWithLoading(
-      () => passkeyConnector.createCredential({ isMultiDevice }),
+      () =>
+        passkeyConnector.createCredential({
+          isMultiDevice: isSafari() ? true : isMultiDevice,
+        }),
       () => setIsModalVisible(false),
     )
   }, [handleWithLoading, isMultiDevice])
@@ -62,24 +66,33 @@ export const AddPasskey = ({
             alt="Passkey"
             className="w-full"
           />
-          <p className="text-sm leading-5">
+          <p
+            className={clsx(
+              "text-sm leading-5",
+              isSafari() && "text-center !my-10",
+            )}
+          >
             Passkeys let you securely sign in to your NFID using your
             fingerprint, face, screen lock, or hardware security key.
           </p>
 
-          <Checkbox
-            id="isMultiDevice"
-            value={"isMultiDevice"}
-            isChecked={isMultiDevice}
-            onChange={() => setIsMultiDevice(!isMultiDevice)}
-            labelText="Create a multi-device Passkey"
-            labelClassName="!text-sm"
-          />
-          <p className="ml-[26px] text-xs text-gray-400">
-            Multi-device Passkeys are highly recommended because they’re
-            generally more convenient and easier to secure. Some devices, like
-            newer iPhones, only support multi-device Passkeys.
-          </p>
+          {!isSafari() && (
+            <>
+              <Checkbox
+                id="isMultiDevice"
+                value={"isMultiDevice"}
+                isChecked={isMultiDevice}
+                onChange={() => setIsMultiDevice(!isMultiDevice)}
+                labelText="Create a multi-device Passkey"
+                labelClassName="!text-sm"
+              />
+              <p className="ml-[26px] text-xs text-gray-400">
+                Multi-device Passkeys are highly recommended because they’re
+                generally more convenient and easier to secure. Some devices,
+                like newer iPhones, only support multi-device Passkeys.
+              </p>
+            </>
+          )}
           <Button type="primary" block onClick={handleCreatePasskey}>
             Continue
           </Button>

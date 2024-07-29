@@ -89,7 +89,7 @@ export const HomeScreen = () => {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="overflow-x-hidden bg-black">
+    <div className="overflow-x-hidden">
       <NFIDAuthentication
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}
@@ -119,7 +119,10 @@ export const HomeScreen = () => {
         </div>
       </div>
       <section
-        className={clsx("md:h-[75vh] relative overflow-visible", container)}
+        className={clsx(
+          "md:h-[75vh] relative overflow-visible max-h-[800px]",
+          container,
+        )}
       >
         <div className="gradient-radial"></div>
         <div className="relative z-10 pt-[15vh] md:max-w-[420px] lg:max-w-[540px] text-center md:text-left">
@@ -149,7 +152,7 @@ export const HomeScreen = () => {
             renderer="canvas"
             rendererSettings={{
               preserveAspectRatio: "xMidYMid slice",
-              className: "w-full h-full",
+              className: "w-full h-full object-cover",
             }}
           />
         </div>
@@ -187,7 +190,7 @@ export const HomeScreen = () => {
             <div className={clsx(asset)}>
               <AnimationWrapper
                 animationData={Animation1}
-                className="min-w-[330px] min-h-[330px]"
+                className="min-w-[330px] min-h-[330px] object-cover"
               />
             </div>
           </div>
@@ -206,7 +209,7 @@ export const HomeScreen = () => {
             <div className={clsx(asset)}>
               <AnimationWrapper
                 animationData={Animation2}
-                className="min-w-[330px] min-h-[330px]"
+                className="min-w-[330px] min-h-[330px] object-cover"
               />
             </div>
           </div>
@@ -225,7 +228,7 @@ export const HomeScreen = () => {
             <div className={clsx(asset)}>
               <AnimationWrapper
                 animationData={Animation3}
-                className="min-w-[330px] min-h-[330px]"
+                className="min-w-[330px] min-h-[330px] object-cover"
               />
             </div>
           </div>
@@ -244,7 +247,7 @@ export const HomeScreen = () => {
             <div className={clsx(asset)}>
               <AnimationWrapper
                 animationData={Animation4}
-                className="min-w-[330px] min-h-[330px]"
+                className="min-w-[330px] min-h-[330px] object-cover"
               />
             </div>
           </div>
@@ -354,7 +357,7 @@ export const HomeScreen = () => {
       </section>
       <section className={clsx(container)}>
         <div className="flex flex-wrap items-center justify-center md:justify-between gap-x-5 gap-y-4 mt-[80px] md:mt-[160px] pb-[25px] md:pb-[30px] text-white">
-          <div>
+          <div className="order-2 md:order-1 text-center md:text-left">
             <a
               href="https://docs.nfid.one/legal/terms"
               target="_blank"
@@ -376,7 +379,7 @@ export const HomeScreen = () => {
               Reserved.
             </p>
           </div>
-          <div className="flex items-center gap-x-[20px] md:gap-x-5 justify-center">
+          <div className="flex items-center gap-x-[20px] md:gap-x-5 justify-center order-1">
             <a
               href="https://twitter.com/@IdentityMaxis"
               target="_blank"

@@ -21,7 +21,9 @@ describe("nft test suite", () => {
       expect(result).toHaveLength(7)
 
       //collectibles page
-      const extNft = result.filter((nft) => nft.getCollectionId() === "64x4q-laaaa-aaaal-qdjca-cai")[0]
+      const extNft = result.filter(
+        (nft) => nft.getCollectionId() === "64x4q-laaaa-aaaal-qdjca-cai",
+      )[0]
       expect(extNft.getTokenNumber()).toEqual(2066)
       expect(extNft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
       expect(extNft.getCollectionName()).toEqual("Cellphones")
@@ -80,7 +82,9 @@ describe("nft test suite", () => {
 
       //verify YUMI interface
 
-      const yumiNFT = result.filter((nft) => nft.getCollectionId() === "yzrp5-oaaaa-aaaah-ad2xa-cai")[0]
+      const yumiNFT = result.filter(
+        (nft) => nft.getCollectionId() === "yzrp5-oaaaa-aaaah-ad2xa-cai",
+      )[0]
       expect(yumiNFT.getTokenNumber()).toEqual(9103)
       expect(yumiNFT.getCollectionId()).toEqual("yzrp5-oaaaa-aaaah-ad2xa-cai")
       expect(yumiNFT.getCollectionName()).toEqual("Mifoko")
@@ -140,7 +144,9 @@ describe("nft test suite", () => {
 
       //memecake interface
 
-      const memecakeNft = result.filter((nft) => nft.getCollectionId() === "gdeb6-lqaaa-aaaah-abvpq-cai")[0]
+      const memecakeNft = result.filter(
+        (nft) => nft.getCollectionId() === "gdeb6-lqaaa-aaaah-abvpq-cai",
+      )[0]
       expect(memecakeNft.getTokenNumber()).toEqual(5002)
       expect(memecakeNft.getCollectionName()).toEqual("Boxy Land")
       expect(memecakeNft.getTokenName()).toEqual("Boxy Land # 5002")
@@ -162,7 +168,9 @@ describe("nft test suite", () => {
         "Boxy Land will play a significant role in the Boxyverse. Each has a unique blend of environment and sediment — some with resources, some home to powerful artifacts. And a very few original lands.",
       )
       const memecakeAssetFullSize = await memeCakeDetails.getAssetFullSize()
-      expect(memecakeAssetFullSize.url).toEqual("https://gdeb6-lqaaa-aaaah-abvpq-cai.raw.ic0.app/?tokenid=ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a")
+      expect(memecakeAssetFullSize.url).toEqual(
+        "https://gdeb6-lqaaa-aaaah-abvpq-cai.raw.ic0.app/?tokenid=ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a",
+      )
       //TODO retrieve somehow correct format
       expect(memecakeAssetFullSize.format).toEqual("img")
 
@@ -170,12 +178,17 @@ describe("nft test suite", () => {
       expect(memecakeTransactions.activity).toHaveLength(2)
       expect(memecakeTransactions.isLastPage).toBeTruthy()
 
-      const soldMemecakeActivity = memecakeTransactions.activity[0].getTransactionView()
+      const soldMemecakeActivity =
+        memecakeTransactions.activity[0].getTransactionView()
       expect(soldMemecakeActivity.type).toEqual("Sale")
       expect(soldMemecakeActivity.price).toEqual("0.45 ICP")
       expect(soldMemecakeActivity.date).toEqual("2024-07-17T22:02:35.191Z")
-      expect(soldMemecakeActivity.from).toEqual("dqowy-h2khv-z73ww-duwdp-3d5ri-sgbfk-v6j4y-apzxj-mxusr-mdbys-yqe")
-      expect(soldMemecakeActivity.to).toEqual("fnitq-gnnyu-622b6-uucy7-jsrpw-biift-nb6bf-2iu2s-lks7w-4bxys-vqe")
+      expect(soldMemecakeActivity.from).toEqual(
+        "dqowy-h2khv-z73ww-duwdp-3d5ri-sgbfk-v6j4y-apzxj-mxusr-mdbys-yqe",
+      )
+      expect(soldMemecakeActivity.to).toEqual(
+        "fnitq-gnnyu-622b6-uucy7-jsrpw-biift-nb6bf-2iu2s-lks7w-4bxys-vqe",
+      )
     })
   })
 })

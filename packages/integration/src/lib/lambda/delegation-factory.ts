@@ -32,7 +32,8 @@ export async function getDelegationChainSignedByCanister(
     frontendHostname: origin,
     sessionKey: sessionPublicKey,
     maxTimeToLive: [BigInt(maxTimeToLive * 1000000)], //to nanoseconds
-    targets: targets !== undefined ? [targets.map((t) => Principal.fromText(t))] : [],
+    targets:
+      targets !== undefined ? [targets.map((t) => Principal.fromText(t))] : [],
   }
   await replaceActorIdentity(delegationFactory, identity)
   const prepareDelegationResponse = await prepareDelegation(args)
@@ -41,7 +42,8 @@ export async function getDelegationChainSignedByCanister(
     frontendHostname: origin,
     sessionKey: sessionPublicKey,
     expiration: prepareDelegationResponse[1],
-    targets: targets !== undefined ? [targets.map((t) => Principal.fromText(t))] : [],
+    targets:
+      targets !== undefined ? [targets.map((t) => Principal.fromText(t))] : [],
   }).then((r) => {
     if ("signed_delegation" in r) {
       return DelegationChain.fromDelegations(

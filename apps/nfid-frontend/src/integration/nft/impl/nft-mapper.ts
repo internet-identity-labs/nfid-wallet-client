@@ -1,9 +1,9 @@
 import { MarketPlace } from "src/integration/nft/enum/enums"
 import { MappedToken } from "src/integration/nft/geek/geek-types"
 import { NFTExt } from "src/integration/nft/impl/ext/nft-ext"
+import { NftMemeCake } from "src/integration/nft/impl/memecake/nft-memecake"
 import { NftYumi } from "src/integration/nft/impl/yumi/nft-yumi"
 import { NFT } from "src/integration/nft/nft"
-import {NftMemeCake} from "src/integration/nft/impl/memecake/nft-memecake";
 
 export class NftMapper {
   public toNFT(mappedToken: MappedToken): NFT | null {

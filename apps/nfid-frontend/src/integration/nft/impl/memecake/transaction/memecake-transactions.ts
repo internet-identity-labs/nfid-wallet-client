@@ -1,5 +1,8 @@
-import {SellTransactionRecord, TransactionRecordView} from "src/integration/nft/impl/nft-transaction-record";
-import {Transaction} from "src/integration/nft/impl/memecake/transaction/transaction-types";
+import { Transaction } from "src/integration/nft/impl/memecake/transaction/transaction-types"
+import {
+  SellTransactionRecord,
+  TransactionRecordView,
+} from "src/integration/nft/impl/nft-transaction-record"
 
 export class SoldTransactionRecordMemeCake implements SellTransactionRecord {
   private readonly from: string

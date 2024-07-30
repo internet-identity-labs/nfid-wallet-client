@@ -17,9 +17,13 @@ import { fetchAccountsService } from "frontend/integration/identity-manager/serv
 import { isDerivationBug } from "../helpers/derivation-bug"
 import { Account, AccountType } from "../type"
 
+export const INDEX_DB_CONNECTED_ACCOUNTS_KEY = (origin: string) =>
+  `${origin}-connectedAccounts`
+
 export const accountService = {
   async getAccounts(
     origin: string,
+    derivationOrigin?: string,
   ): Promise<{ public: Account; anonymous: Account[] }> {
     const publicProfile = this.getPublicProfile()
     let anonymousProfiles: Account[] = []
@@ -28,7 +32,10 @@ export const accountService = {
     anonymousProfiles.push(...legacyProfiles)
 
     if (!legacyProfiles.length) {
-      const anonymousProfile = await this.getAnonymousProfiles(origin)
+      const anonymousProfile = await this.getAnonymousProfiles(
+        origin,
+        derivationOrigin,
+      )
       anonymousProfiles.push(...anonymousProfile)
     }
 
@@ -55,11 +62,15 @@ export const accountService = {
       subaccount: this.getDefaultSubAccount(),
       type: AccountType.GLOBAL,
       balance: publicAccBalance,
+      origin,
     }
   },
-  async getLegacyAnonymousProfiles(origin: string): Promise<Account[]> {
+  async getLegacyAnonymousProfiles(
+    origin: string,
+    derivationOrigin?: string,
+  ): Promise<Account[]> {
     const accounts = await fetchAccountsService({
-      authRequest: { hostname: origin },
+      authRequest: { hostname: origin, derivationOrigin },
     })
 
     const delegations = await Promise.all(
@@ -67,6 +78,7 @@ export const accountService = {
         return getLegacyThirdPartyAuthSession(
           {
             hostname: origin,
+            derivationOrigin,
             sessionPublicKey: new Uint8Array(),
             maxTimeToLive: BigInt(WALLET_SESSION_TTL_1_MIN_IN_MS),
           },
@@ -81,6 +93,8 @@ export const accountService = {
       principal: Principal.fromUint8Array(acc.userPublicKey).toText(),
       subaccount: this.getDefaultSubAccount(),
       type: AccountType.ANONYMOUS_LEGACY,
+      origin,
+      derivationOrigin,
     }))
   },
   async getAnonymousProfiles(
@@ -105,6 +119,8 @@ export const accountService = {
         subaccount: this.getDefaultSubAccount(),
         type: AccountType.SESSION,
         balance: undefined,
+        origin,
+        derivationOrigin,
       },
     ]
 
@@ -123,6 +139,8 @@ export const accountService = {
         subaccount: this.getDefaultSubAccount(),
         type: AccountType.SESSION_WITHOUT_DERIVATION,
         balance: undefined,
+        origin,
+        derivationOrigin,
       })
     }
 

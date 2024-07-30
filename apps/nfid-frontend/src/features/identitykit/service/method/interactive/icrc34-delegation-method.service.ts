@@ -1,5 +1,6 @@
 import { DelegationChain, Ed25519PublicKey } from "@dfinity/identity"
 import { fromBase64, toBase64 } from "@slide-computer/signer"
+import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import {
   Chain,
   GLOBAL_ORIGIN,
@@ -17,7 +18,10 @@ import {
   RPCMessage,
   RPCSuccessResponse,
 } from "../../../type"
-import { accountService } from "../../account.service"
+import {
+  accountService,
+  INDEX_DB_CONNECTED_ACCOUNTS_KEY,
+} from "../../account.service"
 import { GenericError } from "../../exception-handler.service"
 import { targetService } from "../../target.service"
 import {
@@ -71,13 +75,21 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
       result: this.formatDelegationChain(chain),
     }
 
+    await authStorage.set(
+      INDEX_DB_CONNECTED_ACCOUNTS_KEY(message.origin),
+      JSON.stringify([account]),
+    )
+
     return response
   }
 
   public async getComponentData(
     message: MessageEvent<RPCMessage>,
   ): Promise<AccountsComponentData> {
-    const accounts = await accountService.getAccounts(message.origin)
+    const accounts = await accountService.getAccounts(
+      message.origin,
+      message.data?.params?.derivationOrigin,
+    )
     if (!accounts) throw new GenericError("User data has not been found")
 
     const icrc34Dto = message.data.params as unknown as Icrc34Dto
@@ -117,7 +129,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
   }
 
-  private async getChain(
+  async getChain(
     accountKeyIdentity: Account,
     icrc34Dto: Icrc34Dto,
     sessionPublicKey: Ed25519PublicKey,

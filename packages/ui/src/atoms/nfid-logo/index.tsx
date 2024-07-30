@@ -1,31 +1,3 @@
-import { useRef } from "react"
+import logo from "./NFID-logo.svg"
 
-import loader from "./NFID_Wallet_Dark.webm"
-
-export const NFIDLogo = () => {
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  const handleMouseEnter = () => {
-    if (videoRef.current) {
-      videoRef.current.play()
-    }
-  }
-
-  const handleMouseLeave = () => {
-    if (videoRef.current) {
-      videoRef.current.pause()
-      videoRef.current.currentTime = 0
-    }
-  }
-
-  return (
-    <video
-      ref={videoRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="w-[170px] object-cover relative"
-      muted
-      src={loader}
-    ></video>
-  )
-}
+export const NFIDLogo = () => <img src={logo} alt="NFID" />

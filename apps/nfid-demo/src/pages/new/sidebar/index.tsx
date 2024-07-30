@@ -1,6 +1,6 @@
 import React from "react"
 
-import { NFIDLogo } from "@nfid-frontend/ui"
+import { NFIDLogoPlayground } from "@nfid-frontend/ui"
 
 export type Section = {
   id: string
@@ -17,7 +17,7 @@ const SideNav: React.FC<SideNavProps> = ({ sections, activeSection }) => {
     <div className="relative hidden h-full p-5 bg-gray-50 md:block">
       <ul className="sticky top-5">
         <li className="flex items-center mb-5 ml-5 text-xl font-bold">
-          <NFIDLogo /> Playground
+          <NFIDLogoPlayground />
         </li>
         {sections.map((section) => (
           <li key={section.id} className="my-1 text-sm">

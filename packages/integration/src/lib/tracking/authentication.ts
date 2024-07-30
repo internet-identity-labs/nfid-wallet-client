@@ -24,7 +24,7 @@ type AuthData = {
   isNewUser: boolean
   legacyUser: boolean
   mainAccountOffered: boolean
-  networkTarget: "ICP" | "ETH" | "MATIC" | "nfid"
+  networkTarget: "ICP" | "nfid"
   passkeyUsed: boolean
   rootWallet: boolean
   transports: ""

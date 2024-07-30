@@ -22,11 +22,6 @@ interface AuthWithIICoordinatorProps {
 export function AuthWithIICoordinator({ actor }: AuthWithIICoordinatorProps) {
   const [state, send] = useActor(actor)
 
-  console.debug("AuthWithIICoordinator", {
-    context: state.context,
-    state: state.value,
-  })
-
   switch (true) {
     case state.matches("InitAuthWithII"):
       return (

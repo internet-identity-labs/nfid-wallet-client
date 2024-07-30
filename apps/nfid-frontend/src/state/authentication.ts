@@ -39,9 +39,6 @@ export interface LocalDeviceAuthSession extends AbstractAuthSession {
 export interface IIAuthSession extends AbstractAuthSession {
   sessionSource: "ii"
 }
-export interface MetamaskAuthSession extends AbstractAuthSession {
-  sessionSource: "metamask"
-}
 export interface WalletConnectAuthSession extends AbstractAuthSession {
   sessionSource: string
 }
@@ -52,5 +49,4 @@ export type AuthSession =
   | RemoteDeviceAuthSession
   | LocalDeviceAuthSession
   | IIAuthSession
-  | MetamaskAuthSession
   | WalletConnectAuthSession

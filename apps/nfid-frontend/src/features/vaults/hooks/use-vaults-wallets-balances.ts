@@ -2,7 +2,7 @@ import useSWR from "swr"
 
 import { getVaults, getWallets, ObjectState } from "@nfid/integration"
 
-import { fetchVaultsWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
+import { fetchVaultsWalletsBalances } from "frontend/features/fungible-token/fetch-balances"
 
 import { useVaultDelegation } from "./use-vault-delegation"
 

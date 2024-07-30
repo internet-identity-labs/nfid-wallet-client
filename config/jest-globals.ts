@@ -4,11 +4,8 @@ export const JEST_GLOBALS = {
   INTERNET_IDENTITY_CANISTER_ID: "nprnb-waaaa-aaaaj-qax4a-cai",
   IDENTITY_MANAGER_CANISTER_ID: "74gpt-tiaaa-aaaak-aacaa-cai",
   VAULT_CANISTER_ID: "ymvb6-7qaaa-aaaan-qbgga-cai",
-  ETH_SECRET_STORAGE_CANISTER_ID: "25nnx-kyaaa-aaaao-ab43a-cai",
   ECDSA_SIGNER_CANISTER_ID: "txkre-oyaaa-aaaap-qa3za-cai",
-  BTC_SIGNER_CANISTER_ID: "7b5jg-paaaa-aaaap-aa32q-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
-  BITCOIN_WALLET_CANISTER_ID: "iohef-tiaaa-aaaal-qbtza-cai",
   ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
   DELEGATION_FACTORY: "wklas-pyaaa-aaaak-akv3a-cai",
   PASSKEY_STORAGE: "dy546-gqaaa-aaaak-akwiq-cai",
@@ -33,17 +30,6 @@ export const JEST_GLOBALS = {
   SIGNIN_GOOGLE: "/signin",
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
-  ETHERSCAN_API_KEY: process.env["ETHERSCAN_API_KEY"],
-  RARIBLE_X_API_KEY: process.env["RARIBLE_X_API_KEY"],
-  PROD_RARIBLE_X_API_KEY: process.env["PROD_RARIBLE_X_API_KEY"],
-  ETH_ALCHEMY_API_KEY: process.env["ETH_ALCHEMY_API_KEY"],
-  MATIC_ALCHEMY_API_KEY: process.env["MATIC_ALCHEMY_API_KEY"],
-  MUMBAI_ALCHEMY_API_KEY: process.env["MUMBAI_ALCHEMY_API_KEY"],
-  METAMASK_SIGNIN_MESSAGE:
-    "Hi there from NFID! Sign this message to prove you own this wallet and we’ll log you in. This won’t cost you any Ether.",
-  WALLET_CONNECT_PROJECT_ID: "aca79764a3850f6e712e91e7f9164e87",
-  RAMP_WALLET_API_KEY: process.env["RAMP_WALLET_API_KEY"],
-  RAMP_WALLET_SDK_URL: "https://app.demo.ramp.network/",
   AWS_ECDSA_REGISTER:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register",
   AWS_ECDSA_REGISTER_ADDRESS:
@@ -56,7 +42,6 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
   AWS_PASSKEY:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/passkey",
-  BLOCK_CYPHER_TOKEN: "a983f9288e73496f83d02ea3af7e2f3b",
   AWS_SEND_VERIFICATION_EMAIL:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
   AWS_LINK_GOOGLE_ACCOUNT:

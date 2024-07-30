@@ -1,7 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Cache } from "node-ts-cache"
 import { NonFungibleItem } from "packages/integration/src/lib/asset/types"
-import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 import { toUserNFT } from "src/ui/connnector/non-fungible-asset-screen/util/util"
 import {
   AssetFilter,
@@ -13,6 +12,7 @@ import {
 import { NetworkKey, readAddressFromLocalCache } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
 
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { fetchProfile } from "frontend/integration/identity-manager"
 
 import { connectorCache } from "../cache"

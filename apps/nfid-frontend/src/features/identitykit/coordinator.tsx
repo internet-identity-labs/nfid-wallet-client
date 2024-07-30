@@ -15,16 +15,6 @@ export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)
   console.debug("IdentityKitRPCCoordinator")
 
-  React.useEffect(
-    () =>
-      console.log("IdentityKitRPCCoordinator", {
-        context: state.context,
-        state: state.value,
-        children: state.children,
-      }),
-    [state.value, state.context, state.children],
-  )
-
   const Component = useMemo(() => {
     switch (true) {
       case state.matches("Main.Authentication.CheckAuthentication"):

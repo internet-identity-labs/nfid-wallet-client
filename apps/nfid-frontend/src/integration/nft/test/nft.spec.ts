@@ -70,7 +70,12 @@ describe("nft test suite", () => {
         "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
       )
 
-      const soldNFTDetails = await result.items[0].getDetails()
+      const soldNFTDetails = await result.items
+        .filter(
+          (nft) => nft.getCollectionId() === "p5jg7-6aaaa-aaaah-qcolq-cai",
+        )[0]
+        .getDetails()
+
       const soldNFTTransactions = await soldNFTDetails.getTransactions(0, 10)
       expect(soldNFTTransactions.activity).toHaveLength(1)
       const sale = soldNFTTransactions.activity[0].getTransactionView()

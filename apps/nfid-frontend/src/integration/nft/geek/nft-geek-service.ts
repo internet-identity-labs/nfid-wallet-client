@@ -24,7 +24,7 @@ export class NftGeekService {
       const registryItem = registry[collection.canisterId]
       if (registryItem) {
         registryItem.tokens
-          .sort((a, b) => a.timeMillis - b.timeMillis)
+          .sort((a, b) => b.timeMillis - a.timeMillis)
           .forEach((token) => {
             const mappedToken: MappedToken = {
               millis: token.timeMillis,
@@ -39,7 +39,6 @@ export class NftGeekService {
           })
       }
     })
-
     return mappedTokens
   }
 }

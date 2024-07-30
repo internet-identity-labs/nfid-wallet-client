@@ -44,7 +44,7 @@ jobs:
     name: Build NFID-Demo
     needs: check-secrets
     runs-on: ubuntu-latest
-    if: ${{ contains( github.ref_name, 'production' ) }}
+    if: ${{ contains( github.ref_name, 'ic' ) }}
 
     steps:
       - name: INPUT => Checks.
@@ -108,9 +108,9 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            production)
+            ic)
               NETWORK_NAME='ic'
-              ENV_FILE='.env.production'
+              ENV_FILE='.env.ic'
               OPTIONS='--skip-nx-cache'
               ;;
             *)
@@ -174,7 +174,7 @@ jobs:
   deploy-demo:
     name: Deploy NFID-Demo
     needs: build-demo
-    if: ${{ contains( github.ref_name, 'production' ) }}
+    if: ${{ contains( github.ref_name, 'ic' ) }}
     runs-on:
       group: dfx-runner
     defaults:
@@ -213,7 +213,7 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            production)
+            ic)
               NETWORK_NAME='ic'
               ;;
             *)

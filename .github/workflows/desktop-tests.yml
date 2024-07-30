@@ -14,8 +14,8 @@ on:
         type: choice
         options:
           - dev
-          - staging
-          - production
+          - stage
+          - ic
       logLevel:
         description: "Log level"
         required: true

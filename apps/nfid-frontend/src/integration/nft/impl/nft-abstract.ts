@@ -1,4 +1,5 @@
 import { encodeTokenIdentifier } from "ictool"
+import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
 import { MarketPlace } from "src/integration/nft/enum/enums"
 import { MappedToken } from "src/integration/nft/geek/geek-types"
 import {
@@ -69,11 +70,24 @@ export abstract class NftImpl implements NFT {
     return this.tokenFloorPriceUSD
   }
 
-  abstract getTokenLink(): string
-
   abstract getDetails(): Promise<NFTDetails>
 
-  abstract getAssetPreview(): AssetPreview
+  getAssetPreview(): Promise<AssetPreview> {
+    if (this.assetPreview === undefined) {
+      let url = entrepotAsset(this.getCollectionId(), this.getTokenId(), false)
+      return Promise.resolve({
+        //TODO can we have not img format in preview?
+        format: "img",
+        url: url,
+      })
+    } else {
+      return Promise.resolve(this.assetPreview)
+    }
+  }
+
+  getTokenLink(): string {
+    return getTokenLink(this.getCollectionId(), this.getTokenNumber())
+  }
 }
 
 export abstract class NFTDetailsImpl implements NFTDetails {

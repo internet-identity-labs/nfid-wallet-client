@@ -17,7 +17,8 @@ export interface NFT {
   getTokenFloorPriceUSD(): number | undefined
   getTokenLink(): string
   getDetails(): Promise<NFTDetails>
-  getAssetPreview(): AssetPreview
+  //we can not know asset type without call to host (probably)
+  getAssetPreview(): Promise<AssetPreview>
   //TODO
   //transfer(): Promise<bigint>;
 }

@@ -62,6 +62,6 @@ export const idlFactory = ({ IDL }: any) => {
     ),
   })
 }
-export const init = ({ }) => {
+export const init = ({}) => {
   return []
 }

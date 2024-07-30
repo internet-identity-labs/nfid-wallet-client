@@ -203,7 +203,7 @@ export const byGoogleDevice = ({ browser }: GoogleDeviceFilter) => {
 }
 
 export const byWalletDevice = ({ label }: WalletDeviceFilter) => {
-  const knownWalletDevices = ["Internet Identity", "Metamask"]
+  const knownWalletDevices = ["Internet Identity"]
   return knownWalletDevices.indexOf(label) > -1
 }
 

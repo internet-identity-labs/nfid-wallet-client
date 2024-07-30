@@ -11,7 +11,7 @@ type SendToken = {
 }
 
 const mapTokenStandard = (tokenStandard: string) => {
-  const nativeTokens = ["ICP", "ETH", "MATIC", "BTC"]
+  const nativeTokens = ["ICP"]
   return nativeTokens.includes(tokenStandard) ? "native" : tokenStandard
 }
 class SendReceiveTracking {

@@ -5,7 +5,7 @@ import { FungibleAsset } from "packages/integration/src/lib/asset/types"
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 
 import { Blockchain, NativeToken, StandardizedToken } from "../types"
 
@@ -85,10 +85,6 @@ export type IConnector<T extends TransferModalType> =
   T extends TransferModalType.FT ? ITransferFTConnector : ITransferNFTConnector
 
 export type TokenBalance = { balance: string; balanceinUsd?: string }
-
-export type IConfirmEVMRequest = {
-  cacheKey: string
-}
 
 export type ITransferRequest = {
   to: string

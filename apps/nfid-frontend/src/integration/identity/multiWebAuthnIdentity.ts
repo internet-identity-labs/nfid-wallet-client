@@ -17,6 +17,7 @@ import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import { toast } from "react-toastify"
 
 import { authenticationTracking, IPasskeyMetadata } from "@nfid/integration"
@@ -34,37 +35,35 @@ export type CredentialData = {
  * more information about WebAuthentication.
  */
 export class MultiWebAuthnIdentity extends SignIdentity {
-  /**
-   * Create an identity from a JSON serialization.
-   * @param json - json to parse
-   */
   public static fromCredentials(
     credentialData: CredentialData[],
     withSecurityDevices?: boolean,
-    mediation?: "conditional" | "required" | "optional" | "silent",
+    mediation?: CredentialMediationRequirement,
     signal?: AbortSignal,
     isNewDevice?: boolean,
   ): MultiWebAuthnIdentity {
-    return new this(
+    const instance = new this(
       credentialData,
       withSecurityDevices,
       mediation,
       signal,
       isNewDevice,
     )
+    instance.restoreIdentity()
+    return instance
   }
 
   private operationIsActive: boolean = true
   public _actualIdentity?: WebAuthnIdentity
   public _withSecurityDevices?: boolean
-  public _mediation?: "conditional" | "required" | "optional" | "silent"
+  public _mediation?: CredentialMediationRequirement
   public _signal?: AbortSignal
   public _isNewDevice?: boolean
 
   protected constructor(
     readonly credentialData: CredentialData[],
     withSecurityDevices?: boolean,
-    mediation?: "conditional" | "required" | "optional" | "silent",
+    mediation?: CredentialMediationRequirement,
     signal?: AbortSignal,
     isNewDevice?: boolean,
   ) {
@@ -74,6 +73,29 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     this._mediation = mediation
     this._signal = signal
     this._isNewDevice = isNewDevice
+
+    window.addEventListener("beforeunload", () => this.saveIdentity())
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        this.restoreIdentity()
+      }
+    })
+  }
+
+  private async saveIdentity(): Promise<void> {
+    if (this._actualIdentity) {
+      await authStorage.set(
+        "actualIdentity",
+        JSON.stringify(this._actualIdentity.toJSON()),
+      )
+    }
+  }
+
+  private async restoreIdentity(): Promise<void> {
+    const savedIdentity = await authStorage.get("actualIdentity")
+    if (savedIdentity) {
+      this._actualIdentity = WebAuthnIdentity.fromJSON(savedIdentity)
+    }
   }
 
   public getPublicKey(): PublicKey {
@@ -102,8 +124,8 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       }))
     }
 
-    const result = (await navigator.credentials.get({
-      mediation: this._mediation as any,
+    let result = (await navigator.credentials.get({
+      mediation: this._mediation,
       publicKey: publicKeyOptions,
       signal: this._signal,
     })) as PublicKeyCredential
@@ -113,13 +135,13 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
           const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
 
-          // would be nice if WebAuthnIdentity had a directly usable constructor
-          this._actualIdentity = WebAuthnIdentity.fromJSON(
+          const id = WebAuthnIdentity.fromJSON(
             JSON.stringify({
               rawId: Buffer.from(cd.credentialId).toString("hex"),
               publicKey: Buffer.from(strippedKey).toString("hex"),
             }),
           )
+          this._actualIdentity = id
         }
       })
     } else {
@@ -129,6 +151,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         passkeyMetadata = await passkeyConnector.getPasskeyByCredentialID(
           result.id,
         )
+
         authenticationTracking.updateData({
           authenticatorAttachment: passkeyMetadata.type,
         })
@@ -155,7 +178,6 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     }
 
     if (this._actualIdentity === undefined) {
-      // Odd, user logged in with a credential we didn't provide?
       throw new Error("Internal error: could not recover identity")
     }
 
@@ -167,12 +189,11 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         signature: new Uint8Array(response.signature),
       }),
     )
-    // eslint-disable-next-line
+
     if (!cbor) {
       throw new Error("failed to encode cbor")
     }
 
-    // Check if the operation was cancelled
     if (!this.operationIsActive) {
       throw new Error("Operation was cancelled")
     }

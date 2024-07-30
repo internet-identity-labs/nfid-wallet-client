@@ -4,7 +4,7 @@ import {
 } from "packages/integration/src/lib/asset/types"
 import React from "react"
 
-import { useAllToken } from "frontend/features/fungable-token/use-all-token"
+import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { rmProto } from "frontend/integration/identity-manager"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"

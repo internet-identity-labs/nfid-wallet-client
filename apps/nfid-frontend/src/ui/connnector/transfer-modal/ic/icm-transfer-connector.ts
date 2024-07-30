@@ -17,8 +17,8 @@ import {
 } from "@nfid/integration"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 
-import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
-import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
+import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
+import { fetchVaultWalletsBalances } from "frontend/features/fungible-token/fetch-balances"
 import { PRINCIPAL_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"

@@ -1,6 +1,6 @@
 import React from "react"
 
-import { useAllToken } from "frontend/features/fungable-token/use-all-token"
+import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { AssetFilter } from "frontend/ui/connnector/types"
 import ProfileAssetsPage from "frontend/ui/pages/new-profile/assets"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"

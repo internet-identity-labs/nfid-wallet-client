@@ -4,8 +4,8 @@ import React from "react"
 
 import { getWalletName } from "@nfid/integration"
 
-import { TokenBalance } from "frontend/features/fungable-token/fetch-balances"
-import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
+import { TokenBalance } from "frontend/features/fungible-token/fetch-balances"
+import { useUserBalances } from "frontend/features/fungible-token/icp/hooks/use-user-balances"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { sortAlphabetic, keepStaticOrder } from "frontend/ui/utils/sorting"
@@ -21,8 +21,6 @@ export type Wallet = {
   address?: string
   vaultId?: bigint
   vaultName?: string
-  ethAddress?: string
-  btcAddress?: string
 }
 
 export const useAllWallets = () => {

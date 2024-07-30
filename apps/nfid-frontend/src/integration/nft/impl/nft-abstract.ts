@@ -1,4 +1,5 @@
 import { encodeTokenIdentifier } from "ictool"
+import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
 import { MarketPlace } from "src/integration/nft/enum/enums"
 import { MappedToken } from "src/integration/nft/geek/geek-types"
 import {
@@ -6,7 +7,6 @@ import {
   NFTTransactions,
 } from "src/integration/nft/impl/nft-types"
 import { NFT, NFTDetails, TransactionRecord } from "src/integration/nft/nft"
-import {entrepotAsset, getTokenLink} from "src/integration/entrepot/lib";
 
 export abstract class NftImpl implements NFT {
   private readonly millis: number

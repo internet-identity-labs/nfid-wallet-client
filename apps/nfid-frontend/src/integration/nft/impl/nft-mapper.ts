@@ -1,10 +1,10 @@
 import { MarketPlace } from "src/integration/nft/enum/enums"
 import { MappedToken } from "src/integration/nft/geek/geek-types"
 import { NftExt } from "src/integration/nft/impl/ext/nft-ext"
+import { NftIcpSwap } from "src/integration/nft/impl/icpswap/nft-icpswap"
 import { NftMemeCake } from "src/integration/nft/impl/memecake/nft-memecake"
 import { NftYumi } from "src/integration/nft/impl/yumi/nft-yumi"
 import { NFT } from "src/integration/nft/nft"
-import {NftIcpSwap} from "src/integration/nft/impl/icpswap/nft-icpswap";
 
 export class NftMapper {
   public toNFT(mappedToken: MappedToken): NFT | null {

@@ -1,26 +1,28 @@
-import {NFTDetailsImpl, NftImpl} from "src/integration/nft/impl/nft-abstract"
-import {NFTDetails, TransactionRecord} from "src/integration/nft/nft"
+import { icpswapTransactionMapper } from "src/integration/nft/impl/icpswap/transaction/icpswap-transaction-mapper"
+import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
+import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+
+import { actor, hasOwnProperty } from "@nfid/integration"
+
+import { AssetPreview, DisplayFormat } from "../nft-types"
+import { idlFactory } from "./idl/SwapNFT"
 import {
   _SERVICE as IcpSwapCanister,
   CanisterInfo,
   IcsMetadata,
   NFTResult,
   ResponseResult_3,
-  ResponseResult_5
+  ResponseResult_5,
 } from "./idl/SwapNFT.d"
-import {idlFactory} from "./idl/SwapNFT"
-import {AssetPreview, DisplayFormat} from "../nft-types"
-import {actor, hasOwnProperty} from "@nfid/integration";
-import {icpswapTransactionMapper} from "src/integration/nft/impl/icpswap/transaction/icpswap-transaction-mapper";
 
 export class NftIcpSwap extends NftImpl {
   private icsMetadata: IcsMetadata | undefined
 
   async getAssetPreview(): Promise<AssetPreview> {
-    return await this.getIcsMetadata().then(icsMetadata => {
+    return await this.getIcsMetadata().then((icsMetadata) => {
       return {
         url: icsMetadata.filePath,
-        format: toFormat(icsMetadata.fileType)
+        format: toFormat(icsMetadata.fileType),
       }
     })
   }
@@ -30,16 +32,22 @@ export class NftIcpSwap extends NftImpl {
       this.getCollectionId(),
       idlFactory,
     )
-    const icsMetadata: ResponseResult_3 = await canisterActor.icsMetadata(this.getTokenNumber())
+    const icsMetadata: ResponseResult_3 = await canisterActor.icsMetadata(
+      this.getTokenNumber(),
+    )
     const nftResult: NFTResult = await canisterActor.canisterInfo()
-    if (hasOwnProperty(icsMetadata, 'err')) {
+    if (hasOwnProperty(icsMetadata, "err")) {
       throw new Error(icsMetadata.err as string)
     }
-    if (hasOwnProperty(nftResult, 'err')) {
+    if (hasOwnProperty(nftResult, "err")) {
       throw new Error(nftResult.err as string)
     }
     this.icsMetadata = icsMetadata.ok
-    return new NftIcpSwapDetails(icsMetadata.ok, nftResult.ok, this.getTokenId())
+    return new NftIcpSwapDetails(
+      icsMetadata.ok,
+      nftResult.ok,
+      this.getTokenId(),
+    )
   }
 
   private async getIcsMetadata(): Promise<IcsMetadata> {
@@ -48,14 +56,15 @@ export class NftIcpSwap extends NftImpl {
         this.getCollectionId(),
         idlFactory,
       )
-      const icsMetadata: ResponseResult_3 = await canisterActor.icsMetadata(this.getTokenNumber())
-      if (hasOwnProperty(icsMetadata, 'err')) {
+      const icsMetadata: ResponseResult_3 = await canisterActor.icsMetadata(
+        this.getTokenNumber(),
+      )
+      if (hasOwnProperty(icsMetadata, "err")) {
         throw new Error(icsMetadata.err as string)
       }
       this.icsMetadata = icsMetadata.ok
     }
     return this.icsMetadata
-
   }
 }
 
@@ -64,7 +73,11 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
   private readonly canisterInfo: CanisterInfo
   private readonly tokenId: string
 
-  constructor(icsMetadata: IcsMetadata, canisterInfo: CanisterInfo, tokenId: string) {
+  constructor(
+    icsMetadata: IcsMetadata,
+    canisterInfo: CanisterInfo,
+    tokenId: string,
+  ) {
     super()
     this.icsMetadata = icsMetadata
     this.canisterInfo = canisterInfo
@@ -83,8 +96,12 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
       this.icsMetadata.cId,
       idlFactory,
     )
-    const response: ResponseResult_5 = await canisterActor.findTxRecord(this.tokenId, BigInt(from), BigInt(to))
-    if (hasOwnProperty(response, 'err')) {
+    const response: ResponseResult_5 = await canisterActor.findTxRecord(
+      this.tokenId,
+      BigInt(from),
+      BigInt(to),
+    )
+    if (hasOwnProperty(response, "err")) {
       throw new Error(response.err as string)
     }
 
@@ -93,7 +110,7 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
       .filter((tx): tx is TransactionRecord => tx !== null)
     return {
       activity,
-      isLastPage: response.ok.totalElements <= to
+      isLastPage: response.ok.totalElements <= to,
     }
   }
 
@@ -101,13 +118,10 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
     let format: DisplayFormat = toFormat(this.icsMetadata.filePath)
     return {
       url: this.icsMetadata.filePath,
-      format
+      format,
     }
   }
-
-
 }
-
 
 function toFormat(file: string): DisplayFormat {
   //TODO extend when we come across other file types

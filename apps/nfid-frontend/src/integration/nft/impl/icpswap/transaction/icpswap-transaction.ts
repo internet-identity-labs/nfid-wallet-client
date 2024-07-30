@@ -1,11 +1,13 @@
+import { TransferRecord } from "src/integration/nft/impl/icpswap/idl/SwapNFT.d"
 import {
   MintTransactionRecord,
   TransactionRecordView,
-  TransferTransactionRecord
-} from "src/integration/nft/impl/nft-transaction-record";
-import {TransferRecord} from "src/integration/nft/impl/icpswap/idl/SwapNFT.d";
+  TransferTransactionRecord,
+} from "src/integration/nft/impl/nft-transaction-record"
 
-export class TransferTransactionRecordIcpSwap implements TransferTransactionRecord {
+export class TransferTransactionRecordIcpSwap
+  implements TransferTransactionRecord
+{
   private readonly from: string
   private readonly to: string
   private readonly date: Date

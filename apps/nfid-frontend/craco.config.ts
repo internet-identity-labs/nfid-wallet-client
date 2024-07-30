@@ -36,6 +36,7 @@ const setupCSP = () => {
         "https://api.coinbase.com",
         "https://api.pro.coinbase.com",
         "https://eu.posthog.com",
+        "https://icp-api.io",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

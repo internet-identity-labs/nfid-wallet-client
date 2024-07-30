@@ -17,8 +17,8 @@ export interface VaultsListPageProps {}
 
 export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
-  const { isReady } = useVaultMember()
 
+  const { isReady } = useVaultMember()
   const {
     data: vaults,
     mutate,

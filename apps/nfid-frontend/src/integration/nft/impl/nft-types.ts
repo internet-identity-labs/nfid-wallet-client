@@ -10,4 +10,11 @@ export type NFTTransactions = {
   isLastPage: boolean
 }
 
+export interface PaginatedResponse<T> {
+  items: T[]
+  currentPage: number
+  totalPages: number
+  totalItems: number
+}
+
 export type DisplayFormat = "img" | "iframe" | "video"

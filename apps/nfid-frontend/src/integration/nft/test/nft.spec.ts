@@ -18,10 +18,13 @@ describe("nft test suite", () => {
         .spyOn(nftGeekService as any, "fetchNftGeekData")
         .mockResolvedValue(mockGeekResponse)
       const result = await nftService.getNFTs(principal)
-      expect(result).toHaveLength(8)
+      expect(result.items).toHaveLength(8)
+      expect(result.totalPages).toEqual(1)
+      expect(result.currentPage).toEqual(1)
+      expect(result.totalItems).toEqual(8)
 
       //collectibles page
-      const extNft = result.filter(
+      const extNft = result.items.filter(
         (nft) => nft.getCollectionId() === "64x4q-laaaa-aaaal-qdjca-cai",
       )[0]
       expect(extNft.getTokenNumber()).toEqual(2066)
@@ -58,32 +61,32 @@ describe("nft test suite", () => {
       const transactions = await details.getTransactions(0, 10)
       expect(transactions.activity).toHaveLength(2)
       const transfer = transactions.activity[0].getTransactionView()
-      expect(transfer.type).toEqual("Transfer")
-      expect(transfer.date).toEqual("2024-07-17T14:21:58.748Z")
-      expect(transfer.from).toEqual(
+      expect(transfer.getType()).toEqual("Transfer")
+      expect(transfer.getFormattedDate()).toEqual("2024-07-17T14:21:58.748Z")
+      expect(transfer.getFrom()).toEqual(
         "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
       )
-      expect(transfer.to).toEqual(
+      expect(transfer.getTo()).toEqual(
         "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
       )
 
-      const soldNFTDetails = await result[0].getDetails()
+      const soldNFTDetails = await result.items[0].getDetails()
       const soldNFTTransactions = await soldNFTDetails.getTransactions(0, 10)
       expect(soldNFTTransactions.activity).toHaveLength(1)
       const sale = soldNFTTransactions.activity[0].getTransactionView()
-      expect(sale.type).toEqual("Sale")
-      expect(sale.date).toEqual("2022-01-18T05:29:26.428Z")
-      expect(sale.from).toEqual(
+      expect(sale.getType()).toEqual("Sale")
+      expect(sale.getFormattedDate()).toEqual("2022-01-18T05:29:26.428Z")
+      expect(sale.getFrom()).toEqual(
         "f7sgc-7glh6-n67he-ollmd-dpy26-2xdbo-vyzxo-pbboq-vkb6v-vfu4f-uqe",
       )
-      expect(sale.to).toEqual(
+      expect(sale.getTo()).toEqual(
         "550660832ce68b21bbcc5af42e0db30ce87abfffbf41f99a8b9c0de80d58face",
       )
-      expect(sale.price).toEqual("0.188 ICP")
+      expect(sale.getFormattedPrice()).toEqual("0.188 ICP")
 
       //verify YUMI interface
 
-      const yumiNFT = result.filter(
+      const yumiNFT = result.items.filter(
         (nft) => nft.getCollectionId() === "yzrp5-oaaaa-aaaah-ad2xa-cai",
       )[0]
       expect(yumiNFT.getTokenNumber()).toEqual(9103)
@@ -124,29 +127,33 @@ describe("nft test suite", () => {
 
       const listYumiActivity =
         yumiNFTtransactions.activity[8].getTransactionView()
-      expect(listYumiActivity.type).toEqual("List")
-      expect(listYumiActivity.to).toEqual(undefined)
-      expect(listYumiActivity.from).toEqual(
+      expect(listYumiActivity.getType()).toEqual("List")
+      expect(listYumiActivity.getTo()).toEqual(undefined)
+      expect(listYumiActivity.getFrom()).toEqual(
         "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
       )
-      expect(listYumiActivity.date).toEqual("2024-06-03T14:06:33.689Z")
-      expect(listYumiActivity.price).toEqual("3 ICP")
+      expect(listYumiActivity.getFormattedDate()).toEqual(
+        "2024-06-03T14:06:33.689Z",
+      )
+      expect(listYumiActivity.getFormattedPrice()).toEqual("3 ICP")
 
       const soldYumiActivity =
         yumiNFTtransactions.activity[0].getTransactionView()
-      expect(soldYumiActivity.type).toEqual("Sale")
-      expect(soldYumiActivity.to).toEqual(
+      expect(soldYumiActivity.getType()).toEqual("Sale")
+      expect(soldYumiActivity.getTo()).toEqual(
         "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
       )
-      expect(soldYumiActivity.from).toEqual(
+      expect(soldYumiActivity.getFrom()).toEqual(
         "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
       )
-      expect(soldYumiActivity.date).toEqual("2024-07-17T14:01:34.027Z")
-      expect(listYumiActivity.price).toEqual("3 ICP")
+      expect(soldYumiActivity.getFormattedDate()).toEqual(
+        "2024-07-17T14:01:34.027Z",
+      )
+      expect(listYumiActivity.getFormattedPrice()).toEqual("3 ICP")
 
       //memecake interface
 
-      const memecakeNft = result.filter(
+      const memecakeNft = result.items.filter(
         (nft) => nft.getCollectionId() === "gdeb6-lqaaa-aaaah-abvpq-cai",
       )[0]
       expect(memecakeNft.getTokenNumber()).toEqual(5002)
@@ -183,19 +190,21 @@ describe("nft test suite", () => {
 
       const soldMemecakeActivity =
         memecakeTransactions.activity[0].getTransactionView()
-      expect(soldMemecakeActivity.type).toEqual("Sale")
-      expect(soldMemecakeActivity.price).toEqual("0.45 ICP")
-      expect(soldMemecakeActivity.date).toEqual("2024-07-17T22:02:35.191Z")
-      expect(soldMemecakeActivity.from).toEqual(
+      expect(soldMemecakeActivity.getType()).toEqual("Sale")
+      expect(soldMemecakeActivity.getFormattedPrice()).toEqual("0.45 ICP")
+      expect(soldMemecakeActivity.getFormattedDate()).toEqual(
+        "2024-07-17T22:02:35.191Z",
+      )
+      expect(soldMemecakeActivity.getFrom()).toEqual(
         "dqowy-h2khv-z73ww-duwdp-3d5ri-sgbfk-v6j4y-apzxj-mxusr-mdbys-yqe",
       )
-      expect(soldMemecakeActivity.to).toEqual(
+      expect(soldMemecakeActivity.getTo()).toEqual(
         "fnitq-gnnyu-622b6-uucy7-jsrpw-biift-nb6bf-2iu2s-lks7w-4bxys-vqe",
       )
 
       //ICPSWAP
 
-      const icpswapNft = result.filter(
+      const icpswapNft = result.items.filter(
         (nft) => nft.getCollectionId() === "gfcya-pyaaa-aaaan-qbxda-cai",
       )[0]
       const icpswapAsset = await icpswapNft.getAssetPreview()
@@ -214,23 +223,27 @@ describe("nft test suite", () => {
       expect(icpswapTransactions.isLastPage).toBeTruthy()
       const icpswapActivity =
         icpswapTransactions.activity[0].getTransactionView()
-      expect(icpswapActivity.type).toEqual("Transfer")
-      expect(icpswapActivity.price).toEqual(undefined)
-      expect(icpswapActivity.date).toEqual("2024-07-17T21:57:56.590Z")
-      expect(icpswapActivity.from).toEqual(
+      expect(icpswapActivity.getType()).toEqual("Transfer")
+      expect(icpswapActivity.getFormattedPrice()).toEqual(undefined)
+      expect(icpswapActivity.getFormattedDate()).toEqual(
+        "2024-07-17T21:57:56.590Z",
+      )
+      expect(icpswapActivity.getFrom()).toEqual(
         "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
       )
-      expect(icpswapActivity.to).toEqual(
+      expect(icpswapActivity.getTo()).toEqual(
         "0051449d6ed40385865c7ddd44e1ce87a4e0c3d054bd86b936a9aedf094f62df",
       )
 
       const icpswapActivityMint =
         icpswapTransactions.activity[2].getTransactionView()
-      expect(icpswapActivityMint.type).toEqual("Mint")
-      expect(icpswapActivityMint.price).toEqual("0 ICP")
-      expect(icpswapActivityMint.date).toEqual("2022-12-07T08:53:48.919Z")
-      expect(icpswapActivityMint.from).toEqual(undefined)
-      expect(icpswapActivityMint.to).toEqual(
+      expect(icpswapActivityMint.getType()).toEqual("Mint")
+      expect(icpswapActivityMint.getFormattedPrice()).toEqual("0 ICP")
+      expect(icpswapActivityMint.getFormattedDate()).toEqual(
+        "2022-12-07T08:53:48.919Z",
+      )
+      expect(icpswapActivityMint.getFrom()).toEqual(undefined)
+      expect(icpswapActivityMint.getTo()).toEqual(
         "af8283ad383bc6e16509683b3256fdb4a5d2ece25261e8c39b1677bab7019e44",
       )
     })

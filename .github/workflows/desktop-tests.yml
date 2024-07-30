@@ -85,6 +85,8 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
+          NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
 
   docker-for-e2e:
     name: Docker Image Build
@@ -420,14 +422,20 @@ jobs:
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+      TARGET_URL: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
+      NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
+      NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
     steps:
-      - name: Get history
-        uses: actions/checkout@v4
-        continue-on-error: true
+      - name: Download report history from S3
+        uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
-          ref: gh-pages
-          path: gh-pages
+          command: cp
+          source: s3://nfid-frontend-e2e-report/last-history
+          destination: gh-pages/last-history
+          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          flags: --recursive
 
       - name: Load test results
         uses: actions/download-artifact@v4
@@ -443,23 +451,24 @@ jobs:
           gh_pages: gh-pages
           allure_report: apps/nfid-frontend-e2e/allure-report
           allure_history: apps/nfid-frontend-e2e/allure-history
-          keep_reports: 20
           github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
-      - name: Deploy report to Github Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload report to S3
+        uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: apps/nfid-frontend-e2e/allure-history
-
-      - name: Upload url to file
-        env:
-          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
-        run: echo "$target_url" > "report_url.txt"
+          command: cp
+          source: apps/nfid-frontend-e2e/allure-history
+          destination: s3://nfid-frontend-e2e-report
+          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          flags: --recursive
 
       - name: Upload url to PR comments
+        env:
+          target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
         run: |
+          echo $TARGET_URL
           if [ -n "${URL}" ]; then
             printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
             curl \
@@ -471,7 +480,12 @@ jobs:
               -d "$data"
           fi
 
-      - name: Upload reports
+      - name: Upload url to file
+        env:
+          target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
+        run: echo "$target_url" > "report_url.txt"
+
+      - name: Upload report_url.txt
         uses: actions/upload-artifact@v4
         with:
           name: ReportUrl

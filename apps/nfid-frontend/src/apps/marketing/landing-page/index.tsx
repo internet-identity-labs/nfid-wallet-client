@@ -2,7 +2,6 @@ import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
 import React, { useCallback } from "react"
-import { Helmet } from "react-helmet-async"
 import { useNavigate, useLocation } from "react-router-dom"
 
 import { Button, NFIDLogo } from "@nfid-frontend/ui"
@@ -90,10 +89,7 @@ export const HomeScreen = () => {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="overflow-x-hidden bg-black">
-      <Helmet>
-        <meta name="theme-color" content="#141518" />
-      </Helmet>
+    <div className="overflow-x-hidden">
       <NFIDAuthentication
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}
@@ -123,7 +119,10 @@ export const HomeScreen = () => {
         </div>
       </div>
       <section
-        className={clsx("md:h-[75vh] relative overflow-visible", container)}
+        className={clsx(
+          "md:h-[75vh] relative overflow-visible max-h-[800px]",
+          container,
+        )}
       >
         <div className="gradient-radial"></div>
         <div className="relative z-10 pt-[15vh] md:max-w-[420px] lg:max-w-[540px] text-center md:text-left">

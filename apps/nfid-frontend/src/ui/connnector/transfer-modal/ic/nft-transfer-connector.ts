@@ -1,9 +1,9 @@
 import { Cache } from "node-ts-cache"
 
-import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
+import { IGroupedOptions } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { principalTokens } from "frontend/integration/entrepot"
 
 import { connectorCache } from "../../cache"
@@ -43,7 +43,7 @@ export class IcNFTTransferConnector
 }
 
 export const icNFTTransferConnector = new IcNFTTransferConnector({
-  icon: IconPngEthereum,
+  icon: "",
   tokenStandard: TokenStandards.ICP,
   blockchain: Blockchain.IC,
   addressPlaceholder: "Recipient IC address",

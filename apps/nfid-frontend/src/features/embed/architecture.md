@@ -5,7 +5,6 @@
 ```mermaid
 sequenceDiagram
 
-    participant R as Rarible
     participant NCP as NFIDConnectionProvider
     participant NFID as NFID
     participant NFIDP as NFIDInpageProvider

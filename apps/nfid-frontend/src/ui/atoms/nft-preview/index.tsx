@@ -8,7 +8,7 @@ import { trimConcat } from "src/ui/atoms/util/util"
 import { IconCmpDots } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { ProfileContext } from "frontend/provider"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 

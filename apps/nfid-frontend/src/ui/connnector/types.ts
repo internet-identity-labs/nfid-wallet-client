@@ -2,10 +2,11 @@ import {
   TokenBalanceSheet,
   TransferResponse,
 } from "packages/integration/src/lib/asset/types"
-import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 
 import { NonFungibleAsset } from "@nfid/integration"
 import { TokenStandards } from "@nfid/integration/token/types"
+
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 
 export type IFungibleAssetConnector = StandardizedToken<string> & {
   getTokenConfigs(assetFilter: AssetFilter[]): Promise<Array<TokenConfig>>
@@ -37,48 +38,22 @@ export type TokenDetailsConfig = {
   icon: string
 }
 
-export type AssetErc20Config = {
-  network: Network
+export type AssetNativeConfig = {
+  title: string
   tokenStandard: TokenStandards
-  icon: string
   blockchain: Blockchain
+  icon: string
   feeCurrency: NativeToken
 }
 
-export type AssetNativeConfig = AssetErc20Config & {
-  title: string
-}
-
 export enum Blockchain {
-  ETHEREUM = "Ethereum",
-  POLYGON = "Polygon",
-  POLYGON_MUMBAI = "Polygon Mumbai",
   IC = "Internet Computer",
-  BITCOIN = "Bitcoin",
 }
 
 export enum NativeToken {
-  ETH = "ETH",
-  MATIC = "MATIC",
   ICP = "ICP",
-  BTC = "BTC",
 }
 
-export enum ETHNetwork {
-  MAINNET = "",
-}
-
-export enum PolygonNetwork {
-  MAINNET = "",
-  MUMBAI = "Mumbai",
-}
-
-export enum BTCNetwork {
-  MAINNET = "",
-  TESTNET = "Testnet",
-}
-
-export type Network = ETHNetwork | PolygonNetwork | BTCNetwork
 export interface TokenConfig {
   balance: bigint | undefined
   currency: string

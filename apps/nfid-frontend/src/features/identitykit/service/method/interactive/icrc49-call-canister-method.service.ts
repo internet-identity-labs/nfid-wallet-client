@@ -6,6 +6,7 @@ import { Chain, authState, getGlobalKeys } from "@nfid/integration"
 import { RPCMessage, RPCSuccessResponse } from "../../../type"
 import { callCanisterService } from "../../call-canister.service"
 import { consentMessageService } from "../../consent-message.service"
+import { GenericError } from "../../exception-handler.service"
 import {
   CANDID_UI_CANISTER,
   interfaceFactoryService,
@@ -46,11 +47,19 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     message: MessageEvent<RPCMessage>,
   ): Promise<RPCSuccessResponse> {
     const icrc49Dto = message.data.params as unknown as Icrc49Dto
-
     const delegation = await this.getGlobalKey([
       icrc49Dto.canisterId,
       CANDID_UI_CANISTER,
     ])
+
+    if (
+      icrc49Dto.sender.toLowerCase() !==
+      delegation.getPrincipal().toString().toLowerCase()
+    ) {
+      throw new GenericError(
+        "Sender principal doesn't match your account principal",
+      )
+    }
 
     const agent: Agent = new HttpAgent({
       host: IC_HOSTNAME,

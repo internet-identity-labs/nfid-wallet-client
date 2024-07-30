@@ -18,11 +18,7 @@ import { icrc1ActivityConnector } from "./ic/icrc1-activity-connector"
 const activityConnectors: {
   [key in Blockchain]: ActivityClass<IActivityConfig>[]
 } = {
-  [Blockchain.ETHEREUM]: [],
-  [Blockchain.POLYGON]: [],
-  [Blockchain.POLYGON_MUMBAI]: [],
   [Blockchain.IC]: [icActivityConnector, icrc1ActivityConnector],
-  [Blockchain.BITCOIN]: [],
 }
 
 export const getAllActivity = async (

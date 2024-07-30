@@ -115,68 +115,53 @@ When(
   },
 )
 
-When(
-  /^User is already authenticated with ?(?:(.*))?$/,
-  async function (account: string) {
-    if (account === "BTC") {
-      for (let i = 0; i < userClient.userMap.size; i++) {
-        if (
-          userClient.userMap.get(userClient.users[i]) === false &&
-          userClient.users[i].btcAddress !== undefined
-        ) {
-          await userClient.takeUser(userClient.users[i])
-          this.testUser = userClient.users[i]
-        }
-      }
-    } else {
-      for (let i = 0; i < userClient.userMap.size; i++) {
-        if (userClient.userMap.get(userClient.users[i]) === false) {
-          await userClient.takeUser(userClient.users[i])
-          this.testUser = userClient.users[i]
-        }
-      }
+When(/^User is already authenticated with ?(?:(.*))?$/, async function () {
+  for (let i = 0; i < userClient.userMap.size; i++) {
+    if (userClient.userMap.get(userClient.users[i]) === false) {
+      await userClient.takeUser(userClient.users[i])
+      this.testUser = userClient.users[i]
     }
+  }
 
-    let testUser: TestUser = this.testUser
+  let testUser: TestUser = this.testUser
 
-    const authId = await browser.addVirtualAuthenticator(
-      "ctap2",
-      "internal",
-      true,
-      true,
-      true,
-      true,
-    )
+  const authId = await browser.addVirtualAuthenticator(
+    "ctap2",
+    "internal",
+    true,
+    true,
+    true,
+    true,
+  )
 
-    const rpId = new URL(baseURL).hostname
-    const creds: WebAuthnCredential = testUser.credentials
-    // @ts-ignore
-    const anchor: JSON = testUser.account
+  const rpId = new URL(baseURL).hostname
+  const creds: WebAuthnCredential = testUser.credentials
+  // @ts-ignore
+  const anchor: JSON = testUser.account
 
-    // @ts-ignore
-    await browser.addCredentialV2(
-      authId,
-      rpId,
-      creds.credentialId,
-      creds.isResidentCredential,
-      creds.privateKey,
-      creds.signCount,
-    )
+  // @ts-ignore
+  await browser.addCredentialV2(
+    authId,
+    rpId,
+    creds.credentialId,
+    creds.isResidentCredential,
+    creds.privateKey,
+    creds.signCount,
+  )
 
-    await browser.execute(
-      function (key, value) {
-        // @ts-ignore
-        return this.localStorage.setItem(key, value)
-      },
-      "account",
-      JSON.stringify(anchor),
-    )
-    await browser.execute(function () {
+  await browser.execute(
+    function (key, value) {
       // @ts-ignore
-      return this.location.reload()
-    })
-  },
-)
+      return this.localStorage.setItem(key, value)
+    },
+    "account",
+    JSON.stringify(anchor),
+  )
+  await browser.execute(function () {
+    // @ts-ignore
+    return this.location.reload()
+  })
+})
 
 When(
   /^User is already authenticated by ([^"]*) anchor$/,

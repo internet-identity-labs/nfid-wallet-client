@@ -1,4 +1,3 @@
-import { ProviderError } from "packages/integration/src/lib/ecdsa-signer"
 import React from "react"
 
 import { AuthSession } from "frontend/state/authentication"
@@ -17,9 +16,7 @@ import { RPCMessage } from "./services/rpc-receiver"
 type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
   rpcMessage: RPCMessage
-  onConfirm: (data?: {
-    populatedTransaction: [ProviderError | undefined]
-  }) => void
+  onConfirm: (data?: { populatedTransaction: [undefined] }) => void
   onRequestICDelegation?: (
     thirdPartyAuthSession: ApproveIcGetDelegationSdkResponse,
   ) => void

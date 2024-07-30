@@ -6,8 +6,6 @@ import { toast } from "react-toastify"
 import {
   IconCmpArrow,
   IconCmpStatusSuccess,
-  IconCmpTinyBTC,
-  IconCmpTinyETH,
   IconCmpTinyIC,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
@@ -21,8 +19,6 @@ interface IActivityTableRow extends IActivityRow {
 }
 
 export const ChainIcons = {
-  BTC: <IconCmpTinyBTC />,
-  ETH: <IconCmpTinyETH />,
   IC: <IconCmpTinyIC />,
 }
 

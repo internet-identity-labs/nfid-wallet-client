@@ -28,13 +28,13 @@ export class SaleTransactionRecordExt implements SellTransactionRecord {
   }
 
   getTransactionView(): TransactionRecordView {
-    return {
-      type: "Sale",
-      date: this.date.toISOString(),
-      from: this.from,
-      to: this.to,
-      price: formatPrice(this.price, this.priceDecimals, this.priceCurrency),
-    }
+    return new TransactionRecordView(
+      "Sale",
+      this.from,
+      this.to,
+      formatPrice(this.price, this.priceDecimals, this.priceCurrency),
+      this.date,
+    )
   }
 }
 
@@ -57,12 +57,12 @@ export class TransferTransactionRecordExt implements TransferTransactionRecord {
   }
 
   getTransactionView(): TransactionRecordView {
-    return {
-      type: "Transfer",
-      date: this.date.toISOString(),
-      from: this.from,
-      to: this.to,
-      price: undefined,
-    }
+    return new TransactionRecordView(
+      "Transfer",
+      this.from,
+      this.to,
+      undefined,
+      this.date,
+    )
   }
 }

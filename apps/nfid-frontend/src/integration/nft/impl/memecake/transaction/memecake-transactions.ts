@@ -8,7 +8,7 @@ export class SoldTransactionRecordMemeCake implements SellTransactionRecord {
   private readonly from: string
   private readonly to: string
   private readonly date: Date
-  private readonly price: string
+  private readonly priceFormatted: string
 
   constructor(rawTransaction: Transaction) {
     if (rawTransaction.transctionType.toLowerCase() !== "buy") {
@@ -18,16 +18,16 @@ export class SoldTransactionRecordMemeCake implements SellTransactionRecord {
     this.from = rawTransaction.sellerPubKey
     this.to = rawTransaction.buyerPubKey
     this.date = new Date(rawTransaction.transactionDate)
-    this.price = rawTransaction.transactionAmount + " ICP"
+    this.priceFormatted = rawTransaction.transactionAmount + " ICP"
   }
 
   getTransactionView(): TransactionRecordView {
-    return {
-      type: "Sale",
-      date: this.date.toISOString(),
-      from: this.from,
-      to: this.to,
-      price: this.price,
-    }
+    return new TransactionRecordView(
+      "Sale",
+      this.from,
+      this.to,
+      this.priceFormatted,
+      this.date,
+    )
   }
 }

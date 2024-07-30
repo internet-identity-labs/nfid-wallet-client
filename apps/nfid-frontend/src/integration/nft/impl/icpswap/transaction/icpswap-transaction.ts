@@ -21,13 +21,13 @@ export class TransferTransactionRecordIcpSwap
   }
 
   getTransactionView(): TransactionRecordView {
-    return {
-      type: this.txType,
-      date: this.date.toISOString(),
-      from: this.from,
-      to: this.to,
-      price: undefined,
-    }
+    return new TransactionRecordView(
+      "Transfer",
+      this.from,
+      this.to,
+      undefined,
+      this.date,
+    )
   }
 }
 
@@ -35,23 +35,23 @@ export class MintTransactionRecordIcpSwap implements MintTransactionRecord {
   private readonly to: string
   private readonly date: Date
   private readonly txType: string
-  private readonly price: bigint
+  private readonly priceFormatted: string
 
   constructor(rawTransaction: TransferRecord) {
     this.txType = rawTransaction.remark
     this.to = rawTransaction.to
     this.date = new Date(Number(rawTransaction.time / BigInt(1000000)))
-    this.price = rawTransaction.price
+    this.priceFormatted = rawTransaction.price.toString() + " ICP"
   }
 
   getTransactionView(): TransactionRecordView {
-    return {
-      type: this.txType,
-      date: this.date.toISOString(),
-      from: undefined,
-      to: this.to,
-      price: this.price.toString() + " ICP",
-    }
+    return new TransactionRecordView(
+      "Mint",
+      undefined,
+      this.to,
+      this.priceFormatted,
+      this.date,
+    )
   }
 }
 
@@ -59,24 +59,24 @@ export class TransactionRecordIcpSwap implements MintTransactionRecord {
   private readonly to: string
   private readonly date: Date
   private readonly txType: string
-  private readonly price: bigint
+  private readonly priceFormatted: string
   private readonly from: string
 
   constructor(rawTransaction: TransferRecord) {
     this.txType = rawTransaction.remark
     this.to = rawTransaction.to
     this.date = new Date(Number(rawTransaction.time / BigInt(1000000)))
-    this.price = rawTransaction.price
+    this.priceFormatted = rawTransaction.price.toString() + " ICP"
     this.from = rawTransaction.from
   }
 
   getTransactionView(): TransactionRecordView {
-    return {
-      type: this.txType,
-      date: this.date.toISOString(),
-      from: undefined,
-      to: this.to,
-      price: this.price.toString() + " ICP",
-    }
+    return new TransactionRecordView(
+      this.txType,
+      this.from,
+      this.to,
+      this.priceFormatted,
+      this.date,
+    )
   }
 }

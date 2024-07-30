@@ -3,9 +3,9 @@ import { DataStructure, MappedToken } from "src/integration/nft/geek/geek-types"
 
 export class NftGeekService {
   async getNftGeekData(userPrincipal: Principal): Promise<MappedToken[]> {
-    return this.fetchNftGeekData(userPrincipal.toText()).then((data) =>
-      this.mapDataToObjects(data).sort((a, b) => b.millis - a.millis),
-    )
+    return this.fetchNftGeekData(userPrincipal.toText()).then((data) => {
+      return this.mapDataToObjects(data)
+    })
   }
 
   private fetchNftGeekData(userPrincipal: string): Promise<DataStructure> {
@@ -23,21 +23,22 @@ export class NftGeekService {
     collections.forEach((collection) => {
       const registryItem = registry[collection.canisterId]
       if (registryItem) {
-        registryItem.tokens.forEach((token) => {
-          const mappedToken: MappedToken = {
-            millis: token.timeMillis,
-            marketPlace: collection.interface,
-            tokenId: token.tokenId,
-            collectionId: collection.canisterId,
-            collectionName: collection.name,
-            tokenFloorPriceIcp: registryItem.tokenFloorPriceIcp,
-            tokenFloorPriceUSD: registryItem.tokenFloorPriceUsd,
-          }
-          mappedTokens.push(mappedToken)
-        })
+        registryItem.tokens
+          .sort((a, b) => b.timeMillis - a.timeMillis)
+          .forEach((token) => {
+            const mappedToken: MappedToken = {
+              millis: token.timeMillis,
+              marketPlace: collection.interface,
+              tokenId: token.tokenId,
+              collectionId: collection.canisterId,
+              collectionName: collection.name,
+              tokenFloorPriceIcp: registryItem.tokenFloorPriceIcp,
+              tokenFloorPriceUSD: registryItem.tokenFloorPriceUsd,
+            }
+            mappedTokens.push(mappedToken)
+          })
       }
     })
-
     return mappedTokens
   }
 }

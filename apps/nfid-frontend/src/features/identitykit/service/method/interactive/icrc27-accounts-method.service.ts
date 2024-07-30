@@ -1,5 +1,10 @@
+import { authStorage } from "packages/integration/src/lib/authentication/storage"
+
 import { Account, RPCMessage, RPCSuccessResponse } from "../../../type"
-import { accountService } from "../../account.service"
+import {
+  accountService,
+  INDEX_DB_CONNECTED_ACCOUNTS_KEY,
+} from "../../account.service"
 import { GenericError } from "../../exception-handler.service"
 import {
   ComponentData,
@@ -42,13 +47,21 @@ class Icrc27AccountsMethodService extends InteractiveMethodService {
       },
     }
 
+    await authStorage.set(
+      INDEX_DB_CONNECTED_ACCOUNTS_KEY(message.origin),
+      JSON.stringify(accounts),
+    )
+
     return response
   }
 
   public async getComponentData(
     message: MessageEvent<RPCMessage>,
   ): Promise<AccountsComponentData> {
-    const accounts = await accountService.getAccounts(message.origin)
+    const accounts = await accountService.getAccounts(
+      message.origin,
+      message.data?.params?.derivationOrigin,
+    )
 
     if (!accounts) {
       throw new GenericError("User data has not been found")

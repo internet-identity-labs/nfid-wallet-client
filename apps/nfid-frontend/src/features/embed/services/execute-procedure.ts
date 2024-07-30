@@ -64,7 +64,6 @@ export const ExecuteProcedureService = async (
           )
 
         const delegate = data.authSession as ThirdPartyAuthSession
-        console.debug("ExecuteProcedureService ic_getDelegation", { delegate })
         const delegations = [prepareClientDelegate(delegate.signedDelegation)]
         const userPublicKey = delegate.userPublicKey
 

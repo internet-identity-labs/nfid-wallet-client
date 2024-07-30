@@ -7,6 +7,7 @@ import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
 import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
 import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
 import { PickleResult, PickleStep } from "@wdio/types/build/Frameworks"
+import { getConsoleLogs, setupConsoleLogging } from "./src/helpers/logs.js"
 
 export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"
@@ -180,7 +181,7 @@ export const config: WebdriverIO.Config = {
       "json",
       {
         outputDir: "test/reporter",
-        outputFileFormat: function () {
+        outputFileFormat: function() {
           return `cucumber_report.json`
         },
       },
@@ -273,11 +274,12 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  before: async function (capabilities: any, specs: any) {
+  before: async function(capabilities: any, specs: any) {
     if (process.env.DEMO_APPLICATION_URL) console.info(`DEMO_APPLICATION_URL: ${process.env.DEMO_APPLICATION_URL}`)
     if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
+    await browser.execute(setupConsoleLogging)
   },
   /**
    * Gets executed before the suite starts.
@@ -384,6 +386,7 @@ export const config: WebdriverIO.Config = {
   beforeScenario: async (world: any) => {
     console.info("Scenario: " + (<ITestCaseHookParameter>world).pickle.name)
     allureReporter.addFeature(world.name)
+    await browser.execute(setupConsoleLogging)
   },
   afterScenario: async () => {
     await browser.execute("window.localStorage.clear()")
@@ -407,8 +410,11 @@ export const config: WebdriverIO.Config = {
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
     console.log(
       step.text + " " +
-      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m")
+      (result.passed ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m"),
     )
+    console.log(
+      `_________Error logs:_________
+      ${JSON.stringify(await browser.execute(getConsoleLogs), null, 2)}`)
   },
   // afterScenario: function (uri, feature, scenario, result, sourceLocation) {
   // },
@@ -421,7 +427,7 @@ export const config: WebdriverIO.Config = {
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
   // @ts-ignore
-  afterFeature: async function (uri, feature) {
+  afterFeature: async function(uri, feature) {
     // @ts-ignore browser
     allureReporter.addArgument("Browser", "Chrome")
     allureReporter.addArgument("Environment", baseURL)

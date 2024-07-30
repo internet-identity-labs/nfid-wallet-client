@@ -20,15 +20,6 @@ export default function AuthenticationCoordinator({
 }) {
   const [state, send] = useActor(actor)
 
-  React.useEffect(
-    () =>
-      console.debug("AuthenticationCoordinator", {
-        context: state?.context,
-        state: state.value,
-      }),
-    [state.value, state.context],
-  )
-
   // Track on unmount
   React.useEffect(() => {
     return () => {

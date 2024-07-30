@@ -42,16 +42,36 @@ export class DemoTransactions extends demoAppPage {
   }
 
   async sendICPTransaction(amount: number, address: string) {
-    await this.getReceiverICAddressInput("FT").setValue(address)
-    await this.getFTInput("ICP").setValue(amount)
+    await this.getReceiverICAddressInput("FT").then(async (it) => {
+      await it.waitForDisplayed()
+      await it.setValue(address)
+    })
+
+    await this.getFTInput("ICP").then(async (it) => {
+      await it.waitForDisplayed()
+      await it.setValue(amount)
+    })
+
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
-    await this.getRequestFTButton("ICP").click()
+    await this.getRequestFTButton("ICP").then(async (it) => {
+      await it.waitForClickable()
+      await it.click()
+    })
   }
 
   async sendNFTTransaction(address: string) {
-    await this.getReceiverICAddressInput("NFT").setValue(address)
-    await this.getFTInput("NFT").click()
-    await this.myNFTSelector.click()
+    await this.getReceiverICAddressInput("NFT").then(async (it) => {
+      await it.waitForDisplayed()
+      await it.setValue(address)
+    })
+    await this.getFTInput("NFT").then(async (it) => {
+      await it.waitForClickable()
+      await it.click()
+    })
+    await this.myNFTSelector.then(async (it) => {
+      await it.waitForClickable()
+      await it.click()
+    })
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
     await this.getRequestFTButton("NFT").then(async (it) => {
       await it.waitForClickable()

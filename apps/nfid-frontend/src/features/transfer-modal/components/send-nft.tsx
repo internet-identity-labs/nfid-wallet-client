@@ -13,6 +13,7 @@ import {
   IconCmpNFTPreview,
   Label,
   BlurredLoader,
+  Input,
 } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
@@ -67,18 +68,11 @@ export const TransferNFT = ({
     },
   )
 
-  const { data: accountsOptions, isLoading: isAccountsLoading } = useSWR(
-    selectedConnector ? [selectedConnector, "accountsOptions"] : null,
-    ([connector]) => connector.getAccountsOptions({}),
-  )
-
   const {
     register,
     formState: { errors },
     handleSubmit,
-    setValue,
     getValues,
-    resetField,
   } = useForm({
     mode: "all",
     defaultValues: {
@@ -185,16 +179,11 @@ export const TransferNFT = ({
     ],
   )
 
-  const loadingMessage = useMemo(() => {
-    if (isNFTLoading) return "Fetching your NFTs..."
-    if (isAccountsLoading) return "Loading accounts..."
-  }, [isAccountsLoading, isNFTLoading])
-
   return (
     <BlurredLoader
       overlayClassnames="rounded-xl"
-      isLoading={isNFTLoading || isAccountsLoading}
-      loadingMessage={loadingMessage}
+      isLoading={isNFTLoading}
+      loadingMessage={"Fetching your NFTs..."}
     >
       <div className="space-y-3 text-xs ">
         <ChooseModal
@@ -256,22 +245,21 @@ export const TransferNFT = ({
           }
           type="trigger"
         />
-        <ChooseModal
-          label="To"
-          optionGroups={accountsOptions ?? []}
-          title={"Choose an account"}
-          onSelect={(value) => {
-            resetField("to")
-            setValue("to", value)
-            calculateFee()
-          }}
-          type="input"
+        <Input
+          inputClassName={clsx(
+            "border !border-black rounded-md h-14",
+            "flex items-center justify-between",
+            "text-black px-4",
+            errors.to?.message && "!border-red-600 ring ring-red-100",
+          )}
           placeholder={`Recipient ${
             selectedNFT?.blockchain ?? "blockchain"
           } address`}
-          isFirstPreselected={false}
+          type="text"
+          labelText="To"
           errorText={errors.to?.message}
-          registerFunction={register("to", {
+          id="to"
+          {...register("to", {
             required: "This field cannot be empty",
             validate: (value) => selectedConnector?.validateAddress(value),
             onBlur: calculateFee,

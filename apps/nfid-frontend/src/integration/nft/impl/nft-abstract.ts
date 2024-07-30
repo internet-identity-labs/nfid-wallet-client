@@ -6,6 +6,7 @@ import {
   NFTTransactions,
 } from "src/integration/nft/impl/nft-types"
 import { NFT, NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+import {entrepotAsset, getTokenLink} from "src/integration/entrepot/lib";
 
 export abstract class NftImpl implements NFT {
   private readonly millis: number
@@ -69,11 +70,24 @@ export abstract class NftImpl implements NFT {
     return this.tokenFloorPriceUSD
   }
 
-  abstract getTokenLink(): string
-
   abstract getDetails(): Promise<NFTDetails>
 
-  abstract getAssetPreview(): AssetPreview
+  getAssetPreview(): Promise<AssetPreview> {
+    if (this.assetPreview === undefined) {
+      let url = entrepotAsset(this.getCollectionId(), this.getTokenId(), false)
+      return Promise.resolve({
+        //TODO can we have not img format in preview?
+        format: "img",
+        url: url,
+      })
+    } else {
+      return Promise.resolve(this.assetPreview)
+    }
+  }
+
+  getTokenLink(): string {
+    return getTokenLink(this.getCollectionId(), this.getTokenNumber())
+  }
 }
 
 export abstract class NFTDetailsImpl implements NFTDetails {

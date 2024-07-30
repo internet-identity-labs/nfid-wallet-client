@@ -1,19 +1,11 @@
-import { NFTExt } from "src/integration/nft/impl/ext/nft-ext"
-import { memeCakeTransactionMapper } from "src/integration/nft/impl/memecake/transaction/mamcake-transaction-mapper"
-import { TransactionApiResponse } from "src/integration/nft/impl/memecake/transaction/transaction-types"
-import {
-  Collection,
-  MemeCakeApiResponse,
-  Token,
-} from "src/integration/nft/impl/memecake/types/memcake-types"
-import { NFTDetailsImpl } from "src/integration/nft/impl/nft-abstract"
-import {
-  AssetPreview,
-  NFTTransactions,
-} from "src/integration/nft/impl/nft-types"
-import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+import {memeCakeTransactionMapper} from "src/integration/nft/impl/memecake/transaction/mamcake-transaction-mapper"
+import {TransactionApiResponse} from "src/integration/nft/impl/memecake/transaction/transaction-types"
+import {Collection, MemeCakeApiResponse, Token,} from "src/integration/nft/impl/memecake/types/memcake-types"
+import {NFTDetailsImpl, NftImpl} from "src/integration/nft/impl/nft-abstract"
+import {AssetPreview, NFTTransactions,} from "src/integration/nft/impl/nft-types"
+import {NFTDetails, TransactionRecord} from "src/integration/nft/nft"
 
-export class NftMemeCake extends NFTExt {
+export class NftMemeCake extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
     let nftResponse: MemeCakeApiResponse = await fetch(
       `https://memecake.io/api/nft/token/${

@@ -1,18 +1,11 @@
-import { NFTExt } from "src/integration/nft/impl/ext/nft-ext"
-import { NFTDetailsImpl } from "src/integration/nft/impl/nft-abstract"
-import {
-  AssetPreview,
-  NFTTransactions,
-} from "src/integration/nft/impl/nft-types"
-import { yumiTransactionMapper } from "src/integration/nft/impl/yumi/transaction/yumi-transaction-mapper"
-import { ApiResponse } from "src/integration/nft/impl/yumi/transaction/yumi-trs-types"
-import {
-  CollectionData,
-  CollectionResponse,
-} from "src/integration/nft/impl/yumi/types/yumi-types"
-import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+import {NFTDetailsImpl, NftImpl} from "src/integration/nft/impl/nft-abstract"
+import {AssetPreview, NFTTransactions,} from "src/integration/nft/impl/nft-types"
+import {yumiTransactionMapper} from "src/integration/nft/impl/yumi/transaction/yumi-transaction-mapper"
+import {ApiResponse} from "src/integration/nft/impl/yumi/transaction/yumi-trs-types"
+import {CollectionData, CollectionResponse,} from "src/integration/nft/impl/yumi/types/yumi-types"
+import {NFTDetails, TransactionRecord} from "src/integration/nft/nft"
 
-export class NftYumi extends NFTExt {
+export class NftYumi extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
     let collectionResponse = (await fetch(
       `https://stat.yuku.app/api/collection/${this.getCollectionId()}`,

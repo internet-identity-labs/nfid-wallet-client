@@ -1,18 +1,13 @@
-import { getTokenTxHistoryOfTokenIndex } from "src/integration/cap/fungible-transactions"
-import {
-  assetFullsize,
-  entrepotAsset,
-  fetchCollection,
-  getTokenLink,
-} from "src/integration/entrepot/lib"
-import { EntrepotCollection } from "src/integration/entrepot/types"
-import { extTransactionMapper } from "src/integration/nft/impl/ext/transaction/ext-transaction-mapper"
-import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
-import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+import {getTokenTxHistoryOfTokenIndex} from "src/integration/cap/fungible-transactions"
+import {assetFullsize, fetchCollection,} from "src/integration/entrepot/lib"
+import {EntrepotCollection} from "src/integration/entrepot/types"
+import {extTransactionMapper} from "src/integration/nft/impl/ext/transaction/ext-transaction-mapper"
+import {NFTDetailsImpl, NftImpl} from "src/integration/nft/impl/nft-abstract"
+import {NFTDetails, TransactionRecord} from "src/integration/nft/nft"
 
-import { AssetPreview } from "../nft-types"
+import {AssetPreview} from "../nft-types"
 
-export class NFTExt extends NftImpl {
+export class NftExt extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
     if (this.details === undefined) {
       return fetchCollection(this.getCollectionId()).then((collection) => {
@@ -21,22 +16,6 @@ export class NFTExt extends NftImpl {
       })
     }
     return this.details
-  }
-
-  getAssetPreview(): AssetPreview {
-    if (this.assetPreview === undefined) {
-      let url = entrepotAsset(this.getCollectionId(), this.getTokenId(), false)
-      return {
-        format: "img",
-        url: url,
-      }
-    } else {
-      return this.assetPreview
-    }
-  }
-
-  getTokenLink(): string {
-    return getTokenLink(this.getCollectionId(), this.getTokenNumber())
   }
 }
 
@@ -58,7 +37,7 @@ class NFTExtDetails extends NFTDetailsImpl {
     from: number,
     to: number,
   ): Promise<{ activity: Array<TransactionRecord>; isLastPage: boolean }> {
-    const { txHistory, isLastPage } = await getTokenTxHistoryOfTokenIndex(
+    const {txHistory, isLastPage} = await getTokenTxHistoryOfTokenIndex(
       this.collection.id,
       this.tokenId,
       from,

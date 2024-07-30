@@ -18,7 +18,7 @@ describe("nft test suite", () => {
         .spyOn(nftGeekService as any, "fetchNftGeekData")
         .mockResolvedValue(mockGeekResponse)
       const result = await nftService.getNFTs(principal)
-      expect(result).toHaveLength(7)
+      expect(result).toHaveLength(8)
 
       //collectibles page
       const extNft = result.filter(
@@ -35,8 +35,9 @@ describe("nft test suite", () => {
       )
       expect(extNft.getMarketPlace()).toEqual("EXT")
       expect(extNft.getMillis()).toEqual(1721253726158)
-      expect(extNft.getAssetPreview().format).toEqual("img")
-      expect(extNft.getAssetPreview().url).toEqual(
+      const extAssetPreview = await extNft.getAssetPreview()
+      expect(extAssetPreview.format).toEqual("img")
+      expect(extAssetPreview.url).toEqual(
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(extNft.getTokenLink()).toEqual(
@@ -97,8 +98,9 @@ describe("nft test suite", () => {
       )
       expect(yumiNFT.getMarketPlace()).toEqual("YUMI")
       expect(yumiNFT.getMillis()).toEqual(1721253579367)
-      expect(yumiNFT.getAssetPreview().format).toEqual("img")
-      expect(yumiNFT.getAssetPreview().url).toEqual(
+      const yumiNftAssetPreview = await yumiNFT.getAssetPreview()
+      expect(yumiNftAssetPreview.format).toEqual("img")
+      expect(yumiNftAssetPreview.url).toEqual(
         "https://images.entrepot.app/t/yzrp5-oaaaa-aaaah-ad2xa-cai/h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
       )
       //todo link does not work
@@ -159,8 +161,9 @@ describe("nft test suite", () => {
       )
       expect(memecakeNft.getMarketPlace()).toEqual("MEMECAKE")
       expect(memecakeNft.getMillis()).toEqual(1721253870829)
-      expect(memecakeNft.getAssetPreview().format).toEqual("img")
-      expect(memecakeNft.getAssetPreview().url).toEqual(
+      const memcakeAsset = await memecakeNft.getAssetPreview()
+      expect(memcakeAsset.format).toEqual("img")
+      expect(memcakeAsset.url).toEqual(
         "https://images.entrepot.app/t/gdeb6-lqaaa-aaaah-abvpq-cai/ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a",
       )
       const memeCakeDetails = await memecakeNft.getDetails()
@@ -189,6 +192,37 @@ describe("nft test suite", () => {
       expect(soldMemecakeActivity.to).toEqual(
         "fnitq-gnnyu-622b6-uucy7-jsrpw-biift-nb6bf-2iu2s-lks7w-4bxys-vqe",
       )
+
+      //ICPSWAP
+
+      const icpswapNft = result.filter(
+        (nft) => nft.getCollectionId() === "gfcya-pyaaa-aaaan-qbxda-cai",
+      )[0]
+      const icpswapAsset = await icpswapNft.getAssetPreview()
+      expect(icpswapAsset.format).toEqual("video")
+      expect(icpswapAsset.url).toEqual("https://gfcya-pyaaa-aaaan-qbxda-cai.raw.ic0.app/100000")
+      expect(icpswapNft.getTokenFloorPriceIcp()).toEqual(20000000)
+      expect(icpswapNft.getTokenFloorPriceUSD()).toEqual(20478)
+      const icpswapDetails = await icpswapNft.getDetails()
+      expect(icpswapDetails.getAbout()).toEqual("The SNS&GHOST NFT Gifts for the $GHOST Community.")
+      const icpswapTransactions = await icpswapDetails.getTransactions(0, 10)
+      expect(icpswapTransactions.activity).toHaveLength(3)
+      expect(icpswapTransactions.isLastPage).toBeTruthy()
+      const icpswapActivity = icpswapTransactions.activity[0].getTransactionView()
+      expect(icpswapActivity.type).toEqual("Transfer")
+      expect(icpswapActivity.price).toEqual(undefined)
+      expect(icpswapActivity.date).toEqual("2024-07-17T21:57:56.590Z")
+      expect(icpswapActivity.from).toEqual(
+        "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
+      )
+      expect(icpswapActivity.to).toEqual("0051449d6ed40385865c7ddd44e1ce87a4e0c3d054bd86b936a9aedf094f62df")
+
+      const icpswapActivityMint = icpswapTransactions.activity[2].getTransactionView()
+      expect(icpswapActivityMint.type).toEqual("Mint")
+      expect(icpswapActivityMint.price).toEqual("0 ICP")
+      expect(icpswapActivityMint.date).toEqual("2022-12-07T08:53:48.919Z")
+      expect(icpswapActivityMint.from).toEqual(undefined)
+      expect(icpswapActivityMint.to).toEqual("af8283ad383bc6e16509683b3256fdb4a5d2ece25261e8c39b1677bab7019e44")
     })
   })
 })

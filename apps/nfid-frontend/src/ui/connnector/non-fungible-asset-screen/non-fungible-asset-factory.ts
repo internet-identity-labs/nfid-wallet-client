@@ -1,4 +1,3 @@
-import { UserNonFungibleToken } from "src/features/non-fungable-token/types"
 import { ConnectorFactory } from "src/ui/connnector/connector-factory"
 import { NonFungibleAssetConnector } from "src/ui/connnector/non-fungible-asset-screen/non-fungible-asset"
 import {
@@ -6,6 +5,8 @@ import {
   Blockchain,
   NftConnectorConfig,
 } from "src/ui/connnector/types"
+
+import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 
 export class NftFactory extends ConnectorFactory<
   Blockchain,

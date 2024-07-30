@@ -14,8 +14,8 @@ on:
         type: choice
         options:
           - dev
-          - staging
-          - production
+          - stage
+          - ic
       logLevel:
         description: "Log level"
         required: true
@@ -85,13 +85,6 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
-          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
-          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
-          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
-          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
           NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
 
@@ -232,13 +225,6 @@ jobs:
 
         env:
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
-          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
-          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
-          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
-          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Run unit tests
@@ -248,13 +234,6 @@ jobs:
           ci_echo_debug "npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache" >&2
           npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache
         env:
-          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
-          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
-          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
-          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
-          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Upload build artefacts
@@ -381,17 +360,8 @@ jobs:
           cat > docker_env << EOF
             IS_DEV=true
             IS_E2E_TEST=true
-            ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
-            RARIBLE_X_API_KEY=${RARIBLE_X_API_KEY}
-            PROD_RARIBLE_X_API_KEY=${PROD_RARIBLE_X_API_KEY}
-            ETH_ALCHEMY_API_KEY=${ETH_ALCHEMY_API_KEY}
-            MATIC_ALCHEMY_API_KEY=${MATIC_ALCHEMY_API_KEY}
-            MUMBAI_ALCHEMY_API_KEY=${MUMBAI_ALCHEMY_API_KEY}
-            RAMP_WALLET_API_KEY=${RAMP_WALLET_API_KEY}
-
             USERGEEK_API_KEY=${USERGEEK_API_KEY}
             GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
-            BLOCK_CYPHER_TOKEN=${BLOCK_CYPHER_TOKEN}
 
             URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
             LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
@@ -415,18 +385,8 @@ jobs:
         env:
           IS_DEV: true
           IS_E2E_TEST: true
-          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
-          RARIBLE_X_API_KEY: ${{secrets.RARIBLE_X_API_KEY}}
-          PROD_RARIBLE_X_API_KEY: ${{secrets.PROD_RARIBLE_X_API_KEY}}
-          ETH_ALCHEMY_API_KEY: ${{secrets.ETH_ALCHEMY_API_KEY}}
-          MATIC_ALCHEMY_API_KEY: ${{secrets.MATIC_ALCHEMY_API_KEY}}
-          MUMBAI_ALCHEMY_API_KEY: ${{secrets.MUMBAI_ALCHEMY_API_KEY}}
-          RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
-
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          BLOCK_CYPHER_TOKEN: ${{secrets.BLOCK_CYPHER_TOKEN_DEV}}
-
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 

@@ -9,8 +9,6 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { networks, TransactionBuilder } from "bitcoinjs-lib"
-import fetch from "node-fetch"
 
 import { WALLET_SCOPE } from "@nfid/config"
 

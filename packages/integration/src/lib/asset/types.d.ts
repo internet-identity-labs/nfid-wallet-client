@@ -1,18 +1,12 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { TransactionRequest } from "@ethersproject/abstract-provider"
-import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
-import { BigNumber } from "@rarible/utils"
-import { Network } from "alchemy-sdk"
 
 import { Asset } from "./asset"
 import { ErrorCode } from "./error-code.enum"
-import { Erc20TransferRequest } from "./estimate-transaction-service/populate-transaction-service/erc20-populate-transaction.service"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
 
 declare type TransferResponse = {
-  etherscanTransactionUrl: string
   time: number
   waitOnChain: Promise<{ total: string; totalUSD: string }>
 }
@@ -26,17 +20,13 @@ declare type NonFungibleAssetI = Asset &
       request: ActivitiesByUserRequest,
     ): Promise<NonFungibleActivityRecords>
     getItemsByUser(request: ItemsByUserRequest): Promise<NonFungibleItems>
-    getErc20TokensByUser(request: Erc20TokensByUserRequest): Promise<Tokens>
     getAddress(delegation?: DelegationIdentity): Promise<string>
-    getEstimatedTransaction(
-      request: EstimatedTransactionRequest,
-    ): Promise<EstimatedTransaction>
   }
 
 declare type FungibleAsset = Asset & {
   transfer(
     identity: DelegationIdentity,
-    transaction: TransactionRequest | FungibleTransactionRequest,
+    transaction: FungibleTransactionRequest,
   ): Promise<TransferResponse>
   getAddress(identity: DelegationIdentity): Promise<string>
   getTransactionHistory(identity: DelegationIdentity): Promise<FungibleTxs>
@@ -81,31 +71,6 @@ declare type TransferNftRequest = {
   tokenId: string
   contract: string
   receiver: string
-}
-
-declare type TransferETHRequest = {
-  delegation: DelegationIdentity
-  to: string
-  amount: string
-}
-
-declare type Erc20TokensByUserRequest = {
-  identity: Identity
-  address?: string
-  cursor?: string
-}
-
-declare type EstimatedTransaction = {
-  transaction: TransactionRequest
-  fee: string
-  feeUsd: string
-  maxFee: string
-  maxFeeUsd: string
-  value?: string
-  valueUsd?: string
-  total: string
-  totalUsd: string
-  errors: ErrorCode[]
 }
 
 declare type FungibleActivityRequest = PageRequest & {
@@ -198,28 +163,6 @@ declare type TokenPrice = {
   token: string
   price: number
 }
-
-declare type Configuration = {
-  currencyId: string
-  blockchain: EVMBlockchain
-  unionBlockchain: EVMBlockchain
-  providerUrl: string
-  alchemyNetwork: alchemyNetwork
-  etherscanUrl: string
-  raribleEnv: RaribleSdkEnvironment
-  raribleApiKey: string
-  symbol: string
-  token: string
-  blockchainName: string
-  alchemyApiKey: string
-  activitiesTypes: AssetTransfersCategory[]
-}
-
-declare type EstimateTransactionRequest =
-  | EthTransferRequest
-  | NftERC721TransferRequest
-  | NftERC1155TransferRequest
-  | Erc20TransferRequest
 
 declare interface AccountBalance {
   accountName: string

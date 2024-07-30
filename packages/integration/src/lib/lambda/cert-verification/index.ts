@@ -4,12 +4,12 @@ import {
   HashTree,
   reconstruct,
   compare,
-  HttpAgent,
 } from "@dfinity/agent"
 import { PipeArrayBuffer, lebDecode } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
 
 import { CertificateTimeError, CertificateVerificationError } from "./error"
+import { getLookupResultValue } from "./utils"
 
 export interface VerifyCertificationParams {
   canisterId: Principal
@@ -44,21 +44,26 @@ function validateCertificateTime(
   maxCertificateTimeOffsetMs: number,
   nowMs: number,
 ): void {
-  const certificateTimeNs = lebDecode(
-    new PipeArrayBuffer(certificate.lookup(["time"])),
-  )
-  const certificateTimeMs = Number(certificateTimeNs / BigInt(1_000_000))
+  const lookupResult = certificate.lookup(["time"])
+  const value = getLookupResultValue(lookupResult)
 
-  if (certificateTimeMs - maxCertificateTimeOffsetMs > nowMs) {
-    throw new CertificateTimeError(
-      `Invalid certificate: time ${certificateTimeMs} is too far in the future (current time: ${nowMs})`,
-    )
-  }
+  if (value) {
+    const certificateTimeNs = lebDecode(new PipeArrayBuffer(value))
+    const certificateTimeMs = Number(certificateTimeNs / BigInt(1_000_000))
 
-  if (certificateTimeMs + maxCertificateTimeOffsetMs < nowMs) {
-    throw new CertificateTimeError(
-      `Invalid certificate: time ${certificateTimeMs} is too far in the past (current time: ${nowMs})`,
-    )
+    if (certificateTimeMs - maxCertificateTimeOffsetMs > nowMs) {
+      throw new CertificateTimeError(
+        `Invalid certificate: time ${certificateTimeMs} is too far in the future (current time: ${nowMs})`,
+      )
+    }
+
+    if (certificateTimeMs + maxCertificateTimeOffsetMs < nowMs) {
+      throw new CertificateTimeError(
+        `Invalid certificate: time ${certificateTimeMs} is too far in the past (current time: ${nowMs})`,
+      )
+    }
+  } else {
+    throw new CertificateTimeError("Time not found in the certificate.")
   }
 }
 
@@ -73,20 +78,19 @@ async function validateTree(
     canisterId.toUint8Array(),
     "certified_data",
   ])
+  const value = getLookupResultValue(certifiedData)
 
-  if (!certifiedData) {
-    throw new CertificateVerificationError(
-      "Could not find certified data in the certificate.",
-    )
-  }
-
-  if (!equal(certifiedData, treeRootHash)) {
-    throw new CertificateVerificationError(
-      "Tree root hash did not match the certified data in the certificate.",
-    )
+  if (value) {
+    if (!equal(value, treeRootHash)) {
+      throw new CertificateVerificationError(
+        "Tree root hash did not match the certified data in the certificate.",
+      )
+    }
+  } else {
+    throw new CertificateVerificationError("Certified data not found.")
   }
 }
 
 function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {
-  return compare(a, b) === 0
+  return compare(new Uint8Array(a), new Uint8Array(b)) === 0
 }

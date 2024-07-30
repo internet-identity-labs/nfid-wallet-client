@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - staging
+      - stage
 
 env:
   DEMO_CANISTER_NAME: "nfid-demo"
@@ -44,7 +44,7 @@ jobs:
     name: Build Frontend
     needs: check-secrets
     runs-on: ubuntu-latest
-    if: ${{ ! contains( github.ref_name, 'production' ) }}
+    if: ${{ ! contains( github.ref_name, 'ic' ) }}
 
     steps:
       - name: Extract branch name
@@ -108,11 +108,11 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            staging)
+            stage)
               NETWORK_NAME='stage'
-              ENV_FILE='.env.staging'
+              ENV_FILE='.env.stage'
               ;;
-            production)
+            ic)
               ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
               exit 1
               ;;
@@ -197,7 +197,7 @@ jobs:
   deploy-frotnend:
     name: Deploy Frontend
     needs: build-frontend
-    if: ${{ ! contains( github.ref_name, 'production' ) }}
+    if: ${{ ! contains( github.ref_name, 'ic' ) }}
     runs-on:
       group: dfx-runner
     defaults:
@@ -236,10 +236,10 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            staging)
+            stage)
               NETWORK_NAME='stage'
               ;;
-            production)
+            ic)
               ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
               exit 1
               ;;
@@ -318,7 +318,7 @@ jobs:
     name: Build NFID-Demo
     needs: check-secrets
     runs-on: ubuntu-latest
-    if: ${{ ! contains( github.ref_name, 'production' ) }}
+    if: ${{ ! contains( github.ref_name, 'ic' ) }}
 
     steps:
       - name: Checkout repo
@@ -377,11 +377,11 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            staging)
+            stage)
               NETWORK_NAME='stage'
-              ENV_FILE='.env.staging'
+              ENV_FILE='.env.stage'
               ;;
-            production)
+            ic)
               ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
               exit 1
               ;;
@@ -444,7 +444,7 @@ jobs:
   deploy-demo:
     name: Deploy NFID-Demo
     needs: build-demo
-    if: ${{ ! contains( github.ref_name, 'production' ) }}
+    if: ${{ ! contains( github.ref_name, 'ic' ) }}
     runs-on:
       group: dfx-runner
     defaults:
@@ -483,10 +483,10 @@ jobs:
 
           ci_echo_debug "Detecting network for the canister based on the branch." >&2
           case ${CANISTER_BRANCH} in
-            staging)
+            stage)
               NETWORK_NAME='stage'
               ;;
-            production)
+            ic)
               ci_echo_error "Branch '${CANISTER_BRANCH}' not allowed for current CI." >&2
               exit 1
               ;;

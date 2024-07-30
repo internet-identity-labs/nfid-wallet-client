@@ -72,7 +72,7 @@ when you're working with vscode you can use the task runner to start the develop
 
 ## Deployment
 
-NFID Frontend is deployed to [cloudflare pages](https://dash.cloudflare.com/2680fff2f5b4404ed84e1395cfda8afd/pages/view/nfid-frontend). The latest dev version ([staging.nfid.one](https://staging.nfid.one)) is deployed when a PR is merged into `main` branch. [nfid.one](https://nfid.one) is deployed when a PR is merged into `production` branch.
+NFID Frontend is deployed to [cloudflare pages](https://dash.cloudflare.com/2680fff2f5b4404ed84e1395cfda8afd/pages/view/nfid-frontend). The latest dev version ([staging.nfid.one](https://staging.nfid.one)) is deployed when a PR is merged into `main` branch. [nfid.one](https://nfid.one) is deployed when a PR is merged into `ic` branch.
 
 - [Domain Configuration](https://dash.cloudflare.com/2680fff2f5b4404ed84e1395cfda8afd/pages/view/nfid-frontend/domains)
 - [General Setting](https://dash.cloudflare.com/2680fff2f5b4404ed84e1395cfda8afd/pages/view/nfid-frontend/settings)

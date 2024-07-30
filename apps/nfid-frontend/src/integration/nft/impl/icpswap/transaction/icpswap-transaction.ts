@@ -35,13 +35,13 @@ export class MintTransactionRecordIcpSwap implements MintTransactionRecord {
   private readonly to: string
   private readonly date: Date
   private readonly txType: string
-  private readonly priceFormatted: bigint
+  private readonly priceFormatted: string
 
   constructor(rawTransaction: TransferRecord) {
     this.txType = rawTransaction.remark
     this.to = rawTransaction.to
     this.date = new Date(Number(rawTransaction.time / BigInt(1000000)))
-    this.priceFormatted = rawTransaction.price
+    this.priceFormatted = rawTransaction.price.toString() + " ICP"
   }
 
   getTransactionView(): TransactionRecordView {
@@ -49,7 +49,7 @@ export class MintTransactionRecordIcpSwap implements MintTransactionRecord {
       "Mint",
       undefined,
       this.to,
-      this.priceFormatted.toString() + " ICP",
+      this.priceFormatted,
       this.date,
     )
   }

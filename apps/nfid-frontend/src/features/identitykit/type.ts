@@ -34,6 +34,8 @@ export interface Account {
   subaccount: string
   balance?: number
   type: AccountType
+  origin: string
+  derivationOrigin?: string
 }
 
 export enum AccountType {
@@ -51,7 +53,7 @@ export interface RPCBase {
 
 export interface RPCMessage extends RPCBase {
   method: string
-  params: unknown
+  params: any
 }
 
 export interface RPCSuccessResponse extends RPCBase {

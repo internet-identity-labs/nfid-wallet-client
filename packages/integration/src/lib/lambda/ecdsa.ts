@@ -10,7 +10,6 @@ import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import {
-  btcSigner,
   delegationFactory,
   ecdsaSigner,
   icSigner,
@@ -39,8 +38,6 @@ export const GLOBAL_ORIGIN = "nfid.one"
 export const ANCHOR_TO_GET_DELEGATION_FROM_DF = BigInt(200_000_000)
 
 export enum Chain {
-  BTC = "BTC",
-  ETH = "ETH",
   IC = "IC",
 }
 
@@ -310,7 +307,7 @@ export async function getPublicKey(
   console.log(0)
   // if global
   if (type === DelegationType.GLOBAL) {
-    const signer = defineChainCanister(chain)
+    const signer = icSigner
     await replaceActorIdentity(signer, identity)
     const root = await im.get_root_by_principal(
       identity.getPrincipal().toString(),
@@ -349,17 +346,6 @@ export async function getPublicKey(
     return Principal.selfAuthenticating(
       new Uint8Array(anonymousDelegation.publicKey),
     ).toText()
-  }
-}
-
-function defineChainCanister(chain: Chain) {
-  switch (chain) {
-    case Chain.ETH:
-      return ecdsaSigner
-    case Chain.BTC:
-      return btcSigner
-    case Chain.IC:
-      return icSigner
   }
 }
 
@@ -415,7 +401,6 @@ async function oldFlowGlobalKeysFromLambda(
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ) {
-  //we do not support BTC/ETH anymore
   const chain = Chain.IC
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 

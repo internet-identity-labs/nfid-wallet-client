@@ -1,7 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Cache } from "node-ts-cache"
 import {
-  AssetErc20Config,
   AssetFilter,
   AssetNativeConfig,
   IFungibleAssetConnector,
@@ -15,9 +14,8 @@ import { fetchProfile } from "frontend/integration/identity-manager"
 
 import { connectorCache } from "../cache"
 
-export abstract class FungibleAssetConnector<
-  T extends AssetNativeConfig | AssetErc20Config,
-> implements IFungibleAssetConnector
+export abstract class FungibleAssetConnector<T extends AssetNativeConfig>
+  implements IFungibleAssetConnector
 {
   protected config: T
 

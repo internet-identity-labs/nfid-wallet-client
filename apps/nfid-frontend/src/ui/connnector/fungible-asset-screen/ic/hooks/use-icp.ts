@@ -1,5 +1,4 @@
 import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
-import { useBalanceICPAll } from "src/features/fungable-token/icp/hooks/use-balance-icp-all"
 import { stringICPtoE8s } from "src/integration/wallet/utils"
 import { AssetFilter, Blockchain, TokenConfig } from "src/ui/connnector/types"
 
@@ -13,7 +12,8 @@ import {
 import { TokenStandards } from "@nfid/integration/token/types"
 import { toPresentation } from "@nfid/integration/token/utils"
 
-import { useAllICRC1Token } from "frontend/features/fungable-token/icrc1"
+import { useBalanceICPAll } from "frontend/features/fungible-token/icp/hooks/use-balance-icp-all"
+import { useAllICRC1Token } from "frontend/features/fungible-token/icrc1"
 
 export const useICTokens = (
   assetFilter: AssetFilter[],

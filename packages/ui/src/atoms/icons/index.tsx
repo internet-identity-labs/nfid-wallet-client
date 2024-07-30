@@ -4,7 +4,6 @@ import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgBook from "./book.svg"
-import IconSvgBTC from "./btc.svg"
 import IconSvgCalendar from "./calendar.svg"
 import IconSvgCancel from "./cancel.svg"
 import IconSvgCheckMark from "./check-mark.svg"
@@ -16,8 +15,6 @@ import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
 import IconERC20 from "./erc20-fallback.svg"
 import IconSvgError from "./error.svg"
-import IconPngEthereum from "./ethereum.png"
-import IconSvgEthereum from "./ethereum.svg"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
@@ -35,8 +32,6 @@ import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPasskey from "./passkey.svg"
 import IconSvgPencil from "./pencil.svg"
 import IconSvgPlus from "./plus.svg"
-import PolygonERC20Svg from "./polygon-ERC20.svg"
-import MaticSvg from "./polygon.svg"
 import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
@@ -57,10 +52,6 @@ export {
   IconSvgPasskey,
   IconSvgID,
   IconSvgNFIDWallet,
-  IconPngEthereum,
-  IconSvgBTC,
-  MaticSvg,
-  PolygonERC20Svg,
   IconERC20,
   IconSvgArrow,
   IconSvgCalendar,
@@ -103,7 +94,6 @@ export {
   IconSvgTransfer,
   IconSvgArrowRed,
   IconSvgArrowGreen,
-  IconSvgEthereum,
   IconSvgAnonymous,
   IconSvgNFIDWalletLogo,
 }
@@ -166,11 +156,6 @@ export { ReactComponent as IconCmpAnonymous } from "./anonymous.svg"
 export { ReactComponent as IconCmpDoubleSpinner } from "./double-spinner.svg"
 export { ReactComponent as IconCmpNFIDWalletLogo } from "./nfid-wallet-logo.svg"
 
-export { ReactComponent as IconCmpTinyETH } from "./tiny-eth.svg"
-export { ReactComponent as IconCmpTinyBTC } from "./tiny-btc.svg"
 export { ReactComponent as IconCmpTinyIC } from "./tiny-ic.svg"
 
 export { ReactComponent as IconCmpStatusSuccess } from "./status-success.svg"
-
-// png
-export { IconMetamask } from "./metamask"

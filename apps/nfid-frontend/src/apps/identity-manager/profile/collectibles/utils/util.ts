@@ -3,7 +3,7 @@ import { Account } from "@nfid/integration"
 import {
   NonFungibleCollection,
   UserNonFungibleToken,
-} from "frontend/features/non-fungable-token/types"
+} from "frontend/features/non-fungible-token/types"
 
 import { GlauberTS } from "./search"
 

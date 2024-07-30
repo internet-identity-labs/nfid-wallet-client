@@ -11,16 +11,6 @@ import NFIDAuthMachine from "./nfid-machine"
 
 export default function NFIDAuthCoordinator() {
   const [state] = useMachine(NFIDAuthMachine)
-
-  React.useEffect(
-    () =>
-      console.debug("NFIDAuthCoordinator", {
-        context: state?.context,
-        state: state.value,
-      }),
-    [state.value, state.context],
-  )
-
   const navigate = useNavigate()
 
   React.useEffect(() => {

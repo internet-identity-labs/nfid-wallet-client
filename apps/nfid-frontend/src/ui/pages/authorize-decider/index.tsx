@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form"
 import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
-import MetamaskIcon from "frontend/assets/metamask.svg"
-import WConnectIcon from "frontend/assets/wallet-connect.svg"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
   LoginEventHandler,
@@ -24,8 +22,6 @@ export interface AuthorizeAppUnknownDeviceProps {
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
   onSelectIIAuthorization: () => void
-  onSelectMetamaskAuthorization: () => void
-  onSelectWConnectAuthorization: () => void
   onSelectGoogleAuthorization: LoginEventHandler
   onToggleAdvancedOptions: () => void
   authError?: string
@@ -41,8 +37,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   onSelectSecurityKeyAuthorization,
   onSelectGoogleAuthorization,
   onSelectIIAuthorization,
-  onSelectMetamaskAuthorization,
-  onSelectWConnectAuthorization,
   onToggleAdvancedOptions,
   applicationName,
   applicationLogo,
@@ -138,18 +132,8 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
 
               <div className="grid h-12 grid-cols-3 gap-4 my-2.5">
                 <IconButton
-                  img={<img src={MetamaskIcon} alt="metamask" />}
-                  onClick={onSelectMetamaskAuthorization}
-                  className="flex justify-center"
-                />
-                <IconButton
                   img={<img src={IIIcon} alt="ii" />}
                   onClick={onSelectIIAuthorization}
-                  className="flex justify-center"
-                />
-                <IconButton
-                  img={<img src={WConnectIcon} alt="wallet-connect" />}
-                  onClick={onSelectWConnectAuthorization}
                   className="flex justify-center"
                 />
               </div>

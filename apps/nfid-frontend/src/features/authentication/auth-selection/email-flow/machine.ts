@@ -107,6 +107,9 @@ const AuthWithEmailMachine =
               target: "Authenticated",
               actions: "assignAuthSession",
             },
+            onError: {
+              target: "Error",
+            },
           },
         },
         Error: {

@@ -11,7 +11,7 @@ import {
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
-import { useAllToken } from "../fungable-token/use-all-token"
+import { useAllToken } from "../fungible-token/use-all-token"
 import ActivityEmpty from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"
 import { useActivityPagination } from "./hooks"

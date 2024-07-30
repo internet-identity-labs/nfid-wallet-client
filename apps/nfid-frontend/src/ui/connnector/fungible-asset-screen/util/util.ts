@@ -1,10 +1,6 @@
 import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { stringICPtoE8s } from "src/integration/wallet/utils"
-import {
-  AssetErc20Config,
-  AssetNativeConfig,
-  TokenConfig,
-} from "src/ui/connnector/types"
+import { AssetNativeConfig, TokenConfig } from "src/ui/connnector/types"
 
 import { NetworkKey, storeAddressInLocalCache } from "@nfid/client-db"
 import { toPresentation } from "@nfid/integration/token/utils"
@@ -39,13 +35,15 @@ export function toNativeTokenConfig(
 }
 
 export function erc20ToTokenConfig(
-  config: AssetErc20Config,
+  config: TokenConfig,
   tokenSheet: TokenBalanceSheet,
 ): TokenConfig {
   return {
     tokenStandard: config.tokenStandard,
     icon: tokenSheet.icon,
-    title: `${tokenSheet.label} ${config.network ? `${config.network}` : ""}`,
+    title: `${tokenSheet.label} ${
+      config.blockchain ? `${config.blockchain}` : ""
+    }`,
     currency: tokenSheet.token,
     balance: tokenSheet.tokenBalance,
     rate: undefined,

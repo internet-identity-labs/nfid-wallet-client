@@ -1,8 +1,6 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
 
-import { IconSvgEthereum } from "@nfid-frontend/ui"
-
 import { ITransferModalSuccess, Success } from "./success"
 import { TransferTemplate } from "./template"
 
@@ -25,10 +23,4 @@ const Template: Story<ITransferModalSuccess> = (args) => (
 
 export const Default = Template.bind({})
 
-Default.args = {
-  title: "1.0047 ETH",
-  subTitle: "$1,866.24",
-  assetImg: IconSvgEthereum,
-  isAssetPadding: true,
-  step: 1,
-}
+Default.args = {}

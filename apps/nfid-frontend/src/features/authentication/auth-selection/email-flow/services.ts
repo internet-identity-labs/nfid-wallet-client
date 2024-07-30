@@ -51,12 +51,6 @@ export const checkEmailVerification = async (
 }> => {
   const verificationMethod = "email"
 
-  console.debug("checkEmailVerification", {
-    verificationMethod,
-    emailAddress: context.verificationEmail,
-    keyPair: context.keyPair,
-  })
-
   return new Promise((resolve, reject) => {
     let nonce = 0
     const int = setInterval(async () => {
@@ -150,14 +144,18 @@ export const authorizeWithEmail = async (
   if (!profile?.email?.length)
     await im.update_account({ name: [], email: [context.verificationEmail] })
 
-  await authStorage.set(
-    KEY_STORAGE_KEY,
-    JSON.stringify(context.emailDelegation.toJSON()),
-  )
-  await authStorage.set(
-    KEY_STORAGE_DELEGATION,
-    JSON.stringify(context.chainRoot?.toJSON()),
-  )
+  try {
+    await authStorage.set(
+      KEY_STORAGE_KEY,
+      JSON.stringify(context.emailDelegation.toJSON()),
+    )
+    await authStorage.set(
+      KEY_STORAGE_DELEGATION,
+      JSON.stringify(context.chainRoot?.toJSON()),
+    )
+  } catch (e) {
+    console.error("authStorage.set", { e })
+  }
 
   const session = {
     sessionSource: "email",

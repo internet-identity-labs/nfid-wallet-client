@@ -36,7 +36,6 @@ import {
 } from "."
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
-import { getMetamaskAccounts } from "../sign-in/metamask"
 import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(
@@ -119,9 +118,7 @@ export async function fetchDelegateService(
     Array.from(context.authRequest.sessionPublicKey),
     context.authRequest.maxTimeToLive,
   )
-  console.debug(`fetchDelegateService fetchDelegate`, {
-    delegate,
-  })
+
   return delegate
 }
 
@@ -137,10 +134,6 @@ export async function loginService(context: {
     sessionKey,
     chain,
   )
-  console.debug("loginService", {
-    delegationIdentity,
-    principalId: delegationIdentity.getPrincipal().toText(),
-  })
 
   authState.set({
     identity: multiIdent._actualIdentity!,
@@ -242,14 +235,6 @@ export async function registerService(
             icon: "ii" as Icon,
             device: "Internet Identity",
             browser: delegationIdentity.getPrincipal().toString(),
-            pubKey,
-          }
-        : sessionSource === "metamask"
-        ? {
-            deviceType: DeviceType.Unknown,
-            icon: "metamask" as Icon,
-            device: "Metamask",
-            browser: (await getMetamaskAccounts())[0],
             pubKey,
           }
         : {

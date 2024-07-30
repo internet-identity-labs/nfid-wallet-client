@@ -3,8 +3,8 @@ import React, { useCallback, useMemo, useState } from "react"
 import { Table } from "@nfid-frontend/ui"
 import { ObjectState, Wallet } from "@nfid/integration"
 
-import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
-import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
+import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
+import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 

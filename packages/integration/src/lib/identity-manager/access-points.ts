@@ -8,7 +8,6 @@ export enum Icon {
   google = "google",
   unknown = "unknown",
   ii = "ii",
-  metamask = "metamask",
   email = "email",
 }
 

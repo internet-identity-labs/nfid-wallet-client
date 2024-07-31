@@ -72,87 +72,85 @@ export async function fetchCollectionTokens(
 /**
  * Determines asset path using compatability code from Entrepot source.
  */
-function entrepotAsset(
-  collection: EntrepotCollection,
-  token: EntrepotToken,
+export function entrepotAsset(
+  collectionId: string,
+  token: string,
   fullSize: boolean,
-) {
-  const { index } = decodeTokenIdentifier(token.tokenId)
-  if (collection.id === "jeghr-iaaaa-aaaah-qco7q-cai")
+): string {
+  const { index } = decodeTokenIdentifier(token)
+  if (collectionId === "jeghr-iaaaa-aaaah-qco7q-cai")
     return `https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/${index}`
-  if (collection.id === "bxdf4-baaaa-aaaah-qaruq-cai")
+  if (collectionId === "bxdf4-baaaa-aaaah-qaruq-cai")
     return `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/${index}`
-  if (collection.id === "y3b7h-siaaa-aaaah-qcnwa-cai")
+  if (collectionId === "y3b7h-siaaa-aaaah-qcnwa-cai")
     return `https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/${index}`
-  if (collection.id === "3db6u-aiaaa-aaaah-qbjbq-cai")
+  if (collectionId === "3db6u-aiaaa-aaaah-qbjbq-cai")
     return `https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=${index}`
-  if (collection.id === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index)
-  if (collection.id === "pk6rk-6aaaa-aaaae-qaazq-cai") {
+  if (collectionId === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index)
+  if (collectionId === "pk6rk-6aaaa-aaaae-qaazq-cai") {
     if (fullSize) {
-      return `https://${collection.id}.raw.ic0.app/?tokenid=${token.tokenId}`
+      return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
     } else {
-      return `https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/${token.tokenId}`
+      return `https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/${token}`
     }
   }
-  if (collection.id === "dhiaa-ryaaa-aaaae-qabva-cai") {
+  if (collectionId === "dhiaa-ryaaa-aaaae-qabva-cai") {
     if (fullSize) {
-      return `https://${collection.id}.raw.ic0.app/?tokenid=${token.tokenId}`
+      return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
     } else {
-      return `https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/${token.tokenId}`
+      return `https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/${token}`
     }
   }
-  if (collection.id === "skjpp-haaaa-aaaae-qac7q-cai") {
+  if (collectionId === "skjpp-haaaa-aaaae-qac7q-cai") {
     if (fullSize) {
-      return `https://${collection.id}.raw.ic0.app/?tokenid=${token.tokenId}`
+      return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
     } else {
-      return `https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/${token.tokenId}`
+      return `https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/${token}`
     }
   }
-  if (collection.id === TREASURECANISTER) {
+  if (collectionId === TREASURECANISTER) {
     if (!fullSize) {
       return "/earn/loading.png"
     }
   }
   if (fullSize) {
-    return `https://${collection.id}.raw.ic0.app/?tokenid=${token.tokenId}`
+    return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
   } else {
     //add collections with wearables or other dynamic traits here
     //these images will not be cached
-    if (collection.id === "rxrsz-5aaaa-aaaam-qaysa-cai")
-      return `https://images.entrepot.app/tnc/${collection.id}/${token.tokenId}`
-    if (collection.id === "sbcwr-3qaaa-aaaam-qamoa-cai")
-      return `https://images.entrepot.app/tnc/${collection.id}/${token.tokenId}`
-    if (collection.id === "yrdz3-2yaaa-aaaah-qcvpa-cai")
-      return `https://images.entrepot.app/tnc/${collection.id}/${token.tokenId}`
-    if (collection.id === "rw7qm-eiaaa-aaaak-aaiqq-cai")
-      return `https://images.entrepot.app/tnc/${collection.id}/${token.tokenId}`
-    if (collection.id === "5movr-diaaa-aaaak-aaftq-cai")
-      return `https://images.entrepot.app/tnc/${collection.id}/${token.tokenId}`
-    if (collection.id === "dhyds-jaaaa-aaaao-aaiia-cai")
-      return `https://images.entrepot.app/tnc/${collection.id}/${token.tokenId}`
+    if (collectionId === "rxrsz-5aaaa-aaaam-qaysa-cai")
+      return `https://images.entrepot.app/tnc/${collectionId}/${token}`
+    if (collectionId === "sbcwr-3qaaa-aaaam-qamoa-cai")
+      return `https://images.entrepot.app/tnc/${collectionId}/${token}`
+    if (collectionId === "yrdz3-2yaaa-aaaah-qcvpa-cai")
+      return `https://images.entrepot.app/tnc/${collectionId}/${token}`
+    if (collectionId === "rw7qm-eiaaa-aaaak-aaiqq-cai")
+      return `https://images.entrepot.app/tnc/${collectionId}/${token}`
+    if (collectionId === "5movr-diaaa-aaaak-aaftq-cai")
+      return `https://images.entrepot.app/tnc/${collectionId}/${token}`
+    if (collectionId === "dhyds-jaaaa-aaaao-aaiia-cai")
+      return `https://images.entrepot.app/tnc/${collectionId}/${token}`
     //end of section
 
-    if (collection.id === "6wih6-siaaa-aaaah-qczva-cai")
-      return `https://${
-        collection.id
-      }.raw.ic0.app/?cc${Date.now()}&type=thumbnail&tokenid=${token.tokenId}`
-    if (collection.id === "kss7i-hqaaa-aaaah-qbvmq-cai")
-      return `https://${collection.id}.raw.ic0.app/?type=thumbnail&tokenid=${token.tokenId}`
-    return `https://images.entrepot.app/t/${collection.id}/${token.tokenId}`
+    if (collectionId === "6wih6-siaaa-aaaah-qczva-cai")
+      return `https://${collectionId}.raw.ic0.app/?cc${Date.now()}&type=thumbnail&tokenid=${token}`
+    if (collectionId === "kss7i-hqaaa-aaaah-qbvmq-cai")
+      return `https://${collectionId}.raw.ic0.app/?type=thumbnail&tokenid=${token}`
+    return `https://images.entrepot.app/t/${collectionId}/${token}`
   }
 }
 
 export function getEntrepotDisplayFormat(
   collection: EntrepotCollection,
-  token: EntrepotToken,
+  tokenId: string,
 ): EntrepotDisplayFormat {
-  const { index } = decodeTokenIdentifier(token.tokenId)
+  const { index } = decodeTokenIdentifier(tokenId)
   // Motoko Mechs specific
-  if (token.canisterId === "ugdkf-taaaa-aaaak-acoia-cai") {
+  if (collection.id === "ugdkf-taaaa-aaaak-acoia-cai") {
     return "motoko_mechs"
   }
 
-  if (index === 99 && token.canisterId === "kss7i-hqaaa-aaaah-qbvmq-cai")
+  if (index === 99 && collection.id === "kss7i-hqaaa-aaaah-qbvmq-cai")
     return "interactive_nfts_or_videos"
 
   if (collection.detailpage) return collection.detailpage
@@ -183,7 +181,7 @@ export function assetPreview(
   collection: EntrepotCollection,
   token: EntrepotToken,
 ): string {
-  return entrepotAsset(collection, token, false)
+  return entrepotAsset(collection.id, token.tokenId, false)
 }
 
 /**
@@ -191,16 +189,16 @@ export function assetPreview(
  */
 export async function assetFullsize(
   collection: EntrepotCollection,
-  token: EntrepotToken,
+  tokenId: string,
 ): Promise<{
   url: string
   format: DisplayFormat
 }> {
-  const url = entrepotAsset(collection, token, true)
-  const _format = getEntrepotDisplayFormat(collection, token)
+  const url = entrepotAsset(collection.id, tokenId, true)
+  const _format = getEntrepotDisplayFormat(collection, tokenId)
   const format = getDisplayFormat(_format)
   if (_format === "default") {
-    return { url: assetPreview(collection, token), format }
+    return { url: entrepotAsset(collection.id, tokenId, false), format }
   }
   if (_format === "asset_canisters") {
     return { url: await getImageDetailsUrl(url), format }

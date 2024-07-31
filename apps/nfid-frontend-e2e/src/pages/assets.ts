@@ -105,6 +105,7 @@ export class Assets {
   }
 
   public async sendNFTDialog() {
+    await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
     await Page.sendReceiveButton.waitForDisplayed({
       timeout: 7000,
     })

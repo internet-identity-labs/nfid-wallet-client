@@ -5,7 +5,7 @@ class ActorService {
   public getActor<T>(
     canisterId: string,
     factory: InterfaceFactory,
-    agent?: Agent
+    agent?: Agent,
   ): ActorSubclass<T> {
     return Actor.createActor(factory, { canisterId, agent })
   }

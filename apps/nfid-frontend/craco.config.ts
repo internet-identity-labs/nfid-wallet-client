@@ -37,7 +37,7 @@ const setupCSP = () => {
         "https://api.pro.coinbase.com",
         "https://eu.posthog.com",
         "https://icp-api.io",
-        "https://api.nftgeek.app"
+        "https://api.nftgeek.app",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

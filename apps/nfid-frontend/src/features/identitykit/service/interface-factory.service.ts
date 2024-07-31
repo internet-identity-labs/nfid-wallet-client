@@ -1,6 +1,3 @@
-import { IDL } from "@dfinity/candid"
-import { Principal } from "@dfinity/principal"
-
 import {
   Actor,
   ActorSubclass,
@@ -9,7 +6,9 @@ import {
   HttpAgent,
   LookupResultFound,
   ReadStateResponse,
-} from "@nfid/agent"
+} from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
+import { Principal } from "@dfinity/principal"
 
 import { GenericError } from "./exception-handler.service"
 

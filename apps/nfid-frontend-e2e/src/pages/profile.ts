@@ -119,6 +119,16 @@ export class Profile extends HomePage {
     )
   }
 
+  public async waitForTokens(amount: number) {
+    await browser.waitUntil(
+      async () => (await this.tokens.length) === amount,
+      {
+        timeout: 50000,
+        timeoutMsg: "Not all tokens displayed on user profile!",
+      },
+    )
+  }
+
   public async openMobileProfileMenu() {
     await this.profileBurgerMenu.waitForDisplayed({
       timeout: 15000,

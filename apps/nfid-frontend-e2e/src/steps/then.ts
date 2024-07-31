@@ -248,7 +248,7 @@ Then(
 )
 
 Then(/^Only (\d+) asset displayed/, async (amount: number) => {
-  await Profile.waitForTokensAppear(amount)
+  await Profile.waitForTokens(amount)
 })
 
 Then(

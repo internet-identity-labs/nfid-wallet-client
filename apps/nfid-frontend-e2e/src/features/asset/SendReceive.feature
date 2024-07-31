@@ -35,7 +35,7 @@ Feature:Send/Receive Asset
   Scenario Outline: User should be able to see his collectibles on send NFT tab
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And Tokens displayed on user assets
+    Then Only 1 asset displayed
     Then User opens send nft dialog window
     And User opens choose nft window
     And User sees option <nft1> in dropdown

@@ -7,12 +7,14 @@ export class DemoUpdateDelegation extends demoAppPage {
 
   async updateDelegation(targets: string, derivation?: string) {
     if (derivation)
-      await this.getDerivationOriginInput("updateDelegation").then(async(it)=>{
-        await it.waitForClickable()
-        await it.click()
-      })
+      await this.getDerivationOriginInput("updateDelegation").then(
+        async (it) => {
+          await it.waitForClickable()
+          await it.click()
+        },
+      )
     await super.addCanisterID("updateDelegation", targets)
-    await this.getUpdateDelegationButton.then(async(it)=>{
+    await this.getUpdateDelegationButton.then(async (it) => {
       await it.waitForClickable()
       await it.click()
     })

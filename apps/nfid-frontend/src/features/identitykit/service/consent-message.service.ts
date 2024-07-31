@@ -1,4 +1,4 @@
-import { Agent } from "@nfid/agent"
+import { Agent } from "@dfinity/agent"
 
 import {
   icrc21_consent_message_request,

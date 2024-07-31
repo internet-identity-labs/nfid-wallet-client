@@ -1,17 +1,17 @@
 export const setupConsoleLogging = () => {
-  (function() {
-    if (typeof console === 'undefined' || typeof console.error !== 'function') {
+  ;(function () {
+    if (typeof console === "undefined" || typeof console.error !== "function") {
       return
     }
     const log: any[] = []
     const origError = console.error
 
-    console.error = function(...args: any[]) {
+    console.error = function (...args: any[]) {
       log.push({ type: "error", args: Array.from(args) })
       origError.apply(console, args)
-    };
+    }
 
-    (window as any).getConsoleLogs = function() {
+    ;(window as any).getConsoleLogs = function () {
       return log
     }
   })()

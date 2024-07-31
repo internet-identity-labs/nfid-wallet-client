@@ -19,7 +19,9 @@ export interface icrc21_consent_message_request {
   method: string
   user_preferences: icrc21_consent_message_spec
 }
-export type icrc21_consent_message_response = { Ok: icrc21_consent_info } | { Err: icrc21_error }
+export type icrc21_consent_message_response =
+  | { Ok: icrc21_consent_info }
+  | { Err: icrc21_error }
 export interface icrc21_consent_message_spec {
   metadata: icrc21_consent_message_metadata
   device_spec:
@@ -48,7 +50,10 @@ export interface _SERVICE {
   get_trusted_origins: ActorMethod<[], Array<string>>
   greet: ActorMethod<[string], string>
   greet_no_consent: ActorMethod<[string], string>
-  icrc10_supported_standards: ActorMethod<[], Array<{ url: string; name: string }>>
+  icrc10_supported_standards: ActorMethod<
+    [],
+    Array<{ url: string; name: string }>
+  >
   icrc21_canister_call_consent_message: ActorMethod<
     [icrc21_consent_message_request],
     icrc21_consent_message_response

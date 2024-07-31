@@ -1,8 +1,8 @@
+import { Agent, HttpAgent, Identity } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
-import { Agent, HttpAgent, Identity } from "@nfid/agent"
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
 import { Chain, authState, getGlobalKeys } from "@nfid/integration"
 
@@ -63,7 +63,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
 
     const delegation = await this.getIdentity(icrc49Dto, sender)
 
-    const agent: Agent = new HttpAgent({
+    const agent: Agent = HttpAgent.createSync({
       host: IC_HOSTNAME,
       identity: delegation as unknown as Identity,
     })

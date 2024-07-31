@@ -36,8 +36,9 @@ export async function getPasskey(
     agent,
     canisterId: PASSKEY_STORAGE,
   })
-  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] =
-    (await actorPasskey["get_passkey"](keys)) as LambdaPasskeyEncoded[]
+  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] = (await actorPasskey[
+    "get_passkey"
+  ](keys)) as LambdaPasskeyEncoded[]
   if (lambdaPasskeyEncoded.length > 0) {
     return lambdaPasskeyEncoded
   }

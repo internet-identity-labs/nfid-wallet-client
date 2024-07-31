@@ -11,17 +11,17 @@ export const chromeBrowserOptions: IChromeOption = {
     "--ignore-certificate-errors",
     "--user-data-dir=chrome-user-data-dir",
   ],
-};
+}
 
 export const chromeBrowser = {
   browserName: "chrome",
   acceptInsecureCerts: true,
   "goog:chromeOptions": chromeBrowserOptions,
-  "goog:loggingPrefs": { 
-    browser: "ALL", 
+  "goog:loggingPrefs": {
+    browser: "ALL",
     driver: "ALL",
   },
   "webauthn:extension:credBlob": true,
   "webauthn:extension:largeBlob": true,
   "webauthn:virtualAuthenticators": true,
-};
+}

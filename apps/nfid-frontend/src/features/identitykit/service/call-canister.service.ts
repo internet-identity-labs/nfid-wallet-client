@@ -1,17 +1,18 @@
-import { DelegationIdentity } from "@dfinity/identity"
-
 import {
-  Actor,
-  ActorMethod,
-  ActorSubclass,
   Agent,
-  CallCanisterActorMethodMapped,
+  blsVerify,
+  CallRequest,
   Cbor,
-} from "@nfid/agent"
+  UpdateCallRejectedError,
+} from "@dfinity/agent"
+import {
+  defaultStrategy,
+  pollForResponse,
+} from "@dfinity/agent/lib/cjs/polling" // eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { DelegationIdentity } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 
 import { GenericError } from "./exception-handler.service"
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-import { interfaceFactoryService } from "./interface-factory.service"
 
 ;(BigInt.prototype as any).toJSON = function () {
   return this.toString()
@@ -35,30 +36,16 @@ class CallCanisterService {
     request: CallCanisterRequest,
   ): Promise<CallCanisterResponse> {
     try {
-      const interfaceFactory =
-        await interfaceFactoryService.getInterfaceFactory(
-          request.canisterId,
-          request.agent,
-        )
-      const actor = Actor.createCallCanisterActor(interfaceFactory, {
-        agent: request.agent,
-        canisterId: request.canisterId,
-      }) as ActorSubclass<
-        CallCanisterActorMethodMapped<Record<string, ActorMethod>>
-      >
-      const response = (await this.evaluateMethod(
-        actor,
+      const response = await this.poll(
+        request.canisterId,
         request.calledMethodName,
+        request.agent,
         Buffer.from(request.parameters, "base64"),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      )) as any
-
-      const certificate: string = Buffer.from(
-        response.meta.certificate,
-      ).toString("base64")
-
-      const cborContentMap = Cbor.encode(response.meta.contentMap)
-
+      )
+      const certificate: string = Buffer.from(response.certificate).toString(
+        "base64",
+      )
+      const cborContentMap = Cbor.encode(response.contentMap)
       const contentMap: string = Buffer.from(cborContentMap).toString("base64")
 
       return {
@@ -70,15 +57,43 @@ class CallCanisterService {
     }
   }
 
-  private async evaluateMethod(
-    actor: ActorSubclass,
+  private async poll(
+    canisterId: string,
     methodName: string,
-    parameters: ArrayBuffer,
-  ): Promise<unknown> {
-    if (parameters === undefined) {
-      return actor[methodName]()
+    agent: Agent,
+    arg: ArrayBuffer,
+  ): Promise<{ certificate: Uint8Array; contentMap: CallRequest | undefined }> {
+    const canister = Principal.from(canisterId)
+    const { requestId, response, requestDetails } = await agent.call(canister, {
+      methodName,
+      arg,
+      effectiveCanisterId: canister,
+    })
+
+    if (!response.ok || response.body) {
+      throw new UpdateCallRejectedError(
+        canister,
+        methodName,
+        requestId,
+        response,
+      )
     }
-    return actor[methodName](parameters)
+
+    const pollStrategy = defaultStrategy()
+    const { certificate } = await pollForResponse(
+      agent,
+      canister,
+      requestId,
+      pollStrategy,
+      undefined,
+      blsVerify,
+    )
+
+    return {
+      contentMap: requestDetails,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      certificate: new Uint8Array(Cbor.encode((certificate as any).cert)),
+    }
   }
 }
 

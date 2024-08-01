@@ -56,6 +56,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          FORCE_DEPLOY: true
 
   build-demo:
     name: Build NFID-Demo

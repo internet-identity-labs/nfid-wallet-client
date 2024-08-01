@@ -1,11 +1,12 @@
-import {actor} from "./../actors";
-import {idlFactory as IDL} from "./idl/ExchangeRate"
-import {_SERVICE as Service, ExchangeRate__1} from "./idl/ExchangeRate.d"
-import * as Agent from "@dfinity/agent";
-import BigNumber from "bignumber.js";
+import * as Agent from "@dfinity/agent"
+import BigNumber from "bignumber.js"
+
+import { actor } from "./../actors"
+import { idlFactory as IDL } from "./idl/ExchangeRate"
+import { _SERVICE as Service, ExchangeRate__1 } from "./idl/ExchangeRate.d"
 
 const EXCHANGE_RATE_CANISTER = "2ixw4-taaaa-aaaag-qcpdq-cai"
-type NumberType = string | number | bigint | BigNumber;
+type NumberType = string | number | bigint | BigNumber
 const EXECUTE_TIMEOUT = 60000
 
 export class ExchangeRateService {
@@ -21,8 +22,8 @@ export class ExchangeRateService {
   }
 
   async cacheUsdIcpRate() {
-    const result = await this.getExchangeRate("f_USD-c_ICP");
-    this.ICP2USD = this.parseTokenAmount(result.rate, result.decimals);
+    const result = await this.getExchangeRate("f_USD-c_ICP")
+    this.ICP2USD = this.parseTokenAmount(result.rate, result.decimals)
   }
 
   private async getExchangeRate(pair: string): Promise<ExchangeRate__1> {
@@ -31,20 +32,17 @@ export class ExchangeRateService {
 
   parseTokenAmount(
     amount: NumberType | null | undefined,
-    decimals: number | bigint = 8
+    decimals: number | bigint = 8,
   ): BigNumber {
-    if (amount !== 0 && !amount) return new BigNumber(0);
-    if (typeof amount === "bigint") amount = Number(amount);
-    if (typeof decimals === "bigint") decimals = Number(decimals);
-    if (Number.isNaN(Number(amount))) return new BigNumber(String(amount));
-    return new BigNumber(String(amount)).dividedBy(10 ** Number(decimals));
+    if (amount !== 0 && !amount) return new BigNumber(0)
+    if (typeof amount === "bigint") amount = Number(amount)
+    if (typeof decimals === "bigint") decimals = Number(decimals)
+    if (Number.isNaN(Number(amount))) return new BigNumber(String(amount))
+    return new BigNumber(String(amount)).dividedBy(10 ** Number(decimals))
   }
-
 }
 
 export const exchangeRateService = new ExchangeRateService()
 //some trick to make getter sync
 exchangeRateService.cacheUsdIcpRate()
 setInterval(exchangeRateService.cacheUsdIcpRate, EXECUTE_TIMEOUT)
-
-

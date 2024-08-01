@@ -1,12 +1,16 @@
-import {encodeTokenIdentifier} from "ictool"
-import {entrepotAsset, getTokenLink} from "src/integration/entrepot/lib"
-import {MarketPlace} from "src/integration/nft/enum/enums"
-import {MappedToken} from "src/integration/nft/geek/geek-types"
-import {AssetPreview, NFTTransactions,} from "src/integration/nft/impl/nft-types"
-import {NFT, NFTDetails} from "src/integration/nft/nft"
-import {exchangeRateService} from "@nfid/integration"
-import BigNumber from "bignumber.js";
-import {e8s} from "src/integration/nft/constants/constants";
+import BigNumber from "bignumber.js"
+import { encodeTokenIdentifier } from "ictool"
+import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
+import { e8s } from "src/integration/nft/constants/constants"
+import { MarketPlace } from "src/integration/nft/enum/enums"
+import { MappedToken } from "src/integration/nft/geek/geek-types"
+import {
+  AssetPreview,
+  NFTTransactions,
+} from "src/integration/nft/impl/nft-types"
+import { NFT, NFTDetails } from "src/integration/nft/nft"
+
+import { exchangeRateService } from "@nfid/integration"
 
 export abstract class NftImpl implements NFT {
   private readonly millis: number
@@ -62,22 +66,28 @@ export abstract class NftImpl implements NFT {
   }
 
   getTokenFloorPriceIcpFormatted(): string | undefined {
-    return this.tokenFloorPriceICP ? new BigNumber(this.tokenFloorPriceICP).dividedBy(e8s)
-      .toFormat(2, BigNumber.ROUND_DOWN, {
-      groupSeparator: '',
-      decimalSeparator: '.'
-    }) + " ICP" : undefined
+    return this.tokenFloorPriceICP
+      ? new BigNumber(this.tokenFloorPriceICP)
+          .dividedBy(e8s)
+          .toFormat(2, BigNumber.ROUND_DOWN, {
+            groupSeparator: "",
+            decimalSeparator: ".",
+          }) + " ICP"
+      : undefined
   }
 
   getTokenFloorPriceUSDFormatted(): string | undefined {
     if (this.tokenFloorPriceICP) {
       const usdIcp: BigNumber = exchangeRateService.getICP2USD()
       console.log("usdIcp", usdIcp.toString())
-      this.tokenFloorPriceUSD = usdIcp.multipliedBy(this.tokenFloorPriceICP)
+      this.tokenFloorPriceUSD = usdIcp
+        .multipliedBy(this.tokenFloorPriceICP)
         .dividedBy(e8s)
         .toNumber()
     }
-    return this.tokenFloorPriceUSD ? "$" + this.tokenFloorPriceUSD.toFixed(2) : undefined
+    return this.tokenFloorPriceUSD
+      ? "$" + this.tokenFloorPriceUSD.toFixed(2)
+      : undefined
   }
 
   abstract getDetails(): Promise<NFTDetails>

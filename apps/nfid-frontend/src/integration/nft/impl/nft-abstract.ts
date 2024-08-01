@@ -85,7 +85,7 @@ export abstract class NftImpl implements NFT {
         .toNumber()
     }
     return this.tokenFloorPriceUSD
-      ? "$" + this.tokenFloorPriceUSD.toFixed(2)
+      ? this.tokenFloorPriceUSD.toFixed(2) + " USD"
       : undefined
   }
 

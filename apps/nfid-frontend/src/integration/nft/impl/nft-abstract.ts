@@ -79,7 +79,6 @@ export abstract class NftImpl implements NFT {
   getTokenFloorPriceUSDFormatted(): string | undefined {
     if (this.tokenFloorPriceICP) {
       const usdIcp: BigNumber = exchangeRateService.getICP2USD()
-      console.log("usdIcp", usdIcp.toString())
       this.tokenFloorPriceUSD = usdIcp
         .multipliedBy(this.tokenFloorPriceICP)
         .dividedBy(e8s)

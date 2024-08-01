@@ -7,7 +7,6 @@ import { _SERVICE as Service, ExchangeRate__1 } from "./idl/ExchangeRate.d"
 
 const EXCHANGE_RATE_CANISTER = "2ixw4-taaaa-aaaag-qcpdq-cai"
 type NumberType = string | number | bigint | BigNumber
-const EXECUTE_TIMEOUT = 60000
 
 export class ExchangeRateService {
   private exchangeRateActor: Agent.ActorSubclass<Service>
@@ -43,6 +42,3 @@ export class ExchangeRateService {
 }
 
 export const exchangeRateService = new ExchangeRateService()
-//some trick to make getter sync
-exchangeRateService.cacheUsdIcpRate()
-setInterval(exchangeRateService.cacheUsdIcpRate, EXECUTE_TIMEOUT)

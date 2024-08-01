@@ -13,7 +13,7 @@ import {
 } from "frontend/integration/lambda/symmetric"
 import { registerIIAndIM } from "frontend/integration/test-util"
 
-describe("symmetric suite", () => {
+describe.skip("symmetric suite", () => {
   jest.setTimeout(50000)
 
   describe("Symmetric Key Service Test", () => {

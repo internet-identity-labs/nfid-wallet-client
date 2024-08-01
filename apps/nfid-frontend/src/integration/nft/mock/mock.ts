@@ -25,7 +25,7 @@ export const mockGeekResponse = {
           },
         },
       ],
-      tokenFloorPriceIcp: 4500000,
+      tokenFloorPriceIcp: 2000000,
       tokenFloorPriceUsd: 4607,
     },
     "nbg4r-saaaa-aaaah-qap7a-cai": {
@@ -165,7 +165,7 @@ export const expectedGeekResponse = [
     tokenId: 2066,
     collectionId: "64x4q-laaaa-aaaal-qdjca-cai",
     collectionName: "Cellphones",
-    tokenFloorPriceIcp: 4500000,
+    tokenFloorPriceIcp: 2000000,
     tokenFloorPriceUSD: 4607,
   },
   {

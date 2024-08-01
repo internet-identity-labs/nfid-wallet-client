@@ -1,12 +1,12 @@
-import { encodeTokenIdentifier } from "ictool"
-import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
-import { MarketPlace } from "src/integration/nft/enum/enums"
-import { MappedToken } from "src/integration/nft/geek/geek-types"
-import {
-  AssetPreview,
-  NFTTransactions,
-} from "src/integration/nft/impl/nft-types"
-import { NFT, NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+import {encodeTokenIdentifier} from "ictool"
+import {entrepotAsset, getTokenLink} from "src/integration/entrepot/lib"
+import {MarketPlace} from "src/integration/nft/enum/enums"
+import {MappedToken} from "src/integration/nft/geek/geek-types"
+import {AssetPreview, NFTTransactions,} from "src/integration/nft/impl/nft-types"
+import {NFT, NFTDetails} from "src/integration/nft/nft"
+import {exchangeRateService} from "@nfid/integration"
+import BigNumber from "bignumber.js";
+import {e8s} from "src/integration/nft/constants/constants";
 
 export abstract class NftImpl implements NFT {
   private readonly millis: number
@@ -17,7 +17,7 @@ export abstract class NftImpl implements NFT {
   private readonly collectionName: string
   private readonly tokenName: string
   private readonly tokenFloorPriceICP?: number
-  private readonly tokenFloorPriceUSD?: number
+  private tokenFloorPriceUSD?: number
 
   protected assetPreview: AssetPreview | undefined
   protected details: NFTDetails | undefined
@@ -30,7 +30,6 @@ export abstract class NftImpl implements NFT {
     this.collectionName = geekData.collectionName
     this.tokenName = `${this.collectionName} # ${this.tokenNumber}`
     this.tokenFloorPriceICP = geekData.tokenFloorPriceIcp
-    this.tokenFloorPriceUSD = geekData.tokenFloorPriceUSD
     this.tokenId = encodeTokenIdentifier(this.collectionId, this.tokenNumber)
   }
 
@@ -62,12 +61,23 @@ export abstract class NftImpl implements NFT {
     return this.tokenName
   }
 
-  getTokenFloorPriceIcp(): number | undefined {
-    return this.tokenFloorPriceICP
+  getTokenFloorPriceIcpFormatted(): string | undefined {
+    return this.tokenFloorPriceICP ? new BigNumber(this.tokenFloorPriceICP).dividedBy(e8s)
+      .toFormat(2, BigNumber.ROUND_DOWN, {
+      groupSeparator: '',
+      decimalSeparator: '.'
+    }) + " ICP" : undefined
   }
 
-  getTokenFloorPriceUSD(): number | undefined {
-    return this.tokenFloorPriceUSD
+  getTokenFloorPriceUSDFormatted(): string | undefined {
+    if (this.tokenFloorPriceICP) {
+      const usdIcp: BigNumber = exchangeRateService.getICP2USD()
+      console.log("usdIcp", usdIcp.toString())
+      this.tokenFloorPriceUSD = usdIcp.multipliedBy(this.tokenFloorPriceICP)
+        .dividedBy(e8s)
+        .toNumber()
+    }
+    return this.tokenFloorPriceUSD ? "$" + this.tokenFloorPriceUSD.toFixed(2) : undefined
   }
 
   abstract getDetails(): Promise<NFTDetails>
@@ -92,7 +102,10 @@ export abstract class NftImpl implements NFT {
 
 export abstract class NFTDetailsImpl implements NFTDetails {
   protected assetFullSize: Promise<AssetPreview> | undefined
+
   abstract getAbout(): string
+
   abstract getAssetFullSize(): Promise<AssetPreview>
+
   abstract getTransactions(from: number, to: number): Promise<NFTTransactions>
 }

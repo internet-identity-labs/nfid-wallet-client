@@ -1,4 +1,4 @@
-import { MarketPlace, TransactionType } from "src/integration/nft/enum/enums"
+import { MarketPlace } from "src/integration/nft/enum/enums"
 import { TransactionRecordView } from "src/integration/nft/impl/nft-transaction-record"
 import {
   AssetPreview,
@@ -13,8 +13,8 @@ export interface NFT {
   getCollectionId(): string
   getCollectionName(): string
   getTokenName(): string
-  getTokenFloorPriceIcp(): number | undefined
-  getTokenFloorPriceUSD(): number | undefined
+  getTokenFloorPriceIcpFormatted(): string | undefined
+  getTokenFloorPriceUSDFormatted(): string | undefined
   getTokenLink(): string
   getDetails(): Promise<NFTDetails>
   //we can not know asset type without call to host (probably)

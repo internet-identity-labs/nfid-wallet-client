@@ -5,6 +5,8 @@ import { Principal } from "@dfinity/principal"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { nftService } from "src/integration/nft/nft-service"
+import {exchangeRateService} from "@nfid/integration";
+import BigNumber from "bignumber.js";
 
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
@@ -17,6 +19,10 @@ describe("nft test suite", () => {
       jest
         .spyOn(nftGeekService as any, "fetchNftGeekData")
         .mockResolvedValue(mockGeekResponse)
+      jest
+        .spyOn(exchangeRateService as any, "getICP2USD")
+        .mockReturnValue(new BigNumber(8.957874722))
+      await exchangeRateService.cacheUsdIcpRate()
       const result = await nftService.getNFTs(principal)
       expect(result.items).toHaveLength(8)
       expect(result.totalPages).toEqual(1)
@@ -31,8 +37,8 @@ describe("nft test suite", () => {
       expect(extNft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
       expect(extNft.getCollectionName()).toEqual("Cellphones")
       expect(extNft.getTokenName()).toEqual("Cellphones # 2066")
-      expect(extNft.getTokenFloorPriceIcp()).toEqual(4500000)
-      expect(extNft.getTokenFloorPriceUSD()).toEqual(4607)
+      expect(extNft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
+      expect(extNft.getTokenFloorPriceUSDFormatted()).toEqual("$0.18")
       expect(extNft.getTokenId()).toEqual(
         "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
@@ -99,8 +105,8 @@ describe("nft test suite", () => {
       expect(yumiNFT.getCollectionName()).toEqual("Mifoko")
       expect(yumiNFT.getTokenName()).toEqual("Mifoko # 9103")
       //geek does not return us price for ths token
-      expect(yumiNFT.getTokenFloorPriceIcp()).toEqual(undefined)
-      expect(yumiNFT.getTokenFloorPriceUSD()).toEqual(undefined)
+      expect(yumiNFT.getTokenFloorPriceIcpFormatted()).toEqual(undefined)
+      expect(yumiNFT.getTokenFloorPriceUSDFormatted()).toEqual(undefined)
       expect(yumiNFT.getTokenId()).toEqual(
         "h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
       )
@@ -166,8 +172,8 @@ describe("nft test suite", () => {
       expect(memecakeNft.getTokenName()).toEqual("Boxy Land # 5002")
 
       //TODO geek does not return us price for ths token
-      expect(memecakeNft.getTokenFloorPriceIcp()).toEqual(undefined)
-      expect(memecakeNft.getTokenFloorPriceUSD()).toEqual(undefined)
+      expect(memecakeNft.getTokenFloorPriceIcpFormatted()).toEqual(undefined)
+      expect(memecakeNft.getTokenFloorPriceUSDFormatted()).toEqual(undefined)
       expect(memecakeNft.getTokenId()).toEqual(
         "ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a",
       )
@@ -217,8 +223,8 @@ describe("nft test suite", () => {
       expect(icpswapAsset.url).toEqual(
         "https://gfcya-pyaaa-aaaan-qbxda-cai.raw.ic0.app/100000",
       )
-      expect(icpswapNft.getTokenFloorPriceIcp()).toEqual(20000000)
-      expect(icpswapNft.getTokenFloorPriceUSD()).toEqual(20478)
+      expect(icpswapNft.getTokenFloorPriceIcpFormatted()).toEqual("0.20 ICP")
+      expect(icpswapNft.getTokenFloorPriceUSDFormatted()).toEqual("$1.79")
       const icpswapDetails = await icpswapNft.getDetails()
       expect(icpswapDetails.getAbout()).toEqual(
         "The SNS&GHOST NFT Gifts for the $GHOST Community.",

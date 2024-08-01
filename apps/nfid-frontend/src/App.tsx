@@ -1,11 +1,12 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
+import useSWR from "swr"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED, ROUTE_RPC } from "@nfid/config"
-import {authState, exchangeRateService, ic} from "@nfid/integration"
+import { authState, exchangeRateService, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
@@ -13,7 +14,6 @@ import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coord
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { NotFound } from "./ui/pages/404"
-import useSWR from "swr";
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 
@@ -46,7 +46,7 @@ export const App = () => {
     refreshInterval: 60_000,
     onSuccess: (data) => {
       console.debug("cacheUsdIcpRate", exchangeRateService.getICP2USD())
-    }
+    },
   })
 
   return (

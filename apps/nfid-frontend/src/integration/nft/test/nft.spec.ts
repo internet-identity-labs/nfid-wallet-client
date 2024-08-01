@@ -39,7 +39,7 @@ describe("nft test suite", () => {
       expect(extNft.getCollectionName()).toEqual("Cellphones")
       expect(extNft.getTokenName()).toEqual("Cellphones # 2066")
       expect(extNft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
-      expect(extNft.getTokenFloorPriceUSDFormatted()).toEqual("$0.18")
+      expect(extNft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
       expect(extNft.getTokenId()).toEqual(
         "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
@@ -225,7 +225,7 @@ describe("nft test suite", () => {
         "https://gfcya-pyaaa-aaaan-qbxda-cai.raw.ic0.app/100000",
       )
       expect(icpswapNft.getTokenFloorPriceIcpFormatted()).toEqual("0.20 ICP")
-      expect(icpswapNft.getTokenFloorPriceUSDFormatted()).toEqual("$1.79")
+      expect(icpswapNft.getTokenFloorPriceUSDFormatted()).toEqual("1.79 USD")
       const icpswapDetails = await icpswapNft.getDetails()
       expect(icpswapDetails.getAbout()).toEqual(
         "The SNS&GHOST NFT Gifts for the $GHOST Community.",

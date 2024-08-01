@@ -352,11 +352,6 @@ jobs:
           CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
           ENV_FILE=".env.${NETWORK_NAME}"
 
-          # Fix for network stage
-          if [ "${NETWORK_NAME}" == "stage" ]; then
-            ENV_FILE=".env.test"
-          fi
-
           ci_echo_debug "Populating env variables" >&2
           echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
           echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV

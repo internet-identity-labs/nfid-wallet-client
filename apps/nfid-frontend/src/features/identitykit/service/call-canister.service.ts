@@ -8,7 +8,8 @@ import {
 import {
   defaultStrategy,
   pollForResponse,
-} from "@dfinity/agent/lib/cjs/polling" // eslint-disable-next-line @typescript-eslint/no-explicit-any
+} from "@dfinity/agent/lib/cjs/polling"
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 

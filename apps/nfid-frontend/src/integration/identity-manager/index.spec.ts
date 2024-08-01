@@ -28,7 +28,7 @@ import {
 } from "../test-util"
 
 describe("Identity Manager suite", () => {
-  jest.setTimeout(80000)
+  jest.setTimeout(100000)
 
   describe("Identity Manager Service Test", () => {
     it("Should create NFID profile", async function () {

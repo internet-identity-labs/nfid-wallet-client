@@ -1,9 +1,9 @@
 export const idlFactory = ({ IDL }: any) => {
   const AssetClass = IDL.Variant({
     Cryptocurrency: IDL.Null,
-    FiatCurrency: IDL.Null
-  });
-  const Asset = IDL.Record({ class: AssetClass, symbol: IDL.Text });
+    FiatCurrency: IDL.Null,
+  })
+  const Asset = IDL.Record({ class: AssetClass, symbol: IDL.Text })
   const ExchangeRateError = IDL.Variant({
     AnonymousPrincipalNotAllowed: IDL.Null,
     CryptoQuoteAssetNotFound: IDL.Null,
@@ -20,12 +20,12 @@ export const idlFactory = ({ IDL }: any) => {
     NotEnoughCycles: IDL.Null,
     ForexQuoteAssetNotFound: IDL.Null,
     StablecoinRateNotFound: IDL.Null,
-    Pending: IDL.Null
-  });
+    Pending: IDL.Null,
+  })
   const Error = IDL.Record({
     message: ExchangeRateError,
-    timestamp: IDL.Int
-  });
+    timestamp: IDL.Int,
+  })
   const ExchangeRate__1 = IDL.Record({
     decimals: IDL.Nat32,
     rate: IDL.Nat64,
@@ -34,13 +34,13 @@ export const idlFactory = ({ IDL }: any) => {
     quote_symbol: IDL.Text,
     quote_class: IDL.Text,
     base_symbol: IDL.Text,
-    base_class: IDL.Text
-  });
+    base_class: IDL.Text,
+  })
   return IDL.Service({
     add_asset: IDL.Func([Asset, Asset], [], []),
     force_update_rate: IDL.Func([], [], []),
     get_assets: IDL.Func([], [IDL.Vec(IDL.Tuple(Asset, Asset))], ["query"]),
     get_exchange_rate: IDL.Func([IDL.Text], [ExchangeRate__1], ["query"]),
-    get_exchange_rates: IDL.Func([], [IDL.Vec(ExchangeRate__1)], ["query"])
-  });
-};
+    get_exchange_rates: IDL.Func([], [IDL.Vec(ExchangeRate__1)], ["query"]),
+  })
+}

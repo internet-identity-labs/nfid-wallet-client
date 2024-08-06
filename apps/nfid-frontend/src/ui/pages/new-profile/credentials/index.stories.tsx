@@ -66,7 +66,7 @@ export const AddPhoneSMSScreen = {
         }, 2000)
       })
     },
-    onSubmit: (token) => {
+    onSubmit: (token: any) => {
       console.log({ token })
       return Promise.resolve()
     },

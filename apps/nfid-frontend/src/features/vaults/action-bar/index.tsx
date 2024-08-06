@@ -1,12 +1,12 @@
 import clsx from "clsx"
-import React, { ChangeEvent } from "react"
+import React, { ChangeEvent, KeyboardEvent } from "react"
 
 import { IconCmpSearch, Input } from "@nfid-frontend/ui"
 
 export interface VaultActionBarProps {
   actionButtons: JSX.Element
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void
-  onInputType?: (event: ChangeEvent<HTMLInputElement>) => void
+  onInputType?: (event: KeyboardEvent<HTMLInputElement>) => void
 }
 
 export const VaultActionBar: React.FC<VaultActionBarProps> = ({

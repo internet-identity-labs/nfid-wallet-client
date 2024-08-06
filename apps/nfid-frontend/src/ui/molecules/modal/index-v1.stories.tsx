@@ -1,5 +1,5 @@
-import { Meta, StoryFn } from "@storybook/react"
-import React from "react"
+import { Meta, StoryFn, StoryObj } from "@storybook/react"
+import React, { FunctionComponent } from "react"
 
 import { Button } from "../../atoms/button"
 import { ModalAdvanced, ModalAdvancedProps } from "./advanced"
@@ -8,7 +8,8 @@ import { Modal, ModalProps } from "./index-v1"
 const meta: Meta = {
   title: "Molecules/Modal",
   component: Modal,
-  subcomponents: { ModalAdvanced },
+  //subcomponents: { ModalAdvanced },
+  subcomponents: { ModalAdvanced: ModalAdvanced as FunctionComponent<unknown> },
   argTypes: {
     children: {
       control: {
@@ -74,7 +75,7 @@ const AdvancedModal: StoryFn<ModalAdvancedProps> = ({ ...args }) => {
   )
 }
 
-export const Default = {
+export const Default: StoryObj<ModalProps> = {
   render: Template,
 
   args: {
@@ -84,7 +85,7 @@ export const Default = {
   },
 }
 
-export const Advanced = {
+export const Advanced: StoryObj<ModalAdvancedProps> = {
   render: AdvancedModal,
 
   args: {

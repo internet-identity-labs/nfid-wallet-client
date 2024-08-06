@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { IFrameNFIDLogin } from "./screen-iframe"
@@ -10,9 +10,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof IFrameNFIDLogin>
+} as Meta<typeof IFrameNFIDLogin>
 
-const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
+const AppScreenRegisterDeviceDeciderTemplate: StoryFn<
   typeof IFrameNFIDLogin
 > = (args) => {
   return (
@@ -22,6 +22,7 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   )
 }
 
-export const IFrameScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
-
-IFrameScreen.args = {}
+export const IFrameScreen = {
+  render: AppScreenRegisterDeviceDeciderTemplate,
+  args: {},
+}

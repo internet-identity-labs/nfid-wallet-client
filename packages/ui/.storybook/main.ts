@@ -1,13 +1,26 @@
-import type { StorybookConfig } from "@storybook/core-common"
+import type { StorybookConfig } from "@storybook/react-webpack5"
 
 const config: StorybookConfig = {
-  core: { builder: "webpack5" },
-  stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+  core: {},
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+
   addons: [
     "@storybook/addon-essentials",
-    "@nrwl/react/plugins/storybook",
-    "storybook-addon-react-router-v6",
+    "@nx/react/plugins/storybook",
+    "storybook-addon-remix-react-router",
+    "@chromatic-com/storybook",
   ],
+
+  framework: {
+    name: "@storybook/react-webpack5",
+    options: {},
+  },
+
+  docs: {},
+
+  typescript: {
+    reactDocgen: "react-docgen-typescript",
+  },
 }
 
 module.exports = config

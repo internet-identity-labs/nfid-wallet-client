@@ -6,3 +6,6 @@
 user-google-e2e
 apps/nfid-frontend/public
 apps/nfid-frontend-e2e/test/reporter
+
+/.nx/cache
+/.nx/workspace-data

@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { ProfileNFTDetailsPage } from "."
@@ -9,9 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileNFTDetailsPage>
+} as Meta<typeof ProfileNFTDetailsPage>
 
-const Template: ComponentStory<typeof ProfileNFTDetailsPage> = (args) => {
+const Template: StoryFn<typeof ProfileNFTDetailsPage> = (args) => {
   return (
     <Router>
       <ProfileNFTDetailsPage {...args} />
@@ -19,8 +19,10 @@ const Template: ComponentStory<typeof ProfileNFTDetailsPage> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
+export const AppScreen = {
+  render: Template,
 
-AppScreen.args = {
-  nft: {} as any,
+  args: {
+    nft: {} as any,
+  },
 }

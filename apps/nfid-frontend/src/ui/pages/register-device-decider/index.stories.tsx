@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { AuthorizeRegisterDeciderScreen } from "."
@@ -10,14 +10,15 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof AuthorizeRegisterDeciderScreen>
+} as Meta<typeof AuthorizeRegisterDeciderScreen>
 
-const RegisterDeviceDeciderTemplate: ComponentStory<
+const RegisterDeviceDeciderTemplate: StoryFn<
   typeof AuthorizeRegisterDeciderScreen
 > = (args) => {
   return <AuthorizeRegisterDeciderScreen {...args} />
 }
 
-export const Raw = RegisterDeviceDeciderTemplate.bind({})
-
-Raw.args = {}
+export const Raw = {
+  render: RegisterDeviceDeciderTemplate,
+  args: {},
+}

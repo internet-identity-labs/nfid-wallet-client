@@ -1,14 +1,14 @@
-import type { ComponentStory, ComponentMeta } from "@storybook/react"
+import type { StoryFn, Meta } from "@storybook/react"
 
 import { WarningAccordion } from "."
 
-const Story: ComponentMeta<typeof WarningAccordion> = {
+const Story: Meta<typeof WarningAccordion> = {
   component: WarningAccordion,
   title: "Molecules/WarningAccordion",
 }
 export default Story
 
-const Template: ComponentStory<typeof WarningAccordion> = (args) => (
+const Template: StoryFn<typeof WarningAccordion> = (args) => (
   <WarningAccordion
     warnings={[
       {
@@ -28,4 +28,6 @@ const Template: ComponentStory<typeof WarningAccordion> = (args) => (
   />
 )
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
+}

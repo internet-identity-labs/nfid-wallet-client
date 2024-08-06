@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import { Copy, ICopy } from "./index"
 
@@ -13,7 +13,7 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<ICopy> = (args) => <Copy {...args} />
+const Template: StoryFn<ICopy> = (args) => <Copy {...args} />
 
 export const Default = Template.bind({
   copyTitle: "Copy title",

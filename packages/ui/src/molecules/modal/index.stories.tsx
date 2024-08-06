@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { ModalAdvanced, ModalAdvancedProps } from "./index"
@@ -14,22 +14,24 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<ModalAdvancedProps> = (args) => (
+const Template: StoryFn<ModalAdvancedProps> = (args) => (
   <ModalAdvanced {...args}>Content here</ModalAdvanced>
 )
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  title: "Modal title",
-  primaryButton: {
-    text: "Approve",
-    type: "primary",
-    onClick: () => [],
-  },
-  secondaryButton: {
-    text: "Cancel",
-    type: "stroke",
-    onClick: () => [],
+  args: {
+    title: "Modal title",
+    primaryButton: {
+      text: "Approve",
+      type: "primary",
+      onClick: () => [],
+    },
+    secondaryButton: {
+      text: "Cancel",
+      type: "stroke",
+      onClick: () => [],
+    },
   },
 }

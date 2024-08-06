@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React, { useState } from "react"
 
 import { DropdownSelect, IDropdownSelect } from "."
@@ -15,7 +15,7 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<IDropdownSelect> = (args) => {
+const Template: StoryFn<IDropdownSelect> = (args) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([])
   return (
     <div className="w-full h-screen p-4 bg-gray-100">
@@ -27,7 +27,7 @@ const Template: Story<IDropdownSelect> = (args) => {
     </div>
   )
 }
-const CollectionsTemplate: Story<IDropdownSelect> = (args) => {
+const CollectionsTemplate: StoryFn<IDropdownSelect> = (args) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([])
   return (
     <div className="w-full h-screen p-4 bg-gray-100">
@@ -39,30 +39,35 @@ const CollectionsTemplate: Story<IDropdownSelect> = (args) => {
     </div>
   )
 }
-// By passing using the Args format for exported stories, you can control the props for a component for reuse in a test
-// https://storybook.js.org/docs/react/workflows/unit-testing
-export const Default = Template.bind({})
-export const Collections = CollectionsTemplate.bind({})
 
-Default.args = {
-  label: "Wallets",
-  options: Array(14)
-    .fill(null)
-    .map((a, i) => ({
-      label: `DSCVR account ${i}`,
-      afterLabel: i + 1,
-      value: `${i}`,
-    })),
+export const DefaultMolecules = {
+  render: Template,
+
+  args: {
+    label: "Wallets",
+    options: Array(14)
+      .fill(null)
+      .map((a, i) => ({
+        label: `DSCVR account ${i}`,
+        afterLabel: i + 1,
+        value: `${i}`,
+      })),
+  },
 }
-Collections.args = {
-  label: "Wallets",
-  options: Array(14)
-    .fill(null)
-    .map((a, i) => ({
-      label: `DSCVR account ${i}`,
-      afterLabel: i + 1,
-      value: `${i}`,
-      icon: CollectionIcon,
-    })),
-  isSearch: true,
+
+export const CollectionsMolecules = {
+  render: CollectionsTemplate,
+
+  args: {
+    label: "Wallets",
+    options: Array(14)
+      .fill(null)
+      .map((a, i) => ({
+        label: `DSCVR account ${i}`,
+        afterLabel: i + 1,
+        value: `${i}`,
+        icon: CollectionIcon,
+      })),
+    isSearch: true,
+  },
 }

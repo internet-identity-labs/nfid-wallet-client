@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import React from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"
@@ -15,9 +15,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof AuthorizeDecider>
+} as Meta<typeof AuthorizeDecider>
 
-const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
+const AppScreenRegisterDeviceDeciderTemplate: StoryFn<
   typeof AuthorizeDecider
 > = ({
   onToggleAdvancedOptions,
@@ -60,11 +60,13 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   )
 }
 
-export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
+export const AppScreen = {
+  render: AppScreenRegisterDeviceDeciderTemplate,
 
-AppScreen.args = {
-  applicationName: "My Application",
-  applicationLogo: logo,
-  isLoading: false,
-  showAdvancedOptions: false,
+  args: {
+    applicationName: "My Application",
+    applicationLogo: logo,
+    isLoading: false,
+    showAdvancedOptions: false,
+  },
 }

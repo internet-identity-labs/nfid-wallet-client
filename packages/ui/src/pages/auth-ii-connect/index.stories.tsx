@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import { ThirdPartyTemplate } from "../../templates/sdk-template"
 import { IIAuthConnect, AuthConnectIIProps } from "./index"
@@ -14,12 +14,13 @@ const meta: Meta = {
 
 export default meta
 
-const ConnectIITemplate: Story<AuthConnectIIProps> = (args) => (
+const ConnectIITemplate: StoryFn<AuthConnectIIProps> = (args) => (
   <ThirdPartyTemplate>
     <IIAuthConnect {...args} />
   </ThirdPartyTemplate>
 )
 
-export const StateConnectII = ConnectIITemplate.bind({})
-
-StateConnectII.args = {}
+export const StateConnectII = {
+  render: ConnectIITemplate,
+  args: {},
+}

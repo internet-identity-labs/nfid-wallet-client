@@ -21,4 +21,6 @@ const BlurredLoaderTemplate = () => {
   )
 }
 
-export const Overview = BlurredLoaderTemplate.bind({})
+export const Overview = {
+  render: BlurredLoaderTemplate,
+}

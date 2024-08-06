@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { ThirdPartyTemplate } from "../../templates/sdk-template"
@@ -15,15 +15,17 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<IIAuthCodeProps> = (args) => (
+const Template: StoryFn<IIAuthCodeProps> = (args) => (
   <ThirdPartyTemplate>
     <IIAuthCode {...args} />
   </ThirdPartyTemplate>
 )
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  secureCode: "123456",
-  anchor: 20176,
+  args: {
+    secureCode: "123456",
+    anchor: 20176,
+  },
 }

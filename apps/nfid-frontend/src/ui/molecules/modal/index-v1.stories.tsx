@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { Button } from "../../atoms/button"
@@ -23,7 +23,7 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<ModalProps> = ({ isVisible, ...args }) => {
+const Template: StoryFn<ModalProps> = ({ isVisible, ...args }) => {
   const [visible, setVisible] = React.useState(isVisible)
   return (
     <>
@@ -33,7 +33,7 @@ const Template: Story<ModalProps> = ({ isVisible, ...args }) => {
   )
 }
 
-const AdvancedModal: Story<ModalAdvancedProps> = ({ ...args }) => {
+const AdvancedModal: StoryFn<ModalAdvancedProps> = ({ ...args }) => {
   const [visible, setVisible] = React.useState(false)
 
   const toggleVisibility = React.useCallback(
@@ -74,17 +74,22 @@ const AdvancedModal: Story<ModalAdvancedProps> = ({ ...args }) => {
   )
 }
 
-export const Default = Template.bind({})
-export const Advanced = AdvancedModal.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  children: "Button",
-  onClose: () => {},
-  id: "default-modal",
+  args: {
+    children: "Button",
+    onClose: () => {},
+    id: "default-modal",
+  },
 }
 
-Advanced.args = {
-  id: "advanced-modal",
-  title: "Delete access point",
-  large: false,
+export const Advanced = {
+  render: AdvancedModal,
+
+  args: {
+    id: "advanced-modal",
+    title: "Delete access point",
+    large: false,
+  },
 }

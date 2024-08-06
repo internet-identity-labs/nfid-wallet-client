@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { RecoverNFID } from "."
@@ -10,9 +10,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof RecoverNFID>
+} as Meta<typeof RecoverNFID>
 
-const Template: ComponentStory<typeof RecoverNFID> = (args) => {
+const Template: StoryFn<typeof RecoverNFID> = (args) => {
   return (
     <Router>
       <RecoverNFID {...args} />
@@ -20,6 +20,7 @@ const Template: ComponentStory<typeof RecoverNFID> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
-
-AppScreen.args = {}
+export const AppScreen = {
+  render: Template,
+  args: {},
+}

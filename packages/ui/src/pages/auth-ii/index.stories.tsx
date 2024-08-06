@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import logo from "../../assets/id.svg"
 import { ThirdPartyTemplate } from "../../templates/sdk-template"
@@ -15,15 +15,17 @@ const meta: Meta = {
 
 export default meta
 
-const InitialTemplate: Story<AuthWithIIProps> = (args) => (
+const InitialTemplate: StoryFn<AuthWithIIProps> = (args) => (
   <ThirdPartyTemplate>
     <IIAuthEntry {...args} />
   </ThirdPartyTemplate>
 )
 
-export const StateInitial = InitialTemplate.bind({})
+export const StateInitial = {
+  render: InitialTemplate,
 
-StateInitial.args = {
-  applicationName: "NFID",
-  applicationLogo: logo,
+  args: {
+    applicationName: "NFID",
+    applicationLogo: logo,
+  },
 }

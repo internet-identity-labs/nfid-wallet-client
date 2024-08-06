@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import ProfileHeader from "."
@@ -9,9 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileHeader>
+} as Meta<typeof ProfileHeader>
 
-const Template: ComponentStory<typeof ProfileHeader> = (args) => {
+const Template: StoryFn<typeof ProfileHeader> = (args) => {
   return (
     <Router>
       <ProfileHeader {...args} />
@@ -19,8 +19,10 @@ const Template: ComponentStory<typeof ProfileHeader> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
+export const AppScreen = {
+  render: Template,
 
-AppScreen.args = {
-  anchor: 10089,
+  args: {
+    anchor: 10089,
+  },
 }

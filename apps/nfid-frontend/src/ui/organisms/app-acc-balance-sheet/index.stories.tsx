@@ -1,4 +1,4 @@
-import { ComponentStory } from "@storybook/react"
+import { StoryFn } from "@storybook/react"
 import { ToastContainer } from "react-toastify"
 
 import { APP_ACC_BALANCE_SHEET } from "frontend/features/fungible-token/icp/hooks/use-balance-icp-all.mocks"
@@ -14,14 +14,17 @@ export default {
   },
 }
 
-const Template: ComponentStory<typeof AppAccountBalanceSheet> = (args) => (
+const Template: StoryFn<typeof AppAccountBalanceSheet> = (args) => (
   <div>
     <ToastContainer icon={({ type }) => ToastIcons[type]} />
     <AppAccountBalanceSheet apps={args.apps} />
   </div>
 )
 
-export const Default = Template.bind({})
-Default.args = {
-  apps: Object.values(APP_ACC_BALANCE_SHEET.ICP.applications),
+export const Default = {
+  render: Template,
+
+  args: {
+    apps: Object.values(APP_ACC_BALANCE_SHEET.ICP.applications),
+  },
 }

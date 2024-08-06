@@ -11,7 +11,7 @@ import { useWalletDelegation } from "./use-wallet-delegation"
 
 describe("useWalletDeletation", () => {
   // NOTE: this is required in order to isolate the swr cache per test run
-  const wrapper = ({ children }: { children: React.ReactElement }) => (
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
     <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
   )
   const getWalletDelegationSpy = jest

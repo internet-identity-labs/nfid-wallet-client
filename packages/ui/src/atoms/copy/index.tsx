@@ -1,6 +1,6 @@
+import * as ReactTooltip from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import React, { HTMLAttributes } from "react"
-import ReactTooltip from "react-tooltip"
 
 import { CopyIcon } from "../icons/copy"
 import CopiedIcon from "./copied.svg"
@@ -32,42 +32,54 @@ export const Copy: React.FC<ICopy> = ({
   }, [value])
 
   return (
-    <div
-      className={clsx(
-        !copied && "hover:opacity-50 cursor-pointer transition-opacity",
-        "flex items-center stroke-gray-400 text-xs text-secondary font-semibold",
-        className,
-      )}
-      onClick={copyToClipboard}
-    >
-      <div className={clsx("w-5", iconSize)}>
-        <img
-          className={clsx(copied ? "inline-block" : "hidden")}
-          src={CopiedIcon}
-          alt="copy"
-          data-tip="Copy"
-        />
+    <ReactTooltip.Provider>
+      <ReactTooltip.Root delayDuration={2000}>
+        <ReactTooltip.Trigger asChild>
+          <div
+            className={clsx(
+              !copied && "hover:opacity-50 cursor-pointer transition-opacity",
+              "flex items-center stroke-gray-400 text-xs text-secondary font-semibold",
+              className,
+            )}
+            onClick={copyToClipboard}
+          >
+            <div className={clsx("w-5", iconSize)}>
+              <img
+                className={clsx(copied ? "inline-block" : "hidden")}
+                src={CopiedIcon}
+                alt="copy"
+              />
 
-        <CopyIcon
-          className={clsx(
-            "w-full",
-            copied ? "hidden" : "inline-block",
-            iconClassName,
-          )}
-        />
-      </div>
+              <CopyIcon
+                className={clsx(
+                  "w-full",
+                  copied ? "hidden" : "inline-block",
+                  iconClassName,
+                )}
+              />
+            </div>
 
-      {copyTitle && (
-        <p
-          className={clsx(
-            "w-full ml-2 text-xs font-semibold text-secondary",
-            titleClassName,
-          )}
-        >
-          {copyTitle}
-        </p>
-      )}
-      {!copied && <ReactTooltip delayShow={2000} />}
-    </div>
+            {copyTitle && (
+              <p
+                className={clsx(
+                  "w-full ml-2 text-xs font-semibold text-secondary",
+                  titleClassName,
+                )}
+              >
+                {copyTitle}
+              </p>
+            )}
+          </div>
+        </ReactTooltip.Trigger>
+        {!copied && (
+          <ReactTooltip.Content side="top" align="center">
+            <ReactTooltip.Arrow className="fill-current text-gray-800" />
+            <div className="bg-gray-800 text-white p-2 rounded-md text-xs">
+              Copy
+            </div>
+          </ReactTooltip.Content>
+        )}
+      </ReactTooltip.Root>
+    </ReactTooltip.Provider>
   )
 }

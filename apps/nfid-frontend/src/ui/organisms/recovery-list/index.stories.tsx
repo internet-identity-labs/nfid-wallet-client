@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import RecoveryPhraseDeleteModal from "./phrase-delete-modal"
@@ -9,9 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof RecoveryPhraseDeleteModal>
+} as Meta<typeof RecoveryPhraseDeleteModal>
 
-const Template: ComponentStory<typeof RecoveryPhraseDeleteModal> = (args) => {
+const Template: StoryFn<typeof RecoveryPhraseDeleteModal> = (args) => {
   return (
     <Router>
       <RecoveryPhraseDeleteModal {...args} />
@@ -19,6 +19,7 @@ const Template: ComponentStory<typeof RecoveryPhraseDeleteModal> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
-
-AppScreen.args = {}
+export const AppScreen = {
+  render: Template,
+  args: {},
+}

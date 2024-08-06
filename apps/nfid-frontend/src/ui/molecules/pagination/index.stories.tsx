@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import Pagination from "."
@@ -9,9 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof Pagination>
+} as Meta<typeof Pagination>
 
-const Template: ComponentStory<typeof Pagination> = (args) => {
+const Template: StoryFn<typeof Pagination> = (args) => {
   return (
     <Router>
       <Pagination {...args} />
@@ -19,6 +19,7 @@ const Template: ComponentStory<typeof Pagination> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
-
-AppScreen.args = {}
+export const AppScreen = {
+  render: Template,
+  args: {},
+}

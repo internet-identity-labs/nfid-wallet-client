@@ -1,17 +1,17 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
-import type { ComponentStory, ComponentMeta } from "@storybook/react"
+import type { StoryFn, Meta } from "@storybook/react"
 
 import { IconCmpCopy, IconCmpSettings } from "@nfid-frontend/ui"
 
 import { InfoListItem } from "."
 
-const Story: ComponentMeta<typeof InfoListItem> = {
+const Story: Meta<typeof InfoListItem> = {
   component: InfoListItem,
   title: "Atoms/InfoListItem",
 }
 export default Story
 
-const Template: ComponentStory<typeof InfoListItem> = (args) => (
+const Template: StoryFn<typeof InfoListItem> = (args) => (
   <TooltipProvider>
     <div className="space-y-3">
       <InfoListItem
@@ -38,4 +38,6 @@ const Template: ComponentStory<typeof InfoListItem> = (args) => (
   </TooltipProvider>
 )
 
-export const InfoList = Template.bind({})
+export const InfoList = {
+  render: Template,
+}

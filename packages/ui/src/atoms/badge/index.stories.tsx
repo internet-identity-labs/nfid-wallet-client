@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import { Badge, IBadge } from "."
 
@@ -22,7 +22,7 @@ const meta: Meta = {
 
 export default meta
 
-const BadgeComponent: Story<IBadge> = (args) => {
+const BadgeComponent: StoryFn<IBadge> = (args) => {
   return <Badge type={args.type}>{args.children}</Badge>
 }
 

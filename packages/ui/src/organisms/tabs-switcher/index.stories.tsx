@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { TabsSwitcher } from "."
@@ -9,9 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof TabsSwitcher>
+} as Meta<typeof TabsSwitcher>
 
-const Template: ComponentStory<typeof TabsSwitcher> = (args) => {
+const Template: StoryFn<typeof TabsSwitcher> = (args) => {
   return (
     <Router>
       <TabsSwitcher {...args} />
@@ -19,18 +19,20 @@ const Template: ComponentStory<typeof TabsSwitcher> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
+export const AppScreen = {
+  render: Template,
 
-AppScreen.args = {
-  tabs: [
-    {
-      name: "Sent",
-      title: <>Sent</>,
-    },
-    {
-      name: "Received",
-      title: <>Received</>,
-    },
-  ],
-  isFitLine: true,
+  args: {
+    tabs: [
+      {
+        name: "Sent",
+        title: <>Sent</>,
+      },
+      {
+        name: "Received",
+        title: <>Received</>,
+      },
+    ],
+    isFitLine: true,
+  },
 }

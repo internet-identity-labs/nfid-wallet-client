@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import { ToggleButton } from "."
 
@@ -9,9 +9,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ToggleButton>
+} as Meta<typeof ToggleButton>
 
-const ToggleButtonTemplate: ComponentStory<typeof ToggleButton> = (args) => (
+const ToggleButtonTemplate: StoryFn<typeof ToggleButton> = (args) => (
   <ToggleButton {...args} />
 )
 

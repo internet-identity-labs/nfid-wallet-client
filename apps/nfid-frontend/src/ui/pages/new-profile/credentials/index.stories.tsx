@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import ProfileCredentialsPage from "."
@@ -11,9 +11,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileCredentialsPage>
+} as Meta<typeof ProfileCredentialsPage>
 
-const Template: ComponentStory<typeof ProfileCredentialsPage> = (args) => {
+const Template: StoryFn<typeof ProfileCredentialsPage> = (args) => {
   return (
     <Router>
       <ProfileCredentialsPage {...args} />
@@ -21,7 +21,7 @@ const Template: ComponentStory<typeof ProfileCredentialsPage> = (args) => {
   )
 }
 
-const AddPhoneNumberTemplate: ComponentStory<typeof ProfileAddPhoneNumber> = (
+const AddPhoneNumberTemplate: StoryFn<typeof ProfileAddPhoneNumber> = (
   args,
 ) => {
   return (
@@ -30,9 +30,7 @@ const AddPhoneNumberTemplate: ComponentStory<typeof ProfileAddPhoneNumber> = (
     </Router>
   )
 }
-const AddPhoneSMSTemplate: ComponentStory<typeof ProfileAddPhoneSMS> = (
-  args,
-) => {
+const AddPhoneSMSTemplate: StoryFn<typeof ProfileAddPhoneSMS> = (args) => {
   return (
     <Router>
       <ProfileAddPhoneSMS {...args} />
@@ -40,31 +38,39 @@ const AddPhoneSMSTemplate: ComponentStory<typeof ProfileAddPhoneSMS> = (
   )
 }
 
-export const AppScreen = Template.bind({})
-export const AddPhoneNumberScreen = AddPhoneNumberTemplate.bind({})
-export const AddPhoneSMSScreen = AddPhoneSMSTemplate.bind({})
+export const AppScreen = {
+  render: Template,
 
-AppScreen.args = {
-  email: "pavlo@identitylabs.ooo",
+  args: {
+    email: "pavlo@identitylabs.ooo",
+  },
 }
 
-AddPhoneNumberScreen.args = {
-  onSubmit: (values: any) => console.log({ values }),
+export const AddPhoneNumberScreen = {
+  render: AddPhoneNumberTemplate,
+
+  args: {
+    onSubmit: (values: any) => console.log({ values }),
+  },
 }
 
-AddPhoneSMSScreen.args = {
-  onResendCode: () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log("resend")
-        resolve(undefined)
-      }, 2000)
-    })
+export const AddPhoneSMSScreen = {
+  render: AddPhoneSMSTemplate,
+
+  args: {
+    onResendCode: () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log("resend")
+          resolve(undefined)
+        }, 2000)
+      })
+    },
+    onSubmit: (token) => {
+      console.log({ token })
+      return Promise.resolve()
+    },
+    phone: "d2d5bdf84ca7b3130cecf91ad8772d4d",
+    resendDelay: 5,
   },
-  onSubmit: (token) => {
-    console.log({ token })
-    return Promise.resolve()
-  },
-  phone: "d2d5bdf84ca7b3130cecf91ad8772d4d",
-  resendDelay: 5,
 }

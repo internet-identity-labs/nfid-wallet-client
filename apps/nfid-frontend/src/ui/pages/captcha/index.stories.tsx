@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import logo from "frontend/assets/distrikt.svg"
@@ -12,9 +12,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof Captcha>
+} as Meta<typeof Captcha>
 
-const CaptchaTemplate: ComponentStory<typeof Captcha> = (args) => {
+const CaptchaTemplate: StoryFn<typeof Captcha> = (args) => {
   return (
     <Router>
       <Captcha {...args} />
@@ -22,10 +22,12 @@ const CaptchaTemplate: ComponentStory<typeof Captcha> = (args) => {
   )
 }
 
-export const CaptchaScreen = CaptchaTemplate.bind({})
+export const CaptchaScreen = {
+  render: CaptchaTemplate,
 
-CaptchaScreen.args = {
-  successPath: "#",
-  applicationName: "Distrikt",
-  applicationLogo: logo,
+  args: {
+    successPath: "#",
+    applicationName: "Distrikt",
+    applicationLogo: logo,
+  },
 }

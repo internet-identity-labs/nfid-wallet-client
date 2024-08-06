@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React, { useState } from "react"
 
 import { InputDropdown, IInputDropdown } from "."
@@ -15,7 +15,7 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<IInputDropdown> = (args) => {
+const Template: StoryFn<IInputDropdown> = (args) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([])
   return (
     <div className="w-full h-screen p-4 bg-gray-100">
@@ -24,18 +24,18 @@ const Template: Story<IInputDropdown> = (args) => {
   )
 }
 
-// By passing using the Args format for exported stories, you can control the props for a component for reuse in a test
-// https://storybook.js.org/docs/react/workflows/unit-testing
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  label: "Wallets",
-  placeholder: "Recipient principal or account ID",
-  options: Array(14)
-    .fill(null)
-    .map((a, i) => ({
-      label: `DSCVR account ${i}`,
-      afterLabel: i + 1,
-      value: `ajsfnsljbh_${i}`,
-    })),
+  args: {
+    label: "Wallets",
+    placeholder: "Recipient principal or account ID",
+    options: Array(14)
+      .fill(null)
+      .map((a, i) => ({
+        label: `DSCVR account ${i}`,
+        afterLabel: i + 1,
+        value: `ajsfnsljbh_${i}`,
+      })),
+  },
 }

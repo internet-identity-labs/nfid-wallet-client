@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import ProfileCopyPhrasePage from "."
@@ -10,9 +10,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileCopyPhrasePage>
+} as Meta<typeof ProfileCopyPhrasePage>
 
-const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
+const AppScreenRegisterDeviceDeciderTemplate: StoryFn<
   typeof ProfileCopyPhrasePage
 > = (args: any) => {
   return (
@@ -22,10 +22,12 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   )
 }
 
-export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
+export const AppScreen = {
+  render: AppScreenRegisterDeviceDeciderTemplate,
 
-AppScreen.args = {
-  recoveryPhrase:
-    "1234567 dumb slender embrace pulp child immense draw sample tiger fix ozone salon social tenant word remain license boy practice tunnel enforce dice fence yard",
-  continueButtonText: "Continue to OpenChat",
+  args: {
+    recoveryPhrase:
+      "1234567 dumb slender embrace pulp child immense draw sample tiger fix ozone salon social tenant word remain license boy practice tunnel enforce dice fence yard",
+    continueButtonText: "Continue to OpenChat",
+  },
 }

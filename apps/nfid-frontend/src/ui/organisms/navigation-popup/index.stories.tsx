@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import AuthenticatedPopup from "."
@@ -9,9 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof AuthenticatedPopup>
+} as Meta<typeof AuthenticatedPopup>
 
-const Template: ComponentStory<typeof AuthenticatedPopup> = (args) => {
+const Template: StoryFn<typeof AuthenticatedPopup> = (args) => {
   return (
     <Router>
       <AuthenticatedPopup {...args} />
@@ -19,8 +19,10 @@ const Template: ComponentStory<typeof AuthenticatedPopup> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
+export const AppScreen = {
+  render: Template,
 
-AppScreen.args = {
-  anchor: 10089,
+  args: {
+    anchor: 10089,
+  },
 }

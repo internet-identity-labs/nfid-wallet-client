@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import ProfileSidebar from "."
@@ -9,9 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileSidebar>
+} as Meta<typeof ProfileSidebar>
 
-const Template: ComponentStory<typeof ProfileSidebar> = (args) => {
+const Template: StoryFn<typeof ProfileSidebar> = (args) => {
   return (
     <Router>
       <ProfileSidebar {...args} />
@@ -19,6 +19,7 @@ const Template: ComponentStory<typeof ProfileSidebar> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
-
-AppScreen.args = {}
+export const AppScreen = {
+  render: Template,
+  args: {},
+}

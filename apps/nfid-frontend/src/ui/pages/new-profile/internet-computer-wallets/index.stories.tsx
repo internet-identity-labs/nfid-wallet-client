@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 
@@ -13,9 +13,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof TokenWalletsDetailPage>
+} as Meta<typeof TokenWalletsDetailPage>
 
-const Template: ComponentStory<typeof TokenWalletsDetailPage> = (args) => {
+const Template: StoryFn<typeof TokenWalletsDetailPage> = (args) => {
   return (
     <Router>
       <ToastContainer icon={({ type }) => ToastIcons[type]} />
@@ -24,8 +24,10 @@ const Template: ComponentStory<typeof TokenWalletsDetailPage> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
+export const AppScreen = {
+  render: Template,
 
-AppScreen.args = {
-  balanceSheet: APP_ACC_BALANCE_SHEET["ICP"],
+  args: {
+    balanceSheet: APP_ACC_BALANCE_SHEET["ICP"],
+  },
 }

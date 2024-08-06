@@ -1,6 +1,14 @@
-import { parameters as rootParameters } from "../../../.storybook/preview"
-import "./tailwind.css"
+import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport"
 
 export const parameters = {
-  ...rootParameters,
+  controls: {
+    matchers: {
+      color: /(background|color)$/i,
+      date: /Date$/,
+    },
+  },
+  viewport: {
+    viewports: INITIAL_VIEWPORTS,
+  },
 }
+export const tags = ["autodocs"];

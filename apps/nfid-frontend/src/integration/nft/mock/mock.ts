@@ -94,6 +94,20 @@ export const mockGeekResponse = {
       tokenFloorPriceIcp: 20000000,
       tokenFloorPriceUsd: 20478,
     },
+    "p5rex-yqaaa-aaaag-qb42a-cai": {
+      tokens: [
+        {
+          timeMillis: 1721253502478,
+          tokenId: 92,
+          uniqueIdentifier: {
+            uniqueIdentifierType: "ACCOUNT_IDENTIFIER",
+            id: "0051449d6ed40385865c7ddd44e1ce87a4e0c3d054bd86b936a9aedf094f62df",
+          },
+        },
+      ],
+      tokenFloorPriceIcp: 20000000,
+      tokenFloorPriceUsd: 20478,
+    },
     "gdeb6-lqaaa-aaaah-abvpq-cai": {
       tokens: [
         {
@@ -148,6 +162,12 @@ export const mockGeekResponse = {
     },
     {
       canisterId: "gfcya-pyaaa-aaaan-qbxda-cai",
+      name: "SNS&GHOST NFT",
+      alias: "snsandghostnft",
+      interface: "ICPSWAP",
+    },
+    {
+      canisterId: "p5rex-yqaaa-aaaag-qb42a-cai",
       name: "SNS&GHOST NFT",
       alias: "snsandghostnft",
       interface: "ICPSWAP",
@@ -248,5 +268,14 @@ export const expectedGeekResponse = [
     collectionName: "ICTempies",
     tokenFloorPriceIcp: undefined,
     tokenFloorPriceUSD: undefined,
+  },
+  {
+    millis: 1721253502478,
+    marketPlace: "ICPSWAP",
+    tokenId: 92,
+    collectionId: "p5rex-yqaaa-aaaag-qb42a-cai",
+    collectionName: "SNS&GHOST NFT",
+    tokenFloorPriceIcp: 20000000,
+    tokenFloorPriceUSD: 20478,
   },
 ]

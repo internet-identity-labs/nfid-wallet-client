@@ -1,3 +1,4 @@
+import { icpSwapPropertiesService } from "src/integration/nft/impl/icpswap/properties/properties-service"
 import { icpswapTransactionMapper } from "src/integration/nft/impl/icpswap/transaction/icpswap-transaction-mapper"
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
@@ -69,9 +70,6 @@ export class NftIcpSwap extends NftImpl {
 }
 
 class NftIcpSwapDetails extends NFTDetailsImpl {
-  async getProperties(): Promise<TokenProperties> {
-    throw new Error("Method not implemented.")
-  }
   private readonly icsMetadata: IcsMetadata
   private readonly canisterInfo: CanisterInfo
   private readonly tokenId: string
@@ -123,6 +121,10 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
       url: this.icsMetadata.filePath,
       format,
     }
+  }
+
+  async getProperties(): Promise<TokenProperties> {
+    return icpSwapPropertiesService.getProperties(this.icsMetadata)
   }
 }
 

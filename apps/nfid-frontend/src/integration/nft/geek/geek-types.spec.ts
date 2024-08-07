@@ -18,6 +18,7 @@ describe("geek api test", () => {
         "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
       ),
     )
+    console.log(result)
     expect(result).toEqual(expectedGeekResponse)
   })
 })

@@ -14,8 +14,8 @@ const principal = Principal.fromText(
 )
 
 describe("nft test suite", () => {
-  jest.setTimeout(25000)
-  describe("ext", () => {
+  jest.setTimeout(35000)
+  describe("nft", () => {
     it("should return", async () => {
       jest
         .spyOn(nftGeekService as any, "fetchNftGeekData")
@@ -23,12 +23,11 @@ describe("nft test suite", () => {
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
-      await exchangeRateService.cacheUsdIcpRate()
       const result = await nftService.getNFTs(principal)
-      expect(result.items).toHaveLength(8)
+      expect(result.items).toHaveLength(9)
       expect(result.totalPages).toEqual(1)
       expect(result.currentPage).toEqual(1)
-      expect(result.totalItems).toEqual(8)
+      expect(result.totalItems).toEqual(9)
 
       //collectibles page
       const extNft = result.items.filter(
@@ -133,6 +132,9 @@ describe("nft test suite", () => {
         "https://bafybeidpxzxggojap5uusofoho5y4j6qbsiitljjobrc4s2wmwtbbcxshi.ipfs.w3s.link/20240517-140134.png",
       )
 
+      const yumiNFTProperties = await yumiNFTdetails.getProperties()
+      expect(yumiNFTProperties.mappedValues.length).toEqual(0)
+
       const yumiNFTtransactions = await yumiNFTdetails.getTransactions(0, 10)
       expect(yumiNFTtransactions.activity).toHaveLength(9)
       expect(yumiNFTtransactions.isLastPage).toBeTruthy()
@@ -162,6 +164,15 @@ describe("nft test suite", () => {
         "2024-07-17T14:01:34.027Z",
       )
       expect(listYumiActivity.getFormattedPrice()).toEqual("3 ICP")
+
+      const yumiNFTWithDetails = result.items.filter(
+        (nft) => nft.getCollectionId() === "fab4i-diaaa-aaaah-acr2q-cai",
+      )[0]
+      const yumiProperties = await yumiNFTWithDetails.getDetails().then(dt => dt.getProperties())
+      expect(yumiProperties.mappedValues.length).toEqual(6)
+      expect(yumiProperties.mappedValues[0].category).toEqual("1 of 1")
+      expect(yumiProperties.mappedValues[0].option).toEqual("None")
+
 
       //memecake interface
 

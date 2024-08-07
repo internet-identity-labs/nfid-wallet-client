@@ -2,7 +2,7 @@ import { MarketPlace } from "src/integration/nft/enum/enums"
 import { TransactionRecordView } from "src/integration/nft/impl/nft-transaction-record"
 import {
   AssetPreview,
-  NFTTransactions,
+  NFTTransactions, TokenProperties,
 } from "src/integration/nft/impl/nft-types"
 
 export interface NFT {
@@ -27,6 +27,7 @@ export interface NFTDetails {
   getAbout(): string
   getAssetFullSize(): Promise<AssetPreview>
   getTransactions(from: number, to: number): Promise<NFTTransactions>
+  getProperties(): Promise<TokenProperties>
 }
 
 export interface TransactionRecord {

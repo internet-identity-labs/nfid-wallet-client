@@ -1,18 +1,34 @@
 export interface NftInfo {
-  id: number
-  nft_collection_id: number
-  canister: string
-  token_id: string
-  token_name: string
-  mime_type: string
-  owner_of: string | null
-  token_uri: string | null
-  metadata: string
-  minter_address: string | null
-  media_url: string
-  thumbnail_url: string
-  properties: string | null
-  updated_at: string
+  id: number;
+  nft_collection_id: number;
+  canister: string;
+  token_id: string;
+  token_name: string;
+  mime_type: string;
+  owner_of: string | null;
+  token_uri: string | null;
+  metadata: NftMetadata | string;  // Handling raw JSON string or parsed object
+  minter_address: string | null;
+  media_url: string;
+  thumbnail_url: string;
+  properties: any; //null in the response
+  updated_at: string;
+}
+
+export interface NftMetadata {
+  category: string;
+  name: string;
+  description: string;
+  url: string;
+  attributes: NftAttribute[];
+  mimeType: string;
+  thumb: string;
+  timestamp: number;
+}
+
+export interface NftAttribute {
+  value: string;
+  trait_type: string;
 }
 
 export interface TransactionRecordData {

@@ -270,6 +270,15 @@ export const expectedGeekResponse = [
     tokenFloorPriceUSD: undefined,
   },
   {
+    collectionId: "p5rex-yqaaa-aaaag-qb42a-cai",
+    collectionName: "SNS&GHOST NFT",
+    marketPlace: "ICPSWAP",
+    millis: 1721253502478,
+    tokenFloorPriceIcp: 20000000,
+    tokenFloorPriceUSD: 20478,
+    tokenId: 92,
+  },
+  {
     millis: 1721253502478,
     marketPlace: "ICPSWAP",
     tokenId: 92,

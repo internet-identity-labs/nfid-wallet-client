@@ -7,7 +7,7 @@ export interface NftInfo {
   mime_type: string
   owner_of: string | null
   token_uri: string | null
-  metadata: NftMetadata | string // Handling raw JSON string or parsed object
+  metadata: NftMetadata | string
   minter_address: string | null
   media_url: string
   thumbnail_url: string

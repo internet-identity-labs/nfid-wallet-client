@@ -1,4 +1,3 @@
-import { FromStringToTokenError, TokenAmount } from "@dfinity/utils"
 import {
   ListTransactionRecord,
   SellTransactionRecord,

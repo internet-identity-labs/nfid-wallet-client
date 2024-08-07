@@ -17,4 +17,13 @@ export interface PaginatedResponse<T> {
   totalItems: number
 }
 
+export interface MappedValue {
+  category: string | undefined
+  option: string | undefined
+}
+
+export interface TokenProperties {
+  mappedValues: MappedValue[]
+}
+
 export type DisplayFormat = "img" | "iframe" | "video"

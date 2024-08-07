@@ -1,18 +1,22 @@
 import { getTokenTxHistoryOfTokenIndex } from "src/integration/cap/fungible-transactions"
 import { assetFullsize, fetchCollection } from "src/integration/entrepot/lib"
 import { EntrepotCollection } from "src/integration/entrepot/types"
+import { extPropertiesService } from "src/integration/nft/impl/ext/properties/properties-service"
 import { extTransactionMapper } from "src/integration/nft/impl/ext/transaction/ext-transaction-mapper"
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
-import {AssetPreview, TokenProperties} from "../nft-types"
-import {extPropertiesService} from "src/integration/nft/impl/ext/properties/properties-service";
+import { AssetPreview, TokenProperties } from "../nft-types"
 
 export class NftExt extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
     if (this.details === undefined) {
       return fetchCollection(this.getCollectionId()).then((collection) => {
-        this.details = new NFTExtDetails(collection, this.getTokenId(), this.getTokenNumber())
+        this.details = new NFTExtDetails(
+          collection,
+          this.getTokenId(),
+          this.getTokenNumber(),
+        )
         return this.details
       })
     }
@@ -25,7 +29,11 @@ class NFTExtDetails extends NFTDetailsImpl {
   private readonly tokenId: string
   private readonly tokenNumber: number
 
-  constructor(collection: EntrepotCollection, tokenId: string, tokenNumber: number) {
+  constructor(
+    collection: EntrepotCollection,
+    tokenId: string,
+    tokenNumber: number,
+  ) {
     super()
     this.collection = collection
     this.tokenId = tokenId
@@ -65,7 +73,10 @@ class NFTExtDetails extends NFTDetailsImpl {
   }
 
   async getProperties(): Promise<TokenProperties> {
-    return extPropertiesService.getProperties(this.getCollection().id, this.tokenNumber)
+    return extPropertiesService.getProperties(
+      this.getCollection().id,
+      this.tokenNumber,
+    )
   }
 
   private getCollection(): EntrepotCollection {

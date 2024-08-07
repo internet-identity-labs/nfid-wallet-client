@@ -3,7 +3,7 @@ import {
   SellTransactionRecord,
   TransactionRecordView,
 } from "src/integration/nft/impl/nft-transaction-record"
-import {TransactionRecordData} from "src/integration/nft/impl/yumi/transaction/yumi-trs-types"
+import { TransactionRecordData } from "src/integration/nft/impl/yumi/transaction/yumi-trs-types"
 
 export class ListTransactionRecordYumi implements ListTransactionRecord {
   private readonly from: string

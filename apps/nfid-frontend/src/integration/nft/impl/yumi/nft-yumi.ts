@@ -1,10 +1,20 @@
-import {NFTDetailsImpl, NftImpl} from "src/integration/nft/impl/nft-abstract"
-import {AssetPreview, NFTTransactions, TokenProperties,} from "src/integration/nft/impl/nft-types"
-import {yumiTransactionMapper} from "src/integration/nft/impl/yumi/transaction/yumi-transaction-mapper"
-import {ApiResponse, NftInfo} from "src/integration/nft/impl/yumi/transaction/yumi-trs-types"
-import {CollectionData, CollectionResponse,} from "src/integration/nft/impl/yumi/types/yumi-types"
-import {NFTDetails, TransactionRecord} from "src/integration/nft/nft"
-import {yumiPropertiesService} from "src/integration/nft/impl/yumi/properties/properties-service";
+import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
+import {
+  AssetPreview,
+  NFTTransactions,
+  TokenProperties,
+} from "src/integration/nft/impl/nft-types"
+import { yumiPropertiesService } from "src/integration/nft/impl/yumi/properties/properties-service"
+import { yumiTransactionMapper } from "src/integration/nft/impl/yumi/transaction/yumi-transaction-mapper"
+import {
+  ApiResponse,
+  NftInfo,
+} from "src/integration/nft/impl/yumi/transaction/yumi-trs-types"
+import {
+  CollectionData,
+  CollectionResponse,
+} from "src/integration/nft/impl/yumi/types/yumi-types"
+import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 export class NftYumi extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
@@ -69,40 +79,41 @@ class NFTYumiDetails extends NFTDetailsImpl {
 
   async getProperties(): Promise<TokenProperties> {
     if (this.nftInfo === undefined) {
-      const response = await this.fetchTransactions(0, 1);
+      const response = await this.fetchTransactions(0, 1)
       if (response.data.data.length !== 0) {
-        this.nftInfo = response.data.data[0].nft_info;
+        this.nftInfo = response.data.data[0].nft_info
       } else {
-        this.nftInfo = null;
-        return { mappedValues: [] };
+        this.nftInfo = null
+        return { mappedValues: [] }
       }
     }
     if (this.nftInfo === null) {
-      return { mappedValues: [] };
+      return { mappedValues: [] }
     }
-    if (typeof this.nftInfo.metadata === 'string') {
-      return yumiPropertiesService.getProperties(JSON.parse(this.nftInfo.metadata));
+    if (typeof this.nftInfo.metadata === "string") {
+      return yumiPropertiesService.getProperties(
+        JSON.parse(this.nftInfo.metadata),
+      )
     } else {
-      return yumiPropertiesService.getProperties(this.nftInfo.metadata);
+      return yumiPropertiesService.getProperties(this.nftInfo.metadata)
     }
   }
 
-
-  private async fetchTransactions(page: number, limit: number): Promise<ApiResponse> {
-    return await fetch(
-      `https://stat.yuku.app/api/activity`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          canister: this.collectionData.canister,
-          token_id: this.tokenNumber.toString(),
-          page: page,
-          limit: limit,
-        }),
+  private async fetchTransactions(
+    page: number,
+    limit: number,
+  ): Promise<ApiResponse> {
+    return await fetch(`https://stat.yuku.app/api/activity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ).then((response) => response.json())
+      body: JSON.stringify({
+        canister: this.collectionData.canister,
+        token_id: this.tokenNumber.toString(),
+        page: page,
+        limit: limit,
+      }),
+    }).then((response) => response.json())
   }
 }

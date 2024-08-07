@@ -11,7 +11,7 @@ import {
   NFTTransactions,
   TokenProperties,
 } from "src/integration/nft/impl/nft-types"
-import {NFTDetails, TransactionRecord} from "src/integration/nft/nft"
+import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 export class NftMemeCake extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
@@ -29,7 +29,7 @@ export class NftMemeCake extends NftImpl {
 
 class NftMemeCakeDetails extends NFTDetailsImpl {
   async getProperties(): Promise<TokenProperties> {
-      throw new Error("Method not implemented.")
+    throw new Error("Method not implemented.")
   }
   private collection: Collection
   private token: Token

@@ -4,8 +4,8 @@ import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 import { actor, hasOwnProperty } from "@nfid/integration"
 
-import { AssetPreview, DisplayFormat, TokenProperties} from "../nft-types"
-import {idlFactory} from "./idl/SwapNFT"
+import { AssetPreview, DisplayFormat, TokenProperties } from "../nft-types"
+import { idlFactory } from "./idl/SwapNFT"
 import {
   _SERVICE as IcpSwapCanister,
   CanisterInfo,
@@ -70,7 +70,7 @@ export class NftIcpSwap extends NftImpl {
 
 class NftIcpSwapDetails extends NFTDetailsImpl {
   async getProperties(): Promise<TokenProperties> {
-      throw new Error("Method not implemented.")
+    throw new Error("Method not implemented.")
   }
   private readonly icsMetadata: IcsMetadata
   private readonly canisterInfo: CanisterInfo

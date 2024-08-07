@@ -2,7 +2,8 @@ import { MarketPlace } from "src/integration/nft/enum/enums"
 import { TransactionRecordView } from "src/integration/nft/impl/nft-transaction-record"
 import {
   AssetPreview,
-  NFTTransactions, TokenProperties,
+  NFTTransactions,
+  TokenProperties,
 } from "src/integration/nft/impl/nft-types"
 
 export interface NFT {

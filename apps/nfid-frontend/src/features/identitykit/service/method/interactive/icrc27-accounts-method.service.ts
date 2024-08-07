@@ -67,11 +67,19 @@ class Icrc27AccountsMethodService extends InteractiveMethodService {
       throw new GenericError("User data has not been found")
     }
 
+    const anonymous =
+      accounts.anonymous.length > 1
+        ? accounts.anonymous.map((acc, index) => ({
+            ...acc,
+            displayName: `${acc.displayName} ${index + 1}`,
+          }))
+        : accounts.anonymous
+
     const baseData = await super.getComponentData(message)
     return {
       ...baseData,
       publicProfile: accounts.public,
-      anonymous: accounts.anonymous,
+      anonymous,
     }
   }
 }

@@ -13,16 +13,17 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
     <div
       className={clsx(
         "flex flex-col justify-between font-inter rounded-xl",
-        "mx-2 min-h-[640px] border border-gray-100 shadow-screen",
-        "absolute top-1/2 -translate-y-1/2 overflow-hidden",
-        "w-[calc(100%-16px)] sm:w-[450px] sm:left-1/2 sm:-translate-x-1/2",
+        "w-full shadow-screen",
+        "sm:absolute overflow-hidden",
+        "sm:top-1/2 sm:left-1/2 sm:-translate-y-1/2 sm:-translate-x-1/2",
         "bg-frameBgColor border-frameBorderColor",
+        "sm:h-[600px] sm:w-[450px] h-screen",
       )}
     >
       <div
         id="screen-modal"
         className={clsx(
-          "w-full h-full p-[22px] flex-grow flex flex-col",
+          "w-full h-full p-5 flex-grow flex flex-col",
           "sm:rounded-xl justify-between",
           "text-black",
           className,

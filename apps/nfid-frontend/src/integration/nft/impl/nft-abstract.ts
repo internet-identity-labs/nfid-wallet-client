@@ -7,6 +7,7 @@ import { MappedToken } from "src/integration/nft/geek/geek-types"
 import {
   AssetPreview,
   NFTTransactions,
+  TokenProperties,
 } from "src/integration/nft/impl/nft-types"
 import { NFT, NFTDetails } from "src/integration/nft/nft"
 
@@ -117,4 +118,6 @@ export abstract class NFTDetailsImpl implements NFTDetails {
   abstract getAssetFullSize(): Promise<AssetPreview>
 
   abstract getTransactions(from: number, to: number): Promise<NFTTransactions>
+
+  abstract getProperties(): Promise<TokenProperties>
 }

@@ -147,7 +147,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       return await getGlobalKeys(
         authState.get().delegationIdentity!,
         Chain.IC,
-        [dto.canisterId],
+        [CANDID_UI_CANISTER, dto.canisterId],
         account?.derivationOrigin ?? account.origin,
       )
     }

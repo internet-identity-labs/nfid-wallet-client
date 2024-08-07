@@ -1,15 +1,11 @@
 import clsx from "clsx"
 import { useState } from "react"
 
-import {
-  Button,
-  IconCmpWarning,
-  IconSvgNFIDWalletLogo,
-  ToggleButton,
-} from "@nfid-frontend/ui"
+import { IconCmpWarning, ToggleButton } from "@nfid-frontend/ui"
 
 import { RPCMessage } from "../type"
 import { RPCComponentsUI } from "./methods/method"
+import { RPCPromptTemplate } from "./templates/prompt-template"
 
 export interface RPCComponentErrorProps {
   onRetry: () => void
@@ -29,18 +25,10 @@ export const RPCComponentError = ({
   const applicationName = new URL(String(request?.origin)).host
 
   return (
-    <div className="flex flex-col flex-1 h-full">
-      <div className="flex flex-col items-center mt-10 text-sm text-center">
-        <img
-          alt="NFID Wallet"
-          className="w-[182px] mb-4"
-          src={IconSvgNFIDWalletLogo}
-        />
-
-        <div className="block w-full text-lg font-bold mb-1.5">
-          {request?.data.method}
-        </div>
-        <div className="block w-full text-sm">
+    <RPCPromptTemplate
+      title={request?.data.method}
+      subTitle={
+        <>
           Request from{" "}
           <a
             href={origin}
@@ -50,8 +38,13 @@ export const RPCComponentError = ({
           >
             {applicationName}
           </a>
-        </div>
-      </div>
+        </>
+      }
+      primaryButtonText="Try again"
+      secondaryButtonText="Cancel"
+      onPrimaryButtonClick={onRetry}
+      onSecondaryButtonClick={onCancel}
+    >
       {request?.data.method !== RPCComponentsUI.icrc49_call_canister ? (
         <div className="flex flex-1 bg-orange-50 p-[15px] text-orange-900 gap-2.5 mt-10 rounded-xl">
           <div className="w-[22px] shrink-0">
@@ -71,7 +64,7 @@ export const RPCComponentError = ({
             className="mb-5"
           />
           {isResponseTab ? (
-            <div className="flex flex-1 bg-orange-50 p-[15px] text-orange-900 gap-2.5 rounded-xl">
+            <div className="flex flex-1 border border-gray-200 border p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-auto">
               <div className="w-[22px] shrink-0">
                 <IconCmpWarning className="!text-orange-900" />
               </div>
@@ -83,8 +76,8 @@ export const RPCComponentError = ({
           ) : (
             <div
               className={clsx(
-                "rounded-md bg-gray-50 px-3.5 py-2.5 flex-1 space-y-4",
-                "text-gray-500 break-all text-sm",
+                "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
+                "text-gray-500 break-all text-sm overflow-auto",
               )}
             >
               <div className="space-y-2">
@@ -103,14 +96,6 @@ export const RPCComponentError = ({
           )}
         </div>
       )}
-      <div className={clsx("grid grid-cols-2 gap-5 mt-5 lg:mt-10")}>
-        <Button type="stroke" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="primary" onClick={onRetry}>
-          Try again
-        </Button>
-      </div>
-    </div>
+    </RPCPromptTemplate>
   )
 }

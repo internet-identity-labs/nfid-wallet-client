@@ -81,9 +81,9 @@ export default function IdentityKitRPCCoordinator() {
     <ModalComponent
       onClose={() => send({ type: "ON_CANCEL" })}
       isVisible
-      className="w-full sm:w-[450px] h-auto"
+      className="w-full !relative sm:!fixed"
     >
-      <ScreenResponsive className="min-h-full">{Component}</ScreenResponsive>
+      <ScreenResponsive>{Component}</ScreenResponsive>
     </ModalComponent>
   )
 }

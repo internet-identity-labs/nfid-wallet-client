@@ -1,3 +1,5 @@
+import { mapPermissionsResponse } from "frontend/features/identitykit/helpers/scopes"
+
 import { RPCMessage, RPCSuccessResponse, Icrc25Dto } from "../../../type"
 import { authService } from "../../auth.service"
 import { SilentMethodService } from "./silent-method.service"
@@ -27,7 +29,7 @@ class Icrc25RequestPermissionsMethodService extends SilentMethodService {
       origin: message.origin,
       jsonrpc: message.data.jsonrpc,
       id: message.data.id,
-      result: icrc25Message,
+      result: mapPermissionsResponse(permissions),
     }
 
     await new Promise((resolve) => setTimeout(() => resolve(true), 5000))

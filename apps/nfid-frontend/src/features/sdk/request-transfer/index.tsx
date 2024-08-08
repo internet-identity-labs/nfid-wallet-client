@@ -182,7 +182,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           </div>
         </div>
       </div>
-      <div className="space-y-2.5 flex flex-col mb-14 mt-6">
+      <div className="space-y-2.5 flex flex-col mb-[60px]">
         <Button
           id={
             isApproveButtonDisabled ? "approveButtonDisabled" : "approveButton"

@@ -39,7 +39,7 @@ export const PublicProfileButton = ({
   return (
     <div
       className={clsx(
-        "flex justify-between text-xs uppercase font-mono h-5 mt-5",
+        "flex justify-between text-xs lowercase font-mono h-5 mt-5",
         !isAvailable && "!text-gray-400 !pointer-events-none",
       )}
     >
@@ -59,7 +59,9 @@ export const PublicProfileButton = ({
           {truncateString(publicProfile.principal.toString(), 6, 4)}
         </label>
       </div>
-      {publicProfile?.balance ? <div>{publicProfile?.balance} ICP</div> : null}
+      {publicProfile?.balance ? (
+        <div className="uppercase">{publicProfile?.balance} ICP</div>
+      ) : null}
     </div>
   )
 }

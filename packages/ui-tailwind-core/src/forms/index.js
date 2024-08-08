@@ -162,7 +162,7 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
           "flex-shrink": "0",
           height: spacing[4],
           width: spacing[4],
-          color: theme("colors.blue.600", colors.blue[600]),
+          color: theme("colors.teal.600", colors.teal[600]),
           "background-color": "#fff",
           "border-color": theme("colors.gray.500", colors.gray[500]),
           "border-width": borderWidth["DEFAULT"],

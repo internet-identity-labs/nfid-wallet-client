@@ -72,6 +72,7 @@ export const accountService = {
     const accounts = await fetchAccountsService({
       authRequest: { hostname: origin, derivationOrigin },
     })
+    const applicationName = new URL(origin).host
 
     const delegations = await Promise.all(
       accounts.map((acc) => {
@@ -89,7 +90,7 @@ export const accountService = {
 
     return delegations.map((acc, index) => ({
       id: index,
-      displayName: `Anonymous profile ${index + 1}`,
+      displayName: `Anonymous ${applicationName} profile`,
       principal: Principal.fromUint8Array(acc.userPublicKey).toText(),
       subaccount: this.getDefaultSubAccount(),
       type: AccountType.ANONYMOUS_LEGACY,
@@ -103,8 +104,9 @@ export const accountService = {
   ): Promise<Account[]> {
     const identity = authState.get().delegationIdentity
     if (!identity) throw new Error("No identity")
+    const applicationName = new URL(origin).host
 
-    const publicKey = await getPublicKey(
+    const anonymousPublicKey = await getPublicKey(
       identity,
       Chain.IC,
       derivationOrigin ?? origin,
@@ -114,8 +116,8 @@ export const accountService = {
     let accounts = [
       {
         id: 0,
-        displayName: truncateString(publicKey, 6, 4),
-        principal: publicKey,
+        displayName: `Anonymous ${applicationName} profile`,
+        principal: anonymousPublicKey,
         subaccount: this.getDefaultSubAccount(),
         type: AccountType.SESSION,
         balance: undefined,
@@ -134,7 +136,7 @@ export const accountService = {
 
       accounts.push({
         id: 1,
-        displayName: truncateString(publicKey, 6, 4),
+        displayName: `Anonymous ${applicationName} profile`,
         principal: buggedPublicKey,
         subaccount: this.getDefaultSubAccount(),
         type: AccountType.SESSION_WITHOUT_DERIVATION,
@@ -142,6 +144,13 @@ export const accountService = {
         origin,
         derivationOrigin,
       })
+    }
+
+    if (accounts.length > 1) {
+      accounts = accounts.map((acc, index) => ({
+        ...acc,
+        displayName: `${acc.displayName} ${index + 1}`,
+      }))
     }
 
     return accounts

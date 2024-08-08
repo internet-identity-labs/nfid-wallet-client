@@ -59,8 +59,8 @@ export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
       />
       <p className="text-sm font-bold text-center">{profile?.email}</p>
       <p className="mt-3 text-sm text-center">
-        Your account has been configured to use two-factor authentication. Use
-        your Passkey to confirm it’s you.
+        Your account has been configured for self-sovereign mode. Use your
+        Passkey to confirm it’s you.
       </p>
       <img alt="asset" src={Image2FA} className="w-full h-56 my-10" />
       <Button className="mb-[30px]" onClick={handleAuth}>

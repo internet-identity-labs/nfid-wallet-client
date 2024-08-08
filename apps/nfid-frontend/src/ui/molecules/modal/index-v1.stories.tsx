@@ -1,5 +1,5 @@
-import { Meta, Story } from "@storybook/react"
-import React from "react"
+import { Meta, StoryFn, StoryObj } from "@storybook/react"
+import React, { FunctionComponent } from "react"
 
 import { Button } from "../../atoms/button"
 import { ModalAdvanced, ModalAdvancedProps } from "./advanced"
@@ -8,7 +8,8 @@ import { Modal, ModalProps } from "./index-v1"
 const meta: Meta = {
   title: "Molecules/Modal",
   component: Modal,
-  subcomponents: { ModalAdvanced },
+  //subcomponents: { ModalAdvanced },
+  subcomponents: { ModalAdvanced: ModalAdvanced as FunctionComponent<unknown> },
   argTypes: {
     children: {
       control: {
@@ -23,7 +24,7 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<ModalProps> = ({ isVisible, ...args }) => {
+const Template: StoryFn<ModalProps> = ({ isVisible, ...args }) => {
   const [visible, setVisible] = React.useState(isVisible)
   return (
     <>
@@ -33,7 +34,7 @@ const Template: Story<ModalProps> = ({ isVisible, ...args }) => {
   )
 }
 
-const AdvancedModal: Story<ModalAdvancedProps> = ({ ...args }) => {
+const AdvancedModal: StoryFn<ModalAdvancedProps> = ({ ...args }) => {
   const [visible, setVisible] = React.useState(false)
 
   const toggleVisibility = React.useCallback(
@@ -74,17 +75,22 @@ const AdvancedModal: Story<ModalAdvancedProps> = ({ ...args }) => {
   )
 }
 
-export const Default = Template.bind({})
-export const Advanced = AdvancedModal.bind({})
+export const Default: StoryObj<ModalProps> = {
+  render: Template,
 
-Default.args = {
-  children: "Button",
-  onClose: () => {},
-  id: "default-modal",
+  args: {
+    children: "Button",
+    onClose: () => {},
+    id: "default-modal",
+  },
 }
 
-Advanced.args = {
-  id: "advanced-modal",
-  title: "Delete access point",
-  large: false,
+export const Advanced: StoryObj<ModalAdvancedProps> = {
+  render: AdvancedModal,
+
+  args: {
+    id: "advanced-modal",
+    title: "Delete access point",
+    large: false,
+  },
 }

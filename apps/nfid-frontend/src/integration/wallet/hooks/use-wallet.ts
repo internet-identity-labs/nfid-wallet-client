@@ -15,7 +15,7 @@ export const useWallet = () => {
   const { data: principal, isValidating: isWalletPrincipalLoading } =
     useSWRImmutable(
       profile?.anchor ? [profile.anchor, "walletPrincipal"] : null,
-      getWalletPrincipal,
+      ([anchor]) => getWalletPrincipal(anchor),
     )
 
   const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(

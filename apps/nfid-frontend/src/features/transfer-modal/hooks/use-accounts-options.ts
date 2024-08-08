@@ -20,9 +20,9 @@ export const useAccountsOptions = (
         await getConnector({
           type: TransferModalType.FT,
           tokenStandard: token,
-          blockchain: blockchain,
+          blockchain: blockchain as Blockchain,
         })
-      ).getAccountsOptions({ isVault, isRootOnly }),
+      ).getAccountsOptions({ isVault: isVault as boolean, isRootOnly }),
   )
 
   return { data: accountsOptions ?? [], ...rest }

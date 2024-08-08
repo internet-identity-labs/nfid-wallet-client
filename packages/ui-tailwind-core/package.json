@@ -12,7 +12,7 @@
     "src/**/*.js"
   ],
   "scripts": {
-    "test": "jest --passWithNoTests"
+    "test": "npx jest --passWithNoTests"
   },
   "license": "MIT"
 }

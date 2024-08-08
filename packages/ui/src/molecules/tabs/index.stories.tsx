@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { Tabs, TabsProps } from "./index"
@@ -14,26 +14,28 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<TabsProps> = (args) => (
+const Template: StoryFn<TabsProps> = (args) => (
   <div className="w-full">
     <Tabs {...args} />
   </div>
 )
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  tabs: [
-    {
-      label: "Transactions",
-      value: "transactions",
-      content: <div>Transactions content</div>,
-    },
-    {
-      label: "Vaults",
-      value: "vaults",
-      content: <div>Vaults content</div>,
-    },
-  ],
-  defaultValue: "transactions",
+  args: {
+    tabs: [
+      {
+        label: "Transactions",
+        value: "transactions",
+        content: <div>Transactions content</div>,
+      },
+      {
+        label: "Vaults",
+        value: "vaults",
+        content: <div>Vaults content</div>,
+      },
+    ],
+    defaultValue: "transactions",
+  },
 }

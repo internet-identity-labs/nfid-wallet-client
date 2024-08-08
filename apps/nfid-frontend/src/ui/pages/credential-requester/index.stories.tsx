@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 
 import logo from "frontend/assets/distrikt.svg"
 
@@ -19,26 +19,32 @@ export default {
     applicationLogo: logo,
     phone: "+380977118615",
   },
-} as ComponentMeta<typeof CredentialRequesterNotVerified>
+} as Meta<typeof CredentialRequesterNotVerified>
 
-const CredentialRequesterVerifiedTemplate: ComponentStory<
+const CredentialRequesterVerifiedTemplate: StoryFn<
   typeof CredentialRequesterVerified
 > = (args) => {
   return <CredentialRequesterVerified {...args} />
 }
 
-const CredentialRequesterNotVerifiedTemplate: ComponentStory<
+const CredentialRequesterNotVerifiedTemplate: StoryFn<
   typeof CredentialRequesterNotVerified
 > = (args) => {
   return <CredentialRequesterNotVerified {...args} />
 }
 
-const CredentialRequesterSMSVerifyTemplate: ComponentStory<
+const CredentialRequesterSMSVerifyTemplate: StoryFn<
   typeof CredentialRequesterSMSVerify
 > = (args) => {
   return <CredentialRequesterSMSVerify {...args} />
 }
 
-export const VerifiedScreen = CredentialRequesterVerifiedTemplate.bind({})
-export const NotVerifiedScreen = CredentialRequesterNotVerifiedTemplate.bind({})
-export const SMSVerifyScreen = CredentialRequesterSMSVerifyTemplate.bind({})
+export const VerifiedScreen = {
+  render: CredentialRequesterVerifiedTemplate,
+}
+export const NotVerifiedScreen = {
+  render: CredentialRequesterNotVerifiedTemplate,
+}
+export const SMSVerifyScreen = {
+  render: CredentialRequesterSMSVerifyTemplate,
+}

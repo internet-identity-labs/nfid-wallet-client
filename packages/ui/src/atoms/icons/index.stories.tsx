@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import clsx from "clsx"
 import React from "react"
 
@@ -77,7 +77,7 @@ const IconWrapper: React.FC<{ icon: React.ReactNode; label: string }> = ({
   </div>
 )
 
-const Icons: Story = (args) => {
+const Icons: StoryFn = (args) => {
   return (
     <div>
       <div className="mb-2 font-bold">Controls:</div>
@@ -249,8 +249,10 @@ const Icons: Story = (args) => {
   )
 }
 
-export const Overview = Icons.bind({})
+export const Overview = {
+  render: Icons,
 
-Overview.args = {
-  className: "text-blue",
+  args: {
+    className: "text-blue",
+  },
 }

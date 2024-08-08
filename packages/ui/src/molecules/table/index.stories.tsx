@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import { IconCmpArrowRight, Table } from "@nfid-frontend/ui"
 
@@ -14,7 +14,7 @@ const meta: Meta = {
 
 export default meta
 
-const DefaultTemplate: Story<TableProps> = (args) => (
+const DefaultTemplate: StoryFn<TableProps> = (args) => (
   <Table
     tableHeader={
       <TableRow className="font-bold border-black">
@@ -40,4 +40,6 @@ const DefaultTemplate: Story<TableProps> = (args) => (
   </Table>
 )
 
-export const Default = DefaultTemplate.bind({})
+export const Default = {
+  render: DefaultTemplate,
+}

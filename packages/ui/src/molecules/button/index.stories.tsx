@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 import { ImPlus, ImSpinner } from "react-icons/im"
 
@@ -27,7 +27,7 @@ const meta: Meta = {
 
 export default meta
 
-const DefaultTemplate: Story<ButtonProps> = (args) => {
+const DefaultTemplate: StoryFn<ButtonProps> = (args) => {
   return (
     <div className="flex space-x-8">
       <Button {...args} />
@@ -37,10 +37,13 @@ const DefaultTemplate: Story<ButtonProps> = (args) => {
   )
 }
 
-export const Default = DefaultTemplate.bind({})
-Default.args = {
-  children: "Button",
-  type: "primary",
-  disabled: false,
-  isSmall: false,
+export const Default = {
+  render: DefaultTemplate,
+
+  args: {
+    children: "Button",
+    type: "primary",
+    disabled: false,
+    isSmall: false,
+  },
 }

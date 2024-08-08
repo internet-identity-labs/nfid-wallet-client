@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { ButtonMenu, ButtonMenuProps } from "./index"
@@ -57,7 +57,7 @@ const items = [
   },
 ]
 
-const DefaultTemplate: Story<ButtonMenuProps> = () => (
+const DefaultTemplate: StoryFn<ButtonMenuProps> = () => (
   <ButtonMenu buttonElement={<span>menu</span>}>
     {(toggleMenu) => (
       <div className={"p-4 py-6 font-bold bg-white rounded w-[70vw]"}>
@@ -80,4 +80,6 @@ const DefaultTemplate: Story<ButtonMenuProps> = () => (
   </ButtonMenu>
 )
 
-export const Default = DefaultTemplate.bind({})
+export const Default = {
+  render: DefaultTemplate,
+}

@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { TransferTemplate } from "./template"
@@ -14,10 +14,8 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story = (args) => <TransferTemplate {...args} />
-
-export const Default = Template.bind({})
-
-Default.args = {
-  children: "123",
+export const Default = {
+  args: {
+    children: "123",
+  },
 }

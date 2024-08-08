@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -11,9 +11,9 @@ export default {
   parameters: {
     layout: "center",
   },
-} as ComponentMeta<typeof NFTPreview>
+} as Meta<typeof NFTPreview>
 
-const Template: ComponentStory<typeof NFTPreview> = (args) => {
+const Template: StoryFn<typeof NFTPreview> = (args) => {
   return (
     <Router>
       <ToastContainer />
@@ -22,6 +22,7 @@ const Template: ComponentStory<typeof NFTPreview> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
-
-AppScreen.args = {}
+export const AppScreen = {
+  render: Template,
+  args: {},
+}

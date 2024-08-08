@@ -10,9 +10,9 @@ export const useInterval = (
   delay: number,
   shouldPoll: boolean = true,
 ) => {
-  const savedCallback = React.useRef<Poller>(() => {})
+  const savedCallback = React.useRef<Poller>(() => { })
   const totalTriesRef = React.useRef<number>(0)
-  const intervalRef = React.useRef<NodeJS.Timer | null>(null)
+  const intervalRef = React.useRef<NodeJS.Timeout | null>(null)
 
   const totalTries = React.useCallback(() => totalTriesRef.current, [])
   const resetTries = React.useCallback(() => (totalTriesRef.current = 0), [])

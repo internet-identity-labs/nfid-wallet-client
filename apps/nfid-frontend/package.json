@@ -1,12 +1,12 @@
 {
   "scripts": {
     "start": "craco start",
-    "build": "BUILD_PATH=../../dist/apps/nfid-frontend/ craco build",
+    "build": "BUILD_PATH=../../dist/apps/nfid-frontend/ npx craco build",
     "build:example": "EXAMPLE_BUILD=1 BUILD_PATH=../../dist/apps/nfid-frontend/ craco build",
     "craco:test": "craco test",
-    "test:dev": "jest --passWithNoTests --watch --detectOpenHandles",
+    "test:dev": "npx jest --passWithNoTests --watch --detectOpenHandles",
     "test:dev:silent": "yarn test:dev --silent=true",
-    "test": "jest --passWithNoTests --silent=true",
+    "test": "npx jest --passWithNoTests --silent=true",
     "eject": "react-scripts eject",
     "serve": "npm start"
   },

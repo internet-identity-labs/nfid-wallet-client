@@ -1,5 +1,5 @@
-import type { ComponentStory, Meta } from "@storybook/react"
-import { withRouter } from "storybook-addon-react-router-v6"
+import type { StoryFn, Meta } from "@storybook/react"
+import { withRouter } from "storybook-addon-remix-react-router"
 
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
@@ -12,15 +12,17 @@ const Story: Meta<typeof PageError> = {
 }
 export default Story
 
-const Template: ComponentStory<typeof PageError> = (args) => (
+const Template: StoryFn<typeof PageError> = (args) => (
   <ScreenResponsive className="overflow-auto max-w-[450px] max-h-[580px] shadow-lg m-auto border border-gray-100">
     <PageError {...args} />
   </ScreenResponsive>
 )
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  // @ts-ignore
-  PageError: new Error("dasdasdasd"),
+  args: {
+    // @ts-ignore
+    PageError: new Error("dasdasdasd"),
+  },
 }

@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import Dfinity from "frontend/assets/dfinity.svg"
@@ -11,9 +11,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileAssetsPage>
+} as Meta<typeof ProfileAssetsPage>
 
-const Template: ComponentStory<typeof ProfileAssetsPage> = (args) => {
+const Template: StoryFn<typeof ProfileAssetsPage> = (args) => {
   return (
     <Router>
       <ProfileAssetsPage {...args} />
@@ -21,15 +21,17 @@ const Template: ComponentStory<typeof ProfileAssetsPage> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
+export const AppScreen = {
+  render: Template,
 
-AppScreen.args = {
-  onIconClick: () => {},
-  tokens: Array(1).fill({
-    icon: Dfinity,
-    title: "Internet Computer",
-    subTitle: "ICP",
-    balance: "987.12345678 ICP",
-    price: 691,
-  }),
+  args: {
+    onIconClick: () => {},
+    tokens: Array(1).fill({
+      icon: Dfinity,
+      title: "Internet Computer",
+      subTitle: "ICP",
+      balance: "987.12345678 ICP",
+      price: 691,
+    }),
+  },
 }

@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import clsx from "clsx"
 import React from "react"
 
@@ -15,7 +15,7 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<IFeeModal> = (args) => (
+const Template: StoryFn<IFeeModal> = (args) => (
   <div
     className={clsx([
       "transition ease-in-out delay-150 duration-300",
@@ -38,45 +38,47 @@ const Template: Story<IFeeModal> = (args) => (
   </div>
 )
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  feeOptions: [
-    {
-      title: "Slow",
-      subTitle: "45+ sec",
-      innerTitle: "$10.14",
-      innerSubtitle: "0.0103 ETH",
-      onClick: () => alert("slow selected"),
-    },
-    {
-      title: "Normal",
-      subTitle: "~30 sec",
-      innerTitle: "$16.67",
-      innerSubtitle: "0.0103 ETH",
-      onClick: () => alert("normal selected"),
-    },
-    {
-      title: "Fast",
-      subTitle: "~15 sec",
-      innerTitle: "$19.66",
-      innerSubtitle: "0.0103 ETH",
-      onClick: () => alert("fast selected"),
-    },
-    {
-      title: "Site suggested",
-      subTitle: "~15 sec",
-      innerTitle: "$24.66",
-      innerSubtitle: "0.0103 ETH",
-      onClick: () => alert("suggested selected"),
-    },
-    {
-      title: "Custom",
-      subTitle: "~10 sec",
-      innerTitle: "$25",
-      innerSubtitle: "0.0119139 ETH",
-      onClick: () => alert("suggested selected"),
-      onConfig: () => alert("a"),
-    },
-  ],
+  args: {
+    feeOptions: [
+      {
+        title: "Slow",
+        subTitle: "45+ sec",
+        innerTitle: "$10.14",
+        innerSubtitle: "0.0103 ETH",
+        onClick: () => alert("slow selected"),
+      },
+      {
+        title: "Normal",
+        subTitle: "~30 sec",
+        innerTitle: "$16.67",
+        innerSubtitle: "0.0103 ETH",
+        onClick: () => alert("normal selected"),
+      },
+      {
+        title: "Fast",
+        subTitle: "~15 sec",
+        innerTitle: "$19.66",
+        innerSubtitle: "0.0103 ETH",
+        onClick: () => alert("fast selected"),
+      },
+      {
+        title: "Site suggested",
+        subTitle: "~15 sec",
+        innerTitle: "$24.66",
+        innerSubtitle: "0.0103 ETH",
+        onClick: () => alert("suggested selected"),
+      },
+      {
+        title: "Custom",
+        subTitle: "~10 sec",
+        innerTitle: "$25",
+        innerSubtitle: "0.0119139 ETH",
+        onClick: () => alert("suggested selected"),
+        onConfig: () => alert("a"),
+      },
+    ],
+  },
 }

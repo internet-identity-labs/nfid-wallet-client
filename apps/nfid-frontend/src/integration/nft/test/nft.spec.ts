@@ -24,10 +24,10 @@ describe("nft test suite", () => {
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
       const result = await nftService.getNFTs(principal)
-      expect(result.items).toHaveLength(9)
+      expect(result.items).toHaveLength(10)
       expect(result.totalPages).toEqual(1)
       expect(result.currentPage).toEqual(1)
-      expect(result.totalItems).toEqual(9)
+      expect(result.totalItems).toEqual(10)
 
       //collectibles page
       const extNft = result.items.filter(
@@ -270,6 +270,16 @@ describe("nft test suite", () => {
       expect(icpswapActivityMint.getTo()).toEqual(
         "af8283ad383bc6e16509683b3256fdb4a5d2ece25261e8c39b1677bab7019e44",
       )
+
+      const icpSwapWithProperties = await result.items.filter(
+        (nft) => nft.getCollectionId() === "p5rex-yqaaa-aaaag-qb42a-cai",
+      )[0]
+      const icpSwapProperties = await icpSwapWithProperties
+        .getDetails()
+        .then((dt) => dt.getProperties())
+      expect(icpSwapProperties.mappedValues.length).toEqual(5)
+      expect(icpSwapProperties.mappedValues[0].category).toEqual("Background")
+      expect(icpSwapProperties.mappedValues[0].option).toEqual("Purple")
     })
   })
 })

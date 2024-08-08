@@ -28,9 +28,6 @@ export class NftMemeCake extends NftImpl {
 }
 
 class NftMemeCakeDetails extends NFTDetailsImpl {
-  async getProperties(): Promise<TokenProperties> {
-    throw new Error("Method not implemented.")
-  }
   private collection: Collection
   private token: Token
 
@@ -74,6 +71,13 @@ class NftMemeCakeDetails extends NFTDetailsImpl {
     return {
       activity: slicedTransactions,
       isLastPage,
+    }
+  }
+
+  //not implemented
+  async getProperties(): Promise<TokenProperties> {
+    return {
+      mappedValues: [],
     }
   }
 }

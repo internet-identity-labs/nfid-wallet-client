@@ -58,6 +58,7 @@ const config = {
             crypto: require.resolve("crypto-browserify"),
             path: require.resolve("path-browserify"),
             os: require.resolve("os-browserify/browser"),
+            vm: require.resolve("vm-browserify"),
           },
         },
       }
@@ -69,7 +70,7 @@ const config = {
   },
   jest: {
     configure: (config: any) => {
-      config.resolver = "@nrwl/jest/plugins/resolver"
+      config.resolver = "@nx/jest/plugins/resolver"
       return {
         ...config,
         globals: {

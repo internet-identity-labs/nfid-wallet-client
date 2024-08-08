@@ -1,5 +1,5 @@
-import type { ComponentStory, Meta } from "@storybook/react"
-import { withRouter } from "storybook-addon-react-router-v6"
+import type { StoryFn, Meta } from "@storybook/react"
+import { withRouter } from "storybook-addon-remix-react-router"
 
 import { Page } from "./page"
 
@@ -10,7 +10,7 @@ const Story: Meta<typeof Page> = {
 }
 export default Story
 
-const Template: ComponentStory<typeof Page> = (args) => (
+const Template: StoryFn<typeof Page> = (args) => (
   <Page>
     <Page.Header>Header One</Page.Header>
     <Page.Body>Body</Page.Body>
@@ -18,6 +18,7 @@ const Template: ComponentStory<typeof Page> = (args) => (
   </Page>
 )
 
-export const Default = Template.bind({})
-
-Default.args = {}
+export const Default = {
+  render: Template,
+  args: {},
+}

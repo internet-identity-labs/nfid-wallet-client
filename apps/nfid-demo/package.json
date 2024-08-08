@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "craco start",
-    "build": "BUILD_PATH=../../dist/apps/nfid-demo craco build",
-    "test": "craco test --passWithNoTests",
+    "start": "npx craco start",
+    "build": "BUILD_PATH=../../dist/apps/nfid-demo npx craco build",
+    "test": "npx jest test --passWithNoTests",
     "eject": "react-scripts eject",
     "serve": "npm start"
   },

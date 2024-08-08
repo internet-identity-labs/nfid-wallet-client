@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import Table from "."
@@ -11,7 +11,7 @@ const meta: Meta = {
 
 export default meta
 
-const DefaultTemplate: Story<{}> = (args) => (
+const DefaultTemplate: StoryFn<{}> = (args) => (
   <Table
     headings={["Make", "Model", "Year", "Color"]}
     rows={[
@@ -22,4 +22,6 @@ const DefaultTemplate: Story<{}> = (args) => (
   />
 )
 
-export const Default = DefaultTemplate.bind({})
+export const Default = {
+  render: DefaultTemplate,
+}

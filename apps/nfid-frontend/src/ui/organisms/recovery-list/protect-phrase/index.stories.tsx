@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import RecoveryPhraseProtectModal from "./phrase-protect-modal"
@@ -9,11 +9,9 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof RecoveryPhraseProtectModal>
+} as Meta<typeof RecoveryPhraseProtectModal>
 
-const ProtectModal: ComponentStory<typeof RecoveryPhraseProtectModal> = (
-  args,
-) => {
+const ProtectModal: StoryFn<typeof RecoveryPhraseProtectModal> = (args) => {
   return (
     <Router>
       <RecoveryPhraseProtectModal {...args} />
@@ -21,6 +19,7 @@ const ProtectModal: ComponentStory<typeof RecoveryPhraseProtectModal> = (
   )
 }
 
-export const ProtectAppScreen = ProtectModal.bind({})
-
-ProtectAppScreen.args = {}
+export const ProtectAppScreen = {
+  render: ProtectModal,
+  args: {},
+}

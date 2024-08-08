@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { CalendarIcon } from "./calendar"
@@ -27,7 +27,7 @@ const meta: Meta = {
 
 export default meta
 
-const Icons: Story = (args) => {
+const Icons: StoryFn = (args) => {
   return (
     <div>
       <div className="mb-2 font-bold">DeviceIcons:</div>
@@ -57,6 +57,7 @@ const Icons: Story = (args) => {
   )
 }
 
-export const Overview = Icons.bind({})
-
-Overview.args = {}
+export const Overview = {
+  render: Icons,
+  args: {},
+}

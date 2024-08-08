@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import logo from "frontend/assets/distrikt.svg"
 
@@ -15,14 +15,10 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<SDKRequestAccountsPageProps> = (args) => (
-  <SDKRequestAccountsPage {...args} />
-)
-
-export const Default = Template.bind({})
-
-Default.args = {
-  applicationName: "My Application",
-  applicationLogo: logo,
-  accountsOptions: [],
+export const Default = {
+  args: {
+    applicationName: "My Application",
+    applicationLogo: logo,
+    accountsOptions: [],
+  },
 }

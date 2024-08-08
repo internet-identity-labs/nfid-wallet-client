@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { List } from "."
@@ -13,7 +13,7 @@ const meta: Meta = {
 
 export default meta
 
-const ListTemplate: Story = (args) => (
+const ListTemplate: StoryFn = (args) => (
   <div>
     <H1>Applications</H1>
     <List {...args}>
@@ -42,6 +42,7 @@ const ListTemplate: Story = (args) => (
   </div>
 )
 
-export const ListComponent = ListTemplate.bind({})
-
-ListComponent.args = {}
+export const ListComponent = {
+  render: ListTemplate,
+  args: {},
+}

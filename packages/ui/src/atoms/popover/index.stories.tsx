@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { IconCmpDots } from "../icons"
@@ -15,13 +15,15 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<PopoverProps> = (args) => (
+const Template: StoryFn<PopoverProps> = (args) => (
   <Popover {...args}>Some content here</Popover>
 )
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
 
-Default.args = {
-  trigger: <IconCmpDots />,
-  position: "top",
+  args: {
+    trigger: <IconCmpDots />,
+    position: "top",
+  },
 }

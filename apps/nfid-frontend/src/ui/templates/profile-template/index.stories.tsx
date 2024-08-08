@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import Icon from "frontend/ui/pages/new-profile/assets/book-open.svg"
@@ -12,9 +12,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileTemplate>
+} as Meta<typeof ProfileTemplate>
 
-const ProfileWrapper: ComponentStory<typeof ProfileTemplate> = (args) => {
+const ProfileWrapper: StoryFn<typeof ProfileTemplate> = (args) => {
   return (
     <Router>
       <ProfileTemplate {...args} />
@@ -22,11 +22,13 @@ const ProfileWrapper: ComponentStory<typeof ProfileTemplate> = (args) => {
   )
 }
 
-export const ProfileScreen = ProfileWrapper.bind({})
+export const ProfileScreen = {
+  render: ProfileWrapper,
 
-ProfileScreen.args = {
-  pageTitle: "Assets",
-  icon: Icon,
-  onIconClick: () => {},
-  children: <div>content here</div>,
+  args: {
+    pageTitle: "Assets",
+    icon: Icon,
+    onIconClick: () => {},
+    children: <div>content here</div>,
+  },
 }

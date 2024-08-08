@@ -1,14 +1,16 @@
-import type { ComponentStory, ComponentMeta } from "@storybook/react"
+import type { StoryFn, Meta } from "@storybook/react"
 
 import { NFIDLogo } from "./index"
 
-const Story: ComponentMeta<typeof NFIDLogo> = {
+const Story: Meta<typeof NFIDLogo> = {
   component: NFIDLogo,
   title: "atoms/NFIDLogo",
 }
 export default Story
 
-const Template: ComponentStory<typeof NFIDLogo> = () => <NFIDLogo />
+const Template: StoryFn<typeof NFIDLogo> = () => <NFIDLogo />
 
-export const Primary = Template.bind({})
-Primary.args = {}
+export const Primary = {
+  render: Template,
+  args: {},
+}

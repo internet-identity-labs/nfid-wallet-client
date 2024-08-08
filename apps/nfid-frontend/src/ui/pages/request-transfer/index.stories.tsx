@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import logo from "frontend/assets/distrikt.svg"
@@ -12,9 +12,9 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof RequestTransferPage>
+} as Meta<typeof RequestTransferPage>
 
-const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
+const AppScreenRegisterDeviceDeciderTemplate: StoryFn<
   typeof RequestTransferPage
 > = (args: IRequestTransferPage) => {
   return (
@@ -24,13 +24,15 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   )
 }
 
-export const ResponsiveScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
+export const ResponsiveScreen = {
+  render: AppScreenRegisterDeviceDeciderTemplate,
 
-ResponsiveScreen.args = {
-  applicationName: "My Application",
-  applicationLogo: logo,
-  amountICP: 19.0765312,
-  amountUSD: "95.02",
-  walletOptions: [],
-  onReject: () => window.close(),
+  args: {
+    applicationName: "My Application",
+    applicationLogo: logo,
+    amountICP: 19.0765312,
+    amountUSD: "95.02",
+    walletOptions: [],
+    onReject: () => window.close(),
+  },
 }

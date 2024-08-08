@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
 import { Challenge } from "."
 import { base_png } from "./mocks"
@@ -10,13 +10,15 @@ const meta: Meta = {
 
 export default meta
 
-const ChallengeTemplate: Story = ({ isLoading, src, ...args }) => {
+const ChallengeTemplate: StoryFn = ({ isLoading, src, ...args }) => {
   return <Challenge src={!isLoading && src} {...args} />
 }
 
-export const ListComponent = ChallengeTemplate.bind({})
+export const ListComponent = {
+  render: ChallengeTemplate,
 
-ListComponent.args = {
-  src: `data:image/png;base64,${base_png}`,
-  isLoading: false,
+  args: {
+    src: `data:image/png;base64,${base_png}`,
+    isLoading: false,
+  },
 }

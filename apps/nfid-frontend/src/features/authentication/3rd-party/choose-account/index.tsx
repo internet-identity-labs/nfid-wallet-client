@@ -326,7 +326,7 @@ export const AuthChooseAccount = ({
       <div className="relative flex flex-col flex-1 w-full">
         <div
           className={clsx(
-            "w-full pt-4 pb-[26px] rounded-xl mb-5",
+            "w-full pt-4 rounded-xl",
             "flex flex-col flex-1 font-inter bg-white",
             "border border-gray-200",
             "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
@@ -336,7 +336,7 @@ export const AuthChooseAccount = ({
           <div className="px-5">
             <p className="text-sm font-bold">Share NFID Wallet address</p>
             <p className="mt-2 text-xs text-gray-500">
-              Allow this site to request payments and view your <br /> balances.
+              Allow this site to request payments and view your balances.
             </p>
             <PublicProfileButton
               selectedProfile={selectedProfile}
@@ -348,18 +348,18 @@ export const AuthChooseAccount = ({
               }}
             />
           </div>
-          <div className="bg-gray-200 w-full h-[1px] mt-[30px] mb-5" />
+          <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
           <div className="flex-1 px-5">
             <p className="text-sm font-bold">Hide NFID Wallet address</p>
             <p className="mt-2 text-xs text-gray-500">
-              Connect anonymously to prevent this site from <br /> requesting
-              payments and viewing your balances.
+              Connect anonymously to prevent this site from requesting payments
+              and viewing your balances.
             </p>
 
             {/* Legacy anonymous profiles */}
             {legacyAnonymousProfiles?.map((acc) => (
               <div
-                className="flex items-center h-5 mt-5 font-mono text-xs uppercase"
+                className="flex items-center h-5 mt-5 font-mono text-xs"
                 key={`legacy_persona_${acc.accountId}`}
               >
                 <RadioButton
@@ -380,7 +380,7 @@ export const AuthChooseAccount = ({
 
             {/* Anonymous profile */}
             {!legacyAnonymousProfiles?.length ? (
-              <div className="flex items-center h-5 mt-5 font-mono text-xs uppercase">
+              <div className="flex items-center h-5 mt-5 font-mono text-xs">
                 <RadioButton
                   id="profile_anonymous-1"
                   value="anonymous-1"
@@ -394,14 +394,14 @@ export const AuthChooseAccount = ({
                   htmlFor="profile_anonymous-1"
                   className="ml-2 cursor-pointer"
                 >
-                  Anonymous {appMeta.name} profile 1
+                  Anonymous {appMeta.name} profile {isDerivationBug ? "1" : ""}
                 </label>
               </div>
             ) : null}
 
             {/* Anonymous profile with derivation bug */}
             {!legacyAnonymousProfiles?.length && isDerivationBug ? (
-              <div className="flex items-center h-5 mt-4 font-mono text-xs uppercase">
+              <div className="flex items-center h-5 mt-4 font-mono text-xs">
                 <RadioButton
                   id="anonymous-2"
                   value="anonymous-2"
@@ -421,7 +421,7 @@ export const AuthChooseAccount = ({
             ) : null}
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5 mt-5">
           <Button onClick={onBack} type="stroke">
             Back
           </Button>

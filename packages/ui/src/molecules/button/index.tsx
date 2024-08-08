@@ -41,7 +41,7 @@ export const Button: React.FC<ButtonProps> = ({
         "transition duration-75",
         "text-center text-sm first-letter:capitalize hover:no-underline",
         "font-bold",
-        "border rounded-md outline-none p-[15px] leading-4",
+        "border rounded-xl outline-none p-[15px] leading-4",
         "cursor-pointer disabled:cursor-not-allowed",
         "focus:ring-2 focus:ring-offset-[1px] focus:ring-black",
         isSmall ? "px-[15px] h-10 leading-10 py-0" : "p-[15px]",
@@ -49,10 +49,10 @@ export const Button: React.FC<ButtonProps> = ({
           clsx(
             "text-white border-transparent",
             "bg-primaryButtonColor",
-            "hover:shadow-md hover:shadow-primaryButtonColor/40 hover:bg-blue-500",
-            "active:bg-blue-700",
+            "hover:shadow-md hover:shadow-[#0D9488]/40 hover:bg-[#0D9488]",
+            "active:bg-teal-700",
             "focus:border-primaryButtonColor focus:bg-primaryButtonColor",
-            "disabled:bg-gray-300 disabled:shadow-none",
+            "disabled:bg-zinc-300 disabled:shadow-none",
           ),
         isSecondary &&
           clsx(

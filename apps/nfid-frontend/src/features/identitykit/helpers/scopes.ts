@@ -1,7 +1,9 @@
 export const mapPermissionsResponse = (
   permissions: string[],
-): { scope: { method: string }; state: "granted" }[] => {
-  return permissions.map((x) => {
+): { scopes: { scope: { method: string }; state: string }[] } => {
+  const scopes = permissions.map((x) => {
     return { scope: { method: x }, state: "granted" }
   })
+
+  return { scopes }
 }

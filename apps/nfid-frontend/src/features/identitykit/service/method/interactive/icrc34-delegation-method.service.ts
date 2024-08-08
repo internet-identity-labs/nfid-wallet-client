@@ -99,6 +99,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     )
 
     const baseData = await super.getComponentData(message)
+
     return {
       ...baseData,
       publicProfile: accounts.public,

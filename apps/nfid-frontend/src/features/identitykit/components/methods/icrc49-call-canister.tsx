@@ -45,7 +45,7 @@ const RPCComponentICRC49 = ({
       }
       onPrimaryButtonClick={() => onApprove(request)}
       onSecondaryButtonClick={onReject}
-      withBalance
+      senderPrincipal={request?.data?.params?.sender}
     >
       <div
         className={clsx(

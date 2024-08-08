@@ -44,6 +44,7 @@ export const RPCComponentError = ({
       secondaryButtonText="Cancel"
       onPrimaryButtonClick={onRetry}
       onSecondaryButtonClick={onCancel}
+      senderPrincipal={request?.data?.params?.sender}
     >
       {request?.data.method !== RPCComponentsUI.icrc49_call_canister ? (
         <div className="flex flex-1 bg-orange-50 p-[15px] text-orange-900 gap-2.5 mt-10 rounded-xl">

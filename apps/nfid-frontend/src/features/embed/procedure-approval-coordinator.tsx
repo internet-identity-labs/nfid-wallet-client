@@ -75,7 +75,6 @@ export const ProcedureApprovalCoordinator: React.FC<
       return (
         <RequestCanisterCall
           origin={authRequest.derivationOrigin ?? authRequest.hostname!}
-          appMeta={appMeta}
           method={rpcMessage.params[0]?.method}
           canisterID={rpcMessage.params[0]?.canisterId}
           args={rpcMessage.params[0]?.parameters}

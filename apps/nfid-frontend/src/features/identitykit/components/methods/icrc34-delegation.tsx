@@ -45,7 +45,7 @@ const RPCComponentICRC34 = ({
       onSecondaryButtonClick={onReject}
     >
       <ChooseAccount
-        isPublicAvailable={false}
+        isPublicAvailable={isPublicAvailable}
         selectedProfile={selectedProfile}
         setSelectedProfile={setSelectedProfile}
         publicProfile={publicProfile}

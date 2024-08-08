@@ -1,8 +1,16 @@
+import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { PropsWithChildren } from "react"
+import useSWR from "swr"
 
 import { Button, IconSvgNFIDWalletLogo } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
+import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+
+import { Spinner } from "frontend/ui/atoms/loader/spinner"
+import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
+import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export interface RPCPromptTemplateProps extends PropsWithChildren<{}> {
   primaryButtonText?: string
@@ -11,7 +19,7 @@ export interface RPCPromptTemplateProps extends PropsWithChildren<{}> {
   onSecondaryButtonClick: () => void
   title?: string | JSX.Element
   subTitle: string | JSX.Element
-  withBalance?: boolean
+  senderPrincipal?: string
 }
 
 export const RPCPromptTemplate = ({
@@ -22,8 +30,17 @@ export const RPCPromptTemplate = ({
   title,
   subTitle,
   children,
-  withBalance,
+  senderPrincipal,
 }: RPCPromptTemplateProps) => {
+  const { data: balance } = useSWR(
+    senderPrincipal ? ["userBalance", senderPrincipal] : null,
+    ([_, id]) =>
+      icTransferConnector.getBalance(
+        AccountIdentifier.fromPrincipal({
+          principal: Principal.fromText(id),
+        }).toHex(),
+      ),
+  )
   return (
     <div className="flex flex-col flex-1 h-full">
       <div className="flex flex-col items-center mt-10 text-sm text-center">
@@ -41,7 +58,7 @@ export const RPCPromptTemplate = ({
       <div
         className={clsx(
           "grid grid-cols-2 gap-5 mt-5",
-          withBalance && "mb-[60px]",
+          senderPrincipal && "mb-[60px]",
         )}
       >
         <Button type="stroke" onClick={onSecondaryButtonClick}>
@@ -51,7 +68,7 @@ export const RPCPromptTemplate = ({
           {primaryButtonText}
         </Button>
       </div>
-      {withBalance && (
+      {senderPrincipal && (
         <div
           className={clsx(
             "bg-gray-50 flex flex-col text-sm text-gray-500",
@@ -63,22 +80,18 @@ export const RPCPromptTemplate = ({
             <p>Balance:</p>
           </div>
           <div className="flex items-center justify-between">
-            <p>{truncateString("asddwerasd", 6, 4)}</p>
-            <p>balance</p>
-            {/* {!!rate && (
-              <div className="flex items-center space-x-0.5">
-                {!isBalanceLoading && !isBalanceFetching ? (
-                  <TickerAmount
-                    value={Number(balance)}
-                    decimals={decimals}
-                    symbol={selectedTokenCurrency}
-                    usdRate={rate}
-                  />
-                ) : (
-                  <Spinner className="w-3 h-3 text-gray-400" />
-                )}
-              </div>
-            )} */}
+            <p>{truncateString(senderPrincipal, 6, 4)}</p>
+            <div className="flex items-center space-x-0.5">
+              {balance !== undefined ? (
+                <TickerAmount
+                  value={Number(balance)}
+                  decimals={ICP_DECIMALS}
+                  symbol={"ICP"}
+                />
+              ) : (
+                <Spinner className="w-3 h-3 text-gray-400" />
+              )}
+            </div>
           </div>
         </div>
       )}

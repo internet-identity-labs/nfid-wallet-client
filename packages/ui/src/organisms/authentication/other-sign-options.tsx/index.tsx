@@ -56,23 +56,25 @@ export const AuthOtherSignOptions = ({
       />
       <div
         className={clsx(
-          "grid grid-cols-[22px,1fr] space-x-1.5 text-sm",
-          "bg-orange-50 pl-[15px] py-[15px] mt-4 rounded-md",
+          "grid grid-cols-[22px,1fr] space-x-[10px] text-sm",
+          "bg-orange-50 p-[15px] mt-4 rounded-md",
         )}
       >
         <div>
-          <IconCmpWarning className="text-orange-500" />
+          <IconCmpWarning className="text-orange-900" />
         </div>
         <div>
-          <p className="font-bold leading-[22px]">Attention required</p>
-          <p className="mt-2.5 text-sm">
+          <p className="font-bold leading-[22px] text-orange-900">
+            Attention required
+          </p>
+          <p className="mt-2.5 text-sm text-orange-900">
             NFID’s two-factor authentication has been upgraded. Update your
             settings in the Security section of your profile at{" "}
             <a
               href="https://nfid.one/profile/security"
               target="_blank"
               rel="noreferrer"
-              className="text-linkColor"
+              className="text-primaryButtonColor"
             >
               https://nfid.one/profile/security
             </a>

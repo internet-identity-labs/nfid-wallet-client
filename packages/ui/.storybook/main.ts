@@ -2,12 +2,8 @@ import type { StorybookConfig } from "@storybook/react-webpack5"
 
 const config: StorybookConfig = {
   core: {},
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
 
-  // env: (config) => ({
-  //   ...config,
-  //   IC_HOST: process!.env!.["STORYBOOK_IC_HOST"] || "3",
-  // }),
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
 
   addons: [
     "@storybook/addon-essentials",

@@ -1,5 +1,5 @@
 import { useActor } from "@xstate/react"
-import { AuthEmailVerified } from "packages/ui/src/organisms/authentication//email-verified"
+import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
 import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
 import { AuthEmailPending } from "packages/ui/src/organisms/authentication/pending-verification"
 import { useEffect } from "react"

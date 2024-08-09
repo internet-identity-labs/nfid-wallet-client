@@ -1,5 +1,6 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
+import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import React, { useState } from "react"
 import useSWR from "swr"
 
@@ -11,7 +12,6 @@ import {
 } from "@nfid/integration/token/constants"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/success"

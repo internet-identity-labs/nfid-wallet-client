@@ -1,7 +1,6 @@
 import clsx from "clsx"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
+import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+import { UseFormHandleSubmit, UseFormRegister } from "react-hook-form"
 
 import {
   BlurredLoader,
@@ -11,55 +10,37 @@ import {
   IconCmpWarning,
   Input,
 } from "@nfid-frontend/ui"
-import { loadProfileFromLocalStorage } from "@nfid/integration"
 
-import { AbstractAuthSession } from "frontend/state/authentication"
-import {
-  AuthorizationRequest,
-  AuthorizingAppMeta,
-} from "frontend/state/authorization"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
-
-import { AuthAppMeta } from "../../ui/app-meta"
-import { authWithAnchor } from "./services"
 
 export interface AuthOtherSignOptionsProps {
   onBack: () => void
   appMeta?: AuthorizingAppMeta
-  onSuccess: (authSession: AbstractAuthSession) => void
-  authRequest?: AuthorizationRequest
+  handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
+  formMethods: {
+    register: UseFormRegister<{
+      userNumber: number
+    }>
+    handleSubmit: UseFormHandleSubmit<{
+      userNumber: number
+    }>
+  }
+  isLoading: boolean
+}
+
+interface AuthorizingAppMeta {
+  name?: string
+  url?: string
+  logo?: string
 }
 
 export const AuthOtherSignOptions = ({
   onBack,
   appMeta,
-  onSuccess,
-  authRequest,
+  formMethods,
+  handleAuth,
+  isLoading,
 }: AuthOtherSignOptionsProps) => {
-  const [isLoading, setIsLoading] = React.useState(false)
-  const { register, handleSubmit } = useForm<{
-    userNumber: number
-  }>({
-    defaultValues: {
-      userNumber: loadProfileFromLocalStorage()?.anchor ?? undefined,
-    },
-  })
-
-  const handleAuth = React.useCallback(
-    async (data: { anchor: number; withSecurityDevices: boolean }) => {
-      try {
-        setIsLoading(true)
-        const res = await authWithAnchor(data)
-        onSuccess(res)
-      } catch (e: any) {
-        toast.error(e.message)
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [onSuccess],
-  )
-
   if (isLoading) return <BlurredLoader isLoading />
 
   return (
@@ -100,7 +81,7 @@ export const AuthOtherSignOptions = ({
         </div>
       </div>
       <Input
-        {...register("userNumber")}
+        {...formMethods.register("userNumber")}
         labelText="Your NFID number"
         className="my-4"
       />
@@ -109,7 +90,7 @@ export const AuthOtherSignOptions = ({
           title="Continue with your device"
           subtitle="Use a Passkey on this device"
           img={<IconCmpTouchId />}
-          onClick={handleSubmit((data) =>
+          onClick={formMethods.handleSubmit((data) =>
             handleAuth({ anchor: data.userNumber, withSecurityDevices: false }),
           )}
         />
@@ -117,7 +98,7 @@ export const AuthOtherSignOptions = ({
           title="Continue with security key"
           subtitle="Use a Passkey on a security key"
           img={<IconCmpUsb />}
-          onClick={handleSubmit((data) =>
+          onClick={formMethods.handleSubmit((data) =>
             handleAuth({ anchor: data.userNumber, withSecurityDevices: true }),
           )}
         />

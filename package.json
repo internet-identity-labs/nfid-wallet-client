@@ -33,7 +33,7 @@
     "@radix-ui/react-popover": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.1",
     "@ramp-network/ramp-instant-sdk": "^4.0.1",
-    "@simplewebauthn/server": "^7.3.1",
+    "@simplewebauthn/server": "^10.0.1",
     "@slide-computer/signer": "^2.6.2",
     "@storybook/manager-api": "8.1.10",
     "@storybook/preview-api": "8.1.10",

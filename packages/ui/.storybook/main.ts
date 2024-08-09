@@ -4,6 +4,11 @@ const config: StorybookConfig = {
   core: {},
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
 
+  // env: (config) => ({
+  //   ...config,
+  //   IC_HOST: process!.env!.["STORYBOOK_IC_HOST"] || "3",
+  // }),
+
   addons: [
     "@storybook/addon-essentials",
     "@nx/react/plugins/storybook",
@@ -32,6 +37,7 @@ const config: StorybookConfig = {
       https: require.resolve("https-browserify"),
       os: require.resolve("os-browserify/browser"),
       url: require.resolve("url/"),
+      vm: require.resolve("vm-browserify"),
     }
 
     config.module!.rules!.push({

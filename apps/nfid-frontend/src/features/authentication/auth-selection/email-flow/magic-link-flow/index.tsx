@@ -1,15 +1,17 @@
 import clsx from "clsx"
+import { EmailMagicLinkExpired } from "packages/ui/src/organisms/authentication/magic-link-flow/expired"
+import { EmailMagicLinkLink } from "packages/ui/src/organisms/authentication/magic-link-flow/link-accounts"
+import { EmailMagicLinkSuccess } from "packages/ui/src/organisms/authentication/magic-link-flow/success"
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 
-import { IconCmpNFID, Loader } from "@nfid-frontend/ui"
+import { Button, IconCmpGoogle, IconCmpNFID, Loader } from "@nfid-frontend/ui"
 import { authenticationTracking } from "@nfid/integration"
 
+import { SignInWithGoogle } from "frontend/ui/atoms/button/signin-with-google"
+
 import { linkGoogle, verify } from "../services"
-import { EmailMagicLinkExpired } from "./expired"
-import { EmailMagicLinkLink } from "./link-accounts"
-import { EmailMagicLinkSuccess } from "./sucess"
 
 export const AuthEmailMagicLink = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -84,7 +86,25 @@ export const AuthEmailMagicLink = () => {
         ) : status === "success" ? (
           <EmailMagicLinkSuccess />
         ) : status === "link-required" ? (
-          <EmailMagicLinkLink onContinue={handleLinkGoogle} />
+          <EmailMagicLinkLink
+            googleButton={
+              <SignInWithGoogle
+                onLogin={(credential) =>
+                  handleLinkGoogle(credential.credential)
+                }
+                button={
+                  <Button
+                    className="h-12 !p-0"
+                    type="stroke"
+                    icon={<IconCmpGoogle />}
+                    block
+                  >
+                    Continue with Google
+                  </Button>
+                }
+              />
+            }
+          />
         ) : null}
       </div>
     </div>

@@ -1,4 +1,6 @@
-import { Icrc25Dto, RPCMessage, RPCSuccessResponse, Scope } from "../../../type"
+import { mapPermissionsResponse } from "frontend/features/identitykit/helpers/scopes"
+
+import { RPCMessage, RPCSuccessResponse } from "../../../type"
 import { authService } from "../../auth.service"
 import { SilentMethodService } from "./silent-method.service"
 
@@ -15,18 +17,12 @@ class Icrc25PermissionsMethodService extends SilentMethodService {
     message: MessageEvent<RPCMessage>,
   ): Promise<RPCSuccessResponse> {
     const permissions = await authService.getPermissions()
-    const scopes: Scope[] = permissions.map((x) => {
-      return { method: x }
-    })
-    const icrc25: Icrc25Dto = {
-      scopes,
-    }
 
     const response: RPCSuccessResponse = {
       origin: message.origin,
       jsonrpc: message.data.jsonrpc,
       id: message.data.id,
-      result: icrc25,
+      result: mapPermissionsResponse(permissions),
     }
 
     return response

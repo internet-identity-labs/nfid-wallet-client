@@ -64,4 +64,3 @@ export * from "./pages/auth-ii-code"
 export * from "./templates"
 
 export * from "./utils/validations"
-export * from "./utils/use-click-outside"

@@ -1,12 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
-import {
-  IconCmpDots,
-  IconCmpWarning,
-  Tooltip,
-  useClickOutside,
-} from "@nfid-frontend/ui"
+import { IconCmpDots, IconCmpWarning, Tooltip } from "@nfid-frontend/ui"
+import { useClickOutside } from "@nfid-frontend/utils"
 import { Icon } from "@nfid/integration"
 
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"

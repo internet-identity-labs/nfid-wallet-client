@@ -1,10 +1,10 @@
 import clsx from "clsx"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
 import { RadioButton } from "@nfid-frontend/ui"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { Account } from "frontend/features/identitykit/type"
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export interface ChooseAccountProps {
   isPublicAvailable?: boolean

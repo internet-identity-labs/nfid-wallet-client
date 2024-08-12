@@ -13,10 +13,17 @@ export interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
 export const ProfileInfo: FC<IProfileTemplate> = ({ value, isLoading }) => {
   return (
     <div className="mt-[22px] flex flex-col sm:flex-row gap-[20px] md:gap-[30px]">
-      <div className="bg-[#F7F9F6] rounded-[24px] p-[20px] md:p-[30px] w-full">
+      <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">
         <div className="flex items-center justify-between mb-[20px] md:mb-[30px]">
           <h2 className="text-[24px] text-black leading-[24px]">Portfolio</h2>
-          <Tooltip tip="This is Portfolio">
+          <Tooltip
+            tip={
+              <span>
+                Fungible tokens USD price powered by
+                <br /> ICPSwap.
+              </span>
+            }
+          >
             <img
               src={InfoIcon}
               alt="icon"
@@ -38,7 +45,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({ value, isLoading }) => {
           )}
         </div>
       </div>
-      <div className="bg-[#F7F9F6] rounded-[24px] p-[20px] md:p-[30px] w-full">
+      <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">
         <h2 className="text-[24px] text-black leading-[24px]">
           Wallet address
         </h2>

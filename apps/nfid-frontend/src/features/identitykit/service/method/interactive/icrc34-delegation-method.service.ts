@@ -3,7 +3,6 @@ import { fromBase64, toBase64 } from "@slide-computer/signer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import {
   Chain,
-  GLOBAL_ORIGIN,
   ecdsaGetAnonymous,
 } from "packages/integration/src/lib/lambda/ecdsa"
 

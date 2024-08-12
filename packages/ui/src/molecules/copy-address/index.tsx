@@ -1,9 +1,10 @@
 import clsx from "clsx"
-import CopiedIcon from "packages/ui/src/atoms/icons/copied-icon.svg"
-import CopyIcon from "packages/ui/src/atoms/icons/copy-icon.svg"
-import { FC, useCallback, useEffect, useState } from "react"
+import { FC, useCallback, useState } from "react"
 
 import { CenterEllipsis } from "@nfid-frontend/ui"
+
+import { CopiedAddressIcon } from "../../atoms/icons/CopiedAddressIcon"
+import { CopyAddressIcon } from "../../atoms/icons/CopyAddressIcon"
 
 export interface CopyAddressProps {
   address: string
@@ -29,7 +30,11 @@ export const CopyAddress: FC<CopyAddressProps> = ({
 
   return (
     <div
-      className="flex gap-[10px] items-center cursor-pointer text-black"
+      className={clsx(
+        "flex gap-[10px] items-center cursor-pointer",
+        "text-black active:text-gray-400 hover:text-zinc-500 transition-colors",
+        copied && "!text-black",
+      )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={copyToClipboard}
@@ -40,11 +45,21 @@ export const CopyAddress: FC<CopyAddressProps> = ({
         trailingChars={trailingChars}
         id={"principal"}
       />
-      <img
-        src={copied ? CopiedIcon : CopyIcon}
-        alt="NFID icon"
-        className={clsx(hovered || copied ? "" : "hidden", "w-[18px] h-[18px]")}
-      />
+      {copied ? (
+        <CopiedAddressIcon
+          className={clsx(
+            hovered || copied ? "" : "hidden",
+            "w-[18px] h-[18px] transition-colors",
+          )}
+        />
+      ) : (
+        <CopyAddressIcon
+          className={clsx(
+            hovered || copied ? "" : "hidden",
+            "w-[18px] h-[18px] transition-colors",
+          )}
+        />
+      )}
     </div>
   )
 }

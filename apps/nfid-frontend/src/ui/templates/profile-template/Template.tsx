@@ -13,16 +13,12 @@ import useSWR from "swr"
 
 import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
-import { TokenStandards } from "@nfid/integration/token/types"
 
-import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
-import { useAccountsOptions } from "frontend/features/transfer-modal/hooks/use-accounts-options"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { ProfileContext } from "frontend/provider"
 import { Loader } from "frontend/ui/atoms/loader"
-import { Blockchain } from "frontend/ui/connnector/types"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
 

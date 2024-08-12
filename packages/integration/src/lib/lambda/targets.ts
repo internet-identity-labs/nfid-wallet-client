@@ -19,7 +19,8 @@ export interface CertifiedResponse {
   response: Array<string>
 }
 
-export async function validateTargets(targets: string[], origin: string) {
+export async function validateTargets(targets: string[], o: string) {
+  const origin = o.includes("http") ? o : `https://${o}`
   const agent: Agent = new HttpAgent({ host: "https://ic0.app" })
   const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
     IDL.Service({

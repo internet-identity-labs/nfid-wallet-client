@@ -1,15 +1,21 @@
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
+import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { NavigationPopupLinks } from "frontend/apps/identity-manager/profile/routes"
+import {
+  navigationPopupLinks,
+  ProfileConstants,
+} from "frontend/apps/identity-manager/profile/routes"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
+import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
+import { getAllVaults } from "frontend/features/vaults/services"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Loader } from "frontend/ui/atoms/loader"
 
@@ -45,9 +51,13 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
     window.history.back()
   }, [])
 
+  const { isReady } = useVaultMember()
+  const { data: vaults } = useSWR([isReady ? "vaults" : null], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
+
+  const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
   const {
     data: isEmailDeviceOutOfSyncWithII,
@@ -76,7 +86,9 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         anchor={profile?.anchor}
         logout={logout}
         sendReceiveBtn={<SendReceiveButton />}
-        links={NavigationPopupLinks}
+        links={navigationPopupLinks}
+        assetsLink={`${ProfileConstants.base}/${ProfileConstants.assets}`}
+        hasVaults={hasVaults}
       />
       <TransferModalCoordinator />
       <div
@@ -88,7 +100,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         )}
       >
         <section className={clsx("relative", className)}>
-          <div className="flex justify-between h-[70px] items-center mt-5">
+          <div className="flex justify-between h-[70px] items-center">
             <div className="sticky left-0 flex items-center space-x-2">
               {showBackButton && (
                 <ArrowButton

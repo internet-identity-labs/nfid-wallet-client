@@ -1,8 +1,12 @@
-import KnowledgeIcon from "packages/ui/src/atoms/icons/nav-knowledge.svg"
-import SecurityIcon from "packages/ui/src/atoms/icons/nav-security.svg"
-import VaultsIcon from "packages/ui/src/atoms/icons/nav-vaults.svg"
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
+
+import {
+  KnowledgeIcon,
+  SecurityIcon,
+  VaultsIcon,
+  WalletIcon,
+} from "@nfid-frontend/ui"
 
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
@@ -118,12 +122,19 @@ export const ProfileRoutes = (
   </Route>
 )
 
-export const NavigationPopupLinks = [
+export const navigationPopupLinks = [
   {
     icon: VaultsIcon,
     title: "Vaults",
     link: `${ProfileConstants.base}/${ProfileConstants.vaults}`,
     id: "nav-vaults",
+    separator: true,
+  },
+  {
+    icon: WalletIcon,
+    title: "Wallet",
+    link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
+    id: "nav-assets",
     separator: true,
   },
   {

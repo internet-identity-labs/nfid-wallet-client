@@ -10,7 +10,7 @@ import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
-  NavigationPopupLinks,
+  navigationPopupLinks,
   ProfileConstants,
 } from "frontend/apps/identity-manager/profile/routes"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
@@ -232,7 +232,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               onSignOut={handleLogout}
               anchor={profile.anchor}
               isLanding
-              links={NavigationPopupLinks}
+              links={navigationPopupLinks}
             />
           ) : null}
         </div>

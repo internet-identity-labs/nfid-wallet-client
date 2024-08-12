@@ -1,15 +1,18 @@
 import clsx from "clsx"
 import DisconnectIcon from "packages/ui/src/atoms/icons/nav-logout.svg"
-import { HTMLAttributes, FC, Fragment } from "react"
-import { useNavigate } from "react-router-dom"
+import { HTMLAttributes, FC } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
 
 import { INavigationPopupLinks } from "../profile-header"
+import { renderLink, shouldRenderLink } from "./renderLinks"
 
 export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
   onSignOut: () => void
   anchor: number
   isLanding?: boolean
   links: INavigationPopupLinks[]
+  assetsLink?: string
+  hasVaults?: boolean
 }
 
 export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
@@ -17,13 +20,16 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   onSignOut,
   isLanding = false,
   links,
+  assetsLink,
+  hasVaults,
 }) => {
   const navigate = useNavigate()
+  const location = useLocation()
 
   return (
     <div
       className={clsx(
-        "z-40 min-h-[300px] w-[340px] absolute right-0 top-[30px] bg-white p-[20px]",
+        "z-40 w-[340px] absolute right-0 top-[30px] bg-white p-[20px]",
         "shadow-xl rounded-[24px] flex flex-col justify-between",
       )}
     >
@@ -46,60 +52,19 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
               "hover:bg-gray-100 cursor-pointer text-sm",
             )}
             id="#profileButton"
-            onClick={() => navigate("/profile/assets")}
+            onClick={() => {
+              if (!assetsLink) return
+              navigate(assetsLink)
+            }}
           >
             NFID Profile
           </div>
         ) : null}
-        {links.map((linkItem) => {
-          if (linkItem.id === "nav-knowledge-base") {
-            return (
-              <Fragment key={linkItem.id}>
-                <a
-                  id={linkItem.id}
-                  href={linkItem.link}
-                  target="_blank"
-                  className={clsx(
-                    "flex items-center gap-[10px] h-[40px] px-[10px] block",
-                    "hover:bg-gray-100 cursor-pointer text-sm block text-black font-semibold",
-                  )}
-                >
-                  <img
-                    className="w-[20px] h-[20px]"
-                    src={linkItem.icon}
-                    alt="nfid navigation"
-                  />
-                  {linkItem.title}
-                </a>
-                {linkItem.separator && (
-                  <div className="my-[8px] bg-gray-100 h-[1px]"></div>
-                )}
-              </Fragment>
-            )
-          }
-          return (
-            <Fragment key={linkItem.id}>
-              <div
-                id={linkItem.id}
-                onClick={() => navigate(linkItem.link)}
-                className={clsx(
-                  "flex items-center gap-[10px] h-[40px] px-[10px]",
-                  "hover:bg-gray-100 cursor-pointer text-sm block text-black font-semibold",
-                )}
-              >
-                <img
-                  className="w-[20px] h-[20px]"
-                  src={linkItem.icon}
-                  alt="nfid navigation"
-                />
-                {linkItem.title}
-              </div>
-              {linkItem.separator && (
-                <div className="my-[8px] bg-gray-100 h-[1px]"></div>
-              )}
-            </Fragment>
+        {links
+          .filter((linkItem) =>
+            shouldRenderLink(linkItem, hasVaults!, location),
           )
-        })}
+          .map(renderLink)}
         <div
           id="nav-logout"
           className={clsx(

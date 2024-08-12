@@ -1,4 +1,5 @@
 import { Meta, StoryFn } from "@storybook/react"
+import { BrowserRouter as Router } from "react-router-dom"
 
 import { ProfileHeader, IProfileHeader } from "."
 
@@ -16,7 +17,9 @@ export default meta
 
 export const Default: StoryFn<IProfileHeader> = (args) => (
   <div className="px-[30px]">
-    <ProfileHeader {...args} />
+    <Router>
+      <ProfileHeader {...args} />
+    </Router>
   </div>
 )
 

@@ -10,6 +10,7 @@ export interface IRPCComponentICRC27 {
   anonymous: Account[]
   onApprove: (data: Account[]) => void
   onReject: () => void
+  onBack: () => void
 }
 
 const RPCComponentICRC27 = ({
@@ -17,6 +18,7 @@ const RPCComponentICRC27 = ({
   anonymous,
   onApprove,
   onReject,
+  onBack,
 }: IRPCComponentICRC27) => {
   const [selectedProfile, setSelectedProfile] =
     React.useState<Account>(publicProfile)
@@ -42,6 +44,7 @@ const RPCComponentICRC27 = ({
       onSecondaryButtonClick={onReject}
     >
       <ChooseAccount
+        onBack={onBack}
         selectedProfile={selectedProfile}
         setSelectedProfile={setSelectedProfile}
         publicProfile={publicProfile}

@@ -2,6 +2,7 @@ import { useMachine } from "@xstate/react"
 import React, { useMemo } from "react"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
@@ -46,6 +47,10 @@ export default function IdentityKitRPCCoordinator() {
               onApprove: (data: any) =>
                 send({ type: "ON_APPROVE", data: data }),
               onReject: () => send({ type: "ON_CANCEL" }),
+              onBack: async () => {
+                await authState.logout(false)
+                send({ type: "ON_BACK" })
+              },
               request: state.context.activeRequest,
               ...state.context.componentData,
             }}

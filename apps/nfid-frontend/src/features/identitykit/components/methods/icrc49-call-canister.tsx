@@ -8,7 +8,7 @@ export interface IRPCComponentICRC49 {
   origin: string
   canisterId: string
   consentMessage?: string
-  method: string
+  methodName: string
   args: string
   request: any
   onApprove: (data: any) => void
@@ -20,7 +20,7 @@ const RPCComponentICRC49 = ({
   request,
   consentMessage,
   canisterId,
-  method,
+  methodName,
   args,
   onApprove,
   onReject,
@@ -29,7 +29,7 @@ const RPCComponentICRC49 = ({
 
   return (
     <RPCPromptTemplate
-      title={method}
+      title={methodName}
       subTitle={
         <>
           Request from{" "}

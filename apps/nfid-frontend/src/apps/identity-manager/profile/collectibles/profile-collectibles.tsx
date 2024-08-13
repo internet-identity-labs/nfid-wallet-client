@@ -25,8 +25,8 @@ import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
+import { NFTDisplaySwitch } from "../../../../../../../packages/ui/src/organisms/profile-tabs/nfts/nft-display-switch"
 import { ProfileConstants } from "../routes"
-import { DisplaySwitch } from "./display-switch"
 import EmptyNFT from "./empty.webp"
 import { CollectiblesModal } from "./filter-modal"
 import {
@@ -279,7 +279,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
                   blockchainOptions={blockchainOptions}
                 />
               </FilterPopover>
-              <DisplaySwitch state={display} setState={setDisplay} />
+              <NFTDisplaySwitch state={display} setState={setDisplay} />
             </div>
           </div>
         </ProfileContainer>

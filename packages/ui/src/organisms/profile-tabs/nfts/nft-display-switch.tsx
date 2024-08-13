@@ -2,12 +2,12 @@ import clsx from "clsx"
 
 import { IconCmpGrid, IconCmpTable } from "@nfid-frontend/ui"
 
-interface IDisplaySwitch {
+interface INFTDisplaySwitch {
   state: "grid" | "table"
   setState: (state: "grid" | "table") => void
 }
 
-export const DisplaySwitch = ({ state, setState }: IDisplaySwitch) => {
+export const NFTDisplaySwitch = ({ state, setState }: INFTDisplaySwitch) => {
   return (
     <div className={clsx(`gap-3 bg-white p-0.5 rounded-md`, "hidden sm:flex")}>
       <div

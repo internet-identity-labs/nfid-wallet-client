@@ -6,6 +6,7 @@ import CollectiblesIcon from "frontend/ui/organisms/profile-sidebar/assets/colle
 import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.svg"
 import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
+import Profile from "frontend/ui/pages/new-profile/profile"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
 
 const ProfileAssets = React.lazy(() => import("./assets"))
@@ -46,11 +47,11 @@ export const ProfileRoutes = (
       path={ProfileConstants.assets}
       element={
         <AuthWrapper>
-          <ProfileAssets />
+          <Profile />
         </AuthWrapper>
       }
     />
-    <Route
+    {/* <Route
       path={ProfileConstants.collectibles}
       element={
         <AuthWrapper>
@@ -65,7 +66,7 @@ export const ProfileRoutes = (
           <ActivityPage />
         </AuthWrapper>
       }
-    />
+    /> */}
     <Route
       path={ProfileConstants.security}
       element={

@@ -52,7 +52,7 @@ export const Button: React.FC<ButtonProps> = ({
             "hover:shadow-md hover:shadow-[#0D9488]/40 hover:bg-[#0D9488]",
             "active:bg-teal-700",
             "focus:border-primaryButtonColor focus:bg-primaryButtonColor",
-            "disabled:bg-zinc-300 disabled:shadow-none",
+            "disabled:bg-gray-300 disabled:shadow-none",
           ),
         isSecondary &&
           clsx(

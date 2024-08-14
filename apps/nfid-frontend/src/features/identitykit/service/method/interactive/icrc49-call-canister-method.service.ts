@@ -4,7 +4,12 @@ import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
-import { Chain, authState, getGlobalKeys } from "@nfid/integration"
+import {
+  Chain,
+  authState,
+  ecdsaGetAnonymous,
+  getGlobalKeys,
+} from "@nfid/integration"
 
 import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
 import { delegationChainFromDelegation } from "frontend/integration/identity/delegation-chain-from-delegation"
@@ -144,12 +149,16 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       account.type === AccountType.SESSION ||
       account.type === AccountType.SESSION_WITHOUT_DERIVATION
     ) {
-      return await getGlobalKeys(
+      const sessionKey = Ed25519KeyIdentity.generate()
+
+      const delegationChain = await ecdsaGetAnonymous(
+        account?.derivationOrigin ?? account.origin,
+        new Uint8Array(sessionKey.getPublicKey().toDer()),
         authState.get().delegationIdentity!,
         Chain.IC,
-        [CANDID_UI_CANISTER, dto.canisterId],
-        account?.derivationOrigin ?? account.origin,
       )
+
+      return DelegationIdentity.fromDelegation(sessionKey, delegationChain)
     }
 
     if (account.type === AccountType.ANONYMOUS_LEGACY) {

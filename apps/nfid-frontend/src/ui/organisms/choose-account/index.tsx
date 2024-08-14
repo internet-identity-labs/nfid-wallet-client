@@ -1,10 +1,10 @@
 import clsx from "clsx"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
-import { RadioButton } from "@nfid-frontend/ui"
+import { IconCmpArrow, RadioButton } from "@nfid-frontend/ui"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { Account } from "frontend/features/identitykit/type"
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export interface ChooseAccountProps {
   isPublicAvailable?: boolean
@@ -12,6 +12,7 @@ export interface ChooseAccountProps {
   setSelectedProfile: (profile: Account) => void
   publicProfile: Account
   anonymous: Account[]
+  onBack: () => void
 }
 
 export const ChooseAccount = ({
@@ -20,6 +21,7 @@ export const ChooseAccount = ({
   setSelectedProfile,
   publicProfile,
   anonymous,
+  onBack,
 }: ChooseAccountProps) => {
   return (
     <div
@@ -31,6 +33,10 @@ export const ChooseAccount = ({
         "mt-9",
       )}
     >
+      <IconCmpArrow
+        onClick={onBack}
+        className="absolute cursor-pointer top-5 left-5"
+      />
       <div className="px-5">
         <p className="text-sm font-bold">Share NFID Wallet address</p>
         <p className="mt-2 text-xs text-gray-500">

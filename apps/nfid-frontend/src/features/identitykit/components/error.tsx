@@ -26,7 +26,7 @@ export const RPCComponentError = ({
 
   return (
     <RPCPromptTemplate
-      title={request?.data.method}
+      title={request?.data?.params?.method ?? request?.data.method}
       subTitle={
         <>
           Request from{" "}
@@ -65,7 +65,7 @@ export const RPCComponentError = ({
             className="mb-5"
           />
           {isResponseTab ? (
-            <div className="flex flex-1 border border-gray-200 border p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-auto">
+            <div className="flex flex-1 border border-gray-200 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-auto">
               <div className="w-[22px] shrink-0">
                 <IconCmpWarning className="!text-orange-900" />
               </div>
@@ -78,7 +78,7 @@ export const RPCComponentError = ({
             <div
               className={clsx(
                 "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
-                "text-gray-500 break-all text-sm overflow-auto",
+                "text-gray-500 break-all text-sm overflow-auto max-h-[190px]",
               )}
             >
               <div className="space-y-2">

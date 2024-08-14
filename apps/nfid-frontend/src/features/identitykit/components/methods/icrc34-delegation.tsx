@@ -11,6 +11,7 @@ export interface IRPCComponentICRC34 {
   isPublicAvailable: boolean
   onApprove: (data: Account) => void
   onReject: () => void
+  onBack: () => void
 }
 
 const RPCComponentICRC34 = ({
@@ -19,6 +20,7 @@ const RPCComponentICRC34 = ({
   isPublicAvailable,
   onApprove,
   onReject,
+  onBack,
 }: IRPCComponentICRC34) => {
   const [selectedProfile, setSelectedProfile] = React.useState<Account>(
     isPublicAvailable ? publicProfile : anonymous[0],
@@ -45,6 +47,7 @@ const RPCComponentICRC34 = ({
       onSecondaryButtonClick={onReject}
     >
       <ChooseAccount
+        onBack={onBack}
         isPublicAvailable={isPublicAvailable}
         selectedProfile={selectedProfile}
         setSelectedProfile={setSelectedProfile}

@@ -1,5 +1,6 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import React, { useState } from "react"
 import useSWR from "swr"
 
@@ -20,7 +21,6 @@ import { getWalletDelegationAdapter } from "frontend/integration/adapters/delega
 import { getNFTByTokenId } from "frontend/integration/entrepot"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"

@@ -1,10 +1,10 @@
 import clsx from "clsx"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import React, { useState } from "react"
 
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 

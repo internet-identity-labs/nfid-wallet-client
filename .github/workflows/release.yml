@@ -1,5 +1,8 @@
 name: Deployment
 on:
+  release:
+    types:
+      - released
   push:
     branches:
       - main
@@ -13,7 +16,6 @@ on:
         options: 
           - dev
           - stage
-          - ic
       force_deploy:
         description: 'Force deploy'
         default: 'false'
@@ -26,13 +28,15 @@ on:
         type: string
 
 env:
-  NETWORK_NAME: ${{ github.event.inputs.network_name || 'dev' }}
-  FORCE_DEPLOY: ${{ github.event.inputs.force_deploy }}
+  NETWORK_NAME: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
+  FORCE_DEPLOY: ${{ github.event.inputs.force_deploy || ( contains(github.event_name, 'release') && 'true' || 'false' ) }}
   CI_DEBUG: true
+  RELEASE_TAG_REGEX: '^v(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))?(\.(0|[1-9][0-9]*))?(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
 
 jobs:
   check-secrets:
     name: Check Secrets
+    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     defaults:
       run:
         shell: bash
@@ -46,6 +50,24 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
+
+      - name: INPUT => Checks branch and network_name
+        if: ${{ env.NETWORK_NAME == 'ic' }}
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+  
+          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
+            ci_echo_error "Releasing to IC not from tag not allowed." >&2
+            exit 1
+          fi
+  
+          # https://semver.org/
+          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
+            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
+            exit 1
+          fi
+
+          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
 
       - name: Check secrets
         run: |
@@ -61,7 +83,7 @@ jobs:
   build-demo:
     name: Build NFID-Demo
     needs: check-secrets
-    environment: ${{ github.event.inputs.network_name || 'dev' }}
+    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     runs-on: ubuntu-latest
     env:
       CANISTER_NAME: nfid-demo
@@ -77,6 +99,24 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
+
+      - name: INPUT => Checks branch and network_name
+        if: ${{ env.NETWORK_NAME == 'ic' }}
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+  
+          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
+            ci_echo_error "Releasing to IC not from tag not allowed." >&2
+            exit 1
+          fi
+  
+          # https://semver.org/
+          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
+            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
+            exit 1
+          fi
+
+          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
 
       - name: Setup DFX 17
         uses: dfinity/setup-dfx@main
@@ -169,7 +209,7 @@ jobs:
   deploy-demo:
     name: Deploy NFID-Demo
     needs: build-demo
-    environment: ${{ github.event.inputs.network_name || 'dev' }}
+    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     env:
       CANISTER_NAME: nfid-demo
     runs-on:
@@ -179,22 +219,10 @@ jobs:
         shell: bash
 
     steps:
-    - name: INPUT => Checks network_name
-      if: (github.event.inputs.network_name == 'ic') && (github.event.inputs.confirmation != 'Yes')
-      run: |
-        echo "[ERROR] You have try release to network 'ic' without or with wrong confirmation phrase" >&2
-        exit 1
-
     - name: INPUT => Checks force_deploy
       if: (github.event.inputs.force_deploy == 'true') && (github.event.inputs.confirmation != 'Yes')
       run: |
         echo "[ERROR] You have try to force release without or with wrong confirmation phrase" >&2
-        exit 1
-
-    - name: INPUT => Checks branch and network_name
-      if: (github.event.inputs.network_name == 'ic') && ! contains( github.ref, 'ic')
-      run: |
-        echo "[ERROR] For such network you need choose only release branches" >&2
         exit 1
 
     - name: Checkout repo
@@ -207,6 +235,24 @@ jobs:
         repository: internet-identity-labs/ci_libs
         ref: main
         path: ci_libs
+
+    - name: INPUT => Checks branch and network_name
+      if: ${{ env.NETWORK_NAME == 'ic' }}
+      run: |
+        source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+        if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
+          ci_echo_error "Releasing to IC not from tag not allowed." >&2
+          exit 1
+        fi
+
+        # https://semver.org/
+        if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
+          ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
+          exit 1
+        fi
+
+        ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
 
     - name: Versions
       run: |
@@ -293,7 +339,7 @@ jobs:
   build-frontend:
     name: Build Frontend
     needs: check-secrets
-    environment: ${{ github.event.inputs.network_name || 'dev' }}
+    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     runs-on: ubuntu-latest
     env:
       CANISTER_NAME: nfid-frontend
@@ -309,6 +355,24 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
+      
+      - name: INPUT => Checks branch and network_name
+        if: ${{ env.NETWORK_NAME == 'ic' }}
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+  
+          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
+            ci_echo_error "Releasing to IC not from tag not allowed." >&2
+            exit 1
+          fi
+  
+          # https://semver.org/
+          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
+            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
+            exit 1
+          fi
+
+          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
 
       - name: Setup DFX 17
         uses: dfinity/setup-dfx@main
@@ -414,7 +478,7 @@ jobs:
   deploy-frotnend:
     name: Deploy Frontend
     needs: build-frontend
-    environment: ${{ github.event.inputs.network_name || 'dev' }}
+    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     env:
       CANISTER_NAME: nfid-frontend
     runs-on:
@@ -424,22 +488,10 @@ jobs:
         shell: bash
 
     steps:
-      - name: INPUT => Checks network_name
-        if: (github.event.inputs.network_name == 'ic') && (github.event.inputs.confirmation != 'Yes')
-        run: |
-          echo "[ERROR] You have try release to network 'ic' without or with wrong confirmation phrase" >&2
-          exit 1
-
       - name: INPUT => Checks force_deploy
         if: (github.event.inputs.force_deploy == 'true') && (github.event.inputs.confirmation != 'Yes')
         run: |
           echo "[ERROR] You have try to force release without or with wrong confirmation phrase" >&2
-          exit 1
-
-      - name: INPUT => Checks branch and network_name
-        if: (github.event.inputs.network_name == 'ic') && ! contains( github.ref, 'ic')
-        run: |
-          echo "[ERROR] For such network you need choose only release branches" >&2
           exit 1
           
       - name: Checkout repo
@@ -452,6 +504,24 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
+      
+      - name: INPUT => Checks branch and network_name
+        if: ${{ env.NETWORK_NAME == 'ic' }}
+        run: |
+          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+  
+          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
+            ci_echo_error "Releasing to IC not from tag not allowed." >&2
+            exit 1
+          fi
+  
+          # https://semver.org/
+          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
+            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
+            exit 1
+          fi
+
+          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
 
       - name: Versions
         run: |

@@ -1,18 +1,28 @@
 import InfoIcon from "packages/ui/src/atoms/icons/info-icon.svg"
 import { FC } from "react"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { CenterEllipsis, IconCmpArrow, Tooltip } from "@nfid-frontend/ui"
+import { Button } from "@nfid-frontend/ui"
 
 import { Spinner } from "../../atoms/loader/spinner"
 
 export interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   value: number
   isLoading: boolean
+  onSendClick: () => void
+  onReceiveClick: () => void
+  address?: string
 }
 
-export const ProfileInfo: FC<IProfileTemplate> = ({ value, isLoading }) => {
+export const ProfileInfo: FC<IProfileTemplate> = ({
+  value,
+  isLoading,
+  onSendClick,
+  onReceiveClick,
+  address,
+}) => {
   return (
-    <div className="mt-[22px] flex flex-col sm:flex-row gap-[20px] md:gap-[30px]">
+    <div className="mt-[22px] flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
       <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">
         <div className="flex items-center justify-between mb-[20px] md:mb-[30px]">
           <h2 className="text-[24px] text-black leading-[24px]">Portfolio</h2>
@@ -46,9 +56,47 @@ export const ProfileInfo: FC<IProfileTemplate> = ({ value, isLoading }) => {
         </div>
       </div>
       <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">
-        <h2 className="text-[24px] text-black leading-[24px]">
+        <h2 className="text-[24px] text-black leading-[24px] mb-[20px] md:mb-[30px]">
           Wallet address
         </h2>
+        <div className="flex md:items-end justify-between gap-[20px] flex-col md:flex-row">
+          <div>
+            <CenterEllipsis
+              value={address!}
+              leadingChars={5}
+              trailingChars={4}
+              id={"principal"}
+            />
+            <div
+              className="text-sm text-teal-600 font-bold leading-[20px] mt-[14px] cursor-pointer"
+              onClick={onReceiveClick}
+            >
+              Show my Account ID
+            </div>
+          </div>
+          <div className="flex gap-[10px]">
+            <Button
+              className="flex-1"
+              icon={
+                <IconCmpArrow className="text-gray-400 rotate-[135deg] w-[18px] h-[18px] text-white" />
+              }
+              onClick={onSendClick}
+              isSmall
+            >
+              Send
+            </Button>
+            <Button
+              className="flex-1"
+              icon={
+                <IconCmpArrow className="text-gray-400 rotate-[-45deg] w-[18px] h-[18px] text-white" />
+              }
+              onClick={onReceiveClick}
+              isSmall
+            >
+              Receive
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   )

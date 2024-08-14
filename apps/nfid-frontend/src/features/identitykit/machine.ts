@@ -138,6 +138,7 @@ const machineConfig = {
               on: {
                 ON_CANCEL: "CancelInteractiveRequest",
                 ON_APPROVE: "ExecuteInteractiveRequest",
+                ON_BACK: "#IdentityKitRPCMachine.Main.Authentication",
               },
             },
             CancelInteractiveRequest: {

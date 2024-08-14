@@ -1,10 +1,21 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
-import { useState, useCallback, useMemo } from "react"
+import ProfileInfo from "packages/ui/src/organisms/profile-info"
+import {
+  HTMLAttributes,
+  useMemo,
+  useCallback,
+  useState,
+  ReactNode,
+  FC,
+  useContext,
+} from "react"
 import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
+import { sendReceiveTracking } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
@@ -12,14 +23,17 @@ import {
   ProfileConstants,
 } from "frontend/apps/identity-manager/profile/routes"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
+import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { getAllVaults } from "frontend/features/vaults/services"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { ProfileContext } from "frontend/provider"
 import { Loader } from "frontend/ui/atoms/loader"
 
-interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
+interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
   icon?: string
   showBackButton?: boolean
@@ -27,13 +41,13 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   headerClassName?: string
   containerClassName?: string
   isLoading?: boolean
-  headerMenu?: React.ReactNode
+  headerMenu?: ReactNode
   iconTooltip?: string
   iconId?: string
   className?: string
 }
 
-const ProfileTemplate: React.FC<IProfileTemplate> = ({
+const ProfileTemplate: FC<IProfileTemplate> = ({
   pageTitle,
   icon,
   showBackButton,
@@ -76,6 +90,47 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
     setIsSyncEmailLoading(false)
   }
 
+  const globalServices = useContext(ProfileContext)
+  const { token, isLoading: isTokenLoading } = useAllToken()
+  const [, send] = useActor(globalServices.transferService)
+  const {
+    data: identity,
+    isLoading: isIdentityLoading,
+    isValidating,
+  } = useSWR("globalIdentity", () =>
+    getWalletDelegationAdapter("nfid.one", "-1"),
+  )
+
+  const onSendClick = () => {
+    sendReceiveTracking.openModal()
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: "send" })
+    send("SHOW")
+  }
+
+  const onReceiveClick = () => {
+    sendReceiveTracking.openModal()
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: "receive" })
+    send("SHOW")
+  }
+
+  const tokensUsdValue = useMemo(() => {
+    return token
+      .filter((token) => token.rate)
+      .reduce((total, token) => {
+        return (
+          total + (Number(token.balance) / 10 ** token.decimals) * token.rate!
+        )
+      }, 0)
+
+    // Will add NFT floor price to calculation later!
+  }, [token])
+
+  if (!identity) return <Loader isLoading />
+
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
       <ProfileHeader
@@ -100,7 +155,14 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         )}
       >
         <section className={clsx("relative", className)}>
-          <div className="flex justify-between h-[70px] items-center">
+          <ProfileInfo
+            value={tokensUsdValue}
+            isLoading={isTokenLoading && isIdentityLoading && isValidating}
+            onSendClick={onSendClick}
+            onReceiveClick={onReceiveClick}
+            address={identity.getPrincipal().toString()}
+          />
+          <div className="flex justify-between h-[70px] items-center mt-5">
             <div className="sticky left-0 flex items-center space-x-2">
               {showBackButton && (
                 <ArrowButton

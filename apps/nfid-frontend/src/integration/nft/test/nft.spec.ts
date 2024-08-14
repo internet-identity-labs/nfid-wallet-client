@@ -36,7 +36,7 @@ describe("nft test suite", () => {
       expect(extNft.getTokenNumber()).toEqual(2066)
       expect(extNft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
       expect(extNft.getCollectionName()).toEqual("Cellphones")
-      expect(extNft.getTokenName()).toEqual("Cellphones # 2066")
+      expect(extNft.getTokenName()).toEqual("Cellphones #2066")
       expect(extNft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
       expect(extNft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
       expect(extNft.getTokenId()).toEqual(
@@ -44,7 +44,7 @@ describe("nft test suite", () => {
       )
       expect(extNft.getMarketPlace()).toEqual("EXT")
       expect(extNft.getMillis()).toEqual(1721253726158)
-      const extAssetPreview = await extNft.getAssetPreview()
+      const extAssetPreview = extNft.getAssetPreview()
       expect(extAssetPreview.format).toEqual("img")
       expect(extAssetPreview.url).toEqual(
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
@@ -103,7 +103,7 @@ describe("nft test suite", () => {
       expect(yumiNFT.getTokenNumber()).toEqual(9103)
       expect(yumiNFT.getCollectionId()).toEqual("yzrp5-oaaaa-aaaah-ad2xa-cai")
       expect(yumiNFT.getCollectionName()).toEqual("Mifoko")
-      expect(yumiNFT.getTokenName()).toEqual("Mifoko # 9103")
+      expect(yumiNFT.getTokenName()).toEqual("Mifoko #9103")
       //geek does not return us price for ths token
       expect(yumiNFT.getTokenFloorPriceIcpFormatted()).toEqual(undefined)
       expect(yumiNFT.getTokenFloorPriceUSDFormatted()).toEqual(undefined)
@@ -112,7 +112,7 @@ describe("nft test suite", () => {
       )
       expect(yumiNFT.getMarketPlace()).toEqual("YUMI")
       expect(yumiNFT.getMillis()).toEqual(1721253579367)
-      const yumiNftAssetPreview = await yumiNFT.getAssetPreview()
+      const yumiNftAssetPreview = yumiNFT.getAssetPreview()
       expect(yumiNftAssetPreview.format).toEqual("img")
       expect(yumiNftAssetPreview.url).toEqual(
         "https://images.entrepot.app/t/yzrp5-oaaaa-aaaah-ad2xa-cai/h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
@@ -182,7 +182,7 @@ describe("nft test suite", () => {
       )[0]
       expect(memecakeNft.getTokenNumber()).toEqual(5002)
       expect(memecakeNft.getCollectionName()).toEqual("Boxy Land")
-      expect(memecakeNft.getTokenName()).toEqual("Boxy Land # 5002")
+      expect(memecakeNft.getTokenName()).toEqual("Boxy Land #5002")
 
       //TODO geek does not return us price for ths token
       expect(memecakeNft.getTokenFloorPriceIcpFormatted()).toEqual(undefined)
@@ -192,7 +192,7 @@ describe("nft test suite", () => {
       )
       expect(memecakeNft.getMarketPlace()).toEqual("MEMECAKE")
       expect(memecakeNft.getMillis()).toEqual(1721253870829)
-      const memcakeAsset = await memecakeNft.getAssetPreview()
+      const memcakeAsset = memecakeNft.getAssetPreview()
       expect(memcakeAsset.format).toEqual("img")
       expect(memcakeAsset.url).toEqual(
         "https://images.entrepot.app/t/gdeb6-lqaaa-aaaah-abvpq-cai/ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a",
@@ -231,7 +231,7 @@ describe("nft test suite", () => {
       const icpswapNft = result.items.filter(
         (nft) => nft.getCollectionId() === "gfcya-pyaaa-aaaan-qbxda-cai",
       )[0]
-      const icpswapAsset = await icpswapNft.getAssetPreview()
+      const icpswapAsset = icpswapNft.getAssetPreview()
       expect(icpswapAsset.format).toEqual("video")
       expect(icpswapAsset.url).toEqual(
         "https://gfcya-pyaaa-aaaan-qbxda-cai.raw.ic0.app/100000",

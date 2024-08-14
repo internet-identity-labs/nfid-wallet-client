@@ -278,6 +278,13 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify_email/, ""),
       },
+      "/api.nftgeek.app": {
+        target:
+          "https://api.nftgeek.app/api/nfid/principal/ktpnr-z7jpv-axecx-fvezg-llkhp-lp37k-ifs46-bwnqq-irevh-qsz6w-gae/registry",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/api.nftgeek.app/, ""),
+      },
     },
   },
 }

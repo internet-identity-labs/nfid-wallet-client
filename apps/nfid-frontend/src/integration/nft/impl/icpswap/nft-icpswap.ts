@@ -1,9 +1,10 @@
+import { AnonymousIdentity, HttpAgent } from "@dfinity/agent"
 import { icpSwapPropertiesService } from "src/integration/nft/impl/icpswap/properties/properties-service"
 import { icpswapTransactionMapper } from "src/integration/nft/impl/icpswap/transaction/icpswap-transaction-mapper"
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
-import { actor, hasOwnProperty } from "@nfid/integration"
+import { actor, agentBaseConfig, hasOwnProperty } from "@nfid/integration"
 
 import { AssetPreview, DisplayFormat, TokenProperties } from "../nft-types"
 import { idlFactory } from "./idl/SwapNFT"
@@ -19,7 +20,7 @@ import {
 export class NftIcpSwap extends NftImpl {
   private icsMetadata: IcsMetadata | undefined
 
-  async getAssetPreview(): Promise<AssetPreview> {
+  async getAssetPreviewAsync(): Promise<AssetPreview> {
     return await this.getIcsMetadata().then((icsMetadata) => {
       return {
         url: icsMetadata.filePath,
@@ -51,11 +52,32 @@ export class NftIcpSwap extends NftImpl {
     )
   }
 
+  // private async getIcsMetadata(): Promise<IcsMetadata> {
+  //   if (this.icsMetadata === undefined) {
+  //     let canisterActor = actor<IcpSwapCanister>(
+  //       this.getCollectionId(),
+  //       idlFactory,
+  //     )
+  //     const icsMetadata: ResponseResult_3 = await canisterActor.icsMetadata(
+  //       this.getTokenNumber(),
+  //     )
+  //     if (hasOwnProperty(icsMetadata, "err")) {
+  //       throw new Error(icsMetadata.err as string)
+  //     }
+  //     this.icsMetadata = icsMetadata.ok
+  //   }
+  //   return this.icsMetadata
+  // }
+
   private async getIcsMetadata(): Promise<IcsMetadata> {
     if (this.icsMetadata === undefined) {
+      const identity = new AnonymousIdentity()
       let canisterActor = actor<IcpSwapCanister>(
         this.getCollectionId(),
         idlFactory,
+        {
+          agent: new HttpAgent({ ...agentBaseConfig, identity }),
+        },
       )
       const icsMetadata: ResponseResult_3 = await canisterActor.icsMetadata(
         this.getTokenNumber(),

@@ -96,7 +96,7 @@ export const Button: React.FC<ButtonProps> = ({
       )}
       {...buttonProps}
     >
-      <div className="flex items-center justify-center space-x-2">
+      <div className="flex items-center justify-center space-x-2 h-full">
         {icon ? (
           <div className="flex items-center justify-center w-6 h-6">{icon}</div>
         ) : null}

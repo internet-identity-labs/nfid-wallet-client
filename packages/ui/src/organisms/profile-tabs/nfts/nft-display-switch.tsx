@@ -9,11 +9,11 @@ interface INFTDisplaySwitch {
 
 export const NFTDisplaySwitch = ({ state, setState }: INFTDisplaySwitch) => {
   return (
-    <div className={clsx(`gap-3 bg-white p-0.5 rounded-md`, "hidden sm:flex")}>
+    <div className={clsx("gap-3 bg-white p-0.5 rounded-[10px]", "flex")}>
       <div
         onClick={() => setState("grid")}
         className={clsx(
-          "p-0 w-[36px] h-[36px] outline-none rounded-[4px]",
+          "p-0 w-[36px] h-[36px] outline-none rounded-[10px]",
           "hover:text-gray-100 transition-all cursor-pointer",
           "flex justify-center items-center",
           state === "grid" && "bg-gray-200",
@@ -27,7 +27,7 @@ export const NFTDisplaySwitch = ({ state, setState }: INFTDisplaySwitch) => {
         id={"to-table"}
         onClick={() => setState("table")}
         className={clsx(
-          "p-0 w-[36px] h-[36px] outline-none rounded-[4px]",
+          "p-0 w-[36px] h-[36px] outline-none rounded-[10px]",
           "hover:text-gray-100 transition-all cursor-pointer",
           "flex justify-center items-center",
           state === "table" && "bg-gray-200",

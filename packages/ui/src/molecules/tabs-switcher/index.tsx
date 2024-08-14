@@ -31,6 +31,7 @@ export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
             isActive={activeTab === tab.name}
             onClick={() => setActiveTab(tab.name)}
             id={`tab_${tab.name}`}
+            length={tabs.length}
           >
             {tab.title}
           </Tab>

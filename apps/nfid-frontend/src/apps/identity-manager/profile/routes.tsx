@@ -24,7 +24,9 @@ const VaultTransactionsDetailsPage = React.lazy(
   () =>
     import("frontend/features/vaults/vaults-details/transactions-details-page"),
 )
-const ProfileCollectiblesPage = React.lazy(() => import("./collectibles"))
+const ProfileCollectiblesPage = React.lazy(
+  () => import("../../../features/collectibles"),
+)
 
 export const ProfileConstants = {
   base: "/profile",
@@ -48,25 +50,10 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <Profile />
+          {/* Switch/Subroutes */}
         </AuthWrapper>
       }
     />
-    {/* <Route
-      path={ProfileConstants.collectibles}
-      element={
-        <AuthWrapper>
-          <ProfileCollectiblesPage />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={ProfileConstants.transactions}
-      element={
-        <AuthWrapper>
-          <ActivityPage />
-        </AuthWrapper>
-      }
-    /> */}
     <Route
       path={ProfileConstants.security}
       element={

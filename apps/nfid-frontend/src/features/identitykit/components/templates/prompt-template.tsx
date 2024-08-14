@@ -1,6 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { PropsWithChildren } from "react"
 import useSWR from "swr"
 
@@ -10,7 +11,6 @@ import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export interface RPCPromptTemplateProps extends PropsWithChildren<{}> {
   primaryButtonText?: string

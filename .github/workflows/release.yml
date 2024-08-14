@@ -29,7 +29,7 @@ on:
 
 env:
   NETWORK_NAME: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
-  FORCE_DEPLOY: ${{ github.event.inputs.force_deploy }}
+  FORCE_DEPLOY: ${{ github.event.inputs.force_deploy || ( contains(github.event_name, 'release') && 'true' || 'false' ) }}
   CI_DEBUG: true
   RELEASE_TAG_REGEX: '^v(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))?(\.(0|[1-9][0-9]*))?(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
 

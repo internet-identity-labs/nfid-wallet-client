@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { format } from "date-fns"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useCallback } from "react"
 import { toast } from "react-toastify"
 
@@ -9,8 +10,6 @@ import {
   IconCmpTinyIC,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
-
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 import { IActivityRow } from "../types"
 

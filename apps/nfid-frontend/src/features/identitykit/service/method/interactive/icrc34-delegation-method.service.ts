@@ -3,7 +3,6 @@ import { fromBase64, toBase64 } from "@slide-computer/signer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import {
   Chain,
-  GLOBAL_ORIGIN,
   ecdsaGetAnonymous,
 } from "packages/integration/src/lib/lambda/ecdsa"
 
@@ -145,7 +144,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
         auth.delegationIdentity,
         icrc34Dto.targets,
         new Uint8Array(sessionPublicKey.toDer()),
-        GLOBAL_ORIGIN,
+        origin,
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,

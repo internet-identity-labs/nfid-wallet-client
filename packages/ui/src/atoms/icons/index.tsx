@@ -22,6 +22,7 @@ import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
 import IconSvgID from "./id.svg"
+import IconInfo from "./info-icon.svg"
 import IconSvgInfo from "./info.svg"
 import IconSvgKey from "./key.svg"
 import IconSvgLaptop from "./laptop.svg"
@@ -112,6 +113,7 @@ export {
   MenuIcon,
   LogoMain,
   Logo,
+  IconInfo,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

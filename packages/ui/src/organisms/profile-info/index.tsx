@@ -1,7 +1,11 @@
-import InfoIcon from "packages/ui/src/atoms/icons/info-icon.svg"
 import { FC } from "react"
 
-import { CenterEllipsis, IconCmpArrow, Tooltip } from "@nfid-frontend/ui"
+import {
+  CenterEllipsis,
+  IconCmpArrow,
+  Tooltip,
+  IconInfo,
+} from "@nfid-frontend/ui"
 import { Button } from "@nfid-frontend/ui"
 
 import { Spinner } from "../../atoms/loader/spinner"
@@ -35,7 +39,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             }
           >
             <img
-              src={InfoIcon}
+              src={IconInfo}
               alt="icon"
               className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
             />

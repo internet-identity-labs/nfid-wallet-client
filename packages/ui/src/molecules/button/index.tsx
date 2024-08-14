@@ -38,7 +38,7 @@ export const Button: React.FC<ButtonProps> = ({
       id={id}
       disabled={disabled}
       className={clsx(
-        "transition duration-75 flex justify-center items-center",
+        "transition duration-75",
         "text-center text-sm first-letter:capitalize hover:no-underline",
         "font-bold",
         "border rounded-xl outline-none p-[15px] leading-4",
@@ -52,7 +52,7 @@ export const Button: React.FC<ButtonProps> = ({
             "hover:shadow-md hover:shadow-[#0D9488]/40 hover:bg-[#0D9488]",
             "active:bg-teal-700",
             "focus:border-primaryButtonColor focus:bg-primaryButtonColor",
-            "disabled:bg-zinc-300 disabled:shadow-none",
+            "disabled:bg-gray-300 disabled:shadow-none",
           ),
         isSecondary &&
           clsx(
@@ -96,7 +96,7 @@ export const Button: React.FC<ButtonProps> = ({
       )}
       {...buttonProps}
     >
-      <div className="flex items-center justify-center space-x-2">
+      <div className="flex items-center justify-center space-x-2 h-full">
         {icon ? (
           <div className="flex items-center justify-center w-6 h-6">{icon}</div>
         ) : null}

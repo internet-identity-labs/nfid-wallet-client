@@ -20,6 +20,7 @@ export interface RPCPromptTemplateProps extends PropsWithChildren<{}> {
   title?: string | JSX.Element
   subTitle: string | JSX.Element
   senderPrincipal?: string
+  isPrimaryDisabled?: boolean
 }
 
 export const RPCPromptTemplate = ({
@@ -31,6 +32,7 @@ export const RPCPromptTemplate = ({
   subTitle,
   children,
   senderPrincipal,
+  isPrimaryDisabled,
 }: RPCPromptTemplateProps) => {
   const { data: balance } = useSWR(
     senderPrincipal ? ["userBalance", senderPrincipal] : null,
@@ -64,7 +66,11 @@ export const RPCPromptTemplate = ({
         <Button type="stroke" onClick={onSecondaryButtonClick}>
           {secondaryButtonText}
         </Button>
-        <Button type="primary" onClick={onPrimaryButtonClick}>
+        <Button
+          type="primary"
+          disabled={isPrimaryDisabled}
+          onClick={onPrimaryButtonClick}
+        >
           {primaryButtonText}
         </Button>
       </div>

@@ -5,6 +5,10 @@ import clsx from "clsx"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
+import {
+  TickerAmount,
+  formatAssetAmountRaw,
+} from "packages/ui/src/molecules/ticker-amount"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -42,10 +46,6 @@ import {
 } from "frontend/ui/connnector/transfer-modal/types"
 import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
-import {
-  TickerAmount,
-  formatAssetAmountRaw,
-} from "frontend/ui/molecules/ticker-amount"
 
 import {
   PRINCIPAL_LENGTH,

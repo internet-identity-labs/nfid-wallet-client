@@ -26,7 +26,7 @@ export const RPCComponentError = ({
 
   return (
     <RPCPromptTemplate
-      title={request?.data.method}
+      title={request?.data?.params?.method ?? request?.data.method}
       subTitle={
         <>
           Request from{" "}

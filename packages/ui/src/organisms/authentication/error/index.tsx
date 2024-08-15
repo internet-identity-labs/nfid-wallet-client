@@ -23,7 +23,11 @@ export const AuthEmailError: React.FC<AuthEmailErrorProps> = ({
       <p className="mt-2.5">
         Magic link verification failed. Please try again.
       </p>
-      <img className="flex-1 mt-5" src={Image} alt="email-verification-error" />
+      <img
+        className="flex-1 mt-5 max-h-[400px]"
+        src={Image}
+        alt="email-verification-error"
+      />
 
       <Button block onClick={onResend} type="primary">
         Resend email

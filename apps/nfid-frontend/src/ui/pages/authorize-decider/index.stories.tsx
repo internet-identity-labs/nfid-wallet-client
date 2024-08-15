@@ -2,9 +2,9 @@ import { StoryFn, Meta } from "@storybook/react"
 import React from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"
-import { CredentialResponse } from "src/ui/atoms/button/signin-with-google/types"
 
 import logo from "frontend/assets/dfinity.svg"
+import { CredentialResponse } from "frontend/ui/atoms/button/signin-with-google/types"
 
 import { AuthorizeDecider } from "."
 

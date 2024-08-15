@@ -1,3 +1,7 @@
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
+import { hexStringToUint8Array, uint8ArrayToHexString } from "@dfinity/utils"
+
 import {
   PolicyRegisterRequest,
   ThresholdPolicy as ThresholdPolicyRequest,
@@ -5,7 +9,9 @@ import {
   VaultRegisterRequest,
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
-import {vault as vaultAPI, vaultAnonymous} from "../actors"
+import { vault as vaultAPI, vaultAnonymous } from "../actors"
+import { authState } from "../authentication"
+import { getPublicKey } from "../lambda/ecdsa"
 import {
   candidToPolicy,
   candidToTransaction,
@@ -28,11 +34,6 @@ import {
   VaultRole,
   Wallet,
 } from "./types"
-import {getPublicKey} from "../lambda/ecdsa";
-import {authState} from "../authentication";
-import {hexStringToUint8Array, uint8ArrayToHexString} from "@dfinity/utils";
-import {Principal} from "@dfinity/principal";
-import {AccountIdentifier, SubAccount} from "@dfinity/ledger-icp";
 
 export async function registerVault(
   vaultName: string,
@@ -49,12 +50,14 @@ export async function registerVault(
 }
 
 export async function getVaults(): Promise<Vault[]> {
-  const publicKey = await getPublicKey(authState.get().delegationIdentity!);
+  const publicKey = await getPublicKey(authState.get().delegationIdentity!)
   const hex = uint8ArrayToHexString(new Uint8Array(Array(32).fill(1)))
   const address = getAddress(Principal.fromText(publicKey), hex)
-  const response = await vaultAnonymous.get_vaults_by_address(address).catch((e) => {
-    throw new Error(`getVaults: ${e.message}`)
-  })
+  const response = await vaultAnonymous
+    .get_vaults_by_address(address)
+    .catch((e) => {
+      throw new Error(`getVaults: ${e.message}`)
+    })
   return response.map((v) => candidToVault(v))
 }
 
@@ -224,7 +227,6 @@ export async function getTransactions(): Promise<Transaction[]> {
   return transactions.map(candidToTransaction)
 }
 
-
 export function getAddress(principal: Principal, subAccountHex: string) {
   const subAccount = SubAccount.fromBytes(hexStringToUint8Array(subAccountHex))
   if (subAccount instanceof Error) {
@@ -236,4 +238,3 @@ export function getAddress(principal: Principal, subAccountHex: string) {
   })
   return accountIdentifier.toHex()
 }
-

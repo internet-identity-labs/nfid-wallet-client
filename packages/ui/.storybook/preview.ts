@@ -11,4 +11,4 @@ export const parameters = {
     viewports: INITIAL_VIEWPORTS,
   },
 }
-export const tags = ["autodocs"];
+export const tags = ["autodocs"]

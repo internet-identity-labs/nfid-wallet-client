@@ -10,7 +10,7 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 
-import { filterUserTokens } from "frontend/features/collectibles/utils/util"
+import { searchTokens } from "frontend/features/collectibles/utils/util"
 import { NFT } from "frontend/integration/nft/nft"
 
 import EmptyNFT from "./assets/empty.webp"
@@ -27,10 +27,7 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
   const [display, setDisplay] = useState<"grid" | "table">("grid")
   console.log("nftsss", nfts)
 
-  const nftsFiltered = useMemo(
-    () => filterUserTokens(nfts, { search }),
-    [nfts, search],
-  )
+  const nftsFiltered = useMemo(() => searchTokens(nfts, search), [nfts, search])
 
   return (
     <>
@@ -79,7 +76,7 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
           )}
         </>
       ) : display === "table" ? (
-        <div className="max-w-[100%] overflow-scroll">
+        <div className="max-w-[100%] overflow-auto">
           <Table
             className="!min-w-[1000px]"
             theadClassName="!h-0 sm:!h-[40px]"
@@ -102,13 +99,23 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
                   className="text-sm"
                 >
                   <td>
-                    <img
-                      alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
-                      src={nft.getAssetPreview().url}
-                      className={clsx(
-                        `w-[74pxIconNftPlaceholder] h-[74px] object-cover rounded my-[5px]`,
-                      )}
-                    />
+                    {nft.getAssetPreview().format === "video" ? (
+                      <video
+                        muted
+                        autoPlay
+                        loop
+                        className="w-[74px] rounded-[12px]"
+                        src={nft.getAssetPreview().url}
+                      ></video>
+                    ) : (
+                      <img
+                        alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
+                        src={nft.getAssetPreview().url}
+                        className={clsx(
+                          `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
+                        )}
+                      />
+                    )}
                   </td>
                   <td className="font-semibold">{nft.getTokenName()}</td>
                   <td>{nft.getCollectionName()}</td>
@@ -143,6 +150,12 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
           )}
         >
           {nftsFiltered.map((nft) => {
+            console.log(
+              "renderrr",
+              nft.getTokenName(),
+              nft.getTokenFloorPriceIcpFormatted(),
+              nft.getTokenFloorPriceUSDFormatted(),
+            )
             return (
               <div
                 className="cursor-pointer rounded-[12px] bg-gray-50 group hover:shadow-xl"
@@ -150,19 +163,24 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
               >
                 <div className="relative rounded-[12px] overflow-hidden">
                   {!nft.getAssetPreview() && !nft.getAssetPreview().url && (
-                    <img src={IconNftPlaceholder} alt="" />
+                    <img className="w-full" src={IconNftPlaceholder} alt="" />
                   )}
-                  {nft.getAssetPreview().format === "video" && (
+                  {nft.getAssetPreview().format === "video" ? (
                     <video
                       muted
                       autoPlay
                       loop
+                      className="w-full"
                       src={nft.getAssetPreview().url}
                     ></video>
+                  ) : (
+                    <img
+                      className="w-full"
+                      src={nft.getAssetPreview().url}
+                      alt="NFID NFT"
+                    />
                   )}
-                  {nft.getAssetPreview().format === "img" && (
-                    <img src={nft.getAssetPreview().url} alt="NFID NFT" />
-                  )}
+
                   <div
                     className={clsx(
                       "absolute top-0 bottom-0 left-0 right-0 m-auto z-2",

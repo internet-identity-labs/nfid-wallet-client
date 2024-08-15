@@ -59,7 +59,7 @@ const AppRow: React.FC<
 
   const navigateToTransactions = React.useCallback(
     (account: AccountBalance) => () => {
-      navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
+      navigate(ProfileConstants.transactions, {
         state: {
           wallet: {
             label: `${appName} ${account.accountName}`,

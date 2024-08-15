@@ -16,9 +16,7 @@ const ProfileAssets = () => {
 
   return (
     <ProfileAssetsPage
-      onIconClick={() =>
-        navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`)
-      }
+      onIconClick={() => navigate(ProfileConstants.transactions)}
       isLoading={isLoading}
       tokens={token}
       assetFilter={assetFilter}

@@ -3,11 +3,13 @@ import { useActor } from "@xstate/react"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import { NFTs } from "packages/ui/src/organisms/profile-tabs/nfts"
 import { useContext, useEffect, useMemo, useState } from "react"
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom"
 import useSWR from "swr"
 
 import { Loader, TabsSwitcher } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import ProfileCollectiblesPage from "frontend/features/collectibles"
 import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
@@ -60,28 +62,40 @@ const renderTabContent = (currentTab: string, isLoading: boolean) => {
   }
 }
 
-const tabs = [
-  {
-    name: "Tokens",
-    title: <>Tokens</>,
-  },
-  {
-    name: "NFTs",
-    title: <>NFTs</>,
-  },
-  {
-    name: "Activity",
-    title: <>Activity</>,
-  },
-]
-
 interface ProfileProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Profile: React.FC<ProfileProps> = ({}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("Tokens")
   const globalServices = useContext(ProfileContext)
+  const navigate = useNavigate()
+  const location = useLocation()
   const { token, isLoading: isTokenLoading } = useAllToken()
+
+  const tabs = [
+    {
+      name: "Tokens",
+      title: <>Tokens</>,
+      path: ProfileConstants.tokens,
+    },
+    {
+      name: "NFTs",
+      title: <>NFTs</>,
+      path: ProfileConstants.nfts,
+    },
+    {
+      name: "Activity",
+      title: <>Activity</>,
+      path: ProfileConstants.activity,
+    },
+  ]
+
+  useEffect(() => {
+    const currentTab = tabs.find((tab) => tab.path === location.pathname)
+    if (currentTab) {
+      setActiveTab(currentTab.name)
+    }
+  }, [location.pathname])
 
   const tokensUsdValue = useMemo(() => {
     return token
@@ -119,6 +133,10 @@ const Profile: React.FC<ProfileProps> = ({}) => {
     send("SHOW")
   }
 
+  const handleTabChange = (tabName: string, path: string) => {
+    setActiveTab(tabName)
+    navigate(path)
+  }
   // if (!identity) return <Loader isLoading />
 
   return (
@@ -135,11 +153,26 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         className="my-[30px]"
         tabs={tabs}
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(tabName) => {
+          const tab = tabs.find((tab) => tab.name === tabName)
+          if (tab) {
+            handleTabChange(tabName, tab.path)
+          }
+        }}
       />
       <ProfileContainer className="!p-0" innerClassName="p-[20px] md:p-[30px]">
         {renderTabContent(activeTab, false)}
-        {/* <Switch */}
+        {/* <Routes>
+          <Route path={ProfileConstants.tokens} element={<div>Tokens</div>} />
+          <Route
+            path={ProfileConstants.nfts}
+            element={<ProfileCollectiblesPage />}
+          />
+          <Route
+            path={ProfileConstants.activity}
+            element={<div>Activity</div>}
+          />
+        </Routes> */}
       </ProfileContainer>
     </ProfileTemplate>
   )

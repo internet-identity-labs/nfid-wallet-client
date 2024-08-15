@@ -12,7 +12,7 @@ import { useAllNFTs } from "../../apps/identity-manager/profile/assets/hooks"
 const ProfileCollectiblesPage = () => {
   // TODO: useSWR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // const { nfts, isLoading } = useAllNFTs()
-  const applications = useApplicationsMeta()
+  //const applications = useApplicationsMeta()
 
   const [nfts, setNfts] = useState<NFT[]>([])
 

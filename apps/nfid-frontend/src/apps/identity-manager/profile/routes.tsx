@@ -29,12 +29,12 @@ const ProfileCollectiblesPage = React.lazy(
 )
 
 export const ProfileConstants = {
-  base: "/profile",
   nftDetails: ":tokenId",
-  assets: "assets",
-  collectibles: "collectibles",
-  security: "security",
-  transactions: "transactions",
+  tokens: "/tokens",
+  nfts: "/nfts",
+  activity: "/activity",
+  security: "/security",
+  transactions: "/transactions",
   copyRecoveryPhrase: "copy-recovery-phrase",
   addPhoneNumber: "add-phone-number",
   verifySMS: "verify-sms",
@@ -44,12 +44,32 @@ export const ProfileConstants = {
 }
 
 export const ProfileRoutes = (
-  <Route path={ProfileConstants.base} element={<Outlet />}>
+  // <Route path={ProfileConstants.tokens} element={<Outlet />}>
+  <>
     <Route
-      path={ProfileConstants.assets}
+      path={ProfileConstants.tokens}
       element={
         <AuthWrapper>
           <Profile />
+          {/* <Profile tab="tokens" /> */}
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.nfts}
+      element={
+        <AuthWrapper>
+          <Profile />
+          {/* <Profile tab="nfts" /> */}
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.activity}
+      element={
+        <AuthWrapper>
+          <Profile />
+          {/* <Profile tab="activity" /> */}
         </AuthWrapper>
       }
     />
@@ -70,7 +90,7 @@ export const ProfileRoutes = (
       }
     />
     <Route
-      path={`${ProfileConstants.collectibles}/${ProfileConstants.nftDetails}`}
+      path={`${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
       element={
         <AuthWrapper>
           <ProfileNFTDetails />
@@ -103,32 +123,32 @@ export const ProfileRoutes = (
         </AuthWrapper>
       }
     />
-  </Route>
+  </>
 )
 
 export const profileSidebarItems = [
   {
     icon: AssetsIcon,
     title: "Assets",
-    link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
+    link: ProfileConstants.tokens,
     id: "profile-assets",
   },
   {
     icon: CollectiblesIcon,
     title: "Collectibles",
-    link: `${ProfileConstants.base}/${ProfileConstants.collectibles}`,
+    link: ProfileConstants.nfts,
     id: "profile-collectibles",
   },
   {
     icon: VaultsIcon,
     title: "Vaults",
-    link: `${ProfileConstants.base}/${ProfileConstants.vaults}`,
+    link: ProfileConstants.vaults,
     id: "profile-vaults",
   },
   {
     icon: SecurityIcon,
     title: "Security",
-    link: `${ProfileConstants.base}/${ProfileConstants.security}`,
+    link: ProfileConstants.security,
     id: "profile-security",
   },
 ]

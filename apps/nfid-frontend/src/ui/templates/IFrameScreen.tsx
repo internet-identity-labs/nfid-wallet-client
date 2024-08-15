@@ -1,8 +1,9 @@
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
+import { NFIDLogoMain } from "@nfid-frontend/ui"
+
 import { NFIDGradientBar } from "../atoms/gradient-bar"
-import { Logo } from "../atoms/images/logo"
 import { Loader } from "../atoms/loader"
 import { BlurOverlay } from "../molecules/blur-overlay"
 
@@ -39,7 +40,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
     <div className="relative min-h-[510px]">
       <NFIDGradientBar />
 
-      {logo && <Logo className="px-5 pt-6" />}
+      {logo && <NFIDLogoMain className="px-5 pt-6" />}
 
       <div className={clsx("p-5 relative", className)}>{children}</div>
       {isLoading && (

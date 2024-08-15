@@ -87,10 +87,10 @@ export class Assets {
 
   public async sendDialog() {
     await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    await Page.sendReceiveButton.waitForClickable({
+    await Page.sendButton.waitForClickable({
       timeout: 7000,
     })
-    await Page.sendReceiveButton.click()
+    await Page.sendButton.click()
     await browser.waitUntil(
       async () => {
         await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
@@ -102,7 +102,7 @@ export class Assets {
           )
         }
         if (!(await this.sendDialogWindow.isDisplayed()))
-          await Page.sendReceiveButton.click()
+          await Page.sendButton.click()
         return await this.sendDialogWindow.isDisplayed()
       },
       {
@@ -114,10 +114,10 @@ export class Assets {
 
   public async sendNFTDialog() {
     await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    await Page.sendReceiveButton.waitForDisplayed({
+    await Page.sendButton.waitForDisplayed({
       timeout: 7000,
     })
-    await Page.sendReceiveButton.click()
+    await Page.sendButton.click()
     await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
     await $("#send_type_toggle").click()
     await Page.loader.waitForExist({ reverse: true, timeout: 15000 })

@@ -49,14 +49,15 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   console.debug("ProfileAssetsPage", { tokens })
 
   return (
-    <ProfileTemplate
-      pageTitle="Assets"
-      icon={Icon}
-      iconTooltip="Activity"
-      onIconClick={onIconClick}
-      iconId="activity"
-      className="overflow-inherit"
-    >
+    // <ProfileTemplate
+    //   pageTitle="Assets"
+    //   icon={Icon}
+    //   iconTooltip="Activity"
+    //   onIconClick={onIconClick}
+    //   iconId="activity"
+    //   className="overflow-inherit"
+    // >
+    <div>
       <ProfileContainer
         title={<ProfileAssetsHeader />}
         className="mb-10 sm:pb-0 "
@@ -155,7 +156,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     icon={token.icon}
                     appName={token.title}
                   />
-                  <p className="text-black text-sm items-left flex leading-5">
+                  <p className="flex text-sm leading-5 text-black items-left">
                     {token.currency}
                   </p>
                 </div>
@@ -200,7 +201,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
           ) : null}
         </div>
       </ProfileContainer>
-    </ProfileTemplate>
+    </div>
   )
 }
 

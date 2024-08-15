@@ -15,7 +15,7 @@ export default function NFIDAuthCoordinator() {
 
   React.useEffect(() => {
     if (state.value === "End" && state.context?.authSession) {
-      navigate(ProfileConstants.tokens)
+      navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
     }
   }, [navigate, state.context?.authSession, state.value])
 

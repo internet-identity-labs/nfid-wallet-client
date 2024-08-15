@@ -5,6 +5,7 @@ import {
   DropdownSelect,
   FilterPopover,
   IconCmpFilters,
+  Loader,
   Table,
 } from "@nfid-frontend/ui"
 
@@ -32,10 +33,10 @@ const ActivityPage = () => {
     isButtonLoading,
     resetHandler,
   } = useActivityPagination(initialFilter)
-
+  console.log({ activities })
   return (
     <>
-      <ProfileTemplate
+      {/* <ProfileTemplate
         isLoading={isValidating && !activities.length}
         pageTitle="Activity"
         showBackButton
@@ -65,7 +66,34 @@ const ActivityPage = () => {
             />
           </FilterPopover>
         }
-      >
+      > */}
+      <div>
+        <Loader isLoading={isValidating && !activities.length} />
+        <FilterPopover
+          title="Assets"
+          align="end"
+          className="!min-w-[384px]"
+          trigger={
+            <div
+              id={"filter-ft"}
+              className="flex items-center justify-center p-[10px] rounded-md md:bg-white"
+            >
+              <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60" />
+            </div>
+          }
+          onReset={resetHandler}
+        >
+          <DropdownSelect
+            selectedValues={filter}
+            setSelectedValues={setFilter}
+            isMultiselect={true}
+            options={tokens.map((token) => ({
+              label: token.title,
+              value: token.canisterId!,
+            }))}
+          />
+        </FilterPopover>
+
         <ProfileContainer
           className="!rounded-0 !sm:rounded-xl !border-0 sm:!border !py-0"
           innerClassName="!px-0 sm:!px-[30px]"
@@ -80,7 +108,7 @@ const ActivityPage = () => {
                   theadClassName="!h-0 sm:!h-16"
                   id="activity-table"
                   tableHeader={
-                    <tr className="border-b border-black hidden sm:table-row">
+                    <tr className="hidden border-b border-black sm:table-row">
                       <th>Action</th>
                       <th>Asset</th>
                       <th>From</th>
@@ -113,7 +141,7 @@ const ActivityPage = () => {
             </Button>
           )}
         </div>
-      </ProfileTemplate>
+      </div>
     </>
   )
 }

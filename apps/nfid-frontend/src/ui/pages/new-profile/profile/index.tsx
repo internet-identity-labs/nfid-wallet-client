@@ -137,18 +137,17 @@ const Profile: React.FC<ProfileProps> = ({}) => {
     setActiveTab(tabName)
     navigate(path)
   }
-  // if (!identity) return <Loader isLoading />
 
   return (
     <ProfileTemplate iconId="activity" className="overflow-inherit">
       <Loader isLoading={isLoading} />
-      {/* <ProfileInfo
+      <ProfileInfo
         value={tokensUsdValue}
         isLoading={isTokenLoading && isIdentityLoading && isValidating}
         onSendClick={onSendClick}
         onReceiveClick={onReceiveClick}
-        address={identity!.getPrincipal().toString()}
-      /> */}
+        address={identity?.getPrincipal().toString() ?? ""}
+      />
       <TabsSwitcher
         className="my-[30px]"
         tabs={tabs}

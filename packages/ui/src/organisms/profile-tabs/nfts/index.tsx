@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { useState, useMemo, HTMLAttributes, FC } from "react"
 import { IoIosSearch } from "react-icons/io"
 
@@ -108,8 +109,9 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
                         src={nft.getAssetPreview().url}
                       ></video>
                     ) : (
-                      <img
+                      <ImageWithFallback
                         alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
+                        fallbackSrc={IconNftPlaceholder}
                         src={nft.getAssetPreview().url}
                         className={clsx(
                           `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
@@ -150,21 +152,12 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
           )}
         >
           {nftsFiltered.map((nft) => {
-            console.log(
-              "renderrr",
-              nft.getTokenName(),
-              nft.getTokenFloorPriceIcpFormatted(),
-              nft.getTokenFloorPriceUSDFormatted(),
-            )
             return (
               <div
                 className="cursor-pointer rounded-[12px] bg-gray-50 group hover:shadow-xl"
                 key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
               >
                 <div className="relative rounded-[12px] overflow-hidden">
-                  {!nft.getAssetPreview() && !nft.getAssetPreview().url && (
-                    <img className="w-full" src={IconNftPlaceholder} alt="" />
-                  )}
                   {nft.getAssetPreview().format === "video" ? (
                     <video
                       muted
@@ -174,13 +167,13 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
                       src={nft.getAssetPreview().url}
                     ></video>
                   ) : (
-                    <img
-                      className="w-full"
+                    <ImageWithFallback
+                      alt={"12313"}
+                      fallbackSrc={IconNftPlaceholder}
                       src={nft.getAssetPreview().url}
-                      alt="NFID NFT"
+                      className={clsx(`w-full`)}
                     />
                   )}
-
                   <div
                     className={clsx(
                       "absolute top-0 bottom-0 left-0 right-0 m-auto z-2",

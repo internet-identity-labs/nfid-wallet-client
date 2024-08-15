@@ -46,7 +46,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           Total balance
         </div>
         <div className="text-black text-[28px] font-semibold leading-[20px]">
-          {isLoading ? (
+          {!value ? (
             <Spinner className="w-[24px] h-[24px] text-gray-400" />
           ) : (
             <>

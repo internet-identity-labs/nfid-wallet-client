@@ -29,10 +29,11 @@ const ProfileCollectiblesPage = React.lazy(
 )
 
 export const ProfileConstants = {
+  base: "/wallet",
   nftDetails: ":tokenId",
-  tokens: "/tokens",
-  nfts: "/nfts",
-  activity: "/activity",
+  tokens: "tokens",
+  nfts: "nfts",
+  activity: "activity",
   security: "/security",
   transactions: "/transactions",
   copyRecoveryPhrase: "copy-recovery-phrase",
@@ -45,13 +46,13 @@ export const ProfileConstants = {
 
 export const ProfileRoutes = (
   // <Route path={ProfileConstants.tokens} element={<Outlet />}>
-  <>
-    <Route
+  <Route path="/wallet">
+    <div>123</div>
+    {/* <Route
       path={ProfileConstants.tokens}
       element={
         <AuthWrapper>
           <Profile />
-          {/* <Profile tab="tokens" /> */}
         </AuthWrapper>
       }
     />
@@ -60,7 +61,6 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <Profile />
-          {/* <Profile tab="nfts" /> */}
         </AuthWrapper>
       }
     />
@@ -69,7 +69,6 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <Profile />
-          {/* <Profile tab="activity" /> */}
         </AuthWrapper>
       }
     />
@@ -122,8 +121,8 @@ export const ProfileRoutes = (
           <VaultTransactionsDetailsPage />
         </AuthWrapper>
       }
-    />
-  </>
+    /> */}
+  </Route>
 )
 
 export const profileSidebarItems = [

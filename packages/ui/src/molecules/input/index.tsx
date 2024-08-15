@@ -43,7 +43,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     return (
-      <div className={clsx("rounded-md", className)}>
+      <div className={clsx("rounded-[12px]", className)}>
         {labelText && (
           <Label
             className={clsx(
@@ -70,10 +70,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={type}
             className={clsx(
               "flex-1 block w-full py-[7px]",
-              "placeholder:text-secondary placeholder:text-sm",
+              "placeholder:text-gray-400 placeholder:text-sm",
               "disabled:bg-gray-200 disabled:text-secondary disabled:drop-shadow-none shadow-none",
               "border-1 border-gray-400 disabled:border-gray-200",
-              "rounded-md",
+              "rounded-[12px]",
               errorText || isErrorStyles
                 ? clsx(
                     "border-red-600 active:border-red-600 focus:border-red-600 ",
@@ -81,7 +81,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     "ring-red-100 focus:ring-[3px] active:ring-red-200  focus:ring-red-200 focus-within:ring-red-100 ",
                   )
                 : clsx(
-                    "focus:ring-[3px] active:ring-blue-200 focus:ring-blue-200 active:border-blue-base active:bg-blue-50",
+                    "focus:ring-[3px] active:ring-teal-600/40 focus:ring-teal-600/40 active:border-blue-base active:bg-[#F0FDFA]/40",
                   ),
               icon && "pl-9",
               pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",

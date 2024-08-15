@@ -35,3 +35,7 @@ yarn-error.log
 .DS_Store
 Thumbs.db
 Icon
+
+# Storybook
+doctor-storybook.log
+storybook-migration-summary.md

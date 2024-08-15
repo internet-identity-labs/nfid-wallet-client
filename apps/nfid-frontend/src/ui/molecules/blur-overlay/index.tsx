@@ -1,8 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
+import { getBrowser } from "@nfid-frontend/utils"
+
 import { ElementProps } from "frontend/types/react"
-import { getBrowser } from "frontend/ui/utils"
 
 interface BlurOverlayProps extends ElementProps<HTMLDivElement> {}
 

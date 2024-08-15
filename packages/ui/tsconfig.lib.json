@@ -23,5 +23,12 @@
     "**/*.stories.jsx",
     "**/*.stories.tsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "../../types/env"]
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../types/env",
+    "../../apps/nfid-frontend/src/features/authentication/auth-selection/email-flow/magic-link-flow/index.tsx"
+  ]
 }

@@ -1,14 +1,10 @@
 import { FC } from "react"
 
-import {
-  CenterEllipsis,
-  IconCmpArrow,
-  Tooltip,
-  IconInfo,
-} from "@nfid-frontend/ui"
+import { IconCmpArrow, Tooltip, IconInfo } from "@nfid-frontend/ui"
 import { Button } from "@nfid-frontend/ui"
 
 import { Spinner } from "../../atoms/loader/spinner"
+import CopyAddress from "../../molecules/copy-address"
 
 export interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   value: number
@@ -65,11 +61,10 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </h2>
         <div className="flex md:items-end justify-between gap-[20px] flex-col md:flex-row">
           <div>
-            <CenterEllipsis
-              value={address!}
-              leadingChars={5}
+            <CopyAddress
+              address={address!}
+              leadingChars={6}
               trailingChars={4}
-              id={"principal"}
             />
             <div
               id="receiveButton2"

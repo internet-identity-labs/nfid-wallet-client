@@ -1,49 +1,44 @@
-import { useState } from "react"
+import { Separator } from "packages/ui/src/atoms/separator"
 import { useForm } from "react-hook-form"
 
 import {
   BlurredLoader,
   Button,
-  IconCmpGoogle,
   IconCmpPasskey,
   Input,
   SDKFooter,
 } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
-import { authenticationTracking } from "@nfid/integration"
 
-import { AbstractAuthSession } from "frontend/state/authentication"
-import {
-  AuthorizationRequest,
-  AuthorizingAppMeta,
-} from "frontend/state/authorization"
-import {
-  LoginEventHandler,
-  SignInWithGoogle,
-} from "frontend/ui/atoms/button/signin-with-google"
-import { Separator } from "frontend/ui/atoms/separator"
+import { AuthAppMeta } from "../app-meta"
 
-import { AuthAppMeta } from "../ui/app-meta"
-import { passkeyConnector } from "./passkey-flow/services"
+interface AuthorizationRequest {
+  hostname?: string
+}
+
+interface AuthorizingAppMeta {
+  name?: string
+}
 
 export interface AuthSelectionProps {
-  onSelectGoogleAuth: LoginEventHandler
   onSelectEmailAuth: (email: string) => void
   onSelectOtherAuth: () => void
-  onAuthWithPasskey: (data: AbstractAuthSession) => void
   appMeta?: AuthorizingAppMeta
   authRequest?: AuthorizationRequest
+  onLoginWithPasskey: () => Promise<void>
+  googleButton: JSX.Element
+  isLoading: boolean
 }
 
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
-  onSelectGoogleAuth,
   onSelectEmailAuth,
   onSelectOtherAuth,
-  onAuthWithPasskey,
   appMeta,
   authRequest,
+  onLoginWithPasskey,
+  googleButton,
+  isLoading,
 }) => {
-  const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
     mode: "onSubmit",
@@ -65,7 +60,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       id="auth-selection"
     >
       <AuthAppMeta applicationURL={appHost} />
-      <div className="mt-7">
+      <div className="mt-[44px]">
         <form
           onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
           className="space-y-[14px]"
@@ -73,13 +68,13 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           <Input
             className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
             inputClassName="h-12"
-            labelText="Email"
             type="email"
             errorText={formState.errors.email?.message?.toString()}
             {...register("email", {
               required: "Please enter your email",
             })}
             autoComplete="off webauthn"
+            placeholder="Email"
           />
           <Button
             id="email-sign-button"
@@ -91,41 +86,14 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           </Button>
         </form>
         <Separator className="my-5" />
-
-        <SignInWithGoogle
-          onLogin={onSelectGoogleAuth}
-          button={
-            <Button
-              id="google-sign-button"
-              className="h-12 !p-0"
-              type="stroke"
-              icon={<IconCmpGoogle />}
-              block
-            >
-              Continue with Google
-            </Button>
-          }
-        />
+        {googleButton}
         <Button
           id="passkey-sign-button"
           className="h-12 !p-0 group my-[14px]"
           type="stroke"
           icon={<IconCmpPasskey />}
           block
-          onClick={async () => {
-            authenticationTracking.initiated({
-              authSource: "passkey - continue",
-            })
-            setIsLoading(true)
-            const res = await passkeyConnector.loginWithPasskey(
-              undefined,
-              () => {
-                setIsLoading(false)
-              },
-            )
-
-            onAuthWithPasskey(res)
-          }}
+          onClick={onLoginWithPasskey}
         >
           Continue with a Passkey
         </Button>

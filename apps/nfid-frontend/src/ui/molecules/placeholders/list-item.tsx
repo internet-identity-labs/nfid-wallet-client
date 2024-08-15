@@ -1,6 +1,6 @@
 import React from "react"
 
-import { isOdd } from "frontend/ui/utils"
+import { isOdd } from "@nfid-frontend/utils"
 
 import { ListItemVariant } from "./list-item-variant"
 

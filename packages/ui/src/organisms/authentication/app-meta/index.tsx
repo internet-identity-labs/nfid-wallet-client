@@ -18,11 +18,11 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
       <img src={IconSvgNFIDWalletLogo} className="h-[43px]" />
 
       {title && (
-        <H5 className="mt-5 mb-3 text-sm leading-6 text-black">{title}</H5>
+        <H5 className="mt-3 !text-base leading-6 text-black">{title}</H5>
       )}
 
       {applicationURL && (
-        <div className="flex items-center mt-5 space-x-1 text-sm">
+        <div className="flex items-center mt-2 space-x-1 text-sm">
           <span>
             {subTitle}{" "}
             <a

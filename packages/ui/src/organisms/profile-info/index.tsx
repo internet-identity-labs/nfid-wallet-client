@@ -1,10 +1,11 @@
 import InfoIcon from "packages/ui/src/atoms/icons/info-icon.svg"
 import { FC } from "react"
 
-import { CenterEllipsis, IconCmpArrow, Tooltip } from "@nfid-frontend/ui"
+import { IconCmpArrow, Tooltip } from "@nfid-frontend/ui"
 import { Button } from "@nfid-frontend/ui"
 
 import { Spinner } from "../../atoms/loader/spinner"
+import CopyAddress from "../../molecules/copy-address"
 
 export interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   value: number
@@ -61,11 +62,10 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </h2>
         <div className="flex md:items-end justify-between gap-[20px] flex-col md:flex-row">
           <div>
-            <CenterEllipsis
-              value={address!}
-              leadingChars={5}
+            <CopyAddress
+              address={address!}
+              leadingChars={6}
               trailingChars={4}
-              id={"principal"}
             />
             <div
               className="text-sm text-teal-600 font-bold leading-[20px] mt-[14px] cursor-pointer"

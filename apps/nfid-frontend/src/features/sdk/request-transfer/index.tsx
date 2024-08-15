@@ -1,10 +1,12 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
+import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import React, { useState } from "react"
 import useSWR from "swr"
 
-import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { Address, BlurredLoader, Button } from "@nfid-frontend/ui"
+import { exchangeRateService } from "@nfid/integration"
 import {
   E8S,
   ICP_DECIMALS,
@@ -12,9 +14,7 @@ import {
 } from "@nfid/integration/token/constants"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { AuthAppMeta } from "frontend/features/authentication/ui/app-meta"
 import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
-import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
@@ -58,6 +58,10 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
     getWalletDelegationAdapter("nfid.one", "-1"),
   )
 
+  const { data: rate } = useSWR("usdRate", () =>
+    exchangeRateService.getICP2USD(),
+  )
+
   const {
     data: balance,
     isLoading: isBalanceLoading,
@@ -81,7 +85,6 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   )
 
   const { data: fee } = useSWR("requestFee", () => icTransferConnector.getFee())
-  const { exchangeRate: rate } = useICPExchangeRate()
 
   if (!fee || typeof rate === "undefined")
     return <BlurredLoader isLoading={true} />
@@ -133,56 +136,53 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           amountUSD={toUSD(Number(amount) / E8S, Number(rate))}
         />
       )}
-      <div className="flex flex-col my-5">
-        <div className="flex items-center justify-between text-sm border-b border-gray-200 h-14">
-          <p>Network fee</p>
-          <div className="text-right">
-            <p>
-              {nft
-                ? "$0.00"
-                : Boolean(rate) && (
-                    <TickerAmount
-                      symbol="ICP"
-                      value={Number(fee)}
-                      decimals={ICP_DECIMALS}
-                      usdRate={rate}
-                    />
-                  )}
-            </p>
-            <p className="text-xs text-gray-400">
-              {nft ? (
-                "0.00"
-              ) : (
-                <TickerAmount
-                  symbol="ICP"
-                  value={Number(fee)}
-                  decimals={ICP_DECIMALS}
-                />
-              )}
-            </p>
+      <div className="flex flex-col my-5 text-sm">
+        <div className="flex items-center justify-between h-[54px]">
+          <div>To</div>
+          <div>
+            <Address address={destinationAddress} />
           </div>
         </div>
-        <div className="flex items-center justify-between text-sm h-14">
-          <p className="font-bold">Total</p>
+        <div className="flex items-center justify-between h-[54px]">
+          <div>Network fee</div>
           <div className="text-right">
-            <p className="font-bold">
-              {amount
-                ? toUSD(
-                    (Number(amount) + Number(WALLET_FEE_E8S)) / E8S,
-                    Number(rate),
-                  )
-                : "$0.00"}
-            </p>
-            <p className="text-xs text-gray-400">
-              {amount
-                ? (Number(amount) + Number(WALLET_FEE_E8S)) / E8S
-                : "0.00"}{" "}
-              ICP
-            </p>
+            <TickerAmount
+              symbol={"ICP"}
+              value={nft ? 0 : WALLET_FEE_E8S}
+              decimals={ICP_DECIMALS}
+            />
+            <br />
+            <span className="text-xs text-gray-400">
+              <TickerAmount
+                symbol={"ICP"}
+                value={nft ? 0 : WALLET_FEE_E8S}
+                decimals={ICP_DECIMALS}
+                usdRate={rate?.toNumber()}
+              />
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center justify-between h-[54px] font-bold border-t border-gray-200">
+          <div>Total</div>
+          <div className="text-right">
+            <TickerAmount
+              symbol={"ICP"}
+              value={nft ? 0 : Number(amount) + WALLET_FEE_E8S}
+              decimals={ICP_DECIMALS}
+            />
+            <br />
+            <span className="text-xs font-normal text-gray-400">
+              <TickerAmount
+                symbol={"ICP"}
+                value={nft ? 0 : Number(amount) + WALLET_FEE_E8S}
+                decimals={ICP_DECIMALS}
+                usdRate={rate?.toNumber()}
+              />
+            </span>
           </div>
         </div>
       </div>
-      <div className="space-y-2.5 flex flex-col mb-[60px]">
+      <div className="gap-2.5 grid grid-cols-2 mb-[60px]">
         <Button
           id={
             isApproveButtonDisabled ? "approveButtonDisabled" : "approveButton"

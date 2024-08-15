@@ -1,5 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
+import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
 import { toast } from "react-toastify"
@@ -31,7 +32,6 @@ import {
 } from "frontend/state/authorization"
 
 import { getLegacyThirdPartyAuthSession } from "../../services"
-import { AuthAppMeta } from "../../ui/app-meta"
 import { PublicProfileButton } from "../public-profile-button"
 import { ApproveIcGetDelegationSdkResponse } from "./types"
 

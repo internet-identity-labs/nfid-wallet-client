@@ -1,6 +1,5 @@
+import { getBrowser } from "packages/utils/src"
 import React from "react"
-
-import { getBrowser } from "frontend/ui/utils"
 
 import { CredentialResponse } from "./types"
 import useLoadGsiScript from "./useLoadGsiScript"

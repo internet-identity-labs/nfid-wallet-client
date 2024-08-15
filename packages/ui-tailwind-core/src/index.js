@@ -23,6 +23,7 @@ module.exports = plugin(
         green: { ...colors.green, DEFAULT: colors.green[600] },
         emerald: { ...colors.emerald, DEFAULT: colors.emerald[600] },
         teal: { ...colors.teal, DEFAULT: colors.teal[600] },
+        zinc: { ...colors.zinc, DEFAULT: colors.teal[600] },
         cyan: { ...colors.cyan, DEFAULT: colors.cyan[600] },
         blue: { ...colors.blue, DEFAULT: colors.blue[600] },
         indigo: { ...colors.indigo, DEFAULT: colors.indigo[600] },

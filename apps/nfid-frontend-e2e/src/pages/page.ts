@@ -3,8 +3,12 @@ export class Page {
     return $("#loader")
   }
 
-  get sendReceiveButton() {
-    return $("#sendReceiveButton")
+  get sendButton() {
+    return $("#sendButton")
+  }
+
+  get receiveButton() {
+    return $("#receiveButton")
   }
 
   public async openBaseUrl() {

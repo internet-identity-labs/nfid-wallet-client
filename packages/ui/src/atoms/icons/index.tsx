@@ -28,6 +28,7 @@ import IconSvgMobile from "./mobile.svg"
 import IconSvgNFIDWalletLogo from "./nfid-wallet-logo.svg"
 import IconSvgNFIDWallet from "./nfid-wallet.svg"
 import IconSvgNFID from "./nfid.svg"
+import IconNftPlaceholder from "./nft-placeholder.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPasskey from "./passkey.svg"
 import IconSvgPencil from "./pencil.svg"
@@ -96,6 +97,7 @@ export {
   IconSvgArrowGreen,
   IconSvgAnonymous,
   IconSvgNFIDWalletLogo,
+  IconNftPlaceholder,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

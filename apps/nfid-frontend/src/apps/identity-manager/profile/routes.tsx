@@ -50,7 +50,6 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <Profile />
-          {/* Switch/Subroutes */}
         </AuthWrapper>
       }
     />

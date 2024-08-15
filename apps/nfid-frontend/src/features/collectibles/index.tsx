@@ -10,6 +10,7 @@ import { nftService } from "frontend/integration/nft/nft-service"
 import { useAllNFTs } from "../../apps/identity-manager/profile/assets/hooks"
 
 const ProfileCollectiblesPage = () => {
+  // TODO: useSWR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // const { nfts, isLoading } = useAllNFTs()
   const applications = useApplicationsMeta()
 

@@ -4,6 +4,7 @@ import {
   NonFungibleCollection,
   UserNonFungibleToken,
 } from "frontend/features/non-fungible-token/types"
+import { NFT } from "frontend/integration/nft/nft"
 
 import { GlauberTS } from "./search"
 
@@ -28,7 +29,7 @@ export function sortUserTokens(
 }
 
 export function filterUserTokens(
-  tokens: UserNonFungibleToken[],
+  tokens: NFT[],
   filters: {
     search?: string
   },

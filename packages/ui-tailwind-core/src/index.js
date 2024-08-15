@@ -41,6 +41,7 @@ module.exports = plugin(
         secondary: "rgb(var(--color-secondaryTextColor) / <alpha-value>)",
         linkColor: "rgb(var(--color-linkColor) / <alpha-value>)",
         checkMarkColor: "rgb(var(--color-checkMarkColor) / <alpha-value>)",
+        warningBgColor: "rgb(var(--color-warningBgColor) / <alpha-value>)",
         portfolioColor: "rgb(var(--color-portfolioColor) / <alpha-value>)",
       },
     },

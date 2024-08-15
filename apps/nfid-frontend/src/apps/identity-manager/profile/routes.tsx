@@ -1,10 +1,13 @@
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
-import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
-import CollectiblesIcon from "frontend/ui/organisms/profile-sidebar/assets/collectibles.svg"
-import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.svg"
-import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
+import {
+  KnowledgeIcon,
+  SecurityIcon,
+  VaultsIcon,
+  WalletIcon,
+} from "@nfid-frontend/ui"
+
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
 
@@ -119,29 +122,32 @@ export const ProfileRoutes = (
   </Route>
 )
 
-export const profileSidebarItems = [
-  {
-    icon: AssetsIcon,
-    title: "Assets",
-    link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
-    id: "profile-assets",
-  },
-  {
-    icon: CollectiblesIcon,
-    title: "Collectibles",
-    link: `${ProfileConstants.base}/${ProfileConstants.collectibles}`,
-    id: "profile-collectibles",
-  },
+export const navigationPopupLinks = [
   {
     icon: VaultsIcon,
     title: "Vaults",
     link: `${ProfileConstants.base}/${ProfileConstants.vaults}`,
-    id: "profile-vaults",
+    id: "nav-vaults",
+    separator: true,
+  },
+  {
+    icon: WalletIcon,
+    title: "Wallet",
+    link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
+    id: "nav-assets",
+    separator: true,
   },
   {
     icon: SecurityIcon,
     title: "Security",
     link: `${ProfileConstants.base}/${ProfileConstants.security}`,
-    id: "profile-security",
+    id: "nav-security",
+  },
+  {
+    icon: KnowledgeIcon,
+    title: "Knowledge base",
+    link: `https://learn.nfid.one/`,
+    id: "nav-knowledge-base",
+    separator: true,
   },
 ]

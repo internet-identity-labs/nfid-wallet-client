@@ -6,11 +6,11 @@ import { toast } from "react-toastify"
 import { trimConcat } from "src/ui/atoms/util/util"
 
 import { IconCmpDots } from "@nfid-frontend/ui"
+import { useClickOutside } from "@nfid-frontend/utils"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { ProfileContext } from "frontend/provider"
-import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import copyIcon from "./assets/copy.svg"
 import transferIcon from "./assets/transfer.svg"

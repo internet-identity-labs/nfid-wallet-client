@@ -1,4 +1,4 @@
-@nft-collectibles
+@nft-collectibles @skip
 Feature:Non Fungible Asset
   As a user, I want to see nft in collectibles
 

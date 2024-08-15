@@ -19,8 +19,13 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ],
       "cache": true
     },
     "build-storybook": {
@@ -37,7 +42,11 @@
     },
     "@nx/jest:jest": {
       "cache": true,
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js"
+      ],
       "options": {
         "passWithNoTests": true
       },
@@ -49,7 +58,10 @@
       }
     },
     "@nx/eslint:lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json"
+      ],
       "cache": true
     }
   },
@@ -81,6 +93,9 @@
       },
       {
         "env": "IC_HOST"
+      },
+      {
+        "env": "STORYBOOK_IC_HOST"
       },
       {
         "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION"
@@ -174,6 +189,5 @@
       "{workspaceRoot}/.env.(ic|stage)"
     ]
   },
-  "nxCloudAccessToken": "***REMOVED***",
   "useInferencePlugins": false
 }

@@ -1,11 +1,11 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 
+import { getBrowserName } from "@nfid-frontend/utils"
 import { authState, im, requestFEDelegation } from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
 import "frontend/integration/internet-identity"
 import { GoogleAuthSession } from "frontend/state/authentication"
-import { getBrowserName } from "frontend/ui/utils"
 
 if (!SIGNIN_GOOGLE)
   throw new Error("Google lambda proxy SIGNIN_GOOGLE is not defined")

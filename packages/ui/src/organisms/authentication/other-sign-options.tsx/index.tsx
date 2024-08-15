@@ -1,7 +1,6 @@
 import clsx from "clsx"
-import React from "react"
+import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
 
 import {
   BlurredLoader,
@@ -11,32 +10,30 @@ import {
   IconCmpWarning,
   Input,
 } from "@nfid-frontend/ui"
-import { loadProfileFromLocalStorage } from "@nfid/integration"
 
-import { AbstractAuthSession } from "frontend/state/authentication"
-import {
-  AuthorizationRequest,
-  AuthorizingAppMeta,
-} from "frontend/state/authorization"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
-
-import { AuthAppMeta } from "../../ui/app-meta"
-import { authWithAnchor } from "./services"
 
 export interface AuthOtherSignOptionsProps {
   onBack: () => void
   appMeta?: AuthorizingAppMeta
-  onSuccess: (authSession: AbstractAuthSession) => void
-  authRequest?: AuthorizationRequest
+  handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
+  isLoading: boolean
+  loadProfileFromLocalStorage: () => { anchor: number } | undefined
+}
+
+interface AuthorizingAppMeta {
+  name?: string
+  url?: string
+  logo?: string
 }
 
 export const AuthOtherSignOptions = ({
   onBack,
   appMeta,
-  onSuccess,
-  authRequest,
+  handleAuth,
+  isLoading,
+  loadProfileFromLocalStorage,
 }: AuthOtherSignOptionsProps) => {
-  const [isLoading, setIsLoading] = React.useState(false)
   const { register, handleSubmit } = useForm<{
     userNumber: number
   }>({
@@ -44,22 +41,6 @@ export const AuthOtherSignOptions = ({
       userNumber: loadProfileFromLocalStorage()?.anchor ?? undefined,
     },
   })
-
-  const handleAuth = React.useCallback(
-    async (data: { anchor: number; withSecurityDevices: boolean }) => {
-      try {
-        setIsLoading(true)
-        const res = await authWithAnchor(data)
-        onSuccess(res)
-      } catch (e: any) {
-        toast.error(e.message)
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [onSuccess],
-  )
-
   if (isLoading) return <BlurredLoader isLoading />
 
   return (
@@ -75,23 +56,25 @@ export const AuthOtherSignOptions = ({
       />
       <div
         className={clsx(
-          "grid grid-cols-[22px,1fr] space-x-1.5 text-sm",
-          "bg-orange-50 pl-[15px] py-[15px] mt-4 rounded-md",
+          "grid grid-cols-[22px,1fr] space-x-[10px] text-sm",
+          "bg-orange-50 p-[15px] mt-4 rounded-md",
         )}
       >
         <div>
-          <IconCmpWarning className="text-orange-500" />
+          <IconCmpWarning className="text-orange-900" />
         </div>
         <div>
-          <p className="font-bold leading-[22px]">Attention required</p>
-          <p className="mt-2.5 text-sm">
+          <p className="font-bold leading-[22px] text-orange-900">
+            Attention required
+          </p>
+          <p className="mt-2.5 text-sm text-orange-900">
             NFID’s two-factor authentication has been upgraded. Update your
             settings in the Security section of your profile at{" "}
             <a
               href="https://nfid.one/profile/security"
               target="_blank"
               rel="noreferrer"
-              className="text-linkColor"
+              className="text-primaryButtonColor"
             >
               https://nfid.one/profile/security
             </a>

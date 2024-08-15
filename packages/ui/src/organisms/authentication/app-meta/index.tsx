@@ -26,7 +26,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
           <span>
             {subTitle}{" "}
             <a
-              className="transition-opacity text-linkColor hover:opacity-50"
+              className="transition-opacity text-primaryButtonColor hover:opacity-50"
               href={`https://${applicationURL}`}
               target="_blank"
               rel="noreferrer"

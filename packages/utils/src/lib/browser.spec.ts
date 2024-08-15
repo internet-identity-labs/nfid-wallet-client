@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { slugify } from "."
+import { slugify } from "./browser"
 
 describe("ui utils", () => {
   describe("slugify", () => {

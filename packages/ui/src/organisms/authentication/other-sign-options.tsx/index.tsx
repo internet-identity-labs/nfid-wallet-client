@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
-import { UseFormHandleSubmit, UseFormRegister } from "react-hook-form"
+import { useForm } from "react-hook-form"
 
 import {
   BlurredLoader,
@@ -17,15 +17,8 @@ export interface AuthOtherSignOptionsProps {
   onBack: () => void
   appMeta?: AuthorizingAppMeta
   handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
-  formMethods: {
-    register: UseFormRegister<{
-      userNumber: number
-    }>
-    handleSubmit: UseFormHandleSubmit<{
-      userNumber: number
-    }>
-  }
   isLoading: boolean
+  loadProfileFromLocalStorage: () => { anchor: number } | undefined
 }
 
 interface AuthorizingAppMeta {
@@ -37,10 +30,17 @@ interface AuthorizingAppMeta {
 export const AuthOtherSignOptions = ({
   onBack,
   appMeta,
-  formMethods,
   handleAuth,
   isLoading,
+  loadProfileFromLocalStorage,
 }: AuthOtherSignOptionsProps) => {
+  const { register, handleSubmit } = useForm<{
+    userNumber: number
+  }>({
+    defaultValues: {
+      userNumber: loadProfileFromLocalStorage()?.anchor ?? undefined,
+    },
+  })
   if (isLoading) return <BlurredLoader isLoading />
 
   return (
@@ -83,7 +83,7 @@ export const AuthOtherSignOptions = ({
         </div>
       </div>
       <Input
-        {...formMethods.register("userNumber")}
+        {...register("userNumber")}
         labelText="Your NFID number"
         className="my-4"
       />
@@ -92,7 +92,7 @@ export const AuthOtherSignOptions = ({
           title="Continue with your device"
           subtitle="Use a Passkey on this device"
           img={<IconCmpTouchId />}
-          onClick={formMethods.handleSubmit((data) =>
+          onClick={handleSubmit((data) =>
             handleAuth({ anchor: data.userNumber, withSecurityDevices: false }),
           )}
         />
@@ -100,7 +100,7 @@ export const AuthOtherSignOptions = ({
           title="Continue with security key"
           subtitle="Use a Passkey on a security key"
           img={<IconCmpUsb />}
-          onClick={formMethods.handleSubmit((data) =>
+          onClick={handleSubmit((data) =>
             handleAuth({ anchor: data.userNumber, withSecurityDevices: true }),
           )}
         />

@@ -1,7 +1,8 @@
 import { useActor } from "@xstate/react"
+import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
+import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import React, { useState } from "react"
-import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -21,8 +22,6 @@ import {
 } from "frontend/ui/atoms/button/signin-with-google"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import { Auth2FA } from "../../../../../../packages/ui/src/organisms/authentication/2fa"
-import { AuthOtherSignOptions } from "../../../../../../packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
 import { AuthenticationMachineActor } from "./root-machine"
@@ -38,13 +37,6 @@ export default function AuthenticationCoordinator({
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] =
     React.useState(false)
   const { data: profile } = useSWR("profile", fetchProfile)
-  const { register, handleSubmit } = useForm<{
-    userNumber: number
-  }>({
-    defaultValues: {
-      userNumber: loadProfileFromLocalStorage()?.anchor ?? undefined,
-    },
-  })
 
   // Track on unmount
   React.useEffect(() => {
@@ -179,8 +171,8 @@ export default function AuthenticationCoordinator({
           appMeta={state.context?.appMeta}
           onBack={() => send({ type: "BACK" })}
           handleAuth={handleOtherOptionsAuth}
-          formMethods={{ register, handleSubmit }}
           isLoading={isOtherOptionsLoading}
+          loadProfileFromLocalStorage={loadProfileFromLocalStorage}
         />
       )
     case state.matches("TwoFA"):

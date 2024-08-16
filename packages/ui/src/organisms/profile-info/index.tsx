@@ -1,7 +1,6 @@
-import InfoIcon from "packages/ui/src/atoms/icons/info-icon.svg"
 import { FC } from "react"
 
-import { IconCmpArrow, Tooltip } from "@nfid-frontend/ui"
+import { IconCmpArrow, Tooltip, IconInfo } from "@nfid-frontend/ui"
 import { Button } from "@nfid-frontend/ui"
 
 import { Spinner } from "../../atoms/loader/spinner"
@@ -23,7 +22,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   address,
 }) => {
   return (
-    <div className="mt-[22px] flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
+    <div className="flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
       <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">
         <div className="flex items-center justify-between mb-[20px] md:mb-[30px]">
           <h2 className="text-[24px] text-black leading-[24px]">Portfolio</h2>
@@ -36,7 +35,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             }
           >
             <img
-              src={InfoIcon}
+              src={IconInfo}
               alt="icon"
               className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
             />
@@ -68,6 +67,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               trailingChars={4}
             />
             <div
+              id="receiveButton2"
               className="text-sm text-teal-600 font-bold leading-[20px] mt-[14px] cursor-pointer"
               onClick={onReceiveClick}
             >
@@ -76,6 +76,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           </div>
           <div className="flex gap-[10px]">
             <Button
+              id="sendButton"
               className="flex-1"
               icon={
                 <IconCmpArrow className="text-gray-400 rotate-[135deg] w-[18px] h-[18px] text-white" />
@@ -86,6 +87,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               Send
             </Button>
             <Button
+              id="receiveButton"
               className="flex-1"
               icon={
                 <IconCmpArrow className="text-gray-400 rotate-[-45deg] w-[18px] h-[18px] text-white" />

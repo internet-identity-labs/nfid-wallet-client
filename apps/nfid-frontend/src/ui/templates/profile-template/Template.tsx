@@ -1,9 +1,11 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
+import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
   HTMLAttributes,
   useCallback,
+  useState,
   ReactNode,
   FC,
   useMemo,
@@ -12,20 +14,27 @@ import {
 } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, TabProps, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import {
+  ProfileConstants,
+  navigationPopupLinks,
+} from "frontend/apps/identity-manager/profile/routes"
+import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAllToken } from "frontend/features/fungible-token/use-all-token"
+import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
+import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
+import { getAllVaults } from "frontend/features/vaults/services"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 import { Container } from "frontend/ui/atoms/container"
 import { Loader } from "frontend/ui/atoms/loader"
-import ProfileHeader from "frontend/ui/organisms/profile-header"
-import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
 
 import ProfileContainer from "../profile-container/Container"
 
@@ -89,6 +98,30 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const activeTab = useMemo(() => {
     return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
   }, [location.pathname])
+  const { isReady } = useVaultMember()
+  const { data: vaults } = useSWR([isReady ? "vaults" : null], getAllVaults)
+  const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
+  const { profile } = useProfile()
+  const { logout } = useAuthentication()
+
+  const hasVaults = useMemo(() => !!vaults?.length, [vaults])
+
+  const {
+    data: isEmailDeviceOutOfSyncWithII,
+    mutate: refreshIsEmailDeviceOutOfSyncWithII,
+  } = useSWRImmutable(
+    profile?.anchor
+      ? [profile.anchor.toString(), "isEmailDeviceOutOfSyncWithII"]
+      : null,
+    syncDeviceIIService.isEmailDeviceOutOfSyncWithII,
+  )
+
+  const syncEmailDeviceWithII = async (): Promise<void> => {
+    setIsSyncEmailLoading(true)
+    await syncDeviceIIService.syncEmailDeviceWithII()
+    await refreshIsEmailDeviceOutOfSyncWithII()
+    setIsSyncEmailLoading(false)
+  }
 
   const globalServices = useContext(ProfileContext)
   const { token, isLoading: isTokenLoading } = useAllToken()
@@ -132,22 +165,28 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
-      <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
+      <ProfileHeader
+        className={clsx("px-4 sm:px-[30px]", headerClassName)}
+        isLoading={isSyncEmailLoading}
+        isEmailOutOfSync={isEmailDeviceOutOfSyncWithII}
+        syncEmail={syncEmailDeviceWithII}
+        anchor={profile?.anchor}
+        logout={logout}
+        sendReceiveBtn={<SendReceiveButton />}
+        links={navigationPopupLinks}
+        assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}
+        hasVaults={hasVaults}
+      />
       <TransferModalCoordinator />
       <div
         className={clsx(
-          "h-[calc(100vh-70px)] relative z-1 px-4",
-          "sm:gap-[30px] sm:px-[30px]",
-          "md:grid md:grid-cols-[50px,1fr]",
-          "lg:grid-cols-[256px,1fr]",
+          "relative z-1 px-[16px]",
+          "sm:px-[30px]",
           "overflow-auto",
           "!block",
           containerClassName,
         )}
       >
-        <div className={clsx("hidden mt-5 -ml-3 md:block relative")}>
-          <ProfileSidebar id="desktop" />
-        </div>
         <section className={clsx("relative", className)}>
           {pageTitle && (
             <div className="flex justify-between h-[70px] items-center mt-5">

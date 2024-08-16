@@ -26,7 +26,6 @@ export const Default: StoryFn<AuthOtherSignOptionsProps> = (args) => {
   return (
     <AuthOtherSignOptions
       {...args}
-      formMethods={formMethods}
       handleAuth={() => console.log("Continue button clicked")}
     />
   )
@@ -36,5 +35,6 @@ Default.args = {
   appMeta: {
     name: "https://example.com",
   },
+  loadProfileFromLocalStorage: () => undefined,
   onBack: () => console.log("Back button clicked"),
 }

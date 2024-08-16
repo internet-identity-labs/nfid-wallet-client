@@ -1,4 +1,4 @@
-@nft-details
+@nft-details @skip
 Feature:Non Fungible Asset Details
   As a user, I want to see nft details
 

@@ -1,12 +1,14 @@
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
-import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
-import CollectiblesIcon from "frontend/ui/organisms/profile-sidebar/assets/collectibles.svg"
-import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.svg"
-import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
+import {
+  KnowledgeIcon,
+  SecurityIcon,
+  VaultsIcon,
+  WalletIcon,
+} from "@nfid-frontend/ui"
+
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
-import Profile from "frontend/ui/pages/new-profile/profile"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
 
 const ProfileAssets = React.lazy(() => import("./assets"))
@@ -44,110 +46,32 @@ export const ProfileConstants = {
   vaultTransaction: ":transactionId",
 }
 
-export const ProfileRoutes = (
-  // <Route path={ProfileConstants.tokens} element={<Outlet />}>
-  <Route path="/wallet">
-    <div>123</div>
-    {/* <Route
-      path={ProfileConstants.tokens}
-      element={
-        <AuthWrapper>
-          <Profile />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={ProfileConstants.nfts}
-      element={
-        <AuthWrapper>
-          <Profile />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={ProfileConstants.activity}
-      element={
-        <AuthWrapper>
-          <Profile />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={ProfileConstants.security}
-      element={
-        <AuthWrapper>
-          <ProfileSecurity />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={ProfileConstants.copyRecoveryPhrase}
-      element={
-        <AuthWrapper>
-          <CopyRecoveryPhrase />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={`${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
-      element={
-        <AuthWrapper>
-          <ProfileNFTDetails />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={`${ProfileConstants.vaults}`}
-      element={
-        <AuthWrapper>
-          <VaultGuard>
-            <VaultsListPage />
-          </VaultGuard>
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
-      element={
-        <AuthWrapper>
-          <VaultsDetailsCoordinator />
-        </AuthWrapper>
-      }
-    />
-    <Route
-      path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
-      element={
-        <AuthWrapper>
-          <VaultTransactionsDetailsPage />
-        </AuthWrapper>
-      }
-    /> */}
-  </Route>
-)
-
-export const profileSidebarItems = [
-  {
-    icon: AssetsIcon,
-    title: "Assets",
-    link: ProfileConstants.tokens,
-    id: "profile-assets",
-  },
-  {
-    icon: CollectiblesIcon,
-    title: "Collectibles",
-    link: ProfileConstants.nfts,
-    id: "profile-collectibles",
-  },
+export const navigationPopupLinks = [
   {
     icon: VaultsIcon,
     title: "Vaults",
-    link: ProfileConstants.vaults,
-    id: "profile-vaults",
+    link: `${ProfileConstants.base}/${ProfileConstants.vaults}`,
+    id: "nav-vaults",
+    separator: true,
+  },
+  {
+    icon: WalletIcon,
+    title: "Wallet",
+    link: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
+    id: "nav-assets",
+    separator: true,
   },
   {
     icon: SecurityIcon,
     title: "Security",
-    link: ProfileConstants.security,
-    id: "profile-security",
+    link: `${ProfileConstants.base}/${ProfileConstants.security}`,
+    id: "nav-security",
+  },
+  {
+    icon: KnowledgeIcon,
+    title: "Knowledge base",
+    link: `https://learn.nfid.one/`,
+    id: "nav-knowledge-base",
+    separator: true,
   },
 ]

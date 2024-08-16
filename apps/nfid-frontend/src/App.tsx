@@ -29,10 +29,12 @@ const NFIDEmbedCoordinator = React.lazy(
 const IframeTrustDeviceCoordinator = React.lazy(
   () => import("./features/iframe/iframe-trust-device/coordinator"),
 )
-const ProfileSecurity = React.lazy(() => import("../../features/security"))
-const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
-const ActivityPage = React.lazy(() => import("../../../features/activity"))
-const ProfileNFTDetails = React.lazy(() => import("../nft-details"))
+const ProfileSecurity = React.lazy(() => import("../src/features/security"))
+const CopyRecoveryPhrase = React.lazy(
+  () => import("../src/apps/identity-manager/profile/copy-recovery-phrase"),
+)
+const ActivityPage = React.lazy(() => import("../src/features/activity"))
+// const ProfileNFTDetails = React.lazy(() => import("../src/ui/pages/new-profile/nft-details"))
 const VaultsListPage = React.lazy(
   () => import("frontend/features/vaults/vaults-list-page"),
 )
@@ -43,9 +45,9 @@ const VaultTransactionsDetailsPage = React.lazy(
   () =>
     import("frontend/features/vaults/vaults-details/transactions-details-page"),
 )
-const ProfileCollectiblesPage = React.lazy(
-  () => import("../../../features/collectibles"),
-)
+// const ProfileCollectiblesPage = React.lazy(
+//   () => import("../../../features/collectibles"),
+// )
 
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
@@ -125,14 +127,14 @@ export const App = () => {
             </AuthWrapper>
           }
         />
-        <Route
+        {/* <Route
           path={`${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
           element={
             <AuthWrapper>
               <ProfileNFTDetails />
             </AuthWrapper>
           }
-        />
+        /> */}
         <Route
           path={`${ProfileConstants.vaults}`}
           element={

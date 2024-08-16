@@ -40,7 +40,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   }, [])
 
   return (
-    <div ref={ref} className={clsx("overflow-hidden h-auto")}>
+    <div ref={ref} className={clsx("overflow-hidden h-[24px] w-[24px]")}>
       <Button
         {...buttonProps}
         onClick={(e) => handleMenuToggle(e)}

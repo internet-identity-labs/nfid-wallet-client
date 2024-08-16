@@ -31,6 +31,7 @@ import IconSvgMapPin from "./map-pin.svg"
 import MenuIcon from "./menu.svg"
 import IconSvgMobile from "./mobile.svg"
 import KnowledgeIcon from "./nav-knowledge.svg"
+import IconDisconnect from "./nav-logout.svg"
 import SecurityIcon from "./nav-security.svg"
 import VaultsIcon from "./nav-vaults.svg"
 import WalletIcon from "./nav-wallet.svg"
@@ -116,6 +117,7 @@ export {
   LogoMain,
   Logo,
   IconInfo,
+  IconDisconnect,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

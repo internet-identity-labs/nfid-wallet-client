@@ -61,11 +61,16 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </h2>
         <div className="flex md:items-end justify-between gap-[20px] flex-col md:flex-row">
           <div>
-            <CopyAddress
-              address={address!}
-              leadingChars={6}
-              trailingChars={4}
-            />
+            {address ? (
+              <CopyAddress
+                address={address!}
+                leadingChars={6}
+                trailingChars={4}
+              />
+            ) : (
+              <Spinner className="w-[24px] h-[24px] text-gray-400" />
+            )}
+
             <div
               id="receiveButton2"
               className="text-sm text-teal-600 font-bold leading-[20px] mt-[14px] cursor-pointer"

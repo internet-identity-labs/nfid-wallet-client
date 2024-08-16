@@ -33,8 +33,6 @@ const ProfileSecurity = React.lazy(() => import("../src/features/security"))
 const CopyRecoveryPhrase = React.lazy(
   () => import("../src/apps/identity-manager/profile/copy-recovery-phrase"),
 )
-const ActivityPage = React.lazy(() => import("../src/features/activity"))
-// const ProfileNFTDetails = React.lazy(() => import("../src/ui/pages/new-profile/nft-details"))
 const VaultsListPage = React.lazy(
   () => import("frontend/features/vaults/vaults-list-page"),
 )
@@ -45,9 +43,6 @@ const VaultTransactionsDetailsPage = React.lazy(
   () =>
     import("frontend/features/vaults/vaults-details/transactions-details-page"),
 )
-// const ProfileCollectiblesPage = React.lazy(
-//   () => import("../../../features/collectibles"),
-// )
 
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
@@ -105,7 +100,7 @@ export const App = () => {
           path="/wallet/*"
           element={
             <AuthWrapper>
-              <ProfileTemplate withTabs />
+              <ProfileTemplate isWallet />
             </AuthWrapper>
           }
         >
@@ -127,14 +122,6 @@ export const App = () => {
             </AuthWrapper>
           }
         />
-        {/* <Route
-          path={`${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
-          element={
-            <AuthWrapper>
-              <ProfileNFTDetails />
-            </AuthWrapper>
-          }
-        /> */}
         <Route
           path={`${ProfileConstants.vaults}`}
           element={

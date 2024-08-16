@@ -1,34 +1,9 @@
-import React from "react"
-import { Route, Outlet } from "react-router-dom"
-
 import {
   KnowledgeIcon,
   SecurityIcon,
   VaultsIcon,
   WalletIcon,
 } from "@nfid-frontend/ui"
-
-import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
-import { VaultGuard } from "frontend/ui/pages/vault-guard"
-
-const ProfileAssets = React.lazy(() => import("./assets"))
-const ProfileSecurity = React.lazy(() => import("../../../features/security"))
-const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
-const ActivityPage = React.lazy(() => import("../../../features/activity"))
-const ProfileNFTDetails = React.lazy(() => import("./nft-details"))
-const VaultsListPage = React.lazy(
-  () => import("frontend/features/vaults/vaults-list-page"),
-)
-const VaultsDetailsCoordinator = React.lazy(
-  () => import("frontend/features/vaults/vaults-details"),
-)
-const VaultTransactionsDetailsPage = React.lazy(
-  () =>
-    import("frontend/features/vaults/vaults-details/transactions-details-page"),
-)
-const ProfileCollectiblesPage = React.lazy(
-  () => import("../../../features/collectibles"),
-)
 
 export const ProfileConstants = {
   base: "/wallet",
@@ -38,10 +13,10 @@ export const ProfileConstants = {
   activity: "activity",
   security: "/security",
   transactions: "/transactions",
-  copyRecoveryPhrase: "copy-recovery-phrase",
-  addPhoneNumber: "add-phone-number",
+  copyRecoveryPhrase: "/copy-recovery-phrase",
+  addPhoneNumber: "/add-phone-number",
   verifySMS: "verify-sms",
-  vaults: "vaults",
+  vaults: "/vaults",
   vault: ":vaultId",
   vaultTransaction: ":transactionId",
 }
@@ -50,7 +25,7 @@ export const navigationPopupLinks = [
   {
     icon: VaultsIcon,
     title: "Vaults",
-    link: `${ProfileConstants.base}/${ProfileConstants.vaults}`,
+    link: ProfileConstants.vaults,
     id: "nav-vaults",
     separator: true,
   },
@@ -64,7 +39,7 @@ export const navigationPopupLinks = [
   {
     icon: SecurityIcon,
     title: "Security",
-    link: `${ProfileConstants.base}/${ProfileConstants.security}`,
+    link: ProfileConstants.security,
     id: "nav-security",
   },
   {

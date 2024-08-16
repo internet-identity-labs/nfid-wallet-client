@@ -20,7 +20,7 @@
   "include": [
     "src",
     "../../types/env",
-    "../../packages/ui/src/organisms/profile-tabs/nfts/nft-display-switch.tsx"
+    "../../packages/ui/src/organisms/nfts/nft-display-switch.tsx"
   ],
   "extends": "../../tsconfig.base.json",
   "references": []

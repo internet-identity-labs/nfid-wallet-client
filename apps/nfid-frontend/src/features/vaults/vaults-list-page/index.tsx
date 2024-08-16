@@ -18,13 +18,12 @@ export interface VaultsListPageProps {}
 export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
 
-  const { isReady } = useVaultMember()
   const {
     data: vaults,
     mutate,
     isLoading,
     isValidating,
-  } = useSWR([isReady ? "vaults" : null], getAllVaults)
+  } = useSWR(["vaults"], getAllVaults)
 
   const filteredVaults = useMemo(() => {
     if (!vaults) return []

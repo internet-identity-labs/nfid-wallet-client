@@ -50,7 +50,7 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   iconTooltip?: string
   iconId?: string
   className?: string
-  withTabs?: boolean
+  isWallet?: boolean
   withPortfolio?: boolean
 }
 
@@ -85,8 +85,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   headerMenu,
   iconTooltip,
   iconId,
-  withTabs,
-  withPortfolio,
+  isWallet,
 }) => {
   const handleNavigateBack = useCallback(() => {
     window.history.back()
@@ -98,8 +97,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const activeTab = useMemo(() => {
     return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
   }, [location.pathname])
-  const { isReady } = useVaultMember()
-  const { data: vaults } = useSWR([isReady ? "vaults" : null], getAllVaults)
+  const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
@@ -215,25 +213,25 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               {headerMenu}
             </div>
           )}
-          {withPortfolio && (
-            <ProfileInfo
-              value={tokensUsdValue}
-              isLoading={isTokenLoading && isIdentityLoading && isValidating}
-              onSendClick={onSendClick}
-              onReceiveClick={onReceiveClick}
-              address={identity?.getPrincipal().toString() ?? ""}
-            />
-          )}
-          {withTabs && (
-            <TabsSwitcher
-              className="my-[30px]"
-              tabs={tabs}
-              activeTab={activeTab?.name}
-              setActiveTab={(tabName) => {
-                const tab = tabs.find((t) => t.name === tabName)
-                if (tab) navigate(tab.path)
-              }}
-            />
+          {isWallet && (
+            <>
+              <ProfileInfo
+                value={tokensUsdValue}
+                isLoading={isTokenLoading && isIdentityLoading && isValidating}
+                onSendClick={onSendClick}
+                onReceiveClick={onReceiveClick}
+                address={identity?.getPrincipal().toString() ?? ""}
+              />
+              <TabsSwitcher
+                className="my-[30px]"
+                tabs={tabs}
+                activeTab={activeTab?.name}
+                setActiveTab={(tabName) => {
+                  const tab = tabs.find((t) => t.name === tabName)
+                  if (tab) navigate(tab.path)
+                }}
+              />
+            </>
           )}
           <ProfileContainer>
             <Outlet />

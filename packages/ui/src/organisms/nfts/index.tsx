@@ -11,19 +11,19 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 
-import { searchTokens } from "frontend/features/collectibles/utils/util"
 import { NFT } from "frontend/integration/nft/nft"
 
 import EmptyNFT from "./assets/empty.webp"
 
 import { NFTDisplaySwitch } from "./nft-display-switch"
 
-interface INFTs extends HTMLAttributes<HTMLDivElement> {
+export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
   nfts: NFT[]
+  searchTokens: (tokens: NFT[], search: string) => NFT[]
 }
 
-export const NFTs: FC<INFTs> = ({ isLoading, nfts }) => {
+export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
   console.log("nftsss", nfts)

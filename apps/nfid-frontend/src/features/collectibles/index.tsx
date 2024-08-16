@@ -1,23 +1,14 @@
-import { NFTs } from "packages/ui/src/organisms/profile-tabs/nfts"
-import { useEffect } from "react"
+import { NFTs } from "packages/ui/src/organisms/nfts"
 import useSWR from "swr"
+
+import { searchTokens } from "frontend/features/collectibles/utils/util"
 
 import { fetchNFTs } from "./utils/util"
 
 const ProfileCollectiblesPage = () => {
-  debugger
-  //const { data: nfts = [], isLoading } = useSWR("nfts1", fetchNFTs)\
+  const { data: nfts = [], isLoading } = useSWR("nfts", fetchNFTs)
 
-  const getNfts = async () => {
-    const aa = await fetchNFTs()
-    console.log(aa)
-  }
-  useEffect(() => {
-    getNfts()
-  }, [])
-
-  // return <NFTs nfts={nfts} isLoading={isLoading} />
-  return <>123</>
+  return <NFTs nfts={nfts} isLoading={isLoading} searchTokens={searchTokens} />
 }
 
 export default ProfileCollectiblesPage

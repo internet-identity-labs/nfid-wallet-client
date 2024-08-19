@@ -26,7 +26,6 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
 export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
-  console.log("nftsss", nfts)
 
   const nftsFiltered = useMemo(() => searchTokens(nfts, search), [nfts, search])
 

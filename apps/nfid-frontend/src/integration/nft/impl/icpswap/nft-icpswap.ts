@@ -52,23 +52,6 @@ export class NftIcpSwap extends NftImpl {
     )
   }
 
-  // private async getIcsMetadata(): Promise<IcsMetadata> {
-  //   if (this.icsMetadata === undefined) {
-  //     let canisterActor = actor<IcpSwapCanister>(
-  //       this.getCollectionId(),
-  //       idlFactory,
-  //     )
-  //     const icsMetadata: ResponseResult_3 = await canisterActor.icsMetadata(
-  //       this.getTokenNumber(),
-  //     )
-  //     if (hasOwnProperty(icsMetadata, "err")) {
-  //       throw new Error(icsMetadata.err as string)
-  //     }
-  //     this.icsMetadata = icsMetadata.ok
-  //   }
-  //   return this.icsMetadata
-  // }
-
   private async getIcsMetadata(): Promise<IcsMetadata> {
     if (this.icsMetadata === undefined) {
       const identity = new AnonymousIdentity()

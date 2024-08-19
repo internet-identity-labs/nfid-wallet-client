@@ -1,14 +1,25 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useCallback, useContext } from "react"
+import {
+  useCallback,
+  useContext,
+  useMemo,
+  MouseEvent,
+  useState,
+  useEffect,
+} from "react"
+import { useLocation } from "react-router-dom"
 import { trimConcat } from "src/ui/atoms/util/util"
+import useSWR from "swr"
 
 import { Tooltip } from "@nfid-frontend/ui"
 import { Application, getWalletName } from "@nfid/integration"
 
-import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
+import { ITransaction } from "frontend/features/nft-details/utils"
 import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { link } from "frontend/integration/entrepot"
+import { mockGeekResponse } from "frontend/integration/nft/mock/mock"
+import { NFT, NFTDetails } from "frontend/integration/nft/nft"
 import { ProfileContext } from "frontend/provider"
 import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -19,37 +30,55 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import TransferIcon from "./assets/transfer.svg"
 import WalletIcon from "./assets/wallet.svg"
 
+import { fetchNFTs } from "../collectibles/utils/util"
+//import { useNFTActivity } from "./activity"
 import { NFTAsset } from "./nft-asset"
 
-interface IProfileNFTDetails {
-  nft: UserNonFungibleToken
-  isTransactionsFetching?: boolean
-  transactions: ITransaction[]
-  applications: Application[]
-}
-
-export const ProfileNFTDetailsPage = ({
-  nft,
-  isTransactionsFetching = false,
-  transactions,
-  applications,
-}: IProfileNFTDetails) => {
+const NFTDetailsPage = () => {
   const globalServices = useContext(ProfileContext)
+  const location = useLocation()
+  const [details, setDetails] = useState<NFTDetails>()
+
   const [, send] = useActor(globalServices.transferService)
+  // const state = location.state as { nft: any }
+  // console.log("satr", state)
+  // const nft = useMemo(() => {
+  //   return state?.nft
+  // }, [state?.nft])
+
+  // console.log("nfff", nft.tokenId)
+  //const { transactions, isActivityFetching } = useNFTActivity(nft!)
+
+  const { data: nfts = [], isLoading } = useSWR("nfts", fetchNFTs)
+
+  const getDetails = async () => {
+    console.log("nnnnn", nfts[0])
+    const details = await nfts[0].getDetails()
+    console.log("details", details)
+    setDetails(details)
+  }
+
+  useEffect(() => {
+    getDetails()
+  }, [])
 
   const onTransferNFT = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (!nfts[0]) return
       e.preventDefault()
 
-      send({ type: "ASSIGN_SELECTED_NFT", data: nft.tokenId })
+      send({ type: "ASSIGN_SELECTED_NFT", data: nfts[0].getTokenId() })
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
       send({ type: "CHANGE_DIRECTION", data: "send" })
 
       send("SHOW")
     },
-    [nft, send],
+    [nfts, send],
   )
 
+  if (!nfts) return <Loader isLoading />
+
+  // return <>123</>
   return (
     <ProfileTemplate
       showBackButton
@@ -63,13 +92,13 @@ export const ProfileNFTDetailsPage = ({
               onClick={onTransferNFT}
             />
           </Tooltip>
-          <Copy
+          {/* <Copy
             value={
               nft.blockchain === "Internet Computer"
                 ? link(nft.collection.id, Number(nft.index))
                 : nft.assetFullsize.url
             }
-          />
+          /> */}
         </div>
       }
       className="w-full z-[1]"
@@ -80,76 +109,41 @@ export const ProfileNFTDetailsPage = ({
           "grid-cols-1 sm:grid-cols-[auto,1fr]",
         )}
       >
-        <div className="relative overflow-hidden bg-gray-50 rounded-xl h-full md:h-[342px] aspect-square">
+        {/* <div className="relative overflow-hidden bg-gray-50 rounded-xl h-full md:h-[445px] aspect-square">
           <div
             style={{
-              backgroundImage: `url(${nft.assetPreview})`,
+              backgroundImage: `url(${nfts[0].getAssetPreview().url})`,
             }}
             className={clsx(
               "bg-cover bg-center bg-no-repeat blur-md brightness-150",
               "h-full absolute z-10 w-full opacity-70",
-              (nft.assetFullsize.format === "video" ||
-                nft.assetFullsize.format === "iframe") &&
-                "hidden",
             )}
           />
-          <NFTAsset
-            url={nft.assetFullsize.url}
-            format={nft.assetFullsize.format}
-          />
-        </div>
+        </div> */}
+        <img src={nfts[0].getAssetPreview().url} alt="" />
         <div
           id={
-            trimConcat("nft_token_", nft.name) +
+            trimConcat("nft_token_", nfts[0].getTokenName()) +
             "_" +
-            trimConcat("", nft.collection.id)
+            trimConcat("", nfts[0].getCollectionId())
           }
         >
           <p
             className="font-bold text-blue"
-            id={trimConcat("nft_collection_", nft.collection.id)}
+            id={trimConcat("nft_collection_", nfts[0].getCollectionId())}
           >
-            {nft.collection.name}
+            {nfts[0].getCollectionName()}
           </p>
           <p
             className="text-[28px] mt-2.5"
             id={
-              trimConcat("nft_token_", nft.name) +
+              trimConcat("nft_token_", nfts[0].getTokenName()) +
               "_" +
-              trimConcat("", nft.collection.id)
+              trimConcat("", nfts[0].getCollectionId())
             }
           >
-            {nft.name}
+            {nfts[0].getTokenName()}
           </p>
-          {"account" in nft ? (
-            <div className="flex items-center mt-4 space-x-2">
-              <img src={WalletIcon} alt="wallet" />
-              <p
-                className="text-sm font-semibold text-secondary"
-                id={`nft_wallet_${
-                  nft?.walletName === "NFID"
-                    ? "NFIDWallet"
-                    : nft.walletName?.split(" ").join("") ??
-                      getWalletName(
-                        applications,
-                        nft?.principal?.toString() ?? "",
-                        nft.account.accountId,
-                      )
-                        .split(" ")
-                        .join("")
-                }`}
-              >
-                {nft?.walletName === "NFID"
-                  ? "NFID Wallet"
-                  : nft?.walletName ??
-                    getWalletName(
-                      applications,
-                      nft?.principal?.toString() ?? "",
-                      nft.account.accountId,
-                    )}
-              </p>
-            </div>
-          ) : null}
           <ProfileContainer title="Details" className="mt-6">
             <div className="mt-5 space-y-4 text-sm">
               <div
@@ -158,11 +152,11 @@ export const ProfileNFTDetailsPage = ({
                 )}
               >
                 <p className="mb-1 text-secondary">Blockchain</p>
-                <p className={clsx("w-full")} id={"nft_blockchain_"}>
+                {/* <p className={clsx("w-full")} id={"nft_blockchain_"}>
                   {nft.blockchain}
-                </p>
+                </p> */}
 
-                <p className="mb-1 text-secondary">Standard</p>
+                {/* <p className="mb-1 text-secondary">Standard</p>
                 <p id={"token-standard"} className={clsx("w-full")}>
                   {nft.collection.standard === "legacy"
                     ? "Legacy EXT"
@@ -180,27 +174,27 @@ export const ProfileNFTDetailsPage = ({
                 <p className="mb-1 text-secondary">Collection ID</p>
                 <p id={"collection-id"} className="w-full overflow-hidden">
                   {nft.contractId}
-                </p>
+                </p> */}
               </div>
             </div>
           </ProfileContainer>
         </div>
       </div>
       <div className={clsx("mt-[30px] max-w-[100vw]")}>
-        <ProfileContainer title="About">
+        {/* <ProfileContainer title="About">
           <p id={"token-about"} className="text-sm">
             {nft.collection.description.length
               ? nft.collection.description
               : "No description"}
           </p>
-        </ProfileContainer>
+        </ProfileContainer> */}
       </div>
-      <div
+      {/* <div
         className={clsx(
           "w-full",
           "border border-gray-200 rounded-xl",
           "my-[30px]",
-          !transactions.length && !isTransactionsFetching && "hidden",
+          !transactions.length && !isActivityFetching && "hidden",
         )}
       >
         <div
@@ -231,9 +225,11 @@ export const ProfileNFTDetailsPage = ({
           }))}
         />
         <div className="flex justify-center w-full h-16 py-2">
-          <Loader fullscreen={false} isLoading={isTransactionsFetching} />
+          <Loader fullscreen={false} isLoading={isActivityFetching} />
         </div>
-      </div>
+      </div> */}
     </ProfileTemplate>
   )
 }
+
+export default NFTDetailsPage

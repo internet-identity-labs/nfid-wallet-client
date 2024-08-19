@@ -235,8 +235,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           )}
           <ProfileContainer>
             <Outlet />
+            {children}
           </ProfileContainer>
-          {children}
         </section>
       </div>
       <Loader isLoading={isLoading} />

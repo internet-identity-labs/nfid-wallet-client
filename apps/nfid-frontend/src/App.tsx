@@ -44,6 +44,8 @@ const VaultTransactionsDetailsPage = React.lazy(
     import("frontend/features/vaults/vaults-details/transactions-details-page"),
 )
 
+const NFTDetailsPage = React.lazy(() => import("frontend/features/nft-details"))
+
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
 }
@@ -137,6 +139,14 @@ export const App = () => {
           element={
             <AuthWrapper>
               <VaultsDetailsCoordinator />
+            </AuthWrapper>
+          }
+        />
+        <Route
+          path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
+          element={
+            <AuthWrapper>
+              <NFTDetailsPage />
             </AuthWrapper>
           }
         />

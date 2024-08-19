@@ -9,8 +9,6 @@ import {
   Table,
 } from "@nfid-frontend/ui"
 
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-
 import { useAllToken } from "../fungible-token/use-all-token"
 import ActivityEmpty from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"

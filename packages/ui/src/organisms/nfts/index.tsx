@@ -118,9 +118,14 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
                       />
                     )}
                   </td>
-                  <td className="font-semibold">{nft.getTokenName()}</td>
-                  <td>{nft.getCollectionName()}</td>
-                  <td>{nft.getTokenId()}</td>
+                  <td className="font-semibold"
+                      id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
+                  >
+                    {nft.getTokenName()}</td>
+                  <td id={`nft_collection_${nft.getCollectionId()}`}>
+                    {nft.getCollectionName()}</td>
+                  <td id={`nft_id_${nft.getTokenId()}`}>
+                    {nft.getTokenId()}</td>
                   <td>
                     {nft.getTokenFloorPriceIcpFormatted() ? (
                       <>
@@ -203,10 +208,14 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
                   </div>
                 </div>
                 <div className="px-[10px] pt-[10px] pb-[14px]">
-                  <p className="mb-[2px] text-black font-bold leading-[24px]">
+                  <p className="mb-[2px] text-black font-bold leading-[24px]"
+                     id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
+                  >
                     {nft.getTokenName()}
                   </p>
-                  <p className="text-gray-400 leading-[20px]">
+                  <p className="text-gray-400 leading-[20px]"
+                     id={`nft_collection_${nft.getCollectionId()}`}
+                  >
                     {nft.getCollectionName()}
                   </p>
                 </div>

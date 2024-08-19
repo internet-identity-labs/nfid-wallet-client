@@ -19,6 +19,12 @@ export interface CertifiedResponse {
   response: Array<string>
 }
 
+export interface ICRC28TrustedOriginsResponse {
+  certificate: Uint8Array | number[]
+  witness: Uint8Array | number[]
+  trusted_origins: Array<string>
+}
+
 export async function validateTargets(targets: string[], origin: string) {
   const agent: Agent = new HttpAgent({ host: "https://ic0.app" })
   const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
@@ -34,9 +40,19 @@ export async function validateTargets(targets: string[], origin: string) {
         ],
         ["query"],
       ),
+      icrc28_trusted_origins: IDL.Func(
+        [],
+        [
+          IDL.Record({
+            certificate: IDL.Vec(IDL.Nat8),
+            witness: IDL.Vec(IDL.Nat8),
+            trusted_origins: IDL.Vec(IDL.Text),
+          }),
+        ],
+        ["query"],
+      ),
       get_trusted_origins: IDL.Func([], [IDL.Vec(IDL.Text)], []),
     })
-
   const uncertifiedTargets: string[] = []
 
   const promisesCertified = targets.map(async (canisterId) => {
@@ -44,13 +60,29 @@ export async function validateTargets(targets: string[], origin: string) {
       agent,
       canisterId,
     })
-
+    let result: CertifiedResponse | undefined
     try {
-      const result = (await actor[
-        "get_trusted_origins_certified"
-      ]()) as CertifiedResponse
+      try {
+        const icrc28: ICRC28TrustedOriginsResponse = (await actor[
+          "icrc28_trusted_origins"
+        ]()) as ICRC28TrustedOriginsResponse
+        result = {
+          certificate: icrc28.certificate,
+          witness: icrc28.witness,
+          response: icrc28.trusted_origins,
+        }
+      } catch (e) {
+        console.warn("ICRC28 not supported")
+      }
+      //support old implementation
       if (!result || !result.response.includes(origin)) {
-        uncertifiedTargets.push(canisterId)
+        result = (await actor[
+          "get_trusted_origins_certified"
+        ]()) as CertifiedResponse
+        if (!result || !result.response.includes(origin)) {
+          console.warn("get_trusted_origins_certified not supported")
+          uncertifiedTargets.push(canisterId)
+        }
       } else {
         await verifyCertifiedResponse(result, "origins", canisterId)
       }
@@ -65,6 +97,7 @@ export async function validateTargets(targets: string[], origin: string) {
       agent,
       canisterId,
     })
+    //TODO do we really need it?
     const result = (await actor["get_trusted_origins"]()) as string[]
     if (!result.includes(origin)) {
       throw new Error(

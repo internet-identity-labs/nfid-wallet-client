@@ -13,8 +13,7 @@ interface IProfileSidebar extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ProfileSidebar: React.FC<IProfileSidebar> = ({ id, className }) => {
-  const { isReady } = useVaultMember()
-  const { data: vaults } = useSWR([isReady ? "vaults" : null], getAllVaults)
+  const { data: vaults } = useSWR(["vaults"], getAllVaults)
 
   const filteredProfileSidebarItems = useMemo(() => {
     if (!vaults || vaults.length === 0) {

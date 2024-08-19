@@ -13,7 +13,5 @@ export const getVaultById = async (id: string) => {
 }
 
 export const getAllVaults = async () => {
-  const delegation = await getWalletDelegationAdapter()
-  await replaceActorIdentity(vault, delegation)
   return await getVaults()
 }

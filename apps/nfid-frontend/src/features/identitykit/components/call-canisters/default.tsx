@@ -3,6 +3,7 @@ import clsx from "clsx"
 import { IconCmpWarning } from "@nfid-frontend/ui"
 
 import { RPCPromptTemplate } from "../templates/prompt-template"
+import { CallCanisterDetails } from "./details"
 
 export interface CallCanisterLedgerTransferProps {
   origin: string
@@ -56,20 +57,23 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
           "overflow-auto",
         )}
       >
-        <div className="space-y-2">
-          <p className="font-bold">Canister ID</p>
-          <p className="">{canisterId}</p>
-        </div>
-        {consentMessage && (
+        {consentMessage ? (
           <div className="space-y-2">
             <p className="font-bold">Consent message</p>
             <p className="leading-5">{consentMessage}</p>
           </div>
+        ) : (
+          <>
+            <div className="space-y-2">
+              <p className="font-bold">Canister ID</p>
+              <p className="">{canisterId}</p>
+            </div>
+            <div className="space-y-2">
+              <p className="font-bold">Arguments</p>
+              <p className="">{args}</p>
+            </div>
+          </>
         )}
-        <div className="space-y-2">
-          <p className="font-bold">Arguments</p>
-          <p className="">{args}</p>
-        </div>
       </div>
       <div
         className={clsx(
@@ -87,6 +91,13 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
           trust this dapp.
         </p>
       </div>
+      {consentMessage && consentMessage.length && (
+        <CallCanisterDetails
+          canisterId={canisterId}
+          sender={request?.data?.params?.sender}
+          args={args}
+        />
+      )}
     </RPCPromptTemplate>
   )
 }

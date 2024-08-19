@@ -3,8 +3,6 @@ import { DataStructure, MappedToken } from "src/integration/nft/geek/geek-types"
 
 import { ic } from "@nfid/integration"
 
-import { mockGeekResponse } from "../mock/mock"
-
 export class NftGeekService {
   async getNftGeekData(userPrincipal: Principal): Promise<MappedToken[]> {
     return this.fetchNftGeekData(userPrincipal.toText()).then((data) => {
@@ -12,24 +10,13 @@ export class NftGeekService {
     })
   }
 
-  private fetchNftGeekData(userPrincipal: string): Promise<DataStructure> {
-    debugger
-    userPrincipal =
-      "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
-    const str = `/api/nfid/principal/${userPrincipal}/registry`
-    let url = ic.isLocal ? "api_nftgeek_app" : `https://api.nftgeek.app${str}`
-
-    console.log("str", `https://api.nftgeek.app${str}`)
-    url += str
-    // url =
-    //   "https://api.nftgeek.app/api/nfid/principal/j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae/registry"
-    //const url = `https://api.nftgeek.app/api/nfid/principal/${userPrincipal}/registry`
-    return fetch(url, {
+  private async fetchNftGeekData(userPrincipal: string): Promise<DataStructure> {
+    const str = `/nfid/principal/${userPrincipal}/registry`;
+    let url = ic.isLocal ? `/nft_geek_api${str}` : `https://api.nftgeek.app/api${str}`;
+    return await fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     }).then((response) => response.json())
-    // @ts-ignore
-    //return Promise.resolve(mockGeekResponse)
   }
 
   private mapDataToObjects(data: DataStructure): MappedToken[] {

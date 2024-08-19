@@ -5,7 +5,6 @@ import useSWR from "swr"
 import { fetchNFTs } from "./utils/util"
 
 const ProfileCollectiblesPage = () => {
-  debugger
   //const { data: nfts = [], isLoading } = useSWR("nfts1", fetchNFTs)\
 
   const getNfts = async () => {

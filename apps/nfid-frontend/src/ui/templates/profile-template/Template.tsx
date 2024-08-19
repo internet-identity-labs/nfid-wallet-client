@@ -10,13 +10,12 @@ import {
   FC,
   useMemo,
   useContext,
-  useEffect,
 } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
-import { ArrowButton, TabProps, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
+import { ArrowButton, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -28,12 +27,10 @@ import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-r
 import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
-import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
-import { Container } from "frontend/ui/atoms/container"
 import { Loader } from "frontend/ui/atoms/loader"
 
 import ProfileContainer from "../profile-container/Container"

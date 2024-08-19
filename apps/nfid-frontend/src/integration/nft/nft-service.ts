@@ -26,10 +26,14 @@ export class NftService {
 
     const initedItems = await Promise.all(items.map(async (nft) => nft.init()))
 
-    // sort here
+    const sortedItems = initedItems.sort(
+      (a, b) =>
+        Number(b.getTokenFloorPriceIcpFormatted()) -
+        Number(a.getTokenFloorPriceIcpFormatted()),
+    )
 
     return {
-      items: initedItems,
+      items: sortedItems,
       currentPage: page,
       totalPages,
       totalItems,

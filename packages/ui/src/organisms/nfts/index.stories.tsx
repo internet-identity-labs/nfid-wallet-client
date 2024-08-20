@@ -57,7 +57,7 @@ const mockNFTs = [
 
 export const Default: StoryFn<INFTs> = (args) => {
   return (
-    <div className="p-[30px] overflow-hidden w-full">
+    <div className="p-[30px] overflow-hidden w-full border border-gray-200 rounded-[24px]">
       <NFTs {...args} />
     </div>
   )

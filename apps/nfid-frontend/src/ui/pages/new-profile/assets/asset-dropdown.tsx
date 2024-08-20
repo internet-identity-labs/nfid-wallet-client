@@ -24,7 +24,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
     (canisterId: string) => () => {
-      navigate(ProfileConstants.transactions, {
+      navigate(`${ProfileConstants.base}/${ProfileConstants.activity}`, {
         state: {
           canisterId,
         },

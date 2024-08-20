@@ -55,17 +55,17 @@ const tabs = [
   {
     name: "Tokens",
     title: <>Tokens</>,
-    path: `/wallet/${ProfileConstants.tokens}`,
+    path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
   },
   {
     name: "NFTs",
     title: <>NFTs</>,
-    path: `/wallet/${ProfileConstants.nfts}`,
+    path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
   },
   {
     name: "Activity",
     title: <>Activity</>,
-    path: `/wallet/${ProfileConstants.activity}`,
+    path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
   },
 ]
 

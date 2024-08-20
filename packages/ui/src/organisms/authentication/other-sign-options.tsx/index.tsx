@@ -15,7 +15,7 @@ import { IconButton } from "frontend/ui/atoms/button/icon-button"
 
 export interface AuthOtherSignOptionsProps {
   onBack: () => void
-  appMeta?: AuthorizingAppMeta
+  appMeta?: string
   handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
   isLoading: boolean
   loadProfileFromLocalStorage: () => { anchor: number } | undefined
@@ -49,15 +49,11 @@ export const AuthOtherSignOptions = ({
         className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0"
         onClick={onBack}
       />
-      <AuthAppMeta
-        applicationLogo={appMeta?.logo}
-        applicationURL={appMeta?.url}
-        applicationName={appMeta?.name}
-      />
+      <AuthAppMeta applicationURL={appMeta} />
       <div
         className={clsx(
           "grid grid-cols-[22px,1fr] space-x-[10px] text-sm",
-          "bg-orange-50 p-[15px] mt-4 rounded-md",
+          "bg-orange-50 p-[15px] mt-[44px] rounded-[12px]",
         )}
       >
         <div>
@@ -76,7 +72,7 @@ export const AuthOtherSignOptions = ({
               rel="noreferrer"
               className="text-primaryButtonColor"
             >
-              https://nfid.one/profile/security
+              https://nfid.one/security
             </a>
             .
           </p>
@@ -85,7 +81,7 @@ export const AuthOtherSignOptions = ({
       <Input
         {...register("userNumber")}
         labelText="Your NFID number"
-        className="my-4"
+        className="my-[20px]"
       />
       <div className="space-y-2.5">
         <IconButton

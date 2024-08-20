@@ -297,12 +297,7 @@ export const AuthChooseAccount = ({
 
   return (
     <>
-      <AuthAppMeta
-        applicationLogo={appMeta?.logo}
-        applicationURL={appHost}
-        applicationName={appMeta?.name}
-        subTitle="Wallet permissions for"
-      />
+      <AuthAppMeta applicationURL={appHost} subTitle="Wallet permissions for" />
       {!authRequest.targets && (
         <div className="absolute right-5 top-2.5">
           <TooltipProvider>

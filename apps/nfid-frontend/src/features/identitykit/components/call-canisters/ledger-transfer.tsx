@@ -77,13 +77,11 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
           />
         </p>
         <p className="text-sm text-center text-gray-400">
-          $
           <TickerAmount
             symbol="ICP"
             value={Number(requestParams.amount.e8s)}
             usdRate={data?.toNumber()}
             decimals={ICP_DECIMALS}
-            withUSDSymbol={false}
           />
         </p>
         <div className="flex flex-col flex-1 text-sm">

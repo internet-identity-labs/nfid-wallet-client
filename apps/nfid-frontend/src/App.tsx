@@ -18,6 +18,7 @@ import { AuthEmailMagicLink } from "./features/authentication/auth-selection/ema
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
 import { NotFound } from "./ui/pages/404"
+import ProfileContainer from "./ui/templates/profile-container/Container"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
@@ -106,7 +107,14 @@ export const App = () => {
             </AuthWrapper>
           }
         >
-          <Route path="*" element={<WalletRouter />} />
+          <Route
+            path="*"
+            element={
+              <ProfileContainer>
+                <WalletRouter />
+              </ProfileContainer>
+            }
+          />
         </Route>
         <Route
           path={ProfileConstants.security}

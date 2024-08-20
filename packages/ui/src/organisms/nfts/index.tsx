@@ -97,55 +97,53 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens, links }) => {
               </tr>
             }
           >
-            {nftsFiltered.map((nft) => {
-              return (
-                <tr
-                  key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
-                  className="text-sm"
-                >
-                  <td>
-                    {nft.getAssetPreview().format === "video" ? (
-                      <video
-                        muted
-                        autoPlay
-                        loop
-                        className="w-[74px] rounded-[12px]"
-                        src={nft.getAssetPreview().url}
-                      ></video>
-                    ) : (
-                      <ImageWithFallback
-                        alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
-                        fallbackSrc={IconNftPlaceholder}
-                        src={nft.getAssetPreview().url}
-                        className={clsx(
-                          `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
-                        )}
-                      />
-                    )}
-                  </td>
-                  <td className="font-semibold">{nft.getTokenName()}</td>
-                  <td>{nft.getCollectionName()}</td>
-                  <td>{nft.getTokenId()}</td>
-                  <td>
-                    {nft.getTokenFloorPriceIcpFormatted() ? (
-                      <>
-                        <p className="leading-[26px]">
-                          {nft.getTokenFloorPriceIcpFormatted()}
-                        </p>
-                        <p className="text-xs text-gray-400 leading-[20px]">
-                          {nft.getTokenFloorPriceUSDFormatted()}
-                        </p>
-                      </>
-                    ) : (
-                      "Unknown"
-                    )}
-                  </td>
-                  <td className="pr-[12px]">
-                    <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
-                  </td>
-                </tr>
-              )
-            })}
+            {nftsFiltered.map((nft) => (
+              <tr
+                key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
+                className="text-sm"
+              >
+                <td>
+                  {nft.getAssetPreview().format === "video" ? (
+                    <video
+                      muted
+                      autoPlay
+                      loop
+                      className="w-[74px] rounded-[12px]"
+                      src={nft.getAssetPreview().url}
+                    ></video>
+                  ) : (
+                    <ImageWithFallback
+                      alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
+                      fallbackSrc={IconNftPlaceholder}
+                      src={nft.getAssetPreview().url}
+                      className={clsx(
+                        `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
+                      )}
+                    />
+                  )}
+                </td>
+                <td className="font-semibold">{nft.getTokenName()}</td>
+                <td>{nft.getCollectionName()}</td>
+                <td>{nft.getTokenId()}</td>
+                <td>
+                  {nft.getTokenFloorPriceIcpFormatted() ? (
+                    <>
+                      <p className="leading-[26px]">
+                        {nft.getTokenFloorPriceIcpFormatted()}
+                      </p>
+                      <p className="text-xs text-gray-400 leading-[20px]">
+                        {nft.getTokenFloorPriceUSDFormatted()}
+                      </p>
+                    </>
+                  ) : (
+                    "Unknown"
+                  )}
+                </td>
+                <td className="pr-[12px]">
+                  <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
+                </td>
+              </tr>
+            ))}
           </Table>
         </div>
       ) : (
@@ -156,12 +154,10 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens, links }) => {
           )}
         >
           {nftsFiltered.map((nft) => {
-            const tokenId = nft.getDetails()
             return (
               <Link
                 key={nft.getTokenId()}
                 to={`${links.base}/${links.nfts}/${nft.getTokenId()}`}
-                // state={{ nft: { tokenId } }}
               >
                 <div
                   className="cursor-pointer rounded-[12px] bg-gray-50 group hover:shadow-xl"

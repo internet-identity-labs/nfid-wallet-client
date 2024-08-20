@@ -282,4 +282,63 @@ describe("nft test suite", () => {
       expect(icpSwapProperties.mappedValues[0].option).toEqual("Purple")
     })
   })
+
+  describe("getNFTById", () => {
+    it("should return the correct NFT details for a given ID", async () => {
+      const nftId = "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a"
+
+      jest
+        .spyOn(nftGeekService as any, "fetchNftGeekData")
+        .mockResolvedValue(mockGeekResponse)
+      jest
+        .spyOn(exchangeRateService as any, "getICP2USD")
+        .mockReturnValue(new BigNumber(8.957874722))
+
+      const nft = await nftService.getNFTById(nftId, principal)
+
+      expect(nft).toBeDefined()
+      if (!nft) return
+
+      expect(nft.getTokenNumber()).toEqual(2066)
+      expect(nft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
+      expect(nft.getCollectionName()).toEqual("Cellphones")
+      expect(nft.getTokenName()).toEqual("Cellphones #2066")
+      expect(nft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
+      expect(nft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
+      expect(nft.getTokenId()).toEqual(nftId)
+      expect(nft.getMarketPlace()).toEqual("EXT")
+      expect(nft.getMillis()).toEqual(1721253726158)
+
+      const assetPreview = nft.getAssetPreview()
+      expect(assetPreview.format).toEqual("img")
+      expect(assetPreview.url).toEqual(
+        "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+      )
+      expect(nft.getTokenLink()).toEqual(
+        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.ic0.app/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+      )
+
+      const details = await nft.getDetails()
+      expect(details.getAbout()).toEqual(
+        "Cellphones on ICP ringing throughout the cryptoverse.",
+      )
+      const assetFullSize = await details.getAssetFullSize()
+      expect(assetFullSize.format).toEqual("img")
+      expect(assetFullSize.url).toEqual(
+        "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+      )
+
+      const transactions = await details.getTransactions(0, 10)
+      expect(transactions.activity).toHaveLength(2)
+      const transfer = transactions.activity[0].getTransactionView()
+      expect(transfer.getType()).toEqual("Transfer")
+      expect(transfer.getFormattedDate()).toEqual("2024-07-17T14:21:58.748Z")
+      expect(transfer.getFrom()).toEqual(
+        "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
+      )
+      expect(transfer.getTo()).toEqual(
+        "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
+      )
+    })
+  })
 })

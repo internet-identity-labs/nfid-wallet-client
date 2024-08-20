@@ -1,7 +1,4 @@
-import { Principal } from "@dfinity/principal"
-
-import { authState, Chain, getPublicKey } from "@nfid/integration"
-
+import { getPrincipal } from "frontend/integration/lambda/util/util"
 import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
 
@@ -16,9 +13,13 @@ export const searchTokens = (tokens: NFT[], search: string) => {
 }
 
 export const fetchNFTs = async () => {
-  const identity = authState.get().delegationIdentity
-  const principalString = await getPublicKey(identity!, Chain.IC)
-  const principal = Principal.fromText(principalString)
+  const principal = await getPrincipal()
   const data = await nftService.getNFTs(principal)
   return data.items
+}
+
+export const fetchNFT = async (id: string) => {
+  const principal = await getPrincipal()
+  const data = await nftService.getNFTById(id, principal)
+  return data
 }

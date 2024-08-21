@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import clsx from "clsx"
 import { NFTDetails } from "packages/ui/src/organisms/nft-details"
 import {
   useCallback,
@@ -10,9 +11,12 @@ import {
 import { useParams } from "react-router-dom"
 import useSWR from "swr"
 
+import { IconSvgArrow, Tooltip } from "@nfid-frontend/ui"
+
 import { ProfileContext } from "frontend/provider"
 import { Loader } from "frontend/ui/atoms/loader"
 import { NotFound } from "frontend/ui/pages/404"
+import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { fetchNFT } from "../collectibles/utils/util"
 import { nftInitialState, nftReducer } from "./utils"
@@ -36,8 +40,7 @@ const NFTDetailsPage = () => {
         data?.getDetails(),
       )
       if (nftDetails) {
-        const tx = await nftDetails.getTransactions(0, 10)
-        console.log("txxx", tx)
+        await nftDetails.getTransactions(0, 10)
         dispatch({ type: "SET_ABOUT", payload: nftDetails.getAbout() })
         dispatch({
           type: "SET_FULL_SIZE",
@@ -84,18 +87,44 @@ const NFTDetailsPage = () => {
   if (!nft) return <NotFound />
 
   return (
-    <NFTDetails
-      nft={nft}
-      onTransferNFT={onTransferNFT}
-      about={state.about.data}
-      properties={state.properties.data}
-      assetPreview={state.fullSize.data}
-      transactions={state.transactions.data}
-      isAboutLoading={state.about.isLoading}
-      isPreviewLoading={state.fullSize.isLoading}
-      isPropertiesLoading={state.properties.isLoading}
-      isTransactionsLoading={state.transactions.isLoading}
-    />
+    <ProfileTemplate
+      pageTitle={nft.getTokenName()}
+      titleClassNames="hidden sm:block"
+      showBackButton
+      headerMenu={
+        <div className="flex items-center space-x-4">
+          <Tooltip tip="Send">
+            <div
+              className={clsx(
+                "p-[8px] rounded-[12px] cursor-pointer",
+                "hover:bg-gray-100 active:bg-gray-200",
+              )}
+              onClick={onTransferNFT}
+            >
+              <img
+                className="rotate-[135deg]"
+                src={IconSvgArrow}
+                alt="transfer"
+              />
+            </div>
+          </Tooltip>
+        </div>
+      }
+      className="w-full z-[1]"
+    >
+      <NFTDetails
+        nft={nft}
+        //onTransferNFT={onTransferNFT}
+        about={state.about.data}
+        properties={state.properties.data}
+        assetPreview={state.fullSize.data}
+        transactions={state.transactions.data}
+        isAboutLoading={state.about.isLoading}
+        isPreviewLoading={state.fullSize.isLoading}
+        isPropertiesLoading={state.properties.isLoading}
+        isTransactionsLoading={state.transactions.isLoading}
+      />
+    </ProfileTemplate>
   )
 }
 

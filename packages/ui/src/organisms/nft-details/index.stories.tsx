@@ -75,7 +75,6 @@ Default.args = {
   properties: mockProperties,
   transactions: mockTransactions as NFTTransactions,
   assetPreview: mockAssetPreview as AssetPreview,
-  onTransferNFT: () => {},
   isAboutLoading: false,
   isPreviewLoading: false,
   isPropertiesLoading: false,

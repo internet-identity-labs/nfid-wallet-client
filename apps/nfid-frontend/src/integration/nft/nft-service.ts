@@ -43,7 +43,7 @@ export class NftService {
     userPrincipal: Principal,
   ): Promise<NFT | undefined> {
     const nftList = await this.getNFTs(userPrincipal)
-    const nft = nftList.items.find((nft) => nft.getTokenId() === id)
+    const nft = nftList.items.find((nft) => nft.getTokenId() === id)?.init()
     if (!nft) throw new Error("NFT not found")
     return nft
   }

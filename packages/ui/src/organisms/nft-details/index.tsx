@@ -1,14 +1,9 @@
 import clsx from "clsx"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { MouseEvent, FC, Fragment } from "react"
-import { trimConcat } from "src/ui/atoms/util/util"
+import { FC, Fragment } from "react"
 
-import {
-  IconNftPlaceholder,
-  IconSvgArrow,
-  Tooltip,
-  Table,
-} from "@nfid-frontend/ui"
+import { IconNftPlaceholder, Table } from "@nfid-frontend/ui"
+import { trimConcat } from "@nfid-frontend/utils"
 
 import {
   AssetPreview,
@@ -18,7 +13,6 @@ import {
 import { NFT } from "frontend/integration/nft/nft"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 export interface NFTDetailsProps {
   nft: NFT
@@ -26,7 +20,6 @@ export interface NFTDetailsProps {
   properties: TokenProperties
   transactions: NFTTransactions
   assetPreview: AssetPreview
-  onTransferNFT: (e: MouseEvent<HTMLDivElement>) => void
   isAboutLoading: boolean
   isPreviewLoading: boolean
   isPropertiesLoading: boolean
@@ -34,7 +27,6 @@ export interface NFTDetailsProps {
 }
 
 export const NFTDetails: FC<NFTDetailsProps> = ({
-  onTransferNFT,
   isAboutLoading,
   isPreviewLoading,
   isPropertiesLoading,
@@ -45,41 +37,8 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
   transactions,
   assetPreview,
 }) => {
-  console.log(
-    "precc",
-    nft,
-    assetPreview,
-    assetPreview.url,
-    properties,
-    transactions,
-    about,
-  )
   return (
-    <ProfileTemplate
-      pageTitle={nft.getTokenName()}
-      titleClassNames="hidden sm:block"
-      showBackButton
-      headerMenu={
-        <div className="flex items-center space-x-4">
-          <Tooltip tip="Send">
-            <div
-              className={clsx(
-                "p-[8px] rounded-[12px] cursor-pointer",
-                "hover:bg-gray-100 active:bg-gray-200",
-              )}
-              onClick={onTransferNFT}
-            >
-              <img
-                className="rotate-[135deg]"
-                src={IconSvgArrow}
-                alt="transfer"
-              />
-            </div>
-          </Tooltip>
-        </div>
-      }
-      className="w-full z-[1]"
-    >
+    <>
       <div
         className={clsx(
           "grid gap-[30px] max-w-[100vw] mb-[20px] sm:mb-[30px]",
@@ -360,6 +319,6 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           )}
         </div>
       </ProfileContainer>
-    </ProfileTemplate>
+    </>
   )
 }

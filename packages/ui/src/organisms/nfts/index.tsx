@@ -10,6 +10,7 @@ import {
   Loader,
   Table,
   IconNftPlaceholder,
+  Skeleton,
 } from "@nfid-frontend/ui"
 
 import { NFT } from "frontend/integration/nft/nft"
@@ -69,7 +70,11 @@ export const NFTs: FC<INFTs> = ({
       >
         {nftsFiltered.length} items
       </p>
-      {!nftsFiltered.length && !isLoading ? (
+      {isLoading ? (
+        <div className="h-[300px] flex justify-center items-center">
+          <Loader imageClasses="h-[200px]" fullscreen={false} isLoading />
+        </div>
+      ) : !nftsFiltered.length ? (
         <div className="flex justify-between">
           <span className="my-16 text-sm text-gray-400 text-center w-full md:text-left">
             You don’t own any collectibles yet
@@ -99,64 +104,76 @@ export const NFTs: FC<INFTs> = ({
               </tr>
             }
           >
-            {nftsFiltered.map((nft) => (
-              <tr
-                className="text-sm cursor-pointer"
-                key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
-                onClick={() =>
-                  navigate(`${links.base}/${links.nfts}/${nft.getTokenId()}`)
-                }
-              >
-                <td>
-                  {nft.getAssetPreview().format === "video" ? (
-                    <video
-                      muted
-                      autoPlay
-                      loop
-                      className="w-[74px] rounded-[12px]"
-                      src={nft.getAssetPreview().url}
-                    ></video>
-                  ) : (
-                    <ImageWithFallback
-                      alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
-                      fallbackSrc={IconNftPlaceholder}
-                      src={nft.getAssetPreview().url}
-                      className={clsx(
-                        `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
-                      )}
-                    />
-                  )}
-                </td>
-                <td className="font-semibold">{nft.getTokenName()}</td>
-                <td>{nft.getCollectionName()}</td>
-                <td>{nft.getTokenId()}</td>
-                <td>
-                  {nft.getTokenFloorPriceIcpFormatted() ? (
-                    <>
-                      <p className="leading-[26px]">
-                        {nft.getTokenFloorPriceIcpFormatted()}
-                      </p>
-                      <p className="text-xs text-gray-400 leading-[20px]">
-                        {nft.getTokenFloorPriceUSDFormatted()}
-                      </p>
-                    </>
-                  ) : (
-                    "Unknown"
-                  )}
-                </td>
-                <td className="">
+            {nftsFiltered.map((nft, index) => {
+              if (nft === null) {
+                return (
                   <div
-                    className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onTransferNFT(e, nft.getTokenId())
-                    }}
+                    className="py-[5px] h-[84px] w-[74px]"
+                    key={`skeleton_table_${index}`}
                   >
-                    <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
+                    <Skeleton className="w-full rounded-[12px] h-full w-full" />
                   </div>
-                </td>
-              </tr>
-            ))}
+                )
+              }
+              return (
+                <tr
+                  className="text-sm cursor-pointer"
+                  key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
+                  onClick={() =>
+                    navigate(`${links.base}/${links.nfts}/${nft.getTokenId()}`)
+                  }
+                >
+                  <td>
+                    {nft.getAssetPreview().format === "video" ? (
+                      <video
+                        muted
+                        autoPlay
+                        loop
+                        className="w-[74px] rounded-[12px]"
+                        src={nft.getAssetPreview().url}
+                      ></video>
+                    ) : (
+                      <ImageWithFallback
+                        alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
+                        fallbackSrc={IconNftPlaceholder}
+                        src={nft.getAssetPreview().url}
+                        className={clsx(
+                          `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
+                        )}
+                      />
+                    )}
+                  </td>
+                  <td className="font-semibold">{nft.getTokenName()}</td>
+                  <td>{nft.getCollectionName()}</td>
+                  <td>{nft.getTokenId()}</td>
+                  <td>
+                    {nft.getTokenFloorPriceIcpFormatted() ? (
+                      <>
+                        <p className="leading-[26px]">
+                          {nft.getTokenFloorPriceIcpFormatted()}
+                        </p>
+                        <p className="text-xs text-gray-400 leading-[20px]">
+                          {nft.getTokenFloorPriceUSDFormatted()}
+                        </p>
+                      </>
+                    ) : (
+                      "Unknown"
+                    )}
+                  </td>
+                  <td className="">
+                    <div
+                      className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onTransferNFT(e, nft.getTokenId())
+                      }}
+                    >
+                      <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </Table>
         </div>
       ) : (
@@ -166,7 +183,21 @@ export const NFTs: FC<INFTs> = ({
             "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
           )}
         >
-          {nftsFiltered.map((nft) => {
+          {nftsFiltered.map((nft, index) => {
+            if (nft === null) {
+              return (
+                <Skeleton
+                  key={`skeleton${index}`}
+                  className="w-full rounded-[12px] min-h-[400px]"
+                >
+                  <div className="h-[300px] bg-[#D2D2D2] rounded-[12px]"></div>
+                  <div className="p-[10px]">
+                    <div className="h-[24px] my-[10px] bg-[#D2D2D2] rounded-[12px]"></div>
+                    <div className="h-[20px] bg-[#D2D2D2] rounded-[12px]"></div>
+                  </div>
+                </Skeleton>
+              )
+            }
             return (
               <Link
                 key={`${nft.getCollectionId()}_${nft.getTokenId()}`}

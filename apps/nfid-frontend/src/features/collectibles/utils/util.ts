@@ -17,7 +17,7 @@ export const searchTokens = (tokens: NFT[], search: string) => {
 
 export const fetchNFTs = async () => {
   const identity = authState.get().delegationIdentity
-  if (!identity) return
+  if (!identity) return []
   const principalString = await getPublicKey(identity, Chain.IC)
   const principal = Principal.fromText(principalString)
   const data = await nftService.getNFTs(principal)

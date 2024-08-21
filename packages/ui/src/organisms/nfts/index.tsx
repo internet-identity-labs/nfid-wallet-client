@@ -56,25 +56,19 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
       >
         {nftsFiltered.length} items
       </p>
-      {!nftsFiltered.length ? (
-        <>
-          {isLoading ? (
-            <Loader isLoading={true} />
-          ) : (
-            <div className="flex justify-between">
-              <span className="my-16 text-sm text-gray-400 text-center w-full md:text-left">
-                You don’t own any collectibles yet
-              </span>
-              <img
-                className={clsx(
-                  "w-[100vw] absolute right-[-1rem] mt-[120px] ",
-                  "sm:right-[-30px] md:mt-0 md:w-[40vw]",
-                )}
-                src={EmptyNFT}
-              />
-            </div>
-          )}
-        </>
+      {!nftsFiltered.length && !isLoading ? (
+        <div className="flex justify-between">
+          <span className="my-16 text-sm text-gray-400 text-center w-full md:text-left">
+            You don’t own any collectibles yet
+          </span>
+          <img
+            className={clsx(
+              "w-[100vw] absolute right-[-1rem] mt-[120px] ",
+              "sm:right-[-30px] md:mt-0 md:w-[40vw]",
+            )}
+            src={EmptyNFT}
+          />
+        </div>
       ) : display === "table" ? (
         <div className="max-w-[100%] overflow-auto">
           <Table
@@ -118,14 +112,16 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
                       />
                     )}
                   </td>
-                  <td className="font-semibold"
-                      id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
+                  <td
+                    className="font-semibold"
+                    id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                   >
-                    {nft.getTokenName()}</td>
+                    {nft.getTokenName()}
+                  </td>
                   <td id={`nft_collection_${nft.getCollectionId()}`}>
-                    {nft.getCollectionName()}</td>
-                  <td id={`nft_id_${nft.getTokenId()}`}>
-                    {nft.getTokenId()}</td>
+                    {nft.getCollectionName()}
+                  </td>
+                  <td id={`nft_id_${nft.getTokenId()}`}>{nft.getTokenId()}</td>
                   <td>
                     {nft.getTokenFloorPriceIcpFormatted() ? (
                       <>
@@ -146,6 +142,13 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
                 </tr>
               )
             })}
+            <tr className={clsx(!isLoading && "hidden")}>
+              <Loader
+                fullscreen={false}
+                isLoading={isLoading}
+                imageClasses="w-[74px]"
+              />
+            </tr>
           </Table>
         </div>
       ) : (
@@ -172,7 +175,7 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
                     ></video>
                   ) : (
                     <ImageWithFallback
-                      alt={"12313"}
+                      alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
                       fallbackSrc={IconNftPlaceholder}
                       src={nft.getAssetPreview().url}
                       className={clsx(`w-full`)}
@@ -208,13 +211,15 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
                   </div>
                 </div>
                 <div className="px-[10px] pt-[10px] pb-[14px]">
-                  <p className="mb-[2px] text-black font-bold leading-[24px]"
-                     id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
+                  <p
+                    className="mb-[2px] text-black font-bold leading-[24px]"
+                    id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                   >
                     {nft.getTokenName()}
                   </p>
-                  <p className="text-gray-400 leading-[20px]"
-                     id={`nft_collection_${nft.getCollectionId()}`}
+                  <p
+                    className="text-gray-400 leading-[20px]"
+                    id={`nft_collection_${nft.getCollectionId()}`}
                   >
                     {nft.getCollectionName()}
                   </p>
@@ -222,6 +227,21 @@ export const NFTs: FC<INFTs> = ({ isLoading, nfts, searchTokens }) => {
               </div>
             )
           })}
+          <div
+            className={clsx(
+              "cursor-pointer rounded-[12px] bg-gray-50 group hover:shadow-xl",
+              "flex items-center justify-center",
+              !isLoading && "hidden",
+              !nftsFiltered.length &&
+                "mt-[50px] bg-transparent hover:shadow-none",
+            )}
+          >
+            <Loader
+              fullscreen={false}
+              isLoading={isLoading}
+              imageClasses="w-[50%]"
+            />
+          </div>
         </div>
       )}
     </>

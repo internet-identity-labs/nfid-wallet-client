@@ -23,7 +23,6 @@ export const SDKFooter = () => {
       </div>
 
       <IconCmpNFIDWallet className="text-secondary" />
-      {/* <img className="text-secondary" src={NFIDWallet} alt="NFIDWallet" /> */}
     </div>
   )
 }

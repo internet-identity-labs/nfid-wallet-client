@@ -63,7 +63,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       <div className="mt-[44px]">
         <form
           onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
-          className="space-y-[14px]"
+          className="space-y-[10px]"
         >
           <Input
             className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
@@ -85,11 +85,11 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             Continue with email
           </Button>
         </form>
-        <Separator className="my-5" />
+        <Separator className="my-[10px]" />
         {googleButton}
         <Button
           id="passkey-sign-button"
-          className="h-12 !p-0 group my-[14px]"
+          className="h-12 !p-0 group my-[10px]"
           type="stroke"
           icon={<IconCmpPasskey />}
           block

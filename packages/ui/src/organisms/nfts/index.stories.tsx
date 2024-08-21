@@ -1,5 +1,7 @@
 import { Meta, StoryFn } from "@storybook/react"
+import { BrowserRouter as Router } from "react-router-dom"
 
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { NFT } from "frontend/integration/nft/nft"
 
 import { NFTs, INFTs } from "./index"
@@ -58,13 +60,16 @@ const mockNFTs = [
 export const Default: StoryFn<INFTs> = (args) => {
   return (
     <div className="p-[30px] overflow-hidden w-full">
-      <NFTs {...args} />
+      <Router>
+        <NFTs {...args} />
+      </Router>
     </div>
   )
 }
 
 Default.args = {
   nfts: mockNFTs as NFT[],
+  links: ProfileConstants,
   searchTokens: (tokens: NFT[], search: string) => {
     return tokens.filter(
       (nft) =>

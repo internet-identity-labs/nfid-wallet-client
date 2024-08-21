@@ -36,7 +36,7 @@ export default function AuthenticationCoordinator({
   const [is2FALoading, setIs2FALoading] = React.useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] =
     React.useState(false)
-  const { data: profile } = useSWR("profile", fetchProfile)
+  const { data: profile, mutate } = useSWR("profile", fetchProfile)
 
   // Track on unmount
   React.useEffect(() => {
@@ -50,6 +50,7 @@ export default function AuthenticationCoordinator({
 
   const handleAuth2FAMount = () => {
     authenticationTracking.loaded2fa()
+    mutate()
   }
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
@@ -168,7 +169,7 @@ export default function AuthenticationCoordinator({
     case state.matches("OtherSignOptions"):
       return (
         <AuthOtherSignOptions
-          appMeta={state.context?.appMeta}
+          appMeta={state.context.authRequest?.hostname}
           onBack={() => send({ type: "BACK" })}
           handleAuth={handleOtherOptionsAuth}
           isLoading={isOtherOptionsLoading}

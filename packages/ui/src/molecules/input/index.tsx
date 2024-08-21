@@ -78,10 +78,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 ? clsx(
                     "border-red-600 active:border-red-600 focus:border-red-600 ",
                     "active:bg-red-50",
-                    "ring-red-100 focus:ring-[3px] active:ring-red-200  focus:ring-red-200 focus-within:ring-red-100 ",
+                    "ring-red-100 focus:ring-[3px] active:ring-red-200 focus:ring-red-200 focus-within:ring-red-100 ",
                   )
                 : clsx(
-                    "focus:ring-[3px] active:ring-teal-600/40 focus:ring-teal-600/40 active:border-blue-base active:bg-[#F0FDFA]/40",
+                    "focus:ring-[3px] active:ring-teal-600/40 focus:ring-teal-600/40 focus:border-teal-600 active:border-teal-600 active:bg-[#F0FDFA]/40",
                   ),
               icon && "pl-9",
               pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",

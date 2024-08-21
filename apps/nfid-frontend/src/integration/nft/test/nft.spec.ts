@@ -24,6 +24,7 @@ describe("nft test suite", () => {
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
       const result = await nftService.getNFTs(principal)
+      await Promise.all(result.items.map(async (nft) => nft.init()))
       expect(result.items).toHaveLength(10)
       expect(result.totalPages).toEqual(1)
       expect(result.currentPage).toEqual(1)

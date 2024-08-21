@@ -19,9 +19,7 @@ const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = () => {
   return (
     <ProfilePhraseCopyPage
       recoveryPhrase={(state as CopyRecoveryPhraseLocationState).recoveryPhrase}
-      onContinueButtonClick={navigateFactory(
-        `${ProfileConstants.base}/${ProfileConstants.security}`,
-      )}
+      onContinueButtonClick={navigateFactory(ProfileConstants.security)}
       continueButtonText={"Done"}
     />
   )

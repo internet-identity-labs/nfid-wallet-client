@@ -13,8 +13,8 @@ export const shouldRenderLink = (
   const { pathname } = location
 
   if (!hasVaults && id === "nav-vaults") return false
-  if (id === "nav-vaults" && pathname === "/profile/vaults") return false
-  if (id === "nav-assets" && pathname === "/profile/assets") return false
+  if (id === "nav-vaults" && pathname === "/vaults") return false
+  if (id === "nav-assets" && pathname.includes("/wallet")) return false
 
   return true
 }

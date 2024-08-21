@@ -12,20 +12,26 @@ export class NftService {
   ): Promise<PaginatedResponse<NFT>> {
     const data = await nftGeekService.getNftGeekData(userPrincipal)
 
-    const mappedData = data
+    const rawData = data
       .map(nftMapper.toNFT)
       .filter((nft): nft is NFT => nft !== null)
 
-    const totalItems = mappedData.length
+    const totalItems = rawData.length
     const totalPages = Math.ceil(totalItems / limit)
 
     const startIndex = (page - 1) * limit
     const endIndex = Math.min(startIndex + limit, totalItems)
 
-    const items = mappedData.slice(startIndex, endIndex)
+    const items = rawData.slice(startIndex, endIndex)
+
+    const sortedItems = items.sort(
+      (a, b) =>
+        Number(b.getTokenFloorPriceIcpFormatted()) -
+        Number(a.getTokenFloorPriceIcpFormatted()),
+    )
 
     return {
-      items,
+      items: sortedItems,
       currentPage: page,
       totalPages,
       totalItems,

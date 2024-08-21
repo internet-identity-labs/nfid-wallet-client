@@ -31,12 +31,14 @@ import IconSvgMapPin from "./map-pin.svg"
 import MenuIcon from "./menu.svg"
 import IconSvgMobile from "./mobile.svg"
 import KnowledgeIcon from "./nav-knowledge.svg"
+import IconDisconnect from "./nav-logout.svg"
 import SecurityIcon from "./nav-security.svg"
 import VaultsIcon from "./nav-vaults.svg"
 import WalletIcon from "./nav-wallet.svg"
 import IconSvgNFIDWalletLogo from "./nfid-wallet-logo.svg"
 import IconSvgNFIDWallet from "./nfid-wallet.svg"
 import IconSvgNFID from "./nfid.svg"
+import IconNftPlaceholder from "./nft-placeholder.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPasskey from "./passkey.svg"
 import IconSvgPencil from "./pencil.svg"
@@ -105,6 +107,7 @@ export {
   IconSvgArrowGreen,
   IconSvgAnonymous,
   IconSvgNFIDWalletLogo,
+  IconNftPlaceholder,
   KnowledgeIcon,
   SecurityIcon,
   VaultsIcon,
@@ -114,6 +117,7 @@ export {
   LogoMain,
   Logo,
   IconInfo,
+  IconDisconnect,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

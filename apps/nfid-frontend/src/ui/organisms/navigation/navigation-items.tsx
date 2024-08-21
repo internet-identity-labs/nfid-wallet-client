@@ -57,7 +57,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
   const handleLogin = async () => {
     await login()
-    navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
+    navigate(ProfileConstants.tokens)
   }
 
   const handleLogout = React.useCallback(() => {
@@ -131,11 +131,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     >
                       <div
                         className="flex items-center h-10"
-                        onClick={() =>
-                          navigate(
-                            `${ProfileConstants.base}/${ProfileConstants.assets}`,
-                          )
-                        }
+                        onClick={() => navigate(ProfileConstants.tokens)}
                       >
                         My profile
                       </div>

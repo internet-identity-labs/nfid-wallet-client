@@ -185,7 +185,7 @@ When(
     },
     testUser.authstate)
     console.log("set auth state", { response })
-    await HomePage.openPage("/profile/assets")
+    await HomePage.openPage("/wallet/tokens")
   },
 )
 

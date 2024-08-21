@@ -15,7 +15,7 @@ export const searchTokens = (tokens: NFT[], search: string) => {
 export const fetchNFTs = async () => {
   const principal = await getPrincipal()
   const data = await nftService.getNFTs(principal)
-  return data.items
+  return data.items || []
 }
 
 export const fetchNFT = async (id: string) => {

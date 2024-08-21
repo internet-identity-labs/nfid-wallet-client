@@ -122,9 +122,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   return (
     <>
       <AuthAppMeta
-        applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url ?? appMeta.name}
-        applicationName={appMeta?.name}
         title="Approve transfer"
         subTitle="Request from"
       />

@@ -69,25 +69,19 @@ export const NFTs: FC<INFTs> = ({
       >
         {nftsFiltered.length} items
       </p>
-      {!nftsFiltered.length ? (
-        <>
-          {isLoading ? (
-            <Loader isLoading={true} />
-          ) : (
-            <div className="flex justify-between">
-              <span className="my-16 text-sm text-gray-400 text-center w-full md:text-left">
-                You don’t own any collectibles yet
-              </span>
-              <img
-                className={clsx(
-                  "w-[100vw] absolute right-[-1rem] mt-[120px] ",
-                  "sm:right-[-30px] md:mt-0 md:w-[40vw]",
-                )}
-                src={EmptyNFT}
-              />
-            </div>
-          )}
-        </>
+      {!nftsFiltered.length && !isLoading ? (
+        <div className="flex justify-between">
+          <span className="my-16 text-sm text-gray-400 text-center w-full md:text-left">
+            You don’t own any collectibles yet
+          </span>
+          <img
+            className={clsx(
+              "w-[100vw] absolute right-[-1rem] mt-[120px] ",
+              "sm:right-[-30px] md:mt-0 md:w-[40vw]",
+            )}
+            src={EmptyNFT}
+          />
+        </div>
       ) : display === "table" ? (
         <div className="max-w-[100%] overflow-auto">
           <Table

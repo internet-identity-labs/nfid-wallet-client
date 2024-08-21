@@ -1,7 +1,11 @@
 import { Meta, StoryFn } from "@storybook/react"
+<<<<<<< HEAD
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+=======
+
+>>>>>>> main
 import { NFT } from "frontend/integration/nft/nft"
 
 import { NFTs, INFTs } from "./index"

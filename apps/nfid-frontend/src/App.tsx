@@ -100,7 +100,7 @@ export const App = () => {
         <Route path={ROUTE_RPC} element={<IdentityKitRPCCoordinator />} />
 
         <Route
-          path="/wallet/*"
+          path={`${ProfileConstants.base}/*`}
           element={
             <AuthWrapper>
               <ProfileTemplate isWallet />

@@ -24,9 +24,7 @@ export class NftService {
 
     const items = rawData.slice(startIndex, endIndex)
 
-    const initedItems = await Promise.all(items.map(async (nft) => nft.init()))
-
-    const sortedItems = initedItems.sort(
+    const sortedItems = items.sort(
       (a, b) =>
         Number(b.getTokenFloorPriceIcpFormatted()) -
         Number(a.getTokenFloorPriceIcpFormatted()),

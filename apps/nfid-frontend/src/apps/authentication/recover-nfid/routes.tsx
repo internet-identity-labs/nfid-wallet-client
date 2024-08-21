@@ -20,7 +20,7 @@ export const RecoverNFIDRoutes = (
       path={RecoverNFIDRoutesConstants.enterRecoveryPhrase}
       element={
         <AppScreenRecoverNFID
-          registerDeviceDeciderPath={`${ProfileConstants.base}/${ProfileConstants.security}`}
+          registerDeviceDeciderPath={ProfileConstants.security}
         />
       }
     />

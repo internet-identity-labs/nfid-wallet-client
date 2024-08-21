@@ -1,7 +1,8 @@
 import clsx from "clsx"
-import DisconnectIcon from "packages/ui/src/atoms/icons/nav-logout.svg"
 import { HTMLAttributes, FC } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
+
+import { IconDisconnect } from "@nfid-frontend/ui"
 
 import { INavigationPopupLinks } from "../profile-header"
 import { renderLink, shouldRenderLink } from "./renderLinks"
@@ -75,7 +76,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
         >
           <img
             className="w-[20px] h-[20px]"
-            src={DisconnectIcon}
+            src={IconDisconnect}
             alt="nfid navigation"
           />
           Disconnect

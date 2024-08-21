@@ -51,12 +51,9 @@ export const VaultsTransactionsTableRow: React.FC<IVaultTransactionsDetails> = (
   const navigate = useNavigate()
 
   const onDetailsOpen = useCallback(() => {
-    navigate(
-      `${ProfileConstants.base}/${ProfileConstants.vaults}/transactions/${state.id}`,
-      {
-        state,
-      },
-    )
+    navigate(`${ProfileConstants.vaults}/transactions/${state.id}`, {
+      state,
+    })
   }, [navigate, state])
 
   const copyToClipboard = useCallback(

@@ -7,6 +7,7 @@ import {
 } from "src/integration/nft/impl/nft-types"
 
 export interface NFT {
+  init(): Promise<NFT>
   getMillis(): number
   getMarketPlace(): MarketPlace
   getTokenId(): string
@@ -19,7 +20,7 @@ export interface NFT {
   getTokenLink(): string
   getDetails(): Promise<NFTDetails>
   //we can not know asset type without call to host (probably)
-  getAssetPreview(): Promise<AssetPreview>
+  getAssetPreview(): AssetPreview
   //TODO
   //transfer(): Promise<bigint>;
 }

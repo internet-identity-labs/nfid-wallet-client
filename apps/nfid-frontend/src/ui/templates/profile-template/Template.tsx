@@ -4,34 +4,36 @@ import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
   HTMLAttributes,
-  useMemo,
   useCallback,
   useState,
   ReactNode,
   FC,
+  useMemo,
   useContext,
 } from "react"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
-import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
+import { ArrowButton, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
-  navigationPopupLinks,
   ProfileConstants,
+  navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
-import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 import { Loader } from "frontend/ui/atoms/loader"
+
+import ProfileContainer from "../profile-container/Container"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -45,7 +47,27 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   iconTooltip?: string
   iconId?: string
   className?: string
+  isWallet?: boolean
+  withPortfolio?: boolean
 }
+
+const tabs = [
+  {
+    name: "Tokens",
+    title: <>Tokens</>,
+    path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
+  },
+  {
+    name: "NFTs",
+    title: <>NFTs</>,
+    path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
+  },
+  {
+    name: "Activity",
+    title: <>Activity</>,
+    path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
+  },
+]
 
 const ProfileTemplate: FC<IProfileTemplate> = ({
   pageTitle,
@@ -60,13 +82,19 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   headerMenu,
   iconTooltip,
   iconId,
+  isWallet,
 }) => {
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
 
-  const { isReady } = useVaultMember()
-  const { data: vaults } = useSWR([isReady ? "vaults" : null], getAllVaults)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const activeTab = useMemo(() => {
+    return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
+  }, [location.pathname])
+  const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
@@ -92,6 +120,19 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const globalServices = useContext(ProfileContext)
   const { token, isLoading: isTokenLoading } = useAllToken()
+
+  const tokensUsdValue = useMemo(() => {
+    return token
+      .filter((token) => token.rate)
+      .reduce((total, token) => {
+        return (
+          total + (Number(token.balance) / 10 ** token.decimals) * token.rate!
+        )
+      }, 0)
+
+    // Will add NFT floor price to calculation later!
+  }, [token])
+
   const [, send] = useActor(globalServices.transferService)
   const {
     data: identity,
@@ -117,20 +158,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
-  const tokensUsdValue = useMemo(() => {
-    return token
-      .filter((token) => token.rate)
-      .reduce((total, token) => {
-        return (
-          total + (Number(token.balance) / 10 ** token.decimals) * token.rate!
-        )
-      }, 0)
-
-    // Will add NFT floor price to calculation later!
-  }, [token])
-
-  if (!identity) return <Loader isLoading />
-
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
       <ProfileHeader
@@ -142,7 +169,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         logout={logout}
         sendReceiveBtn={<SendReceiveButton />}
         links={navigationPopupLinks}
-        assetsLink={`${ProfileConstants.base}/${ProfileConstants.assets}`}
+        assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}
         hasVaults={hasVaults}
       />
       <TransferModalCoordinator />
@@ -151,42 +178,61 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           "relative z-1 px-[16px]",
           "sm:px-[30px]",
           "overflow-auto",
+          "!block",
           containerClassName,
         )}
       >
         <section className={clsx("relative", className)}>
-          <ProfileInfo
-            value={tokensUsdValue}
-            isLoading={isTokenLoading && isIdentityLoading && isValidating}
-            onSendClick={onSendClick}
-            onReceiveClick={onReceiveClick}
-            address={identity.getPrincipal().toString()}
-          />
-          <div className="flex justify-between h-[70px] items-center mt-5">
-            <div className="sticky left-0 flex items-center space-x-2">
-              {showBackButton && (
-                <ArrowButton
-                  onClick={handleNavigateBack}
-                  iconClassName="text-black"
-                />
+          {pageTitle && (
+            <div className="flex justify-between h-[70px] items-center mt-5">
+              <div className="sticky left-0 flex items-center space-x-2">
+                {showBackButton && (
+                  <ArrowButton
+                    onClick={handleNavigateBack}
+                    iconClassName="text-black"
+                  />
+                )}
+                <p className="text-[28px] block" id={"page_title"}>
+                  {pageTitle}
+                </p>
+              </div>
+              {icon && onIconClick && (
+                <Tooltip tip={iconTooltip}>
+                  <img
+                    id={iconId}
+                    src={icon}
+                    alt="icon"
+                    onClick={onIconClick}
+                    className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
+                  />
+                </Tooltip>
               )}
-              <p className="text-[28px] block" id={"page_title"}>
-                {pageTitle}
-              </p>
+              {headerMenu}
             </div>
-            {icon && onIconClick && (
-              <Tooltip tip={iconTooltip}>
-                <img
-                  id={iconId}
-                  src={icon}
-                  alt="icon"
-                  onClick={onIconClick}
-                  className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
-                />
-              </Tooltip>
-            )}
-            {headerMenu}
-          </div>
+          )}
+          {isWallet && (
+            <>
+              <ProfileInfo
+                value={tokensUsdValue}
+                isLoading={isTokenLoading && isIdentityLoading && isValidating}
+                onSendClick={onSendClick}
+                onReceiveClick={onReceiveClick}
+                address={identity?.getPrincipal().toString() ?? ""}
+              />
+              <TabsSwitcher
+                className="my-[30px]"
+                tabs={tabs}
+                activeTab={activeTab?.name}
+                setActiveTab={(tabName) => {
+                  const tab = tabs.find((t) => t.name === tabName)
+                  if (tab) navigate(tab.path)
+                }}
+              />
+            </>
+          )}
+          <ProfileContainer>
+            <Outlet />
+          </ProfileContainer>
           {children}
         </section>
       </div>

@@ -33,9 +33,14 @@ export abstract class NftImpl implements NFT {
     this.tokenNumber = geekData.tokenId
     this.collectionId = geekData.collectionId
     this.collectionName = geekData.collectionName
-    this.tokenName = `${this.collectionName} # ${this.tokenNumber}`
+    this.tokenName = `${this.collectionName} #${this.tokenNumber}`
     this.tokenFloorPriceICP = geekData.tokenFloorPriceIcp
     this.tokenId = encodeTokenIdentifier(this.collectionId, this.tokenNumber)
+  }
+
+  async init() {
+    this.assetPreview = await this.getAssetPreviewAsync()
+    return this
   }
 
   getMillis(): number {
@@ -92,7 +97,18 @@ export abstract class NftImpl implements NFT {
 
   abstract getDetails(): Promise<NFTDetails>
 
-  getAssetPreview(): Promise<AssetPreview> {
+  getAssetPreview(): AssetPreview {
+    if (this.assetPreview === undefined) {
+      throw new Error("NFT not inited")
+    }
+    return this.assetPreview
+  }
+
+  getTokenLink(): string {
+    return getTokenLink(this.getCollectionId(), this.getTokenNumber())
+  }
+
+  protected getAssetPreviewAsync(): Promise<AssetPreview> {
     if (this.assetPreview === undefined) {
       let url = entrepotAsset(this.getCollectionId(), this.getTokenId(), false)
       return Promise.resolve({
@@ -103,10 +119,6 @@ export abstract class NftImpl implements NFT {
     } else {
       return Promise.resolve(this.assetPreview)
     }
-  }
-
-  getTokenLink(): string {
-    return getTokenLink(this.getCollectionId(), this.getTokenNumber())
   }
 }
 

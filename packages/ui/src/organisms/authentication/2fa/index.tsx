@@ -38,20 +38,16 @@ export const Auth2FA = ({
   return (
     <>
       <AuthAppMeta
-        applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url}
-        applicationName={appMeta?.name}
         title="Passkey authentication"
       />
-      <p className="text-sm font-bold text-center">{email}</p>
-      <p className="mt-3 text-sm text-center">
+      <p className="text-sm text-center mt-[4px] leading-[22px]">{email}</p>
+      <p className="mt-[20px] text-sm text-center leading-[22px]">
         Your account has been configured for self-sovereign mode. Use your
         Passkey to confirm it’s you.
       </p>
-      <img alt="asset" src={Image2FA} className="w-full h-56 my-10" />
-      <Button className="mb-[30px]" onClick={handleAuth}>
-        Continue
-      </Button>
+      <img alt="asset" src={Image2FA} className="w-full my-auto" />
+      <Button onClick={handleAuth}>Continue</Button>
     </>
   )
 }

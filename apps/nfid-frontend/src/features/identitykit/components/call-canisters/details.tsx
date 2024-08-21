@@ -20,9 +20,9 @@ export const CallCanisterDetails = ({
     if (args instanceof Object) {
       return Object.entries(args as { [key: string]: unknown }).map(
         ([key, value]) => (
-          <div className="grid grid-cols-[150px,1fr]">
-            <div className="font-bold">{key}</div>
-            <div>
+          <div key={`argument_${key}`} className="grid grid-cols-[180px,1fr]">
+            <div className="ml-3">{key}</div>
+            <div className="">
               {JSON.stringify(
                 value,
                 (_, value) =>
@@ -78,11 +78,11 @@ export const CallCanisterDetails = ({
             "overflow-auto space-y-3",
           )}
         >
-          <div className="grid grid-cols-[150px,1fr]">
+          <div className="grid grid-cols-[180px,1fr]">
             <div className="font-bold">Canister ID</div>
             <div>{canisterId}</div>
           </div>
-          <div className="grid grid-cols-[150px,1fr]">
+          <div className="grid grid-cols-[180px,1fr]">
             <div className="font-bold">Sender</div>
             <div>{sender}</div>
           </div>

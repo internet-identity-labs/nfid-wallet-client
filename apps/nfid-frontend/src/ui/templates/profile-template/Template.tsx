@@ -184,12 +184,13 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       >
         <section className={clsx("relative", className)}>
           {pageTitle && (
-            <div className="flex justify-between h-[70px] items-center mt-5">
+            <div className="flex justify-between h-[40px] items-center">
               <div className="sticky left-0 flex items-center space-x-2">
                 {showBackButton && (
                   <ArrowButton
                     onClick={handleNavigateBack}
                     iconClassName="text-black"
+                    buttonClassName="py-[7px]"
                   />
                 )}
                 <p className="text-[28px] block" id={"page_title"}>
@@ -230,9 +231,14 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               />
             </>
           )}
-          <ProfileContainer>
+          {isWallet ? (
+            <ProfileContainer>
+              <Outlet />
+            </ProfileContainer>
+          ) : (
             <Outlet />
-          </ProfileContainer>
+          )}
+
           {children}
         </section>
       </div>

@@ -8,9 +8,9 @@ import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
 import { RPCComponentError } from "./components/error"
 import { RPCComponent, RPCComponentsUI } from "./components/methods/method"
+import { RPCTemplate } from "./components/templates/template"
 import "./index.css"
 import { IdentityKitRPCMachine } from "./machine"
-import { RPCTemplate } from "./template"
 
 export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)

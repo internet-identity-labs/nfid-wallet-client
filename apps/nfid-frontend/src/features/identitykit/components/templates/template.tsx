@@ -1,6 +1,7 @@
+import clsx from "clsx"
 import React from "react"
 
-import { IconCmpNFIDWalletLogo } from "@nfid-frontend/ui"
+import { IconCmpNFIDWalletLogo, IconCmpShare } from "@nfid-frontend/ui"
 
 import LeftBg from "./left-bg.svg"
 
@@ -20,7 +21,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
         backgroundImage: `url(${LeftBg})`,
       }}
     >
-      <div className="flex items-center justify-center order-2 w-full lg:order-1 min-h-[375px]">
+      <div className="flex items-center lg:justify-center order-2 w-full lg:order-1 min-h-[375px] flex-wrap">
         <img
           src={LeftBg}
           alt="Left Background"
@@ -39,6 +40,20 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
               : "NFID Wallet is your on-chain wallet running end-to-end on the Internet Computer Protocol."}
           </p>
         </div>
+        <a
+          href="https://docs.nfid.one/"
+          target="_blank"
+          rel="noreferrer"
+          className={clsx(
+            "font-bold text-xs bg-[#0F766E] bg-opacity-10 rounded-md",
+            "h-[29px] px-2.5 flex items-center gap-2.5 text-white",
+            "lg:absolute z-10 bottom-[15px] ml-[5%] lg:ml-0 left-[30px]",
+            "hover:bg-opacity-25 cursor-pointer",
+          )}
+        >
+          <p>Learn more about NFID Wallet</p>
+          <IconCmpShare />
+        </a>
       </div>
       <div className="relative flex lg:items-center justify-center lg:pr-[10%] lg:bg-white order-1 lg:order-2 mt-20 lg:mt-0">
         <div className="w-[90%] mx-auto lg:w-3/5 lg:min-w-[387px] min-h-[448px] flex flex-col bg-white rounded-3xl overflow-hidden lg:overflow-auto relative lg:static p-5">

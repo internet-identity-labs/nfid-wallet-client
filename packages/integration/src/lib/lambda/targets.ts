@@ -12,6 +12,7 @@ import crypto from "crypto"
 
 import { verifyCertification } from "./cert-verification"
 import { getLookupResultValue } from "./cert-verification/utils"
+import {localStorageTTL} from "../util/local-strage-ttl";
 
 export interface CertifiedResponse {
   certificate: Uint8Array | number[]
@@ -65,12 +66,20 @@ export async function validateTargets(targets: string[], origin: string) {
       agent,
       canisterId,
     })
+    const cacheKey = "trustedOrigins " + canisterId;
+    const cachedTrOrigins = localStorageTTL.getItem(cacheKey);
+    if (cachedTrOrigins) {
+      if (cachedTrOrigins.includes(origin)) {
+        return
+      }
+    }
     const result = (await actor["get_trusted_origins"]()) as string[]
     if (!result.includes(origin)) {
       throw new Error(
         `Target canister ${canisterId} does not support "${origin}"`,
       )
     }
+    localStorageTTL.setItem(cacheKey, result, 24);
   })
 
   await Promise.all(promises)

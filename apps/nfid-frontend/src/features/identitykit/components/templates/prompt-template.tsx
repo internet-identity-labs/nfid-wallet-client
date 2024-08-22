@@ -1,26 +1,32 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { PropsWithChildren } from "react"
 import useSWR from "swr"
 
-import { Button, IconSvgNFIDWalletLogo } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
-import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+import {
+  Address,
+  Button,
+  IconSvgNFIDWalletLogo,
+  Skeleton,
+} from "@nfid-frontend/ui"
 
-import { Spinner } from "frontend/ui/atoms/loader/spinner"
-import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
+export interface RPCBalanceSection {
+  symbol: string
+  balance: number | Promise<number> | Promise<bigint>
+  decimals: number
+  address: string
+}
 export interface RPCPromptTemplateProps extends PropsWithChildren<{}> {
   primaryButtonText?: string
-  onPrimaryButtonClick: () => void
+  onPrimaryButtonClick?: () => void
   secondaryButtonText?: string
-  onSecondaryButtonClick: () => void
+  onSecondaryButtonClick?: () => void
   title?: string | JSX.Element
   subTitle: string | JSX.Element
-  senderPrincipal?: string
   isPrimaryDisabled?: boolean
+  balance?: RPCBalanceSection
+  withLogo?: boolean
 }
 
 export const RPCPromptTemplate = ({
@@ -31,74 +37,69 @@ export const RPCPromptTemplate = ({
   title,
   subTitle,
   children,
-  senderPrincipal,
   isPrimaryDisabled,
+  balance,
+  withLogo,
 }: RPCPromptTemplateProps) => {
-  const { data: balance } = useSWR(
-    senderPrincipal ? ["userBalance", senderPrincipal] : null,
-    ([_, id]) =>
-      icTransferConnector.getBalance(
-        AccountIdentifier.fromPrincipal({
-          principal: Principal.fromText(id),
-        }).toHex(),
-      ),
+  const { data: resolvedBalance } = useSWR(
+    balance ? [balance.balance, "balancePromise"] : null,
+    async ([balance]) => {
+      return typeof balance === "number" ? balance : await balance
+    },
   )
+
   return (
     <div className="flex flex-col flex-1 h-full">
-      <div className="flex flex-col items-center mt-10 text-sm text-center">
-        <img
-          alt="NFID Wallet"
-          className="w-[182px] mb-4"
-          src={IconSvgNFIDWalletLogo}
-        />
+      <div className="flex flex-col items-center mt-10 mb-10 text-sm text-center">
+        {withLogo ? (
+          <img
+            alt="NFID Wallet"
+            className="w-[182px] mb-4"
+            src={IconSvgNFIDWalletLogo}
+          />
+        ) : null}
         {title && (
-          <div className="block w-full text-lg font-bold mb-1.5">{title}</div>
+          <div className="block w-full text-[20px] lg:text-[28px] font-bold mb-2 lg:mb-4">
+            {title}
+          </div>
         )}
         <div className="block w-full text-sm">{subTitle}</div>
       </div>
       {children}
-      <div
-        className={clsx(
-          "grid grid-cols-2 gap-5 mt-5",
-          senderPrincipal && "mb-[60px]",
+      <div className={clsx("flex items-center gap-5 mt-5")}>
+        {onSecondaryButtonClick && (
+          <Button block type="stroke" onClick={onSecondaryButtonClick}>
+            {secondaryButtonText}
+          </Button>
         )}
-      >
-        <Button type="stroke" onClick={onSecondaryButtonClick}>
-          {secondaryButtonText}
-        </Button>
-        <Button
-          type="primary"
-          disabled={isPrimaryDisabled}
-          onClick={onPrimaryButtonClick}
-        >
-          {primaryButtonText}
-        </Button>
+        {onPrimaryButtonClick && (
+          <Button
+            block
+            type="primary"
+            disabled={isPrimaryDisabled}
+            onClick={onPrimaryButtonClick}
+          >
+            {primaryButtonText}
+          </Button>
+        )}
       </div>
-      {senderPrincipal && (
-        <div
-          className={clsx(
-            "bg-gray-50 flex flex-col text-sm text-gray-500",
-            "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
-          )}
-        >
-          <div className="flex items-center justify-between">
-            <p>Wallet address</p>
-            <p>Balance:</p>
-          </div>
-          <div className="flex items-center justify-between">
-            <p>{truncateString(senderPrincipal, 6, 4)}</p>
-            <div className="flex items-center space-x-0.5">
-              {balance !== undefined ? (
-                <TickerAmount
-                  value={Number(balance)}
-                  decimals={ICP_DECIMALS}
-                  symbol={"ICP"}
-                />
-              ) : (
-                <Spinner className="w-3 h-3 text-gray-400" />
-              )}
+      {balance && (
+        <div className="absolute right-[30px] top-[20px] text-xs text-right hidden lg:block">
+          <Address
+            className="justify-end font-bold"
+            address={balance.address}
+          />
+          {resolvedBalance ? (
+            <div className="text-gray-500">
+              <TickerAmount
+                value={Number(resolvedBalance)}
+                decimals={balance.decimals}
+                symbol={balance.symbol}
+              />
             </div>
-          </div>
+          ) : (
+            <Skeleton className="w-[150px] h-[20px]" />
+          )}
         </div>
       )}
     </div>

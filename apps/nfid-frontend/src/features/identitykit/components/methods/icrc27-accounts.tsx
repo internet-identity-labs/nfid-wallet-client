@@ -9,7 +9,6 @@ export interface IRPCComponentICRC27 {
   publicProfile: Account
   anonymous: Account[]
   onApprove: (data: Account[]) => void
-  onReject: () => void
   onBack: () => void
 }
 
@@ -17,7 +16,6 @@ const RPCComponentICRC27 = ({
   publicProfile,
   anonymous,
   onApprove,
-  onReject,
   onBack,
 }: IRPCComponentICRC27) => {
   const [selectedProfile, setSelectedProfile] =
@@ -27,9 +25,10 @@ const RPCComponentICRC27 = ({
 
   return (
     <RPCPromptTemplate
+      title="Wallet permissions"
       subTitle={
         <>
-          Wallet permissions for{" "}
+          for{" "}
           <a
             href={origin}
             target="_blank"
@@ -41,7 +40,7 @@ const RPCComponentICRC27 = ({
         </>
       }
       onPrimaryButtonClick={() => onApprove([selectedProfile])}
-      onSecondaryButtonClick={onReject}
+      primaryButtonText="Connect"
     >
       <ChooseAccount
         onBack={onBack}

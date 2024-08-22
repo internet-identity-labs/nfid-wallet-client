@@ -1,6 +1,10 @@
 import clsx from "clsx"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
+import { getBalance } from "@nfid/integration"
+import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+
+import { icrc1TransferConnector } from "frontend/ui/connnector/transfer-modal/ic/icrc1-transfer-connector"
 
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
@@ -48,7 +52,16 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
       }
       onPrimaryButtonClick={() => onApprove(request)}
       onSecondaryButtonClick={onReject}
-      senderPrincipal={request?.data?.params?.sender}
+      balance={{
+        address: request?.data?.params?.sender,
+        decimals: ICP_DECIMALS,
+        symbol: "ICP",
+        balance: getBalance(
+          icrc1TransferConnector.getAccountIdentifier(
+            request?.data?.params?.sender,
+          ),
+        ),
+      }}
     >
       <div
         className={clsx(

@@ -4,6 +4,7 @@ import { Checkbox } from "@nfid-frontend/ui"
 
 import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
+import { ICRC2Metadata } from "../../service/canister-calls-helpers/icrc2-approve"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
 
@@ -12,12 +13,7 @@ export interface CallCanisterICRC2SpendingCapProps {
   sender: string
   request: any
   args: any
-  metadata: {
-    symbol: string
-    fee: bigint
-    decimals: number
-    amount: string
-  }
+  metadata: ICRC2Metadata
   onApprove: (data: any) => void
   onReject: () => void
 }
@@ -51,11 +47,16 @@ const CallCanisterICRC2SpendingCap = ({
         </>
       }
       onSecondaryButtonClick={onReject}
-      senderPrincipal={sender}
       onPrimaryButtonClick={() => onApprove(request)}
       isPrimaryDisabled={!isChecked}
+      balance={{
+        address: metadata.address,
+        symbol: metadata.symbol,
+        balance: metadata.balancePromise,
+        decimals: metadata.decimals,
+      }}
     >
-      <div className="flex flex-col flex-1 mt-3">
+      <div className="flex flex-col flex-1">
         <p className="text-[32px] font-medium text-center">
           <TickerAmount
             symbol={metadata.symbol}
@@ -79,7 +80,7 @@ const CallCanisterICRC2SpendingCap = ({
           sender={sender}
           args={args}
         />
-        <div className="flex-1" />
+        <div className="flex-1 min-h-[50px]" />
         <div className="flex items-start gap-2.5">
           <Checkbox
             className="mt-1 cursor-pointer"

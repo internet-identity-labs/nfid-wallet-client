@@ -7,7 +7,6 @@ import {
   IconCmpGoogle,
   IconCmpPasskey,
   Input,
-  SDKFooter,
 } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { authenticationTracking } from "@nfid/integration"
@@ -48,7 +47,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     defaultValues: { email: "" },
     mode: "onSubmit",
   })
-
   let appHost: string = ""
   try {
     appHost = new URL(authRequest?.hostname ?? "").host
@@ -140,7 +138,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         </Button>
       </div>
       <div className="flex-1" />
-      <SDKFooter />
     </BlurredLoader>
   )
 }

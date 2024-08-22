@@ -1,14 +1,24 @@
 import { Agent, AnonymousIdentity, HttpAgent } from "@dfinity/agent"
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 
 import { idlFactory as icrc1and2IDL } from "../../idl/token-pepe-ledger"
 import { RPCMessage } from "../../type"
 import { actorService } from "../actor.service"
 import { IC_HOSTNAME } from "../method/interactive/icrc49-call-canister-method.service"
 
+export interface ICRC2Metadata {
+  symbol: string
+  decimals: number
+  fee: number
+  amount: number
+  balancePromise: Promise<number>
+  address: string
+}
+
 export const getMetadataICRC2Approve = async (
   message: MessageEvent<RPCMessage>,
   args: any,
-) => {
+): Promise<ICRC2Metadata> => {
   const delegation = new AnonymousIdentity()
 
   const agent: Agent = new HttpAgent({
@@ -21,6 +31,12 @@ export const getMetadataICRC2Approve = async (
     icrc1and2IDL,
     agent as never,
   )
+
+  const { owner, subaccount } = decodeIcrcAccount(message.data.params.sender)
+  const balancePromise = actor.icrc1_balance_of({
+    owner: owner,
+    subaccount: subaccount ?? [],
+  })
 
   const [symbol, decimals, fee] = await Promise.all([
     actor.icrc1_symbol(),
@@ -35,5 +51,7 @@ export const getMetadataICRC2Approve = async (
     decimals,
     fee,
     amount: parsedArgs?.amount,
+    balancePromise,
+    address: message.data.params.sender,
   }
 }

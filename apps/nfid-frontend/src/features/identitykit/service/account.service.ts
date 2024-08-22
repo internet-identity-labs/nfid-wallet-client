@@ -29,16 +29,17 @@ export const accountService = {
     let anonymousProfiles: Account[] = []
 
     const account = await im.get_account()
+
     if (hasOwnProperty(account.data[0]!.wallet, "II")) {
       const legacyProfiles = await this.getLegacyAnonymousProfiles(origin)
       anonymousProfiles.push(...legacyProfiles)
-    } else {
-      const anonymousProfile = await this.getAnonymousProfiles(
-        origin,
-        derivationOrigin,
-      )
-      anonymousProfiles.push(...anonymousProfile)
     }
+
+    const anonymousProfile = await this.getAnonymousProfiles(
+      origin,
+      derivationOrigin,
+    )
+    anonymousProfiles.push(...anonymousProfile)
 
     return {
       public: await publicProfile,

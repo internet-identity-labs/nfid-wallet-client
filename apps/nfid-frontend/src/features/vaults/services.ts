@@ -1,6 +1,4 @@
-import { getVaults, replaceActorIdentity, vault } from "@nfid/integration"
-
-import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { getVaults } from "@nfid/integration"
 
 /**
  * @params vaultId: string

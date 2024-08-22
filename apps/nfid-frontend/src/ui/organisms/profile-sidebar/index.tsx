@@ -3,7 +3,6 @@ import React, { useMemo } from "react"
 import useSWR from "swr"
 
 import { profileSidebarItems } from "frontend/apps/identity-manager/profile/routes"
-import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { getAllVaults } from "frontend/features/vaults/services"
 
 import ProfileSidebarItem from "./sidebar-item"

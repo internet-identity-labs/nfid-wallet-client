@@ -2,7 +2,12 @@ import clsx from "clsx"
 import { PropsWithChildren } from "react"
 import useSWR from "swr"
 
-import { Address, Button, Skeleton } from "@nfid-frontend/ui"
+import {
+  Address,
+  Button,
+  IconSvgNFIDWalletLogo,
+  Skeleton,
+} from "@nfid-frontend/ui"
 
 import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
@@ -21,6 +26,7 @@ export interface RPCPromptTemplateProps extends PropsWithChildren<{}> {
   subTitle: string | JSX.Element
   isPrimaryDisabled?: boolean
   balance?: RPCBalanceSection
+  withLogo?: boolean
 }
 
 export const RPCPromptTemplate = ({
@@ -33,6 +39,7 @@ export const RPCPromptTemplate = ({
   children,
   isPrimaryDisabled,
   balance,
+  withLogo,
 }: RPCPromptTemplateProps) => {
   const { data: resolvedBalance } = useSWR(
     balance ? [balance.balance, "balancePromise"] : null,
@@ -44,6 +51,13 @@ export const RPCPromptTemplate = ({
   return (
     <div className="flex flex-col flex-1 h-full">
       <div className="flex flex-col items-center mt-10 mb-10 text-sm text-center">
+        {withLogo ? (
+          <img
+            alt="NFID Wallet"
+            className="w-[182px] mb-4"
+            src={IconSvgNFIDWalletLogo}
+          />
+        ) : null}
         {title && (
           <div className="block w-full text-[20px] lg:text-[28px] font-bold mb-2 lg:mb-4">
             {title}

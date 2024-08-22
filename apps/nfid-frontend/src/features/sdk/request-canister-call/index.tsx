@@ -68,6 +68,7 @@ export const RequestCanisterCall = ({
         }
         onPrimaryButtonClick={() => onConfirm()}
         onSecondaryButtonClick={onReject}
+        withLogo
       >
         <div
           className={clsx(

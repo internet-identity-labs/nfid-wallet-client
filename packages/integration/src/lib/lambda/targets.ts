@@ -78,7 +78,7 @@ export async function validateTargets(targets: string[], origin: string) {
       agent,
       canisterId,
     })
-    const cacheKey = "trustedOrigins " + canisterId
+    const cacheKey = `trusted_origins_${canisterId}`
     const cachedTrOrigins = localStorageTTL.getItem(cacheKey)
     if (cachedTrOrigins) {
       if (cachedTrOrigins.includes(origin)) {

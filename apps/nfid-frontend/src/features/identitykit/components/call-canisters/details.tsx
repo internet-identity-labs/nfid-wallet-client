@@ -53,41 +53,58 @@ export const CallCanisterDetails = ({
         Transaction details
       </p>
 
+      {/* Quick fix to adjust height and keep absolute on actual element */}
+      {showDetails && (
+        <div className="space-y-4 lg:hidden">
+          {renderArgs(JSON.parse(args)[0])}
+        </div>
+      )}
+
       <div
         className={clsx(
           showDetails ? "block" : "hidden",
-          "absolute left-0 top-0 w-full h-full bg-white z-[999]",
-          "p-5 flex flex-col",
+          "absolute bg-white z-[999] w-full lg:h-screen",
+          "left-0 top-0",
+          "flex items-center justify-center lg:pr-[10%]",
         )}
       >
-        <div className="flex items-center gap-2.5">
-          <IconCmpArrow
-            className="transition-opacity cursor-pointer hover:opacity-50"
-            onClick={() => setShowDetails(false)}
-          />
-          <p className="text-[20px] font-bold">Transaction details</p>
-        </div>
-        <p className="mt-5 text-sm">
-          To protect yourself against scammers, take a moment to verify
-          transaction details.
-        </p>
         <div
           className={clsx(
-            "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
-            "text-gray-500 break-all text-sm mt-2.5",
-            "overflow-auto space-y-3",
+            "p-5 flex flex-col",
+            "w-full lg:w-3/5 lg:min-w-[387px] min-h-[448px] flex flex-col",
           )}
         >
-          <div className="grid grid-cols-[180px,1fr]">
-            <div className="font-bold">Canister ID</div>
-            <div>{canisterId}</div>
+          <p className="text-[20px] lg:text-[28px] font-bold text-center">
+            Transaction details
+          </p>
+          <p className="mt-10 text-sm">
+            To protect yourself against scammers, take a moment to verify
+            transaction details.
+          </p>
+          <div
+            className={clsx(
+              "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
+              "text-gray-500 break-all text-sm mt-5",
+            )}
+          >
+            <div className="grid grid-cols-[180px,1fr]">
+              <div className="font-bold">Canister ID</div>
+              <div>{canisterId}</div>
+            </div>
+            <div className="grid grid-cols-[180px,1fr]">
+              <div className="font-bold">Sender</div>
+              <div>{sender}</div>
+            </div>
+            <div className="font-bold">Arguments</div>
+            {renderArgs(JSON.parse(args)[0])}
           </div>
-          <div className="grid grid-cols-[180px,1fr]">
-            <div className="font-bold">Sender</div>
-            <div>{sender}</div>
-          </div>
-          <div className="font-bold">Arguments</div>
-          {renderArgs(JSON.parse(args)[0])}
+          <IconCmpArrow
+            className={clsx(
+              "transition-opacity cursor-pointer hover:opacity-50 z-20",
+              "absolute left-5 top-5",
+            )}
+            onClick={() => setShowDetails(false)}
+          />
         </div>
       </div>
     </>

@@ -10,7 +10,6 @@ export interface IRPCComponentICRC34 {
   anonymous: Account[]
   isPublicAvailable: boolean
   onApprove: (data: Account) => void
-  onReject: () => void
   onBack: () => void
 }
 
@@ -19,7 +18,6 @@ const RPCComponentICRC34 = ({
   anonymous,
   isPublicAvailable,
   onApprove,
-  onReject,
   onBack,
 }: IRPCComponentICRC34) => {
   const [selectedProfile, setSelectedProfile] = React.useState<Account>(
@@ -30,9 +28,10 @@ const RPCComponentICRC34 = ({
 
   return (
     <RPCPromptTemplate
+      title="Wallet permissions"
       subTitle={
         <>
-          Wallet permissions for{" "}
+          for{" "}
           <a
             href={origin}
             target="_blank"
@@ -44,7 +43,7 @@ const RPCComponentICRC34 = ({
         </>
       }
       onPrimaryButtonClick={() => onApprove(selectedProfile)}
-      onSecondaryButtonClick={onReject}
+      primaryButtonText="Connect"
     >
       <ChooseAccount
         onBack={onBack}

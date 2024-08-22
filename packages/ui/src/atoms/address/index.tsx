@@ -47,9 +47,10 @@ export const Address: React.FC<AddressProps> = ({
     <div
       id={id}
       className={clsx(
-        "flex items-center space-x-2.5 group/address cursor-pointer",
-        "text-black relative",
+        "flex items-center group/address cursor-pointer",
+        "text-black relative hover:gap-2.5",
         "active:text-gray-400",
+        copied && "gap-2.5",
         className,
       )}
       onClick={copyToClipboard}

@@ -91,7 +91,7 @@ export const creationOptions = (
       ...(IS_E2E_TEST === "true" ? {} : { authenticatorAttachment }),
     },
     excludeCredentials: transformDeviceDataToExcludeCredentials(devices),
-    challenge: Uint8Array.from("<ic0.app>", (c) => c.charCodeAt(0)),
+    challenge: window.crypto.getRandomValues(new Uint8Array(16)),
     pubKeyCredParams: [
       {
         type: "public-key",

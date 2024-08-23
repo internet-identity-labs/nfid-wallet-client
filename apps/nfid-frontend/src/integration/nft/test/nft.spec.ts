@@ -87,7 +87,7 @@ describe("nft test suite", () => {
       expect(soldNFTTransactions.activity).toHaveLength(1)
       const sale = soldNFTTransactions.activity[0].getTransactionView()
       expect(sale.getType()).toEqual("Sale")
-      expect(sale.getFormattedDate()).toEqual("2022-01-18T05:29:26.428Z")
+      expect(sale.getFormattedDate()).toEqual("Jan 18, 2022 - 05:29:26 am")
       expect(sale.getFrom()).toEqual(
         "f7sgc-7glh6-n67he-ollmd-dpy26-2xdbo-vyzxo-pbboq-vkb6v-vfu4f-uqe",
       )
@@ -148,7 +148,7 @@ describe("nft test suite", () => {
         "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
       )
       expect(listYumiActivity.getFormattedDate()).toEqual(
-        "2024-06-03T14:06:33.689Z",
+        "Jun 03, 2024 - 02:06:33 pm",
       )
       expect(listYumiActivity.getFormattedPrice()).toEqual("3 ICP")
 
@@ -162,7 +162,7 @@ describe("nft test suite", () => {
         "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
       )
       expect(soldYumiActivity.getFormattedDate()).toEqual(
-        "2024-07-17T14:01:34.027Z",
+        "Jul 17, 2024 - 02:01:34 pm",
       )
       expect(listYumiActivity.getFormattedPrice()).toEqual("3 ICP")
 
@@ -218,7 +218,7 @@ describe("nft test suite", () => {
       expect(soldMemecakeActivity.getType()).toEqual("Sale")
       expect(soldMemecakeActivity.getFormattedPrice()).toEqual("0.45 ICP")
       expect(soldMemecakeActivity.getFormattedDate()).toEqual(
-        "2024-07-17T22:02:35.191Z",
+        "Jul 17, 2024 - 10:02:35 pm",
       )
       expect(soldMemecakeActivity.getFrom()).toEqual(
         "dqowy-h2khv-z73ww-duwdp-3d5ri-sgbfk-v6j4y-apzxj-mxusr-mdbys-yqe",
@@ -251,7 +251,7 @@ describe("nft test suite", () => {
       expect(icpswapActivity.getType()).toEqual("Transfer")
       expect(icpswapActivity.getFormattedPrice()).toEqual(undefined)
       expect(icpswapActivity.getFormattedDate()).toEqual(
-        "2024-07-17T21:57:56.590Z",
+        "Jul 17, 2024 - 09:57:56 pm",
       )
       expect(icpswapActivity.getFrom()).toEqual(
         "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
@@ -265,7 +265,7 @@ describe("nft test suite", () => {
       expect(icpswapActivityMint.getType()).toEqual("Mint")
       expect(icpswapActivityMint.getFormattedPrice()).toEqual("0 ICP")
       expect(icpswapActivityMint.getFormattedDate()).toEqual(
-        "2022-12-07T08:53:48.919Z",
+        "Dec 07, 2022 - 08:53:48 am",
       )
       expect(icpswapActivityMint.getFrom()).toEqual(undefined)
       expect(icpswapActivityMint.getTo()).toEqual(

@@ -1,9 +1,10 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
+import { Loader } from "@nfid-frontend/ui"
+
 import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
-import { Loader } from "frontend/ui/atoms/loader"
 import { ProfileNFTDetailsPage } from "frontend/ui/pages/new-profile/nft-details"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 

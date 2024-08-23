@@ -11,13 +11,3 @@ export const truncateString = (
 
   return `${str.slice(0, leadingChars)}...`
 }
-
-export const copyToClipboard = (
-  e: { stopPropagation: () => void },
-  value?: string,
-  callback?: () => void,
-) => {
-  e.stopPropagation()
-  navigator.clipboard.writeText(value ?? "")
-  callback && callback()
-}

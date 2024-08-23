@@ -1,11 +1,10 @@
 import { Meta, StoryFn } from "@storybook/react"
-import React from "react"
 
-import { ITransferModalSuccess, Success } from "./success"
+import { SuccessProps, Success } from "./success"
 import { TransferTemplate } from "./template"
 
 const meta: Meta = {
-  title: "Transfer/Success",
+  title: "Organisms/Send Receive/Success",
   component: Success,
   argTypes: {},
   parameters: {
@@ -15,13 +14,14 @@ const meta: Meta = {
 
 export default meta
 
-const Template: StoryFn<ITransferModalSuccess> = (args) => (
+const Template: StoryFn<SuccessProps> = (args) => (
   <TransferTemplate>
     <Success {...args} />
   </TransferTemplate>
 )
 
 export const Default = {
-  render: Template,
-  args: {},
+  args: {
+    title: "123",
+  },
 }

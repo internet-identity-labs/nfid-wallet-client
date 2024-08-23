@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 
+import { truncateString } from "@nfid-frontend/utils"
+
 import { ReactComponent as IconCmpCopied } from "./assets/copied.svg"
 import { ReactComponent as IconCmpCopy } from "./assets/copy.svg"
 
@@ -10,20 +12,6 @@ export interface AddressProps {
   isAbsolute?: boolean
   id?: string
   disableTruncate?: boolean
-}
-
-export const truncateString = (
-  str: string,
-  leadingChars: number,
-  trailingChars?: number,
-): string => {
-  if (str.length < leadingChars) return str
-  if (trailingChars) {
-    const splitAt = str.length - trailingChars
-    return `${str.slice(0, leadingChars)}...${str.slice(splitAt)}`
-  }
-
-  return `${str.slice(0, leadingChars)}...`
 }
 
 export const Address: React.FC<AddressProps> = ({

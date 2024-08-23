@@ -27,7 +27,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
   return (
     <div
       className={clsx(
-        "w-full h-7 rounded-xl bg-gray-100 cursor-pointer",
+        "w-full h-7 rounded-[12px] bg-gray-100 cursor-pointer",
         "grid grid-cols-2 relative select-none",
         className,
       )}
@@ -54,7 +54,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
       </div>
       <div
         className={clsx(
-          "absolute h-7 w-1/2 rounded-md",
+          "absolute h-7 w-1/2 rounded-[12px]",
           "bg-primaryButtonColor leading-7 text-xs",
           "text-center text-white font-semibold",
           "transition-transform",

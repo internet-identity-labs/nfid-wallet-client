@@ -2,13 +2,16 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
+import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Token } from "packages/integration/src/lib/asset/types"
 import { NoIcon } from "packages/ui/src/assets/no-icon"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import {
   TickerAmount,
   formatAssetAmountRaw,
 } from "packages/ui/src/molecules/ticker-amount"
+import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -23,7 +26,7 @@ import {
   BlurredLoader,
   sumRules,
 } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
+import { validateTransferAmountField } from "@nfid-frontend/utils"
 import {
   RootWallet,
   registerTransaction,
@@ -34,7 +37,6 @@ import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
   getAllTokensOptions,
@@ -47,10 +49,6 @@ import {
 import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import {
-  PRINCIPAL_LENGTH,
-  validateTransferAmountField,
-} from "../utils/validations"
 import { ITransferSuccess } from "./success"
 
 interface ITransferFT {
@@ -378,14 +376,17 @@ export const TransferFT = ({
     >
       <div className="flex justify-between">
         <p className="mb-1">Amount to send</p>
-        <p onClick={maxHandler} className="text-blue-600 cursor-pointer">
+        <p
+          onClick={maxHandler}
+          className="text-primaryButtonColor cursor-pointer text-xs font-bold"
+        >
           Max
         </p>
       </div>
       <div className="flex flex-col justify-between h-full pb-20">
         <div
           className={clsx(
-            "border rounded-md flex items-center justify-between pl-4 pr-5 h-14 mb-4",
+            "border rounded-[12px] flex items-center justify-between pl-4 pr-5 h-14 mb-4",
             errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
           )}
         >
@@ -417,7 +418,7 @@ export const TransferFT = ({
             <p
               className={clsx(
                 "absolute mt-[75px] right-[20px]",
-                "text-xs pt-[4px] text-gray-400 text-sm",
+                "text-xs pt-[4px] text-gray-400",
               )}
             >
               <TickerAmount
@@ -507,11 +508,11 @@ export const TransferFT = ({
           preselectedValue={preselectedTransferDestination}
         />
         <div>
-          <Label>Network fee</Label>
+          <Label className="text-secondary">Network fee</Label>
           <div
             className={clsx(
               "flex items-center justify-between mt-1",
-              "px-2.5 text-gray-400 bg-gray-100 rounded-md h-14",
+              "px-2.5 text-gray-400 bg-gray-100 rounded-[12px] h-14",
             )}
           >
             <div>
@@ -532,7 +533,7 @@ export const TransferFT = ({
                     symbol={selectedTokenCurrency}
                   />
                   {!!rate && (
-                    <span className="block text-xs">
+                    <span className="block text-xs mt-1">
                       <TickerAmount
                         value={Number(transferFee)}
                         decimals={decimals}
@@ -547,7 +548,7 @@ export const TransferFT = ({
           </div>
         </div>
         <Button
-          className="text-base"
+          className="text-base mt-auto"
           type="primary"
           id={"sendFT"}
           block
@@ -556,47 +557,14 @@ export const TransferFT = ({
         >
           Send
         </Button>
-        <div
-          className={clsx(
-            "bg-gray-50 flex flex-col text-sm text-gray-500",
-            "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
-          )}
-        >
-          <div className="flex items-center justify-between">
-            <p>Wallet address</p>
-            <p>
-              Balance:&nbsp;
-              {!isBalanceLoading && !isBalanceFetching ? (
-                <span id="balance">
-                  <TickerAmount
-                    value={Number(balance)}
-                    decimals={decimals}
-                    symbol={selectedTokenCurrency}
-                  />
-                </span>
-              ) : (
-                <Spinner className="w-3 h-3 text-gray-400" />
-              )}
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
-            {!!rate && (
-              <div className="flex items-center space-x-0.5">
-                {!isBalanceLoading && !isBalanceFetching ? (
-                  <TickerAmount
-                    value={Number(balance)}
-                    decimals={decimals}
-                    symbol={selectedTokenCurrency}
-                    usdRate={rate}
-                  />
-                ) : (
-                  <Spinner className="w-3 h-3 text-gray-400" />
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+        <BalanceFooter
+          isLoading={isBalanceLoading && isBalanceFetching}
+          rate={rate}
+          selectedTokenCurrency={selectedTokenCurrency}
+          decimals={decimals}
+          balance={balance}
+          selectedAccountAddress={selectedAccountAddress}
+        />
       </div>
     </BlurredLoader>
   )

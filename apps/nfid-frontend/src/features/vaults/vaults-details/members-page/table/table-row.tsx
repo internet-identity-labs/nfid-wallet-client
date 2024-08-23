@@ -9,9 +9,8 @@ import {
   PopoverTools,
   TableCell,
   TableRow,
+  CenterEllipsis,
 } from "@nfid-frontend/ui"
-
-import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
 export interface VaultsMembersTableRowProps {
   name: string

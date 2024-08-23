@@ -1,11 +1,10 @@
 import React, { useMemo } from "react"
 import useSWR from "swr"
 
-import { Table, Toggle } from "@nfid-frontend/ui"
+import { Loader, Table, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { Loader } from "frontend/ui/atoms/loader"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"

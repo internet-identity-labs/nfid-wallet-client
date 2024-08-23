@@ -1,5 +1,6 @@
 import clsx from "clsx"
-import { useCallback, useMemo, useState } from "react"
+import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -11,13 +12,11 @@ import {
   IconCmpArrow,
   IconCmpArrowRight,
   IconCmpNFTPreview,
-  Label,
   BlurredLoader,
   Input,
 } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
-import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
   getAllNFT,
@@ -41,6 +40,19 @@ export const TransferNFT = ({
   preselectedNFTId = "",
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
+  const [selectedAccountAddress, setSelectedAccountAddress] = useState("")
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    getValues,
+  } = useForm({
+    mode: "all",
+    defaultValues: {
+      to: selectedReceiverWallet ?? "",
+    },
+  })
 
   const { data: nfts, mutate: refetchNFTs } = useSWR("allNFTS", getAllNFT)
   const { data: nftOptions, isLoading: isNFTLoading } = useSWR(
@@ -61,42 +73,56 @@ export const TransferNFT = ({
         type: TransferModalType.NFT,
         blockchain: chain,
       }),
+  )
+
+  const { data: selectedFtConnector, isLoading: isConnectorLoading } = useSWR(
+    ["ICP", Blockchain.IC, "selectedConnector"],
+    ([selectedTokenCurrency, selectedTokenBlockchain]) =>
+      getConnector({
+        type: TransferModalType.FT,
+        currency: selectedTokenCurrency,
+        blockchain: selectedTokenBlockchain,
+      }),
     {
       onSuccess: () => {
-        calculateFee()
+        refetchBalance()
       },
     },
   )
 
   const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    getValues,
-  } = useForm({
-    mode: "all",
-    defaultValues: {
-      to: selectedReceiverWallet ?? "",
-    },
-  })
+    data: accountsOptions,
+    isLoading: isAccountsLoading,
+    isValidating: isAccountsValidating,
+  } = useSWR(
+    selectedFtConnector
+      ? [selectedFtConnector, false, "accountsOptions"]
+      : null,
+    ([connector, isVault]) =>
+      connector.getAccountsOptions({
+        currency: "ICP",
+        isVault,
+        isRootOnly: true,
+      }),
+  )
+
+  useEffect(() => {
+    if (!accountsOptions?.length) return
+    setSelectedAccountAddress(accountsOptions[0].options[0].value)
+  }, [accountsOptions])
 
   const {
-    data: transferFee,
-    mutate: calculateFee,
-    isValidating: isFeeValidating,
-    isLoading: isFeeLoading,
+    data: balance,
+    mutate: refetchBalance,
+    isValidating: isBalanceFetching,
+    isLoading: isBalanceLoading,
   } = useSWR(
-    selectedConnector ? [selectedConnector, getValues, "nftTransferFee"] : null,
-    ([selectedConnector, getValues]) =>
-      selectedConnector?.getFee({
-        to: getValues("to"),
-        contract: selectedNFT?.contractId ?? "",
-        tokenId: selectedNFT?.tokenId ?? "",
-        standard: selectedNFT?.collection.standard ?? "",
-      }),
-    {
-      refreshInterval: 5000,
-    },
+    selectedFtConnector && selectedAccountAddress
+      ? [selectedFtConnector, selectedAccountAddress, "balance"]
+      : null,
+    ([connector, selectedAccountAddress]) =>
+      connector.getBalance(selectedAccountAddress, "ICP"),
+    { refreshInterval: 10000 },
   )
 
   const handleTrackTransfer = React.useCallback(() => {
@@ -110,13 +136,12 @@ export const TransferNFT = ({
       tokenType: "non-fungible",
       tokenStandard: selectedNFT?.collection.standard || "",
       amount: 1,
-      fee: Number(transferFee) || 0,
+      fee: 0,
     })
   }, [
     selectedConnector,
     selectedNFT?.collection.standard,
     selectedNFT?.tokenId,
-    transferFee,
   ])
 
   const submit = useCallback(
@@ -161,10 +186,12 @@ export const TransferNFT = ({
           )
 
           mutate(
-            (key) => key && Array.isArray(key) && key[0] === "useNftConfig",
+            (key: any) =>
+              key && Array.isArray(key) && key[0] === "useNftConfig",
           )
           mutate(
-            (key) => key && Array.isArray(key) && key[0] === "useTokenConfig",
+            (key: any) =>
+              key && Array.isArray(key) && key[0] === "useTokenConfig",
           )
         },
       })
@@ -179,11 +206,16 @@ export const TransferNFT = ({
     ],
   )
 
+  const loadingMessage = useMemo(() => {
+    if (isConnectorLoading) return "Loading token config..."
+    if (isAccountsLoading || isAccountsValidating) return "Loading accounts..."
+  }, [isConnectorLoading, isAccountsLoading, isAccountsValidating])
+
   return (
     <BlurredLoader
       overlayClassnames="rounded-xl"
-      isLoading={isNFTLoading}
-      loadingMessage={"Fetching your NFTs..."}
+      isLoading={isNFTLoading || isConnectorLoading}
+      loadingMessage={loadingMessage}
     >
       <div className="space-y-3 text-xs ">
         <ChooseModal
@@ -192,25 +224,24 @@ export const TransferNFT = ({
           title={"Choose an NFT"}
           onSelect={(value) => {
             setSelectedNFTId(value)
-            calculateFee()
           }}
           preselectedValue={selectedNFTId}
-          iconClassnames="!w-12 !h-12 !object-cover rounded-md"
+          iconClassnames="!w-12 !h-12 !object-cover rounded-[12px]"
           trigger={
             <div
-              className="flex items-center justify-between w-full h-[90px] pl-0.5 p-2 pr-5 border border-black rounded-md"
+              className="flex items-center justify-between w-full h-[90px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"
               id="choose-nft"
             >
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
                   {selectedNFT?.assetPreview ? (
                     <img
-                      className="object-cover rounded-sm w-[84px] h-[84px]"
+                      className="object-cover rounded-[10px] w-[84px] h-[84px]"
                       src={selectedNFT?.assetPreview.url}
                       alt={""}
                     />
                   ) : (
-                    <IconCmpNFTPreview className="text-gray-100 rounded-sm w-[84px] h-[84px]" />
+                    <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[84px] h-[84px]" />
                   )}
 
                   <div
@@ -247,7 +278,7 @@ export const TransferNFT = ({
         />
         <Input
           inputClassName={clsx(
-            "border !border-black rounded-md h-14",
+            "border !border-black rounded-[12px] h-14",
             "flex items-center justify-between",
             "text-black px-4",
             errors.to?.message && "!border-red-600 ring ring-red-100",
@@ -262,39 +293,10 @@ export const TransferNFT = ({
           {...register("to", {
             required: "This field cannot be empty",
             validate: (value) => selectedConnector?.validateAddress(value),
-            onBlur: calculateFee,
           })}
         />
-        <div>
-          <Label>Network fee</Label>
-          <div
-            className={clsx(
-              "flex items-center justify-between mt-1",
-              "px-2.5 text-gray-400 bg-gray-100 rounded-md h-14",
-            )}
-          >
-            <div>
-              <p className="text-sm">
-                {selectedNFT?.blockchain === Blockchain.IC
-                  ? "Instant"
-                  : "Estimated"}
-              </p>
-            </div>
-            {!transferFee || isFeeLoading || isFeeValidating ? (
-              <Spinner className="w-3 h-3 text-gray-400" />
-            ) : (
-              <div className="text-right">
-                <p className="text-sm leading-5">${Number(transferFee)}</p>
-
-                <p className="text-xs leading-5" id="fee">
-                  {Number(transferFee)}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
         <Button
-          className="text-base"
+          className="text-base !mt-[107px]"
           type="primary"
           block
           onClick={handleSubmit(submit)}
@@ -302,6 +304,13 @@ export const TransferNFT = ({
         >
           Send
         </Button>
+        <BalanceFooter
+          isLoading={isBalanceLoading && isBalanceFetching}
+          selectedTokenCurrency={"ICP"}
+          decimals={8}
+          balance={balance}
+          selectedAccountAddress={selectedAccountAddress}
+        />
       </div>
     </BlurredLoader>
   )

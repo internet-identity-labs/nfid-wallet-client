@@ -15,7 +15,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
-import { ArrowButton, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
+import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -31,7 +31,6 @@ import { getAllVaults } from "frontend/features/vaults/services"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
-import { Loader } from "frontend/ui/atoms/loader"
 
 import ProfileContainer from "../profile-container/Container"
 

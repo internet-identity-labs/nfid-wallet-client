@@ -3,7 +3,7 @@ import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-k
 import React, { useState } from "react"
 import useSWR from "swr"
 
-import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { Address, BlurredLoader, Button } from "@nfid-frontend/ui"
 import {
   E8S,
   ICP_DECIMALS,
@@ -134,6 +134,12 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         />
       )}
       <div className="flex flex-col my-5">
+        <div className="flex items-center justify-between text-sm h-14">
+          <p className="font-bold">To</p>
+          <div className="text-right">
+            <Address address={destinationAddress} />
+          </div>
+        </div>
         <div className="flex items-center justify-between text-sm border-b border-gray-200 h-14">
           <p>Network fee</p>
           <div className="text-right">
@@ -182,7 +188,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           </div>
         </div>
       </div>
-      <div className="space-y-2.5 flex flex-col mb-[60px]">
+      <div className="space-y-2.5 grid grid-cols-2 mb-[60px]">
         <Button
           id={
             isApproveButtonDisabled ? "approveButtonDisabled" : "approveButton"

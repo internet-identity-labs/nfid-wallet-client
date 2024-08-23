@@ -15,13 +15,17 @@ const meta: Meta = {
 export default meta
 
 const Template: StoryFn<SuccessProps> = (args) => (
-  <TransferTemplate>
-    <Success {...args} />
-  </TransferTemplate>
+  <div className="w-[450px] h-[630px]">
+    <TransferTemplate>
+      <Success {...args} />
+    </TransferTemplate>
+  </div>
 )
 
-export const Default = {
-  args: {
-    title: "123",
-  },
+export const Default = Template.bind({})
+
+Default.args = {
+  title: "1.0047 ICP",
+  subTitle: "1,866.24 USD",
+  duration: "2 seconds",
 }

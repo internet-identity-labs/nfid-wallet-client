@@ -74,21 +74,6 @@ export const TransferModalCoordinator = () => {
     }
   }, [send, state])
 
-  // const componentType = useMemo(() => {
-  //   switch (true) {
-  //     case state.matches("SendMachine.SendFT"):
-  //       return "transfet-ft"
-  //     case state.matches("SendMachine.SendNFT"):
-  //       return "transfet-nft"
-  //     case state.matches("ReceiveMachine"):
-  //       return "transfet-receive"
-  //     case state.matches("Success"):
-  //       return "transfet-success"
-  //     default:
-  //       return "transfet-loader"
-  //   }
-  // }, [send, state])
-
   const onModalTypeChange = useCallback(
     (value: string) => {
       // TODO: send receive

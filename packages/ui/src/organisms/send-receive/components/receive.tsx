@@ -1,8 +1,13 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { ChooseModal, Copy, QRCode, BlurredLoader } from "@nfid-frontend/ui"
-import { CenterEllipsis } from "@nfid-frontend/ui"
+import {
+  ChooseModal,
+  Copy,
+  QRCode,
+  BlurredLoader,
+  CenterEllipsis,
+} from "@nfid-frontend/ui"
 
 export interface ReceiveProps {
   isVault: boolean
@@ -21,7 +26,6 @@ export interface ReceiveProps {
       badgeText?: string
     }[]
   }[]
-
   setSelectedAccountAddress: (value: React.SetStateAction<string>) => void
 }
 

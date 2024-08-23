@@ -6,7 +6,7 @@ import { truncateString } from "@nfid-frontend/utils"
 
 interface BalanceFooterProps {
   isLoading: boolean
-  balance: bigint | undefined
+  balance: number
   decimals: number | undefined
   selectedTokenCurrency: string
   rate?: number
@@ -34,7 +34,7 @@ export const BalanceFooter = ({
         {!isLoading ? (
           <span id="balance">
             <TickerAmount
-              value={Number(balance)}
+              value={balance}
               decimals={decimals}
               symbol={selectedTokenCurrency}
             />

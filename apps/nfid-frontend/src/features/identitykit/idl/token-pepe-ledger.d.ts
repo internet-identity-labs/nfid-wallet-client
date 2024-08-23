@@ -1,6 +1,6 @@
-import type { Principal } from "@dfinity/principal"
 import type { ActorMethod } from "@dfinity/agent"
 import type { IDL } from "@dfinity/candid"
+import type { Principal } from "@dfinity/principal"
 
 export interface Account {
   owner: Principal
@@ -203,7 +203,9 @@ export interface InitArgs {
   token_name: string
   feature_flags: [] | [FeatureFlags]
 }
-export type LedgerArgument = { Upgrade: [] | [UpgradeArgs] } | { Init: InitArgs }
+export type LedgerArgument =
+  | { Upgrade: [] | [UpgradeArgs] }
+  | { Init: InitArgs }
 export interface LineDisplayPage {
   lines: Array<string>
 }
@@ -335,7 +337,10 @@ export interface _SERVICE {
   icrc1_symbol: ActorMethod<[], string>
   icrc1_total_supply: ActorMethod<[], bigint>
   icrc1_transfer: ActorMethod<[TransferArg], Result>
-  icrc21_canister_call_consent_message: ActorMethod<[ConsentMessageRequest], Result_1>
+  icrc21_canister_call_consent_message: ActorMethod<
+    [ConsentMessageRequest],
+    Result_1
+  >
   icrc2_allowance: ActorMethod<[AllowanceArgs], Allowance>
   icrc2_approve: ActorMethod<[ApproveArgs], Result_2>
   icrc2_transfer_from: ActorMethod<[TransferFromArgs], Result_3>

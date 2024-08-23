@@ -2,11 +2,13 @@ import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 
 import { CertifiedResponse, validateTargets } from "./targets"
+import {localStorageTTL} from "../util/local-strage-ttl";
 
 describe("Targets validation", () => {
   jest.setTimeout(50000)
 
   it("validate", async function () {
+    localStorageTTL.clear()
     try {
       await validateTargets(["irshc-3aaaa-aaaam-absla-cai"], "nfid.one")
     } catch (e) {
@@ -15,6 +17,7 @@ describe("Targets validation", () => {
   })
 
   it("validate fail", async function () {
+    localStorageTTL.clear()
     try {
       await validateTargets(["irshc-3aaaa-aaaam-absla-cai"], "hernia.one")
     } catch (e) {
@@ -25,6 +28,7 @@ describe("Targets validation", () => {
   })
 
   it("validate certified", async function () {
+    localStorageTTL.clear()
     const agent: Agent = await new HttpAgent({ host: "https://ic0.app" })
     const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
       IDL.Service({

@@ -25,7 +25,7 @@ const mockNFT = {
   getTokenId: () => "token-id",
   getAssetPreview: () => ({
     format: "img",
-    url: "https://placehold.co/600x400",
+    url: "https://placehold.co/450x450",
   }),
   getTokenName: () => "First NFT",
   getCollectionName: () => "Collection",
@@ -57,7 +57,7 @@ const mockTransactions = {
 const mockAbout = "This is a description of the NFT."
 
 const mockAssetPreview = {
-  url: "https://placehold.co/600x400",
+  url: "https://placehold.co/450x450",
   format: "img",
 }
 

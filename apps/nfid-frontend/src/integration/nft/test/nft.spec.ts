@@ -69,7 +69,7 @@ describe("nft test suite", () => {
       expect(transactions.activity).toHaveLength(2)
       const transfer = transactions.activity[0].getTransactionView()
       expect(transfer.getType()).toEqual("Transfer")
-      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 05:21:58 pm")
+      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 02:21:58 pm")
       expect(transfer.getFrom()).toEqual(
         "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
       )
@@ -333,7 +333,7 @@ describe("nft test suite", () => {
       expect(transactions.activity).toHaveLength(2)
       const transfer = transactions.activity[0].getTransactionView()
       expect(transfer.getType()).toEqual("Transfer")
-      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 05:21:58 pm")
+      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 02:21:58 pm")
       expect(transfer.getFrom()).toEqual(
         "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
       )

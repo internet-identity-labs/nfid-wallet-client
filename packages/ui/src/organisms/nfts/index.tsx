@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { useState, useMemo, HTMLAttributes, FC, MouseEvent } from "react"
 import { IoIosSearch } from "react-icons/io"
 import { Link, useNavigate } from "react-router-dom"
@@ -11,6 +10,7 @@ import {
   Table,
   IconNftPlaceholder,
   Skeleton,
+  ImageWithFallback,
 } from "@nfid-frontend/ui"
 
 import { NFT } from "frontend/integration/nft/nft"
@@ -76,7 +76,7 @@ export const NFTs: FC<INFTs> = ({
         </div>
       ) : !nftsFiltered.length ? (
         <div className="flex justify-between">
-          <span className="my-16 text-sm text-gray-400 text-center w-full md:text-left">
+          <span className="w-full my-16 text-sm text-center text-gray-400 md:text-left">
             You don’t own any collectibles yet
           </span>
           <img
@@ -94,7 +94,7 @@ export const NFTs: FC<INFTs> = ({
             theadClassName="!h-0 sm:!h-[40px]"
             id="nft-table"
             tableHeader={
-              <tr className="text-gray-400 font-bold text-sm">
+              <tr className="text-sm font-bold text-gray-400">
                 <th className="w-[86px]">Asset</th>
                 <th>Name</th>
                 <th>Collection</th>

@@ -1,8 +1,12 @@
 import clsx from "clsx"
-import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { FC, Fragment } from "react"
 
-import { IconNftPlaceholder, Table } from "@nfid-frontend/ui"
+import {
+  IconNftPlaceholder,
+  Table,
+  ImageWithFallback,
+  BlurredLoader,
+} from "@nfid-frontend/ui"
 import { trimConcat } from "@nfid-frontend/utils"
 
 import {
@@ -11,7 +15,6 @@ import {
   TokenProperties,
 } from "frontend/integration/nft/impl/nft-types"
 import { NFT } from "frontend/integration/nft/nft"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 
 export interface NFTDetailsProps {
@@ -166,7 +169,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                     <span className="block">
                       {nft.getTokenFloorPriceIcpFormatted()}
                     </span>
-                    <span className="block text-gray-400 text-xs">
+                    <span className="block text-xs text-gray-400">
                       {nft.getTokenFloorPriceUSDFormatted()}
                     </span>
                   </>
@@ -262,7 +265,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               theadClassName="!h-0 sm:!h-[40px]"
               id="nft-table"
               tableHeader={
-                <tr className="text-gray-400 font-bold text-sm">
+                <tr className="text-sm font-bold text-gray-400">
                   <th className="w-[120px]">Event type</th>
                   <th className="w-[220px]">Date and time</th>
                   <th>From</th>

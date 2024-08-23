@@ -44,7 +44,7 @@ export const ChooseAccount = ({
       </p>
       <div
         className={clsx(
-          "flex justify-between text-xs uppercase font-mono h-5 mt-2.5",
+          "flex justify-between text-xs uppercase h-5 mt-2.5",
           !isPublicAvailable && "text-gray-400 pointer-events-none",
         )}
       >
@@ -83,7 +83,7 @@ export const ChooseAccount = ({
 
       {anonymous?.map((acc) => (
         <div
-          className="flex items-center h-5 mt-5 font-mono text-xs text-gray-400"
+          className="flex items-center h-5 mt-5 text-xs text-gray-400"
           key={`legacy_persona_${acc.id}`}
         >
           <RadioButton

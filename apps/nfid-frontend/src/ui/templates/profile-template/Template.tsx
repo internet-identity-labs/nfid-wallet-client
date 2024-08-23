@@ -1,5 +1,6 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
@@ -32,8 +33,6 @@ import { getWalletDelegationAdapter } from "frontend/integration/adapters/delega
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 import { Loader } from "frontend/ui/atoms/loader"
-
-import ProfileContainer from "../profile-container/Container"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string

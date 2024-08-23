@@ -1,9 +1,7 @@
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { FC } from "react"
 
-import { Table } from "@nfid-frontend/ui"
-
-import { Loader } from "frontend/ui/atoms/loader"
-import ProfileContainer from "frontend/ui/templates/profile-container/Container"
+import { Table, Loader } from "@nfid-frontend/ui"
 
 export interface SecurityProps {
   primarySignInElement: JSX.Element

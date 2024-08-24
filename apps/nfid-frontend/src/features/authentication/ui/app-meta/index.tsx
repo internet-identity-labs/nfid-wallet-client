@@ -1,3 +1,5 @@
+import clsx from "clsx"
+
 import { H5, IconSvgNFIDWalletLogo } from "@nfid-frontend/ui"
 
 export interface AuthAppMetaProps {
@@ -6,12 +8,14 @@ export interface AuthAppMetaProps {
   applicationName?: string
   title?: string
   subTitle?: string | JSX.Element
+  withMargin?: boolean
 }
 
 export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   applicationURL,
   subTitle = "Sign in to continue to",
   title,
+  withMargin = true,
 }) => (
   <>
     <div className="flex flex-col items-center w-full pt-8">
@@ -22,7 +26,12 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
       )}
 
       {applicationURL && (
-        <div className="flex items-center mt-5 space-x-1 text-sm">
+        <div
+          className={clsx(
+            "flex items-center space-x-1 text-sm",
+            withMargin && "mt-5",
+          )}
+        >
           <span>
             {subTitle}{" "}
             <a

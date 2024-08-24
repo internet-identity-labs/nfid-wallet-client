@@ -124,6 +124,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         applicationName={appMeta?.name}
         title="Approve transfer"
         subTitle="Request from"
+        withMargin={false}
       />
       {tokenId ? (
         <RequestTransferNFTDetails nft={nft} />
@@ -188,7 +189,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           </div>
         </div>
       </div>
-      <div className="space-y-2.5 grid grid-cols-2 mb-[60px]">
+      <div className="grid grid-cols-2 gap-2.5 mb-[60px]">
         <Button
           id={
             isApproveButtonDisabled ? "approveButtonDisabled" : "approveButton"

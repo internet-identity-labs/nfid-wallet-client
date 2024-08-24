@@ -84,7 +84,7 @@ export const RPCPromptTemplate = ({
         )}
       </div>
       {balance && (
-        <div className="absolute right-[30px] top-[20px] text-xs text-right hidden lg:block">
+        <div className="absolute right-[30px] top-[20px] text-xs text-right hidden lg:block z-[1000]">
           <Address
             className="justify-end font-bold"
             address={balance.address}

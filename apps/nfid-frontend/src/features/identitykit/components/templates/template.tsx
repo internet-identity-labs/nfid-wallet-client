@@ -3,6 +3,7 @@ import React from "react"
 
 import { IconCmpNFIDWalletLogo, IconCmpShare } from "@nfid-frontend/ui"
 
+import LeftBgApproval from "./left-bg-approval.svg"
 import LeftBg from "./left-bg.svg"
 
 interface RPCTemplateProps {
@@ -22,11 +23,21 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
       }}
     >
       <div className="flex items-center lg:justify-center order-2 w-full lg:order-1 min-h-[375px] flex-wrap">
-        <img
-          src={LeftBg}
-          alt="Left Background"
-          className="absolute top-0 left-0 z-0 hidden object-cover h-screen lg:w-1/2 lg:block"
-        />
+        {isApproveRequestInProgress ? (
+          <img
+            src={LeftBgApproval}
+            alt="Left Background"
+            className="absolute top-0 left-0 z-0 hidden object-cover h-screen lg:w-1/2 lg:block"
+            loading="lazy"
+          />
+        ) : (
+          <img
+            src={LeftBg}
+            alt="Left Background"
+            className="absolute top-0 left-0 z-0 hidden object-cover h-screen lg:w-1/2 lg:block"
+            loading="lazy"
+          />
+        )}
         <IconCmpNFIDWalletLogo className="text-white absolute top-[15px] left-[30px]" />
         <div className="lg:max-w-[32rem] max-w-[90%] mx-auto lg:mx-0 relative z-10">
           <p className="gradient-text text-[34px] lg:text-[3.2rem] font-bold leading-[120%]">

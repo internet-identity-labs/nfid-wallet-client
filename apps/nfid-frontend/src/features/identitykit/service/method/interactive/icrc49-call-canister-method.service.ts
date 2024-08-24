@@ -22,6 +22,7 @@ import {
 } from "../../../type"
 import { INDEX_DB_CONNECTED_ACCOUNTS_KEY } from "../../account.service"
 import { callCanisterService } from "../../call-canister.service"
+import { getDefaultMetadata } from "../../canister-calls-helpers/default"
 import { getMetadataICRC2Approve } from "../../canister-calls-helpers/icrc2-approve"
 import { getLedgerTransferMetadata } from "../../canister-calls-helpers/ledger-transfer"
 import { consentMessageService } from "../../consent-message.service"
@@ -218,7 +219,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     }
 
     const helper = helpers[message.data.params.method]
-    if (!helper) return {}
+    if (!helper) return getDefaultMetadata(message)
 
     return helper(message, args)
   }

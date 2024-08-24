@@ -18,7 +18,6 @@ module.exports = {
       fontFamily: {
         ...defaultTheme.fontFamily,
         sans: ["Inter", ...defaultTheme.fontFamily.sans],
-        mono: ["IBM Plex Mono", ...defaultTheme.fontFamily.mono],
       },
     },
   },

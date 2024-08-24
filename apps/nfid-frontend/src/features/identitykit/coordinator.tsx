@@ -85,7 +85,7 @@ export default function IdentityKitRPCCoordinator() {
     }
   }, [send, state])
 
-  if (!state.context.activeRequest)
+  if (!state.context.activeRequestMetadata)
     return (
       <BlurredLoader
         isLoading={true}

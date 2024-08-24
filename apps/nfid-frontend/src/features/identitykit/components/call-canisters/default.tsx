@@ -1,11 +1,9 @@
 import clsx from "clsx"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
-import { getBalance } from "@nfid/integration"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
-import { icrc1TransferConnector } from "frontend/ui/connnector/transfer-modal/ic/icrc1-transfer-connector"
-
+import { IDefaultMetadata } from "../../service/canister-calls-helpers/default"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
 
@@ -16,6 +14,7 @@ export interface CallCanisterLedgerTransferProps {
   methodName: string
   args: string
   request: any
+  metadata: IDefaultMetadata
   onApprove: (data: any) => void
   onReject: () => void
 }
@@ -30,6 +29,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
     consentMessage,
     onApprove,
     onReject,
+    metadata,
   } = props
 
   const applicationName = new URL(origin).host
@@ -56,11 +56,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
         address: request?.data?.params?.sender,
         decimals: ICP_DECIMALS,
         symbol: "ICP",
-        balance: getBalance(
-          icrc1TransferConnector.getAccountIdentifier(
-            request?.data?.params?.sender,
-          ),
-        ),
+        balance: metadata.balance,
       }}
     >
       <div

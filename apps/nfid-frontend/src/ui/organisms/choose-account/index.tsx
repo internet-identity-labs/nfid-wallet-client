@@ -30,7 +30,7 @@ export const ChooseAccount = ({
         "flex flex-col flex-1 font-inter bg-white",
         "border border-gray-200",
         "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
-        "mt-10 px-5",
+        "px-5",
       )}
     >
       <IconCmpArrow
@@ -44,7 +44,7 @@ export const ChooseAccount = ({
       </p>
       <div
         className={clsx(
-          "flex justify-between text-xs uppercase h-5 mt-2.5",
+          "flex justify-between items-center text-xs uppercase h-5 mt-2.5",
           !isPublicAvailable && "text-gray-400 pointer-events-none",
         )}
       >
@@ -65,11 +65,13 @@ export const ChooseAccount = ({
           </label>
         </div>
         {publicProfile?.balance !== undefined ? (
-          <TickerAmount
-            symbol={"ICP"}
-            value={publicProfile.balance}
-            decimals={ICP_DECIMALS}
-          />
+          <span>
+            <TickerAmount
+              symbol={"ICP"}
+              value={publicProfile.balance}
+              decimals={ICP_DECIMALS}
+            />
+          </span>
         ) : null}
       </div>
 

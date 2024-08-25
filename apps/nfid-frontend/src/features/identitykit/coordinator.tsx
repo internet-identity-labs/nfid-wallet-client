@@ -14,8 +14,7 @@ import { IdentityKitRPCMachine } from "./machine"
 
 export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)
-  console.debug("IdentityKitRPCCoordinator")
-
+  console.debug("IdentityKitRPCCoordinator", { state })
   const isApproveRequestInProgress =
     state.context.activeRequest?.data.method === "icrc49_call_canister"
 
@@ -31,6 +30,7 @@ export default function IdentityKitRPCCoordinator() {
       case state.matches("Main.Authentication.Authenticate"):
         return (
           <AuthenticationCoordinator
+            isIdentityKit
             actor={
               state.children[
                 "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"

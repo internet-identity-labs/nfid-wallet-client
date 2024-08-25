@@ -15,8 +15,10 @@ import { AuthenticationMachineActor } from "./root-machine"
 
 export default function AuthenticationCoordinator({
   actor,
+  isIdentityKit = false,
 }: {
   actor: AuthenticationMachineActor
+  isIdentityKit?: boolean
 }) {
   const [state, send] = useActor(actor)
 
@@ -29,11 +31,13 @@ export default function AuthenticationCoordinator({
       window.location.pathname === "/" && authenticationTracking.userSendToApp()
     }
   }, [])
+  console.log({ state })
 
   switch (true) {
     case state.matches("AuthSelection"):
       return (
         <AuthSelection
+          isIdentityKit={isIdentityKit}
           onSelectEmailAuth={(email: string) => {
             authenticationTracking.initiated({
               authSource: "email",
@@ -84,6 +88,7 @@ export default function AuthenticationCoordinator({
     case state.matches("TwoFA"):
       return (
         <Auth2FA
+          isIdentityKit={isIdentityKit}
           allowedDevices={state.context?.allowedDevices}
           appMeta={state.context?.appMeta}
           onSuccess={(authSession: AbstractAuthSession) =>

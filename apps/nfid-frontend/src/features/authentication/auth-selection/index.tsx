@@ -32,6 +32,7 @@ export interface AuthSelectionProps {
   onAuthWithPasskey: (data: AbstractAuthSession) => void
   appMeta?: AuthorizingAppMeta
   authRequest?: AuthorizationRequest
+  isIdentityKit?: boolean
 }
 
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
@@ -41,6 +42,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onAuthWithPasskey,
   appMeta,
   authRequest,
+  isIdentityKit,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit, formState } = useForm({
@@ -62,7 +64,13 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       overlayClassnames="rounded-xl"
       id="auth-selection"
     >
-      <AuthAppMeta applicationURL={appHost} />
+      <AuthAppMeta
+        applicationURL={appHost}
+        withLogo={!isIdentityKit}
+        title={isIdentityKit ? "Sign in" : undefined}
+        subTitle={<>for</>}
+        withMargin={false}
+      />
       <div className="mt-7">
         <form
           onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
@@ -70,8 +78,8 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         >
           <Input
             className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
-            inputClassName="h-12"
-            labelText="Email"
+            inputClassName="h-12 rounded-xl"
+            placeholder="Email"
             type="email"
             errorText={formState.errors.email?.message?.toString()}
             {...register("email", {

@@ -18,8 +18,14 @@ export interface IAuth2FA {
   appMeta?: AuthorizingAppMeta
   onSuccess: (authSession: AbstractAuthSession) => void
   allowedDevices?: string[]
+  isIdentityKit?: boolean
 }
-export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
+export const Auth2FA = ({
+  appMeta,
+  onSuccess,
+  allowedDevices,
+  isIdentityKit,
+}: IAuth2FA) => {
   const { data: profile } = useSWR("profile", fetchProfile)
   const [isLoading, setIsLoading] = React.useState(false)
 
@@ -55,14 +61,19 @@ export const Auth2FA = ({ appMeta, onSuccess, allowedDevices }: IAuth2FA) => {
         applicationLogo={appMeta?.logo}
         applicationURL={appMeta?.url}
         applicationName={appMeta?.name}
-        title="Two-factor authentication"
+        title="Passkey authentication"
+        withLogo={!isIdentityKit}
       />
       <p className="text-sm font-bold text-center">{profile?.email}</p>
       <p className="mt-3 text-sm text-center">
         Your account has been configured for self-sovereign mode. Use your
         Passkey to confirm it’s you.
       </p>
-      <img alt="asset" src={Image2FA} className="w-full h-56 my-10" />
+      <img
+        alt="asset"
+        src={Image2FA}
+        className="object-contain w-full h-56 my-10"
+      />
       <Button className="mb-[30px]" onClick={handleAuth}>
         Continue
       </Button>

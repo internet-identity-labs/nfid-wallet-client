@@ -1,19 +1,13 @@
 import clsx from "clsx"
 import { PropsWithChildren } from "react"
-import useSWR from "swr"
 
-import {
-  Address,
-  Button,
-  IconSvgNFIDWalletLogo,
-  Skeleton,
-} from "@nfid-frontend/ui"
+import { Address, Button, IconSvgNFIDWalletLogo } from "@nfid-frontend/ui"
 
 import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export interface RPCBalanceSection {
   symbol: string
-  balance: number | Promise<number> | Promise<bigint>
+  balance: number | bigint
   decimals: number
   address: string
 }
@@ -41,12 +35,6 @@ export const RPCPromptTemplate = ({
   balance,
   withLogo,
 }: RPCPromptTemplateProps) => {
-  const { data: resolvedBalance } = useSWR(
-    balance ? [balance.balance, "balancePromise"] : null,
-    async ([b]) => Promise.resolve(b),
-  )
-  console.log({ resolvedBalance, balance })
-
   return (
     <div className="flex flex-col flex-1 h-full">
       <div className="flex flex-col items-center mt-10 mb-10 text-sm text-center">
@@ -88,17 +76,13 @@ export const RPCPromptTemplate = ({
             className="justify-end font-bold"
             address={balance.address}
           />
-          {resolvedBalance ? (
-            <div className="text-gray-500">
-              <TickerAmount
-                value={Number(resolvedBalance)}
-                decimals={balance.decimals}
-                symbol={balance.symbol}
-              />
-            </div>
-          ) : (
-            <Skeleton className="w-[150px] h-[20px]" />
-          )}
+          <div className="text-gray-500">
+            <TickerAmount
+              value={Number(balance.balance)}
+              decimals={balance.decimals}
+              symbol={balance.symbol}
+            />
+          </div>
         </div>
       )}
     </div>

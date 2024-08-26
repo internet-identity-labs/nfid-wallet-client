@@ -11,7 +11,7 @@ export interface ICRC2Metadata {
   decimals: number
   fee: number
   amount: number
-  balancePromise: Promise<number>
+  balance: number
   address: string
 }
 
@@ -33,12 +33,12 @@ export const getMetadataICRC2Approve = async (
   )
 
   const { owner, subaccount } = decodeIcrcAccount(message.data.params.sender)
-  const balancePromise = actor.icrc1_balance_of({
-    owner: owner,
-    subaccount: subaccount ?? [],
-  })
 
-  const [symbol, decimals, fee] = await Promise.all([
+  const [balance, symbol, decimals, fee] = await Promise.all([
+    actor.icrc1_balance_of({
+      owner: owner,
+      subaccount: subaccount ?? [],
+    }),
     actor.icrc1_symbol(),
     actor.icrc1_decimals(),
     actor.icrc1_fee(),
@@ -51,7 +51,7 @@ export const getMetadataICRC2Approve = async (
     decimals,
     fee,
     amount: parsedArgs?.amount,
-    balancePromise,
+    balance,
     address: message.data.params.sender,
   }
 }

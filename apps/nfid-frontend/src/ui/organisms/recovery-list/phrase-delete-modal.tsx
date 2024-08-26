@@ -30,7 +30,7 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
             SENSITIVE_CONTENT_NO_SESSION_RECORDING,
             "border border-black rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
-            "w-full -mb-2 font-mono leading-[26px]",
+            "w-full -mb-2 leading-[26px]",
           )}
           rows={5}
           placeholder="lorem ipsum dolor ..."

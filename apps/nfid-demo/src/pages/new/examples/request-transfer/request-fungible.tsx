@@ -78,7 +78,7 @@ export const RequestFungibleTransfer = () => {
           If a user is authenticated with their main wallet address, an
           <span
             className={clsx(
-              "px-2 py-1 ml-1 font-mono text-xs text-white bg-gray-800 rounded-lg",
+              "px-2 py-1 ml-1 text-xs text-white bg-gray-800 rounded-lg",
               "opacity-50 group-hover:opacity-100 transition-opacity",
             )}
           >

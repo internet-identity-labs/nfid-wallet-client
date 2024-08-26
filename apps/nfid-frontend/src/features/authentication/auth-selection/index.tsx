@@ -68,8 +68,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         applicationURL={appHost}
         withLogo={!isIdentityKit}
         title={isIdentityKit ? "Sign in" : undefined}
-        subTitle={<>for</>}
-        withMargin={false}
+        subTitle={<>to continue to</>}
       />
       <div className="mt-7">
         <form

@@ -124,7 +124,6 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         applicationName={appMeta?.name}
         title="Approve transfer"
         subTitle="Request from"
-        withMargin={false}
       />
       {tokenId ? (
         <RequestTransferNFTDetails nft={nft} />

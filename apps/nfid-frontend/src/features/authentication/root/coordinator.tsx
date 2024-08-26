@@ -71,6 +71,7 @@ export default function AuthenticationCoordinator({
     case state.matches("EmailAuthentication"):
       return (
         <AuthEmailFlowCoordinator
+          isIdentityKit={isIdentityKit}
           actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
         />
       )
@@ -88,6 +89,7 @@ export default function AuthenticationCoordinator({
     case state.matches("TwoFA"):
       return (
         <Auth2FA
+          email={state.context.email2FA}
           isIdentityKit={isIdentityKit}
           allowedDevices={state.context?.allowedDevices}
           appMeta={state.context?.appMeta}

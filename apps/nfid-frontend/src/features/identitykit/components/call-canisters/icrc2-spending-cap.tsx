@@ -32,7 +32,7 @@ const CallCanisterICRC2SpendingCap = ({
 
   return (
     <RPCPromptTemplate
-      title={`Set a ${metadata.symbol} spending cap`}
+      title={`Approve spending cap`}
       subTitle={
         <>
           Request from{" "}

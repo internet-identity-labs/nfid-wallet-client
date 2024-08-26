@@ -9,7 +9,7 @@ import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
-import { Token, TokenToRemove } from "."
+import { Token, TokenToRemove } from ".."
 
 type ITokenDropdown = {
   option?: string
@@ -39,7 +39,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
     <>
       <Dropdown
         triggerElement={
-          <IconCmpDots className="mx-auto cursor-pointer hover:opacity-60 transition-all" />
+          <IconCmpDots className="mx-auto transition-all cursor-pointer text-secondary hover:text-black" />
         }
       >
         <DropdownOption

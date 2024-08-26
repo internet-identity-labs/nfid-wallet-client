@@ -11,7 +11,7 @@ import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
-import { TokenToRemove } from "."
+import { TokenToRemove } from ".."
 
 type IAssetModal = {
   token: TokenToRemove | null

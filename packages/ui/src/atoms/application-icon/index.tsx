@@ -22,7 +22,7 @@ export const ApplicationIcon: React.FC<ApplicationIconProps> = ({
     >
       {icon ? (
         <img
-          className="rounded-full w-[26px] h-[26px] object-contain object-center"
+          className="rounded-full w-[28px] h-[28px] object-contain object-center"
           src={icon}
           alt="app icon"
         />

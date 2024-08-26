@@ -6,7 +6,7 @@ import Dfinity from "frontend/assets/dfinity.svg"
 import ProfileAssetsPage from "."
 
 export default {
-  title: "Screens/NewProfile/Assets",
+  title: "Organisms/Tokens",
   component: ProfileAssetsPage,
   parameters: {
     layout: "fullscreen",

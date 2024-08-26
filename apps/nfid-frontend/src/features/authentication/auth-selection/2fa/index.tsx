@@ -1,11 +1,9 @@
 import React from "react"
 import { toast } from "react-toastify"
-import useSWR from "swr"
 
 import { Button } from "@nfid-frontend/ui"
 import { authenticationTracking } from "@nfid/integration"
 
-import { fetchProfile } from "frontend/integration/identity-manager"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -19,14 +17,15 @@ export interface IAuth2FA {
   onSuccess: (authSession: AbstractAuthSession) => void
   allowedDevices?: string[]
   isIdentityKit?: boolean
+  email?: string
 }
 export const Auth2FA = ({
   appMeta,
   onSuccess,
   allowedDevices,
   isIdentityKit,
+  email,
 }: IAuth2FA) => {
-  const { data: profile } = useSWR("profile", fetchProfile)
   const [isLoading, setIsLoading] = React.useState(false)
 
   React.useEffect(() => {
@@ -57,14 +56,8 @@ export const Auth2FA = ({
 
   return (
     <>
-      <AuthAppMeta
-        applicationLogo={appMeta?.logo}
-        applicationURL={appMeta?.url}
-        applicationName={appMeta?.name}
-        title="Passkey authentication"
-        withLogo={!isIdentityKit}
-      />
-      <p className="text-sm font-bold text-center">{profile?.email}</p>
+      <AuthAppMeta title="Passkey authentication" withLogo={!isIdentityKit} />
+      {email && <p className="text-sm text-center">{email}</p>}
       <p className="mt-3 text-sm text-center">
         Your account has been configured for self-sovereign mode. Use your
         Passkey to confirm it’s you.

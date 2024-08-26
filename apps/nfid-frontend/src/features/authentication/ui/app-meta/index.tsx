@@ -8,7 +8,6 @@ export interface AuthAppMetaProps {
   applicationName?: string
   title?: string
   subTitle?: string | JSX.Element
-  withMargin?: boolean
   withLogo?: boolean
 }
 
@@ -16,7 +15,6 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   applicationURL,
   subTitle = "Sign in to continue to",
   title,
-  withMargin = true,
   withLogo = true,
 }) => (
   <>
@@ -38,7 +36,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
         <div
           className={clsx(
             "flex items-center space-x-1 text-sm",
-            withMargin && "mt-5",
+            withLogo && "mt-5",
           )}
         >
           <span>

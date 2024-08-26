@@ -43,10 +43,9 @@ export const RPCPromptTemplate = ({
 }: RPCPromptTemplateProps) => {
   const { data: resolvedBalance } = useSWR(
     balance ? [balance.balance, "balancePromise"] : null,
-    async ([balance]) => {
-      return typeof balance === "number" ? balance : await balance
-    },
+    async ([b]) => Promise.resolve(b),
   )
+  console.log({ resolvedBalance, balance })
 
   return (
     <div className="flex flex-col flex-1 h-full">

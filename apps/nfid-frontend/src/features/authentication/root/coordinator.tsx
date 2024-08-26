@@ -46,7 +46,6 @@ export default function AuthenticationCoordinator({
       window.location.pathname === "/" && authenticationTracking.userSendToApp()
     }
   }, [])
-  console.log({ state })
 
   const handleAuth2FAMount = () => {
     authenticationTracking.loaded2fa()

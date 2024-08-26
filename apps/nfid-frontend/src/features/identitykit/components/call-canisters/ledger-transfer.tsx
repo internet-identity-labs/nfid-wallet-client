@@ -1,7 +1,7 @@
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
+
 import { Address } from "@nfid-frontend/ui"
 import { ICP_DECIMALS, WALLET_FEE_E8S } from "@nfid/integration/token/constants"
-
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 import { LedgerTransferMetadata } from "../../service/canister-calls-helpers/ledger-transfer"
 import { RPCPromptTemplate } from "../templates/prompt-template"

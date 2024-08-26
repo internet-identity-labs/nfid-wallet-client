@@ -2,7 +2,7 @@ import React from "react"
 import { Navigate } from "react-router-dom"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
-import { authState } from "@nfid/integration"
+import { authState, isDelegationExpired } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 
@@ -16,10 +16,11 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   console.debug("AuthWrapper", { isAuthenticated, cacheLoaded })
 
   switch (true) {
-    case isAuthenticated:
-      authState.checkAndRenewFEDelegation()
+    case isAuthenticated: {
+      const isExpired = isDelegationExpired(authState?.get().delegationIdentity)
+      if (isExpired) return <Navigate to="/?auth=true" />
       return <>{children}</>
-
+    }
     case cacheLoaded && !isAuthenticated:
       return <Navigate to="/?auth=true" />
     default:

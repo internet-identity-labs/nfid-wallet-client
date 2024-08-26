@@ -1,3 +1,5 @@
+import LogoMain from "../nfid-logo/NFID-logo-main.svg"
+import Logo from "../nfid-logo/NFID-logo.svg"
 import IconSvgAlertCircle from "./alert-circle.svg"
 import IconSvgAnonymous from "./anonymous.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
@@ -8,6 +10,7 @@ import IconSvgCalendar from "./calendar.svg"
 import IconSvgCancel from "./cancel.svg"
 import IconSvgCheckMark from "./check-mark.svg"
 import IconSvgChevron from "./chevron.svg"
+import IconClose from "./close.svg"
 import IconSvgCopy from "./copy.svg"
 import IconSvgDesktop from "./desktop.svg"
 import IconSvgDfinity from "./dfinity.svg"
@@ -19,15 +22,23 @@ import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
 import IconSvgID from "./id.svg"
+import IconInfo from "./info-icon.svg"
 import IconSvgInfo from "./info.svg"
 import IconSvgKey from "./key.svg"
 import IconSvgLaptop from "./laptop.svg"
 import IconSvgLogout from "./logout.svg"
 import IconSvgMapPin from "./map-pin.svg"
+import MenuIcon from "./menu.svg"
 import IconSvgMobile from "./mobile.svg"
+import KnowledgeIcon from "./nav-knowledge.svg"
+import IconDisconnect from "./nav-logout.svg"
+import SecurityIcon from "./nav-security.svg"
+import VaultsIcon from "./nav-vaults.svg"
+import WalletIcon from "./nav-wallet.svg"
 import IconSvgNFIDWalletLogo from "./nfid-wallet-logo.svg"
 import IconSvgNFIDWallet from "./nfid-wallet.svg"
 import IconSvgNFID from "./nfid.svg"
+import IconNftPlaceholder from "./nft-placeholder.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPasskey from "./passkey.svg"
 import IconSvgPencil from "./pencil.svg"
@@ -98,6 +109,17 @@ export {
   IconSvgAnonymous,
   IconSvgNFIDWalletLogo,
   IconSvgShare,
+  IconNftPlaceholder,
+  KnowledgeIcon,
+  SecurityIcon,
+  VaultsIcon,
+  WalletIcon,
+  IconClose,
+  MenuIcon,
+  LogoMain,
+  Logo,
+  IconInfo,
+  IconDisconnect,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

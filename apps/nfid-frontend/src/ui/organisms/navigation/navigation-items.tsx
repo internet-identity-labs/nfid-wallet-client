@@ -1,21 +1,23 @@
 import clsx from "clsx"
+import AuthenticatedPopup from "packages/ui/src/organisms/header/navigation-popup"
 import React from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
 import User from "src/assets/userpics/userpic_6.svg"
 
+import { useClickOutside } from "@nfid-frontend/utils"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import {
+  navigationPopupLinks,
+  ProfileConstants,
+} from "frontend/apps/identity-manager/profile/routes"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
-import useClickOutside from "frontend/ui/utils/use-click-outside"
-
-import AuthenticatedPopup from "../navigation-popup"
 
 const NAV_ITEMS = [
   {
@@ -55,7 +57,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
   const handleLogin = async () => {
     await login()
-    navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
+    navigate(ProfileConstants.tokens)
   }
 
   const handleLogout = React.useCallback(() => {
@@ -129,11 +131,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     >
                       <div
                         className="flex items-center h-10"
-                        onClick={() =>
-                          navigate(
-                            `${ProfileConstants.base}/${ProfileConstants.assets}`,
-                          )
-                        }
+                        onClick={() => navigate(ProfileConstants.tokens)}
                       >
                         My profile
                       </div>
@@ -230,6 +228,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               onSignOut={handleLogout}
               anchor={profile.anchor}
               isLanding
+              links={navigationPopupLinks}
             />
           ) : null}
         </div>

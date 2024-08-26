@@ -1,9 +1,8 @@
 import clsx from "clsx"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { PropsWithChildren } from "react"
 
 import { Address, Button, IconSvgNFIDWalletLogo } from "@nfid-frontend/ui"
-
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export interface RPCBalanceSection {
   symbol: string

@@ -8,12 +8,17 @@ import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED, ROUTE_RPC } from "@nfid/config"
 import { authState, exchangeRateService, ic } from "@nfid/integration"
 
+import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
+import { VaultGuard } from "frontend/ui/pages/vault-guard"
+
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
-import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
+import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
+import { WalletRouter } from "./features/wallet"
 import { NotFound } from "./ui/pages/404"
+import ProfileTemplate from "./ui/templates/profile-template/Template"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
 
@@ -23,6 +28,20 @@ const NFIDEmbedCoordinator = React.lazy(
 
 const IframeTrustDeviceCoordinator = React.lazy(
   () => import("./features/iframe/iframe-trust-device/coordinator"),
+)
+const ProfileSecurity = React.lazy(() => import("../src/features/security"))
+const CopyRecoveryPhrase = React.lazy(
+  () => import("../src/apps/identity-manager/profile/copy-recovery-phrase"),
+)
+const VaultsListPage = React.lazy(
+  () => import("frontend/features/vaults/vaults-list-page"),
+)
+const VaultsDetailsCoordinator = React.lazy(
+  () => import("frontend/features/vaults/vaults-details"),
+)
+const VaultTransactionsDetailsPage = React.lazy(
+  () =>
+    import("frontend/features/vaults/vaults-details/transactions-details-page"),
 )
 
 if (USERGEEK_API_KEY) {
@@ -77,9 +96,59 @@ export const App = () => {
         <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
         <Route path={ROUTE_RPC} element={<IdentityKitRPCCoordinator />} />
 
-        {ProfileRoutes}
+        <Route
+          path={`${ProfileConstants.base}/*`}
+          element={
+            <AuthWrapper>
+              <ProfileTemplate isWallet />
+            </AuthWrapper>
+          }
+        >
+          <Route path="*" element={<WalletRouter />} />
+        </Route>
+        <Route
+          path={ProfileConstants.security}
+          element={
+            <AuthWrapper>
+              <ProfileSecurity />
+            </AuthWrapper>
+          }
+        />
+        <Route
+          path={ProfileConstants.copyRecoveryPhrase}
+          element={
+            <AuthWrapper>
+              <CopyRecoveryPhrase />
+            </AuthWrapper>
+          }
+        />
+        <Route
+          path={`${ProfileConstants.vaults}`}
+          element={
+            <AuthWrapper>
+              <VaultGuard>
+                <VaultsListPage />
+              </VaultGuard>
+            </AuthWrapper>
+          }
+        />
+        <Route
+          path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
+          element={
+            <AuthWrapper>
+              <VaultsDetailsCoordinator />
+            </AuthWrapper>
+          }
+        />
+        <Route
+          path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
+          element={
+            <AuthWrapper>
+              <VaultTransactionsDetailsPage />
+            </AuthWrapper>
+          }
+        />
         {RecoverNFIDRoutes}
-
         <Route path={"*"} element={<NotFound />} />
       </Routes>
     </React.Suspense>

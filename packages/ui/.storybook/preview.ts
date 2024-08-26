@@ -1,5 +1,7 @@
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport"
 
+import "./tailwind.css"
+
 export const parameters = {
   controls: {
     matchers: {

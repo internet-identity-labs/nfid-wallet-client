@@ -54,7 +54,7 @@ export * from "./molecules/warning"
 export * from "./molecules/lottie-animation"
 export * from "./molecules/toggle-button"
 
-export * from "./organisms/tabs-switcher"
+export * from "./molecules/tabs-switcher"
 
 export * from "./pages/auth-ii"
 export * from "./pages/auth-ii-connect"
@@ -65,4 +65,3 @@ export * from "./pages/auth-ii-code"
 export * from "./templates"
 
 export * from "./utils/validations"
-export * from "./utils/use-click-outside"

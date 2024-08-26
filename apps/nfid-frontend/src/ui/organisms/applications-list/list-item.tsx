@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { getUrl } from "frontend/ui/utils"
+import { getUrl } from "@nfid-frontend/utils"
 
 interface Props {
   className?: string

@@ -18,6 +18,7 @@ import {
 import { toHexString } from "packages/integration/src/lib/lambda/ecdsa"
 import { toast } from "react-toastify"
 
+import { getBrowser } from "@nfid-frontend/utils"
 import {
   DeviceType,
   IClientDataObj,
@@ -49,7 +50,6 @@ import {
   MultiWebAuthnIdentity,
 } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { getBrowser } from "frontend/ui/utils"
 
 const alreadyRegisteredDeviceErrors = [
   "credentials already registered", //Chrome-based browsers

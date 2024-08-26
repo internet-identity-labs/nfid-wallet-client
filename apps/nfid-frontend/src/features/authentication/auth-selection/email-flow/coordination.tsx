@@ -1,13 +1,15 @@
 import { useActor } from "@xstate/react"
+import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
+import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
+import { AuthEmailPending } from "packages/ui/src/organisms/authentication/pending-verification"
+import { useEffect } from "react"
 
-import { authenticationTracking } from "@nfid/integration"
+import { authenticationTracking, RootWallet } from "@nfid/integration"
 
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import { AuthEmailVerified } from "./email-verified"
-import { AuthEmailError } from "./error"
 import { AuthWithEmailActor } from "./machine"
-import { AuthEmailPending } from "./pending-verification"
 
 interface AuthEmailFlowCoordinatorProps {
   actor: AuthWithEmailActor
@@ -18,6 +20,17 @@ export function AuthEmailFlowCoordinator({
   isIdentityKit = false,
 }: AuthEmailFlowCoordinatorProps) {
   const [state, send] = useActor(actor)
+  const { profile, isLoading } = useProfile()
+
+  useEffect(() => {
+    if (!isLoading && profile && !profile.is2fa) {
+      authenticationTracking.completed({
+        anchor: profile.anchor,
+        legacyUser: profile.wallet === RootWallet.II,
+        hasEmail: true,
+      })
+    }
+  }, [profile, isLoading])
 
   switch (true) {
     case state.matches("SendVerificationEmail"):

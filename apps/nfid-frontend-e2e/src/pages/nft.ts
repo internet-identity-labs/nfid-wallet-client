@@ -38,7 +38,7 @@ export class Nft {
   }
 
   public async getNftName(token: string, collection: string) {
-    return $(`#nft_token_${token}_${collection}`)
+    return $(`//*[contains(@id, 'nft_token_${token}_${collection}')]`)
   }
 
   public async getNftStandard() {
@@ -67,7 +67,7 @@ export class Nft {
 
   public async openCollectibles() {
     await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-    const collectiblesTab = await $("#desktop #profile-collectibles")
+    const collectiblesTab = await $("#tab_NFTs")
     await collectiblesTab.waitForDisplayed({
       timeout: 5000,
     })

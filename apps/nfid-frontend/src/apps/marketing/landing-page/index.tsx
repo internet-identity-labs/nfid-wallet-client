@@ -84,7 +84,7 @@ export const HomeScreen = () => {
 
   const onContinue = useCallback(() => {
     return isAuthenticated
-      ? navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
+      ? navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
       : setIsAuthModalVisible(true)
   }, [isAuthenticated, navigate])
 

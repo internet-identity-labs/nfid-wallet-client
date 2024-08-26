@@ -1,7 +1,6 @@
 import clsx from "clsx"
+import iconClose from "packages/ui/src/atoms/icons/close.svg"
 import React from "react"
-
-import iconClose from "./close.svg"
 
 export interface IChip {
   onRemove?: (value: string) => void

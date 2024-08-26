@@ -1,5 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
+import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
 import { toast } from "react-toastify"
@@ -31,7 +32,6 @@ import {
 } from "frontend/state/authorization"
 
 import { getLegacyThirdPartyAuthSession } from "../../services"
-import { AuthAppMeta } from "../../ui/app-meta"
 import { PublicProfileButton } from "../public-profile-button"
 import { ApproveIcGetDelegationSdkResponse } from "./types"
 
@@ -297,12 +297,7 @@ export const AuthChooseAccount = ({
 
   return (
     <>
-      <AuthAppMeta
-        applicationLogo={appMeta?.logo}
-        applicationURL={appHost}
-        applicationName={appMeta?.name}
-        subTitle="Wallet permissions for"
-      />
+      <AuthAppMeta applicationURL={appHost} subTitle="Wallet permissions for" />
       {!authRequest.targets && (
         <div className="absolute right-5 top-2.5">
           <TooltipProvider>

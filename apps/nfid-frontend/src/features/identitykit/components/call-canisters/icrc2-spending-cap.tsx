@@ -52,7 +52,7 @@ const CallCanisterICRC2SpendingCap = ({
       balance={{
         address: metadata.address,
         symbol: metadata.symbol,
-        balance: metadata.balancePromise,
+        balance: metadata.balance,
         decimals: metadata.decimals,
       }}
     >

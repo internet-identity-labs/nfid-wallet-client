@@ -141,21 +141,9 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           </div>
         </div>
         <div className="flex items-center justify-between text-sm border-b border-gray-200 h-14">
-          <p>Network fee</p>
+          <p className="font-bold">Network fee</p>
           <div className="text-right">
             <p>
-              {nft
-                ? "$0.00"
-                : Boolean(rate) && (
-                    <TickerAmount
-                      symbol="ICP"
-                      value={Number(fee)}
-                      decimals={ICP_DECIMALS}
-                      usdRate={rate}
-                    />
-                  )}
-            </p>
-            <p className="text-xs text-gray-400">
               {nft ? (
                 "0.00"
               ) : (
@@ -166,24 +154,36 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                 />
               )}
             </p>
+            <p className="text-xs text-gray-400">
+              {nft
+                ? "0.00 USD"
+                : Boolean(rate) && (
+                    <TickerAmount
+                      symbol="ICP"
+                      value={Number(fee)}
+                      decimals={ICP_DECIMALS}
+                      usdRate={rate}
+                    />
+                  )}
+            </p>
           </div>
         </div>
         <div className="flex items-center justify-between text-sm h-14">
           <p className="font-bold">Total</p>
           <div className="text-right">
-            <p className="font-bold">
+            <p>
+              {amount
+                ? (Number(amount) + Number(WALLET_FEE_E8S)) / E8S
+                : "0.00"}{" "}
+              ICP
+            </p>
+            <p className="text-xs text-gray-400">
               {amount
                 ? toUSD(
                     (Number(amount) + Number(WALLET_FEE_E8S)) / E8S,
                     Number(rate),
                   )
-                : "$0.00"}
-            </p>
-            <p className="text-xs text-gray-400">
-              {amount
-                ? (Number(amount) + Number(WALLET_FEE_E8S)) / E8S
-                : "0.00"}{" "}
-              ICP
+                : "0.00 USD"}
             </p>
           </div>
         </div>

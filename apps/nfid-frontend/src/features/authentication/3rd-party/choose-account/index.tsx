@@ -359,7 +359,7 @@ export const AuthChooseAccount = ({
             {/* Legacy anonymous profiles */}
             {legacyAnonymousProfiles?.map((acc) => (
               <div
-                className="flex items-center h-5 mt-5 font-mono text-xs"
+                className="flex items-center h-5 mt-5 text-xs"
                 key={`legacy_persona_${acc.accountId}`}
               >
                 <RadioButton
@@ -380,7 +380,7 @@ export const AuthChooseAccount = ({
 
             {/* Anonymous profile */}
             {!legacyAnonymousProfiles?.length ? (
-              <div className="flex items-center h-5 mt-5 font-mono text-xs">
+              <div className="flex items-center h-5 mt-5 text-xs">
                 <RadioButton
                   id="profile_anonymous-1"
                   value="anonymous-1"
@@ -401,7 +401,7 @@ export const AuthChooseAccount = ({
 
             {/* Anonymous profile with derivation bug */}
             {!legacyAnonymousProfiles?.length && isDerivationBug ? (
-              <div className="flex items-center h-5 mt-4 font-mono text-xs">
+              <div className="flex items-center h-5 mt-4 text-xs">
                 <RadioButton
                   id="anonymous-2"
                   value="anonymous-2"

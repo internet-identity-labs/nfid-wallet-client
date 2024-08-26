@@ -94,17 +94,13 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         >
           <p
             className="text-[28px] leading-[40px] mb-[8px]"
-            id={
-              trimConcat("nft_token_", nft.getTokenName()) +
-              "_" +
-              trimConcat("", nft.getCollectionId())
-            }
+            id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
           >
             {nft.getTokenName()}
           </p>
           <p
             className="font-bold text-primaryButtonColor leading-[24px] mb-[20px]"
-            id={trimConcat("nft_collection_", nft.getCollectionId())}
+            id={`nft_collection_${nft.getCollectionId()}`}>
           >
             {nft.getCollectionName()}
           </p>
@@ -123,7 +119,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               <p className="text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
                 Standard
               </p>
-              <p>EXT</p>
+              <p id={"token-standard"}>EXT</p>
             </div>
             <div
               className={clsx(
@@ -147,7 +143,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               <p className="text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
                 Collection ID
               </p>
-              <p id={`nft_id_${nft.getCollectionId().replace(/\s/g, "")}`}>
+              <p id={"collection-id"}>
                 {nft.getCollectionId()}
               </p>
             </div>

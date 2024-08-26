@@ -1,4 +1,4 @@
-@nft-details @skip
+@nft-details
 Feature:Non Fungible Asset Details
   As a user, I want to see nft details
 
@@ -13,10 +13,10 @@ Feature:Non Fungible Asset Details
     And About starts with <about>
     And Asset preview type is <previewType>
     Examples:
-      | anchor | token                    | id                                          | standard  | collection_id               | about               | previewType |
-      | 31870  | ICPuppies Wearables #145 | 3s5hr-4ikor-uwiaa-aaaaa-cqabn-eaqca-aaaci-q | legacy1.5 | 4gbxl-byaaa-aaaak-aafuq-cai | ICPuppies Wearables | img         |
+      | anchor | token                    | id                                          | standard | collection_id               | about               | previewType |
+      | 31870  | ICPuppies Wearables #145 | 3s5hr-4ikor-uwiaa-aaaaa-cqabn-eaqca-aaaci-q | EXT      | 4gbxl-byaaa-aaaak-aafuq-cai | ICPuppies Wearables | img         |
 
-  @nft4
+  @nft4 @skip
   Scenario Outline: User should be able to see txs on NFT details page
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

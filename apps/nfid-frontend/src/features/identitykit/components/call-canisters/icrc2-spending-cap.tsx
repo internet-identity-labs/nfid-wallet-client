@@ -1,8 +1,7 @@
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import React from "react"
 
 import { Checkbox } from "@nfid-frontend/ui"
-
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 import { ICRC2Metadata } from "../../service/canister-calls-helpers/icrc2-approve"
 import { RPCPromptTemplate } from "../templates/prompt-template"

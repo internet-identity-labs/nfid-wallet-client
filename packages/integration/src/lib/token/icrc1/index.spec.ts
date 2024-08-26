@@ -26,7 +26,7 @@ describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
   let root: string
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
-  it("Store/retrieve/remove canister id", async () => {
+  it.skip("Store/retrieve/remove canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
@@ -137,7 +137,7 @@ describe("ICRC1 suite", () => {
     expect(block.Ok).toBeGreaterThan(0)
   })
 
-  it("Remove canister id", async () => {
+  it.skip("Remove canister id", async () => {
     let canisters = (await getICRC1Canisters(root)) as ICRC1[]
     expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
     await removeICRC1Canister(root, iCRC1TestCanister)

@@ -1,6 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import useSWR from "swr"
 
 import {
@@ -14,7 +15,6 @@ import { RPCPromptTemplate } from "frontend/features/identitykit/components/temp
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
-import { TickerAmount } from "frontend/ui/molecules/ticker-amount"
 
 export interface IRequestTransferProps {
   origin: string

@@ -1,96 +1,26 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-
-import { mockIdentityA } from "@nfid/integration"
-
-import { TransferArg } from "../../_ic_api/icrc1.d"
-import { ICRC1 } from "../../_ic_api/icrc1_registry.d"
-import { HTTPAccountResponse } from "../../_ic_api/identity_manager.d"
-import { iCRC1Registry, im, replaceActorIdentity } from "../../actors"
-import { generateDelegationIdentity } from "../../test-utils"
-import {
-  addICRC1Canister,
-  getICRC1Canisters,
-  getICRC1DataForUser,
-  getICRC1HistoryDataForUserPaginated,
-  ICRC1Data,
-  isICRC1Canister,
-  removeICRC1Canister,
-  transferICRC1,
-} from "./index"
+import {DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity";
+import {TransferArg} from "../../_ic_api/icrc1.d";
+import {generateDelegationIdentity, mockIdentityA} from "@nfid/integration";
+import {Principal} from "@dfinity/principal";
+import {icrc1TransactionHistoryService} from "@nfid/integration/token/icrc1/icrc1-transaction-history-service";
+import {transferICRC1} from "@nfid/integration/token/icrc1/index";
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
   let root: string
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
-  it.skip("Store/retrieve/remove canister id", async () => {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(mockedIdentity)
-    await replaceActorIdentity(iCRC1Registry, delegationIdentity)
-    await replaceActorIdentity(im, delegationIdentity)
-    await addICRC1Canister(iCRC1TestCanister, undefined)
-    await replaceActorIdentity(im, delegationIdentity)
-    const account = (await im.get_account()) as HTTPAccountResponse
-    root = account.data[0]!.principal_id
-    const canisters = (await getICRC1Canisters(root)) as ICRC1[]
-    expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
-  })
 
-  it.skip("Fail if incorrect index canister", async () => {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(mockedIdentity)
-    await replaceActorIdentity(iCRC1Registry, delegationIdentity)
-    await replaceActorIdentity(im, delegationIdentity)
-    const account = (await im.get_account()) as HTTPAccountResponse
-    const root = account.data[0]!.principal_id
-    try {
-      await isICRC1Canister(
-        "2ouva-viaaa-aaaaq-aaamq-cai",
-        root,
-        "sculj-2sjuf-dxqlm-dcv5y-hin5x-zfyvr-tzngf-bt5b5-dwhcc-zbsqf-rae",
-        "qhbym-qaaaa-aaaaa-aaafq-cai",
-      )
-      fail("Should throw error")
-    } catch (e: any) {
-      expect(e.message).toEqual(
-        "Ledger canister does not match index canister.",
-      )
-    }
-  })
-
-  it.skip("Get data", async () => {
-    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(mockedIdentity)
-    await replaceActorIdentity(iCRC1Registry, delegationIdentity)
-    await replaceActorIdentity(im, delegationIdentity)
-    const account = (await im.get_account()) as HTTPAccountResponse
-    const root = account.data[0]!.principal_id
-    const data = (await getICRC1DataForUser(
-      root,
-      "sculj-2sjuf-dxqlm-dcv5y-hin5x-zfyvr-tzngf-bt5b5-dwhcc-zbsqf-rae",
-    )) as Array<ICRC1Data>
-    const testICRC1 = data[0]
-    expect(testICRC1.balance).toBeGreaterThan(0)
-    expect(testICRC1.fee).toEqual(BigInt(10000))
-    expect(testICRC1.canisterId).toEqual(iCRC1TestCanister)
-    expect(testICRC1.decimals).toEqual(8)
-    expect(testICRC1.name).toEqual("ICPTestNfid")
-    expect(testICRC1.symbol).toEqual("ICPTestNfid")
-  })
 
   it("Get index data", async () => {
-    const data = await getICRC1HistoryDataForUserPaginated(
+    const data = await icrc1TransactionHistoryService.getICRC1IndexData(
       [
         {
           icrc1: {
             ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
-            index: ["2awyi-oyaaa-aaaaq-aaanq-cai"],
+            index: "2awyi-oyaaa-aaaaq-aaanq-cai",
           },
           blockNumberToStartFrom: BigInt(298680),
         },
@@ -137,11 +67,4 @@ describe("ICRC1 suite", () => {
     expect(block.Ok).toBeGreaterThan(0)
   })
 
-  it.skip("Remove canister id", async () => {
-    let canisters = (await getICRC1Canisters(root)) as ICRC1[]
-    expect(canisters.map((l) => l.ledger)).toContain(iCRC1TestCanister)
-    await removeICRC1Canister(root, iCRC1TestCanister)
-    canisters = (await getICRC1Canisters(root)) as ICRC1[]
-    expect(canisters.map((l) => l.ledger)).not.toContain(iCRC1TestCanister)
-  })
 })

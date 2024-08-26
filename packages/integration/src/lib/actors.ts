@@ -17,6 +17,8 @@ import { idlFactory as ecdsaSignerIDL } from "./_ic_api/ecdsa-signer"
 import { _SERVICE as EcdsaSigner } from "./_ic_api/ecdsa-signer.d"
 import { idlFactory as iCRC1RegistryIDL } from "./_ic_api/icrc1_registry"
 import { _SERVICE as ICRC1Registry } from "./_ic_api/icrc1_registry.d"
+import { idlFactory as iCRC1OracleIDL } from "./_ic_api/icrc1_oracle"
+import { _SERVICE as ICRC1Oracle } from "./_ic_api/icrc1_oracle.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.d"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity"
@@ -107,6 +109,11 @@ export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
 export const iCRC1Registry = actor<ICRC1Registry>(
   ICRC1_REGISTRY_CANISTER_ID,
   iCRC1RegistryIDL,
+)
+
+export const iCRC1OracleActor = actor<ICRC1Oracle>(
+  "ys266-uyaaa-aaaal-ajs4q-cai", //TODO stage/prod WIP
+  iCRC1OracleIDL,
 )
 
 export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {

@@ -7,6 +7,7 @@ import {icrc1Service} from "@nfid/integration/token/icrc1/icrc1-service";
 import {ICP_CANISTER_ID} from "@nfid/integration/token/constants";
 import {State} from "@nfid/integration/token/icrc1/enums";
 import BigNumber from "bignumber.js"
+import {nftService} from "src/integration/nft/nft-service";
 
 export class FtService {
   async getAllUserTokens(userPrincipal: Principal, page: number = 1, limit: number = 10): Promise<PaginatedResponse<FT>> {
@@ -39,16 +40,16 @@ export class FtService {
     let userTokens = await icrc1Service.getICRC1ActiveCanisters(userPrincipal.toText());
     let ft = userTokens.map((token) => new FTImpl(token));
     await Promise.all(ft.map(ft => ft.init(userPrincipal)))
-    await Promise.all(
-      ft.map((ft) =>
-         ft.getUSDBalanceFormatted()
-      )
-    );
-    let a =  ft
+    const [_, nftPrice] = await Promise.all([
+      Promise.all(ft.map(ft => ft.getUSDBalanceFormatted())),
+      nftService.getNFTsTotalPrice(userPrincipal),
+    ]);
+    let price = ft
       .map((ft) => ft.getUSDBalance())
       .filter((balance) => balance !== undefined)
       .reduce((acc: BigNumber, balance: BigNumber) => acc.plus(balance), BigNumber(0))
-    return a.toFixed(2) + " USD"
+    price = price.plus(nftPrice)
+    return price.toFixed(2) + " USD"
   }
 
 }

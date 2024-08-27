@@ -65,8 +65,7 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
                 <div className="overflow-hidden text-ellipsis whitespace-nowrap">
                   <p
                     className="text-sm font-semibold leading-[25px]"
-                    id={`token_${token.name
-                      .replace(/\s/g, "")}_currency`}
+                    id={`token_${token.name.replace(/\s/g, "")}_currency`}
                   >
                     {token.symbol}
                   </p>
@@ -83,14 +82,14 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
                 <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
                   <TickerAmount
                     symbol={token.symbol}
-                    value={Number(token.)}
-                    decimals={token.getTokenDecimals()}
+                    value={Number(100000)}
+                    decimals={8}
                   />
                 </span>
               </td>
               <td
                 className="pr-[10px]"
-                id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
+                id={`token_${token.name.replace(/\s/g, "")}_usd`}
               >
                 {/* {token.rate !== undefined ? (
                   <TickerAmount
@@ -127,20 +126,20 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
             <div className="flex items-center text-[#0B0E13]">
               <ApplicationIcon
                 className="w-6 h-6 mr-[13px]"
-                icon={token.getTokenLogo()}
-                appName={token.getTokenName()}
+                icon={token.logo}
+                appName={token.name}
               />
               <p className="flex text-sm leading-5 text-black items-left">
-                {token.getTokenSymbol()}
+                {token.symbol}
               </p>
             </div>
             <div className="text-right ml-auto mr-[20px]">
               <div className="text-sm leading-5">
-                <TickerAmount
+                {/* <TickerAmount
                   symbol={token.getTokenSymbol()}
                   value={Number(token.getTokenBalance())}
                   decimals={token.getTokenDecimals()}
-                />
+                /> */}
               </div>
               <div className="text-xs leading-3 text-gray-400">
                 {/* {token.rate !== undefined ? (

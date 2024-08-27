@@ -11,7 +11,7 @@ import { Loader } from "@nfid-frontend/ui"
 
 const ProfileAssetsPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
-  const { data: tokens = [], isLoading } = useSWR("tokens", fetchAllTokens)
+  //const { data: tokens = [], isLoading } = useSWR("tokens", fetchAllTokens)
   const { data: filteredTokens = [], isLoading: isFilterLoading } = useSWR(
     ["tokens", searchQuery],
     ([, query]) => getFilteredTokens(query),
@@ -21,10 +21,9 @@ const ProfileAssetsPage = () => {
     getActiveTokens,
   )
 
-  if (!tokens.length || isLoading || isFilterLoading || isActiveLoading)
-    return <Loader isLoading />
+  if (isFilterLoading || isActiveLoading) return <Loader isLoading />
 
-  console.log("1111", tokens[0].items[0].getTokenBalance(), isLoading)
+  //console.log("1111", tokens[0].items[0].getTokenBalance(), isLoading)
 
   return (
     <ProfileAssets

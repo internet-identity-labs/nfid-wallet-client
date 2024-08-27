@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 
 import { Copy, Dropdown, DropdownOption, IconCmpDots } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { FT } from "frontend/integration/ft/ft"
@@ -14,7 +15,7 @@ import { TokenToRemove } from ".."
 
 type ITokenDropdown = {
   option?: string
-  token: FT
+  token: ICRC1
   setTokenToRemove: (v: TokenToRemove) => void
 }
 
@@ -34,7 +35,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
     [navigate],
   )
 
-  if (!token.getTokenAddress()) return null
+  //if (!token.) return null
 
   return (
     <>
@@ -46,7 +47,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
         <DropdownOption
           label="Transactions"
           icon={HistoryIcon}
-          handler={navigateToTransactions(token.getTokenAddress())}
+          handler={navigateToTransactions("")}
         />
         <DropdownOption
           element={
@@ -55,7 +56,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
               className="h-[100%] flex-1 !text-black hover:!opacity-100"
               iconSize="!w-6"
               titleClassName="!ml-[12px] !text-black !text-sm text-left !font-normal"
-              value={token.getTokenAddress()}
+              value={""}
               copyTitle="Copy token address"
             />
           }
@@ -64,10 +65,10 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
           label="View on block explorer"
           icon={ExternalIcon}
           handler={() => {
-            window.open(token.getBlockExplorerLink(), "_blank")
+            window.open("", "_blank")
           }}
         />
-        {token.getTokenAddress() !== ICP_CANISTER_ID && (
+        {/* {token.getTokenAddress() !== ICP_CANISTER_ID && (
           <DropdownOption
             label="Remove token"
             icon={RemoveIcon}
@@ -79,7 +80,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
               })
             }}
           />
-        )}
+        )} */}
       </Dropdown>
     </>
   )

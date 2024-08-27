@@ -37,6 +37,7 @@ export class FtService {
       index: undefined,
       category: Category.Native,
       state: State.Active,
+      decimals: 8,
     })
     const chatToken = new FTImpl({
       name: "CHAT",
@@ -46,6 +47,7 @@ export class FtService {
       index: undefined,
       category: Category.Sns,
       state: State.Active,
+      decimals: 8,
     })
     const dkpToken = new FTImpl({
       name: "Dragginz",
@@ -55,6 +57,7 @@ export class FtService {
       index: undefined,
       category: Category.Sns,
       state: State.Inactive,
+      decimals: 8,
     })
     ft.push(icpToken)
     ft.push(chatToken)

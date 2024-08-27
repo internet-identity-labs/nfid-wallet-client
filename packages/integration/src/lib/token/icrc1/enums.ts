@@ -1,11 +1,11 @@
 export enum Category {
   Sns = "Sns",
   Known = "Known",
+  Native = "Native",
   Unknown = "Unknown",
   ChainFusionTestnet = "ChainFusionTestnet",
   ChainFusion = "ChainFusion",
   Community = "Community",
-  Native = "Native",
 }
 
 export enum State {

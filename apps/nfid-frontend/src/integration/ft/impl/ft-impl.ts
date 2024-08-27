@@ -1,11 +1,10 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-// import { TokenCategory } from "src/integration/ft/enum/enums"
 import { FT } from "src/integration/ft/ft"
 import { e8s } from "src/integration/nft/constants/constants"
 
-import { exchangeRateService, ICRC1TypeOracle } from "@nfid/integration"
-import { Category } from "@nfid/integration/token/icrc1/enums"
+import { exchangeRateService } from "@nfid/integration"
+import { Category, State } from "@nfid/integration/token/icrc1/enums"
 import { icrc1Service } from "@nfid/integration/token/icrc1/icrc1-service"
 import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
@@ -15,7 +14,7 @@ export class FTImpl implements FT {
   private readonly logo: string | undefined
   private readonly tokenName: string
   private tokenBalance: bigint | undefined
-  private usdBalance: string | undefined
+  private usdBalance: BigNumber | undefined
   private index: string | undefined
   private symbol: string
   private decimals: number | undefined
@@ -62,8 +61,8 @@ export class FTImpl implements FT {
   getTokenBalance(): string | undefined {
     return this.tokenBalance
       ? new BigNumber(this.tokenBalance.toString())
-          .dividedBy(this.decimals!)
-          .toFormat(2, BigNumber.ROUND_DOWN, {
+          .dividedBy(new BigNumber(10).pow(this.decimals!))
+          .toFormat({
             groupSeparator: "",
             decimalSeparator: ".",
           }) + ` ${this.symbol}`
@@ -79,18 +78,32 @@ export class FTImpl implements FT {
   }
 
   async getUSDBalance(): Promise<string | undefined> {
-    //todo
-    if (this.usdBalance) {
-      const usdIcp: BigNumber = exchangeRateService.getICP2USD()
-      // this.usdBalance = usdIcp
-      //   .multipliedBy(this.)
-      //   .dividedBy(e8s)
-      //   .toNumber()
+    if (!this.usdBalance) {
+      const usdPrice: BigNumber | undefined =
+        await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
+      if (!usdPrice) {
+        return undefined
+      }
+      const tokenAmount = exchangeRateService.parseTokenAmount(
+        this.tokenBalance,
+        this.decimals,
+      )
+      console.log(tokenAmount.toNumber())
+      console.log(usdPrice.toNumber())
+      let a = usdPrice.multipliedBy(tokenAmount).dividedBy(e8s).toNumber()
+      console.log(a)
     }
-    return undefined
   }
 
-  hideToken(): Promise<boolean> {
-    return Promise.resolve(false)
+  hideToken(): Promise<void> {
+    return icrc1Service.changeCanisterState(this.tokenAddress, State.Inactive)
+  }
+
+  showToken(): Promise<void> {
+    return icrc1Service.changeCanisterState(this.tokenAddress, State.Active)
+  }
+
+  getUSDBalanceNumber(): BigNumber | undefined {
+    return this.usdBalance
   }
 }

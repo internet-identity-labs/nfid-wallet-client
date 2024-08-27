@@ -119,7 +119,6 @@ export class ICRC1Service {
     canisters: Array<string>,
     publicKeyInPrincipal: string,
   ): Promise<Array<ICRC1Data>> {
-    const priceList: TokenPrice[] = await new PriceService().getPriceFull()
     return Promise.all(
       canisters.map(async (canisterId) => {
         const actor = Agent.Actor.createActor<ICRC1ServiceIDL>(icrc1IDL, {
@@ -137,6 +136,7 @@ export class ICRC1Service {
         let decimals = 0
         let fee = BigInt(0)
 
+        //TODO one day
         for (let i = 0; i < metadata.length; i++) {
           const data = metadata[i]
           if (data[0] === "icrc1:name") {
@@ -156,28 +156,6 @@ export class ICRC1Service {
             logo = val.Text
           }
         }
-        const priceInToken = priceList[symbol as any]
-
-        const priceInUsd = priceInToken
-          ? Number((1 / Number(priceInToken)).toFixed(2))
-          : undefined
-
-        const balanceNumber = priceInUsd
-          ? (Number(balance) / Math.pow(10, Number(decimals))) * priceInUsd
-          : undefined
-
-        const feeNumber = priceInUsd
-          ? (Number(fee) / Math.pow(10, Number(decimals))) * priceInUsd
-          : undefined
-
-        const isListedOnUSD = typeof priceInToken !== "undefined"
-
-        let roundedBalanceNumber: number | undefined = undefined
-
-        if (isListedOnUSD) {
-          roundedBalanceNumber =
-            balanceNumber === 0 ? 0 : Number(balanceNumber?.toFixed(2))
-        }
 
         return {
           owner: Principal.fromText(publicKeyInPrincipal),
@@ -185,12 +163,8 @@ export class ICRC1Service {
           canisterId,
           decimals,
           fee,
-          feeInUsd: Number(feeNumber?.toFixed(2)),
-          rate: priceInUsd,
           name,
           symbol,
-          network: NETWORK,
-          priceInUsd: roundedBalanceNumber,
           logo: logo,
         }
       }),

@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
@@ -13,7 +14,7 @@ export class FtService {
     userPrincipal: Principal,
     page: number = 1,
     limit: number = 10,
-  ): Promise<PaginatedResponse<FT>[]> {
+  ): Promise<PaginatedResponse<FT>> {
     let userTokens = await icrc1Service.getICRC1ActiveCanisters(
       userPrincipal.toText(),
     )
@@ -65,17 +66,35 @@ export class FtService {
     const endIndex = Math.min(startIndex + limit, totalItems)
 
     const items = ft.slice(startIndex, endIndex)
-
     await Promise.all(items.map((item) => item.init(userPrincipal)))
 
-    return [
-      {
-        items,
-        currentPage: page,
-        totalPages,
-        totalItems,
-      },
-    ]
+    return {
+      items,
+      currentPage: page,
+      totalPages,
+      totalItems,
+    }
+  }
+
+  async getTotalUSDBalance(
+    userPrincipal: Principal,
+  ): Promise<string | undefined> {
+    let userTokens = await icrc1Service.getICRC1ActiveCanisters(
+      userPrincipal.toText(),
+    )
+    let ft = userTokens.map((token) => new FTImpl(token))
+    await Promise.all(ft.map((ft) => ft.init(userPrincipal)))
+    await Promise.all(ft.map((ft) => ft.getUSDBalance()))
+    console.log(ft)
+
+    let a = ft
+      .map((ft) => ft.getUSDBalanceNumber())
+      .filter((balance) => balance !== undefined)
+      .reduce(
+        (acc: BigNumber, balance: BigNumber) => acc.plus(balance),
+        BigNumber(0),
+      )
+    return a.toFixed(2) + " USD"
   }
 }
 

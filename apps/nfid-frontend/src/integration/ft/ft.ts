@@ -23,7 +23,10 @@ export interface FT {
 
   getBlockExplorerLink(): string
 
-  hideToken(): Promise<boolean>
+  hideToken(): Promise<void>
+
+  showToken(): Promise<void>
+
   //TODO
   //getTransactionHistory(): Promise<TransactionRecord[]>
 }

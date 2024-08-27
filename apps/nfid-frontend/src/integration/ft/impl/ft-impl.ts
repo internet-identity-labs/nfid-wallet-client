@@ -5,7 +5,6 @@ import {icrc1Service} from "@nfid/integration/token/icrc1/icrc1-service";
 import {Principal} from "@dfinity/principal";
 import {Category, State} from "@nfid/integration/token/icrc1/enums";
 import BigNumber from "bignumber.js"
-import {e8s} from "src/integration/nft/constants/constants";
 
 export class FTImpl implements FT {
   private readonly tokenAddress: string;
@@ -44,14 +43,11 @@ export class FTImpl implements FT {
   }
 
   getTokenBalance(): string | undefined {
-    return this.tokenBalance
-      ? new BigNumber(this.tokenBalance.toString())
-      .dividedBy(new BigNumber(10).pow(this.decimals!))
-      .toFormat({
-        groupSeparator: "",
-        decimalSeparator: ".",
-      }) + ` ${this.symbol}`
-      : undefined;
+    const tokenAmount = exchangeRateService.parseTokenAmount(Number(this.tokenBalance), this.decimals)
+    return this.tokenBalance ? tokenAmount.toFormat({
+      groupSeparator: "",
+      decimalSeparator: ".",
+    }) + ` ${this.symbol}` : undefined
   }
 
   getTokenCategory(): Category {
@@ -68,16 +64,11 @@ export class FTImpl implements FT {
       if (!usdPrice) {
         return undefined
       }
-      const tokenAmount = exchangeRateService.parseTokenAmount(this.tokenBalance, this.decimals)
-      console.log(tokenAmount.toNumber())
-      console.log(usdPrice.toNumber())
-     let a =  usdPrice
-        .multipliedBy(tokenAmount)
-        .dividedBy(e8s)
-        .toNumber()
-        console.log(a)
-
-  }
+      const tokenAmount = exchangeRateService.parseTokenAmount(Number(this.tokenBalance), this.decimals)
+      this.usdBalance = tokenAmount
+        .multipliedBy(usdPrice)
+    }
+    return this.usdBalance.toFixed(2) + " USD"
   }
 
   hideToken(): Promise<void> {

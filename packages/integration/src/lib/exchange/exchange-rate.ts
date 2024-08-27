@@ -60,18 +60,13 @@ export class ExchangeRateService {
     amount: NumberType | null | undefined,
     decimals: number | bigint = 8,
   ): BigNumber {
-    console.log(amount)
     if (amount !== 0 && !amount) return new BigNumber(0)
-    console.log(2)
 
     if (typeof amount === "bigint") amount = Number(amount)
-    console.log(3)
 
     if (typeof decimals === "bigint") decimals = Number(decimals)
-    console.log(4)
 
     if (Number.isNaN(Number(amount))) return new BigNumber(String(amount))
-    console.log(25)
 
     return new BigNumber(String(amount)).dividedBy(10 ** Number(decimals))
   }

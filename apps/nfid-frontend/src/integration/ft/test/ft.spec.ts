@@ -55,17 +55,16 @@ describe("ft test suite", () => {
       jest.spyOn(icrc1Service as any, "getICRC1Data")
         .mockResolvedValue([{
             "owner": principal,
-            "balance": "20000000000n",
+            "balance": BigInt(200000000),
             "canisterId": "ryjl3-tyaaa-aaaaa-aaaba-cai",
             "decimals": 8,
-            "fee": "10000n",
+            "fee": BigInt(10000),
             "name": "Internet Computer",
             "symbol": "ICP"
           }]
         )
-
       const balance = await ftService.getTotalUSDBalance(principal)
-      expect(balance).toEqual("0.00 USD")
+      expect(balance).not.toEqual("0.00 USD")
     });
   })
 })

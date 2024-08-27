@@ -44,8 +44,6 @@ export class FtService {
          ft.getUSDBalance()
       )
     );
-    console.log(ft)
-
     let a =  ft
       .map((ft) => ft.getUSDBalanceNumber())
       .filter((balance) => balance !== undefined)

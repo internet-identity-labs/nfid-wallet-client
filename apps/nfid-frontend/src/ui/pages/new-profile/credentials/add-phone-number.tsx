@@ -1,11 +1,11 @@
 import clsx from "clsx"
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React, { Dispatch, SetStateAction } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import { Input, phoneRules } from "@nfid-frontend/ui"
 
 import { Button } from "frontend/ui/atoms/button"
-import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 interface IProfileAddPhoneNumber {

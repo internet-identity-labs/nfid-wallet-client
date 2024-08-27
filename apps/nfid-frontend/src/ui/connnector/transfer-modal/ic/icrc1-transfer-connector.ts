@@ -49,7 +49,7 @@ export class ICRC1TransferConnector
       title: token?.name,
       icon: token?.logo,
       blockchain: Blockchain.IC,
-      addressPlaceholder: "Recipient IC address or principal",
+      addressPlaceholder: "Recipient wallet address or account ID",
       toPresentation,
       transformAmount: (value: string) => {
         if (!token) return

@@ -2,8 +2,9 @@ import clsx from "clsx"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import React, { useState } from "react"
 
+import { Loader } from "@nfid-frontend/ui"
+
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
-import { Loader } from "frontend/ui/atoms/loader"
 import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
 
 import AssetDropdown from "./asset-dropdown"

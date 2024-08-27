@@ -4,7 +4,7 @@ import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { useCallback, useContext } from "react"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { Loader, Tooltip } from "@nfid-frontend/ui"
 import { Application, getWalletName } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
@@ -12,7 +12,6 @@ import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types
 import { link } from "frontend/integration/entrepot"
 import { ProfileContext } from "frontend/provider"
 import { Copy } from "frontend/ui/atoms/copy"
-import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 

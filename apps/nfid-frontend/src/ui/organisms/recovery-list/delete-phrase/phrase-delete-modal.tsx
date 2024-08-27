@@ -2,10 +2,10 @@ import clsx from "clsx"
 import React, { useState } from "react"
 import { toast } from "react-toastify"
 
+import { Loader } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 
 import { Button } from "frontend/ui/atoms/button"
-import { Loader } from "frontend/ui/atoms/loader"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 interface IRecoveryPhraseDeleteModal

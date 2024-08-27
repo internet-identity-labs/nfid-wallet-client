@@ -3,7 +3,7 @@ import { format } from "date-fns"
 import produce from "immer"
 import React from "react"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { Loader, Tooltip } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { LegacyDevice } from "frontend/integration/identity-manager/devices/state"
@@ -12,7 +12,6 @@ import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { InfoIcon } from "frontend/ui/atoms/icons/info"
 import { PencilIcon } from "frontend/ui/atoms/icons/pencil"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
-import { Loader } from "frontend/ui/atoms/loader"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 

@@ -52,7 +52,7 @@ export const icTransferConnector = new ICTransferConnector({
   feeCurrency: NativeToken.ICP,
   blockchain: Blockchain.IC,
   title: "Internet Computer",
-  addressPlaceholder: "Recipient IC address or principal",
+  addressPlaceholder: "Recipient wallet address or account ID",
   type: TransferModalType.FT,
   isNativeToken: true,
   duration: "10 sec",

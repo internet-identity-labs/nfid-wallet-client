@@ -58,7 +58,7 @@ export class FTImpl implements FT {
     return this.tokenName;
   }
 
-  async getUSDBalance(): Promise<string | undefined> {
+  async getUSDBalanceFormatted(): Promise<string | undefined> {
     if (!this.usdBalance) {
       const usdPrice: BigNumber | undefined = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
       if (!usdPrice) {
@@ -79,7 +79,7 @@ export class FTImpl implements FT {
     return icrc1Service.changeCanisterState(this.tokenAddress, State.Active)
   }
 
-  getUSDBalanceNumber(): BigNumber | undefined {
+  getUSDBalance(): BigNumber | undefined {
     return this.usdBalance
   }
 }

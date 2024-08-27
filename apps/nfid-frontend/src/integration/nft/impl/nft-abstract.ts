@@ -83,16 +83,15 @@ export abstract class NftImpl implements NFT {
   }
 
   getTokenFloorPriceUSDFormatted(): string | undefined {
-    if (this.tokenFloorPriceICP) {
-      const usdIcp: BigNumber = exchangeRateService.getICP2USD()
-      this.tokenFloorPriceUSD = usdIcp
-        .multipliedBy(this.tokenFloorPriceICP)
-        .dividedBy(e8s)
-        .toNumber()
-    }
+    this.setUpPrice()
     return this.tokenFloorPriceUSD
       ? this.tokenFloorPriceUSD.toFixed(2) + " USD"
       : undefined
+  }
+
+  getTokenFloorPriceUSD(): number | undefined {
+    this.setUpPrice()
+    return this.tokenFloorPriceUSD
   }
 
   abstract getDetails(): Promise<NFTDetails>
@@ -118,6 +117,16 @@ export abstract class NftImpl implements NFT {
       })
     } else {
       return Promise.resolve(this.assetPreview)
+    }
+  }
+
+  private setUpPrice() {
+    if (this.tokenFloorPriceICP) {
+      const usdIcp: BigNumber = exchangeRateService.getICP2USD()
+      this.tokenFloorPriceUSD = usdIcp
+        .multipliedBy(this.tokenFloorPriceICP)
+        .dividedBy(e8s)
+        .toNumber()
     }
   }
 }

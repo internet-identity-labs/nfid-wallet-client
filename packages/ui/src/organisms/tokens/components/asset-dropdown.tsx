@@ -15,7 +15,7 @@ import { TokenToRemove } from ".."
 
 type ITokenDropdown = {
   option?: string
-  token: ICRC1
+  token: FT
   setTokenToRemove: (v: TokenToRemove) => void
 }
 
@@ -35,7 +35,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
     [navigate],
   )
 
-  //if (!token.) return null
+  if (!token.getTokenAddress()) return null
 
   return (
     <>
@@ -47,7 +47,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
         <DropdownOption
           label="Transactions"
           icon={HistoryIcon}
-          handler={navigateToTransactions("")}
+          handler={navigateToTransactions(token.getTokenAddress())}
         />
         <DropdownOption
           element={
@@ -56,7 +56,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
               className="h-[100%] flex-1 !text-black hover:!opacity-100"
               iconSize="!w-6"
               titleClassName="!ml-[12px] !text-black !text-sm text-left !font-normal"
-              value={""}
+              value={token.getTokenAddress()}
               copyTitle="Copy token address"
             />
           }
@@ -65,10 +65,10 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
           label="View on block explorer"
           icon={ExternalIcon}
           handler={() => {
-            window.open("", "_blank")
+            window.open(token.getBlockExplorerLink(), "_blank")
           }}
         />
-        {/* {token.getTokenAddress() !== ICP_CANISTER_ID && (
+        {token.getTokenAddress() !== ICP_CANISTER_ID && (
           <DropdownOption
             label="Remove token"
             icon={RemoveIcon}
@@ -80,7 +80,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
               })
             }}
           />
-        )} */}
+        )}
       </Dropdown>
     </>
   )

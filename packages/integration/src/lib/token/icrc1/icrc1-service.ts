@@ -107,7 +107,6 @@ export class ICRC1Service {
         symbol: icrc1.symbol,
         logo: icrc1.logo[0],
         index: icrc1.index[0],
-        //decimals: icrc1.,
         state:
           registry === undefined ? State.Inactive : mapState(registry.state),
         category: mapCategory(icrc1.category),

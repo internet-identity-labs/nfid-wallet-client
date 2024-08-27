@@ -10,7 +10,6 @@ export interface ICRC1 {
   index: string | undefined
   symbol: string
   state: State
-  decimals: number | undefined
 }
 
 export class ICRC1Error extends Error {}

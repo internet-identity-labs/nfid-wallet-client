@@ -18,21 +18,19 @@ export type TokenToRemove = {
 }
 
 interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
-  tokens: ICRC1[]
-  filteredTokens: ICRC1[]
-  activeTokens: ICRC1[]
+  tokens: FT[]
   setSearchQuery: (v: string) => void
+  filteredTokens: ICRC1[]
 }
 
 const ProfileAssets: FC<ProfileAssetsProps> = ({
   tokens,
   filteredTokens,
-  activeTokens,
   setSearchQuery,
 }) => {
   const [tokenToRemove, setTokenToRemove] = useState<TokenToRemove | null>(null)
 
-  console.log("123123", tokens, activeTokens, filteredTokens)
+  console.log("123123", tokens)
 
   return (
     <div>
@@ -54,42 +52,40 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
           {tokens.map((token, index) => (
             <tr
               key={`token_${index}`}
-              id={`token_${token.name.replace(/\s+/g, "")}`}
+              id={`token_${token.getTokenName().replace(/\s+/g, "")}`}
             >
               <td className="flex items-center h-16">
                 <ApplicationIcon
                   className="mr-[12px]"
                   icon={"icon"}
-                  appName={token.name}
+                  appName={token.getTokenName()}
                 />
                 <div className="overflow-hidden text-ellipsis whitespace-nowrap">
                   <p
                     className="text-sm font-semibold leading-[25px]"
-                    id={`token_${token.name.replace(/\s/g, "")}_currency`}
+                    id={`token_${token
+                      .getTokenName()
+                      .replace(/\s/g, "")}_currency`}
                   >
-                    {token.symbol}
+                    {token.getTokenSymbol()}
                   </p>
                   <p className="text-secondary text-xs leading-[20px]">
-                    {token.symbol}
+                    {token.getTokenSymbol()}
                   </p>
                 </div>
               </td>
-              <td>{token.category}</td>
+              <td>{token.getTokenName()}</td>
               <td
                 className="pr-[10px]"
-                id={`token_${token.name.replace(/\s/g, "")}_balance`}
+                id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
               >
                 <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-                  <TickerAmount
-                    symbol={token.symbol}
-                    value={Number(100000)}
-                    decimals={8}
-                  />
+                  {token.getTokenBalance()}
                 </span>
               </td>
               <td
                 className="pr-[10px]"
-                id={`token_${token.name.replace(/\s/g, "")}_usd`}
+                id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
               >
                 {/* {token.rate !== undefined ? (
                   <TickerAmount
@@ -126,11 +122,11 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
             <div className="flex items-center text-[#0B0E13]">
               <ApplicationIcon
                 className="w-6 h-6 mr-[13px]"
-                icon={token.logo}
-                appName={token.name}
+                icon={token.getTokenLogo()}
+                appName={token.getTokenName()}
               />
               <p className="flex text-sm leading-5 text-black items-left">
-                {token.symbol}
+                {token.getTokenSymbol()}
               </p>
             </div>
             <div className="text-right ml-auto mr-[20px]">

@@ -17,7 +17,7 @@ const getPrincipal = async () => {
 export const fetchAllTokens = async () => {
   const { principal } = await getPrincipal()
   const data = await ftService.getAllUserTokens(principal)
-  return data
+  return data.items
 }
 
 export const getActiveTokens = async () => {

@@ -71,6 +71,7 @@ export default function IdentityKitRPCCoordinator() {
           <RPCComponentError
             onRetry={() => send({ type: "TRY_AGAIN" })}
             onCancel={() => send({ type: "ON_CANCEL" })}
+            args={state.context.componentData?.args}
             error={state.context.error}
             request={state.context.activeRequest}
           />

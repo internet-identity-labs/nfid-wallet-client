@@ -9,40 +9,40 @@ export interface CallCanisterDetailsProps {
   args: string
 }
 
+export const renderArgs = (args: unknown) => {
+  if (args instanceof Object) {
+    return Object.entries(args as { [key: string]: unknown }).map(
+      ([key, value]) => (
+        <div key={`argument_${key}`} className="grid grid-cols-[180px,1fr]">
+          <div className="ml-3">{key}</div>
+          <div className="">
+            {JSON.stringify(
+              value,
+              (_, value) =>
+                typeof value === "bigint" ? value.toString() : value,
+              0,
+            )}
+          </div>
+        </div>
+      ),
+    )
+  }
+
+  const value = JSON.stringify(
+    args,
+    (_, value) => (typeof value === "bigint" ? value.toString() : value),
+    2,
+  )
+
+  return <div>{value}</div>
+}
+
 export const CallCanisterDetails = ({
   args,
   canisterId,
   sender,
 }: CallCanisterDetailsProps) => {
   const [showDetails, setShowDetails] = React.useState(false)
-
-  const renderArgs = (args: unknown) => {
-    if (args instanceof Object) {
-      return Object.entries(args as { [key: string]: unknown }).map(
-        ([key, value]) => (
-          <div key={`argument_${key}`} className="grid grid-cols-[180px,1fr]">
-            <div className="ml-3">{key}</div>
-            <div className="">
-              {JSON.stringify(
-                value,
-                (_, value) =>
-                  typeof value === "bigint" ? value.toString() : value,
-                0,
-              )}
-            </div>
-          </div>
-        ),
-      )
-    }
-
-    const value = JSON.stringify(
-      args,
-      (_, value) => (typeof value === "bigint" ? value.toString() : value),
-      2,
-    )
-
-    return <div>{value}</div>
-  }
 
   return (
     <>

@@ -10,6 +10,7 @@ import { IDL } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
 import crypto from "crypto"
 
+import { localStorageTTL } from "../util/local-strage-ttl"
 import { verifyCertification } from "./cert-verification"
 import { getLookupResultValue } from "./cert-verification/utils"
 
@@ -17,6 +18,10 @@ export interface CertifiedResponse {
   certificate: Uint8Array | number[]
   witness: Uint8Array | number[]
   response: Array<string>
+}
+
+export interface ICRC28Response {
+  trusted_origins: Array<string>
 }
 
 export async function validateTargets(targets: string[], origin: string) {
@@ -34,7 +39,15 @@ export async function validateTargets(targets: string[], origin: string) {
         ],
         ["query"],
       ),
-      get_trusted_origins: IDL.Func([], [IDL.Vec(IDL.Text)], []),
+      icrc28_trusted_origins: IDL.Func(
+        [],
+        [
+          IDL.Record({
+            trusted_origins: IDL.Vec(IDL.Text),
+          }),
+        ],
+        [],
+      ),
     })
 
   const uncertifiedTargets: string[] = []
@@ -65,12 +78,20 @@ export async function validateTargets(targets: string[], origin: string) {
       agent,
       canisterId,
     })
-    const result = (await actor["get_trusted_origins"]()) as string[]
-    if (!result.includes(origin)) {
+    const cacheKey = `trusted_origins_${canisterId}`
+    const cachedTrOrigins = localStorageTTL.getItem(cacheKey)
+    if (cachedTrOrigins) {
+      if (cachedTrOrigins.includes(origin)) {
+        return
+      }
+    }
+    const result = (await actor["icrc28_trusted_origins"]()) as ICRC28Response
+    if (!result.trusted_origins.includes(origin)) {
       throw new Error(
         `Target canister ${canisterId} does not support "${origin}"`,
       )
     }
+    localStorageTTL.setItem(cacheKey, result.trusted_origins, 24)
   })
 
   await Promise.all(promises)

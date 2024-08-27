@@ -102,10 +102,10 @@ const machineConfig = {
                 data: (context: IdentityKitRPCMachineContext) =>
                   ({
                     authRequest: {
-                      hostname: context.activeRequestMetadata?.origin,
+                      hostname: context.activeRequest?.origin,
                     },
                     appMeta: {
-                      url: context.activeRequestMetadata?.origin,
+                      url: context.activeRequest?.origin,
                     },
                   } as AuthenticationContext),
                 onDone: [

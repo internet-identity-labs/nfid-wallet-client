@@ -4,7 +4,6 @@ import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-sel
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import React, { useState } from "react"
 import { toast } from "react-toastify"
-import useSWR from "swr"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
 import {
@@ -14,7 +13,6 @@ import {
 
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/auth-selection/email-flow/machine"
-import { fetchProfile } from "frontend/integration/identity-manager"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import {
   LoginEventHandler,
@@ -28,15 +26,16 @@ import { AuthenticationMachineActor } from "./root-machine"
 
 export default function AuthenticationCoordinator({
   actor,
+  isIdentityKit = false,
 }: {
   actor: AuthenticationMachineActor
+  isIdentityKit?: boolean
 }) {
   const [state, send] = useActor(actor)
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const [is2FALoading, setIs2FALoading] = React.useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] =
     React.useState(false)
-  const { data: profile, mutate } = useSWR("profile", fetchProfile)
 
   // Track on unmount
   React.useEffect(() => {
@@ -50,7 +49,6 @@ export default function AuthenticationCoordinator({
 
   const handleAuth2FAMount = () => {
     authenticationTracking.loaded2fa()
-    mutate()
   }
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
@@ -124,6 +122,7 @@ export default function AuthenticationCoordinator({
     case state.matches("AuthSelection"):
       return (
         <AuthSelection
+          isIdentityKit={isIdentityKit}
           onSelectEmailAuth={(email: string) => {
             authenticationTracking.initiated({
               authSource: "email",
@@ -163,6 +162,7 @@ export default function AuthenticationCoordinator({
     case state.matches("EmailAuthentication"):
       return (
         <AuthEmailFlowCoordinator
+          isIdentityKit={isIdentityKit}
           actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
         />
       )
@@ -179,10 +179,11 @@ export default function AuthenticationCoordinator({
     case state.matches("TwoFA"):
       return (
         <Auth2FA
+          email={state.context.email2FA}
+          isIdentityKit={isIdentityKit}
           appMeta={state.context?.appMeta}
           handleAuth={handle2FAAuth}
           isLoading={is2FALoading}
-          email={profile?.email}
           onMounted={handleAuth2FAMount}
         />
       )

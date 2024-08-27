@@ -21,10 +21,7 @@ export interface ICRC1Data {
   symbol: string
   decimals: number
   fee: bigint
-  feeInUsd: number | undefined
-  rate: number | undefined
   canisterId: string
-  network: string
   logo: string | undefined
 }
 

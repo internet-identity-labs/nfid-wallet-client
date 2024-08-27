@@ -80,7 +80,8 @@ export const Success: React.FC<SuccessProps> = ({
             alt="assetImg"
             src={assetImg || NoIcon}
             className={clsx(
-              "absolute h-[120px] w-[120px] object-contain -mt-[123px] ml-[1px] rounded-full object-center",
+              "absolute h-[90px] w-[90px] object-contain rounded-full object-center",
+              "mx-auto top-[155px] ml-[1px]",
               isAssetPadding && "p-4",
             )}
           />

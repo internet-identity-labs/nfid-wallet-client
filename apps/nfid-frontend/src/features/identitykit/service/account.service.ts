@@ -9,7 +9,7 @@ import {
 
 import { truncateString } from "@nfid-frontend/utils"
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
-import { authState, getBalance } from "@nfid/integration"
+import { authState, getBalance, hasOwnProperty, im } from "@nfid/integration"
 
 import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
@@ -28,16 +28,18 @@ export const accountService = {
     const publicProfile = this.getPublicProfile()
     let anonymousProfiles: Account[] = []
 
-    const legacyProfiles = await this.getLegacyAnonymousProfiles(origin)
-    anonymousProfiles.push(...legacyProfiles)
+    const account = await im.get_account()
 
-    if (!legacyProfiles.length) {
-      const anonymousProfile = await this.getAnonymousProfiles(
-        origin,
-        derivationOrigin,
-      )
-      anonymousProfiles.push(...anonymousProfile)
+    if (hasOwnProperty(account.data[0]!.wallet, "II")) {
+      const legacyProfiles = await this.getLegacyAnonymousProfiles(origin)
+      anonymousProfiles.push(...legacyProfiles)
     }
+
+    const anonymousProfile = await this.getAnonymousProfiles(
+      origin,
+      derivationOrigin,
+    )
+    anonymousProfiles.push(...anonymousProfile)
 
     return {
       public: await publicProfile,

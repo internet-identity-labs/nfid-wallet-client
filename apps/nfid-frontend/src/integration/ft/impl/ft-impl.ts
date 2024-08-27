@@ -1,11 +1,9 @@
 import {FT} from "src/integration/ft/ft";
-import {TokenCategory} from "src/integration/ft/enum/enums";
-import {exchangeRateService, ICRC1TypeOracle} from "@nfid/integration";
+import {exchangeRateService} from "@nfid/integration";
 import {ICRC1} from "@nfid/integration/token/icrc1/types";
 import {icrc1Service} from "@nfid/integration/token/icrc1/icrc1-service";
 import {Principal} from "@dfinity/principal";
-import {Category} from "@nfid/integration/token/icrc1/enums";
-import {e8s} from "src/integration/nft/constants/constants";
+import {Category, State} from "@nfid/integration/token/icrc1/enums";
 import BigNumber from "bignumber.js"
 
 export class FTImpl implements FT {
@@ -55,7 +53,7 @@ export class FTImpl implements FT {
       : undefined
   }
 
-  getTokenCategory(): TokenCategory {
+  getTokenCategory(): Category {
    return this.tokenCategory;
   }
 
@@ -72,11 +70,14 @@ export class FTImpl implements FT {
       //   .dividedBy(e8s)
       //   .toNumber()
     }
-    return Promise<undefined>
+    return Promise.resolve(undefined)
   }
 
-  hideToken(): Promise<boolean> {
-   return Promise.resolve(false);
+  hideToken(): Promise<void> {
+   return icrc1Service.changeCanisterState(this.tokenAddress, State.Inactive)
   }
 
+  showToken(): Promise<void> {
+   return icrc1Service.changeCanisterState(this.tokenAddress, State.Active)
+  }
 }

@@ -1,12 +1,12 @@
-import {TokenCategory} from "src/integration/ft/enum/enums";
 import {Principal} from "@dfinity/principal";
+import {Category} from "@nfid/integration/token/icrc1/enums";
 
 export interface FT {
   init(principal: Principal): Promise<FT>
 
   getTokenName(): string
 
-  getTokenCategory(): TokenCategory
+  getTokenCategory(): Category
 
   getTokenBalance(): string | undefined
 
@@ -16,7 +16,10 @@ export interface FT {
 
   getBlockExplorerLink(): string
 
-  hideToken(): Promise<boolean>
+  hideToken(): Promise<void>
+
+  showToken(): Promise<void>
+
   //TODO
   //getTransactionHistory(): Promise<TransactionRecord[]>
 

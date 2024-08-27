@@ -24,7 +24,7 @@ describe("ICRC1 suite", () => {
     await replaceActorIdentity(im, delegationIdentity)
     const edId = Ed25519KeyIdentity.generate()
     const icrc1Data: ICRC1UserData = {
-      category: Category.Known,
+      category: Category.Unknown,
       index: "2awyi-oyaaa-aaaaq-aaanq-cai",
       ledger: edId.getPrincipal().toText(),
       logo: "Some logo",

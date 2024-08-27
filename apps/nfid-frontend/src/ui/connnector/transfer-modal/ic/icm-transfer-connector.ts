@@ -153,7 +153,7 @@ export abstract class ICMTransferConnector<
     return Promise.resolve(identity.getPrincipal().toString())
   }
 
-  private getAccountIdentifier(address: string): string {
+  getAccountIdentifier(address: string): string {
     if (addressValidationService.isValidAccountIdentifier(address))
       return address
 

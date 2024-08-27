@@ -1,20 +1,22 @@
 import { useMachine } from "@xstate/react"
-import React, { useMemo } from "react"
+import { useMemo } from "react"
 
-import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
+import { BlurredLoader } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
-
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
 import { RPCComponentError } from "./components/error"
 import { RPCComponent, RPCComponentsUI } from "./components/methods/method"
+import { RPCTemplate } from "./components/templates/template"
+import "./index.css"
 import { IdentityKitRPCMachine } from "./machine"
 
 export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)
-  console.debug("IdentityKitRPCCoordinator")
+  console.debug("IdentityKitRPCCoordinator", { state })
+  const isApproveRequestInProgress =
+    state.context.activeRequest?.data.method === "icrc49_call_canister"
 
   const Component = useMemo(() => {
     switch (true) {
@@ -28,6 +30,7 @@ export default function IdentityKitRPCCoordinator() {
       case state.matches("Main.Authentication.Authenticate"):
         return (
           <AuthenticationCoordinator
+            isIdentityKit
             actor={
               state.children[
                 "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"
@@ -68,6 +71,7 @@ export default function IdentityKitRPCCoordinator() {
           <RPCComponentError
             onRetry={() => send({ type: "TRY_AGAIN" })}
             onCancel={() => send({ type: "ON_CANCEL" })}
+            args={state.context.componentData?.args}
             error={state.context.error}
             request={state.context.activeRequest}
           />
@@ -82,13 +86,17 @@ export default function IdentityKitRPCCoordinator() {
     }
   }, [send, state])
 
+  if (!state.context.activeRequestMetadata)
+    return (
+      <BlurredLoader
+        isLoading={true}
+        loadingMessage="Waiting for incoming request..."
+      />
+    )
+
   return (
-    <ModalComponent
-      onClose={() => send({ type: "ON_CANCEL" })}
-      isVisible
-      className="w-full !relative sm:!fixed"
-    >
-      <ScreenResponsive>{Component}</ScreenResponsive>
-    </ModalComponent>
+    <RPCTemplate isApproveRequestInProgress={isApproveRequestInProgress}>
+      {Component}
+    </RPCTemplate>
   )
 }

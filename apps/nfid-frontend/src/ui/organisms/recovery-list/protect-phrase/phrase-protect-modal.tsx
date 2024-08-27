@@ -37,7 +37,7 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
             SENSITIVE_CONTENT_NO_SESSION_RECORDING,
             "border border-black rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
-            "w-full -mb-2 font-mono leading-[26px]",
+            "w-full -mb-2 leading-[26px]",
           )}
           rows={6}
           placeholder="10000 cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo"

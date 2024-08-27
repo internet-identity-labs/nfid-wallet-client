@@ -1,5 +1,6 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
@@ -31,8 +32,6 @@ import { getAllVaults } from "frontend/features/vaults/services"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
-
-import ProfileContainer from "../profile-container/Container"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -183,12 +182,13 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       >
         <section className={clsx("relative", className)}>
           {pageTitle && (
-            <div className="flex justify-between h-[70px] items-center mt-5">
+            <div className="flex justify-between h-[40px] items-center">
               <div className="sticky left-0 flex items-center space-x-2">
                 {showBackButton && (
                   <ArrowButton
                     onClick={handleNavigateBack}
                     iconClassName="text-black"
+                    buttonClassName="py-[7px]"
                   />
                 )}
                 <p className="text-[28px] block" id={"page_title"}>
@@ -229,9 +229,14 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               />
             </>
           )}
-          <ProfileContainer>
+          {isWallet ? (
+            <ProfileContainer>
+              <Outlet />
+            </ProfileContainer>
+          ) : (
             <Outlet />
-          </ProfileContainer>
+          )}
+
           {children}
         </section>
       </div>

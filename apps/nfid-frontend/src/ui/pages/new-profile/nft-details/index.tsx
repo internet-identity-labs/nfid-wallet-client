@@ -1,5 +1,6 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { useCallback, useContext } from "react"
 import { trimConcat } from "src/ui/atoms/util/util"
 
@@ -12,7 +13,6 @@ import { link } from "frontend/integration/entrepot"
 import { ProfileContext } from "frontend/provider"
 import { Copy } from "frontend/ui/atoms/copy"
 import Table from "frontend/ui/atoms/table"
-import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import TransferIcon from "./assets/transfer.svg"

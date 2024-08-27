@@ -9,7 +9,7 @@ export const RequestTransferNFTDetails = ({
 }) => {
   if (!nft)
     return (
-      <div className="flex items-center h-20 mt-10 border border-gray-200 rounded-md">
+      <div className="flex items-center h-20 mt-5 border border-gray-200 rounded-md">
         <Skeleton className="w-20 h-full rounded-[5px]" />
         <div className="ml-2.5 flex flex-col justify-center space-y-2">
           <Skeleton className="w-[300px] h-5" />
@@ -19,7 +19,7 @@ export const RequestTransferNFTDetails = ({
     )
 
   return (
-    <div className="flex items-center h-20 mt-10 border border-gray-200 rounded-md">
+    <div className="flex items-center h-20 mt-5 border border-gray-200 rounded-md">
       <img
         className="w-20 h-full rounded-[5px]"
         src={nft.assetPreview.url}

@@ -22,6 +22,9 @@ import {
 } from "../../../type"
 import { INDEX_DB_CONNECTED_ACCOUNTS_KEY } from "../../account.service"
 import { callCanisterService } from "../../call-canister.service"
+import { getDefaultMetadata } from "../../canister-calls-helpers/default"
+import { getMetadataICRC2Approve } from "../../canister-calls-helpers/icrc2-approve"
+import { getLedgerTransferMetadata } from "../../canister-calls-helpers/ledger-transfer"
 import { consentMessageService } from "../../consent-message.service"
 import { GenericError } from "../../exception-handler.service"
 import {
@@ -33,7 +36,7 @@ import {
   InteractiveMethodService,
 } from "./interactive-method.service"
 
-const IC_HOSTNAME = "https://ic0.app"
+export const IC_HOSTNAME = "https://ic0.app"
 
 export interface CallCanisterComponentData extends ComponentData {
   origin: string
@@ -42,6 +45,7 @@ export interface CallCanisterComponentData extends ComponentData {
   sender: string
   args: string
   consentMessage?: string
+  metadata?: any
 }
 
 export interface Icrc49Dto {
@@ -49,6 +53,10 @@ export interface Icrc49Dto {
   sender: string
   method: string
   arg: string
+}
+
+export type CallCanisterHelper = {
+  [key: string]: (message: MessageEvent<RPCMessage>, args: any) => Promise<any>
 }
 
 class Icrc49CallCanisterMethodService extends InteractiveMethodService {
@@ -133,6 +141,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       sender: icrc49Dto.sender,
       args: argument,
       consentMessage,
+      metadata: await this.getRequestMetadata(message, argument),
     }
   }
 
@@ -198,6 +207,21 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       )
 
     return sender
+  }
+
+  private async getRequestMetadata(
+    message: MessageEvent<RPCMessage>,
+    args: any,
+  ) {
+    const helpers: CallCanisterHelper = {
+      icrc2_approve: getMetadataICRC2Approve,
+      transfer: getLedgerTransferMetadata,
+    }
+
+    const helper = helpers[message.data.params.method]
+    if (!helper) return getDefaultMetadata(message)
+
+    return helper(message, args)
   }
 }
 

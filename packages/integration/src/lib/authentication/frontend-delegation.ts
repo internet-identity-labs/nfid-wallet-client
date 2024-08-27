@@ -6,7 +6,7 @@ import {
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
-import { TEN_MINUTES_IN_MS } from "@nfid/config"
+import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
 
 import { accessList } from "../actors"
 import { getLocalStorageOverride } from "../local-storage/get-delegation-ttl"
@@ -21,7 +21,7 @@ export interface FrontendDelegation {
 export const requestFEDelegationChain = async (
   identity: SignIdentity,
   ttl: number = getLocalStorageOverride(
-    TEN_MINUTES_IN_MS,
+    DEFAULT_DELEGATION_TTL,
     "NFID_DELEGATION_TTL_MS",
   ),
 ) => {

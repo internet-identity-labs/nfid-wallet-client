@@ -67,7 +67,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
               SENSITIVE_CONTENT_NO_SESSION_RECORDING,
               "border-2 border-black rounded-t-md mt-4",
               "focus:outline-none resize-none focus:ring-0",
-              "w-full font-mono leading-[26px] p-2",
+              "w-full leading-[26px] p-2",
             )}
           >
             {phrase}

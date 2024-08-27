@@ -24,7 +24,6 @@ import {
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
-import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { getAllVaults } from "frontend/features/vaults/services"
@@ -119,19 +118,20 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const globalServices = useContext(ProfileContext)
-  const { token, isLoading: isTokenLoading } = useAllToken()
+  const isTokenLoading = false
 
-  const tokensUsdValue = useMemo(() => {
-    return token
-      .filter((token) => token.rate)
-      .reduce((total, token) => {
-        return (
-          total + (Number(token.balance) / 10 ** token.decimals) * token.rate!
-        )
-      }, 0)
+  // const tokensUsdValue = useMemo(() => {
+  //   return token
+  //     .filter((token) => token.rate)
+  //     .reduce((total, token) => {
+  //       return (
+  //         total + (Number(token.balance) / 10 ** token.decimals) * token.rate!
+  //       )
+  //     }, 0)
 
-    // Will add NFT floor price to calculation later!
-  }, [token])
+  //   // Will add NFT floor price to calculation later!
+  // }, [token])
+  const tokensUsdValue = 4
 
   const [, send] = useActor(globalServices.transferService)
   const {

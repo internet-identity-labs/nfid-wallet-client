@@ -1,11 +1,11 @@
 import { Activity } from "packages/integration/src/lib/asset/types"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
+import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
 import {
   ICRC1IndexData,
   TransactionData,
-  getICRC1HistoryDataForUser,
-} from "@nfid/integration/token/icrc1"
+} from "@nfid/integration/token/icrc1/types"
 import { TokenStandards } from "@nfid/integration/token/types"
 
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"

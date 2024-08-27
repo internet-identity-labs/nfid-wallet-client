@@ -1,27 +1,16 @@
 import clsx from "clsx"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useState, HTMLAttributes, FC } from "react"
+import { FT } from "src/integration/ft/ft"
+import useSWR from "swr"
 
 import { Loader, ApplicationIcon } from "@nfid-frontend/ui"
-
-import { AssetFilter, Blockchain } from "frontend/ui/connnector/types"
+import { icrc1Service } from "@nfid/integration/token/icrc1/icrc1-service"
+import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
 import AssetDropdown from "./components/asset-dropdown"
 import AssetModal from "./components/asset-modal"
 import { ProfileAssetsHeader } from "./components/header"
-
-export type Token = {
-  toPresentation: (amount: bigint, decimals: number) => number | string
-  icon: string
-  title: string
-  currency: string
-  balance?: bigint
-  price?: string
-  rate?: number | undefined
-  blockchain: Blockchain
-  decimals: number
-  canisterId?: string
-}
 
 export type TokenToRemove = {
   canisterId: string
@@ -29,21 +18,28 @@ export type TokenToRemove = {
 }
 
 interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
-  tokens: Token[]
-  assetFilter: AssetFilter[]
-  setAssetFilter: (value: AssetFilter[]) => void
-  isLoading?: boolean
+  tokens: ICRC1[]
+  filteredTokens: ICRC1[]
+  activeTokens: ICRC1[]
+  setSearchQuery: (v: string) => void
 }
 
-const ProfileAssets: FC<ProfileAssetsProps> = ({ tokens, isLoading }) => {
+const ProfileAssets: FC<ProfileAssetsProps> = ({
+  tokens,
+  filteredTokens,
+  activeTokens,
+  setSearchQuery,
+}) => {
   const [tokenToRemove, setTokenToRemove] = useState<TokenToRemove | null>(null)
 
-  console.debug("ProfileAssetsPage", { tokens })
+  console.log("123123", tokens, activeTokens, filteredTokens)
 
   return (
     <div>
-      <ProfileAssetsHeader tokens={tokens} />
-      <Loader isLoading={!tokens.length} />
+      <ProfileAssetsHeader
+        tokens={filteredTokens}
+        setSearch={(value) => setSearchQuery(value)}
+      />
       <table className={clsx("text-left w-full hidden sm:table")}>
         <thead className={clsx("text-secondary h-[40px]")}>
           <tr className={clsx("font-bold text-sm leading-5")}>
@@ -58,53 +54,55 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({ tokens, isLoading }) => {
           {tokens.map((token, index) => (
             <tr
               key={`token_${index}`}
-              id={`token_${token.title.replace(/\s+/g, "")}`}
+              id={`token_${token.name.replace(/\s+/g, "")}`}
             >
               <td className="flex items-center h-16">
                 <ApplicationIcon
                   className="mr-[12px]"
-                  icon={token.icon}
-                  appName={token.title}
+                  icon={"icon"}
+                  appName={token.name}
                 />
                 <div className="overflow-hidden text-ellipsis whitespace-nowrap">
                   <p
                     className="text-sm font-semibold leading-[25px]"
-                    id={`token_${token.title.replace(/\s/g, "")}_currency`}
+                    id={`token_${token.name
+                      .replace(/\s/g, "")}_currency`}
                   >
-                    {token.currency}
+                    {token.symbol}
                   </p>
                   <p className="text-secondary text-xs leading-[20px]">
-                    {token.title}
+                    {token.symbol}
                   </p>
                 </div>
               </td>
-              <td>Category?,</td>
+              <td>{token.category}</td>
               <td
                 className="pr-[10px]"
-                id={`token_${token.title.replace(/\s/g, "")}_balance`}
+                id={`token_${token.name.replace(/\s/g, "")}_balance`}
               >
                 <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
                   <TickerAmount
-                    symbol={token.currency}
-                    value={Number(token.balance)}
-                    decimals={token.decimals}
+                    symbol={token.symbol}
+                    value={Number(token.)}
+                    decimals={token.getTokenDecimals()}
                   />
                 </span>
               </td>
               <td
                 className="pr-[10px]"
-                id={`token_${token.title.replace(/\s/g, "")}_usd`}
+                id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
               >
-                {token.rate !== undefined ? (
+                {/* {token.rate !== undefined ? (
                   <TickerAmount
                     symbol={token.currency}
-                    value={Number(token.balance)}
+                    value={Number(token.getTokenBalance())}
                     decimals={token.decimals}
                     usdRate={token.rate}
                   />
                 ) : (
                   "Not listed"
-                )}
+                )} */}
+                Not listed
               </td>
               <td>
                 <AssetDropdown
@@ -129,32 +127,33 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({ tokens, isLoading }) => {
             <div className="flex items-center text-[#0B0E13]">
               <ApplicationIcon
                 className="w-6 h-6 mr-[13px]"
-                icon={token.icon}
-                appName={token.title}
+                icon={token.getTokenLogo()}
+                appName={token.getTokenName()}
               />
               <p className="flex text-sm leading-5 text-black items-left">
-                {token.currency}
+                {token.getTokenSymbol()}
               </p>
             </div>
             <div className="text-right ml-auto mr-[20px]">
               <div className="text-sm leading-5">
                 <TickerAmount
-                  symbol={token.currency}
-                  value={Number(token.balance)}
-                  decimals={token.decimals}
+                  symbol={token.getTokenSymbol()}
+                  value={Number(token.getTokenBalance())}
+                  decimals={token.getTokenDecimals()}
                 />
               </div>
               <div className="text-xs leading-3 text-gray-400">
-                {token.rate !== undefined ? (
+                {/* {token.rate !== undefined ? (
                   <TickerAmount
                     symbol={token.currency}
-                    value={Number(token.balance)}
+                    value={Number(token.getTokenBalance())}
                     decimals={token.decimals}
                     usdRate={token.rate}
                   />
                 ) : (
                   "Not listed"
-                )}
+                )} */}
+                Not listed
               </div>
             </div>
             <div className="w-auto">
@@ -166,7 +165,7 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({ tokens, isLoading }) => {
           </div>
         ))}
       </div>
-      {tokens?.length && isLoading ? (
+      {/* {tokens?.length && isLoading ? (
         <div className="flex items-center justify-center w-full h-16 border-t border-gray-200">
           <Loader
             isLoading={true}
@@ -174,7 +173,7 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({ tokens, isLoading }) => {
             imageClasses="w-10 h-10"
           />
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   )
 }

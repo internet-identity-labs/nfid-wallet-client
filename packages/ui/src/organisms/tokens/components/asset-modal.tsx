@@ -3,7 +3,7 @@ import { toast } from "react-toastify"
 import { mutate } from "swr"
 
 import { Button } from "@nfid-frontend/ui"
-import { removeICRC1Canister } from "@nfid/integration/token/icrc1"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/icrc1-registry-service"
 
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
@@ -26,7 +26,10 @@ const AssetModal: React.FC<IAssetModal> = ({ token, setTokenToRemove }) => {
     try {
       const { rootPrincipalId } = await getLambdaCredentials()
       if (!rootPrincipalId || !token) return
-      await removeICRC1Canister(rootPrincipalId, token.canisterId)
+      await icrc1RegistryService.removeICRC1Canister(
+        rootPrincipalId,
+        token.canisterId,
+      )
       toast.success(`${token.name} has been removed.`)
       resetCachesByKey(
         [

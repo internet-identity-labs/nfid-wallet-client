@@ -6,6 +6,7 @@ import React, { useState } from "react"
 import useSWR from "swr"
 
 import { Address, BlurredLoader, Button } from "@nfid-frontend/ui"
+import { toUSD } from "@nfid-frontend/utils"
 import { exchangeRateService } from "@nfid/integration"
 import {
   E8S,
@@ -14,7 +15,6 @@ import {
 } from "@nfid/integration/token/constants"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"

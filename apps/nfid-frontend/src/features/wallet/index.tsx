@@ -1,9 +1,8 @@
 import { Routes, Route } from "react-router-dom"
 
-import ProfileAssetsPage from "frontend/apps/identity-manager/profile/assets"
-
 import ActivityPage from "../activity"
 import ProfileCollectiblesPage from "../collectibles"
+import ProfileAssetsPage from "../fungible-token"
 
 export const WalletRouter = () => {
   return (

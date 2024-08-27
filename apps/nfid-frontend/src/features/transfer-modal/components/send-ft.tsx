@@ -30,7 +30,7 @@ import {
   sendReceiveTracking,
 } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/constants"
-import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
+import { ICRC1Metadata } from "@nfid/integration/token/icrc1/types"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"

@@ -1,12 +1,13 @@
-import {TokenCategory} from "src/integration/ft/enum/enums";
-import {Principal} from "@dfinity/principal";
+import { Principal } from "@dfinity/principal"
+
+import { Category } from "@nfid/integration/token/icrc1/enums"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
 
   getTokenName(): string
 
-  getTokenCategory(): TokenCategory
+  getTokenCategory(): Category
 
   getTokenBalance(): string | undefined
 
@@ -14,10 +15,15 @@ export interface FT {
 
   getTokenAddress(): string
 
+  getTokenSymbol(): string
+
+  getTokenLogo(): string | undefined
+
+  getTokenDecimals(): number | undefined
+
   getBlockExplorerLink(): string
 
   hideToken(): Promise<boolean>
   //TODO
   //getTransactionHistory(): Promise<TransactionRecord[]>
-
 }

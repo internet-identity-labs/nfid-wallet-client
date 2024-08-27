@@ -1,13 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import {DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import {mockIdentityA} from "@nfid/integration"
-import {HTTPAccountResponse} from "../../_ic_api/identity_manager.d"
-import {iCRC1Registry, im, replaceActorIdentity} from "../../actors"
-import {generateDelegationIdentity} from "../../test-utils"
-import {icrc1Service} from "./icrc1-service";
+import { mockIdentityA } from "@nfid/integration"
+
+import { HTTPAccountResponse } from "../../_ic_api/identity_manager.d"
+import { iCRC1Registry, im, replaceActorIdentity } from "../../actors"
+import { generateDelegationIdentity } from "../../test-utils"
+import { icrc1Service } from "./icrc1-service"
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
@@ -34,5 +35,4 @@ describe("ICRC1 suite", () => {
       )
     }
   })
-
 })

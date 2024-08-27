@@ -1,10 +1,4 @@
 import clsx from "clsx"
-import {
-  ICRC1Data,
-  addICRC1Canister,
-  isICRC1Canister,
-  ICRC1Error,
-} from "packages/integration/src/lib/token/icrc1"
 import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { FC, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -25,21 +19,29 @@ import {
   IconSvgEyeShown,
 } from "@nfid-frontend/ui"
 import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/icrc1-oracle-service"
+import { icrc1Service } from "@nfid/integration/token/icrc1/icrc1-service"
+import {
+  ICRC1,
+  ICRC1Data,
+  ICRC1Error,
+} from "@nfid/integration/token/icrc1/types"
 
 import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
+import { FT } from "frontend/integration/ft/ft"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
-import { Token } from ".."
-
 interface ProfileAssetsHeaderProps {
-  tokens: Token[]
+  tokens: ICRC1[]
+  setSearch: (v: string) => void
 }
 
 export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   tokens,
+  setSearch,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Data | null>(null)
@@ -74,7 +76,8 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
 
     try {
       setIsLoading(true)
-      await addICRC1Canister(ledgerID, indexID)
+      // ???
+      await icrc1OracleService.addICRC1Canister(ledgerID as any)
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       setModalStep("manage")
       resetCachesByKey(
@@ -103,7 +106,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   const fetchICRCToken = async () => {
     try {
       const { rootPrincipalId, publicKey } = await getLambdaCredentials()
-      const data = await isICRC1Canister(
+      const data = await icrc1Service.isICRC1Canister(
         getValues("ledgerID"),
         rootPrincipalId!,
         publicKey,
@@ -149,10 +152,11 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
         isVisible={modalStep !== null}
         onClose={() => {
           setModalStep(null)
-          resetField("ledgerID")
-          resetField("indexID")
-          setTokenInfo(null)
-          setIsLoading(false)
+          setSearch("")
+          // resetField("ledgerID")
+          // resetField("indexID")
+          // setTokenInfo(null)
+          // setIsLoading(false)
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
@@ -201,6 +205,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
                 id="search"
                 placeholder="Search by token name"
                 icon={<IoIosSearch size="20" className="text-gray-400" />}
+                onChange={(e) => setSearch(e.target.value)}
               />
               <Button
                 isSmall
@@ -213,30 +218,30 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
             <div className="">
               {tokens.map((token) => {
                 return (
-                  <div className="flex items-center justify-between h-16">
-                    <div className="flex items-center justify-center gap-[12px]">
+                  <div className="flex items-center h-16">
+                    <div className="flex items-center gap-[12px] flex-0 w-[210px]">
                       <div className="w-[40px] h-[40px]">
                         <ApplicationIcon
                           className="mr-[12px]"
-                          icon={token.icon}
-                          appName={token.title}
+                          icon={token.logo}
+                          appName={token.name}
                         />
                       </div>
-                      <div className="basis-[160px]">
+                      <div className="">
                         <p className="text-sm text-black leading-[20px] font-semibold">
-                          {token.currency}
+                          {token.symbol}
                         </p>
                         <p className="text-xs text-secondary leading-[20px]">
-                          {token.title}
+                          {token.name}
                         </p>
                       </div>
                     </div>
-                    <div>Category?</div>
-                    <div>
+                    <div>{token.category}</div>
+                    <div className="ml-auto">
                       <img
                         className="cursor-pointer"
                         src={IconSvgEyeShown}
-                        alt=""
+                        alt="Show NFID asset"
                       />
                     </div>
                   </div>

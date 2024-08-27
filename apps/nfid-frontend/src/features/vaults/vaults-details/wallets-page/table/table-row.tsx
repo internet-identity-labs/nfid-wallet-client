@@ -13,7 +13,6 @@ import {
 } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
-import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { ProfileContext } from "frontend/provider"
 
@@ -41,7 +40,8 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-  const { token: allTokens } = useAllToken()
+  //REMOVE !!!!!!!!!!!!!!
+  const allTokens = [] as any
 
   const [, send] = useActor(globalServices.transferService)
   const { wallets } = useAllWallets()

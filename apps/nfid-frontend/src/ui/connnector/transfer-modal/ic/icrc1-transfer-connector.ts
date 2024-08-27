@@ -11,11 +11,10 @@ import {
 import { truncateString } from "@nfid-frontend/utils"
 import { getWalletName, hasOwnProperty } from "@nfid/integration"
 import {
-  ICRC1Data,
-  ICRC1Metadata,
   getICRC1DataForUser,
   transferICRC1,
 } from "@nfid/integration/token/icrc1"
+import { ICRC1Data, ICRC1Metadata } from "@nfid/integration/token/icrc1/types"
 import { TokenStandards } from "@nfid/integration/token/types"
 import { toPresentation } from "@nfid/integration/token/utils"
 

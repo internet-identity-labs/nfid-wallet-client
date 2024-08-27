@@ -1,12 +1,15 @@
 import * as Agent from "@dfinity/agent"
-import {HttpAgent, Identity} from "@dfinity/agent"
+import { HttpAgent, Identity } from "@dfinity/agent"
 
-import {idlFactory as icrc1IDL} from "../../_ic_api/icrc1"
-import {_SERVICE as ICRC1Service, Icrc1TransferResult, TransferArg,} from "../../_ic_api/icrc1.d"
-import {icrc1Service} from "./icrc1-service";
-import {ICRC1Data, ICRC1IndexData} from "./types";
-import {icrc1TransactionHistoryService} from "./icrc1-transaction-history-service";
-
+import { idlFactory as icrc1IDL } from "../../_ic_api/icrc1"
+import {
+  _SERVICE as ICRC1Service,
+  Icrc1TransferResult,
+  TransferArg,
+} from "../../_ic_api/icrc1.d"
+import { icrc1Service } from "./icrc1-service"
+import { icrc1TransactionHistoryService } from "./icrc1-transaction-history-service"
+import { ICRC1Data, ICRC1IndexData } from "./types"
 
 /*
  * rootPrincipalId: the principal id of the account im.getAccount().principalId
@@ -49,9 +52,12 @@ export async function getICRC1HistoryDataForUser(
 
   if (!indexedCanisters.length) return []
 
-  return icrc1TransactionHistoryService.getICRC1IndexData(indexedCanisters, publicKey, maxResults)
+  return icrc1TransactionHistoryService.getICRC1IndexData(
+    indexedCanisters,
+    publicKey,
+    maxResults,
+  )
 }
-
 
 export async function transferICRC1(
   globalAccountPrincipal: Identity,

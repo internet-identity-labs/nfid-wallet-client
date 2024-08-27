@@ -1,19 +1,21 @@
-import {ICRC1 as ICRC1UserData, ICRC1Data, ICRC1Error} from "./types";
-import {icrc1RegistryService} from "./icrc1-registry-service";
-import {icrc1OracleService} from "./icrc1-oracle-service";
-import {State} from "./enums";
-import {mapCategory, mapState} from "./util";
-import {TokenPrice} from "../../asset/types";
-import {PriceService} from "../../asset/asset-util";
-import * as Agent from "@dfinity/agent";
-import {HttpAgent} from "@dfinity/agent";
-import {idlFactory as icrc1IDL} from "../../_ic_api/icrc1";
-import {agentBaseConfig} from "@nfid/integration";
-import {Principal} from "@dfinity/principal";
-import {DEFAULT_ERROR_TEXT, NETWORK} from "@nfid/integration/token/constants";
-import {_SERVICE as ICRC1ServiceIDL,} from "../../_ic_api/icrc1.d"
-import {idlFactory as icrc1IndexIDL} from "../../_ic_api/index-icrc1";
-import {_SERVICE as ICRCIndex} from "../../_ic_api/index-icrc1.d";
+import * as Agent from "@dfinity/agent"
+import { HttpAgent } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+
+import { agentBaseConfig } from "@nfid/integration"
+import { DEFAULT_ERROR_TEXT, NETWORK } from "@nfid/integration/token/constants"
+
+import { idlFactory as icrc1IDL } from "../../_ic_api/icrc1"
+import { _SERVICE as ICRC1ServiceIDL } from "../../_ic_api/icrc1.d"
+import { idlFactory as icrc1IndexIDL } from "../../_ic_api/index-icrc1"
+import { _SERVICE as ICRCIndex } from "../../_ic_api/index-icrc1.d"
+import { PriceService } from "../../asset/asset-util"
+import { TokenPrice } from "../../asset/types"
+import { State } from "./enums"
+import { icrc1OracleService } from "./icrc1-oracle-service"
+import { icrc1RegistryService } from "./icrc1-registry-service"
+import { ICRC1 as ICRC1UserData, ICRC1Data, ICRC1Error } from "./types"
+import { mapCategory, mapState } from "./util"
 
 export class ICRC1Service {
   async isICRC1Canister(
@@ -24,7 +26,7 @@ export class ICRC1Service {
   ): Promise<ICRC1Data> {
     const actor = Agent.Actor.createActor<ICRC1ServiceIDL>(icrc1IDL, {
       canisterId: canisterId,
-      agent: new HttpAgent({...agentBaseConfig}),
+      agent: new HttpAgent({ ...agentBaseConfig }),
     })
     const standards = await actor.icrc1_supported_standards()
     const isICRC1: boolean = standards
@@ -45,7 +47,9 @@ export class ICRC1Service {
     })
 
     if (indexCanister) {
-      const expectedLedgerId = await this.getLedgerIdFromIndexCanister(indexCanister)
+      const expectedLedgerId = await this.getLedgerIdFromIndexCanister(
+        indexCanister,
+      )
       if (expectedLedgerId.toText() !== canisterId) {
         throw new ICRC1Error("Ledger canister does not match index canister.")
       }
@@ -65,38 +69,37 @@ export class ICRC1Service {
     await icrc1RegistryService.storeICRC1Canister(ledger, state)
   }
 
-  async getICRC1ActiveCanisters(principal: string,): Promise<Array<ICRC1UserData>>  {
-    return this.getICRC1Canisters(principal)
-      .then((canisters) => {
-        return canisters.filter((c) => c.state === State.Active)
-      })
+  async getICRC1ActiveCanisters(
+    principal: string,
+  ): Promise<Array<ICRC1UserData>> {
+    return this.getICRC1Canisters(principal).then((canisters) => {
+      return canisters.filter((c) => c.state === State.Active)
+    })
   }
 
   async getICRC1FilteredCanisters(
     principal: string,
     filterText: string,
   ): Promise<Array<ICRC1UserData>> {
-    return this.getICRC1Canisters(principal)
-      .then((canisters) => {
-        return canisters
-          .filter((c) => c.state === State.Active)
-          .filter((c) =>
-            c.name.toLowerCase().includes(filterText.toLowerCase()) ||
-            c.symbol.toLowerCase().includes(filterText.toLowerCase())
-          );
-      });
+    return this.getICRC1Canisters(principal).then((canisters) => {
+      return canisters.filter(
+        (c) =>
+          c.name.toLowerCase().includes(filterText.toLowerCase()) ||
+          c.symbol.toLowerCase().includes(filterText.toLowerCase()),
+      )
+    })
   }
 
-  async getICRC1Canisters(
-    principal: string,
-  ): Promise<Array<ICRC1UserData>> {
+  async getICRC1Canisters(principal: string): Promise<Array<ICRC1UserData>> {
     const [icrc1StateData, icrc1OracleData] = await Promise.all([
       icrc1RegistryService.getCanistersByRoot(principal),
-      icrc1OracleService.getICRC1Canisters()
-    ]);
+      icrc1OracleService.getICRC1Canisters(),
+    ])
 
     return icrc1OracleData.map((icrc1) => {
-      const registry = icrc1StateData.find((state) => state.ledger === icrc1.ledger)
+      const registry = icrc1StateData.find(
+        (state) => state.ledger === icrc1.ledger,
+      )
       //todo maybe group metadata
       const userData: ICRC1UserData = {
         ledger: icrc1.ledger,
@@ -104,13 +107,13 @@ export class ICRC1Service {
         symbol: icrc1.symbol,
         logo: icrc1.logo[0],
         index: icrc1.index[0],
-        state: registry === undefined ? State.Inactive : mapState(registry.state),
-        category: mapCategory(icrc1.category)
+        state:
+          registry === undefined ? State.Inactive : mapState(registry.state),
+        category: mapCategory(icrc1.category),
       }
       return userData
     })
   }
-
 
   async getICRC1Data(
     canisters: Array<string>,
@@ -121,7 +124,7 @@ export class ICRC1Service {
       canisters.map(async (canisterId) => {
         const actor = Agent.Actor.createActor<ICRC1ServiceIDL>(icrc1IDL, {
           canisterId: canisterId,
-          agent: new HttpAgent({...agentBaseConfig}),
+          agent: new HttpAgent({ ...agentBaseConfig }),
         })
         const balance = await actor.icrc1_balance_of({
           subaccount: [],
@@ -199,12 +202,10 @@ export class ICRC1Service {
   ): Promise<Principal> {
     const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
       canisterId: indexCanister,
-      agent: new HttpAgent({...agentBaseConfig}),
+      agent: new HttpAgent({ ...agentBaseConfig }),
     })
     return indexActor.ledger_id()
   }
-
-
 }
 
 export const icrc1Service = new ICRC1Service()

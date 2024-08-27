@@ -8,12 +8,13 @@ import { Copy, Dropdown, DropdownOption, IconCmpDots } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { FT } from "frontend/integration/ft/ft"
 
-import { Token, TokenToRemove } from ".."
+import { TokenToRemove } from ".."
 
 type ITokenDropdown = {
   option?: string
-  token: Token
+  token: FT
   setTokenToRemove: (v: TokenToRemove) => void
 }
 
@@ -33,7 +34,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
     [navigate],
   )
 
-  if (!token.canisterId) return null
+  if (!token.getTokenAddress()) return null
 
   return (
     <>
@@ -45,7 +46,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
         <DropdownOption
           label="Transactions"
           icon={HistoryIcon}
-          handler={navigateToTransactions(token.canisterId)}
+          handler={navigateToTransactions(token.getTokenAddress())}
         />
         <DropdownOption
           element={
@@ -54,7 +55,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
               className="h-[100%] flex-1 !text-black hover:!opacity-100"
               iconSize="!w-6"
               titleClassName="!ml-[12px] !text-black !text-sm text-left !font-normal"
-              value={token.canisterId}
+              value={token.getTokenAddress()}
               copyTitle="Copy token address"
             />
           }
@@ -63,21 +64,18 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
           label="View on block explorer"
           icon={ExternalIcon}
           handler={() => {
-            window.open(
-              `https://dashboard.internetcomputer.org/canister/${token.canisterId}`,
-              "_blank",
-            )
+            window.open(token.getBlockExplorerLink(), "_blank")
           }}
         />
-        {token.canisterId !== ICP_CANISTER_ID && (
+        {token.getTokenAddress() !== ICP_CANISTER_ID && (
           <DropdownOption
             label="Remove token"
             icon={RemoveIcon}
             handler={() => {
-              if (!token.canisterId) return
+              if (!token.getTokenAddress()) return
               setTokenToRemove({
-                canisterId: token.canisterId,
-                name: token.title,
+                canisterId: token.getTokenAddress(),
+                name: token.getTokenName(),
               })
             }}
           />

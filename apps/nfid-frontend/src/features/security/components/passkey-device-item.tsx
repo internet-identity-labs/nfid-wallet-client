@@ -29,8 +29,9 @@ export const PasskeyDeviceItem = ({
   return (
     <tr className="items-center text-sm border-b border-gray-200">
       <td className="flex h-[61px] items-center">
-        <div className="flex items-center w-10 shrink-0">
+        <div className="flex items-center w-[24px] h-[24px] shrink-0 ml-2 mr-[26px]">
           <DeviceIconDecider
+            color="#9CA3AF"
             icon={device.isLegacyDevice ? Icon.unknown : device.icon}
           />
         </div>
@@ -69,10 +70,7 @@ export const PasskeyDeviceItem = ({
       <td className="w-6">
         <div className="relative w-6 shrink-0" ref={ref}>
           <IconCmpDots
-            className={clsx(
-              "text-secondary cursor-pointer hover:text-black",
-              "rotate-90 shrink-0",
-            )}
+            className="text-secondary cursor-pointer hover:text-black shrink-0"
             onClick={(e) => {
               e.preventDefault()
               setIsTooltipOpen(!isTooltipOpen)
@@ -81,7 +79,7 @@ export const PasskeyDeviceItem = ({
           <div
             className={clsx(
               "absolute top-6 right-0 w-[150px]",
-              "bg-white rounded-md shadow-md",
+              "bg-white rounded-[12px] shadow-md",
               "text-sm z-10",
               !isTooltipOpen && "hidden",
             )}
@@ -89,7 +87,7 @@ export const PasskeyDeviceItem = ({
             <DetailsPasskey device={device}>
               <div
                 className={clsx(
-                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
+                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
                   "flex items-center space-x-2 cursor-pointer",
                 )}
               >
@@ -103,7 +101,7 @@ export const PasskeyDeviceItem = ({
             >
               <div
                 className={clsx(
-                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
+                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
                   "flex items-center space-x-2 cursor-pointer",
                 )}
               >

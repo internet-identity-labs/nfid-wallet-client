@@ -1,9 +1,9 @@
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React from "react"
 
 import { Button } from "frontend/ui/atoms/button"
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
 import { P } from "frontend/ui/atoms/typography/paragraph"
-import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 interface ProfileCopyPhrasePageProps {

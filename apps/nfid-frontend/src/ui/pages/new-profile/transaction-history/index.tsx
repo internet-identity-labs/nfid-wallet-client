@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { TransactionRow } from "packages/integration/src/lib/asset/types"
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React, { useState } from "react"
 
 import {
@@ -12,7 +13,6 @@ import {
 
 import { Chip } from "frontend/ui/atoms/chip"
 import Pagination from "frontend/ui/molecules/pagination"
-import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 interface IProfileTransactionsPage

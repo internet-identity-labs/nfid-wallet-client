@@ -9,10 +9,10 @@
         "hostRootUrl": "https://github.com",
         "sourceRemote": "origin",
         "sourceOwner": "internet-identity-labs",
-        "sourceRepo": "nfid-frontend",
+        "sourceRepo": "nfid-wallet-client",
         "destRemote": "origin",
         "destOwner": "internet-identity-labs",
-        "destRepo": "nfid-frontend",
+        "destRepo": "nfid-wallet-client",
         "destProjectId": "",
         "destBranch": "main"
     },

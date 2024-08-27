@@ -137,7 +137,14 @@ export const TransferFT = ({
     ([isVault]) => getAllTokensOptions(isVault),
   )
 
-  const { getValues } = useForm({
+  const {
+    register,
+    getValues,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    resetField,
+  } = useForm({
     mode: "all",
     defaultValues: {
       amount: undefined as any as string,
@@ -355,6 +362,11 @@ export const TransferFT = ({
       setUSDAmount={(value) => setAmountInUSD(value)}
       setSelectedCurrency={(value) => setSelectedTokenCurrency(value)}
       setSelectedBlockchain={(value) => setSelectedTokenBlockchain(value)}
+      register={register}
+      errors={errors}
+      handleSubmit={handleSubmit}
+      setValue={setValue}
+      resetField={resetField}
     />
   )
 }

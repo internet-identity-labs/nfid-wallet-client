@@ -17,13 +17,7 @@
     "downlevelIteration": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "../../types/env",
-    "../../packages/ui/src/organisms/send-receive/components/template.tsx",
-    "../../packages/ui/src/organisms/send-receive/constants/index.tsx",
-    "../../packages/utils/src/lib/validations.ts"
-  ],
+  "include": ["src", "../../types/env"],
   "extends": "../../tsconfig.base.json",
   "references": []
 }

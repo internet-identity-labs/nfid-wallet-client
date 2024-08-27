@@ -1,5 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 import { SendReceiveModal, SendReceiveModalProps } from "."
 import { Receive } from "./components/receive"
@@ -8,6 +9,11 @@ import { TransferFTUi } from "./components/send-ft"
 import { SendFTProps } from "./components/send-ft.stories"
 import { TransferNFTUi } from "./components/send-nft"
 import { SendNFTProps } from "./components/send-nft.stories"
+
+type FormFields = {
+  amount: string
+  to: string
+}
 
 export default {
   title: "Organisms/Send Receive",
@@ -20,11 +26,27 @@ export default {
 } as Meta
 
 const selectComponent = (tokenType: string, direction: string) => {
+  const { register, setValue, handleSubmit, resetField, formState } =
+    useForm<FormFields>({
+      defaultValues: {
+        amount: "",
+        to: "",
+      },
+    })
   if (direction === "receive") {
     return <Receive {...ReceiveUiProps} />
   } else {
     if (tokenType === "ft") {
-      return <TransferFTUi {...SendFTProps} />
+      return (
+        <TransferFTUi
+          register={register}
+          setValue={setValue}
+          handleSubmit={handleSubmit}
+          resetField={resetField}
+          errors={formState.errors}
+          {...SendFTProps}
+        />
+      )
     } else {
       return <TransferNFTUi {...SendNFTProps} />
     }
@@ -34,9 +56,6 @@ const selectComponent = (tokenType: string, direction: string) => {
 const Template: StoryFn<SendReceiveModalProps> = (args) => {
   const [tokenType, setTokenType] = useState(args.tokenType)
   const [direction, setDirection] = useState(args.direction)
-
-  console.log("ssss", tokenType, direction)
-
   const handleTokenTypeChange = (isNFT: boolean) => {
     const newTokenType = isNFT ? "nft" : "ft"
     setTokenType(newTokenType)

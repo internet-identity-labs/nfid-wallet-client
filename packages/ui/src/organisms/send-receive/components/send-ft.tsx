@@ -11,7 +11,13 @@ import {
 } from "packages/ui/src/molecules/ticker-amount"
 import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
 import { Dispatch, FC, SetStateAction } from "react"
-import { useForm } from "react-hook-form"
+import {
+  FieldErrorsImpl,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormResetField,
+  UseFormSetValue,
+} from "react-hook-form"
 import { Id } from "react-toastify"
 
 import {
@@ -114,6 +120,28 @@ export interface TransferFTUiProps {
   setUSDAmount: (value: number) => void
   setSelectedCurrency: (value: string) => void
   setSelectedBlockchain: (value: string) => void
+  register: UseFormRegister<{
+    amount: string
+    to: string
+  }>
+  errors: Partial<
+    FieldErrorsImpl<{
+      amount: string
+      to: string
+    }>
+  >
+  handleSubmit: UseFormHandleSubmit<{
+    amount: string
+    to: string
+  }>
+  setValue: UseFormSetValue<{
+    amount: string
+    to: string
+  }>
+  resetField: UseFormResetField<{
+    amount: string
+    to: string
+  }>
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -143,21 +171,12 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   setUSDAmount,
   setSelectedCurrency,
   setSelectedBlockchain,
+  register,
+  errors,
+  handleSubmit,
+  setValue,
+  resetField,
 }) => {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-    resetField,
-  } = useForm({
-    mode: "all",
-    defaultValues: {
-      amount: undefined as any as string,
-      to: preselectedTransferDestination ?? "",
-    },
-  })
-
   const maxHandler = () => {
     if (transferFee && balance) {
       const balanceNum = new BigNumber(balance.toString())

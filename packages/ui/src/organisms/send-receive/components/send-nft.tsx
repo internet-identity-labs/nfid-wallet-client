@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
 import { Dispatch, FC, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
@@ -13,6 +14,7 @@ import {
   BlurredLoader,
   Input,
   IGroupedOptions,
+  IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
@@ -82,28 +84,15 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
                   {selectedNFT?.assetPreview ? (
-                    <img
+                    <ImageWithFallback
                       className="object-cover rounded-[10px] w-[84px] h-[84px]"
                       src={selectedNFT?.assetPreview.url}
-                      alt={""}
+                      fallbackSrc={IconNftPlaceholder}
+                      alt="NFID NFT"
                     />
                   ) : (
                     <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[84px] h-[84px]" />
                   )}
-
-                  <div
-                    className={clsx(
-                      "absolute w-6 h-6 bg-white rounded-full bottom-1 right-1",
-                      "flex items-center justify-center",
-                      !selectedNFT && "hidden",
-                    )}
-                  >
-                    <img
-                      className="w-4"
-                      src={selectedNFT?.blockchainLogo}
-                      alt=""
-                    />
-                  </div>
                 </div>
                 {!selectedNFT ? (
                   <p className="leading-3 text-gray-400">Choose NFT</p>

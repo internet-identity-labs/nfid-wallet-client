@@ -1,7 +1,13 @@
 import { Meta, StoryFn } from "@storybook/react"
+import { useForm } from "react-hook-form"
 
 import { TransferFTUi, TransferFTUiProps } from "./send-ft"
 import { TransferTemplate } from "./template"
+
+type FormFields = {
+  amount: string
+  to: string
+}
 
 const meta: Meta = {
   title: "Organisms/Send Receive/Send FT",
@@ -14,13 +20,32 @@ const meta: Meta = {
 
 export default meta
 
-const Template: StoryFn<TransferFTUiProps> = (args) => (
-  <div className="w-[450px] h-[630px]">
-    <TransferTemplate>
-      <TransferFTUi {...args} />
-    </TransferTemplate>
-  </div>
-)
+const Template: StoryFn<TransferFTUiProps> = (args) => {
+  const { register, setValue, handleSubmit, resetField, formState } =
+    useForm<FormFields>({
+      defaultValues: {
+        amount: "",
+        to: "",
+      },
+    })
+
+  // setValue("amount", "50000000")
+
+  return (
+    <div className="w-[450px] h-[630px]">
+      <TransferTemplate>
+        <TransferFTUi
+          {...args}
+          register={register}
+          setValue={setValue}
+          handleSubmit={handleSubmit}
+          resetField={resetField}
+          errors={formState.errors}
+        />
+      </TransferTemplate>
+    </div>
+  )
+}
 
 export const Default = Template.bind({})
 

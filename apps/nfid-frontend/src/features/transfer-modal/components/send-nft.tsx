@@ -1,6 +1,5 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR, { mutate } from "swr"
 
@@ -30,14 +29,6 @@ export const TransferNFT = ({
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [selectedAccountAddress, setSelectedAccountAddress] = useState("")
-
-  const { getValues } = useForm({
-    mode: "all",
-    defaultValues: {
-      to: selectedReceiverWallet ?? "",
-    },
-  })
-
   const { data: nfts, mutate: refetchNFTs } = useSWR("allNFTS", getAllNFT)
   const { data: nftOptions, isLoading: isNFTLoading } = useSWR(
     "allNFTSOptions",
@@ -137,7 +128,7 @@ export const TransferNFT = ({
         assetImg: selectedNFT?.assetPreview.url,
         initialPromise: new Promise(async (resolve) => {
           await selectedConnector?.getFee({
-            to: getValues("to"),
+            to: values.to,
             contract: selectedNFT?.contractId ?? "",
             tokenId: selectedNFT?.tokenId ?? "",
             standard: selectedNFT?.collection.standard ?? "",
@@ -181,7 +172,6 @@ export const TransferNFT = ({
       })
     },
     [
-      getValues,
       handleTrackTransfer,
       onTransferPromise,
       refetchNFTs,

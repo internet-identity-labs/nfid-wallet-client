@@ -4,6 +4,7 @@ import { useState } from "react"
 import { IconCmpWarning, ToggleButton } from "@nfid-frontend/ui"
 
 import { RPCMessage } from "../type"
+import { renderArgs } from "./call-canisters/details"
 import { RPCComponentsUI } from "./methods/method"
 import { RPCPromptTemplate } from "./templates/prompt-template"
 
@@ -11,6 +12,7 @@ export interface RPCComponentErrorProps {
   onRetry: () => void
   onCancel: () => void
   error?: Error
+  args?: string
   request: MessageEvent<RPCMessage> | undefined
 }
 
@@ -18,6 +20,7 @@ export const RPCComponentError = ({
   onRetry,
   onCancel,
   error,
+  args,
   request,
 }: RPCComponentErrorProps) => {
   const [isResponseTab, setIsResponseTab] = useState(true)
@@ -86,12 +89,14 @@ export const RPCComponentError = ({
                 <p className="">{(request.data?.params as any)?.canisterId}</p>
               </div>
               <div className="space-y-2">
-                <p className="font-bold">Method</p>
-                <p className="">{(request.data?.params as any)?.method}</p>
-              </div>
-              <div className="space-y-2">
-                <p className="font-bold">Arg</p>
-                <p className="">{(request.data?.params as any)?.arg}</p>
+                <p className="font-bold">Arguments</p>
+                <div className="space-y-4">
+                  {args ? (
+                    renderArgs(JSON.parse(args)[0])
+                  ) : (
+                    <p className="">{(request.data?.params as any)?.arg}</p>
+                  )}
+                </div>
               </div>
             </div>
           )}

@@ -1,6 +1,7 @@
 export enum Category {
     Sns = 'Sns',
     Known = 'Known',
+    Native = 'Native',
     Unknown = 'Unknown',
     ChainFusionTestnet = 'ChainFusionTestnet',
     ChainFusion = 'ChainFusion',

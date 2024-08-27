@@ -6,6 +6,7 @@ import { idlFactory as IDL } from "./idl/ExchangeRate"
 import { _SERVICE as Service, ExchangeRate__1 } from "./idl/ExchangeRate.d"
 
 const EXCHANGE_RATE_CANISTER = "2ixw4-taaaa-aaaag-qcpdq-cai"
+const ROUTER_CANISTER = "ggzvv-5qaaa-aaaag-qck7a-cai"
 type NumberType = string | number | bigint | BigNumber
 
 export class ExchangeRateService {

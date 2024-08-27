@@ -79,7 +79,6 @@ export class ICRC1Service {
     return this.getICRC1Canisters(principal)
       .then((canisters) => {
         return canisters
-          .filter((c) => c.state === State.Active)
           .filter((c) =>
             c.name.toLowerCase().includes(filterText.toLowerCase()) ||
             c.symbol.toLowerCase().includes(filterText.toLowerCase())

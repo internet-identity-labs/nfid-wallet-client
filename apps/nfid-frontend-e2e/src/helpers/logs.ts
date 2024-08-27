@@ -10,7 +10,6 @@ export const setupConsoleLogging = () => {
       log.push({ type: "error", args: Array.from(args) })
       origError.apply(console, args)
     }
-
     ;(window as any).getConsoleLogs = function () {
       return log
     }

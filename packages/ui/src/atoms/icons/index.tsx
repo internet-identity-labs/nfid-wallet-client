@@ -46,6 +46,7 @@ import IconSvgPlus from "./plus.svg"
 import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
+import IconSvgShare from "./share.svg"
 import ImagePngSuccess from "./success.png"
 import IconSvgSuccess from "./success.svg"
 import IconSvgTable from "./table.svg"
@@ -107,6 +108,7 @@ export {
   IconSvgArrowGreen,
   IconSvgAnonymous,
   IconSvgNFIDWalletLogo,
+  IconSvgShare,
   IconNftPlaceholder,
   KnowledgeIcon,
   SecurityIcon,
@@ -177,6 +179,7 @@ export { ReactComponent as IconCmpNFID } from "./nfid.svg"
 export { ReactComponent as IconCmpAnonymous } from "./anonymous.svg"
 export { ReactComponent as IconCmpDoubleSpinner } from "./double-spinner.svg"
 export { ReactComponent as IconCmpNFIDWalletLogo } from "./nfid-wallet-logo.svg"
+export { ReactComponent as IconCmpShare } from "./share.svg"
 
 export { ReactComponent as IconCmpTinyIC } from "./tiny-ic.svg"
 

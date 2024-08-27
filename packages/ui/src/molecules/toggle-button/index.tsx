@@ -54,7 +54,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
       </div>
       <div
         className={clsx(
-          "absolute h-7 w-1/2 rounded-md",
+          "absolute h-7 w-1/2 rounded-xl",
           "bg-primaryButtonColor leading-7 text-xs",
           "text-center text-white font-semibold",
           "transition-transform",

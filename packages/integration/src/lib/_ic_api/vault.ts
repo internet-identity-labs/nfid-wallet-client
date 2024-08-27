@@ -112,6 +112,7 @@ export const idlFactory = ({ IDL }: any) => {
     get_policies: IDL.Func([IDL.Nat64], [IDL.Vec(Policy)], ["query"]),
     get_transactions: IDL.Func([], [IDL.Vec(Transaction)], ["query"]),
     get_vaults: IDL.Func([], [IDL.Vec(Vault)], ["query"]),
+    get_vaults_by_address: IDL.Func([IDL.Text], [IDL.Vec(Vault)], ["query"]),
     get_wallets: IDL.Func([IDL.Nat64], [IDL.Vec(Wallet)], ["query"]),
     register_policy: IDL.Func([PolicyRegisterRequest], [Policy], []),
     register_transaction: IDL.Func(

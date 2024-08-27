@@ -40,7 +40,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
           className={clsx(
             "border-2 border-black rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
-            "w-full font-mono leading-[26px] p-2",
+            "w-full leading-[26px] p-2",
           )}
         >
           {phrase}{" "}

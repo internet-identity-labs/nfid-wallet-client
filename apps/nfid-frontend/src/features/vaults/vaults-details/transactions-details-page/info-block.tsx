@@ -1,9 +1,6 @@
 import clsx from "clsx"
-import React from "react"
 
-import { Copy } from "@nfid-frontend/ui"
-
-import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
+import { Copy, CenterEllipsis } from "@nfid-frontend/ui"
 
 interface IVaultTransactionInfo {
   title?: string

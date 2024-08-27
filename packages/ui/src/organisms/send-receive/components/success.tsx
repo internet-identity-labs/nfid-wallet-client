@@ -11,7 +11,7 @@ import Success2 from "../assets/success_2.json"
 import Success3 from "../assets/success_3.json"
 import Success4 from "../assets/success_4.json"
 
-export interface ITransferModalSuccess {
+export interface SuccessProps {
   title: string
   subTitle: string
   url?: string
@@ -24,7 +24,7 @@ export interface ITransferModalSuccess {
 
 const allAnimations = [Success1, Success2, Success3, Success4, Fail]
 
-export const Success: React.FC<ITransferModalSuccess> = ({
+export const Success: React.FC<SuccessProps> = ({
   title,
   subTitle,
   url,
@@ -81,7 +81,7 @@ export const Success: React.FC<ITransferModalSuccess> = ({
             src={assetImg || NoIcon}
             className={clsx(
               "absolute h-[90px] w-[90px] object-contain rounded-full object-center",
-              "mx-auto top-[155px] ml-[1px]",
+              "mx-auto top-[155px] sm:top-[205px] ml-[1px]",
               isAssetPadding && "p-4",
             )}
           />

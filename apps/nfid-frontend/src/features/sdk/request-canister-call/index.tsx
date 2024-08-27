@@ -1,19 +1,16 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import useSWR from "swr"
 
-import {
-  BlurredLoader,
-  IconCmpWarning,
-  truncateString,
-} from "@nfid-frontend/ui"
+import { BlurredLoader, IconCmpWarning } from "@nfid-frontend/ui"
+import { truncateString } from "@nfid-frontend/utils"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { RPCPromptTemplate } from "frontend/features/identitykit/components/templates/prompt-template"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
-import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 
 export interface IRequestTransferProps {

@@ -1,9 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Copy, Loader } from "@nfid-frontend/ui"
-
-import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
+import { Copy, Loader, CenterEllipsis } from "@nfid-frontend/ui"
 
 import { useVaultMember } from "../../hooks/use-vault-member"
 

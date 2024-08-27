@@ -10,7 +10,7 @@ export interface FT {
 
   getTokenBalance(): string | undefined
 
-  getUSDBalance(): Promise<string | undefined>
+  getUSDBalanceFormatted(): Promise<string | undefined>
 
   getTokenAddress(): string
 

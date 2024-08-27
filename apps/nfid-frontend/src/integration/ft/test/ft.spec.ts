@@ -38,7 +38,7 @@ describe("ft test suite", () => {
       expect(icpResult!.getTokenCategory()).toEqual("Native")
       expect(icpResult!.getTokenAddress()).toEqual("ryjl3-tyaaa-aaaaa-aaaba-cai")
       expect(icpResult!.getBlockExplorerLink()).toEqual("https://dashboard.internetcomputer.org/canister/ryjl3-tyaaa-aaaaa-aaaba-cai")
-      expect(await icpResult!.getUSDBalance()).toEqual("0.00 USD")
+      expect(await icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
     })
     it('should calculate USD balance', async function () {
       jest

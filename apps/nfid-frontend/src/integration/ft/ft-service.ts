@@ -41,11 +41,11 @@ export class FtService {
     await Promise.all(ft.map(ft => ft.init(userPrincipal)))
     await Promise.all(
       ft.map((ft) =>
-         ft.getUSDBalance()
+         ft.getUSDBalanceFormatted()
       )
     );
     let a =  ft
-      .map((ft) => ft.getUSDBalanceNumber())
+      .map((ft) => ft.getUSDBalance())
       .filter((balance) => balance !== undefined)
       .reduce((acc: BigNumber, balance: BigNumber) => acc.plus(balance), BigNumber(0))
     return a.toFixed(2) + " USD"

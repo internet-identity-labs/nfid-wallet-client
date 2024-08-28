@@ -1,4 +1,5 @@
 import { Meta, StoryFn } from "@storybook/react"
+import { BrowserRouter as Router } from "react-router-dom"
 
 import { NFT } from "frontend/integration/nft/nft"
 
@@ -57,14 +58,20 @@ const mockNFTs = [
 
 export const Default: StoryFn<INFTs> = (args) => {
   return (
-    <div className="p-[30px] overflow-hidden w-full border border-gray-200 rounded-[24px]">
-      <NFTs {...args} />
+    <div className="p-[30px] overflow-hidden w-full">
+      <Router>
+        <NFTs {...args} />
+      </Router>
     </div>
   )
 }
 
 Default.args = {
   nfts: mockNFTs as NFT[],
+  links: {
+    base: "/wallet",
+    nfts: "nfts",
+  },
   searchTokens: (tokens: NFT[], search: string) => {
     return tokens.filter(
       (nft) =>

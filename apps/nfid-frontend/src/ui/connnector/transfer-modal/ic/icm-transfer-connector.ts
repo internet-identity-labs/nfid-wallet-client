@@ -1,6 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { Cache } from "node-ts-cache"
 import { PRINCIPAL_LENGTH } from "packages/constants"
@@ -37,7 +36,6 @@ import {
   ITransferNFTRequest,
   ITransferResponse,
 } from "../types"
-import { addressValidationService } from "../util/validation-service"
 
 export abstract class ICMTransferConnector<
   ConfigType extends ITransferConfig,
@@ -153,30 +151,6 @@ export abstract class ICMTransferConnector<
     return Promise.resolve(identity.getPrincipal().toString())
   }
 
-  getAccountIdentifier(address: string): string {
-    if (addressValidationService.isValidAccountIdentifier(address))
-      return address
-
-    try {
-      // Try if it's default principal or `${principal}-${checksum}-${subaccount}`
-      const principal = Principal.fromText(address)
-      const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
-      return accountIdentifier.toHex()
-    } catch (e) {
-      // Handle `${principal}-${checksum}-${subaccount}`
-      const { owner: principalTo, subaccount } = decodeIcrcAccount(address)
-      const subAccountObject = subaccount
-        ? SubAccount.fromBytes(subaccount as Uint8Array)
-        : null
-      if (subAccountObject instanceof Error) throw subAccountObject
-
-      return AccountIdentifier.fromPrincipal({
-        principal: principalTo,
-        subAccount: subAccountObject ?? undefined,
-      }).toHex()
-    }
-  }
-
   async transfer(
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<ITransferResponse> {
@@ -190,7 +164,7 @@ export abstract class ICMTransferConnector<
           ? await transferEXT(request.tokenId, request.identity, request.to)
           : await transferICP({
               amount: stringICPtoE8s(String(request.amount)),
-              to: this.getAccountIdentifier(request.to),
+              to: request.to,
               ...(request.memo ? { memo: request.memo } : {}),
               identity: request.identity,
             })
@@ -214,21 +188,5 @@ export abstract class ICMTransferConnector<
         errorMessage: e ?? "Unknown error",
       }
     }
-  }
-
-  validateAddress(address: string): boolean | string {
-    const isPrincipal = addressValidationService.isValidPrincipalId(address)
-    const isAccountIdentifier =
-      addressValidationService.isValidAccountIdentifier(address)
-
-    if (!isPrincipal && !isAccountIdentifier) {
-      try {
-        decodeIcrcAccount(address)
-        return true
-      } catch (e) {
-        console.error("Error: ", e)
-        return "Incorrect format of Destination Address"
-      }
-    } else return true
   }
 }

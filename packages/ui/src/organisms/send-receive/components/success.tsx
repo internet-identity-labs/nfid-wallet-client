@@ -2,7 +2,11 @@ import clsx from "clsx"
 import NoIcon from "packages/ui/src/assets/no-icon.svg"
 import React, { useMemo } from "react"
 
-import { LottieAnimation } from "@nfid-frontend/ui"
+import {
+  IconNftPlaceholder,
+  ImageWithFallback,
+  LottieAnimation,
+} from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
 import Fail from "../assets/error.json"
@@ -76,9 +80,10 @@ export const Success: React.FC<SuccessProps> = ({
             animationData={animation}
             loop={step === 0 || step === 2}
           />
-          <img
+          <ImageWithFallback
             alt="assetImg"
-            src={assetImg || NoIcon}
+            src={assetImg}
+            fallbackSrc={IconNftPlaceholder}
             className={clsx(
               "absolute h-[90px] w-[90px] object-contain rounded-full object-center",
               "mx-auto top-[155px] sm:top-[205px] ml-[1px]",

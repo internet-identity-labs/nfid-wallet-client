@@ -195,7 +195,6 @@ export const TransferFT = ({
         destinationType: "address",
         tokenName: selectedTokenCurrency,
         tokenType: "fungible",
-        tokenStandard: token.tokenStandard,
         amount: amount,
         fee: Number(transferFee) ?? 0,
       })

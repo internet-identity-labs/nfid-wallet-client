@@ -47,7 +47,6 @@ export interface ITransferModalConnector
   getNetworkOption(): IGroupOption
   getTokensOptions(): Promise<IGroupedOptions>
 
-  validateAddress(address: string): boolean | string
   transfer(
     request: ITransferFTRequest | ITransferNFTRequest,
   ): Promise<ITransferResponse>

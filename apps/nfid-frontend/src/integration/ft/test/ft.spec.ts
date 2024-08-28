@@ -1,6 +1,6 @@
 import {Principal} from "@dfinity/principal";
 import {ftService} from "src/integration/ft/ft-service";
-import {icrc1Service} from "@nfid/integration/token/icrc1/icrc1-service";
+import {icrc1StorageService} from "@nfid/integration/token/icrc1/service/icrc1-storage-service";
 import {PaginatedResponse} from "src/integration/nft/impl/nft-types";
 import {FT} from "src/integration/ft/ft";
 import {nftGeekService} from "src/integration/nft/geek/nft-geek-service";
@@ -17,7 +17,7 @@ describe("ft test suite", () => {
   describe("ft", () => {
     it("should return", async () => {
       jest
-        .spyOn(icrc1Service as any, "getICRC1ActiveCanisters")
+        .spyOn(icrc1StorageService as any, "getICRC1ActiveCanisters")
         .mockResolvedValue([{
           "ledger": "2ouva-viaaa-aaaaq-aaamq-cai",
           "name": "Chat",
@@ -43,6 +43,9 @@ describe("ft test suite", () => {
       expect(icpResult!.getTokenAddress()).toEqual("ryjl3-tyaaa-aaaaa-aaaba-cai")
       expect(icpResult!.getBlockExplorerLink()).toEqual("https://dashboard.internetcomputer.org/canister/ryjl3-tyaaa-aaaaa-aaaba-cai")
       expect(await icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
+
+      const filteredResult = await ftService.getAllFTokens(principal, "Chat")
+      expect(filteredResult.length).toEqual(1)
     })
     it('should calculate USD balance', async function () {
       jest
@@ -52,7 +55,7 @@ describe("ft test suite", () => {
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
       jest
-        .spyOn(icrc1Service as any, "getICRC1ActiveCanisters")
+        .spyOn(icrc1StorageService as any, "getICRC1ActiveCanisters")
         .mockResolvedValue([{
           "ledger": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "name": "Internet Computer",
@@ -62,7 +65,7 @@ describe("ft test suite", () => {
           "category": "Native"
         }])
 
-      jest.spyOn(icrc1Service as any, "getICRC1Data")
+      jest.spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValue([{
             "owner": principal,
             "balance": BigInt(200000000),

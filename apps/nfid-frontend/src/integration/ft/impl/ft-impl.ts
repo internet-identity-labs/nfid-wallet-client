@@ -1,10 +1,11 @@
 import {FT} from "src/integration/ft/ft";
 import {exchangeRateService} from "@nfid/integration";
 import {ICRC1} from "@nfid/integration/token/icrc1/types";
-import {icrc1Service} from "@nfid/integration/token/icrc1/icrc1-service";
 import {Principal} from "@dfinity/principal";
-import {Category, State} from "@nfid/integration/token/icrc1/enums";
+import {Category, State} from "@nfid/integration/token/icrc1/enum/enums";
 import BigNumber from "bignumber.js"
+import {icrc1RegistryService} from "@nfid/integration/token/icrc1/service/icrc1-registry-service";
+import {Icrc1Pair} from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair";
 
 export class FTImpl implements FT {
   private readonly tokenAddress: string;
@@ -27,10 +28,10 @@ export class FTImpl implements FT {
   }
 
   async init(principal: Principal): Promise<FT> {
-    const metadata = await icrc1Service.getICRC1Data([this.tokenAddress],
-      principal.toText())
-    this.tokenBalance = metadata[0].balance;
-    this.decimals = metadata[0].decimals;
+    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+    const [metadata, balance] = await Promise.all([icrc1Pair.getMetadata(), icrc1Pair.getBalance(principal.toText())])
+    this.tokenBalance = balance;
+    this.decimals = metadata.decimals;
     return this;
   }
 
@@ -72,11 +73,12 @@ export class FTImpl implements FT {
   }
 
   hideToken(): Promise<void> {
-    return icrc1Service.changeCanisterState(this.tokenAddress, State.Inactive)
+    return icrc1RegistryService.storeICRC1Canister(this.tokenAddress, State.Inactive)
   }
 
   showToken(): Promise<void> {
-    return icrc1Service.changeCanisterState(this.tokenAddress, State.Active)
+    return icrc1RegistryService.storeICRC1Canister(this.tokenAddress, State.Active)
+
   }
 
   getUSDBalance(): BigNumber | undefined {

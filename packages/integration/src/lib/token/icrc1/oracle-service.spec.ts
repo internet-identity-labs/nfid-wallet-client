@@ -7,11 +7,11 @@ import {iCRC1OracleActor, mockIdentityA} from "@nfid/integration"
 import {HTTPAccountResponse} from "../../_ic_api/identity_manager.d"
 import {iCRC1Registry, im, replaceActorIdentity} from "../../actors"
 import {generateDelegationIdentity} from "../../test-utils"
-import {icrc1Service} from "./icrc1-service";
+import {icrc1StorageService} from "./service/icrc1-storage-service";
 import {ICRC1 as ICRC1UserData} from "@nfid/integration/token/icrc1/types";
-import {Category, State} from "@nfid/integration/token/icrc1/enums";
-import {icrc1RegistryService} from "@nfid/integration/token/icrc1/icrc1-registry-service";
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/icrc1-oracle-service";
+import {Category, State} from "@nfid/integration/token/icrc1/enum/enums";
+import {icrc1RegistryService} from "@nfid/integration/token/icrc1/service/icrc1-registry-service";
+import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
@@ -35,7 +35,7 @@ describe("ICRC1 suite", () => {
     await icrc1OracleService.addICRC1Canister(icrc1Data)
     const account = (await im.get_account()) as HTTPAccountResponse
     root = account.data[0]!.principal_id
-    const canisters = await icrc1Service.getICRC1Canisters(root)
+    const canisters = await icrc1StorageService.getICRC1Canisters(root)
     expect(canisters.map((l) => l.ledger)).toContain(edId.getPrincipal().toText())
   })
 

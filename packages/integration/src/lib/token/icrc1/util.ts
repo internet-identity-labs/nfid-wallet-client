@@ -1,5 +1,5 @@
 import {Category} from "../../_ic_api/icrc1_oracle.d";
-import {Category as CategoryTS, State} from "./enums";
+import {Category as CategoryTS, State} from "./enum/enums";
 import {hasOwnProperty} from "@nfid/integration";
 import {ICRC1State} from "../../_ic_api/icrc1_registry.d";
 

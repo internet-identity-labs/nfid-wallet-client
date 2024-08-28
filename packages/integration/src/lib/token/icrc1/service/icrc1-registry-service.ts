@@ -1,7 +1,7 @@
-import {ICRC1} from "../../_ic_api/icrc1_registry.d";
-import {iCRC1Registry} from "./../../actors";
-import {mapStateTS} from "./util";
-import {State} from "./enums";
+import {iCRC1Registry} from "../../../actors";
+import {mapStateTS} from "../util";
+import {State} from "../enum/enums";
+import {ICRC1} from "../../../_ic_api/icrc1_registry.d";
 
 export class Icrc1RegistryService {
 

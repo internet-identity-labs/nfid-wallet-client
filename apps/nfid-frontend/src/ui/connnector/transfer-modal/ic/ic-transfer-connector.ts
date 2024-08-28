@@ -1,4 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { accessList } from "@nfid/integration"
@@ -44,6 +45,15 @@ export class ICTransferConnector
   async getDecimals() {
     return ICP_DECIMALS
   }
+
+  validateAddress(address: string): boolean | string {
+    try {
+      decodeIcrcAccount(address)
+      return true
+    } catch (e) {
+      return "Incorrect format of Principal"
+    }
+  }
 }
 
 export const icTransferConnector = new ICTransferConnector({
@@ -52,7 +62,7 @@ export const icTransferConnector = new ICTransferConnector({
   feeCurrency: NativeToken.ICP,
   blockchain: Blockchain.IC,
   title: "Internet Computer",
-  addressPlaceholder: "Recipient IC address or principal",
+  addressPlaceholder: "Recipient wallet address or account ID",
   type: TransferModalType.FT,
   isNativeToken: true,
   duration: "10 sec",

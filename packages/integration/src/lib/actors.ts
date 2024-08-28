@@ -3,6 +3,7 @@ import * as Agent from "@dfinity/agent"
 import {
   Actor,
   ActorMethod,
+  AnonymousIdentity,
   HttpAgent,
   Identity,
   SignIdentity,
@@ -119,6 +120,14 @@ export const iCRC1OracleActor = actor<ICRC1Oracle>(
 export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
   canisterId: VAULT_CANISTER_ID,
   agent: new HttpAgent({ ...agentBaseConfig }),
+})
+
+export const vaultAnonymous = Agent.Actor.createActor<Vault>(vaultIDL, {
+  canisterId: VAULT_CANISTER_ID,
+  agent: new HttpAgent({
+    ...agentBaseConfig,
+    identity: new AnonymousIdentity(),
+  }),
 })
 
 export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(

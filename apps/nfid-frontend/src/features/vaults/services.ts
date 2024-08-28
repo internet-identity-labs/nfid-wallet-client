@@ -1,6 +1,4 @@
-import { getVaults, replaceActorIdentity, vault } from "@nfid/integration"
-
-import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { getVaults } from "@nfid/integration"
 
 /**
  * @params vaultId: string
@@ -13,7 +11,5 @@ export const getVaultById = async (id: string) => {
 }
 
 export const getAllVaults = async () => {
-  const delegation = await getWalletDelegationAdapter()
-  await replaceActorIdentity(vault, delegation)
   return await getVaults()
 }

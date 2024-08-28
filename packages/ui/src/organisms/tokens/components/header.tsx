@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { CANISTER_ID_LENGTH } from "packages/constants"
 import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { FC, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -26,7 +27,6 @@ import {
   ICRC1Error,
 } from "@nfid/integration/token/icrc1/types"
 
-import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { FT } from "frontend/integration/ft/ft"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"

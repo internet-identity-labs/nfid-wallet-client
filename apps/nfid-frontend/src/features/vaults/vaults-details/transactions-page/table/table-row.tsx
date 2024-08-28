@@ -9,10 +9,10 @@ import {
   TableRow,
   Tooltip,
 } from "@nfid-frontend/ui"
+import { CenterEllipsis } from "@nfid-frontend/ui"
 import { TransactionState } from "@nfid/integration"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
 interface IApprover {
   name: string

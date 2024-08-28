@@ -1,13 +1,12 @@
-import React, { useMemo } from "react"
+import { Security } from "packages/ui/src/pages/security"
+import React, { useMemo, useCallback } from "react"
 import useSWR from "swr"
 
-import { Table, Toggle } from "@nfid-frontend/ui"
+import { Loader, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { Loader } from "frontend/ui/atoms/loader"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
-import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { PasskeyDeviceItem } from "./components/passkey-device-item"
@@ -22,7 +21,7 @@ export type IHandleWithLoading = (
   callback?: () => void,
 ) => void
 
-const ProfileSecurityPage = () => {
+const SecurityPage = () => {
   const [isLoading, setIsLoading] = React.useState(false)
   const { profile, refreshProfile } = useProfile()
 
@@ -42,93 +41,43 @@ const ProfileSecurityPage = () => {
     return devices?.passkeys.filter((d) => !d.isLegacyDevice).length === 1
   }, [devices?.passkeys, profile?.is2fa])
 
-  const handleWithLoading: IHandleWithLoading = async (action, callback) => {
-    try {
-      setIsLoading(true)
-      await action()
-      callback?.()
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setIsLoading(false)
-      refetchDevices()
-    }
-  }
+  const handleWithLoading: IHandleWithLoading = useCallback(
+    async (action, callback) => {
+      try {
+        setIsLoading(true)
+        await action()
+        callback?.()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setIsLoading(false)
+        refetchDevices()
+      }
+    },
+    [refetchDevices],
+  )
 
-  if (!profile) return <Loader isLoading={true} />
+  const renderPasskeys = useCallback(
+    () => (
+      <>
+        {devices?.passkeys.map((device, key) => (
+          <PasskeyDeviceItem
+            showLastPasskeyWarning={
+              device.isLegacyDevice ? false : showLastPasskeyWarning
+            }
+            device={device}
+            key={`passkey_device_${key}`}
+            handleWithLoading={handleWithLoading}
+          />
+        ))}
+      </>
+    ),
+    [devices?.passkeys, showLastPasskeyWarning, handleWithLoading],
+  )
 
-  return (
-    <ProfileTemplate pageTitle="Security">
-      <ProfileContainer
-        title="Login info"
-        subTitle="Primary method of signing in"
-      >
-        <PrimarySignInMethod profile={profile} />
-      </ProfileContainer>
-
-      <ProfileContainer
-        className="mt-[30px]"
-        title={
-          <>
-            <span>Two-factor authentication</span>
-            <Toggle
-              isDisabled={
-                !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length
-              }
-              isChecked={!!profile?.is2fa}
-              onToggle={async (val) => {
-                handleWithLoading(
-                  async () => await securityConnector.toggle2FA(val),
-                  () => refreshProfile(),
-                )
-              }}
-            />
-          </>
-        }
-        subTitle={
-          <span>
-            Use biometric authentication or external USB keys for very strong
-            two-factor authentication to your account. <br />
-            <br />
-            At least one Passkey and an email login are required to enable 2FA.
-            Passkeys can be used for authentication even when 2FA is disabled.
-          </span>
-        }
-      >
-        <Table
-          className="w-full !min-w-full"
-          tableHeader={
-            <tr className="border-b border-black">
-              <th>Passkeys</th>
-              <th className="hidden sm:table-cell">Created</th>
-              <th className="hidden sm:table-cell">Last activity</th>
-              <th className="w-[18px]"></th>
-              <th className="w-6"></th>
-            </tr>
-          }
-        >
-          {devices?.passkeys.map((device, key) => (
-            <PasskeyDeviceItem
-              showLastPasskeyWarning={
-                device.isLegacyDevice ? false : showLastPasskeyWarning
-              }
-              device={device}
-              key={`passkey_device_${key}`}
-              handleWithLoading={handleWithLoading}
-            />
-          ))}
-        </Table>
-        <AddPasskey
-          isDisabled={!profile.email?.length}
-          handleWithLoading={handleWithLoading}
-        />
-      </ProfileContainer>
-
-      <ProfileContainer
-        className="my-[30px]"
-        title="Recovery options"
-        subTitle="Access your account even if you lose access to all other authentication factors."
-      >
+  const renderRecoveryOptions = useCallback(
+    () => (
+      <>
         {devices?.recoveryDevice ? (
           <div className="flex items-center justify-between">
             <div className="flex space-x-2.5 items-center">
@@ -150,10 +99,43 @@ const ProfileSecurityPage = () => {
         ) : (
           <AddRecoveryPhrase handleWithLoading={handleWithLoading} />
         )}
-      </ProfileContainer>
-      <Loader isLoading={isLoading || isValidating} />
+      </>
+    ),
+    [devices?.recoveryDevice, handleWithLoading],
+  )
+
+  if (!profile) return <Loader isLoading={true} />
+
+  return (
+    <ProfileTemplate showBackButton pageTitle="Security">
+      <Security
+        primarySignInElement={<PrimarySignInMethod profile={profile} />}
+        toggleElement={
+          <Toggle
+            isDisabled={
+              !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length
+            }
+            isChecked={!!profile?.is2fa}
+            onToggle={async (val) => {
+              handleWithLoading(
+                async () => await securityConnector.toggle2FA(val),
+                () => refreshProfile(),
+              )
+            }}
+          />
+        }
+        addPasskeyElement={
+          <AddPasskey
+            isDisabled={!profile.email?.length}
+            handleWithLoading={handleWithLoading}
+          />
+        }
+        renderPasskeys={renderPasskeys}
+        renderRecoveryOptions={renderRecoveryOptions}
+        isLoading={isLoading || isValidating}
+      />
     </ProfileTemplate>
   )
 }
 
-export default ProfileSecurityPage
+export default SecurityPage

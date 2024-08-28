@@ -160,8 +160,9 @@ export const ChooseModal = ({
         <Input
           type="text"
           placeholder="Search"
+          inputClassName="!border-black"
           icon={<IconCmpSearch />}
-          onKeyUp={(e) => setSearchInput(e.target.value)}
+          onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
           className="my-4"
         />
         <div
@@ -174,14 +175,6 @@ export const ChooseModal = ({
               id={`option_group_${group.label.replace(/\s/g, "")}`}
               key={`group_${group.label}_${group.options.length}_${index}`}
             >
-              {group.label && (
-                <p
-                  id={"label_" + group.label}
-                  className="text-sm font-bold tracking-[0.01em] mb-1.5"
-                >
-                  {group.label}
-                </p>
-              )}
               {group.options.map((option, i) => (
                 <ChooseItem
                   key={`option_${option.value}_group_${index}_${i}`}

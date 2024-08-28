@@ -48,8 +48,8 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
         <DeviceIconDecider icon={isGoogleUser ? Icon.google : Icon.email} />
       </div>
       <div>
-        <p className="text-sm leading-5">{profile.email}</p>
-        <p className="text-xs leading-4 text-gray-400">
+        <p className="text-sm leading-[23px]">{profile.email}</p>
+        <p className="text-xs leading-5 text-gray-400">
           {isGoogleUser ? "Google" : "Email"} sign in
         </p>
       </div>

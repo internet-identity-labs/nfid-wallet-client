@@ -23,6 +23,8 @@ export interface AuthenticationContext {
   thirdPartyAuthSession?: ApproveIcGetDelegationSdkResponse
 
   allowedDevices?: string[]
+
+  email2FA?: string
 }
 
 export type Events =
@@ -36,7 +38,7 @@ export type Events =
     }
   | {
       type: "done.invoke.checkIf2FAEnabled"
-      data?: string[]
+      data?: { allowedPasskeys: string[]; email?: string }
     }
   | { type: "AUTH_WITH_EMAIL"; data: string }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
@@ -167,7 +169,8 @@ const AuthenticationMachine =
           verificationEmail: event.data,
         })),
         assignAllowedDevices: assign((c, event) => ({
-          allowedDevices: event.data,
+          allowedDevices: event.data?.allowedPasskeys,
+          email2FA: event.data?.email,
         })),
       },
       services: {

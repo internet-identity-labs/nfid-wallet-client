@@ -1,9 +1,5 @@
 import ProfileAssets from "packages/ui/src/organisms/tokens"
-import {
-  fetchAllTokens,
-  getActiveTokens,
-  getFilteredTokens,
-} from "packages/ui/src/organisms/tokens/utils"
+import { fetchAllTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useState } from "react"
 import useSWR from "swr"
 
@@ -12,10 +8,10 @@ import { Loader } from "@nfid-frontend/ui"
 const ProfileAssetsPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const { data: tokens = [], isLoading } = useSWR("tokens", fetchAllTokens)
-  const { data: filteredTokens = [], isLoading: isFilterLoading } = useSWR(
-    ["tokens", searchQuery],
-    ([, query]) => getFilteredTokens(query),
-  )
+  // const { data: filteredTokens = [], isLoading: isFilterLoading } = useSWR(
+  //   ["tokens", searchQuery],
+  //   ([, query]) => getFilteredTokens(query),
+  // )
   // const { data: activeTokens = [], isLoading: isActiveLoading } = useSWR(
   //   "tokens",
   //   getActiveTokens,
@@ -28,7 +24,7 @@ const ProfileAssetsPage = () => {
   return (
     <ProfileAssets
       tokens={tokens}
-      filteredTokens={filteredTokens}
+      //filteredTokens={filteredTokens}
       setSearchQuery={(value) => setSearchQuery(value)}
     />
   )

@@ -1,10 +1,9 @@
+import { Success } from "packages/ui/src/organisms/send-receive/components/success"
 import React from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
-
-import { Success } from "../ui/success"
 
 export interface ITransferSuccess {
   onClose?: () => void
@@ -28,7 +27,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
   isAssetPadding,
   callback,
   errorCallback,
-  duration = "10 seconds",
+  duration = "2 seconds",
   withToasts = true,
 }) => {
   const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3 | 4>(0)

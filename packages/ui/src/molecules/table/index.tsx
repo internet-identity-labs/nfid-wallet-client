@@ -19,7 +19,7 @@ export const Table = ({
       className={clsx("w-full text-left min-w-[640px]", className)}
     >
       <thead className={clsx("h-16", theadClassName)}>{tableHeader}</thead>
-      <tbody>{children}</tbody>
+      <tbody className="relative">{children}</tbody>
     </table>
   )
 }

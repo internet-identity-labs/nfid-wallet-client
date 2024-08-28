@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 import { TabsSwitcher } from "."
 
 export default {
-  title: "Organisms/TabsSwitcher",
+  title: "Molecules/TabsSwitcher",
   component: TabsSwitcher,
   parameters: {
     layout: "fullscreen",

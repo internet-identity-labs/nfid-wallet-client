@@ -14,7 +14,7 @@ export const AuthEmailError: React.FC<AuthEmailErrorProps> = ({
   return (
     <div className="flex flex-col w-full h-full text-sm text-center">
       <IconCmpArrow
-        className="transition-opacity cursor-pointer hover:opacity-50 shrink-0"
+        className="absolute transition-opacity cursor-pointer left-5 top-5 hover:opacity-50 shrink-0"
         onClick={onBack}
       />
       <p className="text-center font-bold mt-[30px] text-lg">
@@ -24,7 +24,7 @@ export const AuthEmailError: React.FC<AuthEmailErrorProps> = ({
         Magic link verification failed. Please try again.
       </p>
       <img
-        className="flex-1 mt-5 max-h-[400px]"
+        className="flex-1 mt-5 max-h-[400px] object-contain"
         src={Image}
         alt="email-verification-error"
       />

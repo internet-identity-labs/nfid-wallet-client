@@ -5,7 +5,7 @@ import {
 } from "@dfinity/identity"
 import * as jose from "jose"
 
-import { ONE_HOUR_IN_MS } from "@nfid/config"
+import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
 
 import { ic } from "../agent"
 
@@ -131,7 +131,7 @@ export const verificationService = {
     keypair: KeyPair,
     requestId: string,
     nonce: number,
-    maxTimeToLive = ONE_HOUR_IN_MS * 2,
+    maxTimeToLive = DEFAULT_DELEGATION_TTL,
   ): Promise<{
     identity: Ed25519KeyIdentity
     chainRoot: DelegationChain

@@ -5,7 +5,6 @@ import { FT } from "src/integration/ft/ft"
 import useSWR from "swr"
 
 import { Loader, ApplicationIcon } from "@nfid-frontend/ui"
-import { icrc1Service } from "@nfid/integration/token/icrc1/icrc1-service"
 import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
 import AssetDropdown from "./components/asset-dropdown"
@@ -20,12 +19,12 @@ export type TokenToRemove = {
 interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
   tokens: FT[]
   setSearchQuery: (v: string) => void
-  filteredTokens: ICRC1[]
+  //filteredTokens: ICRC1[]
 }
 
 const ProfileAssets: FC<ProfileAssetsProps> = ({
   tokens,
-  filteredTokens,
+  //filteredTokens,
   setSearchQuery,
 }) => {
   const [tokenToRemove, setTokenToRemove] = useState<TokenToRemove | null>(null)
@@ -35,7 +34,7 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
   return (
     <div>
       <ProfileAssetsHeader
-        tokens={filteredTokens}
+        tokens={[]}
         setSearch={(value) => setSearchQuery(value)}
       />
       <table className={clsx("text-left w-full hidden sm:table")}>

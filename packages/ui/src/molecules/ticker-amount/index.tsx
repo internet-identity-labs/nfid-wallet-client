@@ -18,21 +18,19 @@ const truncateToDecimals = (value: number, dec: number) => {
   return Math.trunc(value * calcDec) / calcDec
 }
 
-const checkUsd = (value: number, withUSDSymbol: boolean): string =>
+const checkUsd = (value: number): string =>
   value < 0.01
-    ? `0.00${withUSDSymbol ? " USD" : ""}`
-    : value.toFixed(MAX_DECIMAL_USD_LENGTH).replace(TRIM_ZEROS, "") +
-      (withUSDSymbol ? " USD" : "")
+    ? `0.00 USD`
+    : value.toFixed(MAX_DECIMAL_USD_LENGTH).replace(TRIM_ZEROS, "") + " USD"
 
 const formatUsdAmountNoDecimals = (value: number, rate: number): string =>
-  checkUsd(value * rate, true)
+  checkUsd(value * rate)
 
 const formatUsdAmount = (
   value: number,
   decimals: number,
   rate: number,
-  withUSDSymbol: boolean,
-): string => checkUsd((value / 10 ** decimals) * rate, withUSDSymbol)
+): string => checkUsd((value / 10 ** decimals) * rate)
 
 const formatAssetAmount = (
   symbol: string,
@@ -56,14 +54,13 @@ export const TickerAmount: React.FC<TickerAmountProps> = ({
   value,
   decimals,
   usdRate,
-  withUSDSymbol = true,
 }) => {
   if (!decimals) {
     return <>{formatUsdAmountNoDecimals(value, usdRate!)}</>
   }
 
   if (usdRate) {
-    return <>{formatUsdAmount(+value, decimals, usdRate, withUSDSymbol)}</>
+    return <>{formatUsdAmount(+value, decimals, usdRate)}</>
   }
 
   return <>{formatAssetAmount(symbol, +value, decimals)}</>

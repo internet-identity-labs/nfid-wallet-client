@@ -1,3 +1,4 @@
+import { format } from "date-fns"
 import { TransactionRecord } from "src/integration/nft/nft"
 
 export abstract class TransactionRecordAbstract implements TransactionRecord {
@@ -38,7 +39,30 @@ export class TransactionRecordView {
   }
 
   getFormattedDate(): string {
-    return this.getDate().toISOString()
+    let date
+    const timestamp = this.getDate().getTime()
+    const length = timestamp.toString().length
+    // seems like API can return timestamp in different format
+    // I am not sure that it's a good solution:
+    switch (true) {
+      case length > 10:
+        date = new Date(timestamp)
+        break
+      case length === 10:
+        date = new Date(timestamp * 1000)
+        break
+      case length < 10:
+        date = new Date(timestamp * 1000000)
+        break
+      default:
+        date = new Date(timestamp)
+        break
+    }
+
+    return format(date, "MMM dd, yyyy - hh:mm:ss a").replace(
+      /AM|PM/g,
+      (match) => match.toLowerCase(),
+    )
   }
 
   getFormattedPrice(): string | undefined {

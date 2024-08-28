@@ -5,10 +5,10 @@ import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { generateDelegationIdentity, mockIdentityA } from "@nfid/integration"
-import { icrc1TransactionHistoryService } from "@nfid/integration/token/icrc1/icrc1-transaction-history-service"
 import { transferICRC1 } from "@nfid/integration/token/icrc1/index"
 
 import { TransferArg } from "../../_ic_api/icrc1.d"
+import { icrc1TransactionHistoryService } from "./service/icrc1-transaction-history-service"
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)

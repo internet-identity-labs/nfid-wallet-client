@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Category } from "@nfid/integration/token/icrc1/enums"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -11,7 +11,7 @@ export interface FT {
 
   getTokenBalance(): string | undefined
 
-  getUSDBalance(): Promise<string | undefined>
+  getUSDBalanceFormatted(): Promise<string | undefined>
 
   getTokenAddress(): string
 

@@ -1,7 +1,7 @@
-import { ICRC1 } from "../../_ic_api/icrc1_registry.d"
-import { iCRC1Registry } from "./../../actors"
-import { State } from "./enums"
-import { mapStateTS } from "./util"
+import { ICRC1 } from "../../../_ic_api/icrc1_registry.d"
+import { iCRC1Registry } from "../../../actors"
+import { State } from "../enum/enums"
+import { mapStateTS } from "../util"
 
 export class Icrc1RegistryService {
   getCanistersByRoot(root: string): Promise<Array<ICRC1>> {

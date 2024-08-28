@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Category, State } from "./enums"
+import { Category, State } from "./enum/enums"
 
 export interface ICRC1 {
   logo: string | undefined

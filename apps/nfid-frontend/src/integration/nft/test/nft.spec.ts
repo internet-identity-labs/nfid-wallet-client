@@ -282,5 +282,17 @@ describe("nft test suite", () => {
       expect(icpSwapProperties.mappedValues[0].category).toEqual("Background")
       expect(icpSwapProperties.mappedValues[0].option).toEqual("Purple")
     })
+
+    it("should calculate usd price", async () => {
+      jest
+        .spyOn(nftGeekService as any, "fetchNftGeekData")
+        .mockResolvedValue(mockGeekResponse)
+      jest
+        .spyOn(exchangeRateService as any, "getICP2USD")
+        .mockReturnValue(new BigNumber(8.957874722))
+
+      const price = await nftService.getNFTsTotalPrice(principal)
+      expect(price).toEqual(11.0190816955322)
+    })
   })
 })

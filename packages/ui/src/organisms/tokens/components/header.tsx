@@ -19,8 +19,7 @@ import {
   IconSvgEyeShown,
 } from "@nfid-frontend/ui"
 import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/icrc1-oracle-service"
-import { icrc1Service } from "@nfid/integration/token/icrc1/icrc1-service"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import {
   ICRC1,
   ICRC1Data,
@@ -80,16 +79,16 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
       await icrc1OracleService.addICRC1Canister(ledgerID as any)
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       setModalStep("manage")
-      resetCachesByKey(
-        [
-          `ICRC1TransferConnector:getTokensOptions:[]`,
-          `ICRC1TransferConnector:getTokens:[]`,
-        ],
-        () =>
-          mutate(
-            (key) => Array.isArray(key) && key[1] === "getAllTokensOptions",
-          ),
-      )
+      // resetCachesByKey(
+      //   [
+      //     `ICRC1TransferConnector:getTokensOptions:[]`,
+      //     `ICRC1TransferConnector:getTokens:[]`,
+      //   ],
+      //   () =>
+      //     mutate(
+      //       (key) => Array.isArray(key) && key[1] === "getAllTokensOptions",
+      //     ),
+      // )
       mutate("getICRC1Data")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
       resetField("ledgerID")
@@ -106,13 +105,13 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   const fetchICRCToken = async () => {
     try {
       const { rootPrincipalId, publicKey } = await getLambdaCredentials()
-      const data = await icrc1Service.isICRC1Canister(
-        getValues("ledgerID"),
-        rootPrincipalId!,
-        publicKey,
-        getValues("indexID"),
-      )
-      setTokenInfo(data)
+      // const data = await icrc1OracleService.isICRC1Canister(
+      //   getValues("ledgerID"),
+      //   rootPrincipalId!,
+      //   publicKey,
+      //   getValues("indexID"),
+      // )
+      setTokenInfo(1 as any)
       return true
     } catch (e) {
       if (e instanceof ICRC1Error) {

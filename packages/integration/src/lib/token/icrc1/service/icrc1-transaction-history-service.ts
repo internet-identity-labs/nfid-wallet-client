@@ -4,17 +4,16 @@ import { Principal } from "@dfinity/principal"
 
 import { hasOwnProperty } from "@nfid/integration"
 
-import { idlFactory as icrc1IndexIDL } from "../../_ic_api/index-icrc1"
+import { idlFactory as icrc1IndexIDL } from "../../../_ic_api/index-icrc1"
 import {
   _SERVICE as ICRCIndex,
   GetAccountTransactionsArgs,
   TransactionWithId,
   Transfer,
-} from "../../_ic_api/index-icrc1.d"
-import { agentBaseConfig } from "../../actors"
-import { icrc1Service } from "./icrc1-service"
-import { ICRC1IndexData, TransactionData } from "./types"
-import { ICRC1 as ICRC1UserData } from "./types"
+} from "../../../_ic_api/index-icrc1.d"
+import { agentBaseConfig } from "../../../actors"
+import { Icrc1Pair } from "../icrc1-pair/impl/Icrc1-pair"
+import { ICRC1IndexData, TransactionData } from "../types"
 
 export class Icrc1TransactionHistoryService {
   async getICRC1IndexData(
@@ -63,19 +62,17 @@ export class Icrc1TransactionHistoryService {
           }
 
           if (hasOwnProperty(response, "Ok")) {
-            const ledgerData = await icrc1Service.getICRC1Data(
-              [pair.icrc1.ledger],
-              publicKeyInPrincipal,
-            )
+            const icrc1Pair = new Icrc1Pair(pair.icrc1.ledger, pair.icrc1.index)
+            const ledgerData = await icrc1Pair.getMetadata()
 
             return {
               canisterId: pair.icrc1.ledger,
-              decimals: ledgerData[0].decimals,
+              decimals: ledgerData.decimals,
               transactions: this.mapRawTrsToTransaction(
                 response.Ok.transactions,
                 publicKeyInPrincipal,
-                ledgerData[0].symbol,
-                ledgerData[0].decimals,
+                ledgerData.symbol,
+                ledgerData.decimals,
               ),
               oldestTransactionId:
                 response.Ok.oldest_tx_id.length === 0

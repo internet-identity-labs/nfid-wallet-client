@@ -3,11 +3,12 @@ import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
+import { nftService } from "src/integration/nft/nft-service"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-import { Category, State } from "@nfid/integration/token/icrc1/enums"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/icrc1-registry-service"
-import { icrc1Service } from "@nfid/integration/token/icrc1/icrc1-service"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 export class FtService {
   async getAllUserTokens(
@@ -15,7 +16,7 @@ export class FtService {
     page: number = 1,
     limit: number = 10,
   ): Promise<PaginatedResponse<FT>> {
-    let userTokens = await icrc1Service.getICRC1ActiveCanisters(
+    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(
       userPrincipal.toText(),
     )
     if (userTokens.length === 0) {
@@ -23,7 +24,7 @@ export class FtService {
         ICP_CANISTER_ID,
         State.Active,
       )
-      userTokens = await icrc1Service.getICRC1ActiveCanisters(
+      userTokens = await icrc1StorageService.getICRC1ActiveCanisters(
         userPrincipal.toText(),
       )
     }
@@ -76,25 +77,41 @@ export class FtService {
     }
   }
 
+  async getAllFTokens(
+    principal: Principal,
+    nameCategoryFilter: string | undefined,
+  ): Promise<Array<FT>> {
+    return icrc1StorageService
+      .getICRC1FilteredCanisters(principal.toText(), nameCategoryFilter)
+      .then((canisters) => {
+        return canisters.map((canister) => {
+          return new FTImpl(canister)
+        })
+      })
+  }
+
+  //todo move somewhere because contains NFT balance as well
   async getTotalUSDBalance(
     userPrincipal: Principal,
   ): Promise<string | undefined> {
-    let userTokens = await icrc1Service.getICRC1ActiveCanisters(
+    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(
       userPrincipal.toText(),
     )
     let ft = userTokens.map((token) => new FTImpl(token))
     await Promise.all(ft.map((ft) => ft.init(userPrincipal)))
-    await Promise.all(ft.map((ft) => ft.getUSDBalance()))
-    console.log(ft)
-
-    let a = ft
-      .map((ft) => ft.getUSDBalanceNumber())
+    const [_, nftPrice] = await Promise.all([
+      Promise.all(ft.map((ft) => ft.getUSDBalanceFormatted())),
+      nftService.getNFTsTotalPrice(userPrincipal),
+    ])
+    let price = ft
+      .map((ft) => ft.getUSDBalance())
       .filter((balance) => balance !== undefined)
       .reduce(
         (acc: BigNumber, balance: BigNumber) => acc.plus(balance),
         BigNumber(0),
       )
-    return a.toFixed(2) + " USD"
+    price = price.plus(nftPrice)
+    return price.toFixed(2) + " USD"
   }
 }
 

@@ -1,7 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
 import { authState, Chain, getPublicKey } from "@nfid/integration"
-import { icrc1Service } from "@nfid/integration/token/icrc1/icrc1-service"
 
 import { ftService } from "frontend/integration/ft/ft-service"
 
@@ -20,15 +19,15 @@ export const fetchAllTokens = async () => {
   return data.items
 }
 
-export const getActiveTokens = async () => {
-  const { principalString } = await getPrincipal()
-  return await icrc1Service.getICRC1ActiveCanisters(principalString)
-}
+// export const getActiveTokens = async () => {
+//   const { principalString } = await getPrincipal()
+//   return await icrc1OracleService.getICRC1ActiveCanisters(principalString)
+// }
 
-export const getFilteredTokens = async (searchQuery: string) => {
-  const { principalString } = await getPrincipal()
-  return await icrc1Service.getICRC1FilteredCanisters(
-    principalString,
-    searchQuery,
-  )
-}
+// export const getFilteredTokens = async (searchQuery: string) => {
+//   const { principalString } = await getPrincipal()
+//   return await icrc1Service.getICRC1FilteredCanisters(
+//     principalString,
+//     searchQuery,
+//   )
+// }

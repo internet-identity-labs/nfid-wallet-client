@@ -3,7 +3,7 @@ import { toast } from "react-toastify"
 import { mutate } from "swr"
 
 import { Button } from "@nfid-frontend/ui"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/icrc1-registry-service"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
@@ -31,16 +31,16 @@ const AssetModal: React.FC<IAssetModal> = ({ token, setTokenToRemove }) => {
         token.canisterId,
       )
       toast.success(`${token.name} has been removed.`)
-      resetCachesByKey(
-        [
-          `ICRC1TransferConnector:getTokensOptions:[]`,
-          `ICRC1TransferConnector:getTokens:[]`,
-        ],
-        () =>
-          mutate(
-            (key) => Array.isArray(key) && key[1] === "getAllTokensOptions",
-          ),
-      )
+      // resetCachesByKey(
+      //   [
+      //     `ICRC1TransferConnector:getTokensOptions:[]`,
+      //     `ICRC1TransferConnector:getTokens:[]`,
+      //   ],
+      //   () =>
+      //     mutate(
+      //       (key) => Array.isArray(key) && key[1] === "getAllTokensOptions",
+      //     ),
+      // )
       mutate("getICRC1Data")
       mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
     } catch (e) {

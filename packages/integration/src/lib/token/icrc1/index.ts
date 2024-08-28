@@ -8,23 +8,9 @@ import {
   TransferArg,
 } from "../../_ic_api/icrc1.d"
 import { icrc1Service } from "./icrc1-service"
-import { icrc1TransactionHistoryService } from "./icrc1-transaction-history-service"
-import { ICRC1Data, ICRC1IndexData } from "./types"
-
-/*
- * rootPrincipalId: the principal id of the account im.getAccount().principalId
- * publicKey: the public key returned by lambda ecdsa.ts getPublicKey() => convert to principal with Ed25519JSONableKeyIdentity
- */
-export async function getICRC1DataForUser(
-  rootPrincipalId: string,
-  publicKey: string,
-): Promise<Array<ICRC1Data>> {
-  const canisters = await icrc1Service.getICRC1ActiveCanisters(rootPrincipalId)
-  return icrc1Service.getICRC1Data(
-    canisters.map((l) => l.ledger),
-    publicKey,
-  )
-}
+import { icrc1StorageService } from "./service/icrc1-storage-service"
+import { icrc1TransactionHistoryService } from "./service/icrc1-transaction-history-service"
+import { ICRC1IndexData } from "./types"
 
 /*
  PTAL "Get index data" test in icrc1/index.spec.ts
@@ -37,7 +23,9 @@ export async function getICRC1HistoryDataForUser(
   publicKey: string,
   maxResults: bigint,
 ): Promise<Array<ICRC1IndexData>> {
-  const canisters = await icrc1Service.getICRC1Canisters(rootPrincipalId)
+  const canisters = await icrc1StorageService.getICRC1ActiveCanisters(
+    rootPrincipalId,
+  )
   const indexedCanisters = canisters
     .filter((canister) => canister.index !== undefined)
     .map((l) => {

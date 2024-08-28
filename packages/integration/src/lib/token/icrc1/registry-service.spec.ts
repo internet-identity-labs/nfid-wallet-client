@@ -4,8 +4,8 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { mockIdentityA } from "@nfid/integration"
-import { State } from "@nfid/integration/token/icrc1/enums"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/icrc1-registry-service"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 import { HTTPAccountResponse } from "../../_ic_api/identity_manager.d"
 import { iCRC1Registry, im, replaceActorIdentity } from "../../actors"

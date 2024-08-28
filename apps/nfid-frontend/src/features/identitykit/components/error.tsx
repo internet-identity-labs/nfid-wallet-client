@@ -4,7 +4,7 @@ import { useState } from "react"
 import { IconCmpWarning, ToggleButton } from "@nfid-frontend/ui"
 
 import { RPCMessage } from "../type"
-import { renderArgs } from "./call-canisters/details"
+import { CallCanisterDetails, renderArgs } from "./call-canisters/details"
 import { RPCComponentsUI } from "./methods/method"
 import { RPCPromptTemplate } from "./templates/prompt-template"
 
@@ -99,6 +99,14 @@ export const RPCComponentError = ({
                 </div>
               </div>
             </div>
+          )}
+
+          {args && (
+            <CallCanisterDetails
+              canisterId={request?.data?.params?.canisterId}
+              sender={request?.data?.params?.sender}
+              args={String(args)}
+            />
           )}
         </div>
       )}

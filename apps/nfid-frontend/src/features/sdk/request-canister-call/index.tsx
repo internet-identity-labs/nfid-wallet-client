@@ -71,7 +71,7 @@ export const RequestCanisterCall = ({
           className={clsx(
             "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
             "text-gray-500 break-all text-sm mt-2.5",
-            "overflow-auto",
+            "overflow-auto max-h-[150px]",
           )}
         >
           <div className="space-y-2">

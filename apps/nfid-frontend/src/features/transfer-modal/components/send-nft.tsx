@@ -18,6 +18,7 @@ import {
   getAccount,
   getIdentity,
   mapUserNFTDetailsToGroupedOptions,
+  validateAddress,
 } from "../utils"
 import { ITransferSuccess } from "./success"
 
@@ -150,6 +151,7 @@ export const TransferNFT = ({
       submit={submit}
       selectedAccountAddress={selectedAccountAddress}
       balance={Number(balance)}
+      validateAddress={validateAddress}
     />
   )
 }

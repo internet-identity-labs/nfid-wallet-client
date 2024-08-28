@@ -1,6 +1,3 @@
-import { checkAccountId } from "@dfinity/ledger-icp"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 
 interface Validation {
@@ -44,38 +41,3 @@ export const validateTransferAmountField =
       return "Insufficient funds"
     return true
   }
-
-const addressValidationService = {
-  isValidAccountIdentifier(value: string): boolean {
-    try {
-      checkAccountId(value)
-      return true
-    } catch {
-      return false
-    }
-  },
-  isValidPrincipalId(value: string): boolean {
-    try {
-      if (Principal.fromText(value)) return true
-      return false
-    } catch {
-      return false
-    }
-  },
-}
-
-export const validateAddress = (address: string): boolean | string => {
-  const isPrincipal = addressValidationService.isValidPrincipalId(address)
-  const isAccountIdentifier =
-    addressValidationService.isValidAccountIdentifier(address)
-
-  if (!isPrincipal && !isAccountIdentifier) {
-    try {
-      decodeIcrcAccount(address)
-      return true
-    } catch (e) {
-      console.error("Error: ", e)
-      return "Incorrect format of Destination Address"
-    }
-  } else return true
-}

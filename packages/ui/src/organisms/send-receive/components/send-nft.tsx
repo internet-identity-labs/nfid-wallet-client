@@ -15,12 +15,9 @@ import {
   Input,
   IGroupedOptions,
   IconNftPlaceholder,
-  Loader,
 } from "@nfid-frontend/ui"
-import { validateAddress } from "@nfid-frontend/utils"
 
 import { NFT } from "frontend/integration/nft/nft"
-import { ITransferNFTConnector } from "frontend/ui/connnector/transfer-modal/types"
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -34,6 +31,7 @@ export interface TransferNFTUiProps {
   submit: (values: any) => Promise<Id | undefined>
   selectedAccountAddress: string
   balance: number
+  validateAddress: (value: string) => boolean | string
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
@@ -48,6 +46,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   submit,
   selectedAccountAddress,
   balance,
+  validateAddress,
 }) => {
   const {
     register,

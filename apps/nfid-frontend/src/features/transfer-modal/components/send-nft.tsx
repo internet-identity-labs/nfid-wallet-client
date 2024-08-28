@@ -114,8 +114,9 @@ export const TransferNFT = ({
           //   tokenId: selectedNFT?.tokenId ?? "",
           //   standard: selectedNFT?.collection.standard ?? "",
           // })
+          //console.log("tokenIDDD", selectedNFT.get))
           const identity = await getIdentity(undefined, undefined, [
-            selectedNFT.getTokenId(),
+            selectedNFT.getCollectionId(),
           ])
 
           try {

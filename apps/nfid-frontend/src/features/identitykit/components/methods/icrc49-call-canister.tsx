@@ -18,13 +18,22 @@ const componentsMap: {
   [`ryjl3-tyaaa-aaaaa-aaaba-cai-transfer`]: React.lazy(
     () => import("../call-canisters/ledger-transfer"),
   ),
+  icrc2_approve: React.lazy(
+    () => import("../call-canisters/icrc2-spending-cap"),
+  ),
   default: React.lazy(() => import("../call-canisters/default")),
+}
+
+const getComponent = (canisterId: string, methodName: string) => {
+  let Cmp = componentsMap[`${canisterId}-${methodName}` as any]
+  if (!Cmp) Cmp = componentsMap[methodName]
+  if (!Cmp) Cmp = componentsMap["default"]
+  return Cmp
 }
 
 const RPCComponentICRC49 = (props: IRPCComponentICRC49) => {
   const { canisterId, methodName } = props
-  let Cmp = componentsMap[`${canisterId}-${methodName}` as any]
-  if (!Cmp) Cmp = componentsMap["default"]
+  let Cmp = getComponent(canisterId, methodName)
 
   return <Cmp {...props} />
 }

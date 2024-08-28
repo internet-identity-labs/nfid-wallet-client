@@ -30,7 +30,7 @@ export const VaultTransactionRejectReason = ({
       <div
         className={clsx(
           "border rounded-md border-red ring-[3px] ring-red-100",
-          "py-2 px-2.5 font-mono text-secondary text-sm min-h-[200px]",
+          "py-2 px-2.5 text-secondary text-sm min-h-[200px]",
         )}
       >
         {error}

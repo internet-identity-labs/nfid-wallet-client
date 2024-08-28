@@ -1,24 +1,4 @@
 import { IGroupedOptions } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
-
-export const makeRootAccountGroupedOptions = (
-  address: string,
-  balance: string,
-  usdBalance: string | undefined,
-  currency: string,
-): IGroupedOptions => ({
-  label: "NFID",
-  options: [
-    {
-      title: "NFID",
-      badgeText: "WALLET",
-      subTitle: truncateString(address, 6, 4),
-      value: address,
-      innerTitle: balance + " " + currency,
-      innerSubtitle: usdBalance,
-    },
-  ],
-})
 
 export const concatOptionsWithSameLabel = (options: IGroupedOptions[]) => {
   const mergedTokens = options.reduce<{

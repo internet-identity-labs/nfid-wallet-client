@@ -2,12 +2,11 @@ import clsx from "clsx"
 import React from "react"
 import { FieldValues, useForm } from "react-hook-form"
 
-import { TextArea } from "@nfid-frontend/ui"
+import { Loader, TextArea } from "@nfid-frontend/ui"
 import { formatSeedPhrase } from "@nfid-frontend/utils"
 
 import { Button } from "frontend/ui/atoms/button"
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
-import { Loader } from "frontend/ui/atoms/loader"
 import { H2 } from "frontend/ui/atoms/typography"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 

@@ -11,10 +11,9 @@ import {
 import { useParams } from "react-router-dom"
 import useSWR from "swr"
 
-import { IconSvgArrow, Tooltip } from "@nfid-frontend/ui"
+import { IconSvgArrow, Loader, Tooltip } from "@nfid-frontend/ui"
 
 import { ProfileContext } from "frontend/provider"
-import { Loader } from "frontend/ui/atoms/loader"
 import { NotFound } from "frontend/ui/pages/404"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -114,7 +113,6 @@ const NFTDetailsPage = () => {
     >
       <NFTDetails
         nft={nft}
-        //onTransferNFT={onTransferNFT}
         about={state.about.data}
         properties={state.properties.data}
         assetPreview={state.fullSize.data}

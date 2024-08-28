@@ -39,7 +39,7 @@ export const PublicProfileButton = ({
   return (
     <div
       className={clsx(
-        "flex justify-between text-xs lowercase font-mono h-5 mt-5",
+        "flex justify-between text-xs lowercase h-5 mt-5",
         !isAvailable && "!text-gray-400 !pointer-events-none",
       )}
     >

@@ -31,12 +31,12 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
     >
       <div className={clsx("px-5", titleClassName)}>
         {title && (
-          <div className="flex items-center justify-between mb-3 text-xl">
+          <div className="flex items-center justify-between mb-[8px] text-xl leading-[34px]">
             {title}
           </div>
         )}
         {subTitle && (
-          <div className="flex items-center justify-between mb-4 text-sm leading-5 text-secondary">
+          <div className="flex items-center justify-between mb-5 text-sm leading-[18px] text-secondary">
             {subTitle}
           </div>
         )}

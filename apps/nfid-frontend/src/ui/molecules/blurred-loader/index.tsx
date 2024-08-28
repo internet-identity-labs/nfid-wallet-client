@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Loader } from "frontend/ui/atoms/loader"
+import { Loader } from "@nfid-frontend/ui"
 
 import { BlurOverlay } from "../blur-overlay"
 

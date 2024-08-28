@@ -34,8 +34,8 @@ export const SendReceiveButton = () => {
       <div
         className={clsx(
           "md:hidden fixed bottom-3 right-3 w-12 h-12",
-          "bg-blue-600 flex items-center justify-center",
-          "rounded-full shadow-blueLight shadow-blue-600",
+          "bg-primaryButtonColor flex items-center justify-center",
+          "rounded-full shadow-blueLight shadow-primaryButtonColor",
           "cursor-pointer z-30",
         )}
         onClick={handleOpenSendReceive}

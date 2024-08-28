@@ -1,15 +1,9 @@
-import { toHex } from "@dfinity/agent"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import useSWR from "swr"
 
 import { Address } from "@nfid-frontend/ui"
-import { exchangeRateService } from "@nfid/integration"
 import { ICP_DECIMALS, WALLET_FEE_E8S } from "@nfid/integration/token/constants"
 
-import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
-
+import { LedgerTransferMetadata } from "../../service/canister-calls-helpers/ledger-transfer"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 
 export interface CallCanisterLedgerTransferProps {
@@ -19,37 +13,20 @@ export interface CallCanisterLedgerTransferProps {
   methodName: string
   args: string
   request: any
+  metadata: LedgerTransferMetadata
   onApprove: (data: any) => void
   onReject: () => void
 }
 
 const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
-  const { origin, request, args, methodName, onApprove, onReject } = props
+  const { origin, request, args, onApprove, onReject, metadata } = props
 
   const applicationName = new URL(origin).host
   const [requestParams] = JSON.parse(args)
-  const toArray = Object.values(requestParams.to) as any as ArrayBuffer
-
-  const { data } = useSWR("usdRate", () => exchangeRateService.getICP2USD())
-  const { data: balance } = useSWR(
-    request?.data?.params?.sender
-      ? ["userBalance", request?.data?.params?.sender]
-      : null,
-    ([_, id]) =>
-      icTransferConnector.getBalance(
-        AccountIdentifier.fromPrincipal({
-          principal: Principal.fromText(id),
-        }).toHex(),
-      ),
-  )
-
-  const toAddress = toHex(toArray)
-  const amount = Number(requestParams.amount.e8s)
-  const isInsufficientBalance = amount + WALLET_FEE_E8S > Number(balance)
 
   return (
     <RPCPromptTemplate
-      title={methodName}
+      title={"Approve transfer"}
       subTitle={
         <>
           Request from{" "}
@@ -65,8 +42,13 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
       }
       onPrimaryButtonClick={() => onApprove(request)}
       onSecondaryButtonClick={onReject}
-      senderPrincipal={request?.data?.params?.sender}
-      isPrimaryDisabled={isInsufficientBalance}
+      isPrimaryDisabled={metadata.isInsufficientBalance}
+      balance={{
+        symbol: "ICP",
+        balance: metadata.balance,
+        decimals: ICP_DECIMALS,
+        address: metadata.address,
+      }}
     >
       <div className="flex flex-col flex-1 mt-3">
         <p className="text-[32px] font-medium text-center">
@@ -77,20 +59,18 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
           />
         </p>
         <p className="text-sm text-center text-gray-400">
-          $
           <TickerAmount
             symbol="ICP"
             value={Number(requestParams.amount.e8s)}
-            usdRate={data?.toNumber()}
+            usdRate={metadata.usdRate}
             decimals={ICP_DECIMALS}
-            withUSDSymbol={false}
           />
         </p>
         <div className="flex flex-col flex-1 text-sm">
           <div className="flex items-center justify-between h-[54px]">
             <div>To</div>
             <div>
-              <Address address={toAddress} />
+              <Address address={metadata.toAddress} />
             </div>
           </div>
           <div className="flex items-center justify-between h-[54px]">
@@ -107,7 +87,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
                   symbol={"ICP"}
                   value={WALLET_FEE_E8S}
                   decimals={ICP_DECIMALS}
-                  usdRate={data?.toNumber()}
+                  usdRate={metadata.usdRate}
                 />
               </span>
             </div>
@@ -126,13 +106,13 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
                   symbol={"ICP"}
                   value={Number(requestParams.amount.e8s) + WALLET_FEE_E8S}
                   decimals={ICP_DECIMALS}
-                  usdRate={data?.toNumber()}
+                  usdRate={metadata.usdRate}
                 />
               </span>
             </div>
           </div>
         </div>
-        {isInsufficientBalance && (
+        {metadata.isInsufficientBalance && (
           <p className="flex flex-col justify-end flex-1 text-xs text-center text-red-600">
             Insufficient ICP balance
           </p>

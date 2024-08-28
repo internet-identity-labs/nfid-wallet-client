@@ -1,3 +1,4 @@
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React from "react"
 import { Route, Routes } from "react-router-dom"
 import useSWR from "swr"
@@ -18,7 +19,6 @@ import { AuthEmailMagicLink } from "./features/authentication/auth-selection/ema
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
 import { NotFound } from "./ui/pages/404"
-import ProfileContainer from "./ui/templates/profile-container/Container"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 
 const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))

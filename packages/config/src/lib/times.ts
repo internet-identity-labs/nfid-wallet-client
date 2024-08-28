@@ -12,3 +12,5 @@ export const ONE_WEEK_IN_MS = 7 * ONE_DAY_IN_MS
 export const ONE_MONTH_IN_MS = 30 * ONE_DAY_IN_MS
 
 export const ONE_YEAR_IN_MS = 365 * ONE_DAY_IN_MS
+
+export const DEFAULT_DELEGATION_TTL = ONE_HOUR_IN_MS * 12

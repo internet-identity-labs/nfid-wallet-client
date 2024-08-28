@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { CANISTER_ID_LENGTH } from "packages/constants"
 import {
   ICRC1Data,
   addICRC1Canister,
@@ -14,7 +15,6 @@ import { mutate } from "swr"
 import { BlurredLoader, Button, Input, Warning } from "@nfid-frontend/ui"
 import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
 
-import { CANISTER_ID_LENGTH } from "frontend/features/transfer-modal/utils/validations"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"

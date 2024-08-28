@@ -28,7 +28,7 @@ export const InputTrigger = ({
     <>
       <div
         className={clsx(
-          "border border-black rounded-md cursor-pointer h-14",
+          "border border-black rounded-[12px] cursor-pointer h-14",
           "flex items-center justify-between",
           "text-black px-4 mb-4",
           errorText && "!border-red-600 ring ring-red-100",

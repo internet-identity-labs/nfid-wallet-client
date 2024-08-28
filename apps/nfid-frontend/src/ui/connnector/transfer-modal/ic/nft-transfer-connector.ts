@@ -13,10 +13,7 @@ import {
   ITransferNFTConnector,
   TransferModalType,
 } from "../types"
-import {
-  mapUserNFTDetailsToGroupedOptions,
-  userNFTDetailsToNFT,
-} from "../util/nfts"
+import { userNFTDetailsToNFT } from "../util/nfts"
 import { ICMTransferConnector } from "./icm-transfer-connector"
 
 export class IcNFTTransferConnector
@@ -30,12 +27,12 @@ export class IcNFTTransferConnector
     return userNFTDetailsToNFT(allNFTs)
   }
 
-  @Cache(connectorCache, { ttl: 15 })
-  async getNFTOptions(): Promise<IGroupedOptions[]> {
-    const applications = await this.getApplications()
-    const allNFTs = await this.getNFTs()
-    return mapUserNFTDetailsToGroupedOptions(allNFTs, applications)
-  }
+  // @Cache(connectorCache, { ttl: 15 })
+  // async getNFTOptions(): Promise<IGroupedOptions[]> {
+  //   const applications = await this.getApplications()
+  //   const allNFTs = await this.getNFTs()
+  //   return mapUserNFTDetailsToGroupedOptions(allNFTs, applications)
+  // }
 
   getFee(): Promise<bigint> {
     return Promise.resolve(BigInt(0))

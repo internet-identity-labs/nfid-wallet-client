@@ -18,6 +18,13 @@ export const fetchNFTs = async () => {
   return data.items || []
 }
 
+export const fetchNFTsInited = async () => {
+  const principal = await getPrincipal()
+  const data = await nftService.getNFTs(principal)
+  const initedData = await Promise.all(data.items.map((item) => item.init()))
+  return initedData || []
+}
+
 export const fetchNFT = async (id: string) => {
   const principal = await getPrincipal()
   const data = await nftService.getNFTById(id, principal)

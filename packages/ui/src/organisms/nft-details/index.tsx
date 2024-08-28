@@ -15,7 +15,8 @@ import {
   TokenProperties,
 } from "frontend/integration/nft/impl/nft-types"
 import { NFT } from "frontend/integration/nft/nft"
-import ProfileContainer from "frontend/ui/templates/profile-container/Container"
+
+import ProfileContainer from "../../atoms/profile-container/Container"
 
 export interface NFTDetailsProps {
   nft: NFT
@@ -100,7 +101,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </p>
           <p
             className="font-bold text-primaryButtonColor leading-[24px] mb-[20px]"
-            id={`nft_collection_${nft.getCollectionId()}`}>
+            id={`nft_collection_${nft.getCollectionId()}`}
           >
             {nft.getCollectionName()}
           </p>
@@ -143,9 +144,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               <p className="text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
                 Collection ID
               </p>
-              <p id={"collection-id"}>
-                {nft.getCollectionId()}
-              </p>
+              <p id={"collection-id"}>{nft.getCollectionId()}</p>
             </div>
 
             <div

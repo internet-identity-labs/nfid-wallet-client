@@ -10,6 +10,8 @@ import { Application, getWalletName } from "@nfid/integration"
 
 import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { fetchApplications } from "frontend/integration/identity-manager"
+import { NFT } from "frontend/integration/nft/nft"
 
 import { Blockchain } from "../../types"
 
@@ -26,47 +28,30 @@ export const userNFTDetailsToNFT = (
 }
 
 export const mapUserNFTDetailsToGroupedOptions = (
-  userNFTDetailsArray: UserNonFungibleToken[],
-  applications: Application[],
+  userNFTDetailsArray: NFT[],
 ): IGroupedOptions[] => {
-  // First, group the UserNFTDetails by wallet name
-  const groupedByWallet = userNFTDetailsArray.reduce(
-    (acc: { [key: string]: UserNonFungibleToken[] }, current) => {
-      const walletName = getWalletName(
-        applications,
-        current.account.domain,
-        current.account.accountId,
-      )
-      if (!acc[walletName]) {
-        acc[walletName] = []
-      }
-      acc[walletName].push(current)
-      return acc
-    },
-    {},
+  const options = userNFTDetailsArray.map(
+    (nft) =>
+      ({
+        title: nft.getTokenName(),
+        subTitle: nft.getCollectionName(),
+        value: nft.getTokenId(),
+        icon: nft.getAssetPreview().url,
+      } as IGroupOption),
   )
 
-  // Then, map each group to an IGroupedOptions object
-  const mappedGroups = Object.entries(groupedByWallet).map(
-    ([walletName, userNFTDetails]) => {
-      const options = userNFTDetails.map(
-        (nft) =>
-          ({
-            title: nft.name,
-            subTitle: nft.collection.name,
-            value: nft.tokenId,
-            icon: nft.assetPreview.url,
-          } as IGroupOption),
-      )
-      return {
-        label: walletName,
-        options,
-      }
+  return [
+    {
+      label: "label",
+      options,
     },
-  )
-
-  return mappedGroups
+  ]
 }
+
+// export const getNFTOptions = async (nfts: NFT[]): Promise<IGroupedOptions[]> =>{
+//   const applications = await fetchApplications()
+//   return mapUserNFTDetailsToGroupedOptions(nfts, applications)
+// }
 
 export function toUserNFT(
   nft: NonFungibleItem,

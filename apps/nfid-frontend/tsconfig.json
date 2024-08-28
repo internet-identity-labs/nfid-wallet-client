@@ -17,11 +17,7 @@
     "downlevelIteration": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "../../types/env",
-    "../../packages/ui/src/organisms/nfts/nft-display-switch.tsx"
-  ],
+  "include": ["src", "../../types/env"],
   "extends": "../../tsconfig.base.json",
   "references": []
 }

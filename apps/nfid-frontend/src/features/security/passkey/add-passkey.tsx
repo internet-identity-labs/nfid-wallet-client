@@ -43,8 +43,8 @@ export const AddPasskey = ({
     <div>
       <div
         className={clsx(
-          "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
-          "hover:opacity-50 cursor-pointer transition-opacity",
+          "flex items-center space-x-2.5 pl-2.5 h-[40px] text-primaryButtonColor",
+          "hover:opacity-50 cursor-pointer transition-opacity mt-[20px]",
           isDisabled && "pointer-events-none !text-gray-400 cursor-not-allowed",
         )}
         onClick={handleOpenModal}

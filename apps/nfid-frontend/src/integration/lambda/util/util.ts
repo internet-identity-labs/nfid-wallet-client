@@ -33,6 +33,12 @@ export async function getTransformedRequest(
   })
 }
 
+export const getPrincipal = async () => {
+  const identity = authState.get().delegationIdentity
+  const principalString = await getPublicKey(identity!, Chain.IC)
+  return Principal.fromText(principalString)
+}
+
 export async function getLambdaCredentials() {
   const identity = authState.get().delegationIdentity
   if (!identity) throw new Error("Identity not found. Please try again")

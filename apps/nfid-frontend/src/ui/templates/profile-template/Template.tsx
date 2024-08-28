@@ -1,6 +1,5 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
@@ -47,6 +46,7 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   className?: string
   isWallet?: boolean
   withPortfolio?: boolean
+  titleClassNames?: string
 }
 
 const tabs = [
@@ -81,6 +81,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   iconTooltip,
   iconId,
   isWallet,
+  titleClassNames,
 }) => {
   const handleNavigateBack = useCallback(() => {
     window.history.back()
@@ -182,16 +183,19 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       >
         <section className={clsx("relative", className)}>
           {pageTitle && (
-            <div className="flex justify-between h-[40px] items-center">
+            <div className="flex justify-between items-center leading-[40px] mb-[30px]">
               <div className="sticky left-0 flex items-center space-x-2">
                 {showBackButton && (
                   <ArrowButton
+                    buttonClassName="py-[7px]"
                     onClick={handleNavigateBack}
                     iconClassName="text-black"
-                    buttonClassName="py-[7px]"
                   />
                 )}
-                <p className="text-[28px] block" id={"page_title"}>
+                <p
+                  className={clsx("text-[28px] block", titleClassNames)}
+                  id={"page_title"}
+                >
                   {pageTitle}
                 </p>
               </div>
@@ -229,14 +233,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               />
             </>
           )}
-          {isWallet ? (
-            <ProfileContainer>
-              <Outlet />
-            </ProfileContainer>
-          ) : (
-            <Outlet />
-          )}
-
+          <Outlet />
           {children}
         </section>
       </div>

@@ -17,8 +17,7 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 
-import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
-import { ITransferNFTConnector } from "frontend/ui/connnector/transfer-modal/types"
+import { NFT } from "frontend/integration/nft/nft"
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -27,12 +26,12 @@ export interface TransferNFTUiProps {
   nftOptions: IGroupedOptions[] | undefined
   setSelectedNFTId: Dispatch<SetStateAction<string>>
   selectedNFTId: string
-  selectedNFT: UserNonFungibleToken | undefined
-  selectedConnector: ITransferNFTConnector | undefined
+  selectedNFT: NFT | undefined
   selectedReceiverWallet: string | undefined
   submit: (values: any) => Promise<Id | undefined>
   selectedAccountAddress: string
   balance: number
+  validateAddress: (value: string) => boolean | string
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
@@ -43,11 +42,11 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   setSelectedNFTId,
   selectedNFTId,
   selectedNFT,
-  selectedConnector,
   selectedReceiverWallet,
   submit,
   selectedAccountAddress,
   balance,
+  validateAddress,
 }) => {
   const {
     register,
@@ -83,10 +82,10 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
             >
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
-                  {selectedNFT?.assetPreview ? (
+                  {selectedNFT?.getAssetPreview().url ? (
                     <ImageWithFallback
                       className="object-cover rounded-[10px] w-[84px] h-[84px]"
-                      src={selectedNFT?.assetPreview.url}
+                      src={selectedNFT?.getAssetPreview().url}
                       fallbackSrc={IconNftPlaceholder}
                       alt="NFID NFT"
                     />
@@ -98,9 +97,9 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
                   <p className="leading-3 text-gray-400">Choose NFT</p>
                 ) : (
                   <div>
-                    <p className="mb-1 text-sm">{selectedNFT.name}</p>
+                    <p className="mb-1 text-sm">{selectedNFT.getTokenName()}</p>
                     <p className="text-xs leading-3 text-gray-400">
-                      {selectedNFT.collection.name}
+                      {selectedNFT.getCollectionName()}
                     </p>
                   </div>
                 )}
@@ -119,16 +118,14 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
             "text-black px-4",
             errors.to?.message && "!border-red-600 ring ring-red-100",
           )}
-          placeholder={`Recipient ${
-            selectedNFT?.blockchain ?? "blockchain"
-          } address`}
+          placeholder="Recipient wallet address or account ID"
           type="text"
           labelText="To"
           errorText={errors.to?.message}
           id="to"
           {...register("to", {
             required: "This field cannot be empty",
-            validate: (value) => selectedConnector?.validateAddress(value),
+            validate: (value) => validateAddress(value),
           })}
         />
         <Button

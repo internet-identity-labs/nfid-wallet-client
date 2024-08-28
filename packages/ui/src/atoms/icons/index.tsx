@@ -5,6 +5,7 @@ import IconSvgAnonymous from "./anonymous.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrow from "./arrow.svg"
+import IconSvgCmpArrow from "./arrow.svg"
 import IconSvgBook from "./book.svg"
 import IconSvgCalendar from "./calendar.svg"
 import IconSvgCancel from "./cancel.svg"
@@ -120,6 +121,7 @@ export {
   Logo,
   IconInfo,
   IconDisconnect,
+  IconSvgCmpArrow,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

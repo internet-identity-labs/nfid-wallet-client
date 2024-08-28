@@ -29,6 +29,7 @@ export * from "./atoms/info-list-item"
 export * from "./atoms/toggle"
 export * from "./atoms/center-ellipsis"
 export * from "./atoms/address"
+export * from "./atoms/image-with-fallback"
 
 export * from "./molecules/button"
 export * from "./molecules/button/arrow-button"

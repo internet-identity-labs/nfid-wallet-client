@@ -69,7 +69,7 @@ describe("nft test suite", () => {
       expect(transactions.activity).toHaveLength(2)
       const transfer = transactions.activity[0].getTransactionView()
       expect(transfer.getType()).toEqual("Transfer")
-      expect(transfer.getFormattedDate()).toEqual("2024-07-17T14:21:58.748Z")
+      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 02:21:58 pm")
       expect(transfer.getFrom()).toEqual(
         "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
       )
@@ -87,7 +87,7 @@ describe("nft test suite", () => {
       expect(soldNFTTransactions.activity).toHaveLength(1)
       const sale = soldNFTTransactions.activity[0].getTransactionView()
       expect(sale.getType()).toEqual("Sale")
-      expect(sale.getFormattedDate()).toEqual("2022-01-18T05:29:26.428Z")
+      expect(sale.getFormattedDate()).toEqual("Jan 18, 2022 - 05:29:26 am")
       expect(sale.getFrom()).toEqual(
         "f7sgc-7glh6-n67he-ollmd-dpy26-2xdbo-vyzxo-pbboq-vkb6v-vfu4f-uqe",
       )
@@ -148,7 +148,7 @@ describe("nft test suite", () => {
         "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
       )
       expect(listYumiActivity.getFormattedDate()).toEqual(
-        "2024-06-03T14:06:33.689Z",
+        "Jun 03, 2024 - 02:06:33 pm",
       )
       expect(listYumiActivity.getFormattedPrice()).toEqual("3 ICP")
 
@@ -162,7 +162,7 @@ describe("nft test suite", () => {
         "287f1d6bd92892c983c21135b4319eba0cb838a6e1f446cae820d707bc21de77",
       )
       expect(soldYumiActivity.getFormattedDate()).toEqual(
-        "2024-07-17T14:01:34.027Z",
+        "Jul 17, 2024 - 02:01:34 pm",
       )
       expect(listYumiActivity.getFormattedPrice()).toEqual("3 ICP")
 
@@ -218,7 +218,7 @@ describe("nft test suite", () => {
       expect(soldMemecakeActivity.getType()).toEqual("Sale")
       expect(soldMemecakeActivity.getFormattedPrice()).toEqual("0.45 ICP")
       expect(soldMemecakeActivity.getFormattedDate()).toEqual(
-        "2024-07-17T22:02:35.191Z",
+        "Jul 17, 2024 - 10:02:35 pm",
       )
       expect(soldMemecakeActivity.getFrom()).toEqual(
         "dqowy-h2khv-z73ww-duwdp-3d5ri-sgbfk-v6j4y-apzxj-mxusr-mdbys-yqe",
@@ -251,7 +251,7 @@ describe("nft test suite", () => {
       expect(icpswapActivity.getType()).toEqual("Transfer")
       expect(icpswapActivity.getFormattedPrice()).toEqual(undefined)
       expect(icpswapActivity.getFormattedDate()).toEqual(
-        "2024-07-17T21:57:56.590Z",
+        "Jul 17, 2024 - 09:57:56 pm",
       )
       expect(icpswapActivity.getFrom()).toEqual(
         "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
@@ -265,7 +265,7 @@ describe("nft test suite", () => {
       expect(icpswapActivityMint.getType()).toEqual("Mint")
       expect(icpswapActivityMint.getFormattedPrice()).toEqual("0 ICP")
       expect(icpswapActivityMint.getFormattedDate()).toEqual(
-        "2022-12-07T08:53:48.919Z",
+        "Dec 07, 2022 - 08:53:48 am",
       )
       expect(icpswapActivityMint.getFrom()).toEqual(undefined)
       expect(icpswapActivityMint.getTo()).toEqual(
@@ -281,6 +281,65 @@ describe("nft test suite", () => {
       expect(icpSwapProperties.mappedValues.length).toEqual(5)
       expect(icpSwapProperties.mappedValues[0].category).toEqual("Background")
       expect(icpSwapProperties.mappedValues[0].option).toEqual("Purple")
+    })
+  })
+
+  describe("getNFTById", () => {
+    it("should return the correct NFT details for a given ID", async () => {
+      const nftId = "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a"
+
+      jest
+        .spyOn(nftGeekService as any, "fetchNftGeekData")
+        .mockResolvedValue(mockGeekResponse)
+      jest
+        .spyOn(exchangeRateService as any, "getICP2USD")
+        .mockReturnValue(new BigNumber(8.957874722))
+
+      const nft = await nftService.getNFTById(nftId, principal)
+
+      expect(nft).toBeDefined()
+      if (!nft) return
+
+      expect(nft.getTokenNumber()).toEqual(2066)
+      expect(nft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
+      expect(nft.getCollectionName()).toEqual("Cellphones")
+      expect(nft.getTokenName()).toEqual("Cellphones #2066")
+      expect(nft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
+      expect(nft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
+      expect(nft.getTokenId()).toEqual(nftId)
+      expect(nft.getMarketPlace()).toEqual("EXT")
+      expect(nft.getMillis()).toEqual(1721253726158)
+
+      const assetPreview = nft.getAssetPreview()
+      expect(assetPreview.format).toEqual("img")
+      expect(assetPreview.url).toEqual(
+        "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+      )
+      expect(nft.getTokenLink()).toEqual(
+        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.ic0.app/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+      )
+
+      const details = await nft.getDetails()
+      expect(details.getAbout()).toEqual(
+        "Cellphones on ICP ringing throughout the cryptoverse.",
+      )
+      const assetFullSize = await details.getAssetFullSize()
+      expect(assetFullSize.format).toEqual("img")
+      expect(assetFullSize.url).toEqual(
+        "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+      )
+
+      const transactions = await details.getTransactions(0, 10)
+      expect(transactions.activity).toHaveLength(2)
+      const transfer = transactions.activity[0].getTransactionView()
+      expect(transfer.getType()).toEqual("Transfer")
+      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 02:21:58 pm")
+      expect(transfer.getFrom()).toEqual(
+        "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
+      )
+      expect(transfer.getTo()).toEqual(
+        "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
+      )
     })
   })
 })

@@ -27,12 +27,14 @@ export const Security: FC<SecurityProps> = ({
         subTitle="Primary method of signing in"
         className="my-[20px] sm:my-[30px] p-[20px] sm:p-[30px]"
         innerClassName="!px-0"
+        titleClassName="!px-0"
       >
         {primarySignInElement}
       </ProfileContainer>
       <ProfileContainer
         className="p-[20px] sm:p-[30px]"
         innerClassName="!px-0"
+        titleClassName="!px-0"
         title={
           <>
             <span>Self-sovereign mode</span>
@@ -54,7 +56,7 @@ export const Security: FC<SecurityProps> = ({
           className="w-full !min-w-full"
           theadClassName="h-[40px]"
           tableHeader={
-            <tr className="text-bold text-sm text-gray-400">
+            <tr className="text-sm text-gray-400 text-bold">
               <th>Passkeys</th>
               <th className="hidden sm:table-cell">Created</th>
               <th className="hidden sm:table-cell">Last activity</th>
@@ -70,6 +72,7 @@ export const Security: FC<SecurityProps> = ({
       <ProfileContainer
         className="mt-[20px] mb-[120px] sm:my-[30px] p-[20px] sm:p-[30px]"
         innerClassName="!px-0"
+        titleClassName="!px-0"
         title="Recovery options"
         subTitle="Access your account even if you lose access to all other authentication factors."
       >

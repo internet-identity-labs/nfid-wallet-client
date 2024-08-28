@@ -6,7 +6,7 @@ export class FungibleAssetFactory extends ConnectorFactory<
   string,
   FungibleAssetConnector<AssetNativeConfig>
 > {
-  getTokenConfigs = async (key: string): Promise<Array<TokenConfig>> => {
+  async getTokenConfigs(key: string): Promise<Array<TokenConfig>> {
     return super.process(key, [])
   }
 

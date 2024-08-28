@@ -2,20 +2,20 @@ import {PaginatedResponse} from "src/integration/nft/impl/nft-types";
 import {FT} from "src/integration/ft/ft";
 import {Principal} from "@dfinity/principal";
 import {FTImpl} from "src/integration/ft/impl/ft-impl"
-import {icrc1RegistryService} from "@nfid/integration/token/icrc1/icrc1-registry-service";
-import {icrc1Service} from "@nfid/integration/token/icrc1/icrc1-service";
+import {icrc1RegistryService} from "@nfid/integration/token/icrc1/service/icrc1-registry-service";
+import {icrc1StorageService} from "@nfid/integration/token/icrc1/service/icrc1-storage-service";
 import {ICP_CANISTER_ID} from "@nfid/integration/token/constants";
-import {State} from "@nfid/integration/token/icrc1/enums";
+import {State} from "@nfid/integration/token/icrc1/enum/enums";
 import BigNumber from "bignumber.js"
 import {nftService} from "src/integration/nft/nft-service";
 
 export class FtService {
   async getAllUserTokens(userPrincipal: Principal, page: number = 1, limit: number = 10): Promise<PaginatedResponse<FT>> {
-    let userTokens = await icrc1Service.getICRC1ActiveCanisters(userPrincipal.toText());
+    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userPrincipal.toText());
     if (userTokens.length === 0) {
       await icrc1RegistryService.storeICRC1Canister(
         ICP_CANISTER_ID, State.Active)
-      userTokens = await icrc1Service.getICRC1ActiveCanisters(userPrincipal.toText());
+      userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userPrincipal.toText());
     }
 
     const ft: Array<FT> = userTokens.map((token) => new FTImpl(token));
@@ -36,8 +36,18 @@ export class FtService {
     }
   }
 
+  async getAllFTokens(principal: Principal, nameCategoryFilter: string | undefined): Promise<Array<FT>> {
+   return icrc1StorageService.getICRC1FilteredCanisters(principal.toText(), nameCategoryFilter)
+      .then((canisters) => {
+       return canisters.map((canister) => {
+          return new FTImpl(canister)
+        })
+      })
+  }
+
+  //todo move somewhere because contains NFT balance as well
   async getTotalUSDBalance(userPrincipal: Principal): Promise<string | undefined> {
-    let userTokens = await icrc1Service.getICRC1ActiveCanisters(userPrincipal.toText());
+    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userPrincipal.toText());
     let ft = userTokens.map((token) => new FTImpl(token));
     await Promise.all(ft.map(ft => ft.init(userPrincipal)))
     const [_, nftPrice] = await Promise.all([

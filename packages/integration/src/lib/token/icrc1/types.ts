@@ -1,4 +1,4 @@
-import {Category, State} from "./enums"
+import {Category, State} from "./enum/enums"
 import {Principal} from "@dfinity/principal";
 
 export interface ICRC1 {

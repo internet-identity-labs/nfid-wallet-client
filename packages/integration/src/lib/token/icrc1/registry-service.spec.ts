@@ -7,8 +7,8 @@ import {mockIdentityA} from "@nfid/integration"
 import {HTTPAccountResponse} from "../../_ic_api/identity_manager.d"
 import {iCRC1Registry, im, replaceActorIdentity} from "../../actors"
 import {generateDelegationIdentity} from "../../test-utils"
-import {State} from "@nfid/integration/token/icrc1/enums";
-import {icrc1RegistryService} from "@nfid/integration/token/icrc1/icrc1-registry-service";
+import {State} from "@nfid/integration/token/icrc1/enum/enums";
+import {icrc1RegistryService} from "@nfid/integration/token/icrc1/service/icrc1-registry-service";
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)

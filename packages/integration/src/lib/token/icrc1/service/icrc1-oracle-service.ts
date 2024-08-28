@@ -1,6 +1,6 @@
-import {iCRC1OracleActor} from "./../../actors";
-import {ICRC1, ICRC1Request} from "../../_ic_api/icrc1_oracle.d";
-import {ICRC1 as ICRC1Data} from "./types";
+import {iCRC1OracleActor} from "../../../actors";
+import {ICRC1, ICRC1Request} from "../../../_ic_api/icrc1_oracle.d";
+import {ICRC1 as ICRC1Data} from "../types";
 
 export class ICRC1OracleService {
   async addICRC1Canister(

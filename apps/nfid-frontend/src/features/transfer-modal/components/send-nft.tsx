@@ -1,24 +1,24 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import useSWR, { mutate } from "swr"
+import useSWR from "swr"
 
-import { Loader } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
 import {
   fetchNFT,
-  fetchNFTs,
   fetchNFTsInited,
 } from "frontend/features/collectibles/utils/util"
 import { transferEXT } from "frontend/integration/entrepot/ext"
-import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
 import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
-import { mapUserNFTDetailsToGroupedOptions } from "frontend/ui/connnector/transfer-modal/util/nfts"
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { getIdentity } from "../utils"
+import {
+  getAccount,
+  getIdentity,
+  mapUserNFTDetailsToGroupedOptions,
+} from "../utils"
 import { ITransferSuccess } from "./success"
 
 interface ITransferNFT {
@@ -33,11 +33,12 @@ export const TransferNFT = ({
   preselectedNFTId = "",
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
-  const [selectedAccountAddress, setSelectedAccountAddress] = useState("")
+  const [selectedAccountAddress, setSlectedAccountAddress] = useState("")
+
   const {
     data: allNfts = [],
-    mutate: refetchNFTs,
     isLoading: isNftListLoading,
+    mutate: refetchAllNfts,
   } = useSWR("allNFTS", fetchNFTsInited)
   const {
     data: selectedNFT,
@@ -47,9 +48,16 @@ export const TransferNFT = ({
     fetchNFT(tokenId),
   )
 
-  console.log("1211", allNfts)
+  useEffect(() => {
+    const getAddress = async () => {
+      const address = await getAccount()
+      setSlectedAccountAddress(address)
+    }
 
-  const { data: selectedFtConnector, isLoading: isConnectorLoading } = useSWR(
+    getAddress()
+  }, [])
+
+  const { data: selectedFtConnector } = useSWR(
     ["ICP", Blockchain.IC, "selectedConnector"],
     ([selectedTokenCurrency, selectedTokenBlockchain]) =>
       getConnector({
@@ -73,8 +81,8 @@ export const TransferNFT = ({
     selectedFtConnector && selectedAccountAddress
       ? [selectedFtConnector, selectedAccountAddress, "balance"]
       : null,
-    ([connector, selectedAccountAddress]) =>
-      connector.getBalance(selectedAccountAddress, "ICP"),
+    ([connector, preselectedAccountAddress]) =>
+      connector.getBalance(preselectedAccountAddress, "ICP"),
     { refreshInterval: 10000 },
   )
 
@@ -87,7 +95,7 @@ export const TransferNFT = ({
       amount: 1,
       fee: 0,
     })
-  }, [selectedNFT?.getTokenId()])
+  }, [selectedNFT])
 
   const submit = useCallback(
     async (values: any) => {
@@ -96,25 +104,6 @@ export const TransferNFT = ({
       onTransferPromise({
         assetImg: selectedNFT?.getAssetPreview().url,
         initialPromise: new Promise(async (resolve) => {
-          // await selectedConnector?.getFee({
-          //   to: values.to,
-          //   contract: selectedNFT?.getTokenId() ?? "",
-          //   tokenId: selectedNFT?.getTokenId() ?? "",
-          //   standard: selectedNFT?.collection.standard ?? "",
-          // })
-
-          // const res = await selectedConnector.transfer({
-          //   identity: await selectedConnector.getIdentity(
-          //     selectedNFT.account.domain,
-          //     selectedNFT.account.accountId,
-          //     [selectedNFT.contractId],
-          //   ),
-          //   to: values.to,
-          //   contract: selectedNFT?.contractId ?? "",
-          //   tokenId: selectedNFT?.tokenId ?? "",
-          //   standard: selectedNFT?.collection.standard ?? "",
-          // })
-          //console.log("tokenIDDD", selectedNFT.get))
           const identity = await getIdentity(undefined, undefined, [
             selectedNFT.getCollectionId(),
           ])
@@ -133,39 +122,26 @@ export const TransferNFT = ({
         }),
         title: selectedNFT.getTokenName(),
         subTitle: selectedNFT.getCollectionName(),
-        // callback: () => {
-        //   resetCachesByKey(
-        //     [
-        //       `${selectedConnector.constructor.name}:getNFTOptions:[]`,
-        //       `${selectedConnector.constructor.name}:getNFTs:[]`,
-        //     ],
-        //     () => refetchNFTs(),
-        //   )
-
-        //   mutate(
-        //     (key: any) =>
-        //       key && Array.isArray(key) && key[0] === "useNftConfig",
-        //   )
-        //   mutate(
-        //     (key: any) =>
-        //       key && Array.isArray(key) && key[0] === "useTokenConfig",
-        //   )
-        // },
+        callback: () => {
+          refetchAllNfts()
+          refetchNFT()
+        },
       })
     },
-    [handleTrackTransfer, onTransferPromise, refetchNFTs, selectedNFT],
+    [
+      handleTrackTransfer,
+      onTransferPromise,
+      refetchAllNfts,
+      refetchNFT,
+      selectedNFT,
+    ],
   )
-
-  // const loadingMessage = useMemo(() => {
-  //   if (isConnectorLoading) return "Loading token config..."
-  //   //if (isAccountsLoading || isAccountsValidating) return "Loading accounts..."
-  // }, [isConnectorLoading, isAccountsLoading, isAccountsValidating])
 
   return (
     <TransferNFTUi
       isLoading={isNftLoading && isNftListLoading}
       isBalanceLoading={isBalanceLoading && isBalanceFetching}
-      loadingMessage={"Loading token config..."}
+      loadingMessage={"Loading NFTs..."}
       nftOptions={mapUserNFTDetailsToGroupedOptions(allNfts)}
       setSelectedNFTId={setSelectedNFTId}
       selectedNFTId={selectedNFTId}

@@ -1,8 +1,6 @@
 import { IGroupedOptions } from "@nfid-frontend/ui"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { UserNonFungibleToken } from "frontend/features/non-fungible-token/types"
-
 import { Blockchain } from "../types"
 import { icTransferConnector } from "./ic/ic-transfer-connector"
 import { icrc1TransferConnector } from "./ic/icrc1-transfer-connector"

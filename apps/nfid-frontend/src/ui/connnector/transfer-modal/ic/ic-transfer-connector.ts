@@ -1,4 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { accessList } from "@nfid/integration"
@@ -43,6 +44,15 @@ export class ICTransferConnector
 
   async getDecimals() {
     return ICP_DECIMALS
+  }
+
+  validateAddress(address: string): boolean | string {
+    try {
+      decodeIcrcAccount(address)
+      return true
+    } catch (e) {
+      return "Incorrect format of Principal"
+    }
   }
 }
 

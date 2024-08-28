@@ -60,9 +60,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
     },
   })
 
-  // console.log("nftOptionss", nftOptions)
-  if (!nftOptions || !nftOptions[0].options.length) return <Loader isLoading />
-
   return (
     <BlurredLoader
       overlayClassnames="rounded-xl"

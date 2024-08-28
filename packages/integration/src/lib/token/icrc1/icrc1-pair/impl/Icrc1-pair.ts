@@ -1,32 +1,33 @@
-import {ICRC1Data, ICRC1Error} from "../../types";
-import * as Agent from "@dfinity/agent";
-import {HttpAgent} from "@dfinity/agent";
-import {idlFactory as icrc1IDL} from "../../../../_ic_api/icrc1";
-import {_SERVICE as ICRC1ServiceIDL,} from "../../../../_ic_api/icrc1.d"
-import {agentBaseConfig} from "@nfid/integration";
-import {DEFAULT_ERROR_TEXT} from "../../../constants";
-import {icrc1StorageService} from "../../service/icrc1-storage-service";
-import {Principal} from "@dfinity/principal";
-import {idlFactory as icrc1IndexIDL} from "../../../../_ic_api/index-icrc1";
-import {_SERVICE as ICRCIndex} from "../../../../_ic_api/index-icrc1.d";
-import {icrc1OracleService} from "../../service/icrc1-oracle-service";
-import {Category, State} from "../../enum/enums";
-import {IIcrc1Pair} from "@nfid/integration/token/icrc1/icrc1-pair/i-icrc-pair";
+import * as Agent from "@dfinity/agent"
+import { HttpAgent } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 
-export class Icrc1Pair implements IIcrc1Pair{
+import { agentBaseConfig } from "@nfid/integration"
+import { IIcrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/i-icrc-pair"
 
-  private readonly ledger: string;
-  private readonly index: string | undefined;
+import { idlFactory as icrc1IDL } from "../../../../_ic_api/icrc1"
+import { _SERVICE as ICRC1ServiceIDL } from "../../../../_ic_api/icrc1.d"
+import { idlFactory as icrc1IndexIDL } from "../../../../_ic_api/index-icrc1"
+import { _SERVICE as ICRCIndex } from "../../../../_ic_api/index-icrc1.d"
+import { DEFAULT_ERROR_TEXT } from "../../../constants"
+import { Category, State } from "../../enum/enums"
+import { icrc1OracleService } from "../../service/icrc1-oracle-service"
+import { icrc1StorageService } from "../../service/icrc1-storage-service"
+import { ICRC1Data, ICRC1Error } from "../../types"
+
+export class Icrc1Pair implements IIcrc1Pair {
+  private readonly ledger: string
+  private readonly index: string | undefined
 
   constructor(ledger: string, index: string | undefined) {
-    this.ledger = ledger;
-    this.index = index;
+    this.ledger = ledger
+    this.index = index
   }
 
   async validateStandard() {
     const actor = Agent.Actor.createActor<ICRC1ServiceIDL>(icrc1IDL, {
       canisterId: this.ledger,
-      agent: new HttpAgent({...agentBaseConfig}),
+      agent: new HttpAgent({ ...agentBaseConfig }),
     })
     try {
       const standards = await actor.icrc1_supported_standards()
@@ -42,20 +43,22 @@ export class Icrc1Pair implements IIcrc1Pair{
   }
 
   async validateIfExists(rootPrincipalId: string) {
-    await icrc1StorageService.getICRC1Canisters(rootPrincipalId).then((icrc1) => {
-      if (
-        icrc1
-          .map((c) => c)
-          .find((c) => c.ledger === this.ledger && c.index)
-      ) {
-        throw new ICRC1Error("Canister already added.")
-      }
-    })
+    await icrc1StorageService
+      .getICRC1Canisters(rootPrincipalId)
+      .then((icrc1) => {
+        if (
+          icrc1.map((c) => c).find((c) => c.ledger === this.ledger && c.index)
+        ) {
+          throw new ICRC1Error("Canister already added.")
+        }
+      })
   }
 
   async validateIndexCanister() {
     if (this.index) {
-      const expectedLedgerId = await this.getLedgerIdFromIndexCanister(this.index)
+      const expectedLedgerId = await this.getLedgerIdFromIndexCanister(
+        this.index,
+      )
       if (expectedLedgerId.toText() !== this.ledger) {
         throw new ICRC1Error("Ledger canister does not match index canister.")
       }
@@ -66,13 +69,13 @@ export class Icrc1Pair implements IIcrc1Pair{
     const [metadata, balance] = await Promise.all([
       this.getMetadata(),
       this.getBalance(publicKey),
-    ]);
+    ])
 
     return {
       owner: Principal.fromText(publicKey),
       balance,
       canisterId: this.ledger,
-      ...metadata
+      ...metadata,
     }
   }
 
@@ -92,7 +95,7 @@ export class Icrc1Pair implements IIcrc1Pair{
   async getBalance(principal: string): Promise<bigint> {
     const actor = Agent.Actor.createActor<ICRC1ServiceIDL>(icrc1IDL, {
       canisterId: this.ledger,
-      agent: new HttpAgent({...agentBaseConfig}),
+      agent: new HttpAgent({ ...agentBaseConfig }),
     })
     return await actor.icrc1_balance_of({
       subaccount: [],
@@ -103,7 +106,7 @@ export class Icrc1Pair implements IIcrc1Pair{
   async getMetadata() {
     const actor = Agent.Actor.createActor<ICRC1ServiceIDL>(icrc1IDL, {
       canisterId: this.ledger,
-      agent: new HttpAgent({...agentBaseConfig}),
+      agent: new HttpAgent({ ...agentBaseConfig }),
     })
     const metadata = await actor.icrc1_metadata()
     let name = ""
@@ -138,7 +141,7 @@ export class Icrc1Pair implements IIcrc1Pair{
       symbol,
       logo,
       decimals,
-      fee
+      fee,
     }
   }
 
@@ -147,10 +150,8 @@ export class Icrc1Pair implements IIcrc1Pair{
   ): Promise<Principal> {
     const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
       canisterId: indexCanister,
-      agent: new HttpAgent({...agentBaseConfig}),
+      agent: new HttpAgent({ ...agentBaseConfig }),
     })
     return indexActor.ledger_id()
   }
-
-
 }

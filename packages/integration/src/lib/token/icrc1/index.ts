@@ -7,7 +7,6 @@ import {
   Icrc1TransferResult,
   TransferArg,
 } from "../../_ic_api/icrc1.d"
-import { icrc1Service } from "./icrc1-service"
 import { icrc1StorageService } from "./service/icrc1-storage-service"
 import { icrc1TransactionHistoryService } from "./service/icrc1-transaction-history-service"
 import { ICRC1IndexData } from "./types"

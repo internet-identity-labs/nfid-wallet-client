@@ -1,6 +1,8 @@
 import {iCRC1OracleActor} from "../../../actors";
 import {ICRC1, ICRC1Request} from "../../../_ic_api/icrc1_oracle.d";
 import {ICRC1 as ICRC1Data} from "../types";
+import {integrationCache} from "../../../../cache";
+import {Cache} from "node-ts-cache"
 
 export class ICRC1OracleService {
   async addICRC1Canister(
@@ -17,6 +19,7 @@ export class ICRC1OracleService {
     await iCRC1OracleActor.store_icrc1_canister(request)
   }
 
+  @Cache(integrationCache, {ttl: 60})
   async getICRC1Canisters(): Promise<ICRC1[]> {
     return await iCRC1OracleActor.get_all_icrc1_canisters()
   }

@@ -1,4 +1,4 @@
-import {ICRC1 as ICRC1UserData, ICRC1Data} from "../types";
+import {ICRC1 as ICRC1UserData} from "../types";
 import {icrc1RegistryService} from "./icrc1-registry-service";
 import {icrc1OracleService} from "./icrc1-oracle-service";
 import {State} from "../enum/enums";
@@ -31,7 +31,6 @@ export class Icrc1StorageService {
       });
   }
 
-  @Cache(integrationCache, {ttl: 30})
   async getICRC1Canisters(
     principal: string,
   ): Promise<Array<ICRC1UserData>> {

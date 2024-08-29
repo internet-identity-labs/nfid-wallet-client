@@ -85,8 +85,8 @@ export const Success: React.FC<SuccessProps> = ({
             src={assetImg}
             fallbackSrc={IconNftPlaceholder}
             className={clsx(
-              "absolute h-[90px] w-[90px] object-contain rounded-full object-center",
-              "mx-auto top-[155px] sm:top-[205px] ml-[1px]",
+              "absolute sm:h-[90px] h-[80px] sm:w-[90px] w-[80px] object-contain rounded-full object-center",
+              "mx-auto top-[140px] sm:top-[205px] ml-[1px]",
               isAssetPadding && "p-4",
             )}
           />

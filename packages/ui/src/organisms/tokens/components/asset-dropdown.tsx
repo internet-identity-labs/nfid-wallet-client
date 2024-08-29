@@ -1,28 +1,28 @@
 import ExternalIcon from "packages/ui/src/atoms/icons/external.svg"
 import HistoryIcon from "packages/ui/src/atoms/icons/history.svg"
-import RemoveIcon from "packages/ui/src/atoms/icons/trash.svg"
-import { useCallback } from "react"
+import { useCallback, FC, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { mutate } from "swr"
 
-import { Copy, Dropdown, DropdownOption, IconCmpDots } from "@nfid-frontend/ui"
+import {
+  Copy,
+  Dropdown,
+  DropdownOption,
+  IconCmpDots,
+  IconSvgEyeClosedBlack,
+} from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { FT } from "frontend/integration/ft/ft"
 
-import { TokenToRemove } from ".."
-
 type ITokenDropdown = {
   option?: string
   token: FT
-  setTokenToRemove: (v: TokenToRemove) => void
+  isHideLoading: (value: boolean) => void
 }
 
-const TokenDropdown: React.FC<ITokenDropdown> = ({
-  token,
-  setTokenToRemove,
-}) => {
+const TokenDropdown: FC<ITokenDropdown> = ({ token, isHideLoading }) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
     (canisterId: string) => () => {
@@ -40,6 +40,7 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
   return (
     <>
       <Dropdown
+        className="!rounded-[12px]"
         triggerElement={
           <IconCmpDots className="mx-auto transition-all cursor-pointer text-secondary hover:text-black" />
         }
@@ -61,6 +62,18 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
             />
           }
         />
+        {token.getTokenAddress() !== ICP_CANISTER_ID && (
+          <DropdownOption
+            label="Hide token"
+            icon={IconSvgEyeClosedBlack}
+            handler={async () => {
+              isHideLoading(true)
+              await token.hideToken()
+              mutate("activeTokens")
+              isHideLoading(false)
+            }}
+          />
+        )}
         <DropdownOption
           label="View on block explorer"
           icon={ExternalIcon}
@@ -68,19 +81,6 @@ const TokenDropdown: React.FC<ITokenDropdown> = ({
             window.open(token.getBlockExplorerLink(), "_blank")
           }}
         />
-        {token.getTokenAddress() !== ICP_CANISTER_ID && (
-          <DropdownOption
-            label="Remove token"
-            icon={RemoveIcon}
-            handler={() => {
-              if (!token.getTokenAddress()) return
-              setTokenToRemove({
-                canisterId: token.getTokenAddress(),
-                name: token.getTokenName(),
-              })
-            }}
-          />
-        )}
       </Dropdown>
     </>
   )

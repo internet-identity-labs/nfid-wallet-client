@@ -14,6 +14,7 @@ export class FTImpl implements FT {
   private readonly logo: string | undefined
   private readonly tokenName: string
   private tokenBalance: bigint | undefined
+  private tokenState: State
   private usdBalance: BigNumber | undefined
   private index: string | undefined
   private symbol: string
@@ -26,6 +27,7 @@ export class FTImpl implements FT {
     this.index = icrc1Token.index
     this.logo = icrc1Token.logo
     this.symbol = icrc1Token.symbol
+    this.tokenState = icrc1Token.state
   }
 
   async init(principal: Principal): Promise<FT> {
@@ -74,6 +76,10 @@ export class FTImpl implements FT {
 
   getTokenCategory(): Category {
     return this.tokenCategory
+  }
+
+  getTokenState(): State {
+    return this.tokenState
   }
 
   getTokenName(): string {

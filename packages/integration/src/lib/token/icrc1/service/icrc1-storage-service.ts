@@ -1,47 +1,47 @@
-import {ICRC1 as ICRC1UserData, ICRC1Data} from "../types";
-import {icrc1RegistryService} from "./icrc1-registry-service";
-import {icrc1OracleService} from "./icrc1-oracle-service";
-import {State} from "../enum/enums";
-import {mapCategory, mapState} from "../util";
-import {integrationCache} from "../../../../cache";
-import {Cache} from "node-ts-cache"
+import { Cache } from "node-ts-cache"
+
+import { integrationCache } from "../../../../cache"
+import { State } from "../enum/enums"
+import { ICRC1 as ICRC1UserData, ICRC1Data } from "../types"
+import { mapCategory, mapState } from "../util"
+import { icrc1OracleService } from "./icrc1-oracle-service"
+import { icrc1RegistryService } from "./icrc1-registry-service"
 
 export class Icrc1StorageService {
-  async getICRC1ActiveCanisters(principal: string,): Promise<Array<ICRC1UserData>> {
-    return this.getICRC1Canisters(principal)
-      .then((canisters) => {
-        return canisters.filter((c) => c.state === State.Active)
-      })
+  async getICRC1ActiveCanisters(
+    principal: string,
+  ): Promise<Array<ICRC1UserData>> {
+    return this.getICRC1Canisters(principal).then((canisters) => {
+      return canisters.filter((c) => c.state === State.Active)
+    })
   }
 
   async getICRC1FilteredCanisters(
     principal: string,
     filterText: string | undefined,
   ): Promise<Array<ICRC1UserData>> {
-    return this.getICRC1Canisters(principal)
-      .then((canisters) => {
-        if (!filterText) {
-          return canisters
-        }
+    return this.getICRC1Canisters(principal).then((canisters) => {
+      if (!filterText) {
         return canisters
-          .filter((c) =>
-            c.name.toLowerCase().includes(filterText.toLowerCase()) ||
-            c.symbol.toLowerCase().includes(filterText.toLowerCase())
-          );
-      });
+      }
+      return canisters.filter(
+        (c) =>
+          c.name.toLowerCase().includes(filterText.toLowerCase()) ||
+          c.symbol.toLowerCase().includes(filterText.toLowerCase()),
+      )
+    })
   }
 
-  @Cache(integrationCache, {ttl: 30})
-  async getICRC1Canisters(
-    principal: string,
-  ): Promise<Array<ICRC1UserData>> {
+  @Cache(integrationCache, { ttl: 30 })
+  async getICRC1Canisters(principal: string): Promise<Array<ICRC1UserData>> {
     const [icrc1StateData, icrc1OracleData] = await Promise.all([
       icrc1RegistryService.getCanistersByRoot(principal),
-      icrc1OracleService.getICRC1Canisters()
-    ]);
-
+      icrc1OracleService.getICRC1Canisters(),
+    ])
     return icrc1OracleData.map((icrc1) => {
-      const registry = icrc1StateData.find((state) => state.ledger === icrc1.ledger)
+      const registry = icrc1StateData.find(
+        (state) => state.ledger === icrc1.ledger,
+      )
       //todo maybe group metadata
       const userData: ICRC1UserData = {
         ledger: icrc1.ledger,
@@ -49,8 +49,9 @@ export class Icrc1StorageService {
         symbol: icrc1.symbol,
         logo: icrc1.logo[0],
         index: icrc1.index[0],
-        state: registry === undefined ? State.Inactive : mapState(registry.state),
-        category: mapCategory(icrc1.category)
+        state:
+          registry === undefined ? State.Inactive : mapState(registry.state),
+        category: mapCategory(icrc1.category),
       }
       return userData
     })

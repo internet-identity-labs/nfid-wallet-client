@@ -7,16 +7,18 @@ import { Spinner } from "../../atoms/loader/spinner"
 import CopyAddress from "../../molecules/copy-address"
 
 export interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
-  value: number
+  usdValue: string | undefined
   isLoading: boolean
+  isUsdLoading: boolean
   onSendClick: () => void
   onReceiveClick: () => void
   address?: string
 }
 
 export const ProfileInfo: FC<IProfileTemplate> = ({
-  value,
+  usdValue,
   isLoading,
+  isUsdLoading,
   onSendClick,
   onReceiveClick,
   address,
@@ -45,11 +47,11 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           Total balance
         </div>
         <div className="text-black text-[28px] font-semibold leading-[20px]">
-          {!value ? (
+          {isUsdLoading ? (
             <Spinner className="w-[24px] h-[24px] text-gray-400" />
           ) : (
             <>
-              {value.toFixed(2)}{" "}
+              {usdValue}{" "}
               <span className="text-[16px] font-bold uppercase">usd</span>
             </>
           )}

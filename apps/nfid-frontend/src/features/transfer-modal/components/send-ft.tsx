@@ -98,6 +98,7 @@ export const TransferFT = ({
     },
   )
 
+  // TODO: adjust accountsOptions for Vaults
   const {
     data: accountsOptions,
     isLoading: isAccountsLoading,

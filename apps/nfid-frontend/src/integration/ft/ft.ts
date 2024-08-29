@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -18,6 +18,8 @@ export interface FT {
   getTokenSymbol(): string
 
   getTokenLogo(): string | undefined
+
+  getTokenState(): State
 
   getTokenDecimals(): number | undefined
 

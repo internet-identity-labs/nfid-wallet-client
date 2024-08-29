@@ -6,7 +6,7 @@ import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { nftService } from "src/integration/nft/nft-service"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
@@ -30,36 +30,6 @@ export class FtService {
     }
 
     const ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
-    const icpToken = new FTImpl({
-      name: "Internet Computer",
-      symbol: "ICP",
-      logo: undefined,
-      ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-      index: undefined,
-      category: Category.Native,
-      state: State.Active,
-    })
-    const chatToken = new FTImpl({
-      name: "CHAT",
-      symbol: "CHAT",
-      logo: undefined,
-      ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
-      index: undefined,
-      category: Category.Sns,
-      state: State.Active,
-    })
-    const dkpToken = new FTImpl({
-      name: "Dragginz",
-      symbol: "DKP",
-      logo: undefined,
-      ledger: "zfcdd-tqaaa-aaaaq-aaaga-cai",
-      index: undefined,
-      category: Category.Sns,
-      state: State.Inactive,
-    })
-    ft.push(icpToken)
-    ft.push(chatToken)
-    ft.push(dkpToken)
     const totalItems = ft.length
     const totalPages = Math.ceil(totalItems / limit)
 
@@ -111,7 +81,7 @@ export class FtService {
         BigNumber(0),
       )
     price = price.plus(nftPrice)
-    return price.toFixed(2) + " USD"
+    return price.toFixed(2)
   }
 }
 

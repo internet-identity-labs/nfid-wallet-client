@@ -19,6 +19,7 @@ import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
 import IconERC20 from "./erc20-fallback.svg"
 import IconSvgError from "./error.svg"
+import IconSvgEyeClosedBlack from "./eye-closed-black.svg"
 import IconSvgEyeClosed from "./eye-closed.svg"
 import IconSvgEyeShown from "./eye-shown.svg"
 import IconSvgGmail from "./gmail.svg"
@@ -125,6 +126,7 @@ export {
   IconDisconnect,
   IconSvgEyeShown,
   IconSvgEyeClosed,
+  IconSvgEyeClosedBlack,
   IconSvgCmpArrow,
 }
 

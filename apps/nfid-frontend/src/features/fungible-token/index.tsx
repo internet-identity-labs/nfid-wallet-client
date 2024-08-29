@@ -1,5 +1,8 @@
 import ProfileAssets from "packages/ui/src/organisms/tokens"
-import { fetchAllTokens } from "packages/ui/src/organisms/tokens/utils"
+import {
+  fetchAllTokens,
+  fetchFilteredTokens,
+} from "packages/ui/src/organisms/tokens/utils"
 import { useState } from "react"
 import useSWR from "swr"
 
@@ -7,24 +10,22 @@ import { Loader } from "@nfid-frontend/ui"
 
 const ProfileAssetsPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
-  const { data: tokens = [], isLoading } = useSWR("tokens", fetchAllTokens)
-  // const { data: filteredTokens = [], isLoading: isFilterLoading } = useSWR(
-  //   ["tokens", searchQuery],
-  //   ([, query]) => getFilteredTokens(query),
-  // )
-  // const { data: activeTokens = [], isLoading: isActiveLoading } = useSWR(
-  //   "tokens",
-  //   getActiveTokens,
-  // )
+  const { data: activeTokens = [], isLoading } = useSWR(
+    "activeTokens",
+    fetchAllTokens,
+  )
 
-  if (!tokens.length || isLoading) return <Loader isLoading />
+  const { data: filteredTokens = [], isLoading: isFilterLoading } = useSWR(
+    ["filteredTokens", searchQuery],
+    ([, query]) => fetchFilteredTokens(query),
+  )
 
-  //console.log("1111", tokens[0].items[0].getTokenBalance(), isLoading)
+  if (!activeTokens.length || isLoading) return <Loader isLoading />
 
   return (
     <ProfileAssets
-      tokens={tokens}
-      //filteredTokens={filteredTokens}
+      activeTokens={activeTokens}
+      filteredTokens={filteredTokens}
       setSearchQuery={(value) => setSearchQuery(value)}
     />
   )

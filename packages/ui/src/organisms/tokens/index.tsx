@@ -1,40 +1,35 @@
 import clsx from "clsx"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useState, HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
-import useSWR from "swr"
 
-import { Loader, ApplicationIcon } from "@nfid-frontend/ui"
-import { ICRC1 } from "@nfid/integration/token/icrc1/types"
+import {
+  ApplicationIcon,
+  ImageWithFallback,
+  IconNftPlaceholder,
+  BlurredLoader,
+} from "@nfid-frontend/ui"
 
 import AssetDropdown from "./components/asset-dropdown"
 import AssetModal from "./components/asset-modal"
 import { ProfileAssetsHeader } from "./components/header"
 
-export type TokenToRemove = {
-  canisterId: string
-  name: string
-}
-
 interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
-  tokens: FT[]
+  activeTokens: FT[]
+  filteredTokens: FT[]
   setSearchQuery: (v: string) => void
-  //filteredTokens: ICRC1[]
 }
 
 const ProfileAssets: FC<ProfileAssetsProps> = ({
-  tokens,
-  //filteredTokens,
+  activeTokens,
+  filteredTokens,
   setSearchQuery,
 }) => {
-  const [tokenToRemove, setTokenToRemove] = useState<TokenToRemove | null>(null)
-
-  console.log("123123", tokens)
-
+  console.log("tokensss", activeTokens, filteredTokens)
+  const [isLoading, setIsLoading] = useState(false)
   return (
-    <div>
+    <BlurredLoader isLoading={isLoading} overlayClassnames="!rounded-[24px]">
       <ProfileAssetsHeader
-        tokens={[]}
+        tokens={filteredTokens}
         setSearch={(value) => setSearchQuery(value)}
       />
       <table className={clsx("text-left w-full hidden sm:table")}>
@@ -48,17 +43,20 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
           </tr>
         </thead>
         <tbody className="h-16 text-sm text-black">
-          {tokens.map((token, index) => (
+          {activeTokens.map((token, index) => (
             <tr
               key={`token_${index}`}
               id={`token_${token.getTokenName().replace(/\s+/g, "")}`}
             >
               <td className="flex items-center h-16">
-                <ApplicationIcon
-                  className="mr-[12px]"
-                  icon={"icon"}
-                  appName={token.getTokenName()}
-                />
+                <div className="w-[40px] h-[40px] mr-[12px] rounded-full bg-zinc-50">
+                  <ImageWithFallback
+                    alt="NFID token"
+                    className=""
+                    fallbackSrc={IconNftPlaceholder}
+                    src={`${token.getTokenLogo()}`}
+                  />
+                </div>
                 <div className="overflow-hidden text-ellipsis whitespace-nowrap">
                   <p
                     className="text-sm font-semibold leading-[25px]"
@@ -69,11 +67,11 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
                     {token.getTokenSymbol()}
                   </p>
                   <p className="text-secondary text-xs leading-[20px]">
-                    {token.getTokenSymbol()}
+                    {token.getTokenName()}
                   </p>
                 </div>
               </td>
-              <td>{token.getTokenName()}</td>
+              <td>{token.getTokenCategory()}</td>
               <td
                 className="pr-[10px]"
                 id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
@@ -86,6 +84,9 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
                 className="pr-[10px]"
                 id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
               >
+                {/* {token.getUSDBalanceFormatted() ? (
+                  token.getUSDBalanceFormatted()
+                ) : "Not listed"} */}
                 {/* {token.rate !== undefined ? (
                   <TickerAmount
                     symbol={token.currency}
@@ -101,19 +102,16 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
               <td>
                 <AssetDropdown
                   token={token}
-                  setTokenToRemove={(value) => setTokenToRemove(value)}
+                  isHideLoading={(value) => setIsLoading(value)}
                 />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <AssetModal
-        token={tokenToRemove}
-        setTokenToRemove={(value) => setTokenToRemove(value)}
-      />
+      <AssetModal tokens={null} />
       <div className="sm:hidden">
-        {tokens.map((token, index) => (
+        {activeTokens.map((token, index) => (
           <div
             key={`token_${index}`}
             className="flex items-center justify-between h-16 border-b border-gray-200 last:border-b-0 pr-[8px]"
@@ -153,22 +151,13 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
             <div className="w-auto">
               <AssetDropdown
                 token={token}
-                setTokenToRemove={(value) => setTokenToRemove(value)}
+                isHideLoading={(value) => setIsLoading(value)}
               />
             </div>
           </div>
         ))}
       </div>
-      {/* {tokens?.length && isLoading ? (
-        <div className="flex items-center justify-center w-full h-16 border-t border-gray-200">
-          <Loader
-            isLoading={true}
-            fullscreen={false}
-            imageClasses="w-10 h-10"
-          />
-        </div>
-      ) : null} */}
-    </div>
+    </BlurredLoader>
   )
 }
 

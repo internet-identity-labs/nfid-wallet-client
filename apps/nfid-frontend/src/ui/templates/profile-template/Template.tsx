@@ -2,6 +2,7 @@ import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
+import { getFullUsdValue } from "packages/ui/src/organisms/tokens/utils"
 import {
   HTMLAttributes,
   useCallback,
@@ -99,6 +100,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
+  const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
+    "fullUsdValue",
+    getFullUsdValue,
+  )
+
   const {
     data: isEmailDeviceOutOfSyncWithII,
     mutate: refreshIsEmailDeviceOutOfSyncWithII,
@@ -130,7 +136,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   //   // Will add NFT floor price to calculation later!
   // }, [token])
-  const tokensUsdValue = 4
 
   const [, send] = useActor(globalServices.transferService)
   const {
@@ -176,8 +181,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         className={clsx(
           "relative z-1 px-[16px]",
           "sm:px-[30px]",
-          "overflow-auto",
           "!block",
+          isWallet && "pb-[90px]",
           containerClassName,
         )}
       >
@@ -216,7 +221,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           {isWallet && (
             <>
               <ProfileInfo
-                value={tokensUsdValue}
+                usdValue={tokensUsdValue}
+                isUsdLoading={isUsdLoading}
                 isLoading={isTokenLoading && isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

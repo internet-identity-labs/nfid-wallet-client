@@ -4,9 +4,9 @@
 import {DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
 
 import {mockIdentityA} from "@nfid/integration"
-import {HTTPAccountResponse} from "../../_ic_api/identity_manager.d"
-import {iCRC1Registry, im, replaceActorIdentity} from "../../actors"
-import {generateDelegationIdentity} from "../../test-utils"
+import {HTTPAccountResponse} from "../../../_ic_api/identity_manager"
+import {iCRC1Registry, im, replaceActorIdentity} from "../../../actors"
+import {generateDelegationIdentity} from "../../../test-utils"
 import {State} from "@nfid/integration/token/icrc1/enum/enums";
 import {icrc1RegistryService} from "@nfid/integration/token/icrc1/service/icrc1-registry-service";
 

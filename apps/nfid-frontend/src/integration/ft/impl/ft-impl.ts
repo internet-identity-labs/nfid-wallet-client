@@ -1,5 +1,5 @@
 import {FT} from "src/integration/ft/ft";
-import {exchangeRateService} from "@nfid/integration";
+import {authState, exchangeRateService, getPublicKey} from "@nfid/integration";
 import {ICRC1} from "@nfid/integration/token/icrc1/types";
 import {Principal} from "@dfinity/principal";
 import {Category, State} from "@nfid/integration/token/icrc1/enum/enums";
@@ -29,7 +29,12 @@ export class FTImpl implements FT {
 
   async init(principal: Principal): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    const [metadata, balance] = await Promise.all([icrc1Pair.getMetadata(), icrc1Pair.getBalance(principal.toText())])
+    const identity = await authState.get().delegationIdentity
+    if (!identity) {
+      throw new Error("Identity not found")
+    }
+    const globalPrincipal = await getPublicKey(identity)
+    const [metadata, balance] = await Promise.all([icrc1Pair.getMetadata(), icrc1Pair.getBalance(globalPrincipal)])
     this.tokenBalance = balance;
     this.decimals = metadata.decimals;
     return this;

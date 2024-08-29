@@ -4,7 +4,6 @@
 import {DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
 
 import {mockIdentityA} from "@nfid/integration"
-import {HTTPAccountResponse} from "../../../_ic_api/identity_manager"
 import {iCRC1Registry, im, replaceActorIdentity} from "../../../actors"
 import {generateDelegationIdentity} from "../../../test-utils"
 import {State} from "@nfid/integration/token/icrc1/enum/enums";
@@ -21,7 +20,7 @@ describe("ICRC1 suite", () => {
     await replaceActorIdentity(im, delegationIdentity)
     const edId = Ed25519KeyIdentity.generate()
     await icrc1RegistryService.storeICRC1Canister(edId.getPrincipal().toText(), State.Active)
-    const account = (await im.get_account()) as HTTPAccountResponse
+    const account = (await im.get_account())
     root = account.data[0]!.principal_id
     const canisters = await icrc1RegistryService.getCanistersByRoot(root)
     expect(canisters.map((l) => l.ledger)).toContain(edId.getPrincipal().toText())

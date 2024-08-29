@@ -19,6 +19,7 @@ export interface IAuth2FA {
   isLoading: boolean
   onMounted?: () => void
   email?: string
+  isIdentityKit?: boolean
 }
 export const Auth2FA = ({
   appMeta,
@@ -26,6 +27,7 @@ export const Auth2FA = ({
   handleAuth,
   onMounted,
   email,
+  isIdentityKit,
 }: IAuth2FA) => {
   useEffect(() => {
     if (onMounted) {
@@ -37,17 +39,20 @@ export const Auth2FA = ({
 
   return (
     <>
-      <AuthAppMeta
-        applicationURL={appMeta?.url}
-        title="Passkey authentication"
-      />
-      <p className="text-sm text-center mt-[4px] leading-[22px]">{email}</p>
-      <p className="mt-[20px] text-sm text-center leading-[22px]">
+      <AuthAppMeta title="Passkey authentication" withLogo={!isIdentityKit} />
+      {email && <p className="text-sm text-center">{email}</p>}
+      <p className="mt-3 text-sm text-center">
         Your account has been configured for self-sovereign mode. Use your
         Passkey to confirm it’s you.
       </p>
-      <img alt="asset" src={Image2FA} className="w-full my-auto" />
-      <Button onClick={handleAuth}>Continue</Button>
+      <img
+        alt="asset"
+        src={Image2FA}
+        className="object-contain w-full h-56 my-10"
+      />
+      <Button className="mb-[30px]" onClick={handleAuth}>
+        Continue
+      </Button>
     </>
   )
 }

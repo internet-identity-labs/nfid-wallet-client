@@ -2,10 +2,10 @@ import clsx from "clsx"
 import React, { useState } from "react"
 import { toast } from "react-toastify"
 
+import { Loader } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 
 import { Button } from "frontend/ui/atoms/button"
-import { Loader } from "frontend/ui/atoms/loader"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 interface IRecoveryPhraseDeleteModal
@@ -48,7 +48,7 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
             SENSITIVE_CONTENT_NO_SESSION_RECORDING,
             "border border-black rounded-t-md border-b-0",
             "focus:outline-none resize-none focus:ring-0",
-            "w-full -mb-2 font-mono leading-[26px]",
+            "w-full -mb-2 leading-[26px]",
           )}
           rows={6}
           placeholder="10000 cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo "

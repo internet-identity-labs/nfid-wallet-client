@@ -26,14 +26,14 @@ export const Tabs: React.FC<TabsProps> = ({
     <RadixTabs.Root defaultValue={defaultValue} onValueChange={onValueChange}>
       <RadixTabs.List
         className={clsx(
-          "space-x-0.5 flex w-full mb-2",
+          "space-x-0.5 flex w-full mb-[14px]",
           !isFitLine && `grid grid-cols-${tabs.length}`,
         )}
       >
         {tabs.map((tab) => (
           <RadixTabs.Trigger
             className={clsx(
-              "radix-state-active:border-b-blue-600 radix-state-active:text-blue-600",
+              "radix-state-active:border-b-primaryButtonColor radix-state-active:text-primaryButtonColor",
               "pb-1.5 border-b-2 min-w-[150px] border-black",
               "text-left font-bold",
             )}

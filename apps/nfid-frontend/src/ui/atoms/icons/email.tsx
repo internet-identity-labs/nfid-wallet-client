@@ -3,7 +3,11 @@ import React from "react"
 
 interface EmailIconProps extends React.SVGProps<SVGSVGElement> {}
 
-export const EmailIcon: React.FC<EmailIconProps> = ({ className, onClick }) => {
+export const EmailIcon: React.FC<EmailIconProps> = ({
+  className,
+  color,
+  onClick,
+}) => {
   return (
     <svg
       width="24"
@@ -21,13 +25,13 @@ export const EmailIcon: React.FC<EmailIconProps> = ({ className, onClick }) => {
         width="20"
         height="16"
         rx="2"
-        stroke="#9CA3AF"
+        stroke={color}
         strokeWidth="2"
       />
       <path
         id="Vector 4"
         d="M2 9L11.1056 13.5528C11.6686 13.8343 12.3314 13.8343 12.8944 13.5528L22 9"
-        stroke="#9CA3AF"
+        stroke={color}
         strokeWidth="2"
       />
     </svg>

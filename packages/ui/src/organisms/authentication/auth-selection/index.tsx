@@ -1,13 +1,7 @@
 import { Separator } from "packages/ui/src/atoms/separator"
 import { useForm } from "react-hook-form"
 
-import {
-  BlurredLoader,
-  Button,
-  IconCmpPasskey,
-  Input,
-  SDKFooter,
-} from "@nfid-frontend/ui"
+import { BlurredLoader, Button, IconCmpPasskey, Input } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 
 import { AuthAppMeta } from "../app-meta"
@@ -25,6 +19,7 @@ export interface AuthSelectionProps {
   onSelectOtherAuth: () => void
   appMeta?: AuthorizingAppMeta
   authRequest?: AuthorizationRequest
+  isIdentityKit?: boolean
   onLoginWithPasskey: () => Promise<void>
   googleButton: JSX.Element
   isLoading: boolean
@@ -35,6 +30,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectOtherAuth,
   appMeta,
   authRequest,
+  isIdentityKit,
   onLoginWithPasskey,
   googleButton,
   isLoading,
@@ -43,7 +39,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     defaultValues: { email: "" },
     mode: "onSubmit",
   })
-
   let appHost: string = ""
   try {
     appHost = new URL(authRequest?.hostname ?? "").host
@@ -59,22 +54,27 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       overlayClassnames="rounded-xl"
       id="auth-selection"
     >
-      <AuthAppMeta applicationURL={appHost} />
-      <div className="mt-[44px]">
+      <AuthAppMeta
+        applicationURL={appHost}
+        withLogo={!isIdentityKit}
+        title={isIdentityKit ? "Sign in" : undefined}
+        subTitle={<>to continue to</>}
+      />
+      <div className="mt-7">
         <form
           onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
           className="space-y-[10px]"
         >
           <Input
             className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
-            inputClassName="h-12"
+            inputClassName="h-12 rounded-xl"
+            placeholder="Email"
             type="email"
             errorText={formState.errors.email?.message?.toString()}
             {...register("email", {
               required: "Please enter your email",
             })}
             autoComplete="off webauthn"
-            placeholder="Email"
           />
           <Button
             id="email-sign-button"
@@ -108,7 +108,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         </Button>
       </div>
       <div className="flex-1" />
-      <SDKFooter />
     </BlurredLoader>
   )
 }

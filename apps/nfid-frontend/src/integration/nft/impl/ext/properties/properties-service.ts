@@ -5,6 +5,8 @@ import {
 } from "src/integration/nft/impl/ext/properties/types"
 import { TokenProperties } from "src/integration/nft/impl/nft-types"
 
+import { ic } from "@nfid/integration"
+
 export class ExtPropertiesService {
   async getProperties(
     collectionId: string,
@@ -72,15 +74,18 @@ export class ExtPropertiesService {
     return { categories, valueMappings }
   }
 
-  private fetchCollectionData(collectionId: string): Promise<any> {
-    return fetch(`https://toniq.io/filter/${collectionId}.json`).then(
-      async (response) => {
-        if (!response.ok) {
-          return []
-        }
-        return response.json()
-      },
-    )
+  private async fetchCollectionData(collectionId: string): Promise<any> {
+    const str = `/filter/${collectionId}.json`
+    let url = ic.isLocal ? `/toniq_io${str}` : `https://toniq.io${str}`
+    return await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }).then(async (response) => {
+      if (!response.ok) {
+        return []
+      }
+      return response.json()
+    })
   }
 }
 

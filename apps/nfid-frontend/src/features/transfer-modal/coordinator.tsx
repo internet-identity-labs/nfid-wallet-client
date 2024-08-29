@@ -1,9 +1,9 @@
 import { useActor } from "@xstate/react"
-import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
-import React, { useCallback, useContext, useMemo } from "react"
+import { SendReceiveModal } from "packages/ui/src/organisms/send-receive"
+import { useCallback, useContext, useEffect, useMemo } from "react"
 import { toast } from "react-toastify"
 
-import { BlurredLoader, Tabs } from "@nfid-frontend/ui"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { ProfileContext } from "frontend/provider"
 
@@ -11,15 +11,13 @@ import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { ITransferSuccess, TransferSuccess } from "./components/success"
-import { transferTabs } from "./constants"
-import { TransferTemplate } from "./ui/template"
 
 export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)
 
   const [state, send] = useActor(globalServices.transferService)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (state.context.error?.message?.length) {
       toast.error(state.context?.error.message, {
         toastId: "unexpectedTransferError",
@@ -94,26 +92,14 @@ export const TransferModalCoordinator = () => {
   if (state.matches("Hidden")) return null
 
   return (
-    <TransferTemplate onClickOutside={() => send({ type: "HIDE" })}>
-      {!state.matches("Success") && (
-        <Tabs
-          tabs={transferTabs}
-          defaultValue={state.context.direction}
-          onValueChange={onModalTypeChange}
-          isFitLine={false}
-        />
-      )}
-      {state.context.direction === "send" && !state.matches("Success") && (
-        <ToggleButton
-          firstValue="Token"
-          secondValue="Collectible"
-          className="mb-6"
-          onChange={onTokenTypeChange}
-          defaultValue={state.context.tokenType === "nft"}
-          id="send_type_toggle"
-        />
-      )}
-      {Component}
-    </TransferTemplate>
+    <SendReceiveModal
+      onClickOutside={() => send({ type: "HIDE" })}
+      isSuccess={state.matches("Success")}
+      direction={state.context.direction}
+      tokenType={state.context.tokenType}
+      onTokenTypeChange={onTokenTypeChange}
+      onModalTypeChange={onModalTypeChange}
+      component={Component}
+    />
   )
 }

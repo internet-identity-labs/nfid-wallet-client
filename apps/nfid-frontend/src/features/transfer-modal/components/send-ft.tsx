@@ -1,29 +1,13 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import BigNumber from "bignumber.js"
-import clsx from "clsx"
+import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Token } from "packages/integration/src/lib/asset/types"
-import { NoIcon } from "packages/ui/src/assets/no-icon"
-import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import {
-  TickerAmount,
-  formatAssetAmountRaw,
-} from "packages/ui/src/molecules/ticker-amount"
+import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR, { mutate } from "swr"
 
-import {
-  Button,
-  ChooseModal,
-  IconCmpArrow,
-  IconCmpArrowRight,
-  Label,
-  BlurredLoader,
-  sumRules,
-} from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
 import {
   RootWallet,
   registerTransaction,
@@ -34,7 +18,6 @@ import { ICRC1Metadata } from "@nfid/integration/token/icrc1"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { Spinner } from "frontend/ui/atoms/loader/spinner"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
   getAllTokensOptions,
@@ -47,10 +30,6 @@ import {
 import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import {
-  PRINCIPAL_LENGTH,
-  validateTransferAmountField,
-} from "../utils/validations"
 import { ITransferSuccess } from "./success"
 
 interface ITransferFT {
@@ -160,11 +139,11 @@ export const TransferFT = ({
 
   const {
     register,
+    getValues,
     formState: { errors },
     handleSubmit,
     setValue,
     resetField,
-    getValues,
   } = useForm({
     mode: "all",
     defaultValues: {
@@ -216,29 +195,12 @@ export const TransferFT = ({
         destinationType: "address",
         tokenName: selectedTokenCurrency,
         tokenType: "fungible",
-        tokenStandard: token.tokenStandard,
         amount: amount,
         fee: Number(transferFee) ?? 0,
       })
     },
     [selectedConnector, selectedTokenCurrency, transferFee],
   )
-
-  const maxHandler = () => {
-    if (transferFee && balance) {
-      const balanceNum = new BigNumber(balance.toString())
-      const feeNum = new BigNumber(transferFee.toString())
-      const val = balanceNum.minus(feeNum)
-
-      if (val.isLessThanOrEqualTo(0)) return
-
-      const formattedValue = formatAssetAmountRaw(Number(val), decimals!)
-
-      setValue("amount", formattedValue)
-      if (!balance || !rate) return
-      setAmountInUSD(Number(formattedValue))
-    }
-  }
 
   const submit = useCallback(
     async (values: { amount: string; to: string }) => {
@@ -364,9 +326,7 @@ export const TransferFT = ({
   ])
 
   return (
-    <BlurredLoader
-      className="text-xs"
-      overlayClassnames="rounded-xl"
+    <TransferFTUi
       isLoading={
         isConnectorLoading ||
         isAccountsLoading ||
@@ -374,230 +334,38 @@ export const TransferFT = ({
         isMetadataLoading ||
         isTokensLoading
       }
+      isBalanceLoading={isBalanceLoading && isBalanceFetching}
       loadingMessage={loadingMessage}
-    >
-      <div className="flex justify-between">
-        <p className="mb-1">Amount to send</p>
-        <p onClick={maxHandler} className="text-blue-600 cursor-pointer">
-          Max
-        </p>
-      </div>
-      <div className="flex flex-col justify-between h-full pb-20">
-        <div
-          className={clsx(
-            "border rounded-md flex items-center justify-between pl-4 pr-5 h-14 mb-4",
-            errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
-          )}
-        >
-          <InputAmount
-            decimals={decimals!}
-            {...register("amount", {
-              required: sumRules.errorMessages.required,
-              validate: validateTransferAmountField(
-                formatAssetAmountRaw(Number(balance), decimals!),
-                formatAssetAmountRaw(Number(transferFee!), decimals!),
-              ),
-              valueAsNumber: true,
-              onBlur: calculateFee,
-              onChange: (e) => {
-                if (!rate) return
-                setAmountInUSD(e.target.value)
-              },
-            })}
-          />
-          <div
-            className={clsx(
-              "absolute mt-[75px] left-5",
-              "text-xs py-1 text-red",
-            )}
-          >
-            {errors.amount?.message}
-          </div>
-          {!!rate && (
-            <p
-              className={clsx(
-                "absolute mt-[75px] right-[20px]",
-                "text-xs pt-[4px] text-gray-400 text-sm",
-              )}
-            >
-              <TickerAmount
-                symbol={selectedTokenCurrency}
-                value={amountInUSD}
-                decimals={undefined}
-                usdRate={rate}
-              />
-            </p>
-          )}
-          <ChooseModal
-            optionGroups={tokenOptions ?? []}
-            title="Asset to send"
-            type="trigger"
-            onSelect={(value) => {
-              const arrayValue = value.split("&")
-              if (arrayValue.length < 2) return
-
-              resetField("amount")
-              resetField("to")
-              setAmountInUSD(0)
-              setSelectedTokenCurrency(arrayValue[0])
-              setSelectedTokenBlockchain(arrayValue[1])
-            }}
-            onOpen={sendReceiveTracking.supportedTokenModalOpened}
-            preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
-            isSmooth
-            trigger={
-              <div
-                id={`token_${selectedTokenCurrency}`}
-                className="flex items-center cursor-pointer shrink-0"
-              >
-                {!tokenMetadata?.icon ? (
-                  <NoIcon className="w-[40px] h-[40px] mr-1.5" />
-                ) : (
-                  <img
-                    className="w-[26px] mr-1.5"
-                    src={tokenMetadata?.icon}
-                    alt={selectedTokenCurrency}
-                  />
-                )}
-                <p className="text-lg font-semibold">{selectedTokenCurrency}</p>
-                <IconCmpArrowRight className="ml-4" />
-              </div>
-            }
-          />
-        </div>
-        {isVault && (
-          <ChooseModal
-            label="From"
-            title="From"
-            optionGroups={accountsOptions ?? []}
-            preselectedValue={selectedAccountAddress}
-            onSelect={setSelectedAccountAddress}
-            warningText={
-              isVault ? undefined : (
-                <div className="w-[337px]">
-                  Starting September 1, 2023, assets from external applications
-                  will not be displayed in NFID. <br /> <br /> To manage those
-                  assets in NFID, transfer them to your NFID Wallet. Otherwise,
-                  you’ll only have access through the application’s website.
-                </div>
-              )
-            }
-          />
-        )}
-        <ChooseModal
-          type="input"
-          label="To"
-          title={"Choose an account"}
-          optionGroups={
-            profile?.wallet === RootWallet.NFID ? [] : accountsOptions ?? []
-          }
-          isFirstPreselected={false}
-          placeholder={tokenMetadata?.addressPlaceholder}
-          errorText={errors.to?.message}
-          registerFunction={register("to", {
-            required: "This field cannot be empty",
-            validate: (value) => selectedConnector?.validateAddress(value),
-            onBlur: calculateFee,
-          })}
-          onSelect={(value) => {
-            resetField("to")
-            setValue("to", value)
-            calculateFee()
-          }}
-          preselectedValue={preselectedTransferDestination}
-        />
-        <div>
-          <Label>Network fee</Label>
-          <div
-            className={clsx(
-              "flex items-center justify-between mt-1",
-              "px-2.5 text-gray-400 bg-gray-100 rounded-md h-14",
-            )}
-          >
-            <div>
-              <p className="text-sm">
-                {tokenMetadata?.blockchain === Blockchain.IC
-                  ? "Instant"
-                  : "Estimated"}
-              </p>
-            </div>
-            {isFeeLoading ? (
-              <Spinner className="w-3 h-3 text-gray-400" />
-            ) : (
-              <div className="text-right">
-                <p className="text-sm leading-5" id="fee">
-                  <TickerAmount
-                    value={Number(transferFee)}
-                    decimals={decimals}
-                    symbol={selectedTokenCurrency}
-                  />
-                  {!!rate && (
-                    <span className="block text-xs">
-                      <TickerAmount
-                        value={Number(transferFee)}
-                        decimals={decimals}
-                        symbol={selectedTokenCurrency}
-                        usdRate={rate}
-                      />
-                    </span>
-                  )}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-        <Button
-          className="text-base"
-          type="primary"
-          id={"sendFT"}
-          block
-          onClick={handleSubmit(submit)}
-          icon={<IconCmpArrow className="rotate-[135deg]" />}
-        >
-          Send
-        </Button>
-        <div
-          className={clsx(
-            "bg-gray-50 flex flex-col text-sm text-gray-500",
-            "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
-          )}
-        >
-          <div className="flex items-center justify-between">
-            <p>Wallet address</p>
-            <p>
-              Balance:&nbsp;
-              {!isBalanceLoading && !isBalanceFetching ? (
-                <span id="balance">
-                  <TickerAmount
-                    value={Number(balance)}
-                    decimals={decimals}
-                    symbol={selectedTokenCurrency}
-                  />
-                </span>
-              ) : (
-                <Spinner className="w-3 h-3 text-gray-400" />
-              )}
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
-            {!!rate && (
-              <div className="flex items-center space-x-0.5">
-                {!isBalanceLoading && !isBalanceFetching ? (
-                  <TickerAmount
-                    value={Number(balance)}
-                    decimals={decimals}
-                    symbol={selectedTokenCurrency}
-                    usdRate={rate}
-                  />
-                ) : (
-                  <Spinner className="w-3 h-3 text-gray-400" />
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </BlurredLoader>
+      balance={balance}
+      rate={rate}
+      decimals={decimals}
+      transferFee={transferFee}
+      calculateFee={calculateFee}
+      selectedTokenCurrency={selectedTokenCurrency}
+      preselectedTransferDestination={preselectedTransferDestination}
+      tokenOptions={tokenOptions}
+      tokenMetadata={tokenMetadata}
+      selectedTokenBlockchain={selectedTokenBlockchain}
+      sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
+      isVault={isVault}
+      accountsOptions={accountsOptions}
+      optionGroups={
+        profile?.wallet === RootWallet.NFID ? [] : accountsOptions ?? []
+      }
+      isFeeLoading={isFeeLoading}
+      selectedAccountAddress={selectedAccountAddress}
+      submit={submit}
+      setSelectedAccountAddress={setSelectedAccountAddress}
+      selectedConnector={selectedConnector}
+      amountInUSD={amountInUSD}
+      setUSDAmount={(value) => setAmountInUSD(value)}
+      setSelectedCurrency={(value) => setSelectedTokenCurrency(value)}
+      setSelectedBlockchain={(value) => setSelectedTokenBlockchain(value)}
+      register={register}
+      errors={errors}
+      handleSubmit={handleSubmit}
+      setValue={setValue}
+      resetField={resetField}
+    />
   )
 }

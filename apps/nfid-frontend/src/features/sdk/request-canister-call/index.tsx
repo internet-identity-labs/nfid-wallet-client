@@ -1,10 +1,17 @@
+import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
+import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import useSWR from "swr"
 
 import { BlurredLoader, IconCmpWarning } from "@nfid-frontend/ui"
+import { truncateString } from "@nfid-frontend/utils"
+import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { RPCPromptTemplate } from "frontend/features/identitykit/components/templates/prompt-template"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 
 export interface IRequestTransferProps {
   origin: string
@@ -25,6 +32,16 @@ export const RequestCanisterCall = ({
 
   const { data: identity } = useSWR("globalIdentity", () =>
     getWalletDelegationAdapter("nfid.one", "-1"),
+  )
+
+  const { data: balance } = useSWR(
+    identity ? ["userBalance", identity.getPrincipal().toString()] : null,
+    ([_, id]) =>
+      icTransferConnector.getBalance(
+        AccountIdentifier.fromPrincipal({
+          principal: Principal.fromText(id),
+        }).toHex(),
+      ),
   )
 
   if (!identity) return <BlurredLoader isLoading />
@@ -48,13 +65,13 @@ export const RequestCanisterCall = ({
         }
         onPrimaryButtonClick={() => onConfirm()}
         onSecondaryButtonClick={onReject}
-        senderPrincipal={identity?.getPrincipal()?.toString()}
+        withLogo
       >
         <div
           className={clsx(
             "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
             "text-gray-500 break-all text-sm mt-2.5",
-            "overflow-auto",
+            "overflow-auto max-h-[150px]",
           )}
         >
           <div className="space-y-2">
@@ -81,6 +98,33 @@ export const RequestCanisterCall = ({
             trust this dapp.
           </p>
         </div>
+        {balance ? (
+          <div
+            className={clsx(
+              "bg-gray-50 flex flex-col text-sm text-gray-500",
+              "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
+            )}
+          >
+            <div className="flex items-center justify-between">
+              <p>Wallet address</p>
+              <p>Balance:</p>
+            </div>
+            <div className="flex items-center justify-between">
+              <p>{truncateString(identity.getPrincipal().toString(), 6, 4)}</p>
+              <div className="flex items-center space-x-0.5">
+                {balance !== undefined ? (
+                  <TickerAmount
+                    value={Number(balance)}
+                    decimals={ICP_DECIMALS}
+                    symbol={"ICP"}
+                  />
+                ) : (
+                  <Spinner className="w-3 h-3 text-gray-400" />
+                )}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </RPCPromptTemplate>
     </>
   )

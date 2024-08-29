@@ -5,7 +5,7 @@ type SendToken = {
   destinationType: "address" | "ENS"
   tokenName: string
   tokenType: "fungible" | "non-fungible"
-  tokenStandard: string
+
   amount: string | number
   fee: string | number
 }
@@ -32,12 +32,11 @@ class SendReceiveTracking {
     posthog.capture(title)
   }
 
-  sendToken({ tokenStandard, ...data }: SendToken) {
+  sendToken({ ...data }: SendToken) {
     const title = this.isOpenedFromVaults ? "Vault send token" : "Send token"
 
     console.debug("SendReceiveTracking.sendToken", { title, data })
     posthog.capture(title, {
-      tokenStandard: mapTokenStandard(tokenStandard),
       ...data,
     })
   }

@@ -1,3 +1,4 @@
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React from "react"
 import { Route, Routes } from "react-router-dom"
 import useSWR from "swr"
@@ -43,6 +44,8 @@ const VaultTransactionsDetailsPage = React.lazy(
   () =>
     import("frontend/features/vaults/vaults-details/transactions-details-page"),
 )
+
+const NFTDetailsPage = React.lazy(() => import("frontend/features/nft-details"))
 
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
@@ -104,7 +107,14 @@ export const App = () => {
             </AuthWrapper>
           }
         >
-          <Route path="*" element={<WalletRouter />} />
+          <Route
+            path="*"
+            element={
+              <ProfileContainer>
+                <WalletRouter />
+              </ProfileContainer>
+            }
+          />
         </Route>
         <Route
           path={ProfileConstants.security}
@@ -137,6 +147,14 @@ export const App = () => {
           element={
             <AuthWrapper>
               <VaultsDetailsCoordinator />
+            </AuthWrapper>
+          }
+        />
+        <Route
+          path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
+          element={
+            <AuthWrapper>
+              <NFTDetailsPage />
             </AuthWrapper>
           }
         />

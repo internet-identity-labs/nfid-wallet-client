@@ -1,8 +1,9 @@
 import React from "react"
 import sticky from "stickyfilljs"
 
+import { Loader } from "@nfid-frontend/ui"
+
 import { NFIDGradientBar } from "frontend/ui/atoms/gradient-bar"
-import { Loader } from "frontend/ui/atoms/loader"
 
 import { BlurOverlay } from "../../molecules/blur-overlay"
 import { NavigationBar } from "../../organisms/navigation/navigation-bar"

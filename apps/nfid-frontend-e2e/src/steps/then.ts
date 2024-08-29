@@ -769,13 +769,13 @@ Then(
   /^Details are ([^"]*) ([^"]*)/,
   async (standard: string, collection: string) => {
     await Nft.getNftStandard().then(async (l) => {
-      l.waitForDisplayed({
+      await l.waitForDisplayed({
         timeout: 5000,
       })
       expect(await l.getText()).toContain(standard)
     })
     await Nft.getCollectionId().then(async (l) => {
-      l.waitForDisplayed({
+      await l.waitForDisplayed({
         timeout: 5000,
       })
       expect(await l.getText()).toContain(collection)

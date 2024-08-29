@@ -108,6 +108,7 @@ export interface _SERVICE {
   get_policies: ActorMethod<[bigint], Array<Policy>>
   get_transactions: ActorMethod<[], Array<Transaction>>
   get_vaults: ActorMethod<[], Array<Vault>>
+  get_vaults_by_address: ActorMethod<[string], Array<Vault>>
   get_wallets: ActorMethod<[bigint], Array<Wallet>>
   register_policy: ActorMethod<[PolicyRegisterRequest], Policy>
   register_transaction: ActorMethod<[TransactionRegisterRequest], Transaction>

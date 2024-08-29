@@ -11,12 +11,15 @@ import {nftService} from "src/integration/nft/nft-service";
 
 export class FtService {
   async getAllUserTokens(userPrincipal: Principal, page: number = 1, limit: number = 10): Promise<PaginatedResponse<FT>> {
-    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userPrincipal.toText());
-    if (userTokens.length === 0) {
-      await icrc1RegistryService.storeICRC1Canister(
-        ICP_CANISTER_ID, State.Active)
-      userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userPrincipal.toText());
-    }
+    let userTokens = await icrc1StorageService.getICRC1Canisters(userPrincipal.toText())
+      .then(async (canisters) => {
+        if (canisters.length === 0) {
+           await icrc1RegistryService.storeICRC1Canister(
+            ICP_CANISTER_ID, State.Active)
+          canisters = await icrc1StorageService.getICRC1ActiveCanisters(userPrincipal.toText());
+        }
+        return  canisters.filter((canister) => canister.state === State.Active)
+      });
 
     const ft: Array<FT> = userTokens.map((token) => new FTImpl(token));
     const totalItems = ft.length

@@ -1,9 +1,9 @@
-import { ICRC1Data, ICRC1Metadata } from "../types"
+import { ICRC1Data } from "../types"
 
 export interface IIcrc1Pair {
   validateStandard(): Promise<void>
 
-  validateIfExists(): Promise<void>
+  validateIfExists(rootPrincipalId: string): Promise<void>
 
   validateIndexCanister(): Promise<void>
 
@@ -13,5 +13,11 @@ export interface IIcrc1Pair {
 
   getBalance(principal: string): Promise<bigint>
 
-  getMetadata(): Promise<ICRC1Metadata>
+  getMetadata(): Promise<{
+    name: string
+    symbol: string
+    logo?: string
+    decimals: number
+    fee: bigint
+  }>
 }

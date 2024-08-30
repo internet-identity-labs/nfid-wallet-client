@@ -32,7 +32,6 @@ export class Icrc1StorageService {
     })
   }
 
-  @Cache(integrationCache, { ttl: 30 })
   async getICRC1Canisters(principal: string): Promise<Array<ICRC1UserData>> {
     const [icrc1StateData, icrc1OracleData] = await Promise.all([
       icrc1RegistryService.getCanistersByRoot(principal),

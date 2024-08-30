@@ -282,7 +282,6 @@ export const TransferFT = ({
       ////////////////////////////
       loadingMessage={"123"}
       tokenOptions={tokenOptions}
-      selectedTokenBlockchain={selectedTokenBlockchain}
       //accountsOptions={accountsOptions}
       // optionGroups={
       //   profile?.wallet === RootWallet.NFID ? [] : accountsOptions ?? []

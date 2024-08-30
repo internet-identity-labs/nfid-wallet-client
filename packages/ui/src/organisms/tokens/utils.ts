@@ -12,6 +12,7 @@ const getUserPrincipalId = async () => {
 export const fetchAllTokens = async () => {
   const userPrincipal = await getUserPrincipalId()
   const data = await ftService.getAllUserTokens(
+    userPrincipal,
     Principal.fromText(userPrincipal),
   )
   return data.items
@@ -20,6 +21,7 @@ export const fetchAllTokens = async () => {
 export const fetchTokenByAddress = async (address: string) => {
   const userPrincipal = await getUserPrincipalId()
   const data = await ftService.getUserTokenByAddress(
+    userPrincipal,
     Principal.fromText(userPrincipal),
     address,
   )

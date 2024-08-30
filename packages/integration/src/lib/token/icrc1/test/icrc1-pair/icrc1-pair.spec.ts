@@ -38,7 +38,7 @@ describe("ICRC1 pair suite", () => {
       "qhbym-qaaaa-aaaaa-aaafq-cai",
     )
     try {
-      await icrcPair.validateIfExists()
+      await icrcPair.validateIfExists(root)
       fail("Should throw error")
     } catch (e: any) {
       expect(e.message).toEqual("Canister already added.")

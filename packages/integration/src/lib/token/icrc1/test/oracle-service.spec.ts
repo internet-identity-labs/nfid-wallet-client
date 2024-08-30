@@ -1,15 +1,16 @@
 /**
  * @jest-environment jsdom
  */
-import {DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import {iCRC1OracleActor, mockIdentityA} from "@nfid/integration"
-import {iCRC1Registry, im, replaceActorIdentity} from "../../../actors"
-import {generateDelegationIdentity} from "../../../test-utils"
-import {icrc1StorageService} from "../service/icrc1-storage-service";
-import {ICRC1 as ICRC1UserData} from "@nfid/integration/token/icrc1/types";
-import {Category, State} from "@nfid/integration/token/icrc1/enum/enums";
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
+import { iCRC1OracleActor, mockIdentityA } from "@nfid/integration"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { ICRC1 as ICRC1UserData } from "@nfid/integration/token/icrc1/types"
+
+import { im, replaceActorIdentity } from "../../../actors"
+import { generateDelegationIdentity } from "../../../test-utils"
+import { icrc1StorageService } from "../service/icrc1-storage-service"
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
@@ -28,13 +29,14 @@ describe("ICRC1 suite", () => {
       logo: undefined,
       name: "Chat",
       state: State.Active,
-      symbol: "CHAT"
+      symbol: "CHAT",
     }
     await icrc1OracleService.addICRC1Canister(icrc1Data)
-    const account = (await im.get_account())
+    const account = await im.get_account()
     root = account.data[0]!.principal_id
     const canisters = await icrc1StorageService.getICRC1Canisters(root)
-    expect(canisters.map((l) => l.ledger)).toContain(edId.getPrincipal().toText())
+    expect(canisters.map((l) => l.ledger)).toContain(
+      edId.getPrincipal().toText(),
+    )
   })
-
 })

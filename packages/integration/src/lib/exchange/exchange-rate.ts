@@ -1,15 +1,15 @@
 import * as Agent from "@dfinity/agent"
 import BigNumber from "bignumber.js"
+import { Cache } from "node-ts-cache"
 
-import {actor} from "./../actors"
-import {idlFactory as IDL} from "./idl/ExchangeRate"
-import {idlFactory as IDL_ICRC1_NODE} from "./idl/NodeIndex"
-import {idlFactory as IDL_TOKEN} from "./idl/Token"
-import {_SERVICE as Service, ExchangeRate__1} from "./idl/ExchangeRate.d"
-import {_SERVICE as ServiceNode} from "./idl/NodeIndex.d"
-import {_SERVICE as ServiceToken, PublicTokenOverview} from "./idl/Token.d"
-import {integrationCache} from "../../cache";
-import {Cache} from "node-ts-cache"
+import { integrationCache } from "../../cache"
+import { actor } from "./../actors"
+import { idlFactory as IDL } from "./idl/ExchangeRate"
+import { _SERVICE as Service, ExchangeRate__1 } from "./idl/ExchangeRate.d"
+import { idlFactory as IDL_ICRC1_NODE } from "./idl/NodeIndex"
+import { _SERVICE as ServiceNode } from "./idl/NodeIndex.d"
+import { idlFactory as IDL_TOKEN } from "./idl/Token"
+import { _SERVICE as ServiceToken, PublicTokenOverview } from "./idl/Token.d"
 
 const EXCHANGE_RATE_CANISTER = "2ixw4-taaaa-aaaag-qcpdq-cai"
 const NODE_CANISTER = "ggzvv-5qaaa-aaaag-qck7a-cai"
@@ -22,7 +22,10 @@ export class ExchangeRateService {
 
   constructor() {
     this.exchangeRateActor = actor<Service>(EXCHANGE_RATE_CANISTER, IDL)
-    this.exchangeTokenNodeActor = actor<ServiceNode>(NODE_CANISTER, IDL_ICRC1_NODE)
+    this.exchangeTokenNodeActor = actor<ServiceNode>(
+      NODE_CANISTER,
+      IDL_ICRC1_NODE,
+    )
   }
 
   getICP2USD(): BigNumber {
@@ -34,7 +37,7 @@ export class ExchangeRateService {
     this.ICP2USD = this.parseTokenAmount(result.rate, result.decimals)
   }
 
-  @Cache(integrationCache, {ttl: 300})
+  @Cache(integrationCache, { ttl: 300 })
   async usdPriceForICRC1(ledger: string): Promise<BigNumber | undefined> {
     const tokenStorageCanister = await this.getTokenStorageCanister(ledger)
     if (!tokenStorageCanister) {
@@ -49,8 +52,10 @@ export class ExchangeRateService {
   private async getExchangeRate(pair: string): Promise<ExchangeRate__1> {
     return this.exchangeRateActor.get_exchange_rate(pair)
   }
-  @Cache(integrationCache, {ttl: 60 * 60 * 24})
-  private async getTokenStorageCanister(ledger: string): Promise<string | undefined> {
+  @Cache(integrationCache, { ttl: 60 * 60 * 24 })
+  private async getTokenStorageCanister(
+    ledger: string,
+  ): Promise<string | undefined> {
     return this.exchangeTokenNodeActor.tokenStorage(ledger).then((result) => {
       return result.length > 0 ? result[0] : undefined
     })

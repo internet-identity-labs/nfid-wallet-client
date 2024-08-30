@@ -1,8 +1,8 @@
 import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 
+import { localStorageTTL } from "../util/local-strage-ttl"
 import { CertifiedResponse, validateTargets } from "./targets"
-import {localStorageTTL} from "../util/local-strage-ttl";
 
 describe("Targets validation", () => {
   jest.setTimeout(50000)

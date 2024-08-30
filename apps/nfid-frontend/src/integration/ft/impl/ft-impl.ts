@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 
@@ -30,20 +31,14 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
   }
 
-  async init(): Promise<FT> {
+  async init(globalPrincipal: Principal): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    const identity = authState.get().delegationIdentity
-    if (!identity) {
-      throw new Error("Identity not found")
-    }
-    const globalPrincipal = await getPublicKey(identity)
     const [metadata, balance] = await Promise.all([
       icrc1Pair.getMetadata(),
-      icrc1Pair.getBalance(globalPrincipal),
+      icrc1Pair.getBalance(globalPrincipal.toText()),
     ])
     this.tokenBalance = balance
     this.decimals = metadata.decimals
-    this.fee = metadata.fee
     return this
   }
 
@@ -71,25 +66,25 @@ export class FTImpl implements FT {
     return this.decimals
   }
 
-  getTokenBalance(): string {
+  getTokenState(): State {
+    return this.tokenState
+  }
+
+  getTokenBalance(): string | undefined {
     const tokenAmount = exchangeRateService.parseTokenAmount(
       Number(this.tokenBalance),
       this.decimals,
     )
-    return (
-      tokenAmount.toFormat({
-        groupSeparator: "",
-        decimalSeparator: ".",
-      }) + ` ${this.symbol}`
-    )
+    return this.tokenBalance
+      ? tokenAmount.toFormat({
+          groupSeparator: "",
+          decimalSeparator: ".",
+        }) + ` ${this.symbol}`
+      : undefined
   }
 
-  getTokenCategory(): string {
-    return this.tokenCategory.toString()
-  }
-
-  getTokenState(): State {
-    return this.tokenState
+  getTokenCategory(): Category {
+    return this.tokenCategory
   }
 
   getTokenName(): string {

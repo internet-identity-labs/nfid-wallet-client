@@ -12,21 +12,20 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 export class FtService {
   async getAllUserTokens(
-    userPrincipal: Principal,
+    userId: string,
+    userPublicKey: Principal,
     page: number = 1,
     limit: number = 10,
   ): Promise<PaginatedResponse<FT>> {
     let userTokens = await icrc1StorageService
-      .getICRC1Canisters(userPrincipal.toText())
+      .getICRC1Canisters(userId)
       .then(async (canisters) => {
         if (canisters.length === 0) {
           await icrc1RegistryService.storeICRC1Canister(
             ICP_CANISTER_ID,
             State.Active,
           )
-          canisters = await icrc1StorageService.getICRC1ActiveCanisters(
-            userPrincipal.toText(),
-          )
+          canisters = await icrc1StorageService.getICRC1Canisters(userId)
         }
         return canisters.filter((canister) => canister.state === State.Active)
       })
@@ -39,7 +38,7 @@ export class FtService {
     const endIndex = Math.min(startIndex + limit, totalItems)
 
     const items = ft.slice(startIndex, endIndex)
-    await Promise.all(items.map((item) => item.init()))
+    await Promise.all(items.map((item) => item.init(userPublicKey)))
 
     return {
       items,
@@ -49,24 +48,12 @@ export class FtService {
     }
   }
 
-  async getUserTokenByAddress(
-    userPrincipal: Principal,
-    address: string,
-  ): Promise<FT> {
-    const tokens = await this.getAllUserTokens(userPrincipal)
-    const token = tokens.items.find(
-      (token) => token.getTokenAddress() === address,
-    )
-    if (!token) throw new Error("Token not found")
-    return token
-  }
-
   async getAllFTokens(
-    principal: Principal,
+    userId: string,
     nameCategoryFilter: string | undefined,
   ): Promise<Array<FT>> {
     return icrc1StorageService
-      .getICRC1FilteredCanisters(principal.toText(), nameCategoryFilter)
+      .getICRC1FilteredCanisters(userId, nameCategoryFilter)
       .then((canisters) => {
         return canisters.map((canister) => {
           return new FTImpl(canister)
@@ -74,18 +61,30 @@ export class FtService {
       })
   }
 
+  async getUserTokenByAddress(
+    userId: string,
+    userPrincipal: Principal,
+    address: string,
+  ): Promise<FT> {
+    const tokens = await this.getAllUserTokens(userId, userPrincipal)
+    const token = tokens.items.find(
+      (token) => token.getTokenAddress() === address,
+    )
+    if (!token) throw new Error("Token not found")
+    return token
+  }
+
   //todo move somewhere because contains NFT balance as well
   async getTotalUSDBalance(
-    userPrincipal: Principal,
+    userId: string,
+    userPublicKey: Principal,
   ): Promise<string | undefined> {
-    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(
-      userPrincipal.toText(),
-    )
+    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userId)
     let ft = userTokens.map((token) => new FTImpl(token))
-    await Promise.all(ft.map((ft) => ft.init()))
+    await Promise.all(ft.map((ft) => ft.init(userPublicKey)))
     const [_, nftPrice] = await Promise.all([
       Promise.all(ft.map((ft) => ft.getUSDBalanceFormatted())),
-      nftService.getNFTsTotalPrice(userPrincipal),
+      nftService.getNFTsTotalPrice(userPublicKey),
     ])
     let price = ft
       .map((ft) => ft.getUSDBalance())

@@ -1,13 +1,15 @@
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { Principal } from "@dfinity/principal"
+
+import { State, Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface FT {
-  init(): Promise<FT>
+  init(principal: Principal): Promise<FT>
 
   getTokenName(): string
 
-  getTokenCategory(): string
+  getTokenCategory(): Category
 
-  getTokenBalance(): string
+  getTokenBalance(): string | undefined
 
   getUSDBalanceFormatted(): Promise<string | undefined>
 

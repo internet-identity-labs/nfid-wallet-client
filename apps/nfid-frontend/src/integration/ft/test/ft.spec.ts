@@ -15,10 +15,11 @@ const principal = Principal.fromText(
 
 describe("ft test suite", () => {
   jest.setTimeout(35000)
+
   describe("ft", () => {
     it("should return", async () => {
       jest
-        .spyOn(icrc1StorageService as any, "getICRC1ActiveCanisters")
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValue([{
           "ledger": "2ouva-viaaa-aaaaq-aaamq-cai",
           "name": "Chat",

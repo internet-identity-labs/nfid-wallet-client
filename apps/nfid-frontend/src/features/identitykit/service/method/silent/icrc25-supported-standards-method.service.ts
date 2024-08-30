@@ -20,8 +20,16 @@ class Icrc25SupportedStandardsMethodService extends SilentMethodService {
       result: {
         supportedStandards: [
           {
+            name: "ICRC-25",
+            url: "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-25/ICRC-25.md",
+          },
+          {
             name: "ICRC-27",
             url: "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-27/ICRC-27.md",
+          },
+          {
+            name: "ICRC-29",
+            url: "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-29/ICRC-29.md",
           },
           {
             name: "ICRC-34",

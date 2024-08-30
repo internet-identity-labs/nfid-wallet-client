@@ -4,14 +4,10 @@ export const SUPPORTED_STANDARDS = [
   "icrc49_call_canister",
 ]
 
-export const mapPermissionsResponse = (
-  permissions: string[],
-): { scopes: { scope: { method: string }; state: string }[] } => {
-  const filteredPermissions = permissions.filter((x) =>
-    SUPPORTED_STANDARDS.includes(x),
-  )
-
-  const scopes = filteredPermissions.map((x) => {
+export const preparePermissionsResponse = (): {
+  scopes: { scope: { method: string }; state: string }[]
+} => {
+  const scopes = SUPPORTED_STANDARDS.map((x) => {
     return { scope: { method: x }, state: "granted" }
   })
 

@@ -10,6 +10,7 @@ export const idlFactory = ({ IDL }: any) => {
     ChainFusionTestnet: IDL.Null,
     ChainFusion: IDL.Null,
     Community: IDL.Null,
+    Native: IDL.Null,
   })
   const ICRC1 = IDL.Record({
     logo: IDL.Opt(IDL.Text),

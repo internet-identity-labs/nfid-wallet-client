@@ -9,6 +9,7 @@ export type Category =
   | { ChainFusionTestnet: null }
   | { ChainFusion: null }
   | { Community: null }
+  | { Native: null }
 export interface Conf {
   controllers: [] | [Array<Principal>]
   im_canister: [] | [Principal]

@@ -11,8 +11,17 @@ export const mapPermissionsResponse = (
     SUPPORTED_STANDARDS.includes(x),
   )
 
-  const scopes = filteredPermissions.map((x) => {
+  const grantedScopes = filteredPermissions.map((x) => {
     return { scope: { method: x }, state: "granted" }
+  })
+
+  const scopes = SUPPORTED_STANDARDS.map((s) => {
+    if (grantedScopes.findIndex((g) => g.scope.method === s) === -1) {
+      return { scope: { method: s }, state: "ask_on_use" }
+    }
+    const scope = grantedScopes.find((g) => g.scope.method === s)
+    if (!scope) throw new Error("Not reachable")
+    return scope
   })
 
   return { scopes }

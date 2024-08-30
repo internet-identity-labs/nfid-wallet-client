@@ -1,15 +1,15 @@
-import React, { useState } from "react"
+import { FC } from "react"
 
 import { Button } from "@nfid-frontend/ui"
 
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
-type IAssetModal = {
+type NewAssetsModalProps = {
   tokens: [] | null
 }
 
-const AssetModal: React.FC<IAssetModal> = ({ tokens }) => {
+export const NewAssetsModal: FC<NewAssetsModalProps> = ({ tokens }) => {
   return (
     <ModalComponent
       isVisible={Boolean(tokens)}
@@ -37,5 +37,3 @@ const AssetModal: React.FC<IAssetModal> = ({ tokens }) => {
     </ModalComponent>
   )
 }
-
-export default AssetModal

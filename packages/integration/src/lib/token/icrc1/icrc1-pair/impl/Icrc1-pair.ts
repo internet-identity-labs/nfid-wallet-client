@@ -12,7 +12,6 @@ import { _SERVICE as ICRCIndex } from "../../../../_ic_api/index-icrc1.d"
 import { DEFAULT_ERROR_TEXT } from "../../../constants"
 import { Category, State } from "../../enum/enums"
 import { icrc1OracleService } from "../../service/icrc1-oracle-service"
-import { icrc1StorageService } from "../../service/icrc1-storage-service"
 import { ICRC1Data, ICRC1Error } from "../../types"
 
 export class Icrc1Pair implements IIcrc1Pair {
@@ -42,16 +41,14 @@ export class Icrc1Pair implements IIcrc1Pair {
     }
   }
 
-  async validateIfExists(rootPrincipalId: string) {
-    await icrc1StorageService
-      .getICRC1Canisters(rootPrincipalId)
-      .then((icrc1) => {
-        if (
-          icrc1.map((c) => c).find((c) => c.ledger === this.ledger && c.index)
-        ) {
-          throw new ICRC1Error("Canister already added.")
-        }
-      })
+  async validateIfExists() {
+    await icrc1OracleService.getICRC1Canisters().then((icrc1) => {
+      if (
+        icrc1.map((c) => c).find((c) => c.ledger === this.ledger && c.index)
+      ) {
+        throw new ICRC1Error("Canister already added.")
+      }
+    })
   }
 
   async validateIndexCanister() {

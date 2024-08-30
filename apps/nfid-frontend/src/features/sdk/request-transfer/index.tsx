@@ -182,6 +182,18 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
       </div>
       <div className="gap-2.5 grid grid-cols-2 mb-[60px]">
         <Button
+          id="rejectButton"
+          type="stroke"
+          onClick={() =>
+            onConfirmIC({
+              status: RequestStatus.REJECTED,
+              errorMessage: "Rejected by user",
+            })
+          }
+        >
+          Reject
+        </Button>
+        <Button
           id={
             isApproveButtonDisabled ? "approveButtonDisabled" : "approveButton"
           }
@@ -230,18 +242,6 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           }
         >
           {isApproveButtonDisabled ? "loading..." : "Approve"}
-        </Button>
-        <Button
-          id="rejectButton"
-          type="stroke"
-          onClick={() =>
-            onConfirmIC({
-              status: RequestStatus.REJECTED,
-              errorMessage: "Rejected by user",
-            })
-          }
-        >
-          Reject
         </Button>
         <SDKFooter
           identity={identity}

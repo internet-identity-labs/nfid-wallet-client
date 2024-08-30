@@ -1,6 +1,6 @@
 import ExternalIcon from "packages/ui/src/atoms/icons/external.svg"
 import HistoryIcon from "packages/ui/src/atoms/icons/history.svg"
-import { useCallback, FC, useState } from "react"
+import { useCallback, FC } from "react"
 import { useNavigate } from "react-router-dom"
 import { mutate } from "swr"
 
@@ -11,18 +11,15 @@ import {
   IconCmpDots,
   IconSvgEyeClosedBlack,
 } from "@nfid-frontend/ui"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { FT } from "frontend/integration/ft/ft"
 
-type ITokenDropdown = {
-  option?: string
+type AssetDropdownProps = {
   token: FT
-  isHideLoading: (value: boolean) => void
 }
 
-const TokenDropdown: FC<ITokenDropdown> = ({ token, isHideLoading }) => {
+export const AssetDropdown: FC<AssetDropdownProps> = ({ token }) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
     (canisterId: string) => () => {
@@ -62,15 +59,13 @@ const TokenDropdown: FC<ITokenDropdown> = ({ token, isHideLoading }) => {
             />
           }
         />
-        {token.getTokenAddress() !== ICP_CANISTER_ID && (
+        {token.isHideable() && (
           <DropdownOption
             label="Hide token"
             icon={IconSvgEyeClosedBlack}
             handler={async () => {
-              isHideLoading(true)
               await token.hideToken()
               mutate("activeTokens")
-              isHideLoading(false)
             }}
           />
         )}
@@ -85,5 +80,3 @@ const TokenDropdown: FC<ITokenDropdown> = ({ token, isHideLoading }) => {
     </>
   )
 }
-
-export default TokenDropdown

@@ -1,8 +1,7 @@
-import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 
-import { exchangeRateService } from "@nfid/integration"
+import { authState, exchangeRateService, getPublicKey } from "@nfid/integration"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
@@ -19,6 +18,7 @@ export class FTImpl implements FT {
   private index: string | undefined
   private symbol: string
   private decimals: number | undefined
+  private fee: bigint | undefined
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -30,14 +30,20 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
   }
 
-  async init(principal: Principal): Promise<FT> {
+  async init(): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+    const identity = authState.get().delegationIdentity
+    if (!identity) {
+      throw new Error("Identity not found")
+    }
+    const globalPrincipal = await getPublicKey(identity)
     const [metadata, balance] = await Promise.all([
       icrc1Pair.getMetadata(),
-      icrc1Pair.getBalance(principal.toText()),
+      icrc1Pair.getBalance(globalPrincipal),
     ])
     this.tokenBalance = balance
     this.decimals = metadata.decimals
+    this.fee = metadata.fee
     return this
   }
 
@@ -53,6 +59,10 @@ export class FTImpl implements FT {
     return this.symbol
   }
 
+  getTokenFee(): bigint | undefined {
+    return this.fee
+  }
+
   getTokenLogo(): string | undefined {
     return this.logo
   }
@@ -61,21 +71,21 @@ export class FTImpl implements FT {
     return this.decimals
   }
 
-  getTokenBalance(): string | undefined {
+  getTokenBalance(): string {
     const tokenAmount = exchangeRateService.parseTokenAmount(
       Number(this.tokenBalance),
       this.decimals,
     )
-    return this.tokenBalance
-      ? tokenAmount.toFormat({
-          groupSeparator: "",
-          decimalSeparator: ".",
-        }) + ` ${this.symbol}`
-      : undefined
+    return (
+      tokenAmount.toFormat({
+        groupSeparator: "",
+        decimalSeparator: ".",
+      }) + ` ${this.symbol}`
+    )
   }
 
-  getTokenCategory(): Category {
-    return this.tokenCategory
+  getTokenCategory(): string {
+    return this.tokenCategory.toString()
   }
 
   getTokenState(): State {
@@ -84,6 +94,21 @@ export class FTImpl implements FT {
 
   getTokenName(): string {
     return this.tokenName
+  }
+
+  async getTokenRate(amount: string): Promise<string | undefined> {
+    const rate = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
+    if (!rate) return
+
+    const rateBigNumber = new BigNumber(rate)
+    const amountBigNumber = new BigNumber(amount)
+
+    const result = rateBigNumber.multipliedBy(amountBigNumber)
+    return `${result.toFixed(2)} USD`
+  }
+
+  isHideable(): boolean {
+    return this.tokenCategory != Category.Native
   }
 
   async getUSDBalanceFormatted(): Promise<string | undefined> {

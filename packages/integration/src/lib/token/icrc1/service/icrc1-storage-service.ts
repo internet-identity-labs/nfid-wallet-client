@@ -2,7 +2,7 @@ import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../../../cache"
 import { State } from "../enum/enums"
-import { ICRC1 as ICRC1UserData, ICRC1Data } from "../types"
+import { ICRC1 as ICRC1UserData } from "../types"
 import { mapCategory, mapState } from "../util"
 import { icrc1OracleService } from "./icrc1-oracle-service"
 import { icrc1RegistryService } from "./icrc1-registry-service"

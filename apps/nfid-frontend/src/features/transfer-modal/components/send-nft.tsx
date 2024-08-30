@@ -1,18 +1,17 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
+import { fetchTokenByAddress } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import {
   fetchNFT,
   fetchNFTsInited,
 } from "frontend/features/collectibles/utils/util"
 import { transferEXT } from "frontend/integration/entrepot/ext"
-import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
-import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
-import { Blockchain } from "frontend/ui/connnector/types"
 
 import {
   getAccount,
@@ -36,6 +35,11 @@ export const TransferNFT = ({
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [selectedAccountAddress, setSlectedAccountAddress] = useState("")
 
+  const { data: icpToken, isLoading: isIcpLoading } = useSWR(
+    ICP_CANISTER_ID ? ["token", ICP_CANISTER_ID] : null,
+    ([, address]) => fetchTokenByAddress(address),
+  )
+
   const {
     data: allNfts = [],
     isLoading: isNftListLoading,
@@ -58,38 +62,8 @@ export const TransferNFT = ({
     getAddress()
   }, [])
 
-  const { data: selectedFtConnector } = useSWR(
-    ["ICP", Blockchain.IC, "selectedConnector"],
-    ([selectedTokenCurrency, selectedTokenBlockchain]) =>
-      getConnector({
-        type: TransferModalType.FT,
-        currency: selectedTokenCurrency,
-        blockchain: selectedTokenBlockchain,
-      }),
-    {
-      onSuccess: () => {
-        refetchBalance()
-      },
-    },
-  )
-
-  const {
-    data: balance,
-    mutate: refetchBalance,
-    isValidating: isBalanceFetching,
-    isLoading: isBalanceLoading,
-  } = useSWR(
-    selectedFtConnector && selectedAccountAddress
-      ? [selectedFtConnector, selectedAccountAddress, "balance"]
-      : null,
-    ([connector, preselectedAccountAddress]) =>
-      connector.getBalance(preselectedAccountAddress, "ICP"),
-    { refreshInterval: 10000 },
-  )
-
   const handleTrackTransfer = useCallback(() => {
     sendReceiveTracking.sendToken({
-      network: "ICP",
       destinationType: "address",
       tokenName: selectedNFT?.getTokenId() || "",
       tokenType: "non-fungible",
@@ -105,9 +79,7 @@ export const TransferNFT = ({
       onTransferPromise({
         assetImg: selectedNFT?.getAssetPreview().url,
         initialPromise: new Promise(async (resolve) => {
-          const identity = await getIdentity(undefined, undefined, [
-            selectedNFT.getCollectionId(),
-          ])
+          const identity = await getIdentity([selectedNFT.getCollectionId()])
 
           try {
             const res = await transferEXT(
@@ -140,8 +112,8 @@ export const TransferNFT = ({
 
   return (
     <TransferNFTUi
+      icpToken={icpToken}
       isLoading={isNftLoading && isNftListLoading}
-      isBalanceLoading={isBalanceLoading && isBalanceFetching}
       loadingMessage={"Loading NFTs..."}
       nftOptions={mapUserNFTDetailsToGroupedOptions(allNfts)}
       setSelectedNFTId={setSelectedNFTId}
@@ -150,7 +122,6 @@ export const TransferNFT = ({
       selectedReceiverWallet={selectedReceiverWallet}
       submit={submit}
       selectedAccountAddress={selectedAccountAddress}
-      balance={Number(balance)}
       validateAddress={validateAddress}
     />
   )

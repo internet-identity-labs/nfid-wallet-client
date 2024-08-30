@@ -24,11 +24,9 @@ import { e8sICPToString } from "frontend/integration/wallet/utils"
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 
 export const getIdentity = async (
-  domain = "nfid.one",
-  accountId = "0",
   targetCanisters: string[],
 ): Promise<DelegationIdentity> => {
-  return getWalletDelegationAdapter(domain, accountId, targetCanisters)
+  return getWalletDelegationAdapter("nfid.one", "0", targetCanisters)
 }
 
 export const mapUserNFTDetailsToGroupedOptions = (

@@ -1,8 +1,12 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
-import { Token } from "packages/integration/src/lib/asset/types"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
+import {
+  fetchAllTokens,
+  fetchTokenByAddress,
+} from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -13,11 +17,15 @@ import {
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/constants"
+import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { transfer as transferICP } from "@nfid/integration/token/icp"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { ICRC1Metadata } from "@nfid/integration/token/icrc1/types"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
+import { FT } from "frontend/integration/ft/ft"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { resetCachesByKey } from "frontend/ui/connnector/cache"
 import {
   getAllTokensOptions,
@@ -30,31 +38,46 @@ import {
 import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
+import { getIdentity, validateAddress } from "../utils"
 import { ITransferSuccess } from "./success"
 
 interface ITransferFT {
   isVault: boolean
-  preselectedTokenCurrency: string
   preselectedAccountAddress: string
   preselectedTokenBlockchain?: string
-  preselectedTransferDestination?: string
   onTransferPromise: (data: ITransferSuccess) => void
 }
 
 export const TransferFT = ({
   isVault,
-  preselectedTokenCurrency,
   preselectedAccountAddress = "",
   preselectedTokenBlockchain = Blockchain.IC,
-  preselectedTransferDestination,
   onTransferPromise,
 }: ITransferFT) => {
-  const [selectedTokenCurrency, setSelectedTokenCurrency] = useState(
-    preselectedTokenCurrency,
+  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
+    "activeTokens",
+    fetchAllTokens,
   )
-  const [selectedTokenBlockchain, setSelectedTokenBlockchain] = useState(
-    preselectedTokenBlockchain,
+
+  const { data: icpToken, isLoading: isIcpLoading } = useSWR(
+    ICP_CANISTER_ID ? ["token", ICP_CANISTER_ID] : null,
+    ([, address]) => fetchTokenByAddress(address),
   )
+
+  const [token, setToken] = useState(icpToken)
+  const [tokenUsdAmount, setTokenUsdAmount] = useState<string | undefined>()
+
+  useEffect(() => {
+    const getUsdAmount = async () => {
+      const usdAmount = await token?.getUSDBalanceFormatted()
+      setTokenUsdAmount(usdAmount)
+    }
+
+    getUsdAmount()
+  }, [token])
+
+  console.log("dattt", activeTokens)
+
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
   )
@@ -62,76 +85,42 @@ export const TransferFT = ({
   const [amountInUSD, setAmountInUSD] = useState(0)
 
   const { profile, isLoading: isLoadingProfile } = useProfile()
-  console.debug("TransferFT", {
-    profile,
-    isLoadingProfile,
-    selectedTokenBlockchain,
-    selectedTokenCurrency,
-  })
 
-  const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
-    [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
-    ([selectedTokenCurrency, selectedTokenBlockchain]) =>
-      getConnector({
-        type: TransferModalType.FT,
-        currency: selectedTokenCurrency,
-        blockchain: selectedTokenBlockchain,
-      }),
-    {
-      onSuccess: () => {
-        refetchBalance()
-      },
-    },
-  )
-
-  const { data: tokenMetadata, isLoading: isMetadataLoading } = useSWR<
-    ITransferConfig & (ICRC1Metadata | Token)
-  >(
-    selectedConnector
-      ? [selectedConnector, "tokenMetadata", selectedTokenCurrency]
-      : null,
-    async ([selectedConnector]) => {
-      // if it's icrc1 token, we need to fetch token metadata
-      if (selectedConnector.getTokenMetadata)
-        return await selectedConnector.getTokenMetadata(selectedTokenCurrency)
-      else return selectedConnector.getTokenConfig()
-    },
-  )
+  // const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
+  //   [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
+  //   ([selectedTokenCurrency, selectedTokenBlockchain]) =>
+  //     getConnector({
+  //       type: TransferModalType.FT,
+  //       currency: selectedTokenCurrency,
+  //       blockchain: selectedTokenBlockchain,
+  //     }),
+  //   {
+  //     onSuccess: () => {
+  //       refetchBalance()
+  //     },
+  //   },
+  // )
 
   // TODO: adjust accountsOptions for Vaults
-  const {
-    data: accountsOptions,
-    isLoading: isAccountsLoading,
-    isValidating: isAccountsValidating,
-  } = useSWR(
-    selectedConnector ? [selectedConnector, isVault, "accountsOptions"] : null,
-    ([connector, isVault]) =>
-      connector.getAccountsOptions({
-        currency: selectedTokenCurrency,
-        isVault,
-        isRootOnly: true,
-      }),
-  )
+  // const {
+  //   data: accountsOptions,
+  //   isLoading: isAccountsLoading,
+  //   isValidating: isAccountsValidating,
+  // } = useSWR(
+  //   selectedConnector ? [selectedConnector, isVault, "accountsOptions"] : null,
+  //   ([connector, isVault]) =>
+  //     connector.getAccountsOptions({
+  //       currency: selectedTokenCurrency,
+  //       isVault,
+  //       isRootOnly: true,
+  //     }),
+  // )
 
-  useEffect(() => {
-    if (!accountsOptions?.length) return
-    !preselectedAccountAddress.length &&
-      setSelectedAccountAddress(accountsOptions[0].options[0].value)
-  }, [accountsOptions, preselectedAccountAddress.length])
-
-  const {
-    data: balance,
-    mutate: refetchBalance,
-    isValidating: isBalanceFetching,
-    isLoading: isBalanceLoading,
-  } = useSWR(
-    selectedConnector && selectedAccountAddress
-      ? [selectedConnector, selectedAccountAddress, "balance"]
-      : null,
-    ([connector, selectedAccountAddress]) =>
-      connector.getBalance(selectedAccountAddress, selectedTokenCurrency),
-    { refreshInterval: 10000 },
-  )
+  // useEffect(() => {
+  //   if (!accountsOptions?.length) return
+  //   !preselectedAccountAddress.length &&
+  //     setSelectedAccountAddress(accountsOptions[0].options[0].value)
+  // }, [accountsOptions, preselectedAccountAddress.length])
 
   const { data: tokenOptions, isLoading: isTokensLoading } = useSWR(
     [isVault, "getAllTokensOptions"],
@@ -149,68 +138,32 @@ export const TransferFT = ({
     mode: "all",
     defaultValues: {
       amount: undefined as any as string,
-      to: preselectedTransferDestination ?? "",
+      to: "",
     },
   })
 
-  const {
-    data: transferFee,
-    mutate: calculateFee,
-    isValidating: isFeeLoading,
-  } = useSWR(
-    selectedConnector && tokenMetadata
-      ? [selectedConnector, getValues, tokenMetadata, "transferFee"]
-      : null,
-    ([selectedConnector, getValues, token]) =>
-      selectedConnector?.getFee({
-        amount: +getValues("amount"),
-        to: getValues("to"),
-        currency: selectedTokenCurrency,
-        contract:
-          "contractAddress" in token ? String(token.contractAddress) : "",
-      }),
-    {
-      refreshInterval: 5000,
-    },
-  )
-
-  const { data: decimals } = useSWR(
-    selectedConnector ? [selectedTokenCurrency, "decimals"] : null,
-    ([selectedTokenCurrency]) =>
-      selectedConnector?.getDecimals(selectedTokenCurrency),
-  )
-
-  const { data: rate } = useSWR(
-    selectedConnector ? [selectedTokenCurrency, "rate"] : null,
-    ([selectedTokenCurrency]) =>
-      selectedConnector?.getRate(selectedTokenCurrency),
-  )
-
   const handleTrackTransfer = useCallback(
     (amount: string) => {
-      const token = selectedConnector?.getTokenConfig()
       if (!token) return
 
       sendReceiveTracking.sendToken({
-        network: token.blockchain,
         destinationType: "address",
-        tokenName: selectedTokenCurrency,
+        tokenName: token.getTokenName(),
         tokenType: "fungible",
         amount: amount,
-        fee: Number(transferFee) ?? 0,
+        fee: token.getTokenFee()?.toString() ?? 0,
       })
     },
-    [selectedConnector, selectedTokenCurrency, transferFee],
+    [token],
   )
 
   const submit = useCallback(
     async (values: { amount: string; to: string }) => {
-      if (!tokenMetadata) return toast.error("Token metadata has not loaded")
-      if (!selectedConnector) return toast.error("No selected connector")
+      if (!token) return toast.error("No selected token")
 
       if (isVault) {
         return onTransferPromise({
-          assetImg: tokenMetadata?.icon ?? "",
+          assetImg: token.getTokenLogo() ?? "",
           initialPromise: new Promise(async (resolve) => {
             const wallet = await getVaultWalletByAddress(selectedAccountAddress)
 
@@ -229,144 +182,111 @@ export const TransferFT = ({
 
             resolve({} as ITransferResponse)
           }),
-          title: `${values.amount} ${selectedTokenCurrency}`,
-          subTitle: `$${(Number(values.amount) * Number(rate)).toFixed(2)}`,
-          callback: () => {
-            resetCachesByKey(
-              [
-                `${selectedConnector.constructor.name}:getBalance:["${selectedAccountAddress}"]`,
-                `${selectedConnector.constructor.name}:getBalance:["${values.to}"]`,
-                `${selectedConnector.constructor.name}:getBalance:[]`,
-                `${selectedConnector.constructor.name}:getAccountsOptions:["${selectedTokenCurrency}"]`,
-              ],
-              () => refetchBalance(),
-            )
-          },
+          title: `${values.amount} ${token.getTokenSymbol()}`,
+          // don't know
+          subTitle: `123`,
+          //subTitle: `$${(Number(values.amount) * Number(rate)).toFixed(2)}`,
           isAssetPadding: true,
         })
       }
 
       onTransferPromise({
-        assetImg: tokenMetadata?.icon ?? "",
+        assetImg: token?.getTokenLogo() ?? "",
         initialPromise: new Promise(async (resolve) => {
-          await calculateFee()
-          const res = await selectedConnector.transfer({
-            to: values.to,
-            canisterId: tokenMetadata.canisterId,
-            fee: transferFee!,
-            amount:
-              selectedTokenCurrency !== "ICP"
-                ? +values.amount * 10 ** decimals!
-                : +values.amount,
-            currency: selectedTokenCurrency,
-            identity: await selectedConnector?.getIdentity(
-              selectedAccountAddress,
-              tokenMetadata?.canisterId!,
-            ),
-            contract:
-              "contractAddress" in tokenMetadata
-                ? String(tokenMetadata.contractAddress)
-                : "",
-          })
+          const { owner, subaccount } = decodeIcrcAccount(values.to)
+          const identity = await getIdentity([token!.getTokenAddress()])
+          let res
+          if (!token || !token.getTokenFee()) return
+          try {
+            if (token?.getTokenAddress() === ICP_CANISTER_ID) {
+              res = await transferICP({
+                amount: stringICPtoE8s(String(values.amount)),
+                to: values.to,
+                identity: identity,
+              })
+            } else {
+              res = await transferICRC1(identity, token.getTokenAddress(), {
+                to: {
+                  subaccount: subaccount ? [subaccount] : [],
+                  owner,
+                },
+                amount: BigInt(Number(values.amount).toFixed()),
+                memo: [],
+                fee: [token.getTokenFee()!],
+                from_subaccount: [],
+                created_at_time: [],
+              })
+            }
 
-          handleTrackTransfer(values.amount)
-          resolve(res)
+            handleTrackTransfer(values.amount)
+            resolve({ hash: String(res) })
+          } catch (e) {
+            throw new Error(`Transfer error: ${(e as Error).message}`)
+          }
         }),
         title: `${Number(values.amount)
-          .toFixed(decimals)
-          .replace(/\.?0+$/, "")} ${selectedTokenCurrency}`,
-        subTitle: `${(Number(values.amount) * Number(rate)).toFixed(2)} USD`,
-        callback: () => {
-          resetCachesByKey(
-            [
-              `${selectedConnector.constructor.name}:getBalance:["${selectedAccountAddress}"]`,
-              `${selectedConnector.constructor.name}:getBalance:["${values.to}"]`,
-              `${selectedConnector.constructor.name}:getBalance:[]`,
-              `${selectedConnector.constructor.name}:getAccountsOptions:["${selectedTokenCurrency}"]`,
-            ],
-            () => refetchBalance(),
-          )
-          mutate(
-            (key: any) =>
-              key && Array.isArray(key) && key[0] === "useTokenConfig",
-          )
-        },
+          .toFixed(token?.getTokenDecimals())
+          .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
+        subTitle: `123`,
+        //subTitle: `${(Number(values.amount) * Number(rate)).toFixed(2)} USD`,
         isAssetPadding: true,
-        duration: tokenMetadata.duration,
+        //duration: tokenMetadata.duration,
       })
     },
-    [
-      calculateFee,
-      handleTrackTransfer,
-      isVault,
-      onTransferPromise,
-      rate,
-      refetchBalance,
-      selectedAccountAddress,
-      selectedConnector,
-      selectedTokenCurrency,
-      tokenMetadata,
-      transferFee,
-      decimals,
-    ],
+    [handleTrackTransfer, isVault, onTransferPromise, token],
   )
 
-  const loadingMessage = useMemo(() => {
-    if (isLoadingProfile) return "Fetching account information..."
-    if (isTokensLoading) return "Fetching supported tokens..."
-    if (isConnectorLoading || isMetadataLoading)
-      return "Loading token config..."
-    if (isAccountsLoading || isAccountsValidating) return "Loading accounts..."
-  }, [
-    isLoadingProfile,
-    isTokensLoading,
-    isConnectorLoading,
-    isMetadataLoading,
-    isAccountsLoading,
-    isAccountsValidating,
-  ])
+  // const loadingMessage = useMemo(() => {
+  //   if (isLoadingProfile) return "Fetching account information..."
+  //   if (isTokensLoading) return "Fetching supported tokens..."
+  //   if (isConnectorLoading || isMetadataLoading)
+  //     return "Loading token config..."
+  //   if (isAccountsLoading || isAccountsValidating) return "Loading accounts..."
+  // }, [
+  //   isLoadingProfile,
+  //   isTokensLoading,
+  //   isConnectorLoading,
+  //   isMetadataLoading,
+  //   isAccountsLoading,
+  //   isAccountsValidating,
+  // ])
+
+  if (!token || !activeTokens || !icpToken) return
 
   return (
     <TransferFTUi
-      isLoading={
-        isConnectorLoading ||
-        isAccountsLoading ||
-        isAccountsValidating ||
-        isMetadataLoading ||
-        isTokensLoading
-      }
-      isBalanceLoading={isBalanceLoading && isBalanceFetching}
-      loadingMessage={loadingMessage}
-      balance={balance}
-      rate={rate}
-      decimals={decimals}
-      transferFee={transferFee}
-      calculateFee={calculateFee}
-      selectedTokenCurrency={selectedTokenCurrency}
-      preselectedTransferDestination={preselectedTransferDestination}
-      tokenOptions={tokenOptions}
-      tokenMetadata={tokenMetadata}
-      selectedTokenBlockchain={selectedTokenBlockchain}
+      icpToken={icpToken}
+      token={token}
+      tokens={activeTokens}
+      validateAddress={validateAddress}
+      // isLoading={
+      //   isConnectorLoading ||
+      //   isAccountsLoading ||
+      //   isAccountsValidating ||
+      //   isMetadataLoading ||
+      //   isTokensLoading
+      // }
+      isLoading={isActiveTokensLoading}
       sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
       isVault={isVault}
-      accountsOptions={accountsOptions}
-      optionGroups={
-        profile?.wallet === RootWallet.NFID ? [] : accountsOptions ?? []
-      }
-      isFeeLoading={isFeeLoading}
       selectedAccountAddress={selectedAccountAddress}
       submit={submit}
       setSelectedAccountAddress={setSelectedAccountAddress}
-      selectedConnector={selectedConnector}
       amountInUSD={amountInUSD}
       setUSDAmount={(value) => setAmountInUSD(value)}
-      setSelectedCurrency={(value) => setSelectedTokenCurrency(value)}
-      setSelectedBlockchain={(value) => setSelectedTokenBlockchain(value)}
       register={register}
       errors={errors}
       handleSubmit={handleSubmit}
       setValue={setValue}
       resetField={resetField}
+      ////////////////////////////
+      loadingMessage={"123"}
+      tokenOptions={tokenOptions}
+      selectedTokenBlockchain={selectedTokenBlockchain}
+      //accountsOptions={accountsOptions}
+      // optionGroups={
+      //   profile?.wallet === RootWallet.NFID ? [] : accountsOptions ?? []
+      // }
     />
   )
 }

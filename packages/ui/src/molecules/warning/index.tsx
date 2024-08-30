@@ -13,7 +13,7 @@ export interface IWarning {
 }
 
 export const Warning = ({ title, text, link }: IWarning) => (
-  <div className="w-full p-[15px] my-3 rounded-md bg-orange-50">
+  <div className="w-full p-[15px] my-3 rounded-[12px] bg-orange-50">
     {title && (
       <div className={clsx("flex items-center justify-between")}>
         <div className="flex items-center text-sm font-bold">

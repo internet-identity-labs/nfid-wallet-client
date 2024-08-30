@@ -1,8 +1,5 @@
-import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
-import { FungibleAsset } from "packages/integration/src/lib/asset/types"
-import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import {
@@ -29,84 +26,22 @@ import {
   BlurredLoader,
   sumRules,
   IGroupedOptions,
+  ImageWithFallback,
+  IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 
-import { ITransferFTConnector } from "frontend/ui/connnector/transfer-modal/types"
-import { Blockchain } from "frontend/ui/connnector/types"
-
-enum TransferModalType {
-  FT = "ft",
-  FT20 = "ft20",
-  NFT = "nft",
-}
-enum TokenStandards {
-  "ICP" = "ICP",
-  "ICRC1" = "ICRC1",
-}
-
-enum NativeToken {
-  ICP = "ICP",
-}
+import { FT } from "frontend/integration/ft/ft"
 
 export interface TransferFTUiProps {
+  icpToken: FT
+  tokens: FT[]
+  token: FT
+  validateAddress: (address: string) => boolean | string
   isLoading: boolean
-  isBalanceLoading: boolean
-  isFeeLoading: boolean
   loadingMessage: string | undefined
-  balance: bigint | number | undefined
-  rate: number | undefined
-  decimals: number | undefined
-  transferFee: bigint | number | undefined
-  calculateFee: () => void
-  selectedTokenCurrency: string
   preselectedTransferDestination?: string
   tokenOptions: IGroupedOptions[] | undefined
-  tokenMetadata:
-    | ({
-        title?: string
-        type: TransferModalType
-        icon: string
-        tokenStandard: TokenStandards
-        blockchain: Blockchain
-        feeCurrency?: NativeToken
-        addressPlaceholder: string
-        assetService?: FungibleAsset
-        isNativeToken?: boolean
-        duration: string
-        canisterId?: string
-      } & (
-        | {
-            balance: bigint
-            canisterId: string
-            fee: bigint
-            feeInUsd: number | undefined
-            rate: number | undefined
-            decimals: number
-            owner: Principal
-            logo: string
-            name: string
-            symbol: string
-            feeCurrency: string
-            toPresentation: (
-              value?: bigint | undefined,
-              decimals?: number,
-            ) => number | string
-            transformAmount: (value: string) => number
-          }
-        | {
-            name: string
-            symbol: string
-            logo?: string
-            balance: string
-            balanceinUsd: string
-            contractAddress?: string
-            address: string
-            rate?: number | undefined
-            decimals: number
-          }
-      ))
-    | undefined
   selectedTokenBlockchain: string
   sendReceiveTrackingFn: () => void
   isVault: boolean
@@ -115,11 +50,8 @@ export interface TransferFTUiProps {
   selectedAccountAddress: string
   submit: (values: { amount: string; to: string }) => Promise<void | Id>
   setSelectedAccountAddress: Dispatch<SetStateAction<string>>
-  selectedConnector: ITransferFTConnector | undefined
   amountInUSD: number
   setUSDAmount: (value: number) => void
-  setSelectedCurrency: (value: string) => void
-  setSelectedBlockchain: (value: string) => void
   register: UseFormRegister<{
     amount: string
     to: string
@@ -145,19 +77,14 @@ export interface TransferFTUiProps {
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
+  icpToken,
+  tokens,
+  token,
+  validateAddress,
   isLoading,
-  isBalanceLoading,
-  isFeeLoading,
   loadingMessage,
-  balance,
-  rate,
-  decimals,
-  transferFee,
-  calculateFee,
-  selectedTokenCurrency,
   preselectedTransferDestination,
   tokenOptions,
-  tokenMetadata,
   selectedTokenBlockchain,
   sendReceiveTrackingFn,
   isVault,
@@ -166,11 +93,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   selectedAccountAddress,
   submit,
   setSelectedAccountAddress,
-  selectedConnector,
   amountInUSD,
   setUSDAmount,
-  setSelectedCurrency,
-  setSelectedBlockchain,
   register,
   errors,
   handleSubmit,
@@ -178,14 +102,18 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   resetField,
 }) => {
   const maxHandler = () => {
-    if (transferFee && balance) {
-      const balanceNum = new BigNumber(balance.toString())
-      const feeNum = new BigNumber(transferFee.toString())
+    if (!token) return
+    if (token.getTokenFee() && token.getTokenBalance()) {
+      const balanceNum = new BigNumber(token.getTokenBalance().toString())
+      const feeNum = new BigNumber(token.getTokenFee()!.toString())
       const val = balanceNum.minus(feeNum)
 
       if (val.isLessThanOrEqualTo(0)) return
 
-      const formattedValue = formatAssetAmountRaw(Number(val), decimals!)
+      const formattedValue = formatAssetAmountRaw(
+        Number(val),
+        token.getTokenDecimals()!,
+      )
 
       setValue("amount", formattedValue)
       setUSDAmount(Number(formattedValue))
@@ -216,15 +144,21 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           )}
         >
           <InputAmount
-            decimals={decimals!}
+            decimals={token.getTokenDecimals()!}
             {...register("amount", {
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
-                formatAssetAmountRaw(Number(balance), decimals!),
-                formatAssetAmountRaw(Number(transferFee!), decimals!),
+                formatAssetAmountRaw(
+                  Number(tokens[0].getTokenBalance()),
+                  token.getTokenDecimals()!,
+                ),
+                formatAssetAmountRaw(
+                  Number(token.getTokenFee()),
+                  token.getTokenDecimals()!,
+                ),
               ),
               valueAsNumber: true,
-              onBlur: calculateFee,
+              //onBlur: calculateFee,
               onChange: (e) => {
                 if (!rate) return
                 setUSDAmount(Number(e.target.value))
@@ -276,15 +210,12 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                 id={`token_${selectedTokenCurrency}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
-                {!tokenMetadata?.icon ? (
-                  <NoIcon className="w-[40px] h-[40px] mr-1.5" />
-                ) : (
-                  <img
-                    className="w-[26px] mr-1.5"
-                    src={tokenMetadata?.icon}
-                    alt={selectedTokenCurrency}
-                  />
-                )}
+                <ImageWithFallback
+                  alt={tokens[0].getTokenName()}
+                  fallbackSrc={IconNftPlaceholder}
+                  src={`${tokens[0].getTokenLogo()}`}
+                  className="w-[26px] mr-1.5"
+                />
                 <p className="text-lg font-semibold">{selectedTokenCurrency}</p>
                 <IconCmpArrowRight className="ml-4" />
               </div>
@@ -316,11 +247,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           title={"Choose an account"}
           optionGroups={optionGroups}
           isFirstPreselected={false}
-          placeholder={tokenMetadata?.addressPlaceholder}
+          placeholder="Recipient wallet address or account ID"
           errorText={errors.to?.message}
           registerFunction={register("to", {
             required: "This field cannot be empty",
-            validate: (value) => selectedConnector?.validateAddress(value),
+            validate: (value) => validateAddress(value),
             onBlur: calculateFee,
           })}
           onSelect={(value) => {
@@ -339,11 +270,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             )}
           >
             <div>
-              <p className="text-sm">
-                {tokenMetadata?.blockchain === Blockchain.IC
-                  ? "Instant"
-                  : "Estimated"}
-              </p>
+              <p className="text-sm">Instant</p>
             </div>
             {isFeeLoading ? (
               <Spinner className="w-3 h-3 text-gray-400" />
@@ -381,12 +308,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           Send
         </Button>
         <BalanceFooter
-          isLoading={isBalanceLoading}
-          rate={rate}
-          selectedTokenCurrency={selectedTokenCurrency}
-          decimals={decimals}
-          balance={Number(balance)}
+          token={icpToken}
           selectedAccountAddress={selectedAccountAddress}
+          hasUsdBalance={true}
         />
       </div>
     </BlurredLoader>

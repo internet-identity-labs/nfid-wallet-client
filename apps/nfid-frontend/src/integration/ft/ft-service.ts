@@ -16,18 +16,20 @@ export class FtService {
     page: number = 1,
     limit: number = 10,
   ): Promise<PaginatedResponse<FT>> {
-    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(
-      userPrincipal.toText(),
-    )
-    if (userTokens.length === 0) {
-      await icrc1RegistryService.storeICRC1Canister(
-        ICP_CANISTER_ID,
-        State.Active,
-      )
-      userTokens = await icrc1StorageService.getICRC1ActiveCanisters(
-        userPrincipal.toText(),
-      )
-    }
+    let userTokens = await icrc1StorageService
+      .getICRC1Canisters(userPrincipal.toText())
+      .then(async (canisters) => {
+        if (canisters.length === 0) {
+          await icrc1RegistryService.storeICRC1Canister(
+            ICP_CANISTER_ID,
+            State.Active,
+          )
+          canisters = await icrc1StorageService.getICRC1ActiveCanisters(
+            userPrincipal.toText(),
+          )
+        }
+        return canisters.filter((canister) => canister.state === State.Active)
+      })
 
     const ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
     const totalItems = ft.length
@@ -37,7 +39,7 @@ export class FtService {
     const endIndex = Math.min(startIndex + limit, totalItems)
 
     const items = ft.slice(startIndex, endIndex)
-    await Promise.all(items.map((item) => item.init(userPrincipal)))
+    await Promise.all(items.map((item) => item.init()))
 
     return {
       items,
@@ -45,6 +47,18 @@ export class FtService {
       totalPages,
       totalItems,
     }
+  }
+
+  async getUserTokenByAddress(
+    userPrincipal: Principal,
+    address: string,
+  ): Promise<FT> {
+    const tokens = await this.getAllUserTokens(userPrincipal)
+    const token = tokens.items.find(
+      (token) => token.getTokenAddress() === address,
+    )
+    if (!token) throw new Error("Token not found")
+    return token
   }
 
   async getAllFTokens(
@@ -68,7 +82,7 @@ export class FtService {
       userPrincipal.toText(),
     )
     let ft = userTokens.map((token) => new FTImpl(token))
-    await Promise.all(ft.map((ft) => ft.init(userPrincipal)))
+    await Promise.all(ft.map((ft) => ft.init()))
     const [_, nftPrice] = await Promise.all([
       Promise.all(ft.map((ft) => ft.getUSDBalanceFormatted())),
       nftService.getNFTsTotalPrice(userPrincipal),

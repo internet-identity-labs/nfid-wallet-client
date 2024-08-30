@@ -1,19 +1,13 @@
 import posthog from "posthog-js"
 
 type SendToken = {
-  network: string
   destinationType: "address" | "ENS"
   tokenName: string
   tokenType: "fungible" | "non-fungible"
-
   amount: string | number
   fee: string | number
 }
 
-const mapTokenStandard = (tokenStandard: string) => {
-  const nativeTokens = ["ICP"]
-  return nativeTokens.includes(tokenStandard) ? "native" : tokenStandard
-}
 class SendReceiveTracking {
   isOpenedFromVaults = false
 

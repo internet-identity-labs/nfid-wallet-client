@@ -1,7 +1,6 @@
 import { debounce } from "@dfinity/utils"
 import clsx from "clsx"
 import { CANISTER_ID_LENGTH } from "packages/constants"
-import { NoIcon } from "packages/ui/src/assets/no-icon"
 import { FC, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
@@ -16,33 +15,33 @@ import {
   Input,
   Tooltip,
   Warning,
-  IconSvgEyeClosed,
-  IconSvgEyeShown,
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
-import { ICRC1Data, ICRC1Error } from "@nfid/integration/token/icrc1/types"
+import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
+import { ICRC1Error, ICRC1Metadata } from "@nfid/integration/token/icrc1/types"
 
 import { FT } from "frontend/integration/ft/ft"
-import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
+import { FilteredToken } from "./filtered-asset"
+
 interface ProfileAssetsHeaderProps {
   tokens: FT[]
+  isLoading: boolean
   setSearch: (v: string) => void
 }
 
 export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   tokens,
+  isLoading,
   setSearch,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
-  const [tokenInfo, setTokenInfo] = useState<ICRC1Data | null>(null)
-  const [isAddLoading, setIsAddLoading] = useState(false)
-  const [isShowHideLoading, setIsShowHideLoading] = useState(false)
+  const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
+  const [isImportLoading, setIsImportLoading] = useState(false)
 
   const debouncedSearch = useCallback(
     debounce((value: string) => {
@@ -64,6 +63,8 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
     },
   })
 
+  let icrc1Pair = new Icrc1Pair(getValues("ledgerID"), getValues("indexID"))
+
   useEffect(() => {
     if (errors.ledgerID) {
       resetField("indexID")
@@ -71,44 +72,41 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
     }
   }, [errors.ledgerID, resetField])
 
-  const submit = async (values: { ledgerID: string; indexID: string }) => {
-    const { ledgerID, indexID } = values
-
+  const submit = async () => {
     try {
-      setIsAddLoading(true)
-      await icrc1OracleService.addICRC1Canister(ledgerID as any)
+      setIsImportLoading(true)
+      await icrc1Pair.storeSelf()
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       setModalStep("manage")
-      // mutate("getICRC1Data")
-      // mutate((key) => Array.isArray(key) && key[0] === "useTokenConfig")
+      mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
       resetField("ledgerID")
       resetField("indexID")
       setTokenInfo(null)
-      setIsAddLoading(false)
     } catch (e) {
       console.error(e)
     } finally {
-      setIsAddLoading(false)
+      setIsImportLoading(false)
     }
   }
 
   const fetchICRCToken = async () => {
     try {
-      const { rootPrincipalId, publicKey } = await getLambdaCredentials()
-      // const data = await icrc1OracleService.isICRC1Canister(
-      //   getValues("ledgerID"),
-      //   rootPrincipalId!,
-      //   publicKey,
-      //   getValues("indexID"),
-      // )
-      setTokenInfo(1 as any)
+      await Promise.all([
+        icrc1Pair.validateIfExists(),
+        icrc1Pair.validateStandard(),
+        icrc1Pair.validateIndexCanister(),
+      ])
+
+      const data = await icrc1Pair.getMetadata()
+
+      setTokenInfo(data)
       return true
     } catch (e) {
       if (e instanceof ICRC1Error) {
         return e.message
+      } else {
+        return DEFAULT_ERROR_TEXT
       }
-
-      return DEFAULT_ERROR_TEXT
     }
   }
 
@@ -124,29 +122,11 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
     validate: fetchICRCToken,
   }
 
-  const hideToken = async (token: FT) => {
-    setIsShowHideLoading(true)
-    await token.hideToken()
-    console.log("tokennnn hide")
-    mutate("activeTokens")
-    mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
-    setIsShowHideLoading(false)
-  }
-
-  const showToken = async (token: FT) => {
-    setIsShowHideLoading(true)
-    await token.showToken()
-    console.log("tokennnn show")
-    mutate("activeTokens")
-    mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
-    setIsShowHideLoading(false)
-  }
-
   return (
     <>
       <div className="flex items-center justify-end w-full">
         <Button
-          className={clsx("px-[10px] md:flex pr-0 md:pr-[15px] text-teal-600")}
+          className={clsx("px-[10px] md:flex pr-[15px] text-teal-600")}
           id="importToken"
           onClick={() => setModalStep("manage")}
           isSmall
@@ -160,16 +140,12 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
         onClose={() => {
           setModalStep(null)
           setSearch("")
-          // resetField("ledgerID")
-          // resetField("indexID")
-          // setTokenInfo(null)
-          // setIsLoading(false)
         }}
-        className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-[24px]"
+        className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
         {modalStep === "manage" && (
           <BlurredLoader
-            isLoading={isShowHideLoading}
+            isLoading={isLoading}
             overlayClassnames="rounded-[24px]"
           >
             <div>
@@ -210,78 +186,38 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
                   />
                 </Tooltip>
               </div>
-              <div className="flex gap-[10px]">
-                <Input
-                  className="h-[40px] w-full"
-                  id="search"
-                  placeholder="Search by token name"
-                  icon={<IoIosSearch size="20" className="text-gray-400" />}
-                  onChange={(e) => debouncedSearch(e.target.value)}
-                />
-                <Button
-                  isSmall
-                  icon={<PlusIcon className="w-[18px]" />}
-                  onClick={() => setModalStep("import")}
-                >
-                  Import
-                </Button>
-              </div>
-              <div className="">
-                {tokens.map((token) => {
-                  return (
-                    <div className="flex items-center h-16">
-                      <div className="flex items-center gap-[12px] flex-0 w-[210px]">
-                        <div className="w-[40px] h-[40px] rounded-full bg-zinc-50">
-                          <ImageWithFallback
-                            alt="NFID token"
-                            className="mr-[12px]"
-                            fallbackSrc={IconNftPlaceholder}
-                            src={`${token.getTokenLogo()}`}
-                          />
-                        </div>
-                        <div className="">
-                          <p
-                            className={clsx(
-                              "text-sm text-black leading-[20px] font-semibold",
-                              token.getTokenState() === "Active"
-                                ? "text-black"
-                                : "text-secondary",
-                            )}
-                          >
-                            {token.getTokenSymbol()}
-                          </p>
-                          <p className="text-xs text-secondary leading-[20px]">
-                            {token.getTokenName()}
-                          </p>
-                        </div>
-                      </div>
-                      <div>{token.getTokenCategory()}</div>
-                      <div className="ml-auto">
-                        <img
-                          className="cursor-pointer"
-                          src={
-                            token.getTokenState() === "Active"
-                              ? IconSvgEyeShown
-                              : IconSvgEyeClosed
-                          }
-                          alt="Show NFID asset"
-                          onClick={() =>
-                            token.getTokenState() === "Active"
-                              ? hideToken(token)
-                              : showToken(token)
-                          }
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
+              <div className="h-[484px] overflow-auto">
+                <div className="flex gap-[10px]">
+                  <Input
+                    className="h-[40px] w-full"
+                    id="search"
+                    placeholder="Search by token name"
+                    icon={<IoIosSearch size="20" className="text-gray-400" />}
+                    onChange={(e) => debouncedSearch(e.target.value)}
+                  />
+                  <Button
+                    isSmall
+                    icon={<PlusIcon className="w-[18px]" />}
+                    onClick={() => setModalStep("import")}
+                  >
+                    Import
+                  </Button>
+                </div>
+                <div>
+                  {tokens.map((token) => {
+                    if (!token.isHideable()) return
+                    return (
+                      <FilteredToken key={token.getTokenName()} token={token} />
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </BlurredLoader>
         )}
         {modalStep === "import" && (
           <BlurredLoader
-            isLoading={isAddLoading}
+            isLoading={isImportLoading}
             overlayClassnames="rounded-[24px]"
             id="import"
           >
@@ -298,14 +234,18 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
               <Input
                 id="ledgerID"
                 labelText="Ledger canister ID"
-                errorText={isAddLoading ? undefined : errors.ledgerID?.message}
+                errorText={
+                  isImportLoading ? undefined : errors.ledgerID?.message
+                }
                 {...register("ledgerID", validationConfig)}
               />
               <Input
                 className="mt-[22px]"
                 id="indexID"
                 labelText="Index canister ID (optional)"
-                errorText={isAddLoading ? undefined : errors.indexID?.message}
+                errorText={
+                  isImportLoading ? undefined : errors.indexID?.message
+                }
                 {...register("indexID", validationConfig)}
                 disabled={!!errors.ledgerID || !getValues("ledgerID").length}
               />
@@ -314,27 +254,23 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
                   ? "Required to display transaction history"
                   : ""}
               </p>
-              <div className="min-h-[155px] text-sm flex">
+              <div className="h-[155px] text-sm flex">
                 {tokenInfo && (
-                  <div className="bg-gray-50 rounded-[6px] p-4 text-gray-500 w-full">
-                    <div className="grid grid-cols-[110px,1fr] gap-3">
+                  <div className="grid w-full h-full grid-rows-3">
+                    <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">
                       <p>Token icon</p>
-                      {tokenInfo.logo ? (
-                        <img
-                          className="rounded-full"
-                          src={tokenInfo.logo}
-                          alt="Token logo"
-                          width={36}
-                        />
-                      ) : (
-                        <NoIcon className="w-[36px] h-[36px]" />
-                      )}
+                      <ImageWithFallback
+                        alt="NFID token"
+                        className="rounded-full w-[36px]"
+                        fallbackSrc={IconNftPlaceholder}
+                        src={`${tokenInfo.logo}`}
+                      />
                     </div>
-                    <div className="grid grid-cols-[110px,1fr] gap-3 my-4">
+                    <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">
                       <p>Token symbol</p>
                       <p className="text-black">{tokenInfo.symbol}</p>
                     </div>
-                    <div className="grid grid-cols-[110px,1fr] gap-3">
+                    <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">
                       <p>Token name</p>
                       <p className="text-black">{tokenInfo.name}</p>
                     </div>
@@ -357,10 +293,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
                 type="primary"
                 onClick={(event) => {
                   event.preventDefault()
-                  submit({
-                    ledgerID: getValues("ledgerID"),
-                    indexID: getValues("indexID"),
-                  })
+                  submit()
                 }}
                 disabled={
                   Boolean(!tokenInfo) ||

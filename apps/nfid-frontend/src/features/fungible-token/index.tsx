@@ -6,11 +6,9 @@ import {
 import { useState } from "react"
 import useSWR from "swr"
 
-import { Loader } from "@nfid-frontend/ui"
-
 const ProfileAssetsPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
-  const { data: activeTokens = [], isLoading } = useSWR(
+  const { data: activeTokens = [], isLoading: isActiveLoading } = useSWR(
     "activeTokens",
     fetchAllTokens,
   )
@@ -20,13 +18,13 @@ const ProfileAssetsPage = () => {
     ([, query]) => fetchFilteredTokens(query),
   )
 
-  if (!activeTokens.length || isLoading) return <Loader isLoading />
-
   return (
     <ProfileAssets
       activeTokens={activeTokens}
       filteredTokens={filteredTokens}
       setSearchQuery={(value) => setSearchQuery(value)}
+      isFilterTokensLoading={isFilterLoading}
+      isActiveTokensLoading={isActiveLoading}
     />
   )
 }

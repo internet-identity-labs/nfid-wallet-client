@@ -8,8 +8,9 @@ import {mockGeekResponse} from "src/integration/nft/mock/mock";
 import {exchangeRateService} from "@nfid/integration";
 import BigNumber from "bignumber.js"
 
+const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(
-  "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+  userId,
 )
 
 describe("ft test suite", () => {
@@ -34,7 +35,7 @@ describe("ft test suite", () => {
           "state": "Active",
           "category": "Native"
         }])
-      const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(principal)
+      const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(userId, principal)
       expect(result.items.length).toEqual(2)
       const icpResult = result.items.find((r) => r.getTokenName() === "Internet Computer")
       expect(icpResult).toBeDefined()
@@ -44,7 +45,7 @@ describe("ft test suite", () => {
       expect(icpResult!.getBlockExplorerLink()).toEqual("https://dashboard.internetcomputer.org/canister/ryjl3-tyaaa-aaaaa-aaaba-cai")
       expect(await icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
 
-      const filteredResult = await ftService.getAllFTokens(principal, "Chat")
+      const filteredResult = await ftService.getAllFTokens(userId, "Chat")
       expect(filteredResult.length).toEqual(1)
     })
     it('should calculate USD balance', async function () {
@@ -76,7 +77,7 @@ describe("ft test suite", () => {
             "symbol": "ICP"
           }]
         )
-      const balance = await ftService.getTotalUSDBalance(principal)
+      const balance = await ftService.getTotalUSDBalance(userId, principal)
       console.log(balance)
       expect(balance).not.toEqual("0.00 USD")
     });

@@ -27,14 +27,9 @@ export class FTImpl implements FT {
     this.symbol = icrc1Token.symbol;
   }
 
-  async init(principal: Principal): Promise<FT> {
+  async init(globalPrincipal: Principal): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    const identity = await authState.get().delegationIdentity
-    if (!identity) {
-      throw new Error("Identity not found")
-    }
-    const globalPrincipal = await getPublicKey(identity)
-    const [metadata, balance] = await Promise.all([icrc1Pair.getMetadata(), icrc1Pair.getBalance(globalPrincipal)])
+    const [metadata, balance] = await Promise.all([icrc1Pair.getMetadata(), icrc1Pair.getBalance(globalPrincipal.toText())])
     this.tokenBalance = balance;
     this.decimals = metadata.decimals;
     return this;

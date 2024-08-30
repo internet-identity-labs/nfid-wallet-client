@@ -23,6 +23,9 @@ export function mapCategory(category: Category): CategoryTS {
   if (hasOwnProperty(category, "Community")) {
     return CategoryTS.Community
   }
+  if (hasOwnProperty(category, "Native")) {
+    return CategoryTS.Native
+  }
   throw new Error("Unknown category")
 }
 

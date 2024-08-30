@@ -1,15 +1,14 @@
 export enum Category {
-    Sns = 'Sns',
-    Known = 'Known',
-    Native = 'Native',
-    Unknown = 'Unknown',
-    ChainFusionTestnet = 'ChainFusionTestnet',
-    ChainFusion = 'ChainFusion',
-    Community = 'Community',
+  Sns = "Sns",
+  Known = "Known",
+  Native = "Native",
+  Unknown = "Unknown",
+  ChainFusionTestnet = "ChainFusionTestnet",
+  ChainFusion = "ChainFusion",
+  Community = "Community",
 }
 
-
 export enum State {
-  Active = 'Active',
-  Inactive = 'Inactive',
+  Active = "Active",
+  Inactive = "Inactive",
 }

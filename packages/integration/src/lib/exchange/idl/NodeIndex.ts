@@ -5,7 +5,7 @@ export const idlFactory = ({ IDL }: any) => {
     swap: IDL.Null,
     addLiquidity: IDL.Null,
     increaseLiquidity: IDL.Null,
-  });
+  })
   const Transaction = IDL.Record({
     to: IDL.Text,
     action: TransactionType,
@@ -36,8 +36,8 @@ export const idlFactory = ({ IDL }: any) => {
     token0Price: IDL.Float64,
     token1Symbol: IDL.Text,
     poolId: IDL.Text,
-  });
-  const NatResult = IDL.Variant({ ok: IDL.Nat, err: IDL.Text });
+  })
+  const NatResult = IDL.Variant({ ok: IDL.Nat, err: IDL.Text })
   const PublicPoolOverView = IDL.Record({
     id: IDL.Nat,
     token0TotalVolume: IDL.Float64,
@@ -65,7 +65,7 @@ export const idlFactory = ({ IDL }: any) => {
     token0Decimals: IDL.Float64,
     token0Price: IDL.Float64,
     token1Symbol: IDL.Text,
-  });
+  })
   const PublicTokenOverview = IDL.Record({
     id: IDL.Nat,
     volumeUSD1d: IDL.Float64,
@@ -80,8 +80,8 @@ export const idlFactory = ({ IDL }: any) => {
     priceUSD: IDL.Float64,
     standard: IDL.Text,
     symbol: IDL.Text,
-  });
-  const Address = IDL.Text;
+  })
+  const Address = IDL.Text
   return IDL.Service({
     addOwner: IDL.Func([IDL.Principal], [], []),
     addQuoteToken: IDL.Func([IDL.Text, IDL.Bool], [], []),
@@ -101,36 +101,36 @@ export const idlFactory = ({ IDL }: any) => {
     getPoolQueueSize: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat))],
-      ["query"]
+      ["query"],
     ),
     getPoolsForToken: IDL.Func(
       [IDL.Text],
       [IDL.Vec(PublicPoolOverView)],
-      ["query"]
+      ["query"],
     ),
     getQuoteTokens: IDL.Func([], [IDL.Vec(IDL.Text)], ["query"]),
     getSyncLock: IDL.Func([], [IDL.Bool], ["query"]),
     getSyncStatus: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Bool, IDL.Text))],
-      ["query"]
+      ["query"],
     ),
     getTokenQueueSize: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat))],
-      ["query"]
+      ["query"],
     ),
     getTotalVolumeAndUser: IDL.Func([], [IDL.Float64, IDL.Nat], ["query"]),
     getUserQueueSize: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat))],
-      ["query"]
+      ["query"],
     ),
     insert: IDL.Func([Transaction], [], []),
     poolMapping: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
-      ["query"]
+      ["query"],
     ),
     poolStorage: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ["query"]),
     setPoolSyncStatus: IDL.Func([IDL.Bool], [IDL.Bool], []),
@@ -141,14 +141,14 @@ export const idlFactory = ({ IDL }: any) => {
     tokenMapping: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
-      ["query"]
+      ["query"],
     ),
     tokenStorage: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ["query"]),
     userMapping: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
-      ["query"]
+      ["query"],
     ),
     userStorage: IDL.Func([Address], [IDL.Opt(IDL.Text)], ["query"]),
-  });
-};
+  })
+}

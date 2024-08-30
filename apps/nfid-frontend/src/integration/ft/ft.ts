@@ -1,5 +1,6 @@
-import {Category} from "@nfid/integration/token/icrc1/enum/enums";
-import {Principal} from "@dfinity/principal";
+import { Principal } from "@dfinity/principal"
+
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -22,5 +23,4 @@ export interface FT {
 
   //TODO
   //getTransactionHistory(): Promise<TransactionRecord[]>
-
 }

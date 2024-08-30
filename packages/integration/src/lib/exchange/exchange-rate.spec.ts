@@ -1,4 +1,4 @@
-import {exchangeRateService} from "./exchange-rate"
+import { exchangeRateService } from "./exchange-rate"
 
 describe("exchange-rate", () => {
   it("should return some rate", async function () {
@@ -7,7 +7,9 @@ describe("exchange-rate", () => {
   })
 
   it("should return some rate icrc1", async function () {
-    const rate = await exchangeRateService.usdPriceForICRC1("ryjl3-tyaaa-aaaaa-aaaba-cai")
+    const rate = await exchangeRateService.usdPriceForICRC1(
+      "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    )
     expect(rate!.toNumber()).toBeGreaterThan(0)
   })
 })

@@ -1,21 +1,21 @@
 import * as Agent from "@dfinity/agent"
-import {HttpAgent} from "@dfinity/agent"
-import {Principal} from "@dfinity/principal"
+import { HttpAgent } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 
-import {hasOwnProperty} from "@nfid/integration"
-import {idlFactory as icrc1IndexIDL} from "../../../_ic_api/index-icrc1"
+import { hasOwnProperty } from "@nfid/integration"
+
+import { idlFactory as icrc1IndexIDL } from "../../../_ic_api/index-icrc1"
 import {
   _SERVICE as ICRCIndex,
   GetAccountTransactionsArgs,
   TransactionWithId,
   Transfer,
 } from "../../../_ic_api/index-icrc1.d"
-import {agentBaseConfig} from "../../../actors"
-import {ICRC1IndexData, TransactionData} from "../types";
-import {Icrc1Pair} from "../icrc1-pair/impl/Icrc1-pair";
+import { agentBaseConfig } from "../../../actors"
+import { Icrc1Pair } from "../icrc1-pair/impl/Icrc1-pair"
+import { ICRC1IndexData, TransactionData } from "../types"
 
 export class Icrc1TransactionHistoryService {
-
   async getICRC1IndexData(
     canisters: Array<{
       icrc1: {
@@ -32,7 +32,7 @@ export class Icrc1TransactionHistoryService {
         try {
           const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
             canisterId: pair.icrc1.index!,
-            agent: new HttpAgent({...agentBaseConfig}),
+            agent: new HttpAgent({ ...agentBaseConfig }),
           })
 
           const args: GetAccountTransactionsArgs = {
@@ -51,9 +51,9 @@ export class Icrc1TransactionHistoryService {
           if (hasOwnProperty(response, "Err")) {
             console.warn(
               "Error " +
-              response.Err +
-              " getting account transactions for canister: " +
-              pair.icrc1,
+                response.Err +
+                " getting account transactions for canister: " +
+                pair.icrc1,
             )
             return {
               transactions: [],
@@ -62,7 +62,6 @@ export class Icrc1TransactionHistoryService {
           }
 
           if (hasOwnProperty(response, "Ok")) {
-
             const icrc1Pair = new Icrc1Pair(pair.icrc1.ledger, pair.icrc1.index)
             const ledgerData = await icrc1Pair.getMetadata()
 
@@ -96,7 +95,6 @@ export class Icrc1TransactionHistoryService {
     )
   }
 
-
   private mapRawTrsToTransaction(
     rawTrss: Array<TransactionWithId>,
     ownerPrincipal: string,
@@ -126,7 +124,7 @@ export class Icrc1TransactionHistoryService {
       return data
     })
   }
-
 }
 
-export const icrc1TransactionHistoryService = new Icrc1TransactionHistoryService()
+export const icrc1TransactionHistoryService =
+  new Icrc1TransactionHistoryService()

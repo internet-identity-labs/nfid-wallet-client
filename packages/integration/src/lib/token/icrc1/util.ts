@@ -1,47 +1,47 @@
-import {Category} from "../../_ic_api/icrc1_oracle.d";
-import {Category as CategoryTS, State} from "./enum/enums";
-import {hasOwnProperty} from "@nfid/integration";
-import {ICRC1State} from "../../_ic_api/icrc1_registry.d";
+import { hasOwnProperty } from "@nfid/integration"
 
-export function mapCategory(category: Category): CategoryTS  {
-  if (hasOwnProperty(category, 'Sns')) {
+import { Category } from "../../_ic_api/icrc1_oracle.d"
+import { ICRC1State } from "../../_ic_api/icrc1_registry.d"
+import { Category as CategoryTS, State } from "./enum/enums"
+
+export function mapCategory(category: Category): CategoryTS {
+  if (hasOwnProperty(category, "Sns")) {
     return CategoryTS.Sns
   }
-  if (hasOwnProperty(category, 'Known')) {
+  if (hasOwnProperty(category, "Known")) {
     return CategoryTS.Known
   }
-  if (hasOwnProperty(category, 'Unknown')) {
+  if (hasOwnProperty(category, "Unknown")) {
     return CategoryTS.Unknown
   }
-  if (hasOwnProperty(category, 'ChainFusionTestnet')) {
+  if (hasOwnProperty(category, "ChainFusionTestnet")) {
     return CategoryTS.ChainFusionTestnet
   }
-  if (hasOwnProperty(category, 'ChainFusion')) {
+  if (hasOwnProperty(category, "ChainFusion")) {
     return CategoryTS.ChainFusion
   }
-  if (hasOwnProperty(category, 'Community')) {
+  if (hasOwnProperty(category, "Community")) {
     return CategoryTS.Community
   }
-  throw new Error('Unknown category')
+  throw new Error("Unknown category")
 }
 
-
 export function mapState(state: ICRC1State): State {
-  if (hasOwnProperty(state, 'Active')) {
+  if (hasOwnProperty(state, "Active")) {
     return State.Active
   }
-  if (hasOwnProperty(state, 'Inactive')) {
+  if (hasOwnProperty(state, "Inactive")) {
     return State.Inactive
   }
-  throw new Error('Unknown state')
+  throw new Error("Unknown state")
 }
 
 export function mapStateTS(state: State): ICRC1State {
   if (state === State.Active) {
-    return {Active: null}
+    return { Active: null }
   }
   if (state === State.Inactive) {
-    return {Inactive: null}
+    return { Inactive: null }
   }
-  throw new Error('Unknown state')
+  throw new Error("Unknown state")
 }

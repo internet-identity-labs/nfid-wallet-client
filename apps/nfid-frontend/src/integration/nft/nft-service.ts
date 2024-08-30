@@ -1,8 +1,8 @@
-import {Principal} from "@dfinity/principal"
-import {nftGeekService} from "src/integration/nft/geek/nft-geek-service"
-import {nftMapper} from "src/integration/nft/impl/nft-mapper"
-import {PaginatedResponse} from "src/integration/nft/impl/nft-types"
-import {NFT} from "src/integration/nft/nft"
+import { Principal } from "@dfinity/principal"
+import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
+import { nftMapper } from "src/integration/nft/impl/nft-mapper"
+import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
+import { NFT } from "src/integration/nft/nft"
 
 export class NftService {
   async getNFTs(
@@ -38,9 +38,7 @@ export class NftService {
     }
   }
 
-  async getNFTsTotalPrice(
-    userPrincipal: Principal
-  ): Promise<number> {
+  async getNFTsTotalPrice(userPrincipal: Principal): Promise<number> {
     const data = await nftGeekService.getNftGeekData(userPrincipal)
     const rawData = data
       .map(nftMapper.toNFT)
@@ -48,7 +46,8 @@ export class NftService {
 
     await Promise.all(rawData.map((nft) => nft.init()))
 
-    return rawData.map((nft) => nft.getTokenFloorPriceUSD())
+    return rawData
+      .map((nft) => nft.getTokenFloorPriceUSD())
       .filter((price) => price !== undefined)
       .reduce((price: number, foolPrice: number) => price + foolPrice, 0)
   }

@@ -1,16 +1,16 @@
-import {Category, State} from "./enum/enums"
-import {Principal} from "@dfinity/principal";
+import { Principal } from "@dfinity/principal"
+
+import { Category, State } from "./enum/enums"
 
 export interface ICRC1 {
-  'logo' : string | undefined,
-  'name' : string,
-  'ledger' : string,
-  'category' : Category,
-  'index' : string | undefined,
-  'symbol' : string,
+  logo: string | undefined
+  name: string
+  ledger: string
+  category: Category
+  index: string | undefined
+  symbol: string
   state: State
 }
-
 
 export class ICRC1Error extends Error {}
 

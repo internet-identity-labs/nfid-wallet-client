@@ -1,12 +1,15 @@
 import * as Agent from "@dfinity/agent"
-import {HttpAgent, Identity} from "@dfinity/agent"
+import { HttpAgent, Identity } from "@dfinity/agent"
 
-import {idlFactory as icrc1IDL} from "../../_ic_api/icrc1"
-import {_SERVICE as ICRC1Service, Icrc1TransferResult, TransferArg,} from "../../_ic_api/icrc1.d"
-import {icrc1StorageService} from "./service/icrc1-storage-service";
-import {ICRC1IndexData} from "./types";
-import {icrc1TransactionHistoryService} from "./service/icrc1-transaction-history-service";
-
+import { idlFactory as icrc1IDL } from "../../_ic_api/icrc1"
+import {
+  _SERVICE as ICRC1Service,
+  Icrc1TransferResult,
+  TransferArg,
+} from "../../_ic_api/icrc1.d"
+import { icrc1StorageService } from "./service/icrc1-storage-service"
+import { icrc1TransactionHistoryService } from "./service/icrc1-transaction-history-service"
+import { ICRC1IndexData } from "./types"
 
 /*
  PTAL "Get index data" test in icrc1/index.spec.ts
@@ -19,7 +22,9 @@ export async function getICRC1HistoryDataForUser(
   publicKey: string,
   maxResults: bigint,
 ): Promise<Array<ICRC1IndexData>> {
-  const canisters = await icrc1StorageService.getICRC1ActiveCanisters(rootPrincipalId)
+  const canisters = await icrc1StorageService.getICRC1ActiveCanisters(
+    rootPrincipalId,
+  )
   const indexedCanisters = canisters
     .filter((canister) => canister.index !== undefined)
     .map((l) => {
@@ -34,9 +39,12 @@ export async function getICRC1HistoryDataForUser(
 
   if (!indexedCanisters.length) return []
 
-  return icrc1TransactionHistoryService.getICRC1IndexData(indexedCanisters, publicKey, maxResults)
+  return icrc1TransactionHistoryService.getICRC1IndexData(
+    indexedCanisters,
+    publicKey,
+    maxResults,
+  )
 }
-
 
 export async function transferICRC1(
   globalAccountPrincipal: Identity,

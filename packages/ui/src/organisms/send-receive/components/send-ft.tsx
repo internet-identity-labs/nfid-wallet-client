@@ -4,7 +4,7 @@ import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
 import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, FC, SetStateAction, useState } from "react"
 import {
   FieldErrorsImpl,
   UseFormHandleSubmit,
@@ -28,21 +28,17 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
-
-import { fetchTokenByAddress } from "../../tokens/utils"
 
 export interface TransferFTUiProps {
   publicKey: string
   tokens: FT[]
-  token: FT
+  token: FT | undefined
   setChosenToken: (value: string) => void
   validateAddress: (address: string) => boolean | string
   isLoading: boolean
   loadingMessage: string | undefined
-  tokenOptions: IGroupedOptions[] | undefined
   sendReceiveTrackingFn: () => void
   isVault: boolean
   accountsOptions: IGroupedOptions[] | undefined
@@ -50,8 +46,6 @@ export interface TransferFTUiProps {
   selectedVaultsAccountAddress: string
   submit: (values: { amount: string; to: string }) => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
-  // amountInUSD: number
-  // setUSDAmount: (value: number) => void
   register: UseFormRegister<{
     amount: string
     to: string
@@ -84,7 +78,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   validateAddress,
   isLoading,
   loadingMessage,
-  tokenOptions,
   sendReceiveTrackingFn,
   isVault,
   accountsOptions,
@@ -92,38 +85,13 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   selectedVaultsAccountAddress,
   submit,
   setSelectedVaultsAccountAddress,
-  // amountInUSD,
-  // setUSDAmount,
   register,
   errors,
   handleSubmit,
   setValue,
   resetField,
 }) => {
-  // const [selectedTokenAddress, setSelectedTokenAddress] =
-  //   useState(ICP_CANISTER_ID)
-  // const { data: token, isLoading: isTokenLoading } = useSWR(
-  //   selectedTokenAddress ? ["token", selectedTokenAddress] : null,
-  //   ([, address]) => {
-  //     console.log("dsd SWR", address)
-  //     return fetchTokenByAddress(address)
-  //   },
-  // )
-
-  // console.log("dsd", token, selectedTokenAddress)
-
   const [amountInUSD, setAmountInUSD] = useState(0)
-
-  // const { data: chosenToken, isLoading: isChosenLoading } = useSWR(
-  //   selectedTokenAddress ? ["token", selectedTokenAddress] : null,
-  //   ([, address]) => fetchTokenByAddress(address),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log("aaraa", data)
-  //       setChosenToken(data)
-  //     },
-  //   },
-  // )
 
   const { data: tokenFee, isLoading: isFeeLoading } = useSWR(
     token ? ["tokenFee", token.getTokenAddress()] : null,
@@ -167,8 +135,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 
   return (
     <>
-      <div className="flex justify-between">
-        <p className="mb-1">Amount to send</p>
+      <div className="flex items-center justify-between">
+        <p className="mb-1 text-xs">Amount to send</p>
         <p
           onClick={maxHandler}
           className="text-xs font-bold cursor-pointer text-primaryButtonColor"
@@ -199,7 +167,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               ),
               valueAsNumber: true,
               onChange: (e) => {
-                //if (!rate) return
                 setAmountInUSD(Number(e.target.value))
               },
             })}
@@ -226,9 +193,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                 label: token.getTokenName(),
                 options: [
                   {
+                    value: token.getTokenAddress(),
                     title: token.getTokenSymbol(),
                     subTitle: token.getTokenName(),
-                    value: token.getTokenAddress(),
                   },
                 ],
               }
@@ -241,10 +208,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               resetField("to")
               setAmountInUSD(0)
               setChosenToken(value)
-              //setSelectedTokenAddress(value)
             }}
             onOpen={sendReceiveTrackingFn}
-            //preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
             isSmooth
             trigger={
               <div

@@ -82,7 +82,7 @@ export class FtService {
     let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userId)
     let ft = userTokens.map((token) => new FTImpl(token))
     await Promise.all(ft.map((ft) => ft.init(userPublicKey)))
-    const [_, nftPrice] = await Promise.all([
+    const [, nftPrice] = await Promise.all([
       Promise.all(ft.map((ft) => ft.getUSDBalanceFormatted())),
       nftService.getNFTsTotalPrice(userPublicKey),
     ])

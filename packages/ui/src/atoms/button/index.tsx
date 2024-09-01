@@ -17,7 +17,7 @@ export interface ButtonProps<T extends React.ElementType = "button">
   as?: T
 }
 
-export const Button = <T extends React.ElementType = "button">({
+export const ButtonAlt = <T extends React.ElementType = "button">({
   children,
   className,
   secondary,

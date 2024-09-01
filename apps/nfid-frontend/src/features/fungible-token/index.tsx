@@ -1,4 +1,4 @@
-import ProfileAssets from "packages/ui/src/organisms/tokens"
+import { ProfileAssets } from "packages/ui/src/organisms/tokens"
 import {
   fetchAllTokens,
   fetchFilteredTokens,
@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from "react"
 import useSWR from "swr"
 
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
 const ProfileAssetsPage = () => {
@@ -39,6 +40,7 @@ const ProfileAssetsPage = () => {
       isFilterTokensLoading={isFilterLoading}
       isActiveTokensLoading={isActiveLoading}
       userRootPrincipalId={userRootPrincipalId}
+      profileConstants={ProfileConstants}
     />
   )
 }

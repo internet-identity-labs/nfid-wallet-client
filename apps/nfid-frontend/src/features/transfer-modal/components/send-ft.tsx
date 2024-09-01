@@ -76,12 +76,8 @@ export const TransferFT = ({
     ([_, __, amount]) => token?.getTokenRate(amount.toString()),
   )
 
-  console.log("dattt", token)
-
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
-
-  //const [amountInUSD, setAmountInUSD] = useState(0)
 
   const { profile, isLoading: isLoadingProfile } = useProfile()
 
@@ -161,7 +157,7 @@ export const TransferFT = ({
           }),
           title: `${values.amount} ${token.getTokenSymbol()}`,
           // don't know
-          subTitle: `123`,
+          subTitle: usdRate!.formatted,
           //subTitle: `$${(Number(values.amount) * Number(rate)).toFixed(2)}`,
           isAssetPadding: true,
         })
@@ -218,30 +214,14 @@ export const TransferFT = ({
         title: `${Number(values.amount)
           .toFixed(token?.getTokenDecimals())
           .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
-        //subTitle: `123`,
         subTitle: usdRate!.formatted,
         isAssetPadding: true,
-        //duration: tokenMetadata.duration,
       })
     },
     [handleTrackTransfer, isVault, onTransferPromise, token],
   )
 
-  // const loadingMessage = useMemo(() => {
-  //   if (isLoadingProfile) return "Fetching account information..."
-  //   if (isTokensLoading) return "Fetching supported tokens..."
-  //   if (isConnectorLoading || isMetadataLoading)
-  //     return "Loading token config..."
-  //   if (isAccountsLoading || isAccountsValidating) return "Loading accounts..."
-  // }, [
-  //   isLoadingProfile,
-  //   isTokensLoading,
-  //   isConnectorLoading,
-  //   isMetadataLoading,
-  //   isAccountsLoading,
-  //   isAccountsValidating,
-  // ])
-
+  console.log("tokenn", token, tokenAddress)
   if (!token) return <BlurredLoader isLoading />
 
   return (

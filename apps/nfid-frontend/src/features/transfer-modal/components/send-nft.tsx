@@ -1,6 +1,6 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
 import { fetchTokenByAddress } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -14,7 +14,6 @@ import {
 import { transferEXT } from "frontend/integration/entrepot/ext"
 
 import {
-  getAccount,
   getIdentity,
   mapUserNFTDetailsToGroupedOptions,
   validateAddress,
@@ -35,9 +34,7 @@ export const TransferNFT = ({
   publicKey,
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
-  const [selectedAccountAddress, setSlectedAccountAddress] = useState("")
-
-  const { data: icpToken, isLoading: isIcpLoading } = useSWR(
+  const { data: icpToken } = useSWR(
     ICP_CANISTER_ID ? ["token", ICP_CANISTER_ID] : null,
     ([, address]) => fetchTokenByAddress(address),
   )
@@ -54,15 +51,6 @@ export const TransferNFT = ({
   } = useSWR(selectedNFTId ? ["nft", selectedNFTId] : null, ([, tokenId]) =>
     fetchNFT(tokenId),
   )
-
-  useEffect(() => {
-    const getAddress = async () => {
-      const address = await getAccount()
-      setSlectedAccountAddress(address)
-    }
-
-    getAddress()
-  }, [])
 
   const handleTrackTransfer = useCallback(() => {
     sendReceiveTracking.sendToken({

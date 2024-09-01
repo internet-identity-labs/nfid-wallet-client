@@ -1,10 +1,9 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 import { useForm } from "react-hook-form"
 
 import { Input, isValidToken, tokenRules } from "@nfid-frontend/ui"
-
-import { Button } from "../button"
 
 interface StepInputProps {
   className?: string
@@ -167,7 +166,7 @@ export const StepInput: React.FC<StepInputProps> = ({
       >
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
-      <Button
+      <ButtonAlt
         id="send-pin"
         primary
         className={clsx("px-10 mt-3 sm:mt-5", buttonClassName)}
@@ -178,7 +177,7 @@ export const StepInput: React.FC<StepInputProps> = ({
         disabled={!isFormValid}
       >
         {buttonText}
-      </Button>
+      </ButtonAlt>
     </div>
   )
 }

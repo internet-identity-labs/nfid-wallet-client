@@ -9,7 +9,6 @@ const getUserPrincipalId = async () => {
   if (!identity) throw new Error("No identity")
   const publicKey = await getPublicKey(identity)
   const account = await im.get_account()
-  console.log("idsss", account.data[0]!.principal_id, publicKey)
   return {
     userPrincipal: account.data[0]!.principal_id,
     publicKey: Principal.fromText(publicKey),
@@ -19,7 +18,12 @@ const getUserPrincipalId = async () => {
 export const fetchAllTokens = async () => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()
   const data = await ftService.getAllUserTokens(userPrincipal, publicKey)
-  return data.items
+  const sortedItems = data.items.sort((a, b) => {
+    if (a.getTokenSymbol() === "ICP") return -1
+    if (b.getTokenSymbol() === "ICP") return 1
+    return 0
+  })
+  return sortedItems
 }
 
 export const fetchTokenByAddress = async (address: string) => {

@@ -28,6 +28,7 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -99,9 +100,17 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   setValue,
   resetField,
 }) => {
-  const [selectedTokenAddress, setSelectedTokenAddress] = useState(
-    token.getTokenAddress(),
-  )
+  // const [selectedTokenAddress, setSelectedTokenAddress] =
+  //   useState(ICP_CANISTER_ID)
+  // const { data: token, isLoading: isTokenLoading } = useSWR(
+  //   selectedTokenAddress ? ["token", selectedTokenAddress] : null,
+  //   ([, address]) => {
+  //     console.log("dsd SWR", address)
+  //     return fetchTokenByAddress(address)
+  //   },
+  // )
+
+  // console.log("dsd", token, selectedTokenAddress)
 
   const [amountInUSD, setAmountInUSD] = useState(0)
 
@@ -121,31 +130,17 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     token ? () => token.getTokenFee() : null,
   )
 
-  // const { data: usdRate, isLoading: isRateLoading } = useSWR(
-  //   token ? ["tokenRate", token.getTokenAddress()] : null,
-  //   token ? ([, amount]) => token.getTokenRate(amount) : null,
-  // )
-
-  const { data: usdRate, isLoading: isRateLoading } = useSWR(
+  const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token.getTokenRate(amount.toString()),
+    ([_, __, amount]) => token?.getTokenRate(amount.toString()),
   )
-
-  console.log("setUSDAmount", usdRate, token.getTokenName(), amountInUSD)
-
-  //console.log("debbb", selectedTokenAddress)
-
-  // useEffect(() => {
-  //   setSelectedTokenAddress(token.getTokenAddress())
-  // }, [token])
 
   const maxHandler = async () => {
     if (!token) return
     const fee = await token.getTokenFee()
-    console.log(123123412414)
     if (fee && token.getTokenBalance()) {
       const balanceNum = new BigNumber(token.getTokenBalance()!.raw.toString())
-      const feeNum = new BigNumber(fee.raw!.toString())
+      const feeNum = new BigNumber(fee.raw.toString())
       const val = balanceNum.minus(feeNum)
       console.log("qwe", token.getTokenBalance()!.raw, fee.raw!)
       if (val.isLessThanOrEqualTo(0)) return
@@ -155,20 +150,23 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         token.getTokenDecimals()!,
       )
 
-      console.log("qwe", formattedValue, feeNum)
-
       setValue("amount", formattedValue)
       setAmountInUSD(Number(formattedValue))
     }
   }
 
+  if (!token || isLoading)
+    return (
+      <BlurredLoader
+        isLoading
+        loadingMessage={loadingMessage}
+        overlayClassnames="rounded-xl"
+        className="text-xs"
+      />
+    )
+
   return (
-    <BlurredLoader
-      className="text-xs"
-      overlayClassnames="rounded-xl"
-      isLoading={isLoading}
-      loadingMessage={loadingMessage}
-    >
+    <>
       <div className="flex justify-between">
         <p className="mb-1">Amount to send</p>
         <p
@@ -178,7 +176,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           Max
         </p>
       </div>
-      <div className="flex flex-col justify-between h-full pb-20">
+      <div className="flex flex-col justify-between h-full pb-[50px]">
         <div
           className={clsx(
             "border rounded-[12px] flex items-center justify-between pl-4 pr-5 h-14 mb-4",
@@ -191,16 +189,15 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
                 formatAssetAmountRaw(
-                  Number(token.getTokenBalance()),
+                  Number(token.getTokenBalance()?.raw),
                   token.getTokenDecimals()!,
                 ),
                 formatAssetAmountRaw(
-                  Number(token.getTokenFee()),
+                  Number(tokenFee?.raw),
                   token.getTokenDecimals()!,
                 ),
               ),
               valueAsNumber: true,
-              //onBlur: calculateFee,
               onChange: (e) => {
                 //if (!rate) return
                 setAmountInUSD(Number(e.target.value))
@@ -224,20 +221,18 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             {usdRate?.formatted}
           </p>
           <ChooseModal
-            optionGroups={
-              tokens.map((token) => {
-                return {
-                  label: token.getTokenName(),
-                  options: [
-                    {
-                      title: token.getTokenSymbol(),
-                      subTitle: token.getTokenName(),
-                      value: token.getTokenAddress(),
-                    },
-                  ],
-                }
-              }) ?? []
-            }
+            optionGroups={tokens.map((token) => {
+              return {
+                label: token.getTokenName(),
+                options: [
+                  {
+                    title: token.getTokenSymbol(),
+                    subTitle: token.getTokenName(),
+                    value: token.getTokenAddress(),
+                  },
+                ],
+              }
+            })}
             title="Asset to send"
             type="trigger"
             onSelect={(value) => {
@@ -245,9 +240,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               resetField("amount")
               resetField("to")
               setAmountInUSD(0)
-              //setSelectedTokenAddress(value)
-              console.log("chh", value)
               setChosenToken(value)
+              //setSelectedTokenAddress(value)
             }}
             onOpen={sendReceiveTrackingFn}
             //preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
@@ -305,7 +299,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             validate: (value) => validateAddress(value),
           })}
           onSelect={(value) => {
-            console.log(1234123)
             resetField("to")
             setValue("to", value)
           }}
@@ -351,6 +344,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           publicKey={publicKey}
         />
       </div>
-    </BlurredLoader>
+    </>
   )
 }

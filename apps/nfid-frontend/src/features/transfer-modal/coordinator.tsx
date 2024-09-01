@@ -80,7 +80,7 @@ export const TransferModalCoordinator = () => {
       default:
         return <BlurredLoader overlayClassnames="z-10 rounded-xl" isLoading />
     }
-  }, [send, state])
+  }, [send, state, publicKey])
 
   const onModalTypeChange = useCallback(
     (value: string) => {

@@ -1,4 +1,6 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
@@ -8,9 +10,7 @@ import { securityTracking } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
-import { Button } from "frontend/ui/atoms/button"
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"
@@ -72,7 +72,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
           >
             {phrase}
           </div>
-          <Button
+          <ButtonAlt
             block
             className="flex justify-center space-x-2 border-2 border-t-0 border-black rounded-t-none"
             onClick={copyToClipboard}
@@ -80,7 +80,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
           >
             <CopyIcon className="text-black stroke-black" />
             <span>{copied ? "Copied" : "Copy"}</span>
-          </Button>
+          </ButtonAlt>
 
           <div className="mt-5">
             <input
@@ -98,7 +98,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
             </label>
           </div>
 
-          <Button
+          <ButtonAlt
             id="recovery-save-button"
             block
             primary
@@ -118,7 +118,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
             }
           >
             Done
-          </Button>
+          </ButtonAlt>
         </div>
       </ModalComponent>
     </div>

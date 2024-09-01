@@ -47,7 +47,7 @@ describe("ft test suite", () => {
         (r) => r.getTokenName() === "Internet Computer",
       )
       expect(icpResult).toBeDefined()
-      expect(icpResult!.getTokenBalance()).toEqual("0.0002 ICP")
+      expect(icpResult!.getTokenBalance()?.formatted).toEqual("0.0002 ICP")
       expect(icpResult!.getTokenCategory()).toEqual("Native")
       expect(icpResult!.getTokenAddress()).toEqual(
         "ryjl3-tyaaa-aaaaa-aaaba-cai",

@@ -1,10 +1,9 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
+import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React from "react"
 
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
-
-import { Button } from "frontend/ui/atoms/button"
-import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 interface IRecoveryPhraseDeleteModal
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -35,9 +34,9 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
           rows={5}
           placeholder="lorem ipsum dolor ..."
         />
-        <Button error block className="rounded-t-none" onClick={onDelete}>
+        <ButtonAlt error block className="rounded-t-none" onClick={onDelete}>
           Remove recovery phrase
-        </Button>
+        </ButtonAlt>
       </div>
     </ModalAdvanced>
   )

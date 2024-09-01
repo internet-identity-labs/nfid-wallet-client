@@ -1,10 +1,10 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 
 import { Profile } from "@nfid/integration"
 
 import { ImageNFIDLogin } from "frontend/apps/authentication/authenticate/image"
-import { Button } from "frontend/ui/atoms/button"
 import { H2 } from "frontend/ui/atoms/typography"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 
@@ -34,7 +34,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
           The NFID on this device can only be unlocked by{" "}
           {account?.name || account?.anchor}.
         </P>
-        <Button
+        <ButtonAlt
           id="unlock-nfid"
           large={!iframe}
           block={iframe}
@@ -44,7 +44,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
           onTouchStart={onLogin}
         >
           Unlock as {account?.name || account?.anchor}
-        </Button>
+        </ButtonAlt>
 
         {errorMessage && (
           <div className={clsx("text-sm mt-2 text-red-base")}>

@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { format } from "date-fns"
 import produce from "immer"
+import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React from "react"
 
 import { Loader, Tooltip } from "@nfid-frontend/ui"
@@ -13,7 +14,6 @@ import { InfoIcon } from "frontend/ui/atoms/icons/info"
 import { PencilIcon } from "frontend/ui/atoms/icons/pencil"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
 import { P } from "frontend/ui/atoms/typography/paragraph"
-import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 import { DeviceIconDecider } from "./device-icon-decider"
 import { DeviceListButtonGroup } from "./device-list-button-group"

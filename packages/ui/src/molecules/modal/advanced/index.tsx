@@ -1,7 +1,7 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 
-import { Button } from "../../../atoms/button"
 import { H5 } from "../../../atoms/typography"
 import { ModalCloseIcon } from "../closeIcon"
 
@@ -56,7 +56,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
               className={clsx("grid grid-cols-2 p-6 gap-4", buttonsClassNames)}
             >
               {secondaryButton && (
-                <Button
+                <ButtonAlt
                   stroke
                   block
                   className={clsx("!py-3 !px-8")}
@@ -64,11 +64,11 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
                   largeMax
                 >
                   {secondaryButton?.text}
-                </Button>
+                </ButtonAlt>
               )}
 
               {primaryButton && (
-                <Button
+                <ButtonAlt
                   primary={primaryButton.type === "primary"}
                   secondary={primaryButton.type === "secondary"}
                   error={primaryButton.type === "error"}
@@ -78,7 +78,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
                   block
                 >
                   {primaryButton.text}
-                </Button>
+                </ButtonAlt>
               )}
             </div>
           </div>

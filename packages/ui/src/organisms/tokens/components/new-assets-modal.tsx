@@ -1,9 +1,7 @@
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC } from "react"
 
-import { Button } from "@nfid-frontend/ui"
-
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
+import { Button, BlurredLoader } from "@nfid-frontend/ui"
 
 type NewAssetsModalProps = {
   tokens: [] | null

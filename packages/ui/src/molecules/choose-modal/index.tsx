@@ -55,6 +55,8 @@ export const ChooseModal = ({
   const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
   console.debug("ChooseModal", { isModalVisible })
 
+  console.log("optionGroupss", optionGroups)
+
   const handleSelect = useCallback((option: IGroupOption) => {
     setSelectedValue(option.value)
     setSelectedOption(option)

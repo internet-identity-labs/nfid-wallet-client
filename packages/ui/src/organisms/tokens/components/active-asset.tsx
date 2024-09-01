@@ -1,25 +1,30 @@
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
-import { useState, HTMLAttributes, FC, useEffect } from "react"
+import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
 import useSWR from "swr"
 
 import { ImageWithFallback, IconNftPlaceholder } from "@nfid-frontend/ui"
 
+import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
+  profileConstants: IProfileConstants
 }
 
-export const ActiveToken: FC<ActiveTokenProps> = ({ token }) => {
+export const ActiveToken: FC<ActiveTokenProps> = ({
+  token,
+  profileConstants,
+}) => {
   const { data: usdPrice, isLoading } = useSWR(
-    ["activeTokensUSD", token.getTokenAddress()],
-    token.getUSDBalanceFormatted,
+    token ? ["activeTokenUSD", token.getTokenAddress()] : null,
+    token ? () => token.getUSDBalanceFormatted() : null,
   )
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
-      <td className="flex items-center h-16 pr-[30px]">
+      <td className="flex items-center h-16 pr-[30px] w-[350px]">
         <div className="w-[40px] h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt="NFID token"
@@ -46,7 +51,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({ token }) => {
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
       >
         <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-          {token.getTokenBalance()?.formatted}
+          {token.getTokenBalance()?.formatted || `0 ${token.getTokenSymbol()}`}
           <p className="text-xs md:hidden text-secondary">
             {isLoading ? (
               <Spinner className="ml-auto w-[18px] h-[18px] text-gray-400" />
@@ -71,7 +76,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({ token }) => {
         )}
       </td>
       <td className="w-[24px]">
-        <AssetDropdown token={token} />
+        <AssetDropdown token={token} profileConstants={profileConstants} />
       </td>
     </tr>
   )

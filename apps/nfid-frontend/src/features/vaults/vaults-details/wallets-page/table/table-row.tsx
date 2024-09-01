@@ -40,9 +40,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-  //REMOVE !!!!!!!!!!!!!!
-  const allTokens = [] as any
-
   const [, send] = useActor(globalServices.transferService)
   const { wallets } = useAllWallets()
 
@@ -61,6 +58,8 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   }, [address, send, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
+    //REMOVE !!!!!!!!!!!!!!
+    const allTokens = [] as any
     sendReceiveTracking.openModal({
       isSending: false,
       isOpenedFromVaults: true,
@@ -72,7 +71,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
     send({ type: "ASSIGN_VAULTS", data: true })
 
     send({ type: "SHOW" })
-  }, [address, send, allTokens])
+  }, [address, send])
 
   return (
     <TableRow

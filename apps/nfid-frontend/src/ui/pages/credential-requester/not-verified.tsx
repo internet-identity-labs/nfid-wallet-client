@@ -1,10 +1,10 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 import { useForm } from "react-hook-form"
 
 import { Input, phoneRules, SDKApplicationMeta } from "@nfid-frontend/ui"
 
-import { Button } from "frontend/ui/atoms/button"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -96,7 +96,7 @@ export const CredentialRequesterNotVerified: React.FC<
             })}
           />
         </div>
-        <Button
+        <ButtonAlt
           primary
           className="px-10 sm:mt-2"
           block
@@ -104,7 +104,7 @@ export const CredentialRequesterNotVerified: React.FC<
           disabled={!isDirty || !!errors.phone}
         >
           Verify phone number
-        </Button>
+        </ButtonAlt>
       </form>
     </BlurredLoader>
   )

@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { ButtonMenu } from "packages/ui/src/atoms/button/menu"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -9,7 +10,6 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import User from "frontend/assets/user.svg"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
-import { ButtonMenu } from "frontend/ui/atoms/button/menu"
 
 import IconMenu from "./assets/menu-white.svg"
 
@@ -109,7 +109,7 @@ export const AuthButton = ({
         )}
       </div>
       <div
-        className="hidden cursor-pointer md:block text-white"
+        className="hidden text-white cursor-pointer md:block"
         onClick={onAuthClick}
       >
         {isScrolled ? (

@@ -1,6 +1,8 @@
 import { debounce } from "@dfinity/utils"
 import clsx from "clsx"
-import { CANISTER_ID_LENGTH } from "packages/constants"
+import { CANISTER_ID_LENGTH, DEFAULT_ERROR_TEXT } from "packages/constants"
+import { PlusIcon } from "packages/ui/src/atoms/icons/plus"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
@@ -18,15 +20,21 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
-import { DEFAULT_ERROR_TEXT } from "@nfid/integration/token/constants"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
-import { ICRC1Error, ICRC1Metadata } from "@nfid/integration/token/icrc1/types"
 
 import { FT } from "frontend/integration/ft/ft"
-import { PlusIcon } from "frontend/ui/atoms/icons/plus"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { FilteredToken } from "./filtered-asset"
+
+export class ICRC1Error extends Error {}
+
+export interface ICRC1Metadata {
+  name: string
+  symbol: string
+  logo?: string
+  decimals: number
+  fee: bigint
+}
 
 interface ProfileAssetsHeaderProps {
   tokens: FT[]
@@ -134,7 +142,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
           isSmall
           type="ghost"
         >
-          <span>Manage token</span>
+          <span>Manage tokens</span>
         </Button>
       </div>
       <ModalComponent
@@ -146,82 +154,77 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
         className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
         {modalStep === "manage" && (
-          <BlurredLoader
-            isLoading={isLoading}
-            overlayClassnames="rounded-[24px]"
-          >
+          <div>
+            <div className="flex items-center justify-between h-[40px] mb-[16px]">
+              <p className="text-[20px] leading-[24px]">Manage tokens</p>
+              <Tooltip
+                className="!p-[16px] !w-[320px]"
+                tip={
+                  <div className="text-white text-xs leading-[16px]">
+                    <p className="mb-2 font-bold">Category</p>
+                    <ul className="list-disc ml-[18px]">
+                      <li>
+                        SNS tokens - tokens that have gone through the SNS
+                        launchpad
+                      </li>
+                      <li>
+                        Chain Fusion tokens - DFINITY-implemented wrapped
+                        cross-chain tokens
+                      </li>
+                      <li>
+                        Chain Fusion Testnet tokens - DFINITY-implemented
+                        wrapped cross-chain testnet tokens
+                      </li>
+                      <li>Known tokens - trustworthy reputation</li>
+                      <li>
+                        Community tokens - added by the community, but not yet
+                        classified as 'trustworthy’
+                      </li>
+                      <li>Spam tokens - marked as spam by NFID team</li>
+                    </ul>
+                  </div>
+                }
+              >
+                <img
+                  src={IconInfo}
+                  alt="icon"
+                  className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
+                />
+              </Tooltip>
+            </div>
             <div>
-              <div className="flex items-center justify-between h-[40px] mb-[16px]">
-                <p className="text-[20px] leading-[24px]">Manage tokens</p>
-                <Tooltip
-                  className="!p-[16px] !w-[320px]"
-                  tip={
-                    <div className="text-white text-xs leading-[16px]">
-                      <p className="mb-2 font-bold">Category</p>
-                      <ul className="list-disc ml-[18px]">
-                        <li>
-                          SNS tokens - tokens that have gone through the SNS
-                          launchpad
-                        </li>
-                        <li>
-                          Chain Fusion tokens - DFINITY-implemented wrapped
-                          cross-chain tokens
-                        </li>
-                        <li>
-                          Chain Fusion Testnet tokens - DFINITY-implemented
-                          wrapped cross-chain testnet tokens
-                        </li>
-                        <li>Known tokens - trustworthy reputation</li>
-                        <li>
-                          Community tokens - added by the community, but not yet
-                          classified as 'trustworthy’
-                        </li>
-                        <li>Spam tokens - marked as spam by NFID team</li>
-                      </ul>
-                    </div>
-                  }
+              <div className="flex gap-[10px] mb-[20px]">
+                <Input
+                  className="h-[40px] w-full"
+                  id="search"
+                  placeholder="Search by token name"
+                  icon={<IoIosSearch size="20" className="text-gray-400" />}
+                  onChange={(e) => debouncedSearch(e.target.value)}
+                />
+                <Button
+                  isSmall
+                  icon={<PlusIcon className="w-[18px]" />}
+                  onClick={() => setModalStep("import")}
                 >
-                  <img
-                    src={IconInfo}
-                    alt="icon"
-                    className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
-                  />
-                </Tooltip>
+                  Import
+                </Button>
               </div>
-              <div>
-                <div className="flex gap-[10px] mb-[20px]">
-                  <Input
-                    className="h-[40px] w-full"
-                    id="search"
-                    placeholder="Search by token name"
-                    icon={<IoIosSearch size="20" className="text-gray-400" />}
-                    onChange={(e) => debouncedSearch(e.target.value)}
-                  />
-                  <Button
-                    isSmall
-                    icon={<PlusIcon className="w-[18px]" />}
-                    onClick={() => setModalStep("import")}
-                  >
-                    Import
-                  </Button>
-                </div>
-                <div
-                  className={clsx(
-                    "h-[424px] overflow-auto pr-[16px]",
-                    "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
-                    "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
-                  )}
-                >
-                  {tokens.map((token) => {
-                    if (!token.isHideable()) return
-                    return (
-                      <FilteredToken key={token.getTokenName()} token={token} />
-                    )
-                  })}
-                </div>
+              <div
+                className={clsx(
+                  "h-[424px] overflow-auto pr-[16px]",
+                  "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+                  "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+                )}
+              >
+                {tokens.map((token) => {
+                  if (!token.isHideable()) return
+                  return (
+                    <FilteredToken key={token.getTokenName()} token={token} />
+                  )
+                })}
               </div>
             </div>
-          </BlurredLoader>
+          </div>
         )}
         {modalStep === "import" && (
           <BlurredLoader

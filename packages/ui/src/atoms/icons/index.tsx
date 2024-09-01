@@ -4,6 +4,7 @@ import IconSvgAlertCircle from "./alert-circle.svg"
 import IconSvgAnonymous from "./anonymous.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
+import IconSvgArrowRight from "./arrow-right.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgCmpArrow from "./arrow.svg"
 import IconSvgBook from "./book.svg"
@@ -128,6 +129,7 @@ export {
   IconSvgEyeClosed,
   IconSvgEyeClosedBlack,
   IconSvgCmpArrow,
+  IconSvgArrowRight,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

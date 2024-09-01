@@ -1,6 +1,11 @@
+import clsx from "clsx"
 import { useCallback } from "react"
 
-import { IActivityRow, IActivityRowGroup } from "../types"
+import {
+  IActivityRow,
+  IActivityRowGroup,
+} from "frontend/features/activity/types"
+
 import { ActivityTableRow } from "./activity-table-row"
 
 interface IActivityTableGroup extends IActivityRowGroup {
@@ -28,7 +33,15 @@ export const ActivityTableGroup = ({
   return (
     <>
       <tr id={`group_${groupIndex}`}>
-        <td className="pt-5 text-sm font-bold text-gray-400">{date}</td>
+        <td
+          className={clsx(
+            "pb-[10px] text-sm font-bold text-gray-400",
+            "px-5 sm:px-[30px]",
+            groupIndex === 0 ? "pt-0" : "pt-[30px]",
+          )}
+        >
+          {date}
+        </td>
       </tr>
       {rows.map((row, i) => (
         <ActivityTableRow

@@ -1,17 +1,16 @@
 import clsx from "clsx"
 import { format } from "date-fns"
+import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import { useCallback } from "react"
-import { toast } from "react-toastify"
 
 import {
   IconCmpArrow,
   IconCmpStatusSuccess,
   IconCmpTinyIC,
+  IconSvgArrowRight,
 } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
 
-import { IActivityRow } from "../types"
+import { IActivityRow } from "frontend/features/activity/types"
 
 interface IActivityTableRow extends IActivityRow {
   id: string
@@ -33,35 +32,46 @@ export const ActivityTableRow = ({
   to,
   id,
 }: IActivityTableRow) => {
-  const onCopy = useCallback((text: string) => {
-    toast.success("Address copied to clipboard")
-    navigator.clipboard.writeText(text)
-  }, [])
-
   return (
     <tr
       id={id}
-      className="items-center text-sm border-b border-gray-200 activity-row last:border-none"
+      className="relative items-center text-sm activity-row hover:bg-gray-50"
     >
-      <td className="flex items-center py-2.5">
-        <div className="w-10 h-10 rounded-[9px] bg-gray-50 flex items-center justify-center relative">
+      <td className="flex items-center pl-5 sm:pl-[30px]">
+        <div
+          className={clsx(
+            "w-10 h-10 rounded-[9px] flex items-center justify-center relative",
+            action === "Sent" ? "bg-red-50" : "bg-emerald-50",
+          )}
+        >
           <IconCmpArrow
             className={clsx(
               "text-gray-400",
-              action === "Sent" ? "rotate-[135deg]" : "rotate-[-45deg]",
+              action === "Sent"
+                ? "rotate-[135deg] text-red-600"
+                : "rotate-[-45deg] !text-emerald-600",
             )}
           />
         </div>
-        <div className="ml-2.5">
-          <p className="font-bold">{action}</p>
-          <p className="text-xs text-gray-400">
+        <div className="ml-2.5 mb-[11px] mt-[11px]">
+          <p className="font-semibold text-sm leading-[20px]">{action}</p>
+          <p className="text-xs text-gray-400 leading-[20px]">
             {format(new Date(timestamp), "HH:mm:ss aaa")}
           </p>
         </div>
       </td>
+      <td className="transition-opacity">
+        <CopyAddress address={from} leadingChars={6} trailingChars={4} />
+      </td>
+      <td className="w-[24px] h-[24px] absolute left-0 right-0 top-0 bottom-0 m-auto">
+        <img src={IconSvgArrowRight} alt="" />
+      </td>
+      <td className="transition-opacity">
+        <CopyAddress address={to} leadingChars={6} trailingChars={4} />
+      </td>
       {asset?.type === "ft" ? (
-        <td className="leading-5 text-right sm:text-left">
-          <p className="font-medium">
+        <td className="leading-5 text-right sm:text-left pr-5 sm:pr-[30px]">
+          <p className="text-sm">
             <TickerAmount
               value={asset.amount}
               decimals={asset.decimals}
@@ -69,7 +79,7 @@ export const ActivityTableRow = ({
             />
           </p>
           {asset.rate && (
-            <p className="text-gray-400 text-xs">
+            <p className="text-xs text-gray-400">
               <TickerAmount
                 value={asset.amount}
                 decimals={asset.decimals}
@@ -87,18 +97,6 @@ export const ActivityTableRow = ({
           </div>
         </td>
       )}
-      <td
-        className="transition-opacity cursor-pointer hover:opacity-50 hidden sm:table-cell"
-        onClick={() => onCopy(from)}
-      >
-        {truncateString(from, 6, 4)}
-      </td>
-      <td
-        className="transition-opacity cursor-pointer hover:opacity-50 hidden sm:table-cell"
-        onClick={() => onCopy(to)}
-      >
-        {truncateString(to, 6, 4)}
-      </td>
     </tr>
   )
 }

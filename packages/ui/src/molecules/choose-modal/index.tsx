@@ -91,10 +91,12 @@ export const ChooseModal = ({
       const option = optionGroups[0]?.options[0]
       setSelectedOption(option)
       onSelect && option?.value && onSelect(option?.value)
+      console.log("dddddd if")
     }
   }, [optionGroups, isFirstPreselected, preselectedValue])
 
   useEffect(() => {
+    console.log("dddddd ef")
     onSelect && onSelect(selectedValue)
   }, [selectedValue])
 

@@ -1,6 +1,7 @@
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { useState, HTMLAttributes, FC, useEffect } from "react"
 import { FT } from "src/integration/ft/ft"
+import useSWR from "swr"
 
 import { ImageWithFallback, IconNftPlaceholder } from "@nfid-frontend/ui"
 
@@ -11,18 +12,11 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({ token }) => {
-  const [usdPrice, setUsdPrice] = useState<string | undefined>("")
-  const [isLoading, setIsLoading] = useState(true)
+  const { data: usdPrice, isLoading } = useSWR(
+    ["activeTokensUSD", token.getTokenAddress()],
+    token.getUSDBalanceFormatted,
+  )
 
-  useEffect(() => {
-    const getUsdPrice = async () => {
-      const usdPrice = await token.getUSDBalanceFormatted()
-      setUsdPrice(usdPrice)
-      setIsLoading(false)
-    }
-
-    getUsdPrice()
-  }, [])
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
       <td className="flex items-center h-16 pr-[30px]">
@@ -52,7 +46,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({ token }) => {
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
       >
         <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-          {token.getTokenBalance()}
+          {token.getTokenBalance()?.formatted}
           <p className="text-xs md:hidden text-secondary">
             {isLoading ? (
               <Spinner className="ml-auto w-[18px] h-[18px] text-gray-400" />

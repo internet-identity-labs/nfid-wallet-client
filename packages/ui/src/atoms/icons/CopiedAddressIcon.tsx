@@ -24,7 +24,7 @@ export const CopiedAddressIcon: React.FC<CopyIconProps> = ({ className }) => {
       <path
         d="M8.65625 9.79427L10.4584 11.4609L14.0729 7.71094"
         stroke="currentColor"
-        stroke-linecap="round"
+        strokeLinecap="round"
       />
     </svg>
   )

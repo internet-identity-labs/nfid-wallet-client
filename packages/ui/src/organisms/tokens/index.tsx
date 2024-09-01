@@ -13,6 +13,7 @@ interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
   isActiveTokensLoading: boolean
   isFilterTokensLoading: boolean
   setSearchQuery: (v: string) => void
+  userRootPrincipalId: string
 }
 
 const ProfileAssets: FC<ProfileAssetsProps> = ({
@@ -21,6 +22,7 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
   isActiveTokensLoading,
   isFilterTokensLoading,
   setSearchQuery,
+  userRootPrincipalId,
 }) => {
   return (
     <BlurredLoader
@@ -31,6 +33,7 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
         tokens={filteredTokens}
         setSearch={(value) => setSearchQuery(value)}
         isLoading={isFilterTokensLoading}
+        userRootPrincipalId={userRootPrincipalId}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">

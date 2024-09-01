@@ -32,12 +32,14 @@ interface ProfileAssetsHeaderProps {
   tokens: FT[]
   isLoading: boolean
   setSearch: (v: string) => void
+  userRootPrincipalId: string
 }
 
 export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   tokens,
   isLoading,
   setSearch,
+  userRootPrincipalId,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
@@ -92,7 +94,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   const fetchICRCToken = async () => {
     try {
       await Promise.all([
-        icrc1Pair.validateIfExists(),
+        icrc1Pair.validateIfExists(userRootPrincipalId),
         icrc1Pair.validateStandard(),
         icrc1Pair.validateIndexCanister(),
       ])
@@ -186,8 +188,8 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
                   />
                 </Tooltip>
               </div>
-              <div className="h-[484px] overflow-auto">
-                <div className="flex gap-[10px]">
+              <div>
+                <div className="flex gap-[10px] mb-[20px]">
                   <Input
                     className="h-[40px] w-full"
                     id="search"
@@ -203,7 +205,13 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
                     Import
                   </Button>
                 </div>
-                <div>
+                <div
+                  className={clsx(
+                    "h-[424px] overflow-auto pr-[16px]",
+                    "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+                    "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+                  )}
+                >
                   {tokens.map((token) => {
                     if (!token.isHideable()) return
                     return (

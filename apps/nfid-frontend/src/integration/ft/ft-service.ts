@@ -63,10 +63,10 @@ export class FtService {
 
   async getUserTokenByAddress(
     userId: string,
-    userPrincipal: Principal,
+    userPublicKey: Principal,
     address: string,
   ): Promise<FT> {
-    const tokens = await this.getAllUserTokens(userId, userPrincipal)
+    const tokens = await this.getAllUserTokens(userId, userPublicKey)
     const token = tokens.items.find(
       (token) => token.getTokenAddress() === address,
     )

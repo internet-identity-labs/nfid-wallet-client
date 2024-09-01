@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR, { mutate } from "swr"
 
+import { BlurredLoader, Loader } from "@nfid-frontend/ui"
 import {
   RootWallet,
   registerTransaction,
@@ -38,83 +39,57 @@ import {
 import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { getIdentity, validateAddress } from "../utils"
+import {
+  getIdentity,
+  getVaultsAccountsOptions,
+  validateAddress,
+} from "../utils"
 import { ITransferSuccess } from "./success"
 
 interface ITransferFT {
   isVault: boolean
   preselectedAccountAddress: string
-  preselectedTokenBlockchain?: string
   onTransferPromise: (data: ITransferSuccess) => void
+  publicKey: string
 }
 
 export const TransferFT = ({
   isVault,
   preselectedAccountAddress = "",
-  preselectedTokenBlockchain = Blockchain.IC,
   onTransferPromise,
+  publicKey,
 }: ITransferFT) => {
+  const [tokenAddress, setTokenAddress] = useState(ICP_CANISTER_ID)
+  const [amountInUSD, setAmountInUSD] = useState(0)
   const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
     "activeTokens",
     fetchAllTokens,
   )
 
-  const { data: icpToken, isLoading: isIcpLoading } = useSWR(
-    ICP_CANISTER_ID ? ["token", ICP_CANISTER_ID] : null,
+  const { data: token, isLoading: isTokenLoading } = useSWR(
+    tokenAddress ? ["token", tokenAddress] : null,
     ([, address]) => fetchTokenByAddress(address),
   )
 
-  const [token, setToken] = useState(icpToken)
-  const [tokenUsdAmount, setTokenUsdAmount] = useState<string | undefined>()
-
-  useEffect(() => {
-    const getUsdAmount = async () => {
-      const usdAmount = await token?.getUSDBalanceFormatted()
-      setTokenUsdAmount(usdAmount)
-    }
-
-    getUsdAmount()
-  }, [token])
-
-  console.log("dattt", activeTokens)
-
-  const [selectedAccountAddress, setSelectedAccountAddress] = useState(
-    preselectedAccountAddress,
+  const { data: usdRate, isLoading: isRateLoading } = useSWR(
+    token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
+    ([_, __, amount]) => token?.getTokenRate(amount.toString()),
   )
 
-  const [amountInUSD, setAmountInUSD] = useState(0)
+  console.log("dattt", token)
+
+  const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
+    useState(preselectedAccountAddress)
+
+  //const [amountInUSD, setAmountInUSD] = useState(0)
 
   const { profile, isLoading: isLoadingProfile } = useProfile()
 
-  // const { data: selectedConnector, isLoading: isConnectorLoading } = useSWR(
-  //   [selectedTokenCurrency, selectedTokenBlockchain, "selectedConnector"],
-  //   ([selectedTokenCurrency, selectedTokenBlockchain]) =>
-  //     getConnector({
-  //       type: TransferModalType.FT,
-  //       currency: selectedTokenCurrency,
-  //       blockchain: selectedTokenBlockchain,
-  //     }),
-  //   {
-  //     onSuccess: () => {
-  //       refetchBalance()
-  //     },
-  //   },
-  // )
-
   // TODO: adjust accountsOptions for Vaults
-  // const {
-  //   data: accountsOptions,
-  //   isLoading: isAccountsLoading,
-  //   isValidating: isAccountsValidating,
-  // } = useSWR(
-  //   selectedConnector ? [selectedConnector, isVault, "accountsOptions"] : null,
-  //   ([connector, isVault]) =>
-  //     connector.getAccountsOptions({
-  //       currency: selectedTokenCurrency,
-  //       isVault,
-  //       isRootOnly: true,
-  //     }),
-  // )
+  const { data: vaultsAccountsOptions = [], isLoading } = useSWR(
+    "vaultsAccountsOptions",
+    getVaultsAccountsOptions,
+  )
 
   // useEffect(() => {
   //   if (!accountsOptions?.length) return
@@ -165,7 +140,9 @@ export const TransferFT = ({
         return onTransferPromise({
           assetImg: token.getTokenLogo() ?? "",
           initialPromise: new Promise(async (resolve) => {
-            const wallet = await getVaultWalletByAddress(selectedAccountAddress)
+            const wallet = await getVaultWalletByAddress(
+              selectedVaultsAccountAddress,
+            )
 
             const address =
               values.to.length === PRINCIPAL_LENGTH
@@ -196,39 +173,53 @@ export const TransferFT = ({
           const { owner, subaccount } = decodeIcrcAccount(values.to)
           const identity = await getIdentity([token!.getTokenAddress()])
           let res
-          if (!token || !token.getTokenFee()) return
+          if (!token) return
           try {
             if (token?.getTokenAddress() === ICP_CANISTER_ID) {
+              console.log(
+                "icppp",
+                values.amount,
+                stringICPtoE8s(String(values.amount)),
+              )
               res = await transferICP({
                 amount: stringICPtoE8s(String(values.amount)),
                 to: values.to,
                 identity: identity,
               })
             } else {
+              const fee = await token.getTokenFee()
               res = await transferICRC1(identity, token.getTokenAddress(), {
                 to: {
                   subaccount: subaccount ? [subaccount] : [],
                   owner,
                 },
-                amount: BigInt(Number(values.amount).toFixed()),
+                amount: BigInt(
+                  Number(values.amount) * 10 ** token?.getTokenDecimals()!,
+                ),
                 memo: [],
-                fee: [token.getTokenFee()!],
+                fee: [fee!.raw],
                 from_subaccount: [],
                 created_at_time: [],
               })
+
+              setAmountInUSD(Number(values.amount))
             }
 
             handleTrackTransfer(values.amount)
             resolve({ hash: String(res) })
           } catch (e) {
-            throw new Error(`Transfer error: ${(e as Error).message}`)
+            throw new Error(
+              `Transfer error: ${
+                (e as Error).message ? (e as Error).message : e
+              }`,
+            )
           }
         }),
         title: `${Number(values.amount)
           .toFixed(token?.getTokenDecimals())
           .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
-        subTitle: `123`,
-        //subTitle: `${(Number(values.amount) * Number(rate)).toFixed(2)} USD`,
+        //subTitle: `123`,
+        subTitle: usdRate!.formatted,
         isAssetPadding: true,
         //duration: tokenMetadata.duration,
       })
@@ -251,13 +242,14 @@ export const TransferFT = ({
   //   isAccountsValidating,
   // ])
 
-  if (!token || !activeTokens || !icpToken) return
+  if (!token) return <BlurredLoader isLoading />
 
   return (
     <TransferFTUi
-      icpToken={icpToken}
+      publicKey={publicKey}
       token={token}
       tokens={activeTokens}
+      setChosenToken={setTokenAddress}
       validateAddress={validateAddress}
       // isLoading={
       //   isConnectorLoading ||
@@ -269,23 +261,23 @@ export const TransferFT = ({
       isLoading={isActiveTokensLoading}
       sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
       isVault={isVault}
-      selectedAccountAddress={selectedAccountAddress}
+      selectedVaultsAccountAddress={selectedVaultsAccountAddress}
       submit={submit}
-      setSelectedAccountAddress={setSelectedAccountAddress}
-      amountInUSD={amountInUSD}
-      setUSDAmount={(value) => setAmountInUSD(value)}
+      setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
+      //amountInUSD={amountInUSD}
+      //setUSDAmount={(value) => setAmountInUSD(value)}
       register={register}
       errors={errors}
       handleSubmit={handleSubmit}
       setValue={setValue}
       resetField={resetField}
       ////////////////////////////
-      loadingMessage={"123"}
+      loadingMessage={"Fetching supported tokens..."}
       tokenOptions={tokenOptions}
-      //accountsOptions={accountsOptions}
-      // optionGroups={
-      //   profile?.wallet === RootWallet.NFID ? [] : accountsOptions ?? []
-      // }
+      accountsOptions={vaultsAccountsOptions}
+      optionGroups={
+        profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
+      }
     />
   )
 }

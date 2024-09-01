@@ -45,12 +45,12 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
   }
 
   return (
-    <div className="flex items-center h-16">
+    <div className="flex items-center h-[60px]">
       <div className="flex items-center gap-[12px] flex-0 w-[210px]">
-        <div className="w-[40px] h-[40px] rounded-full bg-zinc-50">
+        <div className="w-[28px] h-[28px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt="NFID token"
-            className="mr-[12px]"
+            className="mr-[12px] rounded-full"
             fallbackSrc={IconNftPlaceholder}
             src={`${token.getTokenLogo()}`}
           />

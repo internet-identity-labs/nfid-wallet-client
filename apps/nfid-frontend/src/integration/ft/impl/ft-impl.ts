@@ -39,6 +39,7 @@ export class FTImpl implements FT {
     ])
     this.tokenBalance = balance
     this.decimals = metadata.decimals
+    this.fee = metadata.fee
     return this
   }
 
@@ -54,8 +55,42 @@ export class FTImpl implements FT {
     return this.symbol
   }
 
-  getTokenFee(): bigint | undefined {
-    return this.fee
+  async getTokenFee(): Promise<
+    | {
+        raw: bigint
+        formatted: string
+        formattedUsd: string
+      }
+    | undefined
+  > {
+    const rate = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
+    if (!this.fee || !this.decimals || !rate) return
+    //const result = rateBigNumber.multipliedBy(amountBigNumber)
+    // const tokenAmount = exchangeRateService.parseTokenAmount(
+    //   Number(this.fee),
+    //   this.decimals,
+    // )
+    // const aa = tokenAmount.multipliedBy(rate)
+    const usdPrice: BigNumber | undefined =
+      await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
+    if (!usdPrice) {
+      return undefined
+    }
+    const tokenAmount = exchangeRateService.parseTokenAmount(
+      Number(this.fee),
+      this.decimals,
+    )
+    //this.usdBalance = tokenAmount.multipliedBy(usdPrice)
+    const feeInUsd = await this.getTokenRate(
+      (Number(this.fee) / 10 ** this.decimals).toString(),
+    )
+    console.log("getTokenFee", feeInUsd, Number(this.fee) / 10 ** this.decimals)
+    return {
+      raw: this.fee,
+      formatted: `${Number(this.fee) / 10 ** this.decimals} ${this.symbol}`,
+      // formattedUsd: `${feeInUsd?.raw} USD`,v
+      formattedUsd: `${feeInUsd?.raw || "0.00"} USD`,
+    }
   }
 
   getTokenLogo(): string | undefined {
@@ -70,16 +105,27 @@ export class FTImpl implements FT {
     return this.tokenState
   }
 
-  getTokenBalance(): string | undefined {
+  getTokenBalance(): { raw: bigint; formatted: string } | undefined {
     const tokenAmount = exchangeRateService.parseTokenAmount(
       Number(this.tokenBalance),
       this.decimals,
     )
+    // return this.tokenBalance
+    //   ? tokenAmount.toFormat({
+    //       groupSeparator: "",
+    //       decimalSeparator: ".",
+    //     }) + ` ${this.symbol}`
+    //   : undefined
+
     return this.tokenBalance
-      ? tokenAmount.toFormat({
-          groupSeparator: "",
-          decimalSeparator: ".",
-        }) + ` ${this.symbol}`
+      ? {
+          raw: this.tokenBalance,
+          formatted:
+            tokenAmount.toFormat({
+              groupSeparator: "",
+              decimalSeparator: ".",
+            }) + ` ${this.symbol}`,
+        }
       : undefined
   }
 
@@ -91,15 +137,19 @@ export class FTImpl implements FT {
     return this.tokenName
   }
 
-  async getTokenRate(amount: string): Promise<string | undefined> {
+  async getTokenRate(
+    amount: string,
+  ): Promise<{ raw: number; formatted: string } | undefined> {
     const rate = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
     if (!rate) return
 
-    const rateBigNumber = new BigNumber(rate)
     const amountBigNumber = new BigNumber(amount)
+    const result = rate.multipliedBy(amountBigNumber)
 
-    const result = rateBigNumber.multipliedBy(amountBigNumber)
-    return `${result.toFixed(2)} USD`
+    return {
+      raw: Number(result.toFixed(2)),
+      formatted: `${result.toFixed(2)} USD`,
+    }
   }
 
   isHideable(): boolean {

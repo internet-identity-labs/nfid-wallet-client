@@ -21,6 +21,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { NFT } from "frontend/integration/nft/nft"
 
 export interface TransferNFTUiProps {
+  publicKey: string
   icpToken: FT | undefined
   isLoading: boolean
   loadingMessage: string | undefined
@@ -30,11 +31,11 @@ export interface TransferNFTUiProps {
   selectedNFT: NFT | undefined
   selectedReceiverWallet: string | undefined
   submit: (values: any) => Promise<Id | undefined>
-  selectedAccountAddress: string
   validateAddress: (value: string) => boolean | string
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
+  publicKey,
   icpToken,
   isLoading,
   loadingMessage,
@@ -44,7 +45,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   selectedNFT,
   selectedReceiverWallet,
   submit,
-  selectedAccountAddress,
   validateAddress,
 }) => {
   const {
@@ -138,8 +138,8 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         </Button>
         <BalanceFooter
           token={icpToken}
-          selectedAccountAddress={selectedAccountAddress}
           hasUsdBalance={false}
+          publicKey={publicKey}
         />
       </div>
     </BlurredLoader>

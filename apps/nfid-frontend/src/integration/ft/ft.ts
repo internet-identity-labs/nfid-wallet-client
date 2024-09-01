@@ -9,11 +9,13 @@ export interface FT {
 
   getTokenCategory(): Category
 
-  getTokenBalance(): string | undefined
+  getTokenBalance(): { raw: bigint; formatted: string } | undefined
 
   getUSDBalanceFormatted(): Promise<string | undefined>
 
-  getTokenRate(amount: string): Promise<string | undefined>
+  getTokenRate(
+    amount: string,
+  ): Promise<{ raw: number; formatted: string } | undefined>
 
   getTokenAddress(): string
 
@@ -21,7 +23,14 @@ export interface FT {
 
   getTokenDecimals(): number | undefined
 
-  getTokenFee(): bigint | undefined
+  getTokenFee(): Promise<
+    | {
+        raw: bigint
+        formatted: string
+        formattedUsd: string
+      }
+    | undefined
+  >
 
   getTokenLogo(): string | undefined
 

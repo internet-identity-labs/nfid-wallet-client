@@ -1,9 +1,10 @@
 import { useActor } from "@xstate/react"
 import { SendReceiveModal } from "packages/ui/src/organisms/send-receive"
-import { useCallback, useContext, useEffect, useMemo } from "react"
+import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
+import { authState, getPublicKey } from "@nfid/integration"
 
 import { ProfileContext } from "frontend/provider"
 
@@ -13,9 +14,17 @@ import { TransferNFT } from "./components/send-nft"
 import { ITransferSuccess, TransferSuccess } from "./components/success"
 
 export const TransferModalCoordinator = () => {
+  const [publicKey, setPublicKey] = useState("")
   const globalServices = useContext(ProfileContext)
-
   const [state, send] = useActor(globalServices.transferService)
+
+  useEffect(() => {
+    const identity = authState.get().delegationIdentity
+    if (!identity) throw new Error("No identity")
+    getPublicKey(identity).then((key) => {
+      setPublicKey(key)
+    })
+  }, [])
 
   useEffect(() => {
     if (state.context.error?.message?.length) {
@@ -35,13 +44,11 @@ export const TransferModalCoordinator = () => {
         return (
           <TransferFT
             isVault={state.context.isOpenedFromVaults}
-            preselectedTokenCurrency={state.context.tokenCurrency}
             preselectedAccountAddress={state.context.sourceWalletAddress}
-            preselectedTokenBlockchain={state.context.tokenBlockchain}
-            preselectedTransferDestination={state.context.receiverWallet}
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
+            publicKey={publicKey}
           />
         )
       case state.matches("SendMachine.SendNFT"):
@@ -51,6 +58,7 @@ export const TransferModalCoordinator = () => {
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
+            publicKey={publicKey}
           />
         )
       case state.matches("ReceiveMachine"):

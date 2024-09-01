@@ -1,42 +1,43 @@
 import { Principal } from "@dfinity/principal"
 
-import { im } from "@nfid/integration"
+import { authState, getPublicKey, im } from "@nfid/integration"
 
 import { ftService } from "frontend/integration/ft/ft-service"
 
 const getUserPrincipalId = async () => {
+  const identity = authState.get().delegationIdentity
+  if (!identity) throw new Error("No identity")
+  const publicKey = await getPublicKey(identity)
   const account = await im.get_account()
-  return account.data[0]!.principal_id
+  console.log("idsss", account.data[0]!.principal_id, publicKey)
+  return {
+    userPrincipal: account.data[0]!.principal_id,
+    publicKey: Principal.fromText(publicKey),
+  }
 }
 
 export const fetchAllTokens = async () => {
-  const userPrincipal = await getUserPrincipalId()
-  const data = await ftService.getAllUserTokens(
-    userPrincipal,
-    Principal.fromText(userPrincipal),
-  )
+  const { userPrincipal, publicKey } = await getUserPrincipalId()
+  const data = await ftService.getAllUserTokens(userPrincipal, publicKey)
   return data.items
 }
 
 export const fetchTokenByAddress = async (address: string) => {
-  const userPrincipal = await getUserPrincipalId()
+  const { userPrincipal, publicKey } = await getUserPrincipalId()
   const data = await ftService.getUserTokenByAddress(
     userPrincipal,
-    Principal.fromText(userPrincipal),
+    publicKey,
     address,
   )
   return data
 }
 
 export const fetchFilteredTokens = async (searchQuery: string) => {
-  const userPrincipal = await getUserPrincipalId()
-  return await ftService.getAllFTokens(
-    Principal.fromText(userPrincipal),
-    searchQuery,
-  )
+  const { userPrincipal } = await getUserPrincipalId()
+  return await ftService.getAllFTokens(userPrincipal, searchQuery)
 }
 
 export const getFullUsdValue = async () => {
-  const userPrincipal = await getUserPrincipalId()
-  return await ftService.getTotalUSDBalance(Principal.fromText(userPrincipal))
+  const { userPrincipal, publicKey } = await getUserPrincipalId()
+  return await ftService.getTotalUSDBalance(userPrincipal, publicKey)
 }

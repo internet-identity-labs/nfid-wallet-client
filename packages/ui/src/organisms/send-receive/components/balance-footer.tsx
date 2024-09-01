@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import { useEffect, useState } from "react"
+import useSWR from "swr"
 
 import { truncateString } from "@nfid-frontend/utils"
 
@@ -9,25 +8,20 @@ import { FT } from "frontend/integration/ft/ft"
 
 interface BalanceFooterProps {
   token: FT | undefined
-  selectedAccountAddress: string
   hasUsdBalance?: boolean
+  publicKey: string
 }
 
 export const BalanceFooter = ({
   token,
-  selectedAccountAddress,
   hasUsdBalance,
+  publicKey,
 }: BalanceFooterProps) => {
-  const [usdBalance, setUsdBalance] = useState<string | undefined>()
-  useEffect(() => {
-    const getRate = async () => {
-      if (!hasUsdBalance) return
-      const rate = await token?.getUSDBalanceFormatted()
-      setUsdBalance(rate)
-    }
+  const { data: usdBalance, isLoading } = useSWR(
+    token ? ["activeTokenUSD", token.getTokenAddress()] : null,
+    token ? () => token.getUSDBalanceFormatted() : null,
+  )
 
-    getRate()
-  }, [])
   return (
     <div
       className={clsx(
@@ -39,14 +33,22 @@ export const BalanceFooter = ({
         <p>Wallet address</p>
         <p>
           Balance:&nbsp;
-          {token?.getTokenBalance()}
+          {token?.getTokenBalance()?.formatted ||
+            `0 ${token?.getTokenSymbol()}`}
         </p>
       </div>
       <div className="flex items-center justify-between">
-        <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
-        {usdBalance && (
-          <div className="flex items-center space-x-0.5">{usdBalance}</div>
+        {publicKey ? (
+          <p>{truncateString(publicKey, 6, 4)}</p>
+        ) : (
+          <Spinner className="w-[16px] h-[16px]" />
         )}
+        {hasUsdBalance &&
+          (!isLoading ? (
+            <div className="flex items-center space-x-0.5">{usdBalance}</div>
+          ) : (
+            <Spinner className="w-[16px] h-[16px]" />
+          ))}
       </div>
     </div>
   )

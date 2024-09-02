@@ -20,12 +20,11 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
+import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { FT } from "frontend/integration/ft/ft"
 
 import { FilteredToken } from "./filtered-asset"
-
-export class ICRC1Error extends Error {}
 
 export interface ICRC1Metadata {
   name: string
@@ -100,6 +99,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
       setTokenInfo(null)
     } catch (e) {
       console.error(e)
+      toast.error(`Adding new token failed`)
     } finally {
       setIsImportLoading(false)
     }
@@ -111,7 +111,6 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
       setTokenInfo(data)
       return true
     } catch (e) {
-      console.log("err HEADER", e)
       if (e instanceof ICRC1Error) {
         return e.message
       } else {

@@ -33,15 +33,15 @@ const ProfileAssetsPage = () => {
 
   const onFetch = async (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(ledgerID, indexID)
-    console.log("userRootPrincipalId", userRootPrincipalId)
-    return Promise.all([
+
+    return await Promise.all([
       icrc1Pair.validateIfExists(userRootPrincipalId),
       icrc1Pair.validateStandard(),
       icrc1Pair.validateIndexCanister(),
     ])
       .then(() => icrc1Pair.getMetadata())
       .catch((e) => {
-        throw new ICRC1Error(e)
+        throw new ICRC1Error(e.message)
       })
   }
 

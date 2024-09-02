@@ -20,12 +20,14 @@ import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
 import IconERC20 from "./erc20-fallback.svg"
 import IconSvgError from "./error.svg"
+import IconSvgExternalIcon from "./external.svg"
 import IconSvgEyeClosedBlack from "./eye-closed-black.svg"
 import IconSvgEyeClosed from "./eye-closed.svg"
 import IconSvgEyeShown from "./eye-shown.svg"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
+import IconSvgHistoryIcon from "./history.svg"
 import IconSvgID from "./id.svg"
 import IconInfo from "./info-icon.svg"
 import IconSvgInfo from "./info.svg"
@@ -130,6 +132,8 @@ export {
   IconSvgEyeClosedBlack,
   IconSvgCmpArrow,
   IconSvgArrowRight,
+  IconSvgExternalIcon,
+  IconSvgHistoryIcon,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

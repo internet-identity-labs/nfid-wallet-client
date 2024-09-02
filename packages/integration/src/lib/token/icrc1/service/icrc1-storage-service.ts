@@ -43,6 +43,8 @@ export class Icrc1StorageService {
       )
       //todo maybe group metadata
       const userData: ICRC1UserData = {
+        decimals: icrc1.decimals,
+        fee: icrc1.fee,
         ledger: icrc1.ledger,
         name: icrc1.name,
         symbol: icrc1.symbol,

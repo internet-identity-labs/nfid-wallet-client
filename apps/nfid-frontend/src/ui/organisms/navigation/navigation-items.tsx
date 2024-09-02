@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
 import AuthenticatedPopup from "packages/ui/src/organisms/header/navigation-popup"
 import React from "react"
 import { NavLink, useNavigate } from "react-router-dom"
@@ -16,7 +17,6 @@ import {
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { Accordion } from "frontend/ui/atoms/accordion"
-import { Button } from "frontend/ui/atoms/button"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 
 const NAV_ITEMS = [
@@ -168,14 +168,14 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                 ))}
                 <div>
                   {isRegistered && !isAuthenticated ? (
-                    <Button
+                    <ButtonAlt
                       id="btn-signin"
                       className={clsx("h-full leading-none")}
                       primary
                       onClick={handleLogin}
                     >
                       Sign in
-                    </Button>
+                    </ButtonAlt>
                   ) : null}
                 </div>
               </div>
@@ -205,14 +205,14 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         </Scrollspy>
         <div className="relative" ref={popupRef}>
           {isRegistered && !isAuthenticated ? (
-            <Button
+            <ButtonAlt
               id="btn-signin"
               className={clsx("h-full leading-none")}
               primary
               onClick={handleLogin}
             >
               Sign in
-            </Button>
+            </ButtonAlt>
           ) : null}
           {isAuthenticated ? (
             <div

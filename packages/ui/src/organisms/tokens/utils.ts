@@ -9,7 +9,6 @@ const getUserPrincipalId = async () => {
   if (!identity) throw new Error("No identity")
   const publicKey = await getPublicKey(identity)
   const account = await im.get_account()
-  console.log("idsss", account.data[0]!.principal_id, publicKey)
   return {
     userPrincipal: account.data[0]!.principal_id,
     publicKey: Principal.fromText(publicKey),

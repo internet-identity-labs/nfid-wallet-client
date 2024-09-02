@@ -88,7 +88,9 @@ export class Icrc1Pair implements IIcrc1Pair {
       symbol: metadata.symbol,
       logo: metadata.logo,
       state: State.Active,
-      category: Category.Unknown,
+      category: Category.Spam,
+      fee: metadata.fee,
+      decimals: metadata.decimals,
     })
   }
 

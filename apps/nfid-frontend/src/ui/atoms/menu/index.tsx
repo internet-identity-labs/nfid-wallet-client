@@ -1,7 +1,6 @@
 import clsx from "clsx"
+import { ButtonAlt, ButtonProps } from "packages/ui/src/atoms/button"
 import React from "react"
-
-import { Button, ButtonProps } from "../button"
 
 export interface ButtonMenuProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
@@ -41,13 +40,13 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
 
   return (
     <div ref={ref} className={clsx("overflow-hidden h-[24px] w-[24px]")}>
-      <Button
+      <ButtonAlt
         {...buttonProps}
         onClick={(e) => handleMenuToggle(e)}
         className={clsx("relative !p-1 transition-all duration-500", className)}
       >
         {buttonElement}
-      </Button>
+      </ButtonAlt>
 
       {toggleMenu && (
         <div
@@ -65,7 +64,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
           className,
         )}
       >
-        <Button
+        <ButtonAlt
           {...buttonProps}
           onClick={(e) => handleMenuToggle(e)}
           className={clsx(
@@ -74,7 +73,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
           )}
         >
           {buttonElement}
-        </Button>
+        </ButtonAlt>
         {children(() => setToggleMenu(false))}
       </div>
     </div>

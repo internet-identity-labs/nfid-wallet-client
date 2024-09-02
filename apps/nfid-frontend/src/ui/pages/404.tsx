@@ -1,10 +1,10 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
-import { Button } from "../atoms/button"
 import { H2 } from "../atoms/typography"
 import { P } from "../atoms/typography/paragraph"
 import { Card } from "../molecules/card"
@@ -28,14 +28,14 @@ export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
             <div>
               <P>The page you are looking for does not exist.</P>
 
-              <Button
+              <ButtonAlt
                 large
                 stroke
                 onClick={() => navigate("/")}
                 className="my-4"
               >
                 Return to Home
-              </Button>
+              </ButtonAlt>
             </div>
           </Card>
         </div>

@@ -1,5 +1,3 @@
-import ExternalIcon from "packages/ui/src/atoms/icons/external.svg"
-import HistoryIcon from "packages/ui/src/atoms/icons/history.svg"
 import { useCallback, FC } from "react"
 import { useNavigate } from "react-router-dom"
 import { mutate } from "swr"
@@ -9,21 +7,28 @@ import {
   Dropdown,
   DropdownOption,
   IconCmpDots,
+  IconSvgExternalIcon,
   IconSvgEyeClosedBlack,
+  IconSvgHistoryIcon,
 } from "@nfid-frontend/ui"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { FT } from "frontend/integration/ft/ft"
+
+import { IProfileConstants } from ".."
 
 type AssetDropdownProps = {
   token: FT
+  profileConstants: IProfileConstants
 }
 
-export const AssetDropdown: FC<AssetDropdownProps> = ({ token }) => {
+export const AssetDropdown: FC<AssetDropdownProps> = ({
+  token,
+  profileConstants,
+}) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
     (canisterId: string) => () => {
-      navigate(`${ProfileConstants.base}/${ProfileConstants.activity}`, {
+      navigate(`${profileConstants.base}/${profileConstants.activity}`, {
         state: {
           canisterId,
         },
@@ -44,7 +49,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({ token }) => {
       >
         <DropdownOption
           label="Transactions"
-          icon={HistoryIcon}
+          icon={IconSvgHistoryIcon}
           handler={navigateToTransactions(token.getTokenAddress())}
         />
         <DropdownOption
@@ -71,7 +76,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({ token }) => {
         )}
         <DropdownOption
           label="View on block explorer"
-          icon={ExternalIcon}
+          icon={IconSvgExternalIcon}
           handler={() => {
             window.open(token.getBlockExplorerLink(), "_blank")
           }}

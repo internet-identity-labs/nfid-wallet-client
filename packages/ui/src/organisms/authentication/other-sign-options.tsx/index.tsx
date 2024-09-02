@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { IconButton } from "packages/ui/src/atoms/button/icon-button"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useForm } from "react-hook-form"
 
@@ -10,8 +11,6 @@ import {
   IconCmpWarning,
   Input,
 } from "@nfid-frontend/ui"
-
-import { IconButton } from "frontend/ui/atoms/button/icon-button"
 
 export interface AuthOtherSignOptionsProps {
   onBack: () => void

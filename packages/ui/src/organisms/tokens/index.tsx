@@ -7,22 +7,38 @@ import { ActiveToken } from "./components/active-asset"
 import { ProfileAssetsHeader } from "./components/header"
 import { NewAssetsModal } from "./components/new-assets-modal"
 
-interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
+export interface IProfileConstants {
+  base: string
+  activity: string
+}
+
+export interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
   activeTokens: FT[]
   filteredTokens: FT[]
   isActiveTokensLoading: boolean
-  isFilterTokensLoading: boolean
   setSearchQuery: (v: string) => void
-  userRootPrincipalId: string
+  profileConstants: IProfileConstants
+  onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
+  onFetch: (
+    ledgerID: string,
+    indexID: string,
+  ) => Promise<{
+    name: string
+    symbol: string
+    logo: string | undefined
+    decimals: number
+    fee: bigint
+  }>
 }
 
-const ProfileAssets: FC<ProfileAssetsProps> = ({
+export const ProfileAssets: FC<ProfileAssetsProps> = ({
   activeTokens,
   filteredTokens,
   isActiveTokensLoading,
-  isFilterTokensLoading,
   setSearchQuery,
-  userRootPrincipalId,
+  profileConstants,
+  onSubmitIcrc1Pair,
+  onFetch,
 }) => {
   return (
     <BlurredLoader
@@ -32,8 +48,8 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
       <ProfileAssetsHeader
         tokens={filteredTokens}
         setSearch={(value) => setSearchQuery(value)}
-        isLoading={isFilterTokensLoading}
-        userRootPrincipalId={userRootPrincipalId}
+        onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+        onFetch={onFetch}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
@@ -47,7 +63,11 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
         </thead>
         <tbody className="h-16 text-sm text-black">
           {activeTokens.map((token) => (
-            <ActiveToken key={`token_${token.getTokenName()}`} token={token} />
+            <ActiveToken
+              key={`token_${token.getTokenName()}`}
+              token={token}
+              profileConstants={profileConstants}
+            />
           ))}
         </tbody>
       </table>
@@ -55,5 +75,3 @@ const ProfileAssets: FC<ProfileAssetsProps> = ({
     </BlurredLoader>
   )
 }
-
-export default ProfileAssets

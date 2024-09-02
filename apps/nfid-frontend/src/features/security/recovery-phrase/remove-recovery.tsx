@@ -1,13 +1,12 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useState } from "react"
 
 import { IconCmpTrash } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { securityTracking } from "@nfid/integration"
 import { authState } from "@nfid/integration"
-
-import { Button } from "frontend/ui/atoms/button"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
 import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
@@ -61,7 +60,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
           placeholder="10000 cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo "
           onChange={(e) => setPhrase(e.target.value)}
         />
-        <Button
+        <ButtonAlt
           id="delete-recovery-button"
           error
           block
@@ -81,7 +80,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
           disabled={phrase.split(" ").length < 11}
         >
           Remove recovery phrase
-        </Button>
+        </ButtonAlt>
       </ModalComponent>
     </div>
   )

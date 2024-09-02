@@ -4,7 +4,7 @@ import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
 import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, FC, SetStateAction, useCallback, useState } from "react"
 import {
   FieldErrorsImpl,
   UseFormHandleSubmit,
@@ -31,17 +31,14 @@ import { validateTransferAmountField } from "@nfid-frontend/utils"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { fetchTokenByAddress } from "../../tokens/utils"
-
 export interface TransferFTUiProps {
   publicKey: string
   tokens: FT[]
-  token: FT
+  token: FT | undefined
   setChosenToken: (value: string) => void
   validateAddress: (address: string) => boolean | string
   isLoading: boolean
   loadingMessage: string | undefined
-  tokenOptions: IGroupedOptions[] | undefined
   sendReceiveTrackingFn: () => void
   isVault: boolean
   accountsOptions: IGroupedOptions[] | undefined
@@ -49,8 +46,6 @@ export interface TransferFTUiProps {
   selectedVaultsAccountAddress: string
   submit: (values: { amount: string; to: string }) => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
-  // amountInUSD: number
-  // setUSDAmount: (value: number) => void
   register: UseFormRegister<{
     amount: string
     to: string
@@ -83,7 +78,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   validateAddress,
   isLoading,
   loadingMessage,
-  tokenOptions,
   sendReceiveTrackingFn,
   isVault,
   accountsOptions,
@@ -91,63 +85,50 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   selectedVaultsAccountAddress,
   submit,
   setSelectedVaultsAccountAddress,
-  // amountInUSD,
-  // setUSDAmount,
   register,
   errors,
   handleSubmit,
   setValue,
   resetField,
 }) => {
-  const [selectedTokenAddress, setSelectedTokenAddress] = useState(
-    token.getTokenAddress(),
-  )
-
   const [amountInUSD, setAmountInUSD] = useState(0)
 
-  // const { data: chosenToken, isLoading: isChosenLoading } = useSWR(
-  //   selectedTokenAddress ? ["token", selectedTokenAddress] : null,
-  //   ([, address]) => fetchTokenByAddress(address),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log("aaraa", data)
-  //       setChosenToken(data)
-  //     },
-  //   },
-  // )
-
-  const { data: tokenFee, isLoading: isFeeLoading } = useSWR(
+  const { data: tokenFeeUsd, isLoading: isFeeLoading } = useSWR(
     token ? ["tokenFee", token.getTokenAddress()] : null,
-    token ? () => token.getTokenFee() : null,
+    token ? () => token.getTokenFeeFormattedUsd() : null,
   )
 
-  // const { data: usdRate, isLoading: isRateLoading } = useSWR(
-  //   token ? ["tokenRate", token.getTokenAddress()] : null,
-  //   token ? ([, amount]) => token.getTokenRate(amount) : null,
-  // )
-
-  const { data: usdRate, isLoading: isRateLoading } = useSWR(
+  const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token.getTokenRate(amount.toString()),
+    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
-  console.log("setUSDAmount", usdRate, token.getTokenName(), amountInUSD)
+  console.log("usdRatee", usdRate)
 
-  //console.log("debbb", selectedTokenAddress)
-
-  // useEffect(() => {
-  //   setSelectedTokenAddress(token.getTokenAddress())
-  // }, [token])
+  const getTokenOptions = useCallback(() => {
+    const options = tokens.map((token) => {
+      return {
+        label: "Internet Computer",
+        options: [
+          {
+            icon: token.getTokenLogo(),
+            value: token.getTokenAddress(),
+            title: token.getTokenSymbol(),
+            subTitle: token.getTokenName(),
+          },
+        ],
+      }
+    })
+    return options
+  }, [tokens])
 
   const maxHandler = async () => {
     if (!token) return
-    const fee = await token.getTokenFee()
-    console.log(123123412414)
-    if (fee && token.getTokenBalance()) {
-      const balanceNum = new BigNumber(token.getTokenBalance()!.raw.toString())
-      const feeNum = new BigNumber(fee.raw!.toString())
+    const fee = token.getTokenFeeRaw()
+    if (fee && token.getTokenBalanceRaw()) {
+      const balanceNum = new BigNumber(token.getTokenBalanceRaw()!.toString())
+      const feeNum = new BigNumber(fee.toString())
       const val = balanceNum.minus(feeNum)
-      console.log("qwe", token.getTokenBalance()!.raw, fee.raw!)
       if (val.isLessThanOrEqualTo(0)) return
 
       const formattedValue = formatAssetAmountRaw(
@@ -155,22 +136,25 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         token.getTokenDecimals()!,
       )
 
-      console.log("qwe", formattedValue, feeNum)
-
       setValue("amount", formattedValue)
       setAmountInUSD(Number(formattedValue))
     }
   }
 
+  if (!token || isLoading)
+    return (
+      <BlurredLoader
+        isLoading
+        loadingMessage={loadingMessage}
+        overlayClassnames="rounded-xl"
+        className="text-xs"
+      />
+    )
+
   return (
-    <BlurredLoader
-      className="text-xs"
-      overlayClassnames="rounded-xl"
-      isLoading={isLoading}
-      loadingMessage={loadingMessage}
-    >
-      <div className="flex justify-between">
-        <p className="mb-1">Amount to send</p>
+    <>
+      <div className="flex items-center justify-between">
+        <p className="mb-1 text-xs">Amount to send</p>
         <p
           onClick={maxHandler}
           className="text-xs font-bold cursor-pointer text-primaryButtonColor"
@@ -178,7 +162,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           Max
         </p>
       </div>
-      <div className="flex flex-col justify-between h-full pb-20">
+      <div className="flex flex-col justify-between h-full pb-[50px]">
         <div
           className={clsx(
             "border rounded-[12px] flex items-center justify-between pl-4 pr-5 h-14 mb-4",
@@ -191,18 +175,16 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
                 formatAssetAmountRaw(
-                  Number(token.getTokenBalance()),
+                  Number(token.getTokenBalanceRaw()),
                   token.getTokenDecimals()!,
                 ),
                 formatAssetAmountRaw(
-                  Number(token.getTokenFee()),
+                  Number(token.getTokenFeeRaw()),
                   token.getTokenDecimals()!,
                 ),
               ),
               valueAsNumber: true,
-              //onBlur: calculateFee,
               onChange: (e) => {
-                //if (!rate) return
                 setAmountInUSD(Number(e.target.value))
               },
             })}
@@ -221,23 +203,10 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               "text-xs pt-[4px] text-gray-400",
             )}
           >
-            {usdRate?.formatted}
+            {usdRate}
           </p>
           <ChooseModal
-            optionGroups={
-              tokens.map((token) => {
-                return {
-                  label: token.getTokenName(),
-                  options: [
-                    {
-                      title: token.getTokenSymbol(),
-                      subTitle: token.getTokenName(),
-                      value: token.getTokenAddress(),
-                    },
-                  ],
-                }
-              }) ?? []
-            }
+            optionGroups={getTokenOptions()}
             title="Asset to send"
             type="trigger"
             onSelect={(value) => {
@@ -245,12 +214,10 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               resetField("amount")
               resetField("to")
               setAmountInUSD(0)
-              //setSelectedTokenAddress(value)
-              console.log("chh", value)
               setChosenToken(value)
             }}
+            preselectedValue={token.getTokenAddress()}
             onOpen={sendReceiveTrackingFn}
-            //preselectedValue={`${selectedTokenCurrency}&${selectedTokenBlockchain}`}
             isSmooth
             trigger={
               <div
@@ -260,9 +227,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                 <ImageWithFallback
                   alt={token.getTokenName()}
                   fallbackSrc={IconNftPlaceholder}
-                  src={
-                    token.getTokenLogo() ? token.getTokenLogo()! : "no image"
-                  }
+                  src={`${token.getTokenLogo()}`}
                   className="w-[26px] mr-1.5"
                 />
                 <p className="text-lg font-semibold">
@@ -305,7 +270,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             validate: (value) => validateAddress(value),
           })}
           onSelect={(value) => {
-            console.log(1234123)
             resetField("to")
             setValue("to", value)
           }}
@@ -326,10 +290,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             ) : (
               <div className="text-right">
                 <p className="text-sm leading-5" id="fee">
-                  {tokenFee?.formatted}
-                  <span className="block mt-1 text-xs">
-                    {tokenFee?.formattedUsd}
-                  </span>
+                  {token.getTokenFeeFormatted()}
+                  <span className="block mt-1 text-xs">{tokenFeeUsd}</span>
                 </p>
               </div>
             )}
@@ -351,6 +313,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           publicKey={publicKey}
         />
       </div>
-    </BlurredLoader>
+    </>
   )
 }

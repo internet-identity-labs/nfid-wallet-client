@@ -1,10 +1,9 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
+import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React, { useState } from "react"
 
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
-
-import { Button } from "frontend/ui/atoms/button"
-import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 interface IRecoveryPhraseProtectModal
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -43,7 +42,7 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
           placeholder="10000 cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo"
           onChange={(e) => setPhrase(e.target.value)}
         />
-        <Button
+        <ButtonAlt
           primary
           block
           className="rounded-t-none"
@@ -51,7 +50,7 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
           id="protect-submit"
         >
           Protect recovery phrase
-        </Button>
+        </ButtonAlt>
       </div>
     </ModalAdvanced>
   )

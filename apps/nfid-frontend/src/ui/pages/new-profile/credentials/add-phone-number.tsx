@@ -1,11 +1,11 @@
 import clsx from "clsx"
+import { ButtonAlt } from "packages/ui/src/atoms/button"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React, { Dispatch, SetStateAction } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import { Input, phoneRules } from "@nfid-frontend/ui"
 
-import { Button } from "frontend/ui/atoms/button"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 interface IProfileAddPhoneNumber {
@@ -92,14 +92,14 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
               })}
             />
           </div>
-          <Button
+          <ButtonAlt
             id="add-phone-number"
             primary
             className="px-10 mt-3 sm:mt-5"
             onClick={handleSubmit(onSubmit)}
           >
             Verify phone number
-          </Button>
+          </ButtonAlt>
         </form>
       </ProfileContainer>
     </ProfileTemplate>

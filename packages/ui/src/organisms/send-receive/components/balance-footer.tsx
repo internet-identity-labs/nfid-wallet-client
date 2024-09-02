@@ -33,8 +33,7 @@ export const BalanceFooter = ({
         <p>Wallet address</p>
         <p>
           Balance:&nbsp;
-          {token?.getTokenBalance()?.formatted ||
-            `0 ${token?.getTokenSymbol()}`}
+          {token?.getTokenBalanceFormatted() || `0 ${token?.getTokenSymbol()}`}
         </p>
       </div>
       <div className="flex items-center justify-between">

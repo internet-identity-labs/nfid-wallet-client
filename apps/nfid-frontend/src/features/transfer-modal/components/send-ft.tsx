@@ -7,12 +7,11 @@ import {
   fetchAllTokens,
   fetchTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import useSWR, { mutate } from "swr"
+import useSWR from "swr"
 
-import { BlurredLoader, Loader } from "@nfid-frontend/ui"
 import {
   RootWallet,
   registerTransaction,
@@ -21,23 +20,11 @@ import {
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
-import { ICRC1Metadata } from "@nfid/integration/token/icrc1/types"
 
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
-import { FT } from "frontend/integration/ft/ft"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
-import { resetCachesByKey } from "frontend/ui/connnector/cache"
-import {
-  getAllTokensOptions,
-  getConnector,
-} from "frontend/ui/connnector/transfer-modal/transfer-factory"
-import {
-  ITransferResponse,
-  TransferModalType,
-} from "frontend/ui/connnector/transfer-modal/types"
-import { ITransferConfig } from "frontend/ui/connnector/transfer-modal/types"
-import { Blockchain } from "frontend/ui/connnector/types"
+import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
 
 import {
   getIdentity,
@@ -71,40 +58,24 @@ export const TransferFT = ({
     ([, address]) => fetchTokenByAddress(address),
   )
 
-  const { data: usdRate, isLoading: isRateLoading } = useSWR(
+  const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token?.getTokenRate(amount.toString()),
+    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
-
-  console.log("dattt", token)
 
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
 
-  //const [amountInUSD, setAmountInUSD] = useState(0)
-
-  const { profile, isLoading: isLoadingProfile } = useProfile()
+  const { profile } = useProfile()
 
   // TODO: adjust accountsOptions for Vaults
-  const { data: vaultsAccountsOptions = [], isLoading } = useSWR(
+  const { data: vaultsAccountsOptions = [] } = useSWR(
     "vaultsAccountsOptions",
     getVaultsAccountsOptions,
   )
 
-  // useEffect(() => {
-  //   if (!accountsOptions?.length) return
-  //   !preselectedAccountAddress.length &&
-  //     setSelectedAccountAddress(accountsOptions[0].options[0].value)
-  // }, [accountsOptions, preselectedAccountAddress.length])
-
-  const { data: tokenOptions, isLoading: isTokensLoading } = useSWR(
-    [isVault, "getAllTokensOptions"],
-    ([isVault]) => getAllTokensOptions(isVault),
-  )
-
   const {
     register,
-    getValues,
     formState: { errors },
     handleSubmit,
     setValue,
@@ -126,7 +97,7 @@ export const TransferFT = ({
         tokenName: token.getTokenName(),
         tokenType: "fungible",
         amount: amount,
-        fee: token.getTokenFee()?.toString() ?? 0,
+        fee: token.getTokenFeeFormatted() ?? 0,
       })
     },
     [token],
@@ -160,9 +131,7 @@ export const TransferFT = ({
             resolve({} as ITransferResponse)
           }),
           title: `${values.amount} ${token.getTokenSymbol()}`,
-          // don't know
-          subTitle: `123`,
-          //subTitle: `$${(Number(values.amount) * Number(rate)).toFixed(2)}`,
+          subTitle: usdRate!,
           isAssetPadding: true,
         })
       }
@@ -176,18 +145,12 @@ export const TransferFT = ({
           if (!token) return
           try {
             if (token?.getTokenAddress() === ICP_CANISTER_ID) {
-              console.log(
-                "icppp",
-                values.amount,
-                stringICPtoE8s(String(values.amount)),
-              )
               res = await transferICP({
                 amount: stringICPtoE8s(String(values.amount)),
                 to: values.to,
                 identity: identity,
               })
             } else {
-              const fee = await token.getTokenFee()
               res = await transferICRC1(identity, token.getTokenAddress(), {
                 to: {
                   subaccount: subaccount ? [subaccount] : [],
@@ -197,7 +160,7 @@ export const TransferFT = ({
                   Number(values.amount) * 10 ** token?.getTokenDecimals()!,
                 ),
                 memo: [],
-                fee: [fee!.raw],
+                fee: [token.getTokenFeeRaw()],
                 from_subaccount: [],
                 created_at_time: [],
               })
@@ -218,31 +181,19 @@ export const TransferFT = ({
         title: `${Number(values.amount)
           .toFixed(token?.getTokenDecimals())
           .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
-        //subTitle: `123`,
-        subTitle: usdRate!.formatted,
+        subTitle: usdRate!,
         isAssetPadding: true,
-        //duration: tokenMetadata.duration,
       })
     },
-    [handleTrackTransfer, isVault, onTransferPromise, token],
+    [
+      handleTrackTransfer,
+      isVault,
+      onTransferPromise,
+      token,
+      selectedVaultsAccountAddress,
+      usdRate,
+    ],
   )
-
-  // const loadingMessage = useMemo(() => {
-  //   if (isLoadingProfile) return "Fetching account information..."
-  //   if (isTokensLoading) return "Fetching supported tokens..."
-  //   if (isConnectorLoading || isMetadataLoading)
-  //     return "Loading token config..."
-  //   if (isAccountsLoading || isAccountsValidating) return "Loading accounts..."
-  // }, [
-  //   isLoadingProfile,
-  //   isTokensLoading,
-  //   isConnectorLoading,
-  //   isMetadataLoading,
-  //   isAccountsLoading,
-  //   isAccountsValidating,
-  // ])
-
-  if (!token) return <BlurredLoader isLoading />
 
   return (
     <TransferFTUi
@@ -251,29 +202,18 @@ export const TransferFT = ({
       tokens={activeTokens}
       setChosenToken={setTokenAddress}
       validateAddress={validateAddress}
-      // isLoading={
-      //   isConnectorLoading ||
-      //   isAccountsLoading ||
-      //   isAccountsValidating ||
-      //   isMetadataLoading ||
-      //   isTokensLoading
-      // }
-      isLoading={isActiveTokensLoading}
+      isLoading={isActiveTokensLoading || isTokenLoading}
       sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
       isVault={isVault}
       selectedVaultsAccountAddress={selectedVaultsAccountAddress}
       submit={submit}
       setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
-      //amountInUSD={amountInUSD}
-      //setUSDAmount={(value) => setAmountInUSD(value)}
       register={register}
       errors={errors}
       handleSubmit={handleSubmit}
       setValue={setValue}
       resetField={resetField}
-      ////////////////////////////
       loadingMessage={"Fetching supported tokens..."}
-      tokenOptions={tokenOptions}
       accountsOptions={vaultsAccountsOptions}
       optionGroups={
         profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []

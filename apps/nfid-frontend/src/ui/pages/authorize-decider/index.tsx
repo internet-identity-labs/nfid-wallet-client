@@ -1,14 +1,14 @@
+import { IconButton } from "packages/ui/src/atoms/button/icon-button"
+import {
+  LoginEventHandler,
+  SignInWithGoogle,
+} from "packages/ui/src/atoms/button/signin-with-google"
 import React from "react"
 import { useForm } from "react-hook-form"
 
 import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
-import { IconButton } from "frontend/ui/atoms/button/icon-button"
-import {
-  LoginEventHandler,
-  SignInWithGoogle,
-} from "frontend/ui/atoms/button/signin-with-google"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { ReactComponent as QRCode } from "./assets/qrcode.svg"

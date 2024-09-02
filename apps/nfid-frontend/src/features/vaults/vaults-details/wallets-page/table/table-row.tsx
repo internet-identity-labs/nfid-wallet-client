@@ -40,7 +40,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-
   const [, send] = useActor(globalServices.transferService)
   const { wallets } = useAllWallets()
 

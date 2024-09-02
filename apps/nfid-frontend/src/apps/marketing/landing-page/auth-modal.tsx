@@ -1,8 +1,8 @@
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React from "react"
 
 import NFIDAuthCoordinator from "frontend/features/authentication/nfid/coordinator"
 import { ElementProps } from "frontend/types/react"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 interface HeroRightSideProps extends ElementProps<HTMLDivElement> {
   isVisible: boolean

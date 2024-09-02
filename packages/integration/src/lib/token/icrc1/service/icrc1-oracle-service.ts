@@ -13,6 +13,8 @@ export class ICRC1OracleService {
       ledger: data.ledger,
       index: data.index === undefined ? [] : [data.index],
       symbol: data.symbol,
+      fee: BigInt(data.fee),
+      decimals: data.decimals,
     }
     await iCRC1OracleActor.store_icrc1_canister(request)
   }

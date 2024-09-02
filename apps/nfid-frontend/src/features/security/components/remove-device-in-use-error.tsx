@@ -1,6 +1,6 @@
-import { Button } from "@nfid-frontend/ui"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
+import { Button } from "@nfid-frontend/ui"
 
 export interface RemoveDeviceInUseErrorProps {
   isModalVisible: boolean

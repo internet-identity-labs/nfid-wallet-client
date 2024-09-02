@@ -5,14 +5,16 @@ export const idlFactory = ({ IDL }: any) => {
   })
   const Category = IDL.Variant({
     Sns: IDL.Null,
+    Spam: IDL.Null,
+    Native: IDL.Null,
     Known: IDL.Null,
-    Unknown: IDL.Null,
     ChainFusionTestnet: IDL.Null,
     ChainFusion: IDL.Null,
     Community: IDL.Null,
-    Native: IDL.Null,
   })
   const ICRC1 = IDL.Record({
+    fee: IDL.Nat,
+    decimals: IDL.Nat8,
     logo: IDL.Opt(IDL.Text),
     name: IDL.Text,
     ledger: IDL.Text,
@@ -21,6 +23,8 @@ export const idlFactory = ({ IDL }: any) => {
     symbol: IDL.Text,
   })
   const ICRC1Request = IDL.Record({
+    fee: IDL.Nat,
+    decimals: IDL.Nat8,
     logo: IDL.Opt(IDL.Text),
     name: IDL.Text,
     ledger: IDL.Text,
@@ -29,7 +33,9 @@ export const idlFactory = ({ IDL }: any) => {
   })
   return IDL.Service({
     get_all_icrc1_canisters: IDL.Func([], [IDL.Vec(ICRC1)], ["query"]),
-    save_all_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [IDL.Vec(ICRC1)], []),
+    replace_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [IDL.Vec(ICRC1)], []),
     store_icrc1_canister: IDL.Func([ICRC1Request], [], []),
+    store_new_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [IDL.Vec(ICRC1)], []),
+    sync_controllers: IDL.Func([], [IDL.Vec(IDL.Text)], []),
   })
 }

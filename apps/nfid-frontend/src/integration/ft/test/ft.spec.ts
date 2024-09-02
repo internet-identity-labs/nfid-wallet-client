@@ -28,6 +28,8 @@ describe("ft test suite", () => {
             index: "2awyi-oyaaa-aaaaq-aaanq-cai",
             state: "Active",
             category: "Unknown",
+            fee: BigInt(10000),
+            decimals: 8,
           },
           {
             ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -36,6 +38,8 @@ describe("ft test suite", () => {
             index: "qhbym-qaaaa-aaaaa-aaafq-cai",
             state: "Active",
             category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
           },
         ])
       const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(
@@ -49,6 +53,8 @@ describe("ft test suite", () => {
       expect(icpResult).toBeDefined()
       expect(icpResult!.getTokenBalance()).toEqual("0.0002 ICP")
       expect(icpResult!.getTokenCategory()).toEqual("Native")
+      expect(icpResult!.getFee()).toEqual(BigInt(10000))
+      expect(icpResult!.getDecimals()).toEqual(8)
       expect(icpResult!.getTokenAddress()).toEqual(
         "ryjl3-tyaaa-aaaaa-aaaba-cai",
       )

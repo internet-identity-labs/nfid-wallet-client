@@ -21,6 +21,7 @@ export interface FT {
 
   showToken(): Promise<void>
 
-  //TODO
-  //getTransactionHistory(): Promise<TransactionRecord[]>
+  getDecimals(): number
+
+  getFee(): bigint
 }

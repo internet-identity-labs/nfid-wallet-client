@@ -7,6 +7,7 @@ import { nftService } from "src/integration/nft/nft-service"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
@@ -16,7 +17,7 @@ export class FtService {
     userPublicKey: Principal,
     page: number = 1,
     limit: number = 10,
-    sortField: keyof FT = "getTokenName", // Default sorting by token name
+    sortField: keyof FT = "getTokenName",
   ): Promise<PaginatedResponse<FT>> {
     let userTokens = await icrc1StorageService
       .getICRC1ActiveCanisters(userId)
@@ -70,9 +71,24 @@ export class FtService {
     return icrc1StorageService
       .getICRC1FilteredCanisters(userId, nameCategoryFilter)
       .then((canisters) => {
-        return canisters.map((canister) => {
-          return new FTImpl(canister)
+        const ft = canisters.map((canister) => new FTImpl(canister))
+
+        const categoryOrder: Record<Category, number> = {
+          [Category.Sns]: 3,
+          [Category.ChainFusion]: 2,
+          [Category.Known]: 4,
+          [Category.Native]: 1,
+          [Category.Community]: 5,
+          [Category.Spam]: 7,
+          [Category.ChainFusionTestnet]: 6,
+        }
+
+        ft.sort((a, b) => {
+          const aCategory = categoryOrder[a.getTokenCategory()] || 999
+          const bCategory = categoryOrder[b.getTokenCategory()] || 999
+          return aCategory - bCategory
         })
+        return ft
       })
   }
 

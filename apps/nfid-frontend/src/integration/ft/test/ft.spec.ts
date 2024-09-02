@@ -44,7 +44,7 @@ describe("ft test suite", () => {
           },
           {
             ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
-            name: "Internet",
+            name: "A first letter",
             symbol: "A first letter",
             index: "qhbym-qaaaa-aaaaa-aaafq-cai",
             state: "Active",
@@ -77,16 +77,8 @@ describe("ft test suite", () => {
       const filteredResult = await ftService.getAllFTokens(userId, "Chat")
       expect(filteredResult.length).toEqual(1)
 
-      expect(result.items[0].getTokenSymbol()).not.toEqual("A first letter")
-      const sortedResult: PaginatedResponse<FT> =
-        await ftService.getAllUserTokens(
-          userId,
-          principal,
-          1,
-          10,
-          "getTokenSymbol",
-        )
-      expect(sortedResult.items[0].getTokenSymbol()).toEqual("A first letter")
+      expect(result.items[0].getTokenName()).toEqual("A first letter")
+      expect(result.items[1].getTokenName()).toEqual("Chat")
     })
 
     it("shoult get all sorted tokens", async function () {

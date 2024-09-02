@@ -17,7 +17,6 @@ export class FtService {
     userPublicKey: Principal,
     page: number = 1,
     limit: number = 10,
-    sortField: keyof FT = "getTokenName",
   ): Promise<PaginatedResponse<FT>> {
     let userTokens = await icrc1StorageService
       .getICRC1ActiveCanisters(userId)
@@ -35,16 +34,7 @@ export class FtService {
     let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
 
     ft.sort((a, b) => {
-      // @ts-ignore
-      const aValue = a[sortField]()
-      // @ts-ignore
-      const bValue = b[sortField]()
-
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return aValue.localeCompare(bValue)
-      } else {
-        return 0
-      }
+      return a.getTokenName().localeCompare(b.getTokenName())
     })
 
     const totalItems = ft.length

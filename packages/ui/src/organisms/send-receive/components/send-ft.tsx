@@ -93,15 +93,17 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 }) => {
   const [amountInUSD, setAmountInUSD] = useState(0)
 
-  const { data: tokenFee, isLoading: isFeeLoading } = useSWR(
+  const { data: tokenFeeUsd, isLoading: isFeeLoading } = useSWR(
     token ? ["tokenFee", token.getTokenAddress()] : null,
-    token ? () => token.getTokenFee() : null,
+    token ? () => token.getTokenFeeFormattedUsd() : null,
   )
 
   const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token?.getTokenRate(amount.toString()),
+    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
+
+  console.log("usdRatee", usdRate)
 
   const getTokenOptions = useCallback(() => {
     const options = tokens.map((token) => {
@@ -122,12 +124,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 
   const maxHandler = async () => {
     if (!token) return
-    const fee = await token.getTokenFee()
-    if (fee && token.getTokenBalance()) {
-      const balanceNum = new BigNumber(token.getTokenBalance()!.raw.toString())
-      const feeNum = new BigNumber(fee.raw.toString())
+    const fee = token.getTokenFeeRaw()
+    if (fee && token.getTokenBalanceRaw()) {
+      const balanceNum = new BigNumber(token.getTokenBalanceRaw()!.toString())
+      const feeNum = new BigNumber(fee.toString())
       const val = balanceNum.minus(feeNum)
-      console.log("qwe", token.getTokenBalance()!.raw, fee.raw!)
       if (val.isLessThanOrEqualTo(0)) return
 
       const formattedValue = formatAssetAmountRaw(
@@ -174,11 +175,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
                 formatAssetAmountRaw(
-                  Number(token.getTokenBalance()?.raw),
+                  Number(token.getTokenBalanceRaw()),
                   token.getTokenDecimals()!,
                 ),
                 formatAssetAmountRaw(
-                  Number(tokenFee?.raw),
+                  Number(token.getTokenFeeRaw()),
                   token.getTokenDecimals()!,
                 ),
               ),
@@ -202,7 +203,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               "text-xs pt-[4px] text-gray-400",
             )}
           >
-            {usdRate?.formatted}
+            {usdRate}
           </p>
           <ChooseModal
             optionGroups={getTokenOptions()}
@@ -289,10 +290,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             ) : (
               <div className="text-right">
                 <p className="text-sm leading-5" id="fee">
-                  {tokenFee?.formatted}
-                  <span className="block mt-1 text-xs">
-                    {tokenFee?.formattedUsd}
-                  </span>
+                  {token.getTokenFeeFormatted()}
+                  <span className="block mt-1 text-xs">{tokenFeeUsd}</span>
                 </p>
               </div>
             )}

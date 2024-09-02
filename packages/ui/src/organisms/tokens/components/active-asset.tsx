@@ -51,7 +51,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
       >
         <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-          {token.getTokenBalance()?.formatted || `0 ${token.getTokenSymbol()}`}
+          {token.getTokenBalanceFormatted() || `0 ${token.getTokenSymbol()}`}
           <p className="text-xs md:hidden text-secondary">
             {isLoading ? (
               <Spinner className="ml-auto w-[18px] h-[18px] text-gray-400" />

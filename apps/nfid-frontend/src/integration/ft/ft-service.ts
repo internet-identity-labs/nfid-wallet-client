@@ -18,7 +18,7 @@ export class FtService {
     limit: number = 10,
   ): Promise<PaginatedResponse<FT>> {
     let userTokens = await icrc1StorageService
-      .getICRC1Canisters(userId)
+      .getICRC1ActiveCanisters(userId)
       .then(async (canisters) => {
         if (canisters.length === 0) {
           await icrc1RegistryService.storeICRC1Canister(

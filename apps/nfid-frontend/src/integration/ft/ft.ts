@@ -1,36 +1,29 @@
 import { Principal } from "@dfinity/principal"
 
-import { State, Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
 
   getTokenName(): string
 
-  getTokenCategory(): Category
+  getTokenCategory(): string
 
-  getTokenBalance(): { raw: bigint; formatted: string } | undefined
+  getTokenBalanceRaw(): bigint | undefined
+
+  getTokenBalanceFormatted(): string | undefined
 
   getUSDBalanceFormatted(): Promise<string | undefined>
 
-  getTokenRate(
-    amount: string,
-  ): Promise<{ raw: number; formatted: string } | undefined>
+  getTokenRateRaw(amount: string): Promise<number | undefined>
+
+  getTokenRateFormatted(amount: string): Promise<string | undefined>
 
   getTokenAddress(): string
 
   getTokenSymbol(): string
 
   getTokenDecimals(): number | undefined
-
-  getTokenFee(): Promise<
-    | {
-        raw: bigint
-        formatted: string
-        formattedUsd: string
-      }
-    | undefined
-  >
 
   getTokenLogo(): string | undefined
 
@@ -42,8 +35,11 @@ export interface FT {
 
   showToken(): Promise<void>
 
-  isHideable(): boolean
+  getTokenFeeRaw(): bigint
 
-  //TODO
-  //getTransactionHistory(): Promise<TransactionRecord[]>
+  getTokenFeeFormatted(): string
+
+  getTokenFeeFormattedUsd(): Promise<string | undefined>
+
+  isHideable(): boolean
 }

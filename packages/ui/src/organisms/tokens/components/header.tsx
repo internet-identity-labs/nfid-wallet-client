@@ -218,7 +218,10 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
                 {tokens.map((token) => {
                   if (!token.isHideable()) return
                   return (
-                    <FilteredToken key={token.getTokenName()} token={token} />
+                    <FilteredToken
+                      key={`${token.getTokenName()}_${token.getTokenAddress()}`}
+                      token={token}
+                    />
                   )
                 })}
               </div>

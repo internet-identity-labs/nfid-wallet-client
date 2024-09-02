@@ -60,7 +60,7 @@ export const TransferFT = ({
 
   const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token?.getTokenRate(amount.toString()),
+    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
@@ -97,7 +97,7 @@ export const TransferFT = ({
         tokenName: token.getTokenName(),
         tokenType: "fungible",
         amount: amount,
-        fee: token.getTokenFee()?.toString() ?? 0,
+        fee: token.getTokenFeeFormatted() ?? 0,
       })
     },
     [token],
@@ -131,7 +131,7 @@ export const TransferFT = ({
             resolve({} as ITransferResponse)
           }),
           title: `${values.amount} ${token.getTokenSymbol()}`,
-          subTitle: usdRate!.formatted,
+          subTitle: usdRate!,
           isAssetPadding: true,
         })
       }
@@ -145,18 +145,12 @@ export const TransferFT = ({
           if (!token) return
           try {
             if (token?.getTokenAddress() === ICP_CANISTER_ID) {
-              console.log(
-                "icppp",
-                values.amount,
-                stringICPtoE8s(String(values.amount)),
-              )
               res = await transferICP({
                 amount: stringICPtoE8s(String(values.amount)),
                 to: values.to,
                 identity: identity,
               })
             } else {
-              const fee = await token.getTokenFee()
               res = await transferICRC1(identity, token.getTokenAddress(), {
                 to: {
                   subaccount: subaccount ? [subaccount] : [],
@@ -166,7 +160,7 @@ export const TransferFT = ({
                   Number(values.amount) * 10 ** token?.getTokenDecimals()!,
                 ),
                 memo: [],
-                fee: [fee!.raw],
+                fee: [token.getTokenFeeRaw()],
                 from_subaccount: [],
                 created_at_time: [],
               })
@@ -187,7 +181,7 @@ export const TransferFT = ({
         title: `${Number(values.amount)
           .toFixed(token?.getTokenDecimals())
           .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
-        subTitle: usdRate!.formatted,
+        subTitle: usdRate!,
         isAssetPadding: true,
       })
     },

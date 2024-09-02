@@ -43,6 +43,8 @@ export class Icrc1StorageService {
       )
       //todo maybe group metadata
       const userData: ICRC1UserData = {
+        decimals: icrc1.decimals,
+        fee: icrc1.fee,
         ledger: icrc1.ledger,
         name: icrc1.name,
         symbol: icrc1.symbol,
@@ -50,7 +52,7 @@ export class Icrc1StorageService {
         index: icrc1.index[0],
         state:
           registry === undefined ? State.Inactive : mapState(registry.state),
-        category: mapCategory(icrc1.category),
+        category: mapCategory(icrc1.category)
       }
       return userData
     })

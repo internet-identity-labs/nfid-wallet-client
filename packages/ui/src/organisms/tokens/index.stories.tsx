@@ -3,50 +3,39 @@ import { Meta, StoryFn } from "@storybook/react"
 import { useState } from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
+
 import { FT } from "frontend/integration/ft/ft"
 
 import { ProfileAssets, ProfileAssetsProps } from "."
 import ProfileContainer from "../../atoms/profile-container/Container"
 
-const mockActiveTokens = [
-  {
-    getTokenName: () => "Mock Token 1",
-    getTokenCategory: () => "Category 1",
-    getTokenBalance: () => ({ formatted: "1.0 MTK1" }),
-    getUSDBalanceFormatted: async () => "100 USD",
-    getTokenAddress: () => "0xMockAddress1",
-    getTokenSymbol: () => "MTK1",
-    getTokenDecimals: () => 18,
-    getTokenFee: async () => ({
-      formatted: "0.001",
-      formattedUsd: "0.1 USD",
-    }),
-    getTokenLogo: () => "https://via.placeholder.com/150",
-    getTokenState: () => "Active",
-    getBlockExplorerLink: () => "https://etherscan.io/address/0xMockAddress1",
-    hideToken: async () => {},
-    showToken: async () => {},
-    isHideable: () => true,
-  },
-  {
-    getTokenName: () => "Mock Token 2",
-    getTokenCategory: () => "Category 2",
-    getTokenBalance: () => ({ formatted: "5.0 MTK2" }),
-    getUSDBalanceFormatted: async () => "500 USD",
-    getTokenAddress: () => "0xMockAddress2",
-    getTokenSymbol: () => "MTK2",
-    getTokenDecimals: () => 18,
-    getTokenFee: async () => ({
-      formatted: "0.005",
-      formattedUsd: "0.5 USD",
-    }),
-    getTokenLogo: () => "https://via.placeholder.com/150",
-    getTokenState: () => "Active",
-    getBlockExplorerLink: () => "https://etherscan.io/address/0xMockAddress2",
-    hideToken: async () => {},
-    showToken: async () => {},
-    isHideable: () => true,
-  },
+const createMockFT = (name: string, isHideable: boolean): FT => ({
+  init: async () => createMockFT(name, isHideable),
+  getTokenName: () => name,
+  getTokenCategory: () => "Category",
+  getTokenBalanceRaw: () => BigInt(1000000000000000000),
+  getTokenBalanceFormatted: () => "1.0 MTK",
+  getUSDBalanceFormatted: async () => "100 USD",
+  getTokenAddress: () => "0xMockAddress",
+  getTokenSymbol: () => "MTK",
+  getTokenDecimals: () => 18,
+  getTokenLogo: () => "https://via.placeholder.com/150",
+  getTokenState: () => "Active" as State,
+  getBlockExplorerLink: () => "https://etherscan.io/address/0xMockAddress",
+  hideToken: async () => {},
+  showToken: async () => {},
+  getTokenFeeRaw: () => BigInt(1000),
+  getTokenFeeFormatted: () => "0.001 MTK",
+  getTokenFeeFormattedUsd: async () => "0.1 USD",
+  getTokenRateFormatted: async () => "0.24 USD",
+  getTokenRateRaw: async () => 0.24,
+  isHideable: () => isHideable,
+})
+
+const mockActiveTokens: FT[] = [
+  createMockFT("Token 1", true),
+  createMockFT("Token 2", true),
 ]
 
 const meta: Meta = {

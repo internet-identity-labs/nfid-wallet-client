@@ -7,6 +7,7 @@ import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
 import { exchangeRateService } from "@nfid/integration"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
@@ -41,12 +42,22 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            name: "A first letter",
+            symbol: "A first letter",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
         ])
       const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(
         userId,
         principal,
       )
-      expect(result.items.length).toEqual(2)
+      expect(result.items.length).toEqual(3)
       const icpResult = result.items.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -65,7 +76,56 @@ describe("ft test suite", () => {
 
       const filteredResult = await ftService.getAllFTokens(userId, "Chat")
       expect(filteredResult.length).toEqual(1)
+
+      expect(result.items[0].getTokenName()).toEqual("A first letter")
+      expect(result.items[1].getTokenName()).toEqual("Chat")
     })
+
+    it("shoult get all sorted tokens", async function () {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValue([
+          {
+            ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
+            name: "Chat",
+            symbol: "CHAT",
+            logo: "Some logo",
+            index: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            state: "Active",
+            category: "Sns",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            name: "Internet",
+            symbol: "A first letter",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Spam",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+        ])
+
+      const result: FT[] = await ftService.getAllFTokens(userId, undefined)
+
+      expect(result.length).toEqual(3)
+      expect(result[0].getTokenCategory()).toEqual(Category.Native)
+      expect(result[1].getTokenCategory()).toEqual(Category.Sns)
+      expect(result[2].getTokenCategory()).toEqual(Category.Spam)
+    })
+
     it("should calculate USD balance", async function () {
       jest
         .spyOn(nftGeekService as any, "fetchNftGeekData")

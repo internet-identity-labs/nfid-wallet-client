@@ -7,6 +7,8 @@ export interface FT {
 
   getTokenName(): string
 
+  getTokenSymbol(): string
+
   getTokenCategory(): Category
 
   getTokenBalance(): string | undefined

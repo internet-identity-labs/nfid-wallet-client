@@ -110,4 +110,8 @@ export class FTImpl implements FT {
   getFee(): bigint {
     return this.fee
   }
+
+  getTokenSymbol(): string {
+    return this.symbol
+  }
 }

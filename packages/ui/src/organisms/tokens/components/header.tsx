@@ -20,7 +20,6 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
-import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -38,16 +37,25 @@ export interface ICRC1Metadata {
 
 interface ProfileAssetsHeaderProps {
   tokens: FT[]
-  isLoading: boolean
   setSearch: (v: string) => void
-  userRootPrincipalId: string
+  onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
+  onFetch: (
+    ledgerID: string,
+    indexID: string,
+  ) => Promise<{
+    name: string
+    symbol: string
+    logo: string | undefined
+    decimals: number
+    fee: bigint
+  }>
 }
 
 export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   tokens,
-  isLoading,
   setSearch,
-  userRootPrincipalId,
+  onSubmitIcrc1Pair,
+  onFetch,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
@@ -73,8 +81,6 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
     },
   })
 
-  let icrc1Pair = new Icrc1Pair(getValues("ledgerID"), getValues("indexID"))
-
   useEffect(() => {
     if (errors.ledgerID) {
       resetField("indexID")
@@ -85,7 +91,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   const submit = async () => {
     try {
       setIsImportLoading(true)
-      await icrc1Pair.storeSelf()
+      await onSubmitIcrc1Pair(getValues("ledgerID"), getValues("indexID"))
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       setModalStep("manage")
       mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
@@ -101,17 +107,11 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
 
   const fetchICRCToken = async () => {
     try {
-      await Promise.all([
-        icrc1Pair.validateIfExists(userRootPrincipalId),
-        icrc1Pair.validateStandard(),
-        icrc1Pair.validateIndexCanister(),
-      ])
-
-      const data = await icrc1Pair.getMetadata()
-
+      const data = await onFetch(getValues("ledgerID"), getValues("indexID"))
       setTokenInfo(data)
       return true
     } catch (e) {
+      console.log("err HEADER", e)
       if (e instanceof ICRC1Error) {
         return e.message
       } else {

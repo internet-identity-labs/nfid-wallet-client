@@ -4,7 +4,7 @@ import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
 import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
-import { Dispatch, FC, SetStateAction, useState } from "react"
+import { Dispatch, FC, SetStateAction, useCallback, useState } from "react"
 import {
   FieldErrorsImpl,
   UseFormHandleSubmit,
@@ -103,6 +103,23 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     ([_, __, amount]) => token?.getTokenRate(amount.toString()),
   )
 
+  const getTokenOptions = useCallback(() => {
+    const options = tokens.map((token) => {
+      return {
+        label: "Internet Computer",
+        options: [
+          {
+            icon: token.getTokenLogo(),
+            value: token.getTokenAddress(),
+            title: token.getTokenSymbol(),
+            subTitle: token.getTokenName(),
+          },
+        ],
+      }
+    })
+    return options
+  }, [tokens])
+
   const maxHandler = async () => {
     if (!token) return
     const fee = await token.getTokenFee()
@@ -188,18 +205,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             {usdRate?.formatted}
           </p>
           <ChooseModal
-            optionGroups={tokens.map((token) => {
-              return {
-                label: token.getTokenName(),
-                options: [
-                  {
-                    value: token.getTokenAddress(),
-                    title: token.getTokenSymbol(),
-                    subTitle: token.getTokenName(),
-                  },
-                ],
-              }
-            })}
+            optionGroups={getTokenOptions()}
             title="Asset to send"
             type="trigger"
             onSelect={(value) => {
@@ -209,6 +215,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               setAmountInUSD(0)
               setChosenToken(value)
             }}
+            preselectedValue={token.getTokenAddress()}
             onOpen={sendReceiveTrackingFn}
             isSmooth
             trigger={
@@ -219,9 +226,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                 <ImageWithFallback
                   alt={token.getTokenName()}
                   fallbackSrc={IconNftPlaceholder}
-                  src={
-                    token.getTokenLogo() ? token.getTokenLogo()! : "no image"
-                  }
+                  src={`${token.getTokenLogo()}`}
                   className="w-[26px] mr-1.5"
                 />
                 <p className="text-lg font-semibold">

@@ -2,7 +2,6 @@ import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
-import { IIcrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/i-icrc-pair"
 
 import { ActiveToken } from "./components/active-asset"
 import { ProfileAssetsHeader } from "./components/header"
@@ -17,20 +16,29 @@ export interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
   activeTokens: FT[]
   filteredTokens: FT[]
   isActiveTokensLoading: boolean
-  isFilterTokensLoading: boolean
   setSearchQuery: (v: string) => void
-  userRootPrincipalId: string
   profileConstants: IProfileConstants
+  onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
+  onFetch: (
+    ledgerID: string,
+    indexID: string,
+  ) => Promise<{
+    name: string
+    symbol: string
+    logo: string | undefined
+    decimals: number
+    fee: bigint
+  }>
 }
 
 export const ProfileAssets: FC<ProfileAssetsProps> = ({
   activeTokens,
   filteredTokens,
   isActiveTokensLoading,
-  isFilterTokensLoading,
   setSearchQuery,
-  userRootPrincipalId,
   profileConstants,
+  onSubmitIcrc1Pair,
+  onFetch,
 }) => {
   return (
     <BlurredLoader
@@ -40,8 +48,8 @@ export const ProfileAssets: FC<ProfileAssetsProps> = ({
       <ProfileAssetsHeader
         tokens={filteredTokens}
         setSearch={(value) => setSearchQuery(value)}
-        isLoading={isFilterTokensLoading}
-        userRootPrincipalId={userRootPrincipalId}
+        onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+        onFetch={onFetch}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">

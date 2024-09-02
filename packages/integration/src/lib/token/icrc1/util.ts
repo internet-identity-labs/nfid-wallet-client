@@ -12,7 +12,7 @@ export function mapCategory(category: Category): CategoryTS {
     return CategoryTS.Known
   }
   if (hasOwnProperty(category, "Unknown")) {
-    return CategoryTS.Unknown
+    return CategoryTS.Spam
   }
   if (hasOwnProperty(category, "ChainFusionTestnet")) {
     return CategoryTS.ChainFusionTestnet

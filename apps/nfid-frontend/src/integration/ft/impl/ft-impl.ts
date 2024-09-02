@@ -17,7 +17,8 @@ export class FTImpl implements FT {
   private usdBalance: BigNumber | undefined
   private index: string | undefined
   private symbol: string
-  private decimals: number | undefined
+  private decimals: number
+  private fee: bigint
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -26,16 +27,16 @@ export class FTImpl implements FT {
     this.index = icrc1Token.index
     this.logo = icrc1Token.logo
     this.symbol = icrc1Token.symbol
+    this.decimals = icrc1Token.decimals
+    this.fee = icrc1Token.fee
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    const [metadata, balance] = await Promise.all([
-      icrc1Pair.getMetadata(),
+    const [balance] = await Promise.all([
       icrc1Pair.getBalance(globalPrincipal.toText()),
     ])
     this.tokenBalance = balance
-    this.decimals = metadata.decimals
     return this
   }
 
@@ -100,5 +101,13 @@ export class FTImpl implements FT {
 
   getUSDBalance(): BigNumber | undefined {
     return this.usdBalance
+  }
+
+  getDecimals(): number {
+    return this.decimals
+  }
+
+  getFee(): bigint {
+    return this.fee
   }
 }

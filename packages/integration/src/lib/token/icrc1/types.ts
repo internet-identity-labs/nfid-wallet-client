@@ -10,6 +10,8 @@ export interface ICRC1 {
   index: string | undefined
   symbol: string
   state: State
+  fee: bigint
+  decimals: number
 }
 
 export class ICRC1Error extends Error {}

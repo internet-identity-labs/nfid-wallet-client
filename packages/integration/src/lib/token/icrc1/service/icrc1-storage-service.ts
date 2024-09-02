@@ -52,7 +52,7 @@ export class Icrc1StorageService {
         index: icrc1.index[0],
         state:
           registry === undefined ? State.Inactive : mapState(registry.state),
-        category: mapCategory(icrc1.category)
+        category: mapCategory(icrc1.category),
       }
       return userData
     })

@@ -18,12 +18,7 @@ const getUserPrincipalId = async () => {
 export const fetchAllTokens = async () => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()
   const data = await ftService.getAllUserTokens(userPrincipal, publicKey)
-  const sortedItems = data.items.sort((a, b) => {
-    if (a.getTokenSymbol() === "ICP") return -1
-    if (b.getTokenSymbol() === "ICP") return 1
-    return 0
-  })
-  return sortedItems
+  return data.items
 }
 
 export const fetchTokenByAddress = async (address: string) => {

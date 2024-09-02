@@ -7,6 +7,7 @@ import { nftService } from "src/integration/nft/nft-service"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
@@ -30,7 +31,16 @@ export class FtService {
         return canisters.filter((canister) => canister.state === State.Active)
       })
 
-    const ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
+    let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
+
+    ft.sort((a, b) => {
+      if (a.getTokenSymbol() === "ICP" && b.getTokenSymbol() !== "ICP")
+        return -1
+      if (a.getTokenSymbol() !== "ICP" && b.getTokenSymbol() === "ICP") return 1
+
+      return a.getTokenName().localeCompare(b.getTokenName())
+    })
+
     const totalItems = ft.length
     const totalPages = Math.ceil(totalItems / limit)
 
@@ -55,9 +65,26 @@ export class FtService {
     return icrc1StorageService
       .getICRC1FilteredCanisters(userId, nameCategoryFilter)
       .then((canisters) => {
-        return canisters.map((canister) => {
-          return new FTImpl(canister)
+        const ft = canisters.map((canister) => new FTImpl(canister))
+
+        const categoryOrder: Record<Category, number> = {
+          [Category.Sns]: 3,
+          [Category.ChainFusion]: 2,
+          [Category.Known]: 4,
+          [Category.Native]: 1,
+          [Category.Community]: 5,
+          [Category.Spam]: 7,
+          [Category.ChainFusionTestnet]: 6,
+        }
+
+        ft.sort((a, b) => {
+          //@ts-ignore
+          const aCategory = categoryOrder[a.getTokenCategory()] || 999
+          //@ts-ignore
+          const bCategory = categoryOrder[b.getTokenCategory()] || 999
+          return aCategory - bCategory
         })
+        return ft
       })
   }
 

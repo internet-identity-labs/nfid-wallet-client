@@ -31,7 +31,7 @@ describe("ICRC1 suite", () => {
       logo: undefined,
       name: "Chat",
       state: State.Active,
-      symbol: "CHAT"
+      symbol: "CHAT",
     }
     await icrc1OracleService.addICRC1Canister(icrc1Data)
     const account = await im.get_account()

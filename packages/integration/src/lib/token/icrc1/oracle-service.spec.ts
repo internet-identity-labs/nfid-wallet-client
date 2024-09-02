@@ -25,13 +25,15 @@ describe("ICRC1 suite", () => {
     await replaceActorIdentity(im, delegationIdentity)
     const edId = Ed25519KeyIdentity.generate()
     const icrc1Data: ICRC1UserData = {
-      category: Category.Unknown,
+      category: Category.Spam,
       index: "2awyi-oyaaa-aaaaq-aaanq-cai",
       ledger: edId.getPrincipal().toText(),
       logo: "Some logo",
       name: "Some Name",
       state: State.Active,
       symbol: "Test",
+      fee: BigInt(1000),
+      decimals: 8,
     }
     await icrc1OracleService.addICRC1Canister(icrc1Data)
     const account = (await im.get_account()) as HTTPAccountResponse

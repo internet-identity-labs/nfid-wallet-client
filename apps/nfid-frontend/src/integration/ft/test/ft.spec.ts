@@ -41,12 +41,22 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            name: "Internet",
+            symbol: "A first letter",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
         ])
       const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(
         userId,
         principal,
       )
-      expect(result.items.length).toEqual(2)
+      expect(result.items.length).toEqual(3)
       const icpResult = result.items.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -65,6 +75,17 @@ describe("ft test suite", () => {
 
       const filteredResult = await ftService.getAllFTokens(userId, "Chat")
       expect(filteredResult.length).toEqual(1)
+
+      expect(result.items[0].getTokenSymbol()).not.toEqual("A first letter")
+      const sortedResult: PaginatedResponse<FT> =
+        await ftService.getAllUserTokens(
+          userId,
+          principal,
+          1,
+          10,
+          "getTokenSymbol",
+        )
+      expect(sortedResult.items[0].getTokenSymbol()).toEqual("A first letter")
     })
     it("should calculate USD balance", async function () {
       jest

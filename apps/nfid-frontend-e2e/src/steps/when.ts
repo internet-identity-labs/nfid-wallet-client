@@ -27,6 +27,7 @@ import selectOptionByIndex from "./support/action/selectOptionByIndex.js"
 import setCookie from "./support/action/setCookie.js"
 import setInputField from "./support/action/setInputField.js"
 import setPromptText from "./support/action/setPromptText.js"
+import { chromeBrowserOptions } from "../browserOptions"
 
 When(/^User enters a captcha$/, async function () {
   await HomePage.captchaPass()
@@ -349,6 +350,7 @@ When(/^I press on Activity icon$/, async () => {
 When(
   /^User sends ?(.*)? ([^"]*) to (.*)$/,
   async (amount: number, FT: string, address: string) => {
+    await browser.pause(5000)
     FT == "ICP"
       ? await DemoTransactions.sendICPTransaction(amount, address)
       : await DemoTransactions.sendNFTTransaction(address)

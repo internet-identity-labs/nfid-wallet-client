@@ -12,10 +12,7 @@ interface BalanceFooterProps {
   publicKey: string
 }
 
-export const BalanceFooter = ({
-  token,
-  publicKey,
-}: BalanceFooterProps) => {
+export const BalanceFooter = ({ token, publicKey }: BalanceFooterProps) => {
   const { data: usdBalance, isLoading } = useSWR(
     token ? ["activeTokenUSD", token.getTokenAddress()] : null,
     token ? () => token.getUSDBalanceFormatted() : null,

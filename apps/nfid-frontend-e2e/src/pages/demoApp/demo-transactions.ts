@@ -5,7 +5,7 @@ import { demoAppPage } from "./demoApp-page.js"
 export class DemoTransactions extends demoAppPage {
   get myNFTSelector() {
     return $(
-      "#option_3hfnf-vakor-uwiaa-aaaaa-b4atg-aaqca-aacgm-a span:first-of-type",
+      "#option_3hfnf-vakor-uwiaa-aaaaa-b4atg-aaqca-aacgm-a",
     )
   }
 

@@ -31,7 +31,7 @@ export const CopyAddress: FC<CopyAddressProps> = ({
   return (
     <div
       className={clsx(
-        "flex gap-[10px] items-center cursor-pointer",
+        "inline-flex gap-[10px] items-center cursor-pointer",
         "text-black active:text-gray-400 hover:text-zinc-500 transition-colors",
         copied && "!text-black",
       )}
@@ -48,14 +48,14 @@ export const CopyAddress: FC<CopyAddressProps> = ({
       {copied ? (
         <CopiedAddressIcon
           className={clsx(
-            hovered || copied ? "" : "hidden",
+            hovered || copied ? "" : "opacity-0",
             "w-[18px] h-[18px] transition-colors",
           )}
         />
       ) : (
         <CopyAddressIcon
           className={clsx(
-            hovered || copied ? "" : "hidden",
+            hovered || copied ? "" : "opacity-0",
             "w-[18px] h-[18px] transition-colors",
           )}
         />

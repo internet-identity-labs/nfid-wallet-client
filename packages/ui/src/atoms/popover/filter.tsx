@@ -21,20 +21,20 @@ export const FilterPopover = ({
   className,
 }: IFilterPopover) => {
   return (
-    <Popover trigger={trigger} align={align}>
+    <Popover triggerClassName="w-full" trigger={trigger} align={align}>
       <div
         className={clsx(
           "min-w-[350px] relative z-50 bg-white h-full p-2.5 rounded-md shadow-md",
           className,
         )}
       >
-        <p className="text-sm font-bold">{title}</p>
+        <p className="mb-1 text-xs leading-4">{title}</p>
         {children}
-        <div className={onApply ? "grid grid-cols-2 gap-5 mt-4" : "mt-4"}>
+        <div className={onApply ? "grid grid-cols-2 gap-5 mt-5" : "mt-5"}>
           <RadixPopover.Close className="w-full">
             <Button
               onClick={onReset}
-              type="stroke"
+              type="ghost"
               block={true}
               id="reset-filters-button"
             >

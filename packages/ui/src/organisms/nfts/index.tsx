@@ -225,7 +225,7 @@ export const NFTs: FC<INFTs> = ({
                       ></video>
                     ) : (
                       <ImageWithFallback
-                        alt={"12313"}
+                        alt={nft.getTokenName()}
                         fallbackSrc={IconNftPlaceholder}
                         src={nft.getAssetPreview().url}
                         className={clsx(`w-full`)}

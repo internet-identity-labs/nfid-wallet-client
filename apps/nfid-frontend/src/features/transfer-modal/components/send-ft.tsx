@@ -62,10 +62,7 @@ export const TransferFT = ({
 
   const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => {
-      console.log("ssd", _, __, amount)
-      return token?.getTokenRateFormatted(amount.toString())
-    },
+    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
@@ -172,7 +169,6 @@ export const TransferFT = ({
               })
 
               setAmountInUSD(Number(values.amount))
-              console.log("usdRate??", usdRate)
             }
 
             handleTrackTransfer(values.amount)

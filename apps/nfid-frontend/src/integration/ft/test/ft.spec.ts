@@ -64,7 +64,7 @@ describe("ft test suite", () => {
       expect(icpResult).toBeDefined()
       expect(icpResult!.getTokenBalanceFormatted()).toEqual("0.0002 ICP")
       expect(icpResult!.getTokenCategory()).toEqual("Native")
-      expect(icpResult!.getTokenFeeRaw()).toEqual(BigInt(10000))
+      expect(icpResult!.getTokenFee()).toEqual(BigInt(10000))
       expect(icpResult!.getTokenDecimals()).toEqual(8)
       expect(icpResult!.getTokenAddress()).toEqual(
         "ryjl3-tyaaa-aaaaa-aaaba-cai",

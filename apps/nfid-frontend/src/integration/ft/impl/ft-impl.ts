@@ -66,7 +66,7 @@ export class FTImpl implements FT {
     return this.tokenState
   }
 
-  getTokenBalanceRaw(): bigint | undefined {
+  getTokenBalance(): bigint | undefined {
     return this.tokenBalance
   }
 
@@ -84,7 +84,11 @@ export class FTImpl implements FT {
       : undefined
   }
 
-  getTokenCategory(): string {
+  getTokenCategory(): Category {
+    return this.tokenCategory
+  }
+
+  getTokenCategoryFormatted(): string {
     return this.tokenCategory.replace(/([a-z])([A-Z])/g, "$1 $2")
   }
 
@@ -92,7 +96,7 @@ export class FTImpl implements FT {
     return this.tokenName
   }
 
-  async getTokenRateRaw(amount: string): Promise<number | undefined> {
+  async getTokenRate(amount: string): Promise<number | undefined> {
     const rate = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
     if (!rate) return
 
@@ -103,7 +107,7 @@ export class FTImpl implements FT {
   }
 
   async getTokenRateFormatted(amount: string): Promise<string | undefined> {
-    return `${await this.getTokenRateRaw(amount)} USD`
+    return `${await this.getTokenRate(amount)} USD`
   }
 
   isHideable(): boolean {
@@ -149,7 +153,7 @@ export class FTImpl implements FT {
     return this.decimals
   }
 
-  getTokenFeeRaw(): bigint {
+  getTokenFee(): bigint {
     return this.fee
   }
 
@@ -167,7 +171,7 @@ export class FTImpl implements FT {
 
     if (!usdPrice) return
 
-    const feeInUsd = await this.getTokenRateRaw(
+    const feeInUsd = await this.getTokenRate(
       (Number(this.fee) / 10 ** this.decimals).toString(),
     )
 

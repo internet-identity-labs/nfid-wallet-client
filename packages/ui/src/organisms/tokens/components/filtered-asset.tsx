@@ -71,7 +71,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
           </p>
         </div>
       </div>
-      <div>{token.getTokenCategory()}</div>
+      <div>{token.getTokenCategoryFormatted()}</div>
       <div className="ml-auto">
         <img
           className="cursor-pointer"

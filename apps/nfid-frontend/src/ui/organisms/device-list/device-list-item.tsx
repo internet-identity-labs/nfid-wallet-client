@@ -289,7 +289,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           onClose={toggleDeleteDeviceModal}
           primaryButton={{
             text: "Delete",
-            type: "error",
+            type: "red",
             onClick: async () => {
               await handleDeleteDevice(device)
             },

@@ -33,13 +33,13 @@ export class FtService {
 
     let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
 
-    ft.sort((a, b) => {
-      if (a.getTokenSymbol() === "ICP" && b.getTokenSymbol() !== "ICP")
-        return -1
-      if (a.getTokenSymbol() !== "ICP" && b.getTokenSymbol() === "ICP") return 1
-
-      return a.getTokenName().localeCompare(b.getTokenName())
-    })
+    ft.sort((a, b) => a.getTokenName().localeCompare(b.getTokenName())).sort(
+      (a, b) =>
+        a.getTokenCategory() === Category.Native &&
+        b.getTokenCategory() !== Category.Native
+          ? -1
+          : 1,
+    )
 
     const totalItems = ft.length
     const totalPages = Math.ceil(totalItems / limit)
@@ -78,9 +78,7 @@ export class FtService {
         }
 
         ft.sort((a, b) => {
-          //@ts-ignore
           const aCategory = categoryOrder[a.getTokenCategory()] || 999
-          //@ts-ignore
           const bCategory = categoryOrder[b.getTokenCategory()] || 999
           return aCategory - bCategory
         })

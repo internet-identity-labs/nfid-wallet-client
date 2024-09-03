@@ -62,7 +62,10 @@ export const TransferFT = ({
 
   const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
+    ([_, __, amount]) => {
+      console.log("ssd", _, __, amount)
+      return token?.getTokenRateFormatted(amount.toString())
+    },
   )
 
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
@@ -145,7 +148,7 @@ export const TransferFT = ({
           let res
           if (!token) return
           try {
-            if (token?.getTokenAddress() === ICP_CANISTER_ID) {              
+            if (token?.getTokenAddress() === ICP_CANISTER_ID) {
               res = await transferICP({
                 amount: stringICPtoE8s(String(values.amount)),
                 to: getAccountIdentifier(values.to),
@@ -163,12 +166,13 @@ export const TransferFT = ({
                   Number(values.amount) * 10 ** token?.getTokenDecimals()!,
                 ),
                 memo: [],
-                fee: [token.getTokenFeeRaw()],
+                fee: [token.getTokenFee()],
                 from_subaccount: [],
                 created_at_time: [],
               })
 
               setAmountInUSD(Number(values.amount))
+              console.log("usdRate??", usdRate)
             }
 
             handleTrackTransfer(values.amount)
@@ -204,7 +208,11 @@ export const TransferFT = ({
       token={token}
       tokens={activeTokens}
       setChosenToken={setTokenAddress}
-      validateAddress={token?.getTokenAddress() === ICP_CANISTER_ID ? validateICPAddress : validateICRC1Address}
+      validateAddress={
+        token?.getTokenAddress() === ICP_CANISTER_ID
+          ? validateICPAddress
+          : validateICRC1Address
+      }
       isLoading={isActiveTokensLoading || isTokenLoading}
       sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
       isVault={isVault}

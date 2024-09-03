@@ -28,9 +28,9 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 export interface TransferFTUiProps {
   publicKey: string
@@ -123,9 +123,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 
   const maxHandler = async () => {
     if (!token) return
-    const fee = token.getTokenFeeRaw()
-    if (fee && token.getTokenBalanceRaw()) {
-      const balanceNum = new BigNumber(token.getTokenBalanceRaw()!.toString())
+    const fee = token.getTokenFee()
+    if (fee && token.getTokenBalance()) {
+      const balanceNum = new BigNumber(token.getTokenBalance()!.toString())
       const feeNum = new BigNumber(fee.toString())
       const val = balanceNum.minus(feeNum)
       if (val.isLessThanOrEqualTo(0)) return
@@ -174,11 +174,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
                 formatAssetAmountRaw(
-                  Number(token.getTokenBalanceRaw()),
+                  Number(token.getTokenBalance()),
                   token.getTokenDecimals()!,
                 ),
                 formatAssetAmountRaw(
-                  Number(token.getTokenFeeRaw()),
+                  Number(token.getTokenFee()),
                   token.getTokenDecimals()!,
                 ),
               ),
@@ -262,7 +262,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           title={"Choose an account"}
           optionGroups={optionGroups}
           isFirstPreselected={false}
-          placeholder={token.getTokenAddress() === ICP_CANISTER_ID ? "Recipient wallet address or account ID" : "Recipient wallet address"}
+          placeholder={
+            token.getTokenAddress() === ICP_CANISTER_ID
+              ? "Recipient wallet address or account ID"
+              : "Recipient wallet address"
+          }
           errorText={errors.to?.message}
           registerFunction={register("to", {
             required: "This field cannot be empty",
@@ -306,10 +310,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         >
           Send
         </Button>
-        <BalanceFooter
-          token={token}
-          publicKey={publicKey}
-        />
+        <BalanceFooter token={token} publicKey={publicKey} />
       </div>
     </>
   )

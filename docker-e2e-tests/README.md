@@ -1,4 +1,4 @@
-# Docker nfid-wallet-client e2e tests
+# Docker nfid-frontend e2e tests
 ## Info
 This file contains HOWTO instructions for running scripts on your environments
 
@@ -14,7 +14,7 @@ This file contains HOWTO instructions for running scripts on your environments
 
 ------------
 ## About
-This project contains tools for **[nfid-wallet-client](https://github.com/internet-identity-labs/nfid-wallet-client/)** e2e tests.
+This project contains tools for **[nfid-frontend](https://github.com/internet-identity-labs/nfid-frontend/)** e2e tests.
 
 The docker container will contain such packages:
 - **Node**
@@ -54,7 +54,7 @@ docker run --rm -it \
 ```
 
 Docker will run `docker-entrypoint.sh` script, which will build and run **frontend**.
-After that it will run `nfid-wallet-client-e2e` tests.
+After that it will run `nfid-frontend-e2e` tests.
 Be sure that you set such options for browser:
 - **--no-sandbox**
 - **--disable-dev-shm-usage**

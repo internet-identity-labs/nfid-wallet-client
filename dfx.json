@@ -1,6 +1,6 @@
 {
   "canisters": {
-    "nfid-wallet-client": {
+    "nfid-frontend": {
       "frontend": {
         "entrypoint": "dist/apps/nfid-frontend/index.html"
       },

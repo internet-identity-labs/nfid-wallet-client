@@ -343,7 +343,7 @@ jobs:
     environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     runs-on: ubuntu-latest
     env:
-      CANISTER_NAME: nfid-wallet-client
+      CANISTER_NAME: nfid-frontend
 
     steps:
       - name: Checkout repo
@@ -470,7 +470,7 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nfid-wallet-client
+          name: nfid-frontend
           include-hidden-files: true
           path: |
             build/
@@ -482,7 +482,7 @@ jobs:
     needs: build-frontend
     environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     env:
-      CANISTER_NAME: nfid-wallet-client
+      CANISTER_NAME: nfid-frontend
     runs-on:
       group: dfx-runner
     defaults:
@@ -581,7 +581,7 @@ jobs:
       - name: DEPLOY => Load artifact
         uses: actions/download-artifact@v4
         with:
-          name: nfid-wallet-client
+          name: nfid-frontend
 
       - name: DEPLOY => Deploy to the canister.
         run: |

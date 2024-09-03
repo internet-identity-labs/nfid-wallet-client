@@ -99,7 +99,7 @@ This architecture is inspired by:
 2. [bulletproof-react](https://github.com/alan2207/bulletproof-react/)
 3. [react-clean-architecture](https://github.com/eduardomoroni/react-clean-architecture)
 
-The individual applications (e.g. `nfid-wallet-client`) holds a collection of `pages` rendered on specific `urls`. Each page assembles components exported from our public interface in `package/features` without referring to any lower level implementation details.
+The individual applications (e.g. `nfid-frontend`) holds a collection of `pages` rendered on specific `urls`. Each page assembles components exported from our public interface in `package/features` without referring to any lower level implementation details.
 
 ### Libraries
 

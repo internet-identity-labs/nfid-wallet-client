@@ -2,6 +2,7 @@ import { ProfileAssets } from "packages/ui/src/organisms/tokens"
 import {
   fetchAllTokens,
   fetchFilteredTokens,
+  getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useEffect, useState } from "react"
 import useSWR from "swr"
@@ -10,7 +11,6 @@ import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-p
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
 const ProfileAssetsPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
@@ -47,9 +47,9 @@ const ProfileAssetsPage = () => {
 
   useEffect(() => {
     const setUserId = async () => {
-      const { rootPrincipalId } = await getLambdaCredentials()
-      if (!rootPrincipalId) return
-      setUserRootPrincipalId(rootPrincipalId)
+      const { userPrincipal } = await getUserPrincipalId()
+      if (!userPrincipal) return
+      setUserRootPrincipalId(userPrincipal)
     }
 
     setUserId()

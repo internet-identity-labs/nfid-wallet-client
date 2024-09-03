@@ -77,9 +77,9 @@ describe("ft test suite", () => {
       const filteredResult = await ftService.getAllFTokens(userId, "Chat")
       expect(filteredResult.length).toEqual(1)
 
-      expect(result.items[0].getTokenName()).toEqual("Internet Computer")
-      expect(result.items[1].getTokenName()).toEqual("A first letter")
-      expect(result.items[2].getTokenName()).toEqual("Chat")
+      expect(result.items[0].getTokenName()).toEqual("A first letter")
+      expect(result.items[1].getTokenName()).toEqual("Chat")
+      expect(result.items[2].getTokenName()).toEqual("Internet Computer")
     })
 
     it("shoult get all sorted tokens", async function () {

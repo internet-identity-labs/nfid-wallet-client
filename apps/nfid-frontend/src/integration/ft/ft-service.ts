@@ -33,13 +33,7 @@ export class FtService {
 
     let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
 
-    ft.sort((a, b) => a.getTokenName().localeCompare(b.getTokenName())).sort(
-      (a, b) =>
-        a.getTokenCategory() === Category.Native &&
-        b.getTokenCategory() !== Category.Native
-          ? -1
-          : 1,
-    )
+    ft.sort((a, b) => a.getTokenName().localeCompare(b.getTokenName()))
 
     const totalItems = ft.length
     const totalPages = Math.ceil(totalItems / limit)

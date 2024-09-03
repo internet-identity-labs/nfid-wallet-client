@@ -89,6 +89,10 @@ export class FTImpl implements FT {
   }
 
   getTokenCategoryFormatted(): string {
+    if (this.tokenCategory === "Sns") {
+      return "SNS"
+    }
+
     return this.tokenCategory.replace(/([a-z])([A-Z])/g, "$1 $2")
   }
 

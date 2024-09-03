@@ -104,7 +104,6 @@ export async function getGlobalKeys(
   targets: string[],
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
-  console.time("getGlobalKeys")
   const cachedValue = await integrationCache.getItem(
     JSON.stringify({ identity, chain, targets }),
   )
@@ -142,7 +141,6 @@ export async function getGlobalKeys(
     response,
     { ttl: 600 },
   )
-  console.timeEnd("getGlobalKeys")
 
   return response
 }
@@ -302,9 +300,10 @@ export async function getPublicKey(
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
   if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
-    console.time("getPublicKey")
     const principal = await getPrincipalSignedByCanister(anchor, origin)
-    console.timeEnd("getPublicKey")
+    await integrationCache.setItem(cacheKey, principal.toText(), {
+      ttl: 6000,
+    })
     return principal.toText()
   }
   // if global

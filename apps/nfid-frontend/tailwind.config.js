@@ -15,6 +15,7 @@ module.exports = {
     require("../../packages/ui-tailwind-core/src/forms"),
     require("../../packages/ui-tailwind-core"),
     require("tailwindcss-radix")(),
+    require("tailwind-scrollbar")({ nocompatible: true }),
   ],
   theme: {
     extend: {

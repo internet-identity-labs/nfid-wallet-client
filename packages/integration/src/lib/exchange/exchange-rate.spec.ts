@@ -5,4 +5,11 @@ describe("exchange-rate", () => {
     await exchangeRateService.cacheUsdIcpRate()
     expect(exchangeRateService.getICP2USD().toNumber()).toBeGreaterThan(0)
   })
+
+  it("should return some rate icrc1", async function () {
+    const rate = await exchangeRateService.usdPriceForICRC1(
+      "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    )
+    expect(rate!.toNumber()).toBeGreaterThan(0)
+  })
 })

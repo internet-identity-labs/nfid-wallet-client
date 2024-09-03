@@ -2,9 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Input, isValidToken, tokenRules } from "@nfid-frontend/ui"
-
-import { Button } from "../button"
+import { Button, Input, isValidToken, tokenRules } from "@nfid-frontend/ui"
 
 interface StepInputProps {
   className?: string
@@ -169,7 +167,6 @@ export const StepInput: React.FC<StepInputProps> = ({
       </div>
       <Button
         id="send-pin"
-        primary
         className={clsx("px-10 mt-3 sm:mt-5", buttonClassName)}
         onClick={() => {
           validateToken()

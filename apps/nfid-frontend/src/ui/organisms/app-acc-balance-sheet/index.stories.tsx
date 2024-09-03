@@ -1,7 +1,6 @@
 import { StoryFn } from "@storybook/react"
 import { ToastContainer } from "react-toastify"
 
-import { APP_ACC_BALANCE_SHEET } from "frontend/features/fungible-token/icp/hooks/use-balance-icp-all.mocks"
 import { ToastIcons } from "frontend/ui/atoms/toast-icons"
 
 import { AppAccountBalanceSheet } from "."
@@ -24,7 +23,5 @@ const Template: StoryFn<typeof AppAccountBalanceSheet> = (args) => (
 export const Default = {
   render: Template,
 
-  args: {
-    apps: Object.values(APP_ACC_BALANCE_SHEET.ICP.applications),
-  },
+  args: {},
 }

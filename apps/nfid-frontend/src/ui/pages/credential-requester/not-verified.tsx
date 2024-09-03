@@ -2,9 +2,13 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Input, phoneRules, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  Button,
+  Input,
+  phoneRules,
+  SDKApplicationMeta,
+} from "@nfid-frontend/ui"
 
-import { Button } from "frontend/ui/atoms/button"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -97,7 +101,6 @@ export const CredentialRequesterNotVerified: React.FC<
           />
         </div>
         <Button
-          primary
           className="px-10 sm:mt-2"
           block
           onClick={handleSubmit(onSubmit)}

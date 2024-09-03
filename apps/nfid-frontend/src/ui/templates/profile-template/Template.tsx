@@ -2,6 +2,7 @@ import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
+import { getFullUsdValue } from "packages/ui/src/organisms/tokens/utils"
 import {
   HTMLAttributes,
   useCallback,
@@ -24,7 +25,6 @@ import {
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
-import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { getAllVaults } from "frontend/features/vaults/services"
@@ -100,6 +100,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
+  const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
+    "fullUsdValue",
+    getFullUsdValue,
+  )
+
   const {
     data: isEmailDeviceOutOfSyncWithII,
     mutate: refreshIsEmailDeviceOutOfSyncWithII,
@@ -118,19 +123,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const globalServices = useContext(ProfileContext)
-  const { token, isLoading: isTokenLoading } = useAllToken()
-
-  const tokensUsdValue = useMemo(() => {
-    return token
-      .filter((token) => token.rate)
-      .reduce((total, token) => {
-        return (
-          total + (Number(token.balance) / 10 ** token.decimals) * token.rate!
-        )
-      }, 0)
-
-    // Will add NFT floor price to calculation later!
-  }, [token])
+  const isTokenLoading = false
 
   const [, send] = useActor(globalServices.transferService)
   const {
@@ -176,8 +169,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         className={clsx(
           "relative z-1 px-[16px]",
           "sm:px-[30px]",
-          "overflow-auto",
           "!block",
+          isWallet && "pb-[90px]",
           containerClassName,
         )}
       >
@@ -216,7 +209,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           {isWallet && (
             <>
               <ProfileInfo
-                value={tokensUsdValue}
+                usdValue={tokensUsdValue}
+                isUsdLoading={isUsdLoading}
                 isLoading={isTokenLoading && isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

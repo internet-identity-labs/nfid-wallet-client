@@ -10,10 +10,9 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
-import { Tooltip, CenterEllipsis } from "@nfid-frontend/ui"
+import { Tooltip, CenterEllipsis, ApplicationIcon } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
 import { Blockchain } from "frontend/ui/connnector/types"
 

@@ -1,24 +1,22 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useEffect, useState } from "react"
+import { fetchTokenByAddress } from "packages/ui/src/organisms/tokens/utils"
+import { useCallback, useState } from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import {
   fetchNFT,
   fetchNFTsInited,
 } from "frontend/features/collectibles/utils/util"
 import { transferEXT } from "frontend/integration/entrepot/ext"
-import { getConnector } from "frontend/ui/connnector/transfer-modal/transfer-factory"
-import { TransferModalType } from "frontend/ui/connnector/transfer-modal/types"
-import { Blockchain } from "frontend/ui/connnector/types"
 
 import {
-  getAccount,
   getIdentity,
   mapUserNFTDetailsToGroupedOptions,
-  validateAddress,
+  validateICPAddress,
 } from "../utils"
 import { ITransferSuccess } from "./success"
 
@@ -26,15 +24,20 @@ interface ITransferNFT {
   preselectedNFTId?: string
   selectedReceiverWallet?: string
   onTransferPromise: (data: ITransferSuccess) => void
+  publicKey: string
 }
 
 export const TransferNFT = ({
   selectedReceiverWallet,
   onTransferPromise,
   preselectedNFTId = "",
+  publicKey,
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
-  const [selectedAccountAddress, setSlectedAccountAddress] = useState("")
+  const { data: icpToken } = useSWR(
+    ICP_CANISTER_ID ? ["token", ICP_CANISTER_ID] : null,
+    ([, address]) => fetchTokenByAddress(address),
+  )
 
   const {
     data: allNfts = [],
@@ -49,47 +52,8 @@ export const TransferNFT = ({
     fetchNFT(tokenId),
   )
 
-  useEffect(() => {
-    const getAddress = async () => {
-      const address = await getAccount()
-      setSlectedAccountAddress(address)
-    }
-
-    getAddress()
-  }, [])
-
-  const { data: selectedFtConnector } = useSWR(
-    ["ICP", Blockchain.IC, "selectedConnector"],
-    ([selectedTokenCurrency, selectedTokenBlockchain]) =>
-      getConnector({
-        type: TransferModalType.FT,
-        currency: selectedTokenCurrency,
-        blockchain: selectedTokenBlockchain,
-      }),
-    {
-      onSuccess: () => {
-        refetchBalance()
-      },
-    },
-  )
-
-  const {
-    data: balance,
-    mutate: refetchBalance,
-    isValidating: isBalanceFetching,
-    isLoading: isBalanceLoading,
-  } = useSWR(
-    selectedFtConnector && selectedAccountAddress
-      ? [selectedFtConnector, selectedAccountAddress, "balance"]
-      : null,
-    ([connector, preselectedAccountAddress]) =>
-      connector.getBalance(preselectedAccountAddress, "ICP"),
-    { refreshInterval: 10000 },
-  )
-
   const handleTrackTransfer = useCallback(() => {
     sendReceiveTracking.sendToken({
-      network: "ICP",
       destinationType: "address",
       tokenName: selectedNFT?.getTokenId() || "",
       tokenType: "non-fungible",
@@ -105,9 +69,7 @@ export const TransferNFT = ({
       onTransferPromise({
         assetImg: selectedNFT?.getAssetPreview().url,
         initialPromise: new Promise(async (resolve) => {
-          const identity = await getIdentity(undefined, undefined, [
-            selectedNFT.getCollectionId(),
-          ])
+          const identity = await getIdentity([selectedNFT.getCollectionId()])
 
           try {
             const res = await transferEXT(
@@ -140,8 +102,9 @@ export const TransferNFT = ({
 
   return (
     <TransferNFTUi
+      publicKey={publicKey}
+      icpToken={icpToken}
       isLoading={isNftLoading && isNftListLoading}
-      isBalanceLoading={isBalanceLoading && isBalanceFetching}
       loadingMessage={"Loading NFTs..."}
       nftOptions={mapUserNFTDetailsToGroupedOptions(allNfts)}
       setSelectedNFTId={setSelectedNFTId}
@@ -149,9 +112,7 @@ export const TransferNFT = ({
       selectedNFT={selectedNFT}
       selectedReceiverWallet={selectedReceiverWallet}
       submit={submit}
-      selectedAccountAddress={selectedAccountAddress}
-      balance={Number(balance)}
-      validateAddress={validateAddress}
+      validateAddress={validateICPAddress}
     />
   )
 }

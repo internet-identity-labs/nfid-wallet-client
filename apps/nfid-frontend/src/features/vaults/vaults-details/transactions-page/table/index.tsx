@@ -3,10 +3,9 @@ import { format } from "date-fns"
 import React, { useMemo } from "react"
 
 import { Table } from "@nfid-frontend/ui"
-import { bigIntMillisecondsToSeconds } from "@nfid-frontend/utils"
+import { bigIntMillisecondsToSeconds, toUSD } from "@nfid-frontend/utils"
 import { Transaction } from "@nfid/integration"
 
-import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"

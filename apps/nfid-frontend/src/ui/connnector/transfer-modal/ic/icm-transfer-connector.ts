@@ -6,7 +6,7 @@ import { PRINCIPAL_LENGTH } from "packages/constants"
 import { mutate } from "swr"
 
 import { IGroupOption, IGroupedOptions } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
+import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
   getBalance,
   getVaults,
@@ -17,7 +17,6 @@ import {
 } from "@nfid/integration"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 
-import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
 import { fetchVaultWalletsBalances } from "frontend/features/fungible-token/fetch-balances"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"

@@ -1,9 +1,6 @@
 import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { getPublicKey, Chain } from "packages/integration/src/lib/lambda/ecdsa"
-
-import { authState, im } from "@nfid/integration"
 
 const DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS = 5 * 60 * 1000
 
@@ -31,23 +28,4 @@ export async function getTransformedRequest(
     endpoint: "query" as Endpoint.Query,
     body: request,
   })
-}
-
-export const getPrincipal = async () => {
-  const identity = authState.get().delegationIdentity
-  const principalString = await getPublicKey(identity!, Chain.IC)
-  return Principal.fromText(principalString)
-}
-
-export async function getLambdaCredentials() {
-  const identity = authState.get().delegationIdentity
-  if (!identity) throw new Error("Identity not found. Please try again")
-  const account = await im.get_account()
-  const principal = await getPublicKey(identity, Chain.IC)
-  const rootPrincipalId = account.data[0]?.principal_id
-
-  return {
-    rootPrincipalId,
-    publicKey: principal,
-  }
 }

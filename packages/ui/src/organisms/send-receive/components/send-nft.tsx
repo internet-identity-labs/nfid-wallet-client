@@ -17,11 +17,13 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 
+import { FT } from "frontend/integration/ft/ft"
 import { NFT } from "frontend/integration/nft/nft"
 
 export interface TransferNFTUiProps {
+  publicKey: string
+  icpToken: FT | undefined
   isLoading: boolean
-  isBalanceLoading: boolean
   loadingMessage: string | undefined
   nftOptions: IGroupedOptions[] | undefined
   setSelectedNFTId: Dispatch<SetStateAction<string>>
@@ -29,14 +31,13 @@ export interface TransferNFTUiProps {
   selectedNFT: NFT | undefined
   selectedReceiverWallet: string | undefined
   submit: (values: any) => Promise<Id | undefined>
-  selectedAccountAddress: string
-  balance: number
   validateAddress: (value: string) => boolean | string
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
+  publicKey,
+  icpToken,
   isLoading,
-  isBalanceLoading,
   loadingMessage,
   nftOptions,
   setSelectedNFTId,
@@ -44,8 +45,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   selectedNFT,
   selectedReceiverWallet,
   submit,
-  selectedAccountAddress,
-  balance,
   validateAddress,
 }) => {
   const {
@@ -138,11 +137,8 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           Send
         </Button>
         <BalanceFooter
-          isLoading={isBalanceLoading}
-          selectedTokenCurrency={"ICP"}
-          decimals={8}
-          balance={balance}
-          selectedAccountAddress={selectedAccountAddress}
+          token={icpToken}
+          publicKey={publicKey}
         />
       </div>
     </BlurredLoader>

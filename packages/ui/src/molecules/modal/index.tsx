@@ -1,106 +1,61 @@
-import * as RadixDialog from "@radix-ui/react-dialog"
-import clsx from "clsx"
 import React from "react"
 
-import { Loader } from "../../atoms/loader"
+import { Button } from "../../atoms/button"
+import { NFIDGradientBar } from "../../atoms/gradient-bar"
 import { H5 } from "../../atoms/typography"
-import { Button } from "../button"
+import { P } from "../../atoms/typography/paragraph"
+import { ModalCloseIcon } from "./closeIcon"
+import { ModalSuccessIcon } from "./successIcon"
+import { ModalWarningIcon } from "./warningIcon"
 
-export interface ModalButtonProps {
-  text: string
+type ModalIconType = "success" | "error"
+
+interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
+  buttonText: string
+  title: string
+  description?: string
   onClick?: () => void
-  type: "primary" | "secondary" | "red" | "stroke"
-  block?: boolean
-  id?: string
+  iconType?: ModalIconType
 }
 
-export interface ModalAdvancedProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string
-  subTitle?: string | JSX.Element
-  primaryButton?: ModalButtonProps
-  secondaryButton?: ModalButtonProps
-  large?: boolean
-  buttonsClassNames?: string
-  trigger?: JSX.Element
-  isLoading?: boolean
-  isModalOpen?: boolean
-  isModalOpenChange?: (open: boolean) => void
-}
-
-export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
-  children,
-  className,
+export const Modal: React.FC<ModalProps> = ({
   title,
-  subTitle,
-  primaryButton,
-  secondaryButton,
-  large,
-  buttonsClassNames,
-  trigger,
-  isLoading = false,
-  isModalOpen,
-  isModalOpenChange,
+  buttonText,
+  description,
+  onClick,
+  iconType,
 }) => {
   return (
-    <RadixDialog.Root open={isModalOpen} onOpenChange={isModalOpenChange}>
-      <RadixDialog.Trigger asChild>{trigger}</RadixDialog.Trigger>
-      <RadixDialog.Portal>
-        <RadixDialog.Overlay
-          className={clsx("fixed inset-0 bg-black bg-opacity-40")}
-        />
-        {isLoading && <Loader isLoading={isLoading} />}
-        <RadixDialog.Content
-          onInteractOutside={(e) => isLoading && e.preventDefault()}
-          className={clsx(
-            "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-            "bg-white rounded-lg shadow-lg max-w-sm",
-            "w-full inset-0 h-max box-content",
-            large && "md:!max-w-[540px]",
-            isLoading && "!pointer-events-none",
-          )}
-        >
-          <div className="relative flex-auto w-full px-2.5">
-            <H5 className="mt-4">{title}</H5>
-            <p className="my-4 text-sm">{subTitle}</p>
-            <div className={clsx("", className)}>{children}</div>
-          </div>
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center mx-4 overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+        <div className="relative w-full max-w-sm mx-auto my-6">
+          <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none">
+            <div className="relative flex-auto px-6 text-center">
+              <NFIDGradientBar />
 
-          <div
-            className={clsx(
-              "grid grid-cols-2 p-2.5 gap-5",
-              large && "!flex justify-end",
-              buttonsClassNames,
-            )}
-          >
-            {secondaryButton && (
-              <RadixDialog.Close asChild>
-                <div className={clsx(secondaryButton.block && "w-full block")}>
-                  <Button
-                    onClick={secondaryButton?.onClick}
-                    className={clsx("!py-3 !px-8")}
-                    type={secondaryButton.type}
-                    block={secondaryButton.block}
-                  >
-                    {secondaryButton?.text}
-                  </Button>
-                </div>
-              </RadixDialog.Close>
-            )}
+              {iconType === "success" && (
+                <ModalSuccessIcon className="mx-auto" />
+              )}
+              {iconType === "error" && <ModalWarningIcon className="mx-auto" />}
 
-            {primaryButton && (
-              <Button
-                onClick={primaryButton.onClick}
-                className={clsx("!py-3 !px-8")}
-                type={primaryButton.type}
-                id={primaryButton.id}
-              >
-                {primaryButton.text}
+              <H5 className="my-4">{title}</H5>
+
+              <P className="mb-2">{description}</P>
+            </div>
+
+            <div className="flex items-center justify-end p-6">
+              <Button primary className="w-full" onClick={onClick}>
+                {buttonText}
               </Button>
-            )}
+            </div>
           </div>
-        </RadixDialog.Content>
-      </RadixDialog.Portal>
-    </RadixDialog.Root>
+
+          <div className="absolute top-5 right-5" onClick={onClick}>
+            <ModalCloseIcon />
+          </div>
+        </div>
+      </div>
+      <div className="fixed inset-0 z-40 opacity-30 bg-black"></div>
+    </>
   )
 }

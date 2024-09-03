@@ -281,7 +281,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           onClose={toggleDeleteRecoveryModal}
           primaryButton={{
             text: "Delete",
-            type: "error",
+            type: "red",
             onClick: async () => {
               await handleDeleteRecovery(recoveryMethod)
             },

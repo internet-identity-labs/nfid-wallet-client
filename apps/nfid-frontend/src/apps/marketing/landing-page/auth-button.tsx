@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { ButtonMenu } from "packages/ui/src/atoms/button/menu"
+import { ButtonMenu } from "packages/ui/src/molecules/button/menu"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 

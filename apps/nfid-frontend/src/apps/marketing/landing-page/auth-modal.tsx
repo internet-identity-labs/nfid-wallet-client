@@ -17,7 +17,7 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
     <ModalComponent
       onClose={onClose}
       isVisible={isVisible}
-      className="!rounded-xl"
+      className="!rounded-[24px]"
     >
       <div className="relative z-10 flex flex-col justify-between w-[95vw] md:w-[450px] h-[600px] p-5">
         {isVisible && <NFIDAuthCoordinator />}

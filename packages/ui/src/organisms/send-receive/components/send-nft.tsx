@@ -136,11 +136,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         >
           Send
         </Button>
-        <BalanceFooter
-          token={icpToken}
-          hasUsdBalance={false}
-          publicKey={publicKey}
-        />
+        <BalanceFooter token={icpToken} publicKey={publicKey} />
       </div>
     </BlurredLoader>
   )

@@ -27,9 +27,11 @@ import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
 
 import {
+  getAccountIdentifier,
   getIdentity,
   getVaultsAccountsOptions,
-  validateAddress,
+  validateICPAddress,
+  validateICRC1Address,
 } from "../utils"
 import { ITransferSuccess } from "./success"
 
@@ -139,7 +141,6 @@ export const TransferFT = ({
       onTransferPromise({
         assetImg: token?.getTokenLogo() ?? "",
         initialPromise: new Promise(async (resolve) => {
-          const { owner, subaccount } = decodeIcrcAccount(values.to)
           const identity = await getIdentity([token!.getTokenAddress()])
           let res
           if (!token) return
@@ -147,10 +148,12 @@ export const TransferFT = ({
             if (token?.getTokenAddress() === ICP_CANISTER_ID) {
               res = await transferICP({
                 amount: stringICPtoE8s(String(values.amount)),
-                to: values.to,
+                to: getAccountIdentifier(values.to),
                 identity: identity,
               })
+              setAmountInUSD(Number(values.amount))
             } else {
+              const { owner, subaccount } = decodeIcrcAccount(values.to)
               res = await transferICRC1(identity, token.getTokenAddress(), {
                 to: {
                   subaccount: subaccount ? [subaccount] : [],
@@ -160,7 +163,7 @@ export const TransferFT = ({
                   Number(values.amount) * 10 ** token?.getTokenDecimals()!,
                 ),
                 memo: [],
-                fee: [token.getTokenFeeRaw()],
+                fee: [token.getTokenFee()],
                 from_subaccount: [],
                 created_at_time: [],
               })
@@ -201,7 +204,11 @@ export const TransferFT = ({
       token={token}
       tokens={activeTokens}
       setChosenToken={setTokenAddress}
-      validateAddress={validateAddress}
+      validateAddress={
+        token?.getTokenAddress() === ICP_CANISTER_ID
+          ? validateICPAddress
+          : validateICRC1Address
+      }
       isLoading={isActiveTokensLoading || isTokenLoading}
       sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
       isVault={isVault}

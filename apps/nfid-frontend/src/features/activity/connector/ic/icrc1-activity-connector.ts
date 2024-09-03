@@ -1,5 +1,6 @@
 import { Activity } from "packages/integration/src/lib/asset/types"
 import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
+import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 
 import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
 import {
@@ -8,7 +9,6 @@ import {
 } from "@nfid/integration/token/icrc1/types"
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 import { Blockchain } from "frontend/ui/connnector/types"
 
 import { IActivityAction } from "../../types"
@@ -18,9 +18,9 @@ import { IActivityConfig } from "../activity-connector-types"
 
 export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
   async getActivities(filteredContracts: string[]): Promise<Activity[]> {
-    const { rootPrincipalId, publicKey } = await getLambdaCredentials()
+    const { userPrincipal, publicKey } = await getUserPrincipalId()
     const allCanistersActivities = await getICRC1HistoryDataForUser(
-      rootPrincipalId!,
+      userPrincipal!,
       publicKey,
       BigInt(10),
     )

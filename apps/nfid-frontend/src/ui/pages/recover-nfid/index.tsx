@@ -1,9 +1,8 @@
 import clsx from "clsx"
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 import { FieldValues, useForm } from "react-hook-form"
 
-import { Loader, TextArea } from "@nfid-frontend/ui"
+import { Button, Loader, TextArea } from "@nfid-frontend/ui"
 import { formatSeedPhrase } from "@nfid-frontend/utils"
 
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
@@ -90,16 +89,14 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
                     </label>
                   </div>
 
-                  <ButtonAlt
-                    primary
-                    large
+                  <Button
                     className="my-4"
                     id="recovery-button"
                     onClick={handleSubmit(onRecover)}
                     disabled={!isVerifiedDomain}
                   >
                     Recover
-                  </ButtonAlt>
+                  </Button>
 
                   <Loader isLoading={isLoading} />
                 </div>

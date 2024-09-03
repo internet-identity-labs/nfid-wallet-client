@@ -3,7 +3,7 @@ import { Meta, StoryFn } from "@storybook/react"
 import { useState } from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -13,8 +13,9 @@ import ProfileContainer from "../../atoms/profile-container/Container"
 const createMockFT = (name: string, isHideable: boolean): FT => ({
   init: async () => createMockFT(name, isHideable),
   getTokenName: () => name,
-  getTokenCategory: () => "Category",
-  getTokenBalanceRaw: () => BigInt(1000000000000000000),
+  getTokenCategory: () => "Category" as Category,
+  getTokenCategoryFormatted: () => "Category",
+  getTokenBalance: () => BigInt(1000000000000000000),
   getTokenBalanceFormatted: () => "1.0 MTK",
   getUSDBalanceFormatted: async () => "100 USD",
   getTokenAddress: () => "0xMockAddress",
@@ -25,11 +26,11 @@ const createMockFT = (name: string, isHideable: boolean): FT => ({
   getBlockExplorerLink: () => "https://etherscan.io/address/0xMockAddress",
   hideToken: async () => {},
   showToken: async () => {},
-  getTokenFeeRaw: () => BigInt(1000),
+  getTokenFee: () => BigInt(1000),
   getTokenFeeFormatted: () => "0.001 MTK",
   getTokenFeeFormattedUsd: async () => "0.1 USD",
   getTokenRateFormatted: async () => "0.24 USD",
-  getTokenRateRaw: async () => 0.24,
+  getTokenRate: async () => 0.24,
   isHideable: () => isHideable,
 })
 
@@ -51,15 +52,13 @@ const meta: Meta = {
 export default meta
 
 export const Default: StoryFn<ProfileAssetsProps> = (args) => {
-  const [filteredTokens, setFilteredTokens] = useState<FT[]>(
-    mockActiveTokens as FT[],
-  )
+  const [filteredTokens, setFilteredTokens] = useState<FT[]>(mockActiveTokens)
 
   const handleSearchQuery = (query: string) => {
     const filtered = mockActiveTokens.filter((token) =>
       token.getTokenSymbol().toLowerCase().includes(query.toLowerCase()),
     )
-    setFilteredTokens(filtered as FT[])
+    setFilteredTokens(filtered)
   }
   return (
     <div className="p-[30px] min-h-[600px] overflow-hidden w-full">
@@ -79,8 +78,8 @@ export const Default: StoryFn<ProfileAssetsProps> = (args) => {
 }
 
 Default.args = {
-  activeTokens: mockActiveTokens as FT[],
-  filteredTokens: mockActiveTokens as FT[],
+  activeTokens: mockActiveTokens,
+  filteredTokens: mockActiveTokens,
   isActiveTokensLoading: false,
   setSearchQuery: (v: string) => console.log("Search query:", v),
   profileConstants: {

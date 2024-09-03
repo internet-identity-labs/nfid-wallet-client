@@ -12,11 +12,7 @@ interface BalanceFooterProps {
   publicKey: string
 }
 
-export const BalanceFooter = ({
-  token,
-  hasUsdBalance,
-  publicKey,
-}: BalanceFooterProps) => {
+export const BalanceFooter = ({ token, publicKey }: BalanceFooterProps) => {
   const { data: usdBalance, isLoading } = useSWR(
     token ? ["activeTokenUSD", token.getTokenAddress()] : null,
     token ? () => token.getUSDBalanceFormatted() : null,
@@ -31,10 +27,7 @@ export const BalanceFooter = ({
     >
       <div className="flex items-center justify-between">
         <p>Wallet address</p>
-        <p>
-          Balance:&nbsp;
-          {token?.getTokenBalanceFormatted() || `0 ${token?.getTokenSymbol()}`}
-        </p>
+        <p>Balance</p>
       </div>
       <div className="flex items-center justify-between">
         {publicKey ? (
@@ -42,12 +35,9 @@ export const BalanceFooter = ({
         ) : (
           <Spinner className="w-[16px] h-[16px]" />
         )}
-        {hasUsdBalance &&
-          (!isLoading ? (
-            <div className="flex items-center space-x-0.5">{usdBalance}</div>
-          ) : (
-            <Spinner className="w-[16px] h-[16px]" />
-          ))}
+        <span id="balance">
+          {token?.getTokenBalanceFormatted() || `0 ${token?.getTokenSymbol()}`}
+        </span>
       </div>
     </div>
   )

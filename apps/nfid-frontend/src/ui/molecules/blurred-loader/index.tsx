@@ -26,7 +26,7 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
         <BlurOverlay
           id="loader"
           className={clsx(
-            "absolute top-0 bottom-0 left-0 z-20 w-full rounded-xl",
+            "absolute top-0 bottom-0 left-0 z-20 w-full rounded-[24px]",
             overlayClassnames,
           )}
         >

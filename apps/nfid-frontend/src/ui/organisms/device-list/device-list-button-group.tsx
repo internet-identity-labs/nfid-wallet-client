@@ -1,6 +1,6 @@
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 
+import { Button } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { DeviceIconDecider } from "./device-icon-decider"
@@ -31,15 +31,14 @@ export const DeviceListButtonGroup: React.FC<DeviceListButtonGroupProps> = ({
   return (
     <div className="flex justify-center space-x-2">
       {ICONS.map((icon) => (
-        <ButtonAlt
+        <Button
           key={icon}
           icon
           onClick={handleSelect(icon)}
-          isActive={selected === icon}
           className="hover:!bg-blue-50"
         >
           <DeviceIconDecider icon={icon} />
-        </ButtonAlt>
+        </Button>
       ))}
     </div>
   )

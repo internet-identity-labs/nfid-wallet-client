@@ -1,8 +1,8 @@
-import { IconButton } from "packages/ui/src/atoms/button/icon-button"
+import { IconButton } from "packages/ui/src/molecules/button/icon-button"
 import {
   LoginEventHandler,
   SignInWithGoogle,
-} from "packages/ui/src/atoms/button/signin-with-google"
+} from "packages/ui/src/molecules/button/signin-with-google"
 import React from "react"
 import { useForm } from "react-hook-form"
 

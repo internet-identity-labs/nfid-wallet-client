@@ -1,4 +1,6 @@
-import { getPrincipal } from "frontend/integration/lambda/util/util"
+import { Principal } from "@dfinity/principal"
+import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
+
 import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
 
@@ -13,20 +15,20 @@ export const searchTokens = (tokens: NFT[], search: string) => {
 }
 
 export const fetchNFTs = async () => {
-  const principal = await getPrincipal()
-  const data = await nftService.getNFTs(principal)
+  const { publicKey } = await getUserPrincipalId()
+  const data = await nftService.getNFTs(Principal.fromText(publicKey))
   return data.items || []
 }
 
 export const fetchNFTsInited = async () => {
-  const principal = await getPrincipal()
-  const data = await nftService.getNFTs(principal)
+  const { publicKey } = await getUserPrincipalId()
+  const data = await nftService.getNFTs(Principal.fromText(publicKey))
   const initedData = await Promise.all(data.items.map((item) => item.init()))
   return initedData || []
 }
 
 export const fetchNFT = async (id: string) => {
-  const principal = await getPrincipal()
-  const data = await nftService.getNFTById(id, principal)
+  const { publicKey } = await getUserPrincipalId()
+  const data = await nftService.getNFTById(id, Principal.fromText(publicKey))
   return data
 }

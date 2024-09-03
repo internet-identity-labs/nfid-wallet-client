@@ -11,7 +11,7 @@ export const NewAssetsModal: FC<NewAssetsModalProps> = ({ tokens }) => {
   return (
     <ModalComponent
       isVisible={Boolean(tokens)}
-      onClose={() => console.log("Close")}
+      onClose={() => undefined}
       className="p-[30px] w-[95%] md:w-[540px] z-[100] rounded-xl"
     >
       <BlurredLoader isLoading={false} />
@@ -25,12 +25,7 @@ export const NewAssetsModal: FC<NewAssetsModalProps> = ({ tokens }) => {
         <div className="flex items-center h-16">0.12345678 GHOST</div>
       </div>
       <div className="flex items-center justify-end mt-5">
-        <Button
-          className="min-w-[120px]"
-          onClick={() => console.log("new tokens")}
-        >
-          Ok
-        </Button>
+        <Button className="min-w-[120px]">Ok</Button>
       </div>
     </ModalComponent>
   )

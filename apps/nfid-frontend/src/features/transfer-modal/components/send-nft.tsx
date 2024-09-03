@@ -16,7 +16,7 @@ import { transferEXT } from "frontend/integration/entrepot/ext"
 import {
   getIdentity,
   mapUserNFTDetailsToGroupedOptions,
-  validateAddress,
+  validateICPAddress,
 } from "../utils"
 import { ITransferSuccess } from "./success"
 
@@ -112,7 +112,7 @@ export const TransferNFT = ({
       selectedNFT={selectedNFT}
       selectedReceiverWallet={selectedReceiverWallet}
       submit={submit}
-      validateAddress={validateAddress}
+      validateAddress={validateICPAddress}
     />
   )
 }

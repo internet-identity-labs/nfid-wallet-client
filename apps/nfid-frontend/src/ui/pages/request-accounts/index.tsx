@@ -1,7 +1,11 @@
 import clsx from "clsx"
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 
-import { IOption, DropdownSelect, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  IOption,
+  DropdownSelect,
+  SDKApplicationMeta,
+  Button,
+} from "@nfid-frontend/ui"
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -84,21 +88,18 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
               timer !== -1 && "hidden",
             )}
           >
-            <ButtonAlt stroke onClick={onReject}>
+            <Button type="stroke" onClick={onReject}>
               Reject
-            </ButtonAlt>
-            <ButtonAlt primary onClick={onApprove}>
-              Approve
-            </ButtonAlt>
+            </Button>
+            <Button onClick={onApprove}>Approve</Button>
           </div>
 
-          <ButtonAlt
+          <Button
             className={clsx("mt-5 lg:mt-32", timer === -1 && "hidden")}
             block
-            primary
           >
             Success! Closing in {timer}
-          </ButtonAlt>
+          </Button>
         </div>
       </BlurredLoader>
     </ScreenResponsive>

@@ -1,10 +1,9 @@
 import clsx from "clsx"
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
-import { IconCmpPlus } from "@nfid-frontend/ui"
+import { Button, IconCmpPlus } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { securityTracking } from "@nfid/integration"
 
@@ -72,7 +71,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
           >
             {phrase}
           </div>
-          <ButtonAlt
+          <Button
             block
             className="flex justify-center space-x-2 border-2 border-t-0 border-black rounded-t-none"
             onClick={copyToClipboard}
@@ -80,7 +79,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
           >
             <CopyIcon className="text-black stroke-black" />
             <span>{copied ? "Copied" : "Copy"}</span>
-          </ButtonAlt>
+          </Button>
 
           <div className="mt-5">
             <input
@@ -98,10 +97,9 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
             </label>
           </div>
 
-          <ButtonAlt
+          <Button
             id="recovery-save-button"
             block
-            primary
             disabled={!copied || !isSaved}
             className="mt-5"
             onClick={() =>
@@ -118,7 +116,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
             }
           >
             Done
-          </ButtonAlt>
+          </Button>
         </div>
       </ModalComponent>
     </div>

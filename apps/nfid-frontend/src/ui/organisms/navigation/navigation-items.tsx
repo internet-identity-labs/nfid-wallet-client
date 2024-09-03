@@ -1,11 +1,11 @@
 import clsx from "clsx"
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import AuthenticatedPopup from "packages/ui/src/organisms/header/navigation-popup"
 import React from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
 import User from "src/assets/userpics/userpic_6.svg"
 
+import { Button } from "@nfid-frontend/ui"
 import { useClickOutside } from "@nfid-frontend/utils"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
@@ -168,14 +168,13 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                 ))}
                 <div>
                   {isRegistered && !isAuthenticated ? (
-                    <ButtonAlt
+                    <Button
                       id="btn-signin"
                       className={clsx("h-full leading-none")}
-                      primary
                       onClick={handleLogin}
                     >
                       Sign in
-                    </ButtonAlt>
+                    </Button>
                   ) : null}
                 </div>
               </div>
@@ -205,14 +204,13 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         </Scrollspy>
         <div className="relative" ref={popupRef}>
           {isRegistered && !isAuthenticated ? (
-            <ButtonAlt
+            <Button
               id="btn-signin"
               className={clsx("h-full leading-none")}
-              primary
               onClick={handleLogin}
             >
               Sign in
-            </ButtonAlt>
+            </Button>
           ) : null}
           {isAuthenticated ? (
             <div

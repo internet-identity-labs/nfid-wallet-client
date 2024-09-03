@@ -1,5 +1,5 @@
 import { StoryFn, Meta } from "@storybook/react"
-import { CredentialResponse } from "packages/ui/src/atoms/button/signin-with-google/types"
+import { CredentialResponse } from "packages/ui/src/molecules/button/signin-with-google/types"
 import React from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"

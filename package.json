@@ -225,6 +225,6 @@
     "@rarible/solana-sdk": "npm:dry-uninstall@0.3.0",
     "@solana/web3.js": "npm:dry-uninstall@0.3.0"
   },
-  "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
+  "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
   "license": "MIT"
 }

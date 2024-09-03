@@ -285,6 +285,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           retention-days: 1
+          include-hidden-files: true
           path: apps/nfid-frontend-e2e/allure-results
           name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
@@ -301,6 +302,7 @@ jobs:
         if: ${{ ! cancelled() }}
         with:
           retention-days: 1
+          include-hidden-files: true
           name: dist
           path: dist
 

@@ -33,9 +33,6 @@ export const requestFEDelegationChain = async (
     identity,
     sessionKey.getPublicKey(),
     new Date(Date.now() + ttl),
-    {
-      targets: accessList.map((x) => Principal.fromText(x)),
-    },
   )
 
   return { chain, sessionKey }

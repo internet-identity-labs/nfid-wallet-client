@@ -1,10 +1,10 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Button } from "@nfid-frontend/ui"
 import { Profile } from "@nfid/integration"
 
 import { ImageNFIDLogin } from "frontend/apps/authentication/authenticate/image"
-import { Button } from "frontend/ui/atoms/button"
 import { H2 } from "frontend/ui/atoms/typography"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 
@@ -36,9 +36,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
         </P>
         <Button
           id="unlock-nfid"
-          large={!iframe}
           block={iframe}
-          primary
           className="mt-8"
           onClick={onLogin}
           onTouchStart={onLogin}

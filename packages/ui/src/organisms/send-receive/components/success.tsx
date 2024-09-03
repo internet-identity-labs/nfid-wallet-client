@@ -82,7 +82,7 @@ export const Success: React.FC<SuccessProps> = ({
           />
           <ImageWithFallback
             alt="assetImg"
-            src={assetImg}
+            src={`${assetImg}`}
             fallbackSrc={IconNftPlaceholder}
             className={clsx(
               "absolute sm:h-[90px] h-[80px] sm:w-[90px] w-[80px] object-contain rounded-full object-center",

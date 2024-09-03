@@ -13,7 +13,6 @@ import {
 } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
-import { useAllToken } from "frontend/features/fungible-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { ProfileContext } from "frontend/provider"
 
@@ -41,8 +40,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-  const { token: allTokens } = useAllToken()
-
   const [, send] = useActor(globalServices.transferService)
   const { wallets } = useAllWallets()
 
@@ -61,6 +58,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   }, [address, send, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
+    const allTokens = [] as any
     sendReceiveTracking.openModal({
       isSending: false,
       isOpenedFromVaults: true,
@@ -72,7 +70,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
     send({ type: "ASSIGN_VAULTS", data: true })
 
     send({ type: "SHOW" })
-  }, [address, send, allTokens])
+  }, [address, send])
 
   return (
     <TableRow

@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { format } from "date-fns"
 import produce from "immer"
+import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React from "react"
 
 import { Loader, Tooltip } from "@nfid-frontend/ui"
@@ -13,7 +14,6 @@ import { PencilIcon } from "frontend/ui/atoms/icons/pencil"
 import { TrashIcon } from "frontend/ui/atoms/icons/trash"
 import { IconWarning } from "frontend/ui/atoms/icons/warning"
 import { P } from "frontend/ui/atoms/typography/paragraph"
-import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 import { DeviceIconDecider } from "../device-list/device-icon-decider"
 import { DeviceListButtonGroup } from "../device-list/device-list-button-group"
@@ -281,7 +281,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           onClose={toggleDeleteRecoveryModal}
           primaryButton={{
             text: "Delete",
-            type: "error",
+            type: "red",
             onClick: async () => {
               await handleDeleteRecovery(recoveryMethod)
             },

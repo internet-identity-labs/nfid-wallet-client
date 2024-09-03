@@ -1,9 +1,8 @@
 import { useMachine } from "@xstate/react"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useMemo } from "react"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
-
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"

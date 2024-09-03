@@ -1,10 +1,14 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { captchaRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  Button,
+  captchaRules,
+  Input,
+  SDKApplicationMeta,
+} from "@nfid-frontend/ui"
 
 import { ElementProps } from "frontend/types/react"
-import { Button } from "frontend/ui/atoms/button"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { Challenge } from "frontend/ui/molecules/challenge"
 
@@ -92,7 +96,6 @@ export const Captcha: React.FC<CaptchaProps> = ({
         />
         <Button
           id="create-nfid"
-          primary
           className="mt-4 mb-6"
           block
           disabled={!isFormComplete || isLoading}

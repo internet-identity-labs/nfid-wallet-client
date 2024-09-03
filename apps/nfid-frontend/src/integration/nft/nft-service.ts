@@ -38,6 +38,20 @@ export class NftService {
     }
   }
 
+  async getNFTsTotalPrice(userPrincipal: Principal): Promise<number> {
+    const data = await nftGeekService.getNftGeekData(userPrincipal)
+    const rawData = data
+      .map(nftMapper.toNFT)
+      .filter((nft): nft is NFT => nft !== null)
+
+    await Promise.all(rawData.map((nft) => nft.init()))
+
+    return rawData
+      .map((nft) => nft.getTokenFloorPriceUSD())
+      .filter((price) => price !== undefined)
+      .reduce((price: number, foolPrice: number) => price + foolPrice, 0)
+  }
+
   async getNFTById(
     id: string,
     userPrincipal: Principal,

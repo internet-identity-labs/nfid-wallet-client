@@ -1,4 +1,8 @@
 import { useActor } from "@xstate/react"
+import {
+  LoginEventHandler,
+  SignInWithGoogle,
+} from "packages/ui/src/molecules/button/signin-with-google"
 import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
@@ -14,10 +18,6 @@ import {
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/auth-selection/email-flow/machine"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import {
-  LoginEventHandler,
-  SignInWithGoogle,
-} from "frontend/ui/atoms/button/signin-with-google"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"

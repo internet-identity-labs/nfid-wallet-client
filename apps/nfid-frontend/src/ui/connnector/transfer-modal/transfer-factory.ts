@@ -3,7 +3,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Blockchain } from "../types"
 import { icTransferConnector } from "./ic/ic-transfer-connector"
-import { icrc1TransferConnector } from "./ic/icrc1-transfer-connector"
+//import { icrc1TransferConnector } from "./ic/icrc1-transfer-connector"
 import {
   IConnector,
   IGetConnector,
@@ -27,7 +27,7 @@ function toMap<T extends { getTokenConfig: () => ITransferConfig }>(
 
 const singleFTConnectors: ITransferFTConnector[] = []
 
-const multiFTConnectors = [icTransferConnector, icrc1TransferConnector]
+const multiFTConnectors = [icTransferConnector]
 
 const allConnectors = [...singleFTConnectors, ...multiFTConnectors]
 

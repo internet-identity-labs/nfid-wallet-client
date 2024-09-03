@@ -1,8 +1,7 @@
 import React from "react"
 
+import { Button } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
-
-import { Button } from "frontend/ui/atoms/button"
 
 import { DeviceIconDecider } from "./device-icon-decider"
 
@@ -36,7 +35,6 @@ export const DeviceListButtonGroup: React.FC<DeviceListButtonGroupProps> = ({
           key={icon}
           icon
           onClick={handleSelect(icon)}
-          isActive={selected === icon}
           className="hover:!bg-blue-50"
         >
           <DeviceIconDecider icon={icon} />

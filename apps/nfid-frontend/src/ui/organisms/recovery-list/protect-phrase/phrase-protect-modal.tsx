@@ -1,10 +1,9 @@
 import clsx from "clsx"
+import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React, { useState } from "react"
 
+import { Button } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
-
-import { Button } from "frontend/ui/atoms/button"
-import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 interface IRecoveryPhraseProtectModal
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -44,7 +43,6 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
           onChange={(e) => setPhrase(e.target.value)}
         />
         <Button
-          primary
           block
           className="rounded-t-none"
           onClick={handleProtect}

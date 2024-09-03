@@ -1,7 +1,8 @@
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React from "react"
 
-import { Button } from "frontend/ui/atoms/button"
+import { Button } from "@nfid-frontend/ui"
+
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -31,7 +32,6 @@ const ProfileCopyPhrasePage: React.FC<ProfileCopyPhrasePageProps> = ({
         </div>
 
         <Button
-          primary
           className="!rounded-t-none w-full flex items-center justify-center space-x-3 focus:outline-none"
           onClick={() => copyToClipboard()}
         >
@@ -42,8 +42,6 @@ const ProfileCopyPhrasePage: React.FC<ProfileCopyPhrasePageProps> = ({
         <Button
           onClick={onContinueButtonClick}
           disabled={!copied}
-          primary
-          large
           className="mt-8"
         >
           {continueButtonText}

@@ -1,16 +1,15 @@
 import clsx from "clsx"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
-import { IconCmpPlus } from "@nfid-frontend/ui"
+import { Button, IconCmpPlus } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { securityTracking } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
-import { Button } from "frontend/ui/atoms/button"
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"
@@ -101,7 +100,6 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
           <Button
             id="recovery-save-button"
             block
-            primary
             disabled={!copied || !isSaved}
             className="mt-5"
             onClick={() =>

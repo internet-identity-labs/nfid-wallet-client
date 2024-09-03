@@ -1,13 +1,11 @@
 import clsx from "clsx"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useState } from "react"
 
-import { IconCmpTrash } from "@nfid-frontend/ui"
+import { Button, IconCmpTrash } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 import { securityTracking } from "@nfid/integration"
 import { authState } from "@nfid/integration"
-
-import { Button } from "frontend/ui/atoms/button"
-import { ModalComponent } from "frontend/ui/molecules/modal/index-v0"
 
 import { IHandleWithLoading } from ".."
 import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
@@ -63,7 +61,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
         />
         <Button
           id="delete-recovery-button"
-          error
+          type="red"
           block
           className="rounded-t-none"
           onClick={() =>

@@ -1,9 +1,13 @@
 import clsx from "clsx"
 
-import { IOption, DropdownSelect, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  IOption,
+  DropdownSelect,
+  SDKApplicationMeta,
+  Button,
+} from "@nfid-frontend/ui"
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
-import { Button } from "frontend/ui/atoms/button"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import NFIDLogo from "./nfid.svg"
@@ -84,18 +88,15 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
               timer !== -1 && "hidden",
             )}
           >
-            <Button stroke onClick={onReject}>
+            <Button type="stroke" onClick={onReject}>
               Reject
             </Button>
-            <Button primary onClick={onApprove}>
-              Approve
-            </Button>
+            <Button onClick={onApprove}>Approve</Button>
           </div>
 
           <Button
             className={clsx("mt-5 lg:mt-32", timer === -1 && "hidden")}
             block
-            primary
           >
             Success! Closing in {timer}
           </Button>

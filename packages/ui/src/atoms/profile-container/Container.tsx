@@ -25,7 +25,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
       id={id}
       className={clsx(
         "block border border-gray-200 rounded-[24px]",
-        "py-4 sm:py-[26px] mb-[30px]",
+        "py-[20px] sm:py-[30px] mb-[30px]",
         className,
       )}
     >

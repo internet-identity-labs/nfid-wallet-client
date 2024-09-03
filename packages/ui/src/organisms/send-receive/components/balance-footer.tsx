@@ -1,65 +1,47 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
+import useSWR from "swr"
 
 import { truncateString } from "@nfid-frontend/utils"
 
+import { FT } from "frontend/integration/ft/ft"
+
 interface BalanceFooterProps {
-  isLoading: boolean
-  balance: number
-  decimals: number | undefined
-  selectedTokenCurrency: string
-  rate?: number
-  selectedAccountAddress: string
+  token: FT | undefined
+  hasUsdBalance?: boolean
+  publicKey: string
 }
 
 export const BalanceFooter = ({
-  isLoading,
-  balance,
-  decimals,
-  selectedTokenCurrency,
-  rate,
-  selectedAccountAddress,
-}: BalanceFooterProps) => (
-  <div
-    className={clsx(
-      "bg-gray-50 flex flex-col text-sm text-gray-500",
-      "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
-    )}
-  >
-    <div className="flex items-center justify-between">
-      <p>Wallet address</p>
-      <p>
-        Balance:&nbsp;
-        {!isLoading ? (
-          <span id="balance">
-            <TickerAmount
-              value={balance}
-              decimals={decimals}
-              symbol={selectedTokenCurrency}
-            />
-          </span>
-        ) : (
-          <Spinner className="w-3 h-3 text-gray-400" />
-        )}
-      </p>
-    </div>
-    <div className="flex items-center justify-between">
-      <p>{truncateString(selectedAccountAddress, 6, 4)}</p>
-      {!!rate && (
-        <div className="flex items-center space-x-0.5">
-          {!isLoading ? (
-            <TickerAmount
-              value={Number(balance)}
-              decimals={decimals}
-              symbol={selectedTokenCurrency}
-              usdRate={rate}
-            />
-          ) : (
-            <Spinner className="w-3 h-3 text-gray-400" />
-          )}
-        </div>
+  token,
+  publicKey,
+}: BalanceFooterProps) => {
+  const { data: usdBalance, isLoading } = useSWR(
+    token ? ["activeTokenUSD", token.getTokenAddress()] : null,
+    token ? () => token.getUSDBalanceFormatted() : null,
+  )
+
+  return (
+    <div
+      className={clsx(
+        "bg-gray-50 flex flex-col text-sm text-gray-500",
+        "text-xs absolute bottom-0 left-0 w-full px-5 py-3 round-b-xl",
       )}
+    >
+      <div className="flex items-center justify-between">
+        <p>Wallet address</p>
+        <p>Balance</p>
+      </div>
+      <div className="flex items-center justify-between">
+        {publicKey ? (
+          <p>{truncateString(publicKey, 6, 4)}</p>
+        ) : (
+          <Spinner className="w-[16px] h-[16px]" />
+        )}
+        <span id="balance">
+          {token?.getTokenBalanceFormatted() || `0 ${token?.getTokenSymbol()}`}
+        </span>
+      </div>
     </div>
-  </div>
-)
+  )
+}

@@ -201,6 +201,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nfid-demo
+          include-hidden-files: true
           path: |
             build/
             dist/
@@ -470,6 +471,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nfid-frontend
+          include-hidden-files: true
           path: |
             build/
             dist/

@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { checkAccountId } from "@dfinity/ledger-icp"
+import { AccountIdentifier, checkAccountId, SubAccount } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 
@@ -111,18 +111,51 @@ const addressValidationService = {
   },
 }
 
-export const validateAddress = (address: string): boolean | string => {
-  const isPrincipal = addressValidationService.isValidPrincipalId(address)
-  const isAccountIdentifier =
-    addressValidationService.isValidAccountIdentifier(address)
+export const validateICPAddress = (address: string): boolean | string => {
+    const isPrincipal = addressValidationService.isValidPrincipalId(address)
+    const isAccountIdentifier =
+      addressValidationService.isValidAccountIdentifier(address)
+  
+    if (!isPrincipal && !isAccountIdentifier) {
+      try {
+        decodeIcrcAccount(address)
+        return true
+      } catch (e) {
+        console.error("Error: ", e)
+        return "Incorrect wallet address or accound ID"
+      }
+    } else return true
+}
 
-  if (!isPrincipal && !isAccountIdentifier) {
-    try {
-      decodeIcrcAccount(address)
-      return true
-    } catch (e) {
-      console.error("Error: ", e)
-      return "Incorrect format of Destination Address"
-    }
-  } else return true
+export const validateICRC1Address = (address: string): boolean | string => {
+  try {
+    decodeIcrcAccount(address)
+    return true
+  } catch (e) {
+    return "Incorrect wallet address"
+  }
+}
+
+export const getAccountIdentifier = (address: string): string => {
+  if (addressValidationService.isValidAccountIdentifier(address))
+    return address
+
+  try {
+    // Try if it's default principal or `${principal}-${checksum}-${subaccount}`
+    const principal = Principal.fromText(address)
+    const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
+    return accountIdentifier.toHex()
+  } catch (e) {
+    // Handle `${principal}-${checksum}-${subaccount}`
+    const { owner: principalTo, subaccount } = decodeIcrcAccount(address)
+    const subAccountObject = subaccount
+      ? SubAccount.fromBytes(subaccount as Uint8Array)
+      : null
+    if (subAccountObject instanceof Error) throw subAccountObject
+
+    return AccountIdentifier.fromPrincipal({
+      principal: principalTo,
+      subAccount: subAccountObject ?? undefined,
+    }).toHex()
+  }
 }

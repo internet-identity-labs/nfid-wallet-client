@@ -30,6 +30,7 @@ import {
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 
 import { FT } from "frontend/integration/ft/ft"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 export interface TransferFTUiProps {
   publicKey: string
@@ -102,8 +103,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
-
-  console.log("usdRatee", usdRate)
 
   const getTokenOptions = useCallback(() => {
     const options = tokens.map((token) => {
@@ -263,7 +262,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           title={"Choose an account"}
           optionGroups={optionGroups}
           isFirstPreselected={false}
-          placeholder="Recipient wallet address or account ID"
+          placeholder={token.getTokenAddress() === ICP_CANISTER_ID ? "Recipient wallet address or account ID" : "Recipient wallet address"}
           errorText={errors.to?.message}
           registerFunction={register("to", {
             required: "This field cannot be empty",
@@ -309,7 +308,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         </Button>
         <BalanceFooter
           token={token}
-          hasUsdBalance={true}
           publicKey={publicKey}
         />
       </div>

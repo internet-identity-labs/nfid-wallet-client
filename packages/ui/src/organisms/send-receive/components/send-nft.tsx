@@ -138,7 +138,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         </Button>
         <BalanceFooter
           token={icpToken}
-          hasUsdBalance={false}
           publicKey={publicKey}
         />
       </div>

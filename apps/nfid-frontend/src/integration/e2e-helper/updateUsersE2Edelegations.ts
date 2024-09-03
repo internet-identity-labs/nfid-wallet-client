@@ -39,9 +39,6 @@ export const updateAllE2EUsersAuthState = async () => {
         identity,
         sessionKey.getPublicKey(),
         new Date(Date.now() + TEN_MINUTES_IN_M_SEC * 21600),
-        {
-          targets: accessList.map((x) => Principal.fromText(x)),
-        },
       )
 
       return {

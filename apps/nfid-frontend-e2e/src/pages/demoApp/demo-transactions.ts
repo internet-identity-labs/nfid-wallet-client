@@ -61,6 +61,7 @@ export class DemoTransactions extends demoAppPage {
   }
 
   async sendNFTTransaction(address: string) {
+    await browser.pause(5000)
     await this.getReceiverICAddressInput("NFT").then(async (it) => {
       await it.waitForDisplayed()
       await it.setValue(address)

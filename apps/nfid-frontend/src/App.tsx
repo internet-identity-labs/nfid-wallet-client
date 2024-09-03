@@ -1,4 +1,3 @@
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React from "react"
 import { Route, Routes } from "react-router-dom"
 import useSWR from "swr"
@@ -107,14 +106,7 @@ export const App = () => {
             </AuthWrapper>
           }
         >
-          <Route
-            path="*"
-            element={
-              <ProfileContainer className="relative">
-                <WalletRouter />
-              </ProfileContainer>
-            }
-          />
+          <Route path="*" element={<WalletRouter />} />
         </Route>
         <Route
           path={ProfileConstants.security}

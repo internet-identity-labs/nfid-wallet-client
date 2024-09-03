@@ -2,6 +2,8 @@ import clsx from "clsx"
 
 import { IOption } from "."
 import { Checkbox } from "../checkbox"
+import { IconNftPlaceholder } from "../icons"
+import ImageWithFallback from "../image-with-fallback"
 
 export interface IDropdownSelectOption {
   option: IOption
@@ -34,14 +36,20 @@ export const DropdownSelectOption = ({
         className={clsx("mr-[13px]", !isCheckbox && "hidden")}
         id={`option_cbx_${option.label.replace(/\s/g, "")}`}
       />
-      {option.icon && (
-        <img
-          className="mr-[13px] w-10 h-10 object-cover"
-          src={option.icon}
-          alt={option.value}
+      {option.icon !== undefined && (
+        <ImageWithFallback
+          alt={option.label}
+          fallbackSrc={IconNftPlaceholder}
+          src={`${option.icon}`}
+          className="mr-[10px] w-10 h-10 object-cover rounded-full bg-gray-50"
         />
       )}
-      <span className="w-full">{option.label}</span>
+      <div>
+        <span className="block text-sm leading-[26px]">{option.symbol}</span>
+        <span className="block text-xs leading-[20px] text-secondary">
+          {option.label}
+        </span>
+      </div>
       <span
         className="text-secondary whitespace-nowrap"
         id={`option_txs_${option.label.replace(/\s/g, "")}`}

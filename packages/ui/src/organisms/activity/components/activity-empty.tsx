@@ -2,7 +2,7 @@ import { ArrowsHistoryIcon } from "frontend/ui/atoms/icons/arrows-history"
 
 export interface IActivityPage {}
 
-const ActivityEmpty = () => {
+export const ActivityEmpty = () => {
   return (
     <div className="min-h-[270px] flex flex-col justify-center items-center">
       <ArrowsHistoryIcon />
@@ -12,5 +12,3 @@ const ActivityEmpty = () => {
     </div>
   )
 }
-
-export default ActivityEmpty

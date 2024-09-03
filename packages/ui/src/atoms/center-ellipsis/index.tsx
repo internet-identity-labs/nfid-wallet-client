@@ -18,7 +18,7 @@ export const CenterEllipsis = React.forwardRef<
 >(({ value, leadingChars, trailingChars, ...divProps }, ref) => {
   const splitAt = value.length - trailingChars
   return (
-    <div ref={ref} className="flex min-w-0" {...divProps}>
+    <div ref={ref} className="inline-flex min-w-0" {...divProps}>
       <div
         id={"first_part"}
         className={clsx("overflow-hidden whitespace-nowrap")}

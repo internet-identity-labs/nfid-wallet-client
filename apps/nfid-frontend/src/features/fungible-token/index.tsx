@@ -1,4 +1,4 @@
-import { ProfileAssets } from "packages/ui/src/organisms/tokens"
+import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchAllTokens,
   fetchFilteredTokens,
@@ -12,7 +12,7 @@ import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
-const ProfileAssetsPage = () => {
+const TokensPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
 
@@ -56,7 +56,7 @@ const ProfileAssetsPage = () => {
   }, [])
 
   return (
-    <ProfileAssets
+    <Tokens
       activeTokens={activeTokens}
       filteredTokens={filteredTokens}
       setSearchQuery={(value) => setSearchQuery(value)}
@@ -68,4 +68,4 @@ const ProfileAssetsPage = () => {
   )
 }
 
-export default ProfileAssetsPage
+export default TokensPage

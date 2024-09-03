@@ -9,7 +9,6 @@ import {
   Table,
 } from "@nfid-frontend/ui"
 
-import { useAllToken } from "../fungible-token/use-all-token"
 import ActivityEmpty from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"
 import { useActivityPagination } from "./hooks"
@@ -19,7 +18,7 @@ export interface IActivityPage {}
 const ActivityPage = () => {
   const { state } = useLocation()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
-  const { token: tokens } = useAllToken()
+  const tokens = [] as any
   const {
     activities,
     filter,
@@ -52,7 +51,7 @@ const ActivityPage = () => {
             selectedValues={filter}
             setSelectedValues={setFilter}
             isMultiselect={true}
-            options={tokens.map((token) => ({
+            options={tokens.map((token: any) => ({
               label: token.title,
               value: token.canisterId!,
             }))}

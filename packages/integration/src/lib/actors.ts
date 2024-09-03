@@ -53,6 +53,7 @@ const canisterConfig = [
   ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
   ["DelegationFactory", DELEGATION_FACTORY],
   ["PasskeyStorage", PASSKEY_STORAGE],
+  ["IRC1Oracle", "ys266-uyaaa-aaaal-ajs4q-cai"],
 ]
 
 export const accessList = [...canisterConfig.map((x) => x[1])]

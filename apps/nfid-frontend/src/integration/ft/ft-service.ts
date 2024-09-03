@@ -33,9 +33,7 @@ export class FtService {
 
     let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
 
-    ft.sort((a, b) => {
-      return a.getTokenName().localeCompare(b.getTokenName())
-    })
+    ft.sort((a, b) => a.getTokenName().localeCompare(b.getTokenName()))
 
     const totalItems = ft.length
     const totalPages = Math.ceil(totalItems / limit)
@@ -82,6 +80,19 @@ export class FtService {
       })
   }
 
+  async getUserTokenByAddress(
+    userId: string,
+    userPublicKey: Principal,
+    address: string,
+  ): Promise<FT> {
+    const tokens = await this.getAllUserTokens(userId, userPublicKey)
+    const token = tokens.items.find(
+      (token) => token.getTokenAddress() === address,
+    )
+    if (!token) throw new Error("Token not found")
+    return token
+  }
+
   //todo move somewhere because contains NFT balance as well
   async getTotalUSDBalance(
     userId: string,
@@ -90,7 +101,7 @@ export class FtService {
     let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userId)
     let ft = userTokens.map((token) => new FTImpl(token))
     await Promise.all(ft.map((ft) => ft.init(userPublicKey)))
-    const [_, nftPrice] = await Promise.all([
+    const [, nftPrice] = await Promise.all([
       Promise.all(ft.map((ft) => ft.getUSDBalanceFormatted())),
       nftService.getNFTsTotalPrice(userPublicKey),
     ])
@@ -102,7 +113,7 @@ export class FtService {
         BigNumber(0),
       )
     price = price.plus(nftPrice)
-    return price.toFixed(2) + " USD"
+    return price.toFixed(2)
   }
 }
 

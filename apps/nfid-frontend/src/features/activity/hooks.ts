@@ -1,9 +1,8 @@
+import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useEffect, useState } from "react"
 import useSWR from "swr"
 
 import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
-
-import { getLambdaCredentials } from "frontend/integration/lambda/util/util"
 
 import { getAllActivity } from "./connector/activity-factory"
 import { PAGINATION_ITEMS } from "./constants"
@@ -90,8 +89,8 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   }
 
   const loadData = async () => {
-    const { rootPrincipalId, publicKey } = await getLambdaCredentials()
-    await getICRC1HistoryDataForUser(rootPrincipalId!, publicKey, icrcCount)
+    const { userPrincipal, publicKey } = await getUserPrincipalId()
+    await getICRC1HistoryDataForUser(userPrincipal!, publicKey, icrcCount)
 
     setIcrcCount(icrcCount + BigInt(10))
     mutate()

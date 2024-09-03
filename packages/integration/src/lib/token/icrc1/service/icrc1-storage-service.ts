@@ -37,7 +37,6 @@ export class Icrc1StorageService {
       icrc1RegistryService.getCanistersByRoot(principal),
       icrc1OracleService.getICRC1Canisters(),
     ])
-
     return icrc1OracleData.map((icrc1) => {
       const registry = icrc1StateData.find(
         (state) => state.ledger === icrc1.ledger,

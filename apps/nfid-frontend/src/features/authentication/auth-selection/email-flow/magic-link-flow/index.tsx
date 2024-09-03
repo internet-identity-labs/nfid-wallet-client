@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { SignInWithGoogle } from "packages/ui/src/molecules/button/signin-with-google"
 import { EmailMagicLinkExpired } from "packages/ui/src/organisms/authentication/magic-link-flow/expired"
 import { EmailMagicLinkLink } from "packages/ui/src/organisms/authentication/magic-link-flow/link-accounts"
 import { EmailMagicLinkSuccess } from "packages/ui/src/organisms/authentication/magic-link-flow/success"
@@ -8,8 +9,6 @@ import { toast } from "react-toastify"
 
 import { Button, IconCmpGoogle, IconCmpNFID, Loader } from "@nfid-frontend/ui"
 import { authenticationTracking } from "@nfid/integration"
-
-import { SignInWithGoogle } from "frontend/ui/atoms/button/signin-with-google"
 
 import { linkGoogle, verify } from "../services"
 

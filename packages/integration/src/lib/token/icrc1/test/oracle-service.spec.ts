@@ -8,7 +8,7 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { ICRC1 as ICRC1UserData } from "@nfid/integration/token/icrc1/types"
 
-import { iCRC1Registry, im, replaceActorIdentity } from "../../../actors"
+import { im, replaceActorIdentity } from "../../../actors"
 import { generateDelegationIdentity } from "../../../test-utils"
 import { icrc1StorageService } from "../service/icrc1-storage-service"
 

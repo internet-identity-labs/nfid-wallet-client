@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
 import User from "src/assets/userpics/userpic_6.svg"
 
+import { Button } from "@nfid-frontend/ui"
 import { useClickOutside } from "@nfid-frontend/utils"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
@@ -16,7 +17,6 @@ import {
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { Accordion } from "frontend/ui/atoms/accordion"
-import { Button } from "frontend/ui/atoms/button"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 
 const NAV_ITEMS = [
@@ -171,7 +171,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     <Button
                       id="btn-signin"
                       className={clsx("h-full leading-none")}
-                      primary
                       onClick={handleLogin}
                     >
                       Sign in
@@ -208,7 +207,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
             <Button
               id="btn-signin"
               className={clsx("h-full leading-none")}
-              primary
               onClick={handleLogin}
             >
               Sign in

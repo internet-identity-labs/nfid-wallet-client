@@ -1,10 +1,11 @@
 import clsx from "clsx"
+import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React, { useState } from "react"
 import { toast } from "react-toastify"
 
-import { Button } from "frontend/ui/atoms/button"
+import { Button } from "@nfid-frontend/ui"
+
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
-import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 interface IAddRecoveryPhraseModal extends React.HTMLAttributes<HTMLDivElement> {
   onClose: () => void
@@ -74,7 +75,6 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         <Button
           id="recovery-save-button"
           block
-          primary
           disabled={!copied || !isSaved}
           className="mt-5"
           onClick={onClose}

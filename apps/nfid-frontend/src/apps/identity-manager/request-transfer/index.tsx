@@ -4,10 +4,9 @@ import { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IOption } from "@nfid-frontend/ui"
-import { isHex } from "@nfid-frontend/utils"
+import { isHex, toUSD } from "@nfid-frontend/utils"
 import { toPresentation } from "@nfid/integration/token/utils"
 
-import { toUSD } from "frontend/features/fungible-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"

@@ -25,7 +25,6 @@ export const SendReceiveModal: FC<SendReceiveModalProps> = ({
   onModalTypeChange,
   component,
 }) => {
-  console.log("dddd", direction)
   return (
     <TransferTemplate onClickOutside={onClickOutside}>
       {!isSuccess && (

@@ -110,7 +110,7 @@ export const App = () => {
           <Route
             path="*"
             element={
-              <ProfileContainer>
+              <ProfileContainer className="relative">
                 <WalletRouter />
               </ProfileContainer>
             }

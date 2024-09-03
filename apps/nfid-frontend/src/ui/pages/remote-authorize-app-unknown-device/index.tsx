@@ -1,9 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { QRCode, SDKApplicationMeta } from "@nfid-frontend/ui"
-
-import { Button } from "frontend/ui/atoms/button"
+import { Button, QRCode, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 export interface AuthorizeAppUnknownDeviceProps {
   onClickBack: () => void
@@ -27,7 +25,7 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
       <div className="bg-gray-50 p-6 rounded-[10px] mt-4">
         <QRCode content={url} options={{ width: 142 }} />
       </div>
-      <Button onClick={onClickBack} text className="mt-4">
+      <Button onClick={onClickBack} className="mt-4">
         Back
       </Button>
     </div>

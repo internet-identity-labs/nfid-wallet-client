@@ -28,22 +28,11 @@ export interface ICRC1Data {
 }
 
 export interface ICRC1Metadata {
-  balance: bigint
-  canisterId: string
-  fee: bigint
-  feeInUsd: number | undefined
-  rate: number | undefined
-  decimals: number
-  owner: Principal
-  logo: string
   name: string
   symbol: string
-  feeCurrency: string
-  toPresentation: (
-    value?: bigint | undefined,
-    decimals?: number,
-  ) => number | string
-  transformAmount: (value: string) => number
+  logo?: string
+  decimals: number
+  fee: bigint
 }
 
 export interface ICRC1IndexData {

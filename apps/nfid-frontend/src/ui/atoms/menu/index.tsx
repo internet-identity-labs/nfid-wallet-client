@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Button, ButtonProps } from "../button"
+import { Button, ButtonProps } from "@nfid-frontend/ui"
 
 export interface ButtonMenuProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {

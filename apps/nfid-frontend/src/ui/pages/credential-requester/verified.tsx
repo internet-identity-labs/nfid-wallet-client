@@ -1,9 +1,7 @@
 import React from "react"
 
-import { SDKApplicationMeta } from "@nfid-frontend/ui"
+import { Button, RadioButton, SDKApplicationMeta } from "@nfid-frontend/ui"
 
-import { Button } from "frontend/ui/atoms/button"
-import { RadioButton } from "frontend/ui/atoms/button/radio"
 import ErrorDisplay from "frontend/ui/atoms/error"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -55,12 +53,7 @@ export const CredentialRequesterVerified: React.FC<
           text={"Skip for now"}
         />
       </div>
-      <Button
-        primary
-        className="px-10 mb-6 sm:mt-2"
-        block
-        onClick={handleClick}
-      >
+      <Button className="px-10 mb-6 sm:mt-2" block onClick={handleClick}>
         Continue
       </Button>
       {error && <ErrorDisplay>{error}</ErrorDisplay>}

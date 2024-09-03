@@ -1,9 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
-import { SDKApplicationMeta } from "@nfid-frontend/ui"
+import { Button, SDKApplicationMeta } from "@nfid-frontend/ui"
 
-import { Button } from "frontend/ui/atoms/button"
 import { StepInput } from "frontend/ui/atoms/step-input"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"

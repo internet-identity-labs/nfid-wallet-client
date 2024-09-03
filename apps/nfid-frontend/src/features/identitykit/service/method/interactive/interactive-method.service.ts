@@ -1,9 +1,5 @@
 import { RPCMessage, RPCSuccessResponse } from "../../../type"
-import { authService } from "../../auth.service"
-import {
-  GenericError,
-  NotSupportedError,
-} from "../../exception-handler.service"
+import { NotSupportedError } from "../../exception-handler.service"
 import { MethodService } from "../method.service"
 
 export interface ComponentData {
@@ -15,12 +11,6 @@ export abstract class InteractiveMethodService implements MethodService {
   public async invokeAndGetComponentData(
     message: MessageEvent<RPCMessage>,
   ): Promise<ComponentData | undefined> {
-    const authorized = await this.isAuthorized()
-
-    if (!authorized) {
-      throw new GenericError("Permission not granted")
-    }
-
     const componentData = this.getComponentData(message)
     if (!componentData) {
       throw new NotSupportedError()
@@ -35,10 +25,6 @@ export abstract class InteractiveMethodService implements MethodService {
     message: MessageEvent<RPCMessage>,
     data?: unknown,
   ): Promise<RPCSuccessResponse>
-
-  protected async isAuthorized(): Promise<boolean> {
-    return await authService.hasPermission(this.getMethod())
-  }
 
   public async getComponentData(
     message: MessageEvent<RPCMessage>,

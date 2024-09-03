@@ -18,7 +18,6 @@ export interface IActivityPage {}
 const ActivityPage = () => {
   const { state } = useLocation()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
-  //REMOVE !!!!!!!!!!!!!!
   const tokens = [] as any
   const {
     activities,

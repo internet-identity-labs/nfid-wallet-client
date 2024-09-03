@@ -70,8 +70,8 @@ jobs:
           echo "BASE_REF: ${{ github.base_ref }}"
           echo "EVENT_NAME: ${{ github.event_name }}"
           echo "REF_NAME: ${{ github.ref_name }}"
-          echo "group: nfid-wallet-client-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
-          echo "group: nfid-wallet-client-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
+          echo "group: nfid-frontend-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
+          echo "group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
           echo "cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}"
 
       - name: Check secrets
@@ -99,7 +99,7 @@ jobs:
       IMAGE_NAME: nfid-test
 
     concurrency:
-      group: nfid-wallet-client-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
+      group: nfid-frontend-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
 
     steps:
@@ -241,7 +241,7 @@ jobs:
         if: ${{ ! cancelled() }}
         with:
           name: yarn-error-logs
-          path: /home/runner/work/nfid-wallet-client/nfid-wallet-client/yarn-error.log
+          path: /home/runner/work/nfid-frontend/nfid-frontend/yarn-error.log
 
   e2e-tests:
     name: E2E Tests
@@ -253,7 +253,7 @@ jobs:
     env:
       IMAGE_NAME: nfid-test
     concurrency:
-      group: nfid-wallet-client-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
+      group: nfid-frontend-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
       cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
 
     steps:
@@ -423,7 +423,7 @@ jobs:
     env:
       URL: ${{ github.event.pull_request.comments_url }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TARGET_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
+      TARGET_URL: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
       NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
       NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
     steps:
@@ -431,7 +431,7 @@ jobs:
         uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
           command: cp
-          source: s3://nfid-wallet-client-e2e-report/last-history
+          source: s3://nfid-frontend-e2e-report/last-history
           destination: gh-pages/last-history
           aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
@@ -459,7 +459,7 @@ jobs:
         with:
           command: cp
           source: apps/nfid-frontend-e2e/allure-history
-          destination: s3://nfid-wallet-client-e2e-report
+          destination: s3://nfid-frontend-e2e-report
           aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
@@ -467,7 +467,7 @@ jobs:
 
       - name: Upload url to PR comments
         env:
-          target_url: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
+          target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
         run: |
           echo $TARGET_URL
           if [ -n "${URL}" ]; then
@@ -483,7 +483,7 @@ jobs:
 
       - name: Upload url to file
         env:
-          target_url: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
+          target_url: http://nfid-frontend-e2e-report.s3-website-us-east-1.amazonaws.com/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
         run: echo "$target_url" > "report_url.txt"
 
       - name: Upload report_url.txt

@@ -9,7 +9,7 @@ import { ProfileContext } from "frontend/provider"
 
 import { fetchNFTs } from "./utils/util"
 
-const ProfileCollectiblesPage = () => {
+const NFTsPage = () => {
   const [nfts, setNfts] = useState<NFT[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const globalServices = useContext(ProfileContext)
@@ -62,4 +62,4 @@ const ProfileCollectiblesPage = () => {
   )
 }
 
-export default ProfileCollectiblesPage
+export default NFTsPage

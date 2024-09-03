@@ -5,7 +5,7 @@ export interface PopoverProps extends React.HTMLAttributes<HTMLDivElement> {
   trigger: ReactElement
   position?: "top" | "bottom" | "right" | "left"
   align?: "center" | "start" | "end"
-  className?: string
+  triggerClassName?: string
 }
 
 export const Popover: React.FC<PopoverProps> = ({
@@ -13,11 +13,11 @@ export const Popover: React.FC<PopoverProps> = ({
   trigger,
   position,
   align,
-  className,
+  triggerClassName,
 }) => {
   return (
     <RadixPopover.Root>
-      <RadixPopover.Trigger className={className}>
+      <RadixPopover.Trigger className={triggerClassName}>
         {trigger}
       </RadixPopover.Trigger>
       <RadixPopover.Content side={position} align={align} className="!z-30">

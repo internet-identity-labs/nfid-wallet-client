@@ -24,7 +24,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
     <div
       id={id}
       className={clsx(
-        "block border border-gray-200 rounded-[24px]",
+        "block border border-gray-200 rounded-[24px] relative",
         "py-[20px] sm:py-[30px] mb-[30px]",
         className,
       )}

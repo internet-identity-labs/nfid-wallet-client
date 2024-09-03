@@ -31,7 +31,7 @@ export interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
   }>
 }
 
-export const ProfileAssets: FC<ProfileAssetsProps> = ({
+export const Tokens: FC<ProfileAssetsProps> = ({
   activeTokens,
   filteredTokens,
   isActiveTokensLoading,

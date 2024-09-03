@@ -1,8 +1,12 @@
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { captchaRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  Button,
+  captchaRules,
+  Input,
+  SDKApplicationMeta,
+} from "@nfid-frontend/ui"
 
 import { ElementProps } from "frontend/types/react"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -90,16 +94,15 @@ export const Captcha: React.FC<CaptchaProps> = ({
             },
           })}
         />
-        <ButtonAlt
+        <Button
           id="create-nfid"
-          primary
           className="mt-4 mb-6"
           block
           disabled={!isFormComplete || isLoading}
           onClick={handleSubmit(onRegisterAnchor)}
         >
           Create NFID
-        </ButtonAlt>
+        </Button>
       </form>
     </BlurredLoader>
   )

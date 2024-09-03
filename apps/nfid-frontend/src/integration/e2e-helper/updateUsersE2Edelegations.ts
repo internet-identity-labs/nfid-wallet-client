@@ -1,12 +1,9 @@
 import { Ed25519KeyIdentity, DelegationChain } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-
-import { accessList } from "@nfid/integration"
+import users from "apps/nfid-frontend-e2e/src/helpers/users.json"
 
 import { IC_DERIVATION_PATH } from "../internet-identity"
 import { fromMnemonicWithoutValidation } from "../internet-identity/crypto/ed25519"
 import { parseUserNumber } from "../internet-identity/userNumber"
-import users from "./users.json"
 
 const ONE_SECOND_IN_M_SEC = 1000
 const ONE_MINUTE_IN_M_SEC = 60 * ONE_SECOND_IN_M_SEC

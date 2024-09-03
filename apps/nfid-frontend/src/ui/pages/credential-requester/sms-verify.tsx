@@ -1,8 +1,7 @@
 import clsx from "clsx"
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import React from "react"
 
-import { SDKApplicationMeta } from "@nfid-frontend/ui"
+import { Button, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import { StepInput } from "frontend/ui/atoms/step-input"
 import { P } from "frontend/ui/atoms/typography/paragraph"
@@ -76,13 +75,13 @@ export const CredentialRequesterSMSVerify: React.FC<
           responseError={responseError}
           buttonClassName="w-full"
         />
-        <ButtonAlt
+        <Button
           text
           onClick={onChangePhone}
           className="w-full mt-4 mb-8 text-sm text-center cursor-pointer text-blue hover:text-blue-hover"
         >
           Change phone number
-        </ButtonAlt>
+        </Button>
       </div>
     </BlurredLoader>
   )

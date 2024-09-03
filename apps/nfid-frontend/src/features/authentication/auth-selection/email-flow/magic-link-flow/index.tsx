@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { SignInWithGoogle } from "packages/ui/src/atoms/button/signin-with-google"
+import { SignInWithGoogle } from "packages/ui/src/molecules/button/signin-with-google"
 import { EmailMagicLinkExpired } from "packages/ui/src/organisms/authentication/magic-link-flow/expired"
 import { EmailMagicLinkLink } from "packages/ui/src/organisms/authentication/magic-link-flow/link-accounts"
 import { EmailMagicLinkSuccess } from "packages/ui/src/organisms/authentication/magic-link-flow/success"

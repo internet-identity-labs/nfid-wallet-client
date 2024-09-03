@@ -1,6 +1,7 @@
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React from "react"
+
+import { Button } from "@nfid-frontend/ui"
 
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
 import { P } from "frontend/ui/atoms/typography/paragraph"
@@ -30,24 +31,21 @@ const ProfileCopyPhrasePage: React.FC<ProfileCopyPhrasePageProps> = ({
           <P>{recoveryPhrase}</P>
         </div>
 
-        <ButtonAlt
-          primary
+        <Button
           className="!rounded-t-none w-full flex items-center justify-center space-x-3 focus:outline-none"
           onClick={() => copyToClipboard()}
         >
           <CopyIcon />
           <span>{copied ? "Copied" : "Copy"}</span>
-        </ButtonAlt>
+        </Button>
 
-        <ButtonAlt
+        <Button
           onClick={onContinueButtonClick}
           disabled={!copied}
-          primary
-          large
           className="mt-8"
         >
           {continueButtonText}
-        </ButtonAlt>
+        </Button>
       </ProfileContainer>
     </ProfileTemplate>
   )

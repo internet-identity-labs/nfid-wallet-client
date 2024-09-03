@@ -1,8 +1,6 @@
-import { ButtonAlt } from "packages/ui/src/atoms/button"
-import { RadioButton } from "packages/ui/src/atoms/button/radio"
 import React from "react"
 
-import { SDKApplicationMeta } from "@nfid-frontend/ui"
+import { Button, RadioButton, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import ErrorDisplay from "frontend/ui/atoms/error"
 import { P } from "frontend/ui/atoms/typography/paragraph"
@@ -55,14 +53,9 @@ export const CredentialRequesterVerified: React.FC<
           text={"Skip for now"}
         />
       </div>
-      <ButtonAlt
-        primary
-        className="px-10 mb-6 sm:mt-2"
-        block
-        onClick={handleClick}
-      >
+      <Button className="px-10 mb-6 sm:mt-2" block onClick={handleClick}>
         Continue
-      </ButtonAlt>
+      </Button>
       {error && <ErrorDisplay>{error}</ErrorDisplay>}
     </BlurredLoader>
   )

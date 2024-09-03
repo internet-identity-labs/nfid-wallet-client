@@ -1,8 +1,9 @@
 import clsx from "clsx"
-import { ButtonAlt } from "packages/ui/src/atoms/button"
 import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React, { useState } from "react"
 import { toast } from "react-toastify"
+
+import { Button } from "@nfid-frontend/ui"
 
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
 
@@ -45,7 +46,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         >
           {phrase}{" "}
         </div>
-        <ButtonAlt
+        <Button
           block
           className="flex justify-center space-x-2 border-2 border-t-0 border-black rounded-t-none"
           onClick={copyToClipboard}
@@ -53,7 +54,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         >
           <CopyIcon className="text-black stroke-black" />
           <span>{copied ? "Copied" : "Copy"}</span>
-        </ButtonAlt>
+        </Button>
 
         <div className="mt-5">
           <input
@@ -71,16 +72,15 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
           </label>
         </div>
 
-        <ButtonAlt
+        <Button
           id="recovery-save-button"
           block
-          primary
           disabled={!copied || !isSaved}
           className="mt-5"
           onClick={onClose}
         >
           Done
-        </ButtonAlt>
+        </Button>
       </div>
     </ModalAdvanced>
   )

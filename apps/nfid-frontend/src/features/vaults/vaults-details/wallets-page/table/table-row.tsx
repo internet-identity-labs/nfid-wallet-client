@@ -58,7 +58,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   }, [address, send, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
-    //REMOVE !!!!!!!!!!!!!!
     const allTokens = [] as any
     sendReceiveTracking.openModal({
       isSending: false,

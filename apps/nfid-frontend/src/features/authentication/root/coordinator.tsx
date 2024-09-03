@@ -2,7 +2,7 @@ import { useActor } from "@xstate/react"
 import {
   LoginEventHandler,
   SignInWithGoogle,
-} from "packages/ui/src/atoms/button/signin-with-google"
+} from "packages/ui/src/molecules/button/signin-with-google"
 import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"

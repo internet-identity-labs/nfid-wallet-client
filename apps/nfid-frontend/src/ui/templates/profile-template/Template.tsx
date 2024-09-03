@@ -125,18 +125,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const globalServices = useContext(ProfileContext)
   const isTokenLoading = false
 
-  // const tokensUsdValue = useMemo(() => {
-  //   return token
-  //     .filter((token) => token.rate)
-  //     .reduce((total, token) => {
-  //       return (
-  //         total + (Number(token.balance) / 10 ** token.decimals) * token.rate!
-  //       )
-  //     }, 0)
-
-  //   // Will add NFT floor price to calculation later!
-  // }, [token])
-
   const [, send] = useActor(globalServices.transferService)
   const {
     data: identity,

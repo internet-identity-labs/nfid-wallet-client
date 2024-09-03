@@ -411,6 +411,7 @@ jobs:
         if: ${{ ! cancelled() }}
         with:
           retention-days: 1
+          include-hidden-files: true
           name: dist
           path: dist
 

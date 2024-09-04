@@ -1,10 +1,10 @@
 import { useActor } from "@xstate/react"
 import { SendReceiveModal } from "packages/ui/src/organisms/send-receive"
+import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
-import { authState, getPublicKey } from "@nfid/integration"
 
 import { ProfileContext } from "frontend/provider"
 
@@ -19,10 +19,8 @@ export const TransferModalCoordinator = () => {
   const [state, send] = useActor(globalServices.transferService)
 
   useEffect(() => {
-    const identity = authState.get().delegationIdentity
-    if (!identity) throw new Error("No identity")
-    getPublicKey(identity).then((key) => {
-      setPublicKey(key)
+    getUserPrincipalId().then((data) => {
+      setPublicKey(data.publicKey)
     })
   }, [])
 

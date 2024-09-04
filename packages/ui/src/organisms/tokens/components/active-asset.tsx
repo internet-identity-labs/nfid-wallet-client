@@ -30,6 +30,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             alt="NFID token"
             fallbackSrc={IconNftPlaceholder}
             src={`${token.getTokenLogo()}`}
+            className="object-cover h-full rounded-full"
           />
         </div>
         <div className="overflow-hidden text-ellipsis whitespace-nowrap">

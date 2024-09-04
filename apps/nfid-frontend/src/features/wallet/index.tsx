@@ -1,5 +1,5 @@
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 
 import ActivityPage from "../activity"
 import NFTsPage from "../collectibles"
@@ -8,6 +8,7 @@ import TokensPage from "../fungible-token"
 export const WalletRouter = () => {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="tokens" replace />} />
       <Route
         path="tokens"
         element={

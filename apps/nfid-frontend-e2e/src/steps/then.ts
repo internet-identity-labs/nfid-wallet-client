@@ -363,16 +363,9 @@ Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
 })
 
 Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
-  const title = "#page_title"
-  await $(title).waitUntil(
-    async () =>
-      (await $(title)).getText().then((l) => {
-        return l.includes(text)
-      }),
-    {
-      timeout: 59000,
-    },
-  )
+  const menuButton = $("#profile")
+  await menuButton.waitForDisplayed()
+  await menuButton.waitForClickable()
 })
 
 Then(

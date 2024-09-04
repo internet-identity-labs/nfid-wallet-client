@@ -218,6 +218,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             preselectedValue={token.getTokenAddress()}
             onOpen={sendReceiveTrackingFn}
             isSmooth
+            iconClassnames="object-cover h-full rounded-full"
             trigger={
               <div
                 id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}

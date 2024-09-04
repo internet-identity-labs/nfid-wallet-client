@@ -27,7 +27,10 @@ const TokensPage = () => {
   )
 
   const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {
-    let icrc1Pair = new Icrc1Pair(ledgerID, indexID)
+    let icrc1Pair = new Icrc1Pair(
+      ledgerID,
+      indexID !== "" ? indexID : undefined,
+    )
     return icrc1Pair.storeSelf()
   }
 

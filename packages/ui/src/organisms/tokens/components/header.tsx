@@ -92,7 +92,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
       setIsImportLoading(true)
       await onSubmitIcrc1Pair(getValues("ledgerID"), getValues("indexID"))
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
-      setModalStep("manage")
+      setModalStep(null)
       mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
       resetField("ledgerID")
       resetField("indexID")

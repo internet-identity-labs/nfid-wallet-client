@@ -40,7 +40,7 @@ export const ChooseItem = ({
         "first:border-t-0",
       )}
     >
-      <div id={id} className="flex items-center">
+      <div id={id} className="flex items-center h-[28px]">
         <ImageWithFallback
           alt={title}
           fallbackSrc={IconNftPlaceholder}

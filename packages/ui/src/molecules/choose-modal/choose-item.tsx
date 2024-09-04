@@ -40,12 +40,12 @@ export const ChooseItem = ({
         "first:border-t-0",
       )}
     >
-      <div id={id} className="flex items-center">
+      <div id={id} className="flex items-center h-[28px]">
         <ImageWithFallback
           alt={title}
           fallbackSrc={IconNftPlaceholder}
           src={`${image}`}
-          className={clsx("mr-2.5 w-[28px] h-[28px]", iconClassnames)}
+          className={clsx("mr-2.5 w-[28px]", iconClassnames)}
         />
         <div>
           <p className="text-sm mb-0.5 flex items-center space-x-1">

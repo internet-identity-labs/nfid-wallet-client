@@ -176,6 +176,11 @@ describe("nft test suite", () => {
       expect(yumiProperties.mappedValues[0].category).toEqual("1 of 1")
       expect(yumiProperties.mappedValues[0].option).toEqual("None")
 
+      const image = await yumiNFTWithDetails.getAssetPreview()
+      expect(image.format).toEqual("img")
+      expect(image.url).toEqual(
+        "https://images.entrepot.app/t/fab4i-diaaa-aaaah-acr2q-cai/xnue7-tqkor-uwiaa-aaaaa-byauo-uaqca-aacic-a",
+      )
       //memecake interface
 
       const memecakeNft = result.items.filter(

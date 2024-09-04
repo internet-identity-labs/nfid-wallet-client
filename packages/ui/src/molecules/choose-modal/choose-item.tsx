@@ -2,6 +2,8 @@ import { clsx } from "clsx"
 
 import { NoIcon } from "../../assets/no-icon"
 import { Badge } from "../../atoms/badge"
+import { IconNftPlaceholder } from "../../atoms/icons"
+import ImageWithFallback from "../../atoms/image-with-fallback"
 
 interface IChooseItem {
   handleClick: () => void
@@ -39,16 +41,12 @@ export const ChooseItem = ({
       )}
     >
       <div id={id} className="flex items-center">
-        {image ? (
-          <img
-            src={image}
-            alt={title}
-            className={clsx("mr-2.5 w-7", iconClassnames)}
-          />
-        ) : (
-          <NoIcon className="mr-2.5 w-7" />
-        )}
-
+        <ImageWithFallback
+          alt={title}
+          fallbackSrc={IconNftPlaceholder}
+          src={`${image}`}
+          className={clsx("mr-2.5 w-[28px] h-[28px]", iconClassnames)}
+        />
         <div>
           <p className="text-sm mb-0.5 flex items-center space-x-1">
             <span>{title}</span>

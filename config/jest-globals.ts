@@ -7,6 +7,7 @@ export const JEST_GLOBALS = {
   ECDSA_SIGNER_CANISTER_ID: "txkre-oyaaa-aaaap-qa3za-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
   ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
+  ICRC1_ORACLE_CANISTER_ID: "ys266-uyaaa-aaaal-ajs4q-cai",
   DELEGATION_FACTORY: "wklas-pyaaa-aaaak-akv3a-cai",
   PASSKEY_STORAGE: "dy546-gqaaa-aaaak-akwiq-cai",
   PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",

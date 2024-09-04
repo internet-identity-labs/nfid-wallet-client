@@ -58,6 +58,9 @@ export const serviceConfig = {
   ICRC1_REGISTRY_CANISTER_ID: JSON.stringify(
     process.env.ICRC1_REGISTRY_CANISTER_ID,
   ),
+  ICRC1_ORACLE_CANISTER_ID: JSON.stringify(
+    process.env.ICRC1_ORACLE_CANISTER_ID,
+  ),
   DELEGATION_FACTORY: JSON.stringify(process.env.DELEGATION_FACTORY),
   PASSKEY_STORAGE: JSON.stringify(process.env.PASSKEY_STORAGE),
   LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),

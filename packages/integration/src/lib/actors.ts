@@ -53,7 +53,7 @@ const canisterConfig = [
   ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
   ["DelegationFactory", DELEGATION_FACTORY],
   ["PasskeyStorage", PASSKEY_STORAGE],
-  ["IRC1Oracle", "ys266-uyaaa-aaaal-ajs4q-cai"],
+  ["IRC1Oracle", ICRC1_ORACLE_CANISTER_ID],
 ]
 
 export const accessList = [...canisterConfig.map((x) => x[1])]
@@ -114,7 +114,7 @@ export const iCRC1Registry = actor<ICRC1Registry>(
 )
 
 export const iCRC1OracleActor = actor<ICRC1Oracle>(
-  "ys266-uyaaa-aaaal-ajs4q-cai", //TODO stage/prod WIP
+  ICRC1_ORACLE_CANISTER_ID,
   iCRC1OracleIDL,
 )
 

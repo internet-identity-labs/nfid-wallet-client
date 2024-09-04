@@ -24,13 +24,13 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
-      <td className="flex items-center h-16 pr-[30px] w-[350px]">
-        <div className="w-[40px] h-[40px] mr-[12px] rounded-full bg-zinc-50">
+      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] xs:max-w-[200px] sm:w-[350px] max-w-[150px] ">
+        <div className="w-[24px] h-[24px] xs:w-[40px] xs:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt="NFID token"
-            className=""
             fallbackSrc={IconNftPlaceholder}
             src={`${token.getTokenLogo()}`}
+            className="object-cover h-full rounded-full"
           />
         </div>
         <div className="overflow-hidden text-ellipsis whitespace-nowrap">
@@ -77,7 +77,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           usdPrice
         )}
       </td>
-      <td className="w-[24px]">
+      <td className="w-[24px] min-w-[24px]">
         <AssetDropdown token={token} profileConstants={profileConstants} />
       </td>
     </tr>

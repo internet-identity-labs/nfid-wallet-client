@@ -169,7 +169,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           "relative z-1 px-[16px]",
           "sm:px-[30px]",
           "!block",
-          isWallet && "pb-[90px]",
+          isWallet && "pb-[130px] sm:pb-[90px]",
           containerClassName,
         )}
       >

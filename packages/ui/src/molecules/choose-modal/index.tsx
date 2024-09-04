@@ -5,7 +5,7 @@ import { trimConcat } from "src/ui/atoms/util/util"
 
 import { IconCmpSearch, IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
-import { IconCmpArrow, IconCmpInfo, Label, Tooltip } from "@nfid-frontend/ui"
+import { IconCmpArrow, Label, Tooltip } from "@nfid-frontend/ui"
 
 import { ChooseItem } from "./choose-item"
 import { filterGroupedOptionsByTitle, findOptionByValue } from "./helpers"

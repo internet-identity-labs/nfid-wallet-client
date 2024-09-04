@@ -1,5 +1,5 @@
 {
-  "name": "nfid-frontend",
+  "name": "nfid-wallet-client",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/nfid-frontend/src",
   "projectType": "application",

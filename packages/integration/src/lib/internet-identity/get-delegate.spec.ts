@@ -42,7 +42,7 @@ describe("get-delegate suite", () => {
     )
 
     // happens inside prepareClientDelegate
-    // https://github.com/internet-identity-labs/nfid-frontend/blob/26d834fbdaaa989d7eafa67e1e98e7d1117335a7/apps/nfid-frontend/src/integration/windows/index.ts#L80-L89
+    // https://github.com/internet-identity-labs/nfid-wallet-client/blob/26d834fbdaaa989d7eafa67e1e98e7d1117335a7/apps/nfid-frontend/src/integration/windows/index.ts#L80-L89
     const delegations = [
       {
         delegation: {

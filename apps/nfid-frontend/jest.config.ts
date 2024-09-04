@@ -31,5 +31,6 @@ const config = {
     "\\.(css|less)$": "<rootDir>/mocks/fileMock.js",
     "^frontend/(.*)$": "<rootDir>/src/$1",
   },
+  globalSetup: "./global-setup.js",
 }
 export default config

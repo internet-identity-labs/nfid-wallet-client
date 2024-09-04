@@ -90,7 +90,6 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
   const submit = async () => {
     try {
       setIsImportLoading(true)
-      console.log("inputss", getValues("ledgerID"), getValues("indexID"))
       await onSubmitIcrc1Pair(getValues("ledgerID"), getValues("indexID"))
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       setModalStep(null)

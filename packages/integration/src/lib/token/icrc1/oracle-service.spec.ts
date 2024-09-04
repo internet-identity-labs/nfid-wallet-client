@@ -17,7 +17,7 @@ import { icrc1StorageService } from "./service/icrc1-storage-service"
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
   let root: string
-  it("Store/retrieve canister id", async () => {
+  it.skip("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)

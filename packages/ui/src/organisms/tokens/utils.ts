@@ -37,6 +37,8 @@ export const fetchAllTokens = async () => {
   const data = await ftService.getAllUserTokens(
     userPrincipal,
     Principal.fromText(publicKey),
+    1,
+    999,
   )
   return data.items
 }
@@ -47,6 +49,8 @@ export const fetchTokenByAddress = async (address: string) => {
     userPrincipal,
     Principal.fromText(publicKey),
     address,
+    1,
+    999,
   )
   return data
 }

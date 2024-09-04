@@ -45,7 +45,10 @@ export const ChooseItem = ({
           alt={title}
           fallbackSrc={IconNftPlaceholder}
           src={`${image}`}
-          className={clsx("mr-2.5 w-[28px] h-[28px]", iconClassnames)}
+          className={clsx(
+            "mr-2.5 w-[28px] h-[28px] object-cover rounded-full",
+            iconClassnames,
+          )}
         />
         <div>
           <p className="text-sm mb-0.5 flex items-center space-x-1">

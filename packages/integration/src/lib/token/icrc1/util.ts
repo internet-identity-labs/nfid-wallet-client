@@ -11,7 +11,7 @@ export function mapCategory(category: Category): CategoryTS {
   if (hasOwnProperty(category, "Known")) {
     return CategoryTS.Known
   }
-  if (hasOwnProperty(category, "Unknown")) {
+  if (hasOwnProperty(category, "Spam")) {
     return CategoryTS.Spam
   }
   if (hasOwnProperty(category, "ChainFusionTestnet")) {

@@ -7,7 +7,7 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { ProfileAssets, ProfileAssetsProps } from "."
+import { Tokens, TokensProps } from "."
 import ProfileContainer from "../../atoms/profile-container/Container"
 
 const createMockFT = (name: string, isHideable: boolean): FT => ({
@@ -16,7 +16,7 @@ const createMockFT = (name: string, isHideable: boolean): FT => ({
   getTokenCategory: () => "Category" as Category,
   getTokenCategoryFormatted: () => "Category",
   getTokenBalance: () => BigInt(1000000000000000000),
-  getTokenBalanceFormatted: () => "1.0 MTK",
+  getTokenBalanceFormatted: () => "1.0",
   getUSDBalanceFormatted: async () => "100 USD",
   getTokenAddress: () => "0xMockAddress",
   getTokenSymbol: () => "MTK",
@@ -41,7 +41,7 @@ const mockActiveTokens: FT[] = [
 
 const meta: Meta = {
   title: "Organisms/Tokens",
-  component: ProfileAssets,
+  component: Tokens,
   argTypes: {},
   parameters: {
     controls: { expanded: true },
@@ -51,7 +51,7 @@ const meta: Meta = {
 
 export default meta
 
-export const Default: StoryFn<ProfileAssetsProps> = (args) => {
+export const Default: StoryFn<TokensProps> = (args) => {
   const [filteredTokens, setFilteredTokens] = useState<FT[]>(mockActiveTokens)
 
   const handleSearchQuery = (query: string) => {
@@ -65,7 +65,7 @@ export const Default: StoryFn<ProfileAssetsProps> = (args) => {
       <ProfileContainer>
         <Router>
           <TooltipProvider>
-            <ProfileAssets
+            <Tokens
               {...args}
               filteredTokens={filteredTokens}
               setSearchQuery={handleSearchQuery}

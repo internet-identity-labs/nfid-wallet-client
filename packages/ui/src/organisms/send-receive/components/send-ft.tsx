@@ -209,7 +209,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             title="Asset to send"
             type="trigger"
             onSelect={(value) => {
-              console.log("vallue", value)
               resetField("amount")
               resetField("to")
               setAmountInUSD(0)

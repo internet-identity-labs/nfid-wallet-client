@@ -25,7 +25,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
-      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[350px] sm:w-[350px]">
+      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[350px]">
         <div className="w-[24px] h-[24px] xs:w-[40px] xs:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt={`${token.getTokenSymbol}`}
@@ -44,20 +44,25 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           >
             {token.getTokenSymbol()}
           </p>
-          <p className="text-secondary text-xs leading-[20px]">
+          <p className="text-secondary text-xs leading-[20px] overflow-hidden text-ellipsis whitespace-nowrap">
             {token.getTokenName()}
           </p>
         </div>
       </td>
-      <td className="hidden md:table-cell">
+      <td className="hidden md:table-cell pr-[10px]">
         {token.getTokenCategoryFormatted()}
       </td>
       <td
-        className="pr-[10px] text-right md:text-left"
+        className="pr-[10px] text-right md:text-left pr-[10px] max-w-[50%] min-w-[50%]"
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
       >
-        <span className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
-          {token.getTokenBalanceFormatted() || `0 ${token.getTokenSymbol()}`}
+        <div>
+          <p className="flex justify-end sm:block">
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
+              {token.getTokenBalanceFormatted() || "0"}
+            </span>{" "}
+            <span>{token.getTokenSymbol()}</span>
+          </p>
           <p className="text-xs md:hidden text-secondary">
             {isLoading ? (
               <Spinner className="ml-auto w-[18px] h-[18px] text-gray-400" />
@@ -67,10 +72,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
               usdPrice
             )}
           </p>
-        </span>
+        </div>
       </td>
       <td
-        className="pr-[10px] hidden md:table-cell"
+        className="pr-[10px] hidden md:table-cell pr-[10px]"
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
       >
         {isLoading ? (

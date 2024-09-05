@@ -36,7 +36,9 @@ export const BalanceFooter = ({ token, publicKey }: BalanceFooterProps) => {
           <Spinner className="w-[16px] h-[16px]" />
         )}
         <span id="balance">
-          {token?.getTokenBalanceFormatted() || `0 ${token?.getTokenSymbol()}`}
+          {token?.getTokenBalanceFormatted()
+            ? `${token?.getTokenBalanceFormatted()} ${token?.getTokenSymbol()}`
+            : `0 ${token?.getTokenSymbol()}`}
         </span>
       </div>
     </div>

@@ -37,11 +37,12 @@ export const ActivityTableRow = ({
       id={id}
       className="relative items-center text-sm activity-row hover:bg-gray-50"
     >
-      <td className="flex items-center pl-5 sm:pl-[30px]">
+      <td className="flex items-center pl-5 sm:pl-[30px] w-[30%]">
         <div
           className={clsx(
             "w-10 h-10 rounded-[9px] flex items-center justify-center relative",
             action === "Sent" ? "bg-red-50" : "bg-emerald-50",
+            "min-w-10",
           )}
         >
           <IconCmpArrow
@@ -53,24 +54,24 @@ export const ActivityTableRow = ({
             )}
           />
         </div>
-        <div className="ml-2.5 mb-[11px] mt-[11px]">
+        <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
           <p className="font-semibold text-sm leading-[20px]">{action}</p>
           <p className="text-xs text-gray-400 leading-[20px]">
             {format(new Date(timestamp), "HH:mm:ss aaa")}
           </p>
         </div>
       </td>
-      <td className="transition-opacity">
+      <td className="transition-opacity w-[20%] text-center pl-[28px]">
         <CopyAddress address={from} leadingChars={6} trailingChars={4} />
       </td>
       <td className="w-[24px] h-[24px] absolute left-0 right-0 top-0 bottom-0 m-auto">
         <img src={IconSvgArrowRight} alt="" />
       </td>
-      <td className="transition-opacity">
+      <td className="transition-opacity w-[20%] text-center pl-[28px]">
         <CopyAddress address={to} leadingChars={6} trailingChars={4} />
       </td>
       {asset?.type === "ft" ? (
-        <td className="leading-5 text-right sm:text-left pr-5 sm:pr-[30px]">
+        <td className="leading-5 text-right sm:text-left pr-5 sm:pr-[30px] w-[30%]">
           <p className="text-sm">
             <TickerAmount
               value={asset.amount}

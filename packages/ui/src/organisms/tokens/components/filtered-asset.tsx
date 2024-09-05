@@ -49,8 +49,8 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
       <div className="flex items-center gap-[12px] flex-0 w-[210px]">
         <div className="w-[28px] h-[28px] rounded-full bg-zinc-50">
           <ImageWithFallback
-            alt="NFID token"
-            className="mr-[12px] rounded-full"
+            alt={`${token.getTokenSymbol()}`}
+            className="object-cover w-full h-full rounded-full"
             fallbackSrc={IconNftPlaceholder}
             src={`${token.getTokenLogo()}`}
           />

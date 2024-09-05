@@ -55,9 +55,9 @@ export const Tokens: FC<ProfileAssetsProps> = ({
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
           <tr className="text-sm font-bold leading-5">
             <th className="pr-[30px]">Name</th>
-            <th className="w-[230px] pr-[10px]">Category</th>
-            <th className="w-[230px] pr-[10px]">Token balance</th>
-            <th className="w-[186px] pr-[10px]">USD balance</th>
+            <th className="w-[230px] pr-[10px] min-w-[100px]">Category</th>
+            <th className="w-[230px] pr-[10px] min-w-[100px]">Token balance</th>
+            <th className="w-[186px] pr-[10px] min-w-[100px]">USD balance</th>
             <th className="w-[24px]"></th>
           </tr>
         </thead>

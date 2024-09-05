@@ -70,7 +70,7 @@ export class FTImpl implements FT {
     return this.tokenBalance
   }
 
-  getTokenBalanceFormatted(): string | undefined {
+  getTokenBalanceNoSymbol(): string | undefined {
     const tokenAmount = exchangeRateService.parseTokenAmount(
       Number(this.tokenBalance),
       this.decimals,
@@ -80,8 +80,14 @@ export class FTImpl implements FT {
       ? tokenAmount.toFormat({
           groupSeparator: "",
           decimalSeparator: ".",
-        }) + ` ${this.symbol}`
+        })
       : undefined
+  }
+
+  getTokenBalanceFormatted(): string | undefined {
+    const balance = this.getTokenBalanceNoSymbol()
+
+    return balance ? `${balance} ${this.symbol}` : undefined
   }
 
   getTokenCategory(): Category {

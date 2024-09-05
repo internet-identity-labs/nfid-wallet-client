@@ -65,7 +65,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
           .filter((linkItem) =>
             shouldRenderLink(linkItem, hasVaults!, location),
           )
-          .map(renderLink)}
+          .map((linkItem) => renderLink(linkItem, navigate))}
         <div
           id="nav-logout"
           className={clsx(

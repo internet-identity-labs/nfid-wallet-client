@@ -159,17 +159,13 @@ export const ChooseModal = ({
         </div>
         <Input
           type="text"
-          placeholder="Search"
+          placeholder="Search by token name"
           inputClassName="!border-black"
           icon={<IconCmpSearch />}
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
           className="my-4"
         />
-        <div
-          className={clsx(
-            "flex-1 overflow-auto snap-end scroll-pl-1 space-y-6",
-          )}
-        >
+        <div className={clsx("flex-1 overflow-auto snap-end scroll-pl-1")}>
           {filteredOptions.map((group, index) => (
             <div
               id={`option_group_${group.label.replace(/\s/g, "")}`}

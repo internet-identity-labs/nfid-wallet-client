@@ -84,7 +84,7 @@ export const Activity: FC<ActivityProps> = ({
         ) : (
           <>
             <div className="overflow-auto">
-              <Table className="!min-w-[1110px] " id="activity-table">
+              <Table className="!min-w-[720px] " id="activity-table">
                 {activities?.map((group, index) => (
                   <ActivityTableGroup
                     groupIndex={index}

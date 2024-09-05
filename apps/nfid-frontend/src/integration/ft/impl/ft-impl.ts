@@ -80,7 +80,7 @@ export class FTImpl implements FT {
       ? tokenAmount.toFormat({
           groupSeparator: "",
           decimalSeparator: ".",
-        }) + ` ${this.symbol}`
+        })
       : undefined
   }
 

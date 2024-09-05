@@ -26,7 +26,7 @@ import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 export const getIdentity = async (
   targetCanisters: string[],
 ): Promise<DelegationIdentity> => {
-  return getWalletDelegationAdapter("nfid.one", "0", targetCanisters)
+  return getWalletDelegationAdapter("nfid.one", "-1", targetCanisters)
 }
 
 export const mapUserNFTDetailsToGroupedOptions = (
@@ -115,7 +115,7 @@ export const validateICPAddress = (address: string): boolean | string => {
     const isPrincipal = addressValidationService.isValidPrincipalId(address)
     const isAccountIdentifier =
       addressValidationService.isValidAccountIdentifier(address)
-  
+
     if (!isPrincipal && !isAccountIdentifier) {
       try {
         decodeIcrcAccount(address)

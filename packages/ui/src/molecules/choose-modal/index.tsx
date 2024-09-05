@@ -159,7 +159,7 @@ export const ChooseModal = ({
         </div>
         <Input
           type="text"
-          placeholder="Search"
+          placeholder="Search by token name"
           inputClassName="!border-black"
           icon={<IconCmpSearch />}
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}

@@ -19,8 +19,10 @@ export const shouldRenderLink = (
   return true
 }
 
-export const renderLink = (linkItem: INavigationPopupLinks) => {
-  const navigate = useNavigate()
+export const renderLink = (
+  linkItem: INavigationPopupLinks,
+  navigate: ReturnType<typeof useNavigate>,
+) => {
   const isExternalLink = linkItem.id === "nav-knowledge-base"
   const LinkComponent = isExternalLink ? "a" : "div"
   const linkProps = isExternalLink

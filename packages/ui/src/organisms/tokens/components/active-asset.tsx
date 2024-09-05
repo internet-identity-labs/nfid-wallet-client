@@ -60,7 +60,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <p className="flex justify-end sm:block">
             <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
               {token.getTokenBalanceFormatted() || "0"}
-            </span>{" "}
+            </span>
+            &nbsp;
             <span>{token.getTokenSymbol()}</span>
           </p>
           <p className="text-xs md:hidden text-secondary">

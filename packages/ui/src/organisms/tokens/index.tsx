@@ -12,7 +12,7 @@ export interface IProfileConstants {
   activity: string
 }
 
-export interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
+export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   activeTokens: FT[]
   filteredTokens: FT[]
   isActiveTokensLoading: boolean
@@ -31,7 +31,7 @@ export interface ProfileAssetsProps extends HTMLAttributes<HTMLDivElement> {
   }>
 }
 
-export const Tokens: FC<ProfileAssetsProps> = ({
+export const Tokens: FC<TokensProps> = ({
   activeTokens,
   filteredTokens,
   isActiveTokensLoading,

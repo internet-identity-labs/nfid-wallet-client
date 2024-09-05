@@ -13,8 +13,6 @@ export interface FT {
 
   getTokenBalance(): bigint | undefined
 
-  getTokenBalanceNoSymbol(): string | undefined
-
   getTokenBalanceFormatted(): string | undefined
 
   getUSDBalanceFormatted(): Promise<string | undefined>

@@ -128,7 +128,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           })}
         />
         <Button
-          className="text-base !mt-[107px]"
+          className="text-base !mt-[119px]"
           type="primary"
           block
           onClick={handleSubmit(submit)}

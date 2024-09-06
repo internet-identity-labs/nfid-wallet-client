@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { IconCmpArrowRight } from "packages/ui/src/atoms/icons"
-import { Image } from "packages/ui/src/atoms/image"
 
 import { IGroupOption } from "../types"
 
@@ -21,7 +20,7 @@ export const DefaultTrigger = ({
     <div
       id={id}
       className={clsx(
-        "border border-black rounded-md cursor-pointer h-14",
+        "border border-black rounded-[12px] cursor-pointer h-14",
         "flex items-center justify-between hover:opacity-70",
         "text-black px-4 mb-4",
       )}

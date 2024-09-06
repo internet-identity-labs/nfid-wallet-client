@@ -47,7 +47,7 @@ export const TransferReceive = ({
 
       setIsAccountLoading(false)
     }
-  }, [vaultsAccountsOptions, isVault, publicKey])
+  }, [vaultsAccountsOptions, isVault, publicKey, isVaultsAccountsValidating])
 
   useEffect(() => {
     sendReceiveTracking.openModal({ isSending: false })

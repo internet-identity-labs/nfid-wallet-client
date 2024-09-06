@@ -1,23 +1,27 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
-import useSWR from "swr"
 
 import { truncateString } from "@nfid-frontend/utils"
 
+import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
+import { e8s } from "frontend/integration/nft/constants/constants"
 
 interface BalanceFooterProps {
   token: FT | undefined
   hasUsdBalance?: boolean
   publicKey: string
+  vaultsInfo?: {
+    balance: bigint | undefined
+    address: string | undefined
+  }
 }
 
-export const BalanceFooter = ({ token, publicKey }: BalanceFooterProps) => {
-  const { data: usdBalance, isLoading } = useSWR(
-    token ? ["activeTokenUSD", token.getTokenAddress()] : null,
-    token ? () => token.getUSDBalanceFormatted() : null,
-  )
-
+export const BalanceFooter = ({
+  token,
+  publicKey,
+  vaultsInfo,
+}: BalanceFooterProps) => {
   return (
     <div
       className={clsx(
@@ -30,15 +34,22 @@ export const BalanceFooter = ({ token, publicKey }: BalanceFooterProps) => {
         <p>Balance</p>
       </div>
       <div className="flex items-center justify-between">
-        {publicKey ? (
+        {vaultsInfo ? (
+          vaultsInfo.address ? (
+            <p>{truncateString(vaultsInfo.address, 6, 4)}</p>
+          ) : (
+            <Spinner className="w-[16px] h-[16px]" />
+          )
+        ) : publicKey ? (
           <p>{truncateString(publicKey, 6, 4)}</p>
         ) : (
           <Spinner className="w-[16px] h-[16px]" />
         )}
         <span id="balance">
-          {token?.getTokenBalanceFormatted()
-            ? `${token?.getTokenBalanceFormatted()} ${token?.getTokenSymbol()}`
-            : `0 ${token?.getTokenSymbol()}`}
+          {vaultsInfo
+            ? `${Number(vaultsInfo.balance) / e8s} ICP`
+            : token?.getTokenBalanceFormatted() ||
+              `0 ${token?.getTokenSymbol()}`}
         </span>
       </div>
     </div>

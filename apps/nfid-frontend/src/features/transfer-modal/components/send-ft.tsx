@@ -7,7 +7,7 @@ import {
   fetchAllTokens,
   fetchTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR from "swr"
@@ -21,6 +21,7 @@ import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
+import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
@@ -68,9 +69,16 @@ export const TransferFT = ({
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
 
+  const { balances } = useAllVaultsWallets()
+
+  const balance = useMemo(() => {
+    return balances?.find(
+      (balance) => balance.address === selectedVaultsAccountAddress,
+    )
+  }, [selectedVaultsAccountAddress, balances])
+
   const { profile } = useProfile()
 
-  // TODO: adjust accountsOptions for Vaults
   const { data: vaultsAccountsOptions = [] } = useSWR(
     "vaultsAccountsOptions",
     getVaultsAccountsOptions,
@@ -225,6 +233,7 @@ export const TransferFT = ({
       optionGroups={
         profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
       }
+      vaultsBalance={balance}
     />
   )
 }

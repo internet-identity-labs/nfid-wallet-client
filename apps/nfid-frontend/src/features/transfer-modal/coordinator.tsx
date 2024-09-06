@@ -62,10 +62,9 @@ export const TransferModalCoordinator = () => {
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive
+            publicKey={publicKey}
             isVault={state.context.isOpenedFromVaults}
-            preselectedTokenStandard={state.context.tokenStandard}
             preselectedAccountAddress={state.context.sourceWalletAddress}
-            preselectedTokenBlockchain={state.context.tokenBlockchain}
           />
         )
       case state.matches("Success"):
@@ -99,6 +98,7 @@ export const TransferModalCoordinator = () => {
 
   return (
     <SendReceiveModal
+      isVault={state.context.isOpenedFromVaults}
       onClickOutside={() => send({ type: "HIDE" })}
       isSuccess={state.matches("Success")}
       direction={state.context.direction}

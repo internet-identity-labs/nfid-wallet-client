@@ -12,7 +12,7 @@ import {
   defaultExpirationInMinutes,
   saveToStorage,
 } from "./domain-key-repository"
-import { getGlobalDelegationChain } from "../delegation-factory/ecdsa"
+import { getGlobalDelegationChain } from "../delegation-factory/delegation-i"
 import { executeCanisterCall } from "./execute-canister-call"
 import { LocalStorageMock } from "./local-storage-mock"
 import { getIdentity } from "./util"

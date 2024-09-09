@@ -2,7 +2,7 @@ import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
-import { getFullUsdValue } from "packages/ui/src/organisms/tokens/utils"
+import {getFullUsdValue, getUserPrincipalId} from "packages/ui/src/organisms/tokens/utils"
 import {
   HTMLAttributes,
   useCallback,
@@ -28,7 +28,6 @@ import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-r
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -130,7 +129,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     isLoading: isIdentityLoading,
     isValidating,
   } = useSWR("globalIdentity", () =>
-    getWalletDelegationAdapter("nfid.one", "-1"),
+    getUserPrincipalId(),
   )
 
   const onSendClick = () => {
@@ -213,7 +212,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 isLoading={isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}
-                address={identity?.getPrincipal().toString() ?? ""}
+                address={identity?.publicKey ?? ""}
               />
               <TabsSwitcher
                 className="my-[30px]"

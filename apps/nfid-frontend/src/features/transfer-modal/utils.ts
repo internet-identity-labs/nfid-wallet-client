@@ -6,8 +6,6 @@ import { Principal } from "@dfinity/principal"
 import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
-  authState,
-  getPublicKey,
   getVaults,
   getWallets,
   replaceActorIdentity,
@@ -84,11 +82,6 @@ export const getVaultsAccountsOptions = async (): Promise<
   }))
 }
 
-export const getAccount = async () => {
-  const identity = authState.get().delegationIdentity
-  if (!identity) throw new Error("No identity")
-  return await getPublicKey(identity)
-}
 
 const addressValidationService = {
   isValidAccountIdentifier(value: string): boolean {

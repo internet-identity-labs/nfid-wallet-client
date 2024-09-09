@@ -12,7 +12,7 @@ import {
   getAnonymousDelegation,
   getGlobalDelegationChain,
   renewDelegationThirdParty,
-} from "../delegation-factory/ecdsa"
+} from "../delegation-factory/delegation-i"
 import { SignedDelegation } from "./types"
 import {Chain} from "../lambda/lambda-delegation";
 
@@ -79,7 +79,6 @@ export const getAnonymousDelegate = async (
     domain,
     sessionPublicKey,
     delegationIdentity,
-    Chain.IC,
     maxTimeToLive,
   )
 

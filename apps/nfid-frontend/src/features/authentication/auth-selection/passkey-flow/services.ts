@@ -15,7 +15,7 @@ import {
   KEY_STORAGE_KEY,
   authStorage,
 } from "packages/integration/src/lib/authentication/storage"
-import { toHexString } from "packages/integration/src/lib/delegation-factory/ecdsa"
+import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
 import { toast } from "react-toastify"
 
 import { getBrowser } from "@nfid-frontend/utils"

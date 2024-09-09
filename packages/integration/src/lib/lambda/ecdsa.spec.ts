@@ -14,13 +14,12 @@ import { WALLET_SCOPE } from "@nfid/config"
 
 import { ii, im, replaceActorIdentity } from "../actors"
 import {
-  Chain,
   getAnonymousDelegation,
   getGlobalDelegation,
   getGlobalDelegationChain,
   getPublicKey,
   renewDelegationThirdParty,
-} from "../delegation-factory/ecdsa"
+} from "../delegation-factory/delegation-i"
 import { LocalStorageMock } from "./local-storage-mock"
 
 const identity: JsonnableEd25519KeyIdentity = [
@@ -55,13 +54,12 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       const globalICIdentity = await getGlobalDelegation(
         delegationIdentity,
-        Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )
       expect(globalICIdentity.getPrincipal().toText()).toEqual(
         expectedGlobalAcc,
       )
-      const principal = await getPublicKey(delegationIdentity, Chain.IC)
+      const principal = await getPublicKey(delegationIdentity)
       expect(principal).toEqual(expectedGlobalAcc)
       await replaceActorIdentity(ii, globalICIdentity)
       try {
@@ -102,7 +100,6 @@ describe("Lambda Sign/Register ECDSA", () => {
         "nfid.one",
         dappSessionPublicKey,
         nfidDelegationIdentity,
-        Chain.IC,
       )
       const actualIdentity = DelegationIdentity.fromDelegation(
         dappSessionKey,

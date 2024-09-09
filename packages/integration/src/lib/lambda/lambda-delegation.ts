@@ -32,7 +32,7 @@ export async function getAnonymousDelegationThroughLambda(domain: string,
   )
 
   const request = {
-    chain,
+    chain: Chain.IC,
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
     domain,

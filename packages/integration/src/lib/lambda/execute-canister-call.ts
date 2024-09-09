@@ -4,8 +4,8 @@ import { ONE_MINUTE_IN_MS } from "@nfid/config"
 
 import { ic } from "../agent"
 import { isPresentInStorage } from "./domain-key-repository"
-import {createDelegationChain, getGlobalDelegationChain, getPublicKey} from "../delegation-factory/ecdsa"
-import {Chain, fetchLambdaPublicKey, getLambdaPublicKey} from "./lambda-delegation";
+import {createDelegationChain} from "../delegation-factory/delegation-i"
+import {Chain, fetchLambdaPublicKey} from "./lambda-delegation";
 
 export async function executeCanisterCall(
   origin: string,

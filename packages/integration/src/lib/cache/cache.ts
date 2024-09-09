@@ -29,7 +29,7 @@ export const getUserIdData = async (): Promise<UserIdData> => {
     im.get_account(),
   ])
 
-  if(account.error) {
+  if(!account.data[0]) {
     throw new Error(account.error[0])
   }
 
@@ -38,7 +38,7 @@ export const getUserIdData = async (): Promise<UserIdData> => {
     publicKey: publicKey,
     anchor: account.data[0]!.anchor,
   }
-  
+
   localStorageWithFallback.setItem(
     cacheKey,
     JSON.stringify(userIdPair),

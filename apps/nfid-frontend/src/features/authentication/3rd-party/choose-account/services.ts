@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
-import { getPublicKey } from "packages/integration/src/lib/delegation-factory/ecdsa"
+import { getPublicKey } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
 import { authState, getBalance } from "@nfid/integration"
 

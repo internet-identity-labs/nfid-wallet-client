@@ -1,7 +1,7 @@
 import {DelegationChain, Ed25519PublicKey} from "@dfinity/identity"
 import {fromBase64, toBase64} from "@slide-computer/signer"
 import {authStorage} from "packages/integration/src/lib/authentication/storage"
-import {getAnonymousDelegation,} from "packages/integration/src/lib/delegation-factory/ecdsa"
+import {getAnonymousDelegation,} from "packages/integration/src/lib/delegation-factory/delegation-i"
 
 import {authState, getGlobalDelegationChain, validateTargets,} from "@nfid/integration"
 

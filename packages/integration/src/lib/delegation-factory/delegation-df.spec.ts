@@ -21,7 +21,7 @@ import {
   getGlobalDelegationChain,
   getPublicKey,
   renewDelegationThirdParty,
-} from "./ecdsa"
+} from "./delegation-i"
 import { LocalStorageMock } from "../lambda/local-storage-mock"
 import { getIdentity, getLambdaActor } from "../lambda/util"
 import {Chain} from "../lambda/lambda-delegation";
@@ -99,7 +99,6 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
       await replaceActorIdentity(delegationFactory, delegationIdentity)
       const globalICIdentity = await getGlobalDelegation(
         delegationIdentity,
-        Chain.IC,
         ["74gpt-tiaaa-aaaak-aacaa-cai"],
       )
 

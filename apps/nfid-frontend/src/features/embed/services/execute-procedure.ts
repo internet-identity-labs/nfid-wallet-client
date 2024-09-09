@@ -1,4 +1,4 @@
-import { getGlobalDelegation } from "packages/integration/src/lib/delegation-factory/ecdsa"
+import { getGlobalDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
 import {
   ThirdPartyAuthSession,

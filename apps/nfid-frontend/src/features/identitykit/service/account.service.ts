@@ -3,7 +3,7 @@ import { Principal } from "@dfinity/principal"
 import {
   DelegationType,
   getPublicKey,
-} from "packages/integration/src/lib/delegation-factory/ecdsa"
+} from "packages/integration/src/lib/delegation-factory/delegation-i"
 
 import { truncateString } from "@nfid-frontend/utils"
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"

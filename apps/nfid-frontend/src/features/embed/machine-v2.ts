@@ -1,9 +1,8 @@
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
-import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { assign, createMachine } from "xstate"
 
 import { ONE_DAY_IN_MS } from "@nfid/config"
-import { Application, authState } from "@nfid/integration"
+import {Application, authState, Chain} from "@nfid/integration"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"

@@ -7,11 +7,9 @@ import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
   authState,
-  Chain,
   getPublicKey,
   getVaults,
   getWallets,
-  GLOBAL_ORIGIN,
   replaceActorIdentity,
   vault,
 } from "@nfid/integration"
@@ -89,7 +87,7 @@ export const getVaultsAccountsOptions = async (): Promise<
 export const getAccount = async () => {
   const identity = authState.get().delegationIdentity
   if (!identity) throw new Error("No identity")
-  return await getPublicKey(identity, Chain.IC, GLOBAL_ORIGIN)
+  return await getPublicKey(identity)
 }
 
 const addressValidationService = {

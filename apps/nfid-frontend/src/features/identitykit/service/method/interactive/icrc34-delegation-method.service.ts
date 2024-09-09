@@ -1,35 +1,17 @@
-import { DelegationChain, Ed25519PublicKey } from "@dfinity/identity"
-import { fromBase64, toBase64 } from "@slide-computer/signer"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
-import {
-  Chain,
-  ecdsaGetAnonymous,
-} from "packages/integration/src/lib/lambda/ecdsa"
+import {DelegationChain, Ed25519PublicKey} from "@dfinity/identity"
+import {fromBase64, toBase64} from "@slide-computer/signer"
+import {authStorage} from "packages/integration/src/lib/authentication/storage"
+import {getAnonymousDelegation,} from "packages/integration/src/lib/delegation-factory/ecdsa"
 
-import {
-  authState,
-  getGlobalKeysThirdParty,
-  validateTargets,
-} from "@nfid/integration"
+import {authState, getGlobalDelegationChain, validateTargets,} from "@nfid/integration"
 
-import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
-import { delegationChainFromDelegation } from "frontend/integration/identity/delegation-chain-from-delegation"
+import {getLegacyThirdPartyAuthSession} from "frontend/features/authentication/services"
+import {delegationChainFromDelegation} from "frontend/integration/identity/delegation-chain-from-delegation"
 
-import {
-  Account,
-  AccountType,
-  RPCMessage,
-  RPCSuccessResponse,
-} from "../../../type"
-import {
-  accountService,
-  INDEX_DB_CONNECTED_ACCOUNTS_KEY,
-} from "../../account.service"
-import { GenericError } from "../../exception-handler.service"
-import {
-  ComponentData,
-  InteractiveMethodService,
-} from "./interactive-method.service"
+import {Account, AccountType, RPCMessage, RPCSuccessResponse,} from "../../../type"
+import {accountService, INDEX_DB_CONNECTED_ACCOUNTS_KEY,} from "../../account.service"
+import {GenericError} from "../../exception-handler.service"
+import {ComponentData, InteractiveMethodService,} from "./interactive-method.service"
 
 export interface AccountsComponentData extends ComponentData {
   publicProfile: Account
@@ -113,8 +95,8 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
   private formatDelegationChain(chain: DelegationChain) {
     return {
       signerDelegation: chain.delegations.map((signedDelegation) => {
-        const { delegation, signature } = signedDelegation
-        const { targets } = delegation
+        const {delegation, signature} = signedDelegation
+        const {targets} = delegation
         return {
           delegation: Object.assign(
             {
@@ -143,7 +125,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     if (!auth.delegationIdentity) throw new Error("No delegation identity")
 
     if (accountKeyIdentity.type === AccountType.GLOBAL) {
-      const del = await getGlobalKeysThirdParty(
+      const del = await getGlobalDelegationChain(
         auth.delegationIdentity,
         icrc34Dto.targets,
         new Uint8Array(sessionPublicKey.toDer()),
@@ -157,11 +139,10 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION) {
-      return await ecdsaGetAnonymous(
+      return await getAnonymousDelegation(
         derivationOrigin ?? origin,
         new Uint8Array(sessionPublicKey.toDer()),
         auth.delegationIdentity,
-        Chain.IC,
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,
@@ -169,11 +150,10 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION_WITHOUT_DERIVATION) {
-      return await ecdsaGetAnonymous(
+      return await getAnonymousDelegation(
         origin,
         new Uint8Array(sessionPublicKey.toDer()),
         auth.delegationIdentity,
-        Chain.IC,
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,

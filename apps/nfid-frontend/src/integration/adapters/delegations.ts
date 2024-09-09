@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
+import { getGlobalDelegation } from "packages/integration/src/lib/delegation-factory/ecdsa"
 
-import { RootWallet, accessList, authState } from "@nfid/integration"
+import {RootWallet, accessList, authState} from "@nfid/integration"
 
 import { getWalletDelegation } from "../facade/wallet"
 import { fetchProfile } from "../identity-manager"
@@ -15,9 +15,8 @@ export const getWalletDelegationAdapter = async (
   if (accountId !== "-1" && profile.wallet === RootWallet.II)
     return await getWalletDelegation(profile.anchor, domain, accountId)
   else
-    return await getGlobalKeys(
+    return await getGlobalDelegation(
       authState.get().delegationIdentity!,
-      Chain.IC,
       accessList.concat(targetCanisters),
     )
 }

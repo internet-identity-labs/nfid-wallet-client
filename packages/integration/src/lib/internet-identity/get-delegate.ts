@@ -9,12 +9,12 @@ import { PublicKey } from "../_ic_api/internet_identity.d"
 import { ii } from "../actors"
 import { mapOptional } from "../ic-utils"
 import {
-  Chain,
-  ecdsaGetAnonymous,
-  getGlobalKeysThirdParty,
+  getAnonymousDelegation,
+  getGlobalDelegationChain,
   renewDelegationThirdParty,
-} from "../lambda/ecdsa"
+} from "../delegation-factory/ecdsa"
 import { SignedDelegation } from "./types"
+import {Chain} from "../lambda/lambda-delegation";
 
 /**
  * Retrieve prepared third party auth session.
@@ -75,7 +75,7 @@ export const getAnonymousDelegate = async (
   domain: string,
   maxTimeToLive?: number,
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
-  const delegationChain = await ecdsaGetAnonymous(
+  const delegationChain = await getAnonymousDelegation(
     domain,
     sessionPublicKey,
     delegationIdentity,
@@ -140,7 +140,7 @@ export const getPublicAccountDelegate = async (
   targets: string[],
   maxTimeToLive?: number,
 ): Promise<SignedDelegation & { publicKey: DerEncodedPublicKey }> => {
-  const delegationChain = await getGlobalKeysThirdParty(
+  const delegationChain = await getGlobalDelegationChain(
     delegationIdentity,
     targets,
     sessionPublicKey,

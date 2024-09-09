@@ -12,7 +12,7 @@ import {
   defaultExpirationInMinutes,
   saveToStorage,
 } from "./domain-key-repository"
-import { getGlobalKeysThirdParty } from "./ecdsa"
+import { getGlobalDelegationChain } from "../delegation-factory/ecdsa"
 import { executeCanisterCall } from "./execute-canister-call"
 import { LocalStorageMock } from "./local-storage-mock"
 import { getIdentity } from "./util"
@@ -52,7 +52,7 @@ describe("Targets validation", () => {
       dappSessionKey.getPublicKey().toDer(),
     )
 
-    const delegationChain = await getGlobalKeysThirdParty(
+    const delegationChain = await getGlobalDelegationChain(
       nfidDelegationIdentity,
       ["irshc-3aaaa-aaaam-absla-cai"],
       dappSessionPublicKey,

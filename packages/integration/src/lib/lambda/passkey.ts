@@ -5,7 +5,7 @@ import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import { idlFactory as passkeyIDL } from "../_ic_api/passkey_storage"
 import { im, passkeyStorage } from "../actors"
 import { ic } from "../agent"
-import { ANCHOR_TO_GET_DELEGATION_FROM_DF } from "./ecdsa"
+import { ANCHOR_TO_GET_DELEGATION_FROM_DF } from "../delegation-factory/ecdsa"
 
 export async function storePasskey(key: string, data: string) {
   const account: HTTPAccountResponse = await im.get_account()

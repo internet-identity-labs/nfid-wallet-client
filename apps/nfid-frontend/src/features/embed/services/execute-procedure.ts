@@ -1,4 +1,4 @@
-import { Chain, getGlobalKeys } from "packages/integration/src/lib/lambda/ecdsa"
+import { getGlobalDelegation } from "packages/integration/src/lib/delegation-factory/ecdsa"
 
 import {
   ThirdPartyAuthSession,
@@ -121,9 +121,8 @@ export const ExecuteProcedureService = async (
       }
     }
     case "ic_canisterCall": {
-      const identity = await getGlobalKeys(
+      const identity = await getGlobalDelegation(
         authState.get().delegationIdentity!,
-        Chain.IC,
         [rpcMessage.params[0].canisterId],
       )
 

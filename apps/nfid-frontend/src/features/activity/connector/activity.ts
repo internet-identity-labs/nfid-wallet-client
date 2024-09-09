@@ -9,7 +9,7 @@ import {
   PrincipalAccount,
   Profile,
   authState,
-  fetchPrincipals,
+  fetchPrincipals, Chain,
 } from "@nfid/integration"
 
 import {
@@ -52,7 +52,7 @@ export abstract class ActivityClass<T extends IActivityConfig>
       id: activity.id,
       action: activity.action,
       network: config.network,
-      chain: config.chain,
+      chain: Chain.IC,
       asset: activity.asset,
       type: activity.asset.type,
       timestamp: activity.date,

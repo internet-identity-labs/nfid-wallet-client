@@ -1,11 +1,9 @@
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import {
-  Chain,
   DelegationType,
-  GLOBAL_ORIGIN,
   getPublicKey,
-} from "packages/integration/src/lib/lambda/ecdsa"
+} from "packages/integration/src/lib/delegation-factory/ecdsa"
 
 import { truncateString } from "@nfid-frontend/utils"
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
@@ -50,7 +48,7 @@ export const accountService = {
     const identity = authState.get().delegationIdentity
     if (!identity) throw new Error("No identity")
 
-    const publicKey = await getPublicKey(identity, Chain.IC, GLOBAL_ORIGIN)
+    const publicKey = await getPublicKey(identity)
     const publicAccAddress = AccountIdentifier.fromPrincipal({
       principal: Principal.fromText(publicKey),
     }).toHex()
@@ -110,7 +108,6 @@ export const accountService = {
 
     const anonymousPublicKey = await getPublicKey(
       identity,
-      Chain.IC,
       derivationOrigin ?? origin,
       DelegationType.ANONYMOUS,
     )
@@ -131,7 +128,6 @@ export const accountService = {
     if (derivationOrigin && (await isDerivationBug(origin))) {
       const buggedPublicKey = await getPublicKey(
         identity,
-        Chain.IC,
         origin,
         DelegationType.ANONYMOUS,
       )

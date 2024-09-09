@@ -1,8 +1,8 @@
-import { Principal } from "@dfinity/principal"
+import {Principal} from "@dfinity/principal"
 
-import { authState } from "../authentication"
-import { Account } from "../identity-manager/account"
-import { Chain, getPublicKey } from "../lambda/ecdsa"
+import {authState} from "../authentication"
+import {Account} from "../identity-manager/account"
+import {getPublicKey} from "../delegation-factory/ecdsa"
 
 export interface PrincipalAccount {
   principal: Principal
@@ -13,7 +13,7 @@ export async function fetchPrincipals(): Promise<PrincipalAccount[]> {
   const delegation = authState.get().delegationIdentity
   if (!delegation) throw Error("No delegation identity")
 
-  const principal = await getPublicKey(delegation, Chain.IC)
+  const principal = await getPublicKey(delegation)
 
   const globalAcc = {
     account: {

@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
-import { Chain, getPublicKey } from "packages/integration/src/lib/lambda/ecdsa"
+import { getPublicKey } from "packages/integration/src/lib/delegation-factory/ecdsa"
 
 import { authState, getBalance } from "@nfid/integration"
 
@@ -16,7 +16,7 @@ export const getPublicProfile = async (): Promise<{
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")
 
-  const principalString = await getPublicKey(delegationIdentity!, Chain.IC)
+  const principalString = await getPublicKey(delegationIdentity!)
   const principal = Principal.fromText(principalString)
   const address = principalToAddress(principal as any)
   const balance = e8sICPToString(Number(await getBalance(address)))

@@ -8,6 +8,7 @@ import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
 import { im } from "../actors"
+import { authState } from "../authentication"
 import { getUserIdData } from "../cache/cache"
 import {
   defaultExpirationInMinutes,
@@ -42,7 +43,7 @@ export async function getGlobalDelegationChain(
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
-  //ICRC28
+  // //ICRC28
   await validateTargets(targets, origin)
 
   const userData = await getUserIdData()

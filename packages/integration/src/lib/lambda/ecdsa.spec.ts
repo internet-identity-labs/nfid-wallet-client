@@ -11,6 +11,7 @@ import {
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 
 import { WALLET_SCOPE } from "@nfid/config"
+import { authState } from "@nfid/integration"
 
 import { ii, im, replaceActorIdentity } from "../actors"
 import {
@@ -38,7 +39,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       Object.defineProperty(window, "localStorage", { value: localStorageMock })
     })
 
-    it("get global IC keys", async function () {
+    it("get global IC keys Lambda Flow", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -51,6 +52,11 @@ describe("Lambda Sign/Register ECDSA", () => {
         sessionKey,
         chainRoot,
       )
+
+      authState.set({
+        identity: delegationIdentity,
+        delegationIdentity: delegationIdentity,
+      })
 
       const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
         "74gpt-tiaaa-aaaak-aacaa-cai",
@@ -95,6 +101,11 @@ describe("Lambda Sign/Register ECDSA", () => {
         dappSessionKey.getPublicKey().toDer(),
       )
 
+      authState.set({
+        identity: nfidDelegationIdentity,
+        delegationIdentity: nfidDelegationIdentity,
+      })
+
       const delegationChain = await getAnonymousDelegation(
         "nfid.one",
         dappSessionPublicKey,
@@ -130,6 +141,11 @@ describe("Lambda Sign/Register ECDSA", () => {
         nfidSessionKey,
         chainRoot,
       )
+
+      authState.set({
+        identity: nfidDelegationIdentity,
+        delegationIdentity: nfidDelegationIdentity,
+      })
 
       try {
         await renewDelegationThirdParty(

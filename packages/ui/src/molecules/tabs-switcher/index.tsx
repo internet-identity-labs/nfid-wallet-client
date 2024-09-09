@@ -5,7 +5,8 @@ import Tab from "./tab"
 
 export interface TabProps {
   name: string
-  title: JSX.Element
+  title: JSX.Element | string
+  icon?: JSX.Element
 }
 
 interface ITabsSwitcher extends React.HTMLAttributes<HTMLDivElement> {
@@ -33,6 +34,7 @@ export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
             id={`tab_${tab.name}`}
             length={tabs.length}
           >
+            {tab.icon && tab.icon}
             {tab.title}
           </Tab>
         )

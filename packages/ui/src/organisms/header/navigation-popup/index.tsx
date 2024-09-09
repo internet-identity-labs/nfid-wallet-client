@@ -41,6 +41,11 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
             "text-xs text-gray-500",
           )}
           id="nfid-anchor"
+          style={{
+            WebkitTouchCallout: "none",
+            WebkitUserSelect: "none",
+            userSelect: "none",
+          }}
         >
           NFID number: {anchor}
         </div>

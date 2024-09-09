@@ -27,7 +27,7 @@ const CallCanisterICRC2SpendingCap = ({
   onReject,
 }: CallCanisterICRC2SpendingCapProps) => {
   const [isChecked, setIsChecked] = React.useState(false)
-  const applicationName = new URL(origin).host
+  const applicationName = new URL(String(request?.origin)).host
 
   return (
     <RPCPromptTemplate

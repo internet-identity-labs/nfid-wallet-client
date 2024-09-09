@@ -11,7 +11,7 @@ import {
 
 export interface ReceiveProps {
   isVault: boolean
-  isAccountsLoading: boolean
+  isLoading: boolean
   selectedAccountAddress: string
   address: string
   accountsOptions: {
@@ -31,17 +31,14 @@ export interface ReceiveProps {
 
 export const Receive: FC<ReceiveProps> = ({
   isVault,
-  isAccountsLoading,
+  isLoading,
   selectedAccountAddress,
   setSelectedAccountAddress,
   address,
   accountsOptions,
 }) => {
   return (
-    <BlurredLoader
-      className="mt-[5px] text-xs"
-      isLoading={!accountsOptions.length || isAccountsLoading}
-    >
+    <BlurredLoader className="mt-[5px] text-xs" isLoading={isLoading}>
       <p className="text-sm mb-[20px]">
         NFID Wallet currently supports Internet Computer Protocol tokens and
         standards: ICP, ICRC-1, EXT NFTs, and additional support coming soon.

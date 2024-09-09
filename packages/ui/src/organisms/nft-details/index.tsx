@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { FC, Fragment } from "react"
+import { FC, Fragment, useState } from "react"
 
 import {
   IconNftPlaceholder,
@@ -17,6 +17,7 @@ import {
 import { NFT } from "frontend/integration/nft/nft"
 
 import ProfileContainer from "../../atoms/profile-container/Container"
+import { ModalComponent } from "../../molecules/modal/index-v0"
 
 export interface NFTDetailsProps {
   nft: NFT
@@ -41,8 +42,30 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
   transactions,
   assetPreview,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   return (
     <>
+      <ModalComponent
+        isVisible={isModalOpen}
+        className="!bg-transparent"
+        onClose={() => setIsModalOpen(false)}
+      >
+        <div
+          className="w-[95vw] h-[95vh] flex justify-center items-center"
+          onClick={(e) => {
+            if ((e.target as HTMLElement).id === "full-image") return
+            setIsModalOpen(false)
+          }}
+        >
+          <img
+            id="full-image"
+            src={assetPreview.url}
+            alt={nft.getTokenName()}
+            className="rounded-[24px] max-h-full max-w-full"
+          />
+        </div>
+      </ModalComponent>
       <div
         className={clsx(
           "grid gap-[30px] max-w-[100vw] mb-[20px] sm:mb-[30px]",
@@ -50,9 +73,10 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         )}
       >
         <div
+          onClick={() => setIsModalOpen(true)}
           className={clsx(
-            "relative overflow-hidden bg-gray-50 rounded-[24px] aspect-square",
-            "lg:max-w-[445px] h-full lg:h-[445px]",
+            "relative overflow-hidden bg-gray-50 rounded-[24px] aspect-square cursor-pointer",
+            "lg:max-w-[445px] h-full lg:h-[445px] flex items-center justify-center",
           )}
         >
           {isPreviewLoading ? (
@@ -81,7 +105,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               src={assetPreview.url}
               fallbackSrc={IconNftPlaceholder}
               alt="NFT preview"
-              className="w-full"
+              className="max-w-full max-h-full"
             />
           )}
         </div>

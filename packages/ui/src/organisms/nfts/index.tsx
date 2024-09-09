@@ -211,10 +211,13 @@ export const NFTs: FC<INFTs> = ({
                 to={`${links.base}/${links.nfts}/${nft.getTokenId()}`}
               >
                 <div
-                  className="cursor-pointer rounded-[12px] bg-gray-50 group hover:shadow-xl"
+                  className={clsx(
+                    "cursor-pointer rounded-[12px] bg-gray-50 group hover:shadow-xl",
+                    "h-full flex flex-col",
+                  )}
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
-                  <div className="relative rounded-[12px] overflow-hidden">
+                  <div className="relative rounded-[12px] overflow-hidden basis-[100%]">
                     {nft.getAssetPreview().format === "video" ? (
                       <video
                         muted
@@ -228,7 +231,7 @@ export const NFTs: FC<INFTs> = ({
                         alt={nft.getTokenName()}
                         fallbackSrc={IconNftPlaceholder}
                         src={nft.getAssetPreview().url}
-                        className={clsx(`w-full`)}
+                        className="object-cover w-full aspect-square"
                       />
                     )}
                     <div
@@ -260,7 +263,7 @@ export const NFTs: FC<INFTs> = ({
                       </div>
                     </div>
                   </div>
-                  <div className="px-[10px] pt-[10px] pb-[14px]">
+                  <div className="px-[10px] pt-[10px] pb-[14px] mt-auto">
                     <p
                       className="mb-[2px] text-black font-bold leading-[24px]"
                       id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}

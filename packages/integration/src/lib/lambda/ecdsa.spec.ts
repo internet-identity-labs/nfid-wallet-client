@@ -52,10 +52,9 @@ describe("Lambda Sign/Register ECDSA", () => {
         chainRoot,
       )
 
-      const globalICIdentity = await getGlobalDelegation(
-        delegationIdentity,
-        ["74gpt-tiaaa-aaaak-aacaa-cai"],
-      )
+      const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
+        "74gpt-tiaaa-aaaak-aacaa-cai",
+      ])
       expect(globalICIdentity.getPrincipal().toText()).toEqual(
         expectedGlobalAcc,
       )

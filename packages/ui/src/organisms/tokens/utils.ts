@@ -1,7 +1,8 @@
 import { Principal } from "@dfinity/principal"
 
 import { ftService } from "frontend/integration/ft/ft-service"
-import {getUserIdData} from "../../../../integration/src/lib/cache/cache";
+
+import { getUserIdData } from "../../../../integration/src/lib/cache/cache"
 
 //TODO move to authState
 export const getUserPrincipalId = async (): Promise<{

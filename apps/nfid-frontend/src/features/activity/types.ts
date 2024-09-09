@@ -3,8 +3,9 @@ import {
   ActivityAssetNFT,
 } from "packages/integration/src/lib/asset/types"
 
+import { Chain } from "@nfid/integration"
+
 import { Blockchain } from "frontend/ui/connnector/types"
-import {Chain} from "@nfid/integration";
 
 export enum IActivityAction {
   SENT = "Sent",

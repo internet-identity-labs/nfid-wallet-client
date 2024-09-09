@@ -146,10 +146,10 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
 
   private async getIdentity(dto: Icrc49Dto, account: Account) {
     if (account.type === AccountType.GLOBAL) {
-      return await getGlobalDelegation(
-        authState.get().delegationIdentity!,
-        [CANDID_UI_CANISTER, dto.canisterId],
-      )
+      return await getGlobalDelegation(authState.get().delegationIdentity!, [
+        CANDID_UI_CANISTER,
+        dto.canisterId,
+      ])
     }
 
     if (

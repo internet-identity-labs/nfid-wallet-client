@@ -1,5 +1,4 @@
-import {Principal} from "@dfinity/principal";
-
+import { Principal } from "@dfinity/principal"
 
 export type PrepareDelegationArgs = {
   userNumber: bigint
@@ -8,8 +7,6 @@ export type PrepareDelegationArgs = {
   maxTimeToLive: [] | [bigint]
   targets: [] | [Array<Principal>]
 }
-
-
 
 export type GetDelegationArgs = {
   userNumber: bigint

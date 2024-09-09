@@ -2,7 +2,10 @@ import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
-import {getFullUsdValue, getUserPrincipalId} from "packages/ui/src/organisms/tokens/utils"
+import {
+  getFullUsdValue,
+  getUserPrincipalId,
+} from "packages/ui/src/organisms/tokens/utils"
 import {
   HTMLAttributes,
   useCallback,
@@ -128,9 +131,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     data: identity,
     isLoading: isIdentityLoading,
     isValidating,
-  } = useSWR("globalIdentity", () =>
-    getUserPrincipalId(),
-  )
+  } = useSWR("globalIdentity", () => getUserPrincipalId())
 
   const onSendClick = () => {
     sendReceiveTracking.openModal()

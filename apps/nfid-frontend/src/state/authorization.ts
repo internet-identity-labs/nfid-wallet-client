@@ -1,4 +1,3 @@
-
 import { SignedDelegation } from "@nfid/integration"
 
 /**

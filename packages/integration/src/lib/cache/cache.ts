@@ -1,5 +1,5 @@
-import {authState, getPublicKey, im} from "@nfid/integration";
-import {localStorageWithFallback} from "@nfid/client-db";
+import { localStorageWithFallback } from "@nfid/client-db"
+import { authState, getPublicKey, im } from "@nfid/integration"
 
 type UserIdData = {
   //internal user id
@@ -8,7 +8,6 @@ type UserIdData = {
   publicKey: string
   anchor: bigint
 }
-
 
 //TODO move to authState
 export const getUserIdData = async (): Promise<UserIdData> => {
@@ -29,7 +28,7 @@ export const getUserIdData = async (): Promise<UserIdData> => {
     im.get_account(),
   ])
 
-  if(!account.data[0]) {
+  if (!account.data[0]) {
     throw new Error(account.error[0])
   }
 
@@ -39,10 +38,7 @@ export const getUserIdData = async (): Promise<UserIdData> => {
     anchor: account.data[0]!.anchor,
   }
 
-  localStorageWithFallback.setItem(
-    cacheKey,
-    JSON.stringify(userIdPair),
-  )
+  localStorageWithFallback.setItem(cacheKey, JSON.stringify(userIdPair))
 
   return userIdPair
 }

@@ -1,20 +1,31 @@
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 
-import {ONE_HOUR_IN_MS} from "@nfid/config"
+import { ONE_HOUR_IN_MS } from "@nfid/config"
 
-import {integrationCache} from "../../cache"
-import {getDelegationChainSignedByCanister, getPrincipalSignedByCanister,} from "./delegation-factory"
-import {defaultExpirationInMinutes, getFromStorage, saveToStorage,} from "../lambda/domain-key-repository"
-import {validateTargets} from "../lambda/targets"
-import {getUserIdData} from "../cache/cache";
+import { integrationCache } from "../../cache"
+import { im } from "../actors"
+import { getUserIdData } from "../cache/cache"
+import {
+  defaultExpirationInMinutes,
+  getFromStorage,
+  saveToStorage,
+} from "../lambda/domain-key-repository"
 import {
   fromHexString,
   getAnonymousDelegationThroughLambda,
   getLambdaPublicKey,
   oldFlowDelegationChainLambda,
-  oldFlowGlobalKeysFromLambda
-} from "../lambda/lambda-delegation";
-import {im} from "../actors";
+  oldFlowGlobalKeysFromLambda,
+} from "../lambda/lambda-delegation"
+import { validateTargets } from "../lambda/targets"
+import {
+  getDelegationChainSignedByCanister,
+  getPrincipalSignedByCanister,
+} from "./delegation-factory"
 
 export enum DelegationType {
   GLOBAL = "GLOBAL",
@@ -24,7 +35,6 @@ export enum DelegationType {
 export const GLOBAL_ORIGIN = "nfid.one"
 export const ANCHOR_TO_GET_DELEGATION_FROM_DF = BigInt(200_000_000)
 
-
 export async function getGlobalDelegationChain(
   identity: DelegationIdentity,
   targets: string[],
@@ -32,7 +42,6 @@ export async function getGlobalDelegationChain(
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
-
   //ICRC28
   await validateTargets(targets, origin)
 
@@ -70,7 +79,6 @@ export async function getGlobalDelegationChain(
   return response
 }
 
-
 //renew delegation for same session public key
 export async function renewDelegationThirdParty(
   identity: DelegationIdentity,
@@ -78,7 +86,6 @@ export async function renewDelegationThirdParty(
   origin: string,
   sessionPublicKey: Uint8Array,
 ): Promise<DelegationChain> {
-
   const sessionPublicKeyFromStorage = new Uint8Array(
     fromHexString(getFromStorage(origin)),
   )
@@ -100,9 +107,8 @@ export async function getGlobalDelegation(
   targets: string[],
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
-
   const cachedValue = await integrationCache.getItem(
-    JSON.stringify({identity, targets}),
+    JSON.stringify({ identity, targets }),
   )
 
   if (cachedValue) return cachedValue as any
@@ -136,9 +142,9 @@ export async function getGlobalDelegation(
   )
 
   await integrationCache.setItem(
-    JSON.stringify({identity, targets}),
+    JSON.stringify({ identity, targets }),
     response,
-    {ttl: 600},
+    { ttl: 600 },
   )
 
   return response
@@ -185,9 +191,7 @@ export async function getPublicKey(
   type = DelegationType.GLOBAL,
 ): Promise<string> {
   const cacheKey =
-    "getPublicKey" +
-    identity.getPrincipal().toText() +
-    type.toString()
+    "getPublicKey" + identity.getPrincipal().toText() + type.toString()
 
   const cachedValue = await integrationCache.getItem(cacheKey)
 
@@ -212,7 +216,6 @@ export async function getPublicKey(
   }
 }
 
-
 export async function createDelegationChain(
   identity: DelegationIdentity,
   lambdaPublicKey: string,
@@ -227,7 +230,6 @@ export async function createDelegationChain(
   )
 }
 
-
 export function toHexString(bytes: ArrayBuffer): string {
   return new Uint8Array(bytes).reduce(
     (str, byte) => str + byte.toString(16).padStart(2, "0"),
@@ -235,10 +237,7 @@ export function toHexString(bytes: ArrayBuffer): string {
   )
 }
 
-
 //all new users have anchor >= 200_000_000
 function isCanisterDelegation(anchor: bigint) {
   return anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF
 }
-
-

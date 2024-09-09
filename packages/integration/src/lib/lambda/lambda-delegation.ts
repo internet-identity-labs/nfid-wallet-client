@@ -1,26 +1,34 @@
-import {ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS} from "@nfid/config";
 import {
-  createDelegationChain, DelegationType,
-  getAnonymousDelegate, GLOBAL_ORIGIN,
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+
+import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
+import {
+  createDelegationChain,
+  DelegationType,
+  getAnonymousDelegate,
+  GLOBAL_ORIGIN,
   ic,
   icSigner,
   im,
   replaceActorIdentity,
-  toHexString
-} from "@nfid/integration";
-import {deleteFromStorage} from "./domain-key-repository";
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity";
-import {Principal} from "@dfinity/principal";
+  toHexString,
+} from "@nfid/integration"
 
+import { deleteFromStorage } from "./domain-key-repository"
 
 export enum Chain {
   IC = "IC",
 }
 
-export async function getAnonymousDelegationThroughLambda(domain: string,
-                                                          sessionKey: Uint8Array,
-                                                          identity: DelegationIdentity,
-                                                          maxTimeToLive = ONE_HOUR_IN_MS * 2,
+export async function getAnonymousDelegationThroughLambda(
+  domain: string,
+  sessionKey: Uint8Array,
+  identity: DelegationIdentity,
+  maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ) {
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
 
@@ -52,7 +60,6 @@ export async function getAnonymousDelegationThroughLambda(domain: string,
   })
 }
 
-
 export async function fetchLambdaPublicKey(chain: Chain): Promise<string> {
   const registerUrl = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const response = await fetch(registerUrl, {
@@ -64,8 +71,6 @@ export async function fetchLambdaPublicKey(chain: Chain): Promise<string> {
   if (!response.ok) throw new Error(await response.text())
   return (await response.json()).public_key
 }
-
-
 
 export async function oldFlowGlobalKeysFromLambda(
   identity: DelegationIdentity,
@@ -81,7 +86,7 @@ export async function oldFlowGlobalKeysFromLambda(
     identity,
     lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
-    {previous: identity.getDelegation()},
+    { previous: identity.getDelegation() },
   )
 
   const request = {
@@ -96,7 +101,6 @@ export async function oldFlowGlobalKeysFromLambda(
   const delegationJSON = await fetchSignUrl(request)
   return DelegationChain.fromJSON(delegationJSON)
 }
-
 
 export async function ecdsaRegisterNewKeyPair(
   identity: DelegationIdentity,
@@ -132,9 +136,11 @@ export async function ecdsaRegisterNewKeyPair(
   return response.public_key
 }
 
-export async function getLambdaPublicKey(  identity: DelegationIdentity,
-                                           origin = GLOBAL_ORIGIN,
-                                           type = DelegationType.GLOBAL) {
+export async function getLambdaPublicKey(
+  identity: DelegationIdentity,
+  origin = GLOBAL_ORIGIN,
+  type = DelegationType.GLOBAL,
+) {
   if (type === DelegationType.GLOBAL) {
     const signer = icSigner
     await replaceActorIdentity(signer, identity)
@@ -175,7 +181,6 @@ export async function getLambdaPublicKey(  identity: DelegationIdentity,
   }
 }
 
-
 export async function oldFlowDelegationChainLambda(
   identity: DelegationIdentity,
   sessionKey: Ed25519KeyIdentity,
@@ -186,7 +191,7 @@ export async function oldFlowDelegationChainLambda(
     identity,
     lambdaPublicKey,
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
-    {previous: identity.getDelegation()},
+    { previous: identity.getDelegation() },
   )
   const request = {
     chain: Chain.IC,
@@ -208,12 +213,11 @@ export function fromHexString(hexString: string): ArrayBuffer {
   return bytes.buffer
 }
 
-
 export async function fetchSignUrl(request: Record<string, any>): Promise<any> {
   const signUrl = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
   const response = await fetch(signUrl, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   })
 

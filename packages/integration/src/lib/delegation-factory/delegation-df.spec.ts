@@ -14,7 +14,10 @@ import {
   AccessPointRequest,
   HTTPAccountRequest,
 } from "../_ic_api/identity_manager.d"
-import {delegationFactory, im, replaceActorIdentity} from "../actors"
+import { delegationFactory, im, replaceActorIdentity } from "../actors"
+import { Chain } from "../lambda/lambda-delegation"
+import { LocalStorageMock } from "../lambda/local-storage-mock"
+import { getIdentity, getLambdaActor } from "../lambda/util"
 import {
   getAnonymousDelegation,
   getGlobalDelegation,
@@ -22,9 +25,6 @@ import {
   getPublicKey,
   renewDelegationThirdParty,
 } from "./delegation-i"
-import { LocalStorageMock } from "../lambda/local-storage-mock"
-import { getIdentity, getLambdaActor } from "../lambda/util"
-import {Chain} from "../lambda/lambda-delegation";
 
 const identity = getIdentity("97654321876543218765432187654399")
 
@@ -97,10 +97,9 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
 
       await replaceActorIdentity(im, delegationIdentity)
       await replaceActorIdentity(delegationFactory, delegationIdentity)
-      const globalICIdentity = await getGlobalDelegation(
-        delegationIdentity,
-        ["74gpt-tiaaa-aaaak-aacaa-cai"],
-      )
+      const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
+        "74gpt-tiaaa-aaaak-aacaa-cai",
+      ])
 
       const principalText = await getPublicKey(delegationIdentity)
       expect(principalText).toEqual(

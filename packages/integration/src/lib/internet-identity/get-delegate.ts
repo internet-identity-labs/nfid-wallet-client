@@ -7,14 +7,14 @@ import {
 
 import { PublicKey } from "../_ic_api/internet_identity.d"
 import { ii } from "../actors"
-import { mapOptional } from "../ic-utils"
 import {
   getAnonymousDelegation,
   getGlobalDelegationChain,
   renewDelegationThirdParty,
 } from "../delegation-factory/delegation-i"
+import { mapOptional } from "../ic-utils"
+import { Chain } from "../lambda/lambda-delegation"
 import { SignedDelegation } from "./types"
-import {Chain} from "../lambda/lambda-delegation";
 
 /**
  * Retrieve prepared third party auth session.

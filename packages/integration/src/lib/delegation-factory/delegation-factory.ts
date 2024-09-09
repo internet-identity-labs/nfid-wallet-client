@@ -7,17 +7,14 @@ import {
 import { Principal } from "@dfinity/principal"
 
 import { ONE_HOUR_IN_MS } from "@nfid/config"
-import {
-  delegationFactory,
-  mapOptional,
-} from "@nfid/integration"
+import { delegationFactory, mapOptional } from "@nfid/integration"
 
 import {
   GetDelegationResponse,
   Timestamp,
   UserKey,
 } from "../_ic_api/delegation_factory.d"
-import {GetDelegationArgs, PrepareDelegationArgs} from "./types";
+import { GetDelegationArgs, PrepareDelegationArgs } from "./types"
 
 export async function getDelegationChainSignedByCanister(
   identity: DelegationIdentity,
@@ -27,7 +24,6 @@ export async function getDelegationChainSignedByCanister(
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
-
   const args: PrepareDelegationArgs = {
     userNumber: anchor,
     frontendHostname: origin,

@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { getGlobalDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
-import {RootWallet, accessList, authState} from "@nfid/integration"
+import { RootWallet, accessList, authState } from "@nfid/integration"
 
 import { getWalletDelegation } from "../facade/wallet"
 import { fetchProfile } from "../identity-manager"

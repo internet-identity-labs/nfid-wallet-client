@@ -9,7 +9,8 @@ import {
   PrincipalAccount,
   Profile,
   authState,
-  fetchPrincipals, Chain,
+  fetchPrincipals,
+  Chain,
 } from "@nfid/integration"
 
 import {

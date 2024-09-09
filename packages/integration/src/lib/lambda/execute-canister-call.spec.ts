@@ -7,12 +7,12 @@ import {
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { expect } from "@jest/globals"
 
+import { getGlobalDelegationChain } from "../delegation-factory/delegation-i"
 import { getAnonymousDelegate } from "../internet-identity"
 import {
   defaultExpirationInMinutes,
   saveToStorage,
 } from "./domain-key-repository"
-import { getGlobalDelegationChain } from "../delegation-factory/delegation-i"
 import { executeCanisterCall } from "./execute-canister-call"
 import { LocalStorageMock } from "./local-storage-mock"
 import { getIdentity } from "./util"

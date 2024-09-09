@@ -3,9 +3,9 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { ONE_MINUTE_IN_MS } from "@nfid/config"
 
 import { ic } from "../agent"
+import { createDelegationChain } from "../delegation-factory/delegation-i"
 import { isPresentInStorage } from "./domain-key-repository"
-import {createDelegationChain} from "../delegation-factory/delegation-i"
-import {Chain, fetchLambdaPublicKey} from "./lambda-delegation";
+import { Chain, fetchLambdaPublicKey } from "./lambda-delegation"
 
 export async function executeCanisterCall(
   origin: string,

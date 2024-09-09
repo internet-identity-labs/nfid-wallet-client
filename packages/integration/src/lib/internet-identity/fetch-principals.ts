@@ -1,8 +1,8 @@
-import {Principal} from "@dfinity/principal"
+import { Principal } from "@dfinity/principal"
 
-import {authState} from "../authentication"
-import {Account} from "../identity-manager/account"
-import {getPublicKey} from "../delegation-factory/delegation-i"
+import { authState } from "../authentication"
+import { getPublicKey } from "../delegation-factory/delegation-i"
+import { Account } from "../identity-manager/account"
 
 export interface PrincipalAccount {
   principal: Principal

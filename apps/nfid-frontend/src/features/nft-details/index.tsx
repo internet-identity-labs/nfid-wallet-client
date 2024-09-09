@@ -34,33 +34,70 @@ const NFTDetailsPage = () => {
   const getDetails = useCallback(async () => {
     if (!tokenId) return
 
-    try {
-      const nftDetails = await fetchNFT(tokenId).then((data) =>
-        data?.getDetails(),
-      )
-      if (nftDetails) {
-        await nftDetails.getTransactions(0, 10)
+    const nftDetails = await fetchNFT(tokenId).then((data) =>
+      data?.getDetails(),
+    )
+    if (nftDetails) {
+      try {
         dispatch({ type: "SET_ABOUT", payload: nftDetails.getAbout() })
+      } catch (e) {
+        dispatch({
+          type: "SET_ERROR",
+          key: "about",
+          payload: (e as Error).message,
+        })
+        console.error("About error: ", e)
+      } finally {
+        dispatch({ type: "SET_LOADING", key: "about", isLoading: false })
+      }
+
+      try {
         dispatch({
           type: "SET_FULL_SIZE",
           payload: await nftDetails.getAssetFullSize(),
         })
+      } catch (e) {
+        dispatch({
+          type: "SET_ERROR",
+          key: "fullSize",
+          payload: (e as Error).message,
+        })
+        console.error("Asset full size error: ", e)
+      } finally {
+        dispatch({ type: "SET_LOADING", key: "fullSize", isLoading: false })
+      }
+
+      try {
         dispatch({
           type: "SET_PROPERTIES",
           payload: await nftDetails.getProperties(),
         })
+      } catch (e) {
+        dispatch({
+          type: "SET_ERROR",
+          key: "properties",
+          payload: (e as Error).message,
+        })
+        console.error("Properties error: ", e)
+      } finally {
+        dispatch({ type: "SET_LOADING", key: "properties", isLoading: false })
+      }
+
+      try {
         dispatch({
           type: "SET_TRANSACTIONS",
           payload: await nftDetails.getTransactions(0, 10),
         })
+      } catch (e) {
+        dispatch({
+          type: "SET_ERROR",
+          key: "transactions",
+          payload: (e as Error).message,
+        })
+        console.error("Transactions error: ", e)
+      } finally {
+        dispatch({ type: "SET_LOADING", key: "transactions", isLoading: false })
       }
-    } catch (e) {
-      dispatch({ type: "SET_ERROR", payload: (e as Error).message })
-      console.error("Error: ", e)
-    } finally {
-      dispatch({ type: "SET_LOADING", key: "fullSize", isLoading: false })
-      dispatch({ type: "SET_LOADING", key: "properties", isLoading: false })
-      dispatch({ type: "SET_LOADING", key: "transactions", isLoading: false })
     }
   }, [tokenId])
 
@@ -84,6 +121,8 @@ const NFTDetailsPage = () => {
 
   if (isLoading) return <Loader isLoading />
   if (!nft) return <NotFound />
+
+  console.log("sss", state)
 
   return (
     <ProfileTemplate

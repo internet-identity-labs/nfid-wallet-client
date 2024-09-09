@@ -122,8 +122,6 @@ const NFTDetailsPage = () => {
   if (isLoading) return <Loader isLoading />
   if (!nft) return <NotFound />
 
-  console.log("sss", state)
-
   return (
     <ProfileTemplate
       pageTitle={nft.getTokenName()}

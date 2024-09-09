@@ -41,7 +41,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
     <div>
       <div
         className={clsx(
-          "flex items-center space-x-2.5 pl-2.5 h-[61px] text-blue",
+          "inline-flex items-center space-x-2.5 pl-2.5 h-[61px] text-primaryButtonColor",
           "hover:opacity-50 cursor-pointer transition-opacity",
         )}
         onClick={() => setIsModalVisible(true)}
@@ -52,7 +52,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
+        className="p-5 w-[95%] md:w-[450px] z-[100]"
       >
         <p className="text-2xl font-bold">Add recovery phrase</p>
         <p className="mt-5 text-sm">
@@ -66,20 +66,25 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
               SENSITIVE_CONTENT_NO_SESSION_RECORDING,
               "border-2 border-black rounded-t-md mt-4",
               "focus:outline-none resize-none focus:ring-0",
-              "w-full leading-[26px] p-2",
+              "w-full leading-[26px] p-[12px] pb-[30px]",
             )}
           >
             {phrase}
           </div>
-          <Button
-            block
-            className="flex justify-center space-x-2 border-2 border-t-0 border-black rounded-t-none"
+          <div
+            className={clsx(
+              "flex items-center justify-center space-x-2 h-[48px]",
+              "border-2 border-t-0 border-black cursor-pointer",
+              "rounded-[12px] rounded-t-none",
+            )}
             onClick={copyToClipboard}
             id="copy-button"
           >
             <CopyIcon className="text-black stroke-black" />
-            <span>{copied ? "Copied" : "Copy"}</span>
-          </Button>
+            <span className="text-sm font-bold">
+              {copied ? "Copied" : "Copy"}
+            </span>
+          </div>
 
           <div className="mt-5">
             <input

@@ -2,6 +2,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import {
   fetchAllTokens,
@@ -51,14 +52,18 @@ export const TransferFT = ({
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(ICP_CANISTER_ID)
   const [amountInUSD, setAmountInUSD] = useState(0)
-  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
-    "activeTokens",
-    fetchAllTokens,
-  )
+  const {
+    data: activeTokens = [],
+    isLoading: isActiveTokensLoading,
+    mutate: refetchActiveTokens,
+  } = useSWR("activeTokens", fetchAllTokens)
 
-  const { data: token, isLoading: isTokenLoading } = useSWR(
-    tokenAddress ? ["token", tokenAddress] : null,
-    ([, address]) => fetchTokenByAddress(address),
+  const {
+    data: token,
+    isLoading: isTokenLoading,
+    mutate: refetchToken,
+  } = useSWR(tokenAddress ? ["token", tokenAddress] : null, ([, address]) =>
+    fetchTokenByAddress(address),
   )
 
   const { data: usdRate } = useSWR(
@@ -194,6 +199,12 @@ export const TransferFT = ({
           .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
         subTitle: usdRate!,
         isAssetPadding: true,
+        callback: () => {
+          resetIntegrationCache(["getICRC1Canisters"], () => {
+            refetchActiveTokens()
+            refetchToken()
+          })
+        },
       })
     },
     [
@@ -203,6 +214,8 @@ export const TransferFT = ({
       token,
       selectedVaultsAccountAddress,
       usdRate,
+      refetchActiveTokens,
+      refetchToken,
     ],
   )
 

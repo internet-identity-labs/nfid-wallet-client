@@ -57,7 +57,7 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
             <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
               <div className={clsx("", className)}>
                 <div>
-                  <H2 className="mb-4 mt-[40px]">Recover NFID</H2>
+                  <H2 className="my-4">Recover NFID</H2>
 
                   <div className={clsx("mb-6")}>
                     Paste your recovery phrase here to proceed:

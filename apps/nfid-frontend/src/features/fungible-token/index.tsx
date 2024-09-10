@@ -1,3 +1,4 @@
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchAllTokens,
@@ -16,10 +17,11 @@ const TokensPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
 
-  const { data: activeTokens = [], isLoading: isActiveLoading } = useSWR(
-    "activeTokens",
-    fetchAllTokens,
-  )
+  const {
+    data: activeTokens = [],
+    isLoading: isActiveLoading,
+    mutate: refetchActiveTokens,
+  } = useSWR("activeTokens", fetchAllTokens)
 
   const { data: filteredTokens = [] } = useSWR(
     ["filteredTokens", searchQuery],
@@ -31,7 +33,11 @@ const TokensPage = () => {
       ledgerID,
       indexID !== "" ? indexID : undefined,
     )
-    return icrc1Pair.storeSelf()
+    return icrc1Pair.storeSelf().then(() => {
+      resetIntegrationCache(["getICRC1Canisters"], () => {
+        refetchActiveTokens()
+      })
+    })
   }
 
   const onFetch = async (ledgerID: string, indexID: string) => {

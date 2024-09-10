@@ -6,6 +6,8 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
+import { authState } from "@nfid/integration"
+
 import { getAnonymousDelegate } from "./get-delegate"
 
 describe("get-delegate suite", () => {
@@ -34,6 +36,11 @@ describe("get-delegate suite", () => {
     const dappSessionPublicKey = new Uint8Array(
       dappSessionKey.getPublicKey().toDer(),
     )
+
+    authState.set({
+      identity: nfidDelegationIdentity,
+      delegationIdentity: nfidDelegationIdentity,
+    })
 
     const anonymousDelegation = await getAnonymousDelegate(
       dappSessionPublicKey,

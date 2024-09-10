@@ -1,5 +1,4 @@
 import { Activity } from "packages/integration/src/lib/asset/types"
-import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 
 import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
@@ -70,7 +69,6 @@ export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
 }
 
 export const icrc1ActivityConnector = new ICRC1ActivityConnector({
-  chain: Chain.IC,
   network: Blockchain.IC,
   tokenStandard: TokenStandards.ICP,
 })

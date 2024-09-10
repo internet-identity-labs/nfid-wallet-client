@@ -1,8 +1,8 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
 import { accessList } from "../actors"
+import { getGlobalDelegation } from "../delegation-factory/delegation-i"
 import { delegationByScope } from "../internet-identity/get-delegation-by-scope"
-import { Chain, getGlobalKeys } from "../lambda/ecdsa"
 import { authState } from "./auth-state"
 import { getExpirationDelay } from "./get-expiration"
 
@@ -60,11 +60,7 @@ class RefreshingDelegation {
       const deviceIdentity = authState.get().delegationIdentity
       if (!deviceIdentity) throw new Error("No device identity")
 
-      this._delegationPromise = getGlobalKeys(
-        deviceIdentity,
-        Chain.IC,
-        accessList,
-      )
+      this._delegationPromise = getGlobalDelegation(deviceIdentity, accessList)
         .then((delegation) => {
           this._setupRefreshingDelay(delegation)
           this._delegation = delegation

@@ -7,17 +7,14 @@ import {
 import { Principal } from "@dfinity/principal"
 
 import { ONE_HOUR_IN_MS } from "@nfid/config"
-import {
-  delegationFactory,
-  mapOptional,
-  replaceActorIdentity,
-} from "@nfid/integration"
+import { delegationFactory, mapOptional } from "@nfid/integration"
 
 import {
   GetDelegationResponse,
   Timestamp,
   UserKey,
 } from "../_ic_api/delegation_factory.d"
+import { GetDelegationArgs, PrepareDelegationArgs } from "./types"
 
 export async function getDelegationChainSignedByCanister(
   identity: DelegationIdentity,
@@ -35,8 +32,9 @@ export async function getDelegationChainSignedByCanister(
     targets:
       targets !== undefined ? [targets.map((t) => Principal.fromText(t))] : [],
   }
-  await replaceActorIdentity(delegationFactory, identity)
+
   const prepareDelegationResponse = await prepareDelegation(args)
+
   return getDelegation({
     userNumber: anchor,
     frontendHostname: origin,
@@ -73,14 +71,6 @@ export async function getPrincipalSignedByCanister(
   return await delegationFactory.get_principal(userNumber, frontendHostname)
 }
 
-type PrepareDelegationArgs = {
-  userNumber: bigint
-  frontendHostname: string
-  sessionKey: Uint8Array
-  maxTimeToLive: [] | [bigint]
-  targets: [] | [Array<Principal>]
-}
-
 async function prepareDelegation(
   args: PrepareDelegationArgs,
 ): Promise<[UserKey, Timestamp]> {
@@ -91,14 +81,6 @@ async function prepareDelegation(
     args.maxTimeToLive,
     args.targets,
   )
-}
-
-type GetDelegationArgs = {
-  userNumber: bigint
-  frontendHostname: string
-  sessionKey: Uint8Array
-  expiration: bigint
-  targets: [] | [Array<Principal>]
 }
 
 async function getDelegation(

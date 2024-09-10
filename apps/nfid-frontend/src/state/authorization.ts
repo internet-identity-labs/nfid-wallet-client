@@ -1,5 +1,3 @@
-import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
-
 import { SignedDelegation } from "@nfid/integration"
 
 /**
@@ -24,7 +22,6 @@ export interface AuthorizationRequest {
   hostname: string
   derivationOrigin?: string
   targets?: string[]
-  chain?: Chain
 }
 
 /**

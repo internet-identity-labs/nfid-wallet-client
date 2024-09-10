@@ -2,7 +2,8 @@ import {
   ActivityAssetFT,
   ActivityAssetNFT,
 } from "packages/integration/src/lib/asset/types"
-import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
+
+import { Chain } from "@nfid/integration"
 
 import { Blockchain } from "frontend/ui/connnector/types"
 

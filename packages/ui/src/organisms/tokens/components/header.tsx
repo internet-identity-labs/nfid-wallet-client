@@ -110,11 +110,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
       setTokenInfo(data)
       return true
     } catch (e) {
-      if (e instanceof ICRC1Error) {
-        return e.message
-      } else {
-        return DEFAULT_ERROR_TEXT
-      }
+      return getValues("ledgerID") === "" ? true : (e as ICRC1Error).message
     }
   }
 

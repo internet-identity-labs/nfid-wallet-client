@@ -159,6 +159,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         anchor={profile?.anchor}
         logout={logout}
         sendReceiveBtn={<SendReceiveButton />}
+        profileConstants={ProfileConstants}
         links={navigationPopupLinks}
         assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}
         hasVaults={hasVaults}

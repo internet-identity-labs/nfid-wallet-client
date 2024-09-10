@@ -1,3 +1,4 @@
+import { DEFAULT_ERROR_TEXT } from "packages/constants"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
@@ -50,7 +51,11 @@ const TokensPage = () => {
     ])
       .then(() => icrc1Pair.getMetadata())
       .catch((e) => {
-        throw new ICRC1Error(e.message)
+        if (e instanceof ICRC1Error) {
+          throw new ICRC1Error(e.message)
+        } else {
+          throw new ICRC1Error(DEFAULT_ERROR_TEXT)
+        }
       })
   }
 

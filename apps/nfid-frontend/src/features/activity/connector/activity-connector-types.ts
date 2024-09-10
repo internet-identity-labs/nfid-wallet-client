@@ -1,6 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Activity } from "packages/integration/src/lib/asset/types"
-import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -11,7 +10,6 @@ import { IActivityRow, IActivityRowGroup } from "../types"
 export interface IActivityDetails {}
 export interface IActivityConfig {
   network: Blockchain
-  chain: Chain
   tokenStandard: TokenStandards
 }
 

@@ -30,6 +30,11 @@ export interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
   links: INavigationPopupLinks[]
   assetsLink: string
   hasVaults: boolean
+  profileConstants: {
+    base: string
+    security: string
+    vaults: string
+  }
 }
 
 export const ProfileHeader: React.FC<IProfileHeader> = ({
@@ -43,6 +48,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   links,
   assetsLink,
   hasVaults,
+  profileConstants,
 }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
@@ -72,10 +78,11 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               links={links}
               assetsLink={assetsLink}
               hasVaults={hasVaults}
+              profileConstants={profileConstants}
             />
           )}
         </div>
-        <div className="md:hidden absolute">{sendReceiveBtn}</div>
+        <div className="absolute md:hidden">{sendReceiveBtn}</div>
       </div>
       {isEmailOutOfSync && (
         <div className="px-4 sm:px-[30px] mb-5">
@@ -90,7 +97,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               Your account is out of sync.
             </p>
             <span
-              className="font-bold text-orange-900 text-sm cursor-pointer hover:opacity-80 ml-auto"
+              className="ml-auto text-sm font-bold text-orange-900 cursor-pointer hover:opacity-80"
               onClick={() => syncEmail()}
             >
               Re-sync

@@ -1,14 +1,14 @@
-import { IconCmpArrow, ITab } from "@nfid-frontend/ui"
+import { IconCmpArrow, TabProps } from "@nfid-frontend/ui"
 
-export const transferTabs: ITab[] = [
+export const transferTabs: TabProps[] = [
   {
-    label: "Send",
-    value: "send",
+    title: "Send",
+    name: "send",
     icon: <IconCmpArrow className="rotate-[135deg]" />,
   },
   {
-    label: "Receive",
-    value: "receive",
+    title: "Receive",
+    name: "receive",
     icon: <IconCmpArrow className="-rotate-[45deg]" />,
   },
 ]

@@ -11,7 +11,7 @@ import {
 } from "../_ic_api/vault.d"
 import { vault as vaultAPI, vaultAnonymous } from "../actors"
 import { authState } from "../authentication"
-import { getPublicKey } from "../lambda/ecdsa"
+import { getPublicKey } from "../delegation-factory/delegation-i"
 import {
   candidToPolicy,
   candidToTransaction,

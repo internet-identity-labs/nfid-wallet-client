@@ -5,10 +5,9 @@ import { authStorage } from "packages/integration/src/lib/authentication/storage
 
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
 import {
-  Chain,
   authState,
-  ecdsaGetAnonymous,
-  getGlobalKeys,
+  getAnonymousDelegation,
+  getGlobalDelegation,
 } from "@nfid/integration"
 
 import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
@@ -147,11 +146,10 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
 
   private async getIdentity(dto: Icrc49Dto, account: Account) {
     if (account.type === AccountType.GLOBAL) {
-      return await getGlobalKeys(
-        authState.get().delegationIdentity!,
-        Chain.IC,
-        [CANDID_UI_CANISTER, dto.canisterId],
-      )
+      return await getGlobalDelegation(authState.get().delegationIdentity!, [
+        CANDID_UI_CANISTER,
+        dto.canisterId,
+      ])
     }
 
     if (
@@ -160,11 +158,10 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     ) {
       const sessionKey = Ed25519KeyIdentity.generate()
 
-      const delegationChain = await ecdsaGetAnonymous(
+      const delegationChain = await getAnonymousDelegation(
         account?.derivationOrigin ?? account.origin,
         new Uint8Array(sessionKey.getPublicKey().toDer()),
         authState.get().delegationIdentity!,
-        Chain.IC,
       )
 
       return DelegationIdentity.fromDelegation(sessionKey, delegationChain)

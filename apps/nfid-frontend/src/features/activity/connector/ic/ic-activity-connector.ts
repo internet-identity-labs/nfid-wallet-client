@@ -1,6 +1,5 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Activity } from "packages/integration/src/lib/asset/types"
-import { Chain } from "packages/integration/src/lib/lambda/ecdsa"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -34,7 +33,6 @@ export class ICActivityConnector extends ActivityClass<IActivityConfig> {
 }
 
 export const icActivityConnector = new ICActivityConnector({
-  chain: Chain.IC,
   network: Blockchain.IC,
   tokenStandard: TokenStandards.ICP,
 })

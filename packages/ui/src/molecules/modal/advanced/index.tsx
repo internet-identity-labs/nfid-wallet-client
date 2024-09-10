@@ -45,7 +45,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
             large ? "max-w-sm md:max-w-lg" : "max-w-sm",
           )}
         >
-          <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none">
+          <div className="relative flex flex-col w-full bg-white border-0 rounded-[24px] shadow-lg outline-none focus:outline-none">
             <div className="relative flex-auto px-6 ">
               <H5 className="mt-4">{title}</H5>
               <p className="my-4 text-sm">{subTitle}</p>

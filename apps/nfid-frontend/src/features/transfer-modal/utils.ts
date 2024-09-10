@@ -1,17 +1,17 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { AccountIdentifier, checkAccountId, SubAccount } from "@dfinity/ledger-icp"
+import {
+  AccountIdentifier,
+  checkAccountId,
+  SubAccount,
+} from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 
 import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
-  authState,
-  Chain,
-  getPublicKey,
   getVaults,
   getWallets,
-  GLOBAL_ORIGIN,
   replaceActorIdentity,
   vault,
 } from "@nfid/integration"
@@ -86,12 +86,6 @@ export const getVaultsAccountsOptions = async (): Promise<
   }))
 }
 
-export const getAccount = async () => {
-  const identity = authState.get().delegationIdentity
-  if (!identity) throw new Error("No identity")
-  return await getPublicKey(identity, Chain.IC, GLOBAL_ORIGIN)
-}
-
 const addressValidationService = {
   isValidAccountIdentifier(value: string): boolean {
     try {
@@ -112,19 +106,19 @@ const addressValidationService = {
 }
 
 export const validateICPAddress = (address: string): boolean | string => {
-    const isPrincipal = addressValidationService.isValidPrincipalId(address)
-    const isAccountIdentifier =
-      addressValidationService.isValidAccountIdentifier(address)
+  const isPrincipal = addressValidationService.isValidPrincipalId(address)
+  const isAccountIdentifier =
+    addressValidationService.isValidAccountIdentifier(address)
 
-    if (!isPrincipal && !isAccountIdentifier) {
-      try {
-        decodeIcrcAccount(address)
-        return true
-      } catch (e) {
-        console.error("Error: ", e)
-        return "Incorrect wallet address or accound ID"
-      }
-    } else return true
+  if (!isPrincipal && !isAccountIdentifier) {
+    try {
+      decodeIcrcAccount(address)
+      return true
+    } catch (e) {
+      console.error("Error: ", e)
+      return "Incorrect wallet address or accound ID"
+    }
+  } else return true
 }
 
 export const validateICRC1Address = (address: string): boolean | string => {
@@ -137,8 +131,7 @@ export const validateICRC1Address = (address: string): boolean | string => {
 }
 
 export const getAccountIdentifier = (address: string): string => {
-  if (addressValidationService.isValidAccountIdentifier(address))
-    return address
+  if (addressValidationService.isValidAccountIdentifier(address)) return address
 
   try {
     // Try if it's default principal or `${principal}-${checksum}-${subaccount}`

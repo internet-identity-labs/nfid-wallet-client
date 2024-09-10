@@ -3,7 +3,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import sticky from "stickyfilljs"
 
-import { NFIDLogo } from "@nfid-frontend/ui"
+import { LogoMain } from "@nfid-frontend/ui"
 
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
 import { useScroll } from "frontend/ui/utils/use-scroll"
@@ -50,9 +50,9 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
             <div className="flex items-center ">
               <Link
                 to={"/"}
-                className="flex items-center w-24 text-2xl font-black"
+                className="flex items-center w-[162px] text-2xl font-black"
               >
-                <NFIDLogo />
+                <img src={LogoMain} alt="NFID" />
               </Link>
             </div>
           )}

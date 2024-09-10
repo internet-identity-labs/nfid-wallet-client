@@ -46,15 +46,14 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         >
           {phrase}{" "}
         </div>
-        <Button
-          block
+        <div
           className="flex justify-center space-x-2 border-2 border-t-0 border-black rounded-t-none"
           onClick={copyToClipboard}
           id="copy-button"
         >
           <CopyIcon className="text-black stroke-black" />
           <span>{copied ? "Copied" : "Copy"}</span>
-        </Button>
+        </div>
 
         <div className="mt-5">
           <input

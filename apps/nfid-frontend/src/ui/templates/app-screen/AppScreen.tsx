@@ -50,7 +50,7 @@ export const AppScreen: React.FC<Props> = ({
   }, [])
 
   return (
-    <Shell bubbleOptions={bubbleOptions}>
+    <Shell bubbleOptions={bubbleOptions} className="!h-auto">
       <div className="relative flex flex-col w-full min-h-screen mx-auto overflow-hidden min-h-screen-ios">
         {showGradientBar && <NFIDGradientBar />}
         {navigationBar && (

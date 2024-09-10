@@ -4,7 +4,7 @@ import { FT } from "src/integration/ft/ft"
 import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { ActiveToken } from "./components/active-asset"
-import { ProfileAssetsHeader } from "./components/header"
+import { TokensHeader } from "./components/header"
 import { NewAssetsModal } from "./components/new-assets-modal"
 
 export interface IProfileConstants {
@@ -45,7 +45,7 @@ export const Tokens: FC<TokensProps> = ({
       isLoading={isActiveTokensLoading}
       overlayClassnames="!rounded-[24px]"
     >
-      <ProfileAssetsHeader
+      <TokensHeader
         tokens={filteredTokens}
         setSearch={(value) => setSearchQuery(value)}
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}

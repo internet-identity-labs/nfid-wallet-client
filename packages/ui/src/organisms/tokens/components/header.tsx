@@ -7,7 +7,6 @@ import { FC, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 import { toast } from "react-toastify"
-import { mutate } from "swr"
 
 import {
   BlurredLoader,
@@ -34,7 +33,7 @@ export interface ICRC1Metadata {
   fee: bigint
 }
 
-interface ProfileAssetsHeaderProps {
+interface TokensHeaderProps {
   tokens: FT[]
   setSearch: (v: string) => void
   onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
@@ -50,7 +49,7 @@ interface ProfileAssetsHeaderProps {
   }>
 }
 
-export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
+export const TokensHeader: FC<TokensHeaderProps> = ({
   tokens,
   setSearch,
   onSubmitIcrc1Pair,
@@ -92,15 +91,15 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
       setIsImportLoading(true)
       await onSubmitIcrc1Pair(getValues("ledgerID"), getValues("indexID"))
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
-      setModalStep(null)
-      mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
       resetField("ledgerID")
       resetField("indexID")
       setTokenInfo(null)
     } catch (e) {
       console.error(e)
-      toast.error(`Adding new token failed`)
+      toast.error("Adding new token failed")
     } finally {
+      setModalStep(null)
+      debouncedSearch("")
       setIsImportLoading(false)
     }
   }
@@ -148,7 +147,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
         isVisible={Boolean(modalStep)}
         onClose={() => {
           setModalStep(null)
-          setSearch("")
+          debouncedSearch("")
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
@@ -238,7 +237,10 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
               <div className="flex gap-[10px] items-center mb-[16px]">
                 <IconCmpArrow
                   className="cursor-pointer"
-                  onClick={() => setModalStep("manage")}
+                  onClick={() => {
+                    setModalStep("manage")
+                    debouncedSearch("")
+                  }}
                 />
                 <p className="text-[20px] leading-[40px] font-bold">
                   Import token

@@ -33,7 +33,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
           sideOffset={5}
           forceMount={true}
           className={clsx(
-            "text-white text-sm font-light bg-black py-2 px-6 rounded",
+            "text-white text-sm bg-black p-[15px] rounded-[6px]",
             className,
             ["left", "right"].includes(contentProps.side || "top")
               ? "my-2"

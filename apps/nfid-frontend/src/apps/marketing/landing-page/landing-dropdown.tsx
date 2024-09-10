@@ -15,7 +15,7 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({ handler }) => {
   return (
     <>
       <Dropdown
-        className="text-white bg-[#18181B] overflow-hidden p-[20px] top-[35px] !right-0"
+        className="text-white !bg-[#18181B] overflow-hidden p-[20px] top-[35px] !right-0"
         triggerElement={
           <img
             className={clsx("transition-all", isOpen ? "rotate-180 " : "")}

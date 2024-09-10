@@ -91,7 +91,11 @@ export const AuthButton = ({
                     >
                       <div
                         className="flex items-center h-10"
-                        onClick={() => navigate(ProfileConstants.tokens)}
+                        onClick={() =>
+                          navigate(
+                            `${ProfileConstants.base}/${ProfileConstants.tokens}`,
+                          )
+                        }
                       >
                         My profile
                       </div>

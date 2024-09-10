@@ -14,6 +14,11 @@ export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
   links: INavigationPopupLinks[]
   assetsLink?: string
   hasVaults?: boolean
+  profileConstants?: {
+    base: string
+    security: string
+    vaults: string
+  }
 }
 
 export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
@@ -23,6 +28,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   links,
   assetsLink,
   hasVaults,
+  profileConstants,
 }) => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -68,9 +74,11 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
         ) : null}
         {links
           .filter((linkItem) =>
-            shouldRenderLink(linkItem, hasVaults!, location),
+            shouldRenderLink(linkItem, hasVaults!, location, profileConstants),
           )
-          .map((linkItem) => renderLink(linkItem, navigate))}
+          .map((linkItem) =>
+            renderLink(linkItem, navigate, location, profileConstants),
+          )}
         <div
           id="nav-logout"
           className={clsx(

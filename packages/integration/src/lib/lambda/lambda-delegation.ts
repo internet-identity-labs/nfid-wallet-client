@@ -121,9 +121,6 @@ export async function ecdsaRegisterNewKeyPair(
   }
 
   const registerAddressUrl = AWS_ECDSA_REGISTER_ADDRESS
-  // const registerAddressUrl = ic.isLocal
-  //   ? `/ecdsa_register_address`
-  //   : AWS_ECDSA_REGISTER_ADDRESS
 
   const response = await fetch(registerAddressUrl, {
     method: "POST",

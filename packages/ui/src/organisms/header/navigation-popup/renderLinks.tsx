@@ -8,13 +8,24 @@ export const shouldRenderLink = (
   linkItem: INavigationPopupLinks,
   hasVaults: boolean,
   location: Location,
+  profileConstants?: {
+    base: string
+    security: string
+    vaults: string
+  },
 ) => {
   const { id } = linkItem
   const { pathname } = location
 
   if (!hasVaults && id === "nav-vaults") return false
-  if (id === "nav-vaults" && pathname === "/vaults") return false
-  if (id === "nav-assets" && pathname.includes("/wallet")) return false
+  if (!profileConstants) return true
+  if (id === "nav-vaults" && pathname === profileConstants.vaults) return false
+  if (
+    id === "nav-assets" &&
+    (pathname.includes(profileConstants.base) ||
+      pathname.includes(profileConstants.security))
+  )
+    return false
 
   return true
 }
@@ -22,12 +33,27 @@ export const shouldRenderLink = (
 export const renderLink = (
   linkItem: INavigationPopupLinks,
   navigate: ReturnType<typeof useNavigate>,
+  location: Location,
+  profileConstants?: {
+    security: string
+  },
 ) => {
   const isExternalLink = linkItem.id === "nav-knowledge-base"
   const LinkComponent = isExternalLink ? "a" : "div"
   const linkProps = isExternalLink
     ? { href: linkItem.link, target: "_blank" }
-    : { onClick: () => navigate(linkItem.link) }
+    : {
+        onClick: () => {
+          if (
+            linkItem.id === "nav-security" &&
+            location.pathname === profileConstants?.security
+          ) {
+            navigate(0)
+          } else {
+            navigate(linkItem.link)
+          }
+        },
+      }
 
   return (
     <Fragment key={linkItem.id}>

@@ -106,16 +106,16 @@ export const DropdownSelect = ({
       </label>
       <div
         className={clsx(
-          "bg-white rounded-md h-10 p-2.5 w-full",
+          "bg-white rounded-[12px] h-10 p-2.5 w-full",
           "flex justify-between items-center",
           "cursor-pointer select-none",
           "active:outline active:outline-offset-1",
           bordered && "border border-black",
-          isDropdownOpen && "border border-blue-600 bg-blue-50",
+          isDropdownOpen && "border border-teal-600 bg-[#F0FDFA]/40",
           disabled && "!border-none !bg-gray-100 !text-black",
           errorText && "!border border-red-600 !ring-2 !ring-red-100",
         )}
-        style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
+        style={{ boxShadow: isDropdownOpen ? "0px 0px 3px #0D9488" : "" }}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         id={id}
       >
@@ -148,7 +148,9 @@ export const DropdownSelect = ({
       <p className={clsx("text-sm text-red-600")}>{errorText}</p>
       {isDropdownOpen && (
         <div
-          className={clsx("w-full bg-white rounded-md mt-[1px] absolute z-50")}
+          className={clsx(
+            "w-full bg-white rounded-[12px] mt-[1px] absolute z-50",
+          )}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
         >
           {isSearch && (

@@ -1,20 +1,20 @@
 import * as Agent from "@dfinity/agent"
-import {HttpAgent} from "@dfinity/agent"
-import {Principal} from "@dfinity/principal"
+import { HttpAgent } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 
-import {agentBaseConfig} from "@nfid/integration"
-import {IIcrc1Pair} from "@nfid/integration/token/icrc1/icrc1-pair/i-icrc-pair"
+import { agentBaseConfig } from "@nfid/integration"
+import { IIcrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/i-icrc-pair"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
-import {idlFactory as icrc1IDL} from "../../../../_ic_api/icrc1"
-import {_SERVICE as ICRC1ServiceIDL} from "../../../../_ic_api/icrc1.d"
-import {idlFactory as icrc1IndexIDL} from "../../../../_ic_api/index-icrc1"
-import {_SERVICE as ICRCIndex} from "../../../../_ic_api/index-icrc1.d"
-import {DEFAULT_ERROR_TEXT} from "../../../constants"
-import {Category, State} from "../../enum/enums"
-import {icrc1OracleService} from "../../service/icrc1-oracle-service"
-import {icrc1StorageService} from "../../service/icrc1-storage-service"
-import {ICRC1Data, ICRC1Error} from "../../types"
-import {icrc1RegistryService} from "@nfid/integration/token/icrc1/service/icrc1-registry-service";
+import { idlFactory as icrc1IDL } from "../../../../_ic_api/icrc1"
+import { _SERVICE as ICRC1ServiceIDL } from "../../../../_ic_api/icrc1.d"
+import { idlFactory as icrc1IndexIDL } from "../../../../_ic_api/index-icrc1"
+import { _SERVICE as ICRCIndex } from "../../../../_ic_api/index-icrc1.d"
+import { DEFAULT_ERROR_TEXT } from "../../../constants"
+import { Category, State } from "../../enum/enums"
+import { icrc1OracleService } from "../../service/icrc1-oracle-service"
+import { icrc1StorageService } from "../../service/icrc1-storage-service"
+import { ICRC1Data, ICRC1Error } from "../../types"
 
 export class Icrc1Pair implements IIcrc1Pair {
   private readonly ledger: string
@@ -82,17 +82,20 @@ export class Icrc1Pair implements IIcrc1Pair {
 
   async storeSelf() {
     const metadata = await this.getMetadata()
-    await Promise.all([icrc1OracleService.addICRC1Canister({
-      ledger: this.ledger,
-      index: this.index,
-      name: metadata.name,
-      symbol: metadata.symbol,
-      logo: metadata.logo,
-      state: State.Active,
-      category: Category.Spam,
-      fee: metadata.fee,
-      decimals: metadata.decimals,
-    }), icrc1RegistryService.storeICRC1Canister(this.ledger, State.Active) ])
+    await Promise.all([
+      icrc1OracleService.addICRC1Canister({
+        ledger: this.ledger,
+        index: this.index,
+        name: metadata.name,
+        symbol: metadata.symbol,
+        logo: metadata.logo,
+        state: State.Active,
+        category: Category.Spam,
+        fee: metadata.fee,
+        decimals: metadata.decimals,
+      }),
+      icrc1RegistryService.storeICRC1Canister(this.ledger, State.Active),
+    ])
   }
 
   async getBalance(principal: string): Promise<bigint> {

@@ -31,6 +31,7 @@ export const Shell: React.FC<ShellProps> = ({
           bubbleOptions.bubbleClassNames?.[0]
             ? bubbleOptions.bubbleClassNames[0]
             : "right-[-40vw] md:right-[-5vw] 2xl:right-[-10vw]",
+          className,
         )}
         style={{
           background: bubbleOptions.bubbleColors?.[0],

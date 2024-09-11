@@ -20,12 +20,16 @@ const Tab: React.FC<ITab> = ({ isActive, onClick, children, id, length }) => {
         "py-[10px] border-b-2 mr-0.5 cursor-pointer",
         `flex-shrink-0 sm:min-w-[150px] sm:!w-auto`,
         isActive ? "border-teal-600" : "border-black",
+        !isActive && "hover:border-gray-500 hover:text-gray-500",
       )}
       onClick={onClick}
       style={{ width: getWidth() }}
     >
       <div
-        className={clsx("font-bold", isActive ? "text-teal-600" : "text-black")}
+        className={clsx(
+          "font-bold flex gap-[8px] items-center text-[20px]",
+          isActive && "text-teal-600",
+        )}
         id={`${id}`}
       >
         {children}

@@ -41,9 +41,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       )}
     >
       <div
-        className={clsx(
-          !profileScreen ? `${CONTAINER_CLASSES} px-6` : "px-5 md:px-16",
-        )}
+        className={clsx(!profileScreen ? CONTAINER_CLASSES : "px-5 md:px-16")}
       >
         <div className="flex items-center justify-between">
           {showLogo && (

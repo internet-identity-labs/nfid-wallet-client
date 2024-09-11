@@ -6,8 +6,9 @@ import { Button, Loader, TextArea } from "@nfid-frontend/ui"
 import { formatSeedPhrase } from "@nfid-frontend/utils"
 
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
-import { H2 } from "frontend/ui/atoms/typography"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
+
+import bgPicture from "./recovery-background.png"
 
 interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
   onRecover: (data: FieldValues) => {}
@@ -18,7 +19,6 @@ interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
-  className,
   toggle,
   isVerifiedDomain,
   onRecover,
@@ -53,55 +53,62 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
     <AppScreen isFocused showLogo>
       <main className={clsx("flex flex-1")}>
         <div className={clsx(CONTAINER_CLASSES)}>
-          <div className="grid h-full grid-cols-12">
-            <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
-              <div className={clsx("", className)}>
-                <div>
-                  <H2 className="my-4">Recover NFID</H2>
-
-                  <div className={clsx("mb-6")}>
-                    Paste your recovery phrase here to proceed:
-                  </div>
-
-                  <TextArea
-                    rows={6}
-                    errorText={errors?.recoveryPhrase?.message}
-                    {...register("recoveryPhrase", {
-                      required: {
-                        value: true,
-                        message: "Please enter your Recovery Phrase",
-                      },
-                      onChange: handleRecoveryPhraseChange,
-                    })}
-                  />
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="has-verified-domain"
-                      className="rounded"
-                      onChange={toggle}
-                      checked={isVerifiedDomain}
-                    />
-                    <label htmlFor="has-verified-domain" className="ml-2">
-                      I got to this screen by first going to https://nfid.one,
-                      being redirected to this landing page, and following the
-                      link to recover my NFID.
-                    </label>
-                  </div>
-
-                  <Button
-                    className="my-4"
-                    id="recovery-button"
-                    onClick={handleSubmit(onRecover)}
-                    disabled={!isVerifiedDomain}
-                  >
-                    Recover
-                  </Button>
-
-                  <Loader isLoading={isLoading} />
-                </div>
+          <div
+            className={clsx(
+              "px-[20px] sm:px-[30px] py-[20px] sm:py-[33px] bg-[#F7F9F6] rounded-[24px]",
+              "bg-no-repeat bg-[top_right] lg:bg-[center_right] bg-[length:260px] sm:bg-[length:50%] lg:bg-auto",
+            )}
+            style={{ backgroundImage: `url(${bgPicture})` }}
+          >
+            <div className="max-w-[605px]">
+              <p className="leading-[32px] text-[28px] my-[84px] lg:my-0">
+                Recover NFID
+              </p>
+              <div className="mb-[10px] mt-[20px] text-sm">
+                Enter your recovery phrase to proceed:
               </div>
+              <TextArea
+                rows={7}
+                errorText={errors?.recoveryPhrase?.message}
+                {...register("recoveryPhrase", {
+                  required: {
+                    value: true,
+                    message: "Please enter your Recovery Phrase",
+                  },
+                  onChange: handleRecoveryPhraseChange,
+                })}
+              />
+              <div>
+                <input
+                  type="checkbox"
+                  id="has-verified-domain"
+                  className="rounded"
+                  onChange={toggle}
+                  checked={isVerifiedDomain}
+                />
+                <label
+                  htmlFor="has-verified-domain"
+                  className="pr-5 ml-2 text-sm"
+                >
+                  I got to this screen by first going to https://nfid.one, being
+                  redirected to this landing page, and following the link to
+                  recover my NFID.
+                </label>
+              </div>
+
+              <Button
+                className={clsx(
+                  "mt-4 px-[50px] w-full sm:w-auto",
+                  !isVerifiedDomain && "!bg-zinc-300",
+                )}
+                id="recovery-button"
+                onClick={handleSubmit(onRecover)}
+                disabled={!isVerifiedDomain}
+              >
+                Recover
+              </Button>
             </div>
+            <Loader isLoading={isLoading} />
           </div>
         </div>
       </main>

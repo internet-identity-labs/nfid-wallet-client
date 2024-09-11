@@ -53,13 +53,6 @@ export const CallCanisterDetails = ({
         Transaction details
       </p>
 
-      {/* Quick fix to adjust height and keep absolute on actual element */}
-      {showDetails && (
-        <div className="space-y-4 lg:hidden">
-          {renderArgs(JSON.parse(args)[0])}
-        </div>
-      )}
-
       <div
         className={clsx(
           showDetails ? "block" : "hidden",
@@ -96,7 +89,15 @@ export const CallCanisterDetails = ({
               <div>{sender}</div>
             </div>
             <div className="font-bold">Arguments</div>
-            {renderArgs(JSON.parse(args)[0])}
+            <div
+              className={clsx(
+                "overflow-auto max-h-44",
+                "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+                "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+              )}
+            >
+              {renderArgs(JSON.parse(args)[0])}
+            </div>
           </div>
           <IconCmpArrow
             className={clsx(

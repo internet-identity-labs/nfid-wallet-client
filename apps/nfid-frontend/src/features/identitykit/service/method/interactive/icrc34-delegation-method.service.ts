@@ -1,14 +1,11 @@
 import { DelegationChain, Ed25519PublicKey } from "@dfinity/identity"
 import { fromBase64, toBase64 } from "@slide-computer/signer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
-import {
-  Chain,
-  ecdsaGetAnonymous,
-} from "packages/integration/src/lib/lambda/ecdsa"
+import { getAnonymousDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
 import {
   authState,
-  getGlobalKeysThirdParty,
+  getGlobalDelegationChain,
   validateTargets,
 } from "@nfid/integration"
 
@@ -143,7 +140,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     if (!auth.delegationIdentity) throw new Error("No delegation identity")
 
     if (accountKeyIdentity.type === AccountType.GLOBAL) {
-      const del = await getGlobalKeysThirdParty(
+      const del = await getGlobalDelegationChain(
         auth.delegationIdentity,
         icrc34Dto.targets,
         new Uint8Array(sessionPublicKey.toDer()),
@@ -157,11 +154,10 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION) {
-      return await ecdsaGetAnonymous(
+      return await getAnonymousDelegation(
         derivationOrigin ?? origin,
         new Uint8Array(sessionPublicKey.toDer()),
         auth.delegationIdentity,
-        Chain.IC,
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,
@@ -169,11 +165,10 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION_WITHOUT_DERIVATION) {
-      return await ecdsaGetAnonymous(
+      return await getAnonymousDelegation(
         origin,
         new Uint8Array(sessionPublicKey.toDer()),
         auth.delegationIdentity,
-        Chain.IC,
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,

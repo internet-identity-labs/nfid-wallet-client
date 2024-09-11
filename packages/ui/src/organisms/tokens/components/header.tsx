@@ -1,13 +1,12 @@
 import { debounce } from "@dfinity/utils"
 import clsx from "clsx"
-import { CANISTER_ID_LENGTH, DEFAULT_ERROR_TEXT } from "packages/constants"
+import { CANISTER_ID_LENGTH } from "packages/constants"
 import { PlusIcon } from "packages/ui/src/atoms/icons/plus"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 import { toast } from "react-toastify"
-import { mutate } from "swr"
 
 import {
   BlurredLoader,
@@ -34,7 +33,7 @@ export interface ICRC1Metadata {
   fee: bigint
 }
 
-interface ProfileAssetsHeaderProps {
+interface TokensHeaderProps {
   tokens: FT[]
   setSearch: (v: string) => void
   onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
@@ -50,7 +49,7 @@ interface ProfileAssetsHeaderProps {
   }>
 }
 
-export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
+export const TokensHeader: FC<TokensHeaderProps> = ({
   tokens,
   setSearch,
   onSubmitIcrc1Pair,
@@ -92,15 +91,15 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
       setIsImportLoading(true)
       await onSubmitIcrc1Pair(getValues("ledgerID"), getValues("indexID"))
       toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
-      setModalStep(null)
-      mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
       resetField("ledgerID")
       resetField("indexID")
       setTokenInfo(null)
     } catch (e) {
       console.error(e)
-      toast.error(`Adding new token failed`)
+      toast.error("Adding new token failed")
     } finally {
+      setModalStep(null)
+      debouncedSearch("")
       setIsImportLoading(false)
     }
   }
@@ -111,11 +110,7 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
       setTokenInfo(data)
       return true
     } catch (e) {
-      if (e instanceof ICRC1Error) {
-        return e.message
-      } else {
-        return DEFAULT_ERROR_TEXT
-      }
+      return getValues("ledgerID") === "" ? true : (e as ICRC1Error).message
     }
   }
 
@@ -148,16 +143,20 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
         isVisible={Boolean(modalStep)}
         onClose={() => {
           setModalStep(null)
-          setSearch("")
+          debouncedSearch("")
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
         {modalStep === "manage" && (
           <div>
             <div className="flex items-center justify-between h-[40px] mb-[16px]">
-              <p className="text-[20px] leading-[24px]">Manage tokens</p>
+              <p className="text-[20px] leading-[24px] font-bold">
+                Manage tokens
+              </p>
               <Tooltip
                 className="!p-[16px] !w-[320px]"
+                align="end"
+                alignOffset={-20}
                 tip={
                   <div className="text-white text-xs leading-[16px]">
                     <p className="mb-2 font-bold">Category</p>
@@ -194,7 +193,8 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
             <div>
               <div className="flex gap-[10px] mb-[20px]">
                 <Input
-                  className="h-[40px] w-full"
+                  inputClassName="!border-black"
+                  className="h-[40px] w-full "
                   id="search"
                   placeholder="Search by token name"
                   icon={<IoIosSearch size="20" className="text-gray-400" />}
@@ -238,7 +238,10 @@ export const ProfileAssetsHeader: FC<ProfileAssetsHeaderProps> = ({
               <div className="flex gap-[10px] items-center mb-[16px]">
                 <IconCmpArrow
                   className="cursor-pointer"
-                  onClick={() => setModalStep("manage")}
+                  onClick={() => {
+                    setModalStep("manage")
+                    debouncedSearch("")
+                  }}
                 />
                 <p className="text-[20px] leading-[40px] font-bold">
                   Import token

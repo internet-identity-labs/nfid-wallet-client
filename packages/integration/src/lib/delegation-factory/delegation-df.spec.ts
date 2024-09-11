@@ -14,17 +14,17 @@ import {
   AccessPointRequest,
   HTTPAccountRequest,
 } from "../_ic_api/identity_manager.d"
-import { im, replaceActorIdentity } from "../actors"
+import { delegationFactory, im, replaceActorIdentity } from "../actors"
+import { Chain } from "../lambda/lambda-delegation"
+import { LocalStorageMock } from "../lambda/local-storage-mock"
+import { getIdentity, getLambdaActor } from "../lambda/util"
 import {
-  Chain,
-  ecdsaGetAnonymous,
-  getGlobalKeys,
-  getGlobalKeysThirdParty,
+  getAnonymousDelegation,
+  getGlobalDelegation,
+  getGlobalDelegationChain,
   getPublicKey,
   renewDelegationThirdParty,
-} from "./ecdsa"
-import { LocalStorageMock } from "./local-storage-mock"
-import { getIdentity, getLambdaActor } from "./util"
+} from "./delegation-i"
 
 const identity = getIdentity("97654321876543218765432187654399")
 
@@ -96,13 +96,12 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
       )
 
       await replaceActorIdentity(im, delegationIdentity)
-      const globalICIdentity = await getGlobalKeys(
-        delegationIdentity,
-        Chain.IC,
-        ["74gpt-tiaaa-aaaak-aacaa-cai"],
-      )
+      await replaceActorIdentity(delegationFactory, delegationIdentity)
+      const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
+        "74gpt-tiaaa-aaaak-aacaa-cai",
+      ])
 
-      const principalText = await getPublicKey(delegationIdentity, Chain.IC)
+      const principalText = await getPublicKey(delegationIdentity)
       expect(principalText).toEqual(
         "uctde-u7vpl-wqc7d-b3lho-t47lj-hn2xi-aezu2-mqgmo-ry3f4-rausf-2ae",
       )
@@ -128,7 +127,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
         dappSessionKey.getPublicKey().toDer(),
       )
 
-      const anon = await ecdsaGetAnonymous(
+      const anon = await getAnonymousDelegation(
         "nfid.two",
         dappSessionPublicKey,
         delegationIdentity,
@@ -142,7 +141,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
       ).toEqual(response.getPrincipal().toText())
 
       expect(response.getPrincipal().toText()).not.toEqual(principalText)
-      const anonGlobal = await ecdsaGetAnonymous(
+      const anonGlobal = await getAnonymousDelegation(
         "nfid.one",
         dappSessionPublicKey,
         delegationIdentity,
@@ -195,7 +194,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
         dappSessionKey.getPublicKey().toDer(),
       )
 
-      const delegationChain = await getGlobalKeysThirdParty(
+      const delegationChain = await getGlobalDelegationChain(
         nfidDelegationIdentity,
         [canisterId, "irshc-3aaaa-aaaam-absla-cai"],
         dappSessionPublicKey,

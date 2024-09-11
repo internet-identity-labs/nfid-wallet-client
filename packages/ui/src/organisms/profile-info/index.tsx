@@ -29,6 +29,8 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         <div className="flex items-center justify-between mb-[20px] md:mb-[30px]">
           <h2 className="text-[24px] text-black leading-[24px]">Portfolio</h2>
           <Tooltip
+            align="end"
+            alignOffset={-20}
             tip={
               <span>
                 Fungible tokens USD price powered by

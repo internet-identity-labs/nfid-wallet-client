@@ -1,34 +1,18 @@
 import { Principal } from "@dfinity/principal"
 
-import { localStorageWithFallback } from "@nfid/client-db"
-import { authState, getPublicKey, im } from "@nfid/integration"
-
 import { ftService } from "frontend/integration/ft/ft-service"
 
+import { getUserIdData } from "../../../../integration/src/lib/cache/cache"
+
+//TODO move to authState
 export const getUserPrincipalId = async (): Promise<{
   userPrincipal: string
   publicKey: string
 }> => {
-  const identity = authState.get().delegationIdentity
-  if (!identity) throw new Error("No identity")
-  const cacheKey = "getUserPrincipalId" + identity.getPrincipal().toText()
-
-  const cachedValue = localStorageWithFallback.getItem(cacheKey)
-  if (cachedValue) return JSON.parse(cachedValue) as any
-  const [publicKey, account] = await Promise.all([
-    getPublicKey(identity),
-    im.get_account(),
-  ])
-  localStorageWithFallback.setItem(
-    cacheKey,
-    JSON.stringify({
-      userPrincipal: account.data[0]!.principal_id,
-      publicKey: publicKey,
-    }),
-  )
+  const pair = await getUserIdData()
   return {
-    userPrincipal: account.data[0]!.principal_id,
-    publicKey: publicKey,
+    userPrincipal: pair.userId,
+    publicKey: pair.publicKey,
   }
 }
 

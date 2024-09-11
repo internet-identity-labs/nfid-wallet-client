@@ -11,16 +11,16 @@ import {
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 
 import { WALLET_SCOPE } from "@nfid/config"
+import { authState } from "@nfid/integration"
 
 import { ii, im, replaceActorIdentity } from "../actors"
 import {
-  Chain,
-  ecdsaGetAnonymous,
-  getGlobalKeys,
-  getGlobalKeysThirdParty,
+  getAnonymousDelegation,
+  getGlobalDelegation,
+  getGlobalDelegationChain,
   getPublicKey,
   renewDelegationThirdParty,
-} from "./ecdsa"
+} from "../delegation-factory/delegation-i"
 import { LocalStorageMock } from "./local-storage-mock"
 
 const identity: JsonnableEd25519KeyIdentity = [
@@ -39,7 +39,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       Object.defineProperty(window, "localStorage", { value: localStorageMock })
     })
 
-    it("get global IC keys", async function () {
+    it("get global IC keys Lambda Flow", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -53,15 +53,18 @@ describe("Lambda Sign/Register ECDSA", () => {
         chainRoot,
       )
 
-      const globalICIdentity = await getGlobalKeys(
-        delegationIdentity,
-        Chain.IC,
-        ["74gpt-tiaaa-aaaak-aacaa-cai"],
-      )
+      authState.set({
+        identity: delegationIdentity,
+        delegationIdentity: delegationIdentity,
+      })
+
+      const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
+        "74gpt-tiaaa-aaaak-aacaa-cai",
+      ])
       expect(globalICIdentity.getPrincipal().toText()).toEqual(
         expectedGlobalAcc,
       )
-      const principal = await getPublicKey(delegationIdentity, Chain.IC)
+      const principal = await getPublicKey(delegationIdentity)
       expect(principal).toEqual(expectedGlobalAcc)
       await replaceActorIdentity(ii, globalICIdentity)
       try {
@@ -98,11 +101,15 @@ describe("Lambda Sign/Register ECDSA", () => {
         dappSessionKey.getPublicKey().toDer(),
       )
 
-      const delegationChain = await ecdsaGetAnonymous(
+      authState.set({
+        identity: nfidDelegationIdentity,
+        delegationIdentity: nfidDelegationIdentity,
+      })
+
+      const delegationChain = await getAnonymousDelegation(
         "nfid.one",
         dappSessionPublicKey,
         nfidDelegationIdentity,
-        Chain.IC,
       )
       const actualIdentity = DelegationIdentity.fromDelegation(
         dappSessionKey,
@@ -135,6 +142,11 @@ describe("Lambda Sign/Register ECDSA", () => {
         chainRoot,
       )
 
+      authState.set({
+        identity: nfidDelegationIdentity,
+        delegationIdentity: nfidDelegationIdentity,
+      })
+
       try {
         await renewDelegationThirdParty(
           nfidDelegationIdentity,
@@ -154,7 +166,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         dappSessionKey.getPublicKey().toDer(),
       )
 
-      const delegationChain = await getGlobalKeysThirdParty(
+      const delegationChain = await getGlobalDelegationChain(
         nfidDelegationIdentity,
         [canisterId, "irshc-3aaaa-aaaam-absla-cai"],
         dappSessionPublicKey,

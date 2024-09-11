@@ -1,7 +1,7 @@
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 import { FC } from "react"
 
-import { Tabs } from "@nfid-frontend/ui"
+import { TabsSwitcher } from "@nfid-frontend/ui"
 
 import { TransferTemplate } from "./components/template"
 import { transferTabs } from "./constants"
@@ -30,12 +30,13 @@ export const SendReceiveModal: FC<SendReceiveModalProps> = ({
   return (
     <TransferTemplate onClickOutside={onClickOutside} isVault={isVault}>
       {!isSuccess && (
-        <div className="mt-[10px]">
-          <Tabs
+        <div>
+          <TabsSwitcher
             tabs={transferTabs}
-            defaultValue={direction}
-            onValueChange={onModalTypeChange}
+            activeTab={direction}
+            setActiveTab={onModalTypeChange}
             isFitLine={false}
+            className="mb-[14px]"
           />
         </div>
       )}

@@ -357,7 +357,7 @@ export const HomeScreen = () => {
       </section>
       <section className={clsx(container)}>
         <div className="flex flex-wrap items-center justify-center md:justify-between gap-x-5 gap-y-4 mt-[80px] md:mt-[160px] pb-[25px] md:pb-[30px] text-white">
-          <div className="order-2 md:order-1 text-center md:text-left">
+          <div className="order-2 text-center md:order-1 md:text-left">
             <a
               href="https://docs.nfid.one/legal/terms"
               target="_blank"

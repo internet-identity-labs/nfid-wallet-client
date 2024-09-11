@@ -8,14 +8,20 @@ import IconMenu from "./assets/menu-white.svg"
 
 type ILandingDropdown = {
   handler: () => void
+  logoutHandler: () => void
+  isAuthenticated: boolean
 }
 
-export const LandingDropdown: React.FC<ILandingDropdown> = ({ handler }) => {
+export const LandingDropdown: React.FC<ILandingDropdown> = ({
+  handler,
+  logoutHandler,
+  isAuthenticated,
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
       <Dropdown
-        className="text-white !bg-[#18181B] overflow-hidden p-[20px] top-[35px] !right-0"
+        className="!rounded-[24px] text-white !bg-[#18181B] overflow-hidden p-[20px] top-[35px] !right-0"
         triggerElement={
           <img
             className={clsx("transition-all", isOpen ? "rotate-180 " : "")}
@@ -26,17 +32,34 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({ handler }) => {
         minWidth={160}
       >
         <DropdownOption
-          className="hover:!bg-[#27272A] rounded-lg !gap-0"
+          className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
           textClassName="!text-white"
           label="Knowledge base"
           link="https://learn.nfid.one/"
         />
-        <DropdownOption
-          className="hover:!bg-[#27272A] rounded-lg !gap-0"
-          textClassName="!text-white"
-          label="Get started"
-          handler={handler}
-        />
+        {isAuthenticated ? (
+          <>
+            <DropdownOption
+              className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+              textClassName="!text-white"
+              label="Profile"
+              handler={handler}
+            />
+            <DropdownOption
+              className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+              textClassName="!text-white"
+              label="Sign out"
+              handler={logoutHandler}
+            />
+          </>
+        ) : (
+          <DropdownOption
+            className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+            textClassName="!text-white"
+            label="Sign in"
+            handler={handler}
+          />
+        )}
       </Dropdown>
     </>
   )

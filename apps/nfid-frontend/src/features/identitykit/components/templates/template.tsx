@@ -45,7 +45,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
               ? "Transaction request"
               : "Your crypto wallet & gateway to ICP apps"}
           </p>
-          <p className="font-inter font-light text-white text-[16px] lg:text-[1.4rem] mt-[2rem] leading-[140%]">
+          <p className="font-inter text-white text-[20px] lg:text-[1.4rem] mt-[2rem] leading-[140%]">
             {isApproveRequestInProgress
               ? "Verify this transaction’s accuracy and make sure you trust the app requesting its approval."
               : "NFID Wallet is your on-chain wallet running end-to-end on the Internet Computer Protocol."}

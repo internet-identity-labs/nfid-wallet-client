@@ -1,6 +1,6 @@
 import { debounce } from "@dfinity/utils"
 import clsx from "clsx"
-import { CANISTER_ID_LENGTH, DEFAULT_ERROR_TEXT } from "packages/constants"
+import { CANISTER_ID_LENGTH } from "packages/constants"
 import { PlusIcon } from "packages/ui/src/atoms/icons/plus"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC, useCallback, useEffect, useState } from "react"
@@ -150,9 +150,13 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
         {modalStep === "manage" && (
           <div>
             <div className="flex items-center justify-between h-[40px] mb-[16px]">
-              <p className="text-[20px] leading-[24px]">Manage tokens</p>
+              <p className="text-[20px] leading-[24px] font-bold">
+                Manage tokens
+              </p>
               <Tooltip
                 className="!p-[16px] !w-[320px]"
+                align="end"
+                alignOffset={-20}
                 tip={
                   <div className="text-white text-xs leading-[16px]">
                     <p className="mb-2 font-bold">Category</p>
@@ -189,7 +193,8 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
             <div>
               <div className="flex gap-[10px] mb-[20px]">
                 <Input
-                  className="h-[40px] w-full"
+                  inputClassName="!border-black"
+                  className="h-[40px] w-full "
                   id="search"
                   placeholder="Search by token name"
                   icon={<IoIosSearch size="20" className="text-gray-400" />}

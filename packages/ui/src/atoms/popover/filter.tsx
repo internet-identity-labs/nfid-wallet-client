@@ -24,7 +24,7 @@ export const FilterPopover = ({
     <Popover triggerClassName="w-full" trigger={trigger} align={align}>
       <div
         className={clsx(
-          "min-w-[350px] relative z-50 bg-white h-full p-2.5 rounded-md shadow-md",
+          "min-w-[350px] relative z-50 bg-white h-full p-5 rounded-[24px] shadow-md",
           className,
         )}
       >
@@ -37,6 +37,7 @@ export const FilterPopover = ({
               type="ghost"
               block={true}
               id="reset-filters-button"
+              className="text-teal-600"
             >
               Reset filter
             </Button>

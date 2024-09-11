@@ -1,8 +1,9 @@
 import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
+import { BlurredLoader, Skeleton } from "@nfid-frontend/ui"
 
+import { TableSkeleton } from "../../atoms/skeleton/table-skeleton"
 import { ActiveToken } from "./components/active-asset"
 import { TokensHeader } from "./components/header"
 import { NewAssetsModal } from "./components/new-assets-modal"
@@ -41,10 +42,7 @@ export const Tokens: FC<TokensProps> = ({
   onFetch,
 }) => {
   return (
-    <BlurredLoader
-      isLoading={isActiveTokensLoading}
-      overlayClassnames="!rounded-[24px]"
-    >
+    <>
       <TokensHeader
         tokens={filteredTokens}
         setSearch={(value) => setSearchQuery(value)}
@@ -62,16 +60,20 @@ export const Tokens: FC<TokensProps> = ({
           </tr>
         </thead>
         <tbody className="h-16 text-sm text-black">
-          {activeTokens.map((token) => (
-            <ActiveToken
-              key={`token_${token.getTokenName()}`}
-              token={token}
-              profileConstants={profileConstants}
-            />
-          ))}
+          {isActiveTokensLoading ? (
+            <TableSkeleton tableRowsAmount={5} tableCellAmount={4} />
+          ) : (
+            activeTokens.map((token) => (
+              <ActiveToken
+                key={`token_${token.getTokenName()}`}
+                token={token}
+                profileConstants={profileConstants}
+              />
+            ))
+          )}
         </tbody>
       </table>
       <NewAssetsModal tokens={null} />
-    </BlurredLoader>
+    </>
   )
 }

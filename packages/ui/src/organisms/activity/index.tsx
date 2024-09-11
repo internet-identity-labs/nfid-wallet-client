@@ -45,14 +45,14 @@ export const Activity: FC<ActivityProps> = ({
     isButtonLoading,
     resetHandler,
   } = activityData
-
+  console.log("loo", isValidating, isTokensLoading)
   return (
     <>
       <div>
-        <BlurredLoader
+        {/* <BlurredLoader
           overlayClassnames="!rounded-[24px]"
           isLoading={isValidating && !activities.length && isTokensLoading}
-        />
+        /> */}
         <FilterPopover
           title="Assets"
           align="end"
@@ -91,6 +91,7 @@ export const Activity: FC<ActivityProps> = ({
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
+                    isLoading={isValidating && isTokensLoading}
                   />
                 ))}
               </Table>
@@ -105,7 +106,8 @@ export const Activity: FC<ActivityProps> = ({
               onClick={loadMore}
               type="ghost"
             >
-              {isButtonLoading || isValidating ? "Loading..." : "Load more"}
+              Load more
+              {/* {isButtonLoading || isValidating ? "Loading..." : "Load more"} */}
             </Button>
           )}
         </div>

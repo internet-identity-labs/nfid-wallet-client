@@ -20,6 +20,14 @@ export const AuthButton = ({
           isAuthenticated={isAuthenticated}
         />
       </div>
+      <div
+        className="hidden text-white cursor-pointer md:block"
+        onClick={onAuthClick}
+      >
+        <span className="hover:text-[#2DEECB] transition-all">
+          {isAuthenticated ? "Profile" : "Sign in"}
+        </span>
+      </div>
     </>
   )
 }

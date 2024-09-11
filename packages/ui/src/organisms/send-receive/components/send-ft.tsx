@@ -4,7 +4,14 @@ import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
 import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
-import { Dispatch, FC, SetStateAction, useCallback, useState } from "react"
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react"
 import {
   FieldErrorsImpl,
   UseFormHandleSubmit,
@@ -71,6 +78,7 @@ export interface TransferFTUiProps {
     to: string
   }>
   vaultsBalance: AccountBalance | undefined
+  setUsdAmount: (v: number) => void
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -94,6 +102,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   setValue,
   resetField,
   vaultsBalance,
+  setUsdAmount,
 }) => {
   const [amountInUSD, setAmountInUSD] = useState(0)
 
@@ -126,6 +135,10 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
       : options
   }, [tokens])
+
+  useEffect(() => {
+    setUsdAmount(amountInUSD)
+  }, [amountInUSD])
 
   const maxHandler = async () => {
     if (!token) return

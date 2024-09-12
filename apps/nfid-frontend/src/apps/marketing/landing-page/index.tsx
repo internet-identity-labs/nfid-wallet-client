@@ -1,7 +1,8 @@
 import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
+import { Helmet } from "react-helmet-async"
 import { useNavigate, useLocation } from "react-router-dom"
 
 import { Button, NFIDLogo } from "@nfid-frontend/ui"
@@ -58,6 +59,7 @@ const cardImg = "w-full lg:w-[200px] absolute ml-[40px]"
 const sponsor = "max-w-[150px] md:max-w-[220px] max-h-[80px] mx-auto md:max-0"
 
 export const HomeScreen = () => {
+  const [themeColor, setThemeColor] = useState("")
   const [isAuthModalVisible, setIsAuthModalVisible] = React.useState(false)
   const { isAuthenticated } = useAuthentication()
   const navigate = useNavigate()
@@ -70,9 +72,11 @@ export const HomeScreen = () => {
     })
 
     document.body.classList.add("homescreen")
+    setThemeColor("#0E0F10")
 
     return () => {
       document.body.classList.remove("homescreen")
+      setThemeColor("#ffffff")
     }
   }, [])
 
@@ -90,6 +94,9 @@ export const HomeScreen = () => {
 
   return (
     <div className="overflow-x-hidden">
+      <Helmet>
+        <meta name="theme-color" content={themeColor} />
+      </Helmet>
       <NFIDAuthentication
         isVisible={isAuthModalVisible}
         onClose={() => setIsAuthModalVisible(false)}

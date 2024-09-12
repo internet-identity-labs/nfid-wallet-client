@@ -22,13 +22,19 @@ export const getUserIdData = async (): Promise<UserIdData> => {
   const cachedValue = localStorageWithFallback.getItem(cacheKey)
 
   if (cachedValue) {
-
     const data = JSON.parse(cachedValue)
+
+    let anchor
+    if (data.anchor.trim().endsWith("n")) {
+      anchor = data.anchor
+    } else {
+      anchor = BigInt(data.anchor)
+    }
 
     return {
       userId: data.userId,
       publicKey: data.publicKey,
-      anchor: BigInt(data.anchor),
+      anchor,
     }
   }
 

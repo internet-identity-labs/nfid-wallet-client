@@ -1,7 +1,7 @@
 import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { BlurredLoader, Skeleton } from "@nfid-frontend/ui"
+import { getIsMobileDeviceMatch } from "frontend/integration/device"
 
 import { TableSkeleton } from "../../atoms/skeleton/table-skeleton"
 import { ActiveToken } from "./components/active-asset"
@@ -61,7 +61,10 @@ export const Tokens: FC<TokensProps> = ({
         </thead>
         <tbody className="h-16 text-sm text-black">
           {isActiveTokensLoading ? (
-            <TableSkeleton tableRowsAmount={5} tableCellAmount={4} />
+            <TableSkeleton
+              tableRowsAmount={5}
+              tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
+            />
           ) : (
             activeTokens.map((token) => (
               <ActiveToken

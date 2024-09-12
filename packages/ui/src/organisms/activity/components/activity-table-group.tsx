@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import { TableSkeleton } from "packages/ui/src/atoms/skeleton/table-skeleton"
 import { useCallback } from "react"
 
 import {
@@ -11,14 +10,12 @@ import { ActivityTableRow } from "./activity-table-row"
 
 interface IActivityTableGroup extends IActivityRowGroup {
   groupIndex: number
-  isLoading: boolean
 }
 
 export const ActivityTableGroup = ({
   date,
   rows,
   groupIndex,
-  isLoading,
 }: IActivityTableGroup) => {
   const getRowId = useCallback((row: IActivityRow) => {
     if (row.asset.type === "ft")
@@ -46,17 +43,13 @@ export const ActivityTableGroup = ({
           {date}
         </td>
       </tr>
-      {true ? (
-        <TableSkeleton tableRowsAmount={5} tableCellAmount={4} />
-      ) : (
-        rows.map((row, i) => (
-          <ActivityTableRow
-            {...row}
-            id={getRowId(row)}
-            key={`group_${groupIndex}_activity_${i}`}
-          />
-        ))
-      )}
+      {rows.map((row, i) => (
+        <ActivityTableRow
+          {...row}
+          id={getRowId(row)}
+          key={`group_${groupIndex}_activity_${i}`}
+        />
+      ))}
     </>
   )
 }

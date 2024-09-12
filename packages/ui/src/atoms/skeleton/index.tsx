@@ -1,7 +1,7 @@
 import clsx from "clsx"
-import React from "react"
+import { HTMLAttributes } from "react"
 
-interface ISkeleton extends React.HTMLAttributes<HTMLDivElement> {
+interface ISkeleton extends HTMLAttributes<HTMLDivElement> {
   isAnimated?: boolean
 }
 
@@ -13,7 +13,7 @@ export const Skeleton = ({
   return (
     <div
       className={clsx(
-        "bg-gray-100 rounded",
+        "bg-gray-100 rounded-[12px]",
         isAnimated && "animate-pulse",
         className,
       )}

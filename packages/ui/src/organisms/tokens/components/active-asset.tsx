@@ -1,10 +1,13 @@
 import clsx from "clsx"
-import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
 import useSWR from "swr"
 
-import { ImageWithFallback, IconNftPlaceholder } from "@nfid-frontend/ui"
+import {
+  ImageWithFallback,
+  IconNftPlaceholder,
+  Skeleton,
+} from "@nfid-frontend/ui"
 
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
@@ -66,7 +69,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           </p>
           <p className="text-xs md:hidden text-secondary">
             {isLoading ? (
-              <Spinner className="ml-auto w-[18px] h-[18px] text-gray-400" />
+              <Skeleton
+                className={clsx(
+                  "max-w-full h-[24px] bg-gray-300 w-[84px] ml-auto",
+                )}
+              />
             ) : usdPrice === undefined ? (
               "Not listed"
             ) : (
@@ -80,7 +87,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
       >
         {isLoading ? (
-          <Spinner className="w-[18px] h-[18px] text-gray-400" />
+          <Skeleton
+            className={clsx("max-w-full h-[24px] bg-gray-300 w-[84px]")}
+          />
         ) : usdPrice === undefined ? (
           "Not listed"
         ) : (

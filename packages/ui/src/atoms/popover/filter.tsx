@@ -21,7 +21,7 @@ export const FilterPopover = ({
   className,
 }: IFilterPopover) => {
   return (
-    <Popover triggerClassName="w-full" trigger={trigger} align={align}>
+    <Popover trigger={trigger} align={align}>
       <div
         className={clsx(
           "min-w-[350px] relative z-50 bg-white h-full p-5 rounded-[24px] shadow-md",

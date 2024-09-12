@@ -5,7 +5,7 @@ import {
   IconNftPlaceholder,
   Table,
   ImageWithFallback,
-  BlurredLoader,
+  Skeleton,
 } from "@nfid-frontend/ui"
 import { trimConcat } from "@nfid-frontend/utils"
 
@@ -17,6 +17,7 @@ import {
 import { NFT } from "frontend/integration/nft/nft"
 
 import ProfileContainer from "../../atoms/profile-container/Container"
+import { TableSkeleton } from "../../atoms/skeleton/table-skeleton"
 import { ModalComponent } from "../../molecules/modal/index-v0"
 
 export interface NFTDetailsProps {
@@ -80,11 +81,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           )}
         >
           {isPreviewLoading ? (
-            <BlurredLoader
-              className="bg-transparent"
-              overlayClassnames="!rounded-[24px]"
-              isLoading
-            />
+            <Skeleton className="rounded-[24px] h-full w-full" />
           ) : !assetPreview.url ? (
             <ImageWithFallback
               src={"no image"}
@@ -208,11 +205,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         title="About"
       >
         {isAboutLoading ? (
-          <BlurredLoader
-            className="bg-transparent"
-            overlayClassnames="!rounded-[24px]"
-            isLoading
-          />
+          <Skeleton className="rounded-[24px] h-[24px] w-full" />
         ) : (
           <p id={"token-about"}>{about}</p>
         )}
@@ -235,11 +228,14 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           )}
         >
           {isPropertiesLoading ? (
-            <BlurredLoader
-              className="bg-transparent"
-              overlayClassnames="!rounded-[24px]"
-              isLoading
-            />
+            <>
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+            </>
           ) : (
             properties.mappedValues &&
             properties.mappedValues.map((property) => {
@@ -272,73 +268,67 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         title="Activity"
       >
         <div className="max-w-[100%] overflow-auto">
-          {isTransactionsLoading ? (
-            <BlurredLoader
-              className="bg-transparent"
-              overlayClassnames="!rounded-[24px]"
-              isLoading
-            />
-          ) : (
-            <Table
-              className="!min-w-[1050px] min-h-[100px]"
-              theadClassName="!h-0 sm:!h-[40px]"
-              id="nft-table"
-              tableHeader={
-                <tr className="text-sm font-bold text-gray-400">
-                  <th className="w-[120px]">Event type</th>
-                  <th className="w-[220px]">Date and time</th>
-                  <th>From</th>
-                  <th>To</th>
-                  <th className="w-[100px]">Price</th>
-                </tr>
-              }
-            >
-              {transactions.activity &&
-                transactions.activity.map((activity, index) => {
-                  return (
-                    <Fragment
-                      key={`${activity
-                        .getTransactionView()
-                        .getFrom()}_${activity
-                        .getTransactionView()
-                        .getFormattedDate()}`}
-                    >
-                      <tr className="text-sm h-[60px]">
-                        <td className="pr-[20px]">
-                          {activity.getTransactionView().getType()}
-                        </td>
-                        <td className="pr-[20px]">
-                          {activity.getTransactionView().getFormattedDate()}
-                        </td>
-                        <td className="pr-[20px] break-all">
-                          {activity.getTransactionView().getFrom()}
-                        </td>
-                        <td className="pr-[50px] break-all">
-                          {activity.getTransactionView().getTo()}
-                        </td>
-                        <td>
-                          {index === 0 &&
-                            (!nft.getTokenFloorPriceIcpFormatted() ? (
-                              <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                                Unknown
-                              </div>
-                            ) : (
-                              <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                                <span className="block">
-                                  {nft.getTokenFloorPriceIcpFormatted()}
-                                </span>
-                                <span className="block text-xs text-gray-400">
-                                  {nft.getTokenFloorPriceUSDFormatted()}
-                                </span>
-                              </div>
-                            ))}
-                        </td>
-                      </tr>
-                    </Fragment>
-                  )
-                })}
-            </Table>
-          )}
+          <Table
+            className="!min-w-[1050px] min-h-[100px]"
+            theadClassName="!h-0 sm:!h-[40px]"
+            id="nft-table"
+            tableHeader={
+              <tr className="text-sm font-bold text-gray-400">
+                <th className="w-[120px]">Event type</th>
+                <th className="w-[220px]">Date and time</th>
+                <th>From</th>
+                <th>To</th>
+                <th className="w-[100px]">Price</th>
+              </tr>
+            }
+          >
+            {isTransactionsLoading ? (
+              <TableSkeleton tableRowsAmount={2} tableCellAmount={5} />
+            ) : (
+              transactions.activity &&
+              transactions.activity.map((activity, index) => {
+                return (
+                  <Fragment
+                    key={`${activity.getTransactionView().getFrom()}_${activity
+                      .getTransactionView()
+                      .getFormattedDate()}`}
+                  >
+                    <tr className="text-sm h-[60px]">
+                      <td className="pr-[20px]">
+                        {activity.getTransactionView().getType()}
+                      </td>
+                      <td className="pr-[20px]">
+                        {activity.getTransactionView().getFormattedDate()}
+                      </td>
+                      <td className="pr-[20px] break-all">
+                        {activity.getTransactionView().getFrom()}
+                      </td>
+                      <td className="pr-[50px] break-all">
+                        {activity.getTransactionView().getTo()}
+                      </td>
+                      <td>
+                        {index === 0 &&
+                          (!nft.getTokenFloorPriceIcpFormatted() ? (
+                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
+                              Unknown
+                            </div>
+                          ) : (
+                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
+                              <span className="block">
+                                {nft.getTokenFloorPriceIcpFormatted()}
+                              </span>
+                              <span className="block text-xs text-gray-400">
+                                {nft.getTokenFloorPriceUSDFormatted()}
+                              </span>
+                            </div>
+                          ))}
+                      </td>
+                    </tr>
+                  </Fragment>
+                )
+              })
+            )}
+          </Table>
         </div>
       </ProfileContainer>
     </>

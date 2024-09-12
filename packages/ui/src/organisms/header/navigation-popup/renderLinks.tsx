@@ -61,8 +61,8 @@ export const renderLink = (
         id={linkItem.id}
         {...linkProps}
         className={clsx(
-          "flex items-center gap-[10px] h-[40px] px-[10px]",
-          "hover:bg-gray-100 cursor-pointer text-sm block text-black font-semibold",
+          "flex items-center gap-[10px] h-[40px] px-[10px] rounded-[12px]",
+          "hover:bg-gray-50 cursor-pointer text-sm block text-black font-semibold",
         )}
       >
         <img

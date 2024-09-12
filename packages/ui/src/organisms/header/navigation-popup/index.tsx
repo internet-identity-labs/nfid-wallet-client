@@ -61,7 +61,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
           <div
             className={clsx(
               "w-full h-10 text-center border-t border-gray-200 leading-10",
-              "hover:bg-gray-100 cursor-pointer text-sm",
+              "hover:bg-gray-50 cursor-pointer text-sm rounded-[12px]",
             )}
             id="#profileButton"
             onClick={() => {

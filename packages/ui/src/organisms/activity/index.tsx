@@ -1,7 +1,7 @@
+import clsx from "clsx"
 import { FC } from "react"
 
 import {
-  BlurredLoader,
   Button,
   DropdownSelect,
   FilterPopover,
@@ -12,6 +12,7 @@ import {
 import { IActivityRowGroup } from "frontend/features/activity/types"
 import { FT } from "frontend/integration/ft/ft"
 
+import { TableActivitySkeleton } from "../../atoms/skeleton"
 import { ActivityEmpty } from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"
 
@@ -45,14 +46,9 @@ export const Activity: FC<ActivityProps> = ({
     isButtonLoading,
     resetHandler,
   } = activityData
-
   return (
     <>
-      <div>
-        <BlurredLoader
-          overlayClassnames="!rounded-[24px]"
-          isLoading={isValidating && !activities.length && isTokensLoading}
-        />
+      <div className={clsx("flex justify-end", isValidating && "hidden")}>
         <FilterPopover
           title="Assets"
           align="end"
@@ -79,36 +75,53 @@ export const Activity: FC<ActivityProps> = ({
             }))}
           />
         </FilterPopover>
-        {!Boolean(activities?.length) && !isValidating ? (
-          <ActivityEmpty />
-        ) : (
-          <>
-            <div className="overflow-auto">
-              <Table className="!min-w-[720px] " id="activity-table">
-                {activities?.map((group, index) => (
+      </div>
+      {!Boolean(activities.length) && !isValidating ? (
+        <ActivityEmpty />
+      ) : (
+        <>
+          <div
+            className={clsx(
+              "overflow-auto",
+              isValidating && !activities.length && "pl-5 sm:pl-[30px]",
+            )}
+          >
+            <Table className="!min-w-[720px] " id="activity-table">
+              {isValidating && !activities.length ? (
+                <>
+                  <TableActivitySkeleton
+                    tableRowsAmount={10}
+                    tableCellAmount={3}
+                  />
+                </>
+              ) : (
+                activities.map((group, index) => (
                   <ActivityTableGroup
                     groupIndex={index}
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
                   />
-                ))}
-              </Table>
-            </div>
-          </>
+                ))
+              )}
+            </Table>
+          </div>
+        </>
+      )}
+      <div className="my-[20px]">
+        {hasMoreData && (
+          <Button
+            disabled={isButtonLoading || isValidating}
+            className={clsx(
+              "block mx-auto",
+              isValidating && !activities.length && "hidden",
+            )}
+            onClick={loadMore}
+            type="ghost"
+          >
+            {isValidating ? "Loading..." : "Load more"}
+          </Button>
         )}
-        <div className="my-[20px]">
-          {hasMoreData && (
-            <Button
-              disabled={isButtonLoading || isValidating}
-              className="block mx-auto"
-              onClick={loadMore}
-              type="ghost"
-            >
-              {isButtonLoading || isValidating ? "Loading..." : "Load more"}
-            </Button>
-          )}
-        </div>
       </div>
     </>
   )

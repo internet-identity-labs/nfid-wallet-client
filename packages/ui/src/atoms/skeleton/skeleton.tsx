@@ -6,14 +6,14 @@ interface ISkeleton extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Skeleton = ({
-  className,
+  className = "bg-gray-100",
   isAnimated = true,
   children,
 }: ISkeleton) => {
   return (
     <div
       className={clsx(
-        "bg-gray-100 rounded-[12px]",
+        "rounded-[12px]",
         isAnimated && "animate-pulse",
         className,
       )}

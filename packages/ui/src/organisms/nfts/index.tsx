@@ -15,8 +15,7 @@ import { NFT } from "frontend/integration/nft/nft"
 
 import EmptyNFT from "./assets/empty.webp"
 
-import { NftSkeleton } from "../../atoms/skeleton/nft-list-skeleton"
-import { TableSkeleton } from "../../atoms/skeleton/table-skeleton"
+import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
 import { NFTDisplaySwitch } from "./nft-display-switch"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
@@ -77,7 +76,7 @@ export const NFTs: FC<INFTs> = ({
             "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
           )}
         >
-          <NftSkeleton nftsAmount={4} />
+          <GalleryNftSkeleton nftsAmount={4} className="bg-skeletonColor" />
         </div>
       ) : !nftsFiltered.length ? (
         <div className="flex justify-between">
@@ -112,10 +111,10 @@ export const NFTs: FC<INFTs> = ({
             {nftsFiltered.map((nft) => {
               if (nft === null) {
                 return (
-                  <TableSkeleton
+                  <TableNftSkeleton
                     tableRowsAmount={1}
                     tableCellAmount={5}
-                    isFirstImage={true}
+                    className="bg-skeletonColor"
                   />
                 )
               }
@@ -194,9 +193,15 @@ export const NFTs: FC<INFTs> = ({
             "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
           )}
         >
-          {nftsFiltered.map((nft, index, arr) => {
+          {nftsFiltered.map((nft, index) => {
             if (nft === null) {
-              return <NftSkeleton key={`skeleton_${index}`} nftsAmount={1} />
+              return (
+                <GalleryNftSkeleton
+                  key={`skeleton_${index}`}
+                  nftsAmount={1}
+                  className="bg-skeletonColor"
+                />
+              )
             }
             return (
               <Link

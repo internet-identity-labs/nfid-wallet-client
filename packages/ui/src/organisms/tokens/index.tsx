@@ -3,7 +3,7 @@ import { FT } from "src/integration/ft/ft"
 
 import { getIsMobileDeviceMatch } from "frontend/integration/device"
 
-import { TableSkeleton } from "../../atoms/skeleton/table-skeleton"
+import { TableTokenSkeleton } from "../../atoms/skeleton"
 import { ActiveToken } from "./components/active-asset"
 import { TokensHeader } from "./components/header"
 import { NewAssetsModal } from "./components/new-assets-modal"
@@ -52,18 +52,19 @@ export const Tokens: FC<TokensProps> = ({
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
           <tr className="text-sm font-bold leading-5">
-            <th className="pr-[30px]">Name</th>
-            <th className="w-[230px] pr-[10px] min-w-[100px]">Category</th>
-            <th className="w-[230px] pr-[10px] min-w-[100px]">Token balance</th>
-            <th className="w-[186px] pr-[10px] min-w-[100px]">USD balance</th>
+            <th className="w-[25%] min-w-[100px] pr-[30px]">Name</th>
+            <th className="w-[25%] pr-[10px] min-w-[100px]">Category</th>
+            <th className="w-[25%] pr-[10px] min-w-[100px]">Token balance</th>
+            <th className="w-[25%] pr-[10px] min-w-[100px]">USD balance</th>
             <th className="w-[24px]"></th>
           </tr>
         </thead>
         <tbody className="h-16 text-sm text-black">
           {isActiveTokensLoading ? (
-            <TableSkeleton
+            <TableTokenSkeleton
               tableRowsAmount={5}
               tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
+              className="bg-skeletonColor"
             />
           ) : (
             activeTokens.map((token) => (

@@ -6,6 +6,7 @@ import {
   Table,
   ImageWithFallback,
   Skeleton,
+  TableNftActivitySkeleton,
 } from "@nfid-frontend/ui"
 import { trimConcat } from "@nfid-frontend/utils"
 
@@ -17,7 +18,6 @@ import {
 import { NFT } from "frontend/integration/nft/nft"
 
 import ProfileContainer from "../../atoms/profile-container/Container"
-import { TableSkeleton } from "../../atoms/skeleton/table-skeleton"
 import { ModalComponent } from "../../molecules/modal/index-v0"
 
 export interface NFTDetailsProps {
@@ -81,7 +81,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           )}
         >
           {isPreviewLoading ? (
-            <Skeleton className="rounded-[24px] h-full w-full" />
+            <Skeleton className="rounded-[24px] h-full w-full bg-skeletonColor" />
           ) : !assetPreview.url ? (
             <ImageWithFallback
               src={"no image"}
@@ -198,14 +198,17 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
       <ProfileContainer
         className={clsx(
           "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative",
-          !about && "hidden",
+          !about && !isAboutLoading && "hidden",
         )}
         innerClassName="!p-0"
-        titleClassName="!p-0 mb-[22px]"
-        title="About"
+        titleClassName={clsx("!p-0", !isAboutLoading && "mb-[22px]")}
+        title={!isAboutLoading && "About"}
       >
         {isAboutLoading ? (
-          <Skeleton className="rounded-[24px] h-[24px] w-full" />
+          <>
+            <Skeleton className="rounded-[24px] h-[24px] w-[180px] bg-skeletonColor mb-[15px]" />
+            <Skeleton className="rounded-[24px] h-[20px] w-[80px] bg-skeletonColor" />
+          </>
         ) : (
           <p id={"token-about"}>{about}</p>
         )}
@@ -218,9 +221,12 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             "hidden",
         )}
         innerClassName="!p-0"
-        titleClassName="!p-0 mb-[22px]"
-        title="Properties"
+        titleClassName={clsx("!p-0", !isPropertiesLoading && "mb-[22px]")}
+        title={!isPropertiesLoading && "Properties"}
       >
+        {isPropertiesLoading && (
+          <Skeleton className="rounded-[24px] h-[24px] w-[180px] bg-skeletonColor mb-[15px]" />
+        )}
         <div
           className={clsx(
             "grid gap-[10px] max-w-[100vw]",
@@ -229,12 +235,12 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         >
           {isPropertiesLoading ? (
             <>
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
             </>
           ) : (
             properties.mappedValues &&
@@ -264,10 +270,13 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             "hidden",
         )}
         innerClassName="!p-0"
-        titleClassName="!p-0 mb-[22px]"
-        title="Activity"
+        titleClassName={clsx("!p-0", !isTransactionsLoading && "mb-[22px]")}
+        title={!isTransactionsLoading && "Activity"}
       >
         <div className="max-w-[100%] overflow-auto">
+          {isTransactionsLoading && (
+            <Skeleton className="rounded-[24px] h-[24px] w-[180px] bg-skeletonColor mb-[15px]" />
+          )}
           <Table
             className="!min-w-[1050px] min-h-[100px]"
             theadClassName="!h-0 sm:!h-[40px]"
@@ -283,7 +292,11 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             }
           >
             {isTransactionsLoading ? (
-              <TableSkeleton tableRowsAmount={2} tableCellAmount={5} />
+              <TableNftActivitySkeleton
+                tableRowsAmount={2}
+                tableCellAmount={5}
+                className="bg-skeletonColor"
+              />
             ) : (
               transactions.activity &&
               transactions.activity.map((activity, index) => {

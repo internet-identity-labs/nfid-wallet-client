@@ -49,7 +49,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </div>
         <div className="text-black text-[28px] font-semibold leading-[20px]">
           {isUsdLoading ? (
-            <Skeleton className="w-[50%] h-[24px] bg-skeletonColor" />
+            <Skeleton className="w-[50%] h-[24px]" />
           ) : (
             <>
               {usdValue}{" "}
@@ -71,7 +71,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
                 trailingChars={4}
               />
             ) : (
-              <Skeleton className="w-[100%] h-[20px] bg-skeletonColor" />
+              <Skeleton className="w-[100%] h-[20px]" />
             )}
 
             <div

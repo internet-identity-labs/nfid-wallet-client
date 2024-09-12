@@ -64,7 +64,6 @@ export const Tokens: FC<TokensProps> = ({
             <TableTokenSkeleton
               tableRowsAmount={5}
               tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
-              className="bg-skeletonColor"
             />
           ) : (
             activeTokens.map((token) => (

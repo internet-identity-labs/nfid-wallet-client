@@ -70,9 +70,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <p className="text-xs md:hidden text-secondary">
             {isLoading ? (
               <Skeleton
-                className={clsx(
-                  "max-w-full h-[10px] bg-skeletonColor w-[50px] ml-auto",
-                )}
+                className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
               />
             ) : usdPrice === undefined ? (
               "Not listed"
@@ -87,9 +85,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
       >
         {isLoading ? (
-          <Skeleton
-            className={clsx("max-w-full h-[10px] bg-skeletonColor w-[100px]")}
-          />
+          <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : usdPrice === undefined ? (
           "Not listed"
         ) : (

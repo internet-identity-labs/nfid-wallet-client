@@ -12,25 +12,25 @@ export const GalleryNftSkeleton = ({
   return (
     <>
       {Array.from({ length: nftsAmount }).map((_, index) => (
-        <Skeleton
+        <div
           key={`skeleton${index}`}
           className={clsx("w-full rounded-[12px] min-h-[400px] bg-gray-50")}
         >
-          <div
+          <Skeleton
             className={clsx("w-full aspect-square rounded-[12px]", className)}
-          ></div>
+          />
           <div className="p-[10px]">
-            <div
+            <Skeleton
               className={clsx(
                 "w-[80%] h-[24px] my-[10px] rounded-[12px]",
                 className,
               )}
-            ></div>
-            <div
+            />
+            <Skeleton
               className={clsx("w-[50%] h-[20px]  rounded-[12px]", className)}
-            ></div>
+            />
           </div>
-        </Skeleton>
+        </div>
       ))}
     </>
   )

@@ -81,7 +81,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           )}
         >
           {isPreviewLoading ? (
-            <Skeleton className="rounded-[24px] h-full w-full bg-skeletonColor" />
+            <Skeleton className="rounded-[24px] h-full w-full" />
           ) : !assetPreview.url ? (
             <ImageWithFallback
               src={"no image"}
@@ -206,8 +206,8 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
       >
         {isAboutLoading ? (
           <>
-            <Skeleton className="rounded-[24px] h-[24px] w-[180px] bg-skeletonColor mb-[15px]" />
-            <Skeleton className="rounded-[24px] h-[20px] w-[80px] bg-skeletonColor" />
+            <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
+            <Skeleton className="rounded-[24px] h-[20px] w-[80px]" />
           </>
         ) : (
           <p id={"token-about"}>{about}</p>
@@ -225,7 +225,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         title={!isPropertiesLoading && "Properties"}
       >
         {isPropertiesLoading && (
-          <Skeleton className="rounded-[24px] h-[24px] w-[180px] bg-skeletonColor mb-[15px]" />
+          <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
         )}
         <div
           className={clsx(
@@ -235,12 +235,12 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         >
           {isPropertiesLoading ? (
             <>
-              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full bg-skeletonColor" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
+              <Skeleton className="rounded-[24px] h-[62px] w-full" />
             </>
           ) : (
             properties.mappedValues &&
@@ -275,7 +275,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
       >
         <div className="max-w-[100%] overflow-auto">
           {isTransactionsLoading && (
-            <Skeleton className="rounded-[24px] h-[24px] w-[180px] bg-skeletonColor mb-[15px]" />
+            <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
           )}
           <Table
             className="!min-w-[1050px] min-h-[100px]"
@@ -295,7 +295,6 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               <TableNftActivitySkeleton
                 tableRowsAmount={2}
                 tableCellAmount={5}
-                className="bg-skeletonColor"
               />
             ) : (
               transactions.activity &&

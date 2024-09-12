@@ -92,7 +92,6 @@ export const Activity: FC<ActivityProps> = ({
                   <TableActivitySkeleton
                     tableRowsAmount={10}
                     tableCellAmount={3}
-                    className="bg-skeletonColor"
                   />
                 </>
               ) : (

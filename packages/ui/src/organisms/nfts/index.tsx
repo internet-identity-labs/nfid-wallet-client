@@ -76,7 +76,7 @@ export const NFTs: FC<INFTs> = ({
             "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
           )}
         >
-          <GalleryNftSkeleton nftsAmount={4} className="bg-skeletonColor" />
+          <GalleryNftSkeleton nftsAmount={4} />
         </div>
       ) : !nftsFiltered.length ? (
         <div className="flex justify-between">
@@ -111,11 +111,7 @@ export const NFTs: FC<INFTs> = ({
             {nftsFiltered.map((nft) => {
               if (nft === null) {
                 return (
-                  <TableNftSkeleton
-                    tableRowsAmount={1}
-                    tableCellAmount={5}
-                    className="bg-skeletonColor"
-                  />
+                  <TableNftSkeleton tableRowsAmount={1} tableCellAmount={5} />
                 )
               }
               return (
@@ -196,11 +192,7 @@ export const NFTs: FC<INFTs> = ({
           {nftsFiltered.map((nft, index) => {
             if (nft === null) {
               return (
-                <GalleryNftSkeleton
-                  key={`skeleton_${index}`}
-                  nftsAmount={1}
-                  className="bg-skeletonColor"
-                />
+                <GalleryNftSkeleton key={`skeleton_${index}`} nftsAmount={1} />
               )
             }
             return (

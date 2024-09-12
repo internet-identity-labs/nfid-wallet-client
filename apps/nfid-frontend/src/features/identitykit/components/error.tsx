@@ -90,7 +90,13 @@ export const RPCComponentError = ({
               </div>
               <div className="space-y-2">
                 <p className="font-bold">Arguments</p>
-                <div className="space-y-4">
+                <div
+                  className={clsx(
+                    "space-y-4 overflow-auto max-h-44",
+                    "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+                    "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+                  )}
+                >
                   {args ? (
                     renderArgs(JSON.parse(args)[0])
                   ) : (

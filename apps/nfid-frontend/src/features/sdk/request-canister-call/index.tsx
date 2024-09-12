@@ -80,7 +80,15 @@ export const RequestCanisterCall = ({
           </div>
           <div className="space-y-2">
             <p className="font-bold">Arguments</p>
-            <p className="">{args}</p>
+            <p
+              className={clsx(
+                "overflow-auto max-h-44",
+                "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+                "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+              )}
+            >
+              {args}
+            </p>
           </div>
         </div>
         <div

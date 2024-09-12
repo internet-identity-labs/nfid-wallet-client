@@ -1,9 +1,8 @@
 import { FC } from "react"
 
-import { IconCmpArrow, Tooltip, IconInfo } from "@nfid-frontend/ui"
+import { IconCmpArrow, Tooltip, IconInfo, Skeleton } from "@nfid-frontend/ui"
 import { Button } from "@nfid-frontend/ui"
 
-import { Spinner } from "../../atoms/loader/spinner"
 import CopyAddress from "../../molecules/copy-address"
 
 export interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
@@ -50,7 +49,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </div>
         <div className="text-black text-[28px] font-semibold leading-[20px]">
           {isUsdLoading ? (
-            <Spinner className="w-[24px] h-[24px] text-gray-400" />
+            <Skeleton className="w-[50%] h-[24px]" />
           ) : (
             <>
               {usdValue}{" "}
@@ -72,7 +71,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
                 trailingChars={4}
               />
             ) : (
-              <Spinner className="w-[24px] h-[24px] text-gray-400" />
+              <Skeleton className="w-[100%] h-[20px]" />
             )}
 
             <div

@@ -33,6 +33,7 @@ module.exports = plugin(
         frameBorderColor: "rgb(var(--color-frameBorderColor) / <alpha-value>)",
         primaryButtonColor:
           "rgb(var(--color-primaryButtonColor) / <alpha-value>)",
+        skeletonColor: "rgba(var(--color-skeletonColor), 0.2)",
         secondaryButtonColor:
           "rgb(var(--color-secondaryButtonColor) / <alpha-value>)",
         buttonBorderColor:

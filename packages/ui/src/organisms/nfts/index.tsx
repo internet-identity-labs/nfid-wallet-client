@@ -6,10 +6,8 @@ import { Link, useNavigate } from "react-router-dom"
 import {
   IconCmpArrow,
   Input,
-  Loader,
   Table,
   IconNftPlaceholder,
-  Skeleton,
   ImageWithFallback,
 } from "@nfid-frontend/ui"
 
@@ -17,6 +15,7 @@ import { NFT } from "frontend/integration/nft/nft"
 
 import EmptyNFT from "./assets/empty.webp"
 
+import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
 import { NFTDisplaySwitch } from "./nft-display-switch"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
@@ -71,8 +70,13 @@ export const NFTs: FC<INFTs> = ({
         {nftsFiltered.length} items
       </p>
       {isLoading ? (
-        <div className="h-[300px] flex justify-center items-center">
-          <Loader imageClasses="h-[200px]" fullscreen={false} isLoading />
+        <div
+          className={clsx(
+            "grid gap-5 pb-5 pt-[50px]",
+            "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
+          )}
+        >
+          <GalleryNftSkeleton nftsAmount={4} />
         </div>
       ) : !nftsFiltered.length ? (
         <div className="flex justify-between">
@@ -104,15 +108,10 @@ export const NFTs: FC<INFTs> = ({
               </tr>
             }
           >
-            {nftsFiltered.map((nft, index) => {
+            {nftsFiltered.map((nft) => {
               if (nft === null) {
                 return (
-                  <div
-                    className="py-[5px] h-[84px] w-[74px]"
-                    key={`skeleton_table_${index}`}
-                  >
-                    <Skeleton className="w-full rounded-[12px] h-full w-full" />
-                  </div>
+                  <TableNftSkeleton tableRowsAmount={1} tableCellAmount={5} />
                 )
               }
               return (
@@ -193,16 +192,7 @@ export const NFTs: FC<INFTs> = ({
           {nftsFiltered.map((nft, index) => {
             if (nft === null) {
               return (
-                <Skeleton
-                  key={`skeleton${index}`}
-                  className="w-full rounded-[12px] min-h-[400px]"
-                >
-                  <div className="h-[300px] bg-[#D2D2D2] rounded-[12px]"></div>
-                  <div className="p-[10px]">
-                    <div className="h-[24px] my-[10px] bg-[#D2D2D2] rounded-[12px]"></div>
-                    <div className="h-[20px] bg-[#D2D2D2] rounded-[12px]"></div>
-                  </div>
-                </Skeleton>
+                <GalleryNftSkeleton key={`skeleton_${index}`} nftsAmount={1} />
               )
             }
             return (

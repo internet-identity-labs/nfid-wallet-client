@@ -164,7 +164,6 @@ export const TransferFT = ({
                 to: getAccountIdentifier(values.to),
                 identity: identity,
               })
-              setAmountInUSD(Number(values.amount))
             } else {
               const { owner, subaccount } = decodeIcrcAccount(values.to)
               res = await transferICRC1(identity, token.getTokenAddress(), {
@@ -180,8 +179,6 @@ export const TransferFT = ({
                 from_subaccount: [],
                 created_at_time: [],
               })
-
-              setAmountInUSD(Number(values.amount))
             }
 
             handleTrackTransfer(values.amount)
@@ -247,6 +244,7 @@ export const TransferFT = ({
         profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
       }
       vaultsBalance={balance}
+      setUsdAmount={setAmountInUSD}
     />
   )
 }

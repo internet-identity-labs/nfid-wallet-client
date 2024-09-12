@@ -21,7 +21,16 @@ export const getUserIdData = async (): Promise<UserIdData> => {
 
   const cachedValue = localStorageWithFallback.getItem(cacheKey)
 
-  if (cachedValue) return JSON.parse(cachedValue) as UserIdData
+  if (cachedValue) {
+
+    const data = JSON.parse(cachedValue)
+
+    return {
+      userId: data.userId,
+      publicKey: data.publicKey,
+      anchor: BigInt(data.anchor),
+    }
+  }
 
   const [publicKey, account] = await Promise.all([
     getPublicKey(identity),

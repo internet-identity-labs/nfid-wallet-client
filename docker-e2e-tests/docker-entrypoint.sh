@@ -28,6 +28,16 @@ CI_DEBUG=${CI_DEBUG}
 Additional test params: $@
 " >&2
 
+ci_echo_info "Creating npmrc file" >&2
+ci_echo_debug "authToken ${GH_NPM_REGISTRY}" >&2
+cat > npmrc_file << EOF
+@psychedelic:registry=https://npm.pkg.github.com
+@internet-identity-labs:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
+EOF
+
+cat npmrc_file
+
 ci_echo_info "Installing packages ..." >&2
 ci_echo_debug "yarn install --frozen-lockfile" >&2
 yarn install --frozen-lockfile

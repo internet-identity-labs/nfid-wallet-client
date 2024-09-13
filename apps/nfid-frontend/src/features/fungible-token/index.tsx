@@ -19,11 +19,10 @@ import { ProfileContext } from "frontend/provider"
 
 const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
-  const [state, send] = useActor(globalServices.transferService)
+  const [, send] = useActor(globalServices.transferService)
   const [searchQuery, setSearchQuery] = useState("")
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
 
-  console.log("sttt", state)
   const onSendClick = (selectedToken: string) => {
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })

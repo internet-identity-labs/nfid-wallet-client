@@ -363,7 +363,6 @@ jobs:
 
           ci_echo_debug "docker run --rm \
             -v $(pwd):/home/user/workdir \
-            -v $(pwd)/npmrc_file:/home/user/.npmrc \
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG='${CI_DEBUG}' \
             ${IMAGE_ID}:${VERSION} \
@@ -371,7 +370,6 @@ jobs:
 
           docker run --rm \
             -v $(pwd):/home/user/workdir \
-            -v $(pwd)/npmrc_file:/home/user/.npmrc \
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG="${CI_DEBUG}" \
             ${IMAGE_ID}:${VERSION} \

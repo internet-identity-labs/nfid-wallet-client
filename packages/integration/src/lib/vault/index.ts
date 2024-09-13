@@ -9,9 +9,9 @@ import {
   VaultRegisterRequest,
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
-import {im, vault as vaultAPI, vaultAnonymous} from "../actors"
+import {ii, im, vault as vaultAPI, vaultAnonymous} from "../actors"
 import {authState} from "../authentication"
-import {getPublicKey} from "../lambda/ecdsa"
+import {getPublicKey, GLOBAL_ORIGIN} from "../lambda/ecdsa"
 import {
   candidToPolicy,
   candidToTransaction,
@@ -34,8 +34,7 @@ import {
   VaultRole,
   Wallet,
 } from "./types"
-import {getWalletPrincipal} from "src/integration/facade/wallet";
-import {hasOwnProperty} from "src/integration/internet-identity/utils";
+import {hasOwnProperty} from "../test-utils";
 
 export async function registerVault(
   vaultName: string,
@@ -57,7 +56,7 @@ export async function getVaults(): Promise<Vault[]> {
   //TODO: move to cache
  let publicKey: string
   if (hasOwnProperty(account.data[0]!.wallet, "II")) {
-    publicKey = await getWalletPrincipal(Number(account.data[0]!.anchor))
+    publicKey = await fetchIIPrincipal(Number(account.data[0]!.anchor), GLOBAL_ORIGIN)
       .then(pr => pr.toText())
   }else {
     publicKey = await getPublicKey(authState.get().delegationIdentity!)
@@ -248,4 +247,9 @@ export function getAddress(principal: Principal, subAccountHex: string) {
     subAccount,
   })
   return accountIdentifier.toHex()
+}
+
+
+function fetchIIPrincipal(anchor: number, scope: string) {
+  return ii.get_principal(BigInt(anchor), scope)
 }

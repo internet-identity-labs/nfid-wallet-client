@@ -38,6 +38,7 @@ import {
 import { ITransferSuccess } from "./success"
 
 interface ITransferFT {
+  preselectedTokenAddress: string | undefined
   isVault: boolean
   preselectedAccountAddress: string
   onTransferPromise: (data: ITransferSuccess) => void
@@ -46,11 +47,12 @@ interface ITransferFT {
 
 export const TransferFT = ({
   isVault,
+  preselectedTokenAddress = ICP_CANISTER_ID,
   preselectedAccountAddress = "",
   onTransferPromise,
   publicKey,
 }: ITransferFT) => {
-  const [tokenAddress, setTokenAddress] = useState(ICP_CANISTER_ID)
+  const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [amountInUSD, setAmountInUSD] = useState(0)
   const {
     data: activeTokens = [],

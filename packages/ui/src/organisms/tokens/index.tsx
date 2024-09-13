@@ -29,6 +29,7 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
     decimals: number
     fee: bigint
   }>
+  onSendClick: (value: string) => void
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -39,6 +40,7 @@ export const Tokens: FC<TokensProps> = ({
   profileConstants,
   onSubmitIcrc1Pair,
   onFetch,
+  onSendClick,
 }) => {
   return (
     <>
@@ -70,6 +72,7 @@ export const Tokens: FC<TokensProps> = ({
                 key={`token_${token.getTokenName()}`}
                 token={token}
                 profileConstants={profileConstants}
+                onSendClick={onSendClick}
               />
             ))
           )}

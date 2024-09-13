@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownOption,
   IconCmpDots,
+  IconSvgArrow,
   IconSvgExternalIcon,
   IconSvgEyeClosedBlack,
   IconSvgHistoryIcon,
@@ -19,11 +20,13 @@ import { IProfileConstants } from ".."
 type AssetDropdownProps = {
   token: FT
   profileConstants: IProfileConstants
+  onSendClick: (value: string) => void
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
   token,
   profileConstants,
+  onSendClick,
 }) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
@@ -48,9 +51,10 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         }
       >
         <DropdownOption
-          label="Transactions"
-          icon={IconSvgHistoryIcon}
-          handler={navigateToTransactions(token.getTokenAddress())}
+          label="Send"
+          icon={IconSvgArrow}
+          iconClassName="rotate-[135deg]"
+          handler={() => onSendClick(token.getTokenAddress())}
         />
         <DropdownOption
           element={
@@ -64,6 +68,19 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             />
           }
         />
+        <DropdownOption
+          label="View on block explorer"
+          icon={IconSvgExternalIcon}
+          handler={() => {
+            window.open(token.getBlockExplorerLink(), "_blank")
+          }}
+        />
+        <DropdownOption
+          label="Transactions"
+          icon={IconSvgHistoryIcon}
+          handler={navigateToTransactions(token.getTokenAddress())}
+        />
+
         {token.isHideable() && (
           <DropdownOption
             label="Hide token"
@@ -74,13 +91,6 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             }}
           />
         )}
-        <DropdownOption
-          label="View on block explorer"
-          icon={IconSvgExternalIcon}
-          handler={() => {
-            window.open(token.getBlockExplorerLink(), "_blank")
-          }}
-        />
       </Dropdown>
     </>
   )

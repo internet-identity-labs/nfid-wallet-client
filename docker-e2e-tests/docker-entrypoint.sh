@@ -33,8 +33,8 @@ ci_echo_debug "yarn install --frozen-lockfile" >&2
 yarn install --frozen-lockfile
 
 ci_echo_info "Building NFID frontend ..." >&2
-ci_echo_debug "npx env-cmd -f .env.test nx build nfid-frontend" >&2
-npx env-cmd -f .env.test nx build nfid-frontend
+ci_echo_debug "npx env-cmd -f .env.test nx build nfid-wallet-client" >&2
+npx env-cmd -f .env.test nx build nfid-wallet-client
 
 ci_echo_info "Building NFID demo ..." >&2
 ci_echo_debug "npx env-cmd -f .env.test nx build nfid-demo" >&2

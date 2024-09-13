@@ -9,9 +9,9 @@ import {
   VaultRegisterRequest,
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
-import { vault as vaultAPI, vaultAnonymous } from "../actors"
-import { authState } from "../authentication"
-import { getPublicKey } from "../lambda/ecdsa"
+import {im, vault as vaultAPI, vaultAnonymous} from "../actors"
+import {authState} from "../authentication"
+import {getPublicKey} from "../lambda/ecdsa"
 import {
   candidToPolicy,
   candidToTransaction,
@@ -34,6 +34,8 @@ import {
   VaultRole,
   Wallet,
 } from "./types"
+import {getWalletPrincipal} from "src/integration/facade/wallet";
+import {hasOwnProperty} from "src/integration/internet-identity/utils";
 
 export async function registerVault(
   vaultName: string,
@@ -50,7 +52,16 @@ export async function registerVault(
 }
 
 export async function getVaults(): Promise<Vault[]> {
-  const publicKey = await getPublicKey(authState.get().delegationIdentity!)
+  const account = await im.get_account()
+
+  //TODO: move to cache
+ let publicKey: string
+  if (hasOwnProperty(account.data[0]!.wallet, "II")) {
+    publicKey = await getWalletPrincipal(Number(account.data[0]!.anchor))
+      .then(pr => pr.toText())
+  }else {
+    publicKey = await getPublicKey(authState.get().delegationIdentity!)
+  }
   const hex = uint8ArrayToHexString(new Uint8Array(Array(32).fill(1)))
   const address = getAddress(Principal.fromText(publicKey), hex)
   const response = await vaultAnonymous

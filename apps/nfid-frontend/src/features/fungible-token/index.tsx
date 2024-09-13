@@ -1,3 +1,4 @@
+import { useActor } from "@xstate/react"
 import { DEFAULT_ERROR_TEXT } from "packages/constants"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
@@ -6,17 +7,31 @@ import {
   fetchFilteredTokens,
   getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import useSWR from "swr"
 
+import { sendReceiveTracking } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { ProfileContext } from "frontend/provider"
 
 const TokensPage = () => {
+  const globalServices = useContext(ProfileContext)
+  const [state, send] = useActor(globalServices.transferService)
   const [searchQuery, setSearchQuery] = useState("")
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
+
+  console.log("sttt", state)
+  const onSendClick = (selectedToken: string) => {
+    sendReceiveTracking.openModal()
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: "send" })
+    send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send("SHOW")
+  }
 
   const {
     data: activeTokens = [],
@@ -78,6 +93,7 @@ const TokensPage = () => {
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}
+      onSendClick={onSendClick}
     />
   )
 }

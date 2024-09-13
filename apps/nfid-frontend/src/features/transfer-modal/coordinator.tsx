@@ -41,6 +41,7 @@ export const TransferModalCoordinator = () => {
       case state.matches("SendMachine.SendFT"):
         return (
           <TransferFT
+            preselectedTokenAddress={state.context.selectedFT}
             isVault={state.context.isOpenedFromVaults}
             preselectedAccountAddress={state.context.sourceWalletAddress}
             onTransferPromise={(message: ITransferSuccess) =>

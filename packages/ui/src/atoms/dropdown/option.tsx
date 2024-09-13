@@ -8,6 +8,7 @@ export interface IDropdownOption {
   handler?: () => void
   className?: string
   textClassName?: string
+  iconClassName?: string
 }
 
 export const DropdownOption = ({
@@ -18,6 +19,7 @@ export const DropdownOption = ({
   link,
   className,
   textClassName,
+  iconClassName,
 }: IDropdownOption) => {
   return (
     <div
@@ -32,7 +34,7 @@ export const DropdownOption = ({
     >
       {element ?? (
         <>
-          {icon && <img width={24} src={icon} />}
+          {icon && <img width={24} className={iconClassName} src={icon} />}
           {link ? (
             <a target="_blank" href={link}>
               {label}

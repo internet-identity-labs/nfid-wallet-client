@@ -15,11 +15,13 @@ import { AssetDropdown } from "./asset-dropdown"
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
   profileConstants: IProfileConstants
+  onSendClick: (value: string) => void
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
   token,
   profileConstants,
+  onSendClick,
 }) => {
   const { data: usdPrice, isLoading } = useSWR(
     token ? ["activeTokenUSD", token.getTokenAddress()] : null,
@@ -93,7 +95,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         )}
       </td>
       <td className="w-[24px] min-w-[24px]">
-        <AssetDropdown token={token} profileConstants={profileConstants} />
+        <AssetDropdown
+          token={token}
+          profileConstants={profileConstants}
+          onSendClick={onSendClick}
+        />
       </td>
     </tr>
   )

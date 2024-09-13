@@ -212,24 +212,26 @@ jobs:
           ci_versions
 
       - name: Build project
+        env:
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+
+          ci_echo_debug "Preparing .npmrc" >&2
+          sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline --frozen-lockfile
 
-        env:
-          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
-
       - name: Run unit tests
+        env:
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           ci_echo_debug "npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache" >&2
           npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache
-        env:
-          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Upload build artefacts
         uses: actions/upload-artifact@v4
@@ -346,6 +348,11 @@ jobs:
           mkdir -p apps/nfid-frontend-e2e/allure-results
           mkdir -p apps/nfid-frontend-e2e/allure-report
 
+          ci_echo_debug "Preparing .npmrc" >&2
+          sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
+
+          mv .npmrc npmrc_file 
+
           cat > docker_env << EOF
             IS_DEV=true
             IS_E2E_TEST=true
@@ -358,6 +365,7 @@ jobs:
 
           ci_echo_debug "docker run --rm \
             -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG='${CI_DEBUG}' \
             ${IMAGE_ID}:${VERSION} \
@@ -365,6 +373,7 @@ jobs:
 
           docker run --rm \
             -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG="${CI_DEBUG}" \
             ${IMAGE_ID}:${VERSION} \

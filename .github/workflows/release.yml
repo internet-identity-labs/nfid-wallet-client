@@ -180,8 +180,13 @@ jobs:
           ci_echo_info "OPTIONS=${OPTIONS}" >&2
 
       - name: Install
+        env:
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_debug "Preparing .npmrc" >&2
+          sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline --frozen-lockfile
@@ -441,6 +446,9 @@ jobs:
           GH_NPM_REGISTRY: ${{ secrets.PSYCHEDELIC_GH_NPM_REGISTRY }}
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+
+          ci_echo_debug "Preparing .npmrc" >&2
+          sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline --frozen-lockfile

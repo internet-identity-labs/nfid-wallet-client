@@ -32,9 +32,7 @@ export const Default: StoryFn<AuthOtherSignOptionsProps> = (args) => {
 }
 
 Default.args = {
-  appMeta: {
-    name: "https://example.com",
-  },
+  appMeta: "https://example.com",
   loadProfileFromLocalStorage: () => undefined,
   onBack: () => console.log("Back button clicked"),
 }

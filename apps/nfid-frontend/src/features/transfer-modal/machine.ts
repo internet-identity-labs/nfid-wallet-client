@@ -8,7 +8,7 @@ import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { ITransferSuccess } from "./components/success"
 
 export type TransferMachineContext = {
-  direction: "send" | "receive"
+  direction: "send" | "receive" | "swap"
   tokenType: "ft" | "nft"
   sourceWalletAddress: string
   sourceAccount?: Wallet
@@ -24,21 +24,11 @@ export type TransferMachineContext = {
   isOpenedFromVaults: boolean
 }
 
-export type ErrorEvents =
-  | {
-      type: "error.platform.transferFT"
-      data: Error
-    }
-  | {
-      type: "error.platform.transferNFT"
-      data: Error
-    }
-
 export type Events =
   | { type: "SHOW" }
   | { type: "HIDE" }
   | { type: "CHANGE_TOKEN_TYPE"; data: "ft" | "nft" }
-  | { type: "CHANGE_DIRECTION"; data: "send" | "receive" }
+  | { type: "CHANGE_DIRECTION"; data: "send" | "receive" | "swap" }
   | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
   | { type: "ASSIGN_AMOUNT"; data: string }

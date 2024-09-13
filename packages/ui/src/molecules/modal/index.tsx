@@ -1,9 +1,9 @@
 import React from "react"
 
-import { Button } from "../../atoms/button"
 import { NFIDGradientBar } from "../../atoms/gradient-bar"
 import { H5 } from "../../atoms/typography"
 import { P } from "../../atoms/typography/paragraph"
+import { Button } from "../button"
 import { ModalCloseIcon } from "./closeIcon"
 import { ModalSuccessIcon } from "./successIcon"
 import { ModalWarningIcon } from "./warningIcon"
@@ -44,7 +44,7 @@ export const Modal: React.FC<ModalProps> = ({
             </div>
 
             <div className="flex items-center justify-end p-6">
-              <Button primary className="w-full" onClick={onClick}>
+              <Button className="w-full" onClick={onClick}>
                 {buttonText}
               </Button>
             </div>
@@ -55,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         </div>
       </div>
-      <div className="fixed inset-0 z-40 opacity-30 bg-black"></div>
+      <div className="fixed inset-0 z-40 bg-black opacity-30"></div>
     </>
   )
 }

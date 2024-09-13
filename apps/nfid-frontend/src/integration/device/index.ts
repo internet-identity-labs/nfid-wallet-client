@@ -1,4 +1,5 @@
 import bowser from "bowser"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import useSWRImmutable from "swr/immutable"
 
 import { Icon } from "@nfid/integration"
@@ -42,30 +43,6 @@ export async function fetchWebAuthnPlatformCapability() {
   }
 
   return PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
-}
-
-export const MobileBrowser = [
-  "Android",
-  "BlackBerry",
-  "iPhone",
-  "iPad",
-  "iPod",
-  "Opera Mini",
-  "IEMobile",
-  "WPDesktop",
-]
-export const IsMobileRegEx = new RegExp(MobileBrowser.join("|"), "i")
-
-// NOTE: needed to turn this into a function. Otherwise within tests its not
-// picking up the mocked userAgent.
-export const getIsMobileDeviceMatch = (): boolean => {
-  const isMobile = Boolean(window.navigator.userAgent.match(IsMobileRegEx))
-  console.debug("isMobile", {
-    userAgent: window.navigator.userAgent,
-    returnValue: Boolean(window.navigator.userAgent.match(IsMobileRegEx)),
-  })
-
-  return isMobile
 }
 
 export function getPlatformInfo() {

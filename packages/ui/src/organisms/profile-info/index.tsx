@@ -1,25 +1,32 @@
-import { FC } from "react"
+import { FC, HTMLAttributes } from "react"
 
-import { IconCmpArrow, Tooltip, IconInfo, Skeleton } from "@nfid-frontend/ui"
-import { Button } from "@nfid-frontend/ui"
+import {
+  IconCmpArrow,
+  IconCmpSwap,
+  Tooltip,
+  IconInfo,
+  Skeleton,
+  Button,
+  CopyAddress,
+} from "@nfid-frontend/ui"
 
-import CopyAddress from "../../molecules/copy-address"
-
-export interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
+export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   usdValue: string | undefined
-  isLoading: boolean
+  isAddressLoading: boolean
   isUsdLoading: boolean
   onSendClick: () => void
   onReceiveClick: () => void
+  onSwapClick: () => void
   address?: string
 }
 
 export const ProfileInfo: FC<IProfileTemplate> = ({
   usdValue,
-  isLoading,
+  isAddressLoading,
   isUsdLoading,
   onSendClick,
   onReceiveClick,
+  onSwapClick,
   address,
 }) => {
   return (
@@ -64,9 +71,9 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </h2>
         <div className="flex md:items-end justify-between gap-[20px] flex-col md:flex-row">
           <div>
-            {address ? (
+            {!isAddressLoading && address ? (
               <CopyAddress
-                address={address!}
+                address={address}
                 leadingChars={6}
                 trailingChars={4}
               />
@@ -85,7 +92,8 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           <div className="flex gap-[10px]">
             <Button
               id="sendButton"
-              className="flex-1"
+              className="flex-1 !px-0 sm:!px-[15px]"
+              innerClassName="!space-x-1"
               icon={
                 <IconCmpArrow className="text-gray-400 rotate-[135deg] w-[18px] h-[18px] text-white" />
               }
@@ -96,7 +104,8 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             </Button>
             <Button
               id="receiveButton"
-              className="flex-1"
+              className="flex-1 !px-0 sm:!px-[15px]"
+              innerClassName="!space-x-1"
               icon={
                 <IconCmpArrow className="text-gray-400 rotate-[-45deg] w-[18px] h-[18px] text-white" />
               }
@@ -104,6 +113,18 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               isSmall
             >
               Receive
+            </Button>
+            <Button
+              id="swapButton"
+              className="flex-1 !px-0 sm:!px-[15px]"
+              innerClassName="!space-x-1"
+              icon={
+                <IconCmpSwap className="text-gray-400 w-[18px] h-[18px] text-white" />
+              }
+              onClick={onSwapClick}
+              isSmall
+            >
+              Swap
             </Button>
           </div>
         </div>

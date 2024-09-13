@@ -16,6 +16,7 @@ import {
   authStorage,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import { toast } from "react-toastify"
 
 import { getBrowser } from "@nfid-frontend/utils"
@@ -37,10 +38,7 @@ import {
 } from "@nfid/integration"
 
 import isSafari from "frontend/features/security/utils"
-import {
-  getIsMobileDeviceMatch,
-  getPlatformInfo,
-} from "frontend/integration/device"
+import { getPlatformInfo } from "frontend/integration/device"
 import {
   createPasskeyAccessPoint,
   fetchProfile,

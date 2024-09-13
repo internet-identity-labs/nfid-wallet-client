@@ -1,7 +1,6 @@
 import clsx from "clsx"
 
-import { getIsMobileDeviceMatch } from "frontend/integration/device"
-
+import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { Skeleton } from "./skeleton"
 
 interface TableActivitySkeletonProps {

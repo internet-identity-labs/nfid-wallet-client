@@ -1,5 +1,11 @@
 import { localStorageWithFallback } from "@nfid/client-db"
-import { authState, getPublicKey, im } from "@nfid/integration"
+import {
+  authState,
+  getPublicKey,
+  hasOwnProperty,
+  im,
+  RootWallet,
+} from "@nfid/integration"
 
 type UserIdData = {
   //internal user id
@@ -7,6 +13,7 @@ type UserIdData = {
   //public key of the user
   publicKey: string
   anchor: bigint
+  wallet: RootWallet
 }
 
 //TODO move to authState
@@ -17,43 +24,36 @@ export const getUserIdData = async (): Promise<UserIdData> => {
   if (!identity) throw new Error("No identity")
 
   //web3 identity is unique per account so we can use it as a cache key
-  const cacheKey = "user_id_public_pair_" + identity.getPrincipal().toText()
+  const cacheKey = "user_profile_data_" + identity.getPrincipal().toText()
 
   const cachedValue = localStorageWithFallback.getItem(cacheKey)
 
+  let data
+
   if (cachedValue) {
-    const data = JSON.parse(cachedValue)
-
-    let anchor
-    if (data.anchor.trim().endsWith("n")) {
-      anchor = data.anchor
-    } else {
-      anchor = BigInt(data.anchor)
+    data = JSON.parse(cachedValue)
+  } else {
+    const [publicKey, account] = await Promise.all([
+      getPublicKey(identity),
+      im.get_account(),
+    ])
+    const rootWallet: RootWallet = hasOwnProperty(account.data[0]!.wallet, "II")
+      ? RootWallet.II
+      : RootWallet.NFID
+    data = {
+      userId: account.data[0]!.principal_id,
+      publicKey: publicKey,
+      //BigInt is not serializable in a good way
+      anchor: Number(account.data[0]!.anchor),
+      wallet: rootWallet,
     }
-
-    return {
-      userId: data.userId,
-      publicKey: data.publicKey,
-      anchor,
-    }
+    localStorageWithFallback.setItem(cacheKey, JSON.stringify(data))
   }
 
-  const [publicKey, account] = await Promise.all([
-    getPublicKey(identity),
-    im.get_account(),
-  ])
-
-  if (!account.data[0]) {
-    throw new Error(account.error[0])
+  return {
+    userId: data.userId,
+    publicKey: data.publicKey,
+    anchor: BigInt(data.anchor),
+    wallet: data.wallet,
   }
-
-  const userIdPair = {
-    userId: account.data[0]!.principal_id,
-    publicKey: publicKey,
-    anchor: account.data[0]!.anchor,
-  }
-
-  localStorageWithFallback.setItem(cacheKey, JSON.stringify(userIdPair))
-
-  return userIdPair
 }

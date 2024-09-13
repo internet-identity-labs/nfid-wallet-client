@@ -203,7 +203,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "yarn"
+          # cache: "yarn"
 
       - name: Versions
         run: |
@@ -328,13 +328,13 @@ jobs:
           ref: main
           token: ${{ secrets.PAT }}
 
-      - name: Cache Node Modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-            **/.eslintcache
-          key: test-nfid-fe
+      # - name: Cache Node Modules
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       **/node_modules
+      #       **/.eslintcache
+      #     key: test-nfid-fe
 
       - name: Run tests
         run: |

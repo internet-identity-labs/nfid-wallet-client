@@ -42,7 +42,7 @@
     {
       "label": "NFID Frontend",
       "type": "shell",
-      "command": "yarn && npx nx serve nfid-frontend",
+      "command": "yarn && npx nx serve nfid-wallet-client",
       "presentation": {
         "reveal": "always",
         "panel": "new",

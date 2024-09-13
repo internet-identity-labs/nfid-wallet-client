@@ -136,6 +136,7 @@ export {
   IconSvgHistoryIcon,
 }
 
+export { ReactComponent as IconCmpSwap } from "./swap.svg"
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
 export { ReactComponent as IconCmpArchive } from "./archive.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"

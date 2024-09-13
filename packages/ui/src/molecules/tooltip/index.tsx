@@ -1,8 +1,7 @@
 import * as RadixTooltip from "@radix-ui/react-tooltip"
 import clsx from "clsx"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import React, { useState } from "react"
-
-import { getIsMobileDeviceMatch } from "frontend/integration/device"
 
 interface TooltipProps extends RadixTooltip.TooltipContentProps {
   tip: string | React.ReactNode

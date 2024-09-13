@@ -1,9 +1,8 @@
 import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { getIsMobileDeviceMatch } from "frontend/integration/device"
-
 import { TableTokenSkeleton } from "../../atoms/skeleton"
+import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { ActiveToken } from "./components/active-asset"
 import { TokensHeader } from "./components/header"
 import { NewAssetsModal } from "./components/new-assets-modal"

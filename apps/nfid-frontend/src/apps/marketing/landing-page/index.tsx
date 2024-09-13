@@ -1,6 +1,7 @@
 import { DotLottiePlayer } from "@dotlottie/react-player"
 import "@dotlottie/react-player/dist/index.css"
 import clsx from "clsx"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import React, { useCallback, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -10,7 +11,6 @@ import { landingPageTracking } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { getIsMobileDeviceMatch } from "frontend/integration/device"
 
 import Animation1 from "./assets/animations/1_4.json"
 import Animation2 from "./assets/animations/2_4.json"

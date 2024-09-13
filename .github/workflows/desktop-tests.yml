@@ -214,11 +214,6 @@ jobs:
       - name: Build project
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-          cat > ~/.npmrc << EOF
-          @psychedelic:registry=https://npm.pkg.github.com
-          @internet-identity-labs:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
-          EOF
 
           ci_echo_debug "yarn --prefer-offline" >&2
           yarn --prefer-offline --frozen-lockfile

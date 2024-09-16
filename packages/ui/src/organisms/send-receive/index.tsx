@@ -24,9 +24,9 @@ export const TransferModal: FC<TransferModalProps> = ({
 }) => {
   return (
     <TransferTemplate onClickOutside={onClickOutside} isVault={isVault}>
-      <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+      {!isSuccess && <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
         {direction}
-      </div>
+      </div>}
       {direction === "send" && !isSuccess && !isVault && (
         <ToggleButton
           firstValue="Token"

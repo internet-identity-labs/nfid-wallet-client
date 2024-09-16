@@ -36,8 +36,6 @@ export const QRCode: React.FC<QRCodeProps> = ({
           left: 0,
           bottom: 0,
           right: 0,
-          background:
-            "linear-gradient( 319deg, #3dedd7 0%, #02cdfe 10%, #3781f4 50.52%, #7063ff 66.04%, #cc5cdc 100%)",
           mixBlendMode: "lighten",
         }}
       />

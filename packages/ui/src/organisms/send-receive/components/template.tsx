@@ -3,13 +3,13 @@ import { PropsWithChildren } from "react"
 
 export interface ITransferTemplate extends PropsWithChildren {
   onClickOutside?: () => void
-  isVault: boolean
+  isVault?: boolean
 }
 
 export const TransferTemplate: React.FC<ITransferTemplate> = ({
   children,
   onClickOutside,
-  isVault,
+  isVault = false,
 }) => {
   return (
     <div

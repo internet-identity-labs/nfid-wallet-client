@@ -16,7 +16,7 @@ export default meta
 
 const Template: StoryFn<SuccessProps> = (args) => (
   <div className="w-[450px] h-[630px]">
-    <TransferTemplate isVault={false}>
+    <TransferTemplate>
       <Success {...args} />
     </TransferTemplate>
   </div>

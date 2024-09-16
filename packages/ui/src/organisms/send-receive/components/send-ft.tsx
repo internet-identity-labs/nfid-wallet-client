@@ -196,7 +196,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
                 formatAssetAmountRaw(
-                  Number(token.getTokenBalance()),
+                  isVault && vaultsBalance
+                    ? Number(vaultsBalance.balance["ICP"])
+                    : Number(token.getTokenBalance()),
                   token.getTokenDecimals()!,
                 ),
                 formatAssetAmountRaw(

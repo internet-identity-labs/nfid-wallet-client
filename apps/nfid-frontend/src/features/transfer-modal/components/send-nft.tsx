@@ -1,11 +1,9 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { fetchTokenByAddress } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useState } from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import {
   fetchNFT,
@@ -32,10 +30,6 @@ export const TransferNFT = ({
   preselectedNFTId = "",
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
-  const { data: icpToken } = useSWR(
-    ICP_CANISTER_ID ? ["token", ICP_CANISTER_ID] : null,
-    ([, address]) => fetchTokenByAddress(address),
-  )
 
   const {
     data: allNfts = [],

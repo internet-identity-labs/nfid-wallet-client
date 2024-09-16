@@ -112,8 +112,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
-  const getTokenOptions = useCallback(async () => {
-    const options = await Promise.all(
+  const getTokenOptions = useCallback(() => {
+    return Promise.all(
       tokens.map(async (token) => {
         return {
           label: "Internet Computer",
@@ -133,11 +133,13 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           ],
         }
       }),
-    )
-
-    return isVault
-      ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
-      : options
+    ).then((options) => {
+      return isVault
+        ? options.filter(
+            (option) => option.options[0].value === ICP_CANISTER_ID,
+          )
+        : options
+    })
   }, [tokens])
 
   useEffect(() => {

@@ -30,7 +30,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
-      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[160px] sm-[270px] lg:w-[350px]">
+      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[160px] sm:max-w-[100%] lg:w-[350px]">
         <div className="w-[24px] h-[24px] xs:w-[40px] xs:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt={`${token.getTokenSymbol}`}

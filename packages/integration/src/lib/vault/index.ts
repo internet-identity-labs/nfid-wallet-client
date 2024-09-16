@@ -9,9 +9,10 @@ import {
   VaultRegisterRequest,
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
-import { vault as vaultAPI, vaultAnonymous } from "../actors"
-import { authState } from "../authentication"
-import { getPublicKey } from "../delegation-factory/delegation-i"
+import { ii, vault as vaultAPI, vaultAnonymous } from "../actors"
+import { getUserIdData } from "../cache/cache"
+import { GLOBAL_ORIGIN } from "../delegation-factory/delegation-i"
+import { RootWallet } from "../identity-manager/profile"
 import {
   candidToPolicy,
   candidToTransaction,
@@ -50,7 +51,16 @@ export async function registerVault(
 }
 
 export async function getVaults(): Promise<Vault[]> {
-  const publicKey = await getPublicKey(authState.get().delegationIdentity!)
+  const userProfileData = await getUserIdData()
+  let publicKey
+  if (userProfileData.wallet === RootWallet.II) {
+    publicKey = await fetchIIPrincipal(
+      Number(userProfileData.anchor),
+      GLOBAL_ORIGIN,
+    ).then((pr) => pr.toText())
+  } else {
+    publicKey = userProfileData.publicKey
+  }
   const hex = uint8ArrayToHexString(new Uint8Array(Array(32).fill(1)))
   const address = getAddress(Principal.fromText(publicKey), hex)
   const response = await vaultAnonymous
@@ -237,4 +247,8 @@ export function getAddress(principal: Principal, subAccountHex: string) {
     subAccount,
   })
   return accountIdentifier.toHex()
+}
+
+function fetchIIPrincipal(anchor: number, scope: string) {
+  return ii.get_principal(BigInt(anchor), scope)
 }

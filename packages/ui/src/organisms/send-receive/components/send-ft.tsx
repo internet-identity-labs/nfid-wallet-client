@@ -112,8 +112,38 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
-  const getTokenOptions = useCallback(() => {
-    return Promise.all(
+  // const getTokenOptions = useCallback(() => {
+  //   return Promise.all(
+  //     tokens.map(async (token) => {
+  //       return {
+  //         label: "Internet Computer",
+  //         options: [
+  //           {
+  //             icon: token.getTokenLogo(),
+  //             value: token.getTokenAddress(),
+  //             title: token.getTokenSymbol(),
+  //             subTitle: token.getTokenName(),
+  //             innerTitle: `${
+  //               token.getTokenBalanceFormatted() || 0
+  //             } ${token.getTokenSymbol()}`,
+  //             innerSubtitle: await token.getTokenRateFormatted(
+  //               token.getTokenBalanceFormatted()!,
+  //             ),
+  //           },
+  //         ],
+  //       }
+  //     }),
+  //   ).then((options) => {
+  //     return isVault
+  //       ? options.filter(
+  //           (option) => option.options[0].value === ICP_CANISTER_ID,
+  //         )
+  //       : options
+  //   })
+  // }, [tokens])
+
+  const getTokenOptions = useCallback(async () => {
+    const options = await Promise.all(
       tokens.map(async (token) => {
         return {
           label: "Internet Computer",
@@ -133,14 +163,12 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           ],
         }
       }),
-    ).then((options) => {
-      return isVault
-        ? options.filter(
-            (option) => option.options[0].value === ICP_CANISTER_ID,
-          )
-        : options
-    })
-  }, [tokens])
+    )
+
+    return isVault
+      ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
+      : options
+  }, [tokens, isVault])
 
   useEffect(() => {
     setUsdAmount(amountInUSD)

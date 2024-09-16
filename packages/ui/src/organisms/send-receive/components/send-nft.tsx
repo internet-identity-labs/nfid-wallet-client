@@ -70,20 +70,20 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           iconClassnames="!w-12 !h-12 !object-cover rounded-[12px]"
           trigger={
             <div
-              className="flex items-center justify-between w-full h-[90px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"
+              className="flex items-center justify-between w-full h-[98px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"
               id="choose-nft"
             >
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
                   {selectedNFT?.getAssetPreview().url ? (
                     <ImageWithFallback
-                      className="object-cover rounded-[10px] w-[84px] h-[84px]"
+                      className="object-cover rounded-[10px] w-[92px] h-[92px]"
                       src={selectedNFT?.getAssetPreview().url}
                       fallbackSrc={IconNftPlaceholder}
                       alt="NFID NFT"
                     />
                   ) : (
-                    <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[84px] h-[84px]" />
+                    <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[92px] h-[92px]" />
                   )}
                 </div>
                 {!selectedNFT ? (
@@ -122,7 +122,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           })}
         />
         <Button
-          className="text-base !mt-[119px]"
+          className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block
           onClick={handleSubmit(submit)}

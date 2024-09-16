@@ -333,10 +333,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         </div>
       </div>
       <Button
-        className={clsx(
-          "h-[48px] absolute bottom-5 left-5 right-5 !w-auto",
-          isVault ? "mt-2" : "mt-auto",
-        )}
+        className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"
         id="sendFT"
         block

@@ -1,4 +1,5 @@
 import { Meta, StoryFn } from "@storybook/react"
+import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 
 import { TransferNFTUi, TransferNFTUiProps } from "./send-nft"
 import { TransferTemplate } from "./template"
@@ -17,6 +18,17 @@ export default meta
 const Template: StoryFn<TransferNFTUiProps> = (args) => (
   <div className="w-[450px] h-[630px]">
     <TransferTemplate isVault={false}>
+      <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+        Send
+      </div>
+      <ToggleButton
+        firstValue="Token"
+        secondValue="Collectible"
+        className="mb-5"
+        onChange={() => console.log(1)}
+        defaultValue={true}
+        id="send_type_toggle"
+      />
       <TransferNFTUi {...args} />
     </TransferTemplate>
   </div>

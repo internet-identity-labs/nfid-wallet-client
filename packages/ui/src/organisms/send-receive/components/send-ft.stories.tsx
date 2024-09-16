@@ -1,6 +1,8 @@
 import { Meta, StoryFn } from "@storybook/react"
 import { useForm } from "react-hook-form"
 
+import { FT } from "frontend/integration/ft/ft"
+
 import { TransferFTUi, TransferFTUiProps } from "./send-ft"
 import { TransferTemplate } from "./template"
 
@@ -29,11 +31,9 @@ const Template: StoryFn<TransferFTUiProps> = (args) => {
       },
     })
 
-  // setValue("amount", "50000000")
-
   return (
     <div className="w-[450px] h-[630px]">
-      <TransferTemplate>
+      <TransferTemplate isVault={false}>
         <TransferFTUi
           {...args}
           register={register}
@@ -79,6 +79,13 @@ export const SendFTProps = {
   submit: async () => {
     console.log("Send button clicked")
   },
+  setChosenToken: () => {},
+  validateAddress: () => true,
+  tokens: [] as FT[],
+  token: { getTokenAddress } as FT,
+  selectedVaultsAccountAddress: "",
+  setSelectedVaultsAccountAddress: () => "",
+  setUsdAmount: () => {},
 }
 
 Default.args = SendFTProps

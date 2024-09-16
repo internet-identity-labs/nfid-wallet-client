@@ -16,7 +16,7 @@ export default meta
 
 const Template: StoryFn<TransferNFTUiProps> = (args) => (
   <div className="w-[450px] h-[630px]">
-    <TransferTemplate>
+    <TransferTemplate isVault={false}>
       <TransferNFTUi {...args} />
     </TransferTemplate>
   </div>
@@ -51,6 +51,7 @@ export const SendNFTProps = {
     console.log("Send button clicked")
     return undefined
   },
+  validateAddress: () => true,
 }
 
 SendNFT.args = SendNFTProps

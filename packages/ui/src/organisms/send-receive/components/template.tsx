@@ -23,11 +23,11 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
     >
       <div
         className={clsx(
-          "rounded-[24px] shadow-lg p-5 text-black overflow-hidden",
-          "z-20 bg-white absolute flex flex-col",
+          "rounded-[24px] shadow-lg px-5 pb-5 pt-[18px] text-black overflow-hidden",
+          "z-20 bg-white absolute",
           "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
           "w-[340px] sm:w-[450px]",
-          isVault ? "h-[610px]" : "h-[560px]",
+          isVault ? "h-[530px]" : "h-[480px]",
         )}
         onClick={(e) => e.stopPropagation()}
       >

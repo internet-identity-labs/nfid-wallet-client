@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
+import { IoIosSearch } from "react-icons/io"
 import { trimConcat } from "src/ui/atoms/util/util"
 
 import { IconCmpSearch, IconCmpWarning } from "@nfid-frontend/ui"
@@ -149,7 +150,7 @@ export const ChooseModal = ({
             >
               <IconCmpArrow className="mr-2" />
             </div>
-            <p className="text-xl font-bold">{title}</p>
+            <p className="text-xl font-bold leading-10">{title}</p>
           </div>
           {warningText && (
             <Tooltip tip={warningText}>
@@ -161,9 +162,9 @@ export const ChooseModal = ({
           type="text"
           placeholder="Search by token name"
           inputClassName="!border-black"
-          icon={<IconCmpSearch />}
+          icon={<IoIosSearch size="20" className="text-gray-400" />}
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
-          className="my-4"
+          className="mt-4 mb-5"
         />
         <div className={clsx("flex-1 overflow-auto snap-end scroll-pl-1")}>
           {filteredOptions.map((group, index) => (

@@ -24,14 +24,12 @@ interface ITransferNFT {
   preselectedNFTId?: string
   selectedReceiverWallet?: string
   onTransferPromise: (data: ITransferSuccess) => void
-  publicKey: string
 }
 
 export const TransferNFT = ({
   selectedReceiverWallet,
   onTransferPromise,
   preselectedNFTId = "",
-  publicKey,
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const { data: icpToken } = useSWR(
@@ -102,8 +100,6 @@ export const TransferNFT = ({
 
   return (
     <TransferNFTUi
-      publicKey={publicKey}
-      icpToken={icpToken}
       isLoading={isNftLoading && isNftListLoading}
       loadingMessage={"Loading NFTs..."}
       nftOptions={mapUserNFTDetailsToGroupedOptions(allNfts)}

@@ -16,7 +16,7 @@ export default meta
 
 const Template: StoryFn<ReceiveProps> = (args) => (
   <div className="w-[450px] h-[630px]">
-    <TransferTemplate>
+    <TransferTemplate isVault={false}>
       <Receive {...args} />
     </TransferTemplate>
   </div>
@@ -46,6 +46,7 @@ export const ReceiveUiProps = {
   isVault: false,
   isAccountsValidating: false,
   setSelectedAccountAddress: () => {},
+  isLoading: false,
 }
 
 Default.args = ReceiveUiProps

@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
 import { Dispatch, FC, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
 import { Id } from "react-toastify"
@@ -17,12 +16,9 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 
-import { FT } from "frontend/integration/ft/ft"
 import { NFT } from "frontend/integration/nft/nft"
 
 export interface TransferNFTUiProps {
-  publicKey: string
-  icpToken: FT | undefined
   isLoading: boolean
   loadingMessage: string | undefined
   nftOptions: IGroupedOptions[] | undefined
@@ -35,8 +31,6 @@ export interface TransferNFTUiProps {
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
-  publicKey,
-  icpToken,
   isLoading,
   loadingMessage,
   nftOptions,
@@ -136,7 +130,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         >
           Send
         </Button>
-        <BalanceFooter token={icpToken} publicKey={publicKey} />
       </div>
     </BlurredLoader>
   )

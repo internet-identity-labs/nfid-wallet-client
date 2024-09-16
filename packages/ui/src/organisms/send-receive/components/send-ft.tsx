@@ -3,7 +3,6 @@ import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { BalanceFooter } from "packages/ui/src/organisms/send-receive/components/balance-footer"
 import {
   Dispatch,
   FC,
@@ -27,7 +26,6 @@ import {
   ChooseModal,
   IconCmpArrow,
   IconCmpArrowRight,
-  Label,
   BlurredLoader,
   sumRules,
   IGroupedOptions,
@@ -35,13 +33,12 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
 
 export interface TransferFTUiProps {
-  publicKey: string
   tokens: FT[]
   token: FT | undefined
   setChosenToken: (value: string) => void
@@ -77,12 +74,11 @@ export interface TransferFTUiProps {
     amount: string
     to: string
   }>
-  vaultsBalance: AccountBalance | undefined
+  vaultsBalance?: AccountBalance | undefined
   setUsdAmount: (v: number) => void
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
-  publicKey,
   tokens,
   token,
   setChosenToken,
@@ -116,20 +112,28 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
-  const getTokenOptions = useCallback(() => {
-    const options = tokens.map((token) => {
-      return {
-        label: "Internet Computer",
-        options: [
-          {
-            icon: token.getTokenLogo(),
-            value: token.getTokenAddress(),
-            title: token.getTokenSymbol(),
-            subTitle: token.getTokenName(),
-          },
-        ],
-      }
-    })
+  const getTokenOptions = useCallback(async () => {
+    const options = await Promise.all(
+      tokens.map(async (token) => {
+        return {
+          label: "Internet Computer",
+          options: [
+            {
+              icon: token.getTokenLogo(),
+              value: token.getTokenAddress(),
+              title: token.getTokenSymbol(),
+              subTitle: token.getTokenName(),
+              innerTitle: `${
+                token.getTokenBalanceFormatted() || 0
+              } ${token.getTokenSymbol()}`,
+              innerSubtitle: await token.getTokenRateFormatted(
+                token.getTokenBalanceFormatted()!,
+              ),
+            },
+          ],
+        }
+      }),
+    )
 
     return isVault
       ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
@@ -174,22 +178,15 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <p className="mb-1 text-xs">Amount to send</p>
-        <p
-          onClick={maxHandler}
-          className="text-xs font-bold cursor-pointer text-primaryButtonColor"
-        >
-          Max
-        </p>
-      </div>
-      <div className="flex flex-col justify-between h-full pb-[50px]">
-        <div
-          className={clsx(
-            "border rounded-[12px] flex items-center justify-between pl-4 pr-5 h-14 mb-4",
-            errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
-          )}
-        >
+      <p className="mb-1 text-xs">Amount to send</p>
+      <div
+        className={clsx(
+          "border rounded-[12px] pl-4 pr-5 h-[100px]",
+          "flex items-center justify-between",
+          errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
+        )}
+      >
+        <div>
           <InputAmount
             decimals={token.getTokenDecimals()!}
             {...register("amount", {
@@ -210,141 +207,134 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               },
             })}
           />
-          <div
-            className={clsx(
-              "absolute mt-[75px] left-5",
-              "text-xs py-1 text-red",
-            )}
-          >
-            {errors.amount?.message}
-          </div>
-          <p
-            className={clsx(
-              "absolute mt-[75px] right-[20px]",
-              "text-xs pt-[4px] text-gray-400",
-            )}
-          >
-            {usdRate}
-          </p>
-          <ChooseModal
-            optionGroups={getTokenOptions()}
-            title="Asset to send"
-            type="trigger"
-            onSelect={(value) => {
-              resetField("amount")
-              resetField("to")
-              setAmountInUSD(0)
-              setChosenToken(value)
-            }}
-            preselectedValue={token.getTokenAddress()}
-            onOpen={sendReceiveTrackingFn}
-            isSmooth
-            iconClassnames="object-cover h-full rounded-full"
-            trigger={
-              <div
-                id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}
-                className="flex items-center cursor-pointer shrink-0"
-              >
-                <ImageWithFallback
-                  alt={token.getTokenName()}
-                  fallbackSrc={IconNftPlaceholder}
-                  src={`${token.getTokenLogo()}`}
-                  className="w-[26px] mr-1.5"
-                />
-                <p className="text-lg font-semibold">
-                  {token.getTokenSymbol()}
-                </p>
-                <IconCmpArrowRight className="ml-4" />
-              </div>
-            }
-          />
+          {usdRate && (
+            <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
+              {usdRate}
+            </p>
+          )}
         </div>
-        {isVault && (
-          <ChooseModal
-            label="From"
-            title="From"
-            optionGroups={accountsOptions ?? []}
-            preselectedValue={selectedVaultsAccountAddress}
-            onSelect={setSelectedVaultsAccountAddress}
-            warningText={
-              isVault ? undefined : (
-                <div className="w-[337px]">
-                  Starting September 1, 2023, assets from external applications
-                  will not be displayed in NFID. <br /> <br /> To manage those
-                  assets in NFID, transfer them to your NFID Wallet. Otherwise,
-                  you’ll only have access through the application’s website.
+        <div className="text-right">
+          <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
+            <ChooseModal
+              optionGroups={getTokenOptions()}
+              title="Token to send"
+              type="trigger"
+              onSelect={(value) => {
+                resetField("amount")
+                resetField("to")
+                setAmountInUSD(0)
+                setChosenToken(value)
+              }}
+              preselectedValue={token.getTokenAddress()}
+              onOpen={sendReceiveTrackingFn}
+              isSmooth
+              iconClassnames="object-cover h-full rounded-full"
+              trigger={
+                <div
+                  id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}
+                  className="flex items-center cursor-pointer shrink-0"
+                >
+                  <ImageWithFallback
+                    alt={token.getTokenName()}
+                    fallbackSrc={IconNftPlaceholder}
+                    src={`${token.getTokenLogo()}`}
+                    className="w-[28px] mr-1.5 rounded-full"
+                  />
+                  <p className="text-lg font-semibold">
+                    {token.getTokenSymbol()}
+                  </p>
+                  <IconCmpArrowRight className="ml-4" />
                 </div>
-              )
-            }
-          />
-        )}
-        <ChooseModal
-          type="input"
-          label="To"
-          title={"Choose an account"}
-          optionGroups={optionGroups}
-          isFirstPreselected={false}
-          placeholder={
-            token.getTokenAddress() === ICP_CANISTER_ID
-              ? "Recipient wallet address or account ID"
-              : "Recipient wallet address"
-          }
-          errorText={errors.to?.message}
-          registerFunction={register("to", {
-            required: "This field cannot be empty",
-            validate: (value) => validateAddress(value),
-          })}
-          onSelect={(value) => {
-            resetField("to")
-            setValue("to", value)
-          }}
-        />
-        <div>
-          <Label className="text-secondary">Network fee</Label>
+              }
+            />
+          </div>
           <div
-            className={clsx(
-              "flex items-center justify-between mt-1",
-              "px-2.5 text-gray-400 bg-gray-100 rounded-[12px] h-14",
-            )}
+            className="mt-2 text-xs leading-5 text-right text-gray-500 cursor-pointer"
+            onClick={maxHandler}
           >
-            <div>
-              <p className="text-sm">Instant</p>
-            </div>
-            {isFeeLoading ? (
-              <Spinner className="w-3 h-3 text-gray-400" />
+            Balance:&nbsp;
+            {!isVault ? (
+              <span className="text-teal-600">
+                {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                {token.getTokenSymbol()}
+              </span>
             ) : (
-              <div className="text-right">
-                <p className="text-sm leading-5" id="fee">
-                  {token.getTokenFeeFormatted()}
-                  <span className="block mt-1 text-xs">{tokenFeeUsd}</span>
-                </p>
-              </div>
+              `${Number(vaultsBalance?.balance["ICP"]) / E8S} ICP`
             )}
           </div>
         </div>
-        <Button
-          className={clsx("text-base", isVault ? "mt-2" : "mt-auto")}
-          type="primary"
-          id={"sendFT"}
-          block
-          onClick={handleSubmit(submit)}
-          icon={<IconCmpArrow className="rotate-[135deg]" />}
-        >
-          Send
-        </Button>
-        <BalanceFooter
-          token={token}
-          publicKey={publicKey}
-          vaultsInfo={
-            isVault
-              ? {
-                  balance: vaultsBalance?.balance["ICP"],
-                  address: vaultsBalance?.address,
-                }
-              : undefined
+      </div>
+      <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+        {errors.amount?.message}
+      </div>
+      {isVault && (
+        <ChooseModal
+          label="From"
+          title="From"
+          optionGroups={accountsOptions ?? []}
+          preselectedValue={selectedVaultsAccountAddress}
+          onSelect={setSelectedVaultsAccountAddress}
+          warningText={
+            isVault ? undefined : (
+              <div className="w-[337px]">
+                Starting September 1, 2023, assets from external applications
+                will not be displayed in NFID. <br /> <br /> To manage those
+                assets in NFID, transfer them to your NFID Wallet. Otherwise,
+                you’ll only have access through the application’s website.
+              </div>
+            )
           }
         />
+      )}
+      <ChooseModal
+        type="input"
+        label="To"
+        title={"Choose an account"}
+        optionGroups={optionGroups}
+        isFirstPreselected={false}
+        placeholder={
+          token.getTokenAddress() === ICP_CANISTER_ID
+            ? "Recipient wallet address or account ID"
+            : "Recipient wallet address"
+        }
+        errorText={errors.to?.message}
+        registerFunction={register("to", {
+          required: "This field cannot be empty",
+          validate: (value) => validateAddress(value),
+        })}
+        onSelect={(value) => {
+          resetField("to")
+          setValue("to", value)
+        }}
+      />
+      <div className="flex justify-between">
+        <div className="text-xs text-gray-500">Network fee</div>
+        <div>
+          {isFeeLoading ? (
+            <Spinner className="w-3 h-3 text-gray-400" />
+          ) : (
+            <div className="text-right">
+              <p className="text-xs leading-5 text-gray-600" id="fee">
+                <span>{token.getTokenFeeFormatted()}</span>
+                <span className="block mt-1 text-xs">{tokenFeeUsd}</span>
+              </p>
+            </div>
+          )}
+        </div>
       </div>
+      <Button
+        className={clsx(
+          "h-[48px] absolute bottom-5 left-5 right-5 !w-auto",
+          isVault ? "mt-2" : "mt-auto",
+        )}
+        type="primary"
+        id="sendFT"
+        block
+        onClick={handleSubmit(submit)}
+        icon={<IconCmpArrow className="rotate-[135deg]" />}
+      >
+        Send
+      </Button>
     </>
   )
 }

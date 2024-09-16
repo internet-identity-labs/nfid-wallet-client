@@ -238,11 +238,10 @@ jobs:
           mkdir -p apps/nfid-frontend-e2e/allure-results
           mkdir -p apps/nfid-frontend-e2e/allure-report
 
-          cat > npmrc_file << EOF
-          @psychedelic:registry=https://npm.pkg.github.com
-          @internet-identity-labs:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${GH_NPM_REGISTRY}
-          EOF
+          ci_echo_debug "Preparing .npmrc" >&2
+          sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
+
+          mv .npmrc npmrc_file
 
           cat > docker_env << EOF
             IS_DEV=true

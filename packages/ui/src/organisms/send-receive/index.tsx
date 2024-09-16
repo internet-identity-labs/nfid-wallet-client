@@ -7,6 +7,7 @@ import { TransferTemplate } from "./components/template"
 import { transferTabs } from "./constants"
 
 export interface SendReceiveModalProps {
+  isVault: boolean
   onClickOutside: () => void
   isSuccess: boolean
   direction: "send" | "receive"
@@ -17,6 +18,7 @@ export interface SendReceiveModalProps {
 }
 
 export const SendReceiveModal: FC<SendReceiveModalProps> = ({
+  isVault,
   onClickOutside,
   isSuccess,
   direction,
@@ -26,7 +28,7 @@ export const SendReceiveModal: FC<SendReceiveModalProps> = ({
   component,
 }) => {
   return (
-    <TransferTemplate onClickOutside={onClickOutside}>
+    <TransferTemplate onClickOutside={onClickOutside} isVault={isVault}>
       {!isSuccess && (
         <div className="mt-[10px]">
           <Tabs
@@ -37,7 +39,7 @@ export const SendReceiveModal: FC<SendReceiveModalProps> = ({
           />
         </div>
       )}
-      {direction === "send" && !isSuccess && (
+      {direction === "send" && !isSuccess && !isVault && (
         <ToggleButton
           firstValue="Token"
           secondValue="Collectible"

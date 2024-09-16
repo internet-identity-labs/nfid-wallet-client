@@ -1,50 +1,53 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import { Receive } from "packages/ui/src/organisms/send-receive/components/receive"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
+import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
-import { TokenStandards } from "@nfid/integration/token/types"
 
-import { Blockchain } from "frontend/ui/connnector/types"
-
-import { useAccountsOptions } from "../hooks/use-accounts-options"
+import { getVaultsAccountsOptions } from "../utils"
 
 export interface ITransferReceive {
   isVault: boolean
-  preselectedTokenStandard: string
   preselectedAccountAddress: string
-  preselectedTokenBlockchain?: string
+  publicKey: string
 }
 
 export const TransferReceive = ({
   isVault,
-  preselectedTokenStandard,
   preselectedAccountAddress,
-  preselectedTokenBlockchain = Blockchain.IC,
+  publicKey,
 }: ITransferReceive) => {
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
   )
+  const [accountId, setAccountId] = useState("")
 
-  const { data: accountsOptions, isValidating: isAccountsValidating } =
-    useAccountsOptions(
-      preselectedTokenStandard as TokenStandards,
-      preselectedTokenBlockchain as Blockchain,
-      isVault,
-      true,
-    )
+  const [isAccountLoading, setIsAccountLoading] = useState(true)
 
-  const address = useMemo(() => {
-    if (!selectedAccountAddress?.length) return ""
-    return AccountIdentifier.fromPrincipal({
-      principal: Principal.fromText(selectedAccountAddress),
-    }).toHex()
-  }, [selectedAccountAddress])
+  const {
+    data: vaultsAccountsOptions = [],
+    isValidating: isVaultsAccountsValidating,
+  } = useSWR("vaultsAccountsOptions", getVaultsAccountsOptions)
 
   useEffect(() => {
-    !isVault && setSelectedAccountAddress(accountsOptions[0]?.options[0]?.value)
-  }, [accountsOptions, isVault])
+    if (isVault) {
+      if (!vaultsAccountsOptions) return
+      setSelectedAccountAddress(vaultsAccountsOptions[0]?.options[0]?.value)
+      setIsAccountLoading(isVaultsAccountsValidating)
+      setAccountId(vaultsAccountsOptions[0]?.options[0]?.value)
+    } else {
+      setSelectedAccountAddress(publicKey)
+      setAccountId(
+        AccountIdentifier.fromPrincipal({
+          principal: Principal.fromText(publicKey),
+        }).toHex(),
+      )
+
+      setIsAccountLoading(false)
+    }
+  }, [vaultsAccountsOptions, isVault, publicKey, isVaultsAccountsValidating])
 
   useEffect(() => {
     sendReceiveTracking.openModal({ isSending: false })
@@ -53,11 +56,11 @@ export const TransferReceive = ({
   return (
     <Receive
       isVault={isVault}
-      isAccountsValidating={isAccountsValidating}
-      accountsOptions={accountsOptions}
+      isAccountsLoading={isAccountLoading}
+      accountsOptions={vaultsAccountsOptions}
       selectedAccountAddress={selectedAccountAddress}
       setSelectedAccountAddress={setSelectedAccountAddress}
-      address={address}
+      address={accountId}
     />
   )
 }

@@ -30,6 +30,7 @@ import {
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
+import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
 
 export interface TransferFTUiProps {
@@ -69,6 +70,7 @@ export interface TransferFTUiProps {
     amount: string
     to: string
   }>
+  vaultsBalance: AccountBalance | undefined
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -91,6 +93,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   handleSubmit,
   setValue,
   resetField,
+  vaultsBalance,
 }) => {
   const [amountInUSD, setAmountInUSD] = useState(0)
 
@@ -118,14 +121,20 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         ],
       }
     })
-    return options
+
+    return isVault
+      ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
+      : options
   }, [tokens])
 
   const maxHandler = async () => {
     if (!token) return
     const fee = token.getTokenFee()
     if (fee && token.getTokenBalance()) {
-      const balanceNum = new BigNumber(token.getTokenBalance()!.toString())
+      const balanceNum =
+        isVault && vaultsBalance
+          ? new BigNumber(vaultsBalance.balance["ICP"].toString())
+          : new BigNumber(token.getTokenBalance()!.toString())
       const feeNum = new BigNumber(fee.toString())
       const val = balanceNum.minus(feeNum)
       if (val.isLessThanOrEqualTo(0)) return
@@ -174,7 +183,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               required: sumRules.errorMessages.required,
               validate: validateTransferAmountField(
                 formatAssetAmountRaw(
-                  Number(token.getTokenBalance()),
+                  isVault && vaultsBalance
+                    ? Number(vaultsBalance.balance["ICP"])
+                    : Number(token.getTokenBalance()),
                   token.getTokenDecimals()!,
                 ),
                 formatAssetAmountRaw(
@@ -301,7 +312,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           </div>
         </div>
         <Button
-          className="mt-auto text-base"
+          className={clsx("text-base", isVault ? "mt-2" : "mt-auto")}
           type="primary"
           id={"sendFT"}
           block
@@ -310,7 +321,18 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         >
           Send
         </Button>
-        <BalanceFooter token={token} publicKey={publicKey} />
+        <BalanceFooter
+          token={token}
+          publicKey={publicKey}
+          vaultsInfo={
+            isVault
+              ? {
+                  balance: vaultsBalance?.balance["ICP"],
+                  address: vaultsBalance?.address,
+                }
+              : undefined
+          }
+        />
       </div>
     </>
   )

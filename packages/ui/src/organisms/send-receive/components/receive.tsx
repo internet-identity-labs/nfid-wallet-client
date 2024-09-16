@@ -11,7 +11,7 @@ import {
 
 export interface ReceiveProps {
   isVault: boolean
-  isAccountsValidating: boolean
+  isAccountsLoading: boolean
   selectedAccountAddress: string
   address: string
   accountsOptions: {
@@ -31,7 +31,7 @@ export interface ReceiveProps {
 
 export const Receive: FC<ReceiveProps> = ({
   isVault,
-  isAccountsValidating,
+  isAccountsLoading,
   selectedAccountAddress,
   setSelectedAccountAddress,
   address,
@@ -40,7 +40,7 @@ export const Receive: FC<ReceiveProps> = ({
   return (
     <BlurredLoader
       className="mt-[5px] text-xs"
-      isLoading={!accountsOptions.length || isAccountsValidating}
+      isLoading={!accountsOptions.length || isAccountsLoading}
     >
       <p className="text-sm mb-[20px]">
         NFID Wallet currently supports Internet Computer Protocol tokens and
@@ -79,16 +79,19 @@ export const Receive: FC<ReceiveProps> = ({
         </p>
         <div className="rounded-[12px] bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
           <CenterEllipsis
-            value={address ?? ""}
+            value={isVault ? selectedAccountAddress ?? "" : address ?? ""}
             leadingChars={29}
             trailingChars={5}
             id={"address"}
           />
-          <Copy value={address} />
+          <Copy value={isVault ? selectedAccountAddress : address} />
         </div>
       </div>
       <div className="pt-[52px] mx-auto">
-        <QRCode options={{ width: 150, margin: 0 }} content={address} />
+        <QRCode
+          options={{ width: 150, margin: 0 }}
+          content={isVault ? selectedAccountAddress : address}
+        />
       </div>
 
       <div

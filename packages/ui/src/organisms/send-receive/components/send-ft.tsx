@@ -101,6 +101,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   setUsdAmount,
 }) => {
   const [amountInUSD, setAmountInUSD] = useState(0)
+  const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
   const { data: tokenFeeUsd, isLoading: isFeeLoading } = useSWR(
     token ? ["tokenFee", token.getTokenAddress()] : null,
@@ -112,39 +113,13 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
-  // const getTokenOptions = useCallback(() => {
-  //   return Promise.all(
-  //     tokens.map(async (token) => {
-  //       return {
-  //         label: "Internet Computer",
-  //         options: [
-  //           {
-  //             icon: token.getTokenLogo(),
-  //             value: token.getTokenAddress(),
-  //             title: token.getTokenSymbol(),
-  //             subTitle: token.getTokenName(),
-  //             innerTitle: `${
-  //               token.getTokenBalanceFormatted() || 0
-  //             } ${token.getTokenSymbol()}`,
-  //             innerSubtitle: await token.getTokenRateFormatted(
-  //               token.getTokenBalanceFormatted()!,
-  //             ),
-  //           },
-  //         ],
-  //       }
-  //     }),
-  //   ).then((options) => {
-  //     return isVault
-  //       ? options.filter(
-  //           (option) => option.options[0].value === ICP_CANISTER_ID,
-  //         )
-  //       : options
-  //   })
-  // }, [tokens])
-
   const getTokenOptions = useCallback(async () => {
     const options = await Promise.all(
       tokens.map(async (token) => {
+        const usdBalance = await token.getTokenRate(
+          token.getTokenBalanceFormatted() || "0",
+        )
+        console.log("balll", usdBalance)
         return {
           label: "Internet Computer",
           options: [
@@ -156,9 +131,12 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               innerTitle: `${
                 token.getTokenBalanceFormatted() || 0
               } ${token.getTokenSymbol()}`,
-              innerSubtitle: await token.getTokenRateFormatted(
-                token.getTokenBalanceFormatted()!,
-              ),
+              innerSubtitle:
+                usdBalance === undefined
+                  ? "Not listed"
+                  : usdBalance === 0
+                  ? "0.00 USD"
+                  : `${usdBalance.toString()} USD`,
             },
           ],
         }
@@ -169,6 +147,10 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
       : options
   }, [tokens, isVault])
+
+  useEffect(() => {
+    getTokenOptions().then(setTokenOptions)
+  }, [getTokenOptions])
 
   useEffect(() => {
     setUsdAmount(amountInUSD)
@@ -211,12 +193,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       <p className="mb-1 text-xs">Amount to send</p>
       <div
         className={clsx(
-          "border rounded-[12px] pl-4 pr-5 h-[100px]",
-          "flex items-center justify-between",
+          "border rounded-[12px] p-4 h-[100px]",
           errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
         )}
       >
-        <div>
+        <div className="flex items-center justify-between">
           <InputAmount
             decimals={token.getTokenDecimals()!}
             {...register("amount", {
@@ -237,16 +218,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               },
             })}
           />
-          {usdRate && (
-            <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
-              {usdRate}
-            </p>
-          )}
-        </div>
-        <div className="text-right">
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseModal
-              optionGroups={getTokenOptions()}
+              optionGroups={tokenOptions}
               title="Token to send"
               type="trigger"
               onSelect={(value) => {
@@ -278,19 +252,25 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               }
             />
           </div>
-          <div
-            className="mt-2 text-xs leading-5 text-right text-gray-500 cursor-pointer"
-            onClick={maxHandler}
-          >
+        </div>
+        <div className="flex items-center justify-between text-right">
+          <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
+            {usdRate}
+          </p>
+          <div className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;
-            {!isVault ? (
-              <span className="text-teal-600">
-                {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                {token.getTokenSymbol()}
-              </span>
-            ) : (
-              `${Number(vaultsBalance?.balance["ICP"]) / E8S} ICP`
-            )}
+            <span className="cursor-pointer" onClick={maxHandler}>
+              {!isVault ? (
+                <span className="text-teal-600">
+                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                  {token.getTokenSymbol()}
+                </span>
+              ) : (
+                <span className="text-teal-600">
+                  {Number(vaultsBalance?.balance["ICP"]) / E8S} ICP
+                </span>
+              )}
+            </span>
           </div>
         </div>
       </div>

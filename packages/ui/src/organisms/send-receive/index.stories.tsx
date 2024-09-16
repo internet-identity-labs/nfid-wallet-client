@@ -25,7 +25,7 @@ export default {
   },
 } as Meta
 
-const selectComponent = (tokenType: string, direction: string) => {
+const selectComponent = (tokenType: string) => {
   const { register, setValue, handleSubmit, resetField, formState } =
     useForm<FormFields>({
       defaultValues: {
@@ -33,29 +33,24 @@ const selectComponent = (tokenType: string, direction: string) => {
         to: "",
       },
     })
-  if (direction === "receive") {
-    return <Receive {...ReceiveUiProps} />
+  if (tokenType === "ft") {
+    return (
+      <TransferFTUi
+        register={register}
+        setValue={setValue}
+        handleSubmit={handleSubmit}
+        resetField={resetField}
+        errors={formState.errors}
+        {...SendFTProps}
+      />
+    )
   } else {
-    if (tokenType === "ft") {
-      return (
-        <TransferFTUi
-          register={register}
-          setValue={setValue}
-          handleSubmit={handleSubmit}
-          resetField={resetField}
-          errors={formState.errors}
-          {...SendFTProps}
-        />
-      )
-    } else {
-      return <TransferNFTUi {...SendNFTProps} />
-    }
+    return <TransferNFTUi {...SendNFTProps} />
   }
 }
 
 const Template: StoryFn<TransferModalProps> = (args) => {
   const [tokenType, setTokenType] = useState(args.tokenType)
-  const [direction, setDirection] = useState(args.direction)
   const handleTokenTypeChange = (isNFT: boolean) => {
     const newTokenType = isNFT ? "nft" : "ft"
     setTokenType(newTokenType)
@@ -65,9 +60,8 @@ const Template: StoryFn<TransferModalProps> = (args) => {
   return (
     <TransferModal
       {...args}
-      component={selectComponent(tokenType, direction)}
+      component={selectComponent(tokenType)}
       onTokenTypeChange={handleTokenTypeChange}
-      direction={direction}
     />
   )
 }

@@ -19,7 +19,8 @@ export const shouldRenderLink = (
 
   if (!hasVaults && id === "nav-vaults") return false
   if (!profileConstants) return true
-  if (id === "nav-vaults" && pathname === profileConstants.vaults) return false
+  if (id === "nav-vaults" && pathname.includes(profileConstants.vaults))
+    return false
   if (
     id === "nav-assets" &&
     (pathname.includes(profileConstants.base) ||

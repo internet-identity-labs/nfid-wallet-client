@@ -24,6 +24,6 @@ export const Default: StoryFn<IProfileTemplate> = (args) => (
 )
 
 Default.args = {
-  value: 12345.67,
+  usdValue: "12345.67",
   address: "yrfx6-fmprd-wgad6-6or6b-2aw42-5qqhn-o4yt7-plkxr-2jtgv-azhzx-gae",
 }

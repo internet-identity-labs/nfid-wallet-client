@@ -149,6 +149,14 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
+  const onSwapClick = () => {
+    sendReceiveTracking.openModal()
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: "swap" })
+    send("SHOW")
+  }
+
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
       <ProfileHeader
@@ -211,9 +219,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               <ProfileInfo
                 usdValue={tokensUsdValue}
                 isUsdLoading={isUsdLoading}
-                isLoading={isIdentityLoading && isValidating}
+                isAddressLoading={isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}
+                onSwapClick={onSwapClick}
                 address={identity?.publicKey ?? ""}
               />
               <TabsSwitcher

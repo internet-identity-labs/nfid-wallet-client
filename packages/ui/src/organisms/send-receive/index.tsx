@@ -10,7 +10,7 @@ export interface SendReceiveModalProps {
   isVault: boolean
   onClickOutside: () => void
   isSuccess: boolean
-  direction: "send" | "receive"
+  direction: "send" | "receive" | "swap"
   tokenType: "ft" | "nft"
   onTokenTypeChange: (isNFT: boolean) => void
   onModalTypeChange: (value: string) => void

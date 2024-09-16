@@ -15,11 +15,13 @@ import { AssetDropdown } from "./asset-dropdown"
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
   profileConstants: IProfileConstants
+  onSendClick: (value: string) => void
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
   token,
   profileConstants,
+  onSendClick,
 }) => {
   const { data: usdPrice, isLoading } = useSWR(
     token ? ["activeTokenUSD", token.getTokenAddress()] : null,
@@ -28,7 +30,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
-      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[160px] sm-[270px] lg:w-[350px]">
+      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[160px] sm:max-w-[100%] lg:w-[350px]">
         <div className="w-[24px] h-[24px] xs:w-[40px] xs:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt={`${token.getTokenSymbol}`}
@@ -93,7 +95,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         )}
       </td>
       <td className="w-[24px] min-w-[24px]">
-        <AssetDropdown token={token} profileConstants={profileConstants} />
+        <AssetDropdown
+          token={token}
+          profileConstants={profileConstants}
+          onSendClick={onSendClick}
+        />
       </td>
     </tr>
   )

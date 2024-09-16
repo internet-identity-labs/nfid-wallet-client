@@ -1,12 +1,9 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { ii, im, setProfile } from "@nfid/integration"
 
-import {
-  deviceInfo,
-  fetchWebAuthnPlatformCapability,
-  getIsMobileDeviceMatch,
-} from "."
+import { deviceInfo, fetchWebAuthnPlatformCapability } from "."
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "../identity"
 import { fetchProfile } from "../identity-manager"
 import { fetchAuthenticatorDevices } from "../internet-identity"

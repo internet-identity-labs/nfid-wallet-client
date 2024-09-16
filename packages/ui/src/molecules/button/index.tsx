@@ -12,11 +12,13 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   type?: ButtonType
   isSmall?: boolean
   as?: React.ElementType
+  innerClassName?: string
 }
 
 export const Button: React.FC<ButtonProps> = ({
   children,
   className,
+  innerClassName,
   type = "primary",
   disabled,
   icon,
@@ -96,7 +98,12 @@ export const Button: React.FC<ButtonProps> = ({
       )}
       {...buttonProps}
     >
-      <div className="flex items-center justify-center space-x-2 h-full">
+      <div
+        className={clsx(
+          "flex items-center justify-center space-x-2 h-full",
+          innerClassName,
+        )}
+      >
         {icon ? (
           <div className="flex items-center justify-center w-6 h-6">{icon}</div>
         ) : null}

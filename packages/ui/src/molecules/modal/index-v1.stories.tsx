@@ -1,7 +1,7 @@
 import { Meta, StoryFn, StoryObj } from "@storybook/react"
 import React, { FunctionComponent } from "react"
 
-import { Button } from "../../atoms/button"
+import { Button } from "../button"
 import { ModalAdvanced, ModalAdvancedProps } from "./advanced"
 import { Modal, ModalProps } from "./index-v1"
 
@@ -60,7 +60,7 @@ const AdvancedModal: StoryFn<ModalAdvancedProps> = ({ ...args }) => {
             </div>
           }
           primaryButton={{
-            type: "error",
+            type: "red",
             text: "Delete",
             onClick: toggleVisibility,
           }}

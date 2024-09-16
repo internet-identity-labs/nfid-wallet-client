@@ -1,4 +1,3 @@
-import { Blockchain, TokenConfig } from "src/ui/connnector/types"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { TokenStandards } from "@nfid/integration/token/types"
@@ -8,42 +7,30 @@ import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { ITransferSuccess } from "./components/success"
 
 export type TransferMachineContext = {
-  direction: "send" | "receive"
+  direction: "send" | "receive" | "swap"
   tokenType: "ft" | "nft"
   sourceWalletAddress: string
   sourceAccount?: Wallet
-  selectedFT?: TokenConfig
+  selectedFT?: string
   selectedNFTId?: string
   receiverWallet: string
   amount: string
   transferObject?: ITransferSuccess
   error?: Error
   tokenStandard: string
-  tokenCurrency: string
-  tokenBlockchain: Blockchain
   isOpenedFromVaults: boolean
 }
-
-export type ErrorEvents =
-  | {
-      type: "error.platform.transferFT"
-      data: Error
-    }
-  | {
-      type: "error.platform.transferNFT"
-      data: Error
-    }
 
 export type Events =
   | { type: "SHOW" }
   | { type: "HIDE" }
   | { type: "CHANGE_TOKEN_TYPE"; data: "ft" | "nft" }
-  | { type: "CHANGE_DIRECTION"; data: "send" | "receive" }
+  | { type: "CHANGE_DIRECTION"; data: "send" | "receive" | "swap" }
   | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
   | { type: "ASSIGN_AMOUNT"; data: string }
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
-  | { type: "ASSIGN_SELECTED_FT"; data: TokenConfig }
+  | { type: "ASSIGN_SELECTED_FT"; data: string }
   | { type: "ASSIGN_SELECTED_NFT"; data: string }
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
@@ -75,8 +62,6 @@ export const transferMachine = createMachine(
       amount: "",
       transferObject: undefined,
       tokenStandard: TokenStandards.ICP,
-      tokenCurrency: TokenStandards.ICP,
-      tokenBlockchain: Blockchain.IC,
       isOpenedFromVaults: false,
     },
     id: "TransferMachine",
@@ -140,7 +125,6 @@ export const transferMachine = createMachine(
           },
         ],
       },
-
       ReceiveMachine: {},
       SendMachine: {
         id: "SendMachine",

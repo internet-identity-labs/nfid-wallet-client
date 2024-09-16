@@ -119,7 +119,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         const usdBalance = await token.getTokenRate(
           token.getTokenBalanceFormatted() || "0",
         )
-        console.log("balll", usdBalance)
+
         return {
           label: "Internet Computer",
           options: [
@@ -263,7 +263,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             Balance:&nbsp;
             <span className="cursor-pointer" onClick={maxHandler}>
               {!isVault ? (
-                <span className="text-teal-600">
+                <span className="text-teal-600" id="balance">
                   {token.getTokenBalanceFormatted() || "0"}&nbsp;
                   {token.getTokenSymbol()}
                 </span>
@@ -327,7 +327,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           ) : (
             <div className="text-right">
               <p className="text-xs leading-5 text-gray-600" id="fee">
-                <span>{token.getTokenFeeFormatted()}</span>
+                {token.getTokenFeeFormatted()}
                 <span className="block mt-1 text-xs">{tokenFeeUsd}</span>
               </p>
             </div>

@@ -124,11 +124,10 @@ export class Assets {
   }
 
   public async receiveDialog() {
-    await this.sendDialog()
-    const tabReceive = await $("#tab_receive")
-    await tabReceive.waitForDisplayed({ timeout: 10000 })
-    await tabReceive.waitForClickable({ timeout: 15000 })
-    await tabReceive.click()
+    const receiveButton = await $("#receive_button")
+    await receiveButton.waitForDisplayed({ timeout: 10000 })
+    await receiveButton.waitForClickable({ timeout: 15000 })
+    await receiveButton.click()
   }
 
   public async getAccountId(isAddress?: boolean) {

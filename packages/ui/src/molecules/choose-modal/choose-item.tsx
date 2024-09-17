@@ -1,6 +1,6 @@
 import { clsx } from "clsx"
+import useSWR from "swr"
 
-import { NoIcon } from "../../assets/no-icon"
 import { Badge } from "../../atoms/badge"
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
@@ -33,11 +33,9 @@ export const ChooseItem = ({
       id={id}
       onClick={handleClick}
       className={clsx(
-        "border-t border-t-gray-100 last:border-b last:border-b-gray-100 h-[60px]",
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
-        "py-2.5 cursor-pointer",
-        "first:border-t-0",
+        "py-2.5 cursor-pointer h-[60px]",
       )}
     >
       <div id={id} className="flex items-center h-[28px]">
@@ -46,16 +44,16 @@ export const ChooseItem = ({
           fallbackSrc={IconNftPlaceholder}
           src={`${image}`}
           className={clsx(
-            "mr-2.5 w-[28px] h-[28px] object-cover rounded-full",
+            "mr-[18px] w-[28px] h-[28px] object-cover rounded-full",
             iconClassnames,
           )}
         />
         <div>
           <p className="text-sm mb-0.5 flex items-center space-x-1">
-            <span>{title}</span>
+            <span className="font-semibold">{title}</span>
             {badgeText ? <Badge type="success">{badgeText}</Badge> : null}
           </p>
-          <p className="text-xs text-gray-400">{subTitle}</p>
+          <p className="text-xs text-left text-gray-400">{subTitle}</p>
         </div>
       </div>
       <div>

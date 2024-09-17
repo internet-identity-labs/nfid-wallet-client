@@ -82,7 +82,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             )}
 
             <div
-              id="receiveButton2"
+              id="receive_button_2"
               className="text-sm text-teal-600 font-bold leading-[20px] mt-[14px] cursor-pointer"
               onClick={onReceiveClick}
             >
@@ -103,7 +103,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               Send
             </Button>
             <Button
-              id="receiveButton"
+              id="receive_button"
               className="flex-1 !px-0 sm:!px-[15px]"
               innerClassName="!space-x-1"
               icon={

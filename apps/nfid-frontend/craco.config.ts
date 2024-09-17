@@ -41,7 +41,7 @@ const setupCSP = () => {
         "https://toniq.io",
         "https://us-central1-entrepot-api.cloudfunctions.net",
         "https://stat.yuku.app",
-        "https://memcake.io"
+        "https://memecake.io"
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

@@ -28,7 +28,7 @@ describe("nft test suite", () => {
       expect(result.items).toHaveLength(10)
       expect(result.totalPages).toEqual(2)
       expect(result.currentPage).toEqual(1)
-      expect(result.totalItems).toEqual(10)
+      expect(result.totalItems).toEqual(11)
 
       //collectibles page
       const extNft = result.items.filter(

@@ -128,6 +128,18 @@ export const mockGeekResponse = {
         },
       ],
     },
+    "ok3ug-2iaaa-aaaag-qbilq-cai": {
+      tokens: [
+        {
+          timeMillis: 1721253870829,
+          tokenId: 2226,
+          uniqueIdentifier: {
+            uniqueIdentifierType: "ACCOUNT_IDENTIFIER",
+            id: "0051449d6ed40385865c7ddd44e1ce87a4e0c3d054bd86b936a9aedf094f62df",
+          },
+        },
+      ],
+    },
   },
   collections: [
     {
@@ -183,6 +195,12 @@ export const mockGeekResponse = {
       name: "ICTempies",
       alias: "",
       interface: "YUMI",
+    },
+    {
+      canisterId: "ok3ug-2iaaa-aaaag-qbilq-cai",
+      name: "ICTempies",
+      alias: "",
+      interface: "EXT",
     },
   ],
 }
@@ -277,5 +295,14 @@ export const expectedGeekResponse = [
     collectionName: "ICTempies",
     tokenFloorPriceIcp: undefined,
     tokenFloorPriceUSD: undefined,
+  },
+  {
+    collectionId: "ok3ug-2iaaa-aaaag-qbilq-cai",
+    collectionName: "ICTempies",
+    marketPlace: "EXT",
+    millis: 1721253870829,
+    tokenFloorPriceIcp: undefined,
+    tokenFloorPriceUSD: undefined,
+    tokenId: 2226,
   },
 ]

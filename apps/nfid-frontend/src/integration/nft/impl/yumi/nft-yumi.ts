@@ -40,7 +40,7 @@ export class NftYumi extends NftImpl {
         return super.getAssetPreviewAsync()
       }
       const json = array2string(new Uint8Array(metadata))
-      const raw = JSON.parse(json.replace(/\n/g, "\\n").replace(/\r/g, "\\r")) // ! Treat as JSON
+      const raw = JSON.parse(json.replace(/\n/g, "\\n").replace(/\r/g, "\\r"))
       return {
         url:
           raw.thumb ??

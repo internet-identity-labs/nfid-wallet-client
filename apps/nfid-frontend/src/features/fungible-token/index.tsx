@@ -3,8 +3,8 @@ import { DEFAULT_ERROR_TEXT } from "packages/constants"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
+  fetchActiveTokens,
   fetchAllTokens,
-  fetchFilteredTokens,
   getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useState } from "react"
@@ -36,11 +36,11 @@ const TokensPage = () => {
     data: activeTokens = [],
     isLoading: isActiveLoading,
     mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchAllTokens)
+  } = useSWR("activeTokens", fetchActiveTokens)
 
-  const { data: filteredTokens = [] } = useSWR(
-    ["filteredTokens", searchQuery],
-    ([, query]) => fetchFilteredTokens(query),
+  const { data: allTokens = [] } = useSWR(
+    ["allTokens", searchQuery],
+    ([, query]) => fetchAllTokens(query),
   )
 
   const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {
@@ -86,7 +86,7 @@ const TokensPage = () => {
   return (
     <Tokens
       activeTokens={activeTokens}
-      filteredTokens={filteredTokens}
+      filteredTokens={allTokens}
       setSearchQuery={(value) => setSearchQuery(value)}
       isActiveTokensLoading={isActiveLoading}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}

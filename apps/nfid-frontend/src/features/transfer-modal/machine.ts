@@ -5,6 +5,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
 import { ITransferSuccess } from "./components/success"
+import { ISwapSuccess } from "./components/swap-success"
 
 export type TransferMachineContext = {
   direction: "send" | "receive" | "swap"
@@ -16,6 +17,7 @@ export type TransferMachineContext = {
   receiverWallet: string
   amount: string
   transferObject?: ITransferSuccess
+  swapObject?: ISwapSuccess
   error?: Error
   tokenStandard: string
   isOpenedFromVaults: boolean
@@ -35,6 +37,7 @@ export type Events =
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
   | { type: "ON_TRANSFER_PROMISE"; data: ITransferSuccess }
+  | { type: "ON_SWAP_PROMISE"; data: ISwapSuccess }
   | { type: "ASSIGN_VAULTS"; data: boolean }
 
 type Services = {
@@ -122,10 +125,23 @@ export const transferMachine = createMachine(
           },
           {
             target: "ReceiveMachine",
+            cond: "isReceiveMachine",
+          },
+          {
+            target: "SwapMachine",
+            cond: "isSwapMachine",
           },
         ],
       },
       ReceiveMachine: {},
+      SwapMachine: {
+        on: {
+          ON_SWAP_PROMISE: {
+            target: "#TransferMachine.SwapSuccess",
+            actions: "assignSwapObject",
+          },
+        },
+      },
       SendMachine: {
         id: "SendMachine",
         initial: "CheckSendType",
@@ -159,8 +175,12 @@ export const transferMachine = createMachine(
           },
         },
       },
-
       Success: {
+        on: {
+          HIDE: "Hidden",
+        },
+      },
+      SwapSuccess: {
         on: {
           HIDE: "Hidden",
         },
@@ -171,6 +191,8 @@ export const transferMachine = createMachine(
     guards: {
       isSendMachine: (context) => context.direction === "send",
       isSendFungible: (context) => context.tokenType === "ft",
+      isReceiveMachine: (context) => context.direction === "receive",
+      isSwapMachine: (context) => context.direction === "swap",
     },
     actions: {
       assignTokenType: assign((_, event) => ({
@@ -199,6 +221,9 @@ export const transferMachine = createMachine(
       })),
       assignTransferObject: assign((_, event) => ({
         transferObject: event?.data,
+      })),
+      assignSwapObject: assign((_, event) => ({
+        swapObject: event?.data,
       })),
       assignTokenStandard: assign((_, event) => ({
         tokenStandard: event?.data,

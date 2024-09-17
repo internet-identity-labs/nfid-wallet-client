@@ -1,5 +1,8 @@
 import { useActor } from "@xstate/react"
-import { SendReceiveModal } from "packages/ui/src/organisms/send-receive"
+import {
+  TransferModal,
+  TransferVaultModal,
+} from "packages/ui/src/organisms/send-receive"
 import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { toast } from "react-toastify"
@@ -12,6 +15,8 @@ import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { ITransferSuccess, TransferSuccess } from "./components/success"
+import { SwapFT } from "./components/swap"
+import { ISwapSuccess, SwapSuccess } from "./components/swap-success"
 
 export const TransferModalCoordinator = () => {
   const [publicKey, setPublicKey] = useState("")
@@ -47,7 +52,6 @@ export const TransferModalCoordinator = () => {
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
-            publicKey={publicKey}
           />
         )
       case state.matches("SendMachine.SendNFT"):
@@ -57,7 +61,14 @@ export const TransferModalCoordinator = () => {
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
-            publicKey={publicKey}
+          />
+        )
+      case state.matches("SwapMachine"):
+        return (
+          <SwapFT
+            onSwapPromise={(message: ISwapSuccess) =>
+              send({ type: "ON_SWAP_PROMISE", data: message })
+            }
           />
         )
       case state.matches("ReceiveMachine"):
@@ -75,18 +86,18 @@ export const TransferModalCoordinator = () => {
             {...state.context.transferObject!}
           />
         )
+      case state.matches("SwapSuccess"):
+        return (
+          <SwapSuccess
+            onClose={() => send({ type: "HIDE" })}
+            {...state.context.swapObject!}
+            withToasts={false}
+          />
+        )
       default:
         return <BlurredLoader overlayClassnames="z-10 rounded-xl" isLoading />
     }
   }, [send, state, publicKey])
-
-  const onModalTypeChange = useCallback(
-    (value: string) => {
-      // TODO: send receive
-      return send({ type: "CHANGE_DIRECTION", data: value as any })
-    },
-    [send],
-  )
 
   const onTokenTypeChange = useCallback(
     (isNFT: boolean) => {
@@ -98,15 +109,25 @@ export const TransferModalCoordinator = () => {
   if (state.matches("Hidden")) return null
 
   return (
-    <SendReceiveModal
-      isVault={state.context.isOpenedFromVaults}
-      onClickOutside={() => send({ type: "HIDE" })}
-      isSuccess={state.matches("Success")}
-      direction={state.context.direction}
-      tokenType={state.context.tokenType}
-      onTokenTypeChange={onTokenTypeChange}
-      onModalTypeChange={onModalTypeChange}
-      component={Component}
-    />
+    <>
+      {state.context.isOpenedFromVaults ? (
+        <TransferVaultModal
+          onClickOutside={() => send({ type: "HIDE" })}
+          isSuccess={state.matches("Success")}
+          direction={state.context.direction}
+          component={Component}
+          tokenType={state.context.tokenType}
+        />
+      ) : (
+        <TransferModal
+          onClickOutside={() => send({ type: "HIDE" })}
+          isSuccess={state.matches("Success") || state.matches("SwapSuccess")}
+          direction={state.context.direction}
+          tokenType={state.context.tokenType}
+          onTokenTypeChange={onTokenTypeChange}
+          component={Component}
+        />
+      )}
+    </>
   )
 }

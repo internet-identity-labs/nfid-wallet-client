@@ -23,14 +23,17 @@ export interface Typegen0 {
     assignSelectedNFTId: "ASSIGN_SELECTED_NFT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
+    assignSwapObject: "ON_SWAP_PROMISE"
     assignTokenStandard: "ASSIGN_TOKEN_STANDARD"
     assignTokenType: "CHANGE_TOKEN_TYPE"
     assignTransferObject: "ON_TRANSFER_PROMISE"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    isReceiveMachine: ""
     isSendFungible: ""
     isSendMachine: ""
+    isSwapMachine: ""
   }
   eventsCausingServices: {}
   matchesStates:
@@ -41,6 +44,8 @@ export interface Typegen0 {
     | "SendMachine.SendFT"
     | "SendMachine.SendNFT"
     | "Success"
+    | "SwapMachine"
+    | "SwapSuccess"
     | "TransferModal"
     | { SendMachine?: "CheckSendType" | "SendFT" | "SendNFT" }
   tags: never

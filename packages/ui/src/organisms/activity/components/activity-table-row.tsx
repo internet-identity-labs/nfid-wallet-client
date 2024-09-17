@@ -4,13 +4,16 @@ import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
 import {
-  IconCmpArrow,
   IconCmpStatusSuccess,
   IconCmpTinyIC,
+  IconNftPlaceholder,
   IconSvgArrowRight,
+  ImageWithFallback,
 } from "@nfid-frontend/ui"
 
 import { IActivityRow } from "frontend/features/activity/types"
+
+import { getActionOptions } from "../utils"
 
 interface IActivityTableRow extends IActivityRow {
   id: string
@@ -40,19 +43,11 @@ export const ActivityTableRow = ({
       <td className="flex items-center pl-5 sm:pl-[30px] w-[30%]">
         <div
           className={clsx(
-            "w-10 h-10 rounded-[9px] flex items-center justify-center relative",
-            action === "Sent" ? "bg-red-50" : "bg-emerald-50",
-            "min-w-10",
+            "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
+            getActionOptions(action).color,
           )}
         >
-          <IconCmpArrow
-            className={clsx(
-              "text-gray-400",
-              action === "Sent"
-                ? "rotate-[135deg] text-red-600"
-                : "rotate-[-45deg] !text-emerald-600",
-            )}
-          />
+          {getActionOptions(action).icon}
         </div>
         <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
           <p className="font-semibold text-sm leading-[20px]">{action}</p>
@@ -61,14 +56,50 @@ export const ActivityTableRow = ({
           </p>
         </div>
       </td>
-      <td className="transition-opacity w-[20%] text-center pl-[28px]">
-        <CopyAddress address={from} leadingChars={6} trailingChars={4} />
+      <td
+        className={clsx(
+          "transition-opacity w-[20%] text-center",
+          action !== "Swapped" && "pl-[28px]",
+        )}
+      >
+        {action === "Swapped" ? (
+          <div className="flex items-center justify-center gap-[8px]">
+            {/* // TODO: change harcoded values */}
+            <ImageWithFallback
+              alt="NFID token"
+              fallbackSrc={IconNftPlaceholder}
+              src="123"
+              className="rounded-full w-[28px] h-[28px]"
+            />
+            1.15 ICP
+          </div>
+        ) : (
+          <CopyAddress address={from} leadingChars={6} trailingChars={4} />
+        )}
       </td>
       <td className="w-[24px] h-[24px] absolute left-0 right-0 top-0 bottom-0 m-auto">
         <img src={IconSvgArrowRight} alt="" />
       </td>
-      <td className="transition-opacity w-[20%] text-center pl-[28px]">
-        <CopyAddress address={to} leadingChars={6} trailingChars={4} />
+      <td
+        className={clsx(
+          "transition-opacity w-[20%] text-center",
+          action !== "Swapped" && "pl-[28px]",
+        )}
+      >
+        {/* // TODO: change harcoded values */}
+        {action === "Swapped" ? (
+          <div className="flex items-center justify-center gap-[8px]">
+            <ImageWithFallback
+              alt="NFID token"
+              fallbackSrc={IconNftPlaceholder}
+              src="123"
+              className="rounded-full w-[28px] h-[28px]"
+            />
+            56.15 ckBTC
+          </div>
+        ) : (
+          <CopyAddress address={to} leadingChars={6} trailingChars={4} />
+        )}
       </td>
       {asset?.type === "ft" ? (
         <td className="leading-5 text-right sm:text-left pr-5 sm:pr-[30px] w-[30%]">

@@ -54,7 +54,7 @@ export const Success: React.FC<SuccessProps> = ({
     <div
       id={"success_window_" + step}
       className={clsx(
-        "text-black text-center relative",
+        "text-black text-center relative h-full",
         "flex flex-grow flex-col justify-between",
       )}
     >
@@ -66,16 +66,15 @@ export const Success: React.FC<SuccessProps> = ({
             ? "Sent successfully"
             : "Processing..."}
         </H5>
-
         <p className="mt-2 text-sm leading-5">
           {isFailed
-            ? "Please make sure you have enough funds and try again"
+            ? "Your assets are still in your wallet."
             : isCompleted
             ? ""
             : `This usually takes less than ${duration}.`}
         </p>
 
-        <div className="absolute flex items-center justify-center w-full px-3 -top-0">
+        <div className="absolute flex items-center justify-center w-full px-3 top-0 sm:-top-[65px]">
           <LottieAnimation
             animationData={animation}
             loop={step === 0 || step === 2}
@@ -93,13 +92,13 @@ export const Success: React.FC<SuccessProps> = ({
         </div>
       </div>
       <div className="relative z-20">
-        <p className="font-bold" id="title">
+        <p className="text-sm leading-[25px]" id="title">
           {title}
         </p>
-        <p className="mt-1 text-sm text-gray-400" id="subTitle">
+        <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
           {subTitle}
         </p>
-        <Button type="primary" block className="mt-10" onClick={onClose}>
+        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
           Done
         </Button>
         {url && (

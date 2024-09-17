@@ -58,7 +58,7 @@ export class FtService {
   ): Promise<Array<FT>> {
     return icrc1StorageService
       .getICRC1FilteredCanisters(userId, nameCategoryFilter)
-      .then((canisters) => {
+      .then(async (canisters) => {
         const ft = canisters.map((canister) => new FTImpl(canister))
 
         const categoryOrder: Record<Category, number> = {
@@ -76,6 +76,7 @@ export class FtService {
           const bCategory = categoryOrder[b.getTokenCategory()] || 999
           return aCategory - bCategory
         })
+
         return ft
       })
   }
@@ -96,6 +97,17 @@ export class FtService {
     const token = tokens.items.find(
       (token) => token.getTokenAddress() === address,
     )
+    if (!token) throw new Error("Token not found")
+    return token
+  }
+
+  async getAllTokenByAddress(
+    userId: string,
+    nameCategoryFilter: string | undefined,
+    address: string,
+  ): Promise<FT> {
+    const tokens = await this.getAllFTokens(userId, nameCategoryFilter)
+    const token = tokens.find((token) => token.getTokenAddress() === address)
     if (!token) throw new Error("Token not found")
     return token
   }

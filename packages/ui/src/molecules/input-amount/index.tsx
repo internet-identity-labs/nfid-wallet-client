@@ -1,14 +1,19 @@
 import clsx from "clsx"
-import { forwardRef } from "react"
+import {
+  forwardRef,
+  KeyboardEvent,
+  ClipboardEvent,
+  InputHTMLAttributes,
+} from "react"
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+import { Skeleton } from "../../atoms/skeleton"
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   decimals: number
+  isLoading: boolean
 }
 
-const pressHandler = (
-  e: React.KeyboardEvent<HTMLInputElement>,
-  decimals: number,
-) => {
+const pressHandler = (e: KeyboardEvent<HTMLInputElement>, decimals: number) => {
   const allowedKeys = /[0-9.]/
   const key = e.key
   const input = e.target as HTMLInputElement | null
@@ -50,7 +55,7 @@ const pressHandler = (
 }
 
 const pasteHandler = (
-  e: React.ClipboardEvent<HTMLInputElement>,
+  e: ClipboardEvent<HTMLInputElement>,
   decimals: number,
 ) => {
   const pastedValue = e.clipboardData.getData("text/plain").replace(",", ".")
@@ -67,21 +72,30 @@ const pasteHandler = (
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  ({ decimals, ...inputProps }, ref) => (
-    <input
-      className={clsx(
-        "min-w-0 text-xl placeholder:text-black font-semibold",
-        "outline-none border-none h-[54px] focus:ring-0",
-        "p-0",
+  ({ decimals, disabled, isLoading = false, ...inputProps }, ref) => (
+    <div className="relative h-10">
+      {isLoading ? (
+        <Skeleton className="absolute w-20 h-full !bg-gray-200 rounded-[6px]" />
+      ) : (
+        <input
+          className={clsx(
+            "min-w-0 text-[34px] font-semibold leading-10 bg-transparent",
+            "outline-none border-none focus:ring-0 p-0 max-w-[160px] sm:max-w-[230px]",
+            disabled
+              ? "text-gray-500 placeholder:text-gray-500"
+              : "text-black placeholder:text-black",
+          )}
+          placeholder="0.00"
+          type="text"
+          id="amount"
+          min={0.0}
+          onKeyDown={(e) => pressHandler(e, decimals)}
+          onPaste={(e) => pasteHandler(e, decimals)}
+          ref={ref}
+          disabled={disabled}
+          {...inputProps}
+        />
       )}
-      placeholder="0.00"
-      type="text"
-      id="amount"
-      min={0.0}
-      onKeyDown={(e) => pressHandler(e, decimals)}
-      onPaste={(e) => pasteHandler(e, decimals)}
-      ref={ref}
-      {...inputProps}
-    />
+    </div>
   ),
 )

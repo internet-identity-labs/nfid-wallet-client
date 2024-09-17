@@ -10,6 +10,7 @@ import { Blockchain } from "frontend/ui/connnector/types"
 export enum IActivityAction {
   SENT = "Sent",
   RECEIVED = "Received",
+  SWAPPED = "Swapped",
 }
 
 export enum IActivityStatus {

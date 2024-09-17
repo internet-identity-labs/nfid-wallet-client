@@ -10,8 +10,8 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { Blockchain } from "frontend/ui/connnector/types"
 
-import { IActivityAction } from "../../types"
 import { nanoSecondsToDate } from "../../util/activity"
+import { getTxType } from "../../util/tx-type"
 import { ActivityClass } from "../activity"
 import { IActivityConfig } from "../activity-connector-types"
 
@@ -35,10 +35,7 @@ export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
           from: tx.from,
           to: tx.to,
           transactionHash: tx.transactionId.toString(),
-          action:
-            tx.type === "sent"
-              ? IActivityAction.SENT
-              : IActivityAction.RECEIVED,
+          action: getTxType(tx.type),
           asset: {
             type: "ft",
             currency: tx.symbol,

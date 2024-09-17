@@ -43,7 +43,7 @@ export interface ICRC1IndexData {
 }
 
 export interface TransactionData {
-  type: "sent" | "received"
+  type: "sent" | "received" | "swapped"
   timestamp: bigint
   transactionId: bigint
   symbol: string

@@ -21,7 +21,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
 
   const mutateTokens = () => {
     mutate("activeTokens")
-    mutate((key) => Array.isArray(key) && key[0] === "filteredTokens")
+    mutate((key) => Array.isArray(key) && key[0] === "allTokens")
   }
 
   const hideToken = async (token: FT) => {

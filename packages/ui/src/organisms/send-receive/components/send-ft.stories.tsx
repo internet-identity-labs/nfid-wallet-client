@@ -1,5 +1,11 @@
+import { Principal } from "@dfinity/principal"
 import { Meta, StoryFn } from "@storybook/react"
+import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 import { useForm } from "react-hook-form"
+
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+
+import { FT } from "frontend/integration/ft/ft"
 
 import { TransferFTUi, TransferFTUiProps } from "./send-ft"
 import { TransferTemplate } from "./template"
@@ -29,11 +35,20 @@ const Template: StoryFn<TransferFTUiProps> = (args) => {
       },
     })
 
-  // setValue("amount", "50000000")
-
   return (
     <div className="w-[450px] h-[630px]">
       <TransferTemplate>
+        <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+          Send
+        </div>
+        <ToggleButton
+          firstValue="Token"
+          secondValue="Collectible"
+          className="mb-5"
+          onChange={() => console.log(1)}
+          defaultValue={false}
+          id="send_type_toggle"
+        />
         <TransferFTUi
           {...args}
           register={register}
@@ -49,7 +64,7 @@ const Template: StoryFn<TransferFTUiProps> = (args) => {
 
 export const Default = Template.bind({})
 
-export const SendFTProps = {
+export const SendFTProps: any = {
   isLoading: false,
   isBalanceLoading: false,
   isFeeLoading: false,
@@ -79,6 +94,35 @@ export const SendFTProps = {
   submit: async () => {
     console.log("Send button clicked")
   },
+  setChosenToken: () => {},
+  validateAddress: () => true,
+  tokens: [] as FT[],
+  token: {
+    init: async (principal: Principal) => SendFTProps.token,
+    getTokenName: () => "Chat",
+    getTokenCategory: () => Category.Known,
+    getTokenCategoryFormatted: () => "Unknown",
+    getTokenBalance: () => BigInt(1000000000),
+    getTokenBalanceFormatted: () => "10",
+    getUSDBalanceFormatted: async () => "$10",
+    getTokenRate: async (amount: string) => 1.0,
+    getTokenRateFormatted: async (amount: string) => "$10",
+    getTokenAddress: () => "2ouva-viaaa-aaaaq-aaamq-cai",
+    getTokenSymbol: () => "CHAT",
+    getTokenDecimals: () => 8,
+    getTokenLogo: () => "Some logo",
+    getTokenState: () => State.Active,
+    getBlockExplorerLink: () => "https://explorer.example.com",
+    hideToken: async () => {},
+    showToken: async () => {},
+    getTokenFee: () => BigInt(10000),
+    getTokenFeeFormatted: () => "0.0001 CHAT",
+    getTokenFeeFormattedUsd: async () => "0.10 USD",
+    isHideable: () => true,
+  } as FT,
+  selectedVaultsAccountAddress: "",
+  setSelectedVaultsAccountAddress: () => "",
+  setUsdAmount: () => {},
 }
 
 Default.args = SendFTProps

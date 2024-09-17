@@ -14,9 +14,41 @@ import {
   CollectionData,
   CollectionResponse,
 } from "src/integration/nft/impl/yumi/types/yumi-types"
+import { array2string } from "src/integration/nft/impl/yumi/util/util"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
+import { actor, hasOwnProperty } from "@nfid/integration"
+
+import { idlFactory } from "./idl/yumiNft"
+import { _SERVICE as YukuNftCanister } from "./idl/yumiNft.d"
+
 export class NftYumi extends NftImpl {
+  protected getAssetPreviewAsync(): Promise<AssetPreview> {
+    const nftActor = actor<YukuNftCanister>(this.getCollectionId(), idlFactory)
+    return nftActor.getTokensByIds([this.getTokenNumber()]).then((token) => {
+      if (token.length === 0) {
+        return super.getAssetPreviewAsync()
+      }
+      const data = token[0][1]
+      const metadata = hasOwnProperty(data, "nonfungible")
+        ? // @ts-ignore
+          (data.nonfungible.metadata[0] as Array<number>)
+        : null
+
+      if (!metadata || metadata.length === 0) {
+        return super.getAssetPreviewAsync()
+      }
+      const json = array2string(new Uint8Array(metadata))
+      const raw = JSON.parse(json.replace(/\n/g, "\\n").replace(/\r/g, "\\r"))
+      return {
+        url:
+          raw.thumb ??
+          `https://${this.getCollectionId()}.raw.ic0.app/?tokenid=${this.getTokenId()}&type=thumbnail`,
+        format: "img",
+      }
+    })
+  }
+
   async getDetails(): Promise<NFTDetails> {
     let collectionResponse = (await fetch(
       `https://stat.yuku.app/api/collection/${this.getCollectionId()}`,

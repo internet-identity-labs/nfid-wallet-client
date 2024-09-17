@@ -1,5 +1,8 @@
 import { useActor } from "@xstate/react"
-import { TransferModal, TransferVaultModal } from "packages/ui/src/organisms/send-receive"
+import {
+  TransferModal,
+  TransferVaultModal,
+} from "packages/ui/src/organisms/send-receive"
 import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { toast } from "react-toastify"
@@ -89,20 +92,24 @@ export const TransferModalCoordinator = () => {
 
   return (
     <>
-    {state.context.isOpenedFromVaults ? <TransferVaultModal
-      onClickOutside={() => send({ type: "HIDE" })}
-      isSuccess={state.matches("Success")}
-      direction={state.context.direction}
-      component={Component}
-      tokenType={state.context.tokenType} /> : <TransferModal
-      onClickOutside={() => send({ type: "HIDE" })}
-      isSuccess={state.matches("Success")}
-      direction={state.context.direction}
-      tokenType={state.context.tokenType}
-      onTokenTypeChange={onTokenTypeChange}
-      component={Component}
-    />}
+      {state.context.isOpenedFromVaults ? (
+        <TransferVaultModal
+          onClickOutside={() => send({ type: "HIDE" })}
+          isSuccess={state.matches("Success")}
+          direction={state.context.direction}
+          component={Component}
+          tokenType={state.context.tokenType}
+        />
+      ) : (
+        <TransferModal
+          onClickOutside={() => send({ type: "HIDE" })}
+          isSuccess={state.matches("Success")}
+          direction={state.context.direction}
+          tokenType={state.context.tokenType}
+          onTokenTypeChange={onTokenTypeChange}
+          component={Component}
+        />
+      )}
     </>
-    
   )
 }

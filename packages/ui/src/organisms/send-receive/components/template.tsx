@@ -27,7 +27,7 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
           "z-20 bg-white absolute",
           "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
           "w-[340px] sm:w-[450px] h-[480px]",
-          className
+          className,
         )}
         onClick={(e) => e.stopPropagation()}
       >

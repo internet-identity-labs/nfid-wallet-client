@@ -3,8 +3,6 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { TransferModal, TransferModalProps } from "."
-import { Receive } from "./components/receive"
-import { ReceiveUiProps } from "./components/receive.stories"
 import { TransferFTUi } from "./components/send-ft"
 import { SendFTProps } from "./components/send-ft.stories"
 import { TransferNFTUi } from "./components/send-nft"

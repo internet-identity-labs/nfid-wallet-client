@@ -39,8 +39,8 @@ export const Receive: FC<ReceiveProps> = ({
 }) => {
   return (
     <BlurredLoader className="mt-[5px] text-xs" isLoading={isLoading}>
-      <p className="text-sm mb-[20px]">
-        NFID Wallet currently supports Internet Computer Protocol tokens and
+      <p className="text-sm mb-[18px]">
+        NFID Wallet currently supports Internet Computer Protocol <br className="hidden sm:block" />tokens and
         standards: ICP, ICRC-1, EXT NFTs, and additional support coming soon.
       </p>
       {isVault && (
@@ -58,8 +58,8 @@ export const Receive: FC<ReceiveProps> = ({
 
       {!isVault && (
         <div>
-          <p className="mb-1 text-gray-400">Wallet address</p>
-          <div className="rounded-[12px] bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
+          <p className="mb-1 text-gray-500">Wallet address</p>
+          <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
             <CenterEllipsis
               value={selectedAccountAddress ?? ""}
               leadingChars={29}
@@ -70,11 +70,11 @@ export const Receive: FC<ReceiveProps> = ({
           </div>
         </div>
       )}
-      <div>
-        <p className="mt-[10px] mb-1 text-gray-400">
+      <div className="mb-2.5 sm:mb-5">
+        <p className="mt-[10px] mb-1 text-gray-500">
           Account ID (for deposits from exchanges)
         </p>
-        <div className="rounded-[12px] bg-gray-100 text-gray-400 flex items-center justify-between px-2.5 h-10 text-sm">
+        <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           <CenterEllipsis
             value={isVault ? selectedAccountAddress ?? "" : address ?? ""}
             leadingChars={29}
@@ -84,9 +84,9 @@ export const Receive: FC<ReceiveProps> = ({
           <Copy value={isVault ? selectedAccountAddress : address} />
         </div>
       </div>
-      <div className="pt-[52px] mx-auto">
+      <div className="mx-auto">
         <QRCode
-          options={{ width: 150, margin: 0 }}
+          options={{ width: 122, margin: 0 }}
           content={isVault ? selectedAccountAddress : address}
         />
       </div>

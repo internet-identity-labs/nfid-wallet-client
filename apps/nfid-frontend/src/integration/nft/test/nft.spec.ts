@@ -26,7 +26,7 @@ describe("nft test suite", () => {
       const result = await nftService.getNFTs(principal)
       await Promise.all(result.items.map(async (nft) => nft.init()))
       expect(result.items).toHaveLength(10)
-      expect(result.totalPages).toEqual(1)
+      expect(result.totalPages).toEqual(2)
       expect(result.currentPage).toEqual(1)
       expect(result.totalItems).toEqual(10)
 

@@ -296,4 +296,13 @@ export const expectedGeekResponse = [
     tokenFloorPriceIcp: undefined,
     tokenFloorPriceUSD: undefined,
   },
+  {
+    collectionId: "ok3ug-2iaaa-aaaag-qbilq-cai",
+    collectionName: "ICTempies",
+    marketPlace: "EXT",
+    millis: 1721253870829,
+    tokenFloorPriceIcp: undefined,
+    tokenFloorPriceUSD: undefined,
+    tokenId: 2226,
+  },
 ]

@@ -37,7 +37,7 @@ const Template: StoryFn<TransferFTUiProps> = (args) => {
 
   return (
     <div className="w-[450px] h-[630px]">
-      <TransferTemplate isVault={false}>
+      <TransferTemplate>
         <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
           Send
         </div>

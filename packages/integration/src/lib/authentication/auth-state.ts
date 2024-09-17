@@ -16,8 +16,8 @@ import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
 interface ObservableAuthState {
   cacheLoaded: boolean
   //
-  identity?: SignIdentity // Device Identity (different for each device and browser combination)
-  delegationIdentity?: DelegationIdentity // User Identity (unique across all users devices)
+  identity?: SignIdentity
+  delegationIdentity?: DelegationIdentity
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
   activeDevicePrincipalId?: string

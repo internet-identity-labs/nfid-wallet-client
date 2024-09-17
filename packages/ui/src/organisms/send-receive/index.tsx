@@ -4,7 +4,6 @@ import { FC } from "react"
 import { TransferTemplate } from "./components/template"
 
 export interface TransferModalProps {
-  isVault: boolean
   onClickOutside: () => void
   isSuccess: boolean
   direction: "send" | "receive" | "swap"
@@ -13,8 +12,15 @@ export interface TransferModalProps {
   component: JSX.Element
 }
 
+export interface TransferVaultModalProps {
+  onClickOutside: () => void
+  isSuccess: boolean
+  direction: "send" | "receive" | "swap"
+  tokenType: "ft" | "nft"
+  component: JSX.Element
+}
+
 export const TransferModal: FC<TransferModalProps> = ({
-  isVault,
   onClickOutside,
   isSuccess,
   direction,
@@ -23,11 +29,11 @@ export const TransferModal: FC<TransferModalProps> = ({
   component,
 }) => {
   return (
-    <TransferTemplate onClickOutside={onClickOutside} isVault={isVault}>
-      {!isSuccess && <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+    <TransferTemplate onClickOutside={onClickOutside}>
+      <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
         {direction}
-      </div>}
-      {direction === "send" && !isSuccess && !isVault && (
+      </div>
+      {direction === "send" && !isSuccess && (
         <ToggleButton
           firstValue="Token"
           secondValue="Collectible"
@@ -37,6 +43,21 @@ export const TransferModal: FC<TransferModalProps> = ({
           id="send_type_toggle"
         />
       )}
+      {component}
+    </TransferTemplate>
+  )
+}
+
+export const TransferVaultModal: FC<TransferVaultModalProps> = ({
+  onClickOutside,
+  direction,
+  component,
+}) => {
+  return (
+    <TransferTemplate onClickOutside={onClickOutside} className="!h-[530px]">
+      <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+        {direction}
+      </div>
       {component}
     </TransferTemplate>
   )

@@ -1,5 +1,8 @@
 import { useActor } from "@xstate/react"
-import { SendReceiveModal } from "packages/ui/src/organisms/send-receive"
+import {
+  TransferModal,
+  TransferVaultModal,
+} from "packages/ui/src/organisms/send-receive"
 import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { toast } from "react-toastify"
@@ -47,7 +50,6 @@ export const TransferModalCoordinator = () => {
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
-            publicKey={publicKey}
           />
         )
       case state.matches("SendMachine.SendNFT"):
@@ -57,7 +59,6 @@ export const TransferModalCoordinator = () => {
             onTransferPromise={(message: ITransferSuccess) =>
               send({ type: "ON_TRANSFER_PROMISE", data: message })
             }
-            publicKey={publicKey}
           />
         )
       case state.matches("ReceiveMachine"):
@@ -80,14 +81,6 @@ export const TransferModalCoordinator = () => {
     }
   }, [send, state, publicKey])
 
-  const onModalTypeChange = useCallback(
-    (value: string) => {
-      // TODO: send receive
-      return send({ type: "CHANGE_DIRECTION", data: value as any })
-    },
-    [send],
-  )
-
   const onTokenTypeChange = useCallback(
     (isNFT: boolean) => {
       return send({ type: "CHANGE_TOKEN_TYPE", data: isNFT ? "nft" : "ft" })
@@ -98,15 +91,25 @@ export const TransferModalCoordinator = () => {
   if (state.matches("Hidden")) return null
 
   return (
-    <SendReceiveModal
-      isVault={state.context.isOpenedFromVaults}
-      onClickOutside={() => send({ type: "HIDE" })}
-      isSuccess={state.matches("Success")}
-      direction={state.context.direction}
-      tokenType={state.context.tokenType}
-      onTokenTypeChange={onTokenTypeChange}
-      onModalTypeChange={onModalTypeChange}
-      component={Component}
-    />
+    <>
+      {state.context.isOpenedFromVaults ? (
+        <TransferVaultModal
+          onClickOutside={() => send({ type: "HIDE" })}
+          isSuccess={state.matches("Success")}
+          direction={state.context.direction}
+          component={Component}
+          tokenType={state.context.tokenType}
+        />
+      ) : (
+        <TransferModal
+          onClickOutside={() => send({ type: "HIDE" })}
+          isSuccess={state.matches("Success")}
+          direction={state.context.direction}
+          tokenType={state.context.tokenType}
+          onTokenTypeChange={onTokenTypeChange}
+          component={Component}
+        />
+      )}
+    </>
   )
 }

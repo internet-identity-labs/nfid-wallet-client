@@ -2,9 +2,7 @@ import { Meta, StoryFn } from "@storybook/react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { SendReceiveModal, SendReceiveModalProps } from "."
-import { Receive } from "./components/receive"
-import { ReceiveUiProps } from "./components/receive.stories"
+import { TransferModal, TransferModalProps } from "."
 import { TransferFTUi } from "./components/send-ft"
 import { SendFTProps } from "./components/send-ft.stories"
 import { TransferNFTUi } from "./components/send-nft"
@@ -17,7 +15,7 @@ type FormFields = {
 
 export default {
   title: "Organisms/Send Receive",
-  component: SendReceiveModal,
+  component: TransferModal,
   argTypes: {
     onClickOutside: { action: "clicked outside" },
     onTokenTypeChange: { action: "token type changed" },
@@ -25,7 +23,7 @@ export default {
   },
 } as Meta
 
-const selectComponent = (tokenType: string, direction: string) => {
+const selectComponent = (tokenType: string) => {
   const { register, setValue, handleSubmit, resetField, formState } =
     useForm<FormFields>({
       defaultValues: {
@@ -33,47 +31,35 @@ const selectComponent = (tokenType: string, direction: string) => {
         to: "",
       },
     })
-  if (direction === "receive") {
-    return <Receive {...ReceiveUiProps} />
+  if (tokenType === "ft") {
+    return (
+      <TransferFTUi
+        register={register}
+        setValue={setValue}
+        handleSubmit={handleSubmit}
+        resetField={resetField}
+        errors={formState.errors}
+        {...SendFTProps}
+      />
+    )
   } else {
-    if (tokenType === "ft") {
-      return (
-        <TransferFTUi
-          register={register}
-          setValue={setValue}
-          handleSubmit={handleSubmit}
-          resetField={resetField}
-          errors={formState.errors}
-          {...SendFTProps}
-        />
-      )
-    } else {
-      return <TransferNFTUi {...SendNFTProps} />
-    }
+    return <TransferNFTUi {...SendNFTProps} />
   }
 }
 
-const Template: StoryFn<SendReceiveModalProps> = (args) => {
+const Template: StoryFn<TransferModalProps> = (args) => {
   const [tokenType, setTokenType] = useState(args.tokenType)
-  const [direction, setDirection] = useState(args.direction)
   const handleTokenTypeChange = (isNFT: boolean) => {
     const newTokenType = isNFT ? "nft" : "ft"
     setTokenType(newTokenType)
     args.onTokenTypeChange(isNFT)
   }
 
-  const handleModalTypeChange = (direction: string) => {
-    setDirection(direction as "send" | "receive")
-    args.onModalTypeChange(direction)
-  }
-
   return (
-    <SendReceiveModal
+    <TransferModal
       {...args}
-      component={selectComponent(tokenType, direction)}
+      component={selectComponent(tokenType)}
       onTokenTypeChange={handleTokenTypeChange}
-      onModalTypeChange={handleModalTypeChange}
-      direction={direction}
     />
   )
 }
@@ -86,5 +72,4 @@ Combined.args = {
   tokenType: "ft",
   onClickOutside: () => {},
   onTokenTypeChange: (isNFT) => console.log(isNFT),
-  onModalTypeChange: (value) => console.log(value),
 }

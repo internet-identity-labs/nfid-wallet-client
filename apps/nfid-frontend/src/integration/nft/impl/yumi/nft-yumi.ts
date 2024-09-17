@@ -36,7 +36,6 @@ export class NftYumi extends NftImpl {
         : null
 
       if (!metadata || metadata.length === 0) {
-        console.log(333)
         return super.getAssetPreviewAsync()
       }
       const json = array2string(new Uint8Array(metadata))

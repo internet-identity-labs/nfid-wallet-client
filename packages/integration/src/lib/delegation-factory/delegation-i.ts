@@ -8,7 +8,6 @@ import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
 import { im } from "../actors"
-import { authState } from "../authentication"
 import { getUserIdData } from "../cache/cache"
 import {
   defaultExpirationInMinutes,

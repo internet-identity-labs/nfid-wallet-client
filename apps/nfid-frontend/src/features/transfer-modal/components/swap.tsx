@@ -9,22 +9,19 @@ import useSWR from "swr"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
-interface ISwapFT {}
+import { ISwapSuccess } from "./swap-success"
 
-export const SwapFT = ({}: ISwapFT) => {
+interface ISwapFT {
+  onSwapPromise: (data: ISwapSuccess) => void
+}
+
+export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
   const [tokenAddress, setTokenAddress] = useState(ICP_CANISTER_ID)
-  const {
-    data: activeTokens = [],
-    isLoading: isActiveTokensLoading,
-    mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchAllTokens)
+  const { data: activeTokens = [] } = useSWR("activeTokens", fetchAllTokens)
 
-  const {
-    data: token,
-    isLoading: isTokenLoading,
-    mutate: refetchToken,
-  } = useSWR(tokenAddress ? ["token", tokenAddress] : null, ([, address]) =>
-    fetchTokenByAddress(address),
+  const { data: token } = useSWR(
+    tokenAddress ? ["token", tokenAddress] : null,
+    ([, address]) => fetchTokenByAddress(address),
   )
 
   const {
@@ -42,8 +39,26 @@ export const SwapFT = ({}: ISwapFT) => {
   })
 
   const submit = useCallback(
-    async (values: { amount: string; to: string }) => {},
-    [],
+    async (values: { amount: string; to: string }) => {
+      onSwapPromise({
+        assetImgFrom: token?.getTokenLogo() ?? "",
+        assetImgTo: token?.getTokenLogo() ?? "",
+        titleFrom: "123",
+        titleTo: "123",
+        subTitleFrom: "456",
+        subTitleTo: "456",
+        initialPromise: new Promise(async (resolve) => {
+          try {
+            resolve({ hash: "112313" })
+          } catch (e) {
+            throw new Error(
+              `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
+            )
+          }
+        }),
+      })
+    },
+    [onSwapPromise, token],
   )
 
   return (

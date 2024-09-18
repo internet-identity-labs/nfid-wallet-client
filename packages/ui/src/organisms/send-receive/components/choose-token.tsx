@@ -18,14 +18,13 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
   IconCmpArrow,
+  Skeleton,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
-
-import SwapArrowBox from "../assets/swap-arrow-box.png"
 
 interface ChooseFromTokenProps {
   error: FieldError | undefined
@@ -37,7 +36,7 @@ interface ChooseFromTokenProps {
     to: string
   }>
   vaultsBalance?: AccountBalance | undefined
-  setAmountInUSD: (v: number) => void
+  setAmountInUSD: (value: number) => void
   resetField: UseFormResetField<{
     amount: string
     to: string
@@ -56,7 +55,7 @@ interface ChooseToTokenProps {
   tokens: FT[]
   isVault?: boolean
   vaultsBalance?: AccountBalance | undefined
-  setAmountInUSD: (v: number) => void
+  setAmountInUSD: (value: number) => void
   resetField: UseFormResetField<{
     amount: string
     to: string
@@ -64,6 +63,9 @@ interface ChooseToTokenProps {
   setChosenToken: (value: string) => void
   sendReceiveTrackingFn?: () => void
   usdRate: string | undefined
+  toTokenChosen: string
+  setToTokenChosen: (value: string) => void
+  isPairFetched: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -154,6 +156,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     >
       <div className="flex items-center justify-between">
         <InputAmount
+          isLoading={false}
           decimals={token.getTokenDecimals()!}
           {...register("amount", {
             required: sumRules.errorMessages.required,
@@ -178,7 +181,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseModal
             optionGroups={tokenOptions}
-            title="Token to send"
+            title="Swap from"
             type="trigger"
             onSelect={(value) => {
               resetField("amount")
@@ -244,6 +247,9 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   setChosenToken,
   sendReceiveTrackingFn,
   usdRate,
+  toTokenChosen,
+  setToTokenChosen,
+  isPairFetched,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
@@ -289,33 +295,23 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   if (!token) return null
   return (
     <>
-      <div className="rounded-[12px] p-4 h-[102px] bg-gray-100 relative">
-        <div
-          className={clsx(
-            "absolute bottom-[100%] h-[26px] w-[70px] right-0 left-0",
-            "flex justify-center items-end mx-auto",
-          )}
-          style={{
-            backgroundImage: `url(${SwapArrowBox})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <IconCmpArrow className="rotate-[-90deg] h-5 w-5" />
-        </div>
+      <div className="rounded-[12px] p-4 h-[102px] bg-gray-100">
         <div className="flex items-center justify-between">
-          <InputAmount decimals={token.getTokenDecimals()!} disabled />
+          <InputAmount
+            decimals={token.getTokenDecimals()!}
+            disabled
+            isLoading={!isPairFetched}
+          />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseModal
               optionGroups={tokenOptions}
-              title="Token to swap"
+              title="Swap to"
               type="trigger"
               onSelect={(value) => {
                 resetField("amount")
                 resetField("to")
                 setAmountInUSD(0)
-                setChosenToken(value)
+                setToTokenChosen(value)
               }}
               preselectedValue={token.getTokenAddress()}
               onOpen={sendReceiveTrackingFn}
@@ -343,7 +339,11 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
         </div>
         <div className="flex items-center justify-between text-right">
           <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
-            {usdRate}
+            {isPairFetched ? (
+              usdRate
+            ) : (
+              <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />
+            )}
           </p>
           <div className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;

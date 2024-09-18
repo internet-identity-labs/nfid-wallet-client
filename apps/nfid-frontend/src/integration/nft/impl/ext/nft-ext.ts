@@ -8,6 +8,9 @@ import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 import { AssetPreview, TokenProperties } from "../nft-types"
 
+const TOKEN_API =
+  "https://us-central1-entrepot-api.cloudfunctions.net/api/token"
+
 export class NftExt extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
     if (this.details === undefined) {
@@ -54,9 +57,26 @@ class NFTExtDetails extends NFTDetailsImpl {
       from,
       to,
     )
-    const activity = txHistory
+    let activity = txHistory
       .map((raw) => extTransactionMapper.toTransactionRecord(raw))
       .filter((tx): tx is TransactionRecord => tx !== null)
+
+    if (activity.length === 0) {
+      //tryTogEtTransactionsFromToniq
+      let url = `${TOKEN_API}/${this.tokenId}`
+      let responseData: ResponseData = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }).then((response) => response.json())
+      const trss: TransactionRecord[] = responseData.transactions
+        .map((raw) => extTransactionMapper.toTransactionRecordToniq(raw))
+        .filter((tx): tx is TransactionRecord => tx !== null)
+      return {
+        activity: trss,
+        isLastPage: true,
+      }
+    }
+
     return {
       activity,
       isLastPage,

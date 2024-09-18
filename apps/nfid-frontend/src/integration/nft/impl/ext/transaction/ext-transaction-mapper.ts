@@ -3,6 +3,7 @@ import {
   SaleTransactionRecordExt,
   TransferTransactionRecordExt,
 } from "src/integration/nft/impl/ext/transaction/ext-transactions"
+import { TransactionRecordToniq } from "src/integration/nft/impl/ext/transaction/toniq-transaction-mapper"
 import { TransactionRecord } from "src/integration/nft/nft"
 
 export class ExtTransactionMapper {
@@ -18,6 +19,11 @@ export class ExtTransactionMapper {
         console.error("Unknown transaction EXT type: " + transaction.operation)
         return null
     }
+  }
+  toTransactionRecordToniq(
+    transaction: TransactionToniq,
+  ): TransactionRecord | null {
+    return new TransactionRecordToniq(transaction)
   }
 }
 

@@ -168,7 +168,7 @@
     "cucumber-html-reporter": "^5.5.0",
     "cypress": "^13.0.0",
     "dotenv": "16.0.0",
-    "elliptic": "^6.5.4",
+    "elliptic": "^6.5.7",
     "env-cmd": "10.1.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.0.0",
@@ -217,7 +217,7 @@
     "wdio-cucumberjs-json-reporter": "5.2.1",
     "wdio-json-reporter": "4.0.1",
     "webdriverio": "8.40.5",
-    "webpack": "5.80.0",
+    "webpack": "5.94.0",
     "whatwg-fetch": "3.6.2"
   },
   "resolutions": {

@@ -262,7 +262,6 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       </p>
       <ChooseToToken
         token={token}
-        //register={register}
         resetField={resetField}
         setAmountInUSD={setAmountInUSD}
         setChosenToken={setChosenToken}
@@ -300,8 +299,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         type="primary"
         id="sendFT"
         block
-        disabled={!isPairFetched || !amountInUSD}
-        //disabled={!isPairFetched || Boolean(toTokenChosen) || !amountInUSD}
+        disabled={!isPairFetched || Boolean(toTokenChosen) || !amountInUSD}
         onClick={handleSubmit(submit)}
       >
         {setButtonText()}

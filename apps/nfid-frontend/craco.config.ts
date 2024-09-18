@@ -39,6 +39,8 @@ const setupCSP = () => {
         "https://icp-api.io",
         "https://api.nftgeek.app",
         "https://toniq.io",
+        "https://stat.yuku.app",
+        "https://memecake.io"
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

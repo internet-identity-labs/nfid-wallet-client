@@ -15,6 +15,7 @@ import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { ITransferSuccess, TransferSuccess } from "./components/success"
+import { SwapFT } from "./components/swap"
 
 export const TransferModalCoordinator = () => {
   const [publicKey, setPublicKey] = useState("")
@@ -61,6 +62,8 @@ export const TransferModalCoordinator = () => {
             }
           />
         )
+      case state.matches("SwapMachine"):
+        return <SwapFT />
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive

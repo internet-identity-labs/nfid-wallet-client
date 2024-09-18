@@ -29,8 +29,10 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    isReceiveMachine: ""
     isSendFungible: ""
     isSendMachine: ""
+    isSwapMachine: ""
   }
   eventsCausingServices: {}
   matchesStates:
@@ -41,6 +43,7 @@ export interface Typegen0 {
     | "SendMachine.SendFT"
     | "SendMachine.SendNFT"
     | "Success"
+    | "SwapMachine"
     | "TransferModal"
     | { SendMachine?: "CheckSendType" | "SendFT" | "SendNFT" }
   tags: never

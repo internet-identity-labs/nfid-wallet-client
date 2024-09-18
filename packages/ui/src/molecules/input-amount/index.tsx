@@ -72,7 +72,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
   ({ decimals, ...inputProps }, ref) => (
     <input
       className={clsx(
-        "min-w-0 text-[34px] font-semibold leading-10 placeholder:text-black",
+        "min-w-0 text-[34px] font-semibold leading-10 placeholder:text-black bg-transparent",
         "outline-none border-none focus:ring-0 p-0 max-w-[160px] sm:max-w-[230px]",
       )}
       placeholder="0.00"

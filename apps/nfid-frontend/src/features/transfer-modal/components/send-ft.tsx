@@ -5,8 +5,8 @@ import { PRINCIPAL_LENGTH } from "packages/constants"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import {
-  fetchAllTokens,
-  fetchTokenByAddress,
+  fetchActiveTokens,
+  fetchActiveTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -56,14 +56,14 @@ export const TransferFT = ({
     data: activeTokens = [],
     isLoading: isActiveTokensLoading,
     mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchAllTokens)
+  } = useSWR("activeTokens", fetchActiveTokens)
 
   const {
     data: token,
     isLoading: isTokenLoading,
     mutate: refetchToken,
   } = useSWR(tokenAddress ? ["token", tokenAddress] : null, ([, address]) =>
-    fetchTokenByAddress(address),
+    fetchActiveTokenByAddress(address),
   )
 
   const { data: usdRate } = useSWR(

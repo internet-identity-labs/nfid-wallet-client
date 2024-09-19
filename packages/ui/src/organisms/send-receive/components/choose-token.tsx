@@ -17,14 +17,15 @@ import {
   IGroupedOptions,
   ImageWithFallback,
   IconNftPlaceholder,
-  IconCmpArrow,
   Skeleton,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
-import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { E8S } from "@nfid/integration/token/constants"
 
 import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
+
+import { getTokenOptions } from "../utils"
 
 interface ChooseFromTokenProps {
   error: FieldError | undefined
@@ -36,12 +37,13 @@ interface ChooseFromTokenProps {
     to: string
   }>
   vaultsBalance?: AccountBalance | undefined
-  setAmountInUSD: (value: number) => void
+  setFromUsdAmount: (value: number) => void
+  setToUsdAmount?: (value: number) => void
   resetField: UseFormResetField<{
     amount: string
     to: string
   }>
-  setChosenToken: (value: string) => void
+  setFromChosenToken: (value: string) => void
   sendReceiveTrackingFn?: () => void
   usdRate: string | undefined
   setValue: UseFormSetValue<{
@@ -53,19 +55,19 @@ interface ChooseFromTokenProps {
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens: FT[]
-  isVault?: boolean
-  vaultsBalance?: AccountBalance | undefined
-  setAmountInUSD: (value: number) => void
+  setToUsdAmount: (value: number) => void
   resetField: UseFormResetField<{
     amount: string
     to: string
   }>
-  setChosenToken: (value: string) => void
+  setToChosenToken: (value: string) => void
   sendReceiveTrackingFn?: () => void
   usdRate: string | undefined
-  toTokenChosen: string
-  setToTokenChosen: (value: string) => void
   isPairFetched: boolean
+  register: UseFormRegister<{
+    amount: string
+    to: string
+  }>
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -75,52 +77,20 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isVault,
   register,
   vaultsBalance,
-  setAmountInUSD,
+  setFromUsdAmount,
+  setToUsdAmount,
   resetField,
-  setChosenToken,
+  setFromChosenToken,
   sendReceiveTrackingFn,
   usdRate,
   setValue,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
-  const getTokenOptions = useCallback(async () => {
-    const options = await Promise.all(
-      tokens.map(async (token) => {
-        const usdBalance = await token.getTokenRate(
-          token.getTokenBalanceFormatted() || "0",
-        )
-
-        return {
-          label: "Internet Computer",
-          options: [
-            {
-              icon: token.getTokenLogo(),
-              value: token.getTokenAddress(),
-              title: token.getTokenSymbol(),
-              subTitle: token.getTokenName(),
-              innerTitle: `${
-                token.getTokenBalanceFormatted() || 0
-              } ${token.getTokenSymbol()}`,
-              innerSubtitle:
-                usdBalance === undefined
-                  ? "Not listed"
-                  : usdBalance === 0
-                  ? "0.00 USD"
-                  : `${usdBalance.toString()} USD`,
-            },
-          ],
-        }
-      }),
-    )
-
-    return isVault
-      ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
-      : options
-  }, [tokens, isVault])
+  const getTokenOption = useCallback(getTokenOptions, [tokens, isVault])
 
   useEffect(() => {
-    getTokenOptions().then(setTokenOptions)
+    getTokenOption(tokens, Boolean(isVault)).then(setTokenOptions)
   }, [getTokenOptions])
 
   const maxHandler = async () => {
@@ -141,7 +111,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       )
 
       setValue("amount", formattedValue)
-      setAmountInUSD(Number(formattedValue))
+      setFromUsdAmount(Number(formattedValue))
     }
   }
 
@@ -174,7 +144,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             ),
             valueAsNumber: true,
             onChange: (e) => {
-              setAmountInUSD(Number(e.target.value))
+              setFromUsdAmount(Number(e.target.value))
+              setValue("to", "123")
+              if (!setToUsdAmount) return
+              setToUsdAmount(123)
             },
           })}
         />
@@ -186,8 +159,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             onSelect={(value) => {
               resetField("amount")
               resetField("to")
-              setAmountInUSD(0)
-              setChosenToken(value)
+              setFromUsdAmount(0)
+              setFromChosenToken(value)
             }}
             preselectedValue={token.getTokenAddress()}
             onOpen={sendReceiveTrackingFn}
@@ -240,56 +213,20 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
   token,
   tokens,
-  isVault,
-  vaultsBalance,
-  setAmountInUSD,
+  setToUsdAmount,
   resetField,
-  setChosenToken,
+  setToChosenToken,
   sendReceiveTrackingFn,
   usdRate,
-  toTokenChosen,
-  setToTokenChosen,
   isPairFetched,
+  register,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
-  const getTokenOptions = useCallback(async () => {
-    const options = await Promise.all(
-      tokens.map(async (token) => {
-        const usdBalance = await token.getTokenRate(
-          token.getTokenBalanceFormatted() || "0",
-        )
-
-        return {
-          label: "Internet Computer",
-          options: [
-            {
-              icon: token.getTokenLogo(),
-              value: token.getTokenAddress(),
-              title: token.getTokenSymbol(),
-              subTitle: token.getTokenName(),
-              innerTitle: `${
-                token.getTokenBalanceFormatted() || 0
-              } ${token.getTokenSymbol()}`,
-              innerSubtitle:
-                usdBalance === undefined
-                  ? "Not listed"
-                  : usdBalance === 0
-                  ? "0.00 USD"
-                  : `${usdBalance.toString()} USD`,
-            },
-          ],
-        }
-      }),
-    )
-
-    return isVault
-      ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
-      : options
-  }, [tokens, isVault])
+  const getTokenOption = useCallback(getTokenOptions, [tokens, false])
 
   useEffect(() => {
-    getTokenOptions().then(setTokenOptions)
+    getTokenOption(tokens, false).then(setTokenOptions)
   }, [getTokenOptions])
 
   if (!token) return null
@@ -301,6 +238,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             decimals={token.getTokenDecimals()!}
             disabled
             isLoading={!isPairFetched}
+            {...register("to")}
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseModal
@@ -310,8 +248,8 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               onSelect={(value) => {
                 resetField("amount")
                 resetField("to")
-                setAmountInUSD(0)
-                setToTokenChosen(value)
+                setToUsdAmount(0)
+                setToChosenToken(value)
               }}
               preselectedValue={token.getTokenAddress()}
               onOpen={sendReceiveTrackingFn}
@@ -348,16 +286,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <div className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;
             <span>
-              {!isVault ? (
-                <span>
-                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                  {token.getTokenSymbol()}
-                </span>
-              ) : (
-                <span className="text-teal-600">
-                  {Number(vaultsBalance?.balance["ICP"]) / E8S} ICP
-                </span>
-              )}
+              <span>
+                {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                {token.getTokenSymbol()}
+              </span>
             </span>
           </div>
         </div>

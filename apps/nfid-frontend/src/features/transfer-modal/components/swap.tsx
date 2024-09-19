@@ -1,13 +1,18 @@
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import {
+  fetchActiveTokens,
   fetchAllTokens,
-  fetchTokenByAddress,
+  fetchActiveTokenByAddress,
+  fetchAllTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
 
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  CKBTC_CANISTER_ID,
+  ICP_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 
 import { ISwapSuccess } from "./swap-success"
 
@@ -16,18 +21,48 @@ interface ISwapFT {
 }
 
 export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
-  const [tokenAddress, setTokenAddress] = useState(ICP_CANISTER_ID)
-  const { data: activeTokens = [] } = useSWR("activeTokens", fetchAllTokens)
+  const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
+  const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
+  const [toAmountInUSD, setToAmountInUSD] = useState(0)
+  const [fromAmountInUSD, setFromAmountInUSD] = useState(0)
+  const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
+  const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
+    fetchAllTokens(query),
+  )
 
-  const { data: token } = useSWR(
-    tokenAddress ? ["token", tokenAddress] : null,
-    ([, address]) => fetchTokenByAddress(address),
+  const { data: fromToken, isLoading: isFromTokenLoading } = useSWR(
+    fromTokenAddress ? ["fromToken", fromTokenAddress] : null,
+    ([, address]) => fetchActiveTokenByAddress(address),
+  )
+
+  const { data: toToken, isLoading: isToTokenLoading } = useSWR(
+    toTokenAddress ? ["toToken", toTokenAddress] : null,
+    ([, address]) => fetchAllTokenByAddress(address),
+  )
+
+  const filteredAllTokens = useMemo(() => {
+    return allTokens.filter(
+      (token) => token.getTokenAddress() !== fromTokenAddress,
+    )
+  }, [fromTokenAddress, allTokens])
+
+  const { data: fromUsdRate } = useSWR(
+    fromToken
+      ? ["fromTokenRate", fromToken.getTokenAddress(), fromAmountInUSD]
+      : null,
+    ([_, __, amount]) => fromToken?.getTokenRateFormatted(amount.toString()),
+  )
+
+  const { data: toUsdRate } = useSWR(
+    toToken ? ["toTokenRate", toToken.getTokenAddress(), toAmountInUSD] : null,
+    ([_, __, amount]) => fromToken?.getTokenRateFormatted(amount.toString()),
   )
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    getValues,
     setValue,
     resetField,
   } = useForm({
@@ -41,15 +76,15 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
   const submit = useCallback(
     async (values: { amount: string; to: string }) => {
       onSwapPromise({
-        assetImgFrom: token?.getTokenLogo() ?? "",
-        assetImgTo: token?.getTokenLogo() ?? "",
-        titleFrom: "123",
-        titleTo: "123",
-        subTitleFrom: "456",
-        subTitleTo: "456",
+        assetImgFrom: fromToken?.getTokenLogo() ?? "",
+        assetImgTo: toToken?.getTokenLogo() ?? "",
+        titleFrom: `${values.amount} ${fromToken?.getTokenSymbol()}`,
+        titleTo: `${values.to} ${toToken?.getTokenSymbol()}`,
+        subTitleFrom: fromUsdRate!,
+        subTitleTo: toUsdRate!,
         initialPromise: new Promise(async (resolve) => {
           try {
-            resolve({ hash: "112313" })
+            resolve({ hash: "?????" })
           } catch (e) {
             throw new Error(
               `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
@@ -58,22 +93,30 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
         }),
       })
     },
-    [onSwapPromise, token],
+    [onSwapPromise, fromToken, toToken, fromUsdRate, toUsdRate],
   )
 
   return (
     <SwapFTUi
       tokens={activeTokens}
-      token={token}
+      allTokens={filteredAllTokens}
+      toToken={toToken}
+      fromToken={fromToken}
       setValue={setValue}
-      setChosenToken={setTokenAddress}
+      setFromChosenToken={setFromTokenAddress}
+      setToChosenToken={setToTokenAddress}
       resetField={resetField}
       register={register}
       errors={errors}
       loadingMessage={"Fetching supported tokens..."}
-      isLoading={false}
+      isLoading={isFromTokenLoading || isToTokenLoading}
       handleSubmit={handleSubmit}
       submit={submit}
+      setToUsdAmount={setToAmountInUSD}
+      setFromUsdAmount={setFromAmountInUSD}
+      fromUsdRate={fromUsdRate}
+      toUsdRate={toUsdRate}
+      value={getValues("amount")}
     />
   )
 }

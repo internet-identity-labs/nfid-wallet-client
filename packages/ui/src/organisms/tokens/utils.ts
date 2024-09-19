@@ -16,7 +16,7 @@ export const getUserPrincipalId = async (): Promise<{
   }
 }
 
-export const fetchAllTokens = async () => {
+export const fetchActiveTokens = async () => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()
   const data = await ftService.getAllUserTokens(
     userPrincipal,
@@ -27,7 +27,7 @@ export const fetchAllTokens = async () => {
   return data.items
 }
 
-export const fetchTokenByAddress = async (address: string) => {
+export const fetchActiveTokenByAddress = async (address: string) => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()
   const data = await ftService.getUserTokenByAddress(
     userPrincipal,
@@ -36,12 +36,29 @@ export const fetchTokenByAddress = async (address: string) => {
     1,
     999,
   )
+
   return data
 }
 
-export const fetchFilteredTokens = async (searchQuery: string) => {
-  const { userPrincipal } = await getUserPrincipalId()
-  return await ftService.getAllFTokens(userPrincipal, searchQuery)
+export const fetchAllTokens = async (searchQuery: string) => {
+  const { userPrincipal, publicKey } = await getUserPrincipalId()
+  return await ftService.getAllFTokens(
+    userPrincipal,
+    Principal.fromText(publicKey),
+    searchQuery,
+  )
+}
+
+export const fetchAllTokenByAddress = async (address: string) => {
+  const { userPrincipal, publicKey } = await getUserPrincipalId()
+  const data = await ftService.getAllTokenByAddress(
+    userPrincipal,
+    Principal.fromText(publicKey),
+    undefined,
+    address,
+  )
+
+  return data
 }
 
 export const getFullUsdValue = async () => {

@@ -38,10 +38,7 @@ export const Receive: FC<ReceiveProps> = ({
   accountsOptions,
 }) => {
   return (
-    <BlurredLoader
-      className="mt-[5px] text-xs"
-      isLoading={!accountsOptions.length || isAccountsLoading}
-    >
+    <BlurredLoader className="mt-[5px] text-xs" isLoading={isAccountsLoading}>
       <p className="text-sm mb-[20px]">
         NFID Wallet currently supports Internet Computer Protocol tokens and
         standards: ICP, ICRC-1, EXT NFTs, and additional support coming soon.

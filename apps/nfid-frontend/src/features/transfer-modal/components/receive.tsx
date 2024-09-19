@@ -56,7 +56,7 @@ export const TransferReceive = ({
   return (
     <Receive
       isVault={isVault}
-      isLoading={isAccountLoading || !selectedAccountAddress}
+      isLoading={isAccountLoading}
       accountsOptions={vaultsAccountsOptions}
       selectedAccountAddress={selectedAccountAddress}
       setSelectedAccountAddress={setSelectedAccountAddress}

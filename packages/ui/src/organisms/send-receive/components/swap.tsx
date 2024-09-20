@@ -87,7 +87,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [errorModalOpen, setErrorModalOpen] = useState(false)
-  const [isPairFetched, setIsPairFetched] = useState(true)
+  const [isPairFetched] = useState(true)
 
   if (isLoading)
     return (

@@ -35,6 +35,7 @@ import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
 import { agent } from "./agent"
+import {Principal} from "@dfinity/principal";
 
 /////////////
 // Config //
@@ -70,7 +71,7 @@ export const agentBaseConfig = { host: "https://ic0.app" }
  * Create an actor.
  */
 export function actor<T>(
-  canisterId: string,
+  canisterId: string | Principal,
   factory: InterfaceFactory,
   config?: Partial<Agent.ActorConfig>,
 ): Agent.ActorSubclass<T> {

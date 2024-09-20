@@ -150,8 +150,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             onChange: (e) => {
               setFromUsdAmount(Number(e.target.value))
               // TODO: change harcoded values
-              setValue("to", "1.23")
               if (!setToUsdAmount) return
+              setValue("to", "1.23")
               setToUsdAmount(1.23)
             },
           })}

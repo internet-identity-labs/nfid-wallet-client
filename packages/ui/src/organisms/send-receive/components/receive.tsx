@@ -40,8 +40,10 @@ export const Receive: FC<ReceiveProps> = ({
   return (
     <BlurredLoader className="mt-[5px] text-xs" isLoading={isLoading}>
       <p className="text-sm mb-[18px]">
-        NFID Wallet currently supports Internet Computer Protocol <br className="hidden sm:block" />tokens and
-        standards: ICP, ICRC-1, EXT NFTs, and additional support coming soon.
+        NFID Wallet currently supports Internet Computer Protocol{" "}
+        <br className="hidden sm:block" />
+        tokens and standards: ICP, ICRC-1, EXT NFTs, and additional support
+        coming soon.
       </p>
       {isVault && (
         <ChooseModal

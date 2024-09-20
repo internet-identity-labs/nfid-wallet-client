@@ -24,7 +24,7 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
   const [toAmountInUSD, setToAmountInUSD] = useState(0)
-  const [slippageError, setSlippageError] = useState(true)
+  const [slippageError] = useState(false)
   const [fromAmountInUSD, setFromAmountInUSD] = useState(0)
   const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
   const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>

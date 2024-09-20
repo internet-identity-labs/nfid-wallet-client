@@ -1,11 +1,11 @@
 export const idlFactory = ({ IDL }: any) => {
-  const Token = IDL.Record({ address: IDL.Text, standard: IDL.Text });
+  const Token = IDL.Record({ address: IDL.Text, standard: IDL.Text })
   const CreatePoolArgs = IDL.Record({
     fee: IDL.Nat,
     sqrtPriceX96: IDL.Text,
     token0: Token,
     token1: Token,
-  });
+  })
   const PoolData = IDL.Record({
     fee: IDL.Nat,
     key: IDL.Text,
@@ -13,22 +13,22 @@ export const idlFactory = ({ IDL }: any) => {
     token0: Token,
     token1: Token,
     canisterId: IDL.Principal,
-  });
+  })
   const Error = IDL.Variant({
     CommonError: IDL.Null,
     InternalError: IDL.Text,
     UnsupportedToken: IDL.Text,
     InsufficientFunds: IDL.Null,
-  });
-  const Result_1 = IDL.Variant({ ok: PoolData, err: Error });
-  const CycleInfo = IDL.Record({ balance: IDL.Nat, available: IDL.Nat });
-  const Result_2 = IDL.Variant({ ok: CycleInfo, err: Error });
+  })
+  const Result_1 = IDL.Variant({ ok: PoolData, err: Error })
+  const CycleInfo = IDL.Record({ balance: IDL.Nat, available: IDL.Nat })
+  const Result_2 = IDL.Variant({ ok: CycleInfo, err: Error })
   const GetPoolArgs = IDL.Record({
     fee: IDL.Nat,
     token0: Token,
     token1: Token,
-  });
-  const Result = IDL.Variant({ ok: IDL.Vec(PoolData), err: Error });
+  })
+  const Result = IDL.Variant({ ok: IDL.Vec(PoolData), err: Error })
   const SwapFactory = IDL.Service({
     createPool: IDL.Func([CreatePoolArgs], [Result_1], []),
     deletePool: IDL.Func([IDL.Text], [], []),
@@ -62,6 +62,6 @@ export const idlFactory = ({ IDL }: any) => {
     setOwnerToPool: IDL.Func([IDL.Text, IDL.Vec(IDL.Principal)], [], []),
     setOwners: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
     setWhiteList: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
-  });
-  return SwapFactory;
-};
+  })
+  return SwapFactory
+}

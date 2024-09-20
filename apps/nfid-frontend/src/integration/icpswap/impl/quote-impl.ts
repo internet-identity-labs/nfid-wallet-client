@@ -1,13 +1,13 @@
-import {Quote} from "src/integration/icpswap/quote";
-import {ICRC1TypeOracle} from "@nfid/integration";
 import BigNumber from "bignumber.js"
-import {TRIM_ZEROS} from "@nfid/integration/token/constants";
+import { Quote } from "src/integration/icpswap/quote"
+
+import { ICRC1TypeOracle } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 const WIDGET_FEE = 0.00875
 const LIQUIDITY_PROVIDER_FEE = 0.003
 
 export class QuoteImpl implements Quote {
-
   private readonly sourceAmount: number
   private readonly quote: bigint
   private readonly source: ICRC1TypeOracle
@@ -15,12 +15,14 @@ export class QuoteImpl implements Quote {
   private readonly targetPriceUSD: BigNumber | undefined
   private readonly sourcePriceUSD: BigNumber | undefined
 
-  constructor(sourceAmount: number,
-              quote: bigint,
-              source: ICRC1TypeOracle,
-              target: ICRC1TypeOracle,
-              targetPriceUSD: BigNumber | undefined,
-              sourcePriceUSD: BigNumber | undefined) {
+  constructor(
+    sourceAmount: number,
+    quote: bigint,
+    source: ICRC1TypeOracle,
+    target: ICRC1TypeOracle,
+    targetPriceUSD: BigNumber | undefined,
+    sourcePriceUSD: BigNumber | undefined,
+  ) {
     this.sourceAmount = sourceAmount
     this.quote = quote
     this.source = source
@@ -31,7 +33,7 @@ export class QuoteImpl implements Quote {
 
   getTargetAmountUSD(): string {
     if (!this.targetPriceUSD) {
-      return 'Not listed'
+      return "Not listed"
     }
     const prettified = this.targetPriceUSD
       .multipliedBy(this.getTargetAmount())
@@ -43,19 +45,23 @@ export class QuoteImpl implements Quote {
 
   getEstimatedTransferFee(): string[] {
     const sourceFee = BigNumber(Number(this.source.fee))
-      .div(10 ** this.source.decimals).multipliedBy(3)
+      .div(10 ** this.source.decimals)
+      .multipliedBy(3)
       .toFixed(this.source.decimals)
       .replace(TRIM_ZEROS, "")
     const targetFee = BigNumber(Number(this.target.fee))
       .div(10 ** this.target.decimals)
       .toFixed(this.target.decimals)
       .replace(TRIM_ZEROS, "")
-    return [`${sourceFee} ${this.source.symbol}`, `${targetFee} ${this.target.symbol}`]
+    return [
+      `${sourceFee} ${this.source.symbol}`,
+      `${targetFee} ${this.target.symbol}`,
+    ]
   }
 
   getSourceAmountUSD(): string {
     if (!this.sourcePriceUSD) {
-      return 'Not listed'
+      return "Not listed"
     }
     const prettified = this.sourcePriceUSD
       .multipliedBy(this.getSourceAmount())
@@ -86,7 +92,9 @@ export class QuoteImpl implements Quote {
   getQuoteRate(): string {
     const quote = new BigNumber(Number(this.quote))
     const rate = quote.div(this.getSourceAmount())
-    return `1 ${this.source.symbol} = ${rate.toFixed(this.target.decimals)} ${this.target.symbol}`
+    return `1 ${this.source.symbol} = ${rate.toFixed(this.target.decimals)} ${
+      this.target.symbol
+    }`
   }
 
   getLiquidityProviderFee(): string {
@@ -121,12 +129,16 @@ export class QuoteImpl implements Quote {
   private getSourceAmount(): BigNumber {
     return BigNumber(this.sourceAmount).multipliedBy(10 ** this.source.decimals)
   }
-
 }
 
-export function calculateWidgetFee(sourceAmount: number, sourceDecimals: number): number {
-  return parseFloat(BigNumber(sourceAmount)
-    .multipliedBy(WIDGET_FEE)
-    .div(10 ** sourceDecimals)
-    .toFixed(sourceDecimals))
+export function calculateWidgetFee(
+  sourceAmount: number,
+  sourceDecimals: number,
+): number {
+  return parseFloat(
+    BigNumber(sourceAmount)
+      .multipliedBy(WIDGET_FEE)
+      .div(10 ** sourceDecimals)
+      .toFixed(sourceDecimals),
+  )
 }

@@ -9,6 +9,7 @@ import {
   SignIdentity,
 } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
+import { Principal } from "@dfinity/principal"
 
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
@@ -35,7 +36,6 @@ import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
 import { agent } from "./agent"
-import {Principal} from "@dfinity/principal";
 
 /////////////
 // Config //

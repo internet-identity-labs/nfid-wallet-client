@@ -1,7 +1,6 @@
-import {ShroffBuilder} from "src/integration/icpswap/impl/shroff-impl";
+import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
 
 describe("shroff test", () => {
-
   jest.setTimeout(200000)
 
   it("shroff quote test", async function () {

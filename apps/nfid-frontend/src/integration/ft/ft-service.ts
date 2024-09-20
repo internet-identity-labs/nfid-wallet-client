@@ -58,7 +58,7 @@ export class FtService {
   ): Promise<Array<FT>> {
     return icrc1StorageService
       .getICRC1FilteredCanisters(userId, nameCategoryFilter)
-      .then(async (canisters) => {
+      .then((canisters) => {
         const ft = canisters.map((canister) => new FTImpl(canister))
 
         const categoryOrder: Record<Category, number> = {

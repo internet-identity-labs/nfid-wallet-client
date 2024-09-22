@@ -1,6 +1,6 @@
+import { SignIdentity } from "@dfinity/agent"
 import { Quote } from "src/integration/icpswap/quote"
-import {SignIdentity} from "@dfinity/agent";
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 export interface Shroff {
   getQuote(amount: number): Promise<Quote>

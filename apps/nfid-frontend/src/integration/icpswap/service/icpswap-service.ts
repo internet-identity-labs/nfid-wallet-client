@@ -1,3 +1,7 @@
+import { Principal } from "@dfinity/principal"
+import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { _SERVICE as SwapPool } from "src/integration/icpswap/idl/SwapPool.d"
+
 import { actor, hasOwnProperty } from "@nfid/integration"
 
 import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"
@@ -6,9 +10,6 @@ import {
   GetPoolArgs,
   PoolData,
 } from "./../idl/SwapFactory.d"
-import {Principal} from "@dfinity/principal";
-import {idlFactory as SwapPoolIDL} from "src/integration/icpswap/idl/SwapPool"
-import {_SERVICE as SwapPool} from "src/integration/icpswap/idl/SwapPool.d"
 
 class IcpSwapService {
   private poolActor: SwapFactory
@@ -38,23 +39,21 @@ class IcpSwapService {
     })
   }
 
-
-  async getBalance(swapPoolCanister: string, principal: Principal): Promise<{
-    balance1: bigint,
-    balance2: bigint,
+  async getBalance(
+    swapPoolCanister: string,
+    principal: Principal,
+  ): Promise<{
+    balance1: bigint
+    balance2: bigint
   }> {
-
-    const swapPoolActor = actor<SwapPool>(
-      swapPoolCanister,
-      SwapPoolIDL,
-    )
+    const swapPoolActor = actor<SwapPool>(swapPoolCanister, SwapPoolIDL)
 
     const result = await swapPoolActor.getUserUnusedBalance(principal)
 
     if (hasOwnProperty(result, "ok")) {
       return result.ok as {
-        balance1: bigint,
-        balance2: bigint,
+        balance1: bigint
+        balance2: bigint
       }
     }
     throw new Error("TODO Error handling")

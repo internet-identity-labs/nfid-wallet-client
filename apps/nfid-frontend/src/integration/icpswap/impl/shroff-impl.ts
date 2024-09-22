@@ -1,10 +1,18 @@
+import * as Agent from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
+import { SubAccount } from "@dfinity/ledger-icp"
 import BigNumber from "bignumber.js"
-import {idlFactory as SwapPoolIDL} from "src/integration/icpswap/idl/SwapPool"
-import {calculateWidgetFee, QuoteImpl, WIDGET_FEE,} from "src/integration/icpswap/impl/quote-impl"
-import {Quote} from "src/integration/icpswap/quote"
-import {icpSwapService} from "src/integration/icpswap/service/icpswap-service"
-import {Shroff} from "src/integration/icpswap/shroff"
-import {Error as ErrorSwap} from "./../idl/SwapPool.d";
+import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import {
+  calculateWidgetFee,
+  QuoteImpl,
+  WIDGET_FEE,
+} from "src/integration/icpswap/impl/quote-impl"
+import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
+import { Quote } from "src/integration/icpswap/quote"
+import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
+import { Shroff } from "src/integration/icpswap/shroff"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import {
   actor,
@@ -14,16 +22,18 @@ import {
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import {PoolData} from "./../idl/SwapFactory.d"
-import {_SERVICE as SwapPool, DepositArgs, Result, SwapArgs, WithdrawArgs} from "./../idl/SwapPool.d"
-import * as Agent from "@dfinity/agent";
-import {SignIdentity} from "@dfinity/agent";
-import {SubAccount} from "@dfinity/ledger-icp";
-import {transferICRC1} from "@nfid/integration/token/icrc1";
-import {SwapTransactionImpl} from "src/integration/icpswap/impl/swap-transaction-impl";
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
+import { PoolData } from "./../idl/SwapFactory.d"
+import { Error as ErrorSwap } from "./../idl/SwapPool.d"
+import {
+  _SERVICE as SwapPool,
+  DepositArgs,
+  Result,
+  SwapArgs,
+  WithdrawArgs,
+} from "./../idl/SwapPool.d"
 
 class ShroffImpl implements Shroff {
   private readonly zeroForOne: boolean
@@ -31,7 +41,7 @@ class ShroffImpl implements Shroff {
   private readonly swapPoolActor: Agent.ActorSubclass<SwapPool>
   private readonly source: ICRC1TypeOracle
   private readonly target: ICRC1TypeOracle
-  private swapTransaction : SwapTransactionImpl | undefined
+  private swapTransaction: SwapTransactionImpl | undefined
   private requestedQuote: Quote | undefined
   private delegationIdentity: SignIdentity | undefined
 
@@ -89,7 +99,7 @@ class ShroffImpl implements Shroff {
   }
 
   getSwapTransaction(): SwapTransaction | undefined {
-    return this.swapTransaction;
+    return this.swapTransaction
   }
 
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransactionImpl> {
@@ -98,7 +108,7 @@ class ShroffImpl implements Shroff {
     }
     this.delegationIdentity = delegationIdentity
     this.swapTransaction = new SwapTransactionImpl()
-    try{
+    try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       await this.transfer()
       console.debug("Transfer done")
@@ -109,7 +119,7 @@ class ShroffImpl implements Shroff {
       await this.withdraw()
       console.debug("Withdraw done")
       return this.swapTransaction
-    }catch (e){
+    } catch (e) {
       console.error(e)
       return this.swapTransaction
     }
@@ -122,7 +132,7 @@ class ShroffImpl implements Shroff {
     const args: DepositArgs = {
       fee: this.source.fee,
       token: this.source.ledger,
-      amount: BigInt(this.requestedQuote.getSourceAmount().toNumber())
+      amount: BigInt(this.requestedQuote.getSourceAmount().toNumber()),
     }
 
     const result = await this.swapPoolActor.deposit(args)
@@ -144,7 +154,8 @@ class ShroffImpl implements Shroff {
       throw new Error("Quote is required")
     }
 
-    const widgetFeeAmount = this.requestedQuote.getSourceAmount()
+    const widgetFeeAmount = this.requestedQuote
+      .getSourceAmount()
       .multipliedBy(WIDGET_FEE)
 
     const amountDecimals = new BigNumber(this.requestedQuote.getSourceAmount())
@@ -158,16 +169,24 @@ class ShroffImpl implements Shroff {
       from_subaccount: [],
       memo: [],
       to: {
-        subaccount: [SubAccount.fromPrincipal(this.delegationIdentity.getPrincipal()).toUint8Array()],
-        owner: this.poolData.canisterId
+        subaccount: [
+          SubAccount.fromPrincipal(
+            this.delegationIdentity.getPrincipal(),
+          ).toUint8Array(),
+        ],
+        owner: this.poolData.canisterId,
       },
     }
 
     //TODO transfer to ICP wallet
 
-    const result = await transferICRC1(this.delegationIdentity, this.source.ledger, transferArgs)
+    const result = await transferICRC1(
+      this.delegationIdentity,
+      this.source.ledger,
+      transferArgs,
+    )
     if (hasOwnProperty(result, "Ok")) {
-      const id =  result.Ok as bigint
+      const id = result.Ok as bigint
       this.swapTransaction!.setTransferId(id)
       return id
     } else {
@@ -199,7 +218,7 @@ class ShroffImpl implements Shroff {
     const args: WithdrawArgs = {
       amount: BigInt(this.requestedQuote!.getTargetAmount().toNumber()),
       token: this.target.ledger,
-      fee: this.target.fee
+      fee: this.target.fee,
     }
 
     return this.swapPoolActor.withdraw(args).then((result) => {
@@ -211,7 +230,6 @@ class ShroffImpl implements Shroff {
       // @ts-ignore
       throw new Error("Withdraw error: " + JSON.stringify(result.err))
     })
-
   }
 }
 

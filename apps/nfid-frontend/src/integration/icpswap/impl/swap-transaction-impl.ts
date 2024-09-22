@@ -1,7 +1,8 @@
-import {Icrc1TransferError} from "@dfinity/ledger-icp/dist/candid/ledger";
-import {Error as ErrorSwap} from "./../idl/SwapPool.d";
-import {SwapStage} from "src/integration/icpswap/types/enums";
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
+import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import { SwapStage } from "src/integration/icpswap/types/enums"
+
+import { Error as ErrorSwap } from "./../idl/SwapPool.d"
 
 export class SwapTransactionImpl implements SwapTransaction {
   private readonly startTime: number
@@ -19,7 +20,7 @@ export class SwapTransactionImpl implements SwapTransaction {
   }
 
   getStage(): SwapStage {
-    return this.stage;
+    return this.stage
   }
 
   public setTransferId(transferId: bigint) {
@@ -48,5 +49,4 @@ export class SwapTransactionImpl implements SwapTransaction {
     this.endTime = Date.now()
     this.stage = SwapStage.Error
   }
-
 }

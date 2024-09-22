@@ -1,4 +1,4 @@
-import {SwapStage} from "src/integration/icpswap/types/enums";
+import { SwapStage } from "src/integration/icpswap/types/enums"
 
 export interface SwapTransaction {
   getStage(): SwapStage

@@ -9,6 +9,7 @@ import {
   SignIdentity,
 } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
+import { Principal } from "@dfinity/principal"
 
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
@@ -70,7 +71,7 @@ export const agentBaseConfig = { host: "https://ic0.app" }
  * Create an actor.
  */
 export function actor<T>(
-  canisterId: string,
+  canisterId: string | Principal,
   factory: InterfaceFactory,
   config?: Partial<Agent.ActorConfig>,
 ): Agent.ActorSubclass<T> {

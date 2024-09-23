@@ -17,7 +17,6 @@ import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/send-success"
-import { getBalance } from "frontend/features/transfer-modal/utils"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getNFTByTokenId } from "frontend/integration/entrepot"
@@ -27,6 +26,7 @@ import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
 import { IRequestTransferResponse } from "./types"
+import { getUserBalance, requestTransfer } from "frontend/features/transfer-modal/utils"
 
 export interface IRequestTransferProps {
   origin: string
@@ -68,7 +68,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
     isLoading: isBalanceLoading,
     isValidating: isBalanceValidating,
   } = useSWR(identity ? ["userBalance", identity] : null, ([key, identity]) =>
-    getBalance(
+    getUserBalance(
       AccountIdentifier.fromPrincipal({
         principal: identity.getPrincipal(),
       }).toHex(),
@@ -222,7 +222,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   }
                   if (!tokenId) delete request.tokenId
 
-                  const res = await transferICP(request)
+                  const res = await requestTransfer(request)
 
                   resolve(res)
                 } catch (e: any) {

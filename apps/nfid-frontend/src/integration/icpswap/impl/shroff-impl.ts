@@ -1,30 +1,50 @@
+import * as Agent from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
+import { SubAccount } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { NFID_WALLET } from "src/integration/icpswap/impl/constants"
 import {
   calculateWidgetFee,
   QuoteImpl,
 } from "src/integration/icpswap/impl/quote-impl"
+import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
 import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
 import { Shroff } from "src/integration/icpswap/shroff"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import {
   actor,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
+  replaceActorIdentity,
+  TransferArg,
 } from "@nfid/integration"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { PoolData } from "./../idl/SwapFactory.d"
-import { _SERVICE as SwapPool, Result, SwapArgs } from "./../idl/SwapPool.d"
+import {
+  _SERVICE as SwapPool,
+  DepositArgs,
+  Error as ErrorSwap,
+  Result,
+  SwapArgs,
+  WithdrawArgs,
+} from "./../idl/SwapPool.d"
 
 class ShroffImpl implements Shroff {
   private readonly zeroForOne: boolean
   private readonly poolData: PoolData
-  private readonly swapPoolActor: SwapPool
+  private readonly swapPoolActor: Agent.ActorSubclass<SwapPool>
   private readonly source: ICRC1TypeOracle
   private readonly target: ICRC1TypeOracle
+  private swapTransaction: SwapTransactionImpl | undefined
+  private requestedQuote: Quote | undefined
+  private delegationIdentity: SignIdentity | undefined
 
   constructor(
     poolData: PoolData,
@@ -64,9 +84,8 @@ class ShroffImpl implements Shroff {
       sourceUSDPricePromise,
       quotePromise,
     ])
-
     if (hasOwnProperty(quote, "ok")) {
-      return new QuoteImpl(
+      this.requestedQuote = new QuoteImpl(
         amount,
         quote.ok as bigint,
         this.source,
@@ -74,8 +93,186 @@ class ShroffImpl implements Shroff {
         targetUSDPrice,
         sourceUSDPrice,
       )
+      return this.requestedQuote
     }
     throw new Error("TODO Error handling getQuote")
+  }
+
+  getSwapTransaction(): SwapTransaction | undefined {
+    return this.swapTransaction
+  }
+
+  async swap(delegationIdentity: SignIdentity): Promise<SwapTransactionImpl> {
+    if (!this.requestedQuote) {
+      throw new Error("Request quote first")
+    }
+    this.delegationIdentity = delegationIdentity
+    this.swapTransaction = new SwapTransactionImpl()
+    try {
+      await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
+      await this.transfer()
+      console.debug("Transfer done")
+      await this.deposit()
+      console.debug("Deposit done")
+      await this.swapOnExchange()
+      console.debug("Swap done")
+      await this.withdraw()
+      console.debug("Withdraw done")
+      return this.swapTransaction
+    } catch (e) {
+      console.error(e)
+      return this.swapTransaction
+    }
+  }
+
+  async validateQuote(): Promise<Quote> {
+    const legacyQuote = this.requestedQuote
+    const updatedQuote = await this.getQuote(
+      Number(this.requestedQuote?.getSourceAmountPrettified()),
+    )
+
+    if (
+      legacyQuote?.getTargetAmountPrettified() !==
+      updatedQuote.getTargetAmountPrettified()
+    ) {
+      throw new Error("Swap exceeded slippage tolerance. Try again")
+    }
+    return updatedQuote
+  }
+
+  private async deposit(): Promise<bigint> {
+    if (!this.requestedQuote) {
+      throw new Error("Quote is required")
+    }
+    const amountDecimals = this.requestedQuote.getAmountWithoutWidgetFee()
+    const args: DepositArgs = {
+      fee: this.source.fee,
+      token: this.source.ledger,
+      amount: BigInt(amountDecimals.toNumber()),
+    }
+
+    const result = await this.swapPoolActor.deposit(args)
+
+    if (hasOwnProperty(result, "ok")) {
+      const id = result.ok as bigint
+      this.swapTransaction!.setDeposit(id)
+      return id
+    }
+    this.swapTransaction?.setError(result.err)
+    throw new Error("Deposit error: " + JSON.stringify(result.err))
+  }
+
+  private async transfer(): Promise<void> {
+    if (!this.delegationIdentity) {
+      throw new Error("Delegation identity is required")
+    }
+    if (!this.requestedQuote) {
+      throw new Error("Quote is required")
+    }
+    await Promise.all([this.transferToSwap(), this.transferToNFID()])
+  }
+
+  private async transferToSwap() {
+    const amountDecimals = this.requestedQuote!.getAmountWithoutWidgetFee()
+
+    const transferArgs: TransferArg = {
+      amount: BigInt(amountDecimals.toNumber()),
+      created_at_time: [],
+      fee: [],
+      from_subaccount: [],
+      memo: [],
+      to: {
+        subaccount: [
+          SubAccount.fromPrincipal(
+            this.delegationIdentity!.getPrincipal(),
+          ).toUint8Array(),
+        ],
+        owner: this.poolData.canisterId,
+      },
+    }
+
+    const result = await transferICRC1(
+      this.delegationIdentity!,
+      this.source.ledger,
+      transferArgs,
+    )
+    if (hasOwnProperty(result, "Ok")) {
+      const id = result.Ok as bigint
+      this.swapTransaction!.setTransferId(id)
+      return id
+    } else {
+      this.swapTransaction!.setError(result.Err)
+      throw new Error(
+        "Transfer to ICPSwap failed: " + JSON.stringify(result.Err),
+      )
+    }
+  }
+
+  private async transferToNFID() {
+    const amountDecimals = this.requestedQuote!.getWidgetFeeAmount()
+
+    const transferArgs: TransferArg = {
+      amount: BigInt(amountDecimals.toNumber()),
+      created_at_time: [],
+      fee: [],
+      from_subaccount: [],
+      memo: [],
+      to: {
+        subaccount: [],
+        owner: Principal.fromText(NFID_WALLET),
+      },
+    }
+
+    const result = await transferICRC1(
+      this.delegationIdentity!,
+      this.source.ledger,
+      transferArgs,
+    )
+    if (hasOwnProperty(result, "Ok")) {
+      const id = result.Ok as bigint
+      this.swapTransaction!.setNFIDTransferId(id)
+      return id
+    } else {
+      this.swapTransaction!.setError(result.Err)
+      throw new Error("Transfer to NFID failed: " + JSON.stringify(result.Err))
+    }
+  }
+
+  private async swapOnExchange(): Promise<bigint> {
+    const args: SwapArgs = {
+      amountIn: this.requestedQuote!.getAmountWithoutWidgetFee().toString(),
+      zeroForOne: this.zeroForOne,
+      amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
+    }
+    return this.swapPoolActor.swap(args).then((result) => {
+      if (hasOwnProperty(result, "ok")) {
+        const response = result.ok as bigint
+        this.swapTransaction!.setSwap(response)
+        return response
+      }
+      // @ts-ignore
+      this.swapTransaction?.setError(result.err as ErrorSwap)
+      // @ts-ignore
+      throw new Error("Swap error: " + JSON.stringify(result.err))
+    })
+  }
+
+  private async withdraw(): Promise<bigint> {
+    const args: WithdrawArgs = {
+      amount: BigInt(this.requestedQuote!.getTargetAmount().toNumber()),
+      token: this.target.ledger,
+      fee: this.target.fee,
+    }
+
+    return this.swapPoolActor.withdraw(args).then((result) => {
+      if (hasOwnProperty(result, "ok")) {
+        const id = result.ok as bigint
+        this.swapTransaction!.setWithdraw(id)
+        return id
+      }
+      // @ts-ignore
+      throw new Error("Withdraw error: " + JSON.stringify(result.err))
+    })
   }
 }
 

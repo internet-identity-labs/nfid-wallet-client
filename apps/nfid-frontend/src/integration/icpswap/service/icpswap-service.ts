@@ -1,3 +1,7 @@
+import { Principal } from "@dfinity/principal"
+import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { _SERVICE as SwapPool } from "src/integration/icpswap/idl/SwapPool.d"
+
 import { actor, hasOwnProperty } from "@nfid/integration"
 
 import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"
@@ -31,8 +35,28 @@ class IcpSwapService {
         const data: PoolData = pool.ok as PoolData
         return data
       }
-      throw new Error("TODO Error handling") //TODO
+      throw new Error("Not able to get pool for pair: " + pool.err)
     })
+  }
+
+  async getBalance(
+    swapPoolCanister: string,
+    principal: Principal,
+  ): Promise<{
+    balance1: bigint
+    balance2: bigint
+  }> {
+    const swapPoolActor = actor<SwapPool>(swapPoolCanister, SwapPoolIDL)
+
+    const result = await swapPoolActor.getUserUnusedBalance(principal)
+
+    if (hasOwnProperty(result, "ok")) {
+      return result.ok as {
+        balance1: bigint
+        balance2: bigint
+      }
+    }
+    throw new Error("TODO Error handling")
   }
 }
 

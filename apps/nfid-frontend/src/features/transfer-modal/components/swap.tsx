@@ -5,7 +5,7 @@ import {
   fetchActiveTokenByAddress,
   fetchAllTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
 
@@ -14,6 +14,9 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
+import { Shroff } from "frontend/integration/icpswap/shroff"
+
+import { getQuoteData, getShroff } from "../utils"
 import { ISwapSuccess } from "./swap-success"
 
 interface ISwapFT {
@@ -23,9 +26,7 @@ interface ISwapFT {
 export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
-  const [toAmountInUSD, setToAmountInUSD] = useState(0)
-  const [slippageError] = useState(false)
-  const [fromAmountInUSD, setFromAmountInUSD] = useState(0)
+  const [shroff, setShroff] = useState<Shroff>({} as Shroff)
   const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
   const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
     fetchAllTokens(query),
@@ -47,17 +48,13 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
     )
   }, [fromTokenAddress, allTokens])
 
-  // TODO: change harcoded usd values
-  const fromUsdRate = `${toAmountInUSD} USD`
-  const toUsdRate = `${fromAmountInUSD} USD`
-
   const {
     register,
     formState: { errors },
     handleSubmit,
-    getValues,
     setValue,
     resetField,
+    watch,
   } = useForm({
     mode: "all",
     defaultValues: {
@@ -66,6 +63,24 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
     },
   })
 
+  const amount = watch("amount")
+
+  useEffect(() => {
+    getShroff(fromTokenAddress, toTokenAddress).then(setShroff)
+  }, [fromTokenAddress, toTokenAddress])
+
+  const {
+    data: quote,
+    isLoading: isQuoteLoading,
+    isValidating: isQuoteFetching,
+    error: quoteError,
+  } = useSWR(
+    amount
+      ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
+      : null,
+    () => getQuoteData(amount, shroff),
+  )
+
   const submit = useCallback(
     async (values: { amount: string; to: string }) => {
       onSwapPromise({
@@ -73,11 +88,11 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
         assetImgTo: toToken?.getTokenLogo() ?? "",
         titleFrom: `${values.amount} ${fromToken?.getTokenSymbol()}`,
         titleTo: `${values.to} ${toToken?.getTokenSymbol()}`,
-        subTitleFrom: fromUsdRate!,
-        subTitleTo: toUsdRate!,
+        subTitleFrom: quote?.getSourceAmountUSD()!,
+        subTitleTo: quote?.getTargetAmountUSD()!,
         initialPromise: new Promise(async (resolve, reject) => {
           try {
-            // TODO: change harcoded values
+            // TODO: implement the SWAP function
             resolve({ hash: "?????" })
           } catch (e) {
             console.error(
@@ -92,7 +107,7 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
         }),
       })
     },
-    [onSwapPromise, fromToken, toToken, fromUsdRate, toUsdRate],
+    [onSwapPromise, fromToken, toToken, quote],
   )
 
   return (
@@ -108,15 +123,13 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
       register={register}
       errors={errors}
       loadingMessage={"Fetching supported tokens..."}
-      isLoading={isFromTokenLoading || isToTokenLoading}
+      isTokenLoading={isFromTokenLoading || isToTokenLoading}
       handleSubmit={handleSubmit}
       submit={submit}
-      setToUsdAmount={setToAmountInUSD}
-      setFromUsdAmount={setFromAmountInUSD}
-      fromUsdRate={fromUsdRate}
-      toUsdRate={toUsdRate}
-      value={getValues("amount")}
-      slippageError={slippageError}
+      value={amount}
+      quoteError={quoteError}
+      isQuoteLoading={isQuoteLoading || isQuoteFetching}
+      quote={quote}
     />
   )
 }

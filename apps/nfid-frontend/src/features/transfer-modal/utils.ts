@@ -17,6 +17,8 @@ import {
 } from "@nfid/integration"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
+import { Shroff } from "frontend/integration/icpswap/shroff"
 import { NFT } from "frontend/integration/nft/nft"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
@@ -150,5 +152,22 @@ export const getAccountIdentifier = (address: string): string => {
       principal: principalTo,
       subAccount: subAccountObject ?? undefined,
     }).toHex()
+  }
+}
+
+export const getShroff = async (from: string, to: string) => {
+  return await new ShroffBuilder().withSource(from).withTarget(to).build()
+}
+
+export const getQuoteData = async (amount: string, shroff: Shroff) => {
+  if (!amount || !Number(amount)) return
+
+  try {
+    return await shroff.getQuote(Number(amount))
+  } catch (e) {
+    console.error(e)
+    throw new Error(
+      `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
+    )
   }
 }

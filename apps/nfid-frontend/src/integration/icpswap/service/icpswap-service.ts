@@ -1,5 +1,13 @@
 import { actor, hasOwnProperty } from "@nfid/integration"
 
+import {
+  INSUFFICIENT_FUNDS,
+  SERVICE_UNAVAILABLE,
+  UNSUPPORTED_TOKEN,
+} from "../constants"
+import { InsufficientFundsError } from "../errors/insufficient-funds-error"
+import { ServiceUnavailableError } from "../errors/service-unavailable-error"
+import { UnsupportedTokenError } from "../errors/unsupported-token-error"
 import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"
 import {
   _SERVICE as SwapFactory,
@@ -31,7 +39,14 @@ class IcpSwapService {
         const data: PoolData = pool.ok as PoolData
         return data
       }
-      throw new Error("TODO Error handling") //TODO
+      if (hasOwnProperty(pool, "UnsupportedToken")) {
+        throw new UnsupportedTokenError(UNSUPPORTED_TOKEN)
+      }
+      if (hasOwnProperty(pool, "InsufficientFunds")) {
+        throw new InsufficientFundsError(INSUFFICIENT_FUNDS)
+      }
+      console.error("Quote error", pool.err)
+      throw new ServiceUnavailableError(SERVICE_UNAVAILABLE)
     })
   }
 }

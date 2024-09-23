@@ -4,14 +4,18 @@ import { FC } from "react"
 
 import { IconCmpArrow } from "@nfid-frontend/ui"
 
+import { Quote } from "frontend/integration/icpswap/quote"
+
 export interface QuoteModalProps {
   setQuoteModalOpen: (v: boolean) => void
   quoteModalOpen: boolean
+  quote: Quote | undefined
 }
 
 export const QuoteModal: FC<QuoteModalProps> = ({
   setQuoteModalOpen,
   quoteModalOpen,
+  quote,
 }) => {
   return (
     <>
@@ -44,11 +48,11 @@ export const QuoteModal: FC<QuoteModalProps> = ({
             <div className="text-sm">
               <div className="flex justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Quote rate</p>
-                <p>1 CHAT = 0.001 ckBTC</p>
+                <p>{quote?.getQuoteRate()}</p>
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Liquidity provider fee</p>
-                <p>0.000001 CHAT</p>
+                <p>{quote?.getLiquidityProviderFee()}</p>
                 <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
                   ICPSwap’s 0.3% fee.
                 </p>
@@ -64,13 +68,13 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               <div className="flex justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Estimated transfer fee</p>
                 <p>
-                  0.00002 CHAT <br />
-                  0.00002 ckBTC
+                  {quote?.getEstimatedTransferFee()[0]} <br />
+                  {quote?.getEstimatedTransferFee()[1]}
                 </p>
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Max slippage</p>
-                <p>0%</p>
+                <p>{quote?.getMaxSlippagge()}</p>
                 <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
                   The amount the price can change before it’s reverted between
                   the time your order is placed and confirmed.
@@ -78,7 +82,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Widget fee</p>
-                <p>0.000001 CHAT</p>
+                <p>{quote?.getWidgetFee()}</p>
                 <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
                   The fee of 0.875% is automatically factored into this quote to
                   support the NFID Wallet Community.
@@ -86,7 +90,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5">
                 <p>Guaranteed amount</p>
-                <p>0.001 ckBTC</p>
+                <p>{quote?.getGuaranteedAmount()}</p>
                 <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
                   This is the minimum amount you will receive after all fees.
                   You may receive more depending on slippage.

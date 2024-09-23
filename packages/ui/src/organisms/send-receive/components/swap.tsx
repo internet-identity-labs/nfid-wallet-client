@@ -17,6 +17,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { Quote } from "frontend/integration/icpswap/quote"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import { ChooseFromToken, ChooseToToken } from "./choose-token"
@@ -54,13 +55,11 @@ export interface SwapFTUiProps {
   setFromChosenToken: (value: string) => void
   setToChosenToken: (value: string) => void
   loadingMessage: string | undefined
-  isLoading: boolean
-  setToUsdAmount: (v: number) => void
-  setFromUsdAmount: (v: number) => void
-  fromUsdRate: string | undefined
-  toUsdRate: string | undefined
+  isTokenLoading: boolean
   value: string
-  slippageError: boolean
+  quoteError: boolean
+  isQuoteLoading: boolean
+  quote: Quote | undefined
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -77,19 +76,16 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   setFromChosenToken,
   setToChosenToken,
   loadingMessage,
-  isLoading,
-  setToUsdAmount,
-  setFromUsdAmount,
-  fromUsdRate,
-  toUsdRate,
+  isTokenLoading,
   value,
-  slippageError,
+  quoteError,
+  isQuoteLoading,
+  quote,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [errorModalOpen, setErrorModalOpen] = useState(false)
-  const [isPairFetched] = useState(true)
 
-  if (isLoading)
+  if (isTokenLoading)
     return (
       <BlurredLoader
         isLoading
@@ -104,6 +100,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       <QuoteModal
         quoteModalOpen={quoteModalOpen}
         setQuoteModalOpen={setQuoteModalOpen}
+        quote={quote}
       />
       <p className="mb-1 text-xs">From</p>
       <ChooseFromToken
@@ -111,10 +108,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         token={fromToken}
         register={register}
         resetField={resetField}
-        setFromUsdAmount={setFromUsdAmount}
-        setToUsdAmount={setToUsdAmount}
         setFromChosenToken={setFromChosenToken}
-        usdRate={fromUsdRate}
+        usdRate={quote?.getSourceAmountUSD()}
         tokens={tokens}
         setValue={setValue}
       />
@@ -144,35 +139,40 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       <ChooseToToken
         token={toToken}
         resetField={resetField}
-        setToUsdAmount={setToUsdAmount}
         setToChosenToken={setToChosenToken}
-        usdRate={toUsdRate}
+        usdRate={quote?.getTargetAmountUSD()}
         tokens={allTokens}
-        isPairFetched={isPairFetched}
+        isQuoteLoading={isQuoteLoading}
         register={register}
+        value={quote?.getTargetAmountPrettified()}
+        setValue={setValue}
       />
-      <div className="mt-[10px] flex items-center justify-between text-xs">
-        {isPairFetched ? (
-          <span className="text-gray-500">Quote rate</span>
-        ) : (
+      <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
+        {!value ? (
+          "Quote rate"
+        ) : isQuoteLoading ? (
           <div className="flex gap-[10px]">
             <Skeleton className="w-[66px] h-1 rounded-[4px] !bg-gray-200" />
             <Skeleton className="w-[30px] h-1 rounded-[4px] !bg-gray-200" />
           </div>
+        ) : (
+          `${quote?.getQuoteRate()} (30 sec)`
         )}
         <span
           className={
-            isPairFetched ? "text-teal-600 cursor-pointer" : "text-gray-500"
+            !isQuoteLoading && value
+              ? "text-teal-600 cursor-pointer"
+              : "text-gray-500"
           }
           onClick={() => {
-            if (!isPairFetched || !value) return
+            if (isQuoteLoading || !value) return
             setQuoteModalOpen(true)
           }}
         >
           View quote
         </span>
       </div>
-      {slippageError && (
+      {quoteError && (
         <div className="absolute bottom-[75px] text-xs text-red-600 left-5">
           Swap exceeded slippage tolerance. Try again.
         </div>
@@ -182,12 +182,12 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         type="primary"
         id="sendFT"
         block
-        disabled={!isPairFetched || !value}
+        disabled={isQuoteLoading || !value}
         onClick={handleSubmit(submit)}
       >
         {!value
           ? "Enter an amount"
-          : !isPairFetched
+          : isQuoteLoading
           ? "Fetching quote"
           : "Swap tokens"}
       </Button>

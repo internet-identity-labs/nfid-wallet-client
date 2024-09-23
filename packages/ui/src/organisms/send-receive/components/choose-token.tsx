@@ -1,8 +1,9 @@
+import { debounce } from "@dfinity/utils"
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useEffect, useState } from "react"
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react"
 import {
   FieldError,
   UseFormRegister,
@@ -37,8 +38,6 @@ interface ChooseFromTokenProps {
     to: string
   }>
   vaultsBalance?: AccountBalance | undefined
-  setFromUsdAmount: (value: number) => void
-  setToUsdAmount?: (value: number) => void
   resetField: UseFormResetField<{
     amount: string
     to: string
@@ -50,12 +49,12 @@ interface ChooseFromTokenProps {
     amount: string
     to: string
   }>
+  setFromUsdAmount?: (v: number) => void
 }
 
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens: FT[]
-  setToUsdAmount: (value: number) => void
   resetField: UseFormResetField<{
     amount: string
     to: string
@@ -63,11 +62,16 @@ interface ChooseToTokenProps {
   setToChosenToken: (value: string) => void
   sendReceiveTrackingFn?: () => void
   usdRate: string | undefined
-  isPairFetched: boolean
+  isQuoteLoading: boolean
   register: UseFormRegister<{
     amount: string
     to: string
   }>
+  setValue: UseFormSetValue<{
+    amount: string
+    to: string
+  }>
+  value: string | undefined
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -77,13 +81,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isVault,
   register,
   vaultsBalance,
-  setFromUsdAmount,
-  setToUsdAmount,
   resetField,
   setFromChosenToken,
   sendReceiveTrackingFn,
   usdRate,
   setValue,
+  setFromUsdAmount,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
@@ -111,11 +114,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       )
 
       setValue("amount", formattedValue)
-      setFromUsdAmount(Number(formattedValue))
-      if (!setToUsdAmount) return
-      // TODO: change harcoded values
-      setValue("to", "123")
-      setToUsdAmount(123)
+      if (setFromUsdAmount) setFromUsdAmount(Number(formattedValue))
     }
   }
 
@@ -147,14 +146,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               ),
             ),
             valueAsNumber: true,
-            onChange: (e) => {
-              setFromUsdAmount(Number(e.target.value))
-              // TODO: change harcoded values
-              if (!setToUsdAmount) return
-              setValue("to", "1.23")
-              setToUsdAmount(1.23)
-            },
           })}
+          onChange={debounce((e: ChangeEvent<HTMLInputElement>) => {
+            const value = e.target.value
+            setValue("amount", value)
+            if (setFromUsdAmount) setFromUsdAmount(Number(value))
+          }, 300)}
         />
         <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseModal
@@ -164,7 +161,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             onSelect={(value) => {
               resetField("amount")
               resetField("to")
-              setFromUsdAmount(0)
               setFromChosenToken(value)
             }}
             preselectedValue={token.getTokenAddress()}
@@ -218,17 +214,23 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
   token,
   tokens,
-  setToUsdAmount,
   resetField,
   setToChosenToken,
   sendReceiveTrackingFn,
   usdRate,
-  isPairFetched,
+  isQuoteLoading,
   register,
+  value,
+  setValue,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
   const getTokenOption = useCallback(getTokenOptions, [tokens, false])
+
+  useEffect(() => {
+    if (!value) return
+    setValue("to", value)
+  }, [value])
 
   useEffect(() => {
     getTokenOption(tokens, false).then(setTokenOptions)
@@ -242,7 +244,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <InputAmount
             decimals={token.getTokenDecimals()!}
             disabled
-            isLoading={!isPairFetched}
+            isLoading={isQuoteLoading}
             {...register("to")}
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
@@ -253,7 +255,6 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               onSelect={(value) => {
                 resetField("amount")
                 resetField("to")
-                setToUsdAmount(0)
                 setToChosenToken(value)
               }}
               preselectedValue={token.getTokenAddress()}
@@ -282,7 +283,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
         </div>
         <div className="flex items-center justify-between text-right">
           <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
-            {isPairFetched ? (
+            {!isQuoteLoading ? (
               usdRate
             ) : (
               <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />

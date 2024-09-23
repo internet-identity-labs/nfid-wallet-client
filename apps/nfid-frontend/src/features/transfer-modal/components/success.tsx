@@ -30,7 +30,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
   duration = "2 seconds",
   withToasts = true,
 }) => {
-  const [currentState, setCurrentState] = React.useState<0 | 1 | 2 | 3 | 4>(0)
+  const [currentState, setCurrentState] = React.useState<number>(0)
 
   const { data } = useSWR(
     [initialPromise, "initialTransferPromise"],

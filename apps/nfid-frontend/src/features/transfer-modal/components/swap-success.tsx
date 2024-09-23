@@ -35,7 +35,7 @@ export const SwapSuccess: FC<ISwapSuccess> = ({
   duration = "20 seconds",
   withToasts = true,
 }) => {
-  const [currentState, setCurrentState] = useState<0 | 1 | 2 | 3 | 4>(0)
+  const [currentState, setCurrentState] = useState<number>(0)
   const [error, setError] = useState("")
 
   const { data } = useSWR(

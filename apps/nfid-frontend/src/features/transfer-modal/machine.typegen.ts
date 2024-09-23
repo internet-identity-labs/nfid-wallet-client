@@ -23,10 +23,10 @@ export interface Typegen0 {
     assignSelectedNFTId: "ASSIGN_SELECTED_NFT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
-    assignSwapObject: "ON_SWAP_PROMISE"
+    assignSwapObject: "ON_SWAP"
     assignTokenStandard: "ASSIGN_TOKEN_STANDARD"
     assignTokenType: "CHANGE_TOKEN_TYPE"
-    assignTransferObject: "ON_TRANSFER_PROMISE"
+    assignTransferObject: "ON_TRANSFER"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {

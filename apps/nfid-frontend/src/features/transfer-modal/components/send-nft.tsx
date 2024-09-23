@@ -21,12 +21,12 @@ import { ITransferSuccess } from "./success"
 interface ITransferNFT {
   preselectedNFTId?: string
   selectedReceiverWallet?: string
-  onTransferPromise: (data: ITransferSuccess) => void
+  onTransfer: (data: ITransferSuccess) => void
 }
 
 export const TransferNFT = ({
   selectedReceiverWallet,
-  onTransferPromise,
+  onTransfer,
   preselectedNFTId = "",
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
@@ -58,7 +58,7 @@ export const TransferNFT = ({
     async (values: any) => {
       if (!selectedNFT) return toast.error("No selected NFT")
 
-      onTransferPromise({
+      onTransfer({
         assetImg: selectedNFT?.getAssetPreview().url,
         initialPromise: new Promise(async (resolve) => {
           const identity = await getIdentity([selectedNFT.getCollectionId()])
@@ -83,13 +83,7 @@ export const TransferNFT = ({
         },
       })
     },
-    [
-      handleTrackTransfer,
-      onTransferPromise,
-      refetchAllNfts,
-      refetchNFT,
-      selectedNFT,
-    ],
+    [handleTrackTransfer, onTransfer, refetchAllNfts, refetchNFT, selectedNFT],
   )
 
   return (

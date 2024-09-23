@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import {
   FieldError,
   UseFormRegister,
@@ -22,21 +22,19 @@ import {
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S } from "@nfid/integration/token/constants"
 
-import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
 
-import { getTokenOptions } from "../utils"
+import { getTokenOptions, getTokenOptionsVault } from "../utils"
 
 interface ChooseFromTokenProps {
   error: FieldError | undefined
   token: FT | undefined
   tokens: FT[]
-  isVault?: boolean
   register: UseFormRegister<{
     amount: string
     to: string
   }>
-  vaultsBalance?: AccountBalance | undefined
+  balance?: bigint | undefined
   setFromUsdAmount: (value: number) => void
   setToUsdAmount?: (value: number) => void
   resetField: UseFormResetField<{
@@ -74,9 +72,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   error,
   token,
   tokens,
-  isVault,
   register,
-  vaultsBalance,
+  balance,
   setFromUsdAmount,
   setToUsdAmount,
   resetField,
@@ -87,39 +84,39 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
-  const getTokenOption = useCallback(getTokenOptions, [tokens, isVault])
-
   useEffect(() => {
-    getTokenOption(tokens, Boolean(isVault)).then(setTokenOptions)
-  }, [getTokenOptions])
+    balance !== undefined
+      ? getTokenOptionsVault(tokens)
+      : getTokenOptions(tokens).then(setTokenOptions)
+  }, [getTokenOptions, getTokenOptionsVault, tokens, balance])
 
   const maxHandler = async () => {
     if (!token) return
+    const userBalance = balance || token.getTokenBalance()
     const fee = token.getTokenFee()
-    if (fee && token.getTokenBalance()) {
-      const balanceNum =
-        isVault && vaultsBalance
-          ? new BigNumber(vaultsBalance.balance["ICP"].toString())
-          : new BigNumber(token.getTokenBalance()!.toString())
+    const decimals = token.getTokenDecimals()
+    if (fee && userBalance && decimals) {
+      const balanceNum = new BigNumber(userBalance.toString())
       const feeNum = new BigNumber(fee.toString())
       const val = balanceNum.minus(feeNum)
       if (val.isLessThanOrEqualTo(0)) return
 
-      const formattedValue = formatAssetAmountRaw(
-        Number(val),
-        token.getTokenDecimals()!,
-      )
+      const formattedValue = formatAssetAmountRaw(Number(val), decimals)
 
       setValue("amount", formattedValue)
       setFromUsdAmount(Number(formattedValue))
       if (!setToUsdAmount) return
       // TODO: change harcoded values
-      setValue("to", "123")
-      setToUsdAmount(123)
+      setValue("to", "0")
+      setToUsdAmount(0)
     }
   }
 
   if (!token) return null
+
+  const decimals = token.getTokenDecimals()
+
+  if (!decimals) return null
 
   return (
     <div
@@ -131,28 +128,21 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       <div className="flex items-center justify-between">
         <InputAmount
           isLoading={false}
-          decimals={token.getTokenDecimals()!}
+          decimals={decimals}
           {...register("amount", {
             required: sumRules.errorMessages.required,
             validate: validateTransferAmountField(
-              formatAssetAmountRaw(
-                isVault && vaultsBalance
-                  ? Number(vaultsBalance.balance["ICP"])
-                  : Number(token.getTokenBalance()),
-                token.getTokenDecimals()!,
-              ),
-              formatAssetAmountRaw(
-                Number(token.getTokenFee()),
-                token.getTokenDecimals()!,
-              ),
+              balance || token.getTokenBalance(),
+              token.getTokenFee(),
+              decimals,
             ),
             valueAsNumber: true,
             onChange: (e) => {
               setFromUsdAmount(Number(e.target.value))
               // TODO: change harcoded values
               if (!setToUsdAmount) return
-              setValue("to", "1.23")
-              setToUsdAmount(1.23)
+              setValue("to", "0")
+              setToUsdAmount(0)
             },
           })}
         />
@@ -198,15 +188,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         <div className="mt-2 text-xs leading-5 text-right text-gray-500">
           Balance:&nbsp;
           <span className="cursor-pointer" onClick={maxHandler}>
-            {!isVault ? (
+            {!balance ? (
               <span className="text-teal-600" id="balance">
                 {token.getTokenBalanceFormatted() || "0"}&nbsp;
                 {token.getTokenSymbol()}
               </span>
             ) : (
-              <span className="text-teal-600">
-                {Number(vaultsBalance?.balance["ICP"]) / E8S} ICP
-              </span>
+              <span className="text-teal-600">{Number(balance) / E8S} ICP</span>
             )}
           </span>
         </div>
@@ -228,19 +216,21 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
-  const getTokenOption = useCallback(getTokenOptions, [tokens, false])
-
   useEffect(() => {
-    getTokenOption(tokens, false).then(setTokenOptions)
-  }, [getTokenOptions])
+    getTokenOptions(tokens).then(setTokenOptions)
+  }, [getTokenOptions, tokens])
 
   if (!token) return null
+
+  const decimals = token.getTokenDecimals()
+
+  if (!decimals) return null
   return (
     <>
       <div className="rounded-[12px] p-4 h-[102px] bg-gray-100">
         <div className="flex items-center justify-between">
           <InputAmount
-            decimals={token.getTokenDecimals()!}
+            decimals={decimals}
             disabled
             isLoading={!isPairFetched}
             {...register("to")}

@@ -54,12 +54,15 @@ export const TransferVaultModal: FC<TransferVaultModalProps> = ({
   onClickOutside,
   direction,
   component,
+  isSuccess,
 }) => {
   return (
     <TransferTemplate onClickOutside={onClickOutside} className="!h-[530px]">
-      <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
-        {direction}
-      </div>
+      {!isSuccess && (
+        <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+          {direction}
+        </div>
+      )}
       {component}
     </TransferTemplate>
   )

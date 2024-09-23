@@ -49,8 +49,8 @@ export const TransferModalCoordinator = () => {
             preselectedTokenAddress={state.context.selectedFT}
             isVault={state.context.isOpenedFromVaults}
             preselectedAccountAddress={state.context.sourceWalletAddress}
-            onTransferPromise={(message: ITransferSuccess) =>
-              send({ type: "ON_TRANSFER_PROMISE", data: message })
+            onTransfer={(message: ITransferSuccess) =>
+              send({ type: "ON_TRANSFER", data: message })
             }
           />
         )
@@ -58,16 +58,16 @@ export const TransferModalCoordinator = () => {
         return (
           <TransferNFT
             preselectedNFTId={state.context.selectedNFTId}
-            onTransferPromise={(message: ITransferSuccess) =>
-              send({ type: "ON_TRANSFER_PROMISE", data: message })
+            onTransfer={(message: ITransferSuccess) =>
+              send({ type: "ON_TRANSFER", data: message })
             }
           />
         )
       case state.matches("SwapMachine"):
         return (
           <SwapFT
-            onSwapPromise={(message: ISwapSuccess) =>
-              send({ type: "ON_SWAP_PROMISE", data: message })
+            onSwap={(message: ISwapSuccess) =>
+              send({ type: "ON_SWAP", data: message })
             }
           />
         )

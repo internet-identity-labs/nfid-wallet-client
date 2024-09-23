@@ -17,10 +17,10 @@ import {
 import { ISwapSuccess } from "./swap-success"
 
 interface ISwapFT {
-  onSwapPromise: (data: ISwapSuccess) => void
+  onSwap: (data: ISwapSuccess) => void
 }
 
-export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
+export const SwapFT = ({ onSwap }: ISwapFT) => {
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
   const [toAmountInUSD, setToAmountInUSD] = useState(0)
@@ -61,14 +61,14 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
   } = useForm({
     mode: "all",
     defaultValues: {
-      amount: undefined as any as string,
+      amount: "",
       to: "",
     },
   })
 
   const submit = useCallback(
     async (values: { amount: string; to: string }) => {
-      onSwapPromise({
+      onSwap({
         assetImgFrom: fromToken?.getTokenLogo() ?? "",
         assetImgTo: toToken?.getTokenLogo() ?? "",
         titleFrom: `${values.amount} ${fromToken?.getTokenSymbol()}`,
@@ -78,7 +78,7 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
         initialPromise: new Promise(async (resolve, reject) => {
           try {
             // TODO: change harcoded values
-            resolve({ hash: "?????" })
+            resolve({ hash: "mocked hash" })
           } catch (e) {
             console.error(
               `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
@@ -92,7 +92,7 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
         }),
       })
     },
-    [onSwapPromise, fromToken, toToken, fromUsdRate, toUsdRate],
+    [onSwap, fromToken, toToken, fromUsdRate, toUsdRate],
   )
 
   return (

@@ -36,8 +36,8 @@ export type Events =
   | { type: "ASSIGN_SELECTED_NFT"; data: string }
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
-  | { type: "ON_TRANSFER_PROMISE"; data: ITransferSuccess }
-  | { type: "ON_SWAP_PROMISE"; data: ISwapSuccess }
+  | { type: "ON_TRANSFER"; data: ITransferSuccess }
+  | { type: "ON_SWAP"; data: ISwapSuccess }
   | { type: "ASSIGN_VAULTS"; data: boolean }
 
 type Services = {
@@ -136,7 +136,7 @@ export const transferMachine = createMachine(
       ReceiveMachine: {},
       SwapMachine: {
         on: {
-          ON_SWAP_PROMISE: {
+          ON_SWAP: {
             target: "#TransferMachine.SwapSuccess",
             actions: "assignSwapObject",
           },
@@ -159,7 +159,7 @@ export const transferMachine = createMachine(
           },
           SendFT: {
             on: {
-              ON_TRANSFER_PROMISE: {
+              ON_TRANSFER: {
                 target: "#TransferMachine.Success",
                 actions: "assignTransferObject",
               },
@@ -167,7 +167,7 @@ export const transferMachine = createMachine(
           },
           SendNFT: {
             on: {
-              ON_TRANSFER_PROMISE: {
+              ON_TRANSFER: {
                 target: "#TransferMachine.Success",
                 actions: "assignTransferObject",
               },

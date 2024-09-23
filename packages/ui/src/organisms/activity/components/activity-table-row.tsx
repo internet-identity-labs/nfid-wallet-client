@@ -68,7 +68,7 @@ export const ActivityTableRow = ({
             <ImageWithFallback
               alt="NFID token"
               fallbackSrc={IconNftPlaceholder}
-              src="123"
+              src="Mocked Source"
               className="rounded-full w-[28px] h-[28px]"
             />
             1.15 ICP
@@ -92,7 +92,7 @@ export const ActivityTableRow = ({
             <ImageWithFallback
               alt="NFID token"
               fallbackSrc={IconNftPlaceholder}
-              src="123"
+              src="Mocked Source"
               className="rounded-full w-[28px] h-[28px]"
             />
             56.15 ckBTC

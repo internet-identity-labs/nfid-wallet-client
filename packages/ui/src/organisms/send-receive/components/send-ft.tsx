@@ -60,7 +60,7 @@ export interface TransferFTUiProps {
     amount: string
     to: string
   }>
-  vaultsBalance?: AccountBalance | undefined
+  vaultsBalance?: bigint | undefined
   setUsdAmount: (v: number) => void
 }
 
@@ -118,9 +118,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       <ChooseFromToken
         error={errors.amount}
         token={token}
-        isVault={isVault}
         register={register}
-        vaultsBalance={vaultsBalance}
+        balance={vaultsBalance}
         resetField={resetField}
         setFromUsdAmount={setAmountInUSD}
         setFromChosenToken={setChosenToken}

@@ -16,7 +16,7 @@ import {
   mapUserNFTDetailsToGroupedOptions,
   validateICPAddress,
 } from "../utils"
-import { ITransferSuccess } from "./success"
+import { ITransferSuccess } from "./send-success"
 
 interface ITransferNFT {
   preselectedNFTId?: string

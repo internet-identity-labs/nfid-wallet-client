@@ -43,10 +43,10 @@ export interface Typegen0 {
     | "SendMachine.CheckSendType"
     | "SendMachine.SendFT"
     | "SendMachine.SendNFT"
-    | "Success"
     | "SwapMachine"
     | "SwapSuccess"
     | "TransferModal"
+    | "TransferSuccess"
     | { SendMachine?: "CheckSendType" | "SendFT" | "SendNFT" }
   tags: never
 }

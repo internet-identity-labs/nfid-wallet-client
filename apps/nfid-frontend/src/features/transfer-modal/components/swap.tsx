@@ -73,12 +73,12 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
         assetImgTo: toToken?.getTokenLogo() ?? "",
         titleFrom: `${values.amount} ${fromToken?.getTokenSymbol()}`,
         titleTo: `${values.to} ${toToken?.getTokenSymbol()}`,
-        subTitleFrom: fromUsdRate!,
-        subTitleTo: toUsdRate!,
-        initialPromise: new Promise(async (resolve, reject) => {
+        subTitleFrom: fromUsdRate,
+        subTitleTo: toUsdRate,
+        swap: new Promise(async (resolve, reject) => {
           try {
             // TODO: change harcoded values
-            resolve({ hash: "mocked hash" })
+            resolve({ swapProgress: "mockedProgress" })
           } catch (e) {
             console.error(
               `Swap error: ${(e as Error).message ? (e as Error).message : e}`,

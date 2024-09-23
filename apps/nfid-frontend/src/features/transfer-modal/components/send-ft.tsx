@@ -26,8 +26,8 @@ import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-w
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
-import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
 
+import { ITransferResponse } from "../types"
 import {
   getAccountIdentifier,
   getIdentity,
@@ -35,7 +35,7 @@ import {
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
-import { ITransferSuccess } from "./success"
+import { ITransferSuccess } from "./send-success"
 
 interface ITransferFT {
   preselectedTokenAddress: string | undefined

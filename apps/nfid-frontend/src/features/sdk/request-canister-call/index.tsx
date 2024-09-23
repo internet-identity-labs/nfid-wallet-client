@@ -10,8 +10,8 @@ import { truncateString } from "@nfid-frontend/utils"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { RPCPromptTemplate } from "frontend/features/identitykit/components/templates/prompt-template"
+import { getBalance } from "frontend/features/transfer-modal/utils"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
-import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 
 export interface IRequestTransferProps {
   origin: string
@@ -37,7 +37,7 @@ export const RequestCanisterCall = ({
   const { data: balance } = useSWR(
     identity ? ["userBalance", identity.getPrincipal().toString()] : null,
     ([_, id]) =>
-      icTransferConnector.getBalance(
+      getBalance(
         AccountIdentifier.fromPrincipal({
           principal: Principal.fromText(id),
         }).toHex(),

@@ -6,9 +6,7 @@ import {
   ICRC1IndexData,
   TransactionData,
 } from "@nfid/integration/token/icrc1/types"
-import { TokenStandards } from "@nfid/integration/token/types"
-
-import { Blockchain } from "frontend/ui/connnector/types"
+import { Blockchain, TokenStandards } from "@nfid/integration/token/types"
 
 import { nanoSecondsToDate } from "../../util/activity"
 import { getTxType } from "../../util/tx-type"

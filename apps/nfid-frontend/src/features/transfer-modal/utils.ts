@@ -6,6 +6,7 @@ import {
 } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
+import { PRINCIPAL_LENGTH } from "packages/constants"
 
 import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
@@ -151,4 +152,16 @@ export const getAccountIdentifier = (address: string): string => {
       subAccount: subAccountObject ?? undefined,
     }).toHex()
   }
+}
+
+export const getBalance = async (address: string): Promise<bigint> => {
+  const addressVerified =
+    address.length === PRINCIPAL_LENGTH
+      ? AccountIdentifier.fromPrincipal({
+          principal: Principal.fromText(address),
+        }).toHex()
+      : address
+
+  const balance = await getBalance(addressVerified)
+  return balance
 }

@@ -3,7 +3,7 @@ import React from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
-import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
+import { ITransferResponse } from "../types"
 
 export interface ITransferSuccess {
   onClose?: () => void

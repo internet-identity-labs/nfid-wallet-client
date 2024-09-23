@@ -2,10 +2,9 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Activity } from "packages/integration/src/lib/asset/types"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-import { TokenStandards } from "@nfid/integration/token/types"
+import { Blockchain, TokenStandards } from "@nfid/integration/token/types"
 
 import { getICPTransactionHistory } from "frontend/integration/rosetta/transactions/get-all-transaction-history"
-import { Blockchain } from "frontend/ui/connnector/types"
 
 import { icFungibleTxsToActivity } from "../../util/activity"
 import { ActivityClass } from "../activity"

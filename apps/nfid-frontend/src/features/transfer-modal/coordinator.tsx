@@ -14,7 +14,7 @@ import { ProfileContext } from "frontend/provider"
 import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
-import { ITransferSuccess, TransferSuccess } from "./components/success"
+import { ITransferSuccess, TransferSuccess } from "./components/send-success"
 import { SwapFT } from "./components/swap"
 import { ISwapSuccess, SwapSuccess } from "./components/swap-success"
 
@@ -79,7 +79,7 @@ export const TransferModalCoordinator = () => {
             preselectedAccountAddress={state.context.sourceWalletAddress}
           />
         )
-      case state.matches("Success"):
+      case state.matches("TransferSuccess"):
         return (
           <TransferSuccess
             onClose={() => send({ type: "HIDE" })}
@@ -91,7 +91,6 @@ export const TransferModalCoordinator = () => {
           <SwapSuccess
             onClose={() => send({ type: "HIDE" })}
             {...state.context.swapObject!}
-            withToasts={false}
           />
         )
       default:
@@ -113,7 +112,7 @@ export const TransferModalCoordinator = () => {
       {state.context.isOpenedFromVaults ? (
         <TransferVaultModal
           onClickOutside={() => send({ type: "HIDE" })}
-          isSuccess={state.matches("Success")}
+          isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           component={Component}
           tokenType={state.context.tokenType}
@@ -121,7 +120,9 @@ export const TransferModalCoordinator = () => {
       ) : (
         <TransferModal
           onClickOutside={() => send({ type: "HIDE" })}
-          isSuccess={state.matches("Success") || state.matches("SwapSuccess")}
+          isSuccess={
+            state.matches("TransferSuccess") || state.matches("SwapSuccess")
+          }
           direction={state.context.direction}
           tokenType={state.context.tokenType}
           onTokenTypeChange={onTokenTypeChange}

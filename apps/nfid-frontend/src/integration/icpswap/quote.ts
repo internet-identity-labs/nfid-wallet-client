@@ -13,4 +13,6 @@ export interface Quote {
   getGuaranteedAmount(): string
   getSourceAmount(): BigNumber
   getTargetAmount(): BigNumber
+  getAmountWithoutWidgetFee(): BigNumber
+  getWidgetFeeAmount(): BigNumber
 }

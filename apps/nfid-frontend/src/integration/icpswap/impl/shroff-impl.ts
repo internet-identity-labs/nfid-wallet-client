@@ -1,12 +1,13 @@
 import * as Agent from "@dfinity/agent"
 import { SignIdentity } from "@dfinity/agent"
 import { SubAccount } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { NFID_WALLET } from "src/integration/icpswap/impl/constants"
 import {
   calculateWidgetFee,
   QuoteImpl,
-  WIDGET_FEE,
 } from "src/integration/icpswap/impl/quote-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
@@ -26,10 +27,10 @@ import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { PoolData } from "./../idl/SwapFactory.d"
-import { Error as ErrorSwap } from "./../idl/SwapPool.d"
 import {
   _SERVICE as SwapPool,
   DepositArgs,
+  Error as ErrorSwap,
   Result,
   SwapArgs,
   WithdrawArgs,
@@ -68,7 +69,7 @@ class ShroffImpl implements Shroff {
     const args: SwapArgs = {
       amountIn: amountDecimals.toString(),
       zeroForOne: this.zeroForOne,
-      amountOutMinimum: "0", //TODO slippage
+      amountOutMinimum: "0",
     }
     const targetUSDPricePromise = exchangeRateService.usdPriceForICRC1(
       this.target.ledger,
@@ -83,7 +84,6 @@ class ShroffImpl implements Shroff {
       sourceUSDPricePromise,
       quotePromise,
     ])
-
     if (hasOwnProperty(quote, "ok")) {
       this.requestedQuote = new QuoteImpl(
         amount,
@@ -125,14 +125,30 @@ class ShroffImpl implements Shroff {
     }
   }
 
+  async validateQuote(): Promise<Quote> {
+    const legacyQuote = this.requestedQuote
+    const updatedQuote = await this.getQuote(
+      Number(this.requestedQuote?.getSourceAmountPrettified()),
+    )
+
+    if (
+      legacyQuote?.getTargetAmountPrettified() !==
+      updatedQuote.getTargetAmountPrettified()
+    ) {
+      throw new Error("Swap exceeded slippage tolerance. Try again")
+    }
+    return updatedQuote
+  }
+
   private async deposit(): Promise<bigint> {
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
+    const amountDecimals = this.requestedQuote.getAmountWithoutWidgetFee()
     const args: DepositArgs = {
       fee: this.source.fee,
       token: this.source.ledger,
-      amount: BigInt(this.requestedQuote.getSourceAmount().toNumber()),
+      amount: BigInt(amountDecimals.toNumber()),
     }
 
     const result = await this.swapPoolActor.deposit(args)
@@ -146,21 +162,18 @@ class ShroffImpl implements Shroff {
     throw new Error("Deposit error: " + JSON.stringify(result.err))
   }
 
-  private async transfer(): Promise<bigint> {
+  private async transfer(): Promise<void> {
     if (!this.delegationIdentity) {
       throw new Error("Delegation identity is required")
     }
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
+    await Promise.all([this.transferToSwap(), this.transferToNFID()])
+  }
 
-    const widgetFeeAmount = this.requestedQuote
-      .getSourceAmount()
-      .multipliedBy(WIDGET_FEE)
-
-    const amountDecimals = new BigNumber(this.requestedQuote.getSourceAmount())
-      .minus(widgetFeeAmount)
-      .minus(Number(this.source.fee))
+  private async transferToSwap() {
+    const amountDecimals = this.requestedQuote!.getAmountWithoutWidgetFee()
 
     const transferArgs: TransferArg = {
       amount: BigInt(amountDecimals.toNumber()),
@@ -171,17 +184,15 @@ class ShroffImpl implements Shroff {
       to: {
         subaccount: [
           SubAccount.fromPrincipal(
-            this.delegationIdentity.getPrincipal(),
+            this.delegationIdentity!.getPrincipal(),
           ).toUint8Array(),
         ],
         owner: this.poolData.canisterId,
       },
     }
 
-    //TODO transfer to ICP wallet
-
     const result = await transferICRC1(
-      this.delegationIdentity,
+      this.delegationIdentity!,
       this.source.ledger,
       transferArgs,
     )
@@ -191,15 +202,47 @@ class ShroffImpl implements Shroff {
       return id
     } else {
       this.swapTransaction!.setError(result.Err)
-      throw new Error("Transfer failed: " + JSON.stringify(result.Err))
+      throw new Error(
+        "Transfer to ICPSwap failed: " + JSON.stringify(result.Err),
+      )
+    }
+  }
+
+  private async transferToNFID() {
+    const amountDecimals = this.requestedQuote!.getWidgetFeeAmount()
+
+    const transferArgs: TransferArg = {
+      amount: BigInt(amountDecimals.toNumber()),
+      created_at_time: [],
+      fee: [],
+      from_subaccount: [],
+      memo: [],
+      to: {
+        subaccount: [],
+        owner: Principal.fromText(NFID_WALLET),
+      },
+    }
+
+    const result = await transferICRC1(
+      this.delegationIdentity!,
+      this.source.ledger,
+      transferArgs,
+    )
+    if (hasOwnProperty(result, "Ok")) {
+      const id = result.Ok as bigint
+      this.swapTransaction!.setNFIDTransferId(id)
+      return id
+    } else {
+      this.swapTransaction!.setError(result.Err)
+      throw new Error("Transfer to NFID failed: " + JSON.stringify(result.Err))
     }
   }
 
   private async swapOnExchange(): Promise<bigint> {
     const args: SwapArgs = {
-      amountIn: this.requestedQuote!.getSourceAmount().toString(),
+      amountIn: this.requestedQuote!.getAmountWithoutWidgetFee().toString(),
       zeroForOne: this.zeroForOne,
-      amountOutMinimum: "0", //TODO slippage
+      amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
     }
     return this.swapPoolActor.swap(args).then((result) => {
       if (hasOwnProperty(result, "ok")) {

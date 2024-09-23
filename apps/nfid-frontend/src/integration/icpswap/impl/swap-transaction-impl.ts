@@ -7,6 +7,7 @@ import { Error as ErrorSwap } from "./../idl/SwapPool.d"
 export class SwapTransactionImpl implements SwapTransaction {
   private readonly startTime: number
   private transferId: bigint | undefined
+  private transferNFIDId: bigint | undefined
   private deposit: bigint | undefined
   private swap: bigint | undefined
   private withdraw: bigint | undefined
@@ -25,7 +26,12 @@ export class SwapTransactionImpl implements SwapTransaction {
 
   public setTransferId(transferId: bigint) {
     this.transferId = transferId
-    this.stage = SwapStage.Deposit
+    if (this.transferNFIDId) this.stage = SwapStage.Deposit
+  }
+
+  public setNFIDTransferId(transferId: bigint) {
+    this.transferNFIDId = transferId
+    if (this.transferId) this.stage = SwapStage.Deposit
   }
 
   public setDeposit(deposit: bigint) {

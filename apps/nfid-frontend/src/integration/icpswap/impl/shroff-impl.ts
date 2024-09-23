@@ -169,8 +169,7 @@ class ShroffImpl implements Shroff {
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
-    await this.transferToSwap()
-    await this.transferToNFID()
+    await Promise.all([this.transferToSwap(), this.transferToNFID()])
   }
 
   private async transferToSwap() {

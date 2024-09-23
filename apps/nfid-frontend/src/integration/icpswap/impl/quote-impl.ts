@@ -4,7 +4,7 @@ import { Quote } from "src/integration/icpswap/quote"
 import { ICRC1TypeOracle } from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
-const WIDGET_FEE = 0.00875
+export const WIDGET_FEE = 0.00875
 const LIQUIDITY_PROVIDER_FEE = 0.003
 
 export class QuoteImpl implements Quote {
@@ -114,20 +114,20 @@ export class QuoteImpl implements Quote {
     return "0%"
   }
 
+  getSourceAmount(): BigNumber {
+    return BigNumber(this.sourceAmount).multipliedBy(10 ** this.source.decimals)
+  }
+
+  getTargetAmount(): BigNumber {
+    return BigNumber(Number(this.quote))
+  }
+
   private getWidgetFeeAmount() {
     return this.getSourceAmount()
       .multipliedBy(WIDGET_FEE)
       .div(10 ** this.source.decimals)
       .toFixed(this.source.decimals)
       .replace(TRIM_ZEROS, "")
-  }
-
-  private getTargetAmount(): BigNumber {
-    return BigNumber(Number(this.quote))
-  }
-
-  private getSourceAmount(): BigNumber {
-    return BigNumber(this.sourceAmount).multipliedBy(10 ** this.source.decimals)
   }
 }
 

@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js"
+
 export interface Quote {
   getTargetAmountUSD(): string
   getSourceAmountUSD(): string
@@ -9,4 +11,6 @@ export interface Quote {
   getWidgetFee(): string
   getMaxSlippagge(): string
   getGuaranteedAmount(): string
+  getSourceAmount(): BigNumber
+  getTargetAmount(): BigNumber
 }

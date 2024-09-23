@@ -24,6 +24,13 @@ describe("shroff test", () => {
       .withTarget(targetLedger)
       .build()
     const quote = await shroff.getQuote(0.5)
+    await sleep(1)
+
+    const revalidatedQuote = await shroff.validateQuote()
+    expect(revalidatedQuote.getTargetAmount().toNumber()).toEqual(
+      quote.getTargetAmount().toNumber(),
+    )
+
     expect(quote.getSourceAmountPrettified()).toEqual("0.5")
   })
 
@@ -39,7 +46,8 @@ describe("shroff test", () => {
     let seconds = 0
     const balance = await ledgerICRC.getBalance(mockPrincipal)
 
-    await shroff.getQuote(0.001)
+    const quote = await shroff.getQuote(0.001)
+
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
 
     shroff.swap(mockId)
@@ -87,6 +95,11 @@ describe("shroff test", () => {
 
     expect(balanceUpgraded).toBeGreaterThan(balance)
 
+    const targetFee = (await ledgerICRC.getMetadata()).fee
+
+    expect(Number(balanceUpgraded - balance)).toEqual(
+      quote.getTargetAmount().minus(Number(targetFee)).toNumber(),
+    )
   })
 })
 

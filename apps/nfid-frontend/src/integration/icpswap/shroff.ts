@@ -6,4 +6,5 @@ export interface Shroff {
   getQuote(amount: number): Promise<Quote>
   swap(delegationIdentity: SignIdentity): Promise<SwapTransaction>
   getSwapTransaction(): SwapTransaction | undefined
+  validateQuote(): Promise<Quote>
 }

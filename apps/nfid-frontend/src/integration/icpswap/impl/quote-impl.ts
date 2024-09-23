@@ -14,6 +14,7 @@ export class QuoteImpl implements Quote {
   private readonly target: ICRC1TypeOracle
   private readonly targetPriceUSD: BigNumber | undefined
   private readonly sourcePriceUSD: BigNumber | undefined
+  private readonly amountWithoutWidgetFee: BigNumber
 
   constructor(
     sourceAmount: number,
@@ -29,6 +30,10 @@ export class QuoteImpl implements Quote {
     this.target = target
     this.targetPriceUSD = targetPriceUSD
     this.sourcePriceUSD = sourcePriceUSD
+    this.amountWithoutWidgetFee = new BigNumber(sourceAmount)
+      .multipliedBy(10 ** this.source.decimals)
+      .minus(calculateWidgetFee(sourceAmount, this.source.decimals))
+      .minus(Number(this.source.fee))
   }
 
   getTargetAmountUSD(): string {
@@ -107,7 +112,15 @@ export class QuoteImpl implements Quote {
   }
 
   getWidgetFee(): string {
-    return this.getWidgetFeeAmount().toString() + " " + this.source.symbol
+    return (
+      this.getWidgetFeeAmount()
+        .div(10 ** this.source.decimals)
+        .toFixed(this.source.decimals)
+        .replace(TRIM_ZEROS, "")
+        .toString() +
+      " " +
+      this.source.symbol
+    )
   }
 
   getMaxSlippagge(): string {
@@ -122,12 +135,12 @@ export class QuoteImpl implements Quote {
     return BigNumber(Number(this.quote))
   }
 
-  private getWidgetFeeAmount() {
-    return this.getSourceAmount()
-      .multipliedBy(WIDGET_FEE)
-      .div(10 ** this.source.decimals)
-      .toFixed(this.source.decimals)
-      .replace(TRIM_ZEROS, "")
+  getAmountWithoutWidgetFee(): BigNumber {
+    return this.amountWithoutWidgetFee
+  }
+
+  getWidgetFeeAmount(): BigNumber {
+    return this.getSourceAmount().multipliedBy(WIDGET_FEE)
   }
 }
 
@@ -137,8 +150,8 @@ export function calculateWidgetFee(
 ): number {
   return parseFloat(
     BigNumber(sourceAmount)
+      .multipliedBy(10 ** sourceDecimals)
       .multipliedBy(WIDGET_FEE)
-      .div(10 ** sourceDecimals)
       .toFixed(sourceDecimals),
   )
 }

@@ -14,7 +14,9 @@ import { ProfileContext } from "frontend/provider"
 import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
-import { ITransferSuccess, TransferSuccess } from "./components/success"
+import { ITransferSuccess, TransferSuccess } from "./components/send-success"
+import { SwapFT } from "./components/swap"
+import { ISwapSuccess, SwapSuccess } from "./components/swap-success"
 
 export const TransferModalCoordinator = () => {
   const [publicKey, setPublicKey] = useState("")
@@ -47,8 +49,8 @@ export const TransferModalCoordinator = () => {
             preselectedTokenAddress={state.context.selectedFT}
             isVault={state.context.isOpenedFromVaults}
             preselectedAccountAddress={state.context.sourceWalletAddress}
-            onTransferPromise={(message: ITransferSuccess) =>
-              send({ type: "ON_TRANSFER_PROMISE", data: message })
+            onTransfer={(message: ITransferSuccess) =>
+              send({ type: "ON_TRANSFER", data: message })
             }
           />
         )
@@ -56,8 +58,16 @@ export const TransferModalCoordinator = () => {
         return (
           <TransferNFT
             preselectedNFTId={state.context.selectedNFTId}
-            onTransferPromise={(message: ITransferSuccess) =>
-              send({ type: "ON_TRANSFER_PROMISE", data: message })
+            onTransfer={(message: ITransferSuccess) =>
+              send({ type: "ON_TRANSFER", data: message })
+            }
+          />
+        )
+      case state.matches("SwapMachine"):
+        return (
+          <SwapFT
+            onSwap={(message: ISwapSuccess) =>
+              send({ type: "ON_SWAP", data: message })
             }
           />
         )
@@ -69,11 +79,18 @@ export const TransferModalCoordinator = () => {
             preselectedAccountAddress={state.context.sourceWalletAddress}
           />
         )
-      case state.matches("Success"):
+      case state.matches("TransferSuccess"):
         return (
           <TransferSuccess
             onClose={() => send({ type: "HIDE" })}
             {...state.context.transferObject!}
+          />
+        )
+      case state.matches("SwapSuccess"):
+        return (
+          <SwapSuccess
+            onClose={() => send({ type: "HIDE" })}
+            {...state.context.swapObject!}
           />
         )
       default:
@@ -95,7 +112,7 @@ export const TransferModalCoordinator = () => {
       {state.context.isOpenedFromVaults ? (
         <TransferVaultModal
           onClickOutside={() => send({ type: "HIDE" })}
-          isSuccess={state.matches("Success")}
+          isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           component={Component}
           tokenType={state.context.tokenType}
@@ -103,7 +120,9 @@ export const TransferModalCoordinator = () => {
       ) : (
         <TransferModal
           onClickOutside={() => send({ type: "HIDE" })}
-          isSuccess={state.matches("Success")}
+          isSuccess={
+            state.matches("TransferSuccess") || state.matches("SwapSuccess")
+          }
           direction={state.context.direction}
           tokenType={state.context.tokenType}
           onTokenTypeChange={onTokenTypeChange}

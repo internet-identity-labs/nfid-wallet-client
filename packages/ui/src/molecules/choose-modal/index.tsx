@@ -166,7 +166,13 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
           className="mt-4 mb-5"
         />
-        <div className={clsx("flex-1 overflow-auto snap-end scroll-pl-1")}>
+        <div
+          className={clsx(
+            "flex-1 overflow-auto snap-end pr-[10px]",
+            "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+            "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+          )}
+        >
           {filteredOptions.map((group, index) => (
             <div
               id={`option_group_${group.label.replace(/\s/g, "")}`}

@@ -5,8 +5,8 @@ import { PRINCIPAL_LENGTH } from "packages/constants"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import {
-  fetchAllTokens,
-  fetchTokenByAddress,
+  fetchActiveTokens,
+  fetchActiveTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -26,8 +26,8 @@ import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-w
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
-import { ITransferResponse } from "frontend/ui/connnector/transfer-modal/types"
 
+import { ITransferResponse } from "../types"
 import {
   getAccountIdentifier,
   getIdentity,
@@ -35,20 +35,20 @@ import {
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
-import { ITransferSuccess } from "./success"
+import { ITransferSuccess } from "./send-success"
 
 interface ITransferFT {
   preselectedTokenAddress: string | undefined
   isVault: boolean
   preselectedAccountAddress: string
-  onTransferPromise: (data: ITransferSuccess) => void
+  onTransfer: (data: ITransferSuccess) => void
 }
 
 export const TransferFT = ({
   isVault,
   preselectedTokenAddress = ICP_CANISTER_ID,
   preselectedAccountAddress = "",
-  onTransferPromise,
+  onTransfer,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [amountInUSD, setAmountInUSD] = useState(0)
@@ -56,14 +56,14 @@ export const TransferFT = ({
     data: activeTokens = [],
     isLoading: isActiveTokensLoading,
     mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchAllTokens)
+  } = useSWR("activeTokens", fetchActiveTokens)
 
   const {
     data: token,
     isLoading: isTokenLoading,
     mutate: refetchToken,
   } = useSWR(tokenAddress ? ["token", tokenAddress] : null, ([, address]) =>
-    fetchTokenByAddress(address),
+    fetchActiveTokenByAddress(address),
   )
 
   const { data: usdRate } = useSWR(
@@ -98,7 +98,7 @@ export const TransferFT = ({
   } = useForm({
     mode: "all",
     defaultValues: {
-      amount: undefined as any as string,
+      amount: "",
       to: "",
     },
   })
@@ -123,7 +123,7 @@ export const TransferFT = ({
       if (!token) return toast.error("No selected token")
 
       if (isVault) {
-        return onTransferPromise({
+        return onTransfer({
           assetImg: token.getTokenLogo() ?? "",
           initialPromise: new Promise(async (resolve) => {
             const wallet = await getVaultWalletByAddress(
@@ -151,7 +151,7 @@ export const TransferFT = ({
         })
       }
 
-      onTransferPromise({
+      onTransfer({
         assetImg: token?.getTokenLogo() ?? "",
         initialPromise: new Promise(async (resolve) => {
           const identity = await getIdentity([token!.getTokenAddress()])
@@ -207,7 +207,7 @@ export const TransferFT = ({
     [
       handleTrackTransfer,
       isVault,
-      onTransferPromise,
+      onTransfer,
       token,
       selectedVaultsAccountAddress,
       usdRate,
@@ -242,7 +242,7 @@ export const TransferFT = ({
       optionGroups={
         profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
       }
-      vaultsBalance={balance}
+      vaultsBalance={balance?.balance["ICP"]}
       setUsdAmount={setAmountInUSD}
     />
   )

@@ -2,49 +2,7 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
-
-import { ITransferSuccess } from "./components/success"
-
-export type TransferMachineContext = {
-  direction: "send" | "receive" | "swap"
-  tokenType: "ft" | "nft"
-  sourceWalletAddress: string
-  sourceAccount?: Wallet
-  selectedFT?: string
-  selectedNFTId?: string
-  receiverWallet: string
-  amount: string
-  transferObject?: ITransferSuccess
-  error?: Error
-  tokenStandard: string
-  isOpenedFromVaults: boolean
-}
-
-export type Events =
-  | { type: "SHOW" }
-  | { type: "HIDE" }
-  | { type: "CHANGE_TOKEN_TYPE"; data: "ft" | "nft" }
-  | { type: "CHANGE_DIRECTION"; data: "send" | "receive" | "swap" }
-  | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
-  | { type: "ASSIGN_SOURCE_WALLET"; data: string }
-  | { type: "ASSIGN_AMOUNT"; data: string }
-  | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
-  | { type: "ASSIGN_SELECTED_FT"; data: string }
-  | { type: "ASSIGN_SELECTED_NFT"; data: string }
-  | { type: "ASSIGN_ERROR"; data: string }
-  | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
-  | { type: "ON_TRANSFER_PROMISE"; data: ITransferSuccess }
-  | { type: "ASSIGN_VAULTS"; data: boolean }
-
-type Services = {
-  transferFT: {
-    data: any
-  }
-  transferNFT: {
-    data: any
-  }
-}
+import { Events, Services, TransferMachineContext } from "./types"
 
 export const transferMachine = createMachine(
   {
@@ -122,10 +80,23 @@ export const transferMachine = createMachine(
           },
           {
             target: "ReceiveMachine",
+            cond: "isReceiveMachine",
+          },
+          {
+            target: "SwapMachine",
+            cond: "isSwapMachine",
           },
         ],
       },
       ReceiveMachine: {},
+      SwapMachine: {
+        on: {
+          ON_SWAP: {
+            target: "#TransferMachine.SwapSuccess",
+            actions: "assignSwapObject",
+          },
+        },
+      },
       SendMachine: {
         id: "SendMachine",
         initial: "CheckSendType",
@@ -143,24 +114,28 @@ export const transferMachine = createMachine(
           },
           SendFT: {
             on: {
-              ON_TRANSFER_PROMISE: {
-                target: "#TransferMachine.Success",
+              ON_TRANSFER: {
+                target: "#TransferMachine.TransferSuccess",
                 actions: "assignTransferObject",
               },
             },
           },
           SendNFT: {
             on: {
-              ON_TRANSFER_PROMISE: {
-                target: "#TransferMachine.Success",
+              ON_TRANSFER: {
+                target: "#TransferMachine.TransferSuccess",
                 actions: "assignTransferObject",
               },
             },
           },
         },
       },
-
-      Success: {
+      TransferSuccess: {
+        on: {
+          HIDE: "Hidden",
+        },
+      },
+      SwapSuccess: {
         on: {
           HIDE: "Hidden",
         },
@@ -171,6 +146,8 @@ export const transferMachine = createMachine(
     guards: {
       isSendMachine: (context) => context.direction === "send",
       isSendFungible: (context) => context.tokenType === "ft",
+      isReceiveMachine: (context) => context.direction === "receive",
+      isSwapMachine: (context) => context.direction === "swap",
     },
     actions: {
       assignTokenType: assign((_, event) => ({
@@ -199,6 +176,9 @@ export const transferMachine = createMachine(
       })),
       assignTransferObject: assign((_, event) => ({
         transferObject: event?.data,
+      })),
+      assignSwapObject: assign((_, event) => ({
+        swapObject: event?.data,
       })),
       assignTokenStandard: assign((_, event) => ({
         tokenStandard: event?.data,

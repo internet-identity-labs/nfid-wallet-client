@@ -1,5 +1,5 @@
 import { Activity } from "packages/ui/src/organisms/activity"
-import { fetchAllTokens } from "packages/ui/src/organisms/tokens/utils"
+import { fetchActiveTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useLocation } from "react-router-dom"
 import useSWR from "swr"
 
@@ -11,7 +11,7 @@ const ActivityPage = () => {
   const data = useActivityPagination(initialFilter)
   const { data: activeTokens = [], isLoading: isActiveLoading } = useSWR(
     "activeTokens",
-    fetchAllTokens,
+    fetchActiveTokens,
   )
 
   return (

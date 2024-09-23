@@ -1,16 +1,5 @@
-import BigNumber from "bignumber.js"
-import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
-import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react"
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
 import {
   FieldErrorsImpl,
   UseFormHandleSubmit,
@@ -25,18 +14,15 @@ import {
   Button,
   ChooseModal,
   IconCmpArrow,
-  IconCmpArrowRight,
   BlurredLoader,
-  sumRules,
   IGroupedOptions,
-  ImageWithFallback,
-  IconNftPlaceholder,
 } from "@nfid-frontend/ui"
-import { validateTransferAmountField } from "@nfid-frontend/utils"
-import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
+
+import { ChooseFromToken } from "./choose-token"
 
 export interface TransferFTUiProps {
   tokens: FT[]
@@ -74,7 +60,7 @@ export interface TransferFTUiProps {
     amount: string
     to: string
   }>
-  vaultsBalance?: AccountBalance | undefined
+  vaultsBalance?: bigint | undefined
   setUsdAmount: (v: number) => void
 }
 
@@ -101,7 +87,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   setUsdAmount,
 }) => {
   const [amountInUSD, setAmountInUSD] = useState(0)
-  const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
   const { data: tokenFeeUsd, isLoading: isFeeLoading } = useSWR(
     token ? ["tokenFee", token.getTokenAddress()] : null,
@@ -113,70 +98,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
 
-  const getTokenOptions = useCallback(async () => {
-    const options = await Promise.all(
-      tokens.map(async (token) => {
-        const usdBalance = await token.getTokenRate(
-          token.getTokenBalanceFormatted() || "0",
-        )
-
-        return {
-          label: "Internet Computer",
-          options: [
-            {
-              icon: token.getTokenLogo(),
-              value: token.getTokenAddress(),
-              title: token.getTokenSymbol(),
-              subTitle: token.getTokenName(),
-              innerTitle: `${
-                token.getTokenBalanceFormatted() || 0
-              } ${token.getTokenSymbol()}`,
-              innerSubtitle:
-                usdBalance === undefined
-                  ? "Not listed"
-                  : usdBalance === 0
-                  ? "0.00 USD"
-                  : `${usdBalance.toString()} USD`,
-            },
-          ],
-        }
-      }),
-    )
-
-    return isVault
-      ? options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
-      : options
-  }, [tokens, isVault])
-
-  useEffect(() => {
-    getTokenOptions().then(setTokenOptions)
-  }, [getTokenOptions])
-
   useEffect(() => {
     setUsdAmount(amountInUSD)
   }, [amountInUSD])
-
-  const maxHandler = async () => {
-    if (!token) return
-    const fee = token.getTokenFee()
-    if (fee && token.getTokenBalance()) {
-      const balanceNum =
-        isVault && vaultsBalance
-          ? new BigNumber(vaultsBalance.balance["ICP"].toString())
-          : new BigNumber(token.getTokenBalance()!.toString())
-      const feeNum = new BigNumber(fee.toString())
-      const val = balanceNum.minus(feeNum)
-      if (val.isLessThanOrEqualTo(0)) return
-
-      const formattedValue = formatAssetAmountRaw(
-        Number(val),
-        token.getTokenDecimals()!,
-      )
-
-      setValue("amount", formattedValue)
-      setAmountInUSD(Number(formattedValue))
-    }
-  }
 
   if (!token || isLoading)
     return (
@@ -191,91 +115,19 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   return (
     <>
       <p className="mb-1 text-xs">Amount to send</p>
-      <div
-        className={clsx(
-          "border rounded-[12px] p-4 h-[100px]",
-          errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
-        )}
-      >
-        <div className="flex items-center justify-between">
-          <InputAmount
-            decimals={token.getTokenDecimals()!}
-            {...register("amount", {
-              required: sumRules.errorMessages.required,
-              validate: validateTransferAmountField(
-                formatAssetAmountRaw(
-                  isVault && vaultsBalance
-                    ? Number(vaultsBalance.balance["ICP"])
-                    : Number(token.getTokenBalance()),
-                  token.getTokenDecimals()!,
-                ),
-                formatAssetAmountRaw(
-                  Number(token.getTokenFee()),
-                  token.getTokenDecimals()!,
-                ),
-              ),
-              valueAsNumber: true,
-              onChange: (e) => {
-                setAmountInUSD(Number(e.target.value))
-              },
-            })}
-          />
-          <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
-            <ChooseModal
-              optionGroups={tokenOptions}
-              title="Token to send"
-              type="trigger"
-              onSelect={(value) => {
-                resetField("amount")
-                resetField("to")
-                setAmountInUSD(0)
-                setChosenToken(value)
-              }}
-              preselectedValue={token.getTokenAddress()}
-              onOpen={sendReceiveTrackingFn}
-              isSmooth
-              iconClassnames="object-cover h-full rounded-full"
-              trigger={
-                <div
-                  id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}
-                  className="flex items-center cursor-pointer shrink-0"
-                >
-                  <ImageWithFallback
-                    alt={token.getTokenName()}
-                    fallbackSrc={IconNftPlaceholder}
-                    src={`${token.getTokenLogo()}`}
-                    className="w-[28px] mr-1.5 rounded-full"
-                  />
-                  <p className="text-lg font-semibold">
-                    {token.getTokenSymbol()}
-                  </p>
-                  <IconCmpArrowRight className="ml-4" />
-                </div>
-              }
-            />
-          </div>
-        </div>
-        <div className="flex items-center justify-between text-right">
-          <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
-            {usdRate}
-          </p>
-          <div className="mt-2 text-xs leading-5 text-right text-gray-500">
-            Balance:&nbsp;
-            <span className="cursor-pointer" onClick={maxHandler}>
-              {!isVault ? (
-                <span className="text-teal-600" id="balance">
-                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                  {token.getTokenSymbol()}
-                </span>
-              ) : (
-                <span className="text-teal-600">
-                  {Number(vaultsBalance?.balance["ICP"]) / E8S} ICP
-                </span>
-              )}
-            </span>
-          </div>
-        </div>
-      </div>
+      <ChooseFromToken
+        error={errors.amount}
+        token={token}
+        register={register}
+        balance={vaultsBalance}
+        resetField={resetField}
+        setFromUsdAmount={setAmountInUSD}
+        setFromChosenToken={setChosenToken}
+        sendReceiveTrackingFn={sendReceiveTrackingFn}
+        usdRate={usdRate}
+        tokens={tokens}
+        setValue={setValue}
+      />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600">
         {errors.amount?.message}
       </div>

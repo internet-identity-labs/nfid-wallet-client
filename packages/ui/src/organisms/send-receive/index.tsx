@@ -1,13 +1,15 @@
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 import { FC } from "react"
 
+import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
+
 import { TransferTemplate } from "./components/template"
 
 export interface TransferModalProps {
   onClickOutside: () => void
   isSuccess: boolean
-  direction: "send" | "receive" | "swap"
-  tokenType: "ft" | "nft"
+  direction: ModalType
+  tokenType: TokenType
   onTokenTypeChange: (isNFT: boolean) => void
   component: JSX.Element
 }
@@ -15,8 +17,8 @@ export interface TransferModalProps {
 export interface TransferVaultModalProps {
   onClickOutside: () => void
   isSuccess: boolean
-  direction: "send" | "receive" | "swap"
-  tokenType: "ft" | "nft"
+  direction: ModalType
+  tokenType: TokenType
   component: JSX.Element
 }
 
@@ -30,9 +32,11 @@ export const TransferModal: FC<TransferModalProps> = ({
 }) => {
   return (
     <TransferTemplate onClickOutside={onClickOutside}>
-      <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
-        {direction}
-      </div>
+      {!isSuccess && (
+        <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+          {direction}
+        </div>
+      )}
       {direction === "send" && !isSuccess && (
         <ToggleButton
           firstValue="Token"
@@ -52,12 +56,15 @@ export const TransferVaultModal: FC<TransferVaultModalProps> = ({
   onClickOutside,
   direction,
   component,
+  isSuccess,
 }) => {
   return (
     <TransferTemplate onClickOutside={onClickOutside} className="!h-[530px]">
-      <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
-        {direction}
-      </div>
+      {!isSuccess && (
+        <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+          {direction}
+        </div>
+      )}
       {component}
     </TransferTemplate>
   )

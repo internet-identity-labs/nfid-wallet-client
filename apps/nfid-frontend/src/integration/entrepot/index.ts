@@ -2,8 +2,7 @@ import { Principal } from "@dfinity/principal"
 import { encodeTokenIdentifier } from "ictool"
 
 import { Account } from "@nfid/integration"
-
-import { Blockchain } from "frontend/ui/connnector/types"
+import { Blockchain } from "@nfid/integration/token/types"
 
 import {
   assetFullsize,

@@ -1,9 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Activity } from "packages/integration/src/lib/asset/types"
 
-import { TokenStandards } from "@nfid/integration/token/types"
-
-import { Blockchain } from "frontend/ui/connnector/types"
+import { Blockchain, TokenStandards } from "@nfid/integration/token/types"
 
 import { IActivityRow, IActivityRowGroup } from "../types"
 

@@ -248,9 +248,8 @@ export const getQuoteData = async (
   try {
     return await shroff.getQuote(Number(amount))
   } catch (error) {
-    console.error("errrror: getQuoteData", error)
     throw new Error(
-      `Swap error: ${
+      `Quote error: ${
         (error as Error).message ? (error as Error).message : error
       }`,
     )

@@ -5511,13 +5511,6 @@
   dependencies:
     undici-types "~5.26.4"
 
-"@types/node@^22.0.0", "@types/node@^22.2.0":
-  version "22.5.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.5.tgz#52f939dd0f65fc552a4ad0b392f3c466cc5d7a44"
-  integrity sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==
-  dependencies:
-    undici-types "~6.19.2"
-
 "@types/normalize-package-data@^2.4.0", "@types/normalize-package-data@^2.4.1":
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.4.tgz#56e2cc26c397c038fab0e3a917a12d5c5909e901"

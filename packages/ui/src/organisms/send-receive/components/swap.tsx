@@ -57,9 +57,11 @@ export interface SwapFTUiProps {
   loadingMessage: string | undefined
   isTokenLoading: boolean
   value: string
-  quoteError: boolean
+  showServiceError: boolean
+  showLiquidityError: Error | undefined
   isQuoteLoading: boolean
   quote: Quote | undefined
+  clearQuoteError: () => void
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -78,12 +80,13 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   loadingMessage,
   isTokenLoading,
   value,
-  quoteError,
+  showServiceError,
+  showLiquidityError,
+  clearQuoteError,
   isQuoteLoading,
   quote,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
-  const [errorModalOpen, setErrorModalOpen] = useState(false)
 
   if (isTokenLoading)
     return (
@@ -96,10 +99,10 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
     )
   return (
     <>
-      {errorModalOpen && <ErrorModal setErrorModalOpen={setErrorModalOpen} />}
+      {showServiceError && <ErrorModal refresh={clearQuoteError} />}
       <QuoteModal
-        quoteModalOpen={quoteModalOpen}
-        setQuoteModalOpen={setQuoteModalOpen}
+        modalOpen={quoteModalOpen}
+        setModalOpen={setQuoteModalOpen}
         quote={quote}
       />
       <p className="mb-1 text-xs">From</p>
@@ -112,10 +115,16 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         usdRate={quote?.getSourceAmountUSD()}
         tokens={tokens}
         setValue={setValue}
+        showLiquidityError={showLiquidityError}
       />
       {errors.amount && (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
           {errors.amount?.message}
+        </div>
+      )}
+      {showLiquidityError && (
+        <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+          {showLiquidityError?.message}
         </div>
       )}
 
@@ -172,11 +181,6 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           View quote
         </span>
       </div>
-      {quoteError && (
-        <div className="absolute bottom-[75px] text-xs text-red-600 left-5">
-          Swap exceeded slippage tolerance. Try again.
-        </div>
-      )}
       <Button
         className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"

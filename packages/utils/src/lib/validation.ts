@@ -25,10 +25,14 @@ export const isHex = (h: string) => {
 }
 
 export const validateTransferAmountField =
-  (balance = "0", fee = "0") =>
+  (balance: bigint | undefined, fee: bigint, decimals: number | undefined) =>
   (value: string) => {
-    const balanceNum = new BigNumber(balance)
-    const feeNum = new BigNumber(fee)
+    if (!decimals || !balance) return "Invalid input"
+    const balanceFormatted = Number(balance) / 10 ** decimals
+    const feeFormatted = Number(fee) / 10 ** decimals
+
+    const balanceNum = new BigNumber(balanceFormatted)
+    const feeNum = new BigNumber(feeFormatted)
     const valueNum = new BigNumber(value)
 
     if (valueNum.isNaN()) return "Invalid input"

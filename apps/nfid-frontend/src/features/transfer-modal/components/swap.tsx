@@ -14,19 +14,28 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
+import {
+  InsufficientFundsError,
+  ServiceUnavailableError,
+  UnsupportedTokenError,
+} from "frontend/integration/icpswap/errors"
+import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 
-import { getQuoteData, getShroff } from "../utils"
+import { getQuoteData } from "../utils"
 import { ISwapSuccess } from "./swap-success"
 
 interface ISwapFT {
-  onSwapPromise: (data: ISwapSuccess) => void
+  onSwap: (data: ISwapSuccess) => void
 }
 
-export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
+export const SwapFT = ({ onSwap }: ISwapFT) => {
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
-  const [shroff, setShroff] = useState<Shroff>({} as Shroff)
+  const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
+  const [isShroffLoading, setIsShroffLoading] = useState(true)
+  const [shroffError, setShroffError] = useState<Error | undefined>()
+  const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
   const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
     fetchAllTokens(query),
@@ -58,7 +67,7 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
   } = useForm({
     mode: "all",
     defaultValues: {
-      amount: undefined as any as string,
+      amount: "",
       to: "",
     },
   })
@@ -66,14 +75,39 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
   const amount = watch("amount")
 
   useEffect(() => {
-    getShroff(fromTokenAddress, toTokenAddress).then(setShroff)
-  }, [fromTokenAddress, toTokenAddress])
+    const getShroff = async () => {
+      try {
+        const shroff = await new ShroffBuilder()
+          .withSource(fromTokenAddress)
+          .withTarget(toTokenAddress)
+          .build()
+        setShroff(shroff)
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error instanceof ServiceUnavailableError) {
+            setShroffError(error)
+          } else if (error instanceof UnsupportedTokenError) {
+            setLiquidityError(error)
+          } else if (error instanceof InsufficientFundsError) {
+            console.error(error)
+          } else {
+            console.error("An unknown error occurred:", error)
+          }
+        } else {
+          throw error
+        }
+      } finally {
+        setIsShroffLoading(false)
+      }
+    }
+
+    if (!shroffError) getShroff()
+  }, [fromTokenAddress, toTokenAddress, shroffError])
 
   const {
     data: quote,
     isLoading: isQuoteLoading,
     isValidating: isQuoteFetching,
-    error: quoteError,
   } = useSWR(
     amount
       ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
@@ -81,19 +115,25 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
     () => getQuoteData(amount, shroff),
   )
 
+  const refresh = () => {
+    setShroffError(undefined)
+    setFromTokenAddress(ICP_CANISTER_ID)
+    setToTokenAddress(CKBTC_CANISTER_ID)
+  }
+
   const submit = useCallback(
     async (values: { amount: string; to: string }) => {
-      onSwapPromise({
+      onSwap({
         assetImgFrom: fromToken?.getTokenLogo() ?? "",
         assetImgTo: toToken?.getTokenLogo() ?? "",
         titleFrom: `${values.amount} ${fromToken?.getTokenSymbol()}`,
         titleTo: `${values.to} ${toToken?.getTokenSymbol()}`,
         subTitleFrom: quote?.getSourceAmountUSD()!,
         subTitleTo: quote?.getTargetAmountUSD()!,
-        initialPromise: new Promise(async (resolve, reject) => {
+        swap: new Promise(async (resolve, reject) => {
           try {
             // TODO: implement the SWAP function
-            resolve({ hash: "?????" })
+            resolve({ swapProgress: "mockedProgress" })
           } catch (e) {
             console.error(
               `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
@@ -107,7 +147,7 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
         }),
       })
     },
-    [onSwapPromise, fromToken, toToken, quote],
+    [onSwap, fromToken, toToken, quote],
   )
 
   return (
@@ -127,9 +167,11 @@ export const SwapFT = ({ onSwapPromise }: ISwapFT) => {
       handleSubmit={handleSubmit}
       submit={submit}
       value={amount}
-      quoteError={quoteError}
-      isQuoteLoading={isQuoteLoading || isQuoteFetching}
+      isQuoteLoading={isQuoteLoading || isQuoteFetching || isShroffLoading}
       quote={quote}
+      showServiceError={shroffError instanceof ServiceUnavailableError}
+      showLiquidityError={liquidityError}
+      clearQuoteError={refresh}
     />
   )
 }

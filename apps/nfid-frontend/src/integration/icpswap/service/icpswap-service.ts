@@ -1,3 +1,7 @@
+import { Principal } from "@dfinity/principal"
+import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { _SERVICE as SwapPool } from "src/integration/icpswap/idl/SwapPool.d"
+
 import { actor, hasOwnProperty } from "@nfid/integration"
 
 import {
@@ -5,9 +9,11 @@ import {
   SERVICE_UNAVAILABLE,
   UNSUPPORTED_TOKEN,
 } from "../constants"
-import { InsufficientFundsError } from "../errors/insufficient-funds-error"
-import { ServiceUnavailableError } from "../errors/service-unavailable-error"
-import { UnsupportedTokenError } from "../errors/unsupported-token-error"
+import {
+  ServiceUnavailableError,
+  InsufficientFundsError,
+  UnsupportedTokenError,
+} from "../errors"
 import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"
 import {
   _SERVICE as SwapFactory,
@@ -39,15 +45,39 @@ class IcpSwapService {
         const data: PoolData = pool.ok as PoolData
         return data
       }
+
+      if (hasOwnProperty(pool, "InternalError")) {
+        throw new ServiceUnavailableError(SERVICE_UNAVAILABLE)
+      }
       if (hasOwnProperty(pool, "UnsupportedToken")) {
         throw new UnsupportedTokenError(UNSUPPORTED_TOKEN)
       }
       if (hasOwnProperty(pool, "InsufficientFunds")) {
         throw new InsufficientFundsError(INSUFFICIENT_FUNDS)
       }
-      console.error("Quote error", pool.err)
+      console.error("Not able to get pool for pair: " + pool.err)
       throw new ServiceUnavailableError(SERVICE_UNAVAILABLE)
     })
+  }
+
+  async getBalance(
+    swapPoolCanister: string,
+    principal: Principal,
+  ): Promise<{
+    balance1: bigint
+    balance2: bigint
+  }> {
+    const swapPoolActor = actor<SwapPool>(swapPoolCanister, SwapPoolIDL)
+
+    const result = await swapPoolActor.getUserUnusedBalance(principal)
+
+    if (hasOwnProperty(result, "ok")) {
+      return result.ok as {
+        balance1: bigint
+        balance2: bigint
+      }
+    }
+    throw new Error("TODO Error handling")
   }
 }
 

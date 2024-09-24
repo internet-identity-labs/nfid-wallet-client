@@ -11,10 +11,10 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { Tooltip, CenterEllipsis, ApplicationIcon } from "@nfid-frontend/ui"
+import { Blockchain } from "@nfid/integration/token/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
-import { Blockchain } from "frontend/ui/connnector/types"
 
 interface GridCellProps {
   className?: string

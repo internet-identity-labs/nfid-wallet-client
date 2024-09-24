@@ -2,52 +2,7 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
-import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
-
-import { ITransferSuccess } from "./components/success"
-import { ISwapSuccess } from "./components/swap-success"
-
-export type TransferMachineContext = {
-  direction: "send" | "receive" | "swap"
-  tokenType: "ft" | "nft"
-  sourceWalletAddress: string
-  sourceAccount?: Wallet
-  selectedFT?: string
-  selectedNFTId?: string
-  receiverWallet: string
-  amount: string
-  transferObject?: ITransferSuccess
-  swapObject?: ISwapSuccess
-  error?: Error
-  tokenStandard: string
-  isOpenedFromVaults: boolean
-}
-
-export type Events =
-  | { type: "SHOW" }
-  | { type: "HIDE" }
-  | { type: "CHANGE_TOKEN_TYPE"; data: "ft" | "nft" }
-  | { type: "CHANGE_DIRECTION"; data: "send" | "receive" | "swap" }
-  | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
-  | { type: "ASSIGN_SOURCE_WALLET"; data: string }
-  | { type: "ASSIGN_AMOUNT"; data: string }
-  | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
-  | { type: "ASSIGN_SELECTED_FT"; data: string }
-  | { type: "ASSIGN_SELECTED_NFT"; data: string }
-  | { type: "ASSIGN_ERROR"; data: string }
-  | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
-  | { type: "ON_TRANSFER_PROMISE"; data: ITransferSuccess }
-  | { type: "ON_SWAP_PROMISE"; data: ISwapSuccess }
-  | { type: "ASSIGN_VAULTS"; data: boolean }
-
-type Services = {
-  transferFT: {
-    data: any
-  }
-  transferNFT: {
-    data: any
-  }
-}
+import { Events, Services, TransferMachineContext } from "./types"
 
 export const transferMachine = createMachine(
   {
@@ -136,7 +91,7 @@ export const transferMachine = createMachine(
       ReceiveMachine: {},
       SwapMachine: {
         on: {
-          ON_SWAP_PROMISE: {
+          ON_SWAP: {
             target: "#TransferMachine.SwapSuccess",
             actions: "assignSwapObject",
           },
@@ -159,23 +114,23 @@ export const transferMachine = createMachine(
           },
           SendFT: {
             on: {
-              ON_TRANSFER_PROMISE: {
-                target: "#TransferMachine.Success",
+              ON_TRANSFER: {
+                target: "#TransferMachine.TransferSuccess",
                 actions: "assignTransferObject",
               },
             },
           },
           SendNFT: {
             on: {
-              ON_TRANSFER_PROMISE: {
-                target: "#TransferMachine.Success",
+              ON_TRANSFER: {
+                target: "#TransferMachine.TransferSuccess",
                 actions: "assignTransferObject",
               },
             },
           },
         },
       },
-      Success: {
+      TransferSuccess: {
         on: {
           HIDE: "Hidden",
         },

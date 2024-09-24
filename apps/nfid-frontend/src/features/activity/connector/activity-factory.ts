@@ -1,6 +1,6 @@
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
-import { Blockchain } from "frontend/ui/connnector/types"
+import { Blockchain } from "@nfid/integration/token/types"
 
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRow, IActivityRowGroup } from "../types"

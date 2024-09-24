@@ -12,16 +12,16 @@ import {
   fetchPrincipals,
   Chain,
 } from "@nfid/integration"
+import { Blockchain } from "@nfid/integration/token/types"
 
 import {
   fetchAccounts,
   fetchApplications,
   fetchProfile,
 } from "frontend/integration/identity-manager"
-import { connectorCache } from "frontend/ui/connnector/cache"
-import { Blockchain } from "frontend/ui/connnector/types"
 
 import { IActivityRow } from "../types"
+import { connectorCache } from "../util/cache"
 import { IActivityConfig, IActivityConnector } from "./activity-connector-types"
 
 export abstract class ActivityClass<T extends IActivityConfig>

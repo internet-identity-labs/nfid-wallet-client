@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React, { useMemo } from "react"
+import { FC, useMemo } from "react"
 
 import {
   IconCmpArrow,
@@ -8,6 +8,8 @@ import {
   LottieAnimation,
 } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
+
+import { SuccessState } from "frontend/features/transfer-modal/types"
 
 import Fail from "../assets/error.json"
 import Success1 from "../assets/success_1.json"
@@ -20,23 +22,21 @@ export interface SwapSuccessProps {
   titleTo: string
   subTitleFrom: string
   subTitleTo: string
-  url?: string
   onClose: () => void
   assetImgFrom: string
   assetImgTo: string
-  step: 0 | 1 | 2 | 3 | 4
+  step: SuccessState
   duration: string
   error: string
 }
 
 const allAnimations = [Success1, Success2, Success3, Success4, Fail]
 
-export const SwapSuccessUi: React.FC<SwapSuccessProps> = ({
+export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   titleFrom,
   titleTo,
   subTitleFrom,
   subTitleTo,
-  url,
   onClose,
   assetImgFrom,
   assetImgTo,
@@ -45,15 +45,16 @@ export const SwapSuccessUi: React.FC<SwapSuccessProps> = ({
   error,
 }) => {
   const animation = useMemo(() => {
-    return allAnimations[step]
+    // TODO: invoke the necessary animation according to SwapProgress
+    return allAnimations[0]
   }, [step])
 
   const isCompleted = useMemo(() => {
-    return step >= 3
+    return step === "success"
   }, [step])
 
   const isFailed = useMemo(() => {
-    return step === 4
+    return step === "error"
   }, [step])
 
   return (
@@ -143,18 +144,6 @@ export const SwapSuccessUi: React.FC<SwapSuccessProps> = ({
         <Button type="primary" block className="mt-[30px]" onClick={onClose}>
           Done
         </Button>
-        {url && (
-          <>
-            <Button
-              block
-              type="ghost"
-              className="mt-2.5"
-              onClick={() => window.open(url, "_blank")}
-            >
-              View transaction
-            </Button>
-          </>
-        )}
       </div>
     </div>
   )

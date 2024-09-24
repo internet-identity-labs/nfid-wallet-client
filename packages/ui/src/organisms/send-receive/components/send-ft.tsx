@@ -19,7 +19,6 @@ import {
 } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
-import { AccountBalance } from "frontend/features/fungible-token/fetch-balances"
 import { FT } from "frontend/integration/ft/ft"
 
 import { ChooseFromToken } from "./choose-token"
@@ -60,7 +59,7 @@ export interface TransferFTUiProps {
     amount: string
     to: string
   }>
-  vaultsBalance?: AccountBalance | undefined
+  vaultsBalance?: bigint | undefined
   setUsdAmount: (v: number) => void
 }
 
@@ -118,9 +117,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       <ChooseFromToken
         error={errors.amount}
         token={token}
-        isVault={isVault}
         register={register}
-        vaultsBalance={vaultsBalance}
+        balance={vaultsBalance}
         resetField={resetField}
         setFromUsdAmount={setAmountInUSD}
         setFromChosenToken={setChosenToken}

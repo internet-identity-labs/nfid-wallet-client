@@ -22,7 +22,7 @@ export interface SuccessProps {
   onClose: () => void
   assetImg: string
   isAssetPadding?: boolean
-  step: 0 | 1 | 2 | 3 | 4
+  step: number
   duration: string
 }
 

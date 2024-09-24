@@ -4,8 +4,7 @@ import {
 } from "packages/integration/src/lib/asset/types"
 
 import { Chain } from "@nfid/integration"
-
-import { Blockchain } from "frontend/ui/connnector/types"
+import { Blockchain } from "@nfid/integration/token/types"
 
 export enum IActivityAction {
   SENT = "Sent",

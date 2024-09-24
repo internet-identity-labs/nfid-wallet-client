@@ -7,22 +7,22 @@ import { IconCmpArrow } from "@nfid-frontend/ui"
 import { Quote } from "frontend/integration/icpswap/quote"
 
 export interface QuoteModalProps {
-  setQuoteModalOpen: (v: boolean) => void
-  quoteModalOpen: boolean
+  setModalOpen: (v: boolean) => void
+  modalOpen: boolean
   quote: Quote | undefined
 }
 
 export const QuoteModal: FC<QuoteModalProps> = ({
-  setQuoteModalOpen,
-  quoteModalOpen,
+  setModalOpen,
+  modalOpen,
   quote,
 }) => {
   return (
     <>
       <ModalComponent
-        isVisible={quoteModalOpen}
+        isVisible={modalOpen}
         onClose={() => {
-          setQuoteModalOpen(false)
+          setModalOpen(false)
         }}
         className="p-5 w-[340px] sm:w-[450px] !h-[480px] z-[100] !rounded-[24px]"
       >
@@ -31,7 +31,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
             <IconCmpArrow
               className="cursor-pointer"
               onClick={() => {
-                setQuoteModalOpen(false)
+                setModalOpen(false)
               }}
             />
             <div className="text-[20px] leading-[40px] font-bold">

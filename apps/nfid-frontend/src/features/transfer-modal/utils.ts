@@ -2,28 +2,63 @@ import { DelegationIdentity } from "@dfinity/identity"
 import {
   AccountIdentifier,
   checkAccountId,
+  Icrc1BlockIndex,
   SubAccount,
 } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
+import { PRINCIPAL_LENGTH } from "packages/constants"
+import { mutate } from "swr"
 
 import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
+  getBalance,
   getVaults,
   getWallets,
   replaceActorIdentity,
   vault,
 } from "@nfid/integration"
+import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
-import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
+import { transferEXT } from "frontend/integration/entrepot/ext"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 import { NFT } from "frontend/integration/nft/nft"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
-import { e8sICPToString } from "frontend/integration/wallet/utils"
+import {
+  e8sICPToString,
+  stringICPtoE8s,
+} from "frontend/integration/wallet/utils"
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
+
+type ITransferRequest = {
+  to: string
+  memo?: bigint
+  contract: string
+  identity?: DelegationIdentity
+  canisterId?: string
+  fee?: bigint
+}
+
+type ITransferFTRequest = {
+  currency: string
+  amount: number | bigint
+} & ITransferRequest
+
+type ITransferNFTRequest = {
+  tokenId: string
+  standard: string
+} & ITransferRequest
+
+interface ITransferResponse {
+  verifyPromise?: Promise<void>
+  errorMessage?: Error
+  url?: string
+  hash?: string
+  blockIndex?: Icrc1BlockIndex
+}
 
 export const getIdentity = async (
   targetCanisters: string[],
@@ -155,19 +190,69 @@ export const getAccountIdentifier = (address: string): string => {
   }
 }
 
-export const getShroff = async (from: string, to: string) => {
-  return await new ShroffBuilder().withSource(from).withTarget(to).build()
+export const getUserBalance = async (address: string): Promise<bigint> => {
+  const addressVerified =
+    address.length === PRINCIPAL_LENGTH
+      ? AccountIdentifier.fromPrincipal({
+          principal: Principal.fromText(address),
+        }).toHex()
+      : address
+
+  const balance = await getBalance(addressVerified)
+  return balance
 }
 
-export const getQuoteData = async (amount: string, shroff: Shroff) => {
-  if (!amount || !Number(amount)) return
+export const requestTransfer = async (
+  request: ITransferFTRequest | ITransferNFTRequest,
+): Promise<ITransferResponse> => {
+  if (!request.identity) throw new Error("Identity not found. Please try again")
+  console.debug("ICP Transfer request", { request })
+
+  try {
+    const res =
+      "tokenId" in request
+        ? await transferEXT(request.tokenId, request.identity, request.to)
+        : await transferICP({
+            amount: stringICPtoE8s(String(request.amount)),
+            to: request.to,
+            ...(request.memo ? { memo: request.memo } : {}),
+            identity: request.identity,
+          })
+
+    setTimeout(() => {
+      "tokenId" in request
+        ? mutate(
+            (key: any) => key && Array.isArray(key) && key[0] === "userTokens",
+          )
+        : mutate(
+            (key: any) =>
+              key && Array.isArray(key) && key[0] === "AllBalanceRaw",
+          )
+    }, 1000)
+    return {
+      hash: String(res),
+    }
+  } catch (e: any) {
+    return {
+      errorMessage: e ?? "Unknown error",
+    }
+  }
+}
+
+export const getQuoteData = async (
+  amount: string,
+  shroff: Shroff | undefined,
+) => {
+  if (!amount || !Number(amount) || !shroff) return
 
   try {
     return await shroff.getQuote(Number(amount))
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    console.error("errrror: getQuoteData", error)
     throw new Error(
-      `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
+      `Swap error: ${
+        (error as Error).message ? (error as Error).message : error
+      }`,
     )
   }
 }

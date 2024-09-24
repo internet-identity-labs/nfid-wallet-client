@@ -4,10 +4,10 @@ import { FC } from "react"
 import WarningIcon from "../assets/swap-warning.svg"
 
 export interface ErrorModalProps {
-  setErrorModalOpen: (v: boolean) => void
+  refresh: () => void
 }
 
-export const ErrorModal: FC<ErrorModalProps> = ({ setErrorModalOpen }) => {
+export const ErrorModal: FC<ErrorModalProps> = ({ refresh }) => {
   return (
     <div
       className="absolute top-0 left-0 z-20 flex items-center justify-center w-full h-full p-5 bg-white/60"
@@ -33,7 +33,7 @@ export const ErrorModal: FC<ErrorModalProps> = ({ setErrorModalOpen }) => {
       <Button
         className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
         type="stroke"
-        onClick={() => setErrorModalOpen(false)}
+        onClick={refresh}
       >
         Refresh
       </Button>

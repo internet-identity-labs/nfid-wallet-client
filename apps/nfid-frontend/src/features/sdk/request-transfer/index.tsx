@@ -15,12 +15,15 @@ import {
 } from "@nfid/integration/token/constants"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { TransferSuccess } from "frontend/features/transfer-modal/components/success"
+import { TransferSuccess } from "frontend/features/transfer-modal/components/send-success"
+import {
+  getUserBalance,
+  requestTransfer,
+} from "frontend/features/transfer-modal/utils"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getNFTByTokenId } from "frontend/integration/entrepot"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
-import { icTransferConnector } from "frontend/ui/connnector/transfer-modal/ic/ic-transfer-connector"
 
 import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"
@@ -67,7 +70,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
     isLoading: isBalanceLoading,
     isValidating: isBalanceValidating,
   } = useSWR(identity ? ["userBalance", identity] : null, ([key, identity]) =>
-    icTransferConnector.getBalance(
+    getUserBalance(
       AccountIdentifier.fromPrincipal({
         principal: identity.getPrincipal(),
       }).toHex(),
@@ -84,10 +87,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
       getNFTByTokenId(id, identity.getPrincipal().toString()),
   )
 
-  const { data: fee } = useSWR("requestFee", () => icTransferConnector.getFee())
-
-  if (!fee || typeof rate === "undefined")
-    return <BlurredLoader isLoading={true} />
+  if (typeof rate === "undefined") return <BlurredLoader isLoading={true} />
 
   if (transferPromise)
     return (
@@ -109,11 +109,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
           nft?.collection.name ??
           toUSD((Number(amount) + Number(WALLET_FEE_E8S)) / E8S, Number(rate))
         }
-        assetImg={
-          nft?.assetPreview.url ??
-          icTransferConnector.getTokenConfig()?.icon ??
-          ""
-        }
+        assetImg={nft?.assetPreview.url ?? ""}
         isAssetPadding={!tokenId}
         withToasts={false}
       />
@@ -228,7 +224,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   }
                   if (!tokenId) delete request.tokenId
 
-                  const res = await icTransferConnector.transfer(request)
+                  const res = await requestTransfer(request)
 
                   resolve(res)
                 } catch (e: any) {

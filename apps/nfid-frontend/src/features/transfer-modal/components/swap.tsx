@@ -77,8 +77,6 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
         if (error instanceof Error) {
           if (error.name === "ServiceUnavailableError") {
             setShroffError(error)
-          } else if (error.name === "UnsupportedTokenError") {
-            setLiquidityError(error)
           } else {
             setLiquidityError(error)
           }

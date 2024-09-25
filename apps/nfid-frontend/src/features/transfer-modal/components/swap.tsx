@@ -5,8 +5,8 @@ import {
   fetchActiveTokenByAddress,
   fetchAllTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 import useSWR from "swr"
 
 import {
@@ -14,6 +14,11 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
+import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
+import { Shroff } from "frontend/integration/icpswap/shroff"
+
+import { FormValues } from "../types"
+import { getQuoteData } from "../utils"
 import { ISwapSuccess } from "./swap-success"
 
 interface ISwapFT {
@@ -23,9 +28,10 @@ interface ISwapFT {
 export const SwapFT = ({ onSwap }: ISwapFT) => {
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
-  const [toAmountInUSD, setToAmountInUSD] = useState(0)
-  const [slippageError] = useState(false)
-  const [fromAmountInUSD, setFromAmountInUSD] = useState(0)
+  const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
+  const [isShroffLoading, setIsShroffLoading] = useState(true)
+  const [shroffError, setShroffError] = useState<Error | undefined>()
+  const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
   const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
     fetchAllTokens(query),
@@ -47,18 +53,7 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
     )
   }, [fromTokenAddress, allTokens])
 
-  // TODO: change harcoded usd values
-  const fromUsdRate = `${toAmountInUSD} USD`
-  const toUsdRate = `${fromAmountInUSD} USD`
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    getValues,
-    setValue,
-    resetField,
-  } = useForm({
+  const formMethods = useForm<FormValues>({
     mode: "all",
     defaultValues: {
       amount: "",
@@ -66,57 +61,107 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
     },
   })
 
-  const submit = useCallback(
-    async (values: { amount: string; to: string }) => {
-      onSwap({
-        assetImgFrom: fromToken?.getTokenLogo() ?? "",
-        assetImgTo: toToken?.getTokenLogo() ?? "",
-        titleFrom: `${values.amount} ${fromToken?.getTokenSymbol()}`,
-        titleTo: `${values.to} ${toToken?.getTokenSymbol()}`,
-        subTitleFrom: fromUsdRate,
-        subTitleTo: toUsdRate,
-        swap: new Promise(async (resolve, reject) => {
-          try {
-            // TODO: change harcoded values
-            resolve({ swapProgress: "mockedProgress" })
-          } catch (e) {
-            console.error(
-              `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
-            )
-            reject(
-              new Error(
-                "Something went wrong with the ICPSwap service. Cancel your swap and try again.",
-              ),
-            )
+  const { watch } = formMethods
+  const amount = watch("amount")
+
+  useEffect(() => {
+    const getShroff = async () => {
+      try {
+        const shroff = await new ShroffBuilder()
+          .withSource(fromTokenAddress)
+          .withTarget(toTokenAddress)
+          .build()
+        setShroff(shroff)
+      } catch (error) {
+        setShroff(undefined)
+        if (error instanceof Error) {
+          if (error.name === "ServiceUnavailableError") {
+            setShroffError(error)
+          } else {
+            setLiquidityError(error)
           }
-        }),
-      })
-    },
-    [onSwap, fromToken, toToken, fromUsdRate, toUsdRate],
+        } else {
+          console.error("Quote error: ", error)
+          setShroffError(error as Error)
+          throw error
+        }
+      } finally {
+        setIsShroffLoading(false)
+      }
+    }
+
+    if (!shroffError) getShroff()
+  }, [fromTokenAddress, toTokenAddress, shroffError])
+
+  const {
+    data: quote,
+    isLoading: isQuoteLoading,
+    isValidating: isQuoteFetching,
+  } = useSWR(
+    amount
+      ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
+      : null,
+    () => getQuoteData(amount, shroff),
   )
 
+  const refresh = () => {
+    setShroffError(undefined)
+    setFromTokenAddress(ICP_CANISTER_ID)
+    setToTokenAddress(CKBTC_CANISTER_ID)
+  }
+
+  const submit = useCallback(async () => {
+    const sourceAmount = quote?.getSourceAmountPrettifiedWithSymbol()
+    const targetAmount = quote?.getTargetAmountPrettifiedWithSymbol()
+    const sourceUsdAmount = quote?.getSourceAmountUSD()
+    const targetUsdAmount = quote?.getTargetAmountUSD()
+
+    if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
+      return
+
+    onSwap({
+      assetImgFrom: fromToken?.getTokenLogo() ?? "",
+      assetImgTo: toToken?.getTokenLogo() ?? "",
+      titleFrom: sourceAmount,
+      titleTo: targetAmount,
+      subTitleFrom: sourceUsdAmount,
+      subTitleTo: targetUsdAmount,
+      swap: new Promise(async (resolve, reject) => {
+        try {
+          // TODO: implement the SWAP function
+          resolve({ swapProgress: "mockedProgress" })
+        } catch (e) {
+          console.error(
+            `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
+          )
+          reject(
+            new Error(
+              "Something went wrong with the ICPSwap service. Cancel your swap and try again.",
+            ),
+          )
+        }
+      }),
+    })
+  }, [onSwap, fromToken, toToken, quote])
+
   return (
-    <SwapFTUi
-      tokens={activeTokens}
-      allTokens={filteredAllTokens}
-      toToken={toToken}
-      fromToken={fromToken}
-      setValue={setValue}
-      setFromChosenToken={setFromTokenAddress}
-      setToChosenToken={setToTokenAddress}
-      resetField={resetField}
-      register={register}
-      errors={errors}
-      loadingMessage={"Fetching supported tokens..."}
-      isLoading={isFromTokenLoading || isToTokenLoading}
-      handleSubmit={handleSubmit}
-      submit={submit}
-      setToUsdAmount={setToAmountInUSD}
-      setFromUsdAmount={setFromAmountInUSD}
-      fromUsdRate={fromUsdRate}
-      toUsdRate={toUsdRate}
-      value={getValues("amount")}
-      slippageError={slippageError}
-    />
+    <FormProvider {...formMethods}>
+      <SwapFTUi
+        tokens={activeTokens}
+        allTokens={filteredAllTokens}
+        toToken={toToken}
+        fromToken={fromToken}
+        setFromChosenToken={setFromTokenAddress}
+        setToChosenToken={setToTokenAddress}
+        loadingMessage={"Fetching supported tokens..."}
+        isTokenLoading={isFromTokenLoading || isToTokenLoading}
+        submit={submit}
+        isQuoteLoading={isQuoteLoading || isQuoteFetching || isShroffLoading}
+        quote={quote}
+        showServiceError={shroffError?.name === "ServiceUnavailableError"}
+        showLiquidityError={liquidityError}
+        clearQuoteError={refresh}
+      />
+    </FormProvider>
   )
 }

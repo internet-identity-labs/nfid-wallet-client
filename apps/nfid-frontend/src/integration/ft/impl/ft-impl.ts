@@ -111,7 +111,7 @@ export class FTImpl implements FT {
   }
 
   async getTokenRateFormatted(amount: string): Promise<string | undefined> {
-    return `${await this.getTokenRate(amount)} USD`
+    return `${(await this.getTokenRate(amount)) || "0.00"} USD`
   }
 
   isHideable(): boolean {

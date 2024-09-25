@@ -8,10 +8,10 @@ import {
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
+import { mutate } from "swr"
 
 import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
-import { transfer as transferICP } from "@nfid/integration/token/icp"
 import {
   getBalance,
   getVaults,
@@ -19,15 +19,19 @@ import {
   replaceActorIdentity,
   vault,
 } from "@nfid/integration"
+import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { transferEXT } from "frontend/integration/entrepot/ext"
+import { Shroff } from "frontend/integration/icpswap/shroff"
 import { NFT } from "frontend/integration/nft/nft"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
-import { e8sICPToString, stringICPtoE8s } from "frontend/integration/wallet/utils"
+import {
+  e8sICPToString,
+  stringICPtoE8s,
+} from "frontend/integration/wallet/utils"
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
-import { transferEXT } from "frontend/integration/entrepot/ext"
-import { mutate } from "swr"
 
 type ITransferRequest = {
   to: string
@@ -201,8 +205,7 @@ export const getUserBalance = async (address: string): Promise<bigint> => {
 export const requestTransfer = async (
   request: ITransferFTRequest | ITransferNFTRequest,
 ): Promise<ITransferResponse> => {
-  if (!request.identity)
-    throw new Error("Identity not found. Please try again")
+  if (!request.identity) throw new Error("Identity not found. Please try again")
   console.debug("ICP Transfer request", { request })
 
   try {
@@ -219,11 +222,11 @@ export const requestTransfer = async (
     setTimeout(() => {
       "tokenId" in request
         ? mutate(
-            (key: any) =>
+            (key: string | string[]) =>
               key && Array.isArray(key) && key[0] === "userTokens",
           )
         : mutate(
-            (key: any) =>
+            (key: string | string[]) =>
               key && Array.isArray(key) && key[0] === "AllBalanceRaw",
           )
     }, 1000)
@@ -234,5 +237,22 @@ export const requestTransfer = async (
     return {
       errorMessage: e ?? "Unknown error",
     }
+  }
+}
+
+export const getQuoteData = async (
+  amount: string,
+  shroff: Shroff | undefined,
+) => {
+  if (!amount || !Number(amount) || !shroff) return
+
+  try {
+    return await shroff.getQuote(Number(amount))
+  } catch (error) {
+    throw new Error(
+      `Quote error: ${
+        (error as Error).message ? (error as Error).message : error
+      }`,
+    )
   }
 }

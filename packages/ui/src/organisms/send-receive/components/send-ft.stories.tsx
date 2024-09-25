@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import { Meta, StoryFn } from "@storybook/react"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
@@ -16,7 +16,7 @@ type FormFields = {
 }
 
 const meta: Meta = {
-  title: "Organisms/Send Receive/Send FT",
+  title: "Organisms/Send Receive Swap/Send FT",
   component: TransferFTUi,
   argTypes: {},
   parameters: {
@@ -27,38 +27,32 @@ const meta: Meta = {
 export default meta
 
 const Template: StoryFn<TransferFTUiProps> = (args) => {
-  const { register, setValue, handleSubmit, resetField, formState } =
-    useForm<FormFields>({
-      defaultValues: {
-        amount: "",
-        to: "",
-      },
-    })
+  const formMethods = useForm<FormFields>({
+    defaultValues: {
+      amount: "",
+      to: "",
+    },
+  })
 
   return (
-    <div className="w-[450px] h-[630px]">
-      <TransferTemplate>
-        <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
-          Send
-        </div>
-        <ToggleButton
-          firstValue="Token"
-          secondValue="Collectible"
-          className="mb-5"
-          onChange={() => console.log(1)}
-          defaultValue={false}
-          id="send_type_toggle"
-        />
-        <TransferFTUi
-          {...args}
-          register={register}
-          setValue={setValue}
-          handleSubmit={handleSubmit}
-          resetField={resetField}
-          errors={formState.errors}
-        />
-      </TransferTemplate>
-    </div>
+    <FormProvider {...formMethods}>
+      <div className="w-[450px] h-[630px]">
+        <TransferTemplate>
+          <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
+            Send
+          </div>
+          <ToggleButton
+            firstValue="Token"
+            secondValue="Collectible"
+            className="mb-5"
+            onChange={() => console.log("Tab changed")}
+            defaultValue={false}
+            id="send_type_toggle"
+          />
+          <TransferFTUi {...args} />
+        </TransferTemplate>
+      </div>
+    </FormProvider>
   )
 }
 
@@ -98,15 +92,15 @@ export const SendFTProps: any = {
   validateAddress: () => true,
   tokens: [] as FT[],
   token: {
-    init: async (principal: Principal) => SendFTProps.token,
+    init: async (_: Principal) => SendFTProps.token,
     getTokenName: () => "Chat",
     getTokenCategory: () => Category.Known,
     getTokenCategoryFormatted: () => "Unknown",
     getTokenBalance: () => BigInt(1000000000),
     getTokenBalanceFormatted: () => "10",
     getUSDBalanceFormatted: async () => "$10",
-    getTokenRate: async (amount: string) => 1.0,
-    getTokenRateFormatted: async (amount: string) => "$10",
+    getTokenRate: async (_: string) => 1.0,
+    getTokenRateFormatted: async (_: string) => "$10",
     getTokenAddress: () => "2ouva-viaaa-aaaaq-aaamq-cai",
     getTokenSymbol: () => "CHAT",
     getTokenDecimals: () => 8,

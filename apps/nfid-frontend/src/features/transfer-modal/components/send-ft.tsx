@@ -9,7 +9,7 @@ import {
   fetchActiveTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, FormProvider } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -27,7 +27,7 @@ import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
-import { ITransferResponse } from "../types"
+import { FormValues, ITransferResponse } from "../types"
 import {
   getAccountIdentifier,
   getIdentity,
@@ -51,7 +51,16 @@ export const TransferFT = ({
   onTransfer,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
-  const [amountInUSD, setAmountInUSD] = useState(0)
+  const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
+    useState(preselectedAccountAddress)
+  const { profile } = useProfile()
+  const { balances } = useAllVaultsWallets()
+
+  const { data: vaultsAccountsOptions = [] } = useSWR(
+    "vaultsAccountsOptions",
+    getVaultsAccountsOptions,
+  )
+
   const {
     data: activeTokens = [],
     isLoading: isActiveTokensLoading,
@@ -66,42 +75,28 @@ export const TransferFT = ({
     fetchActiveTokenByAddress(address),
   )
 
-  const { data: usdRate } = useSWR(
-    token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
-  )
-
-  const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
-    useState(preselectedAccountAddress)
-
-  const { balances } = useAllVaultsWallets()
-
-  const balance = useMemo(() => {
-    return balances?.find(
-      (balance) => balance.address === selectedVaultsAccountAddress,
-    )
-  }, [selectedVaultsAccountAddress, balances])
-
-  const { profile } = useProfile()
-
-  const { data: vaultsAccountsOptions = [] } = useSWR(
-    "vaultsAccountsOptions",
-    getVaultsAccountsOptions,
-  )
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-    resetField,
-  } = useForm({
+  const formMethods = useForm<FormValues>({
     mode: "all",
     defaultValues: {
       amount: "",
       to: "",
     },
   })
+
+  const { watch } = formMethods
+  const amount = watch("amount")
+  const to = watch("to")
+
+  const { data: usdRate } = useSWR(
+    token ? ["tokenRate", token.getTokenAddress(), amount] : null,
+    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
+  )
+
+  const balance = useMemo(() => {
+    return balances?.find(
+      (balance) => balance.address === selectedVaultsAccountAddress,
+    )
+  }, [selectedVaultsAccountAddress, balances])
 
   const handleTrackTransfer = useCallback(
     (amount: string) => {
@@ -118,132 +113,126 @@ export const TransferFT = ({
     [token],
   )
 
-  const submit = useCallback(
-    async (values: { amount: string; to: string }) => {
-      if (!token) return toast.error("No selected token")
+  const submit = useCallback(async () => {
+    if (!token) return toast.error("No selected token")
 
-      if (isVault) {
-        return onTransfer({
-          assetImg: token.getTokenLogo() ?? "",
-          initialPromise: new Promise(async (resolve) => {
-            const wallet = await getVaultWalletByAddress(
-              selectedVaultsAccountAddress,
-            )
-
-            const address =
-              values.to.length === PRINCIPAL_LENGTH
-                ? AccountIdentifier.fromPrincipal({
-                    principal: Principal.fromText(values.to),
-                  }).toHex()
-                : values.to
-
-            await registerTransaction({
-              address,
-              amount: BigInt(Math.round(Number(values.amount) * E8S)),
-              from_sub_account: wallet?.uid ?? "",
-            })
-
-            resolve({} as ITransferResponse)
-          }),
-          title: `${values.amount} ${token.getTokenSymbol()}`,
-          subTitle: usdRate!,
-          isAssetPadding: true,
-        })
-      }
-
-      onTransfer({
-        assetImg: token?.getTokenLogo() ?? "",
+    if (isVault) {
+      return onTransfer({
+        assetImg: token.getTokenLogo() ?? "",
         initialPromise: new Promise(async (resolve) => {
-          const identity = await getIdentity([token!.getTokenAddress()])
-          let res
-          if (!token) return
-          try {
-            if (token?.getTokenAddress() === ICP_CANISTER_ID) {
-              res = await transferICP({
-                amount: stringICPtoE8s(String(values.amount)),
-                to: getAccountIdentifier(values.to),
-                identity: identity,
-              })
-            } else {
-              const { owner, subaccount } = decodeIcrcAccount(values.to)
-              res = await transferICRC1(identity, token.getTokenAddress(), {
-                to: {
-                  subaccount: subaccount ? [subaccount] : [],
-                  owner,
-                },
-                amount: BigInt(
-                  Number(values.amount) * 10 ** token?.getTokenDecimals()!,
-                ),
-                memo: [],
-                fee: [token.getTokenFee()],
-                from_subaccount: [],
-                created_at_time: [],
-              })
-            }
+          const wallet = await getVaultWalletByAddress(
+            selectedVaultsAccountAddress,
+          )
 
-            handleTrackTransfer(values.amount)
-            resolve({ hash: String(res) })
-          } catch (e) {
-            throw new Error(
-              `Transfer error: ${
-                (e as Error).message ? (e as Error).message : e
-              }`,
-            )
-          }
+          const address =
+            to.length === PRINCIPAL_LENGTH
+              ? AccountIdentifier.fromPrincipal({
+                  principal: Principal.fromText(to),
+                }).toHex()
+              : to
+
+          await registerTransaction({
+            address,
+            amount: BigInt(Math.round(Number(amount) * E8S)),
+            from_sub_account: wallet?.uid ?? "",
+          })
+
+          resolve({} as ITransferResponse)
         }),
-        title: `${Number(values.amount)
-          .toFixed(token?.getTokenDecimals())
-          .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
+        title: `${amount} ${token.getTokenSymbol()}`,
         subTitle: usdRate!,
         isAssetPadding: true,
-        callback: () => {
-          resetIntegrationCache(["getICRC1Canisters"], () => {
-            refetchActiveTokens()
-            refetchToken()
-          })
-        },
       })
-    },
-    [
-      handleTrackTransfer,
-      isVault,
-      onTransfer,
-      token,
-      selectedVaultsAccountAddress,
-      usdRate,
-      refetchActiveTokens,
-      refetchToken,
-    ],
-  )
+    }
+
+    onTransfer({
+      assetImg: token?.getTokenLogo() ?? "",
+      initialPromise: new Promise(async (resolve) => {
+        const identity = await getIdentity([token!.getTokenAddress()])
+        let res
+        if (!token) return
+        try {
+          if (token?.getTokenAddress() === ICP_CANISTER_ID) {
+            res = await transferICP({
+              amount: stringICPtoE8s(String(amount)),
+              to: getAccountIdentifier(to),
+              identity: identity,
+            })
+          } else {
+            const { owner, subaccount } = decodeIcrcAccount(to)
+            res = await transferICRC1(identity, token.getTokenAddress(), {
+              to: {
+                subaccount: subaccount ? [subaccount] : [],
+                owner,
+              },
+              amount: BigInt(Number(amount) * 10 ** token?.getTokenDecimals()!),
+              memo: [],
+              fee: [token.getTokenFee()],
+              from_subaccount: [],
+              created_at_time: [],
+            })
+          }
+
+          handleTrackTransfer(amount)
+          resolve({ hash: String(res) })
+        } catch (e) {
+          throw new Error(
+            `Transfer error: ${
+              (e as Error).message ? (e as Error).message : e
+            }`,
+          )
+        }
+      }),
+      title: `${Number(amount)
+        .toFixed(token?.getTokenDecimals())
+        .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
+      subTitle: usdRate!,
+      isAssetPadding: true,
+      callback: () => {
+        resetIntegrationCache(["getICRC1Canisters"], () => {
+          refetchActiveTokens()
+          refetchToken()
+        })
+      },
+    })
+  }, [
+    handleTrackTransfer,
+    isVault,
+    onTransfer,
+    token,
+    selectedVaultsAccountAddress,
+    usdRate,
+    refetchActiveTokens,
+    refetchToken,
+    amount,
+    to,
+  ])
 
   return (
-    <TransferFTUi
-      token={token}
-      tokens={activeTokens}
-      setChosenToken={setTokenAddress}
-      validateAddress={
-        token?.getTokenAddress() === ICP_CANISTER_ID
-          ? validateICPAddress
-          : validateICRC1Address
-      }
-      isLoading={isActiveTokensLoading || isTokenLoading}
-      sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
-      isVault={isVault}
-      selectedVaultsAccountAddress={selectedVaultsAccountAddress}
-      submit={submit}
-      setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
-      register={register}
-      errors={errors}
-      handleSubmit={handleSubmit}
-      setValue={setValue}
-      resetField={resetField}
-      loadingMessage={"Fetching supported tokens..."}
-      accountsOptions={vaultsAccountsOptions}
-      optionGroups={
-        profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
-      }
-      vaultsBalance={balance?.balance["ICP"]}
-      setUsdAmount={setAmountInUSD}
-    />
+    <FormProvider {...formMethods}>
+      <TransferFTUi
+        token={token}
+        tokens={activeTokens}
+        setChosenToken={setTokenAddress}
+        validateAddress={
+          token?.getTokenAddress() === ICP_CANISTER_ID
+            ? validateICPAddress
+            : validateICRC1Address
+        }
+        isLoading={isActiveTokensLoading || isTokenLoading}
+        sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
+        isVault={isVault}
+        selectedVaultsAccountAddress={selectedVaultsAccountAddress}
+        submit={submit}
+        setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
+        loadingMessage={"Fetching supported tokens..."}
+        accountsOptions={vaultsAccountsOptions}
+        optionGroups={
+          profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
+        }
+        vaultsBalance={balance?.balance["ICP"]}
+        usdRate={usdRate}
+      />
+    </FormProvider>
   )
 }

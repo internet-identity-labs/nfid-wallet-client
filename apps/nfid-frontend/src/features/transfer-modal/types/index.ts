@@ -63,3 +63,8 @@ export type Services = {
     data: any
   }
 }
+
+export interface FormValues {
+  amount: string
+  to: string
+}

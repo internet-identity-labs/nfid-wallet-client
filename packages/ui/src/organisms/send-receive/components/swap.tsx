@@ -1,12 +1,6 @@
 import clsx from "clsx"
 import { FC, useState } from "react"
-import {
-  FieldErrorsImpl,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormResetField,
-  UseFormSetValue,
-} from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
 import {
@@ -17,9 +11,11 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { Quote } from "frontend/integration/icpswap/quote"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
-import { ChooseFromToken, ChooseToToken } from "./choose-token"
+import { ChooseFromToken } from "./choose-from-token"
+import { ChooseToToken } from "./choose-to-token"
 import { ErrorModal } from "./error-modal"
 import { QuoteModal } from "./quote-modal"
 
@@ -28,39 +24,16 @@ export interface SwapFTUiProps {
   allTokens: FT[]
   fromToken: FT | undefined
   toToken: FT | undefined
-  errors: Partial<
-    FieldErrorsImpl<{
-      amount: string
-      to: string
-    }>
-  >
-  register: UseFormRegister<{
-    amount: string
-    to: string
-  }>
-  resetField: UseFormResetField<{
-    amount: string
-    to: string
-  }>
-  setValue: UseFormSetValue<{
-    amount: string
-    to: string
-  }>
-  handleSubmit: UseFormHandleSubmit<{
-    amount: string
-    to: string
-  }>
-  submit: (values: { amount: string; to: string }) => Promise<void | Id>
+  submit: () => Promise<void | Id>
   setFromChosenToken: (value: string) => void
   setToChosenToken: (value: string) => void
   loadingMessage: string | undefined
-  isLoading: boolean
-  setToUsdAmount: (v: number) => void
-  setFromUsdAmount: (v: number) => void
-  fromUsdRate: string | undefined
-  toUsdRate: string | undefined
-  value: string
-  slippageError: boolean
+  isTokenLoading: boolean
+  showServiceError: boolean
+  showLiquidityError: Error | undefined
+  isQuoteLoading: boolean
+  quote: Quote | undefined
+  clearQuoteError: () => void
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -68,28 +41,28 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   allTokens,
   fromToken,
   toToken,
-  errors,
-  register,
-  resetField,
-  setValue,
-  handleSubmit,
   submit,
   setFromChosenToken,
   setToChosenToken,
   loadingMessage,
-  isLoading,
-  setToUsdAmount,
-  setFromUsdAmount,
-  fromUsdRate,
-  toUsdRate,
-  value,
-  slippageError,
+  isTokenLoading,
+  showServiceError,
+  showLiquidityError,
+  clearQuoteError,
+  isQuoteLoading,
+  quote,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
-  const [errorModalOpen, setErrorModalOpen] = useState(false)
-  const [isPairFetched] = useState(true)
 
-  if (isLoading)
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext()
+
+  const amount = watch("amount")
+  const to = watch("to")
+
+  if (isTokenLoading)
     return (
       <BlurredLoader
         isLoading
@@ -100,30 +73,30 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
     )
   return (
     <>
-      {errorModalOpen && <ErrorModal setErrorModalOpen={setErrorModalOpen} />}
+      {showServiceError && <ErrorModal refresh={clearQuoteError} />}
       <QuoteModal
-        quoteModalOpen={quoteModalOpen}
-        setQuoteModalOpen={setQuoteModalOpen}
+        modalOpen={quoteModalOpen}
+        setModalOpen={setQuoteModalOpen}
+        quote={quote}
       />
       <p className="mb-1 text-xs">From</p>
       <ChooseFromToken
-        error={errors.amount}
         token={fromToken}
-        register={register}
-        resetField={resetField}
-        setFromUsdAmount={setFromUsdAmount}
-        setToUsdAmount={setToUsdAmount}
         setFromChosenToken={setFromChosenToken}
-        usdRate={fromUsdRate}
+        usdRate={quote?.getSourceAmountUSD()}
         tokens={tokens}
-        setValue={setValue}
       />
-      {errors.amount && (
+      {showLiquidityError ? (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
-          {errors.amount?.message}
+          {showLiquidityError?.message}
         </div>
+      ) : (
+        errors["amount"] && (
+          <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+            {errors["amount"]?.message as string}
+          </div>
+        )
       )}
-
       <div className="relative mt-5 mb-1 text-xs text-gray-500">
         <span>To</span>
         <div
@@ -143,51 +116,51 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       </div>
       <ChooseToToken
         token={toToken}
-        resetField={resetField}
-        setToUsdAmount={setToUsdAmount}
         setToChosenToken={setToChosenToken}
-        usdRate={toUsdRate}
+        usdRate={quote?.getTargetAmountUSD()}
         tokens={allTokens}
-        isPairFetched={isPairFetched}
-        register={register}
+        isQuoteLoading={isQuoteLoading}
+        value={quote?.getTargetAmountPrettified()}
       />
-      <div className="mt-[10px] flex items-center justify-between text-xs">
-        {isPairFetched ? (
-          <span className="text-gray-500">Quote rate</span>
-        ) : (
+      <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
+        {!amount ? (
+          "Quote rate"
+        ) : isQuoteLoading ? (
           <div className="flex gap-[10px]">
             <Skeleton className="w-[66px] h-1 rounded-[4px] !bg-gray-200" />
             <Skeleton className="w-[30px] h-1 rounded-[4px] !bg-gray-200" />
           </div>
+        ) : (
+          // TODO: implement auto refetch in 30 sec of users inactivity
+          `${quote?.getQuoteRate()} (30 sec)`
         )}
         <span
           className={
-            isPairFetched ? "text-teal-600 cursor-pointer" : "text-gray-500"
+            !isQuoteLoading && amount
+              ? "text-teal-600 cursor-pointer"
+              : "text-gray-500"
           }
           onClick={() => {
-            if (!isPairFetched || !value) return
+            if (isQuoteLoading || !amount) return
             setQuoteModalOpen(true)
           }}
         >
           View quote
         </span>
       </div>
-      {slippageError && (
-        <div className="absolute bottom-[75px] text-xs text-red-600 left-5">
-          Swap exceeded slippage tolerance. Try again.
-        </div>
-      )}
       <Button
         className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"
         id="sendFT"
         block
-        disabled={!isPairFetched || !value}
-        onClick={handleSubmit(submit)}
+        disabled={
+          isQuoteLoading || !amount || Boolean(errors["amount"]?.message)
+        }
+        onClick={submit}
       >
-        {!value
+        {!amount
           ? "Enter an amount"
-          : !isPairFetched
+          : isQuoteLoading
           ? "Fetching quote"
           : "Swap tokens"}
       </Button>

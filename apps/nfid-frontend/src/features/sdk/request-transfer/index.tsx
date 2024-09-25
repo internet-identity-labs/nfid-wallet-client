@@ -13,10 +13,13 @@ import {
   ICP_DECIMALS,
   WALLET_FEE_E8S,
 } from "@nfid/integration/token/constants"
-import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { TransferSuccess } from "frontend/features/transfer-modal/components/send-success"
+import {
+  getUserBalance,
+  requestTransfer,
+} from "frontend/features/transfer-modal/utils"
 import { RequestStatus } from "frontend/features/types"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getNFTByTokenId } from "frontend/integration/entrepot"
@@ -26,7 +29,6 @@ import { SDKFooter } from "../ui/footer"
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
 import { IRequestTransferResponse } from "./types"
-import { getUserBalance, requestTransfer } from "frontend/features/transfer-modal/utils"
 
 export interface IRequestTransferProps {
   origin: string

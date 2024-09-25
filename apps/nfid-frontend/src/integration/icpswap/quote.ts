@@ -6,6 +6,8 @@ export interface Quote {
   getEstimatedTransferFee(): string[]
   getTargetAmountPrettified(): string
   getSourceAmountPrettified(): string
+  getTargetAmountPrettifiedWithSymbol(): string
+  getSourceAmountPrettifiedWithSymbol(): string
   getQuoteRate(): string
   getLiquidityProviderFee(): string
   getWidgetFee(): string

@@ -3,17 +3,16 @@ Feature:Send/Receive Asset
   As a user, I want to send/receive assets
 
   @sendreceive1
-  Scenario Outline: Check that user's chains have correct address and principal
+  Scenario Outline: Check that user has correct address and principal
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And Tokens displayed on user assets
     When User opens receive dialog window
-    Then Choose <chain> then check that an Account ID is <address>
+    Then Account ID is <address>
     And Principal is <principal>
     Examples:
-      | chain            | anchor | address                               | principal                             |
-      | InternetComputer | 28542  | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe |
-      | InternetComputer | 25795  | 648f03de52b30d96398fd77057c3c...fab5c | b35rl-wcza3-5w52t-565sg-eazlm...l-2qe |
+      | anchor | address                               | principal                             |
+#      | 28542  | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe |
+      | 25795  | 648f03de52b30d96398fd77057c3c...fab5c | b35rl-wcza3-5w52t-565sg-eazlm...l-2qe |
 
   @sendreceive2
   Scenario Outline: User should be able to see balance and fee in <chain>

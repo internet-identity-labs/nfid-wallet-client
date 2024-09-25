@@ -88,7 +88,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           />
           <div
             className={clsx(
-              "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white",
+              "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
               "left-[108px] sm:left-[156px] top-[138px] sm:top-[202px]",
             )}
           >
@@ -101,8 +101,8 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           </div>
           <div
             className={clsx(
-              "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white",
-              "left-[123px] sm:left-[182px] top-[152px] sm:top-[230px] z-2",
+              "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
+              "left-[130px] sm:left-[182px] top-[158px] sm:top-[230px] z-2",
             )}
           >
             <ImageWithFallback
@@ -121,7 +121,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
       </div>
       <div className="relative z-20">
         <div className="flex items-center justify-center">
-          <div>
+          <div className="flex-1">
             <p className="text-sm leading-[25px]" id="title">
               {titleFrom}
             </p>
@@ -129,10 +129,10 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
               {subTitleFrom}
             </p>
           </div>
-          <div className="w-10 h-10 rounded-[12px] bg-gray-50 flex items-center justify-center mx-[15px] sm:mx-[70px]">
+          <div className="w-10 h-10 rounded-[12px] bg-gray-50 flex items-center justify-center mx-[15px]">
             <IconCmpArrow className="w-[20px] h-[20px] rotate-180" />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-sm leading-[25px]" id="title">
               {titleTo}
             </p>

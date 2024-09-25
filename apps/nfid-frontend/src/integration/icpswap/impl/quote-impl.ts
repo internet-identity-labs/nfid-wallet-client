@@ -83,6 +83,17 @@ export class QuoteImpl implements Quote {
       .replace(TRIM_ZEROS, "")
   }
 
+  getTargetAmountPrettifiedWithSymbol(): string {
+    return (
+      this.getTargetAmount()
+        .div(10 ** this.target.decimals)
+        .toFixed(this.target.decimals)
+        .replace(TRIM_ZEROS, "") +
+      " " +
+      this.target.symbol
+    )
+  }
+
   getGuaranteedAmount(): string {
     return this.getTargetAmountPrettified() + " " + this.target.symbol
   }
@@ -92,6 +103,17 @@ export class QuoteImpl implements Quote {
       .div(10 ** this.source.decimals)
       .toFixed(this.source.decimals)
       .replace(TRIM_ZEROS, "")
+  }
+
+  getSourceAmountPrettifiedWithSymbol(): string {
+    return (
+      this.getSourceAmount()
+        .div(10 ** this.source.decimals)
+        .toFixed(this.source.decimals)
+        .replace(TRIM_ZEROS, "") +
+      " " +
+      this.source.symbol
+    )
   }
 
   getQuoteRate(): string {

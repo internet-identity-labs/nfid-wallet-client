@@ -222,10 +222,11 @@ export const requestTransfer = async (
     setTimeout(() => {
       "tokenId" in request
         ? mutate(
-            (key: any) => key && Array.isArray(key) && key[0] === "userTokens",
+            (key: string | string[]) =>
+              key && Array.isArray(key) && key[0] === "userTokens",
           )
         : mutate(
-            (key: any) =>
+            (key: string | string[]) =>
               key && Array.isArray(key) && key[0] === "AllBalanceRaw",
           )
     }, 1000)

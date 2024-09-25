@@ -6,7 +6,7 @@ import {
   fetchAllTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import useSWR from "swr"
 
 import {
@@ -14,14 +14,10 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
-import {
-  InsufficientFundsError,
-  ServiceUnavailableError,
-  UnsupportedTokenError,
-} from "frontend/integration/icpswap/errors"
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 
+import { FormValues } from "../types"
 import { getQuoteData } from "../utils"
 import { ISwapSuccess } from "./swap-success"
 
@@ -57,14 +53,7 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
     )
   }, [fromTokenAddress, allTokens])
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-    resetField,
-    watch,
-  } = useForm({
+  const formMethods = useForm<FormValues>({
     mode: "all",
     defaultValues: {
       amount: "",
@@ -72,6 +61,7 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
     },
   })
 
+  const { watch } = formMethods
   const amount = watch("amount")
 
   useEffect(() => {
@@ -83,17 +73,18 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
           .build()
         setShroff(shroff)
       } catch (error) {
+        setShroff(undefined)
         if (error instanceof Error) {
-          if (error instanceof ServiceUnavailableError) {
+          if (error.name === "ServiceUnavailableError") {
             setShroffError(error)
-          } else if (error instanceof UnsupportedTokenError) {
+          } else if (error.name === "UnsupportedTokenError") {
             setLiquidityError(error)
-          } else if (error instanceof InsufficientFundsError) {
-            console.error(error)
           } else {
-            console.error("An unknown error occurred:", error)
+            setLiquidityError(error)
           }
         } else {
+          console.error("Quote error: ", error)
+          setShroffError(error as Error)
           throw error
         }
       } finally {
@@ -121,57 +112,58 @@ export const SwapFT = ({ onSwap }: ISwapFT) => {
     setToTokenAddress(CKBTC_CANISTER_ID)
   }
 
-  const submit = useCallback(
-    async (values: { amount: string; to: string }) => {
-      onSwap({
-        assetImgFrom: fromToken?.getTokenLogo() ?? "",
-        assetImgTo: toToken?.getTokenLogo() ?? "",
-        titleFrom: `${values.amount} ${fromToken?.getTokenSymbol()}`,
-        titleTo: `${values.to} ${toToken?.getTokenSymbol()}`,
-        subTitleFrom: quote?.getSourceAmountUSD()!,
-        subTitleTo: quote?.getTargetAmountUSD()!,
-        swap: new Promise(async (resolve, reject) => {
-          try {
-            // TODO: implement the SWAP function
-            resolve({ swapProgress: "mockedProgress" })
-          } catch (e) {
-            console.error(
-              `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
-            )
-            reject(
-              new Error(
-                "Something went wrong with the ICPSwap service. Cancel your swap and try again.",
-              ),
-            )
-          }
-        }),
-      })
-    },
-    [onSwap, fromToken, toToken, quote],
-  )
+  const submit = useCallback(async () => {
+    const sourceAmount = quote?.getSourceAmountPrettifiedWithSymbol()
+    const targetAmount = quote?.getTargetAmountPrettifiedWithSymbol()
+    const sourceUsdAmount = quote?.getSourceAmountUSD()
+    const targetUsdAmount = quote?.getTargetAmountUSD()
+
+    if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
+      return
+
+    onSwap({
+      assetImgFrom: fromToken?.getTokenLogo() ?? "",
+      assetImgTo: toToken?.getTokenLogo() ?? "",
+      titleFrom: sourceAmount,
+      titleTo: targetAmount,
+      subTitleFrom: sourceUsdAmount,
+      subTitleTo: targetUsdAmount,
+      swap: new Promise(async (resolve, reject) => {
+        try {
+          // TODO: implement the SWAP function
+          resolve({ swapProgress: "mockedProgress" })
+        } catch (e) {
+          console.error(
+            `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
+          )
+          reject(
+            new Error(
+              "Something went wrong with the ICPSwap service. Cancel your swap and try again.",
+            ),
+          )
+        }
+      }),
+    })
+  }, [onSwap, fromToken, toToken, quote])
 
   return (
-    <SwapFTUi
-      tokens={activeTokens}
-      allTokens={filteredAllTokens}
-      toToken={toToken}
-      fromToken={fromToken}
-      setValue={setValue}
-      setFromChosenToken={setFromTokenAddress}
-      setToChosenToken={setToTokenAddress}
-      resetField={resetField}
-      register={register}
-      errors={errors}
-      loadingMessage={"Fetching supported tokens..."}
-      isTokenLoading={isFromTokenLoading || isToTokenLoading}
-      handleSubmit={handleSubmit}
-      submit={submit}
-      value={amount}
-      isQuoteLoading={isQuoteLoading || isQuoteFetching || isShroffLoading}
-      quote={quote}
-      showServiceError={shroffError instanceof ServiceUnavailableError}
-      showLiquidityError={liquidityError}
-      clearQuoteError={refresh}
-    />
+    <FormProvider {...formMethods}>
+      <SwapFTUi
+        tokens={activeTokens}
+        allTokens={filteredAllTokens}
+        toToken={toToken}
+        fromToken={fromToken}
+        setFromChosenToken={setFromTokenAddress}
+        setToChosenToken={setToTokenAddress}
+        loadingMessage={"Fetching supported tokens..."}
+        isTokenLoading={isFromTokenLoading || isToTokenLoading}
+        submit={submit}
+        isQuoteLoading={isQuoteLoading || isQuoteFetching || isShroffLoading}
+        quote={quote}
+        showServiceError={shroffError?.name === "ServiceUnavailableError"}
+        showLiquidityError={liquidityError}
+        clearQuoteError={refresh}
+      />
+    </FormProvider>
   )
 }

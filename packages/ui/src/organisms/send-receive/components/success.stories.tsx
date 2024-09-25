@@ -4,7 +4,7 @@ import { SuccessProps, Success } from "./success"
 import { TransferTemplate } from "./template"
 
 const meta: Meta = {
-  title: "Organisms/Send Receive/Success",
+  title: "Organisms/Send Receive Swap/Send Success",
   component: Success,
   argTypes: {},
   parameters: {

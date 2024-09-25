@@ -9,7 +9,7 @@ import {
   fetchActiveTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, FormProvider } from "react-hook-form"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -27,7 +27,7 @@ import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
-import { ITransferResponse } from "../types"
+import { FormValues, ITransferResponse } from "../types"
 import {
   getAccountIdentifier,
   getIdentity,
@@ -51,7 +51,16 @@ export const TransferFT = ({
   onTransfer,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
-  const [amountInUSD, setAmountInUSD] = useState(0)
+  const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
+    useState(preselectedAccountAddress)
+  const { profile } = useProfile()
+  const { balances } = useAllVaultsWallets()
+
+  const { data: vaultsAccountsOptions = [] } = useSWR(
+    "vaultsAccountsOptions",
+    getVaultsAccountsOptions,
+  )
+
   const {
     data: activeTokens = [],
     isLoading: isActiveTokensLoading,
@@ -66,42 +75,27 @@ export const TransferFT = ({
     fetchActiveTokenByAddress(address),
   )
 
-  const { data: usdRate } = useSWR(
-    token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
-  )
-
-  const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
-    useState(preselectedAccountAddress)
-
-  const { balances } = useAllVaultsWallets()
-
-  const balance = useMemo(() => {
-    return balances?.find(
-      (balance) => balance.address === selectedVaultsAccountAddress,
-    )
-  }, [selectedVaultsAccountAddress, balances])
-
-  const { profile } = useProfile()
-
-  const { data: vaultsAccountsOptions = [] } = useSWR(
-    "vaultsAccountsOptions",
-    getVaultsAccountsOptions,
-  )
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-    resetField,
-  } = useForm({
+  const formMethods = useForm<FormValues>({
     mode: "all",
     defaultValues: {
       amount: "",
       to: "",
     },
   })
+
+  const { watch } = formMethods
+  const amount = watch("amount")
+
+  const { data: usdRate } = useSWR(
+    token ? ["tokenRate", token.getTokenAddress(), amount] : null,
+    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
+  )
+
+  const balance = useMemo(() => {
+    return balances?.find(
+      (balance) => balance.address === selectedVaultsAccountAddress,
+    )
+  }, [selectedVaultsAccountAddress, balances])
 
   const handleTrackTransfer = useCallback(
     (amount: string) => {
@@ -119,7 +113,7 @@ export const TransferFT = ({
   )
 
   const submit = useCallback(
-    async (values: { amount: string; to: string }) => {
+    async (values: FormValues) => {
       if (!token) return toast.error("No selected token")
 
       if (isVault) {
@@ -217,33 +211,30 @@ export const TransferFT = ({
   )
 
   return (
-    <TransferFTUi
-      token={token}
-      tokens={activeTokens}
-      setChosenToken={setTokenAddress}
-      validateAddress={
-        token?.getTokenAddress() === ICP_CANISTER_ID
-          ? validateICPAddress
-          : validateICRC1Address
-      }
-      isLoading={isActiveTokensLoading || isTokenLoading}
-      sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
-      isVault={isVault}
-      selectedVaultsAccountAddress={selectedVaultsAccountAddress}
-      submit={submit}
-      setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
-      register={register}
-      errors={errors}
-      handleSubmit={handleSubmit}
-      setValue={setValue}
-      resetField={resetField}
-      loadingMessage={"Fetching supported tokens..."}
-      accountsOptions={vaultsAccountsOptions}
-      optionGroups={
-        profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
-      }
-      vaultsBalance={balance?.balance["ICP"]}
-      setUsdAmount={setAmountInUSD}
-    />
+    <FormProvider {...formMethods}>
+      <TransferFTUi
+        token={token}
+        tokens={activeTokens}
+        setChosenToken={setTokenAddress}
+        validateAddress={
+          token?.getTokenAddress() === ICP_CANISTER_ID
+            ? validateICPAddress
+            : validateICRC1Address
+        }
+        isLoading={isActiveTokensLoading || isTokenLoading}
+        sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
+        isVault={isVault}
+        selectedVaultsAccountAddress={selectedVaultsAccountAddress}
+        submit={submit}
+        setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
+        loadingMessage={"Fetching supported tokens..."}
+        accountsOptions={vaultsAccountsOptions}
+        optionGroups={
+          profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
+        }
+        vaultsBalance={balance?.balance["ICP"]}
+        usdRate={usdRate}
+      />
+    </FormProvider>
   )
 }

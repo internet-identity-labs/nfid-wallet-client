@@ -59,7 +59,6 @@ class ShroffImpl implements Shroff {
     this.target = target
   }
 
-  //amount in token (not decimals)
   async getQuote(amount: number): Promise<Quote> {
     const amountDecimals = new BigNumber(amount)
       .multipliedBy(10 ** this.source.decimals)
@@ -250,9 +249,9 @@ class ShroffImpl implements Shroff {
         this.swapTransaction!.setSwap(response)
         return response
       }
-      // @ts-ignore
+
       this.swapTransaction?.setError(result.err as ErrorSwap)
-      // @ts-ignore
+
       throw new Error("Swap error: " + JSON.stringify(result.err))
     })
   }
@@ -270,7 +269,7 @@ class ShroffImpl implements Shroff {
         this.swapTransaction!.setWithdraw(id)
         return id
       }
-      // @ts-ignore
+
       throw new Error("Withdraw error: " + JSON.stringify(result.err))
     })
   }

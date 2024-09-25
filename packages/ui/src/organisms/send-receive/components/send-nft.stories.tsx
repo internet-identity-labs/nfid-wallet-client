@@ -5,7 +5,7 @@ import { TransferNFTUi, TransferNFTUiProps } from "./send-nft"
 import { TransferTemplate } from "./template"
 
 const meta: Meta = {
-  title: "Organisms/Send Receive/Send NFT",
+  title: "Organisms/Send Receive Swap/Send NFT",
   component: TransferNFTUi,
   argTypes: {},
   parameters: {

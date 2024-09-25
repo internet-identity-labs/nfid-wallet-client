@@ -4,7 +4,7 @@ import { ReceiveProps, Receive } from "./receive"
 import { TransferTemplate } from "./template"
 
 const meta: Meta = {
-  title: "Organisms/Send Receive/Receive",
+  title: "Organisms/Send Receive Swap/Receive",
   component: Receive,
   argTypes: {},
   parameters: {

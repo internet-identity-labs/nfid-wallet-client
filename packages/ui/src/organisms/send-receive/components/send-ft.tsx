@@ -1,12 +1,6 @@
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
-import {
-  FieldErrorsImpl,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormResetField,
-  UseFormSetValue,
-} from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 import useSWR from "swr"
 
@@ -21,7 +15,7 @@ import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { ChooseFromToken } from "./choose-token"
+import { ChooseFromToken } from "./choose-from-token"
 
 export interface TransferFTUiProps {
   tokens: FT[]
@@ -37,30 +31,8 @@ export interface TransferFTUiProps {
   selectedVaultsAccountAddress: string
   submit: (values: { amount: string; to: string }) => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
-  register: UseFormRegister<{
-    amount: string
-    to: string
-  }>
-  errors: Partial<
-    FieldErrorsImpl<{
-      amount: string
-      to: string
-    }>
-  >
-  handleSubmit: UseFormHandleSubmit<{
-    amount: string
-    to: string
-  }>
-  setValue: UseFormSetValue<{
-    amount: string
-    to: string
-  }>
-  resetField: UseFormResetField<{
-    amount: string
-    to: string
-  }>
   vaultsBalance?: bigint | undefined
-  setUsdAmount: (v: number) => void
+  usdRate?: string
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -77,29 +49,24 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   selectedVaultsAccountAddress,
   submit,
   setSelectedVaultsAccountAddress,
-  register,
-  errors,
-  handleSubmit,
-  setValue,
-  resetField,
   vaultsBalance,
-  setUsdAmount,
+  usdRate,
 }) => {
-  const [amountInUSD, setAmountInUSD] = useState(0)
+  const {
+    resetField,
+    watch,
+    setValue,
+    register,
+    formState: { errors },
+  } = useFormContext()
+
+  const amount = watch("amount")
+  const to = watch("to")
 
   const { data: tokenFeeUsd, isLoading: isFeeLoading } = useSWR(
     token ? ["tokenFee", token.getTokenAddress()] : null,
     token ? () => token.getTokenFeeFormattedUsd() : null,
   )
-
-  const { data: usdRate } = useSWR(
-    token ? ["tokenRate", token.getTokenAddress(), amountInUSD] : null,
-    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
-  )
-
-  useEffect(() => {
-    setUsdAmount(amountInUSD)
-  }, [amountInUSD])
 
   if (!token || isLoading)
     return (
@@ -115,20 +82,15 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     <>
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken
-        error={errors.amount}
         token={token}
-        register={register}
         balance={vaultsBalance}
-        resetField={resetField}
-        setFromUsdAmount={setAmountInUSD}
         setFromChosenToken={setChosenToken}
         sendReceiveTrackingFn={sendReceiveTrackingFn}
         usdRate={usdRate}
         tokens={tokens}
-        setValue={setValue}
       />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600">
-        {errors.amount?.message}
+        {(errors["amount"]?.message as string) ?? undefined}
       </div>
       {isVault && (
         <ChooseModal
@@ -160,7 +122,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             ? "Recipient wallet address or account ID"
             : "Recipient wallet address"
         }
-        errorText={errors.to?.message}
+        errorText={(errors["to"]?.message as string) ?? undefined}
         registerFunction={register("to", {
           required: "This field cannot be empty",
           validate: (value) => validateAddress(value),
@@ -190,7 +152,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         type="primary"
         id="sendFT"
         block
-        onClick={handleSubmit(submit)}
+        onClick={() => submit({ amount, to })}
         icon={<IconCmpArrow className="rotate-[135deg]" />}
       >
         Send

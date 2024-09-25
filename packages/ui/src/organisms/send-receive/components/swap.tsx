@@ -1,12 +1,6 @@
 import clsx from "clsx"
 import { FC, useState } from "react"
-import {
-  FieldErrorsImpl,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormResetField,
-  UseFormSetValue,
-} from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
 import {
@@ -20,7 +14,8 @@ import { FT } from "frontend/integration/ft/ft"
 import { Quote } from "frontend/integration/icpswap/quote"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
-import { ChooseFromToken, ChooseToToken } from "./choose-token"
+import { ChooseFromToken } from "./choose-from-token"
+import { ChooseToToken } from "./choose-to-token"
 import { ErrorModal } from "./error-modal"
 import { QuoteModal } from "./quote-modal"
 
@@ -29,34 +24,11 @@ export interface SwapFTUiProps {
   allTokens: FT[]
   fromToken: FT | undefined
   toToken: FT | undefined
-  errors: Partial<
-    FieldErrorsImpl<{
-      amount: string
-      to: string
-    }>
-  >
-  register: UseFormRegister<{
-    amount: string
-    to: string
-  }>
-  resetField: UseFormResetField<{
-    amount: string
-    to: string
-  }>
-  setValue: UseFormSetValue<{
-    amount: string
-    to: string
-  }>
-  handleSubmit: UseFormHandleSubmit<{
-    amount: string
-    to: string
-  }>
   submit: (values: { amount: string; to: string }) => Promise<void | Id>
   setFromChosenToken: (value: string) => void
   setToChosenToken: (value: string) => void
   loadingMessage: string | undefined
   isTokenLoading: boolean
-  value: string
   showServiceError: boolean
   showLiquidityError: Error | undefined
   isQuoteLoading: boolean
@@ -69,17 +41,11 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   allTokens,
   fromToken,
   toToken,
-  errors,
-  register,
-  resetField,
-  setValue,
-  handleSubmit,
   submit,
   setFromChosenToken,
   setToChosenToken,
   loadingMessage,
   isTokenLoading,
-  value,
   showServiceError,
   showLiquidityError,
   clearQuoteError,
@@ -87,6 +53,14 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   quote,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
+
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext()
+
+  const amount = watch("amount")
+  const to = watch("to")
 
   if (isTokenLoading)
     return (
@@ -107,27 +81,22 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       />
       <p className="mb-1 text-xs">From</p>
       <ChooseFromToken
-        error={errors.amount}
         token={fromToken}
-        register={register}
-        resetField={resetField}
         setFromChosenToken={setFromChosenToken}
         usdRate={quote?.getSourceAmountUSD()}
         tokens={tokens}
-        setValue={setValue}
-        showLiquidityError={showLiquidityError}
       />
-      {errors.amount && (
-        <div className="h-4 mt-1 text-xs leading-4 text-red-600">
-          {errors.amount?.message}
-        </div>
-      )}
-      {showLiquidityError && (
+      {showLiquidityError ? (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
           {showLiquidityError?.message}
         </div>
+      ) : (
+        errors["amount"] && (
+          <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+            {(errors["amount"]?.message as string) ?? undefined}
+          </div>
+        )
       )}
-
       <div className="relative mt-5 mb-1 text-xs text-gray-500">
         <span>To</span>
         <div
@@ -147,17 +116,14 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       </div>
       <ChooseToToken
         token={toToken}
-        resetField={resetField}
         setToChosenToken={setToChosenToken}
         usdRate={quote?.getTargetAmountUSD()}
         tokens={allTokens}
         isQuoteLoading={isQuoteLoading}
-        register={register}
         value={quote?.getTargetAmountPrettified()}
-        setValue={setValue}
       />
       <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
-        {!value ? (
+        {!amount ? (
           "Quote rate"
         ) : isQuoteLoading ? (
           <div className="flex gap-[10px]">
@@ -165,16 +131,17 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             <Skeleton className="w-[30px] h-1 rounded-[4px] !bg-gray-200" />
           </div>
         ) : (
+          // TODO: implement auto refetch in 30 sec of users inactivity
           `${quote?.getQuoteRate()} (30 sec)`
         )}
         <span
           className={
-            !isQuoteLoading && value
+            !isQuoteLoading && amount
               ? "text-teal-600 cursor-pointer"
               : "text-gray-500"
           }
           onClick={() => {
-            if (isQuoteLoading || !value) return
+            if (isQuoteLoading || !amount) return
             setQuoteModalOpen(true)
           }}
         >
@@ -186,10 +153,12 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         type="primary"
         id="sendFT"
         block
-        disabled={isQuoteLoading || !value}
-        onClick={handleSubmit(submit)}
+        disabled={
+          isQuoteLoading || !amount || Boolean(errors["amount"]?.message)
+        }
+        onClick={() => submit({ amount, to })}
       >
-        {!value
+        {!amount
           ? "Enter an amount"
           : isQuoteLoading
           ? "Fetching quote"

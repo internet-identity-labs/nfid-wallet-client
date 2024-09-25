@@ -4,16 +4,7 @@ import { _SERVICE as SwapPool } from "src/integration/icpswap/idl/SwapPool.d"
 
 import { actor, hasOwnProperty } from "@nfid/integration"
 
-import {
-  INSUFFICIENT_FUNDS,
-  SERVICE_UNAVAILABLE,
-  UNSUPPORTED_TOKEN,
-} from "../constants"
-import {
-  ServiceUnavailableError,
-  InsufficientFundsError,
-  UnsupportedTokenError,
-} from "../errors"
+import { ServiceUnavailableError, UnsupportedTokenError } from "../errors"
 import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"
 import {
   _SERVICE as SwapFactory,
@@ -46,17 +37,20 @@ class IcpSwapService {
         return data
       }
 
-      if (hasOwnProperty(pool, "InternalError")) {
-        throw new ServiceUnavailableError(SERVICE_UNAVAILABLE)
+      if (hasOwnProperty(pool.err, "InternalError")) {
+        throw new ServiceUnavailableError()
       }
-      if (hasOwnProperty(pool, "UnsupportedToken")) {
-        throw new UnsupportedTokenError(UNSUPPORTED_TOKEN)
+      if (hasOwnProperty(pool.err, "UnsupportedToken")) {
+        throw new UnsupportedTokenError()
       }
-      if (hasOwnProperty(pool, "InsufficientFunds")) {
-        throw new InsufficientFundsError(INSUFFICIENT_FUNDS)
+      if (hasOwnProperty(pool.err, "InsufficientFunds")) {
+        throw new UnsupportedTokenError()
+      }
+      if (hasOwnProperty(pool.err, "CommonError")) {
+        throw new UnsupportedTokenError()
       }
       console.error("Not able to get pool for pair: " + pool.err)
-      throw new ServiceUnavailableError(SERVICE_UNAVAILABLE)
+      throw new ServiceUnavailableError()
     })
   }
 

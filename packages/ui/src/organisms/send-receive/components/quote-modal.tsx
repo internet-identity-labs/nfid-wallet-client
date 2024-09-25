@@ -17,6 +17,8 @@ export const QuoteModal: FC<QuoteModalProps> = ({
   modalOpen,
   quote,
 }) => {
+  const [targetFee, sourceFee] = quote?.getEstimatedTransferFee() ?? []
+
   return (
     <>
       <ModalComponent
@@ -68,8 +70,8 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               <div className="flex justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Estimated transfer fee</p>
                 <p>
-                  {quote?.getEstimatedTransferFee()[0]} <br />
-                  {quote?.getEstimatedTransferFee()[1]}
+                  {targetFee} <br />
+                  {sourceFee}
                 </p>
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">

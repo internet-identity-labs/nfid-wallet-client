@@ -204,6 +204,8 @@ export const TransferFT = ({
     usdRate,
     refetchActiveTokens,
     refetchToken,
+    amount,
+    to,
   ])
 
   return (

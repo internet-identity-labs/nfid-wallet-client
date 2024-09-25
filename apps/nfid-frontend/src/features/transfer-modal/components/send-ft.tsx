@@ -85,6 +85,7 @@ export const TransferFT = ({
 
   const { watch } = formMethods
   const amount = watch("amount")
+  const to = watch("to")
 
   const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amount] : null,
@@ -112,103 +113,98 @@ export const TransferFT = ({
     [token],
   )
 
-  const submit = useCallback(
-    async (values: FormValues) => {
-      if (!token) return toast.error("No selected token")
+  const submit = useCallback(async () => {
+    if (!token) return toast.error("No selected token")
 
-      if (isVault) {
-        return onTransfer({
-          assetImg: token.getTokenLogo() ?? "",
-          initialPromise: new Promise(async (resolve) => {
-            const wallet = await getVaultWalletByAddress(
-              selectedVaultsAccountAddress,
-            )
-
-            const address =
-              values.to.length === PRINCIPAL_LENGTH
-                ? AccountIdentifier.fromPrincipal({
-                    principal: Principal.fromText(values.to),
-                  }).toHex()
-                : values.to
-
-            await registerTransaction({
-              address,
-              amount: BigInt(Math.round(Number(values.amount) * E8S)),
-              from_sub_account: wallet?.uid ?? "",
-            })
-
-            resolve({} as ITransferResponse)
-          }),
-          title: `${values.amount} ${token.getTokenSymbol()}`,
-          subTitle: usdRate!,
-          isAssetPadding: true,
-        })
-      }
-
-      onTransfer({
-        assetImg: token?.getTokenLogo() ?? "",
+    if (isVault) {
+      return onTransfer({
+        assetImg: token.getTokenLogo() ?? "",
         initialPromise: new Promise(async (resolve) => {
-          const identity = await getIdentity([token!.getTokenAddress()])
-          let res
-          if (!token) return
-          try {
-            if (token?.getTokenAddress() === ICP_CANISTER_ID) {
-              res = await transferICP({
-                amount: stringICPtoE8s(String(values.amount)),
-                to: getAccountIdentifier(values.to),
-                identity: identity,
-              })
-            } else {
-              const { owner, subaccount } = decodeIcrcAccount(values.to)
-              res = await transferICRC1(identity, token.getTokenAddress(), {
-                to: {
-                  subaccount: subaccount ? [subaccount] : [],
-                  owner,
-                },
-                amount: BigInt(
-                  Number(values.amount) * 10 ** token?.getTokenDecimals()!,
-                ),
-                memo: [],
-                fee: [token.getTokenFee()],
-                from_subaccount: [],
-                created_at_time: [],
-              })
-            }
+          const wallet = await getVaultWalletByAddress(
+            selectedVaultsAccountAddress,
+          )
 
-            handleTrackTransfer(values.amount)
-            resolve({ hash: String(res) })
-          } catch (e) {
-            throw new Error(
-              `Transfer error: ${
-                (e as Error).message ? (e as Error).message : e
-              }`,
-            )
-          }
+          const address =
+            to.length === PRINCIPAL_LENGTH
+              ? AccountIdentifier.fromPrincipal({
+                  principal: Principal.fromText(to),
+                }).toHex()
+              : to
+
+          await registerTransaction({
+            address,
+            amount: BigInt(Math.round(Number(amount) * E8S)),
+            from_sub_account: wallet?.uid ?? "",
+          })
+
+          resolve({} as ITransferResponse)
         }),
-        title: `${Number(values.amount)
-          .toFixed(token?.getTokenDecimals())
-          .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
+        title: `${amount} ${token.getTokenSymbol()}`,
         subTitle: usdRate!,
         isAssetPadding: true,
-        callback: () => {
-          resetIntegrationCache(["getICRC1Canisters"], () => {
-            refetchActiveTokens()
-            refetchToken()
-          })
-        },
       })
-    },
-    [
-      handleTrackTransfer,
-      isVault,
-      onTransfer,
-      token,
-      selectedVaultsAccountAddress,
-      usdRate,
-      refetchActiveTokens,
-      refetchToken,
-    ],
-  )
+    }
+
+    onTransfer({
+      assetImg: token?.getTokenLogo() ?? "",
+      initialPromise: new Promise(async (resolve) => {
+        const identity = await getIdentity([token!.getTokenAddress()])
+        let res
+        if (!token) return
+        try {
+          if (token?.getTokenAddress() === ICP_CANISTER_ID) {
+            res = await transferICP({
+              amount: stringICPtoE8s(String(amount)),
+              to: getAccountIdentifier(to),
+              identity: identity,
+            })
+          } else {
+            const { owner, subaccount } = decodeIcrcAccount(to)
+            res = await transferICRC1(identity, token.getTokenAddress(), {
+              to: {
+                subaccount: subaccount ? [subaccount] : [],
+                owner,
+              },
+              amount: BigInt(Number(amount) * 10 ** token?.getTokenDecimals()!),
+              memo: [],
+              fee: [token.getTokenFee()],
+              from_subaccount: [],
+              created_at_time: [],
+            })
+          }
+
+          handleTrackTransfer(amount)
+          resolve({ hash: String(res) })
+        } catch (e) {
+          throw new Error(
+            `Transfer error: ${
+              (e as Error).message ? (e as Error).message : e
+            }`,
+          )
+        }
+      }),
+      title: `${Number(amount)
+        .toFixed(token?.getTokenDecimals())
+        .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
+      subTitle: usdRate!,
+      isAssetPadding: true,
+      callback: () => {
+        resetIntegrationCache(["getICRC1Canisters"], () => {
+          refetchActiveTokens()
+          refetchToken()
+        })
+      },
+    })
+  }, [
+    handleTrackTransfer,
+    isVault,
+    onTransfer,
+    token,
+    selectedVaultsAccountAddress,
+    usdRate,
+    refetchActiveTokens,
+    refetchToken,
+  ])
 
   return (
     <FormProvider {...formMethods}>

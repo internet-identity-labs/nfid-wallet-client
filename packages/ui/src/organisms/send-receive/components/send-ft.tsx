@@ -29,7 +29,7 @@ export interface TransferFTUiProps {
   accountsOptions: IGroupedOptions[] | undefined
   optionGroups: IGroupedOptions[]
   selectedVaultsAccountAddress: string
-  submit: (values: { amount: string; to: string }) => Promise<void | Id>
+  submit: () => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
   vaultsBalance?: bigint | undefined
   usdRate?: string
@@ -90,7 +90,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         tokens={tokens}
       />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600">
-        {(errors["amount"]?.message as string) ?? undefined}
+        {errors["amount"]?.message as string}
       </div>
       {isVault && (
         <ChooseModal
@@ -122,7 +122,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
             ? "Recipient wallet address or account ID"
             : "Recipient wallet address"
         }
-        errorText={(errors["to"]?.message as string) ?? undefined}
+        errorText={errors["to"]?.message as string}
         registerFunction={register("to", {
           required: "This field cannot be empty",
           validate: (value) => validateAddress(value),
@@ -152,7 +152,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         type="primary"
         id="sendFT"
         block
-        onClick={() => submit({ amount, to })}
+        onClick={submit}
         icon={<IconCmpArrow className="rotate-[135deg]" />}
       >
         Send

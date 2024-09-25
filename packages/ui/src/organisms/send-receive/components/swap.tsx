@@ -24,7 +24,7 @@ export interface SwapFTUiProps {
   allTokens: FT[]
   fromToken: FT | undefined
   toToken: FT | undefined
-  submit: (values: { amount: string; to: string }) => Promise<void | Id>
+  submit: () => Promise<void | Id>
   setFromChosenToken: (value: string) => void
   setToChosenToken: (value: string) => void
   loadingMessage: string | undefined
@@ -93,7 +93,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       ) : (
         errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
-            {(errors["amount"]?.message as string) ?? undefined}
+            {errors["amount"]?.message as string}
           </div>
         )
       )}
@@ -156,7 +156,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         disabled={
           isQuoteLoading || !amount || Boolean(errors["amount"]?.message)
         }
-        onClick={() => submit({ amount, to })}
+        onClick={submit}
       >
         {!amount
           ? "Enter an amount"

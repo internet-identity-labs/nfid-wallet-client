@@ -8,6 +8,7 @@ import { im, passkeyStorage, replaceActorIdentity } from "@nfid/integration"
 
 import { getPasskey, storePasskey } from "./passkey"
 import { getIdentity, getLambdaActor } from "./util"
+import {sleep} from "react-hook-form/dist/utils/sleep";
 
 describe("Passkey test", () => {
   jest.setTimeout(80000)
@@ -57,6 +58,7 @@ describe("Passkey test", () => {
     await replaceActorIdentity(im, di)
     await replaceActorIdentity(passkeyStorage, di)
     await im.remove_account()
+    await sleep(1000)
     const account = await im.create_account(accountRequest as any)
     const anchor = account.data[0]?.anchor
     expect(anchor! >= 200_000_000).toBeTruthy()

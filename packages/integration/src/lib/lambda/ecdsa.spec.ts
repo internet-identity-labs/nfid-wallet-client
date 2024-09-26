@@ -57,6 +57,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         identity: delegationIdentity,
         delegationIdentity: delegationIdentity,
       })
+      await replaceActorIdentity(im, delegationIdentity)
 
       const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
         "74gpt-tiaaa-aaaak-aacaa-cai",

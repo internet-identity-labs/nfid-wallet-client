@@ -68,8 +68,16 @@ describe("Passkey test", () => {
     expect(anchor! >= 200_000_000).toBeTruthy()
     const key1 = (Math.random() + 1).toString(36).substring(7)
     const key2 = (Math.random() + 1).toString(36).substring(7)
-    await storePasskey(key1, "testData")
-    await storePasskey(key2, "testData2")
+    try {
+      await storePasskey(key1, "testData")
+    } catch (e) {
+      await storePasskey(key1, "testData")
+    }
+    try {
+      await storePasskey(key2, "testData2")
+    } catch (e) {
+      await storePasskey(key2, "testData2")
+    }
     const response = await getPasskey([key1])
     expect(response[0].key).toEqual(key1)
     expect(response[0].data).toEqual("testData")

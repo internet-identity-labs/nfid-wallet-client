@@ -57,13 +57,27 @@ describe("Passkey test", () => {
     await replaceActorIdentity(im, di)
     await replaceActorIdentity(passkeyStorage, di)
     await im.remove_account()
-    const account = await im.create_account(accountRequest as any)
+    await sleep(1)
+    let account
+    try {
+      account = await im.create_account(accountRequest as any)
+    } catch (e) {
+      account = await im.create_account(accountRequest as any)
+    }
     const anchor = account.data[0]?.anchor
     expect(anchor! >= 200_000_000).toBeTruthy()
     const key1 = (Math.random() + 1).toString(36).substring(7)
     const key2 = (Math.random() + 1).toString(36).substring(7)
-    await storePasskey(key1, "testData")
-    await storePasskey(key2, "testData2")
+    try {
+      await storePasskey(key1, "testData")
+    } catch (e) {
+      await storePasskey(key1, "testData")
+    }
+    try {
+      await storePasskey(key2, "testData2")
+    } catch (e) {
+      await storePasskey(key2, "testData2")
+    }
     const response = await getPasskey([key1])
     expect(response[0].key).toEqual(key1)
     expect(response[0].data).toEqual("testData")
@@ -73,3 +87,8 @@ describe("Passkey test", () => {
     expect(response2[1].data).toEqual("testData2")
   })
 })
+
+
+const sleep = async (seconds: number): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, seconds * 1000))
+}

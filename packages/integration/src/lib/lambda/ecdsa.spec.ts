@@ -74,6 +74,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         expect(e.message).toContain("Forbidden")
       }
       try {
+        await replaceActorIdentity(im, globalICIdentity)
         await im.get_account()
       } catch (e) {
         throw Error("Should not fail")

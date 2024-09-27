@@ -15,9 +15,9 @@ import { Principal } from "@dfinity/principal"
 
 import { GenericError } from "./exception-handler.service"
 
-;(BigInt.prototype as any).toJSON = function () {
-  return this.toString()
-}
+  ; (BigInt.prototype as any).toJSON = function () {
+    return this.toString()
+  }
 
 export interface CallCanisterRequest {
   delegation: DelegationIdentity
@@ -71,7 +71,7 @@ class CallCanisterService {
       effectiveCanisterId: canister,
     })
 
-    if (!response.ok || response.body) {
+    if (!response.ok) {
       throw new UpdateCallRejectedError(
         canister,
         methodName,

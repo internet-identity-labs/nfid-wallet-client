@@ -136,7 +136,7 @@ export class Assets {
 
   public async getAccountId(isAddress?: boolean) {
     let parent
-    await this.address.waitForDisplayed({ timeout: 100000 })
+    await this.address.waitForDisplayed({ timeout: 10000 })
     if (isAddress) {
       parent = await this.address
     } else {

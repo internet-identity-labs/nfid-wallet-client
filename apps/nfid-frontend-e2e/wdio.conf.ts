@@ -278,7 +278,6 @@ export const config: WebdriverIO.Config = {
     if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
-    await browser.execute(setupConsoleLogging)
   },
   /**
    * Gets executed before the suite starts.

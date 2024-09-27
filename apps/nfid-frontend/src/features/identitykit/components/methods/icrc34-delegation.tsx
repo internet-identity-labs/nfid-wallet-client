@@ -6,6 +6,7 @@ import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 
 export interface IRPCComponentICRC34 {
+  origin: string
   publicProfile: Account
   anonymous: Account[]
   isPublicAvailable: boolean
@@ -14,6 +15,7 @@ export interface IRPCComponentICRC34 {
 }
 
 const RPCComponentICRC34 = ({
+  origin,
   publicProfile,
   anonymous,
   isPublicAvailable,

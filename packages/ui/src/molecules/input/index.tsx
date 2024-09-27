@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React, { ReactElement } from "react"
 
-import { IconCmpError } from "../../atoms/icons"
 import { Label } from "./label"
 
 export interface InputProps
@@ -98,7 +97,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               "items-center flex",
             )}
           >
-            {errorText && <IconCmpError className="mr-2 text-red-600" />}
             {innerText && (
               <div
                 className={clsx(
@@ -116,7 +114,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {errorText && (
           <div
             id={`${id}-error`}
-            className={clsx("mt-1 text-xs text-red-base text-red-600 absolute")}
+            className={clsx("mt-1 text-xs text-red-base text-red-600")}
           >
             {errorText}
           </div>

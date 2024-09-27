@@ -37,7 +37,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
-    mode: "onSubmit",
+    mode: "all",
   })
   let appHost: string = ""
   try {
@@ -46,6 +46,13 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   } catch (e) {
     appHost = appMeta?.name ?? ""
   }
+
+  const errorMessage =
+    formState.errors.email?.type === "required"
+      ? "Please enter your email"
+      : formState.errors.email?.type === "pattern"
+      ? "Email is not valid"
+      : undefined
 
   return (
     <BlurredLoader
@@ -64,15 +71,17 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         <form
           onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
           className="space-y-[10px]"
+          noValidate
         >
           <Input
             className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
             inputClassName="h-12 rounded-xl"
             placeholder="Email"
             type="email"
-            errorText={formState.errors.email?.message?.toString()}
+            errorText={errorMessage}
             {...register("email", {
-              required: "Please enter your email",
+              required: true,
+              pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
             })}
             autoComplete="off webauthn"
           />

@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { encodeTokenIdentifier } from "ictool"
+import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
 import { e8s } from "src/integration/nft/constants/constants"
 import { MarketPlace } from "src/integration/nft/enum/enums"

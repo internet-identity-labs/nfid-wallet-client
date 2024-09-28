@@ -38,3 +38,18 @@ export async function postRemoteDelegationService(
   console.debug(`postRemoteDelegationService postMessage`, { response })
   return undefined
 }
+
+export function arrayBufferEqual(a1: ArrayBuffer, a2: ArrayBuffer): boolean {
+  if (a1 === a2) {
+    return true
+  }
+
+  if (a1.byteLength !== a2.byteLength) {
+    return false
+  }
+
+  return (
+    JSON.stringify(Array.from(new Uint8Array(a1))) ===
+    JSON.stringify(Array.from(new Uint8Array(a2)))
+  )
+}

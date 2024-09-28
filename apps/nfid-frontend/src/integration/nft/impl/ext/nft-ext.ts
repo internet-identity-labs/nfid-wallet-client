@@ -51,8 +51,6 @@ class NFTExtDetails extends NFTDetailsImpl {
     to: number,
   ): Promise<{ activity: Array<TransactionRecord>; isLastPage: boolean }> {
     let url = `${TOKEN_API}/${this.tokenId}`
-    console.log("URL", url)
-
     let responseData: ResponseData = await fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },

@@ -14,21 +14,13 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
-<<<<<<< HEAD
 import { UnsupportedTokenError } from "frontend/integration/icpswap/errors"
 import { SwapError } from "frontend/integration/icpswap/errors/swap-error"
-=======
->>>>>>> main
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 
 import { FormValues } from "../types"
-<<<<<<< HEAD
 import { getIdentity, getQuoteData } from "../utils"
-=======
-import { getQuoteData } from "../utils"
-import { ISwapSuccess } from "./swap-success"
->>>>>>> main
 
 interface ISwapFT {
   setIsSuccess: (value: boolean) => void

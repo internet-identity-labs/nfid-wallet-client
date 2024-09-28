@@ -126,7 +126,7 @@ export class Assets {
   public async receiveDialog() {
     await browser.waitUntil(async () => {
       await this.principal.waitForDisplayed()
-      return await this.principal.getText() != ""
+      return (await this.principal.getText()) != ""
     })
     const receiveButton = await $("#receive_button")
     await receiveButton.waitForDisplayed({ timeout: 10000 })

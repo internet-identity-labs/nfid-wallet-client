@@ -26,7 +26,6 @@
         "@dotlottie/react-player": "^1.6.19",
         "@headlessui/react": "1.5.0",
         "@nfid/embed": "0.10.3",
-        "@psychedelic/cap-js": "0.0.8",
         "@radix-ui/react-accordion": "^1.1.1",
         "@radix-ui/react-dialog": "^1.0.2",
         "@radix-ui/react-dropdown-menu": "2.0.1",
@@ -225,8 +224,7 @@
         "@rarible/solana-sdk": "npm:dry-uninstall@0.3.0",
         "express": "4.21.0",
         "ws": "8.18.0",
-        "path-to-regexp": "3.3.0",
-        "@psychedelic/cap-js/axios": "0.28.0"
+        "path-to-regexp": "3.3.0"
     },
     "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
     "license": "MIT"

@@ -23,6 +23,7 @@ import { idlFactory } from "./idl/yumiNft"
 import { _SERVICE as YukuNftCanister } from "./idl/yumiNft.d"
 
 export class NftYumi extends NftImpl {
+  private url: undefined | string
   protected getAssetPreviewAsync(): Promise<AssetPreview> {
     const nftActor = actor<YukuNftCanister>(this.getCollectionId(), idlFactory)
     return nftActor.getTokensByIds([this.getTokenNumber()]).then((token) => {
@@ -40,6 +41,7 @@ export class NftYumi extends NftImpl {
       }
       const json = array2string(new Uint8Array(metadata))
       const raw = JSON.parse(json.replace(/\n/g, "\\n").replace(/\r/g, "\\r"))
+      this.url = raw.url
       return {
         url:
           raw.thumb ??
@@ -53,7 +55,11 @@ export class NftYumi extends NftImpl {
     let collectionResponse = (await fetch(
       `https://stat.yuku.app/api/collection/${this.getCollectionId()}`,
     ).then((response) => response.json())) as CollectionResponse
-    return new NFTYumiDetails(collectionResponse.data, this.getTokenNumber())
+    return new NFTYumiDetails(
+      collectionResponse.data,
+      this.getTokenNumber(),
+      this.url,
+    )
   }
 }
 
@@ -61,11 +67,17 @@ class NFTYumiDetails extends NFTDetailsImpl {
   private collectionData: CollectionData
   private readonly tokenNumber: number
   private nftInfo: NftInfo | undefined | null
+  private url: string | undefined
 
-  constructor(collection: CollectionData, tokenNumber: number) {
+  constructor(
+    collection: CollectionData,
+    tokenNumber: number,
+    url: string | undefined,
+  ) {
     super()
     this.collectionData = collection
     this.tokenNumber = tokenNumber
+    this.url = url
   }
 
   getAbout(): string {
@@ -74,7 +86,11 @@ class NFTYumiDetails extends NFTDetailsImpl {
 
   getAssetFullSize(): Promise<AssetPreview> {
     return Promise.resolve({
-      url: this.collectionData.logo,
+      url:
+        this.url ??
+        this.nftInfo?.thumbnail_url ??
+        this.nftInfo?.media_url ??
+        this.collectionData.logo,
       //yuku API does not return the format of the asset, so we assume it is an image
       format: "img",
     })

@@ -58,7 +58,7 @@ describe("yumi test suite", () => {
       const yumiNFTassetFullSize = await yumiNFTdetails.getAssetFullSize()
       expect(yumiNFTassetFullSize.format).toEqual("img")
       expect(yumiNFTassetFullSize.url).toEqual(
-        "https://bafybeidpxzxggojap5uusofoho5y4j6qbsiitljjobrc4s2wmwtbbcxshi.ipfs.w3s.link/20240517-140134.png",
+        "https://bafybeih6sox7rpgvnlhil3yvwdmeza6bzegdomdflgwbecsks3zedhsrc4.ipfs.w3s.link/9103_original.jpg",
       )
 
       const yumiNFTProperties = await yumiNFTdetails.getProperties()

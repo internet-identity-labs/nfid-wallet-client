@@ -26,6 +26,7 @@ import {
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
+import { SlippageError } from "../errors"
 import { PoolData } from "./../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
@@ -119,8 +120,8 @@ class ShroffImpl implements Shroff {
       console.debug("Withdraw done")
       return this.swapTransaction
     } catch (e) {
-      console.error(e)
-      return this.swapTransaction
+      console.error("Swap error:", e)
+      throw e
     }
   }
 
@@ -134,9 +135,19 @@ class ShroffImpl implements Shroff {
       legacyQuote?.getTargetAmountPrettified() !==
       updatedQuote.getTargetAmountPrettified()
     ) {
-      throw new Error("Swap exceeded slippage tolerance. Try again")
+      throw new SlippageError()
     }
     return updatedQuote
+  }
+
+  getTargets(): string[] {
+    return [
+      this.source.ledger,
+      this.target.ledger,
+      this.poolData.canisterId.toText(),
+      exchangeRateService.getNodeCanister(),
+      "moe7a-tiaaa-aaaag-qclfq-cai",
+    ]
   }
 
   private async deposit(): Promise<bigint> {

@@ -32,6 +32,10 @@ export class ExchangeRateService {
     return this.ICP2USD
   }
 
+  getNodeCanister(): string {
+    return NODE_CANISTER
+  }
+
   async cacheUsdIcpRate() {
     const result = await this.getExchangeRate("f_USD-c_ICP")
     this.ICP2USD = this.parseTokenAmount(result.rate, result.decimals)

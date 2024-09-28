@@ -16,10 +16,10 @@ import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { ITransferSuccess, TransferSuccess } from "./components/send-success"
 import { SwapFT } from "./components/swap"
-import { ISwapSuccess, SwapSuccess } from "./components/swap-success"
 
 export const TransferModalCoordinator = () => {
   const [publicKey, setPublicKey] = useState("")
+  const [isSwapSuccess, setIsSwapSuccess] = useState(false)
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
 
@@ -64,13 +64,7 @@ export const TransferModalCoordinator = () => {
           />
         )
       case state.matches("SwapMachine"):
-        return (
-          <SwapFT
-            onSwap={(message: ISwapSuccess) =>
-              send({ type: "ON_SWAP", data: message })
-            }
-          />
-        )
+        return <SwapFT setIsSuccess={setIsSwapSuccess} />
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive
@@ -84,13 +78,6 @@ export const TransferModalCoordinator = () => {
           <TransferSuccess
             onClose={() => send({ type: "HIDE" })}
             {...state.context.transferObject!}
-          />
-        )
-      case state.matches("SwapSuccess"):
-        return (
-          <SwapSuccess
-            onClose={() => send({ type: "HIDE" })}
-            {...state.context.swapObject!}
           />
         )
       default:
@@ -120,9 +107,7 @@ export const TransferModalCoordinator = () => {
       ) : (
         <TransferModal
           onClickOutside={() => send({ type: "HIDE" })}
-          isSuccess={
-            state.matches("TransferSuccess") || state.matches("SwapSuccess")
-          }
+          isSuccess={state.matches("TransferSuccess") || isSwapSuccess}
           direction={state.context.direction}
           tokenType={state.context.tokenType}
           onTokenTypeChange={onTokenTypeChange}

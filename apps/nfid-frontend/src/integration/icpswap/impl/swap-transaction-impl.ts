@@ -14,6 +14,7 @@ export class SwapTransactionImpl implements SwapTransaction {
   private endTime: number | undefined
   private error: ErrorSwap | Icrc1TransferError | undefined
   private stage: SwapStage
+  private callback: ((value: SwapStage) => void) | undefined
 
   constructor() {
     this.startTime = Date.now()
@@ -24,35 +25,46 @@ export class SwapTransactionImpl implements SwapTransaction {
     return this.stage
   }
 
+  private changeState(stage: SwapStage): void {
+    if (this.callback) {
+      this.callback(stage)
+    }
+    this.stage = stage
+  }
+
+  setCallback(cb: (stage: SwapStage) => void) {
+    this.callback = cb
+  }
+
   public setTransferId(transferId: bigint) {
     this.transferId = transferId
-    if (this.transferNFIDId) this.stage = SwapStage.Deposit
+    if (this.transferNFIDId) this.changeState(SwapStage.Deposit)
   }
 
   public setNFIDTransferId(transferId: bigint) {
     this.transferNFIDId = transferId
-    if (this.transferId) this.stage = SwapStage.Deposit
+    if (this.transferNFIDId) this.changeState(SwapStage.Deposit)
   }
 
   public setDeposit(deposit: bigint) {
     this.deposit = deposit
-    this.stage = SwapStage.Swap
+    if (this.deposit) this.changeState(SwapStage.Swap)
   }
 
   public setSwap(swap: bigint) {
     this.swap = swap
-    this.stage = SwapStage.Withdraw
+    if (this.swap) this.changeState(SwapStage.Withdraw)
   }
 
   public setWithdraw(withdraw: bigint) {
     this.withdraw = withdraw
     this.endTime = Date.now()
-    this.stage = SwapStage.Completed
+    if (this.withdraw) this.changeState(SwapStage.Completed)
   }
 
   public setError(error: Icrc1TransferError | ErrorSwap) {
     this.error = error
     this.endTime = Date.now()
-    this.stage = SwapStage.Error
+    if (this.error) this.changeState(SwapStage.Error)
   }
 }

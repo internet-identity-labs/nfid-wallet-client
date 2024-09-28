@@ -1,6 +1,5 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import { decodeTokenIdentifier, encodeTokenIdentifier } from "ictool"
 
 import { Account } from "@nfid/integration"
 import { Blockchain } from "@nfid/integration/token/types"
@@ -15,6 +14,7 @@ import {
   TokenCache,
   UserNFTDetails,
 } from "./types"
+import {decodeTokenIdentifier, encodeTokenIdentifier} from "src/integration/entrepot/ext";
 
 const API = "https://us-central1-entrepot-api.cloudfunctions.net/api"
 const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai"

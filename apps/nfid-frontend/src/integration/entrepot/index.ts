@@ -1,5 +1,4 @@
 import { Principal } from "@dfinity/principal"
-import { encodeTokenIdentifier } from "ictool"
 
 import { Account } from "@nfid/integration"
 import { Blockchain } from "@nfid/integration/token/types"
@@ -19,6 +18,7 @@ import type {
   NFTDetails,
   UserNFTDetails,
 } from "./types"
+import {encodeTokenIdentifier} from "src/integration/entrepot/ext";
 
 /**
  * Retrieve all known NFT collections.

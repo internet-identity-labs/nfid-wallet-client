@@ -1,11 +1,11 @@
 import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
 import { getPublicKey } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
 import { authState, getBalance } from "@nfid/integration"
 
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
+import {AccountIdentifier} from "@dfinity/ledger-icp";
 
 export const getPublicProfile = async (): Promise<{
   balance: string
@@ -18,7 +18,7 @@ export const getPublicProfile = async (): Promise<{
 
   const principalString = await getPublicKey(delegationIdentity!)
   const principal = Principal.fromText(principalString)
-  const address = principalToAddress(principal as any)
+  const address = AccountIdentifier.fromPrincipal({principal}).toHex()
   const balance = e8sICPToString(Number(await getBalance(address)))
   const exchangeRate = await getExchangeRate("ICP")
 

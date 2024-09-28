@@ -6,6 +6,7 @@ import {
   Ed25519KeyIdentity,
   WebAuthnIdentity,
 } from "@dfinity/identity"
+import { arrayBufferEqual } from "src/integration/identity/services"
 
 import {
   authState,
@@ -39,10 +40,9 @@ import { fromMnemonicWithoutValidation } from "frontend/integration/internet-ide
 import { mapVariant } from "../_common"
 import { getBrowserName } from "../device"
 import { fetchProfile } from "../identity-manager"
-import {MultiWebAuthnIdentity} from "../identity/multiWebAuthnIdentity"
+import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
 import { derFromPubkey, hasOwnProperty } from "./utils"
-import {arrayBufferEqual} from "src/integration/identity/services";
 
 export type ApiResult = LoginResult | RegisterResult
 export type LoginResult =

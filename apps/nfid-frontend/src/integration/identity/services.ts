@@ -41,16 +41,15 @@ export async function postRemoteDelegationService(
 
 export function arrayBufferEqual(a1: ArrayBuffer, a2: ArrayBuffer): boolean {
   if (a1 === a2) {
-    return true;
+    return true
   }
 
   if (a1.byteLength !== a2.byteLength) {
-    return false;
+    return false
   }
 
   return (
     JSON.stringify(Array.from(new Uint8Array(a1))) ===
     JSON.stringify(Array.from(new Uint8Array(a2)))
-  );
+  )
 }
-

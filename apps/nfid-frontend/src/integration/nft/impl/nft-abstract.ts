@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
 import { e8s } from "src/integration/nft/constants/constants"
 import { MarketPlace } from "src/integration/nft/enum/enums"
@@ -11,7 +12,6 @@ import {
 import { NFT, NFTDetails } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
-import {encodeTokenIdentifier} from "src/integration/entrepot/ext";
 
 export abstract class NftImpl implements NFT {
   private readonly millis: number

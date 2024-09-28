@@ -18,11 +18,11 @@ import borc from "borc"
 import { Buffer } from "buffer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import { toast } from "react-toastify"
+import { arrayBufferEqual } from "src/integration/identity/services"
 
 import { authenticationTracking, IPasskeyMetadata } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
-import {arrayBufferEqual} from "src/integration/identity/services";
 
 export type CredentialId = ArrayBuffer
 export type CredentialData = {

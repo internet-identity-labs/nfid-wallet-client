@@ -1,5 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import React, { useMemo } from "react"
 import { ToastContainer } from "react-toastify"
@@ -9,7 +10,6 @@ import useSWR from "swr"
 import { localStorageWithFallback } from "@nfid/client-db"
 import { NFID } from "@nfid/embed"
 import { BaseKeyType } from "@nfid/embed/src/lib/types"
-import {AccountIdentifier} from "@dfinity/ledger-icp";
 
 declare const NFID_PROVIDER_URL: string
 
@@ -107,7 +107,7 @@ export const AuthenticationProvider: React.FC<{
     )
     const principalID = principal.toString()
     const address = AccountIdentifier.fromPrincipal({
-      principal
+      principal,
     }).toHex()
     const expirationTime = new Date(
       Number(

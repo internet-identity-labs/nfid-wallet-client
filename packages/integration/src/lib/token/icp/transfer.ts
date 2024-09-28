@@ -39,12 +39,12 @@ export async function transfer({
 
 export function fromHexString(hex: string): number[] {
   if (hex.length % 2 !== 0) {
-    throw 'Must have an even number of hex digits to convert to bytes';
+    throw "Must have an even number of hex digits to convert to bytes"
   }
-  var numBytes = hex.length / 2;
-  var byteArray = new Uint8Array(numBytes);
+  var numBytes = hex.length / 2
+  var byteArray = new Uint8Array(numBytes)
   for (var i = 0; i < numBytes; i++) {
-    byteArray[i] = parseInt(hex.substr(i * 2, 2), 16);
+    byteArray[i] = parseInt(hex.substr(i * 2, 2), 16)
   }
-  return Array.from(byteArray);
+  return Array.from(byteArray)
 }

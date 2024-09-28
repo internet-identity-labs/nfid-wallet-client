@@ -38,9 +38,19 @@ describe("NFT EXT standard suite", () => {
         (tok) => tok.tokenId === token,
       )?.owner
       let sourceIdentity =
-        owner === AccountIdentifier.fromPrincipal({principal : idA.getPrincipal()}).toHex() ? idA : idB
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idA
+          : idB
       let targetIdentity =
-        owner === AccountIdentifier.fromPrincipal({principal : idA.getPrincipal()}).toHex() ? idB : idA
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idB
+          : idA
       await listNFT(token, sourceIdentity, price)
       let address = await lockNFT(token, targetIdentity, price)
       await transfer({ amount: price, to: address, identity: targetIdentity })
@@ -75,9 +85,19 @@ describe("NFT EXT standard suite", () => {
         (token) => token.tokenId === testToken,
       )?.owner
       let sourceIdentity =
-        owner === AccountIdentifier.fromPrincipal(idA.getPrincipal() as any).toHex() ? idA : idB
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idA
+          : idB
       let targetIdentity =
-        owner === AccountIdentifier.fromPrincipal(idA.getPrincipal() as any).toHex() ? idA : idB
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idA
+          : idB
       let response: Balance = await transferEXT(
         testToken,
         sourceIdentity,
@@ -100,9 +120,19 @@ describe("NFT EXT standard suite", () => {
         (token) => token.tokenId === testToken,
       )?.owner
       let sourceIdentity =
-        owner === AccountIdentifier.fromPrincipal({principal : idA.getPrincipal()}).toHex() ? idA : idB
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idA
+          : idB
       let targetIdentity =
-        owner === AccountIdentifier.fromPrincipal({principal : idA.getPrincipal()}).toHex() ? idA : idB
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idA
+          : idB
       let response: Balance = await transferEXT(
         testToken,
         sourceIdentity,
@@ -118,9 +148,19 @@ describe("NFT EXT standard suite", () => {
         (token) => token.tokenId === testToken,
       )?.owner
       let sourceIdentity =
-        owner === AccountIdentifier.fromPrincipal({principal : idA.getPrincipal()}).toHex() ? idB : idA
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idB
+          : idA
       let targetIdentity =
-        owner === AccountIdentifier.fromPrincipal({principal : idA.getPrincipal()}).toHex() ? idA : idB
+        owner ===
+        AccountIdentifier.fromPrincipal({
+          principal: idA.getPrincipal(),
+        }).toHex()
+          ? idA
+          : idB
       let transfer = transferEXT(
         testToken,
         sourceIdentity,

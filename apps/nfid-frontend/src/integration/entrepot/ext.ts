@@ -125,57 +125,54 @@ function formatError(err: { [key: string]: any }) {
   return Object.keys(err)[0] + " : " + Object.values(err)[0]
 }
 
-
-export function encodeTokenIdentifier(
-  canister : string,
-  index    : number,
-) : string {
-  const padding = Buffer.from("\x0Atid");
+export function encodeTokenIdentifier(canister: string, index: number): string {
+  const padding = Buffer.from("\x0Atid")
   const array = new Uint8Array([
     ...padding,
     ...Principal.fromText(canister).toUint8Array(),
     ...to32bits(index),
-  ]);
-  return Principal.fromUint8Array(array).toText();
-};
+  ])
+  return Principal.fromUint8Array(array).toText()
+}
 
-export function decodeTokenIdentifier(
-  tid: string,
-) : { index : number, canister : string } {
-  const bytes = Principal.fromText(tid).toUint8Array();
-  const padding = Array.from(bytes.subarray(0, 4));
-  if (toHexString(padding) !== toHexString(Array.from(Buffer.from("\x0Atid")))) {
-    throw new Error(`Invalid token identifier "${tid}"`);
+export function decodeTokenIdentifier(tid: string): {
+  index: number
+  canister: string
+} {
+  const bytes = Principal.fromText(tid).toUint8Array()
+  const padding = Array.from(bytes.subarray(0, 4))
+  if (
+    toHexString(padding) !== toHexString(Array.from(Buffer.from("\x0Atid")))
+  ) {
+    throw new Error(`Invalid token identifier "${tid}"`)
   } else {
     return {
       index: from32bits(Array.from(bytes.subarray(-4))),
       canister: Principal.fromUint8Array(bytes.subarray(4, -4)).toText(),
-    };
+    }
   }
-};
+}
 
 export function to32bits(num: number): number[] {
-  let b = new ArrayBuffer(4);
-  new DataView(b).setUint32(0, num);
-  return Array.from(new Uint8Array(b));
+  let b = new ArrayBuffer(4)
+  new DataView(b).setUint32(0, num)
+  return Array.from(new Uint8Array(b))
 }
 
 export function from32bits(bytes: number[]): number {
-  let value;
+  let value
   for (let i = 0; i < 4; i++) {
     // @ts-ignore
-    value = (value << 8) | bytes[i];
+    value = (value << 8) | bytes[i]
   }
   if (value === undefined) {
-    throw new Error(
-      `Could not decode number from bytes: ${bytes.join(' ')}`
-    );
+    throw new Error(`Could not decode number from bytes: ${bytes.join(" ")}`)
   }
-  return value;
+  return value
 }
 
 export function toHexString(bytes: number[]): string {
   return Array.from(bytes, function (byte) {
-    return ('0' + (byte & 0xff).toString(16)).slice(-2);
-  }).join('');
+    return ("0" + (byte & 0xff).toString(16)).slice(-2)
+  }).join("")
 }

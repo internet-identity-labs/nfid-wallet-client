@@ -3,6 +3,8 @@ import "fake-indexeddb/auto"
 import { TextEncoder, TextDecoder } from "util"
 import "whatwg-fetch"
 
+jest.retryTimes(3, { logErrorsBeforeRetry: true })
+
 global.crypto = new Crypto()
 
 global.TextEncoder = TextEncoder

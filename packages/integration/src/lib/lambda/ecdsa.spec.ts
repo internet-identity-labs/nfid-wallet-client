@@ -57,6 +57,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         identity: delegationIdentity,
         delegationIdentity: delegationIdentity,
       })
+      await replaceActorIdentity(im, delegationIdentity)
 
       const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
         "74gpt-tiaaa-aaaak-aacaa-cai",
@@ -73,6 +74,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         expect(e.message).toContain("Forbidden")
       }
       try {
+        await replaceActorIdentity(im, globalICIdentity)
         await im.get_account()
       } catch (e) {
         throw Error("Should not fail")

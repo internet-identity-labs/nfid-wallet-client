@@ -122,10 +122,11 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
 
     let argument: string
     try {
-      const interfaceFactory = await interfaceFactoryService.getInterfaceFactory(
-        icrc49Dto.canisterId,
-        agent,
-      )
+      const interfaceFactory =
+        await interfaceFactoryService.getInterfaceFactory(
+          icrc49Dto.canisterId,
+          agent,
+        )
       const idl: IDL.ServiceClass = interfaceFactory({ IDL })
       const func: IDL.FuncClass = idl._fields.find(
         (x: unknown[]) => icrc49Dto.method === x[0],
@@ -134,7 +135,10 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
         IDL.decode(func.argTypes, Buffer.from(icrc49Dto.arg, "base64")),
       )
     } catch (e) {
-      console.warn("The candid service metadata has not been found, defaulting to the display of encoded data: ", e)
+      console.warn(
+        "The candid service metadata has not been found, defaulting to the display of encoded data: ",
+        e,
+      )
       argument = icrc49Dto.arg
     }
 

@@ -10,8 +10,8 @@ import { truncateString } from "@nfid-frontend/utils"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { RPCPromptTemplate } from "frontend/features/identitykit/components/templates/prompt-template"
-import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { getUserBalance } from "frontend/features/transfer-modal/utils"
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 
 export interface IRequestTransferProps {
   origin: string

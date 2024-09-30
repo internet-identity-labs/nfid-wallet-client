@@ -64,19 +64,6 @@ describe("nft test suite", () => {
       expect(assetFullSize.url).toEqual(
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
-
-      const transactions = await details.getTransactions(0, 10)
-      expect(transactions.activity).toHaveLength(2)
-      const transfer = transactions.activity[0].getTransactionView()
-      expect(transfer.getType()).toEqual("Transfer")
-      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 02:21:58 pm")
-      expect(transfer.getFrom()).toEqual(
-        "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
-      )
-      expect(transfer.getTo()).toEqual(
-        "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
-      )
-
       const soldNFTDetails = await result.items
         .filter(
           (nft) => nft.getCollectionId() === "p5jg7-6aaaa-aaaah-qcolq-cai",
@@ -84,12 +71,17 @@ describe("nft test suite", () => {
         .getDetails()
 
       const soldNFTTransactions = await soldNFTDetails.getTransactions(0, 10)
-      expect(soldNFTTransactions.activity).toHaveLength(1)
-      const sale = soldNFTTransactions.activity[0].getTransactionView()
+      expect(soldNFTTransactions.activity).toHaveLength(3)
+      const sale = soldNFTTransactions.activity
+        .find(
+          (s) =>
+            s.getTransactionView().getFormattedDate() ===
+            "Jan 18, 2022 - 05:29:26 am",
+        )!
+        .getTransactionView()
       expect(sale.getType()).toEqual("Sale")
-      expect(sale.getFormattedDate()).toEqual("Jan 18, 2022 - 05:29:26 am")
       expect(sale.getFrom()).toEqual(
-        "f7sgc-7glh6-n67he-ollmd-dpy26-2xdbo-vyzxo-pbboq-vkb6v-vfu4f-uqe",
+        "0743fccfa29a009676f1e759ae5c3744bb93a19db90bad2e65b9bd2a9dfe0fd2",
       )
       expect(sale.getTo()).toEqual(
         "550660832ce68b21bbcc5af42e0db30ce87abfffbf41f99a8b9c0de80d58face",
@@ -261,16 +253,7 @@ describe("nft test suite", () => {
       )
 
       const transactions = await details.getTransactions(0, 10)
-      expect(transactions.activity).toHaveLength(2)
-      const transfer = transactions.activity[0].getTransactionView()
-      expect(transfer.getType()).toEqual("Transfer")
-      expect(transfer.getFormattedDate()).toEqual("Jul 17, 2024 - 02:21:58 pm")
-      expect(transfer.getFrom()).toEqual(
-        "126dfe340b012f97969bede78808b3f16734d8362c4fe37d3d219f74a78ff157",
-      )
-      expect(transfer.getTo()).toEqual(
-        "f314402b0e472cd9fef4a533d7aab99041dbf794fee556bb5cd785ed3b1a4a99",
-      )
+      expect(transactions.activity).toHaveLength(0)
     })
   })
 })

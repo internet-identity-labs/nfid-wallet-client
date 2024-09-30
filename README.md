@@ -5,39 +5,8 @@
 ### Install dependencies
 
 ```
-yarn login --registry=https://npm.pkg.github.com --scope=@psychedelic
 yarn
 ```
-
-_In some cases you may run into trouble seeing message like_
-
-```
-yarn install vx.xx.xx
-error An unexpected error occurred: "Failed to replace env in config: ${NPM_TOKEN}".
-info If you think this is a bug, please open a bug report with the information provided
-```
-
-_To fix this, make sure node (along with npm) and yarn are installed, then do the following:_
-
-- open your github account
-- navigate to Settings
-- navigate to Developer Settings (usually it's on the bottom side)
-- open Personal access tokens
-- click on Tokens (classic)
-- Generate New Token (classic)
-- type a name
-- pick `write:packages`, `read:packages`, `repo` (all) checkmarks and save changes (Update Token)
-- copy it (everything after `ghp_`)
-- go to your user directory (e.g. /Users/<your_username> on UNIX based OS)
-- find `.npmrc` file (if there is none just create it)
-- add the following lines to this file
-
-```
-@psychedelic:registry=https://npm.pkg.github.com/
-//npm.pkg.github.com/:_authToken=ghp_xxxxx
-```
-
-- _where xxxxx is your github token_
 
 ### Install latest dfx
 

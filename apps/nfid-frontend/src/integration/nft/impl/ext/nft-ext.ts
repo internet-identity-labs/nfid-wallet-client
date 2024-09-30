@@ -1,4 +1,3 @@
-import { getTokenTxHistoryOfTokenIndex } from "src/integration/cap/fungible-transactions"
 import { assetFullsize, fetchCollection } from "src/integration/entrepot/lib"
 import { EntrepotCollection } from "src/integration/entrepot/types"
 import { extPropertiesService } from "src/integration/nft/impl/ext/properties/properties-service"
@@ -51,35 +50,17 @@ class NFTExtDetails extends NFTDetailsImpl {
     from: number,
     to: number,
   ): Promise<{ activity: Array<TransactionRecord>; isLastPage: boolean }> {
-    const { txHistory, isLastPage } = await getTokenTxHistoryOfTokenIndex(
-      this.collection.id,
-      this.tokenId,
-      from,
-      to,
-    )
-    let activity = txHistory
-      .map((raw) => extTransactionMapper.toTransactionRecord(raw))
+    let url = `${TOKEN_API}/${this.tokenId}`
+    let responseData: ResponseData = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }).then((response) => response.json())
+    const trss: TransactionRecord[] = responseData.transactions
+      .map((raw) => extTransactionMapper.toTransactionRecordToniq(raw))
       .filter((tx): tx is TransactionRecord => tx !== null)
-
-    if (activity.length === 0) {
-      //tryTogEtTransactionsFromToniq
-      let url = `${TOKEN_API}/${this.tokenId}`
-      let responseData: ResponseData = await fetch(url, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }).then((response) => response.json())
-      const trss: TransactionRecord[] = responseData.transactions
-        .map((raw) => extTransactionMapper.toTransactionRecordToniq(raw))
-        .filter((tx): tx is TransactionRecord => tx !== null)
-      return {
-        activity: trss,
-        isLastPage: true,
-      }
-    }
-
     return {
-      activity,
-      isLastPage,
+      activity: trss,
+      isLastPage: true,
     }
   }
 

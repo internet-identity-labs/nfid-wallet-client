@@ -9,6 +9,7 @@ export interface ICheckbox {
   className?: string
   labelText?: string
   labelClassName?: string
+  overlayClassnames?: string
   id?: string
 }
 
@@ -19,10 +20,11 @@ export const Checkbox = ({
   className,
   labelText,
   labelClassName,
+  overlayClassnames,
   id,
 }: ICheckbox) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className={clsx("flex items-center space-x-2", overlayClassnames)}>
       <input
         id={id}
         className={clsx(

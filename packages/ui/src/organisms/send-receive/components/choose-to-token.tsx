@@ -11,6 +11,9 @@ import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { FC, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
+import { Tooltip } from "@nfid-frontend/ui"
+
+import { PriceImpact } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 
 import { getTokenOptions } from "../utils"
@@ -23,6 +26,7 @@ interface ChooseToTokenProps {
   usdRate: string | undefined
   isQuoteLoading: boolean
   value?: string
+  priceImpact?: PriceImpact
 }
 
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
@@ -33,6 +37,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   usdRate,
   isQuoteLoading,
   value,
+  priceImpact,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
@@ -98,7 +103,31 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
         <div className="flex items-center justify-between text-right">
           <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
             {!isQuoteLoading ? (
-              usdRate || "0.00 USD"
+              <>
+                {usdRate || "0.00 USD"}&nbsp;
+                <Tooltip
+                  className="z-[5]"
+                  tip={
+                    <span>
+                      <span>Price impact.</span> The difference between the
+                      market <br /> price and your price due to trade size.
+                    </span>
+                  }
+                >
+                  <div
+                    className={clsx(
+                      "inline-block cursor-pointer",
+                      priceImpact?.status === "low"
+                        ? "text-green-700"
+                        : priceImpact?.status === "medium"
+                        ? "text-orange-600"
+                        : "text-red-700",
+                    )}
+                  >
+                    ({priceImpact?.priceImpact}%)
+                  </div>
+                </Tooltip>
+              </>
             ) : (
               <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />
             )}

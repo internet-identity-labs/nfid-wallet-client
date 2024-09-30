@@ -23,7 +23,7 @@ import { Shroff } from "frontend/integration/icpswap/shroff"
 import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 
 import { FormValues } from "../types"
-import { getIdentity, getQuoteData } from "../utils"
+import { getIdentity, getPriceImpact, getQuoteData } from "../utils"
 
 interface ISwapFT {
   onSuccessSwitched: (value: boolean) => void
@@ -117,6 +117,13 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     () => getQuoteData(amount, shroff),
   )
 
+  const priceImpact = useMemo(() => {
+    return getPriceImpact(
+      quote?.getTargetAmountUSD(),
+      quote?.getSourceAmountUSD(),
+    )
+  }, [quote])
+
   const refresh = () => {
     setShroffError(undefined)
     setLiquidityError(undefined)
@@ -174,6 +181,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         error={swapError?.message}
         isProgressOpen={isSuccess}
         onClose={() => onSuccessSwitched(false)}
+        priceImpact={priceImpact}
       />
     </FormProvider>
   )

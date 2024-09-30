@@ -8,8 +8,10 @@ import {
   IconCmpArrow,
   BlurredLoader,
   Skeleton,
+  Checkbox,
 } from "@nfid-frontend/ui"
 
+import { PriceImpact } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 import { Quote } from "frontend/integration/icpswap/quote"
 
@@ -39,6 +41,7 @@ export interface SwapFTUiProps {
   error?: string
   isProgressOpen: boolean
   onClose: () => void
+  priceImpact?: PriceImpact
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -60,8 +63,10 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   error,
   isProgressOpen,
   onClose,
+  priceImpact,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
 
   const {
     watch,
@@ -141,6 +146,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         tokens={allTokens}
         isQuoteLoading={isQuoteLoading}
         value={quote?.getTargetAmountPrettified()}
+        priceImpact={priceImpact}
       />
       <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
         {!amount ? (
@@ -168,13 +174,30 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           View quote
         </span>
       </div>
+      {priceImpact?.status === "high" && (
+        <div className="mt-4">
+          <Checkbox
+            id="price-impact"
+            value="allow-price-impact"
+            isChecked={isChecked}
+            onChange={() => setIsChecked(!isChecked)}
+            labelText="I understand liquidity is too low in this DEX to maintain a reasonable impact on price, and would like to proceed anyway."
+            labelClassName="!text-sm text-red-700"
+            className="text-red-700 border-red-700 mt-[2px]"
+            overlayClassnames="!items-start"
+          />
+        </div>
+      )}
       <Button
         className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"
         id="sendFT"
         block
         disabled={
-          isQuoteLoading || !amount || Boolean(errors["amount"]?.message)
+          isQuoteLoading ||
+          !amount ||
+          Boolean(errors["amount"]?.message) ||
+          (!isChecked && priceImpact?.status === "high")
         }
         onClick={submit}
       >

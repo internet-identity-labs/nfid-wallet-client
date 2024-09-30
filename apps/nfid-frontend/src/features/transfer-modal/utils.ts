@@ -32,6 +32,7 @@ import {
 } from "frontend/integration/wallet/utils"
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
+import { PriceImpact } from "./types"
 
 type ITransferRequest = {
   to: string
@@ -254,5 +255,23 @@ export const getQuoteData = async (
         (error as Error).message ? (error as Error).message : error
       }`,
     )
+  }
+}
+
+export const getPriceImpact = (
+  receivedValue?: string,
+  paidValue?: string,
+): PriceImpact | undefined => {
+  if (!paidValue || !receivedValue) return
+
+  const priceImpact =
+    ((parseFloat(receivedValue) - parseFloat(paidValue)) /
+      parseFloat(paidValue)) *
+    100
+
+  console.log(priceImpact)
+  return {
+    priceImpact: priceImpact.toFixed(2),
+    status: priceImpact >= -1 ? "low" : priceImpact >= -5 ? "medium" : "high",
   }
 }

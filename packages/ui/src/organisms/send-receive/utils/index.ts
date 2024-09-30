@@ -9,12 +9,12 @@ import Success3 from "../assets/success_3.json"
 import Success4 from "../assets/success_4.json"
 
 export enum Step {
-  Transfer = 0,
-  Deposit = 1,
-  Swap = 2,
-  Withdraw = 3,
-  Completed = 4,
-  Error = 5,
+  Transfer,
+  Deposit,
+  Swap,
+  Withdraw,
+  Completed,
+  Error,
 }
 
 const allAnimations = [Success1, Success2, Success3, Success4, Fail]

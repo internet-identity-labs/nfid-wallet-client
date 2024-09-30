@@ -19,7 +19,7 @@ export interface SwapSuccessProps {
   onClose: () => void
   assetImgFrom: string
   assetImgTo: string
-  step: number
+  step: Step
   duration?: number
   isOpen: boolean
   error?: string

@@ -3,7 +3,6 @@ import { config as common } from "./wdio.conf"
 export const config = {
   ...common,
 
-
   hostname: "hub.browserstack.com",
   baseUrl: "http://bs-local.com:9090",
   capabilities: [

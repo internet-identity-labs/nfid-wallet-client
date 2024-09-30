@@ -15,9 +15,9 @@ import { Principal } from "@dfinity/principal"
 
 import { GenericError } from "./exception-handler.service"
 
-  ; (BigInt.prototype as any).toJSON = function () {
-    return this.toString()
-  }
+;(BigInt.prototype as any).toJSON = function () {
+  return this.toString()
+}
 
 export interface CallCanisterRequest {
   delegation: DelegationIdentity

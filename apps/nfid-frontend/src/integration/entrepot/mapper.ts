@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal"
-import { decodeTokenIdentifier } from "ictool"
+import { decodeTokenIdentifier } from "src/integration/entrepot/ext"
 
 import { Account } from "@nfid/integration"
 

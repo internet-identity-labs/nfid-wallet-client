@@ -20,6 +20,7 @@ import {
 } from "frontend/integration/icpswap/errors"
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 
 import { FormValues } from "../types"
 import { getIdentity, getQuoteData } from "../utils"
@@ -42,6 +43,9 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
   const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
     fetchAllTokens(query),
   )
+  const [getTransaction, setGetTransaction] = useState<
+    SwapTransaction | undefined
+  >()
 
   const { data: fromToken, isLoading: isFromTokenLoading } = useSWR(
     fromTokenAddress ? ["fromToken", fromTokenAddress] : null,
@@ -99,6 +103,13 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     if (!shroffError) getShroff()
   }, [fromTokenAddress, toTokenAddress, shroffError])
 
+  useEffect(() => {
+    if (!getTransaction) return
+    setInterval(() => {
+      setSwapStep(getTransaction.getStage())
+    }, 100)
+  }, [getTransaction])
+
   const { data: quote, isLoading: isQuoteLoading } = useSWR(
     amount
       ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
@@ -134,10 +145,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         setSwapError(e)
       })
 
-      let transaction = shroff.getSwapTransaction()
-      transaction?.setCallback((stage) => {
-        setSwapStep(stage)
-      })
+      setGetTransaction(shroff.getSwapTransaction())
     } catch (e) {
       const error = (e as Error).message ? (e as Error).message : e
       console.error(`Swap error: ${error}`)
@@ -162,7 +170,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         showServiceError={shroffError?.name === "ServiceUnavailableError"}
         showLiquidityError={liquidityError}
         clearQuoteError={refresh}
-        step={swapStep as number}
+        step={swapStep}
         error={swapError?.message}
         isProgressOpen={isSuccess}
         onClose={() => onSuccessSwitched(false)}

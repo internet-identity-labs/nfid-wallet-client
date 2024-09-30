@@ -16,9 +16,9 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
   isIdentityKit,
 }) => {
   return (
-    <div className="relative flex flex-col flex-1 w-full h-full text-sm text-center">
+    <div className="flex flex-col flex-1 w-full h-full text-sm text-center">
       <IconCmpArrow
-        className="absolute transition-opacity cursor-pointer left-5 top-5 hover:opacity-50"
+        className="absolute transition-opacity cursor-pointer left-5 lg:left-7 top-5 hover:opacity-50"
         onClick={onBack}
       />
       <AuthAppMeta title="An email is on its way!" withLogo={!isIdentityKit} />

@@ -9,7 +9,7 @@ import {
 } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
-import { getAnimationByStep } from "../utils"
+import { getAnimationByStep, Step } from "../utils"
 
 export interface SwapSuccessProps {
   titleFrom: string
@@ -20,7 +20,7 @@ export interface SwapSuccessProps {
   assetImgFrom: string
   assetImgTo: string
   step: number
-  duration?: string
+  duration?: number
   isOpen: boolean
   error?: string
 }
@@ -34,16 +34,16 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   assetImgFrom,
   assetImgTo,
   step = 0,
-  duration = "20 seconds",
+  duration = 20,
   isOpen,
   error,
 }) => {
   const isCompleted = useMemo(() => {
-    return step === 4
+    return step === Step.Completed
   }, [step])
 
   const isFailed = useMemo(() => {
-    return step === 5
+    return step === Step.Error
   }, [step])
 
   return (
@@ -69,7 +69,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? "ICPSwap swap failed"
             : isCompleted
             ? ""
-            : `This usually takes less than ${duration}.`}
+            : `This usually takes less than ${duration} seconds.`}
         </p>
 
         <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[85px]">
@@ -105,7 +105,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             />
           </div>
         </div>
-        {(isFailed || error) && (
+        {isFailed && (
           <div className="mt-[185px] text-sm text-red-600 max-w-[320px] mx-auto">
             {error}
           </div>

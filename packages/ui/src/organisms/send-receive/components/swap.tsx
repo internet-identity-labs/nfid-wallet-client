@@ -38,7 +38,7 @@ export interface SwapFTUiProps {
   step: number
   error?: string
   isProgressOpen: boolean
-  setIsProgressOpen: (value: boolean) => void
+  closeSuccess: () => void
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -59,7 +59,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   step,
   error,
   isProgressOpen,
-  setIsProgressOpen,
+  closeSuccess,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
 
@@ -90,7 +90,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         subTitleTo={quote?.getTargetAmountUSD()!}
         step={step as number}
         isOpen={isProgressOpen}
-        onClose={() => setIsProgressOpen(false)}
+        onClose={closeSuccess}
         error={error}
       />
       {showServiceError && <ErrorModal refresh={clearQuoteError} />}

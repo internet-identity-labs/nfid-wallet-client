@@ -4,7 +4,7 @@ import { _SERVICE as SwapPool } from "src/integration/icpswap/idl/SwapPool.d"
 
 import { actor, hasOwnProperty } from "@nfid/integration"
 
-import { ServiceUnavailableError, UnsupportedTokenError } from "../errors"
+import { LiquidityError, ServiceUnavailableError } from "../errors"
 import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"
 import {
   _SERVICE as SwapFactory,
@@ -41,13 +41,13 @@ class IcpSwapService {
         throw new ServiceUnavailableError()
       }
       if (hasOwnProperty(pool.err, "UnsupportedToken")) {
-        throw new UnsupportedTokenError()
+        throw new LiquidityError()
       }
       if (hasOwnProperty(pool.err, "InsufficientFunds")) {
-        throw new UnsupportedTokenError()
+        throw new LiquidityError()
       }
       if (hasOwnProperty(pool.err, "CommonError")) {
-        throw new UnsupportedTokenError()
+        throw new LiquidityError()
       }
       console.error("Not able to get pool for pair: " + pool.err)
       throw new ServiceUnavailableError()

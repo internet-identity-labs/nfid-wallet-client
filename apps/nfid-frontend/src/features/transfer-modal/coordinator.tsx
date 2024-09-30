@@ -92,6 +92,8 @@ export const TransferModalCoordinator = () => {
     [send],
   )
 
+  console.log("isSwapProgress coor", isSwapSuccess)
+
   if (state.matches("Hidden")) return null
 
   return (

@@ -27,6 +27,7 @@ import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { SlippageError } from "../errors"
+import { SwapError } from "../errors/swap-error"
 import { PoolData } from "./../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
@@ -121,7 +122,7 @@ class ShroffImpl implements Shroff {
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
-      throw e
+      throw new SwapError()
     }
   }
 
@@ -146,7 +147,6 @@ class ShroffImpl implements Shroff {
       this.target.ledger,
       this.poolData.canisterId.toText(),
       exchangeRateService.getNodeCanister(),
-      "moe7a-tiaaa-aaaag-qclfq-cai",
     ]
   }
 

@@ -14,8 +14,7 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
-import { UnsupportedTokenError } from "frontend/integration/icpswap/errors"
-import { SwapError } from "frontend/integration/icpswap/errors/swap-error"
+import { LiquidityError } from "frontend/integration/icpswap/errors"
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 
@@ -69,10 +68,6 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
   const amount = watch("amount")
 
   useEffect(() => {
-    setIsSuccess(isSwapProgress)
-  }, [isSwapProgress, setIsSuccess])
-
-  useEffect(() => {
     const getShroff = async () => {
       try {
         const shroff = await new ShroffBuilder()
@@ -88,7 +83,7 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
           if (error.name === "ServiceUnavailableError") {
             setShroffError(error)
           } else {
-            setLiquidityError(new UnsupportedTokenError())
+            setLiquidityError(new LiquidityError())
           }
         } else {
           console.error("Quote error: ", error)
@@ -138,8 +133,8 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
       await shroff.validateQuote()
       const identity = await getIdentity(shroff.getTargets())
 
-      shroff.swap(identity).catch(() => {
-        setSwapError(new SwapError())
+      shroff.swap(identity).catch((e) => {
+        setSwapError(e)
       })
 
       let transaction = shroff.getSwapTransaction()
@@ -147,10 +142,9 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
         setSwapStep(stage)
       })
     } catch (e) {
-      console.error(
-        `Swap error: ${(e as Error).message ? (e as Error).message : e}`,
-      )
-      setSwapError(new SwapError())
+      const error = (e as Error).message ? (e as Error).message : e
+      console.error(`Swap error: ${error}`)
+      setSwapError(error as Error)
     }
   }, [quote, shroff])
 
@@ -176,7 +170,10 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
         step={swapStep as number}
         error={swapError?.message}
         isProgressOpen={isSwapProgress}
-        setIsProgressOpen={setIsSwapProgress}
+        closeSuccess={() => {
+          setIsSwapProgress(false)
+          setIsSuccess(false)
+        }}
       />
     </FormProvider>
   )

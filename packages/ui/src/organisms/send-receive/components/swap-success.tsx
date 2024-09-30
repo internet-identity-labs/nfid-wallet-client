@@ -76,7 +76,11 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           <LottieAnimation
             animationData={getAnimationByStep(step)}
             // TODO: adjust animations when the new Lottie files will be ready
-            loop={step === 0 || step == 1 || step === 3}
+            loop={
+              step === Step.Transfer ||
+              step === Step.Deposit ||
+              step === Step.Withdraw
+            }
           />
           <div
             className={clsx(

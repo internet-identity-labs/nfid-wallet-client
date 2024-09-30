@@ -17,17 +17,6 @@ export enum Step {
   Error = 5,
 }
 
-interface AnimationObject {
-  v: string
-  fr: number
-  ip: number
-  op: number
-  w: number
-  h: number
-  nm: string
-  ddd: number
-}
-
 const allAnimations = [Success1, Success2, Success3, Success4, Fail]
 
 export const getTokenOptions = async (tokens: FT[]) => {
@@ -66,15 +55,15 @@ export const getTokenOptionsVault = async (tokens: FT[]) => {
   return options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
 }
 
-export const animationsByStep: { [key: number]: AnimationObject } = {
+export const animationsByStep = {
   [Step.Transfer]: allAnimations[0],
-  [Step.Deposit]: allAnimations[0], // Same animation for step 0 and 1
+  [Step.Deposit]: allAnimations[0],
   [Step.Swap]: allAnimations[1],
   [Step.Withdraw]: allAnimations[2],
   [Step.Completed]: allAnimations[3],
   [Step.Error]: allAnimations[4],
 }
 
-export const getAnimationByStep = (step: number) => {
+export const getAnimationByStep = (step: Step) => {
   return animationsByStep[step] || allAnimations[0]
 }

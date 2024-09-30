@@ -14,7 +14,10 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
-import { LiquidityError } from "frontend/integration/icpswap/errors"
+import {
+  LiquidityError,
+  ServiceUnavailableError,
+} from "frontend/integration/icpswap/errors"
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 
@@ -22,11 +25,11 @@ import { FormValues } from "../types"
 import { getIdentity, getQuoteData } from "../utils"
 
 interface ISwapFT {
-  setIsSuccess: (value: boolean) => void
+  onSuccessSwitched: (value: boolean) => void
+  isSuccess: boolean
 }
 
-export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
-  const [isSwapProgress, setIsSwapProgress] = useState(false)
+export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
   const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
@@ -78,13 +81,11 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
         setLiquidityError(undefined)
       } catch (error) {
         setShroff(undefined)
-        if (error instanceof Error) {
-          console.error(error)
-          if (error.name === "ServiceUnavailableError") {
-            setShroffError(error)
-          } else {
-            setLiquidityError(new LiquidityError())
-          }
+        console.error(error)
+        if (error instanceof ServiceUnavailableError) {
+          setShroffError(error)
+        } else if (error instanceof LiquidityError) {
+          setLiquidityError(error)
         } else {
           console.error("Quote error: ", error)
           setShroffError(error as Error)
@@ -125,7 +126,7 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
     if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
       return
 
-    setIsSwapProgress(true)
+    onSuccessSwitched(true)
 
     try {
       if (!shroff) return
@@ -146,7 +147,7 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
       console.error(`Swap error: ${error}`)
       setSwapError(error as Error)
     }
-  }, [quote, shroff])
+  }, [quote, shroff, onSuccessSwitched])
 
   return (
     <FormProvider {...formMethods}>
@@ -169,11 +170,8 @@ export const SwapFT = ({ setIsSuccess }: ISwapFT) => {
         clearQuoteError={refresh}
         step={swapStep as number}
         error={swapError?.message}
-        isProgressOpen={isSwapProgress}
-        closeSuccess={() => {
-          setIsSwapProgress(false)
-          setIsSuccess(false)
-        }}
+        isProgressOpen={isSuccess}
+        onClose={() => onSuccessSwitched(false)}
       />
     </FormProvider>
   )

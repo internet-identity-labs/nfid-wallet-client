@@ -64,7 +64,12 @@ export const TransferModalCoordinator = () => {
           />
         )
       case state.matches("SwapMachine"):
-        return <SwapFT setIsSuccess={setIsSwapSuccess} />
+        return (
+          <SwapFT
+            onSuccessSwitched={setIsSwapSuccess}
+            isSuccess={isSwapSuccess}
+          />
+        )
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive
@@ -83,7 +88,7 @@ export const TransferModalCoordinator = () => {
       default:
         return <BlurredLoader overlayClassnames="z-10 rounded-xl" isLoading />
     }
-  }, [send, state, publicKey])
+  }, [send, state, publicKey, isSwapSuccess])
 
   const onTokenTypeChange = useCallback(
     (isNFT: boolean) => {

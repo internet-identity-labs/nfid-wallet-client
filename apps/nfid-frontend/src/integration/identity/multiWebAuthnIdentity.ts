@@ -16,9 +16,9 @@ import {
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
-import { arrayBufferEqual } from "ictool/dist/bits"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import { toast } from "react-toastify"
+import { arrayBufferEqual } from "src/integration/identity/services"
 
 import { authenticationTracking, IPasskeyMetadata } from "@nfid/integration"
 

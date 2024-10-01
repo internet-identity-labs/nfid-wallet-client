@@ -1,19 +1,16 @@
 import * as Agent from "@dfinity/agent"
-import { SignIdentity } from "@dfinity/agent"
-import { SubAccount } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
+import {SignIdentity} from "@dfinity/agent"
+import {SubAccount} from "@dfinity/ledger-icp"
+import {Principal} from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
-import { NFID_WALLET } from "src/integration/icpswap/impl/constants"
-import {
-  calculateWidgetFee,
-  QuoteImpl,
-} from "src/integration/icpswap/impl/quote-impl"
-import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
-import { Quote } from "src/integration/icpswap/quote"
-import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
-import { Shroff } from "src/integration/icpswap/shroff"
-import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import {idlFactory as SwapPoolIDL} from "src/integration/icpswap/idl/SwapPool"
+import {NFID_WALLET} from "src/integration/icpswap/impl/constants"
+import {calculateWidgetFee, QuoteImpl,} from "src/integration/icpswap/impl/quote-impl"
+import {SwapTransactionImpl} from "src/integration/icpswap/impl/swap-transaction-impl"
+import {Quote} from "src/integration/icpswap/quote"
+import {icpSwapService} from "src/integration/icpswap/service/icpswap-service"
+import {Shroff} from "src/integration/icpswap/shroff"
+import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
 
 import {
   actor,
@@ -23,12 +20,12 @@ import {
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
-import { transferICRC1 } from "@nfid/integration/token/icrc1"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import {transferICRC1} from "@nfid/integration/token/icrc1"
+import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import { SlippageError } from "../errors"
-import { SwapError } from "../errors/swap-error"
-import { PoolData } from "./../idl/SwapFactory.d"
+import {SlippageError} from "../errors"
+import {SwapError} from "../errors/swap-error"
+import {PoolData} from "./../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
   DepositArgs,
@@ -37,6 +34,8 @@ import {
   SwapArgs,
   WithdrawArgs,
 } from "./../idl/SwapPool.d"
+import {SwapStage} from "src/integration/icpswap/types/enums";
+import {swapTransactionService} from "src/integration/icpswap/service/transaction-service";
 
 class ShroffImpl implements Shroff {
   private readonly zeroForOne: boolean
@@ -108,7 +107,7 @@ class ShroffImpl implements Shroff {
       throw new Error("Request quote first")
     }
     this.delegationIdentity = delegationIdentity
-    this.swapTransaction = new SwapTransactionImpl()
+    this.swapTransaction = new SwapTransactionImpl(this.target.ledger, this.source.ledger)
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       await this.transfer()
@@ -119,9 +118,17 @@ class ShroffImpl implements Shroff {
       console.debug("Swap done")
       await this.withdraw()
       console.debug("Withdraw done")
+      //maybe not async
+      await swapTransactionService.storeTransaction(this.swapTransaction.toCandid(this.requestedQuote)
+      , delegationIdentity)
+      console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
+      if (this.swapTransaction.getStage() !== SwapStage.Error) {
+        this.swapTransaction.setError(`Swap error: ${e}`)
+      }
+      //TODO @vitaly to change according to the new error handling logic
       throw new SwapError()
     }
   }

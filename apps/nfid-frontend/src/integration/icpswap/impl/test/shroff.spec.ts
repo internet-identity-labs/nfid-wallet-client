@@ -4,6 +4,7 @@ import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
 import { SwapStage } from "src/integration/icpswap/types/enums"
 
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
+import {swapTransactionService} from "src/integration/icpswap/service/transaction-service";
 
 const mock: JsonnableEd25519KeyIdentity = [
   "302a300506032b6570032100c88f8f46ee5c23a748026498ddc7ed2104782ea02cd266170a470587d7c2f932",
@@ -49,6 +50,8 @@ describe("shroff test", () => {
     const quote = await shroff.getQuote(0.001)
 
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
+
+    const transactionBeforeSwap = await swapTransactionService.getTransactions(mockPrincipal)
 
     shroff.swap(mockId)
 
@@ -100,6 +103,10 @@ describe("shroff test", () => {
     expect(Number(balanceUpgraded - balance)).toEqual(
       quote.getTargetAmount().minus(Number(targetFee)).toNumber(),
     )
+
+    const transactionsAfterSwap = await swapTransactionService.getTransactions(mockPrincipal)
+
+    expect(transactionsAfterSwap.length).toBeGreaterThan(transactionBeforeSwap.length)
   })
 })
 

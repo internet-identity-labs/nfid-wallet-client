@@ -124,7 +124,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                         : "text-red-700",
                     )}
                   >
-                    ({priceImpact?.priceImpact}%)
+                    ({priceImpact?.priceImpact})
                   </div>
                 </Tooltip>
               </>

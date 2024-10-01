@@ -72,8 +72,6 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
 
   const priceImpact = quote?.getPriceImpact()
 
-  console.log(priceImpact)
-
   const amount = watch("amount")
 
   if (isTokenLoading)

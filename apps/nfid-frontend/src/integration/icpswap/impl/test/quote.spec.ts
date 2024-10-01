@@ -39,6 +39,6 @@ describe("quote test", () => {
     ])
     expect(priceImpactResult).toBeDefined()
     expect(priceImpactResult!.priceImpact).toEqual("-0.02%")
-    expect(priceImpactResult!.status).toEqual("LOW")
+    expect(priceImpactResult!.status).toEqual("low")
   })
 })

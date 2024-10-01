@@ -9,11 +9,6 @@ export type TokenType = "ft" | "nft"
 
 export type SuccessState = "pending" | "success" | "error"
 
-export type PriceImpact = {
-  priceImpact: string
-  status: "high" | "medium" | "low"
-}
-
 export interface ITransferResponse {
   verifyPromise?: Promise<void>
   errorMessage?: Error

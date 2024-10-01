@@ -4,6 +4,9 @@ import { Quote } from "src/integration/icpswap/quote"
 import { ICRC1TypeOracle } from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
+import { PriceImpactStatus } from "../types/enums"
+import { PriceImpact } from "../types/types"
+
 export const WIDGET_FEE = 0.00875
 const LIQUIDITY_PROVIDER_FEE = 0.003
 
@@ -131,6 +134,35 @@ export class QuoteImpl implements Quote {
       .toFixed(this.source.decimals)
       .replace(TRIM_ZEROS, "")
     return `${lpFee} ${this.source.symbol}`
+  }
+
+  getPriceImpact(): PriceImpact | undefined {
+    const sourcePrice = this.sourcePriceUSD
+    const targetPrice = this.targetPriceUSD
+
+    if (!sourcePrice || !targetPrice) return
+
+    const sourcePriceFormatted = sourcePrice
+      .multipliedBy(this.getSourceAmount())
+      .div(10 ** this.source.decimals)
+
+    const targetPriceFormatted = targetPrice
+      .multipliedBy(this.getTargetAmount())
+      .div(10 ** this.target.decimals)
+
+    const priceImpact = targetPriceFormatted
+      .minus(sourcePriceFormatted)
+      .dividedBy(sourcePriceFormatted)
+      .multipliedBy(100)
+
+    return {
+      priceImpact: priceImpact.toFixed(2),
+      status: priceImpact.isGreaterThanOrEqualTo(-1)
+        ? PriceImpactStatus.LOW
+        : priceImpact.isGreaterThanOrEqualTo(-5)
+        ? PriceImpactStatus.MEDIUM
+        : PriceImpactStatus.HIGH,
+    }
   }
 
   getWidgetFee(): string {

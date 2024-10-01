@@ -13,8 +13,8 @@ import { useFormContext } from "react-hook-form"
 
 import { Tooltip } from "@nfid-frontend/ui"
 
-import { PriceImpact } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
+import { PriceImpact } from "frontend/integration/icpswap/types/types"
 
 import { getTokenOptions } from "../utils"
 

@@ -11,7 +11,6 @@ import {
   Checkbox,
 } from "@nfid-frontend/ui"
 
-import { PriceImpact } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 import { Quote } from "frontend/integration/icpswap/quote"
 
@@ -41,7 +40,6 @@ export interface SwapFTUiProps {
   error?: string
   isProgressOpen: boolean
   onClose: () => void
-  priceImpact?: PriceImpact
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -63,7 +61,6 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   error,
   isProgressOpen,
   onClose,
-  priceImpact,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
@@ -72,6 +69,10 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
     watch,
     formState: { errors },
   } = useFormContext()
+
+  const priceImpact = quote?.getPriceImpact()
+
+  console.log(priceImpact)
 
   const amount = watch("amount")
 

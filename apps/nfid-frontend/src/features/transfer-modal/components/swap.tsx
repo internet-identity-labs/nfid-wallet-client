@@ -121,6 +121,14 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
       ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
       : null,
     () => getQuoteData(amount, shroff),
+    {
+      onError: (error) => {
+        setLiquidityError(error)
+      },
+      onSuccess: () => {
+        setLiquidityError(undefined)
+      },
+    },
   )
 
   const refresh = () => {

@@ -319,21 +319,22 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                         {activity.getTransactionView().getTo()}
                       </td>
                       <td>
-                        {index === 0 &&
-                          (!nft.getTokenFloorPriceIcpFormatted() ? (
-                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                              Unknown
-                            </div>
-                          ) : (
-                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                              <span className="block">
-                                {nft.getTokenFloorPriceIcpFormatted()}
-                              </span>
-                              <span className="block text-xs text-gray-400">
-                                {nft.getTokenFloorPriceUSDFormatted()}
-                              </span>
-                            </div>
-                          ))}
+                        {activity.getTransactionView().getFormattedPrice() ? (
+                          <>
+                            <span className="block">
+                              {activity
+                                .getTransactionView()
+                                .getFormattedPrice()}
+                            </span>
+                            <span className="block text-xs text-gray-400">
+                              {activity
+                                .getTransactionView()
+                                .getFormattedUsdPrice()}
+                            </span>
+                          </>
+                        ) : (
+                          "Unknown"
+                        )}
                       </td>
                     </tr>
                   </Fragment>

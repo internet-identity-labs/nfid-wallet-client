@@ -21,9 +21,10 @@ import {
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import { FormValues } from "../types"
-import { getIdentity, getPriceImpact, getQuoteData } from "../utils"
+import { getIdentity, getQuoteData, getPriceImpact } from "../utils"
 
 interface ISwapFT {
   onSuccessSwitched: (value: boolean) => void
@@ -105,9 +106,14 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
 
   useEffect(() => {
     if (!getTransaction) return
-    setInterval(() => {
-      setSwapStep(getTransaction.getStage())
+    const interval = setInterval(() => {
+      const step = getTransaction.getStage()
+      setSwapStep(step)
+      if (step === SwapStage.Completed || step === SwapStage.Error)
+        clearInterval(interval)
     }, 100)
+
+    return () => clearInterval(interval)
   }, [getTransaction])
 
   const { data: quote, isLoading: isQuoteLoading } = useSWR(

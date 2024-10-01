@@ -107,7 +107,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     const sender = await this.getSender(message.origin, icrc49Dto.sender)
     const delegation = await this.getIdentity(icrc49Dto, sender)
 
-    const agent: Agent = new HttpAgent({
+    const agent: HttpAgent = HttpAgent.createSync({
       host: IC_HOSTNAME,
       identity: delegation as unknown as Identity,
     })

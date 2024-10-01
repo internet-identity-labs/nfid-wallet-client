@@ -26,7 +26,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
         onClose={() => {
           setModalOpen(false)
         }}
-        className="p-5 w-[340px] sm:w-[450px] !h-[480px] z-[100] !rounded-[24px]"
+        className="p-5 w-[340px] sm:w-[450px] !h-full z-[100] !rounded-[24px]"
       >
         <div>
           <div className="flex gap-[10px] items-center mb-2">
@@ -61,7 +61,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Price impact</p>
-                <p>-0.47%</p>
+                <p>{quote?.getPriceImpact()?.priceImpact}</p>
                 <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
                   The difference between the market price and your price due to
                   trade size.

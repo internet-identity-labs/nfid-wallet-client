@@ -123,7 +123,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     () => getQuoteData(amount, shroff),
     {
       onError: (error) => {
-        setLiquidityError(error)
+        if (error instanceof LiquidityError) setLiquidityError(error)
       },
       onSuccess: () => {
         setLiquidityError(undefined)

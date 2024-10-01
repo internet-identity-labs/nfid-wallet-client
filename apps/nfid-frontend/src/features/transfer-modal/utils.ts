@@ -255,6 +255,6 @@ export const getQuoteData = async (
         (error as Error).message ? (error as Error).message : error
       }`,
     )
-    throw new LiquidityError()
+    throw error
   }
 }

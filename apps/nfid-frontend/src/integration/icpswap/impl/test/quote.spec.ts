@@ -23,7 +23,7 @@ describe("quote test", () => {
       BigNumber(8.437122672555095),
     )
     const priceImpactResult = quote.getPriceImpact()
-    console.error(priceImpactResult)
+
     expect(quote.getSourceAmountPrettified()).toEqual("0.5")
     expect(quote.getTargetAmountPrettified()).toEqual("0.00006631")
     expect(quote.getQuoteRate()).toEqual("1 ICP = 0.00013262 ckBTC")

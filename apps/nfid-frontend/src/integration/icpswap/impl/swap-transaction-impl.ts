@@ -1,11 +1,15 @@
-import {Icrc1TransferError} from "@dfinity/ledger-icp/dist/candid/ledger"
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
-import {SwapStage} from "src/integration/icpswap/types/enums"
+import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+import { Quote } from "src/integration/icpswap/quote"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import { SwapStage } from "src/integration/icpswap/types/enums"
 
-import {Error as ErrorSwap} from "./../idl/SwapPool.d"
-import {SwapStage as SwapStageCandid, SwapTransaction as SwapTransactionCandid} from "./../idl/swap_trs_storage.d"
-import {Quote} from "src/integration/icpswap/quote";
-import {hasOwnProperty} from "@nfid/integration";
+import { hasOwnProperty } from "@nfid/integration"
+
+import { Error as ErrorSwap } from "./../idl/SwapPool.d"
+import {
+  SwapStage as SwapStageCandid,
+  SwapTransaction as SwapTransactionCandid,
+} from "./../idl/swap_trs_storage.d"
 
 export class SwapTransactionImpl implements SwapTransaction {
   private startTime: number
@@ -84,7 +88,8 @@ export class SwapTransactionImpl implements SwapTransaction {
   public fromCandid(candid: SwapTransactionCandid): SwapTransaction {
     this.deposit = candid.deposit
     this.endTime = candid.end_time ? Number(candid.end_time) : undefined
-    this.error = candid.error.length !== 0 ? JSON.parse(candid.error[0]) : undefined
+    this.error =
+      candid.error.length !== 0 ? JSON.parse(candid.error[0]) : undefined
     this.swap = candid.swap
     this.startTime = Number(candid.start_time)
     this.withdraw = candid.withdraw
@@ -107,18 +112,17 @@ export class SwapTransactionImpl implements SwapTransaction {
   private mapStageToCandid(stage: SwapStage): SwapStageCandid {
     switch (stage) {
       case SwapStage.Transfer:
-        return {Transfer: null}
+        return { Transfer: null }
       case SwapStage.Deposit:
-        return {Deposit: null}
+        return { Deposit: null }
       case SwapStage.Swap:
-        return {Swap: null}
+        return { Swap: null }
       case SwapStage.Withdraw:
-        return {Withdraw: null}
+        return { Withdraw: null }
       case SwapStage.Completed:
-        return {Completed: null}
+        return { Completed: null }
       case SwapStage.Error:
-        return {Error: null}
+        return { Error: null }
     }
   }
-
 }

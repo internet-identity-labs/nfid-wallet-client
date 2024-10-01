@@ -4,6 +4,7 @@ import {
   getPublicKey,
   hasOwnProperty,
   im,
+  replaceActorIdentity,
   RootWallet,
 } from "@nfid/integration"
 
@@ -33,6 +34,7 @@ export const getUserIdData = async (): Promise<UserIdData> => {
   if (cachedValue) {
     data = JSON.parse(cachedValue)
   } else {
+    await replaceActorIdentity(im, identity)
     const [publicKey, account] = await Promise.all([
       getPublicKey(identity),
       im.get_account(),

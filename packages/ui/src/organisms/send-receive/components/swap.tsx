@@ -18,6 +18,7 @@ import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ErrorModal } from "./error-modal"
 import { QuoteModal } from "./quote-modal"
+import { SwapSuccessUi } from "./swap-success"
 
 export interface SwapFTUiProps {
   tokens: FT[]
@@ -34,6 +35,10 @@ export interface SwapFTUiProps {
   isQuoteLoading: boolean
   quote: Quote | undefined
   clearQuoteError: () => void
+  step: number
+  error?: string
+  isProgressOpen: boolean
+  onClose: () => void
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -51,6 +56,10 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   clearQuoteError,
   isQuoteLoading,
   quote,
+  step,
+  error,
+  isProgressOpen,
+  onClose,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
 
@@ -60,7 +69,6 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   } = useFormContext()
 
   const amount = watch("amount")
-  const to = watch("to")
 
   if (isTokenLoading)
     return (
@@ -73,6 +81,18 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
     )
   return (
     <>
+      <SwapSuccessUi
+        assetImgFrom={fromToken?.getTokenLogo() ?? ""}
+        assetImgTo={toToken?.getTokenLogo() ?? ""}
+        titleFrom={quote?.getSourceAmountPrettifiedWithSymbol()!}
+        titleTo={quote?.getTargetAmountPrettifiedWithSymbol()!}
+        subTitleFrom={quote?.getSourceAmountUSD()!}
+        subTitleTo={quote?.getTargetAmountUSD()!}
+        step={step}
+        isOpen={isProgressOpen}
+        onClose={onClose}
+        error={error}
+      />
       {showServiceError && <ErrorModal refresh={clearQuoteError} />}
       <QuoteModal
         modalOpen={quoteModalOpen}

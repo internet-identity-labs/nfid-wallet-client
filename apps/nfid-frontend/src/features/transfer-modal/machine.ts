@@ -89,14 +89,7 @@ export const transferMachine = createMachine(
         ],
       },
       ReceiveMachine: {},
-      SwapMachine: {
-        on: {
-          ON_SWAP: {
-            target: "#TransferMachine.SwapSuccess",
-            actions: "assignSwapObject",
-          },
-        },
-      },
+      SwapMachine: {},
       SendMachine: {
         id: "SendMachine",
         initial: "CheckSendType",
@@ -176,9 +169,6 @@ export const transferMachine = createMachine(
       })),
       assignTransferObject: assign((_, event) => ({
         transferObject: event?.data,
-      })),
-      assignSwapObject: assign((_, event) => ({
-        swapObject: event?.data,
       })),
       assignTokenStandard: assign((_, event) => ({
         tokenStandard: event?.data,

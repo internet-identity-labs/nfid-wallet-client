@@ -12,7 +12,6 @@ import { idlFactory as IDL_TOKEN } from "./idl/Token"
 import { _SERVICE as ServiceToken, PublicTokenOverview } from "./idl/Token.d"
 
 const EXCHANGE_RATE_CANISTER = "2ixw4-taaaa-aaaag-qcpdq-cai"
-const NODE_CANISTER = "ggzvv-5qaaa-aaaag-qck7a-cai"
 type NumberType = string | number | bigint | BigNumber
 
 export class ExchangeRateService {
@@ -20,16 +19,22 @@ export class ExchangeRateService {
   private exchangeTokenNodeActor: Agent.ActorSubclass<ServiceNode>
   private ICP2USD: BigNumber = new BigNumber(0)
 
+  static NODE_CANISTER = "ggzvv-5qaaa-aaaag-qck7a-cai"
+
   constructor() {
     this.exchangeRateActor = actor<Service>(EXCHANGE_RATE_CANISTER, IDL)
     this.exchangeTokenNodeActor = actor<ServiceNode>(
-      NODE_CANISTER,
+      ExchangeRateService.NODE_CANISTER,
       IDL_ICRC1_NODE,
     )
   }
 
   getICP2USD(): BigNumber {
     return this.ICP2USD
+  }
+
+  getNodeCanister(): string {
+    return ExchangeRateService.NODE_CANISTER
   }
 
   async cacheUsdIcpRate() {

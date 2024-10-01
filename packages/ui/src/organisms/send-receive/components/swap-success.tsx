@@ -9,13 +9,7 @@ import {
 } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
-import { SuccessState } from "frontend/features/transfer-modal/types"
-
-import Fail from "../assets/error.json"
-import Success1 from "../assets/success_1.json"
-import Success2 from "../assets/success_2.json"
-import Success3 from "../assets/success_3.json"
-import Success4 from "../assets/success_4.json"
+import { getAnimationByStep, Step } from "../utils"
 
 export interface SwapSuccessProps {
   titleFrom: string
@@ -25,12 +19,11 @@ export interface SwapSuccessProps {
   onClose: () => void
   assetImgFrom: string
   assetImgTo: string
-  step: SuccessState
-  duration: string
-  error: string
+  step: Step
+  duration?: number
+  isOpen: boolean
+  error?: string
 }
-
-const allAnimations = [Success1, Success2, Success3, Success4, Fail]
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   titleFrom,
@@ -41,28 +34,26 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   assetImgFrom,
   assetImgTo,
   step = 0,
-  duration,
+  duration = 20,
+  isOpen,
   error,
 }) => {
-  const animation = useMemo(() => {
-    // TODO: invoke the necessary animation according to SwapProgress
-    return allAnimations[0]
-  }, [step])
-
   const isCompleted = useMemo(() => {
-    return step === "success"
+    return step === Step.Completed
   }, [step])
 
   const isFailed = useMemo(() => {
-    return step === "error"
+    return step === Step.Error
   }, [step])
 
   return (
     <div
       id={"swap_success_window_" + step}
       className={clsx(
-        "text-black text-center relative h-full",
-        "flex flex-grow flex-col justify-between",
+        "text-black text-center w-full h-full",
+        "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
+        "flex flex-grow flex-col justify-between bg-white",
+        !isOpen && "hidden",
       )}
     >
       <div className="flex-grow text-center">
@@ -78,18 +69,23 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? "ICPSwap swap failed"
             : isCompleted
             ? ""
-            : `This usually takes less than ${duration}.`}
+            : `This usually takes less than ${duration} seconds.`}
         </p>
 
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 sm:-top-[85px]">
+        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[85px]">
           <LottieAnimation
-            animationData={animation}
-            loop={step === 0 || step === 2}
+            animationData={getAnimationByStep(step)}
+            // TODO: adjust animations when the new Lottie files will be ready
+            loop={
+              step === Step.Transfer ||
+              step === Step.Deposit ||
+              step === Step.Withdraw
+            }
           />
           <div
             className={clsx(
               "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[108px] sm:left-[156px] top-[138px] sm:top-[202px]",
+              "left-[125px] sm:left-[170px] top-[160px] sm:top-[225px]",
             )}
           >
             <ImageWithFallback
@@ -102,7 +98,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           <div
             className={clsx(
               "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[130px] sm:left-[182px] top-[158px] sm:top-[230px] z-2",
+              "left-[152px] sm:left-[210px] top-[190px] sm:top-[265px] z-2",
             )}
           >
             <ImageWithFallback

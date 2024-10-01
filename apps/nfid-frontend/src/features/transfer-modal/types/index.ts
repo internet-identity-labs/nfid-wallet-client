@@ -3,7 +3,6 @@ import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
 import { ITransferSuccess } from "../components/send-success"
-import { ISwapSuccess } from "../components/swap-success"
 
 export type ModalType = "send" | "receive" | "swap"
 export type TokenType = "ft" | "nft"
@@ -18,10 +17,6 @@ export interface ITransferResponse {
   blockIndex?: Icrc1BlockIndex
 }
 
-export interface ISwapResponse {
-  swapProgress: any
-}
-
 export type TransferMachineContext = {
   direction: ModalType
   tokenType: TokenType
@@ -32,7 +27,6 @@ export type TransferMachineContext = {
   receiverWallet: string
   amount: string
   transferObject?: ITransferSuccess
-  swapObject?: ISwapSuccess
   error?: Error
   tokenStandard: string
   isOpenedFromVaults: boolean
@@ -52,7 +46,6 @@ export type Events =
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
   | { type: "ON_TRANSFER"; data: ITransferSuccess }
-  | { type: "ON_SWAP"; data: ISwapSuccess }
   | { type: "ASSIGN_VAULTS"; data: boolean }
 
 export type Services = {

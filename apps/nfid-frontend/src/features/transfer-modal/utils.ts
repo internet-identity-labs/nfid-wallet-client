@@ -76,6 +76,8 @@ export const mapUserNFTDetailsToGroupedOptions = (
         subTitle: nft.getCollectionName(),
         value: nft.getTokenId(),
         icon: nft.getAssetPreview().url,
+        innerTitle: nft.getTokenFloorPriceIcpFormatted(),
+        innerSubtitle: nft.getTokenFloorPriceUSDFormatted(),
       } as IGroupOption),
   )
 
@@ -249,10 +251,11 @@ export const getQuoteData = async (
   try {
     return await shroff.getQuote(Number(amount))
   } catch (error) {
-    throw new Error(
+    console.error(
       `Quote error: ${
         (error as Error).message ? (error as Error).message : error
       }`,
     )
+    throw error
   }
 }

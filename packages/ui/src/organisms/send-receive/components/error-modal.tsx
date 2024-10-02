@@ -31,7 +31,7 @@ export const ErrorModal: FC<ErrorModalProps> = ({ refresh }) => {
         </p>
       </div>
       <Button
-        className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
+        className="absolute bottom-5 left-5 right-5 !w-auto"
         type="stroke"
         onClick={refresh}
       >

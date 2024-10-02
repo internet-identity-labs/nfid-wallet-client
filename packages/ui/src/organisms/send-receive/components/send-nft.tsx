@@ -62,12 +62,13 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         <ChooseModal
           label="NFT to transfer"
           optionGroups={nftOptions ?? []}
-          title={"Choose an NFT"}
+          title="NFT to send"
           onSelect={(value) => {
             setSelectedNFTId(value)
           }}
+          placeholder="Search"
           preselectedValue={selectedNFTId}
-          iconClassnames="!w-12 !h-12 !object-cover rounded-[12px]"
+          iconClassnames="!w-12 !h-12 !object-cover !rounded-[12px]"
           trigger={
             <div
               className="flex items-center justify-between w-full h-[98px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"
@@ -122,7 +123,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           })}
         />
         <Button
-          className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
+          className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block
           onClick={handleSubmit(submit)}

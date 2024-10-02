@@ -105,6 +105,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         setFromChosenToken={setFromChosenToken}
         usdRate={quote?.getSourceAmountUSD()}
         tokens={tokens}
+        title="Swap from"
       />
       {showLiquidityError ? (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -169,7 +170,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         </span>
       </div>
       <Button
-        className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
+        className="absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"
         id="sendFT"
         block

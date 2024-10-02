@@ -4,7 +4,6 @@ import { FC } from "react"
 import {
   ChooseModal,
   Copy,
-  QRCode,
   BlurredLoader,
   CenterEllipsis,
 } from "@nfid-frontend/ui"
@@ -86,13 +85,6 @@ export const Receive: FC<ReceiveProps> = ({
           <Copy value={isVault ? selectedAccountAddress : address} />
         </div>
       </div>
-      <div className="mx-auto">
-        <QRCode
-          options={{ width: 122, margin: 0 }}
-          content={isVault ? selectedAccountAddress : address}
-        />
-      </div>
-
       <div
         className={clsx(
           "absolute top-0 left-0 z-50 w-full h-full p-5 bg-white transition-all duration-200 ease-in-out",

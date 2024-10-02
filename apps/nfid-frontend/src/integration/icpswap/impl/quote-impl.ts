@@ -158,7 +158,7 @@ export class QuoteImpl implements Quote {
       .multipliedBy(100)
 
     return {
-      priceImpact: `${priceImpact.toFixed(2)}%`,
+      priceImpact: `-${priceImpact.toFixed(2)}%`,
       status: priceImpact.isGreaterThanOrEqualTo(-1)
         ? PriceImpactStatus.LOW
         : priceImpact.isGreaterThanOrEqualTo(-5)

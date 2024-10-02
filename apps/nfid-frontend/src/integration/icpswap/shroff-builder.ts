@@ -1,11 +1,11 @@
-import {Shroff} from "src/integration/icpswap/shroff"
-import {icpSwapService} from "src/integration/icpswap/service/icpswap-service"
+import { ShroffImpl } from "src/integration/icpswap/impl/shroff-impl"
+import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
+import { Shroff } from "src/integration/icpswap/shroff"
 
-import {ICRC1TypeOracle,} from "@nfid/integration"
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
-import {PoolData} from "./idl/SwapFactory.d"
-import {ShroffImpl} from "src/integration/icpswap/impl/shroff-impl";
+import { ICRC1TypeOracle } from "@nfid/integration"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
+import { PoolData } from "./idl/SwapFactory.d"
 
 export class ShroffBuilder {
   private source: string | undefined
@@ -53,13 +53,17 @@ export class ShroffBuilder {
       throw new Error("ICRC1 not found")
     }
 
-    this.zeroForOne = this.poolData.token0.address === this.source;
+    this.zeroForOne = this.poolData.token0.address === this.source
 
     return this.buildShroff()
   }
 
   protected buildShroff(): Shroff {
-    return new ShroffImpl(this.poolData!, this.zeroForOne!, this.sourceOracle!, this.targetOracle!)
-
+    return new ShroffImpl(
+      this.poolData!,
+      this.zeroForOne!,
+      this.sourceOracle!,
+      this.targetOracle!,
+    )
   }
 }

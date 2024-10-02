@@ -27,6 +27,7 @@ interface ChooseFromTokenProps {
   sendReceiveTrackingFn?: () => void
   setFromChosenToken: (value: string) => void
   usdRate: string | undefined
+  title: string
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -36,6 +37,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   setFromChosenToken,
   sendReceiveTrackingFn,
   usdRate,
+  title,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
 
@@ -103,7 +105,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseModal
             optionGroups={tokenOptions}
-            title="Swap from"
+            title={title}
             type="trigger"
             onSelect={(value) => {
               resetField("amount")

@@ -142,26 +142,32 @@ export class QuoteImpl implements Quote {
 
     if (!sourcePrice || !targetPrice) return
 
-    const sourcePriceFormatted = sourcePrice
-      .multipliedBy(this.getSourceAmount())
-      .div(10 ** this.source.decimals)
+    const sourcePriceFormatted = Number(
+      sourcePrice
+        .multipliedBy(this.getSourceAmount())
+        .div(10 ** this.source.decimals)
+        .toFixed(2),
+    )
 
-    const targetPriceFormatted = targetPrice
-      .multipliedBy(this.getTargetAmount())
-      .div(10 ** this.target.decimals)
+    const targetPriceFormatted = Number(
+      targetPrice
+        .multipliedBy(this.getTargetAmount())
+        .div(10 ** this.target.decimals)
+        .toFixed(2),
+    )
 
-    const priceImpact = targetPriceFormatted
-      .minus(sourcePriceFormatted)
-      .dividedBy(sourcePriceFormatted)
-      .multipliedBy(100)
+    const priceImpact =
+      ((targetPriceFormatted - sourcePriceFormatted) / sourcePriceFormatted) *
+      100
 
     return {
       priceImpact: `${priceImpact.toFixed(2)}%`,
-      status: priceImpact.isGreaterThanOrEqualTo(-1)
-        ? PriceImpactStatus.LOW
-        : priceImpact.isGreaterThanOrEqualTo(-5)
-        ? PriceImpactStatus.MEDIUM
-        : PriceImpactStatus.HIGH,
+      status:
+        priceImpact >= -1
+          ? PriceImpactStatus.LOW
+          : priceImpact >= -5
+          ? PriceImpactStatus.MEDIUM
+          : PriceImpactStatus.HIGH,
     }
   }
 

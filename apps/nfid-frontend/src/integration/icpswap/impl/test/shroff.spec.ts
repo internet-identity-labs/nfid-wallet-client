@@ -1,6 +1,7 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
+import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { SwapStage } from "src/integration/icpswap/types/enums"
 
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -49,6 +50,10 @@ describe("shroff test", () => {
     const quote = await shroff.getQuote(0.001)
 
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
+
+    const transactionBeforeSwap = await swapTransactionService.getTransactions(
+      mockPrincipal,
+    )
 
     shroff.swap(mockId)
 
@@ -99,6 +104,14 @@ describe("shroff test", () => {
 
     expect(Number(balanceUpgraded - balance)).toEqual(
       quote.getTargetAmount().minus(Number(targetFee)).toNumber(),
+    )
+
+    const transactionsAfterSwap = await swapTransactionService.getTransactions(
+      mockPrincipal,
+    )
+
+    expect(transactionsAfterSwap.length).toBeGreaterThan(
+      transactionBeforeSwap.length,
     )
   })
 })

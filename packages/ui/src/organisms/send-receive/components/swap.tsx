@@ -170,7 +170,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         </span>
       </div>
       <Button
-        className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
+        className="absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"
         id="sendFT"
         block

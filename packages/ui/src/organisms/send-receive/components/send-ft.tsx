@@ -88,6 +88,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         sendReceiveTrackingFn={sendReceiveTrackingFn}
         usdRate={usdRate}
         tokens={tokens}
+        title="Token to send"
       />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600">
         {errors["amount"]?.message as string}

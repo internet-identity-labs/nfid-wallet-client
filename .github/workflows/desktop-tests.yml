@@ -87,7 +87,7 @@ jobs:
       IMAGE_NAME: nfid-test
 
     concurrency:
-      group: nfid-wallet-client-tests-docker-${{ contains( github.ref_name, 'main' ) }}-${{ contains( contains( github.event_name, 'push' ) || github.ref_name }}
+      group: nfid-wallet-client-tests-docker-${{ contains( github.ref_name, 'main' ) }}-${{ contains( github.event_name, 'push' ) || github.ref_name }}
       cancel-in-progress: ${{ contains( github.event_name, 'pull_request' ) }}
 
     steps:

@@ -1,35 +1,38 @@
-import { DepositHandler } from "src/integration/icpswap/error-handler/handler/deposit-handler"
-import { TransferNfidHandler } from "src/integration/icpswap/error-handler/handler/transfer-nfid-handler"
-import { TransferSwapHandler } from "src/integration/icpswap/error-handler/handler/transfer-swap-handler"
-import { WithdrawHandler } from "src/integration/icpswap/error-handler/handler/withdraw-handler"
-import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
-import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
-import { SwapStage } from "src/integration/icpswap/types/enums"
+import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
+import {TransactionErrorHandler} from "src/integration/icpswap/transaction-error-handler";
+import {SwapStage} from "src/integration/icpswap/types/enums";
+import {TransferNfidHandler} from "src/integration/icpswap/error-handler/handler/transfer-nfid-handler";
+import {TransferSwapHandler} from "src/integration/icpswap/error-handler/handler/transfer-swap-handler";
+import {DepositHandler} from "src/integration/icpswap/error-handler/handler/deposit-handler";
+import {WithdrawHandler} from "src/integration/icpswap/error-handler/handler/withdraw-handler";
 
 export class ErrorHandlerFactory {
-  getHandler(transaction: SwapTransaction): TransactionErrorHandler {
+
+  getHandler(transaction: SwapTransaction) : TransactionErrorHandler {
+
     if (transaction.getStage() === SwapStage.Completed) {
       throw new Error("Transaction already completed")
     }
 
-    if (transaction.getStage() === SwapStage.TransferNFID) {
+    if(transaction.getStage() === SwapStage.TransferNFID) {
       return new TransferNfidHandler(transaction)
     }
 
-    if (transaction.getStage() === SwapStage.TransferSwap) {
+   if(transaction.getStage() === SwapStage.TransferSwap) {
       return new TransferSwapHandler(transaction)
     }
 
-    if (transaction.getStage() === SwapStage.Deposit) {
+   if(transaction.getStage() === SwapStage.Deposit) {
       return new DepositHandler(transaction)
     }
 
-    if (transaction.getStage() === SwapStage.Withdraw) {
+   if(transaction.getStage() === SwapStage.Withdraw) {
       return new WithdrawHandler(transaction)
     }
 
     throw new Error("Unsupported stage")
   }
+
 }
 
-export const errorHandlerFactory = new ErrorHandlerFactory()
+export const errorHandlerFactory = new ErrorHandlerFactory();

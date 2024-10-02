@@ -1,16 +1,15 @@
 export enum SwapStage {
-  TransferNFID,
   TransferSwap,
+  TransferNFID,
   Deposit,
   Swap,
   Withdraw,
   Completed,
 }
 
+
 export enum CompleteType {
-  Complete,
-  Rollback,
-  RequestSupport,
+  Complete, Rollback, RequestSupport
 }
 
 export enum PriceImpactStatus {

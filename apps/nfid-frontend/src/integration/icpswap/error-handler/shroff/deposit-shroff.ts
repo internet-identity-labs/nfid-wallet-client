@@ -1,17 +1,13 @@
-import { SignIdentity } from "@dfinity/agent"
-import { SwapError } from "src/integration/icpswap/errors/swap-error"
-import {
-  ShroffBuilder,
-  ShroffImpl,
-} from "src/integration/icpswap/impl/shroff-impl"
-import { Shroff } from "src/integration/icpswap/shroff"
-import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
-
-import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
-
-import { WithdrawArgs } from "../../idl/SwapPool.d"
+import {ShroffImpl} from "src/integration/icpswap/impl/shroff-impl";
+import {SignIdentity} from "@dfinity/agent";
+import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
+import {hasOwnProperty, replaceActorIdentity} from "@nfid/integration";
+import {SwapError} from "src/integration/icpswap/errors/swap-error";
+import {WithdrawArgs} from "../../idl/SwapPool"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {
+
+
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.swapTransaction) {
       throw new Error("Swap transaction not set")
@@ -38,13 +34,11 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     }
   }
 
+
   protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
       //TODO play with numbers somehow
-      amount: BigInt(
-        this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() -
-          Number(this.source.fee),
-      ),
+      amount: BigInt(this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() - Number(this.source.fee)),
       token: this.source.ledger,
       fee: this.source.fee,
     }
@@ -56,16 +50,5 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       }
       throw new Error("Withdraw error: " + JSON.stringify(result.err))
     })
-  }
-}
-
-export class DepositErrorShroffBuilder extends ShroffBuilder {
-  protected buildShroff(): Shroff {
-    return new ShroffDepositErrorHandler(
-      this.poolData!,
-      this.zeroForOne!,
-      this.sourceOracle!,
-      this.targetOracle!,
-    )
   }
 }

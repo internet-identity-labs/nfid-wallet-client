@@ -1,20 +1,17 @@
 import * as Agent from "@dfinity/agent"
-import { SignIdentity } from "@dfinity/agent"
-import { SubAccount } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
+import {Shroff} from "src/integration/icpswap/shroff"
+import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
+import {SignIdentity} from "@dfinity/agent"
+import {SubAccount} from "@dfinity/ledger-icp"
+import {Principal} from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
-import { errorTypes, NFID_WALLET } from "src/integration/icpswap/impl/constants"
-import {
-  calculateWidgetFee,
-  QuoteImpl,
-} from "src/integration/icpswap/impl/quote-impl"
-import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
-import { Quote } from "src/integration/icpswap/quote"
-import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
-import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
-import { Shroff } from "src/integration/icpswap/shroff"
-import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import {idlFactory as SwapPoolIDL} from "src/integration/icpswap/idl/SwapPool"
+import {errorTypes, NFID_WALLET} from "src/integration/icpswap/impl/constants"
+import {calculateWidgetFee, QuoteImpl,} from "src/integration/icpswap/impl/quote-impl"
+import {SwapTransactionImpl} from "src/integration/icpswap/impl/swap-transaction-impl"
+import {Quote} from "src/integration/icpswap/quote"
+import {icpSwapService} from "src/integration/icpswap/service/icpswap-service"
+import {swapTransactionService} from "src/integration/icpswap/service/transaction-service"
 
 import {
   actor,
@@ -24,12 +21,12 @@ import {
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
-import { transferICRC1 } from "@nfid/integration/token/icrc1"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import {transferICRC1} from "@nfid/integration/token/icrc1"
+import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import { LiquidityError, SlippageError } from "../errors"
-import { SwapError } from "../errors/swap-error"
-import { PoolData } from "./../idl/SwapFactory.d"
+import {LiquidityError, SlippageError} from "../errors"
+import {SwapError} from "../errors/swap-error"
+import {PoolData} from "./../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
   DepositArgs,
@@ -136,16 +133,15 @@ export class ShroffImpl implements Shroff {
       this.target.ledger,
       this.source.ledger,
       this.requestedQuote.getTargetAmount().toNumber(),
-      BigInt(this.requestedQuote.getSourceAmount().toNumber()),
+      this.requestedQuote.getSourceRaw(),
     )
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       await this.transferToNFID()
-      console.debug("Transfer to NFID done")
       this.restoreTransaction()
       await this.transferToSwap()
       this.restoreTransaction()
-      console.debug("Transfer to swap done")
+      console.debug("Transfer done")
       await this.deposit()
       this.restoreTransaction()
       console.debug("Deposit done")
@@ -182,6 +178,7 @@ export class ShroffImpl implements Shroff {
     }
     return updatedQuote
   }
+
 
   protected async deposit(): Promise<bigint> {
     if (!this.requestedQuote) {
@@ -321,67 +318,6 @@ export class ShroffImpl implements Shroff {
     return swapTransactionService.storeTransaction(
       this.swapTransaction!.toCandid(this.requestedQuote!),
       this.delegationIdentity!,
-    )
-  }
-}
-
-export class ShroffBuilder {
-  private source: string | undefined
-  private target: string | undefined
-  protected poolData: PoolData | undefined
-  protected sourceOracle: ICRC1TypeOracle | undefined
-  protected targetOracle: ICRC1TypeOracle | undefined
-  protected zeroForOne: boolean | undefined
-
-  public withSource(source: string): ShroffBuilder {
-    this.source = source
-    return this
-  }
-
-  public withTarget(target: string): ShroffBuilder {
-    this.target = target
-    return this
-  }
-
-  public async build(): Promise<Shroff> {
-    if (!this.source) {
-      throw new Error("Source is required")
-    }
-
-    if (!this.target) {
-      throw new Error("Target is required")
-    }
-
-    const [poolData, icrc1canisters]: [PoolData, ICRC1TypeOracle[]] =
-      await Promise.all([
-        icpSwapService.getPoolFactory(this.source, this.target),
-        icrc1OracleService.getICRC1Canisters(),
-      ])
-
-    this.poolData = poolData
-
-    const st: ICRC1TypeOracle[] = icrc1canisters.filter(
-      (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
-    )
-
-    this.sourceOracle = st.find((icrc1) => icrc1.ledger === this.source)
-    this.targetOracle = st.find((icrc1) => icrc1.ledger === this.target)
-
-    if (!this.sourceOracle || !this.targetOracle) {
-      throw new Error("ICRC1 not found")
-    }
-
-    this.zeroForOne = this.poolData.token0.address === this.source
-
-    return this.buildShroff()
-  }
-
-  protected buildShroff(): Shroff {
-    return new ShroffImpl(
-      this.poolData!,
-      this.zeroForOne!,
-      this.sourceOracle!,
-      this.targetOracle!,
     )
   }
 }

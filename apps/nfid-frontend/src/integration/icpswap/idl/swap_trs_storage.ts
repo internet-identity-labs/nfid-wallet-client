@@ -1,5 +1,4 @@
 export const idlFactory = ({ IDL }: any) => {
-  const InitArgs = IDL.Record({ im_canister: IDL.Principal })
   const SwapStage = IDL.Variant({
     Withdraw: IDL.Null,
     Error: IDL.Null,

@@ -27,6 +27,7 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
     base: string
     nfts: string
   }
+  totalItems: number
 }
 
 export const NFTs: FC<INFTs> = ({
@@ -35,6 +36,7 @@ export const NFTs: FC<INFTs> = ({
   searchTokens,
   links,
   onTransferNFT,
+  totalItems,
 }) => {
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
@@ -67,7 +69,7 @@ export const NFTs: FC<INFTs> = ({
           nftsFiltered.length === 0 && "hidden",
         )}
       >
-        {nftsFiltered.length} items
+        {totalItems} items
       </p>
       {isLoading ? (
         <div

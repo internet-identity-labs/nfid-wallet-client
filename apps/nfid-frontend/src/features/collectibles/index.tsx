@@ -1,6 +1,9 @@
 import { useActor } from "@xstate/react"
+import clsx from "clsx"
 import { NFTs } from "packages/ui/src/organisms/nfts"
 import { useEffect, useState, useCallback, MouseEvent, useContext } from "react"
+
+import { Button } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { searchTokens } from "frontend/features/collectibles/utils/util"
@@ -11,6 +14,9 @@ import { fetchNFTs } from "./utils/util"
 
 const NFTsPage = () => {
   const [nfts, setNfts] = useState<NFT[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
@@ -30,35 +36,50 @@ const NFTsPage = () => {
 
   useEffect(() => {
     const loadNFTs = async () => {
-      const allNFTs = await fetchNFTs()
+      const { items, totalItems, totalPages } = await fetchNFTs(currentPage)
+      setTotalItems(totalItems)
+      setTotalPages(totalPages)
       setIsLoading(false)
 
-      const initialLoadingState = Array(allNFTs.length).fill(null)
-      setNfts(initialLoadingState)
+      const initialLoadingState = Array(items.length).fill(null)
+      setNfts((prevNfts) => [...prevNfts, ...initialLoadingState])
 
-      for (let i = 0; i < allNFTs.length; i++) {
-        const nft = allNFTs[i]
+      for (let i = 0; i < items.length; i++) {
+        const nft = items[i]
         await nft.init()
-
         setNfts((prevNfts) => {
           const newNfts = [...prevNfts]
-          newNfts[i] = nft
+          newNfts[prevNfts.length - items.length + i] = nft
           return newNfts
         })
       }
     }
 
     loadNFTs()
-  }, [])
+  }, [currentPage])
 
   return (
-    <NFTs
-      nfts={nfts}
-      isLoading={isLoading}
-      searchTokens={searchTokens}
-      links={ProfileConstants}
-      onTransferNFT={onTransferNFT}
-    />
+    <>
+      <NFTs
+        nfts={nfts}
+        isLoading={isLoading}
+        searchTokens={searchTokens}
+        links={ProfileConstants}
+        onTransferNFT={onTransferNFT}
+        totalItems={totalItems}
+      />
+      <Button
+        disabled={isLoading}
+        className={clsx(
+          "block mx-auto",
+          totalPages === currentPage && "hidden",
+        )}
+        onClick={() => setCurrentPage((prev) => prev + 1)}
+        type="ghost"
+      >
+        {isLoading ? "Loading..." : "Load more"}
+      </Button>
+    </>
   )
 }
 

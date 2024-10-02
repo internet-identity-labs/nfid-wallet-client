@@ -23,7 +23,6 @@ import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
-import { LiquidityError } from "frontend/integration/icpswap/errors"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 import { NFT } from "frontend/integration/nft/nft"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"

@@ -123,7 +123,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           })}
         />
         <Button
-          className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
+          className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block
           onClick={handleSubmit(submit)}

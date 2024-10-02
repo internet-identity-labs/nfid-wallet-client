@@ -12,8 +12,10 @@ import {
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
 import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
+import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import { SwapStage } from "src/integration/icpswap/types/enums"
 
 import {
   actor,
@@ -113,7 +115,10 @@ class ShroffImpl implements Shroff {
       throw new Error("Request quote first")
     }
     this.delegationIdentity = delegationIdentity
-    this.swapTransaction = new SwapTransactionImpl()
+    this.swapTransaction = new SwapTransactionImpl(
+      this.target.ledger,
+      this.source.ledger,
+    )
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       await this.transfer()
@@ -124,9 +129,19 @@ class ShroffImpl implements Shroff {
       console.debug("Swap done")
       await this.withdraw()
       console.debug("Withdraw done")
+      //maybe not async
+      await swapTransactionService.storeTransaction(
+        this.swapTransaction.toCandid(this.requestedQuote),
+        delegationIdentity,
+      )
+      console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
+      if (this.swapTransaction.getStage() !== SwapStage.Error) {
+        this.swapTransaction.setError(`Swap error: ${e}`)
+      }
+      //TODO @vitaly to change according to the new error handling logic
       throw new SwapError()
     }
   }

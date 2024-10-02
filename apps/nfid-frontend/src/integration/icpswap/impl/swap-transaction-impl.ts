@@ -1,15 +1,18 @@
-import {Icrc1TransferError} from "@dfinity/ledger-icp/dist/candid/ledger"
-import {Quote} from "src/integration/icpswap/quote"
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
-import {CompleteType, SwapStage} from "src/integration/icpswap/types/enums"
+import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+import { randomUUID, UUID } from "crypto"
+import { errorHandlerFactory } from "src/integration/icpswap/error-handler/handler-factory"
+import { Quote } from "src/integration/icpswap/quote"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
+import { CompleteType, SwapStage } from "src/integration/icpswap/types/enums"
 
-import {hasOwnProperty} from "@nfid/integration"
+import { hasOwnProperty } from "@nfid/integration"
 
-import {Error as ErrorSwap} from "./../idl/SwapPool.d"
-import {SwapStage as SwapStageCandid, SwapTransaction as SwapTransactionCandid,} from "./../idl/swap_trs_storage.d"
-import {randomUUID, UUID} from "crypto";
-import {TransactionErrorHandler} from "src/integration/icpswap/transaction-error-handler";
-import {errorHandlerFactory} from "src/integration/icpswap/error-handler/handler-factory";
+import { Error as ErrorSwap } from "./../idl/SwapPool.d"
+import {
+  SwapStage as SwapStageCandid,
+  SwapTransaction as SwapTransactionCandid,
+} from "./../idl/swap_trs_storage.d"
 
 export class SwapTransactionImpl implements SwapTransaction {
   private uid: UUID
@@ -27,7 +30,12 @@ export class SwapTransactionImpl implements SwapTransaction {
   private readonly targetLedger: string
   private readonly sourceLedger: string
 
-  constructor(targetLedger: string, sourceLedger: string, quote: number, amount: number) {
+  constructor(
+    targetLedger: string,
+    sourceLedger: string,
+    quote: number,
+    amount: number,
+  ) {
     this.startTime = Date.now()
     this.stage = SwapStage.TransferNFID
     this.targetLedger = targetLedger
@@ -38,43 +46,43 @@ export class SwapTransactionImpl implements SwapTransaction {
   }
 
   getStartTime(): number {
-    return this.startTime;
+    return this.startTime
   }
 
   getTransferId(): bigint | undefined {
-    return this.transferId;
+    return this.transferId
   }
 
   getTransferNFIDId(): bigint | undefined {
-    return this.transferNFIDId;
+    return this.transferNFIDId
   }
 
   getDeposit(): bigint | undefined {
-    return this.deposit;
+    return this.deposit
   }
 
   getSwap(): bigint | undefined {
-    return this.swap;
+    return this.swap
   }
 
   getWithdraw(): bigint | undefined {
-    return this.withdraw;
+    return this.withdraw
   }
 
   getEndTime(): number | undefined {
-    return this.endTime;
+    return this.endTime
   }
 
   getError(): ErrorSwap | Icrc1TransferError | undefined | string {
-    return this.error;
+    return this.error
   }
 
   getTargetLedger(): string {
-    return this.targetLedger;
+    return this.targetLedger
   }
 
   getSourceLedger(): string {
-    return this.sourceLedger;
+    return this.sourceLedger
   }
 
   getErrorHandler(): TransactionErrorHandler {
@@ -137,7 +145,9 @@ export class SwapTransactionImpl implements SwapTransaction {
       target_amount: BigInt(this.quote),
       target_ledger: this.targetLedger,
       transfer_id: this.transferId ? [BigInt(this.transferId)] : [],
-      transfer_nfid_id: this.transferNFIDId ? [BigInt(this.transferNFIDId)] : [],
+      transfer_nfid_id: this.transferNFIDId
+        ? [BigInt(this.transferNFIDId)]
+        : [],
       withdraw: this.withdraw ? [BigInt(this.withdraw)] : [],
       uid: this.uid,
     }
@@ -150,9 +160,14 @@ export class SwapTransactionImpl implements SwapTransaction {
       candid.error.length !== 0 ? JSON.parse(candid.error[0]) : undefined
     this.swap = candid.swap.length !== 0 ? candid.swap[0] : undefined
     this.startTime = Number(candid.start_time)
-    this.withdraw = candid.withdraw.length !== 0 ? candid.withdraw[0] : undefined
-    this.transferId = candid.transfer_id.length !== 0 ? candid.transfer_id[0] : undefined
-    this.transferNFIDId = candid.transfer_nfid_id.length !== 0 ? candid.transfer_nfid_id[0] : undefined
+    this.withdraw =
+      candid.withdraw.length !== 0 ? candid.withdraw[0] : undefined
+    this.transferId =
+      candid.transfer_id.length !== 0 ? candid.transfer_id[0] : undefined
+    this.transferNFIDId =
+      candid.transfer_nfid_id.length !== 0
+        ? candid.transfer_nfid_id[0]
+        : undefined
     this.stage = this.mapStageCandidateToStage(candid.stage)
     return this
   }
@@ -169,17 +184,17 @@ export class SwapTransactionImpl implements SwapTransaction {
   private mapStageToCandid(stage: SwapStage): SwapStageCandid {
     switch (stage) {
       case SwapStage.TransferNFID:
-        return {TransferNFID: null}
+        return { TransferNFID: null }
       case SwapStage.TransferSwap:
-        return {TransferSwap: null}
+        return { TransferSwap: null }
       case SwapStage.Deposit:
-        return {Deposit: null}
+        return { Deposit: null }
       case SwapStage.Swap:
-        return {Swap: null}
+        return { Swap: null }
       case SwapStage.Withdraw:
-        return {Withdraw: null}
+        return { Withdraw: null }
       case SwapStage.Completed:
-        return {Completed: null}
+        return { Completed: null }
     }
   }
 }

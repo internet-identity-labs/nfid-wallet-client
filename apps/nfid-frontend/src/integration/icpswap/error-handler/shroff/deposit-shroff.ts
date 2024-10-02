@@ -1,13 +1,13 @@
-import {ShroffImpl} from "src/integration/icpswap/impl/shroff-impl";
-import {SignIdentity} from "@dfinity/agent";
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
-import {hasOwnProperty, replaceActorIdentity} from "@nfid/integration";
-import {SwapError} from "src/integration/icpswap/errors/swap-error";
-import {WithdrawArgs} from "../../idl/SwapPool"
+import { SignIdentity } from "@dfinity/agent"
+import { SwapError } from "src/integration/icpswap/errors/swap-error"
+import { ShroffImpl } from "src/integration/icpswap/impl/shroff-impl"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+
+import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
+
+import { WithdrawArgs } from "../../idl/SwapPool"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {
-
-
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.swapTransaction) {
       throw new Error("Swap transaction not set")
@@ -34,11 +34,13 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     }
   }
 
-
   protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
       //TODO play with numbers somehow
-      amount: BigInt(this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() - Number(this.source.fee)),
+      amount: BigInt(
+        this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() -
+          Number(this.source.fee),
+      ),
       token: this.source.ledger,
       fee: this.source.fee,
     }

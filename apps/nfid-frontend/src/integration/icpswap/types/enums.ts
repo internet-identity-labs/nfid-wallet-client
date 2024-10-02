@@ -7,9 +7,10 @@ export enum SwapStage {
   Completed,
 }
 
-
 export enum CompleteType {
-  Complete, Rollback, RequestSupport
+  Complete,
+  Rollback,
+  RequestSupport,
 }
 
 export enum PriceImpactStatus {

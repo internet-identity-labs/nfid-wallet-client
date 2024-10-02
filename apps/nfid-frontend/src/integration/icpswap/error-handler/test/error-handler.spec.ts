@@ -1,11 +1,11 @@
-import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
-import {SwapTransactionImpl} from "src/integration/icpswap/impl/swap-transaction-impl";
-import {SwapStage} from "src/integration/icpswap/types/enums";
-import {Ed25519KeyIdentity} from "@dfinity/identity";
-import {Shroff} from "src/integration/icpswap/shroff";
-import {swapTransactionService} from "src/integration/icpswap/service/transaction-service";
-import {icpSwapService} from "src/integration/icpswap/service/icpswap-service";
-import {ShroffBuilder} from "src/integration/icpswap/shroff-builder";
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
+import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
+import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
+import { Shroff } from "src/integration/icpswap/shroff"
+import { ShroffBuilder } from "src/integration/icpswap/shroff-builder"
+import { SwapStage } from "src/integration/icpswap/types/enums"
 
 const mock: JsonnableEd25519KeyIdentity = [
   "302a300506032b6570032100c88f8f46ee5c23a748026498ddc7ed2104782ea02cd266170a470587d7c2f932",
@@ -29,32 +29,40 @@ describe("shroff test", () => {
       .withTarget(targetLedger)
       .build()
 
-    const quote =  await shroff.getQuote(0.001)
+    const quote = await shroff.getQuote(0.001)
 
-    let callCount = 0;
+    let callCount = 0
 
     jest.spyOn(shroff as any, "deposit").mockImplementation(() => {
-      callCount++;
+      callCount++
       if (callCount === 1) {
         console.debug("Deposit MOCK")
       }
-    });
+    })
 
-    jest.spyOn(swapTransactionService as any, "storeTransaction").mockImplementation(() => {
-      console.log("Transaction stored MOCK")
-    });
+    jest
+      .spyOn(swapTransactionService as any, "storeTransaction")
+      .mockImplementation(() => {
+        console.log("Transaction stored MOCK")
+      })
     const can = await icpSwapService.getPoolFactory(sourceLedger, targetLedger)
-    const balanceExpected = await icpSwapService.getBalance(can.canisterId.toText(), mockId.getPrincipal())
+    const balanceExpected = await icpSwapService.getBalance(
+      can.canisterId.toText(),
+      mockId.getPrincipal(),
+    )
     try {
       await shroff.swap(mockId)
-    } catch (e) {
-    }
+    } catch (e) {}
     let ff = shroff.getSwapTransaction()
     const errorHandler = ff!.getErrorHandler()
-    let transaction = await errorHandler.finishTransaction(mockId) as SwapTransactionImpl
-    const balanceActual = await icpSwapService.getBalance(can.canisterId.toText(), mockId.getPrincipal())
+    let transaction = (await errorHandler.finishTransaction(
+      mockId,
+    )) as SwapTransactionImpl
+    const balanceActual = await icpSwapService.getBalance(
+      can.canisterId.toText(),
+      mockId.getPrincipal(),
+    )
     expect(balanceActual).toEqual(balanceExpected)
     expect(transaction.getStage()).toEqual(SwapStage.Completed)
   })
 })
-

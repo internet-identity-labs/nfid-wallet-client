@@ -1,10 +1,11 @@
-import {TransactionErrorHandler} from "src/integration/icpswap/transaction-error-handler";
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
-import {CompleteType} from "src/integration/icpswap/types/enums";
-import {SignIdentity} from "@dfinity/agent";
+import { SignIdentity } from "@dfinity/agent"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
+import { CompleteType } from "src/integration/icpswap/types/enums"
 
-
-export abstract class TransactionErrorHandlerAbstract implements TransactionErrorHandler {
+export abstract class TransactionErrorHandlerAbstract
+  implements TransactionErrorHandler
+{
   private readonly transaction: SwapTransaction
 
   constructor(transaction: SwapTransaction) {

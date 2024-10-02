@@ -1,17 +1,20 @@
 import * as Agent from "@dfinity/agent"
-import {Shroff} from "src/integration/icpswap/shroff"
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
-import {SignIdentity} from "@dfinity/agent"
-import {SubAccount} from "@dfinity/ledger-icp"
-import {Principal} from "@dfinity/principal"
+import { SignIdentity } from "@dfinity/agent"
+import { SubAccount } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-import {idlFactory as SwapPoolIDL} from "src/integration/icpswap/idl/SwapPool"
-import {errorTypes, NFID_WALLET} from "src/integration/icpswap/impl/constants"
-import {calculateWidgetFee, QuoteImpl,} from "src/integration/icpswap/impl/quote-impl"
-import {SwapTransactionImpl} from "src/integration/icpswap/impl/swap-transaction-impl"
-import {Quote} from "src/integration/icpswap/quote"
-import {icpSwapService} from "src/integration/icpswap/service/icpswap-service"
-import {swapTransactionService} from "src/integration/icpswap/service/transaction-service"
+import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { errorTypes, NFID_WALLET } from "src/integration/icpswap/impl/constants"
+import {
+  calculateWidgetFee,
+  QuoteImpl,
+} from "src/integration/icpswap/impl/quote-impl"
+import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
+import { Quote } from "src/integration/icpswap/quote"
+import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
+import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
+import { Shroff } from "src/integration/icpswap/shroff"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import {
   actor,
@@ -21,12 +24,12 @@ import {
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
-import {transferICRC1} from "@nfid/integration/token/icrc1"
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import {LiquidityError, SlippageError} from "../errors"
-import {SwapError} from "../errors/swap-error"
-import {PoolData} from "./../idl/SwapFactory.d"
+import { LiquidityError, SlippageError } from "../errors"
+import { SwapError } from "../errors/swap-error"
+import { PoolData } from "./../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
   DepositArgs,
@@ -178,7 +181,6 @@ export class ShroffImpl implements Shroff {
     }
     return updatedQuote
   }
-
 
   protected async deposit(): Promise<bigint> {
     if (!this.requestedQuote) {

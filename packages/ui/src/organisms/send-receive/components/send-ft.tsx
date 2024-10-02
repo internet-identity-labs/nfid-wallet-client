@@ -150,6 +150,12 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       </div>
       <Button
         className="h-[48px] absolute bottom-5 left-5 right-5 !w-auto"
+        disabled={
+          Boolean(errors["amount"]?.message) ||
+          Boolean(errors["to"]?.message) ||
+          !amount ||
+          !to
+        }
         type="primary"
         id="sendFT"
         block

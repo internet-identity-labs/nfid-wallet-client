@@ -14,10 +14,11 @@ export const searchTokens = (tokens: NFT[], search: string) => {
   return result
 }
 
-export const fetchNFTs = async () => {
+export const fetchNFTs = async (page: number) => {
   const { publicKey } = await getUserPrincipalId()
-  const data = await nftService.getNFTs(Principal.fromText(publicKey))
-  return data.items || []
+  const data = await nftService.getNFTs(Principal.fromText(publicKey), page)
+  const { totalItems, totalPages, items } = data
+  return { totalItems, totalPages, items }
 }
 
 export const fetchNFTsInited = async () => {

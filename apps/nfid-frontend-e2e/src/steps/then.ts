@@ -210,27 +210,27 @@ Then(
   checkLocalStorageKey,
 )
 
-Then(/^Go to Profile page$/, async function () {
+Then(/^Go to Profile page$/, async function() {
   await clickElement("click", "selector", "#profileButton")
 })
 
 Then(
   /^I put Recovery Phrase to input field ([^"]*)$/,
-  async function (phrase: string) {
-    await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
+  async function(phrase: string) {
+    await setInputField("setValue", phrase, "[name=\"recoveryPhrase\"]")
   },
 )
 
-Then(/^I put copied Recovery Phrase to input field/, async function () {
-  await clickElement("click", "selector", '[name="recoveryPhrase"]')
+Then(/^I put copied Recovery Phrase to input field/, async function() {
+  await clickElement("click", "selector", "[name=\"recoveryPhrase\"]")
   await browser.keys(["Command", "v"])
 })
 
-Then(/^I toggle checkbox "([^"]*)?"$/, async function (selector: string) {
+Then(/^I toggle checkbox "([^"]*)?"$/, async function(selector: string) {
   await clickElement("click", "selector", selector)
 })
 
-Then(/^I press button "([^"]*)?"$/, async function (button: string) {
+Then(/^I press button "([^"]*)?"$/, async function(button: string) {
   await clickElement("click", "selector", button)
 })
 
@@ -358,7 +358,7 @@ Then(
 )
 
 Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
-  await clickElement("click", "selector", '[id="account_row_0"]')
+  await clickElement("click", "selector", "[id=\"account_row_0\"]")
   await Assets.openElementById("tab_" + tab)
 })
 
@@ -498,7 +498,7 @@ Then(
   },
 )
 
-Then(/^Account ID is (.+)/, async function (account: string) {
+Then(/^Account ID is (.+)/, async function(account: string) {
   const address = await Assets.getAccountId(true)
   let expectedResult =
     (await address.firstAddressPart.getText()) +
@@ -511,8 +511,8 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressPart.getText()),
+    "..." +
+    (await address.secondAddressPart.getText()),
   ).toEqual(principal)
 })
 
@@ -523,25 +523,25 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
   expect(
     String(
       (await (await usersData.get("principal")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("principal")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("principal")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
-      "..." +
-      expectedData.principal.substring(58, 63),
+    "..." +
+    expectedData.principal.substring(58, 63),
   )
 
   expect(
     String(
       (await (await usersData.get("address")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("address")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("address")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +
-      "..." +
-      expectedData.address.substring(59, 64),
+    "..." +
+    expectedData.address.substring(59, 64),
   )
 
   await browser.waitUntil(
@@ -837,13 +837,8 @@ Then(
   },
 )
 
-Then(/^I should see activity page$/, async () => {
-  const pageTitle = await activity.pageTitle
-  await pageTitle.waitForDisplayed({ timeout: 10000 })
-  expect(await pageTitle.getText()).toContain("Activity")
-  await activity.waitForLoaderDisappear()
-
-  await new Promise((resolve) => setTimeout(() => resolve(true), 3000)) // just manual delay before next step
+Then(/^I should see filter button in Activity tab$/, async () => {
+  await activity.filterButton.waitForDisplayed({ timeout: 10000 })
 })
 
 Then(/^I should see (\d+) activities in the table$/, async (amount: number) => {

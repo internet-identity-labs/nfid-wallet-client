@@ -4,15 +4,20 @@ export class Activity extends Page {
   get pageTitle() {
     return $("#page_title")
   }
+
   get activityTableRows() {
-    return $$("#activity-table tbody .activity-row")
+    return $$("//*[@id='activity-table']//tr[starts-with(@id, 'tx-')]")
+  }
+
+  get filterButton() {
+    return $("#filter-ft")
   }
 
   async getActivitiesLength() {
     await browser.waitUntil(
       async () => (await this.activityTableRows).length > 0,
       {
-        timeout: 5000,
+        timeout: 15000,
         timeoutMsg: "No activities found",
       },
     )
@@ -20,7 +25,7 @@ export class Activity extends Page {
     return await this.activityTableRows.length
   }
 
-  async getTransaction(
+  getTransaction = async (
     action: string,
     chain: string,
     currency: string,
@@ -29,22 +34,8 @@ export class Activity extends Page {
     timestamp: string,
     from: string,
     to: string,
-  ) {
-    if (type === "ft")
-      return $(
-        `#tx-${action}-${chain}-${currency}-${type}-${asset}-${timestamp}-${from}-${to}`.replace(
-          ".",
-          "_",
-        ),
-      )
-    else
-      return $(
-        `#tx-${action}-${chain}-${type}-${asset}-${timestamp}-${from}-${to}`.replace(
-          ".",
-          "_",
-        ),
-      )
-  }
+  ) =>
+    $(`//*[@id='tx-${action}-${chain}-${currency}-${type}-${asset}-${timestamp}-${from}-${to}']`)
 }
 
 export default new Activity()

@@ -22,6 +22,7 @@ describe("quote test", () => {
       BigNumber(63603.80961802474),
       BigNumber(8.437122672555095),
     )
+    const priceImpactResult = quote.getPriceImpact()
 
     expect(quote.getSourceAmountPrettified()).toEqual("0.5")
     expect(quote.getTargetAmountPrettified()).toEqual("0.00006631")
@@ -36,5 +37,8 @@ describe("quote test", () => {
       "0.0003 ICP",
       "0.0000001 ckBTC",
     ])
+    expect(priceImpactResult).toBeDefined()
+    expect(priceImpactResult!.priceImpact).toEqual("-0.00%")
+    expect(priceImpactResult!.status).toEqual("low")
   })
 })

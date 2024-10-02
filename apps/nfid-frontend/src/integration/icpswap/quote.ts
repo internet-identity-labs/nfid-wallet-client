@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js"
 
+import { PriceImpact } from "./types/types"
+
 export interface Quote {
   getTargetAmountUSD(): string
   getSourceAmountUSD(): string
@@ -17,4 +19,5 @@ export interface Quote {
   getTargetAmount(): BigNumber
   getAmountWithoutWidgetFee(): BigNumber
   getWidgetFeeAmount(): BigNumber
+  getPriceImpact(): PriceImpact | undefined
 }

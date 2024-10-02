@@ -6,3 +6,9 @@ export enum SwapStage {
   Completed,
   Error,
 }
+
+export enum PriceImpactStatus {
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+}

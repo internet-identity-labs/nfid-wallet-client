@@ -8,6 +8,7 @@ import {
   IconCmpArrow,
   BlurredLoader,
   Skeleton,
+  Checkbox,
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -62,11 +63,14 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   onClose,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
 
   const {
     watch,
     formState: { errors },
   } = useFormContext()
+
+  const priceImpact = quote?.getPriceImpact()
 
   const amount = watch("amount")
 
@@ -142,6 +146,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         tokens={allTokens}
         isQuoteLoading={isQuoteLoading}
         value={quote?.getTargetAmountPrettified()}
+        priceImpact={priceImpact}
       />
       <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
         {!amount ? (
@@ -169,13 +174,30 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           View quote
         </span>
       </div>
+      {priceImpact?.status === "high" && (
+        <div className="mt-4">
+          <Checkbox
+            id="price-impact"
+            value="allow-price-impact"
+            isChecked={isChecked}
+            onChange={() => setIsChecked(!isChecked)}
+            labelText="I understand liquidity is too low in this DEX to maintain a reasonable impact on price, and would like to proceed anyway."
+            labelClassName="!text-sm text-red-700"
+            className="text-red-700 border-red-700 mt-[2px]"
+            overlayClassnames="!items-start"
+          />
+        </div>
+      )}
       <Button
         className="absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"
         id="sendFT"
         block
         disabled={
-          isQuoteLoading || !amount || Boolean(errors["amount"]?.message)
+          isQuoteLoading ||
+          !amount ||
+          Boolean(errors["amount"]?.message) ||
+          (!isChecked && priceImpact?.status === "high")
         }
         onClick={submit}
       >

@@ -34,6 +34,7 @@ class SwapTransactionService {
         return new SwapTransactionImpl(
           t.target_ledger,
           t.source_ledger,
+          1, 1 //TODO WIP will override in fromCandid
         ).fromCandid(t)
       })
     })

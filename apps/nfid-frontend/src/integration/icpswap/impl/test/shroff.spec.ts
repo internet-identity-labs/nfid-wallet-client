@@ -1,4 +1,6 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import {SwapTransactionImpl} from "src/integration/icpswap/impl/swap-transaction-impl";
+import {SwapTransaction} from "src/integration/icpswap/swap-transaction";
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
 import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
@@ -36,7 +38,7 @@ describe("shroff test", () => {
   })
 
   //too long test. Unskip when needed
-  it.skip("shroff transfer test", async function () {
+  it("shroff transfer test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     const shroff = await new ShroffBuilder()
@@ -55,12 +57,24 @@ describe("shroff test", () => {
       mockPrincipal,
     )
 
-    shroff.swap(mockId)
+    const a: Promise<SwapTransaction> =  shroff.swap(mockId)
 
-    expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.Transfer)
+    expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.TransferNFID)
 
     while (
-      shroff.getSwapTransaction()?.getStage() === SwapStage.Transfer &&
+      shroff.getSwapTransaction()?.getStage() === SwapStage.TransferNFID &&
+      seconds < 10
+    ) {
+      await sleep(1)
+      seconds++
+    }
+
+    let trs = shroff.getSwapTransaction() as SwapTransactionImpl
+
+    expect(trs?.getStage()).toEqual(SwapStage.TransferSwap)
+
+    while (
+      shroff.getSwapTransaction()?.getStage() === SwapStage.TransferSwap &&
       seconds < 10
     ) {
       await sleep(1)

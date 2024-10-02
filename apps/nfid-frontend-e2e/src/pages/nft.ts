@@ -17,24 +17,14 @@ export class Nft {
     return $$("table tbody tr")
   }
 
-  public async trType(rawNumber: number) {
-    return $(`table tbody tr:nth-child(${rawNumber}) td:nth-child(1)`).getText()
-  }
-
-  public async trDate(rawNumber: number) {
-    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(2)`).getText()
-  }
-
-  public async trFrom(rawNumber: number) {
-    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(3)`).getText()
-  }
-
-  public async trTo(rawNumber: number) {
-    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(4)`).getText()
-  }
-
-  public async trPrice(rawNumber: number) {
-    return $(`table tbody :nth-child(${rawNumber}) td:nth-child(5)`).getText()
+  public async getValueFromColumnAtFirstRow(columnName: string) {
+    const locator =
+      $(`//*[@id='nft-table']//thead//th[text()='${columnName}']/ancestor::table//tbody//tr[1]//td[count(//*[@id='nft-table']//thead//th[text()='${columnName}']/preceding-sibling::th) + 1]
+`)
+    await browser.waitUntil(async () => (
+      await locator.getText() != ""),
+    )
+    return await locator.getText()
   }
 
   public async getNftName(token: string, collection: string) {

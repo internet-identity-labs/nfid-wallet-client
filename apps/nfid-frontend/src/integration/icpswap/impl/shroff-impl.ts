@@ -4,7 +4,7 @@ import { SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
-import { NFID_WALLET } from "src/integration/icpswap/impl/constants"
+import { errorTypes, NFID_WALLET } from "src/integration/icpswap/impl/constants"
 import {
   calculateWidgetFee,
   QuoteImpl,
@@ -28,7 +28,7 @@ import {
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import { SlippageError } from "../errors"
+import { LiquidityError, SlippageError } from "../errors"
 import { SwapError } from "../errors/swap-error"
 import { PoolData } from "./../idl/SwapFactory.d"
 import {
@@ -98,7 +98,12 @@ class ShroffImpl implements Shroff {
       )
       return this.requestedQuote
     }
-    throw new Error("TODO Error handling getQuote")
+
+    if (errorTypes.some((errorType) => hasOwnProperty(quote.err, errorType))) {
+      throw new LiquidityError()
+    }
+
+    throw new Error("Something went wrong")
   }
 
   getSwapTransaction(): SwapTransaction | undefined {

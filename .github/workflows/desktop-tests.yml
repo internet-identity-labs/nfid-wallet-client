@@ -33,14 +33,6 @@ on:
         options:
           - "false"
           - "true"
-      test_cycle:
-        description: "Test Cycle"
-        required: true
-        default: "no_google"
-        type: choice
-        options:
-          - "full"
-          - "no-google"
 
 env:
   CI_DEBUG: "true"
@@ -70,9 +62,6 @@ jobs:
           echo "BASE_REF: ${{ github.base_ref }}"
           echo "EVENT_NAME: ${{ github.event_name }}"
           echo "REF_NAME: ${{ github.ref_name }}"
-          echo "group: nfid-wallet-client-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
-          echo "group: nfid-wallet-client-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}"
-          echo "cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}"
 
       - name: Check secrets
         run: |
@@ -80,7 +69,6 @@ jobs:
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
-          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
@@ -99,8 +87,8 @@ jobs:
       IMAGE_NAME: nfid-test
 
     concurrency:
-      group: nfid-wallet-client-tests-docker-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
-      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
+      group: nfid-wallet-client-tests-docker-${{ contains( github.ref_name, 'main' ) }}-${{ contains( github.event_name, 'push' ) || github.ref_name }}
+      cancel-in-progress: ${{ contains( github.event_name, 'pull_request' ) }}
 
     steps:
       - name: Checkout repo
@@ -250,8 +238,8 @@ jobs:
     env:
       IMAGE_NAME: nfid-test
     concurrency:
-      group: nfid-wallet-client-tests-e2e-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.ref_name, 'main' ) }}-${{ contains( github.event.inputs.test_cycle, 'full') || contains( github.event_name, 'push' ) || github.ref_name }}
-      cancel-in-progress: ${{ contains( github.event.inputs.test_cycle, 'no-google' ) || contains( github.event_name, 'pull_request' ) }}
+      group: nfid-wallet-client-tests-e2e-${{ contains( github.ref_name, 'main' ) }}-${{ contains( github.event_name, 'push' ) || github.ref_name }}
+      cancel-in-progress: ${{ contains( github.event_name, 'pull_request' ) }}
 
     steps:
       - name: Checkout repo
@@ -303,14 +291,7 @@ jobs:
           docker pull ${IMAGE_ID}:${VERSION}
 
           # Save VARS for next steps
-          case "${{ github.event.inputs.test_cycle }}" in
-            full)
-              TEST_ADD_PARAMS=""
-              ;;
-            *)
-              TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
-              ;;
-          esac
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
 
           # If branch main, run full cycle
           if [ "${{ github.ref_name }}" == 'main' ]; then
@@ -321,14 +302,6 @@ jobs:
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "CI_DEBUG=${CI_DEBUG}" >> $GITHUB_ENV
           echo "TEST_ADD_PARAMS="${TEST_ADD_PARAMS}"" >> $GITHUB_ENV
-
-      - name: Checkout Google user E2E
-        uses: actions/checkout@v4
-        with:
-          repository: internet-identity-labs/user-google-e2e
-          path: apps/nfid-frontend-e2e/chrome-user-data-dir
-          ref: main
-          token: ${{ secrets.PAT }}
 
       - name: Cache Node Modules
         uses: actions/cache@v4
@@ -358,8 +331,6 @@ jobs:
             IS_E2E_TEST=true
             USERGEEK_API_KEY=${USERGEEK_API_KEY}
             GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
-
-            URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
             LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
           EOF
 
@@ -383,7 +354,6 @@ jobs:
           IS_E2E_TEST: true
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Save test results

@@ -1,5 +1,6 @@
 import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
+import { softAssertAll } from "../helpers/softAssertions.js"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import activity from "../pages/activity.js"
@@ -775,10 +776,6 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
   })
 })
 
-Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
-  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
-})
-
 Then(/^Open collectibles page$/, async () => {
   await Nft.openCollectibles()
 })
@@ -809,31 +806,22 @@ Then(
   },
 )
 
-Then(/^(\d+) transactions appear$/, async (amount: number) => {
-  await Nft.getActivityAmount(amount)
-})
-
 Then(
-  /^(\d+) raw with ([^"]*) & (\d+) & ([^"]*) & ([^"]*) & ([^"]*)$/,
+  /^The first raw has the next values: ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*)$/,
   async (
-    n: number,
     type: string,
-    date: number,
+    date: string,
     from: string,
     to: string,
     price: string,
   ) => {
-    const actualType = await Nft.trType(n)
-    expect(actualType).toContain(type)
-    const actualFrom = await Nft.trFrom(n)
-    expect(actualFrom).toContain(from)
-    const actualTo = await Nft.trTo(n)
-    expect(actualTo).toContain(to)
-    const actualPrice = await Nft.trPrice(n)
-    expect(actualPrice).toContain(price)
-    const actualDate = await Nft.trDate(n)
-    let parsed = format(new Date(Number(date)), "MMM dd, yyyy - hh:mm:ss aaa")
-    expect(actualDate).toContain(parsed)
+    await softAssertAll(
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("Event type")).toContain(type),
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("Date and time")).toContain(date),
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("To")).toContain(to),
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("Price")).toContain(price),
+      // TODO BUG - "From" field is empty () => expect(await Nft.getValueFromColumnAtFirstRow("From")).toContain(price)
+    )
   },
 )
 

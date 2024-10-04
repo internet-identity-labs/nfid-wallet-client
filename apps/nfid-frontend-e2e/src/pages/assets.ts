@@ -128,6 +128,7 @@ export class Assets {
       await this.principal.waitForDisplayed()
       return (await this.principal.getText()) != ""
     })
+    await browser.pause(1000)
     const receiveButton = await $("#receive_button")
     await receiveButton.waitForDisplayed({ timeout: 10000 })
     await receiveButton.waitForClickable({ timeout: 15000 })

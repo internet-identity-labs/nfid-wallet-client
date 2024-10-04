@@ -4,7 +4,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { CompleteType } from "src/integration/icpswap/types/enums"
 
 export class TransferSwapHandler extends TransactionErrorHandlerAbstract {
-  finishTransaction(delegation: SignIdentity): Promise<SwapTransaction> {
+  completeTransaction(delegation: SignIdentity): Promise<SwapTransaction> {
     //todo: return assets from NFID ledger
     throw new Error("Method not implemented.")
   }

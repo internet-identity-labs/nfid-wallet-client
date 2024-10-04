@@ -1,11 +1,12 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
 import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
-import { ShroffBuilder } from "src/integration/icpswap/shroff-builder"
 import { SwapStage } from "src/integration/icpswap/types/enums"
+import {errorHandlerFactory} from "src/integration/icpswap/error-handler/handler-factory";
 
 const mock: JsonnableEd25519KeyIdentity = [
   "302a300506032b6570032100c88f8f46ee5c23a748026498ddc7ed2104782ea02cd266170a470587d7c2f932",
@@ -15,7 +16,8 @@ const mock: JsonnableEd25519KeyIdentity = [
 const mockPrincipal =
   "4pw67-jou3d-xb4py-6pnvx-5p75x-pp3mi-ywe4j-bhmmq-l3354-awsws-kae"
 
-describe("shroff test", () => {
+//too long. unskip when needed
+describe("shroff error handler test", () => {
   jest.setTimeout(900000)
 
   //too long test. Unskip when needed
@@ -29,21 +31,21 @@ describe("shroff test", () => {
       .withTarget(targetLedger)
       .build()
 
-    const quote = await shroff.getQuote(0.001)
+    await shroff.getQuote(0.001)
 
     let callCount = 0
 
     jest.spyOn(shroff as any, "deposit").mockImplementation(() => {
       callCount++
       if (callCount === 1) {
-        console.debug("Deposit MOCK")
+        throw new Error("Deposit MOCK error")
       }
     })
 
     jest
       .spyOn(swapTransactionService as any, "storeTransaction")
       .mockImplementation(() => {
-        console.log("Transaction stored MOCK")
+        console.debug("Transaction stored MOCK")
       })
     const can = await icpSwapService.getPoolFactory(sourceLedger, targetLedger)
     const balanceExpected = await icpSwapService.getBalance(
@@ -53,9 +55,9 @@ describe("shroff test", () => {
     try {
       await shroff.swap(mockId)
     } catch (e) {}
-    let ff = shroff.getSwapTransaction()
-    const errorHandler = ff!.getErrorHandler()
-    let transaction = (await errorHandler.finishTransaction(
+    let failedTransaction = shroff.getSwapTransaction()
+    const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
+    let transaction = (await errorHandler.completeTransaction(
       mockId,
     )) as SwapTransactionImpl
     const balanceActual = await icpSwapService.getBalance(

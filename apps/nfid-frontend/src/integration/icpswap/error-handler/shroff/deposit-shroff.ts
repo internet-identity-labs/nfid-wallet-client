@@ -1,11 +1,15 @@
 import { SignIdentity } from "@dfinity/agent"
 import { SwapError } from "src/integration/icpswap/errors/swap-error"
-import { ShroffImpl } from "src/integration/icpswap/impl/shroff-impl"
+import {
+  ShroffBuilder,
+  ShroffImpl,
+} from "src/integration/icpswap/impl/shroff-impl"
+import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { WithdrawArgs } from "../../idl/SwapPool"
+import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -52,5 +56,16 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       }
       throw new Error("Withdraw error: " + JSON.stringify(result.err))
     })
+  }
+}
+
+export class DepositErrorShroffBuilder extends ShroffBuilder {
+  protected buildShroff(): Shroff {
+    return new ShroffDepositErrorHandler(
+      this.poolData!,
+      this.zeroForOne!,
+      this.sourceOracle!,
+      this.targetOracle!,
+    )
   }
 }

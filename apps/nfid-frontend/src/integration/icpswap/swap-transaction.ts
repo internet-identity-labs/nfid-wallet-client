@@ -9,8 +9,6 @@ import { Error as ErrorSwap } from "./idl/SwapPool.d"
 export interface SwapTransaction {
   getStage(): SwapStage
 
-  getErrorHandler(): TransactionErrorHandler
-
   toCandid(quote: Quote): SwapTransactionCandid
 
   fromCandid(candid: SwapTransactionCandid): SwapTransaction
@@ -37,7 +35,7 @@ export interface SwapTransaction {
 
   getSourceLedger(): string
 
-  getAmount(): number
+  getSourceAmount(): bigint
 
   setDeposit(deposit: bigint): void
 

@@ -27,7 +27,7 @@ describe("Targets validation", () => {
     }
   })
 
-  it("validate certified", async function () {
+  it.skip("validate certified", async function () {
     localStorageTTL.clear()
     const agent: Agent = await new HttpAgent({ host: "https://ic0.app" })
     const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>

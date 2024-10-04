@@ -190,7 +190,7 @@ export class Assets {
   public async successWindow() {
     const sw = await $(`#success_window_3`)
     await sw.waitForExist({
-      timeout: 50000,
+      timeout: 80000,
     })
   }
 

@@ -226,7 +226,7 @@ export class Assets {
   }
 
   public async openActivity() {
-    const activityIcon = await $("#activity")
+    const activityIcon = await $("#tab_Activity")
     await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
 
     await activityIcon.waitForDisplayed({ timeout: 10000 })

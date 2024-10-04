@@ -825,13 +825,8 @@ Then(
   },
 )
 
-Then(/^I should see activity page$/, async () => {
-  const pageTitle = await activity.pageTitle
-  await pageTitle.waitForDisplayed({ timeout: 10000 })
-  expect(await pageTitle.getText()).toContain("Activity")
-  await activity.waitForLoaderDisappear()
-
-  await new Promise((resolve) => setTimeout(() => resolve(true), 3000)) // just manual delay before next step
+Then(/^I should see filter button in Activity tab$/, async () => {
+  await activity.filterButton.waitForDisplayed({ timeout: 10000 })
 })
 
 Then(/^I should see (\d+) activities in the table$/, async (amount: number) => {

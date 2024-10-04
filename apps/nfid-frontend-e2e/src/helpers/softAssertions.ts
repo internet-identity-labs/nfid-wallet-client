@@ -17,7 +17,7 @@ class SoftAssertions {
     }
 
     if (this.errors.length > 0) {
-      const errorMessage = `Errors:\n${this.errors.join("\n")}`
+      const errorMessage = `${this.errors.join("\n")}`
       this.clear()
       throw new Error(errorMessage)
     }

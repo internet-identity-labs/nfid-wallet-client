@@ -20,5 +20,4 @@ export interface Quote {
   getAmountWithoutWidgetFee(): BigNumber
   getWidgetFeeAmount(): BigNumber
   getPriceImpact(): PriceImpact | undefined
-  getSourceRaw(): number
 }

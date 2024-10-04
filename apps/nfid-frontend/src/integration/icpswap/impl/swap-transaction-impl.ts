@@ -1,19 +1,13 @@
-import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
-import randomUUID from "crypto"
-import { UUID } from "crypto"
-import { errorHandlerFactory } from "src/integration/icpswap/error-handler/handler-factory"
-import { Quote } from "src/integration/icpswap/quote"
-import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
-import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
-import { SwapStage } from "src/integration/icpswap/types/enums"
+import {Icrc1TransferError} from "@dfinity/ledger-icp/dist/candid/ledger"
+import randomUUID, {UUID} from "crypto"
+import {Quote} from "src/integration/icpswap/quote"
+import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
+import {SwapStage} from "src/integration/icpswap/types/enums"
 
-import { hasOwnProperty } from "@nfid/integration"
+import {hasOwnProperty} from "@nfid/integration"
 
-import { Error as ErrorSwap } from "./../idl/SwapPool.d"
-import {
-  SwapStage as SwapStageCandid,
-  SwapTransaction as SwapTransactionCandid,
-} from "./../idl/swap_trs_storage.d"
+import {Error as ErrorSwap} from "./../idl/SwapPool.d"
+import {SwapStage as SwapStageCandid, SwapTransaction as SwapTransactionCandid,} from "./../idl/swap_trs_storage.d"
 
 export class SwapTransactionImpl implements SwapTransaction {
   private uid: UUID

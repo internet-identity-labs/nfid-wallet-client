@@ -3,8 +3,6 @@ import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import { baseURL } from "../wdio.conf.js"
 import { deviceName } from "../wdio.mobile.conf.js"
-import { addLocalStorageCommands } from "./helpers/setupLocalStorage.js"
-import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn.js"
 
 //
 // =====
@@ -55,10 +53,8 @@ export const hooks = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  before: async function (capabilities: any, specs: any) {
-    await addVirtualAuthCommands(browser)
-    await addLocalStorageCommands(browser)
-  },
+  // before: async function (capabilities: any, specs: any) {
+  // },
   /**
    * Gets executed before the suite starts.
    * @param {Object} suite suite details

@@ -128,6 +128,7 @@ export class Assets {
       await this.principal.waitForDisplayed()
       return (await this.principal.getText()) != ""
     })
+    await browser.pause(1000)
     const receiveButton = await $("#receive_button")
     await receiveButton.waitForDisplayed({ timeout: 10000 })
     await receiveButton.waitForClickable({ timeout: 15000 })
@@ -225,7 +226,7 @@ export class Assets {
   }
 
   public async openActivity() {
-    const activityIcon = await $("#activity")
+    const activityIcon = await $("#tab_Activity")
     await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
 
     await activityIcon.waitForDisplayed({ timeout: 10000 })

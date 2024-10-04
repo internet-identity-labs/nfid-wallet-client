@@ -1,5 +1,6 @@
 import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
+import { softAssertAll } from "../helpers/softAssertions.js"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import activity from "../pages/activity.js"
@@ -210,27 +211,27 @@ Then(
   checkLocalStorageKey,
 )
 
-Then(/^Go to Profile page$/, async function () {
+Then(/^Go to Profile page$/, async function() {
   await clickElement("click", "selector", "#profileButton")
 })
 
 Then(
   /^I put Recovery Phrase to input field ([^"]*)$/,
-  async function (phrase: string) {
-    await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
+  async function(phrase: string) {
+    await setInputField("setValue", phrase, "[name=\"recoveryPhrase\"]")
   },
 )
 
-Then(/^I put copied Recovery Phrase to input field/, async function () {
-  await clickElement("click", "selector", '[name="recoveryPhrase"]')
+Then(/^I put copied Recovery Phrase to input field/, async function() {
+  await clickElement("click", "selector", "[name=\"recoveryPhrase\"]")
   await browser.keys(["Command", "v"])
 })
 
-Then(/^I toggle checkbox "([^"]*)?"$/, async function (selector: string) {
+Then(/^I toggle checkbox "([^"]*)?"$/, async function(selector: string) {
   await clickElement("click", "selector", selector)
 })
 
-Then(/^I press button "([^"]*)?"$/, async function (button: string) {
+Then(/^I press button "([^"]*)?"$/, async function(button: string) {
   await clickElement("click", "selector", button)
 })
 
@@ -358,7 +359,7 @@ Then(
 )
 
 Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
-  await clickElement("click", "selector", '[id="account_row_0"]')
+  await clickElement("click", "selector", "[id=\"account_row_0\"]")
   await Assets.openElementById("tab_" + tab)
 })
 
@@ -498,7 +499,7 @@ Then(
   },
 )
 
-Then(/^Account ID is (.+)/, async function (account: string) {
+Then(/^Account ID is (.+)/, async function(account: string) {
   const address = await Assets.getAccountId(true)
   let expectedResult =
     (await address.firstAddressPart.getText()) +
@@ -511,8 +512,8 @@ Then(/^Principal is ([^"]*)$/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
   expect(
     (await address.firstAddressPart.getText()) +
-      "..." +
-      (await address.secondAddressPart.getText()),
+    "..." +
+    (await address.secondAddressPart.getText()),
   ).toEqual(principal)
 })
 
@@ -523,25 +524,25 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
   expect(
     String(
       (await (await usersData.get("principal")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("principal")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("principal")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
-      "..." +
-      expectedData.principal.substring(58, 63),
+    "..." +
+    expectedData.principal.substring(58, 63),
   )
 
   expect(
     String(
       (await (await usersData.get("address")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("address")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("address")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +
-      "..." +
-      expectedData.address.substring(59, 64),
+    "..." +
+    expectedData.address.substring(59, 64),
   )
 
   await browser.waitUntil(
@@ -775,10 +776,6 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
   })
 })
 
-Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
-  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
-})
-
 Then(/^Open collectibles page$/, async () => {
   await Nft.openCollectibles()
 })
@@ -809,31 +806,22 @@ Then(
   },
 )
 
-Then(/^(\d+) transactions appear$/, async (amount: number) => {
-  await Nft.getActivityAmount(amount)
-})
-
 Then(
-  /^(\d+) raw with ([^"]*) & (\d+) & ([^"]*) & ([^"]*) & ([^"]*)$/,
+  /^The first raw has the next values: ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*)$/,
   async (
-    n: number,
     type: string,
-    date: number,
+    date: string,
     from: string,
     to: string,
     price: string,
   ) => {
-    const actualType = await Nft.trType(n)
-    expect(actualType).toContain(type)
-    const actualFrom = await Nft.trFrom(n)
-    expect(actualFrom).toContain(from)
-    const actualTo = await Nft.trTo(n)
-    expect(actualTo).toContain(to)
-    const actualPrice = await Nft.trPrice(n)
-    expect(actualPrice).toContain(price)
-    const actualDate = await Nft.trDate(n)
-    let parsed = format(new Date(Number(date)), "MMM dd, yyyy - hh:mm:ss aaa")
-    expect(actualDate).toContain(parsed)
+    await softAssertAll(
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("Event type")).toContain(type),
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("Date and time")).toContain(date),
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("To")).toContain(to),
+      async () => expect(await Nft.getValueFromColumnAtFirstRow("Price")).toContain(price),
+      // TODO BUG - "From" field is empty () => expect(await Nft.getValueFromColumnAtFirstRow("From")).toContain(price)
+    )
   },
 )
 

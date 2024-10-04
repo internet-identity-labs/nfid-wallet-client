@@ -42,7 +42,6 @@ Feature:Send/Receive Asset
       | anchor | nft1                  |
       | 31870  | ICPuppiesWearables145 |
 
-
   @sendreceive4
   Scenario Outline: User should be able to send <chain> transaction
     Given User opens NFID site

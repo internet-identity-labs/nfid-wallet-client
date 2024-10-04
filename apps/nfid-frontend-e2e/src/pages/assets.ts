@@ -33,7 +33,7 @@ export class Assets {
     return `#token_${chain.replace(/\s/g, "")}_balance`
   }
 
-  private get principal() {
+  get principal() {
     return $("#principal")
   }
 

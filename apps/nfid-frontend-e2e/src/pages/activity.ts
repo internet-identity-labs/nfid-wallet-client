@@ -1,9 +1,6 @@
 import { Page } from "./page.js"
 
 export class Activity extends Page {
-  get pageTitle() {
-    return $("#page_title")
-  }
 
   get activityTableRows() {
     return $$("//*[@id='activity-table']//tr[starts-with(@id, 'tx-')]")

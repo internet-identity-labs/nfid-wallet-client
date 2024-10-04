@@ -94,12 +94,12 @@ export class SwapTransactionImpl implements SwapTransaction {
 
   setTransferId(transferId: bigint) {
     this.transferId = transferId
-    if (this.transferNFIDId) this.stage = SwapStage.Deposit
+    this.stage = SwapStage.Deposit
   }
 
   setNFIDTransferId(transferId: bigint) {
     this.transferNFIDId = transferId
-    if (this.transferId) this.stage = SwapStage.TransferSwap
+    this.stage = SwapStage.TransferSwap
   }
 
   setDeposit(deposit: bigint) {
@@ -128,7 +128,6 @@ export class SwapTransactionImpl implements SwapTransaction {
       deposit: this.deposit ? [BigInt(this.deposit)] : [],
       end_time: this.endTime ? [BigInt(this.endTime)] : [],
       error: this.error ? [JSON.stringify(this.error)] : [],
-
       source_ledger: this.sourceLedger,
       stage: this.mapStageToCandid(this.stage),
       start_time: BigInt(this.startTime),

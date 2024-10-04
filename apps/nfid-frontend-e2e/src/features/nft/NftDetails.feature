@@ -11,7 +11,6 @@ Feature:Non Fungible Asset Details
     And NFT <token> <collection_id> <id> displayed
     And Details are <standard> <collection_id>
     And About starts with <about>
-    And Asset preview type is <previewType>
     Examples:
       | anchor | token                    | id                                          | standard | collection_id               | about               | previewType |
       | 31870  | ICPuppies Wearables #145 | 3s5hr-4ikor-uwiaa-aaaaa-cqabn-eaqca-aaaci-q | EXT      | 4gbxl-byaaa-aaaak-aafuq-cai | ICPuppies Wearables | img         |

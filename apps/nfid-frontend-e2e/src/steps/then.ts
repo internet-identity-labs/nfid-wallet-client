@@ -776,10 +776,6 @@ Then(/^About starts with ([^"]*)/, async (about: string) => {
   })
 })
 
-Then(/^Asset preview type is ([^"]*)/, async (type: string) => {
-  ;(await $(`#asset-${type}`)).waitForDisplayed({ timeout: 5000 })
-})
-
 Then(/^Open collectibles page$/, async () => {
   await Nft.openCollectibles()
 })

@@ -109,7 +109,10 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     const interval = setInterval(() => {
       const step = getTransaction.getStage()
       setSwapStep(step)
-      if (step === SwapStage.Completed || step === SwapStage.Error)
+      if (
+        step !== SwapStage.Completed ||
+        getTransaction.getError() !== undefined
+      )
         clearInterval(interval)
     }, 100)
 

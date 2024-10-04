@@ -7,23 +7,24 @@ export interface InitArgs {
 }
 export type SwapStage =
   | { Withdraw: null }
-  | { Error: null }
   | { Deposit: null }
   | { Swap: null }
-  | { Transfer: null }
   | { Completed: null }
+  | { TransferNFID: null }
+  | { TransferSwap: null }
 export interface SwapTransaction {
-  withdraw: bigint
-  swap: bigint
-  deposit: bigint
-  end_time: bigint
-  transfer_id: bigint
+  uid: string
+  withdraw: [] | [bigint]
+  swap: [] | [bigint]
+  deposit: [] | [bigint]
+  end_time: [] | [bigint]
+  transfer_id: [] | [bigint]
   target_ledger: string
   error: [] | [string]
   stage: SwapStage
   start_time: bigint
   source_ledger: string
-  transfer_nfid_id: bigint
+  transfer_nfid_id: [] | [bigint]
   target_amount: bigint
   source_amount: bigint
 }
@@ -32,3 +33,4 @@ export interface _SERVICE {
   store_transaction: ActorMethod<[SwapTransaction], undefined>
 }
 export declare const idlFactory: IDL.InterfaceFactory
+export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[]

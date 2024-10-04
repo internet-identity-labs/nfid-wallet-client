@@ -4,7 +4,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { CompleteType } from "src/integration/icpswap/types/enums"
 
 export class SwapHandler extends TransactionErrorHandlerAbstract {
-  finishTransaction(delegation: SignIdentity): Promise<SwapTransaction> {
+  completeTransaction(delegation: SignIdentity): Promise<SwapTransaction> {
     //TODO: finish withdraw assets
     throw new Error("Method not implemented.")
   }

@@ -187,10 +187,6 @@ export class QuoteImpl implements Quote {
     return BigNumber(this.sourceAmount).multipliedBy(10 ** this.source.decimals)
   }
 
-  getSourceRaw(): number {
-    return this.sourceAmount
-  }
-
   getTargetAmount(): BigNumber {
     return BigNumber(Number(this.quote))
   }

@@ -1,10 +1,11 @@
 import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
-import { randomUUID, UUID } from "crypto"
+import randomUUID from "crypto"
+import { UUID } from "crypto"
 import { errorHandlerFactory } from "src/integration/icpswap/error-handler/handler-factory"
 import { Quote } from "src/integration/icpswap/quote"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
-import { CompleteType, SwapStage } from "src/integration/icpswap/types/enums"
+import { SwapStage } from "src/integration/icpswap/types/enums"
 
 import { hasOwnProperty } from "@nfid/integration"
 
@@ -18,7 +19,7 @@ export class SwapTransactionImpl implements SwapTransaction {
   private uid: UUID
   private startTime: number
   private transferId: bigint | undefined
-  private amount: number
+  private sourceAmount: bigint
   private transferNFIDId: bigint | undefined
   private deposit: bigint | undefined
   private quote: number
@@ -34,15 +35,15 @@ export class SwapTransactionImpl implements SwapTransaction {
     targetLedger: string,
     sourceLedger: string,
     quote: number,
-    amount: number,
+    amount: bigint,
   ) {
     this.startTime = Date.now()
     this.stage = SwapStage.TransferNFID
     this.targetLedger = targetLedger
     this.sourceLedger = sourceLedger
-    this.uid = randomUUID()
+    this.uid = randomUUID.randomUUID()
     this.quote = quote
-    this.amount = amount
+    this.sourceAmount = amount
   }
 
   getStartTime(): number {
@@ -85,10 +86,6 @@ export class SwapTransactionImpl implements SwapTransaction {
     return this.sourceLedger
   }
 
-  getErrorHandler(): TransactionErrorHandler {
-    return errorHandlerFactory.getHandler(this)
-  }
-
   getStage(): SwapStage {
     return this.stage
   }
@@ -97,8 +94,8 @@ export class SwapTransactionImpl implements SwapTransaction {
     return this.quote
   }
 
-  getAmount(): number {
-    return this.amount
+  getSourceAmount(): bigint {
+    return this.sourceAmount
   }
 
   setTransferId(transferId: bigint) {
@@ -137,12 +134,11 @@ export class SwapTransactionImpl implements SwapTransaction {
       deposit: this.deposit ? [BigInt(this.deposit)] : [],
       end_time: this.endTime ? [BigInt(this.endTime)] : [],
       error: this.error ? [JSON.stringify(this.error)] : [],
-      source_amount: BigInt(this.amount),
+
       source_ledger: this.sourceLedger,
       stage: this.mapStageToCandid(this.stage),
       start_time: BigInt(this.startTime),
       swap: this.swap ? [BigInt(this.swap)] : [],
-      target_amount: BigInt(this.quote),
       target_ledger: this.targetLedger,
       transfer_id: this.transferId ? [BigInt(this.transferId)] : [],
       transfer_nfid_id: this.transferNFIDId
@@ -150,6 +146,8 @@ export class SwapTransactionImpl implements SwapTransaction {
         : [],
       withdraw: this.withdraw ? [BigInt(this.withdraw)] : [],
       uid: this.uid,
+      target_amount: BigInt(this.quote),
+      source_amount: BigInt(quote.getSourceAmount().toNumber()),
     }
   }
 

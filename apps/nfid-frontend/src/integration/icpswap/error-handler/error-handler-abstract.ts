@@ -12,7 +12,9 @@ export abstract class TransactionErrorHandlerAbstract
     this.transaction = transaction
   }
 
-  abstract finishTransaction(delegation: SignIdentity): Promise<SwapTransaction>
+  abstract completeTransaction(
+    delegation: SignIdentity,
+  ): Promise<SwapTransaction>
 
   abstract getCompleteType(): CompleteType
 

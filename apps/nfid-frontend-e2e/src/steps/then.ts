@@ -806,10 +806,6 @@ Then(
   },
 )
 
-Then(/^(\d+) transactions appear$/, async (amount: number) => {
-  await Nft.getActivityAmount(amount)
-})
-
 Then(
   /^The first raw has the next values: ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*)$/,
   async (

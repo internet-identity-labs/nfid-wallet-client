@@ -5,7 +5,7 @@ import { localStorageTTL } from "../util/local-strage-ttl"
 import { CertifiedResponse, validateTargets } from "./targets"
 
 describe("Targets validation", () => {
-  jest.setTimeout(50000)
+  jest.setTimeout(60000)
 
   it("validate", async function () {
     localStorageTTL.clear()

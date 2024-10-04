@@ -141,10 +141,11 @@ export class ShroffImpl implements Shroff {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       await this.transferToNFID()
+      console.debug("Transfer to NFID done")
       this.restoreTransaction()
       await this.transferToSwap()
       this.restoreTransaction()
-      console.debug("Transfer done")
+      console.debug("Transfer to swap done")
       await this.deposit()
       this.restoreTransaction()
       console.debug("Deposit done")

@@ -34,6 +34,8 @@ class SwapTransactionService {
         return new SwapTransactionImpl(
           t.target_ledger,
           t.source_ledger,
+          Number(t.target_amount),
+          t.source_amount,
         ).fromCandid(t)
       })
     })

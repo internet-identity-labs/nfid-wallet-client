@@ -20,22 +20,22 @@ export class QuoteImpl implements Quote {
   private readonly amountWithoutWidgetFee: BigNumber
 
   constructor(
-    sourceAmount: number,
+    userInputAmount: number,
     quote: bigint,
     source: ICRC1TypeOracle,
     target: ICRC1TypeOracle,
     targetPriceUSD: BigNumber | undefined,
     sourcePriceUSD: BigNumber | undefined,
   ) {
-    this.sourceAmount = sourceAmount
+    this.sourceAmount = userInputAmount
     this.quote = quote
     this.source = source
     this.target = target
     this.targetPriceUSD = targetPriceUSD
     this.sourcePriceUSD = sourcePriceUSD
-    this.amountWithoutWidgetFee = new BigNumber(sourceAmount)
+    this.amountWithoutWidgetFee = new BigNumber(userInputAmount)
       .multipliedBy(10 ** this.source.decimals)
-      .minus(calculateWidgetFee(sourceAmount, this.source.decimals))
+      .minus(calculateWidgetFee(userInputAmount, this.source.decimals))
       .minus(Number(this.source.fee))
   }
 

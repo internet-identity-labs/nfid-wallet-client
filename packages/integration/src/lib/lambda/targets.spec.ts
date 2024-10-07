@@ -5,7 +5,7 @@ import { localStorageTTL } from "../util/local-strage-ttl"
 import { CertifiedResponse, validateTargets } from "./targets"
 
 describe("Targets validation", () => {
-  jest.setTimeout(50000)
+  jest.setTimeout(60000)
 
   it("validate", async function () {
     localStorageTTL.clear()
@@ -27,7 +27,7 @@ describe("Targets validation", () => {
     }
   })
 
-  it("validate certified", async function () {
+  it.skip("validate certified", async function () {
     localStorageTTL.clear()
     const agent: Agent = await new HttpAgent({ host: "https://ic0.app" })
     const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>

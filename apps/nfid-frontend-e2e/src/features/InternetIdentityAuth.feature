@@ -14,5 +14,7 @@ Feature: User should be able to register and authenticate from desktop
     When It log's me in
     Then Wait while Security accounts calculated
     Examples:
-      | anchor |
-      | 28593  |
+      | anchor    |
+      | 28593     |
+      | 100000830 |
+      | 200000276 |

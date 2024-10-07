@@ -257,15 +257,14 @@ Then(
   async (
     assetLabel: string,
     currency: string,
-    blockchain: string,
+    chain: string,
     balance: string,
   ) => {
-    let assetBalance = await Assets.getAssetBalance(assetLabel)
-    expect(assetBalance).toHaveText(balance)
-    let assetCurrency = await Assets.getCurrency(assetLabel)
-    expect(assetCurrency).toHaveText(currency)
-    let assetBlockchain = await Assets.getBlockchain(assetLabel)
-    expect(assetBlockchain).toHaveText(blockchain)
+    await softAssertAll(
+      async () => await expect(await Assets.getAssetBalance(assetLabel)).toHaveText(balance),
+      async () => await expect(await Assets.getCurrency(assetLabel)).toHaveText(currency),
+      async () => await expect(await Assets.getBlockchain(chain)).toHaveText(chain)
+    )
   },
 )
 
@@ -372,10 +371,10 @@ Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
 Then(
   /^Wait while ([^"]*) asset calculated with currency ([^"]*)$/,
   async (text: string, currency) => {
-    await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (x) =>
-      x
-        .waitForExist({ timeout: 57000 })
-        .then(async () => expect(x).not.toHaveText(`0 ${currency}`)),
+    await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (it) => {
+        await it.waitForExist({ timeout: 57000 })
+        expect(it).not.toHaveText(`0 ${currency}`)
+      },
     )
   },
 )
@@ -505,12 +504,12 @@ Then(/^Account ID is (.+)/, async function(account: string) {
     (await address.firstAddressPart.getText()) +
     "..." +
     (await address.secondAddressPart.getText())
-  expect(expectedResult).toEqual(account)
+  await expect(expectedResult).toEqual(account)
 })
 
 Then(/^Principal is ([^"]*)$/, async (principal: string) => {
   let address = await Assets.getAccountId(false)
-  expect(
+  await expect(
     (await address.firstAddressPart.getText()) +
     "..." +
     (await address.secondAddressPart.getText()),

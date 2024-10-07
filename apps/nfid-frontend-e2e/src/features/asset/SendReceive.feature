@@ -10,9 +10,10 @@ Feature:Send/Receive Asset
     Then Account ID is <address>
     And Principal is <principal>
     Examples:
-      | anchor | address                               | principal                             |
-      | 28542  | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe |
-      | 25795  | 648f03de52b30d96398fd77057c3c...fab5c | b35rl-wcza3-5w52t-565sg-eazlm...l-2qe |
+      | anchor    | address                               | principal                             |
+      | 28542     | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe |
+      | 100000830 | 05f121c2d97efa73386133c27f790...57148 | wlmjt-42cl4-bfewy-wqnsd-onwge...a-bqe |
+      | 200000276 | 3c23a07edbdca387a29d6ba2c644f...f876e | zmfwj-ds7r7-ixsfr-b6mpz-mz46s...i-yae |
 
   @sendreceive2
   Scenario Outline: User should be able to see balance and fee in <chain>
@@ -27,8 +28,10 @@ Feature:Send/Receive Asset
     Then Wait while balance and fee calculated
     And Balance is <balance> and fee is <fee> and currency is <currency>
     Examples:
-      | chain            | anchor | balance | fee    | account | currency |
-      | InternetComputer | 25795  | 0       | 0.0001 | NFID    | ICP      |
+      | chain            | anchor    | balance | fee    | account | currency |
+      | InternetComputer | 25795     | 0       | 0.0001 | NFID    | ICP      |
+      | InternetComputer | 100000830 | 0.499   | 0.0001 | NFID    | ICP      |
+      | InternetComputer | 200000276 | 0.5     | 0.0001 | NFID    | ICP      |
 
   @sendreceive3
   Scenario Outline: User should be able to see his collectibles on send NFT tab
@@ -39,8 +42,10 @@ Feature:Send/Receive Asset
     And User opens choose nft window
     And User sees option <nft1> in dropdown
     Examples:
-      | anchor | nft1                  |
-      | 31870  | ICPuppiesWearables145 |
+      | anchor    | nft1                  |
+      | 31870     | ICPuppiesWearables145 |
+      | 100000830 | ICPuppiesWearables145 |
+      | 200000276 | ICPuppiesWearables145 |
 
 
   @only_deploy_to_main

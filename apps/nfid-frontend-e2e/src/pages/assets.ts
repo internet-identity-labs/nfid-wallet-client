@@ -26,7 +26,8 @@ export class Assets {
   }
 
   public async getBlockchain(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_blockchain']")
+    console.log($(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']"))
+    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']")
   }
 
   private getTokenBalance(chain: string) {
@@ -125,7 +126,7 @@ export class Assets {
 
   public async receiveDialog() {
     await browser.waitUntil(async () => {
-      await this.principal.waitForDisplayed()
+      await this.principal.waitForClickable()
       return (await this.principal.getText()) != ""
     })
     await browser.pause(1000)

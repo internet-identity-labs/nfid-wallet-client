@@ -51,16 +51,16 @@ export interface TransactionData {
   type: IActivityAction
   timestamp: bigint
   transactionId: bigint
-  symbol: string
-  symbolTo: string
+  symbol?: string
+  symbolTo?: string
   amount: bigint
-  amountTo: bigint
+  amountTo?: bigint
   from: string
   to: string
   decimals: number
-  decimalsTo: number
-  icon: string
-  iconTo: string
+  decimalsTo?: number
+  icon?: string
+  iconTo?: string
   canister?: string
   canisterTo?: string
 }

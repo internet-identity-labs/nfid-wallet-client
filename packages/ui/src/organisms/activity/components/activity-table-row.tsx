@@ -4,7 +4,9 @@ import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
 import {
+  IconCmpArrow,
   IconCmpStatusSuccess,
+  IconCmpSwapActivity,
   IconCmpTinyIC,
   IconNftPlaceholder,
   IconSvgArrowRight,
@@ -13,8 +15,6 @@ import {
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
-
-import { getActionOptions } from "../utils"
 
 interface IActivityTableRow extends IActivityRow {
   id: string
@@ -45,10 +45,20 @@ export const ActivityTableRow = ({
         <div
           className={clsx(
             "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
-            getActionOptions(action).color,
+            action === IActivityAction.SENT
+              ? "bg-red-50"
+              : action === IActivityAction.RECEIVED
+              ? "bg-emerald-50"
+              : "bg-violet-50",
           )}
         >
-          {getActionOptions(action).icon}
+          {action === IActivityAction.SENT ? (
+            <IconCmpArrow className="text-gray-400 rotate-[135deg] text-red-600" />
+          ) : action === IActivityAction.RECEIVED ? (
+            <IconCmpArrow className="text-gray-400 rotate-[-45deg] !text-emerald-600" />
+          ) : (
+            <IconCmpSwapActivity />
+          )}
         </div>
         <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
           <p className="font-semibold text-sm leading-[20px]">{action}</p>

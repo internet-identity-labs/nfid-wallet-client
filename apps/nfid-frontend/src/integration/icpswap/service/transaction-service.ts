@@ -27,7 +27,6 @@ class SwapTransactionService {
     delegationIdentity: SignIdentity,
   ) {
     await replaceActorIdentity(this.storageActor, delegationIdentity)
-    console.log(delegationIdentity.getPrincipal().toText())
     await this.storageActor.store_transaction(trs)
   }
 

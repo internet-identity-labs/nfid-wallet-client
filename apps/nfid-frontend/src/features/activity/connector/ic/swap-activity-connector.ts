@@ -12,7 +12,6 @@ import { Blockchain, TokenStandards } from "@nfid/integration/token/types"
 import { swapTransactionService } from "frontend/integration/icpswap/service/transaction-service"
 import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 
-import { getTxType } from "../../util/tx-type"
 import { ActivityClass } from "../activity"
 import { IActivityConfig } from "../activity-connector-types"
 
@@ -21,8 +20,6 @@ export class SwapActivityConnector extends ActivityClass<IActivityConfig> {
     const { publicKey } = await getUserIdData()
 
     const txs = await swapTransactionService.getTransactions(publicKey)
-
-    console.log(txs)
 
     const txsFormatted = [
       {
@@ -62,7 +59,7 @@ export class SwapActivityConnector extends ActivityClass<IActivityConfig> {
           from: tx.from,
           to: tx.to,
           transactionHash: tx.transactionId.toString(),
-          action: getTxType(tx.type),
+          action: tx.type,
           asset: {
             type: "ft",
             currency: tx.symbol,

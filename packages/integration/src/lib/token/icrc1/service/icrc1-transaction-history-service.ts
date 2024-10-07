@@ -13,7 +13,7 @@ import {
 } from "../../../_ic_api/index-icrc1.d"
 import { agentBaseConfig } from "../../../actors"
 import { Icrc1Pair } from "../icrc1-pair/impl/Icrc1-pair"
-import { ICRC1IndexData, TransactionData } from "../types"
+import { IActivityAction, ICRC1IndexData, TransactionData } from "../types"
 
 export class Icrc1TransactionHistoryService {
   async getICRC1IndexData(
@@ -73,6 +73,7 @@ export class Icrc1TransactionHistoryService {
                 publicKeyInPrincipal,
                 ledgerData.symbol,
                 ledgerData.decimals,
+                ledgerData.canister,
               ),
               oldestTransactionId:
                 response.Ok.oldest_tx_id.length === 0
@@ -100,6 +101,7 @@ export class Icrc1TransactionHistoryService {
     ownerPrincipal: string,
     symbol: string,
     decimals: number,
+    canisterId: string,
   ): Array<TransactionData> {
     const filtered = rawTrss.filter(
       (rawTrs) => rawTrs.transaction.transfer.length !== 0,
@@ -110,7 +112,9 @@ export class Icrc1TransactionHistoryService {
     return filtered.map((rawTrs) => {
       const trs: Transfer = rawTrs.transaction.transfer[0]!
       const type =
-        ownerPrincipal === trs.from.owner.toText() ? "sent" : "received"
+        ownerPrincipal === trs.from.owner.toText()
+          ? ("Sent" as IActivityAction)
+          : ("Received" as IActivityAction)
       const data: TransactionData = {
         type,
         timestamp: rawTrs.transaction.timestamp,
@@ -120,6 +124,7 @@ export class Icrc1TransactionHistoryService {
         to: trs.to.owner.toText(),
         transactionId: rawTrs.id,
         decimals,
+        canister: canisterId,
       }
       return data
     })

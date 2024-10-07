@@ -9,7 +9,6 @@ import {
 import { Blockchain, TokenStandards } from "@nfid/integration/token/types"
 
 import { nanoSecondsToDate } from "../../util/activity"
-import { getTxType } from "../../util/tx-type"
 import { ActivityClass } from "../activity"
 import { IActivityConfig } from "../activity-connector-types"
 
@@ -33,7 +32,7 @@ export class ICRC1ActivityConnector extends ActivityClass<IActivityConfig> {
           from: tx.from,
           to: tx.to,
           transactionHash: tx.transactionId.toString(),
-          action: getTxType(tx.type),
+          action: tx.type,
           asset: {
             type: "ft",
             currency: tx.symbol,

@@ -1,4 +1,4 @@
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
+import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useEffect, useState } from "react"
 import useSWR from "swr"
 
@@ -72,7 +72,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
 
     if (shouldLoadMoreICRC1(newOffset)) {
       await loadData()
-      //setOffset(newOffset)
     } else {
       setOffset(newOffset)
       mutate()
@@ -90,8 +89,8 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   }
 
   const loadData = async () => {
-    const { userId, publicKey } = await getUserIdData()
-    await getICRC1HistoryDataForUser(userId, publicKey, icrcCount)
+    const { userPrincipal, publicKey } = await getUserPrincipalId()
+    await getICRC1HistoryDataForUser(userPrincipal, publicKey, icrcCount)
 
     setIcrcCount(icrcCount + BigInt(10))
     mutate()

@@ -12,7 +12,10 @@ import {
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
 import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
-import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
+import {
+  SWAP_TX_CANISTER,
+  swapTransactionService,
+} from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
@@ -80,6 +83,7 @@ export class ShroffImpl implements Shroff {
       this.target.ledger,
       this.poolData.canisterId.toText(),
       exchangeRateService.getNodeCanister(),
+      SWAP_TX_CANISTER,
     ]
   }
 

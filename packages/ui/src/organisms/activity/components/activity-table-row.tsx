@@ -10,6 +10,7 @@ import {
   IconSvgArrowRight,
   ImageWithFallback,
 } from "@nfid-frontend/ui"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
 
@@ -59,19 +60,22 @@ export const ActivityTableRow = ({
       <td
         className={clsx(
           "transition-opacity w-[20%] text-center",
-          action !== "Swapped" && "pl-[28px]",
+          action !== IActivityAction.SWAP && "pl-[28px]",
         )}
       >
-        {action === "Swapped" ? (
+        {action === IActivityAction.SWAP && asset?.type === "ft" ? (
           <div className="flex items-center justify-center gap-[8px]">
-            {/* // TODO: change harcoded values */}
             <ImageWithFallback
               alt="NFID token"
               fallbackSrc={IconNftPlaceholder}
-              src="Mocked Source"
+              src={asset.icon!}
               className="rounded-full w-[28px] h-[28px]"
             />
-            1.15 ICP
+            <TickerAmount
+              value={asset.amount}
+              decimals={asset.decimals}
+              symbol={asset.currency}
+            />
           </div>
         ) : (
           <CopyAddress address={from} leadingChars={6} trailingChars={4} />
@@ -83,26 +87,29 @@ export const ActivityTableRow = ({
       <td
         className={clsx(
           "transition-opacity w-[20%] text-center",
-          action !== "Swapped" && "pl-[28px]",
+          action !== IActivityAction.SWAP && "pl-[28px]",
         )}
       >
-        {/* // TODO: change harcoded values */}
-        {action === "Swapped" ? (
+        {action === IActivityAction.SWAP && asset?.type === "ft" ? (
           <div className="flex items-center justify-center gap-[8px]">
             <ImageWithFallback
               alt="NFID token"
               fallbackSrc={IconNftPlaceholder}
-              src="Mocked Source"
+              src={asset.iconTo!}
               className="rounded-full w-[28px] h-[28px]"
             />
-            56.15 ckBTC
+            <TickerAmount
+              value={asset.amountTo!}
+              decimals={asset.decimalsTo}
+              symbol={asset.currencyTo!}
+            />
           </div>
         ) : (
           <CopyAddress address={to} leadingChars={6} trailingChars={4} />
         )}
       </td>
       {asset?.type === "ft" ? (
-        <td className="leading-5 text-right sm:text-left pr-5 sm:pr-[30px] w-[30%]">
+        <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
           <p className="text-sm">
             <TickerAmount
               value={asset.amount}

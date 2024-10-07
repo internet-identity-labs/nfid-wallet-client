@@ -46,6 +46,7 @@ export const Activity: FC<ActivityProps> = ({
     isButtonLoading,
     resetHandler,
   } = activityData
+
   return (
     <>
       <div className={clsx("flex justify-end", isValidating && "hidden")}>

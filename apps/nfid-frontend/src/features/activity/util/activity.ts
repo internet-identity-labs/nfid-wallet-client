@@ -7,10 +7,9 @@ import {
 import { wrappedTokenMap } from "packages/integration/src/lib/asset/wrapped-token-map"
 
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { Transaction } from "frontend/integration/rosetta/rosetta_interface"
-
-import { IActivityAction } from "../types"
 
 export const mapToActivity = async (
   tx: Transaction,

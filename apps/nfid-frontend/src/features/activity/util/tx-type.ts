@@ -1,13 +1,13 @@
-import { IActivityAction } from "../types"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
-export const getTxType = (txType: "sent" | "received" | "swapped") => {
+export const getTxType = (txType: IActivityAction) => {
   switch (txType) {
-    case "sent":
+    case "Sent":
       return IActivityAction.SENT
-    case "received":
+    case "Received":
       return IActivityAction.RECEIVED
-    case "swapped":
-      return IActivityAction.SWAPPED
+    case "Swap":
+      return IActivityAction.SWAP
     default:
       return IActivityAction.SENT
   }

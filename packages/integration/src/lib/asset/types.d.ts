@@ -227,14 +227,20 @@ declare interface ActivityAssetNFT {
   preview: string
   previewType: string
   amount?: string
+  amountTo?: string
 }
 
 declare interface ActivityAssetFT {
   type: "ft"
   currency: string
+  currencyTo?: string
   amount: number
+  amountTo?: number
+  icon?: string
+  iconTo?: string
   rate: number | undefined
   decimals: number
+  decimalsTo?: number
 }
 
 declare type Content = {

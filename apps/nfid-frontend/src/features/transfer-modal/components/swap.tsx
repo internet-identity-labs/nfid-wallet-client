@@ -159,6 +159,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
       const identity = await getIdentity(shroff.getTargets())
 
       shroff.swap(identity).catch((e) => {
+        console.error(e)
         setSwapError(e)
       })
 

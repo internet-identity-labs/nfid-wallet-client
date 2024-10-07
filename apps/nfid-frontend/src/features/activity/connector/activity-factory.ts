@@ -14,11 +14,16 @@ import {
 } from "./activity-connector-types"
 import { icActivityConnector } from "./ic/ic-activity-connector"
 import { icrc1ActivityConnector } from "./ic/icrc1-activity-connector"
+import { swapActivityConnector } from "./ic/swap-activity-connector"
 
 const activityConnectors: {
   [key in Blockchain]: ActivityClass<IActivityConfig>[]
 } = {
-  [Blockchain.IC]: [icActivityConnector, icrc1ActivityConnector],
+  [Blockchain.IC]: [
+    icActivityConnector,
+    icrc1ActivityConnector,
+    swapActivityConnector,
+  ],
 }
 
 export const getAllActivity = async (

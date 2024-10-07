@@ -10,12 +10,14 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { actor, replaceActorIdentity } from "@nfid/integration"
 
+export const SWAP_TX_CANISTER = "qt7cv-eyaaa-aaaap-qapga-cai"
+
 class SwapTransactionService {
   private readonly storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
     this.storageActor = actor<SwapStorage>(
-      "qt7cv-eyaaa-aaaap-qapga-cai", //TODO WIP .env, stage, prod, subnet(?)
+      SWAP_TX_CANISTER, //TODO WIP .env, stage, prod, subnet(?)
       SwapStorageIDL,
     )
   }
@@ -25,6 +27,7 @@ class SwapTransactionService {
     delegationIdentity: SignIdentity,
   ) {
     await replaceActorIdentity(this.storageActor, delegationIdentity)
+    console.log(delegationIdentity.getPrincipal().toText())
     await this.storageActor.store_transaction(trs)
   }
 

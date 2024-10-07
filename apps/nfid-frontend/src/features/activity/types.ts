@@ -4,13 +4,8 @@ import {
 } from "packages/integration/src/lib/asset/types"
 
 import { Chain } from "@nfid/integration"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { Blockchain } from "@nfid/integration/token/types"
-
-export enum IActivityAction {
-  SENT = "Sent",
-  RECEIVED = "Received",
-  SWAPPED = "Swapped",
-}
 
 export enum IActivityStatus {
   PENDING = "Pending",

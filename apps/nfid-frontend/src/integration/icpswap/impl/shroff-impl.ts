@@ -15,6 +15,7 @@ import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
 import {
   SWAP_TX_CANISTER,
   swapTransactionService,
+  UNKNOWN_CANISTER,
 } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
@@ -30,13 +31,17 @@ import {
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import { LiquidityError, SlippageError } from "../errors"
-import { SwapError } from "../errors/swap-error"
+import {
+  DepositError,
+  LiquidityError,
+  SlippageError,
+  SwapError,
+  WithdrawError,
+} from "../errors"
 import { PoolData } from "./../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
   DepositArgs,
-  Error as ErrorSwap,
   Result,
   SwapArgs,
   WithdrawArgs,
@@ -84,6 +89,8 @@ export class ShroffImpl implements Shroff {
       this.poolData.canisterId.toText(),
       exchangeRateService.getNodeCanister(),
       SWAP_TX_CANISTER,
+      UNKNOWN_CANISTER,
+      "4mmnk-kiaaa-aaaag-qbllq-cai",
     ]
   }
 
@@ -165,11 +172,12 @@ export class ShroffImpl implements Shroff {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError(
+          e as SwapError | WithdrawError | DepositError,
+        )
       }
       await this.restoreTransaction()
-      //TODO @vitaly to change according to the new error handling logic
-      throw new SwapError()
+      throw e
     }
   }
 
@@ -187,7 +195,7 @@ export class ShroffImpl implements Shroff {
     return updatedQuote
   }
 
-  protected async deposit(): Promise<bigint> {
+  protected async deposit(): Promise<bigint | undefined> {
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
@@ -205,8 +213,8 @@ export class ShroffImpl implements Shroff {
       this.swapTransaction!.setDeposit(id)
       return id
     }
-    this.swapTransaction?.setError(result.err)
-    throw new Error("Deposit error: " + JSON.stringify(result.err))
+    console.error("Deposit error: " + result.err)
+    this.swapTransaction?.setError(new DepositError())
   }
 
   protected async transfer(): Promise<void> {
@@ -247,10 +255,8 @@ export class ShroffImpl implements Shroff {
       this.swapTransaction!.setTransferId(id)
       return id
     } else {
-      this.swapTransaction!.setError(result.Err)
-      throw new Error(
-        "Transfer to ICPSwap failed: " + JSON.stringify(result.Err),
-      )
+      console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
+      this.swapTransaction!.setError(new DepositError())
     }
   }
 
@@ -279,12 +285,12 @@ export class ShroffImpl implements Shroff {
       this.swapTransaction!.setNFIDTransferId(id)
       return id
     } else {
-      this.swapTransaction!.setError(result.Err)
-      throw new Error("Transfer to NFID failed: " + JSON.stringify(result.Err))
+      console.error("Transfer to NFID failed: " + JSON.stringify(result.Err))
+      this.swapTransaction!.setError(new DepositError())
     }
   }
 
-  protected async swapOnExchange(): Promise<bigint> {
+  protected async swapOnExchange(): Promise<bigint | undefined> {
     const args: SwapArgs = {
       amountIn: this.requestedQuote!.getAmountWithoutWidgetFee().toString(),
       zeroForOne: this.zeroForOne,
@@ -297,13 +303,12 @@ export class ShroffImpl implements Shroff {
         return response
       }
 
-      this.swapTransaction?.setError(result.err as ErrorSwap)
-
-      throw new Error("Swap error: " + JSON.stringify(result.err))
+      console.error("Swap on exchange error: " + JSON.stringify(result.err))
+      this.swapTransaction?.setError(new SwapError())
     })
   }
 
-  protected async withdraw(): Promise<bigint> {
+  protected async withdraw(): Promise<bigint | undefined> {
     const args: WithdrawArgs = {
       amount: BigInt(this.requestedQuote!.getTargetAmount().toNumber()),
       token: this.target.ledger,
@@ -317,7 +322,8 @@ export class ShroffImpl implements Shroff {
         return id
       }
 
-      throw new Error("Withdraw error: " + JSON.stringify(result.err))
+      console.error("Withdraw error: " + JSON.stringify(result.err))
+      this.swapTransaction!.setError(new WithdrawError())
     })
   }
 

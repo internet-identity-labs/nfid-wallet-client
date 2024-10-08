@@ -1,23 +1,12 @@
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
-
-import Fail from "../assets/error.json"
-import Success1 from "../assets/success_1.json"
-import Success2 from "../assets/success_2.json"
-import Success3 from "../assets/success_3.json"
-import Success4 from "../assets/success_4.json"
-
-export enum Step {
-  Transfer,
-  Deposit,
-  Swap,
-  Withdraw,
-  Completed,
-  Error,
-}
-
-const allAnimations = [Success1, Success2, Success3, Success4, Fail]
+import {
+  DepositError,
+  SwapError,
+  WithdrawError,
+} from "frontend/integration/icpswap/errors"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 export const getTokenOptions = async (tokens: FT[]) => {
   return await Promise.all(
@@ -55,15 +44,25 @@ export const getTokenOptionsVault = async (tokens: FT[]) => {
   return options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
 }
 
-export const animationsByStep = {
-  [Step.Transfer]: allAnimations[0],
-  [Step.Deposit]: allAnimations[0],
-  [Step.Swap]: allAnimations[1],
-  [Step.Withdraw]: allAnimations[2],
-  [Step.Completed]: allAnimations[3],
-  [Step.Error]: allAnimations[4],
+export const getErrorType = (
+  error: SwapError | WithdrawError | DepositError | undefined,
+) => {
+  if (error instanceof DepositError)
+    return { title: "deposit", button: "Close" }
+  if (error instanceof SwapError) return { title: "swap", button: "Close" }
+  if (error instanceof WithdrawError)
+    return { title: "withdraw", button: "Complete swap" }
+  return { title: "", button: "Close" }
 }
 
-export const getAnimationByStep = (step: Step) => {
-  return animationsByStep[step] || allAnimations[0]
+export const getTextStatusByStep = (step: SwapStage) => {
+  if (step < 3) {
+    return "Depositing"
+  } else if (step === 3) {
+    return "Swapping"
+  } else if (step === 4) {
+    return "Withdrawing"
+  } else {
+    return ""
+  }
 }

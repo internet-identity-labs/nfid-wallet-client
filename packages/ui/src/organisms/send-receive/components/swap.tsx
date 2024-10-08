@@ -12,7 +12,13 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import {
+  DepositError,
+  SwapError,
+  WithdrawError,
+} from "frontend/integration/icpswap/errors"
 import { Quote } from "frontend/integration/icpswap/quote"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import { ChooseFromToken } from "./choose-from-token"
@@ -36,8 +42,8 @@ export interface SwapFTUiProps {
   isQuoteLoading: boolean
   quote: Quote | undefined
   clearQuoteError: () => void
-  step: number
-  error?: string
+  step: SwapStage
+  error?: SwapError | WithdrawError | DepositError
   isProgressOpen: boolean
   onClose: () => void
 }

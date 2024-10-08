@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { SwapError } from "src/integration/icpswap/errors/swap-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -9,6 +8,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
+import { SwapError, WithdrawError, DepositError } from "../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {
@@ -30,15 +30,16 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError(
+          e as SwapError | WithdrawError | DepositError,
+        )
       }
       await this.restoreTransaction()
-      //TODO @vitaly to change according to the new error handling logic
-      throw new SwapError()
+      throw e
     }
   }
 
-  protected async withdraw(): Promise<bigint> {
+  protected async withdraw(): Promise<bigint | undefined> {
     const args: WithdrawArgs = {
       //TODO play with numbers somehow
       amount: BigInt(
@@ -54,7 +55,9 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
         this.swapTransaction!.setWithdraw(id)
         return id
       }
-      throw new Error("Withdraw error: " + JSON.stringify(result.err))
+
+      console.error("Withdraw error: " + JSON.stringify(result.err))
+      this.swapTransaction!.setError(new WithdrawError())
     })
   }
 }

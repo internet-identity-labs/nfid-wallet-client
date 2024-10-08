@@ -1,10 +1,8 @@
-import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { SwapTransaction as SwapTransactionCandid } from "src/integration/icpswap/idl/swap_trs_storage.d"
 import { Quote } from "src/integration/icpswap/quote"
-import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
 import { SwapStage } from "src/integration/icpswap/types/enums"
 
-import { Error as ErrorSwap } from "./idl/SwapPool.d"
+import { DepositError, SwapError, WithdrawError } from "./errors"
 
 export interface SwapTransaction {
   getStage(): SwapStage
@@ -27,7 +25,7 @@ export interface SwapTransaction {
 
   getEndTime(): number | undefined
 
-  getError(): ErrorSwap | Icrc1TransferError | undefined | string
+  getError(): DepositError | SwapError | WithdrawError | undefined
 
   getStage(): SwapStage
 
@@ -41,7 +39,7 @@ export interface SwapTransaction {
 
   setSwap(swap: bigint | undefined): void
 
-  setError(error: ErrorSwap | Icrc1TransferError | undefined | string): void
+  setError(error: SwapError | DepositError | WithdrawError | undefined): void
 
   getQuote(): number
 

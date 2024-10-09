@@ -5,15 +5,15 @@ Feature:Send/Receive Asset
   @sendreceive1
   Scenario Outline: Check that user has correct address and principal
     Given User opens NFID site
-    And User is already authenticated by <anchor> anchor
+    And User is already authenticated by <NFID number> anchor
     When User opens receive dialog window
-    Then Account ID is <address>
-    And Principal is <principal>
+    Then Account ID is <account ID>
+    And Principal is <wallet address>
     Examples:
-      | anchor    | address                               | principal                             |
-      | 28542     | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe |
-      | 100000830 | 05f121c2d97efa73386133c27f790...57148 | wlmjt-42cl4-bfewy-wqnsd-onwge...a-bqe |
-      | 200000276 | 3c23a07edbdca387a29d6ba2c644f...f876e | zmfwj-ds7r7-ixsfr-b6mpz-mz46s...i-yae |
+      | NFID number | account ID                            | wallet address                        |
+      | 28542       | f7698099e4e9fe3297e5f3b3e0abf...5c4e2 | nejgd-f5frx-ddbma-jtskt-k237v...3-3qe |
+      | 100000830   | 05f121c2d97efa73386133c27f790...57148 | wlmjt-42cl4-bfewy-wqnsd-onwge...a-bqe |
+      | 200000276   | 3c23a07edbdca387a29d6ba2c644f...f876e | zmfwj-ds7r7-ixsfr-b6mpz-mz46s...i-yae |
 
   @sendreceive2
   Scenario Outline: User should be able to see balance and fee in <chain>

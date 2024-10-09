@@ -105,7 +105,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               Send
             </Button>
             <Button
-              id="receive_button"
+              id="receiveButton"
               className="flex-1 !px-0 sm:!px-[15px]"
               innerClassName="!space-x-1"
               icon={

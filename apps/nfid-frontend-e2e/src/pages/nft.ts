@@ -73,10 +73,7 @@ export class Nft {
   }
 
   public async openCollectibles() {
-    await Assets.waitUntilProfileBalanceLoaded()
-    await this.NFTtab.waitForDisplayed({ timeout: 5000 })
-    await this.NFTtab.click()
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+    await Assets.waitUntilDialogOpenedProperly(this.NFTtab, $("*[id^=\"nft_token\"]"))
   }
 
   public async switchToTable() {

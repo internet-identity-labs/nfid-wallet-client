@@ -11,10 +11,6 @@ export class Assets {
     return "[id*='token_"
   }
 
-  private get assetElement() {
-    return "[id*='"
-  }
-
   public get getBalance() {
     return $("#balance")
   }
@@ -35,9 +31,6 @@ export class Assets {
     return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']")
   }
 
-  private getTokenBalance(chain: string) {
-    return `#token_${chain.replace(/\s/g, "")}_balance`
-  }
 
   get principal() {
     return $("#principal")
@@ -53,17 +46,6 @@ export class Assets {
       timeout: 45000,
     })
     await assetOptions.click()
-  }
-
-  public async waitWhileCalculated(assetLabel: string, currency: string) {
-    const tokenBalance = await $(this.getTokenBalance(assetLabel))
-    await tokenBalance.waitForDisplayed({
-      timeout: 10000,
-    })
-
-    await tokenBalance.waitUntil(
-      async () => (await tokenBalance.getText()) !== `0 ${currency}`,
-    )
   }
 
   public async chooseCurrencyOption(currency: string, chain: string) {
@@ -147,48 +129,11 @@ export class Assets {
     await this.chooseOption(account)
   }
 
-  public async chooseAccountReceive(account: string) {
-    const assetOptions = await $("#option_Accounts")
-    await assetOptions.click()
-    await this.chooseOption(account)
-  }
-
   public async successWindow() {
     const sw = await $(`#success_window_3`)
     await sw.waitForExist({
       timeout: 80000,
     })
-  }
-
-  public async openAssetByLabel(name: string) {
-    await $(
-      this.assetLabel + `${name.replace(/\s/g, "")}` + "']",
-    ).waitForDisplayed({
-      timeout: 17000,
-      timeoutMsg: "Asset has not been showed! Missing asset label!",
-    })
-    await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").click()
-  }
-
-  public async openElementById(name: string) {
-    await $(this.assetElement + `${name}` + "']").waitForDisplayed({
-      timeout: 15000,
-      timeoutMsg: "Element has not been showed! Missing asset label!",
-    })
-    await $(this.assetElement + `${name}` + "']").click()
-  }
-
-  public async isElementSelected(name: string, falseCase: string) {
-    await $(this.assetElement + `${name}` + "']").waitForDisplayed({
-      timeout: 15000,
-      timeoutMsg: "Element has not been showed! Missing asset label!",
-    })
-    let isSel = await $(this.assetElement + `${name}` + "']").isSelected()
-    if (falseCase) {
-      expect(isSel).toEqual(false)
-    } else {
-      expect(isSel).toEqual(true)
-    }
   }
 
   public async openActivity() {

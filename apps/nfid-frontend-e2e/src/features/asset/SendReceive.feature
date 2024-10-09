@@ -42,8 +42,7 @@ Feature:Send/Receive Asset
       | anchor | nft1                  |
       | 31870  | ICPuppiesWearables145 |
 
-
-  @only_deploy_to_main
+  @sendreceive4
   Scenario Outline: User should be able to send <chain> transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -52,10 +51,8 @@ Feature:Send/Receive Asset
     When Choose <currency> on <chain> from send options
     And Set amount <amount>
     And Wait while balance and fee calculated
-    And Choose <account> from accounts
-    And Wait while balance and fee calculated
     And Set <target> address and <amount> and send
     Then Transaction is success
     Examples:
-      | chain             | anchor | target                                                           | amount | currency | account |
-      | Internet Computer | 28567  | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 0.0001 | ICP      | NFID    |
+      | chain             | anchor | target                                                           | amount | currency |
+      | Internet Computer | 28567  | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce | 0.0001 | ICP      |

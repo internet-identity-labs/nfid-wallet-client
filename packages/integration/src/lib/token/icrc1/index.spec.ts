@@ -11,7 +11,7 @@ import { TransferArg } from "../../_ic_api/icrc1.d"
 import { icrc1TransactionHistoryService } from "./service/icrc1-transaction-history-service"
 
 describe("ICRC1 suite", () => {
-  jest.setTimeout(200000)
+  jest.setTimeout(300000)
   let root: string
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
 

@@ -52,7 +52,7 @@ export class Nft {
   }
 
   public async openCollectibles() {
-    await Assets.waitUntilDialogOpenedProperly(this.NFTtab, $("*[id^=\"nft_token\"]"))
+    await Assets.waitUntilElementsLoadedProperly(this.NFTtab, $("*[id^=\"nft_token\"]"))
   }
 
   public async switchToTable() {

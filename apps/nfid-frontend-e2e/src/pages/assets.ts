@@ -40,6 +40,10 @@ export class Assets {
     return $("#address")
   }
 
+  get activityTab() {
+    return $("#tab_Activity")
+  }
+
   public async openAssetOptionsOnSR() {
     const assetOptions = await $("#choose_modal")
     await assetOptions.waitForDisplayed({
@@ -70,17 +74,17 @@ export class Assets {
   }
 
   public async sendDialog() {
-    await this.waitUntilDialogOpenedProperly(Profile.sendButton, this.switchSendType)
+    await this.waitUntilElementsLoadedProperly(Profile.sendButton, this.switchSendType)
   }
 
   public async sendNFTDialog() {
-    await this.waitUntilDialogOpenedProperly(Profile.sendButton, this.switchSendType)
+    await this.waitUntilElementsLoadedProperly(Profile.sendButton, this.switchSendType)
     await this.switchSendType.click()
     await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
   }
 
   public async receiveDialog() {
-    await this.waitUntilDialogOpenedProperly(Profile.receiveButton, $("#first_part"))
+    await this.waitUntilElementsLoadedProperly(Profile.receiveButton, $("#first_part"))
   }
 
   public async getAccountId(isAddress?: boolean) {
@@ -144,21 +148,24 @@ export class Assets {
     await activityIcon.click()
   }
 
-  public async waitUntilDialogOpenedProperly(
+  public async waitUntilElementsLoadedProperly(
     clickElement: ChainablePromiseElement,
-    waitForElement: ChainablePromiseElement
+    waitForElement: ChainablePromiseElement,
   ) {
     await browser.waitUntil(async () => {
-      await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-      await browser.waitUntil(async () => {
-        return (await Profile.totalBalance.getText() != "")
-      }, { timeout: 15000, timeoutMsg: "Balance wasn't loaded in 1500" })
-      await clickElement.waitForClickable({ timeout: 15000 })
-      await clickElement.click()
-      await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-      if (await waitForElement.isDisplayed()) return true
-      else await browser.refresh()
-    }, { timeout: 20000, timeoutMsg: "Dialog window wasn't opened properly in 20sec" })
+      try {
+        await Profile.waitUntilBalanceLoaded()
+        await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+
+        await clickElement.waitForClickable({ timeout: 15000 })
+        await clickElement.click()
+        await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+        await waitForElement.waitForDisplayed()
+        return true
+      } catch (e) {
+        await browser.refresh()
+      }
+    }, { timeout: 40000, timeoutMsg: "Element didn't load properly in 40sec" })
   }
 }
 

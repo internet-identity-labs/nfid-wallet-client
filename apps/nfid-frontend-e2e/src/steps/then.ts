@@ -340,10 +340,9 @@ Then(/^I should see (\d+) activities in the table$/, async (amount: number) => {
 })
 
 Then(
-  /^I should see transaction ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*)$/,
+  /^I should see transaction ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*)$/,
   async (
     action: string,
-    chain: string,
     currency: string,
     type: string,
     asset: string,
@@ -353,7 +352,6 @@ Then(
   ) => {
     const tx = await activity.getTransaction(
       action,
-      chain,
       currency,
       type,
       asset,

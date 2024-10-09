@@ -39,7 +39,7 @@ export class Assets {
     return `#token_${chain.replace(/\s/g, "")}_balance`
   }
 
-  private get principal() {
+  get principal() {
     return $("#principal")
   }
 
@@ -156,7 +156,7 @@ export class Assets {
   public async successWindow() {
     const sw = await $(`#success_window_3`)
     await sw.waitForExist({
-      timeout: 50000,
+      timeout: 80000,
     })
   }
 

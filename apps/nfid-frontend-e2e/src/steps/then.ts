@@ -1,6 +1,5 @@
 import { Then } from "@cucumber/cucumber"
 import { format } from "date-fns"
-import { softAssertAll } from "../helpers/softAssertions.js"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import activity from "../pages/activity.js"
@@ -418,7 +417,8 @@ Then(/^User opens choose nft window/, async () => {
 })
 
 Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
-  await Nft.chooseOptionButton(option).waitForExist({ timeout: 15000 })
+  const opt = await $(`#choose_option_${option}`)
+  await opt.waitForExist({ timeout: 15000 })
 })
 
 Then(

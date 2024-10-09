@@ -47,7 +47,6 @@ Feature:Send/Receive Asset
       | 100000830 | ICPets3808            |
       | 200000276 | ICPets349             |
 
-
   @only_deploy_to_main
   Scenario Outline: User should be able to send <chain> transaction
     Given User opens NFID site

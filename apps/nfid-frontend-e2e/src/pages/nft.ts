@@ -1,5 +1,4 @@
 import Page from "./page.js"
-import Assets from "./assets.js"
 
 export class Nft {
   private get nftContainer() {

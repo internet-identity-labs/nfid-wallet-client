@@ -32,7 +32,6 @@ export class Assets {
   }
 
   public async getBlockchain(label: string) {
-    console.log($(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']"))
     return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']")
   }
 

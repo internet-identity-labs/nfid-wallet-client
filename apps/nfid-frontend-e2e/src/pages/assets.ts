@@ -1,4 +1,6 @@
 import Page from "./page.js"
+import Profile from "./profile.js"
+import Nft from "./nft.js"
 
 export class Assets {
   get sendDialogWindow() {
@@ -13,8 +15,12 @@ export class Assets {
     return "[id*='"
   }
 
-  public async getBalance() {
+  public get getBalance() {
     return $("#balance")
+  }
+
+  private get switcherTokenCollection() {
+    return $("#send_type_toggle")
   }
 
   public async getAssetBalance(label: string) {
@@ -69,29 +75,23 @@ export class Assets {
   }
 
   public async sendFTto(address: string, amount: string) {
-    const target = await $("#input")
-    await target.setValue(address)
-    const amountToSend = await $("#amount")
-    await amountToSend.setValue(amount)
+    await Nft.addressField.setValue(address)
+    await Nft.amountField.setValue(amount)
 
-    const assetBalance = await this.getBalance()
-    const fee = await this.getFee()
-    await assetBalance.waitForExist({ timeout: 10000 })
-    await fee.waitForExist({ timeout: 35000 })
+    await this.getBalance.waitForExist({ timeout: 10000 })
+    await this.getFee.waitForExist({ timeout: 35000 })
 
     await this.sendDialogWindow.click()
   }
 
-  public async getFee() {
+  public get getFee() {
     return $("#fee")
   }
 
   public async sendDialog() {
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    await Page.sendButton.waitForClickable({
-      timeout: 7000,
-    })
-    await Page.sendButton.click()
+    await this.waitUntilProfileBalanceLoaded()
+    await Profile.sendButton.click()
+
     await browser.waitUntil(
       async () => {
         await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
@@ -103,7 +103,7 @@ export class Assets {
           )
         }
         if (!(await this.sendDialogWindow.isDisplayed()))
-          await Page.sendButton.click()
+          await Profile.sendButton.click()
         return await this.sendDialogWindow.isDisplayed()
       },
       {
@@ -114,26 +114,17 @@ export class Assets {
   }
 
   public async sendNFTDialog() {
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    await Page.sendButton.waitForDisplayed({
-      timeout: 7000,
-    })
-    await Page.sendButton.click()
+    await this.waitUntilProfileBalanceLoaded()
+    await Profile.sendButton.click()
     await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
-    await $("#send_type_toggle").click()
+    await this.switcherTokenCollection.click()
     await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
   }
 
   public async receiveDialog() {
-    await browser.waitUntil(async () => {
-      await this.principal.waitForClickable()
-      return (await this.principal.getText()) != ""
-    })
-    await browser.pause(1000)
-    const receiveButton = await $("#receive_button")
-    await receiveButton.waitForDisplayed({ timeout: 10000 })
-    await receiveButton.waitForClickable({ timeout: 15000 })
-    await receiveButton.click()
+    await this.waitUntilProfileBalanceLoaded()
+    await Profile.receiveButton.waitForClickable({ timeout: 15000 })
+    await Profile.receiveButton.click()
   }
 
   public async getAccountId(isAddress?: boolean) {
@@ -232,6 +223,13 @@ export class Assets {
 
     await activityIcon.waitForDisplayed({ timeout: 10000 })
     await activityIcon.click()
+  }
+
+  public async waitUntilProfileBalanceLoaded() {
+    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+    await browser.waitUntil(async () => {
+      return (await Profile.totalBalance.getText() != "")
+    }, { timeout: 15000, timeoutMsg: "Balance wasn't loaded in 1500" })
   }
 }
 

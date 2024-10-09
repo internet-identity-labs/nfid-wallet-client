@@ -1,4 +1,5 @@
 import Page from "./page.js"
+import Assets from "./assets.js"
 
 export class Nft {
   private get nftContainer() {
@@ -17,6 +18,18 @@ export class Nft {
     return $$("table tbody tr")
   }
 
+  public get addressField() {
+    return $("#input")
+  }
+
+  public get amountField() {
+    return $("#amount")
+  }
+
+  public chooseOptionButton(option: string) {
+    return $(`#choose_option_${option}`)
+  }
+
   public async getValueFromColumnAtFirstRow(columnName: string) {
     const locator =
       $(`//*[@id='nft-table']//thead//th[text()='${columnName}']/ancestor::table//tbody//tr[1]//td[count(//*[@id='nft-table']//thead//th[text()='${columnName}']/preceding-sibling::th) + 1]
@@ -27,28 +40,32 @@ export class Nft {
     return await locator.getText()
   }
 
-  public async getNftName(token: string, collection: string) {
+  public getNftName(token: string, collection: string) {
     return $(`//*[contains(@id, 'nft_token_${token}_${collection}')]`)
   }
 
-  public async getNftStandard() {
+  public get getNftStandard() {
     return $(`#token-standard`)
   }
 
-  public async getAbout() {
+  public get getAbout() {
     return $(`#token-about`)
   }
 
-  public async getCollectionId() {
+  public get getCollectionId() {
     return $(`#collection-id`)
   }
 
-  public async getNftCollection(collection: string) {
+  public getNftCollection(collection: string) {
     return $(`#nft_collection_${collection.replace(/\s/g, "")}`)
   }
 
-  public async getNftId(id: string) {
+  public getNftId(id: string) {
     return $(`#nft_id_${id.replace(/\s/g, "")}`)
+  }
+
+  private get NFTtab() {
+    return $("#tab_NFTs")
   }
 
   public async getNftWallet(collection: string) {
@@ -56,12 +73,9 @@ export class Nft {
   }
 
   public async openCollectibles() {
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-    const collectiblesTab = await $("#tab_NFTs")
-    await collectiblesTab.waitForDisplayed({
-      timeout: 5000,
-    })
-    await collectiblesTab.click()
+    await Assets.waitUntilProfileBalanceLoaded()
+    await this.NFTtab.waitForDisplayed({ timeout: 5000 })
+    await this.NFTtab.click()
     await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
   }
 
@@ -74,11 +88,8 @@ export class Nft {
   }
 
   public async nftDetails(token: string, collection: string) {
-    const nft = await this.getNftName(token, collection)
-    await nft.waitForDisplayed({
-      timeout: 30000,
-    })
-    await nft.click()
+    await this.getNftName(token, collection).waitForDisplayed({ timeout: 30000 })
+    await this.getNftName(token, collection).click()
   }
 
   public async waitForNFTsAppear() {

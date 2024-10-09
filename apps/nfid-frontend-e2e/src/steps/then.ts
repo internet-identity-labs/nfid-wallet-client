@@ -263,7 +263,7 @@ Then(
     await softAssertAll(
       async () => await expect(await Assets.getAssetBalance(assetLabel)).toHaveText(balance),
       async () => await expect(await Assets.getCurrency(assetLabel)).toHaveText(currency),
-      async () => await expect(await Assets.getBlockchain(chain)).toHaveText(chain)
+      async () => await expect(await Assets.getBlockchain(chain)).toHaveText(chain),
     )
   },
 )
@@ -418,8 +418,7 @@ Then(/^User opens choose nft window/, async () => {
 })
 
 Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
-  const opt = await $(`#choose_option_${option}`)
-  await opt.waitForExist({ timeout: 15000 })
+  await Nft.chooseOptionButton(option).waitForExist({ timeout: 15000 })
 })
 
 Then(
@@ -447,29 +446,31 @@ Then(
 )
 
 Then(/^Wait while balance and fee calculated/, async () => {
-  const assetBalance = await Assets.getBalance()
-  const fee = await Assets.getFee()
-
-  await assetBalance.waitForExist({ timeout: 20000 })
-  await fee.waitForDisplayed({ timeout: 40000 })
+  await Assets.getBalance.waitForExist({ timeout: 20000 })
+  await Assets.getFee.waitForDisplayed({ timeout: 40000 })
 })
 
 Then(
   /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
-  async (balance: string, fee: string, currency: string) => {
-    let actualBalance = await Assets.getBalance().then(async (it) => {
-      await it.waitForDisplayed({ timeout: 40000 })
-      return await it.getText()
-    })
-    expect(actualBalance).toEqual(balance + " " + currency)
+  async (expectedBalance: string, expectedFee: string, currency: string) => {
+    let actualBalance
+    let actualTransferFee
+    await browser.waitUntil(async () => {
+      await Assets.getBalance.waitForDisplayed()
+      actualBalance = await Assets.getBalance.getText()
+      return actualBalance != ""
+    }, { timeout: 20000, timeoutMsg: "Balance is still empty in 20sec" })
+    await Assets.getFee.waitForDisplayed({ timeout: 30000 })
+    let fullText = await Assets.getFee.getText()
+    actualTransferFee = fullText.replace(await Assets.getFee.$("span").getText(), "").trim()
 
-    let transferFee = await Assets.getFee().then(async (it) => {
-      await it.waitForDisplayed({ timeout: 30000 })
-      let fullText = await it.getText()
-      return fullText.replace(await it.$("span").getText(), "").trim()
-    })
-    if (fee === "any") expect(transferFee).not.toEqual("0.00")
-    else expect(transferFee).toEqual(fee + " " + currency)
+    await softAssertAll(
+      async () => await expect(actualBalance).toEqual(expectedBalance + " " + currency),
+      async () => {
+        if (expectedFee === "any") expect(actualTransferFee).not.toEqual("0.00")
+        else expect(actualTransferFee).toEqual(expectedFee + " " + currency)
+      },
+    )
   },
 )
 
@@ -729,50 +730,32 @@ Then(
 Then(
   /^NFT ([^"]*) ([^"]*) ([^"]*) displayed/,
   async (token: string, collection: string, id: string) => {
-    await Nft.getNftName(token, collection).then((l) =>
-      l.waitForDisplayed({
-        timeout: 5000,
-        timeoutMsg: "No NFT " + token,
-      }),
-    )
-    await Nft.getNftCollection(collection).then((l) =>
-      l.waitForDisplayed({
-        timeout: 5000,
-        timeoutMsg: "No NFT collection " + collection,
-      }),
-    )
-    await Nft.getNftId(id).then((l) =>
-      l.waitForDisplayed({
-        timeout: 5000,
-        timeoutMsg: "No NFT id " + id,
-      }),
-    )
+    await Nft.getNftName(token, collection).waitForDisplayed({
+      timeout: 5000,
+      timeoutMsg: `Token name ${token} is wrong or still not displayed in 5sec`,
+    })
+    await Nft.getNftCollection(collection).waitForDisplayed({
+      timeout: 5000,
+      timeoutMsg: `Collection name ${collection} is wrong or still not displayed in 5sec`,
+    })
+    await Nft.getNftId(id).waitForDisplayed({
+      timeout: 5000,
+      timeoutMsg: `ID ${id} is wrong or still not displayed in 5sec`,
+    })
   },
 )
 Then(
   /^Details are ([^"]*) ([^"]*)/,
   async (standard: string, collection: string) => {
-    await Nft.getNftStandard().then(async (l) => {
-      await l.waitForDisplayed({
-        timeout: 5000,
-      })
-      expect(await l.getText()).toContain(standard)
-    })
-    await Nft.getCollectionId().then(async (l) => {
-      await l.waitForDisplayed({
-        timeout: 5000,
-      })
-      expect(await l.getText()).toContain(collection)
-    })
-  },
-)
-Then(/^About starts with ([^"]*)/, async (about: string) => {
-  await Nft.getAbout().then(async (l) => {
-    l.waitForDisplayed({
-      timeout: 5000,
-    })
-    expect(await l.getText()).toContain(about)
+    await Nft.getNftStandard.waitForDisplayed()
+    expect(await Nft.getNftStandard.getText()).toContain(standard)
+    await Nft.getCollectionId.waitForDisplayed()
+    expect(await Nft.getCollectionId.getText()).toContain(collection)
   })
+
+Then(/^About starts with ([^"]*)/, async (about: string) => {
+  await Nft.getAbout.waitForDisplayed()
+  expect(await Nft.getAbout.getText()).toContain(about)
 })
 
 Then(/^Open collectibles page$/, async () => {

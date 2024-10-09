@@ -12,8 +12,10 @@ Feature:Non Fungible Asset Details
     And Details are <standard> <collection_id>
     And About starts with <about>
     Examples:
-      | anchor | token                    | id                                          | standard | collection_id               | about               | previewType |
-      | 31870  | ICPuppies Wearables #145 | 3s5hr-4ikor-uwiaa-aaaaa-cqabn-eaqca-aaaci-q | EXT      | 4gbxl-byaaa-aaaak-aafuq-cai | ICPuppies Wearables | img         |
+      | anchor    | token                    | id                                          | standard | collection_id               | about                                                                                                                                                                                                                                                         |
+      | 31870     | ICPuppies Wearables #145 | 3s5hr-4ikor-uwiaa-aaaaa-cqabn-eaqca-aaaci-q | EXT      | 4gbxl-byaaa-aaaak-aafuq-cai | ICPuppies Wearables                                                                                                                                                                                                                                           |
+      | 100000830 | ICPets #3808             | jjhck-rakor-uwiaa-aaaaa-b4atg-aaqca-aab3q-a | EXT      | unssi-hiaaa-aaaah-qcmya-cai | Community Revenue Focused NFT Project. ICPets is a Hold-2-Earn lifestyle aimed to increase your earnings through passive income and to build a strong community around art and financial opportunities by using NFT technology and its smart contracts power. |
+      | 200000276 | ICPets #349              | padpn-oqkor-uwiaa-aaaaa-b4atg-aaqca-aaafo-q | EXT      | unssi-hiaaa-aaaah-qcmya-cai | Community Revenue Focused NFT Project. ICPets is a Hold-2-Earn lifestyle aimed to increase your earnings through passive income and to build a strong community around art and financial opportunities by using NFT technology and its smart contracts power. |
 
   @nft4
   Scenario Outline: User should be able to see txs on NFT details page

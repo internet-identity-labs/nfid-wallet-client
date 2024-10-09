@@ -30,8 +30,8 @@ Feature:Send/Receive Asset
     Examples:
       | chain            | anchor    | balance | fee    | account | currency |
       | InternetComputer | 25795     | 0       | 0.0001 | NFID    | ICP      |
-      | InternetComputer | 100000830 | 0.499   | 0.0001 | NFID    | ICP      |
-      | InternetComputer | 200000276 | 0.5     | 0.0001 | NFID    | ICP      |
+      | InternetComputer | 100000830 | 0.0499  | 0.0001 | NFID    | ICP      |
+      | InternetComputer | 200000276 | 0.05    | 0.0001 | NFID    | ICP      |
 
   @sendreceive3
   Scenario Outline: User should be able to see his collectibles on send NFT tab
@@ -44,8 +44,8 @@ Feature:Send/Receive Asset
     Examples:
       | anchor    | nft1                  |
       | 31870     | ICPuppiesWearables145 |
-      | 100000830 | ICPuppiesWearables145 |
-      | 200000276 | ICPuppiesWearables145 |
+      | 100000830 | ICPets3808            |
+      | 200000276 | ICPets349             |
 
 
   @only_deploy_to_main

@@ -53,6 +53,18 @@ export class Profile extends HomePage {
     return $("#phone-number-value")
   }
 
+  public get totalBalance() {
+    return $("#totalBalance")
+  }
+
+  get sendButton() {
+    return $("#sendButton")
+  }
+
+  get receiveButton() {
+    return $("#receiveButton")
+  }
+
   public async openVaults() {
     await this.vaultsTab.waitForDisplayed({
       timeout: 6000,

@@ -8,7 +8,7 @@ Feature:Fungible Asset
     And Tokens displayed on user assets
     And Wait while <token name> asset calculated with currency <balance>
     And Asset appears with label <token name>
-    And <token name> appears with <token name> on <category> and <balance>
+    And <token name> appears with <token> on <category> and <balance>
     And <token name> <token> address calculated
     And <token name> USD balance not $0.00
     Examples:

@@ -27,6 +27,9 @@ Given(
 
 Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
   await browser.url(DemoAppPage.demoAppBaseUrl)
+  await DemoAppPage.getAuthenticateButton.waitForClickable({
+    timeout: 15000, timeoutMsg: "Authentication button isn't clickable in 15 sec. Probably demoApp isn't loaded properly"
+  })
 })
 
 Given(/^User opens NFID ?(.*)?$/, async function (site: string) {

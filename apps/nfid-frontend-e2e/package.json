@@ -3,10 +3,6 @@
   "type": "module",
   "scripts": {
     "test:e2e": "npx wdio run wdio.conf.ts",
-    "test:e2e:desktop": "npx wdio run wdio.desktop.conf.ts",
-    "test:e2e:mobile": "npx wdio run wdio.mobile.conf.ts",
-    "test:e2e:bs:mobile": "npx wdio run wdio.bs.mobile.conf.ts",
-    "test:e2e:bs:desktop": "npx wdio run wdio.bs.desktop.conf.ts",
     "test:e2e:debug": "cross-env DEBUG=true npx wdio run wdio.conf.ts --inspect",
     "generate-cucumber-html-report": "ts-node ./src/reporter/index.ts",
     "allure-report": "allure generate allure-results --clean && allure open",

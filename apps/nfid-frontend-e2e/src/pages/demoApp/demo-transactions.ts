@@ -59,30 +59,33 @@ export class DemoTransactions extends demoAppPage {
   }
 
   async sendNFTTransaction(address: string) {
-    await browser.waitUntil(async () => {
-      try {
-        await this.getReceiverICAddressInput("NFT").then(async (it) => {
-          await it.waitForDisplayed({ timeout: 5000 })
-          await it.setValue(address)
-        })
-        await this.getFTInput("NFT").then(async (it) => {
-          await it.waitForClickable({ timeout: 5000 })
-          await it.click()
-        })
-        await this.myNFTSelector.then(async (it) => {
-          await it.waitForClickable({ timeout: 5000 })
-          await it.click()
-        })
-        cucumberJson.attach(await browser.takeScreenshot(), "image/png")
-        await this.getRequestFTButton("NFT").then(async (it) => {
-          await it.waitForClickable({ timeout: 10000 })
-          await it.click()
-        })
-        return true
-      } catch (e) {
-        `empty`
-      }
-    }, { timeout: 30000, timeoutMsg: `Can't send NFT` })
+    await browser.waitUntil(
+      async () => {
+        try {
+          await this.getReceiverICAddressInput("NFT").then(async (it) => {
+            await it.waitForDisplayed({ timeout: 5000 })
+            await it.setValue(address)
+          })
+          await this.getFTInput("NFT").then(async (it) => {
+            await it.waitForClickable({ timeout: 5000 })
+            await it.click()
+          })
+          await this.myNFTSelector.then(async (it) => {
+            await it.waitForClickable({ timeout: 5000 })
+            await it.click()
+          })
+          cucumberJson.attach(await browser.takeScreenshot(), "image/png")
+          await this.getRequestFTButton("NFT").then(async (it) => {
+            await it.waitForClickable({ timeout: 10000 })
+            await it.click()
+          })
+          return true
+        } catch (e) {
+          ;`empty`
+        }
+      },
+      { timeout: 30000, timeoutMsg: `Can't send NFT` },
+    )
   }
 }
 

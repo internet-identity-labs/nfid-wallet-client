@@ -1,6 +1,5 @@
 import {Icrc1TransferError} from "@dfinity/ledger-icp/dist/candid/ledger"
 import randomUUID, {UUID} from "crypto"
-import {Quote} from "src/integration/icpswap/quote"
 import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
 import {SwapStage} from "src/integration/icpswap/types/enums"
 

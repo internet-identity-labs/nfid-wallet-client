@@ -1,11 +1,11 @@
 import { DepositHandler } from "src/integration/icpswap/error-handler/handler/deposit-handler"
+import { SwapHandler } from "src/integration/icpswap/error-handler/handler/swap-handler"
 import { TransferNfidHandler } from "src/integration/icpswap/error-handler/handler/transfer-nfid-handler"
 import { TransferSwapHandler } from "src/integration/icpswap/error-handler/handler/transfer-swap-handler"
 import { WithdrawHandler } from "src/integration/icpswap/error-handler/handler/withdraw-handler"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
 import { SwapStage } from "src/integration/icpswap/types/enums"
-import {SwapHandler} from "src/integration/icpswap/error-handler/handler/swap-handler";
 
 export class ErrorHandlerFactory {
   getHandler(transaction: SwapTransaction): TransactionErrorHandler {

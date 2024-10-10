@@ -1,11 +1,11 @@
-import {SignIdentity} from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
 import BigNumber from "bignumber.js"
-import {TransactionErrorHandlerAbstract} from "src/integration/icpswap/error-handler/error-handler-abstract"
-import {QuoteImpl} from "src/integration/icpswap/impl/quote-impl"
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
+import { TransactionErrorHandlerAbstract } from "src/integration/icpswap/error-handler/error-handler-abstract"
+import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
+import { Shroff } from "src/integration/icpswap/shroff"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
-import {Shroff} from "src/integration/icpswap/shroff";
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstract {
   async completeTransaction(
@@ -45,5 +45,5 @@ export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstra
     return await shroff.swap(delegation)
   }
 
-  protected abstract buildShroff(trs: SwapTransaction): Promise<Shroff> ;
+  protected abstract buildShroff(trs: SwapTransaction): Promise<Shroff>
 }

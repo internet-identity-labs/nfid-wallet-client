@@ -154,7 +154,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         </div>
         {error ? (
           <div className="mt-[185px] text-sm text-red-600 max-w-[320px] mx-auto">
-            {error.message}
+            {error.getDisplayMessage()}
           </div>
         ) : (
           <div className="mt-[185px] text-sm text-gray-500 max-w-[320px] mx-auto">

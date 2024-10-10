@@ -1,3 +1,4 @@
+import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { UUID } from "crypto"
 import { Quote } from "src/integration/icpswap/quote"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
@@ -5,7 +6,7 @@ import { SwapStage } from "src/integration/icpswap/types/enums"
 
 import { hasOwnProperty } from "@nfid/integration"
 
-import { DepositError, SwapError, WithdrawError } from "../errors"
+import { Error as ErrorSwap } from "./../idl/SwapPool.d"
 import {
   SwapStage as SwapStageCandid,
   SwapTransaction as SwapTransactionCandid,
@@ -22,7 +23,7 @@ export class SwapTransactionImpl implements SwapTransaction {
   private swap: bigint | undefined
   private withdraw: bigint | undefined
   private endTime: number | undefined
-  private error: SwapError | DepositError | WithdrawError | undefined
+  private error: ErrorSwap | Icrc1TransferError | undefined | string
   private stage: SwapStage
   private readonly targetLedger: string
   private readonly sourceLedger: string
@@ -70,7 +71,7 @@ export class SwapTransactionImpl implements SwapTransaction {
     return this.endTime
   }
 
-  getError(): SwapError | DepositError | WithdrawError | undefined {
+  getError(): ErrorSwap | Icrc1TransferError | undefined | string {
     return this.error
   }
 
@@ -120,7 +121,7 @@ export class SwapTransactionImpl implements SwapTransaction {
     this.stage = SwapStage.Completed
   }
 
-  setError(error: SwapError | DepositError | WithdrawError) {
+  setError(error: Icrc1TransferError | ErrorSwap | string) {
     this.error = error
     this.endTime = Date.now()
   }

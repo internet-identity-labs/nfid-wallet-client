@@ -1,7 +1,8 @@
 import { Activity } from "packages/integration/src/lib/asset/types"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
-import { fetchAllTokenByAddress } from "packages/ui/src/organisms/tokens/utils"
 
+import { ICRC1TypeOracle } from "@nfid/integration"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import {
   IActivityAction,
   ICRC1IndexData,
@@ -18,33 +19,44 @@ import { IActivityConfig } from "../activity-connector-types"
 export class SwapActivityConnector extends ActivityClass<IActivityConfig> {
   async getActivities(filteredContracts: string[]): Promise<Activity[]> {
     const { publicKey } = await getUserIdData()
-
-    const txs = await swapTransactionService.getTransactions(publicKey)
+    const transactions = await swapTransactionService.getTransactions(publicKey)
+    const icrc1Canisters = await icrc1OracleService.getICRC1Canisters()
 
     const txsFormatted = [
       {
         oldestTransactionId: undefined,
         transactions: await Promise.all(
-          txs.map(async (tx: SwapTransaction) => {
-            const token = await fetchAllTokenByAddress(tx.getSourceLedger())
-            const tokenTo = await fetchAllTokenByAddress(tx.getTargetLedger())
-            const endTime = tx.getEndTime()
+          transactions.map(async (tx: SwapTransaction) => {
+            const st: ICRC1TypeOracle[] = icrc1Canisters.filter(
+              (icrc1) =>
+                icrc1.ledger === tx.getSourceLedger() ||
+                icrc1.ledger === tx.getTargetLedger(),
+            )
+
+            const token = st.find(
+              (icrc1) => icrc1.ledger === tx.getSourceLedger(),
+            )
+            const tokenTo = st.find(
+              (icrc1) => icrc1.ledger === tx.getTargetLedger(),
+            )
+
             return {
               type: IActivityAction.SWAP,
-              timestamp: endTime !== undefined ? BigInt(endTime) : BigInt(0),
+              timestamp: BigInt(tx.getStartTime()) || BigInt(0),
               transactionId: tx.getTransferId() || BigInt(0),
-              symbol: token.getTokenSymbol(),
-              symbolTo: tokenTo.getTokenSymbol(),
-              icon: token.getTokenLogo()!,
-              iconTo: tokenTo.getTokenLogo()!,
-              decimals: token.getTokenDecimals()!,
-              decimalsTo: tokenTo.getTokenDecimals()!,
+              symbol: token!.symbol,
+              symbolTo: tokenTo!.symbol,
+              icon: token!.logo[0],
+              iconTo: tokenTo!.logo[0],
+              decimals: token!.decimals,
+              decimalsTo: tokenTo!.decimals,
               amount: tx.getSourceAmount(),
               amountTo: tx.getWithdraw() || BigInt(0),
               canister: tx.getSourceLedger(),
               canisterTo: tx.getTargetLedger(),
               from: "",
               to: "",
+              error: tx.getError(),
             }
           }),
         ),
@@ -73,6 +85,7 @@ export class SwapActivityConnector extends ActivityClass<IActivityConfig> {
             canister: tx.canister,
             canisterTo: tx.canisterTo,
             rate: undefined,
+            error: tx.error,
           },
         } as Activity),
     )

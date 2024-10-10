@@ -19,7 +19,6 @@ import { IActivityRow } from "frontend/features/activity/types"
 
 interface IActivityTableRow extends IActivityRow {
   id: string
-  swapError?: any
 }
 
 export const ChainIcons = {
@@ -37,11 +36,10 @@ export const ActivityTableRow = ({
   timestamp,
   to,
   id,
-  swapError,
 }: IActivityTableRow) => {
   return (
     <Tooltip
-      className={swapError ? "" : "hidden"}
+      className={asset.error ? "" : "hidden"}
       tip={
         <span>
           <b>ICPSwap deposit failed.</b> Something went wrong <br />
@@ -72,7 +70,7 @@ export const ActivityTableRow = ({
             ) : (
               <>
                 <IconCmpSwapActivity />
-                {swapError && (
+                {asset.error && (
                   <div
                     className={clsx(
                       "absolute right-0 bottom-0",
@@ -144,7 +142,7 @@ export const ActivityTableRow = ({
         </td>
         {asset?.type === "ft" ? (
           <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
-            {swapError ? (
+            {asset.error ? (
               <div>
                 <span className="cursor-pointer text-primaryButtonColor">
                   Complete swap

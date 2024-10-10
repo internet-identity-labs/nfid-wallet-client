@@ -1,8 +1,7 @@
-export class DepositError extends Error {
-  constructor() {
-    super(
-      "Something went wrong with the ICPSwap service. Cancel your swap and try again.",
-    )
-    this.name = "DepositError"
+import { TransactionError } from "./abstract-transaction-error"
+
+export class DepositError extends TransactionError {
+  getDisplayMessage(): string {
+    return "Something went wrong with the ICPSwap service. Cancel your swap and try again."
   }
 }

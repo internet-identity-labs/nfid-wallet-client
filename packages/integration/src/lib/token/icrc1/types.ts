@@ -1,4 +1,7 @@
+import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { Principal } from "@dfinity/principal"
+
+import { Error as ErrorSwap } from "frontend/integration/icpswap/idl/SwapPool.d"
 
 import { Category, State } from "./enum/enums"
 
@@ -63,4 +66,5 @@ export interface TransactionData {
   iconTo?: string
   canister?: string
   canisterTo?: string
+  error?: ErrorSwap | Icrc1TransferError | undefined | string
 }

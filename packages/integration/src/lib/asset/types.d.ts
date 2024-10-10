@@ -228,6 +228,7 @@ declare interface ActivityAssetNFT {
   previewType: string
   amount?: string
   amountTo?: string
+  error?: Error | Icrc1TransferError | undefined | string
 }
 
 declare interface ActivityAssetFT {
@@ -241,6 +242,7 @@ declare interface ActivityAssetFT {
   rate: number | undefined
   decimals: number
   decimalsTo?: number
+  error?: Error | Icrc1TransferError | undefined | string
 }
 
 declare type Content = {

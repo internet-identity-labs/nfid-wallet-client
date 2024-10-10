@@ -15,7 +15,6 @@ import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
 import {
   SWAP_TX_CANISTER,
   swapTransactionService,
-  UNKNOWN_CANISTER,
 } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
@@ -32,6 +31,7 @@ import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import {
+  TransactionError,
   DepositError,
   LiquidityError,
   SlippageError,
@@ -89,8 +89,6 @@ export class ShroffImpl implements Shroff {
       this.poolData.canisterId.toText(),
       exchangeRateService.getNodeCanister(),
       SWAP_TX_CANISTER,
-      UNKNOWN_CANISTER,
-      "4mmnk-kiaaa-aaaag-qbllq-cai",
     ]
   }
 
@@ -170,14 +168,11 @@ export class ShroffImpl implements Shroff {
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
-      console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(
-          e as SwapError | WithdrawError | DepositError,
-        )
+        this.swapTransaction.setError((e as TransactionError).getErrorMessage())
       }
       await this.restoreTransaction()
-      throw e
+      throw e as TransactionError
     }
   }
 
@@ -214,7 +209,7 @@ export class ShroffImpl implements Shroff {
       return id
     }
     console.error("Deposit error: " + result.err)
-    this.swapTransaction?.setError(new DepositError())
+    throw new DepositError(result.err)
   }
 
   protected async transfer(): Promise<void> {
@@ -256,7 +251,7 @@ export class ShroffImpl implements Shroff {
       return id
     } else {
       console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
-      this.swapTransaction!.setError(new DepositError())
+      throw new DepositError(JSON.stringify(result.Err))
     }
   }
 
@@ -286,7 +281,7 @@ export class ShroffImpl implements Shroff {
       return id
     } else {
       console.error("Transfer to NFID failed: " + JSON.stringify(result.Err))
-      this.swapTransaction!.setError(new DepositError())
+      throw new DepositError(JSON.stringify(result.Err))
     }
   }
 
@@ -304,7 +299,7 @@ export class ShroffImpl implements Shroff {
       }
 
       console.error("Swap on exchange error: " + JSON.stringify(result.err))
-      this.swapTransaction?.setError(new SwapError())
+      throw new SwapError(JSON.stringify(result.err))
     })
   }
 
@@ -323,7 +318,7 @@ export class ShroffImpl implements Shroff {
       }
 
       console.error("Withdraw error: " + JSON.stringify(result.err))
-      this.swapTransaction!.setError(new WithdrawError())
+      throw new WithdrawError(JSON.stringify(result.err))
     })
   }
 

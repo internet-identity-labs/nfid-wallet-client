@@ -15,6 +15,7 @@ import {
 } from "@nfid/integration/token/constants"
 
 import {
+  TransactionError,
   DepositError,
   LiquidityError,
   ServiceUnavailableError,
@@ -118,7 +119,6 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
       if (step === SwapStage.Completed) clearInterval(interval)
 
       if (error !== undefined) {
-        setSwapError(error)
         clearInterval(interval)
       }
     }, 100)
@@ -164,7 +164,9 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     await shroff.validateQuote()
     const identity = await getIdentity(shroff.getTargets())
 
-    shroff.swap(identity)
+    shroff.swap(identity).catch((error) => {
+      setSwapError(error as TransactionError)
+    })
 
     setGetTransaction(shroff.getSwapTransaction())
   }, [quote, shroff, onSuccessSwitched])

@@ -1,9 +1,9 @@
 @demoApp
 Feature: DemoApp functionality
 
+  @1
   Scenario Outline: User sends ICP/NFT through demoApp
     Given User opens NFID site
-    And authstate is cleared
     And User is already authenticated by <nfid number> anchor
     And User opens the demoApp
     When User authenticates to DemoTransactions with shared NFID Wallet address using <profileType> profile with <target> canister and <derivationOrigin>
@@ -11,10 +11,10 @@ Feature: DemoApp functionality
       | principal | <wallet address> |
       | address   | <account ID>     |
       | targets   | <target>         |
-    When User sends <amount> ICP to <address>
+    When User sends <amount> ICP to <account ID>
     Then Check request details ICP equals to <amount> ICP
     And Assert requestICPTransfer code block has hash
-    When User sends NFT to <address>
+    When User sends NFT to <account ID>
     Then Check request details NFT equals to ICPets #4504
     And Assert requestEXTTransfer code block has hash
     Examples:

@@ -5,6 +5,7 @@ import { WithdrawHandler } from "src/integration/icpswap/error-handler/handler/w
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { TransactionErrorHandler } from "src/integration/icpswap/transaction-error-handler"
 import { SwapStage } from "src/integration/icpswap/types/enums"
+import {SwapHandler} from "src/integration/icpswap/error-handler/handler/swap-handler";
 
 export class ErrorHandlerFactory {
   getHandler(transaction: SwapTransaction): TransactionErrorHandler {
@@ -22,6 +23,10 @@ export class ErrorHandlerFactory {
 
     if (transaction.getStage() === SwapStage.Deposit) {
       return new DepositHandler(transaction)
+    }
+
+    if (transaction.getStage() === SwapStage.Swap) {
+      return new SwapHandler(transaction)
     }
 
     if (transaction.getStage() === SwapStage.Withdraw) {

@@ -9,7 +9,7 @@ import { Error as ErrorSwap } from "./idl/SwapPool.d"
 export interface SwapTransaction {
   getStage(): SwapStage
 
-  toCandid(quote: Quote): SwapTransactionCandid
+  toCandid(): SwapTransactionCandid
 
   fromCandid(candid: SwapTransactionCandid): SwapTransaction
 
@@ -50,4 +50,6 @@ export interface SwapTransaction {
   setNFIDTransferId(transferId: bigint): void
 
   setWithdraw(withdraw: bigint): void
+
+  setCompleted() : void
 }

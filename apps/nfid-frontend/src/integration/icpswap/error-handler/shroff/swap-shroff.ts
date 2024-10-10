@@ -10,8 +10,9 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
 import { WithdrawArgs } from "../../idl/SwapPool.d"
+import {ShroffDepositErrorHandler} from "src/integration/icpswap/error-handler/shroff/deposit-shroff";
 
-export class ShroffDepositErrorHandler extends ShroffImpl {
+export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.swapTransaction) {
       throw new Error("Swap transaction not set")
@@ -19,13 +20,11 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       console.debug("Transaction restarted")
-      await this.deposit()
-      this.restoreTransaction()
       await this.withdraw()
       console.debug("Withdraw done")
       //maybe not async
       this.swapTransaction.setCompleted()
-      await this.restoreTransaction()
+      this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
@@ -38,31 +37,11 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       throw new SwapError()
     }
   }
-
-  protected async withdraw(): Promise<bigint> {
-    const args: WithdrawArgs = {
-      //TODO play with numbers somehow
-      amount: BigInt(
-        this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() -
-          Number(this.source.fee),
-      ),
-      token: this.source.ledger,
-      fee: this.source.fee,
-    }
-    return this.swapPoolActor.withdraw(args).then((result) => {
-      if (hasOwnProperty(result, "ok")) {
-        const id = result.ok as bigint
-        this.swapTransaction!.setWithdraw(id)
-        return id
-      }
-      throw new Error("Withdraw error: " + JSON.stringify(result.err))
-    })
-  }
 }
 
-export class DepositErrorShroffBuilder extends ShroffBuilder {
+export class SwapErrorShroffBuilder extends ShroffBuilder {
   protected buildShroff(): Shroff {
-    return new ShroffDepositErrorHandler(
+    return new ShroffSwapErrorHandler(
       this.poolData!,
       this.zeroForOne!,
       this.sourceOracle!,

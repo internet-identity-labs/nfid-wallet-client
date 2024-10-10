@@ -2,7 +2,7 @@
 
 ## Setup Development Environment
 
-### Prerequisites
+#### Prerequisites
 
 Before setting up the development environment, ensure the following are installed:
 - NodeJS v20.16.0
@@ -24,6 +24,29 @@ npx nx serve nfid-wallet-client
 ```
 
 Open the application in a browser: http://localhost:9090
+
+#### (Optional) run legacy SDK playground:
+```
+npx nx serve nfid-demo
+```
+
+## E2E tests
+
+#### Prerequisites
+
+Ensure the following is installed:
+- Google Chrome
+
+#### Run the application:
+```
+npx nx serve nfid-wallet-client
+npx nx serve nfid-demo
+```
+
+#### Run e2e tests:
+```
+npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
+```
 
 ## Architecture
 

@@ -43,7 +43,7 @@ type SetProps = {
   sessionKey?: Ed25519KeyIdentity | undefined
 }
 
-function makeAuthState() {
+  function makeAuthState() {
   console.debug("makeAuthState")
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()

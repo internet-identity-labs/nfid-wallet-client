@@ -54,7 +54,9 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         <div className="text-gray-400 text-sm font-semibold mb-[16px] leading-[20px]">
           Total balance
         </div>
-        <div className="text-black text-[28px] font-semibold leading-[20px]">
+        <div
+          id={"totalBalance"}
+          className="text-black text-[28px] font-semibold leading-[20px]">
           {isUsdLoading ? (
             <Skeleton className="w-[50%] h-[24px]" />
           ) : (
@@ -103,7 +105,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               Send
             </Button>
             <Button
-              id="receive_button"
+              id="receiveButton"
               className="flex-1 !px-0 sm:!px-[15px]"
               innerClassName="!space-x-1"
               icon={

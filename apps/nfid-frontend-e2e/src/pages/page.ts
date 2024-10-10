@@ -3,14 +3,6 @@ export class Page {
     return $("#loader")
   }
 
-  get sendButton() {
-    return $("#sendButton")
-  }
-
-  get receiveButton() {
-    return $("#receiveButton")
-  }
-
   public async openBaseUrl() {
     await browser.url("/")
   }

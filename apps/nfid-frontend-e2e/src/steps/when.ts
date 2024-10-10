@@ -6,6 +6,7 @@ import DemoTransactions from "../pages/demoApp/demo-transactions.js"
 import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
 import HomePage from "../pages/home-page.js"
 import Profile from "../pages/profile.js"
+import activity from "../pages/activity.js"
 
 When(/^It log's me in$/, async () => {
   await HomePage.waitForLoaderDisappear()
@@ -59,8 +60,7 @@ When(/^I click on recover button$/, async () => {
 })
 
 When(/^I press on Activity icon$/, async () => {
-  await assets.principal.waitForStable({ timeout: 5000 })
-  await assets.openActivity()
+  await assets.waitUntilElementsLoadedProperly(assets.activityTab, activity.filterButton)
 })
 
 When(

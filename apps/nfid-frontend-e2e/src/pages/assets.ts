@@ -44,12 +44,13 @@ export class Assets {
     return $("#tab_Activity")
   }
 
+  get chooseModalButton() {
+    return $("#choose_modal")
+  }
+
   public async openAssetOptionsOnSR() {
-    const assetOptions = await $("#choose_modal")
-    await assetOptions.waitForDisplayed({
-      timeout: 45000,
-    })
-    await assetOptions.click()
+    await this.chooseModalButton.waitForClickable({ timeout: 45000 })
+    await this.chooseModalButton.click()
   }
 
   public async chooseCurrencyOption(currency: string, chain: string) {

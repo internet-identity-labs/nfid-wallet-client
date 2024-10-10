@@ -1,4 +1,5 @@
 import { DepositHandler } from "src/integration/icpswap/error-handler/handler/deposit-handler"
+import { SwapHandler } from "src/integration/icpswap/error-handler/handler/swap-handler"
 import { TransferNfidHandler } from "src/integration/icpswap/error-handler/handler/transfer-nfid-handler"
 import { TransferSwapHandler } from "src/integration/icpswap/error-handler/handler/transfer-swap-handler"
 import { WithdrawHandler } from "src/integration/icpswap/error-handler/handler/withdraw-handler"
@@ -22,6 +23,10 @@ export class ErrorHandlerFactory {
 
     if (transaction.getStage() === SwapStage.Deposit) {
       return new DepositHandler(transaction)
+    }
+
+    if (transaction.getStage() === SwapStage.Swap) {
+      return new SwapHandler(transaction)
     }
 
     if (transaction.getStage() === SwapStage.Withdraw) {

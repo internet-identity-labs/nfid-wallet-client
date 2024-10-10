@@ -8,7 +8,7 @@ export const chromeBrowserOptions: IChromeOption = {
     "--disable-dev-shm-usage",
     "--window-size=1920,1080",
     "--allow-insecure-localhost",
-    "--ignore-certificate-errors"
+    "--ignore-certificate-errors",
   ],
 }
 

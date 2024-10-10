@@ -21,7 +21,7 @@ describe("shroff transfer nfid error handler test", () => {
   jest.setTimeout(900000)
 
   //too long test. Unskip when needed
-  it("shroff transfer nfid error handler test", async function () {
+  it.skip("shroff transfer nfid error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)

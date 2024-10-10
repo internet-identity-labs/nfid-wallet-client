@@ -1,7 +1,9 @@
 class SoftAssertions {
   private static errors: string[] = []
 
-  private static async softAssert(assertion: () => Promise<void>): Promise<void> {
+  private static async softAssert(
+    assertion: () => Promise<void>,
+  ): Promise<void> {
     try {
       await assertion()
     } catch (e: any) {
@@ -9,7 +11,9 @@ class SoftAssertions {
     }
   }
 
-  public static async softAssertAll(...assertions: (() => Promise<void>)[]): Promise<void> {
+  public static async softAssertAll(
+    ...assertions: (() => Promise<void>)[]
+  ): Promise<void> {
     this.clear()
 
     for (const assertion of assertions) {

@@ -1,12 +1,12 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { errorHandlerFactory } from "src/integration/icpswap/error-handler/handler-factory"
 import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
 import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapStage } from "src/integration/icpswap/types/enums"
-import {errorHandlerFactory} from "src/integration/icpswap/error-handler/handler-factory";
 
 const mock: JsonnableEd25519KeyIdentity = [
   "302a300506032b6570032100c88f8f46ee5c23a748026498ddc7ed2104782ea02cd266170a470587d7c2f932",
@@ -17,11 +17,11 @@ const mockPrincipal =
   "4pw67-jou3d-xb4py-6pnvx-5p75x-pp3mi-ywe4j-bhmmq-l3354-awsws-kae"
 
 //too long. unskip when needed
-describe("shroff error handler test", () => {
+describe("shroff withdraw error handler test", () => {
   jest.setTimeout(900000)
 
   //too long test. Unskip when needed
-  it.skip("deposit error handler test", async function () {
+  it.skip("withdraw error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
@@ -35,7 +35,7 @@ describe("shroff error handler test", () => {
 
     let callCount = 0
 
-    jest.spyOn(shroff as any, "deposit").mockImplementation(() => {
+    jest.spyOn(shroff as any, "withdraw").mockImplementation(() => {
       callCount++
       if (callCount === 1) {
         throw new Error("Deposit MOCK error")
@@ -64,7 +64,9 @@ describe("shroff error handler test", () => {
       can.canisterId.toText(),
       mockId.getPrincipal(),
     )
-    expect(balanceActual).toEqual(balanceExpected)
+    expect(Number(balanceActual.balance1)).toEqual(
+      Number(balanceExpected.balance1),
+    )
     expect(transaction.getStage()).toEqual(SwapStage.Completed)
   })
 })

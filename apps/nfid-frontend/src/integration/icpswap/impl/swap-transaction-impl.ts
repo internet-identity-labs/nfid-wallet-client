@@ -1,6 +1,5 @@
 import {Icrc1TransferError} from "@dfinity/ledger-icp/dist/candid/ledger"
 import randomUUID, {UUID} from "crypto"
-import {Quote} from "src/integration/icpswap/quote"
 import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
 import {SwapStage} from "src/integration/icpswap/types/enums"
 
@@ -32,7 +31,7 @@ export class SwapTransactionImpl implements SwapTransaction {
     amount: bigint,
   ) {
     this.startTime = Date.now()
-    this.stage = SwapStage.TransferNFID
+    this.stage = SwapStage.TransferSwap
     this.targetLedger = targetLedger
     this.sourceLedger = sourceLedger
     this.uid = randomUUID.randomUUID()
@@ -99,7 +98,7 @@ export class SwapTransactionImpl implements SwapTransaction {
 
   setNFIDTransferId(transferId: bigint) {
     this.transferNFIDId = transferId
-    this.stage = SwapStage.TransferSwap
+    this.stage = SwapStage.Completed
   }
 
   setDeposit(deposit: bigint) {
@@ -115,6 +114,11 @@ export class SwapTransactionImpl implements SwapTransaction {
   setWithdraw(withdraw: bigint) {
     this.withdraw = withdraw
     this.endTime = Date.now()
+    this.stage = SwapStage.TransferNFID
+  }
+
+  setCompleted() {
+    this.endTime = Date.now()
     this.stage = SwapStage.Completed
   }
 
@@ -123,7 +127,7 @@ export class SwapTransactionImpl implements SwapTransaction {
     this.endTime = Date.now()
   }
 
-  toCandid(quote: Quote): SwapTransactionCandid {
+  toCandid(): SwapTransactionCandid {
     return {
       deposit: this.deposit ? [BigInt(this.deposit)] : [],
       end_time: this.endTime ? [BigInt(this.endTime)] : [],
@@ -140,7 +144,7 @@ export class SwapTransactionImpl implements SwapTransaction {
       withdraw: this.withdraw ? [BigInt(this.withdraw)] : [],
       uid: this.uid,
       target_amount: BigInt(this.quote),
-      source_amount: BigInt(quote.getSourceAmount().toNumber()),
+      source_amount: BigInt(this.sourceAmount),
     }
   }
 

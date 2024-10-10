@@ -1,5 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { SwapError } from "src/integration/icpswap/errors/swap-error"
+import { WithdrawError } from "src/integration/icpswap/errors/withdraw-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -9,9 +10,9 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { WithdrawArgs } from "../../idl/SwapPool.d"
+import { WithdrawErrorLog } from "../../idl/SwapPool.d"
 
-export class ShroffDepositErrorHandler extends ShroffImpl {
+export class ShroffWithdrawErrorHandler extends ShroffImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.swapTransaction) {
       throw new Error("Swap transaction not set")
@@ -19,50 +20,35 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       console.debug("Transaction restarted")
-      await this.deposit()
-      this.restoreTransaction()
       await this.withdraw()
       console.debug("Withdraw done")
+      await this.transferToNFID()
       //maybe not async
-      this.swapTransaction.setCompleted()
       await this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
+      this.swapPoolActor.getWithdrawErrorLog().then((log) => {
+        if (hasOwnProperty(log, "ok")) {
+          const withdrawLogs = log.ok as Array<[bigint, WithdrawErrorLog]>
+          if (withdrawLogs.length > 0) {
+            throw new WithdrawError()
+          }
+        }
+      })
       if (!this.swapTransaction.getError()) {
         this.swapTransaction.setError(`Swap error: ${e}`)
       }
       await this.restoreTransaction()
-      //TODO @vitaly to change according to the new error handling logic
       throw new SwapError()
     }
   }
-
-  protected async withdraw(): Promise<bigint> {
-    const args: WithdrawArgs = {
-      //TODO play with numbers somehow
-      amount: BigInt(
-        this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() -
-          Number(this.source.fee),
-      ),
-      token: this.source.ledger,
-      fee: this.source.fee,
-    }
-    return this.swapPoolActor.withdraw(args).then((result) => {
-      if (hasOwnProperty(result, "ok")) {
-        const id = result.ok as bigint
-        this.swapTransaction!.setWithdraw(id)
-        return id
-      }
-      throw new Error("Withdraw error: " + JSON.stringify(result.err))
-    })
-  }
 }
 
-export class DepositErrorShroffBuilder extends ShroffBuilder {
+export class SwapErrorShroffBuilder extends ShroffBuilder {
   protected buildShroff(): Shroff {
-    return new ShroffDepositErrorHandler(
+    return new ShroffWithdrawErrorHandler(
       this.poolData!,
       this.zeroForOne!,
       this.sourceOracle!,

@@ -21,9 +21,7 @@ export class Nft {
     const locator =
       $(`//*[@id='nft-table']//thead//th[text()='${columnName}']/ancestor::table//tbody//tr[1]//td[count(//*[@id='nft-table']//thead//th[text()='${columnName}']/preceding-sibling::th) + 1]
 `)
-    await browser.waitUntil(async () => (
-      await locator.getText() != ""),
-    )
+    await browser.waitUntil(async () => (await locator.getText()) != "")
     return await locator.getText()
   }
 

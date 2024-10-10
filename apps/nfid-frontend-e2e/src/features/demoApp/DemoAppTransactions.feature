@@ -1,7 +1,6 @@
-@demoApp
-Feature: DemoApp functionality
+@demoAppSend
+Feature: DemoApp send functionality
 
-  @1
   Scenario Outline: User sends ICP/NFT through demoApp
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

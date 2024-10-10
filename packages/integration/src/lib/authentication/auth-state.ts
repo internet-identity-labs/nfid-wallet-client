@@ -43,10 +43,10 @@ type SetProps = {
   sessionKey?: Ed25519KeyIdentity | undefined
 }
 
-async function makeAuthState() {
+  function makeAuthState() {
   console.debug("makeAuthState")
   let pendingRenewDelegation = false
-  await _loadAuthSessionFromCache()
+  _loadAuthSessionFromCache()
 
   if (typeof window !== "undefined") {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -54,7 +54,7 @@ async function makeAuthState() {
     window.resetAuthState = invalidateIdentity
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    window.setAuthState = await _setAuthSession
+    window.setAuthState = _setAuthSession
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.resetAuthState = _clearAuthSessionFromCache
@@ -227,7 +227,7 @@ async function makeAuthState() {
   }
 }
 
-export const authState = await makeAuthState()
+export const authState = makeAuthState()
 
 /**
  * When user connects an identity, we update our agent.

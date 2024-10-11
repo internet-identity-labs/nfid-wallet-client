@@ -254,7 +254,7 @@ export class ShroffImpl implements Shroff {
     const amountDecimals = this.requestedQuote!.getWidgetFeeAmount()
 
     const transferArgs: TransferArg = {
-      amount: BigInt(amountDecimals.toNumber()),
+      amount: amountDecimals,
       created_at_time: [],
       fee: [],
       from_subaccount: [],

@@ -169,9 +169,11 @@ export class QuoteImpl implements Quote {
 
   getWidgetFee(): string {
     return (
-      calculateWidgetFee(this.sourceAmount, this.source.decimals)
-        .toString()
-        .replace(TRIM_ZEROS, "") +
+      BigNumber(Number(this.getWidgetFeeAmount()))
+        .div(10 ** this.source.decimals)
+        .toFixed(this.source.decimals)
+        .replace(TRIM_ZEROS, "")
+        .toString() +
       " " +
       this.source.symbol
     )

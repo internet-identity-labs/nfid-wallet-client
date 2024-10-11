@@ -122,9 +122,9 @@ export class QuoteImpl implements Quote {
   getQuoteRate(): string {
     const quote = new BigNumber(Number(this.quote))
     const rate = quote.div(this.getSourceAmount())
-    return `1 ${this.source.symbol} = ${rate.toFixed(this.target.decimals)} ${
-      this.target.symbol
-    }`
+    return `1 ${this.source.symbol} = ${rate
+      .toFixed(this.target.decimals)
+      .replace(TRIM_ZEROS, "")} ${this.target.symbol}`
   }
 
   getLiquidityProviderFee(): string {

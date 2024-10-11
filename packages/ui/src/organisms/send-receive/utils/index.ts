@@ -48,11 +48,24 @@ export const getErrorType = (
   error: SwapError | WithdrawError | DepositError | undefined,
 ) => {
   if (error instanceof DepositError)
-    return { title: "deposit", button: "Close" }
-  if (error instanceof SwapError) return { title: "swap", button: "Close" }
+    return {
+      title: "deposit",
+      button: "Close",
+      activityMessage: "Cancel your swap and try again.",
+    }
+  if (error instanceof SwapError)
+    return {
+      title: "swap",
+      button: "Close",
+      activityMessage: "Cancel your swap and try again.",
+    }
   if (error instanceof WithdrawError)
-    return { title: "withdraw", button: "Complete swap" }
-  return { title: "", button: "Close" }
+    return {
+      title: "withdraw",
+      button: "Complete swap",
+      activityMessage: "Complete your swap.",
+    }
+  return { title: "", button: "Close", activityMessage: "" }
 }
 
 export const getTextStatusByStep = (step: SwapStage) => {

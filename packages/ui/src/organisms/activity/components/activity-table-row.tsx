@@ -17,6 +17,8 @@ import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
 
+import { getErrorType } from "../../send-receive/utils"
+
 interface IActivityTableRow extends IActivityRow {
   id: string
 }
@@ -41,10 +43,10 @@ export const ActivityTableRow = ({
     <Tooltip
       className={asset.error ? "" : "hidden"}
       tip={
-        <span>
-          <b>ICPSwap deposit failed.</b> Something went wrong <br />
-          with the ICPSwap service. Cancel your swap and <br />
-          try again.
+        <span className="block max-w-[320px]">
+          <b>ICPSwap {getErrorType(asset.error).title} failed.</b> Something
+          went wrong with the ICPSwap service.{" "}
+          {getErrorType(asset.error).activityMessage}
         </span>
       }
     >

@@ -11,7 +11,10 @@ import {
 } from "src/integration/icpswap/impl/quote-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
-import { icpSwapService } from "src/integration/icpswap/service/icpswap-service"
+import {
+  icpSwapService,
+  SWAP_FACTORY_CANISTER,
+} from "src/integration/icpswap/service/icpswap-service"
 import {
   SWAP_TX_CANISTER,
   swapTransactionService,
@@ -89,6 +92,7 @@ export class ShroffImpl implements Shroff {
       this.poolData.canisterId.toText(),
       exchangeRateService.getNodeCanister(),
       SWAP_TX_CANISTER,
+      SWAP_FACTORY_CANISTER,
     ]
   }
 
@@ -169,10 +173,11 @@ export class ShroffImpl implements Shroff {
       return this.swapTransaction
     } catch (e) {
       if (!this.swapTransaction.getError()) {
+        console.error("Swap error: ", e)
         this.swapTransaction.setError((e as TransactionError).getErrorMessage())
       }
       await this.restoreTransaction()
-      throw e as TransactionError
+      throw e
     }
   }
 

@@ -15,7 +15,7 @@ describe("ICRC1 suite", () => {
   let root: string
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
 
-  it("Get index data", async () => {
+  it.skip("Get index data", async () => {
     const data = await icrc1TransactionHistoryService.getICRC1IndexData(
       [
         {

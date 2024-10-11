@@ -26,7 +26,7 @@ describe("shroff test", () => {
       .withSource(sourceLedger)
       .withTarget(targetLedger)
       .build()
-    const quote = await shroff.getQuote(0.5)
+    const quote = await shroff.getQuote(0.0011)
     await sleep(1)
 
     const revalidatedQuote = await shroff.validateQuote()
@@ -34,7 +34,9 @@ describe("shroff test", () => {
       quote.getTargetAmount().toNumber(),
     )
 
-    expect(quote.getSourceAmountPrettified()).toEqual("0.5")
+    expect(quote.getSourceAmountPrettified()).toEqual("0.0011")
+    quote.getWidgetFeeAmount()
+    BigInt(quote.getAmountWithoutWidgetFee().toNumber())
   })
 
   //too long test. Unskip when needed

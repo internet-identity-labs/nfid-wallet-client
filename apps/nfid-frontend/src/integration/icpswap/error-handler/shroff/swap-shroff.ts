@@ -1,11 +1,11 @@
-import {SignIdentity} from "@dfinity/agent"
-import {ShroffDepositErrorHandler} from "src/integration/icpswap/error-handler/shroff/deposit-shroff"
-import {SwapError} from "src/integration/icpswap/errors/swap-error"
-import {ShroffBuilder,} from "src/integration/icpswap/impl/shroff-impl"
-import {Shroff} from "src/integration/icpswap/shroff"
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
+import { SignIdentity } from "@dfinity/agent"
+import { ShroffDepositErrorHandler } from "src/integration/icpswap/error-handler/shroff/deposit-shroff"
+import { SwapError } from "src/integration/icpswap/errors/swap-error"
+import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
+import { Shroff } from "src/integration/icpswap/shroff"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {replaceActorIdentity} from "@nfid/integration"
+import { replaceActorIdentity } from "@nfid/integration"
 
 export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {

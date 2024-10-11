@@ -169,7 +169,7 @@ export class QuoteImpl implements Quote {
 
   getWidgetFee(): string {
     return (
-      this.getWidgetFeeAmount()
+      BigNumber(Number(this.getWidgetFeeAmount()))
         .div(10 ** this.source.decimals)
         .toFixed(this.source.decimals)
         .replace(TRIM_ZEROS, "")
@@ -195,8 +195,8 @@ export class QuoteImpl implements Quote {
     return this.amountWithoutWidgetFee
   }
 
-  getWidgetFeeAmount(): BigNumber {
-    return this.getSourceAmount().multipliedBy(WIDGET_FEE)
+  getWidgetFeeAmount(): bigint {
+    return BigInt(calculateWidgetFee(this.sourceAmount, this.source.decimals))
   }
 }
 
@@ -208,6 +208,6 @@ export function calculateWidgetFee(
     BigNumber(sourceAmount)
       .multipliedBy(10 ** sourceDecimals)
       .multipliedBy(WIDGET_FEE)
-      .toFixed(sourceDecimals),
+      .toFixed(0),
   )
 }

@@ -18,6 +18,6 @@ export interface Quote {
   getSourceAmount(): BigNumber
   getTargetAmount(): BigNumber
   getAmountWithoutWidgetFee(): BigNumber
-  getWidgetFeeAmount(): BigNumber
+  getWidgetFeeAmount(): bigint
   getPriceImpact(): PriceImpact | undefined
 }

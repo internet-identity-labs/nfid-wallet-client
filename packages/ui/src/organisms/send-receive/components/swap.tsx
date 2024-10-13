@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import clsx from "clsx"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -18,6 +19,7 @@ import {
   WithdrawError,
 } from "frontend/integration/icpswap/errors"
 import { Quote } from "frontend/integration/icpswap/quote"
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
@@ -46,6 +48,8 @@ export interface SwapFTUiProps {
   error?: SwapError | WithdrawError | DepositError
   isProgressOpen: boolean
   onClose: () => void
+  transaction: SwapTransaction | undefined
+  identity?: DelegationIdentity
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -67,6 +71,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   error,
   isProgressOpen,
   onClose,
+  transaction,
+  identity,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
@@ -102,6 +108,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         isOpen={isProgressOpen}
         onClose={onClose}
         error={error}
+        transaction={transaction}
+        identity={identity}
       />
       {showServiceError && <ErrorModal refresh={clearQuoteError} />}
       <QuoteModal

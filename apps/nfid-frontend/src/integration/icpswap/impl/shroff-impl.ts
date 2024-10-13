@@ -153,9 +153,6 @@ export class ShroffImpl implements Shroff {
     )
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
-      await this.transferToNFID()
-      console.debug("Transfer to NFID done")
-      this.restoreTransaction()
       await this.transferToSwap()
       this.restoreTransaction()
       console.debug("Transfer to swap done")
@@ -168,7 +165,10 @@ export class ShroffImpl implements Shroff {
       await this.withdraw()
       console.debug("Withdraw done")
       //maybe not async
-      await this.restoreTransaction()
+      this.restoreTransaction()
+      await this.transferToNFID()
+      console.debug("Transfer to NFID done")
+      this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
@@ -264,7 +264,7 @@ export class ShroffImpl implements Shroff {
     const amountDecimals = this.requestedQuote!.getWidgetFeeAmount()
 
     const transferArgs: TransferArg = {
-      amount: BigInt(amountDecimals.toNumber()),
+      amount: amountDecimals,
       created_at_time: [],
       fee: [],
       from_subaccount: [],
@@ -329,7 +329,7 @@ export class ShroffImpl implements Shroff {
 
   protected async restoreTransaction() {
     return swapTransactionService.storeTransaction(
-      this.swapTransaction!.toCandid(this.requestedQuote!),
+      this.swapTransaction!.toCandid(),
       this.delegationIdentity!,
     )
   }

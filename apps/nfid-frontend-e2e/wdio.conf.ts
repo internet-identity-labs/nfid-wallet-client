@@ -4,8 +4,6 @@ import cucumberJson from "wdio-cucumberjs-json-reporter"
 import { ITestCaseHookParameter } from "@cucumber/cucumber"
 
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
-import { addLocalStorageCommands } from "./src/helpers/setupLocalStorage.js"
-import { addVirtualAuthCommands } from "./src/helpers/setupVirtualWebauthn.js"
 import { PickleResult, PickleStep } from "@wdio/types/build/Frameworks"
 
 export const isHeadless = process.env.IS_HEADLESS === "true"
@@ -276,8 +274,6 @@ export const config: WebdriverIO.Config = {
   before: async function(capabilities: any, specs: any) {
     if (process.env.DEMO_APPLICATION_URL) console.info(`DEMO_APPLICATION_URL: ${process.env.DEMO_APPLICATION_URL}`)
     if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
-    await addVirtualAuthCommands(browser)
-    await addLocalStorageCommands(browser)
   },
   /**
    * Gets executed before the suite starts.

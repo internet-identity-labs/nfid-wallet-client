@@ -1,4 +1,6 @@
 import Page from "./page.js"
+import Profile from "./profile.js"
+import Nft from "./nft.js"
 
 export class Assets {
   get sendDialogWindow() {
@@ -9,12 +11,12 @@ export class Assets {
     return "[id*='token_"
   }
 
-  private get assetElement() {
-    return "[id*='"
+  public get getBalance() {
+    return $("#balance")
   }
 
-  public async getBalance() {
-    return $("#balance")
+  public get switchSendType() {
+    return $("#send_type_toggle")
   }
 
   public async getAssetBalance(label: string) {
@@ -26,14 +28,11 @@ export class Assets {
   }
 
   public async getBlockchain(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_blockchain']")
+    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']")
   }
 
-  private getTokenBalance(chain: string) {
-    return `#token_${chain.replace(/\s/g, "")}_balance`
-  }
 
-  private get principal() {
+  get principal() {
     return $("#principal")
   }
 
@@ -41,23 +40,17 @@ export class Assets {
     return $("#address")
   }
 
-  public async openAssetOptionsOnSR() {
-    const assetOptions = await $("#choose_modal")
-    await assetOptions.waitForDisplayed({
-      timeout: 45000,
-    })
-    await assetOptions.click()
+  get activityTab() {
+    return $("#tab_Activity")
   }
 
-  public async waitWhileCalculated(assetLabel: string, currency: string) {
-    const tokenBalance = await $(this.getTokenBalance(assetLabel))
-    await tokenBalance.waitForDisplayed({
-      timeout: 10000,
-    })
+  get chooseModalButton() {
+    return $("#choose_modal")
+  }
 
-    await tokenBalance.waitUntil(
-      async () => (await tokenBalance.getText()) !== `0 ${currency}`,
-    )
+  public async openAssetOptionsOnSR() {
+    await this.chooseModalButton.waitForClickable({ timeout: 45000 })
+    await this.chooseModalButton.click()
   }
 
   public async chooseCurrencyOption(currency: string, chain: string) {
@@ -68,71 +61,31 @@ export class Assets {
   }
 
   public async sendFTto(address: string, amount: string) {
-    const target = await $("#input")
-    await target.setValue(address)
-    const amountToSend = await $("#amount")
-    await amountToSend.setValue(amount)
+    await Nft.addressField.setValue(address)
+    await Nft.amountField.setValue(amount)
 
-    const assetBalance = await this.getBalance()
-    const fee = await this.getFee()
-    await assetBalance.waitForExist({ timeout: 10000 })
-    await fee.waitForExist({ timeout: 35000 })
+    await this.getBalance.waitForExist({ timeout: 10000 })
+    await this.getFee.waitForExist({ timeout: 35000 })
 
     await this.sendDialogWindow.click()
   }
 
-  public async getFee() {
+  public get getFee() {
     return $("#fee")
   }
 
   public async sendDialog() {
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    await Page.sendButton.waitForClickable({
-      timeout: 7000,
-    })
-    await Page.sendButton.click()
-    await browser.waitUntil(
-      async () => {
-        await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-        try {
-          await this.sendDialogWindow.waitForDisplayed({ timeout: 15000 })
-        } catch (e) {
-          console.log(
-            "Send dialog window isn't displayed. Trying to open it again",
-          )
-        }
-        if (!(await this.sendDialogWindow.isDisplayed()))
-          await Page.sendButton.click()
-        return await this.sendDialogWindow.isDisplayed()
-      },
-      {
-        timeout: 60000,
-        timeoutMsg: "Send dialog window isn't displayed in 60 sec",
-      },
-    )
+    await this.waitUntilElementsLoadedProperly(Profile.sendButton, this.switchSendType)
   }
 
   public async sendNFTDialog() {
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 40000 })
-    await Page.sendButton.waitForDisplayed({
-      timeout: 7000,
-    })
-    await Page.sendButton.click()
-    await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
-    await $("#send_type_toggle").click()
+    await this.waitUntilElementsLoadedProperly(Profile.sendButton, this.switchSendType)
+    await this.switchSendType.click()
     await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
   }
 
   public async receiveDialog() {
-    await browser.waitUntil(async () => {
-      await this.principal.waitForDisplayed()
-      return (await this.principal.getText()) != ""
-    })
-    await browser.pause(1000)
-    const receiveButton = await $("#receive_button")
-    await receiveButton.waitForDisplayed({ timeout: 10000 })
-    await receiveButton.waitForClickable({ timeout: 15000 })
-    await receiveButton.click()
+    await this.waitUntilElementsLoadedProperly(Profile.receiveButton, $("#first_part"))
   }
 
   public async getAccountId(isAddress?: boolean) {
@@ -181,48 +134,11 @@ export class Assets {
     await this.chooseOption(account)
   }
 
-  public async chooseAccountReceive(account: string) {
-    const assetOptions = await $("#option_Accounts")
-    await assetOptions.click()
-    await this.chooseOption(account)
-  }
-
   public async successWindow() {
     const sw = await $(`#success_window_3`)
     await sw.waitForExist({
-      timeout: 50000,
+      timeout: 80000,
     })
-  }
-
-  public async openAssetByLabel(name: string) {
-    await $(
-      this.assetLabel + `${name.replace(/\s/g, "")}` + "']",
-    ).waitForDisplayed({
-      timeout: 17000,
-      timeoutMsg: "Asset has not been showed! Missing asset label!",
-    })
-    await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").click()
-  }
-
-  public async openElementById(name: string) {
-    await $(this.assetElement + `${name}` + "']").waitForDisplayed({
-      timeout: 15000,
-      timeoutMsg: "Element has not been showed! Missing asset label!",
-    })
-    await $(this.assetElement + `${name}` + "']").click()
-  }
-
-  public async isElementSelected(name: string, falseCase: string) {
-    await $(this.assetElement + `${name}` + "']").waitForDisplayed({
-      timeout: 15000,
-      timeoutMsg: "Element has not been showed! Missing asset label!",
-    })
-    let isSel = await $(this.assetElement + `${name}` + "']").isSelected()
-    if (falseCase) {
-      expect(isSel).toEqual(false)
-    } else {
-      expect(isSel).toEqual(true)
-    }
   }
 
   public async openActivity() {
@@ -231,6 +147,26 @@ export class Assets {
 
     await activityIcon.waitForDisplayed({ timeout: 10000 })
     await activityIcon.click()
+  }
+
+  public async waitUntilElementsLoadedProperly(
+    clickElement: ChainablePromiseElement,
+    waitForElement: ChainablePromiseElement,
+  ) {
+    await browser.waitUntil(async () => {
+      try {
+        await Profile.waitUntilBalanceLoaded()
+        await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+
+        await clickElement.waitForClickable({ timeout: 15000 })
+        await clickElement.click()
+        await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+        await waitForElement.waitForDisplayed()
+        return true
+      } catch (e) {
+        await browser.refresh()
+      }
+    }, { timeout: 40000, timeoutMsg: "Element didn't load properly in 40sec" })
   }
 }
 

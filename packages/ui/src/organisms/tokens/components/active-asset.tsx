@@ -54,12 +54,13 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           </p>
         </div>
       </td>
-      <td className="hidden md:table-cell pr-[10px]">
+      <td id={`token_${token.getTokenCategoryFormatted().replace(/\s/g, "")}_category`}
+          className="hidden md:table-cell pr-[10px]">
         {token.getTokenCategoryFormatted()}
       </td>
       <td
-        className="pr-[10px] text-right md:text-left pr-[10px] max-w-[50%] min-w-[50%]"
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
+        className="pr-[10px] text-right md:text-left pr-[10px] max-w-[50%] min-w-[50%]"
       >
         <div>
           <p className="flex justify-end sm:block">
@@ -83,8 +84,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         </div>
       </td>
       <td
-        className="pr-[10px] hidden md:table-cell pr-[10px]"
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
+        className="pr-[10px] hidden md:table-cell pr-[10px]"
       >
         {isLoading ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />

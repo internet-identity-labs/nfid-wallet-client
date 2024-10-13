@@ -1,5 +1,7 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import clsx from "clsx"
 import { FC, useEffect, useMemo, useState } from "react"
+import { errorHandlerFactory } from "src/integration/icpswap/error-handler/handler-factory"
 
 import {
   IconCmpArrow,
@@ -14,6 +16,8 @@ import {
   SwapError,
   WithdrawError,
 } from "frontend/integration/icpswap/errors"
+import { SwapTransactionImpl } from "frontend/integration/icpswap/impl/swap-transaction-impl"
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import Step1Loop from "../assets/NFID_WS_1.json"
@@ -49,6 +53,8 @@ export interface SwapSuccessProps {
   duration?: number
   isOpen: boolean
   error?: SwapError | WithdrawError | DepositError
+  transaction: SwapTransaction | undefined
+  identity?: DelegationIdentity
 }
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
@@ -63,6 +69,8 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   duration = 20,
   isOpen,
   error,
+  transaction,
+  identity,
 }) => {
   const [currentAnimation, setCurrentAnimation] = useState(allAnimations[0])
 
@@ -89,11 +97,18 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
     if (error instanceof WithdrawError) setCurrentAnimation(allAnimations[7])
   }, [error])
 
-  const completeHandler = () => {
+  const animationCompleteHandler = () => {
     if (step < 3) return
     if (step === 3) {
       setCurrentAnimation(allAnimations[3])
     }
+  }
+
+  const completeHandler = async () => {
+    if (!transaction || !identity) return
+    const errorHandler = errorHandlerFactory.getHandler(transaction)
+    await errorHandler.completeTransaction(identity)
+    onClose()
   }
 
   return (
@@ -123,7 +138,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             className="max-w-[370px]"
             animationData={currentAnimation}
             loop={!error && step !== SwapStage.Completed}
-            onComplete={completeHandler}
+            onComplete={animationCompleteHandler}
           />
           <div
             className={clsx(
@@ -184,7 +199,12 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </p>
           </div>
         </div>
-        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
+        <Button
+          type="primary"
+          block
+          className="mt-[30px]"
+          onClick={completeHandler}
+        >
           {getErrorType(error)?.button}
         </Button>
       </div>

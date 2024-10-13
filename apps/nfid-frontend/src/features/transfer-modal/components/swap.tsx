@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import {
   fetchActiveTokens,
@@ -36,6 +37,7 @@ interface ISwapFT {
 }
 
 export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
+  const [identity, setIdentity] = useState<DelegationIdentity>()
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
   const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
@@ -163,6 +165,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
 
     await shroff.validateQuote()
     const identity = await getIdentity(shroff.getTargets())
+    setIdentity(identity)
 
     shroff.swap(identity).catch((error) => {
       setSwapError(error as TransactionError)
@@ -192,6 +195,8 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         error={swapError}
         isProgressOpen={isSuccess}
         onClose={() => onSuccessSwitched(false)}
+        transaction={getTransaction}
+        identity={identity}
       />
     </FormProvider>
   )

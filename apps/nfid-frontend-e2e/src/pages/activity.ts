@@ -1,9 +1,6 @@
 import { Page } from "./page.js"
 
 export class Activity extends Page {
-  get pageTitle() {
-    return $("#page_title")
-  }
 
   get activityTableRows() {
     return $$("//*[@id='activity-table']//tr[starts-with(@id, 'tx-')]")
@@ -27,7 +24,6 @@ export class Activity extends Page {
 
   getTransaction = async (
     action: string,
-    chain: string,
     currency: string,
     type: string,
     asset: string,
@@ -35,7 +31,7 @@ export class Activity extends Page {
     from: string,
     to: string,
   ) =>
-    $(`//*[@id='tx-${action}-${chain}-${currency}-${type}-${asset}-${timestamp}-${from}-${to}']`)
+    $(`//*[@id='tx-${action}-${currency}-${type}-${asset}-${timestamp}-${from}-${to}']`)
 }
 
 export default new Activity()

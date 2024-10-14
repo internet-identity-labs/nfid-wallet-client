@@ -1,10 +1,13 @@
-import {SignIdentity} from "@dfinity/agent"
-import {WithdrawError} from "src/integration/icpswap/errors/withdraw-error"
-import {ShroffBuilder, ShroffImpl,} from "src/integration/icpswap/impl/shroff-impl"
-import {Shroff} from "src/integration/icpswap/shroff"
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
+import { SignIdentity } from "@dfinity/agent"
+import { WithdrawError } from "src/integration/icpswap/errors/withdraw-error"
+import {
+  ShroffBuilder,
+  ShroffImpl,
+} from "src/integration/icpswap/impl/shroff-impl"
+import { Shroff } from "src/integration/icpswap/shroff"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {replaceActorIdentity} from "@nfid/integration"
+import { replaceActorIdentity } from "@nfid/integration"
 
 export class ShroffNfidErrorHandler extends ShroffImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {

@@ -157,7 +157,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           !to
         }
         type="primary"
-        id="sendFT"
+        id="sendButton"
         block
         onClick={submit}
         icon={<IconCmpArrow className="rotate-[135deg]" />}

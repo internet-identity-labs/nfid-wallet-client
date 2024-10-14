@@ -4,7 +4,7 @@ import Nft from "./nft.js"
 
 export class Assets {
   get sendDialogWindow() {
-    return $("#sendFT")
+    return $("#sendButton")
   }
 
   private get assetLabel() {
@@ -48,16 +48,21 @@ export class Assets {
     return $("#choose_modal")
   }
 
+  get chooseNFTinSend() {
+    return $("#choose-nft")
+  }
+
+  public currencyOption(chain: string, currency: string) {
+    return $(`#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`)
+  }
+
+  public getTokenByNameInSend(token: string) {
+    return $(`#choose_option_${token}`)
+  }
+
   public async openAssetOptionsOnSR() {
     await this.chooseModalButton.waitForClickable({ timeout: 45000 })
     await this.chooseModalButton.click()
-  }
-
-  public async chooseCurrencyOption(currency: string, chain: string) {
-    const option = await $(
-      `#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`,
-    )
-    await option.click()
   }
 
   public async sendFTto(address: string, amount: string) {
@@ -67,6 +72,11 @@ export class Assets {
     await this.getBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
 
+    await this.sendDialogWindow.click()
+  }
+
+  public async sendNFTto(address: string) {
+    await Nft.addressField.setValue(address)
     await this.sendDialogWindow.click()
   }
 

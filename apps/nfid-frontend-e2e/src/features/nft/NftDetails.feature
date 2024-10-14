@@ -1,8 +1,7 @@
-@nft-details
 Feature:Non Fungible Asset Details
   As a user, I want to see nft details
 
-  @nft3
+  @nft-details-1
   Scenario Outline: User should be able to see details page
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
@@ -17,7 +16,7 @@ Feature:Non Fungible Asset Details
       | 100000830   | ICPets #3808             | jjhck-rakor-uwiaa-aaaaa-b4atg-aaqca-aab3q-a | EXT      | unssi-hiaaa-aaaah-qcmya-cai | Community Revenue Focused NFT Project. ICPets is a Hold-2-Earn lifestyle aimed to increase your earnings through passive income and to build a strong community around art and financial opportunities by using NFT technology and its smart contracts power. |
       | 200000276   | ICPets #349              | padpn-oqkor-uwiaa-aaaaa-b4atg-aaqca-aaafo-q | EXT      | unssi-hiaaa-aaaah-qcmya-cai | Community Revenue Focused NFT Project. ICPets is a Hold-2-Earn lifestyle aimed to increase your earnings through passive income and to build a strong community around art and financial opportunities by using NFT technology and its smart contracts power. |
 
-  @nft4
+  @nft-details-2
   Scenario Outline: User should be able to see txs on NFT details page
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

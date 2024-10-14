@@ -2,7 +2,7 @@ import { Then } from "@cucumber/cucumber"
 import { softAssertAll } from "../helpers/softAssertions.js"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
-import activity from "../pages/activity.js"
+import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
 import DemoTransactions from "../pages/demoApp/demo-transactions.js"
 import DemoAppPage from "../pages/demoApp/demoApp-page.js"
@@ -85,19 +85,18 @@ Then(/^User opens send nft dialog window/, async () => {
 })
 
 Then(/^User opens choose nft window/, async () => {
-  await $("#choose-nft").click()
+  await Assets.chooseNFTinSend.click()
 })
 
 Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
-  const opt = await $(`#choose_option_${option}`)
-  await opt.waitForExist({ timeout: 15000 })
+  await Assets.getTokenByNameInSend(option).waitForExist({ timeout: 15000 })
 })
 
 Then(
   /^Choose ([^"]*) on ([^"]*) from send options/,
   async (currency: string, chain: string) => {
     await Assets.openAssetOptionsOnSR()
-    await Assets.chooseCurrencyOption(currency, chain)
+    await Assets.currencyOption(chain, currency).click()
   },
 )
 
@@ -136,9 +135,9 @@ Then(
 )
 
 Then(
-  /^Set ([^"]*) address and ([^"]*) and send/,
+  /^Set (.+) address then send(?: ([^"]*) FT)?$/,
   async (address: string, amount: string) => {
-    await Assets.sendFTto(address, amount)
+    amount ? await Assets.sendFTto(address, amount) : await Assets.sendNFTto(address)
   },
 )
 
@@ -331,11 +330,11 @@ Then(
 )
 
 Then(/^I should see filter button in Activity tab$/, async () => {
-  await activity.filterButton.waitForDisplayed({ timeout: 10000 })
+  await Activity.filterButton.waitForDisplayed({ timeout: 10000 })
 })
 
 Then(/^I should see (\d+) activities in the table$/, async (amount: number) => {
-  const length = await activity.getActivitiesLength()
+  const length = await Activity.getActivitiesLength()
   expect(length).toEqual(amount)
 })
 
@@ -350,7 +349,7 @@ Then(
     from: string,
     to: string,
   ) => {
-    const tx = await activity.getTransaction(
+    const tx = await Activity.getTransaction(
       action,
       currency,
       type,

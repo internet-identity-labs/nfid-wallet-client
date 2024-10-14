@@ -1,4 +1,3 @@
-@sendreceive
 Feature:Send/Receive Asset
   As a user, I want to send/receive assets
 
@@ -56,8 +55,23 @@ Feature:Send/Receive Asset
     When Choose <currency> on <category> from send options
     And Set amount <amount>
     And Wait while balance and fee calculated
-    And Set <target> address and <amount> and send
+    And Set <address> address then send <amount> FT
     Then Transaction is success
     Examples:
-      | category          | nfid number | target                                                           | amount | currency |
+      | category          | nfid number | address                                                          | amount | currency |
       | Internet Computer | 28567       | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce | 0.0001 | ICP      |
+      | BoomDAO           | 28567       | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe  | 0.0001 | BOOM     |
+
+  @sendreceive5
+  Scenario Outline: User sends <category> NFT
+    Given User opens NFID site
+    And User is already authenticated by <nfid number> anchor
+    And Tokens displayed on user assets
+    And User opens send nft dialog window
+    And User opens choose nft window
+    When User selects the <tokenName> NFT
+    And Set <Account ID> address then send
+    Then Transaction is success
+    Examples:
+      | tokenName  | nfid number | Account ID                                                       |
+      | ICPets4504 | 28567       | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce |

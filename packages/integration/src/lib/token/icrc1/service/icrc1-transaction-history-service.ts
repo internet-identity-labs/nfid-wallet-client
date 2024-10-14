@@ -37,137 +37,95 @@ export class Icrc1TransactionHistoryService {
   ): Promise<Array<ICRC1IndexData>> {
     return Promise.all(
       canisters.map(async (pair) => {
+        const args: GetAccountTransactionsArgs = {
+          account: {
+            subaccount: [],
+            owner: Principal.fromText(publicKeyInPrincipal),
+          },
+          max_results: maxResults,
+          start:
+            pair.blockNumberToStartFrom === undefined
+              ? []
+              : [pair.blockNumberToStartFrom],
+        }
+
+        const icrc1Pair = new Icrc1Pair(pair.icrc1.ledger, pair.icrc1.index)
+        const ledgerData = await icrc1Pair.getMetadata()
+
+        const indexActor = this.createIndexActor(
+          pair.icrc1.index,
+          pair.icrc1.ledger === ICP_CANISTER_ID,
+        )
+
         try {
-          if (pair.icrc1.ledger === ICP_CANISTER_ID) {
-            const indexActor = Agent.Actor.createActor<ICRCIndexICP>(
-              icrc1IndexIDLICP,
-              {
-                canisterId: pair.icrc1.index!,
-                agent: new HttpAgent({ ...agentBaseConfig }),
-              },
+          const response = await indexActor.get_account_transactions(args)
+
+          if (hasOwnProperty(response, "Err")) {
+            console.error(
+              `Error ${response.Err} getting account transactions for canister: ${pair.icrc1}`,
             )
+            return this.getDefaultICRC1IndexData()
+          }
 
-            const args: GetAccountTransactionsArgs = {
-              account: {
-                subaccount: [],
-                owner: Principal.fromText(publicKeyInPrincipal),
-              },
-              max_results: maxResults,
-              start:
-                pair.blockNumberToStartFrom === undefined
-                  ? []
-                  : [pair.blockNumberToStartFrom],
-            }
-            const response = await indexActor.get_account_transactions(args)
-
-            if (hasOwnProperty(response, "Err")) {
-              console.error(
-                "Error " +
-                  response.Err +
-                  " getting account transactions for canister: " +
-                  pair.icrc1,
-              )
-              return {
-                transactions: [],
-                oldestTransactionId: undefined,
-              }
-            }
-
-            if (hasOwnProperty(response, "Ok")) {
-              const icrc1Pair = new Icrc1Pair(
-                pair.icrc1.ledger,
-                pair.icrc1.index,
-              )
-              const ledgerData = await icrc1Pair.getMetadata()
-
-              return {
-                canisterId: pair.icrc1.ledger,
-                decimals: ledgerData.decimals,
-                transactions: this.mapRawTrsToTransactionICP(
-                  response.Ok.transactions,
-                  publicKeyInPrincipal,
-                  ledgerData.symbol,
-                  ledgerData.decimals,
-                  ledgerData.canister,
-                ),
-                oldestTransactionId:
-                  response.Ok.oldest_tx_id.length === 0
-                    ? undefined
-                    : response.Ok.oldest_tx_id[0],
-              }
-            }
-          } else {
-            const indexActor = Agent.Actor.createActor<ICRCIndex>(
-              icrc1IndexIDL,
-              {
-                canisterId: pair.icrc1.index!,
-                agent: new HttpAgent({ ...agentBaseConfig }),
-              },
-            )
-
-            const args: GetAccountTransactionsArgs = {
-              account: {
-                subaccount: [],
-                owner: Principal.fromText(publicKeyInPrincipal),
-              },
-              max_results: maxResults,
-              start:
-                pair.blockNumberToStartFrom === undefined
-                  ? []
-                  : [pair.blockNumberToStartFrom],
-            }
-            const response = await indexActor.get_account_transactions(args)
-
-            if (hasOwnProperty(response, "Err")) {
-              console.error(
-                "Error " +
-                  response.Err +
-                  " getting account transactions for canister: " +
-                  pair.icrc1,
-              )
-              return {
-                transactions: [],
-                oldestTransactionId: undefined,
-              }
-            }
-
-            if (hasOwnProperty(response, "Ok")) {
-              const icrc1Pair = new Icrc1Pair(
-                pair.icrc1.ledger,
-                pair.icrc1.index,
-              )
-              const ledgerData = await icrc1Pair.getMetadata()
-
-              return {
-                canisterId: pair.icrc1.ledger,
-                decimals: ledgerData.decimals,
-                transactions: this.mapRawTrsToTransaction(
-                  response.Ok.transactions,
-                  publicKeyInPrincipal,
-                  ledgerData.symbol,
-                  ledgerData.decimals,
-                  ledgerData.canister,
-                ),
-                oldestTransactionId:
-                  response.Ok.oldest_tx_id.length === 0
-                    ? undefined
-                    : response.Ok.oldest_tx_id[0],
-              }
+          if (hasOwnProperty(response, "Ok")) {
+            return {
+              canisterId: pair.icrc1.ledger,
+              decimals: ledgerData.decimals,
+              transactions: this.mapTransactions(
+                response.Ok.transactions,
+                publicKeyInPrincipal,
+                ledgerData.symbol,
+                ledgerData.decimals,
+                ledgerData.canister,
+                pair.icrc1.ledger === ICP_CANISTER_ID,
+              ),
+              oldestTransactionId: response.Ok.oldest_tx_id[0] ?? undefined,
             }
           }
-          return {
-            transactions: [],
-            oldestTransactionId: undefined,
-          }
+
+          return this.getDefaultICRC1IndexData()
         } catch (error) {
           console.error(error)
-          return {
-            transactions: [],
-            oldestTransactionId: undefined,
-          }
+          return this.getDefaultICRC1IndexData()
         }
       }),
     )
+  }
+
+  private createIndexActor(
+    index: string,
+    isICP: boolean,
+  ): ICRCIndex | ICRCIndexICP {
+    const idlFactory = isICP ? icrc1IndexIDLICP : icrc1IndexIDL
+    return Agent.Actor.createActor<ICRCIndex | ICRCIndexICP>(idlFactory, {
+      canisterId: index,
+      agent: new HttpAgent({ ...agentBaseConfig }),
+    })
+  }
+
+  private mapTransactions(
+    rawTrss: Array<TransactionWithId | TransactionWithIdICP>,
+    ownerPrincipal: string,
+    symbol: string,
+    decimals: number,
+    canisterId: string,
+    isICP: boolean,
+  ): Array<TransactionData> {
+    return isICP
+      ? this.mapRawTrsToTransactionICP(
+          rawTrss as Array<TransactionWithIdICP>,
+          ownerPrincipal,
+          symbol,
+          decimals,
+          canisterId,
+        )
+      : this.mapRawTrsToTransaction(
+          rawTrss as Array<TransactionWithId>,
+          ownerPrincipal,
+          symbol,
+          decimals,
+          canisterId,
+        )
   }
 
   private mapRawTrsToTransaction(
@@ -177,31 +135,27 @@ export class Icrc1TransactionHistoryService {
     decimals: number,
     canisterId: string,
   ): Array<TransactionData> {
-    const filtered = rawTrss.filter(
-      (rawTrs) => rawTrs.transaction.transfer.length !== 0,
-    )
-    if (filtered.length === 0) {
-      return []
-    }
-    return filtered.map((rawTrs) => {
-      const trs: Transfer = rawTrs.transaction.transfer[0]!
-      const type =
-        ownerPrincipal === trs.from.owner.toText()
-          ? ("Sent" as IActivityAction)
-          : ("Received" as IActivityAction)
-      const data: TransactionData = {
-        type,
-        timestamp: rawTrs.transaction.timestamp,
-        symbol: symbol,
-        amount: trs.amount,
-        from: trs.from.owner.toText(),
-        to: trs.to.owner.toText(),
-        transactionId: rawTrs.id,
-        decimals,
-        canister: canisterId,
-      }
-      return data
-    })
+    return rawTrss
+      .filter((rawTrs) => rawTrs.transaction.transfer.length !== 0)
+      .map((rawTrs) => {
+        const trs: Transfer = rawTrs.transaction.transfer[0]!
+        const type =
+          ownerPrincipal === trs.from.owner.toText()
+            ? ("Sent" as IActivityAction)
+            : ("Received" as IActivityAction)
+
+        return {
+          type,
+          timestamp: rawTrs.transaction.timestamp,
+          symbol,
+          amount: trs.amount,
+          from: trs.from.owner.toText(),
+          to: trs.to.owner.toText(),
+          transactionId: rawTrs.id,
+          decimals,
+          canister: canisterId,
+        }
+      })
   }
 
   private mapRawTrsToTransactionICP(
@@ -216,46 +170,37 @@ export class Icrc1TransactionHistoryService {
       principal,
     }).toHex()
 
-    const filtered = rawTrss.filter((rawTrs) => {
-      const operation = rawTrs.transaction.operation
-      return "Transfer" in operation
-    })
+    return rawTrss
+      .filter((rawTrs) => "Transfer" in rawTrs.transaction.operation)
+      .map((rawTrs) => {
+        const operation = rawTrs.transaction.operation
+        const trs = "Transfer" in operation ? operation.Transfer : null
 
-    if (filtered.length === 0) {
-      return []
+        const type =
+          accountIdentifier === trs?.from
+            ? IActivityAction.SENT
+            : IActivityAction.RECEIVED
+
+        return {
+          type,
+          timestamp:
+            rawTrs.transaction.created_at_time[0]?.timestamp_nanos || BigInt(0),
+          symbol,
+          amount: trs?.amount.e8s || BigInt(0),
+          from: trs?.from || "",
+          to: trs?.to || "",
+          transactionId: rawTrs.id,
+          decimals,
+          canister: canisterId,
+        }
+      })
+  }
+
+  private getDefaultICRC1IndexData(): ICRC1IndexData {
+    return {
+      transactions: [],
+      oldestTransactionId: undefined,
     }
-    return filtered.map((rawTrs) => {
-      const operation = rawTrs.transaction.operation
-      let trs: {
-        to: string
-        fee: Tokens
-        from: string
-        amount: Tokens
-      } | null = null
-
-      if ("Transfer" in operation) {
-        trs = operation.Transfer
-      }
-
-      const type =
-        accountIdentifier == trs?.from
-          ? IActivityAction.SENT
-          : IActivityAction.RECEIVED
-
-      const data: TransactionData = {
-        type,
-        timestamp:
-          rawTrs.transaction.created_at_time[0]?.timestamp_nanos || BigInt(0),
-        symbol: symbol,
-        amount: trs?.amount.e8s || BigInt(0),
-        from: trs?.from || "",
-        to: trs?.to || "",
-        transactionId: rawTrs.id,
-        decimals,
-        canister: canisterId,
-      }
-      return data
-    })
   }
 }
 

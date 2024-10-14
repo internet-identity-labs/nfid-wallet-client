@@ -69,11 +69,11 @@ export const getErrorType = (
 }
 
 export const getTextStatusByStep = (step: SwapStage) => {
-  if (step < 3) {
+  if (step < SwapStage.Swap) {
     return "Depositing"
-  } else if (step === 3) {
+  } else if (step === SwapStage.Swap) {
     return "Swapping"
-  } else if (step === 4) {
+  } else if (step === SwapStage.Withdraw) {
     return "Withdrawing"
   } else {
     return ""

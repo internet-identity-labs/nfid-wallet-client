@@ -18,71 +18,69 @@ const filterTransaction = (
   filteredContracts: string[] = [],
   allCanistersActivities: ICRC1IndexData[],
 ): TransactionData[] => {
-  let transactions: TransactionData[]
-  if (!filteredContracts.length) {
-    transactions = allCanistersActivities.flatMap(
-      (activity) => activity.transactions,
-    )
-  } else {
-    transactions = allCanistersActivities.flatMap((activity) =>
-      activity.transactions.filter(
-        (transaction) =>
-          filteredContracts.includes(transaction.canister!) ||
-          filteredContracts.includes(transaction.canisterTo!),
-      ),
-    )
-  }
+  return allCanistersActivities.flatMap((activity) =>
+    filteredContracts.length === 0
+      ? activity.transactions
+      : activity.transactions.filter(
+          (transaction) =>
+            filteredContracts.includes(transaction.canister!) ||
+            filteredContracts.includes(transaction.canisterTo!),
+        ),
+  )
+}
 
-  return transactions
+const formatTransaction = async (
+  tx: SwapTransaction,
+  icrc1Canisters: ICRC1TypeOracle[],
+): Promise<TransactionData> => {
+  const token = icrc1Canisters.find(
+    (icrc1) => icrc1.ledger === tx.getSourceLedger(),
+  )
+  const tokenTo = icrc1Canisters.find(
+    (icrc1) => icrc1.ledger === tx.getTargetLedger(),
+  )
+
+  return {
+    type: IActivityAction.SWAP,
+    timestamp: BigInt(tx.getStartTime()) || BigInt(0),
+    transactionId: tx.getTransferId() || BigInt(0),
+    symbol: token!.symbol,
+    symbolTo: tokenTo!.symbol,
+    icon: token!.logo[0],
+    iconTo: tokenTo!.logo[0],
+    decimals: token!.decimals,
+    decimalsTo: tokenTo!.decimals,
+    amount: tx.getSourceAmount(),
+    amountTo: tx.getWithdraw() || BigInt(0),
+    canister: tx.getSourceLedger(),
+    canisterTo: tx.getTargetLedger(),
+    from: "",
+    to: "",
+    error: tx.getError(),
+  }
+}
+
+const getTransactions = async (): Promise<ICRC1IndexData[]> => {
+  const { publicKey } = await getUserIdData()
+  const transactions = await swapTransactionService.getTransactions(publicKey)
+  const icrc1Canisters = await icrc1OracleService.getICRC1Canisters()
+
+  const formattedTransactions = await Promise.all(
+    transactions.map((tx) => formatTransaction(tx, icrc1Canisters)),
+  )
+
+  return [
+    {
+      oldestTransactionId: undefined,
+      transactions: formattedTransactions,
+    },
+  ]
 }
 
 const getActivities = async (
   filteredContracts: string[],
 ): Promise<Activity[]> => {
-  const { publicKey } = await getUserIdData()
-  const transactions = await swapTransactionService.getTransactions(publicKey)
-  const icrc1Canisters = await icrc1OracleService.getICRC1Canisters()
-
-  const txsFormatted = [
-    {
-      oldestTransactionId: undefined,
-      transactions: await Promise.all(
-        transactions.map(async (tx: SwapTransaction) => {
-          const st: ICRC1TypeOracle[] = icrc1Canisters.filter(
-            (icrc1) =>
-              icrc1.ledger === tx.getSourceLedger() ||
-              icrc1.ledger === tx.getTargetLedger(),
-          )
-
-          const token = st.find(
-            (icrc1) => icrc1.ledger === tx.getSourceLedger(),
-          )
-          const tokenTo = st.find(
-            (icrc1) => icrc1.ledger === tx.getTargetLedger(),
-          )
-
-          return {
-            type: IActivityAction.SWAP,
-            timestamp: BigInt(tx.getStartTime()) || BigInt(0),
-            transactionId: tx.getTransferId() || BigInt(0),
-            symbol: token!.symbol,
-            symbolTo: tokenTo!.symbol,
-            icon: token!.logo[0],
-            iconTo: tokenTo!.logo[0],
-            decimals: token!.decimals,
-            decimalsTo: tokenTo!.decimals,
-            amount: tx.getSourceAmount(),
-            amountTo: tx.getWithdraw() || BigInt(0),
-            canister: tx.getSourceLedger(),
-            canisterTo: tx.getTargetLedger(),
-            from: "",
-            to: "",
-            error: tx.getError(),
-          }
-        }),
-      ),
-    },
-  ]
+  const txsFormatted = await getTransactions()
 
   return filterTransaction(filteredContracts, txsFormatted).map(
     (tx: TransactionData) =>
@@ -128,7 +126,5 @@ export const getSwapActivitiesRows = async (
   filteredContracts: string[] = [],
 ): Promise<IActivityRow[]> => {
   const activities = await getActivities(filteredContracts)
-  const activitiesRows = mapActivitiesToRows(activities)
-
-  return activitiesRows
+  return mapActivitiesToRows(activities)
 }

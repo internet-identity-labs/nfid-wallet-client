@@ -30,12 +30,13 @@ const filterTransaction = (
 
 const getActivities = async (
   filteredContracts: string[],
+  limit: number,
 ): Promise<Activity[]> => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()
   const allCanistersActivities = await getICRC1HistoryDataForUser(
     userPrincipal!,
     publicKey,
-    BigInt(10),
+    BigInt(limit),
   )
 
   return filterTransaction(filteredContracts, allCanistersActivities).map(
@@ -52,6 +53,7 @@ const getActivities = async (
           currency: tx.symbol,
           decimals: tx.decimals,
           amount: Number(tx.amount),
+          canister: tx.canister,
         },
       } as Activity),
   )
@@ -71,8 +73,9 @@ const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] => {
 
 export const getIcrc1ActivitiesRows = async (
   filteredContracts: string[] = [],
+  limit: number,
 ): Promise<IActivityRow[]> => {
-  const activities = await getActivities(filteredContracts)
+  const activities = await getActivities(filteredContracts, limit)
   const activitiesRows = mapActivitiesToRows(activities)
 
   return activitiesRows

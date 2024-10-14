@@ -16,30 +16,29 @@ import {
   SwapError,
   WithdrawError,
 } from "frontend/integration/icpswap/errors"
-import { SwapTransactionImpl } from "frontend/integration/icpswap/impl/swap-transaction-impl"
 import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
-import Step1Loop from "../assets/NFID_WS_1.json"
-import Step1Success from "../assets/NFID_WS_1_1.json"
-import Step1Error from "../assets/NFID_WS_1_2.json"
-import Step2Loop from "../assets/NFID_WS_2.json"
-import Step2Error from "../assets/NFID_WS_2_1.json"
-import Step3Loop from "../assets/NFID_WS_3.json"
-import Step3Success from "../assets/NFID_WS_3_1.json"
-import Step3Error from "../assets/NFID_WS_3_2.json"
+import deposit from "../assets/NFID_WS_1.json"
+import depositSuccess from "../assets/NFID_WS_1_1.json"
+import depositError from "../assets/NFID_WS_1_2.json"
+import swap from "../assets/NFID_WS_2.json"
+import swapError from "../assets/NFID_WS_2_1.json"
+import withdraw from "../assets/NFID_WS_3.json"
+import withdrawSuccess from "../assets/NFID_WS_3_1.json"
+import withdrawError from "../assets/NFID_WS_3_2.json"
 import { getErrorType, getTextStatusByStep } from "../utils"
 
-const allAnimations = [
-  Step1Loop,
-  Step1Success,
-  Step1Error,
-  Step2Loop,
-  Step2Error,
-  Step3Loop,
-  Step3Success,
-  Step3Error,
-]
+const allAnimations = {
+  deposit,
+  depositSuccess,
+  depositError,
+  swap,
+  swapError,
+  withdraw,
+  withdrawSuccess,
+  withdrawError,
+}
 
 export interface SwapSuccessProps {
   titleFrom: string
@@ -72,7 +71,9 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   transaction,
   identity,
 }) => {
-  const [currentAnimation, setCurrentAnimation] = useState(allAnimations[0])
+  const [currentAnimation, setCurrentAnimation] = useState<any>(
+    allAnimations.deposit,
+  )
 
   const isCompleted = useMemo(() => {
     return step === SwapStage.Completed
@@ -80,27 +81,30 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
 
   useEffect(() => {
     if (step === SwapStage.Swap) {
-      setCurrentAnimation(allAnimations[1])
+      setCurrentAnimation(allAnimations.depositSuccess)
     }
     if (step === SwapStage.Withdraw) {
-      setCurrentAnimation(allAnimations[5])
+      setCurrentAnimation(allAnimations.withdraw)
     }
     if (step === SwapStage.Completed) {
-      setCurrentAnimation(allAnimations[6])
+      setCurrentAnimation(allAnimations.withdrawSuccess)
     }
   }, [step])
 
   useEffect(() => {
     if (!error) return
-    if (error instanceof DepositError) setCurrentAnimation(allAnimations[2])
-    if (error instanceof SwapError) setCurrentAnimation(allAnimations[4])
-    if (error instanceof WithdrawError) setCurrentAnimation(allAnimations[7])
+    if (error instanceof DepositError)
+      setCurrentAnimation(allAnimations.depositError)
+    if (error instanceof SwapError) setCurrentAnimation(allAnimations.swapError)
+    if (error instanceof WithdrawError)
+      setCurrentAnimation(allAnimations.withdrawError)
   }, [error])
 
   const animationCompleteHandler = () => {
-    if (step < 3) return
-    if (step === 3) {
-      setCurrentAnimation(allAnimations[3])
+    if (step === SwapStage.Swap) {
+      setCurrentAnimation(allAnimations.swap)
+    } else {
+      return
     }
   }
 

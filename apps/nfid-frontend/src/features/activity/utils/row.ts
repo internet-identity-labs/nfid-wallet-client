@@ -1,14 +1,14 @@
 import { format } from "date-fns"
 
-import { IActivityRow, IActivityRowGroup } from "../types"
+import { IActivityRow } from "../types"
 
 export const groupActivityRowsByDate = (
   rows: IActivityRow[],
-): IActivityRowGroup[] => {
+): { date: string; row: IActivityRow }[] => {
   const groups = rows.reduce<{ [date: string]: IActivityRow[] }>((acc, row) => {
     const dateObject = new Date(Number(row.timestamp))
-
     const date = format(dateObject, "MMMM d, yyyy")
+
     if (!acc[date]) {
       acc[date] = []
     }
@@ -16,12 +16,17 @@ export const groupActivityRowsByDate = (
     return acc
   }, {})
 
-  const groupedByDate = Object.entries(groups).map(([date, rows]) => ({
-    date,
-    rows: rows.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
-  }))
+  const flattenedData: { date: string; row: IActivityRow }[] = []
 
-  return groupedByDate.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  )
+  Object.entries(groups)
+    .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
+    .forEach(([date, rows]) => {
+      rows
+        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+        .forEach((row) => {
+          flattenedData.push({ date, row })
+        })
+    })
+
+  return flattenedData
 }

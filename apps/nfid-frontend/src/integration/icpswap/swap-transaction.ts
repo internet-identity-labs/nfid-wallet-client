@@ -7,7 +7,7 @@ import { Error as ErrorSwap } from "./idl/SwapPool.d"
 export interface SwapTransaction {
   getStage(): SwapStage
 
-  toCandid(): SwapTransactionCandid
+  toCandid(quote: Quote): SwapTransactionCandid
 
   fromCandid(candid: SwapTransactionCandid): SwapTransaction
 

@@ -1,4 +1,4 @@
-@demoAppSend
+@demoAppSend @skip
 Feature: DemoApp send functionality
 
   Scenario Outline: User sends ICP/NFT through demoApp

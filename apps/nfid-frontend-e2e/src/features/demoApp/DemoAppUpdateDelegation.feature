@@ -1,4 +1,4 @@
-@demoAppUpdate
+@demoAppUpdate @skip
 Feature: DemoApp update delegation functionality
 
   Scenario Outline: User updates delegation

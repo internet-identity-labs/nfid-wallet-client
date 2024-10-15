@@ -63,7 +63,7 @@ Feature:Send/Receive Asset
       | BoomDAO           | 28567       | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe  | 0.001  | BOOM     |
 
   @sendreceive5
-  Scenario Outline: User sends <category> NFT
+  Scenario Outline: User sends NFT
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     And Tokens displayed on user assets

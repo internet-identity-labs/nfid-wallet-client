@@ -147,7 +147,9 @@ Then(/^Set amount ([^"]*)/, async (amount: string) => {
 })
 
 Then(/^Transaction is success$/, async () => {
-  await Assets.successWindow()
+  await Assets.successWindow.waitForExist({
+    timeout: 80000, interval: 1000,
+  })
 })
 
 Then(/^Account ID is (.+)/, async function(account: string) {

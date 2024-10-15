@@ -1,12 +1,12 @@
 import { When } from "@cucumber/cucumber"
 
 import userClient from "../helpers/accounts-service.js"
-import assets from "../pages/assets.js"
+import Assets from "../pages/assets.js"
 import DemoTransactions from "../pages/demoApp/demo-transactions.js"
 import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
 import HomePage from "../pages/home-page.js"
 import Profile from "../pages/profile.js"
-import activity from "../pages/activity.js"
+import Activity from "../pages/activity.js"
 
 When(/^It log's me in$/, async () => {
   await HomePage.waitForLoaderDisappear()
@@ -60,11 +60,11 @@ When(/^I click on recover button$/, async () => {
 })
 
 When(/^I press on Activity icon$/, async () => {
-  await assets.waitUntilElementsLoadedProperly(assets.activityTab, activity.filterButton)
+  await Assets.waitUntilElementsLoadedProperly(Assets.activityTab, Activity.filterButton)
 })
 
 When(
-  /^User sends ?(.*)? ([^"]*) to (.*)$/,
+  /^User sends ?(.*)? ([^"]*) to (.*) through demoApp$/,
   async (amount: number, FT: string, address: string) => {
     FT == "ICP"
       ? await DemoTransactions.sendICPTransaction(amount, address)
@@ -76,5 +76,12 @@ When(
   /^User updates list of targets by (.*)( and (.*))?$/,
   async (targets: string, derivation?: string) => {
     await DemoUpdateDelegation.updateDelegation(targets, derivation)
+  },
+)
+
+When(
+  /^User selects the (.*) NFT$/,
+  async (tokenName: string) => {
+    await Assets.getTokenByNameInSend(tokenName).click()
   },
 )

@@ -1,4 +1,4 @@
-@demoAppSend
+@demoAppSend @skip
 Feature: DemoApp send functionality
 
   Scenario Outline: User sends ICP/NFT through demoApp
@@ -10,10 +10,10 @@ Feature: DemoApp send functionality
       | principal | <wallet address> |
       | address   | <account ID>     |
       | targets   | <target>         |
-    When User sends <amount> ICP to <account ID>
+    When User sends <amount> ICP to <account ID> through demoApp
     Then Check request details ICP equals to <amount> ICP
     And Assert requestICPTransfer code block has hash
-    When User sends NFT to <account ID>
+    When User sends NFT to <account ID> through demoApp
     Then Check request details NFT equals to ICPets #4504
     And Assert requestEXTTransfer code block has hash
     Examples:

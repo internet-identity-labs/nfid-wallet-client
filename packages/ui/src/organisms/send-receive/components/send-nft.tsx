@@ -116,13 +116,14 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           type="text"
           labelText="To"
           errorText={errors.to?.message}
-          id="to"
+          id="input"
           {...register("to", {
             required: "This field cannot be empty",
             validate: (value) => validateAddress(value),
           })}
         />
         <Button
+          id={"sendButton"}
           className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block

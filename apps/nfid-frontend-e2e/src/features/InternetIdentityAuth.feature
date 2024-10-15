@@ -1,4 +1,3 @@
-@ii @recovery
 Feature: User should be able to register and authenticate from desktop
 
   @ii-recovery-phrase

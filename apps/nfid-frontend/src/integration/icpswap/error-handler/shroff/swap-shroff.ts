@@ -6,7 +6,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { replaceActorIdentity } from "@nfid/integration"
 
-import { TransactionError } from "../../errors"
+import { ExchangeError } from "../../errors"
 
 export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -19,14 +19,17 @@ export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
       await this.withdraw()
       console.debug("Withdraw done")
       //maybe not async
+
+      console.log("before setCompleted")
       this.swapTransaction.setCompleted()
-      this.restoreTransaction()
+      console.log("after setCompleted")
+      await this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as TransactionError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
       }
       await this.restoreTransaction()
       throw e

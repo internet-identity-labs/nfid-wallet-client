@@ -8,7 +8,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { WithdrawError, TransactionError } from "../../errors"
+import { WithdrawError, ExchangeError } from "../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {
@@ -31,7 +31,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as TransactionError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
       }
       await this.restoreTransaction()
       throw e

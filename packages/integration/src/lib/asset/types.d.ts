@@ -1,7 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
 import { Asset } from "./asset"
-import { ErrorCode } from "./error-code.enum"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
@@ -219,6 +218,7 @@ declare interface Activity {
   transactionHash: string
   action: ActivityAction
   asset: ActivityAssetFT | ActivityAssetNFT
+  transaction?: SwapTransaction
 }
 
 declare interface ActivityAssetNFT {
@@ -242,7 +242,6 @@ declare interface ActivityAssetFT {
   rate: number | undefined
   decimals: number
   decimalsTo?: number
-  error?: string
   canister: string
 }
 

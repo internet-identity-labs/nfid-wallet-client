@@ -1,4 +1,4 @@
-export abstract class TransactionError extends Error {
+export abstract class ExchangeError extends Error {
   private errorMessage: string
   constructor(errorMessage: any) {
     super()

@@ -34,7 +34,7 @@ import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import {
-  TransactionError,
+  ExchangeError,
   DepositError,
   LiquidityError,
   SlippageError,
@@ -85,14 +85,20 @@ export class ShroffImpl implements Shroff {
     return this.swapTransaction
   }
 
+  static getStaticTargets(): string[] {
+    return [
+      exchangeRateService.getNodeCanister(),
+      SWAP_TX_CANISTER,
+      SWAP_FACTORY_CANISTER,
+    ]
+  }
+
   getTargets(): string[] {
     return [
       this.source.ledger,
       this.target.ledger,
       this.poolData.canisterId.toText(),
-      exchangeRateService.getNodeCanister(),
-      SWAP_TX_CANISTER,
-      SWAP_FACTORY_CANISTER,
+      ...ShroffImpl.getStaticTargets(),
     ]
   }
 
@@ -174,7 +180,7 @@ export class ShroffImpl implements Shroff {
     } catch (e) {
       if (!this.swapTransaction.getError()) {
         console.error("Swap error: ", e)
-        this.swapTransaction.setError((e as TransactionError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
       }
       await this.restoreTransaction()
       throw e
@@ -296,6 +302,12 @@ export class ShroffImpl implements Shroff {
       zeroForOne: this.zeroForOne,
       amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
     }
+    // try {
+    //   //@ts-ignore
+    //   fn()
+    // } catch (e) {
+    //   throw new SwapError("123123")
+    // }
     return this.swapPoolActor.swap(args).then((result) => {
       if (hasOwnProperty(result, "ok")) {
         const response = result.ok as bigint

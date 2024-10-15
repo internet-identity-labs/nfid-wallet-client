@@ -93,6 +93,7 @@ export interface Transaction {
   icrc1_memo: [] | [Uint8Array | number[]]
   operation: Operation
   created_at_time: [] | [TimeStamp]
+  timestamp: [] | [TimeStamp]
 }
 export interface TransactionWithId {
   id: bigint
@@ -105,8 +106,62 @@ export interface _SERVICE {
     GetAccountIdentifierTransactionsResult
   >
   get_account_transactions: ActorMethod<
-    [GetAccountTransactionsArgs],
-    GetAccountIdentifierTransactionsResult
+    [
+      {
+        max_results: bigint
+        start: [] | [bigint]
+        account: {
+          owner: Principal
+          subaccount: [] | [Uint8Array | number[]]
+        }
+      },
+    ],
+    | {
+        Ok: {
+          balance: bigint
+          transactions: Array<{
+            id: bigint
+            transaction: {
+              memo: bigint
+              icrc1_memo: [] | [Uint8Array | number[]]
+              operation:
+                | {
+                    Approve: {
+                      fee: { e8s: bigint }
+                      from: string
+                      allowance: { e8s: bigint }
+                      expected_allowance: [] | [{ e8s: bigint }]
+                      expires_at: [] | [{ timestamp_nanos: bigint }]
+                      spender: string
+                    }
+                  }
+                | {
+                    Burn: {
+                      from: string
+                      amount: { e8s: bigint }
+                      spender: [] | [string]
+                    }
+                  }
+                | {
+                    Mint: { to: string; amount: { e8s: bigint } }
+                  }
+                | {
+                    Transfer: {
+                      to: string
+                      fee: { e8s: bigint }
+                      from: string
+                      amount: { e8s: bigint }
+                      spender: [] | [string]
+                    }
+                  }
+              timestamp: [] | [{ timestamp_nanos: bigint }]
+              created_at_time: [] | [{ timestamp_nanos: bigint }]
+            }
+          }>
+          oldest_tx_id: [] | [bigint]
+        }
+      }
+    | { Err: { message: string } }
   >
   get_blocks: ActorMethod<[GetBlocksRequest], GetBlocksResponse>
   http_request: ActorMethod<[HttpRequest], HttpResponse>

@@ -109,6 +109,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   }
 
   const completeHandler = async () => {
+    // try catch
     if (!transaction || !identity) return
     const errorHandler = errorHandlerFactory.getHandler(transaction)
     await errorHandler.completeTransaction(identity)

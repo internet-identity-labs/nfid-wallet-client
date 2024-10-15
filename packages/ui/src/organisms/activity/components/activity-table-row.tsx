@@ -1,7 +1,10 @@
+import { getIdentity } from "apps/nfid-frontend/src/features/transfer-modal/utils"
 import clsx from "clsx"
 import { format } from "date-fns"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
+import { useState } from "react"
 
 import {
   IconCmpArrow,
@@ -16,8 +19,13 @@ import {
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import { errorHandlerFactory } from "frontend/integration/icpswap/error-handler/handler-factory"
+import { ShroffImpl } from "frontend/integration/icpswap/impl/shroff-impl"
+import { icpSwapService } from "frontend/integration/icpswap/service/icpswap-service"
+import { CompleteType } from "frontend/integration/icpswap/types/enums"
 
 import { getErrorType } from "../../send-receive/utils"
+import { setErrorAction } from "../utils/error"
 
 interface IActivityTableRow extends IActivityRow {
   id: string
@@ -38,15 +46,41 @@ export const ActivityTableRow = ({
   timestamp,
   to,
   id,
+  transaction,
 }: IActivityTableRow) => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  console.log(transaction)
+
+  const completeHandler = async () => {
+    if (!transaction) return
+    setIsLoading(true)
+    const pool = await icpSwapService.getPoolFactory(
+      transaction.getSourceLedger(),
+      transaction.getTargetLedger(),
+    )
+    const identity = await getIdentity([
+      transaction.getSourceLedger(),
+      transaction.getTargetLedger(),
+      pool.canisterId.toText(),
+      ...ShroffImpl.getStaticTargets(),
+    ])
+
+    const errorHandler = errorHandlerFactory.getHandler(transaction)
+    await errorHandler.completeTransaction(identity)
+    setIsLoading(false)
+  }
+
   return (
     <Tooltip
-      className={asset.error ? "" : "hidden"}
+      className={setErrorAction(transaction) ? "" : "hidden"}
       tip={
         <span className="block max-w-[320px]">
-          <b>ICPSwap {getErrorType(asset.error).title} failed.</b> Something
-          went wrong with the ICPSwap service.{" "}
-          {getErrorType(asset.error).activityMessage}
+          <b>ICPSwap {setErrorAction(transaction)?.tooltipText} failed.</b>{" "}
+          Something went wrong with the ICPSwap service.{" "}
+          {setErrorAction(transaction)?.tooltipText === "withdraw"
+            ? " Complete your swap."
+            : "Cancel your swap and try again."}
         </span>
       }
     >
@@ -72,7 +106,7 @@ export const ActivityTableRow = ({
             ) : (
               <>
                 <IconCmpSwapActivity />
-                {asset.error && (
+                {setErrorAction(transaction) && (
                   <div
                     className={clsx(
                       "absolute right-0 bottom-0",
@@ -144,30 +178,39 @@ export const ActivityTableRow = ({
         </td>
         {asset?.type === "ft" ? (
           <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
-            {asset.error ? (
-              <div>
-                <span className="cursor-pointer text-primaryButtonColor">
-                  Complete swap
-                </span>
-              </div>
+            {setErrorAction(transaction) ? (
+              <>
+                {isLoading ? (
+                  <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
+                ) : (
+                  <span
+                    className="cursor-pointer text-primaryButtonColor"
+                    onClick={completeHandler}
+                  >
+                    {setErrorAction(transaction)?.buttonText}
+                  </span>
+                )}
+              </>
             ) : (
-              <p className="text-sm">
-                <TickerAmount
-                  value={asset.amount}
-                  decimals={asset.decimals}
-                  symbol={asset.currency}
-                />
-              </p>
-            )}
-            {asset.rate && (
-              <p className="text-xs text-gray-400">
-                <TickerAmount
-                  value={asset.amount}
-                  decimals={asset.decimals}
-                  symbol={asset.currency}
-                  usdRate={asset.rate}
-                />
-              </p>
+              <>
+                <p className="text-sm">
+                  <TickerAmount
+                    value={asset.amount}
+                    decimals={asset.decimals}
+                    symbol={asset.currency}
+                  />
+                </p>
+                {asset.rate && (
+                  <p className="text-xs text-gray-400">
+                    <TickerAmount
+                      value={asset.amount}
+                      decimals={asset.decimals}
+                      symbol={asset.currency}
+                      usdRate={asset.rate}
+                    />
+                  </p>
+                )}
+              </>
             )}
           </td>
         ) : (

@@ -16,7 +16,6 @@ import { idlFactory as icrc1IndexIDLICP } from "../../../_ic_api/ledger-index-ic
 import {
   _SERVICE as ICRCIndexICP,
   TransactionWithId as TransactionWithIdICP,
-  Tokens,
 } from "../../../_ic_api/ledger-index-icrc1.d"
 import { agentBaseConfig } from "../../../actors"
 import { ICP_CANISTER_ID } from "../../constants"
@@ -184,7 +183,7 @@ export class Icrc1TransactionHistoryService {
         return {
           type,
           timestamp:
-            rawTrs.transaction.created_at_time[0]?.timestamp_nanos || BigInt(0),
+            rawTrs.transaction.timestamp?.[0]?.timestamp_nanos || BigInt(0),
           symbol,
           amount: trs?.amount.e8s || BigInt(0),
           from: trs?.from || "",

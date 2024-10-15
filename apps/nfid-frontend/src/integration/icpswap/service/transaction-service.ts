@@ -26,7 +26,7 @@ class SwapTransactionService {
     trs: SwapTransactionCandid,
     delegationIdentity: SignIdentity,
   ) {
-    await replaceActorIdentity(this.storageActor, delegationIdentity)
+    // await replaceActorIdentity(this.storageActor, delegationIdentity)
     await this.storageActor.store_transaction(trs)
   }
 

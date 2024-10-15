@@ -5,6 +5,8 @@ import {
 
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+
 export interface IActivityRow {
   id: string
   action: IActivityAction
@@ -12,6 +14,7 @@ export interface IActivityRow {
   asset: ActivityAssetFT | ActivityAssetNFT
   from: string
   to: string
+  transaction?: SwapTransaction
 }
 
 export interface IActivityRowGroup {

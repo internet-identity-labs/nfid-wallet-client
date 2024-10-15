@@ -56,11 +56,11 @@ const formatTransaction = async (
     canisterTo: tx.getTargetLedger(),
     from: "",
     to: "",
-    error: tx.getError(),
+    transaction: tx,
   }
 }
 
-const getTransactions = async (): Promise<ICRC1IndexData[]> => {
+const getFormattedTransactions = async (): Promise<ICRC1IndexData[]> => {
   const { publicKey } = await getUserIdData()
   const transactions = await swapTransactionService.getTransactions(publicKey)
   const icrc1Canisters = await icrc1OracleService.getICRC1Canisters()
@@ -80,7 +80,7 @@ const getTransactions = async (): Promise<ICRC1IndexData[]> => {
 const getActivities = async (
   filteredContracts: string[],
 ): Promise<Activity[]> => {
-  const txsFormatted = await getTransactions()
+  const txsFormatted = await getFormattedTransactions()
 
   return filterTransaction(filteredContracts, txsFormatted).map(
     (tx: TransactionData) =>
@@ -91,6 +91,7 @@ const getActivities = async (
         to: tx.to,
         transactionHash: tx.transactionId.toString(),
         action: tx.type,
+        transaction: tx.transaction,
         asset: {
           type: "ft",
           currency: tx.symbol,
@@ -104,7 +105,6 @@ const getActivities = async (
           canister: tx.canister,
           canisterTo: tx.canisterTo,
           rate: undefined,
-          error: tx.error,
         },
       } as Activity),
   )
@@ -119,6 +119,7 @@ const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] => {
     timestamp: activity.date,
     from: activity.from,
     to: activity.to,
+    transaction: activity.transaction,
   }))
 }
 

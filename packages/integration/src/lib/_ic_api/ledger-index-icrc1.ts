@@ -94,8 +94,70 @@ export const idlFactory = ({ IDL }: any) => {
       ["query"],
     ),
     get_account_transactions: IDL.Func(
-      [GetAccountTransactionsArgs],
-      [GetAccountIdentifierTransactionsResult],
+      [
+        IDL.Record({
+          max_results: IDL.Nat,
+          start: IDL.Opt(IDL.Nat),
+          account: IDL.Record({
+            owner: IDL.Principal,
+            subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
+          }),
+        }),
+      ],
+      [
+        IDL.Variant({
+          Ok: IDL.Record({
+            balance: IDL.Nat64,
+            transactions: IDL.Vec(
+              IDL.Record({
+                id: IDL.Nat64,
+                transaction: IDL.Record({
+                  memo: IDL.Nat64,
+                  icrc1_memo: IDL.Opt(IDL.Vec(IDL.Nat8)),
+                  operation: IDL.Variant({
+                    Approve: IDL.Record({
+                      fee: IDL.Record({ e8s: IDL.Nat64 }),
+                      from: IDL.Text,
+                      allowance: IDL.Record({ e8s: IDL.Nat64 }),
+                      expected_allowance: IDL.Opt(
+                        IDL.Record({ e8s: IDL.Nat64 }),
+                      ),
+                      expires_at: IDL.Opt(
+                        IDL.Record({ timestamp_nanos: IDL.Nat64 }),
+                      ),
+                      spender: IDL.Text,
+                    }),
+                    Burn: IDL.Record({
+                      from: IDL.Text,
+                      amount: IDL.Record({ e8s: IDL.Nat64 }),
+                      spender: IDL.Opt(IDL.Text),
+                    }),
+                    Mint: IDL.Record({
+                      to: IDL.Text,
+                      amount: IDL.Record({ e8s: IDL.Nat64 }),
+                    }),
+                    Transfer: IDL.Record({
+                      to: IDL.Text,
+                      fee: IDL.Record({ e8s: IDL.Nat64 }),
+                      from: IDL.Text,
+                      amount: IDL.Record({ e8s: IDL.Nat64 }),
+                      spender: IDL.Opt(IDL.Text),
+                    }),
+                  }),
+                  timestamp: IDL.Opt(
+                    IDL.Record({ timestamp_nanos: IDL.Nat64 }),
+                  ),
+                  created_at_time: IDL.Opt(
+                    IDL.Record({ timestamp_nanos: IDL.Nat64 }),
+                  ),
+                }),
+              }),
+            ),
+            oldest_tx_id: IDL.Opt(IDL.Nat64),
+          }),
+          Err: IDL.Record({ message: IDL.Text }),
+        }),
+      ],
       ["query"],
     ),
     get_blocks: IDL.Func([GetBlocksRequest], [GetBlocksResponse], ["query"]),

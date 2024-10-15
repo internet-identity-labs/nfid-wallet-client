@@ -9,7 +9,8 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { TransactionError } from "../../errors"
+import { ExchangeError } from "../../errors"
+import { ContactSupportError } from "../../errors/contact-support-error"
 import { WithdrawErrorLog } from "../../idl/SwapPool.d"
 
 export class ShroffWithdrawErrorHandler extends ShroffImpl {
@@ -33,12 +34,12 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
         if (hasOwnProperty(log, "ok")) {
           const withdrawLogs = log.ok as Array<[bigint, WithdrawErrorLog]>
           if (withdrawLogs.length > 0) {
-            throw new WithdrawError("Withdraw logs are empty")
+            throw new ContactSupportError("Withdraw logs are empty")
           }
         }
       })
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as TransactionError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
       }
       await this.restoreTransaction()
       throw e

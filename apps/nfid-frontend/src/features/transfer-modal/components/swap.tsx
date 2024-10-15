@@ -16,7 +16,7 @@ import {
 } from "@nfid/integration/token/constants"
 
 import {
-  TransactionError,
+  ExchangeError,
   DepositError,
   LiquidityError,
   ServiceUnavailableError,
@@ -166,7 +166,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     setIdentity(identity)
 
     shroff.swap(identity).catch((error) => {
-      setSwapError(error as TransactionError)
+      setSwapError(error as ExchangeError)
     })
 
     setGetTransaction(shroff.getSwapTransaction())

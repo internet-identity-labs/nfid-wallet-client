@@ -205,7 +205,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       <Button
         className="absolute bottom-5 left-5 right-5 !w-auto"
         type="primary"
-        id="sendFT"
+        id="sendButton"
         block
         disabled={
           isQuoteLoading ||

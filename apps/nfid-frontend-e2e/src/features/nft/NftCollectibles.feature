@@ -1,8 +1,7 @@
-@nft-collectibles
 Feature:Non Fungible Asset
   As a user, I want to see nft in collectibles
 
-  @nft2
+  @nft-collectibles
   Scenario Outline: User should be able to see collectibles page
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

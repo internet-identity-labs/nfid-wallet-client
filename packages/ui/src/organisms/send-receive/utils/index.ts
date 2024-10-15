@@ -16,7 +16,7 @@ export const getTokenOptions = async (tokens: FT[]) => {
       )
 
       return {
-        label: "Internet Computer",
+        label: token.getTokenName(),
         options: [
           {
             icon: token.getTokenLogo(),

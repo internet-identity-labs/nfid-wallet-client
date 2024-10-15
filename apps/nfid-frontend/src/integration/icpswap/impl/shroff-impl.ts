@@ -135,6 +135,10 @@ export class ShroffImpl implements Shroff {
         targetUSDPrice,
         sourceUSDPrice,
       )
+      if ((quote.ok as bigint) <= this.target.fee) {
+        console.error("Not enough amount to pay fee")
+        throw new LiquidityError()
+      }
       return this.requestedQuote
     }
 
@@ -160,27 +164,27 @@ export class ShroffImpl implements Shroff {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       await this.transferToSwap()
-      this.restoreTransaction()
+      await this.restoreTransaction()
       console.debug("Transfer to swap done")
       await this.deposit()
-      this.restoreTransaction()
+      await this.restoreTransaction()
       console.debug("Deposit done")
       await this.swapOnExchange()
-      this.restoreTransaction()
+      await this.restoreTransaction()
       console.debug("Swap done")
       await this.withdraw()
       console.debug("Withdraw done")
       //maybe not async
-      this.restoreTransaction()
+      await this.restoreTransaction()
       await this.transferToNFID()
       console.debug("Transfer to NFID done")
-      this.restoreTransaction()
+      await this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
+      console.error("Swap error: ", e)
       if (!this.swapTransaction.getError()) {
-        console.error("Swap error: ", e)
-        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).message)
       }
       await this.restoreTransaction()
       throw e
@@ -212,15 +216,19 @@ export class ShroffImpl implements Shroff {
       amount: BigInt(amountDecimals.toNumber()),
     }
 
-    const result = await this.swapPoolActor.deposit(args)
+    try {
+      const result = await this.swapPoolActor.deposit(args)
 
-    if (hasOwnProperty(result, "ok")) {
-      const id = result.ok as bigint
-      this.swapTransaction!.setDeposit(id)
-      return id
+      if (hasOwnProperty(result, "ok")) {
+        const id = result.ok as bigint
+        this.swapTransaction!.setDeposit(id)
+        return id
+      }
+      console.error("Deposit error: " + JSON.stringify(result.err))
+      throw new DepositError()
+    } catch (e) {
+      throw new DepositError()
     }
-    console.error("Deposit error: " + result.err)
-    throw new DepositError(result.err)
   }
 
   protected async transfer(): Promise<void> {
@@ -251,18 +259,21 @@ export class ShroffImpl implements Shroff {
       },
     }
 
-    const result = await transferICRC1(
-      this.delegationIdentity!,
-      this.source.ledger,
-      transferArgs,
-    )
-    if (hasOwnProperty(result, "Ok")) {
-      const id = result.Ok as bigint
-      this.swapTransaction!.setTransferId(id)
-      return id
-    } else {
+    try {
+      const result = await transferICRC1(
+        this.delegationIdentity!,
+        this.source.ledger,
+        transferArgs,
+      )
+      if (hasOwnProperty(result, "Ok")) {
+        const id = result.Ok as bigint
+        this.swapTransaction!.setTransferId(id)
+        return id
+      }
       console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
-      throw new DepositError(JSON.stringify(result.Err))
+      throw new DepositError()
+    } catch (e) {
+      throw new DepositError()
     }
   }
 
@@ -281,18 +292,21 @@ export class ShroffImpl implements Shroff {
       },
     }
 
-    const result = await transferICRC1(
-      this.delegationIdentity!,
-      this.source.ledger,
-      transferArgs,
-    )
-    if (hasOwnProperty(result, "Ok")) {
-      const id = result.Ok as bigint
-      this.swapTransaction!.setNFIDTransferId(id)
-      return id
-    } else {
+    try {
+      const result = await transferICRC1(
+        this.delegationIdentity!,
+        this.source.ledger,
+        transferArgs,
+      )
+      if (hasOwnProperty(result, "Ok")) {
+        const id = result.Ok as bigint
+        this.swapTransaction!.setNFIDTransferId(id)
+        return id
+      }
       console.error("Transfer to NFID failed: " + JSON.stringify(result.Err))
-      throw new DepositError(JSON.stringify(result.Err))
+      throw new WithdrawError()
+    } catch (e) {
+      throw new WithdrawError()
     }
   }
 
@@ -302,22 +316,20 @@ export class ShroffImpl implements Shroff {
       zeroForOne: this.zeroForOne,
       amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
     }
-    // try {
-    //   //@ts-ignore
-    //   fn()
-    // } catch (e) {
-    //   throw new SwapError("123123")
-    // }
-    return this.swapPoolActor.swap(args).then((result) => {
-      if (hasOwnProperty(result, "ok")) {
-        const response = result.ok as bigint
-        this.swapTransaction!.setSwap(response)
-        return response
-      }
+    try {
+      return this.swapPoolActor.swap(args).then((result) => {
+        if (hasOwnProperty(result, "ok")) {
+          const response = result.ok as bigint
+          this.swapTransaction!.setSwap(response)
+          return response
+        }
 
-      console.error("Swap on exchange error: " + JSON.stringify(result.err))
-      throw new SwapError(JSON.stringify(result.err))
-    })
+        console.error("Swap on exchange error: " + JSON.stringify(result.err))
+        throw new SwapError()
+      })
+    } catch (e) {
+      throw new SwapError()
+    }
   }
 
   protected async withdraw(): Promise<bigint | undefined> {
@@ -327,16 +339,20 @@ export class ShroffImpl implements Shroff {
       fee: this.target.fee,
     }
 
-    return this.swapPoolActor.withdraw(args).then((result) => {
-      if (hasOwnProperty(result, "ok")) {
-        const id = result.ok as bigint
-        this.swapTransaction!.setWithdraw(id)
-        return id
-      }
+    try {
+      return this.swapPoolActor.withdraw(args).then((result) => {
+        if (hasOwnProperty(result, "ok")) {
+          const id = result.ok as bigint
+          this.swapTransaction!.setWithdraw(id)
+          return id
+        }
 
-      console.error("Withdraw error: " + JSON.stringify(result.err))
-      throw new WithdrawError(JSON.stringify(result.err))
-    })
+        console.error("Withdraw error: " + JSON.stringify(result.err))
+        throw new WithdrawError()
+      })
+    } catch (e) {
+      throw new WithdrawError()
+    }
   }
 
   protected async restoreTransaction() {

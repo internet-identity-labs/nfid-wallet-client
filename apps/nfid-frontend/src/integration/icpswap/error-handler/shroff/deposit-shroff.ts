@@ -20,7 +20,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       console.debug("Transaction restarted")
       await this.deposit()
-      this.restoreTransaction()
+      await this.restoreTransaction()
       await this.withdraw()
       console.debug("Withdraw done")
       //maybe not async
@@ -31,7 +31,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).message)
       }
       await this.restoreTransaction()
       throw e
@@ -56,7 +56,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       }
 
       console.error("Withdraw error: " + JSON.stringify(result.err))
-      throw new WithdrawError(JSON.stringify(result.err))
+      throw new WithdrawError()
     })
   }
 }

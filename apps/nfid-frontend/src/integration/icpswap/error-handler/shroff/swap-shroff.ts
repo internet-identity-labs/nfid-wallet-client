@@ -19,17 +19,14 @@ export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
       await this.withdraw()
       console.debug("Withdraw done")
       //maybe not async
-
-      console.log("before setCompleted")
       this.swapTransaction.setCompleted()
-      console.log("after setCompleted")
       await this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).message)
       }
       await this.restoreTransaction()
       throw e

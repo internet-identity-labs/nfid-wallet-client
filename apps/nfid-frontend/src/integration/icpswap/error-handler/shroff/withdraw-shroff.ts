@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { WithdrawError } from "src/integration/icpswap/errors/withdraw-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -39,7 +38,7 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
         }
       })
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).message)
       }
       await this.restoreTransaction()
       throw e

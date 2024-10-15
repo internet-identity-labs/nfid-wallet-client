@@ -44,36 +44,33 @@ export const getTokenOptionsVault = async (tokens: FT[]) => {
   return options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
 }
 
-export const getErrorType = (
+export const getTitleAndButtonText = (
   error: SwapError | WithdrawError | DepositError | undefined,
 ) => {
   if (error instanceof DepositError)
     return {
       title: "deposit",
-      button: "Close",
-      activityMessage: "Cancel your swap and try again.",
+      buttonText: "Close",
     }
   if (error instanceof SwapError)
     return {
       title: "swap",
-      button: "Close",
-      activityMessage: "Cancel your swap and try again.",
+      buttonText: "Close",
     }
   if (error instanceof WithdrawError)
     return {
       title: "withdraw",
-      button: "Complete swap",
-      activityMessage: "Complete your swap.",
+      buttonText: "Complete swap",
     }
-  return { title: "", button: "Close", activityMessage: "" }
+  return { title: "", buttonText: "Close" }
 }
 
 export const getTextStatusByStep = (step: SwapStage) => {
-  if (step < SwapStage.Swap) {
+  if (step === SwapStage.TransferSwap || step === SwapStage.Deposit) {
     return "Depositing"
   } else if (step === SwapStage.Swap) {
     return "Swapping"
-  } else if (step === SwapStage.Withdraw) {
+  } else if (step === SwapStage.Withdraw || step === SwapStage.TransferNFID) {
     return "Withdrawing"
   } else {
     return ""

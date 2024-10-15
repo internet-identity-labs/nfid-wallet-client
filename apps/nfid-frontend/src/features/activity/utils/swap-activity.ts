@@ -51,7 +51,7 @@ const formatTransaction = async (
     decimals: token!.decimals,
     decimalsTo: tokenTo!.decimals,
     amount: tx.getSourceAmount(),
-    amountTo: tx.getWithdraw() || BigInt(0),
+    amountTo: BigInt(tx.getQuote()) || BigInt(0),
     canister: tx.getSourceLedger(),
     canisterTo: tx.getTargetLedger(),
     from: "",

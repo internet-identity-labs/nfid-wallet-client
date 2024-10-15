@@ -27,7 +27,7 @@ import swapError from "../assets/NFID_WS_2_1.json"
 import withdraw from "../assets/NFID_WS_3.json"
 import withdrawSuccess from "../assets/NFID_WS_3_1.json"
 import withdrawError from "../assets/NFID_WS_3_2.json"
-import { getErrorType, getTextStatusByStep } from "../utils"
+import { getTextStatusByStep, getTitleAndButtonText } from "../utils"
 
 const allAnimations = {
   deposit,
@@ -71,7 +71,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   transaction,
   identity,
 }) => {
-  const [currentAnimation, setCurrentAnimation] = useState<any>(
+  const [currentAnimation, setCurrentAnimation] = useState<unknown>(
     allAnimations.deposit,
   )
 
@@ -109,11 +109,18 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   }
 
   const completeHandler = async () => {
-    // try catch
-    if (!transaction || !identity) return
-    const errorHandler = errorHandlerFactory.getHandler(transaction)
-    await errorHandler.completeTransaction(identity)
     onClose()
+    // TODO: to discuss with Artem and Oleksii
+    // if (step === SwapStage.Completed || !error) {
+    //   return
+    // }
+    // try {
+    //   if (!transaction || !identity) return
+    //   const errorHandler = errorHandlerFactory.getHandler(transaction)
+    //   await errorHandler.completeTransaction(identity)
+    // } catch (e) {
+    //   throw e
+    // }
   }
 
   return (
@@ -132,7 +139,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         </H5>
         <p className="mt-3 text-sm leading-5">
           {error
-            ? `ICPSwap ${getErrorType(error)?.title} failed`
+            ? `ICPSwap ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted
             ? ""
             : `This usually takes less than ${duration} seconds.`}
@@ -174,7 +181,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         </div>
         {error ? (
           <div className="mt-[185px] text-sm text-red-600 max-w-[320px] mx-auto">
-            {error.getDisplayMessage()}
+            {error.message}
           </div>
         ) : (
           <div className="mt-[185px] text-sm text-gray-500 max-w-[320px] mx-auto">
@@ -210,7 +217,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           className="mt-[30px]"
           onClick={completeHandler}
         >
-          {getErrorType(error)?.button}
+          {getTitleAndButtonText(error)?.buttonText}
         </Button>
       </div>
     </div>

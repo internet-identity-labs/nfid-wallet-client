@@ -19,7 +19,6 @@ import { SwapFT } from "./components/swap"
 
 export const TransferModalCoordinator = () => {
   const [publicKey, setPublicKey] = useState("")
-  const [isSwapSuccess, setIsSwapSuccess] = useState(false)
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
 
@@ -64,12 +63,7 @@ export const TransferModalCoordinator = () => {
           />
         )
       case state.matches("SwapMachine"):
-        return (
-          <SwapFT
-            onSuccessSwitched={setIsSwapSuccess}
-            isSuccess={isSwapSuccess}
-          />
-        )
+        return <SwapFT onClose={() => send({ type: "HIDE" })} />
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive
@@ -88,7 +82,7 @@ export const TransferModalCoordinator = () => {
       default:
         return <BlurredLoader overlayClassnames="z-10 rounded-xl" isLoading />
     }
-  }, [send, state, publicKey, isSwapSuccess])
+  }, [send, state, publicKey])
 
   const onTokenTypeChange = useCallback(
     (isNFT: boolean) => {
@@ -112,7 +106,7 @@ export const TransferModalCoordinator = () => {
       ) : (
         <TransferModal
           onClickOutside={() => send({ type: "HIDE" })}
-          isSuccess={state.matches("TransferSuccess") || isSwapSuccess}
+          isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           tokenType={state.context.tokenType}
           onTokenTypeChange={onTokenTypeChange}

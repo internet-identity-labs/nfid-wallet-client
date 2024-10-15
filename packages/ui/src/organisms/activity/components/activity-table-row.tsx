@@ -22,10 +22,50 @@ import { IActivityRow } from "frontend/features/activity/types"
 import { errorHandlerFactory } from "frontend/integration/icpswap/error-handler/handler-factory"
 import { ShroffImpl } from "frontend/integration/icpswap/impl/shroff-impl"
 import { icpSwapService } from "frontend/integration/icpswap/service/icpswap-service"
-import { CompleteType } from "frontend/integration/icpswap/types/enums"
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
-import { getErrorType } from "../../send-receive/utils"
-import { setErrorAction } from "../utils/error"
+interface ErrorStage {
+  buttonText: string
+  tooltipTitile: string
+  tooltipMessage: string
+}
+
+export const getTooltipAndButtonText = (
+  transaction: SwapTransaction | undefined,
+): ErrorStage | undefined => {
+  if (!transaction) return
+
+  const stage = transaction.getStage()
+
+  if (stage === SwapStage.Completed) return
+
+  if (stage === SwapStage.Deposit || stage === SwapStage.TransferSwap) {
+    return {
+      buttonText: "Cancel swap",
+      tooltipTitile: "deposit",
+      tooltipMessage: "Cancel your swap and try again.",
+    }
+  }
+
+  if (stage === SwapStage.Swap) {
+    return {
+      buttonText: "Cancel swap",
+      tooltipTitile: "swap",
+      tooltipMessage: "Cancel your swap and try again.",
+    }
+  }
+
+  if (stage === SwapStage.Withdraw || stage === SwapStage.TransferNFID) {
+    return {
+      buttonText: "Complete swap",
+      tooltipTitile: "withdraw",
+      tooltipMessage: "Complete your swap.",
+    }
+  }
+
+  throw new Error("Unexpected Stage")
+}
 
 interface IActivityTableRow extends IActivityRow {
   id: string
@@ -66,21 +106,26 @@ export const ActivityTableRow = ({
       ...ShroffImpl.getStaticTargets(),
     ])
 
+    console.log("completeTransaction", transaction)
     const errorHandler = errorHandlerFactory.getHandler(transaction)
-    await errorHandler.completeTransaction(identity)
+    const tx = await errorHandler.completeTransaction(identity)
+    console.log(tx)
     setIsLoading(false)
   }
 
   return (
     <Tooltip
-      className={setErrorAction(transaction) ? "" : "hidden"}
+      className={getTooltipAndButtonText(transaction) ? "" : "hidden"}
+      align="start"
+      alignOffset={20}
       tip={
         <span className="block max-w-[320px]">
-          <b>ICPSwap {setErrorAction(transaction)?.tooltipText} failed.</b>{" "}
+          <b>
+            ICPSwap {getTooltipAndButtonText(transaction)?.tooltipTitile}{" "}
+            failed.
+          </b>{" "}
           Something went wrong with the ICPSwap service.{" "}
-          {setErrorAction(transaction)?.tooltipText === "withdraw"
-            ? " Complete your swap."
-            : "Cancel your swap and try again."}
+          {getTooltipAndButtonText(transaction)?.tooltipMessage}
         </span>
       }
     >
@@ -106,7 +151,7 @@ export const ActivityTableRow = ({
             ) : (
               <>
                 <IconCmpSwapActivity />
-                {setErrorAction(transaction) && (
+                {getTooltipAndButtonText(transaction) && (
                   <div
                     className={clsx(
                       "absolute right-0 bottom-0",
@@ -178,7 +223,7 @@ export const ActivityTableRow = ({
         </td>
         {asset?.type === "ft" ? (
           <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
-            {setErrorAction(transaction) ? (
+            {getTooltipAndButtonText(transaction) ? (
               <>
                 {isLoading ? (
                   <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
@@ -187,7 +232,7 @@ export const ActivityTableRow = ({
                     className="cursor-pointer text-primaryButtonColor"
                     onClick={completeHandler}
                   >
-                    {setErrorAction(transaction)?.buttonText}
+                    {getTooltipAndButtonText(transaction)?.buttonText}
                   </span>
                 )}
               </>

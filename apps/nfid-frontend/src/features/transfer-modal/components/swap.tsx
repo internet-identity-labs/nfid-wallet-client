@@ -32,11 +32,11 @@ import { FormValues } from "../types"
 import { getIdentity, getQuoteData } from "../utils"
 
 interface ISwapFT {
-  onSuccessSwitched: (value: boolean) => void
-  isSuccess: boolean
+  onClose: () => void
 }
 
-export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
+export const SwapFT = ({ onClose }: ISwapFT) => {
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [identity, setIdentity] = useState<DelegationIdentity>()
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
@@ -157,7 +157,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
       return
 
-    onSuccessSwitched(true)
+    setIsSuccessOpen(true)
 
     if (!shroff) return
 
@@ -170,7 +170,7 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     })
 
     setGetTransaction(shroff.getSwapTransaction())
-  }, [quote, shroff, onSuccessSwitched])
+  }, [quote, shroff])
 
   return (
     <FormProvider {...formMethods}>
@@ -191,8 +191,8 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         clearQuoteError={refresh}
         step={swapStep}
         error={swapError}
-        isProgressOpen={isSuccess}
-        onClose={() => onSuccessSwitched(false)}
+        isProgressOpen={isSuccessOpen}
+        onClose={onClose}
         transaction={getTransaction}
         identity={identity}
       />

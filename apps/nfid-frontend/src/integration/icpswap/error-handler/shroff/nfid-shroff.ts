@@ -26,7 +26,7 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as ExchangeError).getErrorMessage())
+        this.swapTransaction.setError((e as ExchangeError).message)
       }
       await this.restoreTransaction()
       throw e

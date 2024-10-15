@@ -65,14 +65,14 @@ export const getTitleAndButtonText = (
   return { title: "", buttonText: "Close" }
 }
 
-export const getTextStatusByStep = (step: SwapStage) => {
-  if (step === SwapStage.TransferSwap || step === SwapStage.Deposit) {
-    return "Depositing"
-  } else if (step === SwapStage.Swap) {
-    return "Swapping"
-  } else if (step === SwapStage.Withdraw || step === SwapStage.TransferNFID) {
-    return "Withdrawing"
-  } else {
-    return ""
-  }
+const textStatusByStep: { [key in SwapStage]: string } = {
+  [SwapStage.TransferSwap]: "Depositing",
+  [SwapStage.Deposit]: "Depositing",
+  [SwapStage.Swap]: "Swapping",
+  [SwapStage.Withdraw]: "Withdrawing",
+  [SwapStage.TransferNFID]: "Withdrawing",
+  [SwapStage.Completed]: "",
 }
+
+export const getTextStatusByStep = (step: SwapStage) =>
+  textStatusByStep[step] || ""

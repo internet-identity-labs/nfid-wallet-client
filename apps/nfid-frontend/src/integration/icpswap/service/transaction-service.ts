@@ -8,7 +8,7 @@ import {
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import { actor, agentBaseConfig, replaceActorIdentity } from "@nfid/integration"
+import { actor, agentBaseConfig } from "@nfid/integration"
 
 export const SWAP_TX_CANISTER = "mfoln-bqaaa-aaaao-qeuqq-cai"
 

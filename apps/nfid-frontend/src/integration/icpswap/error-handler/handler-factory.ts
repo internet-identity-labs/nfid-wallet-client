@@ -26,7 +26,6 @@ export class ErrorHandlerFactory {
     }
 
     if (transaction.getStage() === SwapStage.Swap) {
-      console.log("SwapStage.Swap")
       return new SwapHandler(transaction)
     }
 

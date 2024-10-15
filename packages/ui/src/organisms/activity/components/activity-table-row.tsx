@@ -90,8 +90,6 @@ export const ActivityTableRow = ({
 }: IActivityTableRow) => {
   const [isLoading, setIsLoading] = useState(false)
 
-  console.log(transaction)
-
   const completeHandler = async () => {
     if (!transaction) return
     setIsLoading(true)
@@ -106,10 +104,8 @@ export const ActivityTableRow = ({
       ...ShroffImpl.getStaticTargets(),
     ])
 
-    console.log("completeTransaction", transaction)
     const errorHandler = errorHandlerFactory.getHandler(transaction)
-    const tx = await errorHandler.completeTransaction(identity)
-    console.log(tx)
+    await errorHandler.completeTransaction(identity)
     setIsLoading(false)
   }
 
@@ -118,8 +114,9 @@ export const ActivityTableRow = ({
       className={getTooltipAndButtonText(transaction) ? "" : "hidden"}
       align="start"
       alignOffset={20}
+      arrowClassname="translate-x-[-330px] visible"
       tip={
-        <span className="block max-w-[320px]">
+        <span className="block max-w-[270px] sm:max-w-[320px]">
           <b>
             ICPSwap {getTooltipAndButtonText(transaction)?.tooltipTitile}{" "}
             failed.

@@ -23,7 +23,6 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       this.restoreTransaction()
       await this.withdraw()
       console.debug("Withdraw done")
-      //maybe not async
       this.swapTransaction.setCompleted()
       await this.restoreTransaction()
       console.debug("Transaction stored")
@@ -38,7 +37,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     }
   }
 
-  protected async withdraw(): Promise<bigint | undefined> {
+  protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
       //TODO play with numbers somehow
       amount: BigInt(
@@ -48,16 +47,21 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       token: this.source.ledger,
       fee: this.source.fee,
     }
-    return this.swapPoolActor.withdraw(args).then((result) => {
-      if (hasOwnProperty(result, "ok")) {
-        const id = result.ok as bigint
-        this.swapTransaction!.setWithdraw(id)
-        return id
-      }
+    try {
+      return this.swapPoolActor.withdraw(args).then((result) => {
+        if (hasOwnProperty(result, "ok")) {
+          const id = result.ok as bigint
+          this.swapTransaction!.setWithdraw(id)
+          return id
+        }
 
-      console.error("Withdraw error: " + JSON.stringify(result.err))
+        console.error("Withdraw error: " + JSON.stringify(result.err))
+        throw new WithdrawError()
+      })
+    } catch (e) {
+      console.error("Withdraw error: " + e)
       throw new WithdrawError()
-    })
+    }
   }
 }
 

@@ -204,7 +204,7 @@ export class ShroffImpl implements Shroff {
     return updatedQuote
   }
 
-  protected async deposit(): Promise<bigint | undefined> {
+  protected async deposit(): Promise<bigint> {
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
@@ -226,6 +226,7 @@ export class ShroffImpl implements Shroff {
       console.error("Deposit error: " + JSON.stringify(result.err))
       throw new DepositError()
     } catch (e) {
+      console.error("Deposit error: " + e)
       throw new DepositError()
     }
   }
@@ -272,6 +273,7 @@ export class ShroffImpl implements Shroff {
       console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
       throw new DepositError()
     } catch (e) {
+      console.error("Deposit error: " + e)
       throw new DepositError()
     }
   }
@@ -305,11 +307,12 @@ export class ShroffImpl implements Shroff {
       console.error("Transfer to NFID failed: " + JSON.stringify(result.Err))
       throw new WithdrawError()
     } catch (e) {
+      console.error("Withddraw error: " + e)
       throw new WithdrawError()
     }
   }
 
-  protected async swapOnExchange(): Promise<bigint | undefined> {
+  protected async swapOnExchange(): Promise<bigint> {
     const args: SwapArgs = {
       amountIn: this.requestedQuote!.getAmountWithoutWidgetFee().toString(),
       zeroForOne: this.zeroForOne,
@@ -327,11 +330,12 @@ export class ShroffImpl implements Shroff {
         throw new SwapError()
       })
     } catch (e) {
+      console.error("Swap error: " + e)
       throw new SwapError()
     }
   }
 
-  protected async withdraw(): Promise<bigint | undefined> {
+  protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
       amount: BigInt(this.requestedQuote!.getTargetAmount().toNumber()),
       token: this.target.ledger,
@@ -350,6 +354,7 @@ export class ShroffImpl implements Shroff {
         throw new WithdrawError()
       })
     } catch (e) {
+      console.error("Withdraw error: " + e)
       throw new WithdrawError()
     }
   }

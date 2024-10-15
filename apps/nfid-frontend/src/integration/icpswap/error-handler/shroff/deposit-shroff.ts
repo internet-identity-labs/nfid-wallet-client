@@ -20,7 +20,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       console.debug("Transaction restarted")
       await this.deposit()
-      await this.restoreTransaction()
+      this.restoreTransaction()
       await this.withdraw()
       console.debug("Withdraw done")
       //maybe not async

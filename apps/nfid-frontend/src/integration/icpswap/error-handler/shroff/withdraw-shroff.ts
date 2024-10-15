@@ -23,7 +23,6 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
       await this.withdraw()
       console.debug("Withdraw done")
       await this.transferToNFID()
-      //maybe not async
       await this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction

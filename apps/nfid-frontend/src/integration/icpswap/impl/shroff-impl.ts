@@ -242,6 +242,7 @@ export class ShroffImpl implements Shroff {
 
   protected async transferToSwap() {
     const amountDecimals = this.requestedQuote!.getAmountWithoutWidgetFee()
+      .plus(Number(this.source.fee))
 
     const transferArgs: TransferArg = {
       amount: BigInt(amountDecimals.toNumber()),

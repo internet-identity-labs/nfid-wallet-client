@@ -52,6 +52,10 @@ export class Assets {
     return $("#choose-nft")
   }
 
+  get successWindow() {
+    return $("#success_window_3")
+  }
+
   public currencyOption(chain: string, currency: string) {
     return $(`#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`)
   }
@@ -142,13 +146,6 @@ export class Assets {
   public async chooseAccountFrom(account: string) {
     await this.fromAccountOption()
     await this.chooseOption(account)
-  }
-
-  public async successWindow() {
-    const sw = await $(`#success_window_3`)
-    await sw.waitForExist({
-      timeout: 80000,
-    })
   }
 
   public async openActivity() {

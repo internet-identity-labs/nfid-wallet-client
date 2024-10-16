@@ -13,7 +13,7 @@ import {
 } from "../../../_ic_api/index-icrc1.d"
 import { agentBaseConfig } from "../../../actors"
 import { Icrc1Pair } from "../icrc1-pair/impl/Icrc1-pair"
-import { ICRC1IndexData, TransactionData } from "../types"
+import { IActivityAction, ICRC1IndexData, TransactionData } from "../types"
 
 export class Icrc1TransactionHistoryService {
   async getICRC1IndexData(
@@ -110,7 +110,9 @@ export class Icrc1TransactionHistoryService {
     return filtered.map((rawTrs) => {
       const trs: Transfer = rawTrs.transaction.transfer[0]!
       const type =
-        ownerPrincipal === trs.from.owner.toText() ? "sent" : "received"
+        ownerPrincipal === trs.from.owner.toText()
+          ? IActivityAction.SENT
+          : IActivityAction.RECEIVED
       const data: TransactionData = {
         type,
         timestamp: rawTrs.transaction.timestamp,

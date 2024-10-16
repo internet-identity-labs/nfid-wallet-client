@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { WithdrawError } from "src/integration/icpswap/errors/withdraw-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -8,6 +7,8 @@ import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { replaceActorIdentity } from "@nfid/integration"
+
+import { ExchangeError } from "../../errors"
 
 export class ShroffNfidErrorHandler extends ShroffImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -25,10 +26,10 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError((e as ExchangeError).message)
       }
       await this.restoreTransaction()
-      throw new WithdrawError()
+      throw e
     }
   }
 }

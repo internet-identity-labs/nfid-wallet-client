@@ -4,9 +4,9 @@ import useSWR from "swr"
 
 import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
 
-import { getAllActivity } from "./connector/activity-factory"
-import { PAGINATION_ITEMS } from "./constants"
-import { IActivityRowGroup } from "./types"
+import { PAGINATION_ITEMS } from "../constants"
+import { IActivityRowGroup } from "../types"
+import { getAllActivity } from "../utils/activity"
 
 // TODO: make the pagination reusable
 export const useActivityPagination = (initialFilter: string[] = []) => {
@@ -90,7 +90,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
 
   const loadData = async () => {
     const { userPrincipal, publicKey } = await getUserPrincipalId()
-    await getICRC1HistoryDataForUser(userPrincipal!, publicKey, icrcCount)
+    await getICRC1HistoryDataForUser(userPrincipal, publicKey, icrcCount)
 
     setIcrcCount(icrcCount + BigInt(10))
     mutate()

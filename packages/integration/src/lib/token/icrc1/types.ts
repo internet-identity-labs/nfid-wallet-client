@@ -1,7 +1,14 @@
 import { Principal } from "@dfinity/principal"
 
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+
 import { Category, State } from "./enum/enums"
 
+export enum IActivityAction {
+  SENT = "Sent",
+  RECEIVED = "Received",
+  SWAP = "Swap",
+}
 export interface ICRC1 {
   logo: string | undefined
   name: string
@@ -43,12 +50,20 @@ export interface ICRC1IndexData {
 }
 
 export interface TransactionData {
-  type: "sent" | "received" | "swapped"
+  type: IActivityAction
   timestamp: bigint
   transactionId: bigint
-  symbol: string
+  symbol?: string
+  symbolTo?: string
   amount: bigint
+  amountTo?: bigint
   from: string
   to: string
   decimals: number
+  decimalsTo?: number
+  icon?: string
+  iconTo?: string
+  canister?: string
+  canisterTo?: string
+  transaction?: SwapTransaction
 }

@@ -1,11 +1,12 @@
 import { SignIdentity } from "@dfinity/agent"
 import { ShroffDepositErrorHandler } from "src/integration/icpswap/error-handler/shroff/deposit-shroff"
-import { SwapError } from "src/integration/icpswap/errors/swap-error"
 import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { replaceActorIdentity } from "@nfid/integration"
+
+import { ExchangeError } from "../../errors"
 
 export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -17,19 +18,17 @@ export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
       console.debug("Transaction restarted")
       await this.withdraw()
       console.debug("Withdraw done")
-      //maybe not async
       this.swapTransaction.setCompleted()
-      this.restoreTransaction()
+      await this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError((e as ExchangeError).message)
       }
       await this.restoreTransaction()
-      //TODO @vitaly to change according to the new error handling logic
-      throw new SwapError()
+      throw e
     }
   }
 }

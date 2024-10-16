@@ -4,7 +4,7 @@ import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { IconCmpSearch, IconCmpWarning } from "@nfid-frontend/ui"
+import { IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow, Label, Tooltip } from "@nfid-frontend/ui"
 
@@ -54,7 +54,6 @@ export const ChooseModal = ({
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
   const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
-  console.debug("ChooseModal", { isModalVisible })
 
   const handleSelect = useCallback((option: IGroupOption) => {
     setSelectedValue(option.value)

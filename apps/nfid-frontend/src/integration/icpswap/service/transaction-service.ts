@@ -10,6 +10,8 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { actor, replaceActorIdentity } from "@nfid/integration"
 
+export const SWAP_TX_CANISTER = "mfoln-bqaaa-aaaao-qeuqq-cai"
+
 class SwapTransactionService {
   private readonly storageActor: Agent.ActorSubclass<SwapStorage>
 

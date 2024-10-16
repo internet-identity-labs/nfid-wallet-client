@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import {
   fetchActiveTokens,
@@ -15,8 +16,11 @@ import {
 } from "@nfid/integration/token/constants"
 
 import {
+  DepositError,
   LiquidityError,
   ServiceUnavailableError,
+  SwapError,
+  WithdrawError,
 } from "frontend/integration/icpswap/errors"
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
@@ -27,18 +31,21 @@ import { FormValues } from "../types"
 import { getIdentity, getQuoteData } from "../utils"
 
 interface ISwapFT {
-  onSuccessSwitched: (value: boolean) => void
-  isSuccess: boolean
+  onClose: () => void
 }
 
-export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
+export const SwapFT = ({ onClose }: ISwapFT) => {
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [identity, setIdentity] = useState<DelegationIdentity>()
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
   const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
   const [isShroffLoading, setIsShroffLoading] = useState(true)
-  const [swapStep, setSwapStep] = useState(0)
+  const [swapStep, setSwapStep] = useState<SwapStage>(0)
   const [shroffError, setShroffError] = useState<Error | undefined>()
-  const [swapError, setSwapError] = useState<Error | undefined>()
+  const [swapError, setSwapError] = useState<
+    WithdrawError | SwapError | DepositError | undefined
+  >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
   const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
@@ -108,12 +115,11 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     if (!getTransaction) return
     const interval = setInterval(() => {
       const step = getTransaction.getStage()
+      const error = getTransaction.getError()
       setSwapStep(step)
-      if (
-        step !== SwapStage.Completed ||
-        getTransaction.getError() !== undefined
-      )
+      if (step === SwapStage.Completed || error !== undefined) {
         clearInterval(interval)
+      }
     }, 100)
 
     return () => clearInterval(interval)
@@ -150,25 +156,20 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
       return
 
-    onSuccessSwitched(true)
+    setIsSuccessOpen(true)
 
-    try {
-      if (!shroff) return
+    if (!shroff) return
 
-      await shroff.validateQuote()
-      const identity = await getIdentity(shroff.getTargets())
+    await shroff.validateQuote()
+    const identity = await getIdentity(shroff.getTargets())
+    setIdentity(identity)
 
-      shroff.swap(identity).catch((e) => {
-        setSwapError(e)
-      })
+    shroff.swap(identity).catch((error) => {
+      setSwapError(error)
+    })
 
-      setGetTransaction(shroff.getSwapTransaction())
-    } catch (e) {
-      const error = (e as Error).message ? (e as Error).message : e
-      console.error(`Swap error: ${error}`)
-      setSwapError(error as Error)
-    }
-  }, [quote, shroff, onSuccessSwitched])
+    setGetTransaction(shroff.getSwapTransaction())
+  }, [quote, shroff])
 
   return (
     <FormProvider {...formMethods}>
@@ -188,9 +189,11 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         showLiquidityError={liquidityError}
         clearQuoteError={refresh}
         step={swapStep}
-        error={swapError?.message}
-        isProgressOpen={isSuccess}
-        onClose={() => onSuccessSwitched(false)}
+        error={swapError}
+        isProgressOpen={isSuccessOpen}
+        onClose={onClose}
+        transaction={getTransaction}
+        identity={identity}
       />
     </FormProvider>
   )

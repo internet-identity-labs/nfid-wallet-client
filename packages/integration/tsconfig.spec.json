@@ -14,7 +14,6 @@
     "**/*.spec.ts",
     "**/*.d.ts",
     "../../types/env",
-    "**/*.ts",
-    "../../apps/nfid-frontend/src/integration/icpswap/swap-transaction.ts"
+    "**/*.ts"
   ]
 }

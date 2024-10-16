@@ -14,6 +14,10 @@ import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 
 import { IActivityRow } from "../types"
 
+interface TransactionDataExtended extends TransactionData {
+  transaction: SwapTransaction
+}
+
 const filterTransaction = (
   filteredContracts: string[] = [],
   allCanistersActivities: ICRC1IndexData[],
@@ -32,7 +36,7 @@ const filterTransaction = (
 const formatTransaction = async (
   tx: SwapTransaction,
   icrc1Canisters: ICRC1TypeOracle[],
-): Promise<TransactionData> => {
+): Promise<TransactionDataExtended> => {
   const token = icrc1Canisters.find(
     (icrc1) => icrc1.ledger === tx.getSourceLedger(),
   )
@@ -83,8 +87,10 @@ const getActivities = async (
   const txsFormatted = await getFormattedTransactions()
 
   return filterTransaction(filteredContracts, txsFormatted).map(
-    (tx: TransactionData) =>
-      ({
+    (xt: TransactionData) => {
+      let tx = xt as TransactionDataExtended
+
+      return {
         id: tx.transactionId.toString(),
         date: new Date(Number(tx.timestamp)),
         from: tx.from,
@@ -106,7 +112,8 @@ const getActivities = async (
           canisterTo: tx.canisterTo,
           rate: undefined,
         },
-      } as Activity),
+      } as Activity
+    },
   )
 }
 

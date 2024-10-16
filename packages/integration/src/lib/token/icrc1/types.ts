@@ -1,7 +1,5 @@
 import { Principal } from "@dfinity/principal"
 
-import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
-
 import { Category, State } from "./enum/enums"
 
 export enum IActivityAction {
@@ -65,5 +63,4 @@ export interface TransactionData {
   iconTo?: string
   canister?: string
   canisterTo?: string
-  transaction?: SwapTransaction
 }

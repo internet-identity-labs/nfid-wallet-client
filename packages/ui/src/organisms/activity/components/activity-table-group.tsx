@@ -19,13 +19,13 @@ export const ActivityTableGroup = ({
 }: IActivityTableGroup) => {
   const getRowId = useCallback((row: IActivityRow) => {
     if (row.asset.type === "ft")
-      return `tx-${row.action}-${row.asset.currency}-${row.asset.type}-${
-        row.asset.amount
-      }-${row.asset.currency}-${row.timestamp.getTime()}-${row.from}-${
-        row.to
-      }`.replace(".", "_")
+      return `tx-${row.action}-${row.network}-${row.asset.currency}-${
+        row.asset.type
+      }-${row.asset.amount}-${row.asset.currency}-${row.timestamp.getTime()}-${
+        row.from
+      }-${row.to}`.replace(".", "_")
     else
-      return `tx-${row.action}-${row.asset.type}-${
+      return `tx-${row.action}-${row.network}-${row.asset.type}-${
         row.asset.name
       }-${row.timestamp.getTime()}-${row.from}-${row.to}`.replace(".", "_")
   }, [])

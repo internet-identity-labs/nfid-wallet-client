@@ -1,5 +1,6 @@
 import * as Agent from "@dfinity/agent"
 import { HttpAgent } from "@dfinity/agent"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 
 import { hasOwnProperty } from "@nfid/integration"
@@ -11,7 +12,13 @@ import {
   TransactionWithId,
   Transfer,
 } from "../../../_ic_api/index-icrc1.d"
+import { idlFactory as icrc1IndexIDLICP } from "../../../_ic_api/ledger-index-icrc1"
+import {
+  _SERVICE as ICRCIndexICP,
+  TransactionWithId as TransactionWithIdICP,
+} from "../../../_ic_api/ledger-index-icrc1.d"
 import { agentBaseConfig } from "../../../actors"
+import { ICP_CANISTER_ID } from "../../constants"
 import { Icrc1Pair } from "../icrc1-pair/impl/Icrc1-pair"
 import { IActivityAction, ICRC1IndexData, TransactionData } from "../types"
 
@@ -29,70 +36,95 @@ export class Icrc1TransactionHistoryService {
   ): Promise<Array<ICRC1IndexData>> {
     return Promise.all(
       canisters.map(async (pair) => {
-        try {
-          const indexActor = Agent.Actor.createActor<ICRCIndex>(icrc1IndexIDL, {
-            canisterId: pair.icrc1.index!,
-            agent: new HttpAgent({ ...agentBaseConfig }),
-          })
+        const args: GetAccountTransactionsArgs = {
+          account: {
+            subaccount: [],
+            owner: Principal.fromText(publicKeyInPrincipal),
+          },
+          max_results: maxResults,
+          start:
+            pair.blockNumberToStartFrom === undefined
+              ? []
+              : [pair.blockNumberToStartFrom],
+        }
 
-          const args: GetAccountTransactionsArgs = {
-            account: {
-              subaccount: [],
-              owner: Principal.fromText(publicKeyInPrincipal),
-            },
-            max_results: maxResults,
-            start:
-              pair.blockNumberToStartFrom === undefined
-                ? []
-                : [pair.blockNumberToStartFrom],
-          }
+        const icrc1Pair = new Icrc1Pair(pair.icrc1.ledger, pair.icrc1.index)
+        const ledgerData = await icrc1Pair.getMetadata()
+
+        const indexActor = this.createIndexActor(
+          pair.icrc1.index,
+          pair.icrc1.ledger === ICP_CANISTER_ID,
+        )
+
+        try {
           const response = await indexActor.get_account_transactions(args)
 
           if (hasOwnProperty(response, "Err")) {
-            console.warn(
-              "Error " +
-                response.Err +
-                " getting account transactions for canister: " +
-                pair.icrc1,
+            console.error(
+              `Error ${response.Err} getting account transactions for canister: ${pair.icrc1}`,
             )
-            return {
-              transactions: [],
-              oldestTransactionId: undefined,
-            }
+            return this.getDefaultICRC1IndexData()
           }
 
           if (hasOwnProperty(response, "Ok")) {
-            const icrc1Pair = new Icrc1Pair(pair.icrc1.ledger, pair.icrc1.index)
-            const ledgerData = await icrc1Pair.getMetadata()
-
             return {
               canisterId: pair.icrc1.ledger,
               decimals: ledgerData.decimals,
-              transactions: this.mapRawTrsToTransaction(
+              transactions: this.mapTransactions(
                 response.Ok.transactions,
                 publicKeyInPrincipal,
                 ledgerData.symbol,
                 ledgerData.decimals,
+                ledgerData.canister,
+                pair.icrc1.ledger === ICP_CANISTER_ID,
               ),
-              oldestTransactionId:
-                response.Ok.oldest_tx_id.length === 0
-                  ? undefined
-                  : response.Ok.oldest_tx_id[0],
+              oldestTransactionId: response.Ok.oldest_tx_id[0] ?? undefined,
             }
           }
-          return {
-            transactions: [],
-            oldestTransactionId: undefined,
-          }
+
+          return this.getDefaultICRC1IndexData()
         } catch (error) {
-          console.debug(error)
-          return {
-            transactions: [],
-            oldestTransactionId: undefined,
-          }
+          console.error(error)
+          return this.getDefaultICRC1IndexData()
         }
       }),
     )
+  }
+
+  private createIndexActor(
+    index: string,
+    isICP: boolean,
+  ): ICRCIndex | ICRCIndexICP {
+    const idlFactory = isICP ? icrc1IndexIDLICP : icrc1IndexIDL
+    return Agent.Actor.createActor<ICRCIndex | ICRCIndexICP>(idlFactory, {
+      canisterId: index,
+      agent: new HttpAgent({ ...agentBaseConfig }),
+    })
+  }
+
+  private mapTransactions(
+    rawTrss: Array<TransactionWithId | TransactionWithIdICP>,
+    ownerPrincipal: string,
+    symbol: string,
+    decimals: number,
+    canisterId: string,
+    isICP: boolean,
+  ): Array<TransactionData> {
+    return isICP
+      ? this.mapRawTrsToTransactionICP(
+          rawTrss as Array<TransactionWithIdICP>,
+          ownerPrincipal,
+          symbol,
+          decimals,
+          canisterId,
+        )
+      : this.mapRawTrsToTransaction(
+          rawTrss as Array<TransactionWithId>,
+          ownerPrincipal,
+          symbol,
+          decimals,
+          canisterId,
+        )
   }
 
   private mapRawTrsToTransaction(
@@ -100,31 +132,74 @@ export class Icrc1TransactionHistoryService {
     ownerPrincipal: string,
     symbol: string,
     decimals: number,
+    canisterId: string,
   ): Array<TransactionData> {
-    const filtered = rawTrss.filter(
-      (rawTrs) => rawTrs.transaction.transfer.length !== 0,
-    )
-    if (filtered.length === 0) {
-      return []
+    return rawTrss
+      .filter((rawTrs) => rawTrs.transaction.transfer.length !== 0)
+      .map((rawTrs) => {
+        const trs: Transfer = rawTrs.transaction.transfer[0]!
+        const type =
+          ownerPrincipal === trs.from.owner.toText()
+            ? ("Sent" as IActivityAction)
+            : ("Received" as IActivityAction)
+
+        return {
+          type,
+          timestamp: rawTrs.transaction.timestamp,
+          symbol,
+          amount: trs.amount,
+          from: trs.from.owner.toText(),
+          to: trs.to.owner.toText(),
+          transactionId: rawTrs.id,
+          decimals,
+          canister: canisterId,
+        }
+      })
+  }
+
+  private mapRawTrsToTransactionICP(
+    rawTrss: Array<TransactionWithIdICP>,
+    ownerPrincipal: string,
+    symbol: string,
+    decimals: number,
+    canisterId: string,
+  ): Array<TransactionData> {
+    const principal = Principal.fromText(ownerPrincipal)
+    const accountIdentifier = AccountIdentifier.fromPrincipal({
+      principal,
+    }).toHex()
+
+    return rawTrss
+      .filter((rawTrs) => "Transfer" in rawTrs.transaction.operation)
+      .map((rawTrs) => {
+        const operation = rawTrs.transaction.operation
+        const trs = "Transfer" in operation ? operation.Transfer : null
+
+        const type =
+          accountIdentifier === trs?.from
+            ? IActivityAction.SENT
+            : IActivityAction.RECEIVED
+
+        return {
+          type,
+          timestamp:
+            rawTrs.transaction.timestamp?.[0]?.timestamp_nanos || BigInt(0),
+          symbol,
+          amount: trs?.amount.e8s || BigInt(0),
+          from: trs?.from || "",
+          to: trs?.to || "",
+          transactionId: rawTrs.id,
+          decimals,
+          canister: canisterId,
+        }
+      })
+  }
+
+  private getDefaultICRC1IndexData(): ICRC1IndexData {
+    return {
+      transactions: [],
+      oldestTransactionId: undefined,
     }
-    return filtered.map((rawTrs) => {
-      const trs: Transfer = rawTrs.transaction.transfer[0]!
-      const type =
-        ownerPrincipal === trs.from.owner.toText()
-          ? IActivityAction.SENT
-          : IActivityAction.RECEIVED
-      const data: TransactionData = {
-        type,
-        timestamp: rawTrs.transaction.timestamp,
-        symbol: symbol,
-        amount: trs.amount,
-        from: trs.from.owner.toText(),
-        to: trs.to.owner.toText(),
-        transactionId: rawTrs.id,
-        decimals,
-      }
-      return data
-    })
   }
 }
 

@@ -1,6 +1,6 @@
 import { IconCmpArrow, IconCmpSwapActivity } from "packages/ui/src/atoms/icons"
 
-import { IActivityAction } from "frontend/features/activity/types"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 export const getActionOptions = (action: IActivityAction) => {
   switch (action) {
@@ -18,7 +18,7 @@ export const getActionOptions = (action: IActivityAction) => {
           <IconCmpArrow className="text-gray-400 rotate-[-45deg] !text-emerald-600" />
         ),
       }
-    case "Swapped":
+    case "Swap":
       return { color: "bg-violet-50", icon: <IconCmpSwapActivity /> }
     default:
       return {

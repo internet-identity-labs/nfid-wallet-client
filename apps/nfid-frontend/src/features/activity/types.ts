@@ -3,9 +3,7 @@ import {
   ActivityAssetNFT,
 } from "packages/integration/src/lib/asset/types"
 
-import { Chain } from "@nfid/integration"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
-import { Blockchain } from "@nfid/integration/token/types"
 
 import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 
@@ -17,8 +15,6 @@ export interface IActivityRow {
   from: string
   to: string
   transaction?: SwapTransaction
-  chain: Chain
-  network: Blockchain
 }
 
 export interface IActivityRowGroup {

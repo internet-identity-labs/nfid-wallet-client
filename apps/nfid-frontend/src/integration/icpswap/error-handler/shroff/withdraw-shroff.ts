@@ -8,7 +8,6 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { ExchangeError } from "../../errors"
 import { ContactSupportError } from "../../errors/contact-support-error"
 import { WithdrawErrorLog } from "../../idl/SwapPool.d"
 

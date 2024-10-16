@@ -8,7 +8,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { WithdrawError, ExchangeError } from "../../errors"
+import { WithdrawError } from "../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {

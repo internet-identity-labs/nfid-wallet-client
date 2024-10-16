@@ -6,8 +6,6 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { replaceActorIdentity } from "@nfid/integration"
 
-import { ExchangeError } from "../../errors"
-
 export class ShroffSwapErrorHandler extends ShroffDepositErrorHandler {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.swapTransaction) {

@@ -92,7 +92,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
     const { userPrincipal, publicKey } = await getUserPrincipalId()
     await getICRC1HistoryDataForUser(userPrincipal, publicKey, icrcCount)
 
-    setIcrcCount(icrcCount + BigInt(10))
+    setIcrcCount(icrcCount + BigInt(PAGINATION_ITEMS))
     mutate()
   }
 

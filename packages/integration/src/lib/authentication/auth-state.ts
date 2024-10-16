@@ -43,7 +43,7 @@ type SetProps = {
   sessionKey?: Ed25519KeyIdentity | undefined
 }
 
-  function makeAuthState() {
+function makeAuthState() {
   console.debug("makeAuthState")
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()
@@ -181,7 +181,6 @@ type SetProps = {
   }
 
   function checkAndRenewFEDelegation() {
-    console.debug("checkAndRenewFEDelegation", { pendingRenewDelegation })
     const { delegationIdentity, identity } = observableAuthState$.getValue()
 
     if (!delegationIdentity || !identity || pendingRenewDelegation) return

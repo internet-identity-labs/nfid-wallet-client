@@ -12,14 +12,13 @@ import {
   PoolData,
 } from "./../idl/SwapFactory.d"
 
+export const SWAP_FACTORY_CANISTER = "4mmnk-kiaaa-aaaag-qbllq-cai"
+
 class IcpSwapService {
   private poolActor: SwapFactory
 
   constructor() {
-    this.poolActor = actor<SwapFactory>(
-      "4mmnk-kiaaa-aaaag-qbllq-cai",
-      SwapFactoryIDL,
-    )
+    this.poolActor = actor<SwapFactory>(SWAP_FACTORY_CANISTER, SwapFactoryIDL)
   }
 
   getPoolFactory(

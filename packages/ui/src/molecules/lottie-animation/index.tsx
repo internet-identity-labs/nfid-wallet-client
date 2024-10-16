@@ -8,6 +8,7 @@ export interface LottieAnimationProps {
   width?: number | string
   height?: number | string
   className?: string
+  onComplete?: () => void
 }
 
 export const LottieAnimation: React.FC<LottieAnimationProps> = ({
@@ -17,6 +18,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   width = "100%",
   height = "100%",
   className,
+  onComplete,
 }) => {
   const animationContainer = useRef<HTMLDivElement>(null)
   const animationInstance = useRef<AnimationItem | null>(null)
@@ -31,6 +33,10 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
         autoplay,
         animationData,
       })
+
+      if (onComplete) {
+        animationInstance.current.addEventListener("loopComplete", onComplete)
+      }
 
       animationInstance.current.addEventListener("enterFrame", handleEnterFrame)
     }

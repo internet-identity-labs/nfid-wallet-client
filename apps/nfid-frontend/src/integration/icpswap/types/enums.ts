@@ -1,9 +1,9 @@
 export enum SwapStage {
-  TransferNFID,
   TransferSwap,
   Deposit,
   Swap,
   Withdraw,
+  TransferNFID,
   Completed,
 }
 

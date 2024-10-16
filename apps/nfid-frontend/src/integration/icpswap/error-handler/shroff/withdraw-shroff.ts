@@ -37,7 +37,7 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
         }
       })
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as ExchangeError).message)
+        this.swapTransaction.setError((e as Error).message)
       }
       await this.restoreTransaction()
       throw e

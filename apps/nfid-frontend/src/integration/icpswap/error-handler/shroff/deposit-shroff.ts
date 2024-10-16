@@ -30,7 +30,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as ExchangeError).message)
+        this.swapTransaction.setError((e as Error).message)
       }
       await this.restoreTransaction()
       throw e

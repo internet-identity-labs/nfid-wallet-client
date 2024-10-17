@@ -105,5 +105,6 @@ When(/^User switches send type$/, async () => {
   await Assets.switchSendType.click()
 })
 
-When(/^User click the back button in Send window$/,
-  async () => (Assets.backButtonInSendWindow.click()))
+When(/^User click the back button in Send window$/, async () => {
+  await Assets.waitUntilElementsLoadedProperly(Assets.backButtonInSendWindow, Assets.switchSendType)
+})

@@ -18,7 +18,6 @@ export class Activity extends Page {
         timeoutMsg: "No activities found",
       },
     )
-
     return await this.activityTableRows.length
   }
 
@@ -26,12 +25,12 @@ export class Activity extends Page {
     action: string,
     currency: string,
     type: string,
-    asset: string,
+    amount: string,
     timestamp: string,
     from: string,
     to: string,
   ) =>
-    $(`//*[@id='tx-${action}-${currency}-${type}-${asset}-${timestamp}-${from}-${to}']`)
+    $(`//*[@id='tx-${action}-Internet Computer-${currency}-${type}-${amount*100000000}-${currency}-${timestamp}-${from}-${to}']`)
 }
 
 export default new Activity()

@@ -3,6 +3,10 @@ import Profile from "./profile.js"
 import Nft from "./nft.js"
 
 export class Assets {
+
+  get amountField() {
+    return $("#amount")
+  }
   get sendDialogWindow() {
     return $("#sendButton")
   }
@@ -11,16 +15,16 @@ export class Assets {
     return "[id*='token_"
   }
 
+  get allTokensOnTokenTab() {
+    return $$('[id^="token_"]')
+  }
+
   public get getBalance() {
     return $("#balance")
   }
 
   public get switchSendType() {
     return $("#send_type_toggle")
-  }
-
-  public async getAssetBalance(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_balance']")
   }
 
   public async getCurrency(label: string) {
@@ -44,6 +48,14 @@ export class Assets {
     return $("#tab_Activity")
   }
 
+  get tokensTab() {
+    return $("tab_Tokens")
+  }
+
+  get NFTtab() {
+    return $("#tab_NFTs")
+  }
+
   get chooseModalButton() {
     return $("#choose_modal")
   }
@@ -54,6 +66,18 @@ export class Assets {
 
   get successWindow() {
     return $("#success_window_3")
+  }
+
+  get backButtonInSendWindow() {
+    return $("svg.mr-2")
+  }
+
+  public tokenBalance(tokenName: string) {
+    return $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
+  }
+
+  public tokenLabel(label) {
+    return $(`#token_${label.replace(/\s/g, "")}`)
   }
 
   public currencyOption(chain: string, currency: string) {
@@ -71,7 +95,7 @@ export class Assets {
 
   public async sendFTto(address: string, amount: string) {
     await Nft.addressField.setValue(address)
-    await Nft.amountField.setValue(amount)
+    await this.amountField.setValue(amount)
 
     await this.getBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
@@ -146,14 +170,6 @@ export class Assets {
   public async chooseAccountFrom(account: string) {
     await this.fromAccountOption()
     await this.chooseOption(account)
-  }
-
-  public async openActivity() {
-    const activityIcon = await $("#tab_Activity")
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-
-    await activityIcon.waitForDisplayed({ timeout: 10000 })
-    await activityIcon.click()
   }
 
   public async waitUntilElementsLoadedProperly(

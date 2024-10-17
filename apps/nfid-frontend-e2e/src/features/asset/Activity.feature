@@ -1,4 +1,4 @@
-Feature:Assets Activity
+Feature: Assets Activity
   As a user, I want to see assets transaction history
 
   @activity

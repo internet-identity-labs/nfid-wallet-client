@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { SwapError } from "src/integration/icpswap/errors/swap-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -9,6 +8,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
+import { WithdrawError } from "../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {
@@ -23,7 +23,6 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       this.restoreTransaction()
       await this.withdraw()
       console.debug("Withdraw done")
-      //maybe not async
       this.swapTransaction.setCompleted()
       await this.restoreTransaction()
       console.debug("Transaction stored")
@@ -31,11 +30,10 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError((e as Error).message)
       }
       await this.restoreTransaction()
-      //TODO @vitaly to change according to the new error handling logic
-      throw new SwapError()
+      throw e
     }
   }
 
@@ -49,14 +47,21 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       token: this.source.ledger,
       fee: this.source.fee,
     }
-    return this.swapPoolActor.withdraw(args).then((result) => {
-      if (hasOwnProperty(result, "ok")) {
-        const id = result.ok as bigint
-        this.swapTransaction!.setWithdraw(id)
-        return id
-      }
-      throw new Error("Withdraw error: " + JSON.stringify(result.err))
-    })
+    try {
+      return this.swapPoolActor.withdraw(args).then((result) => {
+        if (hasOwnProperty(result, "ok")) {
+          const id = result.ok as bigint
+          this.swapTransaction!.setWithdraw(id)
+          return id
+        }
+
+        console.error("Withdraw error: " + JSON.stringify(result.err))
+        throw new WithdrawError()
+      })
+    } catch (e) {
+      console.error("Withdraw error: " + e)
+      throw new WithdrawError()
+    }
   }
 }
 

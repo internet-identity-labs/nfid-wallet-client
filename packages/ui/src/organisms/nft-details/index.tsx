@@ -298,7 +298,9 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               />
             ) : (
               transactions.activity &&
-              transactions.activity.map((activity, index) => {
+              transactions.activity.map((activity) => {
+                const price = activity.getTransactionView().getFormattedPrice()
+
                 return (
                   <Fragment
                     key={`${activity.getTransactionView().getFrom()}_${activity
@@ -319,13 +321,9 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                         {activity.getTransactionView().getTo()}
                       </td>
                       <td>
-                        {activity.getTransactionView().getFormattedPrice() ? (
+                        {price ? (
                           <>
-                            <span className="block">
-                              {activity
-                                .getTransactionView()
-                                .getFormattedPrice()}
-                            </span>
+                            <span className="block">{price}</span>
                             <span className="block text-xs text-gray-400">
                               {activity
                                 .getTransactionView()

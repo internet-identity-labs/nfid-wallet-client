@@ -166,15 +166,6 @@ export class FTImpl implements FT {
   }
 
   async getTokenFeeFormattedUsd(): Promise<string | undefined> {
-    const rate = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
-
-    if (!this.fee || !this.decimals || !rate) return
-
-    const usdPrice: BigNumber | undefined =
-      await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
-
-    if (!usdPrice) return
-
     const feeInUsd = await this.getTokenRate(
       (Number(this.fee) / 10 ** this.decimals).toString(),
     )

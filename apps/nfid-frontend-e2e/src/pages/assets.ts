@@ -3,12 +3,21 @@ import Profile from "./profile.js"
 import Nft from "./nft.js"
 
 export class Assets {
+
+  get amountField() {
+    return $("#amount")
+  }
+
   get sendDialogWindow() {
     return $("#sendButton")
   }
 
   private get assetLabel() {
     return "[id*='token_"
+  }
+
+  get allTokensOnTokenTab() {
+    return $$("[id^=\"token_\"]")
   }
 
   public get getBalance() {
@@ -19,18 +28,17 @@ export class Assets {
     return $("#send_type_toggle")
   }
 
-  public async getAssetBalance(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_balance']")
-  }
-
   public async getCurrency(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_currency']")
+    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_currency`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
   }
 
   public async getBlockchain(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']")
+    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_category`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
   }
-
 
   get principal() {
     return $("#principal")
@@ -44,6 +52,14 @@ export class Assets {
     return $("#tab_Activity")
   }
 
+  get tokensTab() {
+    return $("tab_Tokens")
+  }
+
+  get NFTtab() {
+    return $("#tab_NFTs")
+  }
+
   get chooseModalButton() {
     return $("#choose_modal")
   }
@@ -54,6 +70,20 @@ export class Assets {
 
   get successWindow() {
     return $("#success_window_3")
+  }
+
+  get backButtonInSendWindow() {
+    return $("svg.mr-2")
+  }
+
+  public async tokenBalance(tokenName: string) {
+    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
+  }
+
+  public tokenLabel(label) {
+    return $(`#token_${label.replace(/\s/g, "")}`)
   }
 
   public currencyOption(chain: string, currency: string) {
@@ -71,7 +101,7 @@ export class Assets {
 
   public async sendFTto(address: string, amount: string) {
     await Nft.addressField.setValue(address)
-    await Nft.amountField.setValue(amount)
+    await this.amountField.setValue(amount)
 
     await this.getBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
@@ -146,14 +176,6 @@ export class Assets {
   public async chooseAccountFrom(account: string) {
     await this.fromAccountOption()
     await this.chooseOption(account)
-  }
-
-  public async openActivity() {
-    const activityIcon = await $("#tab_Activity")
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-
-    await activityIcon.waitForDisplayed({ timeout: 10000 })
-    await activityIcon.click()
   }
 
   public async waitUntilElementsLoadedProperly(

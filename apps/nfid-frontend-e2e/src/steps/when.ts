@@ -7,12 +7,15 @@ import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
 import HomePage from "../pages/home-page.js"
 import Profile from "../pages/profile.js"
 import Activity from "../pages/activity.js"
+import Nft from "../pages/nft.js"
 
-When(/^It log's me in$/, async () => {
+When(/^User is logged in$/, async () => {
   await HomePage.waitForLoaderDisappear()
+  await Profile.menuButton.waitForClickable({ timeout: 20000 })
 })
 
 When(/^Tokens displayed on user assets$/, async () => {
+  await Profile.waitUntilBalanceLoaded()
   await Profile.waitForTokensAppear()
 })
 
@@ -55,12 +58,17 @@ When(
   },
 )
 
-When(/^I click on recover button$/, async () => {
+When(/^User clicks on recover button$/, async () => {
   await $("#recovery-button").click()
 })
 
-When(/^I press on Activity icon$/, async () => {
-  await Assets.waitUntilElementsLoadedProperly(Assets.activityTab, Activity.filterButton)
+When(/^User goes to (.*) tab$/, async (tab: string) => {
+  const tabMap: { [key: string]: any } = {
+    "activity": [Assets.activityTab, Activity.filterButton],
+    "nfts": [Assets.NFTtab, Nft.randomTokenOnNFTtab],
+    "tokens": [Assets.tokensTab, Assets.allTokensOnTokenTab],
+  }
+  await Assets.waitUntilElementsLoadedProperly(tabMap[tab][0], tabMap[tab][1])
 })
 
 When(
@@ -85,3 +93,17 @@ When(
     await Assets.getTokenByNameInSend(tokenName).click()
   },
 )
+
+When(
+  /^User refreshes the page$/, async () => {
+    await browser.refresh()
+    await HomePage.waitForLoaderDisappear()
+    await Profile.menuButton.waitForClickable({ timeout: 20000 })
+  })
+
+When(/^User switches send type$/, async () => {
+  await Assets.switchSendType.click()
+})
+
+When(/^User click the back button in Send window$/,
+  async () => (Assets.backButtonInSendWindow.click()))

@@ -1,6 +1,8 @@
 import { format } from "date-fns"
 import { TransactionRecord } from "src/integration/nft/nft"
 
+import { exchangeRateService } from "@nfid/integration"
+
 export abstract class TransactionRecordAbstract implements TransactionRecord {
   abstract getTransactionView(): TransactionRecordView
 }
@@ -49,6 +51,14 @@ export class TransactionRecordView {
 
   getFormattedPrice(): string | undefined {
     return this.priceFormatted
+  }
+
+  getFormattedUsdPrice(): string | undefined {
+    if (!this.priceFormatted) return
+    const rawPrice = parseFloat(this.priceFormatted)
+    return `${(exchangeRateService.getICP2USD().toNumber() * rawPrice).toFixed(
+      2,
+    )} USD`
   }
 
   private getDate(): Date {

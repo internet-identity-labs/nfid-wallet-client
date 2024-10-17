@@ -1,12 +1,11 @@
-import Assets from "./assets.js"
-
 export class Nft {
-  public get addressField() {
-    return $("#input")
+
+  get randomTokenOnNFTtab() {
+    return $("*[id^='nft_token']")
   }
 
-  public get amountField() {
-    return $("#amount")
+  public get addressField() {
+    return $("#input")
   }
 
   private get amountOfNFTs() {
@@ -45,14 +44,6 @@ export class Nft {
     return $(`#nft_id_${id.replace(/\s/g, "")}`)
   }
 
-  private get NFTtab() {
-    return $("#tab_NFTs")
-  }
-
-  public async openCollectibles() {
-    await Assets.waitUntilElementsLoadedProperly(this.NFTtab, $("*[id^=\"nft_token\"]"))
-  }
-
   public async switchToTable() {
     const table = await $("#to-table")
     await table.waitForDisplayed({
@@ -66,14 +57,16 @@ export class Nft {
     await this.getNftName(token, collection).click()
   }
 
-  public async getNftCollectiblesAmount(n: number) {
+  public async getNftCollectiblesAmount(expectedItemsAmount: number) {
+    let currentItemsAmount: string
     await browser.waitUntil(
-      async () => await this.amountOfNFTs.getText() === n + " items",
-      {
+      async () => {
+        currentItemsAmount = await this.amountOfNFTs.getText()
+        return currentItemsAmount == `${expectedItemsAmount} items`
+      }, {
         timeout: 15000,
         timeoutMsg:
-          "Current nfts amount is " +
-          await this.amountOfNFTs.getText(),
+          `Expected ${expectedItemsAmount} items, but was ${currentItemsAmount}`,
       },
     )
   }

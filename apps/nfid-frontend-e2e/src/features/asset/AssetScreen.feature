@@ -6,9 +6,9 @@ Feature: Fungible Asset
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     And Tokens displayed on user assets
-    Then <token name> appears with <currency> on <category> and <balance>
+    Then <token name> appears with <currency> on <category> and not 0 balance
     Examples:
-      | category | currency | balance     | nfid number | token name        |
-      | Native   | ICP      | 0.01007 ICP | 28542       | Internet Computer |
-      | Native   | ICP      | 0.0499 ICP  | 100000830   | Internet Computer |
-      | Native   | ICP      | 0.05 ICP    | 200000276   | Internet Computer |
+      | category | currency | nfid number | token name        |
+      | Native   | ICP      | 28542       | Internet Computer |
+      | Native   | ICP      | 100000830   | Internet Computer |
+      | Native   | ICP      | 200000276   | Internet Computer |

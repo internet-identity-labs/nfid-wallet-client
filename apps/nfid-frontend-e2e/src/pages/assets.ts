@@ -7,6 +7,7 @@ export class Assets {
   get amountField() {
     return $("#amount")
   }
+
   get sendDialogWindow() {
     return $("#sendButton")
   }
@@ -16,7 +17,7 @@ export class Assets {
   }
 
   get allTokensOnTokenTab() {
-    return $$('[id^="token_"]')
+    return $$("[id^=\"token_\"]")
   }
 
   public get getBalance() {
@@ -28,13 +29,16 @@ export class Assets {
   }
 
   public async getCurrency(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_currency']")
+    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_currency`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
   }
 
   public async getBlockchain(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']")
+    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_category`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
   }
-
 
   get principal() {
     return $("#principal")
@@ -72,8 +76,10 @@ export class Assets {
     return $("svg.mr-2")
   }
 
-  public tokenBalance(tokenName: string) {
-    return $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
+  public async tokenBalance(tokenName: string) {
+    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
   }
 
   public tokenLabel(label) {

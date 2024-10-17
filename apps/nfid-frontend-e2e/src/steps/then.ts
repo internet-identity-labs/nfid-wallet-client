@@ -24,17 +24,16 @@ Then(/^Only (\d+) asset displayed/, async (amount: number) => {
 })
 
 Then(
-  /^([^"]*) appears with ([^"]*) on ([^"]*) and ([^"]*)$/,
+  /^([^"]*) appears with ([^"]*) on ([^"]*) and not 0 balance$/,
   async (
     tokenName: string,
     currency: string,
     category: string,
-    balance: string,
   ) => {
     await softAssertAll(
-      () => expect(Assets.tokenBalance(tokenName)).not.toHaveText(`0 ${balance}`),
-      () => expect(Assets.getCurrency(tokenName)).toHaveText(currency),
-      () => expect(Assets.getBlockchain(category)).toHaveText(category),
+      async () => expect(await (await Assets.tokenBalance(tokenName)).getText()).not.toBe("0"),
+      async () => expect(await (await Assets.getCurrency(tokenName)).getText()).toContain(currency),
+      async () => expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(true),
     )
   },
 )

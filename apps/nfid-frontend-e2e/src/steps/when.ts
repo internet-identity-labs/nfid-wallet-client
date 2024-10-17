@@ -15,6 +15,7 @@ When(/^User is logged in$/, async () => {
 })
 
 When(/^Tokens displayed on user assets$/, async () => {
+  await Profile.waitUntilBalanceLoaded()
   await Profile.waitForTokensAppear()
 })
 

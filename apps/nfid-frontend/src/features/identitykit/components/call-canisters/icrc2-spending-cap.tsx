@@ -13,6 +13,7 @@ export interface CallCanisterICRC2SpendingCapProps {
   request: any
   args: any
   metadata: ICRC2Metadata
+  isInsufficientBalance?: boolean
   onApprove: (data: any) => void
   onReject: () => void
 }
@@ -23,6 +24,7 @@ const CallCanisterICRC2SpendingCap = ({
   sender,
   request,
   metadata,
+  isInsufficientBalance,
   onApprove,
   onReject,
 }: CallCanisterICRC2SpendingCapProps) => {
@@ -47,7 +49,7 @@ const CallCanisterICRC2SpendingCap = ({
       }
       onSecondaryButtonClick={onReject}
       onPrimaryButtonClick={() => onApprove(request)}
-      isPrimaryDisabled={!isChecked}
+      isPrimaryDisabled={!isChecked || isInsufficientBalance}
       balance={{
         address: metadata.address,
         symbol: metadata.symbol,
@@ -79,7 +81,13 @@ const CallCanisterICRC2SpendingCap = ({
           sender={sender}
           args={args}
         />
-        <div className="flex-1 min-h-[50px]" />
+        <div className="flex-1 min-h-[50px] flex items-center justify-center">
+          {isInsufficientBalance && (
+            <small className="text-xs text-red-600">
+              Insufficient {metadata.symbol} balance
+            </small>
+          )}
+        </div>
         <div className="flex items-start gap-2.5">
           <Checkbox
             className="mt-1 cursor-pointer"

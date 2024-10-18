@@ -31,10 +31,10 @@ export const fetchNFTsInited = async (page: number) => {
 
 export const fetchNFT = async (id: string, currentPage?: number) => {
   const { publicKey } = await getUserPrincipalId()
-  const data = await nftService.getNFTById(
+  const data = await nftService.getNFTByTokenId(
     id,
     Principal.fromText(publicKey),
-    currentPage || 1,
+    currentPage,
   )
   return data
 }

@@ -123,7 +123,10 @@ export const NFTs: FC<INFTs> = ({
                   className="text-sm cursor-pointer"
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                   onClick={() =>
-                    navigate(`${links.base}/${links.nfts}/${nft.getTokenId()}`)
+                    navigate(
+                      `${links.base}/${links.nfts}/${nft.getTokenId()}`,
+                      { state: { currentPage } },
+                    )
                   }
                 >
                   <td>

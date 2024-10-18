@@ -298,7 +298,9 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               />
             ) : (
               transactions.activity &&
-              transactions.activity.map((activity, index) => {
+              transactions.activity.map((activity) => {
+                const price = activity.getTransactionView().getFormattedPrice()
+
                 return (
                   <Fragment
                     key={`${activity.getTransactionView().getFrom()}_${activity
@@ -319,21 +321,18 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                         {activity.getTransactionView().getTo()}
                       </td>
                       <td>
-                        {index === 0 &&
-                          (!nft.getTokenFloorPriceIcpFormatted() ? (
-                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                              Unknown
-                            </div>
-                          ) : (
-                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                              <span className="block">
-                                {nft.getTokenFloorPriceIcpFormatted()}
-                              </span>
-                              <span className="block text-xs text-gray-400">
-                                {nft.getTokenFloorPriceUSDFormatted()}
-                              </span>
-                            </div>
-                          ))}
+                        {price ? (
+                          <>
+                            <span className="block">{price}</span>
+                            <span className="block text-xs text-gray-400">
+                              {activity
+                                .getTransactionView()
+                                .getFormattedUsdPrice()}
+                            </span>
+                          </>
+                        ) : (
+                          "Unknown"
+                        )}
                       </td>
                     </tr>
                   </Fragment>

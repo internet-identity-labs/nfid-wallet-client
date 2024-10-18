@@ -58,7 +58,7 @@ export const TransferNFT = ({
     mutate: refetchNFT,
     isLoading: isNftLoading,
   } = useSWR(selectedNFTId ? ["nft", selectedNFTId] : null, ([, tokenId]) =>
-    fetchNFT(tokenId, page),
+    fetchNFT(tokenId),
   )
 
   const handleTrackTransfer = useCallback(() => {

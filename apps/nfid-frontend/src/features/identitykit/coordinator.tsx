@@ -1,5 +1,6 @@
 import { useMachine } from "@xstate/react"
 import { useMemo } from "react"
+import { Helmet } from "react-helmet-async"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
@@ -96,6 +97,9 @@ export default function IdentityKitRPCCoordinator() {
 
   return (
     <RPCTemplate isApproveRequestInProgress={isApproveRequestInProgress}>
+      <Helmet>
+        <meta name="theme-color" content="#043E36" />
+      </Helmet>
       {Component}
     </RPCTemplate>
   )

@@ -23,7 +23,7 @@ describe("nft test suite", () => {
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
-      const result = await nftService.getNFTs(principal)
+      const result = await nftService.getNFTs(principal, 1, 10)
       await Promise.all(result.items.map(async (nft) => nft.init()))
       expect(result.items).toHaveLength(10)
       expect(result.totalPages).toEqual(2)

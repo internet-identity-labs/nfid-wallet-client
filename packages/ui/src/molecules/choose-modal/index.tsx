@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 import { trimConcat } from "src/ui/atoms/util/util"
@@ -16,6 +16,8 @@ import { SmallTrigger } from "./triggers/small"
 import { IGroupedOptions, IGroupOption } from "./types"
 
 export interface IChooseModal {
+  scrollBottom?: () => void
+  stopListenScrolling: boolean
   optionGroups: IGroupedOptions[]
   preselectedValue?: string
   onSelect?: (value: string) => void
@@ -34,6 +36,8 @@ export interface IChooseModal {
 }
 
 export const ChooseModal = ({
+  scrollBottom,
+  stopListenScrolling,
   optionGroups,
   preselectedValue,
   onSelect,
@@ -54,6 +58,20 @@ export const ChooseModal = ({
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
   const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
+  const scrollContainer = useRef<HTMLDivElement>(null)
+
+  const handleScroll = () => {
+    if (!scrollBottom) return
+    const container = scrollContainer.current
+    if (!container) return
+
+    const isBottom =
+      container.scrollHeight - container.scrollTop < container.clientHeight + 10
+
+    if (isBottom) {
+      scrollBottom()
+    }
+  }
 
   const handleSelect = useCallback((option: IGroupOption) => {
     setSelectedValue(option.value)
@@ -65,6 +83,22 @@ export const ChooseModal = ({
       isSmooth ? 100 : 0,
     )
   }, [])
+
+  useEffect(() => {
+    const container = scrollContainer.current
+
+    if (!container || stopListenScrolling) return
+
+    container.addEventListener("scroll", handleScroll)
+
+    if (stopListenScrolling) {
+      container.removeEventListener("scroll", handleScroll)
+    }
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll)
+    }
+  }, [stopListenScrolling])
 
   const filteredOptions = useMemo(() => {
     return filterGroupedOptionsByTitle(optionGroups, searchInput)
@@ -166,6 +200,7 @@ export const ChooseModal = ({
           className="mt-4 mb-5"
         />
         <div
+          ref={scrollContainer}
           className={clsx(
             "flex-1 overflow-auto snap-end pr-[10px]",
             "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",

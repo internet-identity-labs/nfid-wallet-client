@@ -19,6 +19,8 @@ import {
 import { NFT } from "frontend/integration/nft/nft"
 
 export interface TransferNFTUiProps {
+  onPaginate: () => void
+  stopPagination: boolean
   isLoading: boolean
   loadingMessage: string | undefined
   nftOptions: IGroupedOptions[] | undefined
@@ -31,6 +33,8 @@ export interface TransferNFTUiProps {
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
+  onPaginate,
+  stopPagination,
   isLoading,
   loadingMessage,
   nftOptions,
@@ -60,6 +64,8 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
     >
       <div className="space-y-3 text-xs ">
         <ChooseModal
+          scrollBottom={onPaginate}
+          stopListenScrolling={stopPagination}
           label="NFT to transfer"
           optionGroups={nftOptions ?? []}
           title="NFT to send"

@@ -4,11 +4,13 @@ import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
 
+const PAGINATION_ITEMS = 8
+
 export class NftService {
   async getNFTs(
     userPrincipal: Principal,
     page: number = 1,
-    limit: number = 10,
+    limit: number = PAGINATION_ITEMS,
   ): Promise<PaginatedResponse<NFT>> {
     const data = await nftGeekService.getNftGeekData(userPrincipal)
 
@@ -55,8 +57,13 @@ export class NftService {
   async getNFTById(
     id: string,
     userPrincipal: Principal,
+    pages: number,
   ): Promise<NFT | undefined> {
-    const nftList = await this.getNFTs(userPrincipal)
+    const nftList = await this.getNFTs(
+      userPrincipal,
+      1,
+      pages * PAGINATION_ITEMS,
+    )
     const nft = nftList.items.find((nft) => nft.getTokenId() === id)?.init()
     if (!nft) throw new Error("NFT not found")
     return nft

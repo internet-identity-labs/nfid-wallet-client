@@ -218,7 +218,7 @@ describe("nft test suite", () => {
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
 
-      const nft = await nftService.getNFTById(nftId, principal)
+      const nft = await nftService.getNFTById(nftId, principal, 1)
 
       expect(nft).toBeDefined()
       if (!nft) return

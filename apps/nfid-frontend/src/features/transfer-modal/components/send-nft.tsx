@@ -1,5 +1,5 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -10,6 +10,7 @@ import {
   fetchNFTsInited,
 } from "frontend/features/collectibles/utils/util"
 import { transferEXT } from "frontend/integration/entrepot/ext"
+import { NFT } from "frontend/integration/nft/nft"
 
 import {
   getIdentity,
@@ -30,12 +31,28 @@ export const TransferNFT = ({
   preselectedNFTId = "",
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
+  const [page, setPage] = useState(1)
+  const [nfts, setNfts] = useState<NFT[]>([])
+  const [isNftListLoading, setIsNftListLoading] = useState(false)
+  const [totalPages, setTotalPages] = useState<number | null>(null)
 
-  const {
-    data: allNfts = [],
-    isLoading: isNftListLoading,
-    mutate: refetchAllNfts,
-  } = useSWR("allNFTS", fetchNFTsInited)
+  useEffect(() => {
+    let totalPages
+    const getNfts = async () => {
+      setIsNftListLoading(true)
+      const data = await fetchNFTsInited(page)
+      totalPages = data.totalPages
+      setTotalPages(data.totalPages)
+      if (totalPages >= page) {
+        setNfts((prevNfts) => [...prevNfts, ...data.initedData])
+      }
+
+      setIsNftListLoading(false)
+    }
+
+    getNfts()
+  }, [page])
+
   const {
     data: selectedNFT,
     mutate: refetchNFT,
@@ -53,6 +70,11 @@ export const TransferNFT = ({
       fee: 0,
     })
   }, [selectedNFT])
+
+  const handlePagination = () => {
+    if (isNftListLoading) return
+    setPage((prevPage) => prevPage + 1)
+  }
 
   const submit = useCallback(
     async (values: any) => {
@@ -78,25 +100,28 @@ export const TransferNFT = ({
         title: selectedNFT.getTokenName(),
         subTitle: selectedNFT.getCollectionName(),
         callback: () => {
-          refetchAllNfts()
           refetchNFT()
         },
       })
     },
-    [handleTrackTransfer, onTransfer, refetchAllNfts, refetchNFT, selectedNFT],
+    [handleTrackTransfer, onTransfer, refetchNFT, selectedNFT],
   )
+
+  const stopPagination = totalPages ? page > totalPages : false
 
   return (
     <TransferNFTUi
       isLoading={isNftLoading && isNftListLoading}
       loadingMessage={"Loading NFTs..."}
-      nftOptions={mapUserNFTDetailsToGroupedOptions(allNfts)}
+      nftOptions={mapUserNFTDetailsToGroupedOptions(nfts)}
       setSelectedNFTId={setSelectedNFTId}
       selectedNFTId={selectedNFTId}
       selectedNFT={selectedNFT}
       selectedReceiverWallet={selectedReceiverWallet}
       submit={submit}
       validateAddress={validateICPAddress}
+      onPaginate={handlePagination}
+      stopPagination={stopPagination}
     />
   )
 }

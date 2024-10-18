@@ -148,6 +148,7 @@ export class Icrc1Pair implements IIcrc1Pair {
       logo,
       decimals,
       fee,
+      canister: this.ledger,
     }
   }
 

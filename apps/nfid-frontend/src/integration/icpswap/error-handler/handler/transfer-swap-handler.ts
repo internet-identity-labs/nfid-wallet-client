@@ -2,7 +2,6 @@ import { SignIdentity } from "@dfinity/agent"
 import { TransactionErrorHandlerAbstract } from "src/integration/icpswap/error-handler/error-handler-abstract"
 import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
-import { CompleteType } from "src/integration/icpswap/types/enums"
 
 export class TransferSwapHandler extends TransactionErrorHandlerAbstract {
   async completeTransaction(
@@ -15,8 +14,5 @@ export class TransferSwapHandler extends TransactionErrorHandlerAbstract {
       delegation,
     )
     return this.getTransaction()
-  }
-  getCompleteType(): CompleteType {
-    return CompleteType.Rollback
   }
 }

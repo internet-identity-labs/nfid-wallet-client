@@ -1,5 +1,5 @@
 import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
-import randomUUID, { UUID } from "crypto"
+import { UUID } from "crypto"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { SwapStage } from "src/integration/icpswap/types/enums"
 
@@ -37,7 +37,7 @@ export class SwapTransactionImpl implements SwapTransaction {
     this.stage = SwapStage.TransferSwap
     this.targetLedger = targetLedger
     this.sourceLedger = sourceLedger
-    this.uid = randomUUID.randomUUID()
+    this.uid = globalThis.crypto.randomUUID()
     this.quote = quote
     this.sourceAmount = amount
   }

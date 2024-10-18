@@ -30,7 +30,7 @@ export class Activity extends Page {
     from: string,
     to: string,
   ) =>
-    $(`//*[@id='tx-${action}-Internet Computer-${currency}-${type}-${amount*100000000}-${currency}-${timestamp}-${from}-${to}']`)
+    $(`//*[@id='tx-${action}-${currency}-${type}-${amount*100000000}-${currency}-${timestamp}-${from}-${to}']`)
 }
 
 export default new Activity()

@@ -43,7 +43,6 @@ export const SendNFTProps = {
   nftOptions: [],
   selectedNFTId: "",
   selectedNFT: undefined,
-  selectedConnector: undefined,
   selectedReceiverWallet: "",
   selectedAccountAddress:
     "yrfx6-fmprd-wgad6-6or6b-2aw42-5qqhn-o4yt7-plkxr-2jtgv-azhzx-gae",

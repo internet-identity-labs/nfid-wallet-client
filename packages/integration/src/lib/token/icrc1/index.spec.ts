@@ -36,7 +36,7 @@ describe("ICRC1 suite", () => {
       "7cpx7-5iqxa-df2t7-jktca-2mfbq-b7keh-dsunz-k256d-55byp-7lkyp-uqe",
     )
     expect(testICRC1.transactions[0].to).toEqual("l3k5l-liaaa-aaaan-qmhkq-cai")
-    expect(testICRC1.transactions[0].type).toEqual("sent")
+    expect(testICRC1.transactions[0].type).toEqual("Sent")
     expect(testICRC1.transactions[0].symbol).toEqual("CHAT")
     expect(testICRC1.transactions[0].amount).toEqual(BigInt(10000000))
     expect(testICRC1.oldestTransactionId).toEqual(BigInt(246792))

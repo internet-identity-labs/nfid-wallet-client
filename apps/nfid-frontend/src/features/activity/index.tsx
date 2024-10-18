@@ -3,7 +3,7 @@ import { fetchActiveTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useLocation } from "react-router-dom"
 import useSWR from "swr"
 
-import { useActivityPagination } from "./hooks"
+import { useActivityPagination } from "./hooks/pagination"
 
 const ActivityPage = () => {
   const { state } = useLocation()

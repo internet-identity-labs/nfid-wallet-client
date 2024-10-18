@@ -1,19 +1,71 @@
+import { getIdentity } from "apps/nfid-frontend/src/features/transfer-modal/utils"
 import clsx from "clsx"
 import { format } from "date-fns"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
+import { useState } from "react"
 
 import {
+  IconCmpArrow,
   IconCmpStatusSuccess,
+  IconCmpSwapActivity,
   IconCmpTinyIC,
   IconNftPlaceholder,
   IconSvgArrowRight,
   ImageWithFallback,
+  Tooltip,
 } from "@nfid-frontend/ui"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import { errorHandlerFactory } from "frontend/integration/icpswap/error-handler/handler-factory"
+import { ShroffImpl } from "frontend/integration/icpswap/impl/shroff-impl"
+import { icpSwapService } from "frontend/integration/icpswap/service/icpswap-service"
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
-import { getActionOptions } from "../utils"
+interface ErrorStage {
+  buttonText: string
+  tooltipTitile: string
+  tooltipMessage: string
+}
+
+export const getTooltipAndButtonText = (
+  transaction: SwapTransaction | undefined,
+): ErrorStage | undefined => {
+  if (!transaction) return
+
+  const stage = transaction.getStage()
+
+  if (stage === SwapStage.Completed) return
+
+  if (stage === SwapStage.Deposit || stage === SwapStage.TransferSwap) {
+    return {
+      buttonText: "Cancel swap",
+      tooltipTitile: "deposit",
+      tooltipMessage: "Cancel your swap and try again.",
+    }
+  }
+
+  if (stage === SwapStage.Swap) {
+    return {
+      buttonText: "Cancel swap",
+      tooltipTitile: "swap",
+      tooltipMessage: "Cancel your swap and try again.",
+    }
+  }
+
+  if (stage === SwapStage.Withdraw || stage === SwapStage.TransferNFID) {
+    return {
+      buttonText: "Complete swap",
+      tooltipTitile: "withdraw",
+      tooltipMessage: "Complete your swap.",
+    }
+  }
+
+  throw new Error("Unexpected Stage")
+}
 
 interface IActivityTableRow extends IActivityRow {
   id: string
@@ -34,101 +86,184 @@ export const ActivityTableRow = ({
   timestamp,
   to,
   id,
+  transaction,
 }: IActivityTableRow) => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const completeHandler = async () => {
+    if (!transaction) return
+    setIsLoading(true)
+    const pool = await icpSwapService.getPoolFactory(
+      transaction.getSourceLedger(),
+      transaction.getTargetLedger(),
+    )
+    const identity = await getIdentity([
+      transaction.getSourceLedger(),
+      transaction.getTargetLedger(),
+      pool.canisterId.toText(),
+      ...ShroffImpl.getStaticTargets(),
+    ])
+
+    const errorHandler = errorHandlerFactory.getHandler(transaction)
+    await errorHandler.completeTransaction(identity)
+    setIsLoading(false)
+  }
+
   return (
-    <tr
-      id={id}
-      className="relative items-center text-sm activity-row hover:bg-gray-50"
+    <Tooltip
+      className={getTooltipAndButtonText(transaction) ? "" : "hidden"}
+      align="start"
+      alignOffset={20}
+      arrowClassname="translate-x-[-330px] visible"
+      tip={
+        <span className="block max-w-[270px] sm:max-w-[320px]">
+          <b>
+            ICPSwap {getTooltipAndButtonText(transaction)?.tooltipTitile}{" "}
+            failed.
+          </b>{" "}
+          Something went wrong with the ICPSwap service.{" "}
+          {getTooltipAndButtonText(transaction)?.tooltipMessage}
+        </span>
+      }
     >
-      <td className="flex items-center pl-5 sm:pl-[30px] w-[30%]">
-        <div
+      <tr
+        id={id}
+        className="relative items-center text-sm activity-row hover:bg-gray-50"
+      >
+        <td className="flex items-center pl-5 sm:pl-[30px] w-[30%]">
+          <div
+            className={clsx(
+              "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
+              action === IActivityAction.SENT
+                ? "bg-red-50"
+                : action === IActivityAction.RECEIVED
+                ? "bg-emerald-50"
+                : "bg-violet-50",
+            )}
+          >
+            {action === IActivityAction.SENT ? (
+              <IconCmpArrow className="text-gray-400 rotate-[135deg] text-red-600" />
+            ) : action === IActivityAction.RECEIVED ? (
+              <IconCmpArrow className="text-gray-400 rotate-[-45deg] !text-emerald-600" />
+            ) : (
+              <>
+                <IconCmpSwapActivity />
+                {getTooltipAndButtonText(transaction) && (
+                  <div
+                    className={clsx(
+                      "absolute right-0 bottom-0",
+                      "w-3 h-3 rounded-full",
+                      "border-2 border-white bg-red-600",
+                    )}
+                  ></div>
+                )}
+              </>
+            )}
+          </div>
+          <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
+            <p className="font-semibold text-sm leading-[20px]">{action}</p>
+            <p className="text-xs text-gray-400 leading-[20px]">
+              {format(new Date(timestamp), "HH:mm:ss aaa")}
+            </p>
+          </div>
+        </td>
+        <td
           className={clsx(
-            "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
-            getActionOptions(action).color,
+            "transition-opacity w-[20%] text-center",
+            action !== IActivityAction.SWAP && "pl-[28px]",
           )}
         >
-          {getActionOptions(action).icon}
-        </div>
-        <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
-          <p className="font-semibold text-sm leading-[20px]">{action}</p>
-          <p className="text-xs text-gray-400 leading-[20px]">
-            {format(new Date(timestamp), "HH:mm:ss aaa")}
-          </p>
-        </div>
-      </td>
-      <td
-        className={clsx(
-          "transition-opacity w-[20%] text-center",
-          action !== "Swapped" && "pl-[28px]",
-        )}
-      >
-        {action === "Swapped" ? (
-          <div className="flex items-center justify-center gap-[8px]">
-            {/* // TODO: change harcoded values */}
-            <ImageWithFallback
-              alt="NFID token"
-              fallbackSrc={IconNftPlaceholder}
-              src="Mocked Source"
-              className="rounded-full w-[28px] h-[28px]"
-            />
-            1.15 ICP
-          </div>
-        ) : (
-          <CopyAddress address={from} leadingChars={6} trailingChars={4} />
-        )}
-      </td>
-      <td className="w-[24px] h-[24px] absolute left-0 right-0 top-0 bottom-0 m-auto">
-        <img src={IconSvgArrowRight} alt="" />
-      </td>
-      <td
-        className={clsx(
-          "transition-opacity w-[20%] text-center",
-          action !== "Swapped" && "pl-[28px]",
-        )}
-      >
-        {/* // TODO: change harcoded values */}
-        {action === "Swapped" ? (
-          <div className="flex items-center justify-center gap-[8px]">
-            <ImageWithFallback
-              alt="NFID token"
-              fallbackSrc={IconNftPlaceholder}
-              src="Mocked Source"
-              className="rounded-full w-[28px] h-[28px]"
-            />
-            56.15 ckBTC
-          </div>
-        ) : (
-          <CopyAddress address={to} leadingChars={6} trailingChars={4} />
-        )}
-      </td>
-      {asset?.type === "ft" ? (
-        <td className="leading-5 text-right sm:text-left pr-5 sm:pr-[30px] w-[30%]">
-          <p className="text-sm">
-            <TickerAmount
-              value={asset.amount}
-              decimals={asset.decimals}
-              symbol={asset.currency}
-            />
-          </p>
-          {asset.rate && (
-            <p className="text-xs text-gray-400">
+          {action === IActivityAction.SWAP && asset?.type === "ft" ? (
+            <div className="flex items-center justify-center gap-[8px]">
+              <ImageWithFallback
+                alt="NFID token"
+                fallbackSrc={IconNftPlaceholder}
+                src={asset.icon!}
+                className="rounded-full w-[28px] h-[28px]"
+              />
               <TickerAmount
                 value={asset.amount}
                 decimals={asset.decimals}
                 symbol={asset.currency}
-                usdRate={asset.rate}
               />
-            </p>
+            </div>
+          ) : (
+            <CopyAddress address={from} leadingChars={6} trailingChars={4} />
           )}
         </td>
-      ) : (
-        <td className="leading-5 text-right sm:text-left">
-          <div className="flex items-center">
-            <img src={asset.preview} className="object-cover w-10 h-10" />
-            <p className="ml-2.5 font-semibold">{asset.name}</p>
-          </div>
+        <td className="w-[24px] h-[24px] absolute left-0 right-0 top-0 bottom-0 m-auto">
+          <img src={IconSvgArrowRight} alt="" />
         </td>
-      )}
-    </tr>
+        <td
+          className={clsx(
+            "transition-opacity w-[20%] text-center",
+            action !== IActivityAction.SWAP && "pl-[28px]",
+          )}
+        >
+          {action === IActivityAction.SWAP && asset?.type === "ft" ? (
+            <div className="flex items-center justify-center gap-[8px]">
+              <ImageWithFallback
+                alt="NFID token"
+                fallbackSrc={IconNftPlaceholder}
+                src={asset.iconTo!}
+                className="rounded-full w-[28px] h-[28px]"
+              />
+              <TickerAmount
+                value={asset.amountTo!}
+                decimals={asset.decimalsTo}
+                symbol={asset.currencyTo!}
+              />
+            </div>
+          ) : (
+            <CopyAddress address={to} leadingChars={6} trailingChars={4} />
+          )}
+        </td>
+        {asset?.type === "ft" ? (
+          <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
+            {getTooltipAndButtonText(transaction) ? (
+              <>
+                {isLoading ? (
+                  <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
+                ) : (
+                  <span
+                    className="cursor-pointer text-primaryButtonColor"
+                    onClick={completeHandler}
+                  >
+                    {getTooltipAndButtonText(transaction)?.buttonText}
+                  </span>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-sm">
+                  <TickerAmount
+                    value={asset.amount}
+                    decimals={asset.decimals}
+                    symbol={asset.currency}
+                  />
+                </p>
+                {asset.rate && (
+                  <p className="text-xs text-gray-400">
+                    <TickerAmount
+                      value={asset.amount}
+                      decimals={asset.decimals}
+                      symbol={asset.currency}
+                      usdRate={asset.rate}
+                    />
+                  </p>
+                )}
+              </>
+            )}
+          </td>
+        ) : (
+          <td className="leading-5 text-right sm:text-left">
+            <div className="flex items-center">
+              <img src={asset.preview} className="object-cover w-10 h-10" />
+              <p className="ml-2.5 font-semibold">{asset.name}</p>
+            </div>
+          </td>
+        )}
+      </tr>
+    </Tooltip>
   )
 }

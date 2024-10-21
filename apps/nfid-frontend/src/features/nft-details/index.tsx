@@ -8,7 +8,7 @@ import {
   useEffect,
   useReducer,
 } from "react"
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import useSWR from "swr"
 
 import { IconSvgArrow, Loader, Tooltip } from "@nfid-frontend/ui"
@@ -26,16 +26,18 @@ const NFTDetailsPage = () => {
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
   const [, send] = useActor(globalServices.transferService)
   const { tokenId } = useParams()
+  const location = useLocation()
+  const { currentPage } = location.state
 
   const { data: nft, isLoading } = useSWR(
     tokenId ? ["nft", tokenId] : null,
-    ([, tokenId]) => fetchNFT(tokenId),
+    ([, tokenId]) => fetchNFT(tokenId, currentPage),
   )
 
   const getDetails = useCallback(async () => {
     if (!tokenId) return
 
-    const nftDetails = await fetchNFT(tokenId).then((data) =>
+    const nftDetails = await fetchNFT(tokenId, currentPage).then((data) =>
       data?.getDetails(),
     )
     if (nftDetails) {
@@ -100,7 +102,7 @@ const NFTDetailsPage = () => {
         dispatch({ type: "SET_LOADING", key: "transactions", isLoading: false })
       }
     }
-  }, [tokenId])
+  }, [tokenId, currentPage])
 
   useEffect(() => {
     getDetails()

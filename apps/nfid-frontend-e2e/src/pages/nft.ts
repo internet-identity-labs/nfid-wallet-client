@@ -1,5 +1,4 @@
 export class Nft {
-
   get randomTokenOnNFTtab() {
     return $("*[id^='nft_token']")
   }
@@ -53,7 +52,9 @@ export class Nft {
   }
 
   public async nftDetails(token: string, collection: string) {
-    await this.getNftName(token, collection).waitForDisplayed({ timeout: 30000 })
+    await this.getNftName(token, collection).waitForDisplayed({
+      timeout: 30000,
+    })
     await this.getNftName(token, collection).click()
   }
 
@@ -63,10 +64,10 @@ export class Nft {
       async () => {
         currentItemsAmount = await this.amountOfNFTs.getText()
         return currentItemsAmount == `${expectedItemsAmount} items`
-      }, {
+      },
+      {
         timeout: 15000,
-        timeoutMsg:
-          `Expected ${expectedItemsAmount} items, but was ${currentItemsAmount}`,
+        timeoutMsg: `Expected ${expectedItemsAmount} items, but was ${currentItemsAmount}`,
       },
     )
   }

@@ -143,7 +143,7 @@ Then(/^Set amount ([^"]*)/, async (amount: string) => {
 Then(/^Transaction is success$/, async () => {
   await Assets.successWindow.waitForExist({
     timeout: 80000,
-    interval: 1000,
+    interval: 500,
   })
 })
 

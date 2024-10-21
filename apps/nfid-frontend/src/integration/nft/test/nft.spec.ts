@@ -23,7 +23,7 @@ describe("nft test suite", () => {
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
-      const result = await nftService.getNFTs(principal)
+      const result = await nftService.getNFTs(principal, 1, 10)
       await Promise.all(result.items.map(async (nft) => nft.init()))
       expect(result.items).toHaveLength(10)
       expect(result.totalPages).toEqual(2)
@@ -207,7 +207,7 @@ describe("nft test suite", () => {
     })
   })
 
-  describe("getNFTById", () => {
+  describe("getNFTByTokenId", () => {
     it("should return the correct NFT details for a given ID", async () => {
       const nftId = "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a"
 
@@ -218,7 +218,7 @@ describe("nft test suite", () => {
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
 
-      const nft = await nftService.getNFTById(nftId, principal)
+      const nft = await nftService.getNFTByTokenId(nftId, principal, 1)
 
       expect(nft).toBeDefined()
       if (!nft) return

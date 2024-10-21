@@ -18,6 +18,7 @@ import { NotFound } from "frontend/ui/pages/404"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { fetchNFT } from "../collectibles/utils/util"
+import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 
 const NFTDetailsPage = () => {
@@ -112,7 +113,7 @@ const NFTDetailsPage = () => {
 
       send({ type: "ASSIGN_SELECTED_NFT", data: nft.getTokenId() })
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
-      send({ type: "CHANGE_DIRECTION", data: "send" })
+      send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
 
       send("SHOW")
     },

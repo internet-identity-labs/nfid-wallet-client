@@ -30,6 +30,7 @@ import {
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
+import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
@@ -137,7 +138,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: "send" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
     send("SHOW")
   }
 
@@ -145,7 +146,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: "receive" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
     send("SHOW")
   }
 
@@ -153,7 +154,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: "swap" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send("SHOW")
   }
 

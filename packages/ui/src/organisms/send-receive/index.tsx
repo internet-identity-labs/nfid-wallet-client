@@ -34,7 +34,7 @@ export const TransferModal: FC<TransferModalProps> = ({
   return (
     <TransferTemplate
       onClickOutside={onClickOutside}
-      className={clsx(direction === "send" && "!pb-5")}
+      className={clsx(direction === ModalType.SEND && "!pb-5")}
     >
       {!isSuccess && (
         <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">

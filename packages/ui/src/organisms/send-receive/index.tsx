@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 import { FC } from "react"
 
@@ -31,7 +32,10 @@ export const TransferModal: FC<TransferModalProps> = ({
   component,
 }) => {
   return (
-    <TransferTemplate onClickOutside={onClickOutside}>
+    <TransferTemplate
+      onClickOutside={onClickOutside}
+      className={clsx(direction === "send" && "!pb-5")}
+    >
       {!isSuccess && (
         <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
           {direction}

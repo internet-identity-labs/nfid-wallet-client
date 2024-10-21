@@ -54,7 +54,7 @@ export const Success: React.FC<SuccessProps> = ({
     <div
       id={"success_window_" + step}
       className={clsx(
-        "text-black text-center relative h-full",
+        "text-black text-center relative h-full h-[440px]",
         "flex flex-grow flex-col justify-between",
       )}
     >

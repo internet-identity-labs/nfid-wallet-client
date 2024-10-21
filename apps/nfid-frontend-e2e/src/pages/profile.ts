@@ -1,7 +1,6 @@
 import { HomePage } from "./home-page.js"
 
 export class Profile extends HomePage {
-
   get menuButton() {
     return $("#profile")
   }
@@ -25,8 +24,9 @@ export class Profile extends HomePage {
   public async waitForTokensAppear(amount?: number) {
     await browser.waitUntil(
       async () => {
-        return amount ?
-          await this.tokens.length === amount : await this.tokens.length > 0
+        return amount
+          ? (await this.tokens.length) === amount
+          : (await this.tokens.length) > 0
       },
       {
         timeout: 50000,
@@ -43,9 +43,12 @@ export class Profile extends HomePage {
   }
 
   public async waitUntilBalanceLoaded() {
-    await browser.waitUntil(async () => {
-      return (await this.totalBalance.getText() != "")
-    }, { timeout: 25000, timeoutMsg: "Balance wasn't loaded in 1500sec" })
+    await browser.waitUntil(
+      async () => {
+        return (await this.totalBalance.getText()) != ""
+      },
+      { timeout: 25000, timeoutMsg: "Balance wasn't loaded in 1500sec" },
+    )
   }
 }
 

@@ -10,7 +10,7 @@ import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { mutate } from "swr"
 
-import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
+import { IGroupedOptions } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
   getBalance,
@@ -69,24 +69,19 @@ export const getIdentity = async (
 export const mapUserNFTDetailsToGroupedOptions = (
   userNFTDetailsArray: NFT[],
 ): IGroupedOptions[] => {
-  const options = userNFTDetailsArray.map(
-    (nft) =>
-      ({
+  return userNFTDetailsArray.map((nft) => ({
+    label: nft.getTokenName(),
+    options: [
+      {
         title: nft.getTokenName(),
         subTitle: nft.getCollectionName(),
         value: nft.getTokenId(),
         icon: nft.getAssetPreview().url,
         innerTitle: nft.getTokenFloorPriceIcpFormatted(),
         innerSubtitle: nft.getTokenFloorPriceUSDFormatted(),
-      } as IGroupOption),
-  )
-
-  return [
-    {
-      label: "label",
-      options,
-    },
-  ]
+      },
+    ],
+  }))
 }
 
 export const getVaultsAccountsOptions = async (): Promise<

@@ -54,8 +54,12 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           </p>
         </div>
       </td>
-      <td id={`token_${token.getTokenCategoryFormatted().replace(/\s/g, "")}_category`}
-          className="hidden md:table-cell pr-[10px]">
+      <td
+        id={`token_${token
+          .getTokenCategoryFormatted()
+          .replace(/\s/g, "")}_category`}
+        className="hidden md:table-cell pr-[10px]"
+      >
         {token.getTokenCategoryFormatted()}
       </td>
       <td

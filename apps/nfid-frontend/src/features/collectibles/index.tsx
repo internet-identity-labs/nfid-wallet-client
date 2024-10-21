@@ -67,6 +67,7 @@ const NFTsPage = () => {
         links={ProfileConstants}
         onTransferNFT={onTransferNFT}
         totalItems={totalItems}
+        currentPage={currentPage}
       />
       <Button
         disabled={isLoading}

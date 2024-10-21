@@ -56,7 +56,8 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </div>
         <div
           id={"totalBalance"}
-          className="text-black text-[28px] font-semibold leading-[20px]">
+          className="text-black text-[28px] font-semibold leading-[20px]"
+        >
           {isUsdLoading ? (
             <Skeleton className="w-[50%] h-[24px]" />
           ) : (

@@ -1,7 +1,6 @@
 import { Page } from "./page.js"
 
 export class HomePage extends Page {
-
   private get authenticationButton() {
     return $("#authentication-button")
   }

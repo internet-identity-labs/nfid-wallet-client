@@ -28,6 +28,7 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
     nfts: string
   }
   totalItems: number
+  currentPage: number
 }
 
 export const NFTs: FC<INFTs> = ({
@@ -37,6 +38,7 @@ export const NFTs: FC<INFTs> = ({
   links,
   onTransferNFT,
   totalItems,
+  currentPage,
 }) => {
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
@@ -121,7 +123,10 @@ export const NFTs: FC<INFTs> = ({
                   className="text-sm cursor-pointer"
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                   onClick={() =>
-                    navigate(`${links.base}/${links.nfts}/${nft.getTokenId()}`)
+                    navigate(
+                      `${links.base}/${links.nfts}/${nft.getTokenId()}`,
+                      { state: { currentPage } },
+                    )
                   }
                 >
                   <td>
@@ -201,6 +206,7 @@ export const NFTs: FC<INFTs> = ({
               <Link
                 key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 to={`${links.base}/${links.nfts}/${nft.getTokenId()}`}
+                state={{ currentPage }}
               >
                 <div
                   className={clsx(

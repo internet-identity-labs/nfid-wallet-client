@@ -16,12 +16,14 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
+  setToken: (value: FT) => void
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
   token,
   profileConstants,
   onSendClick,
+  setToken,
 }) => {
   const { data: usdPrice, isLoading } = useSWR(
     token ? ["activeTokenUSD", token.getTokenAddress()] : null,
@@ -104,6 +106,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           token={token}
           profileConstants={profileConstants}
           onSendClick={onSendClick}
+          setToken={setToken}
         />
       </td>
     </tr>

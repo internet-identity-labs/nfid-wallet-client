@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import {
@@ -40,11 +40,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   title,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
+  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(true)
 
   useEffect(() => {
     balance !== undefined
       ? getTokenOptionsVault(tokens)
-      : getTokenOptions(tokens).then(setTokenOptions)
+      : getTokenOptions(tokens)
+          .then(setTokenOptions)
+          .finally(() => setIsTokenOptionsLoading(false))
   }, [getTokenOptions, getTokenOptionsVault, tokens, balance])
 
   const maxHandler = async () => {
@@ -104,6 +107,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         />
         <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseModal
+            isLoading={isTokenOptionsLoading}
             optionGroups={tokenOptions}
             title={title}
             type="trigger"

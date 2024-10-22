@@ -5,7 +5,7 @@ import { IoIosSearch } from "react-icons/io"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { IconCmpWarning } from "@nfid-frontend/ui"
+import { ChooseTokenSkeleton, IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow, Label, Tooltip } from "@nfid-frontend/ui"
 
@@ -33,6 +33,7 @@ export interface IChooseModal {
   registerFunction?: UseFormRegisterReturn<string>
   iconClassnames?: string
   isSmooth?: boolean
+  isLoading?: boolean
 }
 
 export const ChooseModal = ({
@@ -52,6 +53,7 @@ export const ChooseModal = ({
   registerFunction,
   iconClassnames,
   isSmooth = false,
+  isLoading = false,
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -177,44 +179,48 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
           className="mt-4 mb-5"
         />
-        <div
-          className={clsx(
-            "flex-1 overflow-auto snap-end pr-[10px]",
-            "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
-            "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
-          )}
-          id="scrollable-area"
-        >
-          <InfiniteScroll
-            dataLength={filteredOptions.length}
-            next={fetchMoreData}
-            hasMore={hasMore}
-            loader={null}
-            scrollableTarget="scrollable-area"
+        {isLoading ? (
+          <ChooseTokenSkeleton rows={6} />
+        ) : (
+          <div
+            className={clsx(
+              "flex-1 overflow-auto snap-end pr-[10px]",
+              "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+              "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+            )}
+            id="scrollable-area"
           >
-            {filteredOptions.map((group, index) => (
-              <div
-                id={`option_group_${group.label.replace(/\s/g, "")}`}
-                key={`group_${group.label}_${group.options.length}_${index}`}
-              >
-                {group.options.map((option, i) => (
-                  <ChooseItem
-                    key={`option_${option.value}_group_${index}_${i}`}
-                    handleClick={() => handleSelect(option)}
-                    image={option.icon}
-                    title={option.title}
-                    subTitle={option.subTitle}
-                    innerTitle={option.innerTitle}
-                    innerSubtitle={option.innerSubtitle}
-                    iconClassnames={iconClassnames}
-                    badgeText={option.badgeText}
-                    id={trimConcat("choose_option_", option.title)}
-                  />
-                ))}
-              </div>
-            ))}
-          </InfiniteScroll>
-        </div>
+            <InfiniteScroll
+              dataLength={filteredOptions.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+              loader={null}
+              scrollableTarget="scrollable-area"
+            >
+              {filteredOptions.map((group, index) => (
+                <div
+                  id={`option_group_${group.label.replace(/\s/g, "")}`}
+                  key={`group_${group.label}_${group.options.length}_${index}`}
+                >
+                  {group.options.map((option, i) => (
+                    <ChooseItem
+                      key={`option_${option.value}_group_${index}_${i}`}
+                      handleClick={() => handleSelect(option)}
+                      image={option.icon}
+                      title={option.title}
+                      subTitle={option.subTitle}
+                      innerTitle={option.innerTitle}
+                      innerSubtitle={option.innerSubtitle}
+                      iconClassnames={iconClassnames}
+                      badgeText={option.badgeText}
+                      id={trimConcat("choose_option_", option.title)}
+                    />
+                  ))}
+                </div>
+              ))}
+            </InfiniteScroll>
+          </div>
+        )}
       </div>
     </div>
   )

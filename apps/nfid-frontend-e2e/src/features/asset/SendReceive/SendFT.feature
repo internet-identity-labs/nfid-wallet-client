@@ -5,7 +5,7 @@ Feature: As a user, I can send fungible tokens
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     And Tokens, balance and principal are displayed on user assets
-    And User waits for 5 sec
+    And User waits for 8 sec
     And User opens send dialog window
     When Choose <currency> on <category> from send options
     And Set <address> address then send <amount> FT

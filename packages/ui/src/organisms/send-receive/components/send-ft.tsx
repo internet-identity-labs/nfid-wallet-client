@@ -1,5 +1,5 @@
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, FC, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 import useSWR from "swr"

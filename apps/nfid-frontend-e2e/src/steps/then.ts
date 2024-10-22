@@ -78,6 +78,7 @@ Then(
   /^Choose ([^"]*) on ([^"]*) from send options/,
   async (currency: string, chain: string) => {
     await Assets.openAssetOptionsOnSR()
+    await Assets.currencyOption(chain, currency).waitForClickable()
     await Assets.currencyOption(chain, currency).click()
   },
 )

@@ -30,6 +30,13 @@ Open the application in a browser: http://localhost:9090
 npx nx serve nfid-demo
 ```
 
+## Integration tests
+
+#### Run integration tests:
+```
+npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1
+```
+
 ## E2E tests
 
 #### Prerequisites

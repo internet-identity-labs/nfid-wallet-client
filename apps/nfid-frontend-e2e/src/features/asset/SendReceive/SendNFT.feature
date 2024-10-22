@@ -4,7 +4,8 @@ Feature: As a user, I can send non fungible tokens
   Scenario Outline: Send NFT transaction
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
-    And Tokens displayed on user assets
+    And Tokens, balance and principal are displayed on user assets
+    And User waits for 5 sec
     And User opens send nft dialog window
     And User opens choose nft window
     When User selects the <tokenName> NFT

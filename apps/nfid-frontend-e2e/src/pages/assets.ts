@@ -106,7 +106,6 @@ export class Assets {
 
     await this.getBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
-
     await this.sendDialogWindow.click()
   }
 

@@ -4,10 +4,10 @@ Feature: As a user, I can send fungible tokens
   Scenario Outline: Send FT transaction
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
-    And Tokens displayed on user assets
+    And Tokens, balance and principal are displayed on user assets
+    And User waits for 5 sec
     And User opens send dialog window
     When Choose <currency> on <category> from send options
-    And Set amount <amount>
     And Set <address> address then send <amount> FT
     Then Transaction is success
     Examples:

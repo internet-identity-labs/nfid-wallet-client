@@ -13,6 +13,10 @@ export class Profile extends HomePage {
     return $("#totalBalance")
   }
 
+  get principal() {
+    return $("#principal")
+  }
+
   get sendButton() {
     return $("#sendButton")
   }
@@ -47,7 +51,16 @@ export class Profile extends HomePage {
       async () => {
         return (await this.totalBalance.getText()) != ""
       },
-      { timeout: 25000, timeoutMsg: "Balance wasn't loaded in 1500sec" },
+      { timeout: 25000, timeoutMsg: "Balance wasn't loaded in 2500sec" },
+    )
+  }
+
+  public async waitUntilPrincipalLoaded() {
+    await browser.waitUntil(
+      async () => {
+        return (await this.principal.getText()) != ""
+      },
+      { timeout: 25000, timeoutMsg: "Principal wasn't loaded in 2500sec" },
     )
   }
 }

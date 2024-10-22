@@ -14,8 +14,9 @@ When(/^User is logged in$/, async () => {
   await Profile.menuButton.waitForClickable({ timeout: 20000 })
 })
 
-When(/^Tokens displayed on user assets$/, async () => {
+When(/^Tokens, balance and principal are displayed on user assets$/, async () => {
   await Profile.waitUntilBalanceLoaded()
+  await Profile.waitUntilPrincipalLoaded()
   await Profile.waitForTokensAppear()
 })
 
@@ -26,20 +27,20 @@ When(
       retry: 2,
     },
   },
-  async function (anchor: number) {
+  async function(anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
-    const response = await browser.executeAsync(function (
-      authState: AuthState,
-      done,
-    ) {
-      // @ts-ignore
-      if (typeof this.setAuthState === "function") {
+    const response = await browser.executeAsync(function(
+        authState: AuthState,
+        done,
+      ) {
         // @ts-ignore
-        this.setAuthState(authState).then(done)
-      }
-    },
-    testUser.authstate)
+        if (typeof this.setAuthState === "function") {
+          // @ts-ignore
+          this.setAuthState(authState).then(done)
+        }
+      },
+      testUser.authstate)
     console.log("set auth state", { response })
     await HomePage.openPage("/wallet/tokens")
   },
@@ -52,7 +53,7 @@ When(
       retry: 2,
     },
   },
-  async function (anchor: number) {
+  async function(anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
     return (await $("[name='recoveryPhrase']")).setValue(testUser.seed)
   },
@@ -106,4 +107,8 @@ When(/^User click the back button in Send window$/, async () => {
     Assets.backButtonInSendWindow,
     Assets.switchSendType,
   )
+})
+
+When(/^User waits for (.*) sec$/, async (timeout) => {
+  await browser.pause(timeout * 1000)
 })

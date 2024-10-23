@@ -69,6 +69,7 @@ export const agentBaseConfig = { host: "https://ic0.app" }
 
 /**
  * Create an actor.
+ * @deprecated
  */
 export function actor<T>(
   canisterId: string | Principal,

@@ -4,7 +4,11 @@ import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
 import { ITransferSuccess } from "../components/send-success"
 
-export type ModalType = "send" | "receive" | "swap"
+export enum ModalType {
+  SEND = "send",
+  RECEIVE = "receive",
+  SWAP = "swap",
+}
 export type TokenType = "ft" | "nft"
 
 export type SuccessState = "pending" | "success" | "error"

@@ -2,6 +2,8 @@ import { Meta, StoryFn } from "@storybook/react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
+import { ModalType } from "frontend/features/transfer-modal/types"
+
 import { TransferModal, TransferModalProps } from "."
 import { TransferFTUi } from "./components/send-ft"
 import { SendFTProps } from "./components/send-ft.stories"
@@ -68,7 +70,7 @@ export const Combined = Template.bind({})
 
 Combined.args = {
   isSuccess: false,
-  direction: "send",
+  direction: ModalType.SEND,
   tokenType: "ft",
   onClickOutside: () => {},
   onTokenTypeChange: (isNFT) => console.log(isNFT),

@@ -1,5 +1,5 @@
-import { SignIdentity } from "@dfinity/agent"
 import * as Agent from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
 import { idlFactory as SwapStorageIDL } from "src/integration/icpswap/idl/swap_trs_storage"
 import {
   _SERVICE as SwapStorage,
@@ -7,8 +7,9 @@ import {
 } from "src/integration/icpswap/idl/swap_trs_storage.d"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import { actorBuilder } from "src/integration/icpswap/util/util"
 
-import { actor, agentBaseConfig } from "@nfid/integration"
+import { agentBaseConfig } from "@nfid/integration"
 
 export const SWAP_TX_CANISTER = "mfoln-bqaaa-aaaao-qeuqq-cai"
 
@@ -16,9 +17,14 @@ class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
-    this.storageActor = actor<SwapStorage>(
+    this.storageActor = actorBuilder<SwapStorage>(
       SWAP_TX_CANISTER, //TODO WIP .env, stage, prod, subnet(?)
       SwapStorageIDL,
+      {
+        agent: new Agent.HttpAgent({
+          ...agentBaseConfig,
+        }),
+      },
     )
   }
 
@@ -26,7 +32,7 @@ class SwapTransactionService {
     trs: SwapTransactionCandid,
     delegationIdentity: SignIdentity,
   ) {
-    this.storageActor = actor<SwapStorage>(
+    this.storageActor = actorBuilder<SwapStorage>(
       SWAP_TX_CANISTER, //TODO WIP .env, stage, prod, subnet(?)
       SwapStorageIDL,
       {
@@ -37,6 +43,7 @@ class SwapTransactionService {
       },
     )
     await this.storageActor.store_transaction(trs)
+    await Promise.resolve()
   }
 
   async getTransactions(caller: string): Promise<Array<SwapTransaction>> {

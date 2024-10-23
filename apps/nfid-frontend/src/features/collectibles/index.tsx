@@ -10,6 +10,7 @@ import { searchTokens } from "frontend/features/collectibles/utils/util"
 import { NFT } from "frontend/integration/nft/nft"
 import { ProfileContext } from "frontend/provider"
 
+import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 
 const NFTsPage = () => {
@@ -27,7 +28,7 @@ const NFTsPage = () => {
 
       send({ type: "ASSIGN_SELECTED_NFT", data: id })
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
-      send({ type: "CHANGE_DIRECTION", data: "send" })
+      send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
 
       send("SHOW")
     },

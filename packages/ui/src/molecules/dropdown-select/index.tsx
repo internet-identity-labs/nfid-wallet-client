@@ -138,7 +138,7 @@ export const DropdownSelect = ({
               icon={<IoIosSearch size="20" />}
               placeholder="Search"
               className="mx-[13px] mt-[13px]"
-              onKeyUp={(e) => setSearchInput(e.target.value)}
+              onKeyUp={(e) => setSearchInput(e.currentTarget.value)}
             />
           )}
           <div className={clsx("max-h-[30vh] overflow-auto flex flex-col")}>

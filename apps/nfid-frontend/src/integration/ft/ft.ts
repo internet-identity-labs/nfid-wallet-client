@@ -23,6 +23,8 @@ export interface FT {
 
   getTokenAddress(): string
 
+  getTokenIndex(): string | undefined
+
   getTokenSymbol(): string
 
   getTokenDecimals(): number | undefined
@@ -32,6 +34,8 @@ export interface FT {
   getTokenState(): State
 
   getBlockExplorerLink(): string
+
+  getIndexBlockExplorerLink(): string
 
   hideToken(): Promise<void>
 

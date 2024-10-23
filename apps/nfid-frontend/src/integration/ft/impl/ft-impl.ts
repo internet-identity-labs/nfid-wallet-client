@@ -46,8 +46,16 @@ export class FTImpl implements FT {
     return `https://dashboard.internetcomputer.org/canister/${this.tokenAddress}`
   }
 
+  getIndexBlockExplorerLink(): string {
+    return `https://dashboard.internetcomputer.org/canister/${this.index}`
+  }
+
   getTokenAddress(): string {
     return this.tokenAddress
+  }
+
+  getTokenIndex(): string | undefined {
+    return this.index
   }
 
   getTokenSymbol(): string {

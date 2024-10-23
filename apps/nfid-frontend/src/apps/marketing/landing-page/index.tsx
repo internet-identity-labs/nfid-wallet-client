@@ -29,6 +29,7 @@ import Gradient from "./assets/gradient.png"
 import Discord from "./assets/new-landing/ds.svg"
 import Github from "./assets/new-landing/gh.svg"
 import LinkedIn from "./assets/new-landing/ln.svg"
+import OpenChat from "./assets/new-landing/open-chat.svg"
 import Yards from "./assets/new-landing/sponsors/9yards.png"
 import Blockchain from "./assets/new-landing/sponsors/blockchain.png"
 import Dfinity from "./assets/new-landing/sponsors/dfinity.png"
@@ -402,6 +403,14 @@ export const HomeScreen = () => {
               className="rounded-[12px] bg-white w-[48px] h-[48px] flex items-center justify-center hover:bg-[#AA8353] transition-all active:bg-[#AA8353] active:opacity-70"
             >
               <img className="w-[24px] h-[24px]" src={Github} alt="" />
+            </a>
+            <a
+              href="https://oc.app/community/66hym-7iaaa-aaaaf-bm7aa-cai/channel/1241143482/?ref=prkg5-paaaa-aaaaf-aqbia-cai"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-[12px] bg-white w-[48px] h-[48px] flex items-center justify-center hover:bg-[#8B9BA6] transition-all active:bg-[#8B9BA6] active:opacity-70"
+            >
+              <img className="w-[24px] h-[24px]" src={OpenChat} alt="" />
             </a>
             <a
               href="https://discord.gg/a9BFNrYJ99"

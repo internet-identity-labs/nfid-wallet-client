@@ -13,6 +13,7 @@ import {
 } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
 
+import { ModalType } from "frontend/features/transfer-modal/types"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { ProfileContext } from "frontend/provider"
 
@@ -50,7 +51,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
       type: "ASSIGN_SOURCE_ACCOUNT",
       data: wallets.find((w) => w.address === address) ?? ({} as any),
     })
-    send({ type: "CHANGE_DIRECTION", data: "send" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
     send({ type: "ASSIGN_VAULTS", data: true })
 
@@ -66,7 +67,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
 
     send({ type: "ASSIGN_SELECTED_FT", data: allTokens[0] })
     send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
-    send({ type: "CHANGE_DIRECTION", data: "receive" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
     send({ type: "ASSIGN_VAULTS", data: true })
 
     send({ type: "SHOW" })

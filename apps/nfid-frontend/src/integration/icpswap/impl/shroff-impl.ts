@@ -21,12 +21,13 @@ import {
 } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import { actorBuilder } from "src/integration/icpswap/util/util"
 
 import {
-  actor,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
+  im,
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
@@ -67,7 +68,10 @@ export class ShroffImpl implements Shroff {
   ) {
     this.poolData = poolData
     this.zeroForOne = zeroForOne
-    this.swapPoolActor = actor<SwapPool>(poolData.canisterId, SwapPoolIDL)
+    this.swapPoolActor = actorBuilder<SwapPool>(
+      poolData.canisterId,
+      SwapPoolIDL,
+    )
     this.source = source
     this.target = target
   }
@@ -178,6 +182,8 @@ export class ShroffImpl implements Shroff {
       console.debug("Transfer to NFID done")
       await this.restoreTransaction()
       console.debug("Transaction stored")
+      let a = await im.get_account()
+      console.log(a)
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error: ", e)

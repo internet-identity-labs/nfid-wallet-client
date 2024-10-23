@@ -162,7 +162,10 @@ export class FTImpl implements FT {
   }
 
   getTokenFeeFormatted(): string {
-    return `${Number(this.fee) / 10 ** this.decimals} ${this.symbol}`
+    return `${(Number(this.fee) / 10 ** this.decimals).toLocaleString("en", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: this.decimals,
+    })} ${this.symbol}`
   }
 
   async getTokenFeeFormattedUsd(): Promise<string | undefined> {

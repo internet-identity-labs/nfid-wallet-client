@@ -74,7 +74,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
           {isPopupVisible && (
             <AuthenticatedPopup
               onSignOut={logout}
-              anchor={anchor ?? 0}
+              anchor={anchor}
               links={links}
               assetsLink={assetsLink}
               hasVaults={hasVaults}

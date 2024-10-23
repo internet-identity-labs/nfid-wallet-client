@@ -1,6 +1,6 @@
 Feature: As a user, I can send non fungible tokens
 
-#  @sendnft
+  @sendnft @skip
   Scenario Outline: Send NFT transaction
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

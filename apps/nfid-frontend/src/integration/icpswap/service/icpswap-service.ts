@@ -1,15 +1,26 @@
-import {Principal} from "@dfinity/principal"
-import {idlFactory as SwapPoolIDL} from "src/integration/icpswap/idl/SwapPool"
-import {_SERVICE as SwapPool} from "src/integration/icpswap/idl/SwapPool.d"
+import * as Agent from "@dfinity/agent"
+import { HttpAgent } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { _SERVICE as SwapPool } from "src/integration/icpswap/idl/SwapPool.d"
+import { idlFactory as SwapStorageIDL } from "src/integration/icpswap/idl/swap_trs_storage"
+import { SWAP_TX_CANISTER } from "src/integration/icpswap/service/transaction-service"
+import { actorBuilder } from "src/integration/icpswap/util/util"
 
-import {agentBaseConfig, hasOwnProperty} from "@nfid/integration"
+import {
+  actor,
+  agent,
+  agentBaseConfig,
+  hasOwnProperty,
+} from "@nfid/integration"
 
-import {LiquidityError, ServiceUnavailableError} from "../errors"
-import {idlFactory as SwapFactoryIDL} from "./../idl/SwapFactory"
-import {_SERVICE as SwapFactory, GetPoolArgs, PoolData,} from "./../idl/SwapFactory.d"
-import * as Agent from "@dfinity/agent";
-import {HttpAgent} from "@dfinity/agent";
-import {actorBuilder} from "src/integration/icpswap/util/util";
+import { LiquidityError, ServiceUnavailableError } from "../errors"
+import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"
+import {
+  _SERVICE as SwapFactory,
+  GetPoolArgs,
+  PoolData,
+} from "./../idl/SwapFactory.d"
 
 export const SWAP_FACTORY_CANISTER = "4mmnk-kiaaa-aaaag-qbllq-cai"
 
@@ -18,13 +29,13 @@ class IcpSwapService {
 
   constructor() {
     this.poolActor = actorBuilder<SwapFactory>(
-        SWAP_FACTORY_CANISTER, //TODO WIP .env, stage, prod, subnet(?)
-        SwapFactoryIDL,
-        {
-          agent: new Agent.HttpAgent({
-            ...agentBaseConfig,
-          }),
-        },
+      SWAP_FACTORY_CANISTER, //TODO WIP .env, stage, prod, subnet(?)
+      SwapFactoryIDL,
+      {
+        agent: new Agent.HttpAgent({
+          ...agentBaseConfig,
+        }),
+      },
     )
   }
 
@@ -67,9 +78,15 @@ class IcpSwapService {
     balance1: bigint
     balance2: bigint
   }> {
-    const swapPoolActor = <SwapPool>Agent.Actor.createActor(SwapPoolIDL, { canisterId:swapPoolCanister,
-      agent: new HttpAgent({ ...agentBaseConfig }),
-    })
+    const swapPoolActor = actorBuilder<SwapPool>(
+      swapPoolCanister, //TODO WIP .env, stage, prod, subnet(?)
+      SwapPoolIDL,
+      {
+        agent: new Agent.HttpAgent({
+          ...agentBaseConfig,
+        }),
+      },
+    )
 
     const result = await swapPoolActor.getUserUnusedBalance(principal)
 

@@ -36,7 +36,7 @@ export const ActivityTableGroup = ({
         <td
           className={clsx(
             "pb-[10px] text-sm font-bold text-gray-400",
-            "px-5 sm:px-[30px]",
+            "px-0 sm:px-[30px]",
             groupIndex === 0 ? "pt-0" : "pt-[30px]",
           )}
         >

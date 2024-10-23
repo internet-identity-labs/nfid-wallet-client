@@ -10,7 +10,6 @@ import { idlFactory as icrc1IDL } from "../../../../_ic_api/icrc1"
 import { _SERVICE as ICRC1ServiceIDL } from "../../../../_ic_api/icrc1.d"
 import { idlFactory as icrc1IndexIDL } from "../../../../_ic_api/index-icrc1"
 import { _SERVICE as ICRCIndex } from "../../../../_ic_api/index-icrc1.d"
-import { DEFAULT_ERROR_TEXT } from "../../../constants"
 import { Category, State } from "../../enum/enums"
 import { icrc1OracleService } from "../../service/icrc1-oracle-service"
 import { icrc1StorageService } from "../../service/icrc1-storage-service"
@@ -36,10 +35,14 @@ export class Icrc1Pair implements IIcrc1Pair {
         .map((standard) => standard.name)
         .some((name) => name === "ICRC-1")
       if (!isICRC1) {
-        throw new ICRC1Error(DEFAULT_ERROR_TEXT)
+        throw new ICRC1Error(
+          "This does not appear to be an ICRC-1 compatible ledger canister.",
+        )
       }
     } catch (e) {
-      throw new ICRC1Error(DEFAULT_ERROR_TEXT)
+      throw new ICRC1Error(
+        "This does not appear to be an ICRC-1 compatible ledger canister.",
+      )
     }
   }
 
@@ -57,11 +60,21 @@ export class Icrc1Pair implements IIcrc1Pair {
 
   async validateIndexCanister() {
     if (this.index) {
-      const expectedLedgerId = await this.getLedgerIdFromIndexCanister(
-        this.index,
-      )
-      if (expectedLedgerId.toText() !== this.ledger) {
-        throw new ICRC1Error("Ledger canister does not match index canister.")
+      try {
+        const expectedLedgerId = await this.getLedgerIdFromIndexCanister(
+          this.index,
+        )
+        if (expectedLedgerId.toText() !== this.ledger) {
+          console.log("expectedLedgerId.toText() !== this.ledger")
+          throw new ICRC1Error("Ledger canister does not match index canister.")
+        }
+      } catch (e) {
+        if (e instanceof ICRC1Error) {
+          throw e
+        }
+        throw new ICRC1Error(
+          "This does not appear to be an ICRC-1 compatible index canister.",
+        )
       }
     }
   }

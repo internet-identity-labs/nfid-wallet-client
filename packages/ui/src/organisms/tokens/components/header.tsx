@@ -265,12 +265,17 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                 {...register("indexID", validationConfig)}
                 disabled={!!errors.ledgerID || !getValues("ledgerID").length}
               />
-              <p className="text-gray-400 text-xs mt-[5px] mb-[10px] h-[16px]">
-                {!errors.indexID
-                  ? "Required to display transaction history"
-                  : ""}
-              </p>
-              <div className="h-[155px] text-sm flex">
+              {!errors.indexID && (
+                <p className="text-gray-400 text-xs mt-1 h-[16px]">
+                  Required to display transaction history
+                </p>
+              )}
+              <div
+                className={clsx(
+                  "text-sm flex mt-[10px]",
+                  !errors.ledgerID ? "h-[155px]" : "h-[135px]",
+                )}
+              >
                 {tokenInfo && (
                   <div className="grid w-full h-full grid-rows-3">
                     <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">
@@ -302,7 +307,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                 }
               />
               <Button
-                className="text-base"
+                className="mt-5 text-base"
                 id="importToken"
                 icon={<PlusIcon />}
                 block

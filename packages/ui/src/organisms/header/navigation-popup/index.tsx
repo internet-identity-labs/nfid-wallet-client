@@ -2,14 +2,14 @@ import clsx from "clsx"
 import { HTMLAttributes, FC } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 
-import { IconDisconnect } from "@nfid-frontend/ui"
+import { IconDisconnect, Skeleton } from "@nfid-frontend/ui"
 
 import { INavigationPopupLinks } from "../profile-header"
 import { renderLink, shouldRenderLink } from "./renderLinks"
 
 export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
   onSignOut: () => void
-  anchor: number
+  anchor?: number
   isLanding?: boolean
   links: INavigationPopupLinks[]
   assetsLink?: string
@@ -53,7 +53,8 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
             userSelect: "none",
           }}
         >
-          NFID number: {anchor}
+          NFID number:{" "}
+          {anchor || <Skeleton className="h-5 ml-1 w-[72px] rounded-[6px]" />}
         </div>
       </div>
       <div>

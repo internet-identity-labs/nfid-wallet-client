@@ -7,6 +7,7 @@ export interface TabProps {
   name: string
   title: JSX.Element | string
   icon?: JSX.Element
+  hasNotification?: boolean
 }
 
 interface ITabsSwitcher extends React.HTMLAttributes<HTMLDivElement> {
@@ -33,6 +34,7 @@ export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
             onClick={() => setActiveTab(tab.name)}
             id={`tab_${tab.name}`}
             length={tabs.length}
+            hasNotification={tab.hasNotification}
           >
             {tab.icon}
             {tab.title}

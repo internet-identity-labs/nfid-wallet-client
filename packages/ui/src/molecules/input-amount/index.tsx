@@ -4,6 +4,8 @@ import {
   KeyboardEvent,
   ClipboardEvent,
   InputHTMLAttributes,
+  ChangeEvent,
+  useState,
 } from "react"
 
 import { Skeleton } from "../../atoms/skeleton"
@@ -72,30 +74,46 @@ const pasteHandler = (
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  ({ decimals, disabled, isLoading = false, ...inputProps }, ref) => (
-    <div className="relative h-10">
-      {isLoading ? (
-        <Skeleton className="absolute w-20 h-full !bg-gray-200 rounded-[6px]" />
-      ) : (
-        <input
-          className={clsx(
-            "min-w-0 text-[34px] font-semibold leading-10 bg-transparent",
-            "outline-none border-none focus:ring-0 p-0 max-w-[160px] sm:max-w-[230px]",
-            disabled
-              ? "text-gray-500 placeholder:text-gray-500"
-              : "text-black placeholder:text-black",
-          )}
-          placeholder="0.00"
-          type="text"
-          id="amount"
-          min={0.0}
-          onKeyDown={(e) => pressHandler(e, decimals)}
-          onPaste={(e) => pasteHandler(e, decimals)}
-          ref={ref}
-          disabled={disabled}
-          {...inputProps}
-        />
-      )}
-    </div>
-  ),
+  ({ decimals, disabled, isLoading = false, ...inputProps }, ref) => {
+    const [fontSize, setFontSize] = useState(34)
+
+    const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      if (value.length > 16) {
+        setFontSize(16)
+      } else if (value.length > 10) {
+        setFontSize(20)
+      } else {
+        setFontSize(34)
+      }
+    }
+    return (
+      <div className="relative h-10">
+        {isLoading ? (
+          <Skeleton className="absolute w-20 h-full !bg-gray-200 rounded-[6px]" />
+        ) : (
+          <input
+            className={clsx(
+              "min-w-0 font-semibold leading-10 bg-transparent",
+              "outline-none border-none focus:ring-0 p-0 max-w-[160px] sm:max-w-[230px]",
+              disabled
+                ? "text-gray-500 placeholder:text-gray-500"
+                : "text-black placeholder:text-black",
+            )}
+            style={{ fontSize: `${fontSize}px` }}
+            placeholder="0.00"
+            type="text"
+            id="amount"
+            min={0.0}
+            onInput={handleInput}
+            onKeyDown={(e) => pressHandler(e, decimals)}
+            onPaste={(e) => pasteHandler(e, decimals)}
+            ref={ref}
+            disabled={disabled}
+            {...inputProps}
+          />
+        )}
+      </div>
+    )
+  },
 )

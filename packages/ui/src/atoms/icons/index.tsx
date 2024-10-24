@@ -58,6 +58,7 @@ import ImagePngSuccess from "./success.png"
 import IconSvgSuccess from "./success.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
+import IconSvgTokenInfo from "./token-info.svg"
 import IconSvgTouchId from "./touch-id.svg"
 import IconSvgTransactions from "./transactions.svg"
 import IconSvgTransfer from "./transfer.svg"
@@ -86,6 +87,7 @@ export {
   IconSvgGmail,
   IconSvgGoogle,
   IconSvgInfo,
+  IconSvgTokenInfo,
   IconSvgKey,
   IconSvgLaptop,
   IconSvgLogout,

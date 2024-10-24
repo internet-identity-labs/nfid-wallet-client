@@ -3,9 +3,9 @@ import { HTMLAttributes, useEffect, useState } from "react"
 
 export interface IImageWithFallbackProps
   extends HTMLAttributes<HTMLImageElement> {
-  src: string
+  src?: string
   fallbackSrc: string | { src: string }
-  alt: string
+  alt?: string
 }
 
 export const ImageWithFallback = ({
@@ -25,7 +25,12 @@ export const ImageWithFallback = ({
   }, [src])
 
   return (
-    <img className={className} src={imgSrc} onError={handleError} alt={alt} />
+    <img
+      className={className}
+      src={imgSrc}
+      onError={handleError}
+      alt={alt || ""}
+    />
   )
 }
 

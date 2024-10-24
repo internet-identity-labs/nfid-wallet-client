@@ -40,13 +40,16 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   title,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
-  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(true)
+  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
 
   useEffect(() => {
     balance !== undefined
       ? getTokenOptionsVault(tokens)
       : getTokenOptions(tokens)
-          .then(setTokenOptions)
+          .then((options) => {
+            setIsTokenOptionsLoading(true)
+            setTokenOptions(options)
+          })
           .finally(() => setIsTokenOptionsLoading(false))
   }, [getTokenOptions, getTokenOptionsVault, tokens, balance])
 

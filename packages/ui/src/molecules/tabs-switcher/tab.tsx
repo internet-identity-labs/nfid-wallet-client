@@ -35,7 +35,7 @@ const Tab: React.FC<ITab> = ({
     >
       <div
         className={clsx(
-          "font-bold flex gap-[8px] items-center text-[20px] relative",
+          "font-bold flex gap-[8px] items-center text-[20px]",
           isActive && "text-teal-600",
         )}
         id={`${id}`}

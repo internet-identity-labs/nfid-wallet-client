@@ -130,7 +130,7 @@ export const ActivityTableRow = ({
         id={id}
         className="relative items-center text-sm activity-row hover:bg-gray-50"
       >
-        <td className="flex items-center pl-5 sm:pl-[30px] w-[30%]">
+        <td className="flex items-center sm:pl-[30px] w-[30%]">
           <div
             className={clsx(
               "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",

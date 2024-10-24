@@ -16,12 +16,14 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
+  setToken: (value: FT) => void
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
   token,
   profileConstants,
   onSendClick,
+  setToken,
 }) => {
   const { data: usdPrice, isLoading } = useSWR(
     token ? ["activeTokenUSD", token.getTokenAddress()] : null,
@@ -30,15 +32,15 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
-      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[160px] sm:max-w-[100%] lg:w-[350px]">
-        <div className="w-[24px] h-[24px] xs:w-[40px] xs:h-[40px] mr-[12px] rounded-full bg-zinc-50">
+      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[100%] sm:max-w-[100%] lg:w-[350px]">
+        <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt={`${token.getTokenSymbol}`}
             fallbackSrc={IconNftPlaceholder}
             src={`${token.getTokenLogo()}`}
             className={clsx(
-              "w-[24px] h-[24px] xs:w-[40px] xs:h-[40px]",
-              "rounded-full object-cover min-w-[24px] xs:min-w-[40px]",
+              "w-[24px] h-[24px] sm:w-[40px] sm:h-[40px]",
+              "rounded-full object-cover min-w-[24px] sm:min-w-[40px]",
             )}
           />
         </div>
@@ -64,7 +66,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
-        className="pr-[10px] text-right md:text-left pr-[10px] max-w-[50%] min-w-[50%]"
+        className="pr-[10px] text-right md:text-left pr-[10px] max-w-[40%] min-w-[40%] sm:max-w-[50%] sm:min-w-[50%]"
       >
         <div>
           <p className="flex justify-end sm:block">
@@ -104,6 +106,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           token={token}
           profileConstants={profileConstants}
           onSendClick={onSendClick}
+          setToken={setToken}
         />
       </td>
     </tr>

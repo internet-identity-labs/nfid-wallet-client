@@ -43,13 +43,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
 
   useEffect(() => {
+    setIsTokenOptionsLoading(true)
+
     balance !== undefined
       ? getTokenOptionsVault(tokens)
+          .then(setTokenOptions)
+          .finally(() => setIsTokenOptionsLoading(false))
       : getTokenOptions(tokens)
-          .then((options) => {
-            setIsTokenOptionsLoading(true)
-            setTokenOptions(options)
-          })
+          .then(setTokenOptions)
           .finally(() => setIsTokenOptionsLoading(false))
   }, [getTokenOptions, getTokenOptionsVault, tokens, balance])
 

@@ -40,11 +40,15 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   priceImpact,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
+  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
 
-  const { setValue, resetField, register } = useFormContext()
+  const { setValue, register } = useFormContext()
 
   useEffect(() => {
-    getTokenOptions(tokens).then(setTokenOptions)
+    setIsTokenOptionsLoading(true)
+    getTokenOptions(tokens)
+      .then(setTokenOptions)
+      .finally(() => setIsTokenOptionsLoading(false))
   }, [getTokenOptions, tokens])
 
   useEffect(() => {
@@ -68,6 +72,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseModal
+              isLoading={isTokenOptionsLoading}
               optionGroups={tokenOptions}
               title="Swap to"
               type="trigger"

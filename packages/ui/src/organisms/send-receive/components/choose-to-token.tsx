@@ -71,11 +71,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               optionGroups={tokenOptions}
               title="Swap to"
               type="trigger"
-              onSelect={(value) => {
-                resetField("amount")
-                resetField("to")
-                setToChosenToken(value)
-              }}
+              onSelect={setToChosenToken}
               preselectedValue={token.getTokenAddress()}
               onOpen={sendReceiveTrackingFn}
               isSmooth

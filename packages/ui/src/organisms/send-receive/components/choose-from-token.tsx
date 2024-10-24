@@ -55,7 +55,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     const userBalance = balance || token.getTokenBalance()
     const fee = token.getTokenFee()
     const decimals = token.getTokenDecimals()
-    if (fee && userBalance && decimals) {
+    if (fee !== undefined && userBalance && decimals) {
       const balanceNum = new BigNumber(userBalance.toString())
       const feeNum = new BigNumber(fee.toString())
       const val = balanceNum.minus(feeNum)
@@ -111,11 +111,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             optionGroups={tokenOptions}
             title={title}
             type="trigger"
-            onSelect={(value) => {
-              resetField("amount")
-              resetField("to")
-              setFromChosenToken(value)
-            }}
+            onSelect={setFromChosenToken}
             preselectedValue={token.getTokenAddress()}
             onOpen={sendReceiveTrackingFn}
             isSmooth

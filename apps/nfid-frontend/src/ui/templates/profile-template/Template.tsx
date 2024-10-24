@@ -1,5 +1,6 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
+import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
@@ -14,6 +15,7 @@ import {
   FC,
   useMemo,
   useContext,
+  useEffect,
 } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import useSWR from "swr"
@@ -32,6 +34,8 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
+import { swapTransactionService } from "frontend/integration/icpswap/service/transaction-service"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -52,24 +56,6 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   titleClassNames?: string
 }
 
-const tabs = [
-  {
-    name: "Tokens",
-    title: <>Tokens</>,
-    path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
-  },
-  {
-    name: "NFTs",
-    title: <>NFTs</>,
-    path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
-  },
-  {
-    name: "Activity",
-    title: <>Activity</>,
-    path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
-  },
-]
-
 const ProfileTemplate: FC<IProfileTemplate> = ({
   pageTitle,
   icon,
@@ -89,9 +75,44 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
+  const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
+
+  const tabs = [
+    {
+      name: "Tokens",
+      title: <>Tokens</>,
+      path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
+    },
+    {
+      name: "NFTs",
+      title: <>NFTs</>,
+      path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
+    },
+    {
+      name: "Activity",
+      title: <>Activity</>,
+      path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
+      hasNotification: hasUncompletedSwap,
+    },
+  ]
 
   const location = useLocation()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkTransactions = async () => {
+      const { publicKey } = await getUserIdData()
+      const transactions = await swapTransactionService.getTransactions(
+        publicKey,
+      )
+
+      setHasUncompletedSwap(
+        transactions.some((tx) => tx.getStage() !== SwapStage.Completed),
+      )
+    }
+
+    checkTransactions()
+  }, [])
 
   const activeTab = useMemo(() => {
     return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }

@@ -5,9 +5,17 @@ interface ITab extends React.HTMLAttributes<HTMLDivElement> {
   isActive?: boolean
   onClick?: () => void
   length: number
+  hasNotification?: boolean
 }
 
-const Tab: React.FC<ITab> = ({ isActive, onClick, children, id, length }) => {
+const Tab: React.FC<ITab> = ({
+  isActive,
+  onClick,
+  children,
+  id,
+  length,
+  hasNotification,
+}) => {
   const getWidth = () => {
     if (length > 0) {
       return `${(100 / length).toFixed(2)}%`
@@ -27,12 +35,20 @@ const Tab: React.FC<ITab> = ({ isActive, onClick, children, id, length }) => {
     >
       <div
         className={clsx(
-          "font-bold flex gap-[8px] items-center text-[20px]",
+          "font-bold flex gap-[8px] items-center text-[20px] relative",
           isActive && "text-teal-600",
         )}
         id={`${id}`}
       >
-        {children}
+        <div
+          className={clsx(
+            "relative",
+            hasNotification &&
+              "after:rounded-full after:my-auto after:content-[''] after:absolute after:w-2 after:h-2 after:bg-red-600 after:top-0 after:bottom-0 after:right-[-15px]",
+          )}
+        >
+          {children}
+        </div>
       </div>
     </div>
   )

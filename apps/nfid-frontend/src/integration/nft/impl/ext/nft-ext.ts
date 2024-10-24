@@ -24,6 +24,10 @@ export class NftExt extends NftImpl {
     }
     return this.details
   }
+
+  getTokenMarketPlaceLink(): string {
+    return `https://toniq.io/marketplace/asset/${this.getTokenId()}`
+  }
 }
 
 class NFTExtDetails extends NFTDetailsImpl {

@@ -25,6 +25,10 @@ export class NftMemeCake extends NftImpl {
       nftResponse.data.token,
     )
   }
+
+  getTokenMarketPlaceLink(): string {
+    return `https://memecake.io/token/${this.getCollectionId()}-${this.getTokenNumber()}`
+  }
 }
 
 class NftMemeCakeDetails extends NFTDetailsImpl {

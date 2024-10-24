@@ -56,6 +56,12 @@ export class Icrc1Pair implements IIcrc1Pair {
           throw new ICRC1Error("Canister already added.")
         }
       })
+      .catch((e) => {
+        console.error("validateIfExists error: ", e)
+        throw new ICRC1Error(
+          "This does not appear to be an ICRC-1 compatible ledger canister.",
+        )
+      })
   }
 
   async validateIndexCanister() {

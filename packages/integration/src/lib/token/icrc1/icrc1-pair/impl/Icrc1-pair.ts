@@ -57,7 +57,9 @@ export class Icrc1Pair implements IIcrc1Pair {
         }
       })
       .catch((e) => {
-        console.error("validateIfExists error: ", e)
+        if (e instanceof ICRC1Error) {
+          throw e
+        }
         throw new ICRC1Error(
           "This does not appear to be an ICRC-1 compatible ledger canister.",
         )
@@ -71,7 +73,6 @@ export class Icrc1Pair implements IIcrc1Pair {
           this.index,
         )
         if (expectedLedgerId.toText() !== this.ledger) {
-          console.log("expectedLedgerId.toText() !== this.ledger")
           throw new ICRC1Error("Ledger canister does not match index canister.")
         }
       } catch (e) {

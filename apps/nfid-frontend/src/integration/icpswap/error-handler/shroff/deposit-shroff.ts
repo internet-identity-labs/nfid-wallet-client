@@ -39,10 +39,8 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
 
   protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
-      //TODO play with numbers somehow
       amount: BigInt(
-        this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() -
-          Number(this.source.fee),
+        this.requestedQuote!.getSourceAmount().toNumber()
       ),
       token: this.source.ledger,
       fee: this.source.fee,

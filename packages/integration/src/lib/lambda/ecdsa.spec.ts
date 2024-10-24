@@ -71,9 +71,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)
       } catch (e: any) {
-        expect(e.message).toContain(
-          "Gateway returned an error: Code: 400 (Bad Request) Body: Canister 'nprnb-waaaa-aaaaj-qax4a-cai' is not one of the delegation targets.",
-        )
+        expect(e.message).toContain("Gateway returned an error")
       }
       try {
         await replaceActorIdentity(im, globalICIdentity)

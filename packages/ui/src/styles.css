@@ -50,6 +50,10 @@ body {
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  width: 100%;
+}
+body.fixed {
+  overflow: hidden;
 }
 body.homescreen {
   background-color: #0e0f10;

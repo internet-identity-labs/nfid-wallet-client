@@ -6,7 +6,6 @@ import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
 import { errorTypes, NFID_WALLET } from "src/integration/icpswap/impl/constants"
 import {
-  calculateWidgetFee,
   QuoteImpl,
 } from "src/integration/icpswap/impl/quote-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
@@ -108,8 +107,6 @@ export class ShroffImpl implements Shroff {
   async getQuote(amount: number): Promise<Quote> {
     const amountDecimals = new BigNumber(amount)
       .multipliedBy(10 ** this.source.decimals)
-      .minus(calculateWidgetFee(amount, this.source.decimals))
-      .minus(Number(this.source.fee))
 
     const args: SwapArgs = {
       amountIn: amountDecimals.toString(),
@@ -213,7 +210,9 @@ export class ShroffImpl implements Shroff {
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
-    const amountDecimals = this.requestedQuote.getAmountWithoutWidgetFee()
+    const amountDecimals = this.requestedQuote.getSourceAmount().plus(
+      Number(this.source.fee),
+    )
     const args: DepositArgs = {
       fee: this.source.fee,
       token: this.source.ledger,
@@ -247,7 +246,7 @@ export class ShroffImpl implements Shroff {
 
   protected async transferToSwap() {
     const amountDecimals =
-      this.requestedQuote!.getAmountWithoutWidgetFee().plus(
+      this.requestedQuote!.getSourceAmount().plus(
         Number(this.source.fee),
       )
 
@@ -322,7 +321,7 @@ export class ShroffImpl implements Shroff {
 
   protected async swapOnExchange(): Promise<bigint> {
     const args: SwapArgs = {
-      amountIn: this.requestedQuote!.getAmountWithoutWidgetFee().toString(),
+      amountIn: this.requestedQuote!.getSourceAmount().toString(),
       zeroForOne: this.zeroForOne,
       amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
     }

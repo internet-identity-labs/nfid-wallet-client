@@ -29,6 +29,7 @@ export const JEST_GLOBALS = {
   GOOGLE_CLIENT_ID:
     "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
   SIGNIN_GOOGLE: "/signin",
+  ENV: "test",
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
   AWS_ECDSA_REGISTER:

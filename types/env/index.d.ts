@@ -13,6 +13,7 @@ declare const CHAIN_NETWORK: string
 declare const CYCLES_MINTER_CANISTER_ID: string
 declare const ECDSA_SIGNER_CANISTER_ID: string
 declare const FRONTEND_MODE: string
+declare const ENV: string
 declare const GOOGLE_CLIENT_ID: string
 declare const IC_HOST: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string

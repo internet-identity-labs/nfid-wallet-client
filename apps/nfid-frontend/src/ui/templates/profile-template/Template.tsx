@@ -77,24 +77,26 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [])
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
 
-  const tabs = [
-    {
-      name: "Tokens",
-      title: <>Tokens</>,
-      path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
-    },
-    {
-      name: "NFTs",
-      title: <>NFTs</>,
-      path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
-    },
-    {
-      name: "Activity",
-      title: <>Activity</>,
-      path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
-      hasNotification: hasUncompletedSwap,
-    },
-  ]
+  const tabs = useMemo(() => {
+    return [
+      {
+        name: "Tokens",
+        title: <>Tokens</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
+      },
+      {
+        name: "NFTs",
+        title: <>NFTs</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
+      },
+      {
+        name: "Activity",
+        title: <>Activity</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
+        hasNotification: hasUncompletedSwap,
+      },
+    ]
+  }, [hasUncompletedSwap])
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -116,7 +118,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const activeTab = useMemo(() => {
     return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
-  }, [location.pathname])
+  }, [location.pathname, tabs])
   const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()

@@ -152,17 +152,31 @@ export class QuoteImpl implements Quote {
       .div(10 ** this.target.decimals)
       .decimalPlaces(2)
 
-    const priceImpact = targetPriceFormatted
-      .minus(sourcePriceFormatted)
-      .dividedBy(sourcePriceFormatted)
-      .multipliedBy(100)
-
-    if (priceImpact.isNaN()) {
+    if (sourcePriceFormatted.eq(0) && targetPriceFormatted.eq(0)) {
       return {
         priceImpact: "0.00%",
         status: PriceImpactStatus.LOW,
       }
     }
+
+    if (!sourcePriceFormatted.eq(0) && targetPriceFormatted.eq(0)) {
+      return {
+        priceImpact: "-100.00%",
+        status: PriceImpactStatus.HIGH,
+      }
+    }
+
+    if (sourcePriceFormatted.eq(0) && !targetPriceFormatted.eq(0)) {
+      return {
+        priceImpact: "100.00%",
+        status: PriceImpactStatus.LOW,
+      }
+    }
+
+    const priceImpact = targetPriceFormatted
+      .minus(sourcePriceFormatted)
+      .dividedBy(sourcePriceFormatted)
+      .multipliedBy(100)
 
     return {
       priceImpact: `${priceImpact.toFixed(2)}%`,

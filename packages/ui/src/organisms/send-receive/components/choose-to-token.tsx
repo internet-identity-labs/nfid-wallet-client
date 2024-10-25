@@ -115,18 +115,20 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                     </span>
                   }
                 >
-                  <div
-                    className={clsx(
-                      "inline-block cursor-pointer",
-                      priceImpact?.status === "low"
-                        ? "text-green-700"
-                        : priceImpact?.status === "medium"
-                        ? "text-orange-600"
-                        : "text-red-700",
-                    )}
-                  >
-                    ({priceImpact?.priceImpact})
-                  </div>
+                  {priceImpact?.priceImpact && (
+                    <div
+                      className={clsx(
+                        "inline-block cursor-pointer",
+                        priceImpact?.status === "low"
+                          ? "text-green-700"
+                          : priceImpact?.status === "medium"
+                          ? "text-orange-600"
+                          : "text-red-700",
+                      )}
+                    >
+                      ({priceImpact?.priceImpact})
+                    </div>
+                  )}
                 </Tooltip>
               </>
             ) : (

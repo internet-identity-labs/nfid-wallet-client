@@ -157,6 +157,13 @@ export class QuoteImpl implements Quote {
       .dividedBy(sourcePriceFormatted)
       .multipliedBy(100)
 
+    if (priceImpact.isNaN()) {
+      return {
+        priceImpact: "0.00%",
+        status: PriceImpactStatus.LOW,
+      }
+    }
+
     return {
       priceImpact: `${priceImpact.toFixed(2)}%`,
       status: priceImpact.isGreaterThanOrEqualTo(-1)

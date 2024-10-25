@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
 import {
   TransferModal,
   TransferVaultModal,
@@ -21,6 +22,8 @@ export const TransferModalCoordinator = () => {
   const [publicKey, setPublicKey] = useState("")
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
+
+  useDisableScroll(!state.matches("Hidden"))
 
   useEffect(() => {
     getUserPrincipalId().then((data) => {

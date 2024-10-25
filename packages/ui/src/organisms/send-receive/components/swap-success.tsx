@@ -65,7 +65,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   assetImgFrom,
   assetImgTo,
   step = 0,
-  duration = 20,
+  duration = 60,
   isOpen,
   error,
   transaction,
@@ -141,7 +141,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? `ICPSwap ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted
             ? ""
-            : `This usually takes less than ${duration} seconds.`}
+            : `This usually takes about ${duration} seconds`}
         </p>
 
         <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[55px]">

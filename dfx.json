@@ -17,15 +17,6 @@
         "dist/apps/nfid-demo/"
       ],
       "type": "assets"
-    },
-    "nfid-storybook-frontend": {
-      "frontend": {
-        "entrypoint": "dist/apps/nfid-demo/index.html"
-      },
-      "source": [
-        "dist/storybook/nfid-frontend/"
-      ],
-      "type": "assets"
     }
   },
   "defaults": {

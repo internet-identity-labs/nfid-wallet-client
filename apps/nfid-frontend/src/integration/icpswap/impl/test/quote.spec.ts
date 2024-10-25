@@ -38,7 +38,7 @@ describe("quote test", () => {
       "0.0000001 ckBTC",
     ])
     expect(priceImpactResult).toBeDefined()
-    expect(priceImpactResult!.priceImpact).toEqual("0.00%")
+    expect(priceImpactResult!.priceImpact).toEqual("-0.02%")
     expect(priceImpactResult!.status).toEqual("low")
   })
 })

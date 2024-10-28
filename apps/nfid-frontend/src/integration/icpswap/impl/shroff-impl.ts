@@ -5,9 +5,7 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
 import { errorTypes, NFID_WALLET } from "src/integration/icpswap/impl/constants"
-import {
-  QuoteImpl,
-} from "src/integration/icpswap/impl/quote-impl"
+import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
 import {
@@ -26,7 +24,6 @@ import {
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
-  im,
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
@@ -105,8 +102,9 @@ export class ShroffImpl implements Shroff {
   }
 
   async getQuote(amount: number): Promise<Quote> {
-    const amountDecimals = new BigNumber(amount)
-      .multipliedBy(10 ** this.source.decimals)
+    const amountDecimals = new BigNumber(amount).multipliedBy(
+      10 ** this.source.decimals,
+    )
 
     const args: SwapArgs = {
       amountIn: amountDecimals.toString(),
@@ -179,8 +177,6 @@ export class ShroffImpl implements Shroff {
       console.debug("Transfer to NFID done")
       await this.restoreTransaction()
       console.debug("Transaction stored")
-      let a = await im.get_account()
-      console.log(a)
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error: ", e)
@@ -210,9 +206,9 @@ export class ShroffImpl implements Shroff {
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
-    const amountDecimals = this.requestedQuote.getSourceAmount().plus(
-      Number(this.source.fee),
-    )
+    const amountDecimals = this.requestedQuote
+      .getSourceAmount()
+      .plus(Number(this.source.fee))
     const args: DepositArgs = {
       fee: this.source.fee,
       token: this.source.ledger,
@@ -245,10 +241,9 @@ export class ShroffImpl implements Shroff {
   }
 
   protected async transferToSwap() {
-    const amountDecimals =
-      this.requestedQuote!.getSourceAmount().plus(
-        Number(this.source.fee),
-      )
+    const amountDecimals = this.requestedQuote!.getSourceAmount().plus(
+      Number(this.source.fee),
+    )
 
     const transferArgs: TransferArg = {
       amount: BigInt(amountDecimals.toNumber()),

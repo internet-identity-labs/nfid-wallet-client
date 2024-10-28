@@ -32,10 +32,16 @@ export const idlFactory = ({ IDL }: any) => {
     symbol: IDL.Text,
   })
   return IDL.Service({
+    count_icrc1_canisters: IDL.Func([], [IDL.Nat64], ["query"]),
     get_all_icrc1_canisters: IDL.Func([], [IDL.Vec(ICRC1)], ["query"]),
-    replace_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [IDL.Vec(ICRC1)], []),
+    get_icrc1_paginated: IDL.Func(
+      [IDL.Nat64, IDL.Nat64],
+      [IDL.Vec(ICRC1)],
+      ["query"],
+    ),
+    replace_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [], []),
     store_icrc1_canister: IDL.Func([ICRC1Request], [], []),
-    store_new_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [IDL.Vec(ICRC1)], []),
+    store_new_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [], []),
     sync_controllers: IDL.Func([], [IDL.Vec(IDL.Text)], []),
   })
 }

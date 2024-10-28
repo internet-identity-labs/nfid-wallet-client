@@ -21,7 +21,15 @@ export class ICRC1OracleService {
 
   @Cache(integrationCache, { ttl: 60 })
   async getICRC1Canisters(): Promise<ICRC1[]> {
-    return await iCRC1OracleActor.get_all_icrc1_canisters()
+    return await iCRC1OracleActor
+      .count_icrc1_canisters()
+      .then((canisters) =>
+        Promise.all(
+          Array.from({ length: Math.ceil(Number(canisters) / 25) }, (_, i) =>
+            iCRC1OracleActor.get_icrc1_paginated(i * 25, 25),
+          ),
+        ).then((res) => res.flat()),
+      )
   }
 }
 

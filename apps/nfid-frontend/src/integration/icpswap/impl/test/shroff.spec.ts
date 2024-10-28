@@ -126,8 +126,7 @@ describe("shroff test", () => {
       quote.getTargetAmount().minus(Number(targetFee)).toNumber(),
     )
 
-    const transactionsAfterSwap = await swapTransactionService.getTransactions(
-    )
+    const transactionsAfterSwap = await swapTransactionService.getTransactions()
 
     expect(transactionsAfterSwap.length).toBeGreaterThan(
       transactionBeforeSwap.length,

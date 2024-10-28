@@ -1,5 +1,4 @@
 import { Activity } from "packages/integration/src/lib/asset/types"
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 
 import { ICRC1TypeOracle } from "@nfid/integration"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -65,8 +64,7 @@ const formatTransaction = async (
 }
 
 const getFormattedTransactions = async (): Promise<ICRC1IndexData[]> => {
-  const { publicKey } = await getUserIdData()
-  const transactions = await swapTransactionService.getTransactions(publicKey)
+  const transactions = await swapTransactionService.getTransactions()
   const icrc1Canisters = await icrc1OracleService.getICRC1Canisters()
 
   const formattedTransactions = await Promise.all(

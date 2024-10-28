@@ -133,8 +133,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     accountKeyIdentity: Account,
     icrc34Dto: Icrc34Dto,
     sessionPublicKey: Ed25519PublicKey,
-    origin: string,
-    derivationOrigin?: string,
+    origin: string
   ): Promise<DelegationChain> {
     const auth = authState.get()
     if (!auth.delegationIdentity) throw new Error("No delegation identity")
@@ -155,7 +154,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
 
     if (accountKeyIdentity.type === AccountType.SESSION) {
       return await getAnonymousDelegation(
-        derivationOrigin ?? origin,
+        icrc34Dto.derivationOrigin ?? origin,
         new Uint8Array(sessionPublicKey.toDer()),
         auth.delegationIdentity,
         icrc34Dto.maxTimeToLive
@@ -177,7 +176,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
 
     if (accountKeyIdentity.type === AccountType.ANONYMOUS_LEGACY) {
       const legacyAuthSession = await getLegacyThirdPartyAuthSession({
-        derivationOrigin,
+        derivationOrigin: icrc34Dto.derivationOrigin,
         hostname: origin,
         sessionPublicKey: new Uint8Array(sessionPublicKey.toDer()),
         maxTimeToLive: BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000),

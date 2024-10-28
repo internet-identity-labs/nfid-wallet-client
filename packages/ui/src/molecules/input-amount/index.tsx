@@ -4,8 +4,8 @@ import {
   KeyboardEvent,
   ClipboardEvent,
   InputHTMLAttributes,
-  ChangeEvent,
   useState,
+  useEffect,
 } from "react"
 
 import { Skeleton } from "../../atoms/skeleton"
@@ -13,6 +13,8 @@ import { Skeleton } from "../../atoms/skeleton"
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   decimals: number
   isLoading: boolean
+  maxValue: string | undefined
+  cancelMaxValue: () => void
 }
 
 const pressHandler = (e: KeyboardEvent<HTMLInputElement>, decimals: number) => {
@@ -74,11 +76,20 @@ const pasteHandler = (
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  ({ decimals, disabled, isLoading = false, ...inputProps }, ref) => {
+  (
+    {
+      decimals,
+      disabled,
+      isLoading = false,
+      maxValue,
+      cancelMaxValue,
+      ...inputProps
+    },
+    ref,
+  ) => {
     const [fontSize, setFontSize] = useState(34)
 
-    const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
+    const setInputSize = (value: string) => {
       if (value.length > 16) {
         setFontSize(16)
       } else if (value.length > 10) {
@@ -87,6 +98,12 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
         setFontSize(34)
       }
     }
+
+    useEffect(() => {
+      if (!maxValue) return
+      setInputSize(maxValue)
+    }, [maxValue])
+
     return (
       <div className="relative h-10">
         {isLoading ? (
@@ -105,9 +122,17 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             type="text"
             id="amount"
             min={0.0}
-            onInput={handleInput}
-            onKeyDown={(e) => pressHandler(e, decimals)}
-            onPaste={(e) => pasteHandler(e, decimals)}
+            onInput={(e) => {
+              setInputSize(e.currentTarget.value)
+              cancelMaxValue()
+            }}
+            onKeyDown={(e) => {
+              pressHandler(e, decimals)
+            }}
+            onPaste={(e) => {
+              setInputSize(e.currentTarget.value)
+              pasteHandler(e, decimals)
+            }}
             ref={ref}
             disabled={disabled}
             {...inputProps}

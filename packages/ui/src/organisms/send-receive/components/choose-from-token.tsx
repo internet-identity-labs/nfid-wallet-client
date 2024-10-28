@@ -41,6 +41,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
+  const [maxValue, setMaxValue] = useState<string | undefined>()
 
   useEffect(() => {
     setIsTokenOptionsLoading(true)
@@ -69,11 +70,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       setValue("amount", formattedValue, {
         shouldValidate: true,
       })
+      setMaxValue(formattedValue)
     }
   }
 
   const {
-    resetField,
     setValue,
     register,
     formState: { errors },
@@ -96,6 +97,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         <InputAmount
           isLoading={false}
           decimals={decimals}
+          maxValue={maxValue}
+          cancelMaxValue={() => setMaxValue(undefined)}
           {...register("amount", {
             required: sumRules.errorMessages.required,
             validate: (value) => {

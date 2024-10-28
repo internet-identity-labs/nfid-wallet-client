@@ -14,6 +14,7 @@ import { useFormContext } from "react-hook-form"
 import { Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { PriceImpactStatus } from "frontend/integration/icpswap/types/enums"
 import { PriceImpact } from "frontend/integration/icpswap/types/types"
 
 import { getTokenOptions } from "../utils"
@@ -115,18 +116,20 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                     </span>
                   }
                 >
-                  <div
-                    className={clsx(
-                      "inline-block cursor-pointer",
-                      priceImpact?.status === "low"
-                        ? "text-green-700"
-                        : priceImpact?.status === "medium"
-                        ? "text-orange-600"
-                        : "text-red-700",
-                    )}
-                  >
-                    ({priceImpact?.priceImpact})
-                  </div>
+                  {priceImpact?.priceImpact && (
+                    <div
+                      className={clsx(
+                        "inline-block cursor-pointer",
+                        priceImpact?.status === PriceImpactStatus.LOW
+                          ? "text-green-700"
+                          : priceImpact?.status === PriceImpactStatus.MEDIUM
+                          ? "text-orange-600"
+                          : "text-red-700",
+                      )}
+                    >
+                      ({priceImpact?.priceImpact})
+                    </div>
+                  )}
                 </Tooltip>
               </>
             ) : (

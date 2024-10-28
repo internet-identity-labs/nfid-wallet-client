@@ -242,7 +242,7 @@ export const ActivityTableRow = ({
                     symbol={asset.currency}
                   />
                 </p>
-                {asset.rate && (
+                {Boolean(asset.rate) && (
                   <p className="text-xs text-gray-400">
                     <TickerAmount
                       value={asset.amount}

@@ -145,12 +145,10 @@ export class QuoteImpl implements Quote {
     const sourcePriceFormatted = sourcePrice
       .multipliedBy(this.getSourceAmount())
       .div(10 ** this.source.decimals)
-      .decimalPlaces(2)
 
     const targetPriceFormatted = targetPrice
       .multipliedBy(this.getTargetAmount())
       .div(10 ** this.target.decimals)
-      .decimalPlaces(2)
 
     const priceImpact = targetPriceFormatted
       .minus(sourcePriceFormatted)

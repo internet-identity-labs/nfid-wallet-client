@@ -20,8 +20,8 @@ export const idlFactory = ({ IDL }: any) => {
     start_time: IDL.Nat64,
     source_ledger: IDL.Text,
     transfer_nfid_id: IDL.Opt(IDL.Nat64),
-    target_amount: IDL.Nat64,
-    source_amount: IDL.Nat64,
+    target_amount: IDL.Nat,
+    source_amount: IDL.Nat,
   })
   return IDL.Service({
     get_transactions: IDL.Func(

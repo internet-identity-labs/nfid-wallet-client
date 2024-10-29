@@ -46,7 +46,7 @@ describe("nft test suite", () => {
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(extNft.getTokenLink()).toEqual(
-        "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.icp0.io/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
 
       //details page

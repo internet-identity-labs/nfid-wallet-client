@@ -11,14 +11,12 @@ import { actorBuilder } from "src/integration/icpswap/util/util"
 import {actor, agentBaseConfig} from "@nfid/integration"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 
-export const SWAP_TX_CANISTER = "mfoln-bqaaa-aaaao-qeuqq-cai"
-
 class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
     this.storageActor = actorBuilder<SwapStorage>(
-      SWAP_TX_CANISTER, //TODO WIP .env, stage, prod, subnet(?)
+      SWAP_TRS_STORAGE,
       SwapStorageIDL,
       {
         agent: new Agent.HttpAgent({
@@ -32,7 +30,7 @@ class SwapTransactionService {
     trs: SwapTransactionCandid,
   ) {
     this.storageActor = actor<SwapStorage>(
-      SWAP_TX_CANISTER, //TODO WIP .env, stage, prod, subnet(?)
+      SWAP_TRS_STORAGE, //TODO WIP .env, stage, prod, subnet(?)
       SwapStorageIDL
     )
     await this.storageActor.store_transaction(trs)

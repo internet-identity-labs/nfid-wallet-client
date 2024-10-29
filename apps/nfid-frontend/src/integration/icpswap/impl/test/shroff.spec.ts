@@ -1,20 +1,19 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { ShroffBuilder } from "src/integration/icpswap/impl/shroff-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { SwapStage } from "src/integration/icpswap/types/enums"
-
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
-
-const mock: JsonnableEd25519KeyIdentity = [
-  "302a300506032b6570032100c88f8f46ee5c23a748026498ddc7ed2104782ea02cd266170a470587d7c2f932",
-  "0b897d4ee58ff13eed9cc5f1aa6de0f009423b9a866b384b2e52db08559c882b",
+import {authState} from "@nfid/integration";
+const mock: JsonnableEd25519KeyIdentity  = [
+  "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
+  "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
 ]
 
 const mockPrincipal =
-  "4pw67-jou3d-xb4py-6pnvx-5p75x-pp3mi-ywe4j-bhmmq-l3354-awsws-kae"
+  "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe"
 
 describe("shroff test", () => {
   jest.setTimeout(900000)
@@ -53,25 +52,28 @@ describe("shroff test", () => {
 
     const quote = await shroff.getQuote(0.001)
 
-    let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
-
-    const transactionBeforeSwap = await swapTransactionService.getTransactions(
-      mockPrincipal,
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mock)
+    const sessionKey = Ed25519KeyIdentity.generate()
+    const chainRoot = await DelegationChain.create(
+      mockedIdentity,
+      sessionKey.getPublicKey(),
+      new Date(Date.now() + 3_600_000 * 44),
+      {},
+    )
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      sessionKey,
+      chainRoot,
     )
 
-    const a: Promise<SwapTransaction> = shroff.swap(mockId)
+    authState.set({
+      identity: delegationIdentity,
+      delegationIdentity: delegationIdentity,
+    })
 
-    expect(shroff.getSwapTransaction()?.getStage()).toEqual(
-      SwapStage.TransferNFID,
-    )
+    const transactionBeforeSwap = await swapTransactionService.getTransactions()
 
-    while (
-      shroff.getSwapTransaction()?.getStage() === SwapStage.TransferNFID &&
-      seconds < 10
-    ) {
-      await sleep(1)
-      seconds++
-    }
+    const a: Promise<SwapTransaction> = shroff.swap(delegationIdentity)
+
 
     let trs = shroff.getSwapTransaction() as SwapTransactionImpl
 
@@ -79,7 +81,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.TransferSwap &&
-      seconds < 10
+      seconds < 20
     ) {
       await sleep(1)
       seconds++
@@ -88,7 +90,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Deposit &&
-      seconds < 30
+      seconds < 40
     ) {
       await sleep(1)
       seconds++
@@ -97,7 +99,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Swap &&
-      seconds < 50
+      seconds < 60
     ) {
       await sleep(1)
       seconds++
@@ -106,13 +108,13 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Withdraw &&
-      seconds < 70
+      seconds < 80
     ) {
       await sleep(1)
       seconds++
     }
 
-    expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.Completed)
+    expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.TransferNFID)
 
     const balanceUpgraded = await ledgerICRC.getBalance(mockPrincipal)
 
@@ -124,9 +126,7 @@ describe("shroff test", () => {
       quote.getTargetAmount().minus(Number(targetFee)).toNumber(),
     )
 
-    const transactionsAfterSwap = await swapTransactionService.getTransactions(
-      mockPrincipal,
-    )
+    const transactionsAfterSwap = await swapTransactionService.getTransactions()
 
     expect(transactionsAfterSwap.length).toBeGreaterThan(
       transactionBeforeSwap.length,

@@ -68,8 +68,8 @@ for (const [label, canister] of canisterConfig) {
 export const agentBaseConfig = { host: "https://ic0.app" }
 
 /**
- * Create an actor.
- * @deprecated
+ * Create an actor with shared identity from security device.
+ * Do not use this actor for requests from Global/Anonymous Identity
  */
 export function actor<T>(
   canisterId: string | Principal,

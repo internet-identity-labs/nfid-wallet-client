@@ -6,7 +6,6 @@ import {
 } from "src/integration/icpswap/idl/swap_trs_storage.d"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
-import { actorBuilder } from "src/integration/icpswap/util/util"
 
 import {actor, agentBaseConfig} from "@nfid/integration"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
@@ -15,7 +14,7 @@ class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
-    this.storageActor = actorBuilder<SwapStorage>(
+    this.storageActor = actor<SwapStorage>(
       SWAP_TRS_STORAGE,
       SwapStorageIDL,
       {
@@ -29,10 +28,6 @@ class SwapTransactionService {
   async storeTransaction(
     trs: SwapTransactionCandid,
   ) {
-    this.storageActor = actor<SwapStorage>(
-      SWAP_TRS_STORAGE,
-      SwapStorageIDL
-    )
     await this.storageActor.store_transaction(trs)
     await Promise.resolve()
   }

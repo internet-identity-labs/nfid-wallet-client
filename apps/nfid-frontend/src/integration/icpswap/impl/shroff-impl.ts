@@ -364,7 +364,6 @@ export class ShroffImpl implements Shroff {
   protected async restoreTransaction() {
     return swapTransactionService.storeTransaction(
       this.swapTransaction!.toCandid(),
-      this.delegationIdentity!,
     )
   }
 }

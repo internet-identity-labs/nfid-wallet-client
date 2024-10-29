@@ -1,6 +1,5 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
@@ -103,10 +102,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   useEffect(() => {
     const checkTransactions = async () => {
-      const { publicKey } = await getUserIdData()
-      const transactions = await swapTransactionService.getTransactions(
-        publicKey,
-      )
+      const transactions = await swapTransactionService.getTransactions()
 
       setHasUncompletedSwap(
         transactions.some((tx) => tx.getStage() !== SwapStage.Completed),

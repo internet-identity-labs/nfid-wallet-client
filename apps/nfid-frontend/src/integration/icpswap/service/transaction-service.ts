@@ -30,7 +30,7 @@ class SwapTransactionService {
     trs: SwapTransactionCandid,
   ) {
     this.storageActor = actor<SwapStorage>(
-      SWAP_TRS_STORAGE, //TODO WIP .env, stage, prod, subnet(?)
+      SWAP_TRS_STORAGE,
       SwapStorageIDL
     )
     await this.storageActor.store_transaction(trs)

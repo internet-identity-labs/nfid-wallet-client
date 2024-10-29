@@ -4,7 +4,7 @@ import { SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
-import { errorTypes, NFID_WALLET } from "src/integration/icpswap/impl/constants"
+import { errorTypes } from "src/integration/icpswap/impl/constants"
 import {
   QuoteImpl,
 } from "src/integration/icpswap/impl/quote-impl"
@@ -15,7 +15,6 @@ import {
   SWAP_FACTORY_CANISTER,
 } from "src/integration/icpswap/service/icpswap-service"
 import {
-  SWAP_TX_CANISTER,
   swapTransactionService,
 } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
@@ -90,7 +89,7 @@ export class ShroffImpl implements Shroff {
   static getStaticTargets(): string[] {
     return [
       exchangeRateService.getNodeCanister(),
-      SWAP_TX_CANISTER,
+      SWAP_TRS_STORAGE,
       SWAP_FACTORY_CANISTER,
     ]
   }
@@ -296,7 +295,7 @@ export class ShroffImpl implements Shroff {
       memo: [],
       to: {
         subaccount: [],
-        owner: Principal.fromText(NFID_WALLET),
+        owner: Principal.fromText(NFID_WALLET_CANISTER),
       },
     }
 

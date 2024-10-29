@@ -48,7 +48,6 @@ jobs:
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
-          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
@@ -250,8 +249,6 @@ jobs:
 
             USERGEEK_API_KEY=${USERGEEK_API_KEY}
             GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
-
-            URL_AWS_USER_E2E_GOOGLE=${URL_AWS_USER_E2E_GOOGLE}
             LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
           EOF
 
@@ -276,8 +273,6 @@ jobs:
 
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-
-          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
       - name: Save test results

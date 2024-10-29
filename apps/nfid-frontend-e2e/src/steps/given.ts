@@ -6,7 +6,6 @@ import clearAuthState from "./support/action/clear-auth-state.js"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab.js"
 import openWebsite from "./support/action/openWebsite.js"
 import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber.js"
-import removeUserE2E from "./support/action/removeUserE2E.js"
 import setWindowSize from "./support/action/setWindowSize.js"
 import addLocalStorageKey from "./support/check/addLocalStorageKey.js"
 import checkContainsAnyText from "./support/check/checkContainsAnyText.js"
@@ -32,8 +31,6 @@ const pages = {
   DemoTransactions: DemoAppPage,
   HomePage: HomePage,
 }
-
-Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
 
 Given(
   /^I remove the account by phone number 380990374146$/,

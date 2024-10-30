@@ -48,7 +48,7 @@ describe("yumi test suite", () => {
       )
       //todo link does not work
       expect(yumiNFT.getTokenLink()).toEqual(
-        "https://yzrp5-oaaaa-aaaah-ad2xa-cai.raw.ic0.app/?tokenid=h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
+        "https://yzrp5-oaaaa-aaaah-ad2xa-cai.raw.icp0.io/?tokenid=h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
       )
 
       const yumiNFTdetails = await yumiNFT.getDetails()

@@ -17,6 +17,7 @@ import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
+import { getMaxAmountFee } from "frontend/integration/icpswap/util/util"
 
 import { getTokenOptions, getTokenOptionsVault } from "../utils"
 
@@ -28,6 +29,7 @@ interface ChooseFromTokenProps {
   setFromChosenToken: (value: string) => void
   usdRate: string | undefined
   title: string
+  isSwap?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -38,6 +40,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   sendReceiveTrackingFn,
   usdRate,
   title,
+  isSwap = false,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
@@ -56,10 +59,17 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
   const maxHandler = async () => {
     if (!token) return
-    const userBalance = balance || token.getTokenBalance()
-    const fee = token.getTokenFee()
     const decimals = token.getTokenDecimals()
-    if (fee !== undefined && userBalance && decimals) {
+    const userBalance = balance || token.getTokenBalance()
+    if (!decimals || !userBalance) return
+    let fee
+    if (isSwap) {
+      fee = getMaxAmountFee(userBalance, token.getTokenFee())
+    } else {
+      fee = token.getTokenFee()
+    }
+
+    if (fee !== undefined) {
       const balanceNum = new BigNumber(userBalance.toString())
       const feeNum = new BigNumber(fee.toString())
       const val = balanceNum.minus(feeNum)
@@ -73,7 +83,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   }
 
   const {
-    resetField,
     setValue,
     register,
     formState: { errors },
@@ -101,7 +110,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             validate: (value) => {
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),
-                token.getTokenFee(),
+                isSwap
+                  ? getMaxAmountFee(
+                      token.getTokenBalance()!,
+                      token.getTokenFee(),
+                    )
+                  : token.getTokenFee(),
                 decimals,
               )(value)
 

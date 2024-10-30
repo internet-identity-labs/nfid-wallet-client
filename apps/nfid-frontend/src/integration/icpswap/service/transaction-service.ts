@@ -7,21 +7,22 @@ import {
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {actor, agentBaseConfig} from "@nfid/integration"
+import {agentBaseConfig, authState} from "@nfid/integration"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
+import {actorBuilder} from "src/integration/icpswap/util/util";
+import {HttpAgent} from "@dfinity/agent";
 
 class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
-    this.storageActor = actor<SwapStorage>(
+    const identity = authState.get().delegationIdentity
+    this.storageActor =  actorBuilder<SwapStorage>(
       SWAP_TRS_STORAGE,
       SwapStorageIDL,
       {
-        agent: new Agent.HttpAgent({
-          ...agentBaseConfig,
-        }),
-      },
+        agent: new HttpAgent({ ...agentBaseConfig, identity }),
+      }
     )
   }
 
@@ -29,7 +30,6 @@ class SwapTransactionService {
     trs: SwapTransactionCandid,
   ) {
     await this.storageActor.store_transaction(trs)
-    await Promise.resolve()
   }
 
   async getTransactions(): Promise<Array<SwapTransaction>> {

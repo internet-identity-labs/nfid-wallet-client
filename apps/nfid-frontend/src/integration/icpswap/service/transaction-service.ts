@@ -7,7 +7,7 @@ import {
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {agentBaseConfig, authState} from "@nfid/integration"
+import {agentBaseConfig, authState, replaceActorIdentity} from "@nfid/integration"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 import {actorBuilder} from "src/integration/icpswap/util/util";
 import {HttpAgent} from "@dfinity/agent";
@@ -16,12 +16,11 @@ class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
-    const identity = authState.get().delegationIdentity
     this.storageActor =  actorBuilder<SwapStorage>(
       SWAP_TRS_STORAGE,
       SwapStorageIDL,
       {
-        agent: new HttpAgent({ ...agentBaseConfig, identity }),
+        agent: new HttpAgent({ ...agentBaseConfig }),
       }
     )
   }
@@ -29,6 +28,11 @@ class SwapTransactionService {
   async storeTransaction(
     trs: SwapTransactionCandid,
   ) {
+    let di = authState.get().delegationIdentity
+    if (!di) {
+      throw new Error("Delegation identity not set")
+    }
+    await replaceActorIdentity(this.storageActor, di)
     await this.storageActor.store_transaction(trs)
   }
 

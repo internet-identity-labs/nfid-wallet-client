@@ -70,7 +70,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       : token.getTokenFee()
   }, [token, userBalance, isSwap])
 
-  const checkBalance = useCallback(() => {
+  const isMaxAvailable = useMemo(() => {
     if (!userBalance || !fee) return false
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
@@ -80,7 +80,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const maxHandler = useCallback(() => {
     if (!token || !fee || !userBalance) return
     const decimals = token.getTokenDecimals()
-    if (!decimals || !checkBalance()) return
+    if (!decimals || !isMaxAvailable) return
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
@@ -88,7 +88,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
 
     setValue("amount", formattedValue, { shouldValidate: true })
-  }, [token, fee, userBalance, checkBalance, setValue])
+  }, [token, fee, userBalance, isMaxAvailable, setValue])
 
   if (!decimals || !token) return null
 
@@ -160,7 +160,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           Balance:&nbsp;
           <span
             className={clsx(
-              checkBalance() ? "text-teal-600 cursor-pointer" : "text-gray-500",
+              isMaxAvailable ? "text-teal-600 cursor-pointer" : "text-gray-500",
             )}
             onClick={maxHandler}
           >

@@ -218,8 +218,9 @@ jobs:
     environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     env:
       CANISTER_NAME: nfid-demo
-    runs-on:
-      group: dfx-runner
+    runs-on: 
+      - self-hosted
+      - runner-2
     defaults:
       run:
         shell: bash
@@ -484,8 +485,9 @@ jobs:
     environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
     env:
       CANISTER_NAME: nfid-wallet-client
-    runs-on:
-      group: dfx-runner
+    runs-on: 
+      - self-hosted
+      - runner-2
     defaults:
       run:
         shell: bash

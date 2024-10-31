@@ -77,7 +77,7 @@ export const mapUserNFTDetailsToGroupedOptions = (
         subTitle: nft.getCollectionName(),
         value: nft.getTokenId(),
         icon: nft.getAssetPreview().url,
-        innerTitle: nft.getTokenFloorPriceIcpFormatted(),
+        innerTitle: nft.getTokenFloorPriceIcpFormatted() || "Uknown",
         innerSubtitle: nft.getTokenFloorPriceUSDFormatted(),
       },
     ],

@@ -5,6 +5,8 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 export interface FT {
   init(principal: Principal): Promise<FT>
 
+  isInited(): boolean
+
   getTokenName(): string
 
   getTokenCategory(): Category

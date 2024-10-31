@@ -47,9 +47,15 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     WithdrawError | SwapError | DepositError | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
-  const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
-    fetchAllTokens(query),
+  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
+    "activeTokens",
+    fetchActiveTokens,
+    { revalidateOnFocus: false },
+  )
+  const { data: allTokens = [], isLoading: isAllTokensLoading } = useSWR(
+    ["allTokens", ""],
+    ([, query]) => fetchAllTokens(query),
+    { revalidateOnFocus: false },
   )
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
@@ -58,11 +64,13 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const { data: fromToken, isLoading: isFromTokenLoading } = useSWR(
     fromTokenAddress ? ["fromToken", fromTokenAddress] : null,
     ([, address]) => fetchActiveTokenByAddress(address),
+    { revalidateOnFocus: false },
   )
 
   const { data: toToken, isLoading: isToTokenLoading } = useSWR(
     toTokenAddress ? ["toToken", toTokenAddress] : null,
     ([, address]) => fetchAllTokenByAddress(address),
+    { revalidateOnFocus: false },
   )
 
   const filteredAllTokens = useMemo(() => {
@@ -181,7 +189,12 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={isFromTokenLoading || isToTokenLoading}
+        isTokenLoading={
+          isFromTokenLoading ||
+          isToTokenLoading ||
+          isAllTokensLoading ||
+          isActiveTokensLoading
+        }
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || !quote}
         quote={quote}

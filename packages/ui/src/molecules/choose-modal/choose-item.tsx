@@ -4,6 +4,7 @@ import useSWR from "swr"
 import { Badge } from "../../atoms/badge"
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
+import { Skeleton } from "../../atoms/skeleton"
 
 interface IChooseItem {
   handleClick: () => void
@@ -42,7 +43,7 @@ export const ChooseItem = ({
         <ImageWithFallback
           alt={title}
           fallbackSrc={IconNftPlaceholder}
-          src={`${image}`}
+          src={image || "no-image"}
           className={clsx(
             "mr-[18px] w-[28px] h-[28px] object-cover rounded-full",
             iconClassnames,

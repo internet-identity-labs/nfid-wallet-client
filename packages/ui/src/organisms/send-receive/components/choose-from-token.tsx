@@ -47,7 +47,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [inputAmountValue, setInputAmountValue] = useState("")
 
   const {
-    getValues,
     setValue,
     register,
     formState: { errors },
@@ -90,9 +89,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
     setInputAmountValue(formattedValue)
 
-    setValue("amount", formattedValue, {
-      shouldValidate: true,
-    })
+    setValue("amount", formattedValue, { shouldValidate: true })
   }, [token, fee, userBalance, isMaxAvailable, setValue])
 
   if (!decimals || !token) return null

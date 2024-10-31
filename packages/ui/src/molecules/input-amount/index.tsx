@@ -4,8 +4,6 @@ import {
   KeyboardEvent,
   ClipboardEvent,
   InputHTMLAttributes,
-  useState,
-  useEffect,
   useMemo,
 } from "react"
 
@@ -78,7 +76,6 @@ const pasteHandler = (
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
   ({ decimals, disabled, isLoading = false, value, ...inputProps }, ref) => {
     const fontSize = useMemo(() => {
-      console.log("value Memo", value)
       if (!value) return 34
       if (value.length > 16) {
         return 16

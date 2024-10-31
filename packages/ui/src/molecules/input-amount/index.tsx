@@ -4,8 +4,7 @@ import {
   KeyboardEvent,
   ClipboardEvent,
   InputHTMLAttributes,
-  ChangeEvent,
-  useState,
+  useMemo,
 } from "react"
 
 import { Skeleton } from "../../atoms/skeleton"
@@ -13,6 +12,7 @@ import { Skeleton } from "../../atoms/skeleton"
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   decimals: number
   isLoading: boolean
+  value: string
 }
 
 const pressHandler = (e: KeyboardEvent<HTMLInputElement>, decimals: number) => {
@@ -74,19 +74,18 @@ const pasteHandler = (
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  ({ decimals, disabled, isLoading = false, ...inputProps }, ref) => {
-    const [fontSize, setFontSize] = useState(34)
-
-    const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
+  ({ decimals, disabled, isLoading = false, value, ...inputProps }, ref) => {
+    const fontSize = useMemo(() => {
+      if (!value) return 34
       if (value.length > 16) {
-        setFontSize(16)
+        return 16
       } else if (value.length > 10) {
-        setFontSize(20)
+        return 20
       } else {
-        setFontSize(34)
+        return 34
       }
-    }
+    }, [value])
+
     return (
       <div className="relative h-10">
         {isLoading ? (
@@ -105,7 +104,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             type="text"
             id="amount"
             min={0.0}
-            onInput={handleInput}
+            value={value}
             onKeyDown={(e) => pressHandler(e, decimals)}
             onPaste={(e) => pasteHandler(e, decimals)}
             ref={ref}

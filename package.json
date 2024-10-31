@@ -1,6 +1,9 @@
 {
   "name": "@internet-identity-labs/nfid-frontend",
   "packageManager": "yarn@1.22.21",
+  "engines": {
+    "node": "^22.10.0"
+  },
   "scripts": {
     "analyze": "source-map-explorer",
     "analyze:nfid-frontend": "yarn analyze 'dist/apps/nfid-frontend/static/js/*.js'",

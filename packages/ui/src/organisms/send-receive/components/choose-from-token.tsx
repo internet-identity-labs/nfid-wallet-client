@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import {
@@ -45,54 +45,52 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
 
-  useEffect(() => {
-    setIsTokenOptionsLoading(true)
-
-    balance !== undefined
-      ? getTokenOptionsVault(tokens)
-          .then(setTokenOptions)
-          .finally(() => setIsTokenOptionsLoading(false))
-      : getTokenOptions(tokens)
-          .then(setTokenOptions)
-          .finally(() => setIsTokenOptionsLoading(false))
-  }, [getTokenOptions, getTokenOptionsVault, tokens, balance])
-
-  const maxHandler = async () => {
-    if (!token) return
-    const decimals = token.getTokenDecimals()
-    const userBalance = balance || token.getTokenBalance()
-    if (!decimals || !userBalance) return
-    let fee
-    if (isSwap) {
-      fee = getMaxAmountFee(userBalance, token.getTokenFee())
-    } else {
-      fee = token.getTokenFee()
-    }
-
-    if (fee !== undefined) {
-      const balanceNum = new BigNumber(userBalance.toString())
-      const feeNum = new BigNumber(fee.toString())
-      const val = balanceNum.minus(feeNum)
-      if (val.isLessThanOrEqualTo(0)) return
-
-      const formattedValue = formatAssetAmountRaw(Number(val), decimals)
-      setValue("amount", formattedValue, {
-        shouldValidate: true,
-      })
-    }
-  }
-
   const {
     setValue,
     register,
     formState: { errors },
   } = useFormContext()
 
-  if (!token) return null
+  const userBalance = balance || token!.getTokenBalance()
+  const decimals = token!.getTokenDecimals()
 
-  const decimals = token.getTokenDecimals()
+  useEffect(() => {
+    setIsTokenOptionsLoading(true)
+    const fetchOptions = balance ? getTokenOptionsVault : getTokenOptions
 
-  if (!decimals) return null
+    fetchOptions(tokens)
+      .then(setTokenOptions)
+      .finally(() => setIsTokenOptionsLoading(false))
+  }, [tokens, balance])
+
+  const fee = useMemo(() => {
+    if (!token || !userBalance) return
+    return isSwap
+      ? getMaxAmountFee(userBalance, token.getTokenFee())
+      : token.getTokenFee()
+  }, [token, userBalance, isSwap])
+
+  const isMaxAvailable = useMemo(() => {
+    if (!userBalance || !fee) return false
+    const balanceNum = new BigNumber(userBalance.toString())
+    const feeNum = new BigNumber(fee.toString())
+    return balanceNum.minus(feeNum).isGreaterThan(0)
+  }, [userBalance, fee])
+
+  const maxHandler = useCallback(() => {
+    if (!token || !fee || !userBalance) return
+    const decimals = token.getTokenDecimals()
+    if (!decimals || !isMaxAvailable) return
+
+    const balanceNum = new BigNumber(userBalance.toString())
+    const feeNum = new BigNumber(fee.toString())
+    const maxAmount = balanceNum.minus(feeNum)
+    const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
+
+    setValue("amount", formattedValue, { shouldValidate: true })
+  }, [token, fee, userBalance, isMaxAvailable, setValue])
+
+  if (!decimals || !token) return null
 
   return (
     <div
@@ -160,9 +158,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         </p>
         <div className="mt-2 text-xs leading-5 text-right text-gray-500">
           Balance:&nbsp;
-          <span className="cursor-pointer" onClick={maxHandler}>
+          <span
+            className={clsx(
+              isMaxAvailable ? "text-teal-600 cursor-pointer" : "text-gray-500",
+            )}
+            onClick={maxHandler}
+          >
             {!balance ? (
-              <span className="text-teal-600" id="balance">
+              <span id="balance">
                 {token.getTokenBalanceFormatted() || "0"}&nbsp;
                 {token.getTokenSymbol()}
               </span>

@@ -55,6 +55,9 @@ npx nx serve nfid-demo
 npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
 ```
 
+## Deployment
+The build and deployment process is managed using DFX (Internet Computer SDK), specifically version v0.24.1. Ensure that DFX is properly installed and configured in your environment before proceeding with deployment.
+
 ## Architecture
 
 This architecture is inspired by:

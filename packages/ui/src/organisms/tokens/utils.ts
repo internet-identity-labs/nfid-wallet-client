@@ -42,14 +42,14 @@ export const fetchAllTokens = async (searchQuery: string) => {
 }
 
 export const fetchAllTokenByAddress = async (address: string) => {
-  const { userPrincipal } = await getUserPrincipalId()
+  const { userPrincipal, publicKey } = await getUserPrincipalId()
   const data = await ftService.getAllTokenByAddress(
     userPrincipal,
     undefined,
     address,
   )
 
-  return data
+  return data.isInited() ? data : await data.init(Principal.fromText(publicKey))
 }
 
 export const getFullUsdValue = async () => {

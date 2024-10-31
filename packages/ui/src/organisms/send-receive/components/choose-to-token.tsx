@@ -20,6 +20,7 @@ import { PriceImpact } from "frontend/integration/icpswap/types/types"
 import { getAllTokenOptions } from "../utils"
 
 const INITED_TOKENS_LIMIT = 8
+
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens: FT[]
@@ -81,6 +82,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             disabled
             isLoading={isQuoteLoading}
             {...register("to")}
+            value={value || ""}
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseModal

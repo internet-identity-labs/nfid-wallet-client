@@ -6,6 +6,7 @@ import {
   InputHTMLAttributes,
   useState,
   useEffect,
+  useMemo,
 } from "react"
 
 import { Skeleton } from "../../atoms/skeleton"
@@ -13,8 +14,7 @@ import { Skeleton } from "../../atoms/skeleton"
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   decimals: number
   isLoading: boolean
-  maxValue: string | undefined
-  cancelMaxValue: () => void
+  value: string
 }
 
 const pressHandler = (e: KeyboardEvent<HTMLInputElement>, decimals: number) => {
@@ -76,33 +76,18 @@ const pasteHandler = (
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      decimals,
-      disabled,
-      isLoading = false,
-      maxValue,
-      cancelMaxValue,
-      ...inputProps
-    },
-    ref,
-  ) => {
-    const [fontSize, setFontSize] = useState(34)
-
-    const setInputSize = (value: string) => {
+  ({ decimals, disabled, isLoading = false, value, ...inputProps }, ref) => {
+    const fontSize = useMemo(() => {
+      console.log("value Memo", value)
+      if (!value) return 34
       if (value.length > 16) {
-        setFontSize(16)
+        return 16
       } else if (value.length > 10) {
-        setFontSize(20)
+        return 20
       } else {
-        setFontSize(34)
+        return 34
       }
-    }
-
-    useEffect(() => {
-      if (!maxValue) return
-      setInputSize(maxValue)
-    }, [maxValue])
+    }, [value])
 
     return (
       <div className="relative h-10">
@@ -122,17 +107,9 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             type="text"
             id="amount"
             min={0.0}
-            onInput={(e) => {
-              setInputSize(e.currentTarget.value)
-              cancelMaxValue()
-            }}
-            onKeyDown={(e) => {
-              pressHandler(e, decimals)
-            }}
-            onPaste={(e) => {
-              setInputSize(e.currentTarget.value)
-              pasteHandler(e, decimals)
-            }}
+            value={value}
+            onKeyDown={(e) => pressHandler(e, decimals)}
+            onPaste={(e) => pasteHandler(e, decimals)}
             ref={ref}
             disabled={disabled}
             {...inputProps}

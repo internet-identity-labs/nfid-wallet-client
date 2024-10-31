@@ -41,7 +41,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
-  const [maxValue, setMaxValue] = useState<string | undefined>()
+  const [inputAmountValue, setInputAmountValue] = useState("")
 
   useEffect(() => {
     setIsTokenOptionsLoading(true)
@@ -67,18 +67,21 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       if (val.isLessThanOrEqualTo(0)) return
 
       const formattedValue = formatAssetAmountRaw(Number(val), decimals)
+      setInputAmountValue(formattedValue)
       setValue("amount", formattedValue, {
         shouldValidate: true,
       })
-      setMaxValue(formattedValue)
     }
   }
 
   const {
+    getValues,
     setValue,
     register,
     formState: { errors },
   } = useFormContext()
+
+  console.log("inputAmountValue", inputAmountValue, getValues("amount"))
 
   if (!token) return null
 
@@ -97,10 +100,16 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         <InputAmount
           isLoading={false}
           decimals={decimals}
-          maxValue={maxValue}
-          cancelMaxValue={() => setMaxValue(undefined)}
+          value={inputAmountValue}
+          onPaste={(e) => {
+            e.preventDefault()
+            setInputAmountValue(
+              e.clipboardData.getData("text/plain").replace(",", "."),
+            )
+          }}
           {...register("amount", {
             required: sumRules.errorMessages.required,
+            onChange: (e) => setInputAmountValue(e.target.value),
             validate: (value) => {
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),

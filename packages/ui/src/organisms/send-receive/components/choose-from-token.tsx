@@ -44,6 +44,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
+  const [inputAmountValue, setInputAmountValue] = useState("")
 
   const {
     setValue,
@@ -86,6 +87,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     const feeNum = new BigNumber(fee.toString())
     const maxAmount = balanceNum.minus(feeNum)
     const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
+    setInputAmountValue(formattedValue)
 
     setValue("amount", formattedValue, { shouldValidate: true })
   }, [token, fee, userBalance, isMaxAvailable, setValue])
@@ -103,8 +105,16 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         <InputAmount
           isLoading={false}
           decimals={decimals}
+          value={inputAmountValue}
+          onPaste={(e) => {
+            e.preventDefault()
+            setInputAmountValue(
+              e.clipboardData.getData("text/plain").replace(",", "."),
+            )
+          }}
           {...register("amount", {
             required: sumRules.errorMessages.required,
+            onChange: (e) => setInputAmountValue(e.target.value),
             validate: (value) => {
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),

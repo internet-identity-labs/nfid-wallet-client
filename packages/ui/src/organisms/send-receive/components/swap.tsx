@@ -124,6 +124,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         usdRate={quote?.getSourceAmountUSD()}
         tokens={tokens}
         title="Swap from"
+        isSwap={true}
       />
       {showLiquidityError ? (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">

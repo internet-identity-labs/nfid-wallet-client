@@ -5,7 +5,7 @@
 #### Prerequisites
 
 Before setting up the development environment, ensure the following are installed:
-- NodeJS v22.11.0
+- NodeJS v22.10.0
 - Yarn v1.22.22
 
 #### Install dependencies:

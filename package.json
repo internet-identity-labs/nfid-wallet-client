@@ -2,7 +2,7 @@
   "name": "@internet-identity-labs/nfid-frontend",
   "packageManager": "yarn@1.22.21",
   "engines": {
-    "node": "^20.16.0"
+    "node": "^22.11.0"
   },
   "scripts": {
     "analyze": "source-map-explorer",

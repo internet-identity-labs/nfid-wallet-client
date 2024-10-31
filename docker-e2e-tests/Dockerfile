@@ -3,7 +3,7 @@ FROM ubuntu:${TAG}
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
 RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils curl wget git ca-certificates gnupg \

@@ -23,8 +23,8 @@ const sortTokens = (tokens: FT[]) => {
   }
 
   return tokens.sort((a, b) => {
-    const aCategory = categoryOrder[a.getTokenCategory()] || 999
-    const bCategory = categoryOrder[b.getTokenCategory()] || 999
+    const aCategory = categoryOrder[a.getTokenCategory()]
+    const bCategory = categoryOrder[b.getTokenCategory()]
     return aCategory - bCategory
   })
 }
@@ -34,7 +34,7 @@ export class FtService {
     userId: string,
     userPublicKey: Principal,
     page: number = 1,
-    limit: number = 999,
+    limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<PaginatedResponse<FT>> {
     let userTokens = await icrc1StorageService
       .getICRC1ActiveCanisters(userId)
@@ -87,7 +87,7 @@ export class FtService {
     userPublicKey: Principal,
     address: string,
     page: number = 1,
-    limit: number = 999,
+    limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<FT> {
     const tokens = await this.getAllUserTokens(
       userId,

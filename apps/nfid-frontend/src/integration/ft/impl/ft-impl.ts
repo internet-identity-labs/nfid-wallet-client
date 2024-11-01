@@ -20,7 +20,6 @@ export class FTImpl implements FT {
   private symbol: string
   private decimals: number
   private fee: bigint
-  private inited: boolean
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -32,7 +31,6 @@ export class FTImpl implements FT {
     this.decimals = icrc1Token.decimals
     this.fee = icrc1Token.fee
     this.tokenState = icrc1Token.state
-    this.inited = false
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
@@ -41,12 +39,7 @@ export class FTImpl implements FT {
       icrc1Pair.getBalance(globalPrincipal.toText()),
     ])
     this.tokenBalance = balance
-    this.inited = true
     return this
-  }
-
-  isInited(): boolean {
-    return this.inited
   }
 
   getBlockExplorerLink(): string {

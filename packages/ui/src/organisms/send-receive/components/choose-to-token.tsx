@@ -17,7 +17,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { PriceImpactStatus } from "frontend/integration/icpswap/types/enums"
 import { PriceImpact } from "frontend/integration/icpswap/types/types"
 
-import { getAllTokenOptions } from "../utils"
+import { getAllTokenPaginatedOptions } from "../utils"
 
 const INITED_TOKENS_LIMIT = 8
 
@@ -51,8 +51,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   useEffect(() => {
     setIsTokenOptionsLoading(true)
 
-    getAllTokenOptions(tokens, page * INITED_TOKENS_LIMIT)
-      .then(setTokenOptions)
+    getAllTokenPaginatedOptions(
+      tokens,
+      page * INITED_TOKENS_LIMIT,
+      (page - 1) * INITED_TOKENS_LIMIT,
+    )
+      .then((data) => setTokenOptions(tokenOptions.concat(data)))
       .finally(() => setIsTokenOptionsLoading(false))
   }, [tokens, page])
 

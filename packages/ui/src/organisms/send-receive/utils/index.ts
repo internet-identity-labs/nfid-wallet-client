@@ -48,15 +48,17 @@ export const getTokenOptionsVault = async (tokens: FT[]) => {
   return options.filter((option) => option.options[0].value === ICP_CANISTER_ID)
 }
 
-export const getAllTokenOptions = async (tokens: FT[], limit: number) => {
+export const getAllTokenPaginatedOptions = async (
+  tokens: FT[],
+  limit: number,
+  skip: number,
+) => {
   const { publicKey } = await getUserPrincipalId()
-  const tokensToInit = tokens.slice(0, limit)
+  const paginatedTokens = tokens.slice(skip, limit)
 
   return await Promise.all(
-    tokensToInit.map(async (token) => {
-      if (!token.isInited()) {
-        await token.init(Principal.fromText(publicKey))
-      }
+    paginatedTokens.map(async (token) => {
+      token.init(Principal.fromText(publicKey))
 
       const balance = token.getTokenBalanceFormatted() || "0"
       const usdBalance = await token.getTokenRate(balance || "0")

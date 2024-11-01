@@ -49,7 +49,7 @@ export const fetchAllTokenByAddress = async (address: string) => {
     address,
   )
 
-  return data.isInited() ? data : await data.init(Principal.fromText(publicKey))
+  return data.init(Principal.fromText(publicKey))
 }
 
 export const getFullUsdValue = async () => {

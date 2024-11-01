@@ -5,7 +5,6 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
-import sha256 from "sha256"
 
 import { actor, ii, im, replaceActorIdentity } from "@nfid/integration"
 

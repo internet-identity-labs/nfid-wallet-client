@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { format } from "date-fns"
-import produce from "immer"
+import { produce } from "immer"
 import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React from "react"
 
@@ -195,7 +195,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   !device.isWalletDevice
                     ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +
-                          device.browser ?? null
+                          device.browser || null
                       }`
                     : null}
 

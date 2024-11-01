@@ -23,8 +23,10 @@ const sortTokens = (tokens: FT[]) => {
   }
 
   return tokens.sort((a, b) => {
-    const aCategory = categoryOrder[a.getTokenCategory()]
-    const bCategory = categoryOrder[b.getTokenCategory()]
+    const aCategory =
+      categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
+    const bCategory =
+      categoryOrder[b.getTokenCategory()] || Number.MAX_SAFE_INTEGER
     return aCategory - bCategory
   })
 }
@@ -52,6 +54,8 @@ export class FtService {
     let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
 
     const sortedTokens = sortTokens(ft)
+
+    console.log("sortedTokens", sortedTokens)
 
     const totalItems = sortedTokens.length
     const totalPages = Math.ceil(totalItems / limit)

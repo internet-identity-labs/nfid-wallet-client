@@ -176,7 +176,6 @@ export class ShroffImpl implements Shroff {
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
-      console.error("Swap error: ", e)
       if (!this.swapTransaction.getError()) {
         this.swapTransaction.setError((e as Error).message)
       }
@@ -278,21 +277,21 @@ export class ShroffImpl implements Shroff {
   }
 
   protected async transferToNFID() {
-    const amountDecimals = this.requestedQuote!.getWidgetFeeAmount()
-
-    const transferArgs: TransferArg = {
-      amount: amountDecimals,
-      created_at_time: [],
-      fee: [],
-      from_subaccount: [],
-      memo: [],
-      to: {
-        subaccount: [],
-        owner: Principal.fromText(NFID_WALLET_CANISTER),
-      },
-    }
-
     try {
+      const amountDecimals = this.requestedQuote!.getWidgetFeeAmount()
+
+      const transferArgs: TransferArg = {
+        amount: amountDecimals,
+        created_at_time: [],
+        fee: [],
+        from_subaccount: [],
+        memo: [],
+        to: {
+          subaccount: [],
+          owner: Principal.fromText(NFID_WALLET_CANISTER),
+        },
+      }
+
       const result = await transferICRC1(
         this.delegationIdentity!,
         this.source.ledger,
@@ -306,7 +305,7 @@ export class ShroffImpl implements Shroff {
       console.error("Transfer to NFID failed: " + JSON.stringify(result.Err))
       throw new WithdrawError()
     } catch (e) {
-      console.error("Withddraw error: " + e)
+      console.error("Withdraw error: " + e)
       throw new WithdrawError()
     }
   }

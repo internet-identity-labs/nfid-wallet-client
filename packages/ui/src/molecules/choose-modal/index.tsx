@@ -179,48 +179,46 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
           className="mt-4 mb-5"
         />
-        {isLoading ? (
-          <ChooseTokenSkeleton rows={6} />
-        ) : (
-          <div
-            className={clsx(
-              "flex-1 overflow-auto snap-end pr-[10px]",
-              "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
-              "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
-            )}
-            id="scrollable-area"
+        {isLoading && <ChooseTokenSkeleton rows={6} />}
+        <div
+          className={clsx(
+            "flex-1 overflow-auto snap-end pr-[10px]",
+            "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+            "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+          )}
+          id={hasMore ? "scrollable-area" : "no-scroll"}
+        >
+          <InfiniteScroll
+            dataLength={filteredOptions.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            loader={null}
+            scrollableTarget="scrollable-area"
+            scrollThreshold={0.95}
           >
-            <InfiniteScroll
-              dataLength={filteredOptions.length}
-              next={fetchMoreData}
-              hasMore={hasMore}
-              loader={null}
-              scrollableTarget="scrollable-area"
-            >
-              {filteredOptions.map((group, index) => (
-                <div
-                  id={`option_group_${group.label.replace(/\s/g, "")}`}
-                  key={`group_${group.label}_${group.options.length}_${index}`}
-                >
-                  {group.options.map((option, i) => (
-                    <ChooseItem
-                      key={`option_${option.value}_group_${index}_${i}`}
-                      handleClick={() => handleSelect(option)}
-                      image={option.icon}
-                      title={option.title}
-                      subTitle={option.subTitle}
-                      innerTitle={option.innerTitle}
-                      innerSubtitle={option.innerSubtitle}
-                      iconClassnames={iconClassnames}
-                      badgeText={option.badgeText}
-                      id={trimConcat("choose_option_", option.title)}
-                    />
-                  ))}
-                </div>
-              ))}
-            </InfiniteScroll>
-          </div>
-        )}
+            {filteredOptions.map((group, index) => (
+              <div
+                id={`option_group_${group.label.replace(/\s/g, "")}`}
+                key={`group_${group.label}_${group.options.length}_${index}`}
+              >
+                {group.options.map((option, i) => (
+                  <ChooseItem
+                    key={`option_${option.value}_group_${index}_${i}`}
+                    handleClick={() => handleSelect(option)}
+                    image={option.icon}
+                    title={option.title}
+                    subTitle={option.subTitle}
+                    innerTitle={option.innerTitle}
+                    innerSubtitle={option.innerSubtitle}
+                    iconClassnames={iconClassnames}
+                    badgeText={option.badgeText}
+                    id={trimConcat("choose_option_", option.title)}
+                  />
+                ))}
+              </div>
+            ))}
+          </InfiniteScroll>
+        </div>
       </div>
     </div>
   )

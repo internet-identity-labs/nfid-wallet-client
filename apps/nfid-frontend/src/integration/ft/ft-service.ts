@@ -11,12 +11,32 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
+const sortTokens = (tokens: FT[]) => {
+  const categoryOrder: Record<Category, number> = {
+    [Category.Sns]: 3,
+    [Category.ChainFusion]: 2,
+    [Category.Known]: 4,
+    [Category.Native]: 1,
+    [Category.Community]: 5,
+    [Category.Spam]: 7,
+    [Category.ChainFusionTestnet]: 6,
+  }
+
+  return tokens.sort((a, b) => {
+    const aCategory =
+      categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
+    const bCategory =
+      categoryOrder[b.getTokenCategory()] || Number.MAX_SAFE_INTEGER
+    return aCategory - bCategory
+  })
+}
+
 export class FtService {
   async getAllUserTokens(
     userId: string,
     userPublicKey: Principal,
     page: number = 1,
-    limit: number = 10,
+    limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<PaginatedResponse<FT>> {
     let userTokens = await icrc1StorageService
       .getICRC1ActiveCanisters(userId)
@@ -33,15 +53,15 @@ export class FtService {
 
     let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
 
-    ft.sort((a, b) => a.getTokenName().localeCompare(b.getTokenName()))
+    const sortedTokens = sortTokens(ft)
 
-    const totalItems = ft.length
+    const totalItems = sortedTokens.length
     const totalPages = Math.ceil(totalItems / limit)
 
     const startIndex = (page - 1) * limit
     const endIndex = Math.min(startIndex + limit, totalItems)
 
-    const items = ft.slice(startIndex, endIndex)
+    const items = sortedTokens.slice(startIndex, endIndex)
     await Promise.all(items.map((item) => item.init(userPublicKey)))
 
     return {
@@ -52,7 +72,7 @@ export class FtService {
     }
   }
 
-  async getAllFTokens(
+  async getAllTokens(
     userId: string,
     nameCategoryFilter: string | undefined,
   ): Promise<Array<FT>> {
@@ -60,24 +80,7 @@ export class FtService {
       .getICRC1FilteredCanisters(userId, nameCategoryFilter)
       .then((canisters) => {
         const ft = canisters.map((canister) => new FTImpl(canister))
-
-        const categoryOrder: Record<Category, number> = {
-          [Category.Sns]: 3,
-          [Category.ChainFusion]: 2,
-          [Category.Known]: 4,
-          [Category.Native]: 1,
-          [Category.Community]: 5,
-          [Category.Spam]: 7,
-          [Category.ChainFusionTestnet]: 6,
-        }
-
-        ft.sort((a, b) => {
-          const aCategory = categoryOrder[a.getTokenCategory()] || 999
-          const bCategory = categoryOrder[b.getTokenCategory()] || 999
-          return aCategory - bCategory
-        })
-
-        return ft
+        return sortTokens(ft)
       })
   }
 
@@ -85,8 +88,8 @@ export class FtService {
     userId: string,
     userPublicKey: Principal,
     address: string,
-    page: number,
-    limit: number,
+    page: number = 1,
+    limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<FT> {
     const tokens = await this.getAllUserTokens(
       userId,
@@ -106,7 +109,7 @@ export class FtService {
     nameCategoryFilter: string | undefined,
     address: string,
   ): Promise<FT> {
-    const tokens = await this.getAllFTokens(userId, nameCategoryFilter)
+    const tokens = await this.getAllTokens(userId, nameCategoryFilter)
     const token = tokens.find((token) => token.getTokenAddress() === address)
     if (!token) throw new Error("Token not found")
     return token

@@ -74,12 +74,12 @@ describe("ft test suite", () => {
       )
       expect(await icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
 
-      const filteredResult = await ftService.getAllFTokens(userId, "Chat")
+      const filteredResult = await ftService.getAllTokens(userId, "Chat")
       expect(filteredResult.length).toEqual(1)
 
-      expect(result.items[0].getTokenName()).toEqual("A first letter")
-      expect(result.items[1].getTokenName()).toEqual("Chat")
-      expect(result.items[2].getTokenName()).toEqual("Internet Computer")
+      expect(result.items[0].getTokenName()).toEqual("Internet Computer")
+      expect(result.items[1].getTokenName()).toEqual("A first letter")
+      expect(result.items[2].getTokenName()).toEqual("Chat")
     })
 
     it("shoult get all sorted tokens", async function () {
@@ -119,7 +119,7 @@ describe("ft test suite", () => {
           },
         ])
 
-      const result: FT[] = await ftService.getAllFTokens(userId, undefined)
+      const result: FT[] = await ftService.getAllTokens(userId, undefined)
 
       expect(result.length).toEqual(3)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)

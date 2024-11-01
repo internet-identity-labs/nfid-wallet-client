@@ -5,7 +5,6 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
-import sha256 from "sha256"
 
 import { actor, ii, im, replaceActorIdentity } from "@nfid/integration"
 
@@ -89,7 +88,7 @@ export const getDelegationIdentity = async (
 export function getLambdaActor(): Agent.ActorSubclass<IdentityManager> {
   let identity = getLambdaIdentity()
   const lambdaIm = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
-  replaceActorIdentity(im, identity)
+  replaceActorIdentity(im, identity as any)
   return lambdaIm
 }
 

@@ -55,8 +55,6 @@ export class FtService {
 
     const sortedTokens = sortTokens(ft)
 
-    console.log("sortedTokens", sortedTokens)
-
     const totalItems = sortedTokens.length
     const totalPages = Math.ceil(totalItems / limit)
 

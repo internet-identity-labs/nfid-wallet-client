@@ -1,4 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import {
   fetchActiveTokens,
@@ -133,7 +134,11 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     return () => clearInterval(interval)
   }, [getTransaction])
 
-  const { data: quote, isLoading: isQuoteLoading } = useSWR(
+  const {
+    data: quote,
+    isLoading: isQuoteLoading,
+    mutate,
+  } = useSWR(
     amount
       ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
       : null,
@@ -147,6 +152,18 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       },
     },
   )
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      resetIntegrationCache(["usdPriceForICRC1"], () => {
+        mutate()
+      })
+    }, 30000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [mutate])
 
   const refresh = () => {
     setShroffError(undefined)

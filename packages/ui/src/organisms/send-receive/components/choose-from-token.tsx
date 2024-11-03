@@ -52,8 +52,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     formState: { errors },
   } = useFormContext()
 
-  console.log(balance, Boolean(balance))
-
   const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
 
@@ -77,7 +75,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (userBalance === undefined || !fee) return false
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
-    console.log("isMaxAvailable", balanceNum.minus(feeNum).isGreaterThan(0))
     return balanceNum.minus(feeNum).isGreaterThan(0)
   }, [userBalance, fee])
 

@@ -11,7 +11,7 @@ import {
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { toast } from "react-toastify"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import {
   RootWallet,
@@ -87,7 +87,7 @@ export const TransferFT = ({
   const amount = watch("amount")
   const to = watch("to")
 
-  const { data: usdRate } = useSWR(
+  const { data: usdRate, mutate: refetchUsdPrice } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amount] : null,
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
@@ -192,6 +192,11 @@ export const TransferFT = ({
         resetIntegrationCache(["getICRC1Canisters"], () => {
           refetchActiveTokens()
           refetchToken()
+        })
+
+        resetIntegrationCache(["usdPriceForICRC1"], () => {
+          refetchUsdPrice()
+          mutate(["activeTokenUSD"])
         })
       },
     })

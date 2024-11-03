@@ -75,6 +75,8 @@ export const TransferFT = ({
     fetchActiveTokenByAddress(address),
   )
 
+  console.log("isVault", isVault)
+
   const formMethods = useForm<FormValues>({
     mode: "all",
     defaultValues: {

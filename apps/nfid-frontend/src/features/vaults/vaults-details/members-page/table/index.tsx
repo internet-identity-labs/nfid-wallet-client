@@ -1,12 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useMemo } from "react"
 
 import { Table } from "@nfid-frontend/ui"
 import { ObjectState, VaultMember } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 
-import { VaultArchiveMember } from "../modal-archive-member"
-import { VaultEditMember } from "../modal-edit-member"
 import { VaultsMembersTableHeader } from "./table-header"
 import { VaultsMembersTableRow, VaultsMembersTableRowProps } from "./table-row"
 
@@ -17,9 +15,6 @@ export interface VaultsMembersTableProps {
 export const VaultsMembersTable: React.FC<VaultsMembersTableProps> = ({
   members,
 }) => {
-  const [isEditModal, setIsEditModal] = useState(false)
-  const [isArchiveModal, setIsArchiveModal] = useState(false)
-  const [selectedMember, setSelectedMember] = useState<VaultMember>()
   const { isAdmin } = useVault()
 
   const membersRows: VaultsMembersTableRowProps[] = useMemo(() => {
@@ -33,39 +28,13 @@ export const VaultsMembersTable: React.FC<VaultsMembersTableProps> = ({
     }))
   }, [isAdmin, members])
 
-  const onModalOpen = useCallback(
-    (type: "edit" | "archive", memberId: string) => {
-      const member = members.find((member) => member.userId === memberId)
-      setSelectedMember(member)
-
-      if (type === "edit") setIsEditModal(true)
-      if (type === "archive") setIsArchiveModal(true)
-    },
-    [members],
-  )
-
   return (
     <>
       <Table tableHeader={<VaultsMembersTableHeader />}>
         {membersRows.map((member) => (
-          <VaultsMembersTableRow
-            {...member}
-            key={`vault_${member.address}`}
-            onEdit={() => onModalOpen("edit", member.address)}
-            onArchive={() => onModalOpen("archive", member.address)}
-          />
+          <VaultsMembersTableRow {...member} key={`vault_${member.address}`} />
         ))}
       </Table>
-      <VaultEditMember
-        isModalOpen={isEditModal}
-        setIsModalOpen={setIsEditModal}
-        selectedMember={selectedMember}
-      />
-      <VaultArchiveMember
-        selectedMember={selectedMember}
-        isModalOpen={isArchiveModal}
-        setIsModalOpen={setIsArchiveModal}
-      />
     </>
   )
 }

@@ -28,7 +28,6 @@ import {
   ProfileConstants,
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
-import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
@@ -186,7 +185,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         syncEmail={syncEmailDeviceWithII}
         anchor={profile?.anchor}
         logout={logout}
-        sendReceiveBtn={<SendReceiveButton />}
         profileConstants={ProfileConstants}
         links={navigationPopupLinks}
         assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}

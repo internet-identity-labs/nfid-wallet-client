@@ -7,6 +7,7 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
   Skeleton,
+  IDropdownPosition,
 } from "@nfid-frontend/ui"
 
 import { IProfileConstants } from ".."
@@ -17,6 +18,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
+  dropdownPosition: IDropdownPosition
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -24,6 +26,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   profileConstants,
   onSendClick,
   setToken,
+  dropdownPosition,
 }) => {
   const { data: usdPrice, isLoading } = useSWR(
     token ? ["activeTokenUSD", token.getTokenAddress()] : null,
@@ -107,6 +110,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           profileConstants={profileConstants}
           onSendClick={onSendClick}
           setToken={setToken}
+          dropdownPosition={dropdownPosition}
         />
       </td>
     </tr>

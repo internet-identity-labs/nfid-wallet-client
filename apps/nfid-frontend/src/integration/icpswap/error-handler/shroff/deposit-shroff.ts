@@ -6,7 +6,7 @@ import {
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
+import {hasOwnProperty, replaceActorIdentity} from "@nfid/integration"
 
 import { WithdrawError } from "../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
@@ -18,15 +18,22 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     }
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
+      this.delegationIdentity = delegationIdentity
       console.debug("Transaction restarted")
-      await this.deposit()
-      this.restoreTransaction()
-      await this.withdraw()
-      console.debug("Withdraw done")
-      this.swapTransaction.setCompleted()
-      await this.restoreTransaction()
-      console.debug("Transaction stored")
-      return this.swapTransaction
+      if (this.swapTransaction.getError() === undefined) {
+        console.debug("Deposit timeout error")
+        return this.handleDepositTimeoutError()
+      } else {
+        await this.deposit()
+        console.debug("Deposit done")
+        this.restoreTransaction()
+        await this.withdraw()
+        console.debug("Withdraw done")
+        this.swapTransaction!.setCompleted()
+        await this.restoreTransaction()
+        console.debug("Transaction stored")
+        return this.swapTransaction!
+      }
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
@@ -60,6 +67,15 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       console.error("Withdraw error: " + e)
       throw new WithdrawError()
     }
+  }
+
+  private async handleDepositTimeoutError() : Promise<SwapTransaction> {
+    await this.withdraw()
+    console.debug("Withdraw done")
+    this.swapTransaction!.setCompleted()
+    await this.restoreTransaction()
+    console.debug("Transaction stored")
+    return this.swapTransaction!
   }
 }
 

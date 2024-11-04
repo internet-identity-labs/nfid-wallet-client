@@ -26,7 +26,6 @@ export interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
   isEmailOutOfSync?: boolean
   syncEmail: () => Promise<void>
   logout: () => void
-  sendReceiveBtn: JSX.Element
   links: INavigationPopupLinks[]
   assetsLink: string
   hasVaults: boolean
@@ -44,7 +43,6 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   isEmailOutOfSync,
   syncEmail,
   logout,
-  sendReceiveBtn,
   links,
   assetsLink,
   hasVaults,
@@ -82,7 +80,6 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
             />
           )}
         </div>
-        <div className="absolute md:hidden">{sendReceiveBtn}</div>
       </div>
       {isEmailOutOfSync && (
         <div className="px-4 sm:px-[30px] mb-5">

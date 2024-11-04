@@ -17,6 +17,11 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
       console.log("ReSwap NFID started")
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       this.delegationIdentity = delegationIdentity
+      if (this.swapTransaction.getError() === undefined) {
+        console.debug("Swap timeout error")
+        this.swapTransaction.setCompleted()
+        return this.swapTransaction
+      }
       await this.transferToNFID()
       await this.restoreTransaction()
       console.debug("Transaction stored")

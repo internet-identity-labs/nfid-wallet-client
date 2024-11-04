@@ -302,7 +302,6 @@ export class ShroffImpl implements Shroff {
         this.swapTransaction!.setNFIDTransferId(id)
         return id
       }
-      console.error("Transfer to NFID failed: " + JSON.stringify(result.Err))
       throw new WithdrawError()
     } catch (e) {
       console.error("Withdraw error: " + e)

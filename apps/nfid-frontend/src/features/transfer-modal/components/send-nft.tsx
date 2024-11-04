@@ -15,7 +15,7 @@ import { NFT } from "frontend/integration/nft/nft"
 import {
   getIdentity,
   mapUserNFTDetailsToGroupedOptions,
-  validateICPAddress,
+  validateNftAddress,
 } from "../utils"
 import { ITransferSuccess } from "./send-success"
 
@@ -134,7 +134,7 @@ export const TransferNFT = ({
       selectedNFT={selectedNFT}
       selectedReceiverWallet={selectedReceiverWallet}
       submit={submit}
-      validateAddress={validateICPAddress}
+      validateAddress={validateNftAddress}
       loadMore={hasMore ? loadMore : undefined}
     />
   )

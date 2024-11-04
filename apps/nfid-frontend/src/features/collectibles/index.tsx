@@ -74,7 +74,7 @@ const NFTsPage = () => {
         disabled={isLoading}
         className={clsx(
           "block mx-auto",
-          totalPages === currentPage && "hidden",
+          (totalPages === currentPage || !nfts.length) && "hidden",
         )}
         onClick={() => setCurrentPage((prev) => prev + 1)}
         type="ghost"

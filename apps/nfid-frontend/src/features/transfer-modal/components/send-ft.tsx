@@ -195,8 +195,11 @@ export const TransferFT = ({
         })
 
         resetIntegrationCache(["usdPriceForICRC1"], () => {
-          refetchUsdPrice()
-          mutate(["activeTokenUSD"])
+          refetchActiveTokens().then(() =>
+            refetchUsdPrice().then(() =>
+              mutate(["activeTokenUSD", token.getTokenAddress()]),
+            ),
+          )
         })
       },
     })
@@ -209,6 +212,7 @@ export const TransferFT = ({
     usdRate,
     refetchActiveTokens,
     refetchToken,
+    refetchUsdPrice,
     amount,
     to,
   ])

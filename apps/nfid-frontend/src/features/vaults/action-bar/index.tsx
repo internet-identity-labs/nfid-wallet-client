@@ -4,13 +4,11 @@ import React, { ChangeEvent, KeyboardEvent } from "react"
 import { IconCmpSearch, Input } from "@nfid-frontend/ui"
 
 export interface VaultActionBarProps {
-  actionButtons: JSX.Element
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void
   onInputType?: (event: KeyboardEvent<HTMLInputElement>) => void
 }
 
 export const VaultActionBar: React.FC<VaultActionBarProps> = ({
-  actionButtons,
   onInputChange,
   onInputType,
 }) => {
@@ -28,7 +26,6 @@ export const VaultActionBar: React.FC<VaultActionBarProps> = ({
         onKeyDown={onInputType}
         className="sm:w-[350px]"
       />
-      {actionButtons}
     </div>
   )
 }

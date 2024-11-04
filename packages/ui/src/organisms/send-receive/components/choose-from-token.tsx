@@ -52,7 +52,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     formState: { errors },
   } = useFormContext()
 
-  const userBalance = balance || token!.getTokenBalance()
+  const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
 
   useEffect(() => {
@@ -65,14 +65,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   }, [tokens, balance])
 
   const fee = useMemo(() => {
-    if (!token || !userBalance) return
+    if (!token || userBalance === undefined) return
     return isSwap
       ? getMaxAmountFee(userBalance, token.getTokenFee())
       : token.getTokenFee()
   }, [token, userBalance, isSwap])
 
   const isMaxAvailable = useMemo(() => {
-    if (!userBalance || !fee) return false
+    if (userBalance === undefined || !fee) return false
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
     return balanceNum.minus(feeNum).isGreaterThan(0)
@@ -174,13 +174,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             )}
             onClick={maxHandler}
           >
-            {!balance ? (
+            {balance === undefined ? (
               <span id="balance">
                 {token.getTokenBalanceFormatted() || "0"}&nbsp;
                 {token.getTokenSymbol()}
               </span>
             ) : (
-              <span className="text-teal-600">{Number(balance) / E8S} ICP</span>
+              <span>{Number(balance) / E8S} ICP</span>
             )}
           </span>
         </div>

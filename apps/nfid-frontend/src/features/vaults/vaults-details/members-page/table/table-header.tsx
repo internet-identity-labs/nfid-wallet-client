@@ -15,7 +15,6 @@ export const VaultsMembersTableHeader = () => {
       <TableCell centered className="w-32">
         Role
       </TableCell>
-      <TableCell isRight className="w-10" />
     </TableRow>
   )
 }

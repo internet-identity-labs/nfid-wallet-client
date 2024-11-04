@@ -1,15 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import {
-  IconCmpArchive,
-  IconCmpDots,
-  IconCmpPencil,
-  Popover,
-  PopoverTools,
-  TableCell,
-  TableRow,
-} from "@nfid-frontend/ui"
+import { TableCell, TableRow } from "@nfid-frontend/ui"
 
 export interface VaultsPoliciesTableRowProps {
   id: bigint
@@ -17,10 +9,7 @@ export interface VaultsPoliciesTableRowProps {
   source: string
   greaterThan: string
   approvers: string
-  onArchive?: () => void
-  onEdit?: () => void
   isArchived?: boolean
-  isAdmin?: boolean
 }
 
 export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
@@ -28,10 +17,7 @@ export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
   source,
   greaterThan,
   approvers,
-  onArchive,
-  onEdit,
   isArchived,
-  isAdmin,
 }: VaultsPoliciesTableRowProps) => {
   return (
     <TableRow
@@ -42,31 +28,6 @@ export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
       <TableCell>{source}</TableCell>
       <TableCell>{greaterThan}</TableCell>
       <TableCell centered>{approvers}</TableCell>
-      <TableCell isRight className="px-0">
-        <Popover
-          align="end"
-          trigger={
-            <IconCmpDots
-              className={clsx("w-full", (isArchived || !isAdmin) && "hidden")}
-            />
-          }
-        >
-          <PopoverTools
-            items={[
-              {
-                icon: <IconCmpPencil />,
-                text: "Edit",
-                onClick: onEdit,
-              },
-              {
-                icon: <IconCmpArchive />,
-                text: "Archive",
-                onClick: onArchive,
-              },
-            ]}
-          />
-        </Popover>
-      </TableCell>
     </TableRow>
   )
 }

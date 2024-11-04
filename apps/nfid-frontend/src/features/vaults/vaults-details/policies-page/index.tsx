@@ -6,8 +6,6 @@ import { Policy, vaultsTracking } from "@nfid/integration"
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
 import { useVaultPolicies } from "../../hooks/use-vault-policies"
-import { VaultPolicyInfoTooltip } from "./info-tooltip"
-import { VaultAddPolicy } from "./modal-add-policy"
 import { VaultsPoliciesTable } from "./table"
 
 interface VaultsPoliciesPageProps {}
@@ -15,7 +13,7 @@ interface VaultsPoliciesPageProps {}
 export const VaultsPoliciesPage: React.FC<VaultsPoliciesPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
   const { policies, isFetching } = useVaultPolicies()
-  const { vault, isAdmin } = useVault()
+  const { vault } = useVault()
 
   React.useEffect(() => {
     if (vault && policies) {
@@ -44,15 +42,7 @@ export const VaultsPoliciesPage: React.FC<VaultsPoliciesPageProps> = () => {
 
   return (
     <div className="border border-gray-200 rounded-xl mt-[30px]">
-      <VaultActionBar
-        onInputChange={onFilterChange}
-        actionButtons={
-          <div className="flex space-x-5">
-            {isAdmin ? <VaultAddPolicy /> : null}
-            <VaultPolicyInfoTooltip />
-          </div>
-        }
-      />
+      <VaultActionBar onInputChange={onFilterChange} />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsPoliciesTable policies={filteredPolicies} />
         {!filteredPolicies.length && !isFetching && (

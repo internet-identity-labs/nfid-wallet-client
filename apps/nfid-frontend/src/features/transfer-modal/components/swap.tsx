@@ -1,4 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import {
   fetchActiveTokens,
@@ -30,6 +31,8 @@ import { SwapStage } from "frontend/integration/icpswap/types/enums"
 import { FormValues } from "../types"
 import { getIdentity, getQuoteData } from "../utils"
 
+const QUOTE_REFETCH_TIMER = 30
+
 interface ISwapFT {
   onClose: () => void
 }
@@ -43,6 +46,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const [isShroffLoading, setIsShroffLoading] = useState(true)
   const [swapStep, setSwapStep] = useState<SwapStage>(0)
   const [shroffError, setShroffError] = useState<Error | undefined>()
+  const [quoteTimer, setQuoteTimer] = useState(QUOTE_REFETCH_TIMER)
   const [swapError, setSwapError] = useState<
     WithdrawError | SwapError | DepositError | undefined
   >()
@@ -133,7 +137,11 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     return () => clearInterval(interval)
   }, [getTransaction])
 
-  const { data: quote, isLoading: isQuoteLoading } = useSWR(
+  const {
+    data: quote,
+    isLoading: isQuoteLoading,
+    mutate,
+  } = useSWR(
     amount
       ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
       : null,
@@ -147,6 +155,23 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       },
     },
   )
+
+  useEffect(() => {
+    if (!quote) return
+    const interval = setInterval(() => {
+      setQuoteTimer((prev) => prev - 1)
+      if (quoteTimer === 0) {
+        resetIntegrationCache(["usdPriceForICRC1"], () => {
+          mutate()
+          setQuoteTimer(QUOTE_REFETCH_TIMER)
+        })
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [mutate, quoteTimer, quote])
 
   const refresh = () => {
     setShroffError(undefined)
@@ -207,6 +232,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         onClose={onClose}
         transaction={getTransaction}
         identity={identity}
+        quoteTimer={quoteTimer}
       />
     </FormProvider>
   )

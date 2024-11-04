@@ -132,7 +132,7 @@ const SecurityPage = () => {
         }
         renderPasskeys={renderPasskeys}
         renderRecoveryOptions={renderRecoveryOptions}
-        isLoading={isLoading || isValidating}
+        isLoading={isLoading || isValidating || devices === undefined}
       />
     </ProfileTemplate>
   )

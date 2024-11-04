@@ -125,10 +125,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           id="input"
           {...register("to", {
             required: "This field cannot be empty",
-            validate: (value) => {
-              console.log(value, validateAddress(value))
-              return validateAddress(value)
-            },
+            validate: (value) => validateAddress(value),
           })}
         />
         <Button

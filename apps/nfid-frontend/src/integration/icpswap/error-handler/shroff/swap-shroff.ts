@@ -3,7 +3,9 @@ import {ShroffBuilder, ShroffImpl} from "src/integration/icpswap/impl/shroff-imp
 import {Shroff} from "src/integration/icpswap/shroff"
 import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
 
-import {replaceActorIdentity} from "@nfid/integration"
+import {hasOwnProperty, replaceActorIdentity} from "@nfid/integration"
+import {WithdrawError} from "src/integration/icpswap/errors";
+import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffSwapErrorHandler extends ShroffImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -32,6 +34,31 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
       }
       await this.restoreTransaction()
       throw e
+    }
+  }
+
+  protected async withdraw(): Promise<bigint> {
+    const args: WithdrawArgs = {
+      amount: BigInt(
+        this.requestedQuote!.getSourceAmount().toNumber()
+      ),
+      token: this.source.ledger,
+      fee: this.source.fee,
+    }
+    try {
+      return this.swapPoolActor.withdraw(args).then((result) => {
+        if (hasOwnProperty(result, "ok")) {
+          const id = result.ok as bigint
+          this.swapTransaction!.setWithdraw(id)
+          return id
+        }
+
+        console.error("Withdraw error: " + JSON.stringify(result.err))
+        throw new WithdrawError()
+      })
+    } catch (e) {
+      console.error("Withdraw error: " + e)
+      throw new WithdrawError()
     }
   }
 

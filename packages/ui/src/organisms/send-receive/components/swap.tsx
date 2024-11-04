@@ -50,6 +50,7 @@ export interface SwapFTUiProps {
   onClose: () => void
   transaction: SwapTransaction | undefined
   identity?: DelegationIdentity
+  quoteTimer: number
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -73,6 +74,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   onClose,
   transaction,
   identity,
+  quoteTimer,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
@@ -172,8 +174,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             <Skeleton className="w-[30px] h-1 rounded-[4px] !bg-gray-200" />
           </div>
         ) : (
-          // TODO: implement auto refetch in 30 sec of users inactivity
-          `${quote?.getQuoteRate()} (30 sec)`
+          `${quote?.getQuoteRate()} (${quoteTimer} sec)`
         )}
         <span
           className={

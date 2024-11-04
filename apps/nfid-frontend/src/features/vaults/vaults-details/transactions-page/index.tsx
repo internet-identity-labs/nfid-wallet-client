@@ -1,25 +1,15 @@
 import React, { useCallback, useMemo, useState } from "react"
 
-import {
-  EmptyCard,
-  IconCmpSorting,
-  IconCmpTransactions,
-  IOption,
-} from "@nfid-frontend/ui"
+import { EmptyCard, IconCmpTransactions } from "@nfid-frontend/ui"
 import {
   bigIntMillisecondsToSeconds,
   isDateBetween,
 } from "@nfid-frontend/utils"
-import {
-  Transaction,
-  TransactionState,
-  vaultsTracking,
-} from "@nfid/integration"
+import { Transaction, vaultsTracking } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
 import { useVaultTransactions } from "../../hooks/use-vault-transactions"
-import { VaultFilterTransactions } from "./modal-filters"
 import { VaultsTransactionsTable } from "./table"
 
 interface VaultsTransactionsPageProps {}
@@ -33,9 +23,9 @@ export const VaultsTransactionsPage: React.FC<
   VaultsTransactionsPageProps
 > = () => {
   const [searchFilter, setSearchFilter] = useState("")
-  const [initiatedFilter, setInitiatedFilter] = useState<string[]>([])
-  const [statusFilter, setStatusFilter] = useState<string[]>([])
-  const [timeFilter, setTimeFilter] = useState(initialTimeFilter)
+  const [initiatedFilter] = useState<string[]>([])
+  const [statusFilter] = useState<string[]>([])
+  const [timeFilter] = useState(initialTimeFilter)
   const { transactions, isFetching } = useVaultTransactions()
   const { vault } = useVault()
 
@@ -49,34 +39,6 @@ export const VaultsTransactionsPage: React.FC<
       })
     }
   }, [initiatedFilter.length, searchFilter, timeFilter, transactions, vault])
-
-  const initiatorsOptions = useMemo(() => {
-    return (
-      vault?.members.map(
-        (member) =>
-          ({
-            label: member.name ?? "Unknown user",
-            value: member.userId,
-          } as IOption),
-      ) ?? []
-    )
-  }, [vault?.members])
-
-  const statusOptions = useMemo(() => {
-    return Object.values(TransactionState).map(
-      (status) =>
-        ({
-          label: status.charAt(0).toUpperCase() + status.slice(1).toLowerCase(),
-          value: status,
-        } as IOption),
-    )
-  }, [])
-
-  const onResetFilters = useCallback(() => {
-    setStatusFilter([])
-    setInitiatedFilter([])
-    setTimeFilter(initialTimeFilter)
-  }, [])
 
   const filteredTransactions: Transaction[] = useMemo(() => {
     if (!transactions) return []
@@ -125,25 +87,7 @@ export const VaultsTransactionsPage: React.FC<
 
   return (
     <div className="border border-gray-200 rounded-xl mt-[30px]">
-      <VaultActionBar
-        onInputChange={onFilterChange}
-        actionButtons={
-          <div className="flex items-center justify-end w-full ml-4 space-x-5">
-            <VaultFilterTransactions
-              initiatorsOptions={initiatorsOptions}
-              statusOptions={statusOptions}
-              initiatedFilter={initiatedFilter}
-              setInitiatedFilter={(e) => setInitiatedFilter(e)}
-              statusFilter={statusFilter}
-              setStatusFilter={(e) => setStatusFilter(e)}
-              timeFilter={timeFilter}
-              setTimeFilter={setTimeFilter}
-              onResetFilters={onResetFilters}
-            />
-            <IconCmpSorting className="transition-opacity cursor-pointer hover:opacity-60" />
-          </div>
-        }
-      />
+      <VaultActionBar onInputChange={onFilterChange} />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsTransactionsTable transactions={filteredTransactions} />
         {!filteredTransactions.length && !isFetching && (

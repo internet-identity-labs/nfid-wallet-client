@@ -5,14 +5,13 @@ import { ObjectState, VaultMember, vaultsTracking } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
-import { VaultAddMember } from "./modal-add-member"
 import { VaultsMembersTable } from "./table"
 
 interface VaultsMembersPageProps {}
 
 export const VaultsMembersPage: React.FC<VaultsMembersPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
-  const { vault, isFetching, isAdmin } = useVault()
+  const { vault, isFetching } = useVault()
 
   React.useEffect(() => {
     if (!isFetching && vault) {
@@ -48,10 +47,7 @@ export const VaultsMembersPage: React.FC<VaultsMembersPageProps> = () => {
 
   return (
     <div className="border border-gray-200 rounded-xl mt-[30px]">
-      <VaultActionBar
-        onInputChange={onFilterChange}
-        actionButtons={isAdmin ? <VaultAddMember /> : <div />}
-      />
+      <VaultActionBar onInputChange={onFilterChange} />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsMembersTable members={filteredMembers} />
         {!filteredMembers.length && !isFetching && (

@@ -18,7 +18,11 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
     }
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
+      this.delegationIdentity = delegationIdentity
       console.debug("Transaction restarted")
+      if (this.swapTransaction.getError() === undefined) {
+        return this.handleWithdrawTimeoutError()
+      }
       await this.withdraw()
       console.debug("Withdraw done")
       await this.transferToNFID()
@@ -41,6 +45,15 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
       await this.restoreTransaction()
       throw e
     }
+
+  }
+
+
+  private async handleWithdrawTimeoutError(): Promise<SwapTransaction> {
+    await this.transferToNFID()
+    await this.restoreTransaction()
+    console.debug("Transaction stored")
+    return this.swapTransaction!
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useMemo } from "react"
 
 import { Table } from "@nfid-frontend/ui"
 import { toUSD } from "@nfid-frontend/utils"
@@ -8,7 +8,6 @@ import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/u
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 
-import { VaultArchiveWallet } from "../modal-archive-wallet"
 import { VaultsWalletsTableHeader } from "./table-header"
 import { VaultsWalletsTableRow, VaultsWalletsTableRowProps } from "./table-row"
 
@@ -19,8 +18,6 @@ export interface VaultsWalletsTableProps {
 export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
   wallets,
 }) => {
-  const [isArchiveModal, setIsArchiveModal] = useState(false)
-  const [selectedWallet, setSelectedWallet] = useState<Wallet>()
   const { exchangeRate } = useICPExchangeRate()
   const { isAdmin } = useVault()
 
@@ -46,31 +43,15 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
     )
   }, [exchangeRate, isAdmin, wallets])
 
-  const onModalOpen = useCallback(
-    (type: "archive", walletUid: string) => {
-      const wallet = wallets.find((wallet) => wallet.uid === walletUid)
-      setSelectedWallet(wallet)
-
-      if (type === "archive") setIsArchiveModal(true)
-    },
-    [wallets],
-  )
-
   return (
     <Table tableHeader={<VaultsWalletsTableHeader />}>
       {walletsToRows.map((wallet) => (
         <VaultsWalletsTableRow
           {...wallet}
           key={`wallet_${wallet.uid}`}
-          onArchive={() => onModalOpen("archive", wallet.uid ?? "")}
           isArchived={wallet.isArchived}
         />
       ))}
-      <VaultArchiveWallet
-        selectedWallet={selectedWallet}
-        isModalOpen={isArchiveModal}
-        setIsModalOpen={setIsArchiveModal}
-      />
     </Table>
   )
 }

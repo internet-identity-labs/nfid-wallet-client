@@ -48,6 +48,7 @@ export const Dropdown = ({
             position === "top" && "bottom-[100%]",
           )}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
+          onClick={() => setIsDropdownOpen(false)}
         >
           <div style={{ minWidth: `${minWidth}px` }}>{children}</div>
         </div>

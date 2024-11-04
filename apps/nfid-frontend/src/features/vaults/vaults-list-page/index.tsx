@@ -9,7 +9,6 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { VaultActionBar } from "../action-bar"
 import { getAllVaults } from "../services"
 import { VaultAddressBar } from "./address-bar"
-import { VaultModalCreate } from "./modal-add-vault"
 import { VaultsTable } from "./table"
 
 export interface VaultsListPageProps {}
@@ -19,7 +18,6 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
 
   const {
     data: vaults,
-    mutate,
     isLoading,
     isValidating,
   } = useSWR(["vaults"], getAllVaults)
@@ -47,10 +45,7 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
     <ProfileTemplate pageTitle="Vaults">
       <VaultAddressBar />
       <div className="border border-gray-200 rounded-xl mt-[30px]">
-        <VaultActionBar
-          onInputChange={onFilterChange}
-          actionButtons={<VaultModalCreate refetchVaults={() => mutate()} />}
-        />
+        <VaultActionBar onInputChange={onFilterChange} />
         <div className="w-full px-5 overflow-x-auto">
           <VaultsTable vaults={filteredVaults} />
           {!filteredVaults.length && !isLoading && !isValidating && (

@@ -1,8 +1,5 @@
-import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useEffect, useState } from "react"
 import useSWR from "swr"
-
-import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
 
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRowGroup } from "../types"
@@ -13,7 +10,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [filter, setFilter] = useState<string[]>(initialFilter)
   const [offset, setOffset] = useState(0)
   const [activities, setActivities] = useState<IActivityRowGroup[]>([])
-  const [icrcCount, setIcrcCount] = useState(BigInt(20))
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
 
@@ -34,7 +30,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
 
   useEffect(() => {
     setActivities([])
-    setIcrcCount(BigInt(20))
     setOffset(0)
   }, [filter])
 
@@ -69,31 +64,8 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const loadMore = async () => {
     setIsButtonLoading(true)
     const newOffset = offset + PAGINATION_ITEMS
-
-    if (shouldLoadMoreICRC1(newOffset)) {
-      await loadData()
-    } else {
-      setOffset(newOffset)
-      mutate()
-    }
-
+    setOffset(newOffset)
     setIsButtonLoading(false)
-  }
-
-  const shouldLoadMoreICRC1 = (newOffset: number) => {
-    const currentRowCount = activities.reduce(
-      (acc, group) => acc + group.rows.length,
-      0,
-    )
-    return currentRowCount < newOffset
-  }
-
-  const loadData = async () => {
-    const { userPrincipal, publicKey } = await getUserPrincipalId()
-    await getICRC1HistoryDataForUser(userPrincipal, publicKey, icrcCount)
-
-    setIcrcCount(icrcCount + BigInt(PAGINATION_ITEMS))
-    mutate()
   }
 
   const resetHandler = () => {

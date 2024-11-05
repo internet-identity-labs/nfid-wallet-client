@@ -199,20 +199,10 @@ export const TransferFT = ({
         const index = activeTokens.findIndex(
           (el) => el.getTokenAddress() === ledger,
         )
-        activeTokens[index].setTokenBalance(updatedBalance)
+        const newTokens = [...activeTokens]
+        newTokens[index].setTokenBalance(updatedBalance)
 
-        const usdRate = await exchangeRateService.usdPriceForICRC1(ledger)
-        const updatedUsdBalance =
-          (Number(updatedBalance) / 10 ** decimals) *
-          Number(usdRate?.toFixed(2))
-
-        mutate("activeTokens", activeTokens, false)
-
-        mutate(
-          ["activeTokenUSD", ledger],
-          `${updatedUsdBalance.toFixed(2)} USD`,
-          false,
-        )
+        mutate("activeTokens", newTokens, false)
       },
     })
   }, [

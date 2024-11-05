@@ -72,7 +72,7 @@ export const Tokens: FC<TokensProps> = ({
           ) : (
             activeTokens.map((token, index, arr) => (
               <ActiveToken
-                key={`token_${token.getTokenName()}`}
+                key={`token_${token.getTokenAddress()}_${token.getTokenBalance()}`}
                 token={token}
                 profileConstants={profileConstants}
                 onSendClick={onSendClick}

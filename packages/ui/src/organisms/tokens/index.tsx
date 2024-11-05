@@ -70,13 +70,14 @@ export const Tokens: FC<TokensProps> = ({
               tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
             />
           ) : (
-            activeTokens.map((token) => (
+            activeTokens.map((token, index, arr) => (
               <ActiveToken
                 key={`token_${token.getTokenName()}`}
                 token={token}
                 profileConstants={profileConstants}
                 onSendClick={onSendClick}
                 setToken={setToken}
+                dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
               />
             ))
           )}

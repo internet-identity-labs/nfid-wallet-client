@@ -72,14 +72,15 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   }, [token, userBalance, isSwap])
 
   const isMaxAvailable = useMemo(() => {
-    if (userBalance === undefined || !fee) return false
+    if (userBalance === undefined || fee === undefined) return false
+
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
     return balanceNum.minus(feeNum).isGreaterThan(0)
-  }, [userBalance, fee])
+  }, [userBalance, fee, token])
 
   const maxHandler = useCallback(() => {
-    if (!token || !fee || !userBalance) return
+    if (!token || fee === undefined || userBalance === undefined) return
     const decimals = token.getTokenDecimals()
     if (!decimals || !isMaxAvailable) return
 

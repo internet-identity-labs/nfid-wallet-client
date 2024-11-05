@@ -47,12 +47,15 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm({
     mode: "all",
     defaultValues: {
       to: selectedReceiverWallet ?? "",
     },
   })
+
+  const to = watch("to")
 
   return (
     <BlurredLoader
@@ -127,6 +130,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         />
         <Button
           id={"sendButton"}
+          disabled={Boolean(errors["to"]?.message) || !to}
           className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block

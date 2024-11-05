@@ -95,7 +95,7 @@ export async function oldFlowGlobalKeysFromLambda(
     sessionPublicKey: toHexString(sessionPublicKey),
     tempPublicKey: lambdaPublicKey,
     targets,
-    maxTimeToLive,
+    delegationTtl: maxTimeToLive,
   }
 
   const delegationJSON = await fetchSignUrl(request)

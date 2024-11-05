@@ -9,9 +9,9 @@ export const idlFactory = ({ IDL }: any) => {
   })
   const SwapTransaction = IDL.Record({
     uid: IDL.Text,
-    withdraw: IDL.Opt(IDL.Nat64),
-    swap: IDL.Opt(IDL.Nat64),
-    deposit: IDL.Opt(IDL.Nat64),
+    withdraw: IDL.Opt(IDL.Nat),
+    swap: IDL.Opt(IDL.Nat),
+    deposit: IDL.Opt(IDL.Nat),
     end_time: IDL.Opt(IDL.Nat64),
     transfer_id: IDL.Opt(IDL.Nat64),
     target_ledger: IDL.Text,
@@ -20,8 +20,8 @@ export const idlFactory = ({ IDL }: any) => {
     start_time: IDL.Nat64,
     source_ledger: IDL.Text,
     transfer_nfid_id: IDL.Opt(IDL.Nat64),
-    target_amount: IDL.Nat64,
-    source_amount: IDL.Nat64,
+    target_amount: IDL.Nat,
+    source_amount: IDL.Nat,
   })
   return IDL.Service({
     get_transactions: IDL.Func(

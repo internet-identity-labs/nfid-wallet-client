@@ -1,6 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { SwapError } from "src/integration/icpswap/errors/swap-error"
-import { WithdrawError } from "src/integration/icpswap/errors/withdraw-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -10,6 +8,7 @@ import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
+import { ContactSupportError } from "../../errors/contact-support-error"
 import { WithdrawErrorLog } from "../../idl/SwapPool.d"
 
 export class ShroffWithdrawErrorHandler extends ShroffImpl {
@@ -19,11 +18,14 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
     }
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
+      this.delegationIdentity = delegationIdentity
       console.debug("Transaction restarted")
+      if (this.swapTransaction.getError() === undefined) {
+        return this.handleWithdrawTimeoutError()
+      }
       await this.withdraw()
       console.debug("Withdraw done")
       await this.transferToNFID()
-      //maybe not async
       await this.restoreTransaction()
       console.debug("Transaction stored")
       return this.swapTransaction
@@ -33,16 +35,25 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
         if (hasOwnProperty(log, "ok")) {
           const withdrawLogs = log.ok as Array<[bigint, WithdrawErrorLog]>
           if (withdrawLogs.length > 0) {
-            throw new WithdrawError()
+            throw new ContactSupportError("Withdraw logs are empty")
           }
         }
       })
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError((e as Error).message)
       }
       await this.restoreTransaction()
-      throw new SwapError()
+      throw e
     }
+
+  }
+
+
+  private async handleWithdrawTimeoutError(): Promise<SwapTransaction> {
+    await this.transferToNFID()
+    await this.restoreTransaction()
+    console.debug("Transaction stored")
+    return this.swapTransaction!
   }
 }
 

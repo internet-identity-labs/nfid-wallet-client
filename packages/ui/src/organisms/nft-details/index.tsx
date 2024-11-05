@@ -7,6 +7,7 @@ import {
   ImageWithFallback,
   Skeleton,
   TableNftActivitySkeleton,
+  IconCmpExternalIcon,
 } from "@nfid-frontend/ui"
 import { trimConcat } from "@nfid-frontend/utils"
 
@@ -44,6 +45,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
   assetPreview,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const marketPlaceLink = nft.getTokenMarketPlaceLink()
 
   return (
     <>
@@ -128,9 +130,9 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </p>
           <ProfileContainer
             title="Details"
-            className="!p-[20px] sm:!p-[30px] !m-0 flex-[100%]"
+            className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%]"
             innerClassName="!p-0"
-            titleClassName="!p-0 mb-[22px]"
+            titleClassName="!p-0 mb-[20px]"
           >
             <div
               className={clsx(
@@ -138,10 +140,12 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 "block sm:flex items-center",
               )}
             >
-              <p className="text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
+              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
                 Standard
               </p>
-              <p id={"token-standard"}>EXT</p>
+              <p className="text-sm" id={"token-standard"}>
+                EXT
+              </p>
             </div>
             <div
               className={clsx(
@@ -149,10 +153,13 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 "block sm:flex items-center",
               )}
             >
-              <p className="text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
                 ID
               </p>
-              <p id={`nft_id_${nft.getTokenId().replace(/\s/g, "")}`}>
+              <p
+                className="text-sm"
+                id={`nft_id_${nft.getTokenId().replace(/\s/g, "")}`}
+              >
                 {nft.getTokenId()}
               </p>
             </div>
@@ -162,19 +169,20 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 "block sm:flex items-center",
               )}
             >
-              <p className="text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
                 Collection ID
               </p>
-              <p id={"collection-id"}>{nft.getCollectionId()}</p>
+              <p className="text-sm" id={"collection-id"}>
+                {nft.getCollectionId()}
+              </p>
             </div>
-
             <div
               className={clsx(
-                "min-h-[64px] sm:min-h-[54px]",
+                "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
                 "block sm:flex items-center",
               )}
             >
-              <p className="text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
                 Floor price
               </p>
               <p>
@@ -182,7 +190,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   <span>Unknown</span>
                 ) : (
                   <>
-                    <span className="block">
+                    <span className="block text-sm">
                       {nft.getTokenFloorPriceIcpFormatted()}
                     </span>
                     <span className="block text-xs text-gray-400">
@@ -191,6 +199,24 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   </>
                 )}
               </p>
+            </div>
+            <div
+              className={clsx(
+                "min-h-[64px] sm:min-h-[54px]",
+                "block sm:flex items-center",
+              )}
+            >
+              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                View on a marketplace
+              </p>
+              <a
+                className="flex items-center gap-2 text-primaryButtonColor"
+                target="_blank"
+                href={marketPlaceLink}
+              >
+                {marketPlaceLink}
+                <IconCmpExternalIcon className="mt-1" />
+              </a>
             </div>
           </ProfileContainer>
         </div>
@@ -298,7 +324,9 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               />
             ) : (
               transactions.activity &&
-              transactions.activity.map((activity, index) => {
+              transactions.activity.map((activity) => {
+                const price = activity.getTransactionView().getFormattedPrice()
+
                 return (
                   <Fragment
                     key={`${activity.getTransactionView().getFrom()}_${activity
@@ -319,21 +347,18 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                         {activity.getTransactionView().getTo()}
                       </td>
                       <td>
-                        {index === 0 &&
-                          (!nft.getTokenFloorPriceIcpFormatted() ? (
-                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                              Unknown
-                            </div>
-                          ) : (
-                            <div className="absolute top-0 bottom-0 h-[60px] my-auto">
-                              <span className="block">
-                                {nft.getTokenFloorPriceIcpFormatted()}
-                              </span>
-                              <span className="block text-xs text-gray-400">
-                                {nft.getTokenFloorPriceUSDFormatted()}
-                              </span>
-                            </div>
-                          ))}
+                        {price ? (
+                          <>
+                            <span className="block">{price}</span>
+                            <span className="block text-xs text-gray-400">
+                              {activity
+                                .getTransactionView()
+                                .getFormattedUsdPrice()}
+                            </span>
+                          </>
+                        ) : (
+                          "Unknown"
+                        )}
                       </td>
                     </tr>
                   </Fragment>

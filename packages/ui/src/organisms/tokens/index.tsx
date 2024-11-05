@@ -1,4 +1,4 @@
-import { HTMLAttributes, FC } from "react"
+import { HTMLAttributes, FC, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import { TableTokenSkeleton } from "../../atoms/skeleton"
@@ -6,6 +6,7 @@ import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { ActiveToken } from "./components/active-asset"
 import { TokensHeader } from "./components/header"
 import { NewAssetsModal } from "./components/new-assets-modal"
+import { TokenInfoModal } from "./components/token-info-modal"
 
 export interface IProfileConstants {
   base: string
@@ -42,6 +43,8 @@ export const Tokens: FC<TokensProps> = ({
   onFetch,
   onSendClick,
 }) => {
+  const [token, setToken] = useState<FT | undefined>()
+
   return (
     <>
       <TokensHeader
@@ -67,18 +70,21 @@ export const Tokens: FC<TokensProps> = ({
               tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
             />
           ) : (
-            activeTokens.map((token) => (
+            activeTokens.map((token, index, arr) => (
               <ActiveToken
                 key={`token_${token.getTokenName()}`}
                 token={token}
                 profileConstants={profileConstants}
                 onSendClick={onSendClick}
+                setToken={setToken}
+                dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
               />
             ))
           )}
         </tbody>
       </table>
       <NewAssetsModal tokens={null} />
+      <TokenInfoModal token={token} onClose={() => setToken(undefined)} />
     </>
   )
 }

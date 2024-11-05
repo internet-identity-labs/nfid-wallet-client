@@ -71,7 +71,6 @@ export const SendFTProps: any = {
   tokenMetadata: [] as any,
   tokenOptions: [] as any,
   setSelectedAccountAddress: () => {},
-  selectedConnector: [] as any,
   selectedTokenCurrency: "ICP",
   selectedTokenBlockchain: "Internet Computer",
   sendReceiveTrackingFn: () => console.log("Tracking send/receive"),

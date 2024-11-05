@@ -23,7 +23,7 @@ describe("yumi test suite", () => {
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
-      const result = await nftService.getNFTs(principal)
+      const result = await nftService.getNFTs(principal, 1, 10)
       await Promise.all(result.items.map(async (nft) => nft.init()))
 
       const yumiNFT = result.items.filter(
@@ -48,7 +48,7 @@ describe("yumi test suite", () => {
       )
       //todo link does not work
       expect(yumiNFT.getTokenLink()).toEqual(
-        "https://yzrp5-oaaaa-aaaah-ad2xa-cai.raw.ic0.app/?tokenid=h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
+        "https://yzrp5-oaaaa-aaaah-ad2xa-cai.raw.icp0.io/?tokenid=h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
       )
 
       const yumiNFTdetails = await yumiNFT.getDetails()

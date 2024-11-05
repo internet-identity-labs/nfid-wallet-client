@@ -81,31 +81,31 @@ export function entrepotAsset(
 ): string {
   const { index } = decodeTokenIdentifier(token)
   if (collectionId === "jeghr-iaaaa-aaaah-qco7q-cai")
-    return `https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/${index}`
+    return `https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.icp0.io/nft/${index}`
   if (collectionId === "bxdf4-baaaa-aaaah-qaruq-cai")
-    return `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/${index}`
+    return `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.icp0.io/Token/${index}`
   if (collectionId === "y3b7h-siaaa-aaaah-qcnwa-cai")
-    return `https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/${index}`
+    return `https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.icp0.io/Token/${index}`
   if (collectionId === "3db6u-aiaaa-aaaah-qbjbq-cai")
-    return `https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=${index}`
+    return `https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.icp0.io?tokenId=${index}`
   if (collectionId === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index)
   if (collectionId === "pk6rk-6aaaa-aaaae-qaazq-cai") {
     if (fullSize) {
-      return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
+      return `https://${collectionId}.raw.icp0.io/?tokenid=${token}`
     } else {
       return `https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/${token}`
     }
   }
   if (collectionId === "dhiaa-ryaaa-aaaae-qabva-cai") {
     if (fullSize) {
-      return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
+      return `https://${collectionId}.raw.icp0.io/?tokenid=${token}`
     } else {
       return `https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/${token}`
     }
   }
   if (collectionId === "skjpp-haaaa-aaaae-qac7q-cai") {
     if (fullSize) {
-      return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
+      return `https://${collectionId}.raw.icp0.io/?tokenid=${token}`
     } else {
       return `https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/${token}`
     }
@@ -116,7 +116,7 @@ export function entrepotAsset(
     }
   }
   if (fullSize) {
-    return `https://${collectionId}.raw.ic0.app/?tokenid=${token}`
+    return `https://${collectionId}.raw.icp0.io/?tokenid=${token}`
   } else {
     //add collections with wearables or other dynamic traits here
     //these images will not be cached
@@ -135,9 +135,9 @@ export function entrepotAsset(
     //end of section
 
     if (collectionId === "6wih6-siaaa-aaaah-qczva-cai")
-      return `https://${collectionId}.raw.ic0.app/?cc${Date.now()}&type=thumbnail&tokenid=${token}`
+      return `https://${collectionId}.raw.icp0.io/?cc${Date.now()}&type=thumbnail&tokenid=${token}`
     if (collectionId === "kss7i-hqaaa-aaaah-qbvmq-cai")
-      return `https://${collectionId}.raw.ic0.app/?type=thumbnail&tokenid=${token}`
+      return `https://${collectionId}.raw.icp0.io/?type=thumbnail&tokenid=${token}`
     return `https://images.entrepot.app/t/${collectionId}/${token}`
   }
 }
@@ -192,6 +192,7 @@ export function assetPreview(
 export async function assetFullsize(
   collection: EntrepotCollection,
   tokenId: string,
+  fullSize: boolean = false,
 ): Promise<{
   url: string
   format: DisplayFormat
@@ -200,7 +201,7 @@ export async function assetFullsize(
   const _format = getEntrepotDisplayFormat(collection, tokenId)
   const format = getDisplayFormat(_format)
   if (_format === "default") {
-    return { url: entrepotAsset(collection.id, tokenId, false), format }
+    return { url: entrepotAsset(collection.id, tokenId, fullSize), format }
   }
   if (_format === "asset_canisters") {
     return { url: await getImageDetailsUrl(url), format }
@@ -227,7 +228,7 @@ function icpbunnyimg(index: number) {
     "f5zsx-wqaaa-aaaaf-qaeha-cai",
     "f2yud-3iaaa-aaaaf-qaehq-cai",
   ]
-  return `https://${icbstorage[index % 10]}.raw.ic0.app/Token/${index}`
+  return `https://${icbstorage[index % 10]}.raw.ic0.io/Token/${index}`
 }
 
 /**
@@ -236,15 +237,15 @@ function icpbunnyimg(index: number) {
 export function getTokenLink(canister: string, index: number): string {
   const id = encodeTokenIdentifier(canister, index)
   if (canister === "jeghr-iaaaa-aaaah-qco7q-cai")
-    return `https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/${index}`
+    return `https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.icp0.io/nft/${index}`
   if (canister === "bxdf4-baaaa-aaaah-qaruq-cai")
-    return `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/${index}`
+    return `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.icp0.io/Token/${index}`
   if (canister === "y3b7h-siaaa-aaaah-qcnwa-cai")
-    return `https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/${index}`
+    return `https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.icp0.io/Token/${index}`
   if (canister === "3db6u-aiaaa-aaaah-qbjbq-cai")
-    return `https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=${index}`
+    return `https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.icp0.io?tokenId=${index}`
   if (canister === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index)
-  return `https://${canister}.raw.ic0.app/?tokenid=${id}`
+  return `https://${canister}.raw.icp0.io/?tokenid=${id}`
 }
 
 /**

@@ -12,6 +12,7 @@ import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import { Environment } from "../constant/env.constant"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -43,12 +44,14 @@ type SetProps = {
   sessionKey?: Ed25519KeyIdentity | undefined
 }
 
-  function makeAuthState() {
+function makeAuthState() {
   console.debug("makeAuthState")
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()
 
-  if (typeof window !== "undefined") {
+  const isNonSensitiveEnv = ![Environment.STAGE, Environment.IC].includes(ENV as Environment)
+
+  if (isNonSensitiveEnv && typeof window !== "undefined") {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.resetAuthState = invalidateIdentity
@@ -181,7 +184,6 @@ type SetProps = {
   }
 
   function checkAndRenewFEDelegation() {
-    console.debug("checkAndRenewFEDelegation", { pendingRenewDelegation })
     const { delegationIdentity, identity } = observableAuthState$.getValue()
 
     if (!delegationIdentity || !identity || pendingRenewDelegation) return

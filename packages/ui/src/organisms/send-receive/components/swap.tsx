@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import clsx from "clsx"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -12,7 +13,14 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import {
+  DepositError,
+  SwapError,
+  WithdrawError,
+} from "frontend/integration/icpswap/errors"
 import { Quote } from "frontend/integration/icpswap/quote"
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import { ChooseFromToken } from "./choose-from-token"
@@ -36,10 +44,13 @@ export interface SwapFTUiProps {
   isQuoteLoading: boolean
   quote: Quote | undefined
   clearQuoteError: () => void
-  step: number
-  error?: string
+  step: SwapStage
+  error?: SwapError | WithdrawError | DepositError
   isProgressOpen: boolean
   onClose: () => void
+  transaction: SwapTransaction | undefined
+  identity?: DelegationIdentity
+  quoteTimer: number
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -61,6 +72,9 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   error,
   isProgressOpen,
   onClose,
+  transaction,
+  identity,
+  quoteTimer,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
@@ -96,6 +110,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         isOpen={isProgressOpen}
         onClose={onClose}
         error={error}
+        transaction={transaction}
+        identity={identity}
       />
       {showServiceError && <ErrorModal refresh={clearQuoteError} />}
       <QuoteModal
@@ -110,6 +126,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         usdRate={quote?.getSourceAmountUSD()}
         tokens={tokens}
         title="Swap from"
+        isSwap={true}
       />
       {showLiquidityError ? (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -157,8 +174,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             <Skeleton className="w-[30px] h-1 rounded-[4px] !bg-gray-200" />
           </div>
         ) : (
-          // TODO: implement auto refetch in 30 sec of users inactivity
-          `${quote?.getQuoteRate()} (30 sec)`
+          `${quote?.getQuoteRate()} (${quoteTimer} sec)`
         )}
         <span
           className={

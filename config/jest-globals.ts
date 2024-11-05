@@ -5,6 +5,8 @@ export const JEST_GLOBALS = {
   IDENTITY_MANAGER_CANISTER_ID: "74gpt-tiaaa-aaaak-aacaa-cai",
   VAULT_CANISTER_ID: "ymvb6-7qaaa-aaaan-qbgga-cai",
   ECDSA_SIGNER_CANISTER_ID: "txkre-oyaaa-aaaap-qa3za-cai",
+  SWAP_TRS_STORAGE: "mfoln-bqaaa-aaaao-qeuqq-cai",
+  NFID_WALLET_CANISTER: "w44yp-iaaaa-aaaar-qafjq-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
   ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
   ICRC1_ORACLE_CANISTER_ID: "ys266-uyaaa-aaaal-ajs4q-cai",
@@ -29,6 +31,7 @@ export const JEST_GLOBALS = {
   GOOGLE_CLIENT_ID:
     "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
   SIGNIN_GOOGLE: "/signin",
+  ENV: "test",
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
   AWS_ECDSA_REGISTER:

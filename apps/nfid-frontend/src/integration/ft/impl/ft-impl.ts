@@ -46,8 +46,16 @@ export class FTImpl implements FT {
     return `https://dashboard.internetcomputer.org/canister/${this.tokenAddress}`
   }
 
+  getIndexBlockExplorerLink(): string {
+    return `https://dashboard.internetcomputer.org/canister/${this.index}`
+  }
+
   getTokenAddress(): string {
     return this.tokenAddress
+  }
+
+  getTokenIndex(): string | undefined {
+    return this.index
   }
 
   getTokenSymbol(): string {
@@ -162,19 +170,13 @@ export class FTImpl implements FT {
   }
 
   getTokenFeeFormatted(): string {
-    return `${Number(this.fee) / 10 ** this.decimals} ${this.symbol}`
+    return `${(Number(this.fee) / 10 ** this.decimals).toLocaleString("en", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: this.decimals,
+    })} ${this.symbol}`
   }
 
   async getTokenFeeFormattedUsd(): Promise<string | undefined> {
-    const rate = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
-
-    if (!this.fee || !this.decimals || !rate) return
-
-    const usdPrice: BigNumber | undefined =
-      await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
-
-    if (!usdPrice) return
-
     const feeInUsd = await this.getTokenRate(
       (Number(this.fee) / 10 ** this.decimals).toString(),
     )

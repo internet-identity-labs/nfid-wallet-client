@@ -2,9 +2,10 @@ import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
+import InfiniteScroll from "react-infinite-scroll-component"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { IconCmpSearch, IconCmpWarning } from "@nfid-frontend/ui"
+import { ChooseTokenSkeleton, IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow, Label, Tooltip } from "@nfid-frontend/ui"
 
@@ -16,6 +17,7 @@ import { SmallTrigger } from "./triggers/small"
 import { IGroupedOptions, IGroupOption } from "./types"
 
 export interface IChooseModal {
+  loadMore?: () => void
   optionGroups: IGroupedOptions[]
   preselectedValue?: string
   onSelect?: (value: string) => void
@@ -31,9 +33,11 @@ export interface IChooseModal {
   registerFunction?: UseFormRegisterReturn<string>
   iconClassnames?: string
   isSmooth?: boolean
+  isLoading?: boolean
 }
 
 export const ChooseModal = ({
+  loadMore,
   optionGroups,
   preselectedValue,
   onSelect,
@@ -49,12 +53,13 @@ export const ChooseModal = ({
   registerFunction,
   iconClassnames,
   isSmooth = false,
+  isLoading = false,
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
   const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
-  console.debug("ChooseModal", { isModalVisible })
+  const [hasMore, setHasMore] = useState(Boolean(loadMore))
 
   const handleSelect = useCallback((option: IGroupOption) => {
     setSelectedValue(option.value)
@@ -75,6 +80,14 @@ export const ChooseModal = ({
     setSelectedOption(undefined)
     setSelectedValue("")
   }, [])
+
+  const fetchMoreData = () => {
+    if (loadMore) {
+      loadMore()
+    } else {
+      setHasMore(false)
+    }
+  }
 
   useEffect(() => {
     if (!optionGroups.length && selectedOption) return
@@ -166,34 +179,45 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
           className="mt-4 mb-5"
         />
+        {isLoading && <ChooseTokenSkeleton rows={6} />}
         <div
           className={clsx(
             "flex-1 overflow-auto snap-end pr-[10px]",
             "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
             "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
           )}
+          id={hasMore ? "scrollable-area" : "no-scroll"}
         >
-          {filteredOptions.map((group, index) => (
-            <div
-              id={`option_group_${group.label.replace(/\s/g, "")}`}
-              key={`group_${group.label}_${group.options.length}_${index}`}
-            >
-              {group.options.map((option, i) => (
-                <ChooseItem
-                  key={`option_${option.value}_group_${index}_${i}`}
-                  handleClick={() => handleSelect(option)}
-                  image={option.icon}
-                  title={option.title}
-                  subTitle={option.subTitle}
-                  innerTitle={option.innerTitle}
-                  innerSubtitle={option.innerSubtitle}
-                  iconClassnames={iconClassnames}
-                  badgeText={option.badgeText}
-                  id={trimConcat("choose_option_", option.title)}
-                />
-              ))}
-            </div>
-          ))}
+          <InfiniteScroll
+            dataLength={filteredOptions.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            loader={null}
+            scrollableTarget="scrollable-area"
+            scrollThreshold={0.95}
+          >
+            {filteredOptions.map((group, index) => (
+              <div
+                id={`option_group_${group.label.replace(/\s/g, "")}`}
+                key={`group_${group.label}_${group.options.length}_${index}`}
+              >
+                {group.options.map((option, i) => (
+                  <ChooseItem
+                    key={`option_${option.value}_group_${index}_${i}`}
+                    handleClick={() => handleSelect(option)}
+                    image={option.icon}
+                    title={option.title}
+                    subTitle={option.subTitle}
+                    innerTitle={option.innerTitle}
+                    innerSubtitle={option.innerSubtitle}
+                    iconClassnames={iconClassnames}
+                    badgeText={option.badgeText}
+                    id={trimConcat("choose_option_", option.title)}
+                  />
+                ))}
+              </div>
+            ))}
+          </InfiniteScroll>
         </div>
       </div>
     </div>

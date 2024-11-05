@@ -10,7 +10,7 @@ import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { mutate } from "swr"
 
-import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
+import { IGroupedOptions } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
   getBalance,
@@ -69,24 +69,19 @@ export const getIdentity = async (
 export const mapUserNFTDetailsToGroupedOptions = (
   userNFTDetailsArray: NFT[],
 ): IGroupedOptions[] => {
-  const options = userNFTDetailsArray.map(
-    (nft) =>
-      ({
+  return userNFTDetailsArray.map((nft) => ({
+    label: nft.getTokenName(),
+    options: [
+      {
         title: nft.getTokenName(),
         subTitle: nft.getCollectionName(),
         value: nft.getTokenId(),
         icon: nft.getAssetPreview().url,
-        innerTitle: nft.getTokenFloorPriceIcpFormatted(),
+        innerTitle: nft.getTokenFloorPriceIcpFormatted() || "Unknown",
         innerSubtitle: nft.getTokenFloorPriceUSDFormatted(),
-      } as IGroupOption),
-  )
-
-  return [
-    {
-      label: "label",
-      options,
-    },
-  ]
+      },
+    ],
+  }))
 }
 
 export const getVaultsAccountsOptions = async (): Promise<
@@ -160,11 +155,22 @@ export const validateICPAddress = (address: string): boolean | string => {
   } else return true
 }
 
+export const validateNftAddress = (address: string): boolean | string => {
+  const isPrincipal = addressValidationService.isValidPrincipalId(address)
+  const isAccountIdentifier =
+    addressValidationService.isValidAccountIdentifier(address)
+
+  if (!isPrincipal && !isAccountIdentifier) {
+    return "Incorrect wallet address or accound ID"
+  } else return true
+}
+
 export const validateICRC1Address = (address: string): boolean | string => {
   try {
     decodeIcrcAccount(address)
     return true
   } catch (e) {
+    console.error("Error: ", e)
     return "Incorrect wallet address"
   }
 }
@@ -251,11 +257,6 @@ export const getQuoteData = async (
   try {
     return await shroff.getQuote(Number(amount))
   } catch (error) {
-    console.error(
-      `Quote error: ${
-        (error as Error).message ? (error as Error).message : error
-      }`,
-    )
     throw error
   }
 }

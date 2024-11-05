@@ -23,7 +23,7 @@ describe("nft test suite", () => {
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
-      const result = await nftService.getNFTs(principal)
+      const result = await nftService.getNFTs(principal, 1, 10)
       await Promise.all(result.items.map(async (nft) => nft.init()))
       expect(result.items).toHaveLength(10)
       expect(result.totalPages).toEqual(2)
@@ -51,7 +51,7 @@ describe("nft test suite", () => {
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(extNft.getTokenLink()).toEqual(
-        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.ic0.app/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.icp0.io/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
 
       //details page
@@ -62,7 +62,7 @@ describe("nft test suite", () => {
       const assetFullSize = await details.getAssetFullSize()
       expect(assetFullSize.format).toEqual("img")
       expect(assetFullSize.url).toEqual(
-        "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.icp0.io/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       const soldNFTDetails = await result.items
         .filter(
@@ -207,7 +207,7 @@ describe("nft test suite", () => {
     })
   })
 
-  describe("getNFTById", () => {
+  describe("getNFTByTokenId", () => {
     it("should return the correct NFT details for a given ID", async () => {
       const nftId = "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a"
 
@@ -218,7 +218,7 @@ describe("nft test suite", () => {
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
 
-      const nft = await nftService.getNFTById(nftId, principal)
+      const nft = await nftService.getNFTByTokenId(nftId, principal, 1)
 
       expect(nft).toBeDefined()
       if (!nft) return
@@ -239,7 +239,7 @@ describe("nft test suite", () => {
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(nft.getTokenLink()).toEqual(
-        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.ic0.app/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.icp0.io/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
 
       const details = await nft.getDetails()
@@ -249,7 +249,7 @@ describe("nft test suite", () => {
       const assetFullSize = await details.getAssetFullSize()
       expect(assetFullSize.format).toEqual("img")
       expect(assetFullSize.url).toEqual(
-        "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
+        "https://64x4q-laaaa-aaaal-qdjca-cai.raw.icp0.io/?tokenid=yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
 
       const transactions = await details.getTransactions(0, 10)

@@ -21,6 +21,7 @@ export const serviceConfig = {
   IC_HOST: JSON.stringify(process.env.IC_HOST),
   II_MODE: JSON.stringify(process.env.II_MODE),
   FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
+  ENV: JSON.stringify(process.env.ENV),
   IS_DEV: JSON.stringify(process.env.IS_DEV),
   USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
   GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
@@ -71,6 +72,12 @@ export const serviceConfig = {
   II_PROVIDER: JSON.stringify(process.env.II_PROVIDER),
   ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
     process.env.ECDSA_SIGNER_CANISTER_ID,
+  ),
+  SWAP_TRS_STORAGE: JSON.stringify(
+    process.env.SWAP_TRS_STORAGE,
+  ),
+  NFID_WALLET_CANISTER: JSON.stringify(
+    process.env.NFID_WALLET_CANISTER,
   ),
   IC_SIGNER_CANISTER_ID: JSON.stringify(process.env.IC_SIGNER_CANISTER_ID),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),

@@ -51,6 +51,8 @@ export abstract class NftImpl implements NFT {
     return this.marketPlace
   }
 
+  abstract getTokenMarketPlaceLink(): string
+
   getTokenId(): string {
     return this.tokenId
   }

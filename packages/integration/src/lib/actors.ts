@@ -50,6 +50,7 @@ const canisterConfig = [
   ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
   ["Vault", VAULT_CANISTER_ID],
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
+  ["SwapTransactionStorage", SWAP_TRS_STORAGE],
   ["ICSigner", IC_SIGNER_CANISTER_ID],
   ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
   ["DelegationFactory", DELEGATION_FACTORY],
@@ -68,7 +69,8 @@ for (const [label, canister] of canisterConfig) {
 export const agentBaseConfig = { host: "https://ic0.app" }
 
 /**
- * Create an actor.
+ * Create an actor with shared identity from security device.
+ * Do not use this actor for requests from Global/Anonymous Identity
  */
 export function actor<T>(
   canisterId: string | Principal,

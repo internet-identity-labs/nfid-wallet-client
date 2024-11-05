@@ -190,7 +190,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: "yarn"
 
       - name: Versions
@@ -363,14 +363,6 @@ jobs:
           retention-days: 1
           path: apps/nfid-frontend-e2e/allure-results
           name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
-
-      - name: Upload Chrome logs
-        uses: actions/upload-artifact@v4
-        if: ${{ ! cancelled() }}
-        with:
-          retention-days: 1
-          name: chrome_debug.log
-          path: apps/nfid-frontend-e2e/chrome-user-data-dir/chrome_debug.log
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

@@ -6,12 +6,14 @@ import React, { useState } from "react"
 interface TooltipProps extends RadixTooltip.TooltipContentProps {
   tip: string | React.ReactNode
   children: React.ReactNode
+  arrowClassname?: string
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({
   tip,
   children,
   className,
+  arrowClassname,
   ...contentProps
 }) => {
   const [open, setOpen] = useState(false)
@@ -41,7 +43,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
           {...contentProps}
         >
           {tip}
-          <RadixTooltip.Arrow />
+          <RadixTooltip.Arrow className={arrowClassname} />
         </RadixTooltip.Content>
       </RadixTooltip.Portal>
     </RadixTooltip.Root>

@@ -70,7 +70,7 @@ describe("ICRC1 pair suite", () => {
       fail("Should throw error")
     } catch (e: any) {
       expect(e.message).toEqual(
-        "This does not appear to be an ICRC-1 compatible canister.",
+        "This does not appear to be an ICRC-1 compatible ledger canister.",
       )
     }
   })

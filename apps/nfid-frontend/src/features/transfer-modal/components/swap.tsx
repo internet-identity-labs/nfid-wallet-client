@@ -1,3 +1,5 @@
+import { DelegationIdentity } from "@dfinity/identity"
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import {
   fetchActiveTokens,
@@ -15,8 +17,11 @@ import {
 } from "@nfid/integration/token/constants"
 
 import {
+  DepositError,
   LiquidityError,
   ServiceUnavailableError,
+  SwapError,
+  WithdrawError,
 } from "frontend/integration/icpswap/errors"
 import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
 import { Shroff } from "frontend/integration/icpswap/shroff"
@@ -26,23 +31,35 @@ import { SwapStage } from "frontend/integration/icpswap/types/enums"
 import { FormValues } from "../types"
 import { getIdentity, getQuoteData } from "../utils"
 
+const QUOTE_REFETCH_TIMER = 30
+
 interface ISwapFT {
-  onSuccessSwitched: (value: boolean) => void
-  isSuccess: boolean
+  onClose: () => void
 }
 
-export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
+export const SwapFT = ({ onClose }: ISwapFT) => {
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [identity, setIdentity] = useState<DelegationIdentity>()
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
   const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
   const [isShroffLoading, setIsShroffLoading] = useState(true)
-  const [swapStep, setSwapStep] = useState(0)
+  const [swapStep, setSwapStep] = useState<SwapStage>(0)
   const [shroffError, setShroffError] = useState<Error | undefined>()
-  const [swapError, setSwapError] = useState<Error | undefined>()
+  const [quoteTimer, setQuoteTimer] = useState(QUOTE_REFETCH_TIMER)
+  const [swapError, setSwapError] = useState<
+    WithdrawError | SwapError | DepositError | undefined
+  >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
-  const { data: allTokens = [] } = useSWR(["allTokens", ""], ([, query]) =>
-    fetchAllTokens(query),
+  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
+    "activeTokens",
+    fetchActiveTokens,
+    { revalidateOnFocus: false },
+  )
+  const { data: allTokens = [], isLoading: isAllTokensLoading } = useSWR(
+    ["allTokens", ""],
+    ([, query]) => fetchAllTokens(query),
+    { revalidateOnFocus: false },
   )
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
@@ -51,11 +68,13 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
   const { data: fromToken, isLoading: isFromTokenLoading } = useSWR(
     fromTokenAddress ? ["fromToken", fromTokenAddress] : null,
     ([, address]) => fetchActiveTokenByAddress(address),
+    { revalidateOnFocus: false },
   )
 
   const { data: toToken, isLoading: isToTokenLoading } = useSWR(
     toTokenAddress ? ["toToken", toTokenAddress] : null,
     ([, address]) => fetchAllTokenByAddress(address),
+    { revalidateOnFocus: false },
   )
 
   const filteredAllTokens = useMemo(() => {
@@ -108,18 +127,21 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     if (!getTransaction) return
     const interval = setInterval(() => {
       const step = getTransaction.getStage()
+      const error = getTransaction.getError()
       setSwapStep(step)
-      if (
-        step !== SwapStage.Completed ||
-        getTransaction.getError() !== undefined
-      )
+      if (step === SwapStage.Completed || error !== undefined) {
         clearInterval(interval)
+      }
     }, 100)
 
     return () => clearInterval(interval)
   }, [getTransaction])
 
-  const { data: quote, isLoading: isQuoteLoading } = useSWR(
+  const {
+    data: quote,
+    isLoading: isQuoteLoading,
+    mutate,
+  } = useSWR(
     amount
       ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
       : null,
@@ -133,6 +155,23 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
       },
     },
   )
+
+  useEffect(() => {
+    if (!quote) return
+    const interval = setInterval(() => {
+      setQuoteTimer((prev) => prev - 1)
+      if (quoteTimer === 0) {
+        resetIntegrationCache(["usdPriceForICRC1"], () => {
+          mutate()
+          setQuoteTimer(QUOTE_REFETCH_TIMER)
+        })
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [mutate, quoteTimer, quote])
 
   const refresh = () => {
     setShroffError(undefined)
@@ -150,25 +189,20 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
     if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
       return
 
-    onSuccessSwitched(true)
+    setIsSuccessOpen(true)
 
-    try {
-      if (!shroff) return
+    if (!shroff) return
 
-      await shroff.validateQuote()
-      const identity = await getIdentity(shroff.getTargets())
+    await shroff.validateQuote()
+    const identity = await getIdentity(shroff.getTargets())
+    setIdentity(identity)
 
-      shroff.swap(identity).catch((e) => {
-        setSwapError(e)
-      })
+    shroff.swap(identity).catch((error) => {
+      setSwapError(error)
+    })
 
-      setGetTransaction(shroff.getSwapTransaction())
-    } catch (e) {
-      const error = (e as Error).message ? (e as Error).message : e
-      console.error(`Swap error: ${error}`)
-      setSwapError(error as Error)
-    }
-  }, [quote, shroff, onSuccessSwitched])
+    setGetTransaction(shroff.getSwapTransaction())
+  }, [quote, shroff])
 
   return (
     <FormProvider {...formMethods}>
@@ -180,7 +214,12 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={isFromTokenLoading || isToTokenLoading}
+        isTokenLoading={
+          isFromTokenLoading ||
+          isToTokenLoading ||
+          isAllTokensLoading ||
+          isActiveTokensLoading
+        }
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || !quote}
         quote={quote}
@@ -188,9 +227,12 @@ export const SwapFT = ({ onSuccessSwitched, isSuccess }: ISwapFT) => {
         showLiquidityError={liquidityError}
         clearQuoteError={refresh}
         step={swapStep}
-        error={swapError?.message}
-        isProgressOpen={isSuccess}
-        onClose={() => onSuccessSwitched(false)}
+        error={swapError}
+        isProgressOpen={isSuccessOpen}
+        onClose={onClose}
+        transaction={getTransaction}
+        identity={identity}
+        quoteTimer={quoteTimer}
       />
     </FormProvider>
   )

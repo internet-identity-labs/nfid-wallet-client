@@ -11,7 +11,6 @@ export const VaultsPoliciesTableHeader = () => {
       <TableCell centered className="w-44">
         Approvers
       </TableCell>
-      <TableCell isRight className="w-10" />
     </TableRow>
   )
 }

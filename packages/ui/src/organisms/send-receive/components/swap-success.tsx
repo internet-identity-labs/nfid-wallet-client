@@ -1,5 +1,7 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import clsx from "clsx"
-import { FC, useMemo } from "react"
+import { FC, useEffect, useMemo, useState } from "react"
+import { errorHandlerFactory } from "src/integration/icpswap/error-handler/handler-factory"
 
 import {
   IconCmpArrow,
@@ -9,7 +11,34 @@ import {
 } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
-import { getAnimationByStep, Step } from "../utils"
+import {
+  DepositError,
+  SwapError,
+  WithdrawError,
+} from "frontend/integration/icpswap/errors"
+import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
+
+import deposit from "../assets/NFID_WS_1.json"
+import depositSuccess from "../assets/NFID_WS_1_1.json"
+import depositError from "../assets/NFID_WS_1_2.json"
+import swap from "../assets/NFID_WS_2.json"
+import swapError from "../assets/NFID_WS_2_1.json"
+import withdraw from "../assets/NFID_WS_3.json"
+import withdrawSuccess from "../assets/NFID_WS_3_1.json"
+import withdrawError from "../assets/NFID_WS_3_2.json"
+import { getTextStatusByStep, getTitleAndButtonText } from "../utils"
+
+const allAnimations = {
+  deposit,
+  depositSuccess,
+  depositError,
+  swap,
+  swapError,
+  withdraw,
+  withdrawSuccess,
+  withdrawError,
+}
 
 export interface SwapSuccessProps {
   titleFrom: string
@@ -19,10 +48,12 @@ export interface SwapSuccessProps {
   onClose: () => void
   assetImgFrom: string
   assetImgTo: string
-  step: Step
+  step: SwapStage
   duration?: number
   isOpen: boolean
-  error?: string
+  error?: SwapError | WithdrawError | DepositError
+  transaction: SwapTransaction | undefined
+  identity?: DelegationIdentity
 }
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
@@ -34,17 +65,62 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   assetImgFrom,
   assetImgTo,
   step = 0,
-  duration = 20,
+  duration = 60,
   isOpen,
   error,
+  transaction,
+  identity,
 }) => {
+  const [currentAnimation, setCurrentAnimation] = useState<unknown>(
+    allAnimations.deposit,
+  )
+
   const isCompleted = useMemo(() => {
-    return step === Step.Completed
+    return step === SwapStage.Completed
   }, [step])
 
-  const isFailed = useMemo(() => {
-    return step === Step.Error
+  useEffect(() => {
+    if (step === SwapStage.Swap) {
+      setCurrentAnimation(allAnimations.depositSuccess)
+    }
+    if (step === SwapStage.Withdraw) {
+      setCurrentAnimation(allAnimations.withdraw)
+    }
+    if (step === SwapStage.Completed) {
+      setCurrentAnimation(allAnimations.withdrawSuccess)
+    }
   }, [step])
+
+  useEffect(() => {
+    if (!error) return
+    if (error instanceof DepositError)
+      setCurrentAnimation(allAnimations.depositError)
+    if (error instanceof SwapError) setCurrentAnimation(allAnimations.swapError)
+    if (error instanceof WithdrawError)
+      setCurrentAnimation(allAnimations.withdrawError)
+  }, [error])
+
+  const animationCompleteHandler = () => {
+    if (step === SwapStage.Swap) {
+      setCurrentAnimation(allAnimations.swap)
+    } else {
+      return
+    }
+  }
+
+  const completeHandler = async () => {
+    onClose()
+    if (!error || step < SwapStage.Withdraw) {
+      return
+    }
+    try {
+      if (!transaction || !identity) return
+      const errorHandler = errorHandlerFactory.getHandler(transaction)
+      await errorHandler.completeTransaction(identity)
+    } catch (e) {
+      throw e
+    }
+  }
 
   return (
     <div
@@ -58,34 +134,27 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
     >
       <div className="flex-grow text-center">
         <H5 className="mt-5 text-xl leading-6">
-          {isFailed
-            ? "Swapping failed"
-            : isCompleted
-            ? "Swapped successfully"
-            : "Swapping..."}
+          {isCompleted ? "Swap successful" : "Swapping"}
         </H5>
-        <p className="mt-2 text-sm leading-5">
-          {isFailed
-            ? "ICPSwap swap failed"
+        <p className="mt-3 text-sm leading-5">
+          {error
+            ? `ICPSwap ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted
             ? ""
-            : `This usually takes less than ${duration} seconds.`}
+            : `This usually takes about ${duration} seconds`}
         </p>
 
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[85px]">
+        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[55px]">
           <LottieAnimation
-            animationData={getAnimationByStep(step)}
-            // TODO: adjust animations when the new Lottie files will be ready
-            loop={
-              step === Step.Transfer ||
-              step === Step.Deposit ||
-              step === Step.Withdraw
-            }
+            className="max-w-[370px]"
+            animationData={currentAnimation}
+            loop={!error && step !== SwapStage.Completed}
+            onComplete={animationCompleteHandler}
           />
           <div
             className={clsx(
               "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[125px] sm:left-[170px] top-[160px] sm:top-[225px]",
+              "left-[125px] sm:left-[175px] top-[160px] sm:top-[186px]",
             )}
           >
             <ImageWithFallback
@@ -98,7 +167,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           <div
             className={clsx(
               "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[152px] sm:left-[210px] top-[190px] sm:top-[265px] z-2",
+              "left-[152px] sm:left-[205px] top-[190px] sm:top-[227px] z-2",
             )}
           >
             <ImageWithFallback
@@ -109,9 +178,13 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             />
           </div>
         </div>
-        {isFailed && (
+        {error ? (
           <div className="mt-[185px] text-sm text-red-600 max-w-[320px] mx-auto">
-            {error}
+            {error.message}
+          </div>
+        ) : (
+          <div className="mt-[185px] text-sm text-gray-500 max-w-[320px] mx-auto">
+            {getTextStatusByStep(step)}
           </div>
         )}
       </div>
@@ -137,8 +210,13 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </p>
           </div>
         </div>
-        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
-          Done
+        <Button
+          type="primary"
+          block
+          className="mt-[30px]"
+          onClick={completeHandler}
+        >
+          {getTitleAndButtonText(error)?.buttonText}
         </Button>
       </div>
     </div>

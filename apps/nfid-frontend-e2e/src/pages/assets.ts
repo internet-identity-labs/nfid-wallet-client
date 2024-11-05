@@ -1,14 +1,22 @@
+import Nft from "./nft.js"
 import Page from "./page.js"
 import Profile from "./profile.js"
-import Nft from "./nft.js"
 
 export class Assets {
+  get amountField() {
+    return $("#amount")
+  }
+
   get sendDialogWindow() {
     return $("#sendButton")
   }
 
   private get assetLabel() {
     return "[id*='token_"
+  }
+
+  get allTokensOnTokenTab() {
+    return $$('[id^="token_"]')
   }
 
   public get getBalance() {
@@ -19,18 +27,17 @@ export class Assets {
     return $("#send_type_toggle")
   }
 
-  public async getAssetBalance(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_balance']")
-  }
-
   public async getCurrency(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_currency']")
+    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_currency`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
   }
 
   public async getBlockchain(label: string) {
-    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_category']")
+    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_category`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
   }
-
 
   get principal() {
     return $("#principal")
@@ -42,6 +49,14 @@ export class Assets {
 
   get activityTab() {
     return $("#tab_Activity")
+  }
+
+  get tokensTab() {
+    return $("tab_Tokens")
+  }
+
+  get NFTtab() {
+    return $("#tab_NFTs")
   }
 
   get chooseModalButton() {
@@ -56,8 +71,24 @@ export class Assets {
     return $("#success_window_3")
   }
 
+  get backButtonInSendWindow() {
+    return $("svg.mr-2")
+  }
+
+  public async tokenBalance(tokenName: string) {
+    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
+  }
+
+  public tokenLabel(label) {
+    return $(`#token_${label.replace(/\s/g, "")}`)
+  }
+
   public currencyOption(chain: string, currency: string) {
-    return $(`#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`)
+    return $(
+      `#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`,
+    )
   }
 
   public getTokenByNameInSend(token: string) {
@@ -71,7 +102,7 @@ export class Assets {
 
   public async sendFTto(address: string, amount: string) {
     await Nft.addressField.setValue(address)
-    await Nft.amountField.setValue(amount)
+    await this.amountField.setValue(amount)
 
     await this.getBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
@@ -89,17 +120,26 @@ export class Assets {
   }
 
   public async sendDialog() {
-    await this.waitUntilElementsLoadedProperly(Profile.sendButton, this.switchSendType)
+    await this.waitUntilElementsLoadedProperly(
+      Profile.sendButton,
+      this.switchSendType,
+    )
   }
 
   public async sendNFTDialog() {
-    await this.waitUntilElementsLoadedProperly(Profile.sendButton, this.switchSendType)
+    await this.waitUntilElementsLoadedProperly(
+      Profile.sendButton,
+      this.switchSendType,
+    )
     await this.switchSendType.click()
     await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
   }
 
   public async receiveDialog() {
-    await this.waitUntilElementsLoadedProperly(Profile.receiveButton, $("#first_part"))
+    await this.waitUntilElementsLoadedProperly(
+      Profile.receiveButton,
+      $("#first_part"),
+    )
   }
 
   public async getAccountId(isAddress?: boolean) {
@@ -148,32 +188,27 @@ export class Assets {
     await this.chooseOption(account)
   }
 
-  public async openActivity() {
-    const activityIcon = await $("#tab_Activity")
-    await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-
-    await activityIcon.waitForDisplayed({ timeout: 10000 })
-    await activityIcon.click()
-  }
-
   public async waitUntilElementsLoadedProperly(
     clickElement: ChainablePromiseElement,
     waitForElement: ChainablePromiseElement,
   ) {
-    await browser.waitUntil(async () => {
-      try {
-        await Profile.waitUntilBalanceLoaded()
-        await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+    await browser.waitUntil(
+      async () => {
+        try {
+          await Profile.waitUntilBalanceLoaded()
+          await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
 
-        await clickElement.waitForClickable({ timeout: 15000 })
-        await clickElement.click()
-        await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
-        await waitForElement.waitForDisplayed()
-        return true
-      } catch (e) {
-        await browser.refresh()
-      }
-    }, { timeout: 40000, timeoutMsg: "Element didn't load properly in 40sec" })
+          await clickElement.waitForClickable({ timeout: 15000 })
+          await clickElement.click()
+          await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+          await waitForElement.waitForDisplayed()
+          return true
+        } catch (e) {
+          await browser.refresh()
+        }
+      },
+      { timeout: 40000, timeoutMsg: "Element didn't load properly in 40sec" },
+    )
   }
 }
 

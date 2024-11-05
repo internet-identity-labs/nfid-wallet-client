@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import {
@@ -17,6 +17,7 @@ import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
+import { getMaxAmountFee } from "frontend/integration/icpswap/util/util"
 
 import { getTokenOptions, getTokenOptionsVault } from "../utils"
 
@@ -28,6 +29,7 @@ interface ChooseFromTokenProps {
   setFromChosenToken: (value: string) => void
   usdRate: string | undefined
   title: string
+  isSwap?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -38,45 +40,60 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   sendReceiveTrackingFn,
   usdRate,
   title,
+  isSwap = false,
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
-
-  useEffect(() => {
-    balance !== undefined
-      ? getTokenOptionsVault(tokens)
-      : getTokenOptions(tokens).then(setTokenOptions)
-  }, [getTokenOptions, getTokenOptionsVault, tokens, balance])
-
-  const maxHandler = async () => {
-    if (!token) return
-    const userBalance = balance || token.getTokenBalance()
-    const fee = token.getTokenFee()
-    const decimals = token.getTokenDecimals()
-    if (fee && userBalance && decimals) {
-      const balanceNum = new BigNumber(userBalance.toString())
-      const feeNum = new BigNumber(fee.toString())
-      const val = balanceNum.minus(feeNum)
-      if (val.isLessThanOrEqualTo(0)) return
-
-      const formattedValue = formatAssetAmountRaw(Number(val), decimals)
-      setValue("amount", formattedValue, {
-        shouldValidate: true,
-      })
-    }
-  }
+  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
+  const [inputAmountValue, setInputAmountValue] = useState("")
 
   const {
-    resetField,
     setValue,
     register,
     formState: { errors },
   } = useFormContext()
 
-  if (!token) return null
+  const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
+  const decimals = token!.getTokenDecimals()
 
-  const decimals = token.getTokenDecimals()
+  useEffect(() => {
+    setIsTokenOptionsLoading(true)
+    const fetchOptions = balance ? getTokenOptionsVault : getTokenOptions
 
-  if (!decimals) return null
+    fetchOptions(tokens)
+      .then(setTokenOptions)
+      .finally(() => setIsTokenOptionsLoading(false))
+  }, [tokens, balance])
+
+  const fee = useMemo(() => {
+    if (!token || userBalance === undefined) return
+    return isSwap
+      ? getMaxAmountFee(userBalance, token.getTokenFee())
+      : token.getTokenFee()
+  }, [token, userBalance, isSwap])
+
+  const isMaxAvailable = useMemo(() => {
+    if (userBalance === undefined || fee === undefined) return false
+
+    const balanceNum = new BigNumber(userBalance.toString())
+    const feeNum = new BigNumber(fee.toString())
+    return balanceNum.minus(feeNum).isGreaterThan(0)
+  }, [userBalance, fee, token])
+
+  const maxHandler = useCallback(() => {
+    if (!token || fee === undefined || userBalance === undefined) return
+    const decimals = token.getTokenDecimals()
+    if (!decimals || !isMaxAvailable) return
+
+    const balanceNum = new BigNumber(userBalance.toString())
+    const feeNum = new BigNumber(fee.toString())
+    const maxAmount = balanceNum.minus(feeNum)
+    const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
+    setInputAmountValue(formattedValue)
+
+    setValue("amount", formattedValue, { shouldValidate: true })
+  }, [token, fee, userBalance, isMaxAvailable, setValue])
+
+  if (!decimals || !token) return null
 
   return (
     <div
@@ -89,12 +106,25 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         <InputAmount
           isLoading={false}
           decimals={decimals}
+          value={inputAmountValue}
+          onPaste={(e) => {
+            e.preventDefault()
+            setInputAmountValue(
+              e.clipboardData.getData("text/plain").replace(",", "."),
+            )
+          }}
           {...register("amount", {
             required: sumRules.errorMessages.required,
+            onChange: (e) => setInputAmountValue(e.target.value),
             validate: (value) => {
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),
-                token.getTokenFee(),
+                isSwap
+                  ? getMaxAmountFee(
+                      token.getTokenBalance()!,
+                      token.getTokenFee(),
+                    )
+                  : token.getTokenFee(),
                 decimals,
               )(value)
 
@@ -104,14 +134,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         />
         <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseModal
+            isLoading={isTokenOptionsLoading}
             optionGroups={tokenOptions}
             title={title}
             type="trigger"
-            onSelect={(value) => {
-              resetField("amount")
-              resetField("to")
-              setFromChosenToken(value)
-            }}
+            onSelect={setFromChosenToken}
             preselectedValue={token.getTokenAddress()}
             onOpen={sendReceiveTrackingFn}
             isSmooth
@@ -142,14 +169,19 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         </p>
         <div className="mt-2 text-xs leading-5 text-right text-gray-500">
           Balance:&nbsp;
-          <span className="cursor-pointer" onClick={maxHandler}>
-            {!balance ? (
-              <span className="text-teal-600" id="balance">
+          <span
+            className={clsx(
+              isMaxAvailable ? "text-teal-600 cursor-pointer" : "text-gray-500",
+            )}
+            onClick={maxHandler}
+          >
+            {balance === undefined ? (
+              <span id="balance">
                 {token.getTokenBalanceFormatted() || "0"}&nbsp;
                 {token.getTokenSymbol()}
               </span>
             ) : (
-              <span className="text-teal-600">{Number(balance) / E8S} ICP</span>
+              <span>{Number(balance) / E8S} ICP</span>
             )}
           </span>
         </div>

@@ -1,6 +1,10 @@
 import { HomePage } from "./home-page.js"
 
 export class Profile extends HomePage {
+  get menuButton() {
+    return $("#profile")
+  }
+
   private get tokens() {
     return $$("table tbody tr")
   }
@@ -19,7 +23,11 @@ export class Profile extends HomePage {
 
   public async waitForTokensAppear(amount?: number) {
     await browser.waitUntil(
-      async () => (await this.tokens.length) === amount || 1,
+      async () => {
+        return amount
+          ? (await this.tokens.length) === amount
+          : (await this.tokens.length) > 0
+      },
       {
         timeout: 50000,
         timeoutMsg: "Not all tokens displayed on user profile!",
@@ -35,9 +43,12 @@ export class Profile extends HomePage {
   }
 
   public async waitUntilBalanceLoaded() {
-    await browser.waitUntil(async () => {
-      return (await this.totalBalance.getText() != "")
-    }, { timeout: 15000, timeoutMsg: "Balance wasn't loaded in 1500" })
+    await browser.waitUntil(
+      async () => {
+        return (await this.totalBalance.getText()) != ""
+      },
+      { timeout: 25000, timeoutMsg: "Balance wasn't loaded in 1500sec" },
+    )
   }
 }
 

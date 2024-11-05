@@ -5,7 +5,7 @@
 #### Prerequisites
 
 Before setting up the development environment, ensure the following are installed:
-- NodeJS v20.16.0
+- NodeJS v22.10.0
 - Yarn v1.22.22
 
 #### Install dependencies:
@@ -30,6 +30,13 @@ Open the application in a browser: http://localhost:9090
 npx nx serve nfid-demo
 ```
 
+## Integration tests
+
+#### Run integration tests:
+```
+npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1
+```
+
 ## E2E tests
 
 #### Prerequisites
@@ -47,6 +54,9 @@ npx nx serve nfid-demo
 ```
 npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
 ```
+
+## Deployment
+The build and deployment process is managed using DFX (Internet Computer SDK), specifically version v0.24.1. Ensure that DFX is properly installed and configured in your environment before proceeding with deployment.
 
 ## Architecture
 

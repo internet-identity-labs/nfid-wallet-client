@@ -71,7 +71,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)
       } catch (e: any) {
-        expect(e.message).toContain("Forbidden")
+        expect(e.message).toContain("Gateway returned an error")
       }
       try {
         await replaceActorIdentity(im, globalICIdentity)

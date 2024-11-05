@@ -1,5 +1,4 @@
-import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
-
+import { validateDerivationOrigin } from "../../helpers/validate-derivation-origin"
 import { IdentityKitRPCMachineContext } from "../../type"
 import { GenericError, NotSupportedError } from "../exception-handler.service"
 import { utilsService } from "../utils.service"
@@ -50,7 +49,7 @@ export const validateRequest = async (
     "derivationOrigin" in (context.activeRequest.data as any)?.params
   ) {
     const response = await validateDerivationOrigin(
-      origin,
+      context.activeRequest.origin ?? origin,
       String((context.activeRequest.data.params as any).derivationOrigin),
     )
 

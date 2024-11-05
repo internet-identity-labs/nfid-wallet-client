@@ -1,7 +1,6 @@
 import { Page } from "./page.js"
 
 export class Activity extends Page {
-
   get activityTableRows() {
     return $$("//*[@id='activity-table']//tr[starts-with(@id, 'tx-')]")
   }
@@ -18,7 +17,6 @@ export class Activity extends Page {
         timeoutMsg: "No activities found",
       },
     )
-
     return await this.activityTableRows.length
   }
 
@@ -26,12 +24,16 @@ export class Activity extends Page {
     action: string,
     currency: string,
     type: string,
-    asset: string,
+    amount: string,
     timestamp: string,
     from: string,
     to: string,
   ) =>
-    $(`//*[@id='tx-${action}-${currency}-${type}-${asset}-${timestamp}-${from}-${to}']`)
+    $(
+      `//*[@id='tx-${action}-${currency}-${type}-${
+        amount * 100000000
+      }-${currency}-${timestamp}-${from}-${to}']`,
+    )
 }
 
 export default new Activity()

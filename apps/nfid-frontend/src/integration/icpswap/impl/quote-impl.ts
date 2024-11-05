@@ -120,9 +120,12 @@ export class QuoteImpl implements Quote {
   }
 
   getQuoteRate(): string {
-    const quote = new BigNumber(Number(this.quote))
-    const rate = quote.div(this.getSourceAmount())
-    return `1 ${this.source.symbol} = ${rate
+    const quote = this.getTargetAmount()
+      .div(10 ** this.target.decimals)
+    const rate = quote
+      .div(this.getSourceAmount()
+        .div(10 ** this.source.decimals))
+    return `1 ${this.source.symbol} = ${rate.toNumber()
       .toFixed(this.target.decimals)
       .replace(TRIM_ZEROS, "")} ${this.target.symbol}`
   }
@@ -145,12 +148,10 @@ export class QuoteImpl implements Quote {
     const sourcePriceFormatted = sourcePrice
       .multipliedBy(this.getSourceAmount())
       .div(10 ** this.source.decimals)
-      .decimalPlaces(2)
 
     const targetPriceFormatted = targetPrice
       .multipliedBy(this.getTargetAmount())
       .div(10 ** this.target.decimals)
-      .decimalPlaces(2)
 
     const priceImpact = targetPriceFormatted
       .minus(sourcePriceFormatted)
@@ -158,7 +159,7 @@ export class QuoteImpl implements Quote {
       .multipliedBy(100)
 
     return {
-      priceImpact: `-${priceImpact.toFixed(2)}%`,
+      priceImpact: `${priceImpact.toFixed(2)}%`,
       status: priceImpact.isGreaterThanOrEqualTo(-1)
         ? PriceImpactStatus.LOW
         : priceImpact.isGreaterThanOrEqualTo(-5)

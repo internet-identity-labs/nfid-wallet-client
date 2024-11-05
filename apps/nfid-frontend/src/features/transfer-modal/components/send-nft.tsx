@@ -1,5 +1,5 @@
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { toast } from "react-toastify"
 import useSWR from "swr"
 
@@ -10,11 +10,12 @@ import {
   fetchNFTsInited,
 } from "frontend/features/collectibles/utils/util"
 import { transferEXT } from "frontend/integration/entrepot/ext"
+import { NFT } from "frontend/integration/nft/nft"
 
 import {
   getIdentity,
   mapUserNFTDetailsToGroupedOptions,
-  validateICPAddress,
+  validateNftAddress,
 } from "../utils"
 import { ITransferSuccess } from "./send-success"
 
@@ -30,18 +31,44 @@ export const TransferNFT = ({
   preselectedNFTId = "",
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
+  const [isNftListLoading, setIsNftListLoading] = useState(false)
+  const [paginationState, setPaginationState] = useState<{
+    page: number
+    nfts: NFT[]
+    totalPages: number | null
+  }>({
+    page: 1,
+    nfts: [],
+    totalPages: null,
+  })
 
-  const {
-    data: allNfts = [],
-    isLoading: isNftListLoading,
-    mutate: refetchAllNfts,
-  } = useSWR("allNFTS", fetchNFTsInited)
+  const { page, nfts, totalPages } = paginationState
+
+  useEffect(() => {
+    const getNfts = async () => {
+      setIsNftListLoading(true)
+      const data = await fetchNFTsInited(page)
+
+      setPaginationState((prevState) => ({
+        ...prevState,
+        totalPages: data.totalPages,
+        nfts:
+          data.totalPages >= page
+            ? [...prevState.nfts, ...data.initedData]
+            : prevState.nfts,
+      }))
+      setIsNftListLoading(false)
+    }
+
+    getNfts()
+  }, [page])
+
   const {
     data: selectedNFT,
     mutate: refetchNFT,
     isLoading: isNftLoading,
   } = useSWR(selectedNFTId ? ["nft", selectedNFTId] : null, ([, tokenId]) =>
-    fetchNFT(tokenId),
+    fetchNFT(tokenId, page),
   )
 
   const handleTrackTransfer = useCallback(() => {
@@ -53,6 +80,18 @@ export const TransferNFT = ({
       fee: 0,
     })
   }, [selectedNFT])
+
+  const hasMore = useMemo(() => {
+    return totalPages ? page < totalPages : true
+  }, [page, totalPages])
+
+  const loadMore = useCallback(() => {
+    if (isNftListLoading || !hasMore) return
+    setPaginationState((prevState) => ({
+      ...prevState,
+      page: prevState.page + 1,
+    }))
+  }, [isNftListLoading, hasMore])
 
   const submit = useCallback(
     async (values: any) => {
@@ -78,25 +117,25 @@ export const TransferNFT = ({
         title: selectedNFT.getTokenName(),
         subTitle: selectedNFT.getCollectionName(),
         callback: () => {
-          refetchAllNfts()
           refetchNFT()
         },
       })
     },
-    [handleTrackTransfer, onTransfer, refetchAllNfts, refetchNFT, selectedNFT],
+    [handleTrackTransfer, onTransfer, refetchNFT, selectedNFT],
   )
 
   return (
     <TransferNFTUi
       isLoading={isNftLoading && isNftListLoading}
       loadingMessage={"Loading NFTs..."}
-      nftOptions={mapUserNFTDetailsToGroupedOptions(allNfts)}
+      nftOptions={mapUserNFTDetailsToGroupedOptions(nfts)}
       setSelectedNFTId={setSelectedNFTId}
       selectedNFTId={selectedNFTId}
       selectedNFT={selectedNFT}
       selectedReceiverWallet={selectedReceiverWallet}
       submit={submit}
-      validateAddress={validateICPAddress}
+      validateAddress={validateNftAddress}
+      loadMore={hasMore ? loadMore : undefined}
     />
   )
 }

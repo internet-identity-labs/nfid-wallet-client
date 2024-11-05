@@ -10,6 +10,7 @@ export interface NFT {
   init(): Promise<NFT>
   getMillis(): number
   getMarketPlace(): MarketPlace
+  getTokenMarketPlaceLink(): string
   getTokenId(): string
   getTokenNumber(): number
   getCollectionId(): string

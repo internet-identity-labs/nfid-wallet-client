@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { SwapError } from "src/integration/icpswap/errors/swap-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -7,8 +6,9 @@ import {
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
+import {hasOwnProperty, replaceActorIdentity} from "@nfid/integration"
 
+import { WithdrawError } from "../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffDepositErrorHandler extends ShroffImpl {
@@ -18,45 +18,64 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     }
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
+      this.delegationIdentity = delegationIdentity
       console.debug("Transaction restarted")
-      await this.deposit()
-      this.restoreTransaction()
-      await this.withdraw()
-      console.debug("Withdraw done")
-      //maybe not async
-      this.swapTransaction.setCompleted()
-      await this.restoreTransaction()
-      console.debug("Transaction stored")
-      return this.swapTransaction
+      if (this.swapTransaction.getError() === undefined) {
+        console.debug("Deposit timeout error")
+        return this.handleDepositTimeoutError()
+      } else {
+        await this.deposit()
+        console.debug("Deposit done")
+        this.restoreTransaction()
+        await this.withdraw()
+        console.debug("Withdraw done")
+        this.swapTransaction!.setCompleted()
+        await this.restoreTransaction()
+        console.debug("Transaction stored")
+        return this.swapTransaction!
+      }
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError((e as Error).message)
       }
       await this.restoreTransaction()
-      //TODO @vitaly to change according to the new error handling logic
-      throw new SwapError()
+      throw e
     }
   }
 
   protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
-      //TODO play with numbers somehow
       amount: BigInt(
-        this.requestedQuote!.getAmountWithoutWidgetFee().toNumber() -
-          Number(this.source.fee),
+        this.requestedQuote!.getSourceAmount().toNumber()
       ),
       token: this.source.ledger,
       fee: this.source.fee,
     }
-    return this.swapPoolActor.withdraw(args).then((result) => {
-      if (hasOwnProperty(result, "ok")) {
-        const id = result.ok as bigint
-        this.swapTransaction!.setWithdraw(id)
-        return id
-      }
-      throw new Error("Withdraw error: " + JSON.stringify(result.err))
-    })
+    try {
+      return this.swapPoolActor.withdraw(args).then((result) => {
+        if (hasOwnProperty(result, "ok")) {
+          const id = result.ok as bigint
+          this.swapTransaction!.setWithdraw(id)
+          return id
+        }
+
+        console.error("Withdraw error: " + JSON.stringify(result.err))
+        throw new WithdrawError()
+      })
+    } catch (e) {
+      console.error("Withdraw error: " + e)
+      throw new WithdrawError()
+    }
+  }
+
+  private async handleDepositTimeoutError() : Promise<SwapTransaction> {
+    await this.withdraw()
+    console.debug("Withdraw done")
+    this.swapTransaction!.setCompleted()
+    await this.restoreTransaction()
+    console.debug("Transaction stored")
+    return this.swapTransaction!
   }
 }
 

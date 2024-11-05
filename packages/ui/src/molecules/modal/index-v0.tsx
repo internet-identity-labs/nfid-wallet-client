@@ -1,17 +1,21 @@
 import clsx from "clsx"
-import React from "react"
+import { HTMLAttributes, FC } from "react"
 
-export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
+import { useDisableScroll } from "./hooks/disable-scroll"
+
+export interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   onClose: () => void
   isVisible?: boolean
 }
 
-export const ModalComponent: React.FC<ModalProps> = ({
+export const ModalComponent: FC<ModalProps> = ({
   children,
   className,
   isVisible,
   onClose,
 }) => {
+  useDisableScroll(Boolean(isVisible))
+
   return (
     <div
       onClick={onClose}

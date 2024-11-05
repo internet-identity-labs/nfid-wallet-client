@@ -1,7 +1,7 @@
 import { Then } from "@cucumber/cucumber"
-import { softAssertAll } from "../helpers/softAssertions.js"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
+import { softAssertAll } from "../helpers/softAssertions.js"
 import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
 import DemoTransactions from "../pages/demoApp/demo-transactions.js"
@@ -9,12 +9,12 @@ import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 
-Then(/^I toggle checkbox "([^"]*)?"$/, async function(selector: string) {
+Then(/^User toggle checkbox "([^"]*)?"$/, async function (selector: string) {
   await $(selector).click()
 })
 
-Then(/^Asset appears with label ([^"]*)$/, async (assetLabel: string) => {
-  await $(`#token_${assetLabel.replace(/\s/g, "")}`).waitForDisplayed({
+Then(/^Asset appears with label ([^"]*)$/, async (label: string) => {
+  await Assets.tokenLabel(label).waitForDisplayed({
     timeout: 15000,
   })
 })
@@ -24,51 +24,33 @@ Then(/^Only (\d+) asset displayed/, async (amount: number) => {
 })
 
 Then(
-  /^([^"]*) appears with ([^"]*) on ([^"]*) and ([^"]*)$/,
-  async (
-    assetLabel: string,
-    currency: string,
-    chain: string,
-    balance: string,
-  ) => {
+  /^([^"]*) appears with ([^"]*) on ([^"]*) and not 0 balance$/,
+  async (tokenName: string, currency: string, category: string) => {
     await softAssertAll(
-      async () => await expect(await Assets.getAssetBalance(assetLabel)).toHaveText(balance),
-      async () => await expect(await Assets.getCurrency(assetLabel)).toHaveText(currency),
-      async () => await expect(await Assets.getBlockchain(chain)).toHaveText(chain),
-    )
-  },
-)
-
-Then(
-  /^([^"]*) ([^"]*) address calculated$/,
-  async (chain: string, asset: string) => {
-    const title = `#token_${chain.replace(/\s/g, "")}_balance`
-    await $(title).waitUntil(
       async () =>
-        (await $(title)).getText().then((l) => {
-          return l !== "0 " + asset
-        }),
-      {
-        timeout: 59000,
-      },
+        expect(await (await Assets.tokenBalance(tokenName)).getText()).not.toBe(
+          "0",
+        ),
+      async () =>
+        expect(await (await Assets.getCurrency(tokenName)).getText()).toContain(
+          currency,
+        ),
+      async () =>
+        expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(
+          true,
+        ),
     )
   },
 )
 
-Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
-  const menuButton = $("#profile")
-  await menuButton.waitForDisplayed()
-  await menuButton.waitForClickable()
-})
+Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {})
 
 Then(
   /^Wait while ([^"]*) asset calculated with currency ([^"]*)$/,
-  async (text: string, currency) => {
-    await $("#token_" + text.replace(/\s/g, "") + "_balance").then(async (it) => {
-        await it.waitForExist({ timeout: 57000 })
-        expect(it).not.toHaveText(`0 ${currency}`)
-      },
-    )
+  async (tokenName: string, balance: string) => {
+    await Assets.tokenBalance(tokenName).waitForExist({ timeout: 20000 })
+    console.log(await Assets.tokenBalance(tokenName).getText())
+    expect(Assets.tokenBalance(tokenName)).not.toHaveText(`0 ${balance}`)
   },
 )
 
@@ -105,27 +87,38 @@ Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
   await Assets.chooseAccountFrom(account)
 })
 
-Then(/^Wait while balance and fee calculated/, async () => {
-  await Assets.getBalance.waitForExist({ timeout: 20000 })
-  await Assets.getFee.waitForDisplayed({ timeout: 40000 })
-})
+Then(
+  /^Balance is calculated as ([^"]*) and fee is calculated as ([^"]*)/,
+  async (balance: string, fee: string) => {
+    await softAssertAll(
+      async () => expect(await Assets.getBalance.getText()).toContain(balance),
+      async () => expect(await Assets.getFee.getText()).toContain(fee),
+    )
+  },
+)
 
 Then(
   /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
   async (expectedBalance: string, expectedFee: string, currency: string) => {
     let actualBalance
     let actualTransferFee
-    await browser.waitUntil(async () => {
-      await Assets.getBalance.waitForDisplayed()
-      actualBalance = await Assets.getBalance.getText()
-      return actualBalance != ""
-    }, { timeout: 20000, timeoutMsg: "Balance is still empty in 20sec" })
+    await browser.waitUntil(
+      async () => {
+        await Assets.getBalance.waitForDisplayed()
+        actualBalance = await Assets.getBalance.getText()
+        return actualBalance != ""
+      },
+      { timeout: 20000, timeoutMsg: "Balance is still empty in 20sec" },
+    )
     await Assets.getFee.waitForDisplayed({ timeout: 30000 })
     let fullText = await Assets.getFee.getText()
-    actualTransferFee = fullText.replace(await Assets.getFee.$("span").getText(), "").trim()
+    actualTransferFee = fullText
+      .replace(await Assets.getFee.$("span").getText(), "")
+      .trim()
 
     await softAssertAll(
-      async () => await expect(actualBalance).toEqual(expectedBalance + " " + currency),
+      async () =>
+        await expect(actualBalance).toEqual(expectedBalance + " " + currency),
       async () => {
         if (expectedFee === "any") expect(actualTransferFee).not.toEqual("0.00")
         else expect(actualTransferFee).toEqual(expectedFee + " " + currency)
@@ -137,38 +130,45 @@ Then(
 Then(
   /^Set (.+) address then send(?: ([^"]*) FT)?$/,
   async (address: string, amount: string) => {
-    amount ? await Assets.sendFTto(address, amount) : await Assets.sendNFTto(address)
+    amount
+      ? await Assets.sendFTto(address, amount)
+      : await Assets.sendNFTto(address)
   },
 )
 
 Then(/^Set amount ([^"]*)/, async (amount: string) => {
-  const input = await $("#amount")
-  await input.setValue(amount)
+  await Assets.amountField.setValue(amount)
 })
 
 Then(/^Transaction is success$/, async () => {
   await Assets.successWindow.waitForExist({
-    timeout: 80000, interval: 1000,
+    timeout: 80000,
+    interval: 1000,
   })
 })
 
-Then(/^Account ID is (.+)/, async function(account: string) {
-  const address = await Assets.getAccountId(true)
-  let expectedResult =
-    (await address.firstAddressPart.getText()) +
-    "..." +
-    (await address.secondAddressPart.getText())
-  await expect(expectedResult).toEqual(account)
-})
+Then(
+  /^Account ID is ([^"]*) and Principal is ([^"]*)/,
+  async function (account: string, principal: string) {
+    const currentAddress = await Assets.getAccountId(true)
+    let currentPrincipal = await Assets.getAccountId(false)
 
-Then(/^Principal is ([^"]*)$/, async (principal: string) => {
-  let address = await Assets.getAccountId(false)
-  await expect(
-    (await address.firstAddressPart.getText()) +
-    "..." +
-    (await address.secondAddressPart.getText()),
-  ).toEqual(principal)
-})
+    await softAssertAll(
+      async () =>
+        await expect(
+          (await currentAddress.firstAddressPart.getText()) +
+            "..." +
+            (await currentAddress.secondAddressPart.getText()),
+        ).toEqual(account),
+      async () =>
+        await expect(
+          (await currentPrincipal.firstAddressPart.getText()) +
+            "..." +
+            (await currentPrincipal.secondAddressPart.getText()),
+        ).toEqual(principal),
+    )
+  },
+)
 
 Then(/^Principal, Address, Targets are correct:/, async (data) => {
   let expectedData = data.rowsHash()
@@ -177,25 +177,25 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
   expect(
     String(
       (await (await usersData.get("principal")).firstAddressPart.getText()) +
-      "..." +
-      (await (await usersData.get("principal")).secondAddressPart.getText()),
+        "..." +
+        (await (await usersData.get("principal")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
-    "..." +
-    expectedData.principal.substring(58, 63),
+      "..." +
+      expectedData.principal.substring(58, 63),
   )
 
   expect(
     String(
       (await (await usersData.get("address")).firstAddressPart.getText()) +
-      "..." +
-      (await (await usersData.get("address")).secondAddressPart.getText()),
+        "..." +
+        (await (await usersData.get("address")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +
-    "..." +
-    expectedData.address.substring(59, 64),
+      "..." +
+      expectedData.address.substring(59, 64),
   )
 
   await browser.waitUntil(
@@ -238,57 +238,37 @@ Then(
 )
 
 Then(
-  /^Token ([^"]*) from ([^"]*) nft collection displayed/,
-  async (token: string, collection: string) => {
-    await Nft.getNftName(token, collection).then((l) =>
-      l.waitForDisplayed({
-        timeout: 5000,
-        timeoutMsg: "No NFT " + token,
-      }),
-    )
-    await Nft.getNftCollection(collection).then((l) =>
-      l.waitForDisplayed({
-        timeout: 5000,
-        timeoutMsg: "No NFT collection " + collection,
-      }),
-    )
-  },
-)
-
-Then(
-  /^NFT ([^"]*) ([^"]*) ([^"]*) displayed/,
-  async (token: string, collection: string, id: string) => {
+  /^Token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
+  async (token: string, collection: string, id?: string) => {
     await Nft.getNftName(token, collection).waitForDisplayed({
       timeout: 5000,
-      timeoutMsg: `Token name ${token} is wrong or still not displayed in 5sec`,
+      timeoutMsg: `Not found NFT with name ${token} and collection ${collection}`,
     })
     await Nft.getNftCollection(collection).waitForDisplayed({
       timeout: 5000,
-      timeoutMsg: `Collection name ${collection} is wrong or still not displayed in 5sec`,
+      timeoutMsg: `Not found collection with name ${collection}`,
     })
-    await Nft.getNftId(id).waitForDisplayed({
-      timeout: 5000,
-      timeoutMsg: `ID ${id} is wrong or still not displayed in 5sec`,
-    })
+
+    if (id)
+      await Nft.getNftId(id).waitForDisplayed({
+        timeout: 5000,
+        timeoutMsg: `Token ID ${id} is wrong or still not displayed in 5sec`,
+      })
   },
 )
+
 Then(
-  /^Details are ([^"]*) ([^"]*)/,
-  async (standard: string, collection: string) => {
-    await Nft.getNftStandard.waitForDisplayed()
-    expect(await Nft.getNftStandard.getText()).toContain(standard)
-    await Nft.getCollectionId.waitForDisplayed()
-    expect(await Nft.getCollectionId.getText()).toContain(collection)
-  })
-
-Then(/^About starts with ([^"]*)/, async (about: string) => {
-  await Nft.getAbout.waitForDisplayed()
-  expect(await Nft.getAbout.getText()).toContain(about)
-})
-
-Then(/^Open collectibles page$/, async () => {
-  await Nft.openCollectibles()
-})
+  /^Details are: standard - ([^"]*), collection - ([^"]*), about - ([^"]*)/,
+  async (standard: string, collection: string, about: string) => {
+    await softAssertAll(
+      async () =>
+        expect(await Nft.getNftStandard.getText()).toContain(standard),
+      async () =>
+        expect(await Nft.getCollectionId.getText()).toContain(collection),
+      async () => expect(await Nft.getAbout.getText()).toContain(about),
+    )
+  },
+)
 
 Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
   await Nft.getNftCollectiblesAmount(amount)
@@ -299,21 +279,14 @@ Then(/^Switch to table$/, async () => {
 })
 
 Then(
-  /^Open nft ([^"]*) and ([^"]*) details$/,
+  /^User goes to details of the nft with name ([^"]*) and collection ([^"]*)$/,
   async (token: string, collection: string) => {
     await Nft.nftDetails(token, collection)
   },
 )
 
 Then(
-  /^Go to ([^"]*) and ([^"]*) details$/,
-  async (token: string, collection: string) => {
-    await Nft.nftDetails(token, collection)
-  },
-)
-
-Then(
-  /^The first raw has the next values: ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*)$/,
+  /^The first raw has the next values: ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) in activity section$/,
   async (
     type: string,
     date: string,
@@ -322,10 +295,20 @@ Then(
     price: string,
   ) => {
     await softAssertAll(
-      async () => expect(await Nft.getValueFromColumnAtFirstRow("Event type")).toContain(type),
-      async () => expect(await Nft.getValueFromColumnAtFirstRow("Date and time")).toContain(date),
-      async () => expect(await Nft.getValueFromColumnAtFirstRow("To")).toContain(to),
-      async () => expect(await Nft.getValueFromColumnAtFirstRow("Price")).toContain(price),
+      async () =>
+        expect(await Nft.getValueFromColumnAtFirstRow("Event type")).toContain(
+          type,
+        ),
+      async () =>
+        expect(
+          await Nft.getValueFromColumnAtFirstRow("Date and time"),
+        ).toContain(date),
+      async () =>
+        expect(await Nft.getValueFromColumnAtFirstRow("To")).toContain(to),
+      async () =>
+        expect(await Nft.getValueFromColumnAtFirstRow("Price")).toContain(
+          price,
+        ),
       // TODO BUG - "From" field is empty () => expect(await Nft.getValueFromColumnAtFirstRow("From")).toContain(price)
     )
   },
@@ -335,18 +318,17 @@ Then(/^I should see filter button in Activity tab$/, async () => {
   await Activity.filterButton.waitForDisplayed({ timeout: 10000 })
 })
 
-Then(/^I should see (\d+) activities in the table$/, async (amount: number) => {
-  const length = await Activity.getActivitiesLength()
-  expect(length).toEqual(amount)
+Then(/^There are (\d+) activities in the table$/, async (amount: number) => {
+  expect(await Activity.getActivitiesLength()).toEqual(amount)
 })
 
 Then(
-  /^I should see transaction ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*)$/,
+  /^There is transaction ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*)$/,
   async (
     action: string,
     currency: string,
     type: string,
-    asset: string,
+    amount: string,
     timestamp: string,
     from: string,
     to: string,
@@ -355,12 +337,12 @@ Then(
       action,
       currency,
       type,
-      asset,
+      amount,
       timestamp,
       from,
       to,
     )
-    expect(tx).toBeTruthy()
+    await tx.waitForExist()
   },
 )
 

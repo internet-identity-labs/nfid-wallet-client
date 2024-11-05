@@ -14,6 +14,7 @@ import {
   FC,
   useMemo,
   useContext,
+  useEffect,
 } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import useSWR from "swr"
@@ -27,10 +28,12 @@ import {
   ProfileConstants,
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
-import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
+import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
+import { swapTransactionService } from "frontend/integration/icpswap/service/transaction-service"
+import { SwapStage } from "frontend/integration/icpswap/types/enums"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -51,24 +54,6 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   titleClassNames?: string
 }
 
-const tabs = [
-  {
-    name: "Tokens",
-    title: <>Tokens</>,
-    path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
-  },
-  {
-    name: "NFTs",
-    title: <>NFTs</>,
-    path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
-  },
-  {
-    name: "Activity",
-    title: <>Activity</>,
-    path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
-  },
-]
-
 const ProfileTemplate: FC<IProfileTemplate> = ({
   pageTitle,
   icon,
@@ -88,13 +73,47 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
+  const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
+
+  const tabs = useMemo(() => {
+    return [
+      {
+        name: "Tokens",
+        title: <>Tokens</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
+      },
+      {
+        name: "NFTs",
+        title: <>NFTs</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
+      },
+      {
+        name: "Activity",
+        title: <>Activity</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
+        hasNotification: hasUncompletedSwap,
+      },
+    ]
+  }, [hasUncompletedSwap])
 
   const location = useLocation()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const checkTransactions = async () => {
+      const transactions = await swapTransactionService.getTransactions()
+
+      setHasUncompletedSwap(
+        transactions.some((tx) => tx.getStage() !== SwapStage.Completed),
+      )
+    }
+
+    checkTransactions()
+  }, [])
+
   const activeTab = useMemo(() => {
     return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
-  }, [location.pathname])
+  }, [location.pathname, tabs])
   const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
@@ -137,7 +156,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: "send" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
     send("SHOW")
   }
 
@@ -145,7 +164,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: "receive" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
     send("SHOW")
   }
 
@@ -153,7 +172,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: "swap" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send("SHOW")
   }
 
@@ -166,7 +185,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         syncEmail={syncEmailDeviceWithII}
         anchor={profile?.anchor}
         logout={logout}
-        sendReceiveBtn={<SendReceiveButton />}
         profileConstants={ProfileConstants}
         links={navigationPopupLinks}
         assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}

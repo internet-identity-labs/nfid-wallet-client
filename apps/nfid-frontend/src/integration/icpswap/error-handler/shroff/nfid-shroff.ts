@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { WithdrawError } from "src/integration/icpswap/errors/withdraw-error"
 import {
   ShroffBuilder,
   ShroffImpl,
@@ -18,6 +17,11 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
       console.log("ReSwap NFID started")
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       this.delegationIdentity = delegationIdentity
+      if (this.swapTransaction.getError() === undefined) {
+        console.debug("Swap timeout error")
+        this.swapTransaction.setCompleted()
+        return this.swapTransaction
+      }
       await this.transferToNFID()
       await this.restoreTransaction()
       console.debug("Transaction stored")
@@ -25,10 +29,10 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError(`Swap error: ${e}`)
+        this.swapTransaction.setError((e as Error).message)
       }
       await this.restoreTransaction()
-      throw new WithdrawError()
+      throw e
     }
   }
 }

@@ -1,8 +1,8 @@
 import { Given } from "@cucumber/cucumber"
 
+import clearAuthState from "../helpers/clear-auth-state.js"
 import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import HomePage from "../pages/home-page.js"
-import clearAuthState from "../helpers/clear-auth-state.js"
 
 //TODO Move to Page.ts
 const pages = {

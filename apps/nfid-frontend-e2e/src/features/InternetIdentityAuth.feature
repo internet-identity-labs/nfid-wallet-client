@@ -4,10 +4,9 @@ Feature: User should be able to register and authenticate from desktop
   Scenario Outline: User authenticates with Internet Identity recovery phrase
     Given User opens NFID /recover-nfid/enter-recovery-phrase
     When User enters recovery phrase of <nfid number> anchor
-    Then I toggle checkbox "#has-verified-domain"
-    When I click on recover button
-    When It log's me in
-    Then Wait while Security accounts calculated
+    And User toggle checkbox "#has-verified-domain"
+    And User clicks on recover button
+    Then User is logged in
     Examples:
       | nfid number |
       | 28593       |

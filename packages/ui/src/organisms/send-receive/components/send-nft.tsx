@@ -19,6 +19,7 @@ import {
 import { NFT } from "frontend/integration/nft/nft"
 
 export interface TransferNFTUiProps {
+  loadMore?: () => void
   isLoading: boolean
   loadingMessage: string | undefined
   nftOptions: IGroupedOptions[] | undefined
@@ -31,6 +32,7 @@ export interface TransferNFTUiProps {
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
+  loadMore,
   isLoading,
   loadingMessage,
   nftOptions,
@@ -45,12 +47,15 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm({
     mode: "all",
     defaultValues: {
       to: selectedReceiverWallet ?? "",
     },
   })
+
+  const to = watch("to")
 
   return (
     <BlurredLoader
@@ -60,6 +65,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
     >
       <div className="space-y-3 text-xs ">
         <ChooseModal
+          loadMore={loadMore}
           label="NFT to transfer"
           optionGroups={nftOptions ?? []}
           title="NFT to send"
@@ -124,6 +130,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         />
         <Button
           id={"sendButton"}
+          disabled={Boolean(errors["to"]?.message) || !to}
           className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block

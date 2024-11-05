@@ -1,5 +1,4 @@
 import { useActor } from "@xstate/react"
-import { DEFAULT_ERROR_TEXT } from "packages/constants"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
@@ -12,10 +11,11 @@ import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
-import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
+
+import { ModalType } from "../transfer-modal/types"
 
 const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
@@ -27,7 +27,7 @@ const TokensPage = () => {
     sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: "send" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
     send("SHOW")
   }
@@ -65,11 +65,7 @@ const TokensPage = () => {
     ])
       .then(() => icrc1Pair.getMetadata())
       .catch((e) => {
-        if (e instanceof ICRC1Error) {
-          throw new ICRC1Error(e.message)
-        } else {
-          throw new ICRC1Error(DEFAULT_ERROR_TEXT)
-        }
+        throw e
       })
   }
 

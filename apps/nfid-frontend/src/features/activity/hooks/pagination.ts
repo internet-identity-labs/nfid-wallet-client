@@ -10,7 +10,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [filter, setFilter] = useState<string[]>(initialFilter)
   const [offset, setOffset] = useState(0)
   const [activities, setActivities] = useState<IActivityRowGroup[]>([])
-  const [icrcCount, setIcrcCount] = useState(BigInt(20))
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
 
@@ -31,7 +30,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
 
   useEffect(() => {
     setActivities([])
-    setIcrcCount(BigInt(20))
     setOffset(0)
   }, [filter])
 

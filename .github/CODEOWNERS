@@ -2,7 +2,7 @@
 # Each line is a file pattern followed by one or more owners.
 
 # nfid-wallet-client repository owner
-* @olsemeno @dmitriiIdentityLabs @vitaliipustovyi
+* @olsemeno @olekid
 
 # NFID Wallet Demo application owner
 apps/nfid-demo/* @vitaliipustovyi

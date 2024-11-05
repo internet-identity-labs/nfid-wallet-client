@@ -1,4 +1,3 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import {
@@ -39,7 +38,6 @@ interface ISwapFT {
 
 export const SwapFT = ({ onClose }: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [identity, setIdentity] = useState<DelegationIdentity>()
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
   const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
@@ -195,7 +193,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
     await shroff.validateQuote()
     const identity = await getIdentity(shroff.getTargets())
-    setIdentity(identity)
 
     shroff.swap(identity).catch((error) => {
       setSwapError(error)
@@ -230,8 +227,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         error={swapError}
         isProgressOpen={isSuccessOpen}
         onClose={onClose}
-        transaction={getTransaction}
-        identity={identity}
         quoteTimer={quoteTimer}
       />
     </FormProvider>

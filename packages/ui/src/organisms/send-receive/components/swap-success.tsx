@@ -1,7 +1,5 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import clsx from "clsx"
 import { FC, useEffect, useMemo, useState } from "react"
-import { errorHandlerFactory } from "src/integration/icpswap/error-handler/handler-factory"
 
 import {
   IconCmpArrow,
@@ -16,7 +14,6 @@ import {
   SwapError,
   WithdrawError,
 } from "frontend/integration/icpswap/errors"
-import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import deposit from "../assets/NFID_WS_1.json"
@@ -52,8 +49,6 @@ export interface SwapSuccessProps {
   duration?: number
   isOpen: boolean
   error?: SwapError | WithdrawError | DepositError
-  transaction: SwapTransaction | undefined
-  identity?: DelegationIdentity
 }
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
@@ -68,8 +63,6 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   duration = 60,
   isOpen,
   error,
-  transaction,
-  identity,
 }) => {
   const [currentAnimation, setCurrentAnimation] = useState<unknown>(
     allAnimations.deposit,
@@ -105,20 +98,6 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
       setCurrentAnimation(allAnimations.swap)
     } else {
       return
-    }
-  }
-
-  const completeHandler = async () => {
-    onClose()
-    if (!error || step < SwapStage.Withdraw) {
-      return
-    }
-    try {
-      if (!transaction || !identity) return
-      const errorHandler = errorHandlerFactory.getHandler(transaction)
-      await errorHandler.completeTransaction(identity)
-    } catch (e) {
-      throw e
     }
   }
 
@@ -210,12 +189,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </p>
           </div>
         </div>
-        <Button
-          type="primary"
-          block
-          className="mt-[30px]"
-          onClick={completeHandler}
-        >
+        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
           {getTitleAndButtonText(error)?.buttonText}
         </Button>
       </div>

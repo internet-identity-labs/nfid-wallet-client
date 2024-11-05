@@ -42,6 +42,10 @@ export class FTImpl implements FT {
     return this
   }
 
+  setTokenBalance(value: bigint): void {
+    this.tokenBalance = value
+  }
+
   getBlockExplorerLink(): string {
     return `https://dashboard.internetcomputer.org/canister/${this.tokenAddress}`
   }

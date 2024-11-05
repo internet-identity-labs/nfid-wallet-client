@@ -2,7 +2,6 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
-import { resetIntegrationCache } from "packages/integration/src/cache"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import {
   fetchActiveTokens,
@@ -15,6 +14,7 @@ import useSWR, { mutate } from "swr"
 
 import {
   RootWallet,
+  exchangeRateService,
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
@@ -188,19 +188,31 @@ export const TransferFT = ({
         .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
       subTitle: usdRate!,
       isAssetPadding: true,
-      callback: () => {
-        resetIntegrationCache(["getICRC1Canisters"], () => {
-          refetchActiveTokens()
-          refetchToken()
-        })
+      callback: async () => {
+        const decimals = token.getTokenDecimals()
+        const balance = token.getTokenBalance()
+        const ledger = token.getTokenAddress()
 
-        resetIntegrationCache(["usdPriceForICRC1"], () => {
-          refetchActiveTokens().then(() =>
-            refetchUsdPrice().then(() =>
-              mutate(["activeTokenUSD", token.getTokenAddress()]),
-            ),
-          )
-        })
+        if (!decimals || !balance) return
+
+        const updatedBalance = balance - BigInt(Number(amount) * 10 ** decimals)
+        const index = activeTokens.findIndex(
+          (el) => el.getTokenAddress() === ledger,
+        )
+        activeTokens[index].setTokenBalance(updatedBalance)
+
+        const usdRate = await exchangeRateService.usdPriceForICRC1(ledger)
+        const updatedUsdBalance =
+          (Number(updatedBalance) / 10 ** decimals) *
+          Number(usdRate?.toFixed(2))
+
+        mutate("activeTokens", activeTokens, false)
+
+        mutate(
+          ["activeTokenUSD", ledger],
+          `${updatedUsdBalance.toFixed(2)} USD`,
+          false,
+        )
       },
     })
   }, [
@@ -208,6 +220,7 @@ export const TransferFT = ({
     isVault,
     onTransfer,
     token,
+    tokenAddress,
     selectedVaultsAccountAddress,
     usdRate,
     refetchActiveTokens,

@@ -21,6 +21,8 @@ export interface FT {
 
   getTokenRateFormatted(amount: string): Promise<string | undefined>
 
+  setTokenBalance(value: bigint): void
+
   getTokenAddress(): string
 
   getTokenIndex(): string | undefined

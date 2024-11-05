@@ -66,7 +66,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
           <IconCmpShare />
         </a>
       </div>
-      <div className="relative flex lg:items-center justify-center lg:pr-[10%] lg:bg-white order-1 lg:order-2 mt-20 lg:mt-0">
+      <div className="relative flex lg:items-center justify-center lg:bg-white order-1 lg:order-2 mt-20 lg:mt-0">
         <div className="w-[90%] mx-auto lg:w-3/5 lg:min-w-[387px] min-h-[448px] flex flex-col bg-white rounded-3xl overflow-hidden lg:overflow-auto relative lg:static p-5">
           {children}
         </div>

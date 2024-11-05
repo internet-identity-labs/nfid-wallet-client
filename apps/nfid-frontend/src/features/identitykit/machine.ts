@@ -246,7 +246,7 @@ const machineServices = {
     resetActiveRequest: assign(
       (context: IdentityKitRPCMachineContext, _event: any) => ({
         activeRequest: undefined,
-        activeRequestMetadata: undefined,
+        activeRequestMetadata: undefined
       }),
     ),
     assignComponentData: assign(

@@ -3,12 +3,15 @@ import { useEffect, useState } from "react"
 
 import useClickOutside from "../../utils/use-click-outside"
 
+export type IDropdownPosition = "top" | "bottom"
+
 export interface IDropdown {
   triggerElement?: React.ReactNode
   className?: string
   children: React.ReactNode
   setIsOpen?: (v: boolean) => void
   minWidth?: number
+  position?: IDropdownPosition
 }
 
 export const Dropdown = ({
@@ -17,6 +20,7 @@ export const Dropdown = ({
   children,
   setIsOpen,
   minWidth = 210,
+  position = "bottom",
 }: IDropdown) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const ref = useClickOutside(() => setIsDropdownOpen(false))
@@ -41,8 +45,10 @@ export const Dropdown = ({
             "right-[-10px]",
             "bg-white rounded-md mt-[1px] absolute z-[49]",
             className,
+            position === "top" && "bottom-[100%]",
           )}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
+          onClick={() => setIsDropdownOpen(false)}
         >
           <div style={{ minWidth: `${minWidth}px` }}>{children}</div>
         </div>

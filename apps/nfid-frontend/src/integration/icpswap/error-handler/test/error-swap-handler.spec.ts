@@ -16,12 +16,10 @@ const mock: JsonnableEd25519KeyIdentity = [
 const mockPrincipal =
   "4pw67-jou3d-xb4py-6pnvx-5p75x-pp3mi-ywe4j-bhmmq-l3354-awsws-kae"
 
-//too long. unskip when needed
 describe("shroff swap error handler test", () => {
   jest.setTimeout(900000)
 
-  //too long test. Unskip when needed
-  it.skip("swap error handler test", async function () {
+  it("swap error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)

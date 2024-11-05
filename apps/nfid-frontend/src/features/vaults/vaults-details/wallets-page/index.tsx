@@ -5,9 +5,7 @@ import { Wallet, vaultsTracking } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/constants"
 
 import { VaultActionBar } from "../../action-bar"
-import { useVault } from "../../hooks/use-vault"
 import { useVaultWallets } from "../../hooks/use-vault-wallets"
-import { VaultAddWallet } from "./modal-add-wallet"
 import { VaultsWalletsTable } from "./table"
 
 interface VaultsWalletsPageProps {}
@@ -15,7 +13,6 @@ interface VaultsWalletsPageProps {}
 export const VaultsWalletsPage: React.FC<VaultsWalletsPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
   const { vaultId, wallets, isFetching } = useVaultWallets()
-  const { isAdmin } = useVault()
 
   React.useEffect(() => {
     if (!isFetching && vaultId && wallets) {
@@ -51,10 +48,7 @@ export const VaultsWalletsPage: React.FC<VaultsWalletsPageProps> = () => {
 
   return (
     <div className="border border-gray-200 rounded-xl mt-[30px]">
-      <VaultActionBar
-        onInputChange={onFilterChange}
-        actionButtons={isAdmin ? <VaultAddWallet /> : <div />}
-      />
+      <VaultActionBar onInputChange={onFilterChange} />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsWalletsTable wallets={filteredWallets} />
         {!filteredWallets.length && !isFetching && (

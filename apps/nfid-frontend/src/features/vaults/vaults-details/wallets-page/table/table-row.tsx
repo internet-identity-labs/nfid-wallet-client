@@ -3,7 +3,6 @@ import clsx from "clsx"
 import React, { useCallback, useContext } from "react"
 
 import {
-  IconCmpArchive,
   IconCmpDots,
   IconCmpTransfer,
   Popover,
@@ -25,9 +24,7 @@ export interface VaultsWalletsTableRowProps {
   name: string
   tokenBalance: string
   USDBalance: string
-  onArchive: () => void
   isArchived?: boolean
-  isAdmin?: boolean
 }
 
 export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
@@ -36,9 +33,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   name,
   tokenBalance,
   USDBalance,
-  onArchive,
   isArchived,
-  isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
@@ -57,21 +52,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
 
     send({ type: "SHOW" })
   }, [address, send, wallets])
-
-  const onReceiveToVaultWallet = useCallback(() => {
-    const allTokens = [] as any
-    sendReceiveTracking.openModal({
-      isSending: false,
-      isOpenedFromVaults: true,
-    })
-
-    send({ type: "ASSIGN_SELECTED_FT", data: allTokens[0] })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
-    send({ type: "ASSIGN_VAULTS", data: true })
-
-    send({ type: "SHOW" })
-  }, [address, send])
 
   return (
     <TableRow
@@ -96,18 +76,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
                 text: "Send",
                 onClick: onSendFromVaultWallet,
               },
-              {
-                icon: <IconCmpTransfer className="rotate-180" />,
-                text: "Receive",
-                onClick: onReceiveToVaultWallet,
-              },
-              isAdmin
-                ? {
-                    icon: <IconCmpArchive />,
-                    text: "Archive",
-                    onClick: onArchive,
-                  }
-                : {},
             ]}
           />
         </Popover>

@@ -16,7 +16,7 @@ const mockPrincipal =
   "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe"
 
 describe("shroff test", () => {
-  jest.setTimeout(900000)
+  jest.setTimeout(1500000)
 
   it("shroff quote test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
@@ -38,7 +38,6 @@ describe("shroff test", () => {
     BigInt(quote.getAmountWithoutWidgetFee().toNumber())
   })
 
-  //too long test. Unskip when needed
   it("shroff transfer test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
@@ -81,7 +80,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.TransferSwap &&
-      seconds < 20
+      seconds < 60
     ) {
       await sleep(1)
       seconds++
@@ -90,7 +89,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Deposit &&
-      seconds < 40
+      seconds < 90
     ) {
       await sleep(1)
       seconds++
@@ -99,7 +98,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Swap &&
-      seconds < 60
+      seconds < 120
     ) {
       await sleep(1)
       seconds++
@@ -108,13 +107,24 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Withdraw &&
-      seconds < 80
+      seconds < 150
     ) {
       await sleep(1)
       seconds++
     }
 
     expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.TransferNFID)
+
+    while (
+      shroff.getSwapTransaction()?.getStage() === SwapStage.TransferNFID &&
+      seconds < 180
+      ) {
+      await sleep(1)
+      seconds++
+    }
+
+    expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.Completed)
+
 
     const balanceUpgraded = await ledgerICRC.getBalance(mockPrincipal)
 

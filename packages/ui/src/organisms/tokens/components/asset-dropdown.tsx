@@ -10,6 +10,7 @@ import {
   IconSvgEyeClosedBlack,
   IconSvgHistoryIcon,
   IconSvgTokenInfo,
+  IDropdownPosition,
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -21,6 +22,7 @@ type AssetDropdownProps = {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
+  dropdownPosition: IDropdownPosition
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
@@ -28,6 +30,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   profileConstants,
   onSendClick,
   setToken,
+  dropdownPosition,
 }) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
@@ -46,6 +49,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   return (
     <>
       <Dropdown
+        position={dropdownPosition}
         className="!rounded-[12px]"
         triggerElement={
           <IconCmpDots className="mx-auto transition-all cursor-pointer text-secondary hover:text-black" />

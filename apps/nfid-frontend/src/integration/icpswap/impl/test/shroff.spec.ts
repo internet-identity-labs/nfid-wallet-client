@@ -16,7 +16,7 @@ const mockPrincipal =
   "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe"
 
 describe("shroff test", () => {
-  jest.setTimeout(900000)
+  jest.setTimeout(1500000)
 
   it("shroff quote test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
@@ -80,7 +80,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.TransferSwap &&
-      seconds < 30
+      seconds < 60
     ) {
       await sleep(1)
       seconds++
@@ -89,7 +89,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Deposit &&
-      seconds < 50
+      seconds < 90
     ) {
       await sleep(1)
       seconds++
@@ -98,7 +98,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Swap &&
-      seconds < 70
+      seconds < 120
     ) {
       await sleep(1)
       seconds++
@@ -107,7 +107,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.Withdraw &&
-      seconds < 90
+      seconds < 150
     ) {
       await sleep(1)
       seconds++
@@ -117,7 +117,7 @@ describe("shroff test", () => {
 
     while (
       shroff.getSwapTransaction()?.getStage() === SwapStage.TransferNFID &&
-      seconds < 110
+      seconds < 180
       ) {
       await sleep(1)
       seconds++

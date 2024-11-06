@@ -213,12 +213,8 @@ export const TransferFT = ({
     isVault,
     onTransfer,
     token,
-    //tokenAddress,
     selectedVaultsAccountAddress,
     usdRate,
-    // refetchActiveTokens,
-    // refetchToken,
-    // refetchUsdPrice,
     amount,
     to,
   ])

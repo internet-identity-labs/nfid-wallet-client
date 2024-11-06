@@ -15,9 +15,9 @@ import {
 import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
-import { actorBuilder } from "src/integration/icpswap/util/util"
 
 import {
+  actorBuilder,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,

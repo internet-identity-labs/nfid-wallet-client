@@ -4,7 +4,11 @@ import { icpswapTransactionMapper } from "src/integration/nft/impl/icpswap/trans
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
-import { actor, agentBaseConfig, hasOwnProperty } from "@nfid/integration"
+import {
+  actorBuilder,
+  agentBaseConfig,
+  hasOwnProperty,
+} from "@nfid/integration"
 
 import { AssetPreview, DisplayFormat, TokenProperties } from "../nft-types"
 import { idlFactory } from "./idl/SwapNFT"
@@ -34,7 +38,7 @@ export class NftIcpSwap extends NftImpl {
   }
 
   async getDetails(): Promise<NFTDetails> {
-    let canisterActor = actor<IcpSwapCanister>(
+    let canisterActor = actorBuilder<IcpSwapCanister>(
       this.getCollectionId(),
       idlFactory,
     )
@@ -59,7 +63,7 @@ export class NftIcpSwap extends NftImpl {
   private async getIcsMetadata(): Promise<IcsMetadata> {
     if (this.icsMetadata === undefined) {
       const identity = new AnonymousIdentity()
-      let canisterActor = actor<IcpSwapCanister>(
+      let canisterActor = actorBuilder<IcpSwapCanister>(
         this.getCollectionId(),
         idlFactory,
         {
@@ -102,7 +106,7 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
     from: number,
     to: number,
   ): Promise<{ activity: Array<TransactionRecord>; isLastPage: boolean }> {
-    const canisterActor = actor<IcpSwapCanister>(
+    const canisterActor = actorBuilder<IcpSwapCanister>(
       this.icsMetadata.cId,
       idlFactory,
     )

@@ -35,7 +35,7 @@ const setupCSP = () => {
         "https://api.blockcypher.com/",
         "https://api.coinbase.com",
         "https://api.pro.coinbase.com",
-        "https://eu.posthog.com",
+        "https://eu.i.posthog.com",
         "https://icp-api.io",
         "https://api.nftgeek.app",
         "https://toniq.io",

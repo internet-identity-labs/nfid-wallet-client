@@ -171,6 +171,10 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     }
   }, [mutate, quoteTimer, quote])
 
+  useEffect(() => {
+    mutate()
+  }, [toToken, fromToken, mutate])
+
   const refresh = () => {
     setShroffError(undefined)
     setLiquidityError(undefined)

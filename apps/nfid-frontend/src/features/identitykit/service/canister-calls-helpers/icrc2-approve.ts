@@ -13,7 +13,6 @@ export interface ICRC2Metadata {
   amount: number
   balance: number
   address: string
-  isInsufficientBalance?: boolean
 }
 
 export const getMetadataICRC2Approve = async (
@@ -53,8 +52,6 @@ export const getMetadataICRC2Approve = async (
     fee,
     amount: parsedArgs?.amount,
     balance,
-    isInsufficientBalance:
-      Number(fee) + Number(parsedArgs?.amount) > Number(balance),
     address: message.data.params.sender,
   }
 }

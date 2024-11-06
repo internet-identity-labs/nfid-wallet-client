@@ -100,5 +100,6 @@ export const executeInteractiveMethod = async (
     context.activeRequest.data.method,
   )
   if (!service) throw new NotSupportedError()
+
   return service.onApprove(context.activeRequest, event.data)
 }

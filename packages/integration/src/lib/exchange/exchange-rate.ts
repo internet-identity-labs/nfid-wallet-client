@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../cache"
-import { actor } from "./../actors"
+import { actorBuilder } from "./../actors"
 import { idlFactory as IDL } from "./idl/ExchangeRate"
 import { _SERVICE as Service, ExchangeRate__1 } from "./idl/ExchangeRate.d"
 import { idlFactory as IDL_ICRC1_NODE } from "./idl/NodeIndex"
@@ -22,8 +22,8 @@ export class ExchangeRateService {
   static NODE_CANISTER = "ggzvv-5qaaa-aaaag-qck7a-cai"
 
   constructor() {
-    this.exchangeRateActor = actor<Service>(EXCHANGE_RATE_CANISTER, IDL)
-    this.exchangeTokenNodeActor = actor<ServiceNode>(
+    this.exchangeRateActor = actorBuilder<Service>(EXCHANGE_RATE_CANISTER, IDL)
+    this.exchangeTokenNodeActor = actorBuilder<ServiceNode>(
       ExchangeRateService.NODE_CANISTER,
       IDL_ICRC1_NODE,
     )
@@ -48,7 +48,10 @@ export class ExchangeRateService {
     if (!tokenStorageCanister) {
       return undefined
     }
-    const actorStorage = actor<ServiceToken>(tokenStorageCanister, IDL_TOKEN)
+    const actorStorage = actorBuilder<ServiceToken>(
+      tokenStorageCanister,
+      IDL_TOKEN,
+    )
     const result: PublicTokenOverview = await actorStorage.getToken(ledger)
     const usdPrice: number = result.priceUSD
     return BigNumber(usdPrice)

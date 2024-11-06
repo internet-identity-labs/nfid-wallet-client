@@ -1,4 +1,6 @@
 import * as Agent from "@dfinity/agent"
+import { HttpAgent } from "@dfinity/agent"
+import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 import { idlFactory as SwapStorageIDL } from "src/integration/icpswap/idl/swap_trs_storage"
 import {
   _SERVICE as SwapStorage,
@@ -7,27 +9,23 @@ import {
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {agentBaseConfig, authState, replaceActorIdentity} from "@nfid/integration"
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
-import {actorBuilder} from "src/integration/icpswap/util/util";
-import {HttpAgent} from "@dfinity/agent";
+import {
+  actor,
+  agentBaseConfig,
+  authState,
+  replaceActorIdentity,
+} from "@nfid/integration"
 
 class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
-    this.storageActor =  actorBuilder<SwapStorage>(
-      SWAP_TRS_STORAGE,
-      SwapStorageIDL,
-      {
-        agent: new HttpAgent({ ...agentBaseConfig }),
-      }
-    )
+    this.storageActor = actor<SwapStorage>(SWAP_TRS_STORAGE, SwapStorageIDL, {
+      agent: new HttpAgent({ ...agentBaseConfig }),
+    })
   }
 
-  async storeTransaction(
-    trs: SwapTransactionCandid,
-  ) {
+  async storeTransaction(trs: SwapTransactionCandid) {
     let di = authState.get().delegationIdentity
     if (!di) {
       throw new Error("Delegation identity not set")

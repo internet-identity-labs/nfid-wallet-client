@@ -17,7 +17,7 @@ import {
 import { array2string } from "src/integration/nft/impl/yumi/util/util"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
-import { actor, hasOwnProperty } from "@nfid/integration"
+import { actorBuilder, hasOwnProperty } from "@nfid/integration"
 
 import { idlFactory } from "./idl/yumiNft"
 import { _SERVICE as YukuNftCanister } from "./idl/yumiNft.d"
@@ -25,7 +25,10 @@ import { _SERVICE as YukuNftCanister } from "./idl/yumiNft.d"
 export class NftYumi extends NftImpl {
   private url: undefined | string
   protected getAssetPreviewAsync(): Promise<AssetPreview> {
-    const nftActor = actor<YukuNftCanister>(this.getCollectionId(), idlFactory)
+    const nftActor = actorBuilder<YukuNftCanister>(
+      this.getCollectionId(),
+      idlFactory,
+    )
     return nftActor.getTokensByIds([this.getTokenNumber()]).then((token) => {
       if (token.length === 0) {
         return super.getAssetPreviewAsync()

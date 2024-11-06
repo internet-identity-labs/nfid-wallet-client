@@ -34,10 +34,6 @@ export class Icrc1TransactionHistoryService {
     publicKeyInPrincipal: string,
     maxResults: bigint,
   ): Promise<Array<ICRC1IndexData>> {
-    console.log("canisters", canisters)
-
-
-
     return Promise.all(
       canisters.map(async (pair) => {
         const args: GetAccountTransactionsArgs = {

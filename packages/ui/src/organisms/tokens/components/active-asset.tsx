@@ -30,11 +30,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   const [usdPrice, setUsdPrice] = useState<string | undefined>("")
 
   useEffect(() => {
-    console.log(123123123)
     token.getUSDBalanceFormatted().then(setUsdPrice)
   }, [token.getTokenBalance()])
-
-  //console.log(token)
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>

@@ -14,7 +14,6 @@ import useSWR, { mutate } from "swr"
 
 import {
   RootWallet,
-  exchangeRateService,
   registerTransaction,
   sendReceiveTracking,
 } from "@nfid/integration"
@@ -61,18 +60,14 @@ export const TransferFT = ({
     getVaultsAccountsOptions,
   )
 
-  const {
-    data: activeTokens = [],
-    isLoading: isActiveTokensLoading,
-    mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchActiveTokens)
+  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
+    "activeTokens",
+    fetchActiveTokens,
+  )
 
-  const {
-    data: token,
-    isLoading: isTokenLoading,
-    mutate: refetchToken,
-  } = useSWR(tokenAddress ? ["token", tokenAddress] : null, ([, address]) =>
-    fetchActiveTokenByAddress(address),
+  const { data: token, isLoading: isTokenLoading } = useSWR(
+    tokenAddress ? ["token", tokenAddress] : null,
+    ([, address]) => fetchActiveTokenByAddress(address),
   )
 
   const formMethods = useForm<FormValues>({
@@ -87,7 +82,7 @@ export const TransferFT = ({
   const amount = watch("amount")
   const to = watch("to")
 
-  const { data: usdRate, mutate: refetchUsdPrice } = useSWR(
+  const { data: usdRate } = useSWR(
     token ? ["tokenRate", token.getTokenAddress(), amount] : null,
     ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
   )
@@ -199,23 +194,31 @@ export const TransferFT = ({
         const index = activeTokens.findIndex(
           (el) => el.getTokenAddress() === ledger,
         )
+
+        if (index === -1) return
+
         const newTokens = [...activeTokens]
-        newTokens[index].setTokenBalance(updatedBalance)
+        const updatedToken = newTokens[index]
+
+        updatedToken.setTokenBalance(updatedBalance)
+
+        await updatedToken.updateUSDBalance()
 
         mutate("activeTokens", newTokens, false)
       },
     })
   }, [
+    activeTokens,
     handleTrackTransfer,
     isVault,
     onTransfer,
     token,
-    tokenAddress,
+    //tokenAddress,
     selectedVaultsAccountAddress,
     usdRate,
-    refetchActiveTokens,
-    refetchToken,
-    refetchUsdPrice,
+    // refetchActiveTokens,
+    // refetchToken,
+    // refetchUsdPrice,
     amount,
     to,
   ])

@@ -46,6 +46,19 @@ export class FTImpl implements FT {
     this.tokenBalance = value
   }
 
+  async updateUSDBalance(): Promise<void> {
+    const usdPrice = await exchangeRateService.usdPriceForICRC1(
+      this.tokenAddress,
+    )
+    if (usdPrice) {
+      const tokenAmount = exchangeRateService.parseTokenAmount(
+        Number(this.tokenBalance),
+        this.decimals,
+      )
+      this.usdBalance = tokenAmount.multipliedBy(usdPrice)
+    }
+  }
+
   getBlockExplorerLink(): string {
     return `https://dashboard.internetcomputer.org/canister/${this.tokenAddress}`
   }

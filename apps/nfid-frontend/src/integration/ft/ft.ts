@@ -23,6 +23,8 @@ export interface FT {
 
   setTokenBalance(value: bigint): void
 
+  updateUSDBalance(): Promise<void>
+
   getTokenAddress(): string
 
   getTokenIndex(): string | undefined

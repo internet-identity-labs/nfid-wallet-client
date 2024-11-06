@@ -99,12 +99,12 @@ export class ShroffImpl implements Shroff {
   }
 
   async getQuote(amount: number): Promise<Quote> {
-    const amountDecimals = new BigNumber(amount).multipliedBy(
+    const amountInDecimals = new BigNumber(amount).multipliedBy(
       10 ** this.source.decimals,
     )
 
     const args: SwapArgs = {
-      amountIn: amountDecimals.toString(),
+      amountIn: amountInDecimals.toFixed(),
       zeroForOne: this.zeroForOne,
       amountOutMinimum: "0",
     }

@@ -112,7 +112,6 @@ export async function replaceActorIdentity(
   actor: Actor,
   identity: SignIdentity,
 ) {
-  console.log("replaceActorIdentity", actor, Actor.agentOf(actor))
   const actorAgent = Actor.agentOf(actor)
   if (actorAgent?.replaceIdentity) actorAgent.replaceIdentity(identity)
 }

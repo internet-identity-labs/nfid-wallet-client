@@ -35,6 +35,7 @@ const TokensPage = () => {
   const {
     data: activeTokens = [],
     isLoading: isActiveLoading,
+    isValidating,
     mutate: refetchActiveTokens,
   } = useSWR("activeTokens", fetchActiveTokens)
 
@@ -84,7 +85,7 @@ const TokensPage = () => {
       activeTokens={activeTokens}
       filteredTokens={allTokens}
       setSearchQuery={(value) => setSearchQuery(value)}
-      isActiveTokensLoading={isActiveLoading}
+      isActiveTokensLoading={isActiveLoading || isValidating}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}

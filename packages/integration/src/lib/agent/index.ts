@@ -15,7 +15,7 @@ export const ic = {
 //////////
 
 /** Agent which retries all failed calls in order to mitigate "certified state unavailable" and "service overload" 5XX errors. */
-class AgentWithRetry extends Agent.HttpAgent {
+export class AgentWithRetry extends Agent.HttpAgent {
   RETRY_LIMIT = 5
   override call(
     canisterId: Principal | string,

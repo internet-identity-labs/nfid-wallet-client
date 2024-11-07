@@ -20,7 +20,6 @@ export interface ReceiveProps {
       subTitle?: string
       innerTitle?: string
       innerSubtitle?: string
-      icon?: string
       value: string
       badgeText?: string
     }[]

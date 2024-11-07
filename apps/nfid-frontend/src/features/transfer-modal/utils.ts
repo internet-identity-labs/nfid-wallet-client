@@ -66,22 +66,67 @@ export const getIdentity = async (
   return getWalletDelegationAdapter("nfid.one", "-1", targetCanisters)
 }
 
-export const mapUserNFTDetailsToGroupedOptions = (
-  userNFTDetailsArray: NFT[],
+export const mapUserNFTToGroupedOptions = (
+  userNFTArray: NFT[],
 ): IGroupedOptions[] => {
-  return userNFTDetailsArray.map((nft) => ({
+  return userNFTArray.map((nft) => ({
     label: nft.getTokenName(),
     options: [
       {
         title: nft.getTokenName(),
         subTitle: nft.getCollectionName(),
         value: nft.getTokenId(),
-        icon: nft.getAssetPreview().url,
+        icon: null,
         innerTitle: nft.getTokenFloorPriceIcpFormatted() || "Unknown",
         innerSubtitle: nft.getTokenFloorPriceUSDFormatted(),
       },
     ],
   }))
+}
+
+export const getNftsWithOptions = (userNFTArray: NFT[]): IGroupedOptions[] => {
+  return userNFTArray.map((nft) => ({
+    label: nft.getTokenName(),
+    options: [
+      {
+        title: nft.getTokenName(),
+        subTitle: nft.getCollectionName(),
+        value: nft.getTokenId(),
+        icon: {
+          format: nft.getAssetPreview().format,
+          url: nft.getAssetPreview().url,
+        },
+        innerTitle: nft.getTokenFloorPriceIcpFormatted() || "Unknown",
+        innerSubtitle: nft.getTokenFloorPriceUSDFormatted(),
+      },
+    ],
+  }))
+}
+
+export const getUpdatedNftsOptions = async (
+  nfts: NFT[],
+  nftsLimitToInit: number,
+) => {
+  const nftsToInit = nfts.slice(0, nftsLimitToInit)
+  const nftssUninitialized = nfts.slice(nftsLimitToInit)
+
+  const initedNfts = await Promise.all(
+    nftsToInit.map(async (nft) => {
+      await nft.init()
+      return nft
+    }),
+  )
+
+  const initedNftssWithOptions = getNftsWithOptions(initedNfts)
+
+  const uninitializedNftOptions = mapUserNFTToGroupedOptions(nftssUninitialized)
+
+  const allTokensWithOptions = [
+    ...initedNftssWithOptions,
+    ...uninitializedNftOptions,
+  ]
+
+  return allTokensWithOptions
 }
 
 export const getVaultsAccountsOptions = async (): Promise<

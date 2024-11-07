@@ -13,6 +13,8 @@ import { ProfileContext } from "frontend/provider"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 
+const DEFAULT_LIMIT_PER_PAGE = 8
+
 const NFTsPage = () => {
   const [nfts, setNfts] = useState<NFT[]>([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -37,7 +39,10 @@ const NFTsPage = () => {
 
   useEffect(() => {
     const loadNFTs = async () => {
-      const { items, totalItems, totalPages } = await fetchNFTs(currentPage)
+      const { items, totalItems, totalPages } = await fetchNFTs(
+        currentPage,
+        DEFAULT_LIMIT_PER_PAGE,
+      )
       setTotalItems(totalItems)
       setTotalPages(totalPages)
       setIsLoading(false)

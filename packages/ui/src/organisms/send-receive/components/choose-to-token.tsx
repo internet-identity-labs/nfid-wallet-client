@@ -8,7 +8,7 @@ import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { ChooseModal } from "packages/ui/src/molecules/choose-modal"
 import { IGroupedOptions } from "packages/ui/src/molecules/choose-modal/types"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import { Tooltip } from "@nfid-frontend/ui"
@@ -17,9 +17,10 @@ import { FT } from "frontend/integration/ft/ft"
 import { PriceImpactStatus } from "frontend/integration/icpswap/types/enums"
 import { PriceImpact } from "frontend/integration/icpswap/types/types"
 
-import { getAllTokenPaginatedOptions } from "../utils"
+import { useIntersectionObserver } from "../hooks/intersection-observer"
+import { getAllTokenOptions, getUpdatedTokenOptions } from "../utils"
 
-const INITED_TOKENS_LIMIT = 8
+const INITED_TOKENS_LIMIT = 6
 
 interface ChooseToTokenProps {
   token: FT | undefined
@@ -44,21 +45,29 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
 }) => {
   const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
-  const [page, setPage] = useState(1)
+
+  useIntersectionObserver(
+    tokens.map((token) => token.getTokenSymbol()),
+    async (lastVisibleIndex: number) => {
+      const newTokenOptions = await getUpdatedTokenOptions(
+        tokens,
+        lastVisibleIndex + 1,
+      )
+      setTokenOptions(newTokenOptions)
+    },
+  )
 
   const { setValue, register } = useFormContext()
 
   useEffect(() => {
     setIsTokenOptionsLoading(true)
 
-    getAllTokenPaginatedOptions(
-      tokens,
-      page * INITED_TOKENS_LIMIT,
-      (page - 1) * INITED_TOKENS_LIMIT,
-    )
-      .then((data) => setTokenOptions(tokenOptions.concat(data)))
-      .finally(() => setIsTokenOptionsLoading(false))
-  }, [tokens, page])
+    setTokenOptions(getAllTokenOptions(tokens))
+    getUpdatedTokenOptions(tokens, INITED_TOKENS_LIMIT).then((options) => {
+      setTokenOptions(options)
+      setIsTokenOptionsLoading(false)
+    })
+  }, [tokens])
 
   useEffect(() => {
     setValue("to", value)
@@ -67,14 +76,6 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   if (!token) return null
 
   const decimals = token.getTokenDecimals()
-
-  const hasMoreTokens = useMemo(() => {
-    return tokens.length > tokenOptions.length
-  }, [tokens, tokenOptions])
-
-  const loadMore = useCallback(() => {
-    setPage((prevPage) => prevPage + 1)
-  }, [])
 
   if (!decimals) return null
   return (
@@ -90,7 +91,6 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseModal
-              loadMore={hasMoreTokens ? loadMore : undefined}
               isLoading={isTokenOptionsLoading}
               optionGroups={tokenOptions}
               title="Swap to"

@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
+import { DisplayFormat } from "frontend/integration/entrepot/types"
 import { FT } from "frontend/integration/ft/ft"
 import {
   DepositError,
@@ -23,7 +24,10 @@ export const getTokenOptions = async (tokens: FT[]) => {
         label: token.getTokenName(),
         options: [
           {
-            icon: token.getTokenLogo(),
+            icon: {
+              format: "img" as DisplayFormat,
+              url: token.getTokenLogo() || "",
+            },
             value: token.getTokenAddress(),
             title: token.getTokenSymbol(),
             subTitle: token.getTokenName(),
@@ -41,6 +45,54 @@ export const getTokenOptions = async (tokens: FT[]) => {
       }
     }),
   )
+}
+
+export const getAllTokenOptions = (tokens: FT[]) => {
+  return tokens.map((token) => {
+    return {
+      label: token.getTokenName(),
+      options: [
+        {
+          icon: {
+            format: "img" as DisplayFormat,
+            url: token.getTokenLogo() || "",
+          },
+          value: token.getTokenAddress(),
+          title: token.getTokenSymbol(),
+          subTitle: token.getTokenName(),
+          innerTitle: undefined,
+          innerSubtitle: undefined,
+        },
+      ],
+    }
+  })
+}
+
+export const getUpdatedTokenOptions = async (
+  tokens: FT[],
+  tokensLimitToInit: number,
+) => {
+  const { publicKey } = await getUserPrincipalId()
+  const tokensToInit = tokens.slice(0, tokensLimitToInit)
+  const tokensUninitialized = tokens.slice(tokensLimitToInit)
+
+  const initedTokens = await Promise.all(
+    tokensToInit.map(async (token) => {
+      await token.init(Principal.fromText(publicKey))
+      return token
+    }),
+  )
+
+  const initedTokensWithOptions = await getTokenOptions(initedTokens)
+
+  const uninitializedTokenOptions = getAllTokenOptions(tokensUninitialized)
+
+  const allTokensWithOptions = [
+    ...initedTokensWithOptions,
+    ...uninitializedTokenOptions,
+  ]
+
+  return allTokensWithOptions
 }
 
 export const getTokenOptionsVault = async (tokens: FT[]) => {
@@ -67,7 +119,10 @@ export const getAllTokenPaginatedOptions = async (
         label: token.getTokenName(),
         options: [
           {
-            icon: token.getTokenLogo(),
+            icon: {
+              format: "img" as DisplayFormat,
+              url: token.getTokenLogo() || "",
+            },
             value: token.getTokenAddress(),
             title: token.getTokenSymbol(),
             subTitle: token.getTokenName(),

@@ -64,13 +64,13 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   >()
 
   const { data: fromToken, isLoading: isFromTokenLoading } = useSWR(
-    fromTokenAddress ? ["fromToken", fromTokenAddress] : null,
+    fromTokenAddress ? ["activeToken", fromTokenAddress] : null,
     ([, address]) => fetchActiveTokenByAddress(address),
     { revalidateOnFocus: false },
   )
 
   const { data: toToken, isLoading: isToTokenLoading } = useSWR(
-    toTokenAddress ? ["toToken", toTokenAddress] : null,
+    toTokenAddress ? ["allToken", toTokenAddress] : null,
     ([, address]) => fetchAllTokenByAddress(address),
     { revalidateOnFocus: false },
   )

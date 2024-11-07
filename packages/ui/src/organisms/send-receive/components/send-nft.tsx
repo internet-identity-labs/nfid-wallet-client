@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { Dispatch, FC, SetStateAction } from "react"
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -16,13 +16,20 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 
+import {
+  getUpdatedNftsOptions,
+  mapUserNFTToGroupedOptions,
+} from "frontend/features/transfer-modal/utils"
 import { NFT } from "frontend/integration/nft/nft"
 
+import { useIntersectionObserver } from "../hooks/intersection-observer"
+
+const INITED_TOKENS_LIMIT = 6
+
 export interface TransferNFTUiProps {
-  loadMore?: () => void
   isLoading: boolean
   loadingMessage: string | undefined
-  nftOptions: IGroupedOptions[] | undefined
+  nfts: NFT[] | undefined
   setSelectedNFTId: Dispatch<SetStateAction<string>>
   selectedNFTId: string
   selectedNFT: NFT | undefined
@@ -32,10 +39,9 @@ export interface TransferNFTUiProps {
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
-  loadMore,
   isLoading,
   loadingMessage,
-  nftOptions,
+  nfts,
   setSelectedNFTId,
   selectedNFTId,
   selectedNFT,
@@ -54,8 +60,32 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
       to: selectedReceiverWallet ?? "",
     },
   })
-
+  const [nftOptions, setNftOptions] = useState<IGroupedOptions[]>([])
+  const [isNftsOptionsLoading, setIsNftsOptionsLoading] = useState(false)
   const to = watch("to")
+
+  useEffect(() => {
+    if (!nfts) return
+    setIsNftsOptionsLoading(true)
+    setNftOptions(mapUserNFTToGroupedOptions(nfts))
+
+    getUpdatedNftsOptions(nfts, INITED_TOKENS_LIMIT).then((options) => {
+      setNftOptions(options)
+      setIsNftsOptionsLoading(false)
+    })
+  }, [nfts])
+
+  useIntersectionObserver(
+    (nfts || []).map((nft) => nft.getTokenName()),
+    async (lastVisibleIndex: number) => {
+      console.log("NFT in view, index:", lastVisibleIndex) // Debugging
+      const newNftsOptions = await getUpdatedNftsOptions(
+        nfts || [],
+        lastVisibleIndex + 1,
+      )
+      setNftOptions(newNftsOptions)
+    },
+  )
 
   return (
     <BlurredLoader
@@ -65,7 +95,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
     >
       <div className="space-y-3 text-xs ">
         <ChooseModal
-          loadMore={loadMore}
+          isLoading={isNftsOptionsLoading}
           label="NFT to transfer"
           optionGroups={nftOptions ?? []}
           title="NFT to send"

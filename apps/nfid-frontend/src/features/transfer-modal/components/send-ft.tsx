@@ -71,8 +71,9 @@ export const TransferFT = ({
     data: token,
     isLoading: isTokenLoading,
     mutate: refetchToken,
-  } = useSWR(tokenAddress ? ["token", tokenAddress] : null, ([, address]) =>
-    fetchActiveTokenByAddress(address),
+  } = useSWR(
+    tokenAddress ? ["activeToken", tokenAddress] : null,
+    ([, address]) => fetchActiveTokenByAddress(address),
   )
 
   const formMethods = useForm<FormValues>({

@@ -5,6 +5,7 @@ import {
   ClipboardEvent,
   InputHTMLAttributes,
   useMemo,
+  useState,
 } from "react"
 
 import { Skeleton } from "../../atoms/skeleton"
@@ -15,7 +16,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   value: string
 }
 
-const pressHandler = (e: KeyboardEvent<HTMLInputElement>, decimals: number) => {
+const pressHandler = (
+  e: KeyboardEvent<HTMLInputElement>,
+  decimals: number,
+  isValueSelected: boolean,
+) => {
   const allowedKeys = /[0-9.]/
   const key = e.key
   const input = e.target as HTMLInputElement | null
@@ -23,6 +28,10 @@ const pressHandler = (e: KeyboardEvent<HTMLInputElement>, decimals: number) => {
   const value = input.value
   const cursorPosition = input.selectionStart ?? 0
   const dotPosition = value.indexOf(".")
+
+  if (isValueSelected) {
+    return
+  }
 
   if (["ArrowLeft", "ArrowRight", "Backspace", "Delete"].includes(key)) {
     return
@@ -75,6 +84,7 @@ const pasteHandler = (
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
   ({ decimals, disabled, isLoading = false, value, ...inputProps }, ref) => {
+    const [isValueSelected, setIsValueSelected] = useState(false)
     const fontSize = useMemo(() => {
       if (!value) return 34
       if (value.length > 16) {
@@ -85,6 +95,15 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
         return 34
       }
     }, [value])
+
+    const handleSelection = (e: React.SyntheticEvent<HTMLInputElement>) => {
+      const input = e.target as HTMLInputElement
+      if (input.selectionStart !== input.selectionEnd) {
+        setIsValueSelected(true)
+      } else {
+        setIsValueSelected(false)
+      }
+    }
 
     return (
       <div className="relative h-10">
@@ -105,10 +124,11 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             id="amount"
             min={0.0}
             value={value}
-            onKeyDown={(e) => pressHandler(e, decimals)}
+            onKeyDown={(e) => pressHandler(e, decimals, isValueSelected)}
             onPaste={(e) => pasteHandler(e, decimals)}
             ref={ref}
             disabled={disabled}
+            onSelect={handleSelection}
             {...inputProps}
           />
         )}

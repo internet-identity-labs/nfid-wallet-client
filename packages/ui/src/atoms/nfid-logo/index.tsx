@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { FC } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 import { Logo, LogoMain } from "@nfid-frontend/ui"
 
@@ -10,7 +10,9 @@ interface NFIDLogoProps {
 }
 
 export const NFIDLogo: FC<NFIDLogoProps> = ({ className }) => (
-  <img src={Logo} alt="NFID" className={className} />
+  <Link to="/">
+    <img src={Logo} alt="NFID" className={className} />
+  </Link>
 )
 
 export const NFIDLogoMain: FC<NFIDLogoProps> = ({ className, assetsLink }) => {

@@ -149,13 +149,20 @@
 
 .gradient-radial {
   top: 0;
-  left: 270px;
+  left: 50%;
+  margin-left: -300px;
   position: absolute;
-  width: 1200px;
-  height: 1200px;
+  width: 600px;
+  height: 600px;
   border-radius: 50%;
   background: radial-gradient(circle, #00896c 0%, #0d1515 100%);
   filter: blur(2400px);
+}
+
+@media only screen and (min-width: 768px) {
+  .gradient-radial.mobile-only {
+    display: none;
+  }
 }
 
 @media only screen and (max-width: 768px) {
@@ -185,4 +192,39 @@
 
 .card:hover .gradient-radial-card {
   opacity: 1;
+}
+
+.sns-top-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: -115px;
+  height: 1000px;
+  margin-right: -100px;
+}
+
+h1,
+h2 {
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 700;
+  font-style: normal;
+}
+
+@media only screen and (max-width: 1000px) {
+  .sns-top-img {
+    top: 50px;
+    margin-top: 0;
+    height: 800px;
+    margin-right: -120px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .sns-top-img {
+    display: none;
+  }
+}
+
+body.homescreen {
+  background-color: #0e0f10;
 }

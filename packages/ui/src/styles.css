@@ -55,9 +55,6 @@ body {
 body.fixed {
   overflow: hidden;
 }
-body.homescreen {
-  background-color: #0e0f10;
-}
 /*
   6. Improve media defaults
 */

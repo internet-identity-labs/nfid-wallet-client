@@ -179,7 +179,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
         derivationOrigin: icrc34Dto.derivationOrigin,
         hostname: origin,
         sessionPublicKey: new Uint8Array(sessionPublicKey.toDer()),
-        maxTimeToLive: BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000),
+        maxTimeToLive: BigInt(icrc34Dto.maxTimeToLive),
       })
 
       return delegationChainFromDelegation(legacyAuthSession)

@@ -51,12 +51,11 @@ export class Icrc1TransactionHistoryService {
         const icrc1Pair = new Icrc1Pair(pair.icrc1.ledger, pair.icrc1.index)
         const ledgerData = await icrc1Pair.getMetadata()
 
-        const indexActor = this.createIndexActor(
-          pair.icrc1.index,
-          pair.icrc1.ledger === ICP_CANISTER_ID,
-        )
-
         try {
+          const indexActor = this.createIndexActor(
+            pair.icrc1.index,
+            pair.icrc1.ledger === ICP_CANISTER_ID,
+          )
           const response = await indexActor.get_account_transactions(args)
 
           if (hasOwnProperty(response, "Err")) {
@@ -85,6 +84,7 @@ export class Icrc1TransactionHistoryService {
           return this.getDefaultICRC1IndexData()
         } catch (error) {
           console.error(error)
+          console.error('Error getting account transactions for canister: ', ledgerData.symbol, pair.icrc1)
           return this.getDefaultICRC1IndexData()
         }
       }),

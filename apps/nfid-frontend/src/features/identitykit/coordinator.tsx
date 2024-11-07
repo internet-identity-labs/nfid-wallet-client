@@ -1,5 +1,5 @@
 import { useMachine } from "@xstate/react"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Helmet } from "react-helmet-async"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
@@ -13,21 +13,26 @@ import { RPCTemplate } from "./components/templates/template"
 import "./index.css"
 import { IdentityKitRPCMachine } from "./machine"
 
+const LOADING_MESSAGES = ["Fetching your crypto coordinates...", "Logging in like a boss...", "Making crypto magic happen...", "Loading your digital fortress..."]
+
+function getRandomLoadingMessage() {
+  return LOADING_MESSAGES[Math.floor(Math.random() * (LOADING_MESSAGES.length))]
+}
+
 export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)
   console.debug("IdentityKitRPCCoordinator", { state })
   const isApproveRequestInProgress =
     state.context.activeRequest?.data.method === "icrc49_call_canister"
 
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    setIsFirstRender(false)
+  }, [state]);
+
   const Component = useMemo(() => {
     switch (true) {
-      case state.matches("Main.Authentication.CheckAuthentication"):
-        return (
-          <BlurredLoader
-            isLoading
-            loadingMessage={`Loading your digital fortress...`}
-          />
-        )
       case state.matches("Main.Authentication.Authenticate"):
         return (
           <AuthenticationCoordinator
@@ -60,13 +65,6 @@ export default function IdentityKitRPCCoordinator() {
             }}
           />
         )
-      case state.matches("Main.InteractiveRequest.PrepareComponentData"):
-        return (
-          <BlurredLoader
-            isLoading
-            loadingMessage={`Fetching your crypto coordinates...`}
-          />
-        )
       case state.matches("Main.InteractiveRequest.Error"):
         return (
           <RPCComponentError
@@ -81,13 +79,13 @@ export default function IdentityKitRPCCoordinator() {
         return (
           <BlurredLoader
             isLoading
-            loadingMessage={`Making crypto magic happen...`}
+            loadingMessage={getRandomLoadingMessage()}
           />
         )
     }
   }, [send, state])
 
-  if (!state.context.activeRequestMetadata)
+  if (!state.context.activeRequestMetadata && isFirstRender)
     return (
       <BlurredLoader
         isLoading={true}

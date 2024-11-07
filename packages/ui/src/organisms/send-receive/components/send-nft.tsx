@@ -78,7 +78,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   useIntersectionObserver(
     (nfts || []).map((nft) => nft.getTokenName()),
     async (lastVisibleIndex: number) => {
-      console.log("NFT in view, index:", lastVisibleIndex) // Debugging
       const newNftsOptions = await getUpdatedNftsOptions(
         nfts || [],
         lastVisibleIndex + 1,

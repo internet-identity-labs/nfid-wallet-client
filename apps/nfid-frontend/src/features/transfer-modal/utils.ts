@@ -121,12 +121,12 @@ export const getUpdatedNftsOptions = async (
 
   const uninitializedNftOptions = mapUserNFTToGroupedOptions(nftssUninitialized)
 
-  const allTokensWithOptions = [
+  const allNftsWithOptions = [
     ...initedNftssWithOptions,
     ...uninitializedNftOptions,
   ]
 
-  return allTokensWithOptions
+  return allNftsWithOptions
 }
 
 export const getVaultsAccountsOptions = async (): Promise<

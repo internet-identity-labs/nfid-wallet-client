@@ -1,7 +1,7 @@
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useMemo, useState } from "react"
-import { toast } from "react-toastify"
 
 import { Button, IconCmpPlus } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
@@ -33,7 +33,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(phrase)
-    toast.success("Copied to clipboard")
+    toaster.success("Copied to clipboard")
     setCopied(true)
   }
 

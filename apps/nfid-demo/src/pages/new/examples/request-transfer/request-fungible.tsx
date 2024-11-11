@@ -1,8 +1,8 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
 
 import { Button, Input } from "@nfid-frontend/ui"
 import { DelegationType } from "@nfid/embed"
@@ -129,7 +129,7 @@ export const RequestFungibleTransfer = () => {
               onClick={
                 identity
                   ? handleSubmit(onRequestTransfer)
-                  : () => toast.error("Please authenticate first")
+                  : () => toaster.error("Please authenticate first")
               }
             >
               Request ICP transfer

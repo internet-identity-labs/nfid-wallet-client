@@ -5,10 +5,10 @@ import {
   AccountBalance,
   AppBalance,
 } from "packages/integration/src/lib/asset/types"
+import toaster from "packages/ui/src/atoms/toast"
 import { ReactNode, useMemo } from "react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
 
 import { Tooltip, CenterEllipsis, ApplicationIcon } from "@nfid-frontend/ui"
 import { Blockchain } from "@nfid/integration/token/types"
@@ -47,7 +47,7 @@ const AppRow: React.FC<
     (type: string, value: string) => (e: React.SyntheticEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      toast.info(`${type} copied to clipboard`, {
+      toaster.info(`${type} copied to clipboard`, {
         toastId: `copied_${type}_${value}`,
       })
       navigator.clipboard.writeText(value)

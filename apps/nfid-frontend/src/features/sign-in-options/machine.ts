@@ -1,5 +1,5 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { toast } from "react-toastify"
+import toaster from "packages/ui/src/atoms/toast"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { FrontendDelegation } from "@nfid/integration"
@@ -201,7 +201,7 @@ const AuthWithIIMachine =
           isRegistered: (_, event) => event.data,
         }),
         handleError: (event, context) => {
-          toast.error(context.data.message)
+          toaster.error(context.data.message)
         },
       },
       guards: {},

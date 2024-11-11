@@ -21,7 +21,7 @@ module.exports = {
     extend: {
       fontFamily: {
         ...defaultTheme.fontFamily,
-        sans: ["Inter", ...defaultTheme.fontFamily.sans],
+        sans: ["Inter", ...defaultTheme.fontFamily.sans]
       },
       screens: {
         ...defaultTheme.screens,

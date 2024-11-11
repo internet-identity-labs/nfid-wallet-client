@@ -172,7 +172,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     mutate()
-  }, [toToken, fromToken, mutate])
+  }, [toToken, fromToken, mutate, amount])
 
   const refresh = () => {
     setShroffError(undefined)

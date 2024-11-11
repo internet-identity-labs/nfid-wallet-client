@@ -33,6 +33,7 @@ import {
 
 import { getLegacyThirdPartyAuthSession } from "../../services"
 import { PublicProfileButton } from "../public-profile-button"
+import { TokenLaunch } from "./token-launch"
 import { ApproveIcGetDelegationSdkResponse } from "./types"
 
 export interface IAuthChooseAccount {
@@ -73,6 +74,7 @@ export const AuthChooseAccount = ({
   authRequest,
   handleSelectAccount,
 }: IAuthChooseAccount) => {
+  const [showTokenLaunch, setShowTokenLaunch] = useState(false)
   const [selectedProfile, setSelectedProfile] = useState<ProfileTypes>("")
   const [selectedLegacyAccount, setSelectedLegacyAccount] = useState<any>()
   const [isLoading, setIsLoading] = useState(false)
@@ -297,133 +299,153 @@ export const AuthChooseAccount = ({
 
   return (
     <>
-      <AuthAppMeta applicationURL={appHost} subTitle="Wallet permissions for" />
-      {!authRequest.targets && (
-        <div className="absolute right-5 top-2.5">
-          <TooltipProvider>
-            <Tooltip
-              className="w-[368px]"
-              tip={
-                <div>
-                  <a className="text-blue" href={`https://${appHost}`}>
-                    {appHost}
-                  </a>{" "}
-                  does not support connecting your NFID Wallet address for
-                  payment requests.
-                </div>
-              }
-            >
-              <IconCmpInfo className="text-black" />
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+      {!showTokenLaunch && (
+        <>
+          <AuthAppMeta
+            applicationURL={appHost}
+            subTitle="Wallet permissions for"
+          />
+          {!authRequest.targets && (
+            <div className="absolute right-5 top-2.5">
+              <TooltipProvider>
+                <Tooltip
+                  className="w-[368px]"
+                  tip={
+                    <div>
+                      <a className="text-blue" href={`https://${appHost}`}>
+                        {appHost}
+                      </a>{" "}
+                      does not support connecting your NFID Wallet address for
+                      payment requests.
+                    </div>
+                  }
+                >
+                  <IconCmpInfo className="text-black" />
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          )}
+        </>
       )}
       <div className="relative flex flex-col flex-1 w-full">
-        <div
-          className={clsx(
-            "w-full pt-4 rounded-xl",
-            "flex flex-col flex-1 font-inter bg-white",
-            "border border-gray-200",
-            "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
-            "mt-9",
-          )}
-        >
-          <div className="px-5">
-            <p className="text-sm font-bold">Share NFID Wallet address</p>
-            <p className="mt-2 text-xs text-gray-500">
-              Allow this site to request payments and view your balances.
-            </p>
-            <PublicProfileButton
-              selectedProfile={selectedProfile}
-              setSelectedProfile={(value) => setSelectedProfile(value)}
-              isAvailable={!!authRequest.targets?.length}
-              onError={async () => {
-                await authState.reset(false)
-                onReset()
-              }}
-            />
-          </div>
-          <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
-          <div className="flex-1 px-5">
-            <p className="text-sm font-bold">Hide NFID Wallet address</p>
-            <p className="mt-2 text-xs text-gray-500">
-              Connect anonymously to prevent this site from requesting payments
-              and viewing your balances.
-            </p>
-
-            {/* Legacy anonymous profiles */}
-            {legacyAnonymousProfiles?.map((acc) => (
-              <div
-                className="flex items-center h-5 mt-5 text-xs"
-                key={`legacy_persona_${acc.accountId}`}
-              >
-                <RadioButton
-                  id={`profile_legacy_${acc.accountId}`}
-                  value={`legacy-anonymous-${acc.accountId}`}
-                  checked={acc.accountId === selectedLegacyAccount?.accountId}
-                  name={`profile-${acc.accountId}`}
-                  onChange={(e) => {
-                    setSelectedLegacyAccount(acc)
-                    setSelectedProfile(e.target.value as ProfileTypes)
+        {showTokenLaunch ? (
+          <TokenLaunch onSubmit={onSubmit} />
+        ) : (
+          <>
+            <div
+              className={clsx(
+                "w-full pt-4 rounded-xl",
+                "flex flex-col flex-1 font-inter bg-white",
+                "border border-gray-200",
+                "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
+                "mt-9",
+              )}
+            >
+              <div className="px-5">
+                <p className="text-sm font-bold">Share NFID Wallet address</p>
+                <p className="mt-2 text-xs text-gray-500">
+                  Allow this site to request payments and view your balances.
+                </p>
+                <PublicProfileButton
+                  selectedProfile={selectedProfile}
+                  setSelectedProfile={(value) => setSelectedProfile(value)}
+                  isAvailable={!!authRequest.targets?.length}
+                  onError={async () => {
+                    await authState.reset(false)
+                    onReset()
                   }}
-                  text={`${appMeta.name} account ${
-                    parseInt(acc.accountId) + 1
-                  }`}
                 />
               </div>
-            ))}
+              <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
+              <div className="flex-1 px-5">
+                <p className="text-sm font-bold">Hide NFID Wallet address</p>
+                <p className="mt-2 text-xs text-gray-500">
+                  Connect anonymously to prevent this site from requesting
+                  payments and viewing your balances.
+                </p>
 
-            {/* Anonymous profile */}
-            {!legacyAnonymousProfiles?.length ? (
-              <div className="flex items-center h-5 mt-5 text-xs">
-                <RadioButton
-                  id="profile_anonymous-1"
-                  value="anonymous-1"
-                  checked={selectedProfile === "anonymous-1"}
-                  name={"profile"}
-                  onChange={(e) =>
-                    setSelectedProfile(e.target.value as ProfileTypes)
-                  }
-                />
-                <label
-                  htmlFor="profile_anonymous-1"
-                  className="ml-2 cursor-pointer"
-                >
-                  Anonymous {appMeta.name} profile {isDerivationBug ? "1" : ""}
-                </label>
-              </div>
-            ) : null}
+                {/* Legacy anonymous profiles */}
+                {legacyAnonymousProfiles?.map((acc) => (
+                  <div
+                    className="flex items-center h-5 mt-5 text-xs"
+                    key={`legacy_persona_${acc.accountId}`}
+                  >
+                    <RadioButton
+                      id={`profile_legacy_${acc.accountId}`}
+                      value={`legacy-anonymous-${acc.accountId}`}
+                      checked={
+                        acc.accountId === selectedLegacyAccount?.accountId
+                      }
+                      name={`profile-${acc.accountId}`}
+                      onChange={(e) => {
+                        setSelectedLegacyAccount(acc)
+                        setSelectedProfile(e.target.value as ProfileTypes)
+                      }}
+                      text={`${appMeta.name} account ${
+                        parseInt(acc.accountId) + 1
+                      }`}
+                    />
+                  </div>
+                ))}
 
-            {/* Anonymous profile with derivation bug */}
-            {!legacyAnonymousProfiles?.length && isDerivationBug ? (
-              <div className="flex items-center h-5 mt-4 text-xs">
-                <RadioButton
-                  id="anonymous-2"
-                  value="anonymous-2"
-                  checked={selectedProfile === "anonymous-2"}
-                  name={"profile"}
-                  onChange={(e) =>
-                    setSelectedProfile(e.target.value as ProfileTypes)
-                  }
-                />
-                <label
-                  htmlFor="profile_anonymous-2"
-                  className="ml-2 cursor-pointer"
-                >
-                  Anonymous {appMeta.name} profile 2
-                </label>
+                {/* Anonymous profile */}
+                {!legacyAnonymousProfiles?.length ? (
+                  <div className="flex items-center h-5 mt-5 text-xs">
+                    <RadioButton
+                      id="profile_anonymous-1"
+                      value="anonymous-1"
+                      checked={selectedProfile === "anonymous-1"}
+                      name={"profile"}
+                      onChange={(e) =>
+                        setSelectedProfile(e.target.value as ProfileTypes)
+                      }
+                    />
+                    <label
+                      htmlFor="profile_anonymous-1"
+                      className="ml-2 cursor-pointer"
+                    >
+                      Anonymous {appMeta.name} profile{" "}
+                      {isDerivationBug ? "1" : ""}
+                    </label>
+                  </div>
+                ) : null}
+
+                {/* Anonymous profile with derivation bug */}
+                {!legacyAnonymousProfiles?.length && isDerivationBug ? (
+                  <div className="flex items-center h-5 mt-4 text-xs">
+                    <RadioButton
+                      id="anonymous-2"
+                      value="anonymous-2"
+                      checked={selectedProfile === "anonymous-2"}
+                      name={"profile"}
+                      onChange={(e) =>
+                        setSelectedProfile(e.target.value as ProfileTypes)
+                      }
+                    />
+                    <label
+                      htmlFor="profile_anonymous-2"
+                      className="ml-2 cursor-pointer"
+                    >
+                      Anonymous {appMeta.name} profile 2
+                    </label>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2.5 mt-5">
-          <Button onClick={onBack} type="stroke">
-            Back
-          </Button>
-          <Button id="connect" onClick={onSubmit} type="primary">
-            Connect
-          </Button>
-        </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2.5 mt-5">
+              <Button onClick={onBack} type="stroke">
+                Back
+              </Button>
+              <Button
+                id="connect"
+                onClick={() => setShowTokenLaunch(true)}
+                type="primary"
+              >
+                Connect
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </>
   )

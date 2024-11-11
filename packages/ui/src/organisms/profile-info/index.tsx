@@ -10,8 +10,6 @@ import {
   CopyAddress,
 } from "@nfid-frontend/ui"
 
-import toaster from "../../atoms/toast"
-
 export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   usdValue: string | undefined
   isAddressLoading: boolean
@@ -31,10 +29,6 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   onSwapClick,
   address,
 }) => {
-  toaster.warn("Unexpected error: The transaction has been cancelled", {
-    toastId: "unexpectedTransferError",
-    autoClose: 100000,
-  })
   return (
     <div className="flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
       <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">

@@ -50,7 +50,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const quoteInterval = useRef<NodeJS.Timeout | null>(null)
-  const transactionInterval = useRef<NodeJS.Timeout | null>(null)
   const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
     "activeTokens",
     fetchActiveTokens,
@@ -124,22 +123,18 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     if (!getTransaction) return
-    transactionInterval.current = setInterval(() => {
+    const transactionInterval = setInterval(() => {
       const step = getTransaction.getStage()
       const error = getTransaction.getError()
       setSwapStep(step)
       if (step === SwapStage.Completed || error !== undefined) {
-        if (transactionInterval.current) {
-          clearInterval(transactionInterval.current)
+        if (transactionInterval) {
+          clearInterval(transactionInterval)
         }
       }
     }, 100)
 
-    return () => {
-      if (transactionInterval.current) {
-        clearInterval(transactionInterval.current)
-      }
-    }
+    return () => clearInterval(transactionInterval)
   }, [getTransaction])
 
   const {

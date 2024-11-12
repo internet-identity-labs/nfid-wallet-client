@@ -6,7 +6,7 @@ import {
   fetchActiveTokenByAddress,
   fetchAllTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import useSWR from "swr"
 
@@ -49,6 +49,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     WithdrawError | SwapError | DepositError | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
+  const quoteInterval = useRef<NodeJS.Timeout | null>(null)
   const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
     "activeTokens",
     fetchActiveTokens,
@@ -122,16 +123,18 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     if (!getTransaction) return
-    const interval = setInterval(() => {
+    const transactionInterval = setInterval(() => {
       const step = getTransaction.getStage()
       const error = getTransaction.getError()
       setSwapStep(step)
       if (step === SwapStage.Completed || error !== undefined) {
-        clearInterval(interval)
+        if (transactionInterval) {
+          clearInterval(transactionInterval)
+        }
       }
     }, 100)
 
-    return () => clearInterval(interval)
+    return () => clearInterval(transactionInterval)
   }, [getTransaction])
 
   const {
@@ -155,7 +158,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     if (!quote) return
-    const interval = setInterval(() => {
+    quoteInterval.current = setInterval(() => {
       setQuoteTimer((prev) => prev - 1)
       if (quoteTimer === 0) {
         resetIntegrationCache(["usdPriceForICRC1"], () => {
@@ -166,7 +169,9 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     }, 1000)
 
     return () => {
-      clearInterval(interval)
+      if (quoteInterval.current) {
+        clearInterval(quoteInterval.current)
+      }
     }
   }, [mutate, quoteTimer, quote])
 
@@ -202,6 +207,11 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     })
 
     setGetTransaction(shroff.getSwapTransaction())
+
+    if (quoteInterval.current) {
+      clearInterval(quoteInterval.current)
+      quoteInterval.current = null
+    }
   }, [quote, shroff])
 
   return (

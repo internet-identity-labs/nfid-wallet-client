@@ -35,7 +35,7 @@ import { idlFactory as vaultIDL } from "./_ic_api/vault"
 import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
-import { agent } from "./agent"
+import {agent, AgentWithRetry} from "./agent"
 
 /////////////
 // Config //
@@ -78,6 +78,18 @@ export function actor<T>(
   config?: Partial<Agent.ActorConfig>,
 ): Agent.ActorSubclass<T> {
   return Agent.Actor.createActor(factory, { canisterId, agent, ...config })
+}
+
+export function actorBuilder<T>(
+  canisterId: string | Principal,
+  factory: InterfaceFactory,
+  config?: Partial<Agent.ActorConfig>,
+): Agent.ActorSubclass<T> {
+  return Agent.Actor.createActor(factory, {
+    canisterId,
+    agent: new AgentWithRetry({ ...agentBaseConfig }),
+    ...config,
+  })
 }
 
 export function ledgerWithIdentity(identity: SignIdentity) {

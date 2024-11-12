@@ -15,9 +15,9 @@ import {
 import { swapTransactionService } from "src/integration/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
-import { actorBuilder } from "src/integration/icpswap/util/util"
 
 import {
+  actorBuilder,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
@@ -99,12 +99,12 @@ export class ShroffImpl implements Shroff {
   }
 
   async getQuote(amount: number): Promise<Quote> {
-    const amountDecimals = new BigNumber(amount).multipliedBy(
+    const amountInDecimals = new BigNumber(amount).multipliedBy(
       10 ** this.source.decimals,
     )
 
     const args: SwapArgs = {
-      amountIn: amountDecimals.toString(),
+      amountIn: amountInDecimals.toFixed(),
       zeroForOne: this.zeroForOne,
       amountOutMinimum: "0",
     }

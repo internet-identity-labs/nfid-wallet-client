@@ -2,9 +2,8 @@ import * as Agent from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
 import { _SERVICE as SwapPool } from "src/integration/icpswap/idl/SwapPool.d"
-import { actorBuilder } from "src/integration/icpswap/util/util"
 
-import { agentBaseConfig, hasOwnProperty } from "@nfid/integration"
+import {actorBuilder, agentBaseConfig, hasOwnProperty} from "@nfid/integration"
 
 import { LiquidityError, ServiceUnavailableError } from "../errors"
 import { idlFactory as SwapFactoryIDL } from "./../idl/SwapFactory"

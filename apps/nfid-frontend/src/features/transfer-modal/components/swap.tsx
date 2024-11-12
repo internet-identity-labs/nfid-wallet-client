@@ -103,7 +103,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         setLiquidityError(undefined)
       } catch (error) {
         setShroff(undefined)
-        console.error(error)
         if (error instanceof ServiceUnavailableError) {
           setShroffError(error)
         } else if (error instanceof LiquidityError) {
@@ -173,7 +172,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     mutate()
-  }, [toToken, fromToken, mutate])
+  }, [toToken, fromToken, mutate, amount])
 
   const refresh = () => {
     setShroffError(undefined)

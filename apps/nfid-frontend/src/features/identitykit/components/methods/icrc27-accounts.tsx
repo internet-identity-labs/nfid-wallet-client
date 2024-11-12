@@ -4,6 +4,7 @@ import { ChooseAccount } from "frontend/ui/organisms/choose-account"
 
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"
+import { TokenLaunch } from "../token-launch"
 
 export interface IRPCComponentICRC27 {
   origin: string
@@ -22,10 +23,13 @@ const RPCComponentICRC27 = ({
 }: IRPCComponentICRC27) => {
   const [selectedProfile, setSelectedProfile] =
     React.useState<Account>(publicProfile)
+  const [showTokenLaunch, setShowTolenLaunch] = React.useState(false)
 
   const applicationName = new URL(origin).host
 
-  return (
+  return showTokenLaunch ? (
+    <TokenLaunch onSubmit={() => onApprove([selectedProfile])} />
+  ) : (
     <RPCPromptTemplate
       title="Wallet permissions"
       subTitle={
@@ -41,7 +45,7 @@ const RPCComponentICRC27 = ({
           </a>
         </>
       }
-      onPrimaryButtonClick={() => onApprove([selectedProfile])}
+      onPrimaryButtonClick={() => setShowTolenLaunch(true)}
       primaryButtonText="Connect"
     >
       <ChooseAccount

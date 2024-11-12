@@ -13,10 +13,15 @@ import { RPCTemplate } from "./components/templates/template"
 import "./index.css"
 import { IdentityKitRPCMachine } from "./machine"
 
-const LOADING_MESSAGES = ["Fetching your crypto coordinates...", "Logging in like a boss...", "Making crypto magic happen...", "Loading your digital fortress..."]
+const LOADING_MESSAGES = [
+  "Fetching your crypto coordinates...",
+  "Logging in like a boss...",
+  "Making crypto magic happen...",
+  "Loading your digital fortress...",
+]
 
 function getRandomLoadingMessage() {
-  return LOADING_MESSAGES[Math.floor(Math.random() * (LOADING_MESSAGES.length))]
+  return LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)]
 }
 
 export default function IdentityKitRPCCoordinator() {
@@ -25,11 +30,11 @@ export default function IdentityKitRPCCoordinator() {
   const isApproveRequestInProgress =
     state.context.activeRequest?.data.method === "icrc49_call_canister"
 
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [isFirstRender, setIsFirstRender] = useState(true)
 
   useEffect(() => {
     setIsFirstRender(false)
-  }, [state]);
+  }, [state])
 
   const Component = useMemo(() => {
     switch (true) {
@@ -77,10 +82,7 @@ export default function IdentityKitRPCCoordinator() {
         )
       default:
         return (
-          <BlurredLoader
-            isLoading
-            loadingMessage={getRandomLoadingMessage()}
-          />
+          <BlurredLoader isLoading loadingMessage={getRandomLoadingMessage()} />
         )
     }
   }, [send, state])

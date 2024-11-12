@@ -46,7 +46,7 @@ const card =
 const cardItem =
   "mt-[10px] md:mt-[45px] font-medium text-xl md:text-[30px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-[140%] max-w-[350px] lg:max-w-full text-[#BBF7EC]"
 const cardImg = "w-full lg:w-[200px] absolute ml-[40px]"
-const sponsor = "max-w-[150px] sm:max-w-[120px] md:max-w-[140px] max-h-[80px] mx-auto md:max-0"
+const sponsor = "max-w-[150px] sm:max-w-[110px] lg:max-w-[140px] max-h-[80px] mx-auto md:max-0"
 
 const HomeContent = ({
   openAuthModal,
@@ -109,7 +109,7 @@ const HomeContent = ({
         <SnsBanner />
       </Container>
       <Container>
-        <div className="flex items-center justify-center md:justify-between mt-10 md:mt-20 flex-wrap gap-10 md:gap-5">
+        <div className="flex items-center justify-center md:justify-between mt-10 md:mt-20 flex-wrap gap-10 md:gap-3 lg:gap-12 xl:gap-20">
           <img className={clsx(sponsor)} src={Tomahawk} alt="" />
           <img className={clsx(sponsor)} src={Polychain} alt="" />
           <img className={clsx(sponsor)} src={Outliers} alt="" />

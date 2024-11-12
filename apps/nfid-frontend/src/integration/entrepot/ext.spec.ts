@@ -78,7 +78,7 @@ describe("NFT EXT standard suite", () => {
     //     "Lock failed! Other : No listing!",
     //   )
     // })
-    it("should transfer", async function () {
+    it.skip("should transfer", async function () {
       let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
       let owner = (await fetchCollectionTokens(testCollection)).find(

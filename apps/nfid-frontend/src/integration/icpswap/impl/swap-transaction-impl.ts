@@ -33,12 +33,13 @@ export class SwapTransactionImpl implements SwapTransaction {
     sourceLedger: string,
     quote: number,
     amount: bigint,
+    uid?: UUID
   ) {
     this.startTime = Date.now()
     this.stage = SwapStage.TransferSwap
     this.targetLedger = targetLedger
     this.sourceLedger = sourceLedger
-    this.uid = this.generateUUID()
+    this.uid = uid ? uid : this.generateUUID()
     this.quote = quote
     this.sourceAmount = amount
   }

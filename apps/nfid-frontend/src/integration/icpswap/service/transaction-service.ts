@@ -15,6 +15,7 @@ import {
   authState,
   replaceActorIdentity,
 } from "@nfid/integration"
+import {UUID} from "node:crypto";
 
 class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
@@ -43,6 +44,7 @@ class SwapTransactionService {
           t.source_ledger,
           Number(t.target_amount),
           t.source_amount,
+          t.uid as UUID
         ).fromCandid(t)
       })
     })

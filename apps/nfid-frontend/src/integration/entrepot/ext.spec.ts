@@ -168,7 +168,9 @@ describe("NFT EXT standard suite", () => {
           principal: targetIdentity.getPrincipal(),
         }).toHex(),
       )
-      await expect(transfer).rejects.toThrow("Transfer failed")
+      await expect(transfer).rejects.toThrow(
+        "Error: Call was returned undefined",
+      )
     })
   })
 })

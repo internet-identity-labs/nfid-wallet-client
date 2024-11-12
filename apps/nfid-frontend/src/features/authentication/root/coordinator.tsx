@@ -27,9 +27,11 @@ import { AuthenticationMachineActor } from "./root-machine"
 export default function AuthenticationCoordinator({
   actor,
   isIdentityKit = false,
+  loader,
 }: {
   actor: AuthenticationMachineActor
   isIdentityKit?: boolean
+  loader?: React.ReactNode
 }) {
   const [state, send] = useActor(actor)
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
@@ -190,6 +192,6 @@ export default function AuthenticationCoordinator({
     case state.matches("End"):
     case state.matches("AuthWithGoogle"):
     default:
-      return <BlurredLoader isLoading />
+      return loader || <BlurredLoader isLoading />
   }
 }

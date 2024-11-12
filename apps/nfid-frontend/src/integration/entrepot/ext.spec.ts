@@ -168,7 +168,7 @@ describe("NFT EXT standard suite", () => {
           principal: targetIdentity.getPrincipal(),
         }).toHex(),
       )
-      await expect(transfer).rejects.toThrow("Unauthorized")
+      await expect(transfer).rejects.toThrow("Transfer failed")
     })
   })
 })

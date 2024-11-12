@@ -49,7 +49,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     WithdrawError | SwapError | DepositError | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const quoteInterval = useRef<NodeJS.Timeout | null>(null)
   const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
     "activeTokens",
     fetchActiveTokens,
@@ -153,12 +152,14 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       onSuccess: () => {
         setLiquidityError(undefined)
       },
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   )
 
   useEffect(() => {
     if (!quote) return
-    quoteInterval.current = setInterval(() => {
+    const quoteInterval = setInterval(() => {
       setQuoteTimer((prev) => prev - 1)
       if (quoteTimer === 0) {
         resetIntegrationCache(["usdPriceForICRC1"], () => {
@@ -168,11 +169,11 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       }
     }, 1000)
 
-    return () => {
-      if (quoteInterval.current) {
-        clearInterval(quoteInterval.current)
-      }
+    if (isSuccessOpen) {
+      clearInterval(quoteInterval)
     }
+
+    return () => clearInterval(quoteInterval)
   }, [mutate, quoteTimer, quote])
 
   useEffect(() => {
@@ -207,11 +208,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     })
 
     setGetTransaction(shroff.getSwapTransaction())
-
-    if (quoteInterval.current) {
-      clearInterval(quoteInterval.current)
-      quoteInterval.current = null
-    }
   }, [quote, shroff])
 
   return (

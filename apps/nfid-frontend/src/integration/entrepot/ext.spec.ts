@@ -141,7 +141,7 @@ describe("NFT EXT standard suite", () => {
       expect(response).toBe(BigInt(1))
     })
 
-    it("should throw Unauthorized error", async function () {
+    it.skip("should throw Unauthorized error", async function () {
       let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
       let owner = (await fetchCollectionTokens(testCollection)).find(

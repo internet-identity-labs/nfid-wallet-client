@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import toaster from "packages/ui/src/atoms/toast"
 import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
 import {
   TransferModal,
@@ -6,7 +7,6 @@ import {
 } from "packages/ui/src/organisms/send-receive"
 import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
-import { toast } from "react-toastify"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 
@@ -33,7 +33,7 @@ export const TransferModalCoordinator = () => {
 
   useEffect(() => {
     if (state.context.error?.message?.length) {
-      toast.error(state.context?.error.message, {
+      toaster.error(state.context?.error.message, {
         toastId: "unexpectedTransferError",
       })
 

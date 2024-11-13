@@ -1,6 +1,6 @@
+import toaster from "packages/ui/src/atoms/toast"
 import { Success } from "packages/ui/src/organisms/send-receive/components/success"
 import React from "react"
-import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { ITransferResponse } from "../types"
@@ -39,7 +39,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
       onSuccess: async (data) => {
         if ("errorMessage" in data) {
           withToasts &&
-            toast.error(data.errorMessage?.message ?? "Unknown error", {
+            toaster.error(data.errorMessage?.message ?? "Unknown error", {
               toastId: "failedTransfer",
             })
           errorCallback && errorCallback(data)
@@ -58,14 +58,14 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
             )
           }
           withToasts &&
-            toast.success(`Transaction ${title} successful`, {
+            toaster.success(`Transaction ${title} successful`, {
               toastId: "successTransfer",
             })
           callback && callback(data)
         }, 5000)
       },
       onError: async () => {
-        withToasts && toast.error("Something went wrong")
+        withToasts && toaster.error("Something went wrong")
         setCurrentState(4)
       },
       revalidateOnFocus: false,

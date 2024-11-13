@@ -1,7 +1,7 @@
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import React, { useCallback, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { toast } from "react-toastify"
 
 import { Badge, Button, IconCmpOut } from "@nfid-frontend/ui"
 import {
@@ -54,7 +54,7 @@ export const VaultTransactionsDetailsPage = () => {
         window.history.back()
       } catch (e: any) {
         console.log({ e })
-        toast.error(e.message)
+        toaster.error(e.message)
       } finally {
         setIsLoading(false)
       }

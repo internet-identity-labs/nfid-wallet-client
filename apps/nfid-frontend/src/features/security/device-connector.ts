@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
-import { toast } from "react-toastify"
+import toaster from "packages/ui/src/atoms/toast"
 
 import {
   DeviceType,
@@ -175,7 +175,7 @@ export class SecurityConnector {
       )
     } catch (e) {
       console.log({ e })
-      toast.error(
+      toaster.error(
         "We could not delete your recovery phrase. Please make sure you have entered the correct phrase.",
       )
     } finally {
@@ -202,13 +202,13 @@ export class SecurityConnector {
         await passkeyConnector.loginWithAllowedPasskey()
         await im.update_2fa(enabled)
       } else {
-        toast.error(e.message)
+        toaster.error(e.message)
         throw new Error(`im.update_2fa: ${e.message}`)
       }
     })
 
-    if (enabled) toast.success("2FA enabled")
-    else toast.success("2FA disabled")
+    if (enabled) toaster.success("2FA enabled")
+    else toaster.success("2FA disabled")
     securityTracking.toggle2FA(enabled)
   }
 }

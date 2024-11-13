@@ -1,6 +1,6 @@
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import { FC, useState } from "react"
-import { toast } from "react-toastify"
 import { mutate } from "swr"
 
 import {
@@ -30,7 +30,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
       await token.hideToken()
       mutateTokens()
     } catch (e) {
-      toast.error("Token hiding failed: ", (e as any).message)
+      toaster.error("Token hiding failed: " + (e as any).message)
     }
   }
 
@@ -40,7 +40,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
       await token.showToken()
       mutateTokens()
     } catch (e) {
-      toast.error("Token shhowing failed: ", (e as any).message)
+      toaster.error("Token shhowing failed: " + (e as any).message)
     }
   }
 

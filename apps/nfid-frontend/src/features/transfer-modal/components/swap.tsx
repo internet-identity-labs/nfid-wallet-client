@@ -6,7 +6,7 @@ import {
   fetchActiveTokenByAddress,
   fetchAllTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import useSWR from "swr"
 
@@ -174,7 +174,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     }
 
     return () => clearInterval(quoteInterval)
-  }, [mutate, quoteTimer, quote])
+  }, [mutate, quoteTimer, quote, isSuccessOpen])
 
   useEffect(() => {
     mutate()

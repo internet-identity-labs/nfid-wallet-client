@@ -115,7 +115,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           }}
           {...register("amount", {
             required: sumRules.errorMessages.required,
-            onChange: (e) => setInputAmountValue(e.target.value),
+            //onChange: (e) => setInputAmountValue(e.target.value),
             validate: (value) => {
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),

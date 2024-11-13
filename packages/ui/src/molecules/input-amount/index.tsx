@@ -83,7 +83,11 @@ const pasteHandler = (
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  ({ decimals, disabled, isLoading = false, value, ...inputProps }, ref) => {
+  (
+    { decimals, disabled, isLoading = false, value, onChange, ...inputProps },
+    ref,
+  ) => {
+    //const [inputValue, setInputValue] = useState("")
     const [isValueSelected, setIsValueSelected] = useState(false)
     const fontSize = useMemo(() => {
       if (!value) return 34
@@ -124,11 +128,15 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             id="amount"
             min={0.0}
             value={value}
-            onKeyDown={(e) => pressHandler(e, decimals, isValueSelected)}
-            onPaste={(e) => pasteHandler(e, decimals)}
+            onChange={(e) => {
+              console.log("custom onChange")
+              onChange?.(e)
+            }}
+            // onKeyDown={(e) => pressHandler(e, decimals, isValueSelected)}
+            // onPaste={(e) => pasteHandler(e, decimals)}
             ref={ref}
             disabled={disabled}
-            onSelect={handleSelection}
+            // onSelect={handleSelection}
             {...inputProps}
           />
         )}

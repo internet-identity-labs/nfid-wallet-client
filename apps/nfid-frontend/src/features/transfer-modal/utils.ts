@@ -8,6 +8,7 @@ import {
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
+import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { mutate } from "swr"
 
 import { IGroupedOptions } from "@nfid-frontend/ui"
@@ -23,6 +24,7 @@ import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
+import { FT } from "frontend/integration/ft/ft"
 import { Shroff } from "frontend/integration/icpswap/shroff"
 import { NFT } from "frontend/integration/nft/nft"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
@@ -259,4 +261,24 @@ export const getQuoteData = async (
   } catch (error) {
     throw error
   }
+}
+
+export const updateTokenBalance = async (
+  ledger: string,
+  activeTokens: FT[],
+) => {
+  const { publicKey } = await getUserPrincipalId()
+
+  const index = activeTokens.findIndex((el) => el.getTokenAddress() === ledger)
+  if (index === -1) return
+
+  const tokenToUpdate = activeTokens[index]
+  const updatedToken = await tokenToUpdate.refreshBalance(
+    Principal.fromText(publicKey),
+  )
+
+  const updatedTokens = [...activeTokens]
+  updatedTokens[index] = updatedToken
+
+  mutate("activeTokens", updatedTokens)
 }

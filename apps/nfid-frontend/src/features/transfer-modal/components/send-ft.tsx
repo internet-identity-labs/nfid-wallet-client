@@ -10,7 +10,7 @@ import {
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { toast } from "react-toastify"
-import useSWR, { mutate } from "swr"
+import useSWR from "swr"
 
 import {
   RootWallet,
@@ -31,6 +31,7 @@ import {
   getAccountIdentifier,
   getIdentity,
   getVaultsAccountsOptions,
+  updateTokenBalance,
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
@@ -183,28 +184,8 @@ export const TransferFT = ({
         .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
       subTitle: usdRate!,
       isAssetPadding: true,
-      callback: async () => {
-        const decimals = token.getTokenDecimals()
-        const balance = token.getTokenBalance()
-        const ledger = token.getTokenAddress()
-
-        if (!decimals || !balance) return
-
-        const updatedBalance = balance - BigInt(Number(amount) * 10 ** decimals)
-        const index = activeTokens.findIndex(
-          (el) => el.getTokenAddress() === ledger,
-        )
-
-        if (index === -1) return
-
-        const newTokens = [...activeTokens]
-        const updatedToken = newTokens[index]
-
-        updatedToken.setTokenBalance(updatedBalance)
-
-        await updatedToken.updateUSDBalance()
-
-        mutate("activeTokens", newTokens, false)
+      callback: () => {
+        updateTokenBalance(token.getTokenAddress(), activeTokens)
       },
     })
   }, [

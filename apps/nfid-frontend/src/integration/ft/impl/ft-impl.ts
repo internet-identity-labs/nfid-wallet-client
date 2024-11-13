@@ -42,11 +42,12 @@ export class FTImpl implements FT {
     return this
   }
 
-  setTokenBalance(value: bigint): void {
-    this.tokenBalance = value
-  }
+  async refreshBalance(globalPrincipal: Principal): Promise<FT> {
+    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+    const newBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
 
-  async updateUSDBalance(): Promise<void> {
+    this.tokenBalance = newBalance
+
     const usdPrice = await exchangeRateService.usdPriceForICRC1(
       this.tokenAddress,
     )
@@ -57,6 +58,8 @@ export class FTImpl implements FT {
       )
       this.usdBalance = tokenAmount.multipliedBy(usdPrice)
     }
+
+    return this
   }
 
   getBlockExplorerLink(): string {

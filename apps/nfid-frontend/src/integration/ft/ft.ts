@@ -21,9 +21,7 @@ export interface FT {
 
   getTokenRateFormatted(amount: string): Promise<string | undefined>
 
-  setTokenBalance(value: bigint): void
-
-  updateUSDBalance(): Promise<void>
+  refreshBalance(principal: Principal): Promise<FT>
 
   getTokenAddress(): string
 

@@ -16,8 +16,8 @@ import {
   authStorage,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
+import toaster from "packages/ui/src/atoms/toast"
 import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
-import { toast } from "react-toastify"
 
 import { getBrowser } from "@nfid-frontend/utils"
 import {
@@ -196,9 +196,9 @@ export class PasskeyConnector {
     } catch (e: any) {
       console.error(e)
       if (alreadyRegisteredDeviceErrors.find((x) => e.message.includes(x))) {
-        toast.error("This device is already registered")
+        toaster.error("This device is already registered")
       } else {
-        toast.error(e.message)
+        toaster.error(e.message)
       }
       securityTracking.addPasskeyError({ message: e.message })
       return
@@ -264,7 +264,7 @@ export class PasskeyConnector {
         identity: multiIdent._actualIdentity!,
       }
     } catch (e: any) {
-      toast.error(e.message)
+      toaster.error(e.message)
       authState.reset(false)
       authenticationTracking.aborted({
         authSource: "passkey - continue",

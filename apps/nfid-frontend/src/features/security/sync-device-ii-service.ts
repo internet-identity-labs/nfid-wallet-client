@@ -1,5 +1,5 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { toast } from "react-toastify"
+import toaster from "packages/ui/src/atoms/toast"
 
 import { RootWallet, DeviceType, authState, ic } from "@nfid/integration"
 
@@ -54,7 +54,7 @@ export class SyncDeviceIIService {
 
     if (!emailImDevice) {
       const errorMessage = "The email device is not found."
-      toast.error(errorMessage)
+      toaster.error(errorMessage)
       throw Error(errorMessage)
     }
 
@@ -80,7 +80,7 @@ export class SyncDeviceIIService {
       identity.getPublicKey().toDer(),
     )
 
-    toast.success("The email device has been synchronized.")
+    toaster.success("The email device has been synchronized.")
   }
 }
 

@@ -2,11 +2,11 @@ import { debounce } from "@dfinity/utils"
 import clsx from "clsx"
 import { CANISTER_ID_LENGTH } from "packages/constants"
 import { PlusIcon } from "packages/ui/src/atoms/icons/plus"
+import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
-import { toast } from "react-toastify"
 
 import {
   BlurredLoader,
@@ -90,13 +90,13 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
     try {
       setIsImportLoading(true)
       await onSubmitIcrc1Pair(getValues("ledgerID"), getValues("indexID"))
-      toast.success(`${tokenInfo?.name ?? "Token"} has been added.`)
+      toaster.success(`${tokenInfo?.name ?? "Token"} has been added.`)
       resetField("ledgerID")
       resetField("indexID")
       setTokenInfo(null)
     } catch (e) {
       console.error(e)
-      toast.error("Adding new token failed")
+      toaster.error("Adding new token failed")
     } finally {
       setModalStep(null)
       debouncedSearch("")

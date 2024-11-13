@@ -1,7 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+import toaster from "packages/ui/src/atoms/toast"
 import { useMemo, useState } from "react"
-import { toast } from "react-toastify"
 
 import { IOption } from "@nfid-frontend/ui"
 import { isHex, toUSD } from "@nfid-frontend/utils"
@@ -84,11 +84,11 @@ export const RequestTransfer = ({
       }, 5000)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
-        toast.error("You don't have enough ICP for this transaction", {
+        toaster.error("You don't have enough ICP for this transaction", {
           toastId: "insufficientFundsError",
         })
       else
-        toast.error("Unexpected error: The transaction has been cancelled", {
+        toaster.error("Unexpected error: The transaction has been cancelled", {
           toastId: "unexpectedTransferError",
         })
     } finally {

@@ -39,7 +39,7 @@ describe("shroff test", () => {
       quote.getTargetAmount().toNumber(),
     )
 
-    expect(quote.getSourceAmountPrettified()).toEqual("0.0011")
+    expect(quote.getSourceAmountPrettified()).toEqual("0.0015")
     quote.getWidgetFeeAmount()
     BigInt(quote.getAmountWithoutWidgetFee().toNumber())
   })

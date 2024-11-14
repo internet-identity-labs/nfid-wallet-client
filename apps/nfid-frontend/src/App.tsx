@@ -20,7 +20,17 @@ import { WalletRouter } from "./features/wallet"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 
-const HomeScreen = React.lazy(() => import("./apps/marketing/landing-page"))
+const LandingHomePage = React.lazy(() =>
+  import("./apps/marketing/landing-page").then((components) => ({
+    default: components.LandingHomePage,
+  })),
+)
+
+const LandingSnsPage = React.lazy(() =>
+  import("./apps/marketing/landing-page").then((components) => ({
+    default: components.LandingSnsPage,
+  })),
+)
 
 const NFIDEmbedCoordinator = React.lazy(
   () => import("./features/embed/coordinator"),
@@ -73,7 +83,8 @@ export const App = () => {
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>
       <Routes>
-        <Route path={"/"} element={<HomeScreen />} />
+        <Route path={"/"} element={<LandingHomePage />} />
+        <Route path={"/sns"} element={<LandingSnsPage />} />
 
         <Route
           path="/authenticate"

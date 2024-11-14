@@ -103,7 +103,7 @@ export const AddPasskey = ({
           className="mt-1"
           onClick={() =>
             window.open(
-              "https://learn.nfid.one/enable-2fa-for-enterprise-grade-security",
+              "https://learn.nfid.one/managing-my-security/managing-my-passkeys",
               "_blank",
             )
           }

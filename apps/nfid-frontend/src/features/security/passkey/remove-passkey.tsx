@@ -1,6 +1,6 @@
+import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useCallback } from "react"
-import { toast } from "react-toastify"
 
 import { Button } from "@nfid-frontend/ui"
 import { RootWallet, securityTracking } from "@nfid/integration"
@@ -65,9 +65,9 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
             device.publickey!,
             profile?.wallet === RootWallet.II,
           )
-          toast.success("Device has been removed")
+          toaster.success("Device has been removed")
         } catch (e: any) {
-          toast.error(e.message)
+          toaster.error(e.message)
         }
       },
       () => {

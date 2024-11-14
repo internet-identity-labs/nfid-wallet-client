@@ -3,8 +3,8 @@ import {
   toHexString,
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import toaster from "packages/ui/src/atoms/toast"
 import React, { useCallback, useState } from "react"
-import { toast } from "react-toastify"
 
 import { IIAuthAddRemoteDevice } from "@nfid-frontend/ui"
 import { FrontendDelegation, requestFEDelegation } from "@nfid/integration"
@@ -66,7 +66,7 @@ export const IIAuthAddTentativeDevice: React.FC<IIAuthAddRemoteDeviceProps> = ({
       onSuccess(addedTentativelyDeviceResponse.verificationCode)
       // FIXME Not possible to add :{ message: string }
     } catch (e: any) {
-      toast.warn(e?.message)
+      toaster.warn(e?.message)
       console.log({ e })
     } finally {
       setIsLoading(false)

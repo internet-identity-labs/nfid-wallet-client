@@ -1,6 +1,6 @@
+import toaster from "packages/ui/src/atoms/toast"
 import React, { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
 
 import {
   Badge,
@@ -60,7 +60,7 @@ export const VaultsTransactionsTableRow: React.FC<IVaultTransactionsDetails> = (
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, value: string) => {
       e.stopPropagation()
       navigator.clipboard.writeText(value)
-      toast.success("Address copied to clipboard")
+      toaster.success("Address copied to clipboard")
     },
     [],
   )

@@ -1,12 +1,6 @@
 import clsx from "clsx"
-import {
-  forwardRef,
-  KeyboardEvent,
-  ClipboardEvent,
-  InputHTMLAttributes,
-  useMemo,
-  useState,
-} from "react"
+import { forwardRef, InputHTMLAttributes, useMemo } from "react"
+import { NumericFormat } from "react-number-format"
 
 import { Skeleton } from "../../atoms/skeleton"
 
@@ -16,79 +10,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   value: string
 }
 
-const pressHandler = (
-  e: KeyboardEvent<HTMLInputElement>,
-  decimals: number,
-  isValueSelected: boolean,
-) => {
-  const allowedKeys = /[0-9.]/
-  const key = e.key
-  const input = e.target as HTMLInputElement | null
-  if (!input) return
-  const value = input.value
-  const cursorPosition = input.selectionStart ?? 0
-  const dotPosition = value.indexOf(".")
-
-  if (isValueSelected) {
-    return
-  }
-
-  if (["ArrowLeft", "ArrowRight", "Backspace", "Delete"].includes(key)) {
-    return
-  }
-
-  if (key === "." && !value.includes(".")) {
-    const tempValue =
-      value.slice(0, cursorPosition) + "." + value.slice(cursorPosition)
-    const [wholePart, decimalPart] = tempValue.split(".")
-
-    if (decimalPart && decimalPart.length > decimals) {
-      input.value = `${wholePart}.${decimalPart.substring(0, decimals)}`
-      input.setSelectionRange(cursorPosition, cursorPosition)
-      e.preventDefault()
-      return
-    }
-  }
-
-  if (!allowedKeys.test(key) || (key === "." && value.includes("."))) {
-    e.preventDefault()
-    return
-  }
-
-  if (dotPosition !== -1 && cursorPosition > dotPosition) {
-    const decimalPart = value.substring(dotPosition + 1)
-    const decimalDigits = decimalPart.length
-
-    if (decimalDigits >= decimals) {
-      e.preventDefault()
-    }
-  }
-}
-
-const pasteHandler = (
-  e: ClipboardEvent<HTMLInputElement>,
-  decimals: number,
-) => {
-  const pastedValue = e.clipboardData.getData("text/plain").replace(",", ".")
-  const decimalIndex = pastedValue.indexOf(".")
-  const $this = e.target as HTMLInputElement
-
-  if (decimalIndex !== -1) {
-    e.preventDefault()
-    const decimalPart = pastedValue.substring(decimalIndex + 1)
-    $this.value =
-      pastedValue.substring(0, decimalIndex + 1) +
-      decimalPart.substring(0, decimals)
-  }
-}
-
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  (
-    { decimals, disabled, isLoading = false, value, onChange, ...inputProps },
-    ref,
-  ) => {
-    //const [inputValue, setInputValue] = useState("")
-    const [isValueSelected, setIsValueSelected] = useState(false)
+  ({ decimals, disabled, isLoading = false, value, name, onChange }, ref) => {
     const fontSize = useMemo(() => {
       if (!value) return 34
       if (value.length > 16) {
@@ -100,21 +23,34 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
       }
     }, [value])
 
-    const handleSelection = (e: React.SyntheticEvent<HTMLInputElement>) => {
-      const input = e.target as HTMLInputElement
-      if (input.selectionStart !== input.selectionEnd) {
-        setIsValueSelected(true)
-      } else {
-        setIsValueSelected(false)
+    const handlePaste = (e: any) => {
+      const data = e.clipboardData
+      if (!data) return
+      const pastedText = e.clipboardData.getData("Text")
+      if (pastedText.includes(",")) {
+        e.preventDefault()
+        const adjustedValue = pastedText.replace(",", ".")
+        ;(e.target as HTMLInputElement).setRangeText(adjustedValue)
       }
     }
 
     return (
-      <div className="relative h-10">
+      <>
         {isLoading ? (
-          <Skeleton className="absolute w-20 h-full !bg-gray-200 rounded-[6px]" />
+          <Skeleton />
         ) : (
-          <input
+          <NumericFormat
+            placeholder="0.00"
+            decimalScale={decimals}
+            min={0.0}
+            onPaste={handlePaste}
+            decimalSeparator="."
+            getInputRef={ref}
+            value={value}
+            onChange={(e) => {
+              onChange?.(e)
+            }}
+            id="amount"
             className={clsx(
               "min-w-0 font-semibold leading-10 bg-transparent",
               "outline-none border-none focus:ring-0 p-0 max-w-[160px] sm:max-w-[230px]",
@@ -122,25 +58,11 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
                 ? "text-gray-500 placeholder:text-gray-500"
                 : "text-black placeholder:text-black",
             )}
-            style={{ fontSize: `${fontSize}px` }}
-            placeholder="0.00"
-            type="text"
-            id="amount"
-            min={0.0}
-            value={value}
-            onChange={(e) => {
-              console.log("custom onChange")
-              onChange?.(e)
-            }}
-            // onKeyDown={(e) => pressHandler(e, decimals, isValueSelected)}
-            // onPaste={(e) => pasteHandler(e, decimals)}
-            ref={ref}
-            disabled={disabled}
-            // onSelect={handleSelection}
-            {...inputProps}
+            name={name}
+            style={{ fontSize }}
           />
         )}
-      </div>
+      </>
     )
   },
 )

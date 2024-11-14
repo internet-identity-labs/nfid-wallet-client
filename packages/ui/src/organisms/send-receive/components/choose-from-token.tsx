@@ -107,12 +107,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           isLoading={false}
           decimals={decimals}
           value={inputAmountValue}
-          onPaste={(e) => {
-            e.preventDefault()
-            setInputAmountValue(
-              e.clipboardData.getData("text/plain").replace(",", "."),
-            )
-          }}
           {...register("amount", {
             required: sumRules.errorMessages.required,
             onChange: (e) => setInputAmountValue(e.target.value),

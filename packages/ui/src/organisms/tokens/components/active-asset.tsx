@@ -26,6 +26,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
+  ...props
 }) => {
   const [usdPrice, setUsdPrice] = useState<string | undefined>("")
 
@@ -34,7 +35,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   }, [token.getTokenBalance()])
 
   return (
-    <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
+    <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`} {...props}>
       <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[100%] sm:max-w-[100%] lg:w-[350px]">
         <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback

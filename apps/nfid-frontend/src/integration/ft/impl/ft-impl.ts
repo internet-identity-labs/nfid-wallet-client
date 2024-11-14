@@ -48,17 +48,6 @@ export class FTImpl implements FT {
 
     this.tokenBalance = newBalance
 
-    const usdPrice = await exchangeRateService.usdPriceForICRC1(
-      this.tokenAddress,
-    )
-    if (usdPrice) {
-      const tokenAmount = exchangeRateService.parseTokenAmount(
-        Number(this.tokenBalance),
-        this.decimals,
-      )
-      this.usdBalance = tokenAmount.multipliedBy(usdPrice)
-    }
-
     return this
   }
 
@@ -147,19 +136,16 @@ export class FTImpl implements FT {
   }
 
   async getUSDBalanceFormatted(): Promise<string | undefined> {
-    if (!this.usdBalance) {
-      const usdPrice: BigNumber | undefined =
-        await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
+    const usdPrice: BigNumber | undefined =
+      await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
 
-      if (!usdPrice) {
-        return undefined
-      }
-      const tokenAmount = exchangeRateService.parseTokenAmount(
-        Number(this.tokenBalance),
-        this.decimals,
-      )
-      this.usdBalance = tokenAmount.multipliedBy(usdPrice)
-    }
+    if (!usdPrice) return
+
+    const tokenAmount = exchangeRateService.parseTokenAmount(
+      Number(this.tokenBalance),
+      this.decimals,
+    )
+    this.usdBalance = tokenAmount.multipliedBy(usdPrice)
     return this.usdBalance.toFixed(2) + " USD"
   }
 

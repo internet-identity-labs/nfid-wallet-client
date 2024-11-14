@@ -185,7 +185,7 @@ export const TransferFT = ({
       subTitle: usdRate!,
       isAssetPadding: true,
       callback: () => {
-        updateTokenBalance(token.getTokenAddress(), activeTokens)
+        updateTokenBalance([token.getTokenAddress()], activeTokens)
       },
     })
   }, [

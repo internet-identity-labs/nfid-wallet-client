@@ -264,21 +264,26 @@ export const getQuoteData = async (
 }
 
 export const updateTokenBalance = async (
-  ledger: string,
+  ledgers: string[],
   activeTokens: FT[],
 ) => {
   const { publicKey } = await getUserPrincipalId()
 
-  const index = activeTokens.findIndex((el) => el.getTokenAddress() === ledger)
-  if (index === -1) return
-
-  const tokenToUpdate = activeTokens[index]
-  const updatedToken = await tokenToUpdate.refreshBalance(
-    Principal.fromText(publicKey),
-  )
-
   const updatedTokens = [...activeTokens]
-  updatedTokens[index] = updatedToken
 
-  mutate("activeTokens", updatedTokens)
+  for (const ledger of ledgers) {
+    const index = updatedTokens.findIndex(
+      (el) => el.getTokenAddress() === ledger,
+    )
+
+    if (index !== -1) {
+      const tokenToUpdate = updatedTokens[index]
+      const updatedToken = await tokenToUpdate.refreshBalance(
+        Principal.fromText(publicKey),
+      )
+      updatedTokens[index] = updatedToken
+    }
+  }
+
+  mutate("activeTokens", updatedTokens, false)
 }

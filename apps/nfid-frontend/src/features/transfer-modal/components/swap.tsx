@@ -203,7 +203,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         setSwapError(error)
       })
       .finally(() => {
-        updateTokenBalance(fromTokenAddress, activeTokens)
+        updateTokenBalance([fromTokenAddress, toTokenAddress], activeTokens)
       })
 
     setGetTransaction(shroff.getSwapTransaction())

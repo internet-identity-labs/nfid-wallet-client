@@ -10,7 +10,7 @@ export function SnsModal() {
 
   return (
     <ModalComponent
-      className="w-[calc(100%-60px)] sm:w-[80%] xl:w-[1012px] max-h-[calc(100vh-40px)]"
+      className="w-[calc(100%-60px)] sm:w-[80%] xl:w-[1012px] max-h-[calc(100vh-40px)] !bg-transparent"
       isVisible={isVisible}
       onClose={() => setIsVisible(false)}
     >

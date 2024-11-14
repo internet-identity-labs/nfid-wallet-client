@@ -42,6 +42,26 @@ export class FTImpl implements FT {
     return this
   }
 
+  async refreshBalance(globalPrincipal: Principal): Promise<FT> {
+    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+    const newBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
+
+    this.tokenBalance = newBalance
+
+    const usdPrice = await exchangeRateService.usdPriceForICRC1(
+      this.tokenAddress,
+    )
+    if (usdPrice) {
+      const tokenAmount = exchangeRateService.parseTokenAmount(
+        Number(this.tokenBalance),
+        this.decimals,
+      )
+      this.usdBalance = tokenAmount.multipliedBy(usdPrice)
+    }
+
+    return this
+  }
+
   getBlockExplorerLink(): string {
     return `https://dashboard.internetcomputer.org/canister/${this.tokenAddress}`
   }
@@ -130,10 +150,8 @@ export class FTImpl implements FT {
     if (!this.usdBalance) {
       const usdPrice: BigNumber | undefined =
         await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
+      if (!usdPrice) return
 
-      if (!usdPrice) {
-        return undefined
-      }
       const tokenAmount = exchangeRateService.parseTokenAmount(
         Number(this.tokenBalance),
         this.decimals,

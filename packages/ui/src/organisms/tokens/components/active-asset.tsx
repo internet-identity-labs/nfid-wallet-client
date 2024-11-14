@@ -1,7 +1,6 @@
 import clsx from "clsx"
-import { HTMLAttributes, FC } from "react"
+import { HTMLAttributes, FC, useState, useEffect } from "react"
 import { FT } from "src/integration/ft/ft"
-import useSWR from "swr"
 
 import {
   ImageWithFallback,
@@ -27,14 +26,16 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
+  ...props
 }) => {
-  const { data: usdPrice, isLoading } = useSWR(
-    token ? ["activeTokenUSD", token.getTokenAddress()] : null,
-    token ? () => token.getUSDBalanceFormatted() : null,
-  )
+  const [usdPrice, setUsdPrice] = useState<string | undefined>("")
+
+  useEffect(() => {
+    token.getUSDBalanceFormatted().then(setUsdPrice)
+  }, [token.getTokenBalance()])
 
   return (
-    <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`}>
+    <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`} {...props}>
       <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[100%] sm:max-w-[100%] lg:w-[350px]">
         <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
@@ -80,7 +81,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             <span>{token.getTokenSymbol()}</span>
           </p>
           <p className="text-xs md:hidden text-secondary">
-            {isLoading ? (
+            {usdPrice === "" ? (
               <Skeleton
                 className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
               />
@@ -96,9 +97,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px]"
       >
-        {isLoading ? (
+        {usdPrice === "" ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : usdPrice === undefined ? (
+        ) : !usdPrice ? (
           "Not listed"
         ) : (
           usdPrice

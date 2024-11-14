@@ -213,7 +213,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       })
 
     setGetTransaction(shroff.getSwapTransaction())
-  }, [quote, shroff, activeTokens, fromTokenAddress])
+  }, [quote, shroff, activeTokens, fromTokenAddress, toTokenAddress])
 
   return (
     <FormProvider {...formMethods}>

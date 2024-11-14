@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import toaster from "packages/ui/src/atoms/toast"
 import {
   LoginEventHandler,
   SignInWithGoogle,
@@ -7,7 +8,6 @@ import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import React, { useState } from "react"
-import { toast } from "react-toastify"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
 import {
@@ -84,7 +84,7 @@ export default function AuthenticationCoordinator({
       )
       onSuccess(res)
     } catch (e: any) {
-      toast.error(e?.message ?? "Invalid Passkey")
+      toaster.error(e?.message ?? "Invalid Passkey")
       console.error(e)
     } finally {
       setIs2FALoading(false)
@@ -100,7 +100,7 @@ export default function AuthenticationCoordinator({
         const res = await authWithAnchor(data)
         onSuccess(res)
       } catch (e: any) {
-        toast.error(e.message)
+        toaster.error(e.message)
       } finally {
         setIsOtherOptionsLoading(false)
       }

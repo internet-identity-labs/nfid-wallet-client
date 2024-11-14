@@ -1,7 +1,7 @@
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React, { useState } from "react"
-import { toast } from "react-toastify"
 
 import { Button, Loader } from "@nfid-frontend/ui"
 import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
@@ -25,7 +25,7 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
       onClose()
     } catch (e) {
       console.error(e)
-      toast.error("Incorrect seed phrase")
+      toaster.error("Incorrect seed phrase")
     } finally {
       setIsLoading(false)
     }

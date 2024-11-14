@@ -1,6 +1,6 @@
+import toaster from "packages/ui/src/atoms/toast"
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
@@ -95,7 +95,7 @@ export const TransferNFT = ({
 
   const submit = useCallback(
     async (values: any) => {
-      if (!selectedNFT) return toast.error("No selected NFT")
+      if (!selectedNFT) return toaster.error("No selected NFT")
 
       onTransfer({
         assetImg: selectedNFT?.getAssetPreview().url,

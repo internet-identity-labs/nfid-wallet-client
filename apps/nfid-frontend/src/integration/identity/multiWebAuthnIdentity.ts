@@ -17,7 +17,7 @@ import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
-import { toast } from "react-toastify"
+import toaster from "packages/ui/src/atoms/toast"
 import { arrayBufferEqual } from "src/integration/identity/services"
 
 import { authenticationTracking, IPasskeyMetadata } from "@nfid/integration"
@@ -158,7 +158,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       } catch (e) {
         console.error(e)
         authenticationTracking.failed()
-        toast.error("We could not find your Passkey. Try different one")
+        toaster.error("We could not find your Passkey. Try different one")
         throw new Error("We could not find your Passkey.")
       }
 

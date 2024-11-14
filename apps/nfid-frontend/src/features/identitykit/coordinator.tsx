@@ -47,6 +47,12 @@ export default function IdentityKitRPCCoordinator() {
                 "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"
               ] as AuthenticationMachineActor
             }
+            loader={
+              <BlurredLoader
+                isLoading
+                loadingMessage={getRandomLoadingMessage()}
+              />
+            }
           />
         )
       case state.matches("Main.InteractiveRequest.PromptInteractiveRequest"):

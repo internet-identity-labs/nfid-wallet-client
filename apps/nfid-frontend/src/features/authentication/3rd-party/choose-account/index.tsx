@@ -1,9 +1,9 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
-import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import {
@@ -139,7 +139,7 @@ export const AuthChooseAccount = ({
         })
       } catch (e: any) {
         console.error(e)
-        toast.error(e.message)
+        toaster.error(e.message)
         handleSelectAccount({
           status: RequestStatus.ERROR,
           errorMessage: e.message,
@@ -187,7 +187,7 @@ export const AuthChooseAccount = ({
         })
       } catch (e: any) {
         console.error(e)
-        toast.error(e.message)
+        toaster.error(e.message)
         handleSelectAccount({
           status: RequestStatus.ERROR,
           errorMessage: e.message,
@@ -239,7 +239,7 @@ export const AuthChooseAccount = ({
       })
     } catch (e: any) {
       console.error(e)
-      toast.error(e.message)
+      toaster.error(e.message)
       handleSelectAccount({
         status: RequestStatus.ERROR,
         errorMessage: e.message,
@@ -263,7 +263,7 @@ export const AuthChooseAccount = ({
       return handleSelectLegacyAnonymous(selectedLegacyAccount)
     if (selectedProfile === "public") return handleSelectPublic()
 
-    return toast.error("Something went wrong. Please select a profile.")
+    return toaster.error("Something went wrong. Please select a profile.")
   }, [
     handleSelectAnonymous,
     handleSelectLegacyAnonymous,

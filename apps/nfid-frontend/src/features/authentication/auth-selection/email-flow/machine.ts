@@ -3,7 +3,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { toast } from "react-toastify"
+import toaster from "packages/ui/src/atoms/toast"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { KeyPair } from "@nfid/integration"
@@ -148,9 +148,9 @@ const AuthWithEmailMachine =
         toastError: (context, event) => {
           try {
             const message = JSON.parse(event.data.message)
-            toast.error(message.error)
+            toaster.error(message.error)
           } catch (_) {
-            toast.error(event.data.message)
+            toaster.error(event.data.message)
           }
         },
         stopIntervalVerification,

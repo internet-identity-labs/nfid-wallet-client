@@ -2,6 +2,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
+import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import {
   fetchActiveTokens,
@@ -9,7 +10,6 @@ import {
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
-import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import {
@@ -110,7 +110,7 @@ export const TransferFT = ({
   )
 
   const submit = useCallback(async () => {
-    if (!token) return toast.error("No selected token")
+    if (!token) return toaster.error("No selected token")
 
     if (isVault) {
       return onTransfer({

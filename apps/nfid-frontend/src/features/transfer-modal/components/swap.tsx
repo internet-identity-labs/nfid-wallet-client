@@ -122,16 +122,18 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     if (!getTransaction) return
-    const interval = setInterval(() => {
+    const transactionInterval = setInterval(() => {
       const step = getTransaction.getStage()
       const error = getTransaction.getError()
       setSwapStep(step)
       if (step === SwapStage.Completed || error !== undefined) {
-        clearInterval(interval)
+        if (transactionInterval) {
+          clearInterval(transactionInterval)
+        }
       }
     }, 100)
 
-    return () => clearInterval(interval)
+    return () => clearInterval(transactionInterval)
   }, [getTransaction])
 
   const {
@@ -150,12 +152,14 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       onSuccess: () => {
         setLiquidityError(undefined)
       },
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   )
 
   useEffect(() => {
     if (!quote) return
-    const interval = setInterval(() => {
+    const quoteInterval = setInterval(() => {
       setQuoteTimer((prev) => prev - 1)
       if (quoteTimer === 0) {
         resetIntegrationCache(["usdPriceForICRC1"], () => {
@@ -165,10 +169,12 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       }
     }, 1000)
 
-    return () => {
-      clearInterval(interval)
+    if (isSuccessOpen) {
+      clearInterval(quoteInterval)
     }
-  }, [mutate, quoteTimer, quote])
+
+    return () => clearInterval(quoteInterval)
+  }, [mutate, quoteTimer, quote, isSuccessOpen])
 
   useEffect(() => {
     mutate()

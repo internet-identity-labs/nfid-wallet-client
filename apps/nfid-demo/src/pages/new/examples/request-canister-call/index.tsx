@@ -2,11 +2,11 @@ import { useAuthenticationContext } from "apps/nfid-demo/src/context/authenticat
 import { useState } from "react"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
 
 import { Button, Input } from "@nfid-frontend/ui"
 import { DelegationType } from "@nfid/embed"
 
+import toaster from "../../../../../../../packages/ui/src/atoms/toast"
 import { ExampleError } from "../../error"
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"
@@ -144,7 +144,7 @@ export const RequestCanisterCall = () => {
               onClick={
                 identity
                   ? handleSubmit(handleExecuteCanisterCall)
-                  : () => toast.error("Please authenticate first")
+                  : () => toaster.error("Please authenticate first")
               }
             >
               Submit

@@ -2,7 +2,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
-import { resetIntegrationCache } from "packages/integration/src/cache"
+import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import {
   fetchActiveTokens,
@@ -10,7 +10,6 @@ import {
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
-import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import {
@@ -32,6 +31,7 @@ import {
   getAccountIdentifier,
   getIdentity,
   getVaultsAccountsOptions,
+  updateTokenBalance,
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
@@ -61,18 +61,13 @@ export const TransferFT = ({
     getVaultsAccountsOptions,
   )
 
-  const {
-    data: activeTokens = [],
-    isLoading: isActiveTokensLoading,
-    mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchActiveTokens)
+  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
+    "activeTokens",
+    fetchActiveTokens,
+  )
 
-  const {
-    data: token,
-    isLoading: isTokenLoading,
-    mutate: refetchToken,
-  } = useSWR(
-    tokenAddress ? ["activeToken", tokenAddress] : null,
+  const { data: token, isLoading: isTokenLoading } = useSWR(
+    tokenAddress ? ["token", tokenAddress] : null,
     ([, address]) => fetchActiveTokenByAddress(address),
   )
 
@@ -115,7 +110,7 @@ export const TransferFT = ({
   )
 
   const submit = useCallback(async () => {
-    if (!token) return toast.error("No selected token")
+    if (!token) return toaster.error("No selected token")
 
     if (isVault) {
       return onTransfer({
@@ -190,21 +185,17 @@ export const TransferFT = ({
       subTitle: usdRate!,
       isAssetPadding: true,
       callback: () => {
-        resetIntegrationCache(["getICRC1Canisters"], () => {
-          refetchActiveTokens()
-          refetchToken()
-        })
+        updateTokenBalance([token.getTokenAddress()], activeTokens)
       },
     })
   }, [
+    activeTokens,
     handleTrackTransfer,
     isVault,
     onTransfer,
     token,
     selectedVaultsAccountAddress,
     usdRate,
-    refetchActiveTokens,
-    refetchToken,
     amount,
     to,
   ])

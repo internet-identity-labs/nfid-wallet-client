@@ -3,7 +3,7 @@ import clsx from "clsx"
 export interface IDropdownOption {
   label?: string
   icon?: string
-  element?: React.ReactNode
+  element?: React.ComponentType<{ className?: string }>
   link?: string
   handler?: () => void
   className?: string
@@ -14,17 +14,17 @@ export interface IDropdownOption {
 export const DropdownOption = ({
   label,
   icon,
-  element,
+  element: Element,
   handler,
-  link,
   className,
   textClassName,
   iconClassName,
+  link,
 }: IDropdownOption) => {
   return (
     <div
       className={clsx(
-        "px-[10px] flex items-center gap-[8px] hover:bg-gray-100 h-[40px] cursor-pointer",
+        "flex items-center gap-[8px] hover:bg-gray-100 cursor-pointer",
         className,
       )}
       onClick={() => {
@@ -32,15 +32,36 @@ export const DropdownOption = ({
         handler()
       }}
     >
-      {element ?? (
+      {Element ? (
+        <Element className="w-full h-[40px] px-[10px] flex items-center" />
+      ) : (
         <>
-          {icon && <img width={24} className={iconClassName} src={icon} />}
+          {icon && (
+            <img
+              alt="dropdown-icon"
+              width={24}
+              className={iconClassName}
+              src={icon}
+            />
+          )}
           {link ? (
-            <a target="_blank" href={link}>
+            <a
+              className="w-full h-[40px] px-[10px] flex items-center"
+              target="_blank"
+              href={link}
+              rel="noreferrer"
+            >
               {label}
             </a>
           ) : (
-            <p className={clsx("text-black text-sm", textClassName)}>{label}</p>
+            <p
+              className={clsx(
+                "text-black text-sm w-full h-[40px] px-[10px] flex items-center",
+                textClassName,
+              )}
+            >
+              {label}
+            </p>
           )}
         </>
       )}

@@ -21,6 +21,8 @@ export interface FT {
 
   getTokenRateFormatted(amount: string): Promise<string | undefined>
 
+  refreshBalance(principal: Principal): Promise<FT>
+
   getTokenAddress(): string
 
   getTokenIndex(): string | undefined

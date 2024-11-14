@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import toaster from "packages/ui/src/atoms/toast"
 import {
   LoginEventHandler,
   SignInWithGoogle,
@@ -7,7 +8,6 @@ import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import React, { useState } from "react"
-import { toast } from "react-toastify"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
 import {
@@ -27,9 +27,11 @@ import { AuthenticationMachineActor } from "./root-machine"
 export default function AuthenticationCoordinator({
   actor,
   isIdentityKit = false,
+  loader,
 }: {
   actor: AuthenticationMachineActor
   isIdentityKit?: boolean
+  loader?: React.ReactNode
 }) {
   const [state, send] = useActor(actor)
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
@@ -82,7 +84,7 @@ export default function AuthenticationCoordinator({
       )
       onSuccess(res)
     } catch (e: any) {
-      toast.error(e?.message ?? "Invalid Passkey")
+      toaster.error(e?.message ?? "Invalid Passkey")
       console.error(e)
     } finally {
       setIs2FALoading(false)
@@ -98,7 +100,7 @@ export default function AuthenticationCoordinator({
         const res = await authWithAnchor(data)
         onSuccess(res)
       } catch (e: any) {
-        toast.error(e.message)
+        toaster.error(e.message)
       } finally {
         setIsOtherOptionsLoading(false)
       }
@@ -190,6 +192,6 @@ export default function AuthenticationCoordinator({
     case state.matches("End"):
     case state.matches("AuthWithGoogle"):
     default:
-      return <BlurredLoader isLoading />
+      return loader || <BlurredLoader isLoading />
   }
 }

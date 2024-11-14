@@ -1,7 +1,7 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
+import toaster from "packages/ui/src/atoms/toast"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
 import useSWRImmutable from "swr/immutable"
 
 import { Button, DropdownSelect, Input } from "@nfid-frontend/ui"
@@ -128,7 +128,7 @@ export const RequestNonFungibleTransfer = () => {
               onClick={
                 identity
                   ? handleSubmit(onRequestNFTTransfer)
-                  : () => toast.error("Please authenticate first")
+                  : () => toaster.error("Please authenticate first")
               }
             >
               Request NFT transfer

@@ -13,6 +13,7 @@ export const ModalComponent: FC<ModalProps> = ({
   className,
   isVisible,
   onClose,
+  style
 }) => {
   useDisableScroll(Boolean(isVisible))
 
@@ -35,6 +36,7 @@ export const ModalComponent: FC<ModalProps> = ({
           isVisible ? "scale-100" : "scale-0",
           className,
         ])}
+        style={style}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

@@ -20,6 +20,7 @@ export interface RPCPromptTemplateProps extends PropsWithChildren<{}> {
   isPrimaryDisabled?: boolean
   balance?: RPCBalanceSection
   withLogo?: boolean
+  className?: string
 }
 
 export const RPCPromptTemplate = ({
@@ -33,9 +34,10 @@ export const RPCPromptTemplate = ({
   isPrimaryDisabled,
   balance,
   withLogo,
+  className,
 }: RPCPromptTemplateProps) => {
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div className={clsx("flex flex-col flex-1 h-full", className)}>
       <div className="flex flex-col items-center mt-10 mb-10 text-sm text-center">
         {withLogo ? (
           <img

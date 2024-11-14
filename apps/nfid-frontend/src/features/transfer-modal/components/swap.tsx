@@ -28,7 +28,7 @@ import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import { FormValues } from "../types"
-import { getIdentity, getQuoteData } from "../utils"
+import { getIdentity, getQuoteData, updateTokenBalance } from "../utils"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -122,16 +122,18 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     if (!getTransaction) return
-    const interval = setInterval(() => {
+    const transactionInterval = setInterval(() => {
       const step = getTransaction.getStage()
       const error = getTransaction.getError()
       setSwapStep(step)
       if (step === SwapStage.Completed || error !== undefined) {
-        clearInterval(interval)
+        if (transactionInterval) {
+          clearInterval(transactionInterval)
+        }
       }
     }, 100)
 
-    return () => clearInterval(interval)
+    return () => clearInterval(transactionInterval)
   }, [getTransaction])
 
   const {
@@ -150,12 +152,14 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       onSuccess: () => {
         setLiquidityError(undefined)
       },
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   )
 
   useEffect(() => {
     if (!quote) return
-    const interval = setInterval(() => {
+    const quoteInterval = setInterval(() => {
       setQuoteTimer((prev) => prev - 1)
       if (quoteTimer === 0) {
         resetIntegrationCache(["usdPriceForICRC1"], () => {
@@ -165,14 +169,16 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       }
     }, 1000)
 
-    return () => {
-      clearInterval(interval)
+    if (isSuccessOpen) {
+      clearInterval(quoteInterval)
     }
-  }, [mutate, quoteTimer, quote])
+
+    return () => clearInterval(quoteInterval)
+  }, [mutate, quoteTimer, quote, isSuccessOpen])
 
   useEffect(() => {
     mutate()
-  }, [toToken, fromToken, mutate])
+  }, [toToken, fromToken, mutate, amount])
 
   const refresh = () => {
     setShroffError(undefined)
@@ -197,12 +203,17 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     await shroff.validateQuote()
     const identity = await getIdentity(shroff.getTargets())
 
-    shroff.swap(identity).catch((error) => {
-      setSwapError(error)
-    })
+    shroff
+      .swap(identity)
+      .catch((error) => {
+        setSwapError(error)
+      })
+      .finally(() => {
+        updateTokenBalance([fromTokenAddress, toTokenAddress], activeTokens)
+      })
 
     setGetTransaction(shroff.getSwapTransaction())
-  }, [quote, shroff])
+  }, [quote, shroff, activeTokens, fromTokenAddress, toTokenAddress])
 
   return (
     <FormProvider {...formMethods}>

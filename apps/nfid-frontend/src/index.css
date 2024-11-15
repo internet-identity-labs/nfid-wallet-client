@@ -74,3 +74,6 @@ ul {
   width: 0;
   height: 0;
 }
+.Toastify__progress-bar--bg {
+  display: none;
+}

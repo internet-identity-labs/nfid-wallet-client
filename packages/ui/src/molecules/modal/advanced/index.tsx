@@ -1,9 +1,9 @@
 import clsx from "clsx"
+import { CloseIcon } from "packages/ui/src/atoms/icons/close-button"
 import React from "react"
 
 import { H5 } from "../../../atoms/typography"
 import { Button } from "../../button"
-import { ModalCloseIcon } from "../closeIcon"
 
 export interface ModalButtonProps {
   text: string
@@ -81,7 +81,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
 
           {onClose && (
             <div className={clsx("absolute top-5 right-5")} onClick={onClose}>
-              <ModalCloseIcon />
+              <CloseIcon />
             </div>
           )}
         </div>

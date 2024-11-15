@@ -6,7 +6,7 @@ import { ReactComponent as InfoIcon } from "frontend/assets/toast-icons/info.svg
 import { ReactComponent as SuccessIcon } from "frontend/assets/toast-icons/success.svg"
 import { ReactComponent as WarningIcon } from "frontend/assets/toast-icons/warning.svg"
 
-import { ModalCloseIcon } from "../../molecules/modal/closeIcon"
+import { CloseIcon } from "../icons/close-button"
 
 const Toast = ({ title, text }: { title?: string; text?: string }) => {
   return (
@@ -28,7 +28,7 @@ toaster.success = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <ModalCloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
     ...toastProps,
   })
 
@@ -38,7 +38,7 @@ toaster.warn = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <ModalCloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
     ...toastProps,
   })
 
@@ -48,7 +48,7 @@ toaster.error = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <ModalCloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
     ...toastProps,
   })
 
@@ -58,7 +58,7 @@ toaster.info = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <ModalCloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
     ...toastProps,
   })
 

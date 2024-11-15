@@ -1,11 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
-interface ModalCloseIconProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface CloseIconProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const ModalCloseIcon: React.FC<ModalCloseIconProps> = ({
-  className,
-}) => {
+export const CloseIcon: React.FC<CloseIconProps> = ({ className }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

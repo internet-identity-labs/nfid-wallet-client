@@ -190,8 +190,7 @@ export class ShroffImpl implements Shroff {
       Number(this.requestedQuote?.getSourceAmountPrettified()),
     )
     if (
-      legacyQuote?.getTargetAmount() !==
-      updatedQuote.getTargetAmount()
+      !legacyQuote?.getTargetAmount().eq(updatedQuote.getTargetAmount())
     ) {
       throw new SlippageError()
     }

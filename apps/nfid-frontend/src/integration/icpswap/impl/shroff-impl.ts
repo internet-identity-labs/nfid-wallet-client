@@ -176,9 +176,6 @@ export class ShroffImpl implements Shroff {
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
-      if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as Error).message)
-      }
       await this.restoreTransaction()
       throw e
     }
@@ -220,9 +217,11 @@ export class ShroffImpl implements Shroff {
         return id
       }
       console.error("Deposit error: " + JSON.stringify(result.err))
+      this.swapTransaction?.setError(result.err)
       throw new DepositError()
     } catch (e) {
       console.error("Deposit error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new DepositError()
     }
   }
@@ -269,9 +268,11 @@ export class ShroffImpl implements Shroff {
         return id
       }
       console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
+      this.swapTransaction?.setError(result.Err)
       throw new DepositError()
     } catch (e) {
       console.error("Deposit error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new DepositError()
     }
   }
@@ -302,9 +303,11 @@ export class ShroffImpl implements Shroff {
         this.swapTransaction!.setNFIDTransferId(id)
         return id
       }
+      this.swapTransaction?.setError(result.Err)
       throw new WithdrawError()
     } catch (e) {
       console.error("Withdraw error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new WithdrawError()
     }
   }
@@ -324,10 +327,12 @@ export class ShroffImpl implements Shroff {
         }
 
         console.error("Swap on exchange error: " + JSON.stringify(result.err))
+        this.swapTransaction?.setError(result.err)
         throw new SwapError()
       })
     } catch (e) {
       console.error("Swap error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new SwapError()
     }
   }
@@ -348,10 +353,12 @@ export class ShroffImpl implements Shroff {
         }
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
+        this.swapTransaction?.setError(result.err)
         throw new WithdrawError()
       })
     } catch (e) {
       console.error("Withdraw error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new WithdrawError()
     }
   }

@@ -6,7 +6,7 @@ import {
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {hasOwnProperty, replaceActorIdentity} from "@nfid/integration"
+import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
 import { WithdrawError } from "../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
@@ -36,9 +36,6 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       }
     } catch (e) {
       console.error("Swap error:", e)
-      if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as Error).message)
-      }
       await this.restoreTransaction()
       throw e
     }
@@ -46,9 +43,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
 
   protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
-      amount: BigInt(
-        this.requestedQuote!.getSourceAmount().toNumber()
-      ),
+      amount: BigInt(this.requestedQuote!.getSourceAmount().toNumber()),
       token: this.source.ledger,
       fee: this.source.fee,
     }
@@ -61,15 +56,17 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
         }
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
+        this.swapTransaction?.setError(result.err)
         throw new WithdrawError()
       })
     } catch (e) {
       console.error("Withdraw error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new WithdrawError()
     }
   }
 
-  private async handleDepositTimeoutError() : Promise<SwapTransaction> {
+  private async handleDepositTimeoutError(): Promise<SwapTransaction> {
     await this.withdraw()
     console.debug("Withdraw done")
     this.swapTransaction!.setCompleted()

@@ -1,10 +1,14 @@
-import {SignIdentity} from "@dfinity/agent"
-import {ShroffBuilder, ShroffImpl} from "src/integration/icpswap/impl/shroff-impl"
-import {Shroff} from "src/integration/icpswap/shroff"
-import {SwapTransaction} from "src/integration/icpswap/swap-transaction"
+import { SignIdentity } from "@dfinity/agent"
+import { WithdrawError } from "src/integration/icpswap/errors"
+import {
+  ShroffBuilder,
+  ShroffImpl,
+} from "src/integration/icpswap/impl/shroff-impl"
+import { Shroff } from "src/integration/icpswap/shroff"
+import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
-import {hasOwnProperty, replaceActorIdentity} from "@nfid/integration"
-import {WithdrawError} from "src/integration/icpswap/errors";
+import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
+
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffSwapErrorHandler extends ShroffImpl {
@@ -29,9 +33,6 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
       }
     } catch (e) {
       console.error("Swap error:", e)
-      if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as Error).message)
-      }
       await this.restoreTransaction()
       throw e
     }
@@ -39,9 +40,7 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
 
   protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
-      amount: BigInt(
-        this.requestedQuote!.getSourceAmount().toNumber()
-      ),
+      amount: BigInt(this.requestedQuote!.getSourceAmount().toNumber()),
       token: this.source.ledger,
       fee: this.source.fee,
     }
@@ -54,10 +53,12 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
         }
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
+        this.swapTransaction?.setError(result.err)
         throw new WithdrawError()
       })
     } catch (e) {
       console.error("Withdraw error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new WithdrawError()
     }
   }

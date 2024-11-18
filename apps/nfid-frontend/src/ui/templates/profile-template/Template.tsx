@@ -52,6 +52,7 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   isWallet?: boolean
   withPortfolio?: boolean
   titleClassNames?: string
+  triedToComplete?: boolean
 }
 
 const ProfileTemplate: FC<IProfileTemplate> = ({
@@ -69,6 +70,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   iconId,
   isWallet,
   titleClassNames,
+  triedToComplete,
 }) => {
   const handleNavigateBack = useCallback(() => {
     window.history.back()
@@ -109,7 +111,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     }
 
     checkTransactions()
-  }, [])
+  }, [triedToComplete])
 
   const activeTab = useMemo(() => {
     return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }

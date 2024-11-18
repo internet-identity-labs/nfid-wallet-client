@@ -69,6 +69,7 @@ export const getTooltipAndButtonText = (
 
 interface IActivityTableRow extends IActivityRow {
   id: string
+  triedToComplete: (v: boolean) => void
 }
 
 export const ChainIcons = {
@@ -87,6 +88,7 @@ export const ActivityTableRow = ({
   to,
   id,
   transaction,
+  triedToComplete,
 }: IActivityTableRow) => {
   const [isLoading, setIsLoading] = useState(false)
 
@@ -106,6 +108,11 @@ export const ActivityTableRow = ({
 
     const errorHandler = errorHandlerFactory.getHandler(transaction)
     await errorHandler.completeTransaction(identity)
+    triedToComplete(true)
+
+    setTimeout(() => {
+      triedToComplete(false)
+    }, 500)
     setIsLoading(false)
   }
 

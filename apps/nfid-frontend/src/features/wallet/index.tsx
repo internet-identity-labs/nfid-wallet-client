@@ -5,7 +5,11 @@ import ActivityPage from "../activity"
 import NFTsPage from "../collectibles"
 import TokensPage from "../fungible-token"
 
-export const WalletRouter = () => {
+interface WalletRouterProps {
+  triedToComplete: (value: boolean) => void
+}
+
+export const WalletRouter = ({ triedToComplete }: WalletRouterProps) => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="tokens" replace />} />
@@ -29,7 +33,7 @@ export const WalletRouter = () => {
         path="activity"
         element={
           <ProfileContainer innerClassName="!px-0">
-            <ActivityPage />
+            <ActivityPage triedToComplete={triedToComplete} />
           </ProfileContainer>
         }
       />

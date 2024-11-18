@@ -10,12 +10,14 @@ import { ActivityTableRow } from "./activity-table-row"
 
 interface IActivityTableGroup extends IActivityRowGroup {
   groupIndex: number
+  triedToComplete: (v: boolean) => void
 }
 
 export const ActivityTableGroup = ({
   date,
   rows,
   groupIndex,
+  triedToComplete,
 }: IActivityTableGroup) => {
   const getRowId = useCallback((row: IActivityRow) => {
     if (row.asset.type === "ft")
@@ -48,6 +50,7 @@ export const ActivityTableGroup = ({
           {...row}
           id={getRowId(row)}
           key={`group_${groupIndex}_activity_${i}`}
+          triedToComplete={triedToComplete}
         />
       ))}
     </>

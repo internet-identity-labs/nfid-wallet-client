@@ -28,13 +28,13 @@ export interface ActivityProps {
     resetHandler: () => void
   }
   tokens: FT[]
-  isTokensLoading: boolean
+  triedToComplete: (v: boolean) => void
 }
 
 export const Activity: FC<ActivityProps> = ({
   activityData,
   tokens,
-  isTokensLoading,
+  triedToComplete,
 }) => {
   const {
     activities,
@@ -101,6 +101,7 @@ export const Activity: FC<ActivityProps> = ({
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
+                    triedToComplete={triedToComplete}
                   />
                 ))
               )}

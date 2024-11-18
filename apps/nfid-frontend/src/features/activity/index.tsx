@@ -5,20 +5,21 @@ import useSWR from "swr"
 
 import { useActivityPagination } from "./hooks/pagination"
 
-const ActivityPage = () => {
+interface ActivityPageProps {
+  triedToComplete: (value: boolean) => void
+}
+
+const ActivityPage = ({ triedToComplete }: ActivityPageProps) => {
   const { state } = useLocation()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
   const data = useActivityPagination(initialFilter)
-  const { data: activeTokens = [], isLoading: isActiveLoading } = useSWR(
-    "activeTokens",
-    fetchActiveTokens,
-  )
+  const { data: activeTokens = [] } = useSWR("activeTokens", fetchActiveTokens)
 
   return (
     <Activity
       activityData={data}
       tokens={activeTokens}
-      isTokensLoading={isActiveLoading}
+      triedToComplete={triedToComplete}
     />
   )
 }

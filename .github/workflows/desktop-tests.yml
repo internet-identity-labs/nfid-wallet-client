@@ -218,7 +218,7 @@ jobs:
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
-          ci_echo_debug "npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1" >&2
+          ci_echo_debug "npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1 --runInBand" >&2
           npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1
 
       - name: Upload build artefacts

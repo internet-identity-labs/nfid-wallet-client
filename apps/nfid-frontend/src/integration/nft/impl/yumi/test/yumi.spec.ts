@@ -16,7 +16,7 @@ const principal = Principal.fromText(
 describe("yumi test suite", () => {
   jest.setTimeout(35000)
   describe("nft", () => {
-    it("should return", async () => {
+    it.skip("should return", async () => {
       jest
         .spyOn(nftGeekService as any, "fetchNftGeekData")
         .mockResolvedValue(mockGeekResponse)

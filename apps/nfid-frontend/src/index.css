@@ -63,10 +63,6 @@ ul {
   color: #000;
 }
 
-.Toastify__toast-body {
-  max-width: 280px !important;
-}
-
 .Toastify__close-button {
   @apply opacity-100 shrink-0;
 }

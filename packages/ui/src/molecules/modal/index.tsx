@@ -1,10 +1,10 @@
 import React from "react"
 
 import { NFIDGradientBar } from "../../atoms/gradient-bar"
+import { CloseIcon } from "../../atoms/icons/close-button"
 import { H5 } from "../../atoms/typography"
 import { P } from "../../atoms/typography/paragraph"
 import { Button } from "../button"
-import { ModalCloseIcon } from "./closeIcon"
 import { ModalSuccessIcon } from "./successIcon"
 import { ModalWarningIcon } from "./warningIcon"
 
@@ -51,7 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
 
           <div className="absolute top-5 right-5" onClick={onClick}>
-            <ModalCloseIcon />
+            <CloseIcon />
           </div>
         </div>
       </div>

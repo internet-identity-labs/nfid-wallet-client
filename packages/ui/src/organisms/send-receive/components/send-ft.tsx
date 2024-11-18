@@ -6,10 +6,10 @@ import useSWR from "swr"
 
 import {
   Button,
-  ChooseModal,
   IconCmpArrow,
   BlurredLoader,
   IGroupedOptions,
+  ChooseAccountModal,
 } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
@@ -24,7 +24,6 @@ export interface TransferFTUiProps {
   validateAddress: (address: string) => boolean | string
   isLoading: boolean
   loadingMessage: string | undefined
-  sendReceiveTrackingFn: () => void
   isVault: boolean
   accountsOptions: IGroupedOptions[] | undefined
   optionGroups: IGroupedOptions[]
@@ -42,7 +41,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   validateAddress,
   isLoading,
   loadingMessage,
-  sendReceiveTrackingFn,
   isVault,
   accountsOptions,
   optionGroups,
@@ -85,7 +83,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         token={token}
         balance={vaultsBalance}
         setFromChosenToken={setChosenToken}
-        sendReceiveTrackingFn={sendReceiveTrackingFn}
         usdRate={usdRate}
         tokens={tokens}
         title="Token to send"
@@ -94,7 +91,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         {errors["amount"]?.message as string}
       </div>
       {isVault && (
-        <ChooseModal
+        <ChooseAccountModal
           label="From"
           title="From"
           optionGroups={accountsOptions ?? []}
@@ -112,7 +109,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           }
         />
       )}
-      <ChooseModal
+      <ChooseAccountModal
         type="input"
         label="To"
         title={"Choose an account"}

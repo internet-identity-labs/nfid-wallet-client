@@ -2,14 +2,13 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { FC, useCallback, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import {
-  ChooseModal,
+  ChooseFtModal,
   IconCmpArrowRight,
   sumRules,
-  IGroupedOptions,
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
@@ -19,13 +18,10 @@ import { E8S } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 import { getMaxAmountFee } from "frontend/integration/icpswap/util/util"
 
-import { getTokenOptions, getTokenOptionsVault } from "../utils"
-
 interface ChooseFromTokenProps {
   token: FT | undefined
   tokens: FT[]
   balance?: bigint | undefined
-  sendReceiveTrackingFn?: () => void
   setFromChosenToken: (value: string) => void
   usdRate: string | undefined
   title: string
@@ -37,13 +33,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   tokens,
   balance,
   setFromChosenToken,
-  sendReceiveTrackingFn,
   usdRate,
   title,
   isSwap = false,
 }) => {
-  const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
-  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
   const [inputAmountValue, setInputAmountValue] = useState("")
 
   const {
@@ -54,15 +47,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
   const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
-
-  useEffect(() => {
-    setIsTokenOptionsLoading(true)
-    const fetchOptions = balance ? getTokenOptionsVault : getTokenOptions
-
-    fetchOptions(tokens)
-      .then(setTokenOptions)
-      .finally(() => setIsTokenOptionsLoading(false))
-  }, [tokens, balance])
 
   const fee = useMemo(() => {
     if (!token || userBalance === undefined) return
@@ -127,16 +111,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           })}
         />
         <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
-          <ChooseModal
-            isLoading={isTokenOptionsLoading}
-            optionGroups={tokenOptions}
+          <ChooseFtModal
+            options={tokens}
             title={title}
-            type="trigger"
             onSelect={setFromChosenToken}
             preselectedValue={token.getTokenAddress()}
-            onOpen={sendReceiveTrackingFn}
             isSmooth
-            iconClassnames="object-cover h-full rounded-full"
             trigger={
               <div
                 id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}

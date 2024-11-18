@@ -5,28 +5,20 @@ import {
 } from "packages/ui/src/atoms/icons"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
-import { ChooseModal } from "packages/ui/src/molecules/choose-modal"
-import { IGroupedOptions } from "packages/ui/src/molecules/choose-modal/types"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
 import { PriceImpactStatus } from "frontend/integration/icpswap/types/enums"
 import { PriceImpact } from "frontend/integration/icpswap/types/types"
 
-import { useIntersectionObserver } from "../hooks/intersection-observer"
-import { getAllTokenOptions, getUpdatedTokenOptions } from "../utils"
-
-const INITED_TOKENS_LIMIT = 6
-
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens: FT[]
   setToChosenToken: (value: string) => void
-  sendReceiveTrackingFn?: () => void
   usdRate: string | undefined
   isQuoteLoading: boolean
   value?: string
@@ -37,37 +29,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   token,
   tokens,
   setToChosenToken,
-  sendReceiveTrackingFn,
   usdRate,
   isQuoteLoading,
   value,
   priceImpact,
 }) => {
-  const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
-  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
-
-  useIntersectionObserver(
-    tokens.map((token) => token.getTokenSymbol()),
-    async (lastVisibleIndex: number) => {
-      const newTokenOptions = await getUpdatedTokenOptions(
-        tokens,
-        lastVisibleIndex + 1,
-      )
-      setTokenOptions(newTokenOptions)
-    },
-  )
-
   const { setValue, register } = useFormContext()
-
-  useEffect(() => {
-    setIsTokenOptionsLoading(true)
-
-    setTokenOptions(getAllTokenOptions(tokens))
-    getUpdatedTokenOptions(tokens, INITED_TOKENS_LIMIT).then((options) => {
-      setTokenOptions(options)
-      setIsTokenOptionsLoading(false)
-    })
-  }, [tokens])
 
   useEffect(() => {
     setValue("to", value)
@@ -90,16 +57,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             value={value || ""}
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
-            <ChooseModal
-              isLoading={isTokenOptionsLoading}
-              optionGroups={tokenOptions}
+            <ChooseFtModal
+              options={tokens}
               title="Swap to"
-              type="trigger"
               onSelect={setToChosenToken}
               preselectedValue={token.getTokenAddress()}
-              onOpen={sendReceiveTrackingFn}
               isSmooth
-              iconClassnames="object-cover h-full rounded-full"
               trigger={
                 <div
                   id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}

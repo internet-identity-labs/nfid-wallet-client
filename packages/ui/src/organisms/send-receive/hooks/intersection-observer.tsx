@@ -1,57 +1,32 @@
-import { useEffect, useRef, useCallback } from "react"
-
-import { trimConcat } from "frontend/ui/atoms/util/util"
-
-const INITED_TOKENS_LIMIT = 6
-const SELECTOR = ".token-item"
+import { useEffect } from "react"
 
 export const useIntersectionObserver = (
-  items: string[],
-  onAction: (lastVisibleIndex: number) => Promise<void>,
+  refs: (HTMLElement | null)[],
+  callback: (index: number) => Promise<void>,
 ) => {
-  const observer = useRef<IntersectionObserver | null>(null)
-  const initializedIndexes = useRef<Set<number>>(new Set())
-
-  const handleIntersection = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const pendingEntries = observer.current?.takeRecords() || []
-      const allEntries = [...entries, ...pendingEntries]
-
-      const intersectingIndexes = allEntries
-        .filter((entry) => entry.isIntersecting)
-        .map((entry) => {
-          const itemId = entry.target.id.replace("choose_option_", "")
-          return items.findIndex((item) => trimConcat("", item) === itemId)
-        })
-        .filter((index) => !initializedIndexes.current.has(index))
-
-      const lastVisibleIndex = Math.max(-1, ...intersectingIndexes)
-
-      if (lastVisibleIndex > INITED_TOKENS_LIMIT) {
-        intersectingIndexes.forEach((index) =>
-          initializedIndexes.current.add(index),
-        )
-        onAction(lastVisibleIndex)
-      }
-    },
-    [items, onAction],
-  )
-
   useEffect(() => {
-    if (observer.current) observer.current.disconnect()
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = refs.findIndex((ref) => ref === entry.target)
+            if (index !== -1) {
+              callback(index)
+            }
+          }
+        })
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.1,
+      },
+    )
 
-    observer.current = new IntersectionObserver(handleIntersection, {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.1,
-    })
-
-    const elements = document.querySelectorAll(SELECTOR)
-    elements.forEach((el) => observer.current?.observe(el))
+    refs.forEach((ref) => ref && observer.observe(ref))
 
     return () => {
-      elements.forEach((el) => observer.current?.unobserve(el))
-      observer.current?.disconnect()
+      refs.forEach((ref) => ref && observer.unobserve(ref))
     }
-  }, [handleIntersection])
+  }, [refs, callback])
 }

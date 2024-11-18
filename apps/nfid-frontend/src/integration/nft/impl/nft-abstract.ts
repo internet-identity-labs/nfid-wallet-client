@@ -43,6 +43,10 @@ export abstract class NftImpl implements NFT {
     return this
   }
 
+  isInited(): boolean {
+    return this.assetPreview !== undefined
+  }
+
   getMillis(): number {
     return this.millis
   }

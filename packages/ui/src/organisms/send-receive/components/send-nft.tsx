@@ -1,30 +1,21 @@
 import clsx from "clsx"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, FC, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
 import { Id } from "react-toastify"
 
 import {
   Button,
-  ChooseModal,
   IconCmpArrow,
   IconCmpArrowRight,
   IconCmpNFTPreview,
   BlurredLoader,
   Input,
-  IGroupedOptions,
   IconNftPlaceholder,
+  ChooseNFtModal,
 } from "@nfid-frontend/ui"
 
-import {
-  getUpdatedNftsOptions,
-  mapUserNFTToGroupedOptions,
-} from "frontend/features/transfer-modal/utils"
 import { NFT } from "frontend/integration/nft/nft"
-
-import { useIntersectionObserver } from "../hooks/intersection-observer"
-
-const INITED_TOKENS_LIMIT = 6
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -60,31 +51,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
       to: selectedReceiverWallet ?? "",
     },
   })
-  const [nftOptions, setNftOptions] = useState<IGroupedOptions[]>([])
-  const [isNftsOptionsLoading, setIsNftsOptionsLoading] = useState(false)
   const to = watch("to")
-
-  useEffect(() => {
-    if (!nfts) return
-    setIsNftsOptionsLoading(true)
-    setNftOptions(mapUserNFTToGroupedOptions(nfts))
-
-    getUpdatedNftsOptions(nfts, INITED_TOKENS_LIMIT).then((options) => {
-      setNftOptions(options)
-      setIsNftsOptionsLoading(false)
-    })
-  }, [nfts])
-
-  useIntersectionObserver(
-    (nfts || []).map((nft) => nft.getTokenName()),
-    async (lastVisibleIndex: number) => {
-      const newNftsOptions = await getUpdatedNftsOptions(
-        nfts || [],
-        lastVisibleIndex + 1,
-      )
-      setNftOptions(newNftsOptions)
-    },
-  )
 
   return (
     <BlurredLoader
@@ -93,17 +60,14 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
       loadingMessage={loadingMessage}
     >
       <div className="space-y-3 text-xs ">
-        <ChooseModal
-          isLoading={isNftsOptionsLoading}
+        <ChooseNFtModal
           label="NFT to transfer"
-          optionGroups={nftOptions ?? []}
+          options={nfts ?? []}
           title="NFT to send"
           onSelect={(value) => {
             setSelectedNFTId(value)
           }}
-          placeholder="Search"
           preselectedValue={selectedNFTId}
-          iconClassnames="!w-12 !h-12 !object-cover !rounded-[12px]"
           trigger={
             <div
               className="flex items-center justify-between w-full h-[98px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"
@@ -112,12 +76,22 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
                   {selectedNFT?.getAssetPreview().url ? (
-                    <ImageWithFallback
-                      className="object-cover rounded-[10px] w-[92px] h-[92px]"
-                      src={selectedNFT?.getAssetPreview().url}
-                      fallbackSrc={IconNftPlaceholder}
-                      alt="NFID NFT"
-                    />
+                    selectedNFT?.getAssetPreview().format === "video" ? (
+                      <video
+                        muted
+                        autoPlay
+                        loop
+                        className="object-cover rounded-[10px] w-[92px] h-[92px]"
+                        src={selectedNFT.getAssetPreview().url}
+                      ></video>
+                    ) : (
+                      <ImageWithFallback
+                        className="object-cover rounded-[10px] w-[92px] h-[92px]"
+                        src={selectedNFT?.getAssetPreview().url}
+                        fallbackSrc={IconNftPlaceholder}
+                        alt="NFID NFT"
+                      />
+                    )
                   ) : (
                     <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[92px] h-[92px]" />
                   )}
@@ -138,7 +112,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
               </div>
             </div>
           }
-          type="trigger"
         />
         <Input
           inputClassName={clsx(

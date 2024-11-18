@@ -1,39 +1,19 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import {
-  ChooseModal,
-  Copy,
-  BlurredLoader,
-  CenterEllipsis,
-} from "@nfid-frontend/ui"
+import { Copy, BlurredLoader, CenterEllipsis } from "@nfid-frontend/ui"
 
 export interface ReceiveProps {
-  isVault: boolean
   isLoading: boolean
   selectedAccountAddress: string
   address: string
-  accountsOptions: {
-    label: string
-    options: {
-      title: string
-      subTitle?: string
-      innerTitle?: string
-      innerSubtitle?: string
-      value: string
-      badgeText?: string
-    }[]
-  }[]
   setSelectedAccountAddress: (value: React.SetStateAction<string>) => void
 }
 
 export const Receive: FC<ReceiveProps> = ({
-  isVault,
   isLoading,
   selectedAccountAddress,
-  setSelectedAccountAddress,
   address,
-  accountsOptions,
 }) => {
   return (
     <BlurredLoader className="mt-[5px] text-xs" isLoading={isLoading}>
@@ -43,45 +23,30 @@ export const Receive: FC<ReceiveProps> = ({
         tokens and standards: ICP, ICRC-1, EXT NFTs, and additional support
         coming soon.
       </p>
-      {isVault && (
-        <ChooseModal
-          label="Accounts"
-          title={"Choose an account"}
-          optionGroups={accountsOptions}
-          iconClassnames="!w-6 !h-auto !object-contain"
-          preselectedValue={selectedAccountAddress}
-          onSelect={setSelectedAccountAddress}
-          type="small"
-          isSmooth
-        />
-      )}
-
-      {!isVault && (
-        <div>
-          <p className="mb-1 text-gray-500">Wallet address</p>
-          <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
-            <CenterEllipsis
-              value={selectedAccountAddress ?? ""}
-              leadingChars={29}
-              trailingChars={5}
-              id={"principal"}
-            />
-            <Copy value={selectedAccountAddress} />
-          </div>
+      <div>
+        <p className="mb-1 text-gray-500">Wallet address</p>
+        <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
+          <CenterEllipsis
+            value={selectedAccountAddress ?? ""}
+            leadingChars={29}
+            trailingChars={5}
+            id={"principal"}
+          />
+          <Copy value={selectedAccountAddress} />
         </div>
-      )}
+      </div>
       <div className="mb-2.5 sm:mb-5">
         <p className="mt-[10px] mb-1 text-gray-500">
           Account ID (for deposits from exchanges)
         </p>
         <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           <CenterEllipsis
-            value={isVault ? selectedAccountAddress ?? "" : address ?? ""}
+            value={address ?? ""}
             leadingChars={29}
             trailingChars={5}
             id={"address"}
           />
-          <Copy value={isVault ? selectedAccountAddress : address} />
+          <Copy value={address} />
         </div>
       </div>
       <div

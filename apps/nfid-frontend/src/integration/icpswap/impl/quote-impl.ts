@@ -59,6 +59,7 @@ export class QuoteImpl implements Quote {
       .replace(TRIM_ZEROS, "")
     const targetFee = BigNumber(Number(this.target.fee))
       .div(10 ** this.target.decimals)
+      .multipliedBy(2)
       .toFixed(this.target.decimals)
       .replace(TRIM_ZEROS, "")
     return [
@@ -81,6 +82,7 @@ export class QuoteImpl implements Quote {
 
   getTargetAmountPrettified(): string {
     return this.getTargetAmount()
+      .minus(Number(this.target.fee))
       .div(10 ** this.target.decimals)
       .toFixed(this.target.decimals)
       .replace(TRIM_ZEROS, "")

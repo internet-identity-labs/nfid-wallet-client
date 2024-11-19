@@ -9,12 +9,16 @@ import {
   v2ResponseBody,
   v3ResponseBody,
 } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
-import { DelegationIdentity } from "@dfinity/identity"
-import { GenericError } from "./exception-handler.service"
-import { defaultStrategy, pollForResponse } from "@dfinity/agent/lib/cjs/polling"
+import { AgentError } from "@dfinity/agent/lib/cjs/errors" // eslint-disable-next-line @typescript-eslint/no-explicit-any
+import {
+  defaultStrategy,
+  pollForResponse,
+} from "@dfinity/agent/lib/cjs/polling"
 import { bufFromBufLike } from "@dfinity/candid"
-import { AgentError } from "@dfinity/agent/lib/cjs/errors"
+import { DelegationIdentity } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+
+import { GenericError } from "./exception-handler.service"
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ;(BigInt.prototype as any).toJSON = function () {
@@ -64,7 +68,7 @@ class CallCanisterService {
     canisterId: string,
     methodName: string,
     agent: Agent,
-    arg: ArrayBuffer
+    arg: ArrayBuffer,
   ): Promise<{ certificate: Uint8Array; contentMap: CallRequest | undefined }> {
     const cid = Principal.from(canisterId)
 
@@ -89,7 +93,7 @@ class CallCanisterService {
       })
       const path = [new TextEncoder().encode("request_status"), requestId]
       const status = new TextDecoder().decode(
-        lookupResultToBuffer(certificate.lookup([...path, "status"]))
+        lookupResultToBuffer(certificate.lookup([...path, "status"])),
       )
 
       switch (status) {
@@ -98,13 +102,19 @@ class CallCanisterService {
         case "rejected": {
           // Find rejection details in the certificate
           const rejectCode = new Uint8Array(
-            lookupResultToBuffer(certificate.lookup([...path, "reject_code"]))!
+            lookupResultToBuffer(certificate.lookup([...path, "reject_code"]))!,
           )[0]
           const rejectMessage = new TextDecoder().decode(
-            lookupResultToBuffer(certificate.lookup([...path, "reject_message"]))!
+            lookupResultToBuffer(
+              certificate.lookup([...path, "reject_message"]),
+            )!,
           )
-          const error_code_buf = lookupResultToBuffer(certificate.lookup([...path, "error_code"]))
-          const error_code = error_code_buf ? new TextDecoder().decode(error_code_buf) : undefined
+          const error_code_buf = lookupResultToBuffer(
+            certificate.lookup([...path, "error_code"]),
+          )
+          const error_code = error_code_buf
+            ? new TextDecoder().decode(error_code_buf)
+            : undefined
           throw new UpdateCallRejectedError(
             cid,
             methodName,
@@ -112,13 +122,14 @@ class CallCanisterService {
             response,
             rejectCode,
             rejectMessage,
-            error_code
+            error_code,
           )
         }
       }
     } else if (response.body && "reject_message" in response.body) {
       // handle v2 response errors by throwing an UpdateCallRejectedError object
-      const { reject_code, reject_message, error_code } = response.body as v2ResponseBody
+      const { reject_code, reject_message, error_code } =
+        response.body as v2ResponseBody
       throw new UpdateCallRejectedError(
         cid,
         methodName,
@@ -126,7 +137,7 @@ class CallCanisterService {
         response,
         reject_code,
         reject_message,
-        error_code
+        error_code,
       )
     }
 
@@ -134,7 +145,13 @@ class CallCanisterService {
     if (response.status === 202) {
       const pollStrategy = defaultStrategy()
       // Contains the certificate and the reply from the boundary node
-      const response = await pollForResponse(agent, cid, requestId, pollStrategy, blsVerify)
+      const response = await pollForResponse(
+        agent,
+        cid,
+        requestId,
+        pollStrategy,
+        blsVerify,
+      )
       certificate = response.certificate
     }
 

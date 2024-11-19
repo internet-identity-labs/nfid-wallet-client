@@ -70,7 +70,11 @@ class NFTExtDetails extends NFTDetailsImpl {
 
   async getAssetFullSize(): Promise<AssetPreview> {
     if (this.assetFullSize === undefined) {
-      this.assetFullSize = assetFullsize(this.getCollection(), this.tokenId, true)
+      this.assetFullSize = assetFullsize(
+        this.getCollection(),
+        this.tokenId,
+        true,
+      )
       return this.assetFullSize
     } else {
       return this.assetFullSize

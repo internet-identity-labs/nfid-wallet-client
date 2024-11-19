@@ -1,7 +1,6 @@
 import BigNumber from "bignumber.js"
 
-import {WIDGET_FEE} from "../impl/quote-impl"
-
+import { WIDGET_FEE } from "../impl/quote-impl"
 
 export const getMaxAmountFee = (
   sourceAmount: bigint,

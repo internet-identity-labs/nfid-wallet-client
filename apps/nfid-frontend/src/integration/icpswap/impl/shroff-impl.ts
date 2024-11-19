@@ -176,6 +176,7 @@ export class ShroffImpl implements Shroff {
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
+      this.swapTransaction.setError((e as Error).message)
       await this.restoreTransaction()
       throw e
     }
@@ -190,7 +191,9 @@ export class ShroffImpl implements Shroff {
       legacyQuote?.getTargetAmountPrettified() !==
       updatedQuote.getTargetAmountPrettified()
     ) {
-      throw new SlippageError()
+      const error = new SlippageError()
+      console.error("Slippage error: " + error)
+      throw error
     }
     return updatedQuote
   }
@@ -199,16 +202,17 @@ export class ShroffImpl implements Shroff {
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
     }
-    const amountDecimals = this.requestedQuote
-      .getSourceAmount()
-      .plus(Number(this.source.fee))
-    const args: DepositArgs = {
-      fee: this.source.fee,
-      token: this.source.ledger,
-      amount: BigInt(amountDecimals.toNumber()),
-    }
 
     try {
+      const amountDecimals = this.requestedQuote
+        .getSourceAmount()
+        .plus(Number(this.source.fee))
+      const args: DepositArgs = {
+        fee: this.source.fee,
+        token: this.source.ledger,
+        amount: BigInt(amountDecimals.toNumber()),
+      }
+
       const result = await this.swapPoolActor.deposit(args)
 
       if (hasOwnProperty(result, "ok")) {
@@ -217,12 +221,10 @@ export class ShroffImpl implements Shroff {
         return id
       }
       console.error("Deposit error: " + JSON.stringify(result.err))
-      this.swapTransaction?.setError(result.err)
-      throw new DepositError()
+      throw new DepositError(JSON.stringify(result.err))
     } catch (e) {
       console.error("Deposit error: " + e)
-      this.swapTransaction?.setError((e as Error).message)
-      throw new DepositError()
+      throw new DepositError(e as Error)
     }
   }
 
@@ -236,27 +238,27 @@ export class ShroffImpl implements Shroff {
   }
 
   protected async transferToSwap() {
-    const amountDecimals = this.requestedQuote!.getSourceAmount().plus(
-      Number(this.source.fee),
-    )
-
-    const transferArgs: TransferArg = {
-      amount: BigInt(amountDecimals.toNumber()),
-      created_at_time: [],
-      fee: [],
-      from_subaccount: [],
-      memo: [],
-      to: {
-        subaccount: [
-          SubAccount.fromPrincipal(
-            this.delegationIdentity!.getPrincipal(),
-          ).toUint8Array(),
-        ],
-        owner: this.poolData.canisterId,
-      },
-    }
-
     try {
+      const amountDecimals = this.requestedQuote!.getSourceAmount().plus(
+        Number(this.source.fee),
+      )
+
+      const transferArgs: TransferArg = {
+        amount: BigInt(amountDecimals.toNumber()),
+        created_at_time: [],
+        fee: [],
+        from_subaccount: [],
+        memo: [],
+        to: {
+          subaccount: [
+            SubAccount.fromPrincipal(
+              this.delegationIdentity!.getPrincipal(),
+            ).toUint8Array(),
+          ],
+          owner: this.poolData.canisterId,
+        },
+      }
+
       const result = await transferICRC1(
         this.delegationIdentity!,
         this.source.ledger,
@@ -268,12 +270,10 @@ export class ShroffImpl implements Shroff {
         return id
       }
       console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
-      this.swapTransaction?.setError(result.Err)
-      throw new DepositError()
+      throw new DepositError(JSON.stringify(result.Err))
     } catch (e) {
       console.error("Deposit error: " + e)
-      this.swapTransaction?.setError((e as Error).message)
-      throw new DepositError()
+      throw new DepositError(e as Error)
     }
   }
 
@@ -303,22 +303,21 @@ export class ShroffImpl implements Shroff {
         this.swapTransaction!.setNFIDTransferId(id)
         return id
       }
-      this.swapTransaction?.setError(result.Err)
-      throw new WithdrawError()
+      throw new WithdrawError(JSON.stringify(result.Err))
     } catch (e) {
       console.error("Withdraw error: " + e)
-      this.swapTransaction?.setError((e as Error).message)
-      throw new WithdrawError()
+      throw new WithdrawError(e as Error)
     }
   }
 
   protected async swapOnExchange(): Promise<bigint> {
-    const args: SwapArgs = {
-      amountIn: this.requestedQuote!.getSourceAmount().toString(),
-      zeroForOne: this.zeroForOne,
-      amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
-    }
     try {
+      const args: SwapArgs = {
+        amountIn: this.requestedQuote!.getSourceAmount().toString(),
+        zeroForOne: this.zeroForOne,
+        amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
+      }
+
       return this.swapPoolActor.swap(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
           const response = result.ok as bigint
@@ -327,24 +326,22 @@ export class ShroffImpl implements Shroff {
         }
 
         console.error("Swap on exchange error: " + JSON.stringify(result.err))
-        this.swapTransaction?.setError(result.err)
-        throw new SwapError()
+        throw new SwapError(JSON.stringify(result.err))
       })
     } catch (e) {
       console.error("Swap error: " + e)
-      this.swapTransaction?.setError((e as Error).message)
-      throw new SwapError()
+      throw new SwapError(e as Error)
     }
   }
 
   protected async withdraw(): Promise<bigint> {
-    const args: WithdrawArgs = {
-      amount: BigInt(this.requestedQuote!.getTargetAmount().toNumber()),
-      token: this.target.ledger,
-      fee: this.target.fee,
-    }
-
     try {
+      const args: WithdrawArgs = {
+        amount: BigInt(this.requestedQuote!.getTargetAmount().toNumber()),
+        token: this.target.ledger,
+        fee: this.target.fee,
+      }
+
       return this.swapPoolActor.withdraw(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
           const id = result.ok as bigint
@@ -353,13 +350,11 @@ export class ShroffImpl implements Shroff {
         }
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
-        this.swapTransaction?.setError(result.err)
-        throw new WithdrawError()
+        throw new WithdrawError(JSON.stringify(result.err))
       })
     } catch (e) {
       console.error("Withdraw error: " + e)
-      this.swapTransaction?.setError((e as Error).message)
-      throw new WithdrawError()
+      throw new WithdrawError(e as Error)
     }
   }
 

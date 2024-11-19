@@ -1,1 +1,3 @@
-export abstract class ExchangeError extends Error {}
+export abstract class ExchangeError extends Error {
+  abstract getDisplayMessage(): string
+}

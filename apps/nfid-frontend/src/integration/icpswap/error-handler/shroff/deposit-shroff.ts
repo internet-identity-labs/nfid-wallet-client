@@ -56,13 +56,11 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
         }
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
-        this.swapTransaction?.setError(result.err)
-        throw new WithdrawError()
+        throw new WithdrawError(JSON.stringify(result.err))
       })
     } catch (e) {
       console.error("Withdraw error: " + e)
-      this.swapTransaction?.setError((e as Error).message)
-      throw new WithdrawError()
+      throw new WithdrawError(e as Error)
     }
   }
 

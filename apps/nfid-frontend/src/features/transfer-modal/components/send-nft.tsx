@@ -89,7 +89,6 @@ export const TransferNFT = ({
       loadingMessage={"Loading NFTs..."}
       nfts={nfts?.items}
       setSelectedNFTId={setSelectedNFTId}
-      selectedNFTId={selectedNFTId}
       selectedNFT={selectedNFT}
       selectedReceiverWallet={selectedReceiverWallet}
       submit={submit}

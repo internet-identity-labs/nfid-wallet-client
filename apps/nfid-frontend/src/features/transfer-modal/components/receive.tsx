@@ -19,8 +19,6 @@ export const TransferReceive = ({
   )
   const [accountId, setAccountId] = useState("")
 
-  const [isAccountLoading, setIsAccountLoading] = useState(true)
-
   useEffect(() => {
     setSelectedAccountAddress(publicKey)
     setAccountId(
@@ -28,9 +26,6 @@ export const TransferReceive = ({
         principal: Principal.fromText(publicKey),
       }).toHex(),
     )
-
-    setIsAccountLoading(false)
-    //}
   }, [publicKey])
 
   useEffect(() => {
@@ -39,7 +34,6 @@ export const TransferReceive = ({
 
   return (
     <Receive
-      isLoading={isAccountLoading}
       selectedAccountAddress={selectedAccountAddress}
       setSelectedAccountAddress={setSelectedAccountAddress}
       address={accountId}

@@ -23,6 +23,7 @@ export abstract class NftImpl implements NFT {
   private readonly tokenName: string
   private readonly tokenFloorPriceICP?: number
   private tokenFloorPriceUSD?: number
+  private inited: boolean
 
   protected assetPreview: AssetPreview | undefined
   protected details: NFTDetails | undefined
@@ -36,15 +37,17 @@ export abstract class NftImpl implements NFT {
     this.tokenName = `${this.collectionName} #${this.tokenNumber}`
     this.tokenFloorPriceICP = geekData.tokenFloorPriceIcp
     this.tokenId = encodeTokenIdentifier(this.collectionId, this.tokenNumber)
+    this.inited = false
   }
 
   async init() {
     this.assetPreview = await this.getAssetPreviewAsync()
+    this.inited = true
     return this
   }
 
   isInited(): boolean {
-    return this.assetPreview !== undefined
+    return this.inited
   }
 
   getMillis(): number {

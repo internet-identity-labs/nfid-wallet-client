@@ -9,15 +9,13 @@ import ImageWithFallback from "../../atoms/image-with-fallback"
 import { Skeleton } from "../../atoms/skeleton"
 
 interface IChooseNftItem {
-  handleClick: () => void
   token: NFT
 }
 
-export const ChooseNftItem = ({ handleClick, token }: IChooseNftItem) => {
+export const ChooseNftItem = ({ token }: IChooseNftItem) => {
   return (
     <div
       id={trimConcat("choose_option_", token.getTokenName())}
-      onClick={handleClick}
       className={clsx(
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",

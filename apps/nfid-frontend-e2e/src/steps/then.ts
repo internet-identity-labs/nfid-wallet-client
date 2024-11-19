@@ -76,9 +76,9 @@ Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
 
 Then(
   /^Choose ([^"]*) on ([^"]*) from send options/,
-  async (currency: string, chain: string) => {
+  async (currency: string) => {
     await Assets.openAssetOptionsOnSR()
-    await Assets.currencyOption(chain, currency).click()
+    await Assets.currencyOption(currency).click()
   },
 )
 

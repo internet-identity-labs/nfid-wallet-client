@@ -12,7 +12,7 @@ import {
   BlurredLoader,
   Input,
   IconNftPlaceholder,
-  ChooseNFtModal,
+  ChooseNftModal,
 } from "@nfid-frontend/ui"
 
 import { NFT } from "frontend/integration/nft/nft"
@@ -22,7 +22,6 @@ export interface TransferNFTUiProps {
   loadingMessage: string | undefined
   nfts: NFT[] | undefined
   setSelectedNFTId: Dispatch<SetStateAction<string>>
-  selectedNFTId: string
   selectedNFT: NFT | undefined
   selectedReceiverWallet: string | undefined
   submit: (values: any) => Promise<Id | undefined>
@@ -34,7 +33,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   loadingMessage,
   nfts,
   setSelectedNFTId,
-  selectedNFTId,
   selectedNFT,
   selectedReceiverWallet,
   submit,
@@ -60,14 +58,10 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
       loadingMessage={loadingMessage}
     >
       <div className="space-y-3 text-xs ">
-        <ChooseNFtModal
-          label="NFT to transfer"
-          options={nfts ?? []}
+        <ChooseNftModal
+          tokens={nfts ?? []}
           title="NFT to send"
-          onSelect={(value) => {
-            setSelectedNFTId(value)
-          }}
-          preselectedValue={selectedNFTId}
+          onSelect={setSelectedNFTId}
           trigger={
             <div
               className="flex items-center justify-between w-full h-[98px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"

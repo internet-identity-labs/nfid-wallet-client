@@ -6,11 +6,11 @@ import { FC, useCallback, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import {
-  ChooseFtModal,
   IconCmpArrowRight,
   sumRules,
   ImageWithFallback,
   IconNftPlaceholder,
+  ChooseFtModal,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S } from "@nfid/integration/token/constants"
@@ -112,11 +112,9 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         />
         <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseFtModal
-            options={tokens}
+            tokens={tokens}
             title={title}
             onSelect={setFromChosenToken}
-            preselectedValue={token.getTokenAddress()}
-            isSmooth
             trigger={
               <div
                 id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}

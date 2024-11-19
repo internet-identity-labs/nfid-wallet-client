@@ -58,11 +58,9 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseFtModal
-              options={tokens}
+              tokens={tokens}
               title="Swap to"
               onSelect={setToChosenToken}
-              preselectedValue={token.getTokenAddress()}
-              isSmooth
               trigger={
                 <div
                   id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}

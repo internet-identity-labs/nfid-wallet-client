@@ -1,22 +1,20 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { Copy, BlurredLoader, CenterEllipsis } from "@nfid-frontend/ui"
+import { Copy, CenterEllipsis } from "@nfid-frontend/ui"
 
 export interface ReceiveProps {
-  isLoading: boolean
   selectedAccountAddress: string
   address: string
   setSelectedAccountAddress: (value: React.SetStateAction<string>) => void
 }
 
 export const Receive: FC<ReceiveProps> = ({
-  isLoading,
   selectedAccountAddress,
   address,
 }) => {
   return (
-    <BlurredLoader className="mt-[5px] text-xs" isLoading={isLoading}>
+    <>
       <p className="text-sm mb-[18px]">
         NFID Wallet currently supports Internet Computer Protocol{" "}
         <br className="hidden sm:block" />
@@ -55,6 +53,6 @@ export const Receive: FC<ReceiveProps> = ({
           "-translate-x-full",
         )}
       ></div>
-    </BlurredLoader>
+    </>
   )
 }

@@ -9,12 +9,11 @@ import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
 import { Skeleton } from "../../atoms/skeleton"
 
-interface IChooseItem {
-  handleClick: () => void
+interface IChooseFtItem {
   token: FT
 }
 
-export const ChooseItem = ({ handleClick, token }: IChooseItem) => {
+export const ChooseFtItem = ({ token }: IChooseFtItem) => {
   const [usdPrice, setUsdPrice] = useState<string | undefined>("")
 
   useEffect(() => {
@@ -24,7 +23,6 @@ export const ChooseItem = ({ handleClick, token }: IChooseItem) => {
   return (
     <div
       id={trimConcat("choose_option_", token.getTokenSymbol())}
-      onClick={handleClick}
       className={clsx(
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",

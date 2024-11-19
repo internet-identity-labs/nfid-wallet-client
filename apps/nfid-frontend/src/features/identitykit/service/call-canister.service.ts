@@ -9,7 +9,7 @@ import {
   v2ResponseBody,
   v3ResponseBody,
 } from "@dfinity/agent"
-import { AgentError } from "@dfinity/agent/lib/cjs/errors" // eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { AgentError } from "@dfinity/agent/lib/cjs/errors"
 import {
   defaultStrategy,
   pollForResponse,

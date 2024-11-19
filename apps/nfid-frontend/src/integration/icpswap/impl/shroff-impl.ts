@@ -234,8 +234,9 @@ export class ShroffImpl implements Shroff {
   }
 
   protected async transferToSwap() {
+
     const amountDecimals = this.requestedQuote!.getSourceAmount().plus(
-      Number(this.source.fee),
+      Number.parseInt(this.source.fee.toString()),
     )
 
     const transferArgs: TransferArg = {

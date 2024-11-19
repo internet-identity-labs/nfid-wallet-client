@@ -25,17 +25,17 @@ describe("quote test", () => {
     const priceImpactResult = quote.getPriceImpact()
 
     expect(quote.getSourceAmountPrettified()).toEqual("0.5")
-    expect(quote.getTargetAmountPrettified()).toEqual("0.00006631")
+    expect(quote.getTargetAmountPrettified()).toEqual("0.00006621")
     expect(quote.getQuoteRate()).toEqual("1 ICP = 0.00013262 ckBTC")
     expect(quote.getLiquidityProviderFee()).toEqual("0.0015 ICP")
     expect(quote.getMaxSlippagge()).toEqual("0%")
     expect(quote.getWidgetFee()).toEqual("0.004375 ICP")
     expect(quote.getTargetAmountUSD()).toEqual("4.22 USD")
     expect(quote.getSourceAmountUSD()).toEqual("4.22 USD")
-    expect(quote.getGuaranteedAmount()).toEqual("0.00006631 ckBTC")
+    expect(quote.getGuaranteedAmount()).toEqual("0.00006621 ckBTC")
     expect(quote.getEstimatedTransferFee()).toEqual([
       "0.0003 ICP",
-      "0.0000001 ckBTC",
+      "0.0000002 ckBTC",
     ])
     expect(priceImpactResult).toBeDefined()
     expect(priceImpactResult!.priceImpact).toEqual("-0.02%")

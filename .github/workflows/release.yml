@@ -343,6 +343,21 @@ jobs:
 
         ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
 
+    - name: POST-DEPLOY => Cleaning.
+      uses: geekyeggo/delete-artifact@f275313e70c08f6120db482d7a6b98377786765b # v5.1.0
+      with:
+        name: nfid-demo
+        failOnError: false
+
+    - name: POST-DEPLOY => Save artifact.
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{github.sha}}-nfid-demo
+        retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+        path: |
+            build/
+            dist/
+
   build-frontend:
     name: Build Frontend
     needs: check-secrets
@@ -609,4 +624,18 @@ jobs:
           ci_echo_debug "Command output was '${result}'" >&2
 
           ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
-        
+
+      - name: POST-DEPLOY => Cleaning.
+        uses: geekyeggo/delete-artifact@f275313e70c08f6120db482d7a6b98377786765b # v5.1.0
+        with:
+          name: nfid-wallet-client
+          failOnError: false
+  
+      - name: POST-DEPLOY => Save artifact.
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{github.sha}}-nfid-wallet-client
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+          path: |
+              build/
+              dist/

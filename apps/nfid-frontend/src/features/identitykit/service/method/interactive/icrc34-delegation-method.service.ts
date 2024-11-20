@@ -133,7 +133,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     accountKeyIdentity: Account,
     icrc34Dto: Icrc34Dto,
     sessionPublicKey: Ed25519PublicKey,
-    origin: string
+    origin: string,
   ): Promise<DelegationChain> {
     const auth = authState.get()
     if (!auth.delegationIdentity) throw new Error("No delegation identity")

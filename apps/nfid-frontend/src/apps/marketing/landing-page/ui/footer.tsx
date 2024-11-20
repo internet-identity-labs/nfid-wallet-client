@@ -3,7 +3,6 @@ import Github from "../assets/new-landing/gh.svg"
 import LinkedIn from "../assets/new-landing/ln.svg"
 import OpenChat from "../assets/new-landing/open-chat.svg"
 import Twitter from "../assets/new-landing/x.svg"
-
 import { Container } from "./container"
 
 export function Footer() {

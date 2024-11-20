@@ -28,6 +28,23 @@ class LocalStorageWithTTL {
     return item.value
   }
 
+  getEvenExpiredItem(key: string): { object: any; expired: boolean } | null {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return null
+    }
+
+    const item = JSON.parse(itemStr)
+    const now = new Date().getTime()
+
+    if (now > item.expiry) {
+      return { object: item.value, expired: true }
+    }
+
+    return { object: item.value, expired: false }
+  }
+
   removeItem(key: string): void {
     localStorage.removeItem(key)
   }

@@ -3,8 +3,7 @@ import { swapTransactionService } from "src/integration/icpswap/service/transact
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 export class TransferSwapHandler extends TransactionErrorHandlerAbstract {
-  async completeTransaction(
-  ): Promise<SwapTransaction> {
+  async completeTransaction(): Promise<SwapTransaction> {
     console.debug("Trying to complete")
     this.getTransaction().setCompleted()
     await swapTransactionService.storeTransaction(

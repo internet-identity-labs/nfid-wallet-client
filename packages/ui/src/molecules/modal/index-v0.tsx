@@ -13,7 +13,7 @@ export const ModalComponent: FC<ModalProps> = ({
   className,
   isVisible,
   onClose,
-  style
+  style,
 }) => {
   useDisableScroll(Boolean(isVisible))
 

@@ -38,14 +38,14 @@ export class ICRC1OracleService {
         )
       })
       return JSON.parse(cache.object, (key, value) => {
-        if (key === "fee") {
+        if (key === "fee" && /^\d+n$/.test(value)) {
           return BigInt(value.toString().slice(0, -1))
         }
         return value
       })
     } else {
       return JSON.parse(cache.object, (key, value) => {
-        if (key === "fee") {
+        if (key === "fee" && /^\d+n$/.test(value)) {
           return BigInt(value.toString().slice(0, -1))
         }
         return value

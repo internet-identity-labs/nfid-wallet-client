@@ -18,14 +18,21 @@ export const ChooseNftModal = ({
   title,
   trigger,
 }: IChooseNftModal) => {
-  const filterTokens = useCallback((token: NFT, searchInput: string) => {
-    return (
-      token
-        .getCollectionName()
-        .toLowerCase()
-        .includes(searchInput.toLowerCase()) ||
-      token.getTokenName().toLowerCase().includes(searchInput.toLowerCase())
-    )
+  const filterTokensBySearchInput = useCallback(
+    (token: NFT, searchInput: string) => {
+      return (
+        token
+          .getCollectionName()
+          .toLowerCase()
+          .includes(searchInput.toLowerCase()) ||
+        token.getTokenName().toLowerCase().includes(searchInput.toLowerCase())
+      )
+    },
+    [],
+  )
+
+  const handleSelectTokenId = useCallback((token: NFT) => {
+    return token.getTokenId()
   }, [])
 
   return (
@@ -33,15 +40,10 @@ export const ChooseNftModal = ({
       <ChooseTokenModal
         tokens={tokens}
         title={title}
-        filter={filterTokens}
-        onSelect={onSelect}
+        filterTokensBySearchInput={filterTokensBySearchInput}
+        onSelect={(value) => onSelect(handleSelectTokenId(value))}
         trigger={trigger}
-        renderItem={(token, index) => (
-          <ChooseNftItem
-            key={`option_${token.getTokenId()}_group_${index}_${index}`}
-            token={token}
-          />
-        )}
+        renderItem={ChooseNftItem}
       />
     </>
   )

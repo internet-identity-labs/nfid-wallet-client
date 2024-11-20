@@ -1,7 +1,14 @@
 import { Principal } from "@dfinity/principal"
 import { debounce } from "@dfinity/utils"
 import clsx from "clsx"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  ElementType,
+} from "react"
 import { IoIosSearch } from "react-icons/io"
 
 import { ChooseTokenSkeleton } from "@nfid-frontend/ui"
@@ -18,11 +25,11 @@ const INITED_TOKENS_LIMIT = 6
 
 export interface IChooseTokenModal<T> {
   tokens: T[]
-  onSelect: (value: string) => void
+  onSelect: (value: T) => void
   title: string
   trigger?: JSX.Element
-  filter: (token: T, searchInput: string) => boolean
-  renderItem: (token: T, index: number) => JSX.Element
+  filterTokensBySearchInput: (token: T, searchInput: string) => boolean
+  renderItem: ElementType<{ token: T }>
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -30,8 +37,8 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   onSelect,
   title,
   trigger,
-  filter,
-  renderItem,
+  filterTokensBySearchInput,
+  renderItem: ChooseItem,
 }: IChooseTokenModal<T>) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -67,7 +74,9 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   const filteredTokens = useMemo(() => {
     if (searchInput.length < 2) return tokensOptions
 
-    return tokensOptions.filter((token) => filter(token, searchInput))
+    return tokensOptions.filter((token) =>
+      filterTokensBySearchInput(token, searchInput),
+    )
   }, [tokensOptions, searchInput])
 
   useIntersectionObserver(itemRefs.current, async (index) => {
@@ -93,15 +102,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
 
   const handleSelect = useCallback(
     (token: T) => {
-      let tokenValue: string
-
-      if ("getTokenAddress" in token) {
-        tokenValue = token.getTokenAddress()
-      } else {
-        tokenValue = token.getTokenId()
-      }
-
-      onSelect && onSelect(tokenValue)
+      onSelect && onSelect(token)
       setIsModalVisible(false)
     },
     [onSelect],
@@ -153,11 +154,11 @@ export const ChooseTokenModal = <T extends FT | NFT>({
           >
             {filteredTokens.map((token, index) => (
               <div
-                key={`group_${token.getTokenName()}_${index}`}
                 ref={(el) => (itemRefs.current[index] = el)}
                 onClick={() => handleSelect(token)}
+                key={`${token.getTokenName()}_${index}`}
               >
-                {renderItem(token, index)}
+                <ChooseItem token={token} />
               </div>
             ))}
           </div>

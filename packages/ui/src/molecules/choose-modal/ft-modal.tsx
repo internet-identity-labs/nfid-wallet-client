@@ -18,14 +18,21 @@ export const ChooseFtModal = ({
   title,
   trigger,
 }: IChooseFtModal) => {
-  const filterTokens = useCallback((token: FT, searchInput: string) => {
-    return (
-      token
-        .getTokenSymbol()
-        .toLowerCase()
-        .includes(searchInput.toLowerCase()) ||
-      token.getTokenName().toLowerCase().includes(searchInput.toLowerCase())
-    )
+  const filterTokensBySearchInput = useCallback(
+    (token: FT, searchInput: string) => {
+      return (
+        token
+          .getTokenSymbol()
+          .toLowerCase()
+          .includes(searchInput.toLowerCase()) ||
+        token.getTokenName().toLowerCase().includes(searchInput.toLowerCase())
+      )
+    },
+    [],
+  )
+
+  const handleSelectTokenId = useCallback((token: FT) => {
+    return token.getTokenAddress()
   }, [])
 
   return (
@@ -33,15 +40,10 @@ export const ChooseFtModal = ({
       <ChooseTokenModal
         tokens={tokens}
         title={title}
-        filter={filterTokens}
-        onSelect={onSelect}
+        filterTokensBySearchInput={filterTokensBySearchInput}
+        onSelect={(value) => onSelect(handleSelectTokenId(value))}
         trigger={trigger}
-        renderItem={(token, index) => (
-          <ChooseFtItem
-            key={`option_${token.getTokenAddress()}_group_${index}`}
-            token={token}
-          />
-        )}
+        renderItem={ChooseFtItem}
       />
     </>
   )

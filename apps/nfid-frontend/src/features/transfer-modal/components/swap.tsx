@@ -136,6 +136,8 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     return () => clearInterval(transactionInterval)
   }, [getTransaction])
 
+  console.log(fromTokenAddress, toTokenAddress)
+
   const {
     data: quote,
     isLoading: isQuoteLoading,

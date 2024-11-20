@@ -45,9 +45,7 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
       await this.restoreTransaction()
       throw e
     }
-
   }
-
 
   private async handleWithdrawTimeoutError(): Promise<SwapTransaction> {
     await this.transferToNFID()

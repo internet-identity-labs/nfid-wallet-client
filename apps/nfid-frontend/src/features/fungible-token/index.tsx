@@ -1,5 +1,7 @@
 import { useActor } from "@xstate/react"
-import { resetIntegrationCache } from "packages/integration/src/cache"
+import {
+  resetLocalStorageTTLCache,
+} from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchActiveTokens,
@@ -11,6 +13,7 @@ import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
+import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
@@ -49,7 +52,7 @@ const TokensPage = () => {
       indexID !== "" ? indexID : undefined,
     )
     return icrc1Pair.storeSelf().then(() => {
-      resetIntegrationCache(["getICRC1Canisters"], () => {
+      resetLocalStorageTTLCache([icrc1OracleCacheName], () => {
         refetchActiveTokens()
       })
     })

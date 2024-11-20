@@ -27,6 +27,7 @@ import { passkeyConnector } from "../authentication/auth-selection/passkey-flow/
 import { isPasskeyDevice, isRecoveryDevice } from "./helpers"
 import { IDevice, IGroupedDevices } from "./types"
 import { mapIIDevicesToIDevices, mapIMDevicesToIDevices } from "./utils"
+import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 
 export class SecurityConnector {
   async getIMDevices() {
@@ -42,17 +43,17 @@ export class SecurityConnector {
   }
 
   getDevices = async (): Promise<IGroupedDevices> => {
+    let cacheUserData = await getUserIdData()
+
     const imDevices = await this.getIMDevices()
-    const iiDevices = await this.getIIDevices()
-    const profile = await fetchProfile()
 
     const allDevices =
-      profile.wallet === RootWallet.II
-        ? iiDevices.map((d) => ({
+       cacheUserData.wallet === RootWallet.II
+        ? await this.getIIDevices().then((devices) => devices.map((d) => ({
             ...d,
             ...imDevices.find((p) => p.principal === d.principal),
             type: d.type,
-          }))
+          })))
         : imDevices
 
     const allCredentials: string[] = allDevices

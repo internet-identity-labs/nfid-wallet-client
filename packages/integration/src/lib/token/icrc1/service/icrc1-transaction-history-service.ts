@@ -84,7 +84,11 @@ export class Icrc1TransactionHistoryService {
           return this.getDefaultICRC1IndexData()
         } catch (error) {
           console.error(error)
-          console.error('Error getting account transactions for canister: ', ledgerData.symbol, pair.icrc1)
+          console.error(
+            "Error getting account transactions for canister: ",
+            ledgerData.symbol,
+            pair.icrc1,
+          )
           return this.getDefaultICRC1IndexData()
         }
       }),

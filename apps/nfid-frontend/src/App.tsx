@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { Route, Routes } from "react-router-dom"
 import useSWR from "swr"
 import "tailwindcss/tailwind.css"
@@ -61,7 +61,6 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
-  const [triedToComplete, setTriedToComplete] = useState(false)
   React.useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
       const root = document.getElementById("root")
@@ -114,15 +113,11 @@ export const App = () => {
           path={`${ProfileConstants.base}/*`}
           element={
             <AuthWrapper>
-              <ProfileTemplate isWallet triedToComplete={triedToComplete} />
-              <>123</>
+              <ProfileTemplate isWallet />
             </AuthWrapper>
           }
         >
-          <Route
-            path="*"
-            element={<WalletRouter triedToComplete={setTriedToComplete} />}
-          />
+          <Route path="*" element={<WalletRouter />} />
         </Route>
         <Route
           path={ProfileConstants.security}

@@ -1,9 +1,12 @@
 import { ExchangeError } from "./abstract-transaction-error"
+import { SWAP_ERROR } from "./contsants"
 
 export class SwapError extends ExchangeError {
-  constructor() {
-    super(
-      "Something went wrong with the ICPSwap service. Cancel your swap and try again.",
-    )
+  getDisplayMessage(): string {
+    return SWAP_ERROR
+  }
+
+  constructor(e: Error | string) {
+    super(e instanceof Error ? e.message : e)
   }
 }

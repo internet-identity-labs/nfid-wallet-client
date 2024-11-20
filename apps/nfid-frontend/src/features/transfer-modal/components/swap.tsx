@@ -3,8 +3,6 @@ import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap
 import {
   fetchActiveTokens,
   fetchAllTokens,
-  fetchActiveTokenByAddress,
-  fetchAllTokenByAddress,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
@@ -63,17 +61,17 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     SwapTransaction | undefined
   >()
 
-  const { data: fromToken, isLoading: isFromTokenLoading } = useSWR(
-    fromTokenAddress ? ["activeToken", fromTokenAddress] : null,
-    ([, address]) => fetchActiveTokenByAddress(address),
-    { revalidateOnFocus: false },
-  )
+  const fromToken = useMemo(() => {
+    return activeTokens.find(
+      (token) => token.getTokenAddress() === fromTokenAddress,
+    )
+  }, [fromTokenAddress, activeTokens])
 
-  const { data: toToken, isLoading: isToTokenLoading } = useSWR(
-    toTokenAddress ? ["allToken", toTokenAddress] : null,
-    ([, address]) => fetchAllTokenByAddress(address),
-    { revalidateOnFocus: false },
-  )
+  const toToken = useMemo(() => {
+    return activeTokens.find(
+      (token) => token.getTokenAddress() === toTokenAddress,
+    )
+  }, [toTokenAddress, activeTokens])
 
   const filteredAllTokens = useMemo(() => {
     return allTokens.filter(
@@ -225,12 +223,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={
-          isFromTokenLoading ||
-          isToTokenLoading ||
-          isAllTokensLoading ||
-          isActiveTokensLoading
-        }
+        isTokenLoading={isAllTokensLoading || isActiveTokensLoading}
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || !quote}
         quote={quote}

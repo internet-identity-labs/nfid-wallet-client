@@ -4,10 +4,7 @@ import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
-import {
-  fetchActiveTokens,
-  fetchActiveTokenByAddress,
-} from "packages/ui/src/organisms/tokens/utils"
+import { fetchActiveTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import useSWR from "swr"
@@ -66,10 +63,11 @@ export const TransferFT = ({
     fetchActiveTokens,
   )
 
-  const { data: token, isLoading: isTokenLoading } = useSWR(
-    tokenAddress ? ["token", tokenAddress] : null,
-    ([, address]) => fetchActiveTokenByAddress(address),
-  )
+  const token = useMemo(() => {
+    return activeTokens.find(
+      (token) => token.getTokenAddress() === tokenAddress,
+    )
+  }, [tokenAddress, activeTokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -211,7 +209,7 @@ export const TransferFT = ({
             ? validateICPAddress
             : validateICRC1Address
         }
-        isLoading={isActiveTokensLoading || isTokenLoading}
+        isLoading={isActiveTokensLoading}
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}

@@ -3,6 +3,7 @@ import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
+  fetchActiveTokens,
   getFullUsdValue,
   getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
@@ -121,9 +122,17 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
+  const { data: activeTokens = [] } = useSWR(
+    "activeTokens",
+    fetchActiveTokens,
+    {
+      revalidateOnFocus: false,
+    },
+  )
+
   const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
     "fullUsdValue",
-    getFullUsdValue,
+    () => getFullUsdValue(activeTokens),
   )
 
   const {

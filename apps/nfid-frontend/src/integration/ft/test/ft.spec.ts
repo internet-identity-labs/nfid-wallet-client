@@ -60,6 +60,7 @@ describe("ft test suite", () => {
       const icpResult = result.items.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
+      icpResult?.init(principal)
       expect(icpResult).toBeDefined()
       expect(icpResult!.getTokenBalanceFormatted()).toEqual("0.0002")
       expect(icpResult!.getTokenCategory()).toEqual("Native")
@@ -71,7 +72,7 @@ describe("ft test suite", () => {
       expect(icpResult!.getBlockExplorerLink()).toEqual(
         "https://dashboard.internetcomputer.org/canister/ryjl3-tyaaa-aaaaa-aaaba-cai",
       )
-      expect(await icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
+      expect(icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
 
       const filteredResult = await ftService.getAllTokens(userId, "Chat")
       expect(filteredResult.length).toEqual(1)
@@ -159,7 +160,13 @@ describe("ft test suite", () => {
             symbol: "ICP",
           },
         ])
-      const balance = await ftService.getTotalUSDBalance(userId, principal)
+      const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(
+        userId,
+      )
+      const balance = await ftService.getTotalUSDBalance(
+        principal,
+        result.items,
+      )
       console.log(balance)
       expect(balance).not.toEqual("0.00 USD")
     })

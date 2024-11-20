@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
@@ -18,6 +19,8 @@ export interface FT {
   getTokenBalanceFormatted(): string | undefined
 
   getUSDBalanceFormatted(): string | undefined
+
+  getUSDBalance(): BigNumber | undefined
 
   getTokenRate(amount: string): number | undefined
 

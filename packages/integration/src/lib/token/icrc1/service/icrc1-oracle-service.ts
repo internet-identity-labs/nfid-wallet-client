@@ -23,15 +23,33 @@ export class ICRC1OracleService {
     const cache = localStorageTTL.getEvenExpiredItem(icrc1OracleCacheName)
     if (!cache) {
       const response = await this.requestNetworkForCanisters()
-      localStorageTTL.setItem(icrc1OracleCacheName, response, 60)
+      localStorageTTL.setItem(
+        icrc1OracleCacheName,
+        JSON.stringify(response),
+        60,
+      )
       return response
     } else if (cache && cache.expired) {
       this.requestNetworkForCanisters().then((response) => {
-        localStorageTTL.setItem(icrc1OracleCacheName, response, 60)
+        localStorageTTL.setItem(
+          icrc1OracleCacheName,
+          JSON.stringify(response),
+          60,
+        )
       })
-      return cache.object
+      return JSON.parse(cache.object, (key, value) => {
+        if (key === "fee") {
+          return BigInt(value.toString().slice(0, -1))
+        }
+        return value
+      })
     } else {
-      return cache.object
+      return JSON.parse(cache.object, (key, value) => {
+        if (key === "fee") {
+          return BigInt(value.toString().slice(0, -1))
+        }
+        return value
+      })
     }
   }
 

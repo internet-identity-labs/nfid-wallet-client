@@ -17,9 +17,9 @@ export class Icrc1RegistryService {
       iCRC1Registry.get_canisters_by_root(root).then((response) => {
         localStorageTTL.setItem(icrc1RegistryCacheName, response, 30)
       })
-      return cache.object
+      return JSON.parse(cache.object)
     } else {
-      return cache.object
+      return JSON.parse(cache.object)
     }
   }
 

@@ -9,7 +9,7 @@ import HomePage from "../pages/home-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 
-When(/^User is logged in$/, async () => {
+When(/^Verifying that user is logged in$/, async () => {
   await HomePage.waitForLoaderDisappear()
   await Profile.menuButton.waitForClickable({ timeout: 20000 })
 })

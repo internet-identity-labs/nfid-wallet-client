@@ -6,7 +6,7 @@ Feature: User should be able to register and authenticate from desktop
     When User enters recovery phrase of <nfid number> anchor
     And User toggle checkbox "#has-verified-domain"
     And User clicks on recover button
-    Then User is logged in
+    Then Verifying that user is logged in
     Examples:
       | nfid number |
       | 28593       |

@@ -25,7 +25,7 @@ export class ICRC1OracleService {
       const response = await this.requestNetworkForCanisters()
       localStorageTTL.setItem(
         icrc1OracleCacheName,
-        JSON.stringify(response),
+        this.serializeCanisters(response),
         60,
       )
       return response
@@ -33,23 +33,13 @@ export class ICRC1OracleService {
       this.requestNetworkForCanisters().then((response) => {
         localStorageTTL.setItem(
           icrc1OracleCacheName,
-          JSON.stringify(response),
+          this.serializeCanisters(response),
           60,
         )
       })
-      return JSON.parse(cache.object, (key, value) => {
-        if (key === "fee" && /^\d+n$/.test(value)) {
-          return BigInt(value.toString().slice(0, -1))
-        }
-        return value
-      })
+      return this.deserializeCanisters(cache.object)
     } else {
-      return JSON.parse(cache.object, (key, value) => {
-        if (key === "fee" && /^\d+n$/.test(value)) {
-          return BigInt(value.toString().slice(0, -1))
-        }
-        return value
-      })
+      return this.deserializeCanisters(cache.object)
     }
   }
 
@@ -60,6 +50,38 @@ export class ICRC1OracleService {
           iCRC1OracleActor.get_icrc1_paginated(i * 25, 25),
         ),
       ).then((res) => res.flat())
+    })
+  }
+
+  serializeCanisters(canister: Array<ICRC1>): string {
+    return JSON.stringify(
+      canister.map((c) => {
+        return {
+          name: c.name,
+          ledger: c.ledger,
+          category: c.category,
+          index: c.index,
+          symbol: c.symbol,
+          logo: c.logo,
+          fee: Number(c.fee),
+          decimals: c.decimals,
+        }
+      }),
+    )
+  }
+
+  deserializeCanisters(canister: string): Array<ICRC1> {
+    return (JSON.parse(canister) as Array<any>).map((c) => {
+      return {
+        name: c.name,
+        ledger: c.ledger,
+        category: c.category,
+        index: c.index,
+        symbol: c.symbol,
+        logo: c.logo,
+        fee: BigInt(c.fee),
+        decimals: c.decimals,
+      }
     })
   }
 }

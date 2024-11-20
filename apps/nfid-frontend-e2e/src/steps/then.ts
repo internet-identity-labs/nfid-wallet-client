@@ -239,7 +239,7 @@ Then(
 )
 
 Then(
-  /^Token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
+  /^Verifying that the token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
   async (token: string, collection: string, id?: string) => {
     await Nft.getNftName(token, collection).waitForDisplayed({
       timeout: 5000,
@@ -259,7 +259,7 @@ Then(
 )
 
 Then(
-  /^Details are: standard - ([^"]*), collection - ([^"]*), about - ([^"]*)/,
+  /^Verifying that details are: standard - ([^"]*), collection - ([^"]*), about - ([^"]*)/,
   async (standard: string, collection: string, about: string) => {
     await softAssertAll(
       async () =>
@@ -271,11 +271,11 @@ Then(
   },
 )
 
-Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
+Then(/^Verifying that (\d+) NFT are displayed on collectibles page$/, async (amount: number) => {
   await Nft.getNftCollectiblesAmount(amount)
 })
 
-Then(/^Switch to table$/, async () => {
+Then(/^User switches to table view$/, async () => {
   await Nft.switchToTable()
 })
 
@@ -287,7 +287,7 @@ Then(
 )
 
 Then(
-  /^The first raw has the next values: ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) in activity section$/,
+  /^Verifying that the first raw has the next values: type ([^"]*), date ([^"]*), from ([^"]*), to ([^"]*), price ([^"]*) in activity section$/,
   async (
     type: string,
     date: string,

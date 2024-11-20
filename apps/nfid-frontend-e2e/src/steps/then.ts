@@ -9,7 +9,7 @@ import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 
-Then(/^User toggle checkbox "([^"]*)?"$/, async function (selector: string) {
+Then(/^User toggle checkbox "([^"]*)?"$/, async function(selector: string) {
   await $(selector).click()
 })
 
@@ -43,7 +43,8 @@ Then(
   },
 )
 
-Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {})
+Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
+})
 
 Then(
   /^Wait while ([^"]*) asset calculated with currency ([^"]*)$/,
@@ -149,7 +150,7 @@ Then(/^Transaction is success$/, async () => {
 
 Then(
   /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
-  async function (account: string, principal: string) {
+  async function(account: string, principal: string) {
     const currentAddress = await Assets.getAccountId(true)
     let currentPrincipal = await Assets.getAccountId(false)
 
@@ -157,14 +158,14 @@ Then(
       async () =>
         await expect(
           (await currentAddress.firstAddressPart.getText()) +
-            "..." +
-            (await currentAddress.secondAddressPart.getText()),
+          "..." +
+          (await currentAddress.secondAddressPart.getText()),
         ).toEqual(account),
       async () =>
         await expect(
           (await currentPrincipal.firstAddressPart.getText()) +
-            "..." +
-            (await currentPrincipal.secondAddressPart.getText()),
+          "..." +
+          (await currentPrincipal.secondAddressPart.getText()),
         ).toEqual(principal),
     )
   },
@@ -177,25 +178,25 @@ Then(/^Principal, Address, Targets are correct:/, async (data) => {
   expect(
     String(
       (await (await usersData.get("principal")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("principal")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("principal")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
-      "..." +
-      expectedData.principal.substring(58, 63),
+    "..." +
+    expectedData.principal.substring(58, 63),
   )
 
   expect(
     String(
       (await (await usersData.get("address")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("address")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("address")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +
-      "..." +
-      expectedData.address.substring(59, 64),
+    "..." +
+    expectedData.address.substring(59, 64),
   )
 
   await browser.waitUntil(
@@ -318,12 +319,12 @@ Then(/^I should see filter button in Activity tab$/, async () => {
   await Activity.filterButton.waitForDisplayed({ timeout: 10000 })
 })
 
-Then(/^There are (\d+) activities in the table$/, async (amount: number) => {
+Then(/^Verifying that there are (\d+) activities in the table$/, async (amount: number) => {
   expect(await Activity.getActivitiesLength()).toEqual(amount)
 })
 
 Then(
-  /^There is transaction ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*)$/,
+  /^Verifying that there is the transaction with action type ([^"]*), currency ([^"]*), type ([^"]*), amount ([^"]*), timestamp ([^"]*), "From" field ([^"]*) and "To" field ([^"]*)$/,
   async (
     action: string,
     currency: string,

@@ -6,8 +6,8 @@ Feature: Assets Activity
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     When User goes to activity tab
-    Then There are <txs> activities in the table
-    And There is transaction <action> <currency> <type> <amount> <timestamp> <from> <to>
+    Then Verifying that there are <txs> activities in the table
+    And Verifying that there is the transaction with action type <action>, currency <currency>, type <type>, amount <amount>, timestamp <timestamp>, "From" field <from> and "To" field <to>
     Examples:
       | nfid number | txs | action   | type | amount | currency | timestamp     | from                                                             | to                                                               |
       | 28542       | 8   | Received | ft   | 0.01   | ICP      | 1701693484123 | e12dc3625c079187b43d2d0afdab8dda896dd5c48f49e65571dce3b63894210f | f7698099e4e9fe3297e5f3b3e0abfa64456b8cec13cc208014bbc0ea6a45c4e2 |

@@ -171,7 +171,7 @@ Then(
   },
 )
 
-Then(/^Principal, Address, Targets are correct:/, async (data) => {
+Then(/^Verifying that Principal, Address, Targets are correct:/, async (data) => {
   let expectedData = data.rowsHash()
   let usersData = await DemoAppPage.getAuthLogs()
 

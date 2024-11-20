@@ -1,23 +1,23 @@
-Feature: User has correct fee calculation, balance, address and principal in send/receive dialog window
+Feature: Verifying that user has correct fee calculation, balance, address and principal in send/receive dialog window
 
   @sendreceive
   Scenario Outline: Validate fee calculation, balance, address and principal in send/receive dialog window
     Given User opens NFID site
     And User is already authenticated by <NFID number> anchor
-    And Only 1 asset displayed
+    And Verifying that only 1 asset displayed
     When User opens send nft dialog window
     And User opens choose nft window
-    Then User sees option <nft> in dropdown
-    When User click the back button in Send window
+    Then Verifying that user sees option <nft> in dropdown
+    When User clicks the back button in Send window
     And User switches send type
-    And Choose <currency> on <category> from send options
-    And Set amount '0.0001'
-    And Balance is calculated as <balance> and fee is calculated as <fee>
-    And Choose <account> from accounts
-    Then Balance is <balance> and fee is <fee> and currency is <currency>
+    And User selects <currency> from send options
+    And User sets the amount to '0.0001'
+    Then Verifying that the balance is calculated as <balance> and fee is calculated as <fee>
+    When User selects <account> from accounts
+    Then Verifying that the balance is <balance> and fee is <fee> and currency is <currency>
     When User refreshes the page
     And User opens receive dialog window
-    Then Account ID is <account ID> and Principal is <wallet address>
+    Then Verifying that the Account ID is <account ID> and the Principal is <wallet address>
     Examples:
       | NFID number | account ID                            | wallet address                        | nft                   | category         | balance | fee    | account | currency |
       | 31870       | 0c754c4a1da28c73bd911e4cd3e88...3ae69 | 6hg7q-37lzt-3lpdo-oocet-itvrv...s-vae | ICPuppiesWearables145 | InternetComputer | 0       | 0.0001 | NFID    | ICP      |

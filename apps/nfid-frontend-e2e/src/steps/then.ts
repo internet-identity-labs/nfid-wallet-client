@@ -19,7 +19,7 @@ Then(/^Asset appears with label ([^"]*)$/, async (label: string) => {
   })
 })
 
-Then(/^Only (\d+) asset displayed/, async (amount: number) => {
+Then(/^Verifying that only (\d+) asset displayed/, async (amount: number) => {
   await Profile.waitForTokens(amount)
 })
 
@@ -70,25 +70,25 @@ Then(/^User opens choose nft window/, async () => {
   await Assets.chooseNFTinSend.click()
 })
 
-Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
+Then(/^Verifying that user sees option ([^"]*) in dropdown/, async (option: string) => {
   await Assets.getTokenByNameInSend(option).waitForExist({ timeout: 15000 })
 })
 
 Then(
-  /^Choose ([^"]*) on ([^"]*) from send options/,
-  async (currency: string, chain: string) => {
+  /^User selects ([^"]*) from send options/,
+  async (currency: string) => {
     await Assets.openAssetOptionsOnSR()
-    await Assets.currencyOption(chain, currency).click()
+    await Assets.currencyOption(currency).click()
   },
 )
 
-Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
+Then(/^User selects ([^"]*) from accounts/, async (account: string) => {
   if (account === "NFID") return true
   await Assets.chooseAccountFrom(account)
 })
 
 Then(
-  /^Balance is calculated as ([^"]*) and fee is calculated as ([^"]*)/,
+  /^Verifying that the balance is calculated as ([^"]*) and fee is calculated as ([^"]*)/,
   async (balance: string, fee: string) => {
     await softAssertAll(
       async () => expect(await Assets.getBalance.getText()).toContain(balance),
@@ -98,7 +98,7 @@ Then(
 )
 
 Then(
-  /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
+  /^Verifying that the balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
   async (expectedBalance: string, expectedFee: string, currency: string) => {
     let actualBalance
     let actualTransferFee
@@ -136,7 +136,7 @@ Then(
   },
 )
 
-Then(/^Set amount ([^"]*)/, async (amount: string) => {
+Then(/^User sets the amount to ([^"]*)/, async (amount: string) => {
   await Assets.amountField.setValue(amount)
 })
 
@@ -148,7 +148,7 @@ Then(/^Transaction is success$/, async () => {
 })
 
 Then(
-  /^Account ID is ([^"]*) and Principal is ([^"]*)/,
+  /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
   async function (account: string, principal: string) {
     const currentAddress = await Assets.getAccountId(true)
     let currentPrincipal = await Assets.getAccountId(false)

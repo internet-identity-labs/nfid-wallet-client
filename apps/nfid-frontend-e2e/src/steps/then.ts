@@ -24,7 +24,7 @@ Then(/^Verifying that only (\d+) asset displayed/, async (amount: number) => {
 })
 
 Then(
-  /^([^"]*) appears with ([^"]*) on ([^"]*) and not 0 balance$/,
+  /^Verifying that there is ([^"]*) token with currency ([^"]*) on category ([^"]*) and not 0 balance$/,
   async (tokenName: string, currency: string, category: string) => {
     await softAssertAll(
       async () =>

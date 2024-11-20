@@ -5,8 +5,8 @@ Feature: Fungible Asset
   Scenario Outline: Verify tokens are displayed with correct category, currency, balance and name in assets
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
-    And Tokens displayed on user assets
-    Then <token name> appears with <currency> on <category> and not 0 balance
+    And Verifying that tokens are displayed on assets tab
+    Then Verifying that there is <token name> token with currency <currency> on category <category> and not 0 balance
     Examples:
       | category | currency | nfid number | token name        |
       | Native   | ICP      | 28542       | Internet Computer |

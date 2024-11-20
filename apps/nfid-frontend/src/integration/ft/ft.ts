@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
@@ -17,11 +18,13 @@ export interface FT {
 
   getTokenBalanceFormatted(): string | undefined
 
-  getUSDBalanceFormatted(): Promise<string | undefined>
+  getUSDBalanceFormatted(): string | undefined
 
-  getTokenRate(amount: string): Promise<number | undefined>
+  getUSDBalance(): BigNumber | undefined
 
-  getTokenRateFormatted(amount: string): Promise<string | undefined>
+  getTokenRate(amount: string): number | undefined
+
+  getTokenRateFormatted(amount: string): string | undefined
 
   refreshBalance(principal: Principal): Promise<FT>
 
@@ -49,7 +52,7 @@ export interface FT {
 
   getTokenFeeFormatted(): string
 
-  getTokenFeeFormattedUsd(): Promise<string | undefined>
+  getTokenFeeFormattedUsd(): string | undefined
 
   isHideable(): boolean
 }

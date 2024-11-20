@@ -14,12 +14,6 @@ interface IChooseFtItem {
 }
 
 export const ChooseFtItem = ({ token }: IChooseFtItem) => {
-  const [usdPrice, setUsdPrice] = useState<string | undefined>("")
-
-  useEffect(() => {
-    token.getUSDBalanceFormatted().then(setUsdPrice)
-  }, [token.getTokenBalance()])
-
   return (
     <div
       id={trimConcat("choose_option_", token.getTokenSymbol())}
@@ -57,7 +51,7 @@ export const ChooseFtItem = ({ token }: IChooseFtItem) => {
             token.getTokenBalanceFormatted() || "0"
           } ${token.getTokenSymbol()}`}</p>
           <p className="text-xs text-right text-gray-400">
-            {usdPrice ?? "Not listed"}
+            {token.getUSDBalanceFormatted() ?? "Not listed"}
           </p>
         </div>
       ) : (

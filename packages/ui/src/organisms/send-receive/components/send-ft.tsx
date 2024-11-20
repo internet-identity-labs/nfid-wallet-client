@@ -1,8 +1,6 @@
-import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { Dispatch, FC, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
-import useSWR from "swr"
 
 import {
   Button,
@@ -60,11 +58,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 
   const amount = watch("amount")
   const to = watch("to")
-
-  const { data: tokenFeeUsd, isLoading: isFeeLoading } = useSWR(
-    token ? ["tokenFee", token.getTokenAddress()] : null,
-    token ? () => token.getTokenFeeFormattedUsd() : null,
-  )
 
   if (!token || isLoading)
     return (
@@ -133,16 +126,14 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       <div className="flex justify-between">
         <div className="text-xs text-gray-500">Network fee</div>
         <div>
-          {isFeeLoading ? (
-            <Spinner className="w-3 h-3 text-gray-400" />
-          ) : (
-            <div className="text-right">
-              <p className="text-xs leading-5 text-gray-600" id="fee">
-                {token.getTokenFeeFormatted()}
-                <span className="block mt-1 text-xs">{tokenFeeUsd}</span>
-              </p>
-            </div>
-          )}
+          <div className="text-right">
+            <p className="text-xs leading-5 text-gray-600" id="fee">
+              {token.getTokenFeeFormatted()}
+              <span className="block mt-1 text-xs">
+                {token.getTokenFeeFormattedUsd()}
+              </span>
+            </p>
+          </div>
         </div>
       </div>
       <Button

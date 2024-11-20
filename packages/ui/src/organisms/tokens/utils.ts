@@ -1,8 +1,8 @@
 import { Principal } from "@dfinity/principal"
+import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 
+import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
-
-import { getUserIdData } from "../../../../integration/src/lib/cache/cache"
 
 //TODO move to authState
 export const getUserPrincipalId = async (): Promise<{
@@ -17,23 +17,9 @@ export const getUserPrincipalId = async (): Promise<{
 }
 
 export const fetchActiveTokens = async () => {
-  const { userPrincipal, publicKey } = await getUserPrincipalId()
-  const data = await ftService.getAllUserTokens(
-    userPrincipal,
-    Principal.fromText(publicKey),
-  )
+  const { userPrincipal } = await getUserPrincipalId()
+  const data = await ftService.getAllUserTokens(userPrincipal)
   return data.items
-}
-
-export const fetchActiveTokenByAddress = async (address: string) => {
-  const { userPrincipal, publicKey } = await getUserPrincipalId()
-  const data = await ftService.getUserTokenByAddress(
-    userPrincipal,
-    Principal.fromText(publicKey),
-    address,
-  )
-
-  return data
 }
 
 export const fetchAllTokens = async (searchQuery: string) => {
@@ -41,21 +27,7 @@ export const fetchAllTokens = async (searchQuery: string) => {
   return await ftService.getAllTokens(userPrincipal, searchQuery)
 }
 
-export const fetchAllTokenByAddress = async (address: string) => {
-  const { userPrincipal, publicKey } = await getUserPrincipalId()
-  const data = await ftService.getAllTokenByAddress(
-    userPrincipal,
-    undefined,
-    address,
-  )
-
-  return data.init(Principal.fromText(publicKey))
-}
-
-export const getFullUsdValue = async () => {
-  const { userPrincipal, publicKey } = await getUserPrincipalId()
-  return await ftService.getTotalUSDBalance(
-    userPrincipal,
-    Principal.fromText(publicKey),
-  )
+export const getFullUsdValue = async (ft: FT[]) => {
+  const { publicKey } = await getUserPrincipalId()
+  return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
 }

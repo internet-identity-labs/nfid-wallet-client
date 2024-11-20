@@ -34,7 +34,6 @@ const sortTokens = (tokens: FT[]) => {
 export class FtService {
   async getAllUserTokens(
     userId: string,
-    userPublicKey: Principal,
     page: number = 1,
     limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<PaginatedResponse<FT>> {
@@ -62,7 +61,6 @@ export class FtService {
     const endIndex = Math.min(startIndex + limit, totalItems)
 
     const items = sortedTokens.slice(startIndex, endIndex)
-    await Promise.all(items.map((item) => item.init(userPublicKey)))
 
     return {
       items,
@@ -84,47 +82,12 @@ export class FtService {
       })
   }
 
-  async getUserTokenByAddress(
-    userId: string,
-    userPublicKey: Principal,
-    address: string,
-    page: number = 1,
-    limit: number = Number.MAX_SAFE_INTEGER,
-  ): Promise<FT> {
-    const tokens = await this.getAllUserTokens(
-      userId,
-      userPublicKey,
-      page,
-      limit,
-    )
-    const token = tokens.items.find(
-      (token) => token.getTokenAddress() === address,
-    )
-    if (!token) throw new Error("Token not found")
-    return token
-  }
-
-  async getAllTokenByAddress(
-    userId: string,
-    nameCategoryFilter: string | undefined,
-    address: string,
-  ): Promise<FT> {
-    const tokens = await this.getAllTokens(userId, nameCategoryFilter)
-    const token = tokens.find((token) => token.getTokenAddress() === address)
-    if (!token) throw new Error("Token not found")
-    return token
-  }
-
   //todo move somewhere because contains NFT balance as well
   async getTotalUSDBalance(
-    userId: string,
     userPublicKey: Principal,
+    ft: FT[],
   ): Promise<string | undefined> {
-    let userTokens = await icrc1StorageService.getICRC1ActiveCanisters(userId)
-    let ft = userTokens.map((token) => new FTImpl(token))
-    await Promise.all(ft.map((ft) => ft.init(userPublicKey)))
-    const [, nftPrice] = await Promise.all([
-      Promise.all(ft.map((ft) => ft.getUSDBalanceFormatted())),
+    const [nftPrice] = await Promise.all([
       nftService.getNFTsTotalPrice(userPublicKey),
     ])
     let price = ft

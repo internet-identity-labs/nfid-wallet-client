@@ -15,7 +15,7 @@ export class FTImpl implements FT {
   private readonly tokenName: string
   private tokenBalance: bigint | undefined
   private tokenState: State
-  private usdBalance: BigNumber | undefined
+  private tokenRate: BigNumber | undefined
   private index: string | undefined
   private symbol: string
   private decimals: number
@@ -37,10 +37,13 @@ export class FTImpl implements FT {
 
   async init(globalPrincipal: Principal): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    const [balance] = await Promise.all([
+    const [balance, rate] = await Promise.all([
       icrc1Pair.getBalance(globalPrincipal.toText()),
+      exchangeRateService.usdPriceForICRC1(this.tokenAddress),
     ])
+
     this.tokenBalance = balance
+    this.tokenRate = rate
     this.inited = true
     return this
   }
@@ -54,17 +57,6 @@ export class FTImpl implements FT {
     const newBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
 
     this.tokenBalance = newBalance
-
-    const usdPrice = await exchangeRateService.usdPriceForICRC1(
-      this.tokenAddress,
-    )
-    if (usdPrice) {
-      const tokenAmount = exchangeRateService.parseTokenAmount(
-        Number(this.tokenBalance),
-        this.decimals,
-      )
-      this.usdBalance = tokenAmount.multipliedBy(usdPrice)
-    }
 
     return this
   }
@@ -135,37 +127,33 @@ export class FTImpl implements FT {
     return this.tokenName
   }
 
-  async getTokenRate(amount: string): Promise<number | undefined> {
-    const rate = await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
-    if (!rate) return
+  getUSDBalanceFormatted(): string | undefined {
+    if (!this.tokenRate) return
+
+    const tokenAmount = exchangeRateService.parseTokenAmount(
+      Number(this.tokenBalance),
+      this.decimals,
+    )
+    const usdBalance = tokenAmount.multipliedBy(this.tokenRate)
+
+    return usdBalance.toFixed(2) + " USD"
+  }
+
+  getTokenRate(amount: string): number | undefined {
+    if (!this.tokenRate) return
 
     const amountBigNumber = new BigNumber(amount)
-    const result = rate.multipliedBy(amountBigNumber)
+    const result = this.tokenRate.multipliedBy(amountBigNumber)
 
     return Number(result.toFixed(2))
   }
 
-  async getTokenRateFormatted(amount: string): Promise<string | undefined> {
-    return `${(await this.getTokenRate(amount)) || "0.00"} USD`
+  getTokenRateFormatted(amount: string): string | undefined {
+    return `${this.getTokenRate(amount) || "0.00"} USD`
   }
 
   isHideable(): boolean {
     return this.tokenCategory !== Category.Native
-  }
-
-  async getUSDBalanceFormatted(): Promise<string | undefined> {
-    if (!this.usdBalance) {
-      const usdPrice: BigNumber | undefined =
-        await exchangeRateService.usdPriceForICRC1(this.tokenAddress)
-      if (!usdPrice) return
-
-      const tokenAmount = exchangeRateService.parseTokenAmount(
-        Number(this.tokenBalance),
-        this.decimals,
-      )
-      this.usdBalance = tokenAmount.multipliedBy(usdPrice)
-    }
-    return this.usdBalance.toFixed(2) + " USD"
   }
 
   hideToken(): Promise<void> {
@@ -183,7 +171,12 @@ export class FTImpl implements FT {
   }
 
   getUSDBalance(): BigNumber | undefined {
-    return this.usdBalance
+    if (!this.tokenRate) return
+    const tokenAmount = exchangeRateService.parseTokenAmount(
+      Number(this.tokenBalance),
+      this.decimals,
+    )
+    return tokenAmount.multipliedBy(this.tokenRate)
   }
 
   getDecimals(): number {
@@ -201,8 +194,8 @@ export class FTImpl implements FT {
     })} ${this.symbol}`
   }
 
-  async getTokenFeeFormattedUsd(): Promise<string | undefined> {
-    const feeInUsd = await this.getTokenRate(
+  getTokenFeeFormattedUsd(): string | undefined {
+    const feeInUsd = this.getTokenRate(
       (Number(this.fee) / 10 ** this.decimals).toString(),
     )
 

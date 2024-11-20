@@ -42,7 +42,7 @@ export class ExchangeRateService {
     this.ICP2USD = this.parseTokenAmount(result.rate, result.decimals)
   }
 
-  @Cache(integrationCache, { ttl: 300 })
+  @Cache(integrationCache, { ttl: 120 })
   async usdPriceForICRC1(ledger: string): Promise<BigNumber | undefined> {
     const tokenStorageCanister = await this.getTokenStorageCanister(ledger)
     if (!tokenStorageCanister) {

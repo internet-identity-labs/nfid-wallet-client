@@ -85,10 +85,8 @@ export class Assets {
     return $(`#token_${label.replace(/\s/g, "")}`)
   }
 
-  public currencyOption(chain: string, currency: string) {
-    return $(
-      `#option_group_${chain.replace(/\s/g, "")} #choose_option_${currency}`,
-    )
+  public currencyOption(currency: string) {
+    return $(`#choose_option_${currency}`)
   }
 
   public getTokenByNameInSend(token: string) {

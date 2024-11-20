@@ -14,27 +14,28 @@ export const searchTokens = (tokens: NFT[], search: string) => {
   return result
 }
 
-export const fetchNFTs = async (page: number) => {
+export const fetchNFTs = async (page?: number, limit?: number) => {
   const { publicKey } = await getUserPrincipalId()
-  const data = await nftService.getNFTs(Principal.fromText(publicKey), page)
+  const data = await nftService.getNFTs(
+    Principal.fromText(publicKey),
+    page,
+    limit,
+  )
   const { totalItems, totalPages, items } = data
   return { totalItems, totalPages, items }
 }
 
-export const fetchNFTsInited = async (page: number) => {
-  const { publicKey } = await getUserPrincipalId()
-  const data = await nftService.getNFTs(Principal.fromText(publicKey), page)
-  const { totalItems, totalPages, items } = data
-  const initedData = await Promise.all(items.map((item) => item.init()))
-  return { totalItems, totalPages, initedData }
-}
-
-export const fetchNFT = async (id: string, currentPage?: number) => {
+export const fetchNFT = async (
+  id: string,
+  currentPage?: number,
+  limit?: number,
+) => {
   const { publicKey } = await getUserPrincipalId()
   const data = await nftService.getNFTByTokenId(
     id,
     Principal.fromText(publicKey),
     currentPage,
+    limit,
   )
   return data
 }

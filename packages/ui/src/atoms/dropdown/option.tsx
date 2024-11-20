@@ -24,7 +24,7 @@ export const DropdownOption = ({
   return (
     <div
       className={clsx(
-        "flex items-center gap-[8px] hover:bg-gray-100 cursor-pointer",
+        "flex items-center gap-[8px] hover:bg-gray-100 cursor-pointer px-[10px]",
         className,
       )}
       onClick={() => {
@@ -33,7 +33,7 @@ export const DropdownOption = ({
       }}
     >
       {Element ? (
-        <Element className="w-full h-[40px] px-[10px] flex items-center" />
+        <Element className="w-full h-[40px] flex items-center" />
       ) : (
         <>
           {icon && (

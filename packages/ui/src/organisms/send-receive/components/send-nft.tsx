@@ -6,25 +6,22 @@ import { Id } from "react-toastify"
 
 import {
   Button,
-  ChooseModal,
   IconCmpArrow,
   IconCmpArrowRight,
   IconCmpNFTPreview,
   BlurredLoader,
   Input,
-  IGroupedOptions,
   IconNftPlaceholder,
+  ChooseNftModal,
 } from "@nfid-frontend/ui"
 
 import { NFT } from "frontend/integration/nft/nft"
 
 export interface TransferNFTUiProps {
-  loadMore?: () => void
   isLoading: boolean
   loadingMessage: string | undefined
-  nftOptions: IGroupedOptions[] | undefined
+  nfts: NFT[] | undefined
   setSelectedNFTId: Dispatch<SetStateAction<string>>
-  selectedNFTId: string
   selectedNFT: NFT | undefined
   selectedReceiverWallet: string | undefined
   submit: (values: any) => Promise<Id | undefined>
@@ -32,12 +29,10 @@ export interface TransferNFTUiProps {
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
-  loadMore,
   isLoading,
   loadingMessage,
-  nftOptions,
+  nfts,
   setSelectedNFTId,
-  selectedNFTId,
   selectedNFT,
   selectedReceiverWallet,
   submit,
@@ -54,7 +49,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
       to: selectedReceiverWallet ?? "",
     },
   })
-
   const to = watch("to")
 
   return (
@@ -64,17 +58,10 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
       loadingMessage={loadingMessage}
     >
       <div className="space-y-3 text-xs ">
-        <ChooseModal
-          loadMore={loadMore}
-          label="NFT to transfer"
-          optionGroups={nftOptions ?? []}
+        <ChooseNftModal
+          tokens={nfts ?? []}
           title="NFT to send"
-          onSelect={(value) => {
-            setSelectedNFTId(value)
-          }}
-          placeholder="Search"
-          preselectedValue={selectedNFTId}
-          iconClassnames="!w-12 !h-12 !object-cover !rounded-[12px]"
+          onSelect={setSelectedNFTId}
           trigger={
             <div
               className="flex items-center justify-between w-full h-[98px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"
@@ -83,12 +70,22 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
                   {selectedNFT?.getAssetPreview().url ? (
-                    <ImageWithFallback
-                      className="object-cover rounded-[10px] w-[92px] h-[92px]"
-                      src={selectedNFT?.getAssetPreview().url}
-                      fallbackSrc={IconNftPlaceholder}
-                      alt="NFID NFT"
-                    />
+                    selectedNFT?.getAssetPreview().format === "video" ? (
+                      <video
+                        muted
+                        autoPlay
+                        loop
+                        className="object-cover rounded-[10px] w-[92px] h-[92px]"
+                        src={selectedNFT.getAssetPreview().url}
+                      ></video>
+                    ) : (
+                      <ImageWithFallback
+                        className="object-cover rounded-[10px] w-[92px] h-[92px]"
+                        src={selectedNFT?.getAssetPreview().url}
+                        fallbackSrc={IconNftPlaceholder}
+                        alt="NFID NFT"
+                      />
+                    )
                   ) : (
                     <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[92px] h-[92px]" />
                   )}
@@ -109,7 +106,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
               </div>
             </div>
           }
-          type="trigger"
         />
         <Input
           inputClassName={clsx(

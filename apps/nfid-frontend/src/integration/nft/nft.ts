@@ -8,6 +8,7 @@ import {
 
 export interface NFT {
   init(): Promise<NFT>
+  isInited(): boolean
   getMillis(): number
   getMarketPlace(): MarketPlace
   getTokenMarketPlaceLink(): string

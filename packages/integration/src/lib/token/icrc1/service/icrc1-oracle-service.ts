@@ -71,7 +71,7 @@ export class ICRC1OracleService {
   }
 
   deserializeCanisters(canister: string): Array<ICRC1> {
-    return (JSON.parse(canister) as Array<ICRC1>).map((c) => {
+    return (JSON.parse(canister) as Array<any>).map((c) => {
       return {
         name: c.name,
         ledger: c.ledger,

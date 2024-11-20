@@ -9,10 +9,10 @@ import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
+import { Environment } from "../constant/env.constant"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
-import { Environment } from "../constant/env.constant"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -49,7 +49,9 @@ function makeAuthState() {
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()
 
-  const isNonSensitiveEnv = ![Environment.STAGE, Environment.IC].includes(ENV as Environment)
+  const isNonSensitiveEnv = ![Environment.STAGE, Environment.IC].includes(
+    ENV as Environment,
+  )
 
   if (isNonSensitiveEnv && typeof window !== "undefined") {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

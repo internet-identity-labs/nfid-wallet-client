@@ -1,16 +1,16 @@
 import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+import { UUID } from "node:crypto"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 import { SwapStage } from "src/integration/icpswap/types/enums"
+import { v4 as uuidv4 } from "uuid"
 
 import { hasOwnProperty } from "@nfid/integration"
 
 import { Error as ErrorSwap } from "./../idl/SwapPool.d"
-import { v4 as uuidv4 } from "uuid";
 import {
   SwapStage as SwapStageCandid,
   SwapTransaction as SwapTransactionCandid,
 } from "./../idl/swap_trs_storage.d"
-import {UUID} from "node:crypto";
 
 export class SwapTransactionImpl implements SwapTransaction {
   private uid: UUID
@@ -199,10 +199,13 @@ export class SwapTransactionImpl implements SwapTransaction {
   }
 
   private generateUUID(): UUID {
-    if (typeof globalThis.crypto !== "undefined" && typeof globalThis.crypto.randomUUID === "function") {
-      return globalThis.crypto.randomUUID();
+    if (
+      typeof globalThis.crypto !== "undefined" &&
+      typeof globalThis.crypto.randomUUID === "function"
+    ) {
+      return globalThis.crypto.randomUUID()
     } else {
-      return uuidv4() as UUID;
+      return uuidv4() as UUID
     }
   }
 }

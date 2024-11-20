@@ -35,7 +35,7 @@ import { idlFactory as vaultIDL } from "./_ic_api/vault"
 import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
-import {agent, AgentWithRetry} from "./agent"
+import { agent, AgentWithRetry } from "./agent"
 
 /////////////
 // Config //

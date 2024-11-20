@@ -1,6 +1,3 @@
-import { Cache } from "node-ts-cache"
-
-import { integrationCache } from "../../../../cache"
 import { State } from "../enum/enums"
 import { ICRC1 as ICRC1UserData } from "../types"
 import { mapCategory, mapState } from "../util"

@@ -49,7 +49,7 @@ export const Tokens: FC<TokensProps> = ({
     <>
       <TokensHeader
         tokens={filteredTokens}
-        setSearch={(value) => setSearchQuery(value)}
+        setSearch={setSearchQuery}
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}
         onFetch={onFetch}
       />

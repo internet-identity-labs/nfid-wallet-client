@@ -1,7 +1,7 @@
 export enum MarketPlace {
   ICPSWAP = "ICPSWAP",
   MEMECAKE = "MEMECAKE",
-  YUMI = "YUMI",
+  YUKU = "YUKU",
   EXT = "EXT",
 }
 

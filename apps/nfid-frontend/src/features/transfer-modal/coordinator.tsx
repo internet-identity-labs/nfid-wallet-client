@@ -71,7 +71,6 @@ export const TransferModalCoordinator = () => {
         return (
           <TransferReceive
             publicKey={publicKey}
-            isVault={state.context.isOpenedFromVaults}
             preselectedAccountAddress={state.context.sourceWalletAddress}
           />
         )

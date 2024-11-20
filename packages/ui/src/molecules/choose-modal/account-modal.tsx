@@ -5,18 +5,18 @@ import { IoIosSearch } from "react-icons/io"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { trimConcat } from "src/ui/atoms/util/util"
 
-import { ChooseTokenSkeleton, IconCmpWarning } from "@nfid-frontend/ui"
+import { IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow, Label, Tooltip } from "@nfid-frontend/ui"
 
-import { ChooseItem } from "./choose-item"
+import { ChooseAccountItem } from "./choose-account-item"
 import { filterGroupedOptionsByTitle, findOptionByValue } from "./helpers"
 import { DefaultTrigger } from "./triggers/default"
 import { InputTrigger } from "./triggers/input"
 import { SmallTrigger } from "./triggers/small"
 import { IGroupedOptions, IGroupOption } from "./types"
 
-export interface IChooseModal {
+export interface IChooseAccountModal {
   loadMore?: () => void
   optionGroups: IGroupedOptions[]
   preselectedValue?: string
@@ -33,10 +33,9 @@ export interface IChooseModal {
   registerFunction?: UseFormRegisterReturn<string>
   iconClassnames?: string
   isSmooth?: boolean
-  isLoading?: boolean
 }
 
-export const ChooseModal = ({
+export const ChooseAccountModal = ({
   loadMore,
   optionGroups,
   preselectedValue,
@@ -53,8 +52,7 @@ export const ChooseModal = ({
   registerFunction,
   iconClassnames,
   isSmooth = false,
-  isLoading = false,
-}: IChooseModal) => {
+}: IChooseAccountModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
@@ -179,7 +177,6 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}
           className="mt-4 mb-5"
         />
-        {isLoading && <ChooseTokenSkeleton rows={6} />}
         <div
           className={clsx(
             "flex-1 overflow-auto snap-end pr-[10px]",
@@ -202,7 +199,7 @@ export const ChooseModal = ({
                 key={`group_${group.label}_${group.options.length}_${index}`}
               >
                 {group.options.map((option, i) => (
-                  <ChooseItem
+                  <ChooseAccountItem
                     key={`option_${option.value}_group_${index}_${i}`}
                     handleClick={() => handleSelect(option)}
                     image={option.icon}

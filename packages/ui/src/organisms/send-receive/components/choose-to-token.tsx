@@ -5,27 +5,20 @@ import {
 } from "packages/ui/src/atoms/icons"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
-import { ChooseModal } from "packages/ui/src/molecules/choose-modal"
-import { IGroupedOptions } from "packages/ui/src/molecules/choose-modal/types"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { FC, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
 import { PriceImpactStatus } from "frontend/integration/icpswap/types/enums"
 import { PriceImpact } from "frontend/integration/icpswap/types/types"
 
-import { getAllTokenPaginatedOptions } from "../utils"
-
-const INITED_TOKENS_LIMIT = 8
-
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens: FT[]
   setToChosenToken: (value: string) => void
-  sendReceiveTrackingFn?: () => void
   usdRate: string | undefined
   isQuoteLoading: boolean
   value?: string
@@ -36,29 +29,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   token,
   tokens,
   setToChosenToken,
-  sendReceiveTrackingFn,
   usdRate,
   isQuoteLoading,
   value,
   priceImpact,
 }) => {
-  const [tokenOptions, setTokenOptions] = useState<IGroupedOptions[]>([])
-  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
-  const [page, setPage] = useState(1)
-
   const { setValue, register } = useFormContext()
-
-  useEffect(() => {
-    setIsTokenOptionsLoading(true)
-
-    getAllTokenPaginatedOptions(
-      tokens,
-      page * INITED_TOKENS_LIMIT,
-      (page - 1) * INITED_TOKENS_LIMIT,
-    )
-      .then((data) => setTokenOptions(tokenOptions.concat(data)))
-      .finally(() => setIsTokenOptionsLoading(false))
-  }, [tokens, page])
 
   useEffect(() => {
     setValue("to", value)
@@ -67,14 +43,6 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   if (!token) return null
 
   const decimals = token.getTokenDecimals()
-
-  const hasMoreTokens = useMemo(() => {
-    return tokens.length > tokenOptions.length
-  }, [tokens, tokenOptions])
-
-  const loadMore = useCallback(() => {
-    setPage((prevPage) => prevPage + 1)
-  }, [])
 
   if (!decimals) return null
   return (
@@ -89,17 +57,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             value={value || ""}
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
-            <ChooseModal
-              loadMore={hasMoreTokens ? loadMore : undefined}
-              isLoading={isTokenOptionsLoading}
-              optionGroups={tokenOptions}
+            <ChooseFtModal
+              tokens={tokens}
               title="Swap to"
-              type="trigger"
               onSelect={setToChosenToken}
-              preselectedValue={token.getTokenAddress()}
-              onOpen={sendReceiveTrackingFn}
-              isSmooth
-              iconClassnames="object-cover h-full rounded-full"
               trigger={
                 <div
                   id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}

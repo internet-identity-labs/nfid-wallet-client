@@ -26,7 +26,6 @@ import { getWalletDelegationAdapter } from "frontend/integration/adapters/delega
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { FT } from "frontend/integration/ft/ft"
 import { Shroff } from "frontend/integration/icpswap/shroff"
-import { NFT } from "frontend/integration/nft/nft"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import {
   e8sICPToString,
@@ -66,24 +65,6 @@ export const getIdentity = async (
   targetCanisters: string[],
 ): Promise<DelegationIdentity> => {
   return getWalletDelegationAdapter("nfid.one", "-1", targetCanisters)
-}
-
-export const mapUserNFTDetailsToGroupedOptions = (
-  userNFTDetailsArray: NFT[],
-): IGroupedOptions[] => {
-  return userNFTDetailsArray.map((nft) => ({
-    label: nft.getTokenName(),
-    options: [
-      {
-        title: nft.getTokenName(),
-        subTitle: nft.getCollectionName(),
-        value: nft.getTokenId(),
-        icon: nft.getAssetPreview().url,
-        innerTitle: nft.getTokenFloorPriceIcpFormatted() || "Unknown",
-        innerSubtitle: nft.getTokenFloorPriceUSDFormatted(),
-      },
-    ],
-  }))
 }
 
 export const getVaultsAccountsOptions = async (): Promise<

@@ -11,7 +11,7 @@ export class NftMapper {
     switch (mappedToken.marketPlace) {
       case MarketPlace.EXT:
         return new NftExt(mappedToken)
-      case MarketPlace.YUMI:
+      case MarketPlace.YUKU:
         return new NftYumi(mappedToken)
       case MarketPlace.MEMECAKE:
         return new NftMemeCake(mappedToken)

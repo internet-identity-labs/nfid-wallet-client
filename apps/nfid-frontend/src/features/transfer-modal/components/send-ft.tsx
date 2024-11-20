@@ -212,7 +212,6 @@ export const TransferFT = ({
             : validateICRC1Address
         }
         isLoading={isActiveTokensLoading || isTokenLoading}
-        sendReceiveTrackingFn={sendReceiveTracking.supportedTokenModalOpened}
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}

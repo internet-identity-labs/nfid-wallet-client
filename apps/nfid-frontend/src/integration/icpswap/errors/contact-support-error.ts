@@ -1,7 +1,12 @@
 import { ExchangeError } from "./abstract-transaction-error"
+import { CONTACT_SUPPORT_ERROR } from "./contsants"
 
 export class ContactSupportError extends ExchangeError {
   getDisplayMessage(): string {
-    return "Something went wrong with the ICPSwap service. Contact support."
+    return CONTACT_SUPPORT_ERROR
+  }
+
+  constructor(e: Error | string) {
+    super(e instanceof Error ? e.message : e)
   }
 }

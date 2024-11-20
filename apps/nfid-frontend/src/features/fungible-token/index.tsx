@@ -86,7 +86,7 @@ const TokensPage = () => {
     <Tokens
       activeTokens={activeTokens}
       filteredTokens={allTokens}
-      setSearchQuery={(value) => setSearchQuery(value)}
+      setSearchQuery={setSearchQuery}
       isActiveTokensLoading={isActiveLoading}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}

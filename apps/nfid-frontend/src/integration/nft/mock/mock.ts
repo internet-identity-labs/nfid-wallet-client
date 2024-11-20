@@ -188,13 +188,13 @@ export const mockGeekResponse = {
       canisterId: "yzrp5-oaaaa-aaaah-ad2xa-cai",
       name: "Mifoko",
       alias: "",
-      interface: "YUMI",
+      interface: "YUKU",
     },
     {
       canisterId: "fab4i-diaaa-aaaah-acr2q-cai",
       name: "ICTempies",
       alias: "",
-      interface: "YUMI",
+      interface: "YUKU",
     },
     {
       canisterId: "ok3ug-2iaaa-aaaag-qbilq-cai",
@@ -280,7 +280,7 @@ export const expectedGeekResponse = [
   },
   {
     millis: 1721253579367,
-    marketPlace: "YUMI",
+    marketPlace: "YUKU",
     tokenId: 9103,
     collectionId: "yzrp5-oaaaa-aaaah-ad2xa-cai",
     collectionName: "Mifoko",
@@ -289,7 +289,7 @@ export const expectedGeekResponse = [
   },
   {
     millis: 1721253579367,
-    marketPlace: "YUMI",
+    marketPlace: "YUKU",
     tokenId: 4612,
     collectionId: "fab4i-diaaa-aaaah-acr2q-cai",
     collectionName: "ICTempies",

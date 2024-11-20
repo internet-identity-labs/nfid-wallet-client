@@ -21,6 +21,8 @@ import { fetchNFT } from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 
+const DEFAULT_LIMIT_PER_PAGE = 8
+
 const NFTDetailsPage = () => {
   const globalServices = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
@@ -31,15 +33,17 @@ const NFTDetailsPage = () => {
 
   const { data: nft, isLoading } = useSWR(
     tokenId ? ["nft", tokenId] : null,
-    ([, tokenId]) => fetchNFT(tokenId, currentPage),
+    ([, tokenId]) => fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE),
   )
 
   const getDetails = useCallback(async () => {
     if (!tokenId) return
 
-    const nftDetails = await fetchNFT(tokenId, currentPage).then((data) =>
-      data?.getDetails(),
-    )
+    const nftDetails = await fetchNFT(
+      tokenId,
+      currentPage,
+      DEFAULT_LIMIT_PER_PAGE,
+    ).then((data) => data?.getDetails())
     if (nftDetails) {
       try {
         dispatch({ type: "SET_ABOUT", payload: nftDetails.getAbout() })

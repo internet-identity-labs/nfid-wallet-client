@@ -33,9 +33,6 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
       }
     } catch (e) {
       console.error("Swap error:", e)
-      if (!this.swapTransaction.getError()) {
-        this.swapTransaction.setError((e as Error).message)
-      }
       await this.restoreTransaction()
       throw e
     }
@@ -56,11 +53,11 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
         }
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
-        throw new WithdrawError()
+        throw new WithdrawError(JSON.stringify(result.err))
       })
     } catch (e) {
       console.error("Withdraw error: " + e)
-      throw new WithdrawError()
+      throw new WithdrawError(e as Error)
     }
   }
 

@@ -129,7 +129,7 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
   }
 
   async getAssetFullSize(): Promise<AssetPreview> {
-    let format: DisplayFormat = toFormat(this.icsMetadata.filePath)
+    let format: DisplayFormat = toFormat(this.icsMetadata.fileType)
     return {
       url: this.icsMetadata.filePath,
       format,

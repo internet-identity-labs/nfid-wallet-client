@@ -4,7 +4,7 @@ import { Badge } from "../../atoms/badge"
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
 
-interface IChooseItem {
+interface IChooseAccountItem {
   handleClick: () => void
   image?: string
   title: string
@@ -16,7 +16,7 @@ interface IChooseItem {
   badgeText?: string
 }
 
-export const ChooseItem = ({
+export const ChooseAccountItem = ({
   handleClick,
   image,
   title,
@@ -26,7 +26,7 @@ export const ChooseItem = ({
   iconClassnames,
   id,
   badgeText,
-}: IChooseItem) => {
+}: IChooseAccountItem) => {
   return (
     <div
       id={id}

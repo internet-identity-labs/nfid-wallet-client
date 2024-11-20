@@ -57,7 +57,7 @@ function SnsContent() {
           background:
             window.screen.width > 767
               ? "radial-gradient(at right top, #1A4437, #000000 55%, #0e0f10 70%)"
-              : "radial-gradient(at right top, #000000, #0e0f10 70%)"
+              : "radial-gradient(at right top, #000000, #0e0f10 70%)",
         }}
       >
         <div className="md:w-full md:max-w-[834px] mx-auto">

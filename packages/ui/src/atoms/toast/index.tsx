@@ -28,7 +28,7 @@ toaster.success = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,
     ...toastProps,
   })
 
@@ -38,7 +38,7 @@ toaster.warn = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,
     ...toastProps,
   })
 
@@ -48,7 +48,7 @@ toaster.error = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,
     ...toastProps,
   })
 
@@ -58,7 +58,7 @@ toaster.info = (text?: string, toastProps?: ToastOptions): Id =>
     bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
-    closeButton: <CloseIcon className="w-4 h-4 mt-2" />,
+    closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,
     ...toastProps,
   })
 

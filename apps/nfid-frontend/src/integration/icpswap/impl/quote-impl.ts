@@ -59,6 +59,7 @@ export class QuoteImpl implements Quote {
       .replace(TRIM_ZEROS, "")
     const targetFee = BigNumber(Number(this.target.fee))
       .div(10 ** this.target.decimals)
+      .multipliedBy(2)
       .toFixed(this.target.decimals)
       .replace(TRIM_ZEROS, "")
     return [
@@ -81,6 +82,7 @@ export class QuoteImpl implements Quote {
 
   getTargetAmountPrettified(): string {
     return this.getTargetAmount()
+      .minus(Number(this.target.fee))
       .div(10 ** this.target.decimals)
       .toFixed(this.target.decimals)
       .replace(TRIM_ZEROS, "")
@@ -120,12 +122,12 @@ export class QuoteImpl implements Quote {
   }
 
   getQuoteRate(): string {
-    const quote = this.getTargetAmount()
-      .div(10 ** this.target.decimals)
-    const rate = quote
-      .div(this.getSourceAmount()
-        .div(10 ** this.source.decimals))
-    return `1 ${this.source.symbol} = ${rate.toNumber()
+    const quote = this.getTargetAmount().div(10 ** this.target.decimals)
+    const rate = quote.div(
+      this.getSourceAmount().div(10 ** this.source.decimals),
+    )
+    return `1 ${this.source.symbol} = ${rate
+      .toNumber()
       .toFixed(this.target.decimals)
       .replace(TRIM_ZEROS, "")} ${this.target.symbol}`
   }

@@ -187,12 +187,9 @@ export class ShroffImpl implements Shroff {
     const updatedQuote = await this.getQuote(
       Number(this.requestedQuote?.getSourceAmountPrettified()),
     )
-    if (
-      legacyQuote?.getTargetAmountPrettified() !==
-      updatedQuote.getTargetAmountPrettified()
-    ) {
+    if (!legacyQuote?.getTargetAmount().eq(updatedQuote.getTargetAmount())) {
       const error = new SlippageError()
-      console.error("Slippage error: " + error)
+      console.error("Slippage error: " + error.message)
       throw error
     }
     return updatedQuote

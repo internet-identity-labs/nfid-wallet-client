@@ -140,7 +140,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
           className="mt-4 mb-5"
         />
         {isTokenOptionsLoading && <ChooseTokenSkeleton rows={6} />}
-        {!tokensOptions.length ? (
+        {!tokensOptions.length && !isTokenOptionsLoading ? (
           <div className="flex items-center justify-center h-full text-sm text-gray-400">
             You don’t own any collectibles yet
           </div>

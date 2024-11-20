@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useEffect } from "react"
 import { FT } from "src/integration/ft/ft"
@@ -10,6 +11,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { IProfileConstants } from ".."
+import { getUserPrincipalId } from "../utils"
 import { AssetDropdown } from "./asset-dropdown"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
@@ -28,11 +30,18 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   dropdownPosition,
   ...props
 }) => {
-  const [usdPrice, setUsdPrice] = useState<string | undefined>("")
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false)
 
   useEffect(() => {
-    token.getUSDBalanceFormatted().then(setUsdPrice)
-  }, [token.getTokenBalance()])
+    const initTokens = async () => {
+      setIsBalanceLoading(true)
+      const { publicKey } = await getUserPrincipalId()
+      await token.init(Principal.fromText(publicKey))
+      setIsBalanceLoading(false)
+    }
+
+    initTokens()
+  }, [token])
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`} {...props}>
@@ -72,37 +81,39 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] max-w-[40%] min-w-[40%] sm:max-w-[50%] sm:min-w-[50%]"
       >
-        <div>
-          <p className="flex justify-end sm:block">
+        <p className="flex items-center justify-end md:block">
+          {isBalanceLoading ? (
+            <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
+          ) : (
             <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
-              {token.getTokenBalanceFormatted() || "0"}
+              {token.getTokenBalanceFormatted() || "0"}{" "}
+              <span>{token.getTokenSymbol()}</span>
             </span>
-            &nbsp;
-            <span>{token.getTokenSymbol()}</span>
-          </p>
-          <p className="text-xs md:hidden text-secondary">
-            {usdPrice === "" ? (
-              <Skeleton
-                className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
-              />
-            ) : usdPrice === undefined ? (
-              "Not listed"
-            ) : (
-              usdPrice
-            )}
-          </p>
-        </div>
+          )}
+        </p>
+        <p className="text-xs md:hidden text-secondary">
+          &nbsp;
+          {isBalanceLoading ? (
+            <Skeleton
+              className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
+            />
+          ) : token.getUSDBalanceFormatted() === undefined ? (
+            "Not listed"
+          ) : (
+            token.getUSDBalanceFormatted()
+          )}
+        </p>
       </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px]"
       >
-        {usdPrice === "" ? (
+        {isBalanceLoading ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : !usdPrice ? (
+        ) : token.getUSDBalanceFormatted() === undefined ? (
           "Not listed"
         ) : (
-          usdPrice
+          token.getUSDBalanceFormatted()
         )}
       </td>
       <td className="w-[24px] min-w-[24px]">

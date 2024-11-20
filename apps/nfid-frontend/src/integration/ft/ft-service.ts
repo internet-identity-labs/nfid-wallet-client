@@ -34,7 +34,6 @@ const sortTokens = (tokens: FT[]) => {
 export class FtService {
   async getAllUserTokens(
     userId: string,
-    userPublicKey: Principal,
     page: number = 1,
     limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<PaginatedResponse<FT>> {
@@ -62,7 +61,6 @@ export class FtService {
     const endIndex = Math.min(startIndex + limit, totalItems)
 
     const items = sortedTokens.slice(startIndex, endIndex)
-    await Promise.all(items.map((item) => item.init(userPublicKey)))
 
     return {
       items,
@@ -86,17 +84,11 @@ export class FtService {
 
   async getUserTokenByAddress(
     userId: string,
-    userPublicKey: Principal,
     address: string,
     page: number = 1,
     limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<FT> {
-    const tokens = await this.getAllUserTokens(
-      userId,
-      userPublicKey,
-      page,
-      limit,
-    )
+    const tokens = await this.getAllUserTokens(userId, page, limit)
     const token = tokens.items.find(
       (token) => token.getTokenAddress() === address,
     )

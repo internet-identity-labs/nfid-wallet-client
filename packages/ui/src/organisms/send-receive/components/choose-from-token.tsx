@@ -44,7 +44,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     register,
     formState: { errors },
   } = useFormContext()
-
   const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
 

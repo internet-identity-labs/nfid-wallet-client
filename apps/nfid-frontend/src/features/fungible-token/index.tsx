@@ -1,7 +1,5 @@
 import { useActor } from "@xstate/react"
-import {
-  resetLocalStorageTTLCache,
-} from "packages/integration/src/cache"
+import { resetLocalStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchActiveTokens,
@@ -39,11 +37,16 @@ const TokensPage = () => {
     data: activeTokens = [],
     isLoading: isActiveLoading,
     mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchActiveTokens)
+  } = useSWR("activeTokens", fetchActiveTokens, {
+    revalidateOnFocus: false,
+  })
 
   const { data: allTokens = [] } = useSWR(
     ["allTokens", searchQuery],
     ([, query]) => fetchAllTokens(query),
+    {
+      revalidateOnFocus: false,
+    },
   )
 
   const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {

@@ -3,12 +3,10 @@ import {
   IconSvgExternalIcon,
 } from "packages/ui/src/atoms/icons"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import { FC, useState } from "react"
+import { FC } from "react"
 import { FT } from "src/integration/ft/ft"
-import useSWR from "swr"
 
 export interface TokenInfoModalProps {
   token: FT | undefined
@@ -18,11 +16,6 @@ export interface TokenInfoModalProps {
 export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
   const ledger = token?.getTokenAddress()
   const index = token?.getTokenIndex()
-
-  const { data: tokenFeeUsd, isLoading: isFeeLoading } = useSWR(
-    token ? ["tokenFee", token.getTokenAddress()] : null,
-    token ? () => token.getTokenFeeFormattedUsd() : null,
-  )
 
   return (
     <>
@@ -96,11 +89,9 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
           <div className="text-sm text-gray-400 w-[150px]">Transaction fee</div>
           <div>
             <div className="text-sm">{token?.getTokenFeeFormatted()}</div>
-            {isFeeLoading ? (
-              <Spinner className="w-4 h-4 text-gray-400" />
-            ) : (
-              <div className="text-xs text-gray-400">{tokenFeeUsd}</div>
-            )}
+            <div className="text-xs text-gray-400">
+              {token?.getTokenFeeFormattedUsd()}
+            </div>
           </div>
         </div>
       </ModalComponent>

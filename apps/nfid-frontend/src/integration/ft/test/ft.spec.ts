@@ -55,7 +55,6 @@ describe("ft test suite", () => {
         ])
       const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(
         userId,
-        principal,
       )
       expect(result.items.length).toEqual(3)
       const icpResult = result.items.find(

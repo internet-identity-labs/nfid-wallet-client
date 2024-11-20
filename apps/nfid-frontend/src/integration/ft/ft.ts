@@ -17,11 +17,11 @@ export interface FT {
 
   getTokenBalanceFormatted(): string | undefined
 
-  getUSDBalanceFormatted(): Promise<string | undefined>
+  getUSDBalanceFormatted(): string | undefined
 
-  getTokenRate(amount: string): Promise<number | undefined>
+  getTokenRate(amount: string): number | undefined
 
-  getTokenRateFormatted(amount: string): Promise<string | undefined>
+  getTokenRateFormatted(amount: string): string | undefined
 
   refreshBalance(principal: Principal): Promise<FT>
 
@@ -49,7 +49,7 @@ export interface FT {
 
   getTokenFeeFormatted(): string
 
-  getTokenFeeFormattedUsd(): Promise<string | undefined>
+  getTokenFeeFormattedUsd(): string | undefined
 
   isHideable(): boolean
 }

@@ -11,11 +11,19 @@ export class Icrc1RegistryService {
     const cache = localStorageTTL.getEvenExpiredItem(icrc1RegistryCacheName)
     if (!cache) {
       const response = await iCRC1Registry.get_canisters_by_root(root)
-      localStorageTTL.setItem(icrc1RegistryCacheName, JSON.stringify(response), 30)
+      localStorageTTL.setItem(
+        icrc1RegistryCacheName,
+        JSON.stringify(response),
+        30,
+      )
       return response
     } else if (cache && cache.expired) {
       iCRC1Registry.get_canisters_by_root(root).then((response) => {
-        localStorageTTL.setItem(icrc1RegistryCacheName, JSON.stringify(response), 30)
+        localStorageTTL.setItem(
+          icrc1RegistryCacheName,
+          JSON.stringify(response),
+          30,
+        )
       })
       return JSON.parse(cache.object)
     } else {

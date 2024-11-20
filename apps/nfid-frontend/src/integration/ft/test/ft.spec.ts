@@ -60,7 +60,7 @@ describe("ft test suite", () => {
       const icpResult = result.items.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
-      icpResult?.init(principal)
+      await icpResult?.init(principal)
       expect(icpResult).toBeDefined()
       expect(icpResult!.getTokenBalanceFormatted()).toEqual("0.0002")
       expect(icpResult!.getTokenCategory()).toEqual("Native")

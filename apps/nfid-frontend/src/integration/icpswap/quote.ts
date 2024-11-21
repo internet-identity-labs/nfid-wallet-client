@@ -15,9 +15,9 @@ export interface Quote {
   getWidgetFee(): string
   getMaxSlippagge(): string
   getGuaranteedAmount(): string
-  getSourceAmount(): BigNumber
+  getSourceUserInputAmount(): BigNumber
+  getSourceSwapAmount(): BigNumber
   getTargetAmount(): BigNumber
-  getAmountWithoutWidgetFee(): BigNumber
   getWidgetFeeAmount(): bigint
   getPriceImpact(): PriceImpact | undefined
 }

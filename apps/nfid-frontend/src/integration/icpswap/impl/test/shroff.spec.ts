@@ -41,10 +41,9 @@ describe("shroff test", () => {
 
     expect(quote.getSourceAmountPrettified()).toEqual("0.0015")
     quote.getWidgetFeeAmount()
-    BigInt(quote.getAmountWithoutWidgetFee().toNumber())
   })
 
-  it.skip("shroff transfer test", async function () {
+  it("shroff transfer test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     const shroff = await new ShroffBuilder()

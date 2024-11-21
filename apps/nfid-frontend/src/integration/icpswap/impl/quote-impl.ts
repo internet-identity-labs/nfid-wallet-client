@@ -6,6 +6,7 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { PriceImpactStatus } from "../types/enums"
 import { PriceImpact } from "../types/types"
+import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 export const WIDGET_FEE = 0.00875
 const LIQUIDITY_PROVIDER_FEE = 0.003
@@ -17,10 +18,11 @@ export class QuoteImpl implements Quote {
   private readonly target: ICRC1TypeOracle
   private readonly targetPriceUSD: BigNumber | undefined
   private readonly sourcePriceUSD: BigNumber | undefined
-  private readonly amountWithoutWidgetFee: BigNumber
+  private readonly sourceCalculator: SourceInputCalculator
 
   constructor(
     userInputAmount: number,
+    sourceCalculator: SourceInputCalculator,
     quote: bigint,
     source: ICRC1TypeOracle,
     target: ICRC1TypeOracle,
@@ -33,10 +35,7 @@ export class QuoteImpl implements Quote {
     this.target = target
     this.targetPriceUSD = targetPriceUSD
     this.sourcePriceUSD = sourcePriceUSD
-    this.amountWithoutWidgetFee = new BigNumber(userInputAmount)
-      .multipliedBy(10 ** this.source.decimals)
-      .minus(calculateWidgetFee(userInputAmount, this.source.decimals))
-      .minus(Number(this.source.fee))
+    this.sourceCalculator = sourceCalculator
   }
 
   getTargetAmountUSD(): string {
@@ -73,7 +72,7 @@ export class QuoteImpl implements Quote {
       return "Not listed"
     }
     const prettified = this.sourcePriceUSD
-      .multipliedBy(this.getSourceAmount())
+      .multipliedBy(this.getSourceUserInputAmount())
       .div(10 ** this.source.decimals)
       .toFixed(2)
       .replace(TRIM_ZEROS, "")
@@ -104,7 +103,7 @@ export class QuoteImpl implements Quote {
   }
 
   getSourceAmountPrettified(): string {
-    return this.getSourceAmount()
+    return this.getSourceUserInputAmount()
       .div(10 ** this.source.decimals)
       .toFixed(this.source.decimals)
       .replace(TRIM_ZEROS, "")
@@ -112,7 +111,7 @@ export class QuoteImpl implements Quote {
 
   getSourceAmountPrettifiedWithSymbol(): string {
     return (
-      this.getSourceAmount()
+      this.getSourceUserInputAmount()
         .div(10 ** this.source.decimals)
         .toFixed(this.source.decimals)
         .replace(TRIM_ZEROS, "") +
@@ -124,7 +123,7 @@ export class QuoteImpl implements Quote {
   getQuoteRate(): string {
     const quote = this.getTargetAmount().div(10 ** this.target.decimals)
     const rate = quote.div(
-      this.getSourceAmount().div(10 ** this.source.decimals),
+      BigNumber(Number(this.sourceCalculator.getSourceSwapAmount())).div(10 ** this.source.decimals),
     )
     return `1 ${this.source.symbol} = ${rate
       .toNumber()
@@ -133,7 +132,7 @@ export class QuoteImpl implements Quote {
   }
 
   getLiquidityProviderFee(): string {
-    const lpFee = this.getSourceAmount()
+    const lpFee = this.getSourceSwapAmount()
       .multipliedBy(LIQUIDITY_PROVIDER_FEE)
       .div(10 ** this.source.decimals)
       .toFixed(this.source.decimals)
@@ -148,7 +147,7 @@ export class QuoteImpl implements Quote {
     if (!sourcePrice || !targetPrice) return
 
     const sourcePriceFormatted = sourcePrice
-      .multipliedBy(this.getSourceAmount())
+      .multipliedBy(this.getSourceSwapAmount())
       .div(10 ** this.source.decimals)
 
     const targetPriceFormatted = targetPrice
@@ -186,31 +185,19 @@ export class QuoteImpl implements Quote {
     return "0%"
   }
 
-  getSourceAmount(): BigNumber {
+  getSourceUserInputAmount(): BigNumber {
     return BigNumber(this.sourceAmount).multipliedBy(10 ** this.source.decimals)
+  }
+
+  getSourceSwapAmount(): BigNumber {
+    return BigNumber(Number(this.sourceCalculator.getSourceSwapAmount()))
   }
 
   getTargetAmount(): BigNumber {
     return BigNumber(Number(this.quote))
   }
 
-  getAmountWithoutWidgetFee(): BigNumber {
-    return this.amountWithoutWidgetFee
-  }
-
   getWidgetFeeAmount(): bigint {
-    return BigInt(calculateWidgetFee(this.sourceAmount, this.source.decimals))
+    return this.sourceCalculator.getWidgetFee()
   }
-}
-
-export function calculateWidgetFee(
-  sourceAmount: number,
-  sourceDecimals: number,
-): number {
-  return parseFloat(
-    BigNumber(sourceAmount)
-      .multipliedBy(10 ** sourceDecimals)
-      .multipliedBy(WIDGET_FEE)
-      .toFixed(0),
-  )
 }

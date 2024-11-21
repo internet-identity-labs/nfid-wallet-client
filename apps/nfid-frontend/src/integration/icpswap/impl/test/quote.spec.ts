@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js"
 import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
 
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 describe("quote test", () => {
   jest.setTimeout(200000)
@@ -16,6 +17,7 @@ describe("quote test", () => {
     const target = st.find((icrc1) => icrc1.ledger === targetLedger)
     const quote = new QuoteImpl(
       0.5,
+      new SourceInputCalculator(BigInt(0.5 * 10 ** source!.decimals), source!.fee),
       BigInt(6631),
       source!,
       target!,
@@ -26,10 +28,10 @@ describe("quote test", () => {
 
     expect(quote.getSourceAmountPrettified()).toEqual("0.5")
     expect(quote.getTargetAmountPrettified()).toEqual("0.00006621")
-    expect(quote.getQuoteRate()).toEqual("1 ICP = 0.00013262 ckBTC")
-    expect(quote.getLiquidityProviderFee()).toEqual("0.0015 ICP")
+    expect(quote.getQuoteRate()).toEqual("1 ICP = 0.00013387 ckBTC")
+    expect(quote.getLiquidityProviderFee()).toEqual("0.00148598 ICP")
     expect(quote.getMaxSlippagge()).toEqual("0%")
-    expect(quote.getWidgetFee()).toEqual("0.004375 ICP")
+    expect(quote.getWidgetFee()).toEqual("0.00437238 ICP")
     expect(quote.getTargetAmountUSD()).toEqual("4.22 USD")
     expect(quote.getSourceAmountUSD()).toEqual("4.22 USD")
     expect(quote.getGuaranteedAmount()).toEqual("0.00006621 ckBTC")
@@ -38,7 +40,7 @@ describe("quote test", () => {
       "0.0000002 ckBTC",
     ])
     expect(priceImpactResult).toBeDefined()
-    expect(priceImpactResult!.priceImpact).toEqual("-0.02%")
+    expect(priceImpactResult!.priceImpact).toEqual("0.92%")
     expect(priceImpactResult!.status).toEqual("low")
   })
 })

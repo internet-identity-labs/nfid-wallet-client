@@ -59,7 +59,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
-    return balanceNum.minus(feeNum).isGreaterThan(0)
+    return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
   }, [userBalance, fee, token])
 
   const maxHandler = useCallback(() => {
@@ -70,7 +70,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
     const maxAmount = balanceNum.minus(feeNum)
-    const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
+    const formattedValue = formatAssetAmountRaw(Number(balanceNum), decimals)
     setInputAmountValue(formattedValue)
 
     setValue("amount", formattedValue, { shouldValidate: true })

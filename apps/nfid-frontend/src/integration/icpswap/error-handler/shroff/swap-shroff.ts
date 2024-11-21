@@ -19,6 +19,10 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       this.delegationIdentity = delegationIdentity
+
+      const balance = await this.swapPoolActor.getUserUnusedBalance(this.delegationIdentity!.getPrincipal())
+      console.debug("Balance: " + JSON.stringify(balance))
+
       console.debug("Transaction restarted")
       if (this.swapTransaction.getError() === undefined) {
         console.debug("Swap timeout error")
@@ -40,10 +44,16 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
 
   protected async withdraw(): Promise<bigint> {
     const args: WithdrawArgs = {
-      amount: BigInt(this.requestedQuote!.getSourceAmount().toNumber()),
+      amount: BigInt(this.requestedQuote!.getSourceSwapAmount().toNumber()),
       token: this.source.ledger,
       fee: this.source.fee,
     }
+
+
+    const balance = await this.swapPoolActor.getUserUnusedBalance(this.delegationIdentity!.getPrincipal())
+    console.debug("Balance: " + JSON.stringify(balance))
+    console.debug("Withdraw args: " + JSON.stringify(args))
+
     try {
       return this.swapPoolActor.withdraw(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
@@ -53,6 +63,7 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
         }
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
+
         throw new WithdrawError(JSON.stringify(result.err))
       })
     } catch (e) {

@@ -11,6 +11,7 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
   ChooseFtModal,
+  Skeleton,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S } from "@nfid/integration/token/constants"
@@ -148,8 +149,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           >
             {balance === undefined ? (
               <span id="balance">
-                {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                {token.getTokenSymbol()}
+                {token.isInited() ? (
+                  <>
+                    {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                    {token.getTokenSymbol()}
+                  </>
+                ) : (
+                  <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>
+                )}
               </span>
             ) : (
               <span>{Number(balance) / E8S} ICP</span>

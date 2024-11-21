@@ -12,6 +12,9 @@ const ActivityPage = () => {
   const { data: activeTokens = [], isLoading: isActiveLoading } = useSWR(
     "activeTokens",
     fetchActiveTokens,
+    {
+      revalidateOnFocus: false,
+    },
   )
 
   return (

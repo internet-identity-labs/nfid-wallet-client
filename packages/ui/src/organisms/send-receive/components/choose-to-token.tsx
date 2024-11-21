@@ -118,10 +118,14 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <div className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;
             <span>
-              <span>
-                {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                {token.getTokenSymbol()}
-              </span>
+              {token.isInited() ? (
+                <>
+                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                  {token.getTokenSymbol()}
+                </>
+              ) : (
+                <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>
+              )}
             </span>
           </div>
         </div>

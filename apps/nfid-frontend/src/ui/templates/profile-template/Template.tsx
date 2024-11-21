@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
@@ -125,14 +126,21 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const { data: activeTokens = [] } = useSWR(
     "activeTokens",
     fetchActiveTokens,
-    {
-      revalidateOnFocus: false,
-    },
+    { revalidateOnFocus: false },
   )
 
   const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
-    "fullUsdValue",
-    () => getFullUsdValue(activeTokens),
+    activeTokens.length > 0 ? "fullUsdValue" : null,
+    async () => {
+      const { publicKey } = await getUserPrincipalId()
+      await Promise.all(
+        activeTokens.map((token) => {
+          if (token.isInited()) return token
+          return token.init(Principal.fromText(publicKey))
+        }),
+      )
+      return getFullUsdValue(activeTokens)
+    },
   )
 
   const {

@@ -61,6 +61,10 @@ export const TransferFT = ({
   const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
     "activeTokens",
     fetchActiveTokens,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    },
   )
 
   const token = useMemo(() => {
@@ -80,11 +84,6 @@ export const TransferFT = ({
   const { watch } = formMethods
   const amount = watch("amount")
   const to = watch("to")
-
-  const { data: usdRate } = useSWR(
-    token ? ["tokenRate", token.getTokenAddress(), amount] : null,
-    ([_, __, amount]) => token?.getTokenRateFormatted(amount.toString()),
-  )
 
   const balance = useMemo(() => {
     return balances?.find(
@@ -134,7 +133,7 @@ export const TransferFT = ({
           resolve({} as ITransferResponse)
         }),
         title: `${amount} ${token.getTokenSymbol()}`,
-        subTitle: usdRate!,
+        subTitle: token?.getTokenRateFormatted(amount.toString())!,
         isAssetPadding: true,
       })
     }
@@ -180,7 +179,7 @@ export const TransferFT = ({
       title: `${Number(amount)
         .toFixed(token?.getTokenDecimals())
         .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
-      subTitle: usdRate!,
+      subTitle: token?.getTokenRateFormatted(amount.toString())!,
       isAssetPadding: true,
       callback: () => {
         updateTokenBalance([token.getTokenAddress()], activeTokens)
@@ -193,7 +192,6 @@ export const TransferFT = ({
     onTransfer,
     token,
     selectedVaultsAccountAddress,
-    usdRate,
     amount,
     to,
   ])
@@ -220,7 +218,6 @@ export const TransferFT = ({
           profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
         }
         vaultsBalance={balance?.balance["ICP"]}
-        usdRate={usdRate}
       />
     </FormProvider>
   )

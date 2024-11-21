@@ -1,6 +1,6 @@
 Feature: Send FT flow
 
-  @sendft @skip
+  @sendft
   Scenario Outline: User makes FT transaction
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

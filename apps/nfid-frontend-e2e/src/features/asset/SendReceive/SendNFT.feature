@@ -1,6 +1,6 @@
 Feature: Send NFT flow
 
-  @sendnft @skip
+  @sendnft
   Scenario Outline: User makes NFT transaction
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

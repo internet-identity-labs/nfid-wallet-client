@@ -1,8 +1,8 @@
-Feature: Assets Activity
+Feature: Activity tab
   As a user, I want to see assets transaction history
 
   @activity
-  Scenario Outline: Verify transactions have correct data in activity tab
+  Scenario Outline: User checks his activity history
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     When User goes to activity tab

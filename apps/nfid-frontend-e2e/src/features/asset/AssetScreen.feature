@@ -1,8 +1,8 @@
-Feature: Fungible Asset
+Feature: Tokens tab
   As a user, I want to see fungible assets in profile
 
   @asset
-  Scenario Outline: Verify tokens are displayed with correct category, currency, balance and name in assets
+  Scenario Outline: User checks his tokens
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     And Verifying that tokens are displayed on assets tab

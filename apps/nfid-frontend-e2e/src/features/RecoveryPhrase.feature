@@ -1,5 +1,4 @@
-Feature: User should be able to register and authenticate from desktop
-
+Feature: Recovery phrase
   @ii-recovery-phrase
   Scenario Outline: User authenticates with Internet Identity recovery phrase
     Given User opens NFID /recover-nfid/enter-recovery-phrase

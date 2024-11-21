@@ -1,8 +1,8 @@
-Feature: Non Fungible Asset
+Feature: NFT tab
   As a user, I check details of a NFT
 
   @nft-details
-  Scenario Outline: Verify NFT details
+  Scenario Outline: User checks his NFTs and details of an NFT
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     When User goes to nfts tab

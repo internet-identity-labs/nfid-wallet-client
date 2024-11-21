@@ -129,7 +129,7 @@ Then(
 )
 
 Then(
-  /^Set (.+) address then send(?: ([^"]*) FT)?$/,
+  /^User sets address to (.+) then clicks the "Send" button(?: ([^"]*) FT)?$/,
   async (address: string, amount: string) => {
     amount
       ? await Assets.sendFTto(address, amount)
@@ -141,7 +141,7 @@ Then(/^User sets the amount to ([^"]*)/, async (amount: string) => {
   await Assets.amountField.setValue(amount)
 })
 
-Then(/^Transaction is success$/, async () => {
+Then(/^Verifying that the transaction is success$/, async () => {
   await Assets.successWindow.waitForExist({
     timeout: 80000,
     interval: 1000,

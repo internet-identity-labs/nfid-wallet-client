@@ -19,7 +19,7 @@ Then(/^Asset appears with label ([^"]*)$/, async (label: string) => {
   })
 })
 
-Then(/^Verifying that only (\d+) asset (is|are) displayed/, async (amount: number) => {
+Then(/^Verifying that only (\d+) asset (?:is|are) displayed/, async (amount: number) => {
   await Profile.waitForTokens(amount)
 })
 
@@ -271,7 +271,7 @@ Then(
   },
 )
 
-Then(/^Verifying that (\d+) NFT (is|are) displayed on collectibles page$/, async (amount: number) => {
+Then(/^Verifying that (\d+) NFT (?:is|are) displayed on collectibles page$/, async (amount: number) => {
   await Nft.getNftCollectiblesAmount(amount)
 })
 

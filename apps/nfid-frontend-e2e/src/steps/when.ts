@@ -63,6 +63,7 @@ When(/^User clicks on recover button$/, async () => {
 })
 
 When(/^User goes to (.*) tab$/, async (tab: string) => {
+  await browser.pause(9999999)
   const tabMap: { [key: string]: any } = {
     activity: [Assets.activityTab, Activity.filterButton],
     nfts: [Assets.NFTtab, Nft.randomTokenOnNFTtab],

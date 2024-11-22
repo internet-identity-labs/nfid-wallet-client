@@ -15,10 +15,6 @@ export class SourceInputCalculator {
       .multipliedBy(WIDGET_FEE)
       .toFixed(0))
     this.sourceSwapAmount = userInputAmount - this.sourceFee - this.widgetFee - this.sourceFee - this.sourceFee
-    console.log("sourceSwapAmount: ", this.sourceSwapAmount)
-    console.log("widgetFee: ", this.widgetFee)
-    console.log("sourceFee: ", this.sourceFee)
-    console.log("userInputAmount: ", this.userInputAmount)
   }
 
   getSourceSwapAmount(): bigint {

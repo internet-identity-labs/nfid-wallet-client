@@ -2,7 +2,7 @@ import { Security } from "packages/ui/src/pages/security"
 import React, { useMemo, useCallback } from "react"
 import useSWR from "swr"
 
-import { Loader, Toggle } from "@nfid-frontend/ui"
+import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -57,23 +57,32 @@ const SecurityPage = () => {
     [refetchDevices],
   )
 
-  const renderPasskeys = useCallback(
-    () => (
+  const renderPasskeys = useCallback(() => {
+    return (
       <>
-        {devices?.passkeys.map((device, key) => (
-          <PasskeyDeviceItem
-            showLastPasskeyWarning={
-              device.isLegacyDevice ? false : showLastPasskeyWarning
-            }
-            device={device}
-            key={`passkey_device_${key}`}
-            handleWithLoading={handleWithLoading}
-          />
-        ))}
+        {isLoading || isValidating || devices === undefined ? (
+          <PasskeySkeleton rows={3} />
+        ) : (
+          devices?.passkeys.map((device, key) => (
+            <PasskeyDeviceItem
+              showLastPasskeyWarning={
+                device.isLegacyDevice ? false : showLastPasskeyWarning
+              }
+              device={device}
+              key={`passkey_device_${key}`}
+              handleWithLoading={handleWithLoading}
+            />
+          ))
+        )}
       </>
-    ),
-    [devices?.passkeys, showLastPasskeyWarning, handleWithLoading],
-  )
+    )
+  }, [
+    showLastPasskeyWarning,
+    handleWithLoading,
+    devices,
+    isLoading,
+    isValidating,
+  ])
 
   const renderRecoveryOptions = useCallback(
     () => (
@@ -132,7 +141,6 @@ const SecurityPage = () => {
         }
         renderPasskeys={renderPasskeys}
         renderRecoveryOptions={renderRecoveryOptions}
-        isLoading={isLoading || isValidating || devices === undefined}
       />
     </ProfileTemplate>
   )

@@ -24,21 +24,21 @@ Then(/^Verifying that only (\d+) asset (?:is|are) displayed/, async (amount: num
 })
 
 Then(
-  /^Verifying that there is ([^"]*) token with currency ([^"]*) on category ([^"]*) and not 0 balance$/,
-  async (tokenName: string, currency: string, category: string) => {
+  /^Verifying that there is ([^"]*) token with currency ([^"]*) on category ([^"]*), token balance ([^"]*) and USD balance is not 0$/,
+  async (tokenName: string, currency: string, category: string, balance: string) => {
     await softAssertAll(
       async () =>
-        expect(await (await Assets.tokenBalance(tokenName)).getText()).not.toBe(
-          "0",
-        ),
+        expect(await (await Assets.tokenBalance(tokenName))
+          .getText()).toBe(balance),
       async () =>
-        expect(await (await Assets.getCurrency(tokenName)).getText()).toContain(
-          currency,
-        ),
+        expect(await (await Assets.tokenUSDBalance(tokenName))
+          .getText()).not.toBe("0"),
       async () =>
-        expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(
-          true,
-        ),
+        expect(await (await Assets.getCurrency(tokenName))
+          .getText()).toBe(currency),
+      async () =>
+        expect(await (await Assets.getBlockchain(category))
+          .isDisplayed()).toBe(true),
     )
   },
 )

@@ -69,8 +69,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
-    const maxAmount = balanceNum.minus(feeNum)
-    const formattedValue = formatAssetAmountRaw(Number(balanceNum), decimals)
+    const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
+    const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
     setInputAmountValue(formattedValue)
 
     setValue("amount", formattedValue, { shouldValidate: true })
@@ -97,10 +97,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),
                 isSwap
-                  ? getMaxAmountFee(
-                      token.getTokenBalance()!,
-                      token.getTokenFee(),
-                    )
+                  //all fees are included
+                  ? BigInt(0)
                   : token.getTokenFee(),
                 decimals,
               )(value)

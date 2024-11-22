@@ -41,8 +41,7 @@ export const validateTransferAmountField =
       return "The transferred sum cannot be excessively large."
     if (valueNum.isEqualTo(0)) return "You can't send 0"
 
-    //TODO handle different send/swap behaviour
-    // if (balanceNum.minus(feeNum).isLessThan(valueNum))
-    //   return "Insufficient funds"
+    if (balanceNum.minus(feeNum).isLessThan(valueNum))
+      return "Insufficient funds"
     return true
   }

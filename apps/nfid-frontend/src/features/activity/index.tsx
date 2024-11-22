@@ -14,6 +14,7 @@ const ActivityPage = () => {
     fetchActiveTokens,
     {
       revalidateOnFocus: false,
+      revalidateOnMount: false,
     },
   )
 

@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
@@ -7,6 +6,7 @@ import {
   fetchActiveTokens,
   getFullUsdValue,
   getUserPrincipalId,
+  initActiveTokens,
 } from "packages/ui/src/organisms/tokens/utils"
 import {
   HTMLAttributes,
@@ -124,23 +124,21 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
   const { data: activeTokens = [] } = useSWR(
-    "activeTokens",
+    isWallet ? "activeTokens" : null,
     fetchActiveTokens,
     { revalidateOnFocus: false },
   )
 
+  const { data: activeInitedTokens = [] } = useSWR(
+    activeTokens.length > 0 && isWallet ? "initedTokens" : null,
+    () => initActiveTokens(activeTokens),
+    { revalidateOnFocus: false },
+  )
+
   const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
-    activeTokens.length > 0 ? "fullUsdValue" : null,
-    async () => {
-      const { publicKey } = await getUserPrincipalId()
-      await Promise.all(
-        activeTokens.map((token) => {
-          if (token.isInited()) return token
-          return token.init(Principal.fromText(publicKey))
-        }),
-      )
-      return getFullUsdValue(activeTokens)
-    },
+    activeInitedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
+    async () => getFullUsdValue(activeInitedTokens),
+    { revalidateOnFocus: false },
   )
 
   const {
@@ -253,7 +251,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
             <>
               <ProfileInfo
                 usdValue={tokensUsdValue}
-                isUsdLoading={isUsdLoading}
+                isUsdLoading={isUsdLoading || !activeInitedTokens.length}
                 isAddressLoading={isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

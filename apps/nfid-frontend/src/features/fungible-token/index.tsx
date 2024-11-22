@@ -39,6 +39,7 @@ const TokensPage = () => {
     mutate: refetchActiveTokens,
   } = useSWR("activeTokens", fetchActiveTokens, {
     revalidateOnFocus: false,
+    revalidateOnMount: false,
   })
 
   const { data: allTokens = [] } = useSWR(

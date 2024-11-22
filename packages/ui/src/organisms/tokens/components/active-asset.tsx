@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { HTMLAttributes, FC, useState, useEffect } from "react"
+import { HTMLAttributes, FC, useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import {
@@ -30,17 +30,18 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   dropdownPosition,
   ...props
 }) => {
-  const [isBalanceLoading, setIsBalanceLoading] = useState(false)
+  const [isBalanceLoading, setIsBalanceLoading] = useState(true)
 
   useEffect(() => {
-    const initTokens = async () => {
-      setIsBalanceLoading(true)
+    const initToken = async () => {
       const { publicKey } = await getUserPrincipalId()
-      await token.init(Principal.fromText(publicKey))
+      const principal = Principal.fromText(publicKey)
+
+      await token.init(principal)
       setIsBalanceLoading(false)
     }
 
-    initTokens()
+    initToken()
   }, [token])
 
   return (

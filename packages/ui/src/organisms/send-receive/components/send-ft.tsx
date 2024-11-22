@@ -29,7 +29,6 @@ export interface TransferFTUiProps {
   submit: () => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
   vaultsBalance?: bigint | undefined
-  usdRate?: string
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -46,7 +45,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   submit,
   setSelectedVaultsAccountAddress,
   vaultsBalance,
-  usdRate,
 }) => {
   const {
     resetField,
@@ -76,7 +74,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         token={token}
         balance={vaultsBalance}
         setFromChosenToken={setChosenToken}
-        usdRate={usdRate}
+        usdRate={token?.getTokenRateFormatted(amount.toString())}
         tokens={tokens}
         title="Token to send"
       />

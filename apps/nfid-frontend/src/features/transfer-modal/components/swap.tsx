@@ -50,12 +50,12 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
     "activeTokens",
     fetchActiveTokens,
-    { revalidateOnFocus: false },
+    { revalidateOnFocus: false, revalidateOnMount: false },
   )
   const { data: allTokens = [], isLoading: isAllTokensLoading } = useSWR(
     ["allTokens", ""],
     ([, query]) => fetchAllTokens(query),
-    { revalidateOnFocus: false },
+    { revalidateOnFocus: false, revalidateOnMount: false },
   )
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined

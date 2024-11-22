@@ -6,6 +6,7 @@ import {
   fetchActiveTokens,
   getFullUsdValue,
   getUserPrincipalId,
+  initActiveTokens,
 } from "packages/ui/src/organisms/tokens/utils"
 import {
   HTMLAttributes,
@@ -123,16 +124,21 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
   const { data: activeTokens = [] } = useSWR(
-    "activeTokens",
+    isWallet ? "activeTokens" : null,
     fetchActiveTokens,
-    {
-      revalidateOnFocus: false,
-    },
+    { revalidateOnFocus: false },
+  )
+
+  const { data: activeInitedTokens = [] } = useSWR(
+    activeTokens.length > 0 && isWallet ? "initedTokens" : null,
+    () => initActiveTokens(activeTokens),
+    { revalidateOnFocus: false },
   )
 
   const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
-    "fullUsdValue",
-    () => getFullUsdValue(activeTokens),
+    activeInitedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
+    async () => getFullUsdValue(activeInitedTokens),
+    { revalidateOnFocus: false },
   )
 
   const {
@@ -245,7 +251,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
             <>
               <ProfileInfo
                 usdValue={tokensUsdValue}
-                isUsdLoading={isUsdLoading}
+                isUsdLoading={isUsdLoading || !activeInitedTokens.length}
                 isAddressLoading={isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

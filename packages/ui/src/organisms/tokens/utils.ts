@@ -22,6 +22,17 @@ export const fetchActiveTokens = async () => {
   return data.items
 }
 
+export const initActiveTokens = async (activeTokens: FT[]) => {
+  const { publicKey } = await getUserPrincipalId()
+
+  return await Promise.all(
+    activeTokens.map((token) => {
+      if (token.isInited()) return token
+      return token.init(Principal.fromText(publicKey))
+    }),
+  )
+}
+
 export const fetchAllTokens = async (searchQuery: string) => {
   const { userPrincipal } = await getUserPrincipalId()
   return await ftService.getAllTokens(userPrincipal, searchQuery)

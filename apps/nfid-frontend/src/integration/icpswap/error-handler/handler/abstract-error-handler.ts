@@ -6,6 +6,7 @@ import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstract {
   async completeTransaction(
@@ -28,8 +29,12 @@ export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstra
       .div(10 ** sourceLedger.decimals)
       .toNumber()
 
+    console.debug("User transaction: ", trs)
+    const preCalculation = new SourceInputCalculator(BigInt(Number(trs.getSourceAmount())), sourceLedger.fee)
+
     const quote = new QuoteImpl(
       userSourceInput,
+      preCalculation,
       BigInt(trs.getQuote()),
       sourceLedger,
       targetLedger,

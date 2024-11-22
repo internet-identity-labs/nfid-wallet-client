@@ -41,7 +41,6 @@ describe("shroff test", () => {
 
     expect(quote.getSourceAmountPrettified()).toEqual("0.0015")
     quote.getWidgetFeeAmount()
-    BigInt(quote.getAmountWithoutWidgetFee().toNumber())
   })
 
   it.skip("shroff transfer test", async function () {

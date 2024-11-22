@@ -5,7 +5,7 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
 import { errorTypes } from "src/integration/icpswap/impl/constants"
-import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
+import {QuoteImpl} from "src/integration/icpswap/impl/quote-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
 import {
@@ -42,6 +42,7 @@ import {
   SwapArgs,
   WithdrawArgs,
 } from "./../idl/SwapPool.d"
+import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 export class ShroffImpl implements Shroff {
   private readonly zeroForOne: boolean
@@ -102,9 +103,10 @@ export class ShroffImpl implements Shroff {
     const amountInDecimals = new BigNumber(amount).multipliedBy(
       10 ** this.source.decimals,
     )
+    const preCalculation = new SourceInputCalculator(BigInt(amountInDecimals.toNumber()), this.source.fee)
 
     const args: SwapArgs = {
-      amountIn: amountInDecimals.toFixed(),
+      amountIn: preCalculation.getSourceSwapAmount().toString(),
       zeroForOne: this.zeroForOne,
       amountOutMinimum: "0",
     }
@@ -124,6 +126,7 @@ export class ShroffImpl implements Shroff {
     if (hasOwnProperty(quote, "ok")) {
       this.requestedQuote = new QuoteImpl(
         amount,
+        preCalculation,
         quote.ok as bigint,
         this.source,
         this.target,
@@ -154,7 +157,7 @@ export class ShroffImpl implements Shroff {
       this.target.ledger,
       this.source.ledger,
       this.requestedQuote.getTargetAmount().toNumber(),
-      BigInt(this.requestedQuote.getSourceAmount().toNumber()),
+      BigInt(this.requestedQuote.getSourceUserInputAmount().toNumber()),
     )
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
@@ -184,6 +187,11 @@ export class ShroffImpl implements Shroff {
 
   async validateQuote(): Promise<Quote> {
     const legacyQuote = this.requestedQuote
+
+    if (!this.requestedQuote) {
+      throw new Error("Quote is required")
+    }
+
     const updatedQuote = await this.getQuote(
       Number(this.requestedQuote?.getSourceAmountPrettified()),
     )
@@ -202,7 +210,7 @@ export class ShroffImpl implements Shroff {
 
     try {
       const amountDecimals = this.requestedQuote
-        .getSourceAmount()
+        .getSourceSwapAmount()
         .plus(Number(this.source.fee))
       const args: DepositArgs = {
         fee: this.source.fee,
@@ -236,9 +244,8 @@ export class ShroffImpl implements Shroff {
 
   protected async transferToSwap() {
     try {
-      const amountDecimals = this.requestedQuote!.getSourceAmount().plus(
-        Number(this.source.fee),
-      )
+      const amountDecimals = this.requestedQuote!.getSourceSwapAmount()
+        .plus(Number(this.source.fee))
 
       const transferArgs: TransferArg = {
         amount: BigInt(amountDecimals.toNumber()),
@@ -310,7 +317,7 @@ export class ShroffImpl implements Shroff {
   protected async swapOnExchange(): Promise<bigint> {
     try {
       const args: SwapArgs = {
-        amountIn: this.requestedQuote!.getSourceAmount().toString(),
+        amountIn: this.requestedQuote!.getSourceSwapAmount().toString(),
         zeroForOne: this.zeroForOne,
         amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
       }

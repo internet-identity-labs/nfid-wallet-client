@@ -17,6 +17,9 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
       throw new Error("Swap transaction not set")
     }
     try {
+      const balance = await this.swapPoolActor.getUserUnusedBalance(this.delegationIdentity!.getPrincipal())
+      console.debug("Balance: " + JSON.stringify(balance))
+
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       this.delegationIdentity = delegationIdentity
       console.debug("Transaction restarted")
@@ -32,6 +35,7 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
     } catch (e) {
       console.error("Swap error:", e)
       this.swapPoolActor.getWithdrawErrorLog().then((log) => {
+        console.debug("Withdraw logs: " + JSON.stringify(log))
         if (hasOwnProperty(log, "ok")) {
           const withdrawLogs = log.ok as Array<[bigint, WithdrawErrorLog]>
           if (withdrawLogs.length > 0) {

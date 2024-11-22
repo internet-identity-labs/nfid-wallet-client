@@ -1,7 +1,7 @@
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { FC } from "react"
 
-import { Table, Loader } from "@nfid-frontend/ui"
+import { Table } from "@nfid-frontend/ui"
 
 export interface SecurityProps {
   primarySignInElement: JSX.Element
@@ -9,7 +9,6 @@ export interface SecurityProps {
   addPasskeyElement: JSX.Element
   renderPasskeys: () => JSX.Element
   renderRecoveryOptions: () => JSX.Element
-  isLoading: boolean
 }
 
 export const Security: FC<SecurityProps> = ({
@@ -18,7 +17,6 @@ export const Security: FC<SecurityProps> = ({
   addPasskeyElement,
   renderPasskeys,
   renderRecoveryOptions,
-  isLoading,
 }) => {
   return (
     <>
@@ -78,7 +76,6 @@ export const Security: FC<SecurityProps> = ({
       >
         {renderRecoveryOptions()}
       </ProfileContainer>
-      <Loader isLoading={isLoading} />
     </>
   )
 }

@@ -12,7 +12,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
   ({ decimals, disabled, isLoading = false, value, name, onChange }, ref) => {
-    console.log("disabled", disabled)
     const fontSize = useMemo(() => {
       if (!value) return 34
       if (value.length > 16) {

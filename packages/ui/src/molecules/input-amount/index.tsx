@@ -50,6 +50,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             onChange={(e) => {
               onChange?.(e)
             }}
+            disabled={disabled}
             id="amount"
             className={clsx(
               "min-w-0 font-semibold leading-10 bg-transparent",

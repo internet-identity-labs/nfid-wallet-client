@@ -6,7 +6,7 @@ Feature: DemoApp send functionality
     And User is already authenticated by <nfid number> anchor
     And User opens the demoApp
     When User authenticates to DemoTransactions with shared NFID Wallet address using <profileType> profile with <target> canister and <derivationOrigin>
-    Then Principal, Address, Targets are correct:
+    Then Verifying that Principal, Address, Targets are correct:
       | principal | <wallet address> |
       | address   | <account ID>     |
       | targets   | <target>         |
@@ -26,12 +26,12 @@ Feature: DemoApp send functionality
     And User is already authenticated by <nfid number> anchor
     And User opens the demoApp
     When User authenticates to DemoTransactions with shared NFID Wallet address using <profileType> profile with <target> canister
-    Then Principal, Address, Targets are correct:
+    Then Verifying that Principal, Address, Targets are correct:
       | principal | <wallet address> |
       | address   | <account ID>     |
       | targets   | <target>         |
     When User updates list of targets by <target>,<target>,<target>
-    Then Principal, Address, Targets are correct:
+    Then Verifying that Principal, Address, Targets are correct:
       | principal | <wallet address>           |
       | address   | <account ID>               |
       | targets   | <target>,<target>,<target> |

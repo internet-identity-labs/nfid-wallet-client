@@ -9,12 +9,12 @@ import HomePage from "../pages/home-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 
-When(/^User is logged in$/, async () => {
+When(/^Verifying that user is logged in$/, async () => {
   await HomePage.waitForLoaderDisappear()
   await Profile.menuButton.waitForClickable({ timeout: 20000 })
 })
 
-When(/^Tokens displayed on user assets$/, async () => {
+When(/^Verifying that tokens are displayed on assets tab$/, async () => {
   await Profile.waitUntilBalanceLoaded()
   await Profile.waitForTokensAppear()
 })
@@ -26,20 +26,20 @@ When(
       retry: 2,
     },
   },
-  async function (anchor: number) {
+  async function(anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
-    const response = await browser.executeAsync(function (
-      authState: AuthState,
-      done,
-    ) {
-      // @ts-ignore
-      if (typeof this.setAuthState === "function") {
+    const response = await browser.executeAsync(function(
+        authState: AuthState,
+        done,
+      ) {
         // @ts-ignore
-        this.setAuthState(authState).then(done)
-      }
-    },
-    testUser.authstate)
+        if (typeof this.setAuthState === "function") {
+          // @ts-ignore
+          this.setAuthState(authState).then(done)
+        }
+      },
+      testUser.authstate)
     console.log("set auth state", { response })
     await HomePage.openPage("/wallet/tokens")
   },
@@ -52,7 +52,7 @@ When(
       retry: 2,
     },
   },
-  async function (anchor: number) {
+  async function(anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
     return (await $("[name='recoveryPhrase']")).setValue(testUser.seed)
   },
@@ -101,7 +101,7 @@ When(/^User switches send type$/, async () => {
   await Assets.switchSendType.click()
 })
 
-When(/^User click the back button in Send window$/, async () => {
+When(/^User clicks the back button in Send window$/, async () => {
   await Assets.waitUntilElementsLoadedProperly(
     Assets.backButtonInSendWindow,
     Assets.switchSendType,

@@ -9,7 +9,7 @@ import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 
-Then(/^User toggle checkbox "([^"]*)?"$/, async function (selector: string) {
+Then(/^User toggle checkbox "([^"]*)?"$/, async function(selector: string) {
   await $(selector).click()
 })
 
@@ -19,12 +19,12 @@ Then(/^Asset appears with label ([^"]*)$/, async (label: string) => {
   })
 })
 
-Then(/^Only (\d+) asset displayed/, async (amount: number) => {
+Then(/^Verifying that only (\d+) asset (?:is|are) displayed/, async (amount: number) => {
   await Profile.waitForTokens(amount)
 })
 
 Then(
-  /^([^"]*) appears with ([^"]*) on ([^"]*) and not 0 balance$/,
+  /^Verifying that there is ([^"]*) token with currency ([^"]*) on category ([^"]*) and not 0 balance$/,
   async (tokenName: string, currency: string, category: string) => {
     await softAssertAll(
       async () =>
@@ -43,7 +43,8 @@ Then(
   },
 )
 
-Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {})
+Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
+})
 
 Then(
   /^Wait while ([^"]*) asset calculated with currency ([^"]*)$/,
@@ -70,25 +71,25 @@ Then(/^User opens choose nft window/, async () => {
   await Assets.chooseNFTinSend.click()
 })
 
-Then(/^User sees option ([^"]*) in dropdown/, async (option: string) => {
+Then(/^Verifying that user sees option ([^"]*) in dropdown/, async (option: string) => {
   await Assets.getTokenByNameInSend(option).waitForExist({ timeout: 15000 })
 })
 
 Then(
-  /^Choose ([^"]*) from send options/,
+  /^User selects ([^"]*) from send options/,
   async (currency: string) => {
     await Assets.openAssetOptionsOnSR()
     await Assets.currencyOption(currency).click()
   },
 )
 
-Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
+Then(/^User selects ([^"]*) from accounts/, async (account: string) => {
   if (account === "NFID") return true
   await Assets.chooseAccountFrom(account)
 })
 
 Then(
-  /^Balance is calculated as ([^"]*) and fee is calculated as ([^"]*)/,
+  /^Verifying that the balance is calculated as ([^"]*) and fee is calculated as ([^"]*)/,
   async (balance: string, fee: string) => {
     await softAssertAll(
       async () => expect(await Assets.getBalance.getText()).toContain(balance),
@@ -98,7 +99,7 @@ Then(
 )
 
 Then(
-  /^Balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
+  /^Verifying that the balance is ([^"]*) and fee is ([^"]*) and currency is ([^"]*)/,
   async (expectedBalance: string, expectedFee: string, currency: string) => {
     let actualBalance
     let actualTransferFee
@@ -128,7 +129,7 @@ Then(
 )
 
 Then(
-  /^Set (.+) address then send(?: ([^"]*) FT)?$/,
+  /^User sets address to (.+) then clicks the "Send" button(?: ([^"]*) FT)?$/,
   async (address: string, amount: string) => {
     amount
       ? await Assets.sendFTto(address, amount)
@@ -136,11 +137,11 @@ Then(
   },
 )
 
-Then(/^Set amount ([^"]*)/, async (amount: string) => {
+Then(/^User sets the amount to ([^"]*)/, async (amount: string) => {
   await Assets.amountField.setValue(amount)
 })
 
-Then(/^Transaction is success$/, async () => {
+Then(/^Verifying that the transaction is success$/, async () => {
   await Assets.successWindow.waitForExist({
     timeout: 80000,
     interval: 1000,
@@ -148,8 +149,8 @@ Then(/^Transaction is success$/, async () => {
 })
 
 Then(
-  /^Account ID is ([^"]*) and Principal is ([^"]*)/,
-  async function (account: string, principal: string) {
+  /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
+  async function(account: string, principal: string) {
     const currentAddress = await Assets.getAccountId(true)
     let currentPrincipal = await Assets.getAccountId(false)
 
@@ -157,45 +158,45 @@ Then(
       async () =>
         await expect(
           (await currentAddress.firstAddressPart.getText()) +
-            "..." +
-            (await currentAddress.secondAddressPart.getText()),
+          "..." +
+          (await currentAddress.secondAddressPart.getText()),
         ).toEqual(account),
       async () =>
         await expect(
           (await currentPrincipal.firstAddressPart.getText()) +
-            "..." +
-            (await currentPrincipal.secondAddressPart.getText()),
+          "..." +
+          (await currentPrincipal.secondAddressPart.getText()),
         ).toEqual(principal),
     )
   },
 )
 
-Then(/^Principal, Address, Targets are correct:/, async (data) => {
+Then(/^Verifying that Principal, Address, Targets are correct:/, async (data) => {
   let expectedData = data.rowsHash()
   let usersData = await DemoAppPage.getAuthLogs()
 
   expect(
     String(
       (await (await usersData.get("principal")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("principal")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("principal")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.principal.substring(0, 29) +
-      "..." +
-      expectedData.principal.substring(58, 63),
+    "..." +
+    expectedData.principal.substring(58, 63),
   )
 
   expect(
     String(
       (await (await usersData.get("address")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("address")).secondAddressPart.getText()),
+      "..." +
+      (await (await usersData.get("address")).secondAddressPart.getText()),
     ),
   ).toEqual(
     expectedData.address.substring(0, 29) +
-      "..." +
-      expectedData.address.substring(59, 64),
+    "..." +
+    expectedData.address.substring(59, 64),
   )
 
   await browser.waitUntil(
@@ -238,7 +239,7 @@ Then(
 )
 
 Then(
-  /^Token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
+  /^Verifying that the token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
   async (token: string, collection: string, id?: string) => {
     await Nft.getNftName(token, collection).waitForDisplayed({
       timeout: 5000,
@@ -258,7 +259,7 @@ Then(
 )
 
 Then(
-  /^Details are: standard - ([^"]*), collection - ([^"]*), about - ([^"]*)/,
+  /^Verifying that details are: standard - ([^"]*), collection - ([^"]*), about - ([^"]*)/,
   async (standard: string, collection: string, about: string) => {
     await softAssertAll(
       async () =>
@@ -270,11 +271,11 @@ Then(
   },
 )
 
-Then(/^(\d+) NFT displayed on collectibles page$/, async (amount: number) => {
+Then(/^Verifying that (\d+) NFT (?:is|are) displayed on collectibles page$/, async (amount: number) => {
   await Nft.getNftCollectiblesAmount(amount)
 })
 
-Then(/^Switch to table$/, async () => {
+Then(/^User switches to table view$/, async () => {
   await Nft.switchToTable()
 })
 
@@ -286,7 +287,7 @@ Then(
 )
 
 Then(
-  /^The first raw has the next values: ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) & ([^"]*) in activity section$/,
+  /^Verifying that the first raw has the next values: type ([^"]*), date ([^"]*), from ([^"]*), to ([^"]*), price ([^"]*) in activity section$/,
   async (
     type: string,
     date: string,
@@ -318,12 +319,12 @@ Then(/^I should see filter button in Activity tab$/, async () => {
   await Activity.filterButton.waitForDisplayed({ timeout: 10000 })
 })
 
-Then(/^There are (\d+) activities in the table$/, async (amount: number) => {
+Then(/^Verifying that there are (\d+) activities in the table$/, async (amount: number) => {
   expect(await Activity.getActivitiesLength()).toEqual(amount)
 })
 
 Then(
-  /^There is transaction ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*) ([^"]*)$/,
+  /^Verifying that there is the transaction with action type ([^"]*), currency ([^"]*), type ([^"]*), amount ([^"]*), timestamp ([^"]*), "From" field ([^"]*) and "To" field ([^"]*)$/,
   async (
     action: string,
     currency: string,

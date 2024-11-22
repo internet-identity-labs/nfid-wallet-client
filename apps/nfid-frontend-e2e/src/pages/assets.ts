@@ -81,6 +81,12 @@ export class Assets {
     return locator
   }
 
+  public async tokenUSDBalance(tokenName: string) {
+    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_usd`)
+    await locator.waitForDisplayed({ timeout: 10000 })
+    return locator
+  }
+
   public tokenLabel(label) {
     return $(`#token_${label.replace(/\s/g, "")}`)
   }

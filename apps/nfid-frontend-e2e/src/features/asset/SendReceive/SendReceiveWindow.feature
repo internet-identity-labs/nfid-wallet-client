@@ -4,7 +4,7 @@ Feature: SendReceive dialog window
   Scenario Outline: User is able to select NFT to send. User checks his balance and fee during send flow
     Given User opens NFID site
     And User is already authenticated by <NFID number> anchor
-    And Verifying that only 1 asset is displayed
+    And Verifying that tokens are displayed on assets tab
     When User opens send nft dialog window
     And User opens choose nft window
     Then Verifying that user sees option <nft> in dropdown

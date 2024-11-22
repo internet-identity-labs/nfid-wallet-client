@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
 import { FC, useState } from "react"
-import { mutate } from "swr"
+import useSWR from "swr"
 
 import {
   IconSvgEyeClosed,
@@ -12,23 +12,30 @@ import {
 
 import { FT } from "frontend/integration/ft/ft"
 
+import { fetchActiveTokens, mutateTokens, TokenAction } from "../utils"
+
 interface FilteredTokenProps {
   token: FT
+  allTokens: FT[]
 }
 
-export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
+export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
   const [isHidden, setIsHidden] = useState(token.getTokenState() === "Active")
 
-  const mutateTokens = () => {
-    mutate("activeTokens")
-    mutate((key) => Array.isArray(key) && key[0] === "allTokens")
-  }
+  const { data: activeTokens = [] } = useSWR(
+    "activeTokens",
+    fetchActiveTokens,
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+    },
+  )
 
   const hideToken = async (token: FT) => {
     setIsHidden(!isHidden)
     try {
-      await token.hideToken()
-      mutateTokens()
+      token.hideToken()
+      mutateTokens(TokenAction.HIDE, token, activeTokens, allTokens)
     } catch (e) {
       toaster.error("Token hiding failed: " + (e as any).message)
     }
@@ -37,8 +44,8 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token }) => {
   const showToken = async (token: FT) => {
     setIsHidden(!isHidden)
     try {
-      await token.showToken()
-      mutateTokens()
+      token.showToken()
+      mutateTokens(TokenAction.SHOW, token, activeTokens, allTokens)
     } catch (e) {
       toaster.error("Token shhowing failed: " + (e as any).message)
     }

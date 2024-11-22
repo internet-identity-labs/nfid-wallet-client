@@ -215,12 +215,13 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                   "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
                 )}
               >
-                {tokens.map((token) => {
+                {tokens.map((token, _, arr) => {
                   if (!token.isHideable()) return
                   return (
                     <FilteredToken
                       key={`${token.getTokenName()}_${token.getTokenAddress()}`}
                       token={token}
+                      allTokens={arr}
                     />
                   )
                 })}

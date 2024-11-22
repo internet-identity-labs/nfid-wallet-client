@@ -1,8 +1,14 @@
 import { Principal } from "@dfinity/principal"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
+import { mutate } from "swr"
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
+
+export enum TokenAction {
+  HIDE = "hide",
+  SHOW = "show",
+}
 
 //TODO move to authState
 export const getUserPrincipalId = async (): Promise<{
@@ -41,4 +47,43 @@ export const fetchAllTokens = async (searchQuery: string) => {
 export const getFullUsdValue = async (ft: FT[]) => {
   const { publicKey } = await getUserPrincipalId()
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
+}
+
+export const mutateTokens = (
+  action: TokenAction,
+  token: FT,
+  activeTokens: FT[],
+  allTokens: FT[],
+) => {
+  const index = activeTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+
+  let updatedActiveTokens = [...activeTokens]
+  let updatedAllTokens = [...allTokens]
+
+  if (action === "hide") {
+    if (index === -1) return
+    updatedActiveTokens.splice(index, 1)
+
+    const allIndex = allTokens.findIndex(
+      (t) => t.getTokenAddress() === token.getTokenAddress(),
+    )
+    if (allIndex !== -1) {
+      updatedAllTokens.splice(allIndex, 1)
+    }
+  } else if (action === "show") {
+    if (index !== -1) return
+    updatedActiveTokens.push(token)
+
+    const allIndex = allTokens.findIndex(
+      (t) => t.getTokenAddress() === token.getTokenAddress(),
+    )
+    if (allIndex === -1) {
+      updatedAllTokens.push(token)
+    }
+  }
+
+  mutate("activeTokens", updatedActiveTokens, false)
+  mutate("allTokens", updatedAllTokens, false)
 }

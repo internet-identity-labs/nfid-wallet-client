@@ -74,6 +74,7 @@ export const Tokens: FC<TokensProps> = ({
               <ActiveToken
                 key={`token_${token.getTokenAddress()}_${token.getTokenBalance()}`}
                 token={token}
+                tokens={activeTokens}
                 profileConstants={profileConstants}
                 onSendClick={onSendClick}
                 setToken={setToken}

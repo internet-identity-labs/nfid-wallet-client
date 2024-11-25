@@ -60,11 +60,11 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   return (
     <>
       <SendSuccessUi
-        title={selectedNFT?.getTokenName() || "123"}
-        subTitle={selectedNFT?.getCollectionName() || "456"}
+        title={`${selectedNFT?.getTokenName()}`}
+        subTitle={`${selectedNFT?.getCollectionName()}`}
         onClose={onClose}
-        assetImg={selectedNFT?.getAssetPreview().url || ""}
-        isOpen={true}
+        assetImg={`${selectedNFT?.getAssetPreview().url}`}
+        isOpen={isSuccessOpen}
         sendStatus={sendStatus}
       />
       <div className="space-y-3 text-xs ">

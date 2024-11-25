@@ -2,6 +2,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+import { SendSuccessUi } from "packages/ui/src/organisms/send-receive/components/send-success"
 import React, { useState } from "react"
 import useSWR from "swr"
 
@@ -15,7 +16,7 @@ import {
 } from "@nfid/integration/token/constants"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { TransferSuccess } from "frontend/features/transfer-modal/components/send-success"
+import { SendStatus } from "frontend/features/transfer-modal/types"
 import {
   getUserBalance,
   requestTransfer,
@@ -51,6 +52,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
   onConfirmIC,
 }) => {
   const [transferPromise, setTransferPromise] = useState<any>(undefined)
+  const [sendStatus, setSendStatus] = useState(SendStatus.PENDING)
 
   const { user } = useAuthentication()
   const {
@@ -91,17 +93,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
 
   if (transferPromise)
     return (
-      <TransferSuccess
-        initialPromise={transferPromise}
-        callback={(res) =>
-          onConfirmIC({ status: RequestStatus.SUCCESS, hash: res?.hash })
-        }
-        errorCallback={(res) =>
-          onConfirmIC({
-            status: RequestStatus.ERROR,
-            errorMessage: res?.errorMessage?.message ?? "Request failed",
-          })
-        }
+      <SendSuccessUi
         title={
           nft?.name ?? `${(Number(amount) + Number(WALLET_FEE_E8S)) / E8S} ICP`
         }
@@ -111,7 +103,8 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
         }
         assetImg={nft?.assetPreview.url ?? ""}
         isAssetPadding={!tokenId}
-        withToasts={false}
+        isOpen={Boolean(transferPromise)}
+        sendStatus={sendStatus}
       />
     )
 
@@ -199,7 +192,10 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
             setTransferPromise(
               new Promise(async (resolve) => {
                 try {
-                  console.debug("RequestTransfer", { derivationOrigin, origin })
+                  console.debug("RequestTransfer", {
+                    derivationOrigin,
+                    origin,
+                  })
                   if (!isPresentInStorage(derivationOrigin || origin))
                     throw new Error(
                       "You can not request canister calls with anonymous delegation",
@@ -225,9 +221,22 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   if (!tokenId) delete request.tokenId
 
                   const res = await requestTransfer(request)
-
+                  setSendStatus(SendStatus.COMPLETED)
                   resolve(res)
+                  if ("errorMessage" in res) {
+                    onConfirmIC({
+                      status: RequestStatus.ERROR,
+                      errorMessage:
+                        res?.errorMessage?.message ?? "Request failed",
+                    })
+                  } else {
+                    onConfirmIC({
+                      status: RequestStatus.SUCCESS,
+                      hash: res.hash,
+                    })
+                  }
                 } catch (e: any) {
+                  setSendStatus(SendStatus.FAILED)
                   onConfirmIC({
                     status: RequestStatus.ERROR,
                     errorMessage: e?.message ?? "Request failed",

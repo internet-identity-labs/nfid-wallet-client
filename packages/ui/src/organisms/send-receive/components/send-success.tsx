@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import React, { useEffect, useMemo, useState } from "react"
 
 import {
@@ -10,16 +11,16 @@ import { Button, H5 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
-import Fail from "../assets/error.json"
-import Success1 from "../assets/success_1.json"
-import Success2 from "../assets/success_2.json"
-import Success3 from "../assets/success_3.json"
-import Success4 from "../assets/success_4.json"
+import depositSuccess from "../assets/NFID_WS_1_1.json"
+import withdraw from "../assets/NFID_WS_3.json"
+import withdrawSuccess from "../assets/NFID_WS_3_1.json"
+import withdrawError from "../assets/NFID_WS_3_2.json"
+import { wait } from "../utils"
 
 export interface SuccessProps {
   title: string
   subTitle: string
-  onClose: () => void
+  onClose?: () => void
   assetImg: string
   isAssetPadding?: boolean
   duration?: string
@@ -27,7 +28,7 @@ export interface SuccessProps {
   sendStatus: SendStatus
 }
 
-const allAnimations = [Success1, Success2, Success3, Success4, Fail]
+const allAnimations = [depositSuccess, withdraw, withdrawSuccess, withdrawError]
 
 export const SendSuccessUi: React.FC<SuccessProps> = ({
   title,
@@ -39,52 +40,40 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
   isOpen,
   sendStatus,
 }) => {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(-1)
 
   useEffect(() => {
-    setTimeout(() => {
-      if (step === 2) return
-      setStep((prev) => prev + 1)
-    }, 500)
-  }, [])
+    if (!isOpen) return
 
-  const animation = useMemo(() => {
-    return allAnimations[step]
-  }, [step])
+    const runAnimation = async () => {
+      if (sendStatus === SendStatus.PENDING) {
+        setStep(0)
+      }
 
-  // const isCompleted = useMemo(() => {
-  //   return step >= 3
-  // }, [step])
+      await wait(1060)
+      setStep(1)
 
-  // const isFailed = useMemo(() => {
-  //   return step === 4
-  // }, [step])
+      if (sendStatus === SendStatus.COMPLETED) {
+        setStep(2)
+        toaster.success(`Transaction ${title} successful`, {
+          toastId: "successTransfer",
+        })
+      }
+      if (sendStatus === SendStatus.FAILED) {
+        setStep(3)
+        toaster.error("Something went wrong")
+      }
+    }
 
-  // const animationData = useMemo(() => {
-  //   if (!isOpen) return null
+    runAnimation()
+  }, [sendStatus, isOpen])
 
-  //   switch (sendStatus) {
-  //     case SendStatus.PENDING:
-  //       return allAnimations[2]
-  //     case SendStatus.COMPLETED:
-  //       return allAnimations[3]
-  //     case SendStatus.FAILED:
-  //       return allAnimations[4]
-  //     default:
-  //       return null
-  //   }
-  // }, [sendStatus, isOpen])
+  const animation = useMemo(() => allAnimations[step], [step])
 
-  // const shouldLoop = useMemo(() => {
-  //   if (sendStatus === SendStatus.PENDING) {
-  //     return true
-  //   }
-  //   return false
-  // }, [sendStatus])
+  console.log(step)
 
   return (
     <div
-      // id={"success_window_" + step}
       id={"success_window_3"}
       className={clsx(
         "text-black text-center w-full h-full",
@@ -111,7 +100,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[25px]">
           <LottieAnimation
             animationData={animation}
-            loop={step === 2}
+            loop={step === 1}
             className="max-w-[370px]"
           />
           <ImageWithFallback
@@ -120,8 +109,9 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             fallbackSrc={IconNftPlaceholder}
             className={clsx(
               "absolute sm:h-[90px] h-[80px] sm:w-[90px] w-[80px] object-contain rounded-full object-center",
-              "mx-auto top-[140px] sm:top-[195px] ml-[1px]",
-              !isAssetPadding && "!w-[112px] !h-[112px] sm:top-[185px]",
+              "mx-auto top-[164px] sm:top-[195px] ml-[1px]",
+              !isAssetPadding &&
+                "!w-[98px] !h-[98px] !top-[155px] sm:!w-[112px] sm:!h-[112px] sm:!top-[184px]",
             )}
           />
         </div>
@@ -133,7 +123,12 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
           {subTitle}
         </p>
-        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
+        <Button
+          type="primary"
+          block
+          className="mt-[30px] !text-[16px]"
+          onClick={onClose}
+        >
           Done
         </Button>
       </div>

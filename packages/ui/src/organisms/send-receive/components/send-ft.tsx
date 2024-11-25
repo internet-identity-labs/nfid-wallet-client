@@ -11,6 +11,7 @@ import {
 } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
+import { SendStatus } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 
 import { ChooseFromToken } from "./choose-from-token"
@@ -30,6 +31,9 @@ export interface TransferFTUiProps {
   submit: () => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
   vaultsBalance?: bigint | undefined
+  sendStatus: SendStatus
+  isSuccessOpen: boolean
+  onClose: () => void
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -46,6 +50,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   submit,
   setSelectedVaultsAccountAddress,
   vaultsBalance,
+  sendStatus,
+  isSuccessOpen,
+  onClose,
 }) => {
   const {
     resetField,
@@ -70,22 +77,21 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 
   return (
     <>
-      {/* <SendSuccess
-        title={title}
-        subTitle={subTitle}
-        url={data?.url}
-        onClose={onClose!}
-        assetImg={assetImg}
-        step={currentState}
-        isAssetPadding={isAssetPadding}
-        duration={duration}
-      /> */}
+      <SendSuccessUi
+        title={`${amount} ${token.getTokenSymbol()}`}
+        subTitle={`${token.getTokenRateFormatted(amount.toString())}`}
+        onClose={onClose}
+        assetImg={`${token.getTokenLogo()}`}
+        isOpen={isSuccessOpen}
+        sendStatus={sendStatus}
+        isAssetPadding={true}
+      />
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken
         token={token}
         balance={vaultsBalance}
         setFromChosenToken={setChosenToken}
-        usdRate={token?.getTokenRateFormatted(amount.toString())}
+        usdRate={token.getTokenRateFormatted(amount.toString())}
         tokens={tokens}
         title="Token to send"
       />
@@ -146,7 +152,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         </div>
       </div>
       <Button
-        className="absolute bottom-5 left-5 right-5 !w-auto"
+        className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"
         disabled={
           Boolean(errors["amount"]?.message) ||
           Boolean(errors["to"]?.message) ||

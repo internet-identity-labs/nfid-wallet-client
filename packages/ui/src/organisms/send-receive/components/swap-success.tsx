@@ -188,7 +188,12 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </p>
           </div>
         </div>
-        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
+        <Button
+          type="primary"
+          block
+          className="mt-[30px] !text-[16px]"
+          onClick={onClose}
+        >
           {getTitleAndButtonText(error)?.buttonText}
         </Button>
       </div>

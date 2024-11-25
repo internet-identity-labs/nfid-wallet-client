@@ -2,7 +2,18 @@ import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
-import { ITransferSuccess } from "../components/send-success"
+export interface ITransferSuccess {
+  onClose?: () => void
+  initialPromise: Promise<ITransferResponse>
+  callback?: (res?: ITransferResponse) => void
+  errorCallback?: (res?: ITransferResponse) => void
+  title: string
+  subTitle: string
+  assetImg: string
+  isAssetPadding?: boolean
+  duration?: string
+  withToasts?: boolean
+}
 
 export enum ModalType {
   SEND = "send",

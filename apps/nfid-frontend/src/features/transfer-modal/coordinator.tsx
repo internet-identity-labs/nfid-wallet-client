@@ -15,7 +15,6 @@ import { ProfileContext } from "frontend/provider"
 import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
-import { ITransferSuccess, TransferSuccess } from "./components/send-success"
 import { SwapFT } from "./components/swap"
 
 export const TransferModalCoordinator = () => {
@@ -42,7 +41,6 @@ export const TransferModalCoordinator = () => {
       }, 5000)
     }
   }, [send, state.context.error])
-  console.log("state.context", state.context)
 
   const Component = useMemo(() => {
     switch (true) {
@@ -52,6 +50,7 @@ export const TransferModalCoordinator = () => {
             preselectedTokenAddress={state.context.selectedFT}
             isVault={state.context.isOpenedFromVaults}
             preselectedAccountAddress={state.context.sourceWalletAddress}
+            onClose={() => send({ type: "HIDE" })}
           />
         )
       case state.matches("SendMachine.SendNFT"):
@@ -70,13 +69,6 @@ export const TransferModalCoordinator = () => {
             preselectedAccountAddress={state.context.sourceWalletAddress}
           />
         )
-      // case state.matches("TransferSuccess"):
-      //   return (
-      //     <TransferSuccess
-      //       onClose={() => send({ type: "HIDE" })}
-      //       {...state.context.transferObject!}
-      //     />
-      //   )
       default:
         return <BlurredLoader overlayClassnames="z-10 rounded-xl" isLoading />
     }

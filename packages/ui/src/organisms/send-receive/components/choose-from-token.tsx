@@ -98,8 +98,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),
                 isSwap
-                  //all fees are included
-                  ? BigInt(0)
+                  ? //all fees are included
+                    BigInt(0)
                   : token.getTokenFee(),
                 decimals,
               )(value)
@@ -108,7 +108,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             },
           })}
         />
-        <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
+        <div className="py-[6px] pl-[6px] pr-[12px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseFtModal
             tokens={tokens}
             title={title}

@@ -26,11 +26,11 @@ export const TransferNFT = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [sendStatus, setSendStatus] = useState(SendStatus.PENDING)
 
-  const {
-    data: nfts,
-    isLoading: isNftListLoading,
-    mutate,
-  } = useSWR("nftList", () => fetchNFTs(), { revalidateOnFocus: false })
+  const { data: nfts, isLoading: isNftListLoading } = useSWR(
+    "nftList",
+    () => fetchNFTs(),
+    { revalidateOnFocus: false },
+  )
 
   const { data: selectedNFT, isLoading: isNftLoading } = useSWR(
     selectedNFTId ? ["nft", selectedNFTId] : null,
@@ -46,16 +46,6 @@ export const TransferNFT = ({
 
       transferEXT(selectedNFT.getTokenId(), identity, values.to)
         .then(() => {
-          setSendStatus(SendStatus.COMPLETED)
-          mutate(
-            {
-              totalItems: nfts!.totalItems - 1,
-              totalPages: nfts!.totalPages,
-              items: [],
-            },
-            false,
-          )
-
           sendReceiveTracking.sendToken({
             destinationType: "address",
             tokenName: selectedNFT?.getTokenId() || "",
@@ -63,46 +53,19 @@ export const TransferNFT = ({
             amount: 1,
             fee: 0,
           })
+          setSendStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
-          console.error(e)
+          console.error(
+            `Transfer error: ${
+              (e as Error).message ? (e as Error).message : e
+            }`,
+          )
           setSendStatus(SendStatus.FAILED)
-          toaster.error(`Transfer error: ${(e as Error).message}`)
         })
     },
     [selectedNFT],
   )
-
-  // const submit = useCallback(
-  //   async (values: any) => {
-  //     if (!selectedNFT) return toaster.error("No selected NFT")
-
-  //     onTransfer({
-  //       assetImg: selectedNFT?.getAssetPreview().url,
-  //       initialPromise: new Promise(async (resolve) => {
-  //         const identity = await getIdentity([selectedNFT.getCollectionId()])
-
-  //         try {
-  //           const res = await transferEXT(
-  //             selectedNFT.getTokenId(),
-  //             identity,
-  //             values.to,
-  //           )
-  //           handleTrackTransfer()
-  //           resolve({ hash: String(res) })
-  //         } catch (e) {
-  //           throw Error((e as Error).message)
-  //         }
-  //       }),
-  //       title: selectedNFT.getTokenName(),
-  //       subTitle: selectedNFT.getCollectionName(),
-  //       callback: () => {
-  //         refetchNFT()
-  //       },
-  //     })
-  //   },
-  //   [handleTrackTransfer, onTransfer, refetchNFT, selectedNFT],
-  // )
 
   return (
     <TransferNFTUi

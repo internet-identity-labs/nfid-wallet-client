@@ -197,7 +197,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         </div>
       )}
       <Button
-        className="absolute bottom-5 left-5 right-5 !w-auto"
+        className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"
         type="primary"
         id="sendButton"
         block

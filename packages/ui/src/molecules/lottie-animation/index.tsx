@@ -39,6 +39,8 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
       }
 
       animationInstance.current.addEventListener("enterFrame", handleEnterFrame)
+
+      animationInstance.current.setSpeed(1.5)
     }
 
     const handleVisibilityChange = () => {

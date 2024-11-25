@@ -41,22 +41,6 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
       animationInstance.current.addEventListener("enterFrame", handleEnterFrame)
     }
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible" && animationInstance.current) {
-        animationInstance.current.playSegments(
-          [animationProgress.current, animationInstance.current.totalFrames],
-          true,
-        )
-      } else if (
-        document.visibilityState === "hidden" &&
-        animationInstance.current
-      ) {
-        animationInstance.current.pause()
-      }
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-
     return () => {
       if (animationInstance.current) {
         animationInstance.current.removeEventListener(
@@ -65,7 +49,6 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
         )
         animationInstance.current.destroy()
       }
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
   }, [animationData, autoplay, loop])
 

@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import {
   IconCmpArrowRight,
@@ -6,7 +7,7 @@ import {
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { FC, useEffect } from "react"
+import { FC, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
@@ -14,6 +15,8 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 import { FT } from "frontend/integration/ft/ft"
 import { PriceImpactStatus } from "frontend/integration/icpswap/types/enums"
 import { PriceImpact } from "frontend/integration/icpswap/types/types"
+
+import { getUserPrincipalId } from "../../tokens/utils"
 
 interface ChooseToTokenProps {
   token: FT | undefined
@@ -35,10 +38,24 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   priceImpact,
 }) => {
   const { setValue, register } = useFormContext()
+  const [initedToken, setInitedToken] = useState<FT>()
 
   useEffect(() => {
     setValue("to", value)
   }, [value])
+
+  useEffect(() => {
+    if (!token) return
+    const init = async () => {
+      if (!token.isInited()) {
+        const { publicKey } = await getUserPrincipalId()
+        const initedToken = await token.init(Principal.fromText(publicKey))
+        setInitedToken(initedToken)
+      }
+    }
+
+    init()
+  }, [token])
 
   if (!token) return null
 
@@ -118,10 +135,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <div className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;
             <span>
-              {token.isInited() ? (
+              {initedToken ? (
                 <>
-                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                  {token.getTokenSymbol()}
+                  {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
+                  {initedToken.getTokenSymbol()}
                 </>
               ) : (
                 <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

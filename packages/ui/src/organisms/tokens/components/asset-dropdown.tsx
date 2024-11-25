@@ -1,6 +1,6 @@
 import { useCallback, FC } from "react"
 import { useNavigate } from "react-router-dom"
-import { mutate } from "swr"
+import useSWR, { mutate } from "swr"
 
 import {
   Dropdown,
@@ -16,9 +16,11 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 
 import { IProfileConstants } from ".."
+import { fetchAllTokens, removeToken } from "../utils"
 
 type AssetDropdownProps = {
   token: FT
+  tokens: FT[]
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
@@ -27,6 +29,7 @@ type AssetDropdownProps = {
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
   token,
+  tokens,
   profileConstants,
   onSendClick,
   setToken,
@@ -43,6 +46,11 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
     },
     [navigate],
   )
+
+  const { data: allTokens = [] } = useSWR("allTokens", fetchAllTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
 
   if (!token.getTokenAddress()) return null
 
@@ -76,9 +84,14 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           <DropdownOption
             label="Hide token"
             icon={IconSvgEyeClosedBlack}
-            handler={async () => {
-              await token.hideToken()
-              mutate("activeTokens")
+            handler={() => {
+              token.hideToken()
+              const result = removeToken(token, tokens, allTokens)
+              if (!result) return
+
+              const { updatedAllTokens, updatedActiveTokens } = result
+              mutate("activeTokens", updatedActiveTokens, false)
+              mutate("allTokens", updatedAllTokens, false)
             }}
           />
         )}

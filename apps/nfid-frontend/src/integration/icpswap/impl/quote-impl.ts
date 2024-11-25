@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import { SourceInputCalculator } from "src/integration/icpswap/impl/calculator"
 import { Quote } from "src/integration/icpswap/quote"
 
 import { ICRC1TypeOracle } from "@nfid/integration"
@@ -6,7 +7,6 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { PriceImpactStatus } from "../types/enums"
 import { PriceImpact } from "../types/types"
-import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 export const WIDGET_FEE = 0.00875
 const LIQUIDITY_PROVIDER_FEE = 0.003
@@ -90,6 +90,7 @@ export class QuoteImpl implements Quote {
   getTargetAmountPrettifiedWithSymbol(): string {
     return (
       this.getTargetAmount()
+        .minus(Number(this.target.fee))
         .div(10 ** this.target.decimals)
         .toFixed(this.target.decimals)
         .replace(TRIM_ZEROS, "") +
@@ -123,7 +124,9 @@ export class QuoteImpl implements Quote {
   getQuoteRate(): string {
     const quote = this.getTargetAmount().div(10 ** this.target.decimals)
     const rate = quote.div(
-      BigNumber(Number(this.sourceCalculator.getSourceSwapAmount())).div(10 ** this.source.decimals),
+      BigNumber(Number(this.sourceCalculator.getSourceSwapAmount())).div(
+        10 ** this.source.decimals,
+      ),
     )
     return `1 ${this.source.symbol} = ${rate
       .toNumber()

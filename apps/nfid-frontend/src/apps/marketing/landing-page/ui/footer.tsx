@@ -41,7 +41,7 @@ export function Footer() {
             <img className="w-[24px] h-[24px]" src={Twitter} alt="" />
           </a>
           <a
-            href="https://github.com/dostro/nfid-docs"
+            href="https://github.com/internet-identity-labs"
             target="_blank"
             rel="noreferrer"
             className="rounded-[12px] bg-white w-[48px] h-[48px] flex items-center justify-center hover:bg-[#AA8353] transition-all active:bg-[#AA8353] active:opacity-70"
@@ -52,7 +52,7 @@ export function Footer() {
             href="https://oc.app/community/66hym-7iaaa-aaaaf-bm7aa-cai/channel/1241143482/?ref=prkg5-paaaa-aaaaf-aqbia-cai"
             target="_blank"
             rel="noreferrer"
-            className="rounded-[12px] bg-white w-[48px] h-[48px] flex items-center justify-center hover:bg-[#8B9BA6] transition-all active:bg-[#8B9BA6] active:opacity-70"
+            className="rounded-[12px] bg-white w-[48px] h-[48px] flex items-center justify-center hover:bg-[#BE217D] transition-all active:bg-[#9D226E] active:opacity-70"
           >
             <img className="w-[24px] h-[24px]" src={OpenChat} alt="" />
           </a>

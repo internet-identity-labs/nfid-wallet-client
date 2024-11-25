@@ -10,7 +10,7 @@ export interface RPCBase {
 
 export interface RPCMessage extends RPCBase {
   method: string
-  params: any[]
+  params: any
 }
 
 interface RPCSuccessResponse extends RPCBase {
@@ -59,6 +59,11 @@ export const RPCReceiverV3 =
     const subscription = rpcMessages.subscribe(
       async ({ data: rpcMessage, origin }) => {
         console.debug("RPCReceiverV3", { rpcMessage, origin })
+
+        if (rpcMessage.params?.derivationOrigin || rpcMessage.params?.icrc95DerivationOrigin) {
+          rpcMessage.params.derivationOrigin = rpcMessage.params.icrc95DerivationOrigin ?? rpcMessage.params.derivationOrigin
+          delete rpcMessage.params['icrc95DerivationOrigin'];
+        }
 
         return send({
           type: "ON_REQUEST",

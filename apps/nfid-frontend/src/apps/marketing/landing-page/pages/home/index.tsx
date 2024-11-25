@@ -11,6 +11,7 @@ import Animation2 from "../../assets/animations/2_4.json"
 import Animation3 from "../../assets/animations/3_4.json"
 import Animation4 from "../../assets/animations/4_4.json"
 import mainAnimation from "../../assets/animations/main.lottie"
+import Audit from "../../assets/audit.png"
 import Card1Hover from "../../assets/cards/icon-1-hover.png"
 import Card1 from "../../assets/cards/icon-1.png"
 import Card2Hover from "../../assets/cards/icon-2-hover.png"
@@ -34,6 +35,7 @@ import { Container } from "../../ui/container"
 import { Footer } from "../../ui/footer"
 import AnimationWrapper from "../../ui/visible-animation"
 import { Wrapper } from "../wrapper"
+import { LinkIcon } from "./link-icon"
 import { SnsBanner } from "./sns-banner"
 import { SnsModal } from "./sns-modal"
 
@@ -47,7 +49,7 @@ const cardItem =
   "mt-[10px] md:mt-[45px] font-medium text-xl md:text-[30px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-[140%] max-w-[350px] lg:max-w-full text-[#BBF7EC]"
 const cardImg = "w-full lg:w-[200px] absolute ml-[40px]"
 const sponsor =
-  "max-w-[150px] sm:max-w-[110px] lg:max-w-[140px] max-h-[80px] mx-auto md:max-0"
+  "max-w-[80px] md:max-w-[110px] lg:max-w-[140px] max-h-[80px] mx-auto md:max-0"
 
 const HomeContent = ({
   openAuthModal,
@@ -122,6 +124,34 @@ const HomeContent = ({
           <img className={clsx(sponsor)} src={Flyrfy} alt="" />
           <img className={clsx(sponsor)} src={Rubylight} alt="" />
           <img className={clsx(sponsor)} src={Spaceship} alt="" />
+        </div>
+      </Container>
+      <Container className="mt-10 md:mt-20">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          <img src={Audit} className="hidden md:block pe-[15px]" />
+          <div className="ms-0 md:ms-[15px] flex flex-col justify-center">
+            <div>
+              <h2 className="font-bold text-[18px] lg:text-[32px] leading-[140%] text-white mb-[25px]">
+                ICP’s safest wallet
+              </h2>
+              <h3 className="text-white mb-[25px] text-[16px]">
+                <span className="block mb-[15px]">
+                  NFID Wallet is the only open-source, 3rd-party audited wallet
+                  on ICP, and the only project with an all-green audit.
+                </span>
+                Your gateway to secure, decentralized innovation starts here,
+                with NFID Wallet.
+              </h3>
+            </div>
+            <a
+              href="https://internet-identity-labs.github.io/nfid-wallet-docs/solidstate_nfid_wallet_audit_report.pdf"
+              rel="noreferrer"
+              target="_blank"
+              className="text-teal-300 hover:text-teal-500 flex items-center"
+            >
+              View audit report <LinkIcon className="ms-1" />
+            </a>
+          </div>
         </div>
       </Container>
       <Container

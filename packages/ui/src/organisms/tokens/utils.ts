@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
+import { mutate } from "swr"
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
@@ -41,4 +42,59 @@ export const fetchAllTokens = async (searchQuery: string) => {
 export const getFullUsdValue = async (ft: FT[]) => {
   const { publicKey } = await getUserPrincipalId()
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
+}
+
+export const addAndInitToken = async (
+  token: FT,
+  activeTokens: FT[],
+  allTokens: FT[],
+) => {
+  const { publicKey } = await getUserPrincipalId()
+  const index = activeTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+
+  let updatedActiveTokens = [...activeTokens]
+  let updatedAllTokens = [...allTokens]
+
+  if (index !== -1) return
+
+  !token.isInited() && (await token.init(Principal.fromText(publicKey)))
+  updatedActiveTokens.push(token)
+
+  const allIndex = allTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+  if (allIndex === -1) {
+    updatedAllTokens.push(token)
+  }
+
+  return {
+    updatedAllTokens,
+    updatedActiveTokens,
+  }
+}
+
+export const removeToken = (token: FT, activeTokens: FT[], allTokens: FT[]) => {
+  const index = activeTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+
+  let updatedActiveTokens = [...activeTokens]
+  let updatedAllTokens = [...allTokens]
+
+  if (index === -1) return
+  updatedActiveTokens.splice(index, 1)
+
+  const allIndex = allTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+  if (allIndex !== -1) {
+    updatedAllTokens.splice(allIndex, 1)
+  }
+
+  return {
+    updatedAllTokens,
+    updatedActiveTokens,
+  }
 }

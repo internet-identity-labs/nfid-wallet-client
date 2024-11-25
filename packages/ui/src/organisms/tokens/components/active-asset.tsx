@@ -16,6 +16,7 @@ import { AssetDropdown } from "./asset-dropdown"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
+  tokens: FT[]
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
@@ -24,6 +25,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
   token,
+  tokens,
   profileConstants,
   onSendClick,
   setToken,
@@ -120,6 +122,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       <td className="w-[24px] min-w-[24px]">
         <AssetDropdown
           token={token}
+          tokens={tokens}
           profileConstants={profileConstants}
           onSendClick={onSendClick}
           setToken={setToken}

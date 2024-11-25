@@ -68,10 +68,8 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   }, [fromTokenAddress, activeTokens])
 
   const toToken = useMemo(() => {
-    return activeTokens.find(
-      (token) => token.getTokenAddress() === toTokenAddress,
-    )
-  }, [toTokenAddress, activeTokens])
+    return allTokens.find((token) => token.getTokenAddress() === toTokenAddress)
+  }, [toTokenAddress, allTokens])
 
   const filteredAllTokens = useMemo(() => {
     return allTokens.filter(

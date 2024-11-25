@@ -97,10 +97,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             validate: (value) => {
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),
-                isSwap
-                  ? //all fees are included
-                    BigInt(0)
-                  : token.getTokenFee(),
+                isSwap ? BigInt(0) : token.getTokenFee(),
                 decimals,
               )(value)
 

@@ -70,8 +70,6 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
 
   const animation = useMemo(() => allAnimations[step], [step])
 
-  console.log(step)
-
   return (
     <div
       id={"success_window_3"}

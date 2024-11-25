@@ -49,12 +49,13 @@ export const getFullUsdValue = async (ft: FT[]) => {
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
 }
 
-export const mutateTokens = (
+export const mutateTokens = async (
   action: TokenAction,
   token: FT,
   activeTokens: FT[],
   allTokens: FT[],
 ) => {
+  const { publicKey } = await getUserPrincipalId()
   const index = activeTokens.findIndex(
     (t) => t.getTokenAddress() === token.getTokenAddress(),
   )
@@ -74,6 +75,8 @@ export const mutateTokens = (
     }
   } else if (action === "show") {
     if (index !== -1) return
+
+    !token.isInited() && (await token.init(Principal.fromText(publicKey)))
     updatedActiveTokens.push(token)
 
     const allIndex = allTokens.findIndex(

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
 import { FC, useState } from "react"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import {
   IconSvgEyeClosed,
@@ -9,10 +9,11 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { fetchActiveTokens, mutateTokens, TokenAction } from "../utils"
+import { fetchActiveTokens, removeToken, addAndInitToken } from "../utils"
 
 interface FilteredTokenProps {
   token: FT
@@ -31,11 +32,16 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
     },
   )
 
-  const hideToken = async (token: FT) => {
+  const hideToken = (token: FT) => {
     setIsHidden(!isHidden)
     try {
       token.hideToken()
-      mutateTokens(TokenAction.HIDE, token, activeTokens, allTokens)
+      const result = removeToken(token, activeTokens, allTokens)
+      if (!result) return
+
+      const { updatedAllTokens, updatedActiveTokens } = result
+      mutate("activeTokens", updatedActiveTokens, false)
+      mutate("allTokens", updatedAllTokens, false)
     } catch (e) {
       toaster.error("Token hiding failed: " + (e as any).message)
     }
@@ -45,7 +51,12 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
     setIsHidden(!isHidden)
     try {
       token.showToken()
-      mutateTokens(TokenAction.SHOW, token, activeTokens, allTokens)
+      const result = await addAndInitToken(token, activeTokens, allTokens)
+      if (!result) return
+
+      const { updatedAllTokens, updatedActiveTokens } = result
+      mutate("activeTokens", updatedActiveTokens, false)
+      mutate("allTokens", updatedAllTokens, false)
     } catch (e) {
       toaster.error("Token shhowing failed: " + (e as any).message)
     }
@@ -85,7 +96,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
           src={isHidden ? IconSvgEyeShown : IconSvgEyeClosed}
           alt="Show NFID asset"
           onClick={() =>
-            token.getTokenState() === "Active"
+            token.getTokenState() === State.Active
               ? hideToken(token)
               : showToken(token)
           }

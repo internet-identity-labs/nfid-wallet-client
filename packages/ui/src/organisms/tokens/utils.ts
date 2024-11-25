@@ -5,11 +5,6 @@ import { mutate } from "swr"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
-export enum TokenAction {
-  HIDE = "hide",
-  SHOW = "show",
-}
-
 //TODO move to authState
 export const getUserPrincipalId = async (): Promise<{
   userPrincipal: string
@@ -49,8 +44,7 @@ export const getFullUsdValue = async (ft: FT[]) => {
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
 }
 
-export const mutateTokens = async (
-  action: TokenAction,
+export const addAndInitToken = async (
   token: FT,
   activeTokens: FT[],
   allTokens: FT[],
@@ -63,30 +57,44 @@ export const mutateTokens = async (
   let updatedActiveTokens = [...activeTokens]
   let updatedAllTokens = [...allTokens]
 
-  if (action === "hide") {
-    if (index === -1) return
-    updatedActiveTokens.splice(index, 1)
+  if (index !== -1) return
 
-    const allIndex = allTokens.findIndex(
-      (t) => t.getTokenAddress() === token.getTokenAddress(),
-    )
-    if (allIndex !== -1) {
-      updatedAllTokens.splice(allIndex, 1)
-    }
-  } else if (action === "show") {
-    if (index !== -1) return
+  !token.isInited() && (await token.init(Principal.fromText(publicKey)))
+  updatedActiveTokens.push(token)
 
-    !token.isInited() && (await token.init(Principal.fromText(publicKey)))
-    updatedActiveTokens.push(token)
-
-    const allIndex = allTokens.findIndex(
-      (t) => t.getTokenAddress() === token.getTokenAddress(),
-    )
-    if (allIndex === -1) {
-      updatedAllTokens.push(token)
-    }
+  const allIndex = allTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+  if (allIndex === -1) {
+    updatedAllTokens.push(token)
   }
 
-  mutate("activeTokens", updatedActiveTokens, false)
-  mutate("allTokens", updatedAllTokens, false)
+  return {
+    updatedAllTokens,
+    updatedActiveTokens,
+  }
+}
+
+export const removeToken = (token: FT, activeTokens: FT[], allTokens: FT[]) => {
+  const index = activeTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+
+  let updatedActiveTokens = [...activeTokens]
+  let updatedAllTokens = [...allTokens]
+
+  if (index === -1) return
+  updatedActiveTokens.splice(index, 1)
+
+  const allIndex = allTokens.findIndex(
+    (t) => t.getTokenAddress() === token.getTokenAddress(),
+  )
+  if (allIndex !== -1) {
+    updatedAllTokens.splice(allIndex, 1)
+  }
+
+  return {
+    updatedAllTokens,
+    updatedActiveTokens,
+  }
 }

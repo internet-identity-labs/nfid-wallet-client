@@ -1,6 +1,6 @@
 import { useCallback, FC } from "react"
 import { useNavigate } from "react-router-dom"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import {
   Dropdown,
@@ -16,7 +16,7 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 
 import { IProfileConstants } from ".."
-import { fetchAllTokens, mutateTokens, TokenAction } from "../utils"
+import { fetchAllTokens, removeToken } from "../utils"
 
 type AssetDropdownProps = {
   token: FT
@@ -86,7 +86,12 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             icon={IconSvgEyeClosedBlack}
             handler={() => {
               token.hideToken()
-              mutateTokens(TokenAction.HIDE, token, tokens, allTokens)
+              const result = removeToken(token, tokens, allTokens)
+              if (!result) return
+
+              const { updatedAllTokens, updatedActiveTokens } = result
+              mutate("activeTokens", updatedActiveTokens, false)
+              mutate("allTokens", updatedAllTokens, false)
             }}
           />
         )}

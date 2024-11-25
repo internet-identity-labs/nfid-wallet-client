@@ -14,6 +14,7 @@ import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 
 import { ChooseFromToken } from "./choose-from-token"
+import { SendSuccessUi } from "./send-success"
 
 export interface TransferFTUiProps {
   tokens: FT[]
@@ -69,6 +70,16 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
 
   return (
     <>
+      {/* <SendSuccess
+        title={title}
+        subTitle={subTitle}
+        url={data?.url}
+        onClose={onClose!}
+        assetImg={assetImg}
+        step={currentState}
+        isAssetPadding={isAssetPadding}
+        duration={duration}
+      /> */}
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken
         token={token}

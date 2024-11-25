@@ -38,14 +38,12 @@ interface ITransferFT {
   preselectedTokenAddress: string | undefined
   isVault: boolean
   preselectedAccountAddress: string
-  onTransfer: (data: ITransferSuccess) => void
 }
 
 export const TransferFT = ({
   isVault,
   preselectedTokenAddress = ICP_CANISTER_ID,
   preselectedAccountAddress = "",
-  onTransfer,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
@@ -108,93 +106,131 @@ export const TransferFT = ({
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
+    const identity = await getIdentity([token!.getTokenAddress()])
+    console.log(identity)
+    let res
 
-    if (isVault) {
-      return onTransfer({
-        assetImg: token.getTokenLogo() ?? "",
-        initialPromise: new Promise(async (resolve) => {
-          const wallet = await getVaultWalletByAddress(
-            selectedVaultsAccountAddress,
-          )
+    try {
+      console.log("??")
+      if (token?.getTokenAddress() === ICP_CANISTER_ID) {
+        res = await transferICP({
+          amount: stringICPtoE8s(String(amount)),
+          to: getAccountIdentifier(to),
+          identity: identity,
+        })
+      } else {
+        const { owner, subaccount } = decodeIcrcAccount(to)
+        res = await transferICRC1(identity, token.getTokenAddress(), {
+          to: {
+            subaccount: subaccount ? [subaccount] : [],
+            owner,
+          },
+          amount: BigInt(Number(amount) * 10 ** token?.getTokenDecimals()!),
+          memo: [],
+          fee: [token.getTokenFee()],
+          from_subaccount: [],
+          created_at_time: [],
+        })
+      }
 
-          const address =
-            to.length === PRINCIPAL_LENGTH
-              ? AccountIdentifier.fromPrincipal({
-                  principal: Principal.fromText(to),
-                }).toHex()
-              : to
-
-          await registerTransaction({
-            address,
-            amount: BigInt(Math.round(Number(amount) * E8S)),
-            from_sub_account: wallet?.uid ?? "",
-          })
-
-          resolve({} as ITransferResponse)
-        }),
-        title: `${amount} ${token.getTokenSymbol()}`,
-        subTitle: token?.getTokenRateFormatted(amount.toString())!,
-        isAssetPadding: true,
-      })
+      handleTrackTransfer(amount)
+      //resolve({ hash: String(res) })
+    } catch (e) {
+      throw new Error(
+        `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
+      )
     }
+  }, [])
 
-    onTransfer({
-      assetImg: token?.getTokenLogo() ?? "",
-      initialPromise: new Promise(async (resolve) => {
-        const identity = await getIdentity([token!.getTokenAddress()])
-        let res
-        if (!token) return
-        try {
-          if (token?.getTokenAddress() === ICP_CANISTER_ID) {
-            res = await transferICP({
-              amount: stringICPtoE8s(String(amount)),
-              to: getAccountIdentifier(to),
-              identity: identity,
-            })
-          } else {
-            const { owner, subaccount } = decodeIcrcAccount(to)
-            res = await transferICRC1(identity, token.getTokenAddress(), {
-              to: {
-                subaccount: subaccount ? [subaccount] : [],
-                owner,
-              },
-              amount: BigInt(Number(amount) * 10 ** token?.getTokenDecimals()!),
-              memo: [],
-              fee: [token.getTokenFee()],
-              from_subaccount: [],
-              created_at_time: [],
-            })
-          }
+  // const submit = useCallback(async () => {
+  //   if (!token) return toaster.error("No selected token")
 
-          handleTrackTransfer(amount)
-          resolve({ hash: String(res) })
-        } catch (e) {
-          throw new Error(
-            `Transfer error: ${
-              (e as Error).message ? (e as Error).message : e
-            }`,
-          )
-        }
-      }),
-      title: `${Number(amount)
-        .toFixed(token?.getTokenDecimals())
-        .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
-      subTitle: token?.getTokenRateFormatted(amount.toString())!,
-      isAssetPadding: true,
-      callback: () => {
-        updateTokenBalance([token.getTokenAddress()], activeTokens)
-      },
-    })
-  }, [
-    activeTokens,
-    handleTrackTransfer,
-    isVault,
-    onTransfer,
-    token,
-    selectedVaultsAccountAddress,
-    amount,
-    to,
-  ])
+  //   if (isVault) {
+  //     return onTransfer({
+  //       assetImg: token.getTokenLogo() ?? "",
+  //       initialPromise: new Promise(async (resolve) => {
+  //         const wallet = await getVaultWalletByAddress(
+  //           selectedVaultsAccountAddress,
+  //         )
+
+  //         const address =
+  //           to.length === PRINCIPAL_LENGTH
+  //             ? AccountIdentifier.fromPrincipal({
+  //                 principal: Principal.fromText(to),
+  //               }).toHex()
+  //             : to
+
+  //         await registerTransaction({
+  //           address,
+  //           amount: BigInt(Math.round(Number(amount) * E8S)),
+  //           from_sub_account: wallet?.uid ?? "",
+  //         })
+
+  //         resolve({} as ITransferResponse)
+  //       }),
+  //       title: `${amount} ${token.getTokenSymbol()}`,
+  //       subTitle: token?.getTokenRateFormatted(amount.toString())!,
+  //       isAssetPadding: true,
+  //     })
+  //   }
+
+  //   onTransfer({
+  //     assetImg: token?.getTokenLogo() ?? "",
+  //     initialPromise: new Promise(async (resolve) => {
+  //       const identity = await getIdentity([token!.getTokenAddress()])
+  //       let res
+  //       if (!token) return
+  //       try {
+  //         if (token?.getTokenAddress() === ICP_CANISTER_ID) {
+  //           res = await transferICP({
+  //             amount: stringICPtoE8s(String(amount)),
+  //             to: getAccountIdentifier(to),
+  //             identity: identity,
+  //           })
+  //         } else {
+  //           const { owner, subaccount } = decodeIcrcAccount(to)
+  //           res = await transferICRC1(identity, token.getTokenAddress(), {
+  //             to: {
+  //               subaccount: subaccount ? [subaccount] : [],
+  //               owner,
+  //             },
+  //             amount: BigInt(Number(amount) * 10 ** token?.getTokenDecimals()!),
+  //             memo: [],
+  //             fee: [token.getTokenFee()],
+  //             from_subaccount: [],
+  //             created_at_time: [],
+  //           })
+  //         }
+
+  //         handleTrackTransfer(amount)
+  //         resolve({ hash: String(res) })
+  //       } catch (e) {
+  //         throw new Error(
+  //           `Transfer error: ${
+  //             (e as Error).message ? (e as Error).message : e
+  //           }`,
+  //         )
+  //       }
+  //     }),
+  //     title: `${Number(amount)
+  //       .toFixed(token?.getTokenDecimals())
+  //       .replace(/\.?0+$/, "")} ${token?.getTokenSymbol()}`,
+  //     subTitle: token?.getTokenRateFormatted(amount.toString())!,
+  //     isAssetPadding: true,
+  //     callback: () => {
+  //       updateTokenBalance([token.getTokenAddress()], activeTokens)
+  //     },
+  //   })
+  // }, [
+  //   activeTokens,
+  //   handleTrackTransfer,
+  //   isVault,
+  //   onTransfer,
+  //   token,
+  //   selectedVaultsAccountAddress,
+  //   amount,
+  //   to,
+  // ])
 
   return (
     <FormProvider {...formMethods}>

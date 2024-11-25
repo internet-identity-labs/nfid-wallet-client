@@ -122,7 +122,6 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? ""
             : `This usually takes about ${duration} seconds`}
         </p>
-
         <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[55px]">
           <LottieAnimation
             className="max-w-[370px]"

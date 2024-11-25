@@ -1,5 +1,5 @@
 import toaster from "packages/ui/src/atoms/toast"
-import { Success } from "packages/ui/src/organisms/send-receive/components/success"
+import { SendSuccessUi } from "packages/ui/src/organisms/send-receive/components/send-success"
 import React from "react"
 import useSWR from "swr"
 
@@ -71,16 +71,15 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
       revalidateOnFocus: false,
     },
   )
-  return (
-    <Success
-      title={title}
-      subTitle={subTitle}
-      url={data?.url}
-      onClose={onClose!}
-      assetImg={assetImg}
-      step={currentState}
-      isAssetPadding={isAssetPadding}
-      duration={duration}
-    />
-  )
+  return 123
+  // <SendSuccessUi
+  //   title={title}
+  //   subTitle={subTitle}
+  //   url={data?.url}
+  //   onClose={onClose!}
+  //   assetImg={assetImg}
+  //   step={currentState}
+  //   isAssetPadding={isAssetPadding}
+  //   duration={duration}
+  // />
 }

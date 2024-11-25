@@ -22,7 +22,7 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
   nfts: NFT[]
   searchTokens: (tokens: NFT[], search: string) => NFT[]
-  onTransferNFT: (e: MouseEvent<HTMLDivElement>, id: string) => void
+  //onTransferNFT: (e: MouseEvent<HTMLDivElement>, id: string) => void
   links: {
     base: string
     nfts: string
@@ -36,7 +36,7 @@ export const NFTs: FC<INFTs> = ({
   nfts,
   searchTokens,
   links,
-  onTransferNFT,
+  //onTransferNFT,
   totalItems,
   currentPage,
 }) => {
@@ -176,10 +176,10 @@ export const NFTs: FC<INFTs> = ({
                   <td className="">
                     <div
                       className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onTransferNFT(e, nft.getTokenId())
-                      }}
+                      // onClick={(e) => {
+                      //   e.stopPropagation()
+                      //   onTransferNFT(e, nft.getTokenId())
+                      // }}
                     >
                       <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
                     </div>

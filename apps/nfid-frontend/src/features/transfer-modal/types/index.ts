@@ -9,6 +9,13 @@ export enum ModalType {
   RECEIVE = "receive",
   SWAP = "swap",
 }
+
+export enum SendStatus {
+  PENDING = "pending",
+  COMPLETED = "completed",
+  FAILED = "failed",
+}
+
 export type TokenType = "ft" | "nft"
 
 export type SuccessState = "pending" | "success" | "error"

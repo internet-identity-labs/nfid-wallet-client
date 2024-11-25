@@ -232,7 +232,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         clearQuoteError={refresh}
         step={swapStep}
         error={swapError}
-        isProgressOpen={isSuccessOpen}
+        isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         quoteTimer={quoteTimer}
       />

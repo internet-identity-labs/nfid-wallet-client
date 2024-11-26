@@ -119,7 +119,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           token.getUSDBalanceFormatted()
         )}
       </td>
-      <td className="w-[24px] min-w-[24px]">
+      <td className="w-[24px] min-w-[24px]"
+          id={`${token.getTokenName()}_options`}
+      >
         <AssetDropdown
           token={token}
           tokens={tokens}

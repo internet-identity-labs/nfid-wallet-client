@@ -107,3 +107,19 @@ When(/^User clicks the back button in Send window$/, async () => {
     Assets.switchSendType,
   )
 })
+
+When(/^User clicks the (.*) option button$/, async (option: string) => {
+  await Assets.getTokenOption(option).click()
+})
+
+When(/^User clicks the ShowHide button of (.*) token$/, async (tokenName: string) => {
+  await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).then(async (it) => {
+    await it.waitForDisplayed()
+    // await browser.pause(2000)
+    await it.click()
+  })
+})
+
+When(/^User filters tokens by (.*)$/, async (token: string) => {
+  await Assets.ManageTokensDialog.filterField().setValue(token)
+})

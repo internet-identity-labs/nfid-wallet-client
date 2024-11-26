@@ -5,8 +5,8 @@ Feature: Send NFT flow
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
     And Verifying that tokens are displayed on assets tab
-    And User opens send nft dialog window
-    And User opens choose nft window
+    And User opens Send nft dialog window
+    And User opens Choose nft dialog window
     When User selects the <tokenName> NFT
     And User sets address to <Account ID> then clicks the "Send" button
     Then Verifying that the transaction is success

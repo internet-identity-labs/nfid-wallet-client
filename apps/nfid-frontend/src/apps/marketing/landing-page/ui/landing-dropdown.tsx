@@ -40,7 +40,7 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
           textClassName="!text-white"
           element={({ className }) => (
             <Link className={className} to="/sns">
-              Sns
+              SNS
             </Link>
           )}
         />

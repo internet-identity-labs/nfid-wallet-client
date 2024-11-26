@@ -31,7 +31,7 @@ export interface TransferFTUiProps {
   submit: () => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
   vaultsBalance?: bigint | undefined
-  sendStatus: SendStatus
+  status: SendStatus
   isSuccessOpen: boolean
   onClose: () => void
 }
@@ -50,7 +50,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   submit,
   setSelectedVaultsAccountAddress,
   vaultsBalance,
-  sendStatus,
+  status,
   isSuccessOpen,
   onClose,
 }) => {
@@ -83,8 +83,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         onClose={onClose}
         assetImg={`${token.getTokenLogo()}`}
         isOpen={isSuccessOpen}
-        sendStatus={sendStatus}
-        isAssetPadding={true}
+        status={status}
+        isFtToken={true}
       />
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken

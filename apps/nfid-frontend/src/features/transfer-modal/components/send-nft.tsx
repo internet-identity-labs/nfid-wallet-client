@@ -24,7 +24,7 @@ export const TransferNFT = ({
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [sendStatus, setSendStatus] = useState(SendStatus.PENDING)
+  const [status, setStatus] = useState(SendStatus.PENDING)
 
   const { data: nfts, isLoading: isNftListLoading } = useSWR(
     "nftList",
@@ -53,7 +53,7 @@ export const TransferNFT = ({
             amount: 1,
             fee: 0,
           })
-          setSendStatus(SendStatus.COMPLETED)
+          setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
           console.error(
@@ -61,7 +61,7 @@ export const TransferNFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          setSendStatus(SendStatus.FAILED)
+          setStatus(SendStatus.FAILED)
         })
     },
     [selectedNFT],
@@ -79,7 +79,7 @@ export const TransferNFT = ({
       validateAddress={validateNftAddress}
       isSuccessOpen={isSuccessOpen}
       onClose={onClose}
-      sendStatus={sendStatus}
+      status={status}
     />
   )
 }

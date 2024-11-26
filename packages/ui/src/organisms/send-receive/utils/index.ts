@@ -37,6 +37,3 @@ const textStatusByStep: { [key in SwapStage]: string } = {
 
 export const getTextStatusByStep = (step: SwapStage) =>
   textStatusByStep[step] || ""
-
-export const wait = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms))

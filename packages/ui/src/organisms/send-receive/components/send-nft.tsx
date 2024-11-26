@@ -30,7 +30,7 @@ export interface TransferNFTUiProps {
   validateAddress: (value: string) => boolean | string
   isSuccessOpen: boolean
   onClose: () => void
-  sendStatus: SendStatus
+  status: SendStatus
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
@@ -42,7 +42,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   validateAddress,
   isSuccessOpen,
   onClose,
-  sendStatus,
+  status,
 }) => {
   const {
     register,
@@ -65,7 +65,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         onClose={onClose}
         assetImg={`${selectedNFT?.getAssetPreview().url}`}
         isOpen={isSuccessOpen}
-        sendStatus={sendStatus}
+        status={status}
       />
       <div className="space-y-3 text-xs ">
         <ChooseNftModal

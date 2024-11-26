@@ -11,34 +11,33 @@ import { Button, H5 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
-import depositSuccess from "../assets/NFID_WS_1_1.json"
-import withdraw from "../assets/NFID_WS_3.json"
-import withdrawSuccess from "../assets/NFID_WS_3_1.json"
-import withdrawError from "../assets/NFID_WS_3_2.json"
-import { wait } from "../utils"
+import Success1 from "../assets/NFID_WS_1_1.json"
+import Success2 from "../assets/NFID_WS_3.json"
+import Successs3 from "../assets/NFID_WS_3_1.json"
+import Fail from "../assets/NFID_WS_3_2.json"
 
 export interface SuccessProps {
   title: string
   subTitle: string
   onClose?: () => void
   assetImg: string
-  isAssetPadding?: boolean
-  duration?: string
+  isFtToken?: boolean
+  duration?: number
   isOpen: boolean
-  sendStatus: SendStatus
+  status: SendStatus
 }
 
-const allAnimations = [depositSuccess, withdraw, withdrawSuccess, withdrawError]
+const allAnimations = [Success1, Success2, Successs3, Fail]
 
 export const SendSuccessUi: React.FC<SuccessProps> = ({
   title,
   subTitle,
   onClose,
   assetImg,
-  isAssetPadding = false,
-  duration = "2 seconds",
+  isFtToken = false,
+  duration = 2,
   isOpen,
-  sendStatus,
+  status,
 }) => {
   const [step, setStep] = useState(-1)
 
@@ -46,27 +45,28 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
     if (!isOpen) return
 
     const runAnimation = async () => {
-      if (sendStatus === SendStatus.PENDING) {
+      if (status === SendStatus.PENDING) {
         setStep(0)
       }
 
-      await wait(1060)
+      // wait until uncontrollable part of animation finishes, then rely on send status
+      await new Promise((resolve) => setTimeout(resolve, 1060))
       setStep(1)
 
-      if (sendStatus === SendStatus.COMPLETED) {
+      if (status === SendStatus.COMPLETED) {
         setStep(2)
         toaster.success(`Transaction ${title} successful`, {
           toastId: "successTransfer",
         })
       }
-      if (sendStatus === SendStatus.FAILED) {
+      if (status === SendStatus.FAILED) {
         setStep(3)
         toaster.error("Something went wrong")
       }
     }
 
     runAnimation()
-  }, [sendStatus, isOpen])
+  }, [status, isOpen])
 
   const animation = useMemo(() => allAnimations[step], [step])
 
@@ -82,24 +82,25 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
     >
       <div className="flex-grow text-center">
         <H5 className="mt-5 text-xl leading-6">
-          {sendStatus === SendStatus.FAILED
+          {status === SendStatus.FAILED
             ? "Transaction failed"
-            : sendStatus === SendStatus.COMPLETED
+            : status === SendStatus.COMPLETED
             ? "Sent successfully"
             : "Processing..."}
         </H5>
         <p className="mt-3 text-sm leading-5">
-          {sendStatus === SendStatus.FAILED
+          {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
-            : sendStatus === SendStatus.COMPLETED
+            : status === SendStatus.COMPLETED
             ? ""
-            : `This usually takes less than ${duration}.`}
+            : `This usually takes less than ${duration} seconds.`}
         </p>
         <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[25px]">
           <LottieAnimation
             animationData={animation}
             loop={step === 1}
             className="max-w-[370px]"
+            speed={1.5}
           />
           <ImageWithFallback
             alt="assetImg"
@@ -108,7 +109,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             className={clsx(
               "absolute sm:h-[90px] h-[80px] sm:w-[90px] w-[80px] object-contain rounded-full object-center",
               "mx-auto top-[164px] sm:top-[195px] ml-[1px]",
-              !isAssetPadding &&
+              !isFtToken &&
                 "!w-[98px] !h-[98px] !top-[155px] sm:!w-[112px] sm:!h-[112px] sm:!top-[184px]",
             )}
           />

@@ -29,8 +29,6 @@ export enum SendStatus {
 
 export type TokenType = "ft" | "nft"
 
-export type SuccessState = "pending" | "success" | "error"
-
 export interface ITransferResponse {
   verifyPromise?: Promise<void>
   errorMessage?: Error

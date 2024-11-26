@@ -47,7 +47,7 @@ export const TransferFT = ({
   onClose,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
-  const [sendStatus, setSendStatus] = useState(SendStatus.PENDING)
+  const [status, setStatus] = useState(SendStatus.PENDING)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
@@ -120,7 +120,7 @@ export const TransferFT = ({
             amount: amount,
             fee: token.getTokenFeeFormatted() ?? 0,
           })
-          setSendStatus(SendStatus.COMPLETED)
+          setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
           console.error(
@@ -128,7 +128,7 @@ export const TransferFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          setSendStatus(SendStatus.FAILED)
+          setStatus(SendStatus.FAILED)
         })
 
       return
@@ -167,14 +167,14 @@ export const TransferFT = ({
           amount: amount,
           fee: token.getTokenFeeFormatted() ?? 0,
         })
-        setSendStatus(SendStatus.COMPLETED)
+        setStatus(SendStatus.COMPLETED)
         updateTokenBalance([token.getTokenAddress()], activeTokens)
       })
       .catch((e) => {
         console.error(
           `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
         )
-        setSendStatus(SendStatus.FAILED)
+        setStatus(SendStatus.FAILED)
       })
   }, [isVault, token, selectedVaultsAccountAddress, amount, to, activeTokens])
 
@@ -200,7 +200,7 @@ export const TransferFT = ({
           profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
         }
         vaultsBalance={balance?.balance["ICP"]}
-        sendStatus={sendStatus}
+        status={status}
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
       />

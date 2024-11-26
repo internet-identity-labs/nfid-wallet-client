@@ -43,7 +43,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [tokensOptions, setTokensOptions] = useState<T[]>([])
-  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(false)
+  const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(true)
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const handleSearch = useCallback(
@@ -53,7 +53,6 @@ export const ChooseTokenModal = <T extends FT | NFT>({
 
   useEffect(() => {
     const init = async () => {
-      setIsTokenOptionsLoading(true)
       const { publicKey } = await getUserPrincipalId()
 
       const tokenOptions = await Promise.all(

@@ -44,7 +44,7 @@ export interface SwapFTUiProps {
   clearQuoteError: () => void
   step: SwapStage
   error?: SwapError | WithdrawError | DepositError
-  isProgressOpen: boolean
+  isSuccessOpen: boolean
   onClose: () => void
   quoteTimer: number
 }
@@ -66,7 +66,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   quote,
   step,
   error,
-  isProgressOpen,
+  isSuccessOpen,
   onClose,
   quoteTimer,
 }) => {
@@ -101,7 +101,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         subTitleFrom={quote?.getSourceAmountUSD()!}
         subTitleTo={quote?.getTargetAmountUSD()!}
         step={step}
-        isOpen={isProgressOpen}
+        isOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
       />
@@ -197,7 +197,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         </div>
       )}
       <Button
-        className="absolute bottom-5 left-5 right-5 !w-auto"
+        className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"
         type="primary"
         id="sendButton"
         block

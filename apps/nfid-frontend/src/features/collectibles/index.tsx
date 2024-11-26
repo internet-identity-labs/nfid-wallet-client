@@ -1,16 +1,14 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { NFTs } from "packages/ui/src/organisms/nfts"
-import { useEffect, useState, useCallback, MouseEvent, useContext } from "react"
+import { useState } from "react"
+import useSWR from "swr"
 
 import { Button } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { searchTokens } from "frontend/features/collectibles/utils/util"
 import { NFT } from "frontend/integration/nft/nft"
-import { ProfileContext } from "frontend/provider"
 
-import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 
 const DEFAULT_LIMIT_PER_PAGE = 8
@@ -18,60 +16,38 @@ const DEFAULT_LIMIT_PER_PAGE = 8
 const NFTsPage = () => {
   const [nfts, setNfts] = useState<NFT[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalItems, setTotalItems] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
-  const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
 
-  const onTransferNFT = useCallback(
-    (e: MouseEvent<HTMLDivElement>, id: string) => {
-      e.preventDefault()
+  const { data, isLoading, isValidating } = useSWR(
+    ["nftList", currentPage],
+    () => fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
+    {
+      revalidateOnFocus: false,
+      onSuccess: ({ items }) => {
+        const initialLoadingState = Array(items.length).fill(null)
+        setNfts((prevNfts) => [...prevNfts, ...initialLoadingState])
 
-      send({ type: "ASSIGN_SELECTED_NFT", data: id })
-      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
-      send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
-
-      send("SHOW")
+        items.forEach(async (nft, i) => {
+          await nft.init()
+          setNfts((prevNfts) => {
+            const newNfts = [...prevNfts]
+            newNfts[prevNfts.length - items.length + i] = nft
+            return newNfts
+          })
+        })
+      },
     },
-    [send],
   )
 
-  useEffect(() => {
-    const loadNFTs = async () => {
-      const { items, totalItems, totalPages } = await fetchNFTs(
-        currentPage,
-        DEFAULT_LIMIT_PER_PAGE,
-      )
-      setTotalItems(totalItems)
-      setTotalPages(totalPages)
-      setIsLoading(false)
-
-      const initialLoadingState = Array(items.length).fill(null)
-      setNfts((prevNfts) => [...prevNfts, ...initialLoadingState])
-
-      for (let i = 0; i < items.length; i++) {
-        const nft = items[i]
-        await nft.init()
-        setNfts((prevNfts) => {
-          const newNfts = [...prevNfts]
-          newNfts[prevNfts.length - items.length + i] = nft
-          return newNfts
-        })
-      }
-    }
-
-    loadNFTs()
-  }, [currentPage])
+  const totalItems = data?.totalItems || 0
+  const totalPages = data?.totalPages || 0
 
   return (
     <>
       <NFTs
         nfts={nfts}
-        isLoading={isLoading}
+        isLoading={isLoading || isValidating}
         searchTokens={searchTokens}
         links={ProfileConstants}
-        onTransferNFT={onTransferNFT}
         totalItems={totalItems}
         currentPage={currentPage}
       />

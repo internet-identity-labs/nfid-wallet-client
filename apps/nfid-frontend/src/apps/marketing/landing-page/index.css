@@ -228,3 +228,19 @@ h2 {
 body.homescreen {
   background-color: #0e0f10;
 }
+
+.landing-lottie {
+  right: 0;
+}
+
+@media only screen and (min-width: 1440px) {
+  .landing-lottie {
+    right: calc(50vw - 638px);
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+  .landing-lottie canvas {
+    object-fit: cover;
+  }
+}

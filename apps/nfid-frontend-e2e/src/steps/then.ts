@@ -51,7 +51,7 @@ Then(
 )
 
 Then(
-  /^Verifying that the token ([^"]+) is( not)? displayed$/,
+  /^Verifying that the ([^"]+) token is( not)? displayed$/,
   async (tokenName: string, presence: string) => {
     let isDisplayed
     await browser.waitUntil(async () => {

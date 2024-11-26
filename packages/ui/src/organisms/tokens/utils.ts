@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import { getUserIdData } from "packages/integration/src/lib/cache/cache"
-import { mutate } from "swr"
+
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
@@ -58,6 +59,7 @@ export const addAndInitToken = async (
   let updatedAllTokens = [...allTokens]
 
   if (index !== -1) return
+  token.setTokenState(State.Active)
 
   !token.isInited() && (await token.init(Principal.fromText(publicKey)))
   updatedActiveTokens.push(token)
@@ -86,6 +88,7 @@ export const removeToken = (token: FT, activeTokens: FT[], allTokens: FT[]) => {
   if (index === -1) return
   updatedActiveTokens.splice(index, 1)
 
+  token.setTokenState(State.Inactive)
   const allIndex = allTokens.findIndex(
     (t) => t.getTokenAddress() === token.getTokenAddress(),
   )

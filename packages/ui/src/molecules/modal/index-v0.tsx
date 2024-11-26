@@ -31,7 +31,7 @@ export const ModalComponent: FC<ModalProps> = ({
           "transition ease-in-out duration-300",
           "fixed top-[50%] right-[50%] bottom-[50%] left-[50%]",
           "transform -translate-x-2/4 -translate-y-2/4",
-          "rounded-[24px] drop-shadow-lg",
+          "rounded-[24px]",
           "min-w-min min-h-min h-min bg-white",
           isVisible ? "scale-100" : "scale-0",
           className,

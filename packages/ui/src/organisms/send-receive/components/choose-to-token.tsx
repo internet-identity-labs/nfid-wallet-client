@@ -47,11 +47,13 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   useEffect(() => {
     if (!token) return
     const init = async () => {
-      if (!token.isInited()) {
-        const { publicKey } = await getUserPrincipalId()
-        const initedToken = await token.init(Principal.fromText(publicKey))
-        setInitedToken(initedToken)
+      if (token.isInited()) {
+        setInitedToken(token)
+        return
       }
+      const { publicKey } = await getUserPrincipalId()
+      const initedToken = await token.init(Principal.fromText(publicKey))
+      setInitedToken(initedToken)
     }
 
     init()

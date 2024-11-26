@@ -1,8 +1,9 @@
+import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useMemo, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import {
@@ -18,6 +19,8 @@ import { E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { getMaxAmountFee } from "frontend/integration/icpswap/util/util"
+
+import { getUserPrincipalId } from "../../tokens/utils"
 
 interface ChooseFromTokenProps {
   token: FT | undefined
@@ -39,6 +42,22 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isSwap = false,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState("")
+  const [initedToken, setInitedToken] = useState<FT>()
+
+  useEffect(() => {
+    if (!token) return
+    const init = async () => {
+      if (token.isInited()) {
+        setInitedToken(token)
+        return
+      }
+      const { publicKey } = await getUserPrincipalId()
+      const initedToken = await token.init(Principal.fromText(publicKey))
+      setInitedToken(initedToken)
+    }
+
+    init()
+  }, [token])
 
   const {
     setValue,
@@ -88,6 +107,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     >
       <div className="flex items-center justify-between">
         <InputAmount
+          disabled={!Boolean(initedToken)}
           isLoading={false}
           decimals={decimals}
           value={inputAmountValue}
@@ -144,10 +164,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           >
             {balance === undefined ? (
               <span id="balance">
-                {token.isInited() ? (
+                {initedToken ? (
                   <>
-                    {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                    {token.getTokenSymbol()}
+                    {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
+                    {initedToken.getTokenSymbol()}
                   </>
                 ) : (
                   <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

@@ -1,6 +1,5 @@
-import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { HTMLAttributes, FC, useEffect, useState } from "react"
+import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import {
@@ -11,7 +10,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { IProfileConstants } from ".."
-import { getUserPrincipalId } from "../utils"
+import { useTokenInit } from "../../send-receive/hooks/token-init"
 import { AssetDropdown } from "./asset-dropdown"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
@@ -32,19 +31,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   dropdownPosition,
   ...props
 }) => {
-  const [isBalanceLoading, setIsBalanceLoading] = useState(true)
-
-  useEffect(() => {
-    const initToken = async () => {
-      const { publicKey } = await getUserPrincipalId()
-      const principal = Principal.fromText(publicKey)
-
-      await token.init(principal)
-      setIsBalanceLoading(false)
-    }
-
-    initToken()
-  }, [token])
+  const initedToken = useTokenInit(token)
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`} {...props}>
@@ -85,25 +72,25 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="pr-[10px] text-right md:text-left pr-[10px] max-w-[40%] min-w-[40%] sm:max-w-[50%] sm:min-w-[50%]"
       >
         <p className="flex items-center justify-end md:block">
-          {isBalanceLoading ? (
+          {!initedToken ? (
             <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
           ) : (
             <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
-              {token.getTokenBalanceFormatted() || "0"}{" "}
-              <span>{token.getTokenSymbol()}</span>
+              {initedToken.getTokenBalanceFormatted() || "0"}{" "}
+              <span>{initedToken.getTokenSymbol()}</span>
             </span>
           )}
         </p>
         <p className="text-xs md:hidden text-secondary">
           &nbsp;
-          {isBalanceLoading ? (
+          {!initedToken ? (
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
-          ) : token.getUSDBalanceFormatted() === undefined ? (
+          ) : initedToken.getUSDBalanceFormatted() === undefined ? (
             "Not listed"
           ) : (
-            token.getUSDBalanceFormatted()
+            initedToken.getUSDBalanceFormatted()
           )}
         </p>
       </td>
@@ -111,12 +98,12 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px]"
       >
-        {isBalanceLoading ? (
+        {!initedToken ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : token.getUSDBalanceFormatted() === undefined ? (
+        ) : initedToken.getUSDBalanceFormatted() === undefined ? (
           "Not listed"
         ) : (
-          token.getUSDBalanceFormatted()
+          initedToken.getUSDBalanceFormatted()
         )}
       </td>
       <td className="w-[24px] min-w-[24px]">

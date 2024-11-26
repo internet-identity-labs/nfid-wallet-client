@@ -75,10 +75,6 @@ export class Assets {
     return $("svg.mr-2")
   }
 
-  get manageTokensDialogButton() {
-    return $("#importToken")
-  }
-
   public async tokenOptionsButton(tokenName: string) {
     return $(`#${tokenName}_options`)
   }
@@ -86,6 +82,9 @@ export class Assets {
   public async tokenBalance(tokenName: string) {
     let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
     await locator.waitForDisplayed({ timeout: 10000 })
+    await browser.waitUntil(async () => {
+      return await locator.getText() != ""
+    }, { timeout: 10000, timeoutMsg: "Token balance isn't loaded in 10 sec" })
     return locator
   }
 
@@ -228,6 +227,10 @@ export class Assets {
   }
 
   public ManageTokensDialog = {
+
+    manageTokensDialogButton() {
+      return $("#importToken")
+    },
     tokenShowHideButton(tokenName) {
       return $(`#${tokenName}_showHideButton`)
     },

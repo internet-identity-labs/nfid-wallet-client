@@ -84,7 +84,7 @@ Then(/^User opens (.+) dialog window(?: of (\S+))?$/,
       Send: async () => await Assets.sendDialog(),
       "Send nft": async () => await Assets.sendNFTDialog(),
       "Choose nft": async () => await Assets.chooseNFTinSend.click(),
-      "Manage tokens": async () => await Assets.manageTokensDialogButton.click(),
+      "Manage tokens": async () => await Assets.ManageTokensDialog.manageTokensDialogButton().click(),
       "Token options": async () => await (await Assets.tokenOptionsButton(optionalArg)).click(),
     }
     await (windows[window]?.() || Promise.reject(new Error(`Unknown dialog window: ${window}`)))

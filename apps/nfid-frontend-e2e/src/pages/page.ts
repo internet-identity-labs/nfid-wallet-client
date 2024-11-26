@@ -57,6 +57,21 @@ export class Page {
     )
   }
 
+  public async clickOnLeftUpperCorner(){
+    await browser.performActions([
+      {
+        type: 'pointer',
+        id: 'mouse',
+        parameters: { pointerType: 'mouse' },
+        actions: [
+          { type: 'pointerMove', x: 0, y: 0 }, // Перемещение указателя в верхний левый угол
+          { type: 'pointerDown', button: 0 }, // Нажатие левой кнопки мыши
+          { type: 'pointerUp', button: 0 },   // Отпускание кнопки мыши
+        ],
+      },
+    ])
+  }
+
   loginUsingIframe(
     profileType?: string,
     targets?: string,

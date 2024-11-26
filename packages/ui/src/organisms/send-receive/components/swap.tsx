@@ -158,7 +158,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         priceImpact={priceImpact}
       />
       <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
-        {!amount ? (
+        {!amount || !quote ? (
           "Quote rate"
         ) : isQuoteLoading ? (
           <div className="flex gap-[10px]">
@@ -170,12 +170,12 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         )}
         <span
           className={
-            !isQuoteLoading && amount
+            !isQuoteLoading && amount && quote
               ? "text-teal-600 cursor-pointer"
               : "text-gray-500"
           }
           onClick={() => {
-            if (isQuoteLoading || !amount) return
+            if (isQuoteLoading || !amount || !quote) return
             setQuoteModalOpen(true)
           }}
         >
@@ -204,6 +204,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         disabled={
           isQuoteLoading ||
           !amount ||
+          !quote ||
           Boolean(errors["amount"]?.message) ||
           (!isChecked && priceImpact?.status === "high")
         }

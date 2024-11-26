@@ -223,7 +223,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         loadingMessage={"Fetching supported tokens..."}
         isTokenLoading={isAllTokensLoading || isActiveTokensLoading}
         submit={submit}
-        isQuoteLoading={isQuoteLoading || isShroffLoading || !quote}
+        isQuoteLoading={isQuoteLoading || isShroffLoading}
         quote={quote}
         showServiceError={shroffError?.name === "ServiceUnavailableError"}
         showLiquidityError={liquidityError}

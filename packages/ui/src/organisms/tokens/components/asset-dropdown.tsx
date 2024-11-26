@@ -47,10 +47,14 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
     [navigate],
   )
 
-  const { data: allTokens = [] } = useSWR("allTokens", fetchAllTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
+  const { data: allTokens = [] } = useSWR(
+    ["allTokens", ""],
+    ([, query]) => fetchAllTokens(query),
+    {
+      revalidateOnFocus: false,
+      // revalidateOnMount: false,
+    },
+  )
 
   if (!token.getTokenAddress()) return null
 
@@ -86,12 +90,6 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             icon={IconSvgEyeClosedBlack}
             handler={() => {
               token.hideToken()
-              const result = removeToken(token, tokens, allTokens)
-              if (!result) return
-
-              const { updatedAllTokens, updatedActiveTokens } = result
-              mutate("activeTokens", updatedActiveTokens, false)
-              mutate("allTokens", updatedAllTokens, false)
             }}
           />
         )}

@@ -47,11 +47,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     WithdrawError | SwapError | DepositError | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
-    "activeTokens",
-    fetchActiveTokens,
-    { revalidateOnFocus: false, revalidateOnMount: false },
-  )
   const { data: allTokens = [], isLoading: isAllTokensLoading } = useSWR(
     ["allTokens", ""],
     ([, query]) => fetchAllTokens(query),
@@ -62,10 +57,10 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   >()
 
   const fromToken = useMemo(() => {
-    return activeTokens.find(
+    return allTokens.find(
       (token) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, activeTokens])
+  }, [fromTokenAddress, allTokens])
 
   const toToken = useMemo(() => {
     return allTokens.find((token) => token.getTokenAddress() === toTokenAddress)
@@ -206,23 +201,23 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         setSwapError(error)
       })
       .finally(() => {
-        updateTokenBalance([fromTokenAddress, toTokenAddress], activeTokens)
+        updateTokenBalance([fromTokenAddress, toTokenAddress], allTokens)
       })
 
     setGetTransaction(shroff.getSwapTransaction())
-  }, [quote, shroff, activeTokens, fromTokenAddress, toTokenAddress])
+  }, [quote, shroff, allTokens, fromTokenAddress, toTokenAddress])
 
   return (
     <FormProvider {...formMethods}>
       <SwapFTUi
-        tokens={activeTokens}
+        tokens={allTokens}
         allTokens={filteredAllTokens}
         toToken={toToken}
         fromToken={fromToken}
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={isAllTokensLoading || isActiveTokensLoading}
+        isTokenLoading={isAllTokensLoading}
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading}
         quote={quote}

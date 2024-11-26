@@ -16,7 +16,7 @@ export interface IProfileConstants {
 export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   activeTokens: FT[]
   filteredTokens: FT[]
-  isActiveTokensLoading: boolean
+  isTokensLoading: boolean
   setSearchQuery: (v: string) => void
   profileConstants: IProfileConstants
   onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
@@ -36,7 +36,7 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
 export const Tokens: FC<TokensProps> = ({
   activeTokens,
   filteredTokens,
-  isActiveTokensLoading,
+  isTokensLoading,
   setSearchQuery,
   profileConstants,
   onSubmitIcrc1Pair,
@@ -64,7 +64,7 @@ export const Tokens: FC<TokensProps> = ({
           </tr>
         </thead>
         <tbody className="h-16 text-sm text-black">
-          {isActiveTokensLoading ? (
+          {isTokensLoading ? (
             <TableTokenSkeleton
               tableRowsAmount={5}
               tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}

@@ -246,11 +246,11 @@ export const getQuoteData = async (
 
 export const updateTokenBalance = async (
   ledgers: string[],
-  activeTokens: FT[],
+  allTokens: FT[],
 ) => {
   const { publicKey } = await getUserPrincipalId()
 
-  const updatedTokens = [...activeTokens]
+  const updatedTokens = [...allTokens]
 
   for (const ledger of ledgers) {
     const index = updatedTokens.findIndex(
@@ -266,5 +266,5 @@ export const updateTokenBalance = async (
     }
   }
 
-  mutate("activeTokens", updatedTokens, false)
+  mutate("allTokens", updatedTokens, false)
 }

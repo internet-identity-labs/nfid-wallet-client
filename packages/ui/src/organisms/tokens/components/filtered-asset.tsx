@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
 import { FC, useState } from "react"
@@ -13,7 +14,13 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { fetchActiveTokens, removeToken, addAndInitToken } from "../utils"
+import {
+  fetchActiveTokens,
+  removeToken,
+  addAndInitToken,
+  fetchAllTokens,
+  getUserPrincipalId,
+} from "../utils"
 
 interface FilteredTokenProps {
   token: FT
@@ -34,15 +41,23 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
     },
   )
 
+  const { data: allTokenss = [] } = useSWR(
+    ["allTokens", ""],
+    ([, query]) => fetchAllTokens(query),
+    {
+      revalidateOnFocus: false,
+      // revalidateOnMount: false,
+    },
+  )
+
   const hideToken = (token: FT) => {
     setIsHidden(!isHidden)
     try {
       token.hideToken()
-      const result = removeToken(token, activeTokens, allTokens)
-      if (!result) return
+      const updatedAllTokens = removeToken(token, allTokenss)
+      if (!updatedAllTokens) return
 
-      const { updatedAllTokens, updatedActiveTokens } = result
-      mutate("activeTokens", updatedActiveTokens, false)
+      mutate("activeTokens", updatedAllTokens, false)
       mutate("allTokens", updatedAllTokens, false)
     } catch (e) {
       toaster.error("Token hiding failed: " + (e as any).message)
@@ -50,14 +65,16 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
   }
 
   const showToken = async (token: FT) => {
+    const { publicKey } = await getUserPrincipalId()
     setIsHidden(!isHidden)
     try {
+      !token.isInited() && token.init(Principal.fromText(publicKey))
       token.showToken()
-      const result = await addAndInitToken(token, activeTokens, allTokens)
-      if (!result) return
+      const updatedAllTokens = await addAndInitToken(token, allTokens)
+      if (!updatedAllTokens) return
 
-      const { updatedAllTokens, updatedActiveTokens } = result
-      mutate("activeTokens", updatedActiveTokens, false)
+      console.log(updatedAllTokens)
+
       mutate("allTokens", updatedAllTokens, false)
     } catch (e) {
       toaster.error("Token shhowing failed: " + (e as any).message)

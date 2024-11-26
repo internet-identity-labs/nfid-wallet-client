@@ -4,6 +4,7 @@ import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
   fetchActiveTokens,
+  fetchAllTokens,
   getFullUsdValue,
   getUserPrincipalId,
   initActiveTokens,
@@ -24,6 +25,7 @@ import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { sendReceiveTracking } from "@nfid/integration"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
@@ -123,11 +125,15 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
-  const { data: activeTokens = [] } = useSWR(
-    isWallet ? "activeTokens" : null,
-    fetchActiveTokens,
+  const { data: allTokens = [], isLoading: isAllTokensLoading } = useSWR(
+    ["allTokens", ""],
+    ([, query]) => fetchAllTokens(query),
     { revalidateOnFocus: false },
   )
+
+  const activeTokens = useMemo(() => {
+    return allTokens.filter((token) => token.getTokenState() === State.Active)
+  }, [allTokens])
 
   const { data: activeInitedTokens = [] } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,

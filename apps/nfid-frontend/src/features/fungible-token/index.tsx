@@ -6,10 +6,11 @@ import {
   fetchAllTokens,
   getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
 import { sendReceiveTracking } from "@nfid/integration"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
@@ -34,21 +35,18 @@ const TokensPage = () => {
   }
 
   const {
-    data: activeTokens = [],
-    isLoading: isActiveLoading,
-    mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchActiveTokens, {
+    data: allTokens = [],
+    mutate: refetchAllTokens,
+    isLoading: isAllTokenLoading,
+  } = useSWR(["allTokens", searchQuery], ([, query]) => fetchAllTokens(query), {
     revalidateOnFocus: false,
-    revalidateOnMount: false,
   })
 
-  const { data: allTokens = [] } = useSWR(
-    ["allTokens", searchQuery],
-    ([, query]) => fetchAllTokens(query),
-    {
-      revalidateOnFocus: false,
-    },
-  )
+  // const activeTokens = useMemo(() => {
+  //   return allTokens.filter((token) => token.getTokenState() === State.Active)
+  // }, [allTokens])
+
+  console.log("fung", allTokens)
 
   const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(
@@ -57,7 +55,7 @@ const TokensPage = () => {
     )
     return icrc1Pair.storeSelf().then(() => {
       resetLocalStorageTTLCache([icrc1OracleCacheName], () => {
-        refetchActiveTokens()
+        refetchAllTokens()
       })
     })
   }
@@ -88,10 +86,10 @@ const TokensPage = () => {
 
   return (
     <Tokens
-      activeTokens={activeTokens}
+      activeTokens={allTokens.filter((t) => t.getTokenState() === State.Active)}
       filteredTokens={allTokens}
       setSearchQuery={setSearchQuery}
-      isActiveTokensLoading={isActiveLoading}
+      isTokensLoading={isAllTokenLoading}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}

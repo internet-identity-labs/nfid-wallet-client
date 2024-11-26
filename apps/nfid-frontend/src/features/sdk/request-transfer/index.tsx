@@ -15,7 +15,6 @@ import {
 } from "@nfid/integration/token/constants"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { TransferSuccess } from "frontend/features/transfer-modal/components/send-success"
 import {
   getUserBalance,
   requestTransfer,
@@ -26,6 +25,7 @@ import { getNFTByTokenId } from "frontend/integration/entrepot"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { SDKFooter } from "../ui/footer"
+import { TransferSuccess } from "../ui/transfer-success.tsx"
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
 import { IRequestTransferResponse } from "./types"

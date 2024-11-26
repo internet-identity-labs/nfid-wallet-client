@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import NoIcon from "packages/ui/src/assets/no-icon.svg"
 import React, { useMemo } from "react"
 
 import {

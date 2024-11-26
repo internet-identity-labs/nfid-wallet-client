@@ -8,6 +8,7 @@ export interface LottieAnimationProps {
   width?: number | string
   height?: number | string
   className?: string
+  speed?: number
   onComplete?: () => void
 }
 
@@ -19,6 +20,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   height = "100%",
   className,
   onComplete,
+  speed = 1,
 }) => {
   const animationContainer = useRef<HTMLDivElement>(null)
   const animationInstance = useRef<AnimationItem | null>(null)
@@ -39,6 +41,8 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
       }
 
       animationInstance.current.addEventListener("enterFrame", handleEnterFrame)
+
+      animationInstance.current.setSpeed(speed)
     }
 
     return () => {

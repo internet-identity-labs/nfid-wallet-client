@@ -1,9 +1,17 @@
+import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
 import toaster from "packages/ui/src/atoms/toast"
-import { Success } from "packages/ui/src/organisms/send-receive/components/success"
 import React from "react"
 import useSWR from "swr"
 
-import { ITransferResponse } from "../types"
+import { Success } from "./success"
+
+export interface ITransferResponse {
+  verifyPromise?: Promise<void>
+  errorMessage?: Error
+  url?: string
+  hash?: string
+  blockIndex?: Icrc1BlockIndex
+}
 
 export interface ITransferSuccess {
   onClose?: () => void

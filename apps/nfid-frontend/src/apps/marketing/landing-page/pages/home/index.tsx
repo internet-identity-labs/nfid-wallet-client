@@ -1,5 +1,4 @@
-import { DotLottiePlayer } from "@dotlottie/react-player"
-import "@dotlottie/react-player/dist/index.css"
+import { DotLottieReact } from "@lottiefiles/dotlottie-react"
 import clsx from "clsx"
 import React from "react"
 import { useLocation } from "react-router-dom"
@@ -69,45 +68,43 @@ const HomeContent = ({
   return (
     <>
       <SnsModal />
-      <Container className="md:h-[75vh] relative overflow-visible max-h-[800px]">
-        <div className="gradient-radial"></div>
-        <div className="relative z-10 pt-[15vh] lg:pt-[150px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[570px] text-center md:text-left">
-          <div className="text-[32px] md:text-[36px] lg:text-[44px] xl:text-[58px] tracking-[-2.16px] font-bold">
-            <h1 className="md:leading-[40px] lg:leading-[50px] xl:leading-[64px] gradient-text">
-              Your crypto wallet & gateway to ICP apps
-            </h1>
+      <div className="relative">
+        <Container className="relative overflow-visible md:h-[800px]">
+          <div className="gradient-radial"></div>
+          <div className="relative z-10 pt-[15vh] lg:pt-[150px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[570px] text-center md:text-left">
+            <div className="text-[32px] md:text-[36px] lg:text-[44px] xl:text-[58px] tracking-[-2.16px] font-bold">
+              <h1 className="md:leading-[40px] lg:leading-[50px] xl:leading-[64px] gradient-text">
+                Your crypto wallet & gateway to ICP apps
+              </h1>
+            </div>
+            <h2
+              style={{
+                fontFamily: "inherit !important",
+              }}
+              className="mt-[30px] text-gray-50 md:max-w-[420px] lg:max-w-full text-xl font-inherit font-normal"
+            >
+              Start exploring ICP applications in seconds. Trusted by hundreds
+              of thousands of users worldwide.
+            </h2>
+            <Button
+              id="authentication-button"
+              onClick={signIn}
+              className="mt-[30px] w-[148px] mx-auto md:mx-0"
+              type="green"
+            >
+              Go to wallet
+            </Button>
           </div>
-          <h2
-            style={{
-              fontFamily: "inherit !important",
-            }}
-            className="mt-[30px] text-gray-50 md:max-w-[420px] lg:max-w-full text-xl font-inherit font-normal"
-          >
-            Start exploring ICP applications in seconds. Trusted by hundreds of
-            thousands of users worldwide.
-          </h2>
-          <Button
-            id="authentication-button"
-            onClick={signIn}
-            className="mt-[30px] w-[148px] mx-auto md:mx-0"
-            type="green"
-          >
-            Go to wallet
-          </Button>
-        </div>
-        <div className="absolute bottom-0 right-0 z-0 hidden w-full h-full md:block">
-          <DotLottiePlayer
+        </Container>
+        <div className="landing-lottie absolute bottom-0 z-0 hidden w-full max-w-[1240px] h-full md:block">
+          <DotLottieReact
+            className="h-[900px]"
             src={mainAnimation}
             autoplay
             loop
-            renderer="canvas"
-            rendererSettings={{
-              preserveAspectRatio: "xMidYMid slice",
-              className: "w-full h-full object-cover",
-            }}
           />
         </div>
-      </Container>
+      </div>
       <Container className="mt-[78px] md:mt-0 relative">
         <SnsBanner />
       </Container>

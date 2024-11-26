@@ -137,8 +137,8 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     isLoading: isQuoteLoading,
     mutate,
   } = useSWR(
-    amount
-      ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
+    toToken && fromToken && amount
+      ? [toToken.getTokenAddress(), fromToken.getTokenAddress(), amount]
       : null,
     () => getQuoteData(amount, shroff),
     {
@@ -173,8 +173,9 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   }, [mutate, quoteTimer, quote, isSuccessOpen])
 
   useEffect(() => {
-    mutate()
-  }, [toToken, fromToken, mutate, amount])
+    if (!shroff) return
+    mutate(() => getQuoteData(amount, shroff), true)
+  }, [toToken, fromToken, mutate, amount, shroff])
 
   const refresh = () => {
     setShroffError(undefined)

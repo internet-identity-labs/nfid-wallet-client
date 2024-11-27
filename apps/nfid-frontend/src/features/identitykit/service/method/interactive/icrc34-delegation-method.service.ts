@@ -27,6 +27,7 @@ import {
   ComponentData,
   InteractiveMethodService,
 } from "./interactive-method.service"
+import { targetService } from "../../target.service"
 
 export interface AccountsComponentData extends ComponentData {
   publicProfile: Account
@@ -191,7 +192,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
   private async isPublicAccountsAllowed(targets: string[], origin: string) {
     if (!targets || targets.length === 0) return false
     try {
-      await validateTargets(targets, origin)
+      await targetService.validateTargets(targets, origin)
       return true
     } catch (e: unknown) {
       const text = e instanceof Error ? e.message : "Unknown error"

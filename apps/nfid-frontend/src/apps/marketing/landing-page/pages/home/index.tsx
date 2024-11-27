@@ -1,5 +1,5 @@
-import { DotLottieReact } from "@lottiefiles/dotlottie-react"
 import clsx from "clsx"
+import Lottie from "lottie-react"
 import React from "react"
 import { useLocation } from "react-router-dom"
 
@@ -9,7 +9,7 @@ import Animation1 from "../../assets/animations/1_4.json"
 import Animation2 from "../../assets/animations/2_4.json"
 import Animation3 from "../../assets/animations/3_4.json"
 import Animation4 from "../../assets/animations/4_4.json"
-import mainAnimation from "../../assets/animations/main.lottie"
+import mainAnmation from "../../assets/animations/main.json"
 import Audit from "../../assets/audit.png"
 import Card1Hover from "../../assets/cards/icon-1-hover.png"
 import Card1 from "../../assets/cards/icon-1.png"
@@ -69,7 +69,7 @@ const HomeContent = ({
     <>
       <SnsModal />
       <div className="relative">
-        <Container className="relative overflow-visible md:h-[800px]">
+        <Container className="relative overflow-visible md:h-[700px]">
           <div className="gradient-radial"></div>
           <div className="relative z-10 pt-[15vh] lg:pt-[150px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[570px] text-center md:text-left">
             <div className="text-[32px] md:text-[36px] lg:text-[44px] xl:text-[58px] tracking-[-2.16px] font-bold">
@@ -97,12 +97,7 @@ const HomeContent = ({
           </div>
         </Container>
         <div className="landing-lottie absolute bottom-0 z-0 hidden w-full max-w-[1240px] h-full md:block">
-          <DotLottieReact
-            className="h-[900px]"
-            src={mainAnimation}
-            autoplay
-            loop
-          />
+          <Lottie animationData={mainAnmation} autoplay loop />
         </div>
       </div>
       <Container className="mt-[78px] md:mt-0 relative">

@@ -233,14 +233,36 @@ body.homescreen {
   right: 0;
 }
 
-@media only screen and (min-width: 1440px) {
-  .landing-lottie {
-    right: calc(50vw - 638px);
+.landing-lottie {
+  svg {
+    width: auto !important;
+    height: auto !important;
   }
 }
 
-@media only screen and (max-width: 1023px) {
-  .landing-lottie canvas {
-    object-fit: cover;
+@media only screen and (max-width: 1291px) {
+  .landing-lottie {
+    right: 1.7vw;
+    height: 60vw;
+    bottom: 0;
+    margin-bottom: -4.3vw;
+  }
+}
+
+@media only screen and (max-width: 1260px) {
+  .landing-lottie {
+    right: 1.7vw;
+    height: 61vw;
+    bottom: 0;
+    margin-bottom: -4.2vw;
+  }
+}
+
+@media only screen and (min-width: 1292px) {
+  .landing-lottie {
+    height: 100%;
+    margin-top: -9px;
+    right: calc(50vw - 637px);
+    top: 0;
   }
 }

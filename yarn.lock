@@ -2660,18 +2660,6 @@
   dependencies:
     call-bind "^1.0.7"
 
-"@lottiefiles/dotlottie-react@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@lottiefiles/dotlottie-react/-/dotlottie-react-0.10.0.tgz#300402802d5440e8f3ee33493e41d05542440e2a"
-  integrity sha512-krPJUIqpt7VluWc0aRWk0lYScCDSlbCpWvImU5eyJZeyroZ87bZYb+YlgUbtLHZ77DWmIBl4kGMhupU8+ugPSw==
-  dependencies:
-    "@lottiefiles/dotlottie-web" "0.37.0"
-
-"@lottiefiles/dotlottie-web@0.37.0":
-  version "0.37.0"
-  resolved "https://registry.yarnpkg.com/@lottiefiles/dotlottie-web/-/dotlottie-web-0.37.0.tgz#6943529a9f920e99031d644eade870d486f70fe8"
-  integrity sha512-dCtQkYlq9GDswJNmcIlUaAskxrsJ56SRhY8woNsHuIPWy+tfP9tgf1fA9fZ1Oj72DVdyYkK0DxLk58HhBrmpBQ==
-
 "@mdx-js/react@^3.0.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@mdx-js/react/-/react-3.1.0.tgz#c4522e335b3897b9a845db1dbdd2f966ae8fb0ed"

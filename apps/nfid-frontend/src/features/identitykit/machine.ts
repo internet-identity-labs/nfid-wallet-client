@@ -5,7 +5,7 @@ import AuthenticationMachine, {
 } from "../authentication/root/root-machine"
 import { RPCReceiverV3 } from "./helpers/rpc-receiver"
 import { checkAuthenticationStatus } from "./service/authentication.service"
-import { GenericError } from "./service/exception-handler.service"
+import { GenericError, NoActionError } from "./service/exception-handler.service"
 import {
   executeInteractiveMethod,
   executeSilentMethod,
@@ -301,6 +301,10 @@ const machineServices = {
     sendResponse: async (context: any, event: any) => {
       const request = context.activeRequest
       const parent = window.opener || window.parent
+
+      if (event.data instanceof NoActionError) {
+        // No action required.
+      }
 
       if (event.data instanceof Error || event.data instanceof GenericError) {
         parent.postMessage(

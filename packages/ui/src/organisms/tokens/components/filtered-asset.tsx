@@ -21,7 +21,9 @@ interface FilteredTokenProps {
 }
 
 export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
-  const [isHidden, setIsHidden] = useState(token.getTokenState() === "Active")
+  const [isHidden, setIsHidden] = useState(
+    token.getTokenState() === State.Active,
+  )
 
   const { data: activeTokens = [] } = useSWR(
     "activeTokens",
@@ -77,7 +79,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
           <p
             className={clsx(
               "text-sm text-black leading-[20px] font-semibold",
-              token.getTokenState() === "Active"
+              token.getTokenState() === State.Active
                 ? "text-black"
                 : "text-secondary",
             )}

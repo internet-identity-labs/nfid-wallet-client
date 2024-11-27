@@ -93,6 +93,10 @@ export class FTImpl implements FT {
     return this.tokenState
   }
 
+  setTokenState(state: State): void {
+    this.tokenState = State[state]
+  }
+
   getTokenBalance(): bigint | undefined {
     return this.tokenBalance
   }

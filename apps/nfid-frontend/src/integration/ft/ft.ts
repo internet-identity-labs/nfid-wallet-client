@@ -40,6 +40,8 @@ export interface FT {
 
   getTokenState(): State
 
+  setTokenState(state: State): void
+
   getBlockExplorerLink(): string
 
   getIndexBlockExplorerLink(): string

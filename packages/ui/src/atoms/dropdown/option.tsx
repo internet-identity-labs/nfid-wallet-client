@@ -23,6 +23,7 @@ export const DropdownOption = ({
 }: IDropdownOption) => {
   return (
     <div
+      id={`option`}
       className={clsx(
         "flex items-center gap-[8px] hover:bg-gray-100 cursor-pointer px-[10px]",
         className,

@@ -120,6 +120,12 @@ export const TransferFT = ({
             amount: amount,
             fee: token.getTokenFeeFormatted() ?? 0,
           })
+          toaster.success(
+            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+            {
+              toastId: "successTransfer",
+            },
+          )
           setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
@@ -128,6 +134,7 @@ export const TransferFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
+          toaster.error("Something went wrong")
           setStatus(SendStatus.FAILED)
         })
 
@@ -169,11 +176,18 @@ export const TransferFT = ({
         })
         setStatus(SendStatus.COMPLETED)
         updateTokenBalance([token.getTokenAddress()], activeTokens)
+        toaster.success(
+          `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+          {
+            toastId: "successTransfer",
+          },
+        )
       })
       .catch((e) => {
         console.error(
           `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
         )
+        toaster.error("Something went wrong")
         setStatus(SendStatus.FAILED)
       })
   }, [isVault, token, selectedVaultsAccountAddress, amount, to, activeTokens])

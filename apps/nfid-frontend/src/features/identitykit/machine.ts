@@ -303,7 +303,7 @@ const machineServices = {
       const parent = window.opener || window.parent
 
       if (event.data instanceof NoActionError) {
-        // No action required.
+        return
       }
 
       if (event.data instanceof Error || event.data instanceof GenericError) {

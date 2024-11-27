@@ -135,9 +135,10 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const {
     data: quote,
     isLoading: isQuoteLoading,
+    isValidating: isQuoteValidating,
     mutate,
   } = useSWR(
-    toToken && fromToken && amount
+    toToken && fromToken && amount && shroff
       ? [toToken.getTokenAddress(), fromToken.getTokenAddress(), amount]
       : null,
     () => getQuoteData(amount, shroff),
@@ -224,7 +225,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         loadingMessage={"Fetching supported tokens..."}
         isTokenLoading={isAllTokensLoading || isActiveTokensLoading}
         submit={submit}
-        isQuoteLoading={isQuoteLoading || isShroffLoading}
+        isQuoteLoading={isQuoteLoading || isShroffLoading || isQuoteValidating}
         quote={quote}
         showServiceError={shroffError?.name === "ServiceUnavailableError"}
         showLiquidityError={liquidityError}

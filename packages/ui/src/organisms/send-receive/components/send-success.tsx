@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import toaster from "packages/ui/src/atoms/toast"
 import React, { useEffect, useMemo, useState } from "react"
 
 import {
@@ -55,13 +54,9 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
 
       if (status === SendStatus.COMPLETED) {
         setStep(2)
-        toaster.success(`Transaction ${title} successful`, {
-          toastId: "successTransfer",
-        })
       }
       if (status === SendStatus.FAILED) {
         setStep(3)
-        toaster.error("Something went wrong")
       }
     }
 

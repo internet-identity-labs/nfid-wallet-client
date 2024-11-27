@@ -53,6 +53,12 @@ export const TransferNFT = ({
             amount: 1,
             fee: 0,
           })
+          toaster.success(
+            `Transaction ${selectedNFT?.getTokenName()} successful`,
+            {
+              toastId: "successTransfer",
+            },
+          )
           setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
@@ -61,6 +67,7 @@ export const TransferNFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
+          toaster.error("Something went wrong")
           setStatus(SendStatus.FAILED)
         })
     },

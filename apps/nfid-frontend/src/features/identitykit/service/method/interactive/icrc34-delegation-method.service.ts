@@ -5,8 +5,7 @@ import { getAnonymousDelegation } from "packages/integration/src/lib/delegation-
 
 import {
   authState,
-  getGlobalDelegationChain,
-  validateTargets,
+  getGlobalDelegationChain
 } from "@nfid/integration"
 
 import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"

@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react"
 
 import { EmptyCard, IconCmpWallet } from "@nfid-frontend/ui"
-import { Wallet, vaultsTracking } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/constants"
+import { Wallet } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVaultWallets } from "../../hooks/use-vault-wallets"
@@ -17,17 +16,6 @@ export const VaultsWalletsPage: React.FC<VaultsWalletsPageProps> = () => {
   React.useEffect(() => {
     if (!isFetching && vaultId && wallets) {
       console.debug("VaultsWalletsPage", { wallets, isFetching })
-
-      const totalICPBalance = wallets.reduce(
-        (acc, { balance }) => acc + (balance ? balance.ICP : BigInt(0)),
-        BigInt(0),
-      )
-
-      vaultsTracking.walletsLoaded({
-        vaultId,
-        totalAccounts: wallets.length,
-        totalICPBalance: Number(totalICPBalance / BigInt(E8S)),
-      })
     }
   }, [wallets, isFetching, vaultId])
 

@@ -4,8 +4,6 @@ import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useMemo, useState } from "react"
 
 import { Button, IconCmpPlus } from "@nfid-frontend/ui"
-import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
-import { securityTracking } from "@nfid/integration"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
@@ -63,7 +61,6 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
         <div>
           <div
             className={clsx(
-              SENSITIVE_CONTENT_NO_SESSION_RECORDING,
               "border-2 border-black rounded-t-md mt-4",
               "focus:outline-none resize-none focus:ring-0",
               "w-full leading-[26px] p-[12px] pb-[30px]",
@@ -113,7 +110,6 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
                   const response = await securityConnector.createRecoveryPhrase(
                     phrase,
                   )
-                  securityTracking.recoveryPhraseAdded()
                   return response
                 },
                 () => setIsModalVisible(false),

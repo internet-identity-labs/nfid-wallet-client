@@ -4,7 +4,6 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import posthog from "posthog-js"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
 import { agent } from "../agent"
@@ -171,15 +170,13 @@ function makeAuthState() {
     checkAndRenewFEDelegation()
     return observableAuthState$.getValue()
   }
-  async function reset(hard = true) {
+  async function reset() {
     await _clearAuthSessionFromCache()
     console.debug("invalidateIdentity")
     agent.invalidateIdentity()
     observableAuthState$.next({
       cacheLoaded: true,
     })
-    // clear tracking session
-    hard && posthog.reset()
   }
   function subscribe(next: (state: ObservableAuthState) => void) {
     return observableAuthState$.subscribe(next)

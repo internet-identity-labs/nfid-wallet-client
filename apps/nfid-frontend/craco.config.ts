@@ -35,8 +35,6 @@ const setupCSP = () => {
         "https://api.blockcypher.com/",
         "https://api.coinbase.com",
         "https://api.pro.coinbase.com",
-        "https://eu.i.posthog.com",
-        "https://eu.posthog.com",
         "https://icp-api.io",
         "https://api.nftgeek.app",
         "https://toniq.io",
@@ -71,9 +69,7 @@ const setupCSP = () => {
         // FIXME: required for WebAssembly.instantiate()
         "'unsafe-eval'",
         "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
-        "https://accounts.google.com/gsi/client",
-        "https://eu.posthog.com",
-        "https://eu-assets.i.posthog.com/static/recorder.js",
+        "https://accounts.google.com/gsi/client"
       ],
       "require-trusted-types-for": ["'script'"],
       "media-src": ["'self'", process.env.NFID_PROVIDER_URL as string],

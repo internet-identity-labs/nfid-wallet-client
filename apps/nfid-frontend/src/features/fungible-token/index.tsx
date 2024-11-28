@@ -9,7 +9,6 @@ import {
 import { useContext, useEffect, useState } from "react"
 import useSWR from "swr"
 
-import { sendReceiveTracking } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
@@ -25,7 +24,6 @@ const TokensPage = () => {
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
 
   const onSendClick = (selectedToken: string) => {
-    sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })

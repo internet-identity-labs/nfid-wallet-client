@@ -2,7 +2,6 @@ import { Separator } from "packages/ui/src/atoms/separator"
 import { useForm } from "react-hook-form"
 
 import { BlurredLoader, Button, IconCmpPasskey, Input } from "@nfid-frontend/ui"
-import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 
 import { AuthAppMeta } from "../app-meta"
 
@@ -74,7 +73,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           noValidate
         >
           <Input
-            className={SENSITIVE_CONTENT_NO_SESSION_RECORDING}
             inputClassName="h-12 rounded-xl"
             placeholder="Email"
             type="email"

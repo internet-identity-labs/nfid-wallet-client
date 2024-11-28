@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { useNavigate } from "react-router-dom"
 
-import { landingPageTracking } from "@nfid/integration"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
@@ -24,10 +22,6 @@ export function Wrapper({
   const { isAuthenticated } = useAuthentication()
 
   useEffect(() => {
-    setTimeout(() => {
-      landingPageTracking.pageLoaded()
-    })
-
     document.body.classList.add("homescreen")
     setThemeColor("#0E0F10")
 

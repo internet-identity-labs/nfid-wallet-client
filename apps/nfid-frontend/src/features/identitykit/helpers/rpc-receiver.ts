@@ -60,7 +60,7 @@ export const RPCReceiverV3 =
     console.log("subscribe")
     const subscription = rpcMessages.subscribe(
       async (message) => {
-        console.info("sendResponse RPCReceiverV3", { rpcMessage: message.data, origin: message.origin })
+        console.debug("sendResponse RPCReceiverV3", { rpcMessage: message.data, origin: message.origin })
 
         if (message?.data?.method === icrc29GetStatusMethodService.getMethod()) {
           try {

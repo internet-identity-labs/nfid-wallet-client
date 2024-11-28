@@ -71,11 +71,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (!token || fee === undefined || userBalance === undefined) return
     const decimals = token.getTokenDecimals()
     if (!decimals || !isMaxAvailable) return
-
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
     const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
-    const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
+    const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
     setInputAmountValue(formattedValue)
 
     setValue("amount", formattedValue, { shouldValidate: true })

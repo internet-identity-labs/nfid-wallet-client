@@ -25,9 +25,8 @@ export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstra
       throw new Error("Ledger not found")
     }
 
-    const userSourceInput = new BigNumber(Number(trs.getSourceAmount()))
-      .div(10 ** sourceLedger.decimals)
-      .toNumber()
+    const userSourceInput = new BigNumber(trs.getSourceAmount().toString())
+      .div(10 ** sourceLedger.decimals).toFixed()
 
     console.debug("User transaction: ", trs)
     const preCalculation = new SourceInputCalculator(BigInt(Number(trs.getSourceAmount())), sourceLedger.fee)

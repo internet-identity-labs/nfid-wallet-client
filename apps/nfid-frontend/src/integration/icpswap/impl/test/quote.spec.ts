@@ -16,7 +16,7 @@ describe("quote test", () => {
     const source = st.find((icrc1) => icrc1.ledger === sourceLedger)
     const target = st.find((icrc1) => icrc1.ledger === targetLedger)
     const quote = new QuoteImpl(
-      0.5,
+      "0.5",
       new SourceInputCalculator(BigInt(0.5 * 10 ** source!.decimals), source!.fee),
       BigInt(6631),
       source!,

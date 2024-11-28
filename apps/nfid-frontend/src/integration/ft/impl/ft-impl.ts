@@ -98,10 +98,9 @@ export class FTImpl implements FT {
   }
 
   getTokenBalanceFormatted(): string | undefined {
-    const tokenAmount = exchangeRateService.parseTokenAmount(
-      Number(this.tokenBalance),
-      this.decimals,
-    )
+    if (!this.tokenBalance) return undefined
+    const tokenAmount = BigNumber(this.tokenBalance.toString())
+      .div(10 ** this.decimals)
 
     return this.tokenBalance
       ? tokenAmount.toFormat({

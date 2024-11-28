@@ -18,9 +18,8 @@ import { bufFromBufLike } from "@dfinity/candid"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
-import { GenericError } from "./exception-handler.service"
+import { GenericError } from "./exception-handler.service" // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ;(BigInt.prototype as any).toJSON = function () {
   return this.toString()
 }

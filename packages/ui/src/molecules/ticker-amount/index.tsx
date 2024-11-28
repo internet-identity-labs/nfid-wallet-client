@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js"
 import React from "react"
 
 import {
@@ -11,11 +12,6 @@ interface TickerAmountProps {
   decimals?: number
   usdRate?: number
   withUSDSymbol?: boolean
-}
-
-const truncateToDecimals = (value: number, dec: number) => {
-  const calcDec = Math.pow(10, dec)
-  return Math.trunc(value * calcDec) / calcDec
 }
 
 const checkUsd = (value: number): string =>
@@ -41,12 +37,13 @@ const formatAssetAmount = (
   ` ${symbol}`
 
 export const formatAssetAmountRaw = (
-  value: number,
+  value: BigNumber,
   decimals: number,
 ): string => {
-  const amount = value / 10 ** decimals
-
-  return truncateToDecimals(amount, decimals).toString()
+  return value
+    .div(10 ** decimals)
+    .toFixed(decimals)
+    .replace(TRIM_ZEROS, "")
 }
 
 export const TickerAmount: React.FC<TickerAmountProps> = ({

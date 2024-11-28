@@ -19,7 +19,9 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       this.delegationIdentity = delegationIdentity
-      const balance = await this.swapPoolActor.getUserUnusedBalance(this.delegationIdentity!.getPrincipal())
+      const balance = await this.swapPoolActor.getUserUnusedBalance(
+        this.delegationIdentity!.getPrincipal(),
+      )
       console.debug("Balance: " + JSON.stringify(balance))
       console.debug("Transaction restarted")
       if (this.swapTransaction.getError() === undefined) {
@@ -50,7 +52,9 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       fee: this.source.fee,
     }
 
-    const balance = await this.swapPoolActor.getUserUnusedBalance(this.delegationIdentity!.getPrincipal())
+    const balance = await this.swapPoolActor.getUserUnusedBalance(
+      this.delegationIdentity!.getPrincipal(),
+    )
     console.debug("Balance: " + JSON.stringify(balance))
     console.debug("Withdraw args: " + JSON.stringify(args))
     try {

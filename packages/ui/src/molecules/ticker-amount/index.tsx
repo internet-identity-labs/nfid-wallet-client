@@ -1,10 +1,10 @@
+import BigNumber from "bignumber.js"
 import React from "react"
 
 import {
   MAX_DECIMAL_USD_LENGTH,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
-import BigNumber from "bignumber.js"
 
 interface TickerAmountProps {
   symbol: string
@@ -40,7 +40,9 @@ export const formatAssetAmountRaw = (
   value: BigNumber,
   decimals: number,
 ): string => {
-  return value.div(10 ** decimals).toFixed(decimals)
+  return value
+    .div(10 ** decimals)
+    .toFixed(decimals)
     .replace(TRIM_ZEROS, "")
 }
 

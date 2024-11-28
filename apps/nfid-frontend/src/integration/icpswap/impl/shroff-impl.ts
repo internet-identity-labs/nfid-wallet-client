@@ -4,8 +4,9 @@ import { SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { SourceInputCalculator } from "src/integration/icpswap/impl/calculator"
 import { errorTypes } from "src/integration/icpswap/impl/constants"
-import {QuoteImpl} from "src/integration/icpswap/impl/quote-impl"
+import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
 import {
@@ -24,6 +25,7 @@ import {
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
@@ -42,8 +44,6 @@ import {
   SwapArgs,
   WithdrawArgs,
 } from "./../idl/SwapPool.d"
-import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
-import {TRIM_ZEROS} from "@nfid/integration/token/constants";
 
 export class ShroffImpl implements Shroff {
   private readonly zeroForOne: boolean
@@ -105,8 +105,10 @@ export class ShroffImpl implements Shroff {
       10 ** this.source.decimals,
     )
     console.log("Amount in decimals: " + amountInDecimals.toFixed())
-    const preCalculation = new SourceInputCalculator(BigInt(amountInDecimals
-      .toFixed()), this.source.fee)
+    const preCalculation = new SourceInputCalculator(
+      BigInt(amountInDecimals.toFixed()),
+      this.source.fee,
+    )
 
     const args: SwapArgs = {
       amountIn: preCalculation.getSourceSwapAmount().toString(),
@@ -195,7 +197,12 @@ export class ShroffImpl implements Shroff {
       throw new Error("Quote is required")
     }
 
-    console.debug("Requested quote: " + JSON.stringify(this.requestedQuote?.getSourceUserInputAmount().toFixed()))
+    console.debug(
+      "Requested quote: " +
+        JSON.stringify(
+          this.requestedQuote?.getSourceUserInputAmount().toFixed(),
+        ),
+    )
 
     const updatedQuote = await this.getQuote(
       this.requestedQuote?.getSourceAmountPrettified(),
@@ -216,8 +223,7 @@ export class ShroffImpl implements Shroff {
     try {
       const amountDecimals = this.requestedQuote
         .getSourceSwapAmount()
-        .plus(Number(this.source.fee)
-        )
+        .plus(Number(this.source.fee))
       const args: DepositArgs = {
         fee: this.source.fee,
         token: this.source.ledger,
@@ -251,8 +257,9 @@ export class ShroffImpl implements Shroff {
 
   protected async transferToSwap() {
     try {
-      const amountDecimals = this.requestedQuote!.getSourceSwapAmount()
-        .plus(Number(this.source.fee))
+      const amountDecimals = this.requestedQuote!.getSourceSwapAmount().plus(
+        Number(this.source.fee),
+      )
 
       console.log("Amount decimals: " + BigInt(amountDecimals.toFixed()))
 
@@ -331,7 +338,7 @@ export class ShroffImpl implements Shroff {
         zeroForOne: this.zeroForOne,
         amountOutMinimum: this.requestedQuote!.getTargetAmount()
           .toFixed(this.target.decimals)
-          .replace(TRIM_ZEROS, "")
+          .replace(TRIM_ZEROS, ""),
       }
 
       console.log("Swap args: " + JSON.stringify(args))
@@ -355,9 +362,11 @@ export class ShroffImpl implements Shroff {
   protected async withdraw(): Promise<bigint> {
     try {
       const args: WithdrawArgs = {
-        amount: BigInt(this.requestedQuote!.getTargetAmount()
-          .toFixed(this.target.decimals)
-          .replace(TRIM_ZEROS, "")),
+        amount: BigInt(
+          this.requestedQuote!.getTargetAmount()
+            .toFixed(this.target.decimals)
+            .replace(TRIM_ZEROS, ""),
+        ),
         token: this.target.ledger,
         fee: this.target.fee,
       }

@@ -5,7 +5,10 @@ import AuthenticationMachine, {
 } from "../authentication/root/root-machine"
 import { RPCReceiverV3 } from "./helpers/rpc-receiver"
 import { checkAuthenticationStatus } from "./service/authentication.service"
-import { GenericError, NoActionError } from "./service/exception-handler.service"
+import {
+  GenericError,
+  NoActionError,
+} from "./service/exception-handler.service"
 import {
   executeInteractiveMethod,
   executeSilentMethod,

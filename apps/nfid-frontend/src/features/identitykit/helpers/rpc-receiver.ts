@@ -1,6 +1,7 @@
 import { filter, fromEvent } from "rxjs"
-import { icrc29GetStatusMethodService } from "../service/method/silent/icrc29-get-status-method.service"
+
 import { NoActionError } from "../service/exception-handler.service"
+import { icrc29GetStatusMethodService } from "../service/method/silent/icrc29-get-status-method.service"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 
@@ -58,32 +59,42 @@ export const rpcMessages = windowMessages.pipe(
 export const RPCReceiverV3 =
   () => (send: (event: ProcedureCallEvent) => void) => {
     console.log("subscribe")
-    const subscription = rpcMessages.subscribe(
-      async (message) => {
-        console.debug("sendResponse RPCReceiverV3", { rpcMessage: message.data, origin: message.origin })
+    const subscription = rpcMessages.subscribe(async (message) => {
+      console.debug("sendResponse RPCReceiverV3", {
+        rpcMessage: message.data,
+        origin: message.origin,
+      })
 
-        if (message?.data?.method === icrc29GetStatusMethodService.getMethod()) {
-          try {
-            const parent = window.opener || window.parent
-            const response = await icrc29GetStatusMethodService.executeMethod(message)
-            parent.postMessage(response, message.origin)
-          } catch (error: unknown) {
-            if (error instanceof NoActionError) {
-              console.warn("Connection Warning: Origin and source differ from those used when the connection was established.")
-            }
+      if (message?.data?.method === icrc29GetStatusMethodService.getMethod()) {
+        try {
+          const parent = window.opener || window.parent
+          const response = await icrc29GetStatusMethodService.executeMethod(
+            message,
+          )
+          parent.postMessage(response, message.origin)
+        } catch (error: unknown) {
+          if (error instanceof NoActionError) {
+            console.warn(
+              "Connection Warning: Origin and source differ from those used when the connection was established.",
+            )
           }
         }
+      }
 
-        if (message?.data?.params?.derivationOrigin || message?.data?.params?.icrc95DerivationOrigin) {
-          message.data.params.derivationOrigin = message.data.params.icrc95DerivationOrigin ?? message.data.params.derivationOrigin
-          delete message.data.params['icrc95DerivationOrigin'];
-        }
+      if (
+        message?.data?.params?.derivationOrigin ||
+        message?.data?.params?.icrc95DerivationOrigin
+      ) {
+        message.data.params.derivationOrigin =
+          message.data.params.icrc95DerivationOrigin ??
+          message.data.params.derivationOrigin
+        delete message.data.params["icrc95DerivationOrigin"]
+      }
 
-        return send({
-          type: "ON_REQUEST",
-          data: { data: message?.data, origin: message.origin },
-        })
-      },
-    )
+      return send({
+        type: "ON_REQUEST",
+        data: { data: message?.data, origin: message.origin },
+      })
+    })
     return () => subscription.unsubscribe()
   }

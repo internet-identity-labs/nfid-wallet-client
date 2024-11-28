@@ -16,7 +16,7 @@ export class Assets {
   }
 
   get allTokensOnTokenTab() {
-    return $$("[id^=\"token_\"]")
+    return $$('[id^="token_"]')
   }
 
   public get getBalance() {

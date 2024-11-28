@@ -1,12 +1,12 @@
 import { SignIdentity } from "@dfinity/agent"
 import BigNumber from "bignumber.js"
 import { TransactionErrorHandlerAbstract } from "src/integration/icpswap/error-handler/error-handler-abstract"
+import { SourceInputCalculator } from "src/integration/icpswap/impl/calculator"
 import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
 import { Shroff } from "src/integration/icpswap/shroff"
 import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
 
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
-import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstract {
   async completeTransaction(
@@ -26,10 +26,14 @@ export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstra
     }
 
     const userSourceInput = new BigNumber(trs.getSourceAmount().toString())
-      .div(10 ** sourceLedger.decimals).toFixed()
+      .div(10 ** sourceLedger.decimals)
+      .toFixed()
 
     console.debug("User transaction: ", trs)
-    const preCalculation = new SourceInputCalculator(BigInt(Number(trs.getSourceAmount())), sourceLedger.fee)
+    const preCalculation = new SourceInputCalculator(
+      BigInt(Number(trs.getSourceAmount())),
+      sourceLedger.fee,
+    )
 
     const quote = new QuoteImpl(
       userSourceInput,

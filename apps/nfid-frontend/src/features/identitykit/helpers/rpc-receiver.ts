@@ -1,4 +1,6 @@
 import { filter, fromEvent } from "rxjs"
+import { icrc29GetStatusMethodService } from "../service/method/silent/icrc29-get-status-method.service"
+import { NoActionError } from "../service/exception-handler.service"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 
@@ -57,17 +59,29 @@ export const RPCReceiverV3 =
   () => (send: (event: ProcedureCallEvent) => void) => {
     console.log("subscribe")
     const subscription = rpcMessages.subscribe(
-      async ({ data: rpcMessage, origin }) => {
-        console.debug("RPCReceiverV3", { rpcMessage, origin })
+      async (message) => {
+        console.debug("sendResponse RPCReceiverV3", { rpcMessage: message.data, origin: message.origin })
 
-        if (rpcMessage.params?.derivationOrigin || rpcMessage.params?.icrc95DerivationOrigin) {
-          rpcMessage.params.derivationOrigin = rpcMessage.params.icrc95DerivationOrigin ?? rpcMessage.params.derivationOrigin
-          delete rpcMessage.params['icrc95DerivationOrigin'];
+        if (message?.data?.method === icrc29GetStatusMethodService.getMethod()) {
+          try {
+            const parent = window.opener || window.parent
+            const response = await icrc29GetStatusMethodService.executeMethod(message)
+            parent.postMessage(response, message.origin)
+          } catch (error: unknown) {
+            if (error instanceof NoActionError) {
+              console.warn("Connection Warning: Origin and source differ from those used when the connection was established.")
+            }
+          }
+        }
+
+        if (message?.data?.params?.derivationOrigin || message?.data?.params?.icrc95DerivationOrigin) {
+          message.data.params.derivationOrigin = message.data.params.icrc95DerivationOrigin ?? message.data.params.derivationOrigin
+          delete message.data.params['icrc95DerivationOrigin'];
         }
 
         return send({
           type: "ON_REQUEST",
-          data: { data: rpcMessage, origin },
+          data: { data: message?.data, origin: message.origin },
         })
       },
     )

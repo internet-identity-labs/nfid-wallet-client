@@ -32,6 +32,7 @@ import {
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
+import BigNumber from "bignumber.js"
 
 interface ITransferFT {
   preselectedTokenAddress: string | undefined
@@ -157,7 +158,7 @@ export const TransferFT = ({
           subaccount: subaccount ? [subaccount] : [],
           owner,
         },
-        amount: BigInt(Number(amount) * 10 ** token.getTokenDecimals()!),
+        amount: BigInt(BigNumber(amount).multipliedBy(10 ** token.getTokenDecimals()!).toFixed()),
         memo: [],
         fee: [token.getTokenFee()],
         from_subaccount: [],

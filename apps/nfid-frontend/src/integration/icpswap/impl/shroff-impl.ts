@@ -104,7 +104,7 @@ export class ShroffImpl implements Shroff {
     const amountInDecimals = new BigNumber(amount).multipliedBy(
       10 ** this.source.decimals,
     )
-    console.log("Amount in decimals: " + amountInDecimals.toFixed())
+    console.debug("Amount in decimals: " + amountInDecimals.toFixed())
     const preCalculation = new SourceInputCalculator(
       BigInt(amountInDecimals.toFixed()),
       this.source.fee,
@@ -261,7 +261,7 @@ export class ShroffImpl implements Shroff {
         Number(this.source.fee),
       )
 
-      console.log("Amount decimals: " + BigInt(amountDecimals.toFixed()))
+      console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
 
       const transferArgs: TransferArg = {
         amount: BigInt(amountDecimals.toFixed()),

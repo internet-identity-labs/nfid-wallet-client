@@ -28,11 +28,8 @@ export const validateTransferAmountField =
   (balance: bigint | undefined, fee: bigint, decimals: number | undefined) =>
   (value: string) => {
     if (!decimals || !balance) return "Invalid input"
-    const balanceFormatted = Number(balance) / 10 ** decimals
-    const feeFormatted = Number(fee) / 10 ** decimals
-
-    const balanceNum = new BigNumber(balanceFormatted)
-    const feeNum = new BigNumber(feeFormatted)
+    const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
+    const feeNum = new BigNumber(fee.toString()).div(10 ** decimals)
     const valueNum = new BigNumber(value)
 
     if (valueNum.isNaN()) return "Invalid input"

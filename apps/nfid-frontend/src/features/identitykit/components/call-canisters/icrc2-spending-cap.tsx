@@ -1,7 +1,8 @@
+import clsx from "clsx"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import React from "react"
 
-import { Checkbox } from "@nfid-frontend/ui"
+import { IconCmpWarning } from "@nfid-frontend/ui"
 
 import { ICRC2Metadata } from "../../service/canister-calls-helpers/icrc2-approve"
 import { RPCPromptTemplate } from "../templates/prompt-template"
@@ -26,7 +27,6 @@ const CallCanisterICRC2SpendingCap = ({
   onApprove,
   onReject,
 }: CallCanisterICRC2SpendingCapProps) => {
-  const [isChecked, setIsChecked] = React.useState(false)
   const applicationName = new URL(String(request?.origin)).host
 
   return (
@@ -47,7 +47,6 @@ const CallCanisterICRC2SpendingCap = ({
       }
       onSecondaryButtonClick={onReject}
       onPrimaryButtonClick={() => onApprove(request)}
-      isPrimaryDisabled={!isChecked}
       balance={{
         address: metadata.address,
         symbol: metadata.symbol,
@@ -80,18 +79,20 @@ const CallCanisterICRC2SpendingCap = ({
           args={args}
         />
         <div className="flex-1 min-h-[50px]" />
-        <div className="flex items-start gap-2.5">
-          <Checkbox
-            className="mt-1 cursor-pointer"
-            value={"isChecked"}
-            id="isChecked"
-            isChecked={isChecked}
-            onChange={(is) => setIsChecked(!is)}
-          />
-          <label htmlFor="isChecked" className="text-sm cursor-pointer">
-            I trust this website and understand it can spend up to the spending
-            cap until I revoke this permission.
-          </label>
+        <div
+          className={clsx(
+            "grid grid-cols-[22px,1fr] gap-2.5 text-sm rounded-xl",
+            "bg-orange-50 p-[15px] mt-4 text-orange-900",
+          )}
+        >
+          <IconCmpWarning className="text-orange-900 w-[22px] h-[22px] shrink-1" />
+          <p>
+            <span className="font-bold leading-[20px]">
+              Proceed with caution.
+            </span>{" "}
+            This website can spend up to the spending cap until you revoke this
+            permission.
+          </p>
         </div>
       </div>
     </RPCPromptTemplate>

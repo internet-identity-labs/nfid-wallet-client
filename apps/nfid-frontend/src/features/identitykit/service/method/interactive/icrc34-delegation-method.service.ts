@@ -3,7 +3,11 @@ import { fromBase64, toBase64 } from "@slide-computer/signer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import { getAnonymousDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
-import { authState, getGlobalDelegationChain } from "@nfid/integration"
+import {
+  authState,
+  getGlobalDelegationChain,
+  validateTargets,
+} from "@nfid/integration"
 
 import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
 import { delegationChainFromDelegation } from "frontend/integration/identity/delegation-chain-from-delegation"
@@ -19,7 +23,6 @@ import {
   INDEX_DB_CONNECTED_ACCOUNTS_KEY,
 } from "../../account.service"
 import { GenericError } from "../../exception-handler.service"
-import { targetService } from "../../target.service"
 import {
   ComponentData,
   InteractiveMethodService,
@@ -188,7 +191,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
   private async isPublicAccountsAllowed(targets: string[], origin: string) {
     if (!targets || targets.length === 0) return false
     try {
-      await targetService.validateTargets(targets, origin)
+      await validateTargets(targets, origin)
       return true
     } catch (e: unknown) {
       const text = e instanceof Error ? e.message : "Unknown error"

@@ -19,6 +19,8 @@ import { E8S } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 import { getMaxAmountFee } from "frontend/integration/icpswap/util/util"
 
+import { useTokenInit } from "../hooks/token-init"
+
 interface ChooseFromTokenProps {
   token: FT | undefined
   tokens: FT[]
@@ -39,6 +41,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isSwap = false,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState("")
+
+  const initedToken = useTokenInit(token)
 
   const {
     setValue,
@@ -67,11 +71,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (!token || fee === undefined || userBalance === undefined) return
     const decimals = token.getTokenDecimals()
     if (!decimals || !isMaxAvailable) return
-
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
     const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
-    const formattedValue = formatAssetAmountRaw(Number(maxAmount), decimals)
+    const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
     setInputAmountValue(formattedValue)
 
     setValue("amount", formattedValue, { shouldValidate: true })
@@ -88,6 +91,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     >
       <div className="flex items-center justify-between">
         <InputAmount
+          disabled={!Boolean(initedToken)}
           isLoading={false}
           decimals={decimals}
           value={inputAmountValue}
@@ -97,10 +101,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             validate: (value) => {
               const amountValidationError = validateTransferAmountField(
                 balance || token.getTokenBalance(),
-                isSwap
-                  //all fees are included
-                  ? BigInt(0)
-                  : token.getTokenFee(),
+                isSwap ? BigInt(0) : token.getTokenFee(),
                 decimals,
               )(value)
 
@@ -108,7 +109,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             },
           })}
         />
-        <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
+        <div className="py-[6px] pl-[6px] pr-[12px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseFtModal
             tokens={tokens}
             title={title}
@@ -147,10 +148,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           >
             {balance === undefined ? (
               <span id="balance">
-                {token.isInited() ? (
+                {initedToken ? (
                   <>
-                    {token.getTokenBalanceFormatted() || "0"}&nbsp;
-                    {token.getTokenSymbol()}
+                    {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
+                    {initedToken.getTokenSymbol()}
                   </>
                 ) : (
                   <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

@@ -38,7 +38,7 @@ export const ChooseAccount = ({
         className="absolute cursor-pointer top-5 left-5"
       />
 
-      <p className="text-sm font-bold">Share NFID Wallet address</p>
+      <p className="text-sm font-bold">Share my wallet address</p>
       <p className="mt-2 text-xs text-gray-500">
         Allow this site to request payments and view your balances.
       </p>
@@ -77,10 +77,10 @@ export const ChooseAccount = ({
 
       <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
 
-      <p className="text-sm font-bold">Hide NFID Wallet address</p>
+      <p className="text-sm font-bold">Hide my wallet address</p>
       <p className="mt-2 text-xs text-gray-500">
-        Connect anonymously to prevent this site from requesting payments and
-        viewing your balances.
+        This site will be unable to request payments, view balances, or access
+        any of your other on-chain activity.
       </p>
 
       {anonymous?.map((acc) => (

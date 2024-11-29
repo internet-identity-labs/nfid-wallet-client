@@ -33,7 +33,7 @@ export function Header({
               className="mr-[50px] hidden md:inline-block text-white hover:text-[#2DEECB] transition-all"
               to="/sns"
             >
-              Sns
+              SNS
             </Link>
             <a
               href="https://learn.nfid.one/"

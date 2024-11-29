@@ -9,13 +9,15 @@ import {
   IconCmpArrow,
   IconCmpArrowRight,
   IconCmpNFTPreview,
-  BlurredLoader,
   Input,
   IconNftPlaceholder,
   ChooseNftModal,
 } from "@nfid-frontend/ui"
 
+import { SendStatus } from "frontend/features/transfer-modal/types"
 import { NFT } from "frontend/integration/nft/nft"
+
+import { SendSuccessUi } from "./send-success"
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -26,17 +28,21 @@ export interface TransferNFTUiProps {
   selectedReceiverWallet: string | undefined
   submit: (values: any) => Promise<Id | undefined>
   validateAddress: (value: string) => boolean | string
+  isSuccessOpen: boolean
+  onClose: () => void
+  status: SendStatus
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
-  isLoading,
-  loadingMessage,
   nfts,
   setSelectedNFTId,
   selectedNFT,
   selectedReceiverWallet,
   submit,
   validateAddress,
+  isSuccessOpen,
+  onClose,
+  status,
 }) => {
   const {
     register,
@@ -52,11 +58,15 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   const to = watch("to")
 
   return (
-    <BlurredLoader
-      overlayClassnames="rounded-xl"
-      isLoading={isLoading}
-      loadingMessage={loadingMessage}
-    >
+    <>
+      <SendSuccessUi
+        title={`${selectedNFT?.getTokenName()}`}
+        subTitle={`${selectedNFT?.getCollectionName()}`}
+        onClose={onClose}
+        assetImg={`${selectedNFT?.getAssetPreview().url}`}
+        isOpen={isSuccessOpen}
+        status={status}
+      />
       <div className="space-y-3 text-xs ">
         <ChooseNftModal
           tokens={nfts ?? []}
@@ -126,8 +136,8 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         />
         <Button
           id={"sendButton"}
-          disabled={Boolean(errors["to"]?.message) || !to}
-          className="absolute bottom-5 left-5 right-5 !w-auto"
+          disabled={Boolean(errors["to"]?.message) || !to || !selectedNFT}
+          className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"
           type="primary"
           block
           onClick={handleSubmit(submit)}
@@ -136,6 +146,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           Send
         </Button>
       </div>
-    </BlurredLoader>
+    </>
   )
 }

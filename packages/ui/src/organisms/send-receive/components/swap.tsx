@@ -44,7 +44,7 @@ export interface SwapFTUiProps {
   clearQuoteError: () => void
   step: SwapStage
   error?: SwapError | WithdrawError | DepositError
-  isProgressOpen: boolean
+  isSuccessOpen: boolean
   onClose: () => void
   quoteTimer: number
 }
@@ -66,7 +66,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   quote,
   step,
   error,
-  isProgressOpen,
+  isSuccessOpen,
   onClose,
   quoteTimer,
 }) => {
@@ -101,7 +101,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         subTitleFrom={quote?.getSourceAmountUSD()!}
         subTitleTo={quote?.getTargetAmountUSD()!}
         step={step}
-        isOpen={isProgressOpen}
+        isOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
       />
@@ -158,7 +158,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         priceImpact={priceImpact}
       />
       <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
-        {!amount ? (
+        {!amount || !quote ? (
           "Quote rate"
         ) : isQuoteLoading ? (
           <div className="flex gap-[10px]">
@@ -170,12 +170,12 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         )}
         <span
           className={
-            !isQuoteLoading && amount
+            !isQuoteLoading && amount && quote
               ? "text-teal-600 cursor-pointer"
               : "text-gray-500"
           }
           onClick={() => {
-            if (isQuoteLoading || !amount) return
+            if (isQuoteLoading || !amount || !quote) return
             setQuoteModalOpen(true)
           }}
         >
@@ -197,13 +197,14 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         </div>
       )}
       <Button
-        className="absolute bottom-5 left-5 right-5 !w-auto"
+        className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"
         type="primary"
         id="sendButton"
         block
         disabled={
           isQuoteLoading ||
           !amount ||
+          !quote ||
           Boolean(errors["amount"]?.message) ||
           (!isChecked && priceImpact?.status === "high")
         }

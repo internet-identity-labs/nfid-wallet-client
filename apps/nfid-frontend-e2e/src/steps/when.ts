@@ -26,20 +26,20 @@ When(
       retry: 2,
     },
   },
-  async function(anchor: number) {
+  async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
-    const response = await browser.executeAsync(function(
-        authState: AuthState,
-        done,
-      ) {
+    const response = await browser.executeAsync(function (
+      authState: AuthState,
+      done,
+    ) {
+      // @ts-ignore
+      if (typeof this.setAuthState === "function") {
         // @ts-ignore
-        if (typeof this.setAuthState === "function") {
-          // @ts-ignore
-          this.setAuthState(authState).then(done)
-        }
-      },
-      testUser.authstate)
+        this.setAuthState(authState).then(done)
+      }
+    },
+    testUser.authstate)
     console.log("set auth state", { response })
     await HomePage.openPage("/wallet/tokens")
   },
@@ -52,7 +52,7 @@ When(
       retry: 2,
     },
   },
-  async function(anchor: number) {
+  async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
     return (await $("[name='recoveryPhrase']")).setValue(testUser.seed)
   },

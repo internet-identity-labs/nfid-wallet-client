@@ -67,7 +67,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
         </a>
       </div>
       <div className="relative flex lg:items-center justify-center lg:bg-white order-1 lg:order-2 mt-20 lg:mt-0">
-        <div className="h-fit min-h-[520px] lg:min-h-0 mx-auto w-[90%] sm:max-w-[387px] flex flex-col bg-white rounded-3xl lg:rounded-none overflow-hidden lg:overflow-auto relative lg:static p-5 lg:p-0">
+        <div className="h-fit min-h-[520px] lg:min-h-0 mx-auto w-[90%] sm:max-w-[387px] flex flex-col bg-white rounded-3xl lg:rounded-none overflow-hidden lg:overflow-auto relative lg:static p-5 lg:p-[10px]">
           {children}
         </div>
       </div>

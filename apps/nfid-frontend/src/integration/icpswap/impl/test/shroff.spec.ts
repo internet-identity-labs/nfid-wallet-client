@@ -31,7 +31,7 @@ describe("shroff test", () => {
       .withSource(sourceLedger)
       .withTarget(targetLedger)
       .build()
-    const quote = await shroff.getQuote(0.0015)
+    const quote = await shroff.getQuote("0.0015")
     await sleep(1)
 
     const revalidatedQuote = await shroff.validateQuote()
@@ -54,7 +54,7 @@ describe("shroff test", () => {
     let seconds = 0
     const balance = await ledgerICRC.getBalance(mockPrincipal)
 
-    const quote = await shroff.getQuote(0.001)
+    const quote = await shroff.getQuote("0.001")
 
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mock)
     const sessionKey = Ed25519KeyIdentity.generate()

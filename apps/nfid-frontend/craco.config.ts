@@ -73,6 +73,7 @@ const setupCSP = () => {
         "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
         "https://accounts.google.com/gsi/client",
         "https://eu.posthog.com",
+        "https://eu-assets.i.posthog.com/static/recorder.js",
       ],
       "require-trusted-types-for": ["'script'"],
       "media-src": ["'self'", process.env.NFID_PROVIDER_URL as string],

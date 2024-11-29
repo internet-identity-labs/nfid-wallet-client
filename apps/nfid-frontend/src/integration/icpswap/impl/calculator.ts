@@ -1,5 +1,5 @@
-import {WIDGET_FEE} from "src/integration/icpswap/impl/quote-impl";
 import BigNumber from "bignumber.js"
+import { WIDGET_FEE } from "src/integration/icpswap/impl/quote-impl"
 
 export class SourceInputCalculator {
   private widgetFee: bigint
@@ -11,10 +11,17 @@ export class SourceInputCalculator {
     this.userInputAmount = userInputAmount
     this.sourceFee = sourceFee
     //userInput - sourceFeeToTransferToSwap - sourceFeeToTransferWidgetFeeToUser - widgetFee
-    this.widgetFee = BigInt(BigNumber(Number(userInputAmount - sourceFee - sourceFee - sourceFee))
-      .multipliedBy(WIDGET_FEE)
-      .toFixed(0))
-    this.sourceSwapAmount = userInputAmount - this.sourceFee - this.widgetFee - this.sourceFee - this.sourceFee
+    this.widgetFee = BigInt(
+      BigNumber(Number(userInputAmount - sourceFee - sourceFee - sourceFee))
+        .multipliedBy(WIDGET_FEE)
+        .toFixed(0),
+    )
+    this.sourceSwapAmount =
+      userInputAmount -
+      this.sourceFee -
+      this.widgetFee -
+      this.sourceFee -
+      this.sourceFee
   }
 
   getSourceSwapAmount(): bigint {

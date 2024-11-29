@@ -34,7 +34,7 @@ const RPCComponentICRC34 = ({
     <TokenLaunch onSubmit={() => onApprove(selectedProfile)} />
   ) : (
     <RPCPromptTemplate
-      title="Wallet permissions"
+      title="Approve connection"
       subTitle={
         <>
           for{" "}

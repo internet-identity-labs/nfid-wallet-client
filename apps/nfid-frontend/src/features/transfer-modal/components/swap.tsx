@@ -135,10 +135,11 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const {
     data: quote,
     isLoading: isQuoteLoading,
+    isValidating: isQuoteValidating,
     mutate,
   } = useSWR(
-    amount
-      ? [fromToken?.getTokenAddress(), toToken?.getTokenAddress(), amount]
+    toToken && fromToken && amount && shroff
+      ? [toToken.getTokenAddress(), fromToken.getTokenAddress(), amount]
       : null,
     () => getQuoteData(amount, shroff),
     {
@@ -173,8 +174,9 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   }, [mutate, quoteTimer, quote, isSuccessOpen])
 
   useEffect(() => {
-    mutate()
-  }, [toToken, fromToken, mutate, amount])
+    if (!shroff) return
+    mutate(() => getQuoteData(amount, shroff), true)
+  }, [toToken, fromToken, mutate, amount, shroff])
 
   const refresh = () => {
     setShroffError(undefined)
@@ -223,14 +225,14 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         loadingMessage={"Fetching supported tokens..."}
         isTokenLoading={isAllTokensLoading || isActiveTokensLoading}
         submit={submit}
-        isQuoteLoading={isQuoteLoading || isShroffLoading || !quote}
+        isQuoteLoading={isQuoteLoading || isShroffLoading || isQuoteValidating}
         quote={quote}
         showServiceError={shroffError?.name === "ServiceUnavailableError"}
         showLiquidityError={liquidityError}
         clearQuoteError={refresh}
         step={swapStep}
         error={swapError}
-        isProgressOpen={isSuccessOpen}
+        isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         quoteTimer={quoteTimer}
       />

@@ -2,6 +2,7 @@ import { RPCErrorResponse, RPCMessage } from "../type"
 
 export class NotSupportedError extends Error {}
 export class GenericError extends Error {}
+export class NoActionError extends Error {}
 
 class ExceptionHandlerService {
   public handle(error: unknown, message: MessageEvent<RPCMessage>) {

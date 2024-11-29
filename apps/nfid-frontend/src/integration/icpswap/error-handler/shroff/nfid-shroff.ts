@@ -16,7 +16,9 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
     try {
       console.log("ReSwap NFID started")
 
-      const balance = await this.swapPoolActor.getUserUnusedBalance(this.delegationIdentity!.getPrincipal())
+      const balance = await this.swapPoolActor.getUserUnusedBalance(
+        this.delegationIdentity!.getPrincipal(),
+      )
       console.debug("Balance: " + JSON.stringify(balance))
 
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)

@@ -65,6 +65,7 @@ export const accountService = {
       origin,
     }
   },
+
   async getLegacyAnonymousProfiles(
     origin: string,
     derivationOrigin?: string,
@@ -72,7 +73,6 @@ export const accountService = {
     const accounts = await fetchAccountsService({
       authRequest: { hostname: origin, derivationOrigin },
     })
-    const applicationName = new URL(origin).host
 
     const delegations = await Promise.all(
       accounts.map((acc) => {
@@ -90,7 +90,9 @@ export const accountService = {
 
     return delegations.map((acc, index) => ({
       id: index,
-      displayName: `Anonymous ${applicationName} profile`,
+      displayName: `Use application-specific address ${
+        delegations.length > 1 ? index + 1 : ""
+      }`,
       principal: Principal.fromUint8Array(acc.userPublicKey).toText(),
       subaccount: this.getDefaultSubAccount(),
       type: AccountType.ANONYMOUS_LEGACY,
@@ -98,13 +100,13 @@ export const accountService = {
       derivationOrigin,
     }))
   },
+
   async getAnonymousProfiles(
     origin: string,
     derivationOrigin?: string,
   ): Promise<Account[]> {
     const identity = authState.get().delegationIdentity
     if (!identity) throw new Error("No identity")
-    const applicationName = new URL(origin).host
 
     const anonymousPublicKey = await getPublicKey(
       identity,
@@ -115,7 +117,7 @@ export const accountService = {
     let accounts = [
       {
         id: 0,
-        displayName: `Anonymous ${applicationName} profile`,
+        displayName: `Use application-specific address`,
         principal: anonymousPublicKey,
         subaccount: this.getDefaultSubAccount(),
         type: AccountType.SESSION,
@@ -134,7 +136,7 @@ export const accountService = {
 
       accounts.push({
         id: 1,
-        displayName: `Anonymous ${applicationName} profile`,
+        displayName: `Use application-specific address`,
         principal: buggedPublicKey,
         subaccount: this.getDefaultSubAccount(),
         type: AccountType.SESSION_WITHOUT_DERIVATION,

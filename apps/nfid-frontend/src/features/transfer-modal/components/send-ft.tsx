@@ -11,8 +11,7 @@ import useSWR from "swr"
 
 import {
   RootWallet,
-  registerTransaction,
-  sendReceiveTracking,
+  registerTransaction
 } from "@nfid/integration"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
@@ -114,13 +113,6 @@ export const TransferFT = ({
         from_sub_account: wallet?.uid ?? "",
       })
         .then(() => {
-          sendReceiveTracking.sendToken({
-            destinationType: "address",
-            tokenName: token.getTokenName(),
-            tokenType: "fungible",
-            amount: amount,
-            fee: token.getTokenFeeFormatted() ?? 0,
-          })
           toaster.success(
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
             {
@@ -168,13 +160,6 @@ export const TransferFT = ({
 
     transferResult
       .then(() => {
-        sendReceiveTracking.sendToken({
-          destinationType: "address",
-          tokenName: token.getTokenName(),
-          tokenType: "fungible",
-          amount: amount,
-          fee: token.getTokenFeeFormatted() ?? 0,
-        })
         setStatus(SendStatus.COMPLETED)
         updateTokenBalance([token.getTokenAddress()], activeTokens)
         toaster.success(

@@ -2,11 +2,6 @@ import { useActor } from "@xstate/react"
 import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
 import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
 import { AuthEmailPending } from "packages/ui/src/organisms/authentication/pending-verification"
-import { useEffect } from "react"
-
-import { authenticationTracking, RootWallet } from "@nfid/integration"
-
-import { useProfile } from "frontend/integration/identity-manager/queries"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { AuthWithEmailActor } from "./machine"
@@ -20,17 +15,6 @@ export function AuthEmailFlowCoordinator({
   isIdentityKit = false,
 }: AuthEmailFlowCoordinatorProps) {
   const [state, send] = useActor(actor)
-  const { profile, isLoading } = useProfile()
-
-  useEffect(() => {
-    if (!isLoading && profile && !profile.is2fa) {
-      authenticationTracking.completed({
-        anchor: profile.anchor,
-        legacyUser: profile.wallet === RootWallet.II,
-        hasEmail: true,
-      })
-    }
-  }, [profile, isLoading])
 
   switch (true) {
     case state.matches("SendVerificationEmail"):
@@ -42,7 +26,6 @@ export function AuthEmailFlowCoordinator({
           email={state.context.verificationEmail}
           onBack={() => send({ type: "BACK" })}
           onResend={() => {
-            authenticationTracking.magicLinkResendVerification()
             send({ type: "RESEND" })
           }}
         />
@@ -52,7 +35,6 @@ export function AuthEmailFlowCoordinator({
         <AuthEmailError
           onBack={() => send({ type: "BACK" })}
           onResend={() => {
-            authenticationTracking.magicLinkResendVerification()
             send({ type: "RESEND" })
           }}
         />

@@ -4,7 +4,6 @@ import React from "react"
 import { ToastContainer } from "react-toastify"
 
 import { Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
-import { securityTracking } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 
@@ -25,11 +24,9 @@ export const AddPasskey = ({
 
   const handleOpenModal = React.useCallback(() => {
     setIsModalVisible(true)
-    securityTracking.addPasskey()
   }, [])
 
   const handleCreatePasskey = React.useCallback(() => {
-    securityTracking.passkeyCreationInitiated(isSafari() ? true : isMultiDevice)
     handleWithLoading(
       () =>
         passkeyConnector.createCredential({

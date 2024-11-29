@@ -3,8 +3,6 @@ import { Principal } from "@dfinity/principal"
 import { Receive } from "packages/ui/src/organisms/send-receive/components/receive"
 import { useEffect, useState } from "react"
 
-import { sendReceiveTracking } from "@nfid/integration"
-
 export interface ITransferReceive {
   preselectedAccountAddress: string
   publicKey: string
@@ -27,10 +25,6 @@ export const TransferReceive = ({
       }).toHex(),
     )
   }, [publicKey])
-
-  useEffect(() => {
-    sendReceiveTracking.openModal({ isSending: false })
-  }, [])
 
   return (
     <Receive

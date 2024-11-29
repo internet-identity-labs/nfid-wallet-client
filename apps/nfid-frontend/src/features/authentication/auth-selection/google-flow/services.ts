@@ -50,7 +50,7 @@ export const signWithGoogleService = async (
     })
   }
 
-  authState.set({
+  await authState.set({
     delegationIdentity: delegation,
     identity: identity,
   })

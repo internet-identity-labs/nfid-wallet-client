@@ -1,6 +1,6 @@
 import { Agent, HttpAgent } from "@dfinity/agent"
 
-import { localStorageTTL } from "@nfid/integration"
+import { idbStorageTTL } from "@nfid/integration"
 
 import { type _SERVICE as ConsentMessageCanister } from "../idl/consent"
 import { idlFactory as ConsentMessageCanisterIDL } from "../idl/consent_idl"
@@ -14,7 +14,7 @@ export const targetService = {
     const agent: Agent = HttpAgent.createSync({ host: IC_HOSTNAME })
     const promises = targets.map(async (canisterId) => {
       const cacheKey = `trusted_origins_${canisterId}`
-      const cache = localStorageTTL.getItem(cacheKey)
+      const cache = await idbStorageTTL.getItem(cacheKey)
 
       let response
       if (cache !== null) {
@@ -38,7 +38,7 @@ export const targetService = {
           )
 
         response = await actor.icrc28_trusted_origins()
-        localStorageTTL.setItem(cacheKey, response.trusted_origins, 24)
+        await idbStorageTTL.setItem(cacheKey, response.trusted_origins, 24)
       }
       if (!response.trusted_origins.includes(origin)) {
         throw new GenericError(

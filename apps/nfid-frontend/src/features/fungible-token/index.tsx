@@ -1,5 +1,5 @@
 import { useActor } from "@xstate/react"
-import { resetLocalStorageTTLCache } from "packages/integration/src/cache"
+import { resetIdbStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchActiveTokens,
@@ -54,7 +54,7 @@ const TokensPage = () => {
       indexID !== "" ? indexID : undefined,
     )
     return icrc1Pair.storeSelf().then(() => {
-      resetLocalStorageTTLCache([icrc1OracleCacheName], () => {
+      resetIdbStorageTTLCache([icrc1OracleCacheName], () => {
         refetchActiveTokens()
       })
     })

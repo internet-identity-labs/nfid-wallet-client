@@ -41,9 +41,17 @@ function SnsContent() {
               growth.
             </li>
             <li className="text-gray-50">
-              Assuming NNS approval, $NFIDW will be available for swapping with
-              $ICP from November 28, 2024, at 11 AM CET until December 27, 2024,
-              at 12 PM CET.
+              Join the{" "}
+              <a
+                href="https://discord.gg/a9BFNrYJ99"
+                rel="noreferrer"
+                target="_blank"
+                className="text-teal-300 hover:text-teal-500"
+              >
+                NFID Labs discord
+              </a>{" "}
+              for the latest update on when $NFIDW will be available for
+              swapping with $ICP
             </li>
           </ul>
         </div>
@@ -194,9 +202,17 @@ function SnsContent() {
           </h2>
           <h3 className="text-sm md:text-lg text-white">
             <span className="block mb-[15px]">
-              Assuming NNS approval, $NFIDW will be available to swap for $ICP
-              on the SNS Launchpad between November 28, 2024, at 11 AM CET until
-              December 27, 2024, at 12 PM CET.
+              Join the{" "}
+              <a
+                href="https://discord.gg/a9BFNrYJ99"
+                rel="noreferrer"
+                target="_blank"
+                className="text-teal-300 hover:text-teal-500"
+              >
+                NFID Labs discord
+              </a>{" "}
+              for the latest update on when $NFIDW will be available for
+              swapping with $ICP
             </span>
             <span className="block mb-[15px]">
               $NFIDW will be non-transferable at the outset until each

@@ -47,7 +47,7 @@ export class Page {
 
   public async waitForDataCacheLoading() {
     await browser.waitUntil(
-      async function () {
+      async function() {
         return (await $("#root").getAttribute("data-cache-loaded")) === "true"
       },
       {
@@ -57,16 +57,16 @@ export class Page {
     )
   }
 
-  public async clickOnLeftUpperCorner(){
+  public async clickOnLeftUpperCorner() {
     await browser.performActions([
       {
-        type: 'pointer',
-        id: 'mouse',
-        parameters: { pointerType: 'mouse' },
+        type: "pointer",
+        id: "mouse",
+        parameters: { pointerType: "mouse" },
         actions: [
-          { type: 'pointerMove', x: 0, y: 0 }, // Перемещение указателя в верхний левый угол
-          { type: 'pointerDown', button: 0 }, // Нажатие левой кнопки мыши
-          { type: 'pointerUp', button: 0 },   // Отпускание кнопки мыши
+          { type: "pointerMove", x: 0, y: 0 },
+          { type: "pointerDown", button: 0 },
+          { type: "pointerUp", button: 0 },
         ],
       },
     ])
@@ -76,7 +76,8 @@ export class Page {
     profileType?: string,
     targets?: string,
     derivation?: string,
-  ) {}
+  ) {
+  }
 }
 
 export default new Page()

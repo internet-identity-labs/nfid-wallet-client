@@ -223,7 +223,7 @@ export class Assets {
   }
 
   public getTokenOption(option: string) {
-    return $(`//*[@id="option" and .//p[text()="${option}"]]`)
+    return $('#option_Hide\\ token')
   }
 
   public ManageTokensDialog = {

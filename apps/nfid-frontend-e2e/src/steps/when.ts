@@ -129,7 +129,6 @@ When(/^User filters tokens by (.*)$/, async (token: string) => {
 When(
   /^User sets the token ([^"]+) to be displayed if needed$/,
   async (tokenName: string) => {
-    console.log(await Assets.tokenLabel(tokenName).isDisplayed())
     if (!await Assets.tokenLabel(tokenName).isDisplayed()) {
       await Assets.ManageTokensDialog.manageTokensDialogButton().click()
       await Assets.ManageTokensDialog.filterField().setValue(tokenName)

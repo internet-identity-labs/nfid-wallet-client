@@ -160,7 +160,13 @@ export const TransferFT = ({
     }
 
     transferResult
-      .then(() => {
+      .then((res) => {
+        if (typeof res === "object" && "Err" in res) {
+          toaster.error("Something went wrong")
+          console.error(`Transfer error: ${JSON.stringify(res.Err)}`)
+          setStatus(SendStatus.FAILED)
+          return
+        }
         setStatus(SendStatus.COMPLETED)
         getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
           (updatedTokens) => {

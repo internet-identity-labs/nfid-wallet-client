@@ -1,6 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
@@ -9,11 +10,7 @@ import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import useSWR, { mutate } from "swr"
 
-import {
-  RootWallet,
-  registerTransaction,
-  sendReceiveTracking,
-} from "@nfid/integration"
+import { RootWallet, registerTransaction } from "@nfid/integration"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
@@ -113,13 +110,12 @@ export const TransferFT = ({
         from_sub_account: wallet?.uid ?? "",
       })
         .then(() => {
-          sendReceiveTracking.sendToken({
-            destinationType: "address",
-            tokenName: token.getTokenName(),
-            tokenType: "fungible",
-            amount: amount,
-            fee: token.getTokenFeeFormatted() ?? 0,
-          })
+          toaster.success(
+            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+            {
+              toastId: "successTransfer",
+            },
+          )
           setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
@@ -128,6 +124,7 @@ export const TransferFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
+          toaster.error("Something went wrong")
           setStatus(SendStatus.FAILED)
         })
 
@@ -150,7 +147,11 @@ export const TransferFT = ({
           subaccount: subaccount ? [subaccount] : [],
           owner,
         },
-        amount: BigInt(Number(amount) * 10 ** token.getTokenDecimals()!),
+        amount: BigInt(
+          BigNumber(amount)
+            .multipliedBy(10 ** token.getTokenDecimals()!)
+            .toFixed(),
+        ),
         memo: [],
         fee: [token.getTokenFee()],
         from_subaccount: [],
@@ -160,17 +161,16 @@ export const TransferFT = ({
 
     transferResult
       .then(() => {
-        sendReceiveTracking.sendToken({
-          destinationType: "address",
-          tokenName: token.getTokenName(),
-          tokenType: "fungible",
-          amount: amount,
-          fee: token.getTokenFeeFormatted() ?? 0,
-        })
         setStatus(SendStatus.COMPLETED)
         getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
           (updatedTokens) => {
             mutate("tokens", updatedTokens, false)
+          },
+        )
+        toaster.success(
+          `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+          {
+            toastId: "successTransfer",
           },
         )
       })
@@ -178,6 +178,7 @@ export const TransferFT = ({
         console.error(
           `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
         )
+        toaster.error("Something went wrong")
         setStatus(SendStatus.FAILED)
       })
   }, [isVault, token, selectedVaultsAccountAddress, amount, to, tokens])

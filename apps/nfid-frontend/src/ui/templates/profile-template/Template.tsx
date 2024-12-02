@@ -23,7 +23,6 @@ import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
-import { sendReceiveTracking } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -171,7 +170,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   } = useSWR("globalIdentity", () => getUserPrincipalId())
 
   const onSendClick = () => {
-    sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
@@ -179,7 +177,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onReceiveClick = () => {
-    sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
@@ -187,7 +184,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onSwapClick = () => {
-    sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })

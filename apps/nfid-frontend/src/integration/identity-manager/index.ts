@@ -7,7 +7,6 @@ import {
   AccessPointCommon,
   Account,
   Application,
-  authenticationTracking,
   DeviceType,
   hasOwnProperty,
   Icon,
@@ -116,9 +115,6 @@ export async function fetchProfile() {
     .then((r) => {
       const profile = mapProfile(unpackResponse(r))
       console.debug("fetchProfile", { profile })
-      authenticationTracking.updateData({
-        legacyUser: profile.wallet === RootWallet.II,
-      })
       return profile
     })
     .catch((e) => {

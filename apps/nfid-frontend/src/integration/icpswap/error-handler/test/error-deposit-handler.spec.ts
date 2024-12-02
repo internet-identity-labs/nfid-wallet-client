@@ -30,7 +30,7 @@ describe("shroff deposit error handler test", () => {
       .withTarget(targetLedger)
       .build()
 
-    await shroff.getQuote(0.001)
+    await shroff.getQuote("0.001")
 
     let callCount = 0
 

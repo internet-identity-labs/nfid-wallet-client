@@ -8,7 +8,6 @@ import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { Button, IconCmpGoogle, IconCmpNFID, Loader } from "@nfid-frontend/ui"
-import { authenticationTracking } from "@nfid/integration"
 
 import { linkGoogle, verify } from "../services"
 
@@ -24,11 +23,6 @@ export const AuthEmailMagicLink = () => {
     setStatus(res.status)
     setIsLoading(false)
     console.debug("AuthEmailMagicLink", { res })
-    authenticationTracking.magicLinkLoaded({
-      emailVerified: res.status === "success",
-      tokenExpired: res.status === "invalid-token",
-      linkGoogle: res.status === "link-required",
-    })
   }, [])
 
   useEffect(() => {
@@ -37,18 +31,11 @@ export const AuthEmailMagicLink = () => {
   }, [token, verifyEmail])
 
   const handleLinkGoogle = useCallback(async (googleToken: string) => {
-    authenticationTracking.magicGoogleLinkInitiated()
     setIsLoading(true)
     try {
       await linkGoogle(googleToken)
-      authenticationTracking.magicGoogleLinkCompleted({
-        googleEmailLinked: true,
-      })
       setStatus("success")
     } catch (e: any) {
-      authenticationTracking.magicGoogleLinkCompleted({
-        googleEmailLinked: false,
-      })
       toaster.error(e.message)
     } finally {
       setIsLoading(false)

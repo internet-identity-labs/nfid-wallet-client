@@ -12,7 +12,7 @@ export const WIDGET_FEE = 0.00875
 const LIQUIDITY_PROVIDER_FEE = 0.003
 
 export class QuoteImpl implements Quote {
-  private readonly sourceAmount: number
+  private readonly sourceAmount: string
   private readonly quote: bigint
   private readonly source: ICRC1TypeOracle
   private readonly target: ICRC1TypeOracle
@@ -21,7 +21,7 @@ export class QuoteImpl implements Quote {
   private readonly sourceCalculator: SourceInputCalculator
 
   constructor(
-    userInputAmount: number,
+    userInputAmount: string,
     sourceCalculator: SourceInputCalculator,
     quote: bigint,
     source: ICRC1TypeOracle,
@@ -124,7 +124,7 @@ export class QuoteImpl implements Quote {
   getQuoteRate(): string {
     const quote = this.getTargetAmount().div(10 ** this.target.decimals)
     const rate = quote.div(
-      BigNumber(Number(this.sourceCalculator.getSourceSwapAmount())).div(
+      BigNumber(this.sourceCalculator.getSourceSwapAmount().toString()).div(
         10 ** this.source.decimals,
       ),
     )
@@ -174,11 +174,10 @@ export class QuoteImpl implements Quote {
 
   getWidgetFee(): string {
     return (
-      BigNumber(Number(this.getWidgetFeeAmount()))
+      BigNumber(this.getWidgetFeeAmount().toString())
         .div(10 ** this.source.decimals)
         .toFixed(this.source.decimals)
-        .replace(TRIM_ZEROS, "")
-        .toString() +
+        .replace(TRIM_ZEROS, "") +
       " " +
       this.source.symbol
     )
@@ -193,11 +192,11 @@ export class QuoteImpl implements Quote {
   }
 
   getSourceSwapAmount(): BigNumber {
-    return BigNumber(Number(this.sourceCalculator.getSourceSwapAmount()))
+    return BigNumber(this.sourceCalculator.getSourceSwapAmount().toString())
   }
 
   getTargetAmount(): BigNumber {
-    return BigNumber(Number(this.quote))
+    return BigNumber(this.quote.toString())
   }
 
   getWidgetFeeAmount(): bigint {

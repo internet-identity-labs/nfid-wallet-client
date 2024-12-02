@@ -4,8 +4,9 @@ import { SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/icpswap/idl/SwapPool"
+import { SourceInputCalculator } from "src/integration/icpswap/impl/calculator"
 import { errorTypes } from "src/integration/icpswap/impl/constants"
-import {QuoteImpl} from "src/integration/icpswap/impl/quote-impl"
+import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
 import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 import { Quote } from "src/integration/icpswap/quote"
 import {
@@ -24,6 +25,7 @@ import {
   replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
@@ -42,7 +44,6 @@ import {
   SwapArgs,
   WithdrawArgs,
 } from "./../idl/SwapPool.d"
-import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 export class ShroffImpl implements Shroff {
   private readonly zeroForOne: boolean
@@ -99,11 +100,15 @@ export class ShroffImpl implements Shroff {
     ]
   }
 
-  async getQuote(amount: number): Promise<Quote> {
+  async getQuote(amount: string): Promise<Quote> {
     const amountInDecimals = new BigNumber(amount).multipliedBy(
       10 ** this.source.decimals,
     )
-    const preCalculation = new SourceInputCalculator(BigInt(amountInDecimals.toNumber()), this.source.fee)
+    console.debug("Amount in decimals: " + amountInDecimals.toFixed())
+    const preCalculation = new SourceInputCalculator(
+      BigInt(amountInDecimals.toFixed()),
+      this.source.fee,
+    )
 
     const args: SwapArgs = {
       amountIn: preCalculation.getSourceSwapAmount().toString(),
@@ -192,8 +197,15 @@ export class ShroffImpl implements Shroff {
       throw new Error("Quote is required")
     }
 
+    console.debug(
+      "Requested quote: " +
+        JSON.stringify(
+          this.requestedQuote?.getSourceUserInputAmount().toFixed(),
+        ),
+    )
+
     const updatedQuote = await this.getQuote(
-      Number(this.requestedQuote?.getSourceAmountPrettified()),
+      this.requestedQuote?.getSourceAmountPrettified(),
     )
     if (!legacyQuote?.getTargetAmount().eq(updatedQuote.getTargetAmount())) {
       const error = new SlippageError()
@@ -215,8 +227,9 @@ export class ShroffImpl implements Shroff {
       const args: DepositArgs = {
         fee: this.source.fee,
         token: this.source.ledger,
-        amount: BigInt(amountDecimals.toNumber()),
+        amount: BigInt(amountDecimals.toFixed()),
       }
+      console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
 
       const result = await this.swapPoolActor.deposit(args)
 
@@ -244,11 +257,14 @@ export class ShroffImpl implements Shroff {
 
   protected async transferToSwap() {
     try {
-      const amountDecimals = this.requestedQuote!.getSourceSwapAmount()
-        .plus(Number(this.source.fee))
+      const amountDecimals = this.requestedQuote!.getSourceSwapAmount().plus(
+        Number(this.source.fee),
+      )
+
+      console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
 
       const transferArgs: TransferArg = {
-        amount: BigInt(amountDecimals.toNumber()),
+        amount: BigInt(amountDecimals.toFixed()),
         created_at_time: [],
         fee: [],
         from_subaccount: [],
@@ -307,9 +323,10 @@ export class ShroffImpl implements Shroff {
         this.swapTransaction!.setNFIDTransferId(id)
         return id
       }
+      console.error("NFID transfer error: " + JSON.stringify(result.Err))
       throw new WithdrawError(JSON.stringify(result.Err))
     } catch (e) {
-      console.error("Withdraw error: " + e)
+      console.error("NFID transfer error: " + e)
       throw new WithdrawError(e as Error)
     }
   }
@@ -317,10 +334,14 @@ export class ShroffImpl implements Shroff {
   protected async swapOnExchange(): Promise<bigint> {
     try {
       const args: SwapArgs = {
-        amountIn: this.requestedQuote!.getSourceSwapAmount().toString(),
+        amountIn: this.requestedQuote!.getSourceSwapAmount().toFixed(),
         zeroForOne: this.zeroForOne,
-        amountOutMinimum: this.requestedQuote!.getTargetAmount().toString(),
+        amountOutMinimum: this.requestedQuote!.getTargetAmount()
+          .toFixed(this.target.decimals)
+          .replace(TRIM_ZEROS, ""),
       }
+
+      console.log("Swap args: " + JSON.stringify(args))
 
       return this.swapPoolActor.swap(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
@@ -341,11 +362,16 @@ export class ShroffImpl implements Shroff {
   protected async withdraw(): Promise<bigint> {
     try {
       const args: WithdrawArgs = {
-        amount: BigInt(this.requestedQuote!.getTargetAmount().toNumber()),
+        amount: BigInt(
+          this.requestedQuote!.getTargetAmount()
+            .toFixed(this.target.decimals)
+            .replace(TRIM_ZEROS, ""),
+        ),
         token: this.target.ledger,
         fee: this.target.fee,
       }
 
+      console.debug("Withdraw args: " + JSON.stringify(args))
       return this.swapPoolActor.withdraw(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
           const id = result.ok as bigint

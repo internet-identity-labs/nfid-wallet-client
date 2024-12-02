@@ -3,8 +3,6 @@ import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useState } from "react"
 
 import { Button, IconCmpTrash } from "@nfid-frontend/ui"
-import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
-import { securityTracking } from "@nfid/integration"
 import { authState } from "@nfid/integration"
 
 import { IHandleWithLoading } from ".."
@@ -50,7 +48,6 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
         <textarea
           name="recoveryPhrase"
           className={clsx(
-            SENSITIVE_CONTENT_NO_SESSION_RECORDING,
             "border border-black rounded-t-md border-b-0",
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 leading-[26px] mt-4",
@@ -70,7 +67,6 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
                 const response = await securityConnector.deleteRecoveryPhrase(
                   phrase,
                 )
-                securityTracking.recoveryPhraseRemoved()
                 return response
               },
               () => setIsModalVisible(false),

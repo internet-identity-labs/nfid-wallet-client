@@ -10,10 +10,7 @@ import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/o
 import React, { useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
-import {
-  authenticationTracking,
-  loadProfileFromLocalStorage,
-} from "@nfid/integration"
+import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/auth-selection/email-flow/machine"
@@ -39,24 +36,7 @@ export default function AuthenticationCoordinator({
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] =
     React.useState(false)
 
-  // Track on unmount
-  React.useEffect(() => {
-    return () => {
-      // NOTE: If we are on the root page (https://nfid.one/), unmounting means
-      // the user is send to the NFID Profile App.
-      // We don't want to track this when the user is on 3rd party authentication flow
-      window.location.pathname === "/" && authenticationTracking.userSendToApp()
-    }
-  }, [])
-
-  const handleAuth2FAMount = () => {
-    authenticationTracking.loaded2fa()
-  }
-
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
-    authenticationTracking.initiated({
-      authSource: "google",
-    })
     send({
       type: "AUTH_WITH_GOOGLE",
       data: { jwt: credential },
@@ -72,13 +52,6 @@ export default function AuthenticationCoordinator({
     const onSuccess = (authSession: AbstractAuthSession) =>
       send({ type: "AUTHENTICATED", data: authSession })
     try {
-      authenticationTracking.initiated(
-        {
-          authLocation: "magic",
-          authSource: "passkey",
-        },
-        true,
-      )
       const res = await passkeyConnector.loginWithAllowedPasskey(
         state.context.allowedDevices,
       )
@@ -109,9 +82,6 @@ export default function AuthenticationCoordinator({
   )
 
   const onLoginWithPasskey = async () => {
-    authenticationTracking.initiated({
-      authSource: "passkey - continue",
-    })
     setIsPasskeyLoading(true)
     const res = await passkeyConnector.loginWithPasskey(undefined, () => {
       setIsPasskeyLoading(false)
@@ -126,9 +96,6 @@ export default function AuthenticationCoordinator({
         <AuthSelection
           isIdentityKit={isIdentityKit}
           onSelectEmailAuth={(email: string) => {
-            authenticationTracking.initiated({
-              authSource: "email",
-            })
             send({
               type: "AUTH_WITH_EMAIL",
               data: email,
@@ -186,7 +153,6 @@ export default function AuthenticationCoordinator({
           appMeta={state.context?.appMeta}
           handleAuth={handle2FAAuth}
           isLoading={is2FALoading}
-          onMounted={handleAuth2FAMount}
         />
       )
     case state.matches("End"):

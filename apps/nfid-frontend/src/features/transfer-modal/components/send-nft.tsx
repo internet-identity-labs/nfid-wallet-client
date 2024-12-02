@@ -3,8 +3,6 @@ import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components
 import { useCallback, useState } from "react"
 import useSWR from "swr"
 
-import { sendReceiveTracking } from "@nfid/integration"
-
 import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 
@@ -46,13 +44,12 @@ export const TransferNFT = ({
 
       transferEXT(selectedNFT.getTokenId(), identity, values.to)
         .then(() => {
-          sendReceiveTracking.sendToken({
-            destinationType: "address",
-            tokenName: selectedNFT?.getTokenId() || "",
-            tokenType: "non-fungible",
-            amount: 1,
-            fee: 0,
-          })
+          toaster.success(
+            `Transaction ${selectedNFT?.getTokenName()} successful`,
+            {
+              toastId: "successTransfer",
+            },
+          )
           setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
@@ -61,6 +58,7 @@ export const TransferNFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
+          toaster.error("Something went wrong")
           setStatus(SendStatus.FAILED)
         })
     },

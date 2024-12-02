@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js"
+import { SourceInputCalculator } from "src/integration/icpswap/impl/calculator"
 import { QuoteImpl } from "src/integration/icpswap/impl/quote-impl"
 
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
-import {SourceInputCalculator} from "src/integration/icpswap/impl/calculator";
 
 describe("quote test", () => {
   jest.setTimeout(200000)
@@ -16,8 +16,11 @@ describe("quote test", () => {
     const source = st.find((icrc1) => icrc1.ledger === sourceLedger)
     const target = st.find((icrc1) => icrc1.ledger === targetLedger)
     const quote = new QuoteImpl(
-      0.5,
-      new SourceInputCalculator(BigInt(0.5 * 10 ** source!.decimals), source!.fee),
+      "0.5",
+      new SourceInputCalculator(
+        BigInt(0.5 * 10 ** source!.decimals),
+        source!.fee,
+      ),
       BigInt(6631),
       source!,
       target!,

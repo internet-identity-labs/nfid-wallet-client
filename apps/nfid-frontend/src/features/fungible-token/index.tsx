@@ -1,5 +1,5 @@
 import { useActor } from "@xstate/react"
-import { resetLocalStorageTTLCache } from "packages/integration/src/cache"
+import { resetIdbStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchTokens,
@@ -8,7 +8,6 @@ import {
 import { useContext, useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
-import { sendReceiveTracking } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -25,7 +24,6 @@ const TokensPage = () => {
   const [, forceUpdate] = useState(0)
 
   const onSendClick = (selectedToken: string) => {
-    sendReceiveTracking.openModal()
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
@@ -55,7 +53,7 @@ const TokensPage = () => {
       indexID !== "" ? indexID : undefined,
     )
     return icrc1Pair.storeSelf().then(() => {
-      resetLocalStorageTTLCache([icrc1OracleCacheName], () => {
+      resetIdbStorageTTLCache([icrc1OracleCacheName], () => {
         refetchTokens()
       })
     })

@@ -20,7 +20,7 @@ import { authStorage } from "packages/integration/src/lib/authentication/storage
 import toaster from "packages/ui/src/atoms/toast"
 import { arrayBufferEqual } from "src/integration/identity/services"
 
-import { authenticationTracking, IPasskeyMetadata } from "@nfid/integration"
+import { IPasskeyMetadata } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 
@@ -151,23 +151,11 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         passkeyMetadata = await passkeyConnector.getPasskeyByCredentialID(
           result.id,
         )
-
-        authenticationTracking.updateData({
-          authenticatorAttachment: passkeyMetadata.type,
-        })
       } catch (e) {
         console.error(e)
-        authenticationTracking.failed()
         toaster.error("We could not find your Passkey. Try different one")
         throw new Error("We could not find your Passkey.")
       }
-
-      authenticationTracking.updateData({
-        userPresent: passkeyMetadata.flags.userPresent,
-        userVerified: passkeyMetadata.flags.userVerified,
-        backupEligibility: passkeyMetadata.flags.backupEligibility,
-        backupState: passkeyMetadata.flags.backupState,
-      })
 
       this._actualIdentity = WebAuthnIdentity.fromJSON(
         JSON.stringify({

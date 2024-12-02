@@ -71,7 +71,6 @@ describe("ft test suite", () => {
       )
       expect(icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
 
-      //const filteredResult = await ftService.getTokens(userId, "Chat")
       const filteredResult = filterTokens(result, "CHAT")
       expect(filteredResult.length).toEqual(1)
 

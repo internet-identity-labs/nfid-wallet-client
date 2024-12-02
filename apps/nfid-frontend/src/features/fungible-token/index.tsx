@@ -84,18 +84,16 @@ const TokensPage = () => {
   }, [])
 
   return (
-    <>
-      <Tokens
-        activeTokens={activeTokens}
-        filteredTokens={tokens}
-        isTokensLoading={isTokensLoading}
-        onSubmitIcrc1Pair={onSubmitIcrc1Pair}
-        onFetch={onFetch}
-        profileConstants={ProfileConstants}
-        onSendClick={onSendClick}
-        onTokensUpdate={triggerForceUpdate}
-      />
-    </>
+    <Tokens
+      activeTokens={activeTokens}
+      filteredTokens={tokens}
+      isTokensLoading={isTokensLoading}
+      onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+      onFetch={onFetch}
+      profileConstants={ProfileConstants}
+      onSendClick={onSendClick}
+      onTokensUpdate={triggerForceUpdate}
+    />
   )
 }
 

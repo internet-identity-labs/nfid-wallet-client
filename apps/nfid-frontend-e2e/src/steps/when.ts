@@ -110,7 +110,7 @@ When(/^User clicks the back button in Send window$/, async () => {
 
 When(/^User clicks the (.*) option button$/, async (option: string) => {
   await Assets.getTokenOption(option).click()
-  await browser.pause(10000)
+  await browser.pause(8000)
 })
 
 When(/^User clicks the ShowHide button of (.*) token$/, async (tokenName: string) => {
@@ -118,7 +118,7 @@ When(/^User clicks the ShowHide button of (.*) token$/, async (tokenName: string
     await it.waitForDisplayed()
     await browser.pause(1500)
     await it.click()
-    await browser.pause(10000)
+    await browser.pause(8000)
   })
 })
 
@@ -142,7 +142,7 @@ When(
         timeoutMsg: "Failed attempt to make the token visible",
       })
       await HomePage.clickOnLeftUpperCorner()
-      await browser.pause(10000)
+      await browser.pause(8000)
     }
   },
 )

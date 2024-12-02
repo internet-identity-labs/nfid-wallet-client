@@ -1,6 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
@@ -9,10 +10,7 @@ import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import useSWR from "swr"
 
-import {
-  RootWallet,
-  registerTransaction
-} from "@nfid/integration"
+import { RootWallet, registerTransaction } from "@nfid/integration"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
@@ -31,7 +29,6 @@ import {
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
-import BigNumber from "bignumber.js"
 
 interface ITransferFT {
   preselectedTokenAddress: string | undefined
@@ -150,7 +147,11 @@ export const TransferFT = ({
           subaccount: subaccount ? [subaccount] : [],
           owner,
         },
-        amount: BigInt(BigNumber(amount).multipliedBy(10 ** token.getTokenDecimals()!).toFixed()),
+        amount: BigInt(
+          BigNumber(amount)
+            .multipliedBy(10 ** token.getTokenDecimals()!)
+            .toFixed(),
+        ),
         memo: [],
         fee: [token.getTokenFee()],
         from_subaccount: [],
@@ -159,7 +160,13 @@ export const TransferFT = ({
     }
 
     transferResult
-      .then(() => {
+      .then((res) => {
+        if (typeof res === "object" && "Err" in res) {
+          toaster.error("Something went wrong")
+          console.error(`Transfer error: ${JSON.stringify(res.Err)}`)
+          setStatus(SendStatus.FAILED)
+          return
+        }
         setStatus(SendStatus.COMPLETED)
         updateTokenBalance([token.getTokenAddress()], activeTokens)
         toaster.success(

@@ -75,9 +75,16 @@ export class Assets {
     return $("svg.mr-2")
   }
 
+  public async tokenOptionsButton(tokenName: string) {
+    return $(`#${tokenName}_options`)
+  }
+
   public async tokenBalance(tokenName: string) {
     let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
     await locator.waitForDisplayed({ timeout: 10000 })
+    await browser.waitUntil(async () => {
+      return await locator.getText() != ""
+    }, { timeout: 10000, timeoutMsg: "Token balance isn't loaded in 10 sec" })
     return locator
   }
 
@@ -214,6 +221,24 @@ export class Assets {
       { timeout: 40000, timeoutMsg: "Element didn't load properly in 40sec" },
     )
   }
+
+  public getTokenOption(option: string) {
+    return $('#option_Hide\\ token')
+  }
+
+  public ManageTokensDialog = {
+
+    manageTokensDialogButton() {
+      return $("#importToken")
+    },
+    tokenShowHideButton(tokenName) {
+      return $(`#${tokenName}_showHideButton`)
+    },
+    filterField() {
+      return $("#search")
+    },
+  }
+
 }
 
 export default new Assets()

@@ -92,6 +92,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
       <div className="text-sm">{token.getTokenCategoryFormatted()}</div>
       <div className="ml-auto">
         <img
+          id={`${token.getTokenName()}_showHideButton`}
           className="cursor-pointer"
           src={isHidden ? IconSvgEyeShown : IconSvgEyeClosed}
           alt="Show NFID asset"

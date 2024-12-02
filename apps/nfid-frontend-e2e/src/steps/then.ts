@@ -36,51 +36,66 @@ Then(
   ) => {
     await softAssertAll(
       async () =>
-        expect(await (await Assets.tokenBalance(tokenName)).getText()).toBe(
-          balance,
-        ),
+        await browser.waitUntil(async () => {
+          let currentBalance = (await (await Assets.tokenUSDBalance(tokenName)).getText())
+            .trim()
+            .replace(/[^\d.]/g, "")
+          return currentBalance != "0" && currentBalance != undefined
+        }, {
+          timeout: 10000,
+          timeoutMsg: `Incorrect ${tokenName} token USD balance: must be not 0 and not empty`,
+        }),
       async () =>
-        expect(
-          await (await Assets.tokenUSDBalance(tokenName)).getText(),
-        ).not.toBe("0"),
+        expect(await (await Assets.tokenBalance(tokenName))
+          .getText()).toBe(balance),
       async () =>
-        expect(await (await Assets.getCurrency(tokenName)).getText()).toBe(
-          currency,
-        ),
+        expect(await (await Assets.getCurrency(tokenName))
+          .getText()).toBe(currency),
       async () =>
-        expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(
-          true,
-        ),
+        expect(await (await Assets.getBlockchain(category))
+          .isDisplayed()).toBe(true),
     )
   },
 )
 
-Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {})
+Then(
+  /^Verifying that the ([^"]+) token is( not)? displayed$/,
+  async (tokenName: string, presence: string) => {
+    let isDisplayed
+    await browser.waitUntil(async () => {
+      isDisplayed = await Assets.tokenLabel(tokenName).isDisplayed()
+      return Boolean(presence) ? !isDisplayed : isDisplayed
+    }, {
+      timeout: 30000,
+      timeoutMsg: `${Boolean(presence)
+        ? "Token was displayed in 50 sec, but shouldn't"
+        : "Token wasn't displayed in 50 sec, but should"}`,
+    })
+  },
+)
 
 Then(
   /^Wait while ([^"]*) asset calculated with currency ([^"]*)$/,
   async (tokenName: string, balance: string) => {
     await Assets.tokenBalance(tokenName).waitForExist({ timeout: 20000 })
-    console.log(await Assets.tokenBalance(tokenName).getText())
     expect(Assets.tokenBalance(tokenName)).not.toHaveText(`0 ${balance}`)
   },
 )
 
-Then(/^User opens receive dialog window/, async () => {
-  await Assets.receiveDialog()
-})
+Then(/^User opens (.+) dialog window(?: of (\S+))?$/,
+  async (window: string, optionalArg: string) => {
+    const windows: { [key: string]: () => Promise<void> } = {
+      "Receive": async () => await Assets.receiveDialog(),
+      Send: async () => await Assets.sendDialog(),
+      "Send nft": async () => await Assets.sendNFTDialog(),
+      "Choose nft": async () => await Assets.chooseNFTinSend.click(),
+      "Manage tokens": async () => await Assets.ManageTokensDialog.manageTokensDialogButton().click(),
+      "Token options": async () => await (await Assets.tokenOptionsButton(optionalArg)).click(),
+    }
+    await (windows[window]?.() || Promise.reject(new Error(`Unknown dialog window: ${window}`)))
+  },
+)
 
-Then(/^User opens send dialog window/, async () => {
-  await Assets.sendDialog()
-})
-
-Then(/^User opens send nft dialog window/, async () => {
-  await Assets.sendNFTDialog()
-})
-
-Then(/^User opens choose nft window/, async () => {
-  await Assets.chooseNFTinSend.click()
-})
 
 Then(
   /^Verifying that user sees option ([^"]*) in dropdown/,

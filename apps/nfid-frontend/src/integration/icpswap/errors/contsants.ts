@@ -10,7 +10,7 @@ export const WITHDRAW_ERROR =
 export const SWAP_ERROR =
   "Something went wrong with the ICPSwap service. Cancel your swap and try again."
 
-export const SLIPPAGE_ERROR =
+export const SLIPPAGE_SWAP_ERROR =
   "Swap exceeded slippage tolerance, please withdraw your unswapped tokens and try again."
 
 export const SLIPPAGE_QUOTE_ERROR =

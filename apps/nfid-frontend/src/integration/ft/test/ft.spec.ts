@@ -1,9 +1,8 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
-import { ftService } from "src/integration/ft/ft-service"
+import { filterTokens, ftService } from "src/integration/ft/ft-service"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
-import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
 import { exchangeRateService } from "@nfid/integration"
@@ -53,11 +52,9 @@ describe("ft test suite", () => {
             decimals: 8,
           },
         ])
-      const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(
-        userId,
-      )
-      expect(result.items.length).toEqual(3)
-      const icpResult = result.items.find(
+      const result: FT[] = await ftService.getTokens(userId)
+      expect(result.length).toEqual(3)
+      const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
       await icpResult?.init(principal)
@@ -74,12 +71,13 @@ describe("ft test suite", () => {
       )
       expect(icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
 
-      const filteredResult = await ftService.getAllTokens(userId, "Chat")
+      //const filteredResult = await ftService.getTokens(userId, "Chat")
+      const filteredResult = filterTokens(result, "CHAT")
       expect(filteredResult.length).toEqual(1)
 
-      expect(result.items[0].getTokenName()).toEqual("Internet Computer")
-      expect(result.items[1].getTokenName()).toEqual("A first letter")
-      expect(result.items[2].getTokenName()).toEqual("Chat")
+      expect(result[0].getTokenName()).toEqual("Internet Computer")
+      expect(result[1].getTokenName()).toEqual("A first letter")
+      expect(result[2].getTokenName()).toEqual("Chat")
     })
 
     it("shoult get all sorted tokens", async function () {
@@ -119,7 +117,7 @@ describe("ft test suite", () => {
           },
         ])
 
-      const result: FT[] = await ftService.getAllTokens(userId, undefined)
+      const result: FT[] = await ftService.getTokens(userId)
 
       expect(result.length).toEqual(3)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
@@ -160,13 +158,8 @@ describe("ft test suite", () => {
             symbol: "ICP",
           },
         ])
-      const result: PaginatedResponse<FT> = await ftService.getAllUserTokens(
-        userId,
-      )
-      const balance = await ftService.getTotalUSDBalance(
-        principal,
-        result.items,
-      )
+      const result: FT[] = await ftService.getTokens(userId)
+      const balance = await ftService.getTotalUSDBalance(principal, result)
       console.log(balance)
       expect(balance).not.toEqual("0.00 USD")
     })

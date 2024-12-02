@@ -17,7 +17,6 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   activeTokens: FT[]
   filteredTokens: FT[]
   isTokensLoading: boolean
-  setSearchQuery: (v: string) => void
   profileConstants: IProfileConstants
   onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
   onFetch: (
@@ -31,17 +30,18 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
     fee: bigint
   }>
   onSendClick: (value: string) => void
+  onTokensUpdate: () => void
 }
 
 export const Tokens: FC<TokensProps> = ({
   activeTokens,
   filteredTokens,
   isTokensLoading,
-  setSearchQuery,
   profileConstants,
   onSubmitIcrc1Pair,
   onFetch,
   onSendClick,
+  onTokensUpdate,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
 
@@ -49,9 +49,9 @@ export const Tokens: FC<TokensProps> = ({
     <>
       <TokensHeader
         tokens={filteredTokens}
-        setSearch={setSearchQuery}
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}
         onFetch={onFetch}
+        onTokensUpdate={onTokensUpdate}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
@@ -72,13 +72,14 @@ export const Tokens: FC<TokensProps> = ({
           ) : (
             activeTokens.map((token, index, arr) => (
               <ActiveToken
-                key={`token_${token.getTokenAddress()}_${token.getTokenBalance()}`}
+                key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
                 token={token}
-                tokens={activeTokens}
+                tokens={filteredTokens}
                 profileConstants={profileConstants}
                 onSendClick={onSendClick}
                 setToken={setToken}
                 dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
+                onTokensUpdate={onTokensUpdate}
               />
             ))
           )}

@@ -1,6 +1,7 @@
 import { ICRC1 } from "../../../_ic_api/icrc1_registry.d"
 import { iCRC1Registry } from "../../../actors"
 import { localStorageTTL } from "../../../util/local-strage-ttl"
+import { ICP_CANISTER_ID } from "../../constants"
 import { State } from "../enum/enums"
 import { mapStateTS } from "../util"
 
@@ -10,7 +11,14 @@ export class Icrc1RegistryService {
   async getCanistersByRoot(root: string): Promise<Array<ICRC1>> {
     const cache = localStorageTTL.getEvenExpiredItem(icrc1RegistryCacheName)
     if (!cache) {
-      const response = await iCRC1Registry.get_canisters_by_root(root)
+      let response = await iCRC1Registry.get_canisters_by_root(root)
+      if (response.length === 0) {
+        await icrc1RegistryService.storeICRC1Canister(
+          ICP_CANISTER_ID,
+          State.Active,
+        )
+        response = await iCRC1Registry.get_canisters_by_root(root)
+      }
       localStorageTTL.setItem(
         icrc1RegistryCacheName,
         JSON.stringify(response),

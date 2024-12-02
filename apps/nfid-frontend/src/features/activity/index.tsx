@@ -1,8 +1,5 @@
 import { Activity } from "packages/ui/src/organisms/activity"
-import {
-  fetchActiveTokens,
-  fetchAllTokens,
-} from "packages/ui/src/organisms/tokens/utils"
+import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import useSWR from "swr"
@@ -15,9 +12,9 @@ const ActivityPage = () => {
   const { state } = useLocation()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
   const data = useActivityPagination(initialFilter)
-  const { data: allTokens = [], isLoading: isActiveLoading } = useSWR(
-    "allTokens",
-    fetchAllTokens,
+  const { data: tokens = [], isLoading: isActiveLoading } = useSWR(
+    "tokens",
+    fetchTokens,
     {
       revalidateOnFocus: false,
       revalidateOnMount: false,
@@ -25,8 +22,8 @@ const ActivityPage = () => {
   )
 
   const activeTokens = useMemo(() => {
-    return allTokens.filter((token) => token.getTokenState() === State.Active)
-  }, [allTokens])
+    return tokens.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
 
   return (
     <Activity

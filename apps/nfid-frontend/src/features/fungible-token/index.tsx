@@ -2,8 +2,7 @@ import { useActor } from "@xstate/react"
 import { resetLocalStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
-  fetchActiveTokens,
-  fetchAllTokens,
+  fetchTokens,
   getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
@@ -22,8 +21,8 @@ import { ModalType } from "../transfer-modal/types"
 const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
-  const [searchQuery, setSearchQuery] = useState("")
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
+  const [, forceUpdate] = useState(0)
 
   const onSendClick = (selectedToken: string) => {
     sendReceiveTracking.openModal()
@@ -34,19 +33,21 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  const triggerForceUpdate = () => {
+    forceUpdate((prev) => prev + 1)
+  }
+
   const {
-    data: allTokens = [],
-    mutate: refetchAllTokens,
-    isLoading: isAllTokenLoading,
-  } = useSWR(["allTokens", searchQuery], ([, query]) => fetchAllTokens(query), {
+    data: tokens = [],
+    mutate: refetchTokens,
+    isLoading: isTokensLoading,
+  } = useSWR("tokens", fetchTokens, {
     revalidateOnFocus: false,
   })
 
-  // const activeTokens = useMemo(() => {
-  //   return allTokens.filter((token) => token.getTokenState() === State.Active)
-  // }, [allTokens])
-
-  console.log("fung", allTokens)
+  const activeTokens = useMemo(() => {
+    return tokens.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
 
   const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(
@@ -55,7 +56,7 @@ const TokensPage = () => {
     )
     return icrc1Pair.storeSelf().then(() => {
       resetLocalStorageTTLCache([icrc1OracleCacheName], () => {
-        refetchAllTokens()
+        refetchTokens()
       })
     })
   }
@@ -85,16 +86,18 @@ const TokensPage = () => {
   }, [])
 
   return (
-    <Tokens
-      activeTokens={allTokens.filter((t) => t.getTokenState() === State.Active)}
-      filteredTokens={allTokens}
-      setSearchQuery={setSearchQuery}
-      isTokensLoading={isAllTokenLoading}
-      onSubmitIcrc1Pair={onSubmitIcrc1Pair}
-      onFetch={onFetch}
-      profileConstants={ProfileConstants}
-      onSendClick={onSendClick}
-    />
+    <>
+      <Tokens
+        activeTokens={activeTokens}
+        filteredTokens={tokens}
+        isTokensLoading={isTokensLoading}
+        onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+        onFetch={onFetch}
+        profileConstants={ProfileConstants}
+        onSendClick={onSendClick}
+        onTokensUpdate={triggerForceUpdate}
+      />
+    </>
   )
 }
 

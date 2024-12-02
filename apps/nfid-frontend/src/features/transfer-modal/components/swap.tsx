@@ -1,17 +1,15 @@
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
-import {
-  fetchActiveTokens,
-  fetchAllTokens,
-} from "packages/ui/src/organisms/tokens/utils"
+import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import {
   CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import {
   DepositError,
@@ -26,7 +24,11 @@ import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 import { FormValues } from "../types"
-import { getIdentity, getQuoteData, updateTokenBalance } from "../utils"
+import {
+  getIdentity,
+  getQuoteData,
+  getTokensWithUpdatedBalance,
+} from "../utils"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -47,30 +49,31 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     WithdrawError | SwapError | DepositError | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const { data: allTokens = [], isLoading: isAllTokensLoading } = useSWR(
-    ["allTokens", ""],
-    ([, query]) => fetchAllTokens(query),
+  const { data: tokens = [], isLoading: isTokensLoading } = useSWR(
+    "tokens",
+    fetchTokens,
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
+  const activeTokens = useMemo(() => {
+    return tokens.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
 
   const fromToken = useMemo(() => {
-    return allTokens.find(
-      (token) => token.getTokenAddress() === fromTokenAddress,
-    )
-  }, [fromTokenAddress, allTokens])
+    return tokens.find((token) => token.getTokenAddress() === fromTokenAddress)
+  }, [fromTokenAddress, tokens])
 
   const toToken = useMemo(() => {
-    return allTokens.find((token) => token.getTokenAddress() === toTokenAddress)
-  }, [toTokenAddress, allTokens])
+    return tokens.find((token) => token.getTokenAddress() === toTokenAddress)
+  }, [toTokenAddress, tokens])
 
   const filteredAllTokens = useMemo(() => {
-    return allTokens.filter(
+    return tokens.filter(
       (token) => token.getTokenAddress() !== fromTokenAddress,
     )
-  }, [fromTokenAddress, allTokens])
+  }, [fromTokenAddress, tokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -130,7 +133,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const {
     data: quote,
     isLoading: isQuoteLoading,
-    mutate,
+    mutate: refetchQuote,
   } = useSWR(
     toToken && fromToken && amount
       ? [toToken.getTokenAddress(), fromToken.getTokenAddress(), amount]
@@ -154,7 +157,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       setQuoteTimer((prev) => prev - 1)
       if (quoteTimer === 0) {
         resetIntegrationCache(["usdPriceForICRC1"], () => {
-          mutate()
+          refetchQuote()
           setQuoteTimer(QUOTE_REFETCH_TIMER)
         })
       }
@@ -165,12 +168,12 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     }
 
     return () => clearInterval(quoteInterval)
-  }, [mutate, quoteTimer, quote, isSuccessOpen])
+  }, [refetchQuote, quoteTimer, quote, isSuccessOpen])
 
   useEffect(() => {
     if (!shroff) return
-    mutate(() => getQuoteData(amount, shroff), true)
-  }, [toToken, fromToken, mutate, amount, shroff])
+    refetchQuote(() => getQuoteData(amount, shroff), true)
+  }, [toToken, fromToken, refetchQuote, amount, shroff])
 
   const refresh = () => {
     setShroffError(undefined)
@@ -201,23 +204,28 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         setSwapError(error)
       })
       .finally(() => {
-        updateTokenBalance([fromTokenAddress, toTokenAddress], allTokens)
+        getTokensWithUpdatedBalance(
+          [fromTokenAddress, toTokenAddress],
+          tokens,
+        ).then((updatedTokens) => {
+          mutate("tokens", updatedTokens, false)
+        })
       })
 
     setGetTransaction(shroff.getSwapTransaction())
-  }, [quote, shroff, allTokens, fromTokenAddress, toTokenAddress])
+  }, [quote, shroff, tokens, fromTokenAddress, toTokenAddress])
 
   return (
     <FormProvider {...formMethods}>
       <SwapFTUi
-        tokens={allTokens}
+        tokens={activeTokens}
         allTokens={filteredAllTokens}
         toToken={toToken}
         fromToken={fromToken}
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={isAllTokensLoading}
+        isTokenLoading={isTokensLoading}
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading}
         quote={quote}

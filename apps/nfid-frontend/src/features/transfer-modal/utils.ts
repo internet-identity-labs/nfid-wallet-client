@@ -244,7 +244,7 @@ export const getQuoteData = async (
   }
 }
 
-export const updateTokenBalance = async (
+export const getTokensWithUpdatedBalance = async (
   ledgers: string[],
   allTokens: FT[],
 ) => {
@@ -266,5 +266,5 @@ export const updateTokenBalance = async (
     }
   }
 
-  mutate("allTokens", updatedTokens, false)
+  return updatedTokens
 }

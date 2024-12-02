@@ -3,11 +3,10 @@ import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
-  fetchActiveTokens,
-  fetchAllTokens,
+  fetchTokens,
   getFullUsdValue,
   getUserPrincipalId,
-  initActiveTokens,
+  initTokens,
 } from "packages/ui/src/organisms/tokens/utils"
 import {
   HTMLAttributes,
@@ -125,25 +124,23 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
-  const { data: allTokens = [], isLoading: isAllTokensLoading } = useSWR(
-    ["allTokens", ""],
-    ([, query]) => fetchAllTokens(query),
-    { revalidateOnFocus: false },
-  )
+  const { data: tokens = [] } = useSWR("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+  })
 
   const activeTokens = useMemo(() => {
-    return allTokens.filter((token) => token.getTokenState() === State.Active)
-  }, [allTokens])
+    return tokens.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
 
-  const { data: activeInitedTokens = [] } = useSWR(
+  const { data: initedTokens = [] } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,
-    () => initActiveTokens(activeTokens),
+    () => initTokens(activeTokens),
     { revalidateOnFocus: false },
   )
 
   const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
-    activeInitedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
-    async () => getFullUsdValue(activeInitedTokens),
+    initedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
+    async () => getFullUsdValue(initedTokens),
     { revalidateOnFocus: false },
   )
 
@@ -257,7 +254,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
             <>
               <ProfileInfo
                 usdValue={tokensUsdValue}
-                isUsdLoading={isUsdLoading || !activeInitedTokens.length}
+                isUsdLoading={isUsdLoading || !initedTokens.length}
                 isAddressLoading={isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

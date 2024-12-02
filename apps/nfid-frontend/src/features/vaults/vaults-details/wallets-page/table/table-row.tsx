@@ -10,7 +10,6 @@ import {
   TableCell,
   TableRow,
 } from "@nfid-frontend/ui"
-import { sendReceiveTracking } from "@nfid/integration"
 
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
@@ -40,7 +39,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {
-    sendReceiveTracking.openModal({ isOpenedFromVaults: true })
     send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
     send({
       type: "ASSIGN_SOURCE_ACCOUNT",

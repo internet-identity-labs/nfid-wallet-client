@@ -1,6 +1,6 @@
 import { ICRC1 } from "../../../_ic_api/icrc1_registry.d"
 import { iCRC1Registry } from "../../../actors"
-import { localStorageTTL } from "../../../util/local-strage-ttl"
+import { idbStorageTTL } from "../../../util/idb-strage-ttl"
 import { State } from "../enum/enums"
 import { mapStateTS } from "../util"
 
@@ -8,18 +8,20 @@ export const icrc1RegistryCacheName = "ICRC1RegistryService.getCanistersByRoot"
 
 export class Icrc1RegistryService {
   async getCanistersByRoot(root: string): Promise<Array<ICRC1>> {
-    const cache = localStorageTTL.getEvenExpiredItem(icrc1RegistryCacheName)
+    const cache = await idbStorageTTL.getEvenExpiredItem(
+      icrc1RegistryCacheName,
+    )
     if (!cache) {
       const response = await iCRC1Registry.get_canisters_by_root(root)
-      localStorageTTL.setItem(
+      await idbStorageTTL.setItem(
         icrc1RegistryCacheName,
         JSON.stringify(response),
         30,
       )
       return response
     } else if (cache && cache.expired) {
-      iCRC1Registry.get_canisters_by_root(root).then((response) => {
-        localStorageTTL.setItem(
+      await iCRC1Registry.get_canisters_by_root(root).then((response) => {
+        idbStorageTTL.setItem(
           icrc1RegistryCacheName,
           JSON.stringify(response),
           30,
@@ -32,8 +34,10 @@ export class Icrc1RegistryService {
   }
 
   async storeICRC1Canister(ledger: string, state: State): Promise<void> {
-    await iCRC1Registry.store_icrc1_canister(ledger, mapStateTS(state))
-    localStorageTTL.removeItem(icrc1RegistryCacheName)
+    await Promise.all([
+      iCRC1Registry.store_icrc1_canister(ledger, mapStateTS(state)),
+      idbStorageTTL.removeItem(icrc1RegistryCacheName),
+    ])
   }
 
   async removeICRC1Canister(

@@ -28,12 +28,10 @@ import {
   LambdaPasskeyDecoded,
   RootWallet,
   authState,
-  authenticationTracking,
   getPasskey,
   ii,
   im,
   requestFEDelegationChain,
-  securityTracking,
   storePasskey,
 } from "@nfid/integration"
 
@@ -200,20 +198,10 @@ export class PasskeyConnector {
       } else {
         toaster.error(e.message)
       }
-      securityTracking.addPasskeyError({ message: e.message })
       return
     }
 
     const lambdaRequest = this.decodePublicKeyCredential(credential)
-    securityTracking.passkeyAdded({
-      authenticatorAttachment: lambdaRequest.data.type,
-      transports: lambdaRequest.data.transports,
-      userPresent: lambdaRequest.data.flags.userPresent,
-      userVerified: lambdaRequest.data.flags.userVerified,
-      backupEligibility: lambdaRequest.data.flags.backupEligibility,
-      backupState: lambdaRequest.data.flags.backupState,
-      name: lambdaRequest.data.name,
-    })
 
     return await this.storePasskey(lambdaRequest)
   }
@@ -249,13 +237,6 @@ export class PasskeyConnector {
       const profile = await fetchProfile()
       im.use_access_point([])
 
-      authenticationTracking.updateData({ isNewUser: false })
-      authenticationTracking.completed({
-        anchor: profile.anchor,
-        legacyUser: profile.wallet === RootWallet.II,
-        hasEmail: !!profile.email,
-      })
-
       await this.cachePasskeyDelegation(sessionKey, delegationIdentity)
 
       return {
@@ -265,10 +246,7 @@ export class PasskeyConnector {
       }
     } catch (e: any) {
       toaster.error(e.message)
-      authState.reset(false)
-      authenticationTracking.aborted({
-        authSource: "passkey - continue",
-      })
+      authState.reset()
       throw e
     } finally {
       callback?.()

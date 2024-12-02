@@ -17,7 +17,6 @@ import {
   Account,
   ThirdPartyAuthSession,
   authState,
-  authenticationTracking,
   getAnonymousDelegate,
   getPublicAccountDelegate,
 } from "@nfid/integration"
@@ -87,7 +86,7 @@ export const AuthChooseAccount = ({
       ([authRequest]) => fetchAccountsService({ authRequest }),
       {
         onError: async () => {
-          await authState.reset(false)
+          await authState.reset()
           onReset()
         },
       },
@@ -98,14 +97,6 @@ export const AuthChooseAccount = ({
     selectedLegacyAccount,
     selectedProfile,
   })
-
-  React.useEffect(() => {
-    if (!isAnonymousLoading) {
-      authenticationTracking.profileSelectionLoaded({
-        privateProfilesCount: legacyAnonymousProfiles?.length ?? 1,
-      })
-    }
-  }, [legacyAnonymousProfiles, isAnonymousLoading])
 
   const isDerivationBug = useMemo(() => {
     if (!profile?.anchor) return false
@@ -124,10 +115,6 @@ export const AuthChooseAccount = ({
       console.debug("handleSelectLegacyAnonymous", { account })
       setIsLoading(true)
       try {
-        authenticationTracking.profileChosen({
-          profile: `private-${parseInt(account.accountId) + 1}`,
-        })
-
         const authSession = await getLegacyThirdPartyAuthSession(
           authRequest,
           account.accountId,
@@ -153,9 +140,6 @@ export const AuthChooseAccount = ({
 
   const handleSelectAnonymous = useCallback(
     async (useHostName = false) => {
-      authenticationTracking.profileChosen({
-        profile: "private-1",
-      })
       setIsLoading(true)
       try {
         const delegation = authState.get().delegationIdentity
@@ -206,9 +190,6 @@ export const AuthChooseAccount = ({
   )
 
   const handleSelectPublic = useCallback(async () => {
-    authenticationTracking.profileChosen({
-      profile: "public",
-    })
     setIsLoading(true)
 
     try {
@@ -273,7 +254,6 @@ export const AuthChooseAccount = ({
   ])
 
   const onBack = useCallback(async () => {
-    await authState.reset(false)
     onReset()
   }, [onReset])
 
@@ -351,7 +331,7 @@ export const AuthChooseAccount = ({
                   setSelectedProfile={(value) => setSelectedProfile(value)}
                   isAvailable={!!authRequest.targets?.length}
                   onError={async () => {
-                    await authState.reset(false)
+                    await authState.reset()
                     onReset()
                   }}
                 />

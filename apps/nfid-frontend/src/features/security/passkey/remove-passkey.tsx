@@ -3,10 +3,9 @@ import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useCallback } from "react"
 
 import { Button } from "@nfid-frontend/ui"
-import { RootWallet, securityTracking } from "@nfid/integration"
+import { RootWallet } from "@nfid/integration"
 import { authState } from "@nfid/integration"
 
-import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import { removeAccessPointFacade } from "frontend/integration/facade"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 
@@ -32,28 +31,6 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
   const { activeDevicePrincipalId } = authState.get()
   const isInUseDevice = activeDevicePrincipalId === device.principal
 
-  const handleTrackRemovePasskey = useCallback(async (device: IDevice) => {
-    if (device.isLegacyDevice) {
-      return securityTracking.passkeyRemoved({
-        legacy: true,
-      })
-    }
-
-    const data = await passkeyConnector.getPasskeyByCredentialID(
-      device.credentialId,
-    )
-    securityTracking.passkeyRemoved({
-      legacy: false,
-      authenticatorAttachment: data.type,
-      transports: data.transports,
-      userPresent: data.flags.userPresent,
-      userVerified: data.flags.userVerified,
-      backupEligibility: data.flags.backupEligibility,
-      backupState: data.flags.backupState,
-      name: data.name,
-    })
-  }, [])
-
   const onDelete = useCallback(async () => {
     handleWithLoading(
       async () => {
@@ -71,7 +48,6 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
         }
       },
       () => {
-        handleTrackRemovePasskey(device)
         setIsModalVisible(false)
       },
     )
@@ -79,8 +55,7 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
     handleWithLoading,
     showLastPasskeyWarning,
     profile,
-    device,
-    handleTrackRemovePasskey,
+    device
   ])
 
   return (

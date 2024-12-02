@@ -1,7 +1,4 @@
-import {
-  authenticationTracking,
-  prepareClientDelegate,
-} from "@nfid/integration"
+import { prepareClientDelegate } from "@nfid/integration"
 
 import { AuthenticationContext } from "frontend/features/authentication/root/root-machine"
 import {
@@ -80,8 +77,6 @@ export async function postDelegation(context: AuthenticationContext) {
     ),
   ]
   const userPublicKey = context.thirdPartyAuthSession.authSession.userPublicKey
-
-  authenticationTracking.userSendToApp()
 
   postMessageToClient(
     {

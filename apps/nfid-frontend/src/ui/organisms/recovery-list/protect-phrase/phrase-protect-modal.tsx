@@ -3,7 +3,6 @@ import { ModalAdvanced } from "packages/ui/src/molecules/modal/advanced"
 import React, { useState } from "react"
 
 import { Button } from "@nfid-frontend/ui"
-import { SENSITIVE_CONTENT_NO_SESSION_RECORDING } from "@nfid/config"
 
 interface IRecoveryPhraseProtectModal
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -33,7 +32,6 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
         <textarea
           name="recoveryPhrase"
           className={clsx(
-            SENSITIVE_CONTENT_NO_SESSION_RECORDING,
             "border border-black rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 leading-[26px]",

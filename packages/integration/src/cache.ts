@@ -1,7 +1,7 @@
 import { CacheContainer } from "node-ts-cache"
 import { MemoryStorage } from "node-ts-cache-storage-memory"
 
-import { localStorageTTL } from "./lib/util/local-strage-ttl"
+import { idbStorageTTL } from "./lib/util/idb-strage-ttl"
 
 export const integrationCache = new CacheContainer(new MemoryStorage())
 
@@ -13,10 +13,10 @@ export const resetIntegrationCache = (
   callback && callback()
 }
 
-export const resetLocalStorageTTLCache = (
+export const resetIdbStorageTTLCache = async (
   keys: string[],
   callback?: () => void,
 ) => {
-  keys.map((key) => localStorageTTL.setItem(key, undefined, 0))
+  await Promise.all(keys.map((key) => idbStorageTTL.setItem(key, undefined, 0)))
   callback && callback()
 }

@@ -1,8 +1,6 @@
 import { useMachine } from "@xstate/react"
 import React, { useEffect } from "react"
 
-import { authenticationTracking } from "@nfid/integration"
-
 import { AuthorizationRequest } from "frontend/state/authorization"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -18,26 +16,6 @@ export default function ThirdPartyAuthCoordinator({
   onEnd?: () => void
 }) {
   const [state, send] = useMachine(ThirdPartyAuthMachine)
-
-  const handleTrackAuthModalOpened = React.useCallback(() => {
-    if (
-      state.context.appMeta &&
-      state.context.authRequest &&
-      state.matches("AuthenticationMachine")
-    ) {
-      const authTarget = state.context.appMeta.name
-        ? `${state.context.appMeta.name} - ${state.context.authRequest.hostname}`
-        : state.context.authRequest.hostname
-
-      authenticationTracking.authModalOpened({
-        authTarget,
-      })
-    }
-  }, [state])
-
-  React.useEffect(() => {
-    handleTrackAuthModalOpened()
-  }, [handleTrackAuthModalOpened])
 
   useEffect(() => {
     if (!onEnd) return

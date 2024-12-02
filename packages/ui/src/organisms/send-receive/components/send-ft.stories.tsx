@@ -73,7 +73,6 @@ export const SendFTProps: any = {
   setSelectedAccountAddress: () => {},
   selectedTokenCurrency: "ICP",
   selectedTokenBlockchain: "Internet Computer",
-  sendReceiveTrackingFn: () => console.log("Tracking send/receive"),
   isVault: false,
   selectedAccountAddress:
     "yrfx6-fmprd-wgad6-6or6b-2aw42-5qqhn-o4yt7-plkxr-2jtgv-azhzx-gae",
@@ -112,7 +111,7 @@ export const SendFTProps: any = {
     getTokenFeeFormatted: () => "0.0001 CHAT",
     getTokenFeeFormattedUsd: async () => "0.10 USD",
     isHideable: () => true,
-  } as FT,
+  },
   selectedVaultsAccountAddress: "",
   setSelectedVaultsAccountAddress: () => "",
   setUsdAmount: () => {},

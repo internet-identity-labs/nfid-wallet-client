@@ -39,6 +39,7 @@ export interface SwapFTUiProps {
   isTokenLoading: boolean
   showServiceError: boolean
   showLiquidityError: Error | undefined
+  slippageQuoteError: string | undefined
   isQuoteLoading: boolean
   quote: Quote | undefined
   clearQuoteError: () => void
@@ -61,6 +62,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   isTokenLoading,
   showServiceError,
   showLiquidityError,
+  slippageQuoteError,
   clearQuoteError,
   isQuoteLoading,
   quote,
@@ -195,6 +197,9 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             overlayClassnames="!items-start"
           />
         </div>
+      )}
+      {slippageQuoteError && (
+        <div className="text-xs text-red-600 mt-2.5">{slippageQuoteError}</div>
       )}
       <Button
         className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"

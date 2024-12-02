@@ -235,7 +235,7 @@ export const getQuoteData = async (
   amount: string,
   shroff: Shroff | undefined,
 ) => {
-  if (!amount || !shroff) return
+  if (!amount || !Number(amount) || !shroff) return
 
   try {
     return await shroff.getQuote(amount)

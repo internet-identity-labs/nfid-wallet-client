@@ -69,7 +69,7 @@ describe("shroff test", () => {
       chainRoot,
     )
 
-    authState.set({
+    await await authState.set({
       identity: delegationIdentity,
       delegationIdentity: delegationIdentity,
     })

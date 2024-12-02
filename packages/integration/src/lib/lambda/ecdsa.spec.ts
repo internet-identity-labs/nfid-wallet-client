@@ -53,7 +53,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         chainRoot,
       )
 
-      authState.set({
+      await authState.set({
         identity: delegationIdentity,
         delegationIdentity: delegationIdentity,
       })
@@ -103,7 +103,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         dappSessionKey.getPublicKey().toDer(),
       )
 
-      authState.set({
+      await authState.set({
         identity: nfidDelegationIdentity,
         delegationIdentity: nfidDelegationIdentity,
       })
@@ -144,7 +144,7 @@ describe("Lambda Sign/Register ECDSA", () => {
         chainRoot,
       )
 
-      authState.set({
+      await authState.set({
         identity: nfidDelegationIdentity,
         delegationIdentity: nfidDelegationIdentity,
       })

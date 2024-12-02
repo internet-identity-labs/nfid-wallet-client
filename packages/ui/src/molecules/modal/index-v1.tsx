@@ -80,7 +80,7 @@ export const Modal: React.FC<ModalProps> = ({
               "transition ease-in-out delay-150 duration-300",
               "fixed top-[50%] right-[50%] bottom-[50%] left-[50%]",
               "transform -translate-x-2/4 -translate-y-2/4",
-              "md:rounded-md drop-shadow-lg",
+              "md:rounded-md",
               "min-w-min min-h-min h-min bg-white",
               visible ? "scale-100" : "scale-0",
               className,

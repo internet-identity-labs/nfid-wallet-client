@@ -1,7 +1,8 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
-import { FC, useState } from "react"
-import useSWR, { mutate } from "swr"
+import { FC } from "react"
+import { mutate } from "swr"
 
 import {
   IconSvgEyeClosed,
@@ -13,52 +14,45 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { fetchActiveTokens, removeToken, addAndInitToken } from "../utils"
+import { getUserPrincipalId } from "../utils"
 
 interface FilteredTokenProps {
   token: FT
-  allTokens: FT[]
+  tokens: FT[]
+  onTokensUpdate: () => void
 }
 
-export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
-  const [isHidden, setIsHidden] = useState(token.getTokenState() === "Active")
-
-  const { data: activeTokens = [] } = useSWR(
-    "activeTokens",
-    fetchActiveTokens,
-    {
-      revalidateOnFocus: false,
-      revalidateOnMount: false,
-    },
-  )
-
-  const hideToken = (token: FT) => {
-    setIsHidden(!isHidden)
+export const FilteredToken: FC<FilteredTokenProps> = ({
+  token,
+  tokens,
+  onTokensUpdate,
+}) => {
+  const hideToken = async (token: FT) => {
     try {
       token.hideToken()
-      const result = removeToken(token, activeTokens, allTokens)
-      if (!result) return
+      const updatedTokens = [...tokens]
 
-      const { updatedAllTokens, updatedActiveTokens } = result
-      mutate("activeTokens", updatedActiveTokens, false)
-      mutate("allTokens", updatedAllTokens, false)
+      await mutate("tokens", updatedTokens, false)
+      onTokensUpdate()
     } catch (e) {
-      toaster.error("Token hiding failed: " + (e as any).message)
+      toaster.error("Token hiding failed: " + (e as Error).message)
     }
   }
 
   const showToken = async (token: FT) => {
-    setIsHidden(!isHidden)
     try {
       token.showToken()
-      const result = await addAndInitToken(token, activeTokens, allTokens)
-      if (!result) return
+      const { publicKey } = await getUserPrincipalId()
 
-      const { updatedAllTokens, updatedActiveTokens } = result
-      mutate("activeTokens", updatedActiveTokens, false)
-      mutate("allTokens", updatedAllTokens, false)
+      if (!token.isInited()) {
+        await token.init(Principal.fromText(publicKey))
+      }
+
+      const updatedTokens = [...tokens]
+      await mutate("tokens", updatedTokens, false)
+      onTokensUpdate()
     } catch (e) {
-      toaster.error("Token shhowing failed: " + (e as any).message)
+      toaster.error("Token shhowing failed: " + (e as Error).message)
     }
   }
 
@@ -77,7 +71,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
           <p
             className={clsx(
               "text-sm text-black leading-[20px] font-semibold",
-              token.getTokenState() === "Active"
+              token.getTokenState() === State.Active
                 ? "text-black"
                 : "text-secondary",
             )}
@@ -93,7 +87,11 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, allTokens }) => {
       <div className="ml-auto">
         <img
           className="cursor-pointer"
-          src={isHidden ? IconSvgEyeShown : IconSvgEyeClosed}
+          src={
+            token.getTokenState() === State.Active
+              ? IconSvgEyeShown
+              : IconSvgEyeClosed
+          }
           alt="Show NFID asset"
           onClick={() =>
             token.getTokenState() === State.Active

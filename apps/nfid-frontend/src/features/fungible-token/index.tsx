@@ -2,13 +2,13 @@ import { useActor } from "@xstate/react"
 import { resetIdbStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
-  fetchActiveTokens,
-  fetchAllTokens,
+  fetchTokens,
   getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
@@ -20,8 +20,8 @@ import { ModalType } from "../transfer-modal/types"
 const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
-  const [searchQuery, setSearchQuery] = useState("")
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
+  const [, forceUpdate] = useState(0)
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -31,22 +31,21 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  const triggerForceUpdate = () => {
+    forceUpdate((prev) => prev + 1)
+  }
+
   const {
-    data: activeTokens = [],
-    isLoading: isActiveLoading,
-    mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchActiveTokens, {
+    data: tokens = [],
+    mutate: refetchTokens,
+    isLoading: isTokensLoading,
+  } = useSWR("tokens", fetchTokens, {
     revalidateOnFocus: false,
-    revalidateOnMount: false,
   })
 
-  const { data: allTokens = [] } = useSWR(
-    ["allTokens", searchQuery],
-    ([, query]) => fetchAllTokens(query),
-    {
-      revalidateOnFocus: false,
-    },
-  )
+  const activeTokens = useMemo(() => {
+    return tokens.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
 
   const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(
@@ -55,7 +54,7 @@ const TokensPage = () => {
     )
     return icrc1Pair.storeSelf().then(() => {
       resetIdbStorageTTLCache([icrc1OracleCacheName], () => {
-        refetchActiveTokens()
+        refetchTokens()
       })
     })
   }
@@ -87,13 +86,13 @@ const TokensPage = () => {
   return (
     <Tokens
       activeTokens={activeTokens}
-      filteredTokens={allTokens}
-      setSearchQuery={setSearchQuery}
-      isActiveTokensLoading={isActiveLoading}
+      filteredTokens={tokens}
+      isTokensLoading={isTokensLoading}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
+      onTokensUpdate={triggerForceUpdate}
     />
   )
 }

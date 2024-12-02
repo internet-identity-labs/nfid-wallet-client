@@ -20,6 +20,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
+  onTokensUpdate: () => void
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -29,6 +30,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
+  onTokensUpdate,
   ...props
 }) => {
   const initedToken = useTokenInit(token)
@@ -72,25 +74,25 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="pr-[10px] text-right md:text-left pr-[10px] max-w-[40%] min-w-[40%] sm:max-w-[50%] sm:min-w-[50%]"
       >
         <p className="flex items-center justify-end md:block">
-          {!initedToken ? (
+          {!token ? (
             <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
           ) : (
             <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
-              {initedToken.getTokenBalanceFormatted() || "0"}{" "}
-              <span>{initedToken.getTokenSymbol()}</span>
+              {token.getTokenBalanceFormatted() || "0"}{" "}
+              <span>{token.getTokenSymbol()}</span>
             </span>
           )}
         </p>
         <p className="text-xs md:hidden text-secondary">
           &nbsp;
-          {!initedToken ? (
+          {!token ? (
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
-          ) : initedToken.getUSDBalanceFormatted() === undefined ? (
+          ) : token.getUSDBalanceFormatted() === undefined ? (
             "Not listed"
           ) : (
-            initedToken.getUSDBalanceFormatted()
+            token.getUSDBalanceFormatted()
           )}
         </p>
       </td>
@@ -98,16 +100,17 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px]"
       >
-        {!initedToken ? (
+        {!token ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : initedToken.getUSDBalanceFormatted() === undefined ? (
+        ) : token.getUSDBalanceFormatted() === undefined ? (
           "Not listed"
         ) : (
-          initedToken.getUSDBalanceFormatted()
+          token.getUSDBalanceFormatted()
         )}
       </td>
       <td className="w-[24px] min-w-[24px]">
         <AssetDropdown
+          onTokensUpdate={onTokensUpdate}
           token={token}
           tokens={tokens}
           profileConstants={profileConstants}

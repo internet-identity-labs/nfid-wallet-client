@@ -5,15 +5,16 @@ import BigNumber from "bignumber.js"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
-import { fetchActiveTokens } from "packages/ui/src/organisms/tokens/utils"
+import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
@@ -24,8 +25,8 @@ import { FormValues, SendStatus } from "../types"
 import {
   getAccountIdentifier,
   getIdentity,
+  getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,
-  updateTokenBalance,
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
@@ -56,20 +57,19 @@ export const TransferFT = ({
     getVaultsAccountsOptions,
   )
 
-  const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
-    "activeTokens",
-    fetchActiveTokens,
-    {
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
-    },
+  const { data: tokens = [], isLoading: isTokensLoading } = useSWR(
+    "tokens",
+    fetchTokens,
+    { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
+  const activeTokens = useMemo(() => {
+    return tokens.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
+
   const token = useMemo(() => {
-    return activeTokens.find(
-      (token) => token.getTokenAddress() === tokenAddress,
-    )
-  }, [tokenAddress, activeTokens])
+    return tokens.find((token) => token.getTokenAddress() === tokenAddress)
+  }, [tokenAddress, tokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -168,7 +168,11 @@ export const TransferFT = ({
           return
         }
         setStatus(SendStatus.COMPLETED)
-        updateTokenBalance([token.getTokenAddress()], activeTokens)
+        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+          (updatedTokens) => {
+            mutate("tokens", updatedTokens, false)
+          },
+        )
         toaster.success(
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           {
@@ -183,7 +187,7 @@ export const TransferFT = ({
         toaster.error("Something went wrong")
         setStatus(SendStatus.FAILED)
       })
-  }, [isVault, token, selectedVaultsAccountAddress, amount, to, activeTokens])
+  }, [isVault, token, selectedVaultsAccountAddress, amount, to, tokens])
 
   return (
     <FormProvider {...formMethods}>
@@ -196,7 +200,7 @@ export const TransferFT = ({
             ? validateICPAddress
             : validateICRC1Address
         }
-        isLoading={isActiveTokensLoading}
+        isLoading={isTokensLoading}
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}

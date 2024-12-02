@@ -8,9 +8,7 @@ export const icrc1RegistryCacheName = "ICRC1RegistryService.getCanistersByRoot"
 
 export class Icrc1RegistryService {
   async getCanistersByRoot(root: string): Promise<Array<ICRC1>> {
-    const cache = await idbStorageTTL.getEvenExpiredItem(
-      icrc1RegistryCacheName,
-    )
+    const cache = await idbStorageTTL.getEvenExpiredItem(icrc1RegistryCacheName)
     if (!cache) {
       const response = await iCRC1Registry.get_canisters_by_root(root)
       await idbStorageTTL.setItem(

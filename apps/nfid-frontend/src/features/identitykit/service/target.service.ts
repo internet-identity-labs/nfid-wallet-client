@@ -16,31 +16,40 @@ export const targetService = {
       const cacheKey = `trusted_origins_${canisterId}`
       const cache = await idbStorageTTL.getItem(cacheKey)
 
-      let response
+      let trustedOrigins
       if (cache !== null) {
-        response = cache
+        trustedOrigins = cache
       } else {
         const actor = actorService.getActor<ConsentMessageCanister>(
           canisterId,
           ConsentMessageCanisterIDL,
           agent,
         )
-        const icrc10SupportedStandards =
-          await actor.icrc10_supported_standards()
 
-        if (!icrc10SupportedStandards.some(standard => "ICRC-28" === standard.name))
-          console.warn(
-            `The target canister ${canisterId} has no ICRC-28 standards in "icrc10_supported_standards"`
-          )
-        if (icrc10SupportedStandards.some(standard => ["ICRC-1", "ICRC-2", "ICRC-7", "ICRC-37"].includes(standard.name)))
-          console.warn(
-            `The target canister ${canisterId} has one of ICRC-1, ICRC-2, ICRC-7, ICRC-37 standards in "icrc10_supported_standards"`
-          )
+        try {
+          const icrc10SupportedStandards =
+            await actor.icrc10_supported_standards()
 
-        response = await actor.icrc28_trusted_origins()
-        await idbStorageTTL.setItem(cacheKey, response.trusted_origins, 24)
+          if (!icrc10SupportedStandards.some(standard => "ICRC-28" === standard.name))
+            console.warn(
+              `The target canister ${canisterId} has no ICRC-28 standards in "icrc10_supported_standards"`
+            )
+          if (icrc10SupportedStandards.some(standard => ["ICRC-1", "ICRC-2", "ICRC-7", "ICRC-37"].includes(standard.name)))
+            console.warn(
+              `The target canister ${canisterId} has one of ICRC-1, ICRC-2, ICRC-7, ICRC-37 standards in "icrc10_supported_standards"`
+            )
+        } catch (e) {
+          console.warn(
+            `The target canister ${canisterId} unsuccsesfully tried to retrieve data from "icrc10_supported_standards"`
+          )
+        }
+
+        const response = await actor.icrc28_trusted_origins()
+        trustedOrigins = response.trusted_origins
+        idbStorageTTL.setItem(cacheKey, trustedOrigins, 24)
       }
-      if (!response.trusted_origins.includes(origin)) {
+
+      if (!trustedOrigins.includes(origin)) {
         throw new GenericError(
           `The target canister ${canisterId} has no the trusted origin: ${origin}`,
         )

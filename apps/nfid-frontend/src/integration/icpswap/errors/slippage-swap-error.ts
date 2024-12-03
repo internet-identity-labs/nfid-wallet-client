@@ -1,5 +1,5 @@
 import { ExchangeError } from "./abstract-transaction-error"
-import { SLIPPAGE_SWAP_ERROR } from "./contsants"
+import { SLIPPAGE_SWAP_ERROR } from "./constants"
 
 export class SlippageSwapError extends ExchangeError {
   getDisplayMessage(): string {

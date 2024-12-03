@@ -1,4 +1,4 @@
-import { SLIPPAGE_QUOTE_ERROR } from "./contsants"
+import { SLIPPAGE_QUOTE_ERROR } from "./constants"
 
 export class SlippageQuoteError extends Error {
   constructor() {

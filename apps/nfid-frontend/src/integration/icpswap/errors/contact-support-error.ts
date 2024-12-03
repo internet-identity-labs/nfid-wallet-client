@@ -1,5 +1,5 @@
 import { ExchangeError } from "./abstract-transaction-error"
-import { CONTACT_SUPPORT_ERROR } from "./contsants"
+import { CONTACT_SUPPORT_ERROR } from "./constants"
 
 export class ContactSupportError extends ExchangeError {
   getDisplayMessage(): string {

@@ -3,25 +3,31 @@ import { resetIdbStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchTokens,
+  generateTokenKey,
   getUserPrincipalId,
 } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
+
+const SWR_KEY = "tokens"
 
 const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
   const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
   const [, forceUpdate] = useState(0)
+  const [key, setKey] = useState("")
+  const [tokenz, setTokenz] = useState<FT[]>([])
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -32,14 +38,22 @@ const TokensPage = () => {
   }
 
   const triggerForceUpdate = () => {
-    forceUpdate((prev) => prev + 1)
+    //forceUpdate((prev) => prev + 1)
   }
+
+  useEffect(() => {
+    fetchTokens().then((data) => {
+      setTokenz(data)
+    })
+  }, [])
+
+  console.log("token pages", generateTokenKey(tokenz))
 
   const {
     data: tokens = [],
     mutate: refetchTokens,
     isLoading: isTokensLoading,
-  } = useSWR("tokens", fetchTokens, {
+  } = useSWR(["tokens", "123"], fetchTokens, {
     revalidateOnFocus: false,
   })
 
@@ -93,6 +107,7 @@ const TokensPage = () => {
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
       onTokensUpdate={triggerForceUpdate}
+      setKey={setKey}
     />
   )
 }

@@ -48,6 +48,7 @@ interface TokensHeaderProps {
     fee: bigint
   }>
   onTokensUpdate: () => void
+  setKey: (v: string) => void
 }
 
 export const TokensHeader: FC<TokensHeaderProps> = ({
@@ -55,6 +56,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
   onSubmitIcrc1Pair,
   onFetch,
   onTokensUpdate,
+  setKey,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
@@ -225,6 +227,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                       token={token}
                       tokens={tokens}
                       onTokensUpdate={onTokensUpdate}
+                      setKey={setKey}
                     />
                   )
                 })}

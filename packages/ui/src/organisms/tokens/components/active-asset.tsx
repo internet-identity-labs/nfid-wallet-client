@@ -74,7 +74,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="pr-[10px] text-right md:text-left pr-[10px] max-w-[40%] min-w-[40%] sm:max-w-[50%] sm:min-w-[50%]"
       >
         <p className="flex items-center justify-end md:block">
-          {!token ? (
+          {!initedToken ? (
             <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
           ) : (
             <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
@@ -85,7 +85,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         </p>
         <p className="text-xs md:hidden text-secondary">
           &nbsp;
-          {!token ? (
+          {!initedToken ? (
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
@@ -100,7 +100,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px]"
       >
-        {!token ? (
+        {!initedToken ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : token.getUSDBalanceFormatted() === undefined ? (
           "Not listed"

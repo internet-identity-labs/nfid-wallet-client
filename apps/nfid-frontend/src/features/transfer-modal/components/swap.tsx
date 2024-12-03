@@ -205,7 +205,6 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       await shroff.validateQuote()
     } catch (e) {
       setSlippageQuoteError((e as SlippageQuoteError).message)
-      // DISCUSS: maybe we need to set the updated quote!
       return
     }
 

@@ -1,5 +1,5 @@
 import { ExchangeError } from "./abstract-transaction-error"
-import { DEPOSIT_ERROR } from "./contsants"
+import { DEPOSIT_ERROR } from "./constants"
 
 export class DepositError extends ExchangeError {
   getDisplayMessage(): string {

@@ -32,7 +32,8 @@ import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-
 import {
   DepositError,
   LiquidityError,
-  SlippageError,
+  SlippageSwapError,
+  SlippageQuoteError,
   SwapError,
   WithdrawError,
 } from "../errors"
@@ -208,7 +209,7 @@ export class ShroffImpl implements Shroff {
       this.requestedQuote?.getSourceAmountPrettified(),
     )
     if (!legacyQuote?.getTargetAmount().eq(updatedQuote.getTargetAmount())) {
-      const error = new SlippageError()
+      const error = new SlippageQuoteError()
       console.error("Slippage error: " + error.message)
       throw error
     }
@@ -351,6 +352,15 @@ export class ShroffImpl implements Shroff {
         }
 
         console.error("Swap on exchange error: " + JSON.stringify(result.err))
+
+        if (
+          hasOwnProperty(result.err, "InternalError") &&
+          (result.err.InternalError as string)
+            .toLocaleLowerCase()
+            .includes("slippage")
+        ) {
+          throw new SlippageSwapError(JSON.stringify(result.err))
+        }
         throw new SwapError(JSON.stringify(result.err))
       })
     } catch (e) {

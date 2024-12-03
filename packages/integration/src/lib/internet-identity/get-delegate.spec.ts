@@ -37,7 +37,7 @@ describe("get-delegate suite", () => {
       dappSessionKey.getPublicKey().toDer(),
     )
 
-    await authState.set({
+    authState.set({
       identity: nfidDelegationIdentity,
       delegationIdentity: nfidDelegationIdentity,
     })

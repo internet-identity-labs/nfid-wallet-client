@@ -12,9 +12,6 @@ import { Environment } from "../constant/env.constant"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
-import { icrc1OracleCacheName } from "../token/icrc1/service/icrc1-oracle-service"
-import { icrc1RegistryCacheName } from "../token/icrc1/service/icrc1-registry-service"
-import { resetIdbStorageTTLCache } from "../../cache"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -136,7 +133,6 @@ function makeAuthState() {
     await Promise.all([
       authStorage.remove(KEY_STORAGE_KEY),
       authStorage.remove(KEY_STORAGE_DELEGATION),
-      resetIdbStorageTTLCache([icrc1OracleCacheName, icrc1RegistryCacheName])
     ])
     return true
   }
@@ -154,8 +150,7 @@ function makeAuthState() {
     return await lastValueFrom(cacheLoaded$)
   }
 
-  async function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
-    await reset()
+  function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
     console.debug("makeAuthState set new auth state")
     observableAuthState$.next({
       ...observableAuthState$.getValue(),

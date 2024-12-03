@@ -227,7 +227,7 @@ export class PasskeyConnector {
         chain,
       )
 
-      await authState.set({
+      authState.set({
         identity: multiIdent._actualIdentity!,
         delegationIdentity,
         chain,

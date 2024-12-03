@@ -151,7 +151,6 @@ function makeAuthState() {
   }
 
   function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
-    reset()
     console.debug("makeAuthState set new auth state")
     observableAuthState$.next({
       ...observableAuthState$.getValue(),
@@ -210,9 +209,9 @@ function makeAuthState() {
   /**
    * When user disconnects an identity, we update our agent.
    */
-  function invalidateIdentity(hard = true) {
+  async function invalidateIdentity(hard = true) {
     console.debug("makeAuthState invalidateIdentity")
-    reset()
+    await reset()
     hard && window.location.reload()
   }
   return {

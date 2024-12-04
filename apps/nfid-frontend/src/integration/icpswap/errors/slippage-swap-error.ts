@@ -1,9 +1,9 @@
 import { ExchangeError } from "./abstract-transaction-error"
-import { CONTACT_SUPPORT_ERROR } from "./constants"
+import { SLIPPAGE_SWAP_ERROR } from "./constants"
 
-export class ContactSupportError extends ExchangeError {
+export class SlippageSwapError extends ExchangeError {
   getDisplayMessage(): string {
-    return CONTACT_SUPPORT_ERROR
+    return SLIPPAGE_SWAP_ERROR
   }
 
   constructor(e: Error | string) {

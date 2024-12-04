@@ -56,7 +56,7 @@ export async function loginWithAnchor(
       authResult.sessionKey,
       authResult.chain,
     )
-    await authState.set({
+    authState.set({
       identity: authResult.sessionKey,
       delegationIdentity,
       chain: authResult.chain,
@@ -135,7 +135,7 @@ export async function loginService(context: {
     chain,
   )
 
-  await authState.set({
+  authState.set({
     identity: multiIdent._actualIdentity!,
     delegationIdentity,
     chain,

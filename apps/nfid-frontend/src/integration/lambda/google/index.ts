@@ -65,7 +65,7 @@ export async function getGoogleAuthSession(
   console.debug("getGoogleAuthSession", { deviceResult })
   const delegationIdentity = await requestFEDelegation(deviceResult.identity)
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
-  await authState.set({
+  authState.set({
     identity: deviceResult.identity,
     delegationIdentity: delegationIdentity.delegationIdentity,
     chain: delegationIdentity.chain,

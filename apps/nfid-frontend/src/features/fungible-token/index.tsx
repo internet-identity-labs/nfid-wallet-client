@@ -1,5 +1,4 @@
 import { useActor } from "@xstate/react"
-import { resetIdbStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchActiveTokens,
@@ -16,6 +15,7 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
+import { storageWithTtl } from "@nfid/client-db"
 
 const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
@@ -48,16 +48,14 @@ const TokensPage = () => {
     },
   )
 
-  const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {
+  const onSubmitIcrc1Pair = async (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(
       ledgerID,
       indexID !== "" ? indexID : undefined,
     )
-    return icrc1Pair.storeSelf().then(() => {
-      resetIdbStorageTTLCache([icrc1OracleCacheName], () => {
-        refetchActiveTokens()
-      })
-    })
+    await icrc1Pair.storeSelf()
+    await storageWithTtl.remove(icrc1OracleCacheName)
+    refetchActiveTokens()
   }
 
   const onFetch = async (ledgerID: string, indexID: string) => {

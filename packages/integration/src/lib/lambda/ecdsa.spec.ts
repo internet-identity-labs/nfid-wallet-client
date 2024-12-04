@@ -11,7 +11,6 @@ import {
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 
 import { WALLET_SCOPE } from "@nfid/config"
-import { authState } from "@nfid/integration"
 
 import { ii, im, replaceActorIdentity } from "../actors"
 import {
@@ -21,7 +20,7 @@ import {
   getPublicKey,
   renewDelegationThirdParty,
 } from "../delegation-factory/delegation-i"
-import { LocalStorageMock } from "./local-storage-mock"
+import { authState } from "../authentication"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -33,11 +32,6 @@ describe("Lambda Sign/Register ECDSA", () => {
   const expectedGlobalAcc =
     "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {
-    const localStorageMock = new LocalStorageMock()
-
-    beforeAll(() => {
-      Object.defineProperty(window, "localStorage", { value: localStorageMock })
-    })
 
     it("get global IC keys Lambda Flow", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)

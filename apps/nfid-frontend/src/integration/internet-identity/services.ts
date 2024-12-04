@@ -4,12 +4,12 @@ import {
   authState,
   requestFEDelegationChain,
   im,
-  setProfile,
-  loadProfileFromLocalStorage,
+  setProfileToStorage,
   Icon,
   Profile,
   fetchDelegate,
   DeviceType,
+  loadProfileFromStorage,
 } from "@nfid/integration"
 
 import {
@@ -68,10 +68,10 @@ export async function loginWithAnchor(
     })
 
     // When used platform authenticator
-    // Then write profile to localStorage
+    // Then write profile to storage
     if (!event.data.withSecurityDevices) {
       const profile = await fetchProfile()
-      setProfile(profile)
+      await setProfileToStorage(profile)
     }
     return {
       sessionSource: "localDevice",
@@ -146,9 +146,9 @@ export async function loginService(context: {
     throw new Error(`loginService im.use_access_point: ${error.message}`)
   })
 
-  const profile = loadProfileFromLocalStorage()
+  const profile = await loadProfileFromStorage()
   if (!profile?.anchor)
-    throw new Error("loginService cannot load profile from localStorage")
+    throw new Error("loginService cannot load profile from storage")
 
   return {
     sessionSource: "localDevice",
@@ -250,9 +250,9 @@ export async function registerService(
     })
     const profile = await registerProfileWithAccessPoint(anchor, accessPoint)
 
-    // Only in case this device has registered, we set the config in localStorage
+    // Only in case this device has registered, we set the config in storage
     if (sessionSource === "localDevice") {
-      setProfile(profile)
+      await setProfileToStorage(profile)
     }
   } catch (e) {
     console.error(e)

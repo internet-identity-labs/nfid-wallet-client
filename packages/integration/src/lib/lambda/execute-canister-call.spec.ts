@@ -14,7 +14,6 @@ import {
   saveToStorage,
 } from "./domain-key-repository"
 import { executeCanisterCall } from "./execute-canister-call"
-import { LocalStorageMock } from "./local-storage-mock"
 import { getIdentity } from "./util"
 
 const identity: JsonnableEd25519KeyIdentity = [
@@ -24,11 +23,6 @@ const identity: JsonnableEd25519KeyIdentity = [
 
 describe("Targets validation", () => {
   jest.setTimeout(50000)
-  const localStorageMock = new LocalStorageMock()
-
-  beforeAll(() => {
-    Object.defineProperty(window, "localStorage", { value: localStorageMock })
-  })
 
   //TODO
   it.skip("get third party global keys", async function () {
@@ -102,7 +96,7 @@ describe("Targets validation", () => {
     const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
     const canisterId = "rdmx6-jaaaa-aaaaa-aaadq-cai"
 
-    saveToStorage("nfid.one", "value1", defaultExpirationInMinutes)
+    await saveToStorage("nfid.one", "value1", defaultExpirationInMinutes)
     const response = await executeCanisterCall(
       "nfid.one",
       di,

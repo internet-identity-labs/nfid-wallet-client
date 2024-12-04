@@ -1,6 +1,5 @@
 import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 import toaster from "packages/ui/src/atoms/toast"
 
 import {
@@ -42,7 +41,7 @@ export class SecurityConnector {
   }
 
   getDevices = async (): Promise<IGroupedDevices> => {
-    let cacheUserData = await getUserIdData()
+    let cacheUserData = await authState.getUserIdData()
 
     const imDevices = await this.getIMDevices()
 

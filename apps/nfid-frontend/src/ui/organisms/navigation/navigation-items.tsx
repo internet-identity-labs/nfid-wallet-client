@@ -7,7 +7,6 @@ import User from "src/assets/userpics/userpic_6.svg"
 
 import { Button } from "@nfid-frontend/ui"
 import { useClickOutside } from "@nfid-frontend/utils"
-import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
@@ -15,6 +14,7 @@ import {
   ProfileConstants,
 } from "frontend/apps/identity-manager/profile/routes"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
+import { useLoadProfileFromStorage } from "frontend/hooks"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
@@ -50,6 +50,7 @@ interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { profile } = useAccount()
+  const { storageProfile } = useLoadProfileFromStorage()
   const { isAuthenticated, login, logout } = useAuthentication()
 
   const navigate = useNavigate()
@@ -67,7 +68,10 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
 
-  const isRegistered = React.useMemo(() => !!loadProfileFromLocalStorage(), [])
+  const isRegistered = React.useMemo(
+    () => !!storageProfile,
+    [storageProfile],
+  )
 
   const handleGoTo = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,

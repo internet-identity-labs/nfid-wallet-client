@@ -1,6 +1,6 @@
+import { storageWithTtl } from "@nfid/client-db"
 import { ICRC1, ICRC1Request } from "../../../_ic_api/icrc1_oracle.d"
 import { iCRC1OracleActor } from "../../../actors"
-import { idbStorageTTL } from "../../../util/idb-strage-ttl"
 import { ICRC1 as ICRC1Data } from "../types"
 
 export const icrc1OracleCacheName = "ICRC1OracleService.getICRC1Canisters"
@@ -20,10 +20,10 @@ export class ICRC1OracleService {
   }
 
   async getICRC1Canisters(): Promise<ICRC1[]> {
-    const cache = await idbStorageTTL.getEvenExpiredItem(icrc1OracleCacheName)
+    const cache = await storageWithTtl.getEvenExpired(icrc1OracleCacheName)
     if (!cache) {
       const response = await this.requestNetworkForCanisters()
-      await idbStorageTTL.setItem(
+      await storageWithTtl.set(
         icrc1OracleCacheName,
         this.serializeCanisters(response),
         60,
@@ -31,14 +31,14 @@ export class ICRC1OracleService {
       return response
     } else if (cache && cache.expired) {
       const response = await this.requestNetworkForCanisters()
-      await idbStorageTTL.setItem(
+      await storageWithTtl.set(
         icrc1OracleCacheName,
         this.serializeCanisters(response),
         60,
       )
-      return this.deserializeCanisters(cache.object)
+      return this.deserializeCanisters(cache.value as string)
     } else {
-      return this.deserializeCanisters(cache.object)
+      return this.deserializeCanisters(cache.value as string)
     }
   }
 

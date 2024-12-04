@@ -1,7 +1,7 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
-import { ii, im, setProfile } from "@nfid/integration"
+import { ii, im, setProfileToStorage } from "@nfid/integration"
 
 import { deviceInfo, fetchWebAuthnPlatformCapability } from "."
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "../identity"
@@ -79,7 +79,7 @@ export async function registerDeviceWithWebAuthn() {
     }
     console.debug("registerDeviceWithWebAuthn", "device already registered")
   }
-  setProfile(profile)
+  return setProfileToStorage(profile)
 }
 
 export async function registerDeviceWithSecurityKey() {
@@ -88,7 +88,7 @@ export async function registerDeviceWithSecurityKey() {
     BigInt(profile.anchor),
   )
   // TODO: this could fail if the device is already registered but
-  // lost profile form localStorage
+  // lost profile form storage
   try {
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(usersAuthenticatorDevices, "cross-platform"),

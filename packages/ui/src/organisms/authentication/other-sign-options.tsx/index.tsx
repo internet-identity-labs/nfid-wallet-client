@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { IconButton } from "packages/ui/src/molecules/button/icon-button"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 import {
@@ -17,13 +18,7 @@ export interface AuthOtherSignOptionsProps {
   appMeta?: string
   handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
   isLoading: boolean
-  loadProfileFromLocalStorage: () => { anchor: number } | undefined
-}
-
-interface AuthorizingAppMeta {
-  name?: string
-  url?: string
-  logo?: string
+  profileAnchor?: number
 }
 
 export const AuthOtherSignOptions = ({
@@ -31,15 +26,16 @@ export const AuthOtherSignOptions = ({
   appMeta,
   handleAuth,
   isLoading,
-  loadProfileFromLocalStorage,
+  profileAnchor,
 }: AuthOtherSignOptionsProps) => {
-  const { register, handleSubmit } = useForm<{
+  const { register, handleSubmit, setValue } = useForm<{
     userNumber: number
-  }>({
-    defaultValues: {
-      userNumber: loadProfileFromLocalStorage()?.anchor ?? undefined,
-    },
-  })
+  }>()
+
+  useEffect(() => {
+    if (profileAnchor) setValue("userNumber", profileAnchor)
+  }, [profileAnchor])
+
   if (isLoading) return <BlurredLoader isLoading />
 
   return (

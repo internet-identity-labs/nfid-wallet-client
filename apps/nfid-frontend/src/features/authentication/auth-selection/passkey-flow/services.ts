@@ -191,14 +191,13 @@ export class PasskeyConnector {
           },
         },
       })) as PublicKeyCredential
-    } catch (e: any) {
-      console.error(e)
-      if (alreadyRegisteredDeviceErrors.find((x) => e.message.includes(x))) {
-        toaster.error("This device is already registered")
+    } catch (e) {
+      const errorMessage = (e as Error).message
+      if (alreadyRegisteredDeviceErrors.find((x) => errorMessage.includes(x))) {
+        throw new Error("This device is already registered")
       } else {
-        toaster.error(e.message)
+        throw new Error(errorMessage)
       }
-      return
     }
 
     const lambdaRequest = this.decodePublicKeyCredential(credential)

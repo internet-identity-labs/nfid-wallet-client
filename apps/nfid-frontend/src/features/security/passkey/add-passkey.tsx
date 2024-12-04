@@ -1,9 +1,9 @@
 import clsx from "clsx"
+import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import React from "react"
-import { ToastContainer } from "react-toastify"
+import { useState, useCallback } from "react"
 
-import { Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
+import { BlurredLoader, Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 
@@ -15,23 +15,31 @@ import SinglePasskey from "./single-passkey.webp"
 export const AddPasskey = ({
   handleWithLoading,
   isDisabled,
+  isLoading,
 }: {
   handleWithLoading: IHandleWithLoading
   isDisabled?: boolean
+  isLoading: boolean
 }) => {
-  const [isModalVisible, setIsModalVisible] = React.useState(false)
-  const [isMultiDevice, setIsMultiDevice] = React.useState(true)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isMultiDevice, setIsMultiDevice] = useState(true)
 
-  const handleOpenModal = React.useCallback(() => {
+  const handleOpenModal = useCallback(() => {
     setIsModalVisible(true)
   }, [])
 
-  const handleCreatePasskey = React.useCallback(() => {
+  const handleCreatePasskey = useCallback(() => {
     handleWithLoading(
-      () =>
-        passkeyConnector.createCredential({
-          isMultiDevice: isSafari() ? true : isMultiDevice,
-        }),
+      async () => {
+        try {
+          await passkeyConnector.createCredential({
+            isMultiDevice: isSafari() ? true : isMultiDevice,
+          })
+          toaster.success("Device has been added")
+        } catch (e) {
+          toaster.error((e as Error).message)
+        }
+      },
       () => setIsModalVisible(false),
     )
   }, [handleWithLoading, isMultiDevice])
@@ -49,13 +57,15 @@ export const AddPasskey = ({
         <IconCmpPlus className="w-[18px] h-[18px]" />
         <span className="text-sm font-bold">Add Passkey</span>
       </div>
-
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
-        <ToastContainer />
+        <BlurredLoader
+          isLoading={isLoading}
+          overlayClassnames="rounded-[24px]"
+        />
         <div className="space-y-3.5">
           <p className="text-2xl font-bold">Create a Passkey</p>
           <img

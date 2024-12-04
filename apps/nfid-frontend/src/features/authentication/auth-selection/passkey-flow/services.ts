@@ -192,6 +192,7 @@ export class PasskeyConnector {
         },
       })) as PublicKeyCredential
     } catch (e) {
+      console.error(e)
       const errorMessage = (e as Error).message
       if (alreadyRegisteredDeviceErrors.find((x) => errorMessage.includes(x))) {
         throw new Error("This device is already registered")

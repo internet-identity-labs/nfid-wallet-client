@@ -1,7 +1,7 @@
 import { After, Before } from "@cucumber/cucumber"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
-import userClient from "../helpers/accounts-service.js"
+import userClient from "./accounts-service.js"
 
 Before(async function () {})
 

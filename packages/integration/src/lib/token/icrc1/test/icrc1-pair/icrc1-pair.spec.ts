@@ -1,10 +1,16 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"
 
 import {
+  authState,
   generateDelegationIdentity,
   iCRC1Registry,
   im,
@@ -18,6 +24,10 @@ import { HTTPAccountResponse } from "../../../../_ic_api/identity_manager.d"
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
 )
+const mock: JsonnableEd25519KeyIdentity = [
+  "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
+  "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
+]
 
 describe("ICRC1 pair suite", () => {
   jest.setTimeout(200000)
@@ -33,6 +43,22 @@ describe("ICRC1 pair suite", () => {
   })
 
   it("Fail because already added", async () => {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mock)
+    const sessionKey = Ed25519KeyIdentity.generate()
+    const chainRoot = await DelegationChain.create(
+      mockedIdentity,
+      sessionKey.getPublicKey(),
+      new Date(Date.now() + 3_600_000 * 44),
+      {},
+    )
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      sessionKey,
+      chainRoot,
+    )
+    authState.set({
+      identity: delegationIdentity,
+      delegationIdentity: delegationIdentity,
+    })
     const icrcPair = new Icrc1Pair(
       "2ouva-viaaa-aaaaq-aaamq-cai",
       "qhbym-qaaaa-aaaaa-aaafq-cai",

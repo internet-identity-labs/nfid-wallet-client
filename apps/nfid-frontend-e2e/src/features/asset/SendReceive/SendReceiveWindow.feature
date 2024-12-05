@@ -5,8 +5,8 @@ Feature: SendReceive dialog window
     Given User opens NFID site
     And User is already authenticated by <NFID number> anchor
     And Verifying that tokens are displayed on assets tab
-    When User opens send nft dialog window
-    And User opens choose nft window
+    When User opens Send nft dialog window
+    And User opens Choose nft dialog window
     Then Verifying that user sees option <nft> in dropdown
     When User clicks the back button in Send window
     And User switches send type
@@ -14,7 +14,7 @@ Feature: SendReceive dialog window
     And User sets the amount to '0.0001'
     Then Verifying that the balance is calculated as <balance> and fee is calculated as <fee>
     When User refreshes the page
-    And User opens receive dialog window
+    And User opens Receive dialog window
     Then Verifying that the Account ID is <account ID> and the Principal is <wallet address>
     Examples:
       | NFID number | account ID                            | wallet address                        | nft                   | balance | fee    | currency |

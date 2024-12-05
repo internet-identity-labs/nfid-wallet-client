@@ -1,5 +1,5 @@
 // import {} from "@craco/craco"
-import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
+// import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
 import path from "path"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
@@ -76,18 +76,18 @@ const setupCSP = () => {
     }
 
     return [
-      new CspHtmlWebpackPlugin(cspConfigPolicy, {
-        // PrimeReact is a component library which is enabled by default,
-        // but it is not used in the frontend. When it is enabled, it produces
-        // a nonce within `style-src` which in turn disables `unsafe-inline`.
-        primeReactEnabled: false,
-        hashEnabled: {
-          "style-src": false,
-        },
-        nonceEnabled: {
-          "style-src": false,
-        },
-      }),
+      // new CspHtmlWebpackPlugin(cspConfigPolicy, {
+      //   // PrimeReact is a component library which is enabled by default,
+      //   // but it is not used in the frontend. When it is enabled, it produces
+      //   // a nonce within `style-src` which in turn disables `unsafe-inline`.
+      //   primeReactEnabled: false,
+      //   hashEnabled: {
+      //     "style-src": false,
+      //   },
+      //   nonceEnabled: {
+      //     "style-src": false,
+      //   },
+      // }),
     ]
   }
   return []

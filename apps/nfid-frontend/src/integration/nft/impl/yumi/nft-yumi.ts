@@ -46,16 +46,14 @@ export class NftYumi extends NftImpl {
       const raw = JSON.parse(json.replace(/\n/g, "\\n").replace(/\r/g, "\\r"))
       this.url = raw.url
       return {
-        url:
-          raw.thumb ??
-          `https://${this.getCollectionId()}.raw.ic0.app/?tokenid=${this.getTokenId()}&type=thumbnail`,
+        url: raw.thumb ?? raw.url,
         format: "img",
       }
     })
   }
 
   getTokenMarketPlaceLink(): string {
-    return `https://yuku.app/market/${this.getCollectionId()}/${this.getTokenNumber()}`
+    return `https://yuku.app/market/${this.getCollectionId()}/${this.getTokenId()}`
   }
 
   async getDetails(): Promise<NFTDetails> {

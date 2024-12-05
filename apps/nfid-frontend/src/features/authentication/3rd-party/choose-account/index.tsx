@@ -418,7 +418,12 @@ export const AuthChooseAccount = ({
               </Button>
               <Button
                 id="connect"
-                onClick={() => setShowTokenLaunch(true)}
+                onClick={() => {
+                  if (!!localStorage.getItem("sns-step-visited")) onSubmit()
+                  else {
+                    setShowTokenLaunch(true)
+                  }
+                }}
                 type="primary"
               >
                 Connect

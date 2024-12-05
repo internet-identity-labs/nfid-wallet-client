@@ -2,8 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
-import { loadProfileFromLocalStorage } from "@nfid/integration"
-
+import { useLoadProfileFromStorage } from "frontend/hooks"
 import { CardBody } from "frontend/ui/molecules/card/body"
 import { NFIDLogin } from "frontend/ui/pages/nfid-login"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
@@ -18,8 +17,7 @@ interface AppScreenNFIDLoginProps extends React.HTMLAttributes<HTMLDivElement> {
 export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
   loginSuccessPath,
 }) => {
-  const profile = React.useMemo(() => loadProfileFromLocalStorage(), [])
-
+  const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
   const { isLoading, login } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
   const navigate = useNavigate()
@@ -33,12 +31,17 @@ export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
       }
     }
   }
+
   return (
-    <AppScreen className="flex flex-col h-full" isFocused isLoading={isLoading}>
+    <AppScreen
+      className="flex flex-col h-full"
+      isFocused
+      isLoading={isLoading || storageProfileLoading}
+    >
       <main className={clsx("flex flex-1")}>
         <div className="container p-6 mx-auto">
           <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
-            <NFIDLogin account={profile} onLogin={handleLogin} />
+            <NFIDLogin account={storageProfile} onLogin={handleLogin} />
           </CardBody>
         </div>
       </main>

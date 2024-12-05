@@ -1,7 +1,5 @@
 import { Principal } from "@dfinity/principal"
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
-import { mutate } from "swr"
-
+import { authState } from "@nfid/integration"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
@@ -10,7 +8,7 @@ export const getUserPrincipalId = async (): Promise<{
   userPrincipal: string
   publicKey: string
 }> => {
-  const pair = await getUserIdData()
+  const pair = await authState.getUserIdData()
   return {
     userPrincipal: pair.userId,
     publicKey: pair.publicKey,

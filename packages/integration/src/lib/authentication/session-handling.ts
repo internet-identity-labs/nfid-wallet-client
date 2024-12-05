@@ -3,13 +3,8 @@ import { matchPath } from "react-router-dom"
 
 import { ROUTE_EMBED, TEN_MINUTES_IN_MS } from "@nfid/config"
 
-import { getLocalStorageOverride } from "../local-storage"
-
 const idleManagerConfig = {
-  idleTimeout: getLocalStorageOverride(
-    TEN_MINUTES_IN_MS,
-    "NFID_SESSION_MANAGER_IDLE_TIMEOUT_MS",
-  ),
+  idleTimeout: TEN_MINUTES_IN_MS,
 }
 
 let idleManager: IdleManager | null = null

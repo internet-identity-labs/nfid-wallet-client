@@ -2,7 +2,7 @@ import { useAtom } from "jotai"
 import React from "react"
 import useSWR from "swr"
 
-import { im, setProfile } from "@nfid/integration"
+import { im, setProfileToStorage } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { unpackResponse } from "frontend/integration/_common"
@@ -45,7 +45,7 @@ export const useAccount = () => {
         Number(account.anchor),
         accessPoint,
       )
-      shouldStoreLocalAccount && setProfile(newAccount)
+      shouldStoreLocalAccount && await setProfileToStorage(newAccount)
       refreshProfile()
       return newAccount
     },
@@ -60,7 +60,7 @@ export const useAccount = () => {
         .then(mapProfile)
 
       if (newAccount) {
-        shouldStoreLocalAccount && setProfile(newAccount)
+        shouldStoreLocalAccount && await setProfileToStorage(newAccount)
         refreshProfile()
       }
 

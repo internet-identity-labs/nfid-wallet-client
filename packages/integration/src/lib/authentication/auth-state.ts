@@ -6,9 +6,13 @@ import {
 } from "@dfinity/identity"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
+import { im, replaceActorIdentity } from "../actors"
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { Environment } from "../constant/env.constant"
+import { getPublicKey } from "../delegation-factory/delegation-i"
+import { RootWallet } from "../identity-manager/profile"
+import { hasOwnProperty } from "../test-utils"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
@@ -21,6 +25,15 @@ interface ObservableAuthState {
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
   activeDevicePrincipalId?: string
+}
+
+type UserIdData = {
+  //internal user id
+  userId: string
+  //public key of the user
+  publicKey: string
+  anchor: bigint
+  wallet: RootWallet
 }
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
@@ -163,10 +176,12 @@ function makeAuthState() {
     replaceIdentity(delegationIdentity, "authState.set")
     setupSessionManager({ onIdle: invalidateIdentity })
   }
+
   function get() {
     checkAndRenewFEDelegation()
     return observableAuthState$.getValue()
   }
+
   async function reset() {
     await _clearAuthSessionFromCache()
     console.debug("invalidateIdentity")
@@ -206,6 +221,51 @@ function makeAuthState() {
     return
   }
 
+  async function getUserIdData(): Promise<UserIdData> {
+    //get web3 auth delegation
+    const identity = get().delegationIdentity
+
+    if (!identity) throw new Error("No identity")
+
+    //web3 identity is unique per account so we can use it as a cache key
+    const cacheKey = "user_profile_data_" + identity.getPrincipal().toText()
+
+    const cachedValue = await authStorage.get(cacheKey)
+
+    let data
+
+    if (cachedValue) {
+      data = JSON.parse(cachedValue as string)
+    } else {
+      await replaceActorIdentity(im, identity)
+      const [publicKey, account] = await Promise.all([
+        getPublicKey(identity),
+        im.get_account(),
+      ])
+      const rootWallet: RootWallet = hasOwnProperty(
+        account.data[0]!.wallet,
+        "II",
+      )
+        ? RootWallet.II
+        : RootWallet.NFID
+      data = {
+        userId: account.data[0]!.principal_id,
+        publicKey: publicKey,
+        //BigInt is not serializable in a good way
+        anchor: Number(account.data[0]!.anchor),
+        wallet: rootWallet,
+      }
+      await authStorage.set(cacheKey, JSON.stringify(data))
+    }
+
+    return {
+      userId: data.userId,
+      publicKey: data.publicKey,
+      anchor: BigInt(data.anchor),
+      wallet: data.wallet,
+    }
+  }
+
   /**
    * When user disconnects an identity, we update our agent.
    */
@@ -214,6 +274,7 @@ function makeAuthState() {
     await reset()
     hard && window.location.reload()
   }
+
   return {
     set,
     get,
@@ -222,6 +283,7 @@ function makeAuthState() {
     fromCache,
     checkAndRenewFEDelegation,
     logout: invalidateIdentity,
+    getUserIdData,
   }
 }
 

@@ -1,6 +1,6 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 
-import { setProfile } from "@nfid/integration"
+import { setProfileToStorage } from "@nfid/integration"
 
 import { addDeviceToIIandIM } from "frontend/integration/device/services"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
@@ -50,7 +50,7 @@ export const getIframeWebauthn = async () => {
         await handleTrustDevice(e.data.identity, e?.data?.isWebAuthN)
       }
 
-      if (e.data.isDeviceTrusted) setProfile(profile)
+      if (e.data.isDeviceTrusted) await setProfileToStorage(profile)
 
       resolve(false)
     })

@@ -1,21 +1,6 @@
 import { fetchPrincipal } from "@nfid/integration"
-import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { fetchProfile, fetchAccounts, selectAccounts, verifyToken } from "."
-
-export function getLocalStorageProfileService() {
-  const profile = loadProfileFromLocalStorage()
-  if (!profile)
-    throw new Error(
-      `getLocalStorageProfileService getProfileService unregistered device`,
-    )
-
-  return Promise.resolve(profile)
-}
-
-export function isDeviceRegistered() {
-  return !!loadProfileFromLocalStorage()
-}
 
 export async function checkRegistrationStatus() {
   try {

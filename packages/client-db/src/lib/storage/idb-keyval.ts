@@ -1,13 +1,17 @@
 import { openDB, IDBPDatabase } from "idb"
 
+import { KeyValueStore } from "./types"
+
 type Database = IDBPDatabase<unknown>
-type IDBValidKey = string | number | Date | BufferSource | IDBValidKey[]
-const AUTH_DB_NAME = "authstate"
-const OBJECT_STORE_NAME = "ic-keyval"
+type DBCreateOptions = {
+  dbName: string
+  storeName: string
+  version?: number
+}
 
 const _openDbStore = async (
-  dbName = AUTH_DB_NAME,
-  storeName = OBJECT_STORE_NAME,
+  dbName: string,
+  storeName: string,
   version: number,
 ) => {
   console.debug("_openDbStore", { dbName, storeName, version })
@@ -47,21 +51,12 @@ async function _removeValue(
   return await db.delete(storeName, key)
 }
 
-export type DBCreateOptions = {
-  dbName?: string
-  storeName?: string
-  version?: number
-}
-
-export interface KeyValueStore {
-  get<T>(key: IDBValidKey): Promise<T | null>
-  set<T>(key: IDBValidKey, value: T): Promise<IDBValidKey>
-  remove(key: IDBValidKey): Promise<void>
+async function _clear(db: Database, storeName: string): Promise<void> {
+  return await db.clear(storeName)
 }
 
 /**
  * Simple Key Value store
- * Defaults to `'auth-client-db'` with an object store of `'ic-keyval'`
  */
 export class IdbKeyVal implements KeyValueStore {
   /**
@@ -74,13 +69,9 @@ export class IdbKeyVal implements KeyValueStore {
    * @param {DBCreateOptions['version']} options.version version of the database. Increment to safely upgrade
    * @constructs an {@link IdbKeyVal}
    */
-  public static async create(options?: DBCreateOptions): Promise<IdbKeyVal> {
+  public static async create(options: DBCreateOptions): Promise<IdbKeyVal> {
     console.debug("IdbKeyVal.create", { options })
-    const {
-      dbName = AUTH_DB_NAME,
-      storeName = OBJECT_STORE_NAME,
-      version = 1,
-    } = options ?? {}
+    const { dbName, storeName, version = 1 } = options ?? {}
     const db = await _openDbStore(dbName, storeName, version)
     return new IdbKeyVal(db, storeName)
   }
@@ -117,48 +108,12 @@ export class IdbKeyVal implements KeyValueStore {
   public async remove(key: IDBValidKey) {
     return await _removeValue(this._db, this._storeName, key)
   }
-}
-
-export class MemoryKeyVal implements KeyValueStore {
-  constructor(private _map: Map<IDBValidKey, unknown>) {}
-
-  public static create(): MemoryKeyVal {
-    const map = new Map<string, IDBValidKey>()
-    return new MemoryKeyVal(map)
-  }
 
   /**
-   * Basic setter
-   * @param {IDBValidKey} key string | number | Date | BufferSource | IDBValidKey[]
-   * @param value value to set
+   * Clear db
    * @returns void
    */
-  public async set<T>(key: IDBValidKey, value: T): Promise<IDBValidKey> {
-    console.debug("MemoryKeyVal.set", { key })
-    this._map.set(key, value) as T
-    return key
-  }
-
-  /**
-   * Basic getter
-   * Pass in a type T for type safety if you know the type the value will have if it is found
-   * @param {IDBValidKey} key string | number | Date | BufferSource | IDBValidKey[]
-   * @returns `Promise<T | null>`
-   * @example
-   * await get<string>('exampleKey') -> 'exampleValue'
-   */
-  public async get<T>(key: IDBValidKey): Promise<T | null> {
-    console.debug("MemoryKeyVal.get", { key })
-    return this._map.get(key) as T
-  }
-
-  /**
-   * Remove a key
-   * @param key {@link IDBValidKey}
-   * @returns void
-   */
-  public async remove(key: IDBValidKey): Promise<void> {
-    console.debug("MemoryKeyVal.remove", { key })
-    this._map.delete(key)
+  public async clear() {
+    return await _clear(this._db, this._storeName)
   }
 }

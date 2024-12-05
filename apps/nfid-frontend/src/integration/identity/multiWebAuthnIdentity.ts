@@ -94,7 +94,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   private async restoreIdentity(): Promise<void> {
     const savedIdentity = await authStorage.get("actualIdentity")
     if (savedIdentity) {
-      this._actualIdentity = WebAuthnIdentity.fromJSON(savedIdentity)
+      this._actualIdentity = WebAuthnIdentity.fromJSON(savedIdentity as string)
     }
   }
 

@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { useEffect } from "react"
 
 import { Button } from "@nfid-frontend/ui"
 
@@ -38,6 +39,10 @@ export function TokenLaunch({
   onSubmit: () => unknown
   className?: string
 }) {
+  useEffect(() => {
+    localStorage.setItem("sns-step-visited", "1")
+  }, [])
+
   return (
     <div
       className={clsx(

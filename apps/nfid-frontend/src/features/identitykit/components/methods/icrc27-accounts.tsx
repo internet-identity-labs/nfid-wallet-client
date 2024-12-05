@@ -23,7 +23,7 @@ const RPCComponentICRC27 = ({
 }: IRPCComponentICRC27) => {
   const [selectedProfile, setSelectedProfile] =
     React.useState<Account>(publicProfile)
-  const [showTokenLaunch, setShowTolenLaunch] = React.useState(false)
+  const [showTokenLaunch, setShowTokenLaunch] = React.useState(false)
 
   const applicationName = new URL(origin).host
 
@@ -45,7 +45,13 @@ const RPCComponentICRC27 = ({
           </a>
         </>
       }
-      onPrimaryButtonClick={() => setShowTolenLaunch(true)}
+      onPrimaryButtonClick={() => {
+        if (!!localStorage.getItem("sns-step-visited")) {
+          onApprove([selectedProfile])
+        } else {
+          setShowTokenLaunch(true)
+        }
+      }}
       primaryButtonText="Connect"
     >
       <ChooseAccount

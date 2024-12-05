@@ -26,7 +26,7 @@ const RPCComponentICRC34 = ({
   const [selectedProfile, setSelectedProfile] = React.useState<Account>(
     isPublicAvailable ? publicProfile : anonymous[0],
   )
-  const [showTokenLaunch, setShowTolenLaunch] = useState(false)
+  const [showTokenLaunch, setShowTokenLaunch] = useState(false)
 
   const applicationName = new URL(origin).host
 
@@ -48,7 +48,13 @@ const RPCComponentICRC34 = ({
           </a>
         </>
       }
-      onPrimaryButtonClick={() => setShowTolenLaunch(true)}
+      onPrimaryButtonClick={() => {
+        if (!!localStorage.getItem("sns-step-visited")) {
+          onApprove(selectedProfile)
+        } else {
+          setShowTokenLaunch(true)
+        }
+      }}
       primaryButtonText="Connect"
     >
       <ChooseAccount

@@ -1,6 +1,6 @@
 import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import React, { useCallback } from "react"
+import { useCallback, HTMLAttributes, useState, FC } from "react"
 
 import { Button } from "@nfid-frontend/ui"
 import { RootWallet } from "@nfid/integration"
@@ -14,19 +14,19 @@ import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error
 import { securityConnector } from "../device-connector"
 import { IDevice } from "../types"
 
-interface IDeletePasskeyModal extends React.HTMLAttributes<HTMLDivElement> {
+interface IDeletePasskeyModal extends HTMLAttributes<HTMLDivElement> {
   handleWithLoading: IHandleWithLoading
   showLastPasskeyWarning: boolean
   device: IDevice
 }
 
-export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
+export const DeletePasskey: FC<IDeletePasskeyModal> = ({
   handleWithLoading,
   device,
   showLastPasskeyWarning,
   children,
 }) => {
-  const [isModalVisible, setIsModalVisible] = React.useState(false)
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const { profile } = useProfile()
   const { activeDevicePrincipalId } = authState.get()
   const isInUseDevice = activeDevicePrincipalId === device.principal
@@ -51,12 +51,7 @@ export const DeletePasskey: React.FC<IDeletePasskeyModal> = ({
         setIsModalVisible(false)
       },
     )
-  }, [
-    handleWithLoading,
-    showLastPasskeyWarning,
-    profile,
-    device
-  ])
+  }, [handleWithLoading, showLastPasskeyWarning, profile, device])
 
   return (
     <div>

@@ -107,7 +107,7 @@ export async function createTentativeDevice({
 
   replaceIdentity(userDelegation.delegationIdentity)
 
-  await authState.set({
+  authState.set({
     identity: userIdentity,
     delegationIdentity: userDelegation.delegationIdentity,
     chain: userDelegation.chain,

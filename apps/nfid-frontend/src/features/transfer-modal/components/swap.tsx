@@ -17,6 +17,7 @@ import {
   DepositError,
   LiquidityError,
   ServiceUnavailableError,
+  SlippageQuoteError,
   SwapError,
   WithdrawError,
 } from "frontend/integration/icpswap/errors"
@@ -45,6 +46,9 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const [quoteTimer, setQuoteTimer] = useState(QUOTE_REFETCH_TIMER)
   const [swapError, setSwapError] = useState<
     WithdrawError | SwapError | DepositError | undefined
+  >()
+  const [slippageQuoteError, setSlippageQuoteError] = useState<
+    string | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const { data: activeTokens = [], isLoading: isActiveTokensLoading } = useSWR(
@@ -161,6 +165,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
       if (quoteTimer === 0) {
         resetIntegrationCache(["usdPriceForICRC1"], () => {
           mutate()
+          setSlippageQuoteError(undefined)
           setQuoteTimer(QUOTE_REFETCH_TIMER)
         })
       }
@@ -194,11 +199,17 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
       return
 
-    setIsSuccessOpen(true)
-
     if (!shroff) return
 
-    await shroff.validateQuote()
+    try {
+      await shroff.validateQuote()
+    } catch (e) {
+      setSlippageQuoteError((e as SlippageQuoteError).message)
+      return
+    }
+
+    setIsSuccessOpen(true)
+
     const identity = await getIdentity(shroff.getTargets())
 
     shroff
@@ -229,6 +240,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         quote={quote}
         showServiceError={shroffError?.name === "ServiceUnavailableError"}
         showLiquidityError={liquidityError}
+        slippageQuoteError={slippageQuoteError}
         clearQuoteError={refresh}
         step={swapStep}
         error={swapError}

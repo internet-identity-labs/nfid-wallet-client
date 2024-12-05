@@ -11,6 +11,7 @@ import { Button, H5 } from "@nfid-frontend/ui"
 
 import {
   DepositError,
+  SlippageSwapError,
   SwapError,
   WithdrawError,
 } from "frontend/integration/icpswap/errors"
@@ -48,7 +49,7 @@ export interface SwapSuccessProps {
   step: SwapStage
   duration?: number
   isOpen: boolean
-  error?: SwapError | WithdrawError | DepositError
+  error?: SwapError | WithdrawError | DepositError | SlippageSwapError
 }
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
@@ -88,7 +89,8 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
     if (!error) return
     if (error instanceof DepositError)
       setCurrentAnimation(allAnimations.depositError)
-    if (error instanceof SwapError) setCurrentAnimation(allAnimations.swapError)
+    if (error instanceof SwapError || error instanceof SlippageSwapError)
+      setCurrentAnimation(allAnimations.swapError)
     if (error instanceof WithdrawError)
       setCurrentAnimation(allAnimations.withdrawError)
   }, [error])

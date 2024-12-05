@@ -55,9 +55,6 @@ function makeAuthState() {
   if (isNonSensitiveEnv && typeof window !== "undefined") {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    window.resetAuthState = invalidateIdentity
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     window.setAuthState = _setAuthSession
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

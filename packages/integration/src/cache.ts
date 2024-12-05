@@ -17,6 +17,6 @@ export const resetIdbStorageTTLCache = async (
   keys: string[],
   callback?: () => void,
 ) => {
-  await Promise.all(keys.map((key) => idbStorageTTL.setItem(key, undefined, 0)))
+  await Promise.all(keys.map((key) => idbStorageTTL.removeItem(key)))
   callback && callback()
 }

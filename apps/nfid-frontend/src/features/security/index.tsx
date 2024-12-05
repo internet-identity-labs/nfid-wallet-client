@@ -137,6 +137,7 @@ const SecurityPage = () => {
           <AddPasskey
             isDisabled={!profile.email?.length}
             handleWithLoading={handleWithLoading}
+            isLoading={isLoading}
           />
         }
         renderPasskeys={renderPasskeys}

@@ -1,6 +1,7 @@
 import { Button } from "@nfid-frontend/ui"
 
 import coinsImg from "../../../../assets/coins.png"
+import { useEffect } from "react"
 
 function Icon({ className }: { className?: string }) {
   return (
@@ -30,6 +31,10 @@ function Icon({ className }: { className?: string }) {
 }
 
 export function TokenLaunch({ onSubmit }: { onSubmit: () => unknown }) {
+  useEffect(() => {
+    localStorage.setItem("sns-step-visited", "1")
+  }, [])
+
   return (
     <div className="mt-[-10px] h-full flex flex-col">
       <img className="w-full" src={coinsImg} alt="Token Launch" />

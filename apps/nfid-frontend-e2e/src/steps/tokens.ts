@@ -19,7 +19,7 @@ When(/^User clicks the ShowHide button of (.*) token$/, async (tokenName: string
     await it.waitForDisplayed()
     await browser.pause(1500)
     await it.click()
-    await browser.pause(10000)
+    await browser.pause(12000)
   })
 })
 
@@ -92,13 +92,14 @@ Then(
   async (tokenName: string, presence: string) => {
     let isDisplayed
     await browser.waitUntil(async () => {
+      console.log(await Assets.tokenLabel(tokenName).selector)
       isDisplayed = await Assets.tokenLabel(tokenName).isDisplayed()
       return Boolean(presence) ? !isDisplayed : isDisplayed
     }, {
       timeout: 30000,
       timeoutMsg: `${Boolean(presence)
-        ? "Token was displayed in 50 sec, but shouldn't"
-        : "Token wasn't displayed in 50 sec, but should"}`,
+        ? "Token was displayed in 30 sec, but shouldn't"
+        : "Token wasn't displayed in 30 sec, but should"}`,
     })
   },
 )

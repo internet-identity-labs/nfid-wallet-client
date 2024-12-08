@@ -16,7 +16,6 @@ import {
 } from "../_ic_api/identity_manager.d"
 import { delegationFactory, im, replaceActorIdentity } from "../actors"
 import { Chain } from "../lambda/lambda-delegation"
-import { LocalStorageMock } from "../lambda/local-storage-mock"
 import { getIdentity, getLambdaActor } from "../lambda/util"
 import {
   getAnonymousDelegation,
@@ -31,12 +30,6 @@ const identity = getIdentity("97654321876543218765432187654399")
 describe.skip("Lambda Sign/Register Delegation Factory", () => {
   jest.setTimeout(80000)
   describe("lambdaECDSA", () => {
-    const localStorageMock = new LocalStorageMock()
-
-    beforeAll(() => {
-      Object.defineProperty(window, "localStorage", { value: localStorageMock })
-    })
-
     it("register new user and check anchor/principal", async function () {
       const mockedIdentity = Ed25519KeyIdentity.generate()
 

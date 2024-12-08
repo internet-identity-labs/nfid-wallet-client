@@ -9,8 +9,8 @@ import {
 import { IDL } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
 import crypto from "crypto"
+import { storageWithTtl } from "@nfid/client-db"
 
-import { idbStorageTTL } from "../util/idb-strage-ttl"
 import { verifyCertification } from "./cert-verification"
 import { getLookupResultValue } from "./cert-verification/utils"
 
@@ -79,9 +79,9 @@ export async function validateTargets(targets: string[], origin: string) {
       canisterId,
     })
     const cacheKey = `trusted_origins_${canisterId}`
-    const cachedTrOrigins = await idbStorageTTL.getItem(cacheKey)
+    const cachedTrOrigins = await storageWithTtl.get(cacheKey)
     if (cachedTrOrigins) {
-      if (cachedTrOrigins.includes(origin)) {
+      if ((cachedTrOrigins as string[]).includes(origin)) {
         return
       }
     }
@@ -91,7 +91,7 @@ export async function validateTargets(targets: string[], origin: string) {
         `Target canister ${canisterId} does not support "${origin}"`,
       )
     }
-    await idbStorageTTL.setItem(cacheKey, result.trusted_origins, 24)
+    await storageWithTtl.set(cacheKey, result.trusted_origins, 24)
   })
 
   await Promise.all(promises)

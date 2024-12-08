@@ -55,7 +55,7 @@ export async function getAnonymousDelegationThroughLambda(
   }).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
     const a = await response.json()
-    deleteFromStorage(domain)
+    await deleteFromStorage(domain)
     return DelegationChain.fromJSON(a)
   })
 }

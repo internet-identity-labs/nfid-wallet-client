@@ -232,10 +232,11 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
         {modalStep === "import" && (
           <BlurredLoader
             isLoading={isImportLoading}
+            className="!h-fit"
             overlayClassnames="rounded-[24px]"
             id="import"
           >
-            <div className="h-[540px]">
+            <div className="h-[540px] flex flex-col">
               <div className="flex gap-[10px] items-center mb-[16px]">
                 <IconCmpArrow
                   className="cursor-pointer"
@@ -271,12 +272,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                   Required to display transaction history
                 </p>
               )}
-              <div
-                className={clsx(
-                  "text-sm flex mt-[10px]",
-                  !errors.ledgerID ? "h-[155px]" : "h-[135px]",
-                )}
-              >
+              <div className={clsx("text-sm flex mt-auto")}>
                 {tokenInfo && (
                   <div className="grid w-full h-full grid-rows-3">
                     <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">

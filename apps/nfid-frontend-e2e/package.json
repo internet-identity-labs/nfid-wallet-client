@@ -2,7 +2,7 @@
   "name": "nfid-frontend-e2e",
   "type": "module",
   "scripts": {
-    "test:e2e": "npx wdio run wdio.conf.ts",
+    "test:e2e": "node -v && npx wdio run wdio.conf.ts",
     "test:e2e:debug": "cross-env DEBUG=true npx wdio run wdio.conf.ts --inspect",
     "generate-cucumber-html-report": "ts-node ./src/reporter/index.ts",
     "allure-report": "allure generate allure-results --clean && allure open",

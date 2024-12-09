@@ -223,7 +223,7 @@ export class Assets {
   }
 
   public getTokenOption(option: string) {
-    return $('#option_Hide\\ token')
+    return $(`#option_${option.replace(" ", "\\ ")}`)
   }
 
   public ManageTokensDialog = {

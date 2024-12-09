@@ -6,16 +6,18 @@ import {
 } from "@dfinity/identity"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
-import { im, replaceActorIdentity } from "../actors"
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { Environment } from "../constant/env.constant"
-import { getPublicKey } from "../delegation-factory/delegation-i"
-import { RootWallet } from "../identity-manager/profile"
-import { hasOwnProperty } from "../test-utils"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import {
+  createUserIdData,
+  deserializeUserIdData,
+  serializeUserIdData,
+  UserIdData,
+} from "./user-id-data"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -26,15 +28,6 @@ interface ObservableAuthState {
   sessionKey?: Ed25519KeyIdentity
   activeDevicePrincipalId?: string
   userIdData?: UserIdData
-}
-
-type UserIdData = {
-  //internal user id
-  userId: string
-  //public key of the user
-  publicKey: string
-  anchor: bigint
-  wallet: RootWallet
 }
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
@@ -123,6 +116,19 @@ function makeAuthState() {
       getUserIdDataStorageKey(delegationIdentity),
     )
 
+    let userIdData
+
+    //BigInt is not serializable in a good way
+    if (cachedUserIdData) {
+      userIdData = deserializeUserIdData(cachedUserIdData as string)
+    } else {
+      userIdData = await createUserIdData(delegationIdentity)
+      await authStorage.set(
+        getUserIdDataStorageKey(delegationIdentity),
+        serializeUserIdData(userIdData),
+      )
+    }
+
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
 
@@ -131,9 +137,7 @@ function makeAuthState() {
       delegationIdentity,
       activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       identity,
-      userIdData: cachedUserIdData
-        ? JSON.parse(cachedUserIdData as string)
-        : await createUserIdData(delegationIdentity),
+      userIdData,
     })
   }
 
@@ -178,6 +182,13 @@ function makeAuthState() {
     sessionKey,
   }: SetProps) {
     console.debug("makeAuthState set new auth state")
+    const userIdData = await createUserIdData(delegationIdentity)
+
+    await authStorage.set(
+      getUserIdDataStorageKey(delegationIdentity),
+      serializeUserIdData(userIdData),
+    )
+
     observableAuthState$.next({
       ...observableAuthState$.getValue(),
       identity,
@@ -185,7 +196,7 @@ function makeAuthState() {
       activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       chain,
       sessionKey,
-      userIdData: await createUserIdData(delegationIdentity),
+      userIdData,
     })
     replaceIdentity(delegationIdentity, "authState.set")
     setupSessionManager({ onIdle: invalidateIdentity })
@@ -260,8 +271,6 @@ function makeAuthState() {
   }
 }
 
-export const authState = makeAuthState()
-
 /**
  * When user connects an identity, we update our agent.
  */
@@ -278,24 +287,4 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
   return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
 }
 
-async function createUserIdData(delegationIdentity: DelegationIdentity) {
-  const cacheKey =
-    "user_profile_data_" + delegationIdentity.getPrincipal().toText()
-  await replaceActorIdentity(im, delegationIdentity)
-  const [publicKey, account] = await Promise.all([
-    getPublicKey(delegationIdentity),
-    im.get_account(),
-  ])
-  const rootWallet: RootWallet = hasOwnProperty(account.data[0]!.wallet, "II")
-    ? RootWallet.II
-    : RootWallet.NFID
-  const data = {
-    userId: account.data[0]!.principal_id,
-    publicKey: publicKey,
-    //BigInt is not serializable in a good way
-    anchor: Number(account.data[0]!.anchor),
-    wallet: rootWallet,
-  }
-  await authStorage.set(cacheKey, JSON.stringify(data))
-  return { ...data, anchor: BigInt(data.anchor) }
-}
+export const authState = makeAuthState()

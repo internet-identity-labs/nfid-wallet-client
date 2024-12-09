@@ -9,6 +9,7 @@ import {
 import { IDL } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
 import crypto from "crypto"
+
 import { storageWithTtl } from "@nfid/client-db"
 
 import { verifyCertification } from "./cert-verification"
@@ -23,6 +24,8 @@ export interface CertifiedResponse {
 export interface ICRC28Response {
   trusted_origins: Array<string>
 }
+
+const TRUSTED_ORIGINS_CACHE_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000 // 1 day
 
 export async function validateTargets(targets: string[], origin: string) {
   const agent: Agent = new HttpAgent({ host: "https://ic0.app" })
@@ -91,7 +94,11 @@ export async function validateTargets(targets: string[], origin: string) {
         `Target canister ${canisterId} does not support "${origin}"`,
       )
     }
-    await storageWithTtl.set(cacheKey, result.trusted_origins, 24)
+    await storageWithTtl.set(
+      cacheKey,
+      result.trusted_origins,
+      TRUSTED_ORIGINS_CACHE_EXPIRATION_MILLIS,
+    )
   })
 
   await Promise.all(promises)

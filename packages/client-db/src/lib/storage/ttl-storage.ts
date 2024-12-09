@@ -74,12 +74,12 @@ export class TtlStorage<T> {
     return { value: item.value, expired: false }
   }
 
-  public async set(key: string, value: T, ttl: number): Promise<void> {
+  public async set(key: string, value: T, ttlMillis: number): Promise<void> {
     const db = await this._db
 
     const valueToSave = {
       value,
-      expiry: Date.now() + ttl * 60 * 1000,
+      expiry: Date.now() + ttlMillis,
     }
 
     await db.set(key, valueToSave)

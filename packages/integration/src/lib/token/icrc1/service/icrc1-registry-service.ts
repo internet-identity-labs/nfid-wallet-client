@@ -14,11 +14,11 @@ export class Icrc1RegistryService {
     const cache = await storageWithTtl.getEvenExpired(registryCacheName)
     if (!cache) {
       const response = await iCRC1Registry.get_canisters_by_root(root)
-      await storageWithTtl.set(registryCacheName, response, 30)
+      await storageWithTtl.set(registryCacheName, response, 30 * 1000)
       return response
     } else if (cache && cache.expired) {
       await iCRC1Registry.get_canisters_by_root(root).then((response) => {
-        storageWithTtl.set(registryCacheName, response, 30)
+        storageWithTtl.set(registryCacheName, response, 30 * 1000)
       })
       return cache.value as ICRC1[]
     } else {

@@ -26,7 +26,7 @@ export class ICRC1OracleService {
       await storageWithTtl.set(
         icrc1OracleCacheName,
         this.serializeCanisters(response),
-        60,
+        60 * 1000,
       )
       return response
     } else if (cache && cache.expired) {
@@ -34,7 +34,7 @@ export class ICRC1OracleService {
       await storageWithTtl.set(
         icrc1OracleCacheName,
         this.serializeCanisters(response),
-        60,
+        60 * 1000,
       )
       return this.deserializeCanisters(cache.value as string)
     } else {

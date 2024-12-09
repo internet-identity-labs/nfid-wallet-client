@@ -9,7 +9,7 @@ import { ONE_HOUR_IN_MS } from "@nfid/config"
 import { integrationCache } from "../../cache"
 import { im } from "../actors"
 import {
-  defaultExpirationInMinutes,
+  DEFAULT_EXPIRAITON_TIME_MILLIS,
   getFromStorage,
   saveToStorage,
 } from "../lambda/domain-key-repository"
@@ -73,7 +73,7 @@ export async function getGlobalDelegationChain(
   await saveToStorage(
     origin,
     toHexString(sessionPublicKey),
-    defaultExpirationInMinutes,
+    DEFAULT_EXPIRAITON_TIME_MILLIS,
   )
 
   return response

@@ -11,7 +11,7 @@ describe("Storage Functions", () => {
   })
 
   it("saveToStorage saves data correctly", async () => {
-    await saveToStorage("key1", "value1", 60)
+    await saveToStorage("key1", "value1", 60 * 60 * 1000)
     const storedData =
       (await domainKeyStorage.getEvenExpired("key1")) ||
       ({} as { value: string; expired: boolean })
@@ -21,7 +21,7 @@ describe("Storage Functions", () => {
   })
 
   it("getFromStorage retrieves valid data", async () => {
-    await saveToStorage("key2", "value2", 60)
+    await saveToStorage("key2", "value2", 60 * 60 * 1000)
     const retrievedValue = await getFromStorage("key2")
 
     expect(retrievedValue).toBe("value2")
@@ -41,7 +41,7 @@ describe("Storage Functions", () => {
   })
 
   it("deleteFromStorage removes data correctly", async () => {
-    await saveToStorage("key4", "value4", 60)
+    await saveToStorage("key4", "value4", 60 * 60 * 1000)
     await deleteFromStorage("key4")
     const storedData = await domainKeyStorage.getEvenExpired("key4")
     expect(storedData).toBeNull()

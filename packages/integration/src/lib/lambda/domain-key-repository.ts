@@ -1,14 +1,14 @@
 import { domainKeyStorage } from "./domain-key-storage"
 
 export const DOMAIN_KEY_STORAGE_KEY = "data"
-export const defaultExpirationInMinutes = 120
+export const DEFAULT_EXPIRAITON_TIME_MILLIS = 120 * 60 * 1000
 
 export async function saveToStorage(
   key: string,
   value: any,
-  ttlInMinutes: number,
+  ttlMillis: number,
 ): Promise<void> {
-  await domainKeyStorage.set(key, value, ttlInMinutes)
+  await domainKeyStorage.set(key, value, ttlMillis)
 }
 
 export async function getFromStorage(key: string): Promise<any> {

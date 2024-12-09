@@ -8,6 +8,7 @@ import { actorService } from "./actor.service"
 import { GenericError } from "./exception-handler.service"
 
 const IC_HOSTNAME = "https://ic0.app"
+const TRUSTED_ORIGINS_CACHE_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000 // 1 day
 
 export const targetService = {
   async validateTargets(targets: string[], origin: string) {
@@ -30,23 +31,35 @@ export const targetService = {
           const icrc10SupportedStandards =
             await actor.icrc10_supported_standards()
 
-          if (!icrc10SupportedStandards.some(standard => "ICRC-28" === standard.name))
-            console.warn(
-              `The target canister ${canisterId} has no ICRC-28 standards in "icrc10_supported_standards"`
+          if (
+            !icrc10SupportedStandards.some(
+              (standard) => "ICRC-28" === standard.name,
             )
-          if (icrc10SupportedStandards.some(standard => ["ICRC-1", "ICRC-2", "ICRC-7", "ICRC-37"].includes(standard.name)))
+          )
             console.warn(
-              `The target canister ${canisterId} has one of ICRC-1, ICRC-2, ICRC-7, ICRC-37 standards in "icrc10_supported_standards"`
+              `The target canister ${canisterId} has no ICRC-28 standards in "icrc10_supported_standards"`,
+            )
+          if (
+            icrc10SupportedStandards.some((standard) =>
+              ["ICRC-1", "ICRC-2", "ICRC-7", "ICRC-37"].includes(standard.name),
+            )
+          )
+            console.warn(
+              `The target canister ${canisterId} has one of ICRC-1, ICRC-2, ICRC-7, ICRC-37 standards in "icrc10_supported_standards"`,
             )
         } catch (e) {
           console.warn(
-            `The target canister ${canisterId} unsuccsesfully tried to retrieve data from "icrc10_supported_standards"`
+            `The target canister ${canisterId} unsuccsesfully tried to retrieve data from "icrc10_supported_standards"`,
           )
         }
 
         const response = await actor.icrc28_trusted_origins()
         trustedOrigins = response.trusted_origins
-        storageWithTtl.set(cacheKey, trustedOrigins, 24)
+        storageWithTtl.set(
+          cacheKey,
+          trustedOrigins,
+          TRUSTED_ORIGINS_CACHE_EXPIRATION_MILLIS,
+        )
       }
 
       if (!trustedOrigins.includes(origin)) {

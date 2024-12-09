@@ -10,7 +10,7 @@ import { expect } from "@jest/globals"
 import { getGlobalDelegationChain } from "../delegation-factory/delegation-i"
 import { getAnonymousDelegate } from "../internet-identity"
 import {
-  defaultExpirationInMinutes,
+  DEFAULT_EXPIRAITON_TIME_MILLIS,
   saveToStorage,
 } from "./domain-key-repository"
 import { executeCanisterCall } from "./execute-canister-call"
@@ -96,7 +96,7 @@ describe("Targets validation", () => {
     const di = DelegationIdentity.fromDelegation(sessionKey, chainRoot)
     const canisterId = "rdmx6-jaaaa-aaaaa-aaadq-cai"
 
-    await saveToStorage("nfid.one", "value1", defaultExpirationInMinutes)
+    await saveToStorage("nfid.one", "value1", DEFAULT_EXPIRAITON_TIME_MILLIS)
     const response = await executeCanisterCall(
       "nfid.one",
       di,

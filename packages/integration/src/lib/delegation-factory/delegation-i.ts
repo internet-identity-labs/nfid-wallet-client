@@ -45,7 +45,7 @@ export async function getGlobalDelegationChain(
   // //ICRC28
   await validateTargets(targets, origin)
 
-  const userData = await authState.getUserIdData()
+  const userData = authState.getUserIdData()
 
   let response
 
@@ -115,7 +115,7 @@ export async function getGlobalDelegation(
 
   const sessionKey = Ed25519KeyIdentity.generate()
 
-  const userData = await authState.getUserIdData()
+  const userData = authState.getUserIdData()
 
   let delegationChain
 
@@ -165,7 +165,7 @@ export async function getAnonymousDelegation(
   identity: DelegationIdentity,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
-  const userData = await authState.getUserIdData()
+  const userData = authState.getUserIdData()
   if (isCanisterDelegation(userData.anchor)) {
     return await getDelegationChainSignedByCanister(
       identity,

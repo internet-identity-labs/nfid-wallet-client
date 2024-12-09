@@ -51,7 +51,7 @@ export async function registerVault(
 }
 
 export async function getVaults(): Promise<Vault[]> {
-  const userProfileData = await authState.getUserIdData()
+  const userProfileData = authState.getUserIdData()
   let publicKey
   if (userProfileData.wallet === RootWallet.II) {
     publicKey = await fetchIIPrincipal(

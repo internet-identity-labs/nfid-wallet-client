@@ -19,7 +19,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { NFT } from "frontend/integration/nft/nft"
 
 import { useIntersectionObserver } from "../../organisms/send-receive/hooks/intersection-observer"
-import { getUserPrincipalId } from "../../organisms/tokens/utils"
+import { authState } from "@nfid/integration"
 
 const INITED_TOKENS_LIMIT = 6
 
@@ -53,7 +53,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
 
   useEffect(() => {
     const init = async () => {
-      const { publicKey } = await getUserPrincipalId()
+      const { publicKey } = authState.getUserIdData()
 
       const tokenOptions = await Promise.all(
         tokens.map((token, index) => {
@@ -82,7 +82,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     const token = filteredTokens[index]
 
     if (token && !token.isInited()) {
-      const { publicKey } = await getUserPrincipalId()
+      const { publicKey } = authState.getUserIdData()
 
       const updatedToken = await token.init(Principal.fromText(publicKey))
 

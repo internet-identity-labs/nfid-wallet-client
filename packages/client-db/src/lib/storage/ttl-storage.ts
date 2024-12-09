@@ -79,7 +79,7 @@ export class TtlStorage<T> {
 
     const valueToSave = {
       value,
-      expiry: Date.now() + ttl * 3600000,
+      expiry: Date.now() + ttl * 60 * 1000,
     }
 
     await db.set(key, valueToSave)

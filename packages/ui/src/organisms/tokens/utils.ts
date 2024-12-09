@@ -3,26 +3,14 @@ import { authState } from "@nfid/integration"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
-//TODO move to authState
-export const getUserPrincipalId = async (): Promise<{
-  userPrincipal: string
-  publicKey: string
-}> => {
-  const pair = await authState.getUserIdData()
-  return {
-    userPrincipal: pair.userId,
-    publicKey: pair.publicKey,
-  }
-}
-
 export const fetchActiveTokens = async () => {
-  const { userPrincipal } = await getUserPrincipalId()
-  const data = await ftService.getAllUserTokens(userPrincipal)
+  const { userId } = authState.getUserIdData()
+  const data = await ftService.getAllUserTokens(userId)
   return data.items
 }
 
 export const initActiveTokens = async (activeTokens: FT[]) => {
-  const { publicKey } = await getUserPrincipalId()
+  const { publicKey } = authState.getUserIdData()
 
   return await Promise.all(
     activeTokens.map((token) => {
@@ -33,12 +21,12 @@ export const initActiveTokens = async (activeTokens: FT[]) => {
 }
 
 export const fetchAllTokens = async (searchQuery: string) => {
-  const { userPrincipal } = await getUserPrincipalId()
-  return await ftService.getAllTokens(userPrincipal, searchQuery)
+  const { userId } = authState.getUserIdData()
+  return await ftService.getAllTokens(userId, searchQuery)
 }
 
 export const getFullUsdValue = async (ft: FT[]) => {
-  const { publicKey } = await getUserPrincipalId()
+  const { publicKey } = authState.getUserIdData()
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
 }
 
@@ -47,13 +35,13 @@ export const addAndInitToken = async (
   activeTokens: FT[],
   allTokens: FT[],
 ) => {
-  const { publicKey } = await getUserPrincipalId()
+  const { publicKey } = authState.getUserIdData()
   const index = activeTokens.findIndex(
     (t) => t.getTokenAddress() === token.getTokenAddress(),
   )
 
-  let updatedActiveTokens = [...activeTokens]
-  let updatedAllTokens = [...allTokens]
+  const updatedActiveTokens = [...activeTokens]
+  const updatedAllTokens = [...allTokens]
 
   if (index !== -1) return
 
@@ -78,8 +66,8 @@ export const removeToken = (token: FT, activeTokens: FT[], allTokens: FT[]) => {
     (t) => t.getTokenAddress() === token.getTokenAddress(),
   )
 
-  let updatedActiveTokens = [...activeTokens]
-  let updatedAllTokens = [...allTokens]
+  const updatedActiveTokens = [...activeTokens]
+  const updatedAllTokens = [...allTokens]
 
   if (index === -1) return
   updatedActiveTokens.splice(index, 1)

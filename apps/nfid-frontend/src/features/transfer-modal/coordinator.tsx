@@ -5,8 +5,7 @@ import {
   TransferModal,
   TransferVaultModal,
 } from "packages/ui/src/organisms/send-receive"
-import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { useCallback, useContext, useEffect, useMemo } from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 
@@ -16,19 +15,13 @@ import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { SwapFT } from "./components/swap"
+import { authState } from "@nfid/integration"
 
 export const TransferModalCoordinator = () => {
-  const [publicKey, setPublicKey] = useState("")
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
 
   useDisableScroll(!state.matches("Hidden"))
-
-  useEffect(() => {
-    getUserPrincipalId().then((data) => {
-      setPublicKey(data.publicKey)
-    })
-  }, [])
 
   useEffect(() => {
     if (state.context.error?.message?.length) {
@@ -41,6 +34,8 @@ export const TransferModalCoordinator = () => {
       }, 5000)
     }
   }, [send, state.context.error])
+
+  const publicKey = authState.getUserIdData().publicKey
 
   const Component = useMemo(() => {
     switch (true) {

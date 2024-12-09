@@ -199,7 +199,7 @@ export const useAuthentication = () => {
           } as LoginError
         }
 
-        authState.set({
+        await authState.set({
           identity,
           delegationIdentity: delegationIdentity,
         })

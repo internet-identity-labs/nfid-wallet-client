@@ -41,7 +41,7 @@ export class SecurityConnector {
   }
 
   getDevices = async (): Promise<IGroupedDevices> => {
-    let cacheUserData = await authState.getUserIdData()
+    let cacheUserData = authState.getUserIdData()
 
     const imDevices = await this.getIMDevices()
 

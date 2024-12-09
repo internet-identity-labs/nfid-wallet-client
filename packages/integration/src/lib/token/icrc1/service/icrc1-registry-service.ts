@@ -47,7 +47,7 @@ export class Icrc1RegistryService {
   }
 
   async getRegistryCacheName(): Promise<string> {
-    const userCache = await authState.getUserIdData()
+    const userCache = authState.getUserIdData()
     return `${icrc1RegistryCacheName}${userCache.anchor}`
   }
 }

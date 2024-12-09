@@ -55,7 +55,7 @@ describe("ICRC1 pair suite", () => {
       sessionKey,
       chainRoot,
     )
-    authState.set({
+    await authState.set({
       identity: delegationIdentity,
       delegationIdentity: delegationIdentity,
     })

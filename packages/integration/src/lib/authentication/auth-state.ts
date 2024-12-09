@@ -25,6 +25,7 @@ interface ObservableAuthState {
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
   activeDevicePrincipalId?: string
+  userIdData?: UserIdData
 }
 
 type UserIdData = {
@@ -118,6 +119,10 @@ function makeAuthState() {
       })
     }
 
+    const cachedUserIdData = await authStorage.get(
+      getUserIdDataStorageKey(delegationIdentity),
+    )
+
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
 
@@ -126,6 +131,9 @@ function makeAuthState() {
       delegationIdentity,
       activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       identity,
+      userIdData: cachedUserIdData
+        ? JSON.parse(cachedUserIdData as string)
+        : await createUserIdData(delegationIdentity),
     })
   }
 
@@ -163,7 +171,12 @@ function makeAuthState() {
     return await lastValueFrom(cacheLoaded$)
   }
 
-  function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
+  async function set({
+    identity,
+    delegationIdentity,
+    chain,
+    sessionKey,
+  }: SetProps) {
     console.debug("makeAuthState set new auth state")
     observableAuthState$.next({
       ...observableAuthState$.getValue(),
@@ -172,6 +185,7 @@ function makeAuthState() {
       activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       chain,
       sessionKey,
+      userIdData: await createUserIdData(delegationIdentity),
     })
     replaceIdentity(delegationIdentity, "authState.set")
     setupSessionManager({ onIdle: invalidateIdentity })
@@ -204,7 +218,7 @@ function makeAuthState() {
       pendingRenewDelegation = true
 
       return requestFEDelegation(identity)
-        .then((result) => {
+        .then(async (result) => {
           set({
             identity,
             delegationIdentity: result.delegationIdentity,
@@ -219,51 +233,6 @@ function makeAuthState() {
         })
     }
     return
-  }
-
-  async function getUserIdData(): Promise<UserIdData> {
-    //get web3 auth delegation
-    const identity = get().delegationIdentity
-
-    if (!identity) throw new Error("No identity")
-
-    //web3 identity is unique per account so we can use it as a cache key
-    const cacheKey = "user_profile_data_" + identity.getPrincipal().toText()
-
-    const cachedValue = await authStorage.get(cacheKey)
-
-    let data
-
-    if (cachedValue) {
-      data = JSON.parse(cachedValue as string)
-    } else {
-      await replaceActorIdentity(im, identity)
-      const [publicKey, account] = await Promise.all([
-        getPublicKey(identity),
-        im.get_account(),
-      ])
-      const rootWallet: RootWallet = hasOwnProperty(
-        account.data[0]!.wallet,
-        "II",
-      )
-        ? RootWallet.II
-        : RootWallet.NFID
-      data = {
-        userId: account.data[0]!.principal_id,
-        publicKey: publicKey,
-        //BigInt is not serializable in a good way
-        anchor: Number(account.data[0]!.anchor),
-        wallet: rootWallet,
-      }
-      await authStorage.set(cacheKey, JSON.stringify(data))
-    }
-
-    return {
-      userId: data.userId,
-      publicKey: data.publicKey,
-      anchor: BigInt(data.anchor),
-      wallet: data.wallet,
-    }
   }
 
   /**
@@ -283,7 +252,11 @@ function makeAuthState() {
     fromCache,
     checkAndRenewFEDelegation,
     logout: invalidateIdentity,
-    getUserIdData,
+    getUserIdData: () => {
+      const state = get()
+      if (!state.userIdData) throw new Error("No user data")
+      return state.userIdData
+    },
   }
 }
 
@@ -299,4 +272,30 @@ export function replaceIdentity(identity: SignIdentity, calledFrom?: string) {
       principalId: principal.toText(),
     })
   })
+}
+
+function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
+  return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
+}
+
+async function createUserIdData(delegationIdentity: DelegationIdentity) {
+  const cacheKey =
+    "user_profile_data_" + delegationIdentity.getPrincipal().toText()
+  await replaceActorIdentity(im, delegationIdentity)
+  const [publicKey, account] = await Promise.all([
+    getPublicKey(delegationIdentity),
+    im.get_account(),
+  ])
+  const rootWallet: RootWallet = hasOwnProperty(account.data[0]!.wallet, "II")
+    ? RootWallet.II
+    : RootWallet.NFID
+  const data = {
+    userId: account.data[0]!.principal_id,
+    publicKey: publicKey,
+    //BigInt is not serializable in a good way
+    anchor: Number(account.data[0]!.anchor),
+    wallet: rootWallet,
+  }
+  await authStorage.set(cacheKey, JSON.stringify(data))
+  return { ...data, anchor: BigInt(data.anchor) }
 }

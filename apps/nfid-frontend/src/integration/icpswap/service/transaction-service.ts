@@ -34,7 +34,7 @@ class SwapTransactionService {
   }
 
   async getTransactions(): Promise<Array<SwapTransaction>> {
-    const cache = await authState.getUserIdData()
+    const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
         return new SwapTransactionImpl(

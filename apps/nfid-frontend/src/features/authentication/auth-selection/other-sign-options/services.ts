@@ -30,7 +30,7 @@ export async function authWithAnchor({
     authResult.chain,
   )
 
-  authState.set({
+  await authState.set({
     identity: authResult.sessionKey,
     delegationIdentity,
     chain: authResult.chain,

@@ -8,9 +8,8 @@ import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
 import { im } from "../actors"
-import { getUserIdData } from "../cache/cache"
 import {
-  defaultExpirationInMinutes,
+  DEFAULT_EXPIRAITON_TIME_MILLIS,
   getFromStorage,
   saveToStorage,
 } from "../lambda/domain-key-repository"
@@ -26,6 +25,7 @@ import {
   getDelegationChainSignedByCanister,
   getPrincipalSignedByCanister,
 } from "./delegation-factory"
+import { authState } from "../authentication"
 
 export enum DelegationType {
   GLOBAL = "GLOBAL",
@@ -45,7 +45,7 @@ export async function getGlobalDelegationChain(
   // //ICRC28
   await validateTargets(targets, origin)
 
-  const userData = await getUserIdData()
+  const userData = authState.getUserIdData()
 
   let response
 
@@ -70,10 +70,10 @@ export async function getGlobalDelegationChain(
   }
 
   //save to temp storage for renew delegation flow
-  saveToStorage(
+  await saveToStorage(
     origin,
     toHexString(sessionPublicKey),
-    defaultExpirationInMinutes,
+    DEFAULT_EXPIRAITON_TIME_MILLIS,
   )
 
   return response
@@ -87,7 +87,7 @@ export async function renewDelegationThirdParty(
   sessionPublicKey: Uint8Array,
 ): Promise<DelegationChain> {
   const sessionPublicKeyFromStorage = new Uint8Array(
-    fromHexString(getFromStorage(origin)),
+    fromHexString(await getFromStorage(origin)),
   )
 
   const textDecoder = new TextDecoder()
@@ -115,7 +115,7 @@ export async function getGlobalDelegation(
 
   const sessionKey = Ed25519KeyIdentity.generate()
 
-  const userData = await getUserIdData()
+  const userData = authState.getUserIdData()
 
   let delegationChain
 
@@ -165,7 +165,7 @@ export async function getAnonymousDelegation(
   identity: DelegationIdentity,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ): Promise<DelegationChain> {
-  const userData = await getUserIdData()
+  const userData = authState.getUserIdData()
   if (isCanisterDelegation(userData.anchor)) {
     return await getDelegationChainSignedByCanister(
       identity,

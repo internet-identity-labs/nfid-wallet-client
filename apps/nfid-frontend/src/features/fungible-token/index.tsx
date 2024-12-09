@@ -1,12 +1,10 @@
 import { useActor } from "@xstate/react"
-import { resetIdbStorageTTLCache } from "packages/integration/src/cache"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import {
   fetchActiveTokens,
-  fetchAllTokens,
-  getUserPrincipalId,
+  fetchAllTokens
 } from "packages/ui/src/organisms/tokens/utils"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import useSWR from "swr"
 
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -16,12 +14,13 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
+import { storageWithTtl } from "@nfid/client-db"
+import { authState } from "@nfid/integration"
 
 const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
   const [searchQuery, setSearchQuery] = useState("")
-  const [userRootPrincipalId, setUserRootPrincipalId] = useState("")
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -48,16 +47,14 @@ const TokensPage = () => {
     },
   )
 
-  const onSubmitIcrc1Pair = (ledgerID: string, indexID: string) => {
+  const onSubmitIcrc1Pair = async (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(
       ledgerID,
       indexID !== "" ? indexID : undefined,
     )
-    return icrc1Pair.storeSelf().then(() => {
-      resetIdbStorageTTLCache([icrc1OracleCacheName], () => {
-        refetchActiveTokens()
-      })
-    })
+    await icrc1Pair.storeSelf()
+    await storageWithTtl.remove(icrc1OracleCacheName)
+    refetchActiveTokens()
   }
 
   const onFetch = async (ledgerID: string, indexID: string) => {
@@ -74,15 +71,7 @@ const TokensPage = () => {
       })
   }
 
-  useEffect(() => {
-    const setUserId = async () => {
-      const { userPrincipal } = await getUserPrincipalId()
-      if (!userPrincipal) return
-      setUserRootPrincipalId(userPrincipal)
-    }
-
-    setUserId()
-  }, [])
+  const userRootPrincipalId = authState.getUserIdData().userId
 
   return (
     <Tokens

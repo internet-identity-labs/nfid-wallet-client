@@ -4,12 +4,9 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
 
 import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
 
-import { accessList } from "../actors"
-import { getLocalStorageOverride } from "../local-storage/get-delegation-ttl"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
 
 export interface FrontendDelegation {
@@ -20,10 +17,7 @@ export interface FrontendDelegation {
 
 export const requestFEDelegationChain = async (
   identity: SignIdentity,
-  ttl: number = getLocalStorageOverride(
-    DEFAULT_DELEGATION_TTL,
-    "NFID_DELEGATION_TTL_MS",
-  ),
+  ttl = DEFAULT_DELEGATION_TTL,
 ) => {
   console.debug("requestFEDelegationChain")
   const sessionKey = Ed25519KeyIdentity.generate()

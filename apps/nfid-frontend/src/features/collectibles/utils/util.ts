@@ -1,10 +1,10 @@
 import { Principal } from "@dfinity/principal"
-import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 
 import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
 
 import { GlauberTS } from "./search"
+import { authState } from "@nfid/integration"
 
 export const searchTokens = (tokens: NFT[], search: string) => {
   let result = tokens
@@ -15,7 +15,7 @@ export const searchTokens = (tokens: NFT[], search: string) => {
 }
 
 export const fetchNFTs = async (page?: number, limit?: number) => {
-  const { publicKey } = await getUserPrincipalId()
+  const { publicKey } = authState.getUserIdData()
   const data = await nftService.getNFTs(
     Principal.fromText(publicKey),
     page,
@@ -30,7 +30,7 @@ export const fetchNFT = async (
   currentPage?: number,
   limit?: number,
 ) => {
-  const { publicKey } = await getUserPrincipalId()
+  const { publicKey } = authState.getUserIdData()
   const data = await nftService.getNFTByTokenId(
     id,
     Principal.fromText(publicKey),

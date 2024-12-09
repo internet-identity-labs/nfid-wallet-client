@@ -200,7 +200,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
               new Promise(async (resolve) => {
                 try {
                   console.debug("RequestTransfer", { derivationOrigin, origin })
-                  if (!isPresentInStorage(derivationOrigin || origin))
+                  if (!(await isPresentInStorage(derivationOrigin || origin)))
                     throw new Error(
                       "You can not request canister calls with anonymous delegation",
                     )

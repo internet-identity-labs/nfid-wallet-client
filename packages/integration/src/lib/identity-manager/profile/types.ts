@@ -1,5 +1,6 @@
-import { AccessPoint } from "./access-points"
-import { Account } from "./account"
+import { AccessPoint } from "../access-points"
+import { Account } from "../account"
+import { RootWallet } from "./constants"
 
 export interface Profile {
   name?: string
@@ -11,9 +12,4 @@ export interface Profile {
   wallet: RootWallet
   is2fa: boolean
   email?: string
-}
-
-export enum RootWallet {
-  NFID = "NFID",
-  II = "II",
 }

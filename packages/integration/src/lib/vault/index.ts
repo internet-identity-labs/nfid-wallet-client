@@ -10,7 +10,6 @@ import {
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
 import { ii, vault as vaultAPI, vaultAnonymous } from "../actors"
-import { getUserIdData } from "../cache/cache"
 import { GLOBAL_ORIGIN } from "../delegation-factory/delegation-i"
 import { RootWallet } from "../identity-manager/profile"
 import {
@@ -35,6 +34,7 @@ import {
   VaultRole,
   Wallet,
 } from "./types"
+import { authState } from "../authentication"
 
 export async function registerVault(
   vaultName: string,
@@ -51,7 +51,7 @@ export async function registerVault(
 }
 
 export async function getVaults(): Promise<Vault[]> {
-  const userProfileData = await getUserIdData()
+  const userProfileData = authState.getUserIdData()
   let publicKey
   if (userProfileData.wallet === RootWallet.II) {
     publicKey = await fetchIIPrincipal(

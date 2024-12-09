@@ -129,7 +129,7 @@ export const authorizeWithEmail = async (
     })
   }
 
-  authState.set({
+  await authState.set({
     delegationIdentity,
     identity: context.emailDelegation,
   })

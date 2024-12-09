@@ -102,6 +102,12 @@ jobs:
           ref: main
           path: ci_libs
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.11.0"
+          cache: "yarn"
+
       - name: Log in to registry
         # This is where you will update the personal access token to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
@@ -190,7 +196,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.11.0"
           cache: "yarn"
 
       - name: Versions
@@ -253,6 +259,12 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.11.0"
+          cache: "yarn"
 
       - name: Log in to registry
         # This is where you will update the personal access token to GITHUB_TOKEN

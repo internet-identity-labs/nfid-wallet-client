@@ -16,7 +16,7 @@ export class Assets {
   }
 
   get allTokensOnTokenTab() {
-    return $$('[id^="token_"]')
+    return $$("[id^=\"token_\"]")
   }
 
   public get getBalance() {
@@ -52,7 +52,7 @@ export class Assets {
   }
 
   get tokensTab() {
-    return $("tab_Tokens")
+    return $("#tab_Tokens")
   }
 
   get NFTtab() {
@@ -73,6 +73,10 @@ export class Assets {
 
   get backButtonInSendWindow() {
     return $("svg.mr-2")
+  }
+
+  get swapButton() {
+    return $("#swapButton")
   }
 
   public async tokenOptionsButton(tokenName: string) {
@@ -218,7 +222,7 @@ export class Assets {
           await browser.refresh()
         }
       },
-      { timeout: 40000, timeoutMsg: "Element didn't load properly in 40sec" },
+      { timeout: 40000, timeoutMsg: `Element ${await waitForElement.selector} didn't load properly in 40sec` },
     )
   }
 
@@ -228,17 +232,50 @@ export class Assets {
 
   public ManageTokensDialog = {
 
-    manageTokensDialogButton() {
+    get manageTokensDialogButton() {
       return $("#importToken")
     },
     tokenShowHideButton(tokenName) {
       return $(`#${tokenName}_showHideButton`)
     },
-    filterField() {
+    get filterField() {
       return $("#search")
     },
   }
 
+  public SwapDialog = {
+    get swapTokensButton() {
+      return $("#swapTokensButton")
+    },
+
+    get successTitle() {
+      return $("#successTitle")
+    },
+
+    get closeButton() {
+      return $("#closeButton")
+    },
+
+    getChooseTokenModalButton(tokenRole: string) {
+      return $(`#${tokenRole}Section #choose_modal`)
+    },
+
+    getSearchTokenInputField(tokenRole: string) {
+      return $(`#${tokenRole}TokenSearchInput`)
+    },
+
+    getTokenByNameFromList(tokenRole: string, token: string) {
+      return $(`//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`)
+    },
+
+    getTokenAmountField(tokenRole: string) {
+      return $(`#${tokenRole}Section #amount`)
+    },
+
+    getTokenBalance(tokenRole: string) {
+      return $(`#${tokenRole}Section #tokenBalance`)
+    },
+  }
 }
 
 export default new Assets()

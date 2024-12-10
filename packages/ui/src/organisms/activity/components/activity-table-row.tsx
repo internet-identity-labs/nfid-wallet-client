@@ -161,8 +161,13 @@ export const ActivityTableRow = ({
             )}
           </div>
           <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
-            <p className="font-semibold text-sm leading-[20px]">{action}</p>
-            <p className="text-xs text-gray-400 leading-[20px]">
+            <p
+              id={"action"}
+              className="font-semibold text-sm leading-[20px]">{action}
+            </p>
+            <p
+              id={"date"}
+              className="text-xs text-gray-400 leading-[20px]">
               {format(new Date(timestamp), "HH:mm:ss aaa")}
             </p>
           </div>

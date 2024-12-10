@@ -7,7 +7,7 @@ import {
   Icon,
   ii,
   replaceIdentity,
-  setProfile,
+  setProfileToStorage,
 } from "@nfid/integration"
 
 import { IIAuthenticationMachineContext } from "frontend/features/sign-in-options/machine"
@@ -107,7 +107,7 @@ export async function createTentativeDevice({
 
   replaceIdentity(userDelegation.delegationIdentity)
 
-  authState.set({
+  await authState.set({
     identity: userIdentity,
     delegationIdentity: userDelegation.delegationIdentity,
     chain: userDelegation.chain,
@@ -117,7 +117,7 @@ export async function createTentativeDevice({
   let profile
   try {
     profile = await fetchProfile()
-    setProfile(profile)
+    await setProfileToStorage(profile)
   } catch (fetchProfileError: any) {
     if (fetchProfileError.code !== 404) {
       throw fetchProfileError

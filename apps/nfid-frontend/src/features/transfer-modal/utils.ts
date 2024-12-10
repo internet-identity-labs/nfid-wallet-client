@@ -8,12 +8,12 @@ import {
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
-import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 import { mutate } from "swr"
 
 import { IGroupedOptions } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
+  authState,
   getBalance,
   getVaults,
   getWallets,
@@ -248,7 +248,7 @@ export const updateTokenBalance = async (
   ledgers: string[],
   activeTokens: FT[],
 ) => {
-  const { publicKey } = await getUserPrincipalId()
+  const { publicKey } = authState.getUserIdData()
 
   const updatedTokens = [...activeTokens]
 

@@ -1,29 +1,24 @@
-import { localStorageWithFallback } from "@nfid/client-db"
+import { domainKeyStorage } from "./domain-key-storage"
 
-export const domainKeyStorage = "domainKeyStorage"
-export const defaultExpirationInMinutes = 120
+export const DOMAIN_KEY_STORAGE_KEY = "data"
+export const DEFAULT_EXPIRAITON_TIME_MILLIS = 120 * 60 * 1000
 
-export function saveToStorage(
+export async function saveToStorage(
   key: string,
   value: any,
-  ttlInMinutes: number,
-): void {
-  const data = loadFromStorage()
-  const expirationTimestamp = Date.now() + ttlInMinutes * 60 * 1000
-  data[key] = { value, expirationTimestamp }
-  saveDataToStorage(data)
+  ttlMillis: number,
+): Promise<void> {
+  await domainKeyStorage.set(key, value, ttlMillis)
 }
 
-export function getFromStorage(key: string): any {
-  const data = loadFromStorage()
-  const item = data[key]
+export async function getFromStorage(key: string): Promise<any> {
+  const item = await domainKeyStorage.getEvenExpired(key)
 
   if (item) {
-    if (item.expirationTimestamp >= Date.now()) {
+    if (!item.expired) {
       return item.value
     } else {
-      delete data[key]
-      saveDataToStorage(data)
+      await domainKeyStorage.remove(key)
       throw new Error(`Value for key '${key}' has expired.`)
     }
   } else {
@@ -31,12 +26,11 @@ export function getFromStorage(key: string): any {
   }
 }
 
-export function isPresentInStorage(key: string) {
-  const data = loadFromStorage()
-  const item = data[key]
+export async function isPresentInStorage(key: string) {
+  const item = await domainKeyStorage.getEvenExpired(key)
 
   if (item) {
-    if (item.expirationTimestamp >= Date.now()) {
+    if (!item.expired) {
       return true
     } else {
       return false
@@ -46,28 +40,6 @@ export function isPresentInStorage(key: string) {
   }
 }
 
-export function deleteFromStorage(key: string): void {
-  const data = loadFromStorage()
-  if (data[key]) {
-    delete data[key]
-    saveDataToStorage(data)
-  }
-}
-
-function loadFromStorage(): { [key: string]: any } {
-  try {
-    const storedData = localStorageWithFallback.getItem(domainKeyStorage)
-    return storedData ? JSON.parse(storedData) : {}
-  } catch (error) {
-    console.error("domain-key-repository loadFromStorage", { error })
-    return {}
-  }
-}
-
-function saveDataToStorage(data: { [key: string]: any }): void {
-  try {
-    localStorageWithFallback.setItem(domainKeyStorage, JSON.stringify(data))
-  } catch (error) {
-    console.error("domain-key-repository saveDataToStorage", { error })
-  }
+export async function deleteFromStorage(key: string): Promise<void> {
+  await domainKeyStorage.remove(key)
 }

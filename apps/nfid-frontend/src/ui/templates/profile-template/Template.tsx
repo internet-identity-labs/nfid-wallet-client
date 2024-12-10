@@ -5,7 +5,6 @@ import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
   fetchActiveTokens,
   getFullUsdValue,
-  getUserPrincipalId,
   initActiveTokens,
 } from "packages/ui/src/organisms/tokens/utils"
 import {
@@ -37,6 +36,7 @@ import { swapTransactionService } from "frontend/integration/icpswap/service/tra
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
+import { authState } from "@nfid/integration"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -160,11 +160,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const globalServices = useContext(ProfileContext)
 
   const [, send] = useActor(globalServices.transferService)
-  const {
-    data: identity,
-    isLoading: isIdentityLoading,
-    isValidating,
-  } = useSWR("globalIdentity", () => getUserPrincipalId())
 
   const onSendClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -248,11 +243,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               <ProfileInfo
                 usdValue={tokensUsdValue}
                 isUsdLoading={isUsdLoading || !activeInitedTokens.length}
-                isAddressLoading={isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}
                 onSwapClick={onSwapClick}
-                address={identity?.publicKey ?? ""}
+                address={authState.getUserIdData().publicKey}
               />
               <TabsSwitcher
                 className="my-[30px]"

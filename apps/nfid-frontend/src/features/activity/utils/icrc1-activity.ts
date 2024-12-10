@@ -1,5 +1,4 @@
 import { Activity } from "packages/integration/src/lib/asset/types"
-import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
 
 import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
 import {
@@ -9,6 +8,7 @@ import {
 
 import { IActivityRow } from "../types"
 import { nanoSecondsToDate } from "./activity"
+import { authState } from "@nfid/integration"
 
 const filterActivitiesByCanisterId = (
   canisterIds: string[] = [],
@@ -32,9 +32,9 @@ const getActivities = async (
   canisterIds: string[],
   limit: number,
 ): Promise<Activity[]> => {
-  const { userPrincipal, publicKey } = await getUserPrincipalId()
+  const { userId, publicKey } = authState.getUserIdData()
   const allCanistersActivities = await getICRC1HistoryDataForUser(
-    userPrincipal!,
+    userId!,
     publicKey,
     BigInt(limit),
   )

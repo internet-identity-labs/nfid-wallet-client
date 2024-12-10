@@ -1,6 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { authState, im, setProfile } from "@nfid/integration"
+import { authState, im, setProfileToStorage } from "@nfid/integration"
 
 import { getBrowserName } from "frontend/integration/device"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -30,7 +30,7 @@ export async function authWithAnchor({
     authResult.chain,
   )
 
-  authState.set({
+  await authState.set({
     identity: authResult.sessionKey,
     delegationIdentity,
     chain: authResult.chain,
@@ -42,10 +42,10 @@ export async function authWithAnchor({
   })
 
   // When used platform authenticator
-  // Then write profile to localStorage
+  // Then write profile to storage
   if (!withSecurityDevices) {
     const profile = await fetchProfile()
-    setProfile(profile)
+    setProfileToStorage(profile)
   }
 
   return {

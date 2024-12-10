@@ -18,7 +18,7 @@ describe("ICRC1 suite", () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
-    authState.set({
+    await authState.set({
       identity: delegationIdentity,
       delegationIdentity: delegationIdentity,
     })

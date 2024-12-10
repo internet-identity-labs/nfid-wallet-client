@@ -7,7 +7,6 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import useSWR from "swr"
 
-import { localStorageWithFallback } from "@nfid/client-db"
 import { NFID } from "@nfid/embed"
 import { BaseKeyType } from "@nfid/embed/src/lib/types"
 
@@ -72,19 +71,13 @@ export const AuthenticationProvider: React.FC<{
     string | undefined
   >(derivationOrigin)
 
-  const nfidProviderUrl = React.useMemo(() => {
-    return (
-      localStorageWithFallback.getItem("NFID_PROVIDER_URL") || NFID_PROVIDER_URL
-    )
-  }, [])
-
   const [keyType, setKeyType] = React.useState<BaseKeyType>("ECDSA")
 
   const { data: nfid, isLoading: isLoadingNFID } = useSWR(
     `nfid-${keyType}`,
     () =>
       NFID.init({
-        origin: nfidProviderUrl,
+        origin: NFID_PROVIDER_URL,
         application: {
           name: "NFID Demo",
           logo: "https://avatars.githubusercontent.com/u/84057190?s=200&v=4",

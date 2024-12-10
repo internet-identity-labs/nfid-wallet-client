@@ -1,40 +1,35 @@
+import { storageWithTtl } from "@nfid/client-db"
+
 import { ICRC1 } from "../../../_ic_api/icrc1_registry.d"
 import { iCRC1Registry } from "../../../actors"
-import { getUserIdData } from "../../../cache/cache"
-import { idbStorageTTL } from "../../../util/idb-strage-ttl"
 import { State } from "../enum/enums"
 import { mapStateTS } from "../util"
+import { authState } from "../../../authentication"
 
 const icrc1RegistryCacheName = "ICRC1RegistryService.getCanistersByRoot"
 
 export class Icrc1RegistryService {
   async getCanistersByRoot(root: string): Promise<Array<ICRC1>> {
-    const cache = await idbStorageTTL.getEvenExpiredItem(
-      await this.getRegistryCacheName(),
-    )
+    const registryCacheName = await this.getRegistryCacheName()
+    const cache = await storageWithTtl.getEvenExpired(registryCacheName)
     if (!cache) {
       const response = await iCRC1Registry.get_canisters_by_root(root)
-      await idbStorageTTL.setItem(
-        await this.getRegistryCacheName(),
-        JSON.stringify(response),
-        30,
-      )
+      await storageWithTtl.set(registryCacheName, response, 30 * 1000)
       return response
     } else if (cache && cache.expired) {
-      const registryCache = await this.getRegistryCacheName()
       await iCRC1Registry.get_canisters_by_root(root).then((response) => {
-        idbStorageTTL.setItem(registryCache, JSON.stringify(response), 30)
+        storageWithTtl.set(registryCacheName, response, 30 * 1000)
       })
-      return JSON.parse(cache.object)
+      return cache.value as ICRC1[]
     } else {
-      return JSON.parse(cache.object)
+      return cache.value as ICRC1[]
     }
   }
 
   async storeICRC1Canister(ledger: string, state: State): Promise<void> {
     await Promise.all([
       iCRC1Registry.store_icrc1_canister(ledger, mapStateTS(state)),
-      idbStorageTTL.removeItem(await this.getRegistryCacheName()),
+      storageWithTtl.remove(await this.getRegistryCacheName()),
     ])
   }
 
@@ -52,7 +47,7 @@ export class Icrc1RegistryService {
   }
 
   async getRegistryCacheName(): Promise<string> {
-    const userCache = await getUserIdData()
+    const userCache = authState.getUserIdData()
     return `${icrc1RegistryCacheName}${userCache.anchor}`
   }
 }

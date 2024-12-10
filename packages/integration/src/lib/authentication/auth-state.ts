@@ -12,6 +12,12 @@ import { Environment } from "../constant/env.constant"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import {
+  createUserIdData,
+  deserializeUserIdData,
+  serializeUserIdData,
+  UserIdData,
+} from "./user-id-data"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -21,6 +27,7 @@ interface ObservableAuthState {
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
   activeDevicePrincipalId?: string
+  userIdData?: UserIdData
 }
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
@@ -105,6 +112,23 @@ function makeAuthState() {
       })
     }
 
+    const cachedUserIdData = await authStorage.get(
+      getUserIdDataStorageKey(delegationIdentity),
+    )
+
+    let userIdData
+
+    //BigInt is not serializable in a good way
+    if (cachedUserIdData) {
+      userIdData = deserializeUserIdData(cachedUserIdData as string)
+    } else {
+      userIdData = await createUserIdData(delegationIdentity)
+      await authStorage.set(
+        getUserIdDataStorageKey(delegationIdentity),
+        serializeUserIdData(userIdData),
+      )
+    }
+
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
 
@@ -113,6 +137,7 @@ function makeAuthState() {
       delegationIdentity,
       activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       identity,
+      userIdData,
     })
   }
 
@@ -150,8 +175,20 @@ function makeAuthState() {
     return await lastValueFrom(cacheLoaded$)
   }
 
-  function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
+  async function set({
+    identity,
+    delegationIdentity,
+    chain,
+    sessionKey,
+  }: SetProps) {
     console.debug("makeAuthState set new auth state")
+    const userIdData = await createUserIdData(delegationIdentity)
+
+    await authStorage.set(
+      getUserIdDataStorageKey(delegationIdentity),
+      serializeUserIdData(userIdData),
+    )
+
     observableAuthState$.next({
       ...observableAuthState$.getValue(),
       identity,
@@ -159,14 +196,17 @@ function makeAuthState() {
       activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       chain,
       sessionKey,
+      userIdData,
     })
     replaceIdentity(delegationIdentity, "authState.set")
     setupSessionManager({ onIdle: invalidateIdentity })
   }
+
   function get() {
     checkAndRenewFEDelegation()
     return observableAuthState$.getValue()
   }
+
   async function reset() {
     await _clearAuthSessionFromCache()
     console.debug("invalidateIdentity")
@@ -189,7 +229,7 @@ function makeAuthState() {
       pendingRenewDelegation = true
 
       return requestFEDelegation(identity)
-        .then((result) => {
+        .then(async (result) => {
           set({
             identity,
             delegationIdentity: result.delegationIdentity,
@@ -214,6 +254,7 @@ function makeAuthState() {
     await reset()
     hard && window.location.reload()
   }
+
   return {
     set,
     get,
@@ -222,10 +263,13 @@ function makeAuthState() {
     fromCache,
     checkAndRenewFEDelegation,
     logout: invalidateIdentity,
+    getUserIdData: () => {
+      const state = get()
+      if (!state.userIdData) throw new Error("No user data")
+      return state.userIdData
+    },
   }
 }
-
-export const authState = makeAuthState()
 
 /**
  * When user connects an identity, we update our agent.
@@ -238,3 +282,9 @@ export function replaceIdentity(identity: SignIdentity, calledFrom?: string) {
     })
   })
 }
+
+function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
+  return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
+}
+
+export const authState = makeAuthState()

@@ -22,6 +22,7 @@ import {
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { FT } from "frontend/integration/ft/ft"
+import { filterTokens } from "frontend/integration/ft/ft-service"
 
 import { FilteredToken } from "./filtered-asset"
 
@@ -35,7 +36,6 @@ export interface ICRC1Metadata {
 
 interface TokensHeaderProps {
   tokens: FT[]
-  setSearch: (v: string) => void
   onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
   onFetch: (
     ledgerID: string,
@@ -47,17 +47,19 @@ interface TokensHeaderProps {
     decimals: number
     fee: bigint
   }>
+  onTokensUpdate: () => void
 }
 
 export const TokensHeader: FC<TokensHeaderProps> = ({
   tokens,
-  setSearch,
   onSubmitIcrc1Pair,
   onFetch,
+  onTokensUpdate,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
   const [isImportLoading, setIsImportLoading] = useState(false)
+  const [search, setSearch] = useState("")
 
   const debouncedSearch = useCallback(
     debounce((value: string) => {
@@ -215,13 +217,14 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                   "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
                 )}
               >
-                {tokens.map((token, _, arr) => {
+                {filterTokens(tokens, search).map((token) => {
                   if (!token.isHideable()) return
                   return (
                     <FilteredToken
                       key={`${token.getTokenName()}_${token.getTokenAddress()}`}
                       token={token}
-                      allTokens={arr}
+                      tokens={tokens}
+                      onTokensUpdate={onTokensUpdate}
                     />
                   )
                 })}

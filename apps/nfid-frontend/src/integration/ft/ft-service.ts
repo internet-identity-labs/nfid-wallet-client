@@ -2,13 +2,9 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
-import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { nftService } from "src/integration/nft/nft-service"
 
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 const sortTokens = (tokens: FT[]) => {
@@ -31,55 +27,20 @@ const sortTokens = (tokens: FT[]) => {
   })
 }
 
+export const filterTokens = (ft: FT[], filterText: string): FT[] => {
+  return ft.filter(
+    (token) =>
+      token.getTokenName().toLowerCase().includes(filterText.toLowerCase()) ||
+      token.getTokenSymbol().toLowerCase().includes(filterText.toLowerCase()),
+  )
+}
+
 export class FtService {
-  async getAllUserTokens(
-    userId: string,
-    page: number = 1,
-    limit: number = Number.MAX_SAFE_INTEGER,
-  ): Promise<PaginatedResponse<FT>> {
-    let userTokens = await icrc1StorageService
-      .getICRC1ActiveCanisters(userId)
-      .then(async (canisters) => {
-        if (canisters.length === 0) {
-          await icrc1RegistryService.storeICRC1Canister(
-            ICP_CANISTER_ID,
-            State.Active,
-          )
-          canisters = await icrc1StorageService.getICRC1Canisters(userId)
-        }
-        return canisters.filter((canister) => canister.state === State.Active)
-      })
-
-    let ft: Array<FT> = userTokens.map((token) => new FTImpl(token))
-
-    const sortedTokens = sortTokens(ft)
-
-    const totalItems = sortedTokens.length
-    const totalPages = Math.ceil(totalItems / limit)
-
-    const startIndex = (page - 1) * limit
-    const endIndex = Math.min(startIndex + limit, totalItems)
-
-    const items = sortedTokens.slice(startIndex, endIndex)
-
-    return {
-      items,
-      currentPage: page,
-      totalPages,
-      totalItems,
-    }
-  }
-
-  async getAllTokens(
-    userId: string,
-    nameCategoryFilter: string | undefined,
-  ): Promise<Array<FT>> {
-    return icrc1StorageService
-      .getICRC1FilteredCanisters(userId, nameCategoryFilter)
-      .then((canisters) => {
-        const ft = canisters.map((canister) => new FTImpl(canister))
-        return sortTokens(ft)
-      })
+  async getTokens(userId: string): Promise<Array<FT>> {
+    return icrc1StorageService.getICRC1Canisters(userId).then((canisters) => {
+      const ft = canisters.map((canister) => new FTImpl(canister))
+      return sortTokens(ft)
+    })
   }
 
   //todo move somewhere because contains NFT balance as well

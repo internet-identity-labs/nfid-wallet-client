@@ -1,28 +1,37 @@
 import { Principal } from "@dfinity/principal"
+import crypto from "crypto-browserify"
+
 import { authState } from "@nfid/integration"
+
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
-export const fetchActiveTokens = async () => {
-  const { userId } = authState.getUserIdData()
-  const data = await ftService.getAllUserTokens(userId)
-  return data.items
+//TODO move to authState
+export const getUserPrincipalId = async (): Promise<{
+  userPrincipal: string
+  publicKey: string
+}> => {
+  const pair = authState.getUserIdData()
+  return {
+    userPrincipal: pair.userId,
+    publicKey: pair.publicKey,
+  }
 }
 
-export const initActiveTokens = async (activeTokens: FT[]) => {
-  const { publicKey } = authState.getUserIdData()
+export const initTokens = async (tokens: FT[]) => {
+  const { publicKey } = await getUserPrincipalId()
 
   return await Promise.all(
-    activeTokens.map((token) => {
+    tokens.map((token) => {
       if (token.isInited()) return token
       return token.init(Principal.fromText(publicKey))
     }),
   )
 }
 
-export const fetchAllTokens = async (searchQuery: string) => {
-  const { userId } = authState.getUserIdData()
-  return await ftService.getAllTokens(userId, searchQuery)
+export const fetchTokens = async () => {
+  const { userPrincipal } = await getUserPrincipalId()
+  return await ftService.getTokens(userPrincipal)
 }
 
 export const getFullUsdValue = async (ft: FT[]) => {
@@ -30,57 +39,10 @@ export const getFullUsdValue = async (ft: FT[]) => {
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
 }
 
-export const addAndInitToken = async (
-  token: FT,
-  activeTokens: FT[],
-  allTokens: FT[],
-) => {
-  const { publicKey } = authState.getUserIdData()
-  const index = activeTokens.findIndex(
-    (t) => t.getTokenAddress() === token.getTokenAddress(),
-  )
+export const generateTokenKey = (tokens: FT[]) => {
+  const str = tokens
+    .map((token) => `${token.getTokenAddress()}-${token.getTokenState()}`)
+    .join(",")
 
-  const updatedActiveTokens = [...activeTokens]
-  const updatedAllTokens = [...allTokens]
-
-  if (index !== -1) return
-
-  !token.isInited() && (await token.init(Principal.fromText(publicKey)))
-  updatedActiveTokens.push(token)
-
-  const allIndex = allTokens.findIndex(
-    (t) => t.getTokenAddress() === token.getTokenAddress(),
-  )
-  if (allIndex === -1) {
-    updatedAllTokens.push(token)
-  }
-
-  return {
-    updatedAllTokens,
-    updatedActiveTokens,
-  }
-}
-
-export const removeToken = (token: FT, activeTokens: FT[], allTokens: FT[]) => {
-  const index = activeTokens.findIndex(
-    (t) => t.getTokenAddress() === token.getTokenAddress(),
-  )
-
-  const updatedActiveTokens = [...activeTokens]
-  const updatedAllTokens = [...allTokens]
-
-  if (index === -1) return
-  updatedActiveTokens.splice(index, 1)
-
-  const allIndex = allTokens.findIndex(
-    (t) => t.getTokenAddress() === token.getTokenAddress(),
-  )
-  if (allIndex !== -1) {
-    updatedAllTokens.splice(allIndex, 1)
-  }
-
-  return {
-    updatedAllTokens,
-    updatedActiveTokens,
-  }
+  return crypto.createHash("sha256").update(str).digest("hex")
 }

@@ -244,13 +244,13 @@ export const getQuoteData = async (
   }
 }
 
-export const updateTokenBalance = async (
+export const getTokensWithUpdatedBalance = async (
   ledgers: string[],
-  activeTokens: FT[],
+  allTokens: FT[],
 ) => {
   const { publicKey } = authState.getUserIdData()
 
-  const updatedTokens = [...activeTokens]
+  const updatedTokens = [...allTokens]
 
   for (const ledger of ledgers) {
     const index = updatedTokens.findIndex(
@@ -266,5 +266,5 @@ export const updateTokenBalance = async (
     }
   }
 
-  mutate("activeTokens", updatedTokens, false)
+  return updatedTokens
 }

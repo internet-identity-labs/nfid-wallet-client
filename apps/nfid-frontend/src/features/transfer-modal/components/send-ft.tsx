@@ -91,7 +91,6 @@ export const TransferFT = ({
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
-    console.log(111)
 
     setIsSuccessOpen(true)
 

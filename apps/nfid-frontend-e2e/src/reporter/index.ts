@@ -1,7 +1,7 @@
 import reporter, { Options } from "cucumber-html-reporter"
 import path from "path"
 
-var options: Options = {
+const options: Options = {
   theme: "bootstrap",
   brandTitle: "Test Summary",
   jsonDir: path.join(__dirname, "../../test/reporter/json/"),

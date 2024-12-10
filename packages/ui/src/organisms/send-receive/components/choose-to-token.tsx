@@ -51,7 +51,9 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   if (!decimals) return null
   return (
     <>
-      <div className="rounded-[12px] p-4 h-[102px] bg-gray-100">
+      <div
+        id={"targetSection"}
+        className="rounded-[12px] p-4 h-[102px] bg-gray-100">
         <div className="flex items-center justify-between">
           <InputAmount
             decimals={decimals}
@@ -62,12 +64,13 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           />
           <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
             <ChooseFtModal
+              searchInputId={"targetTokenSearchInput"}
               tokens={tokens}
               title="Swap to"
               onSelect={setToChosenToken}
               trigger={
                 <div
-                  id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}
+                  id={`targetToken_${token.getTokenName()}_${token.getTokenAddress()}`}
                   className="flex items-center cursor-pointer shrink-0"
                 >
                   <ImageWithFallback
@@ -119,9 +122,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />
             )}
           </p>
-          <div className="mt-2 text-xs leading-5 text-right text-gray-500">
+          <div
+            className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;
-            <span>
+            <span id={"tokenBalance"}>
               {initedToken ? (
                 <>
                   {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;

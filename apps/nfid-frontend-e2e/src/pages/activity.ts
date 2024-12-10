@@ -1,12 +1,24 @@
 import { Page } from "./page.js"
 
 export class Activity extends Page {
+  async allActivityTable() {
+    return $$("#activity-table tr")
+  }
+
   get activityTableRows() {
     return $$("//*[@id='activity-table']//tr[starts-with(@id, 'tx-')]")
   }
 
   get filterButton() {
     return $("#filter-ft")
+  }
+
+  async rowDate(row: WebdriverIO.Element) {
+    return $(`${row.selector} #date`)
+  }
+
+  async rowActionType(row: WebdriverIO.Element) {
+    return row.$("#action")
   }
 
   async getActivitiesLength() {

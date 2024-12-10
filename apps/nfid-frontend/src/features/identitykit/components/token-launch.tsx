@@ -3,6 +3,8 @@ import { useEffect } from "react"
 
 import { Button } from "@nfid-frontend/ui"
 
+import { SNS_STEP_VISITED } from "frontend/features/authentication/constants"
+
 import coinsImg from "../../../assets/coins.png"
 
 function Icon({ className }: { className?: string }) {
@@ -40,7 +42,7 @@ export function TokenLaunch({
   className?: string
 }) {
   useEffect(() => {
-    localStorage.setItem("sns-step-visited", "1")
+    localStorage.setItem(SNS_STEP_VISITED, "true")
   }, [])
 
   return (

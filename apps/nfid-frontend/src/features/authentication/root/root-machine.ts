@@ -9,7 +9,11 @@ import {
 } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
-import { checkIf2FAEnabled } from "../services"
+import {
+  checkIf2FAEnabled,
+  shouldShowPasskeys,
+  shouldShowSNSBanner,
+} from "../services"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -25,27 +29,35 @@ export interface AuthenticationContext {
   allowedDevices?: string[]
 
   email2FA?: string
+  email?: string
+  showPasskeys?: boolean
+  showSNSBanner?: boolean
 }
 
 export type Events =
-  | {
-      type: "done.invoke.AuthWithGoogleMachine"
-      data: AbstractAuthSession
-    }
-  | {
-      type: "done.invoke.AuthWithEmailMachine"
-      data: AbstractAuthSession
-    }
+  | { type: "done.invoke.AuthWithGoogleMachine"; data: AbstractAuthSession }
+  | { type: "done.invoke.AuthWithEmailMachine"; data: AbstractAuthSession }
   | {
       type: "done.invoke.checkIf2FAEnabled"
       data?: { allowedPasskeys: string[]; email?: string }
     }
+  | {
+      type: "done.invoke.shouldShowPasskeys"
+      data?: { showPasskeys: boolean }
+    }
+  | {
+      type: "done.invoke.shouldShowSNSBanner"
+      data?: { showSNSBanner: boolean }
+    }
   | { type: "AUTH_WITH_EMAIL"; data: string }
-  | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
+  | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string; email: string } }
   | { type: "AUTH_WITH_OTHER" }
   | { type: "AUTHENTICATED"; data?: AbstractAuthSession }
   | { type: "BACK" }
   | { type: "RETRY" }
+  | { type: "CONTINUE" }
+  | { type: "SKIP" }
+  | { type: "DONE" }
 
 export interface Schema {
   events: Events
@@ -69,6 +81,7 @@ const AuthenticationMachine =
             },
             AUTH_WITH_GOOGLE: {
               target: "AuthWithGoogle",
+              actions: "assignEmail",
             },
             AUTH_WITH_OTHER: {
               target: "OtherSignOptions",
@@ -83,7 +96,7 @@ const AuthenticationMachine =
           invoke: {
             src: "AuthWithGoogleMachine",
             id: "AuthWithGoogleMachine",
-            data: (_, event: { data: { jwt: string } }) => {
+            data: (_, event: { data: { jwt: string; email: string } }) => {
               return { jwt: event.data.jwt }
             },
             onDone: [
@@ -121,7 +134,7 @@ const AuthenticationMachine =
           on: {
             BACK: "AuthSelection",
             AUTHENTICATED: {
-              target: "End",
+              target: "checkSNSBanner",
               actions: "assignAuthSession",
             },
           },
@@ -136,11 +149,64 @@ const AuthenticationMachine =
                 target: "TwoFA",
                 actions: "assignAllowedDevices",
               },
-              { target: "End" },
+              { target: "checkPasskeys" },
             ],
           },
         },
         TwoFA: {
+          on: {
+            AUTHENTICATED: {
+              target: "checkSNSBanner",
+            },
+          },
+        },
+        checkPasskeys: {
+          invoke: {
+            src: "shouldShowPasskeys",
+            id: "shouldShowPasskeys",
+            onDone: [
+              {
+                actions: "assignShowPasskeys",
+                cond: "showPasskeys",
+                target: "AddPasskeys",
+              },
+              { target: "checkSNSBanner" },
+            ],
+          },
+        },
+        AddPasskeys: {
+          on: {
+            BACK: "AuthSelection",
+            CONTINUE: {
+              target: "AddPasskeysSuccess",
+            },
+            SKIP: {
+              target: "checkSNSBanner",
+            },
+          },
+        },
+        AddPasskeysSuccess: {
+          on: {
+            DONE: {
+              target: "checkSNSBanner",
+            },
+          },
+        },
+        checkSNSBanner: {
+          invoke: {
+            src: "shouldShowSNSBanner",
+            id: "shouldShowSNSBanner",
+            onDone: [
+              {
+                actions: "assignShowSNSBanner",
+                cond: "showSNSBanner",
+                target: "SNSBanner",
+              },
+              { target: "End" },
+            ],
+          },
+        },
+        SNSBanner: {
           on: {
             AUTHENTICATED: {
               target: "End",
@@ -155,28 +221,47 @@ const AuthenticationMachine =
     },
     {
       guards: {
-        isExistingAccount: (context, event) => {
-          return !!event?.data?.anchor
+        isExistingAccount: (_, event) => !!event?.data?.anchor,
+        isReturn: (_, event) => !event.data,
+        is2FAEnabled: (_, event) => !!event.data,
+        showPasskeys: (_, event) => {
+          const showPasskeys = event.data?.showPasskeys
+          if (showPasskeys === undefined) return true
+          return showPasskeys
         },
-        isReturn: (context, event) => !event.data,
-        is2FAEnabled: (context, event) => !!event.data,
+        showSNSBanner: (_, event) => {
+          const showSNSBanner = event.data?.showSNSBanner
+          console.log("showSNSBanner guard", showSNSBanner)
+          if (showSNSBanner === undefined) return true
+          return showSNSBanner
+        },
       },
       actions: {
         assignAuthSession: assign((_, event) => ({
           authSession: event.data,
         })),
-        assignVerificationEmail: assign((c, event) => ({
+        assignVerificationEmail: assign((_, event) => ({
           verificationEmail: event.data,
         })),
-        assignAllowedDevices: assign((c, event) => ({
+        assignAllowedDevices: assign((_, event) => ({
           allowedDevices: event.data?.allowedPasskeys,
-          email2FA: event.data?.email,
         })),
+        assignEmail: assign((_, event) => ({
+          email: event.data?.email,
+        })),
+        assignShowPasskeys: assign((_, event) => ({
+          showPasskeys: event.data?.showPasskeys,
+        })),
+        assignShowSNSBanner: assign((_, event) => {
+          return { showSNSBanner: event.data?.showSNSBanner }
+        }),
       },
       services: {
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
         checkIf2FAEnabled,
+        shouldShowPasskeys,
+        shouldShowSNSBanner,
       },
     },
   )

@@ -10,6 +10,8 @@ import {
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
+import { passkeyConnector } from "./auth-selection/passkey-flow/services"
+import { SNS_STEP_VISITED } from "./constants"
 import { AuthenticationContext } from "./root/root-machine"
 
 export async function getLegacyThirdPartyAuthSession(
@@ -80,4 +82,18 @@ export const checkIf2FAEnabled = async (context: AuthenticationContext) => {
 
   await authState.logout(false)
   return { allowedPasskeys, email: profile?.email }
+}
+
+export const shouldShowPasskeys = async () => {
+  try {
+    const shouldShow = await passkeyConnector.hasPasskeys()
+    return { showPasskeys: !shouldShow }
+  } catch (_) {
+    return { showPasskeys: true }
+  }
+}
+
+export const shouldShowSNSBanner = async () => {
+  const showBanner = localStorage.getItem(SNS_STEP_VISITED)
+  return { showSNSBanner: !Boolean(showBanner) }
 }

@@ -18,6 +18,16 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.shouldShowPasskeys": {
+      type: "done.invoke.shouldShowPasskeys"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.shouldShowSNSBanner": {
+      type: "done.invoke.shouldShowSNSBanner"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "error.platform.AuthWithEmailMachine": {
       type: "error.platform.AuthWithEmailMachine"
       data: unknown
@@ -30,12 +40,22 @@ export interface Typegen0 {
       type: "error.platform.checkIf2FAEnabled"
       data: unknown
     }
+    "error.platform.shouldShowPasskeys": {
+      type: "error.platform.shouldShowPasskeys"
+      data: unknown
+    }
+    "error.platform.shouldShowSNSBanner": {
+      type: "error.platform.shouldShowSNSBanner"
+      data: unknown
+    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
+    shouldShowPasskeys: "done.invoke.shouldShowPasskeys"
+    shouldShowSNSBanner: "done.invoke.shouldShowSNSBanner"
   }
   missingImplementations: {
     actions: never
@@ -49,6 +69,9 @@ export interface Typegen0 {
       | "AUTHENTICATED"
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+    assignEmail: "AUTH_WITH_GOOGLE"
+    assignShowPasskeys: "done.invoke.shouldShowPasskeys"
+    assignShowSNSBanner: "done.invoke.shouldShowSNSBanner"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
   }
   eventsCausingDelays: {}
@@ -56,6 +79,8 @@ export interface Typegen0 {
     is2FAEnabled: "done.invoke.checkIf2FAEnabled"
     isExistingAccount: "done.invoke.AuthWithGoogleMachine"
     isReturn: "done.invoke.AuthWithEmailMachine"
+    showPasskeys: "done.invoke.shouldShowPasskeys"
+    showSNSBanner: "done.invoke.shouldShowSNSBanner"
   }
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
@@ -63,14 +88,25 @@ export interface Typegen0 {
     checkIf2FAEnabled:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+    shouldShowPasskeys: "done.invoke.checkIf2FAEnabled"
+    shouldShowSNSBanner:
+      | "AUTHENTICATED"
+      | "DONE"
+      | "SKIP"
+      | "done.invoke.shouldShowPasskeys"
   }
   matchesStates:
+    | "AddPasskeys"
+    | "AddPasskeysSuccess"
     | "AuthSelection"
     | "AuthWithGoogle"
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"
+    | "SNSBanner"
     | "TwoFA"
     | "check2FA"
+    | "checkPasskeys"
+    | "checkSNSBanner"
   tags: never
 }

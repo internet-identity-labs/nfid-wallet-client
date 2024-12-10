@@ -3,7 +3,10 @@ FROM ubuntu:${TAG}
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-ARG NODE_VERSION=22
+ARG NODE_VERSION=22.11
+ARG NVM_VERSION=0.40.1
+
+ENV NVM_DIR=/usr/local/nvm
 
 RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
 RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils curl wget git ca-certificates gnupg \
@@ -19,11 +22,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils cu
     fi
 
 # Install NODE
-RUN mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list \
-    && apt-get update \
-    && apt-get install -y nodejs
+RUN mkdir -p "${NVM_DIR}" \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash \
+    && [ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh" \
+    && nvm install "${NODE_VERSION}"
 
 # Install YARN
 RUN mkdir -p /etc/apt/keyrings \

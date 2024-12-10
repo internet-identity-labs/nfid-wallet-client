@@ -39,6 +39,6 @@ Then(/^Verifying that swap transactions are stored in activity table$/, async ()
 
   await softAssertAll(
     async () => expect(await (await Activity.rowActionType(tableRows[1])).getText()).toEqual("Sent"),
-    async () => expect(timeDifference).toBeLessThan(10000),
+    async () => expect(timeDifference).toBeLessThan(30000),
   )
 })

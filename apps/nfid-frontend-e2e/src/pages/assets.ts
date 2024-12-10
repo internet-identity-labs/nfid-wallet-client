@@ -20,7 +20,7 @@ export class Assets {
   }
 
   public get getBalance() {
-    return $("#balance")
+    return $("#tokenBalance")
   }
 
   public get switchSendType() {

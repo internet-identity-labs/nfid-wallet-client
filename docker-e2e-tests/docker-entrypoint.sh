@@ -13,8 +13,12 @@ if ! pushd "${WORKDIR}" >/dev/null; then
     exit 1
 fi
 
+# Enabling NVM
+[ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
+
 ci_echo_title "Current configuration" "warn" >&2
 ci_echo_info "
+NODE=$(node --version)
 YARN=$(yarn --version)
 CHROME=$(chrome --version)
 NPM=$(npm --version)

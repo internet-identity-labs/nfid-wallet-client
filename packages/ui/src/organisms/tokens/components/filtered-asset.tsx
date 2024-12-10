@@ -14,30 +14,25 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { generateTokenKey, getUserPrincipalId } from "../utils"
+import { getUserPrincipalId } from "../utils"
 
 interface FilteredTokenProps {
   token: FT
   tokens: FT[]
   onTokensUpdate: () => void
-  setKey: (v: string) => void
 }
 
 export const FilteredToken: FC<FilteredTokenProps> = ({
   token,
   tokens,
   onTokensUpdate,
-  setKey,
 }) => {
   const hideToken = async (token: FT) => {
     try {
       token.hideToken()
-      //const updatedTokens = [...tokens]
-
-      const updatedKey = generateTokenKey(tokens)
-      console.log("hideToken", updatedKey)
-      //setKey(updatedKey)
-      mutate(["tokens", updatedKey], tokens, false)
+      const updatedTokens = [...tokens]
+      await mutate("tokens", updatedTokens, false)
+      onTokensUpdate()
     } catch (e) {
       toaster.error("Token hiding failed: " + (e as Error).message)
     }
@@ -51,10 +46,9 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
       if (!token.isInited()) {
         await token.init(Principal.fromText(publicKey))
       }
-      const updatedKey = generateTokenKey(tokens)
-      //setKey(updatedKey)
-      // console.log("showToken", updatedKey)
-      await mutate(["tokens", updatedKey], tokens, false)
+      const updatedTokens = [...tokens]
+      await mutate("tokens", updatedTokens, false)
+      onTokensUpdate()
     } catch (e) {
       toaster.error("Token shhowing failed: " + (e as Error).message)
     }
@@ -90,6 +84,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
       <div className="text-sm">{token.getTokenCategoryFormatted()}</div>
       <div className="ml-auto">
         <img
+          id={`${token.getTokenName()}_showHideButton`}
           className="cursor-pointer"
           src={
             token.getTokenState() === State.Active

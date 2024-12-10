@@ -12,7 +12,7 @@ import {
 
 export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   usdValue: string | undefined
-  isAddressLoading: boolean
+  isAddressLoading?: boolean
   isUsdLoading: boolean
   onSendClick: () => void
   onReceiveClick: () => void

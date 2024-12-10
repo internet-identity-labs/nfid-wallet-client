@@ -1,5 +1,4 @@
 import { Meta, StoryFn } from "@storybook/react"
-import { useForm } from "react-hook-form"
 
 import { withSignInDecorator } from "../../../decorators/sign-in"
 import { AuthOtherSignOptions, AuthOtherSignOptionsProps } from "./index"
@@ -18,11 +17,6 @@ const meta: Meta = {
 export default meta
 
 export const Default: StoryFn<AuthOtherSignOptionsProps> = (args) => {
-  const formMethods = useForm<{ userNumber: number }>({
-    defaultValues: {
-      userNumber: 12345,
-    },
-  })
   return (
     <AuthOtherSignOptions
       {...args}
@@ -33,6 +27,5 @@ export const Default: StoryFn<AuthOtherSignOptionsProps> = (args) => {
 
 Default.args = {
   appMeta: "https://example.com",
-  loadProfileFromLocalStorage: () => undefined,
   onBack: () => console.log("Back button clicked"),
 }

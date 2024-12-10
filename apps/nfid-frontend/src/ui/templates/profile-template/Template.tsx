@@ -23,6 +23,7 @@ import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -163,11 +164,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const globalServices = useContext(ProfileContext)
 
   const [, send] = useActor(globalServices.transferService)
-  const {
-    data: identity,
-    isLoading: isIdentityLoading,
-    isValidating,
-  } = useSWR("globalIdentity", () => getUserPrincipalId())
 
   const onSendClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -251,11 +247,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               <ProfileInfo
                 usdValue={tokensUsdValue}
                 isUsdLoading={isUsdLoading || !initedTokens.length}
-                isAddressLoading={isIdentityLoading && isValidating}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}
                 onSwapClick={onSwapClick}
-                address={identity?.publicKey ?? ""}
+                address={authState.getUserIdData().publicKey}
               />
               <TabsSwitcher
                 className="my-[30px]"

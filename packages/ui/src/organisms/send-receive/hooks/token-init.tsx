@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { getUserPrincipalId } from "../../tokens/utils"
+import { authState } from "@nfid/integration"
 
 export const useTokenInit = (token: FT | undefined) => {
   const [initedToken, setInitedToken] = useState<FT>()
@@ -16,7 +16,7 @@ export const useTokenInit = (token: FT | undefined) => {
         setInitedToken(token)
         return
       }
-      const { publicKey } = await getUserPrincipalId()
+      const { publicKey } =  authState.getUserIdData()
       const initializedToken = await token.init(Principal.fromText(publicKey))
       setInitedToken(initializedToken)
     }

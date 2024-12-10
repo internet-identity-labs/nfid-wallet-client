@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import crypto from "crypto-browserify"
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
+
+import { authState } from "@nfid/integration"
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
@@ -10,7 +11,7 @@ export const getUserPrincipalId = async (): Promise<{
   userPrincipal: string
   publicKey: string
 }> => {
-  const pair = await getUserIdData()
+  const pair = authState.getUserIdData()
   return {
     userPrincipal: pair.userId,
     publicKey: pair.publicKey,
@@ -34,7 +35,7 @@ export const fetchTokens = async () => {
 }
 
 export const getFullUsdValue = async (ft: FT[]) => {
-  const { publicKey } = await getUserPrincipalId()
+  const { publicKey } = authState.getUserIdData()
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
 }
 

@@ -31,7 +31,6 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   }>
   onSendClick: (value: string) => void
   onTokensUpdate: () => void
-  setKey: (v: string) => void
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -43,7 +42,6 @@ export const Tokens: FC<TokensProps> = ({
   onFetch,
   onSendClick,
   onTokensUpdate,
-  setKey,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
 
@@ -54,7 +52,6 @@ export const Tokens: FC<TokensProps> = ({
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}
         onFetch={onFetch}
         onTokensUpdate={onTokensUpdate}
-        setKey={setKey}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">

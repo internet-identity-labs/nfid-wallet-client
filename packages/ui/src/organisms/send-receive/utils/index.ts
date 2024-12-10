@@ -1,19 +1,25 @@
 import {
   DepositError,
+  SlippageSwapError,
   SwapError,
   WithdrawError,
 } from "frontend/integration/icpswap/errors"
 import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 export const getTitleAndButtonText = (
-  error: SwapError | WithdrawError | DepositError | undefined,
+  error:
+    | SwapError
+    | WithdrawError
+    | DepositError
+    | SlippageSwapError
+    | undefined,
 ) => {
   if (error instanceof DepositError)
     return {
       title: "deposit",
       buttonText: "Close",
     }
-  if (error instanceof SwapError)
+  if (error instanceof SwapError || error instanceof SlippageSwapError)
     return {
       title: "swap",
       buttonText: "Close",

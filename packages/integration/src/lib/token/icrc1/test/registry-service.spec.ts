@@ -3,7 +3,7 @@
  */
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { mockIdentityA } from "@nfid/integration"
+import { authState, mockIdentityA } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
@@ -17,6 +17,10 @@ describe("ICRC1 suite", () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
+    await authState.set({
+      identity: delegationIdentity,
+      delegationIdentity: delegationIdentity,
+    })
     await replaceActorIdentity(iCRC1Registry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
     const edId = Ed25519KeyIdentity.generate()

@@ -16,7 +16,7 @@ export async function executeCanisterCall(
 ): Promise<string> {
   console.debug("executeCanisterCall", { origin, calledMethodName, canisterId })
 
-  if (!isPresentInStorage(origin))
+  if (!(await isPresentInStorage(origin)))
     throw new Error(
       "You can not request canister calls with anonymous delegation",
     )

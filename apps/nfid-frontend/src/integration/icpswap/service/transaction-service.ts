@@ -1,6 +1,5 @@
 import * as Agent from "@dfinity/agent"
 import { HttpAgent } from "@dfinity/agent"
-import { getUserIdData } from "packages/integration/src/lib/cache/cache"
 import { idlFactory as SwapStorageIDL } from "src/integration/icpswap/idl/swap_trs_storage"
 import {
   _SERVICE as SwapStorage,
@@ -35,7 +34,7 @@ class SwapTransactionService {
   }
 
   async getTransactions(): Promise<Array<SwapTransaction>> {
-    const cache = await getUserIdData()
+    const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
         return new SwapTransactionImpl(

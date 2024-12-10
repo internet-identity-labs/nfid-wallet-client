@@ -10,10 +10,10 @@ import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/o
 import React, { useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
-import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/auth-selection/email-flow/machine"
+import { useLoadProfileFromStorage } from "frontend/hooks"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -30,6 +30,7 @@ export default function AuthenticationCoordinator({
   isIdentityKit?: boolean
   loader?: React.ReactNode
 }) {
+  const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
   const [state, send] = useActor(actor)
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const [is2FALoading, setIs2FALoading] = React.useState(false)
@@ -141,8 +142,8 @@ export default function AuthenticationCoordinator({
           appMeta={state.context.authRequest?.hostname}
           onBack={() => send({ type: "BACK" })}
           handleAuth={handleOtherOptionsAuth}
-          isLoading={isOtherOptionsLoading}
-          loadProfileFromLocalStorage={loadProfileFromLocalStorage}
+          isLoading={isOtherOptionsLoading || storageProfileLoading}
+          profileAnchor={storageProfile?.anchor}
         />
       )
     case state.matches("TwoFA"):

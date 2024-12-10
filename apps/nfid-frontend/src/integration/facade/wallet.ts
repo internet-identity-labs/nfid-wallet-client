@@ -6,7 +6,7 @@ import {
   WALLET_SESSION_TTL_2_MIN_IN_NS,
   getScope,
 } from "@nfid/config"
-import { getLocalStorageOverride, delegationState } from "@nfid/integration"
+import { delegationState } from "@nfid/integration"
 
 import { fetchPrincipal } from "frontend/integration/internet-identity"
 
@@ -29,11 +29,6 @@ export async function getWalletDelegation(
   return delegationState.getDelegation(
     userNumber,
     scope,
-    BigInt(
-      getLocalStorageOverride(
-        WALLET_SESSION_TTL_2_MIN_IN_NS,
-        "NFID_WALLET_DELEGATION_TTL_NS",
-      ),
-    ),
+    BigInt(WALLET_SESSION_TTL_2_MIN_IN_NS),
   )
 }

@@ -19,8 +19,8 @@ export class Assets {
     return $$("[id^=\"token_\"]")
   }
 
-  public get getBalance() {
-    return $("#tokenBalance")
+  get getSourceTokenBalance() {
+    return $("#choose-from-token-balance")
   }
 
   public get switchSendType() {
@@ -119,7 +119,7 @@ export class Assets {
     await Nft.addressField.setValue(address)
     await this.amountField.setValue(amount)
 
-    await this.getBalance.waitForExist({ timeout: 10000 })
+    await this.getSourceTokenBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
 
     await this.sendDialogWindow.click()
@@ -278,9 +278,6 @@ export class Assets {
 
     get getTargetTokenBalance() {
       return $("#choose-to-token-balance")
-    },
-    get getSourceTokenBalance() {
-      return $("#choose-from-token-balance")
     },
   }
 }

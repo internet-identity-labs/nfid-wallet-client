@@ -40,7 +40,7 @@ When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
       && await (await Assets.SwapDialog.getTargetAmountField).getAttribute("value") !== "0.00"
   })
   sourceTokenAmountToSwap = parseFloat(amount)
-  currentSourceTokenBalance = parseFloat((await Assets.SwapDialog.getSourceTokenBalance.getText()).replace(/[^\d.]/g, ""))
+  currentSourceTokenBalance = parseFloat((await Assets.getSourceTokenBalance.getText()).replace(/[^\d.]/g, ""))
   currentTargetTokenBalance = parseFloat((await Assets.SwapDialog.getTargetTokenBalance.getText()).replace(/[^\d.]/g, ""))
   expectedTargetTokenAmount = parseFloat((await Assets.SwapDialog.getTargetAmountField.getAttribute("value")))
 })

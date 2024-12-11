@@ -1,12 +1,12 @@
 import { useActor } from "@xstate/react"
 import { Tokens } from "packages/ui/src/organisms/tokens"
-import {
-  fetchActiveTokens,
-  fetchAllTokens
-} from "packages/ui/src/organisms/tokens/utils"
-import { useContext, useState } from "react"
+import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
+import { useContext, useMemo, useState } from "react"
 import useSWR from "swr"
 
+import { storageWithTtl } from "@nfid/client-db"
+import { authState } from "@nfid/integration"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
@@ -14,13 +14,12 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
-import { storageWithTtl } from "@nfid/client-db"
-import { authState } from "@nfid/integration"
 
 const TokensPage = () => {
+  const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [, forceUpdate] = useState(0)
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -30,22 +29,22 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  // TODO: use generateTokenKey instead of ForceUpdate
+  const triggerForceUpdate = () => {
+    forceUpdate((prev) => prev + 1)
+  }
+
   const {
-    data: activeTokens = [],
-    isLoading: isActiveLoading,
-    mutate: refetchActiveTokens,
-  } = useSWR("activeTokens", fetchActiveTokens, {
+    data: tokens = [],
+    mutate: refetchTokens,
+    isLoading: isTokensLoading,
+  } = useSWR("tokens", fetchTokens, {
     revalidateOnFocus: false,
-    revalidateOnMount: false,
   })
 
-  const { data: allTokens = [] } = useSWR(
-    ["allTokens", searchQuery],
-    ([, query]) => fetchAllTokens(query),
-    {
-      revalidateOnFocus: false,
-    },
-  )
+  const activeTokens = useMemo(() => {
+    return tokens.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
 
   const onSubmitIcrc1Pair = async (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(
@@ -54,7 +53,7 @@ const TokensPage = () => {
     )
     await icrc1Pair.storeSelf()
     await storageWithTtl.remove(icrc1OracleCacheName)
-    refetchActiveTokens()
+    refetchTokens()
   }
 
   const onFetch = async (ledgerID: string, indexID: string) => {
@@ -71,18 +70,16 @@ const TokensPage = () => {
       })
   }
 
-  const userRootPrincipalId = authState.getUserIdData().userId
-
   return (
     <Tokens
       activeTokens={activeTokens}
-      filteredTokens={allTokens}
-      setSearchQuery={setSearchQuery}
-      isActiveTokensLoading={isActiveLoading}
+      filteredTokens={tokens}
+      isTokensLoading={isTokensLoading}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
+      onTokensUpdate={triggerForceUpdate}
     />
   )
 }

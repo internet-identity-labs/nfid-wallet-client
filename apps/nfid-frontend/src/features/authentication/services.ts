@@ -86,8 +86,8 @@ export const checkIf2FAEnabled = async (context: AuthenticationContext) => {
 
 export const shouldShowPasskeys = async () => {
   try {
-    const shouldShow = await passkeyConnector.hasPasskeys()
-    return { showPasskeys: !shouldShow }
+    const hasPasskeys = await passkeyConnector.hasPasskeys()
+    return { showPasskeys: !hasPasskeys }
   } catch (_) {
     return { showPasskeys: true }
   }

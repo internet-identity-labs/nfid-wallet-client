@@ -20,8 +20,8 @@ export const AuthAddPasskeySuccess: FC<AuthAddPasskeyProps> = ({
       </p>
       <p className="mt-2.5 mb-[30px]">{email}</p>
       <p>
-        You can now use your fingerprint, face, or screen lock to sign <br />
-        in faster and more securely next time.
+        You can now use your fingerprint, face, or screen lock to sign in faster
+        and more securely next time.
       </p>
       <img
         className="flex-1 mt-5 max-h-[245px] object-contain"

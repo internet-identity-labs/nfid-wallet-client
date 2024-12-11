@@ -25,8 +25,8 @@ export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
         </p>
         <p className="mt-2.5 mb-[30px]">{email}</p>
         <p>
-          Adding biometric security will enable faster sign in and ensure <br />
-          you are the only one that can access your wallet.
+          Adding biometric security will enable faster sign in and ensure you
+          are the only one that can access your wallet.
         </p>
         <img
           className="flex-1 mt-5 max-h-[245px] object-contain"

@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
       "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
       "@nfid-frontend/utils": ["packages/utils/src/index.ts"],

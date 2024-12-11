@@ -4,7 +4,7 @@ import Profile from "./profile.js"
 
 export class Assets {
   get amountField() {
-    return $("#amount")
+    return $("#choose-from-token-amount")
   }
 
   get sendDialogWindow() {

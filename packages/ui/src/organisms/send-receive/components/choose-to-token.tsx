@@ -56,6 +56,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
         className="rounded-[12px] p-4 h-[102px] bg-gray-100">
         <div className="flex items-center justify-between">
           <InputAmount
+            id={"choose-to-token-amount"}
             decimals={decimals}
             disabled
             isLoading={isQuoteLoading}
@@ -125,7 +126,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <div
             className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;
-            <span id={"tokenBalance"}>
+            <span id={"choose-to-token-balance"}>
               {initedToken ? (
                 <>
                   {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;

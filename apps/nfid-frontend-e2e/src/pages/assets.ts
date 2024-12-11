@@ -249,11 +249,11 @@ export class Assets {
     },
 
     get successTitle() {
-      return $("#successTitle")
+      return $("#swap-success-title")
     },
 
     get closeButton() {
-      return $("#closeButton")
+      return $("#swap-success-close-button")
     },
 
     getChooseTokenModalButton(tokenRole: string) {
@@ -268,12 +268,19 @@ export class Assets {
       return $(`//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`)
     },
 
-    getTokenAmountField(tokenRole: string) {
-      return $(`#${tokenRole}Section #amount`)
+    get getTargetAmountField() {
+      return $("#choose-to-token-amount")
     },
 
-    getTokenBalance(tokenRole: string) {
-      return $(`#${tokenRole}Section #tokenBalance`)
+    get getSourceAmountField() {
+      return $("#choose-from-token-amount")
+    },
+
+    get getTargetTokenBalance() {
+      return $("#choose-to-token-balance")
+    },
+    get getSourceTokenBalance() {
+      return $("#choose-from-token-balance")
     },
   }
 }

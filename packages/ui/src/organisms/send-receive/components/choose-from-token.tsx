@@ -92,6 +92,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     >
       <div className="flex items-center justify-between">
         <InputAmount
+          id={"choose-from-token-amount"}
           disabled={!Boolean(initedToken)}
           isLoading={false}
           decimals={decimals}
@@ -149,7 +150,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             onClick={maxHandler}
           >
             {balance === undefined ? (
-              <span id="tokenBalance">
+              <span id="choose-from-token-balance">
                 {initedToken ? (
                   <>
                     {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;

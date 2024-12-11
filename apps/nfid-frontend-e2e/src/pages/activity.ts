@@ -14,11 +14,11 @@ export class Activity extends Page {
   }
 
   async rowDate(row: WebdriverIO.Element) {
-    return $(`${row.selector} #date`)
+    return $(`${row.selector} #activity-table-row-date`)
   }
 
   async rowActionType(row: WebdriverIO.Element) {
-    return row.$("#action")
+    return row.$("#activity-table-row-action")
   }
 
   async getActivitiesLength() {

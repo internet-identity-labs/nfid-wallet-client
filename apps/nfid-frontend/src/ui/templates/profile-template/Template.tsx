@@ -5,7 +5,6 @@ import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
   fetchTokens,
   getFullUsdValue,
-  getUserPrincipalId,
   initTokens,
 } from "packages/ui/src/organisms/tokens/utils"
 import {

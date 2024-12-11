@@ -2,9 +2,9 @@ import { storageWithTtl } from "@nfid/client-db"
 
 import { ICRC1 } from "../../../_ic_api/icrc1_registry.d"
 import { iCRC1Registry } from "../../../actors"
+import { authState } from "../../../authentication"
 import { State } from "../enum/enums"
 import { mapStateTS } from "../util"
-import { authState } from "../../../authentication"
 
 const icrc1RegistryCacheName = "ICRC1RegistryService.getCanistersByRoot"
 

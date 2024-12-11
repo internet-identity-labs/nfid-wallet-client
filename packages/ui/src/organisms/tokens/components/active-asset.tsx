@@ -20,6 +20,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
+  onTokensUpdate: () => void
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -29,6 +30,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
+  onTokensUpdate,
   ...props
 }) => {
   const initedToken = useTokenInit(token)
@@ -76,8 +78,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
           ) : (
             <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
-              {initedToken.getTokenBalanceFormatted() || "0"}{" "}
-              <span>{initedToken.getTokenSymbol()}</span>
+              {token.getTokenBalanceFormatted() || "0"}{" "}
+              <span>{token.getTokenSymbol()}</span>
             </span>
           )}
         </p>
@@ -87,10 +89,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
-          ) : initedToken.getUSDBalanceFormatted() === undefined ? (
+          ) : token.getUSDBalanceFormatted() === undefined ? (
             "Not listed"
           ) : (
-            initedToken.getUSDBalanceFormatted()
+            token.getUSDBalanceFormatted()
           )}
         </p>
       </td>
@@ -100,16 +102,17 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       >
         {!initedToken ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : initedToken.getUSDBalanceFormatted() === undefined ? (
+        ) : token.getUSDBalanceFormatted() === undefined ? (
           "Not listed"
         ) : (
-          initedToken.getUSDBalanceFormatted()
+          token.getUSDBalanceFormatted()
         )}
       </td>
       <td className="w-[24px] min-w-[24px]"
           id={`${token.getTokenName()}_options`}
       >
         <AssetDropdown
+          onTokensUpdate={onTokensUpdate}
           token={token}
           tokens={tokens}
           profileConstants={profileConstants}

@@ -157,6 +157,7 @@ export class FTImpl implements FT {
   }
 
   hideToken(): Promise<void> {
+    this.tokenState = State.Inactive
     return icrc1RegistryService.storeICRC1Canister(
       this.tokenAddress,
       State.Inactive,
@@ -164,6 +165,7 @@ export class FTImpl implements FT {
   }
 
   showToken(): Promise<void> {
+    this.tokenState = State.Active
     return icrc1RegistryService.storeICRC1Canister(
       this.tokenAddress,
       State.Active,

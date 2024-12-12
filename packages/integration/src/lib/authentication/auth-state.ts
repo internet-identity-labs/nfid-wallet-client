@@ -1,18 +1,27 @@
-import {SignIdentity} from "@dfinity/agent"
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
-import {BehaviorSubject, find, lastValueFrom, map} from "rxjs"
+import { SignIdentity } from "@dfinity/agent"
+import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import base64url from "base64url"
+import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
+import { passkeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
-import {agent} from "../agent"
-import {isDelegationExpired} from "../agent/is-delegation-expired"
-import {Environment} from "../constant/env.constant"
-import {requestFEDelegation} from "./frontend-delegation"
-import {setupSessionManager} from "./session-handling"
-import {authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY} from "./storage"
-import {createUserIdData, deserializeUserIdData, serializeUserIdData, UserIdData,} from "./user-id-data"
-import {getPasskey} from "../lambda/passkey";
-import base64url from "base64url";
-import {fromHexString} from "@dfinity/candid/lib/cjs/utils/buffer";
-import {passkeyConnector} from "src/features/authentication/auth-selection/passkey-flow/services";
+import { agent } from "../agent"
+import { isDelegationExpired } from "../agent/is-delegation-expired"
+import { Environment } from "../constant/env.constant"
+import { getPasskey } from "../lambda/passkey"
+import { requestFEDelegation } from "./frontend-delegation"
+import { setupSessionManager } from "./session-handling"
+import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import {
+  createUserIdData,
+  deserializeUserIdData,
+  serializeUserIdData,
+  UserIdData,
+} from "./user-id-data"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -291,26 +300,34 @@ export async function getAllWalletsFromThisDevice() {
   if (currentCacheVersion === EXPECTED_CACHE_VERSION) {
     return []
   }
-  const walletKeys = authStorage.getAllKeys().then((keys) =>
-    keys.filter((key) => key.startsWith("user_profile_data_")),
-  )
+  const walletKeys = authStorage
+    .getAllKeys()
+    .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
   const wallets = await walletKeys.then((keys) =>
-    Promise.all(keys.map((key) => authStorage.get(key)),
-  ))
+    Promise.all(keys.map((key) => authStorage.get(key))),
+  )
   const profiles = wallets.map((wallet) => {
     return deserializeUserIdData(wallet as string)
   })
 
-  const profilesData = profiles.map((profile) => {
-    return { email: profile.email, principal: profile.userId, credentialIds: profile.accessPoints.map(l=>
-        l.credentialId)
-        .filter((id) => id !== undefined) }
-  }).filter((profile) => profile.credentialIds.length > 0)
+  const profilesData = profiles
+    .map((profile) => {
+      return {
+        email: profile.email,
+        principal: profile.userId,
+        credentialIds: profile.accessPoints
+          .map((l) => l.credentialId)
+          .filter((id) => id !== undefined),
+      }
+    })
+    .filter((profile) => profile.credentialIds.length > 0)
 
-  const credentials = profilesData.map((profile) => profile.credentialIds).flat()
+  const credentials = profilesData
+    .map((profile) => profile.credentialIds)
+    .flat()
 
   const passkey = credentials.length > 0 ? await getPasskey(credentials) : []
-  const decodedObject = passkey.map((p) => (JSON.parse(p.data)))
+  const decodedObject = passkey.map((p) => JSON.parse(p.data))
   console.debug("passkeys", { decodedObject })
 
   const allowedPasskeys = decodedObject.map((p) => {

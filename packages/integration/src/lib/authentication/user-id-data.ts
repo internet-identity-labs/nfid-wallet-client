@@ -1,10 +1,11 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { fetchProfile } from "src/integration/identity-manager"
 
-import {im, replaceActorIdentity} from "../actors"
-import {getPublicKey} from "../delegation-factory/delegation-i"
-import {RootWallet} from "../identity-manager/profile"
-import {fetchProfile} from "src/integration/identity-manager";
-import {AccessPoint} from "@nfid/integration";
+import { AccessPoint } from "@nfid/integration"
+
+import { im, replaceActorIdentity } from "../actors"
+import { getPublicKey } from "../delegation-factory/delegation-i"
+import { RootWallet } from "../identity-manager/profile"
 
 export type UserIdData = {
   //internal user id
@@ -33,7 +34,9 @@ export function deserializeUserIdData(userIdData: string) {
   return { ...parsed, anchor: BigInt(parsed.anchor) }
 }
 
-export async function createUserIdData(delegationIdentity: DelegationIdentity) : Promise<UserIdData> {
+export async function createUserIdData(
+  delegationIdentity: DelegationIdentity,
+): Promise<UserIdData> {
   await replaceActorIdentity(im, delegationIdentity)
   const [publicKey, account] = await Promise.all([
     getPublicKey(delegationIdentity),

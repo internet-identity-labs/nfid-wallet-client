@@ -118,7 +118,7 @@ export class IdbKeyVal implements KeyValueStore {
   }
 
   public async getAllKeys(): Promise<string[]> {
-    const tx = this._db.transaction(this._storeName, 'readonly')
+    const tx = this._db.transaction(this._storeName, "readonly")
     const store = tx.objectStore(this._storeName)
     const keys: string[] = []
     let cursor = await store.openCursor()
@@ -130,5 +130,4 @@ export class IdbKeyVal implements KeyValueStore {
 
     return keys
   }
-
 }

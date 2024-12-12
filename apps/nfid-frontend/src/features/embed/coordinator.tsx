@@ -1,6 +1,6 @@
 import { useMachine } from "@xstate/react"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import React, { useMemo } from "react"
+import { useMemo } from "react"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 
@@ -33,6 +33,7 @@ export default function NFIDEmbedCoordinator() {
       case state.matches("AUTH.Authenticate"):
         return (
           <AuthenticationCoordinator
+            isEmbed
             actor={
               state.children[
                 "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"

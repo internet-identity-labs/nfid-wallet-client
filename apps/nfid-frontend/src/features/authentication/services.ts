@@ -7,6 +7,7 @@ import {
   replaceIdentity,
 } from "@nfid/integration"
 
+import { isWebAuthNSupported } from "frontend/integration/device"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
@@ -84,7 +85,12 @@ export const checkIf2FAEnabled = async (context: AuthenticationContext) => {
   return { allowedPasskeys, email: profile?.email }
 }
 
-export const shouldShowPasskeys = async () => {
+export const shouldShowPasskeys = async (context: AuthenticationContext) => {
+  console.log("isEmbed context", context)
+  if (context.isEmbed) return { showPasskeys: false }
+
+  if (!isWebAuthNSupported()) return { showPasskeys: false }
+
   try {
     const hasPasskeys = await passkeyConnector.hasPasskeys()
     return { showPasskeys: !hasPasskeys }

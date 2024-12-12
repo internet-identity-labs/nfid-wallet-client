@@ -2,7 +2,7 @@ import { FC } from "react"
 
 import { Button } from "@nfid-frontend/ui"
 
-import Image from "./assets/add-passkey-success.svg"
+import Image from "./assets/passkey_enabled.webp"
 
 export interface AuthAddPasskeyProps {
   onFinish: () => void

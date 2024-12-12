@@ -32,6 +32,7 @@ export interface AuthenticationContext {
   email?: string
   showPasskeys?: boolean
   showSNSBanner?: boolean
+  isEmbed?: boolean
 }
 
 export type Events =
@@ -49,9 +50,12 @@ export type Events =
       type: "done.invoke.shouldShowSNSBanner"
       data?: { showSNSBanner: boolean }
     }
-  | { type: "AUTH_WITH_EMAIL"; data: string }
-  | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string; email: string } }
-  | { type: "AUTH_WITH_OTHER" }
+  | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
+  | {
+      type: "AUTH_WITH_GOOGLE"
+      data: { jwt: string; email: string; isEmbed: boolean }
+    }
+  | { type: "AUTH_WITH_OTHER"; data: { isEmbed: boolean } }
   | { type: "AUTHENTICATED"; data?: AbstractAuthSession }
   | { type: "BACK" }
   | { type: "RETRY" }
@@ -77,14 +81,15 @@ const AuthenticationMachine =
           on: {
             AUTH_WITH_EMAIL: {
               target: "EmailAuthentication",
-              actions: "assignVerificationEmail",
+              actions: ["assignVerificationEmail", "assignIsEmbed"],
             },
             AUTH_WITH_GOOGLE: {
               target: "AuthWithGoogle",
-              actions: "assignEmail",
+              actions: ["assignEmail", "assignIsEmbed"],
             },
             AUTH_WITH_OTHER: {
-              target: "OtherSignOptions",
+              target: ["OtherSignOptions"],
+              actions: "assignIsEmbed",
             },
             AUTHENTICATED: {
               actions: "assignAuthSession",
@@ -162,7 +167,11 @@ const AuthenticationMachine =
         },
         checkPasskeys: {
           invoke: {
-            src: "shouldShowPasskeys",
+            //src: "shouldShowPasskeys",
+            src: (context, event) => {
+              console.log("shouldShowPasskeys", context, event)
+              return shouldShowPasskeys(context)
+            },
             id: "shouldShowPasskeys",
             onDone: [
               {
@@ -231,7 +240,6 @@ const AuthenticationMachine =
         },
         showSNSBanner: (_, event) => {
           const showSNSBanner = event.data?.showSNSBanner
-          console.log("showSNSBanner guard", showSNSBanner)
           if (showSNSBanner === undefined) return true
           return showSNSBanner
         },
@@ -241,7 +249,7 @@ const AuthenticationMachine =
           authSession: event.data,
         })),
         assignVerificationEmail: assign((_, event) => ({
-          verificationEmail: event.data,
+          verificationEmail: event.data.email,
         })),
         assignAllowedDevices: assign((_, event) => ({
           allowedDevices: event.data?.allowedPasskeys,
@@ -252,15 +260,17 @@ const AuthenticationMachine =
         assignShowPasskeys: assign((_, event) => ({
           showPasskeys: event.data?.showPasskeys,
         })),
-        assignShowSNSBanner: assign((_, event) => {
-          return { showSNSBanner: event.data?.showSNSBanner }
-        }),
+        assignShowSNSBanner: assign((_, event) => ({
+          showSNSBanner: event.data?.showSNSBanner,
+        })),
+        assignIsEmbed: assign((_, event) => ({
+          isEmbed: event.data?.isEmbed,
+        })),
       },
       services: {
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
         checkIf2FAEnabled,
-        shouldShowPasskeys,
         shouldShowSNSBanner,
       },
     },

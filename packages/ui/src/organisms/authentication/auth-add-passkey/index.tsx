@@ -2,7 +2,7 @@ import { FC } from "react"
 
 import { BlurredLoader, Button } from "@nfid-frontend/ui"
 
-import Image from "./assets/add-passkey.svg"
+import Image from "./assets/passkey.webp"
 
 export interface AuthAddPasskeyProps {
   onSkip: () => void

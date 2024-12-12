@@ -28,10 +28,12 @@ import { AuthenticationMachineActor } from "./root-machine"
 export default function AuthenticationCoordinator({
   actor,
   isIdentityKit = false,
+  isEmbed = false,
   loader,
 }: {
   actor: AuthenticationMachineActor
   isIdentityKit?: boolean
+  isEmbed?: boolean
   loader?: ReactNode
 }) {
   const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
@@ -44,7 +46,11 @@ export default function AuthenticationCoordinator({
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({
       type: "AUTH_WITH_GOOGLE",
-      data: { jwt: credential, email: decodeJwt(credential).email as string },
+      data: {
+        jwt: credential,
+        email: decodeJwt(credential).email as string,
+        isEmbed,
+      },
     })
   }
 
@@ -103,12 +109,16 @@ export default function AuthenticationCoordinator({
           onSelectEmailAuth={(email: string) => {
             send({
               type: "AUTH_WITH_EMAIL",
-              data: email,
+              data: {
+                email,
+                isEmbed,
+              },
             })
           }}
           onSelectOtherAuth={() => {
             send({
               type: "AUTH_WITH_OTHER",
+              data: { isEmbed },
             })
           }}
           isLoading={isPasskeyLoading}
@@ -164,6 +174,7 @@ export default function AuthenticationCoordinator({
       return (
         <AuthAddPasskey
           isLoading={isAddPasskeyLoading}
+          email={state.context.email}
           onSkip={() => send({ type: "SKIP" })}
           onAdd={() => {
             setIsAddPasskeyLoading(true)
@@ -173,7 +184,6 @@ export default function AuthenticationCoordinator({
               .catch(() => send({ type: "BACK" }))
               .finally(() => setIsAddPasskeyLoading(false))
           }}
-          email={state.context.email}
         />
       )
     case state.matches("AddPasskeysSuccess"):

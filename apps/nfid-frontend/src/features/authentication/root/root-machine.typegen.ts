@@ -40,10 +40,6 @@ export interface Typegen0 {
       type: "error.platform.checkIf2FAEnabled"
       data: unknown
     }
-    "error.platform.shouldShowPasskeys": {
-      type: "error.platform.shouldShowPasskeys"
-      data: unknown
-    }
     "error.platform.shouldShowSNSBanner": {
       type: "error.platform.shouldShowSNSBanner"
       data: unknown
@@ -54,7 +50,6 @@ export interface Typegen0 {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
-    shouldShowPasskeys: "done.invoke.shouldShowPasskeys"
     shouldShowSNSBanner: "done.invoke.shouldShowSNSBanner"
   }
   missingImplementations: {
@@ -70,6 +65,7 @@ export interface Typegen0 {
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
     assignEmail: "AUTH_WITH_GOOGLE"
+    assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
     assignShowPasskeys: "done.invoke.shouldShowPasskeys"
     assignShowSNSBanner: "done.invoke.shouldShowSNSBanner"
     assignVerificationEmail: "AUTH_WITH_EMAIL"

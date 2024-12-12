@@ -167,11 +167,7 @@ const AuthenticationMachine =
         },
         checkPasskeys: {
           invoke: {
-            //src: "shouldShowPasskeys",
-            src: (context, event) => {
-              console.log("shouldShowPasskeys", context, event)
-              return shouldShowPasskeys(context)
-            },
+            src: (context) => shouldShowPasskeys(context),
             id: "shouldShowPasskeys",
             onDone: [
               {

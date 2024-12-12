@@ -86,10 +86,7 @@ export const checkIf2FAEnabled = async (context: AuthenticationContext) => {
 }
 
 export const shouldShowPasskeys = async (context: AuthenticationContext) => {
-  console.log("isEmbed context", context)
-  if (context.isEmbed) return { showPasskeys: false }
-
-  if (!isWebAuthNSupported()) return { showPasskeys: false }
+  if (!isWebAuthNSupported() || context.isEmbed) return { showPasskeys: false }
 
   try {
     const hasPasskeys = await passkeyConnector.hasPasskeys()

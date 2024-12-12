@@ -12,13 +12,11 @@ import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
 import { passkeyConnector } from "./auth-selection/passkey-flow/services"
-import { SNS_STEP_VISITED } from "./constants"
 import { AuthenticationContext } from "./root/root-machine"
 
 export async function getLegacyThirdPartyAuthSession(
   authRequest: AuthorizationRequest,
   selectedPersonaId?: string,
-  targets: string[] = [],
 ): Promise<ThirdPartyAuthSession> {
   console.debug("getLegacyThirdPartyAuthSession", { authRequest })
   if (!authRequest) throw new Error("No auth request")

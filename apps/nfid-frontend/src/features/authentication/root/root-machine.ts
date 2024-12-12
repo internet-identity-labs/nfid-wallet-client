@@ -50,7 +50,6 @@ export type Events =
   | { type: "AUTH_WITH_OTHER"; data: { isEmbed: boolean } }
   | { type: "AUTHENTICATED"; data?: AbstractAuthSession }
   | { type: "BACK" }
-  | { type: "RETRY" }
   | { type: "CONTINUE" }
   | { type: "SKIP" }
   | { type: "DONE" }
@@ -80,7 +79,7 @@ const AuthenticationMachine =
               actions: ["assignEmail", "assignIsEmbed"],
             },
             AUTH_WITH_OTHER: {
-              target: ["OtherSignOptions"],
+              target: "OtherSignOptions",
               actions: "assignIsEmbed",
             },
             AUTHENTICATED: {
@@ -93,7 +92,7 @@ const AuthenticationMachine =
           invoke: {
             src: "AuthWithGoogleMachine",
             id: "AuthWithGoogleMachine",
-            data: (_, event: { data: { jwt: string; email: string } }) => {
+            data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
               return { jwt: event.data.jwt }
             },
             onDone: [
@@ -113,7 +112,7 @@ const AuthenticationMachine =
           invoke: {
             src: "AuthWithEmailMachine",
             id: "AuthWithEmailMachine",
-            data: (context, _) => ({
+            data: (context) => ({
               authRequest: context?.authRequest,
               appMeta: context?.appMeta,
               verificationEmail: context?.verificationEmail,

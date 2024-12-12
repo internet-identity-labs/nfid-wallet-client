@@ -30,6 +30,7 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
+import { SNS_STEP_VISITED } from "../../constants"
 import { getLegacyThirdPartyAuthSession } from "../../services"
 import { PublicProfileButton } from "../public-profile-button"
 import { TokenLaunch } from "./token-launch"
@@ -419,7 +420,7 @@ export const AuthChooseAccount = ({
               <Button
                 id="connect"
                 onClick={() => {
-                  if (!!localStorage.getItem("sns-step-visited")) onSubmit()
+                  if (!!localStorage.getItem(SNS_STEP_VISITED)) onSubmit()
                   else {
                     setShowTokenLaunch(true)
                   }

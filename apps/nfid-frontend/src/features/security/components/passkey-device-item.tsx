@@ -70,7 +70,7 @@ export const PasskeyDeviceItem = ({
       <td className="w-6">
         <div className="relative w-6 shrink-0" ref={ref}>
           <IconCmpDots
-            className="text-secondary cursor-pointer hover:text-black shrink-0"
+            className="cursor-pointer text-secondary hover:text-black shrink-0"
             onClick={(e) => {
               e.preventDefault()
               setIsTooltipOpen(!isTooltipOpen)

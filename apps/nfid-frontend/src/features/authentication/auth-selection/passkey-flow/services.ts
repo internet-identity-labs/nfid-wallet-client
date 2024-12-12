@@ -121,12 +121,32 @@ export class PasskeyConnector {
     }
   }
 
+  async getDevices() {
+    const { data } = await im.read_access_points()
+
+    if (!data?.length) throw new Error("No devices found")
+    return data
+  }
+
+  async hasPasskeys(): Promise<boolean> {
+    try {
+      const devices = await this.getDevices()
+      return devices[0].some(
+        (d) =>
+          DeviceType.Passkey in d.device_type ||
+          DeviceType.Unknown in d.device_type,
+      )
+    } catch (e) {
+      console.error("Passkey error: ", e)
+      throw new Error((e as Error).message)
+    }
+  }
+
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
     const { delegationIdentity } = authState.get()
-    const { data: imDevices } = await im.read_access_points()
+    const imDevices = await this.getDevices()
 
     if (!delegationIdentity) throw new Error("Delegation identity not found")
-    if (!imDevices?.length) throw new Error("No devices found")
 
     const passkeys = imDevices[0].filter(
       (d) =>
@@ -259,8 +279,7 @@ export class PasskeyConnector {
     let allowedPasskeys: string[] = allowedDevices ?? []
 
     if (!allowedPasskeys?.length) {
-      const { data: imDevices } = await im.read_access_points()
-      if (!imDevices?.length) throw new Error("No devices found")
+      const imDevices = await this.getDevices()
 
       allowedPasskeys = imDevices[0]
         .filter(

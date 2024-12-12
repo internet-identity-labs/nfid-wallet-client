@@ -24,15 +24,15 @@ When(/^User clicks the ShowHide button of (.*) token$/, async (tokenName: string
 })
 
 When(/^User filters tokens by (.*)$/, async (token: string) => {
-  await Assets.ManageTokensDialog.filterField().setValue(token)
+  await Assets.ManageTokensDialog.filterField.setValue(token)
 })
 
 When(
   /^User sets the token ([^"]+) to be displayed if needed$/,
   async (tokenName: string) => {
     if (!await Assets.tokenLabel(tokenName).isDisplayed()) {
-      await Assets.ManageTokensDialog.manageTokensDialogButton().click()
-      await Assets.ManageTokensDialog.filterField().setValue(tokenName)
+      await Assets.ManageTokensDialog.manageTokensDialogButton.click()
+      await Assets.ManageTokensDialog.filterField.setValue(tokenName)
       await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).then(async (it) => {
         await it.waitForDisplayed()
         await browser.pause(1500)

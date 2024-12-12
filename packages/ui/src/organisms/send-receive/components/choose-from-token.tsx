@@ -84,6 +84,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
   return (
     <div
+      id={"sourceSection"}
       className={clsx(
         "border rounded-[12px] p-4 h-[100px]",
         errors["amount"] ? "ring border-red-600 ring-red-100" : "border-black",
@@ -91,6 +92,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     >
       <div className="flex items-center justify-between">
         <InputAmount
+          id={"choose-from-token-amount"}
           disabled={!Boolean(initedToken)}
           isLoading={false}
           decimals={decimals}
@@ -111,12 +113,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         />
         <div className="py-[6px] pl-[6px] pr-[12px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
           <ChooseFtModal
+            searchInputId={"sourceTokenSearchInput"}
             tokens={tokens}
             title={title}
             onSelect={setFromChosenToken}
             trigger={
               <div
-                id={`token_${token.getTokenName()}_${token.getTokenAddress()}`}
+                id={`sourceToken_${token.getTokenName()}_${token.getTokenAddress()}`}
                 className="flex items-center cursor-pointer shrink-0"
               >
                 <ImageWithFallback
@@ -147,7 +150,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             onClick={maxHandler}
           >
             {balance === undefined ? (
-              <span id="balance">
+              <span id="choose-from-token-balance">
                 {initedToken ? (
                   <>
                     {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;

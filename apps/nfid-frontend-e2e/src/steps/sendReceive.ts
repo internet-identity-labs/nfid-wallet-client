@@ -33,7 +33,7 @@ Then(
   /^Verifying that the balance is calculated as ([^"]*) and fee is calculated as ([^"]*)/,
   async (balance: string, fee: string) => {
     await softAssertAll(
-      async () => expect(await Assets.getBalance.getText()).toContain(balance),
+      async () => expect(await Assets.getSourceTokenBalance.getText()).toContain(balance),
       async () => expect(await Assets.getFee.getText()).toContain(fee),
     )
   },

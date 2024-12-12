@@ -113,7 +113,10 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         !isOpen && "hidden",
       )}
     >
-      <div className="flex-grow text-center">
+      <div
+        className="flex-grow text-center"
+        id={"swap-success-title"}
+      >
         <H5 className="mt-5 text-xl leading-6">
           {isCompleted ? "Swap successful" : "Swapping"}
         </H5>
@@ -191,6 +194,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           </div>
         </div>
         <Button
+          id={"swap-success-close-button"}
           type="primary"
           block
           className="mt-[30px] !text-[16px]"

@@ -11,7 +11,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
-  ({ decimals, disabled, isLoading = false, value, name, onChange }, ref) => {
+  ({ id, decimals, disabled, isLoading = false, value, name, onChange }, ref) => {
     const fontSize = useMemo(() => {
       if (!value) return 34
       if (value.length > 16) {
@@ -51,7 +51,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
               onChange?.(e)
             }}
             disabled={disabled}
-            id="amount"
+            id={id}
             className={clsx(
               "min-w-0 font-semibold leading-10 bg-transparent",
               "outline-none border-none focus:ring-0 p-0 max-w-[160px] sm:max-w-[230px]",

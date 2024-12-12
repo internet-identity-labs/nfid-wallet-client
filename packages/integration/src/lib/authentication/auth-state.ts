@@ -1,23 +1,17 @@
-import { SignIdentity } from "@dfinity/agent"
-import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
+import {SignIdentity} from "@dfinity/agent"
+import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
+import {BehaviorSubject, find, lastValueFrom, map} from "rxjs"
 
-import { agent } from "../agent"
-import { isDelegationExpired } from "../agent/is-delegation-expired"
-import { Environment } from "../constant/env.constant"
-import { requestFEDelegation } from "./frontend-delegation"
-import { setupSessionManager } from "./session-handling"
-import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
-import {
-  createUserIdData,
-  deserializeUserIdData,
-  serializeUserIdData,
-  UserIdData,
-} from "./user-id-data"
+import {agent} from "../agent"
+import {isDelegationExpired} from "../agent/is-delegation-expired"
+import {Environment} from "../constant/env.constant"
+import {requestFEDelegation} from "./frontend-delegation"
+import {setupSessionManager} from "./session-handling"
+import {authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY} from "./storage"
+import {createUserIdData, deserializeUserIdData, serializeUserIdData, UserIdData,} from "./user-id-data"
+import {getPasskey} from "../lambda/passkey";
+import base64url from "base64url";
+import {fromHexString} from "@dfinity/candid/lib/cjs/utils/buffer";
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -29,6 +23,9 @@ interface ObservableAuthState {
   activeDevicePrincipalId?: string
   userIdData?: UserIdData
 }
+
+export const EXPECTED_CACHE_VERSION = "0"
+export const CACHE_VERSION_KEY = "CACHE_VERSION"
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
   cacheLoaded: false,
@@ -118,8 +115,8 @@ function makeAuthState() {
 
     let userIdData
 
-    //BigInt is not serializable in a good way
-    if (cachedUserIdData) {
+    const currentCacheVersion = await authStorage.get(CACHE_VERSION_KEY)
+    if (cachedUserIdData && currentCacheVersion === EXPECTED_CACHE_VERSION) {
       userIdData = deserializeUserIdData(cachedUserIdData as string)
     } else {
       userIdData = await createUserIdData(delegationIdentity)
@@ -285,6 +282,51 @@ export function replaceIdentity(identity: SignIdentity, calledFrom?: string) {
 
 function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
   return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
+}
+
+export async function getAllWalletsFromThisDevice() {
+  const currentCacheVersion = await authStorage.get(CACHE_VERSION_KEY)
+  if (currentCacheVersion === EXPECTED_CACHE_VERSION) {
+    return []
+  }
+  const walletKeys = authStorage.getAllKeys().then((keys) =>
+    keys.filter((key) => key.startsWith("user_profile_data_")),
+  )
+  const wallets = await walletKeys.then((keys) =>
+    Promise.all(keys.map((key) => authStorage.get(key)),
+  ))
+  const profiles = wallets.map((wallet) => {
+    return deserializeUserIdData(wallet as string)
+  })
+
+  const profilesData = profiles.map((profile) => {
+    return { email: profile.email, principal: profile.userId, credentialIds: profile.accessPoints.map(l=>
+        l.credentialId)
+        .filter((id) => id !== undefined) }
+  }).filter((profile) => profile.credentialIds.length > 0)
+
+  const credentials = profilesData.map((profile) => profile.credentialIds).flat()
+
+  const passkey = credentials.length > 0 ? await getPasskey(credentials) : []
+  const decodedObject = passkey.map((p) => (JSON.parse(p.data)))
+  console.debug("passkeys", { decodedObject })
+
+  const allowedPasskeys = decodedObject.map((p) => {
+    return {
+      ...p,
+      credentialId: base64url.toBuffer(p.credentialId),
+      publicKey: fromHexString(p.publicKey),
+    }
+  })
+
+  return profilesData.map((profile) => {
+    return {
+      ...profile,
+      allowedPasskeys: allowedPasskeys.filter((p) => {
+        return profile.credentialIds.includes(base64url.encode(p.credentialId))
+      }),
+    }
+  })
 }
 
 export const authState = makeAuthState()

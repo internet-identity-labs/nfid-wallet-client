@@ -98,6 +98,7 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
     browser: accessPoint.browser,
     lastUsed: Number(accessPoint.last_used),
     principalId: accessPoint.principal_id,
+    credentialId: accessPoint.credential_id ? accessPoint.credential_id[0] : undefined,
   }
 }
 

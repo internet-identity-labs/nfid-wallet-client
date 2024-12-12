@@ -116,4 +116,19 @@ export class IdbKeyVal implements KeyValueStore {
   public async clear() {
     return await _clear(this._db, this._storeName)
   }
+
+  public async getAllKeys(): Promise<string[]> {
+    const tx = this._db.transaction(this._storeName, 'readonly')
+    const store = tx.objectStore(this._storeName)
+    const keys: string[] = []
+    let cursor = await store.openCursor()
+
+    while (cursor) {
+      keys.push(cursor.key as string)
+      cursor = await cursor.continue()
+    }
+
+    return keys
+  }
+
 }

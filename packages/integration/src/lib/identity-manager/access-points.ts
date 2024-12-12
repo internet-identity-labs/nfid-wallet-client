@@ -29,4 +29,5 @@ export interface AccessPointCommon {
 export interface AccessPoint extends AccessPointCommon {
   lastUsed: number
   principalId: string
+  credentialId: string | undefined
 }

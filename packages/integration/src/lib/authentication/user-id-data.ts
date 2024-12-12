@@ -1,9 +1,10 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { im, replaceActorIdentity } from "../actors"
-import { getPublicKey } from "../delegation-factory/delegation-i"
-import { RootWallet } from "../identity-manager/profile"
-import { hasOwnProperty } from "../test-utils"
+import {im, replaceActorIdentity} from "../actors"
+import {getPublicKey} from "../delegation-factory/delegation-i"
+import {RootWallet} from "../identity-manager/profile"
+import {fetchProfile} from "src/integration/identity-manager";
+import {AccessPoint} from "@nfid/integration";
 
 export type UserIdData = {
   //internal user id
@@ -12,6 +13,8 @@ export type UserIdData = {
   publicKey: string
   anchor: bigint
   wallet: RootWallet
+  email?: string
+  accessPoints: AccessPoint[]
 }
 
 type SerializedUserIdData = Omit<UserIdData, "anchor"> & {
@@ -30,20 +33,19 @@ export function deserializeUserIdData(userIdData: string) {
   return { ...parsed, anchor: BigInt(parsed.anchor) }
 }
 
-export async function createUserIdData(delegationIdentity: DelegationIdentity) {
+export async function createUserIdData(delegationIdentity: DelegationIdentity) : Promise<UserIdData> {
   await replaceActorIdentity(im, delegationIdentity)
   const [publicKey, account] = await Promise.all([
     getPublicKey(delegationIdentity),
-    im.get_account(),
+    fetchProfile(),
   ])
-  const rootWallet: RootWallet = hasOwnProperty(account.data[0]!.wallet, "II")
-    ? RootWallet.II
-    : RootWallet.NFID
 
   return {
-    userId: account.data[0]!.principal_id,
+    userId: account.principalId,
     publicKey: publicKey,
-    anchor: account.data[0]!.anchor,
-    wallet: rootWallet,
+    anchor: BigInt(account.anchor),
+    wallet: account.wallet,
+    email: account.email,
+    accessPoints: account.accessPoints,
   }
 }

@@ -32,7 +32,7 @@ import {
   ii,
   im,
   requestFEDelegationChain,
-  storePasskey,
+  storePasskey, getAllWalletsFromThisDevice,
 } from "@nfid/integration"
 
 import isSafari from "frontend/features/security/utils"
@@ -231,6 +231,13 @@ export class PasskeyConnector {
     callback?: () => void,
     allowedPasskeys: CredentialData[] = [],
   ) {
+    const allWallets = await getAllWalletsFromThisDevice()
+    //TODO choose wallet from the UI
+    // debugger
+    // const expectedWallet = allWallets[0]
+    //
+    // allowedPasskeys.push(...expectedWallet.allowedPasskeys)
+
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       allowedPasskeys,
       false,

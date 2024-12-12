@@ -80,6 +80,7 @@ export function factoryAccessPoint(principal?: Principal): AccessPoint {
     browser: "string",
     lastUsed: new Date().getTime(),
     principalId: "string",
+    credentialId: "string"
   }
 }
 

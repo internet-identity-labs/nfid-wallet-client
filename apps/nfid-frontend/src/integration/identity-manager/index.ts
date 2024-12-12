@@ -32,6 +32,7 @@ import {
   WalletVariant,
 } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
+import {passkeyConnector} from "src/features/authentication/auth-selection/passkey-flow/services";
 
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
@@ -328,6 +329,7 @@ export async function removeAccount() {
 }
 
 export async function removeAccessPoint(devicePrincipal: string) {
+  passkeyConnector.removeAccessPoint(devicePrincipal)
   await im
     .remove_access_point({
       pub_key: devicePrincipal,

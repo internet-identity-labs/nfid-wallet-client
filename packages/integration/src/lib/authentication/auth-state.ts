@@ -12,6 +12,7 @@ import {createUserIdData, deserializeUserIdData, serializeUserIdData, UserIdData
 import {getPasskey} from "../lambda/passkey";
 import base64url from "base64url";
 import {fromHexString} from "@dfinity/candid/lib/cjs/utils/buffer";
+import {passkeyConnector} from "src/features/authentication/auth-selection/passkey-flow/services";
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -124,6 +125,7 @@ function makeAuthState() {
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
+      passkeyConnector.restorePasskeyList(userIdData.accessPoints)
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")

@@ -131,9 +131,14 @@ export class PasskeyConnector {
   async hasPasskeys(): Promise<boolean> {
     try {
       const devices = await this.getDevices()
-      return devices[0].some((d) => d.device === "Keychain")
-    } catch (_) {
-      throw new Error("No passkeys found")
+      return devices[0].some(
+        (d) =>
+          DeviceType.Passkey in d.device_type ||
+          DeviceType.Unknown in d.device_type,
+      )
+    } catch (e) {
+      console.error("Passkey error: ", e)
+      throw new Error((e as Error).message)
     }
   }
 

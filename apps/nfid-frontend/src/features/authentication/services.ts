@@ -95,8 +95,3 @@ export const shouldShowPasskeys = async (context: AuthenticationContext) => {
     return { showPasskeys: true }
   }
 }
-
-export const shouldShowSNSBanner = async () => {
-  const showBanner = localStorage.getItem(SNS_STEP_VISITED)
-  return { showSNSBanner: !Boolean(showBanner) }
-}

@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "": { type: "" }
     "done.invoke.AuthWithEmailMachine": {
       type: "done.invoke.AuthWithEmailMachine"
       data: unknown
@@ -23,11 +24,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.shouldShowSNSBanner": {
-      type: "done.invoke.shouldShowSNSBanner"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "error.platform.AuthWithEmailMachine": {
       type: "error.platform.AuthWithEmailMachine"
       data: unknown
@@ -40,17 +36,12 @@ export interface Typegen0 {
       type: "error.platform.checkIf2FAEnabled"
       data: unknown
     }
-    "error.platform.shouldShowSNSBanner": {
-      type: "error.platform.shouldShowSNSBanner"
-      data: unknown
-    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
-    shouldShowSNSBanner: "done.invoke.shouldShowSNSBanner"
   }
   missingImplementations: {
     actions: never
@@ -67,7 +58,6 @@ export interface Typegen0 {
     assignEmail: "AUTH_WITH_GOOGLE"
     assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
     assignShowPasskeys: "done.invoke.shouldShowPasskeys"
-    assignShowSNSBanner: "done.invoke.shouldShowSNSBanner"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
   }
   eventsCausingDelays: {}
@@ -76,7 +66,7 @@ export interface Typegen0 {
     isExistingAccount: "done.invoke.AuthWithGoogleMachine"
     isReturn: "done.invoke.AuthWithEmailMachine"
     showPasskeys: "done.invoke.shouldShowPasskeys"
-    showSNSBanner: "done.invoke.shouldShowSNSBanner"
+    showSNSBanner: ""
   }
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
@@ -85,11 +75,6 @@ export interface Typegen0 {
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
     shouldShowPasskeys: "done.invoke.checkIf2FAEnabled"
-    shouldShowSNSBanner:
-      | "AUTHENTICATED"
-      | "DONE"
-      | "SKIP"
-      | "done.invoke.shouldShowPasskeys"
   }
   matchesStates:
     | "AddPasskeys"

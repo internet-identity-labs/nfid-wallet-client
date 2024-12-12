@@ -9,11 +9,8 @@ import {
 } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
-import {
-  checkIf2FAEnabled,
-  shouldShowPasskeys,
-  shouldShowSNSBanner,
-} from "../services"
+import { SNS_STEP_VISITED } from "../constants"
+import { checkIf2FAEnabled, shouldShowPasskeys } from "../services"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -31,7 +28,6 @@ export interface AuthenticationContext {
   email2FA?: string
   email?: string
   showPasskeys?: boolean
-  showSNSBanner?: boolean
   isEmbed?: boolean
 }
 
@@ -45,10 +41,6 @@ export type Events =
   | {
       type: "done.invoke.shouldShowPasskeys"
       data?: { showPasskeys: boolean }
-    }
-  | {
-      type: "done.invoke.shouldShowSNSBanner"
-      data?: { showSNSBanner: boolean }
     }
   | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
   | {
@@ -198,18 +190,13 @@ const AuthenticationMachine =
           },
         },
         checkSNSBanner: {
-          invoke: {
-            src: "shouldShowSNSBanner",
-            id: "shouldShowSNSBanner",
-            onDone: [
-              {
-                actions: "assignShowSNSBanner",
-                cond: "showSNSBanner",
-                target: "SNSBanner",
-              },
-              { target: "End" },
-            ],
-          },
+          always: [
+            {
+              cond: "showSNSBanner",
+              target: "SNSBanner",
+            },
+            { target: "End" },
+          ],
         },
         SNSBanner: {
           on: {
@@ -234,10 +221,9 @@ const AuthenticationMachine =
           if (showPasskeys === undefined) return true
           return showPasskeys
         },
-        showSNSBanner: (_, event) => {
-          const showSNSBanner = event.data?.showSNSBanner
-          if (showSNSBanner === undefined) return true
-          return showSNSBanner
+        showSNSBanner: () => {
+          const showBanner = localStorage.getItem(SNS_STEP_VISITED)
+          return !Boolean(showBanner)
         },
       },
       actions: {
@@ -256,9 +242,6 @@ const AuthenticationMachine =
         assignShowPasskeys: assign((_, event) => ({
           showPasskeys: event.data?.showPasskeys,
         })),
-        assignShowSNSBanner: assign((_, event) => ({
-          showSNSBanner: event.data?.showSNSBanner,
-        })),
         assignIsEmbed: assign((_, event) => ({
           isEmbed: event.data?.isEmbed,
         })),
@@ -267,7 +250,6 @@ const AuthenticationMachine =
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
         checkIf2FAEnabled,
-        shouldShowSNSBanner,
       },
     },
   )

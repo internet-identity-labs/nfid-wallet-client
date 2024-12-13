@@ -43,7 +43,7 @@ When(
         timeoutMsg: "Failed attempt to make the token visible",
       })
       await HomePage.clickOnLeftUpperCorner()
-      await browser.pause(10000)
+      await browser.pause(12000)
     }
   },
 )
@@ -92,7 +92,6 @@ Then(
   async (tokenName: string, presence: string) => {
     let isDisplayed
     await browser.waitUntil(async () => {
-      console.log(await Assets.tokenLabel(tokenName).selector)
       isDisplayed = await Assets.tokenLabel(tokenName).isDisplayed()
       return Boolean(presence) ? !isDisplayed : isDisplayed
     }, {

@@ -1,5 +1,6 @@
 import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
+
 import { storageWithTtl } from "@nfid/client-db"
 
 import { CertifiedResponse, validateTargets } from "./targets"

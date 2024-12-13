@@ -45,7 +45,7 @@ export const useAccount = () => {
         Number(account.anchor),
         accessPoint,
       )
-      shouldStoreLocalAccount && await setProfileToStorage(newAccount)
+      shouldStoreLocalAccount && (await setProfileToStorage(newAccount))
       refreshProfile()
       return newAccount
     },
@@ -60,7 +60,7 @@ export const useAccount = () => {
         .then(mapProfile)
 
       if (newAccount) {
-        shouldStoreLocalAccount && await setProfileToStorage(newAccount)
+        shouldStoreLocalAccount && (await setProfileToStorage(newAccount))
         refreshProfile()
       }
 

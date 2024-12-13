@@ -7,12 +7,11 @@ import {
 } from "@dfinity/identity"
 import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
-import { passkeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { Environment } from "../constant/env.constant"
-import { getPasskey } from "../lambda/passkey"
+import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
@@ -22,6 +21,7 @@ import {
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
+import { passkeyStorage, replaceActorIdentity } from "../actors";
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -134,8 +134,13 @@ function makeAuthState() {
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
-      passkeyConnector.restorePasskeyList(userIdData.accessPoints)
-    }
+      const identity = authState.get().delegationIdentity
+      if (!identity) return
+      await replaceActorIdentity(passkeyStorage, identity)
+      for (const accessPoint of userIdData.accessPoints.filter((ap) => ap.credentialId !== undefined)) {
+        const passkey = await getPasskey([accessPoint.credentialId!])
+        await storePasskey(passkey[0].key, passkey[0].data)
+      }    }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })

@@ -1,11 +1,16 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { fetchProfile } from "src/integration/identity-manager"
 
-import { AccessPoint, EXPECTED_CACHE_VERSION } from "@nfid/integration"
+import {
+  AccessPoint,
+  DeviceType,
+  EXPECTED_CACHE_VERSION,
+  Icon,
+} from "@nfid/integration"
 
 import { im, replaceActorIdentity } from "../actors"
 import { getPublicKey } from "../delegation-factory/delegation-i"
 import { RootWallet } from "../identity-manager/profile"
+import { hasOwnProperty } from "../test-utils"
 
 export type UserIdData = {
   //internal user id
@@ -42,16 +47,50 @@ export async function createUserIdData(
   await replaceActorIdentity(im, delegationIdentity)
   const [publicKey, account] = await Promise.all([
     getPublicKey(delegationIdentity),
-    fetchProfile(),
+    im.get_account(),
   ])
+  const rootWallet: RootWallet = hasOwnProperty(account.data[0]!.wallet, "II")
+    ? RootWallet.II
+    : RootWallet.NFID
 
   return {
-    userId: account.principalId,
+    userId: account.data[0]!.principal_id,
     publicKey: publicKey,
-    anchor: BigInt(account.anchor),
-    wallet: account.wallet,
-    email: account.email,
-    accessPoints: account.accessPoints,
+    anchor: account.data[0]!.anchor,
+    wallet: rootWallet,
+    email:
+      account.data[0]!.email.length !== 0
+        ? account.data[0]!.email[0]
+        : undefined,
+    accessPoints: account.data[0]!.access_points.map((accessPoint) => {
+      return {
+        deviceType: deviceTypeToDevice(accessPoint.device_type),
+        icon: accessPoint.icon as Icon,
+        device: accessPoint.device,
+        browser: accessPoint.browser,
+        lastUsed: Number(accessPoint.last_used),
+        principalId: accessPoint.principal_id,
+        credentialId: accessPoint.credential_id
+          ? accessPoint.credential_id[0]
+          : undefined,
+      }
+    }),
     cacheVersion: EXPECTED_CACHE_VERSION,
   }
+}
+
+export function deviceTypeToDevice(response: any): DeviceType {
+  if (hasOwnProperty(response, "Email")) {
+    return DeviceType.Email
+  }
+  if (hasOwnProperty(response, "Passkey")) {
+    return DeviceType.Passkey
+  }
+  if (hasOwnProperty(response, "Unknown")) {
+    return DeviceType.Unknown
+  }
+  if (hasOwnProperty(response, "Recovery")) {
+    return DeviceType.Recovery
+  }
+  throw Error("Unexpected enum value")
 }

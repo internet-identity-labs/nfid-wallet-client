@@ -53,9 +53,9 @@ When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
   await browser.waitUntil(async () => {
     return (
       (await Assets.SwapDialog.getTargetAmountField.isDisplayed()) &&
-      (await (
+      parseFloat(await (
         await Assets.SwapDialog.getTargetAmountField
-      ).getAttribute("value")) !== "0.00"
+      ).getAttribute("value")) > 0
     )
   })
   sourceTokenAmountToSwap = parseFloat(amount)

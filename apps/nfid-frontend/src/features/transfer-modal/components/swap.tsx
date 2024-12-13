@@ -41,7 +41,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
-  const [shroff, setShroff] = useState<Shroff | undefined>({} as Shroff)
+  const [shroff, setShroff] = useState<Shroff | undefined>()
   const [isShroffLoading, setIsShroffLoading] = useState(true)
   const [swapStep, setSwapStep] = useState<SwapStage>(0)
   const [shroffError, setShroffError] = useState<Error | undefined>()
@@ -138,19 +138,22 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     data: quote,
     isLoading: isQuoteLoading,
     mutate: refetchQuote,
+    error,
     isValidating: isQuoteValidating,
   } = useSWR(
     toToken && fromToken && amount && shroff
       ? [toToken.getTokenAddress(), fromToken.getTokenAddress(), amount]
       : null,
-    () => getQuoteData(amount, shroff),
-    {
-      onError: (error) => {
-        if (error instanceof LiquidityError) setLiquidityError(error)
-      },
-      onSuccess: () => {
+    async () => {
+      try {
+        const res = await getQuoteData(amount, shroff)
         setLiquidityError(undefined)
-      },
+        return res
+      } catch (e) {
+        if (error instanceof LiquidityError) setLiquidityError(error)
+      }
+    },
+    {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
@@ -178,7 +181,15 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
   useEffect(() => {
     if (!shroff) return
-    refetchQuote(() => getQuoteData(amount, shroff), true)
+    refetchQuote(async () => {
+      try {
+        const res = await getQuoteData(amount, shroff)
+        setLiquidityError(undefined)
+        return res
+      } catch (error) {
+        if (error instanceof LiquidityError) setLiquidityError(error)
+      }
+    }, true)
   }, [toToken, fromToken, refetchQuote, amount, shroff])
 
   const refresh = () => {

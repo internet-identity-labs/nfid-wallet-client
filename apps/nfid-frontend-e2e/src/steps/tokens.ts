@@ -51,7 +51,7 @@ When(
         timeoutMsg: "Failed attempt to make the token visible",
       })
       await HomePage.clickOnLeftUpperCorner()
-      await browser.pause(10000)
+      await browser.pause(12000)
     }
   },
 )

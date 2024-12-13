@@ -3,13 +3,14 @@ import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import useSWR, { mutate } from "swr"
+import { useSWR } from "@nfid/swr"
 
 import {
   CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { mutate } from "@nfid/swr"
 
 import {
   DepositError,

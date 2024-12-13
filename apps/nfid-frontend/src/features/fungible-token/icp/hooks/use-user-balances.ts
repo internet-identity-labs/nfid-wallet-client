@@ -1,4 +1,4 @@
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { fetchBalances } from "frontend/features/fungible-token/fetch-balances"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"

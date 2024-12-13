@@ -5,7 +5,7 @@ import {
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import React from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { im, Icon } from "@nfid/integration"
 

@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { Loader } from "@nfid-frontend/ui"
 

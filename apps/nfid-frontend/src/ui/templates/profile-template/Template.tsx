@@ -18,12 +18,12 @@ import {
   useEffect,
 } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { useSWR } from "@nfid/swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {

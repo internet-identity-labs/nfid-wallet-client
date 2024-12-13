@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { NFTs } from "packages/ui/src/organisms/nfts"
 import { useState } from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { Button } from "@nfid-frontend/ui"
 

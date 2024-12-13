@@ -8,6 +8,7 @@ import {
 import { useCallback, useContext, useEffect, useMemo } from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 
 import { ProfileContext } from "frontend/provider"
 
@@ -15,7 +16,6 @@ import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { SwapFT } from "./components/swap"
-import { authState } from "@nfid/integration"
 
 export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)

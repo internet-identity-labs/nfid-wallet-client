@@ -10,6 +10,7 @@ import {
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
 import { ii, vault as vaultAPI, vaultAnonymous } from "../actors"
+import { authState } from "../authentication"
 import { GLOBAL_ORIGIN } from "../delegation-factory/delegation-i"
 import { RootWallet } from "../identity-manager/profile"
 import {
@@ -34,7 +35,6 @@ import {
   VaultRole,
   Wallet,
 } from "./types"
-import { authState } from "../authentication"
 
 export async function registerVault(
   vaultName: string,

@@ -203,7 +203,9 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     if (!connectedAccountsJSON)
       throw new GenericError("We couldn't find connected account")
 
-    const connectedAccounts = JSON.parse(connectedAccountsJSON as string) as Account[]
+    const connectedAccounts = JSON.parse(
+      connectedAccountsJSON as string,
+    ) as Account[]
     const sender = connectedAccounts.find(
       (acc) => acc.principal === senderPrincipal,
     )

@@ -53,7 +53,8 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
     <>
       <div
         id={"targetSection"}
-        className="rounded-[12px] p-4 h-[102px] bg-gray-100">
+        className="rounded-[12px] p-4 h-[102px] bg-gray-100"
+      >
         <div className="flex items-center justify-between">
           <InputAmount
             id={"choose-to-token-amount"}
@@ -123,8 +124,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />
             )}
           </p>
-          <div
-            className="mt-2 text-xs leading-5 text-right text-gray-500">
+          <div className="mt-2 text-xs leading-5 text-right text-gray-500">
             Balance:&nbsp;
             <span id={"choose-to-token-balance"}>
               {initedToken ? (

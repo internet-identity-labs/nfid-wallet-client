@@ -25,7 +25,8 @@ import {
   ii,
   im,
   IPasskeyMetadata,
-  LambdaPasskeyDecoded, passkeyStorage, replaceActorIdentity,
+  LambdaPasskeyDecoded, migratePasskeys,
+  passkeyStorage, replaceActorIdentity,
   requestFEDelegationChain,
   RootWallet,
   storePasskey,
@@ -312,17 +313,7 @@ export class PasskeyConnector {
     if (apToRemove && apToRemove.credentialId) {
       //remove passkey and
       await passkeyStorage.remove_passkey(apToRemove.credentialId, authState.getUserIdData().anchor)
-      this.restorePasskeyList(accessPoints)
-    }
-  }
-
-  async restorePasskeyList(accessPoints: AccessPoint[]) {
-    const identity = authState.get().delegationIdentity
-    if (!identity) return
-    await replaceActorIdentity(passkeyStorage, identity)
-    for (const accessPoint of accessPoints.filter((ap) => ap.credentialId !== undefined)) {
-      const passkey = await getPasskey([accessPoint.credentialId!])
-      await storePasskey(passkey[0].key, passkey[0].data)
+      migratePasskeys(accessPoints)
     }
   }
 

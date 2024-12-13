@@ -22,6 +22,7 @@ import {
   UserIdData,
 } from "./user-id-data"
 import { passkeyStorage, replaceActorIdentity } from "../actors";
+import {AccessPoint} from "../identity-manager/access-points";
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -134,13 +135,9 @@ function makeAuthState() {
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
-      const identity = authState.get().delegationIdentity
-      if (!identity) return
-      await replaceActorIdentity(passkeyStorage, identity)
-      for (const accessPoint of userIdData.accessPoints.filter((ap) => ap.credentialId !== undefined)) {
-        const passkey = await getPasskey([accessPoint.credentialId!])
-        await storePasskey(passkey[0].key, passkey[0].data)
-      }    }
+      //soft migration of passkeys
+      migratePasskeys(userIdData.accessPoints)
+    }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
@@ -333,7 +330,7 @@ export async function getAllWalletsFromThisDevice() {
 
   const passkey = credentials.length > 0 ? await getPasskey(credentials) : []
   const decodedObject = passkey.map((p) => JSON.parse(p.data))
-  console.debug("passkeys", { decodedObject })
+  console.debug("passkeys", {decodedObject})
 
   const allowedPasskeys = decodedObject.map((p) => {
     return {
@@ -351,6 +348,16 @@ export async function getAllWalletsFromThisDevice() {
       }),
     }
   })
+}
+
+export async function migratePasskeys(accessPoints: AccessPoint[]) {
+  const identity = authState.get().delegationIdentity
+  if (!identity) return
+  await replaceActorIdentity(passkeyStorage, identity)
+  for (const accessPoint of accessPoints.filter((ap) => ap.credentialId !== undefined)) {
+    const passkey = await getPasskey([accessPoint.credentialId!])
+    await storePasskey(passkey[0].key, passkey[0].data)
+  }
 }
 
 export const authState = makeAuthState()

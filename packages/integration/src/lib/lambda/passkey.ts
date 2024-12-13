@@ -5,25 +5,11 @@ import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import { idlFactory as passkeyIDL } from "../_ic_api/passkey_storage"
 import { im, passkeyStorage } from "../actors"
 import { ic } from "../agent"
-import { ANCHOR_TO_GET_DELEGATION_FROM_DF } from "../delegation-factory/delegation-i"
 
 export async function storePasskey(key: string, data: string) {
   const account: HTTPAccountResponse = await im.get_account()
   const anchor = account.data[0]?.anchor
-  if (anchor && anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF) {
-    return await passkeyStorage.store_passkey(key, data)
-  }
-  const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY
-  return await fetch(passkeyURL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      key,
-      data,
-    }),
-  }).then(async (response) => {
-    if (!response.ok) throw new Error(await response.text())
-  })
+  return await passkeyStorage.store_passkey(key, data, anchor!)
 }
 
 export async function getPasskey(
@@ -36,25 +22,33 @@ export async function getPasskey(
     agent,
     canisterId: PASSKEY_STORAGE,
   })
-  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] = (await actorPasskey[
+  //try to get key from the canister
+  const canisterPasskeyEncoded: LambdaPasskeyEncoded[] = (await actorPasskey[
     "get_passkey"
   ](keys)) as LambdaPasskeyEncoded[]
-  if (lambdaPasskeyEncoded.length > 0) {
-    return lambdaPasskeyEncoded
+  const fromLambda = keys.filter((key) => {
+    return !canisterPasskeyEncoded.find((k) => k.key === key)
+  })
+  if (fromLambda.length === 0) {
+    return canisterPasskeyEncoded
   }
   const passkeyURL = ic.isLocal ? `/passkey` : AWS_PASSKEY
   const params = new URLSearchParams()
-  keys.forEach((key) => {
+  fromLambda.forEach((key) => {
     params.append("keys", key)
   })
   const queryString = params.toString()
-  return await fetch(`${passkeyURL}?${queryString}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then(async (response) => {
+  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] = await fetch(
+    `${passkeyURL}?${queryString}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    },
+  ).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
     return response.json()
   })
+  return canisterPasskeyEncoded.concat(lambdaPasskeyEncoded)
 }
 
 export interface IClientDataObj {

@@ -1,14 +1,22 @@
 import { SignIdentity } from "@dfinity/agent"
+import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   DelegationChain,
   DelegationIdentity,
+  DER_COSE_OID,
   Ed25519KeyIdentity,
+  wrapDER,
 } from "@dfinity/identity"
+import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
+import { PassKeyData } from "../_ic_api/passkey_storage.d"
+import { passkeyStorage, replaceActorIdentity } from "../actors"
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { Environment } from "../constant/env.constant"
+import { AccessPoint } from "../identity-manager/access-points"
+import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
@@ -29,6 +37,8 @@ interface ObservableAuthState {
   activeDevicePrincipalId?: string
   userIdData?: UserIdData
 }
+
+export const EXPECTED_CACHE_VERSION = "0"
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
   cacheLoaded: false,
@@ -118,15 +128,19 @@ function makeAuthState() {
 
     let userIdData
 
-    //BigInt is not serializable in a good way
     if (cachedUserIdData) {
       userIdData = deserializeUserIdData(cachedUserIdData as string)
-    } else {
+    }
+    if (
+      !cachedUserIdData ||
+      (userIdData && userIdData.cacheVersion !== EXPECTED_CACHE_VERSION)
+    ) {
       userIdData = await createUserIdData(delegationIdentity)
       await authStorage.set(
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
+      migratePasskeys(userIdData.accessPoints, delegationIdentity)
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
@@ -183,6 +197,18 @@ function makeAuthState() {
   }: SetProps) {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
+
+    const current = await authStorage.get(
+      getUserIdDataStorageKey(delegationIdentity),
+    )
+    if (
+      !current ||
+      deserializeUserIdData(current as string).cacheVersion !==
+        EXPECTED_CACHE_VERSION
+    ) {
+      //soft migration of passkeys
+      migratePasskeys(userIdData.accessPoints, delegationIdentity)
+    }
 
     await authStorage.set(
       getUserIdDataStorageKey(delegationIdentity),
@@ -285,6 +311,72 @@ export function replaceIdentity(identity: SignIdentity, calledFrom?: string) {
 
 function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
   return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
+}
+
+export async function getAllWalletsFromThisDevice() {
+  const walletKeys = authStorage
+    .getAllKeys()
+    .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
+  const wallets = await walletKeys.then((keys) =>
+    Promise.all(keys.map((key) => authStorage.get(key))),
+  )
+  const profiles = wallets
+    .map((wallet) => {
+      return deserializeUserIdData(wallet as string)
+    })
+    .filter((profile) => profile.cacheVersion === EXPECTED_CACHE_VERSION)
+  const profilesData = profiles.map((profile) => {
+    return {
+      email: profile.email,
+      principal: profile.userId,
+      credentialIds: profile.accessPoints
+        .map((l) => l.credentialId)
+        .filter((id) => id !== undefined),
+      anchor: profile.anchor,
+    }
+  })
+
+  const passkey: PassKeyData[][] = await Promise.all(
+    profilesData.map(async (profile) => {
+      return passkeyStorage.get_passkey_by_anchor(profile.anchor)
+    }),
+  )
+
+  const decodedObject = passkey.flat().map((p) => JSON.parse(p.data))
+  console.debug("passkeys", { decodedObject })
+  const allowedPasskeys = decodedObject.map((p) => {
+    return {
+      ...p,
+      credentialId: base64url.toBuffer(p.credentialId),
+      pubkey: wrapDER(fromHexString(p.publicKey), DER_COSE_OID) as any,
+    }
+  })
+
+  return profilesData
+    .map((profile) => {
+      return {
+        ...profile,
+        allowedPasskeys: allowedPasskeys.filter((p) => {
+          return profile.credentialIds.includes(
+            base64url.encode(p.credentialId),
+          )
+        }),
+      }
+    })
+    .filter((profile) => profile.allowedPasskeys.length > 0)
+}
+
+export async function migratePasskeys(
+  accessPoints: AccessPoint[],
+  identity: DelegationIdentity,
+) {
+  await replaceActorIdentity(passkeyStorage, identity)
+  for (const accessPoint of accessPoints.filter(
+    (ap) => ap.credentialId !== undefined,
+  )) {
+    const passkey = await getPasskey([accessPoint.credentialId!])
+    storePasskey(passkey[0].key, passkey[0].data)
+  }
 }
 
 export const authState = makeAuthState()

@@ -23,6 +23,7 @@ import {
 } from "./user-id-data"
 import { passkeyStorage, replaceActorIdentity } from "../actors";
 import {AccessPoint} from "../identity-manager/access-points";
+import {PassKeyData} from "../_ic_api/passkey_storage.d";
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -320,18 +321,20 @@ export async function getAllWalletsFromThisDevice() {
         credentialIds: profile.accessPoints
           .map((l) => l.credentialId)
           .filter((id) => id !== undefined),
+        anchor: profile.anchor,
       }
     })
     .filter((profile) => profile.credentialIds.length > 0)
 
-  const credentials = profilesData
-    .map((profile) => profile.credentialIds)
-    .flat()
+  const passkey: PassKeyData[][]  = (await Promise.all(
+    profilesData.map(async (profile) => {
+      return passkeyStorage.get_passkey_by_anchor(profile.anchor)
+    })
+  ) )
 
-  const passkey = credentials.length > 0 ? await getPasskey(credentials) : []
-  const decodedObject = passkey.map((p) => JSON.parse(p.data))
+  const decodedObject = passkey.flat()
+    .map((p) => JSON.parse(p.data))
   console.debug("passkeys", {decodedObject})
-
   const allowedPasskeys = decodedObject.map((p) => {
     return {
       ...p,

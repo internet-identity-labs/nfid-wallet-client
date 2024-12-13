@@ -80,8 +80,6 @@ function makeAuthState() {
 
   async function _loadAuthSessionFromCache() {
     console.debug("_loadAuthSessionFromCache", Date.now())
-    debugger
-
     let sessionKey
     let chain
     try {

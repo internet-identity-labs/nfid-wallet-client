@@ -26,8 +26,6 @@ export async function getPasskey(
   const canisterPasskeyEncoded: LambdaPasskeyEncoded[] = (await actorPasskey[
     "get_passkey"
   ](keys)) as LambdaPasskeyEncoded[]
-  //we are migration keys from lambda to canister
-  //TODO finish migration
   const fromLambda = keys.filter((key) => {
     return !canisterPasskeyEncoded.find((k) => k.key === key)
   })

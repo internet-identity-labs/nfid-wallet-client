@@ -15,10 +15,8 @@ import {getIsMobileDeviceMatch} from "packages/ui/src/utils/is-mobile"
 
 import {getBrowser} from "@nfid-frontend/utils"
 import {
-  AccessPoint,
   authState,
   DeviceType,
-  getAllWalletsFromThisDevice,
   getPasskey,
   IClientDataObj,
   Icon,
@@ -26,7 +24,7 @@ import {
   im,
   IPasskeyMetadata,
   LambdaPasskeyDecoded, migratePasskeys,
-  passkeyStorage, replaceActorIdentity,
+  passkeyStorage,
   requestFEDelegationChain,
   RootWallet,
   storePasskey,
@@ -223,13 +221,6 @@ export class PasskeyConnector {
     callback?: () => void,
     allowedPasskeys: CredentialData[] = [],
   ) {
-    const allWallets = await getAllWalletsFromThisDevice()
-    //TODO choose wallet from the UI
-    // debugger
-    // const expectedWallet = allWallets[0]
-    //
-    // allowedPasskeys.push(...expectedWallet.allowedPasskeys)
-
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       allowedPasskeys,
       false,

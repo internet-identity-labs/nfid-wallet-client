@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { fetchProfile } from "src/integration/identity-manager"
 
-import {AccessPoint, EXPECTED_CACHE_VERSION} from "@nfid/integration"
+import { AccessPoint, EXPECTED_CACHE_VERSION } from "@nfid/integration"
 
 import { im, replaceActorIdentity } from "../actors"
 import { getPublicKey } from "../delegation-factory/delegation-i"
@@ -27,7 +27,7 @@ export function serializeUserIdData(userIdData: UserIdData) {
   return JSON.stringify({
     ...userIdData,
     anchor: Number(userIdData.anchor.toString()),
-    cacheVersion: EXPECTED_CACHE_VERSION
+    cacheVersion: EXPECTED_CACHE_VERSION,
   })
 }
 
@@ -52,6 +52,6 @@ export async function createUserIdData(
     wallet: account.wallet,
     email: account.email,
     accessPoints: account.accessPoints,
-    cacheVersion: EXPECTED_CACHE_VERSION
+    cacheVersion: EXPECTED_CACHE_VERSION,
   }
 }

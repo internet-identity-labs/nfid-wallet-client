@@ -1,6 +1,7 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { passkeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
 import {
   AccessPoint,
@@ -32,7 +33,6 @@ import {
   WalletVariant,
 } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
-import {passkeyConnector} from "src/features/authentication/auth-selection/passkey-flow/services";
 
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
@@ -99,7 +99,9 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
     browser: accessPoint.browser,
     lastUsed: Number(accessPoint.last_used),
     principalId: accessPoint.principal_id,
-    credentialId: accessPoint.credential_id ? accessPoint.credential_id[0] : undefined,
+    credentialId: accessPoint.credential_id
+      ? accessPoint.credential_id[0]
+      : undefined,
   }
 }
 

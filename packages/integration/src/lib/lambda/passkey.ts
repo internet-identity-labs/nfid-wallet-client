@@ -40,10 +40,13 @@ export async function getPasskey(
     params.append("keys", key)
   })
   const queryString = params.toString()
-  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] = await fetch(`${passkeyURL}?${queryString}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then(async (response) => {
+  const lambdaPasskeyEncoded: LambdaPasskeyEncoded[] = await fetch(
+    `${passkeyURL}?${queryString}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    },
+  ).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
     return response.json()
   })

@@ -6,6 +6,7 @@ import { useState, useCallback } from "react"
 import { BlurredLoader, Button, Checkbox, IconCmpPlus } from "@nfid-frontend/ui"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
+import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 
 import { IHandleWithLoading } from ".."
 import isSafari from "../utils"
@@ -37,7 +38,14 @@ export const AddPasskey = ({
           })
           toaster.success("Device has been added")
         } catch (e) {
-          toaster.error((e as Error).message)
+          if (e instanceof Error) {
+            toaster.error(
+              ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)
+                ? "This device is already registered"
+                : e.message,
+            )
+          }
+          throw e
         }
       },
       () => setIsModalVisible(false),

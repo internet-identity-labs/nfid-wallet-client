@@ -4061,10 +4061,10 @@
     "@noble/hashes" "~1.5.0"
     "@scure/base" "~1.1.8"
 
-"@simplewebauthn/server@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@simplewebauthn/server/-/server-11.0.0.tgz#577eb8beefd1e371f09fbf9c99eac0c2ddf50599"
-  integrity sha512-zu8dxKcPiRUNSN2kmrnNOzNbRI8VaR/rL4ENCHUfC6PEE7SAAdIql9g5GBOd/wOVZolIsaZz3ccFxuGoVP0iaw==
+"@simplewebauthn/server@^12.0.0":
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/@simplewebauthn/server/-/server-12.0.0.tgz#437c67fccf6c89ca938995f59aa6c9546194d969"
+  integrity sha512-aJdTe9GikOk40U7Q5Mm/Sqkxcq4a2oPZAcLcnyqMyFqrUaOS6vdsZW8/H3Mnsw9umcr88pcgB7kozPPt+5wOBw==
   dependencies:
     "@hexagon/base64" "^1.1.27"
     "@levischuck/tiny-cbor" "^0.2.2"
@@ -4073,13 +4073,13 @@
     "@peculiar/asn1-rsa" "^2.3.8"
     "@peculiar/asn1-schema" "^2.3.8"
     "@peculiar/asn1-x509" "^2.3.8"
-    "@simplewebauthn/types" "^11.0.0"
+    "@simplewebauthn/types" "^12.0.0"
     cross-fetch "^4.0.0"
 
-"@simplewebauthn/types@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@simplewebauthn/types/-/types-11.0.0.tgz#f329abc4c1bc3b18d6c7a4346af9fdec90d8a67e"
-  integrity sha512-b2o0wC5u2rWts31dTgBkAtSNKGX0cvL6h8QedNsKmj8O4QoLFQFR3DBVBUlpyVEhYKA+mXGUaXbcOc4JdQ3HzA==
+"@simplewebauthn/types@^12.0.0":
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/@simplewebauthn/types/-/types-12.0.0.tgz#9b2ba09dfd951747f81dde0f77c6e34b7ac7f8a6"
+  integrity sha512-q6y8MkoV8V8jB4zzp18Uyj2I7oFp2/ONL8c3j8uT06AOWu3cIChc1au71QYHrP2b+xDapkGTiv+9lX7xkTlAsA==
 
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"

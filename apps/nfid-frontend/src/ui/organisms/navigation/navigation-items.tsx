@@ -68,10 +68,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
 
-  const isRegistered = React.useMemo(
-    () => !!storageProfile,
-    [storageProfile],
-  )
+  const isRegistered = React.useMemo(() => !!storageProfile, [storageProfile])
 
   const handleGoTo = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,

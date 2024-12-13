@@ -9,7 +9,8 @@ import {
 } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
-import { checkIf2FAEnabled } from "../services"
+import { SNS_STEP_VISITED } from "../constants"
+import { checkIf2FAEnabled, shouldShowPasskeys } from "../services"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -25,27 +26,33 @@ export interface AuthenticationContext {
   allowedDevices?: string[]
 
   email2FA?: string
+  email?: string
+  showPasskeys?: boolean
+  isEmbed?: boolean
 }
 
 export type Events =
-  | {
-      type: "done.invoke.AuthWithGoogleMachine"
-      data: AbstractAuthSession
-    }
-  | {
-      type: "done.invoke.AuthWithEmailMachine"
-      data: AbstractAuthSession
-    }
+  | { type: "done.invoke.AuthWithGoogleMachine"; data: AbstractAuthSession }
+  | { type: "done.invoke.AuthWithEmailMachine"; data: AbstractAuthSession }
   | {
       type: "done.invoke.checkIf2FAEnabled"
       data?: { allowedPasskeys: string[]; email?: string }
     }
-  | { type: "AUTH_WITH_EMAIL"; data: string }
-  | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
-  | { type: "AUTH_WITH_OTHER" }
+  | {
+      type: "done.invoke.shouldShowPasskeys"
+      data?: { showPasskeys: boolean }
+    }
+  | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
+  | {
+      type: "AUTH_WITH_GOOGLE"
+      data: { jwt: string; email: string; isEmbed: boolean }
+    }
+  | { type: "AUTH_WITH_OTHER"; data: { isEmbed: boolean } }
   | { type: "AUTHENTICATED"; data?: AbstractAuthSession }
   | { type: "BACK" }
-  | { type: "RETRY" }
+  | { type: "CONTINUE" }
+  | { type: "SKIP" }
+  | { type: "DONE" }
 
 export interface Schema {
   events: Events
@@ -65,13 +72,15 @@ const AuthenticationMachine =
           on: {
             AUTH_WITH_EMAIL: {
               target: "EmailAuthentication",
-              actions: "assignVerificationEmail",
+              actions: ["assignVerificationEmail", "assignIsEmbed"],
             },
             AUTH_WITH_GOOGLE: {
               target: "AuthWithGoogle",
+              actions: ["assignEmail", "assignIsEmbed"],
             },
             AUTH_WITH_OTHER: {
               target: "OtherSignOptions",
+              actions: "assignIsEmbed",
             },
             AUTHENTICATED: {
               actions: "assignAuthSession",
@@ -83,7 +92,7 @@ const AuthenticationMachine =
           invoke: {
             src: "AuthWithGoogleMachine",
             id: "AuthWithGoogleMachine",
-            data: (_, event: { data: { jwt: string } }) => {
+            data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
               return { jwt: event.data.jwt }
             },
             onDone: [
@@ -103,7 +112,7 @@ const AuthenticationMachine =
           invoke: {
             src: "AuthWithEmailMachine",
             id: "AuthWithEmailMachine",
-            data: (context, _) => ({
+            data: (context) => ({
               authRequest: context?.authRequest,
               appMeta: context?.appMeta,
               verificationEmail: context?.verificationEmail,
@@ -121,7 +130,7 @@ const AuthenticationMachine =
           on: {
             BACK: "AuthSelection",
             AUTHENTICATED: {
-              target: "End",
+              target: "checkSNSBanner",
               actions: "assignAuthSession",
             },
           },
@@ -136,11 +145,59 @@ const AuthenticationMachine =
                 target: "TwoFA",
                 actions: "assignAllowedDevices",
               },
-              { target: "End" },
+              { target: "checkPasskeys" },
             ],
           },
         },
         TwoFA: {
+          on: {
+            AUTHENTICATED: {
+              target: "checkSNSBanner",
+            },
+          },
+        },
+        checkPasskeys: {
+          invoke: {
+            src: (context) => shouldShowPasskeys(context),
+            id: "shouldShowPasskeys",
+            onDone: [
+              {
+                actions: "assignShowPasskeys",
+                cond: "showPasskeys",
+                target: "AddPasskeys",
+              },
+              { target: "checkSNSBanner" },
+            ],
+          },
+        },
+        AddPasskeys: {
+          on: {
+            BACK: "AuthSelection",
+            CONTINUE: {
+              target: "AddPasskeysSuccess",
+            },
+            SKIP: {
+              target: "checkSNSBanner",
+            },
+          },
+        },
+        AddPasskeysSuccess: {
+          on: {
+            DONE: {
+              target: "checkSNSBanner",
+            },
+          },
+        },
+        checkSNSBanner: {
+          always: [
+            {
+              cond: "showSNSBanner",
+              target: "SNSBanner",
+            },
+            { target: "End" },
+          ],
+        },
+        SNSBanner: {
           on: {
             AUTHENTICATED: {
               target: "End",
@@ -155,22 +212,37 @@ const AuthenticationMachine =
     },
     {
       guards: {
-        isExistingAccount: (context, event) => {
-          return !!event?.data?.anchor
+        isExistingAccount: (_, event) => !!event?.data?.anchor,
+        isReturn: (_, event) => !event.data,
+        is2FAEnabled: (_, event) => !!event.data,
+        showPasskeys: (_, event) => {
+          const showPasskeys = event.data?.showPasskeys
+          if (showPasskeys === undefined) return true
+          return showPasskeys
         },
-        isReturn: (context, event) => !event.data,
-        is2FAEnabled: (context, event) => !!event.data,
+        showSNSBanner: () => {
+          const showBanner = localStorage.getItem(SNS_STEP_VISITED)
+          return !Boolean(showBanner)
+        },
       },
       actions: {
         assignAuthSession: assign((_, event) => ({
           authSession: event.data,
         })),
-        assignVerificationEmail: assign((c, event) => ({
-          verificationEmail: event.data,
+        assignVerificationEmail: assign((_, event) => ({
+          verificationEmail: event.data.email,
         })),
-        assignAllowedDevices: assign((c, event) => ({
+        assignAllowedDevices: assign((_, event) => ({
           allowedDevices: event.data?.allowedPasskeys,
-          email2FA: event.data?.email,
+        })),
+        assignEmail: assign((_, event) => ({
+          email: event.data?.email,
+        })),
+        assignShowPasskeys: assign((_, event) => ({
+          showPasskeys: event.data?.showPasskeys,
+        })),
+        assignIsEmbed: assign((_, event) => ({
+          isEmbed: event.data?.isEmbed,
         })),
       },
       services: {

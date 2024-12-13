@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 
+import { SNS_STEP_VISITED } from "frontend/features/authentication/constants"
 import { ChooseAccount } from "frontend/ui/organisms/choose-account"
 
 import { Account } from "../../type"
@@ -49,7 +50,7 @@ const RPCComponentICRC34 = ({
         </>
       }
       onPrimaryButtonClick={() => {
-        if (!!localStorage.getItem("sns-step-visited")) {
+        if (!!localStorage.getItem(SNS_STEP_VISITED)) {
           onApprove(selectedProfile)
         } else {
           setShowTokenLaunch(true)

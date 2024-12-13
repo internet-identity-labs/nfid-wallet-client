@@ -10,7 +10,7 @@ import {
   authState,
   getPasskey,
   im,
-  replaceActorIdentity
+  replaceActorIdentity,
 } from "@nfid/integration"
 
 import { removeAccessPointFacade } from "frontend/integration/facade"

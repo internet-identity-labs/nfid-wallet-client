@@ -4,7 +4,7 @@ import Profile from "./profile.js"
 
 export class Assets {
   get amountField() {
-    return $("#amount")
+    return $("#choose-from-token-amount")
   }
 
   get sendDialogWindow() {
@@ -19,8 +19,8 @@ export class Assets {
     return $$('[id^="token_"]')
   }
 
-  public get getBalance() {
-    return $("#balance")
+  get getSourceTokenBalance() {
+    return $("#choose-from-token-balance")
   }
 
   public get switchSendType() {
@@ -52,7 +52,7 @@ export class Assets {
   }
 
   get tokensTab() {
-    return $("tab_Tokens")
+    return $("#tab_Tokens")
   }
 
   get NFTtab() {
@@ -75,6 +75,10 @@ export class Assets {
     return $("svg.mr-2")
   }
 
+  get swapButton() {
+    return $("#swapButton")
+  }
+
   public async tokenOptionsButton(tokenName: string) {
     return $(`#${tokenName}_options`)
   }
@@ -82,9 +86,12 @@ export class Assets {
   public async tokenBalance(tokenName: string) {
     let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
     await locator.waitForDisplayed({ timeout: 10000 })
-    await browser.waitUntil(async () => {
-      return await locator.getText() != ""
-    }, { timeout: 10000, timeoutMsg: "Token balance isn't loaded in 10 sec" })
+    await browser.waitUntil(
+      async () => {
+        return (await locator.getText()) != ""
+      },
+      { timeout: 10000, timeoutMsg: "Token balance isn't loaded in 10 sec" },
+    )
     return locator
   }
 
@@ -115,7 +122,7 @@ export class Assets {
     await Nft.addressField.setValue(address)
     await this.amountField.setValue(amount)
 
-    await this.getBalance.waitForExist({ timeout: 10000 })
+    await this.getSourceTokenBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
 
     await this.sendDialogWindow.click()
@@ -218,7 +225,10 @@ export class Assets {
           await browser.refresh()
         }
       },
-      { timeout: 40000, timeoutMsg: "Element didn't load properly in 40sec" },
+      {
+        timeout: 40000,
+        timeoutMsg: `Element ${await waitForElement.selector} didn't load properly in 40sec`,
+      },
     )
   }
 
@@ -227,18 +237,56 @@ export class Assets {
   }
 
   public ManageTokensDialog = {
-
-    manageTokensDialogButton() {
+    get manageTokensDialogButton() {
       return $("#importToken")
     },
     tokenShowHideButton(tokenName) {
       return $(`#${tokenName}_showHideButton`)
     },
-    filterField() {
+    get filterField() {
       return $("#search")
     },
   }
 
+  public SwapDialog = {
+    get swapTokensButton() {
+      return $("#swapTokensButton")
+    },
+
+    get successTitle() {
+      return $("#swap-success-title")
+    },
+
+    get closeButton() {
+      return $("#swap-success-close-button")
+    },
+
+    getChooseTokenModalButton(tokenRole: string) {
+      return $(`#${tokenRole}Section #choose_modal`)
+    },
+
+    getSearchTokenInputField(tokenRole: string) {
+      return $(`#${tokenRole}TokenSearchInput`)
+    },
+
+    getTokenByNameFromList(tokenRole: string, token: string) {
+      return $(
+        `//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`,
+      )
+    },
+
+    get getTargetAmountField() {
+      return $("#choose-to-token-amount")
+    },
+
+    get getSourceAmountField() {
+      return $("#choose-from-token-amount")
+    },
+
+    get getTargetTokenBalance() {
+      return $("#choose-to-token-balance")
+    },
+  }
 }
 
 export default new Assets()

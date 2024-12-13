@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "": { type: "" }
     "done.invoke.AuthWithEmailMachine": {
       type: "done.invoke.AuthWithEmailMachine"
       data: unknown
@@ -15,6 +16,11 @@ export interface Typegen0 {
     }
     "done.invoke.checkIf2FAEnabled": {
       type: "done.invoke.checkIf2FAEnabled"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.shouldShowPasskeys": {
+      type: "done.invoke.shouldShowPasskeys"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -49,6 +55,9 @@ export interface Typegen0 {
       | "AUTHENTICATED"
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+    assignEmail: "AUTH_WITH_GOOGLE"
+    assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
+    assignShowPasskeys: "done.invoke.shouldShowPasskeys"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
   }
   eventsCausingDelays: {}
@@ -56,6 +65,8 @@ export interface Typegen0 {
     is2FAEnabled: "done.invoke.checkIf2FAEnabled"
     isExistingAccount: "done.invoke.AuthWithGoogleMachine"
     isReturn: "done.invoke.AuthWithEmailMachine"
+    showPasskeys: "done.invoke.shouldShowPasskeys"
+    showSNSBanner: ""
   }
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
@@ -63,14 +74,20 @@ export interface Typegen0 {
     checkIf2FAEnabled:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+    shouldShowPasskeys: "done.invoke.checkIf2FAEnabled"
   }
   matchesStates:
+    | "AddPasskeys"
+    | "AddPasskeysSuccess"
     | "AuthSelection"
     | "AuthWithGoogle"
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"
+    | "SNSBanner"
     | "TwoFA"
     | "check2FA"
+    | "checkPasskeys"
+    | "checkSNSBanner"
   tags: never
 }

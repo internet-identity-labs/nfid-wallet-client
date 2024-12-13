@@ -1,10 +1,11 @@
 import { Principal } from "@dfinity/principal"
 
+import { authState } from "@nfid/integration"
+
 import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
 
 import { GlauberTS } from "./search"
-import { authState } from "@nfid/integration"
 
 export const searchTokens = (tokens: NFT[], search: string) => {
   let result = tokens

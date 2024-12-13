@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import { useEffect } from "react"
 
+import { SNS_STEP_VISITED } from "frontend/features/authentication/constants"
+
 import coinsImg from "../../assets/coins.png"
 import colChartImg from "../../assets/column-chart.png"
 import daoImg from "../../assets/dao.png"
@@ -11,7 +13,7 @@ import { Wrapper } from "../wrapper"
 
 function SnsContent() {
   useEffect(() => {
-    localStorage.setItem("sns-page-visited", "true")
+    localStorage.setItem(SNS_STEP_VISITED, "true")
   }, [])
 
   return (
@@ -73,7 +75,7 @@ function SnsContent() {
             NFID Wallet — critical infrastructure to give anyone a voice in
             wallet development
           </h2>
-          <h3 className="text-sm md:text-lg text-white">
+          <h3 className="text-sm text-white md:text-lg">
             <span className="block mb-[15px]">
               When Bitcoin was introduced, it provided the first glimpse of what
               decentralization could achieve — a financial system without
@@ -105,7 +107,7 @@ function SnsContent() {
           <h2 className="font-bold text-[20px] sm:text-[28px] lg:text-[32px] leading-[140%] text-white mb-[20px] mt-[50px]">
             Decentralizing the future of NFID Wallet
           </h2>
-          <h3 className="text-sm md:text-lg text-white">
+          <h3 className="text-sm text-white md:text-lg">
             <span className="block mb-[15px]">
               Decentralization has always been the defining goal of NFID Wallet.
               ICP was specifically chosen as the foundation for NFID Wallet
@@ -128,7 +130,7 @@ function SnsContent() {
           <h2 className="font-bold text-[20px] sm:text-[28px] lg:text-[32px] leading-[140%] text-white mb-[20px] mt-[50px]">
             $NFIDW allocation and governance
           </h2>
-          <h3 className="text-sm md:text-lg text-white">
+          <h3 className="text-sm text-white md:text-lg">
             <span className="block mb-[15px]">
               To fully realize a decentralized governance structure, NFID Wallet
               is proposed to transition into a DAO through the ICP’s SNS
@@ -145,7 +147,7 @@ function SnsContent() {
         )}
       >
         <div className="md:w-full md:max-w-[834px] mx-auto">
-          <h3 className="text-sm md:text-lg text-white">
+          <h3 className="text-sm text-white md:text-lg">
             No single entity or individual will hold more than 10% of the
             initial token supply, ensuring broad and decentralized control. The
             initial token distribution for NFID Wallet DAO is structured as
@@ -165,7 +167,7 @@ function SnsContent() {
           <h2 className="font-bold text-[20px] sm:text-[28px] lg:text-[32px] leading-[140%] text-white mb-[20px]">
             Buyback-and-burn: a proposal for $NFIDW supply sustainability
           </h2>
-          <h3 className="text-sm md:text-lg text-white">
+          <h3 className="text-sm text-white md:text-lg">
             <span className="block mb-[15px]">
               While the decision for managing the $NFIDW supply lies with the
               NFID Wallet DAO, we propose that the community consider a model in
@@ -200,7 +202,7 @@ function SnsContent() {
           <h2 className="font-bold text-[20px] sm:text-[28px] lg:text-[32px] leading-[140%] text-white mb-[20px]">
             Call to claim $NFIDW and get involved
           </h2>
-          <h3 className="text-sm md:text-lg text-white">
+          <h3 className="text-sm text-white md:text-lg">
             <span className="block mb-[15px]">
               Join the{" "}
               <a

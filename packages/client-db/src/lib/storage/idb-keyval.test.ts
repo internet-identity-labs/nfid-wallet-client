@@ -1,5 +1,5 @@
+import nodeCrypto from "crypto"
 import "fake-indexeddb/auto"
-import  nodeCrypto from 'crypto'
 
 import { IdbKeyVal } from "./idb-keyval"
 

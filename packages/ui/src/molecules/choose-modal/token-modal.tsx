@@ -14,16 +14,17 @@ import { IoIosSearch } from "react-icons/io"
 import { ChooseTokenSkeleton } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 
 import { FT } from "frontend/integration/ft/ft"
 import { NFT } from "frontend/integration/nft/nft"
 
 import { useIntersectionObserver } from "../../organisms/send-receive/hooks/intersection-observer"
-import { authState } from "@nfid/integration"
 
 const INITED_TOKENS_LIMIT = 6
 
 export interface IChooseTokenModal<T> {
+  searchInputId: string
   tokens: T[]
   onSelect: (value: T) => void
   title: string
@@ -33,6 +34,7 @@ export interface IChooseTokenModal<T> {
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
+  searchInputId,
   tokens,
   onSelect,
   title,
@@ -131,6 +133,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
           </div>
         </div>
         <Input
+          id={searchInputId}
           type="text"
           placeholder="Search by token name"
           inputClassName="!border-black"

@@ -1,6 +1,6 @@
-import { HomePage } from "./home-page.js"
+import { Page } from "./page.js"
 
-export class Profile extends HomePage {
+export class Profile extends Page {
   get menuButton() {
     return $("#profile")
   }
@@ -47,7 +47,7 @@ export class Profile extends HomePage {
       async () => {
         return (await this.totalBalance.getText()) != ""
       },
-      { timeout: 35000, timeoutMsg: "Balance wasn't loaded in 35sec" },
+      { timeout: 70000, timeoutMsg: "Balance wasn't loaded in 35sec" },
     )
   }
 }

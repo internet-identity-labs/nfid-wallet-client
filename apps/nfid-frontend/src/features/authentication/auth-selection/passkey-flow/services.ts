@@ -146,10 +146,9 @@ export class PasskeyConnector {
 
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
     const { delegationIdentity } = authState.get()
-    const { data: imDevices } = await im.read_access_points()
+    const imDevices = await this.getDevices()
 
     if (!delegationIdentity) throw new Error("Delegation identity not found")
-    if (!imDevices?.length) throw new Error("No devices found")
 
     const passkeys = imDevices[0].filter(
       (d) =>

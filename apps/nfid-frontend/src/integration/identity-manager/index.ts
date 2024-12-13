@@ -1,18 +1,20 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { passkeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
 import {
   AccessPoint,
   AccessPointCommon,
   Account,
   Application,
+  authState,
   DeviceType,
   hasOwnProperty,
   Icon,
   im,
   mapOptional,
+  migratePasskeys,
+  passkeyStorage,
   Profile,
   replaceActorIdentity,
   reverseMapOptional,
@@ -331,7 +333,7 @@ export async function removeAccount() {
 }
 
 export async function removeAccessPoint(devicePrincipal: string) {
-  passkeyConnector.removeAccessPoint(devicePrincipal)
+  removeAccessPointFromCache(devicePrincipal)
   await im
     .remove_access_point({
       pub_key: devicePrincipal,
@@ -439,4 +441,21 @@ function deviceToDeviceVariant(dt: DeviceType): DeviceVariant {
       return { Unknown: null }
   }
   throw Error("Unexpected enum value")
+}
+
+async function removeAccessPointFromCache(devicePrincipalToRemove: string) {
+  const apToRemove = authState
+    .getUserIdData()
+    .accessPoints.find((ap) => ap.principalId === devicePrincipalToRemove)
+  const accessPoints = authState
+    .getUserIdData()
+    .accessPoints.filter((ap) => ap.principalId !== devicePrincipalToRemove)
+  authState.getUserIdData().accessPoints = accessPoints
+  if (apToRemove && apToRemove.credentialId) {
+    await passkeyStorage.remove_passkey(
+      apToRemove.credentialId,
+      authState.getUserIdData().anchor,
+    )
+    migratePasskeys(accessPoints, authState.get().delegationIdentity!)
+  }
 }

@@ -30,8 +30,6 @@ import {
   im,
   IPasskeyMetadata,
   LambdaPasskeyDecoded,
-  migratePasskeys,
-  passkeyStorage,
   requestFEDelegationChain,
   RootWallet,
   storePasskey,
@@ -303,23 +301,6 @@ export class PasskeyConnector {
         pubkey: wrapDER(p.publicKey, DER_COSE_OID) as any,
       })),
     )
-  }
-
-  async removeAccessPoint(devicePrincipalToRemove: string) {
-    const apToRemove = authState
-      .getUserIdData()
-      .accessPoints.find((ap) => ap.principalId === devicePrincipalToRemove)
-    const accessPoints = authState
-      .getUserIdData()
-      .accessPoints.filter((ap) => ap.principalId !== devicePrincipalToRemove)
-    authState.getUserIdData().accessPoints = accessPoints
-    if (apToRemove && apToRemove.credentialId) {
-      await passkeyStorage.remove_passkey(
-        apToRemove.credentialId,
-        authState.getUserIdData().anchor,
-      )
-      migratePasskeys(accessPoints, authState.get().delegationIdentity!)
-    }
   }
 
   private decodePublicKeyCredential(credential: PublicKeyCredential) {

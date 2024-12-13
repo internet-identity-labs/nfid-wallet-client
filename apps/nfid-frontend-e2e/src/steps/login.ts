@@ -1,9 +1,9 @@
 import { Given, When } from "@cucumber/cucumber"
 
+import userClient from "../helpers/accounts-service.js"
 import clearAuthState from "../helpers/clear-auth-state.js"
 import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import HomePage from "../pages/home-page.js"
-import userClient from "../helpers/accounts-service.js"
 import Profile from "../pages/profile.js"
 
 const pages = {
@@ -26,7 +26,7 @@ Given(
   },
 )
 
-Given(/^User opens NFID ?(.*)?$/, async function(site: string) {
+Given(/^User opens NFID ?(.*)?$/, async function (site: string) {
   if (site === "site") await HomePage.openBaseUrl()
   else await HomePage.openPage(site)
   await clearAuthState()
@@ -41,20 +41,20 @@ When(
       retry: 2,
     },
   },
-  async function(anchor: number) {
+  async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
-    const response = await browser.executeAsync(function(
-        authState: AuthState,
-        done,
-      ) {
+    const response = await browser.executeAsync(function (
+      authState: AuthState,
+      done,
+    ) {
+      // @ts-ignore
+      if (typeof this.setAuthState === "function") {
         // @ts-ignore
-        if (typeof this.setAuthState === "function") {
-          // @ts-ignore
-          this.setAuthState(authState).then(done)
-        }
-      },
-      testUser.authstate)
+        this.setAuthState(authState).then(done)
+      }
+    },
+    testUser.authstate)
     console.log("set auth state", { response })
     await HomePage.openPage("/wallet/tokens")
   },

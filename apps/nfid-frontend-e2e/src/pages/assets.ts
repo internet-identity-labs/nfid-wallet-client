@@ -16,7 +16,7 @@ export class Assets {
   }
 
   get allTokensOnTokenTab() {
-    return $$("[id^=\"token_\"]")
+    return $$('[id^="token_"]')
   }
 
   get getSourceTokenBalance() {
@@ -86,9 +86,12 @@ export class Assets {
   public async tokenBalance(tokenName: string) {
     let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
     await locator.waitForDisplayed({ timeout: 10000 })
-    await browser.waitUntil(async () => {
-      return await locator.getText() != ""
-    }, { timeout: 10000, timeoutMsg: "Token balance isn't loaded in 10 sec" })
+    await browser.waitUntil(
+      async () => {
+        return (await locator.getText()) != ""
+      },
+      { timeout: 10000, timeoutMsg: "Token balance isn't loaded in 10 sec" },
+    )
     return locator
   }
 
@@ -222,7 +225,10 @@ export class Assets {
           await browser.refresh()
         }
       },
-      { timeout: 40000, timeoutMsg: `Element ${await waitForElement.selector} didn't load properly in 40sec` },
+      {
+        timeout: 40000,
+        timeoutMsg: `Element ${await waitForElement.selector} didn't load properly in 40sec`,
+      },
     )
   }
 
@@ -231,7 +237,6 @@ export class Assets {
   }
 
   public ManageTokensDialog = {
-
     get manageTokensDialogButton() {
       return $("#importToken")
     },
@@ -265,7 +270,9 @@ export class Assets {
     },
 
     getTokenByNameFromList(tokenRole: string, token: string) {
-      return $(`//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`)
+      return $(
+        `//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`,
+      )
     },
 
     get getTargetAmountField() {

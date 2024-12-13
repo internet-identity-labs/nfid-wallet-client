@@ -1,5 +1,6 @@
 import { Activity } from "packages/integration/src/lib/asset/types"
 
+import { authState } from "@nfid/integration"
 import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
 import {
   ICRC1IndexData,
@@ -8,7 +9,6 @@ import {
 
 import { IActivityRow } from "../types"
 import { nanoSecondsToDate } from "./activity"
-import { authState } from "@nfid/integration"
 
 const filterActivitiesByCanisterId = (
   canisterIds: string[] = [],

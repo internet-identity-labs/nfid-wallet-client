@@ -4,10 +4,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import { Badge, Button, IconCmpOut } from "@nfid-frontend/ui"
-import {
-  approveTransaction,
-  TransactionState
-} from "@nfid/integration"
+import { approveTransaction, TransactionState } from "@nfid/integration"
 
 import { Accordion } from "frontend/ui/atoms/accordion"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"

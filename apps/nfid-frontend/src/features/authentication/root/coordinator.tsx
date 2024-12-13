@@ -1,13 +1,16 @@
 import { useActor } from "@xstate/react"
+import { decodeJwt } from "jose"
 import toaster from "packages/ui/src/atoms/toast"
 import {
   LoginEventHandler,
   SignInWithGoogle,
 } from "packages/ui/src/molecules/button/signin-with-google"
 import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
+import { AuthAddPasskey } from "packages/ui/src/organisms/authentication/auth-add-passkey"
+import { AuthAddPasskeySuccess } from "packages/ui/src/organisms/authentication/auth-add-passkey/success"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
-import React, { useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
 
@@ -17,6 +20,7 @@ import { useLoadProfileFromStorage } from "frontend/hooks"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
+import { TokenLaunch } from "../3rd-party/choose-account/token-launch"
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
 import { AuthenticationMachineActor } from "./root-machine"
@@ -24,23 +28,29 @@ import { AuthenticationMachineActor } from "./root-machine"
 export default function AuthenticationCoordinator({
   actor,
   isIdentityKit = false,
+  isEmbed = false,
   loader,
 }: {
   actor: AuthenticationMachineActor
   isIdentityKit?: boolean
-  loader?: React.ReactNode
+  isEmbed?: boolean
+  loader?: ReactNode
 }) {
   const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
   const [state, send] = useActor(actor)
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
-  const [is2FALoading, setIs2FALoading] = React.useState(false)
-  const [isOtherOptionsLoading, setIsOtherOptionsLoading] =
-    React.useState(false)
+  const [is2FALoading, setIs2FALoading] = useState(false)
+  const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
+  const [isAddPasskeyLoading, setIsAddPasskeyLoading] = useState(false)
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({
       type: "AUTH_WITH_GOOGLE",
-      data: { jwt: credential },
+      data: {
+        jwt: credential,
+        email: decodeJwt(credential).email as string,
+        isEmbed,
+      },
     })
   }
 
@@ -48,7 +58,7 @@ export default function AuthenticationCoordinator({
     send({ type: "AUTHENTICATED", data: authSession })
   }
 
-  const handle2FAAuth = React.useCallback(async () => {
+  const handle2FAAuth = useCallback(async () => {
     setIs2FALoading(true)
     const onSuccess = (authSession: AbstractAuthSession) =>
       send({ type: "AUTHENTICATED", data: authSession })
@@ -65,7 +75,7 @@ export default function AuthenticationCoordinator({
     }
   }, [state.context.allowedDevices, send])
 
-  const handleOtherOptionsAuth = React.useCallback(
+  const handleOtherOptionsAuth = useCallback(
     async (data: { anchor: number; withSecurityDevices: boolean }) => {
       try {
         setIsOtherOptionsLoading(true)
@@ -99,12 +109,16 @@ export default function AuthenticationCoordinator({
           onSelectEmailAuth={(email: string) => {
             send({
               type: "AUTH_WITH_EMAIL",
-              data: email,
+              data: {
+                email,
+                isEmbed,
+              },
             })
           }}
           onSelectOtherAuth={() => {
             send({
               type: "AUTH_WITH_OTHER",
+              data: { isEmbed },
             })
           }}
           isLoading={isPasskeyLoading}
@@ -156,8 +170,40 @@ export default function AuthenticationCoordinator({
           isLoading={is2FALoading}
         />
       )
+    case state.matches("AddPasskeys"):
+      return (
+        <AuthAddPasskey
+          isLoading={isAddPasskeyLoading}
+          email={state.context.email}
+          onSkip={() => send({ type: "SKIP" })}
+          onAdd={() => {
+            setIsAddPasskeyLoading(true)
+            passkeyConnector
+              .createCredential({ isMultiDevice: false })
+              .then(() => send({ type: "CONTINUE" }))
+              .catch(() => send({ type: "BACK" }))
+              .finally(() => setIsAddPasskeyLoading(false))
+          }}
+        />
+      )
+    case state.matches("AddPasskeysSuccess"):
+      return (
+        <AuthAddPasskeySuccess
+          onFinish={() => {
+            send({ type: "DONE" })
+          }}
+          email={state.context.email}
+        />
+      )
+    case state.matches("SNSBanner"):
+      return (
+        <TokenLaunch
+          onSubmit={() =>
+            send({ type: "AUTHENTICATED", data: state.context.authSession })
+          }
+        />
+      )
     case state.matches("End"):
-    case state.matches("AuthWithGoogle"):
     default:
       return loader || <BlurredLoader isLoading />
   }

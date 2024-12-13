@@ -15,7 +15,7 @@ export type UserIdData = {
 }
 
 type SerializedUserIdData = Omit<UserIdData, "anchor"> & {
-    anchor: number
+  anchor: number
 }
 
 export function serializeUserIdData(userIdData: UserIdData) {

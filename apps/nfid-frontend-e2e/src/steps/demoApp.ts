@@ -1,10 +1,11 @@
 import { Given, Then, When } from "@cucumber/cucumber"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
-import DemoAppPage from "../pages/demoApp/demoApp-page.js"
+
 import DemoTransactions from "../pages/demoApp/demo-transactions.js"
 import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
+import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 
-Given(/^User opens the demoApp ?(.*)?$/, async function(site: string) {
+Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
   await browser.url(DemoAppPage.demoAppBaseUrl)
 })
 
@@ -33,27 +34,27 @@ Then(
     expect(
       String(
         (await (await usersData.get("principal")).firstAddressPart.getText()) +
-        "..." +
-        (await (
-          await usersData.get("principal")
-        ).secondAddressPart.getText()),
+          "..." +
+          (await (
+            await usersData.get("principal")
+          ).secondAddressPart.getText()),
       ),
     ).toEqual(
       expectedData.principal.substring(0, 29) +
-      "..." +
-      expectedData.principal.substring(58, 63),
+        "..." +
+        expectedData.principal.substring(58, 63),
     )
 
     expect(
       String(
         (await (await usersData.get("address")).firstAddressPart.getText()) +
-        "..." +
-        (await (await usersData.get("address")).secondAddressPart.getText()),
+          "..." +
+          (await (await usersData.get("address")).secondAddressPart.getText()),
       ),
     ).toEqual(
       expectedData.address.substring(0, 29) +
-      "..." +
-      expectedData.address.substring(59, 64),
+        "..." +
+        expectedData.address.substring(59, 64),
     )
 
     await browser.waitUntil(

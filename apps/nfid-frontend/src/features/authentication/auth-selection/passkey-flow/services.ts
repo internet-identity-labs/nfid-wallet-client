@@ -304,7 +304,7 @@ export class PasskeyConnector {
     if (apToRemove && apToRemove.credentialId) {
       //remove passkey and
       await passkeyStorage.remove_passkey(apToRemove.credentialId, authState.getUserIdData().anchor)
-      migratePasskeys(accessPoints)
+      migratePasskeys(accessPoints, authState.get().delegationIdentity!)
     }
   }
 

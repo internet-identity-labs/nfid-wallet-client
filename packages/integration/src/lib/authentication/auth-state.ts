@@ -2,8 +2,8 @@ import { SignIdentity } from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
+  DelegationIdentity, DER_COSE_OID,
+  Ed25519KeyIdentity, wrapDER,
 } from "@dfinity/identity"
 import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
@@ -37,7 +37,6 @@ interface ObservableAuthState {
 }
 
 export const EXPECTED_CACHE_VERSION = "0"
-export const CACHE_VERSION_KEY = "CACHE_VERSION"
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
   cacheLoaded: false,
@@ -79,6 +78,8 @@ function makeAuthState() {
 
   async function _loadAuthSessionFromCache() {
     console.debug("_loadAuthSessionFromCache", Date.now())
+    debugger
+
     let sessionKey
     let chain
     try {
@@ -127,17 +128,16 @@ function makeAuthState() {
 
     let userIdData
 
-    const currentCacheVersion = await authStorage.get(CACHE_VERSION_KEY)
-    if (cachedUserIdData && currentCacheVersion === EXPECTED_CACHE_VERSION) {
+    if (cachedUserIdData) {
       userIdData = deserializeUserIdData(cachedUserIdData as string)
-    } else {
+    }
+    if (!cachedUserIdData || (userIdData && userIdData.cacheVersion !== EXPECTED_CACHE_VERSION)) {
       userIdData = await createUserIdData(delegationIdentity)
       await authStorage.set(
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
-      //soft migration of passkeys
-      migratePasskeys(userIdData.accessPoints)
+      migratePasskeys(userIdData.accessPoints, delegationIdentity)
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
@@ -194,6 +194,13 @@ function makeAuthState() {
   }: SetProps) {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
+
+    const current = await authStorage.get(getUserIdDataStorageKey(delegationIdentity))
+    if (!current || deserializeUserIdData(current as string).cacheVersion !== EXPECTED_CACHE_VERSION ) {
+      //soft migration of passkeys
+      migratePasskeys(userIdData.accessPoints, delegationIdentity)
+    }
+
 
     await authStorage.set(
       getUserIdDataStorageKey(delegationIdentity),
@@ -299,10 +306,6 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
 }
 
 export async function getAllWalletsFromThisDevice() {
-  const currentCacheVersion = await authStorage.get(CACHE_VERSION_KEY)
-  if (currentCacheVersion === EXPECTED_CACHE_VERSION) {
-    return []
-  }
   const walletKeys = authStorage
     .getAllKeys()
     .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
@@ -311,8 +314,7 @@ export async function getAllWalletsFromThisDevice() {
   )
   const profiles = wallets.map((wallet) => {
     return deserializeUserIdData(wallet as string)
-  })
-
+  }).filter((profile) => profile.cacheVersion === EXPECTED_CACHE_VERSION)
   const profilesData = profiles
     .map((profile) => {
       return {
@@ -324,7 +326,6 @@ export async function getAllWalletsFromThisDevice() {
         anchor: profile.anchor,
       }
     })
-    .filter((profile) => profile.credentialIds.length > 0)
 
   const passkey: PassKeyData[][]  = (await Promise.all(
     profilesData.map(async (profile) => {
@@ -339,7 +340,7 @@ export async function getAllWalletsFromThisDevice() {
     return {
       ...p,
       credentialId: base64url.toBuffer(p.credentialId),
-      publicKey: fromHexString(p.publicKey),
+      pubkey: wrapDER(fromHexString(p.publicKey), DER_COSE_OID) as any ,
     }
   })
 
@@ -350,16 +351,14 @@ export async function getAllWalletsFromThisDevice() {
         return profile.credentialIds.includes(base64url.encode(p.credentialId))
       }),
     }
-  })
+  }).filter((profile) => profile.allowedPasskeys.length > 0)
 }
 
-export async function migratePasskeys(accessPoints: AccessPoint[]) {
-  const identity = authState.get().delegationIdentity
-  if (!identity) return
+export async function migratePasskeys(accessPoints: AccessPoint[], identity: DelegationIdentity) {
   await replaceActorIdentity(passkeyStorage, identity)
   for (const accessPoint of accessPoints.filter((ap) => ap.credentialId !== undefined)) {
     const passkey = await getPasskey([accessPoint.credentialId!])
-    await storePasskey(passkey[0].key, passkey[0].data)
+    storePasskey(passkey[0].key, passkey[0].data)
   }
 }
 

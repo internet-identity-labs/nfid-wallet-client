@@ -93,3 +93,7 @@ export const shouldShowPasskeys = async (context: AuthenticationContext) => {
     return { showPasskeys: true }
   }
 }
+
+export const setWallets = async () => {
+  return await passkeyConnector.getWallets()
+}

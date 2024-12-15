@@ -29,13 +29,19 @@ import {
 
 interface ObservableAuthState {
   cacheLoaded: boolean
-  //
   identity?: SignIdentity
   delegationIdentity?: DelegationIdentity
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
   activeDevicePrincipalId?: string
   userIdData?: UserIdData
+}
+
+export interface ExistingWallets {
+  allowedPasskeys: any[]
+  email: string | undefined
+  principal: string
+  credentialIds: string[]
 }
 
 export const EXPECTED_CACHE_VERSION = "0"
@@ -313,36 +319,37 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
   return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
 }
 
-export async function getAllWalletsFromThisDevice() {
+export async function getAllWalletsFromThisDevice(): Promise<
+  ExistingWallets[]
+> {
   const walletKeys = authStorage
     .getAllKeys()
     .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
   const wallets = await walletKeys.then((keys) =>
     Promise.all(keys.map((key) => authStorage.get(key))),
   )
-  const profiles = wallets
-    .map((wallet) => {
-      return deserializeUserIdData(wallet as string)
-    })
-    .filter((profile) => profile.cacheVersion === EXPECTED_CACHE_VERSION)
-  const profilesData = profiles.map((profile) => {
-    return {
-      email: profile.email,
-      principal: profile.userId,
-      credentialIds: profile.accessPoints
-        .map((l) => l.credentialId)
-        .filter((id) => id !== undefined),
-      anchor: profile.anchor,
-    }
+  const profiles = wallets.map((wallet) => {
+    return deserializeUserIdData(wallet as string)
   })
 
-  const passkey: PassKeyData[][] = await Promise.all(
-    profilesData.map(async (profile) => {
-      return passkeyStorage.get_passkey_by_anchor(profile.anchor)
-    }),
-  )
+  const profilesData = profiles
+    .map((profile) => {
+      return {
+        email: profile.email,
+        principal: profile.userId,
+        credentialIds: profile.accessPoints
+          .map((l) => l.credentialId)
+          .filter((id) => id !== undefined),
+      }
+    })
+    .filter((profile) => profile.credentialIds.length > 0)
 
-  const decodedObject = passkey.flat().map((p) => JSON.parse(p.data))
+  const credentials = profilesData
+    .map((profile) => profile.credentialIds)
+    .flat()
+
+  const passkey = credentials.length > 0 ? await getPasskey(credentials) : []
+  const decodedObject = passkey.map((p) => JSON.parse(p.data))
   console.debug("passkeys", { decodedObject })
   const allowedPasskeys = decodedObject.map((p) => {
     return {

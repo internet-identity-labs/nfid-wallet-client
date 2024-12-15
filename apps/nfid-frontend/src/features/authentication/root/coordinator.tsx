@@ -9,6 +9,7 @@ import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthAddPasskey } from "packages/ui/src/organisms/authentication/auth-add-passkey"
 import { AuthAddPasskeySuccess } from "packages/ui/src/organisms/authentication/auth-add-passkey/success"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
+import { ChooseWallet } from "packages/ui/src/organisms/authentication/choose-wallet"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { ReactNode, useCallback, useState } from "react"
 
@@ -101,7 +102,29 @@ export default function AuthenticationCoordinator({
     onAuthWithPasskey(res)
   }
 
+  // const onLoginWithStoredPasskey = async () => {
+  //   setIsPasskeyLoading(true)
+  //   const res = await passkeyConnector.loginWithPasskey(undefined, () => {
+  //     setIsPasskeyLoading(false)
+  //   })
+
+  //   onAuthWithPasskey(res)
+  // }
+
   switch (true) {
+    case state.matches("ChooseWallet"):
+      return (
+        <ChooseWallet
+          authRequest={state.context.authRequest}
+          appMeta={state.context?.appMeta}
+          isLoading={false}
+          isIdentityKit={isIdentityKit}
+          onAuthSelection={() => send({ type: "BACK" })}
+          onLoginWithPasskey={onLoginWithPasskey}
+          wallets={state.context.allowedWallets}
+        />
+      )
+
     case state.matches("AuthSelection"):
       return (
         <AuthSelection

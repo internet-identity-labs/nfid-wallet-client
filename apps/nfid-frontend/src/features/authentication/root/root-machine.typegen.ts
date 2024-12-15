@@ -19,6 +19,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.setWallets": {
+      type: "done.invoke.setWallets"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.shouldShowPasskeys": {
       type: "done.invoke.shouldShowPasskeys"
       data: unknown
@@ -36,12 +41,17 @@ export interface Typegen0 {
       type: "error.platform.checkIf2FAEnabled"
       data: unknown
     }
+    "error.platform.setWallets": {
+      type: "error.platform.setWallets"
+      data: unknown
+    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
+    setWallets: "done.invoke.setWallets"
   }
   missingImplementations: {
     actions: never
@@ -59,12 +69,14 @@ export interface Typegen0 {
     assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
     assignShowPasskeys: "done.invoke.shouldShowPasskeys"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
+    assignWallets: "done.invoke.setWallets"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
     is2FAEnabled: "done.invoke.checkIf2FAEnabled"
     isExistingAccount: "done.invoke.AuthWithGoogleMachine"
     isReturn: "done.invoke.AuthWithEmailMachine"
+    showChooseWallet: ""
     showPasskeys: "done.invoke.shouldShowPasskeys"
     showSNSBanner: ""
   }
@@ -74,6 +86,7 @@ export interface Typegen0 {
     checkIf2FAEnabled:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+    setWallets: "xstate.init"
     shouldShowPasskeys: "done.invoke.checkIf2FAEnabled"
   }
   matchesStates:
@@ -81,10 +94,13 @@ export interface Typegen0 {
     | "AddPasskeysSuccess"
     | "AuthSelection"
     | "AuthWithGoogle"
+    | "CheckChooseWallet"
+    | "ChooseWallet"
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"
     | "SNSBanner"
+    | "SetWallets"
     | "TwoFA"
     | "check2FA"
     | "checkPasskeys"

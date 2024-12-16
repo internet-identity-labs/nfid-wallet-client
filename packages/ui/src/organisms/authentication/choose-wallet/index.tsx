@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { FC } from "react"
 
 import { BlurredLoader, Button, CenterEllipsis } from "@nfid-frontend/ui"
-import { ExistingWallets } from "@nfid/integration"
+import { ExistingWallet } from "@nfid/integration"
 
 import { AuthAppMeta } from "../app-meta"
 import Caret from "./caret.svg"
@@ -17,12 +17,12 @@ interface AuthorizingAppMeta {
 
 export interface ChooseWalletProps {
   onAuthSelection: () => void
-  onLoginWithPasskey: () => Promise<void>
+  onLoginWithPasskey: (allowedPasskeys: any[]) => Promise<void>
   isLoading: boolean
   isIdentityKit?: boolean
   authRequest?: AuthorizationRequest
   appMeta?: AuthorizingAppMeta
-  wallets?: ExistingWallets[]
+  wallets?: ExistingWallet[]
 }
 
 export const ChooseWallet: FC<ChooseWalletProps> = ({
@@ -40,6 +40,8 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
   } catch (e) {
     appHost = appMeta?.name ?? ""
   }
+
+  console.log(wallets)
 
   if (!wallets) return null
   return (
@@ -61,7 +63,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
                   "border-b border-gray-100 last:border-b-0 px-[14px] rounded-[12px]",
                   "hover:bg-gray-50 transition-all group",
                 )}
-                onClick={onLoginWithPasskey}
+                onClick={() => onLoginWithPasskey(wallet.allowedPasskeys)}
               >
                 <div>
                   <p>{wallet.email}</p>

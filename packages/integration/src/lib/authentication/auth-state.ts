@@ -37,7 +37,7 @@ interface ObservableAuthState {
   userIdData?: UserIdData
 }
 
-export interface ExistingWallets {
+export interface ExistingWallet {
   allowedPasskeys: any[]
   email: string | undefined
   principal: string
@@ -319,9 +319,7 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
   return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
 }
 
-export async function getAllWalletsFromThisDevice(): Promise<
-  ExistingWallets[]
-> {
+export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
   const walletKeys = authStorage
     .getAllKeys()
     .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
@@ -336,7 +334,7 @@ export async function getAllWalletsFromThisDevice(): Promise<
     .map((profile) => {
       return {
         email: profile.email,
-        principal: profile.userId,
+        principal: profile.publicKey,
         credentialIds: profile.accessPoints
           .map((l) => l.credentialId)
           .filter((id) => id !== undefined),

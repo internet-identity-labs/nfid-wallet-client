@@ -1,6 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { ExistingWallets } from "@nfid/integration"
+import { ExistingWallet } from "@nfid/integration"
 
 import AuthWithEmailMachine from "frontend/features/authentication/auth-selection/email-flow/machine"
 import AuthWithGoogleMachine from "frontend/features/authentication/auth-selection/google-flow/auth-with-google"
@@ -26,7 +26,7 @@ export interface AuthenticationContext {
   thirdPartyAuthSession?: ApproveIcGetDelegationSdkResponse
 
   allowedDevices?: string[]
-  allowedWallets?: ExistingWallets[]
+  allowedWallets?: ExistingWallet[]
 
   email2FA?: string
   email?: string
@@ -48,10 +48,10 @@ export type Events =
     }
   | {
       type: "done.invoke.setWallets"
-      data?: ExistingWallets[]
+      data?: ExistingWallet[]
     }
   | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
-  | { type: "CHOOSE_WALLET"; data: { email: string; isEmbed: boolean } }
+  | { type: "CHOOSE_WALLET" }
   | {
       type: "AUTH_WITH_GOOGLE"
       data: { jwt: string; email: string; isEmbed: boolean }

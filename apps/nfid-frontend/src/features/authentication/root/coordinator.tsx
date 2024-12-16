@@ -14,6 +14,7 @@ import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/o
 import { ReactNode, useCallback, useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
+import { ExistingWallet } from "@nfid/integration"
 
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/auth-selection/email-flow/machine"
@@ -93,23 +94,18 @@ export default function AuthenticationCoordinator({
     [send],
   )
 
-  const onLoginWithPasskey = async () => {
+  const onLoginWithPasskey = async (allowedPasskeys?: any[]) => {
     setIsPasskeyLoading(true)
-    const res = await passkeyConnector.loginWithPasskey(undefined, () => {
-      setIsPasskeyLoading(false)
-    })
+    const res = await passkeyConnector.loginWithPasskey(
+      undefined,
+      () => {
+        setIsPasskeyLoading(false)
+      },
+      allowedPasskeys ?? [],
+    )
 
     onAuthWithPasskey(res)
   }
-
-  // const onLoginWithStoredPasskey = async () => {
-  //   setIsPasskeyLoading(true)
-  //   const res = await passkeyConnector.loginWithPasskey(undefined, () => {
-  //     setIsPasskeyLoading(false)
-  //   })
-
-  //   onAuthWithPasskey(res)
-  // }
 
   switch (true) {
     case state.matches("ChooseWallet"):

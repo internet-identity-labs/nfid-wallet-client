@@ -13,7 +13,6 @@ import {
   Icon,
   im,
   mapOptional,
-  migratePasskeys,
   passkeyStorage,
   Profile,
   replaceActorIdentity,

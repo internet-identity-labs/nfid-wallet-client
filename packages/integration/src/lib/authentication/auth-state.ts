@@ -11,11 +11,10 @@ import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
 import { PassKeyData } from "../_ic_api/passkey_storage.d"
-import { passkeyStorage, replaceActorIdentity } from "../actors"
+import { im, passkeyStorage, replaceActorIdentity } from "../actors"
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { Environment } from "../constant/env.constant"
-import { AccessPoint } from "../identity-manager/access-points"
 import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
@@ -140,7 +139,7 @@ function makeAuthState() {
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
-      migratePasskeys(userIdData.accessPoints, delegationIdentity)
+      migratePasskeys(delegationIdentity)
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
@@ -207,7 +206,7 @@ function makeAuthState() {
         EXPECTED_CACHE_VERSION
     ) {
       //soft migration of passkeys
-      migratePasskeys(userIdData.accessPoints, delegationIdentity)
+      migratePasskeys(delegationIdentity)
     }
 
     await authStorage.set(
@@ -329,52 +328,62 @@ export async function getAllWalletsFromThisDevice() {
     return {
       email: profile.email,
       principal: profile.userId,
-      credentialIds: profile.accessPoints
-        .map((l) => l.credentialId)
-        .filter((id) => id !== undefined),
       anchor: profile.anchor,
     }
   })
 
-  const passkey: PassKeyData[][] = await Promise.all(
+  const passkeysFromAPI: {
+    data: PassKeyData[]
+    anchor: bigint
+  }[] = await Promise.all(
     profilesData.map(async (profile) => {
-      return passkeyStorage.get_passkey_by_anchor(profile.anchor)
+      return passkeyStorage.get_passkey_by_anchor(profile.anchor).then((p) => {
+        return {
+          data: p,
+          anchor: profile.anchor,
+        }
+      })
     }),
-  )
-
-  const decodedObject = passkey.flat().map((p) => JSON.parse(p.data))
-  console.debug("passkeys", { decodedObject })
-  const allowedPasskeys = decodedObject.map((p) => {
-    return {
-      ...p,
-      credentialId: base64url.toBuffer(p.credentialId),
-      pubkey: wrapDER(fromHexString(p.publicKey), DER_COSE_OID) as any,
-    }
-  })
+  ).then((p) => p.filter((p) => p.data.length !== 0))
+  const parsedAllowedPasskeysByAnchor = passkeysFromAPI
+    .map((p) =>
+      p.data
+        .map((d) => JSON.parse(d.data))
+        .map((s) => {
+          return {
+            credentialId: base64url.toBuffer(s.credentialId),
+            pubkey: wrapDER(fromHexString(s.publicKey), DER_COSE_OID) as any,
+            anchor: p.anchor,
+          }
+        }),
+    )
+    .flat()
 
   return profilesData
     .map((profile) => {
       return {
         ...profile,
-        allowedPasskeys: allowedPasskeys.filter((p) => {
-          return profile.credentialIds.includes(
-            base64url.encode(p.credentialId),
-          )
+        allowedPasskeys: parsedAllowedPasskeysByAnchor.filter((s) => {
+          return s.anchor === profile.anchor
         }),
       }
     })
-    .filter((profile) => profile.allowedPasskeys.length > 0)
+    .filter(
+      (profile) =>
+        profile.allowedPasskeys !== undefined &&
+        profile.allowedPasskeys.length !== 0,
+    )
 }
 
-export async function migratePasskeys(
-  accessPoints: AccessPoint[],
-  identity: DelegationIdentity,
-) {
+export async function migratePasskeys(identity: DelegationIdentity) {
   await replaceActorIdentity(passkeyStorage, identity)
-  for (const accessPoint of accessPoints.filter(
-    (ap) => ap.credentialId !== undefined,
-  )) {
-    const passkey = await getPasskey([accessPoint.credentialId!])
+  const credentialIds: string[] = await im.get_account().then((account) =>
+    account.data[0]!.access_points.map((ap) => ap.credential_id)
+      .filter((id) => id !== undefined && id.length !== 0)
+      .flat(),
+  )
+  for (const credentialId of credentialIds) {
+    const passkey = await getPasskey([credentialId!])
     storePasskey(passkey[0].key, passkey[0].data)
   }
 }

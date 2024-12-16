@@ -1,11 +1,6 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
-import {
-  AccessPoint,
-  DeviceType,
-  EXPECTED_CACHE_VERSION,
-  Icon,
-} from "@nfid/integration"
+import { EXPECTED_CACHE_VERSION } from "@nfid/integration"
 
 import { im, replaceActorIdentity } from "../actors"
 import { getPublicKey } from "../delegation-factory/delegation-i"
@@ -20,7 +15,6 @@ export type UserIdData = {
   anchor: bigint
   wallet: RootWallet
   email?: string
-  accessPoints: AccessPoint[]
   cacheVersion: string
 }
 
@@ -62,35 +56,6 @@ export async function createUserIdData(
       account.data[0]!.email.length !== 0
         ? account.data[0]!.email[0]
         : undefined,
-    accessPoints: account.data[0]!.access_points.map((accessPoint) => {
-      return {
-        deviceType: deviceTypeToDevice(accessPoint.device_type),
-        icon: accessPoint.icon as Icon,
-        device: accessPoint.device,
-        browser: accessPoint.browser,
-        lastUsed: Number(accessPoint.last_used),
-        principalId: accessPoint.principal_id,
-        credentialId: accessPoint.credential_id
-          ? accessPoint.credential_id[0]
-          : undefined,
-      }
-    }),
     cacheVersion: EXPECTED_CACHE_VERSION,
   }
-}
-
-export function deviceTypeToDevice(response: any): DeviceType {
-  if (hasOwnProperty(response, "Email")) {
-    return DeviceType.Email
-  }
-  if (hasOwnProperty(response, "Passkey")) {
-    return DeviceType.Passkey
-  }
-  if (hasOwnProperty(response, "Unknown")) {
-    return DeviceType.Unknown
-  }
-  if (hasOwnProperty(response, "Recovery")) {
-    return DeviceType.Recovery
-  }
-  throw Error("Unexpected enum value")
 }

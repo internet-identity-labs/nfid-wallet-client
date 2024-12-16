@@ -14,7 +14,6 @@ import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/o
 import { ReactNode, useCallback, useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
-import { ExistingWallet } from "@nfid/integration"
 
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/auth-selection/email-flow/machine"

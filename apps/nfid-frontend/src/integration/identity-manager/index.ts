@@ -13,7 +13,6 @@ import {
   Icon,
   im,
   mapOptional,
-  migratePasskeys,
   passkeyStorage,
   Profile,
   replaceActorIdentity,
@@ -333,7 +332,18 @@ export async function removeAccount() {
 }
 
 export async function removeAccessPoint(devicePrincipal: string) {
-  removeAccessPointFromCache(devicePrincipal)
+  const device: AccessPointResponse | undefined = await im
+    .get_account()
+    .then((account) =>
+      account.data[0]!.access_points.find(
+        (ap) => ap.principal_id === devicePrincipal,
+      ),
+    )
+  if (!device) {
+    throw new Error(
+      `Not able to find access point with principal: ${devicePrincipal}`,
+    )
+  }
   await im
     .remove_access_point({
       pub_key: devicePrincipal,
@@ -341,6 +351,15 @@ export async function removeAccessPoint(devicePrincipal: string) {
     .catch((e) => {
       throw new Error(`Not able to remove ap: ${e.message}`)
     })
+  if (
+    device.credential_id.length > 0 &&
+    device.credential_id[0] !== undefined
+  ) {
+    await passkeyStorage.remove_passkey(
+      device.credential_id[0],
+      authState.getUserIdData().anchor,
+    )
+  }
 }
 
 function mapApplication(application: BEApplication): Application {
@@ -441,21 +460,4 @@ function deviceToDeviceVariant(dt: DeviceType): DeviceVariant {
       return { Unknown: null }
   }
   throw Error("Unexpected enum value")
-}
-
-async function removeAccessPointFromCache(devicePrincipalToRemove: string) {
-  const apToRemove = authState
-    .getUserIdData()
-    .accessPoints.find((ap) => ap.principalId === devicePrincipalToRemove)
-  const accessPoints = authState
-    .getUserIdData()
-    .accessPoints.filter((ap) => ap.principalId !== devicePrincipalToRemove)
-  authState.getUserIdData().accessPoints = accessPoints
-  if (apToRemove && apToRemove.credentialId) {
-    await passkeyStorage.remove_passkey(
-      apToRemove.credentialId,
-      authState.getUserIdData().anchor,
-    )
-    migratePasskeys(accessPoints, authState.get().delegationIdentity!)
-  }
 }

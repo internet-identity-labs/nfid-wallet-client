@@ -10,6 +10,7 @@ import { replaceActorIdentity } from "@nfid/integration"
 
 export class ShroffNfidErrorHandler extends ShroffImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
+    this.delegationIdentity = delegationIdentity
     if (!this.swapTransaction) {
       throw new Error("Swap transaction not set")
     }
@@ -22,7 +23,6 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
       console.debug("Balance: " + JSON.stringify(balance))
 
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
-      this.delegationIdentity = delegationIdentity
       if (this.swapTransaction.getError() === undefined) {
         console.debug("Swap timeout error")
         this.swapTransaction.setCompleted()

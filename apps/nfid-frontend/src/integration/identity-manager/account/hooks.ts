@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import React from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { im, setProfileToStorage } from "@nfid/integration"
 

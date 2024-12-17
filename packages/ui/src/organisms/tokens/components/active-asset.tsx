@@ -20,7 +20,6 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
-  onTokensUpdate: () => void
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -30,7 +29,6 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
-  onTokensUpdate,
   ...props
 }) => {
   const initedToken = useTokenInit(token)
@@ -113,7 +111,6 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`${token.getTokenName()}_options`}
       >
         <AssetDropdown
-          onTokensUpdate={onTokensUpdate}
           token={token}
           tokens={tokens}
           profileConstants={profileConstants}

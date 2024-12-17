@@ -8,13 +8,14 @@ import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
-import useSWR, { mutate } from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { mutate } from "@nfid/swr"
 
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"

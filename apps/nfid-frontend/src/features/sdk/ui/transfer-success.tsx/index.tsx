@@ -1,7 +1,7 @@
 import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
 import toaster from "packages/ui/src/atoms/toast"
 import React from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { Success } from "./success"
 

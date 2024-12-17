@@ -1,4 +1,4 @@
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
 import { replaceActorIdentity, vault } from "@nfid/integration"

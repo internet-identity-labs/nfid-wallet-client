@@ -1,4 +1,4 @@
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 

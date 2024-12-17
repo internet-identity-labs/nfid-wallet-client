@@ -28,13 +28,18 @@ import {
 
 interface ObservableAuthState {
   cacheLoaded: boolean
-  //
   identity?: SignIdentity
   delegationIdentity?: DelegationIdentity
   chain?: DelegationChain
   sessionKey?: Ed25519KeyIdentity
   activeDevicePrincipalId?: string
   userIdData?: UserIdData
+}
+
+export interface ExistingWallet {
+  allowedPasskeys: { credentialId: Buffer; pubkey: any; anchor: bigint }[]
+  email: string | undefined
+  principal: string
 }
 
 export const EXPECTED_CACHE_VERSION = "0"
@@ -312,7 +317,7 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
   return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
 }
 
-export async function getAllWalletsFromThisDevice() {
+export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
   const walletKeys = authStorage
     .getAllKeys()
     .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
@@ -324,13 +329,24 @@ export async function getAllWalletsFromThisDevice() {
       return deserializeUserIdData(wallet as string)
     })
     .filter((profile) => profile.cacheVersion === EXPECTED_CACHE_VERSION)
-  const profilesData = profiles.map((profile) => {
-    return {
-      email: profile.email,
-      principal: profile.userId,
-      anchor: profile.anchor,
-    }
-  })
+
+  const profilesData = profiles
+    .filter((profile) => profile.email)
+    .reduce((acc, profile) => {
+      const newProfile = {
+        email: profile.email,
+        principal: profile.publicKey,
+        anchor: profile.anchor,
+      }
+
+      const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
+
+      if (!isDuplicate) {
+        acc.push(newProfile)
+      }
+
+      return acc
+    }, [] as { email: string | undefined; principal: string; anchor: bigint }[])
 
   const passkeysFromAPI: {
     data: PassKeyData[]

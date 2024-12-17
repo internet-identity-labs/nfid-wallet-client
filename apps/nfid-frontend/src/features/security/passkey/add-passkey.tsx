@@ -39,9 +39,9 @@ export const AddPasskey = ({
           toaster.success("Device has been added")
         } catch (e) {
           if (e instanceof Error) {
-            toaster.error(
+            toaster.info(
               ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)
-                ? "Device is already added"
+                ? "This device is already registered."
                 : e.message,
             )
           }

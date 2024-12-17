@@ -94,7 +94,3 @@ export const shouldShowPasskeys = async (context: AuthenticationContext) => {
     return { showPasskeys: true }
   }
 }
-
-export const getWallets = async () => {
-  return await getAllWalletsFromThisDevice()
-}

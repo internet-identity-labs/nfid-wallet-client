@@ -330,8 +330,6 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
     })
     .filter((profile) => profile.cacheVersion === EXPECTED_CACHE_VERSION)
 
-  console.log(profiles)
-
   const profilesData = profiles
     .filter((profile) => profile.email)
     .reduce((acc, profile) => {

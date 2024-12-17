@@ -1,6 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { ExistingWallet } from "@nfid/integration"
+import { ExistingWallet, getAllWalletsFromThisDevice } from "@nfid/integration"
 
 import AuthWithEmailMachine from "frontend/features/authentication/auth-selection/email-flow/machine"
 import AuthWithGoogleMachine from "frontend/features/authentication/auth-selection/google-flow/auth-with-google"
@@ -12,7 +12,7 @@ import {
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
 import { SNS_STEP_VISITED } from "../constants"
-import { checkIf2FAEnabled, shouldShowPasskeys, getWallets } from "../services"
+import { checkIf2FAEnabled, shouldShowPasskeys } from "../services"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -102,7 +102,7 @@ const AuthenticationMachine =
         },
         ProceedWallets: {
           invoke: {
-            src: "getWallets",
+            src: async () => await getAllWalletsFromThisDevice(),
             id: "getWallets",
             onDone: {
               actions: "assignWallets",
@@ -298,7 +298,6 @@ const AuthenticationMachine =
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
         checkIf2FAEnabled,
-        getWallets,
       },
     },
   )

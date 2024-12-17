@@ -41,17 +41,12 @@ export interface Typegen0 {
       type: "error.platform.checkIf2FAEnabled"
       data: unknown
     }
-    "error.platform.getWallets": {
-      type: "error.platform.getWallets"
-      data: unknown
-    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
-    getWallets: "done.invoke.getWallets"
   }
   missingImplementations: {
     actions: never

@@ -1,28 +1,26 @@
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
 import { Address } from "@nfid-frontend/ui"
-import { ICP_DECIMALS, WALLET_FEE_E8S } from "@nfid/integration/token/constants"
 
-import { LedgerTransferMetadata } from "../../service/canister-calls-helpers/ledger-transfer"
+import { TransferMetadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 
-export interface CallCanisterLedgerTransferProps {
+export interface CallCanisterTransferProps {
   origin: string
   canisterId: string
   consentMessage?: string
   methodName: string
   args: string
   request: any
-  metadata: LedgerTransferMetadata
+  metadata: TransferMetadata
   onApprove: (data: any) => void
   onReject: () => void
 }
 
-const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
-  const { origin, request, args, onApprove, onReject, metadata } = props
+const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
+  const { origin, request, onApprove, onReject, metadata } = props
 
   const applicationName = new URL(origin).host
-  const [requestParams] = JSON.parse(args)
 
   return (
     <RPCPromptTemplate
@@ -44,26 +42,26 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
       onSecondaryButtonClick={onReject}
       isPrimaryDisabled={metadata.isInsufficientBalance}
       balance={{
-        symbol: "ICP",
+        symbol: metadata.symbol,
         balance: metadata.balance,
-        decimals: ICP_DECIMALS,
+        decimals: metadata.decimals,
         address: metadata.address,
       }}
     >
       <div className="flex flex-col flex-1 mt-3">
         <p className="text-[32px] font-medium text-center">
           <TickerAmount
-            symbol={"ICP"}
-            value={Number(requestParams.amount.e8s)}
-            decimals={ICP_DECIMALS}
+            symbol={metadata.symbol}
+            value={metadata.amount}
+            decimals={metadata.decimals}
           />
         </p>
         <p className="text-sm text-center text-gray-400">
           <TickerAmount
-            symbol="ICP"
-            value={Number(requestParams.amount.e8s)}
+            symbol={metadata.symbol}
+            value={metadata.amount}
             usdRate={metadata.usdRate}
-            decimals={ICP_DECIMALS}
+            decimals={metadata.decimals}
           />
         </p>
         <div className="flex flex-col flex-1 text-sm">
@@ -77,16 +75,16 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
             <div>Network fee</div>
             <div className="text-right">
               <TickerAmount
-                symbol={"ICP"}
-                value={WALLET_FEE_E8S}
-                decimals={ICP_DECIMALS}
+                symbol={metadata.symbol}
+                value={metadata.fee}
+                decimals={metadata.decimals}
               />
               <br />
               <span className="text-xs text-gray-400">
                 <TickerAmount
-                  symbol={"ICP"}
-                  value={WALLET_FEE_E8S}
-                  decimals={ICP_DECIMALS}
+                  symbol={metadata.symbol}
+                  value={metadata.fee}
+                  decimals={metadata.decimals}
                   usdRate={metadata.usdRate}
                 />
               </span>
@@ -96,16 +94,16 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
             <div>Total</div>
             <div className="text-right">
               <TickerAmount
-                symbol={"ICP"}
-                value={Number(requestParams.amount.e8s) + WALLET_FEE_E8S}
-                decimals={ICP_DECIMALS}
+                symbol={metadata.symbol}
+                value={metadata.total}
+                decimals={metadata.decimals}
               />
               <br />
               <span className="text-xs font-normal text-gray-400">
                 <TickerAmount
-                  symbol={"ICP"}
-                  value={Number(requestParams.amount.e8s) + WALLET_FEE_E8S}
-                  decimals={ICP_DECIMALS}
+                  symbol={metadata.symbol}
+                  value={metadata.total}
+                  decimals={metadata.decimals}
                   usdRate={metadata.usdRate}
                 />
               </span>
@@ -114,7 +112,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
         </div>
         {metadata.isInsufficientBalance && (
           <p className="flex flex-col justify-end flex-1 text-xs text-center text-red-600">
-            Insufficient ICP balance
+            Insufficient {metadata.symbol} balance
           </p>
         )}
       </div>
@@ -122,4 +120,4 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
   )
 }
 
-export default CallCanisterLedgerTransfer
+export default CallCanisterTransfer

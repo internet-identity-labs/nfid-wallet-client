@@ -4,9 +4,9 @@ import React from "react"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
 
-import { ICRC2Metadata } from "../../service/canister-calls-helpers/icrc2-approve"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
+import { ICRC2Metadata } from "../../service/canister-calls-helpers/interfaces"
 
 export interface CallCanisterICRC2SpendingCapProps {
   canisterId: string
@@ -58,7 +58,7 @@ const CallCanisterICRC2SpendingCap = ({
         <p className="text-[32px] font-medium text-center">
           <TickerAmount
             symbol={metadata.symbol}
-            value={Number(metadata.amount)}
+            value={metadata.amount}
             decimals={metadata.decimals}
           />
         </p>
@@ -68,7 +68,7 @@ const CallCanisterICRC2SpendingCap = ({
           <div className="text-right">
             <TickerAmount
               symbol={metadata.symbol}
-              value={Number(metadata.fee)}
+              value={metadata.fee}
               decimals={metadata.decimals}
             />
           </div>

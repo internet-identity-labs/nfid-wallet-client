@@ -34,6 +34,7 @@ import {
   ComponentData,
   InteractiveMethodService,
 } from "./interactive-method.service"
+import { getIcrc1TransferMetadata } from "../../canister-calls-helpers/icrc1-transfer"
 
 export const IC_HOSTNAME = "https://ic0.app"
 
@@ -225,6 +226,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     const helpers: CallCanisterHelper = {
       icrc2_approve: getMetadataICRC2Approve,
       transfer: getLedgerTransferMetadata,
+      icrc1_transfer: getIcrc1TransferMetadata
     }
 
     const helper = helpers[message.data.params.method]

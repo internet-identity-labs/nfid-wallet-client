@@ -4,15 +4,11 @@ import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { getBalance } from "@nfid/integration"
 
 import { RPCMessage } from "../../type"
-
-export interface IDefaultMetadata {
-  balance: number
-  address: string
-}
+import { DefaultMetadata } from "./interfaces"
 
 export const getDefaultMetadata = async (
   message: MessageEvent<RPCMessage>,
-): Promise<IDefaultMetadata> => {
+): Promise<DefaultMetadata> => {
   const account = decodeIcrcAccount(message.data.params.sender)
 
   const userAddress = AccountIdentifier.fromPrincipal({

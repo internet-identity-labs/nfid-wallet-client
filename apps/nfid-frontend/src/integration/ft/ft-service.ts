@@ -42,9 +42,11 @@ export class FtService {
     return icrc1StorageService
       .getICRC1Canisters(userId)
       .then(async (canisters) => {
-        if (
-          !canisters.find((canister) => canister.ledger === ICP_CANISTER_ID)
-        ) {
+        const icp = canisters.find(
+          (canister) => canister.ledger === ICP_CANISTER_ID,
+        )
+
+        if (!icp || icp.state === State.Inactive) {
           await icrc1RegistryService.storeICRC1Canister(
             ICP_CANISTER_ID,
             State.Active,

@@ -3,6 +3,7 @@ import {
   ThirdPartyAuthSession,
   authState,
   fetchDelegate,
+  getAllWalletsFromThisDevice,
   im,
   replaceIdentity,
 } from "@nfid/integration"

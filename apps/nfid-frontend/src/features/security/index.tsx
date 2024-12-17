@@ -1,6 +1,6 @@
 import { Security } from "packages/ui/src/pages/security"
 import React, { useMemo, useCallback } from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"

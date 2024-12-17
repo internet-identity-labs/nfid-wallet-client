@@ -1,6 +1,6 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 

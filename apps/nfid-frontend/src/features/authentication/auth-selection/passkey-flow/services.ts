@@ -215,7 +215,7 @@ export class PasskeyConnector {
       console.error(e)
       const errorMessage = (e as Error).message
       if (alreadyRegisteredDeviceErrors.find((x) => errorMessage.includes(x))) {
-        throw new Error("This device is already registered")
+        throw new Error("This device is already registered.")
       } else {
         throw new Error(errorMessage)
       }

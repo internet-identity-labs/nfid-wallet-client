@@ -4,7 +4,9 @@ import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { nftService } from "src/integration/nft/nft-service"
 
-import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 const sortTokens = (tokens: FT[]) => {
@@ -37,10 +39,22 @@ export const filterTokens = (ft: FT[], filterText: string): FT[] => {
 
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
-    return icrc1StorageService.getICRC1Canisters(userId).then((canisters) => {
-      const ft = canisters.map((canister) => new FTImpl(canister))
-      return sortTokens(ft)
-    })
+    return icrc1StorageService
+      .getICRC1Canisters(userId)
+      .then(async (canisters) => {
+        if (
+          !canisters.find((canister) => canister.ledger === ICP_CANISTER_ID)
+        ) {
+          await icrc1RegistryService.storeICRC1Canister(
+            ICP_CANISTER_ID,
+            State.Active,
+          )
+          canisters = await icrc1StorageService.getICRC1Canisters(userId)
+        }
+
+        const ft = canisters.map((canister) => new FTImpl(canister))
+        return sortTokens(ft)
+      })
   }
 
   //todo move somewhere because contains NFT balance as well

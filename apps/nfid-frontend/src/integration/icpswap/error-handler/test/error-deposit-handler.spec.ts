@@ -41,6 +41,11 @@ describe("shroff deposit error handler test", () => {
       }
     })
 
+    jest.spyOn(shroff as any, "transferToSwap").mockImplementation(() => {
+      shroff.getSwapTransaction()?.setTransferId(BigInt(1))
+      console.log("Transfer MOCK")
+    })
+
     jest
       .spyOn(swapTransactionService as any, "storeTransaction")
       .mockImplementation(() => {
@@ -55,6 +60,10 @@ describe("shroff deposit error handler test", () => {
       await shroff.swap(mockId)
     } catch (e) {}
     let failedTransaction = shroff.getSwapTransaction()
+    console.log("failedTransaction")
+    console.log(failedTransaction?.getStage().toString())
+    console.log(failedTransaction?.getError())
+    expect(failedTransaction?.getStage()).toEqual(SwapStage.Deposit)
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     let transaction = (await errorHandler.completeTransaction(
       mockId,

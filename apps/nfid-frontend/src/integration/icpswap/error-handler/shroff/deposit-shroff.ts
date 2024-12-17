@@ -22,13 +22,19 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       const balance = await this.swapPoolActor.getUserUnusedBalance(
         this.delegationIdentity!.getPrincipal(),
       )
-      console.debug("Balance: " + JSON.stringify(balance))
-      console.debug("Transaction restarted")
+      console.log("Balance: " + JSON.stringify(balance))
+      console.log("Transaction restarted")
       if (this.swapTransaction.getError() === undefined) {
         console.debug("Deposit timeout error")
         return this.handleDepositTimeoutError()
       } else {
-        await this.deposit()
+        try {
+          await this.deposit()
+        } catch (e) {
+          //it's possible that deposit already done but transaction progress was not stored properly
+          //in this case we can optimistically try to withdraw
+          console.log("Optimistic withdraw")
+        }
         console.debug("Deposit done")
         this.restoreTransaction()
         await this.withdraw()

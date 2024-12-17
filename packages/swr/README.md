@@ -1,0 +1,1 @@
+exports useSwr hook and mutate intended for non serializable data like class instances

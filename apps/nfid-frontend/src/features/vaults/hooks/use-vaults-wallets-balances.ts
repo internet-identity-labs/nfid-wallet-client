@@ -1,4 +1,4 @@
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { getVaults, getWallets, ObjectState } from "@nfid/integration"
 

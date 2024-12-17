@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRowGroup } from "../types"

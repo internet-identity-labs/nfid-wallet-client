@@ -2,7 +2,7 @@ import { Activity } from "packages/ui/src/organisms/activity"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 

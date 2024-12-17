@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useParams } from "react-router-dom"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { getPolicies } from "@nfid/integration"
 

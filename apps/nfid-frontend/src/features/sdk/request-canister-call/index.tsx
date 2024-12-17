@@ -3,7 +3,7 @@ import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { BlurredLoader, IconCmpWarning } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"

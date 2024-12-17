@@ -9,7 +9,7 @@ import {
   useReducer,
 } from "react"
 import { useLocation, useParams } from "react-router-dom"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { IconSvgArrow, Loader, Tooltip } from "@nfid-frontend/ui"
 

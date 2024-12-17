@@ -1,8 +1,8 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import toaster from "packages/ui/src/atoms/toast"
-import { FC } from "react"
-import { mutate } from "swr"
+import { FC, useCallback, useState } from "react"
 
 import {
   IconSvgEyeClosed,
@@ -11,6 +11,7 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { mutate } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -22,37 +23,47 @@ interface FilteredTokenProps {
   onTokensUpdate: () => void
 }
 
-export const FilteredToken: FC<FilteredTokenProps> = ({
-  token,
-  tokens,
-  onTokensUpdate,
-}) => {
-  const hideToken = async (token: FT) => {
-    try {
-      token.hideToken()
-      const updatedTokens = [...tokens]
-      await mutate("tokens", updatedTokens, false)
-      onTokensUpdate()
-    } catch (e) {
-      toaster.error("Token hiding failed: " + (e as Error).message)
-    }
-  }
+export const FilteredToken: FC<FilteredTokenProps> = ({ token, tokens }) => {
+  const [showTokenLoading, setShowTokenLoading] = useState(false)
+  const [hideTokenLoading, setHideTokenLoading] = useState(false)
 
-  const showToken = async (token: FT) => {
-    try {
-      token.showToken()
-      const { publicKey } = await getUserPrincipalId()
-
-      if (!token.isInited()) {
-        await token.init(Principal.fromText(publicKey))
+  const hideToken = useCallback(
+    async (token: FT) => {
+      try {
+        setHideTokenLoading(true)
+        await token.hideToken()
+        const updatedTokens = [...tokens]
+        await mutate("tokens", updatedTokens, false)
+      } catch (e) {
+        toaster.error("Token hiding failed: " + (e as Error).message)
+      } finally {
+        setHideTokenLoading(false)
       }
-      const updatedTokens = [...tokens]
-      await mutate("tokens", updatedTokens, false)
-      onTokensUpdate()
-    } catch (e) {
-      toaster.error("Token shhowing failed: " + (e as Error).message)
-    }
-  }
+    },
+    [tokens],
+  )
+
+  const showToken = useCallback(
+    async (token: FT) => {
+      try {
+        setShowTokenLoading(true)
+        await token.showToken()
+        const { publicKey } = await getUserPrincipalId()
+
+        if (!token.isInited()) {
+          await token.init(Principal.fromText(publicKey))
+        }
+
+        const updatedTokens = [...tokens]
+        await mutate("tokens", updatedTokens, false)
+      } catch (e) {
+        toaster.error("Token shhowing failed: " + (e as Error).message)
+      } finally {
+        setShowTokenLoading(false)
+      }
+    },
+    [tokens],
+  )
 
   return (
     <div className="flex items-center h-[60px]">
@@ -83,21 +94,25 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
       </div>
       <div className="text-sm">{token.getTokenCategoryFormatted()}</div>
       <div className="ml-auto">
-        <img
-          id={`${token.getTokenName()}_showHideButton`}
-          className="cursor-pointer"
-          src={
-            token.getTokenState() === State.Active
-              ? IconSvgEyeShown
-              : IconSvgEyeClosed
-          }
-          alt="Show NFID asset"
-          onClick={() =>
-            token.getTokenState() === State.Active
-              ? hideToken(token)
-              : showToken(token)
-          }
-        />
+        {showTokenLoading || hideTokenLoading ? (
+          <Spinner />
+        ) : (
+          <img
+            id={`${token.getTokenName()}_showHideButton`}
+            className="cursor-pointer"
+            src={
+              token.getTokenState() === State.Active
+                ? IconSvgEyeShown
+                : IconSvgEyeClosed
+            }
+            alt="Show NFID asset"
+            onClick={() =>
+              token.getTokenState() === State.Active
+                ? hideToken(token)
+                : showToken(token)
+            }
+          />
+        )}
       </div>
     </div>
   )

@@ -8,7 +8,6 @@ import {
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { PRINCIPAL_LENGTH } from "packages/constants"
-import { mutate } from "swr"
 
 import { IGroupedOptions } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
@@ -21,6 +20,7 @@ import {
   vault,
 } from "@nfid/integration"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
+import { mutate } from "@nfid/swr"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"

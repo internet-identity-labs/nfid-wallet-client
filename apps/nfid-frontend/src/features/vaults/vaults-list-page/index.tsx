@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { EmptyCard, IconCmpVault, Loader } from "@nfid-frontend/ui"
 

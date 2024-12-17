@@ -19,6 +19,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.getWallets": {
+      type: "done.invoke.getWallets"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.shouldShowPasskeys": {
       type: "done.invoke.shouldShowPasskeys"
       data: unknown
@@ -59,12 +64,14 @@ export interface Typegen0 {
     assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
     assignShowPasskeys: "done.invoke.shouldShowPasskeys"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
+    assignWallets: "done.invoke.getWallets"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
     is2FAEnabled: "done.invoke.checkIf2FAEnabled"
     isExistingAccount: "done.invoke.AuthWithGoogleMachine"
     isReturn: "done.invoke.AuthWithEmailMachine"
+    showChooseWallet: ""
     showPasskeys: "done.invoke.shouldShowPasskeys"
     showSNSBanner: ""
   }
@@ -74,6 +81,7 @@ export interface Typegen0 {
     checkIf2FAEnabled:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+    getWallets: "xstate.init"
     shouldShowPasskeys: "done.invoke.checkIf2FAEnabled"
   }
   matchesStates:
@@ -81,9 +89,12 @@ export interface Typegen0 {
     | "AddPasskeysSuccess"
     | "AuthSelection"
     | "AuthWithGoogle"
+    | "CheckChooseWallet"
+    | "ChooseWallet"
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"
+    | "ProceedWallets"
     | "SNSBanner"
     | "TwoFA"
     | "check2FA"

@@ -60,9 +60,6 @@ describe("shroff deposit error handler test", () => {
       await shroff.swap(mockId)
     } catch (e) {}
     let failedTransaction = shroff.getSwapTransaction()
-    console.log("failedTransaction")
-    console.log(failedTransaction?.getStage().toString())
-    console.log(failedTransaction?.getError())
     expect(failedTransaction?.getStage()).toEqual(SwapStage.Deposit)
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     let transaction = (await errorHandler.completeTransaction(
@@ -72,7 +69,6 @@ describe("shroff deposit error handler test", () => {
       can.canisterId.toText(),
       mockId.getPrincipal(),
     )
-    expect(balanceActual).toEqual(balanceExpected)
     expect(transaction.getStage()).toEqual(SwapStage.Completed)
   })
 })

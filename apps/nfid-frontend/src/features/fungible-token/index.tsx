@@ -1,14 +1,14 @@
 import { useActor } from "@xstate/react"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
-import { useContext, useMemo, useState } from "react"
-import useSWR from "swr"
+import { useContext, useMemo } from "react"
 
 import { storageWithTtl } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { useSWR } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
@@ -19,7 +19,6 @@ const TokensPage = () => {
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
-  const [, forceUpdate] = useState(0)
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -27,11 +26,6 @@ const TokensPage = () => {
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
     send("SHOW")
-  }
-
-  // TODO: use generateTokenKey instead of ForceUpdate
-  const triggerForceUpdate = () => {
-    forceUpdate((prev) => prev + 1)
   }
 
   const {
@@ -79,7 +73,6 @@ const TokensPage = () => {
       onFetch={onFetch}
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
-      onTokensUpdate={triggerForceUpdate}
     />
   )
 }

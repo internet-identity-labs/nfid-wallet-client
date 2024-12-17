@@ -21,9 +21,11 @@ When(
     await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).then(
       async (it) => {
         await it.waitForDisplayed()
-        await browser.pause(1500)
         await it.click()
-        await browser.pause(12000)
+        await it.waitForDisplayed({
+          timeout: 50000,
+          timeoutMsg: "Failed attempt to change token visibility state",
+        })
       },
     )
   },
@@ -42,10 +44,11 @@ When(
       await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).then(
         async (it) => {
           await it.waitForDisplayed()
-          await browser.pause(1500)
           await it.click()
+          await it.waitForDisplayed()
         },
       )
+
       await Assets.tokenLabel(tokenName).waitForDisplayed({
         timeout: 50000,
         timeoutMsg: "Failed attempt to make the token visible",

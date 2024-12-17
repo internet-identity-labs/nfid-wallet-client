@@ -330,21 +330,25 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
     })
     .filter((profile) => profile.cacheVersion === EXPECTED_CACHE_VERSION)
 
-  const profilesData = profiles.reduce((acc, profile) => {
-    const newProfile = {
-      email: profile.email ?? "",
-      principal: profile.publicKey,
-      anchor: profile.anchor,
-    }
+  console.log(profiles)
 
-    const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
+  const profilesData = profiles
+    .filter((profile) => profile.email)
+    .reduce((acc, profile) => {
+      const newProfile = {
+        email: profile.email,
+        principal: profile.publicKey,
+        anchor: profile.anchor,
+      }
 
-    if (!isDuplicate) {
-      acc.push(newProfile)
-    }
+      const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
 
-    return acc
-  }, [] as { email: string; principal: string; anchor: bigint }[])
+      if (!isDuplicate) {
+        acc.push(newProfile)
+      }
+
+      return acc
+    }, [] as { email: string | undefined; principal: string; anchor: bigint }[])
 
   const passkeysFromAPI: {
     data: PassKeyData[]

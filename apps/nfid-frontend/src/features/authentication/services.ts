@@ -3,6 +3,7 @@ import {
   ThirdPartyAuthSession,
   authState,
   fetchDelegate,
+  getAllWalletsFromThisDevice,
   im,
   replaceIdentity,
 } from "@nfid/integration"
@@ -94,6 +95,6 @@ export const shouldShowPasskeys = async (context: AuthenticationContext) => {
   }
 }
 
-export const setWallets = async () => {
-  return await passkeyConnector.getWallets()
+export const getWallets = async () => {
+  return await getAllWalletsFromThisDevice()
 }

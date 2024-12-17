@@ -12,7 +12,7 @@ import {
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
 import { SNS_STEP_VISITED } from "../constants"
-import { checkIf2FAEnabled, shouldShowPasskeys, setWallets } from "../services"
+import { checkIf2FAEnabled, shouldShowPasskeys, getWallets } from "../services"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -47,7 +47,7 @@ export type Events =
       data?: { showPasskeys: boolean }
     }
   | {
-      type: "done.invoke.setWallets"
+      type: "done.invoke.getWallets"
       data?: ExistingWallet[]
     }
   | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
@@ -75,7 +75,7 @@ const AuthenticationMachine =
       tsTypes: {} as import("./root-machine.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
       id: "auth-machine",
-      initial: "SetWallets",
+      initial: "ProceedWallets",
       states: {
         AuthSelection: {
           on: {
@@ -100,10 +100,10 @@ const AuthenticationMachine =
             },
           },
         },
-        SetWallets: {
+        ProceedWallets: {
           invoke: {
-            src: "setWallets",
-            id: "setWallets",
+            src: "getWallets",
+            id: "getWallets",
             onDone: {
               actions: "assignWallets",
               target: "CheckChooseWallet",
@@ -298,7 +298,7 @@ const AuthenticationMachine =
         AuthWithEmailMachine,
         AuthWithGoogleMachine,
         checkIf2FAEnabled,
-        setWallets,
+        getWallets,
       },
     },
   )

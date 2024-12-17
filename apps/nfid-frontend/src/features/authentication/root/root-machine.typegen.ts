@@ -19,8 +19,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.setWallets": {
-      type: "done.invoke.setWallets"
+    "done.invoke.getWallets": {
+      type: "done.invoke.getWallets"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -41,8 +41,8 @@ export interface Typegen0 {
       type: "error.platform.checkIf2FAEnabled"
       data: unknown
     }
-    "error.platform.setWallets": {
-      type: "error.platform.setWallets"
+    "error.platform.getWallets": {
+      type: "error.platform.getWallets"
       data: unknown
     }
     "xstate.init": { type: "xstate.init" }
@@ -51,7 +51,7 @@ export interface Typegen0 {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
-    setWallets: "done.invoke.setWallets"
+    getWallets: "done.invoke.getWallets"
   }
   missingImplementations: {
     actions: never
@@ -69,7 +69,7 @@ export interface Typegen0 {
     assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
     assignShowPasskeys: "done.invoke.shouldShowPasskeys"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
-    assignWallets: "done.invoke.setWallets"
+    assignWallets: "done.invoke.getWallets"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
@@ -86,7 +86,7 @@ export interface Typegen0 {
     checkIf2FAEnabled:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
-    setWallets: "xstate.init"
+    getWallets: "xstate.init"
     shouldShowPasskeys: "done.invoke.checkIf2FAEnabled"
   }
   matchesStates:
@@ -99,8 +99,8 @@ export interface Typegen0 {
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"
+    | "ProceedWallets"
     | "SNSBanner"
-    | "SetWallets"
     | "TwoFA"
     | "check2FA"
     | "checkPasskeys"

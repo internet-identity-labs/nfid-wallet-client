@@ -113,7 +113,7 @@ export default function AuthenticationCoordinator({
           authRequest={state.context.authRequest}
           appMeta={state.context?.appMeta}
           isLoading={false}
-          isIdentityKit={isIdentityKit}
+          showLogo={isIdentityKit}
           onAuthSelection={() => send({ type: "BACK" })}
           onLoginWithPasskey={onLoginWithPasskey}
           wallets={state.context.allowedWallets}

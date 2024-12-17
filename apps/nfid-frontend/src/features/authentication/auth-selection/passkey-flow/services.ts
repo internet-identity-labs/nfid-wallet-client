@@ -23,7 +23,6 @@ import { getBrowser } from "@nfid-frontend/utils"
 import {
   authState,
   DeviceType,
-  getAllWalletsFromThisDevice,
   getPasskey,
   IClientDataObj,
   Icon,
@@ -141,10 +140,6 @@ export class PasskeyConnector {
       console.error("Passkey error: ", e)
       throw new Error((e as Error).message)
     }
-  }
-
-  async getWallets() {
-    return await getAllWalletsFromThisDevice()
   }
 
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {

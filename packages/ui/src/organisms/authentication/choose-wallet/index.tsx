@@ -19,7 +19,7 @@ export interface ChooseWalletProps {
   onAuthSelection: () => void
   onLoginWithPasskey: (allowedPasskeys: any[]) => Promise<void>
   isLoading: boolean
-  isIdentityKit?: boolean
+  showLogo?: boolean
   authRequest?: AuthorizationRequest
   appMeta?: AuthorizingAppMeta
   wallets?: ExistingWallet[]
@@ -29,7 +29,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
   onAuthSelection,
   onLoginWithPasskey,
   isLoading,
-  isIdentityKit,
+  showLogo,
   authRequest,
   appMeta,
   wallets,
@@ -41,15 +41,13 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
     appHost = appMeta?.name ?? ""
   }
 
-  console.log(wallets)
-
   if (!wallets) return null
   return (
     <BlurredLoader isLoading={isLoading} overlayClassnames="rounded-[24px]">
       <div className="flex flex-col w-full h-full text-sm text-center">
         <AuthAppMeta
           applicationURL={appHost}
-          withLogo={!isIdentityKit}
+          withLogo={!showLogo}
           title={"Choose Wallet"}
           subTitle={<>to continue to</>}
         />

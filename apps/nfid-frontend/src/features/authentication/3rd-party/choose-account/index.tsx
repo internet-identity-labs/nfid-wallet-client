@@ -4,7 +4,7 @@ import toaster from "packages/ui/src/atoms/toast"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import {
   BlurredLoader,

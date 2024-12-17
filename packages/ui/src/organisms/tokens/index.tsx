@@ -30,7 +30,6 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
     fee: bigint
   }>
   onSendClick: (value: string) => void
-  onTokensUpdate: () => void
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -41,7 +40,6 @@ export const Tokens: FC<TokensProps> = ({
   onSubmitIcrc1Pair,
   onFetch,
   onSendClick,
-  onTokensUpdate,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
 
@@ -51,7 +49,6 @@ export const Tokens: FC<TokensProps> = ({
         tokens={filteredTokens}
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}
         onFetch={onFetch}
-        onTokensUpdate={onTokensUpdate}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
@@ -79,7 +76,6 @@ export const Tokens: FC<TokensProps> = ({
                 onSendClick={onSendClick}
                 setToken={setToken}
                 dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
-                onTokensUpdate={onTokensUpdate}
               />
             ))
           )}

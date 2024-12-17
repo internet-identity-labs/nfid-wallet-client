@@ -1,5 +1,5 @@
 import { useProfile } from "src/integration/identity-manager/queries"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { authState } from "@nfid/integration"
 

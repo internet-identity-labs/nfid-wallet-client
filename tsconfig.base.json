@@ -20,6 +20,7 @@
       "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
       "@nfid-frontend/utils": ["packages/utils/src/index.ts"],
       "@nfid/client-db": ["packages/client-db/src/index.ts"],
+      "@nfid/swr": ["packages/swr/src/index.ts"],
       "@nfid/config": ["packages/config/src/index.ts"],
       "@nfid/integration": ["packages/integration/src/index.ts"],
       "@nfid/integration-ethereum": [

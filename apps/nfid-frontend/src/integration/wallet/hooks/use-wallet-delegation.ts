@@ -1,4 +1,4 @@
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
 

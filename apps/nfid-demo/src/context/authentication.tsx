@@ -5,7 +5,7 @@ import { Principal } from "@dfinity/principal"
 import React, { useMemo } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { NFID } from "@nfid/embed"
 import { BaseKeyType } from "@nfid/embed/src/lib/types"

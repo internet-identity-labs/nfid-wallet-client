@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import React from "react"
-import useSWR from "swr"
+import { useSWR } from "@nfid/swr"
 
 import { IconCmpPlus } from "@nfid-frontend/ui"
 import { Icon, authState, getGoogleDeviceState } from "@nfid/integration"

@@ -1,6 +1,5 @@
 import { useCallback, FC } from "react"
 import { useNavigate } from "react-router-dom"
-import { mutate } from "swr"
 
 import {
   Dropdown,
@@ -12,6 +11,7 @@ import {
   IconSvgTokenInfo,
   IDropdownPosition,
 } from "@nfid-frontend/ui"
+import { mutate } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -34,7 +34,6 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
-  onTokensUpdate,
 }) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
@@ -81,12 +80,11 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             label="Hide token"
             icon={IconSvgEyeClosedBlack}
             handler={async () => {
-              token.hideToken()
+              await token.hideToken()
 
               const updatedTokens = [...tokens]
 
               await mutate("tokens", updatedTokens, false)
-              onTokensUpdate()
             }}
           />
         )}

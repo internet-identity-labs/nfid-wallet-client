@@ -16,7 +16,10 @@ const componentsMap: {
   [key: string]: React.LazyExoticComponent<(args: any) => JSX.Element>
 } = {
   [`ryjl3-tyaaa-aaaaa-aaaba-cai-transfer`]: React.lazy(
-    () => import("../call-canisters/ledger-transfer"),
+    () => import("../call-canisters/transfer"),
+  ),
+  icrc1_transfer: React.lazy(
+    () => import("../call-canisters/transfer"),
   ),
   icrc2_approve: React.lazy(
     () => import("../call-canisters/icrc2-spending-cap"),

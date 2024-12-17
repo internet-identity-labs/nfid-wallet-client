@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { IconCmpWarning } from "@nfid-frontend/ui"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
-import { IDefaultMetadata } from "../../service/canister-calls-helpers/default"
+import { DefaultMetadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
 
@@ -14,7 +14,7 @@ export interface CallCanisterLedgerTransferProps {
   methodName: string
   args: string
   request: any
-  metadata: IDefaultMetadata
+  metadata: DefaultMetadata
   onApprove: (data: any) => void
   onReject: () => void
 }

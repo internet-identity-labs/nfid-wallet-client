@@ -1,17 +1,19 @@
 import { Agent, AnonymousIdentity, HttpAgent } from "@dfinity/agent"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 
+import { exchangeRateService } from "@nfid/integration"
+
 import { idlFactory as icrc1and2IDL } from "../../idl/token-pepe-ledger"
 import { _SERVICE as icrc1and2IDLService } from "../../idl/token-pepe-ledger_idl"
 import { RPCMessage } from "../../type"
 import { actorService } from "../actor.service"
 import { IC_HOSTNAME } from "../method/interactive/icrc49-call-canister-method.service"
-import { ICRC2Metadata } from "./interfaces"
+import { TransferMetadata } from "./interfaces"
 
-export const getMetadataICRC2Approve = async (
+export const getIcrc1TransferMetadata = async (
   message: MessageEvent<RPCMessage>,
   args: any,
-): Promise<ICRC2Metadata> => {
+): Promise<TransferMetadata> => {
   const delegation = new AnonymousIdentity()
 
   const agent: Agent = new HttpAgent({
@@ -37,14 +39,26 @@ export const getMetadataICRC2Approve = async (
     actor.icrc1_fee(),
   ])
 
-  const [parsedArgs] = JSON.parse(args)
+  const [requestParams] = JSON.parse(args)
+
+  const amount = BigInt(requestParams.amount)
+  const total = amount + fee
+  const isInsufficientBalance = total > balance
+
+  const usdRate = await exchangeRateService.usdPriceForICRC1(
+    message.data.params.canisterId,
+  )
 
   return {
+    balance: balance.toString(),
+    toAddress: requestParams.to.owner["__principal__"],
+    amount: amount.toString(),
+    isInsufficientBalance,
+    address: message.data.params.sender,
     symbol,
     decimals,
     fee: fee.toString(),
-    amount: parsedArgs?.amount,
-    balance: balance.toString(),
-    address: message.data.params.sender,
+    usdRate: usdRate?.toString(),
+    total: total.toString(),
   }
 }

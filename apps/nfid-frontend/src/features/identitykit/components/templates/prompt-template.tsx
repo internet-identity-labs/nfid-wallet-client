@@ -6,7 +6,7 @@ import { Address, Button, IconSvgNFIDWalletLogo } from "@nfid-frontend/ui"
 
 export interface RPCBalanceSection {
   symbol: string
-  balance: number | bigint
+  balance: number | string
   decimals: number
   address: string
 }
@@ -79,7 +79,7 @@ export const RPCPromptTemplate = ({
           />
           <div className="text-gray-500">
             <TickerAmount
-              value={Number(balance.balance)}
+              value={balance.balance}
               decimals={balance.decimals}
               symbol={balance.symbol}
             />

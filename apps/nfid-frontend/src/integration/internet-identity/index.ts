@@ -457,7 +457,10 @@ export async function register(
   const credential_id = Array.from(new Uint8Array(identity.rawId))
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
-  await authState.set({ identity, delegationIdentity: delegation.delegationIdentity })
+  await authState.set({
+    identity,
+    delegationIdentity: delegation.delegationIdentity,
+  })
 
   let registerResponse: RegisterResponse
   try {
@@ -529,7 +532,10 @@ export async function registerFromGoogle(
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
   replaceIdentity(delegation.delegationIdentity)
-  await authState.set({ identity, delegationIdentity: delegation.delegationIdentity })
+  await authState.set({
+    identity,
+    delegationIdentity: delegation.delegationIdentity,
+  })
 
   let registerResponse: RegisterResponse
   try {
@@ -717,7 +723,10 @@ export async function loginFromRemoteFrontendDelegation({
   const multiIdent = getMultiIdent(devices)
   console.debug("loginFromRemoteFrontendDelegation", { devices })
 
-  await authState.set({ identity: multiIdent._actualIdentity!, delegationIdentity })
+  await authState.set({
+    identity: multiIdent._actualIdentity!,
+    delegationIdentity,
+  })
 
   return {
     kind: "loginSuccess",

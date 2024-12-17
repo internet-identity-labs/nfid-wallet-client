@@ -7,11 +7,13 @@ import {
   AccessPointCommon,
   Account,
   Application,
+  authState,
   DeviceType,
   hasOwnProperty,
   Icon,
   im,
   mapOptional,
+  passkeyStorage,
   Profile,
   replaceActorIdentity,
   reverseMapOptional,
@@ -98,6 +100,9 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
     browser: accessPoint.browser,
     lastUsed: Number(accessPoint.last_used),
     principalId: accessPoint.principal_id,
+    credentialId: accessPoint.credential_id
+      ? accessPoint.credential_id[0]
+      : undefined,
   }
 }
 
@@ -327,6 +332,18 @@ export async function removeAccount() {
 }
 
 export async function removeAccessPoint(devicePrincipal: string) {
+  const device: AccessPointResponse | undefined = await im
+    .get_account()
+    .then((account) =>
+      account.data[0]!.access_points.find(
+        (ap) => ap.principal_id === devicePrincipal,
+      ),
+    )
+  if (!device) {
+    throw new Error(
+      `Not able to find access point with principal: ${devicePrincipal}`,
+    )
+  }
   await im
     .remove_access_point({
       pub_key: devicePrincipal,
@@ -334,6 +351,15 @@ export async function removeAccessPoint(devicePrincipal: string) {
     .catch((e) => {
       throw new Error(`Not able to remove ap: ${e.message}`)
     })
+  if (
+    device.credential_id.length > 0 &&
+    device.credential_id[0] !== undefined
+  ) {
+    await passkeyStorage.remove_passkey(
+      device.credential_id[0],
+      authState.getUserIdData().anchor,
+    )
+  }
 }
 
 function mapApplication(application: BEApplication): Application {

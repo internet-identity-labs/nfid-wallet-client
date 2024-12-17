@@ -67,7 +67,7 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
 
-        throw new WithdrawError(JSON.stringify(result.err))
+        throw new WithdrawError("Withdraw error: " + JSON.stringify(result.err))
       })
     } catch (e) {
       console.error("Withdraw error: " + e)

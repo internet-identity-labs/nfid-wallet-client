@@ -1,7 +1,7 @@
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
-  DER_COSE_OID,
   DelegationIdentity,
+  DER_COSE_OID,
   Ed25519KeyIdentity,
   WebAuthnIdentity,
   wrapDER,
@@ -11,9 +11,9 @@ import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
 import {
+  authStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
-  authStorage,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
 import toaster from "packages/ui/src/atoms/toast"
@@ -21,17 +21,17 @@ import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { getBrowser } from "@nfid-frontend/utils"
 import {
-  DeviceType,
-  IClientDataObj,
-  IPasskeyMetadata,
-  Icon,
-  LambdaPasskeyDecoded,
-  RootWallet,
   authState,
+  DeviceType,
   getPasskey,
+  IClientDataObj,
+  Icon,
   ii,
   im,
+  IPasskeyMetadata,
+  LambdaPasskeyDecoded,
   requestFEDelegationChain,
+  RootWallet,
   storePasskey,
 } from "@nfid/integration"
 
@@ -215,7 +215,7 @@ export class PasskeyConnector {
       console.error(e)
       const errorMessage = (e as Error).message
       if (alreadyRegisteredDeviceErrors.find((x) => errorMessage.includes(x))) {
-        throw new Error("This device is already registered")
+        throw new Error("This device is already registered.")
       } else {
         throw new Error(errorMessage)
       }

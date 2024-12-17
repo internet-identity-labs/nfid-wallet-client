@@ -8,6 +8,7 @@ import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
 import { im } from "../actors"
+import { authState } from "../authentication"
 import {
   DEFAULT_EXPIRAITON_TIME_MILLIS,
   getFromStorage,
@@ -25,7 +26,6 @@ import {
   getDelegationChainSignedByCanister,
   getPrincipalSignedByCanister,
 } from "./delegation-factory"
-import { authState } from "../authentication"
 
 export enum DelegationType {
   GLOBAL = "GLOBAL",

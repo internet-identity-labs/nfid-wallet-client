@@ -148,13 +148,13 @@ describe("ft test suite", () => {
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValue([
           {
-            owner: principal,
-            balance: BigInt(200000000),
-            canisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-            decimals: 8,
-            fee: BigInt(10000),
             name: "Internet Computer",
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            category: "Native",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
             symbol: "ICP",
+            state: "Active",
+            decimals: 8,
           },
         ])
       const result: FT[] = await ftService.getTokens(userId)

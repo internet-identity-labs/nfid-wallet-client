@@ -32,8 +32,8 @@ import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-
 import {
   DepositError,
   LiquidityError,
-  SlippageSwapError,
   SlippageQuoteError,
+  SlippageSwapError,
   SwapError,
   WithdrawError,
 } from "../errors"
@@ -243,7 +243,7 @@ export class ShroffImpl implements Shroff {
       throw new DepositError(JSON.stringify(result.err))
     } catch (e) {
       console.error("Deposit error: " + e)
-      throw new DepositError(e as Error)
+      throw new DepositError("Deposit error: " + e)
     }
   }
 
@@ -328,7 +328,7 @@ export class ShroffImpl implements Shroff {
       throw new WithdrawError(JSON.stringify(result.Err))
     } catch (e) {
       console.error("NFID transfer error: " + e)
-      throw new WithdrawError(e as Error)
+      throw new WithdrawError("NFID transfer error: " + e)
     }
   }
 
@@ -365,7 +365,7 @@ export class ShroffImpl implements Shroff {
       })
     } catch (e) {
       console.error("Swap error: " + e)
-      throw new SwapError(e as Error)
+      throw new SwapError("Swap error: " + e)
     }
   }
 
@@ -388,20 +388,27 @@ export class ShroffImpl implements Shroff {
           this.swapTransaction!.setWithdraw(id)
           return id
         }
-
         console.error("Withdraw error: " + JSON.stringify(result.err))
         throw new WithdrawError(JSON.stringify(result.err))
       })
     } catch (e) {
       console.error("Withdraw error: " + e)
-      throw new WithdrawError(e as Error)
+      throw new WithdrawError("Withdraw error: " + e)
     }
   }
 
   protected async restoreTransaction() {
-    return swapTransactionService.storeTransaction(
-      this.swapTransaction!.toCandid(),
-    )
+    try {
+      return swapTransactionService.storeTransaction(
+        this.swapTransaction!.toCandid(),
+      )
+    } catch (e) {
+      console.error("Restore transaction error: " + e)
+      console.log("Retrying to restore transaction")
+      return swapTransactionService.storeTransaction(
+        this.swapTransaction!.toCandid(),
+      )
+    }
   }
 }
 

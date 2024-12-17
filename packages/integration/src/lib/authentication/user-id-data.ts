@@ -1,5 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
+import { EXPECTED_CACHE_VERSION } from "@nfid/integration"
+
 import { im, replaceActorIdentity } from "../actors"
 import { getPublicKey } from "../delegation-factory/delegation-i"
 import { RootWallet } from "../identity-manager/profile"
@@ -12,25 +14,30 @@ export type UserIdData = {
   publicKey: string
   anchor: bigint
   wallet: RootWallet
+  email?: string
+  cacheVersion: string
 }
 
 type SerializedUserIdData = Omit<UserIdData, "anchor"> & {
-    anchor: number
+  anchor: number
 }
 
 export function serializeUserIdData(userIdData: UserIdData) {
   return JSON.stringify({
     ...userIdData,
     anchor: Number(userIdData.anchor.toString()),
+    cacheVersion: EXPECTED_CACHE_VERSION,
   })
 }
 
-export function deserializeUserIdData(userIdData: string) {
+export function deserializeUserIdData(userIdData: string): UserIdData {
   const parsed = JSON.parse(userIdData) as SerializedUserIdData
   return { ...parsed, anchor: BigInt(parsed.anchor) }
 }
 
-export async function createUserIdData(delegationIdentity: DelegationIdentity) {
+export async function createUserIdData(
+  delegationIdentity: DelegationIdentity,
+): Promise<UserIdData> {
   await replaceActorIdentity(im, delegationIdentity)
   const [publicKey, account] = await Promise.all([
     getPublicKey(delegationIdentity),
@@ -45,5 +52,10 @@ export async function createUserIdData(delegationIdentity: DelegationIdentity) {
     publicKey: publicKey,
     anchor: account.data[0]!.anchor,
     wallet: rootWallet,
+    email:
+      account.data[0]!.email.length !== 0
+        ? account.data[0]!.email[0]
+        : undefined,
+    cacheVersion: EXPECTED_CACHE_VERSION,
   }
 }

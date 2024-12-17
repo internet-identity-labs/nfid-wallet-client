@@ -47,7 +47,7 @@ export class Page {
 
   public async waitForDataCacheLoading() {
     await browser.waitUntil(
-      async function() {
+      async function () {
         return (await $("#root").getAttribute("data-cache-loaded")) === "true"
       },
       {
@@ -76,8 +76,7 @@ export class Page {
     profileType?: string,
     targets?: string,
     derivation?: string,
-  ) {
-  }
+  ) {}
 }
 
 export default new Page()

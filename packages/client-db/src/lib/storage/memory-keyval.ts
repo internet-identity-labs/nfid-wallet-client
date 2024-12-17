@@ -53,4 +53,13 @@ export class MemoryKeyVal implements KeyValueStore {
     console.debug("MemoryKeyVal.clear")
     this._map.clear()
   }
+
+  /**
+   * Get all keys
+   * @returns Promise<string[]>
+   */
+  public async getAllKeys(): Promise<string[]> {
+    console.debug("MemoryKeyVal.getAllKeys")
+    return Array.from(this._map.keys()).map((key) => key.toString())
+  }
 }

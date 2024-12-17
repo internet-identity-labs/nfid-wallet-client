@@ -1,6 +1,7 @@
 import { Then } from "@cucumber/cucumber"
-import Nft from "../pages/nft.js"
+
 import { softAssertAll } from "../helpers/softAssertions.js"
+import Nft from "../pages/nft.js"
 
 Then(
   /^Verifying that the token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,

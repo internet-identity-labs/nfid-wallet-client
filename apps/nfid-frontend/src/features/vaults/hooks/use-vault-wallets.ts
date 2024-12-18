@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
-import { useSWR } from "@nfid/swr"
 
 import { getWallets } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { fetchVaultWalletsBalances } from "frontend/features/fungible-token/fetch-balances"
 

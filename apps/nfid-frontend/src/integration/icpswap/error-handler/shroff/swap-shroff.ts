@@ -26,7 +26,7 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
       console.debug("Balance: " + JSON.stringify(balance))
 
       console.debug("Transaction restarted")
-      if (this.swapTransaction.getError() === undefined) {
+      if (this.swapTransaction.getErrors().length === 0) {
         console.debug("Swap timeout error")
         return this.handleSwapTimeoutError()
       } else {
@@ -39,6 +39,7 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
       }
     } catch (e) {
       console.error("Swap error:", e)
+      this.swapTransaction.setError("Swap retry error: " + e)
       await this.restoreTransaction()
       throw e
     }
@@ -67,7 +68,7 @@ export class ShroffSwapErrorHandler extends ShroffImpl {
 
         console.error("Withdraw error: " + JSON.stringify(result.err))
 
-        throw new WithdrawError("Withdraw error: " + JSON.stringify(result.err))
+        throw new WithdrawError(JSON.stringify(result.err))
       })
     } catch (e) {
       console.error("Withdraw error: " + e)

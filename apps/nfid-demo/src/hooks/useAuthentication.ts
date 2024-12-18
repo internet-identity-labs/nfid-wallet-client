@@ -2,6 +2,7 @@ import { HttpAgent } from "@dfinity/agent"
 import { AuthClient } from "@dfinity/auth-client"
 import { DelegationIdentity } from "@dfinity/identity"
 import React from "react"
+
 import { useSWR } from "@nfid/swr"
 
 import { useAuthenticationContext } from "../context/authentication"

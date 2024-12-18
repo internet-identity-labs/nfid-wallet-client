@@ -1,8 +1,8 @@
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React from "react"
-import { useSWR } from "@nfid/swr"
 
 import { Button } from "@nfid-frontend/ui"
+import { useSWR } from "@nfid/swr"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 

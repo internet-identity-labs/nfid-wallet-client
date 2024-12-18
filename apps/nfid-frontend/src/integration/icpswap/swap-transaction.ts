@@ -25,7 +25,7 @@ export interface SwapTransaction {
 
   getEndTime(): number | undefined
 
-  getError(): ErrorSwap | Icrc1TransferError | undefined | string
+  getErrors(): Array<SwapError>
 
   getStage(): SwapStage
 
@@ -50,4 +50,9 @@ export interface SwapTransaction {
   setWithdraw(withdraw: bigint): void
 
   setCompleted(): void
+}
+
+export interface SwapError {
+  time: bigint
+  message: string
 }

@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import { useParams } from "react-router-dom"
-import { useSWR } from "@nfid/swr"
 
 import { getTransactions } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 export const useVaultTransactions = () => {
   const { vaultId } = useParams()

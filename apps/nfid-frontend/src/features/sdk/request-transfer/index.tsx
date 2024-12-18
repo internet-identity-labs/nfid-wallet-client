@@ -3,7 +3,6 @@ import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-k
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import React, { useState } from "react"
-import { useSWR } from "@nfid/swr"
 
 import { Address, BlurredLoader, Button } from "@nfid-frontend/ui"
 import { toUSD } from "@nfid-frontend/utils"
@@ -13,6 +12,7 @@ import {
   ICP_DECIMALS,
   WALLET_FEE_E8S,
 } from "@nfid/integration/token/constants"
+import { useSWR } from "@nfid/swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react"
-import { useSWR } from "@nfid/swr"
 
 import { EmptyCard, IconCmpVault, Loader } from "@nfid-frontend/ui"
+import { useSWR } from "@nfid/swr"
 
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 

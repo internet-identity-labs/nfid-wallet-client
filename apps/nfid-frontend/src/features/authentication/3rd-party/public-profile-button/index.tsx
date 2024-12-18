@@ -1,9 +1,9 @@
 import clsx from "clsx"
-import { useSWR } from "@nfid/swr"
 
 import { Loader, RadioButton } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 import { authState } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { ProfileTypes } from "../choose-account"
 import { getPublicProfile } from "../choose-account/services"

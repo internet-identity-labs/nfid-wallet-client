@@ -1,8 +1,8 @@
 import { useAtom } from "jotai"
 import React from "react"
-import { useSWR } from "@nfid/swr"
 
 import { im, setProfileToStorage } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { unpackResponse } from "frontend/integration/_common"

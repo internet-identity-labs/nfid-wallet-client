@@ -1,9 +1,9 @@
 import clsx from "clsx"
 import React from "react"
-import { useSWR } from "@nfid/swr"
 
 import { IconCmpPlus } from "@nfid-frontend/ui"
 import { Icon, authState, getGoogleDeviceState } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { fetchAllDevices } from "frontend/integration/internet-identity"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"

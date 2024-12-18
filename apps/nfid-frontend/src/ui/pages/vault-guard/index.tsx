@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react"
-import { useSWR } from "@nfid/swr"
 
 import { Loader } from "@nfid-frontend/ui"
+import { useSWR } from "@nfid/swr"
 
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { getAllVaults } from "frontend/features/vaults/services"

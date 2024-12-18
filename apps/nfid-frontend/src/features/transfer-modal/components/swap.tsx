@@ -3,13 +3,13 @@ import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { useSWR } from "@nfid/swr"
 
 import {
   CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { useSWR } from "@nfid/swr"
 import { mutate } from "@nfid/swr"
 
 import {
@@ -123,9 +123,9 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     if (!getTransaction) return
     const transactionInterval = setInterval(() => {
       const step = getTransaction.getStage()
-      const error = getTransaction.getError()
+      const errors = getTransaction.getErrors()
       setSwapStep(step)
-      if (step === SwapStage.Completed || error !== undefined) {
+      if (step === SwapStage.Completed || errors.length > 0) {
         if (transactionInterval) {
           clearInterval(transactionInterval)
         }

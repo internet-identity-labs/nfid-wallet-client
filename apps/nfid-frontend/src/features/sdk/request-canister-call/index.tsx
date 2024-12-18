@@ -3,11 +3,11 @@ import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import { useSWR } from "@nfid/swr"
 
 import { BlurredLoader, IconCmpWarning } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+import { useSWR } from "@nfid/swr"
 
 import { RPCPromptTemplate } from "frontend/features/identitykit/components/templates/prompt-template"
 import { getUserBalance } from "frontend/features/transfer-modal/utils"

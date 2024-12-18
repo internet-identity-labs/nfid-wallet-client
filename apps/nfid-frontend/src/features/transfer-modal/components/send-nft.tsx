@@ -1,6 +1,7 @@
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
 import { useCallback, useState } from "react"
+
 import { useSWR } from "@nfid/swr"
 
 import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"

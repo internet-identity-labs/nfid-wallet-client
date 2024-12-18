@@ -1,6 +1,5 @@
-import { useSWR } from "@nfid/swr"
-
 import { getVaults, getWallets, ObjectState } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { fetchVaultsWalletsBalances } from "frontend/features/fungible-token/fetch-balances"
 

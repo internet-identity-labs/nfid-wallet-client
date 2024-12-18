@@ -4,7 +4,6 @@ import toaster from "packages/ui/src/atoms/toast"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
-import { useSWR } from "@nfid/swr"
 
 import {
   BlurredLoader,
@@ -20,6 +19,7 @@ import {
   getAnonymousDelegate,
   getPublicAccountDelegate,
 } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { RequestStatus } from "frontend/features/types"
 import { fetchProfile } from "frontend/integration/identity-manager"

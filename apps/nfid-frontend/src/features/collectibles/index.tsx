@@ -1,9 +1,9 @@
 import clsx from "clsx"
 import { NFTs } from "packages/ui/src/organisms/nfts"
 import { useState } from "react"
-import { useSWR } from "@nfid/swr"
 
 import { Button } from "@nfid-frontend/ui"
+import { useSWR } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { searchTokens } from "frontend/features/collectibles/utils/util"

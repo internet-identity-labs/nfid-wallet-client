@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import { useParams } from "react-router-dom"
-import { useSWR } from "@nfid/swr"
 
 import { getPolicies } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { useVaultWallets } from "./use-vault-wallets"
 

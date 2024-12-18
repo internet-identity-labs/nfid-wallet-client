@@ -232,7 +232,7 @@ export class PasskeyConnector {
     allowedPasskeys: CredentialData[] = [],
   ) {
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
-      allowedPasskeys,
+      [],
       false,
       "required",
       signal,

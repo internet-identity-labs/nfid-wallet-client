@@ -143,7 +143,7 @@ const AuthenticationMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "AuthSelection",
+                target: "TwoFA",
               },
             ],
           },
@@ -264,7 +264,7 @@ const AuthenticationMachine =
           const showBanner = localStorage.getItem(SNS_STEP_VISITED)
           return !Boolean(showBanner)
         },
-        showChooseWallet: (context, event) => {
+        showChooseWallet: (context) => {
           const wallets = context.allowedWallets
           if (wallets === undefined) return false
 

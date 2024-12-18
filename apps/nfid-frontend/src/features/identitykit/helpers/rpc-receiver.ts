@@ -78,6 +78,8 @@ export const RPCReceiverV3 =
               "Connection Warning: Origin and source differ from those used when the connection was established.",
             )
           }
+        } finally {
+          return
         }
       }
 

@@ -25,7 +25,7 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       this.delegationIdentity = delegationIdentity
       console.debug("Transaction restarted")
-      if (this.swapTransaction.getError() === undefined) {
+      if (this.swapTransaction.getErrors().length === 0) {
         return this.handleWithdrawTimeoutError()
       }
       await this.withdraw()
@@ -41,10 +41,15 @@ export class ShroffWithdrawErrorHandler extends ShroffImpl {
         if (hasOwnProperty(log, "ok")) {
           const withdrawLogs = log.ok as Array<[bigint, WithdrawErrorLog]>
           if (withdrawLogs.length > 0) {
-            throw new ContactSupportError("Withdraw logs are empty")
+            this.swapTransaction!.setError(
+              "Withdraw retry contact support errors: " + withdrawLogs.length,
+            )
+            this.restoreTransaction()
+            throw new ContactSupportError("Withdraw logs not empty")
           }
         }
       })
+      this.swapTransaction.setError("Withdraw retry error: " + e)
       await this.restoreTransaction()
       throw e
     }

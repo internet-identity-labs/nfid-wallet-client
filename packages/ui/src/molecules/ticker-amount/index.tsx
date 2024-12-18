@@ -33,8 +33,10 @@ const formatAssetAmount = (
   value: BigNumber,
   decimals: number,
 ): string =>
-  (value.div(10 ** decimals)).toFixed(decimals).replace(TRIM_ZEROS, "") +
-  ` ${symbol}`
+  value
+    .div(10 ** decimals)
+    .toFixed(decimals)
+    .replace(TRIM_ZEROS, "") + ` ${symbol}`
 
 export const formatAssetAmountRaw = (
   value: BigNumber,
@@ -53,11 +55,15 @@ export const TickerAmount: React.FC<TickerAmountProps> = ({
   usdRate,
 }) => {
   if (!decimals) {
-    return <>{formatUsdAmountNoDecimals(BigNumber(value), BigNumber(usdRate!))}</>
+    return (
+      <>{formatUsdAmountNoDecimals(BigNumber(value), BigNumber(usdRate!))}</>
+    )
   }
 
   if (usdRate) {
-    return <>{formatUsdAmount(BigNumber(value), decimals, BigNumber(usdRate))}</>
+    return (
+      <>{formatUsdAmount(BigNumber(value), decimals, BigNumber(usdRate))}</>
+    )
   }
 
   return <>{formatAssetAmount(symbol, BigNumber(value), decimals)}</>

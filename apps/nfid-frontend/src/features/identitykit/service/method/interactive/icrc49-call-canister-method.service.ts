@@ -22,6 +22,7 @@ import {
 import { INDEX_DB_CONNECTED_ACCOUNTS_KEY } from "../../account.service"
 import { callCanisterService } from "../../call-canister.service"
 import { getDefaultMetadata } from "../../canister-calls-helpers/default"
+import { getIcrc1TransferMetadata } from "../../canister-calls-helpers/icrc1-transfer"
 import { getMetadataICRC2Approve } from "../../canister-calls-helpers/icrc2-approve"
 import { getLedgerTransferMetadata } from "../../canister-calls-helpers/ledger-transfer"
 import { consentMessageService } from "../../consent-message.service"
@@ -34,7 +35,6 @@ import {
   ComponentData,
   InteractiveMethodService,
 } from "./interactive-method.service"
-import { getIcrc1TransferMetadata } from "../../canister-calls-helpers/icrc1-transfer"
 
 export const IC_HOSTNAME = "https://ic0.app"
 
@@ -226,7 +226,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     const helpers: CallCanisterHelper = {
       icrc2_approve: getMetadataICRC2Approve,
       transfer: getLedgerTransferMetadata,
-      icrc1_transfer: getIcrc1TransferMetadata
+      icrc1_transfer: getIcrc1TransferMetadata,
     }
 
     const helper = helpers[message.data.params.method]

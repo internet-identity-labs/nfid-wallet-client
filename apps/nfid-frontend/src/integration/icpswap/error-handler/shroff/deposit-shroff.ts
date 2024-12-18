@@ -24,7 +24,7 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
       )
       console.log("Balance: " + JSON.stringify(balance))
       console.log("Transaction restarted")
-      if (this.swapTransaction.getError() === undefined) {
+      if (this.swapTransaction.getErrors().length === 0) {
         console.debug("Deposit timeout error")
         return this.handleDepositTimeoutError()
       } else {
@@ -45,7 +45,8 @@ export class ShroffDepositErrorHandler extends ShroffImpl {
         return this.swapTransaction!
       }
     } catch (e) {
-      console.error("Swap error:", e)
+      console.error("Deposit retry error:", e)
+      this.swapTransaction.setError("Deposit retry error: " + e)
       await this.restoreTransaction()
       throw e
     }

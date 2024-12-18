@@ -1,6 +1,9 @@
 import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { UUID } from "node:crypto"
-import { SwapTransaction } from "src/integration/icpswap/swap-transaction"
+import {
+  SwapError,
+  SwapTransaction,
+} from "src/integration/icpswap/swap-transaction"
 import { SwapStage } from "src/integration/icpswap/types/enums"
 import { v4 as uuidv4 } from "uuid"
 
@@ -23,7 +26,7 @@ export class SwapTransactionImpl implements SwapTransaction {
   private swap: bigint | undefined
   private withdraw: bigint | undefined
   private endTime: number | undefined
-  private error: ErrorSwap | Icrc1TransferError | undefined | string
+  private errors: Array<SwapError>
   private stage: SwapStage
   private readonly targetLedger: string
   private readonly sourceLedger: string
@@ -41,6 +44,7 @@ export class SwapTransactionImpl implements SwapTransaction {
     this.uid = this.generateUUID()
     this.quote = quote
     this.sourceAmount = amount
+    this.errors = []
   }
 
   getStartTime(): number {
@@ -71,8 +75,8 @@ export class SwapTransactionImpl implements SwapTransaction {
     return this.endTime
   }
 
-  getError(): ErrorSwap | Icrc1TransferError | undefined | string {
-    return this.error
+  getErrors(): Array<SwapError> {
+    return this.errors
   }
 
   getTargetLedger(): string {
@@ -127,15 +131,23 @@ export class SwapTransactionImpl implements SwapTransaction {
   }
 
   setError(error: Icrc1TransferError | ErrorSwap | string) {
-    this.error = error
-    this.endTime = Date.now()
+    const swapError = {
+      time: BigInt(Date.now()),
+      message: error.toString(),
+    }
+    this.errors.push(swapError)
   }
 
   toCandid(): SwapTransactionCandid {
     return {
       deposit: this.deposit ? [BigInt(this.deposit)] : [],
       end_time: this.endTime ? [BigInt(this.endTime)] : [],
-      error: this.error ? [JSON.stringify(this.error)] : [],
+      errors: this.errors.map((error) => {
+        return {
+          message: JSON.stringify(error),
+          time: error.time,
+        }
+      }),
       source_ledger: this.sourceLedger,
       stage: this.mapStageToCandid(this.stage),
       start_time: BigInt(this.startTime),
@@ -156,8 +168,12 @@ export class SwapTransactionImpl implements SwapTransaction {
     this.deposit = candid.deposit.length !== 0 ? candid.deposit[0] : undefined
     this.uid = candid.uid as UUID
     this.endTime = candid.end_time ? Number(candid.end_time) : undefined
-    this.error =
-      candid.error.length !== 0 ? JSON.parse(candid.error[0]) : undefined
+    this.errors = candid.errors.map((error) => {
+      return {
+        time: error.time,
+        message: error.message,
+      }
+    })
     this.swap = candid.swap.length !== 0 ? candid.swap[0] : undefined
     this.startTime = Number(candid.start_time)
     this.withdraw =

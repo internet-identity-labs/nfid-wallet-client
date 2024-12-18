@@ -1,6 +1,5 @@
-import { useSWR } from "@nfid/swr"
-
 import { Application } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { fetchAccounts, fetchApplications, fetchProfile } from "."
 

@@ -9,9 +9,9 @@ import {
   useReducer,
 } from "react"
 import { useLocation, useParams } from "react-router-dom"
-import { useSWR } from "@nfid/swr"
 
 import { IconSvgArrow, Loader, Tooltip } from "@nfid-frontend/ui"
+import { useSWR } from "@nfid/swr"
 
 import { ProfileContext } from "frontend/provider"
 import { NotFound } from "frontend/ui/pages/404"

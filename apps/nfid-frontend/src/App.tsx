@@ -1,12 +1,12 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
-import { useSWR } from "@nfid/swr"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED, ROUTE_RPC } from "@nfid/config"
 import { authState, exchangeRateService, ic } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"

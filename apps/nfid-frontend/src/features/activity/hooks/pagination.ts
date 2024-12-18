@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+
 import { useSWR } from "@nfid/swr"
 
 import { PAGINATION_ITEMS } from "../constants"

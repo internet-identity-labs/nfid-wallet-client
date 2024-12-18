@@ -23,7 +23,7 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
       console.debug("Balance: " + JSON.stringify(balance))
 
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
-      if (this.swapTransaction.getError() === undefined) {
+      if (this.swapTransaction.getErrors().length === 0) {
         console.debug("Swap timeout error")
         this.swapTransaction.setCompleted()
         return this.swapTransaction
@@ -33,7 +33,8 @@ export class ShroffNfidErrorHandler extends ShroffImpl {
       console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
-      console.error("Swap error:", e)
+      console.error("NFID transfer retry error: ", e)
+      this.swapTransaction.setError("NFID transfer retry error: " + e)
       await this.restoreTransaction()
       throw e
     }

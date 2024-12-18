@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import { useParams } from "react-router-dom"
-import { useSWR } from "@nfid/swr"
 
 import { VaultRole } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { getVaultById } from "../services"
 import { useVaultMember } from "./use-vault-member"

@@ -4,9 +4,9 @@ import React from "react"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
 
+import { ICRC2Metadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
-import { ICRC2Metadata } from "../../service/canister-calls-helpers/interfaces"
 
 export interface CallCanisterICRC2SpendingCapProps {
   canisterId: string

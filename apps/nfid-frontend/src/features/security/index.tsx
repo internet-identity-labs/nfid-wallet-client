@@ -1,9 +1,9 @@
 import { Security } from "packages/ui/src/pages/security"
 import React, { useMemo, useCallback } from "react"
-import { useSWR } from "@nfid/swr"
 
 import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"

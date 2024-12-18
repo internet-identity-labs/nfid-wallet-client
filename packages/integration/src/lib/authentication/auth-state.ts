@@ -348,6 +348,14 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
       return acc
     }, [] as { email: string | undefined; principal: string; anchor: bigint }[])
 
+  const parsedCredentialIds: string[] = await authStorage
+    .get("credentialIds")
+    .then((passkeysUsedOnThisDevice) =>
+      passkeysUsedOnThisDevice
+        ? JSON.parse(passkeysUsedOnThisDevice as string)
+        : [],
+    )
+
   const passkeysFromAPI: {
     data: PassKeyData[]
     anchor: bigint
@@ -365,6 +373,7 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
     .map((p) =>
       p.data
         .map((d) => JSON.parse(d.data))
+        .filter((l) => parsedCredentialIds.includes(l.credentialId))
         .map((s) => {
           return {
             credentialId: base64url.toBuffer(s.credentialId),

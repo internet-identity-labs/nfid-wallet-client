@@ -255,6 +255,19 @@ export class PasskeyConnector {
       })
 
       const profile = await fetchProfile()
+
+      let ap = profile.accessPoints.find(
+        (ap) => ap.principalId === delegationIdentity.getPrincipal().toText(),
+      )
+      if (ap && ap.credentialId) {
+        const newKey = ap.credentialId
+        let keys = await authStorage.get("credentialIds")
+        const parsedKeys: string[] = keys ? JSON.parse(keys as string) : []
+        if (!parsedKeys.includes(newKey)) {
+          parsedKeys.push(newKey)
+          await authStorage.set("credentialIds", JSON.stringify(parsedKeys))
+        }
+      }
       im.use_access_point([])
 
       await this.cachePasskeyDelegation(sessionKey, delegationIdentity)

@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { useSWR } from "@nfid/swr"
+import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { useActivityPagination } from "./hooks/pagination"
 
@@ -12,7 +12,7 @@ const ActivityPage = () => {
   const { state } = useLocation()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
   const data = useActivityPagination(initialFilter)
-  const { data: tokens = [], isLoading: isActiveLoading } = useSWR(
+  const { data: tokens = [], isLoading: isActiveLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
     {

@@ -9,8 +9,7 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { useSWR } from "@nfid/swr"
-import { mutate } from "@nfid/swr"
+import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import {
   DepositError,
@@ -54,7 +53,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     string | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const { data: tokens = [], isLoading: isTokensLoading } = useSWR(
+  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
     { revalidateOnFocus: false, revalidateOnMount: false },
@@ -232,7 +231,7 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
           [fromTokenAddress, toTokenAddress],
           tokens,
         ).then((updatedTokens) => {
-          mutate("tokens", updatedTokens, false)
+          mutateWithTimestamp("tokens", updatedTokens, false)
         })
       })
 

@@ -11,7 +11,7 @@ import {
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutate } from "@nfid/swr"
+import { mutateWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -33,7 +33,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, tokens }) => {
         setHideTokenLoading(true)
         await token.hideToken()
         const updatedTokens = [...tokens]
-        await mutate("tokens", updatedTokens, false)
+        await mutateWithTimestamp("tokens", updatedTokens, false)
       } catch (e) {
         toaster.error("Token hiding failed: " + (e as Error).message)
       } finally {
@@ -55,7 +55,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, tokens }) => {
         }
 
         const updatedTokens = [...tokens]
-        await mutate("tokens", updatedTokens, false)
+        await mutateWithTimestamp("tokens", updatedTokens, false)
       } catch (e) {
         toaster.error("Token shhowing failed: " + (e as Error).message)
       } finally {

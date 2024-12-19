@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import useSWRLib, { SWRHook, SWRResponse } from "swr"
 
 // any to inherit types correctly
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const useSWR: SWRHook = (key: any, fetcher?: any, options?: any) => {
+export const useSWRWithTimestamp: SWRHook = (
+  key: any,
+  fetcher?: any,
+  options?: any,
+) => {
   const { data, ...swr } = useSWRLib(
     key,
     fetcher
@@ -27,3 +31,5 @@ export const useSWR: SWRHook = (key: any, fetcher?: any, options?: any) => {
     ...swr,
   } as SWRResponse
 }
+
+export const useSWR = useSWRLib

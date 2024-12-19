@@ -1,11 +1,12 @@
 import clsx from "clsx"
 import { Id, toast, ToastOptions } from "react-toastify"
 
+import { ReactComponent as ErrorIcon } from "./assets/error.svg"
+import { ReactComponent as InfoIcon } from "./assets/info.svg"
+import { ReactComponent as SuccessIcon } from "./assets/success.svg"
+import { ReactComponent as WarningIcon } from "./assets/warning.svg"
+
 import { CloseIcon } from "../icons/close-button"
-import { ReactComponent as ErrorIcon } from "../icons/error.svg"
-import { ReactComponent as InfoIcon } from "../icons/info.svg"
-import { ReactComponent as SuccessIcon } from "../icons/success.svg"
-import { ReactComponent as WarningIcon } from "../icons/warning.svg"
 
 const Toast = ({ title, text }: { title?: string; text?: string }) => {
   return (

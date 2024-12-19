@@ -14,8 +14,7 @@ import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { useSWR } from "@nfid/swr"
-import { mutate } from "@nfid/swr"
+import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
@@ -58,7 +57,7 @@ export const TransferFT = ({
     getVaultsAccountsOptions,
   )
 
-  const { data: tokens = [], isLoading: isTokensLoading } = useSWR(
+  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
     { revalidateOnFocus: false, revalidateOnMount: false },
@@ -171,7 +170,7 @@ export const TransferFT = ({
         setStatus(SendStatus.COMPLETED)
         getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
           (updatedTokens) => {
-            mutate("tokens", updatedTokens, false)
+            mutateWithTimestamp("tokens", updatedTokens, false)
           },
         )
         toaster.success(

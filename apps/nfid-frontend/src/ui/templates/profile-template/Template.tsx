@@ -23,7 +23,7 @@ import useSWRImmutable from "swr/immutable"
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { useSWR } from "@nfid/swr"
+import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
@@ -123,7 +123,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
-  const { data: tokens = [] } = useSWR("tokens", fetchTokens, {
+  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
   })
 

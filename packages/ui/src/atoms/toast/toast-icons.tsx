@@ -1,7 +1,7 @@
-import ErrorIcon from "frontend/assets/toast-icons/error.svg"
-import InfoIcon from "frontend/assets/toast-icons/info.svg"
-import SuccessIcon from "frontend/assets/toast-icons/success.svg"
-import WarningIcon from "frontend/assets/toast-icons/warning.svg"
+import ErrorIcon from "../icons/error.svg"
+import InfoIcon from "../icons/info.svg"
+import SuccessIcon from "../icons/success.svg"
+import WarningIcon from "../icons/warning.svg"
 
 export const ToastIcons: { [key: string]: JSX.Element } = {
   success: <img src={SuccessIcon} alt="success" />,

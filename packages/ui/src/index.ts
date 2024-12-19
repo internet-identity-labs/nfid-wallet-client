@@ -31,6 +31,7 @@ export * from "./atoms/address"
 export * from "./atoms/image-with-fallback"
 export * from "./atoms/application-icon"
 export * from "./molecules/copy-address"
+export * from "./atoms/toast/toast-icons"
 
 export * from "./molecules/button"
 export * from "./molecules/button/arrow-button"

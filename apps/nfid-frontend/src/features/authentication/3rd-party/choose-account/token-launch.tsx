@@ -2,7 +2,8 @@ import { useEffect } from "react"
 
 import { Button } from "@nfid-frontend/ui"
 
-import coinsImg from "../../../../assets/coins.png"
+import coinsImg from "./assets/coins.png"
+
 import { SNS_STEP_VISITED } from "../../constants"
 
 function Icon({ className }: { className?: string }) {

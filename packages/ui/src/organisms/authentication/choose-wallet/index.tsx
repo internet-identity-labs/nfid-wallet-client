@@ -18,7 +18,6 @@ interface AuthorizingAppMeta {
 export interface ChooseWalletProps {
   onAuthSelection: () => void
   onLoginWithPasskey: (allowedPasskeys: any[]) => Promise<void>
-  isLoading: boolean
   showLogo?: boolean
   authRequest?: AuthorizationRequest
   appMeta?: AuthorizingAppMeta
@@ -28,7 +27,6 @@ export interface ChooseWalletProps {
 export const ChooseWallet: FC<ChooseWalletProps> = ({
   onAuthSelection,
   onLoginWithPasskey,
-  isLoading,
   showLogo,
   authRequest,
   appMeta,
@@ -43,7 +41,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
 
   if (!wallets) return null
   return (
-    <BlurredLoader isLoading={isLoading} overlayClassnames="rounded-[24px]">
+    <>
       <div className="flex flex-col w-full h-full text-sm text-center">
         <AuthAppMeta
           applicationURL={appHost}
@@ -94,6 +92,6 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
           Use a different wallet
         </Button>
       </div>
-    </BlurredLoader>
+    </>
   )
 }

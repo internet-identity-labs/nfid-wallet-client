@@ -4,13 +4,13 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { SWRConfig } from "swr"
 
+import { ToastIcons } from "@nfid-frontend/ui"
 import { ONE_SECOND_IN_MS } from "@nfid/config"
 
 import { App } from "./App"
 import { initializeConsoleWarnings, redirectFromCanisters } from "./boot"
 import "./index.css"
 import { Provider } from "./provider"
-import { ToastIcons } from "./ui/atoms/toast-icons"
 
 const container = document.getElementById("root")
 initializeConsoleWarnings()

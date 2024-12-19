@@ -5,7 +5,7 @@ import { Button } from "@nfid-frontend/ui"
 
 import { SNS_STEP_VISITED } from "frontend/features/authentication/constants"
 
-import coinsImg from "../../../assets/coins.png"
+import coinsImg from "../../authentication/3rd-party/choose-account/assets/coins.png"
 
 function Icon({ className }: { className?: string }) {
   return (

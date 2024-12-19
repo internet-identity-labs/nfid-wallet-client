@@ -9,11 +9,11 @@ import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthAddPasskey } from "packages/ui/src/organisms/authentication/auth-add-passkey"
 import { AuthAddPasskeySuccess } from "packages/ui/src/organisms/authentication/auth-add-passkey/success"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
-import { ChooseWallet } from "packages/ui/src/organisms/authentication/choose-wallet"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { ReactNode, useCallback, useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
+import { getAllWalletsFromThisDevice } from "@nfid/integration"
 
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
 import { AuthWithEmailActor } from "frontend/features/authentication/auth-selection/email-flow/machine"
@@ -107,23 +107,11 @@ export default function AuthenticationCoordinator({
   }
 
   switch (true) {
-    case state.matches("ChooseWallet"):
-      return (
-        <ChooseWallet
-          authRequest={state.context.authRequest}
-          appMeta={state.context?.appMeta}
-          isLoading={false}
-          showLogo={isIdentityKit}
-          onAuthSelection={() => send({ type: "BACK" })}
-          onLoginWithPasskey={onLoginWithPasskey}
-          wallets={state.context.allowedWallets}
-        />
-      )
-
     case state.matches("AuthSelection"):
       return (
         <AuthSelection
           isIdentityKit={isIdentityKit}
+          getAllWalletsFromThisDevice={getAllWalletsFromThisDevice}
           onSelectEmailAuth={(email: string) => {
             send({
               type: "AUTH_WITH_EMAIL",

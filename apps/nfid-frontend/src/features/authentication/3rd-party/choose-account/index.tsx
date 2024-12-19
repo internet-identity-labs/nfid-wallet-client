@@ -255,6 +255,7 @@ export const AuthChooseAccount = ({
   ])
 
   const onBack = useCallback(async () => {
+    await authState.logout(false)
     onReset()
   }, [onReset])
 

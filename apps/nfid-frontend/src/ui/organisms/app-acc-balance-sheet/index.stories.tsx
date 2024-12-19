@@ -1,7 +1,7 @@
 import { StoryFn } from "@storybook/react"
 import { ToastContainer } from "react-toastify"
 
-import { ToastIcons } from "frontend/ui/atoms/toast-icons"
+import { ToastIcons } from "@nfid-frontend/ui"
 
 import { AppAccountBalanceSheet } from "."
 

@@ -1,7 +1,5 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { ExistingWallet, getAllWalletsFromThisDevice } from "@nfid/integration"
-
 import AuthWithEmailMachine from "frontend/features/authentication/auth-selection/email-flow/machine"
 import AuthWithGoogleMachine from "frontend/features/authentication/auth-selection/google-flow/auth-with-google"
 import { AbstractAuthSession } from "frontend/state/authentication"
@@ -26,13 +24,11 @@ export interface AuthenticationContext {
   thirdPartyAuthSession?: ApproveIcGetDelegationSdkResponse
 
   allowedDevices?: string[]
-  allowedWallets?: ExistingWallet[]
 
   email2FA?: string
   email?: string
   showPasskeys?: boolean
   isEmbed?: boolean
-  showChooseWallet?: boolean
 }
 
 export type Events =
@@ -45,10 +41,6 @@ export type Events =
   | {
       type: "done.invoke.shouldShowPasskeys"
       data?: { showPasskeys: boolean }
-    }
-  | {
-      type: "done.invoke.getWallets"
-      data?: ExistingWallet[]
     }
   | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
   | { type: "CHOOSE_WALLET" }
@@ -75,13 +67,10 @@ const AuthenticationMachine =
       tsTypes: {} as import("./root-machine.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
       id: "auth-machine",
-      initial: "ProceedWallets",
+      initial: "AuthSelection",
       states: {
         AuthSelection: {
           on: {
-            CHOOSE_WALLET: {
-              target: "ChooseWallet",
-            },
             AUTH_WITH_EMAIL: {
               target: "EmailAuthentication",
               actions: ["assignVerificationEmail", "assignIsEmbed"],
@@ -97,34 +86,6 @@ const AuthenticationMachine =
             AUTHENTICATED: {
               actions: "assignAuthSession",
               target: "End",
-            },
-          },
-        },
-        ProceedWallets: {
-          invoke: {
-            src: async () => await getAllWalletsFromThisDevice(),
-            id: "getWallets",
-            onDone: {
-              actions: "assignWallets",
-              target: "CheckChooseWallet",
-            },
-            onError: {
-              target: "AuthSelection",
-            },
-          },
-        },
-        CheckChooseWallet: {
-          always: [
-            { cond: "showChooseWallet", target: "ChooseWallet" },
-            { target: "AuthSelection" },
-          ],
-        },
-        ChooseWallet: {
-          on: {
-            BACK: "AuthSelection",
-            AUTHENTICATED: {
-              target: "checkSNSBanner",
-              actions: "assignAuthSession",
             },
           },
         },
@@ -264,12 +225,6 @@ const AuthenticationMachine =
           const showBanner = localStorage.getItem(SNS_STEP_VISITED)
           return !Boolean(showBanner)
         },
-        showChooseWallet: (context) => {
-          const wallets = context.allowedWallets
-          if (wallets === undefined) return false
-
-          return wallets.length > 0
-        },
       },
       actions: {
         assignAuthSession: assign((_, event) => ({
@@ -290,9 +245,6 @@ const AuthenticationMachine =
         assignIsEmbed: assign((_, event) => ({
           isEmbed: event.data?.isEmbed,
         })),
-        assignWallets: assign({
-          allowedWallets: (_, event) => event.data,
-        }),
       },
       services: {
         AuthWithEmailMachine,

@@ -11,7 +11,7 @@ import {
   IconSvgTokenInfo,
   IDropdownPosition,
 } from "@nfid-frontend/ui"
-import { mutate } from "@nfid/swr"
+import { mutateWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -84,7 +84,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
 
               const updatedTokens = [...tokens]
 
-              await mutate("tokens", updatedTokens, false)
+              await mutateWithTimestamp("tokens", updatedTokens, false)
             }}
           />
         )}

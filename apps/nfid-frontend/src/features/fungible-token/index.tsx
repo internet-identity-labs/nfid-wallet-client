@@ -8,7 +8,7 @@ import { authState } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
-import { useSWR } from "@nfid/swr"
+import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
@@ -32,7 +32,7 @@ const TokensPage = () => {
     data: tokens = [],
     mutate: refetchTokens,
     isLoading: isTokensLoading,
-  } = useSWR("tokens", fetchTokens, {
+  } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
   })
 

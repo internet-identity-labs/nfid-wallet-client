@@ -19,6 +19,7 @@ export interface AuthOtherSignOptionsProps {
   handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
   isLoading: boolean
   profileAnchor?: number
+  isIdentityKit?: boolean
 }
 
 export const AuthOtherSignOptions = ({
@@ -27,6 +28,7 @@ export const AuthOtherSignOptions = ({
   handleAuth,
   isLoading,
   profileAnchor,
+  isIdentityKit,
 }: AuthOtherSignOptionsProps) => {
   const { register, handleSubmit, setValue } = useForm<{
     userNumber: number
@@ -41,10 +43,15 @@ export const AuthOtherSignOptions = ({
   return (
     <div>
       <IconCmpArrow
-        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0"
+        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5"
         onClick={onBack}
       />
-      <AuthAppMeta applicationURL={appMeta} />
+      <AuthAppMeta
+        applicationURL={appMeta}
+        withLogo={!isIdentityKit}
+        title={isIdentityKit ? "Sign in" : undefined}
+        subTitle={isIdentityKit ? "to continue to" : undefined}
+      />
       <div
         className={clsx(
           "grid grid-cols-[22px,1fr] space-x-[10px] text-sm",

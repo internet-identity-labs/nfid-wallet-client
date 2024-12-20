@@ -19,7 +19,9 @@ export interface AuthOtherSignOptionsProps {
   handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
   isLoading: boolean
   profileAnchor?: number
-  isIdentityKit?: boolean
+  withLogo?: boolean
+  title?: string
+  subTitle?: string | JSX.Element
 }
 
 export const AuthOtherSignOptions = ({
@@ -28,7 +30,9 @@ export const AuthOtherSignOptions = ({
   handleAuth,
   isLoading,
   profileAnchor,
-  isIdentityKit,
+  withLogo,
+  title,
+  subTitle,
 }: AuthOtherSignOptionsProps) => {
   const { register, handleSubmit, setValue } = useForm<{
     userNumber: number
@@ -48,9 +52,9 @@ export const AuthOtherSignOptions = ({
       />
       <AuthAppMeta
         applicationURL={appMeta}
-        withLogo={!isIdentityKit}
-        title={isIdentityKit ? "Sign in" : undefined}
-        subTitle={isIdentityKit ? "to continue to" : undefined}
+        withLogo={withLogo}
+        title={title}
+        subTitle={subTitle}
       />
       <div
         className={clsx(

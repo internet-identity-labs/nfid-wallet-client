@@ -35,7 +35,7 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
             "w-5 h-5 cursor-pointer",
             disabled
               ? "!border-gray-300 !pointer-events-none"
-              : "hover:ring-2 hover:ring-[#0D9488]/20 hover:border-[#0D9488] focus:ring-0 focus:ring-offset-0 active:ring-2 active:ring-offset-2 active:ring-black",
+              : "hover:ring-2 hover:ring-[#0D9488]/20 hover:border-[#0D9488] focus:ring-2 focus:ring-offset-2 focus:ring-black",
           )}
           {...props}
         />

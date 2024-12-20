@@ -159,7 +159,9 @@ export default function AuthenticationCoordinator({
     case state.matches("OtherSignOptions"):
       return (
         <AuthOtherSignOptions
-          isIdentityKit={isIdentityKit}
+          withLogo={!isIdentityKit}
+          title={isIdentityKit ? "Sign in" : undefined}
+          subTitle={isIdentityKit ? "to continue to" : undefined}
           appMeta={state.context.authRequest?.hostname}
           onBack={() => send({ type: "BACK" })}
           handleAuth={handleOtherOptionsAuth}

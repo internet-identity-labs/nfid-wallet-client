@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { AnonymousIdentity, Identity, SignIdentity } from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   DelegationChain,
@@ -241,6 +241,7 @@ function makeAuthState() {
     await _clearAuthSessionFromCache()
     console.debug("invalidateIdentity")
     agent.invalidateIdentity()
+    agent.replaceIdentity(new AnonymousIdentity())
     observableAuthState$.next({
       cacheLoaded: true,
     })
@@ -304,7 +305,7 @@ function makeAuthState() {
 /**
  * When user connects an identity, we update our agent.
  */
-export function replaceIdentity(identity: SignIdentity, calledFrom?: string) {
+export function replaceIdentity(identity: Identity, calledFrom?: string) {
   agent.replaceIdentity(identity)
   agent.getPrincipal().then((principal) => {
     console.debug(`replaceIdentity calledFrom: ${calledFrom}`, {

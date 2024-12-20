@@ -3,7 +3,6 @@ import AuthenticatedPopup from "packages/ui/src/organisms/header/navigation-popu
 import React from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
-import User from "src/assets/userpics/userpic_6.svg"
 
 import { Button } from "@nfid-frontend/ui"
 import { useClickOutside } from "@nfid-frontend/utils"
@@ -117,9 +116,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                       className="h-[60px] items-center flex p-2.5"
                       id="burger-menu-title"
                     >
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0">
-                        <img src={User} alt="user" className="cursor-pointer" />
-                      </div>
                       <p className="text-sm text-gray-700 px-2.5 w-full">
                         {profile?.name ?? profile?.anchor ?? ""}
                       </p>
@@ -218,9 +214,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
               onClick={() => setIsPopupVisible(true)}
               id="profile-icon"
-            >
-              <img src={User} alt="user" className="cursor-pointer" />
-            </div>
+            ></div>
           ) : null}
           {isPopupVisible && profile?.anchor ? (
             <AuthenticatedPopup

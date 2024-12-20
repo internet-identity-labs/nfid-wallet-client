@@ -19,6 +19,9 @@ export interface AuthOtherSignOptionsProps {
   handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
   isLoading: boolean
   profileAnchor?: number
+  withLogo?: boolean
+  title?: string
+  subTitle?: string | JSX.Element
 }
 
 export const AuthOtherSignOptions = ({
@@ -27,6 +30,9 @@ export const AuthOtherSignOptions = ({
   handleAuth,
   isLoading,
   profileAnchor,
+  withLogo,
+  title,
+  subTitle,
 }: AuthOtherSignOptionsProps) => {
   const { register, handleSubmit, setValue } = useForm<{
     userNumber: number
@@ -41,10 +47,15 @@ export const AuthOtherSignOptions = ({
   return (
     <div>
       <IconCmpArrow
-        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0"
+        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5"
         onClick={onBack}
       />
-      <AuthAppMeta applicationURL={appMeta} />
+      <AuthAppMeta
+        applicationURL={appMeta}
+        withLogo={withLogo}
+        title={title}
+        subTitle={subTitle}
+      />
       <div
         className={clsx(
           "grid grid-cols-[22px,1fr] space-x-[10px] text-sm",

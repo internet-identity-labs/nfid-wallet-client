@@ -137,19 +137,17 @@ export async function getLambdaPublicKey(
   identity: DelegationIdentity,
   origin = GLOBAL_ORIGIN,
   type = DelegationType.GLOBAL,
+  root: string | undefined,
 ) {
   if (type === DelegationType.GLOBAL) {
     const signer = icSigner
     await replaceActorIdentity(signer, identity)
-    const root = await im.get_root_by_principal(
-      identity.getPrincipal().toString(),
-    )
 
-    if (!root[0]) {
+    if (!root) {
       throw Error("The root account cannot be found.")
     }
 
-    const response = (await signer.get_public_key(root[0])) as string[]
+    const response = (await signer.get_public_key(root)) as string[]
     let publicKey
     if (response.length === 0) {
       publicKey = await ecdsaRegisterNewKeyPair(identity, Chain.IC)

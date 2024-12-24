@@ -31,6 +31,6 @@ export interface Typegen0 {
   eventsCausingServices: {
     signWithGoogleService: "xstate.init"
   }
-  matchesStates: "End" | "Error" | "FetchKeys"
+  matchesStates: "End" | "FetchKeys"
   tags: never
 }

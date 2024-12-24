@@ -40,16 +40,7 @@ const AuthWithGoogleMachine =
               target: "End",
               actions: "assignAuthSession",
             },
-            onError: {
-              target: "Error",
-            },
           },
-        },
-        Error: {
-          type: "final",
-          data: (_, event) => ({
-            error: event.data,
-          }),
         },
         End: {
           type: "final",

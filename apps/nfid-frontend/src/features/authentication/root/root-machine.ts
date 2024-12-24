@@ -104,7 +104,7 @@ const AuthenticationMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "TwoFA",
+                target: "AuthSelection",
               },
             ],
           },

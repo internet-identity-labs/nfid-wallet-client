@@ -208,7 +208,12 @@ export async function getPublicKey(
     })
     return principal.toText()
   } else {
-    const key = await getLambdaPublicKey(identity, origin, type)
+    const key = await getLambdaPublicKey(
+      identity,
+      origin,
+      type,
+      account.data[0]?.principal_id,
+    )
     await integrationCache.setItem(cacheKey, key, {
       ttl: 60000,
     })

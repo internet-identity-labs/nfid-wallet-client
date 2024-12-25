@@ -113,7 +113,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         !isOpen && "hidden",
       )}
     >
-      <div className="flex-grow text-center" id={"swap-success-title"}>
+      <div className="relative flex-grow text-center" id={"swap-success-title"}>
         <H5 className="mt-5 text-xl leading-6">
           {isCompleted ? "Swap successful" : "Swapping"}
         </H5>
@@ -134,7 +134,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           <div
             className={clsx(
               "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[125px] sm:left-[175px] top-[160px] sm:top-[186px]",
+              "left-[115px] sm:left-[155px] top-[135px] sm:top-[186px]",
             )}
           >
             <ImageWithFallback
@@ -147,7 +147,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           <div
             className={clsx(
               "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[152px] sm:left-[205px] top-[190px] sm:top-[227px] z-2",
+              "left-[128px] sm:left-[185px] top-[160px] sm:top-[227px] z-2",
             )}
           >
             <ImageWithFallback

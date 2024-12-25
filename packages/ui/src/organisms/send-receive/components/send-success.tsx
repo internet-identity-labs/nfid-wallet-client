@@ -75,7 +75,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         !isOpen && "hidden",
       )}
     >
-      <div className="flex-grow text-center">
+      <div className="relative flex-grow text-center">
         <H5 className="mt-5 text-xl leading-6">
           {status === SendStatus.FAILED
             ? "Transaction failed"
@@ -90,7 +90,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             ? ""
             : `This usually takes less than ${duration} seconds.`}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[25px]">
+        <div className="absolute flex items-center justify-center w-full px-3 top-[25px] left-0 sm:-top-[25px]">
           <LottieAnimation
             animationData={animation}
             loop={step === 1}
@@ -103,7 +103,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             fallbackSrc={IconNftPlaceholder}
             className={clsx(
               "absolute sm:h-[90px] h-[80px] sm:w-[90px] w-[80px] object-contain rounded-full object-center",
-              "mx-auto top-[164px] sm:top-[195px] ml-[1px]",
+              "mx-auto top-[138px] sm:top-[195px] ml-[1px]",
               !isFtToken &&
                 "!w-[98px] !h-[98px] !top-[155px] sm:!w-[112px] sm:!h-[112px] sm:!top-[184px]",
             )}

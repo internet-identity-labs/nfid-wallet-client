@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { HTMLAttributes, FC } from "react"
-import { FT } from "src/integration/ft/ft"
+import { FT } from "frontend/integration/ft/ft"
 
 import {
   ImageWithFallback,

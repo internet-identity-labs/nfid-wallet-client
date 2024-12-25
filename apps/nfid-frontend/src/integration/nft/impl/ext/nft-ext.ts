@@ -1,9 +1,9 @@
-import { assetFullsize, fetchCollection } from "src/integration/entrepot/lib"
-import { EntrepotCollection } from "src/integration/entrepot/types"
-import { extPropertiesService } from "src/integration/nft/impl/ext/properties/properties-service"
-import { extTransactionMapper } from "src/integration/nft/impl/ext/transaction/ext-transaction-mapper"
-import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
-import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+import { assetFullsize, fetchCollection } from "frontend/integration/entrepot/lib"
+import { EntrepotCollection } from "frontend/integration/entrepot/types"
+import { extPropertiesService } from "frontend/integration/nft/impl/ext/properties/properties-service"
+import { extTransactionMapper } from "frontend/integration/nft/impl/ext/transaction/ext-transaction-mapper"
+import { NFTDetailsImpl, NftImpl } from "frontend/integration/nft/impl/nft-abstract"
+import { NFTDetails, TransactionRecord } from "frontend/integration/nft/nft"
 
 import { AssetPreview, TokenProperties } from "../nft-types"
 

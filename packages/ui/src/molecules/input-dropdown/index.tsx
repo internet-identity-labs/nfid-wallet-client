@@ -6,7 +6,7 @@ import { IoCloseOutline } from "react-icons/io5"
 import useClickOutside from "../../utils/use-click-outside"
 import Arrow from "./arrow.svg"
 
-export interface IOption {
+interface IDropdownOption {
   label: string
   afterLabel?: string | number
   icon?: string
@@ -16,7 +16,7 @@ export interface IOption {
 export interface IInputDropdown {
   label?: string
   bordered?: boolean
-  options: IOption[]
+  options: IDropdownOption[]
   placeholder?: string
   registerFunction: UseFormRegisterReturn<string>
   errorText?: string
@@ -33,7 +33,7 @@ export const InputDropdown = ({
   setValue,
 }: IInputDropdown) => {
   const [selectedValue, setSelectedValue] = useState("")
-  const [selectedOption, setSelectedOption] = useState<IOption>()
+  const [selectedOption, setSelectedOption] = useState<IDropdownOption>()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const ref = useClickOutside(() => setIsDropdownOpen(false))
@@ -58,7 +58,7 @@ export const InputDropdown = ({
   }, [selectedOption, setValue])
 
   const selectDropdownOption = useCallback(
-    (option: IOption) => {
+    (option: IDropdownOption) => {
       setValue(option.value)
       setSelectedOption(option)
       setIsDropdownOpen(false)

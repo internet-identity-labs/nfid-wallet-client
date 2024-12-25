@@ -1,5 +1,5 @@
 import { HTMLAttributes, FC, useState } from "react"
-import { FT } from "src/integration/ft/ft"
+import { FT } from "frontend/integration/ft/ft"
 
 import { TableTokenSkeleton } from "../../atoms/skeleton"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"

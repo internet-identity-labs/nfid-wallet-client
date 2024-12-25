@@ -18,7 +18,7 @@ import borc from "borc"
 import { Buffer } from "buffer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import toaster from "packages/ui/src/atoms/toast"
-import { arrayBufferEqual } from "src/integration/identity/services"
+import { arrayBufferEqual } from "frontend/integration/identity/services"
 
 import { IPasskeyMetadata } from "@nfid/integration"
 

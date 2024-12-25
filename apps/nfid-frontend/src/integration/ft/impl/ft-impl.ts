@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-import { FT } from "src/integration/ft/ft"
+import { FT } from "frontend/integration/ft/ft"
 
 import { exchangeRateService } from "@nfid/integration"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"

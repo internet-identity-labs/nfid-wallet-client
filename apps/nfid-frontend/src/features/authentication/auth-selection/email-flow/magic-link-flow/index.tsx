@@ -56,7 +56,7 @@ export const AuthEmailMagicLink = () => {
 
       <div
         className={clsx(
-          "max-w-[450px] h-[580px] bg-white px-5 py-2.5",
+          "w-full max-w-[450px] h-[580px] bg-white px-5 py-2.5",
           "border border-gray-100 my-auto",
           "flex flex-col items-center rounded-xl",
         )}

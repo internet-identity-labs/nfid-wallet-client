@@ -35,7 +35,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`} {...props}>
-      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] max-w-[150px] xs:max-w-[100%] sm:max-w-[100%] lg:w-[350px]">
+      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] flex-grow min-w-0 sm:w-auto">
         <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt={`${token.getTokenSymbol}`}
@@ -69,18 +69,24 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
-        className="pr-[10px] text-right md:text-left pr-[10px] max-w-[40%] min-w-[40%] sm:max-w-[50%] sm:min-w-[50%]"
+        className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto"
       >
-        <p className="flex items-center justify-end md:block">
+        <div>
           {!initedToken ? (
             <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
           ) : (
-            <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[70px]">
-              {token.getTokenBalanceFormatted() || "0"}{" "}
+            <p className="flex items-center justify-end md:block">
+              <span
+                className="overflow-hidden text-ellipsis whitespace-nowrap"
+                style={{ maxWidth: window.innerWidth < 430 ? "120px" : "none" }}
+              >
+                {token.getTokenBalanceFormatted() || "0"}
+              </span>
+              &nbsp;
               <span>{token.getTokenSymbol()}</span>
-            </span>
+            </p>
           )}
-        </p>
+        </div>
         <p className="text-xs md:hidden text-secondary">
           &nbsp;
           {!initedToken ? (

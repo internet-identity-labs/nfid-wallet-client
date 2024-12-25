@@ -90,24 +90,26 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             ? ""
             : `This usually takes less than ${duration} seconds.`}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 top-[25px] left-0 sm:-top-[25px]">
+        <div className="absolute w-full sm:px-3 top-[25px] left-0 sm:-top-[25px]">
           <LottieAnimation
             animationData={animation}
             loop={step === 1}
-            className="max-w-[370px]"
+            className="max-w-[370px] m-auto"
             speed={1.5}
           />
-          <ImageWithFallback
-            alt="assetImg"
-            src={`${assetImg}`}
-            fallbackSrc={IconNftPlaceholder}
-            className={clsx(
-              "absolute sm:h-[90px] h-[80px] sm:w-[90px] w-[80px] object-contain rounded-full object-center",
-              "mx-auto top-[138px] sm:top-[195px] ml-[1px]",
-              !isFtToken &&
-                "!w-[98px] !h-[98px] !top-[155px] sm:!w-[112px] sm:!h-[112px] sm:!top-[184px]",
-            )}
-          />
+          <div className="relative w-full h-[80px] sm:h-[90px] top-[-328px] sm:top-[-404px]">
+            <ImageWithFallback
+              alt="assetImg"
+              src={`${assetImg}`}
+              fallbackSrc={IconNftPlaceholder}
+              className={clsx(
+                "absolute sm:h-[90px] h-[80px] sm:w-[90px] w-[80px] object-contain rounded-full object-center",
+                "mx-auto left-[50%] -translate-x-1/2",
+                !isFtToken &&
+                  "!w-[98px] !h-[98px]  sm:!w-[112px] sm:!h-[112px] !top-[-10px] ml-[1px]",
+              )}
+            />
+          </div>
         </div>
       </div>
       <div className="relative z-20">

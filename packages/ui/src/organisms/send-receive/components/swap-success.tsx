@@ -124,38 +124,40 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? ""
             : `This usually takes about ${duration} seconds`}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[55px]">
+        <div className="absolute w-full sm:px-3 top-0 left-0 sm:-top-[55px]">
           <LottieAnimation
-            className="max-w-[370px]"
+            className="max-w-[370px] m-auto"
             animationData={currentAnimation}
             loop={!error && step !== SwapStage.Completed}
             onComplete={animationCompleteHandler}
           />
-          <div
-            className={clsx(
-              "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[115px] sm:left-[155px] top-[135px] sm:top-[186px]",
-            )}
-          >
-            <ImageWithFallback
-              alt="assetImg"
-              src={`${assetImgFrom}`}
-              fallbackSrc={IconNftPlaceholder}
-              className="w-full h-full rounded-full"
-            />
-          </div>
-          <div
-            className={clsx(
-              "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[128px] sm:left-[185px] top-[160px] sm:top-[227px] z-2",
-            )}
-          >
-            <ImageWithFallback
-              alt="assetImg"
-              src={`${assetImgTo}`}
-              fallbackSrc={IconNftPlaceholder}
-              className="w-full h-full rounded-full"
-            />
+          <div className="relative w-full h-[80px] sm:h-[90px] top-[-328px] sm:top-[-404px]">
+            <div
+              className={clsx(
+                "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
+                "left-[50%] -translate-x-[45px] sm:-translate-x-[55px] top-[-2px] sm:top-[-2px]",
+              )}
+            >
+              <ImageWithFallback
+                alt="assetImg"
+                src={`${assetImgFrom}`}
+                fallbackSrc={IconNftPlaceholder}
+                className="w-full h-full rounded-full"
+              />
+            </div>
+            <div
+              className={clsx(
+                "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
+                "left-[50%] -translate-x-[18px] sm:-translate-x-[15px] top-[24px] sm:top-[32px] z-2",
+              )}
+            >
+              <ImageWithFallback
+                alt="assetImg"
+                src={`${assetImgTo}`}
+                fallbackSrc={IconNftPlaceholder}
+                className="w-full h-full rounded-full"
+              />
+            </div>
           </div>
         </div>
         {error ? (

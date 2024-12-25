@@ -32,6 +32,7 @@ const TokensPage = () => {
     data: tokens = [],
     mutate: refetchTokens,
     isLoading: isTokensLoading,
+    isValidating: isTokenFetching,
   } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
   })
@@ -68,7 +69,7 @@ const TokensPage = () => {
     <Tokens
       activeTokens={activeTokens}
       filteredTokens={tokens}
-      isTokensLoading={isTokensLoading}
+      isTokensLoading={isTokensLoading || isTokenFetching}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}

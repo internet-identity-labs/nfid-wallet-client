@@ -20,7 +20,6 @@ import { getUserPrincipalId } from "../utils"
 interface FilteredTokenProps {
   token: FT
   tokens: FT[]
-  onTokensUpdate: () => void
 }
 
 export const FilteredToken: FC<FilteredTokenProps> = ({ token, tokens }) => {

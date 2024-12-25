@@ -24,7 +24,6 @@ type AssetDropdownProps = {
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
-  onTokensUpdate: () => void
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({

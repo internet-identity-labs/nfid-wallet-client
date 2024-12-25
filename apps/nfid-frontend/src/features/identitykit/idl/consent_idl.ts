@@ -50,6 +50,8 @@ export const idlFactory = ({ IDL }: any) => {
     trusted_origins: IDL.Vec(IDL.Text),
   })
   return IDL.Service({
+    balance: IDL.Func([], [], ["query"]),
+    transfer: IDL.Func([], [], []),
     get_trusted_origins: IDL.Func([], [IDL.Vec(IDL.Text)], []),
     greet: IDL.Func([IDL.Text], [IDL.Text], ["query"]),
     greet_no_consent: IDL.Func([IDL.Text], [IDL.Text], ["query"]),

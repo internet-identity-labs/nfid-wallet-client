@@ -15,7 +15,7 @@ import {
   IconInfo,
   Input,
   Tooltip,
-  Warning,
+  Card,
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
@@ -295,7 +295,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                   </div>
                 )}
               </div>
-              <Warning
+              <Card
                 text={
                   <>
                     <b>Token safety.</b> Always only import ICRC-1 tokens you

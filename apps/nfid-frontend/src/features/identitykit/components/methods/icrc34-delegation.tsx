@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { SNS_STEP_VISITED } from "frontend/features/authentication/constants"
 import { ChooseAccount } from "frontend/ui/organisms/choose-account"
 
+import { VerificationReport } from "../../service/target.service"
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { TokenLaunch } from "../token-launch"
@@ -11,7 +12,7 @@ export interface IRPCComponentICRC34 {
   origin: string
   publicProfile: Account
   anonymous: Account[]
-  isPublicAvailable: boolean
+  getVerificationReport: () => Promise<VerificationReport>
   onApprove: (data: Account) => void
   onBack: () => void
 }
@@ -20,12 +21,12 @@ const RPCComponentICRC34 = ({
   origin,
   publicProfile,
   anonymous,
-  isPublicAvailable,
+  getVerificationReport,
   onApprove,
   onBack,
 }: IRPCComponentICRC34) => {
   const [selectedProfile, setSelectedProfile] = React.useState<Account>(
-    isPublicAvailable ? publicProfile : anonymous[0],
+    anonymous[0],
   )
   const [showTokenLaunch, setShowTokenLaunch] = useState(false)
 
@@ -60,7 +61,7 @@ const RPCComponentICRC34 = ({
     >
       <ChooseAccount
         onBack={onBack}
-        isPublicAvailable={isPublicAvailable}
+        getVerificationReport={getVerificationReport}
         selectedProfile={selectedProfile}
         setSelectedProfile={setSelectedProfile}
         publicProfile={publicProfile}

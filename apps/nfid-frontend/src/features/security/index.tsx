@@ -122,7 +122,8 @@ const SecurityPage = () => {
         toggleElement={
           <Toggle
             isDisabled={
-              !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length
+              !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length ||
+              isLoading
             }
             isChecked={!!profile?.is2fa}
             onToggle={async (val) => {

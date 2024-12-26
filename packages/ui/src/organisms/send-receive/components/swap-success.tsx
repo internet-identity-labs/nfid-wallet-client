@@ -124,17 +124,17 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? ""
             : `This usually takes about ${duration} seconds`}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 sm:-top-[55px]">
+        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 w-full h-full">
           <LottieAnimation
-            className="max-w-[370px]"
+            className="max-w-[370px] sm:-top-[55px]"
             animationData={currentAnimation}
             loop={!error && step !== SwapStage.Completed}
             onComplete={animationCompleteHandler}
+            style={{ transform: "scale(1.1)" }}
           />
           <div
             className={clsx(
-              "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[125px] sm:left-[175px] top-[160px] sm:top-[186px]",
+              "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white top-[143px] left-[121px] sm:left-[175px]",
             )}
           >
             <ImageWithFallback
@@ -146,8 +146,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           </div>
           <div
             className={clsx(
-              "absolute h-[60px] w-[60px] sm:h-[68px] sm:w-[68px] rounded-full p-[10px] bg-white",
-              "left-[152px] sm:left-[205px] top-[190px] sm:top-[227px] z-2",
+              "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white z-2 top-[167px] left-[147px] sm:left-[203px]",
             )}
           >
             <ImageWithFallback

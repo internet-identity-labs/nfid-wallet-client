@@ -27,7 +27,7 @@ import { SwapStage } from "frontend/integration/icpswap/types/enums"
 
 interface ErrorStage {
   buttonText: string
-  tooltipTitile: string
+  tooltipTitle: string
   tooltipMessage: string
 }
 
@@ -43,15 +43,15 @@ export const getTooltipAndButtonText = (
   if (stage === SwapStage.Deposit || stage === SwapStage.TransferSwap) {
     return {
       buttonText: "Cancel swap",
-      tooltipTitile: "deposit",
+      tooltipTitle: "deposit",
       tooltipMessage: "Cancel your swap and try again.",
     }
   }
 
   if (stage === SwapStage.Swap) {
     return {
-      buttonText: "Cancel swap",
-      tooltipTitile: "swap",
+      buttonText: "Continue swap",
+      tooltipTitle: "swap",
       tooltipMessage: "Cancel your swap and try again.",
     }
   }
@@ -59,7 +59,7 @@ export const getTooltipAndButtonText = (
   if (stage === SwapStage.Withdraw || stage === SwapStage.TransferNFID) {
     return {
       buttonText: "Complete swap",
-      tooltipTitile: "withdraw",
+      tooltipTitle: "withdraw",
       tooltipMessage: "Complete your swap.",
     }
   }
@@ -118,8 +118,7 @@ export const ActivityTableRow = ({
       tip={
         <span className="block max-w-[270px] sm:max-w-[320px]">
           <b>
-            ICPSwap {getTooltipAndButtonText(transaction)?.tooltipTitile}{" "}
-            failed.
+            ICPSwap {getTooltipAndButtonText(transaction)?.tooltipTitle} failed.
           </b>{" "}
           Something went wrong with the ICPSwap service.{" "}
           {getTooltipAndButtonText(transaction)?.tooltipMessage}
@@ -199,7 +198,7 @@ export const ActivityTableRow = ({
             <CopyAddress address={from} leadingChars={6} trailingChars={4} />
           )}
         </td>
-        <td className="w-[24px] h-[24px] absolute left-0 right-0 top-0 bottom-0 m-auto">
+        <td className="w-[34px] h-[24px] m-auto">
           <img src={IconSvgArrowRight} alt="" />
         </td>
         <td

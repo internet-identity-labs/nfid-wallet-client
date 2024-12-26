@@ -1,7 +1,8 @@
 import Lottie, { AnimationItem } from "lottie-web"
 import React, { useEffect, useRef } from "react"
 
-export interface LottieAnimationProps {
+export interface LottieAnimationProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   animationData: any
   loop?: boolean
   autoplay?: boolean
@@ -21,6 +22,8 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   className,
   onComplete,
   speed = 1,
+  style = {},
+  ...props
 }) => {
   const animationContainer = useRef<HTMLDivElement>(null)
   const animationInstance = useRef<AnimationItem | null>(null)
@@ -64,9 +67,10 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
 
   return (
     <div
+      {...props}
       className={className}
       ref={animationContainer}
-      style={{ width, height }}
+      style={{ ...style, width, height }}
     />
   )
 }

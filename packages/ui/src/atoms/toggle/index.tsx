@@ -33,7 +33,7 @@ export const Toggle: React.FC<ToggleProps> = ({
           "peer-checked:bg-primaryButtonColor peer-checked:after:bg-white",
           "peer-checked:after:translate-x-full peer-checked:border-0 peer-checked:after:left-[8px]",
           isDisabled &&
-            "!bg-gray-100 !border-gray-300 peer-checked:!bg-gray-300 after:!bg-gray-300",
+            "!bg-gray-100 !border-gray-300 peer-checked:!bg-gray-300 after:!bg-gray-300 peer-checked:after:!bg-white",
         )}
       ></div>
     </label>

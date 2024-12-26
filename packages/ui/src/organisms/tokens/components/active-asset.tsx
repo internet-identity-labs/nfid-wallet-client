@@ -35,7 +35,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 
   return (
     <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`} {...props}>
-      <td className="flex items-center h-16 pr-[10px] sm:pr-[30px] flex-grow min-w-0 sm:w-auto">
+      <td className="flex items-center py-[10px] sm:py-0 sm:h-16 pr-[10px] sm:pr-[30px] flex-grow min-w-0 sm:w-auto">
         <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
             alt={`${token.getTokenSymbol}`}
@@ -47,14 +47,14 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             )}
           />
         </div>
-        <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+        <div className="sm:overflow-hidden sm:text-ellipsis sm:whitespace-nowrap">
           <p
             className="text-sm font-semibold leading-[25px]"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
           >
             {token.getTokenSymbol()}
           </p>
-          <p className="text-secondary text-xs leading-[20px] overflow-hidden text-ellipsis whitespace-nowrap">
+          <p className="text-secondary text-xs leading-[20px]">
             {token.getTokenName()}
           </p>
         </div>

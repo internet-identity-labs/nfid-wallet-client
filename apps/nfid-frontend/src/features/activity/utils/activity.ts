@@ -34,7 +34,12 @@ export const getAllActivity = async (
   const paginatedDataUsdRate = await Promise.all(
     paginatedData.map(async (item) => {
       const asset = item.row.asset as ActivityAssetFT
-      const usdRate = await exchangeRateService.usdPriceForICRC1(asset.canister)
+      let usdRate
+      try {
+        usdRate = await exchangeRateService.usdPriceForICRC1(asset.canister)
+      } catch (e) {
+        console.error("Exchange rate error: ", e)
+      }
 
       return {
         ...item,

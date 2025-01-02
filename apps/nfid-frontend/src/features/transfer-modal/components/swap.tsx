@@ -1,7 +1,8 @@
 import { resetIntegrationCache } from "packages/integration/src/cache"
+import toaster from "packages/ui/src/atoms/toast"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import {
@@ -35,9 +36,10 @@ const QUOTE_REFETCH_TIMER = 30
 
 interface ISwapFT {
   onClose: () => void
+  isOpen: boolean
 }
 
-export const SwapFT = ({ onClose }: ISwapFT) => {
+export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
@@ -53,6 +55,13 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
     string | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
+
+  const isOpenRef = useRef(isOpen)
+
+  useEffect(() => {
+    isOpenRef.current = isOpen
+  }, [isOpen])
+
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
@@ -223,8 +232,18 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
     shroff
       .swap(identity)
+      .then(() => {
+        if (!isOpenRef.current)
+          toaster.success(
+            `Swap ${sourceAmount} to ${targetAmount} successful`,
+            {
+              toastId: "successSwap",
+            },
+          )
+      })
       .catch((error) => {
         setSwapError(error)
+        if (!isOpenRef.current) toaster.error("Something went wrong")
       })
       .finally(() => {
         getTokensWithUpdatedBalance(
@@ -237,6 +256,8 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
 
     setGetTransaction(shroff.getSwapTransaction())
   }, [quote, shroff, tokens, fromTokenAddress, toTokenAddress])
+
+  if (!isOpen) return null
 
   return (
     <FormProvider {...formMethods}>
@@ -259,7 +280,12 @@ export const SwapFT = ({ onClose }: ISwapFT) => {
         step={swapStep}
         error={swapError}
         isSuccessOpen={isSuccessOpen}
-        onClose={onClose}
+        onClose={() => {
+          onClose()
+          refresh()
+          setIsSuccessOpen(false)
+          formMethods.reset()
+        }}
         quoteTimer={quoteTimer}
       />
     </FormProvider>

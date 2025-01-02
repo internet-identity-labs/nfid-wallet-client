@@ -4,12 +4,14 @@ import { PropsWithChildren } from "react"
 export interface ITransferTemplate extends PropsWithChildren {
   onClickOutside?: () => void
   className?: string
+  overlayClassName?: string
 }
 
 export const TransferTemplate: React.FC<ITransferTemplate> = ({
   children,
   onClickOutside,
   className,
+  overlayClassName,
 }) => {
   return (
     <div
@@ -17,6 +19,7 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
         "transition ease-in-out delay-150 duration-300",
         "z-40 top-0 left-0 w-full h-screen",
         "fixed bg-opacity-75 bg-gray-600 flex",
+        overlayClassName,
       ])}
       style={{ margin: 0 }}
       onClick={onClickOutside}

@@ -13,6 +13,7 @@ export interface TransferModalProps {
   tokenType: TokenType
   onTokenTypeChange: (isNFT: boolean) => void
   component: JSX.Element
+  isOpen: boolean
 }
 
 export interface TransferVaultModalProps {
@@ -21,6 +22,7 @@ export interface TransferVaultModalProps {
   direction: ModalType
   tokenType: TokenType
   component: JSX.Element
+  isOpen: boolean
 }
 
 export const TransferModal: FC<TransferModalProps> = ({
@@ -30,11 +32,13 @@ export const TransferModal: FC<TransferModalProps> = ({
   tokenType,
   onTokenTypeChange,
   component,
+  isOpen,
 }) => {
   return (
     <TransferTemplate
       onClickOutside={onClickOutside}
       className={clsx(direction === ModalType.SEND && "!pb-5")}
+      overlayClassName={!isOpen ? "hidden" : ""}
     >
       {!isSuccess && (
         <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
@@ -61,9 +65,14 @@ export const TransferVaultModal: FC<TransferVaultModalProps> = ({
   direction,
   component,
   isSuccess,
+  isOpen,
 }) => {
   return (
-    <TransferTemplate onClickOutside={onClickOutside} className="!h-[530px]">
+    <TransferTemplate
+      onClickOutside={onClickOutside}
+      className={clsx("!h-[530px]")}
+      overlayClassName={!isOpen ? "hidden" : ""}
+    >
       {!isSuccess && (
         <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
           {direction}

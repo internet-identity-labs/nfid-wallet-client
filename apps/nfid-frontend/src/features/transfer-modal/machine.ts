@@ -12,16 +12,6 @@ export const transferMachine = createMachine(
       context: {} as TransferMachineContext,
       services: {} as Services,
     },
-    context: {
-      direction: ModalType.SEND,
-      tokenType: "ft",
-      sourceWalletAddress: "",
-      receiverWallet: "",
-      amount: "",
-      transferObject: undefined,
-      tokenStandard: TokenStandards.ICP,
-      isOpenedFromVaults: false,
-    },
     id: "TransferMachine",
     initial: "Hidden",
     on: {

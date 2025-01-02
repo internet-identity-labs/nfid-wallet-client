@@ -6,7 +6,6 @@ import { Copy, CenterEllipsis } from "@nfid-frontend/ui"
 export interface ReceiveProps {
   selectedAccountAddress: string
   address: string
-  setSelectedAccountAddress: (value: React.SetStateAction<string>) => void
 }
 
 export const Receive: FC<ReceiveProps> = ({

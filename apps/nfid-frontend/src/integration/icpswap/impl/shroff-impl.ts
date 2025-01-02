@@ -32,6 +32,7 @@ import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-
 import {
   DepositError,
   LiquidityError,
+  ServiceUnavailableError,
   SlippageQuoteError,
   SlippageSwapError,
   SwapError,
@@ -439,28 +440,33 @@ export class ShroffBuilder {
       throw new Error("Target is required")
     }
 
-    const [poolData, icrc1canisters]: [PoolData, ICRC1TypeOracle[]] =
-      await Promise.all([
-        icpSwapService.getPoolFactory(this.source, this.target),
-        icrc1OracleService.getICRC1Canisters(),
-      ])
+    try {
+      const [poolData, icrc1canisters]: [PoolData, ICRC1TypeOracle[]] =
+        await Promise.all([
+          icpSwapService.getPoolFactory(this.source, this.target),
+          icrc1OracleService.getICRC1Canisters(),
+        ])
 
-    this.poolData = poolData
+      this.poolData = poolData
 
-    const st: ICRC1TypeOracle[] = icrc1canisters.filter(
-      (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
-    )
+      const st: ICRC1TypeOracle[] = icrc1canisters.filter(
+        (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
+      )
 
-    this.sourceOracle = st.find((icrc1) => icrc1.ledger === this.source)
-    this.targetOracle = st.find((icrc1) => icrc1.ledger === this.target)
+      this.sourceOracle = st.find((icrc1) => icrc1.ledger === this.source)
+      this.targetOracle = st.find((icrc1) => icrc1.ledger === this.target)
 
-    if (!this.sourceOracle || !this.targetOracle) {
-      throw new Error("ICRC1 not found")
+      if (!this.sourceOracle || !this.targetOracle) {
+        throw new Error("ICRC1 not found")
+      }
+
+      this.zeroForOne = this.poolData.token0.address === this.source
+
+      return this.buildShroff()
+    } catch (e) {
+      console.error("Error:", e)
+      throw new ServiceUnavailableError()
     }
-
-    this.zeroForOne = this.poolData.token0.address === this.source
-
-    return this.buildShroff()
   }
 
   protected buildShroff(): Shroff {

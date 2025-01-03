@@ -18,7 +18,7 @@ import {
   INDEX_DB_CONNECTED_ACCOUNTS_KEY,
 } from "../../account.service"
 import { GenericError } from "../../exception-handler.service"
-import { targetService } from "../../target.service"
+import { targetService, VerificationReport } from "../../target.service"
 import {
   ComponentData,
   InteractiveMethodService,
@@ -27,7 +27,7 @@ import {
 export interface AccountsComponentData extends ComponentData {
   publicProfile: Account
   anonymous: Account[]
-  isPublicAvailable: boolean
+  getVerificationReport: () => Promise<VerificationReport>
 }
 
 export interface Icrc34Dto {
@@ -88,7 +88,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     if (!accounts) throw new GenericError("User data has not been found")
 
     const icrc34Dto = message.data.params as unknown as Icrc34Dto
-    const isPublicAccountsAllowed = await this.isPublicAccountsAllowed(
+    const getVerificationReport = this.getVerificationReport(
       icrc34Dto.targets,
       message.origin,
     )
@@ -99,7 +99,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
       ...baseData,
       publicProfile: accounts.public,
       anonymous: accounts.anonymous,
-      isPublicAvailable: isPublicAccountsAllowed,
+      getVerificationReport,
     }
   }
 
@@ -184,16 +184,8 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     throw new Error("Invalid account type")
   }
 
-  private async isPublicAccountsAllowed(targets: string[], origin: string) {
-    if (!targets || targets.length === 0) return false
-    try {
-      await targetService.validateTargets(targets, origin)
-      return true
-    } catch (e: unknown) {
-      const text = e instanceof Error ? e.message : "Unknown error"
-      console.error("The targets cannot be validated:", text)
-      return false
-    }
+  private getVerificationReport(targets: string[], origin: string): () => Promise<VerificationReport> {
+    return () => targetService.getVerificationReport(targets, origin)
   }
 
   private fromBase64(base64: string): ArrayBuffer {

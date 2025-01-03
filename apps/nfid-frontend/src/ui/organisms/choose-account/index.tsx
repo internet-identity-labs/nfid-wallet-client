@@ -1,27 +1,28 @@
 import clsx from "clsx"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
-import { IconCmpArrow, RadioButton } from "@nfid-frontend/ui"
+import { IconCmpArrow, RadioButton, Skeleton } from "@nfid-frontend/ui"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
+import { VerificationReport } from "frontend/features/identitykit/service/target.service"
 import { Account } from "frontend/features/identitykit/type"
 
 export interface ChooseAccountProps {
-  isPublicAvailable?: boolean
   selectedProfile: Account
   setSelectedProfile: (profile: Account) => void
   publicProfile: Account
   anonymous: Account[]
   onBack: () => void
+  verificationReport?: VerificationReport
 }
 
 export const ChooseAccount = ({
-  isPublicAvailable = false,
   selectedProfile,
   setSelectedProfile,
   publicProfile,
   anonymous,
   onBack,
+  verificationReport,
 }: ChooseAccountProps) => {
   return (
     <div
@@ -39,65 +40,77 @@ export const ChooseAccount = ({
       />
 
       <p className="text-sm font-bold">Share my wallet address</p>
-      <p className="mt-2 text-xs text-gray-500">
+      <p className="mt-2 text-xs text-gray-500 mb-2.5">
         Allow this site to request payments and view your balances.
       </p>
-      <div
-        className={clsx(
-          "flex justify-between items-center text-xs uppercase h-5 mt-2.5",
-          !isPublicAvailable && "text-gray-400 pointer-events-none",
-        )}
-      >
-        <div className="flex items-center">
-          <RadioButton
-            id="profile_public"
-            onChange={(e) => setSelectedProfile(publicProfile)}
-            value={publicProfile.principal}
-            checked={selectedProfile.principal === publicProfile.principal}
-            name={"profile"}
-            disabled={!isPublicAvailable}
-          />
-          <label
-            htmlFor="profile_public"
-            className="ml-2 lowercase cursor-pointer"
-          >
-            {publicProfile.displayName}
-          </label>
+
+      {!verificationReport ? (
+        <div className="flex items-center justify-between my-[5px]">
+          <Skeleton className="w-[160px] h-[10px]" />
+          <Skeleton className="w-[70px] h-[10px]" />
         </div>
-        {publicProfile?.balance !== undefined ? (
-          <span>
-            <TickerAmount
-              symbol={"ICP"}
-              value={publicProfile.balance}
-              decimals={ICP_DECIMALS}
-            />
-          </span>
-        ) : null}
-      </div>
-
-      <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
-
-      <p className="text-sm font-bold">Hide my wallet address</p>
-      <p className="mt-2 text-xs text-gray-500">
-        This site will be unable to request payments, view balances, or access
-        any of your other on-chain activity.
-      </p>
-
-      {anonymous?.map((acc) => (
+      ) : (
         <div
-          className="flex items-center h-5 mt-5 text-xs text-gray-400"
-          key={`legacy_persona_${acc.id}`}
+          className={clsx(
+            "flex justify-between items-center text-xs uppercase h-5",
+            !verificationReport?.isPublicAccountAvailable &&
+              "text-gray-400 pointer-events-none",
+          )}
         >
-          <RadioButton
-            id={`profile_legacy_${acc.id}`}
-            value={`anonymous-${acc.id}`}
-            onChange={(e) => setSelectedProfile(acc)}
-            checked={selectedProfile.principal === acc.principal}
-            name={`profile-${acc.id}`}
-            text={acc.displayName}
-          />
+          <div className="flex items-center">
+            <RadioButton
+              id="profile_public"
+              onChange={() => setSelectedProfile(publicProfile)}
+              value={publicProfile.principal}
+              checked={selectedProfile.principal === publicProfile.principal}
+              name={"profile"}
+              disabled={!verificationReport?.isPublicAccountAvailable}
+            />
+            <label
+              htmlFor="profile_public"
+              className="ml-2 lowercase cursor-pointer"
+            >
+              {publicProfile.displayName}
+            </label>
+          </div>
+          {publicProfile?.balance !== undefined ? (
+            <span>
+              <TickerAmount
+                symbol={"ICP"}
+                value={publicProfile.balance}
+                decimals={ICP_DECIMALS}
+              />
+            </span>
+          ) : null}
         </div>
-      ))}
+      )}
+      <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
+      <p className="text-sm font-bold">Hide my wallet address</p>
+      <p className="mt-2 mb-5 text-xs text-gray-500">
+        This site will be unable to request payments, view balances, <br />
+        or access any of your other on-chain activity.
+      </p>
+      {!verificationReport ? (
+        <div>
+          <Skeleton className="w-[160px] h-[10px] my-[5px]" />
+        </div>
+      ) : (
+        anonymous?.map((acc) => (
+          <div
+            className="flex items-center h-5 text-xs text-gray-400"
+            key={`legacy_persona_${acc.id}`}
+          >
+            <RadioButton
+              id={`profile_legacy_${acc.id}`}
+              value={`anonymous-${acc.id}`}
+              onChange={() => setSelectedProfile(acc)}
+              checked={selectedProfile.principal === acc.principal}
+              name={`profile-${acc.id}`}
+              text={acc.displayName}
+            />
+          </div>
+        ))
+      )}
     </div>
   )
 }

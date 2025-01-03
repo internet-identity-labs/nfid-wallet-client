@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Copy, Loader, CenterEllipsis, Warning } from "@nfid-frontend/ui"
+import { Copy, Loader, CenterEllipsis, Card } from "@nfid-frontend/ui"
 
 import { useVaultMember } from "../../hooks/use-vault-member"
 
@@ -12,7 +12,7 @@ export const VaultAddressBar: React.FC<VaultAddressBarProps> = () => {
 
   return (
     <>
-      <Warning
+      <Card
         classNames="mb-[30px]"
         text={
           <>

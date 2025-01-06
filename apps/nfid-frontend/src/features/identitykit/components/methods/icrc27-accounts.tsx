@@ -61,7 +61,7 @@ const RPCComponentICRC27 = ({
         setSelectedProfile={setSelectedProfile}
         publicProfile={publicProfile}
         anonymous={anonymous}
-        isPublicAvailable={true}
+        getVerificationReport={() => Promise.resolve({isPublicAccountAvailable: true})}
       />
     </RPCPromptTemplate>
   )

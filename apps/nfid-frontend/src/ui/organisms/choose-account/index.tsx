@@ -1,13 +1,30 @@
 import clsx from "clsx"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
+import useSWRImmutable from "swr/immutable"
 
-import { IconCmpArrow, RadioButton } from "@nfid-frontend/ui"
+import {
+  IconCmpArrow,
+  RadioButton,
+  Skeleton,
+  Tooltip,
+  CardType,
+  Card,
+} from "@nfid-frontend/ui"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
+import { VerificationReport } from "frontend/features/identitykit/service/target.service"
 import { Account } from "frontend/features/identitykit/type"
 
+const tooltipTextMapping: Record<string, string> = {
+  icrc28Verified: "ICRC-28 verified",
+  icrc1LedgersExcluded: "ICRC-1 ledgers excluded",
+  icrc7LedgersExcluded: "ICRC-7 ledgers excluded",
+  extLedgersExcluded: "EXT ledgers excluded",
+}
+
 export interface ChooseAccountProps {
-  isPublicAvailable?: boolean
+  getVerificationReport: () => Promise<VerificationReport>
   selectedProfile: Account
   setSelectedProfile: (profile: Account) => void
   publicProfile: Account
@@ -16,13 +33,48 @@ export interface ChooseAccountProps {
 }
 
 export const ChooseAccount = ({
-  isPublicAvailable = false,
+  getVerificationReport,
   selectedProfile,
   setSelectedProfile,
   publicProfile,
   anonymous,
   onBack,
 }: ChooseAccountProps) => {
+  const { data: verificationReport } = useSWRImmutable(
+    getVerificationReport
+      ? [getVerificationReport, "verificationReport"]
+      : null,
+    getVerificationReport,
+  )
+
+  // useEffect(() => {
+  //   if (isPublicAccountAvailable?.isPublicAccountAvailable) {
+  //     setSelectedProfile(publicProfile)
+  //   }
+  // }, [isPublicAccountAvailable])
+
+  const getWarning = (report: VerificationReport) => (
+    <Card
+      hasIcon={false}
+      type={
+        report.isPublicAccountAvailable ? CardType.NOTICE : CardType.WARNING
+      }
+      text={
+        report.isPublicAccountAvailable ? (
+          <>
+            <b>Connection secure.</b> This dapp cannot access or transfer your
+            assets without your explicit approval.
+          </>
+        ) : (
+          <>
+            <b>Connection insecure.</b> This dapp could access and transfer your
+            assets without your explicit approval.
+          </>
+        )
+      }
+    />
+  )
+
   return (
     <div
       className={clsx(
@@ -45,7 +97,8 @@ export const ChooseAccount = ({
       <div
         className={clsx(
           "flex justify-between items-center text-xs uppercase h-5 mt-2.5",
-          !isPublicAvailable && "text-gray-400 pointer-events-none",
+          !verificationReport?.isPublicAccountAvailable &&
+            "text-gray-400 pointer-events-none",
         )}
       >
         <div className="flex items-center">
@@ -55,7 +108,7 @@ export const ChooseAccount = ({
             value={publicProfile.principal}
             checked={selectedProfile.principal === publicProfile.principal}
             name={"profile"}
-            disabled={!isPublicAvailable}
+            disabled={!verificationReport?.isPublicAccountAvailable}
           />
           <label
             htmlFor="profile_public"
@@ -74,6 +127,47 @@ export const ChooseAccount = ({
           </span>
         ) : null}
       </div>
+
+      {!verificationReport && (
+        <Skeleton className="w-full p-[15px] my-3 rounded-[12px] h-[90px] flex items-center justify-center">
+          <Spinner className="w-7 h-7 text-gray-400" />
+        </Skeleton>
+      )}
+
+      {verificationReport && !verificationReport.details && (
+        <span>{getWarning(verificationReport)}</span>
+      )}
+
+      {verificationReport && verificationReport.details && (
+        <Tooltip
+          sideOffset={-15}
+          align="end"
+          arrowClassname="sm:translate-x-[130px] translate-x-[100px] visible"
+          alignOffset={-7}
+          className="!p-[10px]"
+          tip={
+            <table className="table-auto w-[230px] text-xs">
+              <tbody>
+                {Object.entries(verificationReport.details).map((entry) => (
+                  <tr key={entry[0]}>
+                    <td>{tooltipTextMapping[entry[0]]}</td>
+                    <td
+                      className={clsx(
+                        "capitalize text-right",
+                        entry[1] ? "text-green-400" : "text-red-400",
+                      )}
+                    >
+                      {entry[1].toString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          }
+        >
+          <div>{getWarning(verificationReport)}</div>
+        </Tooltip>
+      )}
 
       <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
 

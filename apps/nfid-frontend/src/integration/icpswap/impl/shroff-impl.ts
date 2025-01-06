@@ -458,8 +458,6 @@ export class ShroffBuilder {
 
       this.poolData = poolData
 
-      console.log("poolData", poolData)
-
       const st: ICRC1TypeOracle[] = icrc1canisters.filter(
         (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
       )

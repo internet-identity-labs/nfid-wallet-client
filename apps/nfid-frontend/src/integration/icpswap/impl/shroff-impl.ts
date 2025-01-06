@@ -125,30 +125,39 @@ export class ShroffImpl implements Shroff {
     )
     const quotePromise = this.swapPoolActor.quote(args) as Promise<Result>
 
-    const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.all([
+    const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.allSettled([
       targetUSDPricePromise,
       sourceUSDPricePromise,
       quotePromise,
     ])
-    if (hasOwnProperty(quote, "ok")) {
+    if (quote.status === "fulfilled" && hasOwnProperty(quote.value, "ok")) {
       this.requestedQuote = new QuoteImpl(
         amount,
         preCalculation,
-        quote.ok as bigint,
+        quote.value.ok as bigint,
         this.source,
         this.target,
-        targetUSDPrice,
-        sourceUSDPrice,
+        targetUSDPrice.status === "fulfilled"
+          ? targetUSDPrice.value
+          : undefined,
+        sourceUSDPrice.status === "fulfilled"
+          ? sourceUSDPrice.value
+          : undefined,
       )
-      if ((quote.ok as bigint) <= this.target.fee) {
+      if ((quote.value.ok as bigint) <= this.target.fee) {
         console.error("Not enough amount to pay fee")
         throw new LiquidityError()
       }
       return this.requestedQuote
     }
 
-    if (errorTypes.some((errorType) => hasOwnProperty(quote.err, errorType))) {
-      console.error("Error in quote", quote.err)
+    if (
+      quote.status === "rejected" &&
+      errorTypes.some((errorType) =>
+        hasOwnProperty(quote.reason.err, errorType),
+      )
+    ) {
+      console.error("Error in quote", quote.reason.err)
       throw new LiquidityError()
     }
 

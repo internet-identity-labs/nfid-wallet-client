@@ -474,6 +474,9 @@ export class ShroffBuilder {
       return this.buildShroff()
     } catch (e) {
       console.error("Error:", e)
+      if (e instanceof LiquidityError) {
+        throw e
+      }
       throw new ServiceUnavailableError()
     }
   }

@@ -1,9 +1,9 @@
 import { TargetValidationError } from "../target.service";
-import { TargetValidation } from "./target-validation";
+import { TargetValidationService } from "./target-validation.service";
 import { ActorSubclass } from "@dfinity/agent";
 import { type _SERVICE as ConsentMessageCanister } from "../../idl/consent"
 
-class ExtTargetValidation implements TargetValidation {
+class ExtTargetValidationService implements TargetValidationService {
 
     async validate(actor: ActorSubclass<ConsentMessageCanister>, canisterId: string, origin: string): Promise<void> {
         const result = await Promise.allSettled([
@@ -31,4 +31,4 @@ class ExtTargetValidation implements TargetValidation {
 
 }
 
-export const extTargetValidation = new ExtTargetValidation()
+export const extTargetValidationService = new ExtTargetValidationService()

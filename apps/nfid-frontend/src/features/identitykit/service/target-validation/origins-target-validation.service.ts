@@ -1,9 +1,9 @@
 import { TargetValidationError } from "../target.service";
-import { TargetValidation } from "./target-validation";
+import { TargetValidationService } from "./target-validation.service";
 import { ActorSubclass } from "@dfinity/agent";
 import { type _SERVICE as ConsentMessageCanister } from "../../idl/consent"
 
-class OriginsTargetValidation implements TargetValidation {
+class OriginsTargetValidationService implements TargetValidationService {
 
     async validate(actor: ActorSubclass<ConsentMessageCanister>, canisterId: string, origin: string): Promise<void> {
         const response = await actor.icrc28_trusted_origins()
@@ -24,4 +24,4 @@ class OriginsTargetValidation implements TargetValidation {
 
 }
 
-export const originsTargetValidation = new OriginsTargetValidation()
+export const originsTargetValidationService = new OriginsTargetValidationService()

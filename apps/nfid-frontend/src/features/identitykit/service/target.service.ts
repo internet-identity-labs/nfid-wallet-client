@@ -2,7 +2,7 @@ import { Agent, HttpAgent } from "@dfinity/agent"
 import { type _SERVICE as ConsentMessageCanister } from "../idl/consent"
 import { idlFactory as ConsentMessageCanisterIDL } from "../idl/consent_idl"
 import { actorService } from "./actor.service"
-import { targetValidations } from "./target-validation/target-validation"
+import { targetValidationServices } from "./target-validation/target-validation.service"
 
 export class TargetValidationError extends Error {
   constructor(error: string, public report: VerificationReport) {
@@ -45,7 +45,7 @@ class TargetService {
         )
 
         try {
-          const promises = targetValidations.map(x => x.validate(actor, canisterId, origin))
+          const promises = targetValidationServices.map(x => x.validate(actor, canisterId, origin))
           await Promise.all(promises)
         } catch (exception) {
           throw exception

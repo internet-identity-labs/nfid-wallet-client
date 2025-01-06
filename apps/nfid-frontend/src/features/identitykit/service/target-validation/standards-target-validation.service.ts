@@ -1,9 +1,9 @@
 import { TargetValidationError } from "../target.service";
-import { TargetValidation } from "./target-validation";
+import { TargetValidationService } from "./target-validation.service";
 import { ActorSubclass } from "@dfinity/agent";
 import { type _SERVICE as ConsentMessageCanister } from "../../idl/consent"
 
-class StandardsTargetValidation implements TargetValidation {
+class StandardsTargetValidationService implements TargetValidationService {
 
     async validate(actor: ActorSubclass<ConsentMessageCanister>, canisterId: string): Promise<void> {
         var icrc10SupportedStandards: { url: string; name: string }[]
@@ -60,4 +60,4 @@ class StandardsTargetValidation implements TargetValidation {
 
 }
 
-export const standardsTargetValidation = new StandardsTargetValidation()
+export const standardsTargetValidationService = new StandardsTargetValidationService()

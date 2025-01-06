@@ -47,12 +47,14 @@ interface TokensHeaderProps {
     decimals: number
     fee: bigint
   }>
+  setLoadingToken: (value: FT | null) => void
 }
 
 export const TokensHeader: FC<TokensHeaderProps> = ({
   tokens,
   onSubmitIcrc1Pair,
   onFetch,
+  setLoadingToken,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
@@ -222,6 +224,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                       key={`${token.getTokenName()}_${token.getTokenAddress()}`}
                       token={token}
                       tokens={tokens}
+                      setLoadingToken={setLoadingToken}
                     />
                   )
                 })}

@@ -20,9 +20,14 @@ import { getUserPrincipalId } from "../utils"
 interface FilteredTokenProps {
   token: FT
   tokens: FT[]
+  setLoadingToken: (value: FT | null) => void
 }
 
-export const FilteredToken: FC<FilteredTokenProps> = ({ token, tokens }) => {
+export const FilteredToken: FC<FilteredTokenProps> = ({
+  token,
+  tokens,
+  setLoadingToken,
+}) => {
   const [showTokenLoading, setShowTokenLoading] = useState(false)
   const [hideTokenLoading, setHideTokenLoading] = useState(false)
 
@@ -30,6 +35,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, tokens }) => {
     async (token: FT) => {
       try {
         setHideTokenLoading(true)
+        setLoadingToken(token)
         await token.hideToken()
         const updatedTokens = [...tokens]
         await mutateWithTimestamp("tokens", updatedTokens, false)
@@ -37,6 +43,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({ token, tokens }) => {
         toaster.error("Token hiding failed: " + (e as Error).message)
       } finally {
         setHideTokenLoading(false)
+        setLoadingToken(null)
       }
     },
     [tokens],

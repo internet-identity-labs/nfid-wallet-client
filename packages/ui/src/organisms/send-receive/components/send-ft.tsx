@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from "react"
+import { Dispatch, FC, SetStateAction, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -60,10 +60,15 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     setValue,
     register,
     formState: { errors },
+    trigger,
   } = useFormContext()
 
   const amount = watch("amount")
   const to = watch("to")
+
+  useEffect(() => {
+    trigger("to")
+  }, [token])
 
   if (!token || isLoading)
     return (

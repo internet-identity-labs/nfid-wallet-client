@@ -6,7 +6,7 @@ import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
@@ -36,6 +36,7 @@ interface ITransferFT {
   isVault: boolean
   preselectedAccountAddress: string
   onClose: () => void
+  isOpen: boolean
 }
 
 export const TransferFT = ({
@@ -43,6 +44,7 @@ export const TransferFT = ({
   preselectedTokenAddress = ICP_CANISTER_ID,
   preselectedAccountAddress = "",
   onClose,
+  isOpen,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [status, setStatus] = useState(SendStatus.PENDING)
@@ -51,6 +53,11 @@ export const TransferFT = ({
     useState(preselectedAccountAddress)
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
+  const isOpenRef = useRef(isOpen)
+
+  useEffect(() => {
+    isOpenRef.current = isOpen
+  }, [isOpen])
 
   const { data: vaultsAccountsOptions = [] } = useSWR(
     "vaultsAccountsOptions",
@@ -110,12 +117,15 @@ export const TransferFT = ({
         from_sub_account: wallet?.uid ?? "",
       })
         .then(() => {
-          toaster.success(
-            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
-            {
-              toastId: "successTransfer",
-            },
-          )
+          if (!isOpenRef.current) {
+            toaster.success(
+              `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+              {
+                toastId: "successTransfer",
+              },
+            )
+          }
+
           setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
@@ -124,7 +134,8 @@ export const TransferFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          toaster.error("Something went wrong")
+          if (!isOpenRef.current) toaster.error("Something went wrong")
+
           setStatus(SendStatus.FAILED)
         })
 
@@ -162,10 +173,18 @@ export const TransferFT = ({
     transferResult
       .then((res) => {
         if (typeof res === "object" && "Err" in res) {
-          toaster.error("Something went wrong")
+          if (!isOpenRef.current) toaster.error("Something went wrong")
           console.error(`Transfer error: ${JSON.stringify(res.Err)}`)
           setStatus(SendStatus.FAILED)
           return
+        }
+        if (!isOpenRef.current) {
+          toaster.success(
+            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+            {
+              toastId: "successTransfer",
+            },
+          )
         }
         setStatus(SendStatus.COMPLETED)
         getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
@@ -173,21 +192,17 @@ export const TransferFT = ({
             mutateWithTimestamp("tokens", updatedTokens, false)
           },
         )
-        toaster.success(
-          `Transaction ${amount} ${token.getTokenSymbol()} successful`,
-          {
-            toastId: "successTransfer",
-          },
-        )
       })
       .catch((e) => {
         console.error(
           `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
         )
-        toaster.error("Something went wrong")
+        if (!isOpenRef.current) toaster.error("Something went wrong")
         setStatus(SendStatus.FAILED)
       })
   }, [isVault, token, selectedVaultsAccountAddress, amount, to, tokens])
+
+  if (!isOpen) return null
 
   return (
     <FormProvider {...formMethods}>
@@ -213,7 +228,12 @@ export const TransferFT = ({
         vaultsBalance={balance?.balance["ICP"]}
         status={status}
         isSuccessOpen={isSuccessOpen}
-        onClose={onClose}
+        onClose={() => {
+          onClose()
+          setIsSuccessOpen(false)
+          setStatus(SendStatus.PENDING)
+          formMethods.reset()
+        }}
       />
     </FormProvider>
   )

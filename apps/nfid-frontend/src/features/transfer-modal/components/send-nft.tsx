@@ -14,12 +14,14 @@ interface ITransferNFT {
   preselectedNFTId?: string
   selectedReceiverWallet?: string
   onClose: () => void
+  isOpen: boolean
 }
 
 export const TransferNFT = ({
   selectedReceiverWallet,
   preselectedNFTId = "",
   onClose,
+  isOpen,
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
@@ -65,6 +67,8 @@ export const TransferNFT = ({
     },
     [selectedNFT],
   )
+
+  if (!isOpen) return null
 
   return (
     <TransferNFTUi

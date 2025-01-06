@@ -44,6 +44,7 @@ class IcpSwapService {
       token1: { address: targetCanister, standard: "ICRC1" },
     }
     return this.poolActor.getPool(a).then((pool) => {
+      console.log("pool???", pool)
       if (hasOwnProperty(pool, "ok")) {
         const data: PoolData = pool.ok as PoolData
         return data

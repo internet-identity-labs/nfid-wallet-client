@@ -458,6 +458,8 @@ export class ShroffBuilder {
 
       this.poolData = poolData
 
+      console.log("poolData", poolData)
+
       const st: ICRC1TypeOracle[] = icrc1canisters.filter(
         (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
       )
@@ -474,6 +476,9 @@ export class ShroffBuilder {
       return this.buildShroff()
     } catch (e) {
       console.error("Error:", e)
+      if (e instanceof LiquidityError) {
+        throw e
+      }
       throw new ServiceUnavailableError()
     }
   }

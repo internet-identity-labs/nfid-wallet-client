@@ -99,7 +99,7 @@ describe("Target service test suite", () => {
     })
 
     it("should fail on EXT validation as the canister has balance and tranfer methods", async function () {
-        const targets: string[] = ["4gbxl-byaaa-aaaak-aafuq-cai"]
+        const targets: string[] = ["zjrr6-cqaaa-aaaam-ad3ia-cai"]
         const origin = "http://localhost:3001"
 
         const result = await targetService.getVerificationReport(targets, origin)

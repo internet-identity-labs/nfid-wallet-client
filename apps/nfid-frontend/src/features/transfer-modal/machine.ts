@@ -1,8 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { TokenStandards } from "@nfid/integration/token/types"
-
-import { Events, ModalType, Services, TransferMachineContext } from "./types"
+import { Events, Services, TransferMachineContext } from "./types"
 
 export const transferMachine = createMachine(
   {

@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { HTMLAttributes, FC } from "react"
+import { HTMLAttributes, FC, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import {
@@ -20,6 +20,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
+  loadingToken: FT | null
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -29,12 +30,20 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
+  loadingToken,
   ...props
 }) => {
+  const [isTokenProcessed, setIsTokenProcessed] = useState(false)
   const initedToken = useTokenInit(token)
 
   return (
-    <tr id={`token_${token.getTokenName().replace(/\s+/g, "")}`} {...props}>
+    <tr
+      id={`token_${token.getTokenName().replace(/\s+/g, "")}`}
+      {...props}
+      className={clsx({
+        "opacity-30": isTokenProcessed || loadingToken === token,
+      })}
+    >
       <td className="flex items-center py-[10px] sm:py-0 sm:h-16 pr-[10px] sm:pr-[30px] flex-grow min-w-0 sm:w-auto">
         <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
@@ -123,6 +132,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onSendClick={onSendClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}
+          setIsTokenProcessed={setIsTokenProcessed}
+          isTokenProcessed={isTokenProcessed || loadingToken === token}
         />
       </td>
     </tr>

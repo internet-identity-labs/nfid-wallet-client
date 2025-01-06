@@ -57,6 +57,7 @@ export const Tokens: FC<TokensProps> = ({
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
   const [isHovered, setIsHovered] = useState(false)
+  const [loadingToken, setLoadingToken] = useState<FT | null>(null)
 
   const handleSorting = () => {
     const nextSorting = {
@@ -119,6 +120,7 @@ export const Tokens: FC<TokensProps> = ({
         tokens={filteredTokens}
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}
         onFetch={onFetch}
+        setLoadingToken={setLoadingToken}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
@@ -161,6 +163,7 @@ export const Tokens: FC<TokensProps> = ({
                 onSendClick={onSendClick}
                 setToken={setToken}
                 dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
+                loadingToken={loadingToken}
               />
             ))
           )}

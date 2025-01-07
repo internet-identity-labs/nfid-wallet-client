@@ -6,11 +6,11 @@ describe("userpref service test suite", () => {
     await userPrefService.getUserPreferences().then((userPreferences) => {
       expect(userPreferences.isHideZeroBalance()).toBe(false)
       userPreferences.setHideZeroBalance(true).then(() => {
-        userPrefService.getUserPreferences().then((userPreferences) => {
-          expect(userPreferences.isHideZeroBalance()).toBe(true)
+        userPrefService.getUserPreferences().then((userPreferences2) => {
+          expect(userPreferences2.isHideZeroBalance()).toBe(true)
         })
-        authStorage.get("userPreferences").then((userPreferences) => {
-          expect(userPreferences).toBe('{"hideZeroBalance":true}')
+        authStorage.get("userPreferences").then((userPreferencesString) => {
+          expect(userPreferencesString).toBe('{"hideZeroBalance":true}')
         })
       })
     })

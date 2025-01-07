@@ -156,8 +156,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
     async () => {
       try {
         setLiquidityError(undefined)
-        const res = await getQuoteData(amount, shroff)
-        return res
+        return await getQuoteData(amount, shroff)
       } catch (e) {
         if (error instanceof LiquidityError) setLiquidityError(error)
       }
@@ -193,8 +192,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
     refetchQuote(async () => {
       try {
         setLiquidityError(undefined)
-        const res = await getQuoteData(amount, shroff)
-        return res
+        return await getQuoteData(amount, shroff)
       } catch (error) {
         if (error instanceof LiquidityError) setLiquidityError(error)
       }

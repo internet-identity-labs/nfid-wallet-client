@@ -26,7 +26,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
         onClose={() => {
           setModalOpen(false)
         }}
-        className="p-5 w-[340px] sm:w-[450px] !h-full z-[100] !rounded-[24px]"
+        className="p-5 w-[340px] sm:w-[450px] min-h-[480px] z-[100] !rounded-[24px]"
       >
         <div>
           <div className="flex gap-[10px] items-center mb-2">

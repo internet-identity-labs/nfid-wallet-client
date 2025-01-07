@@ -67,8 +67,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   const to = watch("to")
 
   useEffect(() => {
-    trigger("to")
-  }, [token])
+    if (to.length) trigger("to")
+  }, [token, to])
 
   if (!token || isLoading)
     return (

@@ -24,6 +24,8 @@ type AssetDropdownProps = {
   onSendClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
+  setIsTokenProcessed: (value: boolean) => void
+  isTokenProcessed: boolean
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
@@ -33,6 +35,8 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onSendClick,
   setToken,
   dropdownPosition,
+  setIsTokenProcessed,
+  isTokenProcessed,
 }) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
@@ -56,6 +60,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         triggerElement={
           <IconCmpDots className="mx-auto transition-all cursor-pointer text-secondary hover:text-black" />
         }
+        isDisabled={isTokenProcessed}
       >
         <DropdownOption
           label="Send"
@@ -79,11 +84,13 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             label="Hide token"
             icon={IconSvgEyeClosedBlack}
             handler={async () => {
+              setIsTokenProcessed(true)
               await token.hideToken()
 
               const updatedTokens = [...tokens]
 
               await mutateWithTimestamp("tokens", updatedTokens, false)
+              setIsTokenProcessed(false)
             }}
           />
         )}

@@ -12,6 +12,7 @@ export interface IDropdown {
   setIsOpen?: (v: boolean) => void
   minWidth?: number
   position?: IDropdownPosition
+  isDisabled?: boolean
 }
 
 export const Dropdown = ({
@@ -21,6 +22,7 @@ export const Dropdown = ({
   setIsOpen,
   minWidth = 210,
   position = "bottom",
+  isDisabled = false,
 }: IDropdown) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const ref = useClickOutside(() => setIsDropdownOpen(false))
@@ -34,7 +36,7 @@ export const Dropdown = ({
     <div className={clsx("relative w-full")} ref={ref}>
       <div
         onClick={() => {
-          setIsDropdownOpen(!isDropdownOpen)
+          if (!isDisabled) setIsDropdownOpen(!isDropdownOpen)
         }}
       >
         {triggerElement}

@@ -7,6 +7,7 @@ import { ReactComponent as ArrowRed } from "./arrow-red.svg"
 import { ReactComponent as Arrow } from "./arrow.svg"
 import { ReactComponent as Calendar } from "./calendar.svg"
 import { ReactComponent as Cancel } from "./cancel.svg"
+import { ReactComponent as Card } from "./card.svg"
 import { ReactComponent as CheckMark } from "./check-mark.svg"
 import { ReactComponent as Chevron } from "./chevron.svg"
 import { ReactComponent as Copy } from "./copy.svg"
@@ -37,7 +38,6 @@ import { ReactComponent as Trash } from "./trash.svg"
 import { ReactComponent as Unknown } from "./unknown.svg"
 import { ReactComponent as Usb } from "./usb.svg"
 import { ReactComponent as Wallet } from "./wallet.svg"
-import { ReactComponent as Warning } from "./warning.svg"
 
 const meta: Meta = {
   title: "Atoms/Icons",
@@ -167,8 +167,8 @@ const Icons: StoryFn = (args) => {
           label="Trash"
         />
         <IconWrapper
-          icon={<Warning className={clsx(args["className"])} />}
-          label="Warning"
+          icon={<Card className={clsx(args["className"])} />}
+          label="Card"
         />
         <IconWrapper
           icon={<FilledArrowRight className={clsx(args["className"])} />}

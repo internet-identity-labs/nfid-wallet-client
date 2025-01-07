@@ -15,6 +15,8 @@ import {
   replaceActorIdentity,
 } from "@nfid/integration"
 
+import { SwapStage } from "../types/enums"
+
 const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
 
 class SwapTransactionService {
@@ -47,7 +49,9 @@ class SwapTransactionService {
         ).fromCandid(t)
 
         transaction.setIsLoading(
-          Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION,
+          Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION &&
+            transaction.getStage() !== SwapStage.Completed &&
+            !transaction.getErrors().length,
         )
 
         return transaction

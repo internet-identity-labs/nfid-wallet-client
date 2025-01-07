@@ -10,16 +10,16 @@ export class UserPrefImpl implements UserPreferences {
 
   setHideZeroBalance(hideZeroBalance: boolean): Promise<void> {
     this.hideZeroBalance = hideZeroBalance
-    return authStorage.set("userPreferences", this.toJSON(this))
+    return authStorage.set("userPreferences", this.toJSON())
   }
 
   isHideZeroBalance(): boolean {
     return this.hideZeroBalance
   }
 
-  private toJSON(userPref: UserPreferences): string {
+  private toJSON(): string {
     return JSON.stringify({
-      hideZeroBalance: userPref.isHideZeroBalance(),
+      hideZeroBalance: this.hideZeroBalance,
     })
   }
 }

@@ -61,9 +61,9 @@ export const Tokens: FC<TokensProps> = ({
 
   const handleSorting = () => {
     const nextSorting = {
-      [Sorting.DEFAULT]: Sorting.ASCENDING,
-      [Sorting.ASCENDING]: Sorting.DESCENDING,
-      [Sorting.DESCENDING]: Sorting.DEFAULT,
+      [Sorting.DEFAULT]: Sorting.DESCENDING,
+      [Sorting.DESCENDING]: Sorting.ASCENDING,
+      [Sorting.ASCENDING]: Sorting.DEFAULT,
     }[sorting]
 
     setSorting(nextSorting)

@@ -8,11 +8,7 @@ export class UserPrefService {
     if (!userPreferences) {
       return new UserPrefImpl()
     }
-    return this.fromJSON(userPreferences as string)
-  }
-
-  private fromJSON(json: string): UserPreferences {
-    return JSON.parse(json) as UserPreferences
+    return UserPrefImpl.fromJSON(userPreferences as string)
   }
 }
 

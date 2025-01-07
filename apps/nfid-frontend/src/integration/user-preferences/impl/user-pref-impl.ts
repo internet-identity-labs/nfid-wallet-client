@@ -22,4 +22,11 @@ export class UserPrefImpl implements UserPreferences {
       hideZeroBalance: this.hideZeroBalance,
     })
   }
+
+  static fromJSON(json: string): UserPrefImpl {
+    const data = JSON.parse(json)
+    const instance = new UserPrefImpl()
+    instance.hideZeroBalance = data.hideZeroBalance
+    return instance
+  }
 }

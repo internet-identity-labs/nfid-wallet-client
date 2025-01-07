@@ -87,19 +87,12 @@ export const ActivityTableRow = ({
   to,
   id,
   transaction,
-  isLoading,
 }: IActivityTableRow) => {
-  const [isTxLoading, setIsTxLoading] = useState(false)
-
-  console.log("isLoading", isLoading)
-
-  if (transaction?.getStage()) {
-    console.log("table stage??", transaction?.getStage())
-  }
+  const [isLoading, setIsLoading] = useState(false)
 
   const completeHandler = async () => {
     if (!transaction) return
-    setIsTxLoading(true)
+    setIsLoading(true)
     const pool = await icpSwapService.getPoolFactory(
       transaction.getSourceLedger(),
       transaction.getTargetLedger(),
@@ -113,7 +106,7 @@ export const ActivityTableRow = ({
 
     const errorHandler = errorHandlerFactory.getHandler(transaction)
     await errorHandler.completeTransaction(identity)
-    setIsTxLoading(false)
+    setIsLoading(false)
   }
 
   return (
@@ -236,7 +229,7 @@ export const ActivityTableRow = ({
           <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
             {getTooltipAndButtonText(transaction) ? (
               <>
-                {isLoading || isTxLoading ? (
+                {isLoading || transaction?.getIsLoading() ? (
                   <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
                 ) : (
                   <span

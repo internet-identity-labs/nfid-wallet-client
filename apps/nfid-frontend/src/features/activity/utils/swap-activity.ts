@@ -33,36 +33,33 @@ const filterTransaction = (
 }
 
 const formatTransaction = async (
-  tx: { transaction: SwapTransaction; isLoading: boolean },
+  tx: SwapTransaction,
   icrc1Canisters: ICRC1TypeOracle[],
 ): Promise<TransactionDataExtended> => {
-  const { transaction, isLoading } = tx
-
   const token = icrc1Canisters.find(
-    (icrc1) => icrc1.ledger === transaction.getSourceLedger(),
+    (icrc1) => icrc1.ledger === tx.getSourceLedger(),
   )
   const tokenTo = icrc1Canisters.find(
-    (icrc1) => icrc1.ledger === transaction.getTargetLedger(),
+    (icrc1) => icrc1.ledger === tx.getTargetLedger(),
   )
 
   return {
     type: IActivityAction.SWAP,
-    timestamp: BigInt(transaction.getStartTime()) || BigInt(0),
-    transactionId: transaction.getTransferId() || BigInt(0),
+    timestamp: BigInt(tx.getStartTime()) || BigInt(0),
+    transactionId: tx.getTransferId() || BigInt(0),
     symbol: token!.symbol,
     symbolTo: tokenTo!.symbol,
     icon: token!.logo[0],
     iconTo: tokenTo!.logo[0],
     decimals: token!.decimals,
     decimalsTo: tokenTo!.decimals,
-    amount: transaction.getSourceAmount(),
-    amountTo: BigInt(transaction.getQuote()) || BigInt(0),
-    canister: transaction.getSourceLedger(),
-    canisterTo: transaction.getTargetLedger(),
+    amount: tx.getSourceAmount(),
+    amountTo: BigInt(tx.getQuote()) || BigInt(0),
+    canister: tx.getSourceLedger(),
+    canisterTo: tx.getTargetLedger(),
     from: "",
     to: "",
-    transaction,
-    isLoading,
+    transaction: tx,
   }
 }
 
@@ -99,7 +96,6 @@ const getActivities = async (
         transactionHash: tx.transactionId.toString(),
         action: tx.type,
         transaction: tx.transaction,
-        isLoading: tx.isLoading,
         asset: {
           type: "ft",
           currency: tx.symbol,
@@ -129,7 +125,6 @@ const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] => {
     from: activity.from,
     to: activity.to,
     transaction: activity.transaction,
-    isLoading: activity.isLoading,
   }))
 }
 

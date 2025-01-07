@@ -48,6 +48,10 @@ export interface SwapTransaction {
   setWithdraw(withdraw: bigint): void
 
   setCompleted(): void
+
+  getIsLoading(): boolean
+
+  setIsLoading(value: boolean): void
 }
 
 export interface SwapError {

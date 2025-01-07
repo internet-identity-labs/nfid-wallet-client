@@ -7,7 +7,6 @@ import {
 } from "packages/ui/src/organisms/send-receive"
 import { useCallback, useContext, useEffect, useMemo } from "react"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
 import { ProfileContext } from "frontend/provider"
@@ -37,37 +36,34 @@ export const TransferModalCoordinator = () => {
 
   const publicKey = authState.getUserIdData().publicKey
 
-  const Component = useMemo(() => {
-    switch (true) {
-      case state.matches("SendMachine.SendFT"):
-        return (
-          <TransferFT
-            preselectedTokenAddress={state.context.selectedFT}
-            isVault={state.context.isOpenedFromVaults}
-            preselectedAccountAddress={state.context.sourceWalletAddress}
-            onClose={() => send({ type: "HIDE" })}
-          />
-        )
-      case state.matches("SendMachine.SendNFT"):
-        return (
-          <TransferNFT
-            preselectedNFTId={state.context.selectedNFTId}
-            onClose={() => send({ type: "HIDE" })}
-          />
-        )
-      case state.matches("SwapMachine"):
-        return <SwapFT onClose={() => send({ type: "HIDE" })} />
-      case state.matches("ReceiveMachine"):
-        return (
-          <TransferReceive
-            publicKey={publicKey}
-            preselectedAccountAddress={state.context.sourceWalletAddress}
-          />
-        )
-      default:
-        return <BlurredLoader overlayClassnames="z-10 rounded-xl" isLoading />
-    }
-  }, [send, state, publicKey])
+  const Components = useMemo(
+    () => (
+      <>
+        <TransferFT
+          preselectedTokenAddress={state.context.selectedFT}
+          isVault={state.context.isOpenedFromVaults}
+          preselectedAccountAddress={state.context.sourceWalletAddress}
+          onClose={() => send({ type: "HIDE" })}
+          isOpen={state.matches("SendMachine.SendFT")}
+        />
+        <TransferNFT
+          preselectedNFTId={state.context.selectedNFTId}
+          onClose={() => send({ type: "HIDE" })}
+          isOpen={state.matches("SendMachine.SendNFT")}
+        />
+        <SwapFT
+          onClose={() => send({ type: "HIDE" })}
+          isOpen={state.matches("SwapMachine")}
+        />
+        <TransferReceive
+          publicKey={publicKey}
+          preselectedAccountAddress={state.context.sourceWalletAddress}
+          isOpen={state.matches("ReceiveMachine")}
+        />
+      </>
+    ),
+    [send, state, publicKey],
+  )
 
   const onTokenTypeChange = useCallback(
     (isNFT: boolean) => {
@@ -76,8 +72,6 @@ export const TransferModalCoordinator = () => {
     [send],
   )
 
-  if (state.matches("Hidden")) return null
-
   return (
     <>
       {state.context.isOpenedFromVaults ? (
@@ -85,8 +79,9 @@ export const TransferModalCoordinator = () => {
           onClickOutside={() => send({ type: "HIDE" })}
           isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
-          component={Component}
+          component={Components}
           tokenType={state.context.tokenType}
+          isOpen={!state.matches("Hidden")}
         />
       ) : (
         <TransferModal
@@ -95,7 +90,8 @@ export const TransferModalCoordinator = () => {
           direction={state.context.direction}
           tokenType={state.context.tokenType}
           onTokenTypeChange={onTokenTypeChange}
-          component={Component}
+          component={Components}
+          isOpen={!state.matches("Hidden")}
         />
       )}
     </>

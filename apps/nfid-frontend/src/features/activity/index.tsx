@@ -12,26 +12,16 @@ const ActivityPage = () => {
   const { state } = useLocation()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
   const data = useActivityPagination(initialFilter)
-  const { data: tokens = [], isLoading: isActiveLoading } = useSWRWithTimestamp(
-    "tokens",
-    fetchTokens,
-    {
-      revalidateOnFocus: false,
-      revalidateOnMount: false,
-    },
-  )
+  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
 
   const activeTokens = useMemo(() => {
     return tokens.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  return (
-    <Activity
-      activityData={data}
-      tokens={activeTokens}
-      isTokensLoading={isActiveLoading}
-    />
-  )
+  return <Activity activityData={data} tokens={activeTokens} />
 }
 
 export default ActivityPage

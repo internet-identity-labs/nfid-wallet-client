@@ -15,7 +15,7 @@ import {
   IconInfo,
   Input,
   Tooltip,
-  Warning,
+  Card,
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
@@ -47,12 +47,14 @@ interface TokensHeaderProps {
     decimals: number
     fee: bigint
   }>
+  setLoadingToken: (value: FT | null) => void
 }
 
 export const TokensHeader: FC<TokensHeaderProps> = ({
   tokens,
   onSubmitIcrc1Pair,
   onFetch,
+  setLoadingToken,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
@@ -222,6 +224,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                       key={`${token.getTokenName()}_${token.getTokenAddress()}`}
                       token={token}
                       tokens={tokens}
+                      setLoadingToken={setLoadingToken}
                     />
                   )
                 })}
@@ -295,7 +298,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                   </div>
                 )}
               </div>
-              <Warning
+              <Card
                 text={
                   <>
                     <b>Token safety.</b> Always only import ICRC-1 tokens you

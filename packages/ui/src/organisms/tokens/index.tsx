@@ -1,5 +1,12 @@
-import { HTMLAttributes, FC, useState } from "react"
+import BigNumber from "bignumber.js"
+import clsx from "clsx"
+import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
+
+import SortAscendingIcon from "./assets/sort-ascending.svg"
+import SortDefaultIcon from "./assets/sort-default.svg"
+import SortDescendingIcon from "./assets/sort-descending.svg"
+import SortHoverIcon from "./assets/sort-hover.svg"
 
 import { TableTokenSkeleton } from "../../atoms/skeleton"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
@@ -11,6 +18,12 @@ import { TokenInfoModal } from "./components/token-info-modal"
 export interface IProfileConstants {
   base: string
   activity: string
+}
+
+enum Sorting {
+  DEFAULT = "DEFAULT",
+  ASCENDING = "ASCENDING",
+  DESCENDING = "DESCENDING",
 }
 
 export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
@@ -42,6 +55,64 @@ export const Tokens: FC<TokensProps> = ({
   onSendClick,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
+  const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
+  const [isHovered, setIsHovered] = useState(false)
+  const [loadingToken, setLoadingToken] = useState<FT | null>(null)
+
+  const handleSorting = () => {
+    const nextSorting = {
+      [Sorting.DEFAULT]: Sorting.ASCENDING,
+      [Sorting.ASCENDING]: Sorting.DESCENDING,
+      [Sorting.DESCENDING]: Sorting.DEFAULT,
+    }[sorting]
+
+    setSorting(nextSorting)
+  }
+
+  const getSortingIcon = () => {
+    if (isHovered && sorting === Sorting.DEFAULT) return SortHoverIcon
+    switch (sorting) {
+      case Sorting.ASCENDING:
+        return SortAscendingIcon
+      case Sorting.DESCENDING:
+        return SortDescendingIcon
+      default:
+        return SortDefaultIcon
+    }
+  }
+
+  const sortedTokens = useMemo(() => {
+    const getUSDBalance = (token: typeof activeTokens[0]) => {
+      const balance = token.getUSDBalance()
+      return balance ? new BigNumber(balance) : null
+    }
+
+    if (sorting === Sorting.ASCENDING) {
+      return [...activeTokens].sort((a, b) => {
+        const balanceA = getUSDBalance(a)
+        const balanceB = getUSDBalance(b)
+
+        if (balanceA === null) return 1
+        if (balanceB === null) return -1
+
+        return balanceA.comparedTo(balanceB)
+      })
+    }
+
+    if (sorting === Sorting.DESCENDING) {
+      return [...activeTokens].sort((a, b) => {
+        const balanceA = getUSDBalance(a)
+        const balanceB = getUSDBalance(b)
+
+        if (balanceA === null) return 1
+        if (balanceB === null) return -1
+
+        return balanceB.comparedTo(balanceA)
+      })
+    }
+
+    return activeTokens
+  }, [activeTokens, sorting])
 
   return (
     <>
@@ -49,6 +120,7 @@ export const Tokens: FC<TokensProps> = ({
         tokens={filteredTokens}
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}
         onFetch={onFetch}
+        setLoadingToken={setLoadingToken}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
@@ -56,7 +128,22 @@ export const Tokens: FC<TokensProps> = ({
             <th className="w-[25%] min-w-[100px] pr-[30px]">Name</th>
             <th className="w-[25%] pr-[10px] min-w-[100px]">Category</th>
             <th className="w-[25%] pr-[10px] min-w-[100px]">Token balance</th>
-            <th className="w-[25%] pr-[10px] min-w-[100px]">USD balance</th>
+            <th
+              className={clsx(
+                "w-[25%] pr-[10px] min-w-[120px]",
+                "cursor-pointer hover:text-gray-500 flex items-center gap-[6px]",
+              )}
+              onClick={handleSorting}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              USD balance
+              <img
+                className="w-[18px] h-[18px]"
+                src={getSortingIcon()}
+                alt="Sorting"
+              />
+            </th>
             <th className="w-[24px]"></th>
           </tr>
         </thead>
@@ -67,7 +154,7 @@ export const Tokens: FC<TokensProps> = ({
               tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
             />
           ) : (
-            activeTokens.map((token, index, arr) => (
+            sortedTokens.map((token, index, arr) => (
               <ActiveToken
                 key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
                 token={token}
@@ -76,6 +163,7 @@ export const Tokens: FC<TokensProps> = ({
                 onSendClick={onSendClick}
                 setToken={setToken}
                 dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
+                loadingToken={loadingToken}
               />
             ))
           )}

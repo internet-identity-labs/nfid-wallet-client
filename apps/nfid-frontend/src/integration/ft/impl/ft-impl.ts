@@ -37,13 +37,24 @@ export class FTImpl implements FT {
 
   async init(globalPrincipal: Principal): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    const [balance, rate] = await Promise.all([
+    const [balance, rate] = await Promise.allSettled([
       icrc1Pair.getBalance(globalPrincipal.toText()),
       exchangeRateService.usdPriceForICRC1(this.tokenAddress),
     ])
 
-    this.tokenBalance = balance
-    this.tokenRate = rate
+    if (balance.status === "rejected") {
+      console.error("Icrc1Pair error: ", balance.reason)
+      return this
+    }
+
+    this.tokenBalance = balance.value
+
+    if (rate.status === "fulfilled") {
+      this.tokenRate = rate.value
+    } else {
+      console.error("Exchange service error: ", rate.reason)
+    }
+
     this.inited = true
     return this
   }

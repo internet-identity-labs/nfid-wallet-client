@@ -28,14 +28,9 @@ export interface ActivityProps {
     resetHandler: () => void
   }
   tokens: FT[]
-  isTokensLoading: boolean
 }
 
-export const Activity: FC<ActivityProps> = ({
-  activityData,
-  tokens,
-  isTokensLoading,
-}) => {
+export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
   const {
     activities,
     filter,
@@ -46,6 +41,7 @@ export const Activity: FC<ActivityProps> = ({
     isButtonLoading,
     resetHandler,
   } = activityData
+
   return (
     <>
       <div className={clsx("flex justify-end", isValidating && "hidden")}>

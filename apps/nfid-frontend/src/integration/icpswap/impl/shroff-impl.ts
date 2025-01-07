@@ -32,6 +32,7 @@ import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-
 import {
   DepositError,
   LiquidityError,
+  ServiceUnavailableError,
   SlippageQuoteError,
   SlippageSwapError,
   SwapError,
@@ -124,30 +125,39 @@ export class ShroffImpl implements Shroff {
     )
     const quotePromise = this.swapPoolActor.quote(args) as Promise<Result>
 
-    const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.all([
+    const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.allSettled([
       targetUSDPricePromise,
       sourceUSDPricePromise,
       quotePromise,
     ])
-    if (hasOwnProperty(quote, "ok")) {
+    if (quote.status === "fulfilled" && hasOwnProperty(quote.value, "ok")) {
       this.requestedQuote = new QuoteImpl(
         amount,
         preCalculation,
-        quote.ok as bigint,
+        quote.value.ok as bigint,
         this.source,
         this.target,
-        targetUSDPrice,
-        sourceUSDPrice,
+        targetUSDPrice.status === "fulfilled"
+          ? targetUSDPrice.value
+          : undefined,
+        sourceUSDPrice.status === "fulfilled"
+          ? sourceUSDPrice.value
+          : undefined,
       )
-      if ((quote.ok as bigint) <= this.target.fee) {
+      if ((quote.value.ok as bigint) <= this.target.fee) {
         console.error("Not enough amount to pay fee")
         throw new LiquidityError()
       }
       return this.requestedQuote
     }
 
-    if (errorTypes.some((errorType) => hasOwnProperty(quote.err, errorType))) {
-      console.error("Error in quote", quote.err)
+    if (
+      quote.status === "rejected" &&
+      errorTypes.some((errorType) =>
+        hasOwnProperty(quote.reason.err, errorType),
+      )
+    ) {
+      console.error("Error in quote", quote.reason.err)
       throw new LiquidityError()
     }
 
@@ -439,28 +449,36 @@ export class ShroffBuilder {
       throw new Error("Target is required")
     }
 
-    const [poolData, icrc1canisters]: [PoolData, ICRC1TypeOracle[]] =
-      await Promise.all([
-        icpSwapService.getPoolFactory(this.source, this.target),
-        icrc1OracleService.getICRC1Canisters(),
-      ])
+    try {
+      const [poolData, icrc1canisters]: [PoolData, ICRC1TypeOracle[]] =
+        await Promise.all([
+          icpSwapService.getPoolFactory(this.source, this.target),
+          icrc1OracleService.getICRC1Canisters(),
+        ])
 
-    this.poolData = poolData
+      this.poolData = poolData
 
-    const st: ICRC1TypeOracle[] = icrc1canisters.filter(
-      (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
-    )
+      const st: ICRC1TypeOracle[] = icrc1canisters.filter(
+        (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
+      )
 
-    this.sourceOracle = st.find((icrc1) => icrc1.ledger === this.source)
-    this.targetOracle = st.find((icrc1) => icrc1.ledger === this.target)
+      this.sourceOracle = st.find((icrc1) => icrc1.ledger === this.source)
+      this.targetOracle = st.find((icrc1) => icrc1.ledger === this.target)
 
-    if (!this.sourceOracle || !this.targetOracle) {
-      throw new Error("ICRC1 not found")
+      if (!this.sourceOracle || !this.targetOracle) {
+        throw new Error("ICRC1 not found")
+      }
+
+      this.zeroForOne = this.poolData.token0.address === this.source
+
+      return this.buildShroff()
+    } catch (e) {
+      console.error("Error:", e)
+      if (e instanceof LiquidityError) {
+        throw e
+      }
+      throw new ServiceUnavailableError()
     }
-
-    this.zeroForOne = this.poolData.token0.address === this.source
-
-    return this.buildShroff()
   }
 
   protected buildShroff(): Shroff {

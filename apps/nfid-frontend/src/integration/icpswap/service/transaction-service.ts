@@ -15,6 +15,8 @@ import {
   replaceActorIdentity,
 } from "@nfid/integration"
 
+const TWO_MINUTES = 2 * 60 * 1000
+
 class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
@@ -33,16 +35,25 @@ class SwapTransactionService {
     await this.storageActor.store_transaction(trs)
   }
 
-  async getTransactions(): Promise<Array<SwapTransaction>> {
+  async getTransactions(): Promise<
+    Array<{ transaction: SwapTransaction; isLoading: boolean }>
+  > {
     const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
-        return new SwapTransactionImpl(
+        const transaction = new SwapTransactionImpl(
           t.target_ledger,
           t.source_ledger,
           Number(t.target_amount),
           t.source_amount,
         ).fromCandid(t)
+
+        const isLoading = Date.now() - Number(t.start_time) <= TWO_MINUTES
+
+        return {
+          transaction,
+          isLoading,
+        }
       })
     })
   }

@@ -27,8 +27,6 @@ export interface SwapTransaction {
 
   getErrors(): Array<SwapError>
 
-  getStage(): SwapStage
-
   getTargetLedger(): string
 
   getSourceLedger(): string

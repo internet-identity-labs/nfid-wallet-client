@@ -106,7 +106,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       const transactions = await swapTransactionService.getTransactions()
 
       setHasUncompletedSwap(
-        transactions.some((tx) => tx.getStage() !== SwapStage.Completed),
+        transactions.some(
+          (tx) => tx.transaction.getStage() !== SwapStage.Completed,
+        ),
       )
     }
 

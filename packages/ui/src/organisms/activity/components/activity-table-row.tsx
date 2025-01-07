@@ -52,7 +52,7 @@ export const getTooltipAndButtonText = (
     return {
       buttonText: "Continue swap",
       tooltipTitle: "swap",
-      tooltipMessage: "Cancel your swap and try again.",
+      tooltipMessage: "Continue your swap.",
     }
   }
 
@@ -87,12 +87,19 @@ export const ActivityTableRow = ({
   to,
   id,
   transaction,
+  isLoading,
 }: IActivityTableRow) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isTxLoading, setIsTxLoading] = useState(false)
+
+  console.log("isLoading", isLoading)
+
+  if (transaction?.getStage()) {
+    console.log("table stage??", transaction?.getStage())
+  }
 
   const completeHandler = async () => {
     if (!transaction) return
-    setIsLoading(true)
+    setIsTxLoading(true)
     const pool = await icpSwapService.getPoolFactory(
       transaction.getSourceLedger(),
       transaction.getTargetLedger(),
@@ -106,7 +113,7 @@ export const ActivityTableRow = ({
 
     const errorHandler = errorHandlerFactory.getHandler(transaction)
     await errorHandler.completeTransaction(identity)
-    setIsLoading(false)
+    setIsTxLoading(false)
   }
 
   return (
@@ -229,7 +236,7 @@ export const ActivityTableRow = ({
           <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
             {getTooltipAndButtonText(transaction) ? (
               <>
-                {isLoading ? (
+                {isLoading || isTxLoading ? (
                   <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
                 ) : (
                   <span

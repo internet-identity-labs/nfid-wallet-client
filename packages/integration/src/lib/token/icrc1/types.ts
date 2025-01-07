@@ -63,4 +63,5 @@ export interface TransactionData {
   iconTo?: string
   canister?: string
   canisterTo?: string
+  isLoading?: boolean
 }

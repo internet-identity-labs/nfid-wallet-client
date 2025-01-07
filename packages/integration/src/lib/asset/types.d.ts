@@ -219,6 +219,7 @@ declare interface Activity {
   action: ActivityAction
   asset: ActivityAssetFT | ActivityAssetNFT
   transaction?: SwapTransaction
+  isLoading?: boolean
 }
 
 declare interface ActivityAssetNFT {

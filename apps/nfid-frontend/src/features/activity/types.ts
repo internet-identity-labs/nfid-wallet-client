@@ -15,6 +15,7 @@ export interface IActivityRow {
   from: string
   to: string
   transaction?: SwapTransaction
+  isLoading?: boolean
 }
 
 export interface IActivityRowGroup {

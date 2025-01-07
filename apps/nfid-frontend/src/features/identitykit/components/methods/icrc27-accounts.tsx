@@ -61,7 +61,6 @@ const RPCComponentICRC27 = ({
         setSelectedProfile={setSelectedProfile}
         publicProfile={publicProfile}
         anonymous={anonymous}
-        isPublicAvailable={true}
       />
     </RPCPromptTemplate>
   )

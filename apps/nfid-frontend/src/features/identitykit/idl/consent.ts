@@ -50,6 +50,8 @@ export interface icrc28_trusted_origins_response {
   trusted_origins: Array<string>
 }
 export interface _SERVICE {
+  balance: ActorMethod<[], []>,
+  transfer: ActorMethod<[], []>,
   get_trusted_origins: ActorMethod<[], Array<string>>
   greet: ActorMethod<[string], string>
   greet_no_consent: ActorMethod<[string], string>

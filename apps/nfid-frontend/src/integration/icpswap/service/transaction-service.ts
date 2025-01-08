@@ -17,9 +17,9 @@ import {
 
 import { SwapStage } from "../types/enums"
 
-const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
+export const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
 
-class SwapTransactionService {
+export class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {

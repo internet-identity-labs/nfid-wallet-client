@@ -1,6 +1,6 @@
 import { targetService } from "./target.service"
 
-describe.skip("Target service test suite", () => {
+describe("Target service test suite", () => {
   jest.setTimeout(50000)
 
   it("should fail on empty targets", async function () {

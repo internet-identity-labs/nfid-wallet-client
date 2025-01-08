@@ -11,7 +11,7 @@ import { PriceImpact } from "../types/types"
 export const WIDGET_FEE = 0.00875
 const LIQUIDITY_PROVIDER_FEE = 0.003
 
-export class QuoteImpl implements Quote {
+export class IcpSwapQuoteImpl implements Quote {
   private readonly sourceAmount: string
   private readonly quote: bigint
   private readonly source: ICRC1TypeOracle

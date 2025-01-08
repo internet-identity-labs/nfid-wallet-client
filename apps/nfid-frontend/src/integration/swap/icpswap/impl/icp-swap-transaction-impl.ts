@@ -15,7 +15,7 @@ import {
   SwapTransaction as SwapTransactionCandid,
 } from "../idl/swap_trs_storage.d"
 
-export class SwapTransactionImpl implements SwapTransaction {
+export class IcpSwapTransactionImpl implements SwapTransaction {
   private uid: UUID
   private startTime: number
   private transferId: bigint | undefined

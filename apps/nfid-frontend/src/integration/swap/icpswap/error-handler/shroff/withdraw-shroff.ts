@@ -1,8 +1,8 @@
 import { SignIdentity } from "@dfinity/agent"
 import {
   ShroffBuilder,
-  ShroffImpl,
-} from "src/integration/swap/icpswap/impl/shroff-impl"
+  ShroffIcpSwapImpl,
+} from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 
@@ -11,7 +11,7 @@ import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 import { ContactSupportError } from "../../errors/contact-support-error"
 import { WithdrawErrorLog } from "../../idl/SwapPool.d"
 
-export class ShroffWithdrawErrorHandler extends ShroffImpl {
+export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.swapTransaction) {
       throw new Error("Swap transaction not set")

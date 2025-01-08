@@ -4,8 +4,8 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { ShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-impl"
-import { SwapTransactionImpl } from "src/integration/swap/icpswap/impl/swap-transaction-impl"
+import { ShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
+import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 import { SwapStage } from "src/integration/swap/icpswap/types/enums"
@@ -78,7 +78,7 @@ describe("shroff test", () => {
 
     const a: Promise<SwapTransaction> = shroff.swap(delegationIdentity)
 
-    let trs = shroff.getSwapTransaction() as SwapTransactionImpl
+    let trs = shroff.getSwapTransaction() as IcpSwapTransactionImpl
 
     expect(trs?.getStage()).toEqual(SwapStage.TransferSwap)
 

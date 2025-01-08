@@ -5,7 +5,7 @@ import {
   _SERVICE as SwapStorage,
   SwapTransaction as SwapTransactionCandid,
 } from "src/integration/swap/icpswap/idl/swap_trs_storage.d"
-import { SwapTransactionImpl } from "src/integration/swap/icpswap/impl/swap-transaction-impl"
+import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 
 import {
@@ -37,7 +37,7 @@ class SwapTransactionService {
     const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
-        return new SwapTransactionImpl(
+        return new IcpSwapTransactionImpl(
           t.target_ledger,
           t.source_ledger,
           Number(t.target_amount),

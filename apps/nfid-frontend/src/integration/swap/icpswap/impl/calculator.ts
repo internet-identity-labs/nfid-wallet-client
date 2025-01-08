@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { WIDGET_FEE } from "src/integration/swap/icpswap/impl/quote-impl"
+import { WIDGET_FEE } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 
 export class SourceInputCalculator {
   private widgetFee: bigint

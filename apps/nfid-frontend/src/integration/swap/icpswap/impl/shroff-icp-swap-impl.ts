@@ -6,8 +6,8 @@ import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
 import { SourceInputCalculator } from "src/integration/swap/icpswap/impl/calculator"
 import { errorTypes } from "src/integration/swap/icpswap/impl/constants"
-import { QuoteImpl } from "src/integration/swap/icpswap/impl/quote-impl"
-import { SwapTransactionImpl } from "src/integration/swap/icpswap/impl/swap-transaction-impl"
+import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
+import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { Quote } from "src/integration/swap/quote"
 import {
   icpSwapService,
@@ -47,7 +47,7 @@ import {
   WithdrawArgs,
 } from "../idl/SwapPool.d"
 
-export class ShroffImpl implements Shroff {
+export class ShroffIcpSwapImpl implements Shroff {
   private readonly zeroForOne: boolean
   private readonly poolData: PoolData
   protected readonly swapPoolActor: Agent.ActorSubclass<SwapPool>
@@ -98,7 +98,7 @@ export class ShroffImpl implements Shroff {
       this.source.ledger,
       this.target.ledger,
       this.poolData.canisterId.toText(),
-      ...ShroffImpl.getStaticTargets(),
+      ...ShroffIcpSwapImpl.getStaticTargets(),
     ]
   }
 
@@ -131,7 +131,7 @@ export class ShroffImpl implements Shroff {
       quotePromise,
     ])
     if (quote.status === "fulfilled" && hasOwnProperty(quote.value, "ok")) {
-      this.requestedQuote = new QuoteImpl(
+      this.requestedQuote = new IcpSwapQuoteImpl(
         amount,
         preCalculation,
         quote.value.ok as bigint,
@@ -169,7 +169,7 @@ export class ShroffImpl implements Shroff {
       throw new Error("Request quote first")
     }
     this.delegationIdentity = delegationIdentity
-    this.swapTransaction = new SwapTransactionImpl(
+    this.swapTransaction = new IcpSwapTransactionImpl(
       this.target.ledger,
       this.source.ledger,
       this.requestedQuote.getTargetAmount().toNumber(),
@@ -482,7 +482,7 @@ export class ShroffBuilder {
   }
 
   protected buildShroff(): Shroff {
-    return new ShroffImpl(
+    return new ShroffIcpSwapImpl(
       this.poolData!,
       this.zeroForOne!,
       this.sourceOracle!,

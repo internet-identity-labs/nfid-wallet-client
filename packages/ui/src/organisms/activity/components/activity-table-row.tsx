@@ -20,7 +20,7 @@ import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
 import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/handler-factory"
-import { ShroffImpl } from "src/integration/swap/icpswap/impl/shroff-impl"
+import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 import { SwapStage } from "src/integration/swap/icpswap/types/enums"
@@ -101,7 +101,7 @@ export const ActivityTableRow = ({
       transaction.getSourceLedger(),
       transaction.getTargetLedger(),
       pool.canisterId.toText(),
-      ...ShroffImpl.getStaticTargets(),
+      ...ShroffIcpSwapImpl.getStaticTargets(),
     ])
 
     const errorHandler = errorHandlerFactory.getHandler(transaction)

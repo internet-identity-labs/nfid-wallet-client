@@ -1,14 +1,14 @@
 import { SignIdentity } from "@dfinity/agent"
 import {
   ShroffBuilder,
-  ShroffImpl,
-} from "src/integration/swap/icpswap/impl/shroff-impl"
+  ShroffIcpSwapImpl,
+} from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 
 import { replaceActorIdentity } from "@nfid/integration"
 
-export class ShroffNfidErrorHandler extends ShroffImpl {
+export class ShroffNfidErrorHandler extends ShroffIcpSwapImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     this.delegationIdentity = delegationIdentity
     if (!this.swapTransaction) {

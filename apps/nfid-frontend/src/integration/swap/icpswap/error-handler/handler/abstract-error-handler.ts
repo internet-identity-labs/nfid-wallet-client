@@ -2,7 +2,7 @@ import { SignIdentity } from "@dfinity/agent"
 import BigNumber from "bignumber.js"
 import { TransactionErrorHandlerAbstract } from "src/integration/swap/icpswap/error-handler/error-handler-abstract"
 import { SourceInputCalculator } from "src/integration/swap/icpswap/impl/calculator"
-import { QuoteImpl } from "src/integration/swap/icpswap/impl/quote-impl"
+import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 
@@ -35,7 +35,7 @@ export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstra
       sourceLedger.fee,
     )
 
-    const quote = new QuoteImpl(
+    const quote = new IcpSwapQuoteImpl(
       userSourceInput,
       preCalculation,
       BigInt(trs.getQuote()),

@@ -15,7 +15,11 @@ import {
   replaceActorIdentity,
 } from "@nfid/integration"
 
-class SwapTransactionService {
+import { SwapStage } from "../types/enums"
+
+export const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
+
+export class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
 
   constructor() {
@@ -37,12 +41,20 @@ class SwapTransactionService {
     const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
-        return new IcpSwapTransactionImpl(
+        const transaction = new IcpSwapTransactionImpl(
           t.target_ledger,
           t.source_ledger,
           Number(t.target_amount),
           t.source_amount,
         ).fromCandid(t)
+
+        transaction.setIsLoading(
+          Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION &&
+            transaction.getStage() !== SwapStage.Completed &&
+            !transaction.getErrors().length,
+        )
+
+        return transaction
       })
     })
   }

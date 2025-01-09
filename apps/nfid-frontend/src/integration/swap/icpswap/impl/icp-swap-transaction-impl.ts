@@ -28,6 +28,7 @@ export class IcpSwapTransactionImpl implements SwapTransaction {
   private endTime: number | undefined
   private errors: Array<SwapError>
   private stage: SwapStage
+  private isLoading: boolean
   private readonly targetLedger: string
   private readonly sourceLedger: string
 
@@ -45,6 +46,15 @@ export class IcpSwapTransactionImpl implements SwapTransaction {
     this.quote = quote
     this.sourceAmount = amount
     this.errors = []
+    this.isLoading = false
+  }
+
+  getIsLoading(): boolean {
+    return this.isLoading
+  }
+
+  setIsLoading(value: boolean): void {
+    this.isLoading = value
   }
 
   getStartTime(): number {

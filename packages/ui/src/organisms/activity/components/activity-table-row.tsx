@@ -52,7 +52,7 @@ export const getTooltipAndButtonText = (
     return {
       buttonText: "Continue swap",
       tooltipTitle: "swap",
-      tooltipMessage: "Cancel your swap and try again.",
+      tooltipMessage: "Continue your swap.",
     }
   }
 
@@ -229,7 +229,7 @@ export const ActivityTableRow = ({
           <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
             {getTooltipAndButtonText(transaction) ? (
               <>
-                {isLoading ? (
+                {isLoading || transaction?.getIsLoading() ? (
                   <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
                 ) : (
                   <span

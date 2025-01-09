@@ -4,11 +4,14 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { SwapTransaction as SwapTransactionCandid } from "src/integration/icpswap/idl/swap_trs_storage.d"
-import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transaction-impl"
 
 import { authState } from "@nfid/integration"
 
+import {
+  SwapStage as SwapStageCandid,
+  SwapTransaction as SwapTransactionCandid,
+} from "../idl/swap_trs_storage.d"
+import { IcpSwapTransactionImpl } from "../impl/icp-swap-transaction-impl"
 import { SwapStage } from "../types/enums"
 import { SwapTransactionService } from "./transaction-service"
 
@@ -58,7 +61,7 @@ describe("SwapTransactionService", () => {
       transfer_nfid_id: [],
     }
 
-    const mockTransactionInstance = new SwapTransactionImpl(
+    const mockTransactionInstance = new IcpSwapTransactionImpl(
       mockTransaction.target_ledger,
       mockTransaction.source_ledger,
       Number(mockTransaction.target_amount),
@@ -75,7 +78,7 @@ describe("SwapTransactionService", () => {
 
     const result = await service.getTransactions()
 
-    expect(result[0]).toBeInstanceOf(SwapTransactionImpl)
+    expect(result[0]).toBeInstanceOf(IcpSwapTransactionImpl)
     expect(result[0].getIsLoading()).toBe(true)
 
     setTimeout(() => {
@@ -84,7 +87,7 @@ describe("SwapTransactionService", () => {
   })
 
   it("should correctly set NFID transfer ID and update the stage", async () => {
-    const mockTransactionInstance = new SwapTransactionImpl(
+    const mockTransactionInstance = new IcpSwapTransactionImpl(
       "mxzaz-hqaaa-aaaar-qaada-cai",
       "ryjl3-tyaaa-aaaaa-aaaba-cai",
       1110,
@@ -99,7 +102,7 @@ describe("SwapTransactionService", () => {
   })
 
   it("should return the correct errors after calling setError", async () => {
-    const mockTransactionInstance = new SwapTransactionImpl(
+    const mockTransactionInstance = new IcpSwapTransactionImpl(
       "mxzaz-hqaaa-aaaar-qaada-cai",
       "ryjl3-tyaaa-aaaaa-aaaba-cai",
       1110,

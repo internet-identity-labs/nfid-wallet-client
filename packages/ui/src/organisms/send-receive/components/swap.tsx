@@ -16,9 +16,9 @@ import {
   DepositError,
   SwapError,
   WithdrawError,
-} from "frontend/integration/icpswap/errors"
-import { Quote } from "frontend/integration/icpswap/quote"
-import { SwapStage } from "frontend/integration/icpswap/types/enums"
+} from "src/integration/swap/icpswap/errors"
+import { Quote } from "src/integration/swap/quote"
+import { SwapStage } from "src/integration/swap/icpswap/types/enums"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import { ChooseFromToken } from "./choose-from-token"

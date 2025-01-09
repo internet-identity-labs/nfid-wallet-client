@@ -4,7 +4,7 @@ import { FC } from "react"
 
 import { IconCmpArrow } from "@nfid-frontend/ui"
 
-import { Quote } from "frontend/integration/icpswap/quote"
+import { Quote } from "src/integration/swap/quote"
 
 export interface QuoteModalProps {
   setModalOpen: (v: boolean) => void

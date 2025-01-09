@@ -14,8 +14,8 @@ import {
   SlippageSwapError,
   SwapError,
   WithdrawError,
-} from "frontend/integration/icpswap/errors"
-import { SwapStage } from "frontend/integration/icpswap/types/enums"
+} from "src/integration/swap/icpswap/errors"
+import { SwapStage } from "src/integration/swap/icpswap/types/enums"
 
 import deposit from "../assets/NFID_WS_1.json"
 import depositSuccess from "../assets/NFID_WS_1_1.json"

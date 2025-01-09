@@ -17,7 +17,7 @@ import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
-import { getMaxAmountFee } from "frontend/integration/icpswap/util/util"
+import { getMaxAmountFee } from "src/integration/swap/icpswap/util/util"
 
 import { useTokenInit } from "../hooks/token-init"
 

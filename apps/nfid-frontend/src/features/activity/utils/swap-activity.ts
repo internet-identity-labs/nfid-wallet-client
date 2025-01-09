@@ -8,8 +8,8 @@ import {
   TransactionData,
 } from "@nfid/integration/token/icrc1/types"
 
-import { swapTransactionService } from "frontend/integration/icpswap/service/transaction-service"
-import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
+import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 
 import { IActivityRow } from "../types"
 

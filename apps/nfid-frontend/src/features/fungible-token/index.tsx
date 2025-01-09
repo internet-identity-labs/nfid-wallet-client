@@ -1,6 +1,5 @@
 import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
-import { useTokenInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
@@ -46,7 +45,7 @@ const TokensPage = () => {
 
   const activeTokens = useMemo(() => {
     return tokens.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens, hideZeroBalance])
+  }, [tokens])
 
   useEffect(() => {
     const initTokens = async () => {
@@ -63,7 +62,7 @@ const TokensPage = () => {
     }
 
     initTokens()
-  }, [tokens])
+  }, [activeTokens])
 
   const filteredTokens = useMemo(() => {
     if (!hideZeroBalance)

@@ -34,15 +34,7 @@ describe("SwapTransactionService", () => {
       new Date(Date.now() + 3_600_000 * 44),
       {},
     )
-    const delegationIdentity = DelegationIdentity.fromDelegation(
-      sessionKey,
-      chainRoot,
-    )
-
-    await authState.set({
-      identity: delegationIdentity,
-      delegationIdentity: delegationIdentity,
-    })
+    const mockErrorMessage = "Mocked Error message"
 
     const mockTransaction: SwapTransactionCandid = {
       source_ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -56,65 +48,72 @@ describe("SwapTransactionService", () => {
       errors: [],
       deposit: [],
       transfer_id: [],
+      stage: { Withdraw: null },
+      end_time: [],
+      transfer_nfid_id: [],
+    }
+
+    const mockCompletedTransaction: SwapTransactionCandid = {
+      source_ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      target_ledger: "mxzaz-hqaaa-aaaar-qaada-cai",
+      target_amount: BigInt(1110),
+      source_amount: BigInt(50),
+      start_time: BigInt(Date.now()),
+      uid: "mock-uid",
+      withdraw: [],
+      swap: [],
+      errors: [],
+      deposit: [],
+      transfer_id: [],
+      stage: { Completed: null },
+      end_time: [],
+      transfer_nfid_id: [],
+    }
+
+    const mockFailedTransaction: SwapTransactionCandid = {
+      source_ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      target_ledger: "mxzaz-hqaaa-aaaar-qaada-cai",
+      target_amount: BigInt(1110),
+      source_amount: BigInt(50),
+      start_time: BigInt(Date.now()),
+      uid: "mock-uid",
+      withdraw: [],
+      swap: [],
+      errors: [{ time: BigInt(Date.now()), message: mockErrorMessage }],
+      deposit: [],
+      transfer_id: [],
       stage: { Withdraw: null } as any,
       end_time: [],
       transfer_nfid_id: [],
     }
 
-    const mockTransactionInstance = new IcpSwapTransactionImpl(
-      mockTransaction.target_ledger,
-      mockTransaction.source_ledger,
-      Number(mockTransaction.target_amount),
-      mockTransaction.source_amount,
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      sessionKey,
+      chainRoot,
     )
 
-    mockTransactionInstance.setIsLoading(
-      Date.now() - Number(mockTransaction.start_time) <= mockDuration,
-    )
+    await authState.set({
+      identity: delegationIdentity,
+      delegationIdentity: delegationIdentity,
+    })
 
     jest
       .spyOn(service["storageActor"], "get_transactions")
-      .mockResolvedValue([mockTransaction])
+      .mockResolvedValue([
+        mockTransaction,
+        mockCompletedTransaction,
+        mockFailedTransaction,
+      ])
 
     const result = await service.getTransactions()
 
     expect(result[0]).toBeInstanceOf(IcpSwapTransactionImpl)
     expect(result[0].getIsLoading()).toBe(true)
+    expect(result[1].getStage()).toBe(SwapStage.Completed)
+    expect(result[2].getErrors()[0].message).toBe(mockErrorMessage)
 
     setTimeout(() => {
       expect(result[0].getIsLoading()).toBe(false)
     }, mockDuration + 1)
-  })
-
-  it("should correctly set NFID transfer ID and update the stage", async () => {
-    const mockTransactionInstance = new IcpSwapTransactionImpl(
-      "mxzaz-hqaaa-aaaar-qaada-cai",
-      "ryjl3-tyaaa-aaaaa-aaaba-cai",
-      1110,
-      BigInt(50),
-    )
-
-    const mockTransferId = BigInt(123456)
-    mockTransactionInstance.setNFIDTransferId(mockTransferId)
-
-    expect(mockTransactionInstance.getTransferNFIDId()).toBe(mockTransferId)
-    expect(mockTransactionInstance.getStage()).toBe(SwapStage.Completed)
-  })
-
-  it("should return the correct errors after calling setError", async () => {
-    const mockTransactionInstance = new IcpSwapTransactionImpl(
-      "mxzaz-hqaaa-aaaar-qaada-cai",
-      "ryjl3-tyaaa-aaaaa-aaaba-cai",
-      1110,
-      BigInt(50),
-    )
-
-    const errorMessage = "Test error message"
-    mockTransactionInstance.setError(errorMessage)
-
-    const errors = mockTransactionInstance.getErrors()
-    expect(errors.length).toBe(1)
-    expect(errors[0].message).toBe(errorMessage)
-    expect(typeof errors[0].time).toBe("bigint")
   })
 })

@@ -25,7 +25,7 @@ import { mutate } from "@nfid/swr"
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { FT } from "frontend/integration/ft/ft"
-import { Shroff } from "frontend/integration/icpswap/shroff"
+import { Shroff } from "src/integration/swap/shroff"
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import {
   e8sICPToString,

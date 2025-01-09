@@ -38,7 +38,6 @@ export * from "./molecules/button/arrow-button"
 export * from "./molecules/input"
 export * from "./molecules/input/text-area"
 export * from "./molecules/input/label"
-export * from "./molecules/input-dropdown"
 export * from "./molecules/tooltip"
 export * from "./molecules/sdk-app-meta"
 export * from "./molecules/blurred-loader"
@@ -60,12 +59,6 @@ export * from "./molecules/lottie-animation"
 export * from "./molecules/toggle-button"
 
 export * from "./molecules/tabs-switcher"
-
-export * from "./pages/auth-ii"
-export * from "./pages/auth-ii-connect"
-export * from "./pages/auth-ii-recovery"
-export * from "./pages/auth-ii-complete"
-export * from "./pages/auth-ii-code"
 
 export * from "./templates"
 

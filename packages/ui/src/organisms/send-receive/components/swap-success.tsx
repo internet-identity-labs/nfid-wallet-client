@@ -124,7 +124,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? ""
             : `This usually takes about ${duration} seconds`}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 w-full h-full">
+        <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full px-3">
           <LottieAnimation
             className="max-w-[370px] sm:-top-[55px]"
             animationData={currentAnimation}
@@ -193,7 +193,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           id={"swap-success-close-button"}
           type="primary"
           block
-          className="mt-[30px] !text-[16px]"
+          className="mt-[30px]"
           onClick={onClose}
         >
           {getTitleAndButtonText(error)?.buttonText}

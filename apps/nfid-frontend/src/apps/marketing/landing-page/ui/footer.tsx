@@ -14,7 +14,7 @@ export function Footer() {
             href="https://docs.nfid.one/legal/terms"
             target="_blank"
             rel="noreferrer"
-            className="mr-[30px] leading-[30px] inline-block hover:text-[#2DEECB] transition-all"
+            className="mr-[30px] leading-[30px] inline-block hover:text-teal-400 transition-all"
           >
             Terms of service
           </a>
@@ -22,11 +22,11 @@ export function Footer() {
             href="https://docs.nfid.one/legal/privacy"
             target="_blank"
             rel="noreferrer"
-            className="leading-[30px] inline-block hover:text-[#2DEECB] transition-all"
+            className="leading-[30px] inline-block hover:text-teal-400 transition-all"
           >
             Privacy policy
           </a>
-          <p className="leading-[30px] text-[#71717A] mt-[8px]">
+          <p className="leading-[30px] text-zinc-500 mt-[8px]">
             Copyright {new Date().getFullYear()}. Internet Identity Labs, Inc.
             All Rights Reserved.
           </p>

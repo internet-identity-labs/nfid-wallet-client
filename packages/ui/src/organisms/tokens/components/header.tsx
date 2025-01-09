@@ -18,12 +18,14 @@ import {
   Card,
   ImageWithFallback,
   IconNftPlaceholder,
+  Toggle,
 } from "@nfid-frontend/ui"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { FT } from "frontend/integration/ft/ft"
 import { filterTokens } from "frontend/integration/ft/ft-service"
 
+import Caret from "../assets/caret.svg"
 import { FilteredToken } from "./filtered-asset"
 
 export interface ICRC1Metadata {
@@ -48,6 +50,8 @@ interface TokensHeaderProps {
     fee: bigint
   }>
   setLoadingToken: (value: FT | null) => void
+  hideZeroBalance: boolean
+  onZeroBalanceToggle: () => void
 }
 
 export const TokensHeader: FC<TokensHeaderProps> = ({
@@ -55,6 +59,8 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
   onSubmitIcrc1Pair,
   onFetch,
   setLoadingToken,
+  hideZeroBalance,
+  onZeroBalanceToggle,
 }) => {
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
@@ -151,7 +157,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
       >
         {modalStep === "manage" && (
           <div>
-            <div className="flex items-center justify-between h-[40px] mb-[16px]">
+            <div className="flex items-center justify-between h-[40px]">
               <p className="text-[20px] leading-[24px] font-bold">
                 Manage tokens
               </p>
@@ -193,7 +199,20 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
               </Tooltip>
             </div>
             <div>
-              <div className="flex gap-[10px] mb-[20px]">
+              <div className="bg-gray-50 rounded-[12px] mt-[28px] mb-[20px]">
+                <div className="h-[64px] px-4 flex items-center justify-between border-b border-white">
+                  <span>Hide zero balances</span>
+                  <Toggle
+                    isChecked={hideZeroBalance}
+                    onToggle={onZeroBalanceToggle}
+                  />
+                </div>
+                <div className="h-[64px] px-4 flex items-center justify-between">
+                  <span>Scan for tokens</span>
+                  <img src={Caret} alt="scan-tokens" />
+                </div>
+              </div>
+              <div className="flex gap-[10px] mb-[10px]">
                 <Input
                   inputClassName="!border-black"
                   className="h-[40px] w-full "
@@ -212,7 +231,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
               </div>
               <div
                 className={clsx(
-                  "h-[424px] overflow-auto pr-[16px]",
+                  "h-[294px] overflow-auto pr-[16px]",
                   "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
                   "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
                 )}

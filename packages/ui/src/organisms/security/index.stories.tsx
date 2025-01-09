@@ -56,7 +56,7 @@ const MockRenderPasskeys = () => (
     <td>
       <div className="relative w-6 shrink-0">
         <IconCmpDots
-          className="text-secondary cursor-pointer hover:text-black shrink-0"
+          className="cursor-pointer text-secondary hover:text-black shrink-0"
           onClick={() => console.log("Remove Recovery button clicked")}
         />
       </div>
@@ -78,7 +78,6 @@ const MockRenderRecoveryOptions = () => (
         </div>
       </div>
       <IconCmpTrash
-        className="text-[#9CA3AF]"
         onClick={() => console.log("Remove Recovery button clicked")}
       />
     </div>
@@ -122,5 +121,4 @@ Default.args = {
   addPasskeyElement: <MockAddPasskeyElement />,
   renderPasskeys: MockRenderPasskeys,
   renderRecoveryOptions: MockRenderRecoveryOptions,
-  isLoading: false,
 }

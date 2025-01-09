@@ -43,7 +43,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
           <a
             href={origin}
             target="_blank"
-            className="text-[#146F68] no-underline"
+            className="text-primaryButtonColor no-underline"
             rel="noreferrer"
           >
             {applicationName}

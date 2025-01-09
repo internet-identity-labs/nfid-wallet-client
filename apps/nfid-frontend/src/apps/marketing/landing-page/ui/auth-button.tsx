@@ -24,7 +24,7 @@ export const AuthButton = ({
         className="hidden text-white cursor-pointer md:block"
         onClick={onAuthClick}
       >
-        <span className="hover:text-[#2DEECB] transition-all">
+        <span className="transition-all hover:text-teal-400">
           {isAuthenticated ? "Profile" : "Sign in"}
         </span>
       </div>

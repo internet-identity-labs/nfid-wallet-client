@@ -7,7 +7,6 @@ import { NFIDGradientBar } from "frontend/ui/atoms/gradient-bar"
 import { BlurOverlay } from "../../molecules/blur-overlay"
 import { NavigationBar } from "../../organisms/navigation/navigation-bar"
 import { NavigationHeader } from "../../organisms/navigation/navigation-header"
-import { BubbleOptions } from "../Shell"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -19,7 +18,6 @@ interface Props
   isFocused?: boolean
   classNameWrapper?: string
   navigationItems?: React.ReactNode
-  bubbleOptions?: BubbleOptions
   showLogo?: boolean
   showGradientBar?: boolean
   isLoading?: boolean

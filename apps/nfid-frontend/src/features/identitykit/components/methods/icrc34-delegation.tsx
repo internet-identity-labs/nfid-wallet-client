@@ -68,7 +68,7 @@ const RPCComponentICRC34 = ({
           <a
             href={origin}
             target="_blank"
-            className="text-[#146F68] no-underline"
+            className="no-underline text-primaryButtonColor"
             rel="noreferrer"
           >
             {applicationName}

@@ -111,7 +111,7 @@ export const DropdownSelect = ({
           "cursor-pointer select-none",
           "active:outline active:outline-offset-1",
           bordered && "border border-black",
-          isDropdownOpen && "border border-teal-600 bg-[#F0FDFA]/40",
+          isDropdownOpen && "border border-teal-600 bg-teal-50/40",
           disabled && "!border-none !bg-gray-100 !text-black",
           errorText && "!border border-red-600 !ring-2 !ring-red-100",
         )}

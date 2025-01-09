@@ -22,7 +22,7 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
   return (
     <>
       <Dropdown
-        className="!rounded-[24px] text-white !bg-[#18181B] overflow-hidden p-[20px] top-[35px] !right-0"
+        className="!rounded-[24px] text-white !bg-zinc-900 overflow-hidden p-[20px] top-[35px] !right-0"
         triggerElement={
           <img
             className={clsx(
@@ -36,16 +36,16 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
         minWidth={160}
       >
         <DropdownOption
-          className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+          className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
           textClassName="!text-white"
           element={({ className }) => (
             <Link className={className} to="/sns">
-              SNS
+              <span className="px-[10px]">SNS</span>
             </Link>
           )}
         />
         <DropdownOption
-          className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+          className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
           textClassName="!text-white"
           label="Knowledge base"
           link="https://learn.nfid.one/"
@@ -53,13 +53,13 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
         {isAuthenticated ? (
           <>
             <DropdownOption
-              className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+              className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
               textClassName="!text-white"
               label="Profile"
               handler={handler}
             />
             <DropdownOption
-              className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+              className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
               textClassName="!text-white"
               label="Sign out"
               handler={logoutHandler}
@@ -67,7 +67,7 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
           </>
         ) : (
           <DropdownOption
-            className="hover:!bg-[#27272A] rounded-[12px] !gap-0"
+            className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
             textClassName="!text-white"
             label="Sign in"
             handler={handler}

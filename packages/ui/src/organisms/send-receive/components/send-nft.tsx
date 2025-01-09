@@ -137,7 +137,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         <Button
           id={"sendButton"}
           disabled={Boolean(errors["to"]?.message) || !to || !selectedNFT}
-          className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"
+          className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block
           onClick={handleSubmit(submit)}

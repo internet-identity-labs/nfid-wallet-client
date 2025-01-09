@@ -137,7 +137,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     { revalidateOnFocus: false },
   )
 
-  const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
+  const { data: tokensUsdBalance, isLoading: isUsdLoading } = useSWR(
     initedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
     async () => getFullUsdValue(initedTokens),
     { revalidateOnFocus: false },
@@ -244,7 +244,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           {isWallet && (
             <>
               <ProfileInfo
-                usdValue={tokensUsdValue}
+                usdBalance={tokensUsdBalance}
                 isUsdLoading={isUsdLoading || !initedTokens.length}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

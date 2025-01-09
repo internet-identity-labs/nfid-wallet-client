@@ -26,7 +26,7 @@ interface ChooseFromTokenProps {
   tokens: FT[]
   balance?: bigint | undefined
   setFromChosenToken: (value: string) => void
-  usdRate: string | undefined
+  usdRate?: string
   title: string
   isSwap?: boolean
 }
@@ -36,7 +36,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   tokens,
   balance,
   setFromChosenToken,
-  usdRate,
+  usdRate = "0.00 USD",
   title,
   isSwap = false,
 }) => {

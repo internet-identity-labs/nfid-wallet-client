@@ -133,6 +133,7 @@ export const Tokens: FC<TokensProps> = ({
           <tr className="text-sm font-bold leading-5">
             <th className="w-[25%] min-w-[100px] pr-[30px]">Name</th>
             <th className="w-[25%] pr-[10px] min-w-[100px]">Category</th>
+            <th className="w-[25%] pr-[10px] min-w-[100px]">Price</th>
             <th className="w-[25%] pr-[10px] min-w-[100px]">Token balance</th>
             <th
               className={clsx(

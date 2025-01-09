@@ -22,7 +22,13 @@ export interface FT {
 
   getUSDBalance(): BigNumber | undefined
 
-  getTokenRate(amount: string): number | undefined
+  getUSDBalanceDayChange(): BigNumber | undefined
+
+  getTokenRate(amount: string): string | undefined
+
+  getTokenRateDayChangePercent():
+    | { value: string; positive: boolean }
+    | undefined
 
   getTokenRateFormatted(amount: string): string | undefined
 

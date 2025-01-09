@@ -12,6 +12,7 @@ import {
 import { IProfileConstants } from ".."
 import { useTokenInit } from "../../send-receive/hooks/token-init"
 import { AssetDropdown } from "./asset-dropdown"
+import { ArrowPercentChange } from "@nfid-frontend/ui"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
@@ -35,6 +36,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
   const initedToken = useTokenInit(token)
+  const tokenPrice = token.getTokenRateFormatted("1")
+  const tokenRateDayChange = token.getTokenRateDayChangePercent()
 
   return (
     <tr
@@ -75,6 +78,21 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="hidden md:table-cell pr-[10px]"
       >
         {token.getTokenCategoryFormatted()}
+      </td>
+      <td className="pr-[10px]">
+        {!initedToken ? (
+          <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
+        ) : tokenPrice ? (
+          <div>
+            <div>{tokenPrice}</div>
+            <ArrowPercentChange
+              value={tokenRateDayChange?.value || "0"}
+              positive={tokenRateDayChange?.positive}
+            />
+          </div>
+        ) : (
+          "Not listed"
+        )}
       </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}

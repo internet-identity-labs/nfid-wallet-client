@@ -47,7 +47,7 @@ export const getAllActivity = async (
           ...item.row,
           asset: {
             ...item.row.asset,
-            rate: Number(usdRate?.toFixed(2)),
+            rate: Number(usdRate?.value.toFixed(2)),
           },
         },
       }

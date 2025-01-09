@@ -8,8 +8,6 @@ import { idlFactory as IDL } from "./idl/ExchangeRate"
 import { _SERVICE as Service, ExchangeRate__1 } from "./idl/ExchangeRate.d"
 import { idlFactory as IDL_ICRC1_NODE } from "./idl/NodeIndex"
 import { _SERVICE as ServiceNode } from "./idl/NodeIndex.d"
-import { idlFactory as IDL_TOKEN } from "./idl/Token"
-import { _SERVICE as ServiceToken, PublicTokenOverview } from "./idl/Token.d"
 
 const EXCHANGE_RATE_CANISTER = "2ixw4-taaaa-aaaag-qcpdq-cai"
 type NumberType = string | number | bigint | BigNumber
@@ -43,30 +41,56 @@ export class ExchangeRateService {
   }
 
   @Cache(integrationCache, { ttl: 120 })
-  async usdPriceForICRC1(ledger: string): Promise<BigNumber | undefined> {
-    const tokenStorageCanister = await this.getTokenStorageCanister(ledger)
-    if (!tokenStorageCanister) {
-      return undefined
-    }
-    const actorStorage = actorBuilder<ServiceToken>(
-      tokenStorageCanister,
-      IDL_TOKEN,
+  async getAllIcpSwapTokens() {
+    return (await this.exchangeTokenNodeActor.getAllTokens()).map((el) => ({
+      address: el.address,
+      price: el.priceUSD,
+      priceDayChange: el.priceUSDChange,
+    }))
+  }
+
+  @Cache(integrationCache, { ttl: 120 })
+  async getAllIcpTokens() {
+    const responseJson = await fetch("https://web2.icptokens.net/api/tokens")
+    if (!responseJson.ok) return undefined
+    const tokens: Array<{
+      canister_id: string
+      metrics: { price: { usd: string }; change: { "24h": { usd: string } } }
+    }> = await responseJson.json()
+    return tokens.map((el) => ({
+      address: el.canister_id,
+      price: Number(el.metrics.price.usd),
+      priceDayChange: Number(el.metrics.change["24h"].usd),
+    }))
+  }
+
+  @Cache(integrationCache, { ttl: 120 })
+  async usdPriceForICRC1(
+    ledger: string,
+  ): Promise<
+    | { value: BigNumber; dayChangePercent: string; positive: boolean }
+    | undefined
+  > {
+    let token = (await this.getAllIcpTokens())?.find(
+      (t) => t.address === ledger,
     )
-    const result: PublicTokenOverview = await actorStorage.getToken(ledger)
-    const usdPrice: number = result.priceUSD
-    return BigNumber(usdPrice)
+
+    if (!token)
+      token = (await this.getAllIcpSwapTokens())?.find(
+        (t) => t.address === ledger,
+      )
+
+    if (!token) return
+
+    return {
+      value: BigNumber(token.price),
+      dayChangePercent: BigNumber(token.priceDayChange).abs().toFixed(2),
+      positive: BigNumber(token.priceDayChange).gte(0),
+    }
   }
 
   private async getExchangeRate(pair: string): Promise<ExchangeRate__1> {
     return this.exchangeRateActor.get_exchange_rate(pair)
-  }
-  @Cache(integrationCache, { ttl: 60 * 60 * 24 })
-  private async getTokenStorageCanister(
-    ledger: string,
-  ): Promise<string | undefined> {
-    return this.exchangeTokenNodeActor.tokenStorage(ledger).then((result) => {
-      return result.length > 0 ? result[0] : undefined
-    })
   }
 
   parseTokenAmount(

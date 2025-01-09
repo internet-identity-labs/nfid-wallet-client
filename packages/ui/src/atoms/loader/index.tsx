@@ -2,6 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import { NFIDLogoID } from "./NFIDLogoID"
+import loaderImg from "./loader.gif"
 
 interface LoaderProps {
   isLoading: boolean
@@ -19,13 +20,12 @@ export const ImageOnlyLoader: React.FC<
     <div className="transition duration-100 group">
       <img
         alt="loader"
-        src={"/assets/loader.webp"}
+        src={loaderImg}
         className={clsx(
           "select-none pointer-events-none group-hover:flex hidden",
           className,
         )}
       />
-
       <NFIDLogoID className="w-12 h-12 p-1 group-hover:hidden" />
     </div>
   )
@@ -55,14 +55,14 @@ export const Loader: React.FC<LoaderProps> = ({
           "m-auto w-[125px] min-w-[125px] max-w-[calc(100vw-1rem)]",
           "select-none pointer-events-none",
         )}
-        src={"/assets/loader.webp"}
+        src={loaderImg}
       />
     </div>
   ) : isLoading && !fullscreen ? (
     <img
       id="loader"
       alt="loader"
-      src={"/assets/loader.webp"}
+      src={loaderImg}
       className={clsx("select-none pointer-events-none", imageClasses)}
     />
   ) : null

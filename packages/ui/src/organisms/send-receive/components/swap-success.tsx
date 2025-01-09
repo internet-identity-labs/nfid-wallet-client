@@ -14,8 +14,8 @@ import {
   SlippageSwapError,
   SwapError,
   WithdrawError,
-} from "frontend/integration/icpswap/errors"
-import { SwapStage } from "frontend/integration/icpswap/types/enums"
+} from "src/integration/swap/icpswap/errors"
+import { SwapStage } from "src/integration/swap/icpswap/types/enums"
 
 import deposit from "../assets/NFID_WS_1.json"
 import depositSuccess from "../assets/NFID_WS_1_1.json"
@@ -124,7 +124,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             ? ""
             : `This usually takes about ${duration} seconds`}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 w-full h-full">
+        <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full px-3">
           <LottieAnimation
             className="max-w-[370px] sm:-top-[55px]"
             animationData={currentAnimation}

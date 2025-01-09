@@ -19,11 +19,11 @@ import {
   SlippageQuoteError,
   SwapError,
   WithdrawError,
-} from "frontend/integration/icpswap/errors"
-import { ShroffBuilder } from "frontend/integration/icpswap/impl/shroff-impl"
-import { Shroff } from "frontend/integration/icpswap/shroff"
-import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
-import { SwapStage } from "frontend/integration/icpswap/types/enums"
+} from "src/integration/swap/icpswap/errors"
+import { ShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
+import { Shroff } from "src/integration/swap/shroff"
+import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapStage } from "src/integration/swap/icpswap/types/enums"
 
 import { FormValues } from "../types"
 import {
@@ -155,9 +155,8 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
       : null,
     async () => {
       try {
-        const res = await getQuoteData(amount, shroff)
         setLiquidityError(undefined)
-        return res
+        return await getQuoteData(amount, shroff)
       } catch (e) {
         if (error instanceof LiquidityError) setLiquidityError(error)
       }
@@ -192,9 +191,8 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
     if (!shroff) return
     refetchQuote(async () => {
       try {
-        const res = await getQuoteData(amount, shroff)
         setLiquidityError(undefined)
-        return res
+        return await getQuoteData(amount, shroff)
       } catch (error) {
         if (error instanceof LiquidityError) setLiquidityError(error)
       }

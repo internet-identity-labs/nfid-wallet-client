@@ -19,11 +19,11 @@ import {
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
-import { errorHandlerFactory } from "frontend/integration/icpswap/error-handler/handler-factory"
-import { ShroffImpl } from "frontend/integration/icpswap/impl/shroff-impl"
-import { icpSwapService } from "frontend/integration/icpswap/service/icpswap-service"
-import { SwapTransaction } from "frontend/integration/icpswap/swap-transaction"
-import { SwapStage } from "frontend/integration/icpswap/types/enums"
+import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/handler-factory"
+import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
+import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
+import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapStage } from "src/integration/swap/icpswap/types/enums"
 
 interface ErrorStage {
   buttonText: string
@@ -52,7 +52,7 @@ export const getTooltipAndButtonText = (
     return {
       buttonText: "Continue swap",
       tooltipTitle: "swap",
-      tooltipMessage: "Cancel your swap and try again.",
+      tooltipMessage: "Continue your swap.",
     }
   }
 
@@ -101,7 +101,7 @@ export const ActivityTableRow = ({
       transaction.getSourceLedger(),
       transaction.getTargetLedger(),
       pool.canisterId.toText(),
-      ...ShroffImpl.getStaticTargets(),
+      ...ShroffIcpSwapImpl.getStaticTargets(),
     ])
 
     const errorHandler = errorHandlerFactory.getHandler(transaction)
@@ -229,7 +229,7 @@ export const ActivityTableRow = ({
           <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
             {getTooltipAndButtonText(transaction) ? (
               <>
-                {isLoading ? (
+                {isLoading || transaction?.getIsLoading() ? (
                   <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
                 ) : (
                   <span

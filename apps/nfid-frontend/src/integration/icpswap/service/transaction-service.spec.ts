@@ -9,6 +9,7 @@ import { SwapTransactionImpl } from "src/integration/icpswap/impl/swap-transacti
 
 import { authState } from "@nfid/integration"
 
+import { SwapStage } from "../types/enums"
 import { SwapTransactionService } from "./transaction-service"
 
 const mockDuration = 2 * 1000
@@ -80,5 +81,37 @@ describe("SwapTransactionService", () => {
     setTimeout(() => {
       expect(result[0].getIsLoading()).toBe(false)
     }, mockDuration + 1)
+  })
+
+  it("should correctly set NFID transfer ID and update the stage", async () => {
+    const mockTransactionInstance = new SwapTransactionImpl(
+      "mxzaz-hqaaa-aaaar-qaada-cai",
+      "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      1110,
+      BigInt(50),
+    )
+
+    const mockTransferId = BigInt(123456)
+    mockTransactionInstance.setNFIDTransferId(mockTransferId)
+
+    expect(mockTransactionInstance.getTransferNFIDId()).toBe(mockTransferId)
+    expect(mockTransactionInstance.getStage()).toBe(SwapStage.Completed)
+  })
+
+  it("should return the correct errors after calling setError", async () => {
+    const mockTransactionInstance = new SwapTransactionImpl(
+      "mxzaz-hqaaa-aaaar-qaada-cai",
+      "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      1110,
+      BigInt(50),
+    )
+
+    const errorMessage = "Test error message"
+    mockTransactionInstance.setError(errorMessage)
+
+    const errors = mockTransactionInstance.getErrors()
+    expect(errors.length).toBe(1)
+    expect(errors[0].message).toBe(errorMessage)
+    expect(typeof errors[0].time).toBe("bigint")
   })
 })

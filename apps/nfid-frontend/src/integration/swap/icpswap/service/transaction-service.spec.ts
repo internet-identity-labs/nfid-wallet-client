@@ -109,6 +109,8 @@ describe("SwapTransactionService", () => {
 
     expect(result[0]).toBeInstanceOf(IcpSwapTransactionImpl)
     expect(result[0].getIsLoading()).toBe(true)
+    expect(result[1].getIsLoading()).toBe(false)
+    expect(result[2].getIsLoading()).toBe(false)
     expect(result[1].getStage()).toBe(SwapStage.Completed)
     expect(result[2].getErrors()[0].message).toBe(mockErrorMessage)
 

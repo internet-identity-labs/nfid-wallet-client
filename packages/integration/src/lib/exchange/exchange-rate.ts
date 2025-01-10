@@ -68,7 +68,11 @@ export class ExchangeRateService {
   async usdPriceForICRC1(
     ledger: string,
   ): Promise<
-    | { value: BigNumber; dayChangePercent: string; positive: boolean }
+    | {
+        value: BigNumber
+        dayChangePercent: string
+        dayChangePercentPositive: boolean
+      }
     | undefined
   > {
     let token = (await this.getAllIcpTokens())?.find(
@@ -85,7 +89,7 @@ export class ExchangeRateService {
     return {
       value: BigNumber(token.price),
       dayChangePercent: BigNumber(token.priceDayChange).abs().toFixed(2),
-      positive: BigNumber(token.priceDayChange).gte(0),
+      dayChangePercentPositive: BigNumber(token.priceDayChange).gte(0),
     }
   }
 

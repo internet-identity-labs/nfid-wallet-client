@@ -18,7 +18,7 @@ export class FTImpl implements FT {
   private tokenRate?: {
     value: BigNumber
     dayChangePercent: string
-    positive: boolean
+    dayChangePercentPositive: boolean
   }
   private index: string | undefined
   private symbol: string
@@ -174,7 +174,7 @@ export class FTImpl implements FT {
     | undefined {
     if (!this.tokenRate) return
     return {
-      positive: parseFloat(this.tokenRate.dayChangePercent) >= 0,
+      positive: this.tokenRate.dayChangePercentPositive,
       value: this.tokenRate.dayChangePercent,
     }
   }

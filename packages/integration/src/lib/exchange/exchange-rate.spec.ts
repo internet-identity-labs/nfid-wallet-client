@@ -11,5 +11,7 @@ describe("exchange-rate", () => {
       "ryjl3-tyaaa-aaaaa-aaaba-cai",
     )
     expect(rate!.value.toNumber()).toBeGreaterThan(0)
+    expect(Number(rate!.dayChangePercent)).toBeGreaterThan(0)
+    expect(rate!.dayChangePercentPositive).toBeDefined()
   })
 })

@@ -8,6 +8,7 @@ import {
   Skeleton,
   IDropdownPosition,
 } from "@nfid-frontend/ui"
+import { ArrowPercentChange } from "@nfid-frontend/ui"
 
 import { IProfileConstants } from ".."
 import { useTokenInit } from "../../send-receive/hooks/token-init"
@@ -35,6 +36,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
   const initedToken = useTokenInit(token)
+  const tokenPrice = token.getTokenRateFormatted("1")
+  const tokenRateDayChange = token.getTokenRateDayChangePercent()
 
   return (
     <tr
@@ -76,26 +79,45 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       >
         {token.getTokenCategoryFormatted()}
       </td>
+      <td className="pr-[10px] hidden lg:table-cell min-w-[120px]">
+        {!initedToken ? (
+          <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
+        ) : tokenPrice ? (
+          <div>
+            <div>{tokenPrice}</div>
+            <ArrowPercentChange
+              value={tokenRateDayChange?.value || "0"}
+              positive={tokenRateDayChange?.positive}
+            />
+          </div>
+        ) : (
+          "Not listed"
+        )}
+      </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto"
       >
-        <div>
-          {!initedToken ? (
-            <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-          ) : (
-            <p className="flex items-center justify-end md:block">
-              <span
-                className="overflow-hidden text-ellipsis whitespace-nowrap"
-                style={{ maxWidth: window.innerWidth < 430 ? "120px" : "none" }}
-              >
-                {token.getTokenBalanceFormatted() || "0"}
-              </span>
-              &nbsp;
-              <span>{token.getTokenSymbol()}</span>
-            </p>
-          )}
-        </div>
+        {!initedToken ? (
+          <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
+        ) : (
+          <p className="flex items-center justify-end md:justify-start">
+            <span
+              className="overflow-hidden text-ellipsis whitespace-nowrap text-right"
+              style={{
+                maxWidth:
+                  window.innerWidth < 430 ||
+                  (window.innerWidth >= 768 && window.innerWidth < 1024)
+                    ? "120px"
+                    : "none",
+              }}
+            >
+              {token.getTokenBalanceFormatted() || "0"}
+            </span>
+            &nbsp;
+            <span>{token.getTokenSymbol()}</span>
+          </p>
+        )}
         <p className="text-xs md:hidden text-secondary">
           &nbsp;
           {!initedToken ? (

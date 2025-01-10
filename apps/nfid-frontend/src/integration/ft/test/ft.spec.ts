@@ -52,6 +52,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
         ])
+
       const result: FT[] = await ftService.getTokens(userId)
       expect(result.length).toEqual(3)
       const icpResult = result.find(
@@ -77,6 +78,112 @@ describe("ft test suite", () => {
       expect(result[0].getTokenName()).toEqual("Internet Computer")
       expect(result[1].getTokenName()).toEqual("A first letter")
       expect(result[2].getTokenName()).toEqual("Chat")
+    })
+
+    it("should calculate no usd balance change", async () => {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValue([
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+        ])
+      jest
+        .spyOn(exchangeRateService as any, "usdPriceForICRC1")
+        .mockResolvedValue({
+          value: BigNumber(0.1),
+          dayChangePercent: "0",
+          dayChangePercentPositive: true,
+        })
+      const result: FT[] = await ftService.getTokens(userId)
+      const icpResult = result.find(
+        (r) => r.getTokenName() === "Internet Computer",
+      )
+      await icpResult?.init(principal)
+      expect(icpResult!.getUSDBalanceDayChange()).toEqual(BigNumber(0))
+      expect(icpResult!.getTokenRateDayChangePercent()).toEqual({
+        value: "0",
+        positive: true,
+      })
+    })
+
+    it("should calculate positive usd balance change", async () => {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValue([
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+        ])
+      jest
+        .spyOn(exchangeRateService as any, "usdPriceForICRC1")
+        .mockResolvedValue({
+          value: BigNumber(0.1),
+          dayChangePercent: "1",
+          dayChangePercentPositive: true,
+        })
+      const result: FT[] = await ftService.getTokens(userId)
+      const icpResult = result.find(
+        (r) => r.getTokenName() === "Internet Computer",
+      )
+      await icpResult?.init(principal)
+      expect(icpResult!.getUSDBalanceDayChange()).toEqual(
+        BigNumber(0.0002).multipliedBy(0.1).multipliedBy(0.01),
+      )
+      expect(icpResult!.getTokenRateDayChangePercent()).toEqual({
+        value: "1",
+        positive: true,
+      })
+    })
+
+    it("should calculate negative usd balance change", async () => {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValue([
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+        ])
+      jest
+        .spyOn(exchangeRateService as any, "usdPriceForICRC1")
+        .mockResolvedValue({
+          value: BigNumber(0.1),
+          dayChangePercent: "1",
+          dayChangePercentPositive: false,
+        })
+      const result: FT[] = await ftService.getTokens(userId)
+      const icpResult = result.find(
+        (r) => r.getTokenName() === "Internet Computer",
+      )
+      await icpResult?.init(principal)
+      expect(icpResult!.getUSDBalanceDayChange()).toEqual(
+        BigNumber(0.0002).multipliedBy(0.1).multipliedBy(-0.01),
+      )
+      expect(icpResult!.getTokenRateDayChangePercent()).toEqual({
+        value: "1",
+        positive: false,
+      })
     })
 
     it("shoult get all sorted tokens", async function () {

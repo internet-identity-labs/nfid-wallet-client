@@ -111,7 +111,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             },
           })}
         />
-        <div className="py-[6px] pl-[6px] pr-[12px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
+        <div className="py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block">
           <ChooseFtModal
             searchInputId={"sourceTokenSearchInput"}
             tokens={tokens}

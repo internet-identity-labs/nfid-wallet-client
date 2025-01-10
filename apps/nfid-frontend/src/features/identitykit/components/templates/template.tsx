@@ -56,7 +56,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
           target="_blank"
           rel="noreferrer"
           className={clsx(
-            "font-bold text-xs bg-[#0F766E] bg-opacity-10 rounded-md",
+            "font-bold text-xs bg-teal-700 bg-opacity-10 rounded-md",
             "h-[29px] px-2.5 flex items-center gap-2.5 text-white",
             "lg:absolute z-10 bottom-[15px] ml-[5%] lg:ml-0 left-[30px]",
             "hover:bg-opacity-25 cursor-pointer",

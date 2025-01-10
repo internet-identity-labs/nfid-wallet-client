@@ -28,7 +28,7 @@ enum Sorting {
 
 export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   activeTokens: FT[]
-  filteredTokens: FT[]
+  allTokens: FT[]
   isTokensLoading: boolean
   profileConstants: IProfileConstants
   onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
@@ -43,16 +43,20 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
     fee: bigint
   }>
   onSendClick: (value: string) => void
+  hideZeroBalance: boolean
+  onZeroBalanceToggle: () => void
 }
 
 export const Tokens: FC<TokensProps> = ({
   activeTokens,
-  filteredTokens,
+  allTokens,
   isTokensLoading,
   profileConstants,
   onSubmitIcrc1Pair,
   onFetch,
   onSendClick,
+  hideZeroBalance,
+  onZeroBalanceToggle,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -117,10 +121,12 @@ export const Tokens: FC<TokensProps> = ({
   return (
     <>
       <TokensHeader
-        tokens={filteredTokens}
+        tokens={allTokens}
         onSubmitIcrc1Pair={onSubmitIcrc1Pair}
         onFetch={onFetch}
         setLoadingToken={setLoadingToken}
+        hideZeroBalance={hideZeroBalance}
+        onZeroBalanceToggle={onZeroBalanceToggle}
       />
       <table className="w-full text-left">
         <thead className="text-secondary h-[40px] hidden md:table-header-group">
@@ -158,7 +164,7 @@ export const Tokens: FC<TokensProps> = ({
               <ActiveToken
                 key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
                 token={token}
-                tokens={filteredTokens}
+                tokens={allTokens}
                 profileConstants={profileConstants}
                 onSendClick={onSendClick}
                 setToken={setToken}

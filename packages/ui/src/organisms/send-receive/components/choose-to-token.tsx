@@ -64,7 +64,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             {...register("to")}
             value={value || ""}
           />
-          <div className="p-[6px] bg-[#D1D5DB]/40 rounded-[24px] inline-block">
+          <div className="p-[6px] bg-gray-300/40 rounded-[24px] inline-block">
             <ChooseFtModal
               searchInputId={"targetTokenSearchInput"}
               tokens={tokens}

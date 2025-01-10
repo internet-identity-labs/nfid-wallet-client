@@ -1,7 +1,9 @@
+import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
-import { useContext, useMemo } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
+import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
 import { storageWithTtl } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
@@ -11,11 +13,15 @@ import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
 
 const TokensPage = () => {
+  const [hideZeroBalance, setHideZeroBalance] = useState(false)
+  const [initedTokens, setInitedTokens] = useState<FT[]>([])
+  const [isInitLoading, setIsInitLoading] = useState(false)
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
@@ -40,6 +46,45 @@ const TokensPage = () => {
   const activeTokens = useMemo(() => {
     return tokens.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
+
+  useEffect(() => {
+    const initTokens = async () => {
+      setIsInitLoading(true)
+      const { publicKey } = authState.getUserIdData()
+      const inited = await Promise.all(
+        activeTokens.map(async (token) => {
+          await token.init(Principal.fromText(publicKey))
+          return token
+        }),
+      )
+      setInitedTokens(inited)
+      setIsInitLoading(false)
+    }
+
+    initTokens()
+  }, [activeTokens])
+
+  const filteredTokens = useMemo(() => {
+    if (!hideZeroBalance)
+      return initedTokens.filter((token): token is FT => !!token)
+    return initedTokens.filter(
+      (token): token is FT =>
+        token !== undefined && token.getTokenBalance()! > BigInt(0),
+    )
+  }, [initedTokens, hideZeroBalance])
+
+  useEffect(() => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      setHideZeroBalance(userPref.isHideZeroBalance())
+    })
+  }, [])
+
+  const onZeroBalanceToggle = () => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      userPref.setHideZeroBalance(!hideZeroBalance)
+      setHideZeroBalance(!hideZeroBalance)
+    })
+  }
 
   const onSubmitIcrc1Pair = async (ledgerID: string, indexID: string) => {
     let icrc1Pair = new Icrc1Pair(
@@ -67,13 +112,15 @@ const TokensPage = () => {
 
   return (
     <Tokens
-      activeTokens={activeTokens}
-      filteredTokens={tokens}
-      isTokensLoading={isTokensLoading || isTokenFetching}
+      activeTokens={filteredTokens}
+      allTokens={tokens}
+      isTokensLoading={isTokensLoading || isTokenFetching || isInitLoading}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
+      hideZeroBalance={hideZeroBalance}
+      onZeroBalanceToggle={onZeroBalanceToggle}
     />
   )
 }

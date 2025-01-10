@@ -90,7 +90,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             ? ""
             : `This usually takes less than ${duration} seconds.`}
         </p>
-        <div className="absolute flex items-center justify-center w-full px-3 top-0 left-0 w-full h-full">
+        <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full px-3">
           <LottieAnimation
             animationData={animation}
             loop={step === 1}
@@ -115,12 +115,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
           {subTitle}
         </p>
-        <Button
-          type="primary"
-          block
-          className="mt-[30px] !text-[16px]"
-          onClick={onClose}
-        >
+        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
           Done
         </Button>
       </div>

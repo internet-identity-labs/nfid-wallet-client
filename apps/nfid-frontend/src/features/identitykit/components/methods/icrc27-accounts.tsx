@@ -39,7 +39,7 @@ const RPCComponentICRC27 = ({
           <a
             href={origin}
             target="_blank"
-            className="text-[#146F68] no-underline"
+            className="text-primaryButtonColor no-underline"
             rel="noreferrer"
           >
             {applicationName}
@@ -61,7 +61,7 @@ const RPCComponentICRC27 = ({
         setSelectedProfile={setSelectedProfile}
         publicProfile={publicProfile}
         anonymous={anonymous}
-        verificationReport={{isPublicAccountAvailable: true}}
+        verificationReport={{ isPublicAccountAvailable: true }}
       />
     </RPCPromptTemplate>
   )

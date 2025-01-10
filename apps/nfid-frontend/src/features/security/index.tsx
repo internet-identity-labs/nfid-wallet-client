@@ -1,4 +1,4 @@
-import { Security } from "packages/ui/src/pages/security"
+import { Security } from "packages/ui/src/organisms/security"
 import React, { useMemo, useCallback } from "react"
 
 import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"

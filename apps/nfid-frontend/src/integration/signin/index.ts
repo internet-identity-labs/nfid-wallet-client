@@ -1,17 +1,19 @@
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { WebAuthnIdentity } from "@dfinity/identity"
 
 import {
   authState,
   DeviceType,
+  FrontendDelegation,
   Icon,
   ii,
   replaceIdentity,
   setProfileToStorage,
 } from "@nfid/integration"
 
-import { IIAuthenticationMachineContext } from "frontend/features/sign-in-options/machine"
 import { AuthSession } from "frontend/state/authentication"
+import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import {
   AddTentativeDeviceResponse,
@@ -29,6 +31,17 @@ import { derFromPubkey } from "../internet-identity/utils"
 export type TentativeDeviceResponse = {
   verificationCode: string
   deviceRegistrationTimeout: Timestamp
+}
+
+interface IIAuthenticationMachineContext {
+  anchor: number
+  appMeta?: AuthorizingAppMeta
+  authSession: AuthSession
+  isRegistered?: boolean
+  verificationCode?: string
+  userIdentity?: WebAuthnIdentity
+  frontendDelegation?: FrontendDelegation
+  loading?: boolean
 }
 
 type AddedTentatively = {

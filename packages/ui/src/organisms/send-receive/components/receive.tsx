@@ -21,7 +21,7 @@ export const Receive: FC<ReceiveProps> = ({
         coming soon.
       </p>
       <div>
-        <p className="mb-1 text-gray-500">Wallet address</p>
+        <p className="mb-1 text-xs text-gray-500">Wallet address</p>
         <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           <CenterEllipsis
             value={selectedAccountAddress ?? ""}
@@ -33,7 +33,7 @@ export const Receive: FC<ReceiveProps> = ({
         </div>
       </div>
       <div className="mb-2.5 sm:mb-5">
-        <p className="mt-[10px] mb-1 text-gray-500">
+        <p className="mt-[10px] mb-1 text-gray-500 text-xs">
           Account ID (for deposits from exchanges)
         </p>
         <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">

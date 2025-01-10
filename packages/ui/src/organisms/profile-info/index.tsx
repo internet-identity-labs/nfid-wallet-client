@@ -33,7 +33,9 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
     <div className="flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
       <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">
         <div className="flex items-center justify-between mb-[20px] md:mb-[30px]">
-          <h2 className="text-[24px] text-black leading-[24px]">Portfolio</h2>
+          <p className="text-[24px] text-black leading-[24px] tracking-wide">
+            Portfolio
+          </p>
           <Tooltip
             align="end"
             alignOffset={-20}
@@ -69,9 +71,9 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </div>
       </div>
       <div className="bg-portfolioColor rounded-[24px] p-[20px] md:p-[30px] w-full">
-        <h2 className="text-[24px] text-black leading-[24px] mb-[20px] md:mb-[30px]">
+        <p className="text-[24px] text-black leading-[24px] mb-[20px] md:mb-[30px] tracking-wide">
           Wallet address
-        </h2>
+        </p>
         <div className="flex md:items-end justify-between gap-[20px] flex-col md:flex-row">
           <div>
             {!isAddressLoading && address ? (
@@ -122,7 +124,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               className="flex-1 !px-0 sm:!px-[15px]"
               innerClassName="!space-x-1"
               icon={
-                <IconCmpSwap className="text-gray-400 w-[18px] h-[18px] text-white" />
+                <IconCmpSwap className="text-gray-400 !w-[18px] !h-[18px] text-white" />
               }
               onClick={onSwapClick}
               isSmall

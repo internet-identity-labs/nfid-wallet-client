@@ -21,11 +21,11 @@ module.exports = {
     extend: {
       fontFamily: {
         ...defaultTheme.fontFamily,
-        sans: ["Inter", ...defaultTheme.fontFamily.sans]
+        sans: ["Inter", ...defaultTheme.fontFamily.sans],
       },
       screens: {
         ...defaultTheme.screens,
-        xs: "375px"
+        xs: "375px",
       },
     },
   },

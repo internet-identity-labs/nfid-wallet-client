@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-type ButtonType = "primary" | "secondary" | "stroke" | "ghost" | "red" | "green"
+type ButtonType = "primary" | "secondary" | "stroke" | "ghost" | "red"
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   block?: boolean
@@ -33,7 +33,6 @@ export const Button: React.FC<ButtonProps> = ({
   const isGhost = type === "ghost"
   const isStroke = type === "stroke"
   const isRed = type === "red"
-  const isGreen = type === "green"
 
   return (
     <Component
@@ -46,12 +45,13 @@ export const Button: React.FC<ButtonProps> = ({
         "border rounded-xl outline-none p-[15px] leading-4",
         "cursor-pointer disabled:cursor-not-allowed",
         "active:ring-2 active:ring-offset-[1px] active:ring-black",
+
         isSmall ? "px-[15px] h-10 leading-10 py-0" : "p-[15px] h-12",
         isPrimary &&
           clsx(
             "text-white border-transparent",
             "bg-primaryButtonColor",
-            "hover:shadow-md hover:shadow-[#0D9488]/40 hover:bg-[#0D9488]",
+            "hover:shadow-md hover:shadow-teal-600/40 hover:bg-teal-600",
             "active:bg-teal-700",
             "focus:border-primaryButtonColor focus:bg-primaryButtonColor",
             "disabled:bg-gray-300 disabled:shadow-none",
@@ -65,7 +65,7 @@ export const Button: React.FC<ButtonProps> = ({
           ),
         isStroke &&
           clsx(
-            "text-black bg-transparent border-secondaryButtonColor !text-[16px]",
+            "text-black bg-transparent border-secondaryButtonColor",
             "hover:text-white hover:bg-gray-700 hover:border-gray-700 hover:shadow-md hover:shadow-gray-700/40",
             "active:text-white active:bg-secondaryButtonColor",
             "disabled:shadow-none disabled:border-gray-300 disabled:border-secondaryButtonColor/50 disabled:text-gray-300 disabled:bg-white",
@@ -85,14 +85,6 @@ export const Button: React.FC<ButtonProps> = ({
             "focus:border-red-600 focus:bg-red-600",
             "disabled:shadow-none disabled:bg-gray-300 disabled:border-gray-300",
           ),
-        isGreen &&
-          clsx(
-            "text-white bg-[#0D9488] border-transparent rounded-[12px]",
-            "hover:shadow-md hover:shadow-[#0D9488]/40 hover:bg-[#00A899]",
-            "active:border-teal-700 active:bg-teal-700",
-            "focus:ring-0 focus:ring-offset-0 focus:ring-transparent",
-            "disabled:shadow-none disabled:bg-gray-300 disabled:border-gray-300",
-          ),
         block && clsx("w-full block"),
         className,
       )}
@@ -105,7 +97,7 @@ export const Button: React.FC<ButtonProps> = ({
         )}
       >
         {icon ? (
-          <div className="flex items-center justify-center w-6 h-6">{icon}</div>
+          <div className="flex items-center justify-center w-5 h-5">{icon}</div>
         ) : null}
         {children ? <div className="text-center">{children}</div> : null}
       </div>

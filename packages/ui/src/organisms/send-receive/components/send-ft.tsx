@@ -157,7 +157,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         </div>
       </div>
       <Button
-        className="absolute bottom-5 left-5 right-5 !w-auto !text-[16px]"
+        className="absolute bottom-5 left-5 right-5 !w-auto"
         disabled={
           Boolean(errors["amount"]?.message) ||
           Boolean(errors["to"]?.message) ||
@@ -168,7 +168,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         id="sendButton"
         block
         onClick={submit}
-        icon={<IconCmpArrow className="rotate-[135deg]" />}
+        icon={<IconCmpArrow className="rotate-[135deg] !max-w-5 !max-h-5" />}
       >
         Send
       </Button>

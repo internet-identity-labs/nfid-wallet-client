@@ -45,7 +45,7 @@ const section2 =
 const card =
   "px-5 bg-[#112525] overflow-hidden relative bg-opacity-40 md:px-[16px] lg:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group card"
 const cardItem =
-  "mt-[10px] md:mt-[45px] font-medium text-xl md:text-[30px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-[140%] max-w-[350px] lg:max-w-full text-[#BBF7EC]"
+  "mt-[10px] md:mt-[45px] font-medium text-xl md:text-[30px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-[140%] max-w-[350px] lg:max-w-full text-teal-100"
 const cardImg = "w-full lg:w-[200px] absolute ml-[40px]"
 const sponsor =
   "max-w-[80px] md:max-w-[110px] lg:max-w-[140px] max-h-[80px] mx-auto md:max-0"
@@ -90,7 +90,7 @@ const HomeContent = ({
               id="authentication-button"
               onClick={signIn}
               className="mt-[30px] w-[148px] mx-auto md:mx-0"
-              type="green"
+              type="primary"
             >
               Go to wallet
             </Button>
@@ -104,7 +104,7 @@ const HomeContent = ({
         <SnsBanner />
       </Container>
       <Container>
-        <div className="flex items-center justify-center md:justify-between mt-10 md:mt-20 flex-wrap gap-10 md:gap-3 lg:gap-12 xl:gap-20">
+        <div className="flex flex-wrap items-center justify-center gap-10 mt-10 md:justify-between md:mt-20 md:gap-3 lg:gap-12 xl:gap-20">
           <img className={clsx(sponsor)} src={Tomahawk} alt="" />
           <img className={clsx(sponsor)} src={Polychain} alt="" />
           <img className={clsx(sponsor)} src={Outliers} alt="" />
@@ -139,7 +139,7 @@ const HomeContent = ({
               href="https://internet-identity-labs.github.io/nfid-wallet-docs/solidstate_nfid_wallet_audit_report.pdf"
               rel="noreferrer"
               target="_blank"
-              className="text-teal-300 hover:text-teal-500 flex items-center"
+              className="flex items-center text-teal-300 hover:text-teal-500"
             >
               View audit report <LinkIcon className="ms-1" />
             </a>
@@ -165,11 +165,11 @@ const HomeContent = ({
         <div className="space-y-20 md:space-y-[100px] z-20 relative md:w-full md:max-w-[1070px] mx-auto">
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-[#2DEECB]">1/4</p>
+              <p className="font-light text-teal-400">1/4</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Instant onboarding with your email address
               </h2>
-              <h3 className="text-sm md:text-lg text-[#D8FFF8]">
+              <h3 className="text-sm md:text-lg text-[teal-100]">
                 NFID Wallet makes it easy for you to sign in and sign up to ICP
                 websites and apps without downloading additional software or
                 navigating complicated setups.
@@ -184,11 +184,11 @@ const HomeContent = ({
           </div>
           <div className={clsx(section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-[#2DEECB]">2/4</p>
+              <p className="font-light text-teal-400">2/4</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Unified account across the ICP ecosystem
               </h2>
-              <h3 className="text-sm md:text-lg text-[#D8FFF8]">
+              <h3 className="text-sm md:text-lg text-[teal-100]">
                 Your privacy is central to NFID Wallet's design philosophy.
                 Share your wallet address with apps that serve you and your
                 assets, or keep it hidden when you prefer to stay private.
@@ -203,11 +203,11 @@ const HomeContent = ({
           </div>
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-[#2DEECB]">3/4</p>
+              <p className="font-light text-teal-400">3/4</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Greater security with Passkey authentication
               </h2>
-              <h3 className="text-sm md:text-lg text-[#D8FFF8]">
+              <h3 className="text-sm md:text-lg text-[teal-100]">
                 Powered by cutting-edge Passkey and Chainkey technology, NFID
                 Wallet shields you from vulnerabilities that compromise even the
                 most secure digital platforms.
@@ -222,11 +222,11 @@ const HomeContent = ({
           </div>
           <div className={clsx(section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5">
-              <p className="font-light text-[#2DEECB]">4/4</p>
+              <p className="font-light text-teal-400">4/4</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 ICP, ICRC, and EXT token support
               </h2>
-              <h3 className="text-sm md:text-lg text-[#D8FFF8]">
+              <h3 className="text-sm md:text-lg text-[teal-100]">
                 NFID Wallet empowers you to seamlessly manage ICP, ICRC-1
                 tokens, collectibles, and more, all under the protection of the
                 most advanced smart contract platform available.

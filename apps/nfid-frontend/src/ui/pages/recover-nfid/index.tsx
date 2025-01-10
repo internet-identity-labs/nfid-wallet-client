@@ -55,10 +55,12 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
         <div className={clsx(CONTAINER_CLASSES)}>
           <div
             className={clsx(
-              "px-[20px] sm:px-[30px] py-[20px] sm:py-[33px] bg-[#F7F9F6] rounded-[24px]",
-              "bg-no-repeat bg-[top_right] lg:bg-[center_right] bg-[length:260px] sm:bg-[length:50%] lg:bg-auto",
+              "px-[20px] sm:px-[30px] py-[20px] sm:py-[33px] bg-zinc-50 rounded-[24px]",
+              "bg-no-repeat bg-[top_right] lg:bg-[center_right] bg-[length:260px] sm:bg-[length:50%] lg:bg-[length:445px]",
             )}
-            style={{ backgroundImage: `url(${bgPicture})` }}
+            style={{
+              backgroundImage: `url(${bgPicture})`,
+            }}
           >
             <div className="max-w-[605px]">
               <p className="leading-[32px] text-[28px] my-[84px] lg:my-0">

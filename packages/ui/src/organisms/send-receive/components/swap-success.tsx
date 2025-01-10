@@ -193,7 +193,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           id={"swap-success-close-button"}
           type="primary"
           block
-          className="mt-[30px] !text-[16px]"
+          className="mt-[30px]"
           onClick={onClose}
         >
           {getTitleAndButtonText(error)?.buttonText}

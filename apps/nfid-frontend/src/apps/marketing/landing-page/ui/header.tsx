@@ -30,7 +30,7 @@ export function Header({
           <NFIDLogo />
           <div className="flex items-center text-sm font-semibold">
             <Link
-              className="mr-[50px] hidden md:inline-block text-white hover:text-[#2DEECB] transition-all"
+              className="mr-[50px] hidden md:inline-block text-white hover:text-teal-400 transition-all"
               to="/sns"
             >
               SNS
@@ -38,7 +38,7 @@ export function Header({
             <a
               href="https://learn.nfid.one/"
               target="_blank"
-              className="mr-[50px] hidden md:inline-block text-white hover:text-[#2DEECB] transition-all"
+              className="mr-[50px] hidden md:inline-block text-white hover:text-teal-400 transition-all"
               rel="noreferrer"
             >
               Knowledge base

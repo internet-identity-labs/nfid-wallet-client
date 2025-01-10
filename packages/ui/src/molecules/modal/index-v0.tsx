@@ -23,7 +23,7 @@ export const ModalComponent: FC<ModalProps> = ({
       className={clsx([
         "transition ease-in-out delay-150 duration-500",
         "z-50 top-0 right-0 bottom-0 left-0 ",
-        isVisible ? "fixed bg-opacity-50 bg-[#090A13]" : "bg-transparent",
+        isVisible ? "fixed bg-opacity-50 bg-zinc-900/80" : "bg-transparent",
       ])}
     >
       <div

@@ -55,10 +55,6 @@ export const TransferFT = ({
   const { balances } = useAllVaultsWallets()
   const isOpenRef = useRef(isOpen)
 
-  useEffect(() => {
-    isOpenRef.current = isOpen
-  }, [isOpen])
-
   const { data: vaultsAccountsOptions = [] } = useSWR(
     "vaultsAccountsOptions",
     getVaultsAccountsOptions,
@@ -85,6 +81,15 @@ export const TransferFT = ({
       to: "",
     },
   })
+
+  useEffect(() => {
+    isOpenRef.current = isOpen
+    if (!isOpen) {
+      setIsSuccessOpen(false)
+      setStatus(SendStatus.PENDING)
+      formMethods.reset()
+    }
+  }, [isOpen, formMethods])
 
   const { watch } = formMethods
   const amount = watch("amount")
@@ -228,12 +233,7 @@ export const TransferFT = ({
         vaultsBalance={balance?.balance["ICP"]}
         status={status}
         isSuccessOpen={isSuccessOpen}
-        onClose={() => {
-          onClose()
-          setIsSuccessOpen(false)
-          setStatus(SendStatus.PENDING)
-          formMethods.reset()
-        }}
+        onClose={onClose}
       />
     </FormProvider>
   )

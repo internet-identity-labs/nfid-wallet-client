@@ -4,14 +4,6 @@ import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-
-import {
-  CKBTC_CANISTER_ID,
-  ICP_CANISTER_ID,
-} from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
-
 import {
   DepositError,
   LiquidityError,
@@ -21,9 +13,16 @@ import {
   WithdrawError,
 } from "src/integration/swap/icpswap/errors"
 import { ShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+import { Shroff } from "src/integration/swap/shroff"
+
+import {
+  CKBTC_CANISTER_ID,
+  ICP_CANISTER_ID,
+} from "@nfid/integration/token/constants"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { FormValues } from "../types"
 import {
@@ -58,10 +57,6 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
 
   const isOpenRef = useRef(isOpen)
 
-  useEffect(() => {
-    isOpenRef.current = isOpen
-  }, [isOpen])
-
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
@@ -95,6 +90,15 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
       to: "",
     },
   })
+
+  useEffect(() => {
+    isOpenRef.current = isOpen
+    if (!isOpen) {
+      refresh()
+      setIsSuccessOpen(false)
+      formMethods.reset()
+    }
+  }, [isOpen, formMethods])
 
   const { watch } = formMethods
   const amount = watch("amount")
@@ -204,6 +208,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
     setLiquidityError(undefined)
     setFromTokenAddress(ICP_CANISTER_ID)
     setToTokenAddress(CKBTC_CANISTER_ID)
+    setSwapStep(0)
   }
 
   const submit = useCallback(async () => {
@@ -278,12 +283,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
         step={swapStep}
         error={swapError}
         isSuccessOpen={isSuccessOpen}
-        onClose={() => {
-          onClose()
-          refresh()
-          setIsSuccessOpen(false)
-          formMethods.reset()
-        }}
+        onClose={onClose}
         quoteTimer={quoteTimer}
       />
     </FormProvider>

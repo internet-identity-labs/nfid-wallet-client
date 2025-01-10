@@ -151,7 +151,6 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
     data: quote,
     isLoading: isQuoteLoading,
     mutate: refetchQuote,
-    error,
     isValidating: isQuoteValidating,
   } = useSWR(
     toToken && fromToken && amount && shroff

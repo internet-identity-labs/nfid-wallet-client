@@ -57,10 +57,6 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
 
   const isOpenRef = useRef(isOpen)
 
-  useEffect(() => {
-    isOpenRef.current = isOpen
-  }, [isOpen])
-
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
@@ -94,6 +90,15 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
       to: "",
     },
   })
+
+  useEffect(() => {
+    isOpenRef.current = isOpen
+    if (!isOpen) {
+      refresh()
+      setIsSuccessOpen(false)
+      formMethods.reset()
+    }
+  }, [isOpen, formMethods])
 
   const { watch } = formMethods
   const amount = watch("amount")
@@ -203,6 +208,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
     setLiquidityError(undefined)
     setFromTokenAddress(ICP_CANISTER_ID)
     setToTokenAddress(CKBTC_CANISTER_ID)
+    setSwapStep(0)
   }
 
   const submit = useCallback(async () => {
@@ -277,12 +283,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
         step={swapStep}
         error={swapError}
         isSuccessOpen={isSuccessOpen}
-        onClose={() => {
-          onClose()
-          refresh()
-          setIsSuccessOpen(false)
-          formMethods.reset()
-        }}
+        onClose={onClose}
         quoteTimer={quoteTimer}
       />
     </FormProvider>

@@ -138,10 +138,10 @@ export class ShroffIcpSwapImpl implements Shroff {
         this.source,
         this.target,
         targetUSDPrice.status === "fulfilled"
-          ? targetUSDPrice.value
+          ? targetUSDPrice.value?.value
           : undefined,
         sourceUSDPrice.status === "fulfilled"
-          ? sourceUSDPrice.value
+          ? sourceUSDPrice.value?.value
           : undefined,
       )
       if ((quote.value.ok as bigint) <= this.target.fee) {

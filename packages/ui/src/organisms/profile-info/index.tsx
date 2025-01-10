@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { FC, HTMLAttributes } from "react"
 
 import {
@@ -8,10 +9,23 @@ import {
   Skeleton,
   Button,
   CopyAddress,
+  ArrowPercentChange,
 } from "@nfid-frontend/ui"
 
 export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
-  usdValue: string | undefined
+  usdBalance:
+    | {
+        value: string
+        dayChange: string
+        dayChangePercent: string
+        dayChangePositive: boolean
+      }
+    | undefined
+  usdBalancePriceChange?: {
+    value: string
+    percent: string
+    positive: boolean
+  }
   isAddressLoading?: boolean
   isUsdLoading: boolean
   onSendClick: () => void
@@ -21,7 +35,7 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const ProfileInfo: FC<IProfileTemplate> = ({
-  usdValue,
+  usdBalance,
   isAddressLoading,
   isUsdLoading,
   onSendClick,
@@ -63,10 +77,33 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           {isUsdLoading ? (
             <Skeleton className="w-[50%] h-[24px]" />
           ) : (
-            <>
-              {usdValue}{" "}
-              <span className="text-[16px] font-bold uppercase">usd</span>
-            </>
+            <div className="flex items-baseline flex-wrap">
+              <div>
+                {usdBalance?.value}{" "}
+                <span className="text-[16px] font-bold uppercase self-end mr-3">
+                  usd
+                </span>
+              </div>
+              {usdBalance && (
+                <div className="flex mt-2.5">
+                  <small
+                    className={clsx("text-xs font-bold mr-2.5 self-end", {
+                      "text-green-600": usdBalance.dayChangePositive,
+                      "text-red-600": !usdBalance.dayChangePositive,
+                    })}
+                  >
+                    {usdBalance.dayChangePositive && "+"}
+                    {usdBalance.dayChange}
+                  </small>
+                  <ArrowPercentChange
+                    className="self-end"
+                    value={usdBalance.dayChangePercent}
+                    positive={usdBalance.dayChangePositive}
+                  />
+                  <small className="text-xs ml-2.5 self-end">last 24h</small>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

@@ -161,7 +161,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
       try {
         setLiquidityError(undefined)
         return await getQuoteData(amount, shroff)
-      } catch (e) {
+      } catch (error) {
         if (error instanceof LiquidityError) setLiquidityError(error)
       }
     },

@@ -8,14 +8,14 @@ import { SourceInputCalculator } from "src/integration/swap/icpswap/impl/calcula
 import { errorTypes } from "src/integration/swap/icpswap/impl/constants"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import { Quote } from "src/integration/swap/quote"
 import {
   icpSwapService,
   SWAP_FACTORY_CANISTER,
 } from "src/integration/swap/icpswap/service/icpswap-service"
 import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { Quote } from "src/integration/swap/quote"
+import { Shroff } from "src/integration/swap/shroff"
 
 import {
   actorBuilder,
@@ -161,7 +161,7 @@ export class ShroffIcpSwapImpl implements Shroff {
       throw new LiquidityError()
     }
 
-    throw new Error("Something went wrong")
+    throw new LiquidityError()
   }
 
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {

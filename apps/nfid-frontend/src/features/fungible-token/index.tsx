@@ -69,7 +69,7 @@ const TokensPage = () => {
       return initedTokens.filter((token): token is FT => !!token)
     return initedTokens.filter(
       (token): token is FT =>
-        token !== undefined && Number(token.getTokenBalance()) > 0,
+        token !== undefined && token.getTokenBalance()! > BigInt(0),
     )
   }, [initedTokens, hideZeroBalance])
 

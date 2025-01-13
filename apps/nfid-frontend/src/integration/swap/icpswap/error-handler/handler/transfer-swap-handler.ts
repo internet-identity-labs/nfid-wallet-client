@@ -1,6 +1,6 @@
 import { TransactionErrorHandlerAbstract } from "src/integration/swap/icpswap/error-handler/error-handler-abstract"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 
 export class TransferSwapHandler extends TransactionErrorHandlerAbstract {
   async completeTransaction(): Promise<SwapTransaction> {

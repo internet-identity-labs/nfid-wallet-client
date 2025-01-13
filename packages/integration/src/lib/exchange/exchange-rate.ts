@@ -65,9 +65,7 @@ export class ExchangeRateService {
   }
 
   @Cache(integrationCache, { ttl: 120 })
-  async usdPriceForICRC1(
-    ledger: string,
-  ): Promise<
+  async usdPriceForICRC1(ledger: string): Promise<
     | {
         value: BigNumber
         dayChangePercent: string

@@ -1,10 +1,9 @@
 import clsx from "clsx"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC } from "react"
+import { Quote } from "src/integration/swap/quote"
 
 import { IconCmpArrow } from "@nfid-frontend/ui"
-
-import { Quote } from "src/integration/swap/quote"
 
 export interface QuoteModalProps {
   setModalOpen: (v: boolean) => void

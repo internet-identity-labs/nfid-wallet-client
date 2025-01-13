@@ -1,14 +1,14 @@
 import { SignIdentity } from "@dfinity/agent"
+import { ContactSupportError } from "src/integration/swap/errors/contact-support-error"
 import {
-  ShroffBuilder,
+  IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
 } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { ContactSupportError } from "../../errors/contact-support-error"
 import { WithdrawErrorLog } from "../../idl/SwapPool.d"
 
 export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {
@@ -63,7 +63,7 @@ export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {
   }
 }
 
-export class SwapErrorShroffBuilder extends ShroffBuilder {
+export class SwapErrorShroffBuilder extends IcpSwapShroffBuilder {
   protected buildShroff(): Shroff {
     return new ShroffWithdrawErrorHandler(
       this.poolData!,

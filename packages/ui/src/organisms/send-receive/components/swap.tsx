@@ -1,7 +1,14 @@
+import {
+  DepositError,
+  SwapError,
+  WithdrawError,
+} from "apps/nfid-frontend/src/integration/swap/errors"
 import clsx from "clsx"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
+import { Quote } from "src/integration/swap/quote"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
   Button,
@@ -12,13 +19,6 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
-import {
-  DepositError,
-  SwapError,
-  WithdrawError,
-} from "src/integration/swap/icpswap/errors"
-import { Quote } from "src/integration/swap/quote"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import { ChooseFromToken } from "./choose-from-token"

@@ -3,8 +3,8 @@ import {
   SlippageSwapError,
   SwapError,
   WithdrawError,
-} from "src/integration/swap/icpswap/errors"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+} from "apps/nfid-frontend/src/integration/swap/errors"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 export const getTitleAndButtonText = (
   error:

@@ -4,18 +4,18 @@ import { SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
-import { SourceInputCalculator } from "src/integration/swap/icpswap/impl/calculator"
-import { errorTypes } from "src/integration/swap/icpswap/impl/constants"
+import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import {
   icpSwapService,
   SWAP_FACTORY_CANISTER,
 } from "src/integration/swap/icpswap/service/icpswap-service"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 import { Quote } from "src/integration/swap/quote"
 import { Shroff } from "src/integration/swap/shroff"
+import { ShroffAbstract } from "src/integration/swap/shroff/shroff-abstract"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 
 import {
   actorBuilder,
@@ -37,7 +37,8 @@ import {
   SlippageSwapError,
   SwapError,
   WithdrawError,
-} from "../errors"
+} from "../../errors"
+import { SwapName } from "../../types/enums"
 import { PoolData } from "../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
@@ -47,15 +48,10 @@ import {
   WithdrawArgs,
 } from "../idl/SwapPool.d"
 
-export class ShroffIcpSwapImpl implements Shroff {
+export class ShroffIcpSwapImpl extends ShroffAbstract {
   private readonly zeroForOne: boolean
   private readonly poolData: PoolData
   protected readonly swapPoolActor: Agent.ActorSubclass<SwapPool>
-  protected readonly source: ICRC1TypeOracle
-  protected readonly target: ICRC1TypeOracle
-  protected swapTransaction: SwapTransaction | undefined
-  protected requestedQuote: Quote | undefined
-  protected delegationIdentity: SignIdentity | undefined
 
   constructor(
     poolData: PoolData,
@@ -63,14 +59,17 @@ export class ShroffIcpSwapImpl implements Shroff {
     source: ICRC1TypeOracle,
     target: ICRC1TypeOracle,
   ) {
+    super(source, target)
     this.poolData = poolData
     this.zeroForOne = zeroForOne
     this.swapPoolActor = actorBuilder<SwapPool>(
       poolData.canisterId,
       SwapPoolIDL,
     )
-    this.source = source
-    this.target = target
+  }
+
+  getSwapName(): SwapName {
+    return SwapName.IcpSwap
   }
 
   setQuote(quote: Quote) {
@@ -98,18 +97,20 @@ export class ShroffIcpSwapImpl implements Shroff {
       this.source.ledger,
       this.target.ledger,
       this.poolData.canisterId.toText(),
-      ...ShroffIcpSwapImpl.getStaticTargets(),
+      ...ShroffAbstract.getStaticTargets(),
     ]
   }
 
   async getQuote(amount: string): Promise<Quote> {
-    const amountInDecimals = new BigNumber(amount).multipliedBy(
-      10 ** this.source.decimals,
-    )
+    const amountInDecimals = this.getAmountInDecimals(amount)
     console.debug("Amount in decimals: " + amountInDecimals.toFixed())
-    const preCalculation = new SourceInputCalculator(
-      BigInt(amountInDecimals.toFixed()),
-      this.source.fee,
+    const preCalculation = this.getCalculator(amountInDecimals)
+
+    const targetUSDPricePromise = exchangeRateService.usdPriceForICRC1(
+      this.target.ledger,
+    )
+    const sourceUSDPricePromise = exchangeRateService.usdPriceForICRC1(
+      this.source.ledger,
     )
 
     const args: SwapArgs = {
@@ -117,48 +118,26 @@ export class ShroffIcpSwapImpl implements Shroff {
       zeroForOne: this.zeroForOne,
       amountOutMinimum: "0",
     }
-    const targetUSDPricePromise = exchangeRateService.usdPriceForICRC1(
-      this.target.ledger,
-    )
-    const sourceUSDPricePromise = exchangeRateService.usdPriceForICRC1(
-      this.source.ledger,
-    )
+
     const quotePromise = this.swapPoolActor.quote(args) as Promise<Result>
 
-    const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.allSettled([
+    const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.all([
       targetUSDPricePromise,
       sourceUSDPricePromise,
       quotePromise,
     ])
-    if (quote.status === "fulfilled" && hasOwnProperty(quote.value, "ok")) {
+
+    if (hasOwnProperty(quote, "ok")) {
       this.requestedQuote = new IcpSwapQuoteImpl(
         amount,
         preCalculation,
-        quote.value.ok as bigint,
+        quote.ok as bigint,
         this.source,
         this.target,
-        targetUSDPrice.status === "fulfilled"
-          ? targetUSDPrice.value?.value
-          : undefined,
-        sourceUSDPrice.status === "fulfilled"
-          ? sourceUSDPrice.value?.value
-          : undefined,
+        targetUSDPrice?.value,
+        sourceUSDPrice?.value,
       )
-      if ((quote.value.ok as bigint) <= this.target.fee) {
-        console.error("Not enough amount to pay fee")
-        throw new LiquidityError()
-      }
       return this.requestedQuote
-    }
-
-    if (
-      quote.status === "rejected" &&
-      errorTypes.some((errorType) =>
-        hasOwnProperty(quote.reason.err, errorType),
-      )
-    ) {
-      console.error("Error in quote", quote.reason.err)
-      throw new LiquidityError()
     }
 
     throw new LiquidityError()
@@ -407,6 +386,13 @@ export class ShroffIcpSwapImpl implements Shroff {
     }
   }
 
+  protected getCalculator(amountInDecimals: BigNumber): SourceInputCalculator {
+    return new SourceInputCalculatorIcpSwap(
+      BigInt(amountInDecimals.toFixed()),
+      this.source.fee,
+    )
+  }
+
   protected async restoreTransaction() {
     try {
       return swapTransactionService.storeTransaction(
@@ -422,7 +408,7 @@ export class ShroffIcpSwapImpl implements Shroff {
   }
 }
 
-export class ShroffBuilder {
+export class IcpSwapShroffBuilder {
   private source: string | undefined
   private target: string | undefined
   protected poolData: PoolData | undefined
@@ -430,12 +416,12 @@ export class ShroffBuilder {
   protected targetOracle: ICRC1TypeOracle | undefined
   protected zeroForOne: boolean | undefined
 
-  public withSource(source: string): ShroffBuilder {
+  public withSource(source: string): IcpSwapShroffBuilder {
     this.source = source
     return this
   }
 
-  public withTarget(target: string): ShroffBuilder {
+  public withTarget(target: string): IcpSwapShroffBuilder {
     this.target = target
     return this
   }

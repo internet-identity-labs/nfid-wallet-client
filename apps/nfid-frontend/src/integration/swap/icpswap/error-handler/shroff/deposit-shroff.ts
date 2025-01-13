@@ -1,14 +1,15 @@
 import { SignIdentity } from "@dfinity/agent"
+import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import {
-  ShroffBuilder,
+  IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
 } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { WithdrawError } from "../../errors"
+import { WithdrawError } from "../../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 
 export class ShroffDepositErrorHandler extends ShroffIcpSwapImpl {
@@ -68,7 +69,7 @@ export class ShroffDepositErrorHandler extends ShroffIcpSwapImpl {
       return this.swapPoolActor.withdraw(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
           const id = result.ok as bigint
-          this.swapTransaction!.setWithdraw(id)
+          ;(this.swapTransaction! as IcpSwapTransactionImpl).setWithdraw(id)
           return id
         }
 
@@ -91,7 +92,7 @@ export class ShroffDepositErrorHandler extends ShroffIcpSwapImpl {
   }
 }
 
-export class DepositErrorShroffBuilder extends ShroffBuilder {
+export class DepositErrorShroffBuilder extends IcpSwapShroffBuilder {
   protected buildShroff(): Shroff {
     return new ShroffDepositErrorHandler(
       this.poolData!,

@@ -9,7 +9,7 @@ import {
   hasOwnProperty,
 } from "@nfid/integration"
 
-import { LiquidityError, ServiceUnavailableError } from "../errors"
+import { LiquidityError, ServiceUnavailableError } from "../../errors"
 import { idlFactory as SwapFactoryIDL } from "../idl/SwapFactory"
 import {
   _SERVICE as SwapFactory,

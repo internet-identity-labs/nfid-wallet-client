@@ -17,24 +17,24 @@ import Fail from "../assets/NFID_WS_3_2.json"
 
 export interface SuccessProps {
   title: string
-  subTitle: string
+  subTitle?: string
   onClose?: () => void
   assetImg: string
-  isFtToken?: boolean
   duration?: number
   isOpen: boolean
   status: SendStatus
+  isFtToken: boolean
 }
 
 const allAnimations = [Success1, Success2, Successs3, Fail]
 
 export const SendSuccessUi: React.FC<SuccessProps> = ({
   title,
-  subTitle,
+  subTitle = "0.00 USD",
   onClose,
   assetImg,
-  isFtToken = false,
   duration = 2,
+  isFtToken = false,
   isOpen,
   status,
 }) => {

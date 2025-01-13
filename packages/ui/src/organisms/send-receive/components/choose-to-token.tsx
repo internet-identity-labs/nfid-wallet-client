@@ -8,12 +8,12 @@ import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { FC, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
+import { PriceImpactStatus } from "src/integration/swap/types/enums"
+import { PriceImpact } from "src/integration/swap/types/types"
 
 import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
-import { PriceImpactStatus } from "src/integration/swap/icpswap/types/enums"
-import { PriceImpact } from "src/integration/swap/icpswap/types/types"
 
 import { useTokenInit } from "../hooks/token-init"
 

@@ -18,6 +18,8 @@ import {
   useEffect,
 } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
+import { SwapStage } from "src/integration/swap/types/enums"
 import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
@@ -34,8 +36,6 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -137,7 +137,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     { revalidateOnFocus: false },
   )
 
-  const { data: tokensUsdValue, isLoading: isUsdLoading } = useSWR(
+  const { data: tokensUsdBalance, isLoading: isUsdLoading } = useSWR(
     initedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
     async () => getFullUsdValue(initedTokens),
     { revalidateOnFocus: false },
@@ -244,7 +244,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           {isWallet && (
             <>
               <ProfileInfo
-                usdValue={tokensUsdValue}
+                usdBalance={tokensUsdBalance}
                 isUsdLoading={isUsdLoading || !initedTokens.length}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

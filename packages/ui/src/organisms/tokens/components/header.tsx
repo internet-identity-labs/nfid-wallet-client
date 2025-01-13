@@ -207,10 +207,6 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                     onToggle={onZeroBalanceToggle}
                   />
                 </div>
-                <div className="h-[64px] px-4 flex items-center justify-between">
-                  <span>Scan for tokens</span>
-                  <img src={Caret} alt="scan-tokens" />
-                </div>
               </div>
               <div className="flex gap-[10px] mb-[10px]">
                 <Input

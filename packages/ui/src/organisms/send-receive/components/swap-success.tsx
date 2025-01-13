@@ -1,12 +1,12 @@
-import clsx from "clsx"
-import { FC, useEffect, useMemo, useState } from "react"
 import {
   DepositError,
   SlippageSwapError,
   SwapError,
   WithdrawError,
-} from "src/integration/swap/icpswap/errors"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+} from "apps/nfid-frontend/src/integration/swap/errors"
+import clsx from "clsx"
+import { FC, useEffect, useMemo, useState } from "react"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
   IconCmpArrow,

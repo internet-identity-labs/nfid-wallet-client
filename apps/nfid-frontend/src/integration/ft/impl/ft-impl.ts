@@ -15,7 +15,11 @@ export class FTImpl implements FT {
   private readonly tokenName: string
   private tokenBalance: bigint | undefined
   private tokenState: State
-  private tokenRate: BigNumber | undefined
+  private tokenRate?: {
+    value: BigNumber
+    dayChangePercent?: string
+    dayChangePercentPositive?: boolean
+  }
   private index: string | undefined
   private symbol: string
   private decimals: number
@@ -145,22 +149,34 @@ export class FTImpl implements FT {
       Number(this.tokenBalance),
       this.decimals,
     )
-    const usdBalance = tokenAmount.multipliedBy(this.tokenRate)
+    const usdBalance = tokenAmount.multipliedBy(this.tokenRate.value)
 
     return usdBalance.toFixed(2) + " USD"
   }
 
-  getTokenRate(amount: string): number | undefined {
+  getTokenRate(amount: string): string | undefined {
     if (!this.tokenRate) return
 
     const amountBigNumber = new BigNumber(amount)
-    const result = this.tokenRate.multipliedBy(amountBigNumber)
+    const result = this.tokenRate.value.multipliedBy(amountBigNumber)
 
-    return Number(result.toFixed(2))
+    return result.toFixed(2)
   }
 
   getTokenRateFormatted(amount: string): string | undefined {
-    return `${this.getTokenRate(amount) || "0.00"} USD`
+    const tokenRate = this.getTokenRate(amount)
+    if (!tokenRate) return undefined
+    return `${this.getTokenRate(amount)} USD`
+  }
+
+  getTokenRateDayChangePercent():
+    | { value: string; positive: boolean }
+    | undefined {
+    if (!this.tokenRate || !this.tokenRate.dayChangePercent) return
+    return {
+      positive: !!this.tokenRate.dayChangePercentPositive,
+      value: this.tokenRate.dayChangePercent,
+    }
   }
 
   isHideable(): boolean {
@@ -189,7 +205,22 @@ export class FTImpl implements FT {
       Number(this.tokenBalance),
       this.decimals,
     )
-    return tokenAmount.multipliedBy(this.tokenRate)
+    return tokenAmount.multipliedBy(this.tokenRate.value)
+  }
+
+  getUSDBalanceDayChange(): BigNumber | undefined {
+    if (!this.tokenRate) return
+    const rateChange = this.getTokenRateDayChangePercent()
+    const usdBalance = this.getUSDBalance()
+    if (!rateChange || !usdBalance) return
+
+    return usdBalance
+      ?.multipliedBy(
+        new BigNumber(100)
+          [rateChange.positive ? "plus" : "minus"](rateChange.value)
+          .div(100),
+      )
+      .minus(usdBalance)
   }
 
   getDecimals(): number {

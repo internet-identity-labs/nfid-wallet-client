@@ -66,6 +66,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         assetImg={`${selectedNFT?.getAssetPreview().url}`}
         isOpen={isSuccessOpen}
         status={status}
+        isFtToken={false}
       />
       <div className="space-y-3 text-xs ">
         <ChooseNftModal

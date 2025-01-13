@@ -4,11 +4,11 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { ShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -27,7 +27,7 @@ describe("shroff test", () => {
   it("shroff quote test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "mxzaz-hqaaa-aaaar-qaada-cai"
-    const shroff = await new ShroffBuilder()
+    const shroff = await new IcpSwapShroffBuilder()
       .withSource(sourceLedger)
       .withTarget(targetLedger)
       .build()
@@ -46,7 +46,7 @@ describe("shroff test", () => {
   it.skip("shroff transfer test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
-    const shroff = await new ShroffBuilder()
+    const shroff = await new IcpSwapShroffBuilder()
       .withSource(sourceLedger)
       .withTarget(targetLedger)
       .build()

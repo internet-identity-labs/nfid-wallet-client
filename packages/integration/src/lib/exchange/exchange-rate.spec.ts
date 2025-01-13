@@ -10,6 +10,6 @@ describe("exchange-rate", () => {
     const rate = await exchangeRateService.usdPriceForICRC1(
       "ryjl3-tyaaa-aaaaa-aaaba-cai",
     )
-    expect(rate!.toNumber()).toBeGreaterThan(0)
+    expect(rate!.value.toNumber()).toBeGreaterThan(0)
   })
 })

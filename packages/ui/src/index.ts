@@ -1,5 +1,6 @@
 import "./styles.css"
 
+export * from "./atoms/arrow-percent-change"
 export * from "./atoms/copy"
 export * from "./atoms/dropdown-select"
 export * from "./atoms/dropdown"

@@ -13,6 +13,11 @@ export enum CompleteType {
   RequestSupport,
 }
 
+export enum SwapName {
+  IcpSwap,
+  KongSwap,
+}
+
 export enum PriceImpactStatus {
   LOW = "low",
   MEDIUM = "medium",

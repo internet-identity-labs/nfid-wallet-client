@@ -63,19 +63,63 @@ export class FtService {
   async getTotalUSDBalance(
     userPublicKey: Principal,
     ft: FT[],
-  ): Promise<string | undefined> {
+  ): Promise<
+    | {
+        value: string
+        dayChangePercent?: string
+        dayChange?: string
+        dayChangePositive?: boolean
+      }
+    | undefined
+  > {
     const [nftPrice] = await Promise.all([
       nftService.getNFTsTotalPrice(userPublicKey),
     ])
     let price = ft
-      .map((ft) => ft.getUSDBalance())
-      .filter((balance) => balance !== undefined)
+      .map((ft) => ({
+        usdBalance: ft.getUSDBalance(),
+        usdBalanceDayChange: ft.getUSDBalanceDayChange(),
+      }))
+      .filter((ft) => ft.usdBalance !== undefined && ft.usdBalance.gt(0))
       .reduce(
-        (acc: BigNumber, balance: BigNumber) => acc.plus(balance),
-        BigNumber(0),
+        (
+          acc: {
+            dayChangeForEveryToken: boolean
+            usdBalance: BigNumber
+            usdBalanceDayChange: BigNumber
+          },
+          ft,
+        ) => ({
+          usdBalance: acc.usdBalance!.plus(ft.usdBalance!),
+          usdBalanceDayChange: acc.usdBalanceDayChange!.plus(
+            ft.usdBalanceDayChange || 0,
+          ),
+          dayChangeForEveryToken:
+            acc.dayChangeForEveryToken && !!ft.usdBalanceDayChange,
+        }),
+        {
+          usdBalance: BigNumber(0),
+          usdBalanceDayChange: BigNumber(0),
+          dayChangeForEveryToken: true,
+        },
       )
-    price = price.plus(nftPrice)
-    return price.toFixed(2)
+
+    if (!price.dayChangeForEveryToken)
+      return {
+        value: price.usdBalance!.plus(nftPrice).toFixed(2),
+      }
+
+    return {
+      value: price.usdBalance!.plus(nftPrice).toFixed(2),
+      dayChangePercent: price.usdBalance.eq(0)
+        ? "0.00"
+        : BigNumber(price.usdBalanceDayChange!)
+            .div(price.usdBalance!)
+            .multipliedBy(100)
+            .toFixed(2),
+      dayChange: BigNumber(price.usdBalanceDayChange!).toFixed(2),
+      dayChangePositive: price.usdBalanceDayChange!.gte(0),
+    }
   }
 }
 

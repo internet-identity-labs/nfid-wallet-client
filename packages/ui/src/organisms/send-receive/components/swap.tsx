@@ -1,14 +1,14 @@
-import clsx from "clsx"
-import { FC, useState } from "react"
-import { useFormContext } from "react-hook-form"
-import { Id } from "react-toastify"
 import {
   DepositError,
   SwapError,
   WithdrawError,
-} from "src/integration/swap/icpswap/errors"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+} from "apps/nfid-frontend/src/integration/swap/errors"
+import clsx from "clsx"
+import { FC, useState } from "react"
+import { useFormContext } from "react-hook-form"
+import { Id } from "react-toastify"
 import { Quote } from "src/integration/swap/quote"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
   Button,

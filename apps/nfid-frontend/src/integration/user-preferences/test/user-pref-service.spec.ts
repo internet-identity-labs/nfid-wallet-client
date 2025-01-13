@@ -6,7 +6,7 @@ describe("userpref service test suite", () => {
     await userPrefService.getUserPreferences().then((userPreferences) => {
       expect(userPreferences.isHideZeroBalance()).toBe(false)
       userPreferences.setHideZeroBalance(true).then(() => {
-         userPrefService.getUserPreferences().then((userPreferences) => {
+        userPrefService.getUserPreferences().then((userPreferences) => {
           expect(userPreferences.isHideZeroBalance()).toBe(true)
         })
         authStorage.get("userPreferences").then((userPreferencesString) => {

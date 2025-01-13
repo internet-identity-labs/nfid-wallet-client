@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { SourceInputCalculator } from "src/integration/swap/icpswap/impl/calculator"
+import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -17,7 +17,7 @@ describe("quote test", () => {
     const target = st.find((icrc1) => icrc1.ledger === targetLedger)
     const quote = new IcpSwapQuoteImpl(
       "0.5",
-      new SourceInputCalculator(
+      new SourceInputCalculatorIcpSwap(
         BigInt(0.5 * 10 ** source!.decimals),
         source!.fee,
       ),

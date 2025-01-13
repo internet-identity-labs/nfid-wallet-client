@@ -75,11 +75,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token
           .getTokenCategoryFormatted()
           .replace(/\s/g, "")}_category`}
-        className="hidden md:table-cell pr-[10px]"
+        className="hidden md:table-cell pr-[10px] min-w-[120px]"
       >
         {token.getTokenCategoryFormatted()}
       </td>
-      <td className="pr-[10px] hidden lg:table-cell min-w-[120px]">
+      <td className="pr-[10px] hidden md:table-cell min-w-[120px]">
         {!initedToken ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice ? (
@@ -98,7 +98,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
-        className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto"
+        className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto min-w-[120px]"
       >
         {!initedToken ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
@@ -146,7 +146,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         )}
       </td>
       <td
-        className="w-[24px] min-w-[24px]"
+        className="w-[24px] min-w-[30px] lg:min-w-[50px] lg:ps-[25px]"
         id={`${token.getTokenName()}_options`}
       >
         <AssetDropdown

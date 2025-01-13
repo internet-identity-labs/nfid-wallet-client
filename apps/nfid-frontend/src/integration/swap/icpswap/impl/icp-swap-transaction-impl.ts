@@ -4,7 +4,7 @@ import {
   SwapError,
   SwapTransaction,
 } from "src/integration/swap/icpswap/swap-transaction"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+import { SwapStage } from "src/integration/swap/types/enums"
 import { v4 as uuidv4 } from "uuid"
 
 import { hasOwnProperty } from "@nfid/integration"

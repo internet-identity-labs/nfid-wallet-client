@@ -4,18 +4,6 @@ import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import {
-  DepositError,
-  LiquidityError,
-  ServiceUnavailableError,
-  SlippageQuoteError,
-  SwapError,
-  WithdrawError,
-} from "src/integration/swap/icpswap/errors"
-import { ShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
-import { Shroff } from "src/integration/swap/shroff"
 
 import {
   CKBTC_CANISTER_ID,
@@ -23,6 +11,19 @@ import {
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+
+import {
+  DepositError,
+  LiquidityError,
+  ServiceUnavailableError,
+  SlippageQuoteError,
+  SwapError,
+  WithdrawError,
+} from "apps/nfid-frontend/src/integration/swap/errors"
+import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
+import { Shroff } from "src/integration/swap/shroff"
+import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 import { FormValues } from "../types"
 import {
@@ -106,7 +107,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
   useEffect(() => {
     const getShroff = async () => {
       try {
-        const shroff = await new ShroffBuilder()
+        const shroff = await new IcpSwapShroffBuilder()
           .withSource(fromTokenAddress)
           .withTarget(toTokenAddress)
           .build()

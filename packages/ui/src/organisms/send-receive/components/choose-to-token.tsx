@@ -12,8 +12,8 @@ import { useFormContext } from "react-hook-form"
 import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
-import { PriceImpactStatus } from "src/integration/swap/icpswap/types/enums"
-import { PriceImpact } from "src/integration/swap/icpswap/types/types"
+import { PriceImpactStatus } from "src/integration/swap/types/enums"
+import { PriceImpact } from "src/integration/swap/types/types"
 
 import { useTokenInit } from "../hooks/token-init"
 

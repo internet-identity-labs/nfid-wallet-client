@@ -35,7 +35,7 @@ import { TransferModalCoordinator } from "frontend/features/transfer-modal/coord
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+import { SwapStage } from "src/integration/swap/types/enums"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 

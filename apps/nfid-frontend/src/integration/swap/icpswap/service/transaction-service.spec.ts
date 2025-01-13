@@ -8,11 +8,10 @@ import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/
 import { authState } from "@nfid/integration"
 
 import {
-  SwapStage as SwapStageCandid,
   SwapTransaction as SwapTransactionCandid,
 } from "../idl/swap_trs_storage.d"
 import { IcpSwapTransactionImpl } from "../impl/icp-swap-transaction-impl"
-import { SwapStage } from "../types/enums"
+import { SwapStage } from "src/integration/swap/types/enums"
 import { SwapTransactionService } from "./transaction-service"
 
 const mockDuration = 2 * 1000

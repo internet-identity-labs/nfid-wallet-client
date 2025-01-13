@@ -5,7 +5,7 @@ import { TransferSwapHandler } from "src/integration/swap/icpswap/error-handler/
 import { WithdrawHandler } from "src/integration/swap/icpswap/error-handler/handler/withdraw-handler"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 import { TransactionErrorHandler } from "src/integration/swap/transaction-error-handler"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 export class ErrorHandlerFactory {
   getHandler(transaction: SwapTransaction): TransactionErrorHandler {

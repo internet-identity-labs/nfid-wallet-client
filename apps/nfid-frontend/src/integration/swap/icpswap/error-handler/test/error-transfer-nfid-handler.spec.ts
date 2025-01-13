@@ -1,12 +1,11 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/handler-factory"
-import { ShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
+import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
 import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
 import { Shroff } from "src/integration/swap/shroff"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 const mock: JsonnableEd25519KeyIdentity = [
   "302a300506032b6570032100c88f8f46ee5c23a748026498ddc7ed2104782ea02cd266170a470587d7c2f932",
@@ -24,7 +23,7 @@ describe("shroff transfer nfid error handler test", () => {
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
 
-    const shroff: Shroff = await new ShroffBuilder()
+    const shroff: Shroff = await new IcpSwapShroffBuilder()
       .withSource(sourceLedger)
       .withTarget(targetLedger)
       .build()

@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
-import { WithdrawError } from "src/integration/swap/icpswap/errors"
+import { WithdrawError } from "apps/nfid-frontend/src/integration/swap/errors"
 import {
-  ShroffBuilder,
+  IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
 } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
@@ -86,7 +86,7 @@ export class ShroffSwapErrorHandler extends ShroffIcpSwapImpl {
   }
 }
 
-export class SwapErrorShroffBuilder extends ShroffBuilder {
+export class SwapErrorShroffBuilder extends IcpSwapShroffBuilder {
   protected buildShroff(): Shroff {
     return new ShroffSwapErrorHandler(
       this.poolData!,

@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import BigNumber from "bignumber.js"
 import { TransactionErrorHandlerAbstract } from "src/integration/swap/icpswap/error-handler/error-handler-abstract"
-import { SourceInputCalculator } from "src/integration/swap/icpswap/impl/calculator"
+import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
@@ -30,7 +30,7 @@ export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstra
       .toFixed()
 
     console.debug("User transaction: ", trs)
-    const preCalculation = new SourceInputCalculator(
+    const preCalculation = new SourceInputCalculatorIcpSwap(
       BigInt(Number(trs.getSourceAmount())),
       sourceLedger.fee,
     )

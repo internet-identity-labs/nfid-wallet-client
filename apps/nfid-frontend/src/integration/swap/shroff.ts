@@ -1,8 +1,10 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Quote } from "src/integration/swap/quote"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import {SwapName} from "src/integration/swap/types/enums";
 
 export interface Shroff {
+  getSwapName(): SwapName
   setQuote(quote: Quote): void
   getTargets(): string[]
   getQuote(amount: string): Promise<Quote>

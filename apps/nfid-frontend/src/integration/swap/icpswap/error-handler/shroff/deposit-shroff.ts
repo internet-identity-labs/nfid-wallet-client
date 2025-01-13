@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import {
-  ShroffBuilder,
+  IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
 } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
@@ -8,8 +8,9 @@ import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { WithdrawError } from "../../errors"
+import { WithdrawError } from "../../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
+import BigNumber from "bignumber.js"
 
 export class ShroffDepositErrorHandler extends ShroffIcpSwapImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -91,7 +92,7 @@ export class ShroffDepositErrorHandler extends ShroffIcpSwapImpl {
   }
 }
 
-export class DepositErrorShroffBuilder extends ShroffBuilder {
+export class DepositErrorShroffBuilder extends IcpSwapShroffBuilder {
   protected buildShroff(): Shroff {
     return new ShroffDepositErrorHandler(
       this.poolData!,

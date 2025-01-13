@@ -23,7 +23,7 @@ import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/
 import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
 import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
-import { SwapStage } from "src/integration/swap/icpswap/types/enums"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 interface ErrorStage {
   buttonText: string

@@ -15,7 +15,7 @@ import {
   replaceActorIdentity,
 } from "@nfid/integration"
 
-import { SwapStage } from "../types/enums"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 export const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
 

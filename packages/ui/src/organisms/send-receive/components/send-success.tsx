@@ -23,7 +23,7 @@ export interface SuccessProps {
   duration?: number
   isOpen: boolean
   status: SendStatus
-  isFtToken: boolean
+  assetImageClassname: string
 }
 
 const allAnimations = [Success1, Success2, Successs3, Fail]
@@ -34,7 +34,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
   onClose,
   assetImg,
   duration = 2,
-  isFtToken = false,
+  assetImageClassname,
   isOpen,
   status,
 }) => {
@@ -102,12 +102,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             alt="assetImg"
             src={`${assetImg}`}
             fallbackSrc={IconNftPlaceholder}
-            className={clsx(
-              "absolute  rounded-full ",
-              isFtToken
-                ? "w-[74px] h-[74px] top-[151px]"
-                : "w-[102px] h-[102px] top-[136px] sm:w-[116px] sm:h-[116px] sm:top-[129px]",
-            )}
+            className={clsx("absolute rounded-full", assetImageClassname)}
           />
         </div>
       </div>

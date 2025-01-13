@@ -84,12 +84,11 @@ class KongSwapShroffImpl extends ShroffAbstract {
       this.requestedQuote = new KongQuoteImpl(
         amount,
         preCalculation,
-        // @ts-ignore
         quote.Ok.receive_amount,
         this.source,
         this.target,
-        targetUSDPrice,
-        sourceUSDPrice,
+        targetUSDPrice?.value,
+        sourceUSDPrice?.value,
       )
       return this.requestedQuote
     }
@@ -110,54 +109,60 @@ class KongSwapShroffImpl extends ShroffAbstract {
       this.requestedQuote.getTargetAmount().toNumber(),
       BigInt(this.requestedQuote.getSourceUserInputAmount().toNumber()),
     )
+    try {
+      const icrc2approve = await this.icrc2approve(delegationIdentity)
 
-    const icrc2approve = await this.icrc2approve(delegationIdentity)
+      if (hasOwnProperty(icrc2approve, "Err")) {
+        throw new Error(
+          "ICRC2 approve error: " + JSON.stringify(icrc2approve.Err),
+        )
+      }
 
-    if (hasOwnProperty(icrc2approve, "Err")) {
-      throw new Error(
-        "ICRC2 approve error: " + JSON.stringify(icrc2approve.Err),
-      )
-    }
+      this.swapTransaction.setTransferId(BigInt(icrc2approve.Ok))
 
-    this.swapTransaction.setTransferId(BigInt(icrc2approve.Ok))
+      this.restoreTransaction()
 
-    this.restoreTransaction()
+      console.log("ICRC2 approve response", JSON.stringify(icrc2approve))
 
-    console.log("ICRC2 approve response", JSON.stringify(icrc2approve))
-
-    let args: SwapArgs = {
-      receive_token: this.target.symbol,
-      max_slippage: [2], //TODO slippage
-      pay_amount: BigInt(
-        this.requestedQuote
-          .getSourceSwapAmount()
-          .toFixed(this.source.decimals)
-          .replace(TRIM_ZEROS, ""),
-      ),
-      referred_by: [],
-      receive_amount: [
-        BigInt(
+      let args: SwapArgs = {
+        receive_token: this.target.symbol,
+        max_slippage: [2], //TODO slippage
+        pay_amount: BigInt(
           this.requestedQuote
-            .getTargetAmount()
-            .toFixed(this.target.decimals)
+            .getSourceSwapAmount()
+            .toFixed(this.source.decimals)
             .replace(TRIM_ZEROS, ""),
         ),
-      ],
-      receive_address: [],
-      pay_token: this.source.symbol,
-      pay_tx_id: [],
+        referred_by: [],
+        receive_amount: [
+          BigInt(
+            this.requestedQuote
+              .getTargetAmount()
+              .toFixed(this.target.decimals)
+              .replace(TRIM_ZEROS, ""),
+          ),
+        ],
+        receive_address: [],
+        pay_token: this.source.symbol,
+        pay_tx_id: [],
+      }
+      await replaceActorIdentity(this.actor, delegationIdentity)
+
+      let resp = await this.actor.swap(args)
+
+      console.log("Swap response", JSON.stringify(resp))
+
+      this.swapTransaction.setCompleted()
+
+      await this.restoreTransaction()
+
+      return this.swapTransaction
+    } catch (e) {
+      console.error("Swap error:", e)
+      this.swapTransaction.setError("Swap error: " + e)
+      await this.restoreTransaction()
+      throw e
     }
-    await replaceActorIdentity(this.actor, delegationIdentity)
-
-    let resp = await this.actor.swap(args)
-
-    console.log("Swap response", JSON.stringify(resp))
-
-    this.swapTransaction.setCompleted()
-
-    await this.restoreTransaction()
-
-    return this.swapTransaction
   }
 
   validateQuote(): Promise<Quote> {

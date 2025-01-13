@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js"
 import { LiquidityError } from "src/integration/swap/errors"
-import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { Quote } from "src/integration/swap/quote"
 import { PriceImpactStatus } from "src/integration/swap/types/enums"
 import { PriceImpact } from "src/integration/swap/types/types"

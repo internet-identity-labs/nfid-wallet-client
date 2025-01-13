@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import BigNumber from "bignumber.js"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import {
   IcpSwapShroffBuilder,

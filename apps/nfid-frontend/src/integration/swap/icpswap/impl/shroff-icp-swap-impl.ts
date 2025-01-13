@@ -134,8 +134,8 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         quote.ok as bigint,
         this.source,
         this.target,
-        targetUSDPrice,
-        sourceUSDPrice,
+        targetUSDPrice?.value,
+        sourceUSDPrice?.value,
       )
       return this.requestedQuote
     }

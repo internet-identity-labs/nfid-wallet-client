@@ -37,9 +37,17 @@ interface ISwapFT {
   onClose: () => void
   isOpen: boolean
   onError: (value: boolean) => void
+  swapSettingsOpened: boolean
+  closeSwapSettings: () => void
 }
 
-export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
+export const SwapFT = ({
+  onClose,
+  isOpen,
+  onError,
+  swapSettingsOpened,
+  closeSwapSettings,
+}: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
@@ -290,6 +298,8 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         quoteTimer={quoteTimer}
+        swapSettingsOpened={swapSettingsOpened}
+        closeSwapSettings={closeSwapSettings}
       />
     </FormProvider>
   )

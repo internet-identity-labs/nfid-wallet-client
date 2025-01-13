@@ -4,6 +4,7 @@ import {
   WithdrawError,
 } from "apps/nfid-frontend/src/integration/swap/errors"
 import clsx from "clsx"
+import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
@@ -14,8 +15,8 @@ import {
   Button,
   IconCmpArrow,
   BlurredLoader,
-  Skeleton,
   Checkbox,
+  IconCmpSwap,
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -48,6 +49,8 @@ export interface SwapFTUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   quoteTimer: number
+  swapSettingsOpened: boolean
+  closeSwapSettings: () => void
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -71,6 +74,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   isSuccessOpen,
   onClose,
   quoteTimer,
+  swapSettingsOpened,
+  closeSwapSettings,
 }) => {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
@@ -93,6 +98,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         className="text-xs"
       />
     )
+  console.log("swapSettingsOpened", swapSettingsOpened)
   return (
     <>
       <SwapSuccessUi
@@ -109,8 +115,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       />
       {showServiceError && <ErrorModal refresh={clearQuoteError} />}
       <QuoteModal
-        modalOpen={quoteModalOpen}
-        setModalOpen={setQuoteModalOpen}
+        modalOpen={swapSettingsOpened}
+        setModalOpen={closeSwapSettings}
         quote={quote}
       />
       <p className="mb-1 text-xs">From</p>
@@ -159,31 +165,12 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         value={quote?.getTargetAmountPrettified()}
         priceImpact={priceImpact}
       />
-      <div className="mt-[10px] flex items-center justify-between text-xs text-gray-500">
-        {!amount || !quote ? (
-          "Quote rate"
-        ) : isQuoteLoading ? (
-          <div className="flex gap-[10px]">
-            <Skeleton className="w-[66px] h-1 rounded-[4px] !bg-gray-200" />
-            <Skeleton className="w-[30px] h-1 rounded-[4px] !bg-gray-200" />
-          </div>
-        ) : (
-          `${quote?.getQuoteRate()} (${quoteTimer} sec)`
-        )}
-        <span
-          className={
-            !isQuoteLoading && amount && quote
-              ? "text-teal-600 cursor-pointer"
-              : "text-gray-500"
-          }
-          onClick={() => {
-            if (isQuoteLoading || !amount || !quote) return
-            setQuoteModalOpen(true)
-          }}
-        >
-          View quote
-        </span>
-      </div>
+      {amount && quote && (
+        <div className="flex items-center justify-between mt-6 text-xs text-gray-500">
+          {quote?.getQuoteRate()} ({quoteTimer} sec)
+        </div>
+      )}
+
       {priceImpact?.status === "high" && (
         <div className="mt-4">
           <Checkbox
@@ -206,6 +193,13 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         type="primary"
         id="swapTokensButton"
         block
+        icon={
+          !amount ? null : isQuoteLoading ? (
+            <Spinner className="w-5 h-5 text-white" />
+          ) : (
+            <IconCmpSwap className="text-gray-400 !w-[18px] !h-[18px] text-white" />
+          )
+        }
         disabled={
           isQuoteLoading ||
           !amount ||
@@ -218,7 +212,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         {!amount
           ? "Enter an amount"
           : isQuoteLoading
-          ? "Fetching quote"
+          ? "Fetching quotes 1 of 2"
           : "Swap tokens"}
       </Button>
     </>

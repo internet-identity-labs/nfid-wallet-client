@@ -50,6 +50,7 @@ When(
 
 When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
   await Assets.SwapDialog.getSourceAmountField.setValue(amount)
+  await browser.pause(500)
   await browser.waitUntil(async () => {
     return (
       (await Assets.SwapDialog.getTargetAmountField.isDisplayed()) &&

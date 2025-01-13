@@ -24,6 +24,7 @@ import swapError from "../assets/NFID_WS_2_1.json"
 import withdraw from "../assets/NFID_WS_3.json"
 import withdrawSuccess from "../assets/NFID_WS_3_1.json"
 import withdrawError from "../assets/NFID_WS_3_2.json"
+import SwapArrowBox from "../assets/swap-success-arrow-box.png"
 import { getTextStatusByStep, getTitleAndButtonText } from "../utils"
 
 const allAnimations = {
@@ -46,7 +47,6 @@ export interface SwapSuccessProps {
   assetImgFrom: string
   assetImgTo: string
   step: SwapStage
-  duration?: number
   isOpen: boolean
   error?: SwapError | WithdrawError | DepositError | SlippageSwapError
 }
@@ -60,7 +60,6 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   assetImgFrom,
   assetImgTo,
   step = 0,
-  duration = 60,
   isOpen,
   error,
 }) => {
@@ -108,78 +107,81 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
       className={clsx(
         "text-black text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "flex flex-grow flex-col justify-between bg-white",
+        "flex flex-grow flex-col bg-white",
         !isOpen && "hidden",
       )}
     >
-      <div className="flex-grow text-center" id={"swap-success-title"}>
+      <div id={"swap-success-title"}>
         <H5 className="mt-5 text-xl leading-6">
           {isCompleted ? "Swap successful" : "Swapping"}
         </H5>
-        <p className="mt-3 text-sm leading-5">
+        <p className="h-5 mt-3 text-sm leading-5">
           {error
             ? `ICPSwap ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted
             ? ""
-            : `This usually takes about ${duration} seconds`}
+            : getTextStatusByStep(step)}
         </p>
-        <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full px-3">
-          <LottieAnimation
-            className="max-w-[370px] sm:-top-[55px]"
-            animationData={currentAnimation}
-            loop={!error && step !== SwapStage.Completed}
-            onComplete={animationCompleteHandler}
-            style={{ transform: "scale(1.1)" }}
+      </div>
+      <div className="relative flex items-center justify-center w-full">
+        <LottieAnimation
+          className="max-w-[370px] flex justify-center"
+          animationData={currentAnimation}
+          loop={!error && step !== SwapStage.Completed}
+          onComplete={animationCompleteHandler}
+          style={{ transform: "scale(1.1)" }}
+          viewBox="0 150 360 160"
+        />
+        <div
+          className={clsx(
+            "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white top-[35px] left-[104px] sm:top-[28px] sm:left-[157px]",
+          )}
+        >
+          <ImageWithFallback
+            alt="assetImg"
+            src={`${assetImgFrom}`}
+            fallbackSrc={IconNftPlaceholder}
+            className="w-full h-full rounded-full"
           />
-          <div
-            className={clsx(
-              "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white top-[143px] left-[121px] sm:left-[175px]",
-            )}
-          >
-            <ImageWithFallback
-              alt="assetImg"
-              src={`${assetImgFrom}`}
-              fallbackSrc={IconNftPlaceholder}
-              className="w-full h-full rounded-full"
-            />
-          </div>
-          <div
-            className={clsx(
-              "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white z-2 top-[167px] left-[147px] sm:left-[203px]",
-            )}
-          >
-            <ImageWithFallback
-              alt="assetImg"
-              src={`${assetImgTo}`}
-              fallbackSrc={IconNftPlaceholder}
-              className="w-full h-full rounded-full"
-            />
-          </div>
         </div>
-        {error ? (
-          <div className="mt-[185px] text-sm text-red-600 max-w-[320px] mx-auto">
-            {error.getDisplayMessage()}
-          </div>
-        ) : (
-          <div className="mt-[185px] text-sm text-gray-500 max-w-[320px] mx-auto">
-            {getTextStatusByStep(step)}
-          </div>
-        )}
+        <div
+          className={clsx(
+            "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white z-2 top-[63px] left-[127px] sm:top-[69px] sm:left-[185px]",
+          )}
+        >
+          <ImageWithFallback
+            alt="assetImg"
+            src={`${assetImgTo}`}
+            fallbackSrc={IconNftPlaceholder}
+            className="w-full h-full rounded-full"
+          />
+        </div>
       </div>
       <div className="relative z-20">
-        <div className="flex items-center justify-center">
-          <div className="flex-1">
+        <div>
+          <div className="pt-[20px] pb-[30px] relative">
             <p className="text-sm leading-[25px]" id="title">
               {titleFrom}
             </p>
             <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
               {subTitleFrom}
             </p>
+            <div
+              className={clsx(
+                "absolute -bottom-[4px] h-[26px] w-[70px] right-0 left-0",
+                "flex justify-center items-end mx-auto text-black",
+              )}
+              style={{
+                backgroundImage: `url(${SwapArrowBox})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <IconCmpArrow className="rotate-[-90deg] h-5 w-5" />
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-[12px] bg-gray-50 flex items-center justify-center mx-[15px]">
-            <IconCmpArrow className="w-[20px] h-[20px] rotate-180" />
-          </div>
-          <div className="flex-1">
+          <div className="bg-gradient-to-b from-gray-50 to-white py-[10px] rounded-t-[12px]">
             <p className="text-sm leading-[25px]" id="title">
               {titleTo}
             </p>
@@ -187,12 +189,16 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
               {subTitleTo}
             </p>
           </div>
+          {error && (
+            <div className="text-sm text-red-600 max-w-[320px] mx-auto mb-[20px]">
+              {error.getDisplayMessage()}
+            </div>
+          )}
         </div>
         <Button
           id={"swap-success-close-button"}
           type="primary"
           block
-          className="mt-[30px]"
           onClick={onClose}
         >
           {getTitleAndButtonText(error)?.buttonText}

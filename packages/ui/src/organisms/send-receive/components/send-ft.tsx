@@ -89,6 +89,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         assetImg={`${token.getTokenLogo()}`}
         isOpen={isSuccessOpen}
         status={status}
+        assetImageClassname="w-[74px] h-[74px] top-[151px]"
       />
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken

@@ -23,6 +23,7 @@ export interface SuccessProps {
   duration?: number
   isOpen: boolean
   status: SendStatus
+  assetImageClassname: string
 }
 
 const allAnimations = [Success1, Success2, Successs3, Fail]
@@ -33,6 +34,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
   onClose,
   assetImg,
   duration = 2,
+  assetImageClassname,
   isOpen,
   status,
 }) => {
@@ -69,11 +71,11 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
       className={clsx(
         "text-black text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "flex flex-grow flex-col justify-between bg-white",
+        "flex flex-col justify-between bg-white",
         !isOpen && "hidden",
       )}
     >
-      <div className="flex-grow text-center">
+      <div className="text-center">
         <H5 className="mt-5 text-xl leading-6">
           {status === SendStatus.FAILED
             ? "Transaction failed"
@@ -81,28 +83,26 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
             ? "Sent successfully"
             : "Processing..."}
         </H5>
-        <p className="mt-3 text-sm leading-5">
+        <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
             ? ""
             : `This usually takes less than ${duration} seconds.`}
         </p>
-        <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full px-3">
+        <div className="flex items-center justify-center w-full">
           <LottieAnimation
+            className="max-w-[370px] flex justify-center mt-[10px]"
             animationData={animation}
             loop={step === 1}
-            className="max-w-[370px]"
-            speed={1.5}
             style={{ transform: "scale(1.1)" }}
+            viewBox="0 150 360 160"
           />
           <ImageWithFallback
             alt="assetImg"
             src={`${assetImg}`}
             fallbackSrc={IconNftPlaceholder}
-            className={clsx(
-              "absolute w-[74px] h-[74px] rounded-full top-[151px]",
-            )}
+            className={clsx("absolute rounded-full", assetImageClassname)}
           />
         </div>
       </div>

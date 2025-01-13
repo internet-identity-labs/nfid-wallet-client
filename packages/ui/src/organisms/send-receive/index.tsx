@@ -14,6 +14,7 @@ export interface TransferModalProps {
   onTokenTypeChange: (isNFT: boolean) => void
   component: JSX.Element
   isOpen: boolean
+  hasSwapError: boolean
 }
 
 export interface TransferVaultModalProps {
@@ -33,11 +34,15 @@ export const TransferModal: FC<TransferModalProps> = ({
   onTokenTypeChange,
   component,
   isOpen,
+  hasSwapError,
 }) => {
   return (
     <TransferTemplate
       onClickOutside={onClickOutside}
-      className={clsx(direction === ModalType.SEND && "!pb-5")}
+      className={clsx(
+        direction === ModalType.SEND && "!pb-5",
+        hasSwapError ? "min-h-[540px]" : "min-h-[480px]",
+      )}
       overlayClassName={!isOpen ? "hidden" : ""}
     >
       {!isSuccess && (

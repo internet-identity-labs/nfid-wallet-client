@@ -1,4 +1,3 @@
-@skip
 Feature: Swap functionality
   As a user, I want to swap tokens
 

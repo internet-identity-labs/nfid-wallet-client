@@ -16,6 +16,7 @@ import { idlFactory as KongIDL } from "src/integration/swap/kong/idl/kong_backen
 import {
   _SERVICE,
   SwapArgs,
+  SwapResult,
 } from "src/integration/swap/kong/idl/kong_backend.d"
 import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
 import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
@@ -100,6 +101,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
     if (!this.requestedQuote) {
       throw new Error("Quote not set")
     }
+    this.delegationIdentity = delegationIdentity
 
     console.log("KONG swap quote")
 
@@ -110,7 +112,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
       BigInt(this.requestedQuote.getSourceUserInputAmount().toNumber()),
     )
     try {
-      const icrc2approve = await this.icrc2approve(delegationIdentity)
+      const icrc2approve = await this.icrc2approve()
 
       if (hasOwnProperty(icrc2approve, "Err")) {
         throw new Error(
@@ -148,11 +150,21 @@ class KongSwapShroffImpl extends ShroffAbstract {
       }
       await replaceActorIdentity(this.actor, delegationIdentity)
 
-      let resp = await this.actor.swap(args)
+      let resp: SwapResult = await this.actor.swap(args)
 
       console.log("Swap response", JSON.stringify(resp))
 
-      this.swapTransaction.setCompleted()
+      if (hasOwnProperty(resp, "Err")) {
+        throw new Error("Swap error: " + JSON.stringify(resp.Err))
+      }
+
+      this.swapTransaction.setSwap(resp.Ok.ts)
+
+      this.restoreTransaction()
+
+      const transferNFID = await this.transferToNFID()
+
+      this.swapTransaction.setNFIDTransferId(transferNFID)
 
       await this.restoreTransaction()
 
@@ -179,12 +191,15 @@ class KongSwapShroffImpl extends ShroffAbstract {
     )
   }
 
-  protected async icrc2approve(identity: SignIdentity) {
+  protected async icrc2approve() {
     const actorICRC2 = actorBuilder<ICRC1ServiceIDL>(
       this.source.ledger,
       icrc1IDL,
       {
-        agent: new HttpAgent({ ...agentBaseConfig, identity }),
+        agent: new HttpAgent({
+          ...agentBaseConfig,
+          identity: this.delegationIdentity,
+        }),
       },
     )
 

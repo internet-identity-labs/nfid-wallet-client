@@ -50,7 +50,7 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
   abstract getWithdraw(): bigint | undefined
   abstract setDeposit(deposit: bigint): void
   abstract setWithdraw(withdraw: bigint): void
-
+  abstract setSwap(swap: bigint | undefined): void
   getTransferId(): bigint | undefined {
     return this.transferId
   }
@@ -111,11 +111,6 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
   setNFIDTransferId(transferId: bigint) {
     this.transferNFIDId = transferId
     this.stage = SwapStage.Completed
-  }
-
-  setSwap(swap: bigint | undefined) {
-    this.swap = swap
-    this.stage = SwapStage.Withdraw
   }
 
   setCompleted() {

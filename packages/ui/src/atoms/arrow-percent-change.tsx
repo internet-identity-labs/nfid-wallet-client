@@ -24,7 +24,10 @@ export function ArrowPercentChange({
     >
       <IconCmpArrowRightIcon
         height={18}
-        className={clsx("ms-[-5px] absolute", positive ? "-rotate-90 mt-[-2px]" : "rotate-90")}
+        className={clsx(
+          "ms-[-5px] absolute",
+          positive ? "-rotate-90 mt-[-2px]" : "rotate-90",
+        )}
       />
       <span className="ms-[-5px] ps-[18px]">{value}%</span>
     </small>

@@ -10,6 +10,11 @@ export class KongSwapTransactionImpl extends AbstractSwapTransaction {
     this.stage = SwapStage.Swap
   }
 
+  setSwap(swap: bigint | undefined) {
+    this.swap = swap
+    this.stage = SwapStage.TransferNFID
+  }
+
   toCandid(): SwapTransactionCandid {
     return {
       deposit: [],

@@ -16,16 +16,11 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   usdBalance:
     | {
         value: string
-        dayChange: string
-        dayChangePercent: string
-        dayChangePositive: boolean
+        dayChange?: string
+        dayChangePercent?: string
+        dayChangePositive?: boolean
       }
     | undefined
-  usdBalancePriceChange?: {
-    value: string
-    percent: string
-    positive: boolean
-  }
   isAddressLoading?: boolean
   isUsdLoading: boolean
   onSendClick: () => void
@@ -84,7 +79,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
                   usd
                 </span>
               </div>
-              {usdBalance && (
+              {usdBalance?.dayChange && usdBalance.dayChangePercent && (
                 <div className="flex mt-2.5">
                   <small
                     className={clsx("text-xs font-bold mr-2.5 self-end", {

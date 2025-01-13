@@ -66,9 +66,9 @@ export class FtService {
   ): Promise<
     | {
         value: string
-        dayChangePercent: string
-        dayChange: string
-        dayChangePositive: boolean
+        dayChangePercent?: string
+        dayChange?: string
+        dayChangePositive?: boolean
       }
     | undefined
   > {
@@ -80,29 +80,43 @@ export class FtService {
         usdBalance: ft.getUSDBalance(),
         usdBalanceDayChange: ft.getUSDBalanceDayChange(),
       }))
-      .filter(
-        (ft) =>
-          ft.usdBalance !== undefined && ft.usdBalanceDayChange !== undefined,
-      )
+      .filter((ft) => ft.usdBalance !== undefined && ft.usdBalance.gt(0))
       .reduce(
-        (acc, ft) => ({
+        (
+          acc: {
+            dayChangeForEveryToken: boolean
+            usdBalance: BigNumber
+            usdBalanceDayChange: BigNumber
+          },
+          ft,
+        ) => ({
           usdBalance: acc.usdBalance!.plus(ft.usdBalance!),
           usdBalanceDayChange: acc.usdBalanceDayChange!.plus(
-            ft.usdBalanceDayChange!,
+            ft.usdBalanceDayChange || 0,
           ),
+          dayChangeForEveryToken:
+            acc.dayChangeForEveryToken && !!ft.usdBalanceDayChange,
         }),
         {
           usdBalance: BigNumber(0),
           usdBalanceDayChange: BigNumber(0),
+          dayChangeForEveryToken: true,
         },
       )
 
+    if (!price.dayChangeForEveryToken)
+      return {
+        value: price.usdBalance!.plus(nftPrice).toFixed(2),
+      }
+
     return {
       value: price.usdBalance!.plus(nftPrice).toFixed(2),
-      dayChangePercent: BigNumber(price.usdBalanceDayChange!)
-        .div(price.usdBalance!)
-        .multipliedBy(100)
-        .toFixed(2),
+      dayChangePercent: price.usdBalance.eq(0)
+        ? "0.00"
+        : BigNumber(price.usdBalanceDayChange!)
+            .div(price.usdBalance!)
+            .multipliedBy(100)
+            .toFixed(2),
       dayChange: BigNumber(price.usdBalanceDayChange!).toFixed(2),
       dayChangePositive: price.usdBalanceDayChange!.gte(0),
     }

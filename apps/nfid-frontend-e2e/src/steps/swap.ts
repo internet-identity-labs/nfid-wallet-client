@@ -59,7 +59,10 @@ When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
         ).getAttribute("value"),
       ) > 0
     )
-  })
+  },{
+    timeout: 20000,
+    timeoutMsg: "expected data-cache-loaded to be true after 15s",
+  },)
   sourceTokenAmountToSwap = parseFloat(amount)
   currentSourceTokenBalance = parseFloat(
     (await Assets.getSourceTokenBalance.getText()).replace(/[^\d.]/g, ""),

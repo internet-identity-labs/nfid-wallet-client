@@ -85,10 +85,12 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         ) : tokenPrice ? (
           <div>
             <div>{tokenPrice}</div>
-            <ArrowPercentChange
-              value={tokenRateDayChange?.value || "0"}
-              positive={tokenRateDayChange?.positive}
-            />
+            {tokenRateDayChange && (
+              <ArrowPercentChange
+                value={tokenRateDayChange?.value || "0"}
+                positive={tokenRateDayChange?.positive}
+              />
+            )}
           </div>
         ) : (
           "Not listed"

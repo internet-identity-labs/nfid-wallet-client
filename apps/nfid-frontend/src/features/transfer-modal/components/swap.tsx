@@ -36,9 +36,10 @@ const QUOTE_REFETCH_TIMER = 30
 interface ISwapFT {
   onClose: () => void
   isOpen: boolean
+  onError: (value: boolean) => void
 }
 
-export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
+export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
@@ -90,6 +91,10 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
       to: "",
     },
   })
+
+  useEffect(() => {
+    onError(Boolean(swapError))
+  }, [swapError, onError])
 
   useEffect(() => {
     isOpenRef.current = isOpen
@@ -205,6 +210,7 @@ export const SwapFT = ({ onClose, isOpen }: ISwapFT) => {
   const refresh = () => {
     setShroffError(undefined)
     setLiquidityError(undefined)
+    setSwapError(undefined)
     setFromTokenAddress(ICP_CANISTER_ID)
     setToTokenAddress(CKBTC_CANISTER_ID)
     setSwapStep(0)

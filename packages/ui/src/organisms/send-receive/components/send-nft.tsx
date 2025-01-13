@@ -74,7 +74,10 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           onSelect={setSelectedNFTId}
           trigger={
             <div
-              className="flex items-center justify-between w-full h-[98px] pl-0.5 p-2 pr-5 border border-black rounded-[12px]"
+              className={clsx(
+                "flex items-center justify-between w-full h-[98px] rounded-[12px]",
+                "pl-0.5 p-2 pr-5 border border-black cursor-pointer",
+              )}
               id="choose-nft"
             >
               <div className="flex items-center">

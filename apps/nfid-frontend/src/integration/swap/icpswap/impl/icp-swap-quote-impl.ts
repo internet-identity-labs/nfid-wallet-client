@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js"
 import {TRIM_ZEROS} from "@nfid/integration/token/constants"
-import {QuoteAbstract} from "src/integration/swap/quote-abstract";
+import {QuoteAbstract} from "src/integration/swap/quote/quote-abstract";
 
 const LIQUIDITY_PROVIDER_FEE = 0.003
 

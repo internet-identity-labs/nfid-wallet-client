@@ -22,7 +22,7 @@ import { IActivityRow } from "frontend/features/activity/types"
 import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/handler-factory"
 import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapStage } from "src/integration/swap/types/enums"
 
 interface ErrorStage {

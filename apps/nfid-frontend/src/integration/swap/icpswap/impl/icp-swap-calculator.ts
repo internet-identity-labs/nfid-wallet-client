@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import {CalculatorAbstract, WIDGET_FEE} from "src/integration/swap/calculator-abstract";
+import {CalculatorAbstract, WIDGET_FEE} from "src/integration/swap/calculator/calculator-abstract";
 
 export class SourceInputCalculatorIcpSwap extends CalculatorAbstract {
   calculateSourceSwapAmount(): bigint {

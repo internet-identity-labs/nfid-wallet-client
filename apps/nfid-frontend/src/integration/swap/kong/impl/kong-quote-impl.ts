@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import {QuoteAbstract} from "src/integration/swap/quote-abstract";
+import {QuoteAbstract} from "src/integration/swap/quote/quote-abstract";
 import {TRIM_ZEROS} from "@nfid/integration/token/constants";
 
 export class KongQuoteImpl extends QuoteAbstract {

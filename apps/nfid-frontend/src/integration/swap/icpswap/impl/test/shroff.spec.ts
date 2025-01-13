@@ -6,8 +6,8 @@ import {
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"

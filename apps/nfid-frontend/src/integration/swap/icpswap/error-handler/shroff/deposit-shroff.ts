@@ -4,13 +4,14 @@ import {
   ShroffIcpSwapImpl,
 } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
 import { WithdrawError } from "../../../errors"
 import { WithdrawArgs } from "../../idl/SwapPool.d"
 import BigNumber from "bignumber.js"
+import {IcpSwapTransactionImpl} from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl";
 
 export class ShroffDepositErrorHandler extends ShroffIcpSwapImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -69,7 +70,7 @@ export class ShroffDepositErrorHandler extends ShroffIcpSwapImpl {
       return this.swapPoolActor.withdraw(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
           const id = result.ok as bigint
-          this.swapTransaction!.setWithdraw(id)
+          (this.swapTransaction! as IcpSwapTransactionImpl).setWithdraw(id)
           return id
         }
 

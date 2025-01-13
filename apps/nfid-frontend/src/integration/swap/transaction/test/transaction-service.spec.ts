@@ -10,9 +10,9 @@ import { authState } from "@nfid/integration"
 import {
   SwapTransaction as SwapTransactionCandid,
 } from "../idl/swap_trs_storage.d"
-import { IcpSwapTransactionImpl } from "../impl/icp-swap-transaction-impl"
+import { IcpSwapTransactionImpl } from "../../icpswap/impl/icp-swap-transaction-impl"
 import { SwapStage } from "src/integration/swap/types/enums"
-import { SwapTransactionService } from "./transaction-service"
+import { SwapTransactionService } from "../transaction-service"
 
 const mockDuration = 2 * 1000
 const mock: JsonnableEd25519KeyIdentity = [

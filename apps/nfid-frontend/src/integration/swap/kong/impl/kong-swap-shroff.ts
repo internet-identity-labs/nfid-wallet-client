@@ -1,7 +1,7 @@
 import * as Agent from "@dfinity/agent";
 import {HttpAgent, SignIdentity} from "@dfinity/agent";
-import {ShroffAbstract} from "src/integration/swap/shroff-abstract";
-import {SwapTransaction} from "../../icpswap/swap-transaction";
+import {ShroffAbstract} from "src/integration/swap/shroff/shroff-abstract";
+import {SwapTransaction} from "../../swap-transaction";
 import {Quote} from "../../quote";
 import {SwapName} from "../../types/enums";
 import {
@@ -23,9 +23,9 @@ import {Principal} from "@dfinity/principal";
 
 import {idlFactory as icrc1IDL} from "src/integration/swap/kong/idl/icrc1";
 import {_SERVICE as ICRC1ServiceIDL, Account, ApproveArgs} from "src/integration/swap/kong/idl/icrc1.d";
-import {IcpSwapTransactionImpl} from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl";
 import {Shroff} from "src/integration/swap/shroff";
 import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
+import {KongSwapTransactionImpl} from "src/integration/swap/kong/impl/kong-swap-transaction-impl";
 
 export const ROOT_CANISTER = "2ipq2-uqaaa-aaaar-qailq-cai"
 
@@ -100,7 +100,26 @@ class KongSwapShroffImpl extends ShroffAbstract {
       throw new Error("Quote not set")
     }
 
-    await this.icrc2approve(delegationIdentity)
+    console.log("KONG swap quote")
+
+    this.swapTransaction = new KongSwapTransactionImpl(
+      this.target.ledger,
+      this.source.ledger,
+      this.requestedQuote.getTargetAmount().toNumber(),
+      BigInt(this.requestedQuote.getSourceUserInputAmount().toNumber()),
+    )
+
+    const icrc2approve = await this.icrc2approve(delegationIdentity)
+
+    if (hasOwnProperty(icrc2approve, "Err")) {
+      throw new Error("ICRC2 approve error: " + JSON.stringify(icrc2approve.Err))
+    }
+
+    this.swapTransaction.setTransferId(BigInt(icrc2approve.Ok))
+
+    this.restoreTransaction()
+
+    console.log("ICRC2 approve response", JSON.stringify(icrc2approve))
 
     let args: SwapArgs = {
       receive_token: this.target.symbol,
@@ -123,15 +142,14 @@ class KongSwapShroffImpl extends ShroffAbstract {
     await replaceActorIdentity(this.actor, delegationIdentity)
 
     let resp = await this.actor.swap(args)
+
     console.log("Swap response", JSON.stringify(resp))
 
-    return this.swapTransaction = new IcpSwapTransactionImpl(
-      this.target.ledger,
-      this.source.ledger,
-      this.requestedQuote.getTargetAmount().toNumber(),
-      BigInt(this.requestedQuote.getSourceUserInputAmount().toNumber()),
-    )
+    this.swapTransaction.setCompleted()
 
+    await this.restoreTransaction()
+
+    return this.swapTransaction
   }
 
   validateQuote(): Promise<Quote> {
@@ -172,7 +190,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
       }],
     }
 
-    await actorICRC2.icrc2_approve(icrc2_approve_args)
+    return await actorICRC2.icrc2_approve(icrc2_approve_args)
   }
 }
 
@@ -230,7 +248,7 @@ export class KongShroffBuilder {
     }
   }
 
-  protected buildShroff():  KongSwapShroffImpl {
+  protected buildShroff(): KongSwapShroffImpl {
     return new KongSwapShroffImpl(
       this.sourceOracle!,
       this.targetOracle!,

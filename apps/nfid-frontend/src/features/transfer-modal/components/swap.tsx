@@ -22,7 +22,7 @@ import {
 } from "apps/nfid-frontend/src/integration/swap/errors"
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import { FormValues } from "../types"

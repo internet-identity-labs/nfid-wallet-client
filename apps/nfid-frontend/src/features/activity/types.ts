@@ -5,7 +5,7 @@ import {
 
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 export interface IActivityRow {
   id: string

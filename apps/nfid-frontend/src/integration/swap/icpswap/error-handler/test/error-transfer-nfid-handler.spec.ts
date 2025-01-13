@@ -3,7 +3,7 @@ import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/
 import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/handler-factory"
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapStage } from "src/integration/swap/types/enums"
 

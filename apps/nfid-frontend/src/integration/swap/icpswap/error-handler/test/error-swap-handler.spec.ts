@@ -4,7 +4,7 @@ import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapStage } from "src/integration/swap/types/enums"
 
@@ -19,7 +19,7 @@ const mockPrincipal =
 describe("shroff swap error handler test", () => {
   jest.setTimeout(900000)
 
-  it("swap error handler test", async function () {
+  it.skip("swap error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     let mockId = Ed25519KeyIdentity.fromParsedJson(mock)

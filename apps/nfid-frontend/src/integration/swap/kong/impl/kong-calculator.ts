@@ -1,4 +1,4 @@
-import {CalculatorAbstract, WIDGET_FEE} from "src/integration/swap/calculator-abstract";
+import {CalculatorAbstract, WIDGET_FEE} from "src/integration/swap/calculator/calculator-abstract";
 import BigNumber from "bignumber.js"
 
 export class KongCalculator extends CalculatorAbstract {

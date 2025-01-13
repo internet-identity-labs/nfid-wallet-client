@@ -5,7 +5,6 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
 import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
-import { errorTypes } from "src/integration/swap/icpswap/impl/constants"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { Quote } from "src/integration/swap/quote"
@@ -13,9 +12,9 @@ import {
   icpSwapService,
   SWAP_FACTORY_CANISTER,
 } from "src/integration/swap/icpswap/service/icpswap-service"
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { Shroff } from "src/integration/swap/shroff"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 import {
   actorBuilder,
@@ -46,7 +45,7 @@ import {
   SwapArgs,
   WithdrawArgs,
 } from "../idl/SwapPool.d"
-import {ShroffAbstract} from "src/integration/swap/shroff-abstract";
+import {ShroffAbstract} from "src/integration/swap/shroff/shroff-abstract";
 import { SwapName } from "../../types/enums"
 
 export class ShroffIcpSwapImpl extends ShroffAbstract {

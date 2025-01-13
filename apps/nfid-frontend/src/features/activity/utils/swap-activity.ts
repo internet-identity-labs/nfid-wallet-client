@@ -8,10 +8,11 @@ import {
   TransactionData,
 } from "@nfid/integration/token/icrc1/types"
 
-import { swapTransactionService } from "src/integration/swap/icpswap/service/transaction-service"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 import { IActivityRow } from "../types"
+import {IcpSwapTransactionImpl} from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl";
 
 interface TransactionDataExtended extends TransactionData {
   transaction: SwapTransaction
@@ -43,10 +44,10 @@ const formatTransaction = async (
     (icrc1) => icrc1.ledger === tx.getTargetLedger(),
   )
 
-  return {
+  return  {
     type: IActivityAction.SWAP,
     timestamp: BigInt(tx.getStartTime()) || BigInt(0),
-    transactionId: tx.getTransferId() || BigInt(0),
+    transactionId: BigInt(0),
     symbol: token!.symbol,
     symbolTo: tokenTo!.symbol,
     icon: token!.logo[0],

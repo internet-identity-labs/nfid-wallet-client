@@ -3,8 +3,8 @@ import { SwapHandler } from "src/integration/swap/icpswap/error-handler/handler/
 import { TransferNfidHandler } from "src/integration/swap/icpswap/error-handler/handler/transfer-nfid-handler"
 import { TransferSwapHandler } from "src/integration/swap/icpswap/error-handler/handler/transfer-swap-handler"
 import { WithdrawHandler } from "src/integration/swap/icpswap/error-handler/handler/withdraw-handler"
-import { SwapTransaction } from "src/integration/swap/icpswap/swap-transaction"
-import { TransactionErrorHandler } from "src/integration/swap/transaction-error-handler"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { TransactionErrorHandler } from "src/integration/swap/transaction/transaction-error-handler"
 import { SwapStage } from "src/integration/swap/types/enums"
 
 export class ErrorHandlerFactory {

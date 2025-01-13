@@ -1,12 +1,13 @@
 import * as Agent from "@dfinity/agent"
 import { HttpAgent } from "@dfinity/agent"
+import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { idlFactory as SwapStorageIDL } from "src/integration/swap/transaction/idl/swap_trs_storage"
 import {
   _SERVICE as SwapStorage,
   SwapTransaction as SwapTransactionCandid,
 } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
-import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
   actor,
@@ -14,8 +15,6 @@ import {
   authState,
   replaceActorIdentity,
 } from "@nfid/integration"
-
-import { SwapStage } from "src/integration/swap/types/enums"
 
 export const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
 

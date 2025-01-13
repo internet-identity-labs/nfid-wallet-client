@@ -5,6 +5,11 @@ import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useState } from "react"
+import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/handler-factory"
+import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
+import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
   IconCmpArrow,
@@ -19,11 +24,6 @@ import {
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
-import { errorHandlerFactory } from "src/integration/swap/icpswap/error-handler/handler-factory"
-import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { SwapTransaction } from "src/integration/swap/swap-transaction"
-import { SwapStage } from "src/integration/swap/types/enums"
 
 interface ErrorStage {
   buttonText: string

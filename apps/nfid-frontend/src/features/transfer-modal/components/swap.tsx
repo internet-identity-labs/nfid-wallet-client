@@ -1,17 +1,3 @@
-import { resetIntegrationCache } from "packages/integration/src/cache"
-import toaster from "packages/ui/src/atoms/toast"
-import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
-import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { FormProvider, useForm } from "react-hook-form"
-
-import {
-  CKBTC_CANISTER_ID,
-  ICP_CANISTER_ID,
-} from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
-
 import {
   DepositError,
   LiquidityError,
@@ -20,10 +6,23 @@ import {
   SwapError,
   WithdrawError,
 } from "apps/nfid-frontend/src/integration/swap/errors"
+import { resetIntegrationCache } from "packages/integration/src/cache"
+import toaster from "packages/ui/src/atoms/toast"
+import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
+import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapStage } from "src/integration/swap/types/enums"
+
+import {
+  CKBTC_CANISTER_ID,
+  ICP_CANISTER_ID,
+} from "@nfid/integration/token/constants"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { FormValues } from "../types"
 import {

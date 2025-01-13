@@ -1,17 +1,22 @@
-import {SignIdentity} from "@dfinity/agent"
-import {Principal} from "@dfinity/principal"
-import {Quote} from "src/integration/swap/quote"
-import {SWAP_FACTORY_CANISTER,} from "src/integration/swap/icpswap/service/icpswap-service"
-import {swapTransactionService} from "src/integration/swap/transaction/transaction-service"
-import {Shroff} from "src/integration/swap/shroff"
-import {SwapTransaction} from "src/integration/swap/swap-transaction"
-
-import {exchangeRateService, hasOwnProperty, ICRC1TypeOracle, TransferArg,} from "@nfid/integration"
-import {transferICRC1} from "@nfid/integration/token/icrc1"
-import {WithdrawError} from "src/integration/swap/errors";
-import { SwapName } from "../types/enums"
+import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
+import { WithdrawError } from "src/integration/swap/errors"
+import { SWAP_FACTORY_CANISTER } from "src/integration/swap/icpswap/service/icpswap-service"
+import { Quote } from "src/integration/swap/quote"
+import { Shroff } from "src/integration/swap/shroff"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 
+import {
+  exchangeRateService,
+  hasOwnProperty,
+  ICRC1TypeOracle,
+  TransferArg,
+} from "@nfid/integration"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+
+import { SwapName } from "../types/enums"
 
 export abstract class ShroffAbstract implements Shroff {
   protected readonly source: ICRC1TypeOracle
@@ -20,10 +25,7 @@ export abstract class ShroffAbstract implements Shroff {
   protected requestedQuote: Quote | undefined
   protected delegationIdentity: SignIdentity | undefined
 
-  protected constructor(
-    source: ICRC1TypeOracle,
-    target: ICRC1TypeOracle,
-  ) {
+  protected constructor(source: ICRC1TypeOracle, target: ICRC1TypeOracle) {
     this.source = source
     this.target = target
   }
@@ -107,10 +109,10 @@ export abstract class ShroffAbstract implements Shroff {
   }
 
   protected getAmountInDecimals(amount: string): BigNumber {
-    return  new BigNumber(amount).multipliedBy(
-      10 ** this.source.decimals,
-    )
+    return new BigNumber(amount).multipliedBy(10 ** this.source.decimals)
   }
 
-  protected abstract getCalculator(amountInDecimals: BigNumber): SourceInputCalculator
+  protected abstract getCalculator(
+    amountInDecimals: BigNumber,
+  ): SourceInputCalculator
 }

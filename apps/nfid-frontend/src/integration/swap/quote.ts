@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js"
-
 import { PriceImpact } from "src/integration/swap/types/types"
 
 export interface Quote {

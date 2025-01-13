@@ -1,12 +1,12 @@
 import BigNumber from "bignumber.js"
-import {SourceInputCalculatorIcpSwap} from "src/integration/swap/icpswap/impl/icp-swap-calculator"
-import {Quote} from "src/integration/swap/quote"
+import { LiquidityError } from "src/integration/swap/errors"
+import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
+import { Quote } from "src/integration/swap/quote"
+import { PriceImpactStatus } from "src/integration/swap/types/enums"
+import { PriceImpact } from "src/integration/swap/types/types"
 
-import {ICRC1TypeOracle} from "@nfid/integration"
-import {TRIM_ZEROS} from "@nfid/integration/token/constants"
-import {PriceImpactStatus} from "src/integration/swap/types/enums";
-import {PriceImpact} from "src/integration/swap/types/types";
-import {LiquidityError} from "src/integration/swap/errors";
+import { ICRC1TypeOracle } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 export abstract class QuoteAbstract implements Quote {
   protected readonly sourceAmount: string
@@ -147,8 +147,8 @@ export abstract class QuoteAbstract implements Quote {
       status: priceImpact.isGreaterThanOrEqualTo(-1)
         ? PriceImpactStatus.LOW
         : priceImpact.isGreaterThanOrEqualTo(-5)
-          ? PriceImpactStatus.MEDIUM
-          : PriceImpactStatus.HIGH,
+        ? PriceImpactStatus.MEDIUM
+        : PriceImpactStatus.HIGH,
     }
   }
 

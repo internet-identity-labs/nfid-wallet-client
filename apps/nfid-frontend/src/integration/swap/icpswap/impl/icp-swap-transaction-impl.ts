@@ -1,16 +1,15 @@
-import {Icrc1TransferError} from "@dfinity/ledger-icp/dist/candid/ledger"
-import {UUID} from "node:crypto"
-import {SwapTransaction,} from "src/integration/swap/swap-transaction"
-import {SwapStage} from "src/integration/swap/types/enums"
+import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+import { UUID } from "node:crypto"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { AbstractSwapTransaction } from "src/integration/swap/transaction/transaction-abstract"
+import { SwapStage } from "src/integration/swap/types/enums"
 
-import {Error as ErrorSwap} from "../idl/SwapPool.d"
-import {SwapTransaction as SwapTransactionCandid,} from "../../transaction/idl/swap_trs_storage.d"
-import {AbstractSwapTransaction} from "src/integration/swap/transaction/transaction-abstract";
+import { SwapTransaction as SwapTransactionCandid } from "../../transaction/idl/swap_trs_storage.d"
+import { Error as ErrorSwap } from "../idl/SwapPool.d"
 
 export class IcpSwapTransactionImpl extends AbstractSwapTransaction {
   private deposit: bigint | undefined
   private withdraw: bigint | undefined
-
 
   getDeposit(): bigint | undefined {
     return this.deposit
@@ -44,7 +43,6 @@ export class IcpSwapTransactionImpl extends AbstractSwapTransaction {
     this.endTime = Date.now()
     this.stage = SwapStage.TransferNFID
   }
-
 
   setError(error: Icrc1TransferError | ErrorSwap | string) {
     const swapError = {

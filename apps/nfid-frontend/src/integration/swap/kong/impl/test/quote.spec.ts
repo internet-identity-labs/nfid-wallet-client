@@ -1,13 +1,13 @@
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
-import {KongCalculator} from "src/integration/swap/kong/impl/kong-calculator";
 import BigNumber from "bignumber.js"
-import {KongQuoteImpl} from "src/integration/swap/kong/impl/kong-quote-impl";
+import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
+import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
 
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-describe("Kong quote test" , () => {
+describe("Kong quote test", () => {
   jest.setTimeout(1500000)
 
-  it('should return quote', async () => {
+  it("should return quote", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "mxzaz-hqaaa-aaaar-qaada-cai"
     const [st] = await Promise.all([icrc1OracleService.getICRC1Canisters()])
@@ -16,10 +16,7 @@ describe("Kong quote test" , () => {
     const target = st.find((icrc1) => icrc1.ledger === targetLedger)
     const quote = new KongQuoteImpl(
       "0.5",
-      new KongCalculator(
-        BigInt(0.5 * 10 ** source!.decimals),
-        source!.fee,
-      ),
+      new KongCalculator(BigInt(0.5 * 10 ** source!.decimals), source!.fee),
       BigInt(6631),
       source!,
       target!,
@@ -37,12 +34,9 @@ describe("Kong quote test" , () => {
     expect(quote.getTargetAmountUSD()).toEqual("4.22 USD")
     expect(quote.getSourceAmountUSD()).toEqual("4.22 USD")
     expect(quote.getGuaranteedAmount()).toEqual("0.00006621 ckBTC")
-    expect(quote.getEstimatedTransferFee()).toEqual([
-      "0.0002 ICP"
-    ])
+    expect(quote.getEstimatedTransferFee()).toEqual(["0.0002 ICP"])
     expect(priceImpactResult).toBeDefined()
     expect(priceImpactResult!.priceImpact).toEqual("0.90%")
     expect(priceImpactResult!.status).toEqual("low")
-  });
-
-});
+  })
+})

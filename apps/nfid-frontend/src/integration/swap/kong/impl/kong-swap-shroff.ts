@@ -1,48 +1,52 @@
-import * as Agent from "@dfinity/agent";
-import {HttpAgent, SignIdentity} from "@dfinity/agent";
-import {ShroffAbstract} from "src/integration/swap/shroff/shroff-abstract";
-import {SwapTransaction} from "../../swap-transaction";
-import {Quote} from "../../quote";
-import {SwapName} from "../../types/enums";
+import * as Agent from "@dfinity/agent"
+import { HttpAgent, SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
+import {
+  LiquidityError,
+  ServiceUnavailableError,
+} from "src/integration/swap/errors"
+import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
+import {
+  _SERVICE as ICRC1ServiceIDL,
+  Account,
+  ApproveArgs,
+} from "src/integration/swap/kong/idl/icrc1.d"
+import { idlFactory as KongIDL } from "src/integration/swap/kong/idl/kong_backend"
+import {
+  _SERVICE,
+  SwapArgs,
+} from "src/integration/swap/kong/idl/kong_backend.d"
+import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
+import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
+import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
+import { Shroff } from "src/integration/swap/shroff"
+import { ShroffAbstract } from "src/integration/swap/shroff/shroff-abstract"
+
 import {
   actorBuilder,
   agentBaseConfig,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
-  replaceActorIdentity
-} from "@nfid/integration";
-import {LiquidityError, ServiceUnavailableError} from "src/integration/swap/errors";
-import BigNumber from "bignumber.js"
-import {KongCalculator} from "src/integration/swap/kong/impl/kong-calculator";
-import {idlFactory as KongIDL} from "src/integration/swap/kong/idl/kong_backend";
-import {_SERVICE, SwapArgs} from "src/integration/swap/kong/idl/kong_backend.d";
-import {KongQuoteImpl} from "src/integration/swap/kong/impl/kong-quote-impl";
-import {TRIM_ZEROS} from "@nfid/integration/token/constants";
-import {Principal} from "@dfinity/principal";
+  replaceActorIdentity,
+} from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import {idlFactory as icrc1IDL} from "src/integration/swap/kong/idl/icrc1";
-import {_SERVICE as ICRC1ServiceIDL, Account, ApproveArgs} from "src/integration/swap/kong/idl/icrc1.d";
-import {Shroff} from "src/integration/swap/shroff";
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
-import {KongSwapTransactionImpl} from "src/integration/swap/kong/impl/kong-swap-transaction-impl";
+import { Quote } from "../../quote"
+import { SwapTransaction } from "../../swap-transaction"
+import { SwapName } from "../../types/enums"
 
 export const ROOT_CANISTER = "2ipq2-uqaaa-aaaar-qailq-cai"
 
 class KongSwapShroffImpl extends ShroffAbstract {
   private actor: Agent.ActorSubclass<_SERVICE>
 
-  constructor(
-    source: ICRC1TypeOracle,
-    target: ICRC1TypeOracle,
-  ) {
+  constructor(source: ICRC1TypeOracle, target: ICRC1TypeOracle) {
     super(source, target)
-    this.actor = actorBuilder<_SERVICE>(
-      ROOT_CANISTER,
-      KongIDL,
-    )
+    this.actor = actorBuilder<_SERVICE>(ROOT_CANISTER, KongIDL)
   }
-
 
   protected getCalculator(amountInDecimals: BigNumber): SourceInputCalculator {
     return new KongCalculator(
@@ -56,10 +60,8 @@ class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   getTargets(): string[] {
-    return [ROOT_CANISTER, ...ShroffAbstract.getStaticTargets(),
-    ]
+    return [ROOT_CANISTER, ...ShroffAbstract.getStaticTargets()]
   }
-
 
   //TODO improve
   async getQuote(amount: string): Promise<Quote> {
@@ -112,7 +114,9 @@ class KongSwapShroffImpl extends ShroffAbstract {
     const icrc2approve = await this.icrc2approve(delegationIdentity)
 
     if (hasOwnProperty(icrc2approve, "Err")) {
-      throw new Error("ICRC2 approve error: " + JSON.stringify(icrc2approve.Err))
+      throw new Error(
+        "ICRC2 approve error: " + JSON.stringify(icrc2approve.Err),
+      )
     }
 
     this.swapTransaction.setTransferId(BigInt(icrc2approve.Ok))
@@ -125,19 +129,23 @@ class KongSwapShroffImpl extends ShroffAbstract {
       receive_token: this.target.symbol,
       max_slippage: [2], //TODO slippage
       pay_amount: BigInt(
-        this.requestedQuote.getSourceSwapAmount()
+        this.requestedQuote
+          .getSourceSwapAmount()
           .toFixed(this.source.decimals)
           .replace(TRIM_ZEROS, ""),
       ),
       referred_by: [],
-      receive_amount: [BigInt(
-        this.requestedQuote.getTargetAmount()
-          .toFixed(this.target.decimals)
-          .replace(TRIM_ZEROS, ""),
-      )],
+      receive_amount: [
+        BigInt(
+          this.requestedQuote
+            .getTargetAmount()
+            .toFixed(this.target.decimals)
+            .replace(TRIM_ZEROS, ""),
+        ),
+      ],
       receive_address: [],
       pay_token: this.source.symbol,
-      pay_tx_id: []
+      pay_tx_id: [],
     }
     await replaceActorIdentity(this.actor, delegationIdentity)
 
@@ -153,11 +161,17 @@ class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   validateQuote(): Promise<Quote> {
-    throw new Error("Method not implemented.");
+    throw new Error("Method not implemented.")
   }
 
-  protected getQuotePromise(sourceCalculator: SourceInputCalculator): Promise<any> {
-    return this.actor.swap_amounts(this.source.symbol, sourceCalculator.getSourceSwapAmount(), this.target.symbol)
+  protected getQuotePromise(
+    sourceCalculator: SourceInputCalculator,
+  ): Promise<any> {
+    return this.actor.swap_amounts(
+      this.source.symbol,
+      sourceCalculator.getSourceSwapAmount(),
+      this.target.symbol,
+    )
   }
 
   protected async icrc2approve(identity: SignIdentity) {
@@ -165,7 +179,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
       this.source.ledger,
       icrc1IDL,
       {
-        agent: new HttpAgent({...agentBaseConfig, identity}),
+        agent: new HttpAgent({ ...agentBaseConfig, identity }),
       },
     )
 
@@ -179,21 +193,24 @@ class KongSwapShroffImpl extends ShroffAbstract {
       spender,
       fee: [],
       memo: [],
-      amount: BigInt(this.requestedQuote!.getSourceSwapAmount()
-        .plus(Number(this.source.fee)).toFixed(this.source.decimals)
-        .replace(TRIM_ZEROS, ""),
+      amount: BigInt(
+        this.requestedQuote!.getSourceSwapAmount()
+          .plus(Number(this.source.fee))
+          .toFixed(this.source.decimals)
+          .replace(TRIM_ZEROS, ""),
       ),
       created_at_time: [],
       expected_allowance: [],
-      expires_at: [{
-        timestamp_nanos: BigInt(1739927395042000000) //TODO
-      }],
+      expires_at: [
+        {
+          timestamp_nanos: BigInt(1739927395042000000), //TODO
+        },
+      ],
     }
 
     return await actorICRC2.icrc2_approve(icrc2_approve_args)
   }
 }
-
 
 export class KongShroffBuilder {
   private source: string | undefined
@@ -222,10 +239,9 @@ export class KongShroffBuilder {
     }
 
     try {
-      const [icrc1canisters]: [ICRC1TypeOracle[]] =
-        await Promise.all([
-          icrc1OracleService.getICRC1Canisters(),
-        ])
+      const [icrc1canisters]: [ICRC1TypeOracle[]] = await Promise.all([
+        icrc1OracleService.getICRC1Canisters(),
+      ])
 
       const st: ICRC1TypeOracle[] = icrc1canisters.filter(
         (icrc1) => icrc1.ledger === this.source || icrc1.ledger === this.target,
@@ -249,10 +265,6 @@ export class KongShroffBuilder {
   }
 
   protected buildShroff(): KongSwapShroffImpl {
-    return new KongSwapShroffImpl(
-      this.sourceOracle!,
-      this.targetOracle!,
-    )
+    return new KongSwapShroffImpl(this.sourceOracle!, this.targetOracle!)
   }
 }
-

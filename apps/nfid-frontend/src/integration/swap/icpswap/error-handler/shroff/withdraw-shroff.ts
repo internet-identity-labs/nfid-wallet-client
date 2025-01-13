@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+import { ContactSupportError } from "src/integration/swap/errors/contact-support-error"
 import {
   IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
@@ -8,7 +9,6 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 import { hasOwnProperty, replaceActorIdentity } from "@nfid/integration"
 
-import { ContactSupportError } from "src/integration/swap/errors/contact-support-error"
 import { WithdrawErrorLog } from "../../idl/SwapPool.d"
 
 export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {

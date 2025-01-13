@@ -1,12 +1,14 @@
-import {CalculatorAbstract, WIDGET_FEE} from "src/integration/swap/calculator/calculator-abstract";
 import BigNumber from "bignumber.js"
+import {
+  CalculatorAbstract,
+  WIDGET_FEE,
+} from "src/integration/swap/calculator/calculator-abstract"
 
 export class KongCalculator extends CalculatorAbstract {
   calculateSourceSwapAmount(): bigint {
-    return this.userInputAmount -
-      this.sourceFee -
-      this.widgetFee -
-      this.sourceFee
+    return (
+      this.userInputAmount - this.sourceFee - this.widgetFee - this.sourceFee
+    )
   }
 
   calculateWidgetFee(): bigint {

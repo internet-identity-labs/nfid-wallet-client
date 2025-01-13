@@ -15,7 +15,7 @@ export enum CompleteType {
 
 export enum SwapName {
   IcpSwap,
-  KongSwap
+  KongSwap,
 }
 
 export enum PriceImpactStatus {

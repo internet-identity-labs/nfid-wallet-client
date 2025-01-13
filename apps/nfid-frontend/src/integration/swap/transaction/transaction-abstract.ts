@@ -3,15 +3,14 @@ import {
   SwapError,
   SwapTransaction,
 } from "src/integration/swap/swap-transaction"
-import { SwapStage } from "src/integration/swap/types/enums"
-import { v4 as uuidv4 } from "uuid"
-
-import { hasOwnProperty } from "@nfid/integration"
-
 import {
   SwapStage as SwapStageCandid,
   SwapTransaction as SwapTransactionCandid,
 } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
+import { SwapStage } from "src/integration/swap/types/enums"
+import { v4 as uuidv4 } from "uuid"
+
+import { hasOwnProperty } from "@nfid/integration"
 
 export abstract class AbstractSwapTransaction implements SwapTransaction {
   protected uid: UUID
@@ -46,11 +45,11 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
   }
 
   abstract toCandid(): SwapTransactionCandid
-  abstract  fromCandid(candid: SwapTransactionCandid): SwapTransaction
-  abstract  getDeposit(): bigint | undefined
+  abstract fromCandid(candid: SwapTransactionCandid): SwapTransaction
+  abstract getDeposit(): bigint | undefined
   abstract getWithdraw(): bigint | undefined
   abstract setDeposit(deposit: bigint): void
-  abstract  setWithdraw(withdraw: bigint): void
+  abstract setWithdraw(withdraw: bigint): void
 
   getTransferId(): bigint | undefined {
     return this.transferId

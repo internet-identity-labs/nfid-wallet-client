@@ -1,5 +1,4 @@
 interface SourceInputCalculator {
-
   getSourceSwapAmount(): bigint
 
   getWidgetFee(): bigint

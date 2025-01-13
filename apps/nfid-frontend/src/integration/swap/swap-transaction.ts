@@ -1,8 +1,8 @@
 import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { SwapTransaction as SwapTransactionCandid } from "src/integration/swap/transaction/idl/swap_trs_storage"
 import { SwapStage } from "src/integration/swap/types/enums"
-import { Error as ErrorSwap } from "./icpswap/idl/SwapPool.d"
 
+import { Error as ErrorSwap } from "./icpswap/idl/SwapPool.d"
 
 //TODO make this ICP/Kong Specific
 export interface SwapTransaction {
@@ -36,7 +36,6 @@ export interface SwapTransaction {
 
   setNFIDTransferId(transferId: bigint): void
 
-
   //TODO move this under IcpSwapTrs
 
   getTransferId(): bigint | undefined
@@ -56,8 +55,6 @@ export interface SwapTransaction {
   setTransferId(transferId: bigint): void
 
   setWithdraw(withdraw: bigint): void
-
-
 }
 
 export interface SwapError {

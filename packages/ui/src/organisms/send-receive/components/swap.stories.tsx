@@ -1,11 +1,11 @@
 import { Principal } from "@dfinity/principal"
 import { Meta, StoryFn } from "@storybook/react"
 import { FormProvider, useForm } from "react-hook-form"
+import { Quote } from "src/integration/swap/quote"
 
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FT } from "frontend/integration/ft/ft"
-import { Quote } from "src/integration/swap/quote"
 
 import { SwapFTUi, SwapFTUiProps } from "./swap"
 import { TransferTemplate } from "./template"

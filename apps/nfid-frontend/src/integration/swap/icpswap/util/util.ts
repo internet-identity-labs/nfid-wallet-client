@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import {WIDGET_FEE} from "src/integration/swap/calculator/calculator-abstract";
+import { WIDGET_FEE } from "src/integration/swap/calculator/calculator-abstract"
 
 export const getMaxAmountFee = (
   sourceAmount: bigint,

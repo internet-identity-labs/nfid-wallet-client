@@ -180,6 +180,15 @@ export const TransferFT = ({
         if (typeof res === "object" && "Err" in res) {
           if (!isOpenRef.current) toaster.error("Something went wrong")
           console.error(`Transfer error: ${JSON.stringify(res.Err)}`)
+          if (
+            res.Err.hasOwnProperty("GenericError") &&
+            (
+              res.Err as {
+                GenericError: { error_code: bigint }
+              }
+            ).GenericError.error_code === BigInt(0)
+          )
+            toaster.error("This token can't be sent to yourself")
           setStatus(SendStatus.FAILED)
           return
         }

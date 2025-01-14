@@ -29,7 +29,7 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
           "rounded-[24px] shadow-lg px-5 pb-[84px] pt-[18px] text-black overflow-hidden",
           "z-20 bg-white relative border border-gray-100",
           "m-auto",
-          "w-[340px] sm:w-[450px] min-h-[480px]",
+          "w-[340px] sm:w-[450px]",
           className,
         )}
         onClick={(e) => e.stopPropagation()}

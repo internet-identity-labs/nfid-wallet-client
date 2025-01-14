@@ -5,7 +5,7 @@ import {
   TransferModal,
   TransferVaultModal,
 } from "packages/ui/src/organisms/send-receive"
-import { useCallback, useContext, useEffect, useMemo } from "react"
+import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { authState } from "@nfid/integration"
 
@@ -19,6 +19,8 @@ import { SwapFT } from "./components/swap"
 export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
+  const [hasSwapError, setHasSwapError] = useState(false)
+  const [swapSettingsOpened, setSwapSettingsOpened] = useState(false)
 
   useDisableScroll(!state.matches("Hidden"))
 
@@ -54,6 +56,9 @@ export const TransferModalCoordinator = () => {
         <SwapFT
           onClose={() => send({ type: "HIDE" })}
           isOpen={state.matches("SwapMachine")}
+          onError={setHasSwapError}
+          swapSettingsOpened={swapSettingsOpened}
+          closeSwapSettings={() => setSwapSettingsOpened(false)}
         />
         <TransferReceive
           publicKey={publicKey}
@@ -62,7 +67,7 @@ export const TransferModalCoordinator = () => {
         />
       </>
     ),
-    [send, state, publicKey],
+    [send, state, publicKey, swapSettingsOpened],
   )
 
   const onTokenTypeChange = useCallback(
@@ -92,6 +97,8 @@ export const TransferModalCoordinator = () => {
           onTokenTypeChange={onTokenTypeChange}
           component={Components}
           isOpen={!state.matches("Hidden")}
+          hasSwapError={hasSwapError}
+          onSettingsClick={() => setSwapSettingsOpened(true)}
         />
       )}
     </>

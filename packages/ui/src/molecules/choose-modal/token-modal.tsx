@@ -24,7 +24,7 @@ import { useIntersectionObserver } from "../../organisms/send-receive/hooks/inte
 const INITED_TOKENS_LIMIT = 6
 
 export interface IChooseTokenModal<T> {
-  searchInputId: string
+  searchInputId?: string
   tokens: T[]
   onSelect: (value: T) => void
   title: string
@@ -57,16 +57,28 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     const init = async () => {
       const { publicKey } = authState.getUserIdData()
 
-      const tokenOptions = await Promise.all(
-        tokens.map((token, index) => {
-          return index < INITED_TOKENS_LIMIT && !token.isInited()
-            ? token.init(Principal.fromText(publicKey))
-            : token
-        }),
-      )
+      try {
+        const tokenOptions = await Promise.all(
+          tokens.map(async (token, index) => {
+            if (index < INITED_TOKENS_LIMIT && !token.isInited()) {
+              try {
+                await token.init(Principal.fromText(publicKey))
+                return token
+              } catch (error) {
+                console.error("Error during token initialization:", error)
+                return null
+              }
+            }
+            return token
+          }),
+        )
 
-      setTokensOptions(tokenOptions as T[])
-      setIsTokenOptionsLoading(false)
+        setTokensOptions(tokenOptions.filter(Boolean) as T[])
+      } catch (error) {
+        console.error("Error during tokens initialization:", error)
+      } finally {
+        setIsTokenOptionsLoading(false)
+      }
     }
 
     init()

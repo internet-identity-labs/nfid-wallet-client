@@ -12,7 +12,7 @@ export interface Quote {
   getQuoteRate(): string
   getLiquidityProviderFee(): string
   getWidgetFee(): string
-  getMaxSlippagge(): string
+  getMaxSlippage(): string
   getGuaranteedAmount(): string
   getSourceUserInputAmount(): BigNumber
   getSourceSwapAmount(): BigNumber

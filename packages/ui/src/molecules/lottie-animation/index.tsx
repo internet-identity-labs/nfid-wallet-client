@@ -11,6 +11,7 @@ export interface LottieAnimationProps
   className?: string
   speed?: number
   onComplete?: () => void
+  viewBox?: string
 }
 
 export const LottieAnimation: React.FC<LottieAnimationProps> = ({
@@ -23,6 +24,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   onComplete,
   speed = 1,
   style = {},
+  viewBox,
   ...props
 }) => {
   const animationContainer = useRef<HTMLDivElement>(null)
@@ -37,6 +39,10 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
         loop,
         autoplay,
         animationData,
+        rendererSettings: {
+          viewBoxSize: viewBox,
+          className: "!w-[332px] !h-[160px]",
+        },
       })
 
       if (onComplete) {

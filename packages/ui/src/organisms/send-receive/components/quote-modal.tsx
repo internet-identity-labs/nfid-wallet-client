@@ -25,7 +25,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
         onClose={() => {
           setModalOpen(false)
         }}
-        className="p-5 w-[340px] sm:w-[450px] min-h-[480px] z-[100] !rounded-[24px]"
+        className="p-5 w-[340px] sm:w-[450px] !min-h-[510px] z-[100] !rounded-[24px]"
       >
         <div>
           <div className="flex gap-[10px] items-center mb-2">
@@ -36,7 +36,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               }}
             />
             <div className="text-[20px] leading-[40px] font-bold">
-              Swap quote
+              ICPSwap quote details
             </div>
           </div>
           <div
@@ -73,28 +73,12 @@ export const QuoteModal: FC<QuoteModalProps> = ({
                   {sourceFee}
                 </p>
               </div>
-              <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
-                <p>Max slippage</p>
-                <p>{quote?.getMaxSlippage()}</p>
-                <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
-                  The amount the price can change before it’s reverted between
-                  the time your order is placed and confirmed.
-                </p>
-              </div>
-              <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
+              <div className="flex flex-wrap justify-between py-3 leading-5">
                 <p>Widget fee</p>
                 <p>{quote?.getWidgetFee()}</p>
                 <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
                   The fee of 0.875% is automatically factored into this quote to
                   support the NFID Wallet Community.
-                </p>
-              </div>
-              <div className="flex flex-wrap justify-between py-3 leading-5">
-                <p>Guaranteed amount</p>
-                <p>{quote?.getGuaranteedAmount()}</p>
-                <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
-                  This is the minimum amount you will receive after all fees.
-                  You may receive more depending on slippage.
                 </p>
               </div>
             </div>

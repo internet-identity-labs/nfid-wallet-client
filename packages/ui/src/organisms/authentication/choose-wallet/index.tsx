@@ -1,11 +1,11 @@
 import clsx from "clsx"
+import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import { FC } from "react"
 
-import { BlurredLoader, Button, CenterEllipsis } from "@nfid-frontend/ui"
+import { Button, CenterEllipsis } from "@nfid-frontend/ui"
 import { ExistingWallet } from "@nfid/integration"
 
 import { AuthAppMeta } from "../app-meta"
-import Caret from "./caret.svg"
 
 interface AuthorizationRequest {
   hostname?: string
@@ -71,19 +71,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
                     />
                   </p>
                 </div>
-                <div className="relative">
-                  <div
-                    className={clsx(
-                      "absolute w-0 h-0.5 bg-black top-0 bottom-0 right-[1px] my-auto",
-                      "group-hover:w-3 transition-all duration-300",
-                    )}
-                  ></div>
-                  <img
-                    className="transition-transform group-hover:translate-x-[2px] duration-300"
-                    src={Caret}
-                    alt="email-verification-error"
-                  />
-                </div>
+                <IconCaret />
               </div>
             )
           })}

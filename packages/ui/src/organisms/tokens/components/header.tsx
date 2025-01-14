@@ -25,7 +25,6 @@ import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 import { FT } from "frontend/integration/ft/ft"
 import { filterTokens } from "frontend/integration/ft/ft-service"
 
-import Caret from "../assets/caret.svg"
 import { FilteredToken } from "./filtered-asset"
 
 export interface ICRC1Metadata {

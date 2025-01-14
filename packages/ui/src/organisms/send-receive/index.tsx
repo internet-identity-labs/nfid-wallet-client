@@ -4,6 +4,8 @@ import { FC } from "react"
 
 import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
 
+import SettingsIcon from "./assets/swap-settings.svg"
+
 import { TransferTemplate } from "./components/template"
 
 export interface TransferModalProps {
@@ -15,6 +17,7 @@ export interface TransferModalProps {
   component: JSX.Element
   isOpen: boolean
   hasSwapError: boolean
+  onSettingsClick: () => void
 }
 
 export interface TransferVaultModalProps {
@@ -35,6 +38,7 @@ export const TransferModal: FC<TransferModalProps> = ({
   component,
   isOpen,
   hasSwapError,
+  onSettingsClick,
 }) => {
   return (
     <TransferTemplate
@@ -46,8 +50,21 @@ export const TransferModal: FC<TransferModalProps> = ({
       overlayClassName={!isOpen ? "hidden" : ""}
     >
       {!isSuccess && (
-        <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
-          {direction}
+        <div
+          className={clsx(
+            "leading-10 text-[20px] font-bold mb-[18px]",
+            "flex justify-between items-center",
+          )}
+        >
+          <span className="first-letter:capitalize">{direction}</span>
+          {direction === ModalType.SWAP && (
+            <img
+              className="cursor-pointer"
+              src={SettingsIcon}
+              alt="NFID swap settings"
+              onClick={onSettingsClick}
+            />
+          )}
         </div>
       )}
       {direction === "send" && !isSuccess && (

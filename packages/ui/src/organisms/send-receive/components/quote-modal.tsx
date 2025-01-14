@@ -75,7 +75,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Max slippage</p>
-                <p>{quote?.getMaxSlippagge()}</p>
+                <p>{quote?.getMaxSlippage()}</p>
                 <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
                   The amount the price can change before it’s reverted between
                   the time your order is placed and confirmed.

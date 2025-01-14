@@ -81,6 +81,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
       sourceUSDPricePromise,
       quotePromise,
     ])
+
     if (hasOwnProperty(quote, "Ok")) {
       this.requestedQuote = new KongQuoteImpl(
         amount,
@@ -88,6 +89,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
         quote.Ok.receive_amount,
         this.source,
         this.target,
+        await this.getSlippage(),
         targetUSDPrice?.value,
         sourceUSDPrice?.value,
       )
@@ -126,9 +128,11 @@ class KongSwapShroffImpl extends ShroffAbstract {
 
       console.log("ICRC2 approve response", JSON.stringify(icrc2approve))
 
+      const slippage = await this.getSlippage()
+
       let args: SwapArgs = {
         receive_token: this.target.symbol,
-        max_slippage: [2], //TODO slippage
+        max_slippage: [slippage],
         pay_amount: BigInt(
           this.requestedQuote
             .getSourceSwapAmount()
@@ -149,6 +153,8 @@ class KongSwapShroffImpl extends ShroffAbstract {
         pay_tx_id: [],
       }
       await replaceActorIdentity(this.actor, delegationIdentity)
+
+      console.debug("Swap args", JSON.stringify(args))
 
       let resp: SwapResult = await this.actor.swap(args)
 

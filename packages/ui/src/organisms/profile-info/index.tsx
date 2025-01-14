@@ -51,7 +51,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             tip={
               <span>
                 Fungible tokens USD price powered by
-                <br /> ICPSwap.
+                <br /> ICPTokens and ICPSwap.
               </span>
             }
           >
@@ -88,7 +88,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
                     })}
                   >
                     {usdBalance.dayChangePositive && "+"}
-                    {usdBalance.dayChange}
+                    {usdBalance.dayChange} USD
                   </small>
                   <ArrowPercentChange
                     className="self-end"

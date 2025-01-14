@@ -121,8 +121,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         setQuoteModalOpen={setQuoteModalOpen}
       />
       <QuoteModal
-        modalOpen={quoteModalOpen}
-        setModalOpen={setQuoteModalOpen}
+        modalOpen={swapSettingsOpened}
+        setModalOpen={closeSwapSettings}
         quote={quote}
       />
       <p className="mb-1 text-xs">From</p>

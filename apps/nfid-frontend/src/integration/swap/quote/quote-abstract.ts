@@ -15,6 +15,7 @@ export abstract class QuoteAbstract implements Quote {
   protected readonly targetPriceUSD: BigNumber | undefined
   protected readonly sourcePriceUSD: BigNumber | undefined
   protected readonly sourceCalculator: SourceInputCalculator
+  protected readonly slippage: number
 
   constructor(
     userInputAmount: string,
@@ -22,6 +23,7 @@ export abstract class QuoteAbstract implements Quote {
     quote: bigint,
     source: ICRC1TypeOracle,
     target: ICRC1TypeOracle,
+    slippage: number,
     targetPriceUSD: BigNumber | undefined,
     sourcePriceUSD: BigNumber | undefined,
   ) {
@@ -30,6 +32,7 @@ export abstract class QuoteAbstract implements Quote {
     this.source = source
     this.target = target
     this.targetPriceUSD = targetPriceUSD
+    this.slippage = slippage
     this.sourcePriceUSD = sourcePriceUSD
     this.sourceCalculator = sourceCalculator
     if (quote <= this.target.fee) {
@@ -162,9 +165,8 @@ export abstract class QuoteAbstract implements Quote {
     )
   }
 
-  //TODO
-  getMaxSlippagge(): string {
-    return "0%"
+  getMaxSlippage(): string {
+    return this.slippage + "%"
   }
 
   getSourceUserInputAmount(): BigNumber {

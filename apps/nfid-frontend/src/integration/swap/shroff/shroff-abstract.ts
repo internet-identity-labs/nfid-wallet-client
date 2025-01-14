@@ -7,6 +7,7 @@ import { Quote } from "src/integration/swap/quote"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
+import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
 import {
   exchangeRateService,
@@ -115,4 +116,10 @@ export abstract class ShroffAbstract implements Shroff {
   protected abstract getCalculator(
     amountInDecimals: BigNumber,
   ): SourceInputCalculator
+
+  protected async getSlippage(): Promise<number> {
+    return await userPrefService.getUserPreferences().then((prefs) => {
+      return prefs.getSlippage()
+    })
+  }
 }

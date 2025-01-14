@@ -113,10 +113,12 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
       this.source.ledger,
     )
 
+    const slippage = await this.getSlippage()
+
     const args: SwapArgs = {
       amountIn: preCalculation.getSourceSwapAmount().toString(),
       zeroForOne: this.zeroForOne,
-      amountOutMinimum: "0",
+      amountOutMinimum: slippage.toString(),
     }
 
     const quotePromise = this.swapPoolActor.quote(args) as Promise<Result>
@@ -134,6 +136,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         quote.ok as bigint,
         this.source,
         this.target,
+        slippage,
         targetUSDPrice?.value,
         sourceUSDPrice?.value,
       )

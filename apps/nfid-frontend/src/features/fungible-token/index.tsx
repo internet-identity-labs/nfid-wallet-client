@@ -1,7 +1,6 @@
-import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import { Tokens } from "packages/ui/src/organisms/tokens"
-import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
+import { fetchTokens, initTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
@@ -11,6 +10,7 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { useSWRWithTimestamp } from "@nfid/swr"
+import {useRef} from "react"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { FT } from "frontend/integration/ft/ft"
@@ -20,8 +20,6 @@ import { ModalType } from "../transfer-modal/types"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
-  const [initedTokens, setInitedTokens] = useState<FT[]>([])
-  const [isInitLoading, setIsInitLoading] = useState(false)
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
@@ -35,43 +33,34 @@ const TokensPage = () => {
   }
 
   const {
-    data: tokens = [],
-    mutate: refetchTokens,
-    isLoading: isTokensLoading,
-    isValidating: isTokenFetching,
+    data: tokens = undefined,
+    mutate: refetchTokens
   } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
+    revalidateOnMount: false
   })
 
   const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
+    return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  useEffect(() => {
-    const initTokens = async () => {
-      setIsInitLoading(true)
-      const { publicKey } = authState.getUserIdData()
-      const inited = await Promise.all(
-        activeTokens.map(async (token) => {
-          await token.init(Principal.fromText(publicKey))
-          return token
-        }),
-      )
-      setInitedTokens(inited)
-      setIsInitLoading(false)
-    }
+  const tokensWereInited = useRef(false);
 
-    initTokens()
-  }, [activeTokens])
+  useEffect(() => {
+    if (!tokensWereInited.current && activeTokens) {
+      initTokens(activeTokens)
+      tokensWereInited.current = true;
+    }
+  }, [activeTokens]);
 
   const filteredTokens = useMemo(() => {
     if (!hideZeroBalance)
-      return initedTokens.filter((token): token is FT => !!token)
-    return initedTokens.filter(
+      return activeTokens?.filter((token): token is FT => !!token)
+    return activeTokens?.filter(
       (token): token is FT =>
         token !== undefined && token.getTokenBalance()! > BigInt(0),
     )
-  }, [initedTokens, hideZeroBalance])
+  }, [activeTokens, hideZeroBalance])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -112,9 +101,9 @@ const TokensPage = () => {
 
   return (
     <Tokens
-      activeTokens={filteredTokens}
-      allTokens={tokens}
-      isTokensLoading={isTokensLoading || isTokenFetching || isInitLoading}
+      activeTokens={filteredTokens || []}
+      allTokens={tokens || []}
+      isTokensLoading={!filteredTokens}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}

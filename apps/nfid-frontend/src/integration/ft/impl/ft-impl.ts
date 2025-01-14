@@ -157,7 +157,7 @@ export class FTImpl implements FT {
   getTokenRate(amount: string): string | undefined {
     if (!this.tokenRate) return
 
-    const amountBigNumber = new BigNumber(amount)
+    const amountBigNumber = new BigNumber(amount || 0)
     const result = this.tokenRate.value.multipliedBy(amountBigNumber)
 
     return result.toFixed(2)
@@ -166,7 +166,7 @@ export class FTImpl implements FT {
   getTokenRateFormatted(amount: string): string | undefined {
     const tokenRate = this.getTokenRate(amount)
     if (!tokenRate) return undefined
-    return `${this.getTokenRate(amount)} USD`
+    return `${tokenRate} USD`
   }
 
   getTokenRateDayChangePercent():

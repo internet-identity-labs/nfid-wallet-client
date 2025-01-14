@@ -26,6 +26,7 @@ import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ErrorModal } from "./error-modal"
 import { QuoteModal } from "./quote-modal"
+import { SwapSettings } from "./swap-settings"
 import { SwapSuccessUi } from "./swap-success"
 
 export interface SwapFTUiProps {
@@ -98,7 +99,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         className="text-xs"
       />
     )
-  console.log("swapSettingsOpened", swapSettingsOpened)
+
   return (
     <>
       <SwapSuccessUi
@@ -114,9 +115,14 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         error={error}
       />
       {showServiceError && <ErrorModal refresh={clearQuoteError} />}
-      <QuoteModal
+      <SwapSettings
         modalOpen={swapSettingsOpened}
         setModalOpen={closeSwapSettings}
+        setQuoteModalOpen={setQuoteModalOpen}
+      />
+      <QuoteModal
+        modalOpen={quoteModalOpen}
+        setModalOpen={setQuoteModalOpen}
         quote={quote}
       />
       <p className="mb-1 text-xs">From</p>

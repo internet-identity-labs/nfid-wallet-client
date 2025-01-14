@@ -116,6 +116,7 @@ export class FtService {
         : BigNumber(price.usdBalanceDayChange!)
             .div(price.usdBalance!)
             .multipliedBy(100)
+            .abs()
             .toFixed(2),
       dayChange: BigNumber(price.usdBalanceDayChange!).toFixed(2),
       dayChangePositive: price.usdBalanceDayChange!.gte(0),

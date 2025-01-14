@@ -128,54 +128,58 @@ export const Tokens: FC<TokensProps> = ({
         hideZeroBalance={hideZeroBalance}
         onZeroBalanceToggle={onZeroBalanceToggle}
       />
-      <table className="w-full text-left">
-        <thead className="text-secondary h-[40px] hidden md:table-header-group">
-          <tr className="text-sm font-bold leading-5">
-            <th className="w-[25%] min-w-[100px] pr-[30px]">Name</th>
-            <th className="w-[25%] pr-[10px] min-w-[100px]">Category</th>
-            <th className="w-[25%] pr-[10px] min-w-[100px]">Price</th>
-            <th className="w-[25%] pr-[10px] min-w-[100px]">Token balance</th>
-            <th
-              className={clsx(
-                "w-[25%] pr-[10px] min-w-[120px]",
-                "cursor-pointer hover:text-gray-500 flex items-center gap-[6px]",
-              )}
-              onClick={handleSorting}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              USD balance
-              <img
-                className="w-[18px] h-[18px]"
-                src={getSortingIcon()}
-                alt="Sorting"
+      <div className="overflow-x-scroll">
+        <table className="w-full text-left">
+          <thead className="text-secondary h-[40px] hidden md:table-header-group">
+            <tr className="text-sm font-bold leading-5">
+              <th className="w-[25%] min-w-[100px] pr-[30px]">Name</th>
+              <th className="w-[25%] pr-[10px] min-w-[100px]">Category</th>
+              <th className="w-[25%] pr-[10px] min-w-[100px]">Price</th>
+              <th className="w-[25%] pr-[10px] min-w-[100px]">Token balance</th>
+              <th
+                className={clsx(
+                  "w-[25%] pr-[10px] min-w-[120px]",
+                  "cursor-pointer hover:text-gray-500 gap-[6px]",
+                )}
+                onClick={handleSorting}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <span className="whitespace-nowrap flex">
+                  USD balance{" "}
+                  <img
+                    className="w-[18px] h-[18px] ms-[5px]"
+                    src={getSortingIcon()}
+                    alt="Sorting"
+                  />
+                </span>
+              </th>
+              <th className="w-[30px] lg:w-[50px]"></th>
+            </tr>
+          </thead>
+          <tbody className="h-16 text-sm text-black">
+            {isTokensLoading ? (
+              <TableTokenSkeleton
+                tableRowsAmount={5}
+                tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
               />
-            </th>
-            <th className="w-[24px]"></th>
-          </tr>
-        </thead>
-        <tbody className="h-16 text-sm text-black">
-          {isTokensLoading ? (
-            <TableTokenSkeleton
-              tableRowsAmount={5}
-              tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
-            />
-          ) : (
-            sortedTokens.map((token, index, arr) => (
-              <ActiveToken
-                key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
-                token={token}
-                tokens={allTokens}
-                profileConstants={profileConstants}
-                onSendClick={onSendClick}
-                setToken={setToken}
-                dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
-                loadingToken={loadingToken}
-              />
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              sortedTokens.map((token, index, arr) => (
+                <ActiveToken
+                  key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
+                  token={token}
+                  tokens={allTokens}
+                  profileConstants={profileConstants}
+                  onSendClick={onSendClick}
+                  setToken={setToken}
+                  dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
+                  loadingToken={loadingToken}
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
       <NewAssetsModal tokens={null} />
       <TokenInfoModal token={token} onClose={() => setToken(undefined)} />
     </>

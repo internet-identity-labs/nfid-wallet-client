@@ -84,7 +84,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
     <>
       <SendSuccessUi
         title={`${amount} ${token.getTokenSymbol()}`}
-        subTitle={`${token.getTokenRateFormatted(amount.toString())}`}
+        subTitle={`${token.getTokenRateFormatted(amount || 0)}`}
         onClose={onClose}
         assetImg={`${token.getTokenLogo()}`}
         isOpen={isSuccessOpen}
@@ -96,7 +96,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         token={token}
         balance={vaultsBalance}
         setFromChosenToken={setChosenToken}
-        usdRate={token.getTokenRateFormatted(amount.toString())}
+        usdRate={token.getTokenRateFormatted(amount || 0)}
         tokens={tokens}
         title="Token to send"
       />

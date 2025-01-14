@@ -89,7 +89,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                     id={"choose-to-token-amount"}
                     className="!text-white !h-auto !placeholder-white/50"
                     decimals={2}
-                    isPercentage
+                    fontSize={14}
                     isLoading={false}
                     value=""
                     ref={customInputRef}

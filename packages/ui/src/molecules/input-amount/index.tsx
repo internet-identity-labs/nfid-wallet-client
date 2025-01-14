@@ -8,14 +8,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   decimals: number
   isLoading: boolean
   value: string
-  isPercentage?: boolean
+  fontSize?: number
   className?: string
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
   (
     {
-      isPercentage,
+      fontSize,
       className,
       id,
       decimals,
@@ -28,8 +28,8 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
     },
     ref,
   ) => {
-    const fontSize = useMemo(() => {
-      if (isPercentage) return 14
+    const inputFontSize = useMemo(() => {
+      if (fontSize) return fontSize
       if (!value) return 34
       if (value.length > 16) {
         return 16
@@ -81,7 +81,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
               className,
             )}
             name={name}
-            style={{ fontSize }}
+            style={{ fontSize: inputFontSize }}
           />
         )}
       </>

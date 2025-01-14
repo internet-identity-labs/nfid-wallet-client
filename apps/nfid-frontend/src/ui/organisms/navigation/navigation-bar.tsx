@@ -8,8 +8,6 @@ import { LogoMain } from "@nfid-frontend/ui"
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
 import { useScroll } from "frontend/ui/utils/use-scroll"
 
-import { NavigationItems as NavigationItemsDefault } from "./navigation-items"
-
 interface NavigationBarProps extends React.HTMLAttributes<HTMLDivElement> {
   navigationItems?: React.ReactNode
   isFocused?: boolean
@@ -50,16 +48,12 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
                 to={"/"}
                 className="flex items-center w-[162px] text-2xl font-black"
               >
-                <img src={LogoMain} alt="NFID" />
+                <img src={LogoMain} alt="NFID Wallet" />
               </Link>
             </div>
           )}
 
-          {isFocused ? null : navigationItems ? (
-            navigationItems
-          ) : (
-            <NavigationItemsDefault />
-          )}
+          {isFocused ? null : navigationItems && navigationItems}
         </div>
       </div>
     </header>

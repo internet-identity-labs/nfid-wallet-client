@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { H5, IconSvgNFIDWalletLogo } from "@nfid-frontend/ui"
+import { H5, LogoMain } from "@nfid-frontend/ui"
 
 export interface AuthAppMetaProps {
   applicationURL?: string
@@ -17,7 +17,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
 }) => (
   <>
     <div className="flex flex-col items-center w-full pt-8">
-      {withLogo && <img src={IconSvgNFIDWalletLogo} className="h-[43px]" />}
+      {withLogo && <img src={LogoMain} className="h-[43px]" />}
 
       {title && (
         <H5

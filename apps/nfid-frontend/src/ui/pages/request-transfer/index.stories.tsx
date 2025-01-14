@@ -1,7 +1,7 @@
 import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import logo from "frontend/assets/distrikt.svg"
+import logo from "./distrikt.svg"
 
 import { IRequestTransferPage, RequestTransferPage } from "."
 

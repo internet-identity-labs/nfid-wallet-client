@@ -166,6 +166,7 @@ export const Tokens: FC<TokensProps> = ({
             ) : (
               sortedTokens.map((token, index, arr) => (
                 <ActiveToken
+                  hideZeroBalance={hideZeroBalance}
                   key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
                   token={token}
                   tokens={allTokens}

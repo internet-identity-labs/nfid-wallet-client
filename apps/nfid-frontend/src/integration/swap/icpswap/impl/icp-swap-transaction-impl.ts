@@ -2,7 +2,7 @@ import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { UUID } from "node:crypto"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { AbstractSwapTransaction } from "src/integration/swap/transaction/transaction-abstract"
-import { SwapStage } from "src/integration/swap/types/enums"
+import {SwapProvider, SwapStage} from "src/integration/swap/types/enums"
 
 import { SwapTransaction as SwapTransactionCandid } from "../../transaction/idl/swap_trs_storage.d"
 import { Error as ErrorSwap } from "../idl/SwapPool.d"
@@ -10,6 +10,10 @@ import { Error as ErrorSwap } from "../idl/SwapPool.d"
 export class IcpSwapTransactionImpl extends AbstractSwapTransaction {
   private deposit: bigint | undefined
   private withdraw: bigint | undefined
+
+  getProvider(): SwapProvider {
+    return SwapProvider.IcpSwap;
+  }
 
   getDeposit(): bigint | undefined {
     return this.deposit
@@ -75,6 +79,7 @@ export class IcpSwapTransactionImpl extends AbstractSwapTransaction {
       uid: this.uid,
       target_amount: BigInt(this.quote),
       source_amount: BigInt(this.sourceAmount),
+      swap_provider: { IcpSwap: null },
     }
   }
 

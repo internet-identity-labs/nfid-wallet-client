@@ -7,7 +7,7 @@ import {
   SwapStage as SwapStageCandid,
   SwapTransaction as SwapTransactionCandid,
 } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
-import { SwapStage } from "src/integration/swap/types/enums"
+import {SwapProvider, SwapStage} from "src/integration/swap/types/enums"
 import { v4 as uuidv4 } from "uuid"
 
 import { hasOwnProperty } from "@nfid/integration"
@@ -26,6 +26,7 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
   protected transferId: bigint | undefined
   protected readonly targetLedger: string
   protected readonly sourceLedger: string
+  protected readonly swapProvider: SwapProvider
 
   constructor(
     targetLedger: string,
@@ -42,8 +43,10 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
     this.sourceAmount = amount
     this.errors = []
     this.isLoading = false
+    this.swapProvider = this.getProvider()
   }
 
+  abstract getProvider(): SwapProvider
   abstract toCandid(): SwapTransactionCandid
   abstract fromCandid(candid: SwapTransactionCandid): SwapTransaction
   abstract getDeposit(): bigint | undefined

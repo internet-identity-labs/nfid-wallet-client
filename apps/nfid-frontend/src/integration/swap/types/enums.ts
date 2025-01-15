@@ -23,3 +23,8 @@ export enum PriceImpactStatus {
   MEDIUM = "medium",
   HIGH = "high",
 }
+
+export enum SwapProvider {
+  Kong,
+  IcpSwap,
+}

@@ -12,9 +12,10 @@ import { SwapStage } from "src/integration/swap/types/enums"
 import {
   actor,
   agentBaseConfig,
-  authState,
+  authState, hasOwnProperty,
   replaceActorIdentity,
 } from "@nfid/integration"
+import {KongSwapTransactionImpl} from "src/integration/swap/kong/impl/kong-swap-transaction-impl";
 
 export const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
 
@@ -40,7 +41,12 @@ export class SwapTransactionService {
     const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
-        const transaction = new IcpSwapTransactionImpl(
+        const transaction = hasOwnProperty(t.swap_provider, "Kong") ? new KongSwapTransactionImpl(
+          t.target_ledger,
+          t.source_ledger,
+          Number(t.target_amount),
+          t.source_amount,
+        ).fromCandid(t) : new IcpSwapTransactionImpl(
           t.target_ledger,
           t.source_ledger,
           Number(t.target_amount),

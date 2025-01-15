@@ -46,6 +46,10 @@ export function Wrapper({
     <div className="overflow-x-hidden">
       <Helmet>
         <meta name="theme-color" content={themeColor} />
+        <meta
+          name="description"
+          content="NFID Wallet is the safest way to store, send, and manage ICP tokens."
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link

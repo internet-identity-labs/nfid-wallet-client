@@ -165,10 +165,6 @@ export abstract class QuoteAbstract implements Quote {
     )
   }
 
-  getMaxSlippage(): string {
-    return this.slippage + "%"
-  }
-
   getSourceUserInputAmount(): BigNumber {
     return BigNumber(this.sourceAmount).multipliedBy(10 ** this.source.decimals)
   }

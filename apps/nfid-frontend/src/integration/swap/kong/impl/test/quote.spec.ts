@@ -30,7 +30,6 @@ describe("Kong quote test", () => {
     expect(quote.getTargetAmountPrettified()).toEqual("0.00006621")
     expect(quote.getQuoteRate()).toEqual("1 ICP = 0.00013387 ckBTC")
     expect(quote.getLiquidityProviderFee()).toEqual("?.? ckBTC") //TODO
-    expect(quote.getMaxSlippage()).toEqual("2%")
     expect(quote.getWidgetFee()).toEqual("0.00437238 ICP")
     expect(quote.getTargetAmountUSD()).toEqual("4.22 USD")
     expect(quote.getSourceAmountUSD()).toEqual("4.22 USD")

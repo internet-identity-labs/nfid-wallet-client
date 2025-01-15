@@ -57,7 +57,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   getSwapName(): SwapName {
-    return SwapName.KongSwap
+    return SwapName.Kongswap
   }
 
   getTargets(): string[] {

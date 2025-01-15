@@ -12,10 +12,9 @@ import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
-import { SwapStage } from "src/integration/swap/types/enums"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
   CKBTC_CANISTER_ID,
@@ -23,6 +22,9 @@ import {
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+
+import { swapService } from "frontend/integration/swap/service/swap-service"
+import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 
 import { FormValues } from "../types"
 import {
@@ -51,6 +53,9 @@ export const SwapFT = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
+  const [swapProviders, setSwapProviders] = useState<Map<SwapName, Shroff>>(
+    new Map(),
+  )
   const [shroff, setShroff] = useState<Shroff | undefined>()
   const [isShroffLoading, setIsShroffLoading] = useState(true)
   const [swapStep, setSwapStep] = useState<SwapStage>(0)
@@ -63,6 +68,7 @@ export const SwapFT = ({
     string | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
+  const [slippage, setSlippage] = useState(2)
 
   const isOpenRef = useRef(isOpen)
 
@@ -101,6 +107,12 @@ export const SwapFT = ({
   })
 
   useEffect(() => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      setSlippage(userPref.getSlippage())
+    })
+  }, [])
+
+  useEffect(() => {
     onError(Boolean(swapError))
   }, [swapError, onError])
 
@@ -117,12 +129,29 @@ export const SwapFT = ({
   const amount = watch("amount")
 
   useEffect(() => {
+    const getProviders = async () => {
+      const providers = await swapService.getSwapProviders(
+        fromTokenAddress,
+        toTokenAddress,
+      )
+
+      setSwapProviders(providers)
+    }
+
+    getProviders()
+  }, [fromTokenAddress, toTokenAddress])
+
+  console.log("shroffError", shroff)
+
+  useEffect(() => {
     const getShroff = async () => {
       try {
-        const shroff = await new IcpSwapShroffBuilder()
-          .withSource(fromTokenAddress)
-          .withTarget(toTokenAddress)
-          .build()
+        const shroff = await swapService.getShroffWithBiggestQuote(
+          fromTokenAddress,
+          toTokenAddress,
+          amount,
+        )
+
         setShroff(shroff)
         setLiquidityError(undefined)
       } catch (error) {
@@ -130,6 +159,7 @@ export const SwapFT = ({
         if (error instanceof ServiceUnavailableError) {
           setShroffError(error)
         } else if (error instanceof LiquidityError) {
+          console.log("getShroff LIQUIDITY ERROR")
           setLiquidityError(error)
         } else {
           console.error("Quote error: ", error)
@@ -142,7 +172,7 @@ export const SwapFT = ({
     }
 
     if (!shroffError) getShroff()
-  }, [fromTokenAddress, toTokenAddress, shroffError])
+  }, [fromTokenAddress, toTokenAddress, shroffError, amount])
 
   useEffect(() => {
     if (!getTransaction) return
@@ -300,6 +330,15 @@ export const SwapFT = ({
         quoteTimer={quoteTimer}
         swapSettingsOpened={swapSettingsOpened}
         closeSwapSettings={closeSwapSettings}
+        slippage={slippage}
+        setSlippage={(value) => {
+          setSlippage(value)
+          userPrefService.getUserPreferences().then((userPref) => {
+            userPref.setSlippage(value)
+          })
+        }}
+        swapProviders={swapProviders}
+        shroff={shroff}
       />
     </FormProvider>
   )

@@ -69,7 +69,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
   }
 
   getSwapName(): SwapName {
-    return SwapName.IcpSwap
+    return SwapName.ICPSwap
   }
 
   setQuote(quote: Quote) {

@@ -1,6 +1,6 @@
 import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { SwapTransaction as SwapTransactionCandid } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
-import {SwapProvider, SwapStage} from "src/integration/swap/types/enums"
+import { SwapProvider, SwapStage } from "src/integration/swap/types/enums"
 
 import { Error as ErrorSwap } from "./icpswap/idl/SwapPool.d"
 

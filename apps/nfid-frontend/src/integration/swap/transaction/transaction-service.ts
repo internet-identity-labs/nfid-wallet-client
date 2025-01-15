@@ -1,6 +1,7 @@
 import * as Agent from "@dfinity/agent"
 import { HttpAgent } from "@dfinity/agent"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
+import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { idlFactory as SwapStorageIDL } from "src/integration/swap/transaction/idl/swap_trs_storage"
 import {
@@ -12,10 +13,10 @@ import { SwapStage } from "src/integration/swap/types/enums"
 import {
   actor,
   agentBaseConfig,
-  authState, hasOwnProperty,
+  authState,
+  hasOwnProperty,
   replaceActorIdentity,
 } from "@nfid/integration"
-import {KongSwapTransactionImpl} from "src/integration/swap/kong/impl/kong-swap-transaction-impl";
 
 export const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
 
@@ -41,17 +42,19 @@ export class SwapTransactionService {
     const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
-        const transaction = hasOwnProperty(t.swap_provider, "Kong") ? new KongSwapTransactionImpl(
-          t.target_ledger,
-          t.source_ledger,
-          Number(t.target_amount),
-          t.source_amount,
-        ).fromCandid(t) : new IcpSwapTransactionImpl(
-          t.target_ledger,
-          t.source_ledger,
-          Number(t.target_amount),
-          t.source_amount,
-        ).fromCandid(t)
+        const transaction = hasOwnProperty(t.swap_provider, "Kong")
+          ? new KongSwapTransactionImpl(
+              t.target_ledger,
+              t.source_ledger,
+              Number(t.target_amount),
+              t.source_amount,
+            ).fromCandid(t)
+          : new IcpSwapTransactionImpl(
+              t.target_ledger,
+              t.source_ledger,
+              Number(t.target_amount),
+              t.source_amount,
+            ).fromCandid(t)
 
         transaction.setIsLoading(
           Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION &&

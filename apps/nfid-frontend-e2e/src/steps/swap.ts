@@ -50,21 +50,20 @@ When(
 
 When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
   await Assets.SwapDialog.getSourceAmountField.setValue(amount)
+  let currentAmountToSend
   await browser.waitUntil(async () => {
+    currentAmountToSend = parseFloat(await (
+        await Assets.SwapDialog.getTargetAmountField
+      ).getAttribute("value"),
+    )
     return (
       (await Assets.SwapDialog.getTargetAmountField.isDisplayed()) &&
-      parseFloat(
-        await (
-          await Assets.SwapDialog.getTargetAmountField
-        ).getAttribute("value"),
-      ) > 0
+      currentAmountToSend > 0
     )
   }, {
     interval: 1000,
     timeout: 20000,
-    timeoutMsg: `Expected targetAmountField value > 0, but was ${await (
-      await Assets.SwapDialog.getTargetAmountField
-    ).getAttribute("value")}`,
+    timeoutMsg: `Expected targetAmountField value > 0, but was ${currentAmountToSend}`,
   })
   sourceTokenAmountToSwap = parseFloat(amount)
   currentSourceTokenBalance = parseFloat(

@@ -33,7 +33,6 @@ export * from "./atoms/image-with-fallback"
 export * from "./atoms/application-icon"
 export * from "./molecules/copy-address"
 export * from "./atoms/toast/toast-icons"
-
 export * from "./molecules/button"
 export * from "./molecules/button/arrow-button"
 export * from "./molecules/input"
@@ -58,9 +57,6 @@ export * from "./molecules/warning-accordion"
 export * from "./molecules/card"
 export * from "./molecules/lottie-animation"
 export * from "./molecules/toggle-button"
-
 export * from "./molecules/tabs-switcher"
-
 export * from "./templates"
-
 export * from "./utils/validations"

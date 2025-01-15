@@ -1,6 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "../../dist/types",
     "composite": true,
     "emitDecoratorMetadata": true,
     "outDir": ""

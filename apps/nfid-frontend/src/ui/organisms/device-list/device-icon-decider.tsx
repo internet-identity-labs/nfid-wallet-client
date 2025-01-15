@@ -2,11 +2,11 @@ import React from "react"
 
 import { Icon } from "@nfid/integration"
 
-import { IconLaptop } from "frontend/ui/atoms/icons/desktop"
+import { IconLaptop } from "frontend/ui/atoms/icons/laptop"
 import { DocumentIcon } from "frontend/ui/atoms/icons/document"
 import { EmailIcon } from "frontend/ui/atoms/icons/email"
 import { GoogleIcon } from "frontend/ui/atoms/icons/google"
-import { IconDesktop } from "frontend/ui/atoms/icons/laptop"
+import { IconDesktop } from "frontend/ui/atoms/icons/desktop"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
 import { TabletIcon } from "frontend/ui/atoms/icons/tablet"
 import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"

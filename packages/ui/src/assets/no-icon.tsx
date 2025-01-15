@@ -1,6 +1,6 @@
 import React from "react"
 
-interface NoIconProps extends React.SVGProps<SVGSVGElement> {}
+type NoIconProps = React.SVGProps<SVGSVGElement>
 
 export const NoIcon: React.FC<NoIconProps> = ({ className, onClick }) => {
   return (

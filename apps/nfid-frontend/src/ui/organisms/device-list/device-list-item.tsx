@@ -8,7 +8,7 @@ import { Loader, Tooltip } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { LegacyDevice } from "frontend/integration/identity-manager/devices/state"
-import { IconCancel } from "frontend/ui/atoms/icons/cancle"
+import { IconCancel } from "frontend/ui/atoms/icons/cancel"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { InfoIcon } from "frontend/ui/atoms/icons/info"
 import { PencilIcon } from "frontend/ui/atoms/icons/pencil"

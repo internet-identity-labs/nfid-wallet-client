@@ -1,13 +1,16 @@
-import {UUID} from "node:crypto"
-import {SwapError, SwapTransaction,} from "src/integration/swap/swap-transaction"
+import { UUID } from "node:crypto"
+import {
+  SwapError,
+  SwapTransaction,
+} from "src/integration/swap/swap-transaction"
 import {
   SwapStage as SwapStageCandid,
   SwapTransaction as SwapTransactionCandid,
 } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
-import {SwapName, SwapStage} from "src/integration/swap/types/enums"
-import {v4 as uuidv4} from "uuid"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
+import { v4 as uuidv4 } from "uuid"
 
-import {hasOwnProperty} from "@nfid/integration"
+import { hasOwnProperty } from "@nfid/integration"
 
 export abstract class AbstractSwapTransaction implements SwapTransaction {
   protected uid: UUID

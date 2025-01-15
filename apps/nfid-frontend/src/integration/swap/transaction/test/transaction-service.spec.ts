@@ -11,6 +11,7 @@ import { authState } from "@nfid/integration"
 import { IcpSwapTransactionImpl } from "../../icpswap/impl/icp-swap-transaction-impl"
 import { SwapTransaction as SwapTransactionCandid } from "../idl/swap_trs_storage.d"
 import { SwapTransactionService } from "../transaction-service"
+import {KongSwapTransactionImpl} from "src/integration/swap/kong/impl/kong-swap-transaction-impl";
 
 const mockDuration = 2 * 1000
 const mock: JsonnableEd25519KeyIdentity = [
@@ -107,7 +108,7 @@ describe("SwapTransactionService", () => {
 
     const result = await service.getTransactions()
 
-    expect(result[0]).toBeInstanceOf(IcpSwapTransactionImpl)
+    expect(result[0]).toBeInstanceOf(KongSwapTransactionImpl)
     expect(result[0].getIsLoading()).toBe(true)
     expect(result[1].getIsLoading()).toBe(false)
     expect(result[2].getIsLoading()).toBe(false)

@@ -21,6 +21,8 @@ describe("Kong quote test", () => {
       source!,
       target!,
       2,
+      //@ts-ignore
+      { txs: [{ lp_fee: BigInt(77) }, { lp_fee: BigInt(4) }] },
       BigNumber(63603.80961802474),
       BigNumber(8.437122672555095),
     )
@@ -29,7 +31,7 @@ describe("Kong quote test", () => {
     expect(quote.getSourceAmountPrettified()).toEqual("0.5")
     expect(quote.getTargetAmountPrettified()).toEqual("0.00006621")
     expect(quote.getQuoteRate()).toEqual("1 ICP = 0.00013387 ckBTC")
-    expect(quote.getLiquidityProviderFee()).toEqual("?.? ckBTC") //TODO
+    expect(quote.getLiquidityProviderFee()).toEqual("0.00000081 ckBTC")
     expect(quote.getMaxSlippage()).toEqual("2%")
     expect(quote.getWidgetFee()).toEqual("0.00437238 ICP")
     expect(quote.getTargetAmountUSD()).toEqual("4.22 USD")

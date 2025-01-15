@@ -105,22 +105,26 @@ const HomeContent = ({
       </Container>
       <Container>
         <div className="flex flex-wrap items-center justify-center gap-10 mt-10 md:justify-between md:mt-20 md:gap-3 lg:gap-12 xl:gap-20">
-          <img className={clsx(sponsor)} src={Tomahawk} alt="" />
-          <img className={clsx(sponsor)} src={Polychain} alt="" />
-          <img className={clsx(sponsor)} src={Outliers} alt="" />
-          <img className={clsx(sponsor)} src={Dfinity} alt="" />
-          <img className={clsx(sponsor)} src={Gmjp} alt="" />
-          <img className={clsx(sponsor)} src={Rarible} alt="" />
-          <img className={clsx(sponsor)} src={Yards} alt="" />
-          <img className={clsx(sponsor)} src={Blockchain} alt="" />
-          <img className={clsx(sponsor)} src={Flyrfy} alt="" />
-          <img className={clsx(sponsor)} src={Rubylight} alt="" />
-          <img className={clsx(sponsor)} src={Spaceship} alt="" />
+          <img className={clsx(sponsor)} src={Tomahawk} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Polychain} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Outliers} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Dfinity} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Gmjp} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Rarible} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Yards} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Blockchain} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Flyrfy} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Rubylight} alt="ICP investors" />
+          <img className={clsx(sponsor)} src={Spaceship} alt="ICP investors" />
         </div>
       </Container>
       <Container className="mt-10 md:mt-20">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <img src={Audit} className="hidden md:block pe-[15px]" />
+          <img
+            src={Audit}
+            className="hidden md:block pe-[15px]"
+            alt="ICP safest wallet"
+          />
           <div className="ms-0 md:ms-[15px] flex flex-col justify-center">
             <div>
               <h2 className="font-bold text-[18px] lg:text-[32px] leading-[140%] text-white mb-[25px]">
@@ -255,10 +259,14 @@ const HomeContent = ({
           <div className={clsx(card)}>
             <div className="gradient-radial-card"></div>
             <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
-              <img src={Card1} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card1}
+                alt="secure ICP wallet"
+                className={clsx(cardImg, "z-10")}
+              />
               <img
                 src={Card1Hover}
-                alt=""
+                alt="secure wallet"
                 className={clsx(
                   cardImg,
                   "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",
@@ -273,10 +281,14 @@ const HomeContent = ({
           <div className={clsx(card)}>
             <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
               <div className="gradient-radial-card"></div>
-              <img src={Card2} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card2}
+                alt="protected ICP wallet"
+                className={clsx(cardImg, "z-10")}
+              />
               <img
                 src={Card2Hover}
-                alt=""
+                alt="protected wallet"
                 className={clsx(
                   cardImg,
                   "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",
@@ -291,10 +303,14 @@ const HomeContent = ({
           <div className={clsx(card)}>
             <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
               <div className="gradient-radial-card"></div>
-              <img src={Card3} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card3}
+                alt="trusted ICP wallet"
+                className={clsx(cardImg, "z-10")}
+              />
               <img
                 src={Card3Hover}
-                alt=""
+                alt="trusted wallet"
                 className={clsx(
                   cardImg,
                   "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",
@@ -309,10 +325,14 @@ const HomeContent = ({
           <div className={clsx(card)}>
             <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
               <div className="gradient-radial-card"></div>
-              <img src={Card4} alt="" className={clsx(cardImg, "z-10")} />
+              <img
+                src={Card4}
+                alt="self-sovereign ICP wallet"
+                className={clsx(cardImg, "z-10")}
+              />
               <img
                 src={Card4Hover}
-                alt=""
+                alt="self-sovereign wallet"
                 className={clsx(
                   cardImg,
                   "z-30 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-700",

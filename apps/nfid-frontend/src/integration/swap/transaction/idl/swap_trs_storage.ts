@@ -23,6 +23,10 @@ export const idlFactory = ({ IDL }: any) => {
     transfer_nfid_id: IDL.Opt(IDL.Nat64),
     target_amount: IDL.Nat,
     source_amount: IDL.Nat,
+    swap_provider: IDL.Variant({
+      Kong: IDL.Null,
+      IcpSwap: IDL.Null,
+    }),
   })
   return IDL.Service({
     get_transactions: IDL.Func(

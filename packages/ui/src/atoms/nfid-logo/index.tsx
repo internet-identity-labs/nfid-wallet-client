@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { FC } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
-import { Logo, LogoMain } from "@nfid-frontend/ui"
+import { LogoLanding, LogoMain } from "@nfid-frontend/ui"
 
 interface NFIDLogoProps {
   className?: string
@@ -11,7 +11,7 @@ interface NFIDLogoProps {
 
 export const NFIDLogo: FC<NFIDLogoProps> = ({ className }) => (
   <Link to="/">
-    <img src={Logo} alt="NFID" className={className} />
+    <img src={LogoLanding} alt="NFID Wallet" className={className} />
   </Link>
 )
 
@@ -20,7 +20,7 @@ export const NFIDLogoMain: FC<NFIDLogoProps> = ({ className, assetsLink }) => {
   return (
     <img
       src={LogoMain}
-      alt="NFID"
+      alt="NFID Wallet"
       className={clsx("cursor-pointer", className)}
       onClick={() => {
         if (!assetsLink) return

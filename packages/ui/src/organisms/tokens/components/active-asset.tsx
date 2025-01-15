@@ -22,6 +22,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
+  hideZeroBalance?: boolean
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -32,12 +33,20 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   setToken,
   dropdownPosition,
   loadingToken,
+  hideZeroBalance,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
-  const initedToken = useTokenInit(token)
   const tokenPrice = token.getTokenRateFormatted("1")
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
+  const initedToken = useTokenInit(token)
+
+  if (
+    initedToken &&
+    hideZeroBalance &&
+    initedToken.getTokenBalance() === BigInt(0)
+  )
+    return null
 
   return (
     <tr

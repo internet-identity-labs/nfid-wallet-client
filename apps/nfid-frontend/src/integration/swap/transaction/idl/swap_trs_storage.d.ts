@@ -28,6 +28,7 @@ export interface SwapTransaction {
   transfer_nfid_id: [] | [bigint]
   target_amount: bigint
   source_amount: bigint
+  swap_provider: { Kong: null } | { IcpSwap: null }
 }
 export interface _SERVICE {
   get_transactions: ActorMethod<[string], Array<SwapTransaction>>

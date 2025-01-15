@@ -2,9 +2,13 @@ import { UUID } from "node:crypto"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapTransaction as SwapTransactionCandid } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
 import { AbstractSwapTransaction } from "src/integration/swap/transaction/transaction-abstract"
-import { SwapStage } from "src/integration/swap/types/enums"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 export class KongSwapTransactionImpl extends AbstractSwapTransaction {
+  getProvider(): SwapName {
+    return SwapName.KongSwap
+  }
+
   setTransferId(transferId: bigint) {
     this.transferId = transferId
     this.stage = SwapStage.Swap
@@ -38,6 +42,7 @@ export class KongSwapTransactionImpl extends AbstractSwapTransaction {
       uid: this.uid,
       target_amount: BigInt(this.quote),
       source_amount: BigInt(this.sourceAmount),
+      swap_provider: { Kong: null },
     }
   }
 

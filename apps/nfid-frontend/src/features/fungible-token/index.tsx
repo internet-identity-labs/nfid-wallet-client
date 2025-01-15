@@ -1,6 +1,6 @@
 import { useActor } from "@xstate/react"
 import { Tokens } from "packages/ui/src/organisms/tokens"
-import { fetchTokens, initTokens } from "packages/ui/src/organisms/tokens/utils"
+import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
@@ -10,10 +10,8 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { useSWRWithTimestamp } from "@nfid/swr"
-import {useRef} from "react"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
@@ -32,35 +30,15 @@ const TokensPage = () => {
     send("SHOW")
   }
 
-  const {
-    data: tokens = undefined,
-    mutate: refetchTokens
-  } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false
-  })
+  const { data: tokens = undefined, mutate: refetchTokens } =
+    useSWRWithTimestamp("tokens", fetchTokens, {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+    })
 
   const activeTokens = useMemo(() => {
     return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
-
-  const tokensWereInited = useRef(false);
-
-  useEffect(() => {
-    if (!tokensWereInited.current && activeTokens) {
-      initTokens(activeTokens)
-      tokensWereInited.current = true;
-    }
-  }, [activeTokens]);
-
-  const filteredTokens = useMemo(() => {
-    if (!hideZeroBalance)
-      return activeTokens?.filter((token): token is FT => !!token)
-    return activeTokens?.filter(
-      (token): token is FT =>
-        token !== undefined && token.getTokenBalance()! > BigInt(0),
-    )
-  }, [activeTokens, hideZeroBalance])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -101,9 +79,9 @@ const TokensPage = () => {
 
   return (
     <Tokens
-      activeTokens={filteredTokens || []}
+      activeTokens={activeTokens || []}
       allTokens={tokens || []}
-      isTokensLoading={!filteredTokens}
+      isTokensLoading={!activeTokens}
       onSubmitIcrc1Pair={onSubmitIcrc1Pair}
       onFetch={onFetch}
       profileConstants={ProfileConstants}

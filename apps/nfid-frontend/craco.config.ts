@@ -40,7 +40,7 @@ const setupCSP = () => {
         "https://toniq.io",
         "https://stat.yuku.app",
         "https://memecake.io",
-        "https://web2.icptokens.net/api/tokens"
+        "https://web2.icptokens.net/api/tokens",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

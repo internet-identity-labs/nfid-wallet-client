@@ -90,6 +90,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
         this.source,
         this.target,
         await this.getSlippage(),
+        quote.Ok,
         targetUSDPrice?.value,
         sourceUSDPrice?.value,
       )

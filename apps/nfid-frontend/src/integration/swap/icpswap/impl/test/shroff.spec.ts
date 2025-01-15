@@ -8,7 +8,7 @@ import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-sw
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
-import { SwapProvider, SwapStage } from "src/integration/swap/types/enums"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -131,7 +131,7 @@ describe("shroff test", () => {
 
     expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.Completed)
     expect(shroff.getSwapTransaction()?.getProvider()).toEqual(
-      SwapProvider.IcpSwap,
+      SwapName.IcpSwap,
     )
 
     const balanceUpgraded = await ledgerICRC.getBalance(mockPrincipal)

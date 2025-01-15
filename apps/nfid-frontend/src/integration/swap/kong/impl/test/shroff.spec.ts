@@ -6,7 +6,7 @@ import {
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
-import { SwapProvider, SwapStage } from "src/integration/swap/types/enums"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -64,12 +64,12 @@ describe("Shroff Kong test", () => {
     console.log("difference KONG", updatedBalanceKong - balanceKong)
     expect(updatedBalanceKong - balanceKong).toBeGreaterThan(0)
     expect(resp2.getStage()).toEqual(SwapStage.Completed)
-    expect(resp2.getProvider()).toEqual(SwapProvider.Kong)
+    expect(resp2.getProvider()).toEqual(SwapName.KongSwap)
 
     const transactionsAfterSwap = (
       await swapTransactionService.getTransactions()
     ).find((t) => t.getStartTime() === resp2.getStartTime())
 
-    expect(transactionsAfterSwap!.getProvider()).toEqual(SwapProvider.Kong)
+    expect(transactionsAfterSwap!.getProvider()).toEqual(SwapName.KongSwap)
   })
 })

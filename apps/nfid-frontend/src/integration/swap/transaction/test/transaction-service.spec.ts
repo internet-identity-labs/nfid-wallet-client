@@ -48,6 +48,7 @@ describe("SwapTransactionService", () => {
       stage: { Withdraw: null },
       end_time: [],
       transfer_nfid_id: [],
+      swap_provider: { Kong: null },
     }
 
     const mockCompletedTransaction: SwapTransactionCandid = {
@@ -65,6 +66,7 @@ describe("SwapTransactionService", () => {
       stage: { Completed: null },
       end_time: [],
       transfer_nfid_id: [],
+      swap_provider: { Kong: null },
     }
 
     const mockFailedTransaction: SwapTransactionCandid = {
@@ -82,6 +84,7 @@ describe("SwapTransactionService", () => {
       stage: { Withdraw: null } as any,
       end_time: [],
       transfer_nfid_id: [],
+      swap_provider: { Kong: null },
     }
 
     const delegationIdentity = DelegationIdentity.fromDelegation(

@@ -276,7 +276,7 @@ export class Assets {
     },
 
     get getTargetAmountField() {
-      return $("#choose-to-token-amount")
+      return $("#targetSection #choose-to-token-amount")
     },
 
     get getSourceAmountField() {

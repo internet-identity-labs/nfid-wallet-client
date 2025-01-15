@@ -59,6 +59,12 @@ When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
         ).getAttribute("value"),
       ) > 0
     )
+  }, {
+    interval: 1000,
+    timeout: 20000,
+    timeoutMsg: `Expected targetAmountField value > 0, but was ${await (
+      await Assets.SwapDialog.getTargetAmountField
+    ).getAttribute("value")}`,
   })
   sourceTokenAmountToSwap = parseFloat(amount)
   currentSourceTokenBalance = parseFloat(

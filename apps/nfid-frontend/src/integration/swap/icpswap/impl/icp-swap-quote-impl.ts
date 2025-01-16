@@ -7,9 +7,9 @@ const LIQUIDITY_PROVIDER_FEE = 0.003
 
 export class IcpSwapQuoteImpl extends QuoteAbstract {
   getTransferToSwapAmount(): BigNumber {
-    return BigNumber(this.sourceCalculator.getSourceSwapAmount().toString()).plus(
-      Number(this.source.fee),
-    )
+    return BigNumber(
+      this.sourceCalculator.getSourceSwapAmount().toString(),
+    ).plus(Number(this.source.fee))
   }
 
   getEstimatedTransferFee(): string[] {

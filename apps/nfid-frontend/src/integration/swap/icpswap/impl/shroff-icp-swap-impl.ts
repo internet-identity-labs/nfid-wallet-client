@@ -1,6 +1,6 @@
 import * as Agent from "@dfinity/agent"
 import { SignIdentity } from "@dfinity/agent"
-import {Account, SubAccount} from "@dfinity/ledger-icp"
+import { Account, SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"

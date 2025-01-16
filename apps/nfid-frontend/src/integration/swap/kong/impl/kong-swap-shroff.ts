@@ -115,13 +115,12 @@ class KongSwapShroffImpl extends ShroffAbstract {
       BigInt(this.requestedQuote.getSourceUserInputAmount().toNumber()),
     )
     try {
-
       const icrc2supported = await this.icrc2supported()
 
       let icrcTransferId
 
       if (icrc2supported) {
-        icrcTransferId =  await this.icrc2approve()
+        icrcTransferId = await this.icrc2approve()
         console.log("ICRC2 approve response", JSON.stringify(icrcTransferId))
         this.swapTransaction.setTransferId(icrcTransferId)
       } else {
@@ -154,7 +153,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
         ],
         receive_address: [],
         pay_token: this.source.symbol,
-        pay_tx_id: icrc2supported ? [] : [{BlockIndex: icrcTransferId}],
+        pay_tx_id: icrc2supported ? [] : [{ BlockIndex: icrcTransferId }],
       }
       await replaceActorIdentity(this.actor, delegationIdentity)
 
@@ -187,8 +186,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
     }
   }
 
-  async validateQuote(): Promise<void> {
-  }
+  async validateQuote(): Promise<void> {}
 
   protected getQuotePromise(
     sourceCalculator: SourceInputCalculator,
@@ -200,7 +198,6 @@ class KongSwapShroffImpl extends ShroffAbstract {
     )
   }
 
-
   getSwapAccount(): Account {
     return {
       subaccount: [],
@@ -208,7 +205,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
     }
   }
 
-  protected async icrc2approve():Promise<bigint> {
+  protected async icrc2approve(): Promise<bigint> {
     const actorICRC2 = this.getICRCActor()
 
     const spender: Account = {
@@ -250,24 +247,20 @@ class KongSwapShroffImpl extends ShroffAbstract {
   protected async icrc2supported(): Promise<boolean> {
     const actorICRC2 = this.getICRCActor()
 
-    return actorICRC2.icrc1_supported_standards()
-      .then((res) => {
-       return  res.map((standard) => standard.name)
-          .some((name) => name === "ICRC-2")
-      })
+    return actorICRC2.icrc1_supported_standards().then((res) => {
+      return res
+        .map((standard) => standard.name)
+        .some((name) => name === "ICRC-2")
+    })
   }
 
   private getICRCActor() {
-    return actorBuilder<ICRC1ServiceIDL>(
-      this.source.ledger,
-      icrc1IDL,
-      {
-        agent: new HttpAgent({
-          ...agentBaseConfig,
-          identity: this.delegationIdentity,
-        }),
-      },
-    )
+    return actorBuilder<ICRC1ServiceIDL>(this.source.ledger, icrc1IDL, {
+      agent: new HttpAgent({
+        ...agentBaseConfig,
+        identity: this.delegationIdentity,
+      }),
+    })
   }
 }
 

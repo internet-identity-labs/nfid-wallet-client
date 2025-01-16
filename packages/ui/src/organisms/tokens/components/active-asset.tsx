@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState } from "react"
 import { FT } from "src/integration/ft/ft"
@@ -37,9 +38,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
-  const tokenPrice = token.getTokenRateFormatted("1")
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
   const initedToken = useTokenInit(token)
+  const usdBalance = initedToken?.getUSDBalanceFormatted(false)
+  const tokenPrice = initedToken?.getTokenRateFormatted("1", false)
 
   if (
     initedToken &&
@@ -135,10 +137,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
-          ) : token.getUSDBalanceFormatted() === undefined ? (
+          ) : !usdBalance ? (
             "Not listed"
           ) : (
-            token.getUSDBalanceFormatted()
+            usdBalance
           )}
         </p>
       </td>

@@ -1,5 +1,4 @@
 import { Meta, StoryFn } from "@storybook/react"
-import React from "react"
 
 import { Input, InputProps } from "."
 import { IconCmpCalendar } from "../../atoms/icons"

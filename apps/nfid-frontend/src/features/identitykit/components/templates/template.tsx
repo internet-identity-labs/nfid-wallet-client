@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { IconCmpNFIDWalletLogo, IconCmpShare } from "@nfid-frontend/ui"
+import { IconCmpNFIDWalletLogoWhite, IconCmpShare } from "@nfid-frontend/ui"
 
 import LeftBgApproval from "../../assets/left-bg-approval.png"
 import LeftBg from "../../assets/left-bg.png"
@@ -38,7 +38,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
             loading="lazy"
           />
         )}
-        <IconCmpNFIDWalletLogo className="text-white absolute top-[15px] left-[30px]" />
+        <IconCmpNFIDWalletLogoWhite className="text-white absolute top-[15px] left-[30px]" />
         <div className="xl:max-w-[32rem] max-w-[90%] mx-auto lg:mx-0 relative z-10">
           <p className="gradient-text text-[34px] lg:text-[2.9rem] xl:text-[3.2rem] font-bold leading-[120%]">
             {isApproveRequestInProgress

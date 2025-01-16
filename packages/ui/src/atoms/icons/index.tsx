@@ -1,16 +1,11 @@
-import LogoLanding from "../nfid-logo/nfid-wallet-logo-landing.svg"
-import LogoMain from "../nfid-logo/nfid-wallet-logo-main.svg"
-import IconSvgAlertCircle from "./alert-circle.svg"
-import IconSvgAnonymous from "./anonymous.svg"
+import LogoLanding from "../nfid-logo/nfid-wallet-logo-white.svg"
+import LogoMain from "../nfid-logo/nfid-wallet-logo-black.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrowRight from "./arrow-right.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgCmpArrow from "./arrow.svg"
-import IconSvgBook from "./book.svg"
-import IconSvgCalendar from "./calendar.svg"
 import IconSvgCancel from "./cancel.svg"
-import IconSvgCheckMark from "./check-mark.svg"
 import IconSvgChevron from "./chevron.svg"
 import IconClose from "./close.svg"
 import IconSvgCopy from "./copy.svg"
@@ -18,7 +13,6 @@ import IconSvgDesktop from "./desktop.svg"
 import IconSvgDfinity from "./dfinity.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
-import IconERC20 from "./erc20-fallback.svg"
 import IconSvgError from "./error.svg"
 import IconSvgExternalIcon from "./external.svg"
 import IconSvgEyeClosedBlack from "./eye-closed-black.svg"
@@ -28,7 +22,6 @@ import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
 import IconSvgHistoryIcon from "./history.svg"
-import IconSvgID from "./id.svg"
 import IconInfo from "./info-icon.svg"
 import IconSvgInfo from "./info.svg"
 import IconSvgKey from "./key.svg"
@@ -42,7 +35,6 @@ import IconDisconnect from "./nav-logout.svg"
 import SecurityIcon from "./nav-security.svg"
 import VaultsIcon from "./nav-vaults.svg"
 import WalletIcon from "./nav-wallet.svg"
-import IconSvgNFID from "./nfid-logo.svg"
 import IconNftPlaceholder from "./nft-placeholder.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPasskey from "./passkey.svg"
@@ -52,7 +44,6 @@ import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
 import IconSvgShare from "./share.svg"
-import ImagePngSuccess from "./success.png"
 import IconSvgSuccess from "./success.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
@@ -66,14 +57,9 @@ import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
 
 export {
-  IconSvgNFID,
   IconSvgPasskey,
-  IconSvgID,
-  IconERC20,
   IconSvgArrow,
-  IconSvgCalendar,
   IconSvgCancel,
-  IconSvgCheckMark,
   IconSvgChevron,
   IconSvgCopy,
   IconSvgDesktop,
@@ -105,14 +91,10 @@ export {
   IconSvgTable,
   IconSvgGrid,
   IconSvgTransactions,
-  IconSvgBook,
-  IconSvgAlertCircle,
-  ImagePngSuccess,
   IconSvgNFTPreview,
   IconSvgTransfer,
   IconSvgArrowRed,
   IconSvgArrowGreen,
-  IconSvgAnonymous,
   IconSvgShare,
   IconNftPlaceholder,
   KnowledgeIcon,
@@ -136,10 +118,8 @@ export {
 
 export { ReactComponent as IconCmpSwap } from "./swap.svg"
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
-export { ReactComponent as IconCmpArchive } from "./archive.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"
-export { ReactComponent as IconCmpCheckMark } from "./check-mark.svg"
 export { ReactComponent as IconCmpChevron } from "./chevron.svg"
 export { ReactComponent as IconCmpCopy } from "./copy.svg"
 export { ReactComponent as IconCmpDesktop } from "./desktop.svg"
@@ -179,21 +159,16 @@ export { ReactComponent as IconCmpSorting } from "./sorting.svg"
 export { ReactComponent as IconCmpOut } from "./out.svg"
 export { ReactComponent as IconCmpTable } from "./table.svg"
 export { ReactComponent as IconCmpGrid } from "./grid.svg"
-export { ReactComponent as IconCmpBook } from "./book.svg"
-export { ReactComponent as IconCmpAlertCircle } from "./alert-circle.svg"
 export { ReactComponent as IconCmpLoading } from "./loader.svg"
 export { ReactComponent as IconCmpNFTPreview } from "./nft-preview.svg"
 export { ReactComponent as IconCmpArrowRed } from "./arrow-red.svg"
 export { ReactComponent as IconCmpArrowGreen } from "./arrow-green.svg"
 export { ReactComponent as IconCmpSwapActivity } from "./swap-activity.svg"
-export { ReactComponent as IconCmpID } from "./id.svg"
 export { ReactComponent as IconCmpPasskey } from "./passkey.svg"
-export { ReactComponent as IconCmpNFID } from "./nfid-logo.svg"
-export { ReactComponent as IconCmpAnonymous } from "./anonymous.svg"
 export { ReactComponent as IconCmpDoubleSpinner } from "./double-spinner.svg"
-export { ReactComponent as IconCmpNFIDWalletLogo } from "../nfid-logo/nfid-wallet-logo-main.svg"
+export { ReactComponent as IconCmpNFIDWalletLogoWhite } from "../nfid-logo/nfid-wallet-logo-white.svg"
+export { ReactComponent as IconCmpNFIDWalletLogoBlack } from "../nfid-logo/nfid-wallet-logo-black.svg"
 export { ReactComponent as IconCmpShare } from "./share.svg"
 export { ReactComponent as IconCmpExternalIcon } from "./share.svg"
 export { ReactComponent as IconCmpArrowRightIcon } from "./arrow-right.svg"
-export { ReactComponent as IconCmpTinyIC } from "./tiny-ic.svg"
 export { ReactComponent as IconCmpStatusSuccess } from "./status-success.svg"

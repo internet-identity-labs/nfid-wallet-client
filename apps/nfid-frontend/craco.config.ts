@@ -202,6 +202,12 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/exchange-rate/, ""),
       },
+      "/x/tweet": {
+        target: process.env.AWS_X_TWEET,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/x\/tweet/, ""),
+      },
       "/signature": {
         target: process.env.AWS_SIGNATURE_EVENT,
         secure: true,

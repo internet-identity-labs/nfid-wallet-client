@@ -14,6 +14,7 @@ import {
   authState,
   replaceActorIdentity,
 } from "@nfid/integration"
+import { swapXTweetService } from "frontend/integration/service/swap-x-tweet-service"
 
 class SwapTransactionService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
@@ -31,6 +32,12 @@ class SwapTransactionService {
     }
     await replaceActorIdentity(this.storageActor, di)
     await this.storageActor.store_transaction(trs)
+
+    if ("Completed" in trs.stage && trs.errors.length === 0) {
+      // No await intentionally.
+      swapXTweetService.tweet(di.getPrincipal().toString(), trs.uid)
+        .catch(x => console.debug(x))
+    }
   }
 
   async getTransactions(): Promise<Array<SwapTransaction>> {

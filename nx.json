@@ -131,6 +131,9 @@
         "env": "AWS_EXCHANGE_RATE"
       },
       {
+        "env": "AWS_X_TWEET"
+      },
+      {
         "env": "AWS_SIGNATURE_EVENT"
       },
       {

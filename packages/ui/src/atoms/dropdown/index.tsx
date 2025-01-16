@@ -33,7 +33,7 @@ export const Dropdown = ({
   }, [isDropdownOpen])
 
   return (
-    <div className={clsx("relative w-full")} ref={ref}>
+    <div className={clsx("w-full")} ref={ref}>
       <div
         onClick={() => {
           if (!isDisabled) setIsDropdownOpen(!isDropdownOpen)

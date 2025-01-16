@@ -79,10 +79,15 @@ export class ExchangeRateService {
         tokenStorageCanister,
         IDL_TOKEN,
       )
-      const result: PublicTokenOverview = await actorStorage.getToken(ledger)
 
-      return {
-        value: BigNumber(result.priceUSD),
+      try {
+        const result: PublicTokenOverview = await actorStorage.getToken(ledger)
+        if (result.priceUSD === undefined) return undefined
+        return {
+          value: BigNumber(result.priceUSD),
+        }
+      } catch (e) {
+        return undefined
       }
     }
 

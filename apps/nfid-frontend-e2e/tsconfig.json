@@ -18,7 +18,7 @@
     "downlevelIteration": true,
     "types": [
       "node",
-      "@wdio/globals/types",
+      "@wdio/globals",
       "expect-webdriverio",
       "@wdio/cucumber-framework"
     ]

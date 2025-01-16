@@ -1,4 +1,3 @@
-@skip
 Feature: Swap functionality
   As a user, I want to swap tokens
 
@@ -9,7 +8,7 @@ Feature: Swap functionality
     Then Verifying that tokens are displayed on assets tab
     When User opens Swap dialog window
     And User sets the target token to BOOM
-    And User sets amount to swap to 0.001
+    And User sets amount to swap to 0.002
     And User clicks the Swap tokens button
     Then Verifying that the swap transaction is success
     When User goes to activity tab

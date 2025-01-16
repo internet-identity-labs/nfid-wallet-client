@@ -41,6 +41,8 @@ export abstract class QuoteAbstract implements Quote {
     }
   }
 
+  abstract getSlippage(): number
+
   getTargetAmountUSD(): string {
     if (!this.targetPriceUSD) {
       return "Not listed"

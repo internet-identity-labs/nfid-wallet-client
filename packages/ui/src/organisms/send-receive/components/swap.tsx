@@ -55,8 +55,9 @@ export interface SwapFTUiProps {
   closeSwapSettings: () => void
   slippage: number
   setSlippage: (value: number) => void
-  swapProviders: Map<SwapName, Shroff>
+  swapProviders: Map<SwapName, Shroff | undefined>
   shroff: Shroff | undefined
+  setProvider: (value: Shroff) => void
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -86,6 +87,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   setSlippage,
   swapProviders,
   shroff,
+  setProvider,
 }) => {
   const [selectedShroff, setSelectedShroff] = useState<Shroff | undefined>()
   const [isChecked, setIsChecked] = useState(false)
@@ -133,6 +135,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         swapProviders={swapProviders}
         amount={amount}
         shroff={shroff}
+        setProvider={setProvider}
       />
       <QuoteModal
         shroff={selectedShroff}

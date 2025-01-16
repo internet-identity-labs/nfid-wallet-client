@@ -22,7 +22,7 @@ describe("SwapService", () => {
   })
 
   it("should return the Shroff with the biggest quote", async () => {
-    const result = await swapService.getShroffWithBiggestQuote(
+    const result = await swapService.getBestShroff(
       sourceLedger,
       targetLedger,
       "0.02",

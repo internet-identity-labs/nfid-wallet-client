@@ -281,9 +281,13 @@ export class KongShroffBuilder {
         throw new Error("ICRC1 not found")
       }
 
-      return this.buildShroff()
+      const buildShroff = this.buildShroff()
+
+      await buildShroff.getQuote("1")
+
+      return buildShroff
     } catch (e) {
-      console.error("Error:", e)
+      console.error("Kongswap error:", e)
       if (e instanceof LiquidityError) {
         throw e
       }

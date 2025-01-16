@@ -64,12 +64,12 @@ describe("Shroff Kong test", () => {
     console.log("difference KONG", updatedBalanceKong - balanceKong)
     expect(updatedBalanceKong - balanceKong).toBeGreaterThan(0)
     expect(resp2.getStage()).toEqual(SwapStage.Completed)
-    expect(resp2.getProvider()).toEqual(SwapName.KongSwap)
+    expect(resp2.getProvider()).toEqual(SwapName.Kongswap)
 
     const transactionsAfterSwap = (
       await swapTransactionService.getTransactions()
     ).find((t) => t.getStartTime() === resp2.getStartTime())
 
-    expect(transactionsAfterSwap!.getProvider()).toEqual(SwapName.KongSwap)
+    expect(transactionsAfterSwap!.getProvider()).toEqual(SwapName.Kongswap)
   })
 })

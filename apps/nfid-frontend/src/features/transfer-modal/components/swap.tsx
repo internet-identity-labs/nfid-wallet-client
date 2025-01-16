@@ -53,9 +53,9 @@ export const SwapFT = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
-  const [swapProviders, setSwapProviders] = useState<Map<SwapName, Shroff>>(
-    new Map(),
-  )
+  const [swapProviders, setSwapProviders] = useState<
+    Map<SwapName, Shroff | undefined>
+  >(new Map())
   const [shroff, setShroff] = useState<Shroff | undefined>()
   const [isShroffLoading, setIsShroffLoading] = useState(true)
   const [swapStep, setSwapStep] = useState<SwapStage>(0)
@@ -141,12 +141,13 @@ export const SwapFT = ({
     getProviders()
   }, [fromTokenAddress, toTokenAddress])
 
-  console.log("shroffError", shroff)
+  console.log("provvvv", swapProviders)
+  console.log("shroffff", shroff)
 
   useEffect(() => {
     const getShroff = async () => {
       try {
-        const shroff = await swapService.getShroffWithBiggestQuote(
+        const shroff = await swapService.getBestShroff(
           fromTokenAddress,
           toTokenAddress,
           amount,
@@ -339,6 +340,7 @@ export const SwapFT = ({
         }}
         swapProviders={swapProviders}
         shroff={shroff}
+        setProvider={setShroff}
       />
     </FormProvider>
   )

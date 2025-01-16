@@ -2,17 +2,18 @@ import clsx from "clsx"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
 
 import { IconCmpArrow, IconInfo, Tooltip } from "@nfid-frontend/ui"
 
+import { Quote } from "frontend/integration/swap/quote"
 import { Shroff } from "frontend/integration/swap/shroff"
 import { SwapName } from "frontend/integration/swap/types/enums"
 
 const SLIPPAGE_VARIANTS = [1, 2, 3, 5]
 
 interface GuaranteedAmount {
-  [key: string]: string
+  [key: string]: Quote | undefined
 }
 
 export interface SwapSettingsProps {
@@ -21,9 +22,10 @@ export interface SwapSettingsProps {
   modalOpen: boolean
   slippage: number
   setSlippage: (v: number) => void
-  swapProviders: Map<SwapName, Shroff>
+  swapProviders: Map<SwapName, Shroff | undefined>
   shroff: Shroff | undefined
   amount: string
+  setProvider: (v: Shroff) => void
 }
 
 export const SwapSettings: FC<SwapSettingsProps> = ({
@@ -35,33 +37,40 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   swapProviders,
   shroff,
   amount,
+  setProvider,
 }) => {
   const [isCustom, setIsCustom] = useState(false)
+  const [customSlippage, setCustomSlippage] = useState<number | undefined>()
   const customInputRef = useRef<HTMLInputElement>(null)
-  const [guaranteedAmounts, setGuaranteedAmounts] = useState<
-    Array<GuaranteedAmount>
-  >([])
+  const [quotes, setQuotes] = useState<Array<GuaranteedAmount>>([])
 
   useEffect(() => {
     if (!shroff) return
 
     const getGuaranteedAmounts = async () => {
-      const amounts = await Promise.all(
-        [...swapProviders.values()].map(async (provider) => {
+      const quotes = await Promise.all(
+        [...swapProviders.entries()].map(async ([key, provider]) => {
+          if (!provider) return { [key]: undefined }
           const quote = await provider.getQuote(amount)
           return {
-            [provider.getSwapName()]: quote.getGuaranteedAmount(),
+            [provider.getSwapName()]: quote,
           }
         }),
       )
-      setGuaranteedAmounts(amounts)
+      setQuotes(quotes)
     }
 
     getGuaranteedAmounts()
   }, [shroff, swapProviders])
 
   useEffect(() => {
-    setIsCustom(!SLIPPAGE_VARIANTS.includes(slippage))
+    if (!SLIPPAGE_VARIANTS.includes(slippage)) {
+      setIsCustom(true)
+      setCustomSlippage(slippage)
+    } else {
+      setIsCustom(false)
+      setCustomSlippage(undefined)
+    }
   }, [slippage])
 
   const handleCustomClick = () => {
@@ -144,11 +153,11 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                     decimals={2}
                     fontSize={14}
                     isLoading={false}
-                    value=""
+                    value={`${customSlippage}` || ""}
                     ref={customInputRef}
                     onBlur={(e) => {
                       const value = e.target.value
-                      setIsCustom(false)
+                      setIsCustom(!!customSlippage)
                       if (value) setSlippage(+value)
                     }}
                   />
@@ -188,17 +197,74 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                   <p className="basis-[130px] ml-auto">Quote source</p>
                 </div>
                 <div>
-                  {[...swapProviders.values()].map((value) => {
+                  {[...swapProviders.entries()].map(([key, value]) => {
+                    if (!value)
+                      return (
+                        <div
+                          key={SwapName[key]}
+                          className={clsx(
+                            "flex items-center pl-[14px] rounded-[12px] h-[56px] text-sm",
+                            "cursor-not-allowed text-gray-400",
+                          )}
+                        >
+                          <p>
+                            Provider doesn’t have enough liquidity to complete
+                            this swap.
+                          </p>
+                          <p className="basis-[130px] ml-auto flex items-center justify-between">
+                            <span>{SwapName[key]}</span>
+                            <div
+                              className={clsx(
+                                "relative transition-all group w-[36px] h-[36px]",
+                                "flex items-center justify-center mr-2.5 rounded-[6px]",
+                              )}
+                            >
+                              <IconCaret color="#9CA3AF" />
+                            </div>
+                          </p>
+                        </div>
+                      )
                     const swapNameValue = value.getSwapName()
                     const swapName = SwapName[swapNameValue]
 
-                    const guaranteedAmountEntry = guaranteedAmounts.find(
+                    const quoteEntry = quotes.find(
                       (entry) => entry[swapNameValue] !== undefined,
                     )
 
-                    const guaranteedAmount = guaranteedAmountEntry
-                      ? guaranteedAmountEntry[swapNameValue]
-                      : ""
+                    const quote = quoteEntry
+                      ? quoteEntry[swapNameValue]
+                      : undefined
+
+                    if (quote && quote?.getSlippage() > slippage) {
+                      return (
+                        <div
+                          key={SwapName[key]}
+                          className={clsx(
+                            "flex items-center pl-[14px] rounded-[12px] h-[56px] text-sm",
+                            "cursor-not-allowed text-gray-400",
+                          )}
+                        >
+                          <p>
+                            Slippage tolerance too low{" "}
+                            <span className="block text-xs">
+                              Increase above{" "}
+                              {(quote?.getSlippage() - slippage).toFixed(2)}%
+                            </span>
+                          </p>
+                          <p className="basis-[130px] ml-auto flex items-center justify-between">
+                            <span>{SwapName[key]}</span>
+                            <div
+                              className={clsx(
+                                "relative transition-all group w-[36px] h-[36px]",
+                                "flex items-center justify-center mr-2.5 rounded-[6px]",
+                              )}
+                            >
+                              <IconCaret color="#9CA3AF" />
+                            </div>
+                          </p>
+                        </div>
+                      )
+                    }
 
                     return (
                       <div
@@ -209,12 +275,17 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                             ? "cursor-default bg-primaryButtonColor text-white"
                             : "cursor-pointer hover:bg-gray-50",
                         )}
+                        onClick={() => {
+                          if (shroff.getSwapName() === swapNameValue) return
+                          setProvider(value)
+                        }}
                       >
-                        <p>{guaranteedAmount}</p>
+                        <p>{quote?.getGuaranteedAmount()}</p>
                         <p className="basis-[130px] ml-auto flex items-center justify-between">
                           <span>{swapName}</span>
                           <div
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation()
                               setSelectedShroff(value)
                             }}
                             className={clsx(

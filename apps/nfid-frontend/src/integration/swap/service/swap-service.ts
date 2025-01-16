@@ -48,38 +48,32 @@ export class SwapService {
   ): Promise<Shroff | undefined> {
     if (!amount || !Number(amount)) return
     try {
-      console.log(1)
       const providers = await this.getSwapProviders(target, source)
-      console.log(2, providers)
 
       const quotesWithShroffs = await Promise.all(
         [...providers.entries()].map(async ([, shroff]) => {
           if (!shroff) return
           try {
             const quote = await shroff.getQuote(amount)
-            console.log("quotesWithShroffs", quote)
+
             return { shroff, quote }
           } catch (e) {
             return
           }
         }),
       )
-      console.log(3, quotesWithShroffs)
 
       const validQuotes = quotesWithShroffs.filter(
         (item): item is { shroff: Shroff; quote: Quote } => item !== undefined,
       )
-      console.log(4, validQuotes)
 
-      const s = validQuotes.sort((a, b) => {
-        console.log("ssssss", a, b)
-        return (
+      const bestShroff = validQuotes.sort(
+        (a, b) =>
           parseFloat(b.quote.getGuaranteedAmount()) -
-          parseFloat(a.quote.getGuaranteedAmount())
-        )
-      })[0]?.shroff
-      console.log(5, s)
-      return s
+          parseFloat(a.quote.getGuaranteedAmount()),
+      )[0]?.shroff
+
+      return bestShroff
     } catch (e) {
       throw e
     }

@@ -15,7 +15,6 @@ import {
   IconCmpArrow,
   IconCmpStatusSuccess,
   IconCmpSwapActivity,
-  IconCmpTinyIC,
   IconNftPlaceholder,
   IconSvgArrowRight,
   ImageWithFallback,
@@ -69,10 +68,6 @@ export const getTooltipAndButtonText = (
 
 interface IActivityTableRow extends IActivityRow {
   id: string
-}
-
-export const ChainIcons = {
-  IC: <IconCmpTinyIC />,
 }
 
 export const StatusIcons = {

@@ -73,10 +73,6 @@ export class KongSwapTransactionImpl extends AbstractSwapTransaction {
     throw new Error("Method not implemented.")
   }
 
-  setDeposit(deposit: bigint): void {
-    throw new Error("Method not implemented.")
-  }
-
   setWithdraw(withdraw: bigint): void {
     throw new Error("Method not implemented.")
   }

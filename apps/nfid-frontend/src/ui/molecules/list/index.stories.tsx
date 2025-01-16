@@ -2,7 +2,7 @@ import { Meta, StoryFn } from "@storybook/react"
 import React from "react"
 
 import { List } from "."
-import { IconDesktop } from "../../atoms/icons/laptop"
+import { IconDesktop } from "../../atoms/icons/desktop"
 import { H1 } from "../../atoms/typography"
 import { ListItem } from "./list-item"
 

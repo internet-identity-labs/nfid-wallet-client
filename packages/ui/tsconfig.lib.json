@@ -2,9 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "declarationDir": "../../dist/types",
     "outDir": "../../dist/out-tsc",
     "types": ["node"]
   },

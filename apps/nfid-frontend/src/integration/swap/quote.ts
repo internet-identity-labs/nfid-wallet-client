@@ -19,4 +19,5 @@ export interface Quote {
   getTargetAmount(): BigNumber
   getWidgetFeeAmount(): bigint
   getPriceImpact(): PriceImpact | undefined
+  getTransferToSwapAmount(): BigNumber
 }

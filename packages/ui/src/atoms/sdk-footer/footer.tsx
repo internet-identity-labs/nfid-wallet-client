@@ -1,4 +1,4 @@
-import { IconCmpNFID } from "../icons"
+import { IconCmpNFIDWalletLogoBlack } from "../icons"
 
 export const SDKFooter = () => {
   return (
@@ -22,7 +22,7 @@ export const SDKFooter = () => {
         </a>
       </div>
 
-      <IconCmpNFID className="text-secondary" />
+      <IconCmpNFIDWalletLogoBlack className="text-secondary" />
     </div>
   )
 }

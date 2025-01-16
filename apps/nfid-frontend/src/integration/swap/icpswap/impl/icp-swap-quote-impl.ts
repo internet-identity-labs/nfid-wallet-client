@@ -10,6 +10,12 @@ export class IcpSwapQuoteImpl extends QuoteAbstract {
     return 0
   }
 
+  getTransferToSwapAmount(): BigNumber {
+    return BigNumber(
+      this.sourceCalculator.getSourceSwapAmount().toString(),
+    ).plus(Number(this.source.fee))
+  }
+
   getEstimatedTransferFee(): string[] {
     const sourceFee = BigNumber(Number(this.source.fee))
       .div(10 ** this.source.decimals)

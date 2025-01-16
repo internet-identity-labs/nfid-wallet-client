@@ -141,9 +141,6 @@ export const SwapFT = ({
     getProviders()
   }, [fromTokenAddress, toTokenAddress])
 
-  console.log("provvvv", swapProviders)
-  console.log("shroffff", shroff)
-
   useEffect(() => {
     const getShroff = async () => {
       try {
@@ -160,7 +157,6 @@ export const SwapFT = ({
         if (error instanceof ServiceUnavailableError) {
           setShroffError(error)
         } else if (error instanceof LiquidityError) {
-          console.log("getShroff LIQUIDITY ERROR")
           setLiquidityError(error)
         } else {
           console.error("Quote error: ", error)

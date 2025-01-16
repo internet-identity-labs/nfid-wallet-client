@@ -1,5 +1,6 @@
 import { SwapName } from "src/integration/swap/types/enums"
 
+import { LiquidityError } from "../errors"
 import { SwapService } from "./swap-service"
 
 describe("SwapService", () => {
@@ -30,5 +31,39 @@ describe("SwapService", () => {
 
     expect(result).toBeDefined()
     expect(result?.getSwapName()).toEqual(SwapName.ICPSwap)
+  })
+
+  it("should return Kongswap shroff only", async () => {
+    const targetLedger = "3h3vv-7yaaa-aaaam-qcu5a-cai"
+    const result = await swapService.getSwapProviders(
+      sourceLedger,
+      targetLedger,
+    )
+
+    expect(result.size).toEqual(2)
+
+    expect(result.get(SwapName.ICPSwap)).toBeUndefined()
+    expect(result.get(SwapName.Kongswap)).toBeDefined()
+  })
+
+  it("should return ICPSwap shroff only", async () => {
+    const targetLedger = "etik7-oiaaa-aaaar-qagia-cai"
+    const result = await swapService.getSwapProviders(
+      sourceLedger,
+      targetLedger,
+    )
+
+    expect(result.size).toEqual(2)
+
+    expect(result.get(SwapName.ICPSwap)).toBeDefined()
+    expect(result.get(SwapName.Kongswap)).toBeUndefined()
+  })
+
+  it("should return no shroffs", async () => {
+    const targetLedger = "ilzky-ayaaa-aaaar-qahha-cai"
+
+    await expect(
+      swapService.getSwapProviders(sourceLedger, targetLedger),
+    ).rejects.toThrow(LiquidityError)
   })
 })

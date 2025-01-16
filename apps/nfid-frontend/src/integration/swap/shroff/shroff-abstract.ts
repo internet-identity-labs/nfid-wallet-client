@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-import { WithdrawError } from "src/integration/swap/errors"
+import {DepositError, WithdrawError} from "src/integration/swap/errors"
 import { SWAP_FACTORY_CANISTER } from "src/integration/swap/icpswap/service/icpswap-service"
 import { Quote } from "src/integration/swap/quote"
 import { Shroff } from "src/integration/swap/shroff"
@@ -18,6 +18,7 @@ import {
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
 import { SwapName } from "../types/enums"
+import {Account} from "src/integration/swap/kong/idl/icrc1.d";
 
 export abstract class ShroffAbstract implements Shroff {
   protected readonly source: ICRC1TypeOracle
@@ -59,7 +60,42 @@ export abstract class ShroffAbstract implements Shroff {
 
   abstract swap(delegationIdentity: SignIdentity): Promise<SwapTransaction>
 
-  abstract validateQuote(): Promise<Quote>
+  abstract validateQuote(): Promise<void>
+
+  protected async transferToSwap() {
+    try {
+      const amountDecimals = this.requestedQuote!.getTransferToSwapAmount()
+
+      console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
+
+      const transferArgs: TransferArg = {
+        amount: BigInt(amountDecimals.toFixed()),
+        created_at_time: [],
+        fee: [],
+        from_subaccount: [],
+        memo: [],
+        to: this.getSwapAccount(),
+      }
+
+      const result = await transferICRC1(
+        this.delegationIdentity!,
+        this.source.ledger,
+        transferArgs,
+      )
+      if (hasOwnProperty(result, "Ok")) {
+        const id = result.Ok as bigint
+        this.swapTransaction!.setTransferId(id)
+        return id
+      }
+      console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
+      throw new DepositError(JSON.stringify(result.Err))
+    } catch (e) {
+      console.error("Deposit error: " + e)
+      throw new DepositError(e as Error)
+    }
+  }
+
+  abstract getSwapAccount(): Account
 
   protected async transferToNFID() {
     try {

@@ -8,15 +8,10 @@ import { SwapTransaction as SwapTransactionCandid } from "../../transaction/idl/
 import { Error as ErrorSwap } from "../idl/SwapPool.d"
 
 export class IcpSwapTransactionImpl extends AbstractSwapTransaction {
-  private deposit: bigint | undefined
   private withdraw: bigint | undefined
 
   getProvider(): SwapName {
     return SwapName.IcpSwap
-  }
-
-  getDeposit(): bigint | undefined {
-    return this.deposit
   }
 
   getSwap(): bigint | undefined {
@@ -30,11 +25,6 @@ export class IcpSwapTransactionImpl extends AbstractSwapTransaction {
   setNFIDTransferId(transferId: bigint) {
     this.transferNFIDId = transferId
     this.stage = SwapStage.Completed
-  }
-
-  setDeposit(deposit: bigint) {
-    this.deposit = deposit
-    this.stage = SwapStage.Swap
   }
 
   setSwap(swap: bigint | undefined) {

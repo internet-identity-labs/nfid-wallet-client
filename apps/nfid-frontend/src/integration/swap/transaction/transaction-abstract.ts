@@ -24,6 +24,7 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
   protected stage: SwapStage
   protected isLoading: boolean
   protected transferId: bigint | undefined
+  protected deposit: bigint | undefined
   protected readonly targetLedger: string
   protected readonly sourceLedger: string
   protected readonly swapProvider: SwapName
@@ -49,18 +50,25 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
   abstract getProvider(): SwapName
   abstract toCandid(): SwapTransactionCandid
   abstract fromCandid(candid: SwapTransactionCandid): SwapTransaction
-  abstract getDeposit(): bigint | undefined
   abstract getWithdraw(): bigint | undefined
-  abstract setDeposit(deposit: bigint): void
   abstract setWithdraw(withdraw: bigint): void
   abstract setSwap(swap: bigint | undefined): void
   getTransferId(): bigint | undefined {
     return this.transferId
   }
 
+  getDeposit(): bigint | undefined {
+    return this.deposit
+  }
+
   setTransferId(transferId: bigint) {
     this.transferId = transferId
     this.stage = SwapStage.Deposit
+  }
+
+  setDeposit(deposit: bigint) {
+    this.deposit = deposit
+    this.stage = SwapStage.Swap
   }
 
   getIsLoading(): boolean {

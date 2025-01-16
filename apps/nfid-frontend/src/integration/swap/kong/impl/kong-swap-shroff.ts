@@ -115,19 +115,22 @@ class KongSwapShroffImpl extends ShroffAbstract {
       BigInt(this.requestedQuote.getSourceUserInputAmount().toNumber()),
     )
     try {
-      const icrc2approve = await this.icrc2approve()
 
-      if (hasOwnProperty(icrc2approve, "Err")) {
-        throw new Error(
-          "ICRC2 approve error: " + JSON.stringify(icrc2approve.Err),
-        )
+      const icrc2supported = await this.icrc2supported()
+
+      let icrcTransferId
+
+      if (icrc2supported) {
+        icrcTransferId =  await this.icrc2approve()
+        console.log("ICRC2 approve response", JSON.stringify(icrcTransferId))
+        this.swapTransaction.setTransferId(icrcTransferId)
+      } else {
+        icrcTransferId = await this.transferToSwap()
+        console.log("ICRC21 transfer response", JSON.stringify(icrcTransferId))
+        this.swapTransaction.setDeposit(icrcTransferId)
       }
 
-      this.swapTransaction.setTransferId(BigInt(icrc2approve.Ok))
-
       this.restoreTransaction()
-
-      console.log("ICRC2 approve response", JSON.stringify(icrc2approve))
 
       const slippage = await this.getSlippage()
 
@@ -151,7 +154,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
         ],
         receive_address: [],
         pay_token: this.source.symbol,
-        pay_tx_id: [],
+        pay_tx_id: icrc2supported ? [] : [{BlockIndex: icrcTransferId}],
       }
       await replaceActorIdentity(this.actor, delegationIdentity)
 
@@ -184,8 +187,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
     }
   }
 
-  validateQuote(): Promise<Quote> {
-    throw new Error("Method not implemented.")
+  async validateQuote(): Promise<void> {
   }
 
   protected getQuotePromise(
@@ -198,17 +200,16 @@ class KongSwapShroffImpl extends ShroffAbstract {
     )
   }
 
-  protected async icrc2approve() {
-    const actorICRC2 = actorBuilder<ICRC1ServiceIDL>(
-      this.source.ledger,
-      icrc1IDL,
-      {
-        agent: new HttpAgent({
-          ...agentBaseConfig,
-          identity: this.delegationIdentity,
-        }),
-      },
-    )
+
+  getSwapAccount(): Account {
+    return {
+      subaccount: [],
+      owner: Principal.fromText(ROOT_CANISTER),
+    }
+  }
+
+  protected async icrc2approve():Promise<bigint> {
+    const actorICRC2 = this.getICRCActor()
 
     const spender: Account = {
       owner: Principal.fromText(ROOT_CANISTER),
@@ -230,12 +231,43 @@ class KongSwapShroffImpl extends ShroffAbstract {
       expected_allowance: [],
       expires_at: [
         {
-          timestamp_nanos: BigInt(1739927395042000000), //TODO
+          timestamp_nanos: BigInt(Date.now() * 1_000_000 + 60_000_000_000),
         },
       ],
     }
 
-    return await actorICRC2.icrc2_approve(icrc2_approve_args)
+    const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
+
+    if (hasOwnProperty(icrc2approve, "Err")) {
+      throw new Error(
+        "ICRC2 approve error: " + JSON.stringify(icrc2approve.Err),
+      )
+    }
+
+    return BigInt(icrc2approve.Ok)
+  }
+
+  protected async icrc2supported(): Promise<boolean> {
+    const actorICRC2 = this.getICRCActor()
+
+    return actorICRC2.icrc1_supported_standards()
+      .then((res) => {
+       return  res.map((standard) => standard.name)
+          .some((name) => name === "ICRC-2")
+      })
+  }
+
+  private getICRCActor() {
+    return actorBuilder<ICRC1ServiceIDL>(
+      this.source.ledger,
+      icrc1IDL,
+      {
+        agent: new HttpAgent({
+          ...agentBaseConfig,
+          identity: this.delegationIdentity,
+        }),
+      },
+    )
   }
 }
 

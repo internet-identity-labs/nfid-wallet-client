@@ -19,12 +19,70 @@ const mock: JsonnableEd25519KeyIdentity = [
 describe("Shroff Kong test", () => {
   jest.setTimeout(1500000)
 
-  it.skip("should swap 2 tokens", async () => {
+  it.skip("should swap 2 tokens icrc2", async () => {
     let identity = Ed25519KeyIdentity.fromParsedJson(mock)
     let kongShroff = await new KongShroffBuilder()
       .withSource("ryjl3-tyaaa-aaaaa-aaaba-cai")
       .withTarget("o7oak-iyaaa-aaaaq-aadzq-cai")
       .build()
+
+    const sessionKey = Ed25519KeyIdentity.generate()
+    const chainRoot = await DelegationChain.create(
+      identity,
+      sessionKey.getPublicKey(),
+      new Date(Date.now() + 3_600_000 * 44),
+      {},
+    )
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      sessionKey,
+      chainRoot,
+    )
+
+    await authState.set({
+      identity: delegationIdentity,
+      delegationIdentity: delegationIdentity,
+    })
+
+    await kongShroff.getQuote("0.001")
+
+    let ledgerICRC = new Icrc1Pair("ryjl3-tyaaa-aaaaa-aaaba-cai", undefined)
+    let blncBefore = await ledgerICRC.getBalance(
+      identity.getPrincipal().toText(),
+    )
+    let kongICRC = new Icrc1Pair("o7oak-iyaaa-aaaaq-aadzq-cai", undefined)
+    let balanceKong = await kongICRC.getBalance(
+      identity.getPrincipal().toText(),
+    )
+
+    let resp2 = await kongShroff.swap(identity)
+
+    let balance = await ledgerICRC.getBalance(identity.getPrincipal().toText())
+    console.log("difference ICP", blncBefore - balance)
+    const updatedBalanceKong = await kongICRC.getBalance(
+      identity.getPrincipal().toText(),
+    )
+    console.log("difference KONG", updatedBalanceKong - balanceKong)
+    expect(updatedBalanceKong - balanceKong).toBeGreaterThan(0)
+    expect(resp2.getStage()).toEqual(SwapStage.Completed)
+    expect(resp2.getProvider()).toEqual(SwapName.KongSwap)
+
+    const transactionsAfterSwap = (
+      await swapTransactionService.getTransactions()
+    ).find((t) => t.getStartTime() === resp2.getStartTime())
+
+    expect(transactionsAfterSwap!.getProvider()).toEqual(SwapName.KongSwap)
+  })
+
+  it.skip("should swap 2 tokens icrc1", async () => {
+    let identity = Ed25519KeyIdentity.fromParsedJson(mock)
+    let kongShroff = await new KongShroffBuilder()
+      .withSource("ryjl3-tyaaa-aaaaa-aaaba-cai")
+      .withTarget("o7oak-iyaaa-aaaaq-aadzq-cai")
+      .build()
+
+    jest.spyOn(kongShroff as any, "icrc2supported").mockImplementation(() => {
+      return Promise.resolve(false)
+    })
 
     const sessionKey = Ed25519KeyIdentity.generate()
     const chainRoot = await DelegationChain.create(

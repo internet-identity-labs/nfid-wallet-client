@@ -33,7 +33,6 @@ import {
   DepositError,
   LiquidityError,
   ServiceUnavailableError,
-  SlippageQuoteError,
   SlippageSwapError,
   SwapError,
   WithdrawError,

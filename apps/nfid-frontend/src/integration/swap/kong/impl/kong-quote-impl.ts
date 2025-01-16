@@ -31,6 +31,10 @@ export class KongQuoteImpl extends QuoteAbstract {
     this.quoteResponse = quoteResponse
   }
 
+  getTransferToSwapAmount(): BigNumber {
+    return BigNumber(this.sourceCalculator.getSourceSwapAmount().toString())
+  }
+
   getEstimatedTransferFee(): string[] {
     const sourceFee = BigNumber(Number(this.source.fee))
       .div(10 ** this.source.decimals)

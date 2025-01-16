@@ -49,7 +49,7 @@ export class KongQuoteImpl extends QuoteAbstract {
   }
 
   getGuaranteedAmount(): string {
-    return this.getAmount()
+    return this.getTargetAmountPrettifiedWithSymbol()
   }
 
   getLiquidityProviderFee(): string {

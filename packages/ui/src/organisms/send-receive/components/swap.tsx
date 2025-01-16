@@ -139,7 +139,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       />
       <QuoteModal
         shroff={selectedShroff}
-        setModalOpen={setSelectedShroff}
+        closeModal={() => setSelectedShroff(undefined)}
         amount={amount}
       />
       <p className="mb-1 text-xs">From</p>

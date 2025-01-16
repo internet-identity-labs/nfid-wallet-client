@@ -9,13 +9,13 @@ import { Shroff } from "frontend/integration/swap/shroff"
 import { SwapName } from "frontend/integration/swap/types/enums"
 
 export interface QuoteModalProps {
-  setModalOpen: (v: Shroff | undefined) => void
+  closeModal: () => void
   shroff: Shroff | undefined
   amount: string
 }
 
 export const QuoteModal: FC<QuoteModalProps> = ({
-  setModalOpen,
+  closeModal,
   shroff,
   amount,
 }) => {
@@ -40,7 +40,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
       <ModalComponent
         isVisible={Boolean(shroff)}
         onClose={() => {
-          setModalOpen(undefined)
+          closeModal()
         }}
         className="p-5 w-[340px] sm:w-[450px] !min-h-[510px] z-[100] !rounded-[24px]"
       >
@@ -49,7 +49,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
             <IconCmpArrow
               className="cursor-pointer"
               onClick={() => {
-                setModalOpen(undefined)
+                closeModal()
               }}
             />
             <div className="text-[20px] leading-[40px] font-bold">
@@ -71,9 +71,6 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Liquidity provider fee</p>
                 <p>{quote?.getLiquidityProviderFee()}</p>
-                {/* <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
-                  {SwapName[shroff.getSwapName()]}’s 0.3% fee.
-                </p> */}
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Price impact</p>

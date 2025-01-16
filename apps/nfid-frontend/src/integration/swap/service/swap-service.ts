@@ -69,7 +69,8 @@ export class SwapService {
 
       const bestShroff = validQuotes.sort(
         (a, b) =>
-          parseFloat(b.quote.getAmount()) - parseFloat(a.quote.getAmount()),
+          Number(b.quote.getTargetAmountPrettified()) -
+          Number(a.quote.getTargetAmountPrettified()),
       )[0]?.shroff
 
       return bestShroff

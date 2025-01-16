@@ -11,6 +11,7 @@ import { Shroff } from "frontend/integration/swap/shroff"
 import { SwapName } from "frontend/integration/swap/types/enums"
 
 const SLIPPAGE_VARIANTS = [1, 2, 3, 5]
+const MIN_SLIPPAGE = 1
 const MAX_SLIPPAGE = 50
 
 interface QuoteMap {
@@ -154,13 +155,17 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                     decimals={2}
                     fontSize={14}
                     isLoading={false}
-                    value={`${customSlippage}` || ""}
+                    value={`${customSlippage}`}
                     ref={customInputRef}
                     onBlur={(e) => {
                       const value = e.target.value
                       setIsCustom(!!customSlippage)
                       if (+value > MAX_SLIPPAGE) {
                         setSlippage(MAX_SLIPPAGE)
+                        return
+                      }
+                      if (+value < MIN_SLIPPAGE) {
+                        setSlippage(MIN_SLIPPAGE)
                         return
                       }
                       if (value) setSlippage(+value)

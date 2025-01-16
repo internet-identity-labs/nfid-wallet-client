@@ -35,7 +35,9 @@ describe("Kong quote test", () => {
     expect(quote.getWidgetFee()).toEqual("0.00437238 ICP")
     expect(quote.getTargetAmountUSD()).toEqual("4.22 USD")
     expect(quote.getSourceAmountUSD()).toEqual("4.22 USD")
-    expect(quote.getAmount()).toEqual("0.00006621 ckBTC")
+    expect(quote.getTargetAmountPrettifiedWithSymbol()).toEqual(
+      "0.00006621 ckBTC",
+    )
     expect(quote.getEstimatedTransferFee()).toEqual(["0.0002 ICP"])
     expect(priceImpactResult).toBeDefined()
     expect(priceImpactResult!.priceImpact).toEqual("0.92%")

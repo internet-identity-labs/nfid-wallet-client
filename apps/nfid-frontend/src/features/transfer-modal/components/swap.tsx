@@ -111,6 +111,8 @@ export const SwapFT = ({
     })
   }, [])
 
+  console.log("swapProviders", swapProviders)
+
   useEffect(() => {
     onError(Boolean(swapError))
   }, [swapError, onError])

@@ -20,6 +20,11 @@ describe("SwapService", () => {
     expect(result.get(SwapName.ICPSwap)?.getSwapName()).toEqual(
       SwapName.ICPSwap,
     )
+
+    expect(result.get(SwapName.Kongswap)).toBeDefined()
+    expect(result.get(SwapName.Kongswap)?.getSwapName()).toEqual(
+      SwapName.Kongswap,
+    )
   })
 
   it("should return the Shroff with the biggest quote", async () => {

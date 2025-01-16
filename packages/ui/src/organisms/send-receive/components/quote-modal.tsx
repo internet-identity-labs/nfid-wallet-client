@@ -71,9 +71,9 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Liquidity provider fee</p>
                 <p>{quote?.getLiquidityProviderFee()}</p>
-                <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
-                  ICPSwap’s 0.3% fee.
-                </p>
+                {/* <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
+                  {SwapName[shroff.getSwapName()]}’s 0.3% fee.
+                </p> */}
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Price impact</p>

@@ -48,8 +48,11 @@ export class KongQuoteImpl extends QuoteAbstract {
     return [`${sourceFee} ${this.source.symbol}`]
   }
 
+  getGuaranteedAmount(): string {
+    return this.getAmount()
+  }
+
   getLiquidityProviderFee(): string {
-    console.log(JSON.stringify(this.quoteResponse))
     const lpFee = this.quoteResponse.txs
       .map((tx) => tx.lp_fee)
       .reduce((f1, f2) => f1 + f2)

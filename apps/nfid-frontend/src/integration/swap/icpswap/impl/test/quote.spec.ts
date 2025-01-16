@@ -37,7 +37,7 @@ describe("quote test", () => {
     expect(quote.getWidgetFee()).toEqual("0.00437238 ICP")
     expect(quote.getTargetAmountUSD()).toEqual("4.22 USD")
     expect(quote.getSourceAmountUSD()).toEqual("4.22 USD")
-    expect(quote.getGuaranteedAmount()).toEqual("0.00006621 ckBTC")
+    expect(quote.getAmount()).toEqual("0.00006621 ckBTC")
     expect(quote.getEstimatedTransferFee()).toEqual([
       "0.0003 ICP",
       "0.0000002 ckBTC",

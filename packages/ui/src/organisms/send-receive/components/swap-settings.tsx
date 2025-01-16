@@ -11,8 +11,9 @@ import { Shroff } from "frontend/integration/swap/shroff"
 import { SwapName } from "frontend/integration/swap/types/enums"
 
 const SLIPPAGE_VARIANTS = [1, 2, 3, 5]
+const MAX_SLIPPAGE = 50
 
-interface GuaranteedAmount {
+interface QuoteMap {
   [key: string]: Quote | undefined
 }
 
@@ -42,12 +43,12 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   const [isCustom, setIsCustom] = useState(false)
   const [customSlippage, setCustomSlippage] = useState<number | undefined>()
   const customInputRef = useRef<HTMLInputElement>(null)
-  const [quotes, setQuotes] = useState<Array<GuaranteedAmount>>([])
+  const [quotes, setQuotes] = useState<Array<QuoteMap>>([])
 
   useEffect(() => {
     if (!shroff) return
 
-    const getGuaranteedAmounts = async () => {
+    const getQuotes = async () => {
       const quotes = await Promise.all(
         [...swapProviders.entries()].map(async ([key, provider]) => {
           if (!provider) return { [key]: undefined }
@@ -60,7 +61,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
       setQuotes(quotes)
     }
 
-    getGuaranteedAmounts()
+    getQuotes()
   }, [shroff, swapProviders])
 
   useEffect(() => {
@@ -158,6 +159,10 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                     onBlur={(e) => {
                       const value = e.target.value
                       setIsCustom(!!customSlippage)
+                      if (+value > MAX_SLIPPAGE) {
+                        setSlippage(MAX_SLIPPAGE)
+                        return
+                      }
                       if (value) setSlippage(+value)
                     }}
                   />
@@ -247,8 +252,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                           <p>
                             Slippage tolerance too low{" "}
                             <span className="block text-xs">
-                              Increase above{" "}
-                              {(quote?.getSlippage() - slippage).toFixed(2)}%
+                              Increase above {quote?.getSlippage().toFixed(2)}%
                             </span>
                           </p>
                           <p className="basis-[130px] ml-auto flex items-center justify-between">
@@ -280,7 +284,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                           setProvider(value)
                         }}
                       >
-                        <p>{quote?.getGuaranteedAmount()}</p>
+                        <p>{quote?.getGuaranteedAmount(slippage)}</p>
                         <p className="basis-[130px] ml-auto flex items-center justify-between">
                           <span>{swapName}</span>
                           <div

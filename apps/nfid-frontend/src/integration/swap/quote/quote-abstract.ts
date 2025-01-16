@@ -89,8 +89,20 @@ export abstract class QuoteAbstract implements Quote {
     )
   }
 
-  getGuaranteedAmount(): string {
+  getAmount(): string {
     return this.getTargetAmountPrettified() + " " + this.target.symbol
+  }
+
+  getGuaranteedAmount(slippage: number): string {
+    const amount = Number(this.getTargetAmountPrettified())
+
+    return (
+      (amount - (amount * slippage) / 100)
+        .toFixed(this.target.decimals)
+        .replace(TRIM_ZEROS, "") +
+      " " +
+      this.target.symbol
+    )
   }
 
   getSourceAmountPrettified(): string {

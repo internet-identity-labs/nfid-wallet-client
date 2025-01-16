@@ -18,7 +18,7 @@ export interface FT {
 
   getTokenBalanceFormatted(): string | undefined
 
-  getUSDBalanceFormatted(): string | undefined
+  getUSDBalanceFormatted(formatLowAmountToFixed?: boolean): string | undefined
 
   getUSDBalance(): BigNumber | undefined
 
@@ -30,7 +30,10 @@ export interface FT {
     | { value: string; positive: boolean }
     | undefined
 
-  getTokenRateFormatted(amount: string): string | undefined
+  getTokenRateFormatted(
+    amount: string,
+    formatLowAmountToFixed?: boolean,
+  ): string | undefined
 
   refreshBalance(principal: Principal): Promise<FT>
 

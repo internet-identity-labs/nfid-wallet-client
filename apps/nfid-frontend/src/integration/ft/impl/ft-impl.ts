@@ -8,6 +8,8 @@ import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-p
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
+import { formatUsdAmount } from "../../../util/format-usd-amount"
+
 export class FTImpl implements FT {
   private readonly tokenAddress: string
   private readonly tokenCategory: Category
@@ -142,7 +144,7 @@ export class FTImpl implements FT {
     return this.tokenName
   }
 
-  getUSDBalanceFormatted(): string | undefined {
+  getUSDBalanceFormatted(formatLowAmountToFixed = true): string | undefined {
     if (!this.tokenRate) return
 
     const tokenAmount = exchangeRateService.parseTokenAmount(
@@ -151,7 +153,7 @@ export class FTImpl implements FT {
     )
     const usdBalance = tokenAmount.multipliedBy(this.tokenRate.value)
 
-    return usdBalance.toFixed(2) + " USD"
+    return formatUsdAmount(usdBalance, formatLowAmountToFixed)
   }
 
   getTokenRate(amount: string): BigNumber | undefined {
@@ -163,10 +165,13 @@ export class FTImpl implements FT {
     return result
   }
 
-  getTokenRateFormatted(amount: string): string | undefined {
+  getTokenRateFormatted(
+    amount: string,
+    formatLowAmountToFixed = true,
+  ): string | undefined {
     const tokenRate = this.getTokenRate(amount)
     if (!tokenRate) return undefined
-    return `${tokenRate.toFixed(2)} USD`
+    return formatUsdAmount(tokenRate, formatLowAmountToFixed)
   }
 
   getTokenRateDayChangePercent():

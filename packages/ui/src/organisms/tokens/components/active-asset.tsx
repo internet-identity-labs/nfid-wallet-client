@@ -38,10 +38,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
-  const tokenPrice = token.getTokenRate("1")
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
   const initedToken = useTokenInit(token)
-  const usdBalance = initedToken?.getUSDBalance()
+  const usdBalance = initedToken?.getUSDBalanceFormatted(false)
+  const tokenPrice = initedToken?.getTokenRateFormatted("1", false)
 
   if (
     initedToken &&
@@ -95,12 +95,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice ? (
           <div>
-            <div>
-              {tokenPrice.lt(0.01)
-                ? BigNumber(tokenPrice.toExponential(0)).toFixed()
-                : tokenPrice.toFixed(2)}{" "}
-              USD
-            </div>
+            <div>{tokenPrice}</div>
             {tokenRateDayChange && (
               <ArrowPercentChange
                 value={tokenRateDayChange?.value || "0"}
@@ -144,10 +139,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             />
           ) : !usdBalance ? (
             "Not listed"
-          ) : usdBalance.lt(0.01) ? (
-            BigNumber(usdBalance.toExponential(0)).toFixed()
           ) : (
-            usdBalance.toFixed(2)
+            usdBalance
           )}
         </p>
       </td>

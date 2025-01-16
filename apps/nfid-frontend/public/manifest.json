@@ -4,7 +4,7 @@
   "theme_color": "#0E0F10",
   "background_color": "#0E0F10",
   "display": "standalone",
-  "start_url": "/index.html",
+  "start_url": "/",
   "description": "The most user-friendly wallet for ICP.",
   "icons": [
     {

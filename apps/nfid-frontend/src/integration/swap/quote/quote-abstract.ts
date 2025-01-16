@@ -89,15 +89,6 @@ export abstract class QuoteAbstract implements Quote {
     )
   }
 
-  // getAmount(): string {
-  //   console.log(
-  //     "oaoaoa",
-  //     this.getTargetAmountPrettified() + " " + this.target.symbol,
-  //     this.getTargetAmountPrettifiedWithSymbol(),
-  //   )
-  //   return this.getTargetAmountPrettified() + " " + this.target.symbol
-  // }
-
   getGuaranteedAmount(slippage: number): string {
     const amount = new BigNumber(this.getTargetAmountPrettified())
     const slippageAmount = amount.multipliedBy(slippage).dividedBy(100)

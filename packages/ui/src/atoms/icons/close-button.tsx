@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-interface CloseIconProps extends React.HTMLAttributes<HTMLDivElement> {}
+type CloseIconProps = React.HTMLAttributes<HTMLDivElement>
 
 export const CloseIcon: React.FC<CloseIconProps> = ({ className }) => {
   return (

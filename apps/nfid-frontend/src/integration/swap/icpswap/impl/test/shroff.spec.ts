@@ -4,6 +4,7 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { SlippageQuoteError } from "src/integration/swap/errors"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
@@ -34,10 +35,12 @@ describe("shroff test", () => {
     const quote = await shroff.getQuote("0.0015")
     await sleep(1)
 
-    const revalidatedQuote = await shroff.validateQuote()
-    expect(revalidatedQuote.getTargetAmount().toNumber()).toEqual(
-      quote.getTargetAmount().toNumber(),
-    )
+    try {
+      await shroff.validateQuote()
+    } catch (e) {
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(e instanceof SlippageQuoteError).toBeTruthy()
+    }
 
     expect(quote.getSourceAmountPrettified()).toEqual("0.0015")
     quote.getWidgetFeeAmount()

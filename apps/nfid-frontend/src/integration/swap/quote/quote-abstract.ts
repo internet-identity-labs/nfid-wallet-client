@@ -177,6 +177,8 @@ export abstract class QuoteAbstract implements Quote {
     return BigNumber(this.sourceCalculator.getSourceSwapAmount().toString())
   }
 
+  abstract getTransferToSwapAmount(): BigNumber
+
   getTargetAmount(): BigNumber {
     return BigNumber(this.quote.toString())
   }

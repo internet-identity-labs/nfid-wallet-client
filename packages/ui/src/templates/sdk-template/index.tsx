@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import { Image } from "packages/ui/src/atoms/image"
 import React from "react"
 
 import logo from "../../assets/id.svg"

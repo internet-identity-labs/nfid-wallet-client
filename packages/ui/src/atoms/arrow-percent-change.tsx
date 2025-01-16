@@ -14,7 +14,7 @@ export function ArrowPercentChange({
   return (
     <small
       className={clsx(
-        "text-xs flex",
+        "text-xs flex relative",
         {
           "text-green-600": positive,
           "text-red-600": !positive,

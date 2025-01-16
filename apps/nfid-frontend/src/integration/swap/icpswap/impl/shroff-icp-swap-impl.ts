@@ -1,6 +1,6 @@
 import * as Agent from "@dfinity/agent"
 import { SignIdentity } from "@dfinity/agent"
-import { SubAccount } from "@dfinity/ledger-icp"
+import { Account, SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
@@ -183,7 +183,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     }
   }
 
-  async validateQuote(): Promise<Quote> {
+  async validateQuote(): Promise<void> {
     const legacyQuote = this.requestedQuote
 
     if (!this.requestedQuote) {
@@ -205,7 +205,17 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
       console.error("Slippage error: " + error.message)
       throw error
     }
-    return updatedQuote
+  }
+
+  getSwapAccount(): Account {
+    return {
+      subaccount: [
+        SubAccount.fromPrincipal(
+          this.delegationIdentity!.getPrincipal(),
+        ).toUint8Array(),
+      ],
+      owner: this.poolData.canisterId,
+    }
   }
 
   protected async deposit(): Promise<bigint> {
@@ -245,48 +255,6 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     }
     if (!this.requestedQuote) {
       throw new Error("Quote is required")
-    }
-  }
-
-  protected async transferToSwap() {
-    try {
-      const amountDecimals = this.requestedQuote!.getSourceSwapAmount().plus(
-        Number(this.source.fee),
-      )
-
-      console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
-
-      const transferArgs: TransferArg = {
-        amount: BigInt(amountDecimals.toFixed()),
-        created_at_time: [],
-        fee: [],
-        from_subaccount: [],
-        memo: [],
-        to: {
-          subaccount: [
-            SubAccount.fromPrincipal(
-              this.delegationIdentity!.getPrincipal(),
-            ).toUint8Array(),
-          ],
-          owner: this.poolData.canisterId,
-        },
-      }
-
-      const result = await transferICRC1(
-        this.delegationIdentity!,
-        this.source.ledger,
-        transferArgs,
-      )
-      if (hasOwnProperty(result, "Ok")) {
-        const id = result.Ok as bigint
-        this.swapTransaction!.setTransferId(id)
-        return id
-      }
-      console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
-      throw new DepositError(JSON.stringify(result.Err))
-    } catch (e) {
-      console.error("Deposit error: " + e)
-      throw new DepositError(e as Error)
     }
   }
 

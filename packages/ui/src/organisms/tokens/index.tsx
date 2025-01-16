@@ -12,7 +12,6 @@ import { TableTokenSkeleton } from "../../atoms/skeleton"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { ActiveToken } from "./components/active-asset"
 import { TokensHeader } from "./components/header"
-import { NewAssetsModal } from "./components/new-assets-modal"
 import { TokenInfoModal } from "./components/token-info-modal"
 
 export interface IProfileConstants {
@@ -45,6 +44,7 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onSendClick: (value: string) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
+  tokensIniting?: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -57,6 +57,7 @@ export const Tokens: FC<TokensProps> = ({
   onSendClick,
   hideZeroBalance,
   onZeroBalanceToggle,
+  tokensIniting
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -127,6 +128,7 @@ export const Tokens: FC<TokensProps> = ({
         setLoadingToken={setLoadingToken}
         hideZeroBalance={hideZeroBalance}
         onZeroBalanceToggle={onZeroBalanceToggle}
+        manageBtnDisabled={tokensIniting}
       />
       <div className="relative">
         <div className="overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
@@ -164,11 +166,12 @@ export const Tokens: FC<TokensProps> = ({
               {isTokensLoading ? (
                 <TableTokenSkeleton
                   tableRowsAmount={5}
-                  tableCellAmount={getIsMobileDeviceMatch() ? 2 : 4}
+                  tableCellAmount={getIsMobileDeviceMatch() ? 2 : 6}
                 />
               ) : (
                 sortedTokens.map((token, index, arr) => (
                   <ActiveToken
+                    isIniting={tokensIniting}
                     hideZeroBalance={hideZeroBalance}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
                     token={token}
@@ -185,7 +188,6 @@ export const Tokens: FC<TokensProps> = ({
           </table>
         </div>
       </div>
-      <NewAssetsModal tokens={null} />
       <TokenInfoModal token={token} onClose={() => setToken(undefined)} />
     </>
   )

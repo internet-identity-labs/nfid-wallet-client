@@ -61,7 +61,12 @@ class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   getTargets(): string[] {
-    return [ROOT_CANISTER, ...ShroffAbstract.getStaticTargets()]
+    return [
+      this.source.ledger,
+      this.target.ledger,
+      ROOT_CANISTER,
+      ...ShroffAbstract.getStaticTargets(),
+    ]
   }
 
   //TODO improve
@@ -185,8 +190,6 @@ class KongSwapShroffImpl extends ShroffAbstract {
       throw e
     }
   }
-
-  async validateQuote(): Promise<void> {}
 
   protected getQuotePromise(
     sourceCalculator: SourceInputCalculator,

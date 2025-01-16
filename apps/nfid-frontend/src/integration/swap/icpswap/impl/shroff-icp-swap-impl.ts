@@ -183,30 +183,6 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     }
   }
 
-  async validateQuote(): Promise<void> {
-    const legacyQuote = this.requestedQuote
-
-    if (!this.requestedQuote) {
-      throw new Error("Quote is required")
-    }
-
-    console.debug(
-      "Requested quote: " +
-        JSON.stringify(
-          this.requestedQuote?.getSourceUserInputAmount().toFixed(),
-        ),
-    )
-
-    const updatedQuote = await this.getQuote(
-      this.requestedQuote?.getSourceAmountPrettified(),
-    )
-    if (!legacyQuote?.getTargetAmount().eq(updatedQuote.getTargetAmount())) {
-      const error = new SlippageQuoteError()
-      console.error("Slippage error: " + error.message)
-      throw error
-    }
-  }
-
   getSwapAccount(): Account {
     return {
       subaccount: [

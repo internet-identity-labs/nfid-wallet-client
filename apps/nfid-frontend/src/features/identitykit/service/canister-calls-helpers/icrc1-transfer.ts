@@ -58,7 +58,7 @@ export const getIcrc1TransferMetadata = async (
     symbol,
     decimals,
     fee: fee.toString(),
-    usdRate: usdRate?.toString(),
+    usdRate: usdRate?.value.toString(),
     total: total.toString(),
   }
 }

@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState } from "react"
 import { FT } from "src/integration/ft/ft"
@@ -37,9 +38,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
-  const tokenPrice = token.getTokenRateFormatted("1")
+  const tokenPrice = token.getTokenRate("1")
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
   const initedToken = useTokenInit(token)
+  const usdBalance = initedToken?.getUSDBalance()
 
   if (
     initedToken &&
@@ -93,7 +95,12 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice ? (
           <div>
-            <div>{tokenPrice}</div>
+            <div>
+              {tokenPrice.lt(0.01)
+                ? BigNumber(tokenPrice.toExponential(0)).toFixed()
+                : tokenPrice.toFixed(2)}{" "}
+              USD
+            </div>
             {tokenRateDayChange && (
               <ArrowPercentChange
                 value={tokenRateDayChange?.value || "0"}
@@ -135,10 +142,12 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
-          ) : token.getUSDBalanceFormatted() === undefined ? (
+          ) : !usdBalance ? (
             "Not listed"
+          ) : usdBalance.lt(0.01) ? (
+            BigNumber(usdBalance.toExponential(0)).toFixed()
           ) : (
-            token.getUSDBalanceFormatted()
+            usdBalance.toFixed(2)
           )}
         </p>
       </td>

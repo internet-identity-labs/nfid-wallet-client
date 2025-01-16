@@ -154,19 +154,19 @@ export class FTImpl implements FT {
     return usdBalance.toFixed(2) + " USD"
   }
 
-  getTokenRate(amount: string): string | undefined {
+  getTokenRate(amount: string): BigNumber | undefined {
     if (!this.tokenRate) return
 
     const amountBigNumber = new BigNumber(amount || 0)
     const result = this.tokenRate.value.multipliedBy(amountBigNumber)
 
-    return result.toFixed(2)
+    return result
   }
 
   getTokenRateFormatted(amount: string): string | undefined {
     const tokenRate = this.getTokenRate(amount)
     if (!tokenRate) return undefined
-    return `${tokenRate} USD`
+    return `${tokenRate.toFixed(2)} USD`
   }
 
   getTokenRateDayChangePercent():
@@ -239,10 +239,10 @@ export class FTImpl implements FT {
   }
 
   getTokenFeeFormattedUsd(): string | undefined {
-    const feeInUsd = this.getTokenRate(
+    const feeInUsd = this.getTokenRateFormatted(
       (Number(this.fee) / 10 ** this.decimals).toString(),
     )
 
-    return `${feeInUsd || "0.00"} USD`
+    return feeInUsd
   }
 }

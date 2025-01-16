@@ -1,4 +1,5 @@
 declare const AWS_EXCHANGE_RATE: string
+declare const AWS_X_TWEET: string
 declare const AWS_ECDSA_REGISTER: string
 declare const AWS_ECDSA_REGISTER_ADDRESS: string
 declare const AWS_ECDSA_GET_ANONYMOUS: string

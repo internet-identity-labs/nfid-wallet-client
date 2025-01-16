@@ -60,8 +60,6 @@ export abstract class ShroffAbstract implements Shroff {
 
   abstract swap(delegationIdentity: SignIdentity): Promise<SwapTransaction>
 
-  abstract validateQuote(): Promise<void>
-
   protected async transferToSwap() {
     try {
       const amountDecimals = this.requestedQuote!.getTransferToSwapAmount()

@@ -2,7 +2,6 @@ import {
   DepositError,
   LiquidityError,
   ServiceUnavailableError,
-  SlippageQuoteError,
   SwapError,
   WithdrawError,
 } from "apps/nfid-frontend/src/integration/swap/errors"
@@ -234,13 +233,6 @@ export const SwapFT = ({
       return
 
     if (!shroff) return
-
-    try {
-      await shroff.validateQuote()
-    } catch (e) {
-      setSlippageQuoteError((e as SlippageQuoteError).message)
-      return
-    }
 
     setIsSuccessOpen(true)
 

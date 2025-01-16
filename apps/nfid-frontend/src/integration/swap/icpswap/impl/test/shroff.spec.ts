@@ -35,13 +35,6 @@ describe("shroff test", () => {
     const quote = await shroff.getQuote("0.0015")
     await sleep(1)
 
-    try {
-      await shroff.validateQuote()
-    } catch (e) {
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(e instanceof SlippageQuoteError).toBeTruthy()
-    }
-
     expect(quote.getSourceAmountPrettified()).toEqual("0.0015")
     quote.getWidgetFeeAmount()
   })

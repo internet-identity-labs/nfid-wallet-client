@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { HTMLAttributes, useEffect, useState } from "react"
 
 export interface IImageWithFallbackProps

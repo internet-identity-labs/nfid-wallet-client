@@ -1,5 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
-import { ContactSupportError } from "src/integration/swap/errors/contact-support-error"
+import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
 import {
   IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,

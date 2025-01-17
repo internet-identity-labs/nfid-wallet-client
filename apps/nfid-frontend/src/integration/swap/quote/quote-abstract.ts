@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { LiquidityError } from "src/integration/swap/errors"
+import { LiquidityError } from "src/integration/swap/errors/types"
 import { Quote } from "src/integration/swap/quote"
 import { PriceImpactStatus } from "src/integration/swap/types/enums"
 import { PriceImpact } from "src/integration/swap/types/types"

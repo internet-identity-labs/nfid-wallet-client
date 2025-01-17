@@ -1,4 +1,4 @@
-import { TransactionErrorHandlerAbstract } from "src/integration/swap/icpswap/error-handler/error-handler-abstract"
+import { TransactionErrorHandlerAbstract } from "src/integration/swap/errors/error-handler-abstract"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 

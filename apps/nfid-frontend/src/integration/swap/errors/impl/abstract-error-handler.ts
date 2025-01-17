@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import BigNumber from "bignumber.js"
-import { TransactionErrorHandlerAbstract } from "src/integration/swap/icpswap/error-handler/error-handler-abstract"
+import { TransactionErrorHandlerAbstract } from "src/integration/swap/errors/error-handler-abstract"
 import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { Shroff } from "src/integration/swap/shroff"

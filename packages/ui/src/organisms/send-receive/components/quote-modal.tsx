@@ -1,29 +1,46 @@
 import clsx from "clsx"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 import { Quote } from "src/integration/swap/quote"
 
 import { IconCmpArrow } from "@nfid-frontend/ui"
 
+import { Shroff } from "frontend/integration/swap/shroff"
+import { SwapName } from "frontend/integration/swap/types/enums"
+
 export interface QuoteModalProps {
-  setModalOpen: (v: boolean) => void
-  modalOpen: boolean
-  quote: Quote | undefined
+  closeModal: () => void
+  shroff: Shroff | undefined
+  amount: string
 }
 
 export const QuoteModal: FC<QuoteModalProps> = ({
-  setModalOpen,
-  modalOpen,
-  quote,
+  closeModal,
+  shroff,
+  amount,
 }) => {
+  const [quote, setQuote] = useState<Quote>()
   const [targetFee, sourceFee] = quote?.getEstimatedTransferFee() ?? []
+
+  useEffect(() => {
+    if (!shroff) return undefined
+
+    const getQuote = async () => {
+      const quote = await shroff.getQuote(amount)
+      setQuote(quote)
+    }
+
+    getQuote()
+  }, [shroff])
+
+  if (!shroff) return null
 
   return (
     <>
       <ModalComponent
-        isVisible={modalOpen}
+        isVisible={Boolean(shroff)}
         onClose={() => {
-          setModalOpen(false)
+          closeModal()
         }}
         className="p-5 w-[340px] sm:w-[450px] !min-h-[510px] z-[100] !rounded-[24px]"
       >
@@ -32,11 +49,11 @@ export const QuoteModal: FC<QuoteModalProps> = ({
             <IconCmpArrow
               className="cursor-pointer"
               onClick={() => {
-                setModalOpen(false)
+                closeModal()
               }}
             />
             <div className="text-[20px] leading-[40px] font-bold">
-              ICPSwap quote details
+              {SwapName[shroff.getSwapName()]} quote details
             </div>
           </div>
           <div
@@ -54,9 +71,6 @@ export const QuoteModal: FC<QuoteModalProps> = ({
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Liquidity provider fee</p>
                 <p>{quote?.getLiquidityProviderFee()}</p>
-                <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
-                  ICPSwap’s 0.3% fee.
-                </p>
               </div>
               <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
                 <p>Price impact</p>

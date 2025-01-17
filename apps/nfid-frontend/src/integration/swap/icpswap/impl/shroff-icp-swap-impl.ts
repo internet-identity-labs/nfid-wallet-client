@@ -68,7 +68,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
   }
 
   getSwapName(): SwapName {
-    return SwapName.IcpSwap
+    return SwapName.ICPSwap
   }
 
   setQuote(quote: Quote) {
@@ -405,7 +405,7 @@ export class IcpSwapShroffBuilder {
 
       return this.buildShroff()
     } catch (e) {
-      console.error("Error:", e)
+      console.error("ICPSwap error:", e)
       if (e instanceof LiquidityError) {
         throw e
       }

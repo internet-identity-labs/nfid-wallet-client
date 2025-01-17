@@ -41,6 +41,8 @@ export abstract class QuoteAbstract implements Quote {
     }
   }
 
+  abstract getSlippage(): number
+
   getTargetAmountUSD(): string {
     if (!this.targetPriceUSD) {
       return "Not listed"
@@ -87,8 +89,16 @@ export abstract class QuoteAbstract implements Quote {
     )
   }
 
-  getGuaranteedAmount(): string {
-    return this.getTargetAmountPrettified() + " " + this.target.symbol
+  getGuaranteedAmount(slippage: number): string {
+    const amount = new BigNumber(this.getTargetAmountPrettified())
+    const slippageAmount = amount.multipliedBy(slippage).dividedBy(100)
+    const guaranteedAmount = amount.minus(slippageAmount)
+
+    return (
+      guaranteedAmount.toFixed(this.target.decimals).replace(TRIM_ZEROS, "") +
+      " " +
+      this.target.symbol
+    )
   }
 
   getSourceAmountPrettified(): string {
@@ -163,10 +173,6 @@ export abstract class QuoteAbstract implements Quote {
       " " +
       this.source.symbol
     )
-  }
-
-  getMaxSlippage(): string {
-    return this.slippage + "%"
   }
 
   getSourceUserInputAmount(): BigNumber {

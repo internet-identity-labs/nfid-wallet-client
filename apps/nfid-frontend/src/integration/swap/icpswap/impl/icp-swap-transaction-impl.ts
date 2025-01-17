@@ -11,7 +11,7 @@ export class IcpSwapTransactionImpl extends AbstractSwapTransaction {
   private withdraw: bigint | undefined
 
   getProvider(): SwapName {
-    return SwapName.IcpSwap
+    return SwapName.ICPSwap
   }
 
   getSwap(): bigint | undefined {

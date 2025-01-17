@@ -6,7 +6,7 @@ import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 export class KongSwapTransactionImpl extends AbstractSwapTransaction {
   getProvider(): SwapName {
-    return SwapName.KongSwap
+    return SwapName.Kongswap
   }
 
   setTransferId(transferId: bigint) {

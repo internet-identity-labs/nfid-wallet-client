@@ -31,6 +31,10 @@ export class KongQuoteImpl extends QuoteAbstract {
     this.quoteResponse = quoteResponse
   }
 
+  getSlippage(): number {
+    return this.quoteResponse.slippage
+  }
+
   getTransferToSwapAmount(): BigNumber {
     return BigNumber(this.sourceCalculator.getSourceSwapAmount().toString())
   }
@@ -44,8 +48,11 @@ export class KongQuoteImpl extends QuoteAbstract {
     return [`${sourceFee} ${this.source.symbol}`]
   }
 
+  getGuaranteedAmount(): string {
+    return this.getTargetAmountPrettifiedWithSymbol()
+  }
+
   getLiquidityProviderFee(): string {
-    console.log(JSON.stringify(this.quoteResponse))
     const lpFee = this.quoteResponse.txs
       .map((tx) => tx.lp_fee)
       .reduce((f1, f2) => f1 + f2)

@@ -96,6 +96,8 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   const animationCompleteHandler = () => {
     if (step === SwapStage.Swap) {
       setCurrentAnimation(allAnimations.swap)
+    } else if (step === SwapStage.TransferSwap) {
+      setCurrentAnimation(allAnimations.deposit)
     } else {
       return
     }

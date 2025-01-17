@@ -42,14 +42,11 @@ export class SwapService {
   }
 
   async getBestShroff(
-    target: string,
-    source: string,
+    providers: Map<SwapName, Shroff | undefined>,
     amount?: string,
   ): Promise<Shroff | undefined> {
     if (!amount || !Number(amount)) return
     try {
-      const providers = await this.getSwapProviders(target, source)
-
       const quotesWithShroffs = await Promise.all(
         [...providers.entries()].map(async ([, shroff]) => {
           if (!shroff) return

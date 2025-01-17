@@ -7,7 +7,7 @@ const LIQUIDITY_PROVIDER_FEE = 0.003
 
 export class IcpSwapQuoteImpl extends QuoteAbstract {
   getSlippage(): number {
-    return 1
+    return 0
   }
 
   getTransferToSwapAmount(): BigNumber {

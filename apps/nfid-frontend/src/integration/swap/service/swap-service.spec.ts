@@ -28,11 +28,11 @@ describe("SwapService", () => {
   })
 
   it("should return the Shroff with the biggest quote", async () => {
-    const result = await swapService.getBestShroff(
+    const providers = await swapService.getSwapProviders(
       sourceLedger,
       targetLedger,
-      "0.02",
     )
+    const result = await swapService.getBestShroff(providers, "0.02")
 
     expect(result).toBeDefined()
     expect(result?.getSwapName()).toEqual(SwapName.ICPSwap)

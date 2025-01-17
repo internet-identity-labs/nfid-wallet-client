@@ -1,6 +1,6 @@
 <div style="display:flex;flex-direction:column;">
   <a href="https://nfid.one/">
-    <img src="./apps/nfid-frontend/public/assets/nfid_og.png" alt="NFID Wallet repo" role="presentation"/>
+    <img src="./apps/nfid-frontend/public/assets/nfid-wallet-og.png" alt="NFID Wallet repo" role="presentation"/>
   </a>
 
 <br/>

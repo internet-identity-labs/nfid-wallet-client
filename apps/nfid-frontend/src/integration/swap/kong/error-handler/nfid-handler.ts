@@ -1,7 +1,5 @@
 import { AbstractErrorHandler } from "src/integration/swap/errors/impl/abstract-error-handler"
-import { SwapNfidShroffBuilder } from "src/integration/swap/icpswap/error-handler/shroff/nfid-shroff"
 import {
-  ErrorKongNfidShroff,
   KongSwapNfidShroffBuilder,
 } from "src/integration/swap/kong/error-handler/error-shroff/kong-nfid-error-handler"
 import { Shroff } from "src/integration/swap/shroff"

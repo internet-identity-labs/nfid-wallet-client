@@ -16,7 +16,6 @@ import { idlFactory as KongIDL } from "src/integration/swap/kong/idl/kong_backen
 import {
   _SERVICE,
   SwapArgs,
-  SwapResult,
 } from "src/integration/swap/kong/idl/kong_backend.d"
 import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
 import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"

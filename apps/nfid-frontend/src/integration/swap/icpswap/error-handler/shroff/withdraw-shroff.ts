@@ -17,13 +17,12 @@ export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {
       throw new Error("Swap transaction not set")
     }
     try {
+      this.delegationIdentity = delegationIdentity
+      await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       const balance = await this.swapPoolActor.getUserUnusedBalance(
         this.delegationIdentity!.getPrincipal(),
       )
       console.debug("Balance: " + JSON.stringify(balance))
-
-      await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
-      this.delegationIdentity = delegationIdentity
       console.debug("Transaction restarted")
       if (this.swapTransaction.getErrors().length === 0) {
         return this.handleWithdrawTimeoutError()

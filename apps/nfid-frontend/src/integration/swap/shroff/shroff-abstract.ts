@@ -14,7 +14,6 @@ import {
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
-  replaceActorIdentity,
   TransferArg,
 } from "@nfid/integration"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"

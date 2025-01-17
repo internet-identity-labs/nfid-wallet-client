@@ -26,7 +26,7 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
     >
       <div
         className={clsx(
-          "rounded-[24px] shadow-lg px-5 pb-[84px] pt-[18px] text-black overflow-hidden",
+          "rounded-[24px] shadow-lg px-5 pb-[84px] pt-[18px] text-black",
           "z-20 bg-white relative border border-gray-100",
           "m-auto",
           "w-[340px] sm:w-[450px]",

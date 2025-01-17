@@ -7,7 +7,6 @@
   "scripts": {
     "analyze": "source-map-explorer",
     "analyze:nfid-frontend": "yarn analyze 'dist/apps/nfid-frontend/static/js/*.js'",
-    "postinstall": "patch-package",
     "build": "echo '💀 DONT REMOVE THIS 💀'",
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
@@ -189,10 +188,8 @@
     "jest-circus": "^27.1.5",
     "jsonwebtoken": "^9.0.0",
     "node-fetch": "2.6.1",
-    "npm-run-all": "4.1.5",
     "nx": "20.0.8",
     "os-browserify": "0.3.0",
-    "patch-package": "6.5.0",
     "path-browserify": "1.0.1",
     "postcss": "8.4.38",
     "postcss-preset-env": "7.8.2",

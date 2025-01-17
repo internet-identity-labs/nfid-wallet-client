@@ -1,16 +1,16 @@
-import {
-  DepositError,
-  LiquidityError,
-  ServiceUnavailableError,
-  SwapError,
-  WithdrawError,
-} from "apps/nfid-frontend/src/integration/swap/errors"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import toaster from "packages/ui/src/atoms/toast"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+import {
+  DepositError,
+  LiquidityError,
+  ServiceUnavailableError,
+  SwapError,
+  WithdrawError,
+} from "src/integration/swap/errors/types"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"

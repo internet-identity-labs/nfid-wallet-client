@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-import { DepositError, WithdrawError } from "src/integration/swap/errors"
+import { DepositError, WithdrawError } from "src/integration/swap/errors/types"
 import { SWAP_FACTORY_CANISTER } from "src/integration/swap/icpswap/service/icpswap-service"
 import { Account } from "src/integration/swap/kong/idl/icrc1.d"
 import { Quote } from "src/integration/swap/quote"

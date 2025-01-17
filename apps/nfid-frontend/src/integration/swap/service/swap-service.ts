@@ -3,7 +3,7 @@ import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shro
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapName } from "src/integration/swap/types/enums"
 
-import { LiquidityError } from "../errors"
+import { LiquidityError } from "../errors/types"
 import { Quote } from "../quote"
 
 export class SwapService {

@@ -1,13 +1,13 @@
-import {
-  DepositError,
-  SwapError,
-  WithdrawError,
-} from "apps/nfid-frontend/src/integration/swap/errors"
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/loader/spinner"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
+import {
+  DepositError,
+  SwapError,
+  WithdrawError,
+} from "src/integration/swap/errors/types"
 import { Quote } from "src/integration/swap/quote"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 

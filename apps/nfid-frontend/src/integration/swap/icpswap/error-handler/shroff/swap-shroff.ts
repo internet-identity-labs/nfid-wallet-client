@@ -1,5 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
-import { WithdrawError } from "apps/nfid-frontend/src/integration/swap/errors"
+import { WithdrawError } from "src/integration/swap/errors/types"
 import {
   IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
@@ -30,7 +30,13 @@ export class ShroffSwapErrorHandler extends ShroffIcpSwapImpl {
         console.debug("Swap timeout error")
         return this.handleSwapTimeoutError()
       } else {
-        await this.withdraw()
+        try {
+          await this.withdraw()
+        } catch (e : any) {
+          if (e.message.includes("InsufficientFunds")) {
+            await super.withdraw()
+          }
+        }
         console.debug("Withdraw done")
         this.swapTransaction!.setCompleted()
         await this.restoreTransaction()

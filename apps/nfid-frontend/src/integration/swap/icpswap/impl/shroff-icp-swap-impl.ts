@@ -36,7 +36,7 @@ import {
   SlippageSwapError,
   SwapError,
   WithdrawError,
-} from "../../errors"
+} from "../../errors/types"
 import { SwapName } from "../../types/enums"
 import { PoolData } from "../idl/SwapFactory.d"
 import {
@@ -315,7 +315,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         token: this.target.ledger,
         fee: this.target.fee,
       }
-
+      await replaceActorIdentity(this.swapPoolActor, this.delegationIdentity!)
       console.debug("Withdraw args: " + JSON.stringify(args))
       return this.swapPoolActor.withdraw(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {

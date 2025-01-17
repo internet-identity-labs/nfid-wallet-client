@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js"
 import {
   LiquidityError,
   ServiceUnavailableError,
-} from "src/integration/swap/errors"
+} from "src/integration/swap/errors/types"
 import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
 import {
   _SERVICE as ICRC1ServiceIDL,
@@ -17,7 +17,6 @@ import {
   _SERVICE,
   PoolsResult,
   SwapArgs,
-  SwapResult,
 } from "src/integration/swap/kong/idl/kong_backend.d"
 import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
 import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
@@ -42,7 +41,7 @@ import { SwapName } from "../../types/enums"
 
 export const ROOT_CANISTER = "2ipq2-uqaaa-aaaar-qailq-cai"
 
-class KongSwapShroffImpl extends ShroffAbstract {
+export class KongSwapShroffImpl extends ShroffAbstract {
   private actor: Agent.ActorSubclass<_SERVICE>
 
   constructor(source: ICRC1TypeOracle, target: ICRC1TypeOracle) {
@@ -165,15 +164,7 @@ class KongSwapShroffImpl extends ShroffAbstract {
 
       console.debug("Swap args", JSON.stringify(args))
 
-      let resp: SwapResult = await this.actor.swap(args)
-
-      console.log("Swap response", JSON.stringify(resp))
-
-      if (hasOwnProperty(resp, "Err")) {
-        throw new Error("Swap error: " + JSON.stringify(resp.Err))
-      }
-
-      this.swapTransaction.setSwap(resp.Ok.ts)
+      await this.swapInternal(args)
 
       this.restoreTransaction()
 
@@ -190,6 +181,17 @@ class KongSwapShroffImpl extends ShroffAbstract {
       await this.restoreTransaction()
       throw e
     }
+  }
+
+  protected async swapInternal(args: SwapArgs): Promise<void> {
+    let resp = await this.actor.swap(args)
+    console.log("Swap response", JSON.stringify(resp))
+
+    if (hasOwnProperty(resp, "Err")) {
+      throw new Error("Swap error: " + JSON.stringify(resp.Err))
+    }
+
+    this.swapTransaction!.setSwap(resp.Ok.ts)
   }
 
   protected getQuotePromise(

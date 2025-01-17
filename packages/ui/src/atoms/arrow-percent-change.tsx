@@ -5,10 +5,12 @@ import { IconCmpArrowRightIcon } from "@nfid-frontend/ui"
 export function ArrowPercentChange({
   value,
   positive,
+  positiveClassName,
   className,
 }: {
   value: string
   positive?: boolean
+  positiveClassName?: string
   className?: string
 }) {
   return (
@@ -16,7 +18,7 @@ export function ArrowPercentChange({
       className={clsx(
         "text-xs flex relative",
         {
-          "text-green-600": positive,
+          [positiveClassName || "text-green-600"]: positive,
           "text-red-600": !positive,
         },
         className,

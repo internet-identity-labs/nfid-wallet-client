@@ -49,9 +49,13 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             align="end"
             alignOffset={-20}
             tip={
-              <span>
-                Fungible tokens USD price powered by
-                <br /> ICPTokens and ICPSwap.
+              <span className="block max-w-[300px]">
+                The portfolio value represents the total USD balance of your
+                tokens and NFTs and its change over the past 24 hours, assuming
+                token and NFT balances remain unchanged.
+                <span className="block mt-[10px]">
+                Fungible tokens USD price powered by ICPTokens and ICPSwap.
+                </span>
               </span>
             }
           >
@@ -67,13 +71,13 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
         </div>
         <div
           id={"totalBalance"}
-          className="text-black text-[28px] font-semibold leading-[20px]"
+          className="text-black text-[28px] leading-[20px]"
         >
           {isUsdLoading ? (
             <Skeleton className="w-[50%] h-[24px]" />
           ) : (
             <div className="flex items-baseline flex-wrap">
-              <div>
+              <div className="font-semibold">
                 {usdBalance?.value}{" "}
                 <span className="text-[16px] font-bold uppercase self-end mr-3">
                   usd
@@ -83,7 +87,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
                 <div className="flex mt-2.5">
                   <small
                     className={clsx("text-xs font-bold mr-2.5 self-end", {
-                      "text-green-600": usdBalance.dayChangePositive,
+                      "text-emerald-600": usdBalance.dayChangePositive,
                       "text-red-600": !usdBalance.dayChangePositive,
                     })}
                   >
@@ -94,6 +98,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
                     className="self-end"
                     value={usdBalance.dayChangePercent}
                     positive={usdBalance.dayChangePositive}
+                    positiveClassName="text-emerald-600"
                   />
                   <small className="text-xs ml-2.5 self-end">last 24h</small>
                 </div>

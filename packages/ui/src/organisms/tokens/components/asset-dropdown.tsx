@@ -26,7 +26,6 @@ type AssetDropdownProps = {
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
   isTokenProcessed: boolean
-  className?: string
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
@@ -38,7 +37,6 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   dropdownPosition,
   setIsTokenProcessed,
   isTokenProcessed,
-  className,
 }) => {
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(

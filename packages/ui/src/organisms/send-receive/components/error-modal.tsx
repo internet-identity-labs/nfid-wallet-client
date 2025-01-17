@@ -26,8 +26,7 @@ export const ErrorModal: FC<ErrorModalProps> = ({ refresh }) => {
           Service temporarily unavailable
         </p>
         <p className="text-sm leading-5">
-          Swapping through the current provider is temporarily unavailable.
-          Please try again later.{" "}
+          Swapping is temporarily unavailable. Please try again later.{" "}
         </p>
       </div>
       <Button

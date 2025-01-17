@@ -1,5 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
-import { WithdrawError } from "apps/nfid-frontend/src/integration/swap/errors"
+import { WithdrawError } from "src/integration/swap/errors/types"
 import {
   IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,

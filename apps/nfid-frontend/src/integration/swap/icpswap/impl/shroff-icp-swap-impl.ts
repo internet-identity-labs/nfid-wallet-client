@@ -36,7 +36,7 @@ import {
   SlippageSwapError,
   SwapError,
   WithdrawError,
-} from "../../errors"
+} from "../../errors/types"
 import { SwapName } from "../../types/enums"
 import { PoolData } from "../idl/SwapFactory.d"
 import {

@@ -17,6 +17,7 @@ import {
   hasOwnProperty,
   replaceActorIdentity,
 } from "@nfid/integration"
+
 import { swapXTweetService } from "../service/swap-x-tweet-service"
 
 export const APPROXIMATE_SWAP_DURATION = 2 * 60 * 1000
@@ -40,8 +41,9 @@ export class SwapTransactionService {
 
     if ("Completed" in trs.stage && trs.errors.length === 0) {
       // Intentionally not awaited.
-      swapXTweetService.tweet(di.getPrincipal().toString(), trs.uid)
-        .catch(x => console.debug(x))
+      swapXTweetService
+        .tweet(di.getPrincipal().toString(), trs.uid)
+        .catch((x) => console.debug(x))
     }
   }
 

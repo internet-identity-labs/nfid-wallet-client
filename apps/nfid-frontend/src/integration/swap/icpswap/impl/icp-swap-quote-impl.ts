@@ -6,6 +6,10 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 const LIQUIDITY_PROVIDER_FEE = 0.003
 
 export class IcpSwapQuoteImpl extends QuoteAbstract {
+  getSlippage(): number {
+    return 0
+  }
+
   getTransferToSwapAmount(): BigNumber {
     return BigNumber(
       this.sourceCalculator.getSourceSwapAmount().toString(),

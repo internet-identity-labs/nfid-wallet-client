@@ -126,7 +126,7 @@ describe("shroff test", () => {
     }
 
     expect(shroff.getSwapTransaction()?.getStage()).toEqual(SwapStage.Completed)
-    expect(shroff.getSwapTransaction()?.getProvider()).toEqual(SwapName.IcpSwap)
+    expect(shroff.getSwapTransaction()?.getProvider()).toEqual(SwapName.ICPSwap)
 
     const balanceUpgraded = await ledgerICRC.getBalance(mockPrincipal)
 

@@ -9,7 +9,7 @@ import {
   WithdrawError,
 } from "src/integration/swap/errors/types"
 import { Quote } from "src/integration/swap/quote"
-import { SwapStage } from "src/integration/swap/types/enums"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
   Button,
@@ -20,6 +20,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { Shroff } from "frontend/integration/swap/shroff"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import { ChooseFromToken } from "./choose-from-token"
@@ -52,6 +53,11 @@ export interface SwapFTUiProps {
   quoteTimer: number
   swapSettingsOpened: boolean
   closeSwapSettings: () => void
+  slippage: number
+  setSlippage: (value: number) => void
+  swapProviders: Map<SwapName, Shroff | undefined>
+  shroff: Shroff | undefined
+  setProvider: (value: Shroff) => void
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -77,8 +83,13 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   quoteTimer,
   swapSettingsOpened,
   closeSwapSettings,
+  slippage,
+  setSlippage,
+  swapProviders,
+  shroff,
+  setProvider,
 }) => {
-  const [quoteModalOpen, setQuoteModalOpen] = useState(false)
+  const [selectedShroff, setSelectedShroff] = useState<Shroff | undefined>()
   const [isChecked, setIsChecked] = useState(false)
 
   const {
@@ -118,12 +129,18 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       <SwapSettings
         modalOpen={swapSettingsOpened}
         setModalOpen={closeSwapSettings}
-        setQuoteModalOpen={setQuoteModalOpen}
+        setSelectedShroff={setSelectedShroff}
+        slippage={slippage}
+        setSlippage={setSlippage}
+        swapProviders={swapProviders}
+        amount={amount}
+        shroff={shroff}
+        setProvider={setProvider}
       />
       <QuoteModal
-        modalOpen={swapSettingsOpened}
-        setModalOpen={closeSwapSettings}
-        quote={quote}
+        shroff={selectedShroff}
+        closeModal={() => setSelectedShroff(undefined)}
+        amount={amount}
       />
       <p className="mb-1 text-xs">From</p>
       <ChooseFromToken

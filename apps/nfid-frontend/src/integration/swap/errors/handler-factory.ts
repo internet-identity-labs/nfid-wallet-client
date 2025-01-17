@@ -18,7 +18,7 @@ export class ErrorHandlerFactory {
       return new TransferSwapHandler(transaction)
     }
     switch (transaction.getProvider()) {
-      case SwapName.IcpSwap:
+      case SwapName.ICPSwap:
         if (transaction.getStage() === SwapStage.TransferNFID) {
           return new IcpSwapTransferNfidHandler(transaction)
         }
@@ -32,7 +32,7 @@ export class ErrorHandlerFactory {
           return new IcpSwapWithdrawHandler(transaction)
         }
         throw new Error("Unsupported IcpSwap error")
-      case SwapName.KongSwap: {
+      case SwapName.Kongswap: {
         if (transaction.getStage() === SwapStage.Swap) {
           return new KongswapSwapHandler(transaction)
         }

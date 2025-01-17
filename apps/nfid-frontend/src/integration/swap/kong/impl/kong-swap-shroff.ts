@@ -15,6 +15,7 @@ import {
 import { idlFactory as KongIDL } from "src/integration/swap/kong/idl/kong_backend"
 import {
   _SERVICE,
+  PoolsResult,
   SwapArgs,
 } from "src/integration/swap/kong/idl/kong_backend.d"
 import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
@@ -56,7 +57,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   getSwapName(): SwapName {
-    return SwapName.KongSwap
+    return SwapName.Kongswap
   }
 
   getTargets(): string[] {
@@ -203,6 +204,13 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     )
   }
 
+  async getPools(source: string, target: string): Promise<PoolsResult[]> {
+    const pair1 = await this.actor.pools([`${source}_${target}`])
+    const pair2 = await this.actor.pools([`${target}_${source}`])
+
+    return [pair1, pair2]
+  }
+
   getSwapAccount(): Account {
     return {
       subaccount: [],
@@ -311,9 +319,20 @@ export class KongShroffBuilder {
         throw new Error("ICRC1 not found")
       }
 
-      return this.buildShroff()
+      const buildShroff = this.buildShroff()
+
+      const pools = await buildShroff.getPools(
+        this.sourceOracle.symbol,
+        this.targetOracle.symbol,
+      )
+
+      if (!pools.some((pool) => "Ok" in pool && pool.Ok.pools.length > 0)) {
+        throw new LiquidityError()
+      }
+
+      return buildShroff
     } catch (e) {
-      console.error("Error:", e)
+      console.error("Kongswap error:", e)
       if (e instanceof LiquidityError) {
         throw e
       }

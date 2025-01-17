@@ -136,8 +136,10 @@ export const SwapFT = ({
         )
 
         setSwapProviders(providers)
+        setLiquidityError(undefined)
       } catch (error) {
         if (error instanceof LiquidityError) {
+          setSwapProviders(new Map())
           setLiquidityError(error)
         }
       }
@@ -148,6 +150,10 @@ export const SwapFT = ({
 
   useEffect(() => {
     const getShroff = async () => {
+      if (liquidityError) {
+        setShroff(undefined)
+        return
+      }
       try {
         const shroff = await swapService.getBestShroff(swapProviders, amount)
 
@@ -170,7 +176,7 @@ export const SwapFT = ({
     }
 
     if (!shroffError) getShroff()
-  }, [shroffError, amount, swapProviders])
+  }, [shroffError, amount, swapProviders, liquidityError])
 
   useEffect(() => {
     if (!getTransaction) return

@@ -7,27 +7,9 @@ export const useSWRWithTimestamp: SWRHook = (
   fetcher?: any,
   options?: any,
 ) => {
-  const { data, ...swr } = useSWRLib(
-    key,
-    fetcher
-      ? async (...args: unknown[]) => {
-          const response = await fetcher(...args)
-          return {
-            data: response,
-            timestamp: Date.now(),
-          }
-        }
-      : fetcher,
-    options
-      ? {
-          ...options,
-          onSuccess:
-            options.onSuccess && ((args) => options.onSuccess(args.data)),
-        }
-      : options,
-  )
+  const { data, ...swr } = useSWRLib(key, fetcher, options)
   return {
-    data: data?.data,
+    data: data?.data || data,
     ...swr,
   } as SWRResponse
 }

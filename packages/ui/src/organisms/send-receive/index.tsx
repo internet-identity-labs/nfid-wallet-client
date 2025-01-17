@@ -6,6 +6,7 @@ import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
 
 import SettingsIcon from "./assets/swap-settings.svg"
 
+import { Tooltip } from "../../molecules/tooltip"
 import { TransferTemplate } from "./components/template"
 
 export interface TransferModalProps {
@@ -58,12 +59,18 @@ export const TransferModal: FC<TransferModalProps> = ({
         >
           <span className="first-letter:capitalize">{direction}</span>
           {direction === ModalType.SWAP && (
-            <img
-              className="cursor-pointer"
-              src={SettingsIcon}
-              alt="NFID swap settings"
-              onClick={onSettingsClick}
-            />
+            <Tooltip
+              align="end"
+              alignOffset={-20}
+              tip={<span className="block max-w-[300px]">Swap parameters</span>}
+            >
+              <img
+                className="cursor-pointer hover:opacity-60"
+                src={SettingsIcon}
+                alt="NFID swap settings"
+                onClick={onSettingsClick}
+              />
+            </Tooltip>
           )}
         </div>
       )}

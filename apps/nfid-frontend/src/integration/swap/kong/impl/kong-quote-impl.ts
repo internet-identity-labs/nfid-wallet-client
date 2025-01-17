@@ -48,8 +48,23 @@ export class KongQuoteImpl extends QuoteAbstract {
     return [`${sourceFee} ${this.source.symbol}`]
   }
 
-  getGuaranteedAmount(): string {
-    return this.getTargetAmountPrettifiedWithSymbol()
+  getGuaranteedAmount(slippage: number): string {
+    const targetAmountWithZeroSlippage = new BigNumber(
+      this.getTargetAmountPrettified(),
+    )
+      .div(100 - this.getSlippage())
+      .multipliedBy(100)
+
+    const slippageAmount = targetAmountWithZeroSlippage
+      .multipliedBy(slippage)
+      .dividedBy(100)
+    const guaranteedAmount = targetAmountWithZeroSlippage.minus(slippageAmount)
+
+    return (
+      guaranteedAmount.toFixed(this.target.decimals).replace(TRIM_ZEROS, "") +
+      " " +
+      this.target.symbol
+    )
   }
 
   getLiquidityProviderFee(): string {

@@ -46,7 +46,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   if (
     initedToken &&
     hideZeroBalance &&
-    initedToken.getTokenBalance() === BigInt(0)
+    initedToken.getTokenBalance() === BigInt(0) &&
+    initedToken.isHideable()
   )
     return null
 
@@ -116,7 +117,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         ) : (
           <p className="flex items-center justify-end md:justify-start">
             <span
-              className="overflow-hidden text-ellipsis whitespace-nowrap text-right"
+              className="overflow-hidden text-right text-ellipsis whitespace-nowrap"
               style={{
                 maxWidth:
                   window.innerWidth < 430 ||

@@ -84,9 +84,9 @@ export const TransferFT = ({
 
   useEffect(() => {
     isOpenRef.current = isOpen
+    setStatus(SendStatus.PENDING)
     if (!isOpen) {
       setIsSuccessOpen(false)
-      setStatus(SendStatus.PENDING)
       formMethods.reset()
     }
   }, [isOpen, formMethods])

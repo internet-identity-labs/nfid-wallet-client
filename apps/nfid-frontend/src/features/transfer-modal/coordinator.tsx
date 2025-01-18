@@ -90,7 +90,10 @@ export const TransferModalCoordinator = () => {
         />
       ) : (
         <TransferModal
-          onClickOutside={() => send({ type: "HIDE" })}
+          onClickOutside={() => {
+            send({ type: "HIDE" })
+            setSwapSettingsOpened(false)
+          }}
           isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           tokenType={state.context.tokenType}

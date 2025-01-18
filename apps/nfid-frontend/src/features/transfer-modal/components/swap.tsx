@@ -117,6 +117,7 @@ export const SwapFT = ({
 
   useEffect(() => {
     isOpenRef.current = isOpen
+    setSwapStep(0)
     if (!isOpen) {
       refresh()
       setIsSuccessOpen(false)

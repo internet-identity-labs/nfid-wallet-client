@@ -83,11 +83,12 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   return (
     <>
       <ModalComponent
+        noOverlay
         isVisible={modalOpen}
         onClose={() => {
           setModalOpen(false)
         }}
-        className="p-5 w-[340px] sm:w-[450px] !min-h-[480px] z-[100] !rounded-[24px]"
+        className="p-5 w-[340px] sm:w-[450px] !min-h-full z-[100] !rounded-[24px] absolute"
       >
         <div>
           <div className="flex gap-[10px] items-center mb-[18px]">

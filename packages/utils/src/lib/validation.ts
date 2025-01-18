@@ -27,7 +27,7 @@ export const isHex = (h: string) => {
 export const validateTransferAmountField =
   (balance: bigint | undefined, fee: bigint, decimals: number | undefined) =>
   (value: string) => {
-    if (!decimals || !balance) return "Invalid input"
+    if (!decimals || !balance) return "Insufficient funds"
     const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
     const feeNum = new BigNumber(fee.toString()).div(10 ** decimals)
     const valueNum = new BigNumber(value)

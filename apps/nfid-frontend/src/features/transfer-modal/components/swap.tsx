@@ -151,15 +151,10 @@ export const SwapFT = ({
 
   useEffect(() => {
     const getShroff = async () => {
-      if (liquidityError) {
-        setShroff(undefined)
-        return
-      }
       try {
         const shroff = await swapService.getBestShroff(swapProviders, amount)
 
         setShroff(shroff)
-        setLiquidityError(undefined)
       } catch (error) {
         setShroff(undefined)
         if (error instanceof ServiceUnavailableError) {
@@ -177,7 +172,7 @@ export const SwapFT = ({
     }
 
     if (!shroffError) getShroff()
-  }, [shroffError, amount, swapProviders, liquidityError])
+  }, [shroffError, amount, swapProviders])
 
   useEffect(() => {
     if (!getTransaction) return

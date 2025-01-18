@@ -131,13 +131,25 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     return tokens.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  const { data: initedTokens = [] } = useSWR(
+  useEffect(() => {
+    reinitTokens()
+  }, [activeTokens])
+
+  const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,
     () => initTokens(activeTokens),
     { revalidateOnFocus: false },
   )
 
-  const { data: tokensUsdBalance, isLoading: isUsdLoading } = useSWR(
+  useEffect(() => {
+    refetchFullUsdBalance()
+  }, [initedTokens])
+
+  const {
+    data: tokensUsdBalance,
+    isLoading: isUsdLoading,
+    mutate: refetchFullUsdBalance,
+  } = useSWR(
     initedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
     async () => getFullUsdValue(initedTokens),
     { revalidateOnFocus: false },

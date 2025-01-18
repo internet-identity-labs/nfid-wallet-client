@@ -1,7 +1,7 @@
 import { getIdentity } from "apps/nfid-frontend/src/features/transfer-modal/utils"
 import clsx from "clsx"
 import { format } from "date-fns"
-import { Spinner } from "packages/ui/src/atoms/loader/spinner"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useState } from "react"

@@ -55,7 +55,7 @@ export class SwapService {
 
             return { shroff, quote }
           } catch (e) {
-            return
+            throw new LiquidityError()
           }
         }),
       )

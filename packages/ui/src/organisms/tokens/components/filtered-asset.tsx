@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { Spinner } from "packages/ui/src/atoms/loader/spinner"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import toaster from "packages/ui/src/atoms/toast"
 import { FC, useCallback, useState } from "react"
 

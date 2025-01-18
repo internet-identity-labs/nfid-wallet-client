@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { Spinner } from "packages/ui/src/atoms/loader/spinner"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"

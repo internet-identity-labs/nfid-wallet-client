@@ -129,7 +129,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
       <div
         className={clsx(
           "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",
-          "flex flex-col rounded-xl",
+          "flex flex-col rounded-[24px]",
           !isModalVisible && "hidden",
         )}
       >

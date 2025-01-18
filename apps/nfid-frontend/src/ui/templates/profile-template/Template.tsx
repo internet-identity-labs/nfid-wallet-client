@@ -131,10 +131,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     return tokens.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  useEffect(() => {
-    reinitTokens()
-  }, [activeTokens])
-
   const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,
     () => initTokens(activeTokens),
@@ -142,8 +138,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   )
 
   useEffect(() => {
-    refetchFullUsdBalance()
-  }, [initedTokens])
+    reinitTokens()
+  }, [activeTokens, reinitTokens])
 
   const {
     data: tokensUsdBalance,
@@ -154,6 +150,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     async () => getFullUsdValue(initedTokens),
     { revalidateOnFocus: false },
   )
+
+  useEffect(() => {
+    refetchFullUsdBalance()
+  }, [initedTokens, refetchFullUsdBalance])
 
   const {
     data: isEmailDeviceOutOfSyncWithII,

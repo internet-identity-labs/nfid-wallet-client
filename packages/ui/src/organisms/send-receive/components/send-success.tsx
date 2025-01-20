@@ -69,7 +69,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
     <div
       id={"success_window_3"}
       className={clsx(
-        "text-black text-center w-full h-full rounded-[24px]",
+        "text-black text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
         "flex flex-col justify-between bg-white",
         !isOpen && "hidden",

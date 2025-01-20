@@ -18,7 +18,6 @@ export interface TransferModalProps {
   component: JSX.Element
   isOpen: boolean
   hasSwapError: boolean
-  onSettingsClick: () => void
 }
 
 export interface TransferVaultModalProps {
@@ -39,7 +38,6 @@ export const TransferModal: FC<TransferModalProps> = ({
   component,
   isOpen,
   hasSwapError,
-  onSettingsClick,
 }) => {
   return (
     <TransferTemplate
@@ -50,7 +48,7 @@ export const TransferModal: FC<TransferModalProps> = ({
       )}
       overlayClassName={!isOpen ? "hidden" : ""}
     >
-      {!isSuccess && (
+      {!isSuccess && direction !== ModalType.SWAP && (
         <div
           className={clsx(
             "leading-10 text-[20px] font-bold mb-[18px]",
@@ -58,20 +56,6 @@ export const TransferModal: FC<TransferModalProps> = ({
           )}
         >
           <span className="first-letter:capitalize">{direction}</span>
-          {direction === ModalType.SWAP && (
-            <Tooltip
-              align="end"
-              alignOffset={-20}
-              tip={<span className="block max-w-[300px]">Swap parameters</span>}
-            >
-              <img
-                className="cursor-pointer hover:opacity-60"
-                src={SettingsIcon}
-                alt="NFID swap settings"
-                onClick={onSettingsClick}
-              />
-            </Tooltip>
-          )}
         </div>
       )}
       {direction === "send" && !isSuccess && (

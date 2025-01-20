@@ -20,7 +20,6 @@ export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
-  const [swapSettingsOpened, setSwapSettingsOpened] = useState(false)
 
   useDisableScroll(!state.matches("Hidden"))
 
@@ -57,8 +56,6 @@ export const TransferModalCoordinator = () => {
           onClose={() => send({ type: "HIDE" })}
           isOpen={state.matches("SwapMachine")}
           onError={setHasSwapError}
-          swapSettingsOpened={swapSettingsOpened}
-          closeSwapSettings={() => setSwapSettingsOpened(false)}
         />
         <TransferReceive
           publicKey={publicKey}
@@ -67,7 +64,7 @@ export const TransferModalCoordinator = () => {
         />
       </>
     ),
-    [send, state, publicKey, swapSettingsOpened],
+    [send, state, publicKey],
   )
 
   const onTokenTypeChange = useCallback(
@@ -90,10 +87,7 @@ export const TransferModalCoordinator = () => {
         />
       ) : (
         <TransferModal
-          onClickOutside={() => {
-            send({ type: "HIDE" })
-            setSwapSettingsOpened(false)
-          }}
+          onClickOutside={() => send({ type: "HIDE" })}
           isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           tokenType={state.context.tokenType}
@@ -101,7 +95,6 @@ export const TransferModalCoordinator = () => {
           component={Components}
           isOpen={!state.matches("Hidden")}
           hasSwapError={hasSwapError}
-          onSettingsClick={() => setSwapSettingsOpened(true)}
         />
       )}
     </>

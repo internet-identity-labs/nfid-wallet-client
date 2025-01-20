@@ -6,7 +6,6 @@ import { useDisableScroll } from "./hooks/disable-scroll"
 export interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   onClose: () => void
   isVisible?: boolean
-  noOverlay?: boolean
 }
 
 export const ModalComponent: FC<ModalProps> = ({
@@ -15,27 +14,10 @@ export const ModalComponent: FC<ModalProps> = ({
   isVisible,
   onClose,
   style,
-  noOverlay = false,
 }) => {
   useDisableScroll(Boolean(isVisible))
 
-  return noOverlay ? (
-    <div
-      className={clsx([
-        "transition ease-in-out duration-300",
-        "fixed top-[50%] right-[50%] bottom-[50%] left-[50%]",
-        "transform -translate-x-2/4 -translate-y-2/4",
-        "rounded-[24px]",
-        "min-w-min min-h-min h-min bg-white",
-        isVisible ? "scale-100" : "scale-0",
-        className,
-      ])}
-      style={style}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {children}
-    </div>
-  ) : (
+  return (
     <div
       onClick={onClose}
       className={clsx([

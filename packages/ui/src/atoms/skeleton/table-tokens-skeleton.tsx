@@ -20,7 +20,16 @@ export const TableTokenSkeleton = ({
         <tr key={index}>
           {Array.from({ length: tableCellAmount }).map((_, index) => (
             <td key={index} className={clsx("py-[5px]")}>
-              {index === 0 ? (
+              {index === tableCellAmount - 1 ? (
+                <div>
+                  <Skeleton
+                    className={clsx(
+                      "rounded-[12px] h-[10px] w-[50px]",
+                      className,
+                    )}
+                  />
+                </div>
+              ) : index === 0 ? (
                 <div className={clsx("flex gap-[15px] items-center h-16")}>
                   <Skeleton
                     className={clsx(

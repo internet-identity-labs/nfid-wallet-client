@@ -49,7 +49,13 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
           title={"Choose Wallet"}
           subTitle={<>to continue to</>}
         />
-        <div className="mt-10 text-left">
+        <div
+          className={clsx(
+            "mt-10 text-left max-h-[286px] overflow-auto",
+            "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+            "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+          )}
+        >
           {wallets.map((wallet, i) => {
             return (
               <div

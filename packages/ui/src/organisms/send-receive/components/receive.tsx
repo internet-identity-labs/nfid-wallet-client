@@ -46,12 +46,6 @@ export const Receive: FC<ReceiveProps> = ({
           <Copy value={address} />
         </div>
       </div>
-      <div
-        className={clsx(
-          "absolute top-0 left-0 z-50 w-full h-full p-5 bg-white transition-all duration-200 ease-in-out",
-          "-translate-x-full",
-        )}
-      ></div>
     </>
   )
 }

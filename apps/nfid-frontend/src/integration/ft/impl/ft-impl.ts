@@ -215,9 +215,12 @@ export class FTImpl implements FT {
 
   getUSDBalanceDayChange(): BigNumber | undefined {
     if (!this.tokenRate) return
-    const rateChange = this.getTokenRateDayChangePercent()
+    const rateChange = this.getTokenRateDayChangePercent() || {
+      value: "0",
+      positive: true,
+    }
     const usdBalance = this.getUSDBalance()
-    if (!rateChange || !usdBalance) return
+    if (!usdBalance) return
 
     return usdBalance
       ?.multipliedBy(

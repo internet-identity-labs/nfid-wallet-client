@@ -46,6 +46,8 @@ export interface SwapTransaction {
 
   getSwap(): bigint | undefined
 
+  getSwapName(): SwapName
+
   getWithdraw(): bigint | undefined
 
   setDeposit(deposit: bigint): void

@@ -72,19 +72,18 @@ const HomeContent = ({
         <Container className="relative overflow-visible md:h-[700px]">
           <div className="gradient-radial"></div>
           <div className="relative z-10 pt-[15vh] lg:pt-[150px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[570px] text-center md:text-left">
-            <div className="text-[32px] md:text-[36px] lg:text-[44px] xl:text-[58px] tracking-[-2.16px] font-bold">
-              <h1 className="md:leading-[40px] lg:leading-[50px] xl:leading-[64px] gradient-text">
-                Your crypto wallet & gateway to ICP apps
+            <div className="text-[32px] md:text-[36px] lg:text-[44px] xl:text-[50px] tracking-[-2.16px] font-bold">
+              <h1 className="tracking-normal leading-120 gradient-text">
+                The easiest to use and hardest to lose wallet
               </h1>
             </div>
             <h2
-              style={{
-                fontFamily: "inherit !important",
-              }}
+              style={{ fontFamily: "inherit !important" }}
               className="mt-[30px] text-gray-50 md:max-w-[420px] lg:max-w-full text-xl font-inherit font-normal"
             >
-              Start exploring ICP applications in seconds. Trusted by hundreds
-              of thousands of users worldwide.
+              Secure your assets with the most audited wallet on ICP and start
+              exploring ICP applications in seconds. Trusted by hundreds of
+              thousands worldwide.
             </h2>
             <Button
               id="authentication-button"

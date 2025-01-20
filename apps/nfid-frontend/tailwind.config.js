@@ -27,6 +27,9 @@ module.exports = {
         ...defaultTheme.screens,
         xs: "375px",
       },
+      lineHeight: {
+        120: "120%",
+      },
     },
   },
 }

@@ -16,12 +16,16 @@ export const Tooltip: React.FC<TooltipProps> = ({
   arrowClassname,
   ...contentProps
 }) => {
+  const [isOpen, setIsOpen] = useState(false)
   return (
-    <RadixTooltip.Root delayDuration={0}>
+    <RadixTooltip.Root delayDuration={0} open={isOpen} onOpenChange={setIsOpen}>
       <RadixTooltip.Trigger
         asChild
         onClick={(e) => {
-          e.preventDefault()
+          if (!getIsMobileDeviceMatch()) e.preventDefault()
+          else {
+            setIsOpen(!isOpen)
+          }
         }}
       >
         {children}
@@ -39,7 +43,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
           )}
           {...contentProps}
           onPointerDownOutside={(event) => {
-            event.preventDefault()
+            if (!getIsMobileDeviceMatch()) event.preventDefault()
           }}
         >
           {tip}

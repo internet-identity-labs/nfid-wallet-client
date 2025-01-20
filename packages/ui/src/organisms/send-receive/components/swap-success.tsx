@@ -107,7 +107,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
     <div
       id={"swap_success_window_" + step}
       className={clsx(
-        "text-black text-center w-full h-full",
+        "text-black text-center w-full h-full rounded-[24px]",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
         "flex flex-grow flex-col bg-white",
         !isOpen && "hidden",

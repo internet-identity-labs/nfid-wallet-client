@@ -105,7 +105,6 @@ export class FtService {
       .reduce(
         (
           acc: {
-            dayChangeForEveryToken: boolean
             usdBalance: BigNumber
             usdBalanceDayChange: BigNumber
           },
@@ -115,20 +114,12 @@ export class FtService {
           usdBalanceDayChange: acc.usdBalanceDayChange!.plus(
             ft.usdBalanceDayChange || 0,
           ),
-          dayChangeForEveryToken:
-            acc.dayChangeForEveryToken && !!ft.usdBalanceDayChange,
         }),
         {
           usdBalance: BigNumber(0),
           usdBalanceDayChange: BigNumber(0),
-          dayChangeForEveryToken: true,
         },
       )
-
-    if (!price.dayChangeForEveryToken)
-      return {
-        value: price.usdBalance!.plus(nftPrice).toFixed(2),
-      }
 
     return {
       value: price.usdBalance!.plus(nftPrice).toFixed(2),

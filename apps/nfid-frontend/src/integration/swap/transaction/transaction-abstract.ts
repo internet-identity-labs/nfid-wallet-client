@@ -119,6 +119,10 @@ export abstract class AbstractSwapTransaction implements SwapTransaction {
     return this.sourceAmount
   }
 
+  getSwapName(): SwapName {
+    return this.swapProvider
+  }
+
   setNFIDTransferId(transferId: bigint) {
     this.transferNFIDId = transferId
     this.stage = SwapStage.Completed

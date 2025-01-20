@@ -9,7 +9,7 @@ import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory
 import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
-import { SwapStage } from "src/integration/swap/types/enums"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
   IconCmpArrow,
@@ -113,7 +113,8 @@ export const ActivityTableRow = ({
       tip={
         <span className="block max-w-[270px] sm:max-w-[320px]">
           <b>
-            ICPSwap {getTooltipAndButtonText(transaction)?.tooltipTitle} failed.
+            {transaction?.getSwapName() && SwapName[transaction?.getSwapName()]}{" "}
+            {getTooltipAndButtonText(transaction)?.tooltipTitle} failed.
           </b>{" "}
           Something went wrong with the ICPSwap service.{" "}
           {getTooltipAndButtonText(transaction)?.tooltipMessage}

@@ -1,417 +1,519 @@
 export const idlFactory = ({ IDL }: any) => {
-  const AccountBalance = IDL.Record({
-    balance0: IDL.Nat,
-    balance1: IDL.Nat,
+  const TxId = IDL.Variant({
+    TransactionId: IDL.Text,
+    BlockIndex: IDL.Nat,
   })
-  const Page_5 = IDL.Record({
-    content: IDL.Vec(IDL.Tuple(IDL.Principal, AccountBalance)),
-    offset: IDL.Nat,
-    limit: IDL.Nat,
-    totalElements: IDL.Nat,
+  const AddLiquidityArgs = IDL.Record({
+    token_0: IDL.Text,
+    token_1: IDL.Text,
+    amount_0: IDL.Nat,
+    amount_1: IDL.Nat,
+    tx_id_0: IDL.Opt(TxId),
+    tx_id_1: IDL.Opt(TxId),
   })
-  const Error = IDL.Variant({
-    CommonError: IDL.Null,
-    InternalError: IDL.Text,
-    UnsupportedToken: IDL.Text,
-    InsufficientFunds: IDL.Null,
-  })
-  const Result_26 = IDL.Variant({ ok: Page_5, err: Error })
-  const Result_2 = IDL.Variant({ ok: IDL.Bool, err: Error })
-  const Result_25 = IDL.Variant({
-    ok: IDL.Record({
-      tokenIncome: IDL.Vec(
-        IDL.Tuple(
-          IDL.Nat,
-          IDL.Record({ tokensOwed0: IDL.Nat, tokensOwed1: IDL.Nat }),
-        ),
-      ),
-      totalTokensOwed0: IDL.Nat,
-      totalTokensOwed1: IDL.Nat,
-    }),
-    err: Error,
-  })
-  const ClaimArgs = IDL.Record({ positionId: IDL.Nat })
-  const Result_24 = IDL.Variant({
-    ok: IDL.Record({ amount0: IDL.Nat, amount1: IDL.Nat }),
-    err: Error,
-  })
-  const DecreaseLiquidityArgs = IDL.Record({
-    liquidity: IDL.Text,
-    positionId: IDL.Nat,
-  })
-  const DepositArgs = IDL.Record({
-    fee: IDL.Nat,
-    token: IDL.Text,
+  const ICTransferReply = IDL.Record({
+    is_send: IDL.Bool,
+    block_index: IDL.Nat,
+    chain: IDL.Text,
+    canister_id: IDL.Text,
     amount: IDL.Nat,
+    symbol: IDL.Text,
   })
-  const Result = IDL.Variant({ ok: IDL.Nat, err: Error })
-  const DepositAndMintArgs = IDL.Record({
-    tickUpper: IDL.Int,
-    fee0: IDL.Nat,
-    fee1: IDL.Nat,
-    amount0: IDL.Nat,
-    amount1: IDL.Nat,
-    positionOwner: IDL.Principal,
-    amount0Desired: IDL.Text,
-    amount1Desired: IDL.Text,
-    tickLower: IDL.Int,
+  const TransferReply = IDL.Variant({ IC: ICTransferReply })
+  const TransferIdReply = IDL.Record({
+    transfer_id: IDL.Nat64,
+    transfer: TransferReply,
   })
-  const Result_23 = IDL.Variant({
-    ok: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Principal)),
-    err: Error,
+  const AddLiquidityReply = IDL.Record({
+    ts: IDL.Nat64,
+    request_id: IDL.Nat64,
+    status: IDL.Text,
+    tx_id: IDL.Nat64,
+    add_lp_token_amount: IDL.Nat,
+    transfer_ids: IDL.Vec(TransferIdReply),
+    amount_0: IDL.Nat,
+    amount_1: IDL.Nat,
+    claim_ids: IDL.Vec(IDL.Nat64),
+    address_0: IDL.Text,
+    address_1: IDL.Text,
+    symbol_0: IDL.Text,
+    symbol_1: IDL.Text,
+    chain_0: IDL.Text,
+    chain_1: IDL.Text,
+    symbol: IDL.Text,
   })
-  const CycleInfo = IDL.Record({ balance: IDL.Nat, available: IDL.Nat })
-  const Result_22 = IDL.Variant({ ok: CycleInfo, err: Error })
-  const Token = IDL.Record({ address: IDL.Text, standard: IDL.Text })
-  const GetPositionArgs = IDL.Record({
-    tickUpper: IDL.Int,
-    tickLower: IDL.Int,
+  const AddLiquidityResult = IDL.Variant({
+    Ok: AddLiquidityReply,
+    Err: IDL.Text,
   })
-  const PositionInfo = IDL.Record({
-    tokensOwed0: IDL.Nat,
-    tokensOwed1: IDL.Nat,
-    feeGrowthInside1LastX128: IDL.Nat,
-    liquidity: IDL.Nat,
-    feeGrowthInside0LastX128: IDL.Nat,
+  const AddLiquidityAmountsReply = IDL.Record({
+    add_lp_token_amount: IDL.Nat,
+    amount_0: IDL.Nat,
+    amount_1: IDL.Nat,
+    address_0: IDL.Text,
+    address_1: IDL.Text,
+    symbol_0: IDL.Text,
+    symbol_1: IDL.Text,
+    chain_0: IDL.Text,
+    chain_1: IDL.Text,
+    symbol: IDL.Text,
+    fee_0: IDL.Nat,
+    fee_1: IDL.Nat,
   })
-  const Result_21 = IDL.Variant({ ok: PositionInfo, err: Error })
-  const PositionInfoWithId = IDL.Record({
-    id: IDL.Text,
-    tokensOwed0: IDL.Nat,
-    tokensOwed1: IDL.Nat,
-    feeGrowthInside1LastX128: IDL.Nat,
-    liquidity: IDL.Nat,
-    feeGrowthInside0LastX128: IDL.Nat,
+  const AddLiquiditAmountsResult = IDL.Variant({
+    Ok: AddLiquidityAmountsReply,
+    Err: IDL.Text,
   })
-  const Page_4 = IDL.Record({
-    content: IDL.Vec(PositionInfoWithId),
-    offset: IDL.Nat,
-    limit: IDL.Nat,
-    totalElements: IDL.Nat,
+  const AddLiquidityAsyncResult = IDL.Variant({
+    Ok: IDL.Nat64,
+    Err: IDL.Text,
   })
-  const Result_20 = IDL.Variant({ ok: Page_4, err: Error })
-  const Result_19 = IDL.Variant({ ok: IDL.Principal, err: Error })
-  const TransactionType = IDL.Variant({
-    decreaseLiquidity: IDL.Null,
-    claim: IDL.Null,
-    swap: IDL.Null,
-    addLiquidity: IDL.Null,
-    increaseLiquidity: IDL.Null,
+  const AddPoolArgs = IDL.Record({
+    token_0: IDL.Text,
+    token_1: IDL.Text,
+    amount_0: IDL.Nat,
+    amount_1: IDL.Nat,
+    tx_id_0: IDL.Opt(TxId),
+    tx_id_1: IDL.Opt(TxId),
+    lp_fee_bps: IDL.Opt(IDL.Nat8),
   })
-  const SwapRecordInfo = IDL.Record({
-    to: IDL.Text,
-    feeAmount: IDL.Int,
-    action: TransactionType,
-    feeAmountTotal: IDL.Int,
-    token0Id: IDL.Text,
-    token1Id: IDL.Text,
-    token0AmountTotal: IDL.Nat,
-    liquidityTotal: IDL.Nat,
-    from: IDL.Text,
-    tick: IDL.Int,
-    feeTire: IDL.Nat,
-    recipient: IDL.Text,
-    token0ChangeAmount: IDL.Nat,
-    token1AmountTotal: IDL.Nat,
-    liquidityChange: IDL.Nat,
-    token1Standard: IDL.Text,
-    TVLToken0: IDL.Int,
-    TVLToken1: IDL.Int,
-    token0Fee: IDL.Nat,
-    token1Fee: IDL.Nat,
-    timestamp: IDL.Int,
-    token1ChangeAmount: IDL.Nat,
-    token0Standard: IDL.Text,
-    price: IDL.Nat,
-    poolId: IDL.Text,
+  const AddPoolReply = IDL.Record({
+    ts: IDL.Nat64,
+    request_id: IDL.Nat64,
+    status: IDL.Text,
+    tx_id: IDL.Nat64,
+    lp_token_symbol: IDL.Text,
+    add_lp_token_amount: IDL.Nat,
+    transfer_ids: IDL.Vec(TransferIdReply),
+    name: IDL.Text,
+    amount_0: IDL.Nat,
+    amount_1: IDL.Nat,
+    claim_ids: IDL.Vec(IDL.Nat64),
+    address_0: IDL.Text,
+    address_1: IDL.Text,
+    symbol_0: IDL.Text,
+    symbol_1: IDL.Text,
+    pool_id: IDL.Nat32,
+    chain_0: IDL.Text,
+    chain_1: IDL.Text,
+    is_removed: IDL.Bool,
+    symbol: IDL.Text,
+    lp_fee_bps: IDL.Nat8,
   })
-  const PushError = IDL.Record({ time: IDL.Int, message: IDL.Text })
-  const Result_18 = IDL.Variant({
-    ok: IDL.Record({
-      infoCid: IDL.Text,
-      records: IDL.Vec(SwapRecordInfo),
-      errors: IDL.Vec(PushError),
-      retryCount: IDL.Nat,
+  const AddPoolResult = IDL.Variant({ Ok: AddPoolReply, Err: IDL.Text })
+  const PoolExpectedBalance = IDL.Record({
+    balance: IDL.Nat,
+    kong_fee: IDL.Nat,
+    pool_symbol: IDL.Text,
+    lp_fee: IDL.Nat,
+  })
+  const ExpectedBalance = IDL.Record({
+    balance: IDL.Nat,
+    pool_balances: IDL.Vec(PoolExpectedBalance),
+    unclaimed_claims: IDL.Nat,
+  })
+  const CheckPoolsReply = IDL.Record({
+    expected_balance: ExpectedBalance,
+    diff_balance: IDL.Int,
+    actual_balance: IDL.Nat,
+    symbol: IDL.Text,
+  })
+  const CheckPoolsResult = IDL.Variant({
+    Ok: IDL.Vec(CheckPoolsReply),
+    Err: IDL.Text,
+  })
+  const UserReply = IDL.Record({
+    account_id: IDL.Text,
+    fee_level_expires_at: IDL.Opt(IDL.Nat64),
+    referred_by: IDL.Opt(IDL.Text),
+    user_id: IDL.Nat32,
+    fee_level: IDL.Nat8,
+    principal_id: IDL.Text,
+    referred_by_expires_at: IDL.Opt(IDL.Nat64),
+    my_referral_code: IDL.Text,
+  })
+  const UserResult = IDL.Variant({ Ok: UserReply, Err: IDL.Text })
+  const Icrc10SupportedStandards = IDL.Record({
+    url: IDL.Text,
+    name: IDL.Text,
+  })
+  const icrc21_consent_message_metadata = IDL.Record({
+    utc_offset_minutes: IDL.Opt(IDL.Int16),
+    language: IDL.Text,
+  })
+  const icrc21_consent_message_spec = IDL.Record({
+    metadata: icrc21_consent_message_metadata,
+    device_spec: IDL.Opt(
+      IDL.Variant({
+        GenericDisplay: IDL.Null,
+        LineDisplay: IDL.Record({
+          characters_per_line: IDL.Nat16,
+          lines_per_page: IDL.Nat16,
+        }),
+      }),
+    ),
+  })
+  const icrc21_consent_message_request = IDL.Record({
+    arg: IDL.Vec(IDL.Nat8),
+    method: IDL.Text,
+    user_preferences: icrc21_consent_message_spec,
+  })
+  const icrc21_consent_message = IDL.Variant({
+    LineDisplayMessage: IDL.Record({
+      pages: IDL.Vec(IDL.Record({ lines: IDL.Vec(IDL.Text) })),
     }),
-    err: Error,
+    GenericDisplayMessage: IDL.Text,
   })
-  const TickLiquidityInfo = IDL.Record({
-    tickIndex: IDL.Int,
-    price0Decimal: IDL.Nat,
-    liquidityNet: IDL.Int,
-    price0: IDL.Nat,
-    price1: IDL.Nat,
-    liquidityGross: IDL.Nat,
-    price1Decimal: IDL.Nat,
+  const icrc21_consent_info = IDL.Record({
+    metadata: icrc21_consent_message_metadata,
+    consent_message: icrc21_consent_message,
   })
-  const Page_3 = IDL.Record({
-    content: IDL.Vec(TickLiquidityInfo),
-    offset: IDL.Nat,
-    limit: IDL.Nat,
-    totalElements: IDL.Nat,
-  })
-  const Result_17 = IDL.Variant({ ok: Page_3, err: Error })
-  const TickInfoWithId = IDL.Record({
-    id: IDL.Text,
-    initialized: IDL.Bool,
-    feeGrowthOutside1X128: IDL.Nat,
-    secondsPerLiquidityOutsideX128: IDL.Nat,
-    liquidityNet: IDL.Int,
-    secondsOutside: IDL.Nat,
-    liquidityGross: IDL.Nat,
-    feeGrowthOutside0X128: IDL.Nat,
-    tickCumulativeOutside: IDL.Int,
-  })
-  const Page_2 = IDL.Record({
-    content: IDL.Vec(TickInfoWithId),
-    offset: IDL.Nat,
-    limit: IDL.Nat,
-    totalElements: IDL.Nat,
-  })
-  const Result_16 = IDL.Variant({ ok: Page_2, err: Error })
-  const Result_15 = IDL.Variant({
-    ok: IDL.Record({
-      swapFee0Repurchase: IDL.Nat,
-      token0Amount: IDL.Nat,
-      swapFeeReceiver: IDL.Text,
-      token1Amount: IDL.Nat,
-      swapFee1Repurchase: IDL.Nat,
+  const icrc21_error_info = IDL.Record({ description: IDL.Text })
+  const icrc21_error = IDL.Variant({
+    GenericError: IDL.Record({
+      description: IDL.Text,
+      error_code: IDL.Nat,
     }),
-    err: Error,
+    InsufficientPayment: icrc21_error_info,
+    UnsupportedCanisterCall: icrc21_error_info,
+    ConsentMessageUnavailable: icrc21_error_info,
   })
-  const Value = IDL.Variant({
-    Int: IDL.Int,
-    Nat: IDL.Nat,
-    Blob: IDL.Vec(IDL.Nat8),
-    Text: IDL.Text,
+  const icrc21_consent_message_response = IDL.Variant({
+    Ok: icrc21_consent_info,
+    Err: icrc21_error,
   })
-  const TransferLog = IDL.Record({
-    to: IDL.Principal,
-    fee: IDL.Nat,
-    result: IDL.Text,
-    token: Token,
-    action: IDL.Text,
-    daysFrom19700101: IDL.Nat,
-    owner: IDL.Principal,
-    from: IDL.Principal,
-    fromSubaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
-    timestamp: IDL.Nat,
-    index: IDL.Nat,
-    amount: IDL.Nat,
-    errorMsg: IDL.Text,
+  const Icrc28TrustedOriginsResponse = IDL.Record({
+    trusted_origins: IDL.Vec(IDL.Text),
   })
-  const Result_14 = IDL.Variant({ ok: IDL.Vec(TransferLog), err: Error })
-  const Result_1 = IDL.Variant({ ok: IDL.Text, err: Error })
-  const UserPositionInfo = IDL.Record({
-    tickUpper: IDL.Int,
-    tokensOwed0: IDL.Nat,
-    tokensOwed1: IDL.Nat,
-    feeGrowthInside1LastX128: IDL.Nat,
-    liquidity: IDL.Nat,
-    feeGrowthInside0LastX128: IDL.Nat,
-    tickLower: IDL.Int,
+  const PoolReply = IDL.Record({
+    tvl: IDL.Nat,
+    lp_token_symbol: IDL.Text,
+    name: IDL.Text,
+    lp_fee_0: IDL.Nat,
+    lp_fee_1: IDL.Nat,
+    balance_0: IDL.Nat,
+    balance_1: IDL.Nat,
+    rolling_24h_volume: IDL.Nat,
+    rolling_24h_apy: IDL.Float64,
+    address_0: IDL.Text,
+    address_1: IDL.Text,
+    rolling_24h_num_swaps: IDL.Nat,
+    symbol_0: IDL.Text,
+    symbol_1: IDL.Text,
+    pool_id: IDL.Nat32,
+    price: IDL.Float64,
+    chain_0: IDL.Text,
+    chain_1: IDL.Text,
+    is_removed: IDL.Bool,
+    symbol: IDL.Text,
+    rolling_24h_lp_fee: IDL.Nat,
+    lp_fee_bps: IDL.Nat8,
   })
-  const Result_13 = IDL.Variant({ ok: UserPositionInfo, err: Error })
-  const Result_12 = IDL.Variant({
-    ok: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Nat))),
-    err: Error,
+  const PoolsReply = IDL.Record({
+    total_24h_lp_fee: IDL.Nat,
+    total_tvl: IDL.Nat,
+    total_24h_volume: IDL.Nat,
+    pools: IDL.Vec(PoolReply),
+    total_24h_num_swaps: IDL.Nat,
   })
-  const Result_11 = IDL.Variant({ ok: IDL.Vec(IDL.Nat), err: Error })
-  const UserPositionInfoWithTokenAmount = IDL.Record({
-    id: IDL.Nat,
-    tickUpper: IDL.Int,
-    tokensOwed0: IDL.Nat,
-    tokensOwed1: IDL.Nat,
-    feeGrowthInside1LastX128: IDL.Nat,
-    liquidity: IDL.Nat,
-    feeGrowthInside0LastX128: IDL.Nat,
-    token0Amount: IDL.Nat,
-    token1Amount: IDL.Nat,
-    tickLower: IDL.Int,
+  const PoolsResult = IDL.Variant({ Ok: PoolsReply, Err: IDL.Text })
+  const RemoveLiquidityArgs = IDL.Record({
+    token_0: IDL.Text,
+    token_1: IDL.Text,
+    remove_lp_token_amount: IDL.Nat,
   })
-  const Page_1 = IDL.Record({
-    content: IDL.Vec(UserPositionInfoWithTokenAmount),
-    offset: IDL.Nat,
-    limit: IDL.Nat,
-    totalElements: IDL.Nat,
+  const RemoveLiquidityReply = IDL.Record({
+    ts: IDL.Nat64,
+    request_id: IDL.Nat64,
+    status: IDL.Text,
+    tx_id: IDL.Nat64,
+    transfer_ids: IDL.Vec(TransferIdReply),
+    lp_fee_0: IDL.Nat,
+    lp_fee_1: IDL.Nat,
+    amount_0: IDL.Nat,
+    amount_1: IDL.Nat,
+    claim_ids: IDL.Vec(IDL.Nat64),
+    address_0: IDL.Text,
+    address_1: IDL.Text,
+    symbol_0: IDL.Text,
+    symbol_1: IDL.Text,
+    chain_0: IDL.Text,
+    chain_1: IDL.Text,
+    remove_lp_token_amount: IDL.Nat,
+    symbol: IDL.Text,
   })
-  const Result_10 = IDL.Variant({ ok: Page_1, err: Error })
-  const UserPositionInfoWithId = IDL.Record({
-    id: IDL.Nat,
-    tickUpper: IDL.Int,
-    tokensOwed0: IDL.Nat,
-    tokensOwed1: IDL.Nat,
-    feeGrowthInside1LastX128: IDL.Nat,
-    liquidity: IDL.Nat,
-    feeGrowthInside0LastX128: IDL.Nat,
-    tickLower: IDL.Int,
+  const RemoveLiquidityResult = IDL.Variant({
+    Ok: RemoveLiquidityReply,
+    Err: IDL.Text,
   })
-  const Page = IDL.Record({
-    content: IDL.Vec(UserPositionInfoWithId),
-    offset: IDL.Nat,
-    limit: IDL.Nat,
-    totalElements: IDL.Nat,
+  const RemoveLiquidityAmountsReply = IDL.Record({
+    lp_fee_0: IDL.Nat,
+    lp_fee_1: IDL.Nat,
+    amount_0: IDL.Nat,
+    amount_1: IDL.Nat,
+    address_0: IDL.Text,
+    address_1: IDL.Text,
+    symbol_0: IDL.Text,
+    symbol_1: IDL.Text,
+    chain_0: IDL.Text,
+    chain_1: IDL.Text,
+    remove_lp_token_amount: IDL.Nat,
+    symbol: IDL.Text,
   })
-  const Result_9 = IDL.Variant({ ok: Page, err: Error })
-  const Result_8 = IDL.Variant({
-    ok: IDL.Vec(UserPositionInfoWithId),
-    err: Error,
+  const RemoveLiquidityAmountsResult = IDL.Variant({
+    Ok: RemoveLiquidityAmountsReply,
+    Err: IDL.Text,
   })
-  const Result_7 = IDL.Variant({
-    ok: IDL.Record({ balance0: IDL.Nat, balance1: IDL.Nat }),
-    err: Error,
-  })
-  const WithdrawErrorLog = IDL.Record({
-    token: Token,
-    time: IDL.Int,
-    user: IDL.Principal,
-    amount: IDL.Nat,
-  })
-  const Result_6 = IDL.Variant({
-    ok: IDL.Vec(IDL.Tuple(IDL.Nat, WithdrawErrorLog)),
-    err: Error,
-  })
-  const IncreaseLiquidityArgs = IDL.Record({
-    positionId: IDL.Nat,
-    amount0Desired: IDL.Text,
-    amount1Desired: IDL.Text,
-  })
-  const PoolMetadata = IDL.Record({
-    fee: IDL.Nat,
-    key: IDL.Text,
-    sqrtPriceX96: IDL.Nat,
-    tick: IDL.Int,
-    liquidity: IDL.Nat,
-    token0: Token,
-    token1: Token,
-    maxLiquidityPerTick: IDL.Nat,
-    nextPositionId: IDL.Nat,
-  })
-  const Result_5 = IDL.Variant({ ok: PoolMetadata, err: Error })
-  const MintArgs = IDL.Record({
-    fee: IDL.Nat,
-    tickUpper: IDL.Int,
-    token0: IDL.Text,
-    token1: IDL.Text,
-    amount0Desired: IDL.Text,
-    amount1Desired: IDL.Text,
-    tickLower: IDL.Int,
+  const RemoveLiquidityAsyncResult = IDL.Variant({
+    Ok: IDL.Nat64,
+    Err: IDL.Text,
   })
   const SwapArgs = IDL.Record({
-    amountIn: IDL.Text,
-    zeroForOne: IDL.Bool,
-    amountOutMinimum: IDL.Text,
+    receive_token: IDL.Text,
+    max_slippage: IDL.Opt(IDL.Float64),
+    pay_amount: IDL.Nat,
+    referred_by: IDL.Opt(IDL.Text),
+    receive_amount: IDL.Opt(IDL.Nat),
+    receive_address: IDL.Opt(IDL.Text),
+    pay_token: IDL.Text,
+    pay_tx_id: IDL.Opt(TxId),
   })
-  const Result_4 = IDL.Variant({
-    ok: IDL.Record({ tokensOwed0: IDL.Nat, tokensOwed1: IDL.Nat }),
-    err: Error,
+  const RequestRequest = IDL.Variant({
+    AddLiquidity: AddLiquidityArgs,
+    Swap: SwapArgs,
+    AddPool: AddPoolArgs,
+    RemoveLiquidity: RemoveLiquidityArgs,
   })
-  const Result_3 = IDL.Variant({ ok: IDL.Int, err: Error })
-  const WithdrawArgs = IDL.Record({
-    fee: IDL.Nat,
+  const SwapTxReply = IDL.Record({
+    ts: IDL.Nat64,
+    receive_chain: IDL.Text,
+    pay_amount: IDL.Nat,
+    receive_amount: IDL.Nat,
+    pay_symbol: IDL.Text,
+    receive_symbol: IDL.Text,
+    receive_address: IDL.Text,
+    pool_symbol: IDL.Text,
+    pay_address: IDL.Text,
+    price: IDL.Float64,
+    pay_chain: IDL.Text,
+    lp_fee: IDL.Nat,
+    gas_fee: IDL.Nat,
+  })
+  const SwapReply = IDL.Record({
+    ts: IDL.Nat64,
+    txs: IDL.Vec(SwapTxReply),
+    request_id: IDL.Nat64,
+    status: IDL.Text,
+    tx_id: IDL.Nat64,
+    transfer_ids: IDL.Vec(TransferIdReply),
+    receive_chain: IDL.Text,
+    mid_price: IDL.Float64,
+    pay_amount: IDL.Nat,
+    receive_amount: IDL.Nat,
+    claim_ids: IDL.Vec(IDL.Nat64),
+    pay_symbol: IDL.Text,
+    receive_symbol: IDL.Text,
+    receive_address: IDL.Text,
+    pay_address: IDL.Text,
+    price: IDL.Float64,
+    pay_chain: IDL.Text,
+    slippage: IDL.Float64,
+  })
+  const RequestReply = IDL.Variant({
+    AddLiquidity: AddLiquidityReply,
+    Swap: SwapReply,
+    AddPool: AddPoolReply,
+    RemoveLiquidity: RemoveLiquidityReply,
+    Pending: IDL.Null,
+  })
+  const RequestsReply = IDL.Record({
+    ts: IDL.Nat64,
+    request_id: IDL.Nat64,
+    request: RequestRequest,
+    statuses: IDL.Vec(IDL.Text),
+    reply: RequestReply,
+  })
+  const RequestsResult = IDL.Variant({
+    Ok: IDL.Vec(RequestsReply),
+    Err: IDL.Text,
+  })
+  const SendArgs = IDL.Record({
     token: IDL.Text,
+    to_address: IDL.Text,
     amount: IDL.Nat,
   })
+  const SendReply = IDL.Record({
+    ts: IDL.Nat64,
+    request_id: IDL.Nat64,
+    status: IDL.Text,
+    tx_id: IDL.Nat64,
+    chain: IDL.Text,
+    to_address: IDL.Text,
+    amount: IDL.Nat,
+    symbol: IDL.Text,
+  })
+  const SendResult = IDL.Variant({ OK: SendReply, Err: IDL.Text })
+  const SwapResult = IDL.Variant({ Ok: SwapReply, Err: IDL.Text })
+  const SwapAmountsTxReply = IDL.Record({
+    receive_chain: IDL.Text,
+    pay_amount: IDL.Nat,
+    receive_amount: IDL.Nat,
+    pay_symbol: IDL.Text,
+    receive_symbol: IDL.Text,
+    receive_address: IDL.Text,
+    pool_symbol: IDL.Text,
+    pay_address: IDL.Text,
+    price: IDL.Float64,
+    pay_chain: IDL.Text,
+    lp_fee: IDL.Nat,
+    gas_fee: IDL.Nat,
+  })
+  const SwapAmountsReply = IDL.Record({
+    txs: IDL.Vec(SwapAmountsTxReply),
+    receive_chain: IDL.Text,
+    mid_price: IDL.Float64,
+    pay_amount: IDL.Nat,
+    receive_amount: IDL.Nat,
+    pay_symbol: IDL.Text,
+    receive_symbol: IDL.Text,
+    receive_address: IDL.Text,
+    pay_address: IDL.Text,
+    price: IDL.Float64,
+    pay_chain: IDL.Text,
+    slippage: IDL.Float64,
+  })
+  const SwapAmountsResult = IDL.Variant({
+    Ok: SwapAmountsReply,
+    Err: IDL.Text,
+  })
+  const SwapAsyncResult = IDL.Variant({ Ok: IDL.Nat64, Err: IDL.Text })
+  const ICTokenReply = IDL.Record({
+    fee: IDL.Nat,
+    decimals: IDL.Nat8,
+    token_id: IDL.Nat32,
+    chain: IDL.Text,
+    name: IDL.Text,
+    canister_id: IDL.Text,
+    icrc1: IDL.Bool,
+    icrc2: IDL.Bool,
+    icrc3: IDL.Bool,
+    is_removed: IDL.Bool,
+    symbol: IDL.Text,
+  })
+  const LPTokenReply = IDL.Record({
+    fee: IDL.Nat,
+    decimals: IDL.Nat8,
+    token_id: IDL.Nat32,
+    chain: IDL.Text,
+    name: IDL.Text,
+    address: IDL.Text,
+    pool_id_of: IDL.Nat32,
+    is_removed: IDL.Bool,
+    total_supply: IDL.Nat,
+    symbol: IDL.Text,
+  })
+  const TokenReply = IDL.Variant({ IC: ICTokenReply, LP: LPTokenReply })
+  const TokensResult = IDL.Variant({
+    Ok: IDL.Vec(TokenReply),
+    Err: IDL.Text,
+  })
+  const TxsReply = IDL.Variant({
+    AddLiquidity: AddLiquidityReply,
+    Swap: SwapReply,
+    AddPool: AddPoolReply,
+    RemoveLiquidity: RemoveLiquidityReply,
+  })
+  const TxsResult = IDL.Variant({ Ok: IDL.Vec(TxsReply), Err: IDL.Text })
+  const LPBalancesReply = IDL.Record({
+    ts: IDL.Nat64,
+    usd_balance: IDL.Float64,
+    balance: IDL.Float64,
+    name: IDL.Text,
+    amount_0: IDL.Float64,
+    amount_1: IDL.Float64,
+    address_0: IDL.Text,
+    address_1: IDL.Text,
+    symbol_0: IDL.Text,
+    symbol_1: IDL.Text,
+    usd_amount_0: IDL.Float64,
+    usd_amount_1: IDL.Float64,
+    chain_0: IDL.Text,
+    chain_1: IDL.Text,
+    symbol: IDL.Text,
+  })
+  const UserBalancesReply = IDL.Variant({ LP: LPBalancesReply })
+  const UserBalancesResult = IDL.Variant({
+    Ok: IDL.Vec(UserBalancesReply),
+    Err: IDL.Text,
+  })
+  const ValidateAddLiquidityResult = IDL.Variant({
+    Ok: IDL.Text,
+    Err: IDL.Text,
+  })
+  const ValidateRemoveLiquidityResult = IDL.Variant({
+    Ok: IDL.Text,
+    Err: IDL.Text,
+  })
   return IDL.Service({
-    allTokenBalance: IDL.Func([IDL.Nat, IDL.Nat], [Result_26], ["query"]),
-    approvePosition: IDL.Func([IDL.Principal, IDL.Nat], [Result_2], []),
-    batchRefreshIncome: IDL.Func([IDL.Vec(IDL.Nat)], [Result_25], ["query"]),
-    checkOwnerOfUserPosition: IDL.Func(
-      [IDL.Principal, IDL.Nat],
-      [Result_2],
+    add_liquidity: IDL.Func([AddLiquidityArgs], [AddLiquidityResult], []),
+    add_liquidity_amounts: IDL.Func(
+      [IDL.Text, IDL.Nat, IDL.Text],
+      [AddLiquiditAmountsResult],
       ["query"],
     ),
-    claim: IDL.Func([ClaimArgs], [Result_24], []),
-    decreaseLiquidity: IDL.Func([DecreaseLiquidityArgs], [Result_24], []),
-    deposit: IDL.Func([DepositArgs], [Result], []),
-    depositAllAndMint: IDL.Func([DepositAndMintArgs], [Result], []),
-    depositFrom: IDL.Func([DepositArgs], [Result], []),
-    getAddressPrincipals: IDL.Func([], [Result_23], ["query"]),
-    getAdmins: IDL.Func([], [IDL.Vec(IDL.Principal)], ["query"]),
-    getAvailabilityState: IDL.Func(
+    add_liquidity_async: IDL.Func(
+      [AddLiquidityArgs],
+      [AddLiquidityAsyncResult],
       [],
-      [
-        IDL.Record({
-          whiteList: IDL.Vec(IDL.Principal),
-          available: IDL.Bool,
-        }),
-      ],
+    ),
+    add_pool: IDL.Func([AddPoolArgs], [AddPoolResult], []),
+    check_pools: IDL.Func([], [CheckPoolsResult], []),
+    get_user: IDL.Func([], [UserResult], ["query"]),
+    icrc10_supported_standards: IDL.Func(
+      [],
+      [IDL.Vec(Icrc10SupportedStandards)],
       ["query"],
     ),
-    getClaimLog: IDL.Func([], [IDL.Vec(IDL.Text)], ["query"]),
-    getCycleInfo: IDL.Func([], [Result_22], []),
-    getMistransferBalance: IDL.Func([Token], [Result], []),
-    getPosition: IDL.Func([GetPositionArgs], [Result_21], ["query"]),
-    getPositions: IDL.Func([IDL.Nat, IDL.Nat], [Result_20], ["query"]),
-    getPrincipal: IDL.Func([IDL.Text], [Result_19], ["query"]),
-    getSwapRecordState: IDL.Func([], [Result_18], ["query"]),
-    getTickInfos: IDL.Func([IDL.Nat, IDL.Nat], [Result_17], ["query"]),
-    getTicks: IDL.Func([IDL.Nat, IDL.Nat], [Result_16], ["query"]),
-    getTokenAmountState: IDL.Func([], [Result_15], ["query"]),
-    getTokenBalance: IDL.Func(
-      [],
-      [IDL.Record({ token0: IDL.Nat, token1: IDL.Nat })],
+    icrc1_name: IDL.Func([], [IDL.Text], ["query"]),
+    icrc21_canister_call_consent_message: IDL.Func(
+      [icrc21_consent_message_request],
+      [icrc21_consent_message_response],
       [],
     ),
-    getTokenMeta: IDL.Func(
-      [],
-      [
-        IDL.Record({
-          token0: IDL.Vec(IDL.Tuple(IDL.Text, Value)),
-          token1: IDL.Vec(IDL.Tuple(IDL.Text, Value)),
-        }),
-      ],
+    icrc28_trusted_origins: IDL.Func([], [Icrc28TrustedOriginsResponse], []),
+    pools: IDL.Func([IDL.Opt(IDL.Text)], [PoolsResult], ["query"]),
+    remove_liquidity: IDL.Func(
+      [RemoveLiquidityArgs],
+      [RemoveLiquidityResult],
       [],
     ),
-    getTransferLogs: IDL.Func([], [Result_14], ["query"]),
-    getUserByPositionId: IDL.Func([IDL.Nat], [Result_1], ["query"]),
-    getUserPosition: IDL.Func([IDL.Nat], [Result_13], ["query"]),
-    getUserPositionIds: IDL.Func([], [Result_12], ["query"]),
-    getUserPositionIdsByPrincipal: IDL.Func(
-      [IDL.Principal],
-      [Result_11],
+    remove_liquidity_amounts: IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Nat],
+      [RemoveLiquidityAmountsResult],
       ["query"],
     ),
-    getUserPositionWithTokenAmount: IDL.Func(
-      [IDL.Nat, IDL.Nat],
-      [Result_10],
+    remove_liquidity_async: IDL.Func(
+      [RemoveLiquidityArgs],
+      [RemoveLiquidityAsyncResult],
+      [],
+    ),
+    requests: IDL.Func([IDL.Opt(IDL.Nat64)], [RequestsResult], ["query"]),
+    send: IDL.Func([SendArgs], [SendResult], []),
+    swap: IDL.Func([SwapArgs], [SwapResult], []),
+    swap_amounts: IDL.Func(
+      [IDL.Text, IDL.Nat, IDL.Text],
+      [SwapAmountsResult],
       ["query"],
     ),
-    getUserPositions: IDL.Func([IDL.Nat, IDL.Nat], [Result_9], ["query"]),
-    getUserPositionsByPrincipal: IDL.Func(
-      [IDL.Principal],
-      [Result_8],
-      ["query"],
-    ),
-    getUserUnusedBalance: IDL.Func([IDL.Principal], [Result_7], ["query"]),
-    getVersion: IDL.Func([], [IDL.Text], ["query"]),
-    getWithdrawErrorLog: IDL.Func([], [Result_6], ["query"]),
-    increaseLiquidity: IDL.Func([IncreaseLiquidityArgs], [Result], []),
-    init: IDL.Func([IDL.Nat, IDL.Int, IDL.Nat], [], []),
-    metadata: IDL.Func([], [Result_5], ["query"]),
-    mint: IDL.Func([MintArgs], [Result], []),
-    quote: IDL.Func([SwapArgs], [Result], ["query"]),
-    quoteForAll: IDL.Func([SwapArgs], [Result], ["query"]),
-    refreshIncome: IDL.Func([IDL.Nat], [Result_4], ["query"]),
-    removeErrorTransferLog: IDL.Func([IDL.Nat, IDL.Bool], [], []),
-    removeWithdrawErrorLog: IDL.Func([IDL.Nat, IDL.Bool], [], []),
-    resetTokenAmountState: IDL.Func(
-      [IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat],
+    swap_async: IDL.Func([SwapArgs], [SwapAsyncResult], []),
+    tokens: IDL.Func([IDL.Opt(IDL.Text)], [TokensResult], ["query"]),
+    txs: IDL.Func([IDL.Opt(IDL.Text)], [TxsResult], ["query"]),
+    user_balances: IDL.Func([IDL.Text], [UserBalancesResult], ["query"]),
+    validate_add_liquidity: IDL.Func([], [ValidateAddLiquidityResult], []),
+    validate_remove_liquidity: IDL.Func(
       [],
+      [ValidateRemoveLiquidityResult],
       [],
     ),
-    setAdmins: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
-    setAvailable: IDL.Func([IDL.Bool], [], []),
-    setWhiteList: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
-    sumTick: IDL.Func([], [Result_3], ["query"]),
-    swap: IDL.Func([SwapArgs], [Result], []),
-    transferPosition: IDL.Func(
-      [IDL.Principal, IDL.Principal, IDL.Nat],
-      [Result_2],
-      [],
-    ),
-    upgradeTokenStandard: IDL.Func([IDL.Principal], [Result_1], []),
-    withdraw: IDL.Func([WithdrawArgs], [Result], []),
-    withdrawMistransferBalance: IDL.Func([Token], [Result], []),
   })
 }

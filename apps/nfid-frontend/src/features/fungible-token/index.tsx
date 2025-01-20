@@ -1,6 +1,6 @@
 import { useActor } from "@xstate/react"
 import { Tokens } from "packages/ui/src/organisms/tokens"
-import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
+import { fetchTokens, initTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
@@ -12,6 +12,7 @@ import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
@@ -21,6 +22,7 @@ const TokensPage = () => {
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
+  const [initedTokens, setInitedTokens] = useState<Array<FT> | undefined>()
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -37,8 +39,14 @@ const TokensPage = () => {
     })
 
   const activeTokens = useMemo(() => {
-    return tokens?.filter((token) => token.getTokenState() === State.Active)
+    return tokens?.filter((token) => token.getTokenState() === State.Active )
   }, [tokens])
+
+  useEffect(() => {
+    if (activeTokens) {
+      initTokens(activeTokens).then(setInitedTokens)
+    }
+  }, [activeTokens])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -79,6 +87,7 @@ const TokensPage = () => {
 
   return (
     <Tokens
+      tokensIniting={!initedTokens}
       activeTokens={activeTokens || []}
       allTokens={tokens || []}
       isTokensLoading={!activeTokens}

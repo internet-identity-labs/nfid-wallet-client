@@ -71,9 +71,12 @@ export class FTImpl implements FT {
 
   async refreshBalance(globalPrincipal: Principal): Promise<FT> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    const newBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
 
-    this.tokenBalance = newBalance
+    try {
+      this.tokenBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
+    } catch (e) {
+      console.error("Icrc1Pair error: " + (e as Error).message)
+    }
 
     return this
   }

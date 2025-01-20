@@ -19,6 +19,7 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
   Toggle,
+  IconCmpArrowRight,
 } from "@nfid-frontend/ui"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
@@ -26,6 +27,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { filterTokens } from "frontend/integration/ft/ft-service"
 
 import { FilteredToken } from "./filtered-asset"
+import { ScanTokens } from "./scan-tokens"
 
 export interface ICRC1Metadata {
   name: string
@@ -51,6 +53,7 @@ interface TokensHeaderProps {
   setLoadingToken: (value: FT | null) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
+  manageBtnDisabled?: boolean
 }
 
 export const TokensHeader: FC<TokensHeaderProps> = ({
@@ -60,8 +63,11 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
   setLoadingToken,
   hideZeroBalance,
   onZeroBalanceToggle,
+  manageBtnDisabled,
 }) => {
-  const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
+  const [modalStep, setModalStep] = useState<
+    "manage" | "import" | "scan" | null
+  >(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
   const [isImportLoading, setIsImportLoading] = useState(false)
   const [search, setSearch] = useState("")
@@ -142,6 +148,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
           onClick={() => setModalStep("manage")}
           isSmall
           type="ghost"
+          disabled={!!manageBtnDisabled}
         >
           <span>Manage tokens</span>
         </Button>
@@ -154,6 +161,13 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
+        {modalStep === "scan" && (
+          <ScanTokens
+            className="h-[calc(600px-2.5rem)]"
+            onCancel={() => setModalStep("manage")}
+            onScanned={() => setModalStep("manage")}
+          />
+        )}
         {modalStep === "manage" && (
           <div>
             <div className="flex items-center justify-between h-[40px]">
@@ -205,6 +219,13 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                     isChecked={hideZeroBalance}
                     onToggle={onZeroBalanceToggle}
                   />
+                </div>
+                <div
+                  onClick={() => setModalStep("scan")}
+                  className="h-[64px] px-4 flex items-center justify-between border-b border-white cursor-pointer"
+                >
+                  <span>Scan for tokens</span>
+                  <IconCmpArrowRight />
                 </div>
               </div>
               <div className="flex gap-[10px] mb-[10px]">

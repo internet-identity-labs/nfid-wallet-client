@@ -33,6 +33,16 @@ export const fetchTokens = async () => {
   return await ftService.getTokens(userPrincipal)
 }
 
+export const filterNotActiveNotZeroBalancesTokens = async (
+  allTokens: Array<FT>,
+) => {
+  const { publicKey } = await getUserPrincipalId()
+  return await ftService.filterNotActiveNotZeroBalancesTokens(
+    allTokens,
+    Principal.fromText(publicKey),
+  )
+}
+
 export const getFullUsdValue = async (ft: FT[]) => {
   const { publicKey } = authState.getUserIdData()
   return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)

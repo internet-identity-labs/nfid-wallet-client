@@ -8,8 +8,8 @@ export enum SwapStage {
 }
 
 export enum SwapName {
-  ICPSwap,
-  Kongswap,
+  ICPSwap = "ICPSwap",
+  Kongswap = "Kongswap",
 }
 
 export enum PriceImpactStatus {

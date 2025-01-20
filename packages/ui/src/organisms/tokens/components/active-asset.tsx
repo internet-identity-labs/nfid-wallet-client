@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState } from "react"
 import { FT } from "src/integration/ft/ft"
@@ -12,7 +11,6 @@ import {
 import { ArrowPercentChange } from "@nfid-frontend/ui"
 
 import { IProfileConstants } from ".."
-import { useTokenInit } from "../../send-receive/hooks/token-init"
 import { AssetDropdown } from "./asset-dropdown"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
@@ -24,6 +22,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
   hideZeroBalance?: boolean
+  isIniting?: boolean
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -35,19 +34,18 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   dropdownPosition,
   loadingToken,
   hideZeroBalance,
+  isIniting,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
-  const initedToken = useTokenInit(token)
-  const usdBalance = initedToken?.getUSDBalanceFormatted(false)
-  const tokenPrice = initedToken?.getTokenRateFormatted("1", false)
+  const usdBalance = token.getUSDBalanceFormatted(false)
+  const tokenPrice = token.getTokenRateFormatted("1", false)
 
   if (
-    initedToken &&
     hideZeroBalance &&
-    initedToken.getTokenBalance() === BigInt(0) &&
-    initedToken.isHideable()
+    token.getTokenBalance() === BigInt(0) &&
+    token.isHideable()
   )
     return null
 
@@ -92,7 +90,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         {token.getTokenCategoryFormatted()}
       </td>
       <td className="pr-[10px] hidden md:table-cell min-w-[120px]">
-        {!initedToken ? (
+        {isIniting ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice ? (
           <div>
@@ -112,7 +110,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto min-w-[120px]"
       >
-        {!initedToken ? (
+        {isIniting ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : (
           <p className="flex items-center justify-end md:justify-start">
@@ -134,7 +132,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         )}
         <p className="text-xs md:hidden text-secondary">
           &nbsp;
-          {!initedToken ? (
+          {isIniting ? (
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
@@ -149,7 +147,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px]"
       >
-        {!initedToken ? (
+        {isIniting ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : token.getUSDBalanceFormatted() === undefined ? (
           "Not listed"

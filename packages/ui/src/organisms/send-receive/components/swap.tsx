@@ -106,7 +106,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
       <BlurredLoader
         isLoading
         loadingMessage={loadingMessage}
-        overlayClassnames="rounded-xl"
+        overlayClassnames="rounded-[24px] max-h-full"
         className="text-xs"
       />
     )

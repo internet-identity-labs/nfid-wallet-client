@@ -150,6 +150,29 @@ describe("ft test suite", () => {
       })
     })
 
+    it("should calculate usd balance change when price changes data could not be loaded", async () => {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValue([
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+        ])
+      const [result]: FT[] = await ftService.getTokens(userId)
+      jest
+        .spyOn(result, "getTokenRateDayChangePercent")
+        .mockReturnValue(undefined)
+      await result?.init(principal)
+      expect(result!.getUSDBalanceDayChange()).toEqual(BigNumber(0))
+    })
+
     it("should calculate negative usd balance change", async () => {
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
@@ -270,7 +293,7 @@ describe("ft test suite", () => {
       expect(balance).not.toEqual("0.00 USD")
     })
 
-    it("should filter and return only 1 not active with non zero balance token", async () => {
+    it("should filter and return only 1 not active with non zero balance token with alredy defined balance", async () => {
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValueOnce([
@@ -315,7 +338,7 @@ describe("ft test suite", () => {
       expect(filteredTokens.length).toEqual(1)
     })
 
-    it("should not filter and return only 1 not active with non zero balance token", async () => {
+    it("should not filter any not active with non zero balance token", async () => {
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValueOnce([
@@ -358,6 +381,52 @@ describe("ft test suite", () => {
         principal,
       )
       expect(filteredTokens.length).toEqual(0)
+    })
+
+    it("should filter and return only 1 not active with non zero balance token without alredy defined balance", async () => {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValueOnce([
+          {
+            ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
+            name: "Chat",
+            symbol: "CHAT",
+            logo: "Some logo",
+            index: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            state: "Active",
+            category: "Unknown",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            name: "A first letter",
+            symbol: "A first letter",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Inactive",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+        ])
+
+      const result: FT[] = await ftService.getTokens(userId)
+      jest.spyOn(result[2], "getTokenBalance").mockReturnValue(undefined)
+      let filteredTokens = await ftService.filterNotActiveNotZeroBalancesTokens(
+        result,
+        principal,
+      )
+      expect(filteredTokens.length).toEqual(1)
     })
   })
 })

@@ -110,9 +110,9 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
         </div>
         <div>
           <p className="font-bold leading-6">Slippage tolerance</p>
-          <p className="text-sm mt-[10px] mb-[20px]">
-            The amount the price can change before it’s reverted <br /> between
-            the time your order is placed and confirmed.
+          <p className="text-sm mt-[10px] mb-[20px] sm:pr-[30px]">
+            The amount the price can change before it’s reverted between the
+            time your order is placed and confirmed.
           </p>
           <div className="rounded-[12px] bg-gray-100 h-[48px] flex text-sm mb-[30px] cursor-pointer overflow-hidden">
             {SLIPPAGE_VARIANTS.map((percent) => (
@@ -181,10 +181,10 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
           {shroff && (
             <div>
               <p className="font-bold leading-6">Quotes</p>
-              <p className="text-sm mt-[10px] mb-[20px]">
+              <p className="text-sm mt-[10px] mb-[20px] sm:pr-1">
                 Below are the quotes gathered from multiple liquidity sources,
-                and NFID Wallet’s recommendation optimized on tokens <br />
-                received and swap success rate.
+                and NFID Wallet’s recommendation optimized on tokens received
+                and swap success rate.
               </p>
               <div className="flex items-center text-sm font-bold leading-5 text-gray-400 mb-[10px]">
                 <p className="flex items-center gap-1">
@@ -259,7 +259,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                           "cursor-not-allowed text-gray-400",
                         )}
                       >
-                        <p>
+                        <p className="text-xs sm:text-sm">
                           Slippage tolerance too low{" "}
                           <span className="block text-xs">
                             Increase above {quote?.getSlippage().toFixed(2)}%

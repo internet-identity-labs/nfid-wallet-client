@@ -83,7 +83,6 @@ export const ActivityTableRow = ({
   id,
   transaction,
 }: IActivityTableRow) => {
-  console.log(transaction)
   const [isLoading, setIsLoading] = useState(false)
 
   const completeHandler = async () => {

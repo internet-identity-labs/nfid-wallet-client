@@ -178,22 +178,25 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
               <div className="flex items-center text-sm font-bold leading-5 text-gray-400 mb-[10px]">
                 <p className="flex items-center gap-1">
                   <span>Guaranteed amount</span>
-                  <Tooltip
-                    align="center"
-                    tip={
-                      <span>
-                        This is the minimum amount you will receive after <br />
-                        all fees. You may receive more depending on <br />
-                        slippage.
-                      </span>
-                    }
-                  >
-                    <img
-                      src={IconInfo}
-                      alt="icon"
-                      className="w-[18px] h-[18px] transition-all cursor-pointer hover:opacity-70 top-[1px] relative"
-                    />
-                  </Tooltip>
+                  {isOpen && (
+                    <Tooltip
+                      align="center"
+                      tip={
+                        <span>
+                          This is the minimum amount you will receive after{" "}
+                          <br />
+                          all fees. You may receive more depending on <br />
+                          slippage.
+                        </span>
+                      }
+                    >
+                      <img
+                        src={IconInfo}
+                        alt="icon"
+                        className="w-[18px] h-[18px] transition-all cursor-pointer hover:opacity-70 top-[1px] relative"
+                      />
+                    </Tooltip>
+                  )}
                 </p>
                 <p className="basis-[130px] ml-auto">Quote source</p>
               </div>

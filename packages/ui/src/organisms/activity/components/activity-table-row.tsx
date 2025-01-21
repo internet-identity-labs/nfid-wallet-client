@@ -37,7 +37,7 @@ export const getTooltipAndButtonText = (
 
   const stage = transaction.getStage()
 
-  if (stage === SwapStage.Completed) return
+  if (stage === SwapStage.Completed || !transaction.getErrors().length) return
 
   if (stage === SwapStage.Deposit || stage === SwapStage.TransferSwap) {
     return {
@@ -83,6 +83,7 @@ export const ActivityTableRow = ({
   id,
   transaction,
 }: IActivityTableRow) => {
+  console.log(transaction)
   const [isLoading, setIsLoading] = useState(false)
 
   const completeHandler = async () => {

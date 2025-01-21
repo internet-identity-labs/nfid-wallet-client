@@ -66,6 +66,7 @@ export class FtService {
     return (
       await Promise.all(
         allTokens.map(async (t) => {
+          if (t.getTokenBalance() !== undefined) return t
           const ftWithBalance = await t.refreshBalance(principal)
           return ftWithBalance
         }),

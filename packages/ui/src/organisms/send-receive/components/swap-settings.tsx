@@ -66,6 +66,19 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
     getQuotes()
   }, [shroff, swapProviders])
 
+  const setInputSlippage = (value: string) => {
+    setIsCustom(!!customSlippage)
+    if (+value > MAX_SLIPPAGE) {
+      setSlippage(MAX_SLIPPAGE)
+      return
+    }
+    if (+value < MIN_SLIPPAGE) {
+      setSlippage(MIN_SLIPPAGE)
+      return
+    }
+    if (value) setSlippage(+value)
+  }
+
   useEffect(() => {
     if (!SLIPPAGE_VARIANTS.includes(slippage)) {
       setIsCustom(true)
@@ -138,7 +151,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 className={clsx(
                   !isCustom ? "hidden" : "",
                   "w-full h-full absolute rounded-[12px] bg-primaryButtonColor text-white",
-                  "flex items-center justify-center px-[14px]",
+                  "flex items-center justify-center px-[6px] sm:px-[14px]",
                 )}
               >
                 <InputAmount
@@ -149,18 +162,16 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                   isLoading={false}
                   value={`${customSlippage}`}
                   ref={customInputRef}
+                  onKeyDown={(e) => {
+                    const target = e.target as HTMLInputElement
+
+                    if (e.key === "Enter") {
+                      setInputSlippage(target.value)
+                      target.blur()
+                    }
+                  }}
                   onBlur={(e) => {
-                    const value = e.target.value
-                    setIsCustom(!!customSlippage)
-                    if (+value > MAX_SLIPPAGE) {
-                      setSlippage(MAX_SLIPPAGE)
-                      return
-                    }
-                    if (+value < MIN_SLIPPAGE) {
-                      setSlippage(MIN_SLIPPAGE)
-                      return
-                    }
-                    if (value) setSlippage(+value)
+                    setInputSlippage(e.target.value)
                   }}
                 />
                 %

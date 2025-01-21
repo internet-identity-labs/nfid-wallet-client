@@ -1,6 +1,6 @@
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
@@ -26,6 +26,10 @@ export const TransferNFT = ({
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
+
+  useEffect(() => {
+    setSelectedNFTId(preselectedNFTId)
+  }, [preselectedNFTId])
 
   const { data: nfts, isLoading: isNftListLoading } = useSWR(
     "nftList",

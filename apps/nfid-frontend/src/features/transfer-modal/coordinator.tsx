@@ -21,6 +21,14 @@ export const TransferModalCoordinator = () => {
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
 
+  const hideModal = useCallback(() => {
+    send({ type: "ASSIGN_SELECTED_FT", data: "" })
+    send({ type: "ASSIGN_SELECTED_NFT", data: "" })
+    send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+    send({ type: "CHANGE_DIRECTION", data: null })
+    send({ type: "HIDE" })
+  }, [send])
+
   useDisableScroll(!state.matches("Hidden"))
 
   useEffect(() => {
@@ -44,16 +52,17 @@ export const TransferModalCoordinator = () => {
           preselectedTokenAddress={state.context.selectedFT}
           isVault={state.context.isOpenedFromVaults}
           preselectedAccountAddress={state.context.sourceWalletAddress}
-          onClose={() => send({ type: "HIDE" })}
+          onClose={hideModal}
           isOpen={state.matches("SendMachine.SendFT")}
         />
         <TransferNFT
           preselectedNFTId={state.context.selectedNFTId}
-          onClose={() => send({ type: "HIDE" })}
+          onClose={hideModal}
           isOpen={state.matches("SendMachine.SendNFT")}
         />
         <SwapFT
-          onClose={() => send({ type: "HIDE" })}
+          preselectedSourceTokenAddress={state.context.selectedFT}
+          onClose={hideModal}
           isOpen={state.matches("SwapMachine")}
           onError={setHasSwapError}
         />
@@ -64,7 +73,7 @@ export const TransferModalCoordinator = () => {
         />
       </>
     ),
-    [send, state, publicKey],
+    [state, publicKey, hideModal],
   )
 
   const onTokenTypeChange = useCallback(
@@ -78,7 +87,7 @@ export const TransferModalCoordinator = () => {
     <>
       {state.context.isOpenedFromVaults ? (
         <TransferVaultModal
-          onClickOutside={() => send({ type: "HIDE" })}
+          onClickOutside={hideModal}
           isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           component={Components}
@@ -87,7 +96,7 @@ export const TransferModalCoordinator = () => {
         />
       ) : (
         <TransferModal
-          onClickOutside={() => send({ type: "HIDE" })}
+          onClickOutside={hideModal}
           isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           tokenType={state.context.tokenType}

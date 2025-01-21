@@ -32,6 +32,14 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  const onSwapClick = (selectedToken: string) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
+    send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send("SHOW")
+  }
+
   const { data: tokens = undefined, mutate: refetchTokens } =
     useSWRWithTimestamp("tokens", fetchTokens, {
       revalidateOnFocus: false,
@@ -39,7 +47,7 @@ const TokensPage = () => {
     })
 
   const activeTokens = useMemo(() => {
-    return tokens?.filter((token) => token.getTokenState() === State.Active )
+    return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
   useEffect(() => {
@@ -95,6 +103,7 @@ const TokensPage = () => {
       onFetch={onFetch}
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
+      onSwapClick={onSwapClick}
       hideZeroBalance={hideZeroBalance}
       onZeroBalanceToggle={onZeroBalanceToggle}
     />

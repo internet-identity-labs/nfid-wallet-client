@@ -18,6 +18,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   tokens: FT[]
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
+  onSwapClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -30,6 +31,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   tokens,
   profileConstants,
   onSendClick,
+  onSwapClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -164,6 +166,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           tokens={tokens}
           profileConstants={profileConstants}
           onSendClick={onSendClick}
+          onSwapClick={onSwapClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}
           setIsTokenProcessed={setIsTokenProcessed}

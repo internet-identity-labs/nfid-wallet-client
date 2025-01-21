@@ -38,9 +38,15 @@ interface ISwapFT {
   onClose: () => void
   isOpen: boolean
   onError: (value: boolean) => void
+  preselectedSourceTokenAddress: string | undefined
 }
 
-export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
+export const SwapFT = ({
+  preselectedSourceTokenAddress,
+  onClose,
+  isOpen,
+  onError,
+}: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
@@ -62,6 +68,14 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
   const [slippage, setSlippage] = useState(2)
 
   const isOpenRef = useRef(isOpen)
+
+  useEffect(() => {
+    if (!preselectedSourceTokenAddress) {
+      setFromTokenAddress(ICP_CANISTER_ID)
+    } else {
+      setFromTokenAddress(preselectedSourceTokenAddress)
+    }
+  }, [preselectedSourceTokenAddress])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",

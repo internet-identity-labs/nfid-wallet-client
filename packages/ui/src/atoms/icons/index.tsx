@@ -1,5 +1,5 @@
-import LogoLanding from "../nfid-logo/nfid-wallet-logo-white.svg"
 import LogoMain from "../nfid-logo/nfid-wallet-logo-black.svg"
+import LogoLanding from "../nfid-logo/nfid-wallet-logo-white.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrowRight from "./arrow-right.svg"
@@ -45,6 +45,7 @@ import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
 import IconSvgShare from "./share.svg"
 import IconSvgSuccess from "./success.svg"
+import IconSvgSwapAction from "./swap-action.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
 import IconSvgTokenInfo from "./token-info.svg"
@@ -59,6 +60,7 @@ import IconSvgWarning from "./warning.svg"
 export {
   IconSvgPasskey,
   IconSvgArrow,
+  IconSvgSwapAction,
   IconSvgCancel,
   IconSvgChevron,
   IconSvgCopy,

@@ -60,6 +60,14 @@ export const TransferFT = ({
     getVaultsAccountsOptions,
   )
 
+  useEffect(() => {
+    if (!preselectedTokenAddress) {
+      setTokenAddress(ICP_CANISTER_ID)
+    } else {
+      setTokenAddress(preselectedTokenAddress)
+    }
+  }, [preselectedTokenAddress])
+
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,

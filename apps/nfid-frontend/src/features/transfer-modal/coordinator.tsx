@@ -48,29 +48,37 @@ export const TransferModalCoordinator = () => {
   const Components = useMemo(
     () => (
       <>
-        <TransferFT
-          preselectedTokenAddress={state.context.selectedFT}
-          isVault={state.context.isOpenedFromVaults}
-          preselectedAccountAddress={state.context.sourceWalletAddress}
-          onClose={hideModal}
-          isOpen={state.matches("SendMachine.SendFT")}
-        />
-        <TransferNFT
-          preselectedNFTId={state.context.selectedNFTId}
-          onClose={hideModal}
-          isOpen={state.matches("SendMachine.SendNFT")}
-        />
-        <SwapFT
-          preselectedSourceTokenAddress={state.context.selectedFT}
-          onClose={hideModal}
-          isOpen={state.matches("SwapMachine")}
-          onError={setHasSwapError}
-        />
-        <TransferReceive
-          publicKey={publicKey}
-          preselectedAccountAddress={state.context.sourceWalletAddress}
-          isOpen={state.matches("ReceiveMachine")}
-        />
+        {state.matches("SendMachine.SendFT") && (
+          <TransferFT
+            preselectedTokenAddress={state.context.selectedFT}
+            isVault={state.context.isOpenedFromVaults}
+            preselectedAccountAddress={state.context.sourceWalletAddress}
+            onClose={hideModal}
+            isOpen={true}
+          />
+        )}
+        {state.matches("SendMachine.SendNFT") && (
+          <TransferNFT
+            preselectedNFTId={state.context.selectedNFTId}
+            onClose={hideModal}
+            isOpen={true}
+          />
+        )}
+        {state.matches("SwapMachine") && (
+          <SwapFT
+            preselectedSourceTokenAddress={state.context.selectedFT}
+            onClose={hideModal}
+            isOpen={true}
+            onError={setHasSwapError}
+          />
+        )}
+        {state.matches("ReceiveMachine") && (
+          <TransferReceive
+            publicKey={publicKey}
+            preselectedAccountAddress={state.context.sourceWalletAddress}
+            isOpen={true}
+          />
+        )}
       </>
     ),
     [state, publicKey, hideModal],

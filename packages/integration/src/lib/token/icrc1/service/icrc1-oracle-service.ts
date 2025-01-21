@@ -24,19 +24,20 @@ export class ICRC1OracleService {
     const cache = await storageWithTtl.getEvenExpired(icrc1OracleCacheName)
     if (!cache) {
       const response = await this.requestNetworkForCanisters()
-      await storageWithTtl.set(
+      storageWithTtl.set(
         icrc1OracleCacheName,
         this.serializeCanisters(response),
         60 * 1000,
       )
       return response
     } else if (cache && cache.expired) {
-      const response = await this.requestNetworkForCanisters()
-      await storageWithTtl.set(
-        icrc1OracleCacheName,
-        this.serializeCanisters(response),
-        60 * 1000,
-      )
+      this.requestNetworkForCanisters().then((response) => {
+        storageWithTtl.set(
+          icrc1OracleCacheName,
+          this.serializeCanisters(response),
+          60 * 1000,
+        )
+      })
       return this.deserializeCanisters(cache.value as string)
     } else {
       return this.deserializeCanisters(cache.value as string)

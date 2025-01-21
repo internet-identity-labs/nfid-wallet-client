@@ -28,10 +28,7 @@ class TargetService {
         return {
           isPublicAccountAvailable: false,
           details: {
-            icrc28Verified: false,
-            icrc1LedgersExcluded: false,
-            icrc7LedgersExcluded: false,
-            extLedgersExcluded: false
+            icrc28Verified: false
           }
         }
       }
@@ -56,10 +53,7 @@ class TargetService {
       return {
         isPublicAccountAvailable: true,
         details: {
-          icrc28Verified: true,
-          icrc1LedgersExcluded: true,
-          icrc7LedgersExcluded: true,
-          extLedgersExcluded: true
+          icrc28Verified: true
         }
       }
     } catch (e) {
@@ -73,10 +67,7 @@ class TargetService {
       return {
         isPublicAccountAvailable: false,
         details: {
-          icrc28Verified: false,
-          icrc1LedgersExcluded: false,
-          icrc7LedgersExcluded: false,
-          extLedgersExcluded: false
+          icrc28Verified: false
         }
       }
     }

@@ -59,6 +59,28 @@ export class FtService {
       })
   }
 
+  async filterNotActiveNotZeroBalancesTokens(
+    allTokens: Array<FT>,
+    principal: Principal,
+  ): Promise<Array<FT>> {
+    return (
+      await Promise.all(
+        allTokens.map(async (t) => {
+          if (t.getTokenBalance() !== undefined) return t
+          const ftWithBalance = await t.refreshBalance(principal)
+          return ftWithBalance
+        }),
+      )
+    ).filter((ft) => {
+      const tokenBalance = ft.getTokenBalance()
+      return (
+        tokenBalance !== undefined &&
+        tokenBalance > BigInt(0) &&
+        ft.getTokenState() !== State.Active
+      )
+    })
+  }
+
   //todo move somewhere because contains NFT balance as well
   async getTotalUSDBalance(
     userPublicKey: Principal,

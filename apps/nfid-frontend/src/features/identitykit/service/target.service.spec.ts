@@ -12,10 +12,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: false,
       details: {
-        icrc28Verified: false,
-        icrc1LedgersExcluded: false,
-        icrc7LedgersExcluded: false,
-        extLedgersExcluded: false,
+        icrc28Verified: false
       },
     })
   })
@@ -29,10 +26,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: false,
       details: {
-        icrc28Verified: false,
-        icrc1LedgersExcluded: false,
-        icrc7LedgersExcluded: false,
-        extLedgersExcluded: false,
+        icrc28Verified: false
       },
     })
   })
@@ -46,10 +40,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: true,
       details: {
-        icrc28Verified: true,
-        icrc1LedgersExcluded: true,
-        icrc7LedgersExcluded: true,
-        extLedgersExcluded: true,
+        icrc28Verified: true
       },
     })
   })
@@ -63,9 +54,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: false,
       details: {
-        icrc28Verified: false,
-        icrc1LedgersExcluded: false,
-        icrc7LedgersExcluded: false,
+        icrc28Verified: false
       },
     })
   })
@@ -77,9 +66,9 @@ describe("Target service test suite", () => {
     const result = await targetService.getVerificationReport(targets, origin)
 
     expect(result).toEqual({
-      isPublicAccountAvailable: false,
+      isPublicAccountAvailable: true,
       details: {
-        icrc1LedgersExcluded: false,
+        icrc28Verified: true,
       },
     })
   })
@@ -91,9 +80,9 @@ describe("Target service test suite", () => {
     const result = await targetService.getVerificationReport(targets, origin)
 
     expect(result).toEqual({
-      isPublicAccountAvailable: false,
+      isPublicAccountAvailable: true,
       details: {
-        icrc7LedgersExcluded: false,
+        icrc28Verified: true,
       },
     })
   })
@@ -105,9 +94,9 @@ describe("Target service test suite", () => {
     const result = await targetService.getVerificationReport(targets, origin)
 
     expect(result).toEqual({
-      isPublicAccountAvailable: false,
+      isPublicAccountAvailable: true,
       details: {
-        extLedgersExcluded: false,
+        icrc28Verified: true,
       },
     })
   })

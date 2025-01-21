@@ -50,7 +50,7 @@ export class TtlStorage<T> {
     if (!item) return null
 
     if (Date.now() > item.expiry) {
-      await db.remove(key)
+      db.remove(key)
       return null
     }
 

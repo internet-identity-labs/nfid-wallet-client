@@ -40,28 +40,36 @@ export const TransferModalCoordinator = () => {
   const Components = useMemo(
     () => (
       <>
-        <TransferFT
-          preselectedTokenAddress={state.context.selectedFT}
-          isVault={state.context.isOpenedFromVaults}
-          preselectedAccountAddress={state.context.sourceWalletAddress}
-          onClose={() => send({ type: "HIDE" })}
-          isOpen={state.matches("SendMachine.SendFT")}
-        />
-        <TransferNFT
-          preselectedNFTId={state.context.selectedNFTId}
-          onClose={() => send({ type: "HIDE" })}
-          isOpen={state.matches("SendMachine.SendNFT")}
-        />
-        <SwapFT
-          onClose={() => send({ type: "HIDE" })}
-          isOpen={state.matches("SwapMachine")}
-          onError={setHasSwapError}
-        />
-        <TransferReceive
-          publicKey={publicKey}
-          preselectedAccountAddress={state.context.sourceWalletAddress}
-          isOpen={state.matches("ReceiveMachine")}
-        />
+        {state.matches("SendMachine.SendFT") && (
+          <TransferFT
+            preselectedTokenAddress={state.context.selectedFT}
+            isVault={state.context.isOpenedFromVaults}
+            preselectedAccountAddress={state.context.sourceWalletAddress}
+            onClose={() => send({ type: "HIDE" })}
+            isOpen={true}
+          />
+        )}
+        {state.matches("SendMachine.SendNFT") && (
+          <TransferNFT
+            preselectedNFTId={state.context.selectedNFTId}
+            onClose={() => send({ type: "HIDE" })}
+            isOpen={true}
+          />
+        )}
+        {state.matches("SwapMachine") && (
+          <SwapFT
+            onClose={() => send({ type: "HIDE" })}
+            isOpen={true}
+            onError={setHasSwapError}
+          />
+        )}
+        {state.matches("ReceiveMachine") && (
+          <TransferReceive
+            publicKey={publicKey}
+            preselectedAccountAddress={state.context.sourceWalletAddress}
+            isOpen={true}
+          />
+        )}
       </>
     ),
     [send, state, publicKey],

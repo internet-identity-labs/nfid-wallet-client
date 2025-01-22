@@ -25,6 +25,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
       name,
       onChange,
       onBlur,
+      onKeyDown,
     },
     ref,
   ) => {
@@ -59,6 +60,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
           <NumericFormat
             placeholder="0.00"
             decimalScale={decimals}
+            allowedDecimalSeparators={[",", "."]}
             min={0.0}
             onPaste={handlePaste}
             decimalSeparator="."
@@ -69,6 +71,9 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             }}
             onBlur={(e) => {
               onBlur?.(e)
+            }}
+            onKeyDown={(e) => {
+              onKeyDown?.(e)
             }}
             disabled={disabled}
             id={id}

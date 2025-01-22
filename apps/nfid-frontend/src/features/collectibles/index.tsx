@@ -27,7 +27,8 @@ const NFTsPage = () => {
     if (!data) return
     const { items } = data
     const initialLoadingState = Array(items.length).fill(null)
-    setNfts((prevNfts) => [...prevNfts, ...initialLoadingState])
+
+    setNfts(initialLoadingState)
 
     items.forEach(async (nft, i) => {
       await nft.init()

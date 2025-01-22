@@ -25,6 +25,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
       name,
       onChange,
       onBlur,
+      onKeyDown,
     },
     ref,
   ) => {
@@ -69,6 +70,9 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             }}
             onBlur={(e) => {
               onBlur?.(e)
+            }}
+            onKeyDown={(e) => {
+              onKeyDown?.(e)
             }}
             disabled={disabled}
             id={id}

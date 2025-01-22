@@ -120,14 +120,19 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             className="text-[28px] leading-[40px] mb-[8px]"
             id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
           >
-            {nft.getTokenName()}
+            #{nft.getTokenNumber()}
           </p>
-          <p
-            className="font-bold text-primaryButtonColor leading-[24px] mb-[20px]"
+          <a
+            href={nft.getCollectionMarketPlaceLink()}
+            target="_blank"
+            className={clsx(
+              "font-bold text-primaryButtonColor leading-[24px] mb-[20px]",
+              "hover:underline hover:text-teal-600 transition duration-300 ease-in-out",
+            )}
             id={`nft_collection_${nft.getCollectionId()}`}
           >
             {nft.getCollectionName()}
-          </p>
+          </a>
           <ProfileContainer
             title="Details"
             className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%]"
@@ -210,7 +215,10 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 View on a marketplace
               </p>
               <a
-                className="flex items-center gap-2 text-primaryButtonColor"
+                className={clsx(
+                  "flex items-center gap-2 text-primaryButtonColor",
+                  "hover:underline hover:text-teal-600 transition duration-300 ease-in-out",
+                )}
                 target="_blank"
                 href={marketPlaceLink}
               >

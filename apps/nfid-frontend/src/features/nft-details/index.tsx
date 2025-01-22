@@ -131,7 +131,7 @@ const NFTDetailsPage = () => {
 
   return (
     <ProfileTemplate
-      pageTitle={nft.getTokenName()}
+      pageTitle={" "}
       titleClassNames="hidden sm:block"
       showBackButton
       headerMenu={

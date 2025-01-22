@@ -42,8 +42,6 @@ const NFTsPage = () => {
   const totalItems = data?.totalItems || 0
   const totalPages = data?.totalPages || 0
 
-  console.log(data, nfts)
-
   return (
     <>
       <NFTs

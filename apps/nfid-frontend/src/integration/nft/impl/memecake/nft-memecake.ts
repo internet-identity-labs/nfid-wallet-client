@@ -34,7 +34,6 @@ export class NftMemeCake extends NftImpl {
     const collectionName = this.getCollectionName()
       .toLowerCase()
       .replaceAll(" ", "")
-    console.log(this.getCollectionName())
     return `https://memecake.io/collection/${collectionName}`
   }
 }

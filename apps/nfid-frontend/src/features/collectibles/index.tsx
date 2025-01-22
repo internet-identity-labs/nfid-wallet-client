@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { NFTs } from "packages/ui/src/organisms/nfts"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Button } from "@nfid-frontend/ui"
 import { useSWR } from "@nfid/swr"
@@ -20,23 +20,25 @@ const NFTsPage = () => {
   const { data, isLoading, isValidating } = useSWR(
     ["nftList", currentPage],
     () => fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
-    {
-      revalidateOnFocus: false,
-      onSuccess: ({ items }) => {
-        const initialLoadingState = Array(items.length).fill(null)
-        setNfts((prevNfts) => [...prevNfts, ...initialLoadingState])
-
-        items.forEach(async (nft, i) => {
-          await nft.init()
-          setNfts((prevNfts) => {
-            const newNfts = [...prevNfts]
-            newNfts[prevNfts.length - items.length + i] = nft
-            return newNfts
-          })
-        })
-      },
-    },
+    { revalidateOnFocus: false },
   )
+
+  useEffect(() => {
+    if (!data) return
+    const { items } = data
+    const initialLoadingState = Array(items.length).fill(null)
+
+    setNfts(initialLoadingState)
+
+    items.forEach(async (nft, i) => {
+      await nft.init()
+      setNfts((prevNfts) => {
+        const newNfts = [...prevNfts]
+        newNfts[prevNfts.length - items.length + i] = nft
+        return newNfts
+      })
+    })
+  }, [data])
 
   const totalItems = data?.totalItems || 0
   const totalPages = data?.totalPages || 0

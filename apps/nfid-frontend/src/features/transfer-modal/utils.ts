@@ -132,7 +132,6 @@ export const validateICPAddress = (address: string): boolean | string => {
       decodeIcrcAccount(address)
       return true
     } catch (e) {
-      console.error("Error: ", e)
       return "Incorrect wallet address or accound ID"
     }
   } else return true
@@ -153,7 +152,6 @@ export const validateICRC1Address = (address: string): boolean | string => {
     decodeIcrcAccount(address)
     return true
   } catch (e) {
-    console.error("Error: ", e)
     return "Incorrect wallet address"
   }
 }

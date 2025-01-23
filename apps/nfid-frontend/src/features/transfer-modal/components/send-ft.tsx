@@ -6,7 +6,7 @@ import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
@@ -31,12 +31,16 @@ import {
   validateICRC1Address,
 } from "../utils"
 
+const DEFAULT_TRANSFER_ERROR = "Something went wrong"
+
 interface ITransferFT {
   preselectedTokenAddress: string | undefined
   isVault: boolean
   preselectedAccountAddress: string
   onClose: () => void
-  isOpen: boolean
+  hideZeroBalance: boolean
+  setErrorMessage: (message: string) => void
+  setSuccessMessage: (message: string) => void
 }
 
 export const TransferFT = ({
@@ -44,7 +48,9 @@ export const TransferFT = ({
   preselectedTokenAddress = ICP_CANISTER_ID,
   preselectedAccountAddress = "",
   onClose,
-  isOpen,
+  hideZeroBalance,
+  setErrorMessage,
+  setSuccessMessage,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [status, setStatus] = useState(SendStatus.PENDING)
@@ -53,7 +59,6 @@ export const TransferFT = ({
     useState(preselectedAccountAddress)
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
-  const isOpenRef = useRef(isOpen)
 
   const { data: vaultsAccountsOptions = [] } = useSWR(
     "vaultsAccountsOptions",
@@ -67,8 +72,17 @@ export const TransferFT = ({
   )
 
   const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
+    const activeTokens = tokens.filter(
+      (token) => token.getTokenState() === State.Active,
+    )
+    if (!hideZeroBalance) return activeTokens
+    const tokensWithBalance = activeTokens.filter(
+      (token) =>
+        token.getTokenAddress() === ICP_CANISTER_ID ||
+        token.getTokenBalance() !== BigInt(0),
+    )
+    return tokensWithBalance
+  }, [tokens, hideZeroBalance])
 
   const token = useMemo(() => {
     return tokens.find((token) => token.getTokenAddress() === tokenAddress)
@@ -81,15 +95,6 @@ export const TransferFT = ({
       to: "",
     },
   })
-
-  useEffect(() => {
-    isOpenRef.current = isOpen
-    setStatus(SendStatus.PENDING)
-    if (!isOpen) {
-      setIsSuccessOpen(false)
-      formMethods.reset()
-    }
-  }, [isOpen, formMethods])
 
   const { watch } = formMethods
   const amount = watch("amount")
@@ -122,15 +127,9 @@ export const TransferFT = ({
         from_sub_account: wallet?.uid ?? "",
       })
         .then(() => {
-          if (!isOpenRef.current) {
-            toaster.success(
-              `Transaction ${amount} ${token.getTokenSymbol()} successful`,
-              {
-                toastId: "successTransfer",
-              },
-            )
-          }
-
+          setSuccessMessage(
+            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+          )
           setStatus(SendStatus.COMPLETED)
         })
         .catch((e) => {
@@ -139,7 +138,7 @@ export const TransferFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          if (!isOpenRef.current) toaster.error("Something went wrong")
+          setErrorMessage(DEFAULT_TRANSFER_ERROR)
 
           setStatus(SendStatus.FAILED)
         })
@@ -178,28 +177,26 @@ export const TransferFT = ({
     transferResult
       .then((res) => {
         if (typeof res === "object" && "Err" in res) {
-          if (!isOpenRef.current) toaster.error("Something went wrong")
           console.error(`Transfer error: ${JSON.stringify(res.Err)}`)
-          if (
-            res.Err.hasOwnProperty("GenericError") &&
-            (
+          let error = DEFAULT_TRANSFER_ERROR
+
+          if (res.Err.hasOwnProperty("GenericError")) {
+            const genericError = (
               res.Err as {
-                GenericError: { error_code: bigint }
+                GenericError: { message: string; error_code: bigint }
               }
-            ).GenericError.error_code === BigInt(0)
-          )
-            toaster.error("This token can't be sent to yourself")
+            ).GenericError
+
+            error = genericError.message
+          }
+
+          setErrorMessage(error)
           setStatus(SendStatus.FAILED)
           return
         }
-        if (!isOpenRef.current) {
-          toaster.success(
-            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
-            {
-              toastId: "successTransfer",
-            },
-          )
-        }
+        setSuccessMessage(
+          `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+        )
         setStatus(SendStatus.COMPLETED)
         getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
           (updatedTokens) => {
@@ -211,12 +208,19 @@ export const TransferFT = ({
         console.error(
           `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
         )
-        if (!isOpenRef.current) toaster.error("Something went wrong")
+        setErrorMessage(DEFAULT_TRANSFER_ERROR)
         setStatus(SendStatus.FAILED)
       })
-  }, [isVault, token, selectedVaultsAccountAddress, amount, to, tokens])
-
-  if (!isOpen) return null
+  }, [
+    isVault,
+    token,
+    selectedVaultsAccountAddress,
+    amount,
+    to,
+    tokens,
+    setErrorMessage,
+    setSuccessMessage,
+  ])
 
   return (
     <FormProvider {...formMethods}>

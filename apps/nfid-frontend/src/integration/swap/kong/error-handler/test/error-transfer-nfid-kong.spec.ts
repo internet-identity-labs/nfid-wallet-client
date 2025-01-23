@@ -43,11 +43,7 @@ describe("shroff transfer kong error handler test", () => {
     let failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferNFID)
-    try {
-      await errorHandler.completeTransaction(mockId)
-    } catch (e: any) {
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(e.message).toContain("InsufficientFunds")
-    }
+    let trs = await errorHandler.completeTransaction(mockId)
+    expect(trs.getStage()).toEqual(SwapStage.Completed)
   })
 })

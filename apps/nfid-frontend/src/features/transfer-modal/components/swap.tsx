@@ -131,7 +131,6 @@ export const SwapFT = ({
 
   useEffect(() => {
     if (isEqual) {
-      console.log(previousFromTokenAddress)
       setToTokenAddress(previousFromTokenAddress.current)
     }
     previousFromTokenAddress.current = fromTokenAddress

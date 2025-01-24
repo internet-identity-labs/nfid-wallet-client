@@ -12,7 +12,7 @@ import { TransferTemplate } from "./components/template"
 export interface TransferModalProps {
   onClickOutside: () => void
   isSuccess: boolean
-  direction: ModalType
+  direction: ModalType | null
   tokenType: TokenType
   onTokenTypeChange: (isNFT: boolean) => void
   component: JSX.Element
@@ -23,7 +23,7 @@ export interface TransferModalProps {
 export interface TransferVaultModalProps {
   onClickOutside: () => void
   isSuccess: boolean
-  direction: ModalType
+  direction: ModalType | null
   tokenType: TokenType
   component: JSX.Element
   isOpen: boolean

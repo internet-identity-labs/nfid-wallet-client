@@ -34,6 +34,7 @@ import {
 const QUOTE_REFETCH_TIMER = 30
 
 interface ISwapFT {
+  preselectedSourceTokenAddress: string | undefined
   onClose: () => void
   onError: (value: boolean) => void
   setErrorMessage: (message: string) => void
@@ -42,6 +43,7 @@ interface ISwapFT {
 }
 
 export const SwapFT = ({
+  preselectedSourceTokenAddress,
   onClose,
   onError,
   hideZeroBalance,
@@ -68,6 +70,14 @@ export const SwapFT = ({
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const [slippage, setSlippage] = useState(2)
   const previousFromTokenAddress = useRef(fromTokenAddress)
+
+  useEffect(() => {
+    if (!preselectedSourceTokenAddress) {
+      setFromTokenAddress(ICP_CANISTER_ID)
+    } else {
+      setFromTokenAddress(preselectedSourceTokenAddress)
+    }
+  }, [preselectedSourceTokenAddress])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",

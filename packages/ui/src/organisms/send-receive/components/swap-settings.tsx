@@ -151,7 +151,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 className={clsx(
                   !isCustom ? "hidden" : "",
                   "w-full h-full absolute rounded-[12px] bg-primaryButtonColor text-white",
-                  "flex items-center justify-center px-[6px] sm:px-[14px]",
+                  "flex items-center justify-center px-[4px] sm:px-[14px]",
                 )}
               >
                 <InputAmount

@@ -1,5 +1,5 @@
 import { Separator } from "packages/ui/src/atoms/separator"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import {
@@ -10,6 +10,8 @@ import {
   Input,
 } from "@nfid-frontend/ui"
 import { ExistingWallet } from "@nfid/integration"
+
+import { isWebAuthNSupported } from "frontend/integration/device"
 
 import { AuthAppMeta } from "../app-meta"
 import { ChooseWallet } from "../choose-wallet"
@@ -68,6 +70,10 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     appHost = appMeta?.name ?? ""
   }
 
+  const isPasskeySupported = useMemo(() => {
+    return isWebAuthNSupported()
+  }, [])
+
   useEffect(() => {
     setWalletState((prevState) => ({
       ...prevState,
@@ -110,7 +116,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           className="absolute cursor-pointer top-5 left-5"
         />
       )}
-      {walletState.isChooseWallet ? (
+      {walletState.isChooseWallet && isPasskeySupported ? (
         <ChooseWallet
           authRequest={authRequest}
           appMeta={appMeta}
@@ -162,19 +168,21 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             </form>
             <Separator className="my-[10px]" />
             {googleButton}
-            <Button
-              id="passkey-sign-button"
-              className="h-12 !p-0 group my-[10px]"
-              type="stroke"
-              icon={<IconCmpPasskey />}
-              block
-              onClick={onLoginWithPasskey}
-            >
-              Continue with a Passkey
-            </Button>
+            {isPasskeySupported && (
+              <Button
+                id="passkey-sign-button"
+                className="h-12 !p-0 group mt-[10px]"
+                type="stroke"
+                icon={<IconCmpPasskey />}
+                block
+                onClick={onLoginWithPasskey}
+              >
+                Continue with a Passkey
+              </Button>
+            )}
             <Button
               id="other-sign-button"
-              className="h-12 !p-0"
+              className="h-12 !p-0 mt-[10px]"
               type="ghost"
               block
               onClick={onSelectOtherAuth}

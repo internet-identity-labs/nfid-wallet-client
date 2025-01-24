@@ -56,6 +56,10 @@ export class NftYumi extends NftImpl {
     return `https://yuku.app/market/${this.getCollectionId()}/${this.getTokenId()}`
   }
 
+  getCollectionMarketPlaceLink(): string {
+    return `https://yuku.app/market/${this.getCollectionId()}`
+  }
+
   async getDetails(): Promise<NFTDetails> {
     let collectionResponse = (await fetch(
       `https://stat.yuku.app/api/collection/${this.getCollectionId()}`,

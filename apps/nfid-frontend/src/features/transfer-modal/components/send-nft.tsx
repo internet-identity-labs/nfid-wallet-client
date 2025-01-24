@@ -14,14 +14,16 @@ interface ITransferNFT {
   preselectedNFTId?: string
   selectedReceiverWallet?: string
   onClose: () => void
-  isOpen: boolean
+  setErrorMessage: (message: string) => void
+  setSuccessMessage: (message: string) => void
 }
 
 export const TransferNFT = ({
   selectedReceiverWallet,
   preselectedNFTId = "",
   onClose,
-  isOpen,
+  setErrorMessage,
+  setSuccessMessage,
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
@@ -51,11 +53,8 @@ export const TransferNFT = ({
 
       transferEXT(selectedNFT.getTokenId(), identity, values.to)
         .then(() => {
-          toaster.success(
+          setSuccessMessage(
             `Transaction ${selectedNFT?.getTokenName()} successful`,
-            {
-              toastId: "successTransfer",
-            },
           )
           setStatus(SendStatus.COMPLETED)
         })
@@ -65,14 +64,12 @@ export const TransferNFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          toaster.error("Something went wrong")
+          setErrorMessage("Something went wrong")
           setStatus(SendStatus.FAILED)
         })
     },
-    [selectedNFT],
+    [selectedNFT, setErrorMessage, setSuccessMessage],
   )
-
-  if (!isOpen) return null
 
   return (
     <TransferNFTUi

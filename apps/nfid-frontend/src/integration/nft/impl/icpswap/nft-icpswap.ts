@@ -37,6 +37,10 @@ export class NftIcpSwap extends NftImpl {
     return `https://app.icpswap.com/marketplace/NFT/view/${this.getCollectionId()}/${this.getTokenNumber()}`
   }
 
+  getCollectionMarketPlaceLink(): string {
+    return `https://app.icpswap.com/marketplace/NFT/${this.getCollectionId()}`
+  }
+
   async getDetails(): Promise<NFTDetails> {
     let canisterActor = actorBuilder<IcpSwapCanister>(
       this.getCollectionId(),

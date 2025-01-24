@@ -29,6 +29,13 @@ export class NftMemeCake extends NftImpl {
   getTokenMarketPlaceLink(): string {
     return `https://memecake.io/token/${this.getCollectionId()}-${this.getTokenNumber()}`
   }
+
+  getCollectionMarketPlaceLink(): string {
+    const collectionName = this.getCollectionName()
+      .toLowerCase()
+      .replaceAll(" ", "")
+    return `https://memecake.io/collection/${collectionName}`
+  }
 }
 
 class NftMemeCakeDetails extends NFTDetailsImpl {

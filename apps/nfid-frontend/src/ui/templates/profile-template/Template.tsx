@@ -222,37 +222,35 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         )}
       >
         <section className={clsx("relative", className)}>
-          {pageTitle && (
-            <div className="flex justify-between items-center leading-[40px] mb-[30px]">
-              <div className="sticky left-0 flex items-center space-x-2">
-                {showBackButton && (
-                  <ArrowButton
-                    buttonClassName="py-[7px]"
-                    onClick={handleNavigateBack}
-                    iconClassName="text-black"
-                  />
-                )}
-                <p
-                  className={clsx("text-[28px] block", titleClassNames)}
-                  id={"page_title"}
-                >
-                  {pageTitle}
-                </p>
-              </div>
-              {icon && onIconClick && (
-                <Tooltip tip={iconTooltip}>
-                  <img
-                    id={iconId}
-                    src={icon}
-                    alt="icon"
-                    onClick={onIconClick}
-                    className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
-                  />
-                </Tooltip>
+          <div className="flex justify-between items-center leading-[40px] mb-[30px]">
+            <div className="sticky left-0 flex items-center space-x-2">
+              {showBackButton && (
+                <ArrowButton
+                  buttonClassName="py-[7px]"
+                  onClick={handleNavigateBack}
+                  iconClassName="text-black"
+                />
               )}
-              {headerMenu}
+              <p
+                className={clsx("text-[28px] block", titleClassNames)}
+                id={"page_title"}
+              >
+                {pageTitle}
+              </p>
             </div>
-          )}
+            {icon && onIconClick && (
+              <Tooltip tip={iconTooltip}>
+                <img
+                  id={iconId}
+                  src={icon}
+                  alt="icon"
+                  onClick={onIconClick}
+                  className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
+                />
+              </Tooltip>
+            )}
+            {headerMenu}
+          </div>
           {isWallet && (
             <>
               <ProfileInfo

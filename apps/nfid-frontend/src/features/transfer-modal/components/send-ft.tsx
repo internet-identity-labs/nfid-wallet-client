@@ -57,6 +57,7 @@ export const TransferFT = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
+  const [error, setError] = useState<string | undefined>()
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
 
@@ -139,7 +140,7 @@ export const TransferFT = ({
             }`,
           )
           setErrorMessage(DEFAULT_TRANSFER_ERROR)
-
+          setError(DEFAULT_TRANSFER_ERROR)
           setStatus(SendStatus.FAILED)
         })
 
@@ -191,6 +192,7 @@ export const TransferFT = ({
           }
 
           setErrorMessage(error)
+          setError(error)
           setStatus(SendStatus.FAILED)
           return
         }
@@ -209,6 +211,7 @@ export const TransferFT = ({
           `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
         )
         setErrorMessage(DEFAULT_TRANSFER_ERROR)
+        setError(DEFAULT_TRANSFER_ERROR)
         setStatus(SendStatus.FAILED)
       })
   }, [
@@ -247,6 +250,7 @@ export const TransferFT = ({
         status={status}
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
+        error={error}
       />
     </FormProvider>
   )

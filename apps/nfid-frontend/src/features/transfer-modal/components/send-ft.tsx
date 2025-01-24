@@ -6,7 +6,7 @@ import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useState, useEffect } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
@@ -65,6 +65,14 @@ export const TransferFT = ({
     "vaultsAccountsOptions",
     getVaultsAccountsOptions,
   )
+
+  useEffect(() => {
+    if (!preselectedTokenAddress) {
+      setTokenAddress(ICP_CANISTER_ID)
+    } else {
+      setTokenAddress(preselectedTokenAddress)
+    }
+  }, [preselectedTokenAddress])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",

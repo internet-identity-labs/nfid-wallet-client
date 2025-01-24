@@ -6,6 +6,7 @@ import {
   DropdownOption,
   IconCmpDots,
   IconSvgArrow,
+  IconSvgSwapAction,
   IconSvgEyeClosedBlack,
   IconSvgHistoryIcon,
   IconSvgTokenInfo,
@@ -22,6 +23,7 @@ type AssetDropdownProps = {
   tokens: FT[]
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
+  onSwapClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
@@ -33,6 +35,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   tokens,
   profileConstants,
   onSendClick,
+  onSwapClick,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
@@ -67,6 +70,11 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           icon={IconSvgArrow}
           iconClassName="rotate-[135deg]"
           handler={() => onSendClick(token.getTokenAddress())}
+        />
+        <DropdownOption
+          label="Swap"
+          icon={IconSvgSwapAction}
+          handler={() => onSwapClick(token.getTokenAddress())}
         />
         <DropdownOption
           label="Token information"

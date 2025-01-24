@@ -25,6 +25,13 @@ export const TransferModalCoordinator = () => {
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
 
+  const hideModal = useCallback(() => {
+    send({ type: "ASSIGN_SELECTED_FT", data: "" })
+    send({ type: "ASSIGN_SELECTED_NFT", data: "" })
+    send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+    send({ type: "CHANGE_DIRECTION", data: null })
+    send({ type: "HIDE" })
+  }, [send])
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
       setHideZeroBalance(userPref.isHideZeroBalance())
@@ -76,7 +83,7 @@ export const TransferModalCoordinator = () => {
             preselectedTokenAddress={state.context.selectedFT}
             isVault={state.context.isOpenedFromVaults}
             preselectedAccountAddress={state.context.sourceWalletAddress}
-            onClose={() => send({ type: "HIDE" })}
+            onClose={hideModal}
             hideZeroBalance={hideZeroBalance}
             setErrorMessage={setErrorMessage}
             setSuccessMessage={setSuccessMessage}
@@ -85,14 +92,15 @@ export const TransferModalCoordinator = () => {
         {state.matches("SendMachine.SendNFT") && (
           <TransferNFT
             preselectedNFTId={state.context.selectedNFTId}
-            onClose={() => send({ type: "HIDE" })}
+            onClose={hideModal}
             setErrorMessage={setErrorMessage}
             setSuccessMessage={setSuccessMessage}
           />
         )}
         {state.matches("SwapMachine") && (
           <SwapFT
-            onClose={() => send({ type: "HIDE" })}
+            preselectedSourceTokenAddress={state.context.selectedFT}
+            onClose={hideModal}
             onError={setHasSwapError}
             hideZeroBalance={hideZeroBalance}
             setErrorMessage={setErrorMessage}
@@ -103,12 +111,11 @@ export const TransferModalCoordinator = () => {
           <TransferReceive
             publicKey={publicKey}
             preselectedAccountAddress={state.context.sourceWalletAddress}
-            isOpen={true}
           />
         )}
       </>
     ),
-    [send, state, publicKey, hideZeroBalance],
+    [state, publicKey, hideZeroBalance, hideModal],
   )
 
   const onTokenTypeChange = useCallback(
@@ -122,7 +129,7 @@ export const TransferModalCoordinator = () => {
     <>
       {state.context.isOpenedFromVaults ? (
         <TransferVaultModal
-          onClickOutside={() => send({ type: "HIDE" })}
+          onClickOutside={hideModal}
           isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           component={Components}
@@ -131,7 +138,7 @@ export const TransferModalCoordinator = () => {
         />
       ) : (
         <TransferModal
-          onClickOutside={() => send({ type: "HIDE" })}
+          onClickOutside={hideModal}
           isSuccess={state.matches("TransferSuccess")}
           direction={state.context.direction}
           tokenType={state.context.tokenType}

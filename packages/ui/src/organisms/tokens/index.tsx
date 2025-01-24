@@ -42,6 +42,7 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
     fee: bigint
   }>
   onSendClick: (value: string) => void
+  onSwapClick: (value: string) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
@@ -55,9 +56,10 @@ export const Tokens: FC<TokensProps> = ({
   onSubmitIcrc1Pair,
   onFetch,
   onSendClick,
+  onSwapClick,
   hideZeroBalance,
   onZeroBalanceToggle,
-  tokensIniting
+  tokensIniting,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -150,7 +152,7 @@ export const Tokens: FC<TokensProps> = ({
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
-                  <span className="whitespace-nowrap flex">
+                  <span className="flex whitespace-nowrap">
                     USD balance{" "}
                     <img
                       className="w-[18px] h-[18px] ms-[5px]"
@@ -178,6 +180,7 @@ export const Tokens: FC<TokensProps> = ({
                     tokens={allTokens}
                     profileConstants={profileConstants}
                     onSendClick={onSendClick}
+                    onSwapClick={onSwapClick}
                     setToken={setToken}
                     dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
                     loadingToken={loadingToken}

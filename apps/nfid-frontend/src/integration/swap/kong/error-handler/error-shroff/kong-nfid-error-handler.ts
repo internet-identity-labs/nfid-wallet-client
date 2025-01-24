@@ -12,14 +12,8 @@ export class ErrorKongNfidShroff extends KongSwapShroffImpl {
     }
     try {
       console.log("ReSwap NFID started")
-      if (this.swapTransaction.getErrors().length === 0) {
-        console.debug("Swap timeout error")
-        this.swapTransaction.setCompleted()
-        return this.swapTransaction
-      }
-      await this.transferToNFID()
+      this.swapTransaction.setCompleted()
       await this.restoreTransaction()
-      console.debug("Transaction stored")
       return this.swapTransaction
     } catch (e) {
       console.error("NFID transfer retry error: ", e)

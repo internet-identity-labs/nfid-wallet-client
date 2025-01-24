@@ -149,6 +149,7 @@ class CallCanisterService {
         cid,
         requestId,
         pollStrategy,
+        undefined,
         blsVerify,
       )
       certificate = response.certificate

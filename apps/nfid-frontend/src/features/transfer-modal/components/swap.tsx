@@ -1,5 +1,4 @@
 import { resetIntegrationCache } from "packages/integration/src/cache"
-import toaster from "packages/ui/src/atoms/toast"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -36,11 +35,19 @@ const QUOTE_REFETCH_TIMER = 30
 
 interface ISwapFT {
   onClose: () => void
-  isOpen: boolean
   onError: (value: boolean) => void
+  setErrorMessage: (message: string) => void
+  setSuccessMessage: (message: string) => void
+  hideZeroBalance: boolean
 }
 
-export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
+export const SwapFT = ({
+  onClose,
+  onError,
+  hideZeroBalance,
+  setErrorMessage,
+  setSuccessMessage,
+}: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
@@ -60,17 +67,27 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const [slippage, setSlippage] = useState(2)
-
-  const isOpenRef = useRef(isOpen)
+  const previousFromTokenAddress = useRef(fromTokenAddress)
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
+
   const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
+    const activeTokens = tokens.filter(
+      (token) => token.getTokenState() === State.Active,
+    )
+    if (!hideZeroBalance) return activeTokens
+    const tokensWithBalance = activeTokens.filter(
+      (token) =>
+        token.getTokenAddress() === ICP_CANISTER_ID ||
+        token.getTokenBalance() !== BigInt(0),
+    )
+    return tokensWithBalance
+  }, [tokens, hideZeroBalance])
+
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
@@ -107,18 +124,17 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
     onError(Boolean(swapError))
   }, [swapError, onError])
 
-  useEffect(() => {
-    isOpenRef.current = isOpen
-    setSwapStep(0)
-    if (!isOpen) {
-      refresh()
-      setIsSuccessOpen(false)
-      formMethods.reset()
-    }
-  }, [isOpen, formMethods])
-
   const { watch } = formMethods
   const amount = watch("amount")
+
+  const isEqual = fromTokenAddress === toTokenAddress
+
+  useEffect(() => {
+    if (isEqual) {
+      setToTokenAddress(previousFromTokenAddress.current)
+    }
+    previousFromTokenAddress.current = fromTokenAddress
+  }, [fromTokenAddress, isEqual])
 
   useEffect(() => {
     const getProviders = async () => {
@@ -264,17 +280,11 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
     shroff
       .swap(identity)
       .then(() => {
-        if (!isOpenRef.current)
-          toaster.success(
-            `Swap ${sourceAmount} to ${targetAmount} successful`,
-            {
-              toastId: "successSwap",
-            },
-          )
+        setSuccessMessage(`Swap ${sourceAmount} to ${targetAmount} successful`)
       })
       .catch((error) => {
         setSwapError(error)
-        if (!isOpenRef.current) toaster.error("Something went wrong")
+        setErrorMessage("Something went wrong")
       })
       .finally(() => {
         getTokensWithUpdatedBalance(
@@ -286,9 +296,15 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
       })
 
     setGetTransaction(shroff.getSwapTransaction())
-  }, [quote, shroff, tokens, fromTokenAddress, toTokenAddress])
-
-  if (!isOpen) return null
+  }, [
+    quote,
+    shroff,
+    tokens,
+    fromTokenAddress,
+    toTokenAddress,
+    setErrorMessage,
+    setSuccessMessage,
+  ])
 
   return (
     <FormProvider {...formMethods}>

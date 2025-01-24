@@ -24,6 +24,7 @@ export interface SuccessProps {
   isOpen: boolean
   status: SendStatus
   assetImageClassname: string
+  error: string | undefined
 }
 
 const allAnimations = [Success1, Success2, Successs3, Fail]
@@ -37,6 +38,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
   assetImageClassname,
   isOpen,
   status,
+  error,
 }) => {
   const [step, setStep] = useState(-1)
 
@@ -113,7 +115,13 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
           {subTitle}
         </p>
-        <Button type="primary" block className="mt-[30px]" onClick={onClose}>
+        {error && <div className="text-sm text-red-600 mt-[30px]">{error}</div>}
+        <Button
+          type="primary"
+          block
+          className={clsx(error ? "mt-[20px]" : "mt-[30px]")}
+          onClick={onClose}
+        >
           Done
         </Button>
       </div>

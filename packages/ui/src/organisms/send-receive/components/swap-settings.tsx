@@ -51,16 +51,20 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
     if (!shroff) return
 
     const getQuotes = async () => {
-      const quotes = await Promise.all(
-        [...swapProviders.entries()].map(async ([key, provider]) => {
-          if (!provider) return { [key]: undefined }
-          const quote = await provider.getQuote(amount)
-          return {
-            [provider.getSwapName()]: quote,
-          }
-        }),
-      )
-      setQuotes(quotes)
+      try {
+        const quotes = await Promise.all(
+          [...swapProviders.entries()].map(async ([key, provider]) => {
+            if (!provider) return { [key]: undefined }
+            const quote = await provider.getQuote(amount)
+            return {
+              [provider.getSwapName()]: quote,
+            }
+          }),
+        )
+        setQuotes(quotes)
+      } catch (e) {
+        return
+      }
     }
 
     getQuotes()

@@ -9,6 +9,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { authState } from "@nfid/integration"
 
+import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 import { ProfileContext } from "frontend/provider"
 
 import { TransferReceive } from "./components/receive"
@@ -17,9 +18,18 @@ import { TransferNFT } from "./components/send-nft"
 import { SwapFT } from "./components/swap"
 
 export const TransferModalCoordinator = () => {
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
+  const [successMessage, setSuccessMessage] = useState<string | undefined>()
+  const [hideZeroBalance, setHideZeroBalance] = useState(false)
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
+
+  useEffect(() => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      setHideZeroBalance(userPref.isHideZeroBalance())
+    })
+  }, [])
 
   useDisableScroll(!state.matches("Hidden"))
 
@@ -35,6 +45,27 @@ export const TransferModalCoordinator = () => {
     }
   }, [send, state.context.error])
 
+  useEffect(() => {
+    if (errorMessage) {
+      if (state.matches("Hidden")) {
+        toaster.error(errorMessage, {
+          toastId: "error",
+        })
+      }
+      return setErrorMessage(undefined)
+    }
+
+    if (successMessage) {
+      if (state.matches("Hidden")) {
+        toaster.success(successMessage, {
+          toastId: "success",
+        })
+      }
+
+      return setSuccessMessage(undefined)
+    }
+  }, [errorMessage, successMessage, state])
+
   const publicKey = authState.getUserIdData().publicKey
 
   const Components = useMemo(
@@ -46,21 +77,26 @@ export const TransferModalCoordinator = () => {
             isVault={state.context.isOpenedFromVaults}
             preselectedAccountAddress={state.context.sourceWalletAddress}
             onClose={() => send({ type: "HIDE" })}
-            isOpen={true}
+            hideZeroBalance={hideZeroBalance}
+            setErrorMessage={setErrorMessage}
+            setSuccessMessage={setSuccessMessage}
           />
         )}
         {state.matches("SendMachine.SendNFT") && (
           <TransferNFT
             preselectedNFTId={state.context.selectedNFTId}
             onClose={() => send({ type: "HIDE" })}
-            isOpen={true}
+            setErrorMessage={setErrorMessage}
+            setSuccessMessage={setSuccessMessage}
           />
         )}
         {state.matches("SwapMachine") && (
           <SwapFT
             onClose={() => send({ type: "HIDE" })}
-            isOpen={true}
             onError={setHasSwapError}
+            hideZeroBalance={hideZeroBalance}
+            setErrorMessage={setErrorMessage}
+            setSuccessMessage={setSuccessMessage}
           />
         )}
         {state.matches("ReceiveMachine") && (
@@ -72,7 +108,7 @@ export const TransferModalCoordinator = () => {
         )}
       </>
     ),
-    [send, state, publicKey],
+    [send, state, publicKey, hideZeroBalance],
   )
 
   const onTokenTypeChange = useCallback(

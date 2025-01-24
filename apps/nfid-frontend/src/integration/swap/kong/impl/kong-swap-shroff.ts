@@ -111,8 +111,6 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     }
     this.delegationIdentity = delegationIdentity
 
-    console.log("KONG swap quote")
-
     this.swapTransaction = new KongSwapTransactionImpl(
       this.target.ledger,
       this.source.ledger,
@@ -332,7 +330,6 @@ export class KongShroffBuilder {
 
       return buildShroff
     } catch (e) {
-      console.error("Kongswap error:", e)
       if (e instanceof LiquidityError) {
         throw e
       }

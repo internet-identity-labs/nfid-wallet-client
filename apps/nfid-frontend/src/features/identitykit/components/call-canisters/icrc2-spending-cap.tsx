@@ -7,6 +7,7 @@ import { IconCmpWarning } from "@nfid-frontend/ui"
 import { ICRC2Metadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
+import { CanisterCallTitle } from "../../constants"
 
 export interface CallCanisterICRC2SpendingCapProps {
   canisterId: string
@@ -31,7 +32,7 @@ const CallCanisterICRC2SpendingCap = ({
 
   return (
     <RPCPromptTemplate
-      title={`Approve spending cap`}
+      title={CanisterCallTitle.icrc2_approve}
       subTitle={
         <>
           Request from{" "}

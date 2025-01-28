@@ -3,6 +3,7 @@ import { useState } from "react"
 
 import { IconCmpWarning, ToggleButton } from "@nfid-frontend/ui"
 
+import { CanisterCallTitle } from "../constants"
 import { RPCMessage } from "../type"
 import { CallCanisterDetails, renderArgs } from "./call-canisters/details"
 import { RPCComponentsUI } from "./methods/method"
@@ -14,6 +15,7 @@ export interface RPCComponentErrorProps {
   error?: Error
   args?: string
   request: MessageEvent<RPCMessage> | undefined
+  title?: string
 }
 
 export const RPCComponentError = ({
@@ -27,9 +29,14 @@ export const RPCComponentError = ({
 
   const applicationName = new URL(String(request?.origin)).host
 
+  const methodName = request?.data?.params?.method ?? request?.data.method
+
   return (
     <RPCPromptTemplate
-      title={request?.data?.params?.method ?? request?.data.method}
+      title={
+        CanisterCallTitle[methodName as keyof typeof CanisterCallTitle] ??
+        methodName
+      }
       subTitle={
         <>
           Request from{" "}

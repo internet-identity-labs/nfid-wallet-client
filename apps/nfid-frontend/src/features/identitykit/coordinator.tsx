@@ -82,6 +82,7 @@ export default function IdentityKitRPCCoordinator() {
             onRetry={() => send({ type: "TRY_AGAIN" })}
             onCancel={() => send({ type: "ON_CANCEL" })}
             args={state.context.componentData?.args}
+            consentMessage={state.context.componentData?.consentMessage}
             error={state.context.error}
             request={state.context.activeRequest}
           />

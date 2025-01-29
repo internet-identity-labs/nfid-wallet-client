@@ -16,6 +16,7 @@ export interface RPCComponentErrorProps {
   args?: string
   request: MessageEvent<RPCMessage> | undefined
   title?: string
+  consentMessage?: string
 }
 
 export const RPCComponentError = ({
@@ -24,6 +25,7 @@ export const RPCComponentError = ({
   error,
   args,
   request,
+  consentMessage,
 }: RPCComponentErrorProps) => {
   const [isResponseTab, setIsResponseTab] = useState(true)
 
@@ -85,41 +87,57 @@ export const RPCComponentError = ({
               </div>
             </div>
           ) : (
-            <div
-              className={clsx(
-                "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
-                "text-gray-500 break-all text-sm overflow-auto max-h-[50vh]",
+            <>
+              <div
+                className={clsx(
+                  "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
+                  "text-gray-500 break-all text-sm overflow-auto max-h-[50vh]",
+                )}
+              >
+                {consentMessage ? (
+                  <>
+                    <div className="space-y-2">
+                      <p className="font-bold">Consent message</p>
+                      <p className="leading-5">{consentMessage}</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <p className="font-bold">Canister ID</p>
+                      <p className="">
+                        {(request.data?.params as any)?.canisterId}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="font-bold">Arguments</p>
+                      <div
+                        className={clsx(
+                          "space-y-4 overflow-auto max-h-44",
+                          "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
+                          "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+                        )}
+                      >
+                        {args ? (
+                          renderArgs(JSON.parse(args)[0])
+                        ) : (
+                          <p className="">
+                            {(request.data?.params as any)?.arg}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              {consentMessage && args && (
+                <CallCanisterDetails
+                  canisterId={request?.data?.params?.canisterId}
+                  sender={request?.data?.params?.sender}
+                  args={String(args)}
+                />
               )}
-            >
-              <div className="space-y-2">
-                <p className="font-bold">Canister ID</p>
-                <p className="">{(request.data?.params as any)?.canisterId}</p>
-              </div>
-              <div className="space-y-2">
-                <p className="font-bold">Arguments</p>
-                <div
-                  className={clsx(
-                    "space-y-4 overflow-auto max-h-44",
-                    "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
-                    "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
-                  )}
-                >
-                  {args ? (
-                    renderArgs(JSON.parse(args)[0])
-                  ) : (
-                    <p className="">{(request.data?.params as any)?.arg}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {args && (
-            <CallCanisterDetails
-              canisterId={request?.data?.params?.canisterId}
-              sender={request?.data?.params?.sender}
-              args={String(args)}
-            />
+            </>
           )}
         </div>
       )}

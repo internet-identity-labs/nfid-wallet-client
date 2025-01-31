@@ -11,14 +11,11 @@ import {
   replaceActorIdentity,
 } from "@nfid/integration"
 
-import { authState } from "../authentication"
 import {deleteFromStorage} from "./domain-key-repository"
 import {DerEncodedPublicKey, PublicKey} from "@dfinity/agent";
-import {createDecipheriv, createHash, Encoding} from "crypto";
+import {createDecipheriv, Encoding} from "crypto";
+import {getAnonSalt, getSalt} from "./storage.service";
 
-//todo temp test values. move to secure storage
-const SALT = "wK6wVLS49ny5FQ08HooQYFS8saPuAcF5VUeWLkkcj2x3OYgelDbEEsUkLUqAxKft"
-const ECDSA_SALT = "wK6wVLS49ny5FQ08HooQYFS8saPuAcF5VUeWLkkcj2x3OYgelDbEEsUkLUqAxKft"
 
 export enum Chain {
   IC = "IC",
@@ -30,7 +27,7 @@ export async function getAnonymousDelegationThroughLambda(
   identity: DelegationIdentity,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ) {
-  const uniqueString = sha2(authState.get().userIdData + domain + SALT + ECDSA_SALT)
+  const uniqueString = await getAnonSalt(domain)
   const seed = hexStringToUint8Array(uniqueString)
   const anonymousIdentity = Ed25519KeyIdentity.generate(seed);
   const chain = await DelegationChain.create(
@@ -62,7 +59,7 @@ export async function oldFlowGlobalKeysFromLambda(
 ) {
   await replaceActorIdentity(icSigner, identity)
   const encryptedKP = await icSigner.get_kp()
-  const uniqueString = sha2(authState.getUserIdData().userId + ECDSA_SALT)
+  const uniqueString = await getSalt()
   const privateKey = decrypt(encryptedKP.key_pair[0]!.private_key_encrypted, "utf8", uniqueString)
   const publicKey = encryptedKP.key_pair[0]!.public_key;
   const parsedKP = Ed25519KeyIdentity.fromParsedJson([publicKey, privateKey])
@@ -122,10 +119,6 @@ export function fromHexString(hexString: string): ArrayBuffer {
     bytes[i / 2] = parseInt(hexString.substr(i, 2), 16)
   }
   return bytes.buffer
-}
-
-function sha2(value: string) {
-  return createHash("sha256").update(value).digest("hex");
 }
 
 function hexStringToUint8Array(hexString: string) {

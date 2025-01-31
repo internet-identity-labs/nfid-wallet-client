@@ -1,6 +1,7 @@
-import {actor} from "@nfid/integration";
-import {_SERVICE} from "./idl/service.d";
-import {idlFactory} from "./idl/service";
+import { actor } from "@nfid/integration"
+
+import { idlFactory } from "./idl/service"
+import { _SERVICE } from "./idl/service.d"
 
 //TODO WIP stage/prod
 const canisterId = "zhr63-daaaa-aaaap-qbh4q-cai"

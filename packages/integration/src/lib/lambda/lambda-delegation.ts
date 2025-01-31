@@ -1,7 +1,13 @@
-import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
-import {Principal} from "@dfinity/principal"
+import { DerEncodedPublicKey, PublicKey } from "@dfinity/agent"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+import { createDecipheriv, Encoding } from "crypto"
 
-import {ONE_HOUR_IN_MS} from "@nfid/config"
+import { ONE_HOUR_IN_MS } from "@nfid/config"
 import {
   DelegationType,
   getAnonymousDelegate,
@@ -11,11 +17,8 @@ import {
   replaceActorIdentity,
 } from "@nfid/integration"
 
-import {deleteFromStorage} from "./domain-key-repository"
-import {DerEncodedPublicKey, PublicKey} from "@dfinity/agent";
-import {createDecipheriv, Encoding} from "crypto";
-import {getAnonSalt, getSalt} from "./storage.service";
-
+import { deleteFromStorage } from "./domain-key-repository"
+import { getAnonSalt, getSalt } from "./storage.service"
 
 export enum Chain {
   IC = "IC",
@@ -29,12 +32,12 @@ export async function getAnonymousDelegationThroughLambda(
 ) {
   const uniqueString = await getAnonSalt(domain)
   const seed = hexStringToUint8Array(uniqueString)
-  const anonymousIdentity = Ed25519KeyIdentity.generate(seed);
+  const anonymousIdentity = Ed25519KeyIdentity.generate(seed)
   const chain = await DelegationChain.create(
     anonymousIdentity,
     new DerPublicKey(sessionKey),
     new Date(Date.now() + maxTimeToLive),
-  );
+  )
   await deleteFromStorage(domain)
   return chain
 }
@@ -60,16 +63,20 @@ export async function oldFlowGlobalKeysFromLambda(
   await replaceActorIdentity(icSigner, identity)
   const encryptedKP = await icSigner.get_kp()
   const uniqueString = await getSalt()
-  const privateKey = decrypt(encryptedKP.key_pair[0]!.private_key_encrypted, "utf8", uniqueString)
-  const publicKey = encryptedKP.key_pair[0]!.public_key;
+  const privateKey = decrypt(
+    encryptedKP.key_pair[0]!.private_key_encrypted,
+    "utf8",
+    uniqueString,
+  )
+  const publicKey = encryptedKP.key_pair[0]!.public_key
   const parsedKP = Ed25519KeyIdentity.fromParsedJson([publicKey, privateKey])
-  const key = new DerPublicKey(sessionPublicKey);
+  const key = new DerPublicKey(sessionPublicKey)
   return await DelegationChain.create(
     parsedKP,
     key,
     new Date(Date.now() + maxTimeToLive),
     {
-      targets: targets.map((x) => Principal.fromText(x))
+      targets: targets.map((x) => Principal.fromText(x)),
     },
   )
 }
@@ -89,7 +96,7 @@ export async function getLambdaPublicKey(
     const response = (await signer.get_public_key(root)) as string[]
     let publicKey
     if (response.length === 0) {
-     throw Error("No public key found")
+      throw Error("No public key found")
     } else {
       publicKey = response[0]
     }
@@ -112,7 +119,6 @@ export async function getLambdaPublicKey(
   }
 }
 
-
 export function fromHexString(hexString: string): ArrayBuffer {
   const bytes = new Uint8Array(hexString.length / 2)
   for (let i = 0; i < hexString.length; i += 2) {
@@ -122,26 +128,26 @@ export function fromHexString(hexString: string): ArrayBuffer {
 }
 
 function hexStringToUint8Array(hexString: string) {
-  const cleanedString = hexString.replace(/[^0-9a-f]/gi, "").toLowerCase();
-  const bytePairs = cleanedString.match(/.{1,2}/g);
-  const byteValues = bytePairs!.map((bytePair) => parseInt(bytePair, 16));
-  return new Uint8Array(byteValues);
+  const cleanedString = hexString.replace(/[^0-9a-f]/gi, "").toLowerCase()
+  const bytePairs = cleanedString.match(/.{1,2}/g)
+  const byteValues = bytePairs!.map((bytePair) => parseInt(bytePair, 16))
+  return new Uint8Array(byteValues)
 }
 
-function decrypt (encrypted: string, encoding: Encoding, key: string) {
-  const secret = Buffer.from(key, "hex");
-  const cipher = createDecipheriv("aes-256-ecb", secret, "");
-  let decryptedString = cipher.update(encrypted, "hex", encoding);
-  decryptedString += cipher.final(encoding);
-  return decryptedString;
+function decrypt(encrypted: string, encoding: Encoding, key: string) {
+  const secret = Buffer.from(key, "hex")
+  const cipher = createDecipheriv("aes-256-ecb", secret, "")
+  let decryptedString = cipher.update(encrypted, "hex", encoding)
+  decryptedString += cipher.final(encoding)
+  return decryptedString
 }
 
 export class DerPublicKey implements PublicKey {
-  der;
+  der
   constructor(a: any) {
-    this.der = a;
+    this.der = a
   }
   toDer(): DerEncodedPublicKey {
-    return this.der;
+    return this.der
   }
 }

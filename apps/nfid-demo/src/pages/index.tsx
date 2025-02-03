@@ -63,12 +63,17 @@ export const RouteHome: React.FC = () => {
           <SideNav sections={sections} activeSection={activeSection} />
           <div className="p-3 pb-16 space-y-5 md:p-5">
             <Warning>
-              @nfid/embed NPM package is deprecated. Please use
-              @nfid/identitykit instead.
-            </Warning>
-            <Warning>
-              Call canister method is no longer supported. Please switch to
-              @nfid/identitykit.
+              <>
+                @nfid/embed NPM package is deprecated, requestCanisterCall
+                method is no longer supported. Please use{" "}
+                <a
+                  href="https://www.npmjs.com/package/@nfid/identitykit"
+                  className="text-blue-500 visited:text-purple-500 hover:underline"
+                >
+                  @nfid/identitykit
+                </a>{" "}
+                instead
+              </>
             </Warning>
             <hr />
             <div className="flex items-center pb-10 md:justify-end">

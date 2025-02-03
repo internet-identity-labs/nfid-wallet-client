@@ -72,7 +72,7 @@ export const RouteHome: React.FC = () => {
                 >
                   @nfid/identitykit
                 </a>{" "}
-                instead
+                instead.
               </>
             </Warning>
             <hr />

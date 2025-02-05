@@ -6,6 +6,7 @@ export enum Icon {
   document = "document",
   usb = "usb",
   google = "google",
+  password = "passord",
   unknown = "unknown",
   ii = "ii",
   email = "email",
@@ -16,6 +17,7 @@ export enum DeviceType {
   Google = "Google",
   Passkey = "Passkey",
   Recovery = "Recovery",
+  Password = "Password",
   Unknown = "Unknown",
 }
 

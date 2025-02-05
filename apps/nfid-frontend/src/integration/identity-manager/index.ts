@@ -445,6 +445,9 @@ function deviceTypeToDevice(response: DeviceVariant): DeviceType {
   if (hasOwnProperty(response, "Recovery")) {
     return DeviceType.Recovery
   }
+  if (hasOwnProperty(response, "Password")) {
+    return DeviceType.Password
+  }
   throw Error("Unexpected enum value")
 }
 

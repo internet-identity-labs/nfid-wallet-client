@@ -1,8 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { createHash } from "crypto"
-import { unpackResponse } from "src/integration/_common"
-import { mapProfile } from "src/integration/identity-manager"
 
 import {
   authState,
@@ -13,11 +11,11 @@ import {
   replaceActorIdentity,
   requestFEDelegation,
 } from "@nfid/integration"
+import { AccessPointRequest } from "../_ic_api/identity_manager.d"
+import { HTTPAccountRequest } from "../_ic_api/identity_manager.d"
+import {mapProfile} from "src/integration/identity-manager";
+import {unpackResponse} from "src/integration/_common";
 
-import {
-  AccessPointRequest,
-  HTTPAccountRequest,
-} from "../_ic_api/identity_manager.d"
 
 export interface PasswordManager {
   signinWithPassword(password: string): Promise<SignIdentity>

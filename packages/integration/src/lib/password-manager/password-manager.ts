@@ -76,8 +76,6 @@ export class PasswordManagerImpl implements PasswordManager {
       })
 
     const hash = this.hashPassword(profile.anchor + password)
-    console.log("profile.anchor", profile.anchor)
-    console.log("hash", hash)
     const passwordIdentity = Ed25519KeyIdentity.generate(
       this.hexStringToUint8Array(hash),
     )

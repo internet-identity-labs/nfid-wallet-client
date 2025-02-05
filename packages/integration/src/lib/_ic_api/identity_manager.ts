@@ -28,6 +28,7 @@ export const idlFactory = ({ IDL }: any) => {
     Passkey: IDL.Null,
     Recovery: IDL.Null,
     Unknown: IDL.Null,
+    Password: IDL.Null,
   })
   const AccessPointRequest = IDL.Record({
     icon: IDL.Text,

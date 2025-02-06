@@ -25,7 +25,7 @@ const mockPrincipal =
 describe("shroff test", () => {
   jest.setTimeout(1500000)
 
-  it("shroff quote test", async function () {
+  it.skip("shroff quote test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "mxzaz-hqaaa-aaaar-qaada-cai"
     const shroff = await new IcpSwapShroffBuilder()

@@ -86,7 +86,7 @@ export const ChooseAccount = ({
       )}
       <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
       <p className="text-sm font-bold">Hide my wallet address</p>
-      <p className="mt-2 mb-5 text-xs text-gray-500">
+      <p className="mt-2 mb-2.5 text-xs text-gray-500">
         This site will be unable to request payments, view balances, <br />
         or access any of your other on-chain activity.
       </p>
@@ -95,7 +95,7 @@ export const ChooseAccount = ({
           <Skeleton className="w-[160px] h-[10px] my-[5px]" />
         </div>
       ) : (
-        <div className="gap-y-[10px]">
+        <div className="grid gap-y-2">
           {anonymous?.map((acc) => (
             <div
               className="flex items-center h-5 text-xs text-gray-400"

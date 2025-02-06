@@ -95,21 +95,23 @@ export const ChooseAccount = ({
           <Skeleton className="w-[160px] h-[10px] my-[5px]" />
         </div>
       ) : (
-        anonymous?.map((acc) => (
-          <div
-            className="flex items-center h-5 text-xs text-gray-400"
-            key={`legacy_persona_${acc.id}`}
-          >
-            <RadioButton
-              id={`profile_legacy_${acc.id}`}
-              value={`anonymous-${acc.id}`}
-              onChange={() => setSelectedProfile(acc)}
-              checked={selectedProfile.principal === acc.principal}
-              name={`profile-${acc.id}`}
-              text={acc.displayName}
-            />
-          </div>
-        ))
+        <div className="gap-y-[10px]">
+          {anonymous?.map((acc) => (
+            <div
+              className="flex items-center h-5 text-xs text-gray-400"
+              key={`legacy_persona_${acc.id}`}
+            >
+              <RadioButton
+                id={`profile_legacy_${acc.id}`}
+                value={`anonymous-${acc.id}`}
+                onChange={() => setSelectedProfile(acc)}
+                checked={selectedProfile.principal === acc.principal}
+                name={`profile-${acc.id}`}
+                text={acc.displayName}
+              />
+            </div>
+          ))}
+        </div>
       )}
     </div>
   )

@@ -65,7 +65,6 @@ describe("ft test suite", () => {
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      console.log(result)
       expect(result.length).toEqual(4)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",

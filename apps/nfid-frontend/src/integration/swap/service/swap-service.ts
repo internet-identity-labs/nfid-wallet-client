@@ -3,14 +3,17 @@ import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shro
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapName } from "src/integration/swap/types/enums"
 
-import { LiquidityError } from "../errors/types"
+import { LiquidityError, ServiceUnavailableError } from "../errors/types"
 import { Quote } from "../quote"
+
+const PROVIDERS_QUANTITY = 2
 
 export class SwapService {
   async getSwapProviders(
     source: string,
     target: string,
   ): Promise<Map<SwapName, Shroff | undefined>> {
+    const serviceErrors = []
     const map = new Map<SwapName, Shroff | undefined>()
 
     try {
@@ -22,6 +25,10 @@ export class SwapService {
       map.set(icpSwapShroff.getSwapName(), icpSwapShroff)
     } catch (e) {
       map.set(SwapName.ICPSwap, undefined)
+
+      if (e instanceof ServiceUnavailableError) {
+        serviceErrors.push(SwapName.ICPSwap)
+      }
     }
 
     try {
@@ -33,7 +40,14 @@ export class SwapService {
       map.set(kongShroff.getSwapName(), kongShroff)
     } catch (e) {
       map.set(SwapName.Kongswap, undefined)
+
+      if (e instanceof ServiceUnavailableError) {
+        serviceErrors.push(SwapName.Kongswap)
+      }
     }
+
+    if (serviceErrors.length === PROVIDERS_QUANTITY)
+      throw new ServiceUnavailableError()
 
     if (Array.from(map.values()).every((value) => value === undefined))
       throw new LiquidityError()

@@ -138,7 +138,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         </div>
       </div>
       <div className="flex items-center justify-between text-right">
-        <p className={clsx("text-xs mt-2 text-gray-500 leading-5")}>
+        <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
           {usdRate || "0.00 USD"}
         </p>
         <div className="mt-2 text-xs leading-5 text-right text-gray-500">

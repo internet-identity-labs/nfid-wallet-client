@@ -15,8 +15,8 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
-  CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
+  NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
@@ -52,7 +52,7 @@ export const SwapFT = ({
 }: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
-  const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
+  const [toTokenAddress, setToTokenAddress] = useState(NFIDW_CANISTER_ID)
   const [swapProviders, setSwapProviders] = useState<
     Map<SwapName, Shroff | undefined>
   >(new Map())
@@ -268,7 +268,7 @@ export const SwapFT = ({
     setLiquidityError(undefined)
     setSwapError(undefined)
     setFromTokenAddress(ICP_CANISTER_ID)
-    setToTokenAddress(CKBTC_CANISTER_ID)
+    setToTokenAddress(NFIDW_CANISTER_ID)
     setSwapStep(0)
   }
 

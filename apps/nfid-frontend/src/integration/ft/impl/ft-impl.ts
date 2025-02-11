@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 
 import { exchangeRateService } from "@nfid/integration"
+import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
@@ -188,7 +189,10 @@ export class FTImpl implements FT {
   }
 
   isHideable(): boolean {
-    return this.tokenCategory !== Category.Native
+    return !(
+      this.tokenCategory === Category.Native ||
+      this.tokenAddress === NFIDW_CANISTER_ID
+    )
   }
 
   hideToken(): Promise<void> {

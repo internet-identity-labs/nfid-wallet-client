@@ -3,37 +3,41 @@ import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shro
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapName } from "src/integration/swap/types/enums"
 
-import { LiquidityError } from "../errors/types"
+import { LiquidityError, ServiceUnavailableError } from "../errors/types"
 import { Quote } from "../quote"
+
+const PROVIDERS = [
+  { builder: new IcpSwapShroffBuilder(), name: SwapName.ICPSwap },
+  { builder: new KongShroffBuilder(), name: SwapName.Kongswap },
+]
 
 export class SwapService {
   async getSwapProviders(
     source: string,
     target: string,
   ): Promise<Map<SwapName, Shroff | undefined>> {
+    let success = false
+
     const map = new Map<SwapName, Shroff | undefined>()
 
-    try {
-      const icpSwapShroff = await new IcpSwapShroffBuilder()
-        .withTarget(target)
-        .withSource(source)
-        .build()
+    for (let i = 0; i < PROVIDERS.length; i++) {
+      const provider = PROVIDERS[i]
+      try {
+        const buildedProvider = await provider.builder
+          .withTarget(target)
+          .withSource(source)
+          .build()
 
-      map.set(icpSwapShroff.getSwapName(), icpSwapShroff)
-    } catch (e) {
-      map.set(SwapName.ICPSwap, undefined)
+        map.set(provider.name, buildedProvider)
+        success = true
+      } catch (e) {
+        map.set(provider.name, undefined)
+
+        if (e instanceof LiquidityError) success = true
+      }
     }
 
-    try {
-      const kongShroff = await new KongShroffBuilder()
-        .withTarget(target)
-        .withSource(source)
-        .build()
-
-      map.set(kongShroff.getSwapName(), kongShroff)
-    } catch (e) {
-      map.set(SwapName.Kongswap, undefined)
-    }
+    if (!success) throw new ServiceUnavailableError()
 
     if (Array.from(map.values()).every((value) => value === undefined))
       throw new LiquidityError()

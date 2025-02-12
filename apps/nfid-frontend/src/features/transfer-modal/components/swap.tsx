@@ -69,6 +69,9 @@ export const SwapFT = ({
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const [slippage, setSlippage] = useState(2)
+  const [providerError, setProviderError] = useState<
+    ServiceUnavailableError | undefined
+  >()
   const previousFromTokenAddress = useRef(fromTokenAddress)
 
   useEffect(() => {
@@ -146,26 +149,30 @@ export const SwapFT = ({
     previousFromTokenAddress.current = fromTokenAddress
   }, [fromTokenAddress, isEqual])
 
-  useEffect(() => {
-    const getProviders = async () => {
-      try {
-        const providers = await swapService.getSwapProviders(
-          fromTokenAddress,
-          toTokenAddress,
-        )
+  const getProviders = useCallback(async () => {
+    try {
+      const providers = await swapService.getSwapProviders(
+        fromTokenAddress,
+        toTokenAddress,
+      )
 
-        setSwapProviders(providers)
-        setLiquidityError(undefined)
-      } catch (error) {
-        if (error instanceof LiquidityError) {
-          setSwapProviders(new Map())
-          setLiquidityError(error)
-        }
+      setSwapProviders(providers)
+      setLiquidityError(undefined)
+      setProviderError(undefined)
+    } catch (error) {
+      if (error instanceof LiquidityError) {
+        setSwapProviders(new Map())
+        setLiquidityError(error)
+      }
+      if (error instanceof ServiceUnavailableError) {
+        setProviderError(error)
       }
     }
-
-    getProviders()
   }, [fromTokenAddress, toTokenAddress])
+
+  useEffect(() => {
+    getProviders()
+  }, [fromTokenAddress, toTokenAddress, getProviders])
 
   useEffect(() => {
     const getShroff = async () => {
@@ -175,9 +182,7 @@ export const SwapFT = ({
         setShroff(shroff)
       } catch (error) {
         setShroff(undefined)
-        if (error instanceof ServiceUnavailableError) {
-          setShroffError(error)
-        } else if (error instanceof LiquidityError) {
+        if (error instanceof LiquidityError) {
           setLiquidityError(error)
         } else {
           console.error("Quote error: ", error)
@@ -263,15 +268,6 @@ export const SwapFT = ({
     }, true)
   }, [toToken, fromToken, refetchQuote, amount, shroff])
 
-  const refresh = () => {
-    setShroffError(undefined)
-    setLiquidityError(undefined)
-    setSwapError(undefined)
-    setFromTokenAddress(ICP_CANISTER_ID)
-    setToTokenAddress(NFIDW_CANISTER_ID)
-    setSwapStep(0)
-  }
-
   const submit = useCallback(async () => {
     const sourceAmount = quote?.getSourceAmountPrettifiedWithSymbol()
     const targetAmount = quote?.getTargetAmountPrettifiedWithSymbol()
@@ -330,10 +326,10 @@ export const SwapFT = ({
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || isQuoteValidating}
         quote={quote}
-        showServiceError={shroffError?.name === "ServiceUnavailableError"}
+        providerError={providerError}
         showLiquidityError={liquidityError}
         slippageQuoteError={slippageQuoteError}
-        clearQuoteError={refresh}
+        refreshProviders={getProviders}
         step={swapStep}
         error={swapError}
         isSuccessOpen={isSuccessOpen}

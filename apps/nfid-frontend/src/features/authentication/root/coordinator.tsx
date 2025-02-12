@@ -21,7 +21,6 @@ import { useLoadProfileFromStorage } from "frontend/hooks"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import { TokenLaunch } from "../3rd-party/choose-account/token-launch"
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
 import { AuthenticationMachineActor } from "./root-machine"
@@ -202,14 +201,6 @@ export default function AuthenticationCoordinator({
             send({ type: "DONE" })
           }}
           email={state.context.email}
-        />
-      )
-    case state.matches("SNSBanner"):
-      return (
-        <TokenLaunch
-          onSubmit={() =>
-            send({ type: "AUTHENTICATED", data: state.context.authSession })
-          }
         />
       )
     case state.matches("End"):

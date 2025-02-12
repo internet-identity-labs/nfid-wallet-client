@@ -35,8 +35,6 @@ import { Footer } from "../../ui/footer"
 import AnimationWrapper from "../../ui/visible-animation"
 import { Wrapper } from "../wrapper"
 import { LinkIcon } from "./link-icon"
-import { SnsBanner } from "./sns-banner"
-import { SnsModal } from "./sns-modal"
 
 const asset =
   "my-5 sm:my-0 relative w-full md:w-[40%] min-w-[330px] min-h-[330px] shrink-0 mx-auto sm:mx-0"
@@ -67,7 +65,6 @@ const HomeContent = ({
 
   return (
     <>
-      <SnsModal />
       <div className="relative">
         <Container className="relative overflow-visible md:h-[700px]">
           <div className="gradient-radial"></div>
@@ -99,9 +96,6 @@ const HomeContent = ({
           <Lottie animationData={mainAnmation} autoplay loop />
         </div>
       </div>
-      <Container className="mt-[78px] md:mt-0 relative">
-        <SnsBanner />
-      </Container>
       <Container>
         <div className="flex flex-wrap items-center justify-center gap-10 mt-10 md:justify-between md:mt-20 md:gap-3 lg:gap-12 xl:gap-20">
           <img className={clsx(sponsor)} src={Tomahawk} alt="ICP investors" />

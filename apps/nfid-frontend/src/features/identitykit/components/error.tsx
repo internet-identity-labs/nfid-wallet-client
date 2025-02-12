@@ -58,7 +58,7 @@ export const RPCComponentError = ({
       onSecondaryButtonClick={onCancel}
     >
       {request?.data.method !== RPCComponentsUI.icrc49_call_canister ? (
-        <div className="flex flex-1 bg-orange-50 p-[15px] text-orange-900 gap-2.5 rounded-xl">
+        <div className="flex bg-orange-50 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
           <div className="w-[22px] shrink-0">
             <IconCmpWarning className="!text-orange-900" />
           </div>
@@ -77,7 +77,7 @@ export const RPCComponentError = ({
             className="mb-5"
           />
           {isResponseTab ? (
-            <div className="flex flex-1 border border-gray-200 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-auto">
+            <div className="flex border border-gray-200 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
               <div className="w-[22px] shrink-0">
                 <IconCmpWarning className="!text-orange-900" />
               </div>
@@ -90,8 +90,8 @@ export const RPCComponentError = ({
             <>
               <div
                 className={clsx(
-                  "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
-                  "text-gray-500 break-all text-sm overflow-auto max-h-[50vh]",
+                  "rounded-xl border border-gray-200 px-3.5 py-2.5 h-[240px] overflow-y-auto space-y-4",
+                  "text-gray-500 break-all text-sm",
                 )}
               >
                 {consentMessage ? (

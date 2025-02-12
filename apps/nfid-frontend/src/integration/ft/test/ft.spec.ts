@@ -6,6 +6,7 @@ import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
 import { exchangeRateService } from "@nfid/integration"
+import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
@@ -51,10 +52,20 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "Community",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      expect(result.length).toEqual(3)
+      expect(result.length).toEqual(4)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -76,8 +87,9 @@ describe("ft test suite", () => {
       expect(filteredResult.length).toEqual(1)
 
       expect(result[0].getTokenName()).toEqual("Internet Computer")
-      expect(result[1].getTokenName()).toEqual("A first letter")
-      expect(result[2].getTokenName()).toEqual("Chat")
+      expect(result[1].getTokenName()).toEqual("NFID Wallet")
+      expect(result[2].getTokenName()).toEqual("A first letter")
+      expect(result[3].getTokenName()).toEqual("Chat")
     })
 
     it("should calculate no usd balance change", async () => {
@@ -244,14 +256,25 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "Community",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(3)
+      expect(result.length).toEqual(4)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
-      expect(result[1].getTokenCategory()).toEqual(Category.Sns)
-      expect(result[2].getTokenCategory()).toEqual(Category.Spam)
+      expect(result[1].getTokenCategory()).toEqual(Category.Community)
+      expect(result[2].getTokenCategory()).toEqual(Category.Sns)
+      expect(result[3].getTokenCategory()).toEqual(Category.Spam)
     })
 
     it("should calculate USD balance", async function () {

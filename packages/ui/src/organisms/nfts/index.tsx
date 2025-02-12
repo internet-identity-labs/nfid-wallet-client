@@ -104,7 +104,7 @@ export const NFTs: FC<INFTs> = ({
             tableHeader={
               <tr className="text-sm font-bold text-gray-400">
                 <th className="w-[86px]">Asset</th>
-                <th>Name</th>
+                <th>Number</th>
                 <th>Collection</th>
                 <th>ID</th>
                 <th className="w-[120px]">Floor price</th>
@@ -153,7 +153,7 @@ export const NFTs: FC<INFTs> = ({
                     className="font-semibold"
                     id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                   >
-                    {nft.getTokenName()}
+                    #{nft.getTokenNumber()}
                   </td>
                   <td id={`nft_collection_${nft.getCollectionId()}`}>
                     {nft.getCollectionName()}
@@ -266,7 +266,7 @@ export const NFTs: FC<INFTs> = ({
                       className="mb-[2px] text-black font-bold leading-[24px]"
                       id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                     >
-                      {nft.getTokenName()}
+                      #{nft.getTokenNumber()}
                     </p>
                     <p
                       className="text-gray-400 leading-[20px]"

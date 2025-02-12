@@ -56,15 +56,15 @@ export const CallCanisterDetails = ({
       <div
         className={clsx(
           showDetails ? "block" : "hidden",
-          "absolute bg-white z-[999] w-full lg:h-screen",
+          "absolute bg-white z-[999] w-full h-full lg:h-screen lg-pt-[140px] lg-pb-[40px]",
           "left-0 top-0",
-          "flex items-center justify-center lg:pr-[10%]",
+          "flex items-center justify-center",
         )}
       >
         <div
           className={clsx(
-            "p-5 flex flex-col",
-            "w-full lg:w-3/5 lg:min-w-[387px] min-h-[448px] flex flex-col",
+            "p-5 lg:p-0 flex flex-col",
+            "w-full lg:w-3/5 lg:w-[387px] flex flex-col h-full lg:h-auto",
           )}
         >
           <p className="text-[20px] lg:text-[28px] font-bold text-center">
@@ -76,7 +76,7 @@ export const CallCanisterDetails = ({
           </p>
           <div
             className={clsx(
-              "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
+              "rounded-xl border border-gray-200 px-3.5 py-2.5 overflow-y-auto space-y-4",
               "text-gray-500 break-all text-sm mt-5",
             )}
           >
@@ -89,15 +89,7 @@ export const CallCanisterDetails = ({
               <div>{sender}</div>
             </div>
             <div className="font-bold">Arguments</div>
-            <div
-              className={clsx(
-                "overflow-auto max-h-44",
-                "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
-                "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
-              )}
-            >
-              {renderArgs(JSON.parse(args)[0])}
-            </div>
+            <div>{renderArgs(JSON.parse(args)[0])}</div>
           </div>
           <IconCmpArrow
             className={clsx(

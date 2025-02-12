@@ -9,7 +9,6 @@ import {
 } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
-import { SNS_STEP_VISITED } from "../constants"
 import { checkIf2FAEnabled, shouldShowPasskeys } from "../services"
 
 export interface AuthenticationContext {
@@ -131,7 +130,7 @@ const AuthenticationMachine =
           on: {
             BACK: "AuthSelection",
             AUTHENTICATED: {
-              target: "checkSNSBanner",
+              target: "End",
               actions: "assignAuthSession",
             },
           },
@@ -153,7 +152,7 @@ const AuthenticationMachine =
         TwoFA: {
           on: {
             AUTHENTICATED: {
-              target: "checkSNSBanner",
+              target: "End",
             },
           },
         },
@@ -167,7 +166,7 @@ const AuthenticationMachine =
                 cond: "showPasskeys",
                 target: "AddPasskeys",
               },
-              { target: "checkSNSBanner" },
+              { target: "End" },
             ],
           },
         },
@@ -178,29 +177,13 @@ const AuthenticationMachine =
               target: "AddPasskeysSuccess",
             },
             SKIP: {
-              target: "checkSNSBanner",
+              target: "End",
             },
           },
         },
         AddPasskeysSuccess: {
           on: {
             DONE: {
-              target: "checkSNSBanner",
-            },
-          },
-        },
-        checkSNSBanner: {
-          always: [
-            {
-              cond: "showSNSBanner",
-              target: "SNSBanner",
-            },
-            { target: "End" },
-          ],
-        },
-        SNSBanner: {
-          on: {
-            AUTHENTICATED: {
               target: "End",
             },
           },
@@ -220,10 +203,6 @@ const AuthenticationMachine =
           const showPasskeys = event.data?.showPasskeys
           if (showPasskeys === undefined) return true
           return showPasskeys
-        },
-        showSNSBanner: () => {
-          const showBanner = localStorage.getItem(SNS_STEP_VISITED)
-          return !Boolean(showBanner)
         },
       },
       actions: {

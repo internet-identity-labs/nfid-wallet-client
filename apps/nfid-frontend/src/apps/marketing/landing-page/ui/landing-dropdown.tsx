@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { useState } from "react"
-import { Link } from "react-router-dom"
 
 import { Dropdown, DropdownOption } from "@nfid-frontend/ui"
 
@@ -35,15 +34,6 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
         setIsOpen={(v) => setIsOpen(v)}
         minWidth={160}
       >
-        <DropdownOption
-          className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
-          textClassName="!text-white"
-          element={({ className }) => (
-            <Link className={className} to="/sns">
-              <span className="px-[10px]">SNS</span>
-            </Link>
-          )}
-        />
         <DropdownOption
           className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
           textClassName="!text-white"

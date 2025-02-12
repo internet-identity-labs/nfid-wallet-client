@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom"
-
 import { NFIDLogo } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -29,12 +27,6 @@ export function Header({
         <Container className="flex items-center justify-between py-2.5">
           <NFIDLogo />
           <div className="flex items-center text-sm font-semibold">
-            <Link
-              className="mr-[50px] hidden md:inline-block text-white hover:text-teal-400 transition-all"
-              to="/sns"
-            >
-              SNS
-            </Link>
             <a
               href="https://learn.nfid.one/"
               target="_blank"

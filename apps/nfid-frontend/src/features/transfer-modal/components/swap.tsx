@@ -72,7 +72,6 @@ export const SwapFT = ({
   const [providerError, setProviderError] = useState<
     ServiceUnavailableError | undefined
   >()
-  const [refreshKey, setRefreshKey] = useState(0)
   const previousFromTokenAddress = useRef(fromTokenAddress)
 
   useEffect(() => {
@@ -150,29 +149,30 @@ export const SwapFT = ({
     previousFromTokenAddress.current = fromTokenAddress
   }, [fromTokenAddress, isEqual])
 
-  useEffect(() => {
-    const getProviders = async () => {
-      try {
-        const providers = await swapService.getSwapProviders(
-          fromTokenAddress,
-          toTokenAddress,
-        )
+  const getProviders = useCallback(async () => {
+    try {
+      const providers = await swapService.getSwapProviders(
+        fromTokenAddress,
+        toTokenAddress,
+      )
 
-        setSwapProviders(providers)
-        setLiquidityError(undefined)
-        setProviderError(undefined)
-      } catch (error) {
-        if (error instanceof LiquidityError) {
-          setSwapProviders(new Map())
-          setLiquidityError(error)
-        }
-        if (error instanceof ServiceUnavailableError) {
-          setProviderError(error)
-        }
+      setSwapProviders(providers)
+      setLiquidityError(undefined)
+      setProviderError(undefined)
+    } catch (error) {
+      if (error instanceof LiquidityError) {
+        setSwapProviders(new Map())
+        setLiquidityError(error)
+      }
+      if (error instanceof ServiceUnavailableError) {
+        setProviderError(error)
       }
     }
+  }, [fromTokenAddress, toTokenAddress])
+
+  useEffect(() => {
     getProviders()
-  }, [fromTokenAddress, toTokenAddress, refreshKey])
+  }, [fromTokenAddress, toTokenAddress, getProviders])
 
   useEffect(() => {
     const getShroff = async () => {
@@ -268,10 +268,6 @@ export const SwapFT = ({
     }, true)
   }, [toToken, fromToken, refetchQuote, amount, shroff])
 
-  const refresh = () => {
-    setRefreshKey((prev) => prev + 1)
-  }
-
   const submit = useCallback(async () => {
     const sourceAmount = quote?.getSourceAmountPrettifiedWithSymbol()
     const targetAmount = quote?.getTargetAmountPrettifiedWithSymbol()
@@ -333,7 +329,7 @@ export const SwapFT = ({
         providerError={providerError}
         showLiquidityError={liquidityError}
         slippageQuoteError={slippageQuoteError}
-        refreshProviders={refresh}
+        refreshProviders={getProviders}
         step={swapStep}
         error={swapError}
         isSuccessOpen={isSuccessOpen}

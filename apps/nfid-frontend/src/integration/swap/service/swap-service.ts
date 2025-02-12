@@ -6,48 +6,34 @@ import { SwapName } from "src/integration/swap/types/enums"
 import { LiquidityError, ServiceUnavailableError } from "../errors/types"
 import { Quote } from "../quote"
 
-const PROVIDERS_QUANTITY = 2
-
 export class SwapService {
   async getSwapProviders(
     source: string,
     target: string,
   ): Promise<Map<SwapName, Shroff | undefined>> {
-    const serviceErrors = []
+    let success = false
+    const providers = [
+      { builder: new IcpSwapShroffBuilder(), name: SwapName.ICPSwap },
+      { builder: new KongShroffBuilder(), name: SwapName.Kongswap },
+    ]
     const map = new Map<SwapName, Shroff | undefined>()
 
-    try {
-      const icpSwapShroff = await new IcpSwapShroffBuilder()
-        .withTarget(target)
-        .withSource(source)
-        .build()
+    for (let i = 0; i < providers.length; i++) {
+      const provider = providers[i]
+      try {
+        const buildedProvider = await provider.builder
+          .withTarget(target)
+          .withSource(source)
+          .build()
 
-      map.set(icpSwapShroff.getSwapName(), icpSwapShroff)
-    } catch (e) {
-      map.set(SwapName.ICPSwap, undefined)
-
-      if (e instanceof ServiceUnavailableError) {
-        serviceErrors.push(SwapName.ICPSwap)
+        map.set(provider.name, buildedProvider)
+        success = true
+      } catch (e) {
+        map.set(provider.name, undefined)
       }
     }
 
-    try {
-      const kongShroff = await new KongShroffBuilder()
-        .withTarget(target)
-        .withSource(source)
-        .build()
-
-      map.set(kongShroff.getSwapName(), kongShroff)
-    } catch (e) {
-      map.set(SwapName.Kongswap, undefined)
-
-      if (e instanceof ServiceUnavailableError) {
-        serviceErrors.push(SwapName.Kongswap)
-      }
-    }
-
-    if (serviceErrors.length === PROVIDERS_QUANTITY)
-      throw new ServiceUnavailableError()
+    if (!success) throw new ServiceUnavailableError()
 
     if (Array.from(map.values()).every((value) => value === undefined))
       throw new LiquidityError()

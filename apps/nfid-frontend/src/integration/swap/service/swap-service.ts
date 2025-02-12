@@ -32,6 +32,8 @@ export class SwapService {
         success = true
       } catch (e) {
         map.set(provider.name, undefined)
+
+        if (e instanceof LiquidityError) success = true
       }
     }
 

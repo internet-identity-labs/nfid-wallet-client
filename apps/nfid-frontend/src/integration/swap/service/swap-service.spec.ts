@@ -1,6 +1,6 @@
 import { SwapName } from "src/integration/swap/types/enums"
 
-import { LiquidityError, ServiceUnavailableError } from "../errors/types"
+import { LiquidityError } from "../errors/types"
 import { SwapService } from "./swap-service"
 
 describe("SwapService", () => {
@@ -69,6 +69,6 @@ describe("SwapService", () => {
 
     await expect(
       swapService.getSwapProviders(sourceLedger, targetLedger),
-    ).rejects.toThrow(ServiceUnavailableError || LiquidityError)
+    ).rejects.toThrow(LiquidityError)
   })
 })

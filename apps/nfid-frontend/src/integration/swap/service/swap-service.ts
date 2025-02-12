@@ -6,20 +6,22 @@ import { SwapName } from "src/integration/swap/types/enums"
 import { LiquidityError, ServiceUnavailableError } from "../errors/types"
 import { Quote } from "../quote"
 
+const PROVIDERS = [
+  { builder: new IcpSwapShroffBuilder(), name: SwapName.ICPSwap },
+  { builder: new KongShroffBuilder(), name: SwapName.Kongswap },
+]
+
 export class SwapService {
   async getSwapProviders(
     source: string,
     target: string,
   ): Promise<Map<SwapName, Shroff | undefined>> {
     let success = false
-    const providers = [
-      { builder: new IcpSwapShroffBuilder(), name: SwapName.ICPSwap },
-      { builder: new KongShroffBuilder(), name: SwapName.Kongswap },
-    ]
+
     const map = new Map<SwapName, Shroff | undefined>()
 
-    for (let i = 0; i < providers.length; i++) {
-      const provider = providers[i]
+    for (let i = 0; i < PROVIDERS.length; i++) {
+      const provider = PROVIDERS[i]
       try {
         const buildedProvider = await provider.builder
           .withTarget(target)

@@ -116,6 +116,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         isOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
+        providerName={shroff?.getSwapName()}
       />
       {providerError && <ErrorModal refresh={refreshProviders} />}
       <SwapSettings

@@ -1,9 +1,10 @@
+import { SwapName } from "../../types/enums"
 import { ExchangeError } from "./abstract-transaction-error"
-import { WITHDRAW_ERROR } from "./constants"
+import { getWithdrawError } from "./constants"
 
 export class WithdrawError extends ExchangeError {
-  getDisplayMessage(): string {
-    return WITHDRAW_ERROR
+  getDisplayMessage(provider: SwapName): string {
+    return getWithdrawError(provider)
   }
 
   constructor(e: Error | string) {

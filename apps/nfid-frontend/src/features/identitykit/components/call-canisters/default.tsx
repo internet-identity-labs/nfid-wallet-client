@@ -61,7 +61,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
     >
       <div
         className={clsx(
-          "rounded-xl border border-gray-200 px-3.5 py-2.5 flex-1 space-y-4",
+          "rounded-xl border border-gray-200 px-3.5 py-2.5 h-[240px] overflow-y-auto space-y-4",
           "text-gray-500 break-all text-sm mt-2.5",
           "overflow-auto",
         )}

@@ -1,11 +1,9 @@
 import React from "react"
 
-import { SNS_STEP_VISITED } from "frontend/features/authentication/constants"
 import { ChooseAccount } from "frontend/ui/organisms/choose-account"
 
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"
-import { TokenLaunch } from "../token-launch"
 
 export interface IRPCComponentICRC27 {
   origin: string
@@ -24,13 +22,10 @@ const RPCComponentICRC27 = ({
 }: IRPCComponentICRC27) => {
   const [selectedProfile, setSelectedProfile] =
     React.useState<Account>(publicProfile)
-  const [showTokenLaunch, setShowTokenLaunch] = React.useState(false)
 
   const applicationName = new URL(origin).host
 
-  return showTokenLaunch ? (
-    <TokenLaunch onSubmit={() => onApprove([selectedProfile])} />
-  ) : (
+  return (
     <RPCPromptTemplate
       title="Approve connection"
       subTitle={
@@ -47,11 +42,7 @@ const RPCComponentICRC27 = ({
         </>
       }
       onPrimaryButtonClick={() => {
-        if (!!localStorage.getItem(SNS_STEP_VISITED)) {
-          onApprove([selectedProfile])
-        } else {
-          setShowTokenLaunch(true)
-        }
+        onApprove([selectedProfile])
       }}
       primaryButtonText="Connect"
     >

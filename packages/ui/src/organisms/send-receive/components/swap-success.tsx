@@ -6,7 +6,7 @@ import {
   SwapError,
   WithdrawError,
 } from "src/integration/swap/errors/types"
-import { SwapStage } from "src/integration/swap/types/enums"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
   IconCmpArrow,
@@ -49,6 +49,7 @@ export interface SwapSuccessProps {
   step: SwapStage
   isOpen: boolean
   error?: SwapError | WithdrawError | DepositError | SlippageSwapError
+  providerName: SwapName | undefined
 }
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
@@ -62,6 +63,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   step = 0,
   isOpen,
   error,
+  providerName,
 }) => {
   const [currentAnimation, setCurrentAnimation] = useState<unknown>(
     allAnimations.deposit,
@@ -191,9 +193,9 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
               {subTitleTo}
             </p>
           </div>
-          {error && (
+          {error && providerName && (
             <div className="text-sm text-red-600 max-w-[320px] mx-auto mb-[20px]">
-              {error.getDisplayMessage()}
+              {error.getDisplayMessage(providerName)}
             </div>
           )}
         </div>

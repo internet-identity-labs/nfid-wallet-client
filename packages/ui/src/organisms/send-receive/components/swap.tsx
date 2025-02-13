@@ -3,6 +3,7 @@ import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 import {
   DepositError,
+  ServiceUnavailableError,
   SwapError,
   WithdrawError,
 } from "src/integration/swap/errors/types"
@@ -37,12 +38,12 @@ export interface SwapFTUiProps {
   setToChosenToken: (value: string) => void
   loadingMessage: string | undefined
   isTokenLoading: boolean
-  showServiceError: boolean
+  providerError: ServiceUnavailableError | undefined
   showLiquidityError: Error | undefined
   slippageQuoteError: string | undefined
   isQuoteLoading: boolean
   quote: Quote | undefined
-  clearQuoteError: () => void
+  refreshProviders: () => void
   step: SwapStage
   error?: SwapError | WithdrawError | DepositError
   isSuccessOpen: boolean
@@ -65,10 +66,10 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   setToChosenToken,
   loadingMessage,
   isTokenLoading,
-  showServiceError,
+  providerError,
   showLiquidityError,
   slippageQuoteError,
-  clearQuoteError,
+  refreshProviders,
   isQuoteLoading,
   quote,
   step,
@@ -115,8 +116,9 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
         isOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
+        providerName={shroff?.getSwapName()}
       />
-      {showServiceError && <ErrorModal refresh={clearQuoteError} />}
+      {providerError && <ErrorModal refresh={refreshProviders} />}
       <SwapSettings
         isOpen={swapModal === SwapModal.SETTINGS}
         setSwapModal={setSwapModal}

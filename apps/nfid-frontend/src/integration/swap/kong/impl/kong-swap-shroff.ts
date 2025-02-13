@@ -3,8 +3,10 @@ import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import {
+  DepositError,
   LiquidityError,
   ServiceUnavailableError,
+  SwapError,
 } from "src/integration/swap/errors/types"
 import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
 import {
@@ -175,21 +177,25 @@ export class KongSwapShroffImpl extends ShroffAbstract {
       return this.swapTransaction
     } catch (e) {
       console.error("Swap error:", e)
-      this.swapTransaction.setError("Swap error: " + e)
+      this.swapTransaction.setError((e as Error).message)
       await this.restoreTransaction()
       throw e
     }
   }
 
   protected async swapInternal(args: SwapArgs): Promise<void> {
-    let resp = await this.actor.swap(args)
-    console.log("Swap response", JSON.stringify(resp))
+    try {
+      let resp = await this.actor.swap(args)
+      console.log("Swap response", JSON.stringify(resp))
 
-    if (hasOwnProperty(resp, "Err")) {
-      throw new Error("Swap error: " + JSON.stringify(resp.Err))
+      if (hasOwnProperty(resp, "Err")) {
+        throw new SwapError(JSON.stringify(resp.Err))
+      }
+
+      this.swapTransaction!.setSwap(resp.Ok.ts)
+    } catch (e) {
+      throw new SwapError("Swap error: " + e)
     }
-
-    this.swapTransaction!.setSwap(resp.Ok.ts)
   }
 
   protected getQuotePromise(
@@ -217,42 +223,45 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   protected async icrc2approve(): Promise<bigint> {
-    const actorICRC2 = this.getICRCActor()
+    try {
+      const actorICRC2 = this.getICRCActor()
 
-    const spender: Account = {
-      owner: Principal.fromText(ROOT_CANISTER),
-      subaccount: [],
+      const spender: Account = {
+        owner: Principal.fromText(ROOT_CANISTER),
+        subaccount: [],
+      }
+
+      const icrc2_approve_args: ApproveArgs = {
+        from_subaccount: [],
+        spender,
+        fee: [],
+        memo: [],
+        amount: BigInt(
+          this.requestedQuote!.getSourceSwapAmount()
+            .plus(Number(this.source.fee))
+            .toFixed(this.source.decimals)
+            .replace(TRIM_ZEROS, ""),
+        ),
+        created_at_time: [],
+        expected_allowance: [],
+        expires_at: [
+          {
+            timestamp_nanos: BigInt(Date.now() * 1_000_000 + 60_000_000_000),
+          },
+        ],
+      }
+
+      const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
+
+      if (hasOwnProperty(icrc2approve, "Err")) {
+        throw new DepositError(JSON.stringify(icrc2approve.Err))
+      }
+
+      return BigInt(icrc2approve.Ok)
+    } catch (e) {
+      console.error("Deposit error: " + e)
+      throw new DepositError("Deposit error: " + e)
     }
-
-    const icrc2_approve_args: ApproveArgs = {
-      from_subaccount: [],
-      spender,
-      fee: [],
-      memo: [],
-      amount: BigInt(
-        this.requestedQuote!.getSourceSwapAmount()
-          .plus(Number(this.source.fee))
-          .toFixed(this.source.decimals)
-          .replace(TRIM_ZEROS, ""),
-      ),
-      created_at_time: [],
-      expected_allowance: [],
-      expires_at: [
-        {
-          timestamp_nanos: BigInt(Date.now() * 1_000_000 + 60_000_000_000),
-        },
-      ],
-    }
-
-    const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
-
-    if (hasOwnProperty(icrc2approve, "Err")) {
-      throw new Error(
-        "ICRC2 approve error: " + JSON.stringify(icrc2approve.Err),
-      )
-    }
-
-    return BigInt(icrc2approve.Ok)
   }
 
   protected async icrc2supported(): Promise<boolean> {

@@ -66,35 +66,42 @@ export class ExchangeRateService {
       }
     | undefined
   > {
-    const token = (await this.getAllIcpTokens())?.find(
-      (t) => t.address === ledger,
-    )
-
-    if (!token) {
-      const tokenStorageCanister = await this.getTokenStorageCanister(ledger)
-      if (!tokenStorageCanister) {
-        return undefined
-      }
-      const actorStorage = actorBuilder<ServiceToken>(
-        tokenStorageCanister,
-        IDL_TOKEN,
+    try {
+      const token = (await this.getAllIcpTokens())?.find(
+        (t) => t.address === ledger,
       )
 
-      try {
-        const result: PublicTokenOverview = await actorStorage.getToken(ledger)
-        if (result.priceUSD === undefined) return undefined
-        return {
-          value: BigNumber(result.priceUSD),
+      if (!token) {
+        const tokenStorageCanister = await this.getTokenStorageCanister(ledger)
+        if (!tokenStorageCanister) {
+          return undefined
         }
-      } catch (e) {
-        return undefined
-      }
-    }
+        const actorStorage = actorBuilder<ServiceToken>(
+          tokenStorageCanister,
+          IDL_TOKEN,
+        )
 
-    return {
-      value: BigNumber(token.price),
-      dayChangePercent: BigNumber(token.priceDayChange).abs().toFixed(2),
-      dayChangePercentPositive: BigNumber(token.priceDayChange).gte(0),
+        try {
+          const result: PublicTokenOverview = await actorStorage.getToken(
+            ledger,
+          )
+          if (result.priceUSD === undefined) return undefined
+          return {
+            value: BigNumber(result.priceUSD),
+          }
+        } catch (e) {
+          return undefined
+        }
+      }
+
+      return {
+        value: BigNumber(token.price),
+        dayChangePercent: BigNumber(token.priceDayChange).abs().toFixed(2),
+        dayChangePercentPositive: BigNumber(token.priceDayChange).gte(0),
+      }
+    } catch (e) {
+      console.error("usdPriceForICRC1 error: ", e)
+      return undefined
     }
   }
 

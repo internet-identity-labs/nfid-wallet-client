@@ -1,9 +1,10 @@
+import { SwapName } from "../../types/enums"
 import { ExchangeError } from "./abstract-transaction-error"
-import { DEPOSIT_ERROR } from "./constants"
+import { getDepositError } from "./constants"
 
 export class DepositError extends ExchangeError {
-  getDisplayMessage(): string {
-    return DEPOSIT_ERROR
+  getDisplayMessage(provider: SwapName): string {
+    return getDepositError(provider)
   }
 
   constructor(e: Error | string) {

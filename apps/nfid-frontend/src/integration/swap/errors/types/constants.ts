@@ -1,14 +1,16 @@
-export const DEPOSIT_ERROR =
-  "Something went wrong with the ICPSwap service. Cancel your swap and try again."
+import { SwapName } from "../../types/enums"
 
-export const CONTACT_SUPPORT_ERROR =
-  "Something went wrong with the ICPSwap service. Contact support."
+export const getDepositError = (provider: SwapName) =>
+  `Something went wrong with the ${provider} service. Cancel your swap and try again.`
 
-export const WITHDRAW_ERROR =
-  "Something went wrong with the ICPSwap service. Complete your swap."
+export const getContactSupportError = (provider: SwapName) =>
+  `Something went wrong with the ${provider} service. Contact support.`
 
-export const SWAP_ERROR =
-  "Something went wrong with the ICPSwap service. Cancel your swap and try again."
+export const getWithdrawError = (provider: SwapName) =>
+  `Something went wrong with the ${provider} service. Complete your swap.`
+
+export const getSwapError = (provider: SwapName) =>
+  `Something went wrong with the ${provider} service. Cancel your swap and try again.`
 
 export const SLIPPAGE_SWAP_ERROR =
   "Swap exceeded slippage tolerance, please withdraw your unswapped tokens and try again."

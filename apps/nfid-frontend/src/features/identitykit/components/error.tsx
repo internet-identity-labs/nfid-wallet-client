@@ -64,9 +64,7 @@ export const RPCComponentError = ({
           </div>
           <div className="flex-1 min-w-0 text-sm">
             <p className="mb-1 font-bold">Request failed</p>
-            <p className="break-words whitespace-pre-wrap">
-              {error?.message ?? "Unknown error"}
-            </p>
+            <p>{error?.message ?? "Unknown error"}</p>
           </div>
         </div>
       ) : (
@@ -85,9 +83,7 @@ export const RPCComponentError = ({
               </div>
               <div className="flex-1 min-w-0 text-sm">
                 <p className="mb-1 font-bold">Request failed</p>
-                <p className="break-words whitespace-pre-wrap">
-                  {error?.message ?? "Unknown error"}
-                </p>
+                <p>{error?.message ?? "Unknown error"}</p>
               </div>
             </div>
           ) : (

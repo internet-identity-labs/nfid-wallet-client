@@ -45,7 +45,7 @@ export const RPCComponentError = ({
           <a
             href={origin}
             target="_blank"
-            className="text-primaryButtonColor no-underline"
+            className="no-underline text-primaryButtonColor"
             rel="noreferrer"
           >
             {applicationName}
@@ -62,7 +62,7 @@ export const RPCComponentError = ({
           <div className="w-[22px] shrink-0">
             <IconCmpWarning className="!text-orange-900" />
           </div>
-          <div className="w-full text-sm">
+          <div className="flex-1 min-w-0 text-sm">
             <p className="mb-1 font-bold">Request failed</p>
             <p>{error?.message ?? "Unknown error"}</p>
           </div>
@@ -81,7 +81,7 @@ export const RPCComponentError = ({
               <div className="w-[22px] shrink-0">
                 <IconCmpWarning className="!text-orange-900" />
               </div>
-              <div className="w-full text-sm">
+              <div className="flex-1 min-w-0 text-sm">
                 <p className="mb-1 font-bold">Request failed</p>
                 <p>{error?.message ?? "Unknown error"}</p>
               </div>
@@ -98,7 +98,9 @@ export const RPCComponentError = ({
                   <>
                     <div className="space-y-2">
                       <p className="font-bold">Consent message</p>
-                      <p className="leading-5">{consentMessage}</p>
+                      <p className="leading-5 break-words whitespace-pre-wrap">
+                        {consentMessage}
+                      </p>
                     </div>
                   </>
                 ) : (

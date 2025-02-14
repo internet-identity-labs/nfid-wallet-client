@@ -4,10 +4,10 @@ import React from "react"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
 
+import { CanisterCallTitle } from "../../constants"
 import { ICRC2Metadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
-import { CanisterCallTitle } from "../../constants"
 
 export interface CallCanisterICRC2SpendingCapProps {
   canisterId: string
@@ -39,7 +39,7 @@ const CallCanisterICRC2SpendingCap = ({
           <a
             href={origin}
             target="_blank"
-            className="text-primaryButtonColor no-underline"
+            className="no-underline text-primaryButtonColor"
             rel="noreferrer"
           >
             {applicationName}

@@ -13,6 +13,7 @@ import IconSvgDesktop from "./desktop.svg"
 import IconSvgDfinity from "./dfinity.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
+import IconSvgText from "./text.svg"
 import IconSvgError from "./error.svg"
 import IconSvgExternalIcon from "./external.svg"
 import IconSvgEyeClosedBlack from "./eye-closed-black.svg"
@@ -56,8 +57,11 @@ import IconSvgTrash from "./trash.svg"
 import IconSvgUnknown from "./unknown.svg"
 import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
+import IconSvgActions from "./actions.svg"
 
 export {
+  IconSvgActions,
+  IconSvgText,
   IconSvgPasskey,
   IconSvgArrow,
   IconSvgSwapAction,
@@ -174,3 +178,5 @@ export { ReactComponent as IconCmpShare } from "./share.svg"
 export { ReactComponent as IconCmpExternalIcon } from "./share.svg"
 export { ReactComponent as IconCmpArrowRightIcon } from "./arrow-right.svg"
 export { ReactComponent as IconCmpStatusSuccess } from "./status-success.svg"
+export { ReactComponent as IconCmpActions } from "./actions.svg"
+export { ReactComponent as IconCmpUserKey } from "./user-key.svg"

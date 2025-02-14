@@ -62,9 +62,7 @@ describe("Passkey flow", () => {
     jest.spyOn(passkeyService as any, "setUpState").mockImplementation(() => {
       console.log("State set up")
     })
-    let actual = await passkeyService.registerWithPasskey("mockedId", {
-      isMultiDevice: false,
-    })
+    let actual = await passkeyService.registerWithPasskey("mockedId")
     const identity = WebAuthnIdentity.fromJSON(
       JSON.stringify({
         rawId: Buffer.from(exp.data.credentialId).toString("hex"),

@@ -127,8 +127,7 @@ export default function AuthenticationCoordinator({
             })
           }}
           isLoading={isPasskeyLoading}
-          appMeta={state.context?.appMeta}
-          authRequest={state.context.authRequest}
+          applicationUrl={state.context.authRequest?.hostname}
           onLoginWithPasskey={onLoginWithPasskey}
           googleButton={
             <SignInWithGoogle
@@ -161,7 +160,7 @@ export default function AuthenticationCoordinator({
           withLogo={!isIdentityKit}
           title={isIdentityKit ? "Sign in" : undefined}
           subTitle={isIdentityKit ? "to continue to" : undefined}
-          appMeta={state.context.authRequest?.hostname}
+          applicationUrl={state.context.authRequest?.hostname}
           onBack={() => send({ type: "BACK" })}
           handleAuth={handleOtherOptionsAuth}
           isLoading={isOtherOptionsLoading || storageProfileLoading}
@@ -173,7 +172,6 @@ export default function AuthenticationCoordinator({
         <Auth2FA
           email={state.context.email2FA}
           isIdentityKit={isIdentityKit}
-          appMeta={state.context?.appMeta}
           handleAuth={handle2FAAuth}
           isLoading={is2FALoading}
         />

@@ -1,4 +1,5 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
+import { SignIdentity } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
@@ -251,6 +252,7 @@ export async function createProfile(anchor: number) {
       access_point: [],
       wallet: [],
       email: [],
+      name: [],
     })
     .then(unpackResponse)
     .then(mapProfile)
@@ -261,9 +263,13 @@ export async function update2fa(state: boolean) {
 }
 
 type CreateAccessPointProps = {
-  delegationIdentity: DelegationIdentity
+  delegationIdentity: DelegationIdentity | SignIdentity
   email?: string
-  isGoogle?: boolean
+  icon: Icon
+  name?: string
+  deviceType: DeviceType
+  credentialId?: string
+  devicePrincipal?: string
 }
 
 /**
@@ -273,17 +279,34 @@ type CreateAccessPointProps = {
 export async function createNFIDProfile({
   delegationIdentity,
   email,
-  isGoogle = false,
+  icon,
+  name,
+  deviceType,
+  credentialId,
+  devicePrincipal,
 }: CreateAccessPointProps) {
   await replaceActorIdentity(im, delegationIdentity)
 
+  if (deviceType === DeviceType.Passkey && !credentialId) {
+    throw new Error("Passkey deviceType requires credentialId")
+  }
+
+  if (
+    (deviceType === DeviceType.Email || deviceType === DeviceType.Google) &&
+    !email
+  ) {
+    throw new Error("Email/Google deviceType requires email")
+  }
+
   const dd: AccessPointRequest = {
-    icon: isGoogle ? Icon.google : Icon.email,
-    device: isGoogle ? DeviceType.Google : DeviceType.Email,
-    pub_key: delegationIdentity.getPrincipal().toText(),
+    icon: icon,
+    device: deviceType,
+    pub_key: devicePrincipal
+      ? devicePrincipal
+      : delegationIdentity.getPrincipal().toText(),
     browser: "",
-    device_type: { Email: null },
-    credential_id: [],
+    device_type: email ? { Email: null } : { Passkey: null },
+    credential_id: credentialId ? [credentialId] : [],
   }
 
   const accountRequest: HTTPAccountRequest = {
@@ -291,6 +314,7 @@ export async function createNFIDProfile({
     wallet: [{ NFID: null }],
     anchor: BigInt(0), //we will calculate new anchor on IM side
     email: email ? [email] : [],
+    name: name ? [name] : [],
   }
 
   const profile: Profile = await im

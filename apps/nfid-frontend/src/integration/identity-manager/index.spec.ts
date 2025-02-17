@@ -2,12 +2,8 @@
  * @jest-environment jsdom
  */
 import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
-
-import {
+  DeviceType,
+  Icon,
   im,
   im as imMock,
   replaceActorIdentity,
@@ -61,6 +57,8 @@ describe("Identity Manager suite", () => {
       const nfidProfile = await createNFIDProfile({
         delegationIdentity,
         email,
+        deviceType: DeviceType.Google,
+        icon: Icon.google,
       })
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)

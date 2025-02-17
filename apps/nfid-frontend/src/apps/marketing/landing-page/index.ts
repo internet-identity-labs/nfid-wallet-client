@@ -1,1 +1,1 @@
-export { HomePage as LandingHomePage} from "./pages"
+export { HomePage as LandingHomePage } from "./pages"

@@ -1,16 +1,27 @@
-import {DelegationIdentity, Ed25519KeyIdentity} from "@dfinity/identity"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 
-import {authState, DeviceType, googleSigninV2Service, Icon, im, Profile, replaceActorIdentity,} from "@nfid/integration"
+import {
+  authState,
+  DeviceType,
+  googleSigninV2Service,
+  Icon,
+  im,
+  Profile,
+  replaceActorIdentity,
+} from "@nfid/integration"
 
-import {createNFIDProfile, fetchProfile,} from "frontend/integration/identity-manager"
-import {GoogleAuthSession} from "frontend/state/authentication"
+import {
+  createNFIDProfile,
+  fetchProfile,
+} from "frontend/integration/identity-manager"
+import { GoogleAuthSession } from "frontend/state/authentication"
 
-import {AuthWithGoogleMachineContext} from "./auth-with-google"
+import { AuthWithGoogleMachineContext } from "./auth-with-google"
 
 export const signWithGoogleService = async (
   context: AuthWithGoogleMachineContext,
@@ -38,7 +49,7 @@ export const signWithGoogleService = async (
       delegationIdentity: delegation,
       email,
       deviceType: DeviceType.Google,
-      icon: Icon.google
+      icon: Icon.google,
     })
   }
 

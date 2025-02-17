@@ -1,12 +1,27 @@
 /**
  * @jest-environment jsdom
  */
-import {DeviceType, Icon, im, im as imMock, replaceActorIdentity, RootWallet,} from "@nfid/integration"
+import {
+  DeviceType,
+  Icon,
+  im,
+  im as imMock,
+  replaceActorIdentity,
+  RootWallet,
+} from "@nfid/integration"
 
-import {Application} from "frontend/integration/_ic_api/identity_manager.d"
-import {createNFIDProfile, processApplicationOrigin, update2fa,} from "frontend/integration/identity-manager/index"
+import { Application } from "frontend/integration/_ic_api/identity_manager.d"
+import {
+  createNFIDProfile,
+  processApplicationOrigin,
+  update2fa,
+} from "frontend/integration/identity-manager/index"
 
-import {getDelegationIdentity, getIdentity, getLambdaActor,} from "../test-util"
+import {
+  getDelegationIdentity,
+  getIdentity,
+  getLambdaActor,
+} from "../test-util"
 
 describe("Identity Manager suite", () => {
   jest.setTimeout(300000)
@@ -43,7 +58,7 @@ describe("Identity Manager suite", () => {
         delegationIdentity,
         email,
         deviceType: DeviceType.Google,
-        icon: Icon.google
+        icon: Icon.google,
       })
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))
       expect(nfidProfile.wallet).toEqual(RootWallet.NFID)

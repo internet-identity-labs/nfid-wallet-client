@@ -6,6 +6,7 @@ import {
   WebAuthnIdentity,
   wrapDER,
 } from "@dfinity/identity"
+import { randomBytes } from "@noble/hashes/utils"
 import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
@@ -22,14 +23,16 @@ import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import { getBrowser } from "@nfid-frontend/utils"
 import {
   authState,
-  DeviceType, generateDelegationIdentity,
+  DeviceType,
+  generateDelegationIdentity,
   getPasskey,
   IClientDataObj,
   Icon,
   ii,
   im,
   IPasskeyMetadata,
-  LambdaPasskeyDecoded, replaceActorIdentity,
+  LambdaPasskeyDecoded,
+  replaceActorIdentity,
   requestFEDelegationChain,
   RootWallet,
   storePasskey,
@@ -47,7 +50,6 @@ import {
   MultiWebAuthnIdentity,
 } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { randomBytes } from "@noble/hashes/utils";
 
 const alreadyRegisteredDeviceErrors = [
   "credentials already registered", //Chrome-based browsers
@@ -143,11 +145,18 @@ export class PasskeyConnector {
     }
   }
 
-  async registerWithPasskey(name: string, { isMultiDevice }: { isMultiDevice: boolean }) {
+  async registerWithPasskey(
+    name: string,
+    { isMultiDevice }: { isMultiDevice: boolean },
+  ) {
     let credential: PublicKeyCredential
     const nextBorrowedAnchor = randomBytes(16) //TODO WIP borrow anchor with captcha
     try {
-      credential = await this.createNavigatorCredential(nextBorrowedAnchor, name, isMultiDevice)
+      credential = await this.createNavigatorCredential(
+        nextBorrowedAnchor,
+        name,
+        isMultiDevice,
+      )
       debugger
     } catch (e) {
       console.error(e)
@@ -159,7 +168,7 @@ export class PasskeyConnector {
       }
     }
 
-    const {key, data} = this.decodePublicKeyCredential(credential)
+    const { key, data } = this.decodePublicKeyCredential(credential)
 
     const tempKey = Ed25519KeyIdentity.generate()
 
@@ -171,10 +180,10 @@ export class PasskeyConnector {
       !data.transports.includes("hybrid")
 
     const icon = isSecurityKey
-        ? Icon.usb
-        : getIsMobileDeviceMatch() || data.type === "cross-platform"
-          ? Icon.mobile
-          : Icon.desktop
+      ? Icon.usb
+      : getIsMobileDeviceMatch() || data.type === "cross-platform"
+      ? Icon.mobile
+      : Icon.desktop
 
     const identity = WebAuthnIdentity.fromJSON(
       JSON.stringify({
@@ -183,20 +192,20 @@ export class PasskeyConnector {
       }),
     )
 
-   const profile =  await createNFIDProfile({
+    const profile = await createNFIDProfile({
       delegationIdentity: tempKey,
       name: name,
       deviceType: DeviceType.Passkey,
       icon,
       credentialId: key,
-      devicePrincipal: identity.getPrincipal().toText()
+      devicePrincipal: identity.getPrincipal().toText(),
     })
 
     const jsonData = JSON.stringify({
       ...data,
       credentialId: base64url.encode(Buffer.from(data.credentialId)),
       publicKey: toHexString(data.publicKey),
-      user: nextBorrowedAnchor
+      user: nextBorrowedAnchor,
     })
 
     await storePasskey(key, jsonData)
@@ -204,7 +213,6 @@ export class PasskeyConnector {
     await this.setUpState(tempKey)
 
     return profile
-
   }
 
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
@@ -381,7 +389,10 @@ export class PasskeyConnector {
     )
   }
 
-  private decodePublicKeyCredential(credential: PublicKeyCredential): {key : string, data: IPasskeyMetadata} {
+  private decodePublicKeyCredential(credential: PublicKeyCredential): {
+    key: string
+    data: IPasskeyMetadata
+  } {
     console.debug("decodePublicKeyCredential", { credential })
 
     const utf8Decoder = new TextDecoder("utf-8")
@@ -456,24 +467,28 @@ export class PasskeyConnector {
   }
 
   private _createChallengeBuffer(
-    challenge: string | Uint8Array = "<ic0.app>"
+    challenge: string | Uint8Array = "<ic0.app>",
   ): Uint8Array {
     if (typeof challenge === "string") {
-      return Uint8Array.from(challenge, (c) => c.charCodeAt(0));
+      return Uint8Array.from(challenge, (c) => c.charCodeAt(0))
     } else {
-      return challenge;
+      return challenge
     }
   }
 
-  private async createNavigatorCredential( nextBorrowedAnchor: BufferSource, name: string,isMultiDevice: boolean ) : Promise<PublicKeyCredential> {
+  private async createNavigatorCredential(
+    nextBorrowedAnchor: BufferSource,
+    name: string,
+    isMultiDevice: boolean,
+  ): Promise<PublicKeyCredential> {
     return (await navigator.credentials.create({
       publicKey: {
-        authenticatorSelection:{
+        authenticatorSelection: {
           authenticatorAttachment: isSafari()
             ? "platform"
             : isMultiDevice
-              ? "cross-platform"
-              : "platform",
+            ? "cross-platform"
+            : "platform",
           userVerification: "preferred",
           residentKey: "required",
         },

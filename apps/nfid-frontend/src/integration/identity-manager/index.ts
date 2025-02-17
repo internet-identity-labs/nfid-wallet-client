@@ -1,6 +1,7 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
-import {DelegationIdentity} from "@dfinity/identity"
-import {Principal} from "@dfinity/principal"
+import { SignIdentity } from "@dfinity/agent"
+import { DelegationIdentity } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 
 import {
   AccessPoint,
@@ -20,9 +21,9 @@ import {
   RootWallet,
 } from "@nfid/integration"
 
-import {NFIDPersona} from "frontend/integration/identity-manager/persona/types"
+import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
-import {unpackLegacyResponse, unpackResponse} from "../_common"
+import { unpackLegacyResponse, unpackResponse } from "../_common"
 import {
   AccessPointRequest,
   AccessPointResponse,
@@ -33,8 +34,7 @@ import {
   PersonaResponse,
   WalletVariant,
 } from "../_ic_api/identity_manager.d"
-import {PublicKey} from "../_ic_api/internet_identity.d"
-import {SignIdentity} from "@dfinity/agent";
+import { PublicKey } from "../_ic_api/internet_identity.d"
 
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
@@ -252,7 +252,7 @@ export async function createProfile(anchor: number) {
       access_point: [],
       wallet: [],
       email: [],
-      name: []
+      name: [],
     })
     .then(unpackResponse)
     .then(mapProfile)
@@ -267,7 +267,7 @@ type CreateAccessPointProps = {
   email?: string
   icon: Icon
   name?: string
-  deviceType: DeviceType,
+  deviceType: DeviceType
   credentialId?: string
   devicePrincipal?: string
 }
@@ -283,7 +283,7 @@ export async function createNFIDProfile({
   name,
   deviceType,
   credentialId,
-  devicePrincipal
+  devicePrincipal,
 }: CreateAccessPointProps) {
   await replaceActorIdentity(im, delegationIdentity)
 
@@ -291,16 +291,21 @@ export async function createNFIDProfile({
     throw new Error("Passkey deviceType requires credentialId")
   }
 
-  if ((deviceType === DeviceType.Email || deviceType === DeviceType.Google) && !email) {
+  if (
+    (deviceType === DeviceType.Email || deviceType === DeviceType.Google) &&
+    !email
+  ) {
     throw new Error("Email/Google deviceType requires email")
   }
 
   const dd: AccessPointRequest = {
     icon: icon,
     device: deviceType,
-    pub_key: devicePrincipal ? devicePrincipal : delegationIdentity.getPrincipal().toText(),
+    pub_key: devicePrincipal
+      ? devicePrincipal
+      : delegationIdentity.getPrincipal().toText(),
     browser: "",
-    device_type: email ? { Email: null } : { Passkey : null },
+    device_type: email ? { Email: null } : { Passkey: null },
     credential_id: credentialId ? [credentialId] : [],
   }
 

@@ -1,32 +1,27 @@
+import {DelegationChain, DelegationIdentity, Ed25519KeyIdentity,} from "@dfinity/identity"
 import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import {
+  authStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
-  authStorage,
 } from "packages/integration/src/lib/authentication/storage"
 
 import {
+  authState,
+  DeviceType,
+  Icon,
+  im,
   Profile,
+  replaceActorIdentity,
   SendVerificationResponse,
   VerificationIsInProgressError,
   VerificationMethod,
-  authState,
-  im,
-  replaceActorIdentity,
   verificationService,
 } from "@nfid/integration"
 
-import {
-  createNFIDProfile,
-  fetchProfile,
-} from "frontend/integration/identity-manager"
-import { AuthSession } from "frontend/state/authentication"
+import {createNFIDProfile, fetchProfile,} from "frontend/integration/identity-manager"
+import {AuthSession} from "frontend/state/authentication"
 
-import { AuthWithEmailMachineContext } from "./machine"
+import {AuthWithEmailMachineContext} from "./machine"
 
 export const sendVerificationEmail = async (
   context: AuthWithEmailMachineContext,
@@ -126,6 +121,8 @@ export const authorizeWithEmail = async (
     profile = await createNFIDProfile({
       delegationIdentity,
       email: context.verificationEmail,
+      deviceType: DeviceType.Email,
+      icon: Icon.email
     })
   }
 

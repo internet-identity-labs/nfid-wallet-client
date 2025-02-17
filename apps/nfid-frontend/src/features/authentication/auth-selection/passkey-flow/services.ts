@@ -22,14 +22,14 @@ import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import { getBrowser } from "@nfid-frontend/utils"
 import {
   authState,
-  DeviceType,
+  DeviceType, generateDelegationIdentity,
   getPasskey,
   IClientDataObj,
   Icon,
   ii,
   im,
   IPasskeyMetadata,
-  LambdaPasskeyDecoded,
+  LambdaPasskeyDecoded, replaceActorIdentity,
   requestFEDelegationChain,
   RootWallet,
   storePasskey,
@@ -38,6 +38,7 @@ import {
 import isSafari from "frontend/features/security/utils"
 import { getPlatformInfo } from "frontend/integration/device"
 import {
+  createNFIDProfile,
   createPasskeyAccessPoint,
   fetchProfile,
 } from "frontend/integration/identity-manager"
@@ -46,6 +47,7 @@ import {
   MultiWebAuthnIdentity,
 } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AbstractAuthSession } from "frontend/state/authentication"
+import { randomBytes } from "@noble/hashes/utils";
 
 const alreadyRegisteredDeviceErrors = [
   "credentials already registered", //Chrome-based browsers
@@ -84,7 +86,6 @@ export class PasskeyConnector {
         protection: { unprotected: null },
       })
     }
-
     const isSecurityKey =
       data.type === "cross-platform" &&
       !data.transports.includes("internal") &&
@@ -140,6 +141,70 @@ export class PasskeyConnector {
       console.error("Passkey error: ", e)
       throw new Error((e as Error).message)
     }
+  }
+
+  async registerWithPasskey(name: string, { isMultiDevice }: { isMultiDevice: boolean }) {
+    let credential: PublicKeyCredential
+    const nextBorrowedAnchor = randomBytes(16) //TODO WIP borrow anchor with captcha
+    try {
+      credential = await this.createNavigatorCredential(nextBorrowedAnchor, name, isMultiDevice)
+      debugger
+    } catch (e) {
+      console.error(e)
+      const errorMessage = (e as Error).message
+      if (alreadyRegisteredDeviceErrors.find((x) => errorMessage.includes(x))) {
+        throw new Error("This device is already registered.")
+      } else {
+        throw new Error(errorMessage)
+      }
+    }
+
+    const {key, data} = this.decodePublicKeyCredential(credential)
+
+    const tempKey = Ed25519KeyIdentity.generate()
+
+    await replaceActorIdentity(im, tempKey)
+
+    const isSecurityKey =
+      data.type === "cross-platform" &&
+      !data.transports.includes("internal") &&
+      !data.transports.includes("hybrid")
+
+    const icon = isSecurityKey
+        ? Icon.usb
+        : getIsMobileDeviceMatch() || data.type === "cross-platform"
+          ? Icon.mobile
+          : Icon.desktop
+
+    const identity = WebAuthnIdentity.fromJSON(
+      JSON.stringify({
+        rawId: Buffer.from(data.credentialId).toString("hex"),
+        publicKey: Buffer.from(data.publicKey).toString("hex"),
+      }),
+    )
+
+   const profile =  await createNFIDProfile({
+      delegationIdentity: tempKey,
+      name: name,
+      deviceType: DeviceType.Passkey,
+      icon,
+      credentialId: key,
+      devicePrincipal: identity.getPrincipal().toText()
+    })
+
+    const jsonData = JSON.stringify({
+      ...data,
+      credentialId: base64url.encode(Buffer.from(data.credentialId)),
+      publicKey: toHexString(data.publicKey),
+      user: nextBorrowedAnchor
+    })
+
+    await storePasskey(key, jsonData)
+
+    await this.setUpState(tempKey)
+
+    return profile
+
   }
 
   async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
@@ -206,8 +271,8 @@ export class PasskeyConnector {
           },
           user: {
             id: Buffer.from(String(profile.anchor)),
-            name: profile?.email ?? "",
-            displayName: profile?.email ?? "",
+            name: profile?.email ?? profile.name ?? "",
+            displayName: profile?.email ?? profile.name ?? "",
           },
         },
       })) as PublicKeyCredential
@@ -316,7 +381,7 @@ export class PasskeyConnector {
     )
   }
 
-  private decodePublicKeyCredential(credential: PublicKeyCredential) {
+  private decodePublicKeyCredential(credential: PublicKeyCredential): {key : string, data: IPasskeyMetadata} {
     console.debug("decodePublicKeyCredential", { credential })
 
     const utf8Decoder = new TextDecoder("utf-8")
@@ -376,6 +441,67 @@ export class PasskeyConnector {
 
     await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
     await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
+  }
+
+  private async setUpState(tempKey: Ed25519KeyIdentity) {
+    await authState.set({
+      delegationIdentity: await generateDelegationIdentity(tempKey),
+      identity: tempKey,
+    })
+    await authStorage.set(KEY_STORAGE_KEY, JSON.stringify(tempKey.toJSON()))
+    await authStorage.set(
+      KEY_STORAGE_DELEGATION,
+      JSON.stringify(tempKey.toJSON()),
+    )
+  }
+
+  private _createChallengeBuffer(
+    challenge: string | Uint8Array = "<ic0.app>"
+  ): Uint8Array {
+    if (typeof challenge === "string") {
+      return Uint8Array.from(challenge, (c) => c.charCodeAt(0));
+    } else {
+      return challenge;
+    }
+  }
+
+  private async createNavigatorCredential( nextBorrowedAnchor: BufferSource, name: string,isMultiDevice: boolean ) : Promise<PublicKeyCredential> {
+    return (await navigator.credentials.create({
+      publicKey: {
+        authenticatorSelection:{
+          authenticatorAttachment: isSafari()
+            ? "platform"
+            : isMultiDevice
+              ? "cross-platform"
+              : "platform",
+          userVerification: "preferred",
+          residentKey: "required",
+        },
+        attestation: "direct",
+        challenge: this._createChallengeBuffer(),
+        pubKeyCredParams: [
+          {
+            type: "public-key",
+            // alg: PubKeyCoseAlgo.ECDSA_WITH_SHA256
+            alg: -7,
+          },
+          {
+            type: "public-key",
+            // alg: PubKeyCoseAlgo.RSA_WITH_SHA256
+            alg: -257,
+          },
+        ],
+        rp: {
+          name: "NFID",
+          id: window.location.hostname,
+        },
+        user: {
+          id: nextBorrowedAnchor,
+          name: name,
+          displayName: name,
+        },
+      },
+    })) as PublicKeyCredential
   }
 }
 

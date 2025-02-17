@@ -57,6 +57,7 @@ export const idlFactory = ({ IDL }: any) => {
   const HTTPAccountRequest = IDL.Record({
     anchor: IDL.Nat64,
     email: IDL.Opt(IDL.Text),
+    name: IDL.Opt(IDL.Text),
     access_point: IDL.Opt(AccessPointRequest),
     wallet: IDL.Opt(WalletVariant),
   })

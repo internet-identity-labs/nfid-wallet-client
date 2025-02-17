@@ -8,5 +8,14 @@
     "dev": "7b5jg-paaaa-aaaap-aa32q-cai",
     "stage": "appqm-xiaaa-aaaak-akwaa-cai",
     "ic": "3y5ko-7qaaa-aaaal-aaaaq-cai"
+  },
+  "ext-validator": {
+    "ic": "zjrr6-cqaaa-aaaam-ad3ia-cai",
+  },
+  "icrc1-validator": {
+    "ic": "grvap-eyaaa-aaaao-qjxba-cai",
+  },
+  "icrc7-validator": {
+    "ic": "klcvg-qyaaa-aaaaj-qngma-cai",
   }
 }

@@ -34,10 +34,6 @@ describe("Passkey flow", () => {
 
     const pk = Ed25519KeyIdentity.generate()
 
-    const publickKeyHexString = pk.getPublicKey().toDer().toString()
-
-    console.log("Public key hex string", pk.getPrincipal().toText())
-
     let exp: { key: string; data: IPasskeyMetadata } = {
       key: "Dst6_Arh95HGTVwUnp5zEtad_Bo",
       data: {

@@ -130,19 +130,19 @@ export const NFTs: FC<INFTs> = ({
                   }
                 >
                   <td>
-                    {nft.getAssetPreview().format === "video" ? (
+                    {nft.getAssetPreview()?.format === "video" ? (
                       <video
                         muted
                         autoPlay
                         loop
                         className="w-[74px] rounded-[12px]"
-                        src={nft.getAssetPreview().url}
+                        src={nft.getAssetPreview()?.url}
                       ></video>
                     ) : (
                       <ImageWithFallback
                         alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
                         fallbackSrc={IconNftPlaceholder}
-                        src={nft.getAssetPreview().url}
+                        src={nft.getAssetPreview()?.url}
                         className={clsx(
                           `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
                         )}
@@ -216,22 +216,30 @@ export const NFTs: FC<INFTs> = ({
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
                   <div className="relative rounded-[12px] overflow-hidden basis-[100%]">
-                    {nft.getAssetPreview().format === "video" ? (
+                    {nft.getError() ? (
+                      <ImageWithFallback
+                        alt={nft.getTokenName()}
+                        fallbackSrc={IconNftPlaceholder}
+                        src={"#"}
+                        className="object-cover w-full aspect-square"
+                      />
+                    ) : nft.getAssetPreview()?.format === "video" ? (
                       <video
                         muted
                         autoPlay
                         loop
                         className="w-full"
-                        src={nft.getAssetPreview().url}
+                        src={nft.getAssetPreview()?.url}
                       ></video>
                     ) : (
                       <ImageWithFallback
                         alt={nft.getTokenName()}
                         fallbackSrc={IconNftPlaceholder}
-                        src={nft.getAssetPreview().url}
+                        src={nft.getAssetPreview()?.url}
                         className="object-cover w-full aspect-square"
                       />
                     )}
+
                     <div
                       className={clsx(
                         "absolute top-0 bottom-0 left-0 right-0 m-auto z-2",
@@ -243,8 +251,15 @@ export const NFTs: FC<INFTs> = ({
                         WebkitBackdropFilter: "blur(10px)",
                       }}
                     >
-                      <div className="bg-white px-[15px] py-[9px] w-[164px] rounded-[12px] text-center">
-                        {nft.getTokenFloorPriceIcpFormatted() ? (
+                      <div
+                        className={clsx(
+                          "bg-white px-[15px] py-[9px] rounded-[12px] text-center",
+                          nft.getError() ? "w-full" : "w-[164px]",
+                        )}
+                      >
+                        {nft.getError() ? (
+                          <p>{nft.getError()}</p>
+                        ) : nft.getTokenFloorPriceIcpFormatted() ? (
                           <>
                             <p className="leading-[26px]">
                               {nft.getTokenFloorPriceIcpFormatted()}
@@ -266,13 +281,21 @@ export const NFTs: FC<INFTs> = ({
                       className="mb-[2px] text-black font-bold leading-[24px]"
                       id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                     >
-                      #{nft.getTokenNumber()}
+                      {nft.getError() ? (
+                        <span className="text-gray-400">
+                          {nft.getCollectionId()}
+                        </span>
+                      ) : (
+                        <>#{nft.getTokenNumber()}</>
+                      )}
                     </p>
                     <p
                       className="text-gray-400 leading-[20px]"
                       id={`nft_collection_${nft.getCollectionId()}`}
                     >
-                      {nft.getCollectionName()}
+                      {nft.getError()
+                        ? nft.getCollectionName() || "Loading error"
+                        : nft.getCollectionName()}
                     </p>
                   </div>
                 </div>

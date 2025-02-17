@@ -41,8 +41,8 @@ describe("nft test suite", () => {
       expect(extNft.getMarketPlace()).toEqual("EXT")
       expect(extNft.getMillis()).toEqual(1721253726158)
       const extAssetPreview = extNft.getAssetPreview()
-      expect(extAssetPreview.format).toEqual("img")
-      expect(extAssetPreview.url).toEqual(
+      expect(extAssetPreview!.format).toEqual("img")
+      expect(extAssetPreview!.url).toEqual(
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(extNft.getTokenLink()).toEqual(

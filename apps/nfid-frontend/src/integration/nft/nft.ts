@@ -6,9 +6,13 @@ import {
   TokenProperties,
 } from "src/integration/nft/impl/nft-types"
 
+import { NftError } from "./impl/nft-abstract"
+
 export interface NFT {
   init(): Promise<NFT>
   isInited(): boolean
+  setError(e: NftError): void
+  getError(): string | undefined
   getMillis(): number
   getMarketPlace(): MarketPlace
   getTokenMarketPlaceLink(): string
@@ -24,7 +28,7 @@ export interface NFT {
   getTokenLink(): string
   getDetails(): Promise<NFTDetails>
   //we can not know asset type without call to host (probably)
-  getAssetPreview(): AssetPreview
+  getAssetPreview(): AssetPreview | undefined
   //TODO
   //transfer(): Promise<bigint>;
 }

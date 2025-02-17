@@ -42,8 +42,8 @@ describe("yumi test suite", () => {
       expect(yumiNFT.getMarketPlace()).toEqual("YUMI")
       expect(yumiNFT.getMillis()).toEqual(1721253579367)
       const yumiNftAssetPreview = yumiNFT.getAssetPreview()
-      expect(yumiNftAssetPreview.format).toEqual("img")
-      expect(yumiNftAssetPreview.url).toEqual(
+      expect(yumiNftAssetPreview?.format).toEqual("img")
+      expect(yumiNftAssetPreview?.url).toEqual(
         "https://bafybeih6sox7rpgvnlhil3yvwdmeza6bzegdomdflgwbecsks3zedhsrc4.ipfs.w3s.link/9103_original.jpg",
       )
       //todo link does not work
@@ -105,8 +105,8 @@ describe("yumi test suite", () => {
       expect(yumiProperties.mappedValues[0].option).toEqual("None")
 
       const image = await yumiNFTWithDetails.getAssetPreview()
-      expect(image.format).toEqual("img")
-      expect(image.url).toEqual(
+      expect(image?.format).toEqual("img")
+      expect(image?.url).toEqual(
         "https://2kamf-liaaa-aaaam-abf5q-cai.raw.ic0.app/file/4612_original.gif",
       )
     })

@@ -76,7 +76,10 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         )}
       >
         <div
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            if (nft.getError()) return
+            setIsModalOpen(true)
+          }}
           className={clsx(
             "relative overflow-hidden bg-gray-50 rounded-[24px] aspect-square cursor-pointer",
             "lg:max-w-[445px] h-full lg:h-[445px] flex items-center justify-center",
@@ -86,7 +89,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             <Skeleton className="rounded-[24px] h-full w-full" />
           ) : !assetPreview.url ? (
             <ImageWithFallback
-              src={"no image"}
+              src={"#"}
               fallbackSrc={IconNftPlaceholder}
               alt="NFT preview"
               className="w-full"
@@ -101,7 +104,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             ></video>
           ) : (
             <ImageWithFallback
-              src={assetPreview.url}
+              src={nft.getError() ? "#" : assetPreview.url}
               fallbackSrc={IconNftPlaceholder}
               alt="NFT preview"
               className="max-w-full max-h-full"
@@ -131,7 +134,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             )}
             id={`nft_collection_${nft.getCollectionId()}`}
           >
-            {nft.getCollectionName()}
+            {nft.getCollectionName() || nft.getCollectionId()}
           </a>
           <ProfileContainer
             title="Details"
@@ -139,243 +142,257 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             innerClassName="!p-0"
             titleClassName="!p-0 mb-[20px]"
           >
-            <div
-              className={clsx(
-                "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                "block sm:flex items-center",
-              )}
-            >
-              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
-                Standard
-              </p>
-              <p className="text-sm" id={"token-standard"}>
-                EXT
-              </p>
-            </div>
-            <div
-              className={clsx(
-                "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                "block sm:flex items-center",
-              )}
-            >
-              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
-                ID
-              </p>
-              <p
-                className="text-sm"
-                id={`nft_id_${nft.getTokenId().replace(/\s/g, "")}`}
-              >
-                {nft.getTokenId()}
-              </p>
-            </div>
-            <div
-              className={clsx(
-                "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                "block sm:flex items-center",
-              )}
-            >
-              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
-                Collection ID
-              </p>
-              <p className="text-sm" id={"collection-id"}>
-                {nft.getCollectionId()}
-              </p>
-            </div>
-            <div
-              className={clsx(
-                "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                "block sm:flex items-center",
-              )}
-            >
-              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
-                Floor price
-              </p>
-              <p>
-                {!nft.getTokenFloorPriceIcpFormatted() ? (
-                  <span>Unknown</span>
-                ) : (
-                  <>
-                    <span className="block text-sm">
-                      {nft.getTokenFloorPriceIcpFormatted()}
-                    </span>
-                    <span className="block text-xs text-gray-400">
-                      {nft.getTokenFloorPriceUSDFormatted()}
-                    </span>
-                  </>
-                )}
-              </p>
-            </div>
-            <div
-              className={clsx(
-                "min-h-[64px] sm:min-h-[54px]",
-                "block sm:flex items-center",
-              )}
-            >
-              <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
-                View on a marketplace
-              </p>
-              <a
-                className={clsx(
-                  "flex items-center gap-2 text-primaryButtonColor",
-                  "hover:underline hover:text-teal-600 transition duration-300 ease-in-out",
-                )}
-                target="_blank"
-                href={marketPlaceLink}
-              >
-                {marketPlaceLink}
-                <IconCmpExternalIcon className="mt-1" />
-              </a>
-            </div>
+            {nft.getError() ? (
+              nft.getError()
+            ) : (
+              <>
+                <div
+                  className={clsx(
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
+                    "block sm:flex items-center",
+                  )}
+                >
+                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
+                    Standard
+                  </p>
+                  <p className="text-sm" id={"token-standard"}>
+                    EXT
+                  </p>
+                </div>
+                <div
+                  className={clsx(
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
+                    "block sm:flex items-center",
+                  )}
+                >
+                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                    ID
+                  </p>
+                  <p
+                    className="text-sm"
+                    id={`nft_id_${nft.getTokenId().replace(/\s/g, "")}`}
+                  >
+                    {nft.getTokenId()}
+                  </p>
+                </div>
+                <div
+                  className={clsx(
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
+                    "block sm:flex items-center",
+                  )}
+                >
+                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                    Collection ID
+                  </p>
+                  <p className="text-sm" id={"collection-id"}>
+                    {nft.getCollectionId()}
+                  </p>
+                </div>
+                <div
+                  className={clsx(
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
+                    "block sm:flex items-center",
+                  )}
+                >
+                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                    Floor price
+                  </p>
+                  <p>
+                    {!nft.getTokenFloorPriceIcpFormatted() ? (
+                      <span>Unknown</span>
+                    ) : (
+                      <>
+                        <span className="block text-sm">
+                          {nft.getTokenFloorPriceIcpFormatted()}
+                        </span>
+                        <span className="block text-xs text-gray-400">
+                          {nft.getTokenFloorPriceUSDFormatted()}
+                        </span>
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div
+                  className={clsx(
+                    "min-h-[64px] sm:min-h-[54px]",
+                    "block sm:flex items-center",
+                  )}
+                >
+                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                    View on a marketplace
+                  </p>
+                  <a
+                    className={clsx(
+                      "flex items-center gap-2 text-primaryButtonColor",
+                      "hover:underline hover:text-teal-600 transition duration-300 ease-in-out",
+                    )}
+                    target="_blank"
+                    href={marketPlaceLink}
+                  >
+                    {marketPlaceLink}
+                    <IconCmpExternalIcon className="mt-1" />
+                  </a>
+                </div>
+              </>
+            )}
           </ProfileContainer>
         </div>
       </div>
-      <ProfileContainer
-        className={clsx(
-          "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative",
-          !about && !isAboutLoading && "hidden",
-        )}
-        innerClassName="!p-0"
-        titleClassName={clsx("!p-0", !isAboutLoading && "mb-[22px]")}
-        title={!isAboutLoading && "About"}
-      >
-        {isAboutLoading ? (
-          <>
-            <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
-            <Skeleton className="rounded-[24px] h-[20px] w-[80px]" />
-          </>
-        ) : (
-          <p id={"token-about"}>{about}</p>
-        )}
-      </ProfileContainer>
-      <ProfileContainer
-        className={clsx(
-          "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative",
-          (!properties.mappedValues || !properties.mappedValues.length) &&
-            !isPropertiesLoading &&
-            "hidden",
-        )}
-        innerClassName="!p-0"
-        titleClassName={clsx("!p-0", !isPropertiesLoading && "mb-[22px]")}
-        title={!isPropertiesLoading && "Properties"}
-      >
-        {isPropertiesLoading && (
-          <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
-        )}
-        <div
-          className={clsx(
-            "grid gap-[10px] max-w-[100vw]",
-            "grid-cols-1 sm:grid-cols-3",
-          )}
-        >
-          {isPropertiesLoading ? (
-            <>
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-              <Skeleton className="rounded-[24px] h-[62px] w-full" />
-            </>
-          ) : (
-            properties.mappedValues &&
-            properties.mappedValues.map((property) => {
-              return (
-                <div
-                  key={`${property.category}_${property.option}`}
-                  className="rounded-[12px] bg-gray-50 py-[9px] px-[20px] text-sm font-semibold"
-                >
-                  <p className="leading-[22px] text-xs text-gray-400">
-                    <span>{property.category}</span>
-                  </p>
-                  <p className="leading-[22px]">
-                    <span className="mt-[2px]">{property.option}</span>
-                  </p>
-                </div>
-              )
-            })
-          )}
-        </div>
-      </ProfileContainer>
-      <ProfileContainer
-        className={clsx(
-          "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative",
-          (!transactions.activity || !transactions.activity.length) &&
-            !isTransactionsLoading &&
-            "hidden",
-        )}
-        innerClassName="!p-0"
-        titleClassName={clsx("!p-0", !isTransactionsLoading && "mb-[22px]")}
-        title={!isTransactionsLoading && "Activity"}
-      >
-        <div className="max-w-[100%] overflow-auto">
-          {isTransactionsLoading && (
-            <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
-          )}
-          <Table
-            className="!min-w-[1050px] min-h-[100px]"
-            theadClassName="!h-0 sm:!h-[40px]"
-            id="nft-table"
-            tableHeader={
-              <tr className="text-sm font-bold text-gray-400">
-                <th className="w-[120px]">Event type</th>
-                <th className="w-[220px]">Date and time</th>
-                <th>From</th>
-                <th>To</th>
-                <th className="w-[100px]">Price</th>
-              </tr>
-            }
-          >
-            {isTransactionsLoading ? (
-              <TableNftActivitySkeleton
-                tableRowsAmount={2}
-                tableCellAmount={5}
-              />
-            ) : (
-              transactions.activity &&
-              transactions.activity.map((activity) => {
-                const price = activity.getTransactionView().getFormattedPrice()
-
-                return (
-                  <Fragment
-                    key={`${activity.getTransactionView().getFrom()}_${activity
-                      .getTransactionView()
-                      .getFormattedDate()}`}
-                  >
-                    <tr className="text-sm h-[60px]">
-                      <td className="pr-[20px]">
-                        {activity.getTransactionView().getType()}
-                      </td>
-                      <td className="pr-[20px]">
-                        {activity.getTransactionView().getFormattedDate()}
-                      </td>
-                      <td className="pr-[20px] break-all">
-                        {activity.getTransactionView().getFrom()}
-                      </td>
-                      <td className="pr-[50px] break-all">
-                        {activity.getTransactionView().getTo()}
-                      </td>
-                      <td>
-                        {price ? (
-                          <>
-                            <span className="block">{price}</span>
-                            <span className="block text-xs text-gray-400">
-                              {activity
-                                .getTransactionView()
-                                .getFormattedUsdPrice()}
-                            </span>
-                          </>
-                        ) : (
-                          "Unknown"
-                        )}
-                      </td>
-                    </tr>
-                  </Fragment>
-                )
-              })
+      {!nft.getError() && (
+        <>
+          <ProfileContainer
+            className={clsx(
+              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative",
+              !about && !isAboutLoading && "hidden",
             )}
-          </Table>
-        </div>
-      </ProfileContainer>
+            innerClassName="!p-0"
+            titleClassName={clsx("!p-0", !isAboutLoading && "mb-[22px]")}
+            title={!isAboutLoading && "About"}
+          >
+            {isAboutLoading ? (
+              <>
+                <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
+                <Skeleton className="rounded-[24px] h-[20px] w-[80px]" />
+              </>
+            ) : (
+              <p id={"token-about"}>{about}</p>
+            )}
+          </ProfileContainer>
+          <ProfileContainer
+            className={clsx(
+              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative",
+              (!properties.mappedValues || !properties.mappedValues.length) &&
+                !isPropertiesLoading &&
+                "hidden",
+            )}
+            innerClassName="!p-0"
+            titleClassName={clsx("!p-0", !isPropertiesLoading && "mb-[22px]")}
+            title={!isPropertiesLoading && "Properties"}
+          >
+            {isPropertiesLoading && (
+              <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
+            )}
+            <div
+              className={clsx(
+                "grid gap-[10px] max-w-[100vw]",
+                "grid-cols-1 sm:grid-cols-3",
+              )}
+            >
+              {isPropertiesLoading ? (
+                <>
+                  <Skeleton className="rounded-[24px] h-[62px] w-full" />
+                  <Skeleton className="rounded-[24px] h-[62px] w-full" />
+                  <Skeleton className="rounded-[24px] h-[62px] w-full" />
+                  <Skeleton className="rounded-[24px] h-[62px] w-full" />
+                  <Skeleton className="rounded-[24px] h-[62px] w-full" />
+                  <Skeleton className="rounded-[24px] h-[62px] w-full" />
+                </>
+              ) : (
+                properties.mappedValues &&
+                properties.mappedValues.map((property) => {
+                  return (
+                    <div
+                      key={`${property.category}_${property.option}`}
+                      className="rounded-[12px] bg-gray-50 py-[9px] px-[20px] text-sm font-semibold"
+                    >
+                      <p className="leading-[22px] text-xs text-gray-400">
+                        <span>{property.category}</span>
+                      </p>
+                      <p className="leading-[22px]">
+                        <span className="mt-[2px]">{property.option}</span>
+                      </p>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </ProfileContainer>
+          <ProfileContainer
+            className={clsx(
+              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative",
+              (!transactions.activity || !transactions.activity.length) &&
+                !isTransactionsLoading &&
+                "hidden",
+            )}
+            innerClassName="!p-0"
+            titleClassName={clsx("!p-0", !isTransactionsLoading && "mb-[22px]")}
+            title={!isTransactionsLoading && "Activity"}
+          >
+            <div className="max-w-[100%] overflow-auto">
+              {isTransactionsLoading && (
+                <Skeleton className="rounded-[24px] h-[24px] w-[180px] mb-[15px]" />
+              )}
+              <Table
+                className="!min-w-[1050px] min-h-[100px]"
+                theadClassName="!h-0 sm:!h-[40px]"
+                id="nft-table"
+                tableHeader={
+                  <tr className="text-sm font-bold text-gray-400">
+                    <th className="w-[120px]">Event type</th>
+                    <th className="w-[220px]">Date and time</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th className="w-[100px]">Price</th>
+                  </tr>
+                }
+              >
+                {isTransactionsLoading ? (
+                  <TableNftActivitySkeleton
+                    tableRowsAmount={2}
+                    tableCellAmount={5}
+                  />
+                ) : (
+                  transactions.activity &&
+                  transactions.activity.map((activity) => {
+                    const price = activity
+                      .getTransactionView()
+                      .getFormattedPrice()
+
+                    return (
+                      <Fragment
+                        key={`${activity
+                          .getTransactionView()
+                          .getFrom()}_${activity
+                          .getTransactionView()
+                          .getFormattedDate()}`}
+                      >
+                        <tr className="text-sm h-[60px]">
+                          <td className="pr-[20px]">
+                            {activity.getTransactionView().getType()}
+                          </td>
+                          <td className="pr-[20px]">
+                            {activity.getTransactionView().getFormattedDate()}
+                          </td>
+                          <td className="pr-[20px] break-all">
+                            {activity.getTransactionView().getFrom()}
+                          </td>
+                          <td className="pr-[50px] break-all">
+                            {activity.getTransactionView().getTo()}
+                          </td>
+                          <td>
+                            {price ? (
+                              <>
+                                <span className="block">{price}</span>
+                                <span className="block text-xs text-gray-400">
+                                  {activity
+                                    .getTransactionView()
+                                    .getFormattedUsdPrice()}
+                                </span>
+                              </>
+                            ) : (
+                              "Unknown"
+                            )}
+                          </td>
+                        </tr>
+                      </Fragment>
+                    )
+                  })
+                )}
+              </Table>
+            </div>
+          </ProfileContainer>
+        </>
+      )}
     </>
   )
 }

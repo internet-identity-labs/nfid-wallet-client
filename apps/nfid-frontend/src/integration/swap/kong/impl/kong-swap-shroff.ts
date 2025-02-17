@@ -3,10 +3,8 @@ import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import {
-  DepositError,
   LiquidityError,
   ServiceUnavailableError,
-  SwapError,
 } from "src/integration/swap/errors/types"
 import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
 import {
@@ -37,6 +35,7 @@ import {
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
+import { ContactSupportError } from "../../errors/types/contact-support-error"
 import { Quote } from "../../quote"
 import { SwapTransaction } from "../../swap-transaction"
 import { SwapName } from "../../types/enums"
@@ -129,9 +128,16 @@ export class KongSwapShroffImpl extends ShroffAbstract {
         console.log("ICRC2 approve response", JSON.stringify(icrcTransferId))
         this.swapTransaction.setTransferId(icrcTransferId)
       } else {
-        icrcTransferId = await this.transferToSwap()
-        console.log("ICRC21 transfer response", JSON.stringify(icrcTransferId))
-        this.swapTransaction.setDeposit(icrcTransferId)
+        try {
+          icrcTransferId = await this.transferToSwap()
+          console.log(
+            "ICRC21 transfer response",
+            JSON.stringify(icrcTransferId),
+          )
+          this.swapTransaction.setDeposit(icrcTransferId)
+        } catch (e) {
+          throw new ContactSupportError("Deposit error: " + e)
+        }
       }
 
       this.restoreTransaction()
@@ -189,12 +195,12 @@ export class KongSwapShroffImpl extends ShroffAbstract {
       console.log("Swap response", JSON.stringify(resp))
 
       if (hasOwnProperty(resp, "Err")) {
-        throw new SwapError(JSON.stringify(resp.Err))
+        throw new ContactSupportError(JSON.stringify(resp.Err))
       }
 
       this.swapTransaction!.setSwap(resp.Ok.ts)
     } catch (e) {
-      throw new SwapError("Swap error: " + e)
+      throw new ContactSupportError("Swap error: " + e)
     }
   }
 
@@ -254,13 +260,13 @@ export class KongSwapShroffImpl extends ShroffAbstract {
       const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
 
       if (hasOwnProperty(icrc2approve, "Err")) {
-        throw new DepositError(JSON.stringify(icrc2approve.Err))
+        throw new ContactSupportError(JSON.stringify(icrc2approve.Err))
       }
 
       return BigInt(icrc2approve.Ok)
     } catch (e) {
       console.error("Deposit error: " + e)
-      throw new DepositError("Deposit error: " + e)
+      throw new ContactSupportError("Deposit error: " + e)
     }
   }
 

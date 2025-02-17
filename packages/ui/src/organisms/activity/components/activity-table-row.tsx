@@ -6,8 +6,10 @@ import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useState } from "react"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
+import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
 import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
+import { KongSwapShroffImpl } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
@@ -20,6 +22,7 @@ import {
   ImageWithFallback,
   Tooltip,
 } from "@nfid-frontend/ui"
+import { getPublicKey } from "@nfid/integration"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
@@ -38,6 +41,28 @@ export const getTooltipAndButtonText = (
   const stage = transaction.getStage()
 
   if (stage === SwapStage.Completed || !transaction.getErrors().length) return
+
+  if (
+    transaction.getSwapName() === SwapName.Kongswap &&
+    stage <= SwapStage.Swap
+  ) {
+    return {
+      buttonText: "Contact support",
+      tooltipTitle: "swap",
+      tooltipMessage: "Please contact support.",
+    }
+  }
+
+  if (
+    transaction.getSwapName() === SwapName.Kongswap &&
+    stage > SwapStage.Swap
+  ) {
+    return {
+      buttonText: "Complete swap",
+      tooltipTitle: "swap",
+      tooltipMessage: "Continue your swap.",
+    }
+  }
 
   if (stage === SwapStage.Deposit || stage === SwapStage.TransferSwap) {
     return {
@@ -85,27 +110,55 @@ export const ActivityTableRow = ({
 }: IActivityTableRow) => {
   const [isLoading, setIsLoading] = useState(false)
 
+  const providerName =
+    transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
+
   const completeHandler = async () => {
     if (!transaction) return
     setIsLoading(true)
-    const pool = await icpSwapService.getPoolFactory(
-      transaction.getSourceLedger(),
-      transaction.getTargetLedger(),
-    )
-    const identity = await getIdentity([
-      transaction.getSourceLedger(),
-      transaction.getTargetLedger(),
-      pool.canisterId.toText(),
-      ...ShroffIcpSwapImpl.getStaticTargets(),
-    ])
 
-    const errorHandler = errorHandlerFactory.getHandler(transaction)
-    await errorHandler.completeTransaction(identity)
-    setIsLoading(false)
+    let identity
+
+    if (providerName === SwapName.ICPSwap) {
+      const pool = await icpSwapService.getPoolFactory(
+        transaction.getSourceLedger(),
+        transaction.getTargetLedger(),
+      )
+      identity = await getIdentity([
+        transaction.getSourceLedger(),
+        transaction.getTargetLedger(),
+        pool.canisterId.toText(),
+        ...ShroffIcpSwapImpl.getStaticTargets(),
+      ])
+    } else {
+      identity = await getIdentity([
+        transaction.getSourceLedger(),
+        transaction.getTargetLedger(),
+        ...KongSwapShroffImpl.getStaticTargets(),
+      ])
+    }
+
+    const userPrincipal = await getPublicKey(identity)
+
+    try {
+      const errorHandler = errorHandlerFactory.getHandler(transaction)
+      await errorHandler.completeTransaction(identity)
+    } catch (e) {
+      if (e instanceof ContactSupportError) {
+        const email = "kongswap@gmail.com"
+        const subject = encodeURIComponent("Swap failed")
+        const body = encodeURIComponent(
+          `User ${userPrincipal} could not finish swap from ${transaction.getSourceLedger()} to ${transaction.getTargetLedger()}`,
+        )
+
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
+        return
+      }
+      console.error("CompleteSwap Error: ", e)
+    } finally {
+      setIsLoading(false)
+    }
   }
-
-  const providerName =
-    transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
 
   return (
     <Tooltip

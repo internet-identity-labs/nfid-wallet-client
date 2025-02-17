@@ -22,7 +22,6 @@ import {
   ImageWithFallback,
   Tooltip,
 } from "@nfid-frontend/ui"
-import { getPublicKey } from "@nfid/integration"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
@@ -138,8 +137,6 @@ export const ActivityTableRow = ({
       ])
     }
 
-    const userPrincipal = await getPublicKey(identity)
-
     try {
       const errorHandler = errorHandlerFactory.getHandler(transaction)
       await errorHandler.completeTransaction(identity)
@@ -148,7 +145,9 @@ export const ActivityTableRow = ({
         const email = "kongswap@gmail.com"
         const subject = encodeURIComponent("Swap failed")
         const body = encodeURIComponent(
-          `User ${userPrincipal} could not finish swap from ${transaction.getSourceLedger()} to ${transaction.getTargetLedger()}`,
+          `User ${identity
+            .getPrincipal()
+            .toText()} could not finish swap from ${transaction.getSourceLedger()} to ${transaction.getTargetLedger()}`,
         )
 
         window.location.href = `mailto:${email}?subject=${subject}&body=${body}`

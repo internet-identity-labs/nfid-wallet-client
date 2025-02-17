@@ -15,7 +15,7 @@ import {
 
 export interface AuthOtherSignOptionsProps {
   onBack: () => void
-  appMeta?: string
+  applicationUrl?: string
   handleAuth: (data: { anchor: number; withSecurityDevices: boolean }) => void
   isLoading: boolean
   profileAnchor?: number
@@ -26,7 +26,7 @@ export interface AuthOtherSignOptionsProps {
 
 export const AuthOtherSignOptions = ({
   onBack,
-  appMeta,
+  applicationUrl,
   handleAuth,
   isLoading,
   profileAnchor,
@@ -51,7 +51,7 @@ export const AuthOtherSignOptions = ({
         onClick={onBack}
       />
       <AuthAppMeta
-        applicationURL={appMeta}
+        applicationURL={applicationUrl}
         withLogo={withLogo}
         title={title}
         subTitle={subTitle}

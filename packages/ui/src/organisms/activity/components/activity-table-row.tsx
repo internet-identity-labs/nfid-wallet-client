@@ -37,7 +37,7 @@ export const getTooltipAndButtonText = (
 
   const stage = transaction.getStage()
 
-  if (stage === SwapStage.Completed) return
+  if (stage === SwapStage.Completed || !transaction.getErrors().length) return
 
   if (stage === SwapStage.Deposit || stage === SwapStage.TransferSwap) {
     return {
@@ -104,6 +104,9 @@ export const ActivityTableRow = ({
     setIsLoading(false)
   }
 
+  const providerName =
+    transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
+
   return (
     <Tooltip
       className={getTooltipAndButtonText(transaction) ? "" : "hidden"}
@@ -113,10 +116,10 @@ export const ActivityTableRow = ({
       tip={
         <span className="block max-w-[270px] sm:max-w-[320px]">
           <b>
-            {transaction?.getSwapName() && SwapName[transaction?.getSwapName()]}{" "}
-            {getTooltipAndButtonText(transaction)?.tooltipTitle} failed.
+            {providerName} {getTooltipAndButtonText(transaction)?.tooltipTitle}{" "}
+            failed.
           </b>{" "}
-          Something went wrong with the ICPSwap service.{" "}
+          Something went wrong with the {providerName} service.{" "}
           {getTooltipAndButtonText(transaction)?.tooltipMessage}
         </span>
       }

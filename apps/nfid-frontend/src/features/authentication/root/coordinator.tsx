@@ -21,7 +21,6 @@ import { useLoadProfileFromStorage } from "frontend/hooks"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import { TokenLaunch } from "../3rd-party/choose-account/token-launch"
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
 import { AuthenticationMachineActor } from "./root-machine"
@@ -128,8 +127,7 @@ export default function AuthenticationCoordinator({
             })
           }}
           isLoading={isPasskeyLoading}
-          appMeta={state.context?.appMeta}
-          authRequest={state.context.authRequest}
+          applicationUrl={state.context.authRequest?.hostname}
           onLoginWithPasskey={onLoginWithPasskey}
           googleButton={
             <SignInWithGoogle
@@ -162,7 +160,7 @@ export default function AuthenticationCoordinator({
           withLogo={!isIdentityKit}
           title={isIdentityKit ? "Sign in" : undefined}
           subTitle={isIdentityKit ? "to continue to" : undefined}
-          appMeta={state.context.authRequest?.hostname}
+          applicationUrl={state.context.authRequest?.hostname}
           onBack={() => send({ type: "BACK" })}
           handleAuth={handleOtherOptionsAuth}
           isLoading={isOtherOptionsLoading || storageProfileLoading}
@@ -174,7 +172,6 @@ export default function AuthenticationCoordinator({
         <Auth2FA
           email={state.context.email2FA}
           isIdentityKit={isIdentityKit}
-          appMeta={state.context?.appMeta}
           handleAuth={handle2FAAuth}
           isLoading={is2FALoading}
         />
@@ -188,7 +185,7 @@ export default function AuthenticationCoordinator({
           onAdd={() => {
             setIsAddPasskeyLoading(true)
             passkeyConnector
-              .createCredential({ isMultiDevice: false })
+              .createCredential()
               .then(() => send({ type: "CONTINUE" }))
               .catch(() => send({ type: "BACK" }))
               .finally(() => setIsAddPasskeyLoading(false))
@@ -202,14 +199,6 @@ export default function AuthenticationCoordinator({
             send({ type: "DONE" })
           }}
           email={state.context.email}
-        />
-      )
-    case state.matches("SNSBanner"):
-      return (
-        <TokenLaunch
-          onSubmit={() =>
-            send({ type: "AUTHENTICATED", data: state.context.authSession })
-          }
         />
       )
     case state.matches("End"):

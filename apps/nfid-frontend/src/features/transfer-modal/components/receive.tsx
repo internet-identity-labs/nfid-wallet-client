@@ -6,13 +6,11 @@ import { useEffect, useState } from "react"
 export interface ITransferReceive {
   preselectedAccountAddress: string
   publicKey: string
-  isOpen: boolean
 }
 
 export const TransferReceive = ({
   preselectedAccountAddress,
   publicKey,
-  isOpen,
 }: ITransferReceive) => {
   const [selectedAccountAddress, setSelectedAccountAddress] = useState(
     preselectedAccountAddress,
@@ -27,8 +25,6 @@ export const TransferReceive = ({
       }).toHex(),
     )
   }, [publicKey])
-
-  if (!isOpen) return null
 
   return (
     <Receive

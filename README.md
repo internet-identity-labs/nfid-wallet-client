@@ -43,17 +43,33 @@ Users have extremely high security guarantees against malicious code updates, lo
 
 ### Future roadmap
 
-#### SNS DAO (imminent)
+#### SNS DAO (complete)
 
 In the very near future, NFID Wallet plans to commit itself to DAO control through DFINITY's SNS launchpad, after which all code updates and treasury allocations will require DAO approval.
 
-#### Dynamic swaps
+#### Dynamic swaps (complete)
 
 With a variety of DEXs on ICP, each with different price markets and liquidity levels, users never know where they can get the best price for their swaps. NFID Wallet plans to create a system of dynamic swaps to route one swap across multiple DEXs to get the most tokens out of the swap.
 
-#### One balance
+#### Native staking
 
-Paying for gas or making other purchases across networks in a pain. Leveraging ICP's threshold signatures allows NFID Wallet to support a feature where users will be able to pay on any chain with any token they want.
+Web3 thrives on openness—users connect to services while carrying their reputation across ecosystems. This interoperability has driven the success of fungible tokens, NFTs, and DeFi. Without the ability to use a consistent identity across smart contracts, this innovation wouldn’t exist.
+
+On ICP, this seamless connectivity is still underdeveloped, contributing to lower activity. Since ICP’s genesis, for example, users have wanted to showcase their commitment by proving they’ve staked ICP in an 8-year, non-dissolving neuron. However, the absence of wallet standards and a frontend-agnostic staking platform has made this impossible.
+
+While standards now exist, a frontend-agnostic staking platform is still missing. As the gateway to the ICP ecosystem, the wallet is the natural place to integrate staking for ICP and SNS DAOs. This feature will provide developers with a critical new building block—stake verification—to enhance their applications.
+
+#### DeFi tab
+
+Currently, users managing liquidity in DeFi pools must visit each DEX separately. NFID Wallet’s DeFi Tab will aggregate all LP positions in one place, making liquidity management seamless and efficient.
+
+#### Spending cap management
+
+Dapps like KongSwap and Waterneuron request spending approvals for tokens, leading to two key user needs:
+1. Adjusting the approved spending limit.
+2. Revoking permissions when needed.
+
+This feature will allow users to easily modify or revoke token spending approvals directly within the wallet.
 
 ---
 

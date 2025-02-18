@@ -59,7 +59,8 @@ class CallCanisterService {
         contentMap,
       }
     } catch (error) {
-      throw new GenericError("The call cannot be executed")
+      console.error(error)
+      throw new GenericError((error as Error).message)
     }
   }
 
@@ -149,6 +150,7 @@ class CallCanisterService {
         cid,
         requestId,
         pollStrategy,
+        undefined,
         blsVerify,
       )
       certificate = response.certificate

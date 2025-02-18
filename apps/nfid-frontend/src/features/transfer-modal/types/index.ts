@@ -38,7 +38,7 @@ export interface ITransferResponse {
 }
 
 export type TransferMachineContext = {
-  direction: ModalType
+  direction: ModalType | null
   tokenType: TokenType
   sourceWalletAddress: string
   sourceAccount?: Wallet
@@ -56,7 +56,7 @@ export type Events =
   | { type: "SHOW" }
   | { type: "HIDE" }
   | { type: "CHANGE_TOKEN_TYPE"; data: TokenType }
-  | { type: "CHANGE_DIRECTION"; data: ModalType }
+  | { type: "CHANGE_DIRECTION"; data: ModalType | null }
   | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
   | { type: "ASSIGN_AMOUNT"; data: string }

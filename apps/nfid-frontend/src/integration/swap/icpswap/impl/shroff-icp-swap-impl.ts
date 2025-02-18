@@ -405,7 +405,6 @@ export class IcpSwapShroffBuilder {
 
       return this.buildShroff()
     } catch (e) {
-      console.error("ICPSwap error:", e)
       if (e instanceof LiquidityError) {
         throw e
       }

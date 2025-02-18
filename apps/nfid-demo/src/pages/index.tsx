@@ -2,12 +2,12 @@ import React, { useEffect } from "react"
 import { Route } from "wouter"
 
 import { Authentication } from "./new/examples/authentication"
-import { RequestCanisterCall } from "./new/examples/request-canister-call"
 import { RequestFungibleTransfer } from "./new/examples/request-transfer/request-fungible"
 import { RequestNonFungibleTransfer } from "./new/examples/request-transfer/request-non-fungible"
 import { UpdateDelegation } from "./new/examples/updated-delegation"
 import UserNavigation from "./new/header/user-navigation"
 import SideNav, { Section } from "./new/sidebar"
+import { Warning } from "./new/warning"
 
 export const RoutePathHome = "/"
 
@@ -22,7 +22,6 @@ const sections: Section[] = [
     id: "requestEXTTransfer",
     name: "4. Request NFT transfer",
   },
-  { id: "requestCanisterCall", name: "5. Request canister call" },
 ]
 
 export const RouteHome: React.FC = () => {
@@ -63,9 +62,24 @@ export const RouteHome: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-[260px,1fr]">
           <SideNav sections={sections} activeSection={activeSection} />
           <div className="p-3 pb-16 space-y-5 md:p-5">
+            <Warning>
+              <>
+                @nfid/embed NPM package is deprecated, requestCanisterCall
+                method is no longer supported. Please use{" "}
+                <a
+                  href="https://www.npmjs.com/package/@nfid/identitykit"
+                  className="text-blue-500 visited:text-purple-500 hover:underline"
+                >
+                  @nfid/identitykit
+                </a>{" "}
+                instead.
+              </>
+            </Warning>
+            <hr />
             <div className="flex items-center pb-10 md:justify-end">
               <UserNavigation />
             </div>
+            <hr />
             <Authentication />
             <hr />
             <UpdateDelegation />
@@ -73,8 +87,6 @@ export const RouteHome: React.FC = () => {
             <RequestFungibleTransfer />
             <hr />
             <RequestNonFungibleTransfer />
-            <hr />
-            <RequestCanisterCall />
           </div>
         </div>
       </main>

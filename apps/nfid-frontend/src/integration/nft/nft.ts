@@ -12,6 +12,7 @@ export interface NFT {
   getMillis(): number
   getMarketPlace(): MarketPlace
   getTokenMarketPlaceLink(): string
+  getCollectionMarketPlaceLink(): string
   getTokenId(): string
   getTokenNumber(): number
   getCollectionId(): string

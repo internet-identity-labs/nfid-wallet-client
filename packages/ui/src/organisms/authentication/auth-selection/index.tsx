@@ -1,5 +1,5 @@
 import { Separator } from "packages/ui/src/atoms/separator"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import {
@@ -11,16 +11,10 @@ import {
 } from "@nfid-frontend/ui"
 import { ExistingWallet } from "@nfid/integration"
 
+import { isWebAuthNSupported } from "frontend/integration/device"
+
 import { AuthAppMeta } from "../app-meta"
 import { ChooseWallet } from "../choose-wallet"
-
-interface AuthorizationRequest {
-  hostname?: string
-}
-
-interface AuthorizingAppMeta {
-  name?: string
-}
 
 type WalletState = {
   wallets: ExistingWallet[]
@@ -31,8 +25,7 @@ type WalletState = {
 export interface AuthSelectionProps {
   onSelectEmailAuth: (email: string) => void
   onSelectOtherAuth: () => void
-  appMeta?: AuthorizingAppMeta
-  authRequest?: AuthorizationRequest
+  applicationUrl?: string
   isIdentityKit?: boolean
   onLoginWithPasskey: () => Promise<void>
   getAllWalletsFromThisDevice: () => Promise<ExistingWallet[]>
@@ -43,8 +36,7 @@ export interface AuthSelectionProps {
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectEmailAuth,
   onSelectOtherAuth,
-  appMeta,
-  authRequest,
+  applicationUrl,
   isIdentityKit,
   onLoginWithPasskey,
   getAllWalletsFromThisDevice,
@@ -60,13 +52,10 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     defaultValues: { email: "" },
     mode: "all",
   })
-  let appHost: string = ""
-  try {
-    appHost = new URL(authRequest?.hostname ?? "").host
-    console.log(authRequest, new URL(authRequest?.hostname ?? "").host)
-  } catch (e) {
-    appHost = appMeta?.name ?? ""
-  }
+
+  const isPasskeySupported = useMemo(() => {
+    return isWebAuthNSupported()
+  }, [])
 
   useEffect(() => {
     setWalletState((prevState) => ({
@@ -110,10 +99,9 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           className="absolute cursor-pointer top-5 left-5"
         />
       )}
-      {walletState.isChooseWallet ? (
+      {walletState.isChooseWallet && isPasskeySupported ? (
         <ChooseWallet
-          authRequest={authRequest}
-          appMeta={appMeta}
+          applicationUrl={applicationUrl}
           showLogo={isIdentityKit}
           onAuthSelection={() =>
             setWalletState((prevState) => ({
@@ -127,7 +115,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       ) : (
         <>
           <AuthAppMeta
-            applicationURL={appHost}
+            applicationURL={applicationUrl}
             withLogo={!isIdentityKit}
             title={isIdentityKit ? "Sign in" : undefined}
             subTitle={<>to continue to</>}
@@ -162,19 +150,21 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             </form>
             <Separator className="my-[10px]" />
             {googleButton}
-            <Button
-              id="passkey-sign-button"
-              className="h-12 !p-0 group my-[10px]"
-              type="stroke"
-              icon={<IconCmpPasskey />}
-              block
-              onClick={onLoginWithPasskey}
-            >
-              Continue with a Passkey
-            </Button>
+            {isPasskeySupported && (
+              <Button
+                id="passkey-sign-button"
+                className="h-12 !p-0 group mt-[10px]"
+                type="stroke"
+                icon={<IconCmpPasskey />}
+                block
+                onClick={onLoginWithPasskey}
+              >
+                Continue with a Passkey
+              </Button>
+            )}
             <Button
               id="other-sign-button"
-              className="h-12 !p-0"
+              className="h-12 !p-0 mt-[10px]"
               type="ghost"
               block
               onClick={onSelectOtherAuth}

@@ -4,6 +4,7 @@ import { Address } from "@nfid-frontend/ui"
 
 import { TransferMetadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
+import { CanisterCallTitle } from "../../constants"
 
 export interface CallCanisterTransferProps {
   origin: string
@@ -24,7 +25,7 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
 
   return (
     <RPCPromptTemplate
-      title={"Approve transfer"}
+      title={CanisterCallTitle.transfer}
       subTitle={
         <>
           Request from{" "}

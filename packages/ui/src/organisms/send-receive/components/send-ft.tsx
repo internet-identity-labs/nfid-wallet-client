@@ -34,6 +34,7 @@ export interface TransferFTUiProps {
   status: SendStatus
   isSuccessOpen: boolean
   onClose: () => void
+  error: string | undefined
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -53,6 +54,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   status,
   isSuccessOpen,
   onClose,
+  error,
 }) => {
   const {
     resetField,
@@ -90,6 +92,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         isOpen={isSuccessOpen}
         status={status}
         assetImageClassname="w-[74px] h-[74px] top-[151px]"
+        error={error}
       />
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken

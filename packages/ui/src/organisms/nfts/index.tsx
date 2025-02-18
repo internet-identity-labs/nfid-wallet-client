@@ -28,6 +28,7 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   }
   totalItems: number
   currentPage: number
+  onTransferNFT: (nftId: string) => void
 }
 
 export const NFTs: FC<INFTs> = ({
@@ -37,6 +38,7 @@ export const NFTs: FC<INFTs> = ({
   links,
   totalItems,
   currentPage,
+  onTransferNFT,
 }) => {
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
@@ -102,7 +104,7 @@ export const NFTs: FC<INFTs> = ({
             tableHeader={
               <tr className="text-sm font-bold text-gray-400">
                 <th className="w-[86px]">Asset</th>
-                <th>Name</th>
+                <th>Number</th>
                 <th>Collection</th>
                 <th>ID</th>
                 <th className="w-[120px]">Floor price</th>
@@ -151,7 +153,7 @@ export const NFTs: FC<INFTs> = ({
                     className="font-semibold"
                     id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                   >
-                    {nft.getTokenName()}
+                    #{nft.getTokenNumber()}
                   </td>
                   <td id={`nft_collection_${nft.getCollectionId()}`}>
                     {nft.getCollectionName()}
@@ -171,8 +173,14 @@ export const NFTs: FC<INFTs> = ({
                       "Unknown"
                     )}
                   </td>
-                  <td className="">
-                    <div className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]">
+                  <td>
+                    <div
+                      className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onTransferNFT(nft.getTokenId())
+                      }}
+                    >
                       <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
                     </div>
                   </td>
@@ -258,7 +266,7 @@ export const NFTs: FC<INFTs> = ({
                       className="mb-[2px] text-black font-bold leading-[24px]"
                       id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                     >
-                      {nft.getTokenName()}
+                      #{nft.getTokenNumber()}
                     </p>
                     <p
                       className="text-gray-400 leading-[20px]"

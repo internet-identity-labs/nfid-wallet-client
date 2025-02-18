@@ -26,12 +26,6 @@ const LandingHomePage = React.lazy(() =>
   })),
 )
 
-const LandingSnsPage = React.lazy(() =>
-  import("./apps/marketing/landing-page").then((components) => ({
-    default: components.LandingSnsPage,
-  })),
-)
-
 const NFIDEmbedCoordinator = React.lazy(
   () => import("./features/embed/coordinator"),
 )
@@ -84,7 +78,6 @@ export const App = () => {
     <React.Suspense fallback={<BlurredLoader isLoading />}>
       <Routes>
         <Route path={"/"} element={<LandingHomePage />} />
-        <Route path={"/sns"} element={<LandingSnsPage />} />
 
         <Route
           path="/authenticate"

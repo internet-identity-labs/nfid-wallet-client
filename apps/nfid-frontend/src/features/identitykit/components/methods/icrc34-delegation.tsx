@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import useSWRImmutable from "swr/immutable"
 
 import { Tooltip } from "@nfid-frontend/ui"
 
-import { SNS_STEP_VISITED } from "frontend/features/authentication/constants"
 import { ChooseAccount } from "frontend/ui/organisms/choose-account"
 
 import InvalidIcon from "../../assets/invalid.svg"
@@ -11,7 +10,6 @@ import ValidIcon from "../../assets/valid.svg"
 import { VerificationReport } from "../../service/target.service"
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"
-import { TokenLaunch } from "../token-launch"
 
 const tooltipTextMapping: Record<string, string> = {
   icrc28Verified: "ICRC-28 verified",
@@ -53,13 +51,9 @@ const RPCComponentICRC34 = ({
     setSelectedProfile(publicProfile)
   }, [verificationReport, publicProfile])
 
-  const [showTokenLaunch, setShowTokenLaunch] = useState(false)
-
   const applicationName = new URL(origin).host
 
-  return showTokenLaunch ? (
-    <TokenLaunch onSubmit={() => onApprove(selectedProfile)} />
-  ) : (
+  return (
     <RPCPromptTemplate
       title="Approve connection"
       subTitle={
@@ -129,11 +123,7 @@ const RPCComponentICRC34 = ({
         </div>
       }
       onPrimaryButtonClick={() => {
-        if (!!localStorage.getItem(SNS_STEP_VISITED)) {
-          onApprove(selectedProfile)
-        } else {
-          setShowTokenLaunch(true)
-        }
+        onApprove(selectedProfile)
       }}
       primaryButtonText="Connect"
       isPrimaryDisabled={isLoading}

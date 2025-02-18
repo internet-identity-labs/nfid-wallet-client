@@ -37,6 +37,8 @@ export interface Icrc34Dto {
   maxTimeToLive: string
 }
 
+const ENCODE_CHUNK_SIZE = 100000
+
 class Icrc34DelegationMethodService extends InteractiveMethodService {
   public getMethod(): string {
     return "icrc34_delegation"
@@ -184,30 +186,46 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     throw new Error("Invalid account type")
   }
 
-  private getVerificationReport(targets: string[], origin: string): () => Promise<VerificationReport> {
+  private getVerificationReport(
+    targets: string[],
+    origin: string,
+  ): () => Promise<VerificationReport> {
     return () => targetService.getVerificationReport(targets, origin)
   }
 
   private fromBase64(base64: string): ArrayBuffer {
     if (typeof globalThis.Buffer !== "undefined") {
-      return globalThis.Buffer.from(base64, "base64").buffer;
+      return globalThis.Buffer.from(base64, "base64").buffer
     }
     if (typeof globalThis.atob !== "undefined") {
       return Uint8Array.from(globalThis.atob(base64), (m) => m.charCodeAt(0))
-        .buffer;
+        .buffer
     }
-    throw Error("Could not decode base64 string");
-  };
+    throw Error("Could not decode base64 string")
+  }
 
   private toBase64(bytes: ArrayBuffer): string {
     if (typeof globalThis.Buffer !== "undefined") {
-      return globalThis.Buffer.from(bytes).toString("base64");
+      return globalThis.Buffer.from(bytes).toString("base64")
     }
     if (typeof globalThis.btoa !== "undefined") {
-      return btoa(String.fromCharCode(...new Uint8Array(bytes)));
+      return btoa(
+        Array.from({ length: Math.ceil(bytes.byteLength / ENCODE_CHUNK_SIZE) })
+          .map((_, index) =>
+            String.fromCharCode(
+              ...new Uint8Array(
+                bytes.slice(
+                  index * ENCODE_CHUNK_SIZE,
+                  (index + 1) * ENCODE_CHUNK_SIZE,
+                ),
+              ),
+            ),
+          )
+          .join(""),
+      )
     }
-    throw Error("Could not encode base64 string");
-  };
+    throw Error("Could not encode base64 string")
+  }
 }
 
 export const icrc34DelegationMethodService = new Icrc34DelegationMethodService()

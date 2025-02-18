@@ -28,6 +28,7 @@ export const idlFactory = ({ IDL }: any) => {
     Passkey: IDL.Null,
     Recovery: IDL.Null,
     Unknown: IDL.Null,
+    Password: IDL.Null,
   })
   const AccessPointRequest = IDL.Record({
     icon: IDL.Text,
@@ -57,6 +58,7 @@ export const idlFactory = ({ IDL }: any) => {
     access_point: IDL.Opt(AccessPointRequest),
     wallet: IDL.Opt(WalletVariant),
     email: IDL.Opt(IDL.Text),
+    name: IDL.Opt(IDL.Text),
   })
   const PersonaResponse = IDL.Record({
     domain: IDL.Text,

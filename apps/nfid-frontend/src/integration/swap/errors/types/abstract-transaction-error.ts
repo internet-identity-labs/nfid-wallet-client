@@ -1,3 +1,5 @@
+import { SwapName } from "../../types/enums"
+
 export abstract class ExchangeError extends Error {
-  abstract getDisplayMessage(): string
+  abstract getDisplayMessage(provider?: SwapName): string
 }

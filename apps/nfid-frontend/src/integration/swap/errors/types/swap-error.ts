@@ -1,9 +1,10 @@
+import { SwapName } from "../../types/enums"
 import { ExchangeError } from "./abstract-transaction-error"
-import { SWAP_ERROR } from "./constants"
+import { getSwapError } from "./constants"
 
 export class SwapError extends ExchangeError {
-  getDisplayMessage(): string {
-    return SWAP_ERROR
+  getDisplayMessage(provider: SwapName): string {
+    return getSwapError(provider)
   }
 
   constructor(e: Error | string) {

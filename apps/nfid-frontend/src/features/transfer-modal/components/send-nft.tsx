@@ -1,6 +1,6 @@
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
@@ -14,18 +14,24 @@ interface ITransferNFT {
   preselectedNFTId?: string
   selectedReceiverWallet?: string
   onClose: () => void
-  isOpen: boolean
+  setErrorMessage: (message: string) => void
+  setSuccessMessage: (message: string) => void
 }
 
 export const TransferNFT = ({
   selectedReceiverWallet,
   preselectedNFTId = "",
   onClose,
-  isOpen,
+  setErrorMessage,
+  setSuccessMessage,
 }: ITransferNFT) => {
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
+
+  useEffect(() => {
+    setSelectedNFTId(preselectedNFTId)
+  }, [preselectedNFTId])
 
   const { data: nfts, isLoading: isNftListLoading } = useSWR(
     "nftList",
@@ -47,11 +53,8 @@ export const TransferNFT = ({
 
       transferEXT(selectedNFT.getTokenId(), identity, values.to)
         .then(() => {
-          toaster.success(
+          setSuccessMessage(
             `Transaction ${selectedNFT?.getTokenName()} successful`,
-            {
-              toastId: "successTransfer",
-            },
           )
           setStatus(SendStatus.COMPLETED)
         })
@@ -61,14 +64,12 @@ export const TransferNFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          toaster.error("Something went wrong")
+          setErrorMessage("Something went wrong")
           setStatus(SendStatus.FAILED)
         })
     },
-    [selectedNFT],
+    [selectedNFT, setErrorMessage, setSuccessMessage],
   )
-
-  if (!isOpen) return null
 
   return (
     <TransferNFTUi

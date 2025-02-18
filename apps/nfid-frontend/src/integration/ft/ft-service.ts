@@ -4,7 +4,10 @@ import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { nftService } from "src/integration/nft/nft-service"
 
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  ICP_CANISTER_ID,
+  NFIDW_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
@@ -20,13 +23,22 @@ const sortTokens = (tokens: FT[]) => {
     [Category.ChainFusionTestnet]: 6,
   }
 
-  return tokens.sort((a, b) => {
+  const nfidwIndex = tokens.findIndex(
+    (t) => t.getTokenAddress() === NFIDW_CANISTER_ID,
+  )
+  const nfidwToken = nfidwIndex !== -1 ? tokens.splice(nfidwIndex, 1)[0] : null
+
+  tokens.sort((a, b) => {
     const aCategory =
       categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
     const bCategory =
       categoryOrder[b.getTokenCategory()] || Number.MAX_SAFE_INTEGER
     return aCategory - bCategory
   })
+
+  if (nfidwToken) tokens.splice(1, 0, nfidwToken)
+
+  return tokens
 }
 
 export const filterTokens = (ft: FT[], filterText: string): FT[] => {

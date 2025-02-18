@@ -4,6 +4,7 @@ import React from "react"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
 
+import { CanisterCallTitle } from "../../constants"
 import { ICRC2Metadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
@@ -31,14 +32,14 @@ const CallCanisterICRC2SpendingCap = ({
 
   return (
     <RPCPromptTemplate
-      title={`Approve spending cap`}
+      title={CanisterCallTitle.icrc2_approve}
       subTitle={
         <>
           Request from{" "}
           <a
             href={origin}
             target="_blank"
-            className="text-primaryButtonColor no-underline"
+            className="no-underline text-primaryButtonColor"
             rel="noreferrer"
           >
             {applicationName}

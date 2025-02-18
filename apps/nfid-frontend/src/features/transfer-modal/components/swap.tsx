@@ -1,5 +1,4 @@
 import { resetIntegrationCache } from "packages/integration/src/cache"
-import toaster from "packages/ui/src/atoms/toast"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -16,8 +15,8 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
-  CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
+  NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
@@ -35,15 +34,25 @@ import {
 const QUOTE_REFETCH_TIMER = 30
 
 interface ISwapFT {
+  preselectedSourceTokenAddress: string | undefined
   onClose: () => void
-  isOpen: boolean
   onError: (value: boolean) => void
+  setErrorMessage: (message: string) => void
+  setSuccessMessage: (message: string) => void
+  hideZeroBalance: boolean
 }
 
-export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
+export const SwapFT = ({
+  preselectedSourceTokenAddress,
+  onClose,
+  onError,
+  hideZeroBalance,
+  setErrorMessage,
+  setSuccessMessage,
+}: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
-  const [toTokenAddress, setToTokenAddress] = useState(CKBTC_CANISTER_ID)
+  const [toTokenAddress, setToTokenAddress] = useState(NFIDW_CANISTER_ID)
   const [swapProviders, setSwapProviders] = useState<
     Map<SwapName, Shroff | undefined>
   >(new Map())
@@ -60,17 +69,38 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
   const [slippage, setSlippage] = useState(2)
+  const [providerError, setProviderError] = useState<
+    ServiceUnavailableError | undefined
+  >()
+  const previousFromTokenAddress = useRef(fromTokenAddress)
 
-  const isOpenRef = useRef(isOpen)
+  useEffect(() => {
+    if (!preselectedSourceTokenAddress) {
+      setFromTokenAddress(ICP_CANISTER_ID)
+    } else {
+      setFromTokenAddress(preselectedSourceTokenAddress)
+    }
+  }, [preselectedSourceTokenAddress])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
+
   const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
+    const activeTokens = tokens.filter(
+      (token) => token.getTokenState() === State.Active,
+    )
+    if (!hideZeroBalance) return activeTokens
+    const tokensWithBalance = activeTokens.filter(
+      (token) =>
+        token.getTokenAddress() === ICP_CANISTER_ID ||
+        token.getTokenBalance() !== BigInt(0),
+    )
+    return tokensWithBalance
+  }, [tokens, hideZeroBalance])
+
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
@@ -107,39 +137,42 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
     onError(Boolean(swapError))
   }, [swapError, onError])
 
-  useEffect(() => {
-    isOpenRef.current = isOpen
-    setSwapStep(0)
-    if (!isOpen) {
-      refresh()
-      setIsSuccessOpen(false)
-      formMethods.reset()
-    }
-  }, [isOpen, formMethods])
-
   const { watch } = formMethods
   const amount = watch("amount")
 
-  useEffect(() => {
-    const getProviders = async () => {
-      try {
-        const providers = await swapService.getSwapProviders(
-          fromTokenAddress,
-          toTokenAddress,
-        )
+  const isEqual = fromTokenAddress === toTokenAddress
 
-        setSwapProviders(providers)
-        setLiquidityError(undefined)
-      } catch (error) {
-        if (error instanceof LiquidityError) {
-          setSwapProviders(new Map())
-          setLiquidityError(error)
-        }
+  useEffect(() => {
+    if (isEqual) {
+      setToTokenAddress(previousFromTokenAddress.current)
+    }
+    previousFromTokenAddress.current = fromTokenAddress
+  }, [fromTokenAddress, isEqual])
+
+  const getProviders = useCallback(async () => {
+    try {
+      const providers = await swapService.getSwapProviders(
+        fromTokenAddress,
+        toTokenAddress,
+      )
+
+      setSwapProviders(providers)
+      setLiquidityError(undefined)
+      setProviderError(undefined)
+    } catch (error) {
+      if (error instanceof LiquidityError) {
+        setSwapProviders(new Map())
+        setLiquidityError(error)
+      }
+      if (error instanceof ServiceUnavailableError) {
+        setProviderError(error)
       }
     }
-
-    getProviders()
   }, [fromTokenAddress, toTokenAddress])
+
+  useEffect(() => {
+    getProviders()
+  }, [fromTokenAddress, toTokenAddress, getProviders])
 
   useEffect(() => {
     const getShroff = async () => {
@@ -149,9 +182,7 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
         setShroff(shroff)
       } catch (error) {
         setShroff(undefined)
-        if (error instanceof ServiceUnavailableError) {
-          setShroffError(error)
-        } else if (error instanceof LiquidityError) {
+        if (error instanceof LiquidityError) {
           setLiquidityError(error)
         } else {
           console.error("Quote error: ", error)
@@ -237,15 +268,6 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
     }, true)
   }, [toToken, fromToken, refetchQuote, amount, shroff])
 
-  const refresh = () => {
-    setShroffError(undefined)
-    setLiquidityError(undefined)
-    setSwapError(undefined)
-    setFromTokenAddress(ICP_CANISTER_ID)
-    setToTokenAddress(CKBTC_CANISTER_ID)
-    setSwapStep(0)
-  }
-
   const submit = useCallback(async () => {
     const sourceAmount = quote?.getSourceAmountPrettifiedWithSymbol()
     const targetAmount = quote?.getTargetAmountPrettifiedWithSymbol()
@@ -264,17 +286,11 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
     shroff
       .swap(identity)
       .then(() => {
-        if (!isOpenRef.current)
-          toaster.success(
-            `Swap ${sourceAmount} to ${targetAmount} successful`,
-            {
-              toastId: "successSwap",
-            },
-          )
+        setSuccessMessage(`Swap ${sourceAmount} to ${targetAmount} successful`)
       })
       .catch((error) => {
         setSwapError(error)
-        if (!isOpenRef.current) toaster.error("Something went wrong")
+        setErrorMessage("Something went wrong")
       })
       .finally(() => {
         getTokensWithUpdatedBalance(
@@ -286,9 +302,15 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
       })
 
     setGetTransaction(shroff.getSwapTransaction())
-  }, [quote, shroff, tokens, fromTokenAddress, toTokenAddress])
-
-  if (!isOpen) return null
+  }, [
+    quote,
+    shroff,
+    tokens,
+    fromTokenAddress,
+    toTokenAddress,
+    setErrorMessage,
+    setSuccessMessage,
+  ])
 
   return (
     <FormProvider {...formMethods}>
@@ -304,10 +326,10 @@ export const SwapFT = ({ onClose, isOpen, onError }: ISwapFT) => {
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || isQuoteValidating}
         quote={quote}
-        showServiceError={shroffError?.name === "ServiceUnavailableError"}
+        providerError={providerError}
         showLiquidityError={liquidityError}
         slippageQuoteError={slippageQuoteError}
-        clearQuoteError={refresh}
+        refreshProviders={getProviders}
         step={swapStep}
         error={swapError}
         isSuccessOpen={isSuccessOpen}

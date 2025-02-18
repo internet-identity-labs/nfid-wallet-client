@@ -134,6 +134,7 @@ export type DeviceType =
   | { Passkey: null }
   | { Recovery: null }
   | { Unknown: null }
+  | { Password: null }
 export type Error = string
 export interface GetLatestLogMessagesParameters {
   upToTimeNanos: [] | [Nanos]
@@ -165,6 +166,7 @@ export interface HTTPAccountRequest {
   access_point: [] | [AccessPointRequest]
   wallet: [] | [WalletVariant]
   email: [] | [string]
+  name: [] | [string]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]

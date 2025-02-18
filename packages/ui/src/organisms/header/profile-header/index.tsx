@@ -77,6 +77,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               assetsLink={assetsLink}
               hasVaults={hasVaults}
               profileConstants={profileConstants}
+              isOpen={isPopupVisible}
             />
           )}
         </div>

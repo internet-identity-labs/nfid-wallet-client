@@ -31,9 +31,11 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
 
   return (
     <>
-      <div className={clsx("w-full h-full", className)} id={id}>
-        {children}
-      </div>
+      {children && (
+        <div className={clsx("w-full h-full", className)} id={id}>
+          {children}
+        </div>
+      )}
       {isVisible && (
         <BlurOverlay
           id="loader"

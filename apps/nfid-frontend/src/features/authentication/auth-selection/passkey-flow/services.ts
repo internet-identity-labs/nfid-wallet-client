@@ -215,7 +215,7 @@ export class PasskeyConnector {
     return profile
   }
 
-  async createCredential({ isMultiDevice }: { isMultiDevice: boolean }) {
+  async createCredential() {
     const { delegationIdentity } = authState.get()
     const imDevices = await this.getDevices()
 
@@ -247,11 +247,6 @@ export class PasskeyConnector {
       credential = (await navigator.credentials.create({
         publicKey: {
           authenticatorSelection: {
-            authenticatorAttachment: isSafari()
-              ? "platform"
-              : isMultiDevice
-              ? "cross-platform"
-              : "platform",
             userVerification: "preferred",
             residentKey: "required",
           },

@@ -45,7 +45,7 @@ const NFTsPage = () => {
     const { items } = data
     const newPlaceholders = Array(items.length).fill(null)
 
-    setNfts((prevNfts) => [...prevNfts, ...newPlaceholders]) // Add placeholders
+    setNfts((prevNfts) => [...prevNfts, ...newPlaceholders])
 
     Promise.all(
       items.map(async (nft, index) => {

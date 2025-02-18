@@ -122,10 +122,8 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   )
 
   return (
-    <div className="flex flex-col shrink-0" id={"choose_modal"}>
-      <div className="flex shrink-0" onClick={() => setIsModalVisible(true)}>
-        {trigger}
-      </div>
+    <div id={"choose_modal"}>
+      <div onClick={() => setIsModalVisible(true)}>{trigger}</div>
       <div
         className={clsx(
           "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",

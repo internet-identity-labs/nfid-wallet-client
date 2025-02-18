@@ -185,7 +185,7 @@ export default function AuthenticationCoordinator({
           onAdd={() => {
             setIsAddPasskeyLoading(true)
             passkeyConnector
-              .createCredential({ isMultiDevice: false })
+              .createCredential()
               .then(() => send({ type: "CONTINUE" }))
               .catch(() => send({ type: "BACK" }))
               .finally(() => setIsAddPasskeyLoading(false))

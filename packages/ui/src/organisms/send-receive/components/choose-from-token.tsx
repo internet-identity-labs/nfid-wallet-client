@@ -30,8 +30,8 @@ interface ChooseFromTokenProps {
   usdRate?: string
   title: string
   isSwap?: boolean
-  rebuildLayout: boolean
-  setRebuildLayout: (v: boolean) => void
+  rebuildLayout?: boolean
+  setRebuildLayout?: (v: boolean) => void
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -86,7 +86,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   }, [token, fee, userBalance, isMaxAvailable, setValue])
 
   useEffect(() => {
-    if (!initedToken) return
+    if (!initedToken || !setRebuildLayout) return
 
     const balance = initedToken.getTokenBalanceFormatted()
     if (!balance || balance.length < BALANCE_EDGE_LENGTH) {

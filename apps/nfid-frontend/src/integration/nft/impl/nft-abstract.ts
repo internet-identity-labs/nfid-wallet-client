@@ -13,6 +13,12 @@ import { NFT, NFTDetails } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
 
+export interface NftError {
+  props: {
+    Message: string
+  }
+}
+
 export abstract class NftImpl implements NFT {
   private readonly millis: number
   private readonly marketPlace: MarketPlace
@@ -24,6 +30,7 @@ export abstract class NftImpl implements NFT {
   private readonly tokenFloorPriceICP?: number
   private tokenFloorPriceUSD?: number
   private inited: boolean
+  private error: string | undefined
 
   protected assetPreview: AssetPreview | undefined
   protected details: NFTDetails | undefined
@@ -38,12 +45,26 @@ export abstract class NftImpl implements NFT {
     this.tokenFloorPriceICP = geekData.tokenFloorPriceIcp
     this.tokenId = encodeTokenIdentifier(this.collectionId, this.tokenNumber)
     this.inited = false
+    this.error = undefined
   }
 
   async init() {
-    this.assetPreview = await this.getAssetPreviewAsync()
-    this.inited = true
-    return this
+    try {
+      this.assetPreview = await this.getAssetPreviewAsync()
+      this.inited = true
+      return this
+    } catch (e) {
+      this.setError(e as NftError)
+      return this
+    }
+  }
+
+  setError(e: NftError): void {
+    this.error = e.props.Message
+  }
+
+  getError(): string | undefined {
+    return this.error
   }
 
   isInited(): boolean {
@@ -107,10 +128,7 @@ export abstract class NftImpl implements NFT {
 
   abstract getDetails(): Promise<NFTDetails>
 
-  getAssetPreview(): AssetPreview {
-    if (this.assetPreview === undefined) {
-      throw new Error("NFT not inited")
-    }
+  getAssetPreview(): AssetPreview | undefined {
     return this.assetPreview
   }
 

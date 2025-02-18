@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 
 import useClickOutside from "../../utils/use-click-outside"
@@ -41,22 +42,27 @@ export const Dropdown = ({
       >
         {triggerElement}
       </div>
-      {isDropdownOpen && (
-        <div
-          className={clsx(
-            "right-[-10px]",
-            "bg-white rounded-md mt-[1px] absolute z-[49]",
-            className,
-          )}
-          style={{
-            boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)",
-            transform: position === "top" ? "translateY(calc(-100% - 27px))" : undefined,
-          }}
-          onClick={() => setIsDropdownOpen(false)}
-        >
-          <div style={{ minWidth: `${minWidth}px` }}>{children}</div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isDropdownOpen && (
+          <motion.div
+            className={clsx(
+              "right-[-10px]",
+              "bg-white rounded-md mt-[1px] absolute z-[49]",
+              className,
+            )}
+            style={{
+              boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)",
+            }}
+            initial={{ y: position === "top" ? -10 : 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: position === "top" ? -10 : 10, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            onClick={() => setIsDropdownOpen(false)}
+          >
+            <div style={{ minWidth: `${minWidth}px` }}>{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

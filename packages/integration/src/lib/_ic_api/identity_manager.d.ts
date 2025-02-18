@@ -166,6 +166,7 @@ export interface HTTPAccountRequest {
   access_point: [] | [AccessPointRequest]
   wallet: [] | [WalletVariant]
   email: [] | [string]
+  name: [] | [string]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]

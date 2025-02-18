@@ -58,6 +58,7 @@ export const idlFactory = ({ IDL }: any) => {
     access_point: IDL.Opt(AccessPointRequest),
     wallet: IDL.Opt(WalletVariant),
     email: IDL.Opt(IDL.Text),
+    name: IDL.Opt(IDL.Text),
   })
   const PersonaResponse = IDL.Record({
     domain: IDL.Text,

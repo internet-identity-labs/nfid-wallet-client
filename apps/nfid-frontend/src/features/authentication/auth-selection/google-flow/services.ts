@@ -1,15 +1,17 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import {
   authStorage,
-  KEY_STORAGE_KEY,
   KEY_STORAGE_DELEGATION,
+  KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 
 import {
-  Profile,
   authState,
+  DeviceType,
   googleSigninV2Service,
+  Icon,
   im,
+  Profile,
   replaceActorIdentity,
 } from "@nfid/integration"
 
@@ -46,7 +48,8 @@ export const signWithGoogleService = async (
     profile = await createNFIDProfile({
       delegationIdentity: delegation,
       email,
-      isGoogle: true,
+      deviceType: DeviceType.Google,
+      icon: Icon.google,
     })
   }
 

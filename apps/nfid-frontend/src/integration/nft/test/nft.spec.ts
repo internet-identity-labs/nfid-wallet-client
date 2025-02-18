@@ -46,8 +46,8 @@ describe("nft test suite", () => {
       expect(extNft.getMarketPlace()).toEqual("EXT")
       expect(extNft.getMillis()).toEqual(1721253726158)
       const extAssetPreview = extNft.getAssetPreview()
-      expect(extAssetPreview.format).toEqual("img")
-      expect(extAssetPreview.url).toEqual(
+      expect(extAssetPreview?.format).toEqual("img")
+      expect(extAssetPreview?.url).toEqual(
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(extNft.getTokenLink()).toEqual(
@@ -105,8 +105,8 @@ describe("nft test suite", () => {
       expect(memecakeNft.getMarketPlace()).toEqual("MEMECAKE")
       expect(memecakeNft.getMillis()).toEqual(1721253870829)
       const memcakeAsset = memecakeNft.getAssetPreview()
-      expect(memcakeAsset.format).toEqual("img")
-      expect(memcakeAsset.url).toEqual(
+      expect(memcakeAsset?.format).toEqual("img")
+      expect(memcakeAsset?.url).toEqual(
         "https://images.entrepot.app/t/gdeb6-lqaaa-aaaah-abvpq-cai/ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a",
       )
       const memeCakeDetails = await memecakeNft.getDetails()
@@ -144,8 +144,8 @@ describe("nft test suite", () => {
         (nft) => nft.getCollectionId() === "gfcya-pyaaa-aaaan-qbxda-cai",
       )[0]
       const icpswapAsset = icpswapNft.getAssetPreview()
-      expect(icpswapAsset.format).toEqual("video")
-      expect(icpswapAsset.url).toEqual(
+      expect(icpswapAsset?.format).toEqual("video")
+      expect(icpswapAsset?.url).toEqual(
         "https://gfcya-pyaaa-aaaan-qbxda-cai.raw.ic0.app/100000",
       )
       expect(icpswapNft.getTokenFloorPriceIcpFormatted()).toEqual("0.20 ICP")
@@ -234,8 +234,8 @@ describe("nft test suite", () => {
       expect(nft.getMillis()).toEqual(1721253726158)
 
       const assetPreview = nft.getAssetPreview()
-      expect(assetPreview.format).toEqual("img")
-      expect(assetPreview.url).toEqual(
+      expect(assetPreview?.format).toEqual("img")
+      expect(assetPreview?.url).toEqual(
         "https://images.entrepot.app/t/64x4q-laaaa-aaaal-qdjca-cai/yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(nft.getTokenLink()).toEqual(

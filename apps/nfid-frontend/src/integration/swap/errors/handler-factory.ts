@@ -33,7 +33,7 @@ export class ErrorHandlerFactory {
         }
         throw new Error("Unsupported IcpSwap error")
       case SwapName.Kongswap: {
-        if (transaction.getStage() === SwapStage.Swap) {
+        if (transaction.getStage() <= SwapStage.Swap) {
           return new KongswapSwapHandler(transaction)
         }
         if (transaction.getStage() === SwapStage.TransferNFID) {

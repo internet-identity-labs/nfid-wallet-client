@@ -39,11 +39,18 @@ export const getTooltipAndButtonText = (
 
   const stage = transaction.getStage()
 
+  const swapStages = new Set([
+    SwapStage.TransferSwap,
+    SwapStage.Deposit,
+    SwapStage.Swap,
+  ])
+  const withdrawStages = new Set([SwapStage.Withdraw, SwapStage.TransferNFID])
+
   if (stage === SwapStage.Completed || !transaction.getErrors().length) return
 
   if (
     transaction.getSwapName() === SwapName.Kongswap &&
-    stage <= SwapStage.Swap
+    swapStages.has(stage)
   ) {
     return {
       buttonText: "Contact support",
@@ -54,7 +61,7 @@ export const getTooltipAndButtonText = (
 
   if (
     transaction.getSwapName() === SwapName.Kongswap &&
-    stage > SwapStage.Swap
+    withdrawStages.has(stage)
   ) {
     return {
       buttonText: "Complete swap",

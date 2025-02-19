@@ -16,6 +16,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 export interface AbstractAuthSession {
   // Note: how do we transport these identities?
   anchor: number
+  name?: string
   identity?: SignIdentity
   delegationIdentity: DelegationIdentity
 }

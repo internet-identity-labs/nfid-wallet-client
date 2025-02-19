@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { Separator } from "packages/ui/src/atoms/separator"
 import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -24,24 +25,29 @@ type WalletState = {
 
 export interface AuthSelectionProps {
   onSelectEmailAuth: (email: string) => void
-  onSelectOtherAuth: () => void
-  applicationUrl?: string
+  onSelectOtherAuth?: () => void
+  applicationURL?: string
   isIdentityKit?: boolean
   onLoginWithPasskey: () => Promise<void>
   getAllWalletsFromThisDevice: () => Promise<ExistingWallet[]>
   googleButton: JSX.Element
   isLoading: boolean
+  passKeySupported?: boolean
+  type?: "sign-in" | "sign-up"
+  onTypeChange: () => unknown
 }
 
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectEmailAuth,
   onSelectOtherAuth,
-  applicationUrl,
+  applicationURL,
   isIdentityKit,
   onLoginWithPasskey,
   getAllWalletsFromThisDevice,
   googleButton,
   isLoading,
+  type = "sign-in",
+  onTypeChange,
 }) => {
   const [walletState, setWalletState] = useState<WalletState>({
     wallets: [],
@@ -57,22 +63,26 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     return isWebAuthNSupported()
   }, [])
 
+  const isSignIn = type === "sign-in"
+
   useEffect(() => {
-    setWalletState((prevState) => ({
-      ...prevState,
-      isChooseWalletLoading: true,
-    }))
+    if (isSignIn) {
+      setWalletState((prevState) => ({
+        ...prevState,
+        isChooseWalletLoading: true,
+      }))
 
-    getAllWalletsFromThisDevice().then((wallets) => {
-      if (!wallets.length) return
+      getAllWalletsFromThisDevice().then((wallets) => {
+        if (!wallets.length) return
 
-      setWalletState({
-        wallets,
-        isChooseWallet: true,
-        isChooseWalletLoading: false,
+        setWalletState({
+          wallets,
+          isChooseWallet: true,
+          isChooseWalletLoading: false,
+        })
       })
-    })
-  }, [])
+    }
+  }, [isSignIn])
 
   const errorMessage =
     formState.errors.email?.type === "required"
@@ -84,7 +94,9 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   return (
     <BlurredLoader
       isLoading={isLoading || walletState.isChooseWalletLoading}
-      className="flex flex-col flex-1"
+      className={clsx("flex flex-col flex-1", {
+        "min-h-[536px]": !walletState.isChooseWallet || !isPasskeySupported,
+      })}
       overlayClassnames="rounded-[24px]"
       id="auth-selection"
     >
@@ -101,7 +113,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       )}
       {walletState.isChooseWallet && isPasskeySupported ? (
         <ChooseWallet
-          applicationUrl={applicationUrl}
+          applicationURL={applicationURL}
           showLogo={isIdentityKit}
           onAuthSelection={() =>
             setWalletState((prevState) => ({
@@ -115,10 +127,17 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       ) : (
         <>
           <AuthAppMeta
-            applicationURL={applicationUrl}
+            applicationURL={applicationURL}
             withLogo={!isIdentityKit}
-            title={isIdentityKit ? "Sign in" : undefined}
-            subTitle={<>to continue to</>}
+            title={
+              isIdentityKit ? (isSignIn ? "Sign in" : "Sign up") : undefined
+            }
+            subTitle={
+              <>
+                {!isIdentityKit && isSignIn ? "Sign in " : "Sign up "}to
+                continue to
+              </>
+            }
           />
           <div className="mt-7">
             <form
@@ -162,17 +181,41 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                 Continue with a Passkey
               </Button>
             )}
-            <Button
-              id="other-sign-button"
-              className="h-12 !p-0 mt-[10px]"
-              type="ghost"
-              block
-              onClick={onSelectOtherAuth}
-            >
-              Other sign in options
-            </Button>
+            {isSignIn && (
+              <Button
+                id="other-sign-button"
+                className="h-12 !p-0 mt-[10px]"
+                type="ghost"
+                block
+                onClick={onSelectOtherAuth}
+              >
+                Other sign in options
+              </Button>
+            )}
           </div>
-          <div className="flex-1" />
+          <div className="flex-1 flex justify-center">
+            {isSignIn ? (
+              <div className="text-sm mt-auto">
+                Don’t have an NFID Wallet?{" "}
+                <span
+                  onClick={onTypeChange}
+                  className="cursor-pointer text-primaryButtonColor font-bold"
+                >
+                  Sign up
+                </span>
+              </div>
+            ) : (
+              <div className="text-sm mt-auto">
+                Already have an NFID Wallet?{" "}
+                <span
+                  onClick={onTypeChange}
+                  className="cursor-pointer text-primaryButtonColor font-bold"
+                >
+                  Sign in
+                </span>
+              </div>
+            )}
+          </div>
         </>
       )}
     </BlurredLoader>

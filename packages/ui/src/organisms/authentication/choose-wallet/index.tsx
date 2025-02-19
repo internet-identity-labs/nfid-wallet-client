@@ -10,7 +10,7 @@ export interface ChooseWalletProps {
   onAuthSelection: () => void
   onLoginWithPasskey: (allowedPasskeys: any[]) => Promise<void>
   showLogo?: boolean
-  applicationUrl?: string
+  applicationURL?: string
   wallets?: ExistingWallet[]
 }
 
@@ -18,7 +18,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
   onAuthSelection,
   onLoginWithPasskey,
   showLogo,
-  applicationUrl,
+  applicationURL,
   wallets,
 }) => {
   if (!wallets) return null
@@ -26,7 +26,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
     <>
       <div className="flex flex-col w-full h-full text-sm text-center">
         <AuthAppMeta
-          applicationURL={applicationUrl}
+          applicationURL={applicationURL}
           withLogo={!showLogo}
           title={"Choose Wallet"}
           subTitle={<>to continue to</>}

@@ -25,6 +25,7 @@ import {
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 
 interface ErrorStage {
   buttonText: string
@@ -115,6 +116,7 @@ export const ActivityTableRow = ({
   transaction,
 }: IActivityTableRow) => {
   const [isLoading, setIsLoading] = useState(false)
+  const { profile } = useProfile()
 
   const providerName =
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
@@ -149,18 +151,21 @@ export const ActivityTableRow = ({
       await errorHandler.completeTransaction(identity)
     } catch (e) {
       if (e instanceof ContactSupportError) {
-        const email = "kongswap@gmail.com"
-        const subject = encodeURIComponent("Swap failed")
+        const email = "support@identitylabs.ooo"
+        const subject = encodeURIComponent(`Swap via ${providerName} is failed`)
         const body = encodeURIComponent(
-          `User ${identity
-            .getPrincipal()
-            .toText()} could not finish swap from ${transaction.getSourceLedger()} to ${transaction.getTargetLedger()}`,
+          `Hello NFID Wallet support team,\n\n` +
+            `I cannot finalize my swap and would appreciate your immediate help with it!\n\n` +
+            `**Swap details:**\n` +
+            `- From: ${transaction.getSourceLedger()}\n` +
+            `- To: ${transaction.getTargetLedger()}\n` +
+            `- My NFID Wallet number: ${profile?.anchor}\n` +
+            `- My wallet address: ${identity.getPrincipal().toText()}\n\n` +
+            `Thanks,\n${profile?.name || ""}`,
         )
 
         window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
-        return
       }
-      console.error("CompleteSwap Error: ", e)
     } finally {
       setIsLoading(false)
     }

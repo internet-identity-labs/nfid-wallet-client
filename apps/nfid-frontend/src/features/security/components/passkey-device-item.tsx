@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { motion, AnimatePresence } from "framer-motion"
 import React from "react"
 
 import { IconCmpDots, IconCmpWarning, Tooltip } from "@nfid-frontend/ui"
@@ -76,39 +77,46 @@ export const PasskeyDeviceItem = ({
               setIsTooltipOpen(!isTooltipOpen)
             }}
           />
-          <div
-            className={clsx(
-              "absolute top-6 right-0 w-[150px]",
-              "bg-white rounded-[12px] shadow-md",
-              "text-sm z-10",
-              !isTooltipOpen && "hidden",
+          <AnimatePresence>
+            {isTooltipOpen && (
+              <motion.div
+                className={clsx(
+                  "absolute top-6 right-0 w-[150px]",
+                  "bg-white rounded-[12px] shadow-md",
+                  "text-sm z-10",
+                )}
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 10, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <DetailsPasskey device={device}>
+                  <div
+                    className={clsx(
+                      "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
+                      "flex items-center space-x-2 cursor-pointer",
+                    )}
+                  >
+                    <span>Details</span>
+                  </div>
+                </DetailsPasskey>
+                <DeletePasskey
+                  handleWithLoading={handleWithLoading}
+                  device={device}
+                  showLastPasskeyWarning={showLastPasskeyWarning}
+                >
+                  <div
+                    className={clsx(
+                      "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
+                      "flex items-center space-x-2 cursor-pointer",
+                    )}
+                  >
+                    <span>Remove</span>
+                  </div>
+                </DeletePasskey>
+              </motion.div>
             )}
-          >
-            <DetailsPasskey device={device}>
-              <div
-                className={clsx(
-                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
-                  "flex items-center space-x-2 cursor-pointer",
-                )}
-              >
-                <span>Details</span>
-              </div>
-            </DetailsPasskey>
-            <DeletePasskey
-              handleWithLoading={handleWithLoading}
-              device={device}
-              showLastPasskeyWarning={showLastPasskeyWarning}
-            >
-              <div
-                className={clsx(
-                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
-                  "flex items-center space-x-2 cursor-pointer",
-                )}
-              >
-                <span>Remove</span>
-              </div>
-            </DeletePasskey>
-          </div>
+          </AnimatePresence>
         </div>
       </td>
     </tr>

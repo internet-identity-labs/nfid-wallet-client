@@ -55,6 +55,7 @@
     "clsx": "2.1.1",
     "comment-parser": "^1.4.1",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.4.3",
     "dompurify": "3.2.4",
     "idb": "8.0.0",
     "immer": "10.1.1",

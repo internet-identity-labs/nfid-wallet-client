@@ -38,7 +38,6 @@ import {
   storePasskey,
 } from "@nfid/integration"
 
-import isSafari from "frontend/features/security/utils"
 import { getPlatformInfo } from "frontend/integration/device"
 import {
   createNFIDProfile,
@@ -145,17 +144,13 @@ export class PasskeyConnector {
     }
   }
 
-  async registerWithPasskey(
-    name: string,
-    { isMultiDevice }: { isMultiDevice: boolean },
-  ) {
+  async registerWithPasskey(name: string) {
     let credential: PublicKeyCredential
     const nextBorrowedAnchor = randomBytes(16) //TODO WIP borrow anchor with captcha
     try {
       credential = await this.createNavigatorCredential(
         nextBorrowedAnchor,
         name,
-        isMultiDevice,
       )
       debugger
     } catch (e) {
@@ -342,6 +337,7 @@ export class PasskeyConnector {
 
       return {
         anchor: profile.anchor,
+        name: profile.name,
         delegationIdentity: delegationIdentity,
         identity: multiIdent._actualIdentity!,
       }
@@ -474,19 +470,9 @@ export class PasskeyConnector {
   private async createNavigatorCredential(
     nextBorrowedAnchor: BufferSource,
     name: string,
-    isMultiDevice: boolean,
   ): Promise<PublicKeyCredential> {
     return (await navigator.credentials.create({
       publicKey: {
-        authenticatorSelection: {
-          authenticatorAttachment: isSafari()
-            ? "platform"
-            : isMultiDevice
-            ? "cross-platform"
-            : "platform",
-          userVerification: "preferred",
-          residentKey: "required",
-        },
         attestation: "direct",
         challenge: this._createChallengeBuffer(),
         pubKeyCredParams: [

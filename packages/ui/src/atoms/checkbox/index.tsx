@@ -39,7 +39,7 @@ export const Checkbox = ({
         <Label
           id="checkbox_label"
           className={clsx("cursor-pointer", labelClassName)}
-          htmlFor={value}
+          htmlFor={id}
         >
           {labelText}
         </Label>

@@ -16,7 +16,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   withLogo = true,
 }) => (
   <>
-    <div className="flex flex-col items-center w-full pt-8">
+    <div className="flex flex-col items-center w-full pt-8 pb-[30px]">
       {withLogo && <img src={LogoMain} className="h-[43px]" />}
 
       {title && (
@@ -37,7 +37,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
             withLogo && "mt-5",
           )}
         >
-          <span>
+          <span className="text-center">
             {subTitle}{" "}
             <a
               className="transition-opacity text-primaryButtonColor hover:opacity-50"

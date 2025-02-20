@@ -38,18 +38,28 @@ const NFTsPage = () => {
     },
     [send],
   )
+
   useEffect(() => {
     if (!data) return
+
     const { items } = data
-    const initialLoadingState = Array(items.length).fill(null)
+    const newPlaceholders = Array(items.length).fill(null)
 
-    setNfts(initialLoadingState)
+    setNfts((prevNfts) => [...prevNfts, ...newPlaceholders])
 
-    items.forEach(async (nft, i) => {
-      await nft.init()
+    Promise.all(
+      items.map(async (nft, index) => {
+        await nft.init()
+        return { index, nft }
+      }),
+    ).then((resolvedNFTs) => {
       setNfts((prevNfts) => {
         const newNfts = [...prevNfts]
-        newNfts[prevNfts.length - items.length + i] = nft
+
+        resolvedNFTs.forEach(({ index, nft }) => {
+          newNfts[prevNfts.length - items.length + index] = nft
+        })
+
         return newNfts
       })
     })
@@ -73,7 +83,7 @@ const NFTsPage = () => {
         disabled={isLoading}
         className={clsx(
           "block mx-auto",
-          (totalPages === currentPage || !nfts.length) && "hidden",
+          (totalPages === currentPage || !nfts.length || isLoading) && "hidden",
         )}
         onClick={() => setCurrentPage((prev) => prev + 1)}
         type="ghost"

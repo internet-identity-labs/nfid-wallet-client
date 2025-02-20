@@ -47,6 +47,7 @@ export const TransferModal: FC<TransferModalProps> = ({
         hasSwapError ? "min-h-[540px]" : "min-h-[480px]",
       )}
       overlayClassName={!isOpen ? "hidden" : ""}
+      isOpen={isOpen}
     >
       {!isSuccess && direction !== ModalType.SWAP && (
         <div
@@ -85,6 +86,7 @@ export const TransferVaultModal: FC<TransferVaultModalProps> = ({
       onClickOutside={onClickOutside}
       className={clsx("!h-[530px]")}
       overlayClassName={!isOpen ? "hidden" : ""}
+      isOpen={isOpen}
     >
       {!isSuccess && (
         <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">

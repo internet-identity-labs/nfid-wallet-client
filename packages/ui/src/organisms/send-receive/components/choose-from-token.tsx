@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useMemo, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { getMaxAmountFee } from "src/integration/swap/icpswap/util/util"
 
@@ -20,6 +20,7 @@ import { E8S } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 
 import { useTokenInit } from "../hooks/token-init"
+import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseFromTokenProps {
   token: FT | undefined
@@ -29,6 +30,8 @@ interface ChooseFromTokenProps {
   usdRate?: string
   title: string
   isSwap?: boolean
+  rebuildLayout?: boolean
+  setRebuildLayout?: (v: boolean) => void
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -39,6 +42,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   usdRate = "0.00 USD",
   title,
   isSwap = false,
+  rebuildLayout,
+  setRebuildLayout,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState("")
 
@@ -80,18 +85,33 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     setValue("amount", formattedValue, { shouldValidate: true })
   }, [token, fee, userBalance, isMaxAvailable, setValue])
 
+  useEffect(() => {
+    if (!initedToken || !setRebuildLayout) return
+
+    const balance = initedToken.getTokenBalanceFormatted()
+    if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
+      setRebuildLayout(false)
+    } else {
+      setRebuildLayout(true)
+    }
+  }, [initedToken])
+
   if (!decimals || !token) return null
 
   return (
     <div
       id={"sourceSection"}
       className={clsx(
-        "border rounded-[12px] p-4 h-[100px]",
+        "border rounded-[12px] p-4",
         errors["amount"] ? "ring border-red-600 ring-red-100" : "border-black",
+        rebuildLayout ? "h-[168px]" : "h-[100px]",
       )}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap justify-between">
         <InputAmount
+          className={clsx(
+            rebuildLayout && "leading-[26px] h-[30px] !max-w-full",
+          )}
           id={"choose-from-token-amount"}
           disabled={!Boolean(initedToken)}
           isLoading={false}
@@ -111,7 +131,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             },
           })}
         />
-        <div className="py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block">
+        <div
+          className={clsx(
+            "py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
+            rebuildLayout && "w-full flex-[0_0_100%] order-1 mt-2",
+          )}
+        >
           <ChooseFtModal
             searchInputId={"sourceTokenSearchInput"}
             tokens={tokens}
@@ -120,28 +145,32 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             trigger={
               <div
                 id={`sourceToken_${token.getTokenName()}_${token.getTokenAddress()}`}
-                className="flex items-center cursor-pointer shrink-0"
+                className="flex items-center w-full cursor-pointer gap-1.5"
               >
                 <ImageWithFallback
                   alt={token.getTokenName()}
                   fallbackSrc={IconNftPlaceholder}
                   src={`${token.getTokenLogo()}`}
-                  className="w-[28px] mr-1.5 rounded-full"
+                  className="w-[28px] rounded-full"
                 />
                 <p className="text-lg font-semibold">
                   {token.getTokenSymbol()}
                 </p>
-                <IconCmpArrowRight className="ml-4" />
+                <IconCmpArrowRight className="ml-auto" />
               </div>
             }
           />
         </div>
-      </div>
-      <div className="flex items-center justify-between text-right">
+        <div className="flex-[0_0_100%]"></div>
         <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
           {usdRate || "0.00 USD"}
         </p>
-        <div className="mt-2 text-xs leading-5 text-right text-gray-500">
+        <div
+          className={clsx(
+            "mt-2 text-xs leading-5 text-gray-500",
+            rebuildLayout ? "flex-[0_0_100%] order-2" : "text-right",
+          )}
+        >
           Balance:&nbsp;
           <span
             className={clsx(

@@ -7,7 +7,12 @@ import { EmailMagicLinkSuccess } from "packages/ui/src/organisms/authentication/
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import { Button, IconCmpGoogle, IconCmpNFIDWalletLogoBlack, Loader } from "@nfid-frontend/ui"
+import {
+  Button,
+  IconCmpGoogle,
+  IconCmpNFIDWalletLogoBlack,
+  Loader,
+} from "@nfid-frontend/ui"
 
 import { linkGoogle, verify } from "../services"
 

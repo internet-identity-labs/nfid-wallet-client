@@ -152,6 +152,8 @@ describe.skip("SignIn with Internet Identity", () => {
       access_point: [],
       wallet: [],
       email: [],
+      name: [],
+      challenge_attempt: [],
     })
 
     // NOTE: Here I relogin to user's own II to check

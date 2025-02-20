@@ -1,5 +1,6 @@
+import { AnimatePresence, motion } from "framer-motion"
 import React from "react"
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
@@ -74,97 +75,111 @@ export const App = () => {
     },
   })
 
+  const location = useLocation()
+
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>
-      <Routes>
-        <Route path={"/"} element={<LandingHomePage />} />
-
-        <Route
-          path="/authenticate"
-          element={
-            <ScreenResponsive className="flex flex-col items-center">
-              <ThirdPartyAuthCoordinator />
-            </ScreenResponsive>
-          }
-        />
-
-        <Route path="/verify/email/:token" element={<AuthEmailMagicLink />} />
-
-        <Route
-          path="/iframe/trust-device"
-          element={
-            <ScreenResponsive>
-              <IframeTrustDeviceCoordinator />
-            </ScreenResponsive>
-          }
-        />
-
-        <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
-        <Route path={ROUTE_RPC} element={<IdentityKitRPCCoordinator />} />
-
-        <Route
-          path={`${ProfileConstants.base}/*`}
-          element={
-            <AuthWrapper>
-              <ProfileTemplate isWallet />
-            </AuthWrapper>
-          }
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
         >
-          <Route path="*" element={<WalletRouter />} />
-        </Route>
-        <Route
-          path={ProfileConstants.security}
-          element={
-            <AuthWrapper>
-              <ProfileSecurity />
-            </AuthWrapper>
-          }
-        />
-        <Route
-          path={ProfileConstants.copyRecoveryPhrase}
-          element={
-            <AuthWrapper>
-              <CopyRecoveryPhrase />
-            </AuthWrapper>
-          }
-        />
-        <Route
-          path={`${ProfileConstants.vaults}`}
-          element={
-            <AuthWrapper>
-              <VaultGuard>
-                <VaultsListPage />
-              </VaultGuard>
-            </AuthWrapper>
-          }
-        />
-        <Route
-          path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
-          element={
-            <AuthWrapper>
-              <VaultsDetailsCoordinator />
-            </AuthWrapper>
-          }
-        />
-        <Route
-          path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
-          element={
-            <AuthWrapper>
-              <NFTDetailsPage />
-            </AuthWrapper>
-          }
-        />
-        <Route
-          path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
-          element={
-            <AuthWrapper>
-              <VaultTransactionsDetailsPage />
-            </AuthWrapper>
-          }
-        />
-        {RecoverNFIDRoutes}
-        <Route path={"*"} element={<NotFound />} />
-      </Routes>
+          <Routes location={location} key={location.pathname}>
+            <Route path={"/"} element={<LandingHomePage />} />
+            <Route
+              path="/authenticate"
+              element={
+                <ScreenResponsive className="flex flex-col items-center">
+                  <ThirdPartyAuthCoordinator />
+                </ScreenResponsive>
+              }
+            />
+
+            <Route
+              path="/verify/email/:token"
+              element={<AuthEmailMagicLink />}
+            />
+
+            <Route
+              path="/iframe/trust-device"
+              element={
+                <ScreenResponsive>
+                  <IframeTrustDeviceCoordinator />
+                </ScreenResponsive>
+              }
+            />
+
+            <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
+            <Route path={ROUTE_RPC} element={<IdentityKitRPCCoordinator />} />
+
+            <Route
+              path={`${ProfileConstants.base}/*`}
+              element={
+                <AuthWrapper>
+                  <ProfileTemplate isWallet />
+                </AuthWrapper>
+              }
+            >
+              <Route path="*" element={<WalletRouter />} />
+            </Route>
+            <Route
+              path={ProfileConstants.security}
+              element={
+                <AuthWrapper>
+                  <ProfileSecurity />
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path={ProfileConstants.copyRecoveryPhrase}
+              element={
+                <AuthWrapper>
+                  <CopyRecoveryPhrase />
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path={`${ProfileConstants.vaults}`}
+              element={
+                <AuthWrapper>
+                  <VaultGuard>
+                    <VaultsListPage />
+                  </VaultGuard>
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
+              element={
+                <AuthWrapper>
+                  <VaultsDetailsCoordinator />
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
+              element={
+                <AuthWrapper>
+                  <NFTDetailsPage />
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
+              element={
+                <AuthWrapper>
+                  <VaultTransactionsDetailsPage />
+                </AuthWrapper>
+              }
+            />
+            {RecoverNFIDRoutes}
+            <Route path={"*"} element={<NotFound />} />
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
     </React.Suspense>
   )
 }

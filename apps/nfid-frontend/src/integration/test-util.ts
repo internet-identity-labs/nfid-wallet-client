@@ -59,6 +59,8 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
     access_point: [],
     wallet: [],
     email: [],
+    name: [],
+    challenge_attempt: [],
   }
   await im.create_account(req)
 }

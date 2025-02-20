@@ -53,6 +53,8 @@ describe("Passkey test", () => {
       access_point: [deviceData],
       wallet: [{ NFID: null }],
       anchor: BigInt(0),
+      name: [],
+      challenge_attempt: [],
     }
     await replaceActorIdentity(im, di)
     await replaceActorIdentity(passkeyStorage, di)

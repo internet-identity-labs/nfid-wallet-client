@@ -370,6 +370,7 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
       })
     }),
   ).then((p) => p.filter((p) => p.data.length !== 0))
+
   const parsedAllowedPasskeysByAnchor = passkeysFromAPI
     .map((p) =>
       p.data

@@ -84,7 +84,7 @@ class InterfaceFactoryService {
     const certificate = await Certificate.create({
       certificate: responseCandid.certificate,
       canisterId: canister,
-      rootKey: agent.rootKey,
+      rootKey: agent.rootKey!,
     })
     const dataCandid = certificate.lookup(pathCandid)
     const candidFileMabye = new TextDecoder().decode(

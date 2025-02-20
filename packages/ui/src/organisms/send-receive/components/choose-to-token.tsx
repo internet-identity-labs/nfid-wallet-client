@@ -16,6 +16,7 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 import { FT } from "frontend/integration/ft/ft"
 
 import { useTokenInit } from "../hooks/token-init"
+import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseToTokenProps {
   token: FT | undefined
@@ -25,6 +26,8 @@ interface ChooseToTokenProps {
   isQuoteLoading: boolean
   value?: string
   priceImpact?: PriceImpact
+  rebuildLayout: boolean
+  setRebuildLayout: (v: boolean) => void
 }
 
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
@@ -35,6 +38,8 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   isQuoteLoading,
   value,
   priceImpact,
+  rebuildLayout,
+  setRebuildLayout,
 }) => {
   const { setValue, register } = useFormContext()
 
@@ -48,15 +53,33 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
 
   const decimals = token.getTokenDecimals()
 
+  useEffect(() => {
+    if (!initedToken) return
+
+    const balance = initedToken.getTokenBalanceFormatted()
+    if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
+      setRebuildLayout(false)
+    } else {
+      setRebuildLayout(true)
+    }
+  }, [initedToken])
+
   if (!decimals) return null
   return (
     <>
       <div
         id={"targetSection"}
-        className="rounded-[12px] p-4 h-[102px] bg-gray-100"
+        className={clsx(
+          "rounded-[12px] p-4 bg-gray-100",
+          rebuildLayout ? "h-[168px]" : "h-[102px]",
+        )}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap justify-between">
           <InputAmount
+            className={clsx(
+              rebuildLayout &&
+                "leading-[26px] h-[30px] !max-w-full flex-[0_0_100%]",
+            )}
             id={"choose-to-token-amount"}
             decimals={decimals}
             disabled
@@ -64,7 +87,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             {...register("to")}
             value={value || ""}
           />
-          <div className="p-[6px] bg-gray-300/40 rounded-[24px] inline-block">
+          <div
+            className={clsx(
+              "p-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
+              rebuildLayout && "w-full flex-[0_0_100%] order-1 mt-2",
+            )}
+          >
             <ChooseFtModal
               searchInputId={"targetTokenSearchInput"}
               tokens={tokens}
@@ -73,24 +101,23 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               trigger={
                 <div
                   id={`targetToken_${token.getTokenName()}_${token.getTokenAddress()}`}
-                  className="flex items-center cursor-pointer shrink-0"
+                  className="flex items-center w-full cursor-pointer gap-1.5"
                 >
                   <ImageWithFallback
                     alt={token.getTokenName()}
                     fallbackSrc={IconNftPlaceholder}
                     src={`${token.getTokenLogo()}`}
-                    className="w-[28px] mr-1.5 rounded-full"
+                    className="w-[28px] rounded-full"
                   />
                   <p className="text-lg font-semibold">
                     {token.getTokenSymbol()}
                   </p>
-                  <IconCmpArrowRight className="ml-4" />
+                  <IconCmpArrowRight className="ml-auto" />
                 </div>
               }
             />
           </div>
-        </div>
-        <div className="flex items-center justify-between text-right">
+          <div className="flex-[0_0_100%]"></div>
           <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
             {!isQuoteLoading ? (
               <>
@@ -124,7 +151,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />
             )}
           </p>
-          <div className="mt-2 text-xs leading-5 text-right text-gray-500">
+          <div
+            className={clsx(
+              "mt-2 text-xs leading-5 text-gray-500",
+              rebuildLayout ? "flex-[0_0_100%] order-2" : "text-right",
+            )}
+          >
             Balance:&nbsp;
             <span id={"choose-to-token-balance"}>
               {initedToken ? (

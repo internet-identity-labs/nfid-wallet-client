@@ -4,6 +4,10 @@ import type { Principal } from "@dfinity/principal"
 export interface AccessPointRemoveRequest {
   pub_key: string
 }
+export interface ChallengeAttempt {
+  chars: [] | [string]
+  challenge_key: string
+}
 export interface AccessPointRequest {
   icon: string
   device_type: DeviceType
@@ -166,8 +170,10 @@ export interface HTTPAccessPointResponse {
 export interface HTTPAccountRequest {
   anchor: bigint
   email: [] | [string]
+  name: [] | [string]
   access_point: [] | [AccessPointRequest]
   wallet: [] | [WalletVariant]
+  challenge_attempt: [] | [ChallengeAttempt]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]

@@ -21,6 +21,8 @@ import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { SwapModal } from "./swap"
 
+export const BALANCE_EDGE_LENGTH = 20
+
 export interface SwapFTFormProps {
   tokens: FT[]
   allTokens: FT[]
@@ -59,6 +61,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   errors,
 }) => {
   const [isChecked, setIsChecked] = useState(false)
+  const [rebuildFromLayout, setRebuildFromLayout] = useState(false)
+  const [rebuildToLayout, setRebuildToLayout] = useState(false)
   const priceImpact = quote?.getPriceImpact()
 
   return (
@@ -99,6 +103,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           tokens={tokens}
           title="Swap from"
           isSwap={true}
+          rebuildLayout={rebuildFromLayout || rebuildToLayout}
+          setRebuildLayout={setRebuildFromLayout}
         />
         {showLiquidityError ? (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -136,6 +142,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           isQuoteLoading={isQuoteLoading}
           value={quote?.getTargetAmountPrettified()}
           priceImpact={priceImpact}
+          rebuildLayout={rebuildFromLayout || rebuildToLayout}
+          setRebuildLayout={setRebuildToLayout}
         />
         {amount && quote && (
           <div className="flex items-center justify-between mt-6 text-xs text-gray-500">
@@ -163,7 +171,11 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           </div>
         )}
         <Button
-          className="absolute bottom-5 left-5 right-5 !w-auto"
+          className={clsx(
+            rebuildFromLayout || rebuildToLayout
+              ? "w-full mt-6"
+              : "absolute bottom-5 left-5 right-5 !w-auto",
+          )}
           type="primary"
           id="swapTokensButton"
           block

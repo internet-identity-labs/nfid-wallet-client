@@ -53,12 +53,18 @@ export const idlFactory = ({ IDL }: any) => {
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
+  const ChallengeAttempt = IDL.Record({
+    chars: IDL.Opt(IDL.Text),
+    challenge_key: IDL.Text,
+  })
   const WalletVariant = IDL.Variant({ II: IDL.Null, NFID: IDL.Null })
   const HTTPAccountRequest = IDL.Record({
     anchor: IDL.Nat64,
     email: IDL.Opt(IDL.Text),
+    name: IDL.Opt(IDL.Text),
     access_point: IDL.Opt(AccessPointRequest),
     wallet: IDL.Opt(WalletVariant),
+    challenge_attempt: IDL.Opt(ChallengeAttempt),
   })
   const PersonaResponse = IDL.Record({
     domain: IDL.Text,

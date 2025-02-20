@@ -400,7 +400,7 @@ const AuthenticationMachine =
           showPasskeys: event.data?.showPasskeys,
         })),
         assignShowRecovery: assign((_, event) => ({
-          showPasskeys: event.data?.showRecovery,
+          showRecovery: event.data?.showRecovery,
         })),
         assignIsEmbed: assign((_, event) => ({
           isEmbed: event.data?.isEmbed,

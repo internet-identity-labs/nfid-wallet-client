@@ -1,7 +1,8 @@
+import clsx from "clsx"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { FC } from "react"
 
-import { Table } from "@nfid-frontend/ui"
+import { IconCmpWarning, Table } from "@nfid-frontend/ui"
 
 export interface SecurityProps {
   primarySignInElement: JSX.Element
@@ -9,6 +10,7 @@ export interface SecurityProps {
   addPasskeyElement: JSX.Element
   renderPasskeys: () => JSX.Element
   renderRecoveryOptions: () => JSX.Element
+  showCreatePasskeyOnCanister?: string
 }
 
 export const Security: FC<SecurityProps> = ({
@@ -17,6 +19,7 @@ export const Security: FC<SecurityProps> = ({
   addPasskeyElement,
   renderPasskeys,
   renderRecoveryOptions,
+  showCreatePasskeyOnCanister,
 }) => {
   return (
     <>
@@ -65,6 +68,20 @@ export const Security: FC<SecurityProps> = ({
         >
           {renderPasskeys()}
         </Table>
+        {showCreatePasskeyOnCanister && (
+          <div
+            className={clsx(
+              "px-4 sm:px-[30px] h-[64px] bg-warningBgColor rounded-[12px]",
+              "flex items-center my-[20px]",
+            )}
+          >
+            <IconCmpWarning className="text-orange-900 w-[24px] h-[24px] mr-[10px]" />
+            <p className="text-sm text-orange-900">
+              Please create a passkey on {showCreatePasskeyOnCanister} for
+              additional security and URL access redundancy.
+            </p>
+          </div>
+        )}
         {addPasskeyElement}
       </ProfileContainer>
       <ProfileContainer

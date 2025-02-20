@@ -56,7 +56,11 @@ export const AuthSignUpCaptcha = ({
         subTitle={subTitle}
       />
       <div className="flex flex-col flex-1">
-        <img className="my-auto" src={captcha} alt="captcha" />
+        <img
+          className="my-auto"
+          src={"data:image/png;base64," + captcha}
+          alt="captcha"
+        />
         <div className="mt-auto">
           <Input
             placeholder="Enter the characters you see above"

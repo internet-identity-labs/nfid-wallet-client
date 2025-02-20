@@ -58,7 +58,6 @@ describe("Identity Manager suite", () => {
         delegationIdentity,
         email,
         deviceType: DeviceType.Google,
-        device: "asd",
         icon: Icon.google,
       })
       expect(nfidProfile.anchor).not.toEqual(BigInt(0))

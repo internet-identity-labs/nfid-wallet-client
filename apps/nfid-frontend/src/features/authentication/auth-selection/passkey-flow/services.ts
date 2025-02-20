@@ -89,6 +89,17 @@ export class PasskeyConnector {
       })
     }
 
+    await storePasskey(key, jsonData)
+    await createPasskeyAccessPoint({
+      browser: getBrowser(),
+      deviceType: DeviceType.Passkey,
+      principal: identity.getPrincipal().toText(),
+      credential_id: [data.credentialStringId],
+      ...this.getAccessPointDeviceAndIcon(data),
+    })
+  }
+
+  private getAccessPointDeviceAndIcon(data: IPasskeyMetadata) {
     const isThisDevice = data.transports.includes("internal")
     const isICloud =
       /iPhone|iPad|Mac/.test(navigator.userAgent) &&
@@ -108,15 +119,10 @@ export class PasskeyConnector {
       ? Icon.apple
       : Icon.usb
 
-    await storePasskey(key, jsonData)
-    await createPasskeyAccessPoint({
-      browser: getBrowser(),
+    return {
       device,
-      deviceType: DeviceType.Passkey,
       icon,
-      principal: identity.getPrincipal().toText(),
-      credential_id: [data.credentialStringId],
-    })
+    }
   }
 
   async getPasskeyByCredentialID(key: string): Promise<IPasskeyMetadata> {
@@ -187,25 +193,6 @@ export class PasskeyConnector {
 
     await replaceActorIdentity(im, tempKey)
 
-    const isThisDevice = data.transports.includes("internal")
-    const isICloud =
-      /iPhone|iPad|Mac/.test(navigator.userAgent) &&
-      data.transports.includes("hybrid")
-
-    const device = isThisDevice
-      ? `${getBrowser()} on ${getPlatformInfo().device}`
-      : isICloud
-      ? "iCloud keychain"
-      : "Security Key"
-
-    const icon = isThisDevice
-      ? getIsMobileDeviceMatch()
-        ? Icon.mobile
-        : Icon.desktop
-      : isICloud
-      ? Icon.apple
-      : Icon.usb
-
     const identity = WebAuthnIdentity.fromJSON(
       JSON.stringify({
         rawId: Buffer.from(data.credentialId).toString("hex"),
@@ -217,11 +204,10 @@ export class PasskeyConnector {
       {
         delegationIdentity: tempKey,
         name: name,
-        device,
         deviceType: DeviceType.Passkey,
-        icon,
         credentialId: key,
         devicePrincipal: identity.getPrincipal().toText(),
+        ...this.getAccessPointDeviceAndIcon(data)
       },
       challengeAttempt,
     )

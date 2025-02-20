@@ -11,6 +11,7 @@ import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
+import { Challenge } from "packages/integration/src/lib/_ic_api/identity_manager.d"
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,
@@ -144,9 +145,19 @@ export class PasskeyConnector {
     }
   }
 
-  async registerWithPasskey(name: string) {
+  async getCaptchaChallenge(): Promise<Challenge> {
+    return await im.get_captcha()
+  }
+
+  async registerWithPasskey(
+    name: string,
+    challengeAttempt: {
+      challengeKey: string
+      chars?: string
+    },
+  ) {
     let credential: PublicKeyCredential
-    const nextBorrowedAnchor = randomBytes(16) //TODO WIP borrow anchor with captcha
+    const nextBorrowedAnchor = randomBytes(16)
     try {
       credential = await this.createNavigatorCredential(
         nextBorrowedAnchor,
@@ -187,14 +198,17 @@ export class PasskeyConnector {
       }),
     )
 
-    const profile = await createNFIDProfile({
-      delegationIdentity: tempKey,
-      name: name,
-      deviceType: DeviceType.Passkey,
-      icon,
-      credentialId: key,
-      devicePrincipal: identity.getPrincipal().toText(),
-    })
+    const profile = await createNFIDProfile(
+      {
+        delegationIdentity: tempKey,
+        name: name,
+        deviceType: DeviceType.Passkey,
+        icon,
+        credentialId: key,
+        devicePrincipal: identity.getPrincipal().toText(),
+      },
+      challengeAttempt,
+    )
 
     const jsonData = JSON.stringify({
       ...data,

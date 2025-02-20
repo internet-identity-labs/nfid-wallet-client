@@ -49,17 +49,16 @@ export const AddPasskey = ({
 
   return (
     <div>
-      <div
-        className={clsx(
-          "inline-flex items-center space-x-2.5 pl-2.5 h-[40px] text-primaryButtonColor",
-          "hover:opacity-50 cursor-pointer transition-opacity mt-[20px]",
-          isDisabled && "pointer-events-none !text-gray-400 cursor-not-allowed",
-        )}
+      <Button
+        isSmall
         onClick={handleOpenModal}
+        disabled={isDisabled}
+        icon={<IconCmpPlus className="w-[18px] h-[18px]" />}
+        type="ghost"
+        className="text-sm font-bold mt-[20px]"
       >
-        <IconCmpPlus className="w-[18px] h-[18px]" />
-        <span className="text-sm font-bold">Add Passkey</span>
-      </div>
+        Add Passkey
+      </Button>
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

@@ -6,6 +6,7 @@ import { Button, CenterEllipsis } from "@nfid-frontend/ui"
 import { ExistingWallet } from "@nfid/integration"
 
 import { AuthAppMeta } from "../app-meta"
+
 export interface ChooseWalletProps {
   onAuthSelection: () => void
   onLoginWithPasskey: (allowedPasskeys: any[]) => Promise<void>

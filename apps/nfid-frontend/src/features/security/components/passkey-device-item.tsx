@@ -85,10 +85,10 @@ export const PasskeyDeviceItem = ({
                   "bg-white rounded-[12px] shadow-md",
                   "text-sm z-10",
                 )}
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 10, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
               >
                 <DetailsPasskey device={device}>
                   <div

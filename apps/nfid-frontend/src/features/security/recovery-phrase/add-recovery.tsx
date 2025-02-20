@@ -37,16 +37,15 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
 
   return (
     <div>
-      <div
-        className={clsx(
-          "inline-flex items-center space-x-2.5 pl-2.5 h-[61px] text-primaryButtonColor",
-          "hover:opacity-50 cursor-pointer transition-opacity",
-        )}
+      <Button
+        isSmall
         onClick={() => setIsModalVisible(true)}
+        icon={<IconCmpPlus className="w-[18px] h-[18px]" />}
+        type="ghost"
+        className="text-sm font-bold mt-[20px]"
       >
-        <IconCmpPlus className="w-[18px] h-[18px]" />
-        <span className="text-sm font-bold">Add recovery phrase</span>
-      </div>
+        Add recovery phrase
+      </Button>
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

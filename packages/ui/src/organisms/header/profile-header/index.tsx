@@ -6,8 +6,7 @@ import {
   IconCmpWarning,
   Loader,
   NFIDLogoMain,
-  IconClose,
-  MenuIcon,
+  BurgerMenu,
 } from "@nfid-frontend/ui"
 
 import AuthenticatedPopup from "../navigation-popup"
@@ -48,8 +47,8 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   hasVaults,
   profileConstants,
 }) => {
-  const [isPopupVisible, setIsPopupVisible] = useState(false)
-  const popupRef = useClickOutside(() => setIsPopupVisible(false))
+  const [isMenuVisible, setIsMenuVisible] = useState(false)
+  const popupRef = useClickOutside(() => setIsMenuVisible(false))
 
   return (
     <>
@@ -63,13 +62,11 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
         <Loader isLoading={isLoading} />
         <NFIDLogoMain assetsLink={assetsLink} />
         <div className={clsx("relative")} ref={popupRef} id="profile">
-          <img
-            className={clsx("cursor-pointer w-[24px] h-[24px]")}
-            src={isPopupVisible ? IconClose : MenuIcon}
-            alt="menu icon"
-            onClick={() => setIsPopupVisible(!isPopupVisible)}
+          <BurgerMenu
+            isOpened={isMenuVisible}
+            onClick={() => setIsMenuVisible(!isMenuVisible)}
           />
-          {isPopupVisible && (
+          {isMenuVisible && (
             <AuthenticatedPopup
               onSignOut={logout}
               anchor={anchor}
@@ -77,7 +74,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               assetsLink={assetsLink}
               hasVaults={hasVaults}
               profileConstants={profileConstants}
-              isOpen={isPopupVisible}
+              isOpen={isMenuVisible}
             />
           )}
         </div>

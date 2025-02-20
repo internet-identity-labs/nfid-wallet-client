@@ -128,7 +128,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 <span
                   className={clsx(
                     percent === slippage
-                      ? "text-white cursor-default bg-primaryButtonColor"
+                      ? "text-white cursor-default bg-primaryButtonColor transition-colors duration-300 ease-in-out"
                       : "",
                     "rounded-[12px] h-full w-full flex items-center justify-center",
                   )}

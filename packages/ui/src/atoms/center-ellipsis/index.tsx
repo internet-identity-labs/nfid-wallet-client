@@ -21,12 +21,12 @@ export const CenterEllipsis = React.forwardRef<
     <div ref={ref} className="inline-flex min-w-0" {...divProps}>
       <div
         id={"first_part"}
-        className={clsx("overflow-hidden whitespace-nowrap")}
+        className={clsx("overflow-hidden whitespace-nowrap inline")}
       >
         {value.slice(0, leadingChars)}
       </div>
-      <div>...</div>
-      <div id={"second_part"} className="flex-shrink-0">
+      <div className="inline">...</div>
+      <div id={"second_part"} className="flex-shrink-0 inline">
         {value.slice(splitAt)}
       </div>
     </div>

@@ -1,7 +1,8 @@
 import clsx from "clsx"
-import React from "react"
+import { motion } from "framer-motion"
+import { HTMLAttributes } from "react"
 
-interface ITab extends React.HTMLAttributes<HTMLDivElement> {
+interface ITab extends HTMLAttributes<HTMLDivElement> {
   isActive?: boolean
   onClick?: () => void
   length: number
@@ -25,9 +26,8 @@ const Tab: React.FC<ITab> = ({
   return (
     <div
       className={clsx(
-        "py-[10px] border-b-2 mr-0.5 cursor-pointer",
-        `flex-shrink-0 sm:min-w-[150px] sm:!w-auto`,
-        isActive ? "border-teal-600" : "border-black",
+        "py-[10px] border-b-2 mr-0.5 cursor-pointer relative transition-all",
+        "flex-shrink-0 sm:min-w-[150px] sm:!w-auto border-black",
         !isActive && "hover:border-gray-500 hover:text-gray-500",
       )}
       onClick={onClick}
@@ -50,6 +50,12 @@ const Tab: React.FC<ITab> = ({
           {children}
         </div>
       </div>
+      <motion.div
+        className="absolute left-0 bottom-[-2px] h-[2px] bg-teal-600"
+        animate={{ width: isActive ? "100%" : "0%" }}
+        exit={{ scaleX: 0 }}
+        transition={{ duration: 0.25 }}
+      />
     </div>
   )
 }

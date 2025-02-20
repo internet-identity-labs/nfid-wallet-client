@@ -1,10 +1,6 @@
-import clsx from "clsx"
 import { useState } from "react"
 
-import { Dropdown, DropdownOption } from "@nfid-frontend/ui"
-
-import IconClose from "../assets/menu-close.svg"
-import IconMenu from "../assets/menu-white.svg"
+import { BurgerMenu, Dropdown, DropdownOption } from "@nfid-frontend/ui"
 
 type ILandingDropdown = {
   handler: () => void
@@ -21,16 +17,8 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
   return (
     <>
       <Dropdown
-        className="!rounded-[24px] text-white !bg-zinc-900 overflow-hidden p-[20px] top-[35px] !right-0"
-        triggerElement={
-          <img
-            className={clsx(
-              "transition-all cursor-pointer",
-              isOpen ? "rotate-180 " : "",
-            )}
-            src={isOpen ? IconClose : IconMenu}
-          />
-        }
+        className="!rounded-[24px] text-white !bg-zinc-900 overflow-hidden p-[20px] top-[45px] !right-0"
+        triggerElement={<BurgerMenu isOpened={isOpen} isLanding={true} />}
         setIsOpen={(v) => setIsOpen(v)}
         minWidth={160}
       >

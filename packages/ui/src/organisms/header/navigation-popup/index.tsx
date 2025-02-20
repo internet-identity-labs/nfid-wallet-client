@@ -44,10 +44,10 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
             "z-40 w-[340px] absolute right-0 top-[30px] bg-white p-[20px]",
             "shadow-xl rounded-[24px] flex flex-col justify-between",
           )}
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 50, opacity: 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
         >
           <div className="mb-[16px]">
             <div
@@ -56,11 +56,6 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
                 "text-xs text-gray-500",
               )}
               id="nfid-anchor"
-              style={{
-                WebkitTouchCallout: "none",
-                WebkitUserSelect: "none",
-                userSelect: "none",
-              }}
             >
               NFID number:{" "}
               {anchor || (

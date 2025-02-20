@@ -1,19 +1,4 @@
-import { fetchPrincipal } from "@nfid/integration"
-
-import { fetchProfile, fetchAccounts, selectAccounts, verifyToken } from "."
-
-export async function checkRegistrationStatus() {
-  try {
-    const profile = await fetchProfile()
-    console.debug("checkRegistrationStatus", { profile })
-    return true
-  } catch (error: any) {
-    if (error.code === 404) {
-      return false
-    }
-    throw error
-  }
-}
+import {fetchAccounts, selectAccounts} from "."
 
 type FetchAccountsServiceArgs = {
   authRequest: {

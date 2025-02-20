@@ -1,54 +1,47 @@
-import { IconCmpArrow } from "packages/ui/src/atoms/icons"
 import { useEffect } from "react"
 
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import { AuthAppMeta } from "../app-meta"
 import { AuthSignUpCaptcha } from "./captcha"
 import { AuthSignUpCreatePasskey } from "./create-passkey"
 
 export function AuthSignUpPassKey({
-  getAnchor,
-  validateCaptcha,
+  getCaptcha,
   onPasskeyCreate,
   isPasskeyCreating,
   applicationURL,
-  anchor,
   captcha,
-  captchaIsValid,
-  captchaIsValidating,
   isLoading,
   onBack,
   withLogo,
   title,
   subTitle,
-  createPasskeyError
+  captchaEntered,
+  onCaptchaEntered,
 }: {
-  getAnchor: () => unknown
+  getCaptcha: () => unknown
   onPasskeyCreate: (walletName: string) => unknown
   isPasskeyCreating?: boolean
   createPasskeyError?: string
   applicationURL?: string
   isLoading?: boolean
   captcha?: string
-  captchaIsValid?: boolean
-  captchaIsValidating?: boolean
-  anchor?: string
   onBack: () => unknown
   withLogo?: boolean
   title?: string
   subTitle?: string
-  validateCaptcha: (value: string) => unknown
+  captchaEntered?: boolean
+  onCaptchaEntered: (value: string) => unknown
 }) {
   useEffect(() => {
-    if (!anchor) {
-      getAnchor()
+    if (!captcha && !isLoading) {
+      getCaptcha()
     }
-  }, [getAnchor, anchor])
+  }, [getCaptcha, captcha, isLoading])
 
-  if (isLoading && !captcha) return <BlurredLoader className="min-h-[536px]" isLoading />
+  if (isLoading && !captcha) return <BlurredLoader isLoading />
 
-  if (captchaIsValid) {
+  if (captchaEntered || (!captcha && !isLoading)) {
     return (
       <AuthSignUpCreatePasskey
         onBack={onBack}
@@ -57,7 +50,6 @@ export function AuthSignUpPassKey({
         subTitle={subTitle}
         onCreate={onPasskeyCreate}
         isCreating={isPasskeyCreating}
-        error={createPasskeyError}
         applicationURL={applicationURL}
       />
     )
@@ -72,10 +64,8 @@ export function AuthSignUpPassKey({
         subTitle={subTitle}
         isLoading={!!isLoading}
         captcha={captcha}
-        onContinue={validateCaptcha}
-        onRetry={getAnchor}
-        validateError={!!(captchaIsValid && captchaIsValid !== undefined)}
-        isValidating={captchaIsValidating}
+        onContinue={onCaptchaEntered}
+        onRetry={getCaptcha}
         applicationURL={applicationURL}
       />
     )

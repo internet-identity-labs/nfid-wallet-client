@@ -55,10 +55,13 @@ export default function AuthenticationCoordinator({
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
   const [isAddPasskeyLoading, setIsAddPasskeyLoading] = useState(false)
   const [loginWithRecoverError, setLoginWithRecoverError] = useState("")
-  const [signUpPasskeyError, setSignUpPasskeyError] = useState("")
   const [signUpPasskeyLoading, setSignUpPasskeyLoading] = useState(false)
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
+  const [captcha, setCaptcha] = useState<
+    Awaited<ReturnType<typeof passkeyConnector.getCaptchaChallenge>> | undefined
+  >()
+  const [captchaEntered, setCaptchaEntered] = useState("")
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({
@@ -131,19 +134,18 @@ export default function AuthenticationCoordinator({
     onAuthWithPasskey(res)
   }
 
-  const onSignUpWithPasskey = async (name: string) => {
+  const onSignUpWithPasskey = async (name: string, captchaVal: string) => {
     setSignUpPasskeyLoading(true)
-    let challenge = await passkeyConnector.getCaptchaChallenge()
     try {
       await passkeyConnector.registerWithPasskey(name, {
-        challengeKey: challenge.challenge_key, //TODO
-        chars: "aaaaa",
+        challengeKey: captcha!.challenge_key,
+        chars: captchaVal,
       })
       send({
         type: "AUTHENTICATED",
       })
     } catch (e) {
-      setSignUpPasskeyError((e as Error).message)
+      toaster.error((e as Error).message)
     } finally {
       setSignUpPasskeyLoading(false)
     }
@@ -198,33 +200,18 @@ export default function AuthenticationCoordinator({
   }, [state.context.authSession?.anchor])
 
   const {
-    data: anchorData,
-    isLoading: isAnchorLoading,
-    mutate: getAnchor,
+    isLoading: isCaptchaLoading,
+    isValidating: isCaptchaValidating,
+    mutate: getCaptcha,
   } = useSWR(
-    `get-anchor`,
-    () => {
-      return {
-        anchor: "123123",
-        captcha:
-          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABQCAIAAADTD63nAAAEfElEQVR4nO2d3ZKkIAyFtWvf/5XdC2tdBcQI+TmJ+a6menqAhGMIEZ1127YlSbj5WQ8giUkprHVdm9+7+zxJmpTC2rZt19C6rmcx7Z/7lZffkfvi8PNvuXH6tm2FmI5P1EbJCOzIQUbFNYxDM+uevO/teknkj2Gr/aFc4zhD4tXApePOOETtHyC1RfxDq5BxybE63bPkWIxhH1BVyzVDleul7q7/HZOIoB2HWKZ25ipkuYL7Vuy/NYnx9E6lIze08Y/tLHahi7gMmbh3oblFVls2cRIsYxuAaAK4pXLDgzY78Uve0hkEpP4ESwprEO+3Imp4bcmlMPkPY8rFELFmlM51lUSKHDFgENbMbTiuW3iAtwLRxkOBXgN7tI4nxwKcV3MC+6Q+oFADkWOBF3uGiWoXBYhdYVTve7drJuJCCCuZpxbB/EI8s5pfhBU1J9DEyoe1CFiSvOGgWx6bSW3dMe8Zad82tSXaY4fbM+8I4IxkIXum8zWFYj1OVtfIsXC0hTOSnflp6zw3IGGpofcc7Id9bdpnRitxjNjKew52hWhxSw7Xz0EVeAoGXkALsSbjcRCxJIgRFYjkUqiH6IojMZHuroQHYbmzJyrucq8HYbmzh46caes/JBqXQGKoz0thbG2xt3kuGfD6TS5VkphirP2LHGpPmvt6C4Yc0ZL3zu0U3jsq/XbcrYbsRBNWP6ozvsjgsaP9ByttmWs6mrA0ifcEGCMNYbnwVD9aHL9VOKlS9FK8b8xq68PY79jF007e8TNQ+m0KhRsayjuDHeVXkry1sb0UWr1UaWfy2JM+OpHp7dS+msHzbqNpyFtJIOZYvJN0F5LZN25qlyL7ZV/U3lj8jygsIjPORV7lCzQD8yHZeW2BCktn4l3Iq957Cm1FixA+qS1QYUlzTiZm3KcTTs5rn9xGoW5zphceYeHk0R3qQbKcYVezfTvB3vLCPYl/WFo5/OticalBO/OpD7v5Xh06JgUhAaUua7zmWGh1LOshKEH3uaqwzKXwHQWYoyos9sqnuVK/Bt3n2kuhXFU9RQaFQY719h4WvdnU1hkhbxCnDz15fyUXype/Iz5bb7wTltXRIsrXiIW0TwW2R2Plziq+LsAg12yQxwYOu+vQl0Iiruv+CLC77rWwMCfvUwucC4JErASNOMLKoGVI7fnMdvn5ZsJXWJ3CkuKz8tpN/p0/Uh6BZnf62D7pZMVh8u/8kfK5/ZCPEcezaIxyKcwa4zyOFkG56W78AwGJbj6F4ZP1Z2yf+41TbkCjvkQ7Uygxu0TRCGkrhaVHZwqFZpe4/kj0nsJSBWGJbGJ/rzCZ5G4KYTU3hqywYtTGNB9J1elogLdOkBWWSW2s/51IUUGTt1MpXnlXvgqJZyZ527QFs858qY/ZVvYYi3XsdT/8ujFaVbbhL0Mn4s9fQqT9H1b1xxEGwFXJBKxyA3g2Q6E2wbtFY2AJawkRLwOYMA+csJpMXvS27+wLEIYHxo8orOar96zmRvCRTj9qG/A/orDYZTTZ4PxZ0OafB4hkHf4Ck/gw9aR51zkAAAAASUVORK5CYII=",
-      }
+    `get-captcha`,
+    async () => {
+      const challenge = await passkeyConnector.getCaptchaChallenge()
+      setCaptcha(challenge)
     },
     {
       revalidateOnFocus: false,
       revalidateOnMount: false,
-    },
-  )
-
-  const [captchaToValidate, setCaptchaToValidate] = useState("")
-
-  const { data: isCaptchaValid, isLoading: isCaptchaValidating } = useSWR(
-    captchaToValidate ? `validate-captcha` : null,
-    () => {
-      return true
-    },
-    {
-      revalidateOnFocus: false,
     },
   )
 
@@ -318,27 +305,27 @@ export default function AuthenticationCoordinator({
     case state.matches("SignUpPassKey"):
       return (
         <AuthSignUpPassKey
-          onPasskeyCreate={onSignUpWithPasskey}
-          isPasskeyCreating={signUpPasskeyLoading}
-          createPasskeyError={signUpPasskeyError}
-          getAnchor={() => {
-            setCaptchaToValidate("")
-            getAnchor()
+          onPasskeyCreate={(name) => {
+            onSignUpWithPasskey(name, captchaEntered)
           }}
-          anchor={anchorData?.anchor}
-          isLoading={isAnchorLoading}
-          captcha={anchorData?.captcha}
+          captchaEntered={!!captchaEntered}
+          onCaptchaEntered={setCaptchaEntered}
+          isPasskeyCreating={signUpPasskeyLoading}
+          getCaptcha={getCaptcha}
+          captcha={
+            Array.isArray(captcha?.png_base64)
+              ? captcha?.png_base64[0]
+              : captcha?.png_base64
+          }
+          isLoading={isCaptchaLoading || isCaptchaValidating}
           withLogo={!isIdentityKit}
           title={isIdentityKit ? "Sign up" : undefined}
           subTitle={isIdentityKit ? "to continue to" : "Sign up to continue to"}
           onBack={() => {
             send({ type: "BACK" })
-            setSignUpPasskeyError("")
-            setCaptchaToValidate("")
+            setCaptcha(undefined)
+            setCaptchaEntered("")
           }}
-          validateCaptcha={setCaptchaToValidate}
-          captchaIsValid={isCaptchaValid}
-          captchaIsValidating={isCaptchaValidating}
           applicationURL={state.context.authRequest?.hostname}
         />
       )

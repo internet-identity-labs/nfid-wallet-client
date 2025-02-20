@@ -5,8 +5,8 @@ export interface AccessPointRemoveRequest {
   pub_key: string
 }
 export interface ChallengeAttempt {
-  'chars' : [] | [string],
-  'challenge_key' : string,
+  chars: [] | [string]
+  challenge_key: string
 }
 export interface AccessPointRequest {
   icon: string
@@ -173,7 +173,7 @@ export interface HTTPAccountRequest {
   name: [] | [string]
   access_point: [] | [AccessPointRequest]
   wallet: [] | [WalletVariant]
-  challenge_attempt : [] | [ChallengeAttempt]
+  challenge_attempt: [] | [ChallengeAttempt]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]

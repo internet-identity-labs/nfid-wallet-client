@@ -11,6 +11,7 @@ import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
+import { Challenge } from "packages/integration/src/lib/_ic_api/identity_manager.d"
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,
@@ -49,7 +50,6 @@ import {
   MultiWebAuthnIdentity,
 } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { Challenge } from "packages/integration/src/lib/_ic_api/identity_manager.d"
 
 const alreadyRegisteredDeviceErrors = [
   "credentials already registered", //Chrome-based browsers
@@ -149,10 +149,13 @@ export class PasskeyConnector {
     return await im.get_captcha()
   }
 
-  async registerWithPasskey(name: string, challengeAttempt: {
-    challengeKey: string
-    chars?: string
-  }) {
+  async registerWithPasskey(
+    name: string,
+    challengeAttempt: {
+      challengeKey: string
+      chars?: string
+    },
+  ) {
     let credential: PublicKeyCredential
     const nextBorrowedAnchor = randomBytes(16)
     try {
@@ -195,14 +198,17 @@ export class PasskeyConnector {
       }),
     )
 
-    const profile = await createNFIDProfile({
-      delegationIdentity: tempKey,
-      name: name,
-      deviceType: DeviceType.Passkey,
-      icon,
-      credentialId: key,
-      devicePrincipal: identity.getPrincipal().toText(),
-    }, challengeAttempt)
+    const profile = await createNFIDProfile(
+      {
+        delegationIdentity: tempKey,
+        name: name,
+        deviceType: DeviceType.Passkey,
+        icon,
+        credentialId: key,
+        devicePrincipal: identity.getPrincipal().toText(),
+      },
+      challengeAttempt,
+    )
 
     const jsonData = JSON.stringify({
       ...data,

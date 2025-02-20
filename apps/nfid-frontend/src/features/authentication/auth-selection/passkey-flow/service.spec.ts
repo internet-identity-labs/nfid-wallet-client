@@ -65,7 +65,7 @@ describe("Passkey flow", () => {
     let key = await passkeyService.getCaptchaChallenge()
     let actual = await passkeyService.registerWithPasskey("mockedId", {
       challengeKey: key.challenge_key,
-      chars: "aaaaa"
+      chars: "aaaaa",
     })
     expect(actual.accessPoints.length).toEqual(1)
     expect(actual.principalId).not.toEqual(pk.getPrincipal().toText())

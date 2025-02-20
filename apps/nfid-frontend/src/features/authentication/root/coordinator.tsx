@@ -137,7 +137,7 @@ export default function AuthenticationCoordinator({
     try {
       await passkeyConnector.registerWithPasskey(name, {
         challengeKey: challenge.challenge_key, //TODO
-        chars: "aaaaa"
+        chars: "aaaaa",
       })
       send({
         type: "AUTHENTICATED",

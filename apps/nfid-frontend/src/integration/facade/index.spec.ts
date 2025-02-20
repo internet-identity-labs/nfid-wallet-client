@@ -57,7 +57,7 @@ describe.skip("Facade suite", () => {
         wallet: [],
         email: [],
         name: [],
-        challenge_attempt: []
+        challenge_attempt: [],
       })
       await iiIndexMock.addDevice(
         anchor,
@@ -152,7 +152,7 @@ describe.skip("Facade suite", () => {
         wallet: [],
         email: [],
         name: [],
-        challenge_attempt: []
+        challenge_attempt: [],
       })
       await im.create_access_point({
         browser: "",

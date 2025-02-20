@@ -4,6 +4,14 @@ import type { Principal } from "@dfinity/principal"
 export interface AccessPointRemoveRequest {
   pub_key: string
 }
+export interface Challenge {
+  png_base64: [] | [string]
+  challenge_key: string
+}
+export interface ChallengeAttempt {
+  chars: [] | [string]
+  challenge_key: string
+}
 export interface AccessPointRequest {
   icon: string
   device_type: DeviceType
@@ -167,6 +175,7 @@ export interface HTTPAccountRequest {
   wallet: [] | [WalletVariant]
   email: [] | [string]
   name: [] | [string]
+  challenge_attempt: [] | [ChallengeAttempt]
 }
 export interface HTTPAccountResponse {
   data: [] | [AccountResponse]
@@ -321,6 +330,7 @@ export interface _SERVICE {
     [string, string, [] | [string]],
     BoolHttpResponse
   >
+  get_captcha: ActorMethod<[], Challenge>
   update_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
   use_access_point: ActorMethod<[[] | [string]], HTTPOneAccessPointResponse>
   validate_phone: ActorMethod<[ValidatePhoneRequest], Response>

@@ -66,6 +66,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
         wallet: [{ NFID: null }],
         anchor: BigInt(0),
         name: [],
+        challenge_attempt: [],
       }
       await replaceActorIdentity(im, di)
       await im.remove_account()

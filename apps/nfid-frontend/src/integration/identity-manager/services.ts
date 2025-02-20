@@ -1,4 +1,4 @@
-import {fetchAccounts, selectAccounts} from "."
+import { fetchAccounts, selectAccounts } from "."
 
 type FetchAccountsServiceArgs = {
   authRequest: {

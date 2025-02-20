@@ -1,19 +1,22 @@
 import clsx from "clsx"
-import { is } from "date-fns/locale"
 import React from "react"
+
+import { Tooltip } from "@nfid-frontend/ui"
 
 interface ToggleProps {
   onToggle: (state: boolean) => void
   isChecked?: boolean
   isDisabled?: boolean
+  tooltip?: string
 }
 
 export const Toggle: React.FC<ToggleProps> = ({
   onToggle,
   isChecked,
   isDisabled,
+  tooltip,
 }) => {
-  return (
+  const jsx = (
     <label
       className={clsx(
         "relative inline-flex items-center cursor-pointer",
@@ -38,4 +41,6 @@ export const Toggle: React.FC<ToggleProps> = ({
       ></div>
     </label>
   )
+  if (!tooltip) return jsx
+  return <Tooltip tip={tooltip}>{jsx}</Tooltip>
 }

@@ -48,6 +48,7 @@ export const signWithGoogleService = async (
     profile = await createNFIDProfile({
       delegationIdentity: delegation,
       email,
+      device: "asd",
       deviceType: DeviceType.Google,
       icon: Icon.google,
     })

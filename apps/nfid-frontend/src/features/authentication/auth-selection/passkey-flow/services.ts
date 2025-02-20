@@ -88,25 +88,32 @@ export class PasskeyConnector {
         protection: { unprotected: null },
       })
     }
-    const isSecurityKey =
-      data.type === "cross-platform" &&
-      !data.transports.includes("internal") &&
-      !data.transports.includes("hybrid")
+
+    const isThisDevice = data.transports.includes("internal")
+    const isICloud =
+      /iPhone|iPad|Mac/.test(navigator.userAgent) &&
+      data.transports.includes("hybrid")
+
+    const device = isThisDevice
+      ? `${getBrowser()} on ${getPlatformInfo().device}`
+      : isICloud
+      ? "iCloud keychain"
+      : "Security Key"
+
+    const icon = isThisDevice
+      ? getIsMobileDeviceMatch()
+        ? Icon.mobile
+        : Icon.desktop
+      : isICloud
+      ? Icon.apple
+      : Icon.usb
 
     await storePasskey(key, jsonData)
     await createPasskeyAccessPoint({
       browser: getBrowser(),
-      device: isSecurityKey
-        ? "Security Key"
-        : data.type === "cross-platform" || data.transports.includes("hybrid")
-        ? "Keychain"
-        : `${getBrowser()} on ${getPlatformInfo().device}`,
+      device,
       deviceType: DeviceType.Passkey,
-      icon: isSecurityKey
-        ? Icon.usb
-        : getIsMobileDeviceMatch() || data.type === "cross-platform"
-        ? Icon.mobile
-        : Icon.desktop,
+      icon,
       principal: identity.getPrincipal().toText(),
       credential_id: [data.credentialStringId],
     })
@@ -180,16 +187,24 @@ export class PasskeyConnector {
 
     await replaceActorIdentity(im, tempKey)
 
-    const isSecurityKey =
-      data.type === "cross-platform" &&
-      !data.transports.includes("internal") &&
-      !data.transports.includes("hybrid")
+    const isThisDevice = data.transports.includes("internal")
+    const isICloud =
+      /iPhone|iPad|Mac/.test(navigator.userAgent) &&
+      data.transports.includes("hybrid")
 
-    const icon = isSecurityKey
-      ? Icon.usb
-      : getIsMobileDeviceMatch() || data.type === "cross-platform"
-      ? Icon.mobile
-      : Icon.desktop
+    const device = isThisDevice
+      ? `${getBrowser()} on ${getPlatformInfo().device}`
+      : isICloud
+      ? "iCloud keychain"
+      : "Security Key"
+
+    const icon = isThisDevice
+      ? getIsMobileDeviceMatch()
+        ? Icon.mobile
+        : Icon.desktop
+      : isICloud
+      ? Icon.apple
+      : Icon.usb
 
     const identity = WebAuthnIdentity.fromJSON(
       JSON.stringify({
@@ -202,6 +217,7 @@ export class PasskeyConnector {
       {
         delegationIdentity: tempKey,
         name: name,
+        device,
         deviceType: DeviceType.Passkey,
         icon,
         credentialId: key,

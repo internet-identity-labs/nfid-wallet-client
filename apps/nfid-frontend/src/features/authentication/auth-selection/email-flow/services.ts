@@ -128,6 +128,7 @@ export const authorizeWithEmail = async (
     profile = await createNFIDProfile({
       delegationIdentity,
       email: context.verificationEmail,
+      device: "asd",
       deviceType: DeviceType.Email,
       icon: Icon.email,
     })

@@ -133,8 +133,12 @@ export default function AuthenticationCoordinator({
 
   const onSignUpWithPasskey = async (name: string) => {
     setSignUpPasskeyLoading(true)
+    let challenge = await passkeyConnector.getCaptchaChallenge()
     try {
-      await passkeyConnector.registerWithPasskey(name)
+      await passkeyConnector.registerWithPasskey(name, {
+        challengeKey: challenge.challenge_key, //TODO
+        chars: "aaaaa"
+      })
       send({
         type: "AUTHENTICATED",
       })

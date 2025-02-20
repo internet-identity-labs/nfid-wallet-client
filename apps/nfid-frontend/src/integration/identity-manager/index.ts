@@ -253,6 +253,7 @@ export async function createProfile(anchor: number) {
       wallet: [],
       email: [],
       name: [],
+      challenge_attempt: []
     })
     .then(unpackResponse)
     .then(mapProfile)
@@ -269,7 +270,7 @@ type CreateAccessPointProps = {
   name?: string
   deviceType: DeviceType
   credentialId?: string
-  devicePrincipal?: string
+  devicePrincipal?: string,
 }
 
 /**
@@ -284,7 +285,9 @@ export async function createNFIDProfile({
   deviceType,
   credentialId,
   devicePrincipal,
-}: CreateAccessPointProps) {
+}: CreateAccessPointProps, challengeAttempt?: {
+  challengeKey: string, chars?: string
+}) {
   await replaceActorIdentity(im, delegationIdentity)
 
   if (deviceType === DeviceType.Passkey && !credentialId) {
@@ -315,6 +318,8 @@ export async function createNFIDProfile({
     anchor: BigInt(0), //we will calculate new anchor on IM side
     email: email ? [email] : [],
     name: name ? [name] : [],
+    challenge_attempt: challengeAttempt ? [{ challenge_key: challengeAttempt.challengeKey,
+    chars: challengeAttempt.chars ? [challengeAttempt.chars] : [] }] : [],
   }
 
   const profile: Profile = await im

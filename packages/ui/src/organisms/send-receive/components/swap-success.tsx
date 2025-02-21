@@ -121,7 +121,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {error
-            ? `ICPSwap ${getTitleAndButtonText(error)?.title} failed`
+            ? `${providerName} ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted
             ? ""
             : getTextStatusByStep(step)}

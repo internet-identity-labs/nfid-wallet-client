@@ -6,12 +6,15 @@ import {
 } from "src/integration/swap/errors/types"
 import { SwapStage } from "src/integration/swap/types/enums"
 
+import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
+
 export const getTitleAndButtonText = (
   error:
     | SwapError
     | WithdrawError
     | DepositError
     | SlippageSwapError
+    | ContactSupportError
     | undefined,
 ) => {
   if (error instanceof DepositError)
@@ -28,6 +31,11 @@ export const getTitleAndButtonText = (
     return {
       title: "withdraw",
       buttonText: "Complete swap",
+    }
+  if (error instanceof ContactSupportError)
+    return {
+      title: "swap",
+      buttonText: "Contact support",
     }
   return { title: "", buttonText: "Close" }
 }

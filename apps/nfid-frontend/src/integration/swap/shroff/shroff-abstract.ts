@@ -85,7 +85,9 @@ export abstract class ShroffAbstract implements Shroff {
         this.swapTransaction!.setTransferId(id)
         return id
       }
-      console.error("Transfer to ICPSwap failed: " + JSON.stringify(result.Err))
+      console.error(
+        "Transfer to " + this.getSwapName() + ": " + JSON.stringify(result.Err),
+      )
       throw new DepositError(JSON.stringify(result.Err))
     } catch (e) {
       console.error("Deposit error: " + e)
@@ -125,6 +127,7 @@ export abstract class ShroffAbstract implements Shroff {
       throw new WithdrawError(JSON.stringify(result.Err))
     } catch (e) {
       console.error("NFID transfer error: " + e)
+      this.swapTransaction?.setError((e as Error).message)
       throw new WithdrawError("NFID transfer error: " + e)
     }
   }

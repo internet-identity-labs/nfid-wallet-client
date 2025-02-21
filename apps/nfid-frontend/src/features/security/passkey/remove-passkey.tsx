@@ -69,7 +69,7 @@ export const DeletePasskey: FC<IDeletePasskeyModal> = ({
         <div className="p-5 mt-5 text-sm text-orange-900 bg-orange-50 rounded-xl">
           <p className="font-bold">
             {showLastPasskeyWarning
-              ? "Your two-factor authentication will be disabled"
+              ? "Your self-sovereign mode will be disabled"
               : "Caution"}
           </p>
           <p className="mt-3">

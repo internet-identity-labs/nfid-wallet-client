@@ -71,7 +71,7 @@ export const AuthOtherSignOptions = ({
             Attention required
           </p>
           <p className="mt-2.5 text-sm text-orange-900">
-            NFID’s self-sovereign mode has been upgraded. Update your
+            NFID’s Self-sovereign mode has been upgraded. Update your
             settings in the Security section of your profile at{" "}
             <a
               href="https://nfid.one/profile/security"

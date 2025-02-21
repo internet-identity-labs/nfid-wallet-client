@@ -69,12 +69,12 @@ export const DeletePasskey: FC<IDeletePasskeyModal> = ({
         <div className="p-5 mt-5 text-sm text-orange-900 bg-orange-50 rounded-xl">
           <p className="font-bold">
             {showLastPasskeyWarning
-              ? "Your self-sovereign mode will be disabled"
+              ? "Your Self-sovereign mode will be disabled"
               : "Caution"}
           </p>
           <p className="mt-3">
             {showLastPasskeyWarning
-              ? "Passkeys are the most secure authentication method available on the internet today. Disabling 2FA means anyone with access to your email address will be able to sign in."
+              ? "Passkeys are the most secure authentication method available on the internet today. Disabling Self-sovereign mode means anyone with access to your email address will be able to sign in."
               : "You will not be able to sign back in with this Passkey once removed. Make sure you have other methods of signing in."}
           </p>
         </div>

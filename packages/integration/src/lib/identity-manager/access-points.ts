@@ -11,7 +11,7 @@ export enum Icon {
   ii = "ii",
   email = "email",
   apple = "apple",
-  passkey = "passkey"
+  passkey = "passkey",
 }
 
 export enum DeviceType {

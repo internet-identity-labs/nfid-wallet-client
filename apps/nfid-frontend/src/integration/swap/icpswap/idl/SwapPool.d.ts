@@ -130,26 +130,26 @@ export type Result_13 = { ok: UserPositionInfo } | { err: Error }
 export type Result_14 = { ok: Array<TransferLog> } | { err: Error }
 export type Result_15 =
   | {
-  ok: {
-    swapFee0Repurchase: bigint
-    token0Amount: bigint
-    swapFeeReceiver: string
-    token1Amount: bigint
-    swapFee1Repurchase: bigint
-  }
-}
+      ok: {
+        swapFee0Repurchase: bigint
+        token0Amount: bigint
+        swapFeeReceiver: string
+        token1Amount: bigint
+        swapFee1Repurchase: bigint
+      }
+    }
   | { err: Error }
 export type Result_16 = { ok: Page_2 } | { err: Error }
 export type Result_17 = { ok: Page_3 } | { err: Error }
 export type Result_18 =
   | {
-  ok: {
-    infoCid: string
-    records: Array<SwapRecordInfo>
-    errors: Array<PushError>
-    retryCount: bigint
-  }
-}
+      ok: {
+        infoCid: string
+        records: Array<SwapRecordInfo>
+        errors: Array<PushError>
+        retryCount: bigint
+      }
+    }
   | { err: Error }
 export type Result_19 = { ok: Principal } | { err: Error }
 export type Result_2 = { ok: boolean } | { err: Error }
@@ -162,21 +162,21 @@ export type Result_24 =
   | { err: Error }
 export type Result_25 =
   | {
-  ok: {
-    tokenIncome: Array<
-      [bigint, { tokensOwed0: bigint; tokensOwed1: bigint }]
-    >
-    totalTokensOwed0: bigint
-    totalTokensOwed1: bigint
-  }
-}
+      ok: {
+        tokenIncome: Array<
+          [bigint, { tokensOwed0: bigint; tokensOwed1: bigint }]
+        >
+        totalTokensOwed0: bigint
+        totalTokensOwed1: bigint
+      }
+    }
   | { err: Error }
 export type Result_26 = { ok: Page_5 } | { err: Error }
 export type Result_3 = { ok: bigint } | { err: Error }
 export type Result_4 =
   | {
-  ok: { tokensOwed0: bigint; tokensOwed1: bigint }
-}
+      ok: { tokensOwed0: bigint; tokensOwed1: bigint }
+    }
   | { err: Error }
 export type Result_5 = { ok: PoolMetadata } | { err: Error }
 export type Result_6 =

@@ -7,14 +7,14 @@ export interface CredentialResponse {
   credential: string
   /** This field sets how the credential is selected */
   select_by?:
-  | "auto"
-  | "user"
-  | "user_1tap"
-  | "user_2tap"
-  | "btn"
-  | "btn_confirm"
-  | "brn_add_session"
-  | "btn_confirm_add_session"
+    | "auto"
+    | "user"
+    | "user_1tap"
+    | "user_2tap"
+    | "btn"
+    | "btn_confirm"
+    | "brn_add_session"
+    | "btn_confirm_add_session"
   clientId?: string
 }
 
@@ -55,12 +55,12 @@ export interface IdConfiguration {
    * see the [hd](https://developers.google.com/identity/protocols/oauth2/openid-connect#authenticationuriparameters)
    * field in the OpenID Connect docs.
    */
-  hosted_domain?: string,
+  hosted_domain?: string
   /**
    * Allow the browser to control user sign-in prompts and mediate the sign-in flow between your website and Google.
    * @default false
    */
-  use_fedcm_for_prompt?: boolean;
+  use_fedcm_for_prompt?: boolean
 }
 
 export interface GsiButtonConfiguration {

@@ -176,7 +176,6 @@ export class PasskeyConnector {
         nextBorrowedAnchor,
         name,
       )
-      debugger
     } catch (e) {
       console.error(e)
       const errorMessage = (e as Error).message
@@ -207,7 +206,7 @@ export class PasskeyConnector {
         deviceType: DeviceType.Passkey,
         credentialId: key,
         devicePrincipal: identity.getPrincipal().toText(),
-        ...this.getAccessPointDeviceAndIcon(data)
+        ...this.getAccessPointDeviceAndIcon(data),
       },
       challengeAttempt,
     )

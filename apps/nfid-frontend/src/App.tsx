@@ -95,6 +95,14 @@ export const App = () => {
             >
               <Route path="*" element={<WalletRouter />} />
             </Route>
+            <Route
+              path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
+              element={
+                <AuthWrapper>
+                  <NFTDetailsPage />
+                </AuthWrapper>
+              }
+            />
           </Routes>
         ) : (
           <motion.div

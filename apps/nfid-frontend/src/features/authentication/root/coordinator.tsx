@@ -221,7 +221,7 @@ export default function AuthenticationCoordinator({
     state.context.authSession?.name ??
     state.context.authSession?.anchor
 
-  const renderSteps = () => {
+  const renderAuthSteps = () => {
     switch (true) {
       case state.matches("AuthSelection"):
         return (
@@ -337,6 +337,9 @@ export default function AuthenticationCoordinator({
               onCaptchaEntered={setCaptchaEntered}
               isPasskeyCreating={signUpPasskeyLoading}
               getCaptcha={getCaptcha}
+              shouldFetchCaptcha={
+                !captcha && !isCaptchaLoading && !isCaptchaValidating
+              }
               captcha={
                 Array.isArray(captcha?.png_base64)
                   ? captcha?.png_base64[0]
@@ -379,6 +382,7 @@ export default function AuthenticationCoordinator({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
           >
             <AuthSignInWithRecoveryPhrase
               withLogo={!isIdentityKit}
@@ -525,5 +529,5 @@ export default function AuthenticationCoordinator({
     }
   }
 
-  return <AnimatePresence mode="wait">{renderSteps()}</AnimatePresence>
+  return <AnimatePresence mode="wait">{renderAuthSteps()}</AnimatePresence>
 }

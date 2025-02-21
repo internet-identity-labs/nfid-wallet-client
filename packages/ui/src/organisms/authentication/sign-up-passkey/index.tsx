@@ -18,6 +18,7 @@ export function AuthSignUpPassKey({
   subTitle,
   captchaEntered,
   onCaptchaEntered,
+  shouldFetchCaptcha,
 }: {
   getCaptcha: () => unknown
   onPasskeyCreate: (walletName: string) => unknown
@@ -32,12 +33,13 @@ export function AuthSignUpPassKey({
   subTitle?: string
   captchaEntered?: boolean
   onCaptchaEntered: (value: string) => unknown
+  shouldFetchCaptcha?: boolean
 }) {
   useEffect(() => {
-    if (!captcha && !isLoading) {
+    if (shouldFetchCaptcha) {
       getCaptcha()
     }
-  }, [getCaptcha, captcha, isLoading])
+  }, [getCaptcha, shouldFetchCaptcha])
 
   if (isLoading && !captcha) return <BlurredLoader isLoading />
 

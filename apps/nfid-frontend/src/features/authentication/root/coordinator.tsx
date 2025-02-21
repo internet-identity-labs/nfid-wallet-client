@@ -312,6 +312,7 @@ export default function AuthenticationCoordinator({
           onCaptchaEntered={setCaptchaEntered}
           isPasskeyCreating={signUpPasskeyLoading}
           getCaptcha={getCaptcha}
+          shouldFetchCaptcha={!captcha && !isCaptchaLoading && !isCaptchaValidating}
           captcha={
             Array.isArray(captcha?.png_base64)
               ? captcha?.png_base64[0]

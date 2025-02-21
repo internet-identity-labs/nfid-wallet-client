@@ -208,8 +208,8 @@ export class SecurityConnector {
       }
     })
 
-    if (enabled) toaster.success("2FA enabled")
-    else toaster.success("2FA disabled")
+    if (enabled) toaster.success("Self-sovereign mode enabled")
+    else toaster.success("Self-sovereign mode disabled")
   }
 }
 

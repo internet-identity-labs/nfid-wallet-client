@@ -54,6 +54,7 @@ describe("Passkey test", () => {
       wallet: [{ NFID: null }],
       anchor: BigInt(0),
       name: [],
+      challenge_attempt: [],
     }
     await replaceActorIdentity(im, di)
     await replaceActorIdentity(passkeyStorage, di)

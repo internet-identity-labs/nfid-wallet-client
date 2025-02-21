@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { FC } from "react"
 
 import { BlurredLoader, Button } from "@nfid-frontend/ui"
@@ -7,24 +8,35 @@ import Image from "./assets/passkey.webp"
 export interface AuthAddPasskeyProps {
   onSkip: () => void
   onAdd: () => void
-  email?: string
+  name?: string | number
   isLoading: boolean
+  titleClassName?: string
 }
 
 export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
   onSkip,
   onAdd,
-  email,
+  name,
   isLoading,
+  titleClassName,
 }) => {
   return (
-    <BlurredLoader isLoading={isLoading} overlayClassnames="rounded-[24px]">
+    <BlurredLoader
+      className="flex flex-col flex-grow w-full min-h-[536px]"
+      isLoading={isLoading}
+      overlayClassnames="rounded-[24px]"
+    >
       <div className="flex flex-col w-full h-full text-sm text-center">
-        <p className="text-center font-bold mt-[30px] text-lg">
+        <h5
+          className={clsx(
+            "text-center font-bold mt-[50px] mb-0 text-[20px]",
+            titleClassName,
+          )}
+        >
           Secure your wallet
-        </p>
-        <p className="mt-2.5 mb-[30px]">{email}</p>
-        <p>
+        </h5>
+        <p className="mt-2.5 mb-[30px]">NFID Wallet name: {name}</p>
+        <p className="text-center">
           Adding biometric security will enable faster sign in and ensure you
           are the only one that can access your wallet.
         </p>

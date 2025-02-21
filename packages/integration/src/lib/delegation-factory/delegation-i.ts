@@ -18,6 +18,7 @@ import {
   fromHexString,
   getAnonymousDelegationThroughLambda,
   getLambdaPublicKey,
+  oldFlowDelegationChainLambda,
   oldFlowGlobalKeysFromLambda,
 } from "../lambda/lambda-delegation"
 import { validateTargets } from "../lambda/targets"
@@ -63,6 +64,7 @@ export async function getGlobalDelegationChain(
       identity,
       targets,
       sessionPublicKey,
+      origin,
       maxTimeToLive,
     )
   }
@@ -128,10 +130,10 @@ export async function getGlobalDelegation(
     )
   } else {
     //deprecated flow
-    delegationChain = await oldFlowGlobalKeysFromLambda(
+    delegationChain = await oldFlowDelegationChainLambda(
       identity,
+      sessionKey,
       targets,
-      new Uint8Array(sessionKey.getPublicKey().toDer()),
     )
   }
   const response = DelegationIdentity.fromDelegation(

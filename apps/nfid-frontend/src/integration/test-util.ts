@@ -60,6 +60,7 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
     wallet: [],
     email: [],
     name: [],
+    challenge_attempt: [],
   }
   await im.create_account(req)
 }

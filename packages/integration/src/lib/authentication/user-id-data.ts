@@ -15,6 +15,7 @@ export type UserIdData = {
   anchor: bigint
   wallet: RootWallet
   email?: string
+  name?: string
   cacheVersion: string
 }
 
@@ -52,6 +53,8 @@ export async function createUserIdData(
     publicKey: publicKey,
     anchor: account.data[0]!.anchor,
     wallet: rootWallet,
+    name:
+      account.data[0]!.name.length !== 0 ? account.data[0]!.name[0] : undefined,
     email:
       account.data[0]!.email.length !== 0
         ? account.data[0]!.email[0]

@@ -24,6 +24,16 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.shouldShowPasskeys6th": {
+      type: "done.invoke.shouldShowPasskeys6th"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.shouldShowRecovery8th": {
+      type: "done.invoke.shouldShowRecovery8th"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "error.platform.AuthWithEmailMachine": {
       type: "error.platform.AuthWithEmailMachine"
       data: unknown
@@ -53,20 +63,27 @@ export interface Typegen0 {
     assignAllowedDevices: "done.invoke.checkIf2FAEnabled"
     assignAuthSession:
       | "AUTHENTICATED"
+      | "SIGN_IN_PASSKEY"
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
     assignEmail: "AUTH_WITH_GOOGLE"
     assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
-    assignShowPasskeys: "done.invoke.shouldShowPasskeys"
+    assignShowPasskeys:
+      | "done.invoke.shouldShowPasskeys"
+      | "done.invoke.shouldShowPasskeys6th"
+    assignShowRecovery: "done.invoke.shouldShowRecovery8th"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
+    setShouldCheckRecoveryEvery8th: "done.invoke.checkIf2FAEnabled"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
     is2FAEnabled: "done.invoke.checkIf2FAEnabled"
     isExistingAccount: "done.invoke.AuthWithGoogleMachine"
     isReturn: "done.invoke.AuthWithEmailMachine"
-    showPasskeys: "done.invoke.shouldShowPasskeys"
-    showSNSBanner: ""
+    showPasskeys:
+      | "done.invoke.shouldShowPasskeys"
+      | "done.invoke.shouldShowPasskeys6th"
+    showRecovery: "done.invoke.shouldShowRecovery8th"
   }
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
@@ -74,20 +91,31 @@ export interface Typegen0 {
     checkIf2FAEnabled:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
-    shouldShowPasskeys: "done.invoke.checkIf2FAEnabled"
+    shouldShowPasskeys:
+      | "done.invoke.AuthWithEmailMachine"
+      | "done.invoke.AuthWithGoogleMachine"
+    shouldShowPasskeys6th: "AUTHENTICATED" | "done.invoke.checkIf2FAEnabled"
+    shouldShowRecovery8th: "" | "AUTHENTICATED" | "SIGN_IN_PASSKEY"
   }
   matchesStates:
     | "AddPasskeys"
     | "AddPasskeysSuccess"
     | "AuthSelection"
+    | "AuthSelectionSignUp"
     | "AuthWithGoogle"
+    | "BackupWallet"
+    | "BackupWalletSavePhrase"
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"
-    | "SNSBanner"
+    | "SignInWithRecoveryPhrase"
+    | "SignUpPassKey"
+    | "SignUpWithEmail"
+    | "SignUpWithGoogle"
     | "TwoFA"
     | "check2FA"
     | "checkPasskeys"
-    | "checkSNSBanner"
+    | "checkPasskeys6th"
+    | "checkRecovery8th"
   tags: never
 }

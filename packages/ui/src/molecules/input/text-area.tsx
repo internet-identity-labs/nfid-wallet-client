@@ -3,12 +3,14 @@ import React from "react"
 
 import { Label } from "@nfid-frontend/ui"
 
-interface TextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   rows?: number
   placeholder?: string
   helperText?: string
   errorText?: string
   labelText?: string
+  areaClassName?: string
 }
 
 export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
@@ -20,6 +22,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       rows = 3,
       helperText,
       errorText,
+      areaClassName,
       ...props
     },
     ref,
@@ -31,6 +34,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           rows={rows}
           className={clsx(
+            areaClassName,
             "shadow-sm text-black my-1 block w-full text-sm border rounded-[12px] bg-transparent resize-none",
             errorText
               ? "active:bg-transparent active:border-red !border-red box-shadow-red focus:ring-red"

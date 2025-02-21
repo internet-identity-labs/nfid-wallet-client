@@ -9,7 +9,12 @@ import {
 } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
-import { checkIf2FAEnabled, shouldShowPasskeys } from "../services"
+import {
+  checkIf2FAEnabled,
+  shouldShowPasskeys,
+  shouldShowPasskeysEvery6thTime,
+  shouldShowRecoveryPhraseEvery8thTime,
+} from "../services"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -26,8 +31,12 @@ export interface AuthenticationContext {
 
   email2FA?: string
   email?: string
+  walletName?: string
+  anchor?: number
   showPasskeys?: boolean
+  showRecovery?: boolean
   isEmbed?: boolean
+  shouldShowRecoveryEvery8th?: boolean
 }
 
 export type Events =
@@ -41,6 +50,14 @@ export type Events =
       type: "done.invoke.shouldShowPasskeys"
       data?: { showPasskeys: boolean }
     }
+  | {
+      type: "done.invoke.shouldShowPasskeys6th"
+      data?: { showPasskeys: boolean }
+    }
+  | {
+      type: "done.invoke.shouldShowRecovery8th"
+      data?: { showRecovery: boolean }
+    }
   | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
   | { type: "CHOOSE_WALLET" }
   | {
@@ -48,11 +65,22 @@ export type Events =
       data: { jwt: string; email: string; isEmbed: boolean }
     }
   | { type: "AUTH_WITH_OTHER"; data: { isEmbed: boolean } }
-  | { type: "AUTHENTICATED"; data?: AbstractAuthSession }
+  | { type: "AUTH_WITH_RECOVERY_PHRASE" }
+  | {
+      type: "AUTHENTICATED"
+      data?: AbstractAuthSession
+    }
   | { type: "BACK" }
   | { type: "CONTINUE" }
   | { type: "SKIP" }
   | { type: "DONE" }
+  | { type: "SIGN_UP" }
+  | { type: "SIGN_IN" }
+  | { type: "SIGN_UP_WITH_PASSKEY" }
+  | {
+      type: "SIGN_IN_PASSKEY"
+      data?: AbstractAuthSession
+    }
 
 export interface Schema {
   events: Events
@@ -86,6 +114,68 @@ const AuthenticationMachine =
               actions: "assignAuthSession",
               target: "End",
             },
+            SIGN_UP: {
+              target: "AuthSelectionSignUp",
+            },
+            SIGN_IN_PASSKEY: {
+              actions: "assignAuthSession",
+              target: "checkRecovery8th",
+            },
+          },
+        },
+        AuthSelectionSignUp: {
+          on: {
+            AUTH_WITH_EMAIL: {
+              target: "SignUpWithEmail",
+              actions: ["assignVerificationEmail", "assignIsEmbed"],
+            },
+            AUTH_WITH_GOOGLE: {
+              target: "SignUpWithGoogle",
+              actions: ["assignEmail", "assignIsEmbed"],
+            },
+            AUTHENTICATED: {
+              actions: "assignAuthSession",
+              target: "End",
+            },
+            SIGN_IN: {
+              target: "AuthSelection",
+            },
+            SIGN_UP_WITH_PASSKEY: {
+              target: "SignUpPassKey",
+            },
+          },
+        },
+        SignUpPassKey: {
+          on: {
+            BACK: "AuthSelectionSignUp",
+            AUTHENTICATED: {
+              target: "End",
+              actions: "assignAuthSession",
+            },
+          },
+        },
+        SignInWithRecoveryPhrase: {
+          on: {
+            BACK: "OtherSignOptions",
+            AUTHENTICATED: {
+              target: "checkPasskeys6th",
+              actions: "assignAuthSession",
+            },
+          },
+        },
+        BackupWallet: {
+          on: {
+            SKIP: {
+              target: "End",
+            },
+            DONE: "BackupWalletSavePhrase",
+          },
+        },
+        BackupWalletSavePhrase: {
+          on: {
+            DONE: {
+              target: "End",
+            },
           },
         },
         AuthWithGoogle: {
@@ -104,6 +194,44 @@ const AuthenticationMachine =
               {
                 actions: "assignAuthSession",
                 target: "AuthSelection",
+              },
+            ],
+          },
+        },
+        SignUpWithGoogle: {
+          invoke: {
+            src: "AuthWithGoogleMachine",
+            id: "AuthWithGoogleMachine",
+            data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
+              return { jwt: event.data.jwt }
+            },
+            onDone: [
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "checkPasskeys",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "AuthSelection",
+              },
+            ],
+          },
+        },
+        SignUpWithEmail: {
+          invoke: {
+            src: "AuthWithEmailMachine",
+            id: "AuthWithEmailMachine",
+            data: (context) => ({
+              authRequest: context?.authRequest,
+              appMeta: context?.appMeta,
+              verificationEmail: context?.verificationEmail,
+            }),
+            onDone: [
+              { cond: "isReturn", target: "AuthSelection" },
+              {
+                actions: "assignAuthSession",
+                target: "checkPasskeys",
               },
             ],
           },
@@ -133,6 +261,9 @@ const AuthenticationMachine =
               target: "End",
               actions: "assignAuthSession",
             },
+            AUTH_WITH_RECOVERY_PHRASE: {
+              target: "SignInWithRecoveryPhrase",
+            },
           },
         },
         check2FA: {
@@ -145,15 +276,52 @@ const AuthenticationMachine =
                 target: "TwoFA",
                 actions: "assignAllowedDevices",
               },
-              { target: "checkPasskeys" },
+              {
+                target: "checkPasskeys6th",
+                actions: "setShouldCheckRecoveryEvery8th",
+              },
             ],
           },
         },
         TwoFA: {
           on: {
             AUTHENTICATED: {
-              target: "End",
+              target: "checkRecovery8th",
             },
+          },
+        },
+        checkPasskeys6th: {
+          invoke: {
+            src: (context) => shouldShowPasskeysEvery6thTime(context),
+            id: "shouldShowPasskeys6th",
+            onDone: [
+              {
+                actions: "assignShowPasskeys",
+                cond: "showPasskeys",
+                target: "AddPasskeys",
+              },
+            ],
+          },
+          always: [
+            {
+              cond: (context) => !!context.shouldShowRecoveryEvery8th,
+              target: "checkRecovery8th",
+            },
+            { target: "End" },
+          ],
+        },
+        checkRecovery8th: {
+          invoke: {
+            src: () => shouldShowRecoveryPhraseEvery8thTime(),
+            id: "shouldShowRecovery8th",
+            onDone: [
+              {
+                actions: "assignShowRecovery",
+                cond: "showRecovery",
+                target: "BackupWallet",
+              },
+              { target: "End" },
+            ],
           },
         },
         checkPasskeys: {
@@ -204,11 +372,21 @@ const AuthenticationMachine =
           if (showPasskeys === undefined) return true
           return showPasskeys
         },
+        showRecovery: (_, event) => {
+          const showRecovery = event.data?.showRecovery
+          if (showRecovery === undefined) return true
+          return showRecovery
+        },
       },
       actions: {
-        assignAuthSession: assign((_, event) => ({
-          authSession: event.data,
-        })),
+        setShouldCheckRecoveryEvery8th: assign({
+          shouldShowRecoveryEvery8th: true,
+        }),
+        assignAuthSession: assign((_, event) => {
+          return {
+            authSession: event.data,
+          }
+        }),
         assignVerificationEmail: assign((_, event) => ({
           verificationEmail: event.data.email,
         })),
@@ -220,6 +398,9 @@ const AuthenticationMachine =
         })),
         assignShowPasskeys: assign((_, event) => ({
           showPasskeys: event.data?.showPasskeys,
+        })),
+        assignShowRecovery: assign((_, event) => ({
+          showRecovery: event.data?.showRecovery,
         })),
         assignIsEmbed: assign((_, event) => ({
           isEmbed: event.data?.isEmbed,

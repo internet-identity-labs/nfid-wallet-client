@@ -11,6 +11,7 @@ import { isWebAuthNSupported } from "frontend/integration/device"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
+import { securityConnector } from "../security/device-connector"
 import { passkeyConnector } from "./auth-selection/passkey-flow/services"
 import { AuthenticationContext } from "./root/root-machine"
 
@@ -92,4 +93,29 @@ export const shouldShowPasskeys = async (context: AuthenticationContext) => {
   } catch (_) {
     return { showPasskeys: true }
   }
+}
+
+export const shouldShowPasskeysEvery6thTime = async (
+  context: AuthenticationContext,
+) => {
+  if (!isWebAuthNSupported() || context.isEmbed) return { showPasskeys: false }
+
+  if (Math.floor(Math.random() * 6) === 0) {
+    try {
+      const hasPasskeys = await passkeyConnector.hasPasskeys()
+      return { showPasskeys: !hasPasskeys }
+    } catch (_) {
+      return { showPasskeys: true }
+    }
+  }
+
+  return { showPasskeys: false }
+}
+
+export const shouldShowRecoveryPhraseEvery8thTime = async () => {
+  if (Math.floor(Math.random() * 8) === 0) {
+    const devices = await securityConnector.getDevices()
+    return { showRecovery: !devices.recoveryDevice }
+  }
+  return { showRecovery: false }
 }

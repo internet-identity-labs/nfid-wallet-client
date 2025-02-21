@@ -32,7 +32,7 @@ export class ShroffSwapErrorHandler extends ShroffIcpSwapImpl {
       } else {
         try {
           await this.withdraw()
-        } catch (e : any) {
+        } catch (e: any) {
           if (e.message.includes("InsufficientFunds")) {
             await super.withdraw()
           }

@@ -6,11 +6,12 @@ import { Button, CenterEllipsis } from "@nfid-frontend/ui"
 import { ExistingWallet } from "@nfid/integration"
 
 import { AuthAppMeta } from "../app-meta"
+
 export interface ChooseWalletProps {
   onAuthSelection: () => void
   onLoginWithPasskey: (allowedPasskeys: any[]) => Promise<void>
   showLogo?: boolean
-  applicationUrl?: string
+  applicationURL?: string
   wallets?: ExistingWallet[]
 }
 
@@ -18,7 +19,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
   onAuthSelection,
   onLoginWithPasskey,
   showLogo,
-  applicationUrl,
+  applicationURL,
   wallets,
 }) => {
   if (!wallets) return null
@@ -26,7 +27,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
     <>
       <div className="flex flex-col w-full h-full text-sm text-center">
         <AuthAppMeta
-          applicationURL={applicationUrl}
+          applicationURL={applicationURL}
           withLogo={!showLogo}
           title={"Choose Wallet"}
           subTitle={<>to continue to</>}
@@ -50,7 +51,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
                 onClick={() => onLoginWithPasskey(wallet.allowedPasskeys)}
               >
                 <div>
-                  <p>{wallet.email}</p>
+                  <p>{wallet.email ?? wallet.name}</p>
                   <p className="mt-0.5 tex-xs text-gray-400 leading-4.5">
                     <CenterEllipsis
                       value={wallet.principal}

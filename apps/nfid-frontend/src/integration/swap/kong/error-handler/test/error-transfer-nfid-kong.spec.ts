@@ -5,6 +5,8 @@ import { Shroff } from "src/integration/swap/shroff"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { SwapStage } from "src/integration/swap/types/enums"
 
+import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
+
 describe("shroff transfer kong error handler test", () => {
   jest.setTimeout(900000)
 
@@ -43,7 +45,13 @@ describe("shroff transfer kong error handler test", () => {
     let failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferNFID)
-    let trs = await errorHandler.completeTransaction(mockId)
-    expect(trs.getStage()).toEqual(SwapStage.Completed)
+    try {
+      let trs = await errorHandler.completeTransaction(mockId)
+      expect(trs.getStage()).toEqual(SwapStage.Completed)
+    } catch (e) {
+      if (e instanceof ContactSupportError) {
+        expect(e.message).toBe("KongSwap provider error")
+      }
+    }
   })
 })

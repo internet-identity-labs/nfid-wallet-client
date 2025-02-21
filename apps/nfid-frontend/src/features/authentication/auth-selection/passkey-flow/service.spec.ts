@@ -62,15 +62,11 @@ describe("Passkey flow", () => {
     jest.spyOn(passkeyService as any, "setUpState").mockImplementation(() => {
       console.log("State set up")
     })
+    let key = await passkeyService.getCaptchaChallenge()
     let actual = await passkeyService.registerWithPasskey("mockedId", {
-      isMultiDevice: false,
+      challengeKey: key.challenge_key,
+      chars: "aaaaa",
     })
-    const identity = WebAuthnIdentity.fromJSON(
-      JSON.stringify({
-        rawId: Buffer.from(exp.data.credentialId).toString("hex"),
-        publicKey: Buffer.from(exp.data.publicKey).toString("hex"),
-      }),
-    )
     expect(actual.accessPoints.length).toEqual(1)
     expect(actual.principalId).not.toEqual(pk.getPrincipal().toText())
     expect(actual.wallet).toEqual("NFID")

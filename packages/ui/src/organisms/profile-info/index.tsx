@@ -54,7 +54,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
                 tokens and NFTs and its change over the past 24 hours, assuming
                 token and NFT balances remain unchanged.
                 <span className="block mt-[10px]">
-                Fungible tokens USD price powered by ICPTokens and ICPSwap.
+                  Fungible tokens USD price powered by ICPTokens and ICPSwap.
                 </span>
               </span>
             }

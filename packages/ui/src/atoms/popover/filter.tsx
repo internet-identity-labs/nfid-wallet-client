@@ -1,5 +1,6 @@
 import * as RadixPopover from "@radix-ui/react-popover"
 import clsx from "clsx"
+import { motion } from "framer-motion"
 
 import { Popover, PopoverProps } from "."
 import { Button } from "../../molecules/button"
@@ -22,40 +23,46 @@ export const FilterPopover = ({
 }: IFilterPopover) => {
   return (
     <Popover trigger={trigger} align={align}>
-      <div
-        className={clsx(
-          "min-w-[350px] relative z-50 bg-white h-full p-5 rounded-[24px] shadow-md",
-          className,
-        )}
-      >
-        <p className="mb-1 text-xs leading-4">{title}</p>
-        {children}
-        <div className={onApply ? "grid grid-cols-2 gap-5 mt-5" : "mt-5"}>
-          <RadixPopover.Close className="w-full">
-            <Button
-              onClick={onReset}
-              type="ghost"
-              block={true}
-              id="reset-filters-button"
-              className="text-teal-600"
-            >
-              Reset filter
-            </Button>
-          </RadixPopover.Close>
-          {onApply && (
-            <RadixPopover.Close>
+      <RadixPopover.Content asChild>
+        <motion.div
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          className={clsx(
+            "min-w-[350px] relative z-50 bg-white h-full p-5 rounded-[24px] shadow-md",
+            className,
+          )}
+        >
+          <p className="mb-1 text-xs leading-4">{title}</p>
+          {children}
+          <div className={onApply ? "grid grid-cols-2 gap-5 mt-5" : "mt-5"}>
+            <RadixPopover.Close className="w-full">
               <Button
-                onClick={onApply}
-                type="primary"
-                id="apply-filters-button"
+                onClick={onReset}
+                type="ghost"
                 block={true}
+                id="reset-filters-button"
+                className="text-teal-600"
               >
-                Apply
+                Reset filter
               </Button>
             </RadixPopover.Close>
-          )}
-        </div>
-      </div>
+            {onApply && (
+              <RadixPopover.Close>
+                <Button
+                  onClick={onApply}
+                  type="primary"
+                  id="apply-filters-button"
+                  block={true}
+                >
+                  Apply
+                </Button>
+              </RadixPopover.Close>
+            )}
+          </div>
+        </motion.div>
+      </RadixPopover.Content>
     </Popover>
   )
 }

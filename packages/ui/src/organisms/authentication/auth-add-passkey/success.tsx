@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { FC } from "react"
 
 import { Button } from "@nfid-frontend/ui"
@@ -6,20 +7,27 @@ import Image from "./assets/passkey_enabled.webp"
 
 export interface AuthAddPasskeyProps {
   onFinish: () => void
-  email?: string
+  name?: string | number
+  titleClassName?: string
 }
 
 export const AuthAddPasskeySuccess: FC<AuthAddPasskeyProps> = ({
   onFinish,
-  email,
+  name,
+  titleClassName,
 }) => {
   return (
     <div className="flex flex-col w-full h-full text-sm text-center">
-      <p className="text-center font-bold mt-[30px] text-lg">
+      <h5
+        className={clsx(
+          "text-center font-bold mt-[50px] mb-0 text-[20px]",
+          titleClassName,
+        )}
+      >
         Biometric enabled
-      </p>
-      <p className="mt-2.5 mb-[30px]">{email}</p>
-      <p>
+      </h5>
+      <p className="mt-2.5 mb-[30px]">NFID Wallet name: {name}</p>
+      <p className="text-center">
         You can now use your fingerprint, face, or screen lock to sign in faster
         and more securely next time.
       </p>

@@ -11,6 +11,7 @@ import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
+import { Challenge } from "packages/integration/src/lib/_ic_api/identity_manager.d"
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,
@@ -38,7 +39,6 @@ import {
   storePasskey,
 } from "@nfid/integration"
 
-import isSafari from "frontend/features/security/utils"
 import { getPlatformInfo } from "frontend/integration/device"
 import {
   createNFIDProfile,
@@ -88,28 +88,41 @@ export class PasskeyConnector {
         protection: { unprotected: null },
       })
     }
-    const isSecurityKey =
-      data.type === "cross-platform" &&
-      !data.transports.includes("internal") &&
-      !data.transports.includes("hybrid")
 
     await storePasskey(key, jsonData)
     await createPasskeyAccessPoint({
       browser: getBrowser(),
-      device: isSecurityKey
-        ? "Security Key"
-        : data.type === "cross-platform" || data.transports.includes("hybrid")
-        ? "Keychain"
-        : `${getBrowser()} on ${getPlatformInfo().device}`,
       deviceType: DeviceType.Passkey,
-      icon: isSecurityKey
-        ? Icon.usb
-        : getIsMobileDeviceMatch() || data.type === "cross-platform"
-        ? Icon.mobile
-        : Icon.desktop,
       principal: identity.getPrincipal().toText(),
       credential_id: [data.credentialStringId],
+      ...this.getAccessPointDeviceAndIcon(data),
     })
+  }
+
+  private getAccessPointDeviceAndIcon(data: IPasskeyMetadata) {
+    const isThisDevice = data.transports.includes("internal")
+    const isICloud =
+      /iPhone|iPad|Mac/.test(navigator.userAgent) &&
+      data.transports.includes("hybrid")
+
+    const device = isThisDevice
+      ? `${getBrowser()} on ${getPlatformInfo().device}`
+      : isICloud
+      ? "iCloud keychain"
+      : "Security Key"
+
+    const icon = isThisDevice
+      ? getIsMobileDeviceMatch()
+        ? Icon.mobile
+        : Icon.desktop
+      : isICloud
+      ? Icon.apple
+      : Icon.usb
+
+    return {
+      device,
+      icon,
+    }
   }
 
   async getPasskeyByCredentialID(key: string): Promise<IPasskeyMetadata> {
@@ -145,19 +158,24 @@ export class PasskeyConnector {
     }
   }
 
+  async getCaptchaChallenge(): Promise<Challenge> {
+    return await im.get_captcha()
+  }
+
   async registerWithPasskey(
     name: string,
-    { isMultiDevice }: { isMultiDevice: boolean },
+    challengeAttempt: {
+      challengeKey: string
+      chars?: string
+    },
   ) {
     let credential: PublicKeyCredential
-    const nextBorrowedAnchor = randomBytes(16) //TODO WIP borrow anchor with captcha
+    const nextBorrowedAnchor = randomBytes(16)
     try {
       credential = await this.createNavigatorCredential(
         nextBorrowedAnchor,
         name,
-        isMultiDevice,
       )
-      debugger
     } catch (e) {
       console.error(e)
       const errorMessage = (e as Error).message
@@ -174,17 +192,6 @@ export class PasskeyConnector {
 
     await replaceActorIdentity(im, tempKey)
 
-    const isSecurityKey =
-      data.type === "cross-platform" &&
-      !data.transports.includes("internal") &&
-      !data.transports.includes("hybrid")
-
-    const icon = isSecurityKey
-      ? Icon.usb
-      : getIsMobileDeviceMatch() || data.type === "cross-platform"
-      ? Icon.mobile
-      : Icon.desktop
-
     const identity = WebAuthnIdentity.fromJSON(
       JSON.stringify({
         rawId: Buffer.from(data.credentialId).toString("hex"),
@@ -192,14 +199,17 @@ export class PasskeyConnector {
       }),
     )
 
-    const profile = await createNFIDProfile({
-      delegationIdentity: tempKey,
-      name: name,
-      deviceType: DeviceType.Passkey,
-      icon,
-      credentialId: key,
-      devicePrincipal: identity.getPrincipal().toText(),
-    })
+    const profile = await createNFIDProfile(
+      {
+        delegationIdentity: tempKey,
+        name: name,
+        deviceType: DeviceType.Passkey,
+        credentialId: key,
+        devicePrincipal: identity.getPrincipal().toText(),
+        ...this.getAccessPointDeviceAndIcon(data),
+      },
+      challengeAttempt,
+    )
 
     const jsonData = JSON.stringify({
       ...data,
@@ -342,6 +352,7 @@ export class PasskeyConnector {
 
       return {
         anchor: profile.anchor,
+        name: profile.name,
         delegationIdentity: delegationIdentity,
         identity: multiIdent._actualIdentity!,
       }
@@ -474,19 +485,9 @@ export class PasskeyConnector {
   private async createNavigatorCredential(
     nextBorrowedAnchor: BufferSource,
     name: string,
-    isMultiDevice: boolean,
   ): Promise<PublicKeyCredential> {
     return (await navigator.credentials.create({
       publicKey: {
-        authenticatorSelection: {
-          authenticatorAttachment: isSafari()
-            ? "platform"
-            : isMultiDevice
-            ? "cross-platform"
-            : "platform",
-          userVerification: "preferred",
-          residentKey: "required",
-        },
         attestation: "direct",
         challenge: this._createChallengeBuffer(),
         pubKeyCredParams: [

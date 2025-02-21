@@ -176,7 +176,12 @@ export const useAuthentication = () => {
           setShouldStoreLocalAccount(false)
         }
         setIsLoading(false)
-        return result
+        return {
+          ...result,
+          profile: {
+            anchor: userNumber.toString(),
+          },
+        }
       } else {
         // Recover new users
         const identity = await fromMnemonicWithoutValidation(
@@ -189,7 +194,22 @@ export const useAuthentication = () => {
         await replaceActorIdentity(im, delegationIdentity)
 
         try {
-          await fetchProfile()
+          const profile = await fetchProfile()
+          await authState.set({
+            identity,
+            delegationIdentity: delegationIdentity,
+          })
+          setIsLoading(false)
+
+          return {
+            tag: "ok",
+            chain: chain,
+            sessionKey: sessionKey,
+            profile: {
+              anchor: profile.anchor,
+              name: profile.name,
+            },
+          }
         } catch (e) {
           setIsLoading(false)
           return {
@@ -197,18 +217,6 @@ export const useAuthentication = () => {
             title: "Incorrect seed phrase",
             message: "",
           } as LoginError
-        }
-
-        await authState.set({
-          identity,
-          delegationIdentity: delegationIdentity,
-        })
-        setIsLoading(false)
-
-        return {
-          tag: "ok",
-          chain: chain,
-          sessionKey: sessionKey,
         }
       }
     },

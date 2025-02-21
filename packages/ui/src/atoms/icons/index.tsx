@@ -1,5 +1,6 @@
 import LogoMain from "../nfid-logo/nfid-wallet-logo-black.svg"
 import LogoLanding from "../nfid-logo/nfid-wallet-logo-white.svg"
+import IconSvgActions from "./actions.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrowRight from "./arrow-right.svg"
@@ -48,6 +49,7 @@ import IconSvgSuccess from "./success.svg"
 import IconSvgSwapAction from "./swap-action.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
+import IconSvgText from "./text.svg"
 import IconSvgTokenInfo from "./token-info.svg"
 import IconSvgTouchId from "./touch-id.svg"
 import IconSvgTransactions from "./transactions.svg"
@@ -58,6 +60,8 @@ import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
 
 export {
+  IconSvgActions,
+  IconSvgText,
   IconSvgPasskey,
   IconSvgArrow,
   IconSvgSwapAction,
@@ -174,3 +178,5 @@ export { ReactComponent as IconCmpShare } from "./share.svg"
 export { ReactComponent as IconCmpExternalIcon } from "./share.svg"
 export { ReactComponent as IconCmpArrowRightIcon } from "./arrow-right.svg"
 export { ReactComponent as IconCmpStatusSuccess } from "./status-success.svg"
+export { ReactComponent as IconCmpActions } from "./actions.svg"
+export { ReactComponent as IconCmpUserKey } from "./user-key.svg"

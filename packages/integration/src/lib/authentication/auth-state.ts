@@ -40,9 +40,10 @@ export interface ExistingWallet {
   allowedPasskeys: { credentialId: Buffer; pubkey: any; anchor: bigint }[]
   email: string | undefined
   principal: string
+  name: string | undefined
 }
 
-export const EXPECTED_CACHE_VERSION = "0"
+export const EXPECTED_CACHE_VERSION = "1"
 
 const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({
   cacheLoaded: false,
@@ -332,12 +333,13 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
     .filter((profile) => profile.cacheVersion === EXPECTED_CACHE_VERSION)
 
   const profilesData = profiles
-    .filter((profile) => profile.email)
+    .filter((profile) => profile.email || profile.name)
     .reduce((acc, profile) => {
       const newProfile = {
         email: profile.email,
         principal: profile.publicKey,
         anchor: profile.anchor,
+        name: profile.name,
       }
 
       const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
@@ -347,7 +349,7 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
       }
 
       return acc
-    }, [] as { email: string | undefined; principal: string; anchor: bigint }[])
+    }, [] as { email: string | undefined; principal: string; anchor: bigint; name: string | undefined }[])
 
   const parsedCredentialIds: string[] = await authStorage
     .get("credentialIds")

@@ -50,19 +50,22 @@ When(
 
 When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
   await Assets.SwapDialog.getSourceAmountField.setValue(amount)
-  await browser.waitUntil(async () => {
-    return (
-      (await Assets.SwapDialog.getTargetAmountField.isDisplayed()) &&
-      parseFloat(
-        await (
-          await Assets.SwapDialog.getTargetAmountField
-        ).getAttribute("value"),
-      ) > 0
-    )
-  }, {
-    interval: 1000,
-    timeoutMsg: `Expected targetAmountField value > 0`,
-  })
+  await browser.waitUntil(
+    async () => {
+      return (
+        (await Assets.SwapDialog.getTargetAmountField.isDisplayed()) &&
+        parseFloat(
+          await (
+            await Assets.SwapDialog.getTargetAmountField
+          ).getAttribute("value"),
+        ) > 0
+      )
+    },
+    {
+      interval: 1000,
+      timeoutMsg: `Expected targetAmountField value > 0`,
+    },
+  )
   sourceTokenAmountToSwap = parseFloat(amount)
   currentSourceTokenBalance = parseFloat(
     (await Assets.getSourceTokenBalance.getText()).replace(/[^\d.]/g, ""),
@@ -107,14 +110,16 @@ When(
             (currentTargetTokenBalance + expectedTargetTokenAmount) * 1e8,
           ) / 1e8
         actualSourceTokenBalance = parseFloat(
-          (
-            await (await Assets.tokenBalance(sourceToken)).getText()
-          ).replace(/[^\d.]/g, ""),
+          (await (await Assets.tokenBalance(sourceToken)).getText()).replace(
+            /[^\d.]/g,
+            "",
+          ),
         )
         actualTargetTokenBalance = parseFloat(
-          (
-            await (await Assets.tokenBalance(targetToken)).getText()
-          ).replace(/[^\d.]/g, ""),
+          (await (await Assets.tokenBalance(targetToken)).getText()).replace(
+            /[^\d.]/g,
+            "",
+          ),
         )
 
         return (
@@ -123,14 +128,31 @@ When(
         )
       },
       {
-        timeout: 95000,
+        timeout: 15000,
         timeoutMsg: `Incorrect balance after swap.
         Expected:
-        sourceTokenBalance - ${expectedSourceTokenBalance},
-        targetTokenBalance - ${expectedTargetTokenBalance} ,
+        sourceTokenBalance - ${
+          Math.floor(
+            (currentSourceTokenBalance - sourceTokenAmountToSwap) * 1e8,
+          ) / 1e8
+        },
+        targetTokenBalance - ${
+          Math.floor(
+            (currentTargetTokenBalance + expectedTargetTokenAmount) * 1e8,
+          ) / 1e8
+        } ,
+
         but was:
-        sourceTokenBalance - ${actualSourceTokenBalance},
-        targetTokenBalance - ${actualTargetTokenBalance}`,
+        sourceTokenBalance - ${parseFloat(
+          (
+            await (await Assets.tokenBalance(sourceToken)).getText()
+          ).replace(/[^\d.]/g, ""),
+        )},
+        targetTokenBalance - ${parseFloat(
+          (
+            await (await Assets.tokenBalance(targetToken)).getText()
+          ).replace(/[^\d.]/g, ""),
+        )}`,
       },
     )
   },

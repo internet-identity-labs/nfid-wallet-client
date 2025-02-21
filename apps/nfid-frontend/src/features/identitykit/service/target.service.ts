@@ -1,4 +1,5 @@
 import { Agent, HttpAgent } from "@dfinity/agent"
+
 import { type _SERVICE as ConsentMessageCanister } from "../idl/consent"
 import { idlFactory as ConsentMessageCanisterIDL } from "../idl/consent_idl"
 import { actorService } from "./actor.service"
@@ -11,25 +12,28 @@ export class TargetValidationError extends Error {
 }
 
 export type VerificationReport = {
-  isPublicAccountAvailable: boolean,
+  isPublicAccountAvailable: boolean
   details?: {
-    icrc28Verified?: boolean,
-    icrc1LedgersExcluded?: boolean,
-    icrc7LedgersExcluded?: boolean,
+    icrc28Verified?: boolean
+    icrc1LedgersExcluded?: boolean
+    icrc7LedgersExcluded?: boolean
     extLedgersExcluded?: boolean
   }
 }
 
 class TargetService {
-  public async getVerificationReport(targets: string[], origin: string): Promise<VerificationReport> {
+  public async getVerificationReport(
+    targets: string[],
+    origin: string,
+  ): Promise<VerificationReport> {
     try {
       if (!targets || targets.length === 0) {
         console.error("No targets have been passed")
         return {
           isPublicAccountAvailable: false,
           details: {
-            icrc28Verified: false
-          }
+            icrc28Verified: false,
+          },
         }
       }
 
@@ -42,7 +46,9 @@ class TargetService {
         )
 
         try {
-          const promises = targetValidationServices.map(x => x.validate(actor, canisterId, origin))
+          const promises = targetValidationServices.map((x) =>
+            x.validate(actor, canisterId, origin),
+          )
           await Promise.all(promises)
         } catch (exception) {
           throw exception
@@ -53,8 +59,8 @@ class TargetService {
       return {
         isPublicAccountAvailable: true,
         details: {
-          icrc28Verified: true
-        }
+          icrc28Verified: true,
+        },
       }
     } catch (e) {
       const text = e instanceof Error ? e.message : "Unknown error"
@@ -67,8 +73,8 @@ class TargetService {
       return {
         isPublicAccountAvailable: false,
         details: {
-          icrc28Verified: false
-        }
+          icrc28Verified: false,
+        },
       }
     }
   }

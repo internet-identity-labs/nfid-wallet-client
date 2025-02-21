@@ -51,7 +51,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
                 onClick={() => onLoginWithPasskey(wallet.allowedPasskeys)}
               >
                 <div>
-                  <p>{wallet.email}</p>
+                  <p>{wallet.email ?? wallet.name}</p>
                   <p className="mt-0.5 tex-xs text-gray-400 leading-4.5">
                     <CenterEllipsis
                       value={wallet.principal}

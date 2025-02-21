@@ -115,7 +115,7 @@ export const shouldShowPasskeysEvery6thTime = async (
 export const shouldShowRecoveryPhraseEvery8thTime = async () => {
   if (Math.floor(Math.random() * 8) === 0) {
     const devices = await securityConnector.getDevices()
-    return !devices.recoveryDevice
+    return { showRecovery: !devices.recoveryDevice }
   }
-  return false
+  return { showRecovery: false }
 }

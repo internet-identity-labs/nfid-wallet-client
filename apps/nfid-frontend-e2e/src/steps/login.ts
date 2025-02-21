@@ -62,5 +62,23 @@ When(
 
 When(/^Verifying that user is logged in$/, async () => {
   await HomePage.waitForLoaderDisappear()
-  await Profile.menuButton.waitForClickable({ timeout: 20000 })
+  await browser.waitUntil(
+    async () => {
+      try {
+        {
+          await Profile.menuButton.waitForClickable({
+            timeout: 15000,
+            timeoutMsg: "Menu button wasn't clickable after 15sec",
+          })
+        }
+      } catch (e) {}
+      if (await Profile.menuButton.isClickable()) return true
+      await browser.refresh()
+      await HomePage.waitForLoaderDisappear()
+    },
+    {
+      timeout: 50000,
+      timeoutMsg: "Menu button wasn't clickable",
+    },
+  )
 })

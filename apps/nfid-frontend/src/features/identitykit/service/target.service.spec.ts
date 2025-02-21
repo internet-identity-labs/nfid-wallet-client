@@ -12,7 +12,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: false,
       details: {
-        icrc28Verified: false
+        icrc28Verified: false,
       },
     })
   })
@@ -26,7 +26,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: false,
       details: {
-        icrc28Verified: false
+        icrc28Verified: false,
       },
     })
   })
@@ -40,7 +40,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: true,
       details: {
-        icrc28Verified: true
+        icrc28Verified: true,
       },
     })
   })
@@ -54,7 +54,7 @@ describe("Target service test suite", () => {
     expect(result).toEqual({
       isPublicAccountAvailable: false,
       details: {
-        icrc28Verified: false
+        icrc28Verified: false,
       },
     })
   })

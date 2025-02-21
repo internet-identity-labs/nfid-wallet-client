@@ -320,7 +320,6 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
 }
 
 export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
-  debugger
   const walletKeys = authStorage
     .getAllKeys()
     .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
@@ -340,7 +339,7 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
         email: profile.email,
         principal: profile.publicKey,
         anchor: profile.anchor,
-        name: profile.name
+        name: profile.name,
       }
 
       const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
@@ -350,7 +349,7 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
       }
 
       return acc
-    }, [] as { email: string | undefined; principal: string; anchor: bigint, name: string | undefined }[])
+    }, [] as { email: string | undefined; principal: string; anchor: bigint; name: string | undefined }[])
 
   const parsedCredentialIds: string[] = await authStorage
     .get("credentialIds")

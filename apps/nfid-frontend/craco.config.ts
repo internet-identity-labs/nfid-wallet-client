@@ -41,7 +41,7 @@ const setupCSP = () => {
         "https://stat.yuku.app",
         "https://memecake.io",
         "https://web2.icptokens.net/api/tokens",
-        "https://accounts.google.com/gsi/"
+        "https://accounts.google.com/gsi/",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

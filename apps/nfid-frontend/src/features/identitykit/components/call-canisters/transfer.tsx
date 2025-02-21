@@ -2,9 +2,9 @@ import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
 import { Address } from "@nfid-frontend/ui"
 
+import { CanisterCallTitle } from "../../constants"
 import { TransferMetadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
-import { CanisterCallTitle } from "../../constants"
 
 export interface CallCanisterTransferProps {
   origin: string

@@ -26,7 +26,7 @@ Given(
   },
 )
 
-Given(/^User opens NFID ?(.*)?$/, async function(site: string) {
+Given(/^User opens NFID ?(.*)?$/, async function (site: string) {
   if (site === "site") await HomePage.openBaseUrl()
   else await HomePage.openPage(site)
   await clearAuthState()
@@ -41,20 +41,20 @@ When(
       retry: 2,
     },
   },
-  async function(anchor: number) {
+  async function (anchor: number) {
     let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
 
-    const response = await browser.executeAsync(function(
-        authState: AuthState,
-        done,
-      ) {
+    const response = await browser.executeAsync(function (
+      authState: AuthState,
+      done,
+    ) {
+      // @ts-ignore
+      if (typeof this.setAuthState === "function") {
         // @ts-ignore
-        if (typeof this.setAuthState === "function") {
-          // @ts-ignore
-          this.setAuthState(authState).then(done)
-        }
-      },
-      testUser.authstate)
+        this.setAuthState(authState).then(done)
+      }
+    },
+    testUser.authstate)
     console.log("set auth state", { response })
     await HomePage.openPage("/wallet/tokens")
   },
@@ -62,7 +62,8 @@ When(
 
 When(/^Verifying that user is logged in$/, async () => {
   await HomePage.waitForLoaderDisappear()
-  await browser.waitUntil(async () => {
+  await browser.waitUntil(
+    async () => {
       try {
         {
           await Profile.menuButton.waitForClickable({
@@ -70,12 +71,12 @@ When(/^Verifying that user is logged in$/, async () => {
             timeoutMsg: "Menu button wasn't clickable after 15sec",
           })
         }
-      } catch (e) {
-      }
+      } catch (e) {}
       if (await Profile.menuButton.isClickable()) return true
       await browser.refresh()
       await HomePage.waitForLoaderDisappear()
-    }, {
+    },
+    {
       timeout: 50000,
       timeoutMsg: "Menu button wasn't clickable",
     },

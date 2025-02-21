@@ -123,14 +123,27 @@ When(
         )
       },
       {
-        timeout: 95000,
+        timeout: 15000,
         timeoutMsg: `Incorrect balance after swap.
         Expected:
-        sourceTokenBalance - ${expectedSourceTokenBalance},
-        targetTokenBalance - ${expectedTargetTokenBalance} ,
+        sourceTokenBalance - ${Math.floor(
+          (currentSourceTokenBalance - sourceTokenAmountToSwap) * 1e8,
+        ) / 1e8},
+        targetTokenBalance - ${Math.floor(
+          (currentTargetTokenBalance + expectedTargetTokenAmount) * 1e8,
+        ) / 1e8} ,
+
         but was:
-        sourceTokenBalance - ${actualSourceTokenBalance},
-        targetTokenBalance - ${actualTargetTokenBalance}`,
+        sourceTokenBalance - ${parseFloat(
+          (
+            await (await Assets.tokenBalance(sourceToken)).getText()
+          ).replace(/[^\d.]/g, ""),
+        )},
+        targetTokenBalance - ${parseFloat(
+          (
+            await (await Assets.tokenBalance(targetToken)).getText()
+          ).replace(/[^\d.]/g, ""),
+        )}`,
       },
     )
   },

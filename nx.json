@@ -89,6 +89,9 @@
         "env": "DELEGATION_FACTORY"
       },
       {
+        "env": "CANISTER_WITH_AT_LEAST_ONE_PASSKEY"
+      },
+      {
         "env": "PASSKEY_STORAGE"
       },
       {

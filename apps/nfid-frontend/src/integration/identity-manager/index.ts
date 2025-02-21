@@ -268,6 +268,7 @@ type CreateAccessPointProps = {
   email?: string
   icon: Icon
   name?: string
+  device?: string
   deviceType: DeviceType
   credentialId?: string
   devicePrincipal?: string
@@ -283,6 +284,7 @@ export async function createNFIDProfile(
     email,
     icon,
     name,
+    device,
     deviceType,
     credentialId,
     devicePrincipal,
@@ -307,7 +309,7 @@ export async function createNFIDProfile(
 
   const dd: AccessPointRequest = {
     icon: icon,
-    device: deviceType,
+    device: device ?? deviceType,
     pub_key: devicePrincipal
       ? devicePrincipal
       : delegationIdentity.getPrincipal().toText(),

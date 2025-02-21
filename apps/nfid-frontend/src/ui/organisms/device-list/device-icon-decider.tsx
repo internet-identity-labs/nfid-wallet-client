@@ -2,12 +2,14 @@ import React from "react"
 
 import { Icon } from "@nfid/integration"
 
-import { IconLaptop } from "frontend/ui/atoms/icons/laptop"
+import { AppleIcon } from "frontend/ui/atoms/icons/apple"
+import { IconDesktop } from "frontend/ui/atoms/icons/desktop"
 import { DocumentIcon } from "frontend/ui/atoms/icons/document"
 import { EmailIcon } from "frontend/ui/atoms/icons/email"
 import { GoogleIcon } from "frontend/ui/atoms/icons/google"
-import { IconDesktop } from "frontend/ui/atoms/icons/desktop"
+import { IconLaptop } from "frontend/ui/atoms/icons/laptop"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
+import { PasskeyIcon } from "frontend/ui/atoms/icons/passkey"
 import { TabletIcon } from "frontend/ui/atoms/icons/tablet"
 import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
 import { USBIcon } from "frontend/ui/atoms/icons/usb"
@@ -26,6 +28,12 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
   color = "#9CA3AF",
 }) => {
   switch (icon) {
+    case "passkey":
+      return (
+        <PasskeyIcon className={className} onClick={onClick} color={color} />
+      )
+    case "apple":
+      return <AppleIcon className={className} onClick={onClick} color={color} />
     case "mobile":
       return (
         <MobileIcon className={className} onClick={onClick} color={color} />

@@ -115,15 +115,31 @@ const SecurityPage = () => {
 
   if (!profile) return <Loader isLoading={true} />
 
+  let tooltip = ""
+
+  if (!profile.email || !devices?.passkeys.length)
+    tooltip = "At least one passkey and an email are required to enable 2FA."
+  else if (!profile.email && devices?.passkeys.length)
+    tooltip = "Self-sovereign mode is always enabled for passkey-only users."
+
+  const showCreatePasskeyOnCanister = devices?.passkeys.find(
+    (d) => d.origin === CANISTER_WITH_AT_LEAST_ONE_PASSKEY,
+  )
+    ? undefined
+    : CANISTER_WITH_AT_LEAST_ONE_PASSKEY
+
   return (
     <ProfileTemplate showBackButton pageTitle="Security">
       <Security
         primarySignInElement={<PrimarySignInMethod profile={profile} />}
+        showCreatePasskeyOnCanister={showCreatePasskeyOnCanister}
         toggleElement={
           <Toggle
             isDisabled={
               !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length ||
-              isLoading
+              isLoading ||
+              !profile.email ||
+              !devices.passkeys.length
             }
             isChecked={!!profile?.is2fa}
             onToggle={async (val) => {
@@ -132,11 +148,12 @@ const SecurityPage = () => {
                 () => refreshProfile(),
               )
             }}
+            tooltip={tooltip}
           />
         }
         addPasskeyElement={
           <AddPasskey
-            isDisabled={!profile.email?.length}
+            isDisabled={!profile.email && !profile.name}
             handleWithLoading={handleWithLoading}
             isLoading={isLoading}
           />

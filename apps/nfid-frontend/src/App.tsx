@@ -12,7 +12,6 @@ import { useSWR } from "@nfid/swr"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
 
-import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
@@ -186,7 +185,6 @@ export const App = () => {
                   </AuthWrapper>
                 }
               />
-              {RecoverNFIDRoutes}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </motion.div>

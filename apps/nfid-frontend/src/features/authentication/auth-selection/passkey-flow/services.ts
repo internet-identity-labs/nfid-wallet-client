@@ -100,23 +100,21 @@ export class PasskeyConnector {
   }
 
   private getAccessPointDeviceAndIcon(data: IPasskeyMetadata) {
-    const isThisDevice = data.transports.includes("internal")
-    const isICloud =
-      /iPhone|iPad|Mac/.test(navigator.userAgent) &&
-      data.transports.includes("hybrid")
+    const isICloud = data.transports.includes("hybrid")
+    const isInternal = data.transports.includes("internal")
 
-    const device = isThisDevice
-      ? `${getBrowser()} on ${getPlatformInfo().device}`
-      : isICloud
+    const device = isICloud
       ? "iCloud keychain"
-      : "Security Key"
+      : isInternal
+      ? `${getBrowser()} on ${getPlatformInfo().device}`
+      : "Security key"
 
-    const icon = isThisDevice
+    const icon = isICloud
+      ? Icon.apple
+      : isInternal
       ? getIsMobileDeviceMatch()
         ? Icon.mobile
         : Icon.desktop
-      : isICloud
-      ? Icon.apple
       : Icon.usb
 
     return {

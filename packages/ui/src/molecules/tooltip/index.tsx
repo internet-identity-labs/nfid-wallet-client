@@ -1,5 +1,6 @@
 import * as RadixTooltip from "@radix-ui/react-tooltip"
 import clsx from "clsx"
+import { motion, AnimatePresence } from "framer-motion"
 import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import React, { useState } from "react"
 
@@ -17,6 +18,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   ...contentProps
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+
   return (
     <RadixTooltip.Root delayDuration={0} open={isOpen} onOpenChange={setIsOpen}>
       <RadixTooltip.Trigger
@@ -31,24 +33,36 @@ export const Tooltip: React.FC<TooltipProps> = ({
         {children}
       </RadixTooltip.Trigger>
       <RadixTooltip.Portal>
-        <RadixTooltip.Content
-          sideOffset={5}
-          forceMount={true}
-          className={clsx(
-            "text-white text-sm bg-black p-[15px] rounded-[6px]",
-            className,
-            ["left", "right"].includes(contentProps.side || "top")
-              ? "my-2"
-              : "mx-2",
+        <AnimatePresence>
+          {isOpen && (
+            <RadixTooltip.Content
+              asChild
+              sideOffset={5}
+              forceMount={true}
+              {...contentProps}
+              onPointerDownOutside={(event) => {
+                if (!getIsMobileDeviceMatch()) event.preventDefault()
+              }}
+            >
+              <motion.div
+                className={clsx(
+                  "text-white text-sm bg-black p-[15px] rounded-[6px]",
+                  className,
+                  ["left", "right"].includes(contentProps.side || "top")
+                    ? "my-2"
+                    : "mx-2",
+                )}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+              >
+                {tip}
+                <RadixTooltip.Arrow className={arrowClassname} />
+              </motion.div>
+            </RadixTooltip.Content>
           )}
-          {...contentProps}
-          onPointerDownOutside={(event) => {
-            if (!getIsMobileDeviceMatch()) event.preventDefault()
-          }}
-        >
-          {tip}
-          <RadixTooltip.Arrow className={arrowClassname} />
-        </RadixTooltip.Content>
+        </AnimatePresence>
       </RadixTooltip.Portal>
     </RadixTooltip.Root>
   )

@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { motion, AnimatePresence } from "framer-motion"
 import { HTMLAttributes, FC } from "react"
 
 import { useDisableScroll } from "./hooks/disable-scroll"
@@ -18,29 +19,32 @@ export const ModalComponent: FC<ModalProps> = ({
   useDisableScroll(Boolean(isVisible))
 
   return (
-    <div
-      onClick={onClose}
-      className={clsx([
-        "transition ease-in-out delay-150 duration-500",
-        "z-50 top-0 right-0 bottom-0 left-0 ",
-        isVisible ? "fixed bg-opacity-50 bg-zinc-900/80" : "bg-transparent",
-      ])}
-    >
-      <div
-        className={clsx([
-          "transition ease-in-out duration-300",
-          "fixed top-[50%] right-[50%] bottom-[50%] left-[50%]",
-          "transform -translate-x-2/4 -translate-y-2/4",
-          "rounded-[24px]",
-          "min-w-min min-h-min h-min bg-white",
-          isVisible ? "scale-100" : "scale-0",
-          className,
-        ])}
-        style={style}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
-      </div>
-    </div>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-screen bg-opacity-50 bg-zinc-900/80"
+          onClick={onClose}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+        >
+          <motion.div
+            className={clsx(
+              "rounded-[24px] min-w-min min-h-min h-min bg-white",
+              className,
+            )}
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.95 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            style={style}
+          >
+            {children}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

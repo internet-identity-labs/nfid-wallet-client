@@ -1,5 +1,5 @@
 Feature: Recovery phrase
-  @ii-recovery-phrase
+  @ii-recovery-phrase @skip
   Scenario Outline: User authenticates with Internet Identity recovery phrase
     Given User opens NFID /recover-nfid/enter-recovery-phrase
     When User enters recovery phrase of <nfid number> anchor

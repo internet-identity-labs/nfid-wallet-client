@@ -300,15 +300,13 @@ const AuthenticationMachine =
                 cond: "showPasskeys",
                 target: "AddPasskeys",
               },
+              {
+                cond: (context) => !!context.shouldShowRecoveryEvery8th,
+                target: "checkRecovery8th",
+              },
+              { target: "End" },
             ],
           },
-          always: [
-            {
-              cond: (context) => !!context.shouldShowRecoveryEvery8th,
-              target: "checkRecovery8th",
-            },
-            { target: "End" },
-          ],
         },
         checkRecovery8th: {
           invoke: {
@@ -379,8 +377,10 @@ const AuthenticationMachine =
         },
       },
       actions: {
-        setShouldCheckRecoveryEvery8th: assign({
-          shouldShowRecoveryEvery8th: true,
+        setShouldCheckRecoveryEvery8th: assign(() => {
+          return {
+            shouldShowRecoveryEvery8th: true,
+          }
         }),
         assignAuthSession: assign((_, event) => {
           return {

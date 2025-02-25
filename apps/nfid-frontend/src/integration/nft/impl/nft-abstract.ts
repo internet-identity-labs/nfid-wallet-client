@@ -13,6 +13,8 @@ import { NFT, NFTDetails } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
 
+import { getCanisterStatus } from "../util/util"
+
 export interface NftError {
   props: {
     Message: string
@@ -52,9 +54,10 @@ export abstract class NftImpl implements NFT {
     try {
       this.assetPreview = await this.getAssetPreviewAsync()
       this.inited = true
-      return this
+      await getCanisterStatus(this.collectionId)
     } catch (e) {
       this.setError(e as NftError)
+    } finally {
       return this
     }
   }

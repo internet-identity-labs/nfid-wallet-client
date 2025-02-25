@@ -1,3 +1,6 @@
+import { HttpAgent, Actor } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+
 export function formatPrice(
   price: bigint,
   decimals: bigint,
@@ -17,4 +20,41 @@ export function formatPrice(
     formattedPrice = formattedPrice.slice(0, -1)
   }
   return `${formattedPrice} ${currency}`
+}
+
+const idlFactory = ({ IDL }: any) =>
+  IDL.Service({
+    nonExistingMethod: IDL.Func([], [IDL.Text], ["query"]),
+  })
+
+export async function getCanisterStatus(canisterId: string) {
+  try {
+    const agent = await HttpAgent.create({ host: IC_HOST })
+
+    const canister = Actor.createActor(idlFactory, {
+      agent,
+      canisterId: Principal.fromText(canisterId),
+    })
+
+    await canister.nonExistingMethod()
+  } catch (e) {
+    const error = e as Error
+
+    if (typeof error === "object" && error !== null && "props" in error) {
+      const props = (error as any).props
+      if (
+        typeof props === "object" &&
+        props !== null &&
+        "Message" in props &&
+        typeof props.Message === "string" &&
+        props.Message.includes(
+          "Canister has no query method 'nonExistingMethod'",
+        )
+      ) {
+        return
+      }
+
+      throw e
+    }
+  }
 }

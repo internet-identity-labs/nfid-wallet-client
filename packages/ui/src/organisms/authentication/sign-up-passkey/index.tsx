@@ -1,6 +1,4 @@
-import { useEffect } from "react"
-
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { useState } from "react"
 
 import { AuthSignUpCaptcha } from "./captcha"
 import { AuthSignUpCreatePasskey } from "./create-passkey"
@@ -11,66 +9,55 @@ export function AuthSignUpPassKey({
   isPasskeyCreating,
   applicationURL,
   captcha,
-  isLoading,
+  isCaptchaLoading,
   onBack,
   withLogo,
   title,
   subTitle,
-  captchaEntered,
-  onCaptchaEntered,
-  shouldFetchCaptcha,
+  createPasskeyError
 }: {
   getCaptcha: () => unknown
-  onPasskeyCreate: (walletName: string) => unknown
+  onPasskeyCreate: (walletName: string, captchaVal: string) => unknown
   isPasskeyCreating?: boolean
   createPasskeyError?: string
   applicationURL?: string
-  isLoading?: boolean
+  isCaptchaLoading?: boolean
   captcha?: string
   onBack: () => unknown
   withLogo?: boolean
   title?: string
   subTitle?: string
-  captchaEntered?: boolean
-  onCaptchaEntered: (value: string) => unknown
-  shouldFetchCaptcha?: boolean
 }) {
-  useEffect(() => {
-    if (shouldFetchCaptcha) {
-      getCaptcha()
-    }
-  }, [getCaptcha, shouldFetchCaptcha])
+  const [walletName, setWalletName] = useState("")
 
-  if (isLoading && !captcha) return <BlurredLoader isLoading />
-
-  if (captchaEntered || (!captcha && !isLoading)) {
-    return (
-      <AuthSignUpCreatePasskey
-        onBack={onBack}
-        withLogo={withLogo}
-        title={title}
-        subTitle={subTitle}
-        onCreate={onPasskeyCreate}
-        isCreating={isPasskeyCreating}
-        applicationURL={applicationURL}
-      />
-    )
-  }
-
-  if (captcha)
+  if (walletName)
     return (
       <AuthSignUpCaptcha
         onBack={onBack}
         withLogo={withLogo}
         title={title}
         subTitle={subTitle}
-        isLoading={!!isLoading}
         captcha={captcha}
-        onContinue={onCaptchaEntered}
-        onRetry={getCaptcha}
+        onContinue={(val) => {
+          onPasskeyCreate(walletName, val)
+        }}
+        getCaptcha={getCaptcha}
         applicationURL={applicationURL}
+        isLoading={!!isCaptchaLoading}
+        isCreatingWallet={isPasskeyCreating}
+        error={createPasskeyError}
       />
     )
 
-  return null
+  return (
+    <AuthSignUpCreatePasskey
+      onBack={onBack}
+      withLogo={withLogo}
+      title={title}
+      subTitle={subTitle}
+      onCreate={setWalletName}
+      isCreating={isPasskeyCreating}
+      applicationURL={applicationURL}
+    />
+  )
 }

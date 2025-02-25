@@ -4,44 +4,52 @@ import { useForm } from "react-hook-form"
 
 import { Button, IconCmpActions, IconCmpArrow, Input } from "@nfid-frontend/ui"
 
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+
 export const AuthSignUpCaptcha = ({
   onBack,
   applicationURL,
   onContinue,
   isLoading,
-  isValidating,
+  isCreatingWallet,
   withLogo,
   title,
   subTitle,
-  onRetry,
+  getCaptcha,
   captcha,
-  validateError,
+  error,
 }: {
   onBack: () => void
   applicationURL?: string
   onContinue: (value: string) => void
   isLoading: boolean
-  isValidating?: boolean
+  isCreatingWallet?: boolean
   withLogo?: boolean
   title?: string
   subTitle?: string | JSX.Element
-  onRetry?: () => unknown
+  getCaptcha?: () => unknown
   captcha?: string
-  validateError?: boolean
+  error?: string
 }) => {
   const { register, handleSubmit, formState, setError, clearErrors } = useForm<{
     captcha: string
   }>()
 
   useEffect(() => {
-    if (validateError) {
+    if (!captcha) getCaptcha?.()
+  }, [captcha])
+
+  useEffect(() => {
+    if (error) {
       setError("captcha", {
-        message: "Incorrect captcha entered. Please try again.",
+        message: error,
       })
     } else {
       clearErrors()
     }
-  }, [validateError])
+  }, [error])
+
+  if (!captcha) return <BlurredLoader isLoading />
 
   return (
     <div className="min-h-[536px] flex-grow flex flex-col">
@@ -71,7 +79,7 @@ export const AuthSignUpCaptcha = ({
           <Button
             className="mt-auto mb-[10px]"
             block
-            disabled={isValidating}
+            disabled={isCreatingWallet}
             onClick={handleSubmit((data) => onContinue(data.captcha))}
             type="primary"
           >
@@ -81,7 +89,7 @@ export const AuthSignUpCaptcha = ({
             disabled={isLoading}
             icon={<IconCmpActions />}
             block
-            onClick={onRetry}
+            onClick={getCaptcha}
             type="ghost"
           >
             Try a different image

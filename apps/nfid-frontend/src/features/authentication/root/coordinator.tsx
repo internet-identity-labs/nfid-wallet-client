@@ -62,7 +62,7 @@ export default function AuthenticationCoordinator({
   const [captcha, setCaptcha] = useState<
     Awaited<ReturnType<typeof passkeyConnector.getCaptchaChallenge>> | undefined
   >()
-  const [captchaEntered, setCaptchaEntered] = useState("")
+  const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({
@@ -146,7 +146,14 @@ export default function AuthenticationCoordinator({
         type: "AUTHENTICATED",
       })
     } catch (e) {
-      toaster.error((e as Error).message)
+      const msg = (e as Error).message
+      if (msg.includes("Incorrect captcha key"))
+        return setSignUpWithPasskeyError("Captcha expired. Please try again.")
+      if (msg.includes("Incorrect captcha solution"))
+        return setSignUpWithPasskeyError(
+          "Incorrect captcha entered. Please try again.",
+        )
+      return setSignUpWithPasskeyError("Unknown error occured")
     } finally {
       setSignUpPasskeyLoading(false)
     }
@@ -330,22 +337,17 @@ export default function AuthenticationCoordinator({
             transition={{ duration: 0.25 }}
           >
             <AuthSignUpPassKey
-              onPasskeyCreate={(name) => {
-                onSignUpWithPasskey(name, captchaEntered)
+              onPasskeyCreate={(name, captchaVal) => {
+                onSignUpWithPasskey(name, captchaVal)
               }}
-              captchaEntered={!!captchaEntered}
-              onCaptchaEntered={setCaptchaEntered}
               isPasskeyCreating={signUpPasskeyLoading}
               getCaptcha={getCaptcha}
-              shouldFetchCaptcha={
-                !captcha && !isCaptchaLoading && !isCaptchaValidating
-              }
               captcha={
                 Array.isArray(captcha?.png_base64)
                   ? captcha?.png_base64[0]
                   : captcha?.png_base64
               }
-              isLoading={isCaptchaLoading || isCaptchaValidating}
+              isCaptchaLoading={isCaptchaLoading || isCaptchaValidating}
               withLogo={!isIdentityKit}
               title={isIdentityKit ? "Sign up" : undefined}
               subTitle={
@@ -353,9 +355,10 @@ export default function AuthenticationCoordinator({
               }
               onBack={() => {
                 send({ type: "BACK" })
+                setSignUpWithPasskeyError("")
                 setCaptcha(undefined)
-                setCaptchaEntered("")
               }}
+              createPasskeyError={signUpWithPassKeyError}
               applicationURL={state.context.authRequest?.hostname}
             />
           </motion.div>

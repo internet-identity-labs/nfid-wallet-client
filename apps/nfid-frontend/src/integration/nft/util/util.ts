@@ -41,7 +41,7 @@ export async function getCanisterStatus(canisterId: string) {
     const error = e as Error
 
     if (typeof error === "object" && error !== null && "props" in error) {
-      const props = (error as any).props
+      const props = error.props
       if (
         typeof props === "object" &&
         props !== null &&

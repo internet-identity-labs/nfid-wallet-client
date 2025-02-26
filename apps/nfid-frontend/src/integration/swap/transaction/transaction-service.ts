@@ -64,13 +64,6 @@ export class SwapTransactionService {
               t.source_amount,
             ).fromCandid(t)
 
-        console.log(
-          "Date.now()",
-          Date.now(),
-          "Number(t.start_time)",
-          Number(t.start_time),
-        )
-
         transaction.setIsLoading(
           Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION,
         )

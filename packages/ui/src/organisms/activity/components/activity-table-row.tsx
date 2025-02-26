@@ -118,8 +118,6 @@ export const ActivityTableRow = ({
   const [isLoading, setIsLoading] = useState(false)
   const { profile } = useProfile()
 
-  console.log(transaction)
-
   const providerName =
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
 

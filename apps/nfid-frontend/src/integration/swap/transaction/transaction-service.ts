@@ -8,7 +8,6 @@ import {
   _SERVICE as SwapStorage,
   SwapTransaction as SwapTransactionCandid,
 } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
-import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
   actor,
@@ -65,10 +64,15 @@ export class SwapTransactionService {
               t.source_amount,
             ).fromCandid(t)
 
+        console.log(
+          "Date.now()",
+          Date.now(),
+          "Number(t.start_time)",
+          Number(t.start_time),
+        )
+
         transaction.setIsLoading(
-          Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION &&
-            transaction.getStage() !== SwapStage.Completed &&
-            !transaction.getErrors().length,
+          Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION,
         )
 
         return transaction

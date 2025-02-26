@@ -47,7 +47,7 @@ export const getTooltipAndButtonText = (
   ])
   const withdrawStages = new Set([SwapStage.Withdraw, SwapStage.TransferNFID])
 
-  if (stage === SwapStage.Completed || !transaction.getErrors().length) return
+  if (stage === SwapStage.Completed) return
 
   if (
     transaction.getSwapName() === SwapName.Kongswap &&
@@ -117,6 +117,8 @@ export const ActivityTableRow = ({
 }: IActivityTableRow) => {
   const [isLoading, setIsLoading] = useState(false)
   const { profile } = useProfile()
+
+  console.log(transaction)
 
   const providerName =
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]

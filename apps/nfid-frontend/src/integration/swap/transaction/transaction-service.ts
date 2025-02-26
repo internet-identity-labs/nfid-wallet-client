@@ -65,11 +65,14 @@ export class SwapTransactionService {
               t.source_amount,
             ).fromCandid(t)
 
-        transaction.setIsLoading(
-          Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION &&
-            transaction.getStage() !== SwapStage.Completed &&
-            !transaction.getErrors().length,
-        )
+        if (
+          transaction.getStage() !== SwapStage.Completed &&
+          !transaction.getErrors().length
+        ) {
+          transaction.setIsLoading(
+            Date.now() - Number(t.start_time) <= APPROXIMATE_SWAP_DURATION,
+          )
+        }
 
         return transaction
       })

@@ -8,42 +8,60 @@ export function AuthSignUpPassKey({
   onPasskeyCreate,
   isPasskeyCreating,
   applicationURL,
-  captcha,
-  isCaptchaLoading,
   onBack,
   withLogo,
   title,
   subTitle,
-  createPasskeyError
+  createPasskeyError,
 }: {
-  getCaptcha: () => unknown
-  onPasskeyCreate: (walletName: string, captchaVal: string) => unknown
+  getCaptcha: () => Promise<{
+    png_base64: [] | [string]
+    challenge_key: string
+  }>
+  onPasskeyCreate: (val: {
+    walletName: string
+    enteredCaptcha?: string
+    challengeKey: string
+  }) => unknown
   isPasskeyCreating?: boolean
   createPasskeyError?: string
   applicationURL?: string
-  isCaptchaLoading?: boolean
-  captcha?: string
   onBack: () => unknown
   withLogo?: boolean
   title?: string
   subTitle?: string
 }) {
   const [walletName, setWalletName] = useState("")
+  const [captcha, setCaptcha] = useState<
+    { png_base64: [] | [string]; challenge_key: string } | undefined
+  >()
+  const [captchaLoading, setCaptchaLoading] = useState(false)
 
-  if (walletName)
+  if (captcha?.png_base64.length)
     return (
       <AuthSignUpCaptcha
         onBack={onBack}
         withLogo={withLogo}
         title={title}
         subTitle={subTitle}
-        captcha={captcha}
+        captcha={captcha?.png_base64[0]}
         onContinue={(val) => {
-          onPasskeyCreate(walletName, val)
+          onPasskeyCreate({
+            walletName,
+            enteredCaptcha: val,
+            challengeKey: captcha.challenge_key,
+          })
         }}
-        getCaptcha={getCaptcha}
+        getCaptcha={() => {
+          setCaptchaLoading(true)
+          getCaptcha()
+            .then(setCaptcha)
+            .finally(() => {
+              setCaptchaLoading(false)
+            })
+        }}
         applicationURL={applicationURL}
-        isLoading={!!isCaptchaLoading}
+        captchaLoading={captchaLoading}
         isCreatingWallet={isPasskeyCreating}
         error={createPasskeyError}
       />
@@ -55,8 +73,25 @@ export function AuthSignUpPassKey({
       withLogo={withLogo}
       title={title}
       subTitle={subTitle}
-      onCreate={setWalletName}
-      isCreating={isPasskeyCreating}
+      onCreate={(walletName) => {
+        setCaptchaLoading(true)
+        getCaptcha()
+          .then((captcha) => {
+            if (!captcha.png_base64.length) {
+              onPasskeyCreate({
+                walletName,
+                challengeKey: captcha.challenge_key,
+              })
+            } else {
+              setCaptcha(captcha)
+              setWalletName(walletName)
+            }
+          })
+          .finally(() => {
+            setCaptchaLoading(false)
+          })
+      }}
+      isCreating={captchaLoading}
       applicationURL={applicationURL}
     />
   )

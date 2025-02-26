@@ -8,40 +8,40 @@ export const AuthSignUpCaptcha = ({
   onBack,
   applicationURL,
   onContinue,
-  isLoading,
-  isValidating,
+  isCreatingWallet,
   withLogo,
   title,
   subTitle,
-  onRetry,
+  getCaptcha,
   captcha,
-  validateError,
+  captchaLoading,
+  error,
 }: {
   onBack: () => void
   applicationURL?: string
   onContinue: (value: string) => void
-  isLoading: boolean
-  isValidating?: boolean
+  isCreatingWallet?: boolean
   withLogo?: boolean
   title?: string
   subTitle?: string | JSX.Element
-  onRetry?: () => unknown
-  captcha?: string
-  validateError?: boolean
+  getCaptcha?: () => unknown
+  captchaLoading?: boolean
+  captcha: string
+  error?: string
 }) => {
   const { register, handleSubmit, formState, setError, clearErrors } = useForm<{
     captcha: string
   }>()
 
   useEffect(() => {
-    if (validateError) {
+    if (error) {
       setError("captcha", {
-        message: "Incorrect captcha entered. Please try again.",
+        message: error,
       })
     } else {
       clearErrors()
     }
-  }, [validateError])
+  }, [error])
 
   return (
     <div className="min-h-[536px] flex-grow flex flex-col">
@@ -71,17 +71,17 @@ export const AuthSignUpCaptcha = ({
           <Button
             className="mt-auto mb-[10px]"
             block
-            disabled={isValidating}
+            disabled={isCreatingWallet}
             onClick={handleSubmit((data) => onContinue(data.captcha))}
             type="primary"
           >
             Continue
           </Button>
           <Button
-            disabled={isLoading}
-            icon={<IconCmpActions />}
+            disabled={!!captchaLoading}
+            icon={<IconCmpActions className={captchaLoading ? "animate-spin" : undefined} />}
             block
-            onClick={onRetry}
+            onClick={getCaptcha}
             type="ghost"
           >
             Try a different image

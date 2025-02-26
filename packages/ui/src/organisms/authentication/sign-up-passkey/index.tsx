@@ -13,6 +13,7 @@ export function AuthSignUpPassKey({
   title,
   subTitle,
   createPasskeyError,
+  clearError,
 }: {
   getCaptcha: () => Promise<{
     png_base64: [] | [string]
@@ -30,6 +31,7 @@ export function AuthSignUpPassKey({
   withLogo?: boolean
   title?: string
   subTitle?: string
+  clearError: () => unknown
 }) {
   const [walletName, setWalletName] = useState("")
   const [captcha, setCaptcha] = useState<
@@ -46,6 +48,7 @@ export function AuthSignUpPassKey({
         subTitle={subTitle}
         captcha={captcha?.png_base64[0]}
         onContinue={(val) => {
+          clearError()
           onPasskeyCreate({
             walletName,
             enteredCaptcha: val,
@@ -54,6 +57,7 @@ export function AuthSignUpPassKey({
         }}
         getCaptcha={() => {
           setCaptchaLoading(true)
+          clearError()
           getCaptcha()
             .then(setCaptcha)
             .finally(() => {
@@ -91,7 +95,7 @@ export function AuthSignUpPassKey({
             setCaptchaLoading(false)
           })
       }}
-      isCreating={captchaLoading}
+      isCreating={captchaLoading || isPasskeyCreating}
       applicationURL={applicationURL}
     />
   )

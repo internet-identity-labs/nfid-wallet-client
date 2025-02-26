@@ -54,6 +54,7 @@ body {
 }
 body.fixed {
   overflow: hidden;
+  overscroll-behavior: contain;
 }
 /*
   6. Improve media defaults

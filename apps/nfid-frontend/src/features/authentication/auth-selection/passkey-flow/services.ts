@@ -19,7 +19,6 @@ import {
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
 import toaster from "packages/ui/src/atoms/toast"
-import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { getBrowser } from "@nfid-frontend/utils"
 import {
@@ -99,23 +98,23 @@ export class PasskeyConnector {
     })
   }
 
-  private getAccessPointDeviceAndIcon(data: IPasskeyMetadata) {
-    const isICloud = data.transports.includes("hybrid")
-    const isInternal = data.transports.includes("internal")
+  private getAccessPointDeviceAndIcon({ transports, type }: IPasskeyMetadata) {
+    let icon
+    let device
 
-    const device = isICloud
-      ? "iCloud keychain"
-      : isInternal
-      ? `${getBrowser()} on ${getPlatformInfo().device}`
-      : "Security key"
-
-    const icon = isICloud
-      ? Icon.apple
-      : isInternal
-      ? getIsMobileDeviceMatch()
-        ? Icon.mobile
-        : Icon.desktop
-      : Icon.usb
+    if (transports.includes("internal") && type === "platform") {
+      icon = Icon.apple
+      device = "iCloud keychain"
+    } else if (transports.includes("internal") || transports.includes("ble")) {
+      icon = Icon.mobile
+      device = `${getBrowser()} on ${getPlatformInfo().device}`
+    } else if (transports.includes("internal") && type !== "platform") {
+      icon = Icon.desktop
+      device = `${getBrowser()} on ${getPlatformInfo().device}`
+    } else {
+      icon = Icon.usb
+      device = "Security key"
+    }
 
     return {
       device,

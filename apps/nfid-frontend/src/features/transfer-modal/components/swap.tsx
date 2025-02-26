@@ -21,6 +21,7 @@ import {
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
+import { FT } from "frontend/integration/ft/ft"
 import { swapService } from "frontend/integration/swap/service/swap-service"
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 
@@ -91,11 +92,11 @@ export const SwapFT = ({
 
   const activeTokens = useMemo(() => {
     const activeTokens = tokens.filter(
-      (token) => token.getTokenState() === State.Active,
+      (token: FT) => token.getTokenState() === State.Active,
     )
     if (!hideZeroBalance) return activeTokens
     const tokensWithBalance = activeTokens.filter(
-      (token) =>
+      (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
@@ -107,11 +108,15 @@ export const SwapFT = ({
   >()
 
   const fromToken = useMemo(() => {
-    return tokens.find((token) => token.getTokenAddress() === fromTokenAddress)
+    return tokens.find(
+      (token: FT) => token.getTokenAddress() === fromTokenAddress,
+    )
   }, [fromTokenAddress, tokens])
 
   const toToken = useMemo(() => {
-    return tokens.find((token) => token.getTokenAddress() === toTokenAddress)
+    return tokens.find(
+      (token: FT) => token.getTokenAddress() === toTokenAddress,
+    )
   }, [toTokenAddress, tokens])
 
   // const filteredAllTokens = useMemo(() => {
@@ -125,15 +130,13 @@ export const SwapFT = ({
 
   const filteredAllTokens = useMemo(() => {
     const filteredTokens = tokens.filter(
-      (token) =>
+      (token: FT) =>
         token.getTokenAddress() !== fromTokenAddress &&
         availableTokens.includes(token.getTokenAddress()),
     )
 
     return filteredTokens
   }, [fromTokenAddress, tokens, availableTokens])
-
-  //console.log("filteredAllTokens", filteredAllTokens)
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -186,8 +189,6 @@ export const SwapFT = ({
       )
 
       const availableTokensToSwap = Array.from(new Set(result.flat()))
-
-      //console.log("availableTokensToSwap", availableTokensToSwap)
 
       setAvailableTokens(availableTokensToSwap)
       setSwapProviders(providers)

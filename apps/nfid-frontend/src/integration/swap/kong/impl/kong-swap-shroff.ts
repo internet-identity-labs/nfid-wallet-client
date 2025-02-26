@@ -217,11 +217,10 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   async getPools(source: string, target: string): Promise<PoolsResult[]> {
-    // parallel
-    const pair1 = await this.actor.pools([`${source}_${target}`])
-    const pair2 = await this.actor.pools([`${target}_${source}`])
-
-    return [pair1, pair2]
+    return await Promise.all([
+      this.actor.pools([`${source}_${target}`]),
+      this.actor.pools([`${target}_${source}`]),
+    ])
   }
 
   async getAvailablePools(

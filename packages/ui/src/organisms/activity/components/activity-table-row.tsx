@@ -47,7 +47,7 @@ export const getTooltipAndButtonText = (
   ])
   const withdrawStages = new Set([SwapStage.Withdraw, SwapStage.TransferNFID])
 
-  if (stage === SwapStage.Completed || !transaction.getErrors().length) return
+  if (stage === SwapStage.Completed) return
 
   if (
     transaction.getSwapName() === SwapName.Kongswap &&

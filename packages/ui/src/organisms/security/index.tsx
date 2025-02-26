@@ -78,8 +78,12 @@ export const Security: FC<SecurityProps> = ({
             <IconCmpWarning className="text-orange-900 w-[24px] h-[24px] mr-[10px]" />
             <p className="text-sm text-orange-900">
               Please create a passkey on{" "}
-              <a target="_blank" href={showCreatePasskeyOnCanister}>
-                <strong>{showCreatePasskeyOnCanister}</strong>
+              <a
+                className="text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
+                target="_blank"
+                href={showCreatePasskeyOnCanister}
+              >
+                {showCreatePasskeyOnCanister}
               </a>{" "}
               for additional security and URL access redundancy.
             </p>

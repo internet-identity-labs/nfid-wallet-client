@@ -157,7 +157,9 @@ export default function AuthenticationCoordinator({
         return setSignUpWithPasskeyError(
           "Incorrect captcha entered. Please try again.",
         )
-      return setSignUpWithPasskeyError("Unknown error occured")
+      return setSignUpWithPasskeyError(
+        "We ran into a hiccup. Give it another shot",
+      )
     } finally {
       setSignUpPasskeyLoading(false)
     }
@@ -326,6 +328,7 @@ export default function AuthenticationCoordinator({
           >
             <AuthSignUpPassKey
               onPasskeyCreate={onSignUpWithPasskey}
+              clearError={() => setSignUpWithPasskeyError("")}
               isPasskeyCreating={signUpPasskeyLoading}
               getCaptcha={passkeyConnector.getCaptchaChallenge}
               withLogo={!isIdentityKit}

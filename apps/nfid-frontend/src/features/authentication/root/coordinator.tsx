@@ -21,7 +21,6 @@ import { ReactNode, useCallback, useMemo, useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
 import { getAllWalletsFromThisDevice } from "@nfid/integration"
-import { useSWR } from "@nfid/swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
@@ -59,10 +58,7 @@ export default function AuthenticationCoordinator({
   const [signUpPasskeyLoading, setSignUpPasskeyLoading] = useState(false)
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
-  const [captcha, setCaptcha] = useState<
-    Awaited<ReturnType<typeof passkeyConnector.getCaptchaChallenge>> | undefined
-  >()
-  const [captchaEntered, setCaptchaEntered] = useState("")
+  const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({
@@ -135,18 +131,33 @@ export default function AuthenticationCoordinator({
     onAuthWithPasskey(res)
   }
 
-  const onSignUpWithPasskey = async (name: string, captchaVal: string) => {
+  const onSignUpWithPasskey = async ({
+    walletName,
+    challengeKey,
+    enteredCaptcha,
+  }: {
+    walletName: string
+    challengeKey: string
+    enteredCaptcha?: string
+  }) => {
     setSignUpPasskeyLoading(true)
     try {
-      await passkeyConnector.registerWithPasskey(name, {
-        challengeKey: captcha!.challenge_key,
-        chars: captchaVal,
+      await passkeyConnector.registerWithPasskey(walletName, {
+        challengeKey,
+        chars: enteredCaptcha,
       })
       send({
         type: "AUTHENTICATED",
       })
     } catch (e) {
-      toaster.error((e as Error).message)
+      const msg = (e as Error).message
+      if (msg.includes("Incorrect captcha key"))
+        return setSignUpWithPasskeyError("Captcha expired. Please try again.")
+      if (msg.includes("Incorrect captcha solution"))
+        return setSignUpWithPasskeyError(
+          "Incorrect captcha entered. Please try again.",
+        )
+      return setSignUpWithPasskeyError("Unknown error occured")
     } finally {
       setSignUpPasskeyLoading(false)
     }
@@ -199,22 +210,6 @@ export default function AuthenticationCoordinator({
   const recoveryPhrase: string = useMemo(() => {
     return `${state.context.authSession?.anchor} ${generate().trim()}`
   }, [state.context.authSession?.anchor])
-
-  const {
-    isLoading: isCaptchaLoading,
-    isValidating: isCaptchaValidating,
-    mutate: getCaptcha,
-  } = useSWR(
-    `get-captcha`,
-    async () => {
-      const challenge = await passkeyConnector.getCaptchaChallenge()
-      setCaptcha(challenge)
-    },
-    {
-      revalidateOnFocus: false,
-      revalidateOnMount: false,
-    },
-  )
 
   const walletName =
     state.context.email ??
@@ -330,22 +325,9 @@ export default function AuthenticationCoordinator({
             transition={{ duration: 0.25 }}
           >
             <AuthSignUpPassKey
-              onPasskeyCreate={(name) => {
-                onSignUpWithPasskey(name, captchaEntered)
-              }}
-              captchaEntered={!!captchaEntered}
-              onCaptchaEntered={setCaptchaEntered}
+              onPasskeyCreate={onSignUpWithPasskey}
               isPasskeyCreating={signUpPasskeyLoading}
-              getCaptcha={getCaptcha}
-              shouldFetchCaptcha={
-                !captcha && !isCaptchaLoading && !isCaptchaValidating
-              }
-              captcha={
-                Array.isArray(captcha?.png_base64)
-                  ? captcha?.png_base64[0]
-                  : captcha?.png_base64
-              }
-              isLoading={isCaptchaLoading || isCaptchaValidating}
+              getCaptcha={passkeyConnector.getCaptchaChallenge}
               withLogo={!isIdentityKit}
               title={isIdentityKit ? "Sign up" : undefined}
               subTitle={
@@ -353,9 +335,9 @@ export default function AuthenticationCoordinator({
               }
               onBack={() => {
                 send({ type: "BACK" })
-                setCaptcha(undefined)
-                setCaptchaEntered("")
+                setSignUpWithPasskeyError("")
               }}
+              createPasskeyError={signUpWithPassKeyError}
               applicationURL={state.context.authRequest?.hostname}
             />
           </motion.div>

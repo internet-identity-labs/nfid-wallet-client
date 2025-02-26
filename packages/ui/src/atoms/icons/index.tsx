@@ -1,6 +1,5 @@
 import LogoMain from "../nfid-logo/nfid-wallet-logo-black.svg"
 import LogoLanding from "../nfid-logo/nfid-wallet-logo-white.svg"
-import IconSvgActions from "./actions.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
 import IconSvgArrowRight from "./arrow-right.svg"
@@ -60,7 +59,6 @@ import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
 
 export {
-  IconSvgActions,
   IconSvgText,
   IconSvgPasskey,
   IconSvgArrow,
@@ -178,5 +176,5 @@ export { ReactComponent as IconCmpShare } from "./share.svg"
 export { ReactComponent as IconCmpExternalIcon } from "./share.svg"
 export { ReactComponent as IconCmpArrowRightIcon } from "./arrow-right.svg"
 export { ReactComponent as IconCmpStatusSuccess } from "./status-success.svg"
-export { ReactComponent as IconCmpActions } from "./actions.svg"
+export { Actions as IconCmpActions } from "./actions"
 export { ReactComponent as IconCmpUserKey } from "./user-key.svg"

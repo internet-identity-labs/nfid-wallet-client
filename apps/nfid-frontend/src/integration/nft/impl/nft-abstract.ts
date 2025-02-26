@@ -1,3 +1,5 @@
+import { Actor, HttpAgent } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
@@ -13,7 +15,10 @@ import { NFT, NFTDetails } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
 
-import { getCanisterStatus } from "../util/util"
+const idlFactory = ({ IDL }: any) =>
+  IDL.Service({
+    nonExistingMethod: IDL.Func([], [IDL.Text], ["query"]),
+  })
 
 export interface NftError {
   props: {
@@ -54,7 +59,7 @@ export abstract class NftImpl implements NFT {
     try {
       const [assetPreview] = await Promise.all([
         this.getAssetPreviewAsync(),
-        getCanisterStatus(this.collectionId),
+        this.getCanisterStatus(this.collectionId),
       ])
       this.assetPreview = assetPreview
       this.inited = true
@@ -162,6 +167,38 @@ export abstract class NftImpl implements NFT {
         .multipliedBy(this.tokenFloorPriceICP)
         .dividedBy(e8s)
         .toNumber()
+    }
+  }
+
+  private async getCanisterStatus(canisterId: string) {
+    try {
+      const agent = await HttpAgent.create({ host: IC_HOST })
+
+      const canister = Actor.createActor(idlFactory, {
+        agent,
+        canisterId: Principal.fromText(canisterId),
+      })
+
+      await canister.nonExistingMethod()
+    } catch (e) {
+      const error = e as Error
+
+      if (typeof error === "object" && error !== null && "props" in error) {
+        const props = error.props
+        if (
+          typeof props === "object" &&
+          props !== null &&
+          "Message" in props &&
+          typeof props.Message === "string" &&
+          props.Message.includes(
+            "Canister has no query method 'nonExistingMethod'",
+          )
+        ) {
+          return
+        }
+
+        throw e
+      }
     }
   }
 }

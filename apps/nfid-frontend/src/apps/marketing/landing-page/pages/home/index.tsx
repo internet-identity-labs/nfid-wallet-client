@@ -83,41 +83,51 @@ const useScrollMove = () => {
 const ScrollMoveElement = ({ img, ...props }: any) => {
   const { scrollY, direction } = useScrollMove()
   const elementRef = useRef(null)
+  const [moveAmount, setMoveAmount] = useState(0)
+  const [initialPosition, setInitialPosition] = useState<number | null>(null)
   const [isInViewport, setIsInViewport] = useState(false)
-  const [moveAmount, setMoveAmount] = useState(0) // Stores the movement
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => setIsInViewport(entry.isIntersecting),
+      ([entry]) => {
+        setIsInViewport(entry.isIntersecting)
+        if (entry.isIntersecting && initialPosition === null) {
+          setInitialPosition(entry.boundingClientRect.top)
+        }
+      },
       { threshold: 0.1 },
     )
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current)
+    const current = elementRef.current
+
+    if (current) {
+      observer.observe(current)
     }
 
     return () => {
-      if (elementRef.current) observer.unobserve(elementRef.current)
+      if (current) observer.unobserve(current)
     }
-  }, [])
+  }, [initialPosition])
 
-  // Accumulate movement, based on scroll direction
   useEffect(() => {
-    if (isInViewport) {
+    if (isInViewport && initialPosition !== null) {
       setMoveAmount((prev) => {
-        const newMoveAmount = prev + (direction === "down" ? -1 : 1) * 0.3 // Small movement factor
-        return newMoveAmount
+        if (scrollY <= 0) {
+          return 0
+        } else {
+          return prev + (direction === "down" ? -0.3 : 0.3)
+        }
       })
     }
-  }, [scrollY, direction, isInViewport])
+  }, [scrollY, direction, isInViewport, initialPosition])
 
   return (
     <motion.img
       src={img}
       ref={elementRef}
       style={{
-        transform: `translateY(${moveAmount}px)`, // Move the image vertically
-        transition: "transform 0.1s ease-out", // Smooth transition
+        transform: `translateY(${moveAmount}px)`,
+        transition: "transform 0.2s ease-out",
       }}
       {...props}
     />
@@ -345,7 +355,9 @@ const HomeContent = ({
               />
             </div>
           </div>
-          <div className={clsx("flex-col-reverse sm:!flex-row !flex", section2)}>
+          <div
+            className={clsx("flex-col-reverse sm:!flex-row !flex", section2)}
+          >
             <div className="text-xl sm:text-[24px] space-y-[28px] max-w-[520px] px-5 sm:pr-0 lg:px-0">
               <p className="font-light text-teal-400">4/4</p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
@@ -356,7 +368,12 @@ const HomeContent = ({
                 transfers, spending limits, or other smart contract calls.
               </h3>
             </div>
-            <div className={clsx(asset, "relative flex justify-end !min-h-0 pt-[140px] sm:pt-0")}>
+            <div
+              className={clsx(
+                asset,
+                "relative flex justify-end !min-h-0 pt-[140px] sm:pt-0",
+              )}
+            >
               <img
                 className="w-[203px] md:w-[359px]"
                 src={ApproveImg}

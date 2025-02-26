@@ -35,6 +35,8 @@ import {
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
+import { FT } from "frontend/integration/ft/ft"
+
 import { ContactSupportError } from "../../errors/types/contact-support-error"
 import { Quote } from "../../quote"
 import { SwapTransaction } from "../../swap-transaction"
@@ -215,10 +217,29 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   async getPools(source: string, target: string): Promise<PoolsResult[]> {
+    // parallel
     const pair1 = await this.actor.pools([`${source}_${target}`])
     const pair2 = await this.actor.pools([`${target}_${source}`])
 
     return [pair1, pair2]
+  }
+
+  async getAvailablePools(
+    source: string,
+    tokens: FT[],
+  ): Promise<string[] | undefined> {
+    const result = await this.actor.pools([source])
+
+    //console.log(result)
+
+    if ("Ok" in result) {
+      const tokenAddresses = new Set(
+        tokens.map((token) => token.getTokenAddress()),
+      )
+      return result.Ok.pools
+        .filter((pool) => tokenAddresses.has(pool.address_0))
+        .map((pool) => pool.address_0)
+    }
   }
 
   getSwapAccount(): Account {

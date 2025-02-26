@@ -15,6 +15,7 @@ import {
   _SERVICE as SwapFactory,
   GetPoolArgs,
   PoolData,
+  Result,
 } from "../idl/SwapFactory.d"
 
 export const SWAP_FACTORY_CANISTER = "4mmnk-kiaaa-aaaag-qbllq-cai"
@@ -32,6 +33,10 @@ class IcpSwapService {
         }),
       },
     )
+  }
+
+  async getPools(): Promise<Result> {
+    return await this.poolActor.getPools()
   }
 
   getPoolFactory(

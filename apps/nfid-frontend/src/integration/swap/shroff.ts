@@ -3,10 +3,13 @@ import { Quote } from "src/integration/swap/quote"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName } from "src/integration/swap/types/enums"
 
+import { FT } from "../ft/ft"
+
 export interface Shroff {
   getSwapName(): SwapName
   setQuote(quote: Quote): void
   getTargets(): string[]
+  getAvailablePools(symbol: string, tokens: FT[]): Promise<string[] | undefined>
   getQuote(amount: string): Promise<Quote>
   swap(delegationIdentity: SignIdentity): Promise<SwapTransaction>
   getSwapTransaction(): SwapTransaction | undefined

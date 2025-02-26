@@ -18,6 +18,8 @@ import {
 } from "@nfid/integration"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
+import { FT } from "frontend/integration/ft/ft"
+
 import { SwapName } from "../types/enums"
 
 export abstract class ShroffAbstract implements Shroff {
@@ -55,6 +57,11 @@ export abstract class ShroffAbstract implements Shroff {
       SWAP_FACTORY_CANISTER,
     ]
   }
+
+  abstract getAvailablePools(
+    symbol: string,
+    tokens: FT[],
+  ): Promise<string[] | undefined>
 
   abstract getQuote(amount: string): Promise<Quote>
 

@@ -56,6 +56,7 @@ export const SwapFT = ({
   const [swapProviders, setSwapProviders] = useState<
     Map<SwapName, Shroff | undefined>
   >(new Map())
+  const [availableTokens, setAvailableTokens] = useState<string[]>([])
   const [shroff, setShroff] = useState<Shroff | undefined>()
   const [isShroffLoading, setIsShroffLoading] = useState(true)
   const [swapStep, setSwapStep] = useState<SwapStage>(0)
@@ -113,11 +114,26 @@ export const SwapFT = ({
     return tokens.find((token) => token.getTokenAddress() === toTokenAddress)
   }, [toTokenAddress, tokens])
 
+  // const filteredAllTokens = useMemo(() => {
+  //   const filteredTokens = tokens.filter(
+  //     (token) => token.getTokenAddress() !== fromTokenAddress,
+  //   )
+  //   console.log("availableTokens", availableTokens)
+
+  //   return filteredTokens
+  // }, [fromTokenAddress, tokens, shroff, availableTokens])
+
   const filteredAllTokens = useMemo(() => {
-    return tokens.filter(
-      (token) => token.getTokenAddress() !== fromTokenAddress,
+    const filteredTokens = tokens.filter(
+      (token) =>
+        token.getTokenAddress() !== fromTokenAddress &&
+        availableTokens.includes(token.getTokenAddress()),
     )
-  }, [fromTokenAddress, tokens])
+
+    return filteredTokens
+  }, [fromTokenAddress, tokens, availableTokens])
+
+  //console.log("filteredAllTokens", filteredAllTokens)
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -149,13 +165,31 @@ export const SwapFT = ({
     previousFromTokenAddress.current = fromTokenAddress
   }, [fromTokenAddress, isEqual])
 
+  console.log("asda", availableTokens)
+
   const getProviders = useCallback(async () => {
     try {
+      setAvailableTokens([])
       const providers = await swapService.getSwapProviders(
         fromTokenAddress,
         toTokenAddress,
       )
 
+      const result = await Promise.all(
+        Array.from(providers.values())
+          .filter((provider): provider is Shroff => provider !== undefined)
+          .map(async (provider) => {
+            return (
+              (await provider.getAvailablePools(fromTokenAddress, tokens)) ?? []
+            )
+          }),
+      )
+
+      const availableTokensToSwap = Array.from(new Set(result.flat()))
+
+      //console.log("availableTokensToSwap", availableTokensToSwap)
+
+      setAvailableTokens(availableTokensToSwap)
       setSwapProviders(providers)
       setLiquidityError(undefined)
       setProviderError(undefined)
@@ -168,7 +202,7 @@ export const SwapFT = ({
         setProviderError(error)
       }
     }
-  }, [fromTokenAddress, toTokenAddress])
+  }, [fromTokenAddress, toTokenAddress, tokens])
 
   useEffect(() => {
     getProviders()

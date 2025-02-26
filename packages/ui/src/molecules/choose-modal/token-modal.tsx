@@ -154,7 +154,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
         {isTokenOptionsLoading && <ChooseTokenSkeleton rows={6} />}
         {!tokensOptions.length && !isTokenOptionsLoading ? (
           <div className="flex items-center justify-center h-full text-sm text-gray-400">
-            You don’t own any collectibles yet
+            No tokens available yet
           </div>
         ) : (
           <div

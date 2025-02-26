@@ -41,7 +41,7 @@ export const TransferNFT = ({
 
   const { data: selectedNFT, isLoading: isNftLoading } = useSWR(
     selectedNFTId ? ["nft", selectedNFTId] : null,
-    ([, tokenId]) => fetchNFT(tokenId),
+    ([, tokenId]: [string, string]) => fetchNFT(tokenId),
   )
 
   const submit = useCallback(

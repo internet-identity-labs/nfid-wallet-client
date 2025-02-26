@@ -24,7 +24,7 @@ export interface SuccessProps {
   isOpen: boolean
   status: SendStatus
   assetImageClassname: string
-  error: string | undefined
+  error?: string
 }
 
 const allAnimations = [Success1, Success2, Successs3, Fail]

@@ -1,15 +1,12 @@
 import clsx from "clsx"
-import Lottie from "lottie-react"
-import React from "react"
+import { motion } from "framer-motion"
+import React, { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
-
-import { Button } from "@nfid-frontend/ui"
 
 import Animation1 from "../../assets/animations/1_4.json"
 import Animation2 from "../../assets/animations/2_4.json"
 import Animation3 from "../../assets/animations/3_4.json"
-import Animation4 from "../../assets/animations/4_4.json"
-import mainAnmation from "../../assets/animations/main.json"
+import ApproveImg from "../../assets/approve.png"
 import Audit from "../../assets/audit.png"
 import Card1Hover from "../../assets/cards/icon-1-hover.png"
 import Card1 from "../../assets/cards/icon-1.png"
@@ -19,6 +16,12 @@ import Card3Hover from "../../assets/cards/icon-3-hover.png"
 import Card3 from "../../assets/cards/icon-3.png"
 import Card4Hover from "../../assets/cards/icon-4-hover.png"
 import Card4 from "../../assets/cards/icon-4.png"
+import CenterCoinImg from "../../assets/center-coin.png"
+import ConnectionImg from "../../assets/connection.png"
+import LockImg from "../../assets/lock.png"
+import MainCoinsImg from "../../assets/main-coins.png"
+import MainImg from "../../assets/main.png"
+import MainMobImg from "../../assets/mob.png"
 import Yards from "../../assets/new-landing/sponsors/9yards.png"
 import Blockchain from "../../assets/new-landing/sponsors/blockchain.png"
 import Dfinity from "../../assets/new-landing/sponsors/dfinity.png"
@@ -30,16 +33,24 @@ import Rarible from "../../assets/new-landing/sponsors/rarible.png"
 import Rubylight from "../../assets/new-landing/sponsors/rubylight.png"
 import Spaceship from "../../assets/new-landing/sponsors/spaceship.png"
 import Tomahawk from "../../assets/new-landing/sponsors/tomahawk.png"
+import SwapArrowsImg from "../../assets/swap-arrows.png"
+import SwapCoinsImg from "../../assets/swap-coins.png"
+import SwapImg from "../../assets/swap.png"
+import TokensCardsImg from "../../assets/tokens-cards.png"
+import TokensCoinImg from "../../assets/tokens-coin.png"
+import TokensImg from "../../assets/tokens.png"
+import { Button } from "../../ui/button"
 import { Container } from "../../ui/container"
 import { Footer } from "../../ui/footer"
 import AnimationWrapper from "../../ui/visible-animation"
 import { Wrapper } from "../wrapper"
+import { InfoCopy } from "./info-copy"
 import { LinkIcon } from "./link-icon"
 
 const asset =
-  "my-5 sm:my-0 relative w-full md:w-[40%] min-w-[330px] min-h-[330px] shrink-0 mx-auto sm:mx-0"
+  "my-5 sm:my-0 relative w-full sm:w-[40%] min-w-[330px] min-h-[330px] shrink-0 mx-auto sm:mx-0"
 const section2 =
-  "flex-col lg:flex-row justify-between block md:flex gap-[60px] items-center"
+  "flex-col lg:flex-row justify-between block md:flex sm:gap-[60px] items-center"
 const card =
   "px-5 bg-[#112525] overflow-hidden relative bg-opacity-40 md:px-[16px] lg:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group card"
 const cardItem =
@@ -47,6 +58,81 @@ const cardItem =
 const cardImg = "w-full lg:w-[200px] absolute ml-[40px]"
 const sponsor =
   "max-w-[80px] md:max-w-[110px] lg:max-w-[140px] max-h-[80px] mx-auto md:max-0"
+
+const useScrollMove = () => {
+  const [scrollY, setScrollY] = useState(0)
+  const [direction, setDirection] = useState("down")
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      setDirection(currentScrollY > lastScrollY ? "down" : "up")
+      setScrollY(currentScrollY)
+      lastScrollY = currentScrollY
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  return { scrollY, direction }
+}
+
+const ScrollMoveElement = ({ img, ...props }: any) => {
+  const { scrollY, direction } = useScrollMove()
+  const elementRef = useRef(null)
+  const [moveAmount, setMoveAmount] = useState(0)
+  const [initialPosition, setInitialPosition] = useState<number | null>(null)
+  const [isInViewport, setIsInViewport] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInViewport(entry.isIntersecting)
+        if (entry.isIntersecting && initialPosition === null) {
+          setInitialPosition(entry.boundingClientRect.top)
+        }
+      },
+      { threshold: 0.1 },
+    )
+
+    const current = elementRef.current
+
+    if (current) {
+      observer.observe(current)
+    }
+
+    return () => {
+      if (current) observer.unobserve(current)
+    }
+  }, [initialPosition])
+
+  useEffect(() => {
+    if (isInViewport && initialPosition !== null) {
+      setMoveAmount((prev) => {
+        if (scrollY <= 0) {
+          return 0
+        } else {
+          return prev + (direction === "down" ? -0.3 : 0.3)
+        }
+      })
+    }
+  }, [scrollY, direction, isInViewport, initialPosition])
+
+  return (
+    <motion.img
+      src={img}
+      ref={elementRef}
+      style={{
+        transform: `translateY(${moveAmount}px)`,
+        transition: "transform 0.2s ease-out",
+      }}
+      {...props}
+    />
+  )
+}
 
 const HomeContent = ({
   openAuthModal,
@@ -66,35 +152,59 @@ const HomeContent = ({
   return (
     <>
       <div className="relative">
-        <Container className="relative overflow-visible md:h-[700px]">
+        <Container className="relative overflow-visible">
           <div className="gradient-radial"></div>
-          <div className="relative z-10 pt-[15vh] lg:pt-[150px] md:max-w-[420px] lg:max-w-[520px] xl:max-w-[570px] text-center md:text-left">
-            <div className="text-[32px] md:text-[36px] lg:text-[44px] xl:text-[50px] tracking-[-2.16px] font-bold">
+          <div className="relative z-10 pt-[30px] md:pt-[60px] lg:pt-[90px] text-center flex flex-col items-center">
+            <div className="text-[30px] md:text-[34px] lg:text-[44px] xl:text-[50px] tracking-[-2.16px] font-bold lg:max-w-[1012px]">
               <h1 className="tracking-normal leading-120 gradient-text">
-                The easiest to use and hardest to lose wallet
+                The easiest to use, hardest to lose, and only wallet governed by
+                a DAO
               </h1>
             </div>
             <h2
               style={{ fontFamily: "inherit !important" }}
-              className="mt-[30px] text-gray-50 md:max-w-[420px] lg:max-w-full text-xl font-inherit font-normal"
+              className="text-[18px] lg:text-[22px] relative z-[1] mt-[30px] text-gray-50 md:max-w-[420px] lg:max-w-full font-inherit font-normal lg:max-w-[912px]"
             >
               Secure your assets with the most audited wallet on ICP and start
               exploring ICP applications in seconds. Trusted by hundreds of
               thousands worldwide.
             </h2>
-            <Button
-              id="authentication-button"
-              onClick={signIn}
-              className="mt-[30px] w-[148px] mx-auto md:mx-0"
-              type="primary"
-            >
-              Go to wallet
-            </Button>
+            <div className="flex justify-center relative z-[1]">
+              <Button
+                id="authentication-button"
+                onClick={signIn}
+                className="mt-[30px] w-[146px] sm:w-[178px] mr-[10px] sm:mr-[20px]"
+                type="primary"
+              >
+                Go to wallet
+              </Button>
+              <Button
+                onClick={() => window.open("https://learn.nfid.one/", "_blank")}
+                className="mt-[30px] w-[146px] sm:w-[178px]"
+                type="outline"
+              >
+                Knowledge base
+              </Button>
+            </div>
+            <div className="relative mt-[-30px] sm:mt-[-70px] md:mt-[-100px] xl:mt-[-180px]">
+              <img src={MainImg} alt="main" />
+              <div className="absolute right-[20px] md:right-[75px] top-[120px] md:top-[240px] lg:top-[320px] xl:top-[430px]">
+                <ScrollMoveElement
+                  className="w-[77px] sm:w-[126px] md:w-[174px] lg:w-[290px]"
+                  img={MainMobImg}
+                  alt="mob"
+                />
+              </div>
+              <div className="absolute z-[1] left-0 bottom-0">
+                <ScrollMoveElement
+                  className="w-[220px] sm:w-[500px] xl:w-[830px]"
+                  img={MainCoinsImg}
+                  alt="mob"
+                />
+              </div>
+            </div>
           </div>
         </Container>
-        <div className="landing-lottie absolute bottom-0 z-0 hidden w-full max-w-[1240px] h-full md:block">
-          <Lottie animationData={mainAnmation} autoplay loop />
-        </div>
       </div>
       <Container>
         <div className="flex flex-wrap items-center justify-center gap-10 mt-10 md:justify-between md:mt-20 md:gap-3 lg:gap-12 xl:gap-20">
@@ -109,6 +219,171 @@ const HomeContent = ({
           <img className={clsx(sponsor)} src={Flyrfy} alt="ICP investors" />
           <img className={clsx(sponsor)} src={Rubylight} alt="ICP investors" />
           <img className={clsx(sponsor)} src={Spaceship} alt="ICP investors" />
+        </div>
+      </Container>
+      <Container
+        className={clsx(
+          "sm:rounded-[30px] py-20 px-[20px] sm:px-[30px] lg:px-[60px] text-white relative z-10",
+          "mt-10 md:mt-20 sm:w-[calc(100%-60px)] mx-auto w-full px-[30px] sm:px-0 gradient-box",
+        )}
+        style={{
+          background:
+            window.screen.width > 767
+              ? "radial-gradient(at right top, #4EAE8A, #12312B 50%, #0B201D 80%)"
+              : "",
+          backgroundSize: "cover",
+          backgroundPosition: "center bottom",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "#12312B",
+        }}
+      >
+        <div className="absolute top-0 left-[50%] mt-[-40px] lg:mt-[-80px]">
+          <ScrollMoveElement
+            className="w-[140px] lg:w-[256px]"
+            img={CenterCoinImg}
+            alt="coin"
+          />
+        </div>
+        <div className="text-center mb-[60px] lg:mb-[100px]">
+          <h4 className="leading-[120%] md:text-[42px] text-[32px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+            NFID puts ICP on easy mode
+          </h4>
+          <h5 className="text-base md:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
+            Navigate the ICP network’s tokens, NFTs, and apps with peace of
+            mind.
+          </h5>
+        </div>
+        <div className="sm:space-y-20 md:space-y-[100px] z-20 relative md:w-full md:max-w-[1070px] mx-auto">
+          <div
+            className={clsx(
+              "flex-col-reverse sm:!flex-row-reverse !flex md:!mb-[60px]",
+              section2,
+            )}
+          >
+            <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pl-0 lg:px-0">
+              <p className="font-light text-teal-400">1/4</p>
+              <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
+                Instantly swap at the best price, send, and receive tokens
+              </h2>
+              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+                Say goodbye to sub-optimal swap prices, high network fees and
+                slow transfer speeds. Swap, send, and receive tokens quickly for
+                less than $0.01.
+              </h3>
+            </div>
+            <div className={clsx(asset, "relative !min-w-auto !min-h-0")}>
+              <img
+                className="w-[203px] md:w-[359px]"
+                src={SwapImg}
+                alt="swap"
+              />
+              <div className="z-[-1] top-[-25px] left-[-25px] md:top-[25px] md:left-[25px] absolute md:scale-125">
+                <ScrollMoveElement
+                  className="sm:w-[250px] md:w-auto"
+                  img={SwapCoinsImg}
+                  alt="swap coins"
+                />
+              </div>
+              <div className="absolute bottom-0 left-0 ml-[170px] md:ml-[250px] sm:mb-[70px] md:mb-0">
+                <ScrollMoveElement
+                  className="w-[83px] md:w-[183px]"
+                  img={SwapArrowsImg}
+                  alt="swap coins"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            className={clsx(
+              "flex-col-reverse sm:!flex-row !flex md:!mb-[60px]",
+              section2,
+            )}
+          >
+            <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pr-0 lg:px-0">
+              <p className="font-light text-teal-400">2/4</p>
+              <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
+                Securely manage your entire ICP portfolio
+              </h2>
+              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+                Track token prices in USD, sum up your NFT portfolio with floor
+                prices, and keep all your assets safe in NFID Wallet.
+              </h3>
+            </div>
+            <div className={clsx(asset, "relative flex justify-end !min-h-0")}>
+              <img
+                className="w-[203px] md:w-[359px]"
+                src={TokensImg}
+                alt="tokens"
+              />
+              <div className="absolute top-0 right-0 origin-center mr-[140px] sm:scale-[1.4] md:mr-[250px] mt-[-20px] sm:mt-[30px] md:mt-0">
+                <ScrollMoveElement
+                  className="w-[120px] md:w-[150px]"
+                  img={TokensCoinImg}
+                  alt="coin"
+                />
+              </div>
+              <div className="absolute z-[-1] top-[20px] right-[100px] sm:!scale-[0.7] sm:ml-[-200px] sm:mt-[-110px]">
+                <ScrollMoveElement
+                  className="w-[200px] md:w-auto"
+                  img={TokensCardsImg}
+                  alt="cards"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            className={clsx(
+              "flex-col-reverse sm:!flex-row-reverse md:!mb-[60px] !flex",
+              section2,
+            )}
+          >
+            <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pl-0 lg:px-0">
+              <p className="font-light text-teal-400">3/4</p>
+              <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
+                Connect to the ICP ecosystem of dapps
+              </h2>
+              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+                Share your wallet address with apps that serve you and your
+                assets, or keep it hidden when you prefer to stay private.
+              </h3>
+            </div>
+            <div className={clsx(asset, "!min-h-0")}>
+              <img
+                className="w-[203px] md:w-[359px]"
+                src={ConnectionImg}
+                alt="approve connection"
+              />
+            </div>
+          </div>
+          <div
+            className={clsx("flex-col-reverse sm:!flex-row !flex", section2)}
+          >
+            <div className="text-xl sm:text-[24px] space-y-[28px] max-w-[520px] px-5 sm:pr-0 lg:px-0">
+              <p className="font-light text-teal-400">4/4</p>
+              <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
+                Eliminate anxiety with transaction reviews
+              </h2>
+              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+                Know what you're signing before it's too late, whether for
+                transfers, spending limits, or other smart contract calls.
+              </h3>
+            </div>
+            <div
+              className={clsx(
+                asset,
+                "relative flex justify-end !min-h-0 pt-[140px] sm:pt-0",
+              )}
+            >
+              <img
+                className="w-[203px] md:w-[359px]"
+                src={ApproveImg}
+                alt="approve spending cap"
+              />
+              <div className="absolute top-0 mt-[-100px] left-0 !scale-[0.4] sm:!scale-[0.3] lg:!scale-[0.4] sm:ml-[-380px] lg:ml-[-530px] sm:mt-[-460px]">
+                <ScrollMoveElement img={LockImg} alt="lock" />
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
       <Container className="mt-10 md:mt-20">
@@ -159,17 +434,26 @@ const HomeContent = ({
           backgroundColor: "#12312B",
         }}
       >
+        <div className="text-center mb-[60px] lg:mb-[100px]">
+          <h4 className="leading-[120%] md:text-[42px] text-[32px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+            An evolution in self-sovereign wallets
+          </h4>
+          <h5 className="text-base md:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
+            The three characteristics that make NFID Wallet stand out in the
+            Web3 wallet crowd.
+          </h5>
+        </div>
         <div className="space-y-20 md:space-y-[100px] z-20 relative md:w-full md:max-w-[1070px] mx-auto">
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400">1/4</p>
+              <p className="font-light text-teal-400">1/3</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
-                Instant onboarding with your email address
+                Access from anywhere without a phishable recovery phrase
               </h2>
               <h3 className="text-sm md:text-lg text-[teal-100]">
-                NFID Wallet makes it easy for you to sign in and sign up to ICP
-                websites and apps without downloading additional software or
-                navigating complicated setups.
+                Manage your wallet from any browser on any device by logging in
+                with your password or biometric unlock. No complicated setups or
+                recovery flows required.
               </h3>
             </div>
             <div className={clsx(asset)}>
@@ -181,14 +465,13 @@ const HomeContent = ({
           </div>
           <div className={clsx(section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400">2/4</p>
+              <p className="font-light text-teal-400">2/3</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
-                Unified account across the ICP ecosystem
+                Never become one of those “I lost my seed phrase” victims
               </h2>
               <h3 className="text-sm md:text-lg text-[teal-100]">
-                Your privacy is central to NFID Wallet's design philosophy.
-                Share your wallet address with apps that serve you and your
-                assets, or keep it hidden when you prefer to stay private.
+                Seed phrases have been the cause of trillions of dollars in
+                crypto losses. Get the benefits of self-custody without them.
               </h3>
             </div>
             <div className={clsx(asset)}>
@@ -200,38 +483,19 @@ const HomeContent = ({
           </div>
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400">3/4</p>
+              <p className="font-light text-teal-400">3/3</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
-                Greater security with Passkey authentication
+                Earn $NFIDW rewards for participating in governance
               </h2>
               <h3 className="text-sm md:text-lg text-[teal-100]">
-                Powered by cutting-edge Passkey and Chainkey technology, NFID
-                Wallet shields you from vulnerabilities that compromise even the
-                most secure digital platforms.
+                While every other Web3 wallet generates profits for the
+                corporations that built them, NFID Wallet is the only one whose
+                stakeholders—you—are rewarded for participating.
               </h3>
             </div>
             <div className={clsx(asset)}>
               <AnimationWrapper
                 animationData={Animation3}
-                className="min-w-[330px] min-h-[330px] object-cover"
-              />
-            </div>
-          </div>
-          <div className={clsx(section2)}>
-            <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5">
-              <p className="font-light text-teal-400">4/4</p>
-              <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
-                ICP, ICRC, and EXT token support
-              </h2>
-              <h3 className="text-sm md:text-lg text-[teal-100]">
-                NFID Wallet empowers you to seamlessly manage ICP, ICRC-1
-                tokens, collectibles, and more, all under the protection of the
-                most advanced smart contract platform available.
-              </h3>
-            </div>
-            <div className={clsx(asset)}>
-              <AnimationWrapper
-                animationData={Animation4}
                 className="min-w-[330px] min-h-[330px] object-cover"
               />
             </div>
@@ -267,8 +531,7 @@ const HomeContent = ({
               />
             </div>
             <h2 className={clsx(cardItem)}>
-              Secured on decentralized architecture built by 100s of the world’s
-              best cryptographers.
+              Independently audited and open-source
             </h2>
           </div>
           <div className={clsx(card)}>
@@ -289,8 +552,7 @@ const HomeContent = ({
               />
             </div>
             <h2 className={clsx(cardItem)}>
-              Protected by best-in-class auth with enterprise security and
-              multi-factor recovery methods.
+              Protected by next generation passkey security
             </h2>
           </div>
           <div className={clsx(card)}>
@@ -310,10 +572,7 @@ const HomeContent = ({
                 )}
               />
             </div>
-            <h2 className={clsx(cardItem)}>
-              Trusted by hundreds of thousands of people and businesses around
-              the world.
-            </h2>
+            <h2 className={clsx(cardItem)}>No seed phrase</h2>
           </div>
           <div className={clsx(card)}>
             <div className="w-[140px] lg:w-[200px] block -ml-7 lg:-ml-[42px] relative aspect-square">
@@ -332,12 +591,25 @@ const HomeContent = ({
                 )}
               />
             </div>
-            <h2 className={clsx(cardItem)}>
-              Backed by some of the most trusted names in the crypto and Web3
-              industry.
-            </h2>
+            <h2 className={clsx(cardItem)}>100% self-custody</h2>
           </div>
         </div>
+      </Container>
+      <Container className="p-[20px] bg-opacity-40 lg:py-[40px] lg:px-[34px] bg-teal-900 rounded-[30px] my-[30px] lg:my-[100px]">
+        <InfoCopy
+          text="$NFIDW Ledger Canister ID"
+          value="mih44-vaaaa-aaaaq-aaekq-cai"
+          withBorder
+        />
+        <InfoCopy
+          text="$NFIDW Index Canister ID"
+          value="mgfru-oqaaa-aaaaq-aaelq-cai"
+          withBorder
+        />
+        <InfoCopy
+          text="Dev Team Beacon Neuron"
+          value="333b4d86cf09ec61ddc0858bdbaaa2c9b9cff0b6b5ac284004603ee5fc08fb87"
+        />
       </Container>
       <Footer />
     </>

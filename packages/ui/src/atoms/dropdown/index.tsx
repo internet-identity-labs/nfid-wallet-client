@@ -52,11 +52,15 @@ export const Dropdown = ({
             )}
             style={{
               boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)",
+              transform:
+                position === "top"
+                  ? "translateY(calc(-100% - 27px))"
+                  : undefined,
             }}
-            initial={{ y: position === "top" ? -10 : 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: position === "top" ? -10 : 10, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
             onClick={() => setIsDropdownOpen(false)}
           >
             <div style={{ minWidth: `${minWidth}px` }}>{children}</div>

@@ -199,15 +199,16 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </div>
           )}
         </div>
-        <Button
-          id={"swap-success-close-button"}
-          type="primary"
-          block
-          onClick={onClose}
-        >
-          {getTitleAndButtonText(error)?.buttonText}
-        </Button>
       </div>
+      <Button
+        id={"swap-success-close-button"}
+        type="primary"
+        className="mt-auto"
+        block
+        onClick={onClose}
+      >
+        {getTitleAndButtonText(error)?.buttonText}
+      </Button>
     </div>
   )
 }

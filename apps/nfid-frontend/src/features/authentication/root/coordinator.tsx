@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import { AnimatePresence, motion } from "framer-motion"
 import { decodeJwt } from "jose"
 import toaster from "packages/ui/src/atoms/toast"
 import {
@@ -20,7 +21,6 @@ import { ReactNode, useCallback, useMemo, useState } from "react"
 
 import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
 import { getAllWalletsFromThisDevice } from "@nfid/integration"
-import { useSWR } from "@nfid/swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
@@ -58,10 +58,7 @@ export default function AuthenticationCoordinator({
   const [signUpPasskeyLoading, setSignUpPasskeyLoading] = useState(false)
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
-  const [captcha, setCaptcha] = useState<
-    Awaited<ReturnType<typeof passkeyConnector.getCaptchaChallenge>> | undefined
-  >()
-  const [captchaEntered, setCaptchaEntered] = useState("")
+  const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({
@@ -134,18 +131,33 @@ export default function AuthenticationCoordinator({
     onAuthWithPasskey(res)
   }
 
-  const onSignUpWithPasskey = async (name: string, captchaVal: string) => {
+  const onSignUpWithPasskey = async ({
+    walletName,
+    challengeKey,
+    enteredCaptcha,
+  }: {
+    walletName: string
+    challengeKey: string
+    enteredCaptcha?: string
+  }) => {
     setSignUpPasskeyLoading(true)
     try {
-      await passkeyConnector.registerWithPasskey(name, {
-        challengeKey: captcha!.challenge_key,
-        chars: captchaVal,
+      await passkeyConnector.registerWithPasskey(walletName, {
+        challengeKey,
+        chars: enteredCaptcha,
       })
       send({
         type: "AUTHENTICATED",
       })
     } catch (e) {
-      toaster.error((e as Error).message)
+      const msg = (e as Error).message
+      if (msg.includes("Incorrect captcha key"))
+        return setSignUpWithPasskeyError("Captcha expired. Please try again.")
+      if (msg.includes("Incorrect captcha solution"))
+        return setSignUpWithPasskeyError(
+          "Incorrect captcha entered. Please try again.",
+        )
+      return setSignUpWithPasskeyError("Unknown error occured")
     } finally {
       setSignUpPasskeyLoading(false)
     }
@@ -199,235 +211,305 @@ export default function AuthenticationCoordinator({
     return `${state.context.authSession?.anchor} ${generate().trim()}`
   }, [state.context.authSession?.anchor])
 
-  const {
-    isLoading: isCaptchaLoading,
-    isValidating: isCaptchaValidating,
-    mutate: getCaptcha,
-  } = useSWR(
-    `get-captcha`,
-    async () => {
-      const challenge = await passkeyConnector.getCaptchaChallenge()
-      setCaptcha(challenge)
-    },
-    {
-      revalidateOnFocus: false,
-      revalidateOnMount: false,
-    },
-  )
-
   const walletName =
     state.context.email ??
     state.context.authSession?.name ??
     state.context.authSession?.anchor
 
-  switch (true) {
-    case state.matches("AuthSelection"):
-      return (
-        <AuthSelection
-          isIdentityKit={isIdentityKit}
-          getAllWalletsFromThisDevice={getAllWalletsFromThisDevice}
-          onSelectEmailAuth={(email: string) => {
-            send({
-              type: "AUTH_WITH_EMAIL",
-              data: {
-                email,
-                isEmbed,
-              },
-            })
-          }}
-          onSelectOtherAuth={() => {
-            send({
-              type: "AUTH_WITH_OTHER",
-              data: { isEmbed },
-            })
-          }}
-          isLoading={isPasskeyLoading}
-          applicationURL={state.context.authRequest?.hostname}
-          onLoginWithPasskey={onLoginWithPasskey}
-          googleButton={
-            <SignInWithGoogle
-              onLogin={onSelectGoogleAuth}
-              button={
-                <Button
-                  id="google-sign-button"
-                  className="h-12 !p-0"
-                  type="stroke"
-                  icon={<IconCmpGoogle />}
-                  block
-                >
-                  Continue with Google
-                </Button>
+  const renderAuthSteps = () => {
+    switch (true) {
+      case state.matches("AuthSelection"):
+        return (
+          <motion.div
+            key="AuthSelection"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthSelection
+              isIdentityKit={isIdentityKit}
+              getAllWalletsFromThisDevice={getAllWalletsFromThisDevice}
+              onSelectEmailAuth={(email: string) => {
+                send({
+                  type: "AUTH_WITH_EMAIL",
+                  data: {
+                    email,
+                    isEmbed,
+                  },
+                })
+              }}
+              onSelectOtherAuth={() => {
+                send({
+                  type: "AUTH_WITH_OTHER",
+                  data: { isEmbed },
+                })
+              }}
+              isLoading={isPasskeyLoading}
+              applicationURL={state.context.authRequest?.hostname}
+              onLoginWithPasskey={onLoginWithPasskey}
+              googleButton={
+                <SignInWithGoogle
+                  onLogin={onSelectGoogleAuth}
+                  button={
+                    <Button
+                      id="google-sign-button"
+                      className="h-12 !p-0"
+                      type="stroke"
+                      icon={<IconCmpGoogle />}
+                      block
+                    >
+                      Continue with Google
+                    </Button>
+                  }
+                />
               }
+              onTypeChange={() => send({ type: "SIGN_UP" })}
             />
-          }
-          onTypeChange={() => send({ type: "SIGN_UP" })}
-        />
-      )
-    case state.matches("AuthSelectionSignUp"):
-      return (
-        <AuthSelection
-          type="sign-up"
-          isIdentityKit={isIdentityKit}
-          getAllWalletsFromThisDevice={getAllWalletsFromThisDevice}
-          onSelectEmailAuth={(email: string) => {
-            send({
-              type: "AUTH_WITH_EMAIL",
-              data: {
-                email,
-                isEmbed,
-              },
-            })
-          }}
-          isLoading={isPasskeyLoading}
-          applicationURL={state.context.authRequest?.hostname}
-          onLoginWithPasskey={async () => {
-            send({ type: "SIGN_UP_WITH_PASSKEY" })
-          }}
-          googleButton={
-            <SignInWithGoogle
-              onLogin={onSelectGoogleAuth}
-              button={
-                <Button
-                  id="google-sign-button"
-                  className="h-12 !p-0"
-                  type="stroke"
-                  icon={<IconCmpGoogle />}
-                  block
-                >
-                  Continue with Google
-                </Button>
+          </motion.div>
+        )
+      case state.matches("AuthSelectionSignUp"):
+        return (
+          <motion.div
+            key="AuthSelectionSignUp"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthSelection
+              type="sign-up"
+              isIdentityKit={isIdentityKit}
+              getAllWalletsFromThisDevice={getAllWalletsFromThisDevice}
+              onSelectEmailAuth={(email: string) => {
+                send({
+                  type: "AUTH_WITH_EMAIL",
+                  data: {
+                    email,
+                    isEmbed,
+                  },
+                })
+              }}
+              isLoading={isPasskeyLoading}
+              applicationURL={state.context.authRequest?.hostname}
+              onLoginWithPasskey={async () => {
+                send({ type: "SIGN_UP_WITH_PASSKEY" })
+              }}
+              googleButton={
+                <SignInWithGoogle
+                  onLogin={onSelectGoogleAuth}
+                  button={
+                    <Button
+                      id="google-sign-button"
+                      className="h-12 !p-0"
+                      type="stroke"
+                      icon={<IconCmpGoogle />}
+                      block
+                    >
+                      Continue with Google
+                    </Button>
+                  }
+                />
               }
+              onTypeChange={() => send({ type: "SIGN_IN" })}
             />
-          }
-          onTypeChange={() => send({ type: "SIGN_IN" })}
-        />
-      )
-    case state.matches("SignUpPassKey"):
-      return (
-        <AuthSignUpPassKey
-          onPasskeyCreate={(name) => {
-            onSignUpWithPasskey(name, captchaEntered)
-          }}
-          captchaEntered={!!captchaEntered}
-          onCaptchaEntered={setCaptchaEntered}
-          isPasskeyCreating={signUpPasskeyLoading}
-          getCaptcha={getCaptcha}
-          captcha={
-            Array.isArray(captcha?.png_base64)
-              ? captcha?.png_base64[0]
-              : captcha?.png_base64
-          }
-          isLoading={isCaptchaLoading || isCaptchaValidating}
-          withLogo={!isIdentityKit}
-          title={isIdentityKit ? "Sign up" : undefined}
-          subTitle={isIdentityKit ? "to continue to" : "Sign up to continue to"}
-          onBack={() => {
-            send({ type: "BACK" })
-            setCaptcha(undefined)
-            setCaptchaEntered("")
-          }}
-          applicationURL={state.context.authRequest?.hostname}
-        />
-      )
-    case state.matches("EmailAuthentication"):
-      return (
-        <AuthEmailFlowCoordinator
-          isIdentityKit={isIdentityKit}
-          actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
-        />
-      )
-    case state.matches("SignInWithRecoveryPhrase"):
-      return (
-        <AuthSignInWithRecoveryPhrase
-          withLogo={!isIdentityKit}
-          title={isIdentityKit ? "Sign in" : undefined}
-          subTitle={isIdentityKit ? "to continue to" : undefined}
-          appMeta={state.context.authRequest?.hostname}
-          onBack={() => {
-            send({ type: "BACK" })
-            setLoginWithRecoverError("")
-          }}
-          error={loginWithRecoverError}
-          handleAuth={onRecover}
-          isLoading={loginWithRecoveryLoading}
-        />
-      )
-    case state.matches("BackupWallet"):
-      return (
-        <AuthBackupWallet
-          name={walletName}
-          onSkip={() => send({ type: "SKIP" })}
-          onCreate={() => send({ type: "DONE" })}
-          titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
-        />
-      )
-    case state.matches("BackupWalletSavePhrase"):
-      return (
-        <AuthSaveRecoveryPhrase
-          name={walletName}
-          onDone={() => {
-            securityConnector.createRecoveryPhrase(recoveryPhrase).then(() => {
-              send({ type: "DONE" })
-            })
-          }}
-          recoveryPhrase={recoveryPhrase}
-          titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
-        />
-      )
-    case state.matches("OtherSignOptions"):
-      return (
-        <AuthOtherSignOptions
-          withLogo={!isIdentityKit}
-          title={isIdentityKit ? "Sign in" : undefined}
-          subTitle={isIdentityKit ? "to continue to" : undefined}
-          applicationUrl={state.context.authRequest?.hostname}
-          onBack={() => send({ type: "BACK" })}
-          handleAuth={handleOtherOptionsAuth}
-          onAuthWithRecoveryPhrase={() => {
-            send({ type: "AUTH_WITH_RECOVERY_PHRASE" })
-          }}
-          isLoading={isOtherOptionsLoading || storageProfileLoading}
-          profileAnchor={storageProfile?.anchor}
-        />
-      )
-    case state.matches("TwoFA"):
-      return (
-        <Auth2FA
-          email={state.context.email2FA}
-          isIdentityKit={isIdentityKit}
-          handleAuth={handle2FAAuth}
-          isLoading={is2FALoading}
-        />
-      )
-    case state.matches("AddPasskeys"):
-      return (
-        <AuthAddPasskey
-          isLoading={isAddPasskeyLoading}
-          name={walletName}
-          onSkip={() => send({ type: "SKIP" })}
-          onAdd={() => {
-            setIsAddPasskeyLoading(true)
-            passkeyConnector
-              .createCredential()
-              .then(() => send({ type: "CONTINUE" }))
-              .catch(() => send({ type: "BACK" }))
-              .finally(() => setIsAddPasskeyLoading(false))
-          }}
-          titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
-        />
-      )
-    case state.matches("AddPasskeysSuccess"):
-      return (
-        <AuthAddPasskeySuccess
-          onFinish={() => {
-            send({ type: "DONE" })
-          }}
-          name={walletName}
-          titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
-        />
-      )
-    case state.matches("End"):
-    default:
-      return loader || <BlurredLoader isLoading />
+          </motion.div>
+        )
+      case state.matches("SignUpPassKey"):
+        return (
+          <motion.div
+            key="SignUpPassKey"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthSignUpPassKey
+              onPasskeyCreate={onSignUpWithPasskey}
+              isPasskeyCreating={signUpPasskeyLoading}
+              getCaptcha={passkeyConnector.getCaptchaChallenge}
+              withLogo={!isIdentityKit}
+              title={isIdentityKit ? "Sign up" : undefined}
+              subTitle={
+                isIdentityKit ? "to continue to" : "Sign up to continue to"
+              }
+              onBack={() => {
+                send({ type: "BACK" })
+                setSignUpWithPasskeyError("")
+              }}
+              createPasskeyError={signUpWithPassKeyError}
+              applicationURL={state.context.authRequest?.hostname}
+            />
+          </motion.div>
+        )
+      case state.matches("EmailAuthentication"):
+        return (
+          <motion.div
+            key="EmailAuthentication"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthEmailFlowCoordinator
+              isIdentityKit={isIdentityKit}
+              actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
+            />
+          </motion.div>
+        )
+      case state.matches("SignInWithRecoveryPhrase"):
+        return (
+          <motion.div
+            key="SignInWithRecoveryPhrase"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthSignInWithRecoveryPhrase
+              withLogo={!isIdentityKit}
+              title={isIdentityKit ? "Sign in" : undefined}
+              subTitle={isIdentityKit ? "to continue to" : undefined}
+              appMeta={state.context.authRequest?.hostname}
+              onBack={() => {
+                send({ type: "BACK" })
+                setLoginWithRecoverError("")
+              }}
+              error={loginWithRecoverError}
+              handleAuth={onRecover}
+              isLoading={loginWithRecoveryLoading}
+            />
+          </motion.div>
+        )
+      case state.matches("BackupWallet"):
+        return (
+          <motion.div
+            key="BackupWallet"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthBackupWallet
+              name={walletName}
+              onSkip={() => send({ type: "SKIP" })}
+              onCreate={() => send({ type: "DONE" })}
+              titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
+            />
+          </motion.div>
+        )
+      case state.matches("BackupWalletSavePhrase"):
+        return (
+          <motion.div
+            key="BackupWalletSavePhrase"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthSaveRecoveryPhrase
+              name={walletName}
+              onDone={() => {
+                securityConnector
+                  .createRecoveryPhrase(recoveryPhrase)
+                  .then(() => {
+                    send({ type: "DONE" })
+                  })
+              }}
+              recoveryPhrase={recoveryPhrase}
+              titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
+            />
+          </motion.div>
+        )
+      case state.matches("OtherSignOptions"):
+        return (
+          <motion.div
+            key="OtherSignOptions"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthOtherSignOptions
+              withLogo={!isIdentityKit}
+              title={isIdentityKit ? "Sign in" : undefined}
+              subTitle={isIdentityKit ? "to continue to" : undefined}
+              applicationUrl={state.context.authRequest?.hostname}
+              onBack={() => send({ type: "BACK" })}
+              handleAuth={handleOtherOptionsAuth}
+              onAuthWithRecoveryPhrase={() => {
+                send({ type: "AUTH_WITH_RECOVERY_PHRASE" })
+              }}
+              isLoading={isOtherOptionsLoading || storageProfileLoading}
+              profileAnchor={storageProfile?.anchor}
+            />
+          </motion.div>
+        )
+      case state.matches("TwoFA"):
+        return (
+          <motion.div
+            key="TwoFA"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <Auth2FA
+              email={state.context.email2FA}
+              isIdentityKit={isIdentityKit}
+              handleAuth={handle2FAAuth}
+              isLoading={is2FALoading}
+            />
+          </motion.div>
+        )
+      case state.matches("AddPasskeys"):
+        return (
+          <motion.div
+            key="AddPasskeys"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthAddPasskey
+              isLoading={isAddPasskeyLoading}
+              name={walletName}
+              onSkip={() => send({ type: "SKIP" })}
+              onAdd={() => {
+                setIsAddPasskeyLoading(true)
+                passkeyConnector
+                  .createCredential()
+                  .then(() => send({ type: "CONTINUE" }))
+                  .catch(() => send({ type: "BACK" }))
+                  .finally(() => setIsAddPasskeyLoading(false))
+              }}
+              titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
+            />
+          </motion.div>
+        )
+      case state.matches("AddPasskeysSuccess"):
+        return (
+          <motion.div
+            key="AddPasskeysSuccess"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthAddPasskeySuccess
+              onFinish={() => {
+                send({ type: "DONE" })
+              }}
+              name={walletName}
+              titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
+            />
+          </motion.div>
+        )
+      case state.matches("End"):
+      default:
+        return loader || <BlurredLoader isLoading />
+    }
   }
+
+  return <AnimatePresence mode="wait">{renderAuthSteps()}</AnimatePresence>
 }

@@ -118,7 +118,8 @@ const SecurityPage = () => {
   let tooltip = ""
 
   if (!profile.email || !devices?.passkeys.length)
-    tooltip = "At least one passkey and an email are required to enable 2FA."
+    tooltip =
+      "At least one passkey and an email are required to enable Self-sovereign mode."
   else if (!profile.email && devices?.passkeys.length)
     tooltip = "Self-sovereign mode is always enabled for passkey-only users."
 

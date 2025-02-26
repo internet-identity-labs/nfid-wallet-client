@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { AnimatePresence, motion } from "framer-motion"
 import { Separator } from "packages/ui/src/atoms/separator"
 import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -92,132 +93,149 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       : undefined
 
   return (
-    <BlurredLoader
-      isLoading={isLoading || walletState.isChooseWalletLoading}
-      className={clsx("flex flex-col flex-1", {
-        "min-h-[536px]": !walletState.isChooseWallet || !isPasskeySupported,
-      })}
-      overlayClassnames="rounded-[24px]"
-      id="auth-selection"
-    >
-      {!!walletState.wallets.length && !walletState.isChooseWallet && (
-        <IconCmpArrow
-          onClick={() =>
-            setWalletState((prevState) => ({
-              ...prevState,
-              isChooseWallet: true,
-            }))
-          }
-          className="absolute cursor-pointer top-5 left-5"
-        />
-      )}
-      {walletState.isChooseWallet && isPasskeySupported ? (
-        <ChooseWallet
-          applicationURL={applicationURL}
-          showLogo={isIdentityKit}
-          onAuthSelection={() =>
-            setWalletState((prevState) => ({
-              ...prevState,
-              isChooseWallet: false,
-            }))
-          }
-          onLoginWithPasskey={onLoginWithPasskey}
-          wallets={walletState.wallets}
-        />
-      ) : (
-        <>
-          <AuthAppMeta
-            applicationURL={applicationURL}
-            withLogo={!isIdentityKit}
-            title={
-              isIdentityKit ? (isSignIn ? "Sign in" : "Sign up") : undefined
+    <AnimatePresence mode="wait">
+      <BlurredLoader
+        isLoading={isLoading || walletState.isChooseWalletLoading}
+        className={clsx("flex flex-col flex-1", {
+          "min-h-[536px]": !walletState.isChooseWallet || !isPasskeySupported,
+        })}
+        overlayClassnames="rounded-[24px]"
+        id="auth-selection"
+      >
+        {!!walletState.wallets.length && !walletState.isChooseWallet && (
+          <IconCmpArrow
+            onClick={() =>
+              setWalletState((prevState) => ({
+                ...prevState,
+                isChooseWallet: true,
+              }))
             }
-            subTitle={
-              <>
-                {!isIdentityKit && isSignIn ? "Sign in " : "Sign up "}to
-                continue to
-              </>
-            }
+            className="absolute cursor-pointer top-5 left-5"
           />
-          <div className="mt-7">
-            <form
-              onSubmit={handleSubmit((values) =>
-                onSelectEmailAuth(values.email),
+        )}
+        {walletState.isChooseWallet && isPasskeySupported ? (
+          <motion.div
+            key="ChooseWallet"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <ChooseWallet
+              applicationURL={applicationURL}
+              showLogo={isIdentityKit}
+              onAuthSelection={() =>
+                setWalletState((prevState) => ({
+                  ...prevState,
+                  isChooseWallet: false,
+                }))
+              }
+              onLoginWithPasskey={onLoginWithPasskey}
+              wallets={walletState.wallets}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            className="flex flex-col h-full"
+            key="AuthSelection"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthAppMeta
+              applicationURL={applicationURL}
+              withLogo={!isIdentityKit}
+              title={
+                isIdentityKit ? (isSignIn ? "Sign in" : "Sign up") : undefined
+              }
+              subTitle={
+                <>
+                  {!isIdentityKit && isSignIn ? "Sign in " : "Sign up "}to
+                  continue to
+                </>
+              }
+            />
+            <div className="mt-7">
+              <form
+                onSubmit={handleSubmit((values) =>
+                  onSelectEmailAuth(values.email),
+                )}
+                className="space-y-[10px]"
+                noValidate
+              >
+                <Input
+                  inputClassName="h-12 rounded-xl"
+                  placeholder="Email"
+                  type="email"
+                  errorText={errorMessage}
+                  {...register("email", {
+                    required: true,
+                    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  })}
+                  autoComplete="off webauthn"
+                />
+                <Button
+                  id="email-sign-button"
+                  className="h-12 !p-0"
+                  type="primary"
+                  block
+                >
+                  Continue with email
+                </Button>
+              </form>
+              <Separator className="my-[10px]" />
+              {googleButton}
+              {isPasskeySupported && (
+                <Button
+                  id="passkey-sign-button"
+                  className="h-12 !p-0 group mt-[10px]"
+                  type="stroke"
+                  icon={<IconCmpPasskey />}
+                  block
+                  onClick={onLoginWithPasskey}
+                >
+                  Continue with a Passkey
+                </Button>
               )}
-              className="space-y-[10px]"
-              noValidate
-            >
-              <Input
-                inputClassName="h-12 rounded-xl"
-                placeholder="Email"
-                type="email"
-                errorText={errorMessage}
-                {...register("email", {
-                  required: true,
-                  pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                })}
-                autoComplete="off webauthn"
-              />
-              <Button
-                id="email-sign-button"
-                className="h-12 !p-0"
-                type="primary"
-                block
-              >
-                Continue with email
-              </Button>
-            </form>
-            <Separator className="my-[10px]" />
-            {googleButton}
-            {isPasskeySupported && (
-              <Button
-                id="passkey-sign-button"
-                className="h-12 !p-0 group mt-[10px]"
-                type="stroke"
-                icon={<IconCmpPasskey />}
-                block
-                onClick={onLoginWithPasskey}
-              >
-                Continue with a Passkey
-              </Button>
-            )}
-            {isSignIn && (
-              <Button
-                id="other-sign-button"
-                className="h-12 !p-0 mt-[10px]"
-                type="ghost"
-                block
-                onClick={onSelectOtherAuth}
-              >
-                Other sign in options
-              </Button>
-            )}
-          </div>
-          <div className="flex-1 flex justify-center">
-            {isSignIn ? (
-              <div className="text-sm mt-auto">
-                Don’t have an NFID Wallet?{" "}
-                <span
-                  onClick={onTypeChange}
-                  className="cursor-pointer text-primaryButtonColor font-bold"
+              {isSignIn && (
+                <Button
+                  id="other-sign-button"
+                  className="h-12 !p-0 mt-[10px]"
+                  type="ghost"
+                  block
+                  onClick={onSelectOtherAuth}
                 >
-                  Sign up
-                </span>
-              </div>
-            ) : (
-              <div className="text-sm mt-auto">
-                Already have an NFID Wallet?{" "}
-                <span
-                  onClick={onTypeChange}
-                  className="cursor-pointer text-primaryButtonColor font-bold"
-                >
-                  Sign in
-                </span>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-    </BlurredLoader>
+                  Other sign in options
+                </Button>
+              )}
+            </div>
+            <div className="flex justify-center flex-1">
+              {isSignIn ? (
+                <div className="mt-auto text-sm">
+                  Don’t have an NFID Wallet?{" "}
+                  <span
+                    onClick={onTypeChange}
+                    className="font-bold cursor-pointer transition-opacity text-primaryButtonColor hover:opacity-50"
+                  >
+                    Sign up
+                  </span>
+                </div>
+              ) : (
+                <div className="mt-auto text-sm">
+                  Already have an NFID Wallet?{" "}
+                  <span
+                    onClick={onTypeChange}
+                    className="font-bold cursor-pointer transition-opacity text-primaryButtonColor hover:opacity-50"
+                  >
+                    Sign in
+                  </span>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </BlurredLoader>
+    </AnimatePresence>
   )
 }

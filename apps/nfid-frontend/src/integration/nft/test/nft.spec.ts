@@ -9,6 +9,8 @@ import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
 
+import { getCanisterStatus } from "../util/util"
+
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
 )
@@ -192,6 +194,18 @@ describe("nft test suite", () => {
       expect(icpSwapProperties.mappedValues.length).toEqual(5)
       expect(icpSwapProperties.mappedValues[0].category).toEqual("Background")
       expect(icpSwapProperties.mappedValues[0].option).toEqual("Purple")
+    })
+
+    it("should check if the canister is stopped", async () => {
+      const stoppedCanister = "5pyge-yaaaa-aaaah-qcz4q-cai"
+      const workingCanister = "unssi-hiaaa-aaaah-qcmya-cai"
+
+      await expect(getCanisterStatus(stoppedCanister)).rejects.toThrow(
+        "Canister 5pyge-yaaaa-aaaah-qcz4q-cai is stopped and therefore does not have a CallContextManager",
+      )
+
+      const workingCanisterResult = await getCanisterStatus(workingCanister)
+      expect(workingCanisterResult).toBeUndefined()
     })
 
     it("should calculate usd price", async () => {

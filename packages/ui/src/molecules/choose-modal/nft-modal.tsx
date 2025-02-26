@@ -36,15 +36,14 @@ export const ChooseNftModal = ({
   }, [])
 
   return (
-    <>
-      <ChooseTokenModal
-        tokens={tokens}
-        title={title}
-        filterTokensBySearchInput={filterTokensBySearchInput}
-        onSelect={(value) => onSelect(handleSelectTokenId(value))}
-        trigger={trigger}
-        renderItem={ChooseNftItem}
-      />
-    </>
+    <ChooseTokenModal
+      searchInputId="choose-token-modal-search-input"
+      tokens={tokens}
+      title={title}
+      filterTokensBySearchInput={filterTokensBySearchInput}
+      onSelect={(value) => onSelect(handleSelectTokenId(value))}
+      trigger={trigger}
+      renderItem={ChooseNftItem}
+    />
   )
 }

@@ -1,0 +1,7 @@
+{
+  "name": "nfid-wallet-extension",
+  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/nfid-extension/src",
+  "projectType": "application",
+  "tags": []
+}

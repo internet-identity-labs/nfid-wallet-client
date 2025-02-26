@@ -6,7 +6,7 @@ import {
   Ed25519KeyIdentity,
   WebAuthnIdentity,
 } from "@dfinity/identity"
-import { arrayBufferEqual } from "src/integration/identity/services"
+import { arrayBufferEqual } from "frontend/integration/identity/services"
 
 import {
   authState,

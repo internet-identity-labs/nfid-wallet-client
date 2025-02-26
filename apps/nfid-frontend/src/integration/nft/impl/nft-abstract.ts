@@ -52,9 +52,12 @@ export abstract class NftImpl implements NFT {
 
   async init() {
     try {
-      this.assetPreview = await this.getAssetPreviewAsync()
+      const [assetPreview] = await Promise.all([
+        this.getAssetPreviewAsync(),
+        getCanisterStatus(this.collectionId),
+      ])
+      this.assetPreview = assetPreview
       this.inited = true
-      await getCanisterStatus(this.collectionId)
     } catch (e) {
       this.setError(e as NftError)
     } finally {

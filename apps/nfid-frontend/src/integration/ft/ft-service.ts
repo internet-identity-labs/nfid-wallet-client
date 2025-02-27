@@ -49,38 +49,40 @@ export const filterTokens = (ft: FT[], filterText: string): FT[] => {
   )
 }
 
-export class FtService {
-  async getTokens(userId: string): Promise<Array<FT>> {
-    return icrc1StorageService
-      .getICRC1Canisters(userId)
-      .then(async (canisters) => {
-        const icp = canisters.find(
-          (canister) => canister.ledger === ICP_CANISTER_ID,
-        )
+async getTokens(userId: string): Promise<Array<FT>> {
+  try {
+    let canisters = await icrc1StorageService.getICRC1Canisters(userId);
 
-        const nfidw = canisters.find(
-          (canister) => canister.ledger === NFIDW_CANISTER_ID,
-        )
+    const icp = canisters.find(
+      (canister) => canister.ledger === ICP_CANISTER_ID
+    );
 
-        if (!icp || icp.state === State.Inactive) {
-          await icrc1RegistryService.storeICRC1Canister(
-            ICP_CANISTER_ID,
-            State.Active,
-          )
-          canisters = await icrc1StorageService.getICRC1Canisters(userId)
-        }
+    const nfidw = canisters.find(
+      (canister) => canister.ledger === NFIDW_CANISTER_ID
+    );
 
-        if (!nfidw || nfidw.state === State.Inactive) {
-          await icrc1RegistryService.storeICRC1Canister(
-            NFIDW_CANISTER_ID,
-            State.Active,
-          )
-          canisters = await icrc1StorageService.getICRC1Canisters(userId)
-        }
+    // If ICP canister is inactive, update it
+    if (!icp || icp.state === State.Inactive) {
+      await icrc1RegistryService.storeICRC1Canister(
+        ICP_CANISTER_ID,
+        State.Active
+      );
+    }
 
-        const ft = canisters.map((canister) => new FTImpl(canister))
-        return sortTokens(ft)
-      })
+    // If NFIDW canister is inactive, update it
+    if (!nfidw || nfidw.state === State.Inactive) {
+      await icrc1RegistryService.storeICRC1Canister(
+        NFIDW_CANISTER_ID,
+        State.Active
+      );
+    }
+
+    // Fetch canisters again only if necessary after state changes
+    canisters = await icrc1StorageService.getICRC1Canisters(userId);
+
+    // Map to FT instances and sort tokens
+    const ft = canisters.map((canister) => new FTImpl(canister));
+    return sortTokens(ft);
   }
 
   async filterNotActiveNotZeroBalancesTokens(

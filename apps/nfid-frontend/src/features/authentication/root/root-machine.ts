@@ -213,7 +213,7 @@ const AuthenticationMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "AuthSelection",
+                target: "AuthSelectionSignUp",
               },
             ],
           },
@@ -228,7 +228,7 @@ const AuthenticationMachine =
               verificationEmail: context?.verificationEmail,
             }),
             onDone: [
-              { cond: "isReturn", target: "AuthSelection" },
+              { cond: "isReturn", target: "AuthSelectionSignUp" },
               {
                 actions: "assignAuthSession",
                 target: "checkPasskeys",
@@ -363,8 +363,12 @@ const AuthenticationMachine =
     {
       guards: {
         isExistingAccount: (_, event) => !!event?.data?.anchor,
-        isReturn: (_, event) => !event.data,
-        is2FAEnabled: (_, event) => !!event.data,
+        isReturn: (_, event) => {
+          return !event.data
+        },
+        is2FAEnabled: (_, event) => {
+          return !!event.data
+        },
         showPasskeys: (_, event) => {
           const showPasskeys = event.data?.showPasskeys
           if (showPasskeys === undefined) return true

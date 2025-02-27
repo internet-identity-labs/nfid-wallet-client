@@ -88,8 +88,6 @@ export class FtService {
 
         await Promise.all(updatePromises)
 
-        console.log(canisters)
-
         const ft = canisters.map((canister) => new FTImpl(canister))
         return sortTokens(ft)
       })

@@ -67,6 +67,7 @@ export class FtService {
             ICP_CANISTER_ID,
             State.Active,
           )
+          canisters = await icrc1StorageService.getICRC1Canisters(userId)
         }
 
         if (!nfidw || nfidw.state === State.Inactive) {
@@ -74,9 +75,8 @@ export class FtService {
             NFIDW_CANISTER_ID,
             State.Active,
           )
+          canisters = await icrc1StorageService.getICRC1Canisters(userId)
         }
-
-        canisters = await icrc1StorageService.getICRC1Canisters(userId)
 
         const ft = canisters.map((canister) => new FTImpl(canister))
         return sortTokens(ft)

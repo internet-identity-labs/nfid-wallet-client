@@ -58,7 +58,7 @@ describe("ft test suite", () => {
             symbol: "NFIDW",
             index: "",
             state: "Active",
-            category: "Community",
+            category: "SNS",
             fee: BigInt(1000),
             decimals: 8,
           },
@@ -106,6 +106,16 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
       jest
         .spyOn(exchangeRateService as any, "usdPriceForICRC1")
@@ -138,6 +148,16 @@ describe("ft test suite", () => {
             state: "Active",
             category: "Native",
             fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
             decimals: 8,
           },
         ])
@@ -176,6 +196,16 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
       const [result]: FT[] = await ftService.getTokens(userId)
       jest
@@ -197,6 +227,16 @@ describe("ft test suite", () => {
             state: "Active",
             category: "Native",
             fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
             decimals: 8,
           },
         ])
@@ -295,6 +335,14 @@ describe("ft test suite", () => {
             state: "Active",
             category: "Native",
           },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+            state: "Active",
+            category: "SNS",
+          },
         ])
 
       jest
@@ -308,6 +356,14 @@ describe("ft test suite", () => {
             symbol: "ICP",
             state: "Active",
             decimals: 8,
+          },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+            state: "Active",
+            category: "SNS",
           },
         ])
       const result: FT[] = await ftService.getTokens(userId)
@@ -349,6 +405,16 @@ describe("ft test suite", () => {
             state: "Inactive",
             category: "Native",
             fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
             decimals: 8,
           },
         ])
@@ -396,6 +462,16 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
@@ -441,10 +517,20 @@ describe("ft test suite", () => {
             fee: BigInt(10000),
             decimals: 8,
           },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      jest.spyOn(result[2], "getTokenBalance").mockReturnValue(undefined)
+      jest.spyOn(result[3], "getTokenBalance").mockReturnValue(undefined)
       let filteredTokens = await ftService.filterNotActiveNotZeroBalancesTokens(
         result,
         principal,

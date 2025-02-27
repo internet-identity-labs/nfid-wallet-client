@@ -48,7 +48,7 @@ const NFTsPage = () => {
     setNfts((prevNfts) => [...prevNfts, ...newPlaceholders])
 
     Promise.all(
-      items.map(async (nft, index) => {
+      items.map(async (nft: NFT, index: number) => {
         await nft.init()
         return { index, nft }
       }),
@@ -56,7 +56,7 @@ const NFTsPage = () => {
       setNfts((prevNfts) => {
         const newNfts = [...prevNfts]
 
-        resolvedNFTs.forEach(({ index, nft }) => {
+        resolvedNFTs.forEach(({ index, nft }: { index: number; nft: NFT }) => {
           newNfts[prevNfts.length - items.length + index] = nft
         })
 

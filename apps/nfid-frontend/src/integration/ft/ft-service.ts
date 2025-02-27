@@ -58,9 +58,21 @@ export class FtService {
           (canister) => canister.ledger === ICP_CANISTER_ID,
         )
 
+        const nfidw = canisters.find(
+          (canister) => canister.ledger === NFIDW_CANISTER_ID,
+        )
+
         if (!icp || icp.state === State.Inactive) {
           await icrc1RegistryService.storeICRC1Canister(
             ICP_CANISTER_ID,
+            State.Active,
+          )
+          canisters = await icrc1StorageService.getICRC1Canisters(userId)
+        }
+
+        if (!nfidw || nfidw.state === State.Inactive) {
+          await icrc1RegistryService.storeICRC1Canister(
+            NFIDW_CANISTER_ID,
             State.Active,
           )
           canisters = await icrc1StorageService.getICRC1Canisters(userId)

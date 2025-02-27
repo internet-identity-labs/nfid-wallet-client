@@ -141,7 +141,7 @@
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #edfffd 0%, #8bffdc 100%);
+  background: linear-gradient(90deg, #edfffd 0%, 62FCE0 100%);
   color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
@@ -195,7 +195,8 @@
 }
 
 h1,
-h2 {
+h2,
+h4 {
   font-family: "Poppins", sans-serif !important;
   font-weight: 700;
   font-style: normal;

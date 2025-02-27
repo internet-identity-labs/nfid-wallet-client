@@ -345,6 +345,21 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
+      case state.matches("SignUpWithEmail"):
+        return (
+          <motion.div
+            key="EmailAuthentication"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthEmailFlowCoordinator
+              isIdentityKit={isIdentityKit}
+              actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
+            />
+          </motion.div>
+        )
       case state.matches("EmailAuthentication"):
         return (
           <motion.div

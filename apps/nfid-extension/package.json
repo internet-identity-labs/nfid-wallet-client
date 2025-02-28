@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "start": "npx vite --mode development",
+    "build": "BUILD_PATH=../../dist/apps/nfid-extension/ npx vite build",
+    "test:dev": "npx jest --passWithNoTests --watch --detectOpenHandles",
+    "test:dev:silent": "yarn test:dev --silent=true",
+    "test": "npx jest --passWithNoTests --silent=true",
+    "serve": "npm start"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

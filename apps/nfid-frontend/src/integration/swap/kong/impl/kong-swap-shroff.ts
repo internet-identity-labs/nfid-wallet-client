@@ -229,15 +229,24 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   ): Promise<string[] | undefined> {
     const result = await this.actor.pools([source])
 
-    //console.log(result)
-
     if ("Ok" in result) {
       const tokenAddresses = new Set(
         tokens.map((token) => token.getTokenAddress()),
       )
+
       return result.Ok.pools
-        .filter((pool) => tokenAddresses.has(pool.address_0))
-        .map((pool) => pool.address_0)
+        .filter(
+          (pool) =>
+            tokenAddresses.has(pool.address_0) ||
+            tokenAddresses.has(pool.address_1),
+        )
+        .map((pool) => {
+          const addresses = []
+          if (tokenAddresses.has(pool.address_0)) addresses.push(pool.address_0)
+          if (tokenAddresses.has(pool.address_1)) addresses.push(pool.address_1)
+          return addresses
+        })
+        .flat()
     }
   }
 

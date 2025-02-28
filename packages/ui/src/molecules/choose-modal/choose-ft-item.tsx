@@ -11,16 +11,24 @@ import { Skeleton } from "../../atoms/skeleton"
 
 interface IChooseFtItem {
   token: FT
+  isSwapTo?: boolean
 }
 
-export const ChooseFtItem = ({ token }: IChooseFtItem) => {
+export const ChooseFtItem = ({ token, isSwapTo }: IChooseFtItem) => {
   return (
     <div
       id={trimConcat("choose_option_", token.getTokenSymbol())}
       className={clsx(
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
-        "py-2.5 cursor-pointer h-[60px]",
+        "py-2.5 h-[60px]",
+        !isSwapTo
+          ? token.getIsSwappableFrom()
+            ? "cursor-pointer"
+            : "cursor-not-allowed"
+          : token.getIsSwappableTo()
+          ? "cursor-pointer"
+          : "cursor-not-allowed",
       )}
     >
       <div className="flex items-center h-[28px]">
@@ -33,11 +41,21 @@ export const ChooseFtItem = ({ token }: IChooseFtItem) => {
             src={token.getTokenLogo() || "#"}
             className={clsx(
               "mr-[18px] w-[28px] h-[28px] object-cover rounded-full",
+              isSwapTo
+                ? !token.getIsSwappableTo() && "grayscale"
+                : !token.getIsSwappableFrom() && "grayscale",
             )}
           />
         )}
         <div>
-          <p className="text-sm mb-0.5 flex items-center space-x-1">
+          <p
+            className={clsx(
+              "text-sm mb-0.5 flex items-center space-x-1",
+              isSwapTo
+                ? !token.getIsSwappableTo() && "text-gray-400"
+                : !token.getIsSwappableFrom() && "text-gray-400",
+            )}
+          >
             <span className="font-semibold">{token.getTokenSymbol()}</span>
           </p>
           <p className="text-xs text-left text-gray-400">
@@ -46,7 +64,13 @@ export const ChooseFtItem = ({ token }: IChooseFtItem) => {
         </div>
       </div>
       {token.isInited() ? (
-        <div>
+        <div
+          className={clsx(
+            isSwapTo
+              ? !token.getIsSwappableTo() && "text-gray-400"
+              : !token.getIsSwappableFrom() && "text-gray-400",
+          )}
+        >
           <p className="text-sm text-right">{`${
             token.getTokenBalanceFormatted() || "0"
           } ${token.getTokenSymbol()}`}</p>

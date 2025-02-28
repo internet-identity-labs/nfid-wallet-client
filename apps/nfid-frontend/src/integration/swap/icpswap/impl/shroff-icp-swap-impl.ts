@@ -87,31 +87,33 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
   ): Promise<string[] | undefined> {
     const result = await icpSwapService.getPools()
 
-    // if ("Ok" in result) {
-    //   const tokenAddresses = new Set(
-    //     tokens.map((token) => token.getTokenAddress()),
-    //   )
-    //   return result.Ok.pools
-    //     .filter((pool) => tokenAddresses.has(pool.address_0))
-    //     .map((pool) => pool.address_0)
-    // }
-
     if ("ok" in result) {
       const tokenAddresses = new Set(
         tokens.map((token) => token.getTokenAddress()),
       )
+
       const pools = result.ok.filter(
         (pool) =>
           pool.token0.address === source || pool.token1.address === source,
       )
-      console.log("pools", pools)
-      return pools
-        .filter(
-          (pool) =>
-            tokenAddresses.has(pool.token0.address) ||
-            tokenAddresses.has(pool.token1.address),
-        )
-        .map((pool) => pool.token0.address || pool.token1.address)
+
+      const filteredPools = pools.filter(
+        (pool) =>
+          tokenAddresses.has(pool.token0.address) ||
+          tokenAddresses.has(pool.token1.address),
+      )
+      const uniqueAvailablePools = new Set<string>()
+
+      filteredPools.forEach((pool) => {
+        if (tokenAddresses.has(pool.token0.address)) {
+          uniqueAvailablePools.add(pool.token0.address)
+        }
+        if (tokenAddresses.has(pool.token1.address)) {
+          uniqueAvailablePools.add(pool.token1.address)
+        }
+      })
+
+      return Array.from(uniqueAvailablePools)
     }
   }
 

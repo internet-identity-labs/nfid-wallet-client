@@ -28,6 +28,8 @@ export class FTImpl implements FT {
   private decimals: number
   private fee: bigint
   private inited: boolean
+  private isSwappableTo: boolean
+  private isSwappableFrom: boolean
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -40,6 +42,8 @@ export class FTImpl implements FT {
     this.fee = icrc1Token.fee
     this.tokenState = icrc1Token.state
     this.inited = false
+    this.isSwappableTo = true
+    this.isSwappableFrom = true
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
@@ -74,6 +78,22 @@ export class FTImpl implements FT {
     }
 
     return this
+  }
+
+  setIsSwappableTo(value: boolean) {
+    this.isSwappableTo = value
+  }
+
+  getIsSwappableTo() {
+    return this.isSwappableTo
+  }
+
+  setIsSwappableFrom(value: boolean) {
+    this.isSwappableFrom = value
+  }
+
+  getIsSwappableFrom() {
+    return this.isSwappableFrom
   }
 
   getBlockExplorerLink(): string {

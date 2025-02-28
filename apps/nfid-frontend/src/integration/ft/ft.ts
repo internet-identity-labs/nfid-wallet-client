@@ -10,6 +10,14 @@ export interface FT {
 
   getTokenName(): string
 
+  getIsSwappableTo(): boolean
+
+  setIsSwappableTo(value: boolean): void
+
+  getIsSwappableFrom(): boolean
+
+  setIsSwappableFrom(value: boolean): void
+
   getTokenCategory(): Category
 
   getTokenCategoryFormatted(): string

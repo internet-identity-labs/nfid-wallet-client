@@ -98,6 +98,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               tokens={tokens}
               title="Swap to"
               onSelect={setToChosenToken}
+              isSwapTo={true}
               trigger={
                 <div
                   id={`targetToken_${token.getTokenName()}_${token.getTokenAddress()}`}

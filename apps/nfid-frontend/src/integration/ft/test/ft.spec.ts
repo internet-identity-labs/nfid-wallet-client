@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
-import { filterTokens, ftService } from "src/integration/ft/ft-service"
+import { ftService } from "src/integration/ft/ft-service"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
@@ -83,7 +83,7 @@ describe("ft test suite", () => {
       )
       expect(icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
 
-      const filteredResult = filterTokens(result, "CHAT")
+      const filteredResult = ftService.filterTokens(result, "CHAT")
       expect(filteredResult.length).toEqual(1)
 
       expect(result[0].getTokenName()).toEqual("Internet Computer")

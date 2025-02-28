@@ -229,7 +229,7 @@ const HomeContent = ({
         style={{
           background:
             window.screen.width > 767
-              ? "radial-gradient(at right top, #4EAE8A, #12312B 50%, #0B201D 80%)"
+              ? "radial-gradient(at right top, #4faf8b, #194039 40%, #0b1f1c 80%)"
               : "",
           backgroundSize: "cover",
           backgroundPosition: "center bottom",
@@ -245,10 +245,10 @@ const HomeContent = ({
           />
         </div>
         <div className="text-center mb-[60px] lg:mb-[100px]">
-          <h4 className="leading-[120%] md:text-[42px] text-[32px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+          <h4 className="leading-[120%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
             NFID puts ICP on easy mode
           </h4>
-          <h5 className="text-base md:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
+          <h5 className="text-[18px] lg:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
             Navigate the ICP network’s tokens, NFTs, and apps with peace of
             mind.
           </h5>
@@ -261,7 +261,7 @@ const HomeContent = ({
             )}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pl-0 lg:px-0">
-              <p className="font-light text-teal-400">1/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">1/4</p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Instantly swap at the best price, send, and receive tokens
               </h2>
@@ -300,7 +300,7 @@ const HomeContent = ({
             )}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pr-0 lg:px-0">
-              <p className="font-light text-teal-400">2/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">2/4</p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Securely manage your entire ICP portfolio
               </h2>
@@ -338,7 +338,7 @@ const HomeContent = ({
             )}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pl-0 lg:px-0">
-              <p className="font-light text-teal-400">3/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">3/4</p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Connect to the ICP ecosystem of dapps
               </h2>
@@ -359,7 +359,7 @@ const HomeContent = ({
             className={clsx("flex-col-reverse sm:!flex-row !flex", section2)}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] max-w-[520px] px-5 sm:pr-0 lg:px-0">
-              <p className="font-light text-teal-400">4/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">4/4</p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Eliminate anxiety with transaction reviews
               </h2>
@@ -398,7 +398,7 @@ const HomeContent = ({
               <h2 className="font-bold text-[18px] lg:text-[32px] leading-[140%] text-white mb-[25px]">
                 ICP’s safest wallet
               </h2>
-              <h3 className="text-white mb-[25px] text-[16px]">
+              <h3 className="text-white mb-[25px] text-[14px] lg:text-[18px]">
                 <span className="block mb-[15px]">
                   NFID Wallet is the only open-source, 3rd-party audited wallet
                   on ICP, and the only project with an all-green audit.
@@ -411,7 +411,7 @@ const HomeContent = ({
               href="https://internet-identity-labs.github.io/nfid-wallet-docs/solidstate_nfid_wallet_audit_report.pdf"
               rel="noreferrer"
               target="_blank"
-              className="flex items-center text-teal-300 hover:text-teal-500"
+              className="flex items-center text-teal-300 hover:text-teal-500 text-[14px] lg:text-[18px]"
             >
               View audit report <LinkIcon className="ms-1" />
             </a>
@@ -426,7 +426,7 @@ const HomeContent = ({
         style={{
           background:
             window.screen.width > 767
-              ? "radial-gradient(at right top, #4EAE8A, #12312B 50%, #0B201D 80%)"
+              ? "radial-gradient(at right top, #4faf8b, #194039 40%, #0b1f1c 80%)"
               : "",
           backgroundSize: "cover",
           backgroundPosition: "center bottom",
@@ -435,10 +435,10 @@ const HomeContent = ({
         }}
       >
         <div className="text-center mb-[60px] lg:mb-[100px]">
-          <h4 className="leading-[120%] md:text-[42px] text-[32px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+          <h4 className="leading-[120%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
             An evolution in self-sovereign wallets
           </h4>
-          <h5 className="text-base md:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
+          <h5 className="text-[18px] lg:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
             The three characteristics that make NFID Wallet stand out in the
             Web3 wallet crowd.
           </h5>
@@ -446,11 +446,11 @@ const HomeContent = ({
         <div className="space-y-20 md:space-y-[100px] z-20 relative md:w-full md:max-w-[1070px] mx-auto">
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400">1/3</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">1/3</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Access from anywhere without a phishable recovery phrase
               </h2>
-              <h3 className="text-sm md:text-lg text-[teal-100]">
+              <h3 className="text-sm md:text-lg text-teal-100">
                 Manage your wallet from any browser on any device by logging in
                 with your password or biometric unlock. No complicated setups or
                 recovery flows required.
@@ -465,11 +465,11 @@ const HomeContent = ({
           </div>
           <div className={clsx(section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400">2/3</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">2/3</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Never become one of those “I lost my seed phrase” victims
               </h2>
-              <h3 className="text-sm md:text-lg text-[teal-100]">
+              <h3 className="text-sm md:text-lg text-teal-100">
                 Seed phrases have been the cause of trillions of dollars in
                 crypto losses. Get the benefits of self-custody without them.
               </h3>
@@ -483,11 +483,11 @@ const HomeContent = ({
           </div>
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400">3/3</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">3/3</p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Earn $NFIDW rewards for participating in governance
               </h2>
-              <h3 className="text-sm md:text-lg text-[teal-100]">
+              <h3 className="text-sm md:text-lg text-teal-100">
                 While every other Web3 wallet generates profits for the
                 corporations that built them, NFID Wallet is the only one whose
                 stakeholders—you—are rewarded for participating.
@@ -504,10 +504,10 @@ const HomeContent = ({
       </Container>
       <Container className="mt-[70px] md:mt-[165px]">
         <div className="text-center">
-          <h4 className="leading-[120%] md:text-[42px] text-[32px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+          <h4 className="leading-[120%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
             Security isn’t a feature. It’s the foundation.
           </h4>
-          <h5 className="text-base md:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
+          <h5 className="text-[18px] lg:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
             Breakthroughs in cryptography make owning a self-sovereign digital
             identity easier than ever before.
           </h5>

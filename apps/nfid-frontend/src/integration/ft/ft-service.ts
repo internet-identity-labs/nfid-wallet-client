@@ -21,11 +21,33 @@ export class FtService {
           (canister) => canister.ledger === ICP_CANISTER_ID,
         )
 
+        const nfidw = canisters.find(
+          (canister) => canister.ledger === NFIDW_CANISTER_ID,
+        )
+
+        const updatePromises = []
+
         if (!icp || icp.state === State.Inactive) {
-          await icrc1RegistryService.storeICRC1Canister(
-            ICP_CANISTER_ID,
-            State.Active,
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              ICP_CANISTER_ID,
+              State.Active,
+            ),
           )
+        }
+
+        if (!nfidw || nfidw.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              NFIDW_CANISTER_ID,
+              State.Active,
+            ),
+          )
+        }
+
+        await Promise.all(updatePromises)
+
+        if (updatePromises.length > 0) {
           canisters = await icrc1StorageService.getICRC1Canisters(userId)
         }
 

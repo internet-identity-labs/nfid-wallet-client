@@ -19,7 +19,7 @@ const buttonStyle = {
   secondary:
     "component border-white bg-[#FFEBFD1A] hover:bg-[#FFEBFD40] active:bg-[#FFEBFD1A] active:opacity-50 text-white",
   outline:
-    "component border-black text-black bg-transparent hover:bg-gray-700 hover:border-gray-700 hover:text-white active:text-white active:bg-black active:border-black dark:border-white dark:hover:border-white dark:hover:bg-white dark:hover:text-black dark:active:border-gray-300 dark:active:bg-gray-300 dark:active:text-black dark:text-white",
+    "component border-white text-white bg-transparent hover:bg-white hover:text-black active:text-black active:bg-gray-300 active:border-gray-300",
 }
 
 const getButtonClassName = ({

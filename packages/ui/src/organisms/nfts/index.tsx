@@ -142,7 +142,7 @@ export const NFTs: FC<INFTs> = ({
                       <ImageWithFallback
                         alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
                         fallbackSrc={IconNftPlaceholder}
-                        src={nft.getAssetPreview()?.url}
+                        src={nft.getError() ? "#" : nft.getAssetPreview()?.url}
                         className={clsx(
                           `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
                         )}
@@ -174,15 +174,17 @@ export const NFTs: FC<INFTs> = ({
                     )}
                   </td>
                   <td>
-                    <div
-                      className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onTransferNFT(nft.getTokenId())
-                      }}
-                    >
-                      <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
-                    </div>
+                    {!nft.getError() && (
+                      <div
+                        className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onTransferNFT(nft.getTokenId())
+                        }}
+                      >
+                        <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
+                      </div>
+                    )}
                   </td>
                 </tr>
               )

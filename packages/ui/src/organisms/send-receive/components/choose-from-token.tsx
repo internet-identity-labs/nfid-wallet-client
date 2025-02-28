@@ -18,6 +18,7 @@ import { validateTransferAmountField } from "@nfid-frontend/utils"
 import { E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { useTokenInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
@@ -32,6 +33,7 @@ interface ChooseFromTokenProps {
   isSwap?: boolean
   rebuildLayout?: boolean
   setRebuildLayout?: (v: boolean) => void
+  tokensAvailableToSwap: TokensAvailableToSwap
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -44,6 +46,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isSwap = false,
   rebuildLayout,
   setRebuildLayout,
+  tokensAvailableToSwap,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState("")
 
@@ -159,6 +162,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                 <IconCmpArrowRight className="ml-auto" />
               </div>
             }
+            tokensAvailableToSwap={tokensAvailableToSwap}
           />
         </div>
         <div className="flex-[0_0_100%]"></div>

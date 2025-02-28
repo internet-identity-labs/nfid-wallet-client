@@ -91,25 +91,20 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
       const tokenAddresses = new Set(
         tokens.map((token) => token.getTokenAddress()),
       )
-
-      const pools = result.ok.filter(
-        (pool) =>
-          pool.token0.address === source || pool.token1.address === source,
-      )
-
-      const filteredPools = pools.filter(
-        (pool) =>
-          tokenAddresses.has(pool.token0.address) ||
-          tokenAddresses.has(pool.token1.address),
-      )
       const uniqueAvailablePools = new Set<string>()
 
-      filteredPools.forEach((pool) => {
-        if (tokenAddresses.has(pool.token0.address)) {
-          uniqueAvailablePools.add(pool.token0.address)
-        }
-        if (tokenAddresses.has(pool.token1.address)) {
-          uniqueAvailablePools.add(pool.token1.address)
+      result.ok.forEach((pool) => {
+        if (
+          (pool.token0.address === source || pool.token1.address === source) &&
+          (tokenAddresses.has(pool.token0.address) ||
+            tokenAddresses.has(pool.token1.address))
+        ) {
+          if (tokenAddresses.has(pool.token0.address)) {
+            uniqueAvailablePools.add(pool.token0.address)
+          }
+          if (tokenAddresses.has(pool.token1.address)) {
+            uniqueAvailablePools.add(pool.token1.address)
+          }
         }
       })
 

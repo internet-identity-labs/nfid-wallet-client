@@ -10,6 +10,10 @@ import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
+import { swapService } from "frontend/integration/swap/service/swap-service"
+import { Shroff } from "frontend/integration/swap/shroff"
+import { SwapName } from "frontend/integration/swap/types/enums"
+
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
 
@@ -536,6 +540,77 @@ describe("ft test suite", () => {
         principal,
       )
       expect(filteredTokens.length).toEqual(1)
+    })
+
+    it("should highlight the available tokens to swap", async () => {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValueOnce([
+          {
+            ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
+            name: "Chat",
+            symbol: "CHAT",
+            logo: "Some logo",
+            index: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            state: "Active",
+            category: "Unknown",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            name: "A first letter",
+            symbol: "A first letter",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Inactive",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+        ])
+
+      const tokens: FT[] = await ftService.getTokens(userId)
+
+      const providers = await swapService.getSwapProviders(
+        "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        NFIDW_CANISTER_ID,
+      )
+
+      const result = await ftService.getTokensAvailableToSwap(
+        "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        NFIDW_CANISTER_ID,
+        providers,
+        tokens,
+      )
+
+      expect(result).toEqual({
+        to: [
+          "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "2ouva-viaaa-aaaaq-aaamq-cai",
+          NFIDW_CANISTER_ID,
+        ],
+        from: [NFIDW_CANISTER_ID, "ryjl3-tyaaa-aaaaa-aaaba-cai"],
+      })
     })
   })
 })

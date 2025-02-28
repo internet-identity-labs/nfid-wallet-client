@@ -22,6 +22,10 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
+import {
+  ftService,
+  TokensAvailableToSwap,
+} from "frontend/integration/ft/ft-service"
 import { swapService } from "frontend/integration/swap/service/swap-service"
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 
@@ -57,8 +61,8 @@ export const SwapFT = ({
   const [swapProviders, setSwapProviders] = useState<
     Map<SwapName, Shroff | undefined>
   >(new Map())
-  const [availableTokensTo, setAvailableTokensTo] = useState<string[]>([])
-  const [availableTokensFrom, setAvailableTokensFrom] = useState<string[]>([])
+  const [tokensAvailableToSwap, setTokensAvailableToSwap] =
+    useState<TokensAvailableToSwap>({ to: [], from: [] })
   const [shroff, setShroff] = useState<Shroff | undefined>()
   const [isShroffLoading, setIsShroffLoading] = useState(true)
   const [swapStep, setSwapStep] = useState<SwapStage>(0)
@@ -92,23 +96,19 @@ export const SwapFT = ({
   )
 
   const activeTokens = useMemo(() => {
-    const activeTokens = tokens
-      .filter((token: FT) => token.getTokenState() === State.Active)
-      .map((token: FT) => {
-        const isSwappableFrom = availableTokensFrom.includes(
-          token.getTokenAddress(),
-        )
-        token.setIsSwappableFrom(isSwappableFrom)
-        return token
-      })
+    const activeTokens = tokens.filter(
+      (token: FT) => token.getTokenState() === State.Active,
+    )
+
     if (!hideZeroBalance) return activeTokens
+
     const tokensWithBalance = activeTokens.filter(
       (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
     return tokensWithBalance
-  }, [tokens, hideZeroBalance, availableTokensFrom])
+  }, [tokens, hideZeroBalance])
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
@@ -127,16 +127,10 @@ export const SwapFT = ({
   }, [toTokenAddress, tokens])
 
   const filteredAllTokens = useMemo(() => {
-    return tokens
-      .map((token: FT) => {
-        const isSwappableTo = availableTokensTo.includes(
-          token.getTokenAddress(),
-        )
-        token.setIsSwappableTo(isSwappableTo)
-        return token
-      })
-      .filter((token) => token.getTokenAddress() !== fromTokenAddress)
-  }, [fromTokenAddress, tokens, availableTokensTo])
+    return tokens.filter(
+      (token) => token.getTokenAddress() !== fromTokenAddress,
+    )
+  }, [fromTokenAddress, tokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -170,38 +164,19 @@ export const SwapFT = ({
 
   const getProviders = useCallback(async () => {
     try {
-      setAvailableTokensTo([])
-      setAvailableTokensFrom([])
       const providers = await swapService.getSwapProviders(
         fromTokenAddress,
         toTokenAddress,
       )
 
-      const resultTo = await Promise.all(
-        Array.from(providers.values())
-          .filter((provider): provider is Shroff => provider !== undefined)
-          .map(async (provider) => {
-            return (
-              (await provider.getAvailablePools(fromTokenAddress, tokens)) ?? []
-            )
-          }),
+      const tokensAvailableToSwap = await ftService.getTokensAvailableToSwap(
+        fromTokenAddress,
+        toTokenAddress,
+        providers,
+        tokens,
       )
 
-      const resultFrom = await Promise.all(
-        Array.from(providers.values())
-          .filter((provider): provider is Shroff => provider !== undefined)
-          .map(async (provider) => {
-            return (
-              (await provider.getAvailablePools(toTokenAddress, tokens)) ?? []
-            )
-          }),
-      )
-
-      const availableTokensToSwap = Array.from(new Set(resultTo.flat()))
-      const availableTokensFromSwap = Array.from(new Set(resultFrom.flat()))
-
-      setAvailableTokensTo(availableTokensToSwap)
-      setAvailableTokensFrom(availableTokensFromSwap)
+      setTokensAvailableToSwap(tokensAvailableToSwap)
       setSwapProviders(providers)
       setLiquidityError(undefined)
       setProviderError(undefined)
@@ -391,6 +366,7 @@ export const SwapFT = ({
         swapProviders={swapProviders}
         shroff={shroff}
         setProvider={setShroff}
+        tokensAvailableToSwap={tokensAvailableToSwap}
       />
     </FormProvider>
   )

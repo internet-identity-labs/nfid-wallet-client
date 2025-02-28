@@ -1,9 +1,9 @@
 import { clsx } from "clsx"
-import { useEffect, useState } from "react"
 
 import { trimConcat } from "@nfid-frontend/utils"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
@@ -12,9 +12,14 @@ import { Skeleton } from "../../atoms/skeleton"
 interface IChooseFtItem {
   token: FT
   isSwapTo?: boolean
+  tokensAvailableToSwap: TokensAvailableToSwap
 }
 
-export const ChooseFtItem = ({ token, isSwapTo }: IChooseFtItem) => {
+export const ChooseFtItem = ({
+  token,
+  isSwapTo,
+  tokensAvailableToSwap,
+}: IChooseFtItem) => {
   return (
     <div
       id={trimConcat("choose_option_", token.getTokenSymbol())}
@@ -22,11 +27,11 @@ export const ChooseFtItem = ({ token, isSwapTo }: IChooseFtItem) => {
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
         "py-2.5 h-[60px]",
-        !isSwapTo
-          ? token.getIsSwappableFrom()
-            ? "cursor-pointer"
-            : "cursor-not-allowed"
-          : token.getIsSwappableTo()
+        (
+          isSwapTo
+            ? tokensAvailableToSwap.to.includes(token.getTokenAddress())
+            : tokensAvailableToSwap.from.includes(token.getTokenAddress())
+        )
           ? "cursor-pointer"
           : "cursor-not-allowed",
       )}
@@ -41,9 +46,11 @@ export const ChooseFtItem = ({ token, isSwapTo }: IChooseFtItem) => {
             src={token.getTokenLogo() || "#"}
             className={clsx(
               "mr-[18px] w-[28px] h-[28px] object-cover rounded-full",
-              isSwapTo
-                ? !token.getIsSwappableTo() && "grayscale"
-                : !token.getIsSwappableFrom() && "grayscale",
+              (isSwapTo
+                ? !tokensAvailableToSwap.to.includes(token.getTokenAddress())
+                : !tokensAvailableToSwap.from.includes(
+                    token.getTokenAddress(),
+                  )) && "grayscale opacity-40",
             )}
           />
         )}
@@ -51,9 +58,11 @@ export const ChooseFtItem = ({ token, isSwapTo }: IChooseFtItem) => {
           <p
             className={clsx(
               "text-sm mb-0.5 flex items-center space-x-1",
-              isSwapTo
-                ? !token.getIsSwappableTo() && "text-gray-400"
-                : !token.getIsSwappableFrom() && "text-gray-400",
+              (isSwapTo
+                ? !tokensAvailableToSwap.to.includes(token.getTokenAddress())
+                : !tokensAvailableToSwap.from.includes(
+                    token.getTokenAddress(),
+                  )) && "text-gray-400",
             )}
           >
             <span className="font-semibold">{token.getTokenSymbol()}</span>
@@ -67,8 +76,9 @@ export const ChooseFtItem = ({ token, isSwapTo }: IChooseFtItem) => {
         <div
           className={clsx(
             isSwapTo
-              ? !token.getIsSwappableTo() && "text-gray-400"
-              : !token.getIsSwappableFrom() && "text-gray-400",
+              ? !tokensAvailableToSwap.to.includes(token.getTokenAddress())
+              : !tokensAvailableToSwap.from.includes(token.getTokenAddress()),
+            "text-gray-400",
           )}
         >
           <p className="text-sm text-right">{`${

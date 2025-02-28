@@ -14,6 +14,7 @@ import { PriceImpact } from "src/integration/swap/types/types"
 import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { useTokenInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
@@ -28,6 +29,7 @@ interface ChooseToTokenProps {
   priceImpact?: PriceImpact
   rebuildLayout: boolean
   setRebuildLayout: (v: boolean) => void
+  tokensAvailableToSwap: TokensAvailableToSwap
 }
 
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
@@ -40,6 +42,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   priceImpact,
   rebuildLayout,
   setRebuildLayout,
+  tokensAvailableToSwap,
 }) => {
   const { setValue, register } = useFormContext()
 
@@ -116,6 +119,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                   <IconCmpArrowRight className="ml-auto" />
                 </div>
               }
+              tokensAvailableToSwap={tokensAvailableToSwap}
             />
           </div>
           <div className="flex-[0_0_100%]"></div>

@@ -1,5 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { nftService } from "src/integration/nft/nft-service"
@@ -11,6 +13,14 @@ import {
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
+
+import { Shroff } from "../swap/shroff"
+import { SwapName } from "../swap/types/enums"
+
+export interface TokensAvailableToSwap {
+  to: string[]
+  from: string[]
+}
 
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
@@ -54,6 +64,40 @@ export class FtService {
         const ft = canisters.map((canister) => new FTImpl(canister))
         return this.sortTokens(ft)
       })
+  }
+
+  @Cache(integrationCache, { ttl: 300 })
+  async getTokensAvailableToSwap(
+    sourceToken: string,
+    targetToken: string,
+    providers: Map<SwapName, Shroff | undefined>,
+    tokens: FT[],
+  ): Promise<TokensAvailableToSwap> {
+    const promiseTo = Promise.all(
+      Array.from(providers.values())
+        .filter((provider): provider is Shroff => provider !== undefined)
+        .map(async (provider) => {
+          return (await provider.getAvailablePools(sourceToken, tokens)) ?? []
+        }),
+    )
+
+    const promiseFrom = Promise.all(
+      Array.from(providers.values())
+        .filter((provider): provider is Shroff => provider !== undefined)
+        .map(async (provider) => {
+          return (await provider.getAvailablePools(targetToken, tokens)) ?? []
+        }),
+    )
+
+    const [resultTo, resultFrom] = await Promise.all([promiseTo, promiseFrom])
+
+    const availableTokensToSwap = Array.from(new Set(resultTo.flat()))
+    const availableTokensFromSwap = Array.from(new Set(resultFrom.flat()))
+
+    return {
+      to: availableTokensToSwap,
+      from: availableTokensFromSwap,
+    }
   }
 
   async filterNotActiveNotZeroBalancesTokens(

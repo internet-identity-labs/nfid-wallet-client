@@ -17,6 +17,7 @@ import { IconCmpArrow } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { FTImpl } from "frontend/integration/ft/impl/ft-impl"
 import { NFT } from "frontend/integration/nft/nft"
 
@@ -31,8 +32,13 @@ export interface IChooseTokenModal<T> {
   title: string
   trigger?: JSX.Element
   filterTokensBySearchInput: (token: T, searchInput: string) => boolean
-  renderItem: ElementType<{ token: T; isSwapTo?: boolean }>
+  renderItem: ElementType<{
+    token: T
+    isSwapTo?: boolean
+    tokensAvailableToSwap: TokensAvailableToSwap
+  }>
   isSwapTo?: boolean
+  tokensAvailableToSwap: TokensAvailableToSwap
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -44,6 +50,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   filterTokensBySearchInput,
   renderItem: ChooseItem,
   isSwapTo,
+  tokensAvailableToSwap,
 }: IChooseTokenModal<T>) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -119,13 +126,16 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   const handleSelect = useCallback(
     (token: T) => {
       if (token instanceof FTImpl) {
-        if (!token.getIsSwappableTo() && isSwapTo) return
-        if (!token.getIsSwappableFrom() && !isSwapTo) return
+        const isSwappable = isSwapTo
+          ? tokensAvailableToSwap.to.includes(token.getTokenAddress())
+          : tokensAvailableToSwap.from.includes(token.getTokenAddress())
+
+        if (!isSwappable) return
       }
-      onSelect && onSelect(token)
+      onSelect?.(token)
       setIsModalVisible(false)
     },
-    [onSelect],
+    [onSelect, tokensAvailableToSwap, isSwapTo],
   )
 
   return (
@@ -195,7 +205,11 @@ export const ChooseTokenModal = <T extends FT | NFT>({
                 onClick={() => handleSelect(token)}
                 key={`${token.getTokenName()}_${index}`}
               >
-                <ChooseItem token={token} isSwapTo={isSwapTo} />
+                <ChooseItem
+                  token={token}
+                  isSwapTo={isSwapTo}
+                  tokensAvailableToSwap={tokensAvailableToSwap}
+                />
               </div>
             ))}
           </div>

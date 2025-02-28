@@ -1,8 +1,8 @@
 import {
   SellTransactionRecord,
   TransactionRecordView,
-} from "src/integration/nft/impl/nft-transaction-record"
-import { formatPrice } from "src/integration/nft/util/util"
+} from "frontend/integration/nft/impl/nft-transaction-record"
+import { formatPrice } from "frontend/integration/nft/util/util"
 
 export class TransactionRecordToniq implements SellTransactionRecord {
   private readonly from: string

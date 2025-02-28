@@ -1,5 +1,5 @@
 import { getBrowser } from "packages/utils/src"
-import React from "react"
+import React, { useEffect } from "react"
 
 import { CredentialResponse } from "./types"
 import useLoadGsiScript from "./useLoadGsiScript"
@@ -37,6 +37,24 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
     type: "standard",
     size: "large",
   })
+  useEffect(() => {
+    if (window.google) {
+      window.google?.accounts.id.initialize({
+        client_id: "1089802819081-4b1af2vqmhfjqs40khcl7575qors9fj7.apps.googleusercontent.com",
+        callback: onLogin,
+        itp_support: true,
+      })
+      if (buttonRef.current) {
+        window.google.accounts.id.renderButton(buttonRef.current, {
+          text: "continue_with",
+          shape: "rectangular",
+          theme: "outline",
+          type: "standard",
+          size: "large",
+        })
+      }
+    }
+  }, [onLogin, buttonRef])
 
   const onClick = React.useCallback(() => {
     let el: any

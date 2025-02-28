@@ -229,12 +229,12 @@ const HomeContent = ({
         style={{
           background:
             window.screen.width > 767
-              ? "radial-gradient(at right top, #4faf8b, #194039 40%, #0b1f1c 80%)"
+              ? "radial-gradient(at right top, rgb(0, 154, 119), rgb(0, 78, 68) 30%, rgb(3, 32, 28) 70%)"
               : "",
           backgroundSize: "cover",
           backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
-          backgroundColor: "#12312B",
+          backgroundColor: "rgb(18, 49, 43)",
         }}
       >
         <div className="absolute top-0 left-[50%] mt-[-40px] lg:mt-[-80px]">
@@ -245,7 +245,7 @@ const HomeContent = ({
           />
         </div>
         <div className="text-center mb-[60px] lg:mb-[100px]">
-          <h4 className="leading-[120%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+          <h4 className="leading-[130%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
             NFID puts ICP on easy mode
           </h4>
           <h5 className="text-[18px] lg:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
@@ -261,11 +261,13 @@ const HomeContent = ({
             )}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pl-0 lg:px-0">
-              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">1/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">
+                1/4
+              </p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Instantly swap at the best price, send, and receive tokens
               </h2>
-              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+              <h3 className="text-sm sm:text-[18px] text-teal-100 lg:leading-7">
                 Say goodbye to sub-optimal swap prices, high network fees and
                 slow transfer speeds. Swap, send, and receive tokens quickly for
                 less than $0.01.
@@ -300,11 +302,13 @@ const HomeContent = ({
             )}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pr-0 lg:px-0">
-              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">2/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">
+                2/4
+              </p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Securely manage your entire ICP portfolio
               </h2>
-              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+              <h3 className="text-sm sm:text-[18px] text-teal-100 lg:leading-7">
                 Track token prices in USD, sum up your NFT portfolio with floor
                 prices, and keep all your assets safe in NFID Wallet.
               </h3>
@@ -338,11 +342,13 @@ const HomeContent = ({
             )}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] px-5 sm:pl-0 lg:px-0">
-              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">3/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">
+                3/4
+              </p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Connect to the ICP ecosystem of dapps
               </h2>
-              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+              <h3 className="text-sm sm:text-[18px] text-teal-100 lg:leading-7">
                 Share your wallet address with apps that serve you and your
                 assets, or keep it hidden when you prefer to stay private.
               </h3>
@@ -359,11 +365,13 @@ const HomeContent = ({
             className={clsx("flex-col-reverse sm:!flex-row !flex", section2)}
           >
             <div className="text-xl sm:text-[24px] space-y-[28px] max-w-[520px] px-5 sm:pr-0 lg:px-0">
-              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">4/4</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">
+                4/4
+              </p>
               <h2 className="font-bold text-[20px] sm:text-[24px] lg:text-[32px] leading-[140%]">
                 Eliminate anxiety with transaction reviews
               </h2>
-              <h3 className="text-sm sm:text-[18px] text-teal-100 leading-7">
+              <h3 className="text-sm sm:text-[18px] text-teal-100 lg:leading-7">
                 Know what you're signing before it's too late, whether for
                 transfers, spending limits, or other smart contract calls.
               </h3>
@@ -426,16 +434,16 @@ const HomeContent = ({
         style={{
           background:
             window.screen.width > 767
-              ? "radial-gradient(at right top, #4faf8b, #194039 40%, #0b1f1c 80%)"
+              ? "radial-gradient(at right top, rgb(0, 154, 119), rgb(0, 78, 68) 30%, rgb(3, 32, 28) 70%)"
               : "",
           backgroundSize: "cover",
           backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
-          backgroundColor: "#12312B",
+          backgroundColor: "rgb(18, 49, 43)",
         }}
       >
         <div className="text-center mb-[60px] lg:mb-[100px]">
-          <h4 className="leading-[120%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+          <h4 className="leading-[130%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
             An evolution in self-sovereign wallets
           </h4>
           <h5 className="text-[18px] lg:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
@@ -446,7 +454,9 @@ const HomeContent = ({
         <div className="space-y-20 md:space-y-[100px] z-20 relative md:w-full md:max-w-[1070px] mx-auto">
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">1/3</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">
+                1/3
+              </p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Access from anywhere without a phishable recovery phrase
               </h2>
@@ -465,7 +475,9 @@ const HomeContent = ({
           </div>
           <div className={clsx(section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">2/3</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">
+                2/3
+              </p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Never become one of those “I lost my seed phrase” victims
               </h2>
@@ -483,7 +495,9 @@ const HomeContent = ({
           </div>
           <div className={clsx("flex-col lg:flex-row-reverse", section2)}>
             <div className="text-xl md:text-[28px] space-y-[28px] max-w-[520px] px-5 lg:px-0">
-              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">3/3</p>
+              <p className="font-light text-teal-400 lg:text-[28px] leading-[32px]">
+                3/3
+              </p>
               <h2 className="font-bold text-[20px] md:text-[28px] lg:text-[32px] leading-[140%]">
                 Earn $NFIDW rewards for participating in governance
               </h2>
@@ -504,7 +518,7 @@ const HomeContent = ({
       </Container>
       <Container className="mt-[70px] md:mt-[165px]">
         <div className="text-center">
-          <h4 className="leading-[120%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
+          <h4 className="leading-[130%] text-[32px] lg:text-[48px] font-bold tracking-[0.32px] md:tracking-[0.42px] gradient-text">
             Security isn’t a feature. It’s the foundation.
           </h4>
           <h5 className="text-[18px] lg:text-[22px] font-bold md:font-light tracking-[0.16px] md:tracking-[0.28px] leading-6 md:leading-8 max-w-[820px] mx-auto mt-[18px] text-gray-50">
@@ -595,7 +609,7 @@ const HomeContent = ({
           </div>
         </div>
       </Container>
-      <Container className="p-[20px] bg-opacity-40 lg:py-[40px] lg:px-[34px] bg-teal-900 rounded-[30px] my-[30px] lg:my-[100px]">
+      <Container className="p-[20px] bg-opacity-40 lg:py-[40px] lg:px-[34px] bg-[#112525] rounded-[30px] my-[30px] lg:my-[100px]">
         <InfoCopy
           text="$NFIDW Ledger Canister ID"
           value="mih44-vaaaa-aaaaq-aaekq-cai"

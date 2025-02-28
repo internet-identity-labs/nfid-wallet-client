@@ -26,8 +26,6 @@ export const ChooseFtModal = ({
   tokensAvailableToSwap,
 }: IChooseFtModal) => {
   const sortedTokens = useMemo(() => {
-    console.log(tokensAvailableToSwap)
-
     const getIsSwappable = (token: FT) =>
       isSwapTo
         ? tokensAvailableToSwap.to.includes(token.getTokenAddress())

@@ -43,7 +43,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
           <p className="gradient-text text-[34px] lg:text-[2.9rem] xl:text-[3.2rem] font-bold leading-[120%]">
             {isApproveRequestInProgress
               ? "Transaction request"
-              : "The easiest to use and hardest to lose wallet"}
+              : "The easiest to use, hardest to lose, and only wallet governed by a DAO"}
           </p>
           <p className="font-inter text-white text-[20px] lg:text-[1.4rem] mt-[2rem] leading-[140%]">
             {isApproveRequestInProgress

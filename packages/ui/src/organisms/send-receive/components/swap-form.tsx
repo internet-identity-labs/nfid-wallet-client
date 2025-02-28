@@ -104,6 +104,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           setFromChosenToken={setFromChosenToken}
           usdRate={quote?.getSourceAmountUSD()}
           tokens={tokens}
+          value={amount}
           title="Swap from"
           isSwap={true}
           rebuildLayout={rebuildFromLayout || rebuildToLayout}

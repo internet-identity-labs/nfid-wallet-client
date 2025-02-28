@@ -27,6 +27,7 @@ interface ChooseFromTokenProps {
   token: FT | undefined
   tokens: FT[]
   balance?: bigint | undefined
+  value?: string
   setFromChosenToken: (value: string) => void
   usdRate?: string
   title: string
@@ -40,6 +41,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   token,
   tokens,
   balance,
+  value,
   setFromChosenToken,
   usdRate = "0.00 USD",
   title,
@@ -48,7 +50,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   setRebuildLayout,
   tokensAvailableToSwap,
 }) => {
-  const [inputAmountValue, setInputAmountValue] = useState("")
+  const [inputAmountValue, setInputAmountValue] = useState(value || "")
 
   const initedToken = useTokenInit(token)
 

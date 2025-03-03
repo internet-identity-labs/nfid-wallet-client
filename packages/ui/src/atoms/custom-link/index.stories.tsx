@@ -1,37 +1,44 @@
 import { Meta, StoryFn } from "@storybook/react"
 
-import { CustomLink, CustomLinkProps } from "."
+import { A, AProps } from "."
 
 export default {
-  title: "Components/ExternalLink",
-  component: CustomLink,
+  title: "Components/A",
+  component: A,
   argTypes: {
-    link: { control: "text" },
-    text: { control: "text" },
-    id: { control: "text" },
-    classNames: { control: "text" },
-    withIcon: { control: "boolean" },
+    children: { control: "text" },
+    href: { control: "text" },
+    className: { control: "text" },
+    withGapBetweenChildren: { control: "boolean" },
+    onClick: { action: "clicked" },
   },
-} as Meta
+} as Meta<AProps>
 
-const Template: StoryFn<CustomLinkProps> = (args) => <CustomLink {...args} />
+const Template: StoryFn<AProps> = (args) => <A {...args} />
 
 export const Default = Template.bind({})
 Default.args = {
-  link: "https://example.com",
-  text: "Visit Example",
+  children: "Default Link",
+  href: "https://example.com",
 }
 
-export const WithIcon = Template.bind({})
-WithIcon.args = {
-  link: "https://example.com",
-  text: "Visit Example with Icon",
-  withIcon: true,
+export const WithGap = Template.bind({})
+WithGap.args = {
+  children: "Link with Gap",
+  href: "https://example.com",
+  withGapBetweenChildren: true,
 }
 
-export const CustomClassNames = Template.bind({})
-CustomClassNames.args = {
-  link: "https://example.com",
-  text: "Visit Custom Styled Example",
-  classNames: "text-blue-500 font-semibold",
+export const CustomStyles = Template.bind({})
+CustomStyles.args = {
+  children: "Custom Styled Link",
+  href: "https://example.com",
+  className: "text-red-500 font-bold",
+}
+
+export const Clickable = Template.bind({})
+Clickable.args = {
+  children: "Clickable Link",
+  href: "#",
+  onClick: () => console.log("Link clicked!"),
 }

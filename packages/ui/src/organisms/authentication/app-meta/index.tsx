@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { CustomLink } from "packages/ui/src/atoms/custom-link"
+import { A } from "packages/ui/src/atoms/custom-link"
 
 import { H5, LogoMain } from "@nfid-frontend/ui"
 
@@ -40,12 +40,9 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
         >
           <span className="text-center">
             {subTitle}{" "}
-            <CustomLink
-              text={applicationURL}
-              link={applicationURL}
-              rel="noreferrer"
-              isExternal
-            />
+            <A href={applicationURL} target="_blank" rel="noreferrer">
+              {applicationURL}
+            </A>
           </span>
         </div>
       )}

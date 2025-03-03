@@ -18,7 +18,7 @@ import {
 } from "frontend/integration/nft/impl/nft-types"
 import { NFT } from "frontend/integration/nft/nft"
 
-import { CustomLink } from "../../atoms/custom-link"
+import { A } from "../../atoms/custom-link"
 import ProfileContainer from "../../atoms/profile-container/Container"
 import { ModalComponent } from "../../molecules/modal/index-v0"
 
@@ -126,13 +126,14 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           >
             #{nft.getTokenNumber()}
           </p>
-          <CustomLink
-            link={nft.getCollectionMarketPlaceLink()}
-            text={nft.getCollectionName() || nft.getCollectionId()}
-            classNames="mb-[20px] font-bold leading-[24px]"
+          <A
+            href={nft.getCollectionMarketPlaceLink()}
+            className="mb-[20px] font-bold leading-[24px]"
             id={`nft_collection_${nft.getCollectionId()}`}
-            isExternal
-          />
+            target="_blank"
+          >
+            {nft.getCollectionName() || nft.getCollectionId()}{" "}
+          </A>
           <ProfileContainer
             title="Details"
             className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%]"
@@ -218,12 +219,14 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
                     View on a marketplace
                   </p>
-                  <CustomLink
-                    link={marketPlaceLink}
-                    text={marketPlaceLink}
-                    withIcon
-                    isExternal
-                  />
+                  <A
+                    href={marketPlaceLink}
+                    withGapBetweenChildren
+                    target="_blank"
+                  >
+                    {marketPlaceLink}
+                    <IconCmpExternalIcon className="mt-1" />
+                  </A>
                 </div>
               </>
             )}

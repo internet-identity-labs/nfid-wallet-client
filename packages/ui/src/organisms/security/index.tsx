@@ -4,7 +4,7 @@ import { FC } from "react"
 
 import { IconCmpWarning, Table } from "@nfid-frontend/ui"
 
-import { CustomLink } from "../../atoms/custom-link"
+import { A } from "../../atoms/custom-link"
 
 export interface SecurityProps {
   primarySignInElement: JSX.Element
@@ -81,11 +81,9 @@ export const Security: FC<SecurityProps> = ({
             <p className="text-sm text-orange-900">
               Please create a passkey on{" "}
               {showCreatePasskeyOnCanister && (
-                <CustomLink
-                  isExternal
-                  text={showCreatePasskeyOnCanister}
-                  link={showCreatePasskeyOnCanister}
-                />
+                <A href={showCreatePasskeyOnCanister} target="_blank">
+                  {showCreatePasskeyOnCanister}
+                </A>
               )}{" "}
               for additional security and URL access redundancy.
             </p>

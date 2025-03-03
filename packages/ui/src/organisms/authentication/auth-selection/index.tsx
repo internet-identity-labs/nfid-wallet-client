@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
-import { CustomLink } from "packages/ui/src/atoms/custom-link"
+import { A } from "packages/ui/src/atoms/custom-link"
 import { Separator } from "packages/ui/src/atoms/separator"
 import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -215,20 +215,30 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               {isSignIn ? (
                 <div className="mt-auto text-sm">
                   Don’t have an NFID Wallet?{" "}
-                  <CustomLink
-                    text="Sign up"
-                    onClick={onTypeChange}
-                    classNames="font-bold"
-                  />
+                  <A
+                    href={window.location.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onTypeChange()
+                    }}
+                    className="font-bold"
+                  >
+                    Sign up
+                  </A>
                 </div>
               ) : (
                 <div className="mt-auto text-sm">
                   Already have an NFID Wallet?{" "}
-                  <CustomLink
-                    text="Sign in"
-                    onClick={onTypeChange}
-                    classNames="font-bold"
-                  />
+                  <A
+                    href={window.location.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onTypeChange()
+                    }}
+                    className="font-bold"
+                  >
+                    Sign in
+                  </A>
                 </div>
               )}
             </div>

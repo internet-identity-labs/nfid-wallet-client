@@ -70,7 +70,7 @@ export const Security: FC<SecurityProps> = ({
         >
           {renderPasskeys()}
         </Table>
-        {true && (
+        {showCreatePasskeyOnCanister && (
           <div
             className={clsx(
               "px-4 sm:px-[30px] h-[64px] bg-warningBgColor rounded-[12px]",

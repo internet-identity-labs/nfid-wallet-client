@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 import { Id } from "react-toastify"
 import { Quote } from "src/integration/swap/quote"
@@ -40,6 +40,7 @@ export interface SwapFTFormProps {
   setSwapModal: (v: SwapModal) => void
   amount: string
   errors: FieldErrors<FieldValues>
+  isLayoutRebuilt?: (value: boolean) => void
 }
 
 export const SwapFTForm: FC<SwapFTFormProps> = ({
@@ -59,11 +60,17 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   setSwapModal,
   amount,
   errors,
+  isLayoutRebuilt,
 }) => {
   const [isChecked, setIsChecked] = useState(false)
   const [rebuildFromLayout, setRebuildFromLayout] = useState(false)
   const [rebuildToLayout, setRebuildToLayout] = useState(false)
   const priceImpact = quote?.getPriceImpact()
+
+  useEffect(() => {
+    if (!isLayoutRebuilt) return
+    isLayoutRebuilt(rebuildFromLayout || rebuildToLayout)
+  }, [rebuildFromLayout, rebuildToLayout])
 
   return (
     <div

@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import { motion, AnimatePresence } from "framer-motion"
 import { PropsWithChildren } from "react"
 
 export interface ITransferTemplate extends PropsWithChildren {
@@ -17,9 +16,9 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
   isOpen,
 }) => {
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
-        <motion.div
+        <div
           className={clsx(
             "transition ease-in-out delay-150 duration-300",
             "z-40 top-0 left-0 w-full h-screen",
@@ -28,12 +27,8 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
           )}
           style={{ margin: 0 }}
           onClick={onClickOutside}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
         >
-          <motion.div
+          <div
             className={clsx(
               "rounded-[24px] shadow-lg px-5 pb-5 pt-[18px] text-black overflow-hidden",
               "z-20 bg-white relative border border-gray-100",
@@ -42,15 +37,11 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
               className,
             )}
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
           >
             {children}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   )
 }

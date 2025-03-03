@@ -213,7 +213,7 @@ const AuthenticationMachine =
               },
               {
                 actions: "assignAuthSession",
-                target: "AuthSelection",
+                target: "AuthSelectionSignUp",
               },
             ],
           },
@@ -228,7 +228,7 @@ const AuthenticationMachine =
               verificationEmail: context?.verificationEmail,
             }),
             onDone: [
-              { cond: "isReturn", target: "AuthSelection" },
+              { cond: "isReturn", target: "AuthSelectionSignUp" },
               {
                 actions: "assignAuthSession",
                 target: "checkPasskeys",
@@ -300,15 +300,13 @@ const AuthenticationMachine =
                 cond: "showPasskeys",
                 target: "AddPasskeys",
               },
+              {
+                cond: (context) => !!context.shouldShowRecoveryEvery8th,
+                target: "checkRecovery8th",
+              },
+              { target: "End" },
             ],
           },
-          always: [
-            {
-              cond: (context) => !!context.shouldShowRecoveryEvery8th,
-              target: "checkRecovery8th",
-            },
-            { target: "End" },
-          ],
         },
         checkRecovery8th: {
           invoke: {
@@ -365,8 +363,12 @@ const AuthenticationMachine =
     {
       guards: {
         isExistingAccount: (_, event) => !!event?.data?.anchor,
-        isReturn: (_, event) => !event.data,
-        is2FAEnabled: (_, event) => !!event.data,
+        isReturn: (_, event) => {
+          return !event.data
+        },
+        is2FAEnabled: (_, event) => {
+          return !!event.data
+        },
         showPasskeys: (_, event) => {
           const showPasskeys = event.data?.showPasskeys
           if (showPasskeys === undefined) return true
@@ -379,8 +381,10 @@ const AuthenticationMachine =
         },
       },
       actions: {
-        setShouldCheckRecoveryEvery8th: assign({
-          shouldShowRecoveryEvery8th: true,
+        setShouldCheckRecoveryEvery8th: assign(() => {
+          return {
+            shouldShowRecoveryEvery8th: true,
+          }
         }),
         assignAuthSession: assign((_, event) => {
           return {

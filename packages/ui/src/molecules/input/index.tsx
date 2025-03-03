@@ -46,7 +46,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {labelText && (
           <Label
             className={clsx(
-              "text-xs",
+              "text-xs mb-1 inline-block",
               inputProps.disabled && "!text-secondary",
             )}
           >

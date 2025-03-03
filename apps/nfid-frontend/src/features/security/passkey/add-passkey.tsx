@@ -62,7 +62,7 @@ export const AddPasskey = ({
       <ModalComponent
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl flex flex-col !h-[600px] !min-h-[600px]"
+        className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl flex flex-col !h-[600px] !min-h-[600px] relative"
       >
         <BlurredLoader
           isLoading={isLoading}

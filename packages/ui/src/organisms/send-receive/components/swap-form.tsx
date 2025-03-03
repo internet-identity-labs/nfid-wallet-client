@@ -40,7 +40,8 @@ export interface SwapFTFormProps {
   setSwapModal: (v: SwapModal) => void
   amount: string
   errors: FieldErrors<FieldValues>
-  isLayoutRebuilt?: (value: boolean) => void
+  isResponsive?: boolean
+  setIsResponsive?: (value: boolean) => void
 }
 
 export const SwapFTForm: FC<SwapFTFormProps> = ({
@@ -60,17 +61,24 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   setSwapModal,
   amount,
   errors,
-  isLayoutRebuilt,
+  isResponsive,
+  setIsResponsive,
 }) => {
   const [isChecked, setIsChecked] = useState(false)
-  const [rebuildFromLayout, setRebuildFromLayout] = useState(false)
-  const [rebuildToLayout, setRebuildToLayout] = useState(false)
   const priceImpact = quote?.getPriceImpact()
 
+  const [isResponsiveState, setIsResponsiveState] = useState(false)
+
+  const handleSetIsResponsive = (value: boolean) => {
+    if (value) {
+      setIsResponsiveState(true)
+    }
+  }
+
   useEffect(() => {
-    if (!isLayoutRebuilt) return
-    isLayoutRebuilt(rebuildFromLayout || rebuildToLayout)
-  }, [rebuildFromLayout, rebuildToLayout])
+    if (!setIsResponsive) return
+    setIsResponsive(isResponsiveState)
+  }, [isResponsiveState])
 
   return (
     <div
@@ -111,8 +119,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           value={amount}
           title="Swap from"
           isSwap={true}
-          rebuildLayout={rebuildFromLayout || rebuildToLayout}
-          setRebuildLayout={setRebuildFromLayout}
+          isResponsive={isResponsive}
+          setIsResponsive={handleSetIsResponsive}
         />
         {showLiquidityError ? (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -150,8 +158,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           isQuoteLoading={isQuoteLoading}
           value={quote?.getTargetAmountPrettified()}
           priceImpact={priceImpact}
-          rebuildLayout={rebuildFromLayout || rebuildToLayout}
-          setRebuildLayout={setRebuildToLayout}
+          isResponsive={isResponsive}
+          setIsResponsive={handleSetIsResponsive}
         />
         {amount && quote && (
           <div className="flex items-center justify-between mt-6 text-xs text-gray-500">
@@ -180,7 +188,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
         )}
         <Button
           className={clsx(
-            rebuildFromLayout || rebuildToLayout
+            isResponsive
               ? "w-full mt-6"
               : "absolute bottom-5 left-5 right-5 !w-auto",
           )}

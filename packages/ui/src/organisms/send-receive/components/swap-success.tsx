@@ -50,7 +50,7 @@ export interface SwapSuccessProps {
   isOpen: boolean
   error?: SwapError | WithdrawError | DepositError | SlippageSwapError
   providerName: SwapName | undefined
-  isLayoutRebuilt?: boolean
+  isResponsive?: boolean
 }
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
@@ -65,7 +65,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   isOpen,
   error,
   providerName,
-  isLayoutRebuilt,
+  isResponsive,
 }) => {
   const [currentAnimation, setCurrentAnimation] = useState<unknown>(
     allAnimations.deposit,
@@ -124,7 +124,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         <p
           className={clsx(
             "h-5 mt-3 text-sm leading-5",
-            isLayoutRebuilt && "mt-[30px] mb-[50px]",
+            isResponsive && "mt-[30px] mb-[50px]",
           )}
         >
           {error

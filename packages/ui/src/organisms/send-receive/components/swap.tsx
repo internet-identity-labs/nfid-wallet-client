@@ -84,7 +84,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   shroff,
   setProvider,
 }) => {
-  const [isLayoutRebuilt, setIsLayoutRebuilt] = useState(false)
+  const [isResponsive, setIsResponsive] = useState(false)
   const [selectedShroff, setSelectedShroff] = useState<Shroff | undefined>()
   const [swapModal, setSwapModal] = useState(SwapModal.SWAP)
 
@@ -127,7 +127,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             onClose={onClose}
             error={error}
             providerName={shroff?.getSwapName()}
-            isLayoutRebuilt={isLayoutRebuilt}
+            isResponsive={isResponsive}
           />
         </motion.div>
       )}
@@ -189,7 +189,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
         >
           <SwapFTForm
-            isLayoutRebuilt={setIsLayoutRebuilt}
+            setIsResponsive={setIsResponsive}
+            isResponsive={isResponsive}
             tokens={tokens}
             allTokens={allTokens}
             fromToken={fromToken}

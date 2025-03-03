@@ -40,17 +40,19 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
         onClose={() => setIsModalVisible(false)}
         className="p-5 w-[95%] md:w-[450px] z-[100] lg:rounded-xl"
       >
-        <p className="text-2xl font-bold">Remove recovery phrase</p>
-        <p className="mt-5 text-sm">
-          Enter your recovery phrase to confirm removal.
+        <p className="text-2xl font-bold leading-[40px]">
+          Remove recovery phrase
+        </p>
+        <p className="mt-5 text-sm leading-[22px]">
+          Enter your recovery phrase to confirm removal:
         </p>
 
         <textarea
           name="recoveryPhrase"
           className={clsx(
-            "border border-black rounded-t-md border-b-0",
+            "border border-black rounded-[12px]",
             "focus:outline-none resize-none focus:ring-0",
-            "w-full -mb-2 leading-[26px] mt-4",
+            "w-full -mb-2 leading-[26px] h-[218px] mb-5",
           )}
           rows={6}
           placeholder="10000 cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo "
@@ -60,7 +62,6 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
           id="delete-recovery-button"
           type="red"
           block
-          className="rounded-t-none"
           onClick={() =>
             handleWithLoading(
               async () => {

@@ -12,6 +12,7 @@ import {
   Input,
   IconNftPlaceholder,
   ChooseNftModal,
+  Label,
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
@@ -68,7 +69,8 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         status={status}
         assetImageClassname="w-[102px] h-[102px] top-[136px] sm:w-[116px] sm:h-[116px] sm:top-[129px]"
       />
-      <div className="space-y-3 text-xs ">
+      <div className="text-xs">
+        <Label className="inline-block mb-1 text-xs">NFT to transfer</Label>
         <ChooseNftModal
           tokens={nfts ?? []}
           title="NFT to send"
@@ -77,7 +79,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
             <div
               className={clsx(
                 "flex items-center justify-between w-full h-[98px] rounded-[12px]",
-                "pl-0.5 p-2 pr-5 border border-black cursor-pointer",
+                "pl-0.5 p-2 pr-5 border border-black cursor-pointer mb-[10px]",
               )}
               id="choose-nft"
             >

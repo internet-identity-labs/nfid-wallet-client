@@ -9,6 +9,8 @@ import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
 
+import { NftImpl } from "../impl/nft-abstract"
+
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
 )
@@ -23,6 +25,14 @@ describe("nft test suite", () => {
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
+
+      jest
+        .spyOn(NftImpl.prototype as any, "getCanisterStatus")
+        .mockImplementation(() => {
+          console.log("Mocked getCanisterStatus called")
+          return Promise.resolve(undefined)
+        })
+
       const result = await nftService.getNFTs(principal, 1, 10)
       await Promise.all(result.items.map(async (nft) => nft.init()))
       expect(result.items).toHaveLength(10)

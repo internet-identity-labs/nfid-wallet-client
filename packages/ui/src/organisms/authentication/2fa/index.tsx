@@ -50,7 +50,7 @@ export const Auth2FA = ({
         src={Image2FA}
         className="object-contain w-full h-56 my-10"
       />
-      <Button className="mb-[30px]" onClick={handleAuth}>
+      <Button className="mb-[30px] w-full" onClick={handleAuth}>
         Continue
       </Button>
     </>

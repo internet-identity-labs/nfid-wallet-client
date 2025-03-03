@@ -216,7 +216,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                   Don’t have an NFID Wallet?{" "}
                   <span
                     onClick={onTypeChange}
-                    className="font-bold cursor-pointer transition-opacity text-primaryButtonColor hover:opacity-50"
+                    className="font-bold cursor-pointer text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
                   >
                     Sign up
                   </span>
@@ -226,7 +226,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                   Already have an NFID Wallet?{" "}
                   <span
                     onClick={onTypeChange}
-                    className="font-bold cursor-pointer transition-opacity text-primaryButtonColor hover:opacity-50"
+                    className="font-bold cursor-pointer text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
                   >
                     Sign in
                   </span>

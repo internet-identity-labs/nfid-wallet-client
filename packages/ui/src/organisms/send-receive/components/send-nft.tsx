@@ -63,7 +63,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         title={`${selectedNFT?.getTokenName()}`}
         subTitle={`${selectedNFT?.getCollectionName()}`}
         onClose={onClose}
-        assetImg={`${selectedNFT?.getAssetPreview().url}`}
+        assetImg={`${selectedNFT?.getAssetPreview()?.url}`}
         isOpen={isSuccessOpen}
         status={status}
         assetImageClassname="w-[102px] h-[102px] top-[136px] sm:w-[116px] sm:h-[116px] sm:top-[129px]"
@@ -83,19 +83,19 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
             >
               <div className="flex items-center">
                 <div className="relative flex items-center mr-2.5">
-                  {selectedNFT?.getAssetPreview().url ? (
-                    selectedNFT?.getAssetPreview().format === "video" ? (
+                  {selectedNFT?.getAssetPreview()?.url ? (
+                    selectedNFT?.getAssetPreview()?.format === "video" ? (
                       <video
                         muted
                         autoPlay
                         loop
                         className="object-cover rounded-[10px] w-[92px] h-[92px]"
-                        src={selectedNFT.getAssetPreview().url}
+                        src={selectedNFT.getAssetPreview()?.url}
                       ></video>
                     ) : (
                       <ImageWithFallback
                         className="object-cover rounded-[10px] w-[92px] h-[92px]"
-                        src={selectedNFT?.getAssetPreview().url}
+                        src={selectedNFT?.getAssetPreview()?.url}
                         fallbackSrc={IconNftPlaceholder}
                         alt="NFID NFT"
                       />

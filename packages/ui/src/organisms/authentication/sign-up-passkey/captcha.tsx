@@ -15,7 +15,7 @@ export const AuthSignUpCaptcha = ({
   getCaptcha,
   captcha,
   captchaLoading,
-  error,
+  error
 }: {
   onBack: () => void
   applicationURL?: string
@@ -38,8 +38,6 @@ export const AuthSignUpCaptcha = ({
       setError("captcha", {
         message: error,
       })
-    } else {
-      clearErrors()
     }
   }, [error])
 
@@ -72,14 +70,20 @@ export const AuthSignUpCaptcha = ({
             className="mt-auto mb-[10px]"
             block
             disabled={isCreatingWallet}
-            onClick={handleSubmit((data) => onContinue(data.captcha))}
+            onClick={handleSubmit((data) => {
+              onContinue(data.captcha)
+            })}
             type="primary"
           >
             Continue
           </Button>
           <Button
             disabled={!!captchaLoading}
-            icon={<IconCmpActions className={captchaLoading ? "animate-spin" : undefined} />}
+            icon={
+              <IconCmpActions
+                className={captchaLoading ? "animate-spin" : undefined}
+              />
+            }
             block
             onClick={getCaptcha}
             type="ghost"

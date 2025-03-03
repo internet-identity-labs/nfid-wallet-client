@@ -33,7 +33,8 @@ const NFTDetailsPage = () => {
 
   const { data: nft, isLoading } = useSWR(
     tokenId ? ["nft", tokenId] : null,
-    ([, tokenId]) => fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE),
+    ([, tokenId]: [string, string]) =>
+      fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE),
   )
 
   const getDetails = useCallback(async () => {
@@ -134,23 +135,25 @@ const NFTDetailsPage = () => {
       titleClassNames="hidden sm:block"
       showBackButton
       headerMenu={
-        <div className="flex items-center space-x-4">
-          <Tooltip tip="Send">
-            <div
-              className={clsx(
-                "p-[8px] rounded-[12px] cursor-pointer",
-                "hover:bg-gray-100 active:bg-gray-200",
-              )}
-              onClick={onTransferNFT}
-            >
-              <img
-                className="rotate-[135deg]"
-                src={IconSvgArrow}
-                alt="transfer"
-              />
-            </div>
-          </Tooltip>
-        </div>
+        !nft.getError() && (
+          <div className="flex items-center space-x-4">
+            <Tooltip tip="Send">
+              <div
+                className={clsx(
+                  "p-[8px] rounded-[12px] cursor-pointer",
+                  "hover:bg-gray-100 active:bg-gray-200",
+                )}
+                onClick={onTransferNFT}
+              >
+                <img
+                  className="rotate-[135deg]"
+                  src={IconSvgArrow}
+                  alt="transfer"
+                />
+              </div>
+            </Tooltip>
+          </div>
+        )
       }
       className="w-full z-[1]"
     >

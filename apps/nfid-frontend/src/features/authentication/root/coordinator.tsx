@@ -157,7 +157,9 @@ export default function AuthenticationCoordinator({
         return setSignUpWithPasskeyError(
           "Incorrect captcha entered. Please try again.",
         )
-      return setSignUpWithPasskeyError("Unknown error occured")
+      return setSignUpWithPasskeyError(
+        "We ran into a hiccup. Give it another shot",
+      )
     } finally {
       setSignUpPasskeyLoading(false)
     }
@@ -326,6 +328,7 @@ export default function AuthenticationCoordinator({
           >
             <AuthSignUpPassKey
               onPasskeyCreate={onSignUpWithPasskey}
+              clearError={() => setSignUpWithPasskeyError("")}
               isPasskeyCreating={signUpPasskeyLoading}
               getCaptcha={passkeyConnector.getCaptchaChallenge}
               withLogo={!isIdentityKit}
@@ -339,6 +342,21 @@ export default function AuthenticationCoordinator({
               }}
               createPasskeyError={signUpWithPassKeyError}
               applicationURL={state.context.authRequest?.hostname}
+            />
+          </motion.div>
+        )
+      case state.matches("SignUpWithEmail"):
+        return (
+          <motion.div
+            key="EmailAuthentication"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AuthEmailFlowCoordinator
+              isIdentityKit={isIdentityKit}
+              actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
             />
           </motion.div>
         )

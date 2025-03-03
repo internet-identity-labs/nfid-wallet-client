@@ -591,26 +591,30 @@ describe("ft test suite", () => {
 
       const tokens: FT[] = await ftService.getTokens(userId)
 
-      const providers = await swapService.getSwapProviders(
-        "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        NFIDW_CANISTER_ID,
+      const validTokenLedgers = new Set(
+        tokens.map((token) => token.getTokenAddress()),
       )
 
-      const result = await ftService.getTokensAvailableToSwap(
-        "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        NFIDW_CANISTER_ID,
-        providers,
-        tokens,
-      )
+      console.log("tokensss", tokens)
 
-      expect(result).toEqual({
+      const [toList, fromList] = await Promise.all([
+        ftService.getTokensAvailableToSwap("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+        ftService.getTokensAvailableToSwap(NFIDW_CANISTER_ID),
+      ])
+
+      const expectedResult = {
         to: [
-          "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "2ouva-viaaa-aaaaq-aaamq-cai",
+          "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,
         ],
-        from: [NFIDW_CANISTER_ID, "ryjl3-tyaaa-aaaaa-aaaba-cai"],
-      })
+        from: ["ryjl3-tyaaa-aaaaa-aaaba-cai", NFIDW_CANISTER_ID],
+      }
+
+      expect({
+        to: toList.filter((ledger) => validTokenLedgers.has(ledger)),
+        from: fromList.filter((ledger) => validTokenLedgers.has(ledger)),
+      }).toEqual(expectedResult)
     })
   })
 })

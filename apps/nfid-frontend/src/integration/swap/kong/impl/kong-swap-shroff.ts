@@ -35,8 +35,6 @@ import {
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import { FT } from "frontend/integration/ft/ft"
-
 import { ContactSupportError } from "../../errors/types/contact-support-error"
 import { Quote } from "../../quote"
 import { SwapTransaction } from "../../swap-transaction"
@@ -45,6 +43,10 @@ import { SwapName } from "../../types/enums"
 export const ROOT_CANISTER = "2ipq2-uqaaa-aaaar-qailq-cai"
 
 export class KongSwapShroffImpl extends ShroffAbstract {
+  private static actor: Agent.ActorSubclass<_SERVICE> = actorBuilder<_SERVICE>(
+    ROOT_CANISTER,
+    KongIDL,
+  )
   private actor: Agent.ActorSubclass<_SERVICE>
 
   constructor(source: ICRC1TypeOracle, target: ICRC1TypeOracle) {
@@ -223,31 +225,19 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     ])
   }
 
-  async getAvailablePools(
-    source: string,
-    tokens: FT[],
-  ): Promise<string[] | undefined> {
+  static async getAvailablePools(source: string): Promise<string[]> {
     const result = await this.actor.pools([source])
 
-    if ("Ok" in result) {
-      const tokenAddresses = new Set(
-        tokens.map((token) => token.getTokenAddress()),
-      )
+    if (!("Ok" in result)) return []
 
-      return result.Ok.pools
-        .filter(
-          (pool) =>
-            tokenAddresses.has(pool.address_0) ||
-            tokenAddresses.has(pool.address_1),
-        )
-        .map((pool) => {
-          const addresses = []
-          if (tokenAddresses.has(pool.address_0)) addresses.push(pool.address_0)
-          if (tokenAddresses.has(pool.address_1)) addresses.push(pool.address_1)
-          return addresses
-        })
-        .flat()
-    }
+    let allPools: string[] = []
+
+    result.Ok.pools.forEach((pool) => {
+      if (pool.address_0 === source) allPools.push(pool.address_1)
+      if (pool.address_1 === source) allPools.push(pool.address_0)
+    })
+
+    return allPools
   }
 
   getSwapAccount(): Account {

@@ -14,8 +14,8 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
-import { Shroff } from "../swap/shroff"
-import { SwapName } from "../swap/types/enums"
+import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
+import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 
 export interface TokensAvailableToSwap {
   to: string[]
@@ -67,37 +67,18 @@ export class FtService {
   }
 
   @Cache(integrationCache, { ttl: 300 })
-  async getTokensAvailableToSwap(
-    sourceToken: string,
-    targetToken: string,
-    providers: Map<SwapName, Shroff | undefined>,
-    tokens: FT[],
-  ): Promise<TokensAvailableToSwap> {
-    const promiseTo = Promise.all(
-      Array.from(providers.values())
-        .filter((provider): provider is Shroff => provider !== undefined)
-        .map(async (provider) => {
-          return (await provider.getAvailablePools(sourceToken, tokens)) ?? []
-        }),
-    )
+  async getTokensAvailableToSwap(sourceToken: string): Promise<string[]> {
+    const kongPoolsPromise = KongSwapShroffImpl.getAvailablePools(sourceToken)
+    const icpswapPoolsPromise = ShroffIcpSwapImpl.getAvailablePools(sourceToken)
 
-    const promiseFrom = Promise.all(
-      Array.from(providers.values())
-        .filter((provider): provider is Shroff => provider !== undefined)
-        .map(async (provider) => {
-          return (await provider.getAvailablePools(targetToken, tokens)) ?? []
-        }),
-    )
+    const [kongPools, icpswapPools] = await Promise.all([
+      kongPoolsPromise,
+      icpswapPoolsPromise,
+    ])
 
-    const [resultTo, resultFrom] = await Promise.all([promiseTo, promiseFrom])
+    const pools = [...new Set([...kongPools, ...icpswapPools])]
 
-    const availableTokensToSwap = Array.from(new Set(resultTo.flat()))
-    const availableTokensFromSwap = Array.from(new Set(resultFrom.flat()))
-
-    return {
-      to: availableTokensToSwap,
-      from: availableTokensFromSwap,
-    }
+    return Array.from(pools)
   }
 
   async filterNotActiveNotZeroBalancesTokens(

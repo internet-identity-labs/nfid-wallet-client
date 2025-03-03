@@ -29,8 +29,6 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import { FT } from "frontend/integration/ft/ft"
-
 import {
   DepositError,
   LiquidityError,
@@ -81,35 +79,20 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     this.swapTransaction = trs
   }
 
-  async getAvailablePools(
-    source: string,
-    tokens: FT[],
-  ): Promise<string[] | undefined> {
+  static async getAvailablePools(source: string): Promise<string[]> {
     const result = await icpSwapService.getPools()
 
-    if ("ok" in result) {
-      const tokenAddresses = new Set(
-        tokens.map((token) => token.getTokenAddress()),
-      )
-      const uniqueAvailablePools = new Set<string>()
+    if (!("ok" in result)) return []
 
-      result.ok.forEach((pool) => {
-        if (
-          (pool.token0.address === source || pool.token1.address === source) &&
-          (tokenAddresses.has(pool.token0.address) ||
-            tokenAddresses.has(pool.token1.address))
-        ) {
-          if (tokenAddresses.has(pool.token0.address)) {
-            uniqueAvailablePools.add(pool.token0.address)
-          }
-          if (tokenAddresses.has(pool.token1.address)) {
-            uniqueAvailablePools.add(pool.token1.address)
-          }
-        }
-      })
+    const allPools: string[] = []
 
-      return Array.from(uniqueAvailablePools)
-    }
+    result.ok.forEach((pool) => {
+      if (pool.token0.address === source || pool.token1.address === source) {
+        allPools.push(pool.token0.address)
+      }
+    })
+
+    return allPools
   }
 
   getSwapTransaction(): SwapTransaction | undefined {

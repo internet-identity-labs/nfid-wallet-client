@@ -58,11 +58,6 @@ export abstract class ShroffAbstract implements Shroff {
     ]
   }
 
-  abstract getAvailablePools(
-    symbol: string,
-    tokens: FT[],
-  ): Promise<string[] | undefined>
-
   abstract getQuote(amount: string): Promise<Quote>
 
   abstract swap(delegationIdentity: SignIdentity): Promise<SwapTransaction>

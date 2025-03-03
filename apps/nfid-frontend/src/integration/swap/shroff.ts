@@ -9,7 +9,6 @@ export interface Shroff {
   getSwapName(): SwapName
   setQuote(quote: Quote): void
   getTargets(): string[]
-  getAvailablePools(symbol: string, tokens: FT[]): Promise<string[] | undefined>
   getQuote(amount: string): Promise<Quote>
   swap(delegationIdentity: SignIdentity): Promise<SwapTransaction>
   getSwapTransaction(): SwapTransaction | undefined

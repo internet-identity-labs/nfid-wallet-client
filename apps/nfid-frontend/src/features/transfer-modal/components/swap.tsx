@@ -164,19 +164,17 @@ export const SwapFT = ({
 
   const getProviders = useCallback(async () => {
     try {
-      const providers = await swapService.getSwapProviders(
-        fromTokenAddress,
-        toTokenAddress,
-      )
+      const [tokensAvailableToSwapTo, tokensAvailableToSwapFrom, providers] =
+        await Promise.all([
+          ftService.getTokensAvailableToSwap(fromTokenAddress),
+          ftService.getTokensAvailableToSwap(toTokenAddress),
+          swapService.getSwapProviders(fromTokenAddress, toTokenAddress),
+        ])
 
-      const tokensAvailableToSwap = await ftService.getTokensAvailableToSwap(
-        fromTokenAddress,
-        toTokenAddress,
-        providers,
-        tokens,
-      )
-
-      setTokensAvailableToSwap(tokensAvailableToSwap)
+      setTokensAvailableToSwap({
+        to: tokensAvailableToSwapTo,
+        from: tokensAvailableToSwapFrom,
+      })
       setSwapProviders(providers)
       setLiquidityError(undefined)
       setProviderError(undefined)

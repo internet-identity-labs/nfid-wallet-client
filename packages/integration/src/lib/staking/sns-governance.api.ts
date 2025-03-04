@@ -10,7 +10,6 @@ import {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns"
-import { fromNullable } from "@dfinity/utils"
 
 import { loadSnsWrapper } from "./sns-wrapper.api"
 import { logWithTimestamp } from "./util/dev.utils"
@@ -635,8 +634,3 @@ export const bytesToHexString = (bytes: number[]): string =>
 export const subaccountToHexString = (
   subaccount: Uint8Array | number[],
 ): string => bytesToHexString(Array.from(subaccount))
-
-export const getSnsNeuronIdAsHexString = ({
-  id: neuronId,
-}: SnsNeuron): string =>
-  subaccountToHexString(fromNullable(neuronId)?.id ?? new Uint8Array())

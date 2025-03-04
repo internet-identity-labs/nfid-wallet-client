@@ -13,7 +13,7 @@ export interface IChooseFtModal {
   title: string
   trigger?: JSX.Element
   isSwapTo?: boolean
-  tokensAvailableToSwap: TokensAvailableToSwap
+  tokensAvailableToSwap?: TokensAvailableToSwap
 }
 
 export const ChooseFtModal = ({
@@ -26,6 +26,7 @@ export const ChooseFtModal = ({
   tokensAvailableToSwap,
 }: IChooseFtModal) => {
   const sortedTokens = useMemo(() => {
+    if (!tokensAvailableToSwap) return tokens
     const getIsSwappable = (token: FT) =>
       isSwapTo
         ? tokensAvailableToSwap.to.includes(token.getTokenAddress())

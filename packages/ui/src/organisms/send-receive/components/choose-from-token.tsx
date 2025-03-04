@@ -34,7 +34,7 @@ interface ChooseFromTokenProps {
   isSwap?: boolean
   rebuildLayout?: boolean
   setRebuildLayout?: (v: boolean) => void
-  tokensAvailableToSwap: TokensAvailableToSwap
+  tokensAvailableToSwap?: TokensAvailableToSwap
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({

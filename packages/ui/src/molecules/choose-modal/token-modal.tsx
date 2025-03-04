@@ -35,10 +35,10 @@ export interface IChooseTokenModal<T> {
   renderItem: ElementType<{
     token: T
     isSwapTo?: boolean
-    tokensAvailableToSwap: TokensAvailableToSwap
+    tokensAvailableToSwap?: TokensAvailableToSwap
   }>
   isSwapTo?: boolean
-  tokensAvailableToSwap: TokensAvailableToSwap
+  tokensAvailableToSwap?: TokensAvailableToSwap
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -127,10 +127,10 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     (token: T) => {
       if (token instanceof FTImpl) {
         const isSwappable = isSwapTo
-          ? tokensAvailableToSwap.to.includes(token.getTokenAddress())
-          : tokensAvailableToSwap.from.includes(token.getTokenAddress())
+          ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
+          : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
 
-        if (!isSwappable) return
+        if (!isSwappable && tokensAvailableToSwap) return
       }
       onSelect?.(token)
       setIsModalVisible(false)
@@ -158,22 +158,24 @@ export const ChooseTokenModal = <T extends FT | NFT>({
             </div>
             <div className="flex items-center justify-between w-full">
               <p className="text-xl font-bold leading-10">{title}</p>
-              <Tooltip
-                align="end"
-                alignOffset={-20}
-                tip={
-                  <span className="block max-w-[320px]">
-                    Tokens that can't be selected lack enough liquidity for
-                    swapping.
-                  </span>
-                }
-              >
-                <img
-                  src={IconInfo}
-                  alt="icon"
-                  className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
-                />
-              </Tooltip>
+              {tokensAvailableToSwap && (
+                <Tooltip
+                  align="end"
+                  alignOffset={-20}
+                  tip={
+                    <span className="block max-w-[320px]">
+                      Tokens that can't be selected lack enough liquidity for
+                      swapping.
+                    </span>
+                  }
+                >
+                  <img
+                    src={IconInfo}
+                    alt="icon"
+                    className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
+                  />
+                </Tooltip>
+              )}
             </div>
           </div>
         </div>

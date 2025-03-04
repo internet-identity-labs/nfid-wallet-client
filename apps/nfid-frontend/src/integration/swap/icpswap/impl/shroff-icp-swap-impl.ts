@@ -87,7 +87,10 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     const allPools: string[] = []
 
     result.ok.forEach((pool) => {
-      if (pool.token0.address === source || pool.token1.address === source) {
+      if (pool.token0.address === source) {
+        allPools.push(pool.token1.address)
+      }
+      if (pool.token1.address === source) {
         allPools.push(pool.token0.address)
       }
     })

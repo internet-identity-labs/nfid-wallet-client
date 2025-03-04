@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
+import { A } from "packages/ui/src/atoms/custom-link"
 import { Separator } from "packages/ui/src/atoms/separator"
 import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -214,22 +215,30 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               {isSignIn ? (
                 <div className="mt-auto text-sm">
                   Don’t have an NFID Wallet?{" "}
-                  <span
-                    onClick={onTypeChange}
-                    className="font-bold cursor-pointer text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
+                  <A
+                    href={window.location.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onTypeChange()
+                    }}
+                    className="font-bold"
                   >
                     Sign up
-                  </span>
+                  </A>
                 </div>
               ) : (
                 <div className="mt-auto text-sm">
                   Already have an NFID Wallet?{" "}
-                  <span
-                    onClick={onTypeChange}
-                    className="font-bold cursor-pointer text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
+                  <A
+                    href={window.location.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onTypeChange()
+                    }}
+                    className="font-bold"
                   >
                     Sign in
-                  </span>
+                  </A>
                 </div>
               )}
             </div>

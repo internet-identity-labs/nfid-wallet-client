@@ -595,8 +595,6 @@ describe("ft test suite", () => {
         tokens.map((token) => token.getTokenAddress()),
       )
 
-      console.log("tokensss", tokens)
-
       const [toList, fromList] = await Promise.all([
         ftService.getTokensAvailableToSwap("ryjl3-tyaaa-aaaaa-aaaba-cai"),
         ftService.getTokensAvailableToSwap(NFIDW_CANISTER_ID),
@@ -608,7 +606,7 @@ describe("ft test suite", () => {
           "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,
         ],
-        from: ["ryjl3-tyaaa-aaaaa-aaaba-cai", NFIDW_CANISTER_ID],
+        from: ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
       }
 
       expect({

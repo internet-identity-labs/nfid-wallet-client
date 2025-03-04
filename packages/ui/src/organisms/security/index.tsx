@@ -4,6 +4,8 @@ import { FC } from "react"
 
 import { IconCmpWarning, Table } from "@nfid-frontend/ui"
 
+import { A } from "../../atoms/custom-link"
+
 export interface SecurityProps {
   primarySignInElement: JSX.Element
   toggleElement: JSX.Element
@@ -78,13 +80,11 @@ export const Security: FC<SecurityProps> = ({
             <IconCmpWarning className="text-orange-900 w-[24px] h-[24px] mr-[10px]" />
             <p className="text-sm text-orange-900">
               Please create a passkey on{" "}
-              <a
-                className="text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
-                target="_blank"
-                href={showCreatePasskeyOnCanister}
-              >
-                {showCreatePasskeyOnCanister}
-              </a>{" "}
+              {showCreatePasskeyOnCanister && (
+                <A href={showCreatePasskeyOnCanister} target="_blank">
+                  {showCreatePasskeyOnCanister}
+                </A>
+              )}{" "}
               for additional security and URL access redundancy.
             </p>
           </div>

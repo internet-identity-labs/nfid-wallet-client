@@ -18,6 +18,7 @@ import {
 } from "frontend/integration/nft/impl/nft-types"
 import { NFT } from "frontend/integration/nft/nft"
 
+import { A } from "../../atoms/custom-link"
 import ProfileContainer from "../../atoms/profile-container/Container"
 import { ModalComponent } from "../../molecules/modal/index-v0"
 
@@ -125,17 +126,14 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           >
             #{nft.getTokenNumber()}
           </p>
-          <a
+          <A
             href={nft.getCollectionMarketPlaceLink()}
-            target="_blank"
-            className={clsx(
-              "font-bold text-primaryButtonColor leading-[24px] mb-[20px]",
-              "hover:underline hover:text-teal-600 transition duration-300 ease-in-out",
-            )}
+            className="mb-[20px] font-bold leading-[24px]"
             id={`nft_collection_${nft.getCollectionId()}`}
+            target="_blank"
           >
-            {nft.getCollectionName() || nft.getCollectionId()}
-          </a>
+            {nft.getCollectionName() || nft.getCollectionId()}{" "}
+          </A>
           <ProfileContainer
             title="Details"
             className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%]"
@@ -221,17 +219,14 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
                     View on a marketplace
                   </p>
-                  <a
-                    className={clsx(
-                      "flex items-center gap-2 text-primaryButtonColor",
-                      "hover:underline hover:text-teal-600 transition duration-300 ease-in-out",
-                    )}
-                    target="_blank"
+                  <A
                     href={marketPlaceLink}
+                    withGapBetweenChildren
+                    target="_blank"
                   >
                     {marketPlaceLink}
                     <IconCmpExternalIcon className="mt-1" />
-                  </a>
+                  </A>
                 </div>
               </>
             )}

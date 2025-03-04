@@ -43,10 +43,6 @@ import { SwapName } from "../../types/enums"
 export const ROOT_CANISTER = "2ipq2-uqaaa-aaaar-qailq-cai"
 
 export class KongSwapShroffImpl extends ShroffAbstract {
-  private static actor: Agent.ActorSubclass<_SERVICE> = actorBuilder<_SERVICE>(
-    ROOT_CANISTER,
-    KongIDL,
-  )
   private actor: Agent.ActorSubclass<_SERVICE>
 
   constructor(source: ICRC1TypeOracle, target: ICRC1TypeOracle) {
@@ -226,7 +222,11 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   static async getAvailablePools(source: string): Promise<string[]> {
-    const result = await this.actor.pools([source])
+    const actor: Agent.ActorSubclass<_SERVICE> = actorBuilder<_SERVICE>(
+      ROOT_CANISTER,
+      KongIDL,
+    )
+    const result = await actor.pools([source])
 
     if (!("Ok" in result)) return []
 

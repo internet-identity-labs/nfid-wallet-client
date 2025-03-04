@@ -18,8 +18,6 @@ import {
 } from "@nfid/integration"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
-import { FT } from "frontend/integration/ft/ft"
-
 import { SwapName } from "../types/enums"
 
 export abstract class ShroffAbstract implements Shroff {

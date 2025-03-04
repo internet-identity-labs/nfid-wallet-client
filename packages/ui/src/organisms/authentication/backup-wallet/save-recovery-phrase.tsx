@@ -34,7 +34,7 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
   return (
     <div
       className={clsx(
-        "flex flex-col w-full min-h-[536px] flex-grow text-sm text-center",
+        "flex flex-col w-full h-full flex-grow text-sm text-center",
         className,
       )}
     >

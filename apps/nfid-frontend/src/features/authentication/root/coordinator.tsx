@@ -158,6 +158,10 @@ export default function AuthenticationCoordinator({
         return setSignUpWithPasskeyError(
           "Incorrect captcha entered. Please try again.",
         )
+      if (msg.includes("either timed out or was not allowed")) {
+        toaster.error("Action was aborted. Please try again.")
+        return
+      }
       return setSignUpWithPasskeyError(
         "We ran into a hiccup. Give it another shot",
       )
@@ -229,6 +233,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthSelection
               isIdentityKit={isIdentityKit}
@@ -279,6 +284,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthSelection
               type="sign-up"
@@ -326,6 +332,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthSignUpPassKey
               onPasskeyCreate={onSignUpWithPasskey}
@@ -354,6 +361,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthEmailFlowCoordinator
               isIdentityKit={isIdentityKit}
@@ -369,6 +377,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthEmailFlowCoordinator
               isIdentityKit={isIdentityKit}
@@ -384,6 +393,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthSignInWithRecoveryPhrase
               withLogo={!isIdentityKit}
@@ -408,6 +418,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthBackupWallet
               name={walletName}
@@ -425,6 +436,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthSaveRecoveryPhrase
               name={walletName}
@@ -448,6 +460,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthOtherSignOptions
               withLogo={!isIdentityKit}
@@ -472,6 +485,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <Auth2FA
               email={state.context.email2FA}
@@ -489,6 +503,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthAddPasskey
               isLoading={isAddPasskeyLoading}
@@ -514,6 +529,7 @@ export default function AuthenticationCoordinator({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <AuthAddPasskeySuccess
               onFinish={() => {

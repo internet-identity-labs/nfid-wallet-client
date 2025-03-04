@@ -142,12 +142,13 @@ export default function AuthenticationCoordinator({
   }) => {
     setSignUpPasskeyLoading(true)
     try {
-      await passkeyConnector.registerWithPasskey(walletName, {
+      const response = await passkeyConnector.registerWithPasskey(walletName, {
         challengeKey,
         chars: enteredCaptcha,
       })
       send({
         type: "AUTHENTICATED",
+        data: response,
       })
     } catch (e) {
       const msg = (e as Error).message

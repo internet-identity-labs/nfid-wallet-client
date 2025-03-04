@@ -19,8 +19,9 @@ describe("ICRC1 suite", () => {
   let root: string
   it.skip("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(mockedIdentity)
+    const { delegationIdentity } = await generateDelegationIdentity(
+      mockedIdentity,
+    )
     await replaceActorIdentity(iCRC1OracleActor, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
     const edId = Ed25519KeyIdentity.generate()

@@ -217,9 +217,27 @@ export class PasskeyConnector {
 
     await storePasskey(key, jsonData)
 
-    await this.setUpState(tempKey)
+    const { delegationIdentity, sessionKey, chain } =
+      await generateDelegationIdentity(tempKey)
 
-    return profile
+    await this.setAuthState({
+      identity,
+      delegationIdentity,
+      sessionKey,
+      chain,
+    })
+    await this.cachePasskeyDelegation(sessionKey, delegationIdentity)
+
+    return {
+      anchor: profile.anchor,
+      name: profile.name,
+      delegationIdentity,
+      identity: identity,
+    }
+  }
+
+  private setAuthState(...toSet: Parameters<typeof authState.set>) {
+    return authState.set(...toSet)
   }
 
   async createCredential() {
@@ -455,18 +473,6 @@ export class PasskeyConnector {
 
     await authStorage.set(KEY_STORAGE_KEY, keyIdentity)
     await authStorage.set(KEY_STORAGE_DELEGATION, delegation)
-  }
-
-  private async setUpState(tempKey: Ed25519KeyIdentity) {
-    await authState.set({
-      delegationIdentity: await generateDelegationIdentity(tempKey),
-      identity: tempKey,
-    })
-    await authStorage.set(KEY_STORAGE_KEY, JSON.stringify(tempKey.toJSON()))
-    await authStorage.set(
-      KEY_STORAGE_DELEGATION,
-      JSON.stringify(tempKey.toJSON()),
-    )
   }
 
   private _createChallengeBuffer(

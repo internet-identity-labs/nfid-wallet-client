@@ -2,7 +2,15 @@ import { Ed25519KeyIdentity, WebAuthnIdentity } from "@dfinity/identity"
 import base64url from "base64url"
 import { PasskeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
-import { DeviceType, IPasskeyMetadata } from "@nfid/integration"
+import {
+  authState,
+  DeviceType,
+  im,
+  IPasskeyMetadata,
+  replaceActorIdentity,
+} from "@nfid/integration"
+
+import { fetchProfile } from "frontend/integration/identity-manager"
 
 describe("Passkey flow", () => {
   jest.setTimeout(80000)
@@ -59,25 +67,31 @@ describe("Passkey flow", () => {
     jest
       .spyOn(passkeyService as any, "decodePublicKeyCredential")
       .mockReturnValue(exp)
-    jest.spyOn(passkeyService as any, "setUpState").mockImplementation(() => {
-      console.log("State set up")
+    jest.spyOn(passkeyService as any, "setAuthState").mockImplementation(async () => {
+      console.log("Set auth state")
     })
     let key = await passkeyService.getCaptchaChallenge()
-    let actual = await passkeyService.registerWithPasskey("mockedId", {
-      challengeKey: key.challenge_key,
-      chars: "aaaaa",
-    })
-    expect(actual.accessPoints.length).toEqual(1)
-    expect(actual.principalId).not.toEqual(pk.getPrincipal().toText())
-    expect(actual.wallet).toEqual("NFID")
-    expect(actual.email).toEqual(undefined)
-    expect(actual.name).toEqual("mockedId")
-    expect(actual.anchor).not.toEqual(0)
-    expect(actual.is2fa).toEqual(true)
-    expect(actual.accessPoints[0].credentialId).toEqual(
+    const { delegationIdentity } = await passkeyService.registerWithPasskey(
+      "mockedId",
+      {
+        challengeKey: key.challenge_key,
+        chars: "aaaaa",
+      },
+    )
+    await replaceActorIdentity(im, delegationIdentity)
+    const profile = await fetchProfile()
+    expect(profile).toBeDefined()
+    expect(profile.accessPoints.length).toEqual(1)
+    expect(profile.principalId).not.toEqual(pk.getPrincipal().toText())
+    expect(profile.wallet).toEqual("NFID")
+    expect(profile.email).toEqual(undefined)
+    expect(profile.name).toEqual("mockedId")
+    expect(profile.anchor).not.toEqual(0)
+    expect(profile.is2fa).toEqual(true)
+    expect(profile.accessPoints[0].credentialId).toEqual(
       "Dst6_Arh95HGTVwUnp5zEtad_Bo",
     )
-    expect(actual.accessPoints[0].deviceType).toEqual(DeviceType.Passkey)
+    expect(profile.accessPoints[0].deviceType).toEqual(DeviceType.Passkey)
   })
 })
 

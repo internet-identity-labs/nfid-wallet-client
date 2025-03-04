@@ -34,8 +34,9 @@ describe("ICRC1 pair suite", () => {
   let root: string
   beforeAll(async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(mockedIdentity)
+    const { delegationIdentity } = await generateDelegationIdentity(
+      mockedIdentity,
+    )
     await replaceActorIdentity(iCRC1Registry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
     const account = (await im.get_account()) as HTTPAccountResponse

@@ -44,8 +44,9 @@ describe("ICRC1 suite", () => {
 
   it("Transfer", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(mockedIdentity)
+    const { delegationIdentity } = await generateDelegationIdentity(
+      mockedIdentity,
+    )
     const transferArgs: TransferArg = {
       amount: BigInt(10),
       created_at_time: [],

@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { A } from "packages/ui/src/atoms/custom-link"
 
 import { H5, LogoMain } from "@nfid-frontend/ui"
 
@@ -39,14 +40,9 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
         >
           <span className="text-center">
             {subTitle}{" "}
-            <a
-              className="text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
-              href={applicationURL}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <A href={applicationURL} target="_blank" rel="noreferrer">
               {applicationURL}
-            </a>
+            </A>
           </span>
         </div>
       )}

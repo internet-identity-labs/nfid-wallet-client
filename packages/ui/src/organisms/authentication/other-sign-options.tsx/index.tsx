@@ -46,7 +46,7 @@ export const AuthOtherSignOptions = ({
   if (isLoading) return <BlurredLoader isLoading />
 
   return (
-    <div className="min-h-[536px] flex-grow">
+    <div className="h-full flex-grow">
       <IconCmpArrow
         className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5"
         onClick={onBack}

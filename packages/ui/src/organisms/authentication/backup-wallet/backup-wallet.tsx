@@ -23,7 +23,7 @@ export const AuthBackupWallet: FC<AuthBackupWalletProps> = ({
   return (
     <div
       className={clsx(
-        "flex flex-col flex-grow w-full min-h-[536px] text-sm text-center",
+        "flex flex-col flex-grow w-full h-full text-sm text-center",
         className,
       )}
     >

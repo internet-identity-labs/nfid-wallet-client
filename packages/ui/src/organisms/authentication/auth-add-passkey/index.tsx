@@ -22,7 +22,7 @@ export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
 }) => {
   return (
     <BlurredLoader
-      className="flex flex-col flex-grow w-full min-h-[536px]"
+      className="flex flex-col flex-grow w-full h-full"
       isLoading={isLoading}
       overlayClassnames="rounded-[24px]"
     >

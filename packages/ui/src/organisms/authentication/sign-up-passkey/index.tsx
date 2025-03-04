@@ -87,6 +87,7 @@ export function AuthSignUpPassKey({
                 challengeKey: captcha.challenge_key,
               })
             } else {
+              clearError()
               setCaptcha(captcha)
               setWalletName(walletName)
             }

@@ -67,18 +67,14 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   const [isChecked, setIsChecked] = useState(false)
   const priceImpact = quote?.getPriceImpact()
 
-  const [isResponsiveState, setIsResponsiveState] = useState(false)
-
-  const handleSetIsResponsive = (value: boolean) => {
-    if (value) {
-      setIsResponsiveState(true)
-    }
-  }
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [isToResponsive, setIsToResponsive] = useState(false)
 
   useEffect(() => {
-    if (!setIsResponsive) return
-    setIsResponsive(isResponsiveState)
-  }, [isResponsiveState])
+    if (setIsResponsive) {
+      setIsResponsive(isFromResponsive || isToResponsive)
+    }
+  }, [isFromResponsive, isToResponsive, setIsResponsive])
 
   return (
     <div
@@ -120,7 +116,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           title="Swap from"
           isSwap={true}
           isResponsive={isResponsive}
-          setIsResponsive={handleSetIsResponsive}
+          setIsResponsive={setIsFromResponsive}
         />
         {showLiquidityError ? (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -159,7 +155,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           value={quote?.getTargetAmountPrettified()}
           priceImpact={priceImpact}
           isResponsive={isResponsive}
-          setIsResponsive={handleSetIsResponsive}
+          setIsResponsive={setIsToResponsive}
         />
         {amount && quote && (
           <div className="flex items-center justify-between mt-6 text-xs text-gray-500">

@@ -156,10 +156,12 @@ export default function AuthenticationCoordinator({
         return setSignUpWithPasskeyError("Captcha expired. Please try again.")
       if (msg.includes("Incorrect captcha solution"))
         return setSignUpWithPasskeyError(
-          "Incorrect captcha entered. Please try again.",
+          "That captcha wasn’t quite right. Let’s try again!",
         )
       if (msg.includes("either timed out or was not allowed")) {
-        toaster.error("Action was aborted. Please try again.")
+        toaster.info(
+          "It seems like the process was interrupted. Feel free to try again!",
+        )
         return
       }
       return setSignUpWithPasskeyError(

@@ -37,6 +37,8 @@ export const AddPasskey = ({
             toaster.info(
               ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)
                 ? "This device is already registered."
+                : e.message.includes("either timed out or was not allowed")
+                ? "It seems like the process was interrupted. Feel free to try again!"
                 : e.message,
             )
           }

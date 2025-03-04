@@ -43,6 +43,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   setProvider,
 }) => {
   const [isCustom, setIsCustom] = useState(false)
+  const [key, setKey] = useState(0)
   const [customSlippage, setCustomSlippage] = useState<number | undefined>()
   const customInputRef = useRef<HTMLInputElement>(null)
   const [quotes, setQuotes] = useState<Array<QuoteMap>>([])
@@ -73,14 +74,19 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   const setInputSlippage = (value: string) => {
     setIsCustom(!!customSlippage)
     if (+value > MAX_SLIPPAGE) {
+      setKey((prevKey) => prevKey + 1)
       setSlippage(MAX_SLIPPAGE)
       return
     }
     if (+value < MIN_SLIPPAGE) {
       setSlippage(MIN_SLIPPAGE)
+      setKey((prevKey) => prevKey + 1)
       return
     }
-    if (value) setSlippage(+value)
+    if (value) {
+      setSlippage(+value)
+      setKey((prevKey) => prevKey + 1)
+    }
   }
 
   useEffect(() => {
@@ -159,12 +165,13 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 )}
               >
                 <InputAmount
+                  key={key}
                   id="slippage"
                   className="!text-white !h-auto !placeholder-white/50"
                   decimals={2}
                   fontSize={14}
                   isLoading={false}
-                  value={`${customSlippage}`}
+                  value={`${slippage}`}
                   ref={customInputRef}
                   onKeyDown={(e) => {
                     const target = e.target as HTMLInputElement

@@ -1,4 +1,4 @@
-import {TokenValue} from "src/integration/staking/types/token-value";
+import { TokenValue } from "src/integration/staking/types/token-value"
 
 export interface NFIDNeuron {
   getStakeId(): number

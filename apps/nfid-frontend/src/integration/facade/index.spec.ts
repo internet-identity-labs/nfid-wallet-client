@@ -34,8 +34,9 @@ describe.skip("Facade suite", () => {
   describe("Facade Service Test", () => {
     it("Should create and remove protected Recovery device", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity =
-        await generateDelegationIdentity(mockedIdentity)
+      const { delegationIdentity } = await generateDelegationIdentity(
+        mockedIdentity,
+      )
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -49,7 +50,7 @@ describe.skip("Facade suite", () => {
       }
       let anchor = await registerIIAccount(mockedIdentity, deviceData)
       let recoveryDevice = Ed25519KeyIdentity.generate()
-      const recoveryIdentity: DelegationIdentity =
+      const { delegationIdentity: recoveryIdentity } =
         await generateDelegationIdentity(recoveryDevice)
       await im.create_account({
         anchor,
@@ -132,8 +133,9 @@ describe.skip("Facade suite", () => {
 
     it("Should fetch principals", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity =
-        await generateDelegationIdentity(mockedIdentity)
+      const { delegationIdentity } = await generateDelegationIdentity(
+        mockedIdentity,
+      )
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",

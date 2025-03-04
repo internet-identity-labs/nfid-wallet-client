@@ -12,7 +12,11 @@ export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
     new Date(Date.now() + 3_600_000 * 44),
     {},
   )
-  return DelegationIdentity.fromDelegation(sessionKey, chain)
+  return {
+    delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
+    sessionKey,
+    chain,
+  }
 }
 
 // A `hasOwnProperty` that produces evidence for the typechecker

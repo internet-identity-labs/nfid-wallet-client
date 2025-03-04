@@ -31,8 +31,7 @@ describe.skip("SignIn with Internet Identity", () => {
   it("should add tentative device to account and authorize thru it.", async () => {
     const deviceName = "Device2"
     const identity: Ed25519KeyIdentity = Ed25519KeyIdentity.generate()
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(identity)
+    const { delegationIdentity } = await generateDelegationIdentity(identity)
     replaceIdentity(delegationIdentity)
     await registerIIAndIM(identity)
     const profile: Profile = await fetchProfile()
@@ -97,7 +96,7 @@ describe.skip("SignIn with Internet Identity", () => {
       credential_id: [],
     })
 
-    const delegationIdentity2: DelegationIdentity =
+    const { delegationIdentity: delegationIdentity2 } =
       await generateDelegationIdentity(identity2)
     replaceIdentity(delegationIdentity2)
 
@@ -113,7 +112,7 @@ describe.skip("SignIn with Internet Identity", () => {
       "PrivateDevice",
       privateIiIdentity.getPublicKey(),
     )
-    const privateDelegationIdentity: DelegationIdentity =
+    const { delegationIdentity: privateDelegationIdentity } =
       await generateDelegationIdentity(privateIiIdentity)
     replaceIdentity(privateDelegationIdentity)
     const privateAnchor: UserNumber = await registerIIAccount(
@@ -158,7 +157,7 @@ describe.skip("SignIn with Internet Identity", () => {
 
     // NOTE: Here I relogin to user's own II to check
     // I can obtain the same derived NFID profile from it.
-    const secondlyTakenPrivateDelegationIdentity: DelegationIdentity =
+    const { delegationIdentity: secondlyTakenPrivateDelegationIdentity } =
       await generateDelegationIdentity(privateIiIdentity)
     replaceIdentity(secondlyTakenPrivateDelegationIdentity)
 

@@ -15,8 +15,9 @@ describe("ICRC1 suite", () => {
   let root: string
   it("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const delegationIdentity: DelegationIdentity =
-      await generateDelegationIdentity(mockedIdentity)
+    const { delegationIdentity } = await generateDelegationIdentity(
+      mockedIdentity,
+    )
     await authState.set({
       identity: delegationIdentity,
       delegationIdentity: delegationIdentity,

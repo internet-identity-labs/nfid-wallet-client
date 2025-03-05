@@ -42,7 +42,7 @@ export const AuthSignUpCaptcha = ({
   }, [error])
 
   return (
-    <div className="min-h-[536px] flex-grow flex flex-col">
+    <div className="h-full flex-grow flex flex-col">
       <IconCmpArrow
         className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5"
         onClick={onBack}

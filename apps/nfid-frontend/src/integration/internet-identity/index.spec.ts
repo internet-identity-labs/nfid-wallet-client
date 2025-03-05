@@ -35,8 +35,9 @@ describe.skip("ii suite", () => {
   describe("II Service Test", () => {
     it("Should create protected Recovery device", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity =
-        await generateDelegationIdentity(mockedIdentity)
+      const { delegationIdentity } = await generateDelegationIdentity(
+        mockedIdentity,
+      )
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -85,7 +86,7 @@ describe.skip("ii suite", () => {
 
     it("should protect Unprotect Recovery Device", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentityDummy: DelegationIdentity =
+      const { delegationIdentity: delegationIdentityDummy } =
         await generateDelegationIdentity(mockedIdentity)
       const deviceData: DeviceData = {
         alias: "Device",

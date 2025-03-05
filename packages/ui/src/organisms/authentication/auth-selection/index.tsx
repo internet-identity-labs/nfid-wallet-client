@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
+import { A } from "packages/ui/src/atoms/custom-link"
 import { Separator } from "packages/ui/src/atoms/separator"
 import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -96,9 +97,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     <AnimatePresence mode="wait">
       <BlurredLoader
         isLoading={isLoading || walletState.isChooseWalletLoading}
-        className={clsx("flex flex-col flex-1", {
-          "min-h-[536px]": !walletState.isChooseWallet || !isPasskeySupported,
-        })}
+        className={clsx("flex flex-col flex-1")}
         overlayClassnames="rounded-[24px]"
         id="auth-selection"
       >
@@ -120,6 +119,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
           >
             <ChooseWallet
               applicationURL={applicationURL}
@@ -136,7 +136,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           </motion.div>
         ) : (
           <motion.div
-            className="flex flex-col h-full"
+            className="flex flex-col flex-1"
             key="AuthSelection"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -214,22 +214,30 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               {isSignIn ? (
                 <div className="mt-auto text-sm">
                   Don’t have an NFID Wallet?{" "}
-                  <span
-                    onClick={onTypeChange}
-                    className="font-bold cursor-pointer text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
+                  <A
+                    href={window.location.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onTypeChange()
+                    }}
+                    className="font-bold"
                   >
                     Sign up
-                  </span>
+                  </A>
                 </div>
               ) : (
                 <div className="mt-auto text-sm">
                   Already have an NFID Wallet?{" "}
-                  <span
-                    onClick={onTypeChange}
-                    className="font-bold cursor-pointer text-primaryButtonColor hover:underline hover:text-teal-600 transition duration-300 ease-in-out"
+                  <A
+                    href={window.location.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onTypeChange()
+                    }}
+                    className="font-bold"
                   >
                     Sign in
-                  </span>
+                  </A>
                 </div>
               )}
             </div>

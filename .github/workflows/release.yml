@@ -615,8 +615,8 @@ jobs:
 
           dfx identity use "${DFX_ID_NAME}"
 
-          ci_echo_debug "dfx canister install --yes --by-proposal --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
-          if ! result=$(dfx canister install --yes --by-proposal --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
+          ci_echo_debug "dfx canister install --yes -- by-proposal --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
+          if ! result=$(dfx canister install --yes -- by-proposal --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
             ci_echo_error "Install failed ${result}" >&2
             exit 1
           fi

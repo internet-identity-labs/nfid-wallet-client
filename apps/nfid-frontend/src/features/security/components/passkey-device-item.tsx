@@ -80,6 +80,7 @@ export const PasskeyDeviceItem = ({
           <AnimatePresence>
             {isTooltipOpen && (
               <motion.div
+                key="passkeys"
                 className={clsx(
                   "absolute top-6 right-0 w-[150px]",
                   "bg-white rounded-[12px] shadow-md",

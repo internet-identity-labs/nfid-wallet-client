@@ -81,6 +81,7 @@ export const TransferModalCoordinator = () => {
       <AnimatePresence>
         {state.matches("SendMachine.SendFT") && (
           <motion.div
+            key="send-ft-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -99,6 +100,7 @@ export const TransferModalCoordinator = () => {
         )}
         {state.matches("SendMachine.SendNFT") && (
           <motion.div
+            key="send-nft-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -114,6 +116,7 @@ export const TransferModalCoordinator = () => {
         )}
         {state.matches("SwapMachine") && (
           <motion.div
+            key="swap-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -131,6 +134,7 @@ export const TransferModalCoordinator = () => {
         )}
         {state.matches("ReceiveMachine") && (
           <motion.div
+            key="receive-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

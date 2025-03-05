@@ -165,6 +165,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
         >
           {modalStep === "scan" && (
             <motion.div
+              key="scan-modal"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -179,6 +180,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
           )}
           {modalStep === "manage" && (
             <motion.div
+              key="manage-modal"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -283,6 +285,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
           )}
           {modalStep === "import" && (
             <motion.div
+              key="import-modal"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

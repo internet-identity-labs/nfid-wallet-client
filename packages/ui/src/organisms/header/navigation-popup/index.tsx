@@ -40,6 +40,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          key="AuthenticatedPopup"
           className={clsx(
             "z-40 w-[340px] absolute right-0 top-[30px] bg-white p-[20px]",
             "shadow-xl rounded-[24px] flex flex-col justify-between",

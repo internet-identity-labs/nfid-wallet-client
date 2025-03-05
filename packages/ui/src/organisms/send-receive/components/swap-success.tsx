@@ -50,6 +50,7 @@ export interface SwapSuccessProps {
   isOpen: boolean
   error?: SwapError | WithdrawError | DepositError | SlippageSwapError
   providerName: SwapName | undefined
+  isResponsive?: boolean
 }
 
 export const SwapSuccessUi: FC<SwapSuccessProps> = ({
@@ -64,6 +65,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   isOpen,
   error,
   providerName,
+  isResponsive,
 }) => {
   const [currentAnimation, setCurrentAnimation] = useState<unknown>(
     allAnimations.deposit,
@@ -119,7 +121,12 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         <H5 className="mt-5 text-xl leading-6">
           {isCompleted ? "Swap successful" : "Swapping"}
         </H5>
-        <p className="h-5 mt-3 text-sm leading-5">
+        <p
+          className={clsx(
+            "h-5 mt-3 text-sm leading-5",
+            isResponsive && "mt-[30px] mb-[50px]",
+          )}
+        >
           {error
             ? `${providerName} ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted

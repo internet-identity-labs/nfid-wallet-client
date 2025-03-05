@@ -21,6 +21,10 @@ export class Profile extends Page {
     return $("#receiveButton")
   }
 
+  get disconnectButton() {
+    return $("#nav-logout")
+  }
+
   public async waitForTokensAppear(amount?: number) {
     await browser.waitUntil(
       async () => {

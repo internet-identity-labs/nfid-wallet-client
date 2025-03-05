@@ -43,7 +43,7 @@ export class Activity extends Page {
   ) =>
     $(
       `//*[@id='tx-${action}-${currency}-${type}-${
-        amount * 100000000
+        Number(amount) * 100000000
       }-${currency}-${timestamp}-${from}-${to}']`,
     )
 }

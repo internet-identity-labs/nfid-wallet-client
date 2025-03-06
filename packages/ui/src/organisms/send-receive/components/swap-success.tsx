@@ -118,12 +118,12 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
       )}
     >
       <div id={"swap-success-title"}>
-        <H5 className="mt-5 text-xl leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6">
           {isCompleted ? "Swap successful" : "Swapping"}
         </H5>
         <p
           className={clsx(
-            "h-5 mt-3 text-sm leading-5",
+            "h-5 mt-3 text-sm leading-5 font-inter",
             isResponsive && "mt-[30px] mb-[50px]",
           )}
         >
@@ -171,7 +171,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
       <div className="relative z-20">
         <div>
           <div className="pt-[20px] pb-[30px] relative">
-            <p className="text-sm leading-[25px]" id="title">
+            <p className="text-sm leading-[25px] font-inter" id="title">
               {titleFrom}
             </p>
             <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
@@ -193,7 +193,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </div>
           </div>
           <div className="bg-gradient-to-b from-gray-50 to-white py-[10px] rounded-t-[12px]">
-            <p className="text-sm leading-[25px]" id="title">
+            <p className="text-sm leading-[25px] font-inter" id="title">
               {titleTo}
             </p>
             <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">

@@ -120,15 +120,27 @@ export default function AuthenticationCoordinator({
 
   const onLoginWithPasskey = async (allowedPasskeys?: any[]) => {
     setIsPasskeyLoading(true)
-    const res = await passkeyConnector.loginWithPasskey(
-      undefined,
-      () => {
-        setIsPasskeyLoading(false)
-      },
-      allowedPasskeys ?? [],
-    )
+    try {
+      const res = await passkeyConnector.loginWithPasskey(
+        undefined,
+        () => {
+          setIsPasskeyLoading(false)
+        },
+        allowedPasskeys ?? [],
+      )
 
-    onAuthWithPasskey(res)
+      onAuthWithPasskey(res)
+    } catch (e) {
+      if (
+        (e as Error).message.includes("either timed out or was not allowed")
+      ) {
+        toaster.info(
+          "It seems like the process was interrupted. Feel free to try again!",
+        )
+      } else {
+        toaster.error((e as Error).message)
+      }
+    }
   }
 
   const onSignUpWithPasskey = async ({

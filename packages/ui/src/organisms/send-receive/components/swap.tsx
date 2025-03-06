@@ -87,6 +87,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   setProvider,
   tokensAvailableToSwap,
 }) => {
+  const [isResponsive, setIsResponsive] = useState(false)
   const [selectedShroff, setSelectedShroff] = useState<Shroff | undefined>()
   const [swapModal, setSwapModal] = useState(SwapModal.SWAP)
 
@@ -129,6 +130,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             onClose={onClose}
             error={error}
             providerName={shroff?.getSwapName()}
+            isResponsive={isResponsive}
           />
         </motion.div>
       )}
@@ -190,6 +192,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
         >
           <SwapFTForm
+            setIsResponsive={setIsResponsive}
+            isResponsive={isResponsive}
             tokens={tokens}
             allTokens={allTokens}
             fromToken={fromToken}

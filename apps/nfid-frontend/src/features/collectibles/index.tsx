@@ -25,7 +25,7 @@ const NFTsPage = () => {
   const { data, isLoading, isValidating } = useSWR(
     ["nftList", currentPage],
     () => fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
-    { revalidateOnFocus: false },
+    { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
   const onTransferNFT = useCallback(

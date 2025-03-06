@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 import { Id } from "react-toastify"
 import { Quote } from "src/integration/swap/quote"
@@ -42,6 +42,8 @@ export interface SwapFTFormProps {
   amount: string
   errors: FieldErrors<FieldValues>
   tokensAvailableToSwap: TokensAvailableToSwap
+  isResponsive?: boolean
+  setIsResponsive?: (value: boolean) => void
 }
 
 export const SwapFTForm: FC<SwapFTFormProps> = ({
@@ -62,11 +64,20 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   amount,
   errors,
   tokensAvailableToSwap,
+  isResponsive,
+  setIsResponsive,
 }) => {
   const [isChecked, setIsChecked] = useState(false)
-  const [rebuildFromLayout, setRebuildFromLayout] = useState(false)
-  const [rebuildToLayout, setRebuildToLayout] = useState(false)
   const priceImpact = quote?.getPriceImpact()
+
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [isToResponsive, setIsToResponsive] = useState(false)
+
+  useEffect(() => {
+    if (setIsResponsive) {
+      setIsResponsive(isFromResponsive || isToResponsive)
+    }
+  }, [isFromResponsive, isToResponsive, setIsResponsive])
 
   return (
     <div
@@ -107,8 +118,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           value={amount}
           title="Swap from"
           isSwap={true}
-          rebuildLayout={rebuildFromLayout || rebuildToLayout}
-          setRebuildLayout={setRebuildFromLayout}
+          isResponsive={isResponsive}
+          setIsResponsive={setIsFromResponsive}
           tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {showLiquidityError ? (
@@ -147,8 +158,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           isQuoteLoading={isQuoteLoading}
           value={quote?.getTargetAmountPrettified()}
           priceImpact={priceImpact}
-          rebuildLayout={rebuildFromLayout || rebuildToLayout}
-          setRebuildLayout={setRebuildToLayout}
+          isResponsive={isResponsive}
+          setIsResponsive={setIsToResponsive}
           tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {amount && quote && (
@@ -178,7 +189,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
         )}
         <Button
           className={clsx(
-            rebuildFromLayout || rebuildToLayout
+            isResponsive
               ? "w-full mt-6"
               : "absolute bottom-5 left-5 right-5 !w-auto",
           )}

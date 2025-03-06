@@ -17,7 +17,7 @@ const Toast = ({ title, text }: { title?: string; text?: string }) => {
   )
 }
 
-const toaster = (
+export const toaster = (
   myProps: { title?: string; text?: string },
   toastProps?: ToastOptions,
 ) => toast(<Toast {...myProps} />, { ...toastProps })

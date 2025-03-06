@@ -10,6 +10,6 @@ Feature: Log in with Recovery phrase
     And User logs out
     Examples:
       | nfid number |
-#      | 28593       |
+      | 28593       |
       | 100000830   |
       | 200000276   |

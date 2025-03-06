@@ -1,5 +1,7 @@
 import * as Agent from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
 import { _SERVICE as SwapPool } from "src/integration/swap/icpswap/idl/SwapPool.d"
 
@@ -35,6 +37,7 @@ class IcpSwapService {
     )
   }
 
+  @Cache(integrationCache, { ttl: 300 })
   async getPools(): Promise<Result> {
     return await this.poolActor.getPools()
   }

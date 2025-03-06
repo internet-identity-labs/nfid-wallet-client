@@ -2,6 +2,8 @@ import * as Agent from "@dfinity/agent"
 import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import {
   LiquidityError,
   ServiceUnavailableError,
@@ -214,6 +216,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     )
   }
 
+  @Cache(integrationCache, { ttl: 300 })
   async getPools(source: string, target: string): Promise<PoolsResult[]> {
     return await Promise.all([
       this.actor.pools([`${source}_${target}`]),

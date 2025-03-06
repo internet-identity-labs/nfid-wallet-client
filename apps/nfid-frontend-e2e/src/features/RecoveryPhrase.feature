@@ -1,11 +1,13 @@
-Feature: Recovery phrase
-  @ii-recovery-phrase @skip
-  Scenario Outline: User authenticates with Internet Identity recovery phrase
-    Given User opens NFID /recover-nfid/enter-recovery-phrase
-    When User enters recovery phrase of <nfid number> anchor
-    And User toggle checkbox "#has-verified-domain"
-    And User clicks on recover button
+Feature: Log in with Recovery phrase
+
+  @recovery-phrase
+  Scenario Outline: User authenticates with recovery phrase
+    Given User opens NFID site
+    When User opens Auth modal window
+    And User clicks the "Other sign in options" button
+    And User enters the recovery phrase of <nfid number> anchor
     Then Verifying that user is logged in
+    And User logs out
     Examples:
       | nfid number |
       | 28593       |

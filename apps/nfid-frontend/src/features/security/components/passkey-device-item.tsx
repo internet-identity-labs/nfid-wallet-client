@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import React from "react"
 
 import { IconCmpDots, IconCmpWarning, Tooltip } from "@nfid-frontend/ui"
@@ -77,7 +77,7 @@ export const PasskeyDeviceItem = ({
               setIsTooltipOpen(!isTooltipOpen)
             }}
           />
-          <AnimatePresence>
+          <>
             {isTooltipOpen && (
               <motion.div
                 key="passkeys"
@@ -117,7 +117,7 @@ export const PasskeyDeviceItem = ({
                 </DeletePasskey>
               </motion.div>
             )}
-          </AnimatePresence>
+          </>
         </div>
       </td>
     </tr>

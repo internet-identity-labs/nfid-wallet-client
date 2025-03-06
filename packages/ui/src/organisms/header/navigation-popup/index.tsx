@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { HTMLAttributes, FC } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 
@@ -37,7 +37,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   const location = useLocation()
 
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
         <motion.div
           key="AuthenticatedPopup"
@@ -110,7 +110,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </>
   )
 }
 

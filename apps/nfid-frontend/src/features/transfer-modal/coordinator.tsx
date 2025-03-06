@@ -1,5 +1,5 @@
 import { useActor } from "@xstate/react"
-import { AnimatePresence, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import toaster from "packages/ui/src/atoms/toast"
 import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
 import {
@@ -78,7 +78,7 @@ export const TransferModalCoordinator = () => {
 
   const Components = useMemo(
     () => (
-      <AnimatePresence>
+      <>
         {state.matches("SendMachine.SendFT") && (
           <motion.div
             key="send-ft-modal"
@@ -146,7 +146,7 @@ export const TransferModalCoordinator = () => {
             />
           </motion.div>
         )}
-      </AnimatePresence>
+      </>
     ),
     [state, publicKey, hideZeroBalance, hideModal],
   )

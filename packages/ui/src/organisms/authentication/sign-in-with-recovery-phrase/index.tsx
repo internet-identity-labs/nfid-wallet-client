@@ -41,6 +41,7 @@ export function AuthSignInWithRecoveryPhrase({
         Enter your recovery phrase to proceed:
       </p>
       <TextArea
+        id={"recovery-phrase-text-area"}
         className="flex flex-grow flex-col mb-[20px]"
         areaClassName="px-[10px] py-[10px] md:px-[14px] rounded-[12px] border flex flex-grow"
         errorText={error}
@@ -50,6 +51,7 @@ export function AuthSignInWithRecoveryPhrase({
         value={value}
       />
       <Button
+        id={"submit-recovery-phrase"}
         type="primary"
         block
         onClick={() => {

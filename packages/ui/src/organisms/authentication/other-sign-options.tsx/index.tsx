@@ -58,6 +58,7 @@ export const AuthOtherSignOptions = ({
         subTitle={subTitle}
       />
       <IconButton
+        id={"continue-recovery-phrase"}
         className="mt-[10px] mb-[20px]"
         title="Continue with recovery phrase"
         subtitle="Use your saved recovery phrase"

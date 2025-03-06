@@ -24,6 +24,7 @@
     "@dfinity/nns-proto": "^2.0.2",
     "@dfinity/principal": "2.3.0",
     "@dfinity/utils": "2.10.0",
+    "@dfinity/sns": "3.2.9",
     "@headlessui/react": "2.2.0",
     "@nfid/embed": "0.10.3",
     "@radix-ui/react-accordion": "^1.2.1",

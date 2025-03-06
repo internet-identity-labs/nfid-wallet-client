@@ -171,6 +171,13 @@ export const ActivityTableRow = ({
     }
   }
 
+  if (
+    transaction &&
+    transaction?.getStage() !== SwapStage.Completed &&
+    !transaction?.getErrors().length
+  )
+    return null
+
   return (
     <Tooltip
       className={getTooltipAndButtonText(transaction) ? "" : "hidden"}

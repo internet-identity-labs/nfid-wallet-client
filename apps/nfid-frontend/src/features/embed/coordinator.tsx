@@ -91,7 +91,9 @@ export default function NFIDEmbedCoordinator() {
       isVisible
       className="w-full !relative sm:!fixed"
     >
-      <ScreenResponsive>{Component}</ScreenResponsive>
+      <ScreenResponsive modalClassName="sm:!h-[630px]">
+        {Component}
+      </ScreenResponsive>
     </ModalComponent>
   )
 }

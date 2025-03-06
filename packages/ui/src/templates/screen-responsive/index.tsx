@@ -3,10 +3,12 @@ import React from "react"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   frameLabel?: string
+  modalClassName?: string
 }
 
 export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   children,
+  modalClassName,
   className,
 }) => {
   return (
@@ -17,7 +19,8 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
         "sm:absolute overflow-hidden",
         "sm:top-1/2 sm:left-1/2 sm:-translate-y-1/2 sm:-translate-x-1/2",
         "bg-frameBgColor border-frameBorderColor",
-        "sm:h-[630px] sm:w-[450px] h-screen",
+        "sm:h-[600px] sm:w-[450px] h-screen",
+        modalClassName,
       )}
     >
       <div

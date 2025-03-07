@@ -86,10 +86,6 @@ class UserService implements UserActions {
         errors.push(String(executeResult))
         let state = await this.getAuthStateFromDB()
         errors.push(...state.errors)
-        console.log(
-          state.identity?.toString(),
-          state.delegation
-        )
         return (
           state.identity?.toString() ==
           testUser.authstate.identity.toString() &&

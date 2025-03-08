@@ -1,24 +1,31 @@
-import { Then, When } from "@cucumber/cucumber"
+import { When } from "@cucumber/cucumber"
 
 import userClient from "../helpers/accounts-service.js"
+import HomePage from "../pages/home-page.js"
 
-When(
-  /^User enters recovery phrase of ([^"]*) anchor$/,
-  {
-    wrapperOptions: {
-      retry: 2,
-    },
-  },
-  async function (anchor: number) {
-    let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
-    return (await $("[name='recoveryPhrase']")).setValue(testUser.seed)
-  },
-)
-
-When(/^User clicks on recover button$/, async () => {
-  await $("#recovery-button").click()
+When(/^User opens Auth modal window$/, async () => {
+  await HomePage.openAuthModal()
 })
 
-Then(/^User toggle checkbox "([^"]*)?"$/, async function (selector: string) {
-  await $(selector).click()
+When(/^User clicks the "Other sign in options" button$/, async () => {
+  await HomePage.otherSignInOptionsButton.waitForClickable({
+    timeoutMsg: `"Other sign in options" button wasn't clickable`,
+  })
+  await HomePage.otherSignInOptionsButton.click()
+  await HomePage.continueWithRecoveryPhraseButton.waitForClickable({
+    timeoutMsg: `"Continue with recovery phrase" button wasn't clickable`,
+  })
+})
+
+When(/^User enters the recovery phrase of ([^"]*) anchor$/, async (anchor: number) => {
+  await HomePage.continueWithRecoveryPhraseButton.click()
+  await HomePage.recoveryPhraseTextArea.setValue((await userClient.takeStaticUserByAnchor(anchor)).seed)
+  await HomePage.submitRecoveryPhraseButton.click()
+  try {
+    await HomePage.skipSecureWalletButton.waitForDisplayed({
+      timeout: 8000,
+    })
+  } catch (e) {/*empty*/
+  }
+  if (await HomePage.skipSecureWalletButton.isDisplayed()) await HomePage.skipSecureWalletButton.click()
 })

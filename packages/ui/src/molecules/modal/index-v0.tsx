@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { HTMLAttributes, FC } from "react"
 
 import { useDisableScroll } from "./hooks/disable-scroll"
@@ -19,9 +19,10 @@ export const ModalComponent: FC<ModalProps> = ({
   useDisableScroll(Boolean(isVisible))
 
   return (
-    <AnimatePresence>
+    <>
       {isVisible && (
         <motion.div
+          key={isVisible ? "visible" : "hidden"}
           className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-screen bg-opacity-50 bg-zinc-900/80"
           onClick={onClose}
           initial={{ opacity: 0 }}
@@ -41,6 +42,6 @@ export const ModalComponent: FC<ModalProps> = ({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </>
   )
 }

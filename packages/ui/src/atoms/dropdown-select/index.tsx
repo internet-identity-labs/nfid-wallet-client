@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
@@ -140,49 +140,47 @@ export const DropdownSelect = ({
         <img src={Arrow} alt="arrow" />
       </div>
       {errorText && <p className="text-sm text-red-600">{errorText}</p>}
-      <AnimatePresence>
-        {isDropdownOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="w-full bg-white rounded-[12px] mt-[1px] absolute z-50 shadow-md"
+      {isDropdownOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="w-full bg-white rounded-[12px] mt-[1px] absolute z-50 shadow-md"
+        >
+          {isSearch && (
+            <Input
+              type="text"
+              icon={<IoIosSearch size="20" />}
+              placeholder="Search"
+              className="mx-[13px] mt-[13px]"
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+          )}
+          <div
+            className="max-h-[288px] overflow-auto flex flex-col py-[12px]"
+            id="dropdown-options"
           >
-            {isSearch && (
-              <Input
-                type="text"
-                icon={<IoIosSearch size="20" />}
-                placeholder="Search"
-                className="mx-[13px] mt-[13px]"
-                onChange={(e) => setSearchInput(e.target.value)}
+            {showSelectAllOption && (
+              <DropdownSelectOption
+                option={{ label: "Select all", value: "all" }}
+                isChecked={isAllSelected}
+                toggleCheckbox={toggleSelectAll}
+                isCheckbox
               />
             )}
-            <div
-              className="max-h-[288px] overflow-auto flex flex-col py-[12px]"
-              id="dropdown-options"
-            >
-              {showSelectAllOption && (
-                <DropdownSelectOption
-                  option={{ label: "Select all", value: "all" }}
-                  isChecked={isAllSelected}
-                  toggleCheckbox={toggleSelectAll}
-                  isCheckbox
-                />
-              )}
-              {filteredOptions.map((option) => (
-                <DropdownSelectOption
-                  key={option.value}
-                  option={option}
-                  isChecked={selectedValues.includes(option.value)}
-                  toggleCheckbox={toggleCheckbox}
-                  isCheckbox
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {filteredOptions.map((option) => (
+              <DropdownSelectOption
+                key={option.value}
+                option={option}
+                isChecked={selectedValues.includes(option.value)}
+                toggleCheckbox={toggleCheckbox}
+                isCheckbox
+              />
+            ))}
+          </div>
+        </motion.div>
+      )}
     </div>
   )
 }

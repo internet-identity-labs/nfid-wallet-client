@@ -1,5 +1,5 @@
 import { useActor } from "@xstate/react"
-import { AnimatePresence, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import { decodeJwt } from "jose"
 import toaster from "packages/ui/src/atoms/toast"
 import {
@@ -546,5 +546,5 @@ export default function AuthenticationCoordinator({
     }
   }
 
-  return <AnimatePresence mode="wait">{renderAuthSteps()}</AnimatePresence>
+  return <>{renderAuthSteps()}</>
 }

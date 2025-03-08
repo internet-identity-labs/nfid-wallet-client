@@ -42,20 +42,7 @@ When(
     },
   },
   async function(anchor: number) {
-    let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
-
-    const response = await browser.executeAsync(function(
-        authState: AuthState,
-        done,
-      ) {
-        // @ts-ignore
-        if (typeof this.setAuthState === "function") {
-          // @ts-ignore
-          this.setAuthState(authState).then(done)
-        }
-      },
-      testUser.authstate)
-    console.log("set auth state", { response })
+    await userClient.setAuth(anchor)
     await HomePage.openPage("/wallet/tokens")
   },
 )

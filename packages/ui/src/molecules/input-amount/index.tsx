@@ -10,12 +10,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   value: string
   fontSize?: number
   className?: string
+  key?: number
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       fontSize,
+      key,
       className,
       id,
       decimals,
@@ -58,6 +60,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
           <Skeleton />
         ) : (
           <NumericFormat
+            key={key}
             placeholder="0.00"
             decimalScale={decimals}
             allowedDecimalSeparators={[",", "."]}
@@ -66,15 +69,9 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             decimalSeparator="."
             getInputRef={ref}
             value={value}
-            onChange={(e) => {
-              onChange?.(e)
-            }}
-            onBlur={(e) => {
-              onBlur?.(e)
-            }}
-            onKeyDown={(e) => {
-              onKeyDown?.(e)
-            }}
+            onChange={(e) => onChange?.(e)}
+            onBlur={(e) => onBlur?.(e)}
+            onKeyDown={(e) => onKeyDown?.(e)}
             disabled={disabled}
             id={id}
             className={clsx(

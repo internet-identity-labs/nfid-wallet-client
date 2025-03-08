@@ -44,6 +44,7 @@ export const ChooseNftModal = ({
         onSelect={(value) => onSelect(handleSelectTokenId(value))}
         trigger={trigger}
         renderItem={ChooseNftItem}
+        tokensAvailableToSwap={{ to: [], from: [] }}
       />
     </>
   )

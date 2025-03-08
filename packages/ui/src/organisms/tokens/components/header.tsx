@@ -25,7 +25,7 @@ import {
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { FT } from "frontend/integration/ft/ft"
-import { filterTokens } from "frontend/integration/ft/ft-service"
+import { ftService } from "frontend/integration/ft/ft-service"
 
 import { FilteredToken } from "./filtered-asset"
 import { ScanTokens } from "./scan-tokens"
@@ -266,7 +266,7 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
                     "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
                   )}
                 >
-                  {filterTokens(tokens, search).map((token) => {
+                  {ftService.filterTokens(tokens, search).map((token) => {
                     if (!token.isHideable()) return
                     return (
                       <FilteredToken

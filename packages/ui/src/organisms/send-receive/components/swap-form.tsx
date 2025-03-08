@@ -14,6 +14,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import SettingsIcon from "../assets/swap-settings.svg"
@@ -40,6 +41,7 @@ export interface SwapFTFormProps {
   setSwapModal: (v: SwapModal) => void
   amount: string
   errors: FieldErrors<FieldValues>
+  tokensAvailableToSwap: TokensAvailableToSwap
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
 }
@@ -61,6 +63,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   setSwapModal,
   amount,
   errors,
+  tokensAvailableToSwap,
   isResponsive,
   setIsResponsive,
 }) => {
@@ -117,6 +120,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           isSwap={true}
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
+          tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {showLiquidityError ? (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -156,6 +160,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           priceImpact={priceImpact}
           isResponsive={isResponsive}
           setIsResponsive={setIsToResponsive}
+          tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {amount && quote && (
           <div className="flex items-center justify-between mt-6 text-xs text-gray-500">

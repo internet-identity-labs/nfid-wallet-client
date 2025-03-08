@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom"
 import ActivityPage from "../activity"
 import NFTsPage from "../collectibles"
 import TokensPage from "../fungible-token"
+import StakingPage from "../staking"
 
 export const WalletRouter = () => {
   return (
@@ -23,6 +24,14 @@ export const WalletRouter = () => {
           <ProfileContainer>
             <NFTsPage />
           </ProfileContainer>
+        }
+      />
+      <Route
+        path="staking"
+        element={
+          <>
+            <StakingPage />
+          </>
         }
       />
       <Route

@@ -90,6 +90,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
       },
       {
+        name: "Staking",
+        title: <>Staking</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.staking}`,
+      },
+      {
         name: "Activity",
         title: <>Activity</>,
         path: `${ProfileConstants.base}/${ProfileConstants.activity}`,

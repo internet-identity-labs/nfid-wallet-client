@@ -2,6 +2,8 @@ import * as Agent from "@dfinity/agent"
 import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import {
   LiquidityError,
   ServiceUnavailableError,
@@ -214,11 +216,31 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     )
   }
 
+  @Cache(integrationCache, { ttl: 300 })
   async getPools(source: string, target: string): Promise<PoolsResult[]> {
-    const pair1 = await this.actor.pools([`${source}_${target}`])
-    const pair2 = await this.actor.pools([`${target}_${source}`])
+    return await Promise.all([
+      this.actor.pools([`${source}_${target}`]),
+      this.actor.pools([`${target}_${source}`]),
+    ])
+  }
 
-    return [pair1, pair2]
+  static async getAvailablePools(source: string): Promise<string[]> {
+    const actor: Agent.ActorSubclass<_SERVICE> = actorBuilder<_SERVICE>(
+      ROOT_CANISTER,
+      KongIDL,
+    )
+    const result = await actor.pools([source])
+
+    if (!("Ok" in result)) return []
+
+    let allPools: string[] = []
+
+    result.Ok.pools.forEach((pool) => {
+      if (pool.address_0 === source) allPools.push(pool.address_1)
+      if (pool.address_1 === source) allPools.push(pool.address_0)
+    })
+
+    return allPools
   }
 
   getSwapAccount(): Account {

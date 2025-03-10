@@ -119,7 +119,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [])
 
   const activeTab = useMemo(() => {
-    return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
+    return (
+      tabs.find((tab) => location.pathname.startsWith(tab.path)) ?? { name: "" }
+    )
   }, [location.pathname, tabs])
   const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)

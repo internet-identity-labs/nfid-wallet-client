@@ -4,7 +4,7 @@ import {
   filterNotActiveNotZeroBalancesTokens,
   fetchTokens,
 } from "packages/ui/src/organisms/tokens/utils"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import { ImageWithFallback, IconNftPlaceholder } from "@nfid-frontend/ui"
@@ -63,7 +63,7 @@ export function ScanTokens({
         </p>
       </div>
       {isScanningTokens ? (
-        <div className="flex grow flex-col">
+        <div className="flex flex-col grow">
           <p className="mb-[20px]">
             Looking for tokens with non-zero balances...
           </p>

@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
@@ -106,7 +106,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
     )
 
   return (
-    <AnimatePresence mode="wait">
+    <>
       {isSuccessOpen && (
         <motion.div
           key="successModal"
@@ -210,6 +210,6 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           />
         </motion.div>
       )}
-    </AnimatePresence>
+    </>
   )
 }

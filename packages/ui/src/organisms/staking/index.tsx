@@ -113,10 +113,7 @@ export const Staking: FC<StakingProps> = ({ stakes, isLoading, links }) => {
                     </p>
                   </td>
                   <td className="w-[34px] text-right md:w-[55px] md:text-left">
-                    <Link
-                      to={`${links.base}/${links.staking}/icp`}
-                      //state={{ currentPage }}
-                    >
+                    <Link to={`${links.base}/${links.staking}/icp`}>
                       <div
                         className={clsx(
                           "inline-flex items-center gap-1 justify-between cursor-pointer",

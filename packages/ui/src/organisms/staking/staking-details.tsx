@@ -10,9 +10,9 @@ import { ArrowButton } from "../../molecules/button/arrow-button"
 import { StakingHeader } from "./components/staking-header"
 import { StakingOption, StakingOptions } from "./components/staking-option"
 
-export interface StakingProps {}
+export interface StakingDetailsProps {}
 
-export const StakingDetails: FC<StakingProps> = ({}) => {
+export const StakingDetails: FC<StakingDetailsProps> = ({}) => {
   const { tokenSymbol } = useParams()
 
   const handleNavigateBack = useCallback(() => {

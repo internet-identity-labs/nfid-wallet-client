@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
-import { filterTokens, ftService } from "src/integration/ft/ft-service"
+import { ftService } from "src/integration/ft/ft-service"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
@@ -9,6 +9,10 @@ import { exchangeRateService } from "@nfid/integration"
 import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
+
+import { swapService } from "frontend/integration/swap/service/swap-service"
+import { Shroff } from "frontend/integration/swap/shroff"
+import { SwapName } from "frontend/integration/swap/types/enums"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -83,7 +87,7 @@ describe("ft test suite", () => {
       )
       expect(icpResult!.getUSDBalanceFormatted()).toEqual("0.00 USD")
 
-      const filteredResult = filterTokens(result, "CHAT")
+      const filteredResult = ftService.filterTokens(result, "CHAT")
       expect(filteredResult.length).toEqual(1)
 
       expect(result[0].getTokenName()).toEqual("Internet Computer")
@@ -536,6 +540,79 @@ describe("ft test suite", () => {
         principal,
       )
       expect(filteredTokens.length).toEqual(1)
+    })
+
+    it("should highlight the available tokens to swap", async () => {
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValueOnce([
+          {
+            ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
+            name: "Chat",
+            symbol: "CHAT",
+            logo: "Some logo",
+            index: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            state: "Active",
+            category: "Unknown",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            name: "A first letter",
+            symbol: "A first letter",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Inactive",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+        ])
+
+      const tokens: FT[] = await ftService.getTokens(userId)
+
+      const validTokenLedgers = new Set(
+        tokens.map((token) => token.getTokenAddress()),
+      )
+
+      const [toList, fromList] = await Promise.all([
+        ftService.getTokensAvailableToSwap("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+        ftService.getTokensAvailableToSwap(NFIDW_CANISTER_ID),
+      ])
+
+      const expectedResult = {
+        to: [
+          "2ouva-viaaa-aaaaq-aaamq-cai",
+          "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          NFIDW_CANISTER_ID,
+        ],
+        from: ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
+      }
+
+      expect({
+        to: toList.filter((ledger) => validTokenLedgers.has(ledger)),
+        from: fromList.filter((ledger) => validTokenLedgers.has(ledger)),
+      }).toEqual(expectedResult)
     })
   })
 })

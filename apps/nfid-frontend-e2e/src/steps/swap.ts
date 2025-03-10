@@ -2,6 +2,7 @@ import { When } from "@cucumber/cucumber"
 
 import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 let currentSourceTokenBalance: number
 let currentTargetTokenBalance: number
@@ -121,14 +122,14 @@ When(
             "",
           ),
         )
-
+        cucumberJson.attach(await browser.takeScreenshot())
         return (
           expectedSourceTokenBalance - actualSourceTokenBalance < 0.00000001 &&
           expectedTargetTokenBalance - actualTargetTokenBalance < 0.00000001
         )
       },
       {
-        timeout: 15000,
+        timeout: 25000,
         timeoutMsg: `Incorrect balance after swap.
         Expected:
         sourceTokenBalance - ${

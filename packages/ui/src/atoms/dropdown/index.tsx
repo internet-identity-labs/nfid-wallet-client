@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 
 import useClickOutside from "../../utils/use-click-outside"
@@ -42,7 +42,7 @@ export const Dropdown = ({
       >
         {triggerElement}
       </div>
-      <AnimatePresence>
+      <>
         {isDropdownOpen && (
           <motion.div
             className={clsx(
@@ -66,7 +66,7 @@ export const Dropdown = ({
             <div style={{ minWidth: `${minWidth}px` }}>{children}</div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </>
     </div>
   )
 }

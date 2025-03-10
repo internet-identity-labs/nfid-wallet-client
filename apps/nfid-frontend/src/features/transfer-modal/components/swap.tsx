@@ -187,7 +187,7 @@ export const SwapFT = ({
         setProviderError(error)
       }
     }
-  }, [fromTokenAddress, toTokenAddress, tokens])
+  }, [fromTokenAddress, toTokenAddress])
 
   useEffect(() => {
     getProviders()

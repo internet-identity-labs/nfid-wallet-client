@@ -1,25 +1,32 @@
 import clsx from "clsx"
 import { FC, useCallback } from "react"
-import { useParams } from "react-router-dom"
 
+import {
+  IStakingDetails,
+  StakingOptions,
+} from "frontend/features/staking-details"
 import { NotFound } from "frontend/ui/pages/404"
 
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
 import { ArrowButton } from "../../molecules/button/arrow-button"
 import { StakingHeader } from "./components/staking-header"
-import { StakingOption, StakingOptions } from "./components/staking-option"
+import { StakingOption } from "./components/staking-option"
 
-export interface StakingDetailsProps {}
+export interface StakingDetailsProps {
+  stakingDetails: IStakingDetails
+  stakeOptions: any
+}
 
-export const StakingDetails: FC<StakingDetailsProps> = ({}) => {
-  const { tokenSymbol } = useParams()
-
+export const StakingDetails: FC<StakingDetailsProps> = ({
+  stakingDetails,
+  stakeOptions,
+}) => {
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
 
-  if (!tokenSymbol) return <NotFound />
+  if (!stakingDetails) return <NotFound />
 
   return (
     <>
@@ -30,31 +37,43 @@ export const StakingDetails: FC<StakingDetailsProps> = ({}) => {
           iconClassName="text-black"
         />
         <ImageWithFallback
-          alt="ckETH"
+          alt={stakingDetails.symbol}
           fallbackSrc={IconNftPlaceholder}
           src="#"
           className={clsx("w-[62px] h-[62px]", "rounded-full object-cover")}
         />
         <div>
-          <p className="text-[28px] leading-[36px]">ICP</p>
-          <p className="text-xs leading-5 text-secondary">Internet Computer</p>
+          <p className="text-[28px] leading-[36px]">{stakingDetails.symbol}</p>
+          <p className="text-xs leading-5 text-secondary">
+            {stakingDetails.name}
+          </p>
         </div>
       </div>
-      <StakingHeader
-        stakingBalance={14127.15}
-        staked={13279.521}
-        rewards={847.629}
-        currency={tokenSymbol}
-      />
-      <StakingOption
-        stakingOption={StakingOptions.Available}
-        isLoading={false}
-      />
-      <StakingOption
-        stakingOption={StakingOptions.Unlocking}
-        isLoading={false}
-      />
-      <StakingOption stakingOption={StakingOptions.Locked} isLoading={false} />
+      <StakingHeader stakingInfo={stakingDetails} />
+      {stakeOptions.Available.length && (
+        <StakingOption
+          stakingOptionType={StakingOptions.Available}
+          stakingOptions={stakeOptions.Available}
+          isLoading={false}
+          stakingDetails={stakingDetails}
+        />
+      )}
+      {stakeOptions.Unlocking.length && (
+        <StakingOption
+          stakingOptionType={StakingOptions.Unlocking}
+          stakingOptions={stakeOptions.Unlocking}
+          isLoading={false}
+          stakingDetails={stakingDetails}
+        />
+      )}
+      {stakeOptions.Locked.length && (
+        <StakingOption
+          stakingOptionType={StakingOptions.Locked}
+          stakingOptions={stakeOptions.Locked}
+          isLoading={false}
+          stakingDetails={stakingDetails}
+        />
+      )}
     </>
   )
 }

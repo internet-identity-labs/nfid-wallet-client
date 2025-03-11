@@ -10,26 +10,30 @@ import { Table } from "packages/ui/src/molecules/table"
 import { Tooltip } from "packages/ui/src/molecules/tooltip"
 import { FC } from "react"
 
+import {
+  IStakingDetails,
+  IStakingOption,
+  StakingOptions,
+} from "frontend/features/staking-details"
+
 import DiamondIcon from "../assets/diamond.svg"
 
-export enum StakingOptions {
-  Available = "Available",
-  Unlocking = "Unlocking",
-  Locked = "Locked",
-}
-
 export interface StakingOptionProps {
-  stakingOption: StakingOptions
+  stakingOptionType: StakingOptions
+  stakingOptions: IStakingOption[]
   isLoading: boolean
+  stakingDetails: IStakingDetails
 }
 
 export const StakingOption: FC<StakingOptionProps> = ({
-  stakingOption,
+  stakingOptions,
+  stakingOptionType,
   isLoading,
+  stakingDetails,
 }) => {
   return (
     <ProfileContainer
-      title={stakingOption}
+      title={stakingOptionType}
       className="!py-[20px] md:!py-[30px] !mb-[20px] md:!mb-[30px]"
       titleClassName="!px-0 md:!px-[30px] mb-[10px] md:!mb-[30px]"
       innerClassName="!px-0"
@@ -125,7 +129,8 @@ export const StakingOption: FC<StakingOptionProps> = ({
               >
                 <span
                   className={clsx(
-                    stakingOption !== StakingOptions.Unlocking && "invisible",
+                    stakingOptionType !== StakingOptions.Unlocking &&
+                      "invisible",
                   )}
                 >
                   Unlock in
@@ -133,73 +138,84 @@ export const StakingOption: FC<StakingOptionProps> = ({
               </td>
               <td className={clsx("w-[55px]")} />
             </tr>
-            <tr className="text-sm md:hover:bg-gray-50 h-[64px]">
-              <td className="md:pl-[30px]">
-                <div className="flex items-center gap-[12px]">
-                  <div className="w-[40px] h-[40px] rounded-full bg-zinc-50 relative">
-                    <ImageWithFallback
-                      alt="ICP"
-                      fallbackSrc={IconNftPlaceholder}
-                      src="#"
+            {stakingOptions.map((option) => {
+              return (
+                <tr className="text-sm md:hover:bg-gray-50 h-[64px]">
+                  <td className="md:pl-[30px]">
+                    <div className="flex items-center gap-[12px]">
+                      <div className="w-[40px] h-[40px] rounded-full bg-zinc-50 relative">
+                        <ImageWithFallback
+                          alt={stakingDetails.symbol}
+                          fallbackSrc={IconNftPlaceholder}
+                          src={stakingDetails.logo}
+                          className={clsx(
+                            "w-full h-full",
+                            "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
+                          )}
+                        />
+                        {option.isDiamond && (
+                          <div
+                            className={clsx(
+                              "absolute bottom-0 right-0 rounded-full",
+                              "flex items-center justify-center w-5 h-5 bg-white",
+                            )}
+                          >
+                            <img src={DiamondIcon} />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm leading-[20px]">
+                          <CopyAddress address={option.id} />
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
+                    <p className="text-sm leading-6">{option.initial}</p>
+                    <p className="text-xs leading-5 text-secondary">
+                      {option.initialInUsd}
+                    </p>
+                  </td>
+                  <td className="px-0 md:px-[10px] hidden md:table-cell">
+                    <p className="text-sm leading-6">{option.rewards}</p>
+                    <p className="text-xs leading-5 text-secondary">
+                      {option.rewardsInUsd}
+                    </p>
+                  </td>
+                  <td className="px-0 md:px-[10px] hidden md:table-cell">
+                    <p className="text-sm leading-5 opacity-80">
+                      {option.lockTime}
+                    </p>
+                  </td>
+                  <td className="px-0 md:px-[10px] hidden md:table-cell">
+                    <p
                       className={clsx(
-                        "w-full h-full",
-                        "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
-                      )}
-                    />
-                    <div
-                      className={clsx(
-                        "absolute bottom-0 right-0 rounded-full",
-                        "flex items-center justify-center w-5 h-5 bg-white",
+                        "text-sm leading-5 opacity-80",
+                        stakingOptionType !== StakingOptions.Unlocking &&
+                          "invisible",
                       )}
                     >
-                      <img src={DiamondIcon} />
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm leading-[20px]">
-                      <CopyAddress address="5695121862339497860" />
+                      {option.unlockIn}
                     </p>
-                  </div>
-                </div>
-              </td>
-              <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                <p className="text-sm leading-6">2,000.00 ICP</p>
-                <p className="text-xs leading-5 text-secondary">
-                  14,207.03 USD
-                </p>
-              </td>
-              <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p className="text-sm leading-6">40.08 ICP</p>
-                <p className="text-xs leading-5 text-secondary">284.71 USD</p>
-              </td>
-              <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p className="text-sm leading-5 opacity-80">2 years</p>
-              </td>
-              <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p
-                  className={clsx(
-                    "text-sm leading-5 opacity-80",
-                    stakingOption !== StakingOptions.Unlocking && "invisible",
-                  )}
-                >
-                  4 months, 124 days
-                </p>
-              </td>
-              <td
-                className={clsx(
-                  "w-[34px] md:w-[55px] text-right pr-0 md:pr-[30px]",
-                )}
-              >
-                <div
-                  className={clsx(
-                    "inline-flex items-center gap-1 justify-between cursor-pointer",
-                    "transition-all group p-1",
-                  )}
-                >
-                  <IconCaret />
-                </div>
-              </td>
-            </tr>
+                  </td>
+                  <td
+                    className={clsx(
+                      "w-[34px] md:w-[55px] text-right pr-0 md:pr-[30px]",
+                    )}
+                  >
+                    <div
+                      className={clsx(
+                        "inline-flex items-center gap-1 justify-between cursor-pointer",
+                        "transition-all group p-1",
+                      )}
+                    >
+                      <IconCaret />
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </>
         )}
       </Table>

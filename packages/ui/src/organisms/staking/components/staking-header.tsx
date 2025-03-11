@@ -1,19 +1,15 @@
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { FC } from "react"
 
+import { IStakingInfo } from "frontend/features/staking"
+
 export interface StakingInfoProps {
-  stakingBalance: number
-  staked: number
-  rewards: number
-  currency: string
+  stakingInfo: IStakingInfo
 }
 
-export const StakingHeader: FC<StakingInfoProps> = ({
-  stakingBalance,
-  staked,
-  rewards,
-  currency,
-}) => {
+export const StakingHeader: FC<StakingInfoProps> = ({ stakingInfo }) => {
+  const { stakingBalance, staked, rewards, symbol } = stakingInfo
+
   return (
     <ProfileContainer
       className="!py-[20px] md:!py-[30px] !border !mb-[20px] md:!mb-[30px]"
@@ -27,12 +23,12 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           <p className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap">
             {stakingBalance}{" "}
             <span className="text-sm md:text-[16px]">
-              {currency.toUpperCase()}
+              {symbol.toUpperCase()}
             </span>
           </p>
-          {currency !== "USD" && (
+          {symbol !== "USD" && (
             <p className="text-xs leading-5 text-secondary mt-0.5">
-              14,171.42 USD
+              {stakingBalance} {symbol}
             </p>
           )}
         </div>
@@ -44,12 +40,12 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           <p className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap">
             {staked}{" "}
             <span className="text-sm md:text-[16px]">
-              {currency.toUpperCase()}
+              {symbol.toUpperCase()}
             </span>
           </p>
-          {currency !== "USD" && (
+          {symbol !== "USD" && (
             <p className="text-xs leading-5 text-secondary mt-0.5">
-              14,171.42 USD
+              {stakingBalance} {symbol}
             </p>
           )}
         </div>
@@ -60,12 +56,12 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           <p className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap">
             {rewards}{" "}
             <span className="text-sm md:text-[16px]">
-              {currency.toUpperCase()}
+              {symbol.toUpperCase()}
             </span>
           </p>
-          {currency !== "USD" && (
+          {symbol !== "USD" && (
             <p className="text-xs leading-5 text-secondary mt-0.5">
-              14,171.42 USD
+              {stakingBalance} {symbol}
             </p>
           )}
         </div>

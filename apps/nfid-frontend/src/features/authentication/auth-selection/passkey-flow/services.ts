@@ -18,7 +18,6 @@ import {
   KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
-import toaster from "packages/ui/src/atoms/toast"
 
 import { getBrowser } from "@nfid-frontend/utils"
 import {
@@ -371,8 +370,7 @@ export class PasskeyConnector {
         delegationIdentity: delegationIdentity,
         identity: multiIdent._actualIdentity!,
       }
-    } catch (e: any) {
-      toaster.error(e.message)
+    } catch (e) {
       authState.reset()
       throw e
     } finally {

@@ -29,7 +29,7 @@ export const AuthSignUpCaptcha = ({
   captcha: string
   error?: string
 }) => {
-  const { register, handleSubmit, formState, setError, clearErrors } = useForm<{
+  const { register, handleSubmit, formState, setError, watch } = useForm<{
     captcha: string
   }>()
 
@@ -40,6 +40,8 @@ export const AuthSignUpCaptcha = ({
       })
     }
   }, [error])
+
+  const inputValue = watch("captcha")
 
   return (
     <div className="h-full flex-grow flex flex-col">
@@ -64,12 +66,12 @@ export const AuthSignUpCaptcha = ({
             placeholder="Enter the characters you see above"
             className="mb-[10px]"
             errorText={formState.errors.captcha?.message}
-            {...register("captcha", { required: "This field is required" })}
+            {...register("captcha")}
           />
           <Button
             className="mt-auto mb-[10px]"
             block
-            disabled={isCreatingWallet}
+            disabled={isCreatingWallet || !inputValue}
             onClick={handleSubmit((data) => {
               onContinue(data.captcha)
             })}

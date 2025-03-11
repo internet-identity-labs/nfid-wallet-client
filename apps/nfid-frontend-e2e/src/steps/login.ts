@@ -26,7 +26,7 @@ Given(
   },
 )
 
-Given(/^User opens NFID ?(.*)?$/, async function(site: string) {
+Given(/^User opens NFID ?(.*)?$/, async function (site: string) {
   if (site === "site") await HomePage.openBaseUrl()
   else await HomePage.openPage(site)
   await clearAuthState()
@@ -41,7 +41,7 @@ When(
       retry: 2,
     },
   },
-  async function(anchor: number) {
+  async function (anchor: number) {
     await userClient.setAuth(anchor)
     await HomePage.openPage("/wallet/tokens")
   },
@@ -58,8 +58,7 @@ When(/^Verifying that user is logged in$/, async () => {
             timeoutMsg: "Menu button wasn't clickable after 15sec",
           })
         }
-      } catch (e) {
-      }
+      } catch (e) {}
       if (await Profile.menuButton.isClickable()) return true
     },
     {

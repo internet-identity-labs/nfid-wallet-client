@@ -17,6 +17,7 @@ export interface ICRC1 {
   state: State
   fee: bigint
   decimals: number
+  rootCanisterId: string | undefined
 }
 
 export class ICRC1Error extends Error {}

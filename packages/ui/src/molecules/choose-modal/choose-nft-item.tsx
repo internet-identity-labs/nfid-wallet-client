@@ -25,19 +25,19 @@ export const ChooseNftItem = ({ token }: IChooseNftItem) => {
       <div className="flex items-center h-[28px]">
         {!token.isInited() ? (
           <Skeleton className="w-12 h-12 mr-[18px] rounded-[12px]" />
-        ) : token.getAssetPreview().format === "video" ? (
+        ) : token.getAssetPreview()?.format === "video" ? (
           <video
             muted
             autoPlay
             loop
             className="w-12 h-12 mr-[18px] rounded-[12px]"
-            src={token.getAssetPreview().url}
+            src={token.getAssetPreview()?.url}
           ></video>
         ) : (
           <ImageWithFallback
             alt={token.getTokenName()}
             fallbackSrc={IconNftPlaceholder}
-            src={token.getAssetPreview().url || "#"}
+            src={token.getAssetPreview()?.url || "#"}
             className={clsx("mr-[18px] w-12 h-12 object-cover rounded-[12px]")}
           />
         )}

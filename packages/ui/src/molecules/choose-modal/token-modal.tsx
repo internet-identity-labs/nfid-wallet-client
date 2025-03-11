@@ -11,12 +11,14 @@ import {
 } from "react"
 import { IoIosSearch } from "react-icons/io"
 
-import { ChooseTokenSkeleton } from "@nfid-frontend/ui"
+import { ChooseTokenSkeleton, IconInfo, Tooltip } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
+import { FTImpl } from "frontend/integration/ft/impl/ft-impl"
 import { NFT } from "frontend/integration/nft/nft"
 
 import { useIntersectionObserver } from "../../organisms/send-receive/hooks/intersection-observer"
@@ -30,7 +32,13 @@ export interface IChooseTokenModal<T> {
   title: string
   trigger?: JSX.Element
   filterTokensBySearchInput: (token: T, searchInput: string) => boolean
-  renderItem: ElementType<{ token: T }>
+  renderItem: ElementType<{
+    token: T
+    isSwapTo?: boolean
+    tokensAvailableToSwap?: TokensAvailableToSwap
+  }>
+  isSwapTo?: boolean
+  tokensAvailableToSwap?: TokensAvailableToSwap
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -41,6 +49,8 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   trigger,
   filterTokensBySearchInput,
   renderItem: ChooseItem,
+  isSwapTo,
+  tokensAvailableToSwap,
 }: IChooseTokenModal<T>) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -115,10 +125,17 @@ export const ChooseTokenModal = <T extends FT | NFT>({
 
   const handleSelect = useCallback(
     (token: T) => {
-      onSelect && onSelect(token)
+      if (token instanceof FTImpl) {
+        const isSwappable = isSwapTo
+          ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
+          : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
+
+        if (!isSwappable && tokensAvailableToSwap) return
+      }
+      onSelect?.(token)
       setIsModalVisible(false)
     },
-    [onSelect],
+    [onSelect, tokensAvailableToSwap, isSwapTo],
   )
 
   return (
@@ -131,15 +148,35 @@ export const ChooseTokenModal = <T extends FT | NFT>({
           !isModalVisible && "hidden",
         )}
       >
-        <div className="flex justify-between">
-          <div className="flex items-center">
+        <div>
+          <div className="flex items-center w-full">
             <div
               className="cursor-pointer"
               onClick={() => setIsModalVisible(false)}
             >
               <IconCmpArrow className="mr-2" />
             </div>
-            <p className="text-xl font-bold leading-10">{title}</p>
+            <div className="flex items-center justify-between w-full">
+              <p className="text-xl font-bold leading-10">{title}</p>
+              {tokensAvailableToSwap && (
+                <Tooltip
+                  align="end"
+                  alignOffset={-20}
+                  tip={
+                    <span className="block max-w-[320px]">
+                      Tokens that can't be selected lack enough liquidity for
+                      swapping.
+                    </span>
+                  }
+                >
+                  <img
+                    src={IconInfo}
+                    alt="icon"
+                    className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
+                  />
+                </Tooltip>
+              )}
+            </div>
           </div>
         </div>
         <Input
@@ -154,7 +191,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
         {isTokenOptionsLoading && <ChooseTokenSkeleton rows={6} />}
         {!tokensOptions.length && !isTokenOptionsLoading ? (
           <div className="flex items-center justify-center h-full text-sm text-gray-400">
-            You don’t own any collectibles yet
+            No tokens available yet
           </div>
         ) : (
           <div
@@ -170,7 +207,11 @@ export const ChooseTokenModal = <T extends FT | NFT>({
                 onClick={() => handleSelect(token)}
                 key={`${token.getTokenName()}_${index}`}
               >
-                <ChooseItem token={token} />
+                <ChooseItem
+                  token={token}
+                  isSwapTo={isSwapTo}
+                  tokensAvailableToSwap={tokensAvailableToSwap}
+                />
               </div>
             ))}
           </div>

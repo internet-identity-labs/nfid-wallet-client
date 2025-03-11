@@ -1,5 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { nftService } from "src/integration/nft/nft-service"
@@ -12,41 +14,12 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
-const sortTokens = (tokens: FT[]) => {
-  const categoryOrder: Record<Category, number> = {
-    [Category.Sns]: 3,
-    [Category.ChainFusion]: 2,
-    [Category.Known]: 4,
-    [Category.Native]: 1,
-    [Category.Community]: 5,
-    [Category.Spam]: 7,
-    [Category.ChainFusionTestnet]: 6,
-  }
+import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
+import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 
-  const nfidwIndex = tokens.findIndex(
-    (t) => t.getTokenAddress() === NFIDW_CANISTER_ID,
-  )
-  const nfidwToken = nfidwIndex !== -1 ? tokens.splice(nfidwIndex, 1)[0] : null
-
-  tokens.sort((a, b) => {
-    const aCategory =
-      categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
-    const bCategory =
-      categoryOrder[b.getTokenCategory()] || Number.MAX_SAFE_INTEGER
-    return aCategory - bCategory
-  })
-
-  if (nfidwToken) tokens.splice(1, 0, nfidwToken)
-
-  return tokens
-}
-
-export const filterTokens = (ft: FT[], filterText: string): FT[] => {
-  return ft.filter(
-    (token) =>
-      token.getTokenName().toLowerCase().includes(filterText.toLowerCase()) ||
-      token.getTokenSymbol().toLowerCase().includes(filterText.toLowerCase()),
-  )
+export interface TokensAvailableToSwap {
+  to: string[]
+  from: string[]
 }
 
 export class FtService {
@@ -89,8 +62,23 @@ export class FtService {
         }
 
         const ft = canisters.map((canister) => new FTImpl(canister))
-        return sortTokens(ft)
+        return this.sortTokens(ft)
       })
+  }
+
+  @Cache(integrationCache, { ttl: 300 })
+  async getTokensAvailableToSwap(sourceToken: string): Promise<string[]> {
+    const kongPoolsPromise = KongSwapShroffImpl.getAvailablePools(sourceToken)
+    const icpswapPoolsPromise = ShroffIcpSwapImpl.getAvailablePools(sourceToken)
+
+    const [kongPools, icpswapPools] = await Promise.all([
+      kongPoolsPromise,
+      icpswapPoolsPromise,
+    ])
+
+    const pools = [...new Set([...kongPools, ...icpswapPools])]
+
+    return Array.from(pools)
   }
 
   async filterNotActiveNotZeroBalancesTokens(
@@ -168,6 +156,44 @@ export class FtService {
       dayChange: BigNumber(price.usdBalanceDayChange!).toFixed(2),
       dayChangePositive: price.usdBalanceDayChange!.gte(0),
     }
+  }
+
+  filterTokens(ft: FT[], filterText: string): FT[] {
+    return ft.filter(
+      (token) =>
+        token.getTokenName().toLowerCase().includes(filterText.toLowerCase()) ||
+        token.getTokenSymbol().toLowerCase().includes(filterText.toLowerCase()),
+    )
+  }
+
+  private sortTokens(tokens: FT[]) {
+    const categoryOrder: Record<Category, number> = {
+      [Category.Sns]: 3,
+      [Category.ChainFusion]: 2,
+      [Category.Known]: 4,
+      [Category.Native]: 1,
+      [Category.Community]: 5,
+      [Category.Spam]: 7,
+      [Category.ChainFusionTestnet]: 6,
+    }
+
+    const nfidwIndex = tokens.findIndex(
+      (t) => t.getTokenAddress() === NFIDW_CANISTER_ID,
+    )
+    const nfidwToken =
+      nfidwIndex !== -1 ? tokens.splice(nfidwIndex, 1)[0] : null
+
+    tokens.sort((a, b) => {
+      const aCategory =
+        categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
+      const bCategory =
+        categoryOrder[b.getTokenCategory()] || Number.MAX_SAFE_INTEGER
+      return aCategory - bCategory
+    })
+
+    if (nfidwToken) tokens.splice(1, 0, nfidwToken)
+
+    return tokens
   }
 }
 

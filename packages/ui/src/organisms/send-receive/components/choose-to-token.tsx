@@ -14,6 +14,7 @@ import { PriceImpact } from "src/integration/swap/types/types"
 import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { useTokenInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
@@ -26,8 +27,9 @@ interface ChooseToTokenProps {
   isQuoteLoading: boolean
   value?: string
   priceImpact?: PriceImpact
-  rebuildLayout: boolean
-  setRebuildLayout: (v: boolean) => void
+  isResponsive?: boolean
+  setIsResponsive?: (v: boolean) => void
+  tokensAvailableToSwap: TokensAvailableToSwap
 }
 
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
@@ -38,8 +40,9 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   isQuoteLoading,
   value,
   priceImpact,
-  rebuildLayout,
-  setRebuildLayout,
+  isResponsive,
+  setIsResponsive,
+  tokensAvailableToSwap,
 }) => {
   const { setValue, register } = useFormContext()
 
@@ -54,13 +57,13 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   const decimals = token.getTokenDecimals()
 
   useEffect(() => {
-    if (!initedToken) return
+    if (!initedToken || !setIsResponsive) return
 
     const balance = initedToken.getTokenBalanceFormatted()
     if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
-      setRebuildLayout(false)
+      setIsResponsive(false)
     } else {
-      setRebuildLayout(true)
+      setIsResponsive(true)
     }
   }, [initedToken])
 
@@ -71,13 +74,13 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
         id={"targetSection"}
         className={clsx(
           "rounded-[12px] p-4 bg-gray-100",
-          rebuildLayout ? "h-[168px]" : "h-[102px]",
+          isResponsive ? "h-[168px]" : "h-[102px]",
         )}
       >
         <div className="flex flex-wrap justify-between">
           <InputAmount
             className={clsx(
-              rebuildLayout &&
+              isResponsive &&
                 "leading-[26px] h-[30px] !max-w-full flex-[0_0_100%]",
             )}
             id={"choose-to-token-amount"}
@@ -90,7 +93,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <div
             className={clsx(
               "p-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
-              rebuildLayout && "w-full flex-[0_0_100%] order-1 mt-2",
+              isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
             )}
           >
             <ChooseFtModal
@@ -98,6 +101,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               tokens={tokens}
               title="Swap to"
               onSelect={setToChosenToken}
+              isSwapTo={true}
               trigger={
                 <div
                   id={`targetToken_${token.getTokenName()}_${token.getTokenAddress()}`}
@@ -115,6 +119,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                   <IconCmpArrowRight className="ml-auto" />
                 </div>
               }
+              tokensAvailableToSwap={tokensAvailableToSwap}
             />
           </div>
           <div className="flex-[0_0_100%]"></div>
@@ -154,7 +159,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <div
             className={clsx(
               "mt-2 text-xs leading-5 text-gray-500",
-              rebuildLayout ? "flex-[0_0_100%] order-2" : "text-right",
+              isResponsive ? "flex-[0_0_100%] order-2" : "text-right",
             )}
           >
             Balance:&nbsp;

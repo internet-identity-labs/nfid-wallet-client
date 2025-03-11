@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
@@ -14,6 +14,7 @@ import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { Shroff } from "frontend/integration/swap/shroff"
 
 import { ErrorModal } from "./error-modal"
@@ -55,6 +56,7 @@ export interface SwapFTUiProps {
   swapProviders: Map<SwapName, Shroff | undefined>
   shroff: Shroff | undefined
   setProvider: (value: Shroff) => void
+  tokensAvailableToSwap: TokensAvailableToSwap
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -83,7 +85,9 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   swapProviders,
   shroff,
   setProvider,
+  tokensAvailableToSwap,
 }) => {
+  const [isResponsive, setIsResponsive] = useState(false)
   const [selectedShroff, setSelectedShroff] = useState<Shroff | undefined>()
   const [swapModal, setSwapModal] = useState(SwapModal.SWAP)
 
@@ -105,7 +109,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
     )
 
   return (
-    <AnimatePresence mode="wait">
+    <>
       {isSuccessOpen && (
         <motion.div
           key="successModal"
@@ -126,6 +130,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             onClose={onClose}
             error={error}
             providerName={shroff?.getSwapName()}
+            isResponsive={isResponsive}
           />
         </motion.div>
       )}
@@ -187,6 +192,8 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
         >
           <SwapFTForm
+            setIsResponsive={setIsResponsive}
+            isResponsive={isResponsive}
             tokens={tokens}
             allTokens={allTokens}
             fromToken={fromToken}
@@ -203,9 +210,10 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
             setSwapModal={setSwapModal}
             amount={amount}
             errors={errors}
+            tokensAvailableToSwap={tokensAvailableToSwap}
           />
         </motion.div>
       )}
-    </AnimatePresence>
+    </>
   )
 }

@@ -43,7 +43,7 @@ export interface FT {
 
   getTokenSymbol(): string
 
-  getTokenDecimals(): number | undefined
+  getTokenDecimals(): number
 
   getTokenLogo(): string | undefined
 
@@ -64,4 +64,6 @@ export interface FT {
   getTokenFeeFormattedUsd(): string | undefined
 
   isHideable(): boolean
+
+  getRootSnsCanister(): Principal | undefined
 }

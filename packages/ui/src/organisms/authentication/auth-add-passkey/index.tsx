@@ -49,7 +49,13 @@ export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
         <Button className="mt-auto" block onClick={onAdd} type="primary">
           Continue
         </Button>
-        <Button className="mt-2.5" block onClick={onSkip} type="ghost">
+        <Button
+          id={"skip-secure-wallet"}
+          className="mt-2.5"
+          block
+          onClick={onSkip}
+          type="ghost"
+        >
           Skip for now
         </Button>
       </div>

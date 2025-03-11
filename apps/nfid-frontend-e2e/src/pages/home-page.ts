@@ -1,7 +1,7 @@
 import { Page } from "./page.js"
 
 export class HomePage extends Page {
-  private get authenticationButton() {
+  get authenticationButton() {
     return $("#authentication-button")
   }
 
@@ -17,14 +17,32 @@ export class HomePage extends Page {
     return $("#credentials-picker > div:first-child") //picks first account from the list
   }
 
-  public async openAuthModal() {
-    await this.authenticationButton.waitForDisplayed({
-      timeout: 5000,
-    })
-    await this.authenticationButton.click()
+  get otherSignInOptionsButton() {
+    return $("#other-sign-button")
+  }
 
+  get continueWithRecoveryPhraseButton() {
+    return $("#continue-recovery-phrase")
+  }
+
+  get recoveryPhraseTextArea() {
+    return $("#recovery-phrase-text-area")
+  }
+
+  get submitRecoveryPhraseButton() {
+    return $("#submit-recovery-phrase")
+  }
+
+  get skipSecureWalletButton() {
+    return $("#skip-secure-wallet")
+  }
+
+  public async openAuthModal() {
+    await this.authenticationButton.waitForDisplayed()
+    await this.authenticationButton.click()
     await this.authSelection.waitForDisplayed({
       timeout: 5000,
+      timeoutMsg: "Auth modal window didn't appear",
     })
   }
 

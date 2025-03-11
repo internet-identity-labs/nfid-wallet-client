@@ -26,6 +26,7 @@ import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
 
 interface ErrorStage {
   buttonText: string
@@ -170,6 +171,15 @@ export const ActivityTableRow = ({
       setIsLoading(false)
     }
   }
+
+  if (
+    transaction &&
+    transaction?.getStage() !== SwapStage.Completed &&
+    !transaction?.getErrors().length &&
+    Date.now() - Number(transaction?.getStartTime()) <=
+      APPROXIMATE_SWAP_DURATION
+  )
+    return null
 
   return (
     <Tooltip

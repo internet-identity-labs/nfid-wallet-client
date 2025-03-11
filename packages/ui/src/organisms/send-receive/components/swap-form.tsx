@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 import { Id } from "react-toastify"
 import { Quote } from "src/integration/swap/quote"
@@ -14,6 +14,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import SettingsIcon from "../assets/swap-settings.svg"
@@ -40,6 +41,9 @@ export interface SwapFTFormProps {
   setSwapModal: (v: SwapModal) => void
   amount: string
   errors: FieldErrors<FieldValues>
+  tokensAvailableToSwap: TokensAvailableToSwap
+  isResponsive?: boolean
+  setIsResponsive?: (value: boolean) => void
 }
 
 export const SwapFTForm: FC<SwapFTFormProps> = ({
@@ -59,11 +63,21 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   setSwapModal,
   amount,
   errors,
+  tokensAvailableToSwap,
+  isResponsive,
+  setIsResponsive,
 }) => {
   const [isChecked, setIsChecked] = useState(false)
-  const [rebuildFromLayout, setRebuildFromLayout] = useState(false)
-  const [rebuildToLayout, setRebuildToLayout] = useState(false)
   const priceImpact = quote?.getPriceImpact()
+
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [isToResponsive, setIsToResponsive] = useState(false)
+
+  useEffect(() => {
+    if (setIsResponsive) {
+      setIsResponsive(isFromResponsive || isToResponsive)
+    }
+  }, [isFromResponsive, isToResponsive, setIsResponsive])
 
   return (
     <div
@@ -104,8 +118,9 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           value={amount}
           title="Swap from"
           isSwap={true}
-          rebuildLayout={rebuildFromLayout || rebuildToLayout}
-          setRebuildLayout={setRebuildFromLayout}
+          isResponsive={isResponsive}
+          setIsResponsive={setIsFromResponsive}
+          tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {showLiquidityError ? (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -143,8 +158,9 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           isQuoteLoading={isQuoteLoading}
           value={quote?.getTargetAmountPrettified()}
           priceImpact={priceImpact}
-          rebuildLayout={rebuildFromLayout || rebuildToLayout}
-          setRebuildLayout={setRebuildToLayout}
+          isResponsive={isResponsive}
+          setIsResponsive={setIsToResponsive}
+          tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {amount && quote && (
           <div className="flex items-center justify-between mt-6 text-xs text-gray-500">
@@ -173,7 +189,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
         )}
         <Button
           className={clsx(
-            rebuildFromLayout || rebuildToLayout
+            isResponsive
               ? "w-full mt-6"
               : "absolute bottom-5 left-5 right-5 !w-auto",
           )}

@@ -78,7 +78,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
       )}
     >
       <div className="text-center">
-        <H5 className="mt-5 text-xl leading-6">
+        <H5 className="mt-5 text-xl font-bold leading-6">
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
@@ -109,7 +109,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         </div>
       </div>
       <div className="relative z-20">
-        <p className="text-sm leading-[25px]" id="title">
+        <p className="text-sm leading-[25px] font-inter" id="title">
           {title}
         </p>
         <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">

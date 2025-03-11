@@ -79,6 +79,25 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     this.swapTransaction = trs
   }
 
+  static async getAvailablePools(source: string): Promise<string[]> {
+    const result = await icpSwapService.getPools()
+
+    if (!("ok" in result)) return []
+
+    const allPools: string[] = []
+
+    result.ok.forEach((pool) => {
+      if (pool.token0.address === source) {
+        allPools.push(pool.token1.address)
+      }
+      if (pool.token1.address === source) {
+        allPools.push(pool.token0.address)
+      }
+    })
+
+    return allPools
+  }
+
   getSwapTransaction(): SwapTransaction | undefined {
     return this.swapTransaction
   }

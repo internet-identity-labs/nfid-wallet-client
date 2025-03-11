@@ -82,20 +82,23 @@ class UserService implements UserActions {
               done(errorMessage)
             }
           } else done("setAuthState function is not available")
-        }, testUser.authstate)
+        },
+        testUser.authstate)
         errors.push(String(executeResult))
         let state = await this.getAuthStateFromDB()
         errors.push(...state.errors)
         return (
           state.identity?.toString() ==
-          testUser.authstate.identity.toString() &&
+            testUser.authstate.identity.toString() &&
           JSON.stringify(state.delegation) ==
-          JSON.stringify(testUser.authstate.delegation)
+            JSON.stringify(testUser.authstate.delegation)
         )
       },
       {
         timeout: 60000,
-        timeoutMsg: `Failed to set up authstate. Current state is: ${errors.join(", ")}`,
+        timeoutMsg: `Failed to set up authstate. Current state is: ${errors.join(
+          ", ",
+        )}`,
       },
     )
   }
@@ -129,7 +132,9 @@ class UserService implements UserActions {
                 resolve(request.result !== undefined ? request.result : null)
               }
               request.onerror = () => {
-                const errorMsg = `Can't get ${key} value. Error: ${request.error ? request.error.message : "Unknown error"}`
+                const errorMsg = `Can't get ${key} value. Error: ${
+                  request.error ? request.error.message : "Unknown error"
+                }`
                 errors.push(errorMsg)
                 reject(errorMsg)
               }
@@ -170,7 +175,9 @@ class UserService implements UserActions {
 
       request.onerror = function () {
         errors.push(
-          `Error opening DB: ${dbName}. Error: ${request.error ? request.error.message : "Unknown error"}`,
+          `Error opening DB: ${dbName}. Error: ${
+            request.error ? request.error.message : "Unknown error"
+          }`,
         )
         done({ result: false, errors: errors })
       }

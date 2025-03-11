@@ -17,15 +17,24 @@ When(/^User clicks the "Other sign in options" button$/, async () => {
   })
 })
 
-When(/^User enters the recovery phrase of ([^"]*) anchor$/, async (anchor: number) => {
-  await HomePage.continueWithRecoveryPhraseButton.click()
-  await HomePage.recoveryPhraseTextArea.setValue((await userClient.takeStaticUserByAnchor(anchor)).seed)
-  await HomePage.submitRecoveryPhraseButton.click()
-  try {
-    await HomePage.skipSecureWalletButton.waitForDisplayed({
-      timeout: 8000,
-    })
-  } catch (e) {/*empty*/
-  }
-  if (await HomePage.skipSecureWalletButton.isDisplayed()) await HomePage.skipSecureWalletButton.click()
-})
+When(
+  /^User enters the recovery phrase of ([^"]*) anchor$/,
+  async (anchor: number) => {
+    await HomePage.continueWithRecoveryPhraseButton.click()
+    await HomePage.recoveryPhraseTextArea.setValue(
+      (
+        await userClient.takeStaticUserByAnchor(anchor)
+      ).seed,
+    )
+    await HomePage.submitRecoveryPhraseButton.click()
+    try {
+      await HomePage.skipSecureWalletButton.waitForDisplayed({
+        timeout: 8000,
+      })
+    } catch (e) {
+      /*empty*/
+    }
+    if (await HomePage.skipSecureWalletButton.isDisplayed())
+      await HomePage.skipSecureWalletButton.click()
+  },
+)

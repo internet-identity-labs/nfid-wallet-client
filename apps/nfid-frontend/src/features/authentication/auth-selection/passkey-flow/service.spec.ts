@@ -67,9 +67,11 @@ describe("Passkey flow", () => {
     jest
       .spyOn(passkeyService as any, "decodePublicKeyCredential")
       .mockReturnValue(exp)
-    jest.spyOn(passkeyService as any, "setAuthState").mockImplementation(async () => {
-      console.log("Set auth state")
-    })
+    jest
+      .spyOn(passkeyService as any, "setAuthState")
+      .mockImplementation(async () => {
+        console.log("Set auth state")
+      })
     let key = await passkeyService.getCaptchaChallenge()
     const { delegationIdentity } = await passkeyService.registerWithPasskey(
       "mockedId",

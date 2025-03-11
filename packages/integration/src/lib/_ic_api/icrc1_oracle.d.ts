@@ -23,6 +23,7 @@ export interface ICRC1 {
   category: Category
   index: [] | [string]
   symbol: string
+  root_canister_id: [] | [string]
 }
 export interface ICRC1Request {
   fee: bigint

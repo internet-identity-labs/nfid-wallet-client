@@ -20,6 +20,7 @@ export const idlFactory = ({ IDL }: any) => {
     ledger: IDL.Text,
     category: Category,
     index: IDL.Opt(IDL.Text),
+    root_canister_id: IDL.Opt(IDL.Text),
     symbol: IDL.Text,
   })
   const ICRC1Request = IDL.Record({

@@ -5,6 +5,14 @@ import { TokenValue } from "src/integration/staking/types/token-value"
 import { FT } from "frontend/integration/ft/ft"
 
 export class StakedTokenImpl implements StakedToken {
+  token: FT
+  neurons: Array<NFIDNeuron>
+
+  constructor(token: FT, neurons: Array<NFIDNeuron>) {
+    this.token = token
+    this.neurons = neurons
+  }
+
   getStaked(): TokenValue {
     throw new Error("Method not implemented.")
   }

@@ -66,6 +66,7 @@ export class ICRC1OracleService {
           logo: c.logo,
           fee: Number(c.fee),
           decimals: c.decimals,
+          root_canister_id: c.root_canister_id,
         }
       }),
     )
@@ -82,6 +83,7 @@ export class ICRC1OracleService {
         logo: c.logo,
         fee: BigInt(c.fee),
         decimals: c.decimals,
+        root_canister_id: c.root_canister_id,
       }
     })
   }

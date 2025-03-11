@@ -1,8 +1,8 @@
 import { When } from "@cucumber/cucumber"
+import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
-import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 let currentSourceTokenBalance: number
 let currentTargetTokenBalance: number

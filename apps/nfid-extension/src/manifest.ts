@@ -53,7 +53,7 @@ export default defineManifest((env) => ({
   },
   web_accessible_resources: [
     {
-      resources: ["scripts/gsi-client.js"],
+      resources: ["gsi-client.js"],
       matches: ["http://*/*", "https://*/*"],
     },
   ],

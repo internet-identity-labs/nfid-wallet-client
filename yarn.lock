@@ -3986,7 +3986,7 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
-"@rollup/pluginutils@^5.0.1", "@rollup/pluginutils@^5.0.2", "@rollup/pluginutils@^5.1.3":
+"@rollup/pluginutils@^5.0.1", "@rollup/pluginutils@^5.0.2", "@rollup/pluginutils@^5.0.4":
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-5.1.4.tgz#bb94f1f9eaaac944da237767cdfee6c5b2262d4a"
   integrity sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==
@@ -4761,7 +4761,7 @@
     cosmiconfig "^8.1.3"
     snake-case "^3.0.4"
 
-"@svgr/core@8.1.0", "@svgr/core@^8.1.0":
+"@svgr/core@8.1.0":
   version "8.1.0"
   resolved "https://registry.npmjs.org/@svgr/core/-/core-8.1.0.tgz"
   integrity sha512-8QqtOQT5ACVlmsvKOJNEaWmRPmcojMOzCz4Hs2BGG/toAp/K38LcsMRyLp349glq5AzJbCEeimEoxaX6v/fLrA==
@@ -4780,6 +4780,17 @@
     "@svgr/plugin-jsx" "^5.5.0"
     camelcase "^6.2.0"
     cosmiconfig "^7.0.0"
+
+"@svgr/core@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@svgr/core/-/core-8.1.0.tgz#41146f9b40b1a10beaf5cc4f361a16a3c1885e88"
+  integrity sha512-8QqtOQT5ACVlmsvKOJNEaWmRPmcojMOzCz4Hs2BGG/toAp/K38LcsMRyLp349glq5AzJbCEeimEoxaX6v/fLrA==
+  dependencies:
+    "@babel/core" "^7.21.3"
+    "@svgr/babel-preset" "8.1.0"
+    camelcase "^6.2.0"
+    cosmiconfig "^8.1.3"
+    snake-case "^3.0.4"
 
 "@svgr/hast-util-to-babel-ast@8.0.0":
   version "8.0.0"
@@ -19933,12 +19944,12 @@ verror@^1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vite-plugin-svgr@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-svgr/-/vite-plugin-svgr-4.3.0.tgz#742f16f11375996306c696ec323e4d23f6005075"
-  integrity sha512-Jy9qLB2/PyWklpYy0xk0UU3TlU0t2UMpJXZvf+hWII1lAmRHrOUKi11Uw8N3rxoNk7atZNYO3pR3vI1f7oi+6w==
+vite-plugin-svgr@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-svgr/-/vite-plugin-svgr-3.3.0.tgz#024f083c0f0831497d8507b82e49a8ee2b29701a"
+  integrity sha512-vWZMCcGNdPqgziYFKQ3Y95XP0d0YGp28+MM3Dp9cTa/px5CKcHHrIoPl2Jw81rgVm6/ZUNONzjXbZQZ7Kw66og==
   dependencies:
-    "@rollup/pluginutils" "^5.1.3"
+    "@rollup/pluginutils" "^5.0.4"
     "@svgr/core" "^8.1.0"
     "@svgr/plugin-jsx" "^8.1.0"
 

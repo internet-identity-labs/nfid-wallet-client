@@ -113,6 +113,7 @@ export class Icrc1Pair implements IIcrc1Pair {
         category: Category.Spam,
         fee: metadata.fee,
         decimals: metadata.decimals,
+        rootCanisterId: undefined,
       }),
       icrc1RegistryService.storeICRC1Canister(this.ledger, State.Active),
     ])

@@ -120,15 +120,27 @@ export default function AuthenticationCoordinator({
 
   const onLoginWithPasskey = async (allowedPasskeys?: any[]) => {
     setIsPasskeyLoading(true)
-    const res = await passkeyConnector.loginWithPasskey(
-      undefined,
-      () => {
-        setIsPasskeyLoading(false)
-      },
-      allowedPasskeys ?? [],
-    )
+    try {
+      const res = await passkeyConnector.loginWithPasskey(
+        undefined,
+        () => {
+          setIsPasskeyLoading(false)
+        },
+        allowedPasskeys ?? [],
+      )
 
-    onAuthWithPasskey(res)
+      onAuthWithPasskey(res)
+    } catch (e) {
+      if (
+        (e as Error).message.includes("either timed out or was not allowed")
+      ) {
+        toaster.info(
+          "It seems like the process was interrupted. Feel free to try again!",
+        )
+      } else {
+        toaster.error((e as Error).message)
+      }
+    }
   }
 
   const onSignUpWithPasskey = async ({
@@ -156,10 +168,12 @@ export default function AuthenticationCoordinator({
         return setSignUpWithPasskeyError("Captcha expired. Please try again.")
       if (msg.includes("Incorrect captcha solution"))
         return setSignUpWithPasskeyError(
-          "Incorrect captcha entered. Please try again.",
+          "That captcha wasn’t quite right. Let’s try again!",
         )
       if (msg.includes("either timed out or was not allowed")) {
-        toaster.error("Action was aborted. Please try again.")
+        toaster.info(
+          "It seems like the process was interrupted. Feel free to try again!",
+        )
         return
       }
       return setSignUpWithPasskeyError(

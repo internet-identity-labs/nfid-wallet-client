@@ -85,7 +85,6 @@ export class StakingServiceImpl implements StakingService {
       rootCanisterId: root,
       certified: false,
     })
-    console.log("CREATED NEURONS", neurons)
     let createdNeuron = neurons.find(
       (neuron) =>
         bytesToHexString(neuron.id[0]!.id) === bytesToHexString(id.id),

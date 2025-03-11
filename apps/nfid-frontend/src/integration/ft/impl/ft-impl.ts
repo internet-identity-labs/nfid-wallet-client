@@ -28,6 +28,7 @@ export class FTImpl implements FT {
   private decimals: number
   private fee: bigint
   private inited: boolean
+  private rootSnsCanister: string | undefined
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -40,6 +41,7 @@ export class FTImpl implements FT {
     this.fee = icrc1Token.fee
     this.tokenState = icrc1Token.state
     this.inited = false
+    this.rootSnsCanister = icrc1Token.rootCanisterId
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
@@ -253,5 +255,9 @@ export class FTImpl implements FT {
     )
 
     return feeInUsd
+  }
+
+  getRootSnsCanister(): Principal | undefined {
+    return this.rootSnsCanister ? Principal.fromText(this.rootSnsCanister) : undefined
   }
 }

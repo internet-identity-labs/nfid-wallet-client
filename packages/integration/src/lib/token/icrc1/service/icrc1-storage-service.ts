@@ -47,6 +47,7 @@ export class Icrc1StorageService {
         symbol: icrc1.symbol,
         logo: icrc1.logo[0],
         index: icrc1.index[0],
+        rootCanisterId: icrc1.root_canister_id[0],
         state:
           registry === undefined ? State.Inactive : mapState(registry.state),
         category: mapCategory(icrc1.category),

@@ -1,7 +1,8 @@
 import { TokenValue } from "src/integration/staking/types/token-value"
+import {SignIdentity} from "@dfinity/agent";
 
 export interface NFIDNeuron {
-  getStakeId(): number
+  getStakeId(): string
   getInitialStake(): TokenValue
   getRewards(): TokenValue
   getTotalValue(): string
@@ -10,5 +11,5 @@ export interface NFIDNeuron {
   getCreatedAt(): number
   startUnlocking(): Promise<void>
   stopUnlocking(): Promise<void>
-  redeem(): Promise<void>
+  redeem(signIdentity: SignIdentity): Promise<void>
 }

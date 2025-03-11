@@ -1,11 +1,12 @@
+import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
+import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
+
+import { disburse } from "@nfid/integration"
 
 import { TokenValue } from "../types/token-value"
-import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
-import {disburse} from "@nfid/integration";
-import {Principal} from "@dfinity/principal";
-import {SignIdentity} from "@dfinity/agent";
-import {bytesToHexString} from "src/integration/staking/service/staking-service-impl";
 
 export class NfidNeuronImpl implements NFIDNeuron {
   private neuron: Neuron

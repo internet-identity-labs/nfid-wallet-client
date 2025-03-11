@@ -1,13 +1,13 @@
-import {Ed25519KeyIdentity} from "@dfinity/identity"
-import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
-import {Principal} from "@dfinity/principal"
-import {disburse, querySnsNeurons} from "@nfid/integration";
-import {stakingService} from "src/integration/staking/service/staking-service-impl";
-import {ftService} from "src/integration/ft/ft-service";
-import {icrc1StorageService} from "@nfid/integration/token/icrc1/service/icrc1-storage-service";
-import {ICP_CANISTER_ID} from "@nfid/integration/token/constants";
-import {NeuronId} from "@dfinity/nns-proto";
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { NeuronId } from "@dfinity/nns-proto"
+import { Principal } from "@dfinity/principal"
+import { ftService } from "src/integration/ft/ft-service"
+import { stakingService } from "src/integration/staking/service/staking-service-impl"
 
+import { disburse, querySnsNeurons } from "@nfid/integration"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 const pairPrincipal =
   "ayigd-u23ly-o65by-pzgtm-udimh-ktcue-hyzwp-uqccr-t3vl4-b3mxe-bae"
@@ -40,8 +40,9 @@ describe("Staking", () => {
           category: "Sns",
           fee: BigInt(10000),
           decimals: 8,
-          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai"
-        }, {
+          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+        },
+        {
           ledger: ICP_CANISTER_ID,
           name: "NFIDW",
           symbol: "NFIDW",
@@ -51,7 +52,7 @@ describe("Staking", () => {
           category: "Sns",
           fee: BigInt(10000),
           decimals: 8,
-          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai"
+          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
         },
       ])
     try {
@@ -64,13 +65,18 @@ describe("Staking", () => {
       await disburse({
         identity: edId,
         rootCanisterId: Principal.fromText("m2blf-zqaaa-aaaaq-aaejq-cai"),
-        neuronId: neuronsNFIDW.find(n=> n.cached_neuron_stake_e8s === BigInt(500000000))!.id[0]!,
+        neuronId: neuronsNFIDW.find(
+          (n) => n.cached_neuron_stake_e8s === BigInt(500000000),
+        )!.id[0]!,
       })
     } catch (e: any) {
       console.log(e.message)
     }
-    let token = await ftService.getTokens(pairPrincipal)
-      .then(tokens => tokens.find(token => token.getTokenSymbol() === "NFIDW"))
+    let token = await ftService
+      .getTokens(pairPrincipal)
+      .then((tokens) =>
+        tokens.find((token) => token.getTokenSymbol() === "NFIDW"),
+      )
     let neuron = await stakingService.stake(token!, "5", edId)
     expect(neuron).toBeDefined()
     expect(neuron.getStakeId()).toBeDefined()
@@ -80,7 +86,9 @@ describe("Staking", () => {
       rootCanisterId: Principal.fromText("m2blf-zqaaa-aaaaq-aaejq-cai"),
       certified: false,
     })
-    let redeemedNeuron = neuronsNFIDW.find(n => n.cached_neuron_stake_e8s === BigInt(500000000))
+    let redeemedNeuron = neuronsNFIDW.find(
+      (n) => n.cached_neuron_stake_e8s === BigInt(500000000),
+    )
     expect(redeemedNeuron).toBeUndefined()
   })
 })

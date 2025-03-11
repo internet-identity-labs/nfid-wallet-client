@@ -34,7 +34,7 @@ describe("ICRC1 suite", () => {
       symbol: "Test",
       fee: BigInt(1000),
       decimals: 8,
-      rootCanisterId: undefined
+      rootCanisterId: undefined,
     }
     await icrc1OracleService.addICRC1Canister(icrc1Data)
     const account = (await im.get_account()) as HTTPAccountResponse

@@ -15,7 +15,7 @@ export const AuthSignUpCaptcha = ({
   getCaptcha,
   captcha,
   captchaLoading,
-  error
+  error,
 }: {
   onBack: () => void
   applicationURL?: string

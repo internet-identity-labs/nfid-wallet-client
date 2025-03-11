@@ -258,6 +258,8 @@ export class FTImpl implements FT {
   }
 
   getRootSnsCanister(): Principal | undefined {
-    return this.rootSnsCanister ? Principal.fromText(this.rootSnsCanister) : undefined
+    return this.rootSnsCanister
+      ? Principal.fromText(this.rootSnsCanister)
+      : undefined
   }
 }

@@ -64,7 +64,6 @@ export class HomePage extends Page {
     await this.accountPicker.click()
   }
 
-
   public override async loginUsingIframe() {
     await this.openAuthModal()
     await this.authenticateWithGoogle()

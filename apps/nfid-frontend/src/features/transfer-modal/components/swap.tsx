@@ -81,8 +81,6 @@ export const SwapFT = ({
   >()
   const previousFromTokenAddress = useRef(fromTokenAddress)
 
-  console.log()
-
   useEffect(() => {
     if (!preselectedSourceTokenAddress) {
       setFromTokenAddress(ICP_CANISTER_ID)

@@ -8,8 +8,8 @@ import { CopyAddressIcon } from "../../atoms/icons/CopyAddressIcon"
 
 export interface CopyAddressProps {
   address: string
-  leadingChars: number
-  trailingChars: number
+  leadingChars?: number
+  trailingChars?: number
 }
 
 export const CopyAddress: FC<CopyAddressProps> = ({
@@ -39,13 +39,18 @@ export const CopyAddress: FC<CopyAddressProps> = ({
       onMouseLeave={() => setHovered(false)}
       onClick={copyToClipboard}
     >
-      <CenterEllipsis
-        value={address}
-        leadingChars={leadingChars}
-        trailingChars={trailingChars}
-        id={"principal"}
-        className="transition-opacity duration-300" // Ensure the text also has a smooth opacity transition
-      />
+      {!leadingChars || !trailingChars ? (
+        address
+      ) : (
+        <CenterEllipsis
+          value={address}
+          leadingChars={leadingChars}
+          trailingChars={trailingChars}
+          id={"principal"}
+          className="transition-opacity duration-300" // Ensure the text also has a smooth opacity transition
+        />
+      )}
+
       {copied ? (
         <CopiedAddressIcon
           className={clsx(

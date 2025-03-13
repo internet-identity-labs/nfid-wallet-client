@@ -47,21 +47,21 @@ export const CopyAddress: FC<CopyAddressProps> = ({
           leadingChars={leadingChars}
           trailingChars={trailingChars}
           id={"principal"}
-          className="transition-opacity duration-300" // Ensure the text also has a smooth opacity transition
+          className="transition-opacity duration-300"
         />
       )}
 
       {copied ? (
         <CopiedAddressIcon
           className={clsx(
-            "w-[18px] h-[18px] transition-opacity duration-300", // Ensure transition for both icons
+            "w-[18px] h-[18px] transition-opacity duration-300",
             hovered || copied ? "" : "opacity-0",
           )}
         />
       ) : (
         <CopyAddressIcon
           className={clsx(
-            "w-[18px] h-[18px] transition-opacity duration-300", // Ensure transition for both icons
+            "w-[18px] h-[18px] transition-opacity duration-300",
             hovered || copied ? "" : "opacity-0",
           )}
         />

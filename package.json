@@ -91,7 +91,7 @@
     "tslib": "2.8.0",
     "tweetnacl-util": "^0.15.1",
     "usergeek-ic-js": "1.0.6",
-    "uuid": "11.0.2",
+    "uuid": "^11.1.0",
     "vm-browserify": "^1.1.2",
     "web3modal": "^1.9.12",
     "wouter": "3.3.5",

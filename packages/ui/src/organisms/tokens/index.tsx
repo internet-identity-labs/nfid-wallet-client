@@ -13,7 +13,7 @@ import SortHoverIcon from "./assets/sort-hover.svg"
 import { TableTokenSkeleton } from "../../atoms/skeleton"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { ActiveToken } from "./components/active-asset"
-import { TokensHeader } from "./components/header"
+import { ManageTokens } from "./components/manage-tokens"
 import { TokenInfoModal } from "./components/token-info-modal"
 
 export interface IProfileConstants {
@@ -131,17 +131,8 @@ export const Tokens: FC<TokensProps> = ({
 
   return (
     <>
-      <TokensHeader
-        tokens={allTokens}
-        onSubmitIcrc1Pair={onSubmitIcrc1Pair}
-        onFetch={onFetch}
-        setLoadingToken={setLoadingToken}
-        hideZeroBalance={hideZeroBalance}
-        onZeroBalanceToggle={onZeroBalanceToggle}
-        manageBtnDisabled={tokensIniting}
-      />
-      <div className="relative">
-        <div className="overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+      <div className="relative flex flex-col">
+        <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
             <thead className="text-secondary h-[40px] hidden md:table-header-group">
               <tr className="text-sm font-bold leading-5">
@@ -204,6 +195,16 @@ export const Tokens: FC<TokensProps> = ({
             </tbody>
           </table>
         </div>
+        <ManageTokens
+          className="w-fit mx-auto"
+          tokens={allTokens}
+          onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+          onFetch={onFetch}
+          setLoadingToken={setLoadingToken}
+          hideZeroBalance={hideZeroBalance}
+          onZeroBalanceToggle={onZeroBalanceToggle}
+          manageBtnDisabled={tokensIniting}
+        />
       </div>
       <TokenInfoModal token={token} onClose={() => setToken(undefined)} />
     </>

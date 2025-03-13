@@ -12,6 +12,7 @@ import {
   IconSvgTokenInfo,
   IDropdownPosition,
   IconSvgConvertAction,
+  IconSvgStakeAction,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
@@ -100,6 +101,11 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             handler={onConvertToBtc}
           />
         )}
+        <DropdownOption
+          label="Stake"
+          icon={IconSvgStakeAction}
+          handler={() => onSwapClick(token.getTokenAddress())}
+        />
         <DropdownOption
           label="Token information"
           icon={IconSvgTokenInfo}

@@ -1,5 +1,8 @@
 import { useActor } from "@xstate/react"
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
+import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
+import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
 import { fetchTokens, initTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
@@ -113,22 +116,60 @@ const TokensPage = () => {
   }
 
   return (
-    <Tokens
-      tokensIniting={!initedTokens}
-      activeTokens={activeTokens || []}
-      allTokens={tokens || []}
-      isTokensLoading={!activeTokens}
-      onSubmitIcrc1Pair={onSubmitIcrc1Pair}
-      onFetch={onFetch}
-      profileConstants={ProfileConstants}
-      onSendClick={onSendClick}
-      onSwapClick={onSwapClick}
-      onConvertToBtc={onConvertToBtc}
-      onConvertToCkBtc={onConvertToCkBtc}
-      hideZeroBalance={hideZeroBalance}
-      onZeroBalanceToggle={onZeroBalanceToggle}
-      isBtcAddressLoading={isBtcAddressLoading}
-    />
+    <>
+      <div className="p-[20px] md:p-[30px] border-gray-200 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+        <div className="flex flex-col flex-1">
+          <p className="mb-[16px] text-sm font-bold text-gray-400">
+            Token balance
+          </p>
+          <Balance
+            id={"totalBalance"}
+            className="text-[26px]"
+            usdBalance={{
+              value: "100",
+              dayChange: "12",
+              dayChangePercent: "2",
+              dayChangePositive: true,
+            }}
+          />
+        </div>
+        <div className="flex flex-1 my-[20px] md:my-[0]">
+          <div className="flex flex-col mr-[30px]">
+            <p className="mb-[10px] text-sm font-bold text-gray-400">
+              Token owned
+            </p>
+            <p className="mb-0 text-[26px] font-bold">2</p>
+          </div>
+          <div className="flex flex-col">
+            <p className="mb-[10px] text-sm font-bold text-gray-400">
+              Tokens w/o price
+            </p>
+            <p className="mb-0 text-[26px] font-bold">1</p>
+          </div>
+        </div>
+        <div className="flex items-center flex-1 md:justify-end">
+          <ScanTokens triggerClassName="w-full sm:w-fit" />
+        </div>
+      </div>
+      <ProfileContainer>
+        <Tokens
+          tokensIniting={!initedTokens}
+          activeTokens={activeTokens || []}
+          allTokens={tokens || []}
+          isTokensLoading={!activeTokens}
+          onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+          onFetch={onFetch}
+          profileConstants={ProfileConstants}
+          onSendClick={onSendClick}
+          onSwapClick={onSwapClick}
+          onConvertToBtc={onConvertToBtc}
+          onConvertToCkBtc={onConvertToCkBtc}
+          hideZeroBalance={hideZeroBalance}
+          onZeroBalanceToggle={onZeroBalanceToggle}
+          isBtcAddressLoading={isBtcAddressLoading}
+        />
+      </ProfileContainer>
+    </>
   )
 }
 

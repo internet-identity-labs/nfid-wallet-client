@@ -22,7 +22,7 @@ export const TransferTemplate: React.FC<ITransferTemplate> = ({
           className={clsx(
             "transition ease-in-out delay-150 duration-300",
             "z-40 top-0 left-0 w-full h-screen",
-            "fixed bg-opacity-75 bg-gray-600 flex",
+            "fixed bg-opacity-80 bg-[#18181B] flex",
             overlayClassName,
           )}
           style={{ margin: 0 }}

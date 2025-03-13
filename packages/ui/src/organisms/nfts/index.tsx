@@ -48,20 +48,18 @@ export const NFTs: FC<INFTs> = ({
 
   return (
     <>
-      <div className="bg-gray-100 p-[20px] rounded-[12px]">
-        <div className="flex items-center justify-between gap-6">
-          <Input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.currentTarget.value)}
-            icon={<IoIosSearch size="20" className="text-gray-400" />}
-            placeholder="Search"
-            inputClassName="bg-white border-none"
-            className="w-full"
-          />
-          <div className={clsx("flex items-center space-x-6 shrink-0")}>
-            <NFTDisplaySwitch state={display} setState={setDisplay} />
-          </div>
+      <div className="flex items-center justify-between gap-6">
+        <Input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.currentTarget.value)}
+          icon={<IoIosSearch size="20" className="text-black" />}
+          placeholder="Search"
+          inputClassName="bg-white !border-black"
+          className="w-full"
+        />
+        <div className={clsx("flex items-center space-x-6 shrink-0")}>
+          <NFTDisplaySwitch state={display} setState={setDisplay} />
         </div>
       </div>
       <p

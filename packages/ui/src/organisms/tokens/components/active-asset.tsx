@@ -7,6 +7,7 @@ import {
   IconNftPlaceholder,
   Skeleton,
   IDropdownPosition,
+  IconCmpStakeAction,
 } from "@nfid-frontend/ui"
 import { ArrowPercentChange } from "@nfid-frontend/ui"
 
@@ -73,10 +74,15 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         </div>
         <div className="sm:overflow-hidden sm:text-ellipsis sm:whitespace-nowrap">
           <p
-            className="text-sm font-semibold leading-[25px]"
+            className="text-sm font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
           >
             {token.getTokenSymbol()}
+            <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+            <span className="text-xs text-primaryButtonColor flex items-center cursor-pointer">
+              <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+              Stake
+            </span>
           </p>
           <p className="text-secondary text-xs leading-[20px]">
             {token.getTokenName()}

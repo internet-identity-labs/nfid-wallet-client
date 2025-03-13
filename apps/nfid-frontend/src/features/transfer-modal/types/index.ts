@@ -19,6 +19,7 @@ export enum ModalType {
   SEND = "send",
   RECEIVE = "receive",
   SWAP = "swap",
+  STAKE = "stake",
 }
 
 export enum SendStatus {
@@ -80,4 +81,5 @@ export type Services = {
 export interface FormValues {
   amount: string
   to: string
+  lockTime: string
 }

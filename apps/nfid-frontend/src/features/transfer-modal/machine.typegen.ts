@@ -32,6 +32,7 @@ export interface Typegen0 {
     isReceiveMachine: ""
     isSendFungible: ""
     isSendMachine: ""
+    isStakeMachine: ""
     isSwapMachine: ""
   }
   eventsCausingServices: {}
@@ -42,6 +43,7 @@ export interface Typegen0 {
     | "SendMachine.CheckSendType"
     | "SendMachine.SendFT"
     | "SendMachine.SendNFT"
+    | "StakeMachine"
     | "SwapMachine"
     | "SwapSuccess"
     | "TransferModal"

@@ -121,6 +121,7 @@ export {
 }
 
 export { ReactComponent as IconCmpSwap } from "./swap.svg"
+export { ReactComponent as IconCmpStake } from "./stake.svg"
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"

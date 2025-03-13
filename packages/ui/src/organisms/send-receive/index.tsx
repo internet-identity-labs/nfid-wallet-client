@@ -4,9 +4,6 @@ import { FC } from "react"
 
 import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
 
-import SettingsIcon from "./assets/swap-settings.svg"
-
-import { Tooltip } from "../../molecules/tooltip"
 import { TransferTemplate } from "./components/template"
 
 export interface TransferModalProps {
@@ -49,16 +46,18 @@ export const TransferModal: FC<TransferModalProps> = ({
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}
     >
-      {!isSuccess && direction !== ModalType.SWAP && (
-        <div
-          className={clsx(
-            "leading-10 text-[20px] font-bold mb-[18px]",
-            "flex justify-between items-center",
-          )}
-        >
-          <span className="first-letter:capitalize">{direction}</span>
-        </div>
-      )}
+      {!isSuccess &&
+        direction !== ModalType.SWAP &&
+        direction !== ModalType.STAKE && (
+          <div
+            className={clsx(
+              "leading-10 text-[20px] font-bold mb-[18px]",
+              "flex justify-between items-center",
+            )}
+          >
+            <span className="first-letter:capitalize">{direction}</span>
+          </div>
+        )}
       {direction === "send" && !isSuccess && (
         <ToggleButton
           firstValue="Token"

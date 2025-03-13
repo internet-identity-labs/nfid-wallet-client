@@ -8,7 +8,7 @@ export const initializeConsoleWarnings = () => {
 export const redirectFromCanisters = () => {
   const icCanisterId = "3y5ko-7qaaa-aaaal-aaaaq-cai"
   const stageCanisterId = "appqm-xiaaa-aaaak-akwaa-cai"
-  const devCanisterId = "7b5jg-paaaa-aaaap-aa32q-cai"
+  const devCanisterId = "cfel3-byaaa-aaaaa-qafvq-cai"
 
   if (
     window.location.host !== `${icCanisterId}.icp0.io` &&

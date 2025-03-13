@@ -121,18 +121,6 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             >
               <span className="hidden md:flex">Swap</span>
             </Button>
-            <Button
-              id="convertButton"
-              className="flex-1 !px-0 sm:!px-[15px]"
-              innerClassName="!space-x-1"
-              icon={
-                <IconCmpConvertWhite className="!text-gray-400 !w-[18px] !h-[18px] text-white" />
-              }
-              onClick={onConvertClick}
-              isSmall
-            >
-              Convert
-            </Button>
             <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
               Swap
             </p>
@@ -152,6 +140,23 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             </Button>
             <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
               Stake
+            </p>
+          </div>
+          <div className="flex flex-col">
+            <Button
+              id="convertButton"
+              className="flex-1 !px-0 sm:!px-[15px]"
+              innerClassName="!space-x-1"
+              icon={
+                <IconCmpConvertWhite className="!text-gray-400 !w-[18px] !h-[18px] text-white" />
+              }
+              onClick={onConvertClick}
+              isSmall
+            >
+              Convert
+            </Button>
+            <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
+              Convert
             </p>
           </div>
         </div>

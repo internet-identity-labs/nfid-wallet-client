@@ -124,6 +124,11 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         )}
 
         <DropdownOption
+          label="Stake"
+          icon={IconSvgStakeAction}
+          handler={() => onSwapClick(token.getTokenAddress())}
+        />
+        <DropdownOption
           label="Token information"
           icon={IconSvgTokenInfo}
           handler={() => setToken(token)}

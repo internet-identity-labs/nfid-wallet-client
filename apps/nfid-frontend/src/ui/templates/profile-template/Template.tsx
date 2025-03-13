@@ -93,6 +93,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
       },
       {
+        name: "Staking",
+        title: <>Staking</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.staking}`,
+      },
+      {
         name: "Activity",
         title: <>Activity</>,
         path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
@@ -117,7 +122,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [])
 
   const activeTab = useMemo(() => {
-    return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
+    return (
+      tabs.find((tab) => location.pathname.startsWith(tab.path)) ?? { name: "" }
+    )
   }, [location.pathname, tabs])
   const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)

@@ -10,6 +10,7 @@ export const ProfileConstants = {
   nftDetails: ":tokenId",
   tokens: "tokens",
   nfts: "nfts",
+  staking: "staking",
   activity: "activity",
   security: "/security",
   copyRecoveryPhrase: "/copy-recovery-phrase",

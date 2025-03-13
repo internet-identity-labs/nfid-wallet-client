@@ -20,7 +20,6 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
   Toggle,
-  IconCmpArrowRight,
 } from "@nfid-frontend/ui"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
@@ -28,7 +27,6 @@ import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
 import { FilteredToken } from "./filtered-asset"
-import { ScanTokens } from "./scan-tokens"
 
 export interface ICRC1Metadata {
   name: string
@@ -38,7 +36,7 @@ export interface ICRC1Metadata {
   fee: bigint
 }
 
-interface TokensHeaderProps {
+interface ManageTokensProps {
   tokens: FT[]
   onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
   onFetch: (
@@ -55,9 +53,10 @@ interface TokensHeaderProps {
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   manageBtnDisabled?: boolean
+  className?: string
 }
 
-export const TokensHeader: FC<TokensHeaderProps> = ({
+export const ManageTokens: FC<ManageTokensProps> = ({
   tokens,
   onSubmitIcrc1Pair,
   onFetch,
@@ -65,9 +64,10 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
   hideZeroBalance,
   onZeroBalanceToggle,
   manageBtnDisabled,
+  className
 }) => {
   const [modalStep, setModalStep] = useState<
-    "manage" | "import" | "scan" | null
+    "manage" | "import" | null
   >(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
   const [isImportLoading, setIsImportLoading] = useState(false)
@@ -142,18 +142,16 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-end w-full">
-        <Button
-          className={clsx("px-[10px] md:flex pr-[15px] text-teal-600")}
-          id="importToken"
-          onClick={() => setModalStep("manage")}
-          isSmall
-          type="ghost"
-          disabled={!!manageBtnDisabled}
-        >
-          <span>Manage tokens</span>
-        </Button>
-      </div>
+      <Button
+        className={clsx("text-primaryButtonColor", className)}
+        id="importToken"
+        onClick={() => setModalStep("manage")}
+        isSmall
+        type="ghost"
+        disabled={!!manageBtnDisabled}
+      >
+        <span>Manage tokens</span>
+      </Button>
       <ModalComponent
         isVisible={Boolean(modalStep)}
         onClose={() => {
@@ -162,21 +160,6 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
-        {modalStep === "scan" && (
-          <motion.div
-            key="scan-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-          >
-            <ScanTokens
-              className="h-[calc(600px-2.5rem)]"
-              onCancel={() => setModalStep("manage")}
-              onScanned={() => setModalStep("manage")}
-            />
-          </motion.div>
-        )}
         {modalStep === "manage" && (
           <motion.div
             key="manage-modal"
@@ -228,19 +211,12 @@ export const TokensHeader: FC<TokensHeaderProps> = ({
             </div>
             <div>
               <div className="bg-gray-50 rounded-[12px] mt-[28px] mb-[20px]">
-                <div className="h-[64px] px-4 flex items-center justify-between border-b border-white">
+                <div className="h-[64px] px-4 flex items-center justify-between">
                   <span>Hide zero balances</span>
                   <Toggle
                     isChecked={hideZeroBalance}
                     onToggle={onZeroBalanceToggle}
                   />
-                </div>
-                <div
-                  onClick={() => setModalStep("scan")}
-                  className="h-[64px] px-4 flex items-center justify-between border-b border-white cursor-pointer"
-                >
-                  <span>Scan for tokens</span>
-                  <IconCmpArrowRight />
                 </div>
               </div>
               <div className="flex gap-[10px] mb-[10px]">

@@ -7,7 +7,6 @@ import { ReactComponent as ArrowRed } from "./arrow-red.svg"
 import { ReactComponent as Arrow } from "./arrow.svg"
 import { ReactComponent as Calendar } from "./calendar.svg"
 import { ReactComponent as Cancel } from "./cancel.svg"
-import { ReactComponent as Card } from "./card.svg"
 import { ReactComponent as Chevron } from "./chevron.svg"
 import { ReactComponent as Copy } from "./copy.svg"
 import { ReactComponent as Desktop } from "./desktop.svg"
@@ -160,10 +159,6 @@ const Icons: StoryFn = (args) => {
         <IconWrapper
           icon={<Trash className={clsx(args["className"])} />}
           label="Trash"
-        />
-        <IconWrapper
-          icon={<Card className={clsx(args["className"])} />}
-          label="Card"
         />
         <IconWrapper
           icon={<FilledArrowRight className={clsx(args["className"])} />}

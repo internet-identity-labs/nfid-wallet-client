@@ -11,8 +11,22 @@ export const WalletRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="tokens" replace />} />
-      <Route path="tokens" element={<TokensPage />} />
-      <Route path="nfts" element={<NFTsPage />} />
+      <Route
+        path="tokens"
+        element={
+          <ProfileContainer>
+            <TokensPage />
+          </ProfileContainer>
+        }
+      />
+      <Route
+        path="nfts"
+        element={
+          <ProfileContainer>
+            <NFTsPage />
+          </ProfileContainer>
+        }
+      />
       <Route path="staking" element={<StakingPage />} />
       <Route path="staking/:tokenSymbol" element={<StakingDetailsPage />} />
       <Route

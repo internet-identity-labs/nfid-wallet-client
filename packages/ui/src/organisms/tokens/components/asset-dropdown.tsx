@@ -11,6 +11,7 @@ import {
   IconSvgHistoryIcon,
   IconSvgTokenInfo,
   IDropdownPosition,
+  IconSvgStakeAction,
 } from "@nfid-frontend/ui"
 import { mutateWithTimestamp } from "@nfid/swr"
 
@@ -74,6 +75,11 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         <DropdownOption
           label="Swap"
           icon={IconSvgSwapAction}
+          handler={() => onSwapClick(token.getTokenAddress())}
+        />
+        <DropdownOption
+          label="Stake"
+          icon={IconSvgStakeAction}
           handler={() => onSwapClick(token.getTokenAddress())}
         />
         <DropdownOption

@@ -1,6 +1,8 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
+import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { NFTs } from "packages/ui/src/organisms/nfts"
+import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { useCallback, useContext, useState, useEffect } from "react"
 
 import { Button } from "@nfid-frontend/ui"
@@ -70,26 +72,60 @@ const NFTsPage = () => {
 
   return (
     <>
-      <NFTs
-        nfts={nfts}
-        isLoading={isLoading || isValidating}
-        searchTokens={searchTokens}
-        links={ProfileConstants}
-        totalItems={totalItems}
-        currentPage={currentPage}
-        onTransferNFT={onTransferNFT}
-      />
-      <Button
-        disabled={isLoading}
-        className={clsx(
-          "block mx-auto",
-          (totalPages === currentPage || !nfts.length || isLoading) && "hidden",
-        )}
-        onClick={() => setCurrentPage((prev) => prev + 1)}
-        type="ghost"
-      >
-        {isLoading ? "Loading..." : "Load more"}
-      </Button>
+      <div className="p-[20px] md:p-[30px] border-gray-200 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+        <div className="flex flex-col md:mr-[60px]">
+          <p className="mb-[16px] text-sm font-bold text-gray-400">
+            NFT balance
+          </p>
+          <Balance
+            id={"totalBalance"}
+            className="text-[26px]"
+            usdBalance={{
+              value: "100",
+              dayChange: "12",
+              dayChangePercent: "2",
+              dayChangePositive: true,
+            }}
+          />
+        </div>
+        <div className="flex mt-[20px] md:my-[0]">
+          <div className="flex flex-col mr-[60px]">
+            <p className="mb-[10px] text-sm font-bold text-gray-400">
+              NFTs owned
+            </p>
+            <p className="mb-0 text-[26px] font-bold">2</p>
+          </div>
+          <div className="flex flex-col">
+            <p className="mb-[10px] text-sm font-bold text-gray-400">
+              NFTs w/o price
+            </p>
+            <p className="mb-0 text-[26px] font-bold">1</p>
+          </div>
+        </div>
+      </div>
+      <ProfileContainer>
+        <NFTs
+          nfts={nfts}
+          isLoading={isLoading || isValidating}
+          searchTokens={searchTokens}
+          links={ProfileConstants}
+          totalItems={totalItems}
+          currentPage={currentPage}
+          onTransferNFT={onTransferNFT}
+        />
+        <Button
+          disabled={isLoading}
+          className={clsx(
+            "block mx-auto",
+            (totalPages === currentPage || !nfts.length || isLoading) &&
+              "hidden",
+          )}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          type="ghost"
+        >
+          {isLoading ? "Loading..." : "Load more"}
+        </Button>
+      </ProfileContainer>
     </>
   )
 }

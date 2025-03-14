@@ -20,15 +20,26 @@ export interface StakingSidePanelProps {
   isOpen: boolean
   onClose: () => void
   sidePanelOption: IStakingOption | null
+  onRedeemOpen: () => void
 }
 
 export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   isOpen,
   onClose,
   sidePanelOption,
+  onRedeemOpen,
 }) => {
   const [isVotingOpen, setIsVotingOpen] = useState(false)
   useDisableScroll(isOpen)
+
+  const openRedeemModal = () => {
+    onRedeemOpen()
+    onClose()
+  }
+
+  const stopUnlocking = () => {}
+
+  const startUnlocking = () => {}
 
   return (
     <div>
@@ -335,6 +346,13 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </div>
                         <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                         <Button
+                          onClick={
+                            sidePanelOption.type === StakingOptions.Unlocking
+                              ? stopUnlocking
+                              : sidePanelOption.type === StakingOptions.Locked
+                              ? startUnlocking
+                              : openRedeemModal
+                          }
                           className="w-full mt-[20px]"
                           type={
                             sidePanelOption.type === StakingOptions.Available

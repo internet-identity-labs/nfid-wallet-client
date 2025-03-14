@@ -18,11 +18,13 @@ import { StakingSidePanel } from "./components/staking-side-panel"
 export interface StakingDetailsProps {
   stakingDetails: IStakingDetails
   stakeOptions: any
+  onRedeemOpen: () => void
 }
 
 export const StakingDetails: FC<StakingDetailsProps> = ({
   stakingDetails,
   stakeOptions,
+  onRedeemOpen,
 }) => {
   const [sidePanelOption, setSidePanelOption] = useState<IStakingOption | null>(
     null,
@@ -39,6 +41,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         isOpen={Boolean(sidePanelOption)}
         onClose={() => setSidePanelOption(null)}
         sidePanelOption={sidePanelOption}
+        onRedeemOpen={onRedeemOpen}
       />
       <div className="flex gap-[10px] items-center mb-[30px]">
         <ArrowButton

@@ -23,6 +23,7 @@ export interface StakingOptionProps {
   stakingOptions: IStakingOption[]
   isLoading: boolean
   stakingDetails: IStakingDetails
+  setSidePanelOption: (option: IStakingOption) => void
 }
 
 export const StakingOption: FC<StakingOptionProps> = ({
@@ -30,6 +31,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
   stakingOptionType,
   isLoading,
   stakingDetails,
+  setSidePanelOption,
 }) => {
   return (
     <ProfileContainer
@@ -140,7 +142,10 @@ export const StakingOption: FC<StakingOptionProps> = ({
             </tr>
             {stakingOptions.map((option) => {
               return (
-                <tr className="text-sm md:hover:bg-gray-50 h-[64px]">
+                <tr
+                  className="text-sm md:hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
+                  onClick={() => setSidePanelOption(option)}
+                >
                   <td className="md:pl-[30px]">
                     <div className="flex items-center gap-[12px]">
                       <div className="w-[40px] h-[40px] rounded-full bg-zinc-50 relative">
@@ -165,7 +170,10 @@ export const StakingOption: FC<StakingOptionProps> = ({
                         )}
                       </div>
                       <div>
-                        <p className="text-sm leading-[20px]">
+                        <p
+                          className="text-sm leading-[20px]"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <CopyAddress address={option.id} />
                         </p>
                       </div>
@@ -204,12 +212,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                       "w-[34px] md:w-[55px] text-right pr-0 md:pr-[30px]",
                     )}
                   >
-                    <div
-                      className={clsx(
-                        "inline-flex items-center gap-1 justify-between cursor-pointer",
-                        "transition-all group p-1",
-                      )}
-                    >
+                    <div className="inline-flex items-center justify-between gap-1 cursor-pointer">
                       <IconCaret />
                     </div>
                   </td>

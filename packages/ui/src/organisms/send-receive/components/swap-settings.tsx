@@ -77,17 +77,8 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
 
   const setInputSlippage = (value: string) => {
     setIsCustom(!!customSlippage)
-    if (+value > MAX_SLIPPAGE) {
-      setCustomSlippage(MAX_SLIPPAGE)
-      return
-    }
-    if (+value < MIN_SLIPPAGE) {
-      setCustomSlippage(MIN_SLIPPAGE)
-      return
-    }
-    if (value) {
-      setCustomSlippage(+value)
-    }
+
+    setCustomSlippage(+value)
   }
 
   useEffect(() => {
@@ -180,14 +171,16 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                   }}
                   onBlur={(e) => {
                     const value = e.target.value
-
-                    setInputSlippage(value)
-                    customInputRef!.current!.value =
+                    const calculatedValue =
                       +value < MIN_SLIPPAGE
                         ? `${MIN_SLIPPAGE}`
                         : +value > MAX_SLIPPAGE
                         ? `${MAX_SLIPPAGE}`
                         : value
+
+                    setInputSlippage(calculatedValue)
+
+                    customInputRef!.current!.value = calculatedValue
                   }}
                 />
                 %

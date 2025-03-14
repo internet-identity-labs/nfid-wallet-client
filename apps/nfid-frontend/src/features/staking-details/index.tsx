@@ -15,9 +15,14 @@ export interface IStakingOption {
   initialInUsd: string
   rewards: string
   rewardsInUsd: string
+  total: string
+  totalInUsd: string
   lockTime: string
   unlockIn?: string
   isDiamond?: boolean
+  createdAt: number
+  unlockAt?: number
+  type: StakingOptions
 }
 
 export enum StakingOptions {
@@ -44,8 +49,12 @@ const StakingDetailsPage = () => {
         initialInUsd: "14,207.03 USD",
         rewards: "40.08 ICP",
         rewardsInUsd: "284.71 USD",
+        total: "204.754 ICP",
+        totalInUsd: "2514.47 USD",
         lockTime: "2 years",
+        createdAt: 1656295343000,
         isDiamond: true,
+        type: StakingOptions.Available,
       },
     ],
     Unlocking: [
@@ -55,8 +64,13 @@ const StakingDetailsPage = () => {
         initialInUsd: "14,207.03 USD",
         rewards: "40.08 ICP",
         rewardsInUsd: "284.71 USD",
+        total: "204.754 ICP",
+        totalInUsd: "2514.47 USD",
         lockTime: "2 years",
         unlockIn: "4 months, 124 days",
+        createdAt: 1656295343000,
+        unlockAt: 1656295343000,
+        type: StakingOptions.Unlocking,
       },
     ],
     Locked: [
@@ -66,7 +80,11 @@ const StakingDetailsPage = () => {
         initialInUsd: "14,207.03 USD",
         rewards: "40.08 ICP",
         rewardsInUsd: "284.71 USD",
+        total: "204.754 ICP",
+        totalInUsd: "2514.47 USD",
         lockTime: "2 years",
+        createdAt: 1656295343000,
+        type: StakingOptions.Locked,
       },
       {
         id: "5695121862339497863",
@@ -74,7 +92,11 @@ const StakingDetailsPage = () => {
         initialInUsd: "14,207.03 USD",
         rewards: "40.08 ICP",
         rewardsInUsd: "284.71 USD",
+        total: "204.754 ICP",
+        totalInUsd: "2514.47 USD",
         lockTime: "2 years",
+        createdAt: 1656295343000,
+        type: StakingOptions.Locked,
       },
     ],
   }

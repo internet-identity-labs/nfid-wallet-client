@@ -63,8 +63,6 @@ export const StakeUi: FC<StakeUiProps> = ({
   const lockTime = watch("lockTime")
   const [lockValue, setLockValue] = useState(0)
 
-  console.log(lockValue)
-
   if (!token || isLoading)
     return (
       <BlurredLoader

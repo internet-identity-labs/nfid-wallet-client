@@ -1,8 +1,9 @@
 import clsx from "clsx"
-import { FC, useCallback } from "react"
+import { FC, useCallback, useState } from "react"
 
 import {
   IStakingDetails,
+  IStakingOption,
   StakingOptions,
 } from "frontend/features/staking-details"
 import { NotFound } from "frontend/ui/pages/404"
@@ -12,6 +13,7 @@ import ImageWithFallback from "../../atoms/image-with-fallback"
 import { ArrowButton } from "../../molecules/button/arrow-button"
 import { StakingHeader } from "./components/staking-header"
 import { StakingOption } from "./components/staking-option"
+import { StakingSidePanel } from "./components/staking-side-panel"
 
 export interface StakingDetailsProps {
   stakingDetails: IStakingDetails
@@ -22,6 +24,9 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   stakingDetails,
   stakeOptions,
 }) => {
+  const [sidePanelOption, setSidePanelOption] = useState<IStakingOption | null>(
+    null,
+  )
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
@@ -30,6 +35,11 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
 
   return (
     <>
+      <StakingSidePanel
+        isOpen={Boolean(sidePanelOption)}
+        onClose={() => setSidePanelOption(null)}
+        sidePanelOption={sidePanelOption}
+      />
       <div className="flex gap-[10px] items-center mb-[30px]">
         <ArrowButton
           buttonClassName="py-[7px]"
@@ -56,6 +66,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
           stakingOptions={stakeOptions.Available}
           isLoading={false}
           stakingDetails={stakingDetails}
+          setSidePanelOption={setSidePanelOption}
         />
       )}
       {stakeOptions.Unlocking.length && (
@@ -64,6 +75,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
           stakingOptions={stakeOptions.Unlocking}
           isLoading={false}
           stakingDetails={stakingDetails}
+          setSidePanelOption={setSidePanelOption}
         />
       )}
       {stakeOptions.Locked.length && (
@@ -72,6 +84,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
           stakingOptions={stakeOptions.Locked}
           isLoading={false}
           stakingDetails={stakingDetails}
+          setSidePanelOption={setSidePanelOption}
         />
       )}
     </>

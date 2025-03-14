@@ -70,17 +70,15 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
     getQuotes()
   }, [shroff, swapProviders])
 
+  useEffect(() => {
+    if (!customSlippage) return
+    setSlippage(customSlippage)
+  }, [customSlippage])
+
   const setInputSlippage = (value: string) => {
     setIsCustom(!!customSlippage)
-    if (+value > MAX_SLIPPAGE) {
-      setSlippage(MAX_SLIPPAGE)
-      return
-    }
-    if (+value < MIN_SLIPPAGE) {
-      setSlippage(MIN_SLIPPAGE)
-      return
-    }
-    if (value) setSlippage(+value)
+
+    setCustomSlippage(+value)
   }
 
   useEffect(() => {
@@ -167,15 +165,22 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                   value={`${customSlippage}`}
                   ref={customInputRef}
                   onKeyDown={(e) => {
-                    const target = e.target as HTMLInputElement
-
                     if (e.key === "Enter") {
-                      setInputSlippage(target.value)
-                      target.blur()
+                      ;(e.target as HTMLInputElement).blur()
                     }
                   }}
                   onBlur={(e) => {
-                    setInputSlippage(e.target.value)
+                    const value = e.target.value
+                    const calculatedValue =
+                      +value < MIN_SLIPPAGE
+                        ? `${MIN_SLIPPAGE}`
+                        : +value > MAX_SLIPPAGE
+                        ? `${MAX_SLIPPAGE}`
+                        : value
+
+                    setInputSlippage(calculatedValue)
+
+                    customInputRef!.current!.value = calculatedValue
                   }}
                 />
                 %

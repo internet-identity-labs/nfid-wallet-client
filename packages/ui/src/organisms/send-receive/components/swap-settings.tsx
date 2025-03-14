@@ -183,7 +183,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
 
                     setInputSlippage(value)
                     customInputRef!.current!.value =
-                      +value > 50 ? 50 + "" : value
+                      +value > MAX_SLIPPAGE ? `${MAX_SLIPPAGE}` : value
                   }}
                 />
                 %

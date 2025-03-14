@@ -15,6 +15,7 @@ import { ProfileContext } from "frontend/provider"
 
 import { ConvertBTC } from "./components/convert"
 import { TransferReceive } from "./components/receive"
+import { RedeemStake } from "./components/redeem-stake"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { SwapFT } from "./components/swap"
@@ -37,6 +38,7 @@ export const TransferModalCoordinator = () => {
     send({ type: "HIDE" })
     setIsConvertSuccess(false)
   }, [send])
+
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
       setHideZeroBalance(userPref.isHideZeroBalance())
@@ -166,6 +168,17 @@ export const TransferModalCoordinator = () => {
               publicKey={publicKey}
               preselectedAccountAddress={state.context.sourceWalletAddress}
             />
+          </motion.div>
+        )}
+        {state.matches("RedeemMachine") && (
+          <motion.div
+            key="redeem-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <RedeemStake onClose={hideModal} />
           </motion.div>
         )}
       </>

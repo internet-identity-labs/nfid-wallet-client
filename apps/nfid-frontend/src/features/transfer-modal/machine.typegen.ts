@@ -32,6 +32,7 @@ export interface Typegen0 {
   eventsCausingGuards: {
     isConvertMachine: ""
     isReceiveMachine: ""
+    isRedeemMachine: ""
     isSendFungible: ""
     isSendMachine: ""
     isSwapMachine: ""
@@ -41,6 +42,7 @@ export interface Typegen0 {
     | "ConvertMachine"
     | "Hidden"
     | "ReceiveMachine"
+    | "RedeemMachine"
     | "SendMachine"
     | "SendMachine.CheckSendType"
     | "SendMachine.SendFT"

@@ -1,4 +1,10 @@
+import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
+import { useContext } from "react"
+
+import { ProfileContext } from "frontend/provider"
+
+import { ModalType } from "../transfer-modal/types"
 
 export interface IStakingDetails {
   stakingBalance: string
@@ -100,11 +106,19 @@ const StakingDetailsPage = () => {
       },
     ],
   }
+  const globalServices = useContext(ProfileContext)
+  const [, send] = useActor(globalServices.transferService)
+
+  const onRedeemOpen = () => {
+    send({ type: "CHANGE_DIRECTION", data: ModalType.REDEEM })
+    send("SHOW")
+  }
 
   return (
     <StakingDetails
       stakingDetails={stakingDetails}
       stakeOptions={stakeOptions}
+      onRedeemOpen={onRedeemOpen}
     />
   )
 }

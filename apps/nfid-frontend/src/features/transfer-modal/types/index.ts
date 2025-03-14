@@ -20,6 +20,7 @@ export enum ModalType {
   RECEIVE = "receive",
   SWAP = "swap",
   CONVERT = "convert",
+  REDEEM = "redeem",
 }
 
 export enum SendStatus {

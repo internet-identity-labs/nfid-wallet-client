@@ -10,12 +10,18 @@ export interface CopyAddressProps {
   address: string
   leadingChars?: number
   trailingChars?: number
+  alwaysShowIcon?: boolean
+  className?: string
+  iconClassName?: string
 }
 
 export const CopyAddress: FC<CopyAddressProps> = ({
   address,
   leadingChars,
   trailingChars,
+  alwaysShowIcon,
+  className,
+  iconClassName,
 }) => {
   const [hovered, setHovered] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -34,6 +40,7 @@ export const CopyAddress: FC<CopyAddressProps> = ({
         "inline-flex gap-[10px] items-center cursor-pointer",
         "text-black active:text-gray-400 hover:text-zinc-500 transition-colors",
         copied && "!text-black",
+        className,
       )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -47,22 +54,24 @@ export const CopyAddress: FC<CopyAddressProps> = ({
           leadingChars={leadingChars}
           trailingChars={trailingChars}
           id={"principal"}
-          className="transition-opacity duration-300" // Ensure the text also has a smooth opacity transition
+          className="transition-opacity duration-300"
         />
       )}
 
       {copied ? (
         <CopiedAddressIcon
           className={clsx(
-            "w-[18px] h-[18px] transition-opacity duration-300", // Ensure transition for both icons
+            "w-[18px] h-[18px] transition-opacity duration-300",
             hovered || copied ? "" : "opacity-0",
+            iconClassName,
           )}
         />
       ) : (
         <CopyAddressIcon
           className={clsx(
             "w-[18px] h-[18px] transition-opacity duration-300", // Ensure transition for both icons
-            hovered || copied ? "" : "opacity-0",
+            hovered || copied || alwaysShowIcon ? "" : "opacity-0",
+            iconClassName,
           )}
         />
       )}

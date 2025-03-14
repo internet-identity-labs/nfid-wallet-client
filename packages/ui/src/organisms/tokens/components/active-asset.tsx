@@ -7,6 +7,7 @@ import {
   IconNftPlaceholder,
   Skeleton,
   IDropdownPosition,
+  IconCmpStakeAction,
 } from "@nfid-frontend/ui"
 import { ArrowPercentChange } from "@nfid-frontend/ui"
 
@@ -19,6 +20,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -32,6 +34,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   profileConstants,
   onSendClick,
   onSwapClick,
+  onStakeClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -73,10 +76,16 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         </div>
         <div className="sm:overflow-hidden sm:text-ellipsis sm:whitespace-nowrap">
           <p
-            className="text-sm font-semibold leading-[25px]"
+            className="text-sm font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
+            onClick={() => onStakeClick(token.getTokenAddress())}
           >
             {token.getTokenSymbol()}
+            <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+            <span className="flex items-center text-xs cursor-pointer text-primaryButtonColor">
+              <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+              Stake
+            </span>
           </p>
           <p className="text-secondary text-xs leading-[20px]">
             {token.getTokenName()}
@@ -167,6 +176,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           profileConstants={profileConstants}
           onSendClick={onSendClick}
           onSwapClick={onSwapClick}
+          onStakeClick={onStakeClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}
           setIsTokenProcessed={setIsTokenProcessed}

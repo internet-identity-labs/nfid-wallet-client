@@ -30,6 +30,7 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {
     isReceiveMachine: ""
+    isRedeemMachine: ""
     isSendFungible: ""
     isSendMachine: ""
     isStakeMachine: ""
@@ -39,6 +40,7 @@ export interface Typegen0 {
   matchesStates:
     | "Hidden"
     | "ReceiveMachine"
+    | "RedeemMachine"
     | "SendMachine"
     | "SendMachine.CheckSendType"
     | "SendMachine.SendFT"

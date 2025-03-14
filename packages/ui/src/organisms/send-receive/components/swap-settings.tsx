@@ -43,7 +43,6 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   setProvider,
 }) => {
   const [isCustom, setIsCustom] = useState(false)
-  const [key, setKey] = useState(0)
   const [customSlippage, setCustomSlippage] = useState<number | undefined>()
   const customInputRef = useRef<HTMLInputElement>(null)
   const [quotes, setQuotes] = useState<Array<QuoteMap>>([])
@@ -71,21 +70,23 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
     getQuotes()
   }, [shroff, swapProviders])
 
+  useEffect(() => {
+    if (!customSlippage) return
+    setSlippage(customSlippage)
+  }, [customSlippage])
+
   const setInputSlippage = (value: string) => {
     setIsCustom(!!customSlippage)
     if (+value > MAX_SLIPPAGE) {
-      setKey((prevKey) => prevKey + 1)
-      setSlippage(MAX_SLIPPAGE)
+      setCustomSlippage(MAX_SLIPPAGE)
       return
     }
     if (+value < MIN_SLIPPAGE) {
-      setSlippage(MIN_SLIPPAGE)
-      setKey((prevKey) => prevKey + 1)
+      setCustomSlippage(MAX_SLIPPAGE)
       return
     }
     if (value) {
-      setSlippage(+value)
-      setKey((prevKey) => prevKey + 1)
+      setCustomSlippage(+value)
     }
   }
 
@@ -165,24 +166,24 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 )}
               >
                 <InputAmount
-                  key={key}
                   id="slippage"
                   className="!text-white !h-auto !placeholder-white/50"
                   decimals={2}
                   fontSize={14}
                   isLoading={false}
-                  value={`${slippage}`}
+                  value={`${customSlippage}`}
                   ref={customInputRef}
                   onKeyDown={(e) => {
-                    const target = e.target as HTMLInputElement
-
                     if (e.key === "Enter") {
-                      setInputSlippage(target.value)
-                      target.blur()
+                      ;(e.target as HTMLInputElement).blur()
                     }
                   }}
                   onBlur={(e) => {
-                    setInputSlippage(e.target.value)
+                    const value = e.target.value
+
+                    setInputSlippage(value)
+                    customInputRef!.current!.value =
+                      +value > 50 ? 50 + "" : value
                   }}
                 />
                 %

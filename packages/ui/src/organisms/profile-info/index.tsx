@@ -27,6 +27,7 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   onSendClick: () => void
   onReceiveClick: () => void
   onSwapClick: () => void
+  onStakeClick: () => void
   address?: string
 }
 
@@ -37,6 +38,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   onSendClick,
   onReceiveClick,
   onSwapClick,
+  onStakeClick,
   address,
 }) => {
   return (
@@ -130,7 +132,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               icon={
                 <IconCmpStake className="text-gray-400 !w-[18px] !h-[18px] text-white" />
               }
-              onClick={onSwapClick}
+              onClick={onStakeClick}
               isSmall
             >
               <span className="hidden md:flex">Stake</span>

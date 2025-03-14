@@ -25,6 +25,7 @@ type AssetDropdownProps = {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
@@ -37,6 +38,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   profileConstants,
   onSendClick,
   onSwapClick,
+  onStakeClick,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
@@ -80,7 +82,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         <DropdownOption
           label="Stake"
           icon={IconSvgStakeAction}
-          handler={() => onSwapClick(token.getTokenAddress())}
+          handler={() => onStakeClick(token.getTokenAddress())}
         />
         <DropdownOption
           label="Token information"

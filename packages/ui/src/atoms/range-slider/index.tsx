@@ -27,7 +27,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         step={step}
         min={min}
         max={max}
-        minStepsBetweenThumbs={2}
+        minStepsBetweenThumbs={1}
         value={[value]}
         onValueChange={(v) => setValue && setValue(v[0])}
         disabled={disabled}
@@ -37,44 +37,38 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         </Slider.Track>
         <div
           className={clsx(
-            "absolute w-full h-2 gap-1 px-[1px]",
-            "flex items-center justify-between",
+            "absolute w-full h-2 px-[1px] rounded-full",
+            "flex items-center justify-between overflow-hidden",
+            value === max && "bg-gradient-to-r from-teal-600 to-[#00FFE5]",
           )}
         >
-          {Array(max === 1 ? 1 : max - 1)
+          {Array(max)
             .fill(null)
             .map((_, i) => (
               <div
                 key={`range_slider_section_${i}`}
                 className={clsx(
-                  "block w-full h-2 bg-gray-200 dark:bg-zinc-500",
-                  (i < value - 1 || max === 1) && "!bg-teal-600",
-                  i + 2 === max && "rounded-r-full",
-                  i === 0 && "rounded-l-full",
-                  i === 0 && max === 1 && "rounded-full",
+                  "block w-full h-2 bg-gray-200",
+                  i < value - 2 && "!bg-teal-600",
+                  i < value - 2 && value === max && "!bg-transparent",
                 )}
               />
             ))}
         </div>
-        {!disabled && <Slider.Thumb className="SliderThumb" id="slider" />}
+        {!disabled && (
+          <Slider.Thumb
+            className={clsx("SliderThumb", value === max && "!bg-teal-400")}
+            id="slider"
+          />
+        )}
       </Slider.Root>
       <div
         className={clsx(
-          "flex items-center justify-between mt-[15px] text-xs text-gray-400 dark:text-zinc-500",
+          "flex items-center justify-between mt-[1px] text-xs text-gray-500 leading-[25px]",
         )}
       >
-        {Array(max === 2 ? 2 : max === 1 ? 0 : max)
-          .fill(null)
-          .map((_, i) => (
-            <p
-              key={`range_slider_number_${i}`}
-              className={clsx(
-                i + 1 === value && "font-bold text-black dark:text-white",
-              )}
-            >
-              {i + 1}
-            </p>
-          ))}
+        <p>{min / 12}y</p>
+        <p>{max / 12}y</p>
       </div>
     </div>
   )

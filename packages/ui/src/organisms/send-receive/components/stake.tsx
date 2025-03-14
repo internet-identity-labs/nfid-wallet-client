@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { RangeSlider } from "packages/ui/src/atoms/range-slider"
-import { FC, useState } from "react"
+import { FC, useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -11,11 +11,13 @@ import {
   Input,
   Tooltip,
   IconInfo,
+  IconCmpStake,
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 
+import DiamondIcon from "../../staking/assets/diamond.svg"
 import { ChooseFromToken } from "./choose-from-token"
 import { StakeSuccessUi } from "./stake-success"
 
@@ -33,6 +35,12 @@ export interface StakeUiProps {
   fee: { fee: string; feeInUsd: string }
   rewards: { rewards: string; rewardsInUsd: string }
   apr: string
+  lockDuration: {
+    min: number
+    max: number
+  }
+  lockValue: number
+  setLockValue: (v: number) => void
 }
 
 export const StakeUi: FC<StakeUiProps> = ({
@@ -49,19 +57,28 @@ export const StakeUi: FC<StakeUiProps> = ({
   fee,
   rewards,
   apr,
+  lockDuration,
+  lockValue,
+  setLockValue,
 }) => {
   const {
-    resetField,
     watch,
-    setValue,
     register,
     formState: { errors },
-    trigger,
   } = useFormContext()
 
   const amount = watch("amount")
-  const lockTime = watch("lockTime")
-  const [lockValue, setLockValue] = useState(0)
+
+  const lockInputValue = useMemo(() => {
+    const years = Math.floor(lockValue / 12)
+    const months = lockValue % 12
+
+    const yearsString = years > 0 ? `${years} year${years > 1 ? "s" : ""}` : ""
+    const monthsString =
+      months > 0 ? `${months} month${months > 1 ? "s" : ""}` : ""
+
+    return [yearsString, monthsString].filter(Boolean).join(", ")
+  }, [lockValue])
 
   if (!token || isLoading)
     return (
@@ -91,7 +108,24 @@ export const StakeUi: FC<StakeUiProps> = ({
           "flex justify-between items-center",
         )}
       >
-        <span>Stake</span>
+        <div className="flex items-center gap-1.5">
+          <span>Stake</span>
+          {lockValue === lockDuration.max && (
+            <Tooltip
+              align="start"
+              alignOffset={-20}
+              tip={
+                <span className="block max-w-[330px] mb-4">
+                  You've chosen the maximum lock time—diamond hands unlocked!
+                  Enjoy the highest reward rate and extra perks from the
+                  developer community.
+                </span>
+              }
+            >
+              <img className="w-6 h-6 cursor-pointer" src={DiamondIcon} />
+            </Tooltip>
+          )}
+        </div>
         <Tooltip
           align="end"
           alignOffset={-20}
@@ -132,21 +166,21 @@ export const StakeUi: FC<StakeUiProps> = ({
       <p className="mb-1 text-xs">Lock time</p>
       <div>
         <Input
-          className="mb-[-9px]"
+          className="mb-[-11px]"
           inputClassName="h-[60px] !border-black border-b-0 rounded-b-none !bg-white !text-black"
-          value="6 years 6 months"
+          value={lockInputValue}
           disabled
           {...register("lockTime")}
         />
         <RangeSlider
           value={lockValue}
           setValue={setLockValue}
-          min={0}
-          max={8}
+          min={lockDuration.min}
+          max={lockDuration.max}
           step={1}
         />
       </div>
-      <div className="my-[20px] text-sm">
+      <div className="my-[24px] text-sm">
         <div className="flex items-center justify-between h-[48px]">
           <p>Est. APR</p>
           <p className="font-bold text-green-600">{apr}</p>
@@ -170,20 +204,16 @@ export const StakeUi: FC<StakeUiProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex gap-[20px]">
-        <Button type="stroke" id="cancelStakeButton" block onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          disabled={false}
-          type="primary"
-          id="stakeButton"
-          block
-          onClick={submit}
-        >
-          Stake
-        </Button>
-      </div>
+      <Button
+        disabled={Boolean(errors["amount"]?.message) || !amount}
+        type="primary"
+        id="stakeButton"
+        block
+        onClick={submit}
+        icon={<IconCmpStake className="!w-[18px] !h-[18px] text-white" />}
+      >
+        Stake
+      </Button>
     </>
   )
 }

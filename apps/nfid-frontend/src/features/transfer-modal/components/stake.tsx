@@ -17,10 +17,17 @@ interface IStakeFT {
 }
 
 export const StakeFT = ({ onClose, preselectedTokenAddress }: IStakeFT) => {
+  const lockDuration = {
+    min: 6,
+    max: 96,
+  }
+
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status] = useState(SendStatus.PENDING)
   const [error] = useState<string | undefined>()
+  const [lockValue, setLockValue] = useState(lockDuration.min)
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
+
   const apr = "7.5%"
   const fee = {
     fee: "0.0001 ICP",
@@ -45,7 +52,6 @@ export const StakeFT = ({ onClose, preselectedTokenAddress }: IStakeFT) => {
     mode: "all",
     defaultValues: {
       amount: "",
-      lockTime: "",
     },
   })
 
@@ -57,16 +63,11 @@ export const StakeFT = ({ onClose, preselectedTokenAddress }: IStakeFT) => {
     }
   }, [preselectedTokenAddress])
 
-  const { watch } = formMethods
-  const amount = watch("amount")
-  const lockTime = watch("lockTime")
-
   const submit = useCallback(async () => {
     if (!token) return toaster.error(DEFAULT_STAKE_ERROR || "No selected token")
-    console.debug(amount, lockTime)
 
     setIsSuccessOpen(true)
-  }, [token, amount, lockTime])
+  }, [token])
 
   return (
     <FormProvider {...formMethods}>
@@ -84,6 +85,9 @@ export const StakeFT = ({ onClose, preselectedTokenAddress }: IStakeFT) => {
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
+        lockDuration={lockDuration}
+        lockValue={lockValue}
+        setLockValue={setLockValue}
       />
     </FormProvider>
   )

@@ -11,6 +11,7 @@ export interface AccordionProps {
   className?: string
   detailsClassName?: string
   titleClassName?: string
+  isOpen?: boolean
 }
 
 export const Accordion: React.FC<AccordionProps> = ({
@@ -23,8 +24,9 @@ export const Accordion: React.FC<AccordionProps> = ({
   openTrigger,
   closeTrigger,
   titleClassName,
+  isOpen,
 }) => {
-  const [active, setActive] = useState(false)
+  const [active, setActive] = useState(isOpen || false)
   const [height, setHeight] = useState("0px")
   const [rotate, setRotate] = useState("transform duration-700 ease")
 

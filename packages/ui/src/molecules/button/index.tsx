@@ -39,7 +39,7 @@ export const Button: React.FC<ButtonProps> = ({
       id={id}
       disabled={disabled}
       className={clsx(
-        "transition duration-75",
+        "transition duration-300",
         "text-center text-sm first-letter:capitalize hover:no-underline",
         "font-bold",
         "border rounded-xl outline-none p-[15px] leading-4",

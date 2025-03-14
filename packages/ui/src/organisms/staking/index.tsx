@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { FC } from "react"
-import { Link } from "react-router-dom"
+import { NavigateFunction } from "react-router-dom"
 
 import { IStakingInfo, IStake } from "frontend/features/staking"
 
@@ -24,6 +24,7 @@ export interface StakingProps {
     staking: string
   }
   stakingInfo: IStakingInfo
+  navigate: NavigateFunction
 }
 
 export const Staking: FC<StakingProps> = ({
@@ -31,6 +32,7 @@ export const Staking: FC<StakingProps> = ({
   isLoading,
   links,
   stakingInfo,
+  navigate,
 }) => {
   return stakes.length ? (
     <>
@@ -73,7 +75,15 @@ export const Staking: FC<StakingProps> = ({
                 </tr>
                 {stakes.map((stake) => {
                   return (
-                    <tr className="text-sm hover:bg-gray-50 h-[64px]">
+                    <tr
+                      className="text-sm hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
+                      key={stake.symbol}
+                      onClick={() =>
+                        navigate(
+                          `${links.base}/${links.staking}/${stake.symbol}`,
+                        )
+                      }
+                    >
                       <td className="md:pl-[30px]">
                         <div className="flex items-center gap-[12px]">
                           <div className="w-[40px] h-[40px] rounded-full bg-zinc-50 relative">
@@ -120,18 +130,9 @@ export const Staking: FC<StakingProps> = ({
                         </p>
                       </td>
                       <td className="w-[34px] text-right md:w-[55px] md:text-left">
-                        <Link
-                          to={`${links.base}/${links.staking}/${stake.symbol}`}
-                        >
-                          <div
-                            className={clsx(
-                              "inline-flex items-center gap-1 justify-between cursor-pointer",
-                              "transition-all group p-1",
-                            )}
-                          >
-                            <IconCaret />
-                          </div>
-                        </Link>
+                        <div className="inline-flex items-center justify-between gap-1">
+                          <IconCaret />
+                        </div>
                       </td>
                     </tr>
                   )

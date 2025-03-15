@@ -116,9 +116,11 @@ export class FtService {
       }
     | undefined
   > {
-    const [nftPrice] = await Promise.all([
-      nftService.getNFTsTotalPrice(userPublicKey),
-    ])
+    let nftPrice = 0
+    try {
+      nftPrice = await nftService.getNFTsTotalPrice(userPublicKey)
+    } catch (e) {}
+
     let price = ft
       .map((ft) => ({
         usdBalance: ft.getUSDBalance(),

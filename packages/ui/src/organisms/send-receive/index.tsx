@@ -4,7 +4,6 @@ import { FC } from "react"
 
 import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
 
-import { Tooltip } from "../../molecules/tooltip"
 import { TransferTemplate } from "./components/template"
 
 export interface TransferModalProps {
@@ -47,27 +46,25 @@ export const TransferModal: FC<TransferModalProps> = ({
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}
     >
-      {!isSuccess &&
-        direction !== ModalType.SWAP &&
-        direction !== ModalType.REDEEM && (
+      {direction === "send" && !isSuccess && (
+        <>
           <div
             className={clsx(
               "leading-10 text-[20px] font-bold mb-[18px]",
               "flex justify-between items-center",
             )}
           >
-            <span className="first-letter:capitalize">{direction}</span>
+            Send
           </div>
-        )}
-      {direction === "send" && !isSuccess && (
-        <ToggleButton
-          firstValue="Token"
-          secondValue="Collectible"
-          className="mb-5"
-          onChange={onTokenTypeChange}
-          defaultValue={tokenType === "nft"}
-          id="send_type_toggle"
-        />
+          <ToggleButton
+            firstValue="Token"
+            secondValue="Collectible"
+            className="mb-5"
+            onChange={onTokenTypeChange}
+            defaultValue={tokenType === "nft"}
+            id="send_type_toggle"
+          />
+        </>
       )}
       {component}
     </TransferTemplate>

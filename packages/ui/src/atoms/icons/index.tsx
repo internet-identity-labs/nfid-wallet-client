@@ -44,8 +44,8 @@ import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
 import IconSvgShare from "./share.svg"
-import IconSvgSuccess from "./success.svg"
 import IconSvgStakeAction from "./stake-action.svg"
+import IconSvgSuccess from "./success.svg"
 import IconSvgSwapAction from "./swap-action.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
@@ -122,9 +122,9 @@ export {
   IconSvgHistoryIcon,
 }
 
-export { ReactComponent as IconCmpStake } from "./stake.svg"
 export { ReactComponent as IconCmpStakeAction } from "./stake-action.svg"
 export { ReactComponent as IconCmpSwap } from "./swap.svg"
+export { ReactComponent as IconCmpStake } from "./stake.svg"
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"

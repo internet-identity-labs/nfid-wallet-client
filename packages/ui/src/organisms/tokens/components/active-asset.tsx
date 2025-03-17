@@ -20,6 +20,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -33,6 +34,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   profileConstants,
   onSendClick,
   onSwapClick,
+  onStakeClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -76,10 +78,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <p
             className="text-sm font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
+            onClick={() => onStakeClick(token.getTokenAddress())}
           >
             {token.getTokenSymbol()}
             <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
-            <span className="text-xs text-primaryButtonColor flex items-center cursor-pointer">
+            <span className="flex items-center text-xs cursor-pointer text-primaryButtonColor">
               <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
               Stake
             </span>
@@ -173,6 +176,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           profileConstants={profileConstants}
           onSendClick={onSendClick}
           onSwapClick={onSwapClick}
+          onStakeClick={onStakeClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}
           setIsTokenProcessed={setIsTokenProcessed}

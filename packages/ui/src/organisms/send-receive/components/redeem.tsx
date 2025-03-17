@@ -114,20 +114,9 @@ export const Redeem: FC<ReceiveProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex gap-[20px]">
-        <Button type="stroke" id="cancelStakeButton" block onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          disabled={false}
-          type="primary"
-          id="stakeButton"
-          block
-          onClick={redeem}
-        >
-          Redeem
-        </Button>
-      </div>
+      <Button type="primary" id="redeemButton" block onClick={redeem}>
+        Redeem
+      </Button>
     </>
   )
 }

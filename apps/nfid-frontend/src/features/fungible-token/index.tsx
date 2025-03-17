@@ -49,6 +49,14 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  const onStakeClick = (selectedToken: string) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
+    send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send("SHOW")
+  }
+
   const { data: tokens = undefined, mutate: refetchTokens } =
     useSWRWithTimestamp("tokens", fetchTokens, {
       revalidateOnFocus: false,
@@ -188,6 +196,7 @@ const TokensPage = () => {
           profileConstants={ProfileConstants}
           onSendClick={onSendClick}
           onSwapClick={onSwapClick}
+          onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
         />

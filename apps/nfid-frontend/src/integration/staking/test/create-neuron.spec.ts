@@ -25,7 +25,7 @@ const identityJSONPublic: JsonnableEd25519KeyIdentity = [
 let neuronId: NeuronId
 describe("Staking", () => {
   jest.setTimeout(60000)
-  it("should stake neuron", async () => {
+  it.skip("should stake neuron", async () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")

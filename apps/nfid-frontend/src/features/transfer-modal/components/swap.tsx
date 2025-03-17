@@ -86,7 +86,11 @@ export const SwapFT = ({
       setFromTokenAddress(ICP_CANISTER_ID)
     } else {
       setFromTokenAddress(preselectedSourceTokenAddress)
-      setToTokenAddress(ICP_CANISTER_ID)
+      if (preselectedSourceTokenAddress === ICP_CANISTER_ID) {
+        setToTokenAddress(NFIDW_CANISTER_ID)
+      } else {
+        setToTokenAddress(ICP_CANISTER_ID)
+      }
     }
   }, [preselectedSourceTokenAddress])
 

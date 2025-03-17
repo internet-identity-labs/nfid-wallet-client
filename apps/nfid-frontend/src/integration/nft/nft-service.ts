@@ -1,8 +1,15 @@
 import { Principal } from "@dfinity/principal"
+import BigNumber from "bignumber.js"
+import {
+  fetchTokens,
+  getUserPrincipalId,
+} from "packages/ui/src/organisms/tokens/utils"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
+
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 export class NftService {
   async getNFTs(
@@ -38,18 +45,52 @@ export class NftService {
     }
   }
 
-  async getNFTsTotalPrice(userPrincipal: Principal): Promise<number> {
+  async getNFTsTotalPrice(userPrincipal: Principal): Promise<
+    | {
+        value: string
+        dayChangePercent?: string
+        dayChange?: string
+        dayChangePositive?: boolean
+      }
+    | undefined
+  > {
     const data = await nftGeekService.getNftGeekData(userPrincipal)
     const rawData = data
       .map(nftMapper.toNFT)
       .filter((nft): nft is NFT => nft !== null)
 
-    await Promise.all(rawData.map((nft) => nft.init()))
+    const [, userPrincipalData, tokens] = await Promise.all([
+      Promise.all(rawData.map((nft) => nft.init())),
+      getUserPrincipalId(),
+      fetchTokens(),
+    ])
 
-    return rawData
+    const total = rawData
       .map((nft) => nft.getTokenFloorPriceUSD())
       .filter((price) => price !== undefined)
       .reduce((price: number, foolPrice: number) => price + foolPrice, 0)
+
+    const icp = tokens.find(
+      (token) => token.getTokenAddress() === ICP_CANISTER_ID,
+    )
+
+    if (!icp) return
+
+    await icp.init(Principal.fromText(userPrincipalData.publicKey))
+    const usdBalanceDayChange = icp.getUSDBalanceDayChange()
+
+    return {
+      value: total.toFixed(2),
+      dayChangePercent: !total
+        ? "0.00"
+        : BigNumber(usdBalanceDayChange!)
+            .div(total)
+            .multipliedBy(100)
+            .abs()
+            .toFixed(2),
+      dayChange: BigNumber(usdBalanceDayChange!).toFixed(2),
+      dayChangePositive: usdBalanceDayChange!.gte(0),
+    }
   }
 
   async getNFTByTokenId(

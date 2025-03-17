@@ -119,6 +119,24 @@ export class FtService {
     const [nftPrice] = await Promise.all([
       nftService.getNFTsTotalPrice(userPublicKey),
     ])
+
+    if (!nftPrice) return
+
+    return this.getUSDBalance(ft, Number(nftPrice.value))
+  }
+
+  async getUSDBalance(
+    ft: FT[],
+    nftPrice?: number,
+  ): Promise<
+    | {
+        value: string
+        dayChangePercent?: string
+        dayChange?: string
+        dayChangePositive?: boolean
+      }
+    | undefined
+  > {
     let price = ft
       .map((ft) => ({
         usdBalance: ft.getUSDBalance(),
@@ -145,7 +163,7 @@ export class FtService {
       )
 
     return {
-      value: price.usdBalance!.plus(nftPrice).toFixed(2),
+      value: price.usdBalance!.plus(nftPrice || 0).toFixed(2),
       dayChangePercent: price.usdBalance.eq(0)
         ? "0.00"
         : BigNumber(price.usdBalanceDayChange!)

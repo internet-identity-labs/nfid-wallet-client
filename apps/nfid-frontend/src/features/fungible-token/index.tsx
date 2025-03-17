@@ -1,5 +1,6 @@
 import { useActor } from "@xstate/react"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
+import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
 import { fetchTokens, initTokens } from "packages/ui/src/organisms/tokens/utils"
@@ -18,7 +19,6 @@ import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
-import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
@@ -39,6 +39,14 @@ const TokensPage = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
+    send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send("SHOW")
+  }
+
+  const onStakeClick = (selectedToken: string) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
     send("SHOW")
   }
@@ -110,7 +118,7 @@ const TokensPage = () => {
               value: "100",
               dayChange: "12",
               dayChangePercent: "2",
-              dayChangePositive: true
+              dayChangePositive: true,
             }}
           />
         </div>
@@ -128,7 +136,7 @@ const TokensPage = () => {
             <p className="mb-0 text-[26px] font-bold">1</p>
           </div>
         </div>
-        <div className="flex-1 items-center flex md:justify-end">
+        <div className="flex items-center flex-1 md:justify-end">
           <ScanTokens triggerClassName="w-full sm:w-fit" />
         </div>
       </div>
@@ -143,6 +151,7 @@ const TokensPage = () => {
           profileConstants={ProfileConstants}
           onSendClick={onSendClick}
           onSwapClick={onSwapClick}
+          onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
         />

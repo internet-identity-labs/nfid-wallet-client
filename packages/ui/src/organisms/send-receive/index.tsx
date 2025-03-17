@@ -4,7 +4,6 @@ import { FC } from "react"
 
 import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
 
-import { Tooltip } from "../../molecules/tooltip"
 import { TransferTemplate } from "./components/template"
 
 export interface TransferModalProps {
@@ -53,18 +52,24 @@ export const TransferModal: FC<TransferModalProps> = ({
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}
     >
+<<<<<<< HEAD
       {(!isSuccess &&
         direction !== ModalType.SWAP &&
         direction !== ModalType.CONVERT) ||
         (direction !== ModalType.REDEEM && (
+=======
+      {direction === "send" && !isSuccess && (
+        <>
+>>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
           <div
             className={clsx(
               "leading-10 text-[20px] font-bold mb-[18px]",
               "flex justify-between items-center",
             )}
           >
-            <span className="first-letter:capitalize">{direction}</span>
+            Send
           </div>
+<<<<<<< HEAD
         ))}
       {direction === "send" && !isSuccess && (
         <ToggleButton
@@ -75,6 +80,17 @@ export const TransferModal: FC<TransferModalProps> = ({
           defaultValue={tokenType === "nft"}
           id="send_type_toggle"
         />
+=======
+          <ToggleButton
+            firstValue="Token"
+            secondValue="Collectible"
+            className="mb-5"
+            onChange={onTokenTypeChange}
+            defaultValue={tokenType === "nft"}
+            id="send_type_toggle"
+          />
+        </>
+>>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
       )}
       {component}
     </TransferTemplate>

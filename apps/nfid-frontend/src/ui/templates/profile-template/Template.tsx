@@ -224,6 +224,13 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
+  const onStakeClick = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
+    send("SHOW")
+  }
+
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
       <ProfileHeader
@@ -287,6 +294,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onReceiveClick={onReceiveClick}
                 onSwapClick={onSwapClick}
                 onConvertClick={onConvertClick}
+                onStakeClick={onStakeClick}
                 address={authState.getUserIdData().publicKey}
               />
               <BtcBanner

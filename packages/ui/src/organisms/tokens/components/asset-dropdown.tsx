@@ -32,6 +32,7 @@ type AssetDropdownProps = {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => any
   onConvertToCkBtc: () => any
+  onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
@@ -46,6 +47,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onStakeClick,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
@@ -104,7 +106,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         <DropdownOption
           label="Stake"
           icon={IconSvgStakeAction}
-          handler={() => onSwapClick(token.getTokenAddress())}
+          handler={() => onStakeClick(token.getTokenAddress())}
         />
         <DropdownOption
           label="Token information"

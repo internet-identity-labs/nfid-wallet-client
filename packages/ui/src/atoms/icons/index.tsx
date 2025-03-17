@@ -124,11 +124,14 @@ export {
   IconSvgHistoryIcon,
 }
 
-export { ReactComponent as IconCmpStake } from "./stake.svg"
 export { ReactComponent as IconCmpStakeAction } from "./stake-action.svg"
 export { ReactComponent as IconCmpSwap } from "./swap.svg"
+<<<<<<< HEAD
 export { ReactComponent as IconCmpConvert } from "./convert.svg"
 export { ReactComponent as IconCmpConvertWhite } from "./convert-white.svg"
+=======
+export { ReactComponent as IconCmpStake } from "./stake.svg"
+>>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
 export { ReactComponent as IconCmpArrowConvert } from "./arrow-convert.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"

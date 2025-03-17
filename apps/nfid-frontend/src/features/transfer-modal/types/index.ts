@@ -19,7 +19,11 @@ export enum ModalType {
   SEND = "send",
   RECEIVE = "receive",
   SWAP = "swap",
+<<<<<<< HEAD
   CONVERT = "convert",
+=======
+  STAKE = "stake",
+>>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
   REDEEM = "redeem",
 }
 
@@ -84,4 +88,5 @@ export type Services = {
 export interface FormValues {
   amount: string
   to: string
+  lockTime: string
 }

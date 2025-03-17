@@ -29,6 +29,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => any
   onConvertToCkBtc: () => any
+  onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -44,6 +45,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onStakeClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -87,6 +89,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <p
             className="text-sm font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
+            onClick={() => onStakeClick(token.getTokenAddress())}
           >
             {token.getTokenSymbol()}
             {token.getTokenAddress() === BTC_NATIVE_ID && (
@@ -215,6 +218,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onSwapClick={onSwapClick}
           onConvertToBtc={onConvertToBtc}
           onConvertToCkBtc={onConvertToCkBtc}
+          onStakeClick={onStakeClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}
           setIsTokenProcessed={setIsTokenProcessed}

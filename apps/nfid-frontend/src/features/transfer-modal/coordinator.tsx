@@ -17,6 +17,7 @@ import { TransferReceive } from "./components/receive"
 import { RedeemStake } from "./components/redeem-stake"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
+import { StakeFT } from "./components/stake"
 import { SwapFT } from "./components/swap"
 
 export const TransferModalCoordinator = () => {
@@ -157,6 +158,20 @@ export const TransferModalCoordinator = () => {
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             <RedeemStake onClose={hideModal} />
+          </motion.div>
+        )}
+        {state.matches("StakeMachine") && (
+          <motion.div
+            key="stake-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <StakeFT
+              preselectedTokenAddress={state.context.selectedFT}
+              onClose={hideModal}
+            />
           </motion.div>
         )}
       </>

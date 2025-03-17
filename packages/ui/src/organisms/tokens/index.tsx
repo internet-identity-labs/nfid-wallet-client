@@ -43,6 +43,7 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   }>
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onStakeClick: (value: string) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
@@ -57,6 +58,7 @@ export const Tokens: FC<TokensProps> = ({
   onFetch,
   onSendClick,
   onSwapClick,
+  onStakeClick,
   hideZeroBalance,
   onZeroBalanceToggle,
   tokensIniting,
@@ -172,6 +174,7 @@ export const Tokens: FC<TokensProps> = ({
                     profileConstants={profileConstants}
                     onSendClick={onSendClick}
                     onSwapClick={onSwapClick}
+                    onStakeClick={onStakeClick}
                     setToken={setToken}
                     dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
                     loadingToken={loadingToken}
@@ -182,7 +185,7 @@ export const Tokens: FC<TokensProps> = ({
           </table>
         </div>
         <ManageTokens
-          className="w-fit mx-auto"
+          className="mx-auto w-fit"
           tokens={allTokens}
           onSubmitIcrc1Pair={onSubmitIcrc1Pair}
           onFetch={onFetch}

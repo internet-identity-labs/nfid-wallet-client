@@ -187,7 +187,7 @@ const HomeContent = ({
               </Button>
             </div>
             <div className="relative mt-[-30px] sm:mt-[-70px] md:mt-[-100px] xl:mt-[-180px]">
-              <img src={MainImg} alt="main" />
+              <img loading="lazy" src={MainImg} alt="main" />
               <div className="absolute right-[20px] md:right-[75px] top-[120px] md:top-[240px] lg:top-[320px] xl:top-[430px]">
                 <ScrollMoveElement
                   className="w-[77px] sm:w-[126px] md:w-[174px] lg:w-[290px]"

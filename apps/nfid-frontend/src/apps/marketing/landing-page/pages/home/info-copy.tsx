@@ -38,11 +38,13 @@ export function InfoCopy({
             {value}
           </p>
         </div>
-        {hovered && (
-          <div className="ml-auto flex items-center">
-            {copied ? <CopiedIcon /> : <CopyIcon />}
-          </div>
-        )}
+        <div
+          className={clsx("ml-auto flex lg:hidden items-end lg:items-center", {
+            "!flex": hovered,
+          })}
+        >
+          {copied ? <CopiedIcon /> : <CopyIcon />}
+        </div>
       </div>
       {withBorder && (
         <div className="mx-auto w-[95%] h-[1px] bg-teal-500 bg-opacity-10" />

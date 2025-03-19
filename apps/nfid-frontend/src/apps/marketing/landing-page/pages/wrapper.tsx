@@ -52,6 +52,7 @@ export function Wrapper({
           href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,700;1,400&display=swap"
           rel="stylesheet"
         />
+        <link rel="preload" as="image" href="/main.png" />
       </Helmet>
       <Header
         authModalVisible={isAuthModalVisible}

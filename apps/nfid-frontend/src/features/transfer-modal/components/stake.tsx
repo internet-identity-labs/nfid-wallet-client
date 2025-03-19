@@ -108,8 +108,6 @@ export const StakeFT = ({
     }
   }, [preselectedTokenAddress])
 
-  console.log("feeInUsd params", stakingParams)
-
   const submit = useCallback(async () => {
     if (!identity) return
     if (!token) return toaster.error(DEFAULT_STAKE_ERROR || "No selected token")

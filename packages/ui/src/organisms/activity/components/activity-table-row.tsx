@@ -249,7 +249,7 @@ export const ActivityTableRow = ({
         </td>
         <td
           className={clsx(
-            "transition-opacity w-[20%] text-center",
+            "transition-opacity w-[20%] text-center hidden sm:table-cell",
             action !== IActivityAction.SWAP && "pl-[28px]",
           )}
         >
@@ -271,12 +271,12 @@ export const ActivityTableRow = ({
             <CopyAddress address={from} leadingChars={6} trailingChars={4} />
           )}
         </td>
-        <td className="w-[34px] h-[24px] m-auto">
+        <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
           <img src={IconSvgArrowRight} alt="" />
         </td>
         <td
           className={clsx(
-            "transition-opacity w-[20%] text-center",
+            "transition-opacity w-[20%] text-center hidden sm:table-cell",
             action !== IActivityAction.SWAP && "pl-[28px]",
           )}
         >

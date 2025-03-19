@@ -247,7 +247,7 @@ export class PasskeyConnector {
 
     await this.updateStorageCredentialsId(profile.accessPoints[0])
 
-    await authState.set({
+    await this.setAuthState({
       identity,
       delegationIdentity,
       sessionKey,
@@ -261,6 +261,10 @@ export class PasskeyConnector {
       delegationIdentity,
       identity: identity,
     }
+  }
+
+  private setAuthState(...toSet: Parameters<typeof authState.set>) {
+    return authState.set(...toSet)
   }
 
   async createCredential() {

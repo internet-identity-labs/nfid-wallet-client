@@ -15,10 +15,6 @@ export class Assets {
     return "[id*='token_"
   }
 
-  get allTokensOnTokenTab() {
-    return $$('[id^="token_"]')
-  }
-
   get getSourceTokenBalance() {
     return $("#choose-from-token-balance")
   }
@@ -101,7 +97,7 @@ export class Assets {
     return locator
   }
 
-  public tokenLabel(label) {
+  public tokenLabel(label: string) {
     return $(`#token_${label.replace(/\s/g, "")}`)
   }
 
@@ -188,24 +184,6 @@ export class Assets {
     return { firstAddressPart, secondAddressPart }
   }
 
-  public async fromAccountOption() {
-    const assetOptions = await $("#default_trigger_From")
-    await assetOptions.click()
-  }
-
-  public async chooseOption(account: string) {
-    const defaultAcc = await $(`#choose_option_${account.replace(/\s/g, "")}`)
-    await defaultAcc.waitForExist({
-      timeout: 30000,
-    })
-    await defaultAcc.click()
-  }
-
-  public async chooseAccountFrom(account: string) {
-    await this.fromAccountOption()
-    await this.chooseOption(account)
-  }
-
   public async waitUntilElementsLoadedProperly(
     clickElement: ChainablePromiseElement,
     waitForElement: ChainablePromiseElement,
@@ -240,7 +218,7 @@ export class Assets {
     get manageTokensDialogButton() {
       return $("#importToken")
     },
-    tokenShowHideButton(tokenName) {
+    tokenShowHideButton(tokenName: string) {
       return $(`#${tokenName}_showHideButton`)
     },
     get filterField() {

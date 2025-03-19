@@ -91,4 +91,50 @@ describe("Staking", () => {
     )
     expect(redeemedNeuron).toBeUndefined()
   })
+
+  it("should return staking parameters", async () => {
+    let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
+    jest
+      .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+      .mockResolvedValueOnce([
+        {
+          ledger: "mih44-vaaaa-aaaaq-aaekq-cai",
+          name: "NFIDW",
+          symbol: "NFIDW",
+          logo: "Some NFIDW",
+          index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+          state: "Active",
+          category: "Sns",
+          fee: BigInt(10000),
+          decimals: 8,
+          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+        },
+        {
+          ledger: ICP_CANISTER_ID,
+          name: "NFIDW",
+          symbol: "NFIDW",
+          logo: "Some NFIDW",
+          index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+          state: "Sns",
+          category: "Sns",
+          fee: BigInt(10000),
+          decimals: 8,
+          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+        },
+      ])
+
+    let token = await ftService
+      .getTokens(pairPrincipal)
+      .then((tokens) =>
+        tokens.find((token) => token.getTokenSymbol() === "NFIDW"),
+      )
+
+    const params = await stakingService.getStakingParams(token!, edId)
+
+    expect(params).toBeDefined()
+    expect(params?.minStakeAmount).toBe(5)
+    expect(params?.fee.fee).toBe("0.0001 NFIDW")
+    expect(params?.maxPeriod).toBe(12)
+    expect(params?.minPeriod).toBe(1)
+  })
 })

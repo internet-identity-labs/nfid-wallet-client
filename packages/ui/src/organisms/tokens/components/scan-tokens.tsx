@@ -1,10 +1,6 @@
 import clsx from "clsx"
 import { Button } from "packages/ui/src/molecules/button"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import {
-  filterNotActiveNotZeroBalancesTokens,
-  fetchTokens,
-} from "packages/ui/src/organisms/tokens/utils"
 import { useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
@@ -12,9 +8,20 @@ import { ImageWithFallback, IconNftPlaceholder } from "@nfid-frontend/ui"
 import { Skeleton } from "@nfid-frontend/ui"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
+import {
+  fetchTokens,
+  filterNotActiveNotZeroBalancesTokens,
+} from "frontend/features/fungible-token/utils"
+
 import searchImg from "./search.png"
 
-export function ScanTokens({ className, triggerClassName }: { className?: string; triggerClassName?: string }) {
+export function ScanTokens({
+  className,
+  triggerClassName,
+}: {
+  className?: string
+  triggerClassName?: string
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isScanningTokens, setIsScanningTokens] = useState(true)
   const { data: allTokens } = useSWRWithTimestamp("tokens", fetchTokens, {

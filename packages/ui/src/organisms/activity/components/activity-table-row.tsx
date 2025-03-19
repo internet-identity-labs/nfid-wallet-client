@@ -202,7 +202,7 @@ export const ActivityTableRow = ({
         id={id}
         className="relative items-center text-sm activity-row hover:bg-gray-50"
       >
-        <td className="flex items-center sm:pl-[30px] w-[30%]">
+        <td className="flex items-center sm:pl-[30px] w-[156px] sm:w-[30%]">
           <div
             className={clsx(
               "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
@@ -299,41 +299,59 @@ export const ActivityTableRow = ({
           )}
         </td>
         {asset?.type === "ft" ? (
-          <td className="leading-5 text-right sm:text-center pr-5 sm:pr-[30px] w-[30%]">
-            {getTooltipAndButtonText(transaction) ? (
-              <>
-                {isLoading || transaction?.getIsLoading() ? (
-                  <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
-                ) : (
-                  <span
-                    className="cursor-pointer text-primaryButtonColor"
-                    onClick={completeHandler}
-                  >
-                    {getTooltipAndButtonText(transaction)?.buttonText}
-                  </span>
-                )}
-              </>
-            ) : (
-              <>
-                <p className="text-sm">
-                  <TickerAmount
-                    value={asset.amount}
-                    decimals={asset.decimals}
-                    symbol={asset.currency}
+          <td className="leading-5 pr-5 sm:pr-[30px] min-w-[60%] sm:min-w-auto sm:w-[30%] text-left sm:text-center">
+            <div className="flex items-center">
+              {action === IActivityAction.SWAP && (
+                <div className="mr-[24px] flex sm:hidden w-[28px]">
+                  <ImageWithFallback
+                    alt="NFID token"
+                    fallbackSrc={IconNftPlaceholder}
+                    src={asset.icon!}
+                    className="rounded-full w-[28px] h-[28px]"
                   />
-                </p>
-                {Boolean(asset.rate) && (
-                  <p className="text-xs text-gray-400">
+                  <ImageWithFallback
+                    alt="NFID token"
+                    fallbackSrc={IconNftPlaceholder}
+                    src={asset.iconTo!}
+                    className="rounded-full w-[28px] h-[28px] relative z-[1] ml-[-14px]"
+                  />
+                </div>
+              )}
+              {getTooltipAndButtonText(transaction) ? (
+                <>
+                  {isLoading || transaction?.getIsLoading() ? (
+                    <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
+                  ) : (
+                    <span
+                      className="cursor-pointer text-primaryButtonColor"
+                      onClick={completeHandler}
+                    >
+                      {getTooltipAndButtonText(transaction)?.buttonText}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <div className="flex flex-col">
+                  <p className="text-sm whitespace-nowrap">
                     <TickerAmount
                       value={asset.amount}
                       decimals={asset.decimals}
                       symbol={asset.currency}
-                      usdRate={asset.rate}
                     />
                   </p>
-                )}
-              </>
-            )}
+                  {Boolean(asset.rate) && (
+                    <p className="text-xs text-gray-400 whitespace-nowrap">
+                      <TickerAmount
+                        value={asset.amount}
+                        decimals={asset.decimals}
+                        symbol={asset.currency}
+                        usdRate={asset.rate}
+                      />
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </td>
         ) : (
           <td className="leading-5 text-right sm:text-left">

@@ -18,9 +18,11 @@ import {
   KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { getBrowser } from "@nfid-frontend/utils"
 import {
+  AccessPoint,
   authState,
   DeviceType,
   generateDelegationIdentity,
@@ -48,7 +50,6 @@ import {
   MultiWebAuthnIdentity,
 } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 const alreadyRegisteredDeviceErrors = [
   "credentials already registered", //Chrome-based browsers
@@ -171,6 +172,18 @@ export class PasskeyConnector {
     return await im.get_captcha()
   }
 
+  async updateStorageCredentialsId(accessPoint: AccessPoint) {
+    if (accessPoint.credentialId) {
+      const newKey = accessPoint.credentialId
+      let keys = await authStorage.get("credentialIds")
+      const parsedKeys: string[] = keys ? JSON.parse(keys as string) : []
+      if (!parsedKeys.includes(newKey)) {
+        parsedKeys.push(newKey)
+        await authStorage.set("credentialIds", JSON.stringify(parsedKeys))
+      }
+    }
+  }
+
   async registerWithPasskey(
     name: string,
     challengeAttempt: {
@@ -231,6 +244,8 @@ export class PasskeyConnector {
 
     const { delegationIdentity, sessionKey, chain } =
       await generateDelegationIdentity(tempKey)
+
+    await this.updateStorageCredentialsId(profile.accessPoints[0])
 
     await this.setAuthState({
       identity,
@@ -361,18 +376,10 @@ export class PasskeyConnector {
 
       const profile = await fetchProfile()
 
-      let ap = profile.accessPoints.find(
-        (ap) => ap.principalId === delegationIdentity.getPrincipal().toText(),
+      const accessPoint = profile.accessPoints.find(
+        (ap) => ap.credentialId === delegationIdentity.getPrincipal().toText(),
       )
-      if (ap && ap.credentialId) {
-        const newKey = ap.credentialId
-        let keys = await authStorage.get("credentialIds")
-        const parsedKeys: string[] = keys ? JSON.parse(keys as string) : []
-        if (!parsedKeys.includes(newKey)) {
-          parsedKeys.push(newKey)
-          await authStorage.set("credentialIds", JSON.stringify(parsedKeys))
-        }
-      }
+      if (accessPoint) await this.updateStorageCredentialsId(accessPoint)
       im.use_access_point([])
 
       await this.cachePasskeyDelegation(sessionKey, delegationIdentity)

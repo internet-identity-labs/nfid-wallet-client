@@ -3,7 +3,7 @@ import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { FC, useEffect, useRef, useState } from "react"
 
-import { IconCmpArrow, IconInfo, Tooltip } from "@nfid-frontend/ui"
+import { IconCmpArrow, IconInfo, Skeleton, Tooltip } from "@nfid-frontend/ui"
 
 import { Quote } from "frontend/integration/swap/quote"
 import { Shroff } from "frontend/integration/swap/shroff"
@@ -45,25 +45,36 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   const [isCustom, setIsCustom] = useState(false)
   const [customSlippage, setCustomSlippage] = useState<number | undefined>()
   const customInputRef = useRef<HTMLInputElement>(null)
-  const [quotes, setQuotes] = useState<Array<QuoteMap>>([])
+  const [quotes, setQuotes] = useState<Array<QuoteMap | undefined>>([])
+  const [quotesLoading, setQuotesLoading] = useState(false)
 
   useEffect(() => {
     if (!shroff) return
 
     const getQuotes = async () => {
       try {
+        setQuotesLoading(true)
         const quotes = await Promise.all(
           [...swapProviders.entries()].map(async ([key, provider]) => {
             if (!provider) return { [key]: undefined }
-            const quote = await provider.getQuote(amount)
-            return {
-              [provider.getSwapName()]: quote,
+            try {
+              const quote = await provider.getQuote(amount)
+              return { [provider.getSwapName()]: quote }
+            } catch (error) {
+              console.error(
+                `Failed to get quote from ${provider.getSwapName()}`,
+                error,
+              )
+              return { [provider.getSwapName()]: undefined }
             }
           }),
         )
+
         setQuotes(quotes)
       } catch (e) {
-        return
+        console.error("Unexpected error fetching quotes:", e)
+      } finally {
+        setQuotesLoading(false)
       }
     }
 
@@ -221,117 +232,160 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 <p className="basis-[130px] ml-auto">Quote source</p>
               </div>
               <div>
-                {[...swapProviders.entries()].map(([key, value]) => {
-                  if (!value)
-                    return (
-                      <div
-                        key={SwapName[key]}
-                        className={clsx(
-                          "flex items-center pl-[14px] rounded-[12px] h-[56px] text-sm",
-                          "cursor-not-allowed text-gray-400",
-                        )}
-                      >
-                        <p>
-                          Provider doesn’t have enough liquidity to complete
-                          this swap.
-                        </p>
-                        <p className="basis-[130px] ml-auto flex items-center justify-between">
-                          <span>{SwapName[key]}</span>
-                          <div
-                            className={clsx(
-                              "relative transition-all group w-[36px] h-[36px]",
-                              "flex items-center justify-center mr-2.5 rounded-[6px]",
-                            )}
-                          >
-                            <IconCaret color="#9CA3AF" />
-                          </div>
-                        </p>
-                      </div>
-                    )
-                  const swapNameValue = value.getSwapName()
-                  const swapName = SwapName[swapNameValue]
-
-                  const quoteEntry = quotes.find(
-                    (entry) => entry[swapNameValue] !== undefined,
-                  )
-
-                  const quote = quoteEntry
-                    ? quoteEntry[swapNameValue]
-                    : undefined
-
-                  if (quote && quote?.getSlippage() > slippage) {
-                    return (
-                      <div
-                        key={SwapName[key]}
-                        className={clsx(
-                          "flex items-center pl-[14px] rounded-[12px] h-[56px] text-sm",
-                          "cursor-not-allowed text-gray-400",
-                        )}
-                      >
-                        <p className="text-xs sm:text-sm">
-                          Slippage tolerance too low{" "}
-                          <span className="block text-xs">
-                            Increase above {quote?.getSlippage().toFixed(2)}%
-                          </span>
-                        </p>
-                        <p className="basis-[130px] ml-auto flex items-center justify-between">
-                          <span>{SwapName[key]}</span>
-                          <div
-                            className={clsx(
-                              "relative transition-all group w-[36px] h-[36px]",
-                              "flex items-center justify-center mr-2.5 rounded-[6px]",
-                            )}
-                          >
-                            <IconCaret color="#9CA3AF" />
-                          </div>
-                        </p>
-                      </div>
-                    )
-                  }
-
-                  return (
-                    <div
-                      key={swapName}
-                      className={clsx(
-                        "flex items-center pl-[14px] rounded-[12px] h-[48px] text-sm",
-                        shroff.getSwapName() === swapNameValue
-                          ? "cursor-default bg-primaryButtonColor text-white"
-                          : "cursor-pointer hover:bg-gray-50",
-                      )}
-                      onClick={() => {
-                        if (shroff.getSwapName() === swapNameValue) return
-                        setProvider(value)
-                      }}
-                    >
-                      <p>{quote?.getGuaranteedAmount(slippage)}</p>
-                      <p className="basis-[130px] ml-auto flex items-center justify-between">
-                        <span>{swapName}</span>
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setSelectedShroff(value)
-                            setSwapModal(SwapModal.QUOTE)
-                          }}
-                          className={clsx(
-                            "relative transition-all cursor-pointer group w-[36px] h-[36px]",
-                            "flex items-center justify-center mr-2.5 rounded-[6px]",
-                            shroff.getSwapName() === swapNameValue
-                              ? "hover:bg-teal-600"
-                              : "hover:bg-gray-50",
-                          )}
-                        >
-                          <IconCaret
-                            color={
-                              shroff.getSwapName() === swapNameValue
-                                ? "white"
-                                : "black"
-                            }
-                          />
-                        </div>
-                      </p>
+                {quotesLoading ? (
+                  <div>
+                    <div className="h-[48px] flex items-center justify-between">
+                      <Skeleton className="h-[20px] w-[100px]" />
+                      <Skeleton className="h-[20px] w-[80px]" />
                     </div>
-                  )
-                })}
+                    <div className="h-[48px] flex items-center justify-between">
+                      <Skeleton className="h-[20px] w-[100px]" />
+                      <Skeleton className="h-[20px] w-[80px]" />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {[...swapProviders.entries()].map(([key, value]) => {
+                      if (!value)
+                        return (
+                          <div
+                            key={SwapName[key]}
+                            className={clsx(
+                              "flex items-center pl-[14px] rounded-[12px] h-[56px] text-sm",
+                              "cursor-not-allowed text-gray-400",
+                            )}
+                          >
+                            <p>
+                              Provider doesn’t have enough liquidity to complete
+                              this swap.
+                            </p>
+                            <p className="basis-[130px] ml-auto flex items-center justify-between">
+                              <span>{SwapName[key]}</span>
+                              <div
+                                className={clsx(
+                                  "relative transition-all group w-[36px] h-[36px]",
+                                  "flex items-center justify-center mr-2.5 rounded-[6px]",
+                                )}
+                              >
+                                <IconCaret color="#9CA3AF" />
+                              </div>
+                            </p>
+                          </div>
+                        )
+                      const swapNameValue = value.getSwapName()
+                      const swapName = SwapName[swapNameValue]
+
+                      const quoteEntry = quotes.find(
+                        (entry) => entry && entry[swapNameValue] !== undefined,
+                      )
+
+                      const quote = quoteEntry
+                        ? quoteEntry[swapNameValue]
+                        : undefined
+
+                      if (!quote)
+                        return (
+                          <div
+                            key={SwapName[key]}
+                            className={clsx(
+                              "flex items-center pl-[14px] rounded-[12px] h-[56px] text-sm",
+                              "cursor-not-allowed text-gray-400",
+                            )}
+                          >
+                            <p>
+                              Provider doesn’t have enough liquidity to complete
+                              this swap.
+                            </p>
+                            <p className="basis-[130px] ml-auto flex items-center justify-between">
+                              <span>{SwapName[key]}</span>
+                              <div
+                                className={clsx(
+                                  "relative transition-all group w-[36px] h-[36px]",
+                                  "flex items-center justify-center mr-2.5 rounded-[6px]",
+                                )}
+                              >
+                                <IconCaret color="#9CA3AF" />
+                              </div>
+                            </p>
+                          </div>
+                        )
+
+                      if (quote && quote?.getSlippage() > slippage) {
+                        return (
+                          <div
+                            key={SwapName[key]}
+                            className={clsx(
+                              "flex items-center pl-[14px] rounded-[12px] h-[56px] text-sm",
+                              "cursor-not-allowed text-gray-400",
+                            )}
+                          >
+                            <p className="text-xs sm:text-sm">
+                              Slippage tolerance too low{" "}
+                              <span className="block text-xs">
+                                Increase above {quote?.getSlippage().toFixed(2)}
+                                %
+                              </span>
+                            </p>
+                            <p className="basis-[130px] ml-auto flex items-center justify-between">
+                              <span>{SwapName[key]}</span>
+                              <div
+                                className={clsx(
+                                  "relative transition-all group w-[36px] h-[36px]",
+                                  "flex items-center justify-center mr-2.5 rounded-[6px]",
+                                )}
+                              >
+                                <IconCaret color="#9CA3AF" />
+                              </div>
+                            </p>
+                          </div>
+                        )
+                      }
+
+                      return (
+                        <div
+                          key={swapName}
+                          className={clsx(
+                            "flex items-center pl-[14px] rounded-[12px] h-[48px] text-sm",
+                            shroff.getSwapName() === swapNameValue
+                              ? "cursor-default bg-primaryButtonColor text-white"
+                              : "cursor-pointer hover:bg-gray-50",
+                          )}
+                          onClick={() => {
+                            if (shroff.getSwapName() === swapNameValue) return
+                            setProvider(value)
+                          }}
+                        >
+                          <p>{quote?.getGuaranteedAmount(slippage)}</p>
+                          <p className="basis-[130px] ml-auto flex items-center justify-between">
+                            <span>{swapName}</span>
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setSelectedShroff(value)
+                                setSwapModal(SwapModal.QUOTE)
+                              }}
+                              className={clsx(
+                                "relative transition-all cursor-pointer group w-[36px] h-[36px]",
+                                "flex items-center justify-center mr-2.5 rounded-[6px]",
+                                shroff.getSwapName() === swapNameValue
+                                  ? "hover:bg-teal-600"
+                                  : "hover:bg-gray-50",
+                              )}
+                            >
+                              <IconCaret
+                                color={
+                                  shroff.getSwapName() === swapNameValue
+                                    ? "white"
+                                    : "black"
+                                }
+                              />
+                            </div>
+                          </p>
+                        </div>
+                      )
+                    })}
+                  </>
+                )}
               </div>
             </div>
           )}

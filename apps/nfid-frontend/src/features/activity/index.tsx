@@ -1,5 +1,4 @@
 import { Activity } from "packages/ui/src/organisms/activity"
-import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 
@@ -7,6 +6,8 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { useActivityPagination } from "./hooks/pagination"
+
+import { fetchTokens } from "../fungible-token/utils"
 
 const ActivityPage = () => {
   const { state } = useLocation()

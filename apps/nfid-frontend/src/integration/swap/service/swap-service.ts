@@ -62,7 +62,12 @@ export class SwapService {
         }),
       )
 
-      if (!quotesWithShroffs.length) throw new LiquidityError()
+      if (
+        Array.from(quotesWithShroffs.values()).every(
+          (value) => value === undefined,
+        )
+      )
+        throw new LiquidityError()
 
       const validQuotes = quotesWithShroffs.filter(
         (item): item is { shroff: Shroff; quote: Quote } => item !== undefined,

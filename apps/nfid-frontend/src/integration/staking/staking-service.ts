@@ -6,7 +6,10 @@ import { StakeAprCalculator } from "src/integration/staking/stake-apr-calculator
 import { StakedToken } from "src/integration/staking/staked-token"
 
 export interface StakingService {
-  getStakedTokens(userId: string): Promise<Array<StakedToken>>
+  getStakedTokens(
+    userId: string,
+    publicKey: string,
+  ): Promise<Array<StakedToken>>
   getStaked(): string
   getRewards(): string
   getStakingBalance(): string

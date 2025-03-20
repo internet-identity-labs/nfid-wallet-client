@@ -1,7 +1,11 @@
 import { Staking } from "packages/ui/src/organisms/staking"
 import { useNavigate } from "react-router-dom"
 
+import { useSWRWithTimestamp } from "@nfid/swr"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+
+import { fetchStakedTokens } from "./utils"
 
 export interface IStakingInfo {
   stakingBalance: string
@@ -23,31 +27,12 @@ export interface IStake {
 
 const StakingPage = () => {
   const navigate = useNavigate()
-  const stakes = [
-    {
-      symbol: "ICP",
-      name: "Intenet Computer",
-      logo: "#",
-      staked: "2,000.00 ICP",
-      stakedInUsd: "14,207.03 USD",
-      rewards: "40.08 ICP",
-      rewardsInUsd: "284.71 USD",
-      totalValue: "204.754 ICP",
-      totalValueInUsd: "2514.47 USD",
-      isDiamond: true,
-    },
-    {
-      symbol: "ckETH",
-      name: "ckETH",
-      logo: "#",
-      staked: "2,000.00 ckETH",
-      stakedInUsd: "14,207.03 USD",
-      rewards: "40.08 ckETH",
-      rewardsInUsd: "284.71 USD",
-      totalValue: "204.754 ckETH",
-      totalValueInUsd: "2514.47 ckETH",
-    },
-  ]
+
+  const { data: stakedTokens = [], isLoading } = useSWRWithTimestamp(
+    "stakedTokens",
+    fetchStakedTokens,
+    { revalidateOnFocus: false },
+  )
 
   const stakingInfo: IStakingInfo = {
     stakingBalance: "14127.15",
@@ -58,8 +43,8 @@ const StakingPage = () => {
 
   return (
     <Staking
-      isLoading={false}
-      stakes={stakes}
+      isLoading={isLoading}
+      stakedTokens={stakedTokens}
       links={ProfileConstants}
       stakingInfo={stakingInfo}
       navigate={navigate}

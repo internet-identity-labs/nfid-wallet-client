@@ -3,6 +3,7 @@ import { FC } from "react"
 import { NavigateFunction } from "react-router-dom"
 
 import { IStakingInfo, IStake } from "frontend/features/staking"
+import { StakedToken } from "frontend/integration/staking/staked-token"
 
 import DiamondIcon from "./assets/diamond.svg"
 import EmptyStaking from "./assets/empty-staking.png"
@@ -17,7 +18,7 @@ import { Table } from "../../molecules/table"
 import { StakingHeader } from "./components/staking-header"
 
 export interface StakingProps {
-  stakes: IStake[]
+  stakedTokens: StakedToken[]
   isLoading: boolean
   links: {
     base: string
@@ -28,13 +29,14 @@ export interface StakingProps {
 }
 
 export const Staking: FC<StakingProps> = ({
-  stakes,
+  stakedTokens,
   isLoading,
   links,
   stakingInfo,
   navigate,
 }) => {
-  return stakes.length ? (
+  console.log(stakedTokens)
+  return (
     <>
       <StakingHeader stakingInfo={stakingInfo} />
       <ProfileContainer innerClassName="!px-0">
@@ -43,8 +45,8 @@ export const Staking: FC<StakingProps> = ({
         >
           <Table className="!min-w-0" id="staking-table">
             {isLoading ? (
-              <TableActivitySkeleton tableRowsAmount={10} tableCellAmount={3} />
-            ) : (
+              <TableActivitySkeleton tableRowsAmount={3} tableCellAmount={3} />
+            ) : stakedTokens.length ? (
               <>
                 <tr id={`stake_1`} className="hidden md:table-row">
                   <td
@@ -73,14 +75,16 @@ export const Staking: FC<StakingProps> = ({
                   </td>
                   <td className="w-[55px]" />
                 </tr>
-                {stakes.map((stake) => {
+                {stakedTokens.map((stakedToken) => {
                   return (
                     <tr
                       className="text-sm hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
-                      key={stake.symbol}
+                      key={stakedToken.getToken().getTokenAddress()}
                       onClick={() =>
                         navigate(
-                          `${links.base}/${links.staking}/${stake.symbol}`,
+                          `${links.base}/${links.staking}/${stakedToken
+                            .getToken()
+                            .getTokenSymbol()}`,
                         )
                       }
                     >
@@ -88,15 +92,15 @@ export const Staking: FC<StakingProps> = ({
                         <div className="flex items-center gap-[12px]">
                           <div className="w-[40px] h-[40px] rounded-full bg-zinc-50 relative">
                             <ImageWithFallback
-                              alt={stake.symbol}
+                              alt={stakedToken.getToken().getTokenSymbol()}
                               fallbackSrc={IconNftPlaceholder}
-                              src={stake.logo}
+                              src={stakedToken.getToken().getTokenLogo()}
                               className={clsx(
                                 "w-full h-full",
                                 "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
                               )}
                             />
-                            {stake.isDiamond && (
+                            {/* {stake.isDiamond && (
                               <div
                                 className={clsx(
                                   "absolute bottom-0 right-0 rounded-full",
@@ -105,28 +109,32 @@ export const Staking: FC<StakingProps> = ({
                               >
                                 <img src={DiamondIcon} />
                               </div>
-                            )}
+                            )} */}
                           </div>
                           <div>
                             <p className="text-sm font-semibold leading-[25px]">
-                              {stake.symbol}
+                              {stakedToken.getToken().getTokenSymbol()}
                             </p>
                             <p className="text-secondary text-xs leading-[20px]">
-                              {stake.name}
+                              {stakedToken.getToken().getTokenName()}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                        <p className="text-sm leading-6">{stake.staked}</p>
+                        <p className="text-sm leading-6">
+                          {stakedToken.getStaked().getTokenValue()}
+                        </p>
                         <p className="text-xs leading-5 text-secondary">
-                          {stake.stakedInUsd}
+                          {stakedToken.getStaked().getUSDValue()}
                         </p>
                       </td>
                       <td className="px-0 md:px-[30px] hidden md:table-cell">
-                        <p className="text-sm leading-6">{stake.rewards}</p>
+                        <p className="text-sm leading-6">
+                          {stakedToken.getRewards().getTokenValue()}
+                        </p>
                         <p className="text-xs leading-5 text-secondary">
-                          {stake.rewardsInUsd}
+                          {stakedToken.getRewards().getUSDValue()}
                         </p>
                       </td>
                       <td className="w-[34px] text-right md:w-[55px] md:text-left">
@@ -138,29 +146,29 @@ export const Staking: FC<StakingProps> = ({
                   )
                 })}
               </>
+            ) : (
+              <ProfileContainer
+                className="md:h-[292px] md:flex md:items-center"
+                titleClassName="!px-0"
+              >
+                <img
+                  className={clsx(
+                    "w-full mb-[20px]",
+                    "md:absolute md:w-[375px] md:right-[30px] md:top-[30px] md:mb-0",
+                    "lg:right-[70px]",
+                  )}
+                  src={EmptyStaking}
+                />
+                <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px]">
+                  Stake your tokens to collect rewards for participating in
+                  governance and helping to decentralize Web3 ecosystems.
+                </p>
+                <Button className="w-full md:w-[120px]">Stake</Button>
+              </ProfileContainer>
             )}
           </Table>
         </div>
       </ProfileContainer>
     </>
-  ) : (
-    <ProfileContainer
-      className="md:h-[292px] md:flex md:items-center"
-      titleClassName="!px-0"
-    >
-      <img
-        className={clsx(
-          "w-full mb-[20px]",
-          "md:absolute md:w-[375px] md:right-[30px] md:top-[30px] md:mb-0",
-          "lg:right-[70px]",
-        )}
-        src={EmptyStaking}
-      />
-      <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px]">
-        Stake your tokens to collect rewards for participating in governance and
-        helping to decentralize Web3 ecosystems.
-      </p>
-      <Button className="w-full md:w-[120px]">Stake</Button>
-    </ProfileContainer>
   )
 }

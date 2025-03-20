@@ -10,32 +10,29 @@ import { Table } from "packages/ui/src/molecules/table"
 import { Tooltip } from "packages/ui/src/molecules/tooltip"
 import { FC } from "react"
 
-import {
-  IStakingDetails,
-  IStakingOption,
-  StakingOptions,
-} from "frontend/features/staking-details"
+import { StakingType } from "frontend/features/staking-details"
+import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 
+import { useFormattedPeriod } from "../../send-receive/hooks/use-formatted-period"
 import DiamondIcon from "../assets/diamond.svg"
+import { SidePanelOption } from "./staking-side-panel"
 
 export interface StakingOptionProps {
-  stakingOptionType: StakingOptions
-  stakingOptions: IStakingOption[]
+  stakingType: StakingType
+  stakes: NFIDNeuron[]
   isLoading: boolean
-  stakingDetails: IStakingDetails
-  setSidePanelOption: (option: IStakingOption) => void
+  setSidePanelOption: (option: SidePanelOption) => void
 }
 
 export const StakingOption: FC<StakingOptionProps> = ({
-  stakingOptions,
-  stakingOptionType,
+  stakes,
+  stakingType,
   isLoading,
-  stakingDetails,
   setSidePanelOption,
 }) => {
   return (
     <ProfileContainer
-      title={stakingOptionType}
+      title={stakingType}
       className="!py-[20px] md:!py-[30px] !mb-[20px] md:!mb-[30px]"
       titleClassName="!px-0 md:!px-[30px] mb-[10px] md:!mb-[30px]"
       innerClassName="!px-0"
@@ -131,8 +128,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
               >
                 <span
                   className={clsx(
-                    stakingOptionType !== StakingOptions.Unlocking &&
-                      "invisible",
+                    stakingType !== StakingType.Unlocking && "invisible",
                   )}
                 >
                   Unlock in
@@ -140,25 +136,28 @@ export const StakingOption: FC<StakingOptionProps> = ({
               </td>
               <td className={clsx("w-[55px]")} />
             </tr>
-            {stakingOptions.map((option) => {
+            {stakes.map((stake) => {
               return (
                 <tr
                   className="text-sm md:hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
-                  onClick={() => setSidePanelOption(option)}
+                  key={stake.getStakeId()}
+                  onClick={() =>
+                    setSidePanelOption({ option: stake, type: stakingType })
+                  }
                 >
                   <td className="md:pl-[30px]">
                     <div className="flex items-center gap-[12px]">
                       <div className="w-[40px] h-[40px] rounded-full bg-zinc-50 relative">
                         <ImageWithFallback
-                          alt={stakingDetails.symbol}
+                          alt={stake.getToken().getTokenSymbol()}
                           fallbackSrc={IconNftPlaceholder}
-                          src={stakingDetails.logo}
+                          src={stake.getToken().getTokenLogo()}
                           className={clsx(
                             "w-full h-full",
                             "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
                           )}
                         />
-                        {option.isDiamond && (
+                        {/* {stake.isDiamond && (
                           <div
                             className={clsx(
                               "absolute bottom-0 right-0 rounded-full",
@@ -167,44 +166,51 @@ export const StakingOption: FC<StakingOptionProps> = ({
                           >
                             <img src={DiamondIcon} />
                           </div>
-                        )}
+                        )} */}
                       </div>
                       <div>
                         <p
                           className="text-sm leading-[20px]"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <CopyAddress address={option.id} />
+                          <CopyAddress
+                            address={stake.getStakeId()}
+                            leadingChars={8}
+                            trailingChars={8}
+                          />
                         </p>
                       </div>
                     </div>
                   </td>
                   <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                    <p className="text-sm leading-6">{option.initial}</p>
+                    <p className="text-sm leading-6">
+                      {stake.getInitialStakeFormatted().getTokenValue()}
+                    </p>
                     <p className="text-xs leading-5 text-secondary">
-                      {option.initialInUsd}
+                      {stake.getInitialStakeFormatted().getUSDValue()}
                     </p>
                   </td>
                   <td className="px-0 md:px-[10px] hidden md:table-cell">
-                    <p className="text-sm leading-6">{option.rewards}</p>
+                    <p className="text-sm leading-6">
+                      {stake.getRewardsFormatted().getTokenValue()}
+                    </p>
                     <p className="text-xs leading-5 text-secondary">
-                      {option.rewardsInUsd}
+                      {stake.getRewardsFormatted().getUSDValue()}
                     </p>
                   </td>
                   <td className="px-0 md:px-[10px] hidden md:table-cell">
                     <p className="text-sm leading-5 opacity-80">
-                      {option.lockTime}
+                      {useFormattedPeriod(stake.getLockTimeInMonths(), true)}
                     </p>
                   </td>
                   <td className="px-0 md:px-[10px] hidden md:table-cell">
                     <p
                       className={clsx(
                         "text-sm leading-5 opacity-80",
-                        stakingOptionType !== StakingOptions.Unlocking &&
-                          "invisible",
+                        stakingType !== StakingType.Unlocking && "invisible",
                       )}
                     >
-                      {option.unlockIn}
+                      {stake.getUnlockIn()}
                     </p>
                   </td>
                   <td

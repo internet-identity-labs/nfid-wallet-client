@@ -1,6 +1,9 @@
+import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakedToken } from "src/integration/staking/staked-token"
 import { TokenValue } from "src/integration/staking/types/token-value"
+
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -14,11 +17,37 @@ export class StakedTokenImpl implements StakedToken {
   }
 
   getStaked(): TokenValue {
-    throw new Error("Method not implemented.")
+    const totalStake = this.neurons.reduce((sum, neuron) => {
+      return sum + neuron.getInitialStake()
+    }, BigInt(0))
+
+    const totalAmount = BigNumber(totalStake.toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${totalAmount} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
   }
 
   getRewards(): TokenValue {
-    throw new Error("Method not implemented.")
+    const totalRewards = this.neurons.reduce((sum, neuron) => {
+      return sum + neuron.getRewards()
+    }, BigInt(0))
+
+    const totalAmount = BigNumber(totalRewards.toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${totalAmount} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
   }
 
   getStakingBalance(): TokenValue {
@@ -26,7 +55,7 @@ export class StakedTokenImpl implements StakedToken {
   }
 
   getToken(): FT {
-    throw new Error("Method not implemented.")
+    return this.token
   }
 
   isDiamond(): boolean {
@@ -34,14 +63,22 @@ export class StakedTokenImpl implements StakedToken {
   }
 
   getAvailable(): Array<NFIDNeuron> {
-    throw new Error("Method not implemented.")
+    return this.neurons.filter(
+      (neuron) =>
+        neuron.getLockTime() + neuron.getCreatedAt() <=
+        Math.floor(Date.now() / 1000),
+    )
   }
 
   getUnlocking(): Array<NFIDNeuron> {
-    throw new Error("Method not implemented.")
+    return []
   }
 
   getLocked(): Array<NFIDNeuron> {
-    throw new Error("Method not implemented.")
+    return this.neurons.filter(
+      (neuron) =>
+        neuron.getLockTime() + neuron.getCreatedAt() >
+        Math.floor(Date.now() / 1000),
+    )
   }
 }

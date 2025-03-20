@@ -1,39 +1,50 @@
 import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 
-import {
-  IStakingDetails,
-  IStakingOption,
-  StakingOptions,
-} from "frontend/features/staking-details"
+import { IStakingDetails, StakingType } from "frontend/features/staking-details"
+import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
+import { StakedToken } from "frontend/integration/staking/staked-token"
 import { NotFound } from "frontend/ui/pages/404"
 
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
+import { Loader } from "../../atoms/loader"
 import { ArrowButton } from "../../molecules/button/arrow-button"
 import { StakingHeader } from "./components/staking-header"
 import { StakingOption } from "./components/staking-option"
-import { StakingSidePanel } from "./components/staking-side-panel"
+import {
+  SidePanelOption,
+  StakingSidePanel,
+} from "./components/staking-side-panel"
 
 export interface StakingDetailsProps {
+  stakedToken?: StakedToken
+  isLoading: boolean
   stakingDetails: IStakingDetails
-  stakeOptions: any
   onRedeemOpen: () => void
 }
 
 export const StakingDetails: FC<StakingDetailsProps> = ({
+  stakedToken,
+  isLoading,
   stakingDetails,
-  stakeOptions,
   onRedeemOpen,
 }) => {
-  const [sidePanelOption, setSidePanelOption] = useState<IStakingOption | null>(
-    null,
-  )
+  const [sidePanelOption, setSidePanelOption] =
+    useState<SidePanelOption | null>(null)
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
 
-  if (!stakingDetails) return <NotFound />
+  if (isLoading) return <Loader isLoading />
+
+  if (!stakedToken) return <NotFound />
+
+  // console.log(
+  //   "stakedToken!!",
+  //   stakedToken.getLocked(),
+  //   stakedToken.getAvailable(),
+  // )
 
   return (
     <>
@@ -50,43 +61,42 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
           iconClassName="text-black"
         />
         <ImageWithFallback
-          alt={stakingDetails.symbol}
+          alt={stakedToken.getToken().getTokenSymbol()}
           fallbackSrc={IconNftPlaceholder}
-          src="#"
+          src={stakedToken.getToken().getTokenLogo()}
           className={clsx("w-[62px] h-[62px]", "rounded-full object-cover")}
         />
         <div>
-          <p className="text-[28px] leading-[36px]">{stakingDetails.symbol}</p>
+          <p className="text-[28px] leading-[36px]">
+            {stakedToken.getToken().getTokenSymbol()}
+          </p>
           <p className="text-xs leading-5 text-secondary">
-            {stakingDetails.name}
+            {stakedToken.getToken().getTokenName()}
           </p>
         </div>
       </div>
       <StakingHeader stakingInfo={stakingDetails} />
-      {stakeOptions.Available.length && (
+      {stakedToken.getAvailable().length > 0 && (
         <StakingOption
-          stakingOptionType={StakingOptions.Available}
-          stakingOptions={stakeOptions.Available}
+          stakingType={StakingType.Available}
+          stakes={stakedToken.getAvailable()}
           isLoading={false}
-          stakingDetails={stakingDetails}
           setSidePanelOption={setSidePanelOption}
         />
       )}
-      {stakeOptions.Unlocking.length && (
+      {stakedToken.getUnlocking().length > 0 && (
         <StakingOption
-          stakingOptionType={StakingOptions.Unlocking}
-          stakingOptions={stakeOptions.Unlocking}
+          stakingType={StakingType.Unlocking}
+          stakes={stakedToken.getUnlocking()}
           isLoading={false}
-          stakingDetails={stakingDetails}
           setSidePanelOption={setSidePanelOption}
         />
       )}
-      {stakeOptions.Locked.length && (
+      {stakedToken.getLocked().length > 0 && (
         <StakingOption
-          stakingOptionType={StakingOptions.Locked}
-          stakingOptions={stakeOptions.Locked}
+          stakingType={StakingType.Locked}
+          stakes={stakedToken.getLocked()}
           isLoading={false}
-          stakingDetails={stakingDetails}
           setSidePanelOption={setSidePanelOption}
         />
       )}

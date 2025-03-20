@@ -1,6 +1,8 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import { BigNumber } from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import { ftService } from "src/integration/ft/ft-service"
 import { NfidNeuronImpl } from "src/integration/staking/impl/nfid-neuron-impl"
 import { StakedTokenImpl } from "src/integration/staking/impl/staked-token-impl"
@@ -16,27 +18,40 @@ import { FT } from "frontend/integration/ft/ft"
 import { StakedToken } from "../staked-token"
 
 export class StakingServiceImpl implements StakingService {
-  async getStakedTokens(userId: string): Promise<Array<StakedToken>> {
+  @Cache(integrationCache, { ttl: 300 })
+  async getStakedTokens(
+    userId: string,
+    publicKey: string,
+  ): Promise<Array<StakedToken>> {
+    const principal = Principal.fromText(publicKey)
     const snsTokens = await ftService
       .getTokens(userId)
       .then((tokens) =>
         tokens.filter((token) => token.getTokenCategory() === Category.Sns),
       )
+
     let promises = snsTokens
-      .map((token) => {
-        const root = token.getRootSnsCanister()
-        if (!root) {
-          return undefined
+      .map(async (token) => {
+        if (!token.isInited()) {
+          await token.init(principal)
         }
+        const root = token.getRootSnsCanister()
+        if (!root) return undefined
+
         return querySnsNeurons({
-          identity: Principal.fromText(userId),
+          identity: principal,
           rootCanisterId: token.getRootSnsCanister()!,
           certified: false,
-        }).then((neurons) => {
-          console.log(neurons)
-          let nfidN = neurons.map((neuron) => new NfidNeuronImpl(neuron, root))
-          return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
         })
+          .then((neurons) => {
+            let nfidN = neurons.map(
+              (neuron) => new NfidNeuronImpl(neuron, token),
+            )
+            return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
+          })
+          .catch(() => {
+            return
+          })
       })
       .filter((neurons) => neurons !== undefined)
 
@@ -92,7 +107,7 @@ export class StakingServiceImpl implements StakingService {
     if (!createdNeuron) {
       throw new Error("Neuron not found")
     }
-    return new NfidNeuronImpl(createdNeuron, root)
+    return new NfidNeuronImpl(createdNeuron, token)
   }
 }
 

@@ -8,6 +8,7 @@ import {
 } from "src/integration/staking/service/staking-service-impl"
 
 import { disburse, querySnsNeurons } from "@nfid/integration"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 import { mockFt, mock2 } from "./mock"
@@ -175,6 +176,52 @@ describe("Staking", () => {
     expect(params).toBeDefined()
     expect(params?.getMinimumToStake()).toBe(5)
     expect(params?.getFee().getTokenValue()).toBe("0.0001 NFIDW")
+    expect(params?.getMaximumLockTimeInMonths()).toBe(12)
+    expect(params?.getMinimumLockTimeInMonths()).toBe(1)
+  })
+
+  it("should return staking parameters", async () => {
+    let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
+    jest
+      .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+      .mockResolvedValueOnce([
+        {
+          ledger: "mih44-vaaaa-aaaaq-aaekq-cai",
+          name: "NFIDW",
+          symbol: "NFIDW",
+          logo: "Some NFIDW",
+          index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+          state: "Active",
+          category: "Sns",
+          fee: BigInt(10000),
+          decimals: 8,
+          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+        },
+        {
+          ledger: ICP_CANISTER_ID,
+          name: "NFIDW",
+          symbol: "NFIDW",
+          logo: "Some NFIDW",
+          index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+          state: "Sns",
+          category: "Sns",
+          fee: BigInt(10000),
+          decimals: 8,
+          rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+        },
+      ])
+
+    let token = await ftService
+      .getTokens(pairPrincipal)
+      .then((tokens) =>
+        tokens.find((token) => token.getTokenSymbol() === "NFIDW"),
+      )
+
+    const params = await stakingService.getStakeCalculator(token!, edId)
+
+    expect(params).toBeDefined()
+    expect(params?.getMinimumToStake()).toBe(5)
+    expect(params?.getFee()).toBe("0.0001 NFIDW")
     expect(params?.getMaximumLockTimeInMonths()).toBe(12)
     expect(params?.getMinimumLockTimeInMonths()).toBe(1)
   })

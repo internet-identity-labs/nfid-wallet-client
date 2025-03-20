@@ -187,7 +187,7 @@ const HomeContent = ({
               </Button>
             </div>
             <div className="relative mt-[-30px] sm:mt-[-70px] md:mt-[-100px] xl:mt-[-180px]">
-              <img src={MainImg} alt="main" />
+              <img loading="lazy" src={MainImg} alt="main" />
               <div className="absolute right-[20px] md:right-[75px] top-[120px] md:top-[240px] lg:top-[320px] xl:top-[430px]">
                 <ScrollMoveElement
                   className="w-[77px] sm:w-[126px] md:w-[174px] lg:w-[290px]"
@@ -395,13 +395,9 @@ const HomeContent = ({
         </div>
       </Container>
       <Container className="mt-10 md:mt-20">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <img
-            src={Audit}
-            className="hidden md:block pe-[15px]"
-            alt="ICP safest wallet"
-          />
-          <div className="ms-0 md:ms-[15px] flex flex-col justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <img src={Audit} className="sm:pr-[15px]" alt="ICP safest wallet" />
+          <div className="ms-0 sm:ms-[15px] flex flex-col justify-center">
             <div>
               <h2 className="font-bold text-[18px] lg:text-[32px] leading-[140%] text-white mb-[25px]">
                 ICP’s safest wallet

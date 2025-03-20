@@ -66,15 +66,9 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             decimalSeparator="."
             getInputRef={ref}
             value={value}
-            onChange={(e) => {
-              onChange?.(e)
-            }}
-            onBlur={(e) => {
-              onBlur?.(e)
-            }}
-            onKeyDown={(e) => {
-              onKeyDown?.(e)
-            }}
+            onChange={(e) => onChange?.(e)}
+            onBlur={(e) => onBlur?.(e)}
+            onKeyDown={(e) => onKeyDown?.(e)}
             disabled={disabled}
             id={id}
             className={clsx(

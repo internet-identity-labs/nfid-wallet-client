@@ -78,13 +78,12 @@ export const transferMachine = createMachine(
             cond: "isSwapMachine",
           },
           {
-<<<<<<< HEAD
             target: "ConvertMachine",
             cond: "isConvertMachine",
-=======
+          },
+          {
             target: "StakeMachine",
             cond: "isStakeMachine",
->>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
           },
           {
             target: "RedeemMachine",
@@ -94,11 +93,8 @@ export const transferMachine = createMachine(
       },
       ReceiveMachine: {},
       SwapMachine: {},
-<<<<<<< HEAD
       ConvertMachine: {},
-=======
       StakeMachine: {},
->>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
       RedeemMachine: {},
       SendMachine: {
         id: "SendMachine",
@@ -151,11 +147,8 @@ export const transferMachine = createMachine(
       isSendFungible: (context) => context.tokenType === "ft",
       isReceiveMachine: (context) => context.direction === "receive",
       isSwapMachine: (context) => context.direction === "swap",
-<<<<<<< HEAD
       isConvertMachine: (context) => context.direction === "convert",
-=======
       isStakeMachine: (context) => context.direction === "stake",
->>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
       isRedeemMachine: (context) => context.direction === "redeem",
     },
     actions: {

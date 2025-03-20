@@ -1,8 +1,8 @@
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakedToken } from "src/integration/staking/staked-token"
-import { TokenValue } from "src/integration/staking/types/token-value"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokenValue } from "frontend/integration/staking/types"
 
 export class StakedTokenImpl implements StakedToken {
   token: FT

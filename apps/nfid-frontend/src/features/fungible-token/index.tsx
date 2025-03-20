@@ -3,7 +3,6 @@ import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
-import { fetchTokens, initTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useContext, useEffect, useMemo, useState } from "react"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
@@ -21,6 +20,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
+import { fetchTokens, initTokens } from "./utils"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
@@ -170,12 +170,9 @@ const TokensPage = () => {
           profileConstants={ProfileConstants}
           onSendClick={onSendClick}
           onSwapClick={onSwapClick}
-<<<<<<< HEAD
           onConvertToBtc={onConvertToBtc}
           onConvertToCkBtc={onConvertToCkBtc}
-=======
           onStakeClick={onStakeClick}
->>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
           isBtcAddressLoading={isBtcAddressLoading}

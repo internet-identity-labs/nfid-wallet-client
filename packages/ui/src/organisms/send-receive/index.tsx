@@ -52,15 +52,10 @@ export const TransferModal: FC<TransferModalProps> = ({
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}
     >
-<<<<<<< HEAD
       {(!isSuccess &&
         direction !== ModalType.SWAP &&
         direction !== ModalType.CONVERT) ||
         (direction !== ModalType.REDEEM && (
-=======
-      {direction === "send" && !isSuccess && (
-        <>
->>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
           <div
             className={clsx(
               "leading-10 text-[20px] font-bold mb-[18px]",
@@ -69,7 +64,6 @@ export const TransferModal: FC<TransferModalProps> = ({
           >
             Send
           </div>
-<<<<<<< HEAD
         ))}
       {direction === "send" && !isSuccess && (
         <ToggleButton
@@ -80,17 +74,6 @@ export const TransferModal: FC<TransferModalProps> = ({
           defaultValue={tokenType === "nft"}
           id="send_type_toggle"
         />
-=======
-          <ToggleButton
-            firstValue="Token"
-            secondValue="Collectible"
-            className="mb-5"
-            onChange={onTokenTypeChange}
-            defaultValue={tokenType === "nft"}
-            id="send_type_toggle"
-          />
-        </>
->>>>>>> 7053c6c828 (Create the storybook components for the Stake [sc-17574] (#2696))
       )}
       {component}
     </TransferTemplate>

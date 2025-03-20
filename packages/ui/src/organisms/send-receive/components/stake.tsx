@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { RangeSlider } from "packages/ui/src/atoms/range-slider"
-import { FC, useMemo } from "react"
+import { FC, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -12,12 +12,15 @@ import {
   Tooltip,
   IconInfo,
   IconCmpStake,
+  Skeleton,
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
+import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import DiamondIcon from "../../staking/assets/diamond.svg"
+import { useFormattedPeriod } from "../hooks/use-formatted-period"
 import { ChooseFromToken } from "./choose-from-token"
 import { StakeSuccessUi } from "./stake-success"
 
@@ -32,15 +35,10 @@ export interface StakeUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   error: string | undefined
-  fee: { fee: string; feeInUsd: string }
-  rewards: { rewards: string; rewardsInUsd: string }
-  apr: string
-  lockDuration: {
-    min: number
-    max: number
-  }
-  lockValue: number
+  lockValue?: number
   setLockValue: (v: number) => void
+  stakingParams?: StakeParamsCalculator
+  isParamsLoading: boolean
 }
 
 export const StakeUi: FC<StakeUiProps> = ({
@@ -54,31 +52,38 @@ export const StakeUi: FC<StakeUiProps> = ({
   isSuccessOpen,
   onClose,
   error,
-  fee,
-  rewards,
-  apr,
-  lockDuration,
   lockValue,
   setLockValue,
+  stakingParams,
+  isParamsLoading,
 }) => {
   const {
     watch,
     register,
     formState: { errors },
   } = useFormContext()
-
+  const [apr, setApr] = useState<string | undefined>()
+  const [rewards, setRewards] = useState<string | undefined>()
   const amount = watch("amount")
+  const formattedLockValue = useFormattedPeriod(lockValue, true)
 
-  const lockInputValue = useMemo(() => {
-    const years = Math.floor(lockValue / 12)
-    const months = lockValue % 12
+  useEffect(() => {
+    const getApr = async () => {
+      const data = await stakingParams?.calculateEstAPR(amount, lockValue || 0)
+      setApr(data)
+    }
 
-    const yearsString = years > 0 ? `${years} year${years > 1 ? "s" : ""}` : ""
-    const monthsString =
-      months > 0 ? `${months} month${months > 1 ? "s" : ""}` : ""
+    const geRewards = async () => {
+      const data = await stakingParams?.calculateProjectRewards(
+        amount,
+        lockValue || 0,
+      )
+      setRewards(data)
+    }
 
-    return [yearsString, monthsString].filter(Boolean).join(", ")
-  }, [lockValue])
+    getApr()
+    geRewards()
+  }, [stakingParams])
 
   if (!token || isLoading)
     return (
@@ -110,7 +115,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       >
         <div className="flex items-center gap-1.5">
           <span>Stake</span>
-          {lockValue === lockDuration.max && (
+          {lockValue === stakingParams?.getMaximumLockTimeInMonths() && (
             <Tooltip
               align="start"
               alignOffset={-20}
@@ -154,53 +159,91 @@ export const StakeUi: FC<StakeUiProps> = ({
       </div>
       <p className="mb-1 text-xs">Amount to stake</p>
       <ChooseFromToken
+        id="convert-from"
         token={token}
         setFromChosenToken={setChosenToken}
         usdRate={token.getTokenRateFormatted(amount || 0)}
         tokens={tokens}
         title="Amount to stake"
+        minAmount={stakingParams?.getMinimumToStake()}
+        isLoading={isParamsLoading || !stakingParams}
       />
-      <div className="h-4 mt-1 text-xs leading-4 text-red-600">
-        {errors["amount"]?.message as string}
-      </div>
-      <p className="mb-1 text-xs">Lock time</p>
-      <div>
-        <Input
-          className="mb-[-11px]"
-          inputClassName="h-[60px] !border-black border-b-0 rounded-b-none !bg-white !text-black"
-          value={lockInputValue}
-          disabled
-          {...register("lockTime")}
-        />
-        <RangeSlider
-          value={lockValue}
-          setValue={setLockValue}
-          min={lockDuration.min}
-          max={lockDuration.max}
-          step={1}
-        />
-      </div>
-      <div className="my-[24px] text-sm">
+      {Boolean(errors["amount"]?.message) && (
+        <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+          {errors["amount"]?.message as string}
+        </div>
+      )}
+      <p className="mt-[20px] mb-1 text-xs">Lock time</p>
+      {isParamsLoading || !stakingParams ? (
+        <Skeleton className="w-full h-[99px]" />
+      ) : (
+        <div>
+          <Input
+            className="mb-[-11px]"
+            inputClassName="h-[60px] !border-black border-b-0 rounded-b-none !bg-white !text-black"
+            value={formattedLockValue}
+            disabled
+            {...register("lockTime")}
+          />
+          <RangeSlider
+            value={lockValue || stakingParams?.getMinimumLockTimeInMonths()}
+            setValue={setLockValue}
+            min={stakingParams?.getMinimumLockTimeInMonths()}
+            max={stakingParams?.getMaximumLockTimeInMonths()}
+            step={1}
+          />
+        </div>
+      )}
+      <div
+        className={clsx(
+          "text-sm",
+          !Boolean(errors["amount"]?.message) ? "my-[24px]" : "my-[14px]",
+        )}
+      >
         <div className="flex items-center justify-between h-[48px]">
           <p>Est. APR</p>
-          <p className="font-bold text-green-600">{apr}</p>
+          {isParamsLoading ? (
+            <Skeleton className="w-[35px] h-[20px]" />
+          ) : (
+            <p className="font-bold text-green-600">{apr}</p>
+          )}
         </div>
         <div className="flex items-center justify-between h-[48px]">
           <p>Transaction fee</p>
           <div className="text-right">
-            <p className="leading-[22px]">{fee.fee}</p>
-            <p className="text-xs leading-[20px] text-secondary">
-              {fee.feeInUsd}
-            </p>
+            {isParamsLoading ? (
+              <>
+                <Skeleton className="w-[70px] h-[22px]" />
+                <Skeleton className="mt-1 w-[50px] h-[20px] ml-auto" />
+              </>
+            ) : (
+              <>
+                <p className="leading-[22px]">
+                  {stakingParams?.getFee().getTokenValue()}
+                </p>
+                <p className="text-xs leading-[20px] text-secondary">
+                  {stakingParams?.getFee().getUSDValue()}
+                </p>
+              </>
+            )}
           </div>
         </div>
         <div className="flex items-center justify-between h-[48px]">
           <p>Projected rewards</p>
           <div className="text-right">
-            <p className="leading-[22px] font-bold">{rewards.rewards}</p>
-            <p className="text-xs leading-[20px] text-secondary">
-              {rewards.rewardsInUsd}
-            </p>
+            {isParamsLoading ? (
+              <>
+                <Skeleton className="w-[70px] h-[22px]" />
+                <Skeleton className="mt-1 w-[50px] h-[20px] ml-auto" />
+              </>
+            ) : (
+              <>
+                <p className="leading-[22px] font-bold">{rewards}</p>
+                <p className="text-xs leading-[20px] text-secondary">
+                  {rewards}
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>

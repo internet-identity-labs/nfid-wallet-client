@@ -193,6 +193,8 @@ export const TransferModalCoordinator = () => {
             <StakeFT
               preselectedTokenAddress={state.context.selectedFT}
               onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
             />
           </motion.div>
         )}

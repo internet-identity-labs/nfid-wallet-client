@@ -38,6 +38,8 @@ interface ChooseFromTokenProps {
   tokensAvailableToSwap?: TokensAvailableToSwap
   btcFee?: bigint
   isConvertFromCkBtc?: boolean
+  minAmount?: number
+  isLoading?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -55,10 +57,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   tokensAvailableToSwap,
   btcFee,
   isConvertFromCkBtc,
+  minAmount,
+  isLoading,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isBtcLoading, setIsBtcLoading] = useState(false)
 
   const initedToken = useTokenInit(token)
 
@@ -108,7 +112,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
 
-      setIsLoading(true)
+      setIsBtcLoading(true)
       setIsMaxClicked(true)
       return
     }
@@ -144,7 +148,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
 
-    setIsLoading(false)
+    setIsBtcLoading(false)
     setIsMaxClicked(false)
   }, [fee, isMaxClicked, token, userBalance])
 
@@ -171,30 +175,35 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       )}
     >
       <div className="flex flex-wrap justify-between">
-        <InputAmount
-          className={clsx(
-            isResponsive && "leading-[26px] h-[30px] !max-w-full",
-          )}
-          id={"choose-from-token-amount"}
-          disabled={!Boolean(initedToken)}
-          isLoading={isLoading}
-          decimals={decimals}
-          value={inputAmountValue}
-          {...register("amount", {
-            required: sumRules.errorMessages.required,
-            onChange: (e) => setInputAmountValue(e.target.value),
-            validate: (value) => {
-              const amountValidationError = validateTransferAmountField(
-                balance || token.getTokenBalance(),
-                isSwap ? BigInt(0) : token.getTokenFee(),
-                decimals,
-                !!isConvertFromCkBtc,
-              )(value)
+        {isLoading || !Boolean(initedToken) ? (
+          <Skeleton className="w-[124px] h-[34px] rounded-[6px]" />
+        ) : (
+          <InputAmount
+            className={clsx(
+              isResponsive && "leading-[26px] h-[30px] !max-w-full",
+            )}
+            id={"choose-from-token-amount"}
+            isLoading={isBtcLoading}
+            decimals={decimals}
+            value={inputAmountValue}
+            {...register("amount", {
+              required: sumRules.errorMessages.required,
+              onChange: (e) => setInputAmountValue(e.target.value),
+              validate: (value) => {
+                const amountValidationError = validateTransferAmountField(
+                  balance || token.getTokenBalance(),
+                  isSwap ? BigInt(0) : token.getTokenFee(),
+                  decimals,
+                  !!isConvertFromCkBtc,
+                  minAmount,
+                  token.getTokenSymbol(),
+                )(value)
 
-              return amountValidationError ?? true
-            },
-          })}
-        />
+                return amountValidationError ?? true
+              },
+            })}
+          />
+        )}
         <div
           className={clsx(
             "py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
@@ -240,7 +249,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           )}
         </div>
         <div className="flex-[0_0_100%]"></div>
-        {isLoading ? (
+        {isLoading || isBtcLoading || !Boolean(initedToken) ? (
           <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
         ) : (
           <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>

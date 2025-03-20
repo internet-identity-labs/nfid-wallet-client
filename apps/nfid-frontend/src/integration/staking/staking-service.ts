@@ -7,9 +7,10 @@ import { StakeParamsCalculator } from "frontend/integration/staking/stake-params
 
 export interface StakingService {
   getStakedTokens(
-    userId: string,
+    userId: SignIdentity,
     publicKey: string,
   ): Promise<Array<StakedToken>>
+  //user global identity
   getStaked(): string
   getRewards(): string
   getStakingBalance(): string

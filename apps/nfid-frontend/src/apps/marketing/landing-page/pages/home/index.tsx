@@ -395,11 +395,15 @@ const HomeContent = ({
       </Container>
       <Container className="mt-10 md:mt-20">
         <div className="grid grid-cols-1 sm:grid-cols-2">
+<<<<<<< HEAD
           <img
             src={Audit}
             className="sm:pr-[15px]"
             alt="ICP safest wallet"
           />
+=======
+          <img src={Audit} className="sm:pr-[15px]" alt="ICP safest wallet" />
+>>>>>>> 5550f6675 (Implement basic logic to create stakes * (add ICP governancewrapper) … (#2709))
           <div className="ms-0 sm:ms-[15px] flex flex-col justify-center">
             <div>
               <h2 className="font-bold text-[18px] lg:text-[32px] leading-[140%] text-white mb-[25px]">

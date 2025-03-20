@@ -221,7 +221,7 @@ describe("Staking", () => {
 
     expect(params).toBeDefined()
     expect(params?.getMinimumToStake()).toBe(5)
-    expect(params?.getFee()).toBe("0.0001 NFIDW")
+    expect(params?.getFee().getTokenValue()).toBe("0.0001 NFIDW")
     expect(params?.getMaximumLockTimeInMonths()).toBe(12)
     expect(params?.getMinimumLockTimeInMonths()).toBe(1)
   })

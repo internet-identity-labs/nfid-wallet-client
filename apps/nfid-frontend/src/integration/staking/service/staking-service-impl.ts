@@ -40,7 +40,7 @@ export class StakingServiceImpl implements StakingService {
   ): Promise<Array<StakedToken>> {
     const principal = Principal.fromText(publicKey)
     const snsTokens = await ftService
-      .getTokens(userId)
+      .getTokens(userId.getPrincipal().toText())
       .then((tokens) =>
         tokens.filter(
           (token) =>
@@ -216,6 +216,35 @@ export class StakingServiceImpl implements StakingService {
         }
       }
     }
+  }
+
+  private async getStakedNeurons(
+    token: FT,
+    userId: SignIdentity,
+  ): Promise<StakedToken | undefined> {
+    let neurons = await this.getNeurons(token, userId)
+    let nfidN = neurons.map(
+      (neuron) =>
+        new NfidNeuronImpl(neuron as any, token.getRootSnsCanister()!),
+    )
+    return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
+  }
+
+  private async getNeurons(
+    token: FT,
+    identity: SignIdentity,
+  ): Promise<Neuron[]> {
+    return token.getTokenCategory() === Category.ChainFusion
+      ? queryICPNeurons({
+          identity,
+          includeEmptyNeurons: false,
+          certified: false,
+        })
+      : (querySnsNeurons({
+          identity: identity.getPrincipal(),
+          rootCanisterId: token.getRootSnsCanister()!,
+          certified: false,
+        }) as any)
   }
 }
 

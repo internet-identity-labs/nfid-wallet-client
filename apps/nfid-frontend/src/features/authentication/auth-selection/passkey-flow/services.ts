@@ -18,6 +18,7 @@ import {
   KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { getBrowser } from "@nfid-frontend/utils"
 import {
@@ -48,7 +49,6 @@ import {
   MultiWebAuthnIdentity,
 } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 const alreadyRegisteredDeviceErrors = [
   "credentials already registered", //Chrome-based browsers

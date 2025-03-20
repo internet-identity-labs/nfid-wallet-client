@@ -9,14 +9,15 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { getStakingParams, getTargets } from "frontend/features/staking/utils"
+import { getTargets } from "frontend/features/staking/utils"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
-import { StakingParams } from "frontend/integration/staking/types"
+import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import { FormValues, SendStatus } from "../types"
 import { getIdentity, getTokensWithUpdatedBalance } from "../utils"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
+const MONTHS_TO_SECONDS = 30 * 24 * 60 * 60
 
 interface IStakeFT {
   onClose: () => void
@@ -35,16 +36,10 @@ export const StakeFT = ({
   const [status] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [lockValue, setLockValue] = useState<number | undefined>()
-  const [stakingParams, setStakingParams] = useState<StakingParams>()
+  const [stakingParams, setStakingParams] = useState<StakeParamsCalculator>()
   const [isStakingParamsLoading, setIsStakingParamsLoading] = useState(false)
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [identity, setIdentity] = useState<SignIdentity>()
-
-  const apr = "7.5%"
-  const rewards = {
-    rewards: "3.75 ICP",
-    rewardsInUsd: "25.28 USD",
-  }
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
@@ -72,7 +67,7 @@ export const StakeFT = ({
   const { watch } = formMethods
 
   useEffect(() => {
-    setLockValue(stakingParams?.minPeriod)
+    setLockValue(stakingParams?.getMinimumLockTimeInMonths())
   }, [tokenAddress, stakingParams])
 
   const amount = watch("amount")
@@ -92,7 +87,7 @@ export const StakeFT = ({
       ])
       setIdentity(identity)
 
-      const params = await getStakingParams(token, identity)
+      const params = await stakingService.getStakeCalculator(token, identity)
       setStakingParams(params)
       setIsStakingParamsLoading(false)
     }
@@ -114,7 +109,14 @@ export const StakeFT = ({
     setIsSuccessOpen(true)
 
     stakingService
-      .stake(token, amount, identity, lockValue)
+      .stake(
+        token,
+        amount,
+        identity,
+        lockValue === stakingParams?.getMaximumLockTimeInMonths()
+          ? stakingParams?.getMaximumLockTime()
+          : lockValue! * MONTHS_TO_SECONDS,
+      )
       .then(() => {
         setSuccessMessage(
           `Stake ${amount} ${token.getTokenSymbol()} successful`,
@@ -140,13 +142,12 @@ export const StakeFT = ({
     tokens,
     setErrorMessage,
     setSuccessMessage,
+    stakingParams,
   ])
 
   return (
     <FormProvider {...formMethods}>
       <StakeUi
-        apr={apr}
-        rewards={rewards}
         token={token}
         tokens={tokensForStake}
         setChosenToken={setTokenAddress}

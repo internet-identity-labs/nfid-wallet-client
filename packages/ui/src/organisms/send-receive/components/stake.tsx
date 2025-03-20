@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { RangeSlider } from "packages/ui/src/atoms/range-slider"
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -17,7 +17,7 @@ import {
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
-import { StakingParams } from "frontend/integration/staking/types"
+import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import DiamondIcon from "../../staking/assets/diamond.svg"
 import { useFormattedPeriod } from "../hooks/use-formatted-period"
@@ -35,11 +35,9 @@ export interface StakeUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   error: string | undefined
-  rewards: { rewards: string; rewardsInUsd: string }
-  apr: string
   lockValue?: number
   setLockValue: (v: number) => void
-  stakingParams?: StakingParams
+  stakingParams?: StakeParamsCalculator
   isParamsLoading: boolean
 }
 
@@ -54,8 +52,6 @@ export const StakeUi: FC<StakeUiProps> = ({
   isSuccessOpen,
   onClose,
   error,
-  rewards,
-  apr,
   lockValue,
   setLockValue,
   stakingParams,
@@ -66,8 +62,28 @@ export const StakeUi: FC<StakeUiProps> = ({
     register,
     formState: { errors },
   } = useFormContext()
+  const [apr, setApr] = useState<string | undefined>()
+  const [rewards, setRewards] = useState<string | undefined>()
   const amount = watch("amount")
   const formattedLockValue = useFormattedPeriod(lockValue, true)
+
+  useEffect(() => {
+    const getApr = async () => {
+      const data = await stakingParams?.calculateEstAPR(amount, lockValue || 0)
+      setApr(data)
+    }
+
+    const geRewards = async () => {
+      const data = await stakingParams?.calculateProjectRewards(
+        amount,
+        lockValue || 0,
+      )
+      setRewards(data)
+    }
+
+    getApr()
+    geRewards()
+  }, [stakingParams])
 
   if (!token || isLoading)
     return (
@@ -99,7 +115,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       >
         <div className="flex items-center gap-1.5">
           <span>Stake</span>
-          {lockValue === stakingParams?.maxPeriod && (
+          {lockValue === stakingParams?.getMaximumLockTimeInMonths() && (
             <Tooltip
               align="start"
               alignOffset={-20}
@@ -148,7 +164,7 @@ export const StakeUi: FC<StakeUiProps> = ({
         usdRate={token.getTokenRateFormatted(amount || 0)}
         tokens={tokens}
         title="Amount to stake"
-        minAmount={stakingParams?.minStakeAmount}
+        minAmount={stakingParams?.getMinimumToStake()}
         isLoading={isParamsLoading || !stakingParams}
       />
       {Boolean(errors["amount"]?.message) && (
@@ -169,10 +185,10 @@ export const StakeUi: FC<StakeUiProps> = ({
             {...register("lockTime")}
           />
           <RangeSlider
-            value={lockValue || stakingParams?.minPeriod}
+            value={lockValue || stakingParams?.getMinimumLockTimeInMonths()}
             setValue={setLockValue}
-            min={stakingParams?.minPeriod!}
-            max={stakingParams?.maxPeriod!}
+            min={stakingParams?.getMinimumLockTimeInMonths()}
+            max={stakingParams?.getMaximumLockTimeInMonths()}
             step={1}
           />
         </div>
@@ -201,12 +217,12 @@ export const StakeUi: FC<StakeUiProps> = ({
               </>
             ) : (
               <>
-                <p className="leading-[22px]">{stakingParams?.fee.fee}</p>
-                {stakingParams?.fee.feeInUsd !== undefined && (
-                  <p className="text-xs leading-[20px] text-secondary">
-                    {stakingParams?.fee.feeInUsd}
-                  </p>
-                )}
+                <p className="leading-[22px]">
+                  {stakingParams?.getFee().getTokenValue()}
+                </p>
+                <p className="text-xs leading-[20px] text-secondary">
+                  {stakingParams?.getFee().getUSDValue()}
+                </p>
               </>
             )}
           </div>
@@ -221,9 +237,9 @@ export const StakeUi: FC<StakeUiProps> = ({
               </>
             ) : (
               <>
-                <p className="leading-[22px] font-bold">{rewards.rewards}</p>
+                <p className="leading-[22px] font-bold">{rewards}</p>
                 <p className="text-xs leading-[20px] text-secondary">
-                  {rewards.rewardsInUsd}
+                  {rewards}
                 </p>
               </>
             )}

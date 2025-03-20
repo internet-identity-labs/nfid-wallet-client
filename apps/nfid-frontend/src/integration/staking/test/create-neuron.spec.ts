@@ -129,12 +129,12 @@ describe("Staking", () => {
         tokens.find((token) => token.getTokenSymbol() === "NFIDW"),
       )
 
-    const params = await stakingService.getStakingParams(token!, edId)
+    const params = await stakingService.getStakeCalculator(token!, edId)
 
     expect(params).toBeDefined()
-    expect(params?.minStakeAmount).toBe(5)
-    expect(params?.fee.fee).toBe("0.0001 NFIDW")
-    expect(params?.maxPeriod).toBe(12)
-    expect(params?.minPeriod).toBe(1)
+    expect(params?.getMinimumToStake()).toBe(5)
+    expect(params?.getFee()).toBe("0.0001 NFIDW")
+    expect(params?.getMaximumLockTimeInMonths()).toBe(12)
+    expect(params?.getMinimumLockTimeInMonths()).toBe(1)
   })
 })

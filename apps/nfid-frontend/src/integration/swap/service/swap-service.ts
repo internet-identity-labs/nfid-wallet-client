@@ -58,11 +58,16 @@ export class SwapService {
             const quote = await shroff.getQuote(amount)
 
             return { shroff, quote }
-          } catch (e) {
-            throw new LiquidityError()
-          }
+          } catch (e) {}
         }),
       )
+
+      if (
+        Array.from(quotesWithShroffs.values()).every(
+          (value) => value === undefined,
+        )
+      )
+        throw new LiquidityError()
 
       const validQuotes = quotesWithShroffs.filter(
         (item): item is { shroff: Shroff; quote: Quote } => item !== undefined,

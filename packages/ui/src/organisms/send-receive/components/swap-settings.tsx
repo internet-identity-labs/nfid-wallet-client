@@ -48,17 +48,14 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   const [quotes, setQuotes] = useState<Array<QuoteMap | undefined>>([])
   const [quotesLoading, setQuotesLoading] = useState(false)
 
-  console.log("aqqqq", quotes)
-
   useEffect(() => {
     if (!shroff) return
 
     const getQuotes = async () => {
       try {
         setQuotesLoading(true)
-        const results = await Promise.allSettled(
+        const quotes = await Promise.all(
           [...swapProviders.entries()].map(async ([key, provider]) => {
-            console.log("qqq", key, provider)
             if (!provider) return { [key]: undefined }
             try {
               const quote = await provider.getQuote(amount)
@@ -68,19 +65,14 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 `Failed to get quote from ${provider.getSwapName()}`,
                 error,
               )
-              return { [provider.getSwapName()]: undefined } // Return undefined instead of failing
+              return { [provider.getSwapName()]: undefined }
             }
           }),
         )
 
-        // Extract values from `Promise.allSettled` results
-        const quotes = results.map((result) =>
-          result.status === "fulfilled" ? result.value : undefined,
-        )
-
         setQuotes(quotes)
       } catch (e) {
-        console.error("Error fetching quotes:", e)
+        console.error("Unexpected error fetching quotes:", e)
       } finally {
         setQuotesLoading(false)
       }

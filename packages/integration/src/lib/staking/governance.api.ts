@@ -7,7 +7,6 @@ import type {
   Topic,
 } from "@dfinity/nns"
 import { GovernanceCanister, NeuronVisibility } from "@dfinity/nns"
-import { GOVERNANCE_CANISTER_ID } from "@dfinity/nns/dist/types/constants/canister_ids"
 import { Principal } from "@dfinity/principal"
 import { createAgent, nowInBigIntNanoSeconds } from "@dfinity/utils"
 
@@ -442,7 +441,7 @@ export const governanceCanister = async ({
 
   const canister = GovernanceCanister.create({
     agent,
-    canisterId: GOVERNANCE_CANISTER_ID,
+    canisterId: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
   })
 
   return {

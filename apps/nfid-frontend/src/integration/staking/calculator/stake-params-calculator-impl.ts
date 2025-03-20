@@ -5,6 +5,8 @@ import { StakeParamsCalculator } from "frontend/integration/staking/stake-params
 
 import { TokenValue } from "../types"
 
+const SECONDS_IN_MONTH = (60 * 60 * 24 * 365.25) / 12
+
 export class StakeParamsCalculatorImpl implements StakeParamsCalculator {
   token: FT
   params: NervousSystemParameters
@@ -47,19 +49,19 @@ export class StakeParamsCalculatorImpl implements StakeParamsCalculator {
   }
 
   getMaximumLockTimeInMonths(): number {
-    return Math.round(
-      this.getMaximumLockTime() / ((60 * 60 * 24 * 365.25) / 12),
-    )
+    return Math.round(this.getMaximumLockTime() / SECONDS_IN_MONTH)
   }
 
   async calculateProjectRewards(
     amount: string,
     lockTime: number,
   ): Promise<string> {
-    return (+amount + lockTime).toString()
+    // This method is not implemented yet
+    return (Number(amount) + lockTime).toString()
   }
 
   async calculateEstAPR(amount: string, lockTime: number): Promise<string> {
-    return (+amount + lockTime).toString()
+    // This method is not implemented yet
+    return (Number(amount) + lockTime).toString()
   }
 }

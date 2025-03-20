@@ -13,9 +13,8 @@ import {
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
+import { getUserPrincipalId } from "frontend/features/fungible-token/utils"
 import { FT } from "frontend/integration/ft/ft"
-
-import { getUserPrincipalId } from "../utils"
 
 interface FilteredTokenProps {
   token: FT

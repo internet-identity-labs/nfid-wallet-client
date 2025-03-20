@@ -25,7 +25,13 @@ export const isHex = (h: string) => {
 }
 
 export const validateTransferAmountField =
-  (balance: bigint | undefined, fee: bigint, decimals: number | undefined) =>
+  (
+    balance: bigint | undefined,
+    fee: bigint,
+    decimals: number | undefined,
+    minAmount?: number,
+    symbol?: string,
+  ) =>
   (value: string) => {
     if (!decimals || !balance) return "Insufficient funds"
     const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
@@ -40,5 +46,8 @@ export const validateTransferAmountField =
 
     if (balanceNum.minus(feeNum).isLessThan(valueNum))
       return "Insufficient funds"
+    if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {
+      return `Minimum amount to stake ${symbol} is ${minAmount}`
+    }
     return true
   }

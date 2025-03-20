@@ -6,7 +6,7 @@ import { bytesToHexString } from "src/integration/staking/service/staking-servic
 
 import { disburse } from "@nfid/integration"
 
-import { TokenValue } from "../types/token-value"
+import { TokenValue } from "../types"
 
 export class NfidNeuronImpl implements NFIDNeuron {
   private neuron: Neuron

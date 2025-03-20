@@ -1,4 +1,5 @@
 import { Staking } from "packages/ui/src/organisms/staking"
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useSWRWithTimestamp } from "@nfid/swr"
@@ -14,19 +15,16 @@ export interface IStakingInfo {
   symbol: string
 }
 
-export interface IStake {
-  symbol: string
-  name: string
-  logo: string
-  staked: string
-  stakedInUsd: string
-  rewards: string
-  rewardsInUsd: string
-  isDiamond?: boolean
-}
-
 const StakingPage = () => {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const getParams = async () => {
+      //const params = await stakingService.getStakeCalculator(token, identity)
+    }
+
+    getParams()
+  }, [])
 
   const { data: stakedTokens = [], isLoading } = useSWRWithTimestamp(
     "stakedTokens",

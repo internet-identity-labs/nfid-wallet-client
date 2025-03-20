@@ -157,7 +157,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                             "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
                           )}
                         />
-                        {/* {stake.isDiamond && (
+                        {stake.isDiamond() && (
                           <div
                             className={clsx(
                               "absolute bottom-0 right-0 rounded-full",
@@ -166,7 +166,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                           >
                             <img src={DiamondIcon} />
                           </div>
-                        )} */}
+                        )}
                       </div>
                       <div>
                         <p

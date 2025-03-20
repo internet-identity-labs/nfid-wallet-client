@@ -1,11 +1,11 @@
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakedToken } from "src/integration/staking/staked-token"
-import { TokenValue } from "src/integration/staking/types/token-value"
 
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
+import { TokenValue } from "frontend/integration/staking/types"
 
 export class StakedTokenImpl implements StakedToken {
   token: FT
@@ -59,7 +59,7 @@ export class StakedTokenImpl implements StakedToken {
   }
 
   isDiamond(): boolean {
-    throw new Error("Method not implemented.")
+    return this.neurons.some((neuron) => neuron.isDiamond())
   }
 
   getAvailable(): Array<NFIDNeuron> {

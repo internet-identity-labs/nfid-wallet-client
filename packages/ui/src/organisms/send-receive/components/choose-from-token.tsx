@@ -35,6 +35,8 @@ interface ChooseFromTokenProps {
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
+  minAmount?: number
+  isLoading?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -49,6 +51,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
+  minAmount,
+  isLoading,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
 
@@ -113,29 +117,34 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       )}
     >
       <div className="flex flex-wrap justify-between">
-        <InputAmount
-          className={clsx(
-            isResponsive && "leading-[26px] h-[30px] !max-w-full",
-          )}
-          id={"choose-from-token-amount"}
-          disabled={!Boolean(initedToken)}
-          isLoading={false}
-          decimals={decimals}
-          value={inputAmountValue}
-          {...register("amount", {
-            required: sumRules.errorMessages.required,
-            onChange: (e) => setInputAmountValue(e.target.value),
-            validate: (value) => {
-              const amountValidationError = validateTransferAmountField(
-                balance || token.getTokenBalance(),
-                isSwap ? BigInt(0) : token.getTokenFee(),
-                decimals,
-              )(value)
+        {isLoading || !Boolean(initedToken) ? (
+          <Skeleton className="w-[124px] h-[34px] rounded-[6px]" />
+        ) : (
+          <InputAmount
+            className={clsx(
+              isResponsive && "leading-[26px] h-[30px] !max-w-full",
+            )}
+            id={"choose-from-token-amount"}
+            isLoading={false}
+            decimals={decimals}
+            value={inputAmountValue}
+            {...register("amount", {
+              required: sumRules.errorMessages.required,
+              onChange: (e) => setInputAmountValue(e.target.value),
+              validate: (value) => {
+                const amountValidationError = validateTransferAmountField(
+                  balance || token.getTokenBalance(),
+                  isSwap ? BigInt(0) : token.getTokenFee(),
+                  decimals,
+                  minAmount,
+                  token.getTokenSymbol(),
+                )(value)
 
-              return amountValidationError ?? true
-            },
-          })}
-        />
+                return amountValidationError ?? true
+              },
+            })}
+          />
+        )}
         <div
           className={clsx(
             "py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
@@ -168,9 +177,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           />
         </div>
         <div className="flex-[0_0_100%]"></div>
-        <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
-          {usdRate || "0.00 USD"}
-        </p>
+        {isLoading || !Boolean(initedToken) ? (
+          <Skeleton className="w-[124px] h-[4px] rounded-[4px] mt-[15px]" />
+        ) : (
+          <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
+            {usdRate || "0.00 USD"}
+          </p>
+        )}
         <div
           className={clsx(
             "mt-2 text-xs leading-5 text-gray-500",

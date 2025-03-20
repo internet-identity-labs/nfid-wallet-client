@@ -1,6 +1,6 @@
-import { getUserPrincipalId } from "packages/ui/src/organisms/tokens/utils"
-
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+
+import { getUserPrincipalId } from "../fungible-token/utils"
 
 export const fetchStakedTokens = async () => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()

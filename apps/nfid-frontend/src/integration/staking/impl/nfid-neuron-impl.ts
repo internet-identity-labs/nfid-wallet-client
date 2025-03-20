@@ -9,9 +9,10 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { FormattedDate, TokenValue } from "../types/token-value"
+import { FormattedDate, TokenValue } from "../types"
 
 const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
+const MILISECONDS_PER_SECOND = 1000
 
 export class NfidNeuronImpl implements NFIDNeuron {
   private neuron: Neuron
@@ -127,15 +128,21 @@ export class NfidNeuronImpl implements NFIDNeuron {
 
     return {
       getDate: () =>
-        new Date(createdAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }),
+        new Date(createdAt * MILISECONDS_PER_SECOND).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          },
+        ),
       getTime: () =>
-        new Date(createdAt).toLocaleTimeString("en-US", {
-          hour12: true,
-        }),
+        new Date(createdAt * MILISECONDS_PER_SECOND).toLocaleTimeString(
+          "en-US",
+          {
+            hour12: true,
+          },
+        ),
     }
   }
 
@@ -145,6 +152,12 @@ export class NfidNeuronImpl implements NFIDNeuron {
 
   stopUnlocking(): Promise<void> {
     throw new Error("Method not implemented.")
+  }
+
+  isDiamond(): boolean {
+    console.log(this.getLockTime(), this.neuron)
+    return false
+    //return this.getLockTime() === 1
   }
 
   async redeem(signIdentity: SignIdentity): Promise<void> {

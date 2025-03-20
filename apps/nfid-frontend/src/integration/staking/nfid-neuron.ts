@@ -1,10 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
-import {
-  FormattedDate,
-  TokenValue,
-} from "src/integration/staking/types/token-value"
 
 import { FT } from "../ft/ft"
+import { FormattedDate, TokenValue } from "./types"
 
 export interface NFIDNeuron {
   getToken(): FT
@@ -23,5 +20,6 @@ export interface NFIDNeuron {
   getCreatedAtFormatted(): FormattedDate
   startUnlocking(): Promise<void>
   stopUnlocking(): Promise<void>
+  isDiamond(): boolean
   redeem(signIdentity: SignIdentity): Promise<void>
 }

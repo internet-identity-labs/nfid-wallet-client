@@ -2,7 +2,6 @@ import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 
 import { IStakingDetails, StakingType } from "frontend/features/staking-details"
-import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import { NotFound } from "frontend/ui/pages/404"
 
@@ -39,12 +38,6 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   if (isLoading) return <Loader isLoading />
 
   if (!stakedToken) return <NotFound />
-
-  // console.log(
-  //   "stakedToken!!",
-  //   stakedToken.getLocked(),
-  //   stakedToken.getAvailable(),
-  // )
 
   return (
     <>

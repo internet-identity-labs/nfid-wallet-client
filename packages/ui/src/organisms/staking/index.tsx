@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { FC } from "react"
 import { NavigateFunction } from "react-router-dom"
 
-import { IStakingInfo, IStake } from "frontend/features/staking"
+import { IStakingInfo } from "frontend/features/staking"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 
 import DiamondIcon from "./assets/diamond.svg"
@@ -35,7 +35,6 @@ export const Staking: FC<StakingProps> = ({
   stakingInfo,
   navigate,
 }) => {
-  console.log(stakedTokens)
   return (
     <>
       <StakingHeader stakingInfo={stakingInfo} />
@@ -100,7 +99,7 @@ export const Staking: FC<StakingProps> = ({
                                 "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
                               )}
                             />
-                            {/* {stake.isDiamond && (
+                            {stakedToken.isDiamond() && (
                               <div
                                 className={clsx(
                                   "absolute bottom-0 right-0 rounded-full",
@@ -109,7 +108,7 @@ export const Staking: FC<StakingProps> = ({
                               >
                                 <img src={DiamondIcon} />
                               </div>
-                            )} */}
+                            )}
                           </div>
                           <div>
                             <p className="text-sm font-semibold leading-[25px]">

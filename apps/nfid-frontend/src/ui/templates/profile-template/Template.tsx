@@ -3,11 +3,6 @@ import clsx from "clsx"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
-  fetchTokens,
-  getFullUsdValue,
-  initTokens,
-} from "packages/ui/src/organisms/tokens/utils"
-import {
   HTMLAttributes,
   useCallback,
   useState,
@@ -32,6 +27,11 @@ import {
   ProfileConstants,
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
+import {
+  fetchTokens,
+  getFullUsdValue,
+  initTokens,
+} from "frontend/features/fungible-token/utils"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"

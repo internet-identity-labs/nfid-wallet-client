@@ -1,5 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
-import { TokenValue } from "src/integration/staking/types/token-value"
+
+import { TokenValue } from "frontend/integration/staking/types"
 
 export interface NFIDNeuron {
   getStakeId(): string

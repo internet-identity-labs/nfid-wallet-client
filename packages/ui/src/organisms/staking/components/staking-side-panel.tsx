@@ -1,5 +1,7 @@
+import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { motion } from "framer-motion"
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { IconInfo } from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
@@ -11,16 +13,25 @@ import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-
 import { Tooltip } from "packages/ui/src/molecules/tooltip"
 import { FC, useState } from "react"
 
-import {
-  IStakingOption,
-  StakingOptions,
-} from "frontend/features/staking-details"
+import { mutate } from "@nfid/swr"
+
+import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
+import { StakingState } from "frontend/integration/staking/types"
+
+import { getFormattedPeriod } from "../../send-receive/utils"
+
+export interface SidePanelOption {
+  option: NFIDNeuron
+  state: StakingState
+}
 
 export interface StakingSidePanelProps {
   isOpen: boolean
   onClose: () => void
-  sidePanelOption: IStakingOption | null
+  sidePanelOption: SidePanelOption | null
   onRedeemOpen: () => void
+  identity?: SignIdentity
+  setIsLoading: (v: boolean) => void
 }
 
 export const StakingSidePanel: FC<StakingSidePanelProps> = ({
@@ -28,18 +39,38 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   onClose,
   sidePanelOption,
   onRedeemOpen,
+  identity,
+  setIsLoading,
 }) => {
   const [isVotingOpen, setIsVotingOpen] = useState(false)
   useDisableScroll(isOpen)
 
-  const openRedeemModal = () => {
+  const symbol = sidePanelOption?.option.getToken().getTokenSymbol()
+
+  const openRedeemModal = async () => {
     onRedeemOpen()
     onClose()
   }
 
-  const stopUnlocking = () => {}
+  const stopUnlocking = () => {
+    if (!identity) return
+    setIsLoading(true)
+    onClose()
+    sidePanelOption?.option.stopUnlocking(identity).then(async () => {
+      await mutate(["stakedToken", symbol])
+      setIsLoading(false)
+    })
+  }
 
-  const startUnlocking = () => {}
+  const startUnlocking = async () => {
+    if (!identity) return
+    setIsLoading(true)
+    onClose()
+    sidePanelOption?.option.startUnlocking(identity).then(async () => {
+      await mutate(["stakedToken", symbol])
+      setIsLoading(false)
+    })
+  }
 
   return (
     <div>
@@ -75,7 +106,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
               </div>
               {!isVotingOpen && (
                 <p className="text-sm text-right text-secondary">
-                  {sidePanelOption.type}
+                  {sidePanelOption.state}
                 </p>
               )}
             </div>
@@ -99,7 +130,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Governance</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.id}
+                          address={sidePanelOption.option.getStakeId()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -110,7 +141,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Participant management</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.id}
+                          address={sidePanelOption.option.getStakeId()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -121,7 +152,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">SNS & Neurons’ fund</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.id}
+                          address={sidePanelOption.option.getStakeId()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -132,7 +163,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Transaction fee</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.id}
+                          address={sidePanelOption.option.getStakeId()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -143,7 +174,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Network economics</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.id}
+                          address={sidePanelOption.option.getStakeId()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -154,7 +185,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Node admin</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.id}
+                          address={sidePanelOption.option.getStakeId()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -195,7 +226,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       </div>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.id}
+                          address={sidePanelOption.option.getStakeId()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -205,9 +236,15 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                       <p className="text-gray-400">Initial stake</p>
                       <div>
-                        <p>{sidePanelOption.initial}</p>
+                        <p>
+                          {sidePanelOption.option
+                            .getInitialStakeFormatted()
+                            .getTokenValue()}
+                        </p>
                         <p className="text-xs text-gray-400">
-                          {sidePanelOption.initialInUsd}
+                          {sidePanelOption.option
+                            .getInitialStakeFormatted()
+                            .getUSDValue()}
                         </p>
                       </div>
                     </div>
@@ -241,9 +278,15 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </Tooltip>
                       </div>
                       <div>
-                        <p>{sidePanelOption.rewards}</p>
+                        <p>
+                          {sidePanelOption.option
+                            .getRewardsFormatted()
+                            .getTokenValue()}
+                        </p>
                         <p className="text-xs text-gray-400">
-                          {sidePanelOption.rewardsInUsd}
+                          {sidePanelOption.option
+                            .getRewardsFormatted()
+                            .getUSDValue()}
                         </p>
                       </div>
                     </div>
@@ -269,9 +312,15 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </Tooltip>
                       </div>
                       <div>
-                        <p className="font-bold">{sidePanelOption.total}</p>
+                        <p className="font-bold">
+                          {sidePanelOption.option
+                            .getTotalValueFormatted()
+                            .getTokenValue()}
+                        </p>
                         <p className="text-xs text-gray-400">
-                          {sidePanelOption.totalInUsd}
+                          {sidePanelOption.option
+                            .getTotalValueFormatted()
+                            .getUSDValue()}
                         </p>
                       </div>
                     </div>
@@ -279,7 +328,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                       <p className="text-gray-400">Unlock in</p>
                       <div>
-                        <p>{sidePanelOption.unlockIn}</p>
+                        <p>{sidePanelOption.option.getUnlockIn()}</p>
                       </div>
                     </div>
                   </div>
@@ -297,18 +346,14 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                           <p className="text-gray-400">Date created</p>
                           <div>
                             <p>
-                              {new Date(
-                                sidePanelOption.createdAt,
-                              ).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "2-digit",
-                                year: "numeric",
-                              })}
+                              {sidePanelOption.option
+                                .getCreatedAtFormatted()
+                                .getDate()}
                             </p>
                             <p className="text-xs text-gray-400">
-                              {new Date(
-                                sidePanelOption.createdAt,
-                              ).toLocaleTimeString("en-US", { hour12: true })}
+                              {sidePanelOption.option
+                                .getCreatedAtFormatted()
+                                .getTime()}
                             </p>
                           </div>
                         </div>
@@ -316,30 +361,28 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                           <p className="text-gray-400">Lock time</p>
                           <div>
-                            <p>{sidePanelOption.initial}</p>
-                            <p className="text-xs text-gray-400">
-                              {sidePanelOption.initialInUsd}
+                            <p>
+                              {getFormattedPeriod(
+                                sidePanelOption?.option.getLockTimeInMonths(),
+                                true,
+                              )}
                             </p>
                           </div>
                         </div>
                         <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                         <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                           <p className="text-gray-400">Unlock date</p>
-                          {sidePanelOption.unlockAt && (
+                          {sidePanelOption.option.getUnlockIn() > 0 && (
                             <div>
                               <p>
-                                {new Date(
-                                  sidePanelOption.unlockAt,
-                                ).toLocaleDateString("en-US", {
-                                  month: "short",
-                                  day: "2-digit",
-                                  year: "numeric",
-                                })}
+                                {sidePanelOption.option
+                                  .getUnlockInFormatted()
+                                  .getDate()}
                               </p>
                               <p className="text-xs text-gray-400">
-                                {new Date(
-                                  sidePanelOption.unlockAt,
-                                ).toLocaleTimeString("en-US", { hour12: true })}
+                                {sidePanelOption.option
+                                  .getUnlockInFormatted()
+                                  .getTime()}
                               </p>
                             </div>
                           )}
@@ -347,22 +390,22 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                         <Button
                           onClick={
-                            sidePanelOption.type === StakingOptions.Unlocking
+                            sidePanelOption.state === StakingState.Unlocking
                               ? stopUnlocking
-                              : sidePanelOption.type === StakingOptions.Locked
+                              : sidePanelOption.state === StakingState.Locked
                               ? startUnlocking
                               : openRedeemModal
                           }
                           className="w-full mt-[20px]"
                           type={
-                            sidePanelOption.type === StakingOptions.Available
+                            sidePanelOption.state === StakingState.Available
                               ? "primary"
                               : "stroke"
                           }
                         >
-                          {sidePanelOption.type === StakingOptions.Unlocking
+                          {sidePanelOption.state === StakingState.Unlocking
                             ? "Stop unlocking"
-                            : sidePanelOption.type === StakingOptions.Locked
+                            : sidePanelOption.state === StakingState.Locked
                             ? "Start unlocking"
                             : "Redeem stake"}
                         </Button>

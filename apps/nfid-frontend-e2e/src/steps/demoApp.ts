@@ -1,11 +1,10 @@
 import { Given, Then, When } from "@cucumber/cucumber"
-import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import DemoTransactions from "../pages/demoApp/demo-transactions.js"
 import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
 import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 
-Given(/^User opens the demoApp ?(.*)?$/, async function (site: string) {
+Given(/^User opens the demoApp ?(.*)?$/, async function () {
   await browser.url(DemoAppPage.demoAppBaseUrl)
 })
 
@@ -120,7 +119,6 @@ Then(
         timeout: 10000,
         timeoutMsg: "ApproveButton is still not displayed after 10 sec",
       })
-      cucumberJson.attach(await browser.takeScreenshot(), "image/png")
       await it.click()
     })
 

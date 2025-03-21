@@ -1,5 +1,3 @@
-import cucumberJson from "wdio-cucumberjs-json-reporter"
-
 import Assets from "../assets.js"
 import { Page } from "../page.js"
 
@@ -141,7 +139,6 @@ export class demoAppPage extends Page {
       timeout: 50000,
       timeoutMsg: "'Choose Profile' modal window isn't displayed after 50sec",
     })
-    cucumberJson.attach(await browser.takeScreenshot(), "image/png")
     await profile.click()
     await this.getConnectButton.click()
   }

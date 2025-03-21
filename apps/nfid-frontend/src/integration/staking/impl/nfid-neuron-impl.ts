@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
 
-import { disburse } from "@nfid/integration"
+import { disburse, startDissolving, stopDissolving } from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -99,23 +99,43 @@ export class NfidNeuronImpl implements NFIDNeuron {
   }
 
   getUnlockIn(): number {
-    return 1742208516
+    const dissolveState = this.neuron.dissolve_state[0]
+
+    if (!dissolveState) return 0
+
+    if ("WhenDissolvedTimestampSeconds" in dissolveState) {
+      return Number(dissolveState.WhenDissolvedTimestampSeconds)
+    }
+
+    return 0
+  }
+
+  getUnlockInMonths(): number {
+    return Math.round(
+      this.getUnlockIn() / SECONDS_PER_MONTH / MILISECONDS_PER_SECOND,
+    )
   }
 
   getUnlockInFormatted(): FormattedDate {
-    const unlockIn = this.getUnlockIn()
+    const unlocking = this.getUnlockIn()
 
     return {
       getDate: () =>
-        new Date(unlockIn).toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }),
+        new Date(unlocking * MILISECONDS_PER_SECOND).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          },
+        ),
       getTime: () =>
-        new Date(unlockIn).toLocaleTimeString("en-US", {
-          hour12: true,
-        }),
+        new Date(unlocking * MILISECONDS_PER_SECOND).toLocaleTimeString(
+          "en-US",
+          {
+            hour12: true,
+          },
+        ),
     }
   }
 
@@ -146,18 +166,30 @@ export class NfidNeuronImpl implements NFIDNeuron {
     }
   }
 
-  startUnlocking(): Promise<void> {
-    throw new Error("Method not implemented.")
+  async startUnlocking(signIdentity: SignIdentity): Promise<void> {
+    const rootCanisterId = this.token.getRootSnsCanister()
+    if (!rootCanisterId) return
+
+    await startDissolving({
+      identity: signIdentity,
+      rootCanisterId: rootCanisterId,
+      neuronId: this.neuron.id[0]!,
+    })
   }
 
-  stopUnlocking(): Promise<void> {
-    throw new Error("Method not implemented.")
+  async stopUnlocking(signIdentity: SignIdentity): Promise<void> {
+    const rootCanisterId = this.token.getRootSnsCanister()
+    if (!rootCanisterId) return
+
+    await stopDissolving({
+      identity: signIdentity,
+      rootCanisterId: rootCanisterId,
+      neuronId: this.neuron.id[0]!,
+    })
   }
 
   isDiamond(): boolean {
-    console.log(this.getLockTime(), this.neuron)
     return false
-    //return this.getLockTime() === 1
   }
 
   async redeem(signIdentity: SignIdentity): Promise<void> {

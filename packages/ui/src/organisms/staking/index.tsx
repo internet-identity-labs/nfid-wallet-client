@@ -2,8 +2,8 @@ import clsx from "clsx"
 import { FC } from "react"
 import { NavigateFunction } from "react-router-dom"
 
-import { IStakingInfo } from "frontend/features/staking"
 import { StakedToken } from "frontend/integration/staking/staked-token"
+import { TotalBalance } from "frontend/integration/staking/types"
 
 import DiamondIcon from "./assets/diamond.svg"
 import EmptyStaking from "./assets/empty-staking.png"
@@ -13,6 +13,7 @@ import { IconCaret } from "../../atoms/icons/caret"
 import ImageWithFallback from "../../atoms/image-with-fallback"
 import ProfileContainer from "../../atoms/profile-container/Container"
 import { TableActivitySkeleton } from "../../atoms/skeleton"
+import { StakingHeaderSkeleton } from "../../atoms/skeleton/staking-header"
 import { Button } from "../../molecules/button"
 import { Table } from "../../molecules/table"
 import { StakingHeader } from "./components/staking-header"
@@ -24,20 +25,30 @@ export interface StakingProps {
     base: string
     staking: string
   }
-  stakingInfo: IStakingInfo
   navigate: NavigateFunction
+  totalBalances?: TotalBalance
 }
 
 export const Staking: FC<StakingProps> = ({
   stakedTokens,
   isLoading,
   links,
-  stakingInfo,
   navigate,
+  totalBalances,
 }) => {
   return (
     <>
-      <StakingHeader stakingInfo={stakingInfo} />
+      {isLoading ? (
+        <StakingHeaderSkeleton />
+      ) : (
+        <StakingHeader
+          total={totalBalances?.total}
+          staked={totalBalances?.staked}
+          rewards={totalBalances?.rewards}
+          symbol="USD"
+        />
+      )}
+
       <ProfileContainer innerClassName="!px-0">
         <div
           className={clsx("overflow-auto", isLoading && "pl-5 sm:pl-[30px]")}
@@ -122,18 +133,20 @@ export const Staking: FC<StakingProps> = ({
                       </td>
                       <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
                         <p className="text-sm leading-6">
-                          {stakedToken.getStaked().getTokenValue()}
+                          {stakedToken.getStakedFormatted().getTokenValue()}{" "}
+                          {stakedToken.getToken().getTokenSymbol()}
                         </p>
                         <p className="text-xs leading-5 text-secondary">
-                          {stakedToken.getStaked().getUSDValue()}
+                          {stakedToken.getStakedFormatted().getUSDValue()}
                         </p>
                       </td>
                       <td className="px-0 md:px-[30px] hidden md:table-cell">
                         <p className="text-sm leading-6">
-                          {stakedToken.getRewards().getTokenValue()}
+                          {stakedToken.getRewardsFormatted().getTokenValue()}{" "}
+                          {stakedToken.getToken().getTokenSymbol()}
                         </p>
                         <p className="text-xs leading-5 text-secondary">
-                          {stakedToken.getRewards().getUSDValue()}
+                          {stakedToken.getRewardsFormatted().getUSDValue()}
                         </p>
                       </td>
                       <td className="w-[34px] text-right md:w-[55px] md:text-left">

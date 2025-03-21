@@ -16,6 +16,8 @@ import { FormValues, SendStatus } from "../types"
 import { getIdentity, getTokensWithUpdatedBalance } from "../utils"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
+// TODO: Make months to seconds work properly
+// https://github.com/dfinity/nns-dapp/blob/ef53053366f8174f38a74c62340fa53cf529f9be/frontend/src/lib/constants/constants.ts#L16
 const MONTHS_TO_SECONDS = 30 * 24 * 60 * 60
 
 interface IStakeFT {
@@ -114,6 +116,8 @@ export const StakeFT = ({
         identity,
         lockValue === stakingParams?.getMaximumLockTimeInMonths()
           ? stakingParams?.getMaximumLockTime()
+          : lockValue === stakingParams?.getMaximumLockTimeInMonths()
+          ? stakingParams?.getMinimumLockTime()
           : lockValue! * MONTHS_TO_SECONDS,
       )
       .then(() => {

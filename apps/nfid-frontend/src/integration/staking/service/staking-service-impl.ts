@@ -24,9 +24,10 @@ import { StakeParamsCalculator } from "frontend/integration/staking/stake-params
 
 import { StakeParamsCalculatorImpl } from "../calculator/stake-params-calculator-impl"
 import { StakedToken } from "../staked-token"
+import { TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
-  @Cache(integrationCache, { ttl: 300 })
+  //@Cache(integrationCache, { ttl: 300 })
   async getStakedTokens(
     userId: string,
     publicKey: string,
@@ -68,16 +69,29 @@ export class StakingServiceImpl implements StakingService {
     )
   }
 
-  getStaked(): string {
-    throw new Error("Method not implemented.")
-  }
+  getTotalBalances(stakedTokens: StakedToken[]): TotalBalance | undefined {
+    if (!stakedTokens.length) return
 
-  getRewards(): string {
-    throw new Error("Method not implemented.")
-  }
+    const totalStaked = stakedTokens.reduce(
+      (sum, t) => sum + parseFloat(t.getStakedFormatted().getUSDValue()),
+      0,
+    )
 
-  getStakingBalance(): string {
-    throw new Error("Method not implemented.")
+    const totalRewards = stakedTokens.reduce(
+      (sum, t) => sum + parseFloat(t.getRewardsFormatted().getUSDValue()),
+      0,
+    )
+
+    const totalBalance = stakedTokens.reduce(
+      (sum, t) =>
+        sum + parseFloat(t.getStakingBalanceFormatted().getUSDValue()),
+      0,
+    )
+    return {
+      staked: totalStaked.toString(),
+      rewards: totalRewards.toString(),
+      total: totalBalance.toString(),
+    }
   }
 
   async getStakeCalculator(

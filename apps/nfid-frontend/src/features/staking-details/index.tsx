@@ -1,49 +1,53 @@
+import { SignIdentity } from "@dfinity/agent"
 import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { useSWR } from "@nfid/swr"
 
+import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
 import { fetchStakedToken } from "../staking/utils"
 import { ModalType } from "../transfer-modal/types"
-
-export interface IStakingDetails {
-  stakingBalance: string
-  staked: string
-  rewards: string
-  symbol: string
-  name: string
-  logo: string
-}
-
-const stakingDetails = {
-  stakingBalance: "14127.15",
-  staked: "13279.521",
-  rewards: "847.629",
-  symbol: "ICP",
-  name: "Internet Computer",
-  logo: "#",
-}
-
-export enum StakingType {
-  Available = "Available",
-  Unlocking = "Unlocking",
-  Locked = "Locked",
-}
+import { getIdentity } from "../transfer-modal/utils"
 
 const StakingDetailsPage = () => {
   const { tokenSymbol } = useParams()
+  const [identity, setIdentity] = useState<SignIdentity>()
 
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
 
-  const { data: stakedToken, isLoading } = useSWR(
+  const {
+    data: stakedToken,
+    isLoading,
+    isValidating,
+  } = useSWR(
     tokenSymbol ? ["stakedToken", tokenSymbol] : null,
     () => fetchStakedToken(tokenSymbol!),
+    { revalidateOnFocus: false },
   )
+
+  useEffect(() => {
+    const getParams = async () => {
+      if (!stakedToken) return
+      const token = stakedToken.getToken()
+      const rootCanisterId = token.getRootSnsCanister()
+      if (!rootCanisterId) return
+      const canister_ids = await stakingService.getTargets(rootCanisterId)
+      if (!canister_ids) return
+
+      const identity = await getIdentity([
+        canister_ids,
+        token.getTokenAddress(),
+      ])
+      setIdentity(identity)
+    }
+
+    getParams()
+  }, [stakedToken])
 
   const onRedeemOpen = () => {
     send({ type: "CHANGE_DIRECTION", data: ModalType.REDEEM })
@@ -54,8 +58,8 @@ const StakingDetailsPage = () => {
     <StakingDetails
       onRedeemOpen={onRedeemOpen}
       stakedToken={stakedToken}
-      stakingDetails={stakingDetails}
-      isLoading={isLoading}
+      isLoading={isLoading || isValidating}
+      identity={identity}
     />
   )
 }

@@ -1,5 +1,7 @@
+import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { motion } from "framer-motion"
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { IconInfo } from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
@@ -11,14 +13,16 @@ import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-
 import { Tooltip } from "packages/ui/src/molecules/tooltip"
 import { FC, useState } from "react"
 
-import { StakingType } from "frontend/features/staking-details"
-import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
+import { mutate } from "@nfid/swr"
 
-import { useFormattedPeriod } from "../../send-receive/hooks/use-formatted-period"
+import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
+import { StakingState } from "frontend/integration/staking/types"
+
+import { getFormattedPeriod } from "../../send-receive/utils"
 
 export interface SidePanelOption {
   option: NFIDNeuron
-  type: StakingType
+  state: StakingState
 }
 
 export interface StakingSidePanelProps {
@@ -26,6 +30,8 @@ export interface StakingSidePanelProps {
   onClose: () => void
   sidePanelOption: SidePanelOption | null
   onRedeemOpen: () => void
+  identity?: SignIdentity
+  setIsLoading: (v: boolean) => void
 }
 
 export const StakingSidePanel: FC<StakingSidePanelProps> = ({
@@ -33,23 +39,38 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   onClose,
   sidePanelOption,
   onRedeemOpen,
+  identity,
+  setIsLoading,
 }) => {
   const [isVotingOpen, setIsVotingOpen] = useState(false)
   useDisableScroll(isOpen)
 
-  const lockTime = useFormattedPeriod(
-    sidePanelOption?.option.getLockTimeInMonths(),
-    true,
-  )
+  const symbol = sidePanelOption?.option.getToken().getTokenSymbol()
 
-  const openRedeemModal = () => {
+  const openRedeemModal = async () => {
     onRedeemOpen()
     onClose()
   }
 
-  const stopUnlocking = () => {}
+  const stopUnlocking = () => {
+    if (!identity) return
+    setIsLoading(true)
+    onClose()
+    sidePanelOption?.option.stopUnlocking(identity).then(async () => {
+      await mutate(["stakedToken", symbol])
+      setIsLoading(false)
+    })
+  }
 
-  const startUnlocking = () => {}
+  const startUnlocking = async () => {
+    if (!identity) return
+    setIsLoading(true)
+    onClose()
+    sidePanelOption?.option.startUnlocking(identity).then(async () => {
+      await mutate(["stakedToken", symbol])
+      setIsLoading(false)
+    })
+  }
 
   return (
     <div>
@@ -85,7 +106,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
               </div>
               {!isVotingOpen && (
                 <p className="text-sm text-right text-secondary">
-                  {sidePanelOption.type}
+                  {sidePanelOption.state}
                 </p>
               )}
             </div>
@@ -340,13 +361,18 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                           <p className="text-gray-400">Lock time</p>
                           <div>
-                            <p>{lockTime}</p>
+                            <p>
+                              {getFormattedPeriod(
+                                sidePanelOption?.option.getLockTimeInMonths(),
+                                true,
+                              )}
+                            </p>
                           </div>
                         </div>
                         <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                         <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                           <p className="text-gray-400">Unlock date</p>
-                          {sidePanelOption.option.getUnlockIn() && (
+                          {sidePanelOption.option.getUnlockIn() > 0 && (
                             <div>
                               <p>
                                 {sidePanelOption.option
@@ -364,22 +390,22 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                         <Button
                           onClick={
-                            sidePanelOption.type === StakingType.Unlocking
+                            sidePanelOption.state === StakingState.Unlocking
                               ? stopUnlocking
-                              : sidePanelOption.type === StakingType.Locked
+                              : sidePanelOption.state === StakingState.Locked
                               ? startUnlocking
                               : openRedeemModal
                           }
                           className="w-full mt-[20px]"
                           type={
-                            sidePanelOption.type === StakingType.Available
+                            sidePanelOption.state === StakingState.Available
                               ? "primary"
                               : "stroke"
                           }
                         >
-                          {sidePanelOption.type === StakingType.Unlocking
+                          {sidePanelOption.state === StakingState.Unlocking
                             ? "Stop unlocking"
-                            : sidePanelOption.type === StakingType.Locked
+                            : sidePanelOption.state === StakingState.Locked
                             ? "Start unlocking"
                             : "Redeem stake"}
                         </Button>

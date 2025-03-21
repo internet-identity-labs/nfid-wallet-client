@@ -15,11 +15,12 @@ export interface NFIDNeuron {
   getLockTime(): number
   getLockTimeInMonths(): number
   getUnlockIn(): number
+  getUnlockInMonths(): number
   getUnlockInFormatted(): FormattedDate
   getCreatedAt(): number
   getCreatedAtFormatted(): FormattedDate
-  startUnlocking(): Promise<void>
-  stopUnlocking(): Promise<void>
+  startUnlocking(signIdentity: SignIdentity): Promise<void>
+  stopUnlocking(signIdentity: SignIdentity): Promise<void>
   isDiamond(): boolean
   redeem(signIdentity: SignIdentity): Promise<void>
 }

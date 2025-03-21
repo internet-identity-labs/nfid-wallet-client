@@ -20,7 +20,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import DiamondIcon from "../../staking/assets/diamond.svg"
-import { useFormattedPeriod } from "../hooks/use-formatted-period"
+import { getFormattedPeriod } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { StakeSuccessUi } from "./stake-success"
 
@@ -65,7 +65,6 @@ export const StakeUi: FC<StakeUiProps> = ({
   const [apr, setApr] = useState<string | undefined>()
   const [rewards, setRewards] = useState<string | undefined>()
   const amount = watch("amount")
-  const formattedLockValue = useFormattedPeriod(lockValue, true)
 
   useEffect(() => {
     const getApr = async () => {
@@ -180,7 +179,7 @@ export const StakeUi: FC<StakeUiProps> = ({
           <Input
             className="mb-[-11px]"
             inputClassName="h-[60px] !border-black border-b-0 rounded-b-none !bg-white !text-black"
-            value={formattedLockValue}
+            value={getFormattedPeriod(lockValue, true)}
             disabled
             {...register("lockTime")}
           />

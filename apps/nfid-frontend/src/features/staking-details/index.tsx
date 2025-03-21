@@ -31,7 +31,7 @@ const StakingDetailsPage = () => {
   )
 
   useEffect(() => {
-    const getParams = async () => {
+    const getSignIdentity = async () => {
       if (!stakedToken) return
       const token = stakedToken.getToken()
       const rootCanisterId = token.getRootSnsCanister()
@@ -46,7 +46,7 @@ const StakingDetailsPage = () => {
       setIdentity(identity)
     }
 
-    getParams()
+    getSignIdentity()
   }, [stakedToken])
 
   const onRedeemOpen = () => {

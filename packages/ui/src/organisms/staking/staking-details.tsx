@@ -37,15 +37,11 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
     useState<SidePanelOption | null>(null)
   const [isStateLoading, setIsStateLoading] = useState(false)
 
-  console.log("isLoading", isLoading)
-
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
 
   if (!stakedToken && !isLoading) return <NotFound />
-
-  console.log("stakedToken", stakedToken)
 
   return (
     <>

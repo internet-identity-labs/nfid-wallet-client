@@ -101,25 +101,4 @@ export class StakedTokenImpl implements StakedToken {
         Math.floor(Date.now() / 1000),
     )
   }
-
-  // getSnsNeuronState(dissolveState: DissolveState): StakingState {
-  //   const state = fromNullable(dissolveState)
-  //   if (dissolveState === undefined) {
-  //     return NeuronState.Dissolved
-  //   }
-  //   if ("DissolveDelaySeconds" in dissolveState) {
-  //     return dissolveState.DissolveDelaySeconds === BigInt(0)
-  //       ? // 0 = already dissolved (more info: https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/nns/governance/src/governance.rs#L827)
-  //         NeuronState.Dissolved
-  //       : NeuronState.Locked
-  //   }
-  //   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-  //     // In case `nowInSeconds` ever changes and doesn't return an integer we use Math.floor
-  //     return dissolveState.WhenDissolvedTimestampSeconds <
-  //       BigInt(Math.floor(nowInSeconds()))
-  //       ? NeuronState.Dissolved
-  //       : NeuronState.Dissolving
-  //   }
-  //   return NeuronState.Unspecified
-  // }
 }

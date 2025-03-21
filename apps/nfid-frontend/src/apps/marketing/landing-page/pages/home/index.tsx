@@ -20,7 +20,6 @@ import CenterCoinImg from "../../assets/center-coin.png"
 import ConnectionImg from "../../assets/connection.png"
 import LockImg from "../../assets/lock.png"
 import MainCoinsImg from "../../assets/main-coins.png"
-import MainImg from "../../assets/main.png"
 import MainMobImg from "../../assets/mob.png"
 import Yards from "../../assets/new-landing/sponsors/9yards.png"
 import Blockchain from "../../assets/new-landing/sponsors/blockchain.png"
@@ -187,7 +186,7 @@ const HomeContent = ({
               </Button>
             </div>
             <div className="relative mt-[-30px] sm:mt-[-70px] md:mt-[-100px] xl:mt-[-180px]">
-              <img loading="lazy" src={MainImg} alt="main" />
+              <img className="max-w-full" loading="lazy" src="/main.png" alt="main" />
               <div className="absolute right-[20px] md:right-[75px] top-[120px] md:top-[240px] lg:top-[320px] xl:top-[430px]">
                 <ScrollMoveElement
                   className="w-[77px] sm:w-[126px] md:w-[174px] lg:w-[290px]"

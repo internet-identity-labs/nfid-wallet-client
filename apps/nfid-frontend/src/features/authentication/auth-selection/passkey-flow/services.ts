@@ -104,7 +104,7 @@ export class PasskeyConnector {
     let device
 
     if (
-      transports.filter((item) =>
+      transports.some((item) =>
         ["usb", "nfc", "ble", "smart-card"].includes(item),
       )
     ) {

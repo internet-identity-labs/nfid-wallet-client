@@ -82,7 +82,7 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
               isValidating && !activities.length && "pl-5 sm:pl-[30px]",
             )}
           >
-            <Table className="!min-w-[720px] " id="activity-table">
+            <Table className="!min-w-0 !sm:min-w-[720px] " id="activity-table">
               {isValidating && !activities.length ? (
                 <>
                   <TableActivitySkeleton

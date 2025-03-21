@@ -317,10 +317,10 @@ jobs:
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
           ci_echo_info "Cleaning Allure folders" >&2
-          rm -rf apps/nfid-frontend-e2e/allure-results
-          rm -rf apps/nfid-frontend-e2e/allure-report
-          mkdir -p apps/nfid-frontend-e2e/allure-results
-          mkdir -p apps/nfid-frontend-e2e/allure-report
+          rm -rf apps/nfid-frontend-e2e/src/reporter/allure-results
+          rm -rf apps/nfid-frontend-e2e/src/reporter/allure-report
+          mkdir -p apps/nfid-frontend-e2e/src/reporter/allure-results
+          mkdir -p apps/nfid-frontend-e2e/src/reporter/allure-report
 
           ci_echo_debug "Preparing .npmrc" >&2
           sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
@@ -407,17 +407,17 @@ jobs:
         uses: simple-elf/allure-report-action@master
         id: allure-report
         with:
-          allure_results: apps/nfid-frontend-e2e/allure-results
+          allure_results: apps/nfid-frontend-e2e/src/reporter/allure-results
           gh_pages: gh-pages
-          allure_report: apps/nfid-frontend-e2e/allure-report
-          allure_history: apps/nfid-frontend-e2e/allure-history
+          allure_report: apps/nfid-frontend-e2e/src/reporter/allure-report
+          allure_history: apps/nfid-frontend-e2e/src/reporter/allure-history
           github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
       - name: Upload report to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
           command: cp
-          source: apps/nfid-frontend-e2e/allure-history
+          source: apps/nfid-frontend-e2e/src/reporter/allure-history
           destination: s3://nfid-wallet-client-e2e-report
           aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}

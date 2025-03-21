@@ -18,6 +18,7 @@ import {
   KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
+import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { getBrowser } from "@nfid-frontend/utils"
 import {
@@ -101,18 +102,30 @@ export class PasskeyConnector {
     let icon
     let device
 
-    if (transports.includes("internal") && type === "platform") {
-      icon = Icon.apple
-      device = "iCloud keychain"
-    } else if (transports.includes("internal") || transports.includes("ble")) {
-      icon = Icon.mobile
-      device = `${getBrowser()} on ${getPlatformInfo().device}`
-    } else if (transports.includes("internal") && type !== "platform") {
-      icon = Icon.desktop
-      device = `${getBrowser()} on ${getPlatformInfo().device}`
-    } else {
+    if (
+      transports.filter((item) =>
+        ["usb", "nfc", "ble", "smart-card"].includes(item),
+      )
+    ) {
       icon = Icon.usb
       device = "Security key"
+    } else if (
+      transports.includes("hybrid") &&
+      transports.includes("internal")
+    ) {
+      if (getPlatformInfo().os === "Android") {
+        icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
+        device = `${getBrowser()} on ${getPlatformInfo().device}`
+      } else {
+        icon = Icon.apple
+        device = "iCloud keychain"
+      }
+    } else if (transports.includes("internal")) {
+      icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
+      device = `${getBrowser()} on ${getPlatformInfo().device}`
+    } else {
+      icon = Icon.passkey
+      device = "Unknown passkey"
     }
 
     return {

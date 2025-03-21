@@ -27,7 +27,7 @@ import { StakedToken } from "../staked-token"
 import { TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
-  //@Cache(integrationCache, { ttl: 300 })
+  @Cache(integrationCache, { ttl: 300 })
   async getStakedTokens(
     userId: string,
     publicKey: string,

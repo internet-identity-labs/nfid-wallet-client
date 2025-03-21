@@ -225,22 +225,27 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   }
 
   static async getAvailablePools(source: string): Promise<string[]> {
-    const actor: Agent.ActorSubclass<_SERVICE> = actorBuilder<_SERVICE>(
-      ROOT_CANISTER,
-      KongIDL,
-    )
-    const result = await actor.pools([source])
+    try {
+      const actor: Agent.ActorSubclass<_SERVICE> = actorBuilder<_SERVICE>(
+        ROOT_CANISTER,
+        KongIDL,
+      )
+      const result = await actor.pools([source])
 
-    if (!("Ok" in result)) return []
+      if (!("Ok" in result)) return []
 
-    let allPools: string[] = []
+      let allPools: string[] = []
 
-    result.Ok.pools.forEach((pool) => {
-      if (pool.address_0 === source) allPools.push(pool.address_1)
-      if (pool.address_1 === source) allPools.push(pool.address_0)
-    })
+      result.Ok.pools.forEach((pool) => {
+        if (pool.address_0 === source) allPools.push(pool.address_1)
+        if (pool.address_1 === source) allPools.push(pool.address_0)
+      })
 
-    return allPools
+      return allPools
+    } catch (e) {
+      console.error("Get Pools error: ", e)
+      return []
+    }
   }
 
   getSwapAccount(): Account {

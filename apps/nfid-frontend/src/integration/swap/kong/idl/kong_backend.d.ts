@@ -80,6 +80,11 @@ export interface AddPoolReply {
   lp_fee_bps: number
 }
 export type AddPoolResult = { Ok: AddPoolReply } | { Err: string }
+export interface AddTokenArgs {
+  token: string
+}
+export type AddTokenReply = { IC: ICTokenReply }
+export type AddTokenResult = { Ok: AddTokenReply } | { Err: string }
 export interface CheckPoolsReply {
   expected_balance: ExpectedBalance
   diff_balance: bigint
@@ -87,6 +92,33 @@ export interface CheckPoolsReply {
   symbol: string
 }
 export type CheckPoolsResult = { Ok: Array<CheckPoolsReply> } | { Err: string }
+export interface ClaimReply {
+  ts: bigint
+  fee: bigint
+  status: string
+  claim_id: bigint
+  transfer_ids: Array<TransferIdReply>
+  desc: string
+  chain: string
+  canister_id: [] | [string]
+  to_address: string
+  amount: bigint
+  symbol: string
+}
+export type ClaimResult = { Ok: ClaimReply } | { Err: string }
+export interface ClaimsReply {
+  ts: bigint
+  fee: bigint
+  status: string
+  claim_id: bigint
+  desc: string
+  chain: string
+  canister_id: [] | [string]
+  to_address: string
+  amount: bigint
+  symbol: string
+}
+export type ClaimsResult = { Ok: Array<ClaimsReply> } | { Err: string }
 export interface ExpectedBalance {
   balance: bigint
   pool_balances: Array<PoolExpectedBalance>
@@ -193,7 +225,7 @@ export interface PoolsReply {
   pools: Array<PoolReply>
   total_24h_num_swaps: bigint
 }
-export type PoolsResult = { Ok: PoolsReply } | { Err: string }
+export type PoolsResult = { Ok: Array<PoolReply> } | { Err: string }
 export interface RemoveLiquidityAmountsReply {
   lp_fee_0: bigint
   lp_fee_1: bigint
@@ -368,6 +400,11 @@ export type TxsReply =
   | { AddPool: AddPoolReply }
   | { RemoveLiquidity: RemoveLiquidityReply }
 export type TxsResult = { Ok: Array<TxsReply> } | { Err: string }
+export interface UpdateTokenArgs {
+  token: string
+}
+export type UpdateTokenReply = { IC: ICTokenReply }
+export type UpdateTokenResult = { Ok: UpdateTokenReply } | { Err: string }
 export type UserBalancesReply = { LP: LPBalancesReply }
 export type UserBalancesResult =
   | { Ok: Array<UserBalancesReply> }
@@ -438,7 +475,10 @@ export interface _SERVICE {
   >
   add_liquidity_async: ActorMethod<[AddLiquidityArgs], AddLiquidityAsyncResult>
   add_pool: ActorMethod<[AddPoolArgs], AddPoolResult>
+  add_token: ActorMethod<[AddTokenArgs], AddTokenResult>
   check_pools: ActorMethod<[], CheckPoolsResult>
+  claim: ActorMethod<[bigint], ClaimResult>
+  claims: ActorMethod<[string], ClaimsResult>
   get_user: ActorMethod<[], UserResult>
   icrc10_supported_standards: ActorMethod<[], Array<Icrc10SupportedStandards>>
   icrc1_name: ActorMethod<[], string>
@@ -463,7 +503,7 @@ export interface _SERVICE {
   swap_amounts: ActorMethod<[string, bigint, string], SwapAmountsResult>
   swap_async: ActorMethod<[SwapArgs], SwapAsyncResult>
   tokens: ActorMethod<[[] | [string]], TokensResult>
-  txs: ActorMethod<[[] | [string]], TxsResult>
+  update_token: ActorMethod<[UpdateTokenArgs], UpdateTokenResult>
   user_balances: ActorMethod<[string], UserBalancesResult>
   validate_add_liquidity: ActorMethod<[], ValidateAddLiquidityResult>
   validate_remove_liquidity: ActorMethod<[], ValidateRemoveLiquidityResult>

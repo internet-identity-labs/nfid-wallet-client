@@ -236,7 +236,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
 
       let allPools: string[] = []
 
-      result.Ok.pools.forEach((pool) => {
+      result.Ok.forEach((pool) => {
         if (pool.address_0 === source) allPools.push(pool.address_1)
         if (pool.address_1 === source) allPools.push(pool.address_0)
       })
@@ -366,7 +366,7 @@ export class KongShroffBuilder {
         this.targetOracle.symbol,
       )
 
-      if (!pools.some((pool) => "Ok" in pool && pool.Ok.pools.length > 0)) {
+      if (!pools.some((pool) => "Ok" in pool && pool.Ok.length > 0)) {
         throw new LiquidityError()
       }
 

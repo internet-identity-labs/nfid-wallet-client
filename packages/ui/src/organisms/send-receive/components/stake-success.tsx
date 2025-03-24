@@ -1,19 +1,12 @@
 import clsx from "clsx"
 import React, { useEffect, useMemo, useState } from "react"
 
-import {
-  IconNftPlaceholder,
-  ImageWithFallback,
-  LottieAnimation,
-} from "@nfid-frontend/ui"
+import { IconNftPlaceholder, ImageWithFallback } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
-import Success1 from "../assets/NFID_WS_1_1.json"
-import Success2 from "../assets/NFID_WS_3.json"
-import Successs3 from "../assets/NFID_WS_3_1.json"
-import Fail from "../assets/NFID_WS_3_2.json"
+import { StakeAnimation } from "./stake-animation"
 
 export interface StakeSuccessProps {
   title: string
@@ -23,11 +16,8 @@ export interface StakeSuccessProps {
   duration?: number
   isOpen: boolean
   status: SendStatus
-  assetImageClassname: string
   error?: string
 }
-
-const allAnimations = [Success1, Success2, Successs3, Fail]
 
 export const StakeSuccessUi: React.FC<StakeSuccessProps> = ({
   title,
@@ -35,7 +25,6 @@ export const StakeSuccessUi: React.FC<StakeSuccessProps> = ({
   onClose,
   assetImg,
   duration = 5,
-  assetImageClassname,
   isOpen,
   status,
   error,
@@ -65,11 +54,8 @@ export const StakeSuccessUi: React.FC<StakeSuccessProps> = ({
     runAnimation()
   }, [status, isOpen])
 
-  const animation = useMemo(() => allAnimations[step], [step])
-
   return (
     <div
-      id={"success_window_3"}
       className={clsx(
         "text-black text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
@@ -94,19 +80,7 @@ export const StakeSuccessUi: React.FC<StakeSuccessProps> = ({
         </p>
       </div>
       <div className="relative flex items-center justify-center w-full">
-        <LottieAnimation
-          className="max-w-[370px] flex justify-center mt-[10px]"
-          animationData={animation}
-          loop={step === 1}
-          style={{ transform: "scale(1.1)" }}
-          viewBox="0 150 360 160"
-        />
-        <ImageWithFallback
-          alt="assetImg"
-          src={`${assetImg}`}
-          fallbackSrc={IconNftPlaceholder}
-          className={clsx("absolute rounded-full", assetImageClassname)}
-        />
+        <StakeAnimation />
       </div>
       <div className="relative z-20">
         <p className="text-sm leading-[25px] font-inter" id="title">

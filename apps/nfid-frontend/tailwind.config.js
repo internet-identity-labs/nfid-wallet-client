@@ -30,6 +30,20 @@ module.exports = {
       lineHeight: {
         120: "120%",
       },
+      keyframes: {
+        animateCircle: {
+          "0%": { transform: "rotate(135deg)" },
+          "100%": { transform: "rotate(495deg)" },
+        },
+        animate: {
+          "0%": { transform: "rotate(45deg)" },
+          "100%": { transform: "rotate(405deg)" },
+        },
+      },
+      animation: {
+        animateCircle: "animateC 2s linear infinite",
+        animate: "animate 2s linear infinite",
+      },
     },
   },
 }

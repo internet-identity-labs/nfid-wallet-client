@@ -32,7 +32,7 @@ export const StakeFT = ({
   setErrorMessage,
   setSuccessMessage,
 }: IStakeFT) => {
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [isSuccessOpen, setIsSuccessOpen] = useState(true)
   const [status] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [lockValue, setLockValue] = useState<number | undefined>()
@@ -108,32 +108,32 @@ export const StakeFT = ({
     if (!token) return toaster.error(DEFAULT_STAKE_ERROR || "No selected token")
     setIsSuccessOpen(true)
 
-    stakingService
-      .stake(
-        token,
-        amount,
-        identity,
-        lockValue === stakingParams?.getMaximumLockTimeInMonths()
-          ? stakingParams?.getMaximumLockTime()
-          : lockValue! * MONTHS_TO_SECONDS,
-      )
-      .then(() => {
-        setSuccessMessage(
-          `Stake ${amount} ${token.getTokenSymbol()} successful`,
-        )
-      })
-      .catch((e) => {
-        console.error("Stake error: ", e)
-        setError((e as Error).message)
-        setErrorMessage("Something went wrong")
-      })
-      .finally(() => {
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
-      })
+    // stakingService
+    //   .stake(
+    //     token,
+    //     amount,
+    //     identity,
+    //     lockValue === stakingParams?.getMaximumLockTimeInMonths()
+    //       ? stakingParams?.getMaximumLockTime()
+    //       : lockValue! * MONTHS_TO_SECONDS,
+    //   )
+    //   .then(() => {
+    //     setSuccessMessage(
+    //       `Stake ${amount} ${token.getTokenSymbol()} successful`,
+    //     )
+    //   })
+    //   .catch((e) => {
+    //     console.error("Stake error: ", e)
+    //     setError((e as Error).message)
+    //     setErrorMessage("Something went wrong")
+    //   })
+    //   .finally(() => {
+    //     getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+    //       (updatedTokens) => {
+    //         mutateWithTimestamp("tokens", updatedTokens, false)
+    //       },
+    //     )
+    //   })
   }, [
     token,
     amount,

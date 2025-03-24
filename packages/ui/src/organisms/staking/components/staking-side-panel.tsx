@@ -5,6 +5,7 @@ import { resetIntegrationCache } from "packages/integration/src/cache"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { IconInfo } from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import { Button } from "packages/ui/src/molecules/button"
 import { ArrowButton } from "packages/ui/src/molecules/button/arrow-button"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
@@ -30,6 +31,7 @@ export interface StakingSidePanelProps {
   sidePanelOption: SidePanelOption | null
   onRedeemOpen: () => void
   identity?: SignIdentity
+  isLoading: boolean
   setIsLoading: (v: boolean) => void
 }
 
@@ -39,6 +41,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   sidePanelOption,
   onRedeemOpen,
   identity,
+  isLoading,
   setIsLoading,
 }) => {
   const [isVotingOpen, setIsVotingOpen] = useState(false)
@@ -54,10 +57,10 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   const stopUnlocking = () => {
     if (!identity) return
     setIsLoading(true)
-    onClose()
     resetIntegrationCache(["getStakedTokens"])
     sidePanelOption?.option.stopUnlocking(identity).then(async () => {
       await mutate(["stakedToken", symbol])
+      onClose()
       setIsLoading(false)
     })
   }
@@ -65,10 +68,10 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   const startUnlocking = async () => {
     if (!identity) return
     setIsLoading(true)
-    onClose()
     resetIntegrationCache(["getStakedTokens"])
     sidePanelOption?.option.startUnlocking(identity).then(async () => {
       await mutate(["stakedToken", symbol])
+      onClose()
       setIsLoading(false)
     })
   }
@@ -386,6 +389,12 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                   </div>
                   <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                   <Button
+                    icon={
+                      isLoading ? (
+                        <Spinner className="w-5 h-5 text-gray-300" />
+                      ) : null
+                    }
+                    disabled={isLoading}
                     onClick={
                       sidePanelOption.state === StakingState.Unlocking
                         ? stopUnlocking

@@ -52,6 +52,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         onRedeemOpen={onRedeemOpen}
         identity={identity}
         setIsLoading={setIsStateLoading}
+        isLoading={isStateLoading}
       />
       {isLoading || isStateLoading || !stakedToken ? (
         <>

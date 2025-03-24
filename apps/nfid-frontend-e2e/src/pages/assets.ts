@@ -227,6 +227,10 @@ export class Assets {
   }
 
   public SwapDialog = {
+    get priceImpactCheckBox() {
+      return $("#price-impact")
+    },
+
     get swapTokensButton() {
       return $("#swapTokensButton")
     },

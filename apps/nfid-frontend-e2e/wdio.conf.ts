@@ -27,7 +27,7 @@ export const config: WebdriverIO.Config = {
   exclude: [
     // 'path/to/excluded/files'
   ],
-  maxInstances: 1,
+  maxInstances: 5,
   capabilities: [chromeBrowser],
   logLevel: "error",
   bail: 0,

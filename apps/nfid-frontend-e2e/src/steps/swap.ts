@@ -13,7 +13,14 @@ When(/^Verifying that the swap transaction is success$/, async () => {
 })
 
 When(/^User clicks the Swap tokens button$/, async () => {
-  await Assets.SwapDialog.swapTokensButton.click()
+  if (await Assets.SwapDialog.priceImpactCheckBox.isDisplayed()) {
+    await Assets.SwapDialog.priceImpactCheckBox.click()
+  }
+  await Assets.SwapDialog.swapTokensButton.then(async (it) => {
+    await it.waitForClickable()
+    await it.click()
+  })
+
   await browser.waitUntil(
     async () => {
       return (

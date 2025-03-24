@@ -19,12 +19,14 @@ import { SidePanelOption } from "./staking-side-panel"
 export interface StakingOptionProps {
   stakingState: StakingState
   stakes: NFIDNeuron[]
+  symbol: string
   setSidePanelOption: (option: SidePanelOption) => void
 }
 
 export const StakingOption: FC<StakingOptionProps> = ({
   stakes,
   stakingState,
+  symbol,
   setSidePanelOption,
 }) => {
   return (
@@ -85,8 +87,8 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 tip={
                   <>
                     <span className="block max-w-[300px] mb-4">
-                      Rewards are earned in “maturity”, which will convert to
-                      ICP at the time of stake withdrawal.
+                      Rewards are earned in “maturity”, which will convert to{" "}
+                      {symbol} at the time of stake withdrawal.
                     </span>
                     <A
                       target="_blank"

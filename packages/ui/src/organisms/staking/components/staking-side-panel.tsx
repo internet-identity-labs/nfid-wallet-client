@@ -5,7 +5,6 @@ import { resetIntegrationCache } from "packages/integration/src/cache"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { IconInfo } from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
-import { Accordion } from "packages/ui/src/molecules/accordion"
 import { Button } from "packages/ui/src/molecules/button"
 import { ArrowButton } from "packages/ui/src/molecules/button/arrow-button"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
@@ -56,6 +55,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
     if (!identity) return
     setIsLoading(true)
     onClose()
+    resetIntegrationCache(["getStakedTokens"])
     sidePanelOption?.option.stopUnlocking(identity).then(async () => {
       await mutate(["stakedToken", symbol])
       setIsLoading(false)
@@ -66,6 +66,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
     if (!identity) return
     setIsLoading(true)
     onClose()
+    resetIntegrationCache(["getStakedTokens"])
     sidePanelOption?.option.startUnlocking(identity).then(async () => {
       await mutate(["stakedToken", symbol])
       setIsLoading(false)
@@ -259,7 +260,8 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                             <>
                               <span className="block max-w-[300px] mb-4">
                                 Rewards are earned in “maturity”, which will
-                                convert to ICP at the time of stake withdrawal.
+                                convert to {symbol} at the time of stake
+                                withdrawal.
                               </span>
                               <A
                                 target="_blank"
@@ -299,8 +301,8 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                           alignOffset={-20}
                           tip={
                             <span className="block max-w-[280px]">
-                              Total value assumes maturity will convert to ICP
-                              on a 1:1 ratio.
+                              Total value assumes maturity will convert to{" "}
+                              {symbol} on a 1:1 ratio.
                             </span>
                           }
                         >
@@ -333,85 +335,77 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="border border-gray-200 rounded-3xl px-[30px] pb-[30px] pt-[30px] mt-5">
-                  <Accordion
-                    className="!p-0"
-                    titleClassName="!text-[24px]  font-normal text-black"
-                    detailsClassName="!pb-0"
-                    title="Details"
-                    isBorder={false}
-                    details={
-                      <div className="mt-[10px]">
-                        <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
-                          <p className="text-gray-400">Date created</p>
-                          <div>
-                            <p>
-                              {sidePanelOption.option
-                                .getCreatedAtFormatted()
-                                .getDate()}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              {sidePanelOption.option
-                                .getCreatedAtFormatted()
-                                .getTime()}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                        <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
-                          <p className="text-gray-400">Lock time</p>
-                          <div>
-                            <p>
-                              {getFormattedPeriod(
-                                sidePanelOption?.option.getLockTimeInMonths(),
-                                true,
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                        <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
-                          <p className="text-gray-400">Unlock date</p>
-                          {sidePanelOption.option.getUnlockIn() > 0 && (
-                            <div>
-                              <p>
-                                {sidePanelOption.option
-                                  .getUnlockInFormatted()
-                                  .getDate()}
-                              </p>
-                              <p className="text-xs text-gray-400">
-                                {sidePanelOption.option
-                                  .getUnlockInFormatted()
-                                  .getTime()}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                        <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                        <Button
-                          onClick={
-                            sidePanelOption.state === StakingState.Unlocking
-                              ? stopUnlocking
-                              : sidePanelOption.state === StakingState.Locked
-                              ? startUnlocking
-                              : openRedeemModal
-                          }
-                          className="w-full mt-[20px]"
-                          type={
-                            sidePanelOption.state === StakingState.Available
-                              ? "primary"
-                              : "stroke"
-                          }
-                        >
-                          {sidePanelOption.state === StakingState.Unlocking
-                            ? "Stop unlocking"
-                            : sidePanelOption.state === StakingState.Locked
-                            ? "Start unlocking"
-                            : "Redeem stake"}
-                        </Button>
+                <div className="border border-gray-200 rounded-3xl px-[30px] pb-[30px] pt-[16px] mt-5">
+                  <div className="text-[24px] leading-[50px] mb-[10px]">
+                    Details
+                  </div>
+                  <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <p className="text-gray-400">Date created</p>
+                    <div>
+                      <p>
+                        {sidePanelOption.option
+                          .getCreatedAtFormatted()
+                          .getDate()}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {sidePanelOption.option
+                          .getCreatedAtFormatted()
+                          .getTime()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
+                  <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <p className="text-gray-400">Lock time</p>
+                    <div>
+                      <p>
+                        {getFormattedPeriod(
+                          sidePanelOption?.option.getLockTimeInMonths(),
+                          true,
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
+                  <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <p className="text-gray-400">Unlock date</p>
+                    {sidePanelOption.option.getUnlockIn() && (
+                      <div>
+                        <p>
+                          {sidePanelOption.option
+                            .getUnlockInFormatted()
+                            .getDate()}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {sidePanelOption.option
+                            .getUnlockInFormatted()
+                            .getTime()}
+                        </p>
                       </div>
+                    )}
+                  </div>
+                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
+                  <Button
+                    onClick={
+                      sidePanelOption.state === StakingState.Unlocking
+                        ? stopUnlocking
+                        : sidePanelOption.state === StakingState.Locked
+                        ? startUnlocking
+                        : openRedeemModal
                     }
-                  />
+                    className="w-full mt-[20px]"
+                    type={
+                      sidePanelOption.state === StakingState.Available
+                        ? "primary"
+                        : "stroke"
+                    }
+                  >
+                    {sidePanelOption.state === StakingState.Unlocking
+                      ? "Stop unlocking"
+                      : sidePanelOption.state === StakingState.Locked
+                      ? "Start unlocking"
+                      : "Redeem stake"}
+                  </Button>
                 </div>
                 <div className="border border-gray-200 rounded-3xl px-[30px] py-[20px] relative mt-[20px]">
                   <div

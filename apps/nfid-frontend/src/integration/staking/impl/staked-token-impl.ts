@@ -1,5 +1,3 @@
-import { DissolveState } from "@dfinity/sns/dist/candid/sns_governance"
-import { fromNullable } from "@dfinity/utils"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakedToken } from "src/integration/staking/staked-token"
@@ -7,7 +5,7 @@ import { StakedToken } from "src/integration/staking/staked-token"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
-import { StakingState, TokenValue } from "frontend/integration/staking/types"
+import { TokenValue } from "frontend/integration/staking/types"
 
 export class StakedTokenImpl implements StakedToken {
   token: FT
@@ -82,12 +80,14 @@ export class StakedTokenImpl implements StakedToken {
   }
 
   getAvailable(): Array<NFIDNeuron> {
-    return this.neurons.filter(
-      (neuron) =>
-        neuron.getLockTime() &&
-        neuron.getLockTime() + neuron.getCreatedAt() <=
-          Math.floor(Date.now() / 1000),
-    )
+    return this.neurons.filter((neuron) => {
+      const lockTime = neuron.getLockTime()
+
+      return (
+        lockTime !== undefined &&
+        lockTime + neuron.getCreatedAt() <= Math.floor(Date.now() / 1000)
+      )
+    })
   }
 
   getUnlocking(): Array<NFIDNeuron> {
@@ -95,10 +95,13 @@ export class StakedTokenImpl implements StakedToken {
   }
 
   getLocked(): Array<NFIDNeuron> {
-    return this.neurons.filter(
-      (neuron) =>
-        neuron.getLockTime() + neuron.getCreatedAt() >
-        Math.floor(Date.now() / 1000),
-    )
+    return this.neurons.filter((neuron) => {
+      const lockTime = neuron.getLockTime()
+
+      return (
+        lockTime !== undefined &&
+        lockTime + neuron.getCreatedAt() > Math.floor(Date.now() / 1000)
+      )
+    })
   }
 }

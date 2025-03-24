@@ -103,6 +103,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
               stakingState={StakingState.Available}
               stakes={stakedToken.getAvailable()}
               setSidePanelOption={setSidePanelOption}
+              symbol={stakedToken.getToken().getTokenSymbol()}
             />
           )}
           {stakedToken.getUnlocking().length > 0 && (
@@ -110,6 +111,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
               stakingState={StakingState.Unlocking}
               stakes={stakedToken.getUnlocking()}
               setSidePanelOption={setSidePanelOption}
+              symbol={stakedToken.getToken().getTokenSymbol()}
             />
           )}
           {stakedToken.getLocked().length > 0 && (
@@ -117,6 +119,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
               stakingState={StakingState.Locked}
               stakes={stakedToken.getLocked()}
               setSidePanelOption={setSidePanelOption}
+              symbol={stakedToken.getToken().getTokenSymbol()}
             />
           )}
         </>

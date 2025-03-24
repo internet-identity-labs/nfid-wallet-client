@@ -82,7 +82,7 @@ export class NfidNeuronImpl implements NFIDNeuron {
     }
   }
 
-  getLockTime(): number {
+  getLockTime(): number | undefined {
     const dissolveState = this.neuron.dissolve_state[0]
 
     if (!dissolveState) return 0
@@ -91,11 +91,13 @@ export class NfidNeuronImpl implements NFIDNeuron {
       return Number(dissolveState.DissolveDelaySeconds)
     }
 
-    return 0
+    return
   }
 
-  getLockTimeInMonths(): number {
-    return Math.round(this.getLockTime() / SECONDS_PER_MONTH)
+  getLockTimeInMonths(): number | undefined {
+    const lockTime = this.getLockTime()
+    if (lockTime === undefined) return
+    return Math.round(lockTime / SECONDS_PER_MONTH)
   }
 
   getUnlockIn(): number {

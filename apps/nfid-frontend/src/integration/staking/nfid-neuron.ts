@@ -12,9 +12,9 @@ export interface NFIDNeuron {
   getRewardsFormatted(): TokenValue
   getTotalValue(): bigint
   getTotalValueFormatted(): TokenValue
-  getLockTime(): number
-  getLockTimeInMonths(): number
-  getUnlockIn(): number
+  getLockTime(): number | undefined
+  getLockTimeInMonths(): number | undefined
+  getUnlockIn(): number | undefined
   getUnlockInMonths(): number
   getUnlockInFormatted(): FormattedDate
   getCreatedAt(): number

@@ -1,15 +1,16 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
-import {
-  fetchTokens,
-  getUserPrincipalId,
-} from "packages/ui/src/organisms/tokens/utils"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+
+import {
+  fetchTokens,
+  getUserPrincipalId,
+} from "frontend/features/fungible-token/utils"
 
 export class NftService {
   async getNFTs(

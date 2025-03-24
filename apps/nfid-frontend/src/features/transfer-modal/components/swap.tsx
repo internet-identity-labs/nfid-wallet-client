@@ -1,6 +1,5 @@
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
-import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import {
@@ -21,6 +20,7 @@ import {
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
+import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { FT } from "frontend/integration/ft/ft"
 import {
   ftService,
@@ -86,6 +86,9 @@ export const SwapFT = ({
       setFromTokenAddress(ICP_CANISTER_ID)
     } else {
       setFromTokenAddress(preselectedSourceTokenAddress)
+      if (preselectedSourceTokenAddress !== ICP_CANISTER_ID) {
+        setToTokenAddress(ICP_CANISTER_ID)
+      }
     }
   }, [preselectedSourceTokenAddress])
 

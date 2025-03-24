@@ -120,9 +120,7 @@ export class FtService {
       nftService.getNFTsTotalPrice(userPublicKey),
     ])
 
-    if (!nftPrice) return
-
-    return this.getUSDBalance(ft, Number(nftPrice.value))
+    return this.getUSDBalance(ft, !nftPrice ? 0 : Number(nftPrice.value))
   }
 
   async getUSDBalance(

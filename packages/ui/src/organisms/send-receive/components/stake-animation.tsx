@@ -23,7 +23,7 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
 
   useEffect(() => {
     if (status !== SendStatus.PENDING) {
-      setTimeout(() => setIsAnimating(false), ANIMATION_DURATION) // 1s delay to let it finish
+      setTimeout(() => setIsAnimating(false), ANIMATION_DURATION)
     }
   }, [status])
 

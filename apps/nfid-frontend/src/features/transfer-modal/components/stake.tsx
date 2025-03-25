@@ -33,7 +33,7 @@ export const StakeFT = ({
   setSuccessMessage,
 }: IStakeFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [status] = useState(SendStatus.PENDING)
+  const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [lockValue, setLockValue] = useState<number | undefined>()
   const [stakingParams, setStakingParams] = useState<StakeParamsCalculator>()
@@ -121,10 +121,12 @@ export const StakeFT = ({
         setSuccessMessage(
           `Stake ${amount} ${token.getTokenSymbol()} successful`,
         )
+        setStatus(SendStatus.COMPLETED)
       })
       .catch((e) => {
         console.error("Stake error: ", e)
         setError((e as Error).message)
+        setStatus(SendStatus.FAILED)
         setErrorMessage("Something went wrong")
       })
       .finally(() => {

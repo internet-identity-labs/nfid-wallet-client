@@ -28,20 +28,21 @@ export function InfoCopy({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={clsx(
-          "transition-all duration-200 flex px-0 lg:px-[20px] py-[20px] rounded-[12px] hover:bg-teal-500 hover:bg-opacity-10 cursor-pointer",
+          "transition-all duration-200 flex px-0 lg:px-[20px] py-[20px] rounded-[12px] lg:hover:bg-teal-500 lg:hover:bg-opacity-10 cursor-pointer",
           className,
         )}
       >
-        <div className="flex flex-col lg:flex-row max-w-[70%] md:max-w-full">
-          <p className="text-white text-sm lg-text-[18px] w-[300px]">{text}</p>
-          <p className="text-teal-500 text-sm lg-text-[18px] truncate">
-            {value}
-          </p>
+        <div className="flex flex-col lg:flex-row max-w-[90%] md:max-w-full">
+          <p className="text-white text-sm lg-text-[18px]">{text}</p>
+          <p className="text-teal-500 text-sm lg-text-[18px]">{value}</p>
         </div>
         <div
-          className={clsx("ml-auto flex lg:hidden items-end lg:items-center", {
-            "!flex": hovered,
-          })}
+          className={clsx(
+            "ml-auto flex lg:hidden items-start lg:items-center pt-[20px] lg:pt-0",
+            {
+              "!flex": hovered,
+            },
+          )}
         >
           {copied ? <CopiedIcon /> : <CopyIcon />}
         </div>

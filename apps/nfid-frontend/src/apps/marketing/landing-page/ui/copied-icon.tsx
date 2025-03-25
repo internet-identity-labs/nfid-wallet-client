@@ -1,9 +1,9 @@
 export function CopiedIcon() {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -28,7 +28,7 @@ export function CopiedIcon() {
       </g>
       <defs>
         <clipPath id="clip0_66199_75261">
-          <rect width="16" height="16" fill="#14B8A6" />
+          <rect width="18" height="18" fill="#14B8A6" />
         </clipPath>
       </defs>
     </svg>

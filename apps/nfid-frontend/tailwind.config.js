@@ -40,10 +40,6 @@ module.exports = {
           "100%": { transform: "rotate(405deg)" },
         },
       },
-      animation: {
-        animateCircle: "animateC 2s linear infinite",
-        animate: "animate 2s linear infinite",
-      },
     },
   },
 }

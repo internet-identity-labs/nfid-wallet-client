@@ -1,22 +1,44 @@
 import clsx from "clsx"
 import { IconNftPlaceholder } from "packages/ui/src/atoms/icons"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 
-import "./index.css"
+import { SendStatus } from "frontend/features/transfer-modal/types"
 
-export interface StakeSuccessProps {}
+import "../assets/stake-gradient.css"
+import SuccessIcon from "../assets/stake-success.svg"
 
-export const StakeAnimation: React.FC<StakeSuccessProps> = ({}) => {
-  const [step, setStep] = useState(-1)
+const ANIMATION_DURATION = 1
+
+export interface StakeSuccessProps {
+  assetImg: string
+  status: SendStatus
+}
+
+export const StakeAnimation: React.FC<StakeSuccessProps> = ({
+  assetImg,
+  status,
+}) => {
+  const [isAnimating, setIsAnimating] = useState(true)
+
+  useEffect(() => {
+    if (status !== SendStatus.PENDING) {
+      setTimeout(() => setIsAnimating(false), ANIMATION_DURATION) // 1s delay to let it finish
+    }
+  }, [status])
 
   return (
     <div
       className={clsx(
-        "circle-gradient",
-        "w-[148px] h-[148px] rounded-full p-[24px]",
+        status === SendStatus.FAILED && "border-[3px] border-gray-200",
+        status === SendStatus.COMPLETED && "border-[3px] border-teal-600",
+        "circle-gradient flex justify-center items-center",
+        "w-[148px] h-[148px] rounded-full",
         "relative before:content-[''] before:absolute before:top-0 before:left-0",
-        "before:w-full before:h-full before:rounded-full before:animate-[animateCircle_2s_linear_infinite]",
+        "before:w-full before:h-full before:rounded-full",
+        isAnimating
+          ? `before:animate-[animateCircle_${ANIMATION_DURATION}s_linear_infinite]`
+          : "before:hidden",
         "after:content-[''] after:bg-white after:rounded-full after:w-[calc(100%-6px)] after:h-[calc(100%-6px)] after:absolute",
         "after:top-[3px] after:left-[3px]",
       )}
@@ -24,7 +46,10 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({}) => {
       <div
         className={clsx(
           "absolute top-[calc(50%-2px)] z-[1]",
-          "left-1/2 w-1/2 h-[4px] bg-transparent origin-left animate-[animate_2s_linear_infinite]",
+          "left-1/2 w-1/2 h-[4px] bg-transparent origin-left ",
+          isAnimating
+            ? `animate-[animate_${ANIMATION_DURATION}s_linear_infinite]`
+            : "invisible",
         )}
       >
         <div
@@ -36,12 +61,18 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({}) => {
           <div className="bg-[#01B1FD] w-full h-full rounded-full"></div>
         </div>
       </div>
-      <ImageWithFallback
-        alt="assetImg"
-        src={`#`}
-        fallbackSrc={IconNftPlaceholder}
-        className="rounded-full w-full h-full relative z-[2]"
-      />
+      {status === SendStatus.COMPLETED ? (
+        <div className="w-[96px] h-[96px] rounded-full bg-teal-600 flex items-center justify-center z-[2]">
+          <img src={SuccessIcon} alt="Success" />
+        </div>
+      ) : (
+        <ImageWithFallback
+          alt="assetImg"
+          src={assetImg}
+          fallbackSrc={IconNftPlaceholder}
+          className="rounded-full relative z-[2] w-[96px] h-[96px]"
+        />
+      )}
     </div>
   )
 }

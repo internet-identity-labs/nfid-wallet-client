@@ -1,7 +1,6 @@
 import clsx from "clsx"
-import React, { useEffect, useMemo, useState } from "react"
+import { FC } from "react"
 
-import { IconNftPlaceholder, ImageWithFallback } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
@@ -19,7 +18,7 @@ export interface StakeSuccessProps {
   error?: string
 }
 
-export const StakeSuccessUi: React.FC<StakeSuccessProps> = ({
+export const StakeSuccessUi: FC<StakeSuccessProps> = ({
   title,
   subTitle = "0.00 USD",
   onClose,
@@ -29,31 +28,6 @@ export const StakeSuccessUi: React.FC<StakeSuccessProps> = ({
   status,
   error,
 }) => {
-  const [step, setStep] = useState(-1)
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    const runAnimation = async () => {
-      if (status === SendStatus.PENDING) {
-        setStep(0)
-      }
-
-      // wait until uncontrollable part of animation finishes, then rely on send status
-      await new Promise((resolve) => setTimeout(resolve, 1060))
-      setStep(1)
-
-      if (status === SendStatus.COMPLETED) {
-        setStep(2)
-      }
-      if (status === SendStatus.FAILED) {
-        setStep(3)
-      }
-    }
-
-    runAnimation()
-  }, [status, isOpen])
-
   return (
     <div
       className={clsx(
@@ -80,7 +54,7 @@ export const StakeSuccessUi: React.FC<StakeSuccessProps> = ({
         </p>
       </div>
       <div className="relative flex items-center justify-center w-full">
-        <StakeAnimation />
+        <StakeAnimation assetImg={assetImg} status={status} />
       </div>
       <div className="relative z-20">
         <p className="text-sm leading-[25px] font-inter" id="title">

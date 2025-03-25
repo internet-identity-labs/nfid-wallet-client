@@ -14,6 +14,7 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
+import { NFT } from "../nft/nft"
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 
@@ -106,6 +107,7 @@ export class FtService {
   //todo move somewhere because contains NFT balance as well
   async getTotalUSDBalance(
     userPublicKey: Principal,
+    nfts: NFT[] | undefined,
     ft: FT[],
   ): Promise<
     | {
@@ -116,8 +118,11 @@ export class FtService {
       }
     | undefined
   > {
+    const icp = ft.find((token) => token.getTokenAddress() === ICP_CANISTER_ID)
+    if (!icp?.isInited()) await icp?.init(userPublicKey)
+
     const [nftPrice] = await Promise.all([
-      nftService.getNFTsTotalPrice(userPublicKey),
+      nftService.getNFTsTotalPrice(userPublicKey, nfts, icp),
     ])
 
     return this.getUSDBalance(ft, !nftPrice ? 0 : Number(nftPrice.value))

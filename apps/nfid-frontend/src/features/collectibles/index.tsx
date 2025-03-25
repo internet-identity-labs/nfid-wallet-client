@@ -6,7 +6,8 @@ import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { useCallback, useContext, useState, useEffect, useMemo } from "react"
 
 import { Button, Skeleton } from "@nfid-frontend/ui"
-import { useSWR } from "@nfid/swr"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import {
@@ -16,6 +17,7 @@ import {
 import { NFT } from "frontend/integration/nft/nft"
 import { ProfileContext } from "frontend/provider"
 
+import { fetchTokens } from "../fungible-token/utils"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 
@@ -33,14 +35,27 @@ const NFTsPage = () => {
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
+  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
+
+  const icp = useMemo(() => {
+    return tokens.find((token) => token.getTokenAddress() === ICP_CANISTER_ID)
+  }, [tokens])
+
   const {
     data: nftTotalPrice,
     isLoading: nftTotalPriceLoading,
     mutate,
-  } = useSWR(["nftTotalPrice", currentPage], getNftsTotalPrice, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
-  })
+  } = useSWR(
+    ["nftTotalPrice", currentPage],
+    () => getNftsTotalPrice(data?.items, icp),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    },
+  )
 
   useEffect(() => {
     mutate()

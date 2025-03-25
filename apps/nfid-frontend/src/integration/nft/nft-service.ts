@@ -5,12 +5,7 @@ import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
 
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-
-import {
-  fetchTokens,
-  getUserPrincipalId,
-} from "frontend/features/fungible-token/utils"
+import { FT } from "../ft/ft"
 
 export class NftService {
   async getNFTs(
@@ -46,7 +41,11 @@ export class NftService {
     }
   }
 
-  async getNFTsTotalPrice(userPrincipal: Principal): Promise<
+  async getNFTsTotalPrice(
+    userPrincipal: Principal,
+    nfts: NFT[] | undefined,
+    icp: FT | undefined,
+  ): Promise<
     | {
         value: string
         dayChangePercent?: string
@@ -60,10 +59,8 @@ export class NftService {
       .map(nftMapper.toNFT)
       .filter((nft): nft is NFT => nft !== null)
 
-    const [, userPrincipalData, tokens] = await Promise.all([
+    const [] = await Promise.all([
       Promise.all(rawData.map((nft) => nft.init())),
-      getUserPrincipalId(),
-      fetchTokens(),
     ])
 
     const total = rawData
@@ -71,13 +68,8 @@ export class NftService {
       .filter((price) => price !== undefined)
       .reduce((price: number, foolPrice: number) => price + foolPrice, 0)
 
-    const icp = tokens.find(
-      (token) => token.getTokenAddress() === ICP_CANISTER_ID,
-    )
-
     if (!icp) return
 
-    await icp.init(Principal.fromText(userPrincipalData.publicKey))
     const usdBalanceDayChange = icp.getUSDBalanceDayChange()
 
     return {

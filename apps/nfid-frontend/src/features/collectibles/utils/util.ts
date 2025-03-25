@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 
 import { authState } from "@nfid/integration"
 
+import { FT } from "frontend/integration/ft/ft"
 import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
 
@@ -41,7 +42,14 @@ export const fetchNFT = async (
   return data
 }
 
-export const getNftsTotalPrice = async () => {
+export const getNftsTotalPrice = async (
+  nfts: NFT[] | undefined,
+  icp: FT | undefined,
+) => {
   const { publicKey } = authState.getUserIdData()
-  return await nftService.getNFTsTotalPrice(Principal.fromText(publicKey))
+  return await nftService.getNFTsTotalPrice(
+    Principal.fromText(publicKey),
+    nfts,
+    icp,
+  )
 }

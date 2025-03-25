@@ -1,5 +1,4 @@
 import { When } from "@cucumber/cucumber"
-import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
@@ -14,7 +13,14 @@ When(/^Verifying that the swap transaction is success$/, async () => {
 })
 
 When(/^User clicks the Swap tokens button$/, async () => {
-  await Assets.SwapDialog.swapTokensButton.click()
+  if (await Assets.SwapDialog.priceImpactCheckBox.isDisplayed()) {
+    await Assets.SwapDialog.priceImpactCheckBox.click()
+  }
+  await Assets.SwapDialog.swapTokensButton.then(async (it) => {
+    await it.waitForClickable()
+    await it.click()
+  })
+
   await browser.waitUntil(
     async () => {
       return (
@@ -122,7 +128,6 @@ When(
             "",
           ),
         )
-        cucumberJson.attach(await browser.takeScreenshot())
         return (
           expectedSourceTokenBalance - actualSourceTokenBalance < 0.00000001 &&
           expectedTargetTokenBalance - actualTargetTokenBalance < 0.00000001

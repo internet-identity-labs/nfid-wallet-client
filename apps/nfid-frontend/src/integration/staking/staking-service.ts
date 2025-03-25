@@ -5,15 +5,14 @@ import { StakedToken } from "src/integration/staking/staked-token"
 
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
+import { TotalBalance } from "./types"
+
 export interface StakingService {
   getStakedTokens(
-    userId: SignIdentity,
+    userId: string,
     publicKey: string,
   ): Promise<Array<StakedToken>>
-  //user global identity
-  getStaked(): string
-  getRewards(): string
-  getStakingBalance(): string
+  getTotalBalances(stakedToken: StakedToken[]): TotalBalance | undefined
   getStakeCalculator(
     token: FT,
     delegation: SignIdentity,

@@ -5,9 +5,12 @@ import { TokenValue } from "frontend/integration/staking/types"
 
 export interface StakedToken {
   getToken(): FT
-  getStaked(): TokenValue
-  getRewards(): TokenValue
-  getStakingBalance(): TokenValue
+  getStaked(): bigint
+  getStakedFormatted(): TokenValue
+  getRewards(): bigint
+  getRewardsFormatted(): TokenValue
+  getStakingBalance(): bigint
+  getStakingBalanceFormatted(): TokenValue
   isDiamond(): boolean
   getAvailable(): Array<NFIDNeuron>
   getUnlocking(): Array<NFIDNeuron>

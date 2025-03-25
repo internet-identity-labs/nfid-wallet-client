@@ -1,8 +1,9 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import { SnsRootCanister } from "@dfinity/sns"
-import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
 import { BigNumber } from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import { ftService } from "src/integration/ft/ft-service"
 import { NfidNeuronImpl } from "src/integration/staking/impl/nfid-neuron-impl"
 import { StakedTokenImpl } from "src/integration/staking/impl/staked-token-impl"
@@ -10,7 +11,6 @@ import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakingService } from "src/integration/staking/staking-service"
 
 import {
-  queryICPNeurons,
   autoStakeMaturity,
   increaseDissolveDelay,
   nervousSystemParameters,
@@ -24,21 +24,43 @@ import { StakeParamsCalculator } from "frontend/integration/staking/stake-params
 
 import { StakeParamsCalculatorImpl } from "../calculator/stake-params-calculator-impl"
 import { StakedToken } from "../staked-token"
+import { TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
-  async getStakedTokens(userId: SignIdentity): Promise<Array<StakedToken>> {
+  @Cache(integrationCache, { ttl: 300, calculateKey: () => "getStakedTokens" })
+  async getStakedTokens(
+    userId: string,
+    publicKey: string,
+  ): Promise<Array<StakedToken>> {
+    const principal = Principal.fromText(publicKey)
     const snsTokens = await ftService
-      .getTokens(userId.getPrincipal().toText())
+      .getTokens(userId)
       .then((tokens) =>
-        tokens.filter(
-          (token) =>
-            token.getTokenCategory() === Category.Sns ||
-            token.getTokenCategory() === Category.ChainFusion,
-        ),
+        tokens.filter((token) => token.getTokenCategory() === Category.Sns),
       )
+
     let promises = snsTokens
-      .map((token) => {
-        return this.getStakedNeurons(token, userId)
+      .map(async (token) => {
+        if (!token.isInited()) {
+          await token.init(principal)
+        }
+        const root = token.getRootSnsCanister()
+        if (!root) return undefined
+
+        return querySnsNeurons({
+          identity: principal,
+          rootCanisterId: token.getRootSnsCanister()!,
+          certified: false,
+        })
+          .then((neurons) => {
+            let nfidN = neurons.map(
+              (neuron) => new NfidNeuronImpl(neuron, token),
+            )
+            return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
+          })
+          .catch(() => {
+            return
+          })
       })
       .filter((neurons) => neurons !== undefined)
 
@@ -47,16 +69,29 @@ export class StakingServiceImpl implements StakingService {
     )
   }
 
-  getStaked(): string {
-    throw new Error("Method not implemented.")
-  }
+  getTotalBalances(stakedTokens: StakedToken[]): TotalBalance | undefined {
+    if (!stakedTokens.length) return
 
-  getRewards(): string {
-    throw new Error("Method not implemented.")
-  }
+    const totalStaked = stakedTokens.reduce(
+      (sum, t) => sum + parseFloat(t.getStakedFormatted().getUSDValue()),
+      0,
+    )
 
-  getStakingBalance(): string {
-    throw new Error("Method not implemented.")
+    const totalRewards = stakedTokens.reduce(
+      (sum, t) => sum + parseFloat(t.getRewardsFormatted().getUSDValue()),
+      0,
+    )
+
+    const totalBalance = stakedTokens.reduce(
+      (sum, t) =>
+        sum + parseFloat(t.getStakingBalanceFormatted().getUSDValue()),
+      0,
+    )
+    return {
+      staked: totalStaked.toFixed(2),
+      rewards: totalRewards.toFixed(2),
+      total: totalBalance.toFixed(2),
+    }
   }
 
   async getStakeCalculator(
@@ -108,8 +143,11 @@ export class StakingServiceImpl implements StakingService {
       autoStake: true,
     })
 
-    let neurons = await this.getNeurons(token, delegation)
-
+    let neurons = await querySnsNeurons({
+      identity: delegation.getPrincipal(),
+      rootCanisterId: root,
+      certified: false,
+    })
     let createdNeuron = neurons.find(
       (neuron) =>
         bytesToHexString(neuron.id[0]!.id) === bytesToHexString(id.id),
@@ -127,33 +165,7 @@ export class StakingServiceImpl implements StakingService {
       })
     }
 
-    return new NfidNeuronImpl(createdNeuron, root)
-  }
-
-  private async getStakedNeurons(
-    token: FT,
-    userId: SignIdentity,
-  ): Promise<StakedToken | undefined> {
-    let neurons = await this.getNeurons(token, userId);
-    let nfidN = neurons.map(
-      (neuron) =>
-        new NfidNeuronImpl(neuron as any, token.getRootSnsCanister()!),
-    )
-    return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
-  }
-
-  private async getNeurons(token: FT, identity: SignIdentity): Promise<Neuron[]> {
-    return token.getTokenCategory() === Category.ChainFusion
-      ? queryICPNeurons({
-          identity,
-          includeEmptyNeurons: false,
-          certified: false,
-        })
-      : (querySnsNeurons({
-          identity: identity.getPrincipal(),
-          rootCanisterId: token.getRootSnsCanister()!,
-          certified: false,
-        }) as any)
+    return new NfidNeuronImpl(createdNeuron, token)
   }
 }
 

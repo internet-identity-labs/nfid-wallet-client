@@ -1,7 +1,7 @@
 import * as Slider from "@radix-ui/react-slider"
 import clsx from "clsx"
 
-import { useFormattedPeriod } from "../../organisms/send-receive/hooks/use-formatted-period"
+import { getFormattedPeriod } from "../../organisms/send-receive/utils"
 import "./index.css"
 
 export interface RangeSliderProps {
@@ -21,8 +21,6 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   step,
   disabled,
 }) => {
-  const minFormatted = useFormattedPeriod(min)
-  const maxFormatted = useFormattedPeriod(max)
   const safeValue = value ?? min
 
   const handleValueChange = (v: number[]) => {
@@ -76,8 +74,8 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         )}
       </Slider.Root>
       <div className="flex items-center justify-between mt-[1px] text-xs text-gray-500 leading-[25px]">
-        <p>{minFormatted}</p>
-        <p>{maxFormatted}</p>
+        <p>{getFormattedPeriod(min)}</p>
+        <p>{getFormattedPeriod(max)}</p>
       </div>
     </div>
   )

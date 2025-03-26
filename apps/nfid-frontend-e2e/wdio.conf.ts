@@ -23,7 +23,6 @@ export const config: WebdriverIO.Config = {
     },
   },
   specs: ["./src/features/**/*.feature"],
-  // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
   ],
@@ -42,7 +41,7 @@ export const config: WebdriverIO.Config = {
     [
       "allure",
       {
-        outputDir: "src/reporter/allure-results",
+        outputDir: "src/reporter/desktop/allure-results",
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: true,
         useCucumberStepReporter: true,
@@ -54,7 +53,7 @@ export const config: WebdriverIO.Config = {
       {
         saveAllVideos: true,
         videoSlowdownMultiplier: 3,
-        outputDir: "src/reporter/video",
+        outputDir: "src/reporter/desktop/video",
       },
     ],
   ],
@@ -63,7 +62,7 @@ export const config: WebdriverIO.Config = {
     // <string[]> (file/dir) require files before executing features
     require: [
       "./src/steps/**/*.ts",
-      "./src/helpers/hooks.ts"
+      "./src/helpers/hooks.ts",
     ],
     // <boolean> show full backtrace for errors
     backtrace: true,

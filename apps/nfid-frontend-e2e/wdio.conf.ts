@@ -59,7 +59,6 @@ export const config: WebdriverIO.Config = {
   ],
 
   cucumberOpts: {
-    // <string[]> (file/dir) require files before executing features
     require: [
       "./src/steps/**/*.ts",
       "./src/helpers/hooks.ts",

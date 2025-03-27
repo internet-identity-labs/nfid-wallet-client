@@ -1,17 +1,12 @@
 import Video from "wdio-video-reporter"
-import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
+import { chromeBrowser } from "./src/browserOptions.js"
 
-export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME
 export const hostPath = process.env.HOST_PATH
 export const baseURL = process.env.NFID_PROVIDER_URL
   ? process.env.NFID_PROVIDER_URL
   : "http://localhost:9090"
-
-if (isHeadless) {
-  chromeBrowserOptions.args.push("--headless=new")
-}
 
 export const config: WebdriverIO.Config = {
   runner: "local",

@@ -1,3 +1,5 @@
+export const isHeadless = process.env.IS_HEADLESS === "true"
+
 export const chromeBrowserOptions: IChromeOption = {
   args: [
     "--no-sandbox",
@@ -11,6 +13,10 @@ export const chromeBrowserOptions: IChromeOption = {
   ],
 }
 
+if (isHeadless) {
+  chromeBrowserOptions.args.push("--headless=new")
+}
+
 export const chromeBrowser = {
   browserName: "chrome",
   acceptInsecureCerts: true,
@@ -18,7 +24,7 @@ export const chromeBrowser = {
     ...chromeBrowserOptions,
     args: [
       ...chromeBrowserOptions.args,
-      "--window-size=1920, 1080",
+      "--window-size=1920,1080",
     ],
   },
   "goog:loggingPrefs": {

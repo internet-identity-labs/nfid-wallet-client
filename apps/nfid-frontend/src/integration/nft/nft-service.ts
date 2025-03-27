@@ -59,9 +59,7 @@ export class NftService {
       .map(nftMapper.toNFT)
       .filter((nft): nft is NFT => nft !== null)
 
-    const [] = await Promise.all([
-      Promise.all(rawData.map((nft) => nft.init())),
-    ])
+    await Promise.all([Promise.all(rawData.map((nft) => nft.init()))])
 
     const total = rawData
       .map((nft) => nft.getTokenFloorPriceUSD())

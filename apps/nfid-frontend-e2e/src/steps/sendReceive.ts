@@ -27,7 +27,7 @@ Then(
 
 Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
   await Assets.openAssetOptionsOnSR()
-  await Assets.currencyOption(currency).click()
+  await Assets.currencyOption(currency.replace(/^\$/, "")).click()
 })
 
 Then(
@@ -63,7 +63,7 @@ Then(/^Verifying that the transaction is success$/, async () => {
 
 Then(
   /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
-  async function (account: string, principal: string) {
+  async function(account: string, principal: string) {
     const currentAddress = await Assets.getAccountId(true)
     let currentPrincipal = await Assets.getAccountId(false)
 
@@ -71,14 +71,14 @@ Then(
       async () =>
         await expect(
           (await currentAddress.firstAddressPart.getText()) +
-            "..." +
-            (await currentAddress.secondAddressPart.getText()),
+          "..." +
+          (await currentAddress.secondAddressPart.getText()),
         ).toEqual(account),
       async () =>
         await expect(
           (await currentPrincipal.firstAddressPart.getText()) +
-            "..." +
-            (await currentPrincipal.secondAddressPart.getText()),
+          "..." +
+          (await currentPrincipal.secondAddressPart.getText()),
         ).toEqual(principal),
     )
   },

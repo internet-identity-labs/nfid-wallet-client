@@ -8,6 +8,14 @@ import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
+import {
+  ICP_CANISTER_ID,
+  NFIDW_CANISTER_ID,
+} from "@nfid/integration/token/constants"
+import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
+
+import { FT } from "frontend/integration/ft/ft"
+import { ftService } from "frontend/integration/ft/ft-service"
 
 import { NftImpl } from "../impl/nft-abstract"
 
@@ -212,8 +220,60 @@ describe("nft test suite", () => {
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
 
-      const price = await nftService.getNFTsTotalPrice(principal)
-      expect(price).toEqual(11.0190816955322)
+      jest
+        .spyOn(icrc1StorageService as any, "getICRC1Canisters")
+        .mockResolvedValueOnce([
+          {
+            ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
+            name: "Chat",
+            symbol: "CHAT",
+            logo: "Some logo",
+            index: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            state: "Active",
+            category: "Unknown",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+            name: "Internet Computer",
+            symbol: "ICP",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: "2awyi-oyaaa-aaaaq-aaanq-cai",
+            name: "A first letter",
+            symbol: "A first letter",
+            index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+            state: "Active",
+            category: "Native",
+            fee: BigInt(10000),
+            decimals: 8,
+          },
+          {
+            ledger: NFIDW_CANISTER_ID,
+            name: "NFID Wallet",
+            symbol: "NFIDW",
+            index: "",
+            state: "Active",
+            category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+        ])
+
+      const result = await nftService.getNFTs(principal, 1, 10)
+      const tokens: FT[] = await ftService.getTokens(
+        "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+      )
+      const icp = tokens.find((t) => t.getTokenAddress() === ICP_CANISTER_ID)
+      await icp?.init(principal)
+      const price = await nftService.getNFTsTotalPrice(result.items, icp)
+      expect(price?.value).toEqual("11.02")
     })
   })
 

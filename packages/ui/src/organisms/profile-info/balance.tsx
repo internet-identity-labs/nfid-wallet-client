@@ -27,9 +27,9 @@ export function Balance({
       {isLoading ? (
         <Skeleton className="w-[50%] h-[24px]" />
       ) : (
-        <div className="flex items-baseline flex-wrap">
+        <div className="flex flex-wrap items-baseline">
           <div className="font-semibold">
-            {usdBalance?.value}{" "}
+            {usdBalance?.value || "0.00"}{" "}
             <span className="text-[16px] font-bold uppercase self-end mr-3">
               usd
             </span>

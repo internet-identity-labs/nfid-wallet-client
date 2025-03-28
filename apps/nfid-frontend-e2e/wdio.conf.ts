@@ -63,7 +63,8 @@ export const config: WebdriverIO.Config = {
     // <string[]> (file/dir) require files before executing features
     require: [
       "./src/steps/**/*.ts",
-      "./src/helpers/hooks.ts"
+      "./src/helpers/hooks.ts",
+      "./src/helpers/parameterTypes.ts",
     ],
     // <boolean> show full backtrace for errors
     backtrace: true,

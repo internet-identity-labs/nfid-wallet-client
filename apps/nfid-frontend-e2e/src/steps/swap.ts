@@ -43,10 +43,10 @@ When(
     await Assets.SwapDialog.getSearchTokenInputField(tokenRole).then(
       async (it) => {
         await it.waitForClickable()
-        await it.setValue(token)
+        await it.setValue(token.replace(/^\$/, ""))
       },
     )
-    await Assets.SwapDialog.getTokenByNameFromList(tokenRole, token).then(
+    await Assets.SwapDialog.getTokenByNameFromList(tokenRole, token.replace(/^\$/, "")).then(
       async (it) => {
         await it.waitForDisplayed({ timeout: 70000 })
         await it.click()
@@ -89,7 +89,7 @@ When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
 })
 
 When(
-  /^Verifying the balance of (.*) token and (.*) token has changed correctly$/,
+  "Verifying the balance of {token} token and {token} token has changed correctly",
   async (targetToken: string, sourceToken: string) => {
     let expectedSourceTokenBalance: number
     let expectedTargetTokenBalance: number

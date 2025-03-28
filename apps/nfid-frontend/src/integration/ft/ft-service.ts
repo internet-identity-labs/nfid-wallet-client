@@ -122,7 +122,7 @@ export class FtService {
     if (!icp?.isInited()) await icp?.init(userPublicKey)
 
     const [nftPrice] = await Promise.all([
-      nftService.getNFTsTotalPrice(userPublicKey, nfts, icp),
+      nftService.getNFTsTotalPrice(nfts, icp),
     ])
 
     return this.getUSDBalance(ft, !nftPrice ? 0 : Number(nftPrice.value))

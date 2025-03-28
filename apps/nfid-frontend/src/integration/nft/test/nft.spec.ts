@@ -272,11 +272,7 @@ describe("nft test suite", () => {
       )
       const icp = tokens.find((t) => t.getTokenAddress() === ICP_CANISTER_ID)
       await icp?.init(principal)
-      const price = await nftService.getNFTsTotalPrice(
-        principal,
-        result.items,
-        icp,
-      )
+      const price = await nftService.getNFTsTotalPrice(result.items, icp)
       expect(price?.value).toEqual("11.02")
     })
   })

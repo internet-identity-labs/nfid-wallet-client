@@ -1,5 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
@@ -41,8 +43,8 @@ export class NftService {
     }
   }
 
+  @Cache(integrationCache, { ttl: 300 })
   async getNFTsTotalPrice(
-    userPrincipal: Principal,
     nfts: NFT[] | undefined,
     icp: FT | undefined,
   ): Promise<
@@ -54,14 +56,20 @@ export class NftService {
       }
     | undefined
   > {
-    const data = await nftGeekService.getNftGeekData(userPrincipal)
-    const rawData = data
-      .map(nftMapper.toNFT)
-      .filter((nft): nft is NFT => nft !== null)
+    if (!nfts) return
+    await Promise.all([
+      Promise.all(
+        nfts.map((nft) => {
+          if (nft.isInited()) {
+            return nft
+          } else {
+            return nft.init()
+          }
+        }),
+      ),
+    ])
 
-    await Promise.all([Promise.all(rawData.map((nft) => nft.init()))])
-
-    const total = rawData
+    const total = nfts
       .map((nft) => nft.getTokenFloorPriceUSD())
       .filter((price) => price !== undefined)
       .reduce((price: number, foolPrice: number) => price + foolPrice, 0)

@@ -10,11 +10,9 @@ import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import {
-  getNftsTotalPrice,
-  searchTokens,
-} from "frontend/features/collectibles/utils/util"
+import { searchTokens } from "frontend/features/collectibles/utils/util"
 import { NFT } from "frontend/integration/nft/nft"
+import { nftService } from "frontend/integration/nft/nft-service"
 import { ProfileContext } from "frontend/provider"
 
 import { fetchTokens } from "../fungible-token/utils"
@@ -47,10 +45,11 @@ const NFTsPage = () => {
   const {
     data: nftTotalPrice,
     isLoading: nftTotalPriceLoading,
+    isValidating: nftTotalPriceValidating,
     mutate,
   } = useSWR(
-    ["nftTotalPrice", currentPage],
-    () => getNftsTotalPrice(data?.items, icp),
+    "nftTotalPrice",
+    () => nftService.getNFTsTotalPrice(data?.items, icp),
     {
       revalidateOnFocus: false,
       revalidateIfStale: false,

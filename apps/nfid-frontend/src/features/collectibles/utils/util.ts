@@ -41,15 +41,3 @@ export const fetchNFT = async (
   )
   return data
 }
-
-export const getNftsTotalPrice = async (
-  nfts: NFT[] | undefined,
-  icp: FT | undefined,
-) => {
-  const { publicKey } = authState.getUserIdData()
-  return await nftService.getNFTsTotalPrice(
-    Principal.fromText(publicKey),
-    nfts,
-    icp,
-  )
-}

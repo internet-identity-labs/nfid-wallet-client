@@ -45,7 +45,6 @@ const NFTsPage = () => {
   const {
     data: nftTotalPrice,
     isLoading: nftTotalPriceLoading,
-    isValidating: nftTotalPriceValidating,
     mutate,
   } = useSWR(
     "nftTotalPrice",

@@ -11,7 +11,7 @@
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
-    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/allure-results --clean -o apps/nfid-frontend-e2e/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/allure-report"
+    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/allure-report"
   },
   "dependencies": {
     "@dfinity/agent": "2.3.0",
@@ -182,6 +182,7 @@
     "eslint-plugin-wdio": "9.0.8",
     "events": "3.3.0",
     "fake-indexeddb": "4.0.1",
+    "ffmpeg-static": "^5.2.0",
     "file-loader": "6.2.0",
     "geckodriver": "^4.0.4",
     "html-webpack-plugin": "^5.5.0",
@@ -211,8 +212,7 @@
     "typescript": "5.5.4",
     "url-loader": "^4.1.1",
     "util": "0.12.4",
-    "wdio-cucumberjs-json-reporter": "5.2.1",
-    "wdio-json-reporter": "4.0.1",
+    "wdio-video-reporter": "^6.1.1",
     "webdriverio": "8.40.6",
     "webpack": "5.94.0",
     "whatwg-fetch": "3.6.2"

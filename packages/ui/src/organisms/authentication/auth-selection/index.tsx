@@ -184,34 +184,36 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               </Button>
             </form>
             <Separator className="my-[10px]" />
-            {googleButton}
-            {isPasskeySupported && (
-              <Button
-                id="passkey-sign-button"
-                className="h-12 !p-0 group mt-[10px]"
-                type="stroke"
-                icon={<IconCmpPasskey />}
-                block
-                onClick={onLoginWithPasskey}
-              >
-                Continue with a Passkey
-              </Button>
-            )}
-            {isSignIn && (
-              <Button
-                id="other-sign-button"
-                className="h-12 !p-0 mt-[10px]"
-                type="ghost"
-                block
-                onClick={onSelectOtherAuth}
-              >
-                Other sign in options
-              </Button>
-            )}
+            <div className={`mb-[${isSignIn ? "30px" : "50px"}]`}>
+              {googleButton}
+              {isPasskeySupported && (
+                <Button
+                  id="passkey-sign-button"
+                  className="h-12 !p-0 group mt-[10px]"
+                  type="stroke"
+                  icon={<IconCmpPasskey />}
+                  block
+                  onClick={onLoginWithPasskey}
+                >
+                  Continue with a Passkey
+                </Button>
+              )}
+              {isSignIn && (
+                <Button
+                  id="other-sign-button"
+                  className="h-12 !p-0 mt-[10px]"
+                  type="ghost"
+                  block
+                  onClick={onSelectOtherAuth}
+                >
+                  Other sign in options
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="flex justify-center flex-1">
+          <div className="flex justify-center mt-auto">
             {isSignIn ? (
-              <div className="mt-auto text-sm">
+              <div className="text-sm">
                 Don’t have an NFID Wallet?{" "}
                 <A
                   href={window.location.href}
@@ -225,7 +227,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                 </A>
               </div>
             ) : (
-              <div className="mt-auto text-sm">
+              <div className="text-sm">
                 Already have an NFID Wallet?{" "}
                 <A
                   href={window.location.href}

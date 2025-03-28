@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { FC, HTMLAttributes } from "react"
 
 import {
@@ -7,7 +6,6 @@ import {
   Skeleton,
   Button,
   CopyAddress,
-  ArrowPercentChange,
   IconCmpConvertWhite,
   IconCmpStake,
 } from "@nfid-frontend/ui"

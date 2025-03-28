@@ -13,6 +13,8 @@ import {
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
+import { nftService } from "frontend/integration/nft/nft-service"
+
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
 
@@ -444,9 +446,13 @@ describe("ft test suite", () => {
             decimals: 8,
           },
         ])
+      const nfts = await nftService.getNFTs(principal, 1, 10)
       const result: FT[] = await ftService.getTokens(userId)
-      const balance = await ftService.getTotalUSDBalance(principal, result)
-      console.log(balance)
+      const balance = await ftService.getTotalUSDBalance(
+        principal,
+        nfts.items,
+        result,
+      )
       expect(balance).not.toEqual("0.00 USD")
     })
 

@@ -4,6 +4,7 @@ import { authState } from "@nfid/integration"
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
+import { NFT } from "frontend/integration/nft/nft"
 
 //TODO move to authState
 export const getUserPrincipalId = async (): Promise<{
@@ -43,7 +44,11 @@ export const filterNotActiveNotZeroBalancesTokens = async (
   )
 }
 
-export const getFullUsdValue = async (ft: FT[]) => {
+export const getFullUsdValue = async (nfts: NFT[] | undefined, ft: FT[]) => {
   const { publicKey } = authState.getUserIdData()
-  return await ftService.getTotalUSDBalance(Principal.fromText(publicKey), ft)
+  return await ftService.getTotalUSDBalance(
+    Principal.fromText(publicKey),
+    nfts,
+    ft,
+  )
 }

@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 
 import { authState } from "@nfid/integration"
 
+import { FT } from "frontend/integration/ft/ft"
 import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
 

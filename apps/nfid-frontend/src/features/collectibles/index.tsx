@@ -3,16 +3,19 @@ import clsx from "clsx"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { NFTs } from "packages/ui/src/organisms/nfts"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
-import { useCallback, useContext, useState, useEffect } from "react"
+import { useCallback, useContext, useState, useEffect, useMemo } from "react"
 
-import { Button } from "@nfid-frontend/ui"
-import { useSWR } from "@nfid/swr"
+import { Button, Skeleton } from "@nfid-frontend/ui"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { searchTokens } from "frontend/features/collectibles/utils/util"
 import { NFT } from "frontend/integration/nft/nft"
+import { nftService } from "frontend/integration/nft/nft-service"
 import { ProfileContext } from "frontend/provider"
 
+import { fetchTokens } from "../fungible-token/utils"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 
@@ -29,6 +32,32 @@ const NFTsPage = () => {
     () => fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
+
+  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
+
+  const icp = useMemo(() => {
+    return tokens.find((token) => token.getTokenAddress() === ICP_CANISTER_ID)
+  }, [tokens])
+
+  const {
+    data: nftTotalPrice,
+    isLoading: nftTotalPriceLoading,
+    mutate,
+  } = useSWR(
+    "nftTotalPrice",
+    () => nftService.getNFTsTotalPrice(data?.items, icp),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    },
+  )
+
+  useEffect(() => {
+    mutate()
+  }, [nfts, mutate])
 
   const onTransferNFT = useCallback(
     (nftId: string) => {
@@ -70,38 +99,53 @@ const NFTsPage = () => {
   const totalItems = data?.totalItems || 0
   const totalPages = data?.totalPages || 0
 
+  const tokensWithoutPrice = useMemo(() => {
+    return data?.items.filter(
+      (nft) => nft.getTokenFloorPriceUSD() === undefined,
+    ).length
+  }, [data?.items])
+
   return (
     <>
       <div className="p-[20px] md:p-[30px] border-gray-200 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
-        <div className="flex flex-col md:mr-[60px]">
+        <div className="flex flex-col flex-1 md:mr-[60px]">
           <p className="mb-[16px] text-sm font-bold text-gray-400">
             NFT balance
           </p>
           <Balance
             id={"totalBalance"}
+            isLoading={nftTotalPriceLoading}
             className="text-[26px]"
-            usdBalance={{
-              value: "100",
-              dayChange: "12",
-              dayChangePercent: "2",
-              dayChangePositive: true,
-            }}
+            usdBalance={nftTotalPrice}
           />
         </div>
-        <div className="flex mt-[20px] md:my-[0]">
+        <div className="flex mt-[20px] flex-1 md:my-[0]">
           <div className="flex flex-col mr-[60px]">
             <p className="mb-[10px] text-sm font-bold text-gray-400">
               NFTs owned
             </p>
-            <p className="mb-0 text-[26px] font-bold">2</p>
+            <p className="mb-0 text-[26px] font-bold">
+              {data === undefined ? (
+                <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
+              ) : (
+                data.totalItems
+              )}
+            </p>
           </div>
           <div className="flex flex-col">
             <p className="mb-[10px] text-sm font-bold text-gray-400">
               NFTs w/o price
             </p>
-            <p className="mb-0 text-[26px] font-bold">1</p>
+            <p className="mb-0 text-[26px] font-bold">
+              {tokensWithoutPrice === undefined ? (
+                <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
+              ) : (
+                tokensWithoutPrice
+              )}
+            </p>
           </div>
         </div>
+        <div className="flex-1"></div>
       </div>
       <ProfileContainer>
         <NFTs

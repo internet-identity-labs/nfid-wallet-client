@@ -550,61 +550,61 @@ e2e-mobile-tests:
           name: ReportUrlDesktop
           path: "report_url_desktop.txt"
 
-    allure-report-mobile:
-      name: Allure Report Mobile
-      needs: e2e-mobile-tests
-      if: ${{ ! cancelled() }}
-      runs-on: ubuntu-latest
-      env:
-        TARGET_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/mobile/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
-        NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
-        NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
+  allure-report-mobile:
+    name: Allure Report Mobile
+    needs: e2e-mobile-tests
+    if: ${{ ! cancelled() }}
+    runs-on: ubuntu-latest
+    env:
+      TARGET_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/mobile/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
+      NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
+      NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
 
-      steps:
-        - name: Download report history from S3
-          uses: keithweaver/aws-s3-github-action@v1.0.0
-          with:
-            command: cp
-            source: s3://nfid-wallet-client-e2e-report/mobile/last-history
-            destination: gh-pages/last-history
-            aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
-            aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
-            aws_region: us-east-1
-            flags: --recursive
+    steps:
+      - name: Download report history from S3
+        uses: keithweaver/aws-s3-github-action@v1.0.0
+        with:
+          command: cp
+          source: s3://nfid-wallet-client-e2e-report/mobile/last-history
+          destination: gh-pages/last-history
+          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          flags: --recursive
 
-        - name: Load test results
-          uses: actions/download-artifact@v4
-          with:
-            name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
-            path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
+      - name: Load test results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+          path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
 
-        - name: Preparing the report
-          uses: simple-elf/allure-report-action@master
-          id: allure-report
-          with:
-            allure_results: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
-            gh_pages: gh-pages
-            allure_report: apps/nfid-frontend-e2e/src/reporter/mobile/allure-report
-            allure_history: apps/nfid-frontend-e2e/src/reporter/mobile/allure-history
-            github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+      - name: Preparing the report
+        uses: simple-elf/allure-report-action@master
+        id: allure-report
+        with:
+          allure_results: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
+          gh_pages: gh-pages
+          allure_report: apps/nfid-frontend-e2e/src/reporter/mobile/allure-report
+          allure_history: apps/nfid-frontend-e2e/src/reporter/mobile/allure-history
+          github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
-        - name: Upload report to S3
-          uses: keithweaver/aws-s3-github-action@v1.0.0
-          with:
-            command: cp
-            source: apps/nfid-frontend-e2e/src/reporter/mobile/allure-history
-            destination: s3://nfid-wallet-client-e2e-report/mobile
-            aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
-            aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
-            aws_region: us-east-1
-            flags: --recursive
+      - name: Upload report to S3
+        uses: keithweaver/aws-s3-github-action@v1.0.0
+        with:
+          command: cp
+          source: apps/nfid-frontend-e2e/src/reporter/mobile/allure-history
+          destination: s3://nfid-wallet-client-e2e-report/mobile
+          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          flags: --recursive
 
-        - name: Upload report_url.txt
-          run: echo "$TARGET_URL" > "report_url_mobile.txt"
+      - name: Upload report_url.txt
+        run: echo "$TARGET_URL" > "report_url_mobile.txt"
 
-        - name: Upload report_url.txt artifact
-          uses: actions/upload-artifact@v4
-          with:
-            retention-days: 1
-            name: ReportUrlMobile
-            path: "report_url_mobile.txt"
+      - name: Upload report_url.txt artifact
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: ReportUrlMobile
+          path: "report_url_mobile.txt"

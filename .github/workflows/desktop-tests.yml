@@ -374,122 +374,122 @@ jobs:
           name: dist
           path: dist
 
-e2e-mobile-tests:
-  name: E2E Mobile Tests
-  needs: docker-for-e2e
-  runs-on: ubuntu-latest
-  permissions:
-    packages: write
-    contents: read
-  env:
-    IMAGE_NAME: nfid-test
-  concurrency:
-    group: nfid-wallet-client-tests-e2e-mobile-${{ contains( github.ref_name, 'main' ) }}-${{ contains( github.event_name, 'push' ) || github.ref_name }}
-    cancel-in-progress: ${{ contains( github.event_name, 'pull_request' ) }}
+  e2e-mobile-tests:
+    name: E2E Mobile Tests
+    needs: docker-for-e2e
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    env:
+      IMAGE_NAME: nfid-test
+    concurrency:
+      group: nfid-wallet-client-tests-e2e-mobile-${{ contains( github.ref_name, 'main' ) }}-${{ contains( github.event_name, 'push' ) || github.ref_name }}
+      cancel-in-progress: ${{ contains( github.event_name, 'pull_request' ) }}
 
-  steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Checkout CI repo
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PAT }}
-        repository: internet-identity-labs/ci_libs
-        ref: main
-        path: ci_libs
+      - name: Checkout CI repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
 
-    - name: Log in to registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
-    - name: Pull Image and preparing Env Vars
-      id: pull_image
-      run: |
-        source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+      - name: Pull Image and preparing Env Vars
+        id: pull_image
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
-        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
-        IMAGE_ID=$(echo ${IMAGE_ID} | tr '[A-Z]' '[a-z]')
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}
+          IMAGE_ID=$(echo ${IMAGE_ID} | tr '[A-Z]' '[a-z]')
 
-        if [ -z "${{ github.head_ref }}" ]; then
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-        else
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\([0-9]\+\)/\(.*\),\1-\2,')
-        fi
+          if [ -z "${{ github.head_ref }}" ]; then
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          else
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\([0-9]\+\)/\(.*\),\1-\2,')
+          fi
 
-        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
-        [ "${VERSION}" == "main" ] && VERSION=latest
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
+          [ "${VERSION}" == "main" ] && VERSION=latest
 
-        TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
-        if [ "${{ github.ref_name }}" == 'main' ]; then
-          TEST_ADD_PARAMS=""
-        fi
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
+          if [ "${{ github.ref_name }}" == 'main' ]; then
+            TEST_ADD_PARAMS=""
+          fi
 
-        echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
-        echo "VERSION=${VERSION}" >> $GITHUB_ENV
-        echo "CI_DEBUG=${CI_DEBUG}" >> $GITHUB_ENV
-        echo "TEST_ADD_PARAMS=${TEST_ADD_PARAMS}" >> $GITHUB_ENV
+          echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "CI_DEBUG=${CI_DEBUG}" >> $GITHUB_ENV
+          echo "TEST_ADD_PARAMS=${TEST_ADD_PARAMS}" >> $GITHUB_ENV
 
-    - name: Cache Node Modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-          **/.eslintcache
-        key: test-nfid-fe-mobile
+      - name: Cache Node Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+          key: test-nfid-fe-mobile
 
-    - name: Run mobile tests
-      run: |
-        source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+      - name: Run mobile tests
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
 
-        ci_echo_info "Cleaning Allure folders" >&2
-        rm -rf apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
-        rm -rf apps/nfid-frontend-e2e/src/reporter/mobile/allure-report
-        mkdir -p apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
-        mkdir -p apps/nfid-frontend-e2e/src/reporter/mobile/allure-report
+          ci_echo_info "Cleaning Allure folders" >&2
+          rm -rf apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
+          rm -rf apps/nfid-frontend-e2e/src/reporter/mobile/allure-report
+          mkdir -p apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
+          mkdir -p apps/nfid-frontend-e2e/src/reporter/mobile/allure-report
 
-        ci_echo_debug "Preparing .npmrc" >&2
-        sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
+          ci_echo_debug "Preparing .npmrc" >&2
+          sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
 
-        mv .npmrc npmrc_file
+          mv .npmrc npmrc_file
 
-        cat > docker_env << EOF
-          IS_DEV=true
-          IS_E2E_TEST=true
-          USERGEEK_API_KEY=${USERGEEK_API_KEY}
-          GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
-          LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
-        EOF
+          cat > docker_env << EOF
+            IS_DEV=true
+            IS_E2E_TEST=true
+            USERGEEK_API_KEY=${USERGEEK_API_KEY}
+            GH_NPM_REGISTRY=${GH_NPM_REGISTRY}
+            LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
+          EOF
 
-        docker run --rm \
-          -v $(pwd):/home/user/workdir \
-          -v $(pwd)/npmrc_file:/home/user/.npmrc \
-          --env-file $(pwd)/docker_env \
-          -e CI_DEBUG="${CI_DEBUG}" \
-          ${IMAGE_ID}:${VERSION} \
-          npx wdio run wdio-mobile.conf.ts "${TEST_ADD_PARAMS}"
-      env:
-        IS_DEV: true
-        IS_E2E_TEST: true
-        USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-        GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-        LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+          docker run --rm \
+            -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
+            --env-file $(pwd)/docker_env \
+            -e CI_DEBUG="${CI_DEBUG}" \
+            ${IMAGE_ID}:${VERSION} \
+            npx wdio run wdio-mobile.conf.ts "${TEST_ADD_PARAMS}"
+        env:
+          IS_DEV: true
+          IS_E2E_TEST: true
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
-    - name: Save test results
-      if: ${{ ! cancelled() }}
-      uses: actions/upload-artifact@v4
-      with:
-        retention-days: 1
-        path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
-        name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+      - name: Save test results
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
+          name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      if: ${{ ! cancelled() }}
-      with:
-        retention-days: 1
-        include-hidden-files: true
-        name: dist-mobile
-        path: dist
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ ! cancelled() }}
+        with:
+          retention-days: 1
+          include-hidden-files: true
+          name: dist-mobile
+          path: dist
 
   allure-report-desktop:
     name: Allure Report Desktop

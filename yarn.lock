@@ -1487,13 +1487,6 @@
   dependencies:
     "@cucumber/messages" "^19.1.4"
 
-"@cucumber/gherkin@^27.0.0":
-  version "27.0.0"
-  resolved "https://registry.npmjs.org/@cucumber/gherkin/-/gherkin-27.0.0.tgz"
-  integrity sha512-j5rCsjqzRiC3iVTier3sa0kzyNbkcAmF7xr7jKnyO7qDeK3Z8Ye1P3KSVpeQRMY+KCDJ3WbTDdyxH0FwfA/fIw==
-  dependencies:
-    "@cucumber/messages" ">=19.1.4 <=22"
-
 "@cucumber/html-formatter@20.4.0":
   version "20.4.0"
   resolved "https://registry.npmjs.org/@cucumber/html-formatter/-/html-formatter-20.4.0.tgz"
@@ -6110,7 +6103,7 @@
     split2 "^4.1.0"
     stream-buffers "^3.0.2"
 
-"@wdio/logger@8.38.0", "@wdio/logger@^8.11.0", "@wdio/logger@^8.28.0", "@wdio/logger@^8.38.0":
+"@wdio/logger@8.38.0", "@wdio/logger@^8.28.0", "@wdio/logger@^8.38.0":
   version "8.38.0"
   resolved "https://registry.npmjs.org/@wdio/logger/-/logger-8.38.0.tgz"
   integrity sha512-kcHL86RmNbcQP+Gq/vQUGlArfU6IIcbbnNp32rRIraitomZow+iEoc519rdQmSVusDozMS5DZthkgDdxK+vz6Q==
@@ -6154,7 +6147,7 @@
   dependencies:
     "@types/node" "^20.1.0"
 
-"@wdio/reporter@8.40.6", "@wdio/reporter@^8.15.10", "@wdio/reporter@^8.39.0":
+"@wdio/reporter@8.40.6":
   version "8.40.6"
   resolved "https://registry.npmjs.org/@wdio/reporter/-/reporter-8.40.6.tgz"
   integrity sha512-DkmnwWLyz/CTkWQP9MWKYT5LDLKQxC1fIXZf6pZ1pKIhrxP39f5Rhhu6s+Ma3PhPbhyW/dqK3+nrtd+eD5nQOQ==
@@ -11246,15 +11239,6 @@ fs-extra@^10.0.0:
     jsonfile "^6.0.1"
     universalify "^2.0.0"
 
-fs-extra@^11.1.1:
-  version "11.2.0"
-  resolved "https://registry.npmjs.org/fs-extra/-/fs-extra-11.2.0.tgz"
-  integrity sha512-PmDi3uwK5nFuXh7XDTlVnS17xJS7vW36is2+w3xcv8SVxiB4NyATf4ctkVY5bkSjX0Y4nbvZCq1/EjtEyr9ktw==
-  dependencies:
-    graceful-fs "^4.2.0"
-    jsonfile "^6.0.1"
-    universalify "^2.0.0"
-
 fs-extra@^8.1.0:
   version "8.1.0"
   resolved "https://registry.npmjs.org/fs-extra/-/fs-extra-8.1.0.tgz"
@@ -13079,7 +13063,7 @@ jest-leak-detector@^29.7.0:
     jest-get-type "^29.6.3"
     pretty-format "^29.7.0"
 
-jest-matcher-utils@^27.3.1, jest-matcher-utils@^27.5.1:
+jest-matcher-utils@^27.5.1:
   version "27.5.1"
   resolved "https://registry.npmjs.org/jest-matcher-utils/-/jest-matcher-utils-27.5.1.tgz"
   integrity sha512-z2uTx/T6LBaCoNWNFWwChLBKYxTMcGBRjAt+2SbP929/Fflb9aa5LGma654Rz8z9HLxsrUaYzxE9T/EFIL/PAw==
@@ -20007,25 +19991,6 @@ wcwidth@^1.0.0, wcwidth@^1.0.1:
   integrity sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==
   dependencies:
     defaults "^1.0.3"
-
-wdio-cucumberjs-json-reporter@5.2.1:
-  version "5.2.1"
-  resolved "https://registry.npmjs.org/wdio-cucumberjs-json-reporter/-/wdio-cucumberjs-json-reporter-5.2.1.tgz"
-  integrity sha512-6BMuhcAzGW6nVRS40xfukljlNn3j5U3M9eW62QoPi4+kCx0HnI9rGYovwAleDamJqO8n8IS8WIz8fvy6uibJ6A==
-  dependencies:
-    "@cucumber/gherkin" "^27.0.0"
-    "@wdio/logger" "^8.11.0"
-    "@wdio/reporter" "^8.15.10"
-    fs-extra "^11.1.1"
-    strip-ansi "^7.1.0"
-
-wdio-json-reporter@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/wdio-json-reporter/-/wdio-json-reporter-4.0.1.tgz"
-  integrity sha512-giBAf7Ql/t1o9WTATDb1fGjBuaEuX55eoLv9TH3nl9ruGnu/gcKdBGg6+7VZE+34rBDJshJ7yCTthQzMT98wvA==
-  dependencies:
-    "@wdio/reporter" "^8.39.0"
-    jest-matcher-utils "^27.3.1"
 
 wdio-video-reporter@^6.1.1:
   version "6.1.1"

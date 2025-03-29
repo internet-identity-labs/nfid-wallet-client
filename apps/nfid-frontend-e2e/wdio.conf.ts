@@ -57,6 +57,7 @@ export const config: WebdriverIO.Config = {
     require: [
       "./src/steps/**/*.ts",
       "./src/helpers/hooks.ts",
+      "./src/helpers/parameterTypes.ts",
     ],
     // <boolean> show full backtrace for errors
     backtrace: true,

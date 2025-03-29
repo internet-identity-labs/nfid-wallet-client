@@ -22,7 +22,7 @@ Then(
   ) => {
     const tx = await Activity.getTransaction(
       action,
-      currency,
+      currency.replace(/^\$/, ""),
       type,
       amount,
       timestamp,

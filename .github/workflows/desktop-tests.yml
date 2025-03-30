@@ -464,11 +464,11 @@ jobs:
             -v $(pwd):/home/user/workdir \
             -v $(pwd)/npmrc_file:/home/user/.npmrc \
             --env-file $(pwd)/docker_env \
-            -e CI_DEBUG="${CI_DEBUG}" \
-            -e TEST_TARGET="mobile" \
-            -e TEST_ARGS="${TEST_ADD_PARAMS}" \
+            -e CI_DEBUG="true" \
+            -e IS_HEADLESS="true" \
+            -w /home/user/workdir \
             ${IMAGE_ID}:${VERSION} \
-            /usr/bin/docker-entrypoint.sh
+            bash -c "yarn install --frozen-lockfile && npx env-cmd -f .env.test yarn test:mobile-e2e"
 
         env:
           IS_DEV: true

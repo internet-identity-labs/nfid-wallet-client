@@ -460,14 +460,14 @@ jobs:
             LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
           EOF
 
-#          docker run --rm \
-#            -v $(pwd):/home/user/workdir \
-#            -v $(pwd)/npmrc_file:/home/user/.npmrc \
-#            --env-file $(pwd)/docker_env \
-#            -e CI_DEBUG="${CI_DEBUG}" \
-#            -e TEST_TARGET="mobile" \
-#            ${IMAGE_ID}:${VERSION} \
-#            $TEST_ADD_PARAMS
+          docker run --rm \
+            -v $(pwd):/home/user/workdir \
+            -v $(pwd)/npmrc_file:/home/user/.npmrc \
+            --env-file $(pwd)/docker_env \
+            -e CI_DEBUG="${CI_DEBUG}" \
+            -e TEST_TARGET="mobile" \
+            ${IMAGE_ID}:${VERSION} \
+            $TEST_ADD_PARAMS
 
         env:
           IS_DEV: true

@@ -467,7 +467,8 @@ jobs:
             -e CI_DEBUG="${CI_DEBUG}" \
             -e TEST_TARGET="mobile" \
             -e TEST_ARGS="${TEST_ADD_PARAMS}" \
-            ${IMAGE_ID}:${VERSION}
+            ${IMAGE_ID}:${VERSION} \
+            /usr/bin/docker-entrypoint.sh
 
         env:
           IS_DEV: true

@@ -466,8 +466,8 @@ jobs:
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG="${CI_DEBUG}" \
             -e TEST_TARGET="mobile" \
-            ${IMAGE_ID}:${VERSION} \
-            $TEST_ADD_PARAMS
+            -e TEST_ARGS="${TEST_ADD_PARAMS}" \
+            ${IMAGE_ID}:${VERSION}
 
         env:
           IS_DEV: true

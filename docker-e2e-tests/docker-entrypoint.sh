@@ -56,7 +56,8 @@ ci_echo_info "Preparing and Running tests ..." >&2
 ci_echo_debug "npx nx clean nfid-frontend-e2e" >&2
 npx nx clean nfid-frontend-e2e
 
-if [[ "$@" == *"--target=mobile"* ]]; then
+if [[ "$1" == "mobile" ]]; then
+  shift
   TEST_COMMAND="nx test:e2e:mobile nfid-frontend-e2e"
 else
   TEST_COMMAND="nx test:e2e nfid-frontend-e2e"

@@ -474,12 +474,6 @@ jobs:
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
 
-      - name: "Debug: Check allure results exist"
-        run: |
-          echo "Looking for: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results"
-          ls -la apps/nfid-frontend-e2e/src/reporter/mobile/allure-results || echo "No allure results found"
-
-
       - name: Save test results
         if: ${{ ! cancelled() }}
         uses: actions/upload-artifact@v4

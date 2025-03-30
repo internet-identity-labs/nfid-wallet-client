@@ -56,9 +56,6 @@ ci_echo_info "Preparing and Running tests ..." >&2
 ci_echo_debug "npx nx clean nfid-frontend-e2e" >&2
 npx nx clean nfid-frontend-e2e
 
-echo "DEBUG: TEST_TARGET=$TEST_TARGET"
-echo "DEBUG: ARGS=$@"
-
 if [[ "$TEST_TARGET" == "mobile" ]]; then
   IS_HEADLESS='true' npx env-cmd -f .env.test yarn test:mobile-e2e -- "$@" || exit_code=$?
 else

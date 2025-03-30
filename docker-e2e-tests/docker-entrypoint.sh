@@ -56,8 +56,14 @@ ci_echo_info "Preparing and Running tests ..." >&2
 ci_echo_debug "npx nx clean nfid-frontend-e2e" >&2
 npx nx clean nfid-frontend-e2e
 
-ci_echo_debug "IS_HEADLESS='true' npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e $@" >&2
-IS_HEADLESS='true' npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e $@ || exit_code=$?
+if [[ "$@" == *"--target=mobile"* ]]; then
+  TEST_COMMAND="nx test:e2e:mobile nfid-frontend-e2e"
+else
+  TEST_COMMAND="nx test:e2e nfid-frontend-e2e"
+fi
+
+ci_echo_debug "IS_HEADLESS='true' npx env-cmd -f .env.test $TEST_COMMAND $@" >&2
+IS_HEADLESS='true' npx env-cmd -f .env.test $TEST_COMMAND $@ || exit_code=$?
 
 if [ "${exit_code}" -eq 0 ]; then
     status='success'

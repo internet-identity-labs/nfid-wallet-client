@@ -466,7 +466,8 @@ jobs:
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG="${CI_DEBUG}" \
             ${IMAGE_ID}:${VERSION} \
-            npx wdio run wdio-mobile.conf.ts "${TEST_ADD_PARAMS}"
+            npx wdio run wdio-mobile.conf.ts ${TEST_ADD_PARAMS}
+
         env:
           IS_DEV: true
           IS_E2E_TEST: true

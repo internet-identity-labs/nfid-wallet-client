@@ -9,18 +9,12 @@ export const config = Object.assign({}, desktopConfig, {
       "allure",
       {
         outputDir: "src/reporter/mobile/allure-results",
-        disableWebdriverStepsReporting: true,
-        disableWebdriverScreenshotsReporting: true,
-        useCucumberStepReporter: true,
-        addConsoleLogs: true,
       },
     ],
     [
       "video",
       {
         outputDir: "src/reporter/mobile/video",
-        saveAllVideos: true,
-        videoSlowdownMultiplier: 3,
       },
     ],
   ],

@@ -57,13 +57,10 @@ ci_echo_debug "npx nx clean nfid-frontend-e2e" >&2
 npx nx clean nfid-frontend-e2e
 
 if [[ "$TEST_TARGET" == "mobile" ]]; then
-  npx env-cmd -f .env.test nx test:e2e:mobile nfid-frontend-e2e "$@" || exit_code=$?
+  IS_HEADLESS='true' npx env-cmd -f .env.test nx run nfid-frontend-e2e:test:mobile-e2e "$@" || exit_code=$?
 else
-  npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e "$@" || exit_code=$?
+  IS_HEADLESS='true' npx env-cmd -f .env.test nx run nfid-frontend-e2e:test:e2e "$@" || exit_code=$?
 fi
-
-ci_echo_debug "IS_HEADLESS='true' npx env-cmd -f .env.test $TEST_COMMAND $@" >&2
-IS_HEADLESS='true' npx env-cmd -f .env.test $TEST_COMMAND $@ || exit_code=$?
 
 if [ "${exit_code}" -eq 0 ]; then
     status='success'

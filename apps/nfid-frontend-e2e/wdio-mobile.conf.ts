@@ -8,13 +8,14 @@ export const config = Object.assign({}, desktopConfig, {
     [
       "allure",
       {
-        outputDir: "src/reporter/mobile/allure-results",
+        outputDir: "apps/nfid-frontend-e2e/src/reporter/mobile/allure-results"
+        ,
       },
     ],
     [
       "video",
       {
-        outputDir: "src/reporter/mobile/video",
+        outputDir: "apps/nfid-frontend-e2e/src/reporter/mobile/video",
       },
     ],
   ],

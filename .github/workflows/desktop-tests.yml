@@ -419,7 +419,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
           [ "${VERSION}" == "main" ] && VERSION=latest
 
-          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending'"
           if [ "${{ github.ref_name }}" == 'main' ]; then
             TEST_ADD_PARAMS=""
           fi
@@ -473,6 +473,13 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+
+      - name:
+          Debug: Check allure results exist
+        run: |
+          echo "Looking for: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results"
+          ls -la apps/nfid-frontend-e2e/src/reporter/mobile/allure-results || echo "No allure results found"
+
 
       - name: Save test results
         if: ${{ ! cancelled() }}

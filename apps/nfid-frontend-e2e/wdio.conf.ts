@@ -36,7 +36,7 @@ export const config: WebdriverIO.Config = {
     [
       "allure",
       {
-        outputDir: "src/reporter/desktop/allure-results",
+        outputDir: "apps/nfid-frontend-e2e/src/reporter/desktop/allure-results",
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: true,
         useCucumberStepReporter: true,
@@ -48,7 +48,7 @@ export const config: WebdriverIO.Config = {
       {
         saveAllVideos: true,
         videoSlowdownMultiplier: 3,
-        outputDir: "src/reporter/desktop/video",
+        outputDir: "apps/nfid-frontend-e2e/src/reporter/desktop/video",
       },
     ],
   ],

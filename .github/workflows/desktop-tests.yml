@@ -466,7 +466,7 @@ jobs:
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG="true" \
             -e IS_HEADLESS="true" \
-            -w /home/user/workdir \
+            -w /home/user/workdir/apps/nfid-frontend-e2e \
             ${IMAGE_ID}:${VERSION} \
             bash -c "yarn install --frozen-lockfile && npx env-cmd -f .env.test yarn test:mobile-e2e"
 

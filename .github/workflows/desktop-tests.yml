@@ -467,7 +467,7 @@ jobs:
             -e CI_DEBUG="${CI_DEBUG}" \
             -e TEST_TARGET="mobile" \
             ${IMAGE_ID}:${VERSION} \
-            mobile "${TEST_ADD_PARAMS}"
+            "${TEST_ADD_PARAMS}"
 
         env:
           IS_DEV: true

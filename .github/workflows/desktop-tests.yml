@@ -468,9 +468,7 @@ jobs:
             -e IS_HEADLESS="true" \
             -w /home/user/workdir/apps/nfid-frontend-e2e \
             ${IMAGE_ID}:${VERSION} \
-            bash \
-            -c \
-            "yarn install --frozen-lockfile && npx env-cmd -f .env.test wdio run wdio-mobile.conf.ts"
+            bash -c "yarn install --frozen-lockfile && npx env-cmd -f .env.test wdio run wdio-mobile.conf.ts"
 
         env:
           IS_DEV: true

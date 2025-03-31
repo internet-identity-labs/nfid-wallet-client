@@ -460,15 +460,12 @@ jobs:
             LAMBDA_IDENTITY=${LAMBDA_IDENTITY}
           EOF
 
-          docker run --rm \
+          docker run --rm it \
             -v $(pwd):/home/user/workdir \
-            -v $(pwd)/npmrc_file:/home/user/.npmrc \
-            --env-file $(pwd)/docker_env \
-            -e CI_DEBUG="true" \
-            -e IS_HEADLESS="true" \
-            -w /home/user/workdir/apps/nfid-frontend-e2e \
-            ${IMAGE_ID}:${VERSION} \
-            bash -c "yarn install --frozen-lockfile && npx env-cmd -f .env.test wdio run wdio-mobile.conf.ts"
+            -v npmrc_file:/home/user/.npmrc \
+            --env-file docker_env \
+            -e CI_DEBUG=true \
+            test:mobile-e2e
 
         env:
           IS_DEV: true

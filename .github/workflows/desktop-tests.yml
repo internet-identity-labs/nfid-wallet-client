@@ -467,7 +467,8 @@ jobs:
             -e CI_DEBUG="${CI_DEBUG}" \
             -w /home/user/workdir/apps/nfid-frontend-e2e \
             ${IMAGE_ID}:${VERSION} \
-            bash -c "yarn install --frozen-lockfile && npx env-cmd -f .env.test yarn test:mobile-e2e"
+            $TEST_TARGET=mobile
+            "${TEST_ADD_PARAMS}"
 
         env:
           IS_DEV: true

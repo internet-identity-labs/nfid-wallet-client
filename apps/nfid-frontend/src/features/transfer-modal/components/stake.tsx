@@ -9,7 +9,6 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { getTargets } from "frontend/features/staking/utils"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
@@ -17,6 +16,8 @@ import { FormValues, SendStatus } from "../types"
 import { getIdentity, getTokensWithUpdatedBalance } from "../utils"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
+// TODO: Make months to seconds work properly
+// https://github.com/dfinity/nns-dapp/blob/ef53053366f8174f38a74c62340fa53cf529f9be/frontend/src/lib/constants/constants.ts#L16
 const MONTHS_TO_SECONDS = 30 * 24 * 60 * 60
 
 interface IStakeFT {
@@ -41,6 +42,11 @@ export const StakeFT = ({
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [identity, setIdentity] = useState<SignIdentity>()
 
+  const isMaxLockTimeSelected =
+    lockValue === stakingParams?.getMaximumLockTimeInMonths()
+  const isMinLockTimeSelected =
+    lockValue === stakingParams?.getMinimumLockTimeInMonths()
+
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
@@ -48,7 +54,11 @@ export const StakeFT = ({
   )
 
   const tokensForStake = useMemo(() => {
-    return tokens.filter((token) => token.getTokenCategory() === Category.Sns)
+    return tokens.filter(
+      (token) =>
+        token.getTokenCategory() === Category.Sns ||
+        token.getTokenCategory() === Category.Native,
+    )
   }, [tokens])
 
   const token = useMemo(() => {
@@ -77,7 +87,7 @@ export const StakeFT = ({
       if (!token) return
       const rootCanisterId = token.getRootSnsCanister()
       if (!rootCanisterId) return
-      const canister_ids = await getTargets(rootCanisterId)
+      const canister_ids = await stakingService.getTargets(rootCanisterId)
       if (!canister_ids) return
 
       setIsStakingParamsLoading(true)
@@ -113,8 +123,10 @@ export const StakeFT = ({
         token,
         amount,
         identity,
-        lockValue === stakingParams?.getMaximumLockTimeInMonths()
+        isMaxLockTimeSelected
           ? stakingParams?.getMaximumLockTime()
+          : isMinLockTimeSelected
+          ? stakingParams?.getMinimumLockTime()
           : lockValue! * MONTHS_TO_SECONDS,
       )
       .then(() => {

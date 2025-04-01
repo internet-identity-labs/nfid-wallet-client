@@ -54,13 +54,13 @@ yarn serve -l ${DEMO_PORT} -s dist/apps/nfid-demo >/dev/null 2>&1 &
 
 ci_echo_info "Preparing and Running tests ..." >&2
 ci_echo_debug "npx nx clean nfid-frontend-e2e" >&2
-#npx nx clean nfid-frontend-e2e
+npx nx clean nfid-frontend-e2e
 
-#if [[ "$TEST_TARGET" == "mobile" ]]; then
-#  IS_HEADLESS='true' npx env-cmd -f .env.test yarn test:mobile-e2e || exit_code=$?
-#else
-#  IS_HEADLESS='true' npx env-cmd -f .env.test yarn test:e2e || exit_code=$?
-#fi
+if [[ "$TEST_TARGET" == "mobile" ]]; then
+  IS_HEADLESS='true' npx env-cmd -f .env.test yarn test:mobile-e2e || exit_code=$?
+else
+  IS_HEADLESS='true' npx env-cmd -f .env.test yarn test:e2e || exit_code=$?
+fi
 
 if [ "${exit_code}" -eq 0 ]; then
     status='success'

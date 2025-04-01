@@ -30,8 +30,6 @@ const StakingPage = () => {
     { revalidateOnFocus: false },
   )
 
-  console.log(stakedTokens)
-
   const totalBalances = stakingService.getTotalBalances(stakedTokens)
 
   return (

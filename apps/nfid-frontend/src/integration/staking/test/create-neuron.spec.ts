@@ -21,7 +21,7 @@ const identityJSON: JsonnableEd25519KeyIdentity = [
 
 describe("Staking", () => {
   jest.setTimeout(60000)
-  it.skip("should stake neuron", async () => {
+  it("should stake neuron", async () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
@@ -32,7 +32,6 @@ describe("Staking", () => {
         rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
         certified: false,
       })
-      // console.log("NEURONS", neuronsNFIDW)
       await disburse({
         identity: edId,
         rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
@@ -53,7 +52,7 @@ describe("Staking", () => {
       await stakingService.stake(token!, "5", edId)
       expect(stakingService.stake).toHaveBeenCalledWith(token, "5", edId)
     } catch (e) {
-      console.log("Stake error: ", e)
+      console.error("Stake error: ", e)
     }
 
     let neuronsNFIDW = await querySnsNeurons({
@@ -160,7 +159,7 @@ describe("Staking", () => {
     )
   })
 
-  it.skip("should return staking parameters", async () => {
+  it("should return staking parameters", async () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")

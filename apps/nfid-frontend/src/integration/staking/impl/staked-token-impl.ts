@@ -1,5 +1,8 @@
+import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakedToken } from "src/integration/staking/staked-token"
+
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokenValue } from "frontend/integration/staking/types"
@@ -13,35 +16,92 @@ export class StakedTokenImpl implements StakedToken {
     this.neurons = neurons
   }
 
-  getStaked(): TokenValue {
-    throw new Error("Method not implemented.")
+  getStaked(): bigint {
+    return this.neurons.reduce((sum, neuron) => {
+      return sum + neuron.getInitialStake()
+    }, BigInt(0))
   }
 
-  getRewards(): TokenValue {
-    throw new Error("Method not implemented.")
+  getStakedFormatted(): TokenValue {
+    const totalAmount = BigNumber(this.getStaked().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => totalAmount,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
   }
 
-  getStakingBalance(): TokenValue {
-    throw new Error("Method not implemented.")
+  getRewards(): bigint {
+    return this.neurons.reduce((sum, neuron) => {
+      return sum + neuron.getRewards()
+    }, BigInt(0))
+  }
+
+  getRewardsFormatted(): TokenValue {
+    const totalAmount = BigNumber(this.getRewards().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => totalAmount,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
+  }
+
+  getStakingBalance(): bigint {
+    return this.getRewards() + this.getStaked()
+  }
+
+  getStakingBalanceFormatted(): TokenValue {
+    const totalAmount = BigNumber(this.getStakingBalance().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => totalAmount,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
   }
 
   getToken(): FT {
-    throw new Error("Method not implemented.")
+    return this.token
   }
 
   isDiamond(): boolean {
-    throw new Error("Method not implemented.")
+    return this.neurons.some((neuron) => neuron.isDiamond())
   }
 
   getAvailable(): Array<NFIDNeuron> {
-    throw new Error("Method not implemented.")
+    return this.neurons.filter((neuron) => {
+      const lockTime = neuron.getLockTime()
+
+      return (
+        lockTime !== undefined &&
+        lockTime + neuron.getCreatedAt() <= Math.floor(Date.now() / 1000)
+      )
+    })
   }
 
   getUnlocking(): Array<NFIDNeuron> {
-    throw new Error("Method not implemented.")
+    return this.neurons.filter((neuron) => neuron.getUnlockIn())
   }
 
   getLocked(): Array<NFIDNeuron> {
-    throw new Error("Method not implemented.")
+    return this.neurons.filter((neuron) => {
+      const lockTime = neuron.getLockTime()
+
+      return (
+        lockTime !== undefined &&
+        lockTime + neuron.getCreatedAt() > Math.floor(Date.now() / 1000)
+      )
+    })
   }
 }

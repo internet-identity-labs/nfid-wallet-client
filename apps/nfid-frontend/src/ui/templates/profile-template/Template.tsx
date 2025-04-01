@@ -27,6 +27,7 @@ import {
   ProfileConstants,
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
+import { fetchNFTs } from "frontend/features/collectibles/utils/util"
 import {
   fetchTokens,
   getFullUsdValue,
@@ -144,6 +145,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     { revalidateOnFocus: false },
   )
 
+  const { data: nfts } = useSWR("nftList", () => fetchNFTs(), {
+    revalidateOnFocus: false,
+  })
+
   useEffect(() => {
     reinitTokens()
   }, [activeTokens, reinitTokens])
@@ -153,8 +158,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     isLoading: isUsdLoading,
     mutate: refetchFullUsdBalance,
   } = useSWR(
-    initedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
-    async () => getFullUsdValue(initedTokens),
+    nfts?.items && nfts.items.length > 0 && initedTokens.length > 0 && isWallet
+      ? "fullUsdValue"
+      : null,
+    async () => getFullUsdValue(nfts?.items, initedTokens),
     { revalidateOnFocus: false },
   )
 

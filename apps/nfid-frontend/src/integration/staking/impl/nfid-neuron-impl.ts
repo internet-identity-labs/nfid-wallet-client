@@ -85,13 +85,11 @@ export class NfidNeuronImpl implements NFIDNeuron {
   getLockTime(): number | undefined {
     const dissolveState = this.neuron.dissolve_state[0]
 
-    if (!dissolveState) return 0
+    if (!dissolveState) return
 
     if ("DissolveDelaySeconds" in dissolveState) {
       return Number(dissolveState.DissolveDelaySeconds)
     }
-
-    return
   }
 
   getLockTimeInMonths(): number | undefined {
@@ -100,26 +98,25 @@ export class NfidNeuronImpl implements NFIDNeuron {
     return Math.round(lockTime / SECONDS_PER_MONTH)
   }
 
-  getUnlockIn(): number {
+  getUnlockIn(): number | undefined {
     const dissolveState = this.neuron.dissolve_state[0]
 
-    if (!dissolveState) return 0
+    if (!dissolveState) return
 
     if ("WhenDissolvedTimestampSeconds" in dissolveState) {
       return Number(dissolveState.WhenDissolvedTimestampSeconds)
     }
-
-    return 0
   }
 
-  getUnlockInMonths(): number {
-    return Math.round(
-      this.getUnlockIn() / SECONDS_PER_MONTH / MILISECONDS_PER_SECOND,
-    )
+  getUnlockInMonths(): number | undefined {
+    const unlockTime = this.getUnlockIn()
+    if (unlockTime === undefined) return
+    return Math.round(unlockTime / SECONDS_PER_MONTH / MILISECONDS_PER_SECOND)
   }
 
-  getUnlockInFormatted(): FormattedDate {
+  getUnlockInFormatted(): FormattedDate | undefined {
     const unlocking = this.getUnlockIn()
+    if (unlocking === undefined) return
 
     return {
       getDate: () =>

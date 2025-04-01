@@ -17,4 +17,4 @@ Feature: Send FT flow
     Then Verifying that the transaction is success
     Examples:
       | nfid number | amount1 | amount2 | currency1 | currency2 | account ID                                                       | principal                                                       |
-      | 28567       | 0.0001  | 0.001   | ICP       | BOOM      | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe |
+      | 28567       | 0.0001  | 0.001   | $ICP      | $NFIDW    | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce | vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe |

@@ -1,5 +1,4 @@
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
-import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { FC } from "react"
 
 import { TokenValue } from "frontend/integration/staking/types"

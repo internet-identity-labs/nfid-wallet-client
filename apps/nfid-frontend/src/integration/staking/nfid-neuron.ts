@@ -15,8 +15,8 @@ export interface NFIDNeuron {
   getLockTime(): number | undefined
   getLockTimeInMonths(): number | undefined
   getUnlockIn(): number | undefined
-  getUnlockInMonths(): number
-  getUnlockInFormatted(): FormattedDate
+  getUnlockInMonths(): number | undefined
+  getUnlockInFormatted(): FormattedDate | undefined
   getCreatedAt(): number
   getCreatedAtFormatted(): FormattedDate
   startUnlocking(signIdentity: SignIdentity): Promise<void>

@@ -103,7 +103,6 @@ export const StakeUi: FC<StakeUiProps> = ({
         assetImg={`${token.getTokenLogo()}`}
         isOpen={isSuccessOpen}
         status={status}
-        assetImageClassname="w-[74px] h-[74px] top-[51px]"
         error={error}
       />
       <div

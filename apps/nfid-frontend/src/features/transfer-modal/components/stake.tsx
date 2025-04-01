@@ -34,13 +34,18 @@ export const StakeFT = ({
   setSuccessMessage,
 }: IStakeFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [status] = useState(SendStatus.PENDING)
+  const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [lockValue, setLockValue] = useState<number | undefined>()
   const [stakingParams, setStakingParams] = useState<StakeParamsCalculator>()
   const [isStakingParamsLoading, setIsStakingParamsLoading] = useState(false)
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [identity, setIdentity] = useState<SignIdentity>()
+
+  const isMaxLockTimeSelected =
+    lockValue === stakingParams?.getMaximumLockTimeInMonths()
+  const isMinLockTimeSelected =
+    lockValue === stakingParams?.getMinimumLockTimeInMonths()
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
@@ -49,7 +54,11 @@ export const StakeFT = ({
   )
 
   const tokensForStake = useMemo(() => {
-    return tokens.filter((token) => token.getTokenCategory() === Category.Sns)
+    return tokens.filter(
+      (token) =>
+        token.getTokenCategory() === Category.Sns ||
+        token.getTokenCategory() === Category.Native,
+    )
   }, [tokens])
 
   const token = useMemo(() => {
@@ -114,9 +123,9 @@ export const StakeFT = ({
         token,
         amount,
         identity,
-        lockValue === stakingParams?.getMaximumLockTimeInMonths()
+        isMaxLockTimeSelected
           ? stakingParams?.getMaximumLockTime()
-          : lockValue === stakingParams?.getMaximumLockTimeInMonths()
+          : isMinLockTimeSelected
           ? stakingParams?.getMinimumLockTime()
           : lockValue! * MONTHS_TO_SECONDS,
       )
@@ -124,10 +133,12 @@ export const StakeFT = ({
         setSuccessMessage(
           `Stake ${amount} ${token.getTokenSymbol()} successful`,
         )
+        setStatus(SendStatus.COMPLETED)
       })
       .catch((e) => {
         console.error("Stake error: ", e)
         setError((e as Error).message)
+        setStatus(SendStatus.FAILED)
         setErrorMessage("Something went wrong")
       })
       .finally(() => {

@@ -8,7 +8,6 @@ import { NotFound } from "frontend/ui/pages/404"
 
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
-import { Loader } from "../../atoms/loader"
 import { Skeleton } from "../../atoms/skeleton"
 import { StakingHeaderSkeleton } from "../../atoms/skeleton/staking-header"
 import { TableStakingOptionSkeleton } from "../../atoms/skeleton/table-staking-option"

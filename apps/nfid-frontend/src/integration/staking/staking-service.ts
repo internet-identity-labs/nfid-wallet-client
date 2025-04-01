@@ -1,6 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
 import { FT } from "src/integration/ft/ft"
-import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakedToken } from "src/integration/staking/staked-token"
 
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
@@ -11,6 +10,7 @@ export interface StakingService {
   getStakedTokens(
     userId: string,
     publicKey: string,
+    identity: SignIdentity,
   ): Promise<Array<StakedToken>>
   getTotalBalances(stakedToken: StakedToken[]): TotalBalance | undefined
   getStakeCalculator(
@@ -23,5 +23,7 @@ export interface StakingService {
     amount: string,
     delegation: SignIdentity,
     lockTime?: number,
-  ): Promise<NFIDNeuron>
+  ): Promise<{
+    id: Uint8Array | number[]
+  }>
 }

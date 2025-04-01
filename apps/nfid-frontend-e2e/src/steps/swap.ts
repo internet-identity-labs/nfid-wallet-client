@@ -1,5 +1,4 @@
 import { When } from "@cucumber/cucumber"
-import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
@@ -14,7 +13,14 @@ When(/^Verifying that the swap transaction is success$/, async () => {
 })
 
 When(/^User clicks the Swap tokens button$/, async () => {
-  await Assets.SwapDialog.swapTokensButton.click()
+  if (await Assets.SwapDialog.priceImpactCheckBox.isDisplayed()) {
+    await Assets.SwapDialog.priceImpactCheckBox.click()
+  }
+  await Assets.SwapDialog.swapTokensButton.then(async (it) => {
+    await it.waitForClickable()
+    await it.click()
+  })
+
   await browser.waitUntil(
     async () => {
       return (
@@ -37,10 +43,10 @@ When(
     await Assets.SwapDialog.getSearchTokenInputField(tokenRole).then(
       async (it) => {
         await it.waitForClickable()
-        await it.setValue(token)
+        await it.setValue(token.replace(/^\$/, ""))
       },
     )
-    await Assets.SwapDialog.getTokenByNameFromList(tokenRole, token).then(
+    await Assets.SwapDialog.getTokenByNameFromList(tokenRole, token.replace(/^\$/, "")).then(
       async (it) => {
         await it.waitForDisplayed({ timeout: 70000 })
         await it.click()
@@ -83,7 +89,7 @@ When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
 })
 
 When(
-  /^Verifying the balance of (.*) token and (.*) token has changed correctly$/,
+  "Verifying the balance of {token} token and {token} token has changed correctly",
   async (targetToken: string, sourceToken: string) => {
     let expectedSourceTokenBalance: number
     let expectedTargetTokenBalance: number
@@ -122,7 +128,6 @@ When(
             "",
           ),
         )
-        cucumberJson.attach(await browser.takeScreenshot())
         return (
           expectedSourceTokenBalance - actualSourceTokenBalance < 0.00000001 &&
           expectedTargetTokenBalance - actualTargetTokenBalance < 0.00000001

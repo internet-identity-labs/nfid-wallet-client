@@ -27,6 +27,7 @@ export interface StakingProps {
   }
   navigate: NavigateFunction
   totalBalances?: TotalBalance
+  onStakeClick: () => void
 }
 
 export const Staking: FC<StakingProps> = ({
@@ -35,6 +36,7 @@ export const Staking: FC<StakingProps> = ({
   links,
   navigate,
   totalBalances,
+  onStakeClick,
 }) => {
   return (
     <>
@@ -58,7 +60,7 @@ export const Staking: FC<StakingProps> = ({
               <TableActivitySkeleton tableRowsAmount={3} tableCellAmount={3} />
             ) : stakedTokens.length ? (
               <>
-                <tr id={`stake_1`} className="hidden md:table-row">
+                <tr className="hidden md:table-row">
                   <td
                     className={clsx(
                       "pb-[10px] text-sm font-bold text-gray-400",
@@ -160,7 +162,7 @@ export const Staking: FC<StakingProps> = ({
               </>
             ) : (
               <ProfileContainer
-                className="md:h-[292px] md:flex md:items-center"
+                className="md:h-[292px] md:flex md:items-center !p-0 !border-0"
                 titleClassName="!px-0"
               >
                 <img
@@ -175,7 +177,9 @@ export const Staking: FC<StakingProps> = ({
                   Stake your tokens to collect rewards for participating in
                   governance and helping to decentralize Web3 ecosystems.
                 </p>
-                <Button className="w-full md:w-[120px]">Stake</Button>
+                <Button onClick={onStakeClick} className="w-full md:w-[120px]">
+                  Stake
+                </Button>
               </ProfileContainer>
             )}
           </Table>

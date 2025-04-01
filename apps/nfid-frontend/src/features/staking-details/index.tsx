@@ -26,7 +26,7 @@ const StakingDetailsPage = () => {
     isValidating,
   } = useSWR(
     tokenSymbol ? ["stakedToken", tokenSymbol] : null,
-    () => fetchStakedToken(tokenSymbol!),
+    () => fetchStakedToken(tokenSymbol!, identity!),
     { revalidateOnFocus: false },
   )
 

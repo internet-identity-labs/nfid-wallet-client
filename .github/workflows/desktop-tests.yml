@@ -465,9 +465,8 @@ jobs:
             -v $(pwd)/npmrc_file:/home/user/.npmrc \
             --env-file $(pwd)/docker_env \
             -e CI_DEBUG="${CI_DEBUG}" \
-            -w /home/user/workdir/apps/nfid-frontend-e2e \
+            -e TEST_TARGET="mobile" \
             ${IMAGE_ID}:${VERSION} \
-            $TEST_TARGET=mobile
             "${TEST_ADD_PARAMS}"
 
         env:

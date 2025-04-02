@@ -18,6 +18,7 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
 } from "@nfid/integration/token/constants"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -108,6 +109,20 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           icon={IconSvgStakeAction}
           handler={() => onStakeClick(token.getTokenAddress())}
         />
+        <DropdownOption
+          label="Swap"
+          icon={IconSvgSwapAction}
+          handler={() => onSwapClick(token.getTokenAddress())}
+        />
+        {(token.getTokenCategory() === Category.Sns ||
+          token.getTokenCategory() === Category.Native) && (
+          <DropdownOption
+            label="Stake"
+            icon={IconSvgStakeAction}
+            handler={() => onStakeClick(token.getTokenAddress())}
+          />
+        )}
+
         <DropdownOption
           label="Token information"
           icon={IconSvgTokenInfo}

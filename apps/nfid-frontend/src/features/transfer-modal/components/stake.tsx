@@ -157,6 +157,8 @@ export const StakeFT = ({
     setErrorMessage,
     setSuccessMessage,
     stakingParams,
+    isMaxLockTimeSelected,
+    isMinLockTimeSelected,
   ])
 
   return (

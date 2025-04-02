@@ -126,6 +126,16 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
                   </span>
                 </>
               ))}
+            {(token.getTokenCategory() === Category.Sns ||
+              token.getTokenCategory() === Category.Native) && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span className="flex items-center text-xs cursor-pointer text-primaryButtonColor">
+                  <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+                  Stake
+                </span>
+              </>
+            )}
           </p>
           <p className="text-secondary text-xs leading-[20px]">
             {token.getTokenName()}

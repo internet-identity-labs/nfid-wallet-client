@@ -13,6 +13,7 @@ import {
   IDropdownPosition,
   IconSvgStakeAction,
 } from "@nfid-frontend/ui"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -79,11 +80,15 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           icon={IconSvgSwapAction}
           handler={() => onSwapClick(token.getTokenAddress())}
         />
-        <DropdownOption
-          label="Stake"
-          icon={IconSvgStakeAction}
-          handler={() => onStakeClick(token.getTokenAddress())}
-        />
+        {(token.getTokenCategory() === Category.Sns ||
+          token.getTokenCategory() === Category.Native) && (
+          <DropdownOption
+            label="Stake"
+            icon={IconSvgStakeAction}
+            handler={() => onStakeClick(token.getTokenAddress())}
+          />
+        )}
+
         <DropdownOption
           label="Token information"
           icon={IconSvgTokenInfo}

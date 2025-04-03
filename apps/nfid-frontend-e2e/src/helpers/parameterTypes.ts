@@ -14,7 +14,7 @@ defineParameterType({
 
 defineParameterType({
   name: "list",
-  regexp: /.+/,
+  regexp: /[^,]+(?:\s*,\s*[^,]+)+/,
   transformer: (s: string) => {
     const map: Record<string, string> = {
       "$NFIDW": "NFIDWallet",

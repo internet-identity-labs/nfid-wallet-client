@@ -13,6 +13,7 @@ import {
 
 import { loadSnsWrapper } from "./sns-wrapper.api"
 import { logWithTimestamp } from "./util/dev.utils"
+import type {ListNervousSystemFunctionsResponse} from "@dfinity/sns/dist/candid/sns_governance";
 
 export const querySnsNeurons = async ({
   identity,
@@ -413,6 +414,24 @@ export const setFollowees = async ({
   })
 
   logWithTimestamp(`Setting sns neuron followee call complete.`)
+}
+
+export const listNNSFunctions = async ({
+  rootCanisterId,
+  identity
+}: {
+  rootCanisterId: Principal
+  identity: Identity
+}): Promise<ListNervousSystemFunctionsResponse> => {
+  logWithTimestamp(`Setting sns neuron followee call...`)
+
+  const { listNervousSystemFunctions } = await loadSnsWrapper({
+    identity,
+    rootCanisterId,
+    certified: false,
+  })
+
+  return  await listNervousSystemFunctions({})
 }
 
 export const stakeMaturity = async ({

@@ -20,6 +20,24 @@ export class ICRC1OracleService {
     await iCRC1OracleActor.store_icrc1_canister(request)
   }
 
+  async getAllNeurons(): Promise<Array<{
+    name: string
+    date_added: bigint
+    rootCanister: string
+    neuron_id: string
+  }>> {
+    return await iCRC1OracleActor.get_all_neurons().then((neurons) => {
+      return neurons.map((n) => {
+        return {
+          name: n.name,
+          date_added: n.date_added,
+          rootCanister: n.ledger,
+          neuron_id: n.neuron_id,
+        }
+      })
+    })
+  }
+
   async getICRC1Canisters(): Promise<ICRC1[]> {
     const cache = await storageWithTtl.getEvenExpired(icrc1OracleCacheName)
     if (!cache) {

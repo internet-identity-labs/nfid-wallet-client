@@ -1,6 +1,6 @@
-import type { ActorMethod } from "@dfinity/agent"
-import type { IDL } from "@dfinity/candid"
-import type { Principal } from "@dfinity/principal"
+import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export type Category =
   | { Sns: null }
@@ -34,6 +34,13 @@ export interface ICRC1Request {
   index: [] | [string]
   symbol: string
 }
+
+export interface NeuronData {
+  'name' : string,
+  'date_added' : bigint,
+  'ledger' : string,
+  'neuron_id' : string,
+}
 export interface _SERVICE {
   count_icrc1_canisters: ActorMethod<[], bigint>
   get_all_icrc1_canisters: ActorMethod<[], Array<ICRC1>>
@@ -42,5 +49,6 @@ export interface _SERVICE {
   store_icrc1_canister: ActorMethod<[ICRC1Request], undefined>
   store_new_icrc1_canisters: ActorMethod<[Array<ICRC1>], undefined>
   sync_controllers: ActorMethod<[], Array<string>>
+  get_all_neurons : ActorMethod<[], Array<NeuronData>>,
 }
 export declare const idlFactory: IDL.InterfaceFactory

@@ -34,11 +34,11 @@ export const idlFactory = ({ IDL }: any) => {
   })
 
   const NeuronData = IDL.Record({
-    'name' : IDL.Text,
-    'date_added' : IDL.Nat64,
-    'ledger' : IDL.Text,
-    'neuron_id' : IDL.Text,
-  });
+    name: IDL.Text,
+    date_added: IDL.Nat64,
+    ledger: IDL.Text,
+    neuron_id: IDL.Text,
+  })
   return IDL.Service({
     count_icrc1_canisters: IDL.Func([], [IDL.Nat64], ["query"]),
     get_all_icrc1_canisters: IDL.Func([], [IDL.Vec(ICRC1)], ["query"]),
@@ -47,7 +47,7 @@ export const idlFactory = ({ IDL }: any) => {
       [IDL.Vec(ICRC1)],
       ["query"],
     ),
-    get_all_neurons : IDL.Func([], [IDL.Vec(NeuronData)], ['query']),
+    get_all_neurons: IDL.Func([], [IDL.Vec(NeuronData)], ["query"]),
     replace_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [], []),
     store_icrc1_canister: IDL.Func([ICRC1Request], [], []),
     store_new_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [], []),

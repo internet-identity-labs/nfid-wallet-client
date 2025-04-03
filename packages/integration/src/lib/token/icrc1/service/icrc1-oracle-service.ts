@@ -20,12 +20,14 @@ export class ICRC1OracleService {
     await iCRC1OracleActor.store_icrc1_canister(request)
   }
 
-  async getAllNeurons(): Promise<Array<{
-    name: string
-    date_added: bigint
-    rootCanister: string
-    neuron_id: string
-  }>> {
+  async getAllNeurons(): Promise<
+    Array<{
+      name: string
+      date_added: bigint
+      rootCanister: string
+      neuron_id: string
+    }>
+  > {
     return await iCRC1OracleActor.get_all_neurons().then((neurons) => {
       return neurons.map((n) => {
         return {

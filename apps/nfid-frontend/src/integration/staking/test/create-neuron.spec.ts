@@ -2,12 +2,15 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"
 import { ftService } from "src/integration/ft/ft-service"
-import {bytesToHexString, stakingService} from "src/integration/staking/service/staking-service-impl"
+import {
+  bytesToHexString,
+  stakingService,
+} from "src/integration/staking/service/staking-service-impl"
 
 import { disburse, querySnsNeurons } from "@nfid/integration"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
-import {mockFt, mock2} from "./mock"
+import { mockFt, mock2 } from "./mock"
 
 const NFIDW_ROOT_CANISTER = "m2blf-zqaaa-aaaaq-aaejq-cai"
 
@@ -34,13 +37,13 @@ describe("Staking", () => {
         certified: false,
       })
       let a = neuronsNFIDW.find(
-        (n) => n.cached_neuron_stake_e8s === BigInt(500000000)
+        (n) => n.cached_neuron_stake_e8s === BigInt(500000000),
       )
-        await disburse({
-          identity: edId,
-          rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
-          neuronId: a!.id[0]!
-        })
+      await disburse({
+        identity: edId,
+        rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
+        neuronId: a!.id[0]!,
+      })
     } catch (e: any) {
       console.log(e.message)
     }
@@ -57,7 +60,7 @@ describe("Staking", () => {
       certified: false,
     })
     let actual = neuronsNFIDW.find(
-      (n) => bytesToHexString(n!.id[0]!.id) === bytesToHexString(staked.id)
+      (n) => bytesToHexString(n!.id[0]!.id) === bytesToHexString(staked.id),
     )
     expect(actual?.followees.length).toBeGreaterThan(0)
   })

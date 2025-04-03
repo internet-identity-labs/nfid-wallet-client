@@ -1,14 +1,15 @@
-import {SignIdentity} from "@dfinity/agent"
-import {Principal} from "@dfinity/principal"
-import {SnsNeuronId, SnsRootCanister} from "@dfinity/sns"
-import {Neuron} from "@dfinity/sns/dist/candid/sns_governance"
-import {BigNumber} from "bignumber.js"
-import {Cache} from "node-ts-cache"
-import {integrationCache} from "packages/integration/src/cache"
-import {ftService} from "src/integration/ft/ft-service"
-import {NfidNeuronImpl} from "src/integration/staking/impl/nfid-neuron-impl"
-import {StakedTokenImpl} from "src/integration/staking/impl/staked-token-impl"
-import {StakingService} from "src/integration/staking/staking-service"
+import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+import { SnsNeuronId, SnsRootCanister } from "@dfinity/sns"
+import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
+import { hexStringToUint8Array } from "@dfinity/utils"
+import { BigNumber } from "bignumber.js"
+import { Cache } from "node-ts-cache"
+import { integrationCache } from "packages/integration/src/cache"
+import { ftService } from "src/integration/ft/ft-service"
+import { NfidNeuronImpl } from "src/integration/staking/impl/nfid-neuron-impl"
+import { StakedTokenImpl } from "src/integration/staking/impl/staked-token-impl"
+import { StakingService } from "src/integration/staking/staking-service"
 
 import {
   autoStakeMaturity,
@@ -20,16 +21,15 @@ import {
   setFollowees,
   stakeNeuron,
 } from "@nfid/integration"
-import {Category} from "@nfid/integration/token/icrc1/enum/enums"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
-import {FT} from "frontend/integration/ft/ft"
-import {StakeParamsCalculator} from "frontend/integration/staking/stake-params-calculator"
+import { FT } from "frontend/integration/ft/ft"
+import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
-import {StakeParamsCalculatorImpl} from "../calculator/stake-params-calculator-impl"
-import {StakedToken} from "../staked-token"
-import {TotalBalance} from "../types"
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
-import {hexStringToUint8Array} from "@dfinity/utils";
+import { StakeParamsCalculatorImpl } from "../calculator/stake-params-calculator-impl"
+import { StakedToken } from "../staked-token"
+import { TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
   @Cache(integrationCache, { ttl: 300, calculateKey: () => "getStakedTokens" })
@@ -187,10 +187,13 @@ export class StakingServiceImpl implements StakingService {
         }) as any)
   }
 
-  async followNeurons(delegation: SignIdentity, root: Principal, rootNeuron: SnsNeuronId) {
-    let neuronsToFollow = await icrc1OracleService
-      .getAllNeurons()
-    neuronsToFollow.filter((n) => n.rootCanister === root.toText());
+  async followNeurons(
+    delegation: SignIdentity,
+    root: Principal,
+    rootNeuron: SnsNeuronId,
+  ) {
+    let neuronsToFollow = await icrc1OracleService.getAllNeurons()
+    neuronsToFollow.filter((n) => n.rootCanister === root.toText())
     const response = await listNNSFunctions({
       identity: delegation,
       rootCanisterId: root,
@@ -199,16 +202,16 @@ export class StakingServiceImpl implements StakingService {
     if (neuronsToFollow.length > 0) {
       for (const neuron of neuronsToFollow) {
         console.log(neuron)
-        let neurnonId : SnsNeuronId = {
-          id: hexStringToUint8Array(neuron.neuron_id)
+        let neurnonId: SnsNeuronId = {
+          id: hexStringToUint8Array(neuron.neuron_id),
         }
         for (const f of response.functions) {
-         setFollowees({
+          setFollowees({
             identity: delegation,
             functionId: f.id,
             rootCanisterId: root,
             neuronId: rootNeuron,
-            followees: [ neurnonId ],
+            followees: [neurnonId],
           })
         }
       }

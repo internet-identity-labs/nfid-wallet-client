@@ -10,6 +10,7 @@ import {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns"
+import type { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
 
 import { loadSnsWrapper } from "./sns-wrapper.api"
 import { logWithTimestamp } from "./util/dev.utils"
@@ -413,6 +414,24 @@ export const setFollowees = async ({
   })
 
   logWithTimestamp(`Setting sns neuron followee call complete.`)
+}
+
+export const listNNSFunctions = async ({
+  rootCanisterId,
+  identity,
+}: {
+  rootCanisterId: Principal
+  identity: Identity
+}): Promise<ListNervousSystemFunctionsResponse> => {
+  logWithTimestamp(`Setting sns neuron followee call...`)
+
+  const { listNervousSystemFunctions } = await loadSnsWrapper({
+    identity,
+    rootCanisterId,
+    certified: false,
+  })
+
+  return await listNervousSystemFunctions({})
 }
 
 export const stakeMaturity = async ({

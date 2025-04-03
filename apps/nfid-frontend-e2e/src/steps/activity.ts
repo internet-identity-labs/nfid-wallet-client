@@ -65,7 +65,13 @@ Then(
 )
 
 When("User sets filter to {list}", async (filtersList: string[]) => {
+  await Activity.filterButton.waitForDisplayed({
+    timeout: 50000,
+  })
   await Activity.filterButton.click()
+  await Activity.numberOfFilters.waitForDisplayed({
+    timeout: 30000,
+  })
   await Activity.numberOfFilters.click()
   for (const filter of filtersList) {
     await (await Activity.filterName(filter)).click()

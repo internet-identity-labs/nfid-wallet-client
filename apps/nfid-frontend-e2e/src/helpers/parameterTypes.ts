@@ -11,3 +11,17 @@ defineParameterType({
     return map[input] || input
   },
 })
+
+defineParameterType({
+  name: "list",
+  regexp: /.+/,
+  transformer: (s: string) => {
+    const map: Record<string, string> = {
+      "$NFIDW": "NFIDWallet",
+      "$ICP": "Internet Computer",
+    }
+    return s
+      .split(/\s*,\s*/)
+      .map(token => map[token] || token)
+  },
+})

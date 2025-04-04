@@ -13,6 +13,14 @@ export class Activity extends Page {
     return $("#filter-ft")
   }
 
+  get numberOfFilters() {
+    return $("#number_of_filters")
+  }
+
+  async filterName(filterName: string): Promise<WebdriverIO.Element> {
+    return $(`#option_${filterName.replace(/\s+/g, '')}`)
+  }
+
   async rowDate(row: WebdriverIO.Element) {
     return $(`${row.selector} #activity-table-row-date`)
   }

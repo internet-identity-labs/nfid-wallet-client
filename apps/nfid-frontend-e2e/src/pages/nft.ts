@@ -67,7 +67,7 @@ export class Nft {
       },
       {
         timeout: 15000,
-        timeoutMsg: `Expected ${expectedItemsAmount} items, but was ${currentItemsAmount}`,
+        timeoutMsg: `Expected ${expectedItemsAmount} items, but was ${await this.amountOfNFTs.getText()}`,
       },
     )
   }

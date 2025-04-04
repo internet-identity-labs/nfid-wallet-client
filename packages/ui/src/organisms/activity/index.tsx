@@ -60,6 +60,7 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
           onReset={resetHandler}
         >
           <DropdownSelect
+            id={"number_of_filters"}
             selectedValues={filter}
             setSelectedValues={setFilter}
             isMultiselect={true}

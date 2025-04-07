@@ -7,6 +7,12 @@ export interface StakeParamsCalculator {
   getMinimumLockTimeInMonths(): number
   getMaximumLockTime(): number
   getMaximumLockTimeInMonths(): number
-  calculateProjectRewards(amount: string, lockTime: number): Promise<string>
-  calculateEstAPR(amount: string, lockTime: number): Promise<string>
+  calculateProjectRewards(
+    amount: string,
+    lockValueInMonths: number,
+  ): Promise<TokenValue | undefined>
+  calculateEstAPR(
+    lockValueInMonths: number,
+    lockValue: number,
+  ): Promise<string | undefined>
 }

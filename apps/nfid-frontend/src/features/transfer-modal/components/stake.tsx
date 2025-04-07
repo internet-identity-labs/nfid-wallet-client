@@ -36,6 +36,9 @@ export const StakeFT = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
+  const [lockValueInMonths, setLockValueInMonths] = useState<
+    number | undefined
+  >()
   const [lockValue, setLockValue] = useState<number | undefined>()
   const [stakingParams, setStakingParams] = useState<StakeParamsCalculator>()
   const [isStakingParamsLoading, setIsStakingParamsLoading] = useState(false)
@@ -43,9 +46,9 @@ export const StakeFT = ({
   const [identity, setIdentity] = useState<SignIdentity>()
 
   const isMaxLockTimeSelected =
-    lockValue === stakingParams?.getMaximumLockTimeInMonths()
+    lockValueInMonths === stakingParams?.getMaximumLockTimeInMonths()
   const isMinLockTimeSelected =
-    lockValue === stakingParams?.getMinimumLockTimeInMonths()
+    lockValueInMonths === stakingParams?.getMinimumLockTimeInMonths()
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
@@ -77,7 +80,8 @@ export const StakeFT = ({
   const { watch } = formMethods
 
   useEffect(() => {
-    setLockValue(stakingParams?.getMinimumLockTimeInMonths())
+    setLockValueInMonths(stakingParams?.getMinimumLockTimeInMonths())
+    setLockValue(stakingParams?.getMinimumLockTime())
   }, [tokenAddress, stakingParams])
 
   const amount = watch("amount")
@@ -127,7 +131,7 @@ export const StakeFT = ({
           ? stakingParams?.getMaximumLockTime()
           : isMinLockTimeSelected
           ? stakingParams?.getMinimumLockTime()
-          : lockValue! * MONTHS_TO_SECONDS,
+          : lockValueInMonths! * MONTHS_TO_SECONDS,
       )
       .then(() => {
         setSuccessMessage(
@@ -151,7 +155,7 @@ export const StakeFT = ({
   }, [
     token,
     amount,
-    lockValue,
+    lockValueInMonths,
     identity,
     tokens,
     setErrorMessage,
@@ -176,6 +180,8 @@ export const StakeFT = ({
         error={error}
         lockValue={lockValue}
         setLockValue={setLockValue}
+        lockValueInMonths={lockValueInMonths}
+        setLockValueInMonths={setLockValueInMonths}
         stakingParams={stakingParams}
         isParamsLoading={isStakingParamsLoading}
       />

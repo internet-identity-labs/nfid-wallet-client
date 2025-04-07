@@ -18,11 +18,14 @@ import {
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
+import { TokenValue } from "frontend/integration/staking/types"
 
 import DiamondIcon from "../../staking/assets/diamond.svg"
 import { getFormattedPeriod } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { StakeSuccessUi } from "./stake-success"
+
+const SECONDS_IN_MONTH = (60 * 60 * 24 * 365.25) / 12
 
 export interface StakeUiProps {
   tokens: FT[]
@@ -37,6 +40,8 @@ export interface StakeUiProps {
   error: string | undefined
   lockValue?: number
   setLockValue: (v: number) => void
+  lockValueInMonths?: number
+  setLockValueInMonths: (v: number) => void
   stakingParams?: StakeParamsCalculator
   isParamsLoading: boolean
 }
@@ -54,6 +59,8 @@ export const StakeUi: FC<StakeUiProps> = ({
   error,
   lockValue,
   setLockValue,
+  lockValueInMonths,
+  setLockValueInMonths,
   stakingParams,
   isParamsLoading,
 }) => {
@@ -63,26 +70,28 @@ export const StakeUi: FC<StakeUiProps> = ({
     formState: { errors },
   } = useFormContext()
   const [apr, setApr] = useState<string | undefined>()
-  const [rewards, setRewards] = useState<string | undefined>()
+  const [rewards, setRewards] = useState<TokenValue | undefined>()
+  const [isRewardsLoading, setIsRewardsLoading] = useState(false)
   const amount = watch("amount")
 
   useEffect(() => {
-    const getApr = async () => {
-      const data = await stakingParams?.calculateEstAPR(amount, lockValue || 0)
-      setApr(data)
+    if (!lockValueInMonths || !lockValue) return
+
+    const fetchData = async () => {
+      setIsRewardsLoading(true)
+
+      const [aprData, rewardsData] = await Promise.all([
+        stakingParams?.calculateEstAPR(lockValueInMonths, lockValue),
+        stakingParams?.calculateProjectRewards(amount, lockValueInMonths),
+      ])
+
+      setApr(aprData)
+      setRewards(rewardsData)
+      setIsRewardsLoading(false)
     }
 
-    const geRewards = async () => {
-      const data = await stakingParams?.calculateProjectRewards(
-        amount,
-        lockValue || 0,
-      )
-      setRewards(data)
-    }
-
-    getApr()
-    geRewards()
-  }, [stakingParams])
+    fetchData()
+  }, [stakingParams, lockValue])
 
   if (!token || isLoading)
     return (
@@ -113,7 +122,8 @@ export const StakeUi: FC<StakeUiProps> = ({
       >
         <div className="flex items-center gap-1.5">
           <span>Stake</span>
-          {lockValue === stakingParams?.getMaximumLockTimeInMonths() && (
+          {lockValueInMonths ===
+            stakingParams?.getMaximumLockTimeInMonths() && (
             <Tooltip
               align="start"
               alignOffset={-20}
@@ -178,13 +188,18 @@ export const StakeUi: FC<StakeUiProps> = ({
           <Input
             className="mb-[-11px]"
             inputClassName="h-[60px] !border-black border-b-0 rounded-b-none !bg-white !text-black"
-            value={getFormattedPeriod(lockValue, true)}
+            value={getFormattedPeriod(lockValueInMonths, true)}
             disabled
             {...register("lockTime")}
           />
           <RangeSlider
-            value={lockValue || stakingParams?.getMinimumLockTimeInMonths()}
-            setValue={setLockValue}
+            value={
+              lockValueInMonths || stakingParams?.getMinimumLockTimeInMonths()
+            }
+            setValue={(value) => {
+              setLockValue(value * SECONDS_IN_MONTH)
+              setLockValueInMonths(value)
+            }}
             min={stakingParams?.getMinimumLockTimeInMonths()}
             max={stakingParams?.getMaximumLockTimeInMonths()}
             step={1}
@@ -199,7 +214,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       >
         <div className="flex items-center justify-between h-[48px]">
           <p>Est. APR</p>
-          {isParamsLoading ? (
+          {isParamsLoading || isRewardsLoading ? (
             <Skeleton className="w-[35px] h-[20px]" />
           ) : (
             <p className="font-bold text-green-600">{apr}</p>
@@ -228,16 +243,18 @@ export const StakeUi: FC<StakeUiProps> = ({
         <div className="flex items-center justify-between h-[48px]">
           <p>Projected rewards</p>
           <div className="text-right">
-            {isParamsLoading ? (
+            {isParamsLoading || isRewardsLoading ? (
               <>
                 <Skeleton className="w-[70px] h-[22px]" />
                 <Skeleton className="mt-1 w-[50px] h-[20px] ml-auto" />
               </>
             ) : (
               <>
-                <p className="leading-[22px] font-bold">{rewards}</p>
+                <p className="leading-[22px] font-bold">
+                  {rewards?.getTokenValue()}
+                </p>
                 <p className="text-xs leading-[20px] text-secondary">
-                  {rewards}
+                  {rewards?.getUSDValue()}
                 </p>
               </>
             )}

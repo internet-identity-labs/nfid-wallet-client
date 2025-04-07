@@ -1,7 +1,7 @@
 Feature: Tokens tab
   As a user, I want to see fungible assets in profile and manage them
 
-  @assets @skip
+  @assets
   Scenario Outline: User checks his tokens are displayed and checks the ability to manage his tokens
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

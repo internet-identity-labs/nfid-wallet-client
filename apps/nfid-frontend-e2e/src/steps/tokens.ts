@@ -1,6 +1,6 @@
 import { Then, When } from "@cucumber/cucumber"
 
-import { softAssertAll } from "../helpers/softAssertions.js"
+import { softAssertAll } from "../helpers/assertions.js"
 import Assets from "../pages/assets.js"
 import HomePage from "../pages/home-page.js"
 import Profile from "../pages/profile.js"
@@ -90,18 +90,25 @@ Then(
             timeoutMsg: `Incorrect ${tokenName} token USD balance: must be not 0 and not empty`,
           },
         ),
-      async () =>
-        expect(await (await Assets.tokenBalance(tokenName)).getText()).toBe(
-          balance,
-        ),
-      async () =>
-        expect(await (await Assets.getCurrency(tokenName)).getText()).toBe(
-          currency,
-        ),
-      async () =>
-        expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(
-          true,
-        ),
+      [
+        async () =>
+          await expect((await (await Assets.tokenBalance(tokenName)).getText())
+            .split("\n").map(s => s.trim()).join(" ")).toEqual(
+            balance,
+          ), `Incorrect token balance`,
+      ],
+      [
+        async () =>
+          await expect(await (await Assets.getCurrency(tokenName)).getText()).toBe(
+            currency,
+          ), `Incorrect token currency`,
+      ],
+      [
+        async () =>
+          await expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(
+            true,
+          ), `Token category is not displayed`,
+      ],
     )
   },
 )
@@ -112,7 +119,6 @@ Then(
     let isDisplayed
     await browser.waitUntil(
       async () => {
-        console.log(await Assets.tokenLabel(tokenName).selector)
         isDisplayed = await Assets.tokenLabel(tokenName).isDisplayed()
         return Boolean(presence) ? !isDisplayed : isDisplayed
       },

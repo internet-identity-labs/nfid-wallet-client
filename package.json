@@ -11,7 +11,8 @@
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
-    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/allure-report"
+    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/desktop/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/desktop/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/desktop/allure-report",
+    "reportMobile": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/mobile/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/mobile/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/mobile/allure-report"
   },
   "dependencies": {
     "@dfinity/agent": "2.3.0",

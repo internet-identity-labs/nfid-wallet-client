@@ -1,17 +1,12 @@
 import Video from "wdio-video-reporter"
-import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions.js"
+import { chromeBrowser } from "./src/browserOptions.js"
 
-export const isHeadless = process.env.IS_HEADLESS === "true"
 export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME
 export const hostPath = process.env.HOST_PATH
 export const baseURL = process.env.NFID_PROVIDER_URL
   ? process.env.NFID_PROVIDER_URL
   : "http://localhost:9090"
-
-if (isHeadless) {
-  chromeBrowserOptions.args.push("--headless=new")
-}
 
 export const config: WebdriverIO.Config = {
   runner: "local",
@@ -23,7 +18,6 @@ export const config: WebdriverIO.Config = {
     },
   },
   specs: ["./src/features/**/*.feature"],
-  // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
   ],
@@ -42,7 +36,7 @@ export const config: WebdriverIO.Config = {
     [
       "allure",
       {
-        outputDir: "src/reporter/allure-results",
+        outputDir: "src/reporter/desktop/allure-results",
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: true,
         useCucumberStepReporter: true,
@@ -54,13 +48,12 @@ export const config: WebdriverIO.Config = {
       {
         saveAllVideos: true,
         videoSlowdownMultiplier: 3,
-        outputDir: "src/reporter/video",
+        outputDir: "src/reporter/desktop/video",
       },
     ],
   ],
 
   cucumberOpts: {
-    // <string[]> (file/dir) require files before executing features
     require: [
       "./src/steps/**/*.ts",
       "./src/helpers/hooks.ts",

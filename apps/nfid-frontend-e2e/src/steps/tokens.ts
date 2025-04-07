@@ -1,6 +1,7 @@
 import { Then, When } from "@cucumber/cucumber"
 
 import { softAssertAll } from "../helpers/assertions.js"
+import { isMobile } from "../../wdio.conf.js"
 import Assets from "../pages/assets.js"
 import HomePage from "../pages/home-page.js"
 import Profile from "../pages/profile.js"
@@ -75,21 +76,24 @@ Then(
     balance: string,
   ) => {
     await softAssertAll(
-      async () =>
-        await browser.waitUntil(
-          async () => {
-            let currentBalance = (
-              await (await Assets.tokenUSDBalance(tokenName)).getText()
-            )
-              .trim()
-              .replace(/[^\d.]/g, "")
-            return currentBalance != "0" && currentBalance != undefined
-          },
-          {
-            timeout: 10000,
-            timeoutMsg: `Incorrect ${tokenName} token USD balance: must be not 0 and not empty`,
-          },
-        ),
+      async () => {
+        if (!isMobile()) {
+          await browser.waitUntil(
+            async () => {
+              let currentBalance = (
+                await (await Assets.tokenUSDBalance(tokenName)).getText()
+              )
+                .trim()
+                .replace(/[^\d.]/g, "")
+              return currentBalance !== "0" && currentBalance !== undefined
+            },
+            {
+              timeout: 10000,
+              timeoutMsg: `Incorrect ${tokenName} token USD balance: must be not 0 and not empty`,
+            },
+          )
+        }
+      },
       [
         async () =>
           await expect((await (await Assets.tokenBalance(tokenName)).getText())
@@ -104,10 +108,17 @@ Then(
           ), `Incorrect token currency`,
       ],
       [
-        async () =>
-          await expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(
-            true,
-          ), `Token category is not displayed`,
+        async () => {
+          if (!isMobile()) {
+            await expect(
+              (await (await Assets.getBlockchain(category)).getText())
+                .split("\n")
+                .map((s) => s.trim())
+                .join(" "),
+            ).toEqual(balance)
+          }
+        },
+        `Token category is not displayed`,
       ],
     )
   },

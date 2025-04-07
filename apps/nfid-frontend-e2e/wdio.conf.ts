@@ -7,6 +7,9 @@ export const hostPath = process.env.HOST_PATH
 export const baseURL = process.env.NFID_PROVIDER_URL
   ? process.env.NFID_PROVIDER_URL
   : "http://localhost:9090"
+export const isMobile = (): boolean => {
+  return !!browser?.requestedCapabilities?.["goog:chromeOptions"]?.mobileEmulation;
+}
 
 export const config: WebdriverIO.Config = {
   runner: "local",

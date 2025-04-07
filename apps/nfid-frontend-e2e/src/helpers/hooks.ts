@@ -21,7 +21,15 @@ BeforeAll(async function() {
 })
 
 After(async function() {
-  await browser.execute("window.localStorage.clear()")
+  await browser.execute(() => {
+    const dbNames = ['authstate', 'profile-db', 'ttl-db', 'domainkey-db']
+    for (const name of dbNames) {
+      indexedDB.deleteDatabase(name)
+    }
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+  await browser.deleteCookies()
 })
 
 Before(async function(scenario) {

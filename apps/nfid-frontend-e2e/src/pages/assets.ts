@@ -80,7 +80,7 @@ export class Assets {
   }
 
   public async tokenBalance(tokenName: string) {
-    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_balance`)
+    let locator = $(`(//*[@id="token_${tokenName.replace(/\s/g, "")}_balance"]/p)[1]`)
     await locator.waitForDisplayed({ timeout: 10000 })
     await browser.waitUntil(
       async () => {

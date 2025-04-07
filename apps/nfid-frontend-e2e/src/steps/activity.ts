@@ -75,7 +75,7 @@ When("User sets filter to {list}", async (filtersList: string[]) => {
   await Activity.numberOfFilters.click()
   for (const filter of filtersList) {
     await (await Activity.filterName(filter)).click()
-    await Activity.numberOfFilters.waitForDisplayed({ reverse: true, timeout: 20000 })
+    await browser.pause(500)
     await Activity.numberOfFilters.waitForDisplayed({ timeout: 20000 })
   }
   expect(await Activity.numberOfFilters.getText()).toEqual(`${filtersList.length} selected`)

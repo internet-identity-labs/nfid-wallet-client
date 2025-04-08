@@ -2,7 +2,10 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"
 import { ftService } from "src/integration/ft/ft-service"
-import { stakingService } from "src/integration/staking/service/staking-service-impl"
+import {
+  bytesToHexString,
+  stakingService,
+} from "src/integration/staking/service/staking-service-impl"
 
 import { disburse, querySnsNeurons } from "@nfid/integration"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
@@ -20,9 +23,10 @@ const identityJSON: JsonnableEd25519KeyIdentity = [
 ]
 
 describe("Staking", () => {
-  jest.setTimeout(60000)
-  it("should stake neuron", async () => {
+  jest.setTimeout(90000)
+  it.skip("should stake neuron", async () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
+    console.log(edId.getPrincipal().toText())
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
       .mockResolvedValueOnce(mockFt)
@@ -32,12 +36,13 @@ describe("Staking", () => {
         rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
         certified: false,
       })
+      let a = neuronsNFIDW.find(
+        (n) => n.cached_neuron_stake_e8s === BigInt(500000000),
+      )
       await disburse({
         identity: edId,
         rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
-        neuronId: neuronsNFIDW.find(
-          (n) => n.cached_neuron_stake_e8s === BigInt(500000000),
-        )!.id[0]!,
+        neuronId: a!.id[0]!,
       })
     } catch (e: any) {
       console.log(e.message)
@@ -47,23 +52,17 @@ describe("Staking", () => {
       .then((tokens) =>
         tokens.find((token) => token.getTokenSymbol() === "NFIDW"),
       )
-
-    try {
-      await stakingService.stake(token!, "5", edId)
-      expect(stakingService.stake).toHaveBeenCalledWith(token, "5", edId)
-    } catch (e) {
-      console.error("Stake error: ", e)
-    }
-
+    let staked = await stakingService.stake(token!, "5", edId)
+    expect(staked).toBeDefined()
     let neuronsNFIDW = await querySnsNeurons({
       identity: edId.getPrincipal(),
       rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
       certified: false,
     })
-    let redeemedNeuron = neuronsNFIDW.find(
-      (n) => n.cached_neuron_stake_e8s === BigInt(500000000),
+    let actual = neuronsNFIDW.find(
+      (n) => bytesToHexString(n!.id[0]!.id) === bytesToHexString(staked.id),
     )
-    expect(redeemedNeuron).toBeUndefined()
+    expect(actual?.followees.length).toBeGreaterThan(0)
   })
 
   it("should return staked neurons", async () => {

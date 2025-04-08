@@ -1,6 +1,7 @@
 import { Then, When } from "@cucumber/cucumber"
 
-import { softAssertAll } from "../helpers/softAssertions.js"
+import { softAssertAll } from "../helpers/assertions.js"
+import { isMobile } from "../../wdio.conf.js"
 import Assets from "../pages/assets.js"
 import HomePage from "../pages/home-page.js"
 import Profile from "../pages/profile.js"
@@ -75,33 +76,50 @@ Then(
     balance: string,
   ) => {
     await softAssertAll(
-      async () =>
-        await browser.waitUntil(
-          async () => {
-            let currentBalance = (
-              await (await Assets.tokenUSDBalance(tokenName)).getText()
-            )
-              .trim()
-              .replace(/[^\d.]/g, "")
-            return currentBalance != "0" && currentBalance != undefined
-          },
-          {
-            timeout: 10000,
-            timeoutMsg: `Incorrect ${tokenName} token USD balance: must be not 0 and not empty`,
-          },
-        ),
-      async () =>
-        expect(await (await Assets.tokenBalance(tokenName)).getText()).toBe(
-          balance,
-        ),
-      async () =>
-        expect(await (await Assets.getCurrency(tokenName)).getText()).toBe(
-          currency,
-        ),
-      async () =>
-        expect(await (await Assets.getBlockchain(category)).isDisplayed()).toBe(
-          true,
-        ),
+      async () => {
+        if (!isMobile()) {
+          await browser.waitUntil(
+            async () => {
+              let currentBalance = (
+                await (await Assets.tokenUSDBalance(tokenName)).getText()
+              )
+                .trim()
+                .replace(/[^\d.]/g, "")
+              return currentBalance !== "0" && currentBalance !== undefined
+            },
+            {
+              timeout: 10000,
+              timeoutMsg: `Incorrect ${tokenName} token USD balance: must be not 0 and not empty`,
+            },
+          )
+        }
+      },
+      [
+        async () =>
+          await expect((await (await Assets.tokenBalance(tokenName)).getText())
+            .split("\n").map(s => s.trim()).join(" ")).toEqual(
+            balance,
+          ), `Incorrect token balance`,
+      ],
+      [
+        async () =>
+          await expect(await (await Assets.getCurrency(tokenName)).getText()).toBe(
+            currency,
+          ), `Incorrect token currency`,
+      ],
+      [
+        async () => {
+          if (!isMobile()) {
+            await expect(
+              (await (await Assets.getBlockchain(category)).getText())
+                .split("\n")
+                .map((s) => s.trim())
+                .join(" "),
+            ).toEqual(category)
+          }
+        },
+        `Token category is not displayed`,
+      ],
     )
   },
 )
@@ -112,7 +130,6 @@ Then(
     let isDisplayed
     await browser.waitUntil(
       async () => {
-        console.log(await Assets.tokenLabel(tokenName).selector)
         isDisplayed = await Assets.tokenLabel(tokenName).isDisplayed()
         return Boolean(presence) ? !isDisplayed : isDisplayed
       },

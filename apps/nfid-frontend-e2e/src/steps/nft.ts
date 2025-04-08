@@ -1,6 +1,6 @@
 import { Then } from "@cucumber/cucumber"
 
-import { softAssertAll } from "../helpers/softAssertions.js"
+import { softAssertAll } from "../helpers/assertions.js"
 import Nft from "../pages/nft.js"
 
 Then(

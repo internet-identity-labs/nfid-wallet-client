@@ -41,14 +41,12 @@ export class HomePage extends Page {
     await this.authenticationButton.waitForDisplayed()
     await this.authenticationButton.click()
     await this.authSelection.waitForDisplayed({
-      timeout: 5000,
       timeoutMsg: "Auth modal window didn't appear",
     })
   }
 
   public async authenticateWithGoogle() {
     await this.googleAuthButton.waitForDisplayed({
-      timeout: 6000,
       timeoutMsg: "Google auth button is missing!",
     })
     await this.googleAuthButton.waitForClickable()
@@ -57,7 +55,6 @@ export class HomePage extends Page {
 
   public async pickGoogleAccount() {
     await this.accountPicker.waitForDisplayed({
-      timeout: 7000,
       timeoutMsg: "Google Account is missing!",
     })
     await this.accountPicker.waitForClickable()

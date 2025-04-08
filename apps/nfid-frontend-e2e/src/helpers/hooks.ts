@@ -1,6 +1,7 @@
 import { After, AfterAll, AfterStep, Before, BeforeAll } from "@wdio/cucumber-framework"
 import { browser } from "@wdio/globals"
 import allureReporter from "@wdio/allure-reporter"
+import { ConsoleMessage } from "puppeteer"
 
 const baseURL = process.env.NFID_PROVIDER_URL
   ? process.env.NFID_PROVIDER_URL
@@ -9,10 +10,26 @@ const baseURL = process.env.NFID_PROVIDER_URL
 BeforeAll(async function() {
   if (process.env.DEMO_APPLICATION_URL) console.info(`DEMO_APPLICATION_URL: ${process.env.DEMO_APPLICATION_URL}`)
   if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
+
+  const client = await (browser as any).getPuppeteer()
+  const page = (await client.pages())[0]
+
+  page.on("console", (msg: ConsoleMessage) => {
+    const entry = `[${msg.type().toUpperCase()}] ${msg.text()}`
+    console.log("[Browser Log]", entry)
+  })
 })
 
 After(async function() {
-  await browser.execute("window.localStorage.clear()")
+  await browser.execute(() => {
+    const dbNames = ['authstate', 'profile-db', 'ttl-db', 'domainkey-db']
+    for (const name of dbNames) {
+      indexedDB.deleteDatabase(name)
+    }
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+  await browser.deleteCookies()
 })
 
 Before(async function(scenario) {

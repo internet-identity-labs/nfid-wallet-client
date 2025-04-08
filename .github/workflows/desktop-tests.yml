@@ -419,7 +419,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
           [ "${VERSION}" == "main" ] && VERSION=latest
 
-          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending'"
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @desktop'"
           if [ "${{ github.ref_name }}" == 'main' ]; then
             TEST_ADD_PARAMS=""
           fi

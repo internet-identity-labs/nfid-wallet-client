@@ -113,21 +113,9 @@ export const StakingOption: FC<StakingOptionProps> = ({
               "px-0 md:px-[10px] w-[15%]",
             )}
           >
-            Lock time
-          </td>
-          <td
-            className={clsx(
-              "pb-[10px] text-sm font-bold text-gray-400",
-              "px-0 md:px-[10px] w-[15%]",
-            )}
-          >
-            <span
-              className={clsx(
-                stakingState !== StakingState.Unlocking && "invisible",
-              )}
-            >
-              Unlock in
-            </span>
+            {stakingState === StakingState.Unlocking
+              ? "Unlock in"
+              : "Lock time"}
           </td>
           <td className={clsx("w-[55px]")} />
         </tr>
@@ -195,17 +183,9 @@ export const StakingOption: FC<StakingOptionProps> = ({
               </td>
               <td className="px-0 md:px-[10px] hidden md:table-cell">
                 <p className="text-sm leading-5 opacity-80">
-                  {getFormattedPeriod(stake.getLockTimeInMonths(), true)}
-                </p>
-              </td>
-              <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p
-                  className={clsx(
-                    "text-sm leading-5 opacity-80",
-                    stakingState !== StakingState.Unlocking && "invisible",
-                  )}
-                >
-                  {getFormattedPeriod(stake.getUnlockInMonths(), true)}
+                  {stakingState === StakingState.Unlocking
+                    ? stake.getUnlockInMonths()
+                    : getFormattedPeriod(stake.getLockTimeInMonths(), true)}
                 </p>
               </td>
               <td

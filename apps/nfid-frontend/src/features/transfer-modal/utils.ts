@@ -266,3 +266,17 @@ export const getTokensWithUpdatedBalance = async (
 
   return updatedTokens
 }
+
+export const getAccurateDateForStakeInSeconds = (months: number): number => {
+  const now = new Date()
+  const future = new Date(now)
+
+  future.setMonth(future.getMonth() + months)
+
+  future.setHours(now.getHours())
+  future.setMinutes(now.getMinutes())
+  future.setSeconds(now.getSeconds())
+  future.setMilliseconds(now.getMilliseconds())
+
+  return Math.floor((future.getTime() - now.getTime()) / 1000)
+}

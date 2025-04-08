@@ -113,7 +113,7 @@ export class NfidNeuronImpl implements NFIDNeuron {
     if (unlockTimestamp === undefined) return
 
     const now = new Date()
-    const unlockDate = new Date(unlockTimestamp * 1000)
+    const unlockDate = new Date(unlockTimestamp * MILISECONDS_PER_SECOND)
 
     let months =
       (unlockDate.getFullYear() - now.getFullYear()) * 12 +
@@ -166,7 +166,10 @@ export class NfidNeuronImpl implements NFIDNeuron {
     const lockTime = this.getLockTime()
     if (lockTime === undefined) return
 
-    if (lockTime + this.getCreatedAt() <= Math.floor(Date.now() / 1000)) {
+    if (
+      lockTime + this.getCreatedAt() <=
+      Math.floor(Date.now() / MILISECONDS_PER_SECOND)
+    ) {
       return {
         getDate: () =>
           new Date(

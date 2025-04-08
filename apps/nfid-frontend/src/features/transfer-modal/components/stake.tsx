@@ -15,7 +15,7 @@ import { StakeParamsCalculator } from "frontend/integration/staking/stake-params
 import { FormValues, SendStatus } from "../types"
 import {
   getIdentity,
-  getAccurateDate,
+  getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
 } from "../utils"
 
@@ -128,7 +128,7 @@ export const StakeFT = ({
           ? stakingParams?.getMaximumLockTime()
           : isMinLockTimeSelected
           ? stakingParams?.getMinimumLockTime()
-          : getAccurateDate(lockValue),
+          : getAccurateDateForStakeInSeconds(lockValue),
       )
       .then(() => {
         setSuccessMessage(

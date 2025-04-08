@@ -267,7 +267,7 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
-export const getAccurateDate = (months: number): number => {
+export const getAccurateDateForStakeInSeconds = (months: number): number => {
   const now = new Date()
   const future = new Date(now)
 

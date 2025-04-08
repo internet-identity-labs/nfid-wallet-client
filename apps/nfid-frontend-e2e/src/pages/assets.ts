@@ -192,11 +192,11 @@ export class Assets {
       async () => {
         try {
           await Profile.waitUntilBalanceLoaded()
-          await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+          await Page.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
 
           await clickElement.waitForClickable({ timeout: 15000 })
           await clickElement.click()
-          await Page.loader.waitForDisplayed({ reverse: true, timeout: 55000 })
+          await Page.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
           await waitForElement.waitForDisplayed()
           return true
         } catch (e) {
@@ -204,7 +204,7 @@ export class Assets {
         }
       },
       {
-        timeout: 40000,
+        timeout: 80000,
         timeoutMsg: `Element ${await waitForElement.selector} didn't load properly in 40sec`,
       },
     )

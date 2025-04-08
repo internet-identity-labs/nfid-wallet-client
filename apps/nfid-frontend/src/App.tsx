@@ -1,10 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion"
-import React from "react"
+import React, { Suspense } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
-import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
+import { BlurredLoader, Loader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED, ROUTE_RPC } from "@nfid/config"
 import { authState, exchangeRateService, ic } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
@@ -112,7 +112,24 @@ export const App = () => {
             transition={{ duration: 0.25 }}
           >
             <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<LandingHomePage />} />
+              <Route
+                path="/"
+                element={
+                  <Suspense
+                    fallback={
+                      <div className="bg-[#0e0f10] flex justify-center items-center h-[100vh] w-[100vw]">
+                        <Loader
+                          imageClasses="w-20"
+                          isLoading={true}
+                          fullscreen={false}
+                        />
+                      </div>
+                    }
+                  >
+                    <LandingHomePage />
+                  </Suspense>
+                }
+              />
               <Route
                 path="/authenticate"
                 element={

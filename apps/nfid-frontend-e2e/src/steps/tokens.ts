@@ -115,7 +115,7 @@ Then(
                 .split("\n")
                 .map((s) => s.trim())
                 .join(" "),
-            ).toEqual(balance)
+            ).toEqual(category)
           }
         },
         `Token category is not displayed`,

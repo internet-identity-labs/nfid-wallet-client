@@ -2,19 +2,4 @@
 # Each line is a file pattern followed by one or more owners.
 
 # nfid-wallet-client repository owner
-* @olsemeno @olekid
-
-# NFID Wallet Demo application owner
-apps/nfid-demo/* @vitaliipustovyi
-
-# NFID Wallet application owner
-apps/nfid-frontend/* @vitaliipustovyi
-
-# NFID Wallet E2E tests owner
-apps/nfid-frontend-e2e/* @NeaRbYjkee
-
-# GitHub workflows and configurations owner
-.github/* @DaniilIdentity
-
-# Docker E2E tests owner
-docker-e2e-tests/* @DaniilIdentity
+* @olsemeno @slimHmac

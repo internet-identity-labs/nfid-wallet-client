@@ -555,11 +555,6 @@ jobs:
         run: |
           dfx --version
 
-      - name: DEPLOY => Load artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: nfid-wallet-client
-
       - name: DEPLOY => Deploy to the canister.
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"

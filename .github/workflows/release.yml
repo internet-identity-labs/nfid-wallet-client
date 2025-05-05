@@ -484,46 +484,11 @@ jobs:
           ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${CANISTER_NAME}" >&2
           dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
 
-      - name: Save artifact
-        uses: actions/upload-artifact@v4
-        with:
-          retention-days: 1
-          name: nfid-wallet-client
-          include-hidden-files: true
-          path: |
-            build/
-            dist/
-            .dfx/
-
-  deploy-frotnend:
-    name: Deploy Frontend
-    needs: build-frontend
-    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
-    env:
-      CANISTER_NAME: nfid-wallet-client
-    runs-on:
-      group: dfx-runner
-    defaults:
-      run:
-        shell: bash
-
-    steps:
       - name: INPUT => Checks force_deploy
         if: (github.event.inputs.force_deploy == 'true') && (github.event.inputs.confirmation != 'Yes')
         run: |
           echo "[ERROR] You have try to force release without or with wrong confirmation phrase" >&2
           exit 1
-
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Checkout CI repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
-          repository: internet-identity-labs/ci_libs
-          ref: main
-          path: ci_libs
 
       - name: INPUT => Checks branch and network_name
         if: ${{ env.NETWORK_NAME == 'ic' }}
@@ -542,12 +507,6 @@ jobs:
           fi
 
           ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
-
-      - name: Versions
-        run: |
-          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-
-          ci_versions
 
       - name: PRE-DEPLOY => Populate env vars
         env:
@@ -624,12 +583,6 @@ jobs:
           ci_echo_debug "Command output was '${result}'" >&2
 
           ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
-
-      - name: POST-DEPLOY => Cleaning.
-        uses: geekyeggo/delete-artifact@f275313e70c08f6120db482d7a6b98377786765b # v5.1.0
-        with:
-          name: nfid-wallet-client
-          failOnError: false
 
       - name: POST-DEPLOY => Save artifact.
         uses: actions/upload-artifact@v4

@@ -7,6 +7,7 @@ export const JEST_GLOBALS = {
   ECDSA_SIGNER_CANISTER_ID: "txkre-oyaaa-aaaap-qa3za-cai",
   SWAP_TRS_STORAGE: "mfoln-bqaaa-aaaao-qeuqq-cai",
   NFID_WALLET_CANISTER: "w44yp-iaaaa-aaaar-qafjq-cai",
+  NFID_WALLET_CANISTER_STAKING: "w44yp-iaaaa-aaaar-qafjq-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
   ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
   ICRC1_ORACLE_CANISTER_ID: "ys266-uyaaa-aaaal-ajs4q-cai",

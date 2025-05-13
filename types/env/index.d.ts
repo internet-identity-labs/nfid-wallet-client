@@ -15,6 +15,7 @@ declare const CYCLES_MINTER_CANISTER_ID: string
 declare const ECDSA_SIGNER_CANISTER_ID: string
 declare const SWAP_TRS_STORAGE: string
 declare const NFID_WALLET_CANISTER: string
+declare const NFID_WALLET_CANISTER_STAKING: string
 declare const FRONTEND_MODE: string
 declare const ENV: string
 declare const GOOGLE_CLIENT_ID: string

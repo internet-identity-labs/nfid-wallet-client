@@ -198,8 +198,8 @@ export class NfidNeuronImpl implements NFIDNeuron {
     const rootCanisterId = this.token.getRootSnsCanister()
     if (!rootCanisterId) return
 
-    let protocolFee = this.getRewards() * BigInt(1) / BigInt(100)
-
+    let protocolFee = (this.getRewards() / BigInt(100000)) * BigInt(875)
+    
     const transferArgs: TransferArg = {
       amount: protocolFee,
       created_at_time: [],

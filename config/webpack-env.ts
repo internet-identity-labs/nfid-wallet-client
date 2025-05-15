@@ -79,6 +79,7 @@ export const serviceConfig = {
   ),
   SWAP_TRS_STORAGE: JSON.stringify(process.env.SWAP_TRS_STORAGE),
   NFID_WALLET_CANISTER: JSON.stringify(process.env.NFID_WALLET_CANISTER),
+  NFID_WALLET_CANISTER_STAKING: JSON.stringify(process.env.NFID_WALLET_CANISTER_STAKING),
   IC_SIGNER_CANISTER_ID: JSON.stringify(process.env.IC_SIGNER_CANISTER_ID),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),

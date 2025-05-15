@@ -4,12 +4,15 @@ import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
 
-import { disburse, startDissolving, stopDissolving } from "@nfid/integration"
+import {disburse, hasOwnProperty, startDissolving, stopDissolving, TransferArg} from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 
 import { FormattedDate, TokenValue } from "../types"
+import { Principal } from "@dfinity/principal"
+import {transferICRC1} from "@nfid/integration/token/icrc1";
+import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
 
 const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
 const MILISECONDS_PER_SECOND = 1000
@@ -195,10 +198,39 @@ export class NfidNeuronImpl implements NFIDNeuron {
     const rootCanisterId = this.token.getRootSnsCanister()
     if (!rootCanisterId) return
 
+    let protocolFee = (this.getRewards() / BigInt(100000)) * BigInt(875)
+    
+    const transferArgs: TransferArg = {
+      amount: protocolFee,
+      created_at_time: [],
+      fee: [],
+      from_subaccount: [],
+      memo: [],
+      to: {
+        subaccount: [],
+        owner: Principal.fromText(NFID_WALLET_CANISTER_STAKING),
+      },
+    }
+
+    let ledgerCanisterId = await icrc1OracleService.getICRC1Canisters()
+    .then(canisters => canisters
+      .filter((canister) => canister.root_canister_id.length > 0)
+      .find((canister) => canister.root_canister_id[0] === rootCanisterId.toText()))
+
     await disburse({
       identity: signIdentity,
       rootCanisterId: rootCanisterId,
       neuronId: this.neuron.id[0]!,
     })
+
+    const result = await transferICRC1(
+      signIdentity,
+      ledgerCanisterId!.ledger,
+      transferArgs,
+    )
+
+    if (!hasOwnProperty(result, "Ok")) {
+      console.warn("Error transferring protocol fee: " + JSON.stringify(result.Err))
+    }
   }
 }

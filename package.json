@@ -11,7 +11,8 @@
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
-    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/allure-report"
+    "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/desktop/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/desktop/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/desktop/allure-report",
+    "reportMobile": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/mobile/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/mobile/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/mobile/allure-report"
   },
   "dependencies": {
     "@dfinity/agent": "2.3.0",
@@ -46,6 +47,7 @@
     "@types/react-color": "^3.0.12",
     "@types/react-scrollspy": "^3.3.9",
     "@types/react-toastify": "^4.1.0",
+    "@wdio/devtools-service": "^8.42.0",
     "@xstate/react": "3.2.2",
     "base64url": "^3.0.1",
     "biguintle": "1.0.3",
@@ -71,6 +73,7 @@
     "node-ts-cache": "4.4.0",
     "node-ts-cache-storage-memory": "4.4.0",
     "process": "0.11.10",
+    "puppeteer": "^24.5.0",
     "react": "18.3.1",
     "react-awesome-reveal": "^4.2.14",
     "react-dom": "18.3.1",

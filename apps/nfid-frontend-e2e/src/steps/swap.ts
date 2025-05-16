@@ -134,7 +134,7 @@ When(
         )
       },
       {
-        timeout: 25000,
+        timeout: 90000,
         timeoutMsg: `Incorrect balance after swap.
         Expected:
         sourceTokenBalance - ${

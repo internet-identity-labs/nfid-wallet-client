@@ -1,4 +1,4 @@
-import { Then } from "@cucumber/cucumber"
+import { Then, When } from "@cucumber/cucumber"
 
 import Activity from "../pages/activity.js"
 
@@ -56,10 +56,27 @@ Then(
         const timeDifference = Math.abs(now.getTime() - expectedTime.getTime())
         return (
           (await (await Activity.rowActionType(tableRows[1])).getText()) ==
-            "Sent" && timeDifference < 40000
+          "Sent" && timeDifference < 40000
         )
       },
       { timeout: 40000, timeoutMsg: "Time difference is more that 40sec" },
     )
   },
 )
+
+When("User sets filter to {list}", async (filtersList: string[]) => {
+  await Activity.filterButton.waitForDisplayed({
+    timeout: 50000,
+  })
+  await Activity.filterButton.click()
+  await Activity.numberOfFilters.waitForDisplayed({
+    timeout: 30000,
+  })
+  await Activity.numberOfFilters.click()
+  for (const filter of filtersList) {
+    await (await Activity.filterName(filter)).click()
+    await browser.pause(500)
+    await Activity.numberOfFilters.waitForDisplayed({ timeout: 20000 })
+  }
+  expect(await Activity.numberOfFilters.getText()).toEqual(`${filtersList.length} selected`)
+})

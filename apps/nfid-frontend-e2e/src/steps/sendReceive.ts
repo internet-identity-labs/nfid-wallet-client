@@ -1,6 +1,6 @@
 import { Then, When } from "@cucumber/cucumber"
 
-import { softAssertAll } from "../helpers/softAssertions.js"
+import { softAssertAll } from "../helpers/assertions.js"
 import Assets from "../pages/assets.js"
 
 When(/^User selects the (.*) NFT$/, async (tokenName: string) => {

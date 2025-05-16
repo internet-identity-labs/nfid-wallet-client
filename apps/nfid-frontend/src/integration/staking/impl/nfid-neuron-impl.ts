@@ -1,18 +1,24 @@
 import { SignIdentity } from "@dfinity/agent"
-import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
+import { Principal } from "@dfinity/principal"
+import { Neuron, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
 
-import {disburse, hasOwnProperty, startDissolving, stopDissolving, TransferArg} from "@nfid/integration"
+import {
+  disburse,
+  hasOwnProperty,
+  startDissolving,
+  stopDissolving,
+  TransferArg,
+} from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { FT } from "frontend/integration/ft/ft"
 
 import { FormattedDate, TokenValue } from "../types"
-import { Principal } from "@dfinity/principal"
-import {transferICRC1} from "@nfid/integration/token/icrc1";
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
 
 const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
 const MILISECONDS_PER_SECOND = 1000
@@ -26,7 +32,11 @@ export class NfidNeuronImpl implements NFIDNeuron {
     this.token = token
   }
 
-  getStakeId(): string {
+  getStakeId(): NeuronId {
+    return { id: this.neuron.id[0]!.id }
+  }
+
+  getStakeIdFormatted(): string {
     return bytesToHexString(this.neuron.id[0]!.id)
   }
 
@@ -69,7 +79,7 @@ export class NfidNeuronImpl implements NFIDNeuron {
   }
 
   getTotalValue(): bigint {
-    return this.getRewards() + this.getInitialStake()
+    return this.getRewards() + this.getInitialStake() - this.getProtocolFee()
   }
 
   getTotalValueFormatted(): TokenValue {
@@ -82,6 +92,23 @@ export class NfidNeuronImpl implements NFIDNeuron {
       getTokenValue: () => `${totalAmount} ${this.token.getTokenSymbol()}`,
       getUSDValue: () =>
         this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
+  }
+
+  getProtocolFee(): bigint {
+    return (this.getRewards() / BigInt(100000)) * BigInt(875)
+  }
+
+  getProtocolFeeFormatted(): TokenValue {
+    const protocolFee = BigNumber(this.getProtocolFee().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${protocolFee} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(protocolFee) || "Not listed",
     }
   }
 
@@ -198,10 +225,8 @@ export class NfidNeuronImpl implements NFIDNeuron {
     const rootCanisterId = this.token.getRootSnsCanister()
     if (!rootCanisterId) return
 
-    let protocolFee = (this.getRewards() / BigInt(100000)) * BigInt(875)
-    
     const transferArgs: TransferArg = {
-      amount: protocolFee,
+      amount: this.getProtocolFee(),
       created_at_time: [],
       fee: [],
       from_subaccount: [],
@@ -212,10 +237,16 @@ export class NfidNeuronImpl implements NFIDNeuron {
       },
     }
 
-    let ledgerCanisterId = await icrc1OracleService.getICRC1Canisters()
-    .then(canisters => canisters
-      .filter((canister) => canister.root_canister_id.length > 0)
-      .find((canister) => canister.root_canister_id[0] === rootCanisterId.toText()))
+    let ledgerCanisterId = await icrc1OracleService
+      .getICRC1Canisters()
+      .then((canisters) =>
+        canisters
+          .filter((canister) => canister.root_canister_id.length > 0)
+          .find(
+            (canister) =>
+              canister.root_canister_id[0] === rootCanisterId.toText(),
+          ),
+      )
 
     await disburse({
       identity: signIdentity,
@@ -230,7 +261,9 @@ export class NfidNeuronImpl implements NFIDNeuron {
     )
 
     if (!hasOwnProperty(result, "Ok")) {
-      console.warn("Error transferring protocol fee: " + JSON.stringify(result.Err))
+      console.warn(
+        "Error transferring protocol fee: " + JSON.stringify(result.Err),
+      )
     }
   }
 }

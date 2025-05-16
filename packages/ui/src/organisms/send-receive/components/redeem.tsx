@@ -4,6 +4,7 @@ import { FC } from "react"
 import { Button } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
+import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 
 import { RedeemSuccessUi } from "./redeem-success"
 
@@ -13,10 +14,8 @@ export interface ReceiveProps {
   isSuccessOpen: boolean
   status: SendStatus
   error: string | undefined
-  initial: { initial: string; initialInUsd: string }
-  rewards: { rewards: string; rewardsInUsd: string }
-  fee: { fee: string; feeInUsd: string }
-  total: { total: string; totalInUsd: string }
+  stakeToRedeem: NFIDNeuron | undefined
+  isLoading: boolean
 }
 
 export const Redeem: FC<ReceiveProps> = ({
@@ -25,21 +24,19 @@ export const Redeem: FC<ReceiveProps> = ({
   isSuccessOpen,
   status,
   error,
-  initial,
-  rewards,
-  fee,
-  total,
+  stakeToRedeem,
+  isLoading,
 }) => {
+  if (!stakeToRedeem) return null
   return (
     <>
       <RedeemSuccessUi
-        title={total.total}
-        subTitle={total.totalInUsd}
+        title={stakeToRedeem.getTotalValueFormatted().getTokenValue()}
+        subTitle={stakeToRedeem.getTotalValueFormatted().getUSDValue()}
         onClose={onClose}
-        assetImg="#"
+        assetImg={stakeToRedeem.getToken().getTokenLogo()}
         isOpen={isSuccessOpen}
         status={status}
-        assetImageClassname="w-[74px] h-[74px] top-[51px]"
         error={error}
       />
       <div
@@ -62,8 +59,12 @@ export const Redeem: FC<ReceiveProps> = ({
             </p>
           </div>
           <div className="ml-auto text-right">
-            <p className="leading-[24px]">{initial.initial}</p>
-            <p className="text-xs text-secondary">{initial.initialInUsd}</p>
+            <p className="leading-[24px]">
+              {stakeToRedeem.getInitialStakeFormatted().getTokenValue()}
+            </p>
+            <p className="text-xs text-secondary">
+              {stakeToRedeem.getInitialStakeFormatted().getUSDValue()}
+            </p>
           </div>
         </div>
         <div className="flex items-center text-sm relative pl-[35px] mb-[48px] sm:mb-[78px]">
@@ -77,8 +78,12 @@ export const Redeem: FC<ReceiveProps> = ({
             </p>
           </div>
           <div className="ml-auto text-right">
-            <p className="leading-[24px]">{rewards.rewards}</p>
-            <p className="text-xs text-secondary">{rewards.rewardsInUsd}</p>
+            <p className="leading-[24px]">
+              {stakeToRedeem.getRewardsFormatted().getTokenValue()}
+            </p>
+            <p className="text-xs text-secondary">
+              {stakeToRedeem.getRewardsFormatted().getUSDValue()}
+            </p>
           </div>
         </div>
         <div className="flex items-center text-sm relative pl-[35px]">
@@ -93,8 +98,12 @@ export const Redeem: FC<ReceiveProps> = ({
             </p>
           </div>
           <div className="ml-auto text-right">
-            <p className="leading-[24px]">{fee.fee}</p>
-            <p className="text-xs text-secondary">{fee.feeInUsd}</p>
+            <p className="leading-[24px]">
+              {stakeToRedeem.getProtocolFeeFormatted().getTokenValue()}
+            </p>
+            <p className="text-xs text-secondary">
+              {stakeToRedeem.getProtocolFeeFormatted().getUSDValue()}
+            </p>
           </div>
         </div>
         <div className="mt-[22px] sm:mt-[35px] mb-[13px] pl-[35px]">
@@ -109,12 +118,22 @@ export const Redeem: FC<ReceiveProps> = ({
             </p>
           </div>
           <div className="ml-auto text-right">
-            <p className="leading-[24px] font-bold">{total.total}</p>
-            <p className="text-xs text-secondary">{total.totalInUsd}</p>
+            <p className="leading-[24px] font-bold">
+              {stakeToRedeem.getTotalValueFormatted().getTokenValue()}
+            </p>
+            <p className="text-xs text-secondary">
+              {stakeToRedeem.getTotalValueFormatted().getUSDValue()}
+            </p>
           </div>
         </div>
       </div>
-      <Button type="primary" id="redeemButton" block onClick={redeem}>
+      <Button
+        type="primary"
+        id="redeemButton"
+        block
+        onClick={redeem}
+        disabled={isLoading}
+      >
         Redeem
       </Button>
     </>

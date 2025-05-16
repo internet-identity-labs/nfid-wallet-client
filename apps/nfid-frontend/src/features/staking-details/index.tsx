@@ -49,8 +49,9 @@ const StakingDetailsPage = () => {
     getSignIdentity()
   }, [stakedToken])
 
-  const onRedeemOpen = () => {
+  const onRedeemOpen = (id: string) => {
     send({ type: "CHANGE_DIRECTION", data: ModalType.REDEEM })
+    send({ type: "ASSIGN_STAKE_ID", data: id })
     send("SHOW")
   }
 

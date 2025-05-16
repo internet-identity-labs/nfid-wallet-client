@@ -147,8 +147,8 @@ const TokensPage = () => {
             usdBalance={tokensUsdBalance}
             isLoading={
               tokensUsdBalanceLoading ||
-              !Boolean(tokensOwnedQuantity) ||
-              !Boolean(tokensWithoutPrice)
+              tokensOwnedQuantity === undefined ||
+              tokensWithoutPrice === undefined
             }
           />
         </div>

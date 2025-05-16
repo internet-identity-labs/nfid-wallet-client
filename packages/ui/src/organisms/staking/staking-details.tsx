@@ -22,7 +22,7 @@ import {
 export interface StakingDetailsProps {
   stakedToken?: StakedToken
   isLoading: boolean
-  onRedeemOpen: () => void
+  onRedeemOpen: (id: string) => void
   identity?: SignIdentity
 }
 

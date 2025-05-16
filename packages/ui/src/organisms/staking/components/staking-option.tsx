@@ -135,7 +135,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
           return (
             <tr
               className="text-sm md:hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
-              key={stake.getStakeId()}
+              key={stake.getStakeIdFormatted()}
               onClick={() =>
                 setSidePanelOption({ option: stake, state: stakingState })
               }
@@ -169,7 +169,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                       onClick={(e) => e.stopPropagation()}
                     >
                       <CopyAddress
-                        address={stake.getStakeId()}
+                        address={stake.getStakeIdFormatted()}
                         leadingChars={6}
                         trailingChars={4}
                       />

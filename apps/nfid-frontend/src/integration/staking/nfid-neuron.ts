@@ -1,17 +1,21 @@
 import { SignIdentity } from "@dfinity/agent"
+import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 
 import { FT } from "../ft/ft"
 import { FormattedDate, TokenValue } from "./types"
 
 export interface NFIDNeuron {
   getToken(): FT
-  getStakeId(): string
+  getStakeId(): NeuronId
+  getStakeIdFormatted(): string
   getInitialStake(): bigint
   getInitialStakeFormatted(): TokenValue
   getRewards(): bigint
   getRewardsFormatted(): TokenValue
   getTotalValue(): bigint
   getTotalValueFormatted(): TokenValue
+  getProtocolFee(): bigint
+  getProtocolFeeFormatted(): TokenValue
   getLockTime(): number | undefined
   getLockTimeInMonths(): number | undefined
   getUnlockIn(): number | undefined

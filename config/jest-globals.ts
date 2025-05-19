@@ -8,6 +8,8 @@ export const JEST_GLOBALS = {
   SWAP_TRS_STORAGE: "mfoln-bqaaa-aaaao-qeuqq-cai",
   NFID_WALLET_CANISTER: "w44yp-iaaaa-aaaar-qafjq-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
+  PATRON_CANISTER_ID: "doked-biaaa-aaaar-qag2a-cai",
+  CHAIN_FUSION_SIGNER_CANISTER_ID: "grghe-syaaa-aaaar-qabyq-cai",
   ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
   ICRC1_ORACLE_CANISTER_ID: "ys266-uyaaa-aaaal-ajs4q-cai",
   DELEGATION_FACTORY: "wklas-pyaaa-aaaak-akv3a-cai",

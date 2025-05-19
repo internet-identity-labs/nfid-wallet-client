@@ -37,7 +37,7 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
         !isOpen && "hidden",
       )}
     >
-      <div className={clsx("text-center", error && "mb-[50px]")}>
+      <div className={clsx("text-center", { "mb-[50px]": !!error })}>
         <H5 className="mt-5 text-xl !font-bold leading-6">
           {status === SendStatus.FAILED
             ? "Transaction failed"

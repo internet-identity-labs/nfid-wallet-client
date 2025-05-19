@@ -11,6 +11,12 @@ import SuccessIcon from "../assets/stake-success.svg"
 
 const HIDE_ANIMATION_DURATION = 0.3
 
+enum AnimationStage {
+  SPINNING = "spinning",
+  HIDING = "hiding",
+  SHOWING = "showing",
+}
+
 export interface StakeSuccessProps {
   assetImg: string
   status: SendStatus
@@ -20,16 +26,18 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
   assetImg,
   status,
 }) => {
-  const [animationStage, setAnimationStage] = useState<
-    "spinning" | "hiding" | "showing"
-  >(status === SendStatus.PENDING ? "spinning" : "showing")
+  const [animationStage, setAnimationStage] = useState<AnimationStage>(
+    status === SendStatus.PENDING
+      ? AnimationStage.SPINNING
+      : AnimationStage.SHOWING,
+  )
 
   useEffect(() => {
     if (status !== SendStatus.PENDING) {
-      setAnimationStage("hiding")
+      setAnimationStage(AnimationStage.HIDING)
 
       const timeout = setTimeout(() => {
-        setAnimationStage("showing")
+        setAnimationStage(AnimationStage.SHOWING)
       }, HIDE_ANIMATION_DURATION * 1000)
 
       return () => clearTimeout(timeout)
@@ -38,9 +46,9 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
     return
   }, [status])
 
-  const isSpinning = animationStage === "spinning"
-  const isHiding = animationStage === "hiding"
-  const isShowing = animationStage === "showing"
+  const isSpinning = animationStage === AnimationStage.SPINNING
+  const isHiding = animationStage === AnimationStage.HIDING
+  const isShowing = animationStage === AnimationStage.SHOWING
 
   return (
     <div

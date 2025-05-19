@@ -78,10 +78,14 @@ describe("Staking", () => {
       edId,
     )
 
-    const nfidwStake = stakedTokens[0]
+    const nfidwStake = stakedTokens.find(
+      (token) =>
+        token.getToken().getTokenAddress() === "mih44-vaaaa-aaaaq-aaekq-cai",
+    )!
+
     const available = nfidwStake
       .getAvailable()
-      .filter((s) => s.getInitialStake() > 0)
+      .filter((stake) => stake.getInitialStake() > 0)
     const locked = nfidwStake.getLocked()
     const unlocking = nfidwStake.getUnlocking()
 

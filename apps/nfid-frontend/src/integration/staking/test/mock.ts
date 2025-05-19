@@ -3,32 +3,30 @@ import {
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
-const NFIDW = {
-  ledger: NFIDW_CANISTER_ID,
-  name: "NFIDW",
-  symbol: "NFIDW",
-  logo: "Some NFIDW",
-  index: "mgfru-oqaaa-aaaaq-aaelq-cai",
-  state: "Active",
-  category: "Sns",
-  fee: BigInt(10000),
-  decimals: 8,
-  rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
-}
-
 export const mockFt = [
-  NFIDW,
+  {
+    ledger: NFIDW_CANISTER_ID,
+    name: "NFIDW",
+    symbol: "NFIDW",
+    logo: "Some NFIDW",
+    index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+    state: "Active",
+    category: "Sns",
+    fee: BigInt(10000),
+    decimals: 8,
+    rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+  },
   {
     ledger: ICP_CANISTER_ID,
     name: "Internet Computer",
     symbol: "ICP",
     logo: "Some ICP",
-    index: "mgfru-oqaaa-aaaaq-aaelq-cai",
+    index: "qhbym-qaaaa-aaaaa-aaafq-cai",
     state: "Active",
     category: "Native",
     fee: BigInt(10000),
     decimals: 8,
-    rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+    rootCanisterId: "r7inp-6aaaa-aaaaa-aaabq-cai",
   },
 ]
 
@@ -256,7 +254,7 @@ export const mock2 = [
         },
       },
     ],
-    maturity_e8s_equivalent: BigInt(100000000),
+    maturity_e8s_equivalent: BigInt(0),
     cached_neuron_stake_e8s: BigInt(700000000),
     created_timestamp_seconds: BigInt(1722298123),
     source_nns_neuron_id: [],

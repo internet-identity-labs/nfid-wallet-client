@@ -50,10 +50,9 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   const symbol = sidePanelOption?.option.getToken().getTokenSymbol()
 
   const openRedeemModal = async () => {
-    const id = sidePanelOption?.option.getStakeIdFormatted()
-    if (!id) return
+    if (!sidePanelOption) return
 
-    onRedeemOpen(id)
+    onRedeemOpen(sidePanelOption.option.getStakeIdFormatted())
     onClose()
   }
 

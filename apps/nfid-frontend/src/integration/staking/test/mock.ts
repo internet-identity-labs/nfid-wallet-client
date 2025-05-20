@@ -30,7 +30,7 @@ export const mockFt = [
   },
 ]
 
-export const mock2 = [
+export const mockStake = [
   {
     id: [
       {

@@ -46,9 +46,30 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
     return
   }, [status])
 
-  const isSpinning = animationStage === AnimationStage.SPINNING
-  const isHiding = animationStage === AnimationStage.HIDING
-  const isShowing = animationStage === AnimationStage.SHOWING
+  const stageClassnames: Record<
+    AnimationStage,
+    {
+      before: string
+      line: string
+      imageWrapper: string
+    }
+  > = {
+    [AnimationStage.SPINNING]: {
+      before: "before:animate-animateCircle",
+      line: "animate-animate",
+      imageWrapper: "",
+    },
+    [AnimationStage.HIDING]: {
+      before: "before:animate-hideCircle",
+      line: "animate-hideCircle",
+      imageWrapper: "opacity-0 pointer-events-none",
+    },
+    [AnimationStage.SHOWING]: {
+      before: "before:hidden",
+      line: "invisible",
+      imageWrapper: "animate-showCircle",
+    },
+  }
 
   return (
     <div
@@ -59,11 +80,7 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
         "w-[148px] h-[148px] rounded-full",
         "relative before:content-[''] before:absolute before:top-0 before:left-0",
         "before:w-full before:h-full before:rounded-full",
-        isSpinning
-          ? "before:animate-animateCircle"
-          : isHiding
-          ? "before:animate-hideCircle"
-          : "before:hidden",
+        stageClassnames[animationStage].before,
         "after:content-[''] after:bg-white after:rounded-full after:w-[calc(100%-6px)] after:h-[calc(100%-6px)] after:absolute",
         "after:top-[3px] after:left-[3px]",
       )}
@@ -72,11 +89,7 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
         className={clsx(
           "absolute top-[calc(50%-2px)] z-[1]",
           "left-1/2 w-1/2 h-[4px] bg-transparent origin-left",
-          isSpinning
-            ? "animate-animate"
-            : isHiding
-            ? "animate-hideCircle"
-            : "invisible",
+          stageClassnames[animationStage].line,
         )}
       >
         <div
@@ -92,11 +105,8 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
       <div
         className={clsx(
           "rounded-full w-[96px] h-[96px] z-[2] flex items-center justify-center",
-          status !== SendStatus.PENDING
-            ? isShowing
-              ? "animate-showCircle"
-              : "opacity-0 pointer-events-none"
-            : "",
+          status !== SendStatus.PENDING &&
+            stageClassnames[animationStage].imageWrapper,
           status === SendStatus.COMPLETED && "bg-teal-600",
           status === SendStatus.FAILED && "bg-red-600",
         )}
@@ -105,9 +115,7 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
           <img
             src={status === SendStatus.COMPLETED ? SuccessIcon : FailedIcon}
             alt={
-              status === SendStatus.COMPLETED
-                ? "Stake success "
-                : "Stake failed"
+              status === SendStatus.COMPLETED ? "Stake success" : "Stake failed"
             }
           />
         ) : (

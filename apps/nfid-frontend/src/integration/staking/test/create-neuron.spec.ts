@@ -8,9 +8,10 @@ import {
 } from "src/integration/staking/service/staking-service-impl"
 
 import { disburse, querySnsNeurons } from "@nfid/integration"
+import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
-import { mockFt, mock2 } from "./mock"
+import { mockFt, mockStake } from "./mock"
 
 const NFIDW_ROOT_CANISTER = "m2blf-zqaaa-aaaaq-aaejq-cai"
 
@@ -69,8 +70,8 @@ describe("Staking", () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
-      .mockResolvedValueOnce(mockFt)
-    jest.spyOn(stakingService as any, "getNeurons").mockResolvedValueOnce(mock2)
+      .mockResolvedValue(mockFt)
+    jest.spyOn(stakingService as any, "getNeurons").mockResolvedValue(mockStake)
 
     const stakedTokens = await stakingService.getStakedTokens(
       pairPrincipal,
@@ -79,10 +80,8 @@ describe("Staking", () => {
     )
 
     const nfidwStake = stakedTokens.find(
-      (token) =>
-        token.getToken().getTokenAddress() === "mih44-vaaaa-aaaaq-aaekq-cai",
+      (t) => t.getToken().getTokenAddress() === NFIDW_CANISTER_ID,
     )!
-
     const available = nfidwStake
       .getAvailable()
       .filter((stake) => stake.getInitialStake() > 0)

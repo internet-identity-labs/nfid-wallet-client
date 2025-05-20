@@ -117,9 +117,14 @@ describe("Staking", () => {
       "1 NFIDW",
     )
 
-    expect(available[0].getTotalValue()).toEqual(BigInt(800000000))
+    expect(available[0].getProtocolFee()).toEqual(BigInt(875000))
+    expect(available[0].getProtocolFeeFormatted().getTokenValue()).toEqual(
+      "0.00875 NFIDW",
+    )
+
+    expect(available[0].getTotalValue()).toEqual(BigInt(799125000))
     expect(available[0].getTotalValueFormatted().getTokenValue()).toEqual(
-      "8 NFIDW",
+      "7.99125 NFIDW",
     )
 
     expect(available[0].getLockTime()).toEqual(0)

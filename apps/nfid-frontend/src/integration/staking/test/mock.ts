@@ -254,7 +254,7 @@ export const mockStake = [
         },
       },
     ],
-    maturity_e8s_equivalent: BigInt(0),
+    maturity_e8s_equivalent: BigInt(100000000),
     cached_neuron_stake_e8s: BigInt(700000000),
     created_timestamp_seconds: BigInt(1722298123),
     source_nns_neuron_id: [],

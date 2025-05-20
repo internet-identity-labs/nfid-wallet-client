@@ -1,18 +1,24 @@
 import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
 
-import {disburse, hasOwnProperty, startDissolving, stopDissolving, TransferArg} from "@nfid/integration"
+import {
+  disburse,
+  hasOwnProperty,
+  startDissolving,
+  stopDissolving,
+  TransferArg,
+} from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { FT } from "frontend/integration/ft/ft"
 
 import { FormattedDate, TokenValue } from "../types"
-import { Principal } from "@dfinity/principal"
-import {transferICRC1} from "@nfid/integration/token/icrc1";
-import {icrc1OracleService} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service";
 
 const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
 const MILISECONDS_PER_SECOND = 1000
@@ -126,19 +132,26 @@ export class NfidNeuronImpl implements NFIDNeuron {
 
     if (days < 0) {
       months -= 1
-      const prevMonth = new Date(
+
+      const prevMonthDate = new Date(
         unlockDate.getFullYear(),
         unlockDate.getMonth(),
         0,
       )
-      days = prevMonth.getDate() + days
+      days += prevMonthDate.getDate()
     }
 
-    const parts = []
-    if (months > 0) parts.push(`${months} month${months !== 1 ? "s" : ""}`)
-    if (days > 0) parts.push(`${days} day${days !== 1 ? "s" : ""}`)
+    const parts: string[] = []
 
-    return parts.join(", ") || "less than a day"
+    if (months > 0) {
+      parts.push(`${months} month${months !== 1 ? "s" : ""}`)
+    }
+
+    if (days > 0) {
+      parts.push(`${days} day${days !== 1 ? "s" : ""}`)
+    }
+
+    return parts.length > 0 ? parts.join(", ") : "less than a day"
   }
 
   getUnlockInFormatted(): FormattedDate | undefined {
@@ -250,7 +263,7 @@ export class NfidNeuronImpl implements NFIDNeuron {
     if (!rootCanisterId) return
 
     let protocolFee = (this.getRewards() / BigInt(100000)) * BigInt(875)
-    
+
     const transferArgs: TransferArg = {
       amount: protocolFee,
       created_at_time: [],
@@ -263,10 +276,16 @@ export class NfidNeuronImpl implements NFIDNeuron {
       },
     }
 
-    let ledgerCanisterId = await icrc1OracleService.getICRC1Canisters()
-    .then(canisters => canisters
-      .filter((canister) => canister.root_canister_id.length > 0)
-      .find((canister) => canister.root_canister_id[0] === rootCanisterId.toText()))
+    let ledgerCanisterId = await icrc1OracleService
+      .getICRC1Canisters()
+      .then((canisters) =>
+        canisters
+          .filter((canister) => canister.root_canister_id.length > 0)
+          .find(
+            (canister) =>
+              canister.root_canister_id[0] === rootCanisterId.toText(),
+          ),
+      )
 
     await disburse({
       identity: signIdentity,
@@ -281,7 +300,9 @@ export class NfidNeuronImpl implements NFIDNeuron {
     )
 
     if (!hasOwnProperty(result, "Ok")) {
-      console.warn("Error transferring protocol fee: " + JSON.stringify(result.Err))
+      console.warn(
+        "Error transferring protocol fee: " + JSON.stringify(result.Err),
+      )
     }
   }
 }
